@@ -1,0 +1,114 @@
+{
+  "name": "@hiveio/content-renderer",
+  "version": "0.0.0-development",
+  "description": "Content renderer for Hive posts and comments. Markdown + HTML",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "unpkg": "dist/browser/hive-content-renderer.min.js",
+  "engines": {
+    "node": ">=8"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build:cleanbefore": "rm -rf dist",
+    "build:lint": "tslint -c tslint.json -p tsconfig.lint.json",
+    "build:node": "tsc",
+    "build:browser": "rm -rf dist/browser/ && NODE_ENV=production webpack -p --config webpack.config.js",
+    "build": "npm run build:cleanbefore && npm run build:node && npm run build:lint && npm run build:browser",
+    "prepare": "NODE_ENV=production npm run build",
+    "test": "find src -name '*.spec.test.ts' | TS_NODE_FILES=true TS_NODE_CACHE=false TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\"}' xargs mocha -r ts-node/register --require source-map-support/register",
+    "verify:browser": " testcafe --app-init-timeout 4000 --selector-timeout 2000 --assertion-timeout 2000 chrome browser-test/browser-test.js",
+    "lint-fix": "tslint --fix -c tslint.json -p tsconfig.lint.json",
+    "semantic-release": "semantic-release"
+  },
+  "dependencies": {
+    "ow": "^0.13.2",
+    "remarkable": "^1.7.1",
+    "sanitize-html": "^1.20.1",
+    "typescript-chained-error": "^1.3.2",
+    "universe-log": "^2.1.0",
+    "xmldom": "^0.1.27"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^8.1.0",
+    "@commitlint/config-conventional": "^8.1.0",
+    "@types/bluebird": "^3.5.27",
+    "@types/chai": "^4.2.0",
+    "@types/chai-as-promised": "^7.1.2",
+    "@types/jsdom": "^12.2.4",
+    "@types/lodash": "^4.14.136",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.7.1",
+    "@types/remarkable": "1.7.3",
+    "@types/sanitize-html": "^1.20.1",
+    "@types/sinon": "^7.0.13",
+    "@types/uuid": "^3.4.5",
+    "@types/xmldom": "^0.1.29",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "husky": "^3.0.3",
+    "jsdom": "^15.1.1",
+    "lodash": "^4.17.15",
+    "mocha": "^6.2.0",
+    "semantic-release": "18.0.0",
+    "@semantic-release/gitlab": "7.0.3",
+    "sinon": "^7.4.1",
+    "testcafe": "^1.4.3",
+    "ts-node": "^8.3.0",
+    "tslint": "^5.18.0",
+    "typescript": "^3.5.3",
+    "uuid": "^3.3.2",
+    "webpack": "^4.39.1",
+    "webpack-cli": "^3.3.6",
+    "webpack-visualizer-plugin": "^0.1.11",
+    "wise-tslint-configuration": "^0.2.0"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
+    "rules": {
+      "header-max-length": [
+        0
+      ],
+      "scope-case": [
+        0
+      ]
+    }
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.syncad.com/hive/hive-renderer.git"
+  },
+  "keywords": [
+    "hive",
+    "markdown",
+    "renderer",
+    "blockchain"
+  ],
+  "author": "The Wise Team (https://wise-team.io/)",
+  "contributors": [
+    "Jędrzej Lewandowski <jedrzejblew@gmail.com> (https://jedrzej.lewandowski.doctor/)",
+    "Bartłomiej Górnicki <contact@engrave.dev> (https://engrave.dev)"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://gitlab.syncad.com/hive/hive-renderer/-/issues"
+  },
+  "homepage": "https://engrave.dev",
+  "release": {
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/gitlab",
+      "@semantic-release/npm"
+    ]
+  }
+}

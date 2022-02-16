@@ -1,0 +1,22 @@
+stages:
+  - test
+  - release
+
+image: node:14.19.0
+
+before_script:
+  - npm ci
+
+test:
+  stage: test
+  script:
+      - NODE_ENV=production npm run build
+      - npm run test
+      - node sample/demo-local.js
+
+release:
+  stage: release
+  script:
+    - npm run semantic-release
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'

@@ -1,0 +1,14 @@
+/_dev
+/.travis.yml
+/.prettierrc.yml
+/TODO
+/README.md
+/LICENSE
+/src
+/.DS_Store
+/sample
+/tslint.json
+/tsconfig.lint.json
+*.test.ts
+/dist/browser/statistics.html
+.gitlab-ci.yml
