@@ -14,6 +14,12 @@ test:
       - npm run test
       - node sample/demo-local.js
 
+verify:
+  stage: test
+  script:
+    - NODE_ENV=production npm run build
+    - npm run verify:browser
+
 release:
   stage: release
   script:
