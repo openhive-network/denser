@@ -14,12 +14,4 @@ export class Log extends AbstractUniverseLog {
             },
         });
     }
-
-    public initialize() {
-        super.init();
-    }
-
-    public init() {
-        throw new Error("Instead of #init() please call #initialize() which indirectly overrides init");
-    }
 }
