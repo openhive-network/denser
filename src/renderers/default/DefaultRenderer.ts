@@ -1,5 +1,6 @@
 import ow from "ow";
-import * as Remarkable from "remarkable";
+// @ts-ignore
+import { Remarkable } from "remarkable";
 
 import { SecurityChecker } from "../../security/SecurityChecker";
 

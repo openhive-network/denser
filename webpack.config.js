@@ -1,6 +1,6 @@
 'use strict';
 
-const Visualizer = require('webpack-visualizer-plugin');
+const Visualizer = require('webpack-visualizer-plugin2');
 
 const path = require('path');
 const webpack = require('webpack');
@@ -19,7 +19,7 @@ module.exports = {
         library: "HiveContentRenderer",
         libraryTarget: "umd"
     },
-    devtool: (DEFAULTS.isDevelopment ? 'cheap-eval-source-map' : ''),
+    devtool: (DEFAULTS.isDevelopment ? 'eval-cheap-source-map' : false),
     target: "web",
     module: {
         rules: []
@@ -31,10 +31,11 @@ module.exports = {
         hints: false
     },
     resolve: {
-        extensions: [".js", ".json"]
-    },
-    node: {
-        fs: "empty" // fix can't resolve "fs" in ow
+        extensions: [".js", ".json"],
+        fallback: {
+            "fs": false,
+            "url": false
+        }
     },
     plugins: [
         new Visualizer({

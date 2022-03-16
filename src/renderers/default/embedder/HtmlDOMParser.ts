@@ -2,8 +2,8 @@
  * Based on: https://github.com/steemit/condenser/raw/master/src/shared/HtmlReady.js
  */
 // tslint:disable max-classes-per-file
+import * as xmldom from "@xmldom/xmldom";
 import ChainedError from "typescript-chained-error";
-import * as xmldom from "xmldom";
 
 import { Log } from "../../../Log";
 import { LinkSanitizer } from "../../../security/LinkSanitizer";
@@ -67,7 +67,7 @@ export class HtmlDOMParser {
             if (this.mutate) this.postprocessDOM(doc);
             this.parsedDocument = doc;
         } catch (error) {
-            throw new HtmlDOMParser.HtmlDOMParserError("Parsing error", error);
+            throw new HtmlDOMParser.HtmlDOMParserError("Parsing error", error as Error);
         }
 
         return this;

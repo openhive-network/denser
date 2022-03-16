@@ -14,6 +14,13 @@ test:
       - npm run test
       - node sample/demo-local.js
 
+verify:
+  stage: test
+  image: alekzonder/puppeteer
+  script:
+    - NODE_ENV=production npm run build
+    - npm run verify:puppeteer
+
 release:
   stage: release
   script:
