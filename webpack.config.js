@@ -25,7 +25,7 @@ module.exports = {
         rules: []
     },
     optimization: {
-        minimize: (DEFAULTS.isDevelopment ? false : true)
+        minimize: (!DEFAULTS.isDevelopment)
     },
     performance: {
         hints: false
