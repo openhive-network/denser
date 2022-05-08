@@ -27,3 +27,14 @@ release:
     - npm run semantic-release
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
+
+pages:
+  stage: release
+  script:
+    - mkdir -p public
+    - cp sample/live-demo.html public/index.html
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
