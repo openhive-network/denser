@@ -73,7 +73,6 @@ export class DefaultRenderer {
         const renderer = new Remarkable({
             html: true, // remarkable renders first then sanitize runs...
             breaks: this.options.breaks,
-            linkify: false, // linkify is done locally
             typographer: false, // https://github.com/jonschlinkert/remarkable/issues/142#issuecomment-221546793
             quotes: "“”‘’",
         });

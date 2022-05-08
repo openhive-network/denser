@@ -2,6 +2,9 @@
 
 [![npm](https://img.shields.io/npm/v/@hiveio/content-renderer.svg?style=flat-square)](https://www.npmjs.com/package/@hiveio/content-renderer) [![License](https://img.shields.io/github/license/wise-team/steem-content-renderer.svg?style=flat-square)](https://github.com/wise-team/steem-content-renderer/blob/master/LICENSE) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
+
+👉 **[Online demo](https://hive.pages.syncad.com/hive-renderer/)**
+
 Portable library that renders Hive posts and comments to string. It supports markdown and html and mimics the behaviour of condenser frontend.
 
 Features:
@@ -46,7 +49,7 @@ const safeHtmlStr = renderer.render(postContent);
 
 ## Browser usage:
 
-See [demo](./sample/live-demo.html).
+See [demo](https://hive.pages.syncad.com/hive-renderer/) and [its source](https://gitlab.syncad.com/hive/hive-renderer/-/blob/master/sample/live-demo.html).
 
 ```html
 
