@@ -8,18 +8,29 @@ generator client {
 }
 
 model User {
-  id    String @id @default(cuid())
-  email String @unique
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  password Password?
+  id           String @id @default(cuid())
+  username     String @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  posts        Post[]
 }
 
-model Password {
-  hash String
-
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String @unique
+model Post {
+  id                String @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  author            String
+  permlink          String
+  category          String
+  title             String
+  body              String
+  image             String
+  created           DateTime @default(now())
+  updated           DateTime @updatedAt
+  children          Int
+  payout            Float
+  author_reputation Float
+  community         String
+  community_title   String
 }
