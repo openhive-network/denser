@@ -106,7 +106,7 @@ export async function requireUserId(
 	// }
 
 	// this is temporary hard coded userId
-	return userId || 'cld3jm18c0000p041yy48mqxl';
+	return userId || 'cld4uuxrg0000p0q02eq5jm88';
 }
 
 export async function createUserSession(userId: string, redirectTo: string) {

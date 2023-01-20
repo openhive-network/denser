@@ -28,6 +28,7 @@ model Post {
   image             String
   created           DateTime @default(now())
   updated           DateTime @updatedAt
+  votes             Int
   children          Int
   payout            Float
   author_reputation Float
