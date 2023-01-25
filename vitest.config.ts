@@ -10,7 +10,7 @@ export default defineConfig({
 	test: {
 		globals: true,
 		environment: 'happy-dom',
-		setupFiles: ['./test/setup-test-env.ts'],
+		setupFiles: ['./tests/setup-vitest.ts'],
 
 		// Excluding `e2e tests` avoids overlapping with Playwright.
 		exclude: ['./tests/e2e/*', 'node_modules'],
