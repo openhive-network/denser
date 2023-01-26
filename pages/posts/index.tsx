@@ -1,24 +1,11 @@
-import * as React from "react"
+import CommunitiesSidebar from '@/components/communities-sidebar';
+import { Icons } from '@/components/icons';
+import { Layout } from '@/components/layout';
+import PostListItem from '@/components/post-list-item';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { getPostsRanked } from '@/lib/bridge';
 
-import { getPosts } from "@/lib/utils"
-import CommunitiesSidebar from "@/components/communities-sidebar"
-import { Icons } from "@/components/icons"
-import { Layout } from "@/components/layout"
-import PostListItem from "@/components/post-list-item"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-
-export default function PostsPage() {
-  const data = getPosts()
-
+export default function PostsPage({ data }) {
   return (
     <Layout>
       <div className="flex mt-4 md:mt-20">
@@ -109,7 +96,7 @@ export default function PostsPage() {
             ) : (
               <ul>
                 {data.map((post) => (
-                  <li key={post.id}>
+                  <li key={post.author}>
                     <PostListItem post={post} />
                   </li>
                 ))}
@@ -121,3 +108,11 @@ export default function PostsPage() {
     </Layout>
   )
 }
+
+export async function getServerSideProps(context) {
+  const data = await getPostsRanked()
+  return {
+    props: { data }, // will be passed to the page component as props
+  }
+}
+

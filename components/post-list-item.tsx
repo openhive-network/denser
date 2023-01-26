@@ -1,3 +1,4 @@
+import { dateToRelative } from "@/lib/utils"
 import { Icons } from "@/components/icons"
 
 export default function PostListItem({ post }: any) {
@@ -5,7 +6,7 @@ export default function PostListItem({ post }: any) {
     <div className="flex flex-col items-center gap-7 my-4 md:max-h-[200px] md:flex-row md:items-start">
       <div className="relative h-full max-h-[200px] min-h-[200px] w-full overflow-hidden bg-gray-100 md:min-w-[320px] md:max-w-[320px]">
         <img
-          src="https://images.unsplash.com/photo-1674674313266-4d67bb33f4b8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1336&q=80"
+          src={post.json_metadata.image[0]}
           className="max-h-full max-w-full"
           alt=""
         />
@@ -26,13 +27,13 @@ export default function PostListItem({ post }: any) {
             <Icons.arrowUpCircle className="h-5 w-5" />
             <Icons.arrowDownCircle className="h-5 w-5" />
             <span className="ml-2 text-sm font-medium leading-5 text-slate-500 dark:text-slate-400">
-              ${post.payout}
+              ${post.payout.toFixed(2)}
             </span>
           </li>
           <li className="mr-4 flex items-center">
             <Icons.chevronDown className="h-5 w-5" />
             <span className="ml-2 text-sm font-medium leading-5 text-slate-500 dark:text-slate-400">
-              {post.votes}
+              {post.stats.total_votes}
             </span>
           </li>
           <li className="mr-4 flex items-center">
@@ -47,13 +48,15 @@ export default function PostListItem({ post }: any) {
         </ul>
         <div className="mt-7 flex">
           <img
-            src={post.image}
+            src="https://qph.cf2.quoracdn.net/main-qimg-134e3bf89fff27bf56bdbd04e7dbaedf-lq"
             className="mr-3 h-10 w-10 rounded-full"
             alt=""
           />
           <div className="flex flex-col text-slate-500 dark:text-slate-400">
-            <p>@{post.author}</p>
-            <p>16 hours agoM</p>
+            <p>
+              @{post.author} ({post.author_reputation.toFixed(0)})
+            </p>
+            <p>{dateToRelative(post.created)}</p>
           </div>
         </div>
       </div>
