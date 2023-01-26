@@ -10,7 +10,7 @@ import {
   SunMedium,
   Twitter,
   Youtube,
-  type Icon as LucideIcon, Search,
+  type Icon as LucideIcon, Search, MoreHorizontal, ArrowUpCircle, ArrowDownCircle, LayoutList, LayoutGrid,
 } from 'lucide-react';
 
 export type Icon = LucideIcon
@@ -18,10 +18,15 @@ export type Icon = LucideIcon
 export const Icons = {
   arrowBigUp: ArrowBigUp,
   arrowBigDown: ArrowBigDown,
+  arrowUpCircle: ArrowUpCircle,
+  arrowDownCircle: ArrowDownCircle,
   chevronDown: ChevronDown,
   comment: MessageSquare,
   search: Search,
   share: Share2,
+  moreHorizontal: MoreHorizontal,
+  layoutList: LayoutList,
+  layoutGrid: LayoutGrid,
   sun: SunMedium,
   moon: Moon,
   laptop: Laptop,

@@ -18,8 +18,24 @@ export const siteConfig: SiteConfig = {
     "Description",
   mainNav: [
     {
-      title: "Home",
-      href: "/",
+      title: "Posts",
+      href: "/posts",
+    },
+    {
+      title: "Proposals",
+      href: "/proposals",
+    },
+    {
+      title: "Witnesses",
+      href: "/witnesses",
+    },
+    {
+      title: "Explore HIVE",
+      href: "/explore-hive",
+    },
+    {
+      title: "dApps",
+      href: "/dapps",
     },
   ],
   links: {

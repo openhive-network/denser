@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input"
 
 export default function CommunitiesSidebar() {
   return (
-    <div className="flex flex-col w-72 px-8">
-      <div className="relative text-gray-600 focus-within:text-gray-400 mb-8">
+    <div className="hidden w-72 flex-col px-8 md:flex">
+      <div className="relative mb-8 text-gray-600 focus-within:text-gray-400">
         <span className="absolute inset-y-0 left-0 flex items-center pl-2">
           <Icons.search className="h-5 w-5" />
         </span>
@@ -41,6 +41,21 @@ export default function CommunitiesSidebar() {
         <li>
           <Button variant="ghost" size="sm" className="w-full justify-start">
             Pinmapple
+          </Button>
+        </li>
+        <li>
+          <Button variant="ghost" size="sm" className="w-full justify-start">
+            Splinterlands
+          </Button>
+        </li>
+        <li>
+          <Button variant="ghost" size="sm" className="w-full justify-start">
+            Liketu
+          </Button>
+        </li>
+        <li>
+          <Button variant="ghost" size="sm" className="w-full justify-start">
+            <Icons.moreHorizontal className="h-5 w-5" />
           </Button>
         </li>
       </ul>
