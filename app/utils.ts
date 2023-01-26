@@ -1,5 +1,8 @@
 import { useMatches } from '@remix-run/react';
 import { useMemo } from 'react';
+import type { ClassValue} from 'clsx';
+import { clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 const DEFAULT_REDIRECT = '/';
 
@@ -39,4 +42,8 @@ export function useMatchesData(id: string): Record<string, unknown> | undefined 
 
 export function validateEmail(email: unknown): email is string {
 	return typeof email === 'string' && email.length > 3 && email.includes('@');
+}
+
+export function cn(...inputs: ClassValue[]) {
+	return twMerge(clsx(inputs));
 }

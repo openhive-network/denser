@@ -1,4 +1,4 @@
-import { ArrowUpIcon, ArrowDownIcon, ChevronUpIcon, ChatBubbleIcon, Share2Icon } from '@radix-ui/react-icons';
+import { Icons } from "~/components/ui/Icons"
 
 export default function PostListItem({ post }: any) {
 	return (
@@ -9,20 +9,20 @@ export default function PostListItem({ post }: any) {
 				<p className="mt-2 mb-7 text-base font-normal leading-6 text-gray-500">{post.bodyLine}</p>
 				<ul className="flex">
 					<li className="mr-4 flex items-center">
-						<ArrowUpIcon className="h-[18px] w-[18px] text-gray-800" />
-						<ArrowDownIcon className="h-[18px] w-[18px] text-gray-800" />
+						<Icons.arrowBigUp className="h-5 w-5" />
+						<Icons.arrowBigDown className="h-5 w-5" />
 						<span className="ml-2 text-sm font-medium leading-5 text-gray-500">${post.payout}</span>
 					</li>
 					<li className="mr-4 flex items-center">
-						<ChevronUpIcon className="h-[18px] w-[18px] text-gray-800" />
+						<Icons.chevronDown className="h-5 w-5" />
 						<span className="ml-2 text-sm font-medium leading-5 text-gray-500">{post.votes}</span>
 					</li>
 					<li className="mr-4 flex items-center">
-						<ChatBubbleIcon className="h-[18px] w-[18px] text-gray-800" />
+						<Icons.comment className="h-5 w-5" />
 						<span className="ml-2 text-sm font-medium leading-5 text-gray-500">{post.children}</span>
 					</li>
 					<li className="flex items-center">
-						<Share2Icon className="h-[18px] w-[18px] text-gray-800" />
+						<Icons.share className="h-5 w-5" />
 					</li>
 				</ul>
 				<div className="mt-7 flex">
