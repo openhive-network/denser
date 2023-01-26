@@ -1,5 +1,4 @@
 import type { MetaFunction } from '@remix-run/node';
-import { useEffect, useRef, useState } from 'react';
 import { Form } from '@remix-run/react';
 
 export const meta: MetaFunction = () => {
@@ -11,18 +10,23 @@ export const meta: MetaFunction = () => {
 export default function LoginPage() {
 	return (
 		<>
-			<nav className="mx-auto py-7 max-w-4xl flex items-center justify-between">
+			<nav className="mx-auto flex hidden max-w-4xl items-center justify-between py-7 md:flex">
 				<div className="flex">
-					<img src="/images/hive-logo.png" />
+					<img src="/images/hive-logo.svg" className="w-10"/>
 					<span className="whitespace-nowrap text-center text-3xl font-semibold text-gray-800">HIVE blog</span>
 				</div>
 				<div className="flex">
-					<span className="text-base font-normal text-gray-500">Don’t have an account?</span>
-					<span className="text-base font-semibold text-red-600 ml-1">Sign up</span>
+					<p className="text-base font-normal text-gray-500">
+						Don’t have an account?
+						<span className="ml-1 font-semibold text-red-600">Sign up</span>
+					</p>
 				</div>
 			</nav>
-			<div className="flex min-h-full flex-col justify-center">
+			<div className="flex min-h-screen flex-col justify-start md:justify-center pt-16 md:pt-0">
 				<div className="mx-auto flex w-[360px] max-w-md flex-col items-center">
+					<div className="flex md:hidden mb-4">
+						<img src="/images/hive-logo.svg" className="w-14"/>
+					</div>
 					<h2 className="text-center text-3xl font-semibold text-gray-800">Log in to your account</h2>
 					<p className="mt-2 mb-8 text-center text-base font-normal leading-6 text-gray-500">
 						Welcome back! Please enter your details.
@@ -87,10 +91,16 @@ export default function LoginPage() {
 							className="w-full rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-semibold text-white hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300">
 							Log in
 						</button>
-						<button className="mt-4 w-full rounded-lg border border-gray-200 px-5 py-2.5 text-center text-sm font-semibold text-gray-900 hover:bg-red-50 focus:outline-none focus:ring-4 focus:ring-red-300">
-							Log in with hivesigner
+						<button className="flex justify-center mt-4 w-full rounded-lg border border-gray-200 px-5 py-2.5 text-center text-sm font-semibold text-gray-900 hover:bg-red-50 focus:outline-none focus:ring-4 focus:ring-red-300">
+							Log in with <img src="/images/hivesigner.svg" className="ml-2"/>
 						</button>
 					</Form>
+					<div className="flex md:hidden mt-8">
+						<p className="text-base font-normal text-gray-500">
+							Don’t have an account?
+							<span className="ml-1 font-semibold text-red-600">Sign up</span>
+						</p>
+					</div>
 				</div>
 			</div>
 		</>
