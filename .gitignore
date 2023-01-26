@@ -1,30 +1,36 @@
-# We don't want lockfiles in stacks, as people could use a different package manager
-# This part will be removed by `remix.init`
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-pnpm-lock.yml
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# dependencies
 node_modules
+.pnp
+.pnp.js
 
-# Editor Configs.
-.idea
-.vscode
+# testing
+coverage
+
+# next.js
+.next/
+out/
+build
+
+# misc
 .DS_Store
+*.pem
 
-/.cache
-/build
-/public/build
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# local env files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# turbo
+.turbo
+
+.contentlayer
 .env
-
-# Tests.
-/test-results/
-/playwright-report/
-/playwright/.cache/
-
-# Prisma.
-/prisma/data.db
-/prisma/data.db-journal
-
-# Tailwind CSS.
-/app/styles/tailwind.css
