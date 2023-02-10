@@ -138,6 +138,31 @@ export const getPostsRanked = (
   });
 };
 
+export const getPostsRanked2 = (
+  sort: string,
+  tag: string = "",
+  start_author: string = '',
+  start_permlink: string = '',
+  limit: number = 11,
+  observer: string = '',
+): Promise<Entry[] | null> => {
+  return bridgeApiCall<Entry[] | null>('get_ranked_posts', {
+    sort,
+    start_author,
+    start_permlink,
+    limit,
+    tag,
+    observer,
+  }).then((resp) => {
+    if (resp) {
+      return resolvePosts(resp, observer);
+    }
+
+    return resp;
+  });
+};
+
+
 export const getAccountPosts = (
   sort: string,
   account: string,

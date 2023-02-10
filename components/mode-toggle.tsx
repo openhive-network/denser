@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react"
 import { useTheme } from "next-themes"
 
@@ -10,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-export function ThemeToggle() {
+export function ModeToggle() {
   const { setTheme } = useTheme()
 
   return (
@@ -21,7 +23,7 @@ export function ThemeToggle() {
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" forceMount>
+      <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme("light")}>
           <Icons.sun className="mr-2 h-4 w-4" />
           <span>Light</span>
