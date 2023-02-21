@@ -2,7 +2,7 @@ import Link from "next/link"
 
 import { MainNav } from "@/components/main-nav"
 import { ModeToggle } from "@/components/mode-toggle"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import { MobileNav } from '@/components/mobile-nav';
 
 export function SiteHeader() {
@@ -16,7 +16,7 @@ export function SiteHeader() {
             CMD
           </div>
           <nav className="flex items-center space-x-1">
-            <Link href="/login">
+            <Link href="/">
               <Button variant="ghost">Log In</Button>
             </Link>
             <Link href="https://signup.hive.io/" rel="noreferrer">

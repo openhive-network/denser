@@ -3,13 +3,15 @@ import { Icons } from "@/components/icons"
 
 export default function PostListItem({ post }: any) {
   return (
-    <div className="flex flex-col items-center gap-7 my-4 md:max-h-[200px] md:flex-row md:items-start">
+    <div className="my-4 flex flex-col items-center gap-7 md:max-h-[200px] md:flex-row md:items-start">
       <div className="relative h-full max-h-[200px] min-h-[200px] w-full overflow-hidden bg-gray-100 md:min-w-[320px] md:max-w-[320px]">
-        <img
+        {post.json_metadata.image ? (
+          <img
           src={post.json_metadata.image[0]}
           className="max-h-full max-w-full"
           alt=""
         />
+        ) : null}
         <div className="absolute inset-x-0 bottom-0 flex h-16 items-center justify-center bg-gradient-to-r from-slate-400 text-white dark:text-white">
           {post.community_title}
         </div>

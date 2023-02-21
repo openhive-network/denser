@@ -4,13 +4,22 @@ import SelectFilter from '@/components/select-filter';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Icons } from '@/components/icons';
 import Feed from '@/components/feed';
+import { getPostsRanked2 } from '@/lib/bridge';
+import { useQuery } from 'react-query';
 
 export default function FeedProvider() {
   const [filter, setFilter] = useState('hot');
+  const { isLoading, error, data } = useQuery({
+    queryKey: ['postsData', filter],
+    queryFn: () => getPostsRanked2(filter),
+  })
+
 
   function handleChangeFilter(e) {
     setFilter(e)
   }
+
+  if (isLoading) return <p>Loading...</p>
 
   return (
     <>
@@ -80,7 +89,7 @@ export default function FeedProvider() {
         </Select>
       </div>
 
-      <Feed filter={filter} />
+      <Feed data={data} />
     </>
   )
 }

@@ -69,6 +69,31 @@ export interface Entry {
   original_entry?: Entry;
 }
 
+export type CommunityTeam = Array<Array<string>>;
+
+export interface Community {
+  about: string;
+  admins?: string[];
+  avatar_url: string;
+  created_at: string;
+  description: string;
+  flag_text: string;
+  id: number;
+  is_nsfw: boolean;
+  lang: string;
+  name: string;
+  num_authors: number;
+  num_pending: number;
+  subscribers: number;
+  sum_pending: number;
+  settings?: any;
+  team: CommunityTeam;
+  title: string;
+  type_id: number;
+}
+
+export type Communities = Community[];
+
 export const bridgeServer = new Client(["https://api.hive.blog"], {
   timeout: 3000,
   failoverThreshold: 3,
@@ -260,3 +285,25 @@ export const getRelationshipBetweenAccounts = (
     follower,
     following
   ]);
+
+
+export const getCommunity = (
+  name: string,
+  observer: string | undefined = ""
+): Promise<Community | null> =>
+  bridgeApiCall<Community | null>("get_community", { name, observer });
+
+export const getCommunities = (
+  last: string = "",
+  limit: number = 100,
+  query?: string | null,
+  sort: string = "rank",
+  observer: string = ""
+): Promise<Community[] | null> =>
+  bridgeApiCall<Community[] | null>("list_communities", {
+    last,
+    limit,
+    query,
+    sort,
+    observer
+  });

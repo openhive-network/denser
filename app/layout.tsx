@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 import { SiteHeader } from "@/components/site-header"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
+import ReactQueryWrapper from "./reactQueryWrapper"
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -26,13 +27,15 @@ export default function RootLayout({ children }: RootLayoutProps) {
           fontSans.variable
         )}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <div className="flex min-h-screen flex-col">
-            <SiteHeader />
-            <div className="container flex-1">{children}</div>
-          </div>
-          <TailwindIndicator />
-        </ThemeProvider>
+        <ReactQueryWrapper>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <div className="flex min-h-screen flex-col">
+              <SiteHeader />
+              <div className="container flex-1">{children}</div>
+            </div>
+            <TailwindIndicator />
+          </ThemeProvider>
+        </ReactQueryWrapper>
       </body>
     </html>
   )

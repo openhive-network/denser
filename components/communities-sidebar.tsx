@@ -1,10 +1,18 @@
+'use client'
 import * as React from "react"
 
 import { Icons } from "@/components/icons"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { useQuery } from 'react-query';
+import { getCommunities } from '@/lib/bridge';
 
 export default function CommunitiesSidebar() {
+  const { isLoading, error, data } = useQuery({
+    queryKey: ['communitiesData'],
+    queryFn: () => getCommunities(),
+  })
+
   return (
     <div className="hidden w-72 flex-col px-8 md:flex">
       <div className="relative mb-8 text-gray-600 focus-within:text-gray-400">
@@ -23,41 +31,13 @@ export default function CommunitiesSidebar() {
         Trending Communities
       </h2>
       <ul className="space-y-1">
-        <li>
-          <Button variant="ghost" size="sm" className="w-full justify-start">
-            View all
-          </Button>
-        </li>
-        <li>
-          <Button variant="ghost" size="sm" className="w-full justify-start">
-            LeoFinance
-          </Button>
-        </li>
-        <li>
-          <Button variant="ghost" size="sm" className="w-full justify-start">
-            Photography Lovers
-          </Button>
-        </li>
-        <li>
-          <Button variant="ghost" size="sm" className="w-full justify-start">
-            Pinmapple
-          </Button>
-        </li>
-        <li>
-          <Button variant="ghost" size="sm" className="w-full justify-start">
-            Splinterlands
-          </Button>
-        </li>
-        <li>
-          <Button variant="ghost" size="sm" className="w-full justify-start">
-            Liketu
-          </Button>
-        </li>
-        <li>
-          <Button variant="ghost" size="sm" className="w-full justify-start">
-            <Icons.moreHorizontal className="h-5 w-5" />
-          </Button>
-        </li>
+        {data?.slice(0, 10).map(community => (
+          <li key={community.id}>
+            <Button variant="ghost" size="sm" className="w-full justify-start">
+              {community.title}
+            </Button>
+          </li>
+        ))}
       </ul>
     </div>
   )
