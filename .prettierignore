@@ -1,7 +1,7 @@
-node_modules
-
-/build
-/public/build
-.env
-
-/app/styles/tailwind.css
+cache
+.cache
+package.json
+package-lock.json
+public
+CHANGELOG.md
+.yarn
