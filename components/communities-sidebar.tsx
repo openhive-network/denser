@@ -4,7 +4,7 @@ import * as React from "react"
 import { Icons } from "@/components/icons"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { getCommunities } from '@/lib/bridge';
 
 export default function CommunitiesSidebar() {
