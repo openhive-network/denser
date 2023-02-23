@@ -1,6 +1,6 @@
 {
-  "name": "shadcn/ui",
-  "short_name": "shadcn/ui",
+  "name": "hive.blog",
+  "short_name": "hive.blog",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
