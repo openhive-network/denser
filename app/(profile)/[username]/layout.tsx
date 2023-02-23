@@ -71,13 +71,15 @@ export default function UserProfileLayout({
               </Link>
             </li>
             <li>
-              <Button
-                variant="ghost"
-                className="hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white"
-              >
-                <BellRing className="mr-2" />
-                Notifications
-              </Button>
+              <Link href={`/${params.username}/notifications`}>
+                <Button
+                  variant="ghost"
+                  className="hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white"
+                >
+                  <BellRing className="mr-2" />
+                  Notifications
+                </Button>
+              </Link>
             </li>
           </ul>
           {children}

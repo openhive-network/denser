@@ -1,7 +1,7 @@
 import Link from "next/link"
 
+import SocialActivities from "@/components/social-activities"
 import { SubscriptionList } from "@/components/subscription-list"
-import SocialActivities from '@/components/social-activities';
 
 export default async function CommunitiesSubPage() {
   const mockData = [
@@ -32,7 +32,7 @@ export default async function CommunitiesSubPage() {
     },
   ]
   return (
-    <div className="flex flex-col py-8">
+    <div className="flex flex-col">
       <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
         Community Subscriptions
       </h2>
@@ -45,8 +45,20 @@ export default async function CommunitiesSubPage() {
       </h2>
       <p>
         These are badges received by the author via the third-party apps{" "}
-        <Link href="https://peakd.com/" className="text-red-600 hover:underline">Peakd</Link> &{" "}
-        <Link href="https://hivebuzz.me/" className="text-red-600 hover:underline">Hivebuzz</Link>.
+        <Link
+          href="https://peakd.com/"
+          className="text-red-600 hover:underline"
+        >
+          Peakd
+        </Link>{" "}
+        &{" "}
+        <Link
+          href="https://hivebuzz.me/"
+          className="text-red-600 hover:underline"
+        >
+          Hivebuzz
+        </Link>
+        .
       </p>
 
       <SocialActivities />
