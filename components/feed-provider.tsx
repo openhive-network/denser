@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Icons } from '@/components/icons';
 import Feed from '@/components/feed';
 import { getPostsRanked2 } from '@/lib/bridge';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 export default function FeedProvider() {
   const [filter, setFilter] = useState('hot');
