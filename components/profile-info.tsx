@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button"
 export default function ProfileInfo() {
   return (
     <div className="mt-[-6rem] px-8 md:w-80 ">
-      <div className="flex h-40 w-40 items-center justify-center rounded-lg bg-white">
+      <div className="flex h-40 w-40 items-center justify-center rounded-lg bg-white dark:bg-slate-900">
         <Image
           src="/olivia.png"
           alt="Profile picture"

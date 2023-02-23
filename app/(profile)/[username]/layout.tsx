@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 import { Award, BellRing, Cast, MessageSquare, Newspaper } from "lucide-react"
 
 import ProfileInfo from "@/components/profile-info"
@@ -6,10 +7,14 @@ import { Button } from "@/components/ui/button"
 
 interface UserProfileLayoutProps {
   children: React.ReactNode
+  params: {
+    username: string
+  }
 }
 
 export default function UserProfileLayout({
   children,
+  params,
 }: UserProfileLayoutProps) {
   return (
     <div>
@@ -55,13 +60,15 @@ export default function UserProfileLayout({
               </Button>
             </li>
             <li>
-              <Button
-                variant="ghost"
-                className="hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white"
-              >
-                <Award className="mr-2" />
-                Social
-              </Button>
+              <Link href={`/${params.username}/communities`}>
+                <Button
+                  variant="ghost"
+                  className="hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white"
+                >
+                  <Award className="mr-2" />
+                  Social
+                </Button>
+              </Link>
             </li>
             <li>
               <Button
