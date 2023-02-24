@@ -4,6 +4,7 @@ import { MainNav } from "@/components/main-nav"
 import { ModeToggle } from "@/components/mode-toggle"
 import { Button } from "@/components/ui/button"
 import { MobileNav } from '@/components/mobile-nav';
+import LoginModal from '@/components/login-modal';
 
 export function SiteHeader() {
   return (
@@ -12,10 +13,8 @@ export function SiteHeader() {
         <MainNav />
         <MobileNav />
         <div className="flex flex-1 items-center justify-between space-x-2 sm:space-x-4 md:justify-end">
-          <nav className="flex items-center space-x-1">
-            <Link href="/">
-              <Button variant="ghost">Log In</Button>
-            </Link>
+          <nav className="flex items-center space-x-2">
+            <LoginModal />
             <Link href="https://signup.hive.io/" rel="noreferrer">
               <Button>Sign Up</Button>
             </Link>
