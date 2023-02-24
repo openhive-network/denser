@@ -1,7 +1,7 @@
 import { NavItem } from "@/types/nav"
 
 interface SiteConfig {
-  name: string
+  title: string
   description: string
   mainNav: NavItem[]
   links: {
@@ -13,9 +13,9 @@ interface SiteConfig {
 }
 
 export const siteConfig: SiteConfig = {
-  name: "HIVE blog",
+  title: "Hive Blog",
   description:
-    "Description",
+    "Communities without borders. A social network owned and operated by its users, powered by Hive.",
   mainNav: [
     {
       title: "Posts",

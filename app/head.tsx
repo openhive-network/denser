@@ -3,9 +3,7 @@ import { siteConfig } from "@/config/site"
 export default function Head() {
   return (
     <>
-      <title>{`${siteConfig.name} - ${siteConfig.description}`}</title>
       <meta charSet="utf-8" />
-      <meta name="description" content={siteConfig.description} />
       <link
         rel="apple-touch-icon"
         sizes="180x180"
