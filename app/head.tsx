@@ -24,9 +24,9 @@ export default function Head() {
       <link rel="manifest" href="/site.webmanifest" />
       <meta content="width=device-width, initial-scale=1" name="viewport" />
       <meta property="og:type" content="website" />
-      <meta property="og:title" content={siteConfig.name} />
+      <meta property="og:title" content={siteConfig.title} />
       <meta property="og:description" content={siteConfig.description} />
-      <meta name="twitter:title" content={siteConfig.name} />
+      <meta name="twitter:title" content={siteConfig.title} />
       <meta name="twitter:description" content={siteConfig.description} />
       <meta name="twitter:card" content="summary_large_image" />
     </>

@@ -3,20 +3,20 @@ import { Icons } from "@/components/icons"
 
 export default function PostListItem({ post }: any) {
   return (
-    <div className="my-4 flex flex-col items-center gap-7 md:max-h-[200px] md:flex-row md:items-start">
-      <div className="relative h-full max-h-[200px] min-h-[200px] w-full overflow-hidden bg-gray-100 md:min-w-[320px] md:max-w-[320px]">
+    <div className="my-4 flex flex-col items-center gap-7 lg:max-h-[200px] lg:flex-row lg:items-start">
+      <div className="relative h-full max-h-[200px] min-h-[200px] w-full overflow-hidden bg-gray-100 lg:min-w-[320px] lg:max-w-[320px]">
         {post.json_metadata.image ? (
           <img
-          src={post.json_metadata.image[0]}
-          className="max-h-full max-w-full"
-          alt=""
-        />
+            src={post.json_metadata.image[0]}
+            className="max-h-full max-w-full"
+            alt=""
+          />
         ) : null}
         <div className="absolute inset-x-0 bottom-0 flex h-16 items-center justify-center bg-gradient-to-r from-slate-400 text-white dark:text-white">
           {post.community_title}
         </div>
       </div>
-      <div key={post.id} className="mb-10 w-full md:w-auto">
+      <div key={post.id} className="mb-10 w-full lg:w-auto">
         <h2 className="text-lg font-semibold leading-5 text-slate-900 dark:text-white">
           {post.title}
         </h2>
@@ -25,15 +25,15 @@ export default function PostListItem({ post }: any) {
           {post?.bodyLine}
         </p>
         <ul className="flex">
-          <li className="mr-4 flex items-center">
+          <li className="mr-4 flex items-center space-x-1">
             <Icons.arrowUpCircle className="h-5 w-5" />
             <Icons.arrowDownCircle className="h-5 w-5" />
-            <span className="ml-2 text-sm font-medium leading-5 text-slate-500 dark:text-slate-400">
+            <span className="text-sm font-medium leading-5 text-slate-500 dark:text-slate-400">
               ${post.payout.toFixed(2)}
             </span>
           </li>
           <li className="mr-4 flex items-center">
-            <Icons.chevronDown className="h-5 w-5" />
+            <Icons.chevronUp className="h-5 w-5" />
             <span className="ml-2 text-sm font-medium leading-5 text-slate-500 dark:text-slate-400">
               {post.stats.total_votes}
             </span>
@@ -45,7 +45,7 @@ export default function PostListItem({ post }: any) {
             </span>
           </li>
           <li className="flex items-center">
-            <Icons.share className="h-5 w-5" />
+            <Icons.forward className="h-5 w-5" />
           </li>
         </ul>
         <div className="mt-7 flex">

@@ -1,15 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
-import {
-  CalendarHeart,
-  MapPin,
-  Globe2,
-  Instagram,
-  Twitter,
-  UserPlus,
-} from "lucide-react"
-
 import { Button } from "@/components/ui/button"
+import { Icons } from "@/components/icons"
 
 export default function ProfileInfo() {
   return (
@@ -35,11 +27,11 @@ export default function ProfileInfo() {
         Unchained. I make YouTube Videos and stream on Twitch
       </p>
       <p className="my-4 flex text-slate-900 dark:text-white">
-        <CalendarHeart className="mr-2" />
+        <Icons.calendarHeart className="mr-2" />
         Joined August 26, 2018
       </p>
       <p className="my-4 flex text-slate-900 dark:text-white">
-        <MapPin className="mr-2" />
+        <Icons.mapPin className="mr-2" />
         Chicago, USA
       </p>
 
@@ -66,14 +58,14 @@ export default function ProfileInfo() {
         variant="outline"
         className="mt-4 mb-8 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
       >
-        <UserPlus className="mr-2" />
+        <Icons.userPlus className="mr-2" />
         Follow
       </Button>
 
       <div>
         <h6 className="text-slate-900 dark:text-white">Links</h6>
         <p className="my-3 flex">
-          <Globe2 className="mr-2" />
+          <Icons.globe2 className="mr-2" />
           <Link href="/">
             <span className="text-slate-900 dark:text-white">
               www.olivia.com
@@ -81,13 +73,13 @@ export default function ProfileInfo() {
           </Link>
         </p>
         <p className="my-3 flex">
-          <Twitter className="mr-2" />
+          <Icons.twitter className="mr-2" />
           <Link href="/">
             <span className="text-slate-900 dark:text-white">olive123y</span>
           </Link>
         </p>
         <p className="my-3 flex">
-          <Instagram className="mr-2" />
+          <Icons.instagram className="mr-2" />
           <Link href="/">
             <span className="text-slate-900 dark:text-white">olivephotos</span>
           </Link>
