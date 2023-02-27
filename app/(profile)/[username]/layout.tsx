@@ -22,7 +22,7 @@ export default function UserProfileLayout({
         <Image
           src="/banner.png"
           alt="Banner image"
-          className="h-auto min-h-full w-auto min-w-full"
+          className="h-auto max-h-full min-h-full w-auto min-w-full max-w-full"
           height="320"
           width="960"
           priority
@@ -53,13 +53,15 @@ export default function UserProfileLayout({
               </Link>
             </li>
             <li>
-              <Button
-                variant="ghost"
-                className="hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white"
-              >
-                <Cast className="mr-2" />
-                Replies
-              </Button>
+              <Link href={`/${params.username}/replies`}>
+                <Button
+                  variant="ghost"
+                  className="hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white"
+                >
+                  <Cast className="mr-2" />
+                  Replies
+                </Button>
+              </Link>
             </li>
             <li>
               <Link href={`/${params.username}/communities`}>
