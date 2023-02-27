@@ -42,13 +42,15 @@ export default function UserProfileLayout({
               </Button>
             </li>
             <li>
-              <Button
-                variant="ghost"
-                className="hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white"
-              >
-                <MessageSquare className="mr-2" />
-                Comments
-              </Button>
+              <Link href={`/${params.username}/posts`}>
+                <Button
+                  variant="ghost"
+                  className="hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white"
+                >
+                  <MessageSquare className="mr-2" />
+                  Posts
+                </Button>
+              </Link>
             </li>
             <li>
               <Button
