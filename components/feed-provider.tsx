@@ -1,4 +1,3 @@
-'use client'
 import { useState } from 'react';
 import SelectFilter from '@/components/select-filter';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -15,7 +14,7 @@ export default function FeedProvider() {
   })
 
 
-  function handleChangeFilter(e) {
+    function handleChangeFilter(e) {
     setFilter(e)
   }
 

@@ -1,10 +1,8 @@
-"use client"
-
 import Link from "next/link"
-import { usePathname } from "next/navigation"
 import { SidebarNavItem } from "types/nav"
 
 import { cn } from "@/lib/utils"
+import { usePathname } from 'next/dist/client/components/hooks-client';
 
 export interface DocsSidebarNavProps {
   items: SidebarNavItem[]
@@ -55,12 +53,14 @@ export function DocsSidebarNavItems({
             target={item.external ? "_blank" : ""}
             rel={item.external ? "noreferrer" : ""}
           >
-            {item.title}
-            {item.label && (
-              <span className="ml-2 rounded-md bg-teal-100 px-1.5 py-0.5 text-xs no-underline group-hover:no-underline dark:text-slate-900">
-                {item.label}
-              </span>
-            )}
+            <>
+              {item.title}
+              {item.label && (
+                <span className="ml-2 rounded-md bg-teal-100 px-1.5 py-0.5 text-xs no-underline group-hover:no-underline dark:text-slate-900">
+                  {item.label}
+                </span>
+              )}
+            </>
           </Link>
         ) : (
           <span
