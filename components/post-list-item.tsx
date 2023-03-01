@@ -1,7 +1,23 @@
-import { dateToRelative } from "@/lib/utils"
+import dynamic from "next/dynamic"
 import { Icons } from "@/components/icons"
+import { dateToRelative } from "@/lib/utils"
+import { useEffect, useState } from "react"
+
+// Part of Solution 1
+const Time = dynamic(() => import('./time'), {
+  ssr: false
+})
 
 export default function PostListItem({ post }: any) {
+  
+  // Part of Solution 2
+  const [isSsr, setIsSsr] = useState(true);
+
+    useEffect(() => {
+      setIsSsr(false);
+    }, [])
+  // End of Solution 2
+
   return (
     <div className="my-4 flex flex-col items-center gap-7 lg:max-h-[200px] lg:flex-row lg:items-start">
       <div className="relative h-full max-h-[200px] min-h-[200px] w-full overflow-hidden bg-gray-100 lg:min-w-[320px] lg:max-w-[320px]">
@@ -58,7 +74,10 @@ export default function PostListItem({ post }: any) {
             <p>
               @{post.author} ({post.author_reputation.toFixed(0)})
             </p>
-            <p>{dateToRelative(post.created)}</p>
+            {/* Solution 1 */}
+            <Time time={post.created} />
+            {/* Solution 2 (Date specific) */}
+            <span>{dateToRelative(isSsr ? post.created : post.created  + '.000Z')}</span>
           </div>
         </div>
       </div>

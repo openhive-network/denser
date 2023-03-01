@@ -9,8 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 
 dayjs.extend(relativeTime)
 export const dateToRelative = (d: string): string => {
-  const isTimeZoned = d.indexOf(".") !== -1 || d.indexOf("+") !== -1 ? d : `${d}.000Z`;
-  const dm = dayjs((new Date(isTimeZoned)));
+  const dm = dayjs(d);
   const dd = dm.fromNow();
 
   return dd
