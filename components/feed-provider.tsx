@@ -7,11 +7,12 @@ import Feed from '@/components/feed';
 import { getPostsRanked2 } from '@/lib/bridge';
 import { useQuery } from '@tanstack/react-query';
 
-export default function FeedProvider() {
+export default function FeedProvider({ serverData }) {
   const [filter, setFilter] = useState('hot');
   const { isLoading, error, data } = useQuery({
     queryKey: ['postsData', filter],
     queryFn: () => getPostsRanked2(filter),
+    initialData: serverData
   })
 
 
