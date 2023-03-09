@@ -1,47 +1,29 @@
 import { NavItem } from "@/types/nav"
 
 interface SiteConfig {
-  title: string
+  name: string
   description: string
   mainNav: NavItem[]
   links: {
     twitter: string
-    gitlab: string
-    youtube: string
+    github: string
     docs: string
   }
 }
 
 export const siteConfig: SiteConfig = {
-  title: "Hive Blog",
+  name: "Next.js",
   description:
-    "Communities without borders. A social network owned and operated by its users, powered by Hive.",
+    "Beautifully designed components built with Radix UI and Tailwind CSS.",
   mainNav: [
     {
-      title: "Posts",
-      href: "/posts",
-    },
-    {
-      title: "Proposals",
-      href: "/proposals",
-    },
-    {
-      title: "Witnesses",
-      href: "/witnesses",
-    },
-    {
-      title: "Explore HIVE",
-      href: "/explore-hive",
-    },
-    {
-      title: "dApps",
-      href: "/dapps",
+      title: "Home",
+      href: "/",
     },
   ],
   links: {
-    twitter: "https://twitter.com/hiveblocks",
-    gitlab: "https://gitlab.hive.io/",
-    youtube: "https://www.youtube.com/@Hivenetwork",
+    twitter: "https://twitter.com/shadcn",
+    github: "https://github.com/shadcn/ui",
     docs: "https://ui.shadcn.com",
   },
 }

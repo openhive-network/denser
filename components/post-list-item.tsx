@@ -1,19 +1,19 @@
 import { Icons } from "@/components/icons"
 import dynamic from 'next/dynamic';
 
-const PostTime = dynamic(() => import('./post-time'), {
+const Time = dynamic(() => import('./time'), {
   ssr: false
 })
 
-const PostPayout = dynamic(() => import('./post-payout'), {
+const Payout = dynamic(() => import('./payout'), {
   ssr: false
 })
 
-const PostVotes = dynamic(() => import('./post-votes'), {
+const Votes = dynamic(() => import('./votes'), {
   ssr: false
 })
 
-const PostComments = dynamic(() => import('./post-comments'), {
+const Children = dynamic(() => import('./children'), {
   ssr: false
 })
 
@@ -46,20 +46,22 @@ export default function PostListItem({ post }: any) {
             <Icons.arrowUpCircle className="h-5 w-5" />
             <Icons.arrowDownCircle className="h-5 w-5" />
             <span className="text-sm font-medium leading-5 text-slate-500 dark:text-slate-400">
-              <PostPayout amount={post.payout} />
+              {/*${post.payout.toFixed(2)}*/}
+              <Payout amount={post.payout} />
             </span>
           </li>
           <li className="mr-4 flex items-center">
             <Icons.chevronUp className="h-5 w-5" />
             <span className="ml-2 text-sm font-medium leading-5 text-slate-500 dark:text-slate-400">
               {/*{post.stats.total_votes}*/}
-              <PostVotes votes={post.stats.total_votes} />
+              <Votes votes={post.stats.total_votes} />
             </span>
           </li>
           <li className="mr-4 flex items-center">
             <Icons.comment className="h-5 w-5" />
             <span className="ml-2 text-sm font-medium leading-5 text-slate-500 dark:text-slate-400">
-              <PostComments>{post.children}</PostComments>
+              {/*{post.children}*/}
+              <Children children={post.children} />
             </span>
           </li>
           <li className="flex items-center">
@@ -76,7 +78,8 @@ export default function PostListItem({ post }: any) {
             <p>
               @{post.author} ({post.author_reputation.toFixed(0)})
             </p>
-            <PostTime time={post.created} />
+            <Time time={post.created} />
+            {/*<p>{dateToRelative(post.created)}</p>*/}
           </div>
         </div>
       </div>

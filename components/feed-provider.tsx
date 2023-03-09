@@ -1,23 +1,34 @@
-'use client'
-import { useState } from 'react';
-import SelectFilter from '@/components/select-filter';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Icons } from '@/components/icons';
-import Feed from '@/components/feed';
-import { getPostsRanked2 } from '@/lib/bridge';
-import { useQuery } from '@tanstack/react-query';
+"use client"
 
-export default function FeedProvider({ serverData }) {
-  const [filter, setFilter] = useState('hot');
+import { useState } from "react"
+import { useRouter } from "next/router"
+import { useQuery } from "@tanstack/react-query"
+
+import { getPostsRanked2 } from "@/lib/bridge"
+import Feed from "@/components/feed"
+import { Icons } from "@/components/icons"
+import SelectFilter from "@/components/select-filter"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
+export default function FeedProvider({ serverData, sort = "hot" }) {
+  const router = useRouter()
+  const [filter, setFilter] = useState(sort)
   const { isLoading, error, data } = useQuery({
-    queryKey: ['postsData', filter],
+    queryKey: ["postsData", filter],
     queryFn: () => getPostsRanked2(filter),
-    initialData: serverData
+    initialData: serverData,
   })
-
 
   function handleChangeFilter(e) {
     setFilter(e)
+    router.push(`/${e}`, undefined, { shallow: true })
   }
 
   if (isLoading) return <p>Loading...</p>
@@ -30,11 +41,11 @@ export default function FeedProvider({ serverData }) {
             LeoFinance
           </h4>
           <span className="mt-2 text-xs font-normal text-slate-500 dark:text-slate-400">
-              Community
-            </span>
+            Community
+          </span>
         </div>
         <div className="flex">
-          <SelectFilter filter={'hot'} handleChangeFilter={handleChangeFilter}/>
+          <SelectFilter filter={sort} handleChangeFilter={handleChangeFilter} />
 
           <Select defaultValue="list">
             <SelectTrigger className="ml-4 w-16 border-0">

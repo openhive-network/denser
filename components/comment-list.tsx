@@ -1,5 +1,3 @@
-'use client'
-
 import CommentListItem from '@/components/comment-list-item';
 
 export default function CommentList({ data }) {

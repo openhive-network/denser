@@ -1,5 +1,3 @@
-"use client"
-
 import Link from "next/link"
 
 import { dateToRelative } from "@/lib/utils"
@@ -24,9 +22,9 @@ export default function CommentListItem({ comment }) {
             </span>{" "}
             ({comment.author_reputation.toFixed(0)}) in{" "}
             <span>
-              <Link href={`/trending/${comment.json_metadata.tags[0]}`}>
-                #{comment.json_metadata.tags[0]}
-              </Link>
+              {/*<Link href={`/trending/${comment.json_metadata.tags[0]}`}>*/}
+              {/*  #{comment.json_metadata.tags[0]}*/}
+              {/*</Link>*/}
             </span>{" "}
             <span className="mx-1">&#x2022;</span>
             <span>{dateToRelative(comment.created)}</span>

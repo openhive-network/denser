@@ -1,7 +1,5 @@
-'use client'
-
 import { useQuery } from '@tanstack/react-query';
-import { getAccountPosts, getPostsRanked2 } from '@/lib/bridge';
+import { getAccountPosts } from '@/lib/bridge';
 import CommentList from '@/components/comment-list';
 
 export default function CommentsProvider() {

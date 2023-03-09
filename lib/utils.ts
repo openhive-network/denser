@@ -1,7 +1,7 @@
 import { ClassValue, clsx } from "clsx"
+import dayjs from "dayjs"
+import relativeTime from "dayjs/plugin/relativeTime.js"
 import { twMerge } from "tailwind-merge"
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime.js'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -9,9 +9,10 @@ export function cn(...inputs: ClassValue[]) {
 
 dayjs.extend(relativeTime)
 export const dateToRelative = (d: string): string => {
-  const isTimeZoned = d.indexOf(".") !== -1 || d.indexOf("+") !== -1 ? d : `${d}.000Z`;
-  const dm = dayjs((new Date(isTimeZoned)));
-  const dd = dm.fromNow();
+  const isTimeZoned =
+    d.indexOf(".") !== -1 || d.indexOf("+") !== -1 ? d : `${d}.000Z`
+  const dm = dayjs(new Date(isTimeZoned))
+  const dd = dm.fromNow()
 
   return dd
     .replace("a few seconds", "~1s")
@@ -25,5 +26,5 @@ export const dateToRelative = (d: string): string => {
     .replace(" months", "M")
     .replace("a month", "1M")
     .replace(" years", "y")
-    .replace("a year", "1y");
-};
+    .replace("a year", "1y")
+}
