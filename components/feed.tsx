@@ -8,8 +8,8 @@ export default function Feed({ data }) {
         <p className="p-4">No posts yet</p>
       ) : (
         <ul>
-          {data.map((post) => (
-            <li key={post.author}>
+          {data.map((post, index) => (
+            <li key={`${post.author}-${index}-${Math.random()}`}>
               <PostListItem post={post} />
             </li>
           ))}
