@@ -11,6 +11,14 @@ const nextConfig = {
     ],
     appDir: true,
   },
+  async rewrites() {
+    return [
+      {
+        source: '/@:username',
+        destination: '/profile/:username'
+      }
+    ]
+  }
 }
 
 export default nextConfig
