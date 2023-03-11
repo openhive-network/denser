@@ -3,7 +3,8 @@ import { Inter as FontSans } from "@next/font/google"
 import { ThemeProvider } from "next-themes"
 
 import "@/styles/globals.css"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { Hydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import React from 'react';
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -11,11 +12,12 @@ const fontSans = FontSans({
   display: "swap",
 })
 
-const queryClient = new QueryClient()
+
 
 export default function App({ Component, pageProps }: AppProps) {
   // @ts-ignore
   const getLayout = Component.getLayout || ((page) => page)
+  const [queryClient] = React.useState(() => new QueryClient())
   return (
     <>
       <style jsx global>{`
@@ -24,9 +26,11 @@ export default function App({ Component, pageProps }: AppProps) {
 				}
 			}`}</style>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {getLayout(<Component {...pageProps} />)}
-        </ThemeProvider>
+        <Hydrate state={pageProps.dehydratedState}>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            {getLayout(<Component {...pageProps} />)}
+          </ThemeProvider>
+        </Hydrate>
       </QueryClientProvider>
     </>
   )

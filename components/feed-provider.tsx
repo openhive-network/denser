@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/router"
-import { useQuery } from "@tanstack/react-query"
+import { dehydrate, QueryClient, useQuery } from '@tanstack/react-query';
 
 import { getPostsRanked2 } from "@/lib/bridge"
 import Feed from "@/components/feed"
@@ -17,13 +17,14 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-export default function FeedProvider({ serverData, sort = "hot" }) {
+export default function FeedProvider() {
   const router = useRouter()
+  const sort = typeof router.query?.sort === "string" ? router.query.sort : "hot"
+  console.log('sort from router query', sort)
   const [filter, setFilter] = useState(sort)
   const { isLoading, error, data } = useQuery({
     queryKey: ["postsData", filter],
     queryFn: () => getPostsRanked2(filter),
-    initialData: serverData,
   })
 
   function handleChangeFilter(e) {
@@ -104,4 +105,19 @@ export default function FeedProvider({ serverData, sort = "hot" }) {
       <Feed data={data} />
     </>
   )
+}
+
+export async function getStaticProps(context) {
+  const sort = context.params?.id as string
+  const queryClient = new QueryClient()
+
+  await queryClient.prefetchQuery(["postsData", sort], () =>
+    getPostsRanked2(sort)
+  )
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  }
 }

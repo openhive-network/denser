@@ -61,7 +61,7 @@ export default function PostListItem({ post }: any) {
             <Icons.comment className="h-5 w-5" />
             <span className="ml-2 text-sm font-medium leading-5 text-slate-500 dark:text-slate-400">
               {/*{post.children}*/}
-              <Children children={post.children} />
+              <Children>{post.children}</Children>
             </span>
           </li>
           <li className="flex items-center">
