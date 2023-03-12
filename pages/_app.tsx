@@ -17,7 +17,15 @@ const fontSans = FontSans({
 export default function App({ Component, pageProps }: AppProps) {
   // @ts-ignore
   const getLayout = Component.getLayout || ((page) => page)
-  const [queryClient] = React.useState(() => new QueryClient())
+  const [queryClient] = React.useState(() => new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+        staleTime: 1000 * 60 * 60 * 24,
+        retry: 1,
+      },
+    },
+  }))
   return (
     <>
       <style jsx global>{`

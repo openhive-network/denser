@@ -1,4 +1,3 @@
-'use client'
 import PostListItem from '@/components/post-list-item';
 
 export default function Feed({ data }) {

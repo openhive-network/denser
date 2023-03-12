@@ -18,21 +18,19 @@ import {
 } from "@/components/ui/select"
 
 export default function FeedProvider() {
+  console.log('FeedProvider')
   const router = useRouter()
   const sort = typeof router.query?.sort === "string" ? router.query.sort : "hot"
-  console.log('sort from router query', sort)
-  const [filter, setFilter] = useState(sort)
   const { isLoading, error, data } = useQuery({
-    queryKey: ["postsData", filter],
-    queryFn: () => getPostsRanked2(filter),
+    queryKey: ["postsData", sort],
+    queryFn: () => getPostsRanked2(sort),
   })
 
   function handleChangeFilter(e) {
-    setFilter(e)
     router.push(`/${e}`, undefined, { shallow: true })
   }
 
-  if (isLoading) return <p>Loading...</p>
+  if (isLoading) return <p>Loading... ⚡️</p>
 
   return (
     <>
@@ -107,17 +105,3 @@ export default function FeedProvider() {
   )
 }
 
-export async function getStaticProps(context) {
-  const sort = context.params?.id as string
-  const queryClient = new QueryClient()
-
-  await queryClient.prefetchQuery(["postsData", sort], () =>
-    getPostsRanked2(sort)
-  )
-
-  return {
-    props: {
-      dehydratedState: dehydrate(queryClient),
-    },
-  }
-}
