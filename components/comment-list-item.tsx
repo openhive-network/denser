@@ -1,8 +1,12 @@
+import dynamic from "next/dynamic"
+import Image from "next/image"
 import Link from "next/link"
 
-import { dateToRelative } from "@/lib/utils"
 import { Icons } from "@/components/icons"
-import Image from 'next/image';
+
+const Time = dynamic(() => import("./time"), {
+  ssr: false,
+})
 
 export default function CommentListItem({ comment }) {
   return (
@@ -27,19 +31,18 @@ export default function CommentListItem({ comment }) {
               {/*</Link>*/}
             </span>{" "}
             <span className="mx-1">&#x2022;</span>
-            <span>{dateToRelative(comment.created)}</span>
+            <Time time={comment.created} />
           </p>
           <p></p>
         </div>
       </div>
       <div className="my-4 flex flex-col items-center gap-7 md:max-h-[200px] md:flex-row md:items-start">
-        <div key={comment.id} className="mb-10 w-full">
+        <div key={comment.id} className="mb-10 w-full whitespace-nowrap">
           <h2 className="text-lg font-semibold leading-5 text-slate-900 dark:text-white">
             {comment.title}
           </h2>
-          {/*TODO: Work on bodyLine - sanitized first 150 characters from body*/}
-          <p className="mt-2 mb-7 text-base font-normal leading-6 text-slate-500 dark:text-slate-400">
-            {comment?.bodyLine}
+          <p className="mt-2 mb-7 overflow-hidden text-ellipsis text-base font-normal leading-6 text-slate-500 dark:text-slate-400">
+            {comment.body}
           </p>
           <ul className="flex">
             <li className="mr-4 flex items-center space-x-1">

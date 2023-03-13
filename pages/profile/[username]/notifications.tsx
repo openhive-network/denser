@@ -1,39 +1,26 @@
+import { useRouter } from "next/router"
+import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query"
+
+import { getAccountNotifications } from "@/lib/bridge"
 import { Layout } from "@/components/layout"
 import LayoutProfile from "@/components/layout-profile"
 import NotificationActivities from "@/components/notification-activities"
 
 export default function UserNotifications() {
-  const mockData = [
-    {
-      username: "@wbrandt",
-      action: "replies",
-      timestamp: "2023-02-23T13:24:03",
-    },
-    {
-      username: "@winniex",
-      action: "replies",
-      timestamp: "2023-02-23T13:24:03",
-    },
-    {
-      username: "@drag33",
-      action: "mention",
-      timestamp: "2023-02-23T13:24:03",
-    },
-    {
-      username: "@city-of-berlin",
-      action: "mention",
-      timestamp: "2023-02-23T13:24:03",
-    },
-    {
-      username: "@wbrandt",
-      action: "follow",
-      timestamp: "2023-02-23T13:24:03",
-    },
-  ]
+  const router = useRouter()
+  const username =
+    typeof router.query?.username === "string" ? router.query.username : ""
+  const { isLoading, error, data } = useQuery({
+    queryKey: ["accountNotification", username],
+    queryFn: () => getAccountNotifications(username),
+  })
+
+  if (isLoading) return <p>Loading... ⚡️</p>
+
   return (
     <div className="flex flex-col">
       <div className="flex justify-center">
-        <NotificationActivities data={mockData} />
+        <NotificationActivities data={data} />
       </div>
     </div>
   )
@@ -45,4 +32,19 @@ UserNotifications.getLayout = function getLayout(page) {
       <LayoutProfile>{page}</LayoutProfile>
     </Layout>
   )
+}
+
+export async function getServerSideProps(context) {
+  const username = context.params?.username as string
+  const queryClient = new QueryClient()
+
+  await queryClient.prefetchQuery(["accountNotification", username], () =>
+    getAccountNotifications(username)
+  )
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  }
 }

@@ -39,21 +39,18 @@ export default function PostListItem({ post }: any) {
             <Icons.arrowUpCircle className="h-5 w-5" />
             <Icons.arrowDownCircle className="h-5 w-5" />
             <span className="text-sm font-medium leading-5 text-slate-500 dark:text-slate-400">
-              {/*${post.payout.toFixed(2)}*/}
               <Payout amount={post.payout} />
             </span>
           </li>
           <li className="mr-4 flex items-center">
             <Icons.chevronUp className="h-5 w-5" />
             <span className="ml-2 text-sm font-medium leading-5 text-slate-500 dark:text-slate-400">
-              {/*{post.stats.total_votes}*/}
               <Votes votes={post.stats.total_votes} />
             </span>
           </li>
           <li className="mr-4 flex items-center">
             <Icons.comment className="h-5 w-5" />
             <span className="ml-2 text-sm font-medium leading-5 text-slate-500 dark:text-slate-400">
-              {/*{post.children}*/}
               <Children>{post.children}</Children>
             </span>
           </li>
@@ -72,7 +69,6 @@ export default function PostListItem({ post }: any) {
               @{post.author} ({post.author_reputation.toFixed(0)})
             </p>
             <Time time={post.created} />
-            {/*<p>{dateToRelative(post.created)}</p>*/}
           </div>
         </div>
       </div>

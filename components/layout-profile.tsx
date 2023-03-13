@@ -20,10 +20,10 @@ export default function LayoutProfile({ children }) {
           priority
         />
       </div>
-      <div className="flex flex-col md:flex-row ">
+      <div className="flex flex-col pb-8 md:flex-row md:pb-4 ">
         <ProfileInfo />
-        <main className="w-full">
-          <div className=" flex justify-between py-8">
+        <main style={{ width: 'calc(100% - 20rem)'}}>
+          <div className="flex justify-between py-8">
             <ul className="grid grid-cols-2 gap-4 lg:flex lg:gap-8">
               <li>
                 <Button
@@ -35,7 +35,7 @@ export default function LayoutProfile({ children }) {
                 </Button>
               </li>
               <li>
-                <Link href={`/${username}/posts`}>
+                <Link href={`/profile/${username}/posts`}>
                   <Button
                     variant="ghost"
                     className="hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white"
@@ -46,7 +46,7 @@ export default function LayoutProfile({ children }) {
                 </Link>
               </li>
               <li>
-                <Link href={`/${username}/replies`}>
+                <Link href={`/profile/${username}/replies`}>
                   <Button
                     variant="ghost"
                     className="hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white"
@@ -57,7 +57,7 @@ export default function LayoutProfile({ children }) {
                 </Link>
               </li>
               <li>
-                <Link href={`/${username}/communities`}>
+                <Link href={`/profile/${username}/communities`}>
                   <Button
                     variant="ghost"
                     className="hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white"
@@ -68,7 +68,7 @@ export default function LayoutProfile({ children }) {
                 </Link>
               </li>
               <li>
-                <Link href={`/${username}/notifications`}>
+                <Link href={`/profile/${username}/notifications`}>
                   <Button
                     variant="ghost"
                     className="hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white"
@@ -94,7 +94,7 @@ export default function LayoutProfile({ children }) {
                 </Link>
               </li>
               <li>
-                <Link href={`/${username}/settings`}>
+                <Link href={`/profile/${username}/settings`}>
                   <Button
                     variant="ghost"
                     className="hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white"

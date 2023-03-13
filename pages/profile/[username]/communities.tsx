@@ -1,38 +1,24 @@
 import Link from "next/link"
+import { useRouter } from "next/router"
+import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query"
 
+import { getSubscriptions } from "@/lib/bridge"
 import { Layout } from "@/components/layout"
 import LayoutProfile from "@/components/layout-profile"
 import SocialActivities from "@/components/social-activities"
 import { SubscriptionList } from "@/components/subscription-list"
 
-export default function UserCommunities() {
-  const mockData = [
-    {
-      name: "BEER",
-      link: "/trending/hive-1",
-      role: "ADMIN",
-    },
-    {
-      name: "carrot",
-      link: "/trending/hive-2",
-      role: "ADMIN",
-    },
-    {
-      name: "HiveFest",
-      link: "/trending/hive-3",
-      role: "MOD",
-    },
-    {
-      name: "LeoFinance",
-      link: "/trending/hive-4",
-      role: "GUEST",
-    },
-    {
-      name: "Pinmapple",
-      link: "/trending/hive-5",
-      role: "GUEST",
-    },
-  ]
+export default function UserCommunities({ hivebuzz }) {
+  const router = useRouter()
+  const username =
+    typeof router.query?.username === "string" ? router.query.username : ""
+  const { isLoading, error, data } = useQuery({
+    queryKey: ["listAllSubscription", username],
+    queryFn: () => getSubscriptions(username),
+  })
+
+  if (isLoading) return <p>Loading... ⚡️</p>
+
   return (
     <div className="flex flex-col">
       <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
@@ -40,7 +26,7 @@ export default function UserCommunities() {
       </h2>
       <p>The author has subscribed to the following Hive Communities</p>
 
-      <SubscriptionList data={mockData} />
+      <SubscriptionList data={data} />
 
       <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
         Badges and achievements
@@ -63,7 +49,7 @@ export default function UserCommunities() {
         .
       </p>
 
-      <SocialActivities />
+      <SocialActivities data={hivebuzz}/>
     </div>
   )
 }
@@ -74,4 +60,24 @@ UserCommunities.getLayout = function getLayout(page) {
       <LayoutProfile>{page}</LayoutProfile>
     </Layout>
   )
+}
+
+export async function getServerSideProps(context) {
+  const username = context.params?.username as string
+  const queryClient = new QueryClient()
+
+  await queryClient.prefetchQuery(["listAllSubscription", username], () =>
+    getSubscriptions(username)
+  )
+
+  const hivebuzzRes = await fetch(`https://hivebuzz.me/api/badges/${username}`);
+  const hivebuzzJson = await hivebuzzRes.json();
+  const hivebuzzJsonStateOn = hivebuzzJson.filter(badge => badge.state === "on");
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+      hivebuzz: hivebuzzJsonStateOn
+    },
+  }
 }

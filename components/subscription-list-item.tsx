@@ -1,13 +1,12 @@
-'use client'
 import Link from 'next/link';
 
 export function SubscriptionListItem({community}) {
   return (
     <li>
-      <Link href={community.link} className="mr-2 text-red-600 hover:underline">
-        {community.name}
+      <Link href={community[0]} className="mr-2 text-red-600 hover:underline">
+        {community[1]}
       </Link>
-      <span className="font-light">{community.role}</span>
+      <span className="font-light">{community[2].toUpperCase()}</span>
     </li>
   )
 }

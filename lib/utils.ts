@@ -1,3 +1,4 @@
+import { SMTAsset } from "@hiveio/dhive"
 import { ClassValue, clsx } from "clsx"
 import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime.js"
@@ -28,3 +29,87 @@ export const dateToRelative = (d: string): string => {
     .replace(" years", "y")
     .replace("a year", "1y")
 }
+
+// refactor
+
+export const vestsToRshares = (
+  vests: number,
+  votingPower: number,
+  votePerc: number
+): number => {
+  const vestingShares = vests * 1e6
+  const power = (votingPower * votePerc) / 1e4 / 50 + 1
+  return (power * vestingShares) / 1e4
+}
+
+export const isCommunity = (s: string) => s.match(/^hive-\d+/) !== null
+
+export enum Symbol {
+  HIVE = "HIVE",
+  HBD = "HBD",
+  VESTS = "VESTS",
+  SPK = "SPK",
+}
+
+export enum NaiMap {
+  "@@000000021" = "HIVE",
+  "@@000000013" = "HBD",
+  "@@000000037" = "VESTS",
+}
+
+export interface Asset {
+  amount: number
+  symbol: Symbol
+}
+
+export const parseAsset = (sval: string | SMTAsset): Asset => {
+  if (typeof sval === "string") {
+    const sp = sval.split(" ")
+    return {
+      amount: parseFloat(sp[0]),
+      symbol: Symbol[sp[1]],
+    }
+  } else {
+    return {
+      amount: parseFloat(sval.amount.toString()) / Math.pow(10, sval.precision),
+      symbol: NaiMap[sval.nai],
+    }
+  }
+}
+
+const isHumanReadable = (input: number): boolean => {
+  return Math.abs(input) > 0 && Math.abs(input) <= 100;
+};
+
+export const accountReputation =  (input: string | number): number => {
+  if (typeof input === "number" && isHumanReadable(input)) {
+    return Math.floor(input);
+  }
+
+  if (typeof input === "string") {
+    input = Number(input);
+
+    if (isHumanReadable(input)) {
+      return Math.floor(input);
+    }
+  }
+
+  if (input === 0) {
+    return 25;
+  }
+
+  let neg = false;
+
+  if (input < 0) neg = true;
+
+  let reputationLevel = Math.log10(Math.abs(input));
+  reputationLevel = Math.max(reputationLevel - 9, 0);
+
+  if (reputationLevel < 0) reputationLevel = 0;
+
+  if (neg) reputationLevel *= -1;
+
+  reputationLevel = reputationLevel * 9 + 25;
+
+  return Math.floor(reputationLevel);
+};

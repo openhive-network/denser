@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/select"
 
 export default function FeedProvider() {
-  console.log('FeedProvider')
   const router = useRouter()
   const sort = typeof router.query?.sort === "string" ? router.query.sort : "hot"
   const { isLoading, error, data } = useQuery({

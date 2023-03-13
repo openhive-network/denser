@@ -1,43 +1,64 @@
 import Image from "next/image"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import { useRouter } from "next/router"
+import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query"
+
+import { getAccount } from "@/lib/hive"
 import { Icons } from "@/components/icons"
+import { Button } from "@/components/ui/button"
+import { accountReputation } from '@/lib/utils';
 
 export default function ProfileInfo() {
+  const router = useRouter()
+  const username =
+    typeof router.query?.username === "string" ? router.query.username : ""
+  const { isLoading, error, data } = useQuery({
+    queryKey: ["profileData", username],
+    queryFn: () => getAccount(username),
+  })
+
+  if (isLoading) return <p>Loading... ⚡️</p>
+
+  console.log('data', data)
+
+  const profile = JSON.parse(data.posting_json_metadata).profile
+
   return (
     <div className="mt-[-6rem] px-8 md:w-80 ">
       <div className="flex h-40 w-40 items-center justify-center rounded-lg bg-white dark:bg-slate-900">
-        <Image
-          src="/olivia.png"
-          alt="Profile picture"
+        {/*<Image*/}
+        {/*  src={profile.profile_image}*/}
+        {/*  alt="Profile picture"*/}
+        {/*  className="h-36 w-36 rounded-md"*/}
+        {/*  height="144"*/}
+        {/*  width="144"*/}
+        {/*  priority*/}
+        {/*/>*/}
+        <img
           className="h-36 w-36 rounded-md"
-          height="144"
-          width="144"
-          priority
+          src={profile.profile_image}
+          alt="Profile picture"
         />
       </div>
       <h4 className="mt-8 mb-4 text-xl text-slate-900 dark:text-white">
-        Olivia Rhye <span className="text-slate-600">(82)</span>
+        {data.profile.name} <span className="text-slate-600">({accountReputation(data.reputation)})</span>
       </h4>
       <h6 className="my-4 bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent">
-        @olivrhye
+        @{data.name}
       </h6>
-      <p className="my-4">
-        I&apos;m a content creator for Play And Earn Blockchain games like Gods
-        Unchained. I make YouTube Videos and stream on Twitch
-      </p>
+      <p className="my-4">{profile.about}</p>
       <p className="my-4 flex text-slate-900 dark:text-white">
         <Icons.calendarHeart className="mr-2" />
         Joined August 26, 2018
       </p>
       <p className="my-4 flex text-slate-900 dark:text-white">
         <Icons.mapPin className="mr-2" />
-        Chicago, USA
+        {data.profile.location}
       </p>
 
       <div className="my-4 grid grid-cols-2 gap-y-4">
         <div className="flex flex-col">
-          <span className="text-slate-900 dark:text-white">77</span>
+          <span className="text-slate-900 dark:text-white">{data.post_count}</span>
           Number of posts
         </div>
         <div className="flex flex-col">
@@ -87,4 +108,19 @@ export default function ProfileInfo() {
       </div>
     </div>
   )
+}
+
+export async function getServerSideProps(context) {
+  const username = context.params?.username as string
+  const queryClient = new QueryClient()
+
+  await queryClient.prefetchQuery(["profileData", username], () =>
+    getAccount(username)
+  )
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  }
 }

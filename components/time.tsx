@@ -1,7 +1,7 @@
 import { dateToRelative } from "@/lib/utils"
 
 const Time = (props) => {
-  return <p>{dateToRelative(props.time)}</p>
+  return <span>{dateToRelative(props.time)}</span>
 }
 
 export default Time
