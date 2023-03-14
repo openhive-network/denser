@@ -7,8 +7,9 @@ import { getAccount } from "@/lib/hive"
 import { Icons } from "@/components/icons"
 import { Button } from "@/components/ui/button"
 import { accountReputation } from '@/lib/utils';
+import { useEffect } from 'react';
 
-export default function ProfileInfo() {
+export default function ProfileInfo({ handleCoverImage }) {
   const router = useRouter()
   const username =
     typeof router.query?.username === "string" ? router.query.username : ""
@@ -17,11 +18,19 @@ export default function ProfileInfo() {
     queryFn: () => getAccount(username),
   })
 
+  useEffect(() => {
+    if (!isLoading) {
+      handleCoverImage(JSON.parse(data?.posting_json_metadata).profile.cover_image)
+    }
+  }, [isLoading, data, handleCoverImage])
+
   if (isLoading) return <p>Loading... ⚡️</p>
 
-  console.log('data', data)
-
   const profile = JSON.parse(data.posting_json_metadata).profile
+
+
+
+
 
   return (
     <div className="mt-[-6rem] px-8 md:w-80 ">

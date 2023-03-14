@@ -27,19 +27,29 @@ export function NotificationListItem({ date, msg, score, type, url }) {
     default:
       icon = <Icons.arrowUpCircle className="h-4 w-4" />
   }
+
+  const usernamePattern = /\B@[a-z0-9.-]+/gi
+  const mentions = msg.match(usernamePattern)
+  const participants = mentions
+    ? mentions.map((m) => (
+        <a key={m} href={"/" + m}>
+          <img
+            className="mr-3 h-[40px] w-[40px] rounded-3xl"
+            height="40"
+            width="40"
+            src={`https://images.hive.blog/u/${m.substring(1)}/avatar`}
+            alt={`${m} profile picture`}
+          />
+        </a>
+      ))
+    : null
+
   return (
     <>
       <Link href={`/${url}`}>
         <li className="flex justify-between py-4">
           <div className="flex items-center">
-            <Image
-              src="/olivia.png"
-              alt="Profile picture"
-              className="mr-3 rounded-3xl"
-              height="40"
-              width="40"
-              priority
-            />
+            {participants}
             <div className="flex flex-col">
               <span className="bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent">
                 {msg}

@@ -12,12 +12,12 @@ export default function CommentListItem({ comment }) {
   return (
     <li className="list-none" key={comment.id}>
       <div className="mt-7 flex w-full items-center">
-        <Image
-          src="/olivia.png"
-          className="mr-3 rounded-full"
-          alt=""
-          width={40}
-          height={40}
+        <img
+          className="mr-3 h-[40px] w-[40px] rounded-3xl"
+          height="40"
+          width="40"
+          src={`https://images.hive.blog/u/${comment.author}/avatar`}
+          alt={`${comment.author} profile picture`}
         />
         <div className="flex flex-col text-slate-500 dark:text-slate-400">
           <p>

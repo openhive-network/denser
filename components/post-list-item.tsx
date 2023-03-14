@@ -1,27 +1,28 @@
+import dynamic from "next/dynamic"
+
 import { Icons } from "@/components/icons"
-import dynamic from 'next/dynamic';
 
-const Time = dynamic(() => import('./time'), {
-  ssr: false
+const Time = dynamic(() => import("./time"), {
+  ssr: false,
 })
 
-const Payout = dynamic(() => import('./payout'), {
-  ssr: false
+const Payout = dynamic(() => import("./payout"), {
+  ssr: false,
 })
 
-const Votes = dynamic(() => import('./votes'), {
-  ssr: false
+const Votes = dynamic(() => import("./votes"), {
+  ssr: false,
 })
 
-const Children = dynamic(() => import('./children'), {
-  ssr: false
+const Children = dynamic(() => import("./children"), {
+  ssr: false,
 })
-
 
 export default function PostListItem({ post }: any) {
   return (
     <div className="my-4 flex flex-col items-center gap-7 lg:max-h-[200px] lg:flex-row lg:items-start">
       <div className="relative h-full max-h-[200px] min-h-[200px] w-full overflow-hidden bg-gray-100 lg:min-w-[320px] lg:max-w-[320px]">
+        <img src={post.json_metadata.image[0]} alt="Post image" />
         <div className="absolute inset-x-0 bottom-0 flex h-16 items-center justify-center bg-gradient-to-r from-slate-400 text-white dark:text-white">
           {post.community_title}
         </div>
@@ -58,11 +59,13 @@ export default function PostListItem({ post }: any) {
             <Icons.forward className="h-5 w-5" />
           </li>
         </ul>
-        <div className="mt-7 flex">
+        <div className="mt-7 flex items-center">
           <img
-            src="https://qph.cf2.quoracdn.net/main-qimg-134e3bf89fff27bf56bdbd04e7dbaedf-lq"
-            className="mr-3 h-10 w-10 rounded-full"
-            alt=""
+            className="mr-3 h-[40px] w-[40px] rounded-3xl"
+            height="40"
+            width="40"
+            src={`https://images.hive.blog/u/${post.author}/avatar`}
+            alt={`${post.author} profile picture`}
           />
           <div className="flex flex-col text-slate-500 dark:text-slate-400">
             <p>
