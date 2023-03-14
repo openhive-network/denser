@@ -8,8 +8,7 @@ import PostList from "@/components/post-list"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-export default function PostActivities({ data }) {
-  const [state, setState] = useState(() => data)
+export default function PostActivities() {
   const [sort, setSort] = useState("posts")
   const router = useRouter()
   const username =
@@ -18,64 +17,62 @@ export default function PostActivities({ data }) {
     isLoading,
     error,
     refetch,
-    data: moreData,
+    data,
   } = useQuery({
-    queryKey: ["accountPostsMoreData", username, sort],
+    queryKey: ["accountPosts", username, sort],
     queryFn: () => getAccountPosts(sort, username, "hive.blog"),
   })
 
-  function handleLoadMore() {
-    if (!isLoading) {
-      setState([...state, ...moreData])
-      refetch()
-    }
-  }
+  if (isLoading) return <p>Loading... ⚡️</p>
 
-  function handleChangeSort(s) {
-    setSort(s)
-  }
-
+  // function handleLoadMore() {
+  //   if (!isLoading) {
+  //     setState([...state, ...moreData])
+  //     refetch()
+  //   }
+  // }
 
   return (
     <Tabs
       defaultValue="posts"
       className="w-full"
-      onValueChange={handleChangeSort}
+      onValueChange={(s) => setSort(s)}
+      value={sort}
     >
       <TabsList className="flex">
         <TabsTrigger value="posts">Posts</TabsTrigger>
         <TabsTrigger value="comments">Comments</TabsTrigger>
-        <TabsTrigger value="payouts">Payouts</TabsTrigger>
+        <TabsTrigger value="payout">Payouts</TabsTrigger>
       </TabsList>
       <TabsContent value="posts">
-        <PostList data={state} />
-        <Button
-          variant="outline"
-          className="mt-4 mb-8 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
-          onClick={handleLoadMore}
-        >
-          Load more
-        </Button>
+        <PostList data={data} />
+        {/*<Button*/}
+        {/*  variant="outline"*/}
+        {/*  className="mt-4 mb-8 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"*/}
+        {/*  onClick={handleLoadMore}*/}
+        {/*>*/}
+        {/*  Load more*/}
+        {/*</Button>*/}
       </TabsContent>
       <TabsContent value="comments">
-        <CommentList data={state} />
-        <Button
-          variant="outline"
-          className="mt-4 mb-8 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
-          onClick={handleLoadMore}
-        >
-          Load more
-        </Button>
+        <CommentList data={data} />
+        {/*<Button*/}
+        {/*  variant="outline"*/}
+        {/*  className="mt-4 mb-8 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"*/}
+        {/*  onClick={handleLoadMore}*/}
+        {/*>*/}
+        {/*  Load more*/}
+        {/*</Button>*/}
       </TabsContent>
-      <TabsContent value="payouts">
-        <PostList data={state} />
-        <Button
-          variant="outline"
-          className="mt-4 mb-8 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
-          onClick={handleLoadMore}
-        >
-          Load more
-        </Button>
+      <TabsContent value="payout">
+        <PostList data={data} />
+        {/*<Button*/}
+        {/*  variant="outline"*/}
+        {/*  className="mt-4 mb-8 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"*/}
+        {/*  onClick={handleLoadMore}*/}
+        {/*>*/}
+        {/*  Load more*/}
+        {/*</Button>*/}
       </TabsContent>
     </Tabs>
   )
