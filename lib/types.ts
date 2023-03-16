@@ -1,4 +1,4 @@
-import { Authority } from "@hiveio/dhive";
+import { Asset, Authority } from '@hiveio/dhive';
 
 export interface AccountProfile {
   about?: string;
@@ -55,6 +55,7 @@ export interface FullAccount {
   witness_votes: string[];
   proxy: string;
   proxied_vsf_votes: number[] | string[];
+  vesting_balance: string | Asset;
   voting_manabar: {
     current_mana: string | number;
     last_update_time: number;

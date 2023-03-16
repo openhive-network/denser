@@ -1,10 +1,10 @@
 import { Client, RCAPI } from "@hiveio/dhive"
 import { RCAccount } from "@hiveio/dhive/lib/chain/rc"
-import moment, { Moment } from "moment";
+import moment, { Moment } from "moment"
 
+import { isCommunity, parseAsset, vestsToRshares } from "@/lib/utils"
 import { dataLimit } from "./bridge"
 import { AccountFollowStats, AccountProfile, FullAccount } from "./types"
-import { isCommunity, parseAsset, vestsToRshares } from '@/lib/utils';
 
 export interface TrendingTag {
   comments: number
@@ -279,6 +279,7 @@ export const getAccounts = (usernames: string[]): Promise<FullAccount[]> => {
           voting_manabar: x.voting_manabar,
           voting_power: x.voting_power,
           downvote_manabar: x.downvote_manabar,
+          vesting_balance: x.vesting_balance,
           __loaded: true,
         }
 
