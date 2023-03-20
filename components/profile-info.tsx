@@ -57,7 +57,7 @@ export default function ProfileInfo({ handleCoverImage }) {
   useEffect(() => {
     if (!isLoading) {
       handleCoverImage(
-        JSON.parse(data?.posting_json_metadata).profile.cover_image
+        JSON.parse(data?.posting_json_metadata).profile.cover_image ? JSON.parse(data?.posting_json_metadata).profile.cover_image : ""
       )
     }
   }, [isLoading, data, handleCoverImage])
@@ -141,7 +141,7 @@ export default function ProfileInfo({ handleCoverImage }) {
 
       <div>
         <h6 className="text-slate-900 dark:text-white">Links</h6>
-        {data.profile.website ? (<p className="my-3 flex">
+        {data.profile.website ? (<p className="my-3 flex flex-wrap">
           <Icons.globe2 className="mr-2" />
           <Link
             target="_external"
@@ -156,18 +156,18 @@ export default function ProfileInfo({ handleCoverImage }) {
             </span>
           </Link>
         </p>) : null}
-        <p className="my-3 flex">
-          <Icons.twitter className="mr-2" />
-          <Link href="/">
-            <span className="text-slate-900 dark:text-white">olive123y</span>
-          </Link>
-        </p>
-        <p className="my-3 flex">
-          <Icons.instagram className="mr-2" />
-          <Link href="/">
-            <span className="text-slate-900 dark:text-white">olivephotos</span>
-          </Link>
-        </p>
+        {/*<p className="my-3 flex">*/}
+        {/*  <Icons.twitter className="mr-2" />*/}
+        {/*  <Link href="/">*/}
+        {/*    <span className="text-slate-900 dark:text-white">olive123y</span>*/}
+        {/*  </Link>*/}
+        {/*</p>*/}
+        {/*<p className="my-3 flex">*/}
+        {/*  <Icons.instagram className="mr-2" />*/}
+        {/*  <Link href="/">*/}
+        {/*    <span className="text-slate-900 dark:text-white">olivephotos</span>*/}
+        {/*  </Link>*/}
+        {/*</p>*/}
       </div>
     </div>
   )

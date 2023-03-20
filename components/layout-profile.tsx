@@ -22,10 +22,18 @@ export default function LayoutProfile({ children }) {
   return (
     <div>
       <div className="min-h-80 h-80 max-h-80 w-full">
-        <div
-          style={{ background: `url('${coverImage}') center center no-repeat` }}
-          className={`h-auto max-h-full min-h-full w-auto min-w-full max-w-full bg-cover`}
-        />
+        {coverImage !== "" ? (
+          <div
+            style={{
+              background: `url('${coverImage}') center center no-repeat`,
+            }}
+            className={`h-auto max-h-full min-h-full w-auto min-w-full max-w-full bg-cover`}
+          />
+        ) : (
+          <div
+            className={`h-auto max-h-full min-h-full w-auto min-w-full max-w-full bg-gray-600 bg-cover`}
+          />
+        )}
       </div>
       <div className="flex flex-col pb-8 md:flex-row md:pb-4 ">
         <ProfileInfo handleCoverImage={setCoverImage} />

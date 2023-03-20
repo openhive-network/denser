@@ -3,7 +3,10 @@ import Big from "big.js"
 import { ClassValue, clsx } from "clsx"
 import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime.js"
+import remarkableStripper from './remarkableStripper';
+import sanitize from "sanitize-html"
 import { twMerge } from "tailwind-merge"
+
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -139,3 +142,63 @@ export const getHivePower = (
 
 export const numberWithCommas = (x) =>
   String(x).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+
+export function extractBodySummary(body, stripQuotes = false) {
+  let desc = body
+
+  if (stripQuotes) desc = desc.replace(/(^(\n|\r|\s)*)>([\s\S]*?).*\s*/g, "")
+  desc = remarkableStripper.render(desc) // render markdown to html
+  desc = sanitize(desc, { allowedTags: [] }) // remove all html, leaving text
+  desc = htmlDecode(desc)
+
+  // Strip any raw URLs from preview text
+  desc = desc.replace(/https?:\/\/[^\s]+/g, "")
+
+  // Grab only the first line (not working as expected. does rendering/sanitizing strip newlines?)
+  // eslint-disable-next-line prefer-destructuring
+  desc = desc.trim().split("\n")[0]
+
+  if (desc.length > 200) {
+    desc = desc.substring(0, 200).trim()
+
+    // Truncate, remove the last (likely partial) word (along with random punctuation), and add ellipses
+    desc = desc
+      .substring(0, 180)
+      .trim()
+      .replace(/[,!?]?\s+[^\s]+$/, "…")
+  }
+
+  return desc
+}
+
+export function getPostSummary(jsonMetadata, body, stripQuotes = false) {
+  const shortDescription = jsonMetadata?.description
+
+  if (!shortDescription) {
+    return extractBodySummary(body, stripQuotes)
+  }
+
+  return shortDescription
+}
+
+export const htmlDecode = (txt) =>
+  txt.replace(/&[a-z]+;/g, (ch) => {
+    const char = htmlCharMap[ch.substring(1, ch.length - 1)]
+    return char ? char : ch
+  })
+
+const htmlCharMap = {
+  amp: "&",
+  quot: '"',
+  lsquo: "‘",
+  rsquo: "’",
+  sbquo: "‚",
+  ldquo: "“",
+  rdquo: "”",
+  bdquo: "„",
+  hearts: "♥",
+  trade: "™",
+  hellip: "…",
+  pound: "£",
+  copy: "",
+}
