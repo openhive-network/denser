@@ -1,6 +1,3 @@
-import { QueryClient, dehydrate } from "@tanstack/react-query"
-
-import { getSubscriptions } from "@/lib/bridge"
 import { Layout } from "@/components/layout"
 import LayoutProfile from "@/components/layout-profile"
 

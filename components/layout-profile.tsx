@@ -53,7 +53,11 @@ export default function LayoutProfile({ children }) {
                 <Link href={`/profile/${username}/posts`}>
                   <Button
                     variant="ghost"
-                    className="hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white"
+                    className={`hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white ${
+                      router.asPath === `/profile/${username}/posts`
+                        ? "bg-red-100 text-red-600"
+                        : ""
+                    }`}
                   >
                     <MessageSquare className="mr-2" />
                     Posts
@@ -64,7 +68,11 @@ export default function LayoutProfile({ children }) {
                 <Link href={`/profile/${username}/replies`}>
                   <Button
                     variant="ghost"
-                    className="hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white"
+                    className={`hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white ${
+                      router.asPath === `/profile/${username}/replies`
+                        ? "bg-red-100 text-red-600"
+                        : ""
+                    }`}
                   >
                     <Cast className="mr-2" />
                     Replies
@@ -75,7 +83,11 @@ export default function LayoutProfile({ children }) {
                 <Link href={`/profile/${username}/communities`}>
                   <Button
                     variant="ghost"
-                    className="hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white"
+                    className={`hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white ${
+                      router.asPath === `/profile/${username}/communities`
+                        ? "bg-red-100 text-red-600"
+                        : ""
+                    }`}
                   >
                     <Award className="mr-2" />
                     Social
@@ -86,7 +98,11 @@ export default function LayoutProfile({ children }) {
                 <Link href={`/profile/${username}/notifications`}>
                   <Button
                     variant="ghost"
-                    className="hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white"
+                    className={`hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white ${
+                      router.asPath === `/profile/${username}/notifications`
+                        ? "bg-red-100 text-red-600"
+                        : ""
+                    }`}
                   >
                     <BellRing className="mr-2" />
                     Notifications
@@ -110,7 +126,11 @@ export default function LayoutProfile({ children }) {
                 <Link href={`/profile/${username}/settings`}>
                   <Button
                     variant="ghost"
-                    className="hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white"
+                    className={`hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white ${
+                      router.asPath === `/profile/${username}/settings`
+                        ? "bg-red-100 text-red-600"
+                        : ""
+                    }`}
                   >
                     <Settings className="mr-2" />
                     Settings
