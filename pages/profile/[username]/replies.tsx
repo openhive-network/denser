@@ -1,19 +1,17 @@
 import { useRouter } from "next/router"
-import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query"
+import { QueryClient, dehydrate } from "@tanstack/react-query"
 
 import { getAccountPosts } from "@/lib/bridge"
 import CommentList from "@/components/comment-list"
 import { Layout } from "@/components/layout"
 import LayoutProfile from "@/components/layout-profile"
+import { useGetAccountPosts } from '@/services/bridgeService';
 
 export default function UserReplies() {
   const router = useRouter()
   const username =
     typeof router.query?.username === "string" ? router.query.username : ""
-  const { isLoading, error, data } = useQuery({
-    queryKey: ["accountReplies", username],
-    queryFn: () => getAccountPosts("replies", username, "hive.blog"),
-  })
+  const { isLoading, error, data } = useGetAccountPosts("replies", username);
 
   if (isLoading) return <p>Loading...</p>
 

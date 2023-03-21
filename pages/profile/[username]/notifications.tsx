@@ -1,19 +1,17 @@
 import { useRouter } from "next/router"
-import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query"
+import { QueryClient, dehydrate } from "@tanstack/react-query"
 
 import { getAccountNotifications } from "@/lib/bridge"
 import { Layout } from "@/components/layout"
 import LayoutProfile from "@/components/layout-profile"
 import NotificationActivities from "@/components/notification-activities"
+import { useAccountNotifications } from '@/services/bridgeService';
 
 export default function UserNotifications() {
   const router = useRouter()
   const username =
     typeof router.query?.username === "string" ? router.query.username : ""
-  const { isLoading, error, data } = useQuery({
-    queryKey: ["accountNotification", username],
-    queryFn: () => getAccountNotifications(username),
-  })
+  const { isLoading, error, data } = useAccountNotifications(username);
 
   if (isLoading) return <p>Loading... ⚡️</p>
 

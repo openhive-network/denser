@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from "next/router"
-import { useQuery } from "@tanstack/react-query"
 
-import { getAccountPosts } from "@/lib/bridge"
 import CommentList from "@/components/comment-list"
 import PostList from "@/components/post-list"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useGetAccountPosts } from '@/services/bridgeService';
 
 export default function PostActivities() {
   const [sort, setSort] = useState("posts")
@@ -18,10 +17,7 @@ export default function PostActivities() {
     error,
     refetch,
     data,
-  } = useQuery({
-    queryKey: ["accountPosts", username, sort],
-    queryFn: () => getAccountPosts(sort, username, "hive.blog"),
-  })
+  } = useGetAccountPosts(sort, username)
 
   if (isLoading) return <p>Loading... ⚡️</p>
 

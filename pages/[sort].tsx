@@ -2,7 +2,7 @@ import { Layout } from "@/components/layout"
 import CommunitiesSidebar from '@/components/communities-sidebar';
 import FeedProvider from '@/components/feed-provider';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
-import { getPostsRanked2 } from '@/lib/bridge';
+import { getPostsRanked } from '@/lib/bridge';
 
 export default function IndexPage() {
   return (
@@ -22,7 +22,7 @@ export async function getServerSideProps(context) {
   const queryClient = new QueryClient()
 
   await queryClient.prefetchQuery(["postsData", sort], () =>
-    getPostsRanked2(sort)
+    getPostsRanked(sort)
   )
 
   return {

@@ -1,10 +1,6 @@
-"use client"
-
-import { useState } from "react"
 import { useRouter } from "next/router"
-import { dehydrate, QueryClient, useQuery } from '@tanstack/react-query';
+import { useGetPostsRanked } from "@/services/bridgeService"
 
-import { getPostsRanked2 } from "@/lib/bridge"
 import Feed from "@/components/feed"
 import { Icons } from "@/components/icons"
 import SelectFilter from "@/components/select-filter"
@@ -19,11 +15,9 @@ import {
 
 export default function FeedProvider() {
   const router = useRouter()
-  const sort = typeof router.query?.sort === "string" ? router.query.sort : "hot"
-  const { isLoading, error, data } = useQuery({
-    queryKey: ["postsData", sort],
-    queryFn: () => getPostsRanked2(sort),
-  })
+  const sort =
+    typeof router.query?.sort === "string" ? router.query.sort : "hot"
+  const { isLoading, error, data } = useGetPostsRanked(sort)
 
   function handleChangeFilter(e) {
     router.push(`/${e}`, undefined, { shallow: true })
@@ -103,4 +97,3 @@ export default function FeedProvider() {
     </>
   )
 }
-

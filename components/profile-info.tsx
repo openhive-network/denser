@@ -1,16 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react"
 import dynamic from "next/dynamic"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query"
+import {
+  useGetAccountFull,
+  useGetAccounts,
+  useGetDynamicGlobalProperties,
+} from "@/services/hiveService"
+import { QueryClient, dehydrate } from "@tanstack/react-query"
 
 import {
   getAccountFull,
   getAccounts,
   getDynamicGlobalProperties,
 } from "@/lib/hive"
-import { accountReputation, getHivePower, numberWithCommas } from '@/lib/utils';
+import { accountReputation, getHivePower, numberWithCommas } from "@/lib/utils"
 import { Icons } from "@/components/icons"
 import { Button } from "@/components/ui/button"
 
@@ -23,41 +28,42 @@ const Date = dynamic(() => import("./date"), {
 })
 
 export default function ProfileInfo({ handleCoverImage }) {
-  const [hivePower, setHivePower] = useState(0);
+  const [hivePower, setHivePower] = useState(0)
   const router = useRouter()
   const username =
     typeof router.query?.username === "string" ? router.query.username : ""
-  const { isLoading, error, data } = useQuery({
-    queryKey: ["profileData", username],
-    queryFn: () => getAccountFull(username),
-  })
+  const { isLoading, error, data } = useGetAccountFull(username)
   const {
     isLoading: accountDataIsLoading,
     error: accountDataError,
     data: accountData,
-  } = useQuery({
-    queryKey: ["accountData", username],
-    queryFn: () => getAccounts([username]),
-  })
+  } = useGetAccounts(username)
   const {
     isLoading: dynamicGlobalDataIsLoading,
     error: dynamicGlobalDataError,
     data: dynamicGlobalData,
-  } = useQuery({
-    queryKey: ["dynamicGlobalData", username],
-    queryFn: () => getDynamicGlobalProperties(),
-  })
+  } = useGetDynamicGlobalProperties()
 
   useEffect(() => {
-    if(!dynamicGlobalDataIsLoading && !accountDataIsLoading) {
-      setHivePower(getHivePower(dynamicGlobalData?.total_vesting_fund_hive.split(' ')[0], dynamicGlobalData?.total_vesting_shares.split(' ')[0], accountData[0].vesting_shares.split(' ')[0], accountData[0].delegated_vesting_shares.split(' ')[0], accountData[0].received_vesting_shares.split(' ')[0]))
+    if (!dynamicGlobalDataIsLoading && !accountDataIsLoading) {
+      setHivePower(
+        getHivePower(
+          dynamicGlobalData?.total_vesting_fund_hive.split(" ")[0],
+          dynamicGlobalData?.total_vesting_shares.split(" ")[0],
+          accountData[0].vesting_shares.split(" ")[0],
+          accountData[0].delegated_vesting_shares.split(" ")[0],
+          accountData[0].received_vesting_shares.split(" ")[0]
+        )
+      )
     }
-  }, [dynamicGlobalDataIsLoading, accountDataIsLoading ])
+  }, [dynamicGlobalDataIsLoading, accountDataIsLoading])
 
   useEffect(() => {
     if (!isLoading) {
       handleCoverImage(
-        JSON.parse(data?.posting_json_metadata).profile.cover_image ? JSON.parse(data?.posting_json_metadata).profile.cover_image : ""
+        JSON.parse(data?.posting_json_metadata).profile.cover_image
+          ? JSON.parse(data?.posting_json_metadata).profile.cover_image
+          : ""
       )
     }
   }, [isLoading, data, handleCoverImage])
@@ -114,7 +120,9 @@ export default function ProfileInfo({ handleCoverImage }) {
           Number of posts
         </div>
         <div className="flex flex-col">
-          <span className="text-slate-900 dark:text-white">{numberWithCommas(hivePower)}</span>
+          <span className="text-slate-900 dark:text-white">
+            {numberWithCommas(hivePower)}
+          </span>
           HP
         </div>
         <div className="flex flex-col">
@@ -141,21 +149,23 @@ export default function ProfileInfo({ handleCoverImage }) {
 
       <div>
         <h6 className="text-slate-900 dark:text-white">Links</h6>
-        {data.profile.website ? (<p className="my-3 flex flex-wrap">
-          <Icons.globe2 className="mr-2" />
-          <Link
-            target="_external"
-            className="website-link"
-            href={`https://${data.profile.website.replace(
-              /^(https?|ftp):\/\//,
-              ""
-            )}`}
-          >
-            <span className="text-slate-900 dark:text-white">
-              {data.profile.website}
-            </span>
-          </Link>
-        </p>) : null}
+        {data.profile.website ? (
+          <p className="my-3 flex flex-wrap">
+            <Icons.globe2 className="mr-2" />
+            <Link
+              target="_external"
+              className="website-link"
+              href={`https://${data.profile.website.replace(
+                /^(https?|ftp):\/\//,
+                ""
+              )}`}
+            >
+              <span className="text-slate-900 dark:text-white">
+                {data.profile.website}
+              </span>
+            </Link>
+          </p>
+        ) : null}
         {/*<p className="my-3 flex">*/}
         {/*  <Icons.twitter className="mr-2" />*/}
         {/*  <Link href="/">*/}
@@ -181,10 +191,12 @@ export async function getServerSideProps(context) {
     getAccountFull(username)
   )
 
-  await queryClient.prefetchQuery(["accountData", username], () => getAccounts([username])
+  await queryClient.prefetchQuery(["accountData", username], () =>
+    getAccounts([username])
   )
 
-  await queryClient.prefetchQuery(["dynamicGlobalData", username], () => getDynamicGlobalProperties(),
+  await queryClient.prefetchQuery(["dynamicGlobalData", username], () =>
+    getDynamicGlobalProperties()
   )
 
   return {

@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query"
+import { useGetSubscriptions } from "@/services/bridgeService"
+import { QueryClient, dehydrate } from "@tanstack/react-query"
 
 import { getSubscriptions } from "@/lib/bridge"
 import { Layout } from "@/components/layout"
@@ -12,10 +13,7 @@ export default function UserCommunities({ hivebuzz }) {
   const router = useRouter()
   const username =
     typeof router.query?.username === "string" ? router.query.username : ""
-  const { isLoading, error, data } = useQuery({
-    queryKey: ["listAllSubscription", username],
-    queryFn: () => getSubscriptions(username),
-  })
+  const { isLoading, error, data } = useGetSubscriptions(username)
 
   if (isLoading) return <p>Loading... ⚡️</p>
 
@@ -49,7 +47,7 @@ export default function UserCommunities({ hivebuzz }) {
         .
       </p>
 
-      <SocialActivities data={hivebuzz}/>
+      <SocialActivities data={hivebuzz} />
     </div>
   )
 }
@@ -70,14 +68,16 @@ export async function getServerSideProps(context) {
     getSubscriptions(username)
   )
 
-  const hivebuzzRes = await fetch(`https://hivebuzz.me/api/badges/${username}`);
-  const hivebuzzJson = await hivebuzzRes.json();
-  const hivebuzzJsonStateOn = hivebuzzJson.filter(badge => badge.state === "on");
+  const hivebuzzRes = await fetch(`https://hivebuzz.me/api/badges/${username}`)
+  const hivebuzzJson = await hivebuzzRes.json()
+  const hivebuzzJsonStateOn = hivebuzzJson.filter(
+    (badge) => badge.state === "on"
+  )
 
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
-      hivebuzz: hivebuzzJsonStateOn
+      hivebuzz: hivebuzzJsonStateOn,
     },
   }
 }
