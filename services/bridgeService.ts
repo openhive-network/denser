@@ -24,7 +24,9 @@ export function useAccountNotifications(username: string) {
 }
 
 export function useGetAccountPosts(sort: string, username: string, enabled) {
-  return useQuery(["accountReplies", username], () =>
-    getAccountPosts(sort, username, "hive.blog"), enabled
+  return useQuery(
+    ["accountReplies", username],
+    () => getAccountPosts(sort, username, "hive.blog"),
+    { enabled: enabled }
   )
 }

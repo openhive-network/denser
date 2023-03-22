@@ -76,7 +76,7 @@ export default function ProfileInfo({ handleCoverImage }) {
     }
   }, [accountDataIsLoading, data])
 
-  if (isLoading) return <p>Loading... ⚡️</p>
+  if (isLoading || accountDataIsLoading || dynamicGlobalDataIsLoading) return <p>Loading... ⚡️</p>
 
   return (
     <div className="mt-[-6rem] px-8 md:w-80 ">

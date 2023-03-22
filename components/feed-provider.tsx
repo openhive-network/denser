@@ -16,7 +16,7 @@ import {
 export default function FeedProvider() {
   const router = useRouter()
   const sort =
-    typeof router.query?.sort === "string" ? router.query.sort : "hot"
+    typeof router.query?.param === "string" ? router.query.param : "hot"
   const { isLoading, error, data } = useGetPostsRanked(sort)
 
   function handleChangeFilter(e) {
