@@ -1,5 +1,4 @@
-import { useRouter } from "next/router"
-import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query"
+import { QueryClient, dehydrate } from "@tanstack/react-query"
 
 import { getAccountPosts } from "@/lib/bridge"
 import { Layout } from "@/components/layout"
@@ -23,7 +22,7 @@ UserPosts.getLayout = function getLayout(page) {
 }
 
 export async function getServerSideProps(context) {
-  const username = context.params?.username as string
+  const username = String(context.params?.param).slice(1)
   const sort = "posts"
   const queryClient = new QueryClient()
 

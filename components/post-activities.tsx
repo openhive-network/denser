@@ -1,23 +1,22 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react"
 import { useRouter } from "next/router"
+import { useGetAccountPosts } from "@/services/bridgeService"
 
 import CommentList from "@/components/comment-list"
 import PostList from "@/components/post-list"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useGetAccountPosts } from '@/services/bridgeService';
 
 export default function PostActivities() {
   const [sort, setSort] = useState("posts")
   const router = useRouter()
   const username =
-    typeof router.query?.username === "string" ? router.query.username : ""
-  const {
-    isLoading,
-    error,
-    refetch,
-    data,
-  } = useGetAccountPosts(sort, username)
+    typeof router.query?.param === "string" ? router.query.param : ""
+  const { isLoading, error, refetch, data } = useGetAccountPosts(
+    sort,
+    username.slice(1),
+    username.startsWith("@")
+  )
 
   if (isLoading) return <p>Loading... ⚡️</p>
 

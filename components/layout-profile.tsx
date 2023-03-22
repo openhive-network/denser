@@ -18,7 +18,8 @@ import { Button } from "@/components/ui/button"
 export default function LayoutProfile({ children }) {
   const [coverImage, setCoverImage] = useState("")
   const router = useRouter()
-  const { username } = router.query
+  const username =
+    typeof router.query?.param === "string" ? router.query.param : ""
   return (
     <div>
       <div className="min-h-80 h-80 max-h-80 w-full">
@@ -26,8 +27,9 @@ export default function LayoutProfile({ children }) {
           <div
             style={{
               background: `url('${coverImage}') center center no-repeat`,
+              backgroundSize: "cover",
             }}
-            className={`h-auto max-h-full min-h-full w-auto min-w-full max-w-full bg-cover`}
+            className={`h-auto max-h-full min-h-full w-auto min-w-full max-w-full`}
           />
         ) : (
           <div
@@ -41,20 +43,22 @@ export default function LayoutProfile({ children }) {
           <div className="flex justify-between py-8">
             <ul className="grid grid-cols-2 gap-4 lg:flex lg:gap-8">
               <li>
-                <Button
-                  variant="ghost"
-                  className="hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white"
-                >
-                  <Newspaper className="mr-2" />
-                  Feed
-                </Button>
+                <Link href={`/${username}`}>
+                  <Button
+                    variant="ghost"
+                    className="hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white"
+                  >
+                    <Newspaper className="mr-2" />
+                    Feed
+                  </Button>
+                </Link>
               </li>
               <li>
-                <Link href={`/profile/${username}/posts`}>
+                <Link href={`/${username}/posts`}>
                   <Button
                     variant="ghost"
                     className={`hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white ${
-                      router.asPath === `/profile/${username}/posts`
+                      router.asPath === `/${username}/posts`
                         ? "bg-red-100 text-red-600"
                         : ""
                     }`}
@@ -65,11 +69,11 @@ export default function LayoutProfile({ children }) {
                 </Link>
               </li>
               <li>
-                <Link href={`/profile/${username}/replies`}>
+                <Link href={`/${username}/replies`}>
                   <Button
                     variant="ghost"
                     className={`hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white ${
-                      router.asPath === `/profile/${username}/replies`
+                      router.asPath === `${username}/replies`
                         ? "bg-red-100 text-red-600"
                         : ""
                     }`}
@@ -80,11 +84,11 @@ export default function LayoutProfile({ children }) {
                 </Link>
               </li>
               <li>
-                <Link href={`/profile/${username}/communities`}>
+                <Link href={`/${username}/communities`}>
                   <Button
                     variant="ghost"
                     className={`hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white ${
-                      router.asPath === `/profile/${username}/communities`
+                      router.asPath === `${username}/communities`
                         ? "bg-red-100 text-red-600"
                         : ""
                     }`}
@@ -95,11 +99,11 @@ export default function LayoutProfile({ children }) {
                 </Link>
               </li>
               <li>
-                <Link href={`/profile/${username}/notifications`}>
+                <Link href={`/${username}/notifications`}>
                   <Button
                     variant="ghost"
                     className={`hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white ${
-                      router.asPath === `/profile/${username}/notifications`
+                      router.asPath === `/${username}/notifications`
                         ? "bg-red-100 text-red-600"
                         : ""
                     }`}
@@ -123,11 +127,11 @@ export default function LayoutProfile({ children }) {
                 </Link>
               </li>
               <li>
-                <Link href={`/profile/${username}/settings`}>
+                <Link href={`/${username}/settings`}>
                   <Button
                     variant="ghost"
                     className={`hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white ${
-                      router.asPath === `/profile/${username}/settings`
+                      router.asPath === `/${username}/settings`
                         ? "bg-red-100 text-red-600"
                         : ""
                     }`}

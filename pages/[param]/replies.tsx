@@ -10,8 +10,8 @@ import { useGetAccountPosts } from '@/services/bridgeService';
 export default function UserReplies() {
   const router = useRouter()
   const username =
-    typeof router.query?.username === "string" ? router.query.username : ""
-  const { isLoading, error, data } = useGetAccountPosts("replies", username);
+    typeof router.query?.param=== "string" ? router.query.param : ""
+  const { isLoading, error, data } = useGetAccountPosts("replies", username.slice(1), true);
 
   if (isLoading) return <p>Loading...</p>
 
@@ -31,7 +31,7 @@ UserReplies.getLayout = function getLayout(page) {
 }
 
 export async function getServerSideProps(context) {
-  const username = context.params?.username as string
+  const username = String(context.params?.param).slice(1);
   const queryClient = new QueryClient()
 
   await queryClient.prefetchQuery(["accountReplies", username], () =>

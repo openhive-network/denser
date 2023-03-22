@@ -10,10 +10,10 @@ export function useGetDynamicGlobalProperties() {
   return useQuery(["dynamicGlobalData"], () => getDynamicGlobalProperties())
 }
 
-export function useGetAccountFull(username: string) {
-  return useQuery(["profileData", username], () => getAccountFull(username))
+export function useGetAccountFull(username: string, enabled) {
+  return useQuery(["profileData", username], () => getAccountFull(username), enabled)
 }
 
-export function useGetAccounts(username: string) {
-  return useQuery(["accountData", username], () => getAccounts([username]))
+export function useGetAccounts(username: string, enabled) {
+  return useQuery(["accountData", username], () => getAccounts([username]), enabled)
 }

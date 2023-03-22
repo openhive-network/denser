@@ -10,8 +10,8 @@ import { useAccountNotifications } from '@/services/bridgeService';
 export default function UserNotifications() {
   const router = useRouter()
   const username =
-    typeof router.query?.username === "string" ? router.query.username : ""
-  const { isLoading, error, data } = useAccountNotifications(username);
+    typeof router.query?.param === "string" ? router.query.param : ""
+  const { isLoading, error, data } = useAccountNotifications(username.slice(1));
 
   if (isLoading) return <p>Loading... ⚡️</p>
 
@@ -33,7 +33,7 @@ UserNotifications.getLayout = function getLayout(page) {
 }
 
 export async function getServerSideProps(context) {
-  const username = context.params?.username as string
+  const username = String(context.params?.param).slice(1);
   const queryClient = new QueryClient()
 
   await queryClient.prefetchQuery(["accountNotification", username], () =>

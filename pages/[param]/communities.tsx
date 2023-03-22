@@ -12,8 +12,8 @@ import { SubscriptionList } from "@/components/subscription-list"
 export default function UserCommunities({ hivebuzz }) {
   const router = useRouter()
   const username =
-    typeof router.query?.username === "string" ? router.query.username : ""
-  const { isLoading, error, data } = useGetSubscriptions(username)
+    typeof router.query?.param === "string" ? router.query.param : ""
+  const { isLoading, error, data } = useGetSubscriptions(username.slice(1))
 
   if (isLoading) return <p>Loading... ⚡️</p>
 
@@ -61,7 +61,7 @@ UserCommunities.getLayout = function getLayout(page) {
 }
 
 export async function getServerSideProps(context) {
-  const username = context.params?.username as string
+  const username = String(context.params?.param).slice(1);
   const queryClient = new QueryClient()
 
   await queryClient.prefetchQuery(["listAllSubscription", username], () =>

@@ -28,16 +28,17 @@ const Date = dynamic(() => import("./date"), {
 })
 
 export default function ProfileInfo({ handleCoverImage }) {
+  const [profile, setProfile] = useState(undefined)
   const [hivePower, setHivePower] = useState(0)
   const router = useRouter()
   const username =
-    typeof router.query?.username === "string" ? router.query.username : ""
-  const { isLoading, error, data } = useGetAccountFull(username)
+    typeof router.query?.param === "string" ? router.query.param : ""
+  const { isLoading, error, data } = useGetAccountFull(username.slice(1),  username.startsWith('@'))
   const {
     isLoading: accountDataIsLoading,
     error: accountDataError,
     data: accountData,
-  } = useGetAccounts(username)
+  } = useGetAccounts(username.slice(1), username.startsWith('@'))
   const {
     isLoading: dynamicGlobalDataIsLoading,
     error: dynamicGlobalDataError,
@@ -65,12 +66,17 @@ export default function ProfileInfo({ handleCoverImage }) {
           ? JSON.parse(data?.posting_json_metadata).profile.cover_image
           : ""
       )
+
     }
   }, [isLoading, data, handleCoverImage])
 
-  if (isLoading) return <p>Loading... ⚡️</p>
+  useEffect(() => {
+    if (!accountDataIsLoading && data) {
+      setProfile(JSON.parse(data.posting_json_metadata).profile)
+    }
+  }, [accountDataIsLoading, data])
 
-  const profile = JSON.parse(data.posting_json_metadata).profile
+  if (isLoading) return <p>Loading... ⚡️</p>
 
   return (
     <div className="mt-[-6rem] px-8 md:w-80 ">
@@ -85,7 +91,7 @@ export default function ProfileInfo({ handleCoverImage }) {
         {/*/>*/}
         <img
           className="h-36 w-36 rounded-md"
-          src={profile.profile_image}
+          src={profile?.profile_image}
           alt="Profile picture"
         />
       </div>
@@ -98,7 +104,7 @@ export default function ProfileInfo({ handleCoverImage }) {
       <h6 className="my-4 bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent">
         @{data.name}
       </h6>
-      <p className="my-4">{profile.about}</p>
+      <p className="my-4">{profile?.about}</p>
       <p className="my-4 flex text-slate-900 dark:text-white">
         <Icons.calendarActive className="mr-2" />
         Active <Time time={data.last_vote_time} />
