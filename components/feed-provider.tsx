@@ -1,5 +1,5 @@
 import { useRouter } from "next/router"
-import { useGetPostsRanked } from "@/services/bridgeService"
+import { useGetCommunity, useGetPostsRanked } from "@/services/bridgeService"
 
 import Feed from "@/components/feed"
 import { Icons } from "@/components/icons"
@@ -15,9 +15,22 @@ import {
 
 export default function FeedProvider() {
   const router = useRouter()
-  const sort =
-    typeof router.query?.param === "string" ? router.query.param : "hot"
-  const { isLoading, error, data } = useGetPostsRanked(sort)
+  const sort = router.query?.param
+    ? typeof router.query?.param[0] === "string"
+      ? router.query.param[0]
+      : "hot"
+    : "hot"
+  const tag = router.query?.param
+    ? typeof router.query?.param[1] === "string"
+      ? router.query.param[1]
+      : ""
+    : ""
+  const { isLoading, error, data } = useGetPostsRanked(sort, tag)
+  const {
+    isLoading: isLoadingCommunity,
+    error: errorCommunity,
+    data: dataCommunity,
+  } = useGetCommunity(tag, "hive.blog", tag)
 
   function handleChangeFilter(e) {
     router.push(`/${e}`, undefined, { shallow: true })
@@ -29,12 +42,20 @@ export default function FeedProvider() {
     <>
       <div className="hidden justify-between md:flex">
         <div>
-          <h4 className="text-base font-semibold text-slate-900 dark:text-white">
-            LeoFinance
-          </h4>
-          <span className="mt-2 text-xs font-normal text-slate-500 dark:text-slate-400">
-            Community
-          </span>
+          {tag === "" ? (
+            <h4 className="text-base font-semibold text-slate-900 dark:text-white">
+              All
+            </h4>
+          ) : (
+            <>
+              <h4 className="text-base font-semibold text-slate-900 dark:text-white">
+                {dataCommunity?.title}
+              </h4>
+              <span className="mt-2 text-xs font-normal text-slate-500 dark:text-slate-400">
+                Community
+              </span>
+            </>
+          )}
         </div>
         <div className="flex">
           <SelectFilter filter={sort} handleChangeFilter={handleChangeFilter} />

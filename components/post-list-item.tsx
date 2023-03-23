@@ -63,8 +63,11 @@ export default function PostListItem({ post }: any) {
         </div>
         <div className="flex flex-col overflow-hidden">
           <div key={post.id} className="mb-10 w-full whitespace-nowrap">
-            <h2 className="text-lg font-semibold leading-5 text-slate-900 dark:text-white">
-              {post.title}
+            <h2 className="whitespace-normal text-lg font-semibold leading-5 text-slate-900 dark:text-white">
+              {post.title}{" "}
+              {post.stats.is_pinned ? (
+                <span className="rounded-md bg-red-600 p-1 text-xs text-white">Pinned</span>
+              ) : null}
             </h2>
             <p className="mt-2 mb-7 overflow-hidden text-ellipsis text-base font-normal leading-6 text-slate-500 dark:text-slate-400">
               {getPostSummary(post.json_metadata, post.body)}

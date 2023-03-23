@@ -19,7 +19,11 @@ export default function LayoutProfile({ children }) {
   const [coverImage, setCoverImage] = useState("")
   const router = useRouter()
   const username =
-    typeof router.query?.param === "string" ? router.query.param : ""
+    typeof router.query?.param === "object"
+      ? router.query.param[0]
+      : typeof router.query?.param === "string"
+      ? router.query?.param
+      : ""
   return (
     <div>
       <div className="min-h-80 h-80 max-h-80 w-full">

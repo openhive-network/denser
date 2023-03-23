@@ -32,10 +32,11 @@ UserReplies.getLayout = function getLayout(page) {
 
 export async function getServerSideProps(context) {
   const username = String(context.params?.param).slice(1);
+  const sort = "replies";
   const queryClient = new QueryClient()
 
-  await queryClient.prefetchQuery(["accountReplies", username], () =>
-    getAccountPosts("replies", username, "hive.blog")
+  await queryClient.prefetchQuery(["accountReplies", username, sort], () =>
+    getAccountPosts(sort, username, "hive.blog")
   )
 
   return {

@@ -145,10 +145,10 @@ const resolvePosts = (posts: Entry[], observer: string): Promise<Entry[]> => {
 
 export const getPostsRanked = (
   sort: string,
+  tag: string = "",
   start_author: string = "",
   start_permlink: string = "",
   limit: number = dataLimit,
-  tag: string = "",
   observer: string = ""
 ): Promise<Entry[] | null> => {
   return bridgeApiCall<Entry[] | null>("get_ranked_posts", {
@@ -218,6 +218,7 @@ export interface AccountNotification {
   url: string
 }
 
+// I have problem with this func, I pass good account name but RPC call it with empty string
 export const getAccountNotifications = (
   account: string,
   lastId: number | null = null,
@@ -254,10 +255,10 @@ export const getCommunity = (
   bridgeApiCall<Community | null>("get_community", { name, observer })
 
 export const getCommunities = (
+  sort: string,
+  query?: string | null,
   last: string = "",
   limit: number = 100,
-  query?: string | null,
-  sort: string = "rank",
   observer: string = ""
 ): Promise<Community[] | null> =>
   bridgeApiCall<Community[] | null>("list_communities", {

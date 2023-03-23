@@ -32,13 +32,21 @@ export default function ProfileInfo({ handleCoverImage }) {
   const [hivePower, setHivePower] = useState(0)
   const router = useRouter()
   const username =
-    typeof router.query?.param === "string" ? router.query.param : ""
-  const { isLoading, error, data } = useGetAccountFull(username.slice(1),  username.startsWith('@'))
+    typeof router.query?.param === "object"
+      ? router.query.param[0]
+      : typeof router.query?.param === "string"
+      ? router.query?.param
+      : ""
+  const { isLoading, error, data } = useGetAccountFull(
+    username.slice(1),
+    username.startsWith("@")
+  )
   const {
     isLoading: accountDataIsLoading,
     error: accountDataError,
     data: accountData,
-  } = useGetAccounts(username.slice(1), username.startsWith('@'))
+  } = useGetAccounts(username.slice(1), username.startsWith("@"))
+
   const {
     isLoading: dynamicGlobalDataIsLoading,
     error: dynamicGlobalDataError,
@@ -66,7 +74,6 @@ export default function ProfileInfo({ handleCoverImage }) {
           ? JSON.parse(data?.posting_json_metadata).profile.cover_image
           : ""
       )
-
     }
   }, [isLoading, data, handleCoverImage])
 
@@ -76,7 +83,8 @@ export default function ProfileInfo({ handleCoverImage }) {
     }
   }, [accountDataIsLoading, data])
 
-  if (isLoading || accountDataIsLoading || dynamicGlobalDataIsLoading) return <p>Loading... ⚡️</p>
+  if (isLoading || accountDataIsLoading || dynamicGlobalDataIsLoading)
+    return <p>Loading... ⚡️</p>
 
   return (
     <div className="mt-[-6rem] px-8 md:w-80 ">

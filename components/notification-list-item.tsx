@@ -46,23 +46,23 @@ export function NotificationListItem({ date, msg, score, type, url }) {
 
   return (
     <>
-      <Link href={`/${url}`}>
-        <li className="flex justify-between py-4">
-          <div className="flex items-center">
-            {participants}
-            <div className="flex flex-col">
+      <li className="flex justify-between py-4">
+        <div className="flex items-center">
+          {participants}
+          <div className="flex flex-col">
+            <Link href={`/${url}`}>
               <span className="bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent">
                 {msg}
               </span>
-              <span className="flex items-center gap-2">
-                {icon}
-                <Time time={date} />
-              </span>
-            </div>
+            </Link>
+            <span className="flex items-center gap-2">
+              {icon}
+              <Time time={date} />
+            </span>
           </div>
-          <Progress value={score} className="h-[10px] w-[60px]" />
-        </li>
-      </Link>
+        </div>
+        <Progress value={score} className="h-[10px] w-[60px]" />
+      </li>
       <hr />
     </>
   )

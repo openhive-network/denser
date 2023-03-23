@@ -1,4 +1,4 @@
-import PostListItem from '@/components/post-list-item';
+import PostListItem from "@/components/post-list-item"
 
 export default function Feed({ data }) {
   return (
@@ -8,9 +8,7 @@ export default function Feed({ data }) {
       ) : (
         <ul>
           {data.map((post) => (
-            <li key={post.author}>
-              <PostListItem post={post} />
-            </li>
+            <PostListItem post={post} key={post.post_id} />
           ))}
         </ul>
       )}
