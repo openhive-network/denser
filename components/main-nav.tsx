@@ -25,7 +25,7 @@ export function MainNav({ items }: MainNavProps) {
       <Link href="/" className="hidden items-center space-x-2 md:flex">
         <Icons.hive className="h-6 w-6" />
         <span className="hidden font-bold sm:inline-block">
-          {siteConfig.title}
+          {siteConfig.name}
         </span>
       </Link>
       {items?.length ? (
