@@ -23,8 +23,8 @@ export default function CommunitiesProvider() {
 
   return (
     <>
-      <div className="flex justify-between">
-        <div className="relative mb-8 text-gray-600 focus-within:text-gray-400">
+      <div className="flex flex-col justify-between md:flex-row">
+        <div className="relative mb-4 text-gray-600 focus-within:text-gray-400 md:mb-8">
           <span className="absolute inset-y-0 left-0 flex items-center pl-2">
             <Icons.search className="h-5 w-5" />
           </span>

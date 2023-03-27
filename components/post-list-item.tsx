@@ -117,7 +117,12 @@ export default function PostListItem({ post }: any) {
                   </Link>{" "}
                   ({post.author_reputation.toFixed(0)})
                 </p>
-                <Time time={post.created} />
+                <p className="flex items-center gap-2">
+                  <Time time={post.created} />
+                  {post.percent_hbd === 0 ? (
+                    <Icons.hive className="h-4 w-4" />
+                  ) : null}
+                </p>
               </div>
             </div>
           </div>
