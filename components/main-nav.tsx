@@ -64,7 +64,7 @@ export function MainNav({ items }: MainNavProps) {
         >
           <DropdownMenuLabel>
             <Link href="/" className="flex items-center">
-              <Icons.hive className="mr-2 h-4 w-4" /> {siteConfig.title}
+              <Icons.hive className="mr-2 h-4 w-4" /> {siteConfig.name}
             </Link>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />

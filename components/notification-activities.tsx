@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react"
 import { useRouter } from "next/router"
 import { useQuery } from "@tanstack/react-query"
 
@@ -8,11 +8,15 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function NotificationActivities({ data }) {
-  const [state, setState] = useState(() => data);
+  const [state, setState] = useState(() => data)
   const lastStateElementId = state[state.length - 1].id
   const router = useRouter()
   const username =
-    typeof router.query?.username === "string" ? router.query.username : ""
+    typeof router.query?.param === "object"
+      ? router.query.param[0]
+      : typeof router.query?.param === "string"
+      ? router.query?.param
+      : ""
   const {
     isLoading,
     error,
@@ -20,11 +24,11 @@ export default function NotificationActivities({ data }) {
     data: moreData,
   } = useQuery({
     queryKey: ["accountNotificationMoreData", username],
-    queryFn: () => getAccountNotifications(username, lastStateElementId, 50),
+    queryFn: () =>
+      getAccountNotifications(username.slice(1), lastStateElementId, 50),
   })
 
-
-  function handleLoadMore () {
+  function handleLoadMore() {
     if (!isLoading) {
       setState([...state, ...moreData])
       refetch()
@@ -66,7 +70,9 @@ export default function NotificationActivities({ data }) {
         </Button>
       </TabsContent>
       <TabsContent value="mentions">
-        <NotificationList data={state.filter((row) => row.type === "mention")} />
+        <NotificationList
+          data={state.filter((row) => row.type === "mention")}
+        />
         <Button
           variant="outline"
           className="mt-4 mb-8 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
