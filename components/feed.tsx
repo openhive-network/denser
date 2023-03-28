@@ -12,7 +12,7 @@ export default function Feed({ data }) {
       {data.length === 0 ? (
         <p className="p-4">No posts yet</p>
       ) : (
-        <ul>
+        <ul data-testid="posts-list">
           {data.map((post) => (
             <PostListItem post={post} key={post.post_id} />
           ))}

@@ -22,7 +22,7 @@ const Children = dynamic(() => import("./children"), {
 
 export default function PostListItem({ post }: any) {
   return (
-    <li className="my-4 flex flex-col">
+    <li className="my-4 flex flex-col" data-testid="post-list-item">
       {post.reblogged_by !== undefined && post.reblogged_by.length > 0 ? (
         <div className="flex">
           <Icons.forward className="h-5 w-5" /> {post.reblogged_by[0]} reblogged
@@ -112,6 +112,7 @@ export default function PostListItem({ post }: any) {
                   <Link
                     href={`@${post.author}`}
                     className="bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent"
+                    data-testid="post-author"
                   >
                     @{post.author}
                   </Link>{" "}

@@ -109,7 +109,7 @@ export default function ProfileInfo({ handleCoverImage }) {
           ({accountReputation(data.reputation)})
         </span>
       </h4>
-      <h6 className="my-4 bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent">
+      <h6 className="my-4 bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent" data-testid="profile-nickname">
         @{data.name}
       </h6>
       <p className="my-4">{profile?.about}</p>
