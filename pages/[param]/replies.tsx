@@ -10,7 +10,11 @@ import { useGetAccountPosts } from '@/services/bridgeService';
 export default function UserReplies() {
   const router = useRouter()
   const username =
-    typeof router.query?.param=== "string" ? router.query.param : ""
+    typeof router.query?.param === "object"
+      ? router.query.param[0]
+      : typeof router.query?.param === "string"
+        ? router.query?.param
+        : ""
   const { isLoading, error, data } = useGetAccountPosts("replies", username.slice(1), true);
 
   if (isLoading) return <p>Loading...</p>
@@ -35,7 +39,7 @@ export async function getServerSideProps(context) {
   const sort = "replies";
   const queryClient = new QueryClient()
 
-  await queryClient.prefetchQuery(["accountReplies", username, sort], () =>
+  await queryClient.prefetchQuery(["accountReplies", username], () =>
     getAccountPosts(sort, username, "hive.blog")
   )
 

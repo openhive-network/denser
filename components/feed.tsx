@@ -1,6 +1,12 @@
 import PostListItem from "@/components/post-list-item"
 
 export default function Feed({ data }) {
+  // To check, I don't know why object structure change over fist milliseconds
+  if (data.data && data.data.length > 0) {
+    return null
+  }
+
+
   return (
     <div>
       {data.length === 0 ? (

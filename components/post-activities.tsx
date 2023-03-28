@@ -11,7 +11,11 @@ export default function PostActivities() {
   const [sort, setSort] = useState("posts")
   const router = useRouter()
   const username =
-    typeof router.query?.param === "string" ? router.query.param : ""
+    typeof router.query?.param === "object"
+      ? router.query.param[0]
+      : typeof router.query?.param === "string"
+      ? router.query?.param
+      : ""
   const { isLoading, error, refetch, data } = useGetAccountPosts(
     sort,
     username.slice(1),

@@ -19,12 +19,12 @@ export default function CommunitiesListItem({ community }) {
               {community.admins?.length > 1 ? "admins" : "admin"}{" "}
             </span>
             {community.admins.map((admin, index) => (
-              <>
+              <span key={index}>
                 {admin}{" "}
                 {index !== community.admins.length - 1 ? (
                   <span className="mx-1">•</span>
                 ) : null}
-              </>
+              </span>
             ))}
           </p>
         ) : null}

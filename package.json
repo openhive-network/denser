@@ -55,6 +55,7 @@
         "next-themes": "^0.2.1",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
+        "react-intersection-observer": "^9.4.3",
         "remarkable": "^2.0.1",
         "sanitize-html": "^2.10.0",
         "sharp": "^0.31.3",

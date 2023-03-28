@@ -27,13 +27,13 @@ export function useAccountNotifications(username: string) {
 
 export function useGetAccountPosts(sort: string, username: string, enabled) {
   return useQuery(
-    ["accountReplies", username],
+    ["accountReplies", username, sort],
     () => getAccountPosts(sort, username, "hive.blog"),
     { enabled: !!enabled }
   )
 }
 
-export function useGetCommunities(sort = "rank", query?: string) {
+export function useGetCommunities(sort = "rank", query = null) {
   return useQuery(["communitiesList", sort, query], () =>
     getCommunities(sort, query)
   )

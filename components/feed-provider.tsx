@@ -1,6 +1,10 @@
+import { useEffect } from "react"
 import { useRouter } from "next/router"
-import { useGetCommunity, useGetPostsRanked } from "@/services/bridgeService"
+import { useGetCommunity } from "@/services/bridgeService"
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInView } from "react-intersection-observer"
 
+import { getPostsRanked } from "@/lib/bridge";
 import Feed from "@/components/feed"
 import { Icons } from "@/components/icons"
 import SelectFilter from "@/components/select-filter"
@@ -13,7 +17,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-export default function FeedProvider() {
+export default function FeedProvider({ feedData }) {
+  const { ref, inView } = useInView()
   const router = useRouter()
   const sort = router.query?.param
     ? typeof router.query?.param[0] === "string"
@@ -25,7 +30,42 @@ export default function FeedProvider() {
       ? router.query.param[1]
       : ""
     : ""
-  const { isLoading, error, data } = useGetPostsRanked(sort, tag)
+  const {
+    status,
+    data,
+    error,
+    isFetching,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+    refetch
+  } = useInfiniteQuery(
+    ["postsInfinite"],
+    async ({ pageParam }) => {
+      return await getPostsRanked(
+          sort,
+          tag,
+          pageParam?.author,
+          pageParam?.permlink
+        )
+    },
+    {
+      initialData: feedData,
+      getNextPageParam: (lastPage) => {
+        return {
+          author:
+            lastPage && lastPage.length > 0
+              ? lastPage[lastPage?.length - 1].author
+              : "",
+          permlink:
+            lastPage && lastPage.length > 0
+              ? lastPage[lastPage?.length - 1].permlink
+              : "",
+        }
+      },
+    }
+  )
+
   const {
     isLoading: isLoadingCommunity,
     error: errorCommunity,
@@ -34,9 +74,14 @@ export default function FeedProvider() {
 
   function handleChangeFilter(e) {
     router.push(`/${e}`, undefined, { shallow: true })
+    refetch()
   }
 
-  if (isLoading) return <p>Loading... ⚡️</p>
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage()
+    }
+  }, [fetchNextPage, inView])
 
   return (
     <>
@@ -114,7 +159,33 @@ export default function FeedProvider() {
         </Select>
       </div>
 
-      <Feed data={data} />
+      {status === "loading" ? (
+        <p>Loading... ⚡</p>
+      ) : (
+        <>
+          {data.pages.map((page, index) => {
+            return page ? <Feed data={page} key={`f-${index}`} /> : null
+          })}
+          <div>
+            <button
+              ref={ref}
+              onClick={() => fetchNextPage()}
+              disabled={!hasNextPage || isFetchingNextPage}
+            >
+              {isFetchingNextPage
+                ? "Loading more..."
+                : hasNextPage
+                ? "Load Newer"
+                : "Nothing more to load"}
+            </button>
+          </div>
+          <div>
+            {isFetching && !isFetchingNextPage
+              ? "Background Updating..."
+              : null}
+          </div>
+        </>
+      )}
     </>
   )
 }

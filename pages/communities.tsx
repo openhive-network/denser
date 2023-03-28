@@ -1,6 +1,8 @@
 import { Layout } from "@/components/layout";
 import CommunitiesSidebar from "@/components/communities-sidebar";
 import CommunitiesProvider from "@/components/communities-provider";
+import { getCommunities } from "@/lib/bridge";
+import { dehydrate, QueryClient } from "@tanstack/react-query";
 
 export default function CommunitiesPage() {
   return (
@@ -13,4 +15,18 @@ export default function CommunitiesPage() {
       </div>
     </Layout>
   )
+}
+
+export async function getServerSideProps(context) {
+  const queryClient = new QueryClient()
+  const sort = "rank"
+  const query = null
+  await queryClient.prefetchQuery(["communitiesList", sort, query], () =>
+    getCommunities(sort, query)
+  )
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  }
 }

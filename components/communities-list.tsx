@@ -4,7 +4,7 @@ export default function CommunitiesList({ data }) {
   return (
     <ul>
       {data.map((community) => (
-        <CommunitiesListItem community={community} key={community.id} />
+        <CommunitiesListItem community={community} key={community.name} />
       ))}
     </ul>
   )
