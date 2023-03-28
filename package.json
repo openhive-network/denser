@@ -10,7 +10,12 @@
         "preview": "next build && next start",
         "typecheck": "tsc --noEmit",
         "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
-        "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache"
+        "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache",
+        "pw:test:all": "playwright test",
+        "pw:test:local": "playwright test --config=playwright.local3000.config.ts",
+        "pw:test:local:chromium": "playwright test --project=chromium --config=playwright.local3000.config.ts --headed",
+        "pw:test:local:firefox": "playwright test --project=firefox --config=playwright.local3000.config.ts --headed",
+        "pw:test:local:webkit": "playwright test --project=webkit --config=playwright.local3000.config.ts --headed"
     },
     "dependencies": {
         "@hiveio/dhive": "^1.2.6",
