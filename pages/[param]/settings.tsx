@@ -14,8 +14,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useLocalStorage } from "@/hooks/use-local-storage";
 
 export default function UserSettings() {
+  const [ endpoint, setEndpoint] = useLocalStorage('hive-blog-endpoint', "api.hive.blog")
   return (
     <div className="flex flex-col">
       <div className="py-8">
@@ -190,6 +192,8 @@ export default function UserSettings() {
         <RadioGroup
           defaultValue="https://api.hive.blog"
           className="w-8/12 gap-0"
+          onValueChange={e => {console.log('e', e); return setEndpoint(e)}}
+          value={endpoint}
         >
           <div className="grid grid-cols-3">
             <span> Endpoint</span>
@@ -198,22 +202,22 @@ export default function UserSettings() {
           </div>
           <div className="grid grid-cols-3 items-center bg-slate-100 p-2 dark:bg-slate-500">
             <Label htmlFor="e1">https://api.hive.blog</Label>
-            <RadioGroupItem value="https://api.hive.blog" id="e1" />
+            <RadioGroupItem value="api.hive.blog" id="e1" />
             <Icons.trash />
           </div>
           <div className="grid grid-cols-3 items-center bg-slate-200 p-2 dark:bg-slate-600">
             <Label htmlFor="e2">https://rpc.ausbit.dev</Label>
-            <RadioGroupItem value="https://rpc.ausbit.dev" id="e2" />
+            <RadioGroupItem value="rpc.ausbit.dev" id="e2" />
             <Icons.trash />
           </div>
           <div className="grid grid-cols-3 items-center bg-slate-100 p-2 dark:bg-slate-500">
             <Label htmlFor="e3">https://anyx.io</Label>
-            <RadioGroupItem value="https://anyx.io" id="e3" />
+            <RadioGroupItem value="anyx.io" id="e3" />
             <Icons.trash />
           </div>
           <div className="grid grid-cols-3 items-center bg-slate-200 p-2 dark:bg-slate-600">
             <Label htmlFor="e4">https://api.deathwing.me</Label>
-            <RadioGroupItem value="https://api.deathwing.me" id="e4" />
+            <RadioGroupItem value="api.deathwing.me" id="e4" />
             <Icons.trash />
           </div>
         </RadioGroup>

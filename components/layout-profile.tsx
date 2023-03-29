@@ -63,7 +63,7 @@ export default function LayoutProfile({ children }) {
                     variant="ghost"
                     className={`hover:bg-red-100 hover:text-red-600 dark:text-red-100 dark:hover:bg-red-800 dark:hover:text-white ${
                       router.asPath === `/${username}/posts`
-                        ? "bg-red-100 text-red-600"
+                        ? "bg-red-100 text-red-600 dark:bg-red-100 dark:text-red-600"
                         : ""
                     }`}
                   >

@@ -98,7 +98,14 @@ export type Subscription = Array<string>
 
 export const dataLimit = 20
 
-export const bridgeServer = new Client(["https://api.hive.blog"], {
+const endpoint =
+  typeof window !== "undefined"
+    ? window.localStorage.getItem("hive-blog-endpoint")
+      ? JSON.parse(window.localStorage.getItem("hive-blog-endpoint"))
+      : "api.hive.blog"
+    : "api.hive.blog"
+
+export const bridgeServer = new Client([`https://${endpoint}`], {
   timeout: 3000,
   failoverThreshold: 3,
   consoleOnFailover: true,
@@ -173,7 +180,7 @@ export const getAccountPosts = (
   observer: string,
   start_author: string = "",
   start_permlink: string = "",
-  limit: number = dataLimit,
+  limit: number = dataLimit
 ): Promise<Entry[] | null> => {
   return bridgeApiCall<Entry[] | null>("get_account_posts", {
     sort,
