@@ -90,11 +90,9 @@ export class HomePage {
   }
 
   async getElementCssPropertyValue(element: Locator, cssProperty: string) {
-    /// const element = await this.page.waitForSelector(selector)
-    const bcg = await element.evaluate((ele) => {
-      // return window.getComputedStyle(ele).getPropertyValue(cssProperty)
-      return window.getComputedStyle(ele).getPropertyValue("background-color")
-    })
+    const bcg = await element.evaluate((ele, css) => {
+      return window.getComputedStyle(ele).getPropertyValue(css)
+    }, cssProperty)
     // return value of element's css property
     return bcg
   }
