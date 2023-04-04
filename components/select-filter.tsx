@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 
 import {
@@ -12,20 +10,18 @@ import {
 } from "@/components/ui/select"
 
 export default function SelectFilter({filter, handleChangeFilter}) {
-  const [state, setState] = useState(() => filter)
   return (
       <Select
         defaultValue="hot"
-        value={state}
+        value={filter}
         onValueChange={(e) => {
           handleChangeFilter(e)
-          setState(e)
         }}
       >
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-[180px]" data-testid="posts-filter">
           <SelectValue placeholder="Select a filter" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent data-testid="posts-filter-list">
           <SelectGroup>
             <SelectItem value="trending">Trending</SelectItem>
             <SelectItem value="hot">Hot</SelectItem>

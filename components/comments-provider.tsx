@@ -1,18 +1,15 @@
-'use client'
+import { useGetAccountPosts } from "@/services/bridgeService"
 
-import { useQuery } from '@tanstack/react-query';
-import { getAccountPosts, getPostsRanked2 } from '@/lib/bridge';
-import CommentList from '@/components/comment-list';
+import CommentList from "@/components/comment-list"
 
 export default function CommentsProvider() {
-  const { isLoading, error, data } = useQuery({
-    queryKey: ["postsData"],
-    queryFn: () => getAccountPosts("comments", "meesterboom")
-  })
+  const { isLoading, error, data } = useGetAccountPosts(
+    "comments",
+    "meesterboom",
+    true
+  )
 
   if (isLoading) return <p>Loading...</p>
 
-  return (
-    <CommentList data={data} />
-  )
+  return <CommentList data={data} />
 }
