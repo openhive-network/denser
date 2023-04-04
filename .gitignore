@@ -34,3 +34,6 @@ yarn-error.log*
 
 .contentlayer
 .env
+/test-results/
+/playwright-report/
+/playwright/.cache/

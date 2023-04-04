@@ -1,16 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  swcMinify: true,
   reactStrictMode: true,
-  experimental: {
-    fontLoaders: [
-      {
-        loader: "@next/font/google",
-        options: { subsets: ["latin"] },
-      },
-    ],
-    appDir: true,
-  },
 }
 
 export default nextConfig
+
+// Config for next/images
+// images: {
+//   remotePatterns: [
+//     {
+//       protocol: "https",
+//       hostname: "files.peakd.com",
+//       port: "",
+//       pathname: "",
+//     },
+//   ],
+// },

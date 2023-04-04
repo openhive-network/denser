@@ -1,7 +1,7 @@
-'use client'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import BadgeList from "@/components/badge-list"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-export default function SocialActivities() {
+export default function SocialActivities({ data }) {
   return (
     <Tabs defaultValue="badges" className="mt-8 w-full">
       <TabsList className="flex">
@@ -12,19 +12,19 @@ export default function SocialActivities() {
         <TabsTrigger value="challenges">Challenges</TabsTrigger>
       </TabsList>
       <TabsContent value="badges">
-        Badges Tab
+        <BadgeList data={data} />
       </TabsContent>
       <TabsContent value="activity">
-        Activity Tab
+        <BadgeList data={data.filter((badge) => badge.type === "activity")} />
       </TabsContent>
       <TabsContent value="personal">
-        Personal Tab
+        <BadgeList data={data.filter((badge) => badge.type === "perso")} />
       </TabsContent>
       <TabsContent value="meetups">
-        Meetups Tab
+        <BadgeList data={data.filter((badge) => badge.type === "meetup")} />
       </TabsContent>
       <TabsContent value="challenges">
-        Challenges Tab
+        <BadgeList data={data.filter((badge) => badge.type === "challenge")} />
       </TabsContent>
     </Tabs>
   )

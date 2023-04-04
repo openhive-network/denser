@@ -1,39 +1,122 @@
-'use client'
-import { useState } from 'react';
-import SelectFilter from '@/components/select-filter';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Icons } from '@/components/icons';
-import Feed from '@/components/feed';
-import { getPostsRanked2 } from '@/lib/bridge';
-import { useQuery } from '@tanstack/react-query';
+import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/router"
+import { useGetCommunity } from "@/services/bridgeService"
+import { useInfiniteQuery } from "@tanstack/react-query"
+import { useInView } from "react-intersection-observer"
 
-export default function FeedProvider() {
-  const [filter, setFilter] = useState('hot');
-  const { isLoading, error, data } = useQuery({
-    queryKey: ['postsData', filter],
-    queryFn: () => getPostsRanked2(filter),
-  })
+import { Entry, getPostsRanked } from "@/lib/bridge";
+import Feed from "@/components/feed"
+import { Icons } from "@/components/icons"
+import SelectFilter from "@/components/select-filter"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
+export default function FeedProvider({ feedData, sort }: { feedData: any, sort: string }) {
+  console.log('sort', sort)
+  const [sortState, setSortState] = useState(sort);
+  const { ref, inView } = useInView()
+  const router = useRouter()
 
-  function handleChangeFilter(e) {
-    setFilter(e)
-  }
+  const tag = router.query?.param
+    ? typeof router.query?.param[1] === "string"
+      ? router.query.param[1]
+      : ""
+    : ""
 
-  if (isLoading) return <p>Loading...</p>
+  const {
+    status,
+    data,
+    error,
+    isFetching,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+    refetch,
+  } = useInfiniteQuery(
+    ["postsInfinite", tag, sortState],
+    async ({ pageParam }) => {
+      return await getPostsRanked(
+        sortState,
+        tag,
+        pageParam?.author,
+        pageParam?.permlink
+      )
+    },
+    {
+      initialData: feedData,
+      getNextPageParam: (lastPage: Entry[]) => {
+        return {
+          author:
+            lastPage && lastPage.length > 0
+              ? lastPage[lastPage?.length - 1].author
+              : "",
+          permlink:
+            lastPage && lastPage.length > 0
+              ? lastPage[lastPage?.length - 1].permlink
+              : "",
+        }
+      },
+    }
+  )
+
+  // This prevents to cache the same function with same args between renders,
+  // using useCallback we make sure that when there is change in the router
+  // we re-define the function
+  const handleChangeFilter = useCallback(
+    (e) => {
+      setSortState(e);
+      if (tag) {
+        router.push(`/${e}/${tag}`, undefined, { shallow: true }).then(async () => {
+          await refetch()
+        })
+      } else {
+        router.push(`/${e}`, undefined, { shallow: true }).then(async () => {
+          await refetch()
+        })
+      }
+    },
+    [refetch, router]
+  )
+
+  const {
+    isLoading: isLoadingCommunity,
+    error: errorCommunity,
+    data: dataCommunity,
+  } = useGetCommunity(tag, "hive.blog", tag)
+
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage()
+    }
+  }, [fetchNextPage, inView])
 
   return (
     <>
       <div className="hidden justify-between md:flex">
         <div>
-          <h4 className="text-base font-semibold text-slate-900 dark:text-white">
-            LeoFinance
-          </h4>
-          <span className="mt-2 text-xs font-normal text-slate-500 dark:text-slate-400">
-              Community
-            </span>
+          {tag === "" ? (
+            <h4 className="text-base font-semibold text-slate-900 dark:text-white">
+              All
+            </h4>
+          ) : (
+            <>
+              <h4 className="text-base font-semibold text-slate-900 dark:text-white">
+                {dataCommunity?.title}
+              </h4>
+              <span className="mt-2 text-xs font-normal text-slate-500 dark:text-slate-400">
+                Community
+              </span>
+            </>
+          )}
         </div>
         <div className="flex">
-          <SelectFilter filter={'hot'} handleChangeFilter={handleChangeFilter}/>
+          <SelectFilter filter={sort} handleChangeFilter={handleChangeFilter} />
 
           <Select defaultValue="list">
             <SelectTrigger className="ml-4 w-16 border-0">
@@ -89,7 +172,33 @@ export default function FeedProvider() {
         </Select>
       </div>
 
-      <Feed data={data} />
+      {status === "loading" ? (
+        <p>Loading... ⚡</p>
+      ) : (
+        <>
+          {data.pages.map((page, index) => {
+            return page ? <Feed data={page} key={`f-${index}`} /> : null
+          })}
+          <div>
+            <button
+              ref={ref}
+              onClick={() => fetchNextPage()}
+              disabled={!hasNextPage || isFetchingNextPage}
+            >
+              {isFetchingNextPage
+                ? "Loading more..."
+                : hasNextPage
+                ? "Load Newer"
+                : "Nothing more to load"}
+            </button>
+          </div>
+          <div>
+            {isFetching && !isFetchingNextPage
+              ? "Background Updating..."
+              : null}
+          </div>
+        </>
+      )}
     </>
   )
 }

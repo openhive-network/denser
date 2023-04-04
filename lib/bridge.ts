@@ -1,110 +1,121 @@
-import { Client } from "@hiveio/dhive";
+import { Client } from "@hiveio/dhive"
 
 export interface EntryBeneficiaryRoute {
-  account: string;
-  weight: number;
+  account: string
+  weight: number
 }
 
 export interface EntryVote {
-  voter: string;
-  rshares: number;
+  voter: string
+  rshares: number
 }
 
 export interface EntryStat {
-  flag_weight: number;
-  gray: boolean;
-  hide: boolean;
-  total_votes: number;
-  is_pinned?: boolean;
+  flag_weight: number
+  gray: boolean
+  hide: boolean
+  total_votes: number
+  is_pinned?: boolean
 }
 
 export interface JsonMetadata {
-  tags?: string[];
-  description?: string | null;
-  app?: any;
-  canonical_url?: string;
-  format?: string;
-  original_author?: string;
-  original_permlink?: string;
+  tags?: string[]
+  description?: string | null
+  app?: any
+  canonical_url?: string
+  format?: string
+  original_author?: string
+  original_permlink?: string
 }
 
 export interface Entry {
-  active_votes: EntryVote[];
-  author: string;
-  author_payout_value: string;
-  author_reputation: number;
-  author_role?: string;
-  author_title?: string;
-  beneficiaries: EntryBeneficiaryRoute[];
-  blacklists: string[];
-  body: string;
-  category: string;
-  children: number;
-  community?: string;
-  community_title?: string;
-  created: string;
-  total_votes?: number;
-  curator_payout_value: string;
-  depth: number;
-  is_paidout: boolean;
-  json_metadata: JsonMetadata;
-  max_accepted_payout: string;
-  net_rshares: number;
-  parent_author?: string;
-  parent_permlink?: string;
-  payout: number;
-  payout_at: string;
-  pending_payout_value: string;
-  percent_hbd: number;
-  permlink: string;
-  post_id: number;
-  id?: number;
-  promoted: string;
-  reblogged_by?: string[] | any;
-  replies: any[];
-  stats?: EntryStat;
-  title: string;
-  updated: string;
-  url: string;
-  original_entry?: Entry;
+  active_votes: EntryVote[]
+  author: string
+  author_payout_value: string
+  author_reputation: number
+  author_role?: string
+  author_title?: string
+  beneficiaries: EntryBeneficiaryRoute[]
+  blacklists: string[]
+  body: string
+  category: string
+  children: number
+  community?: string
+  community_title?: string
+  created: string
+  total_votes?: number
+  curator_payout_value: string
+  depth: number
+  is_paidout: boolean
+  json_metadata: JsonMetadata
+  max_accepted_payout: string
+  net_rshares: number
+  parent_author?: string
+  parent_permlink?: string
+  payout: number
+  payout_at: string
+  pending_payout_value: string
+  percent_hbd: number
+  permlink: string
+  post_id: number
+  id?: number
+  promoted: string
+  reblogged_by?: string[] | any
+  replies: any[]
+  stats?: EntryStat
+  title: string
+  updated: string
+  url: string
+  original_entry?: Entry
 }
 
-export type CommunityTeam = Array<Array<string>>;
+export type CommunityTeam = Array<Array<string>>
 
 export interface Community {
-  about: string;
-  admins?: string[];
-  avatar_url: string;
-  created_at: string;
-  description: string;
-  flag_text: string;
-  id: number;
-  is_nsfw: boolean;
-  lang: string;
-  name: string;
-  num_authors: number;
-  num_pending: number;
-  subscribers: number;
-  sum_pending: number;
-  settings?: any;
-  team: CommunityTeam;
-  title: string;
-  type_id: number;
+  about: string
+  admins?: string[]
+  avatar_url: string
+  created_at: string
+  description: string
+  flag_text: string
+  id: number
+  is_nsfw: boolean
+  lang: string
+  name: string
+  num_authors: number
+  num_pending: number
+  subscribers: number
+  sum_pending: number
+  settings?: any
+  team: CommunityTeam
+  title: string
+  type_id: number
 }
 
-export type Communities = Community[];
+export type Communities = Community[]
 
-export const bridgeServer = new Client(["https://api.hive.blog"], {
+export type Subscription = Array<string>
+
+export const dataLimit = 20
+
+const endpoint =
+  typeof window !== "undefined"
+    ? window.localStorage.getItem("hive-blog-endpoint")
+      ? JSON.parse(window.localStorage.getItem("hive-blog-endpoint"))
+      : "api.hive.blog"
+    : "api.hive.blog"
+
+export const bridgeServer = new Client([`https://${endpoint}`], {
   timeout: 3000,
   failoverThreshold: 3,
-  consoleOnFailover: true
-});
+  consoleOnFailover: true,
+})
 
 const bridgeApiCall = <T>(endpoint: string, params: {}): Promise<T> =>
-  bridgeServer.call("bridge", endpoint, params);
+  bridgeServer.call("bridge", endpoint, params)
 
 const resolvePost = (post: Entry, observer: string): Promise<Entry> => {
-  const { json_metadata: json } = post;
+  const { json_metadata: json } = post
 
   if (
     json.original_author &&
@@ -117,34 +128,34 @@ const resolvePost = (post: Entry, observer: string): Promise<Entry> => {
         if (resp) {
           return {
             ...post,
-            original_entry: resp
-          };
+            original_entry: resp,
+          }
         }
 
-        return post;
+        return post
       })
       .catch(() => {
-        return post;
-      });
+        return post
+      })
   }
 
   return new Promise((resolve) => {
-    resolve(post);
-  });
-};
+    resolve(post)
+  })
+}
 
 const resolvePosts = (posts: Entry[], observer: string): Promise<Entry[]> => {
-  const promises = posts.map((p) => resolvePost(p, observer));
+  const promises = posts.map((p) => resolvePost(p, observer))
 
-  return Promise.all(promises);
-};
+  return Promise.all(promises)
+}
 
 export const getPostsRanked = (
-  sort: string =  "hot",
+  sort: string,
+  tag: string = "",
   start_author: string = "",
   start_permlink: string = "",
-  limit: number = 11,
-  tag: string = "",
+  limit: number = dataLimit,
   observer: string = ""
 ): Promise<Entry[] | null> => {
   return bridgeApiCall<Entry[] | null>("get_ranked_posts", {
@@ -153,48 +164,23 @@ export const getPostsRanked = (
     start_permlink,
     limit,
     tag,
-    observer
-  }).then((resp) => {
-    if (resp) {
-      return resolvePosts(resp, observer);
-    }
-
-    return resp;
-  });
-};
-
-export const getPostsRanked2 = (
-  sort: string,
-  tag: string = "",
-  start_author: string = '',
-  start_permlink: string = '',
-  limit: number = 11,
-  observer: string = '',
-): Promise<Entry[] | null> => {
-  return bridgeApiCall<Entry[] | null>('get_ranked_posts', {
-    sort,
-    start_author,
-    start_permlink,
-    limit,
-    tag,
     observer,
   }).then((resp) => {
     if (resp) {
-      return resolvePosts(resp, observer);
+      return resolvePosts(resp, observer)
     }
 
-    return resp;
-  });
-};
-
+    return resp
+  })
+}
 
 export const getAccountPosts = (
   sort: string,
   account: string,
+  observer: string,
   start_author: string = "",
   start_permlink: string = "",
-  limit: number = 11,
-  observer: string = ""
+  limit: number = dataLimit
 ): Promise<Entry[] | null> => {
   return bridgeApiCall<Entry[] | null>("get_account_posts", {
     sort,
@@ -202,15 +188,15 @@ export const getAccountPosts = (
     start_author,
     start_permlink,
     limit,
-    observer
+    observer,
   }).then((resp) => {
     if (resp) {
-      return resolvePosts(resp, observer);
+      return resolvePosts(resp, observer)
     }
 
-    return resp;
-  });
-};
+    return resp
+  })
+}
 
 export const getPost = (
   author: string = "",
@@ -220,25 +206,26 @@ export const getPost = (
   return bridgeApiCall<Entry | null>("get_post", {
     author,
     permlink,
-    observer
+    observer,
   }).then((resp) => {
     if (resp) {
-      return resolvePost(resp, observer);
+      return resolvePost(resp, observer)
     }
 
-    return resp;
-  });
-};
-
-export interface AccountNotification {
-  date: string;
-  id: number;
-  msg: string;
-  score: number;
-  type: string;
-  url: string;
+    return resp
+  })
 }
 
+export interface AccountNotification {
+  date: string
+  id: number
+  msg: string
+  score: number
+  type: string
+  url: string
+}
+
+// I have problem with this func, I pass good account name but RPC call it with empty string
 export const getAccountNotifications = (
   account: string,
   lastId: number | null = null,
@@ -246,15 +233,18 @@ export const getAccountNotifications = (
 ): Promise<AccountNotification[] | null> => {
   const params: { account: string; last_id?: number; limit: number } = {
     account,
-    limit
-  };
-
-  if (lastId) {
-    params.last_id = lastId;
+    limit,
   }
 
-  return bridgeApiCall<AccountNotification[] | null>("account_notifications", params);
-};
+  if (lastId) {
+    params.last_id = lastId
+  }
+
+  return bridgeApiCall<AccountNotification[] | null>(
+    "account_notifications",
+    params
+  )
+}
 
 export const getDiscussion = (
   author: string,
@@ -262,42 +252,20 @@ export const getDiscussion = (
 ): Promise<Record<string, Entry> | null> =>
   bridgeApiCall<Record<string, Entry> | null>("get_discussion", {
     author,
-    permlink
-  });
-
-export const normalizePost = (post: any): Promise<Entry | null> =>
-  bridgeApiCall<Entry | null>("normalize_post", {
-    post
-  });
-
-export interface AccountRelationship {
-  follows: boolean;
-  ignores: boolean;
-  is_blacklisted: boolean;
-  follows_blacklists: boolean;
-}
-
-export const getRelationshipBetweenAccounts = (
-  follower: string,
-  following: string
-): Promise<AccountRelationship | null> =>
-  bridgeApiCall<AccountRelationship | null>("get_relationship_between_accounts", [
-    follower,
-    following
-  ]);
-
+    permlink,
+  })
 
 export const getCommunity = (
   name: string,
   observer: string | undefined = ""
 ): Promise<Community | null> =>
-  bridgeApiCall<Community | null>("get_community", { name, observer });
+  bridgeApiCall<Community | null>("get_community", { name, observer })
 
 export const getCommunities = (
+  sort: string,
+  query?: string | null,
   last: string = "",
   limit: number = 100,
-  query?: string | null,
-  sort: string = "rank",
   observer: string = ""
 ): Promise<Community[] | null> =>
   bridgeApiCall<Community[] | null>("list_communities", {
@@ -305,5 +273,40 @@ export const getCommunities = (
     limit,
     query,
     sort,
-    observer
-  });
+    observer,
+  })
+
+export const normalizePost = (post: any): Promise<Entry | null> =>
+  bridgeApiCall<Entry | null>("normalize_post", {
+    post,
+  })
+
+export const getSubscriptions = (
+  account: string
+): Promise<Subscription[] | null> =>
+  bridgeApiCall<Subscription[] | null>("list_all_subscriptions", {
+    account,
+  })
+
+export const getSubscribers = (
+  community: string
+): Promise<Subscription[] | null> =>
+  bridgeApiCall<Subscription[] | null>("list_subscribers", {
+    community,
+  })
+
+export interface AccountRelationship {
+  follows: boolean
+  ignores: boolean
+  is_blacklisted: boolean
+  follows_blacklists: boolean
+}
+
+export const getRelationshipBetweenAccounts = (
+  follower: string,
+  following: string
+): Promise<AccountRelationship | null> =>
+  bridgeApiCall<AccountRelationship | null>(
+    "get_relationship_between_accounts",
+    [follower, following]
+  )
