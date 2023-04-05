@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 export default function SocialActivities({ data, peakd }) {
   return (
     <Tabs defaultValue="badges" className="mt-8 w-full">
-      <TabsList className="flex">
+      <TabsList className="flex" data-testid="badges-activity-menu">
         <TabsTrigger value="badges">Badges</TabsTrigger>
         <TabsTrigger value="activity">Activity</TabsTrigger>
         <TabsTrigger value="personal">Personal</TabsTrigger>

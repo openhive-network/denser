@@ -87,7 +87,7 @@ export default function ProfileInfo({ handleCoverImage }) {
     return <p>Loading... ⚡️</p>
 
   return (
-    <div className="mt-[-6rem] px-8 md:w-80 ">
+    <div className="mt-[-6rem] px-8 md:w-80" data-testid="profile-info">
       <div className="flex h-40 w-40 items-center justify-center rounded-lg bg-white dark:bg-slate-900">
         {/*<Image*/}
         {/*  src={profile.profile_image}*/}
@@ -103,7 +103,7 @@ export default function ProfileInfo({ handleCoverImage }) {
           alt="Profile picture"
         />
       </div>
-      <h4 className="mt-8 mb-4 text-xl text-slate-900 dark:text-white">
+      <h4 className="mt-8 mb-4 text-xl text-slate-900 dark:text-white" data-testid="profile-name">
         {data.profile.name}{" "}
         <span className="text-slate-600">
           ({accountReputation(data.reputation)})
@@ -112,21 +112,21 @@ export default function ProfileInfo({ handleCoverImage }) {
       <h6 className="my-4 bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent" data-testid="profile-nickname">
         @{data.name}
       </h6>
-      <p className="my-4">{profile?.about}</p>
-      <p className="my-4 flex text-slate-900 dark:text-white">
+      <p className="my-4" data-testid="profile-about">{profile?.about}</p>
+      <p className="my-4 flex text-slate-900 dark:text-white" data-testid="user-last-time-active">
         <Icons.calendarActive className="mr-2" />
         Active <Time time={data.last_vote_time} />
       </p>
-      <p className="my-4 flex text-slate-900 dark:text-white">
+      <p className="my-4 flex text-slate-900 dark:text-white" data-testid="user-joined">
         <Icons.calendarHeart className="mr-2" />
         Joined <Date time={data.created} />
       </p>
-      <p className="my-4 flex text-slate-900 dark:text-white">
+      <p className="my-4 flex text-slate-900 dark:text-white" data-testid="user-location">
         <Icons.mapPin className="mr-2" />
         {data.profile.location}
       </p>
 
-      <div className="my-4 grid grid-cols-2 gap-y-4">
+      <div className="my-4 grid grid-cols-2 gap-y-4" data-testid="profile-stats">
         <div className="flex flex-col">
           <span className="text-slate-900 dark:text-white">
             {data.post_count}
@@ -156,12 +156,13 @@ export default function ProfileInfo({ handleCoverImage }) {
       <Button
         variant="outline"
         className="mt-4 mb-8 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
+        data-testid="profile-follow-button"
       >
         <Icons.userPlus className="mr-2" />
         Follow
       </Button>
 
-      <div>
+      <div data-testid="user-links">
         <h6 className="text-slate-900 dark:text-white">Links</h6>
         {data.profile.website ? (
           <p className="my-3 flex flex-wrap">
