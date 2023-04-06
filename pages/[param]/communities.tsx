@@ -8,8 +8,9 @@ import { Layout } from "@/components/layout"
 import LayoutProfile from "@/components/layout-profile"
 import SocialActivities from "@/components/social-activities"
 import { SubscriptionList } from "@/components/subscription-list"
+import * as console from "console";
 
-export default function UserCommunities({ hivebuzz }) {
+export default function UserCommunities({ hivebuzz, peakd }) {
   const router = useRouter()
   const username =
     typeof router.query?.param === "string" ? router.query.param : ""
@@ -47,7 +48,7 @@ export default function UserCommunities({ hivebuzz }) {
         .
       </p>
 
-      <SocialActivities data={hivebuzz} />
+      <SocialActivities data={hivebuzz} peakd={peakd}/>
     </div>
   )
 }
@@ -69,15 +70,21 @@ export async function getServerSideProps(context) {
   )
 
   const hivebuzzRes = await fetch(`https://hivebuzz.me/api/badges/${username}`)
+  console.log('hivebuzzRes', hivebuzzRes)
   const hivebuzzJson = await hivebuzzRes.json()
   const hivebuzzJsonStateOn = hivebuzzJson.filter(
     (badge) => badge.state === "on"
   )
 
+  const peakdRes = await fetch(`https://peakd.com/api/public/badge/${username}`)
+  const peakdJson = await peakdRes.json();
+  const peakdJsonMapedWithURL = peakdJson.map(obj => ({ id: obj.title ,url: `https://images.hive.blog/u/${obj.name}/avatar`, title: obj.title}))
+
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
       hivebuzz: hivebuzzJsonStateOn,
+      peakd: peakdJsonMapedWithURL
     },
   }
 }

@@ -1,7 +1,7 @@
 import BadgeList from "@/components/badge-list"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-export default function SocialActivities({ data }) {
+export default function SocialActivities({ data, peakd }) {
   return (
     <Tabs defaultValue="badges" className="mt-8 w-full">
       <TabsList className="flex">
@@ -12,7 +12,7 @@ export default function SocialActivities({ data }) {
         <TabsTrigger value="challenges">Challenges</TabsTrigger>
       </TabsList>
       <TabsContent value="badges">
-        <BadgeList data={data} />
+        <BadgeList data={peakd} />
       </TabsContent>
       <TabsContent value="activity">
         <BadgeList data={data.filter((badge) => badge.type === "activity")} />
