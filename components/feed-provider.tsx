@@ -72,13 +72,9 @@ export default function FeedProvider({ feedData, sort }: { feedData: any, sort: 
     (e) => {
       setSortState(e);
       if (tag) {
-        router.push(`/${e}/${tag}`, undefined, { shallow: true }).then(async () => {
-          await refetch()
-        })
+        router.push(`/${e}/${tag}`, undefined, { shallow: true })
       } else {
-        router.push(`/${e}`, undefined, { shallow: true }).then(async () => {
-          await refetch()
-        })
+        router.push(`/${e}`, undefined, { shallow: true })
       }
     },
     [refetch, router]

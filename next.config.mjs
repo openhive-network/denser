@@ -1,18 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/trending',
+        permanent: true,
+      },
+    ]
+  },
 }
 
 export default nextConfig
-
-// Config for next/images
-// images: {
-//   remotePatterns: [
-//     {
-//       protocol: "https",
-//       hostname: "files.peakd.com",
-//       port: "",
-//       pathname: "",
-//     },
-//   ],
-// },

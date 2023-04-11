@@ -5,6 +5,7 @@ import {
   getAccountPosts,
   getCommunities,
   getCommunity,
+  getPost,
   getPostsRanked,
   getSubscriptions,
 } from "@/lib/bridge"
@@ -45,4 +46,8 @@ export function useGetCommunity(name, observer = "hive.blog", enabled) {
     () => getCommunity(name, observer),
     { enabled: !!enabled }
   )
+}
+
+export function useGetPost(author, permlink, observer = "calcifero") {
+  return useQuery(["getPost"], () => getPost(author, permlink, observer))
 }

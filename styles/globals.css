@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.pull-left {
+  float: left;
+  padding-right: 1rem;
+  max-width: 50%;
+}
+
+.pull-right {
+  float: right;
+  padding-left: 1rem;
+  max-width: 50%;
+}
+
+.prose table thead th {
+  font-weight: bold;
+  text-align: left;
+  background-color: #f8fafc;
+}
