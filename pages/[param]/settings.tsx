@@ -19,7 +19,7 @@ import { useLocalStorage } from "@/hooks/use-local-storage";
 export default function UserSettings() {
   const [ endpoint, setEndpoint] = useLocalStorage('hive-blog-endpoint', "api.hive.blog")
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col" data-testid="public-profile-settings">
       <div className="py-8">
         <h2 className="py-4 text-lg font-semibold leading-5 text-slate-900 dark:text-white">
           Public Profile Settings

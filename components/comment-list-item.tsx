@@ -10,7 +10,7 @@ const Time = dynamic(() => import("./time"), {
 
 export default function CommentListItem({ comment }) {
   return (
-    <li className="list-none" key={comment.id}>
+    <li className="list-none" key={comment.id} data-testid="comment-list-item">
       <div className="mt-7 flex w-full items-center">
         <img
           className="mr-3 h-[40px] w-[40px] rounded-3xl"
