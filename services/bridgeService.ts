@@ -49,5 +49,5 @@ export function useGetCommunity(name, observer = "hive.blog", enabled) {
 }
 
 export function useGetPost(author, permlink, observer = "calcifero") {
-  return useQuery(["getPost"], () => getPost(author, permlink, observer))
+  return useQuery(["getPost", permlink], () => getPost(author, permlink, observer))
 }

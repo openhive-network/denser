@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/select"
 
 export default function FeedProvider({ feedData, sort }: { feedData: any, sort: string }) {
-  console.log('sort', sort)
   const [sortState, setSortState] = useState(sort);
   const { ref, inView } = useInView()
   const router = useRouter()
