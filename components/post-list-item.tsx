@@ -64,7 +64,7 @@ export default function PostListItem({ post }: any) {
         </div>
         <div className="flex flex-col overflow-hidden">
           <div key={post.id} className="mb-10 w-full whitespace-nowrap">
-            <Link href={`/${post.url}`}>
+            <Link href={`${post.url}`}>
               <h2 className="whitespace-normal text-lg font-semibold leading-5 text-slate-900 dark:text-white">
                 {post.title}
                 {post.stats.is_pinned ? (
