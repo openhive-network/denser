@@ -37,7 +37,7 @@ export default function NotificationActivities({ data }) {
 
   return (
     <Tabs defaultValue="all" className="w-full">
-      <TabsList className="flex">
+      <TabsList className="flex" data-testid="notifications-local-menu">
         <TabsTrigger value="all">All</TabsTrigger>
         <TabsTrigger value="replies">Replies</TabsTrigger>
         <TabsTrigger value="mentions">Mentions</TabsTrigger>
@@ -45,7 +45,7 @@ export default function NotificationActivities({ data }) {
         <TabsTrigger value="upvotes">Upvotes</TabsTrigger>
         <TabsTrigger value="reblogs">Reblogs</TabsTrigger>
       </TabsList>
-      <TabsContent value="all">
+      <TabsContent value="all" data-testid="notifications-content-all">
         <NotificationList data={state} />
         <Button
           variant="outline"
@@ -55,7 +55,7 @@ export default function NotificationActivities({ data }) {
           Load more
         </Button>
       </TabsContent>
-      <TabsContent value="replies">
+      <TabsContent value="replies" data-testid="notifications-content-replies">
         <NotificationList
           data={state.filter(
             (row) => row.type === "reply_comment" || row.type === "reply"
@@ -69,7 +69,7 @@ export default function NotificationActivities({ data }) {
           Load more
         </Button>
       </TabsContent>
-      <TabsContent value="mentions">
+      <TabsContent value="mentions" data-testid="notifications-content-mentions">
         <NotificationList
           data={state.filter((row) => row.type === "mention")}
         />
@@ -81,7 +81,7 @@ export default function NotificationActivities({ data }) {
           Load more
         </Button>
       </TabsContent>
-      <TabsContent value="follows">
+      <TabsContent value="follows" data-testid="notifications-content-follows">
         <NotificationList data={state.filter((row) => row.type === "follow")} />
         <Button
           variant="outline"
@@ -91,7 +91,7 @@ export default function NotificationActivities({ data }) {
           Load more
         </Button>
       </TabsContent>
-      <TabsContent value="upvotes">
+      <TabsContent value="upvotes" data-testid="notifications-content-upvotes">
         <NotificationList data={state.filter((row) => row.type === "vote")} />
         <Button
           variant="outline"
@@ -101,7 +101,7 @@ export default function NotificationActivities({ data }) {
           Load more
         </Button>
       </TabsContent>
-      <TabsContent value="reblogs">
+      <TabsContent value="reblogs" data-testid="notifications-content-reblogs">
         <NotificationList data={state.filter((row) => row.type === "reblog")} />
         <Button
           variant="outline"

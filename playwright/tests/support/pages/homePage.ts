@@ -15,7 +15,7 @@ export class HomePage {
   readonly getBody: Locator
   readonly getThemeModeButton: Locator
   readonly getThemeModeItem: Locator
-  readonly getFiltrPosts: Locator
+  readonly getFilterPosts: Locator
   readonly getFilterPostsList: Locator
 
   constructor(page: Page) {
@@ -39,7 +39,7 @@ export class HomePage {
     this.getBody = page.locator("body")
     this.getThemeModeButton = page.locator('[data-testid="theme-mode"]')
     this.getThemeModeItem = page.locator('[data-testid="theme-mode-item"]')
-    this.getFiltrPosts = page.locator('[data-testid="posts-filter"]')
+    this.getFilterPosts = page.locator('[data-testid="posts-filter"]')
     this.getFilterPostsList = page.locator('[data-testid="posts-filter-list"]')
   }
 

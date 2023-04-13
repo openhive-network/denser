@@ -44,7 +44,7 @@ export default function LayoutProfile({ children }) {
       <div className="flex flex-col pb-8 md:flex-row md:pb-4 ">
         <ProfileInfo handleCoverImage={setCoverImage} />
         <main style={{ width: "calc(100% - 20rem)" }}>
-          <div className="flex justify-between py-8">
+          <div className="flex justify-between py-8" data-testid="profile-navigation">
             <ul className="grid grid-cols-2 gap-4 lg:flex lg:gap-8">
               <li>
                 <Link href={`/${username}`}>

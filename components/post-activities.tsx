@@ -38,7 +38,7 @@ export default function PostActivities() {
       onValueChange={(s) => setSort(s)}
       value={sort}
     >
-      <TabsList className="flex">
+      <TabsList className="flex" data-testid="user-post-menu">
         <TabsTrigger value="posts">Posts</TabsTrigger>
         <TabsTrigger value="comments">Comments</TabsTrigger>
         <TabsTrigger value="payout">Payouts</TabsTrigger>
