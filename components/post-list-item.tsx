@@ -37,29 +37,35 @@ export default function PostListItem({ post }: any) {
       >
         <div className="flex">
           {post.json_metadata.image ? (
-            <div className="relative flex h-full max-h-[200px] min-h-[200px] w-full items-center overflow-hidden bg-gray-100 lg:min-w-[320px] lg:max-w-[320px]">
-              <img src={post.json_metadata.image[0]} alt="Post image" />
-              <div className="absolute inset-x-0 bottom-0 flex h-16 items-center justify-center bg-gradient-to-r from-slate-400 text-white dark:text-white">
-                {post.community_title}
+            <Link href={`${post.url}`}>
+              <div className="relative flex h-full max-h-[200px] min-h-[200px] w-full items-center overflow-hidden bg-gray-100 lg:min-w-[320px] lg:max-w-[320px]">
+                <img src={post.json_metadata.image[0]} alt="Post image" />
+                <div className="absolute inset-x-0 bottom-0 flex h-16 items-center justify-center bg-gradient-to-r from-slate-400 text-white dark:text-white">
+                  {post.community_title}
+                </div>
               </div>
-            </div>
+            </Link>
           ) : post.json_metadata.images ? (
-            <div className="relative flex h-full max-h-[200px] min-h-[200px] w-full items-center overflow-hidden bg-gray-100 lg:min-w-[320px] lg:max-w-[320px]">
-              <img src={post.json_metadata.images[0]} alt="Post image" />
-              <div className="absolute inset-x-0 bottom-0 flex h-16 items-center justify-center bg-gradient-to-r from-slate-400 text-white dark:text-white">
-                {post.community_title}
+            <Link href={`${post.url}`}>
+              <div className="relative flex h-full max-h-[200px] min-h-[200px] w-full items-center overflow-hidden bg-gray-100 lg:min-w-[320px] lg:max-w-[320px]">
+                <img src={post.json_metadata.images[0]} alt="Post image" />
+                <div className="absolute inset-x-0 bottom-0 flex h-16 items-center justify-center bg-gradient-to-r from-slate-400 text-white dark:text-white">
+                  {post.community_title}
+                </div>
               </div>
-            </div>
+            </Link>
           ) : post.json_metadata?.flow?.pictures[0] ? (
-            <div className="relative flex h-full max-h-[200px] min-h-[200px] w-full items-center overflow-hidden bg-gray-100 lg:min-w-[320px] lg:max-w-[320px]">
-              <img
-                src={post.json_metadata.flow.pictures[0].url}
-                alt="Post image"
-              />
-              <div className="absolute inset-x-0 bottom-0 flex h-16 items-center justify-center bg-gradient-to-r from-slate-400 text-white dark:text-white">
-                {post.community_title}
+            <Link href={`${post.url}`}>
+              <div className="relative flex h-full max-h-[200px] min-h-[200px] w-full items-center overflow-hidden bg-gray-100 lg:min-w-[320px] lg:max-w-[320px]">
+                <img
+                  src={post.json_metadata.flow.pictures[0].url}
+                  alt="Post image"
+                />
+                <div className="absolute inset-x-0 bottom-0 flex h-16 items-center justify-center bg-gradient-to-r from-slate-400 text-white dark:text-white">
+                  {post.community_title}
+                </div>
               </div>
-            </div>
+            </Link>
           ) : null}
         </div>
         <div className="flex flex-col overflow-hidden">
