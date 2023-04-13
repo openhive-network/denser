@@ -70,7 +70,7 @@ function PostPage() {
             <hr />
             <div
               id="articleBody"
-              className="entry-body markdown-view user-selectable prose max-w-full lg:prose-xl"
+              className="entry-body markdown-view user-selectable prose max-w-full"
               dangerouslySetInnerHTML={{
                 __html: renderPostBody(post.body, false),
               }}
