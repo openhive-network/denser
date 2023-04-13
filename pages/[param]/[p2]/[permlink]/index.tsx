@@ -49,7 +49,7 @@ function PostPage() {
 
   return (
     <Layout>
-      {!isLoadingPost ? (
+      {!isLoadingPost && !isLoadingFollows && !isLoadingAccounts ? (
         <div className="bg-slate-50 py-8">
           <div className="mx-auto my-0 max-w-4xl bg-white px-8 py-4">
             <h1 className="text-3xl font-bold">{post.title}</h1>
