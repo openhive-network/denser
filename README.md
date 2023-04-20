@@ -40,8 +40,11 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
 ## Testing
+
 ### E2E Playwright
+
 You can run automatic e2e tests in localhost by using node scripts but first run local Denser App by `npm run dev`
+
 - `npm run pw:test:local:chromium` (to run tests on the Chrome browser engine)
 - `npm run pw:test:local:firefox` (to run tests on the Firefox browser engine)
 - `npm run pw:test:local:webkit` (to run tests on the Safari browser engine)
@@ -65,7 +68,7 @@ scripts/build_instance.sh .
 
 Script usage is as follows:
 
-```
+```bash
 Usage: scripts/build_instance.sh <source directory> [OPTION[=VALUE]]...
 
 Build a Denser Docker image
@@ -87,7 +90,7 @@ scripts/run_instance.sh
 
 The full usage is as follows:
 
-```
+```bash
 Usage: scripts/run_instance.sh [OPTION[=VALUE]]...
 
 Run a Denser Docker instance
@@ -112,7 +115,7 @@ You can change the port and the default enpoint by using environment variables l
 docker run --detach --publish 80:80 --env PORT=80 --env API_NODE_ENDPOINT=api.example.com registry.gitlab.syncad.com/hive/denser:latest
 ```
 
-Finally, there are example [Composefile](docker/docker-compose.yml) and accompanying (dotenv)[docker/.env] files available if you prefer to go that route.
+Finally, there are example [Composefile](docker/docker-compose.yml) and accompanying [dotenv](docker/.env) files available if you prefer to go that route.
 
 ## Learn More
 
