@@ -1,0 +1,9 @@
+version: '3.9'
+services:
+  denser:
+    image: registry.gitlab.syncad.com/hive/denser:${IMAGE_TAG:-latest}
+    environment:
+      - API_NODE_ENDPOINT
+      - PORT
+    ports:
+      - "${PORT}:${PORT}"

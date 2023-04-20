@@ -1,0 +1,10 @@
+docker/
+.next/
+node_modules/
+
+.git
+.gitignore
+.gitlab-ci.yml
+docker-bake.hcl
+Dockerfile
+.npmrc

@@ -47,6 +47,30 @@ You can run automatic e2e tests in localhost by using node scripts but first run
 - `npm run pw:test:local:webkit` (to run tests on the Safari browser engine)
 - `npm run pw:test:local` (to run tests on the browser engines above)
 
+## Docker
+
+You can build a Docker image using the following command
+
+```bash
+docker buildx bake --progress=plain local-build
+```
+
+Then you can run it with command:
+
+```bash
+docker run --detach --publish 3000:3000 registry.gitlab.syncad.com/hive/denser:latest
+```
+
+This will run a single instance of the App on port 3000, connected to [the default API](api.hive.blog).
+
+You can change the port and the default enpoint by using environment variables like so:
+
+```bash
+docker run --detach --publish 80:80 --env PORT=80 --env API_NODE_ENDPOINT=api.example.com registry.gitlab.syncad.com/hive/denser:latest
+```
+
+There's also an example [Composefile](docker/docker-compose.yml) and accompanying (dotenv)[docker/.env] files available if you prefer to go that route.
+
 ## Learn More
 
 To learn more about Next.js and Hive , take a look at the following resources:

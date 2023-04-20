@@ -1,0 +1,6 @@
+.git
+.gitignore
+.gitlab-ci.yml
+
+.next/
+node_modules/
