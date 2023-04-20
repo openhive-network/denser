@@ -1,38 +1,33 @@
-import dynamic from "next/dynamic"
-import Image from "next/image"
-import Link from "next/link"
+import Link from 'next/link';
+import { Icons } from '@/components/icons';
+import { Progress } from '@/components/ui/progress';
+import parseDate from '@/lib/parse-date';
+import moment from 'moment/moment';
 
-import { Icons } from "@/components/icons"
-import { Progress } from "@/components/ui/progress"
-
-const Time = dynamic(() => import("./time"), {
-  ssr: false,
-})
-
-export function NotificationListItem({ date, msg, score, type, url }) {
-  let icon
+const NotificationListItem = ({ date, msg, score, type, url }: any) => {
+  let icon;
   switch (type) {
-    case "vote":
-      icon = <Icons.arrowUpCircle className="h-4 w-4" />
-      break
-    case "reblog":
-      icon = <Icons.forward className="h-4 w-4" />
-      break
-    case "reply_comment":
-      icon = <Icons.comment className="h-4 w-4" />
-      break
-    case "mention":
-      icon = <Icons.atSign className="h-4 w-4" />
-      break
+    case 'vote':
+      icon = <Icons.arrowUpCircle className="h-4 w-4" />;
+      break;
+    case 'reblog':
+      icon = <Icons.forward className="h-4 w-4" />;
+      break;
+    case 'reply_comment':
+      icon = <Icons.comment className="h-4 w-4" />;
+      break;
+    case 'mention':
+      icon = <Icons.atSign className="h-4 w-4" />;
+      break;
     default:
-      icon = <Icons.arrowUpCircle className="h-4 w-4" />
+      icon = <Icons.arrowUpCircle className="h-4 w-4" />;
   }
 
-  const usernamePattern = /\B@[a-z0-9.-]+/gi
-  const mentions = msg.match(usernamePattern)
+  const usernamePattern = /\B@[a-z0-9.-]+/gi;
+  const mentions = msg.match(usernamePattern);
   const participants = mentions
-    ? mentions.map((m) => (
-        <a key={m} href={"/" + m}>
+    ? mentions.map((m: any) => (
+        <a key={m} href={'/' + m}>
           <img
             className="mr-3 h-[40px] w-[40px] rounded-3xl"
             height="40"
@@ -42,7 +37,7 @@ export function NotificationListItem({ date, msg, score, type, url }) {
           />
         </a>
       ))
-    : null
+    : null;
 
   return (
     <>
@@ -57,7 +52,7 @@ export function NotificationListItem({ date, msg, score, type, url }) {
             </Link>
             <span className="flex items-center gap-2">
               {icon}
-              <Time time={date} />
+              {moment(parseDate(date)).fromNow()}
             </span>
           </div>
         </div>
@@ -65,5 +60,7 @@ export function NotificationListItem({ date, msg, score, type, url }) {
       </li>
       <hr />
     </>
-  )
-}
+  );
+};
+
+export default NotificationListItem;

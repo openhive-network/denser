@@ -1,48 +1,54 @@
-import { useRouter } from "next/router"
-import { QueryClient, dehydrate } from "@tanstack/react-query"
+import { useQuery } from '@tanstack/react-query';
 
-import { getAccountNotifications } from "@/lib/bridge"
-import { Layout } from "@/components/layout"
-import LayoutProfile from "@/components/layout-profile"
-import NotificationActivities from "@/components/notification-activities"
-import { useAccountNotifications } from '@/services/bridgeService';
+import { getAccountNotifications } from '@/lib/bridge';
+import LayoutProfile from '@/components/common/profile-layout';
+import NotificationActivities from '@/components/notification-activities';
+import { useSiteParams } from '@/components/hooks/use-site-params';
+import Loading from '@/components/loading';
+import Layout from '@/components/common/layout';
 
 export default function UserNotifications() {
-  const router = useRouter()
-  const username =
-    typeof router.query?.param === "string" ? router.query.param : ""
-  const { isLoading, error, data } = useAccountNotifications(username.slice(1));
+  const { username } = useSiteParams();
+  const {
+    isLoading: accountNotificationIsLoading,
+    error: AccountNotificationError,
+    data: dataAccountNotification
+  } = useQuery(['accountNotification', username], () => getAccountNotifications(username), {
+    enabled: !!username
+  });
 
-  if (isLoading) return <p>Loading... ⚡️</p>
+  if (accountNotificationIsLoading) return <Loading />;
 
   return (
-    <div className="flex flex-col">
-      <div className="flex justify-center">
-        <NotificationActivities data={data} />
+    <LayoutProfile>
+      <div className="flex flex-col">
+        <div className="flex justify-center">
+          <NotificationActivities data={dataAccountNotification} username={username} />
+        </div>
       </div>
-    </div>
-  )
+    </LayoutProfile>
+  );
 }
 
-UserNotifications.getLayout = function getLayout(page) {
-  return (
-    <Layout>
-      <LayoutProfile>{page}</LayoutProfile>
-    </Layout>
-  )
-}
+// UserNotifications.getLayout = function getLayout(page: any) {
+//   return (
+//     <Layout>
+//       <LayoutProfile>{page}</LayoutProfile>
+//     </Layout>
+//   );
+// };
 
-export async function getServerSideProps(context) {
-  const username = String(context.params?.param).slice(1);
-  const queryClient = new QueryClient()
-
-  await queryClient.prefetchQuery(["accountNotification", username], () =>
-    getAccountNotifications(username)
-  )
-
-  return {
-    props: {
-      dehydratedState: dehydrate(queryClient),
-    },
-  }
-}
+// export async function getServerSideProps(context) {
+//   const username = String(context.params?.param).slice(1);
+//   const queryClient = new QueryClient()
+//
+//   await queryClient.prefetchQuery(["accountNotification", username], () =>
+//     getAccountNotifications(username)
+//   )
+//
+//   return {
+//     props: {
+//       dehydratedState: dehydrate(queryClient),
+//     },
+//   }
+// }

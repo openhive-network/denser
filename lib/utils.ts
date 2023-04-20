@@ -1,48 +1,14 @@
 import { SMTAsset } from "@hiveio/dhive"
 import Big from "big.js"
 import { ClassValue, clsx } from "clsx"
-import dayjs from "dayjs"
-import relativeTime from "dayjs/plugin/relativeTime.js"
-import remarkableStripper from './remarkableStripper';
 import sanitize from "sanitize-html"
 import { twMerge } from "tailwind-merge"
 
+import remarkableStripper from "@/lib/remmarkable-stripper"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
-
-dayjs.extend(relativeTime)
-export const dateToRelative = (d: string): string => {
-  const isTimeZoned =
-    d.indexOf(".") !== -1 || d.indexOf("+") !== -1 ? d : `${d}.000Z`
-  const dm = dayjs(new Date(isTimeZoned))
-  const dd = dm.fromNow()
-
-  return dd
-    .replace("a few seconds", "~1s")
-    .replace(" seconds", "s")
-    .replace(" minutes", "m")
-    .replace("a minute", "1m")
-    .replace(" hours", "h")
-    .replace("an hour", "1h")
-    .replace(" days", "d")
-    .replace("a day", "1d")
-    .replace(" months", "M")
-    .replace("a month", "1M")
-    .replace(" years", "y")
-    .replace("a year", "1y")
-}
-
-export const dateToShow = (d: string): string => {
-  const isTimeZoned =
-    d.indexOf(".") !== -1 || d.indexOf("+") !== -1 ? d : `${d}.000Z`
-  console.log("isTimeZoned", isTimeZoned)
-  const dm = dayjs(new Date(isTimeZoned)).format("MMMM YYYY")
-  return dm.toString()
-}
-
-// refactor
 
 export const vestsToRshares = (
   vests: number,
@@ -77,15 +43,11 @@ export interface Asset {
 export const parseAsset = (sval: string | SMTAsset): Asset => {
   if (typeof sval === "string") {
     const sp = sval.split(" ")
-    return {
-      amount: parseFloat(sp[0]),
-      symbol: Symbol[sp[1]],
-    }
+    // @ts-ignore
+    return {amount: parseFloat(sp[0]), symbol: Symbol[sp[1]],}
   } else {
-    return {
-      amount: parseFloat(sval.amount.toString()) / Math.pow(10, sval.precision),
-      symbol: NaiMap[sval.nai],
-    }
+    // @ts-ignore
+    return {amount: parseFloat(sval.amount.toString()) / Math.pow(10, sval.precision), symbol: NaiMap[sval.nai],}
   }
 }
 
@@ -127,11 +89,11 @@ export const accountReputation = (input: string | number): number => {
 }
 
 export const getHivePower = (
-  totalHive,
-  totalVests,
-  vesting_shares,
-  delegated_vesting_shares,
-  received_vesting_shares
+  totalHive: any,
+  totalVests: any,
+  vesting_shares: any,
+  delegated_vesting_shares: any,
+  received_vesting_shares: any
 ) => {
   const hive = new Big(vesting_shares)
     .minus(new Big(delegated_vesting_shares))
@@ -140,10 +102,10 @@ export const getHivePower = (
   return hive.div(hiveDividedByVests).toFixed(0)
 }
 
-export const numberWithCommas = (x) =>
+export const numberWithCommas = (x: any) =>
   String(x).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 
-export function extractBodySummary(body, stripQuotes = false) {
+export function extractBodySummary(body: any, stripQuotes = false) {
   let desc = body
 
   if (stripQuotes) desc = desc.replace(/(^(\n|\r|\s)*)>([\s\S]*?).*\s*/g, "")
@@ -171,7 +133,7 @@ export function extractBodySummary(body, stripQuotes = false) {
   return desc
 }
 
-export function getPostSummary(jsonMetadata, body, stripQuotes = false) {
+export function getPostSummary(jsonMetadata: any, body: any, stripQuotes = false) {
   const shortDescription = jsonMetadata?.description
 
   if (!shortDescription) {
@@ -181,8 +143,9 @@ export function getPostSummary(jsonMetadata, body, stripQuotes = false) {
   return shortDescription
 }
 
-export const htmlDecode = (txt) =>
-  txt.replace(/&[a-z]+;/g, (ch) => {
+export const htmlDecode = (txt: any) =>
+  txt.replace(/&[a-z]+;/g, (ch: any) => {
+    // @ts-ignore
     const char = htmlCharMap[ch.substring(1, ch.length - 1)]
     return char ? char : ch
   })

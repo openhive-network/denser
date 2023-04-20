@@ -1,100 +1,120 @@
-import { useRouter } from "next/router"
-import { useGetAccountPosts } from "@/services/bridgeService"
-import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query"
+import { useSiteParams } from '@/components/hooks/use-site-params';
+import { useQuery } from '@tanstack/react-query';
+import { getAccountPosts, getCommunity, getPostsRanked } from '@/lib/bridge';
+import Loading from '@/components/loading';
+import { FC, useCallback } from 'react';
+import PostList from '@/components/post-list';
+import { Skeleton } from '@/components/ui/skeleton';
+import CommunitiesSidebar from '@/components/communities-sidebar';
+import PostSelectFilter from '@/components/post-select-filter';
+import { useRouter } from 'next/router';
+import ExploreHive from '@/components/explore-hive';
+import UserShortcutsCard from '@/components/user-shortcuts-card';
+import ProfileLayout from '@/components/common/profile-layout';
+import CommunityDescription from '@/components/community-description';
 
-import { getAccountPosts, getCommunities, getPostsRanked } from "@/lib/bridge"
-import CommunitiesSidebar from "@/components/communities-sidebar"
-import FeedProvider from "@/components/feed-provider"
-import { Layout } from "@/components/layout"
-import LayoutProfile from "@/components/layout-profile"
-import PostList from "@/components/post-list"
+const PostSkeleton = () => {
+  return (
+    <div className="flex items-center space-x-4">
+      <Skeleton className="h-12 w-12 rounded-full" />
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-[250px]" />
+        <Skeleton className="h-4 w-[200px]" />
+      </div>
+    </div>
+  );
+};
 
-export default function ParamPage({ feedData, sortServer }) {
-  const router = useRouter()
-  const param = router.query?.param
-    ? typeof router.query?.param[0] === "string"
-      ? router.query.param[0]
-      : ""
-    : ""
-  const { isLoading, error, refetch, data } = useGetAccountPosts(
-    "blog",
-    param.slice(1),
-    param.startsWith("@")
-  )
+const ParamPage: FC = () => {
+  const router = useRouter();
+  const { sort, username, tag } = useSiteParams();
 
-  if (isLoading && param.startsWith("@")) return <p>Loading... ⚡️</p>
+  const {
+    data: entriesData,
+    isLoading: entriesDataIsLoading,
+    isFetching: entriesDataIsFetching,
+    error: entriesDataError
+  } = useQuery(
+    ['entries', sort, tag],
+    async () => {
+      return await getPostsRanked(sort || 'trending', tag).then((res) => {
+        return res;
+      });
+    },
+    { enabled: Boolean(sort) }
+  );
 
-  if (param[0].startsWith("@")) {
+  const {
+    data: communityData,
+    isLoading: communityDataIsLoading,
+    isFetching: communityDataIsFetching,
+    error: communityDataError
+  } = useQuery(['community', tag, ''], () => getCommunity(tag || '', ''), { enabled: !!tag });
+
+  const {
+    data: accountEntriesData,
+    isLoading: accountEntriesIsLoading,
+    isFetching: accountEntriesIsFetching,
+    error: accountEntriesError
+  } = useQuery(
+    ['accountEntries', username],
+    async () => {
+      return await getAccountPosts('blog', username, '').then((res) => {
+        return res;
+      });
+    },
+    { enabled: Boolean(username) }
+  );
+
+  const handleChangeFilter = useCallback(
+    (e: any) => {
+      if (tag) {
+        router.push(`/${e}/${tag}`, undefined, { shallow: true });
+      } else {
+        router.push(`/${e}`, undefined, { shallow: true });
+      }
+    },
+    [router, tag]
+  );
+
+  if (
+    (entriesDataIsLoading && entriesDataIsFetching) ||
+    (accountEntriesIsLoading && accountEntriesIsFetching)
+  ) {
+    return <Loading />;
+  }
+
+  if (!entriesDataIsLoading && entriesData) {
     return (
-      <Layout>
-        <LayoutProfile>
-          <div className="flex flex-col">
-            <PostList data={data} />
+      <div className="container mx-auto max-w-screen-xl flex-grow px-4 pb-2 pt-8">
+        <div className="grid grid-cols-12 lg:gap-8 ">
+          <div className="col-span-12 mb-5 space-y-5 md:col-span-12 lg:col-span-8">
+            <div className="mt-4 flex items-center justify-between">
+              <div className="flex flex-col">
+                <span className="text-sm font-medium">{tag ? 'Community' : 'All posts'}</span>
+                {tag && communityData ? (
+                  <span className="text-xs font-light">{communityData?.title}</span>
+                ) : null}
+              </div>
+              <PostSelectFilter filter={sort} handleChangeFilter={handleChangeFilter} />
+            </div>
+            <PostList data={entriesData} sort={sort} />
           </div>
-        </LayoutProfile>
-      </Layout>
-    )
+          <div className="col-span-12 md:col-span-12 lg:col-span-4">
+            {communityData ? <CommunityDescription data={communityData} /> : <ExploreHive />}
+            <CommunitiesSidebar />
+            <UserShortcutsCard />
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <Layout>
-      <div className="flex justify-center py-8">
-        <CommunitiesSidebar />
-        <main className="flex w-[920px] flex-col gap-4 px-4 md:px-0">
-          <FeedProvider feedData={feedData} sort={param || sortServer} />
-        </main>
-      </div>
-    </Layout>
-  )
-}
+    <ProfileLayout>
+      <PostList data={accountEntriesData} />
+    </ProfileLayout>
+  );
+};
 
-export async function getServerSideProps(context) {
-  const param = (context.params?.param[0] as string) || ""
-  const tag = (context.params?.param[1] as string) || ""
-  const sort = "blog"
-  const queryClient = new QueryClient()
-  let data = []
-
-  if (param.startsWith("@")) {
-    await queryClient.prefetchQuery(
-      ["accountReplies", param.slice(1), sort],
-      () => getAccountPosts(sort, param.slice(1), "hive.blog")
-    )
-  } else {
-    // When we prefetch query to do SSR then we don't use needed object structure to work with useInfiniteQuery
-    // await queryClient.prefetchQuery(["postsInfinite"], () =>
-    //   getPostsRanked(param, tag)
-    // )
-
-    if (tag) {
-      await queryClient.prefetchQuery(["postsData", param, tag], () =>
-        getPostsRanked(param, tag)
-      )
-      data = queryClient.getQueryData(["postsData", param, tag])
-
-      const sortC = "rank"
-      const queryC = null
-      await queryClient.prefetchQuery(["communitiesList", sortC, queryC], () =>
-        getCommunities(sortC, queryC)
-      )
-    } else {
-      await queryClient.prefetchQuery(["postsData", param, tag], () =>
-        getPostsRanked(param, tag)
-      )
-      data = queryClient.getQueryData(["postsData", param, tag])
-    }
-  }
-
-  const feedData = {
-    pages: [{ data }],
-    pageParams: [null],
-  }
-
-  return {
-    props: {
-      dehydratedState: dehydrate(queryClient),
-      feedData,
-      sortServer: param
-    },
-  }
-}
+export default ParamPage;

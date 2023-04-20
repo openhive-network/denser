@@ -1,9 +1,9 @@
-'use client'
+'use client';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-export default function SubNavigation({ username }) {
+export default function SubNavigation({ username }: { username: string }) {
   const pathname = usePathname();
   return (
     <div className="flex h-5 items-center justify-center space-x-4 text-sm">
@@ -11,7 +11,7 @@ export default function SubNavigation({ username }) {
       <Link
         href={`/${username}/posts`}
         className={`cursor-pointer hover:text-red-600 hover:underline ${
-          pathname === `/${username}/posts` ? "text-red-600" : ""
+          pathname === `/${username}/posts` ? 'text-red-600' : ''
         }`}
       >
         Posts
@@ -20,7 +20,7 @@ export default function SubNavigation({ username }) {
       <Link
         href={`/${username}/comments`}
         className={`cursor-pointer hover:text-red-600 hover:underline ${
-          pathname === `/${username}/comments` ? "text-red-600" : ""
+          pathname === `/${username}/comments` ? 'text-red-600' : ''
         }`}
       >
         Comments
@@ -29,12 +29,12 @@ export default function SubNavigation({ username }) {
       <Link
         href={`/${username}/payouts`}
         className={`cursor-pointer hover:text-red-600 hover:underline ${
-          pathname === `/${username}/payouts` ? "text-red-600" : ""
+          pathname === `/${username}/payouts` ? 'text-red-600' : ''
         }`}
       >
         Payouts
       </Link>
       <Separator />
     </div>
-  )
+  );
 }

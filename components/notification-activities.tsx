@@ -1,37 +1,30 @@
-import { useState } from "react"
-import { useRouter } from "next/router"
-import { useQuery } from "@tanstack/react-query"
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
-import { getAccountNotifications } from "@/lib/bridge"
-import { NotificationList } from "@/components/notification-list"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { getAccountNotifications } from '@/lib/bridge';
+import NotificationList from '@/components/notification-list';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useSiteParams } from '@/components/hooks/use-site-params';
 
-export default function NotificationActivities({ data }) {
-  const [state, setState] = useState(() => data)
-  const lastStateElementId = state[state.length - 1].id
-  const router = useRouter()
-  const username =
-    typeof router.query?.param === "object"
-      ? router.query.param[0]
-      : typeof router.query?.param === "string"
-      ? router.query?.param
-      : ""
+const NotificationActivities = ({ data, username }: any) => {
+  const [state, setState] = useState<any>(() => data);
+  const lastStateElementId = state[state.length - 1].id;
   const {
     isLoading,
     error,
     refetch,
-    data: moreData,
-  } = useQuery({
-    queryKey: ["accountNotificationMoreData", username],
-    queryFn: () =>
-      getAccountNotifications(username.slice(1), lastStateElementId, 50),
-  })
+    data: moreData
+  } = useQuery(
+    ['accountNotificationMoreData', username],
+    () => getAccountNotifications(username, lastStateElementId, 50),
+    { enabled: !!username }
+  );
 
   function handleLoadMore() {
     if (!isLoading) {
-      setState([...state, ...moreData])
-      refetch()
+      setState([...state, ...(moreData || [])]);
+      refetch();
     }
   }
 
@@ -49,7 +42,7 @@ export default function NotificationActivities({ data }) {
         <NotificationList data={state} />
         <Button
           variant="outline"
-          className="mt-4 mb-8 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
+          className="mb-8 mt-4 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
           onClick={handleLoadMore}
         >
           Load more
@@ -57,60 +50,58 @@ export default function NotificationActivities({ data }) {
       </TabsContent>
       <TabsContent value="replies" data-testid="notifications-content-replies">
         <NotificationList
-          data={state.filter(
-            (row) => row.type === "reply_comment" || row.type === "reply"
-          )}
+          data={state.filter((row: any) => row.type === 'reply_comment' || row.type === 'reply')}
         />
         <Button
           variant="outline"
-          className="mt-4 mb-8 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
+          className="mb-8 mt-4 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
           onClick={handleLoadMore}
         >
           Load more
         </Button>
       </TabsContent>
       <TabsContent value="mentions" data-testid="notifications-content-mentions">
-        <NotificationList
-          data={state.filter((row) => row.type === "mention")}
-        />
+        <NotificationList data={state.filter((row: any) => row.type === 'mention')} />
         <Button
           variant="outline"
-          className="mt-4 mb-8 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
+          className="mb-8 mt-4 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
           onClick={handleLoadMore}
         >
           Load more
         </Button>
       </TabsContent>
       <TabsContent value="follows" data-testid="notifications-content-follows">
-        <NotificationList data={state.filter((row) => row.type === "follow")} />
+        <NotificationList data={state.filter((row: any) => row.type === 'follow')} />
         <Button
           variant="outline"
-          className="mt-4 mb-8 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
+          className="mb-8 mt-4 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
           onClick={handleLoadMore}
         >
           Load more
         </Button>
       </TabsContent>
       <TabsContent value="upvotes" data-testid="notifications-content-upvotes">
-        <NotificationList data={state.filter((row) => row.type === "vote")} />
+        <NotificationList data={state.filter((row: any) => row.type === 'vote')} />
         <Button
           variant="outline"
-          className="mt-4 mb-8 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
+          className="mb-8 mt-4 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
           onClick={handleLoadMore}
         >
           Load more
         </Button>
       </TabsContent>
       <TabsContent value="reblogs" data-testid="notifications-content-reblogs">
-        <NotificationList data={state.filter((row) => row.type === "reblog")} />
+        <NotificationList data={state.filter((row: any) => row.type === 'reblog')} />
         <Button
           variant="outline"
-          className="mt-4 mb-8 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
+          className="mb-8 mt-4 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
           onClick={handleLoadMore}
         >
           Load more
         </Button>
       </TabsContent>
     </Tabs>
-  )
-}
+  );
+};
+
+export default NotificationActivities;

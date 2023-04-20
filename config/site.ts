@@ -1,29 +1,12 @@
-import { NavItem } from "@/types/nav"
-
-interface SiteConfig {
-  name: string
-  description: string
-  mainNav: NavItem[]
+export const siteConfig = {
+  name: 'Hive Blog',
+  url: 'https://hive.blog',
+  ogImage: '',
+  description: 'Social media site for Hive Blockchain',
   links: {
-    twitter: string
-    github: string
-    docs: string
+    twitter: '/',
+    github: '/'
   }
-}
+};
 
-export const siteConfig: SiteConfig = {
-  name: "Next.js",
-  description:
-    "Beautifully designed components built with Radix UI and Tailwind CSS.",
-  mainNav: [
-    {
-      title: "Home",
-      href: "/",
-    },
-  ],
-  links: {
-    twitter: "https://twitter.com/shadcn",
-    github: "https://github.com/shadcn/ui",
-    docs: "https://ui.shadcn.com",
-  },
-}
+export type SiteConfig = typeof siteConfig;

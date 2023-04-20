@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react';
 
 import {
   Select,
@@ -6,21 +6,27 @@ import {
   SelectGroup,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+  SelectValue
+} from '@/components/ui/select';
 
-export default function CommunitiesSelectFilter({filter, handleChangeFilter}) {
-  const [state, setState] = useState(() => filter)
+const CommunitiesSelectFilter = ({
+  filter,
+  handleChangeFilter
+}: {
+  filter: any;
+  handleChangeFilter: any;
+}) => {
+  const [state, setState] = useState(() => filter);
   return (
     <Select
       defaultValue="rank"
       value={state}
       onValueChange={(e) => {
-        handleChangeFilter(e)
-        setState(e)
+        handleChangeFilter(e);
+        setState(e);
       }}
     >
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="w-[180px] bg-white dark:bg-background/95 dark:text-white" data-testid="communities-filter">
         <SelectValue placeholder="Select a filter" />
       </SelectTrigger>
       <SelectContent>
@@ -31,5 +37,7 @@ export default function CommunitiesSelectFilter({filter, handleChangeFilter}) {
         </SelectGroup>
       </SelectContent>
     </Select>
-  )
-}
+  );
+};
+
+export default CommunitiesSelectFilter;

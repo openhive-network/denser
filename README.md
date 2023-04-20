@@ -1,78 +1,48 @@
-# next-template
+<div align="center">
+    <img src="https://user-images.githubusercontent.com/8167068/232636144-c0cb3c35-9d79-4349-bc67-b2c0c298ee4b.png" alt="Pivot Logo">
+    <p><strong>Decentralized social media app for Hive Blockchain ⛓️</strong></p>
+    <small style='display: block'>Hive.blog successor (code name PIVOT)</small>
+</div>
 
-A Next.js 13 template for building apps with Radix UI and Tailwind CSS.
+## What's in the stack
+- Cache State [React Query](https://tanstack.com/query/latest)
+- App State [Zustand](https://zustand-demo.pmnd.rs/)
+- Styling with [Tailwind](https://tailwindcss.com/)
+- End-to-end testing with [Playwright](https://playwright.dev/)
+- Unit testing with [Vitest](https://vitest.dev) and [Testing Library](https://testing-library.com)
+- Code formatting with [Prettier](https://prettier.io)
+- Linting with [ESLint](https://eslint.org)
+- Static Types with [TypeScript](https://typescriptlang.org)
+- UI Component library [Radix UI](https://www.radix-ui.com/)
+- Javascript library for talking to Hive API [DHive](https://gitlab.syncad.com/hive/dhive)
+- [Hivesigner](https://hivesigner.com/) option for authentication 
 
-## Features
+## Getting Started
 
-- Radix UI Primitives
-- Tailwind CSS
-- Fonts with `@next/font`
-- Icons from [Lucide](https://lucide.dev)
-- Dark mode with `next-themes`
-- Automatic import sorting with `@ianvs/prettier-plugin-sort-imports`
+First, run the development server: ⚡️
 
-## Tailwind CSS Features
-
-- Class merging with `taiwind-merge`
-- Animation with `tailwindcss-animate`
-- Conditional classes with `clsx`
-- Variants with `class-variance-authority`
-- Automatic class sorting with `eslint-plugin-tailwindcss`
-
-## Import Sort
-
-The starter comes with `@ianvs/prettier-plugin-sort-imports` for automatically sort your imports.
-
-### Input
-
-```tsx
-import * as React from "react"
-import Link from "next/link"
-
-import { siteConfig } from "@/config/site"
-import { buttonVariants } from "@/components/ui/button"
-import "@/styles/globals.css"
-import { twMerge } from "tailwind-merge"
-
-import { NavItem } from "@/types/nav"
-import { cn } from "@/lib/utils"
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
 ```
 
-### Output
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-```tsx
-import * as React from "react"
-// React is always first.
-import Link from "next/link"
-// Followed by next modules.
-import { twMerge } from "tailwind-merge"
+You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
 
-// Followed by third-party modules
-// Space
-import "@/styles/globals.css"
-// styles
-import { NavItem } from "@/types/nav"
-// types
-import { siteConfig } from "@/config/site"
-// config
-import { cn } from "@/lib/utils"
-// lib
-import { buttonVariants } from "@/components/ui/button"
+[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
 
-// components
-```
+The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
-### Class Merging
+This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-The `cn` util handles conditional classes and class merging.
+## Learn More
 
-### Input
+To learn more about Next.js and Hive , take a look at the following resources:
 
-```ts
-cn("px-2 bg-slate-100 py-2 bg-slate-200")
-// Outputs `p-2 bg-slate-200`
-```
-
-## License
-
-Licensed under the [MIT license](https://github.com/shadcn/ui/blob/main/LICENSE.md).
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Hive Documentation](https://developers.hive.io/) - learn about Hive Blockchain
+- [Hive Ecosystem](https://hive.io/eco) - checkout apps ecosystem 📱

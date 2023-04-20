@@ -1,90 +1,71 @@
-import { useEffect, useState } from "react"
-import dynamic from "next/dynamic"
-import Image from "next/image"
-import Link from "next/link"
-import { useRouter } from "next/router"
-import {
-  useGetAccountFull,
-  useGetAccounts,
-  useGetDynamicGlobalProperties,
-} from "@/services/hiveService"
-import { QueryClient, dehydrate } from "@tanstack/react-query"
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { QueryClient, dehydrate, useQuery } from '@tanstack/react-query';
 
-import {
-  getAccountFull,
-  getAccounts,
-  getDynamicGlobalProperties,
-} from "@/lib/hive"
-import { accountReputation, getHivePower, numberWithCommas } from "@/lib/utils"
-import { Icons } from "@/components/icons"
-import { Button } from "@/components/ui/button"
+import { getAccountFull, getAccounts, getDynamicGlobalProperties } from '@/lib/hive';
+import { accountReputation, getHivePower, numberWithCommas } from '@/lib/utils';
+import { Icons } from '@/components/icons';
+import { Button } from '@/components/ui/button';
+import { useSiteParams } from '@/components/hooks/use-site-params';
+import { dateToRelative, dateToShow } from '@/lib/parse-date';
+import Loading from '@/components/loading';
 
-const Time = dynamic(() => import("./time"), {
-  ssr: false,
-})
+const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
+  const [profile, setProfile] = useState<any>(undefined);
+  const [hivePower, setHivePower] = useState(0);
+  const { username } = useSiteParams();
+  const {
+    isLoading: profileDataIsLoading,
+    error: errorProfileData,
+    data: profileData
+  } = useQuery(['profileData', username], () => getAccountFull(username), {
+    enabled: !!username
+  });
 
-const Date = dynamic(() => import("./date"), {
-  ssr: false,
-})
-
-export default function ProfileInfo({ handleCoverImage }) {
-  const [profile, setProfile] = useState(undefined)
-  const [hivePower, setHivePower] = useState(0)
-  const router = useRouter()
-  const username =
-    typeof router.query?.param === "object"
-      ? router.query.param[0]
-      : typeof router.query?.param === "string"
-      ? router.query?.param
-      : ""
-  const { isLoading, error, data } = useGetAccountFull(
-    username.slice(1),
-    username.startsWith("@")
-  )
   const {
     isLoading: accountDataIsLoading,
     error: accountDataError,
-    data: accountData,
-  } = useGetAccounts(username.slice(1), username.startsWith("@"))
-
+    data: accountData
+  } = useQuery(['accountData', username], () => getAccounts([username]), {
+    enabled: !!username
+  });
   const {
     isLoading: dynamicGlobalDataIsLoading,
     error: dynamicGlobalDataError,
-    data: dynamicGlobalData,
-  } = useGetDynamicGlobalProperties()
+    data: dynamicGlobalData
+  } = useQuery(['dynamicGlobalData'], () => getDynamicGlobalProperties());
+
+  // useEffect(() => {
+  //   if (!dynamicGlobalDataIsLoading && !accountDataIsLoading) {
+  //     setHivePower(
+  //       getHivePower(
+  //         dynamicGlobalData?.total_vesting_fund_hive.split(" ")[0],
+  //         dynamicGlobalData?.total_vesting_shares.split(" ")[0],
+  //         accountData[0].vesting_shares.split(" ")[0],
+  //         accountData[0].delegated_vesting_shares.split(" ")[0],
+  //         accountData[0].received_vesting_shares.split(" ")[0]
+  //       )
+  //     )
+  //   }
+  // }, [dynamicGlobalDataIsLoading, accountDataIsLoading])
 
   useEffect(() => {
-    if (!dynamicGlobalDataIsLoading && !accountDataIsLoading) {
-      setHivePower(
-        getHivePower(
-          dynamicGlobalData?.total_vesting_fund_hive.split(" ")[0],
-          dynamicGlobalData?.total_vesting_shares.split(" ")[0],
-          accountData[0].vesting_shares.split(" ")[0],
-          accountData[0].delegated_vesting_shares.split(" ")[0],
-          accountData[0].received_vesting_shares.split(" ")[0]
-        )
-      )
-    }
-  }, [dynamicGlobalDataIsLoading, accountDataIsLoading])
-
-  useEffect(() => {
-    if (!isLoading && data?.posting_json_metadata)  {
+    if (!profileDataIsLoading && profileData?.posting_json_metadata) {
       handleCoverImage(
-        JSON.parse(data?.posting_json_metadata).profile.cover_image
-          ? JSON.parse(data?.posting_json_metadata).profile.cover_image
-          : ""
-      )
+        JSON.parse(profileData?.posting_json_metadata).profile.cover_image
+          ? JSON.parse(profileData?.posting_json_metadata).profile.cover_image
+          : ''
+      );
     }
-  }, [isLoading, data, handleCoverImage])
+  }, [profileDataIsLoading, profileData, handleCoverImage]);
 
   useEffect(() => {
-    if (!accountDataIsLoading && data?.posting_json_metadata) {
-      setProfile(JSON.parse(data.posting_json_metadata).profile)
+    if (!accountDataIsLoading && profileData?.posting_json_metadata) {
+      setProfile(JSON.parse(profileData.posting_json_metadata).profile);
     }
-  }, [accountDataIsLoading, data])
+  }, [accountDataIsLoading, profileData]);
 
-  if (isLoading || accountDataIsLoading || dynamicGlobalDataIsLoading)
-    return <p>Loading... ⚡️</p>
+  if (profileDataIsLoading || accountDataIsLoading || dynamicGlobalDataIsLoading) return <Loading />;
 
   return (
     <div className="mt-[-6rem] px-8 md:w-80" data-testid="profile-info">
@@ -97,126 +78,94 @@ export default function ProfileInfo({ handleCoverImage }) {
         {/*  width="144"*/}
         {/*  priority*/}
         {/*/>*/}
-        <img
-          className="h-36 w-36 rounded-md"
-          src={profile?.profile_image}
-          alt="Profile picture"
-        />
+        <img className="h-36 w-36 rounded-md" src={profile?.profile_image} alt="Profile picture" />
       </div>
-      <h4 className="mt-8 mb-4 text-xl text-slate-900 dark:text-white" data-testid="profile-name">
-        {data.profile.name}{" "}
+      <h4 className="mb-4 mt-8 text-xl text-slate-900 dark:text-white" data-testid="profile-name">
+        {profileData?.profile?.name}{' '}
         <span className="text-slate-600">
-          ({accountReputation(data.reputation)})
+          ({profileData?.reputation ? accountReputation(profileData.reputation) : null})
         </span>
       </h4>
-      <h6 className="my-4 bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent" data-testid="profile-nickname">
-        @{data.name}
+      <h6
+        className="my-4 bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent"
+        data-testid="profile-nickname"
+      >
+        @{profileData?.name}
       </h6>
-      <p className="my-4" data-testid="profile-about">{profile?.about}</p>
+      <p className="my-4" data-testid="profile-about">
+        {profile?.about}
+      </p>
       <p className="my-4 flex text-slate-900 dark:text-white" data-testid="user-last-time-active">
         <Icons.calendarActive className="mr-2" />
-        Active <Time time={data.last_vote_time} />
+        Active {profileData?.last_vote_time ? dateToRelative(profileData.last_vote_time) : null}
       </p>
       <p className="my-4 flex text-slate-900 dark:text-white" data-testid="user-joined">
         <Icons.calendarHeart className="mr-2" />
-        Joined <Date time={data.created} />
+        Joined {profileData?.created ? dateToShow(profileData.created) : null}
       </p>
       <p className="my-4 flex text-slate-900 dark:text-white" data-testid="user-location">
         <Icons.mapPin className="mr-2" />
-        {data.profile.location}
+        {profileData?.profile?.location}
       </p>
 
-      <div className="my-4 grid grid-cols-2 gap-y-4" data-testid="profile-stats">
+      <div className="my-4 grid grid-cols-2 gap-4" data-testid="profile-stats">
         <div className="flex flex-col">
-          <span className="text-slate-900 dark:text-white">
-            {data.post_count}
-          </span>
+          <span className="text-slate-900 dark:text-white">{profileData?.post_count}</span>
           Number of posts
         </div>
         <div className="flex flex-col">
-          <span className="text-slate-900 dark:text-white">
-            {numberWithCommas(hivePower)}
-          </span>
+          <span className="text-slate-900 dark:text-white">{numberWithCommas(hivePower)}</span>
           HP
         </div>
         <div className="flex flex-col">
-          <span className="text-slate-900 dark:text-white">
-            {data.follow_stats.following_count}
-          </span>
+          <span className="text-slate-900 dark:text-white">{profileData?.follow_stats?.following_count}</span>
           Following
         </div>
         <div className="flex flex-col">
-          <span className="text-slate-900 dark:text-white">
-            {data.follow_stats.follower_count}
-          </span>
+          <span className="text-slate-900 dark:text-white">{profileData?.follow_stats?.follower_count}</span>
           Followers
         </div>
       </div>
 
-      <Button
-        variant="outline"
-        className="mt-4 mb-8 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
-        data-testid="profile-follow-button"
-      >
-        <Icons.userPlus className="mr-2" />
-        Follow
-      </Button>
+      <div className="flex gap-x-4">
+        <Button
+          size="sm"
+          variant="outline"
+          className="mb-8 mt-4 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
+          data-testid="profile-follow-button"
+        >
+          <Icons.userPlus className="mr-2 h-4 w-4" />
+          Follow
+        </Button>
+
+        <Button
+          size="sm"
+          variant="outline"
+          className="mb-8 mt-4 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
+          data-testid="profile-mute-button"
+        >
+          <Icons.micOff className="mr-2 h-4 w-4" />
+          Mute
+        </Button>
+      </div>
 
       <div data-testid="user-links">
         <h6 className="text-slate-900 dark:text-white">Links</h6>
-        {data.profile.website ? (
+        {profileData?.profile?.website ? (
           <p className="my-3 flex flex-wrap">
             <Icons.globe2 className="mr-2" />
             <Link
               target="_external"
               className="website-link"
-              href={`https://${data.profile.website.replace(
-                /^(https?|ftp):\/\//,
-                ""
-              )}`}
+              href={`https://${profileData?.profile?.website.replace(/^(https?|ftp):\/\//, '')}`}
             >
-              <span className="text-slate-900 dark:text-white">
-                {data.profile.website}
-              </span>
+              <span className="text-slate-900 dark:text-white">{profileData?.profile?.website}</span>
             </Link>
           </p>
         ) : null}
-        {/*<p className="my-3 flex">*/}
-        {/*  <Icons.twitter className="mr-2" />*/}
-        {/*  <Link href="/">*/}
-        {/*    <span className="text-slate-900 dark:text-white">olive123y</span>*/}
-        {/*  </Link>*/}
-        {/*</p>*/}
-        {/*<p className="my-3 flex">*/}
-        {/*  <Icons.instagram className="mr-2" />*/}
-        {/*  <Link href="/">*/}
-        {/*    <span className="text-slate-900 dark:text-white">olivephotos</span>*/}
-        {/*  </Link>*/}
-        {/*</p>*/}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export async function getServerSideProps(context) {
-  const username = context.params?.username as string
-  const queryClient = new QueryClient()
-
-  await queryClient.prefetchQuery(["profileData", username], () =>
-    getAccountFull(username)
-  )
-
-  await queryClient.prefetchQuery(["accountData", username], () =>
-    getAccounts([username])
-  )
-
-  await queryClient.prefetchQuery(["dynamicGlobalData", username], () =>
-    getDynamicGlobalProperties()
-  )
-
-  return {
-    props: {
-      dehydratedState: dehydrate(queryClient),
-    },
-  }
-}
+export default ProfileInfo;

@@ -1,54 +1,34 @@
-import Link from "next/link"
+import { Button} from '@/components/ui/button';
+import { Icons } from '@/components/icons';
+import { MainNav } from '@/components/main-nav';
+import { MobileNav } from '@/components/mobile-nav';
+import { ModeToggle } from '@/components/mode-toggle';
+import ProfileDropdownMenu from '@/components/profile-dropdown-menu';
+import { Input } from '@/components/ui/input';
+import { FC } from 'react';
+import Sidebar from '@/components/sidebar';
 
-import { siteConfig } from "@/config/site"
-import { Icons } from "@/components/icons"
-import { MainNav } from "@/components/main-nav"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { buttonVariants } from "@/components/ui/button"
-
-export function SiteHeader() {
+const SiteHeader: FC = () => {
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-b-slate-200 bg-white dark:border-b-slate-700 dark:bg-slate-900">
-      <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
-        <MainNav items={siteConfig.mainNav} />
-        <div className="flex flex-1 items-center justify-end space-x-4">
+    <header className="supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur">
+      <div className="container flex h-14 items-center">
+        <MainNav />
+        <MobileNav />
+        <div className="flex flex-1 items-center justify-between space-x-2 sm:space-x-4 md:justify-end">
           <nav className="flex items-center space-x-1">
-            <Link
-              href={siteConfig.links.github}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <div
-                className={buttonVariants({
-                  size: "sm",
-                  variant: "ghost",
-                  className: "text-slate-700 dark:text-slate-400",
-                })}
-              >
-                <Icons.globe2 className="h-5 w-5" />
-                <span className="sr-only">GitHub</span>
-              </div>
-            </Link>
-            <Link
-              href={siteConfig.links.twitter}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <div
-                className={buttonVariants({
-                  size: "sm",
-                  variant: "ghost",
-                  className: "text-slate-700 dark:text-slate-400",
-                })}
-              >
-                <Icons.twitter className="h-5 w-5 fill-current" />
-                <span className="sr-only">Twitter</span>
-              </div>
-            </Link>
-            <ThemeToggle />
+            <Input type="search" placeholder="Search..." className={`md:w-[100px] lg:w-[300px]`} />
+
+            <ProfileDropdownMenu />
+            <Button variant="ghost" size="sm" className="h-10 w-10 px-0">
+              <Icons.pencil className="h-5 w-5" />
+            </Button>
+            <ModeToggle />
+            <Sidebar />
           </nav>
         </div>
       </div>
     </header>
-  )
-}
+  );
+};
+
+export default SiteHeader;

@@ -1,83 +1,59 @@
-import * as React from "react"
-import Link from "next/link"
+'use client';
 
-import { NavItem } from "@/types/nav"
-import { siteConfig } from "@/config/site"
-import { cn } from "@/lib/utils"
-import { Icons } from "@/components/icons"
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
-interface MainNavProps {
-  items?: NavItem[]
-}
+import { siteConfig } from '@/config/site';
+import { cn } from '@/lib/utils';
+import { Icons } from '@/components/icons';
 
-export function MainNav({ items }: MainNavProps) {
+export function MainNav() {
+  const pathname = usePathname();
+
   return (
-    <div className="flex gap-6 md:gap-10">
-      <Link href="/" className="hidden items-center space-x-2 md:flex">
+    <div className="mr-4 hidden md:flex">
+      <Link href="/" className="mr-6 flex items-center space-x-2">
         <Icons.hive className="h-6 w-6" />
-        <span className="hidden font-bold sm:inline-block">
-          {siteConfig.name}
-        </span>
+        <span className="hidden font-bold sm:inline-block">{siteConfig.name}</span>
       </Link>
-      {items?.length ? (
-        <nav className="hidden gap-6 md:flex">
-          {items?.map(
-            (item, index) =>
-              item.href && (
-                <Link
-                  key={index}
-                  href={item.href}
-                  className={cn(
-                    "flex items-center text-lg font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-100 sm:text-sm",
-                    item.disabled && "cursor-not-allowed opacity-80"
-                  )}
-                >
-                  {item.title}
-                </Link>
-              )
+      <nav className="flex items-center space-x-6 text-sm font-medium">
+        <Link
+          href="/trending"
+          className={cn(
+            'transition-colors hover:text-foreground/80',
+            pathname === '/trending' ? 'text-foreground' : 'text-foreground/60'
           )}
-        </nav>
-      ) : null}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="-ml-4 text-base hover:bg-transparent focus:ring-0 md:hidden"
-          >
-            <Icons.hive className="mr-2 h-4 w-4" />{" "}
-            <span className="font-bold">Menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
-          align="start"
-          sideOffset={24}
-          className="w-[300px] overflow-scroll"
         >
-          <DropdownMenuLabel>
-            <Link href="/" className="flex items-center">
-              <Icons.hive className="mr-2 h-4 w-4" /> {siteConfig.name}
-            </Link>
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {items?.map(
-            (item, index) =>
-              item.href && (
-                <DropdownMenuItem key={index} asChild>
-                  <Link href={item.href}>{item.title}</Link>
-                </DropdownMenuItem>
-              )
+          Posts
+        </Link>
+        <Link
+          href="https://wallet.hive.blog/proposals"
+          className={cn(
+            'transition-colors hover:text-foreground/80',
+            pathname === 'https://wallet.hive.blog/proposals' ? 'text-foreground' : 'text-foreground/60'
           )}
-        </DropdownMenuContent>
-      </DropdownMenu>
+        >
+          Proposals
+        </Link>
+        <Link
+          href="https://wallet.hive.blog/~witnesses"
+          className={cn(
+            'transition-colors hover:text-foreground/80',
+            pathname === 'https://wallet.hive.blog/~witnesses' ? 'text-foreground' : 'text-foreground/60'
+          )}
+        >
+          Witnesses
+        </Link>
+        <Link
+          href="https://hive.io/eco/"
+          className={cn(
+            'transition-colors hover:text-foreground/80',
+            pathname === 'https://hive.io/eco/' ? 'text-foreground' : 'text-foreground/60'
+          )}
+        >
+          Our dApps
+        </Link>
+      </nav>
     </div>
-  )
+  );
 }

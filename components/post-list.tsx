@@ -1,11 +1,13 @@
-import PostListItem from "@/components/post-list-item"
+import PostListItem from '@/components/post-list-item';
 
-export default function PostList({ data }) {
+const PostList = ({ data, sort}: { data: any, sort?: string | null }) => {
   return (
-    <ul className="p-2">
-      {data.map((post) => (
-        <PostListItem post={post} key={post.post_id} />
+    <ul>
+      {data?.map((post: any) => (
+        <PostListItem post={post} sort={sort} key={post.post_id} />
       ))}
     </ul>
-  )
-}
+  );
+};
+
+export default PostList;

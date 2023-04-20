@@ -1,39 +1,51 @@
-import Link from "next/link"
-import { useGetCommunities } from "@/services/bridgeService"
-import { Button } from "@/components/ui/button"
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { useQuery } from '@tanstack/react-query';
+import { getCommunities } from '@/lib/bridge';
+import { cn } from '@/lib/utils';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { FC } from 'react';
 
-export default function CommunitiesSidebar() {
-  const { isLoading, error, data } = useGetCommunities()
+const CommunitiesSidebar: FC = () => {
+  const sort = 'rank';
+  const query = null;
+  const { isLoading, error, data } = useQuery(['communitiesList', sort, query], () =>
+    getCommunities(sort, query)
+  );
 
-  if (isLoading) return <p>Loading...</p>
+  if (isLoading) return <p>Loading...</p>;
 
   return (
-    <div className="hidden w-72 flex-col px-8 md:flex">
-      <h2 className="mb-2 px-2 text-lg font-semibold tracking-tight">
-        Trending Communities
-      </h2>
-      <ul className="space-y-1">
-        {data?.slice(0, 12).map((community) => (
-          <li key={community.id}>
-            <Link href={`/trending/${community.name}`}>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full justify-start"
-              >
-                {community.title}
+    <Card
+      className={cn(
+        'my-4 hidden h-fit w-[300px] flex-col px-8 dark:bg-background/95 dark:text-white md:flex'
+      )}
+    >
+      <CardHeader>
+        <CardTitle className="px-2">Trending Communities</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <ul>
+          {data?.slice(0, 12).map((community) => (
+            <li key={community.id}>
+              <Link href={`/trending/${community.name}`}>
+                <Button variant="ghost" size="sm" className="w-full justify-start">
+                  {community.title}
+                </Button>
+              </Link>
+            </li>
+          ))}
+          <li>
+            <Link href={`/communities`}>
+              <Button variant="ghost" size="sm" className="w-full justify-start">
+                Explore communities...
               </Button>
             </Link>
           </li>
-        ))}
-        <li>
-          <Link href={`/communities`}>
-            <Button variant="ghost" size="sm" className="w-full justify-start">
-              Explore communities...
-            </Button>
-          </Link>
-        </li>
-      </ul>
-    </div>
-  )
+        </ul>
+      </CardContent>
+    </Card>
+  );
 }
+
+export default CommunitiesSidebar;

@@ -1,22 +1,20 @@
 import Link from "next/link"
-import { useRouter } from "next/router"
-import { useGetSubscriptions } from "@/services/bridgeService"
-import { QueryClient, dehydrate } from "@tanstack/react-query"
+import { useQuery } from '@tanstack/react-query';
 
 import { getSubscriptions } from "@/lib/bridge"
-import { Layout } from "@/components/layout"
-import LayoutProfile from "@/components/layout-profile"
+import ProfileLayout from "@/components/common/profile-layout";
 import SocialActivities from "@/components/social-activities"
-import { SubscriptionList } from "@/components/subscription-list"
-import * as console from "console";
+import SubscriptionList from "@/components/subscription-list"
+import Loading from '@/components/loading';
+import { useSiteParams } from '@/components/hooks/use-site-params';
 
-export default function UserCommunities({ hivebuzz, peakd }) {
-  const router = useRouter()
-  const username =
-    typeof router.query?.param === "string" ? router.query.param : ""
-  const { isLoading, error, data } = useGetSubscriptions(username.slice(1))
+const UserCommunities = ({ hivebuzz, peakd }: {hivebuzz: any, peakd: any}) => {
+  const { username } = useSiteParams();
+  const { isLoading: dataSubscriptionsIsLoading, error: dataSubscriptionsError, data: dataSubscriptions } = useQuery(["listAllSubscription", username], () =>
+    getSubscriptions(username), { enabled: !!username}
+  )
 
-  if (isLoading) return <p>Loading... ⚡️</p>
+  if (dataSubscriptionsIsLoading) return <Loading />
 
   return (
     <div className="flex flex-col">
@@ -25,7 +23,7 @@ export default function UserCommunities({ hivebuzz, peakd }) {
       </h2>
       <p>The author has subscribed to the following Hive Communities</p>
 
-      <SubscriptionList data={data} />
+      <SubscriptionList data={dataSubscriptions} />
 
       <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
         Badges and achievements
@@ -53,36 +51,30 @@ export default function UserCommunities({ hivebuzz, peakd }) {
   )
 }
 
-UserCommunities.getLayout = function getLayout(page) {
+export default UserCommunities;
+
+UserCommunities.getLayout = function getLayout(page: any) {
   return (
-    <Layout>
-      <LayoutProfile>{page}</LayoutProfile>
-    </Layout>
+      <ProfileLayout>{page}</ProfileLayout>
   )
 }
 
-export async function getServerSideProps(context) {
+//
+export async function getServerSideProps(context: any) {
   const username = String(context.params?.param).slice(1);
-  const queryClient = new QueryClient()
-
-  await queryClient.prefetchQuery(["listAllSubscription", username], () =>
-    getSubscriptions(username)
-  )
 
   const hivebuzzRes = await fetch(`https://hivebuzz.me/api/badges/${username}`)
-  console.log('hivebuzzRes', hivebuzzRes)
   const hivebuzzJson = await hivebuzzRes.json()
   const hivebuzzJsonStateOn = hivebuzzJson.filter(
-    (badge) => badge.state === "on"
+    (badge: any) => badge.state === "on"
   )
 
   const peakdRes = await fetch(`https://peakd.com/api/public/badge/${username}`)
   const peakdJson = await peakdRes.json();
-  const peakdJsonMapedWithURL = peakdJson.map(obj => ({ id: obj.title ,url: `https://images.hive.blog/u/${obj.name}/avatar`, title: obj.title}))
+  const peakdJsonMapedWithURL = peakdJson?.map((obj: any)=> ({ id: obj.title ,url: `https://images.hive.blog/u/${obj.name}/avatar`, title: obj.title}))
 
   return {
     props: {
-      dehydratedState: dehydrate(queryClient),
       hivebuzz: hivebuzzJsonStateOn,
       peakd: peakdJsonMapedWithURL
     },
