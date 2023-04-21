@@ -1,8 +1,8 @@
 import { useSiteParams } from '@/components/hooks/use-site-params';
-import { useQuery } from '@tanstack/react-query';
-import { getAccountPosts, getCommunity, getPostsRanked } from '@/lib/bridge';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { Entry, getAccountPosts, getCommunity, getPostsRanked } from '@/lib/bridge';
 import Loading from '@/components/loading';
-import { FC, useCallback } from 'react';
+import { FC, useCallback, useEffect } from 'react';
 import PostList from '@/components/post-list';
 import { Skeleton } from '@/components/ui/skeleton';
 import CommunitiesSidebar from '@/components/communities-sidebar';
@@ -12,6 +12,7 @@ import ExploreHive from '@/components/explore-hive';
 import UserShortcutsCard from '@/components/user-shortcuts-card';
 import ProfileLayout from '@/components/common/profile-layout';
 import CommunityDescription from '@/components/community-description';
+import { useInView } from 'react-intersection-observer';
 
 const PostSkeleton = () => {
   return (
@@ -28,21 +29,44 @@ const PostSkeleton = () => {
 const ParamPage: FC = () => {
   const router = useRouter();
   const { sort, username, tag } = useSiteParams();
+  const { ref, inView } = useInView()
 
   const {
     data: entriesData,
     isLoading: entriesDataIsLoading,
     isFetching: entriesDataIsFetching,
-    error: entriesDataError
-  } = useQuery(
-    ['entries', sort, tag],
-    async () => {
-      return await getPostsRanked(sort || 'trending', tag).then((res) => {
-        return res;
-      });
+    error: entriesDataError,
+    status,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+    refetch,
+  } = useInfiniteQuery(
+    ["entriesInfinite", sort, tag],
+    async ({ pageParam }: {pageParam?: any}): Promise<any> => {
+      return await getPostsRanked(
+        sort || 'trending',
+        tag,
+        pageParam?.author,
+        pageParam?.permlink
+      )
     },
-    { enabled: Boolean(sort) }
-  );
+    {
+      getNextPageParam: (lastPage: Entry[]) => {
+        return {
+          author:
+            lastPage && lastPage.length > 0
+              ? lastPage[lastPage?.length - 1].author
+              : "",
+          permlink:
+            lastPage && lastPage.length > 0
+              ? lastPage[lastPage?.length - 1].permlink
+              : "",
+        }
+      },
+      enabled: Boolean(sort)
+    }
+  )
 
   const {
     data: communityData,
@@ -77,6 +101,13 @@ const ParamPage: FC = () => {
     [router, tag]
   );
 
+
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage()
+    }
+  }, [fetchNextPage, inView])
+
   if (
     (entriesDataIsLoading && entriesDataIsFetching) ||
     (accountEntriesIsLoading && accountEntriesIsFetching)
@@ -104,7 +135,29 @@ const ParamPage: FC = () => {
               </div>
               <PostSelectFilter filter={sort} handleChangeFilter={handleChangeFilter} />
             </div>
-            <PostList data={entriesData} sort={sort} />
+              <>
+                {entriesData.pages.map((page, index) => {
+                  return page ? <PostList data={page} key={`f-${index}`} /> : null
+                })}
+                <div>
+                  <button
+                    ref={ref}
+                    onClick={() => fetchNextPage()}
+                    disabled={!hasNextPage || isFetchingNextPage}
+                  >
+                    {isFetchingNextPage
+                      ? <PostSkeleton />
+                      : hasNextPage
+                        ? "Load Newer"
+                        : "Nothing more to load"}
+                  </button>
+                </div>
+                <div>
+                  {entriesDataIsFetching && !isFetchingNextPage
+                    ? "Background Updating..."
+                    : null}
+                </div>
+              </>
           </div>
           <div className="col-span-12 md:col-span-12 lg:col-span-4">
             {communityData ? <CommunityDescription data={communityData} /> : <ExploreHive />}
