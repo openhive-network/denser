@@ -102,7 +102,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               </li>
               <li>
                 <Link
-                  href={`@/${username}/settings`}
+                  href={`/@${username}/settings`}
                   className={` hover:text-red-600 dark:text-red-100  dark:hover:text-white ${
                     router.asPath === `/@${username}/settings` ? ' text-red-600 dark:text-red-600' : ''
                   }`}
