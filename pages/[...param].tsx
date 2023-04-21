@@ -137,7 +137,7 @@ const ParamPage: FC = () => {
             </div>
               <>
                 {entriesData.pages.map((page, index) => {
-                  return page ? <PostList data={page} key={`f-${index}`} /> : null
+                  return page ? <PostList data={page} sort={sort} key={`f-${index}`} /> : null
                 })}
                 <div>
                   <button
