@@ -64,7 +64,7 @@ const PostListItem = ({ post, sort }: any) => {
         </CardHeader>
         <CardContent>
           <CardTitle>
-            {post.title}
+            <Link href={`${post.url}`}>{post.title}</Link>
             {post.stats.is_pinned ? <Badge className="ml-1 bg-red-600 text-white">Pinned</Badge> : null}
           </CardTitle>
           <CardDescription>{getPostSummary(post.json_metadata, post.body)}</CardDescription>
