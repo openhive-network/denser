@@ -17,6 +17,7 @@ const UserCommunities = ({ hivebuzz, peakd }: {hivebuzz: any, peakd: any}) => {
   if (dataSubscriptionsIsLoading) return <Loading />
 
   return (
+    <ProfileLayout>
     <div className="flex flex-col">
       <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
         Community Subscriptions
@@ -48,16 +49,11 @@ const UserCommunities = ({ hivebuzz, peakd }: {hivebuzz: any, peakd: any}) => {
 
       <SocialActivities data={hivebuzz} peakd={peakd}/>
     </div>
+    </ProfileLayout>
   )
 }
 
 export default UserCommunities;
-
-UserCommunities.getLayout = function getLayout(page: any) {
-  return (
-      <ProfileLayout>{page}</ProfileLayout>
-  )
-}
 
 //
 export async function getServerSideProps(context: any) {
