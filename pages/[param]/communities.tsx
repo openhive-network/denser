@@ -16,7 +16,7 @@ const UserCommunities = ({ hivebuzz, peakd }: { hivebuzz: any; peakd: any }) => 
     data: dataSubscriptions
   } = useQuery(['listAllSubscription', username], () => getSubscriptions(username), { enabled: !!username });
 
-  if (dataSubscriptionsIsLoading) return <Loading />;
+  if (dataSubscriptionsIsLoading) return <Loading loading={dataSubscriptionsIsLoading} />;
 
   return (
     <ProfileLayout>

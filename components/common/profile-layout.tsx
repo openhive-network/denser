@@ -33,7 +33,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
       </div>
       <div className="flex flex-col pb-8 md:flex-row md:pb-4 ">
         <ProfileInfo handleCoverImage={setCoverImage} />
-        <main  className="px-4 w-full">
+        <main className="w-full px-4">
           <div className="flex justify-between py-8" data-testid="profile-navigation">
             <ul className="grid grid-cols-2 gap-4 lg:flex lg:gap-8">
               <li>
@@ -117,7 +117,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
       </div>
     </div>
   ) : (
-    <Loading />
+    <Loading loading={true} />
   );
 };
 

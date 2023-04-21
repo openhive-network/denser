@@ -81,7 +81,13 @@ const ParamPage: FC = () => {
     (entriesDataIsLoading && entriesDataIsFetching) ||
     (accountEntriesIsLoading && accountEntriesIsFetching)
   ) {
-    return <Loading />;
+    return (
+      <Loading
+        loading={
+          entriesDataIsLoading || entriesDataIsFetching || accountEntriesIsLoading || accountEntriesIsFetching
+        }
+      />
+    );
   }
 
   if (!entriesDataIsLoading && entriesData) {

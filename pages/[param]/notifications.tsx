@@ -17,7 +17,7 @@ export default function UserNotifications() {
     enabled: !!username
   });
 
-  if (accountNotificationIsLoading) return <Loading />;
+  if (accountNotificationIsLoading) return <Loading loading={accountNotificationIsLoading} />;
 
   return (
     <LayoutProfile>

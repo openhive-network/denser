@@ -24,7 +24,7 @@ export default function CommunitiesPage() {
     setSort(e);
   }
 
-  if (communitiesDataIsLoading) return <Loading />;
+  if (communitiesDataIsLoading) return <Loading loading={communitiesDataIsLoading} />;
 
   return (
     <div className="container mx-auto max-w-screen-xl flex-grow px-4 pb-2 pt-8">

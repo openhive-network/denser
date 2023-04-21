@@ -108,6 +108,7 @@ const endpoint = siteConfig.endpoint;
 //       : "api.hive.blog"
 //     : "api.hive.blog"
 
+if (endpoint) {}
 export const bridgeServer = new Client([`https://${endpoint}`], {
   timeout: 3000,
   failoverThreshold: 3,

@@ -18,7 +18,7 @@ const UserPosts = () => {
     { enabled: !!username }
   );
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <Loading loading={isLoading} />;
 
   return (
     <ProfileLayout>
