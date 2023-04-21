@@ -5,6 +5,7 @@ import moment, { Moment } from 'moment';
 import { isCommunity, parseAsset, vestsToRshares } from '@/lib/utils';
 import { dataLimit } from './bridge';
 import { AccountFollowStats, AccountProfile, FullAccount } from '@/store/app-types';
+import { siteConfig } from '@/config/site';
 
 export interface TrendingTag {
   comments: number;
@@ -28,7 +29,9 @@ export interface DynamicProps {
   vestingRewardPercent: number;
 }
 
-export const client = new Client(['https://api.hive.blog'], {
+const endpoint = siteConfig.endpoint;
+
+export const client = new Client([`https://${endpoint}`], {
   timeout: 3000,
   failoverThreshold: 3,
   consoleOnFailover: true

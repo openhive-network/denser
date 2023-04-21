@@ -14,10 +14,11 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { useState } from 'react';
+import { siteConfig } from '@/config/site';
 // import { useLocalStorage } from "@/hooks/use-local-storage";
 
 export default function UserSettings() {
-  const [endpoint, setEndpoint] = useState('api.hive.blog');
+  const [endpoint, setEndpoint] = useState(siteConfig.endpoint);
   return (
     <ProfileLayout>
       <div className="flex flex-col" data-testid="public-profile-settings">
