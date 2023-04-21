@@ -1,4 +1,5 @@
 import { Client } from '@hiveio/dhive';
+import { siteConfig } from '@/config/site';
 
 export interface EntryBeneficiaryRoute {
   account: string;
@@ -98,7 +99,7 @@ export type Subscription = Array<string>;
 
 export const dataLimit = 20;
 
-const endpoint = 'api.hive.blog';
+const endpoint = siteConfig.endpoint;
 
 // const endpoint =
 //   typeof window !== "undefined"

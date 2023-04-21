@@ -21,22 +21,12 @@ export default function UserNotifications() {
 
   return (
     <LayoutProfile>
-      <div className="flex flex-col">
-        <div className="flex justify-center">
+      <div className="flex flex-col w-full">
           <NotificationActivities data={dataAccountNotification} username={username} />
-        </div>
       </div>
     </LayoutProfile>
   );
 }
-
-// UserNotifications.getLayout = function getLayout(page: any) {
-//   return (
-//     <Layout>
-//       <LayoutProfile>{page}</LayoutProfile>
-//     </Layout>
-//   );
-// };
 
 // export async function getServerSideProps(context) {
 //   const username = String(context.params?.param).slice(1);

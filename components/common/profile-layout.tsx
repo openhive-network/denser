@@ -8,7 +8,11 @@ import { Button } from '@/components/ui/button';
 import { useSiteParams } from '@/components/hooks/use-site-params';
 import Loading from '@/components/loading';
 
-const ProfileLayout = ({ children }: { children: React.ReactNode }) => {
+interface IProfileLayout {
+  children: React.ReactNode;
+}
+
+const ProfileLayout = ({ children }: IProfileLayout) => {
   const [coverImage, setCoverImage] = useState('');
   const router = useRouter();
   const { username } = useSiteParams();
@@ -29,7 +33,7 @@ const ProfileLayout = ({ children }: { children: React.ReactNode }) => {
       </div>
       <div className="flex flex-col pb-8 md:flex-row md:pb-4 ">
         <ProfileInfo handleCoverImage={setCoverImage} />
-        <main  className="px-4">
+        <main  className="px-4 w-full">
           <div className="flex justify-between py-8" data-testid="profile-navigation">
             <ul className="grid grid-cols-2 gap-4 lg:flex lg:gap-8">
               <li>
@@ -98,7 +102,7 @@ const ProfileLayout = ({ children }: { children: React.ReactNode }) => {
               </li>
               <li>
                 <Link
-                  href={`/${username}/settings`}
+                  href={`@/${username}/settings`}
                   className={` hover:text-red-600 dark:text-red-100  dark:hover:text-white ${
                     router.asPath === `/@${username}/settings` ? ' text-red-600 dark:text-red-600' : ''
                   }`}
