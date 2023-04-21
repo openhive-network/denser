@@ -55,6 +55,7 @@
     "prettier-plugin-tailwindcss": "^0.2.7",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-intersection-observer": "^9.4.3",
     "react-spinners-kit": "^1.9.1",
     "sanitize-html": "^2.10.0",
     "simple-zustand-devtools": "^1.1.0",
