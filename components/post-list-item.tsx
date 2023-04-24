@@ -9,7 +9,7 @@ import parseDate from '@/lib/parse-date';
 
 const PostListItem = ({ post, sort }: any) => {
   return (
-    <li>
+    <li data-testid="post-list-item">
       <Card
         className={cn(
           'my-4 hover:bg-accent hover:text-accent-foreground  dark:bg-background/95 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground'
