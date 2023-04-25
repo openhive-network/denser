@@ -106,9 +106,6 @@ const endpoint =
       :  siteConfig.endpoint
     :  siteConfig.endpoint
 
-typeof window !== "undefined" && console.log('window.localStorage.getItem("hive-blog-endpoint")', window.localStorage.getItem("hive-blog-endpoint"))
-typeof window !== "undefined" && console.log('JSON.parse(String(window.localStorage.getItem("hive-blog-endpoint")))', JSON.parse(String(window.localStorage.getItem("hive-blog-endpoint"))))
-
 if (endpoint) {}
 export const bridgeServer = new Client([`https://${endpoint}`], {
   timeout: 3000,
