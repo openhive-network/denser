@@ -1,3 +1,4 @@
+import Router from 'next/router';
 import { Icons } from '@/components/icons';
 import ProfileLayout from '@/components/common/profile-layout';
 import { Button } from '@/components/ui/button';
@@ -13,12 +14,11 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { useState } from 'react';
 import { siteConfig } from '@/config/site';
-// import { useLocalStorage } from "@/hooks/use-local-storage";
+import { useLocalStorage } from '@/components/hooks/use-local-storage';
 
 export default function UserSettings() {
-  const [endpoint, setEndpoint] = useState(siteConfig.endpoint);
+  const [endpoint, setEndpoint] = useLocalStorage('hive-blog-endpoint', siteConfig.endpoint);
   return (
     <ProfileLayout>
       <div className="flex flex-col" data-testid="public-profile-settings">
@@ -171,8 +171,11 @@ export default function UserSettings() {
 
           <RadioGroup
             defaultValue="https://api.hive.blog"
-            className="w-full md:w-8/12 gap-0"
-            onValueChange={(e) => setEndpoint(e)}
+            className="w-full gap-0 md:w-8/12"
+            onValueChange={(e) => {
+              setEndpoint(e);
+              Router.reload();
+            }}
             value={endpoint}
           >
             <div className="grid grid-cols-3">
@@ -182,22 +185,22 @@ export default function UserSettings() {
             </div>
             <div className="grid grid-cols-3 items-center bg-slate-100 p-2 dark:bg-slate-500">
               <Label htmlFor="e1">https://api.hive.blog</Label>
-              <RadioGroupItem value="api.hive.blog" id="e1" />
+              <RadioGroupItem value="api.hive.blog" id="e1" className="border-red-600" />
               <Icons.trash />
             </div>
             <div className="grid grid-cols-3 items-center bg-slate-200 p-2 dark:bg-slate-600">
               <Label htmlFor="e2">https://rpc.ausbit.dev</Label>
-              <RadioGroupItem value="rpc.ausbit.dev" id="e2" />
+              <RadioGroupItem value="rpc.ausbit.dev" id="e2" className="border-red-600" disabled />
               <Icons.trash />
             </div>
             <div className="grid grid-cols-3 items-center bg-slate-100 p-2 dark:bg-slate-500">
               <Label htmlFor="e3">https://anyx.io</Label>
-              <RadioGroupItem value="anyx.io" id="e3" />
+              <RadioGroupItem value="anyx.io" id="e3" className="border-red-600" />
               <Icons.trash />
             </div>
             <div className="grid grid-cols-3 items-center bg-slate-200 p-2 dark:bg-slate-600">
               <Label htmlFor="e4">https://api.deathwing.me</Label>
-              <RadioGroupItem value="api.deathwing.me" id="e4" />
+              <RadioGroupItem value="api.deathwing.me" id="e4" className="border-red-600" />
               <Icons.trash />
             </div>
           </RadioGroup>

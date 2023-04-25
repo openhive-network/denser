@@ -29,7 +29,12 @@ export interface DynamicProps {
   vestingRewardPercent: number;
 }
 
-const endpoint = siteConfig.endpoint;
+const endpoint =
+  typeof window !== "undefined"
+    ? window.localStorage.getItem("hive-blog-endpoint")
+      ? JSON.parse(String(window.localStorage.getItem("hive-blog-endpoint")))
+      :  siteConfig.endpoint
+    :  siteConfig.endpoint
 
 export const client = new Client([`https://${endpoint}`], {
   timeout: 3000,

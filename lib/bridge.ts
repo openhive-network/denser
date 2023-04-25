@@ -99,14 +99,15 @@ export type Subscription = Array<string>;
 
 export const dataLimit = 20;
 
-const endpoint = siteConfig.endpoint;
+const endpoint =
+  typeof window !== "undefined"
+    ? window.localStorage.getItem("hive-blog-endpoint")
+      ? JSON.parse(String(window.localStorage.getItem("hive-blog-endpoint")))
+      :  siteConfig.endpoint
+    :  siteConfig.endpoint
 
-// const endpoint =
-//   typeof window !== "undefined"
-//     ? window.localStorage.getItem("hive-blog-endpoint")
-//       ? JSON.parse(window.localStorage.getItem("hive-blog-endpoint"))
-//       : "api.hive.blog"
-//     : "api.hive.blog"
+typeof window !== "undefined" && console.log('window.localStorage.getItem("hive-blog-endpoint")', window.localStorage.getItem("hive-blog-endpoint"))
+typeof window !== "undefined" && console.log('JSON.parse(String(window.localStorage.getItem("hive-blog-endpoint")))', JSON.parse(String(window.localStorage.getItem("hive-blog-endpoint"))))
 
 if (endpoint) {}
 export const bridgeServer = new Client([`https://${endpoint}`], {
