@@ -21,6 +21,7 @@ export function MainNav() {
             'transition-colors hover:text-foreground/80',
             pathname === '/trending' ? 'text-foreground' : 'text-foreground/60'
           )}
+          data-testid="nav-posts-link"
         >
           Posts
         </Link>
@@ -30,6 +31,7 @@ export function MainNav() {
             'transition-colors hover:text-foreground/80',
             pathname === 'https://wallet.hive.blog/proposals' ? 'text-foreground' : 'text-foreground/60'
           )}
+          data-testid="nav-proposals-link"
         >
           Proposals
         </Link>
@@ -39,6 +41,7 @@ export function MainNav() {
             'transition-colors hover:text-foreground/80',
             pathname === 'https://wallet.hive.blog/~witnesses' ? 'text-foreground' : 'text-foreground/60'
           )}
+          data-testid="nav-witnesses-link"
         >
           Witnesses
         </Link>
@@ -48,6 +51,7 @@ export function MainNav() {
             'transition-colors hover:text-foreground/80',
             pathname === 'https://hive.io/eco/' ? 'text-foreground' : 'text-foreground/60'
           )}
+          data-testid="nav-our-dapps-link"
         >
           Our dApps
         </Link>
