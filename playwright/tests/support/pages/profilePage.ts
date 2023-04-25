@@ -3,7 +3,7 @@ import { Locator, Page, expect } from '@playwright/test';
 export class ProfilePage {
   readonly page: Page;
   readonly profileNickName: Locator;
-  readonly profileInfo: Locator;
+  readonly profileInfo: any;
   readonly profileName: Locator;
   readonly profileAbout: Locator;
   readonly profileLastTimeActive: Locator;
@@ -22,15 +22,15 @@ export class ProfilePage {
   readonly profileWalletLink: Locator;
   readonly profileSettingsLink: Locator;
 
-  readonly postFeedItem: Locator;
+  readonly postFeedItem: any;
   readonly postsMenu: Locator;
   readonly postsMenuPostsButton: Locator;
   readonly postsMenuCommentsButton: Locator;
   readonly postsMenuPayoutsButton: Locator;
 
-  readonly repliesCommentListItem: Locator;
+  readonly repliesCommentListItem: any;
 
-  readonly notificationsMenu: Locator;
+  readonly notificationsMenu: any;
   readonly notificationsMenuAllButton: Locator;
   readonly notificationsMenuRepliesButton: Locator;
   readonly notificationsMenuMentionsButton: Locator;
@@ -39,10 +39,12 @@ export class ProfilePage {
   readonly notificationsMenuReblogsButton: Locator;
   readonly notificationsMenuAllContent: Locator;
 
-  readonly publicProfileSettings: Locator;
+  readonly publicProfileSettings: any;
 
   readonly thirdPartyAppPeakdLink: Locator;
   readonly thirdPartyAppHivebuzzLink: Locator;
+
+  readonly communitySubscriptionHeader: any;
 
   constructor(page: Page) {
     this.page = page;
@@ -113,6 +115,7 @@ export class ProfilePage {
 
     this.thirdPartyAppPeakdLink = page.locator('a[href="https://peakd.com/"]');
     this.thirdPartyAppHivebuzzLink = page.locator('a[href="https://hivebuzz.me/"]');
+    this.communitySubscriptionHeader = page.getByText('Community Subscriptions')
   }
 
   async gotoProfilePage(nickName: string) {
@@ -187,7 +190,8 @@ export class ProfilePage {
   }
 
   async profileSocialTabIsSelected() {
-    await this.page.waitForSelector(this.page.getByText('Community Subscriptions')['_selector']);
+    await this.page.waitForSelector(this.communitySubscriptionHeader['_selector']);
+    // await this.page.waitForSelector(this.page.getByText('Community Subscriptions')['_selector']);
     await expect(this.page.getByText('Community Subscriptions')).toBeVisible();
     await expect(
       this.page.getByText('The author has subscribed to the following Hive Communities')

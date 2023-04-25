@@ -10,8 +10,13 @@ export class HomePage {
   readonly getHeaderPinmappleCommunities: Locator
   readonly getHomeNavLink: Locator
   readonly getHeaderAllCommunities: Locator
-  readonly getMainTimeLineOfPosts: Locator
+  readonly getMainTimeLineOfPosts: any
   readonly getFirstPostAuthor: Locator
+  readonly getFirstPostAuthorReputation: Locator
+  readonly getFirstPostTitle: Locator
+  readonly getFirstPostPayout: Locator
+  readonly getFirstPostVotes: Locator
+  readonly getFirstPostChildren: Locator
   readonly getBody: Locator
   readonly getThemeModeButton: Locator
   readonly getThemeModeItem: Locator
@@ -36,6 +41,11 @@ export class HomePage {
     this.getFirstPostAuthor = page
       .locator('[data-testid="post-author"]')
       .first()
+    this.getFirstPostAuthorReputation = this.getFirstPostAuthor.locator('..')
+    this.getFirstPostTitle = page.locator('li[data-testid="post-list-item"] h3 a').first()
+    this.getFirstPostPayout = page.locator('[data-testid="post-payout"]').first()
+    this.getFirstPostVotes = page.locator('[data-testid="post-total-votes"]').first()
+    this.getFirstPostChildren = page.locator('[data-testid="post-children"]').first()
     this.getBody = page.locator("body")
     this.getThemeModeButton = page.locator('[data-testid="theme-mode"]')
     this.getThemeModeItem = page.locator('[data-testid="theme-mode-item"]')

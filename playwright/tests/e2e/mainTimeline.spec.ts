@@ -11,7 +11,58 @@ test("has the main timeline of posts (20 posts are displayed by default)", async
   await homePage.mainPostsTimelineVisible()
 })
 
-test("move tho the first post author profile page", async ({ page }) => {
+test.only("validate the first post (on Trending filter)", async ({page, request}) => {
+  const homePage = new HomePage(page)
+  await homePage.goto()
+
+  const url = process.env.NEXT_PUBLIC_API_NODE_ENDPOINT
+  console.log("5555 ", process.env.NEXT_PUBLIC_API_NODE_ENDPOINT)
+
+  //const response = await request.post('https://api.hive.blog/', {
+  const response = await request.post(`https://${url}/`, {
+    data: {
+      id:0,
+      jsonrpc:"2.0",
+      method:"bridge.get_ranked_posts",
+      params:{sort:"trending",
+              start_author:"",
+              start_permlink:"",
+              limit:20,
+              tag:"",
+              observer:""}
+    },
+    headers: {
+      'Accept': 'application/json, text/plain, */*'
+    }
+  })
+
+  // console.log((await response.json()).result[0])
+  const postAuthor = (await response.json()).result[0].author
+  // console.log("Post author: ", await postAuthor)
+  const postAuthorReputation = (await response.json()).result[0].author_reputation.toFixed()
+  // console.log("Post author reputation: ", await postAuthorReputation)
+  const postTitle = (await response.json()).result[0].title
+  // console.log("Post title: ", await postTitle)
+  const postPayout = (await response.json()).result[0].payout.toFixed(2)
+  // console.log("Post payout: ", await postPayout)
+  const postTotalVotes = (await response.json()).result[0].stats.total_votes
+  // console.log("Post total votes: ", await postTotalVotes)
+  const postChildren = (await response.json()).result[0].children
+  // console.log("Responses to post : ", await postChildren)
+
+  expect(homePage.getFirstPostAuthor).toHaveText('@' + postAuthor)
+  expect(homePage.getFirstPostAuthorReputation).toHaveText('@' + postAuthor + ' (' + postAuthorReputation + ')')
+  expect(homePage.getFirstPostTitle).toHaveText(postTitle)
+  expect(homePage.getFirstPostPayout).toHaveText(postPayout)
+
+  const firstPostTotalVotes = (await homePage.getFirstPostVotes.allInnerTexts()).at(0)
+  expect(firstPostTotalVotes).toBe(String(postTotalVotes))
+
+  const firstPostChildren = (await homePage.getFirstPostChildren.allInnerTexts()).at(0)
+  expect(firstPostChildren).toBe(String(postChildren))
+})
+
+test("move to the first post author profile page", async ({ page }) => {
   const homePage = new HomePage(page)
 
   await homePage.goto()
