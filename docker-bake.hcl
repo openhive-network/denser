@@ -2,7 +2,7 @@ variable "CI_REGISTRY_IMAGE" {
     default = "registry.gitlab.syncad.com/hive/denser"
 }
 variable "CI_COMMIT_SHA" {}
-variable "tag" {
+variable "TAG" {
   default = "latest"
 }
 
@@ -14,7 +14,7 @@ function "notempty" {
 target "local-build" {
   dockerfile = "Dockerfile"
   tags = [
-    "${CI_REGISTRY_IMAGE}:${tag}",
+    "${CI_REGISTRY_IMAGE}:${TAG}",
     notempty(CI_COMMIT_SHA) ? "${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}": ""
   ]
 }
@@ -22,10 +22,10 @@ target "local-build" {
 target "ci-build" {
   inherits = ["local-build"]
   cache-from = [
-    "type=registry,ref=${CI_REGISTRY_IMAGE}/cache:${tag}"
+    "type=registry,ref=${CI_REGISTRY_IMAGE}/cache:${TAG}"
   ]
   cache-to = [
-    "type=registry,mode=max,ref=${CI_REGISTRY_IMAGE}/cache:${tag}"
+    "type=registry,mode=max,ref=${CI_REGISTRY_IMAGE}/cache:${TAG}"
   ]
   output = [
     "type=registry"

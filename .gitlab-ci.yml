@@ -23,14 +23,14 @@ docker-build:
       echo -e "\e[0Ksection_start:$(date +%s):tag[collapsed=true]\r\e[0KDetermining tag for the new image..."
       if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
         echo "Running on default branch '$CI_DEFAULT_BRANCH': tag = 'latest'"
-        export tag="latest"
+        export TAG="latest"
       else
         echo "Running on branch '$CI_COMMIT_BRANCH': tag = $CI_COMMIT_REF_SLUG"
-        export tag="$CI_COMMIT_REF_SLUG" 
+        export TAG="$CI_COMMIT_REF_SLUG" 
       fi
       echo -e "\e[0Ksection_end:$(date +%s):tag\r\e[0K"
-      echo -e "\e[0Ksection_start:$(date +%s):build[collapsed=true]\r\e[0KBaking image "$CI_REGISTRY_IMAGE/$BUILD_TARGET:${tag}"..."
-      docker buildx bake --progress=plain ci-build
+      echo -e "\e[0Ksection_start:$(date +%s):build[collapsed=true]\r\e[0KBaking image "$CI_REGISTRY_IMAGE:${TAG}"..."
+      scripts/ci-helpers/build_instance.sh --progress=plain "$CI_PROJECT_DIR"
       echo -e "\e[0Ksection_end:$(date +%s):build\r\e[0K"
   tags:
     - public-runner-docker

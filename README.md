@@ -49,13 +49,37 @@ You can run automatic e2e tests in localhost by using node scripts but first run
 
 ## Docker
 
+### Build
+
 You can build a Docker image using the following command
 
 ```bash
-docker buildx bake --progress=plain local-build
+docker buildx bake local-build
 ```
 
-Then you can run it with command:
+or using the convenience script:
+
+```bash
+scripts/ci-helpers/build_instance.sh .
+```
+
+Script usage is as follows:
+
+```
+Usage: scripts/ci-helpers/build_instance.sh <source directory> [OPTION[=VALUE]]...
+
+Build a Denser Docker image
+by default tagged as 'registry.gitlab.syncad.com/hive/denser:latest'
+OPTIONS:
+  --registry=URL        Docker registry to assign the image to (default: 'registry.gitlab.syncad.com/hive/denser')
+  --tag=TAG             Docker tag to be build (default: 'latest')
+  --progress=TYPE       Determines how to display build progress (default: 'auto')
+  -?|--help             Display this help screen and exit
+```
+
+### Run
+
+You can run the pre-built Docker image with command:
 
 ```bash
 docker run --detach --publish 3000:3000 registry.gitlab.syncad.com/hive/denser:latest
