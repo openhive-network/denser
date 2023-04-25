@@ -60,13 +60,13 @@ docker buildx bake local-build
 or using the convenience script:
 
 ```bash
-scripts/ci-helpers/build_instance.sh .
+scripts/build_instance.sh .
 ```
 
 Script usage is as follows:
 
 ```
-Usage: scripts/ci-helpers/build_instance.sh <source directory> [OPTION[=VALUE]]...
+Usage: scripts/build_instance.sh <source directory> [OPTION[=VALUE]]...
 
 Build a Denser Docker image
 by default tagged as 'registry.gitlab.syncad.com/hive/denser:latest'
@@ -79,7 +79,26 @@ OPTIONS:
 
 ### Run
 
-You can run the pre-built Docker image with command:
+There's a convenience script provided for running the Docker image. Using it to set up an instance is as simple as:
+
+```bash
+scripts/run_instance.sh
+```
+
+The full usage is as follows:
+
+```
+Usage: scripts/run_instance.sh [OPTION[=VALUE]]...
+
+Run a Denser Docker instance
+OPTIONS:
+  --image=IAMGE        Docker image to run (default: 'registry.gitlab.syncad.com/hive/denser:latest')
+  --api-endpoint=URL   API endpoint to be used by the new instance (default: 'api.hive.blog')
+  --port=PORT          Port to be exposed (default: 3000)
+  -?|--help            Display this help screen and exit
+```
+
+You can also run the pre-built Docker image with command:
 
 ```bash
 docker run --detach --publish 3000:3000 registry.gitlab.syncad.com/hive/denser:latest
@@ -93,7 +112,7 @@ You can change the port and the default enpoint by using environment variables l
 docker run --detach --publish 80:80 --env PORT=80 --env API_NODE_ENDPOINT=api.example.com registry.gitlab.syncad.com/hive/denser:latest
 ```
 
-There's also an example [Composefile](docker/docker-compose.yml) and accompanying (dotenv)[docker/.env] files available if you prefer to go that route.
+Finally, there are example [Composefile](docker/docker-compose.yml) and accompanying (dotenv)[docker/.env] files available if you prefer to go that route.
 
 ## Learn More
 
