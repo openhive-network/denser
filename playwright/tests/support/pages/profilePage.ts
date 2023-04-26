@@ -40,11 +40,51 @@ export class ProfilePage {
   readonly notificationsMenuAllContent: Locator;
 
   readonly publicProfileSettings: any;
+  readonly publicProfileSettingsHeader: Locator;
+  readonly preferencesProfileSettingsHeader: Locator;
+  readonly advancedProfileSettingsHeader: Locator;
+  readonly ppsProfilePictureUrlLabel: Locator;
+  readonly ppsProfilePictureUrlInput: Locator;
+  readonly ppsCoverImageUrlLabel: Locator;
+  readonly ppsCoverImageUrlInput: Locator;
+  readonly ppsDisplayNameLabel: Locator;
+  readonly ppsDisplayNameInput: Locator;
+  readonly ppsAboutLabel: Locator;
+  readonly ppsAboutInput: Locator;
+  readonly ppsLocationLabel: Locator;
+  readonly ppsLocationInput: Locator;
+  readonly ppsWebsiteLabel: Locator;
+  readonly ppsWebsiteInput: Locator;
+  readonly ppsBlacklistDescriptionLabel: Locator;
+  readonly ppsBlacklistDescriptionInput: Locator;
+  readonly ppsMuteListDescriptionLabel: Locator;
+  readonly ppsMuteListDescriptionInput: Locator;
+  readonly ppsButtonUpdate: Locator;
+
+  readonly preferencesSettings: Locator;
+  readonly preferencesSettingsChooseLanguage: Locator;
+  readonly preferencesSettingsNoSafeForWorkContent: Locator;
+  readonly preferencesSettingsBlogPostRewards: Locator;
+  readonly preferencesSettingsCommentsPostRewards: Locator;
+  readonly preferencesSettingsReferralSystem: Locator;
+
+  readonly advancedSettingsApiEndpointRadioGroup: Locator
+  readonly advancedSettingsApiEndpointList: Locator
+  readonly advancedSettingsApiEndpointButton: Locator
+  readonly advancedSettingsApiEndpointAdd: Locator
+  readonly advancedSettingsApiEndpointAddInput: Locator
+  readonly advancedSettingsApiEndpointAddButton: Locator
+  readonly advancedSettingsApiResetEndpointsButton: Locator
 
   readonly thirdPartyAppPeakdLink: Locator;
   readonly thirdPartyAppHivebuzzLink: Locator;
 
   readonly communitySubscriptionHeader: any;
+
+  readonly profileNumberOfPosts: Locator;
+  readonly profileHP: Locator;
+  readonly profileFollowing: Locator;
+  readonly profileFollowers: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -56,6 +96,10 @@ export class ProfilePage {
     this.profileJoined = page.locator('[data-testid="user-joined"]');
     this.profileLocation = page.locator('[data-testid="user-location"]');
     this.profileStats = page.locator('[data-testid="profile-stats"]');
+    this.profileNumberOfPosts = this.profileStats.locator('div span').nth(0);
+    this.profileHP = this.profileStats.locator('div span').nth(1);
+    this.profileFollowing = this.profileStats.locator('div span').nth(2);
+    this.profileFollowers = this.profileStats.locator('div span').nth(3);
     this.followButton = page.locator('[data-testid="profile-follow-button"]');
     this.userLinks = page.locator('[data-testid="user-links"]');
 
@@ -112,10 +156,56 @@ export class ProfilePage {
     this.notificationsMenuAllContent = page.locator('[data-testid="notifications-content-all"]');
 
     this.publicProfileSettings = page.locator('[data-testid="public-profile-settings"]');
+    this.publicProfileSettingsHeader = this.publicProfileSettings.locator('h2').nth(0);
+    this.preferencesProfileSettingsHeader = this.publicProfileSettings.locator('h2').nth(1);
+    this.advancedProfileSettingsHeader = this.publicProfileSettings.locator('h2').nth(2);
+
+    this.ppsProfilePictureUrlLabel = this.publicProfileSettings.locator('[for="profileImage"]');
+    this.ppsProfilePictureUrlInput = this.publicProfileSettings.locator('#profileImage');
+    this.ppsCoverImageUrlLabel = this.publicProfileSettings.locator('[for="coverImage"]');
+    this.ppsCoverImageUrlInput = this.publicProfileSettings.locator('#coverImage');
+    this.ppsDisplayNameLabel = this.publicProfileSettings.locator('[for="name"]');
+    this.ppsDisplayNameInput = this.publicProfileSettings.locator('#name');
+    this.ppsAboutLabel = this.publicProfileSettings.locator('[for="about"]');
+    this.ppsAboutInput = this.publicProfileSettings.locator('#about');
+    this.ppsLocationLabel = this.publicProfileSettings.locator('[for="location"]');
+    this.ppsLocationInput = this.publicProfileSettings.locator('#location');
+    this.ppsWebsiteLabel = this.publicProfileSettings.locator('[for="website"]');
+    this.ppsWebsiteInput = this.publicProfileSettings.locator('#website');
+    this.ppsBlacklistDescriptionLabel = this.publicProfileSettings.locator('[for="blacklistDescription"]');
+    this.ppsBlacklistDescriptionInput = this.publicProfileSettings.locator('#blacklistDescription');
+    this.ppsMuteListDescriptionLabel = this.publicProfileSettings.locator('[for="mutedListDescription"]');
+    this.ppsMuteListDescriptionInput = this.publicProfileSettings.locator('#mutedListDescription');
+    this.ppsButtonUpdate = this.publicProfileSettings.locator('[data-testid="pps-update-button"]');
+
+    this.preferencesSettings = page.locator('[data-testid="settings-preferences"]');
+    this.preferencesSettingsChooseLanguage = this.preferencesSettings.locator(
+      '[data-testid="choose-language"]'
+    );
+    this.preferencesSettingsNoSafeForWorkContent = this.preferencesSettings.locator(
+      '[data-testid="not-safe-for-work-content"]'
+    );
+    this.preferencesSettingsBlogPostRewards = this.preferencesSettings.locator(
+      '[data-testid="blog-post-rewards"]'
+    );
+    this.preferencesSettingsCommentsPostRewards = this.preferencesSettings.locator(
+      '[data-testid="comment-post-rewards"]'
+    );
+    this.preferencesSettingsReferralSystem = this.preferencesSettings.locator(
+      '[data-testid="referral-system"]'
+    );
+
+    this.advancedSettingsApiEndpointRadioGroup = page.locator('[data-testid="api-endpoint-radiogroup"]')
+    this.advancedSettingsApiEndpointList = this.advancedSettingsApiEndpointRadioGroup.locator('div label')
+    this.advancedSettingsApiEndpointButton = this.advancedSettingsApiEndpointRadioGroup.locator('div button')
+    this.advancedSettingsApiEndpointAdd = page.locator('[data-testid="add-api-endpoint"]')
+    this.advancedSettingsApiEndpointAddInput = this.advancedSettingsApiEndpointAdd.locator('input')
+    this.advancedSettingsApiEndpointAddButton = this.advancedSettingsApiEndpointAdd.locator('button')
+    this.advancedSettingsApiResetEndpointsButton = page.getByText('Reset Endpoints')
 
     this.thirdPartyAppPeakdLink = page.locator('a[href="https://peakd.com/"]');
     this.thirdPartyAppHivebuzzLink = page.locator('a[href="https://hivebuzz.me/"]');
-    this.communitySubscriptionHeader = page.getByText('Community Subscriptions')
+    this.communitySubscriptionHeader = page.getByText('Community Subscriptions');
   }
 
   async gotoProfilePage(nickName: string) {

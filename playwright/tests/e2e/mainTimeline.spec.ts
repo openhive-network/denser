@@ -166,92 +166,94 @@ test.describe('Home page tests', () => {
     await expect(homePage.getFilterPosts).toHaveText('Trending');
   });
 
-  test('validate that Explore Hive sidebar is visible', async ({page}) => {
+  test('validate that Explore Hive sidebar is visible', async ({ page }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
-    expect(homePage.getCardExploreHive).toBeVisible()
-    expect(homePage.getCardExploreHiveTitle).toHaveText('Explore Hive')
-    expect(homePage.getCardExploreHiveLinks).toHaveCount(5)
-  })
+    expect(homePage.getCardExploreHive).toBeVisible();
+    expect(homePage.getCardExploreHiveTitle).toHaveText('Explore Hive');
+    expect(homePage.getCardExploreHiveLinks).toHaveCount(5);
+  });
 
-  test('validate that Shortcuts sidebar is visible', async ({page}) => {
+  test('validate that Shortcuts sidebar is visible', async ({ page }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
-    expect(homePage.getCardUserShortcuts).toBeVisible()
-    expect(homePage.getCardUserShortcutsTitle).toHaveText('Shortcuts')
-    expect(homePage.getCardUserShortcutsLinks).toHaveCount(3)
-  })
+    expect(homePage.getCardUserShortcuts).toBeVisible();
+    expect(homePage.getCardUserShortcutsTitle).toHaveText('Shortcuts');
+    expect(homePage.getCardUserShortcutsLinks).toHaveCount(3);
+  });
 
-  test('validate that Trending Communities sidebar is visible', async ({page}) => {
+  test('validate that Trending Communities sidebar is visible', async ({ page }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
-    expect(homePage.getTrendingCommunitiesSideBar).toBeVisible()
-    expect(homePage.getTrandingCommunitiesHeader).toHaveText('Trending Communities')
-    expect(homePage.getTrendingCommunitiesSideBarLinks).toHaveCount(13)
-  })
+    expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
+    expect(homePage.getTrandingCommunitiesHeader).toHaveText('Trending Communities');
+    expect(homePage.getTrendingCommunitiesSideBarLinks).toHaveCount(13);
+  });
 
-  test('move to the Proposals page', async ({page}) => {
+  test('move to the Proposals page', async ({ page }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
-    await homePage.moveToNavProposalsPage()
-  })
+    await homePage.moveToNavProposalsPage();
+  });
 
-  test('move to the Witnesses page', async ({page}) => {
+  test('move to the Witnesses page', async ({ page }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
-    await homePage.moveToNavWitnessesPage()
-  })
+    await homePage.moveToNavWitnessesPage();
+  });
 
-  test('move to the Our dApps page', async ({page}) => {
+  test('move to the Our dApps page', async ({ page }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
-    await homePage.moveToNavOurdAppsPage()
-  })
+    await homePage.moveToNavOurdAppsPage();
+  });
 
-  test('navigation search input is visible', async ({page}) => {
+  test('navigation search input is visible', async ({ page }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
-    await expect(homePage.getNavSearchInput).toBeVisible()
-    await expect(homePage.getNavSearchInput).toHaveAttribute('placeholder','Search...')
-  })
+    await expect(homePage.getNavSearchInput).toBeVisible();
+    await expect(homePage.getNavSearchInput).toHaveAttribute('placeholder', 'Search...');
+  });
 
-  test('navigation user avatar and its dropdown list is visible', async ({page}) => {
+  test('navigation user avatar and its dropdown list is visible', async ({ page }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
-    await expect(homePage.getNavUserAvatar).toBeVisible()
-    await expect(homePage.getNavUserAvatar.locator('img')).toHaveAttribute('src', 'https://images.hive.blog/u/gtg/avatar')
+    await expect(homePage.getNavUserAvatar).toBeVisible();
+    await expect(homePage.getNavUserAvatar.locator('img')).toHaveAttribute(
+      'src',
+      'https://images.hive.blog/u/gtg/avatar'
+    );
 
-    await homePage.getNavUserAvatar.click()
-    await page.waitForSelector(homePage.getNavProfileMenuContent["_selector"])
-    await expect(homePage.getNavProfileMenuContent.getByText('My Account')).toBeVisible()
-  })
+    await homePage.getNavUserAvatar.click();
+    await page.waitForSelector(homePage.getNavProfileMenuContent['_selector']);
+    await expect(homePage.getNavProfileMenuContent.getByText('My Account')).toBeVisible();
+  });
 
-  test('navigation create post button is visible', async ({page}) => {
+  test('navigation create post button is visible', async ({ page }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
-    await expect(homePage.getNavCreatePost).toBeVisible()
-  })
+    await expect(homePage.getNavCreatePost).toBeVisible();
+  });
 
-  test('navigation hamburger menu is visible', async ({page}) => {
+  test('navigation hamburger menu is visible', async ({ page }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
-    await expect(homePage.getNavSidebarMenu).toBeVisible()
-    await homePage.getNavSidebarMenu.click()
-    await page.waitForSelector(homePage.getNavSidebarMenu["_selector"])
-    await expect(homePage.getNavSidebarMenuContent).toBeVisible()
-    await expect(homePage.getNavSidebarMenuContent.getByText('Welcome')).toBeVisible()
-    await homePage.getNavSidebarMenuContentCloseButton.click()
-    await expect(homePage.getNavSidebarMenuContent).not.toBeVisible()
-  })
-
+    await expect(homePage.getNavSidebarMenu).toBeVisible();
+    await homePage.getNavSidebarMenu.click();
+    await page.waitForSelector(homePage.getNavSidebarMenu['_selector']);
+    await expect(homePage.getNavSidebarMenuContent).toBeVisible();
+    await expect(homePage.getNavSidebarMenuContent.getByText('Welcome')).toBeVisible();
+    await homePage.getNavSidebarMenuContentCloseButton.click();
+    await expect(homePage.getNavSidebarMenuContent).not.toBeVisible();
+  });
 });
