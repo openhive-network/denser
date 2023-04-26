@@ -11,3 +11,6 @@ export const siteConfig = {
 };
 
 export type SiteConfig = typeof siteConfig;
+
+// @ts-ignore
+global.$STM_Config = siteConfig;
