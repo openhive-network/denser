@@ -15,6 +15,13 @@ export class HomePage {
   readonly getNavProposalsLink: Locator
   readonly getNavWitnessesLink: Locator
   readonly getNavOurdAppsLink: Locator
+  readonly getNavSearchInput: Locator
+  readonly getNavUserAvatar: Locator
+  readonly getNavCreatePost: Locator
+  readonly getNavSidebarMenu: any
+  readonly getNavProfileMenuContent: any
+  readonly getNavSidebarMenuContent: Locator
+  readonly getNavSidebarMenuContentCloseButton: Locator
   readonly getHeaderAllCommunities: Locator
   readonly getMainTimeLineOfPosts: any
   readonly getFirstPostAuthor: Locator
@@ -75,6 +82,13 @@ export class HomePage {
     this.getCardUserShortcuts = page.locator('[data-testid="card-user-shortcuts"]')
     this.getCardUserShortcutsTitle = this.getCardUserShortcuts.locator('div h3')
     this.getCardUserShortcutsLinks = this.getCardUserShortcuts.locator('div ul li')
+    this.getNavSearchInput = page.locator('header div nav input[type="search"]')
+    this.getNavUserAvatar = page.locator('[data-testid="profile-menu"]')
+    this.getNavProfileMenuContent = page.locator('[data-testid="profile-menu-content"]')
+    this.getNavCreatePost = page.locator('[data-testid="nav-pencil"]')
+    this.getNavSidebarMenu = page.locator('[data-testid="nav-sidebar-menu-button"]')
+    this.getNavSidebarMenuContent = page.locator('[data-testid="nav-sidebar-menu-content"]')
+    this.getNavSidebarMenuContentCloseButton = this.getNavSidebarMenuContent.locator('button')
   }
 
   async goto() {

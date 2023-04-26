@@ -166,7 +166,7 @@ test.describe('Home page tests', () => {
     await expect(homePage.getFilterPosts).toHaveText('Trending');
   });
 
-  test('validate that Explore Hive side bar is visible', async ({page}) => {
+  test('validate that Explore Hive sidebar is visible', async ({page}) => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
@@ -175,7 +175,7 @@ test.describe('Home page tests', () => {
     expect(homePage.getCardExploreHiveLinks).toHaveCount(5)
   })
 
-  test('validate that Shortcuts side bar is visible', async ({page}) => {
+  test('validate that Shortcuts sidebar is visible', async ({page}) => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
@@ -184,7 +184,7 @@ test.describe('Home page tests', () => {
     expect(homePage.getCardUserShortcutsLinks).toHaveCount(3)
   })
 
-  test('validate that Trending Communities side bar is visible', async ({page}) => {
+  test('validate that Trending Communities sidebar is visible', async ({page}) => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
@@ -213,4 +213,45 @@ test.describe('Home page tests', () => {
 
     await homePage.moveToNavOurdAppsPage()
   })
+
+  test('navigation search input is visible', async ({page}) => {
+    const homePage = new HomePage(page);
+    await homePage.goto();
+
+    await expect(homePage.getNavSearchInput).toBeVisible()
+    await expect(homePage.getNavSearchInput).toHaveAttribute('placeholder','Search...')
+  })
+
+  test('navigation user avatar and its dropdown list is visible', async ({page}) => {
+    const homePage = new HomePage(page);
+    await homePage.goto();
+
+    await expect(homePage.getNavUserAvatar).toBeVisible()
+    await expect(homePage.getNavUserAvatar.locator('img')).toHaveAttribute('src', 'https://images.hive.blog/u/gtg/avatar')
+
+    await homePage.getNavUserAvatar.click()
+    await page.waitForSelector(homePage.getNavProfileMenuContent["_selector"])
+    await expect(homePage.getNavProfileMenuContent.getByText('My Account')).toBeVisible()
+  })
+
+  test('navigation create post button is visible', async ({page}) => {
+    const homePage = new HomePage(page);
+    await homePage.goto();
+
+    await expect(homePage.getNavCreatePost).toBeVisible()
+  })
+
+  test('navigation hamburger menu is visible', async ({page}) => {
+    const homePage = new HomePage(page);
+    await homePage.goto();
+
+    await expect(homePage.getNavSidebarMenu).toBeVisible()
+    await homePage.getNavSidebarMenu.click()
+    await page.waitForSelector(homePage.getNavSidebarMenu["_selector"])
+    await expect(homePage.getNavSidebarMenuContent).toBeVisible()
+    await expect(homePage.getNavSidebarMenuContent.getByText('Welcome')).toBeVisible()
+    await homePage.getNavSidebarMenuContentCloseButton.click()
+    await expect(homePage.getNavSidebarMenuContent).not.toBeVisible()
+  })
+
 });
