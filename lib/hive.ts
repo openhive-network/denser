@@ -29,12 +29,12 @@ export interface DynamicProps {
   vestingRewardPercent: number;
 }
 
-const endpoint =
-  typeof window !== "undefined"
-    ? window.localStorage.getItem("hive-blog-endpoint")
-      ? JSON.parse(String(window.localStorage.getItem("hive-blog-endpoint")))
-      :  siteConfig.endpoint
-    :  siteConfig.endpoint
+let globalWithConfig = global as typeof globalThis & {
+  STM_Config: any;
+};
+
+// @ts-ignore
+const endpoint = global.STM_Config
 
 export const client = new Client([`https://${endpoint}`], {
   timeout: 3000,

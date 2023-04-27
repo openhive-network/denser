@@ -1,7 +1,7 @@
 export const siteConfig = {
   name: 'Hive Blog',
   url: 'https://hive.blog',
-  endpoint: `${process.env.NEXT_PUBLIC_API_NODE_ENDPOINT ? process.env.NEXT_PUBLIC_API_NODE_ENDPOINT : 'api.hive.blog'}`,
+  endpoint: 'api.hive.blog',
   ogImage: '',
   description: 'Social media site for Hive Blockchain',
   links: {
@@ -11,6 +11,3 @@ export const siteConfig = {
 };
 
 export type SiteConfig = typeof siteConfig;
-
-// @ts-ignore
-global.$STM_Config = siteConfig;

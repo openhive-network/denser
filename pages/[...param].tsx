@@ -13,6 +13,8 @@ import UserShortcutsCard from '@/components/user-shortcuts-card';
 import ProfileLayout from '@/components/common/profile-layout';
 import CommunityDescription from '@/components/community-description';
 import { useInView } from 'react-intersection-observer';
+import { useAppStore } from '@/store/app';
+import { siteConfig } from '@/config/site';
 
 const PostSkeleton = () => {
   return (
@@ -26,10 +28,18 @@ const PostSkeleton = () => {
   );
 };
 
-const ParamPage: FC = () => {
+const ParamPage: FC = (props: any) => {
+  const setConfig = useAppStore((state) => state.setConfig);
   const router = useRouter();
   const { sort, username, tag } = useSiteParams();
-  const { ref, inView } = useInView()
+  const { ref, inView } = useInView();
+
+  useEffect(() => {
+    // @ts-ignore
+    setConfig(props.config | global.$STM_Config);
+    // @ts-ignore
+    global.STM_Config = props.config
+  }, [props, setConfig]);
 
   const {
     data: entriesData,
@@ -40,33 +50,22 @@ const ParamPage: FC = () => {
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
-    refetch,
+    refetch
   } = useInfiniteQuery(
-    ["entriesInfinite", sort, tag],
-    async ({ pageParam }: {pageParam?: any}): Promise<any> => {
-      return await getPostsRanked(
-        sort || 'trending',
-        tag,
-        pageParam?.author,
-        pageParam?.permlink
-      )
+    ['entriesInfinite', sort, tag],
+    async ({ pageParam }: { pageParam?: any }): Promise<any> => {
+      return await getPostsRanked(sort || 'trending', tag, pageParam?.author, pageParam?.permlink);
     },
     {
       getNextPageParam: (lastPage: Entry[]) => {
         return {
-          author:
-            lastPage && lastPage.length > 0
-              ? lastPage[lastPage?.length - 1].author
-              : "",
-          permlink:
-            lastPage && lastPage.length > 0
-              ? lastPage[lastPage?.length - 1].permlink
-              : "",
-        }
+          author: lastPage && lastPage.length > 0 ? lastPage[lastPage?.length - 1].author : '',
+          permlink: lastPage && lastPage.length > 0 ? lastPage[lastPage?.length - 1].permlink : ''
+        };
       },
       enabled: Boolean(sort)
     }
-  )
+  );
 
   const {
     data: communityData,
@@ -101,12 +100,11 @@ const ParamPage: FC = () => {
     [router, tag]
   );
 
-
   useEffect(() => {
     if (inView) {
-      fetchNextPage()
+      fetchNextPage();
     }
-  }, [fetchNextPage, inView])
+  }, [fetchNextPage, inView]);
 
   if (
     (entriesDataIsLoading && entriesDataIsFetching) ||
@@ -135,29 +133,27 @@ const ParamPage: FC = () => {
               </div>
               <PostSelectFilter filter={sort} handleChangeFilter={handleChangeFilter} />
             </div>
-              <>
-                {entriesData.pages.map((page, index) => {
-                  return page ? <PostList data={page} sort={sort} key={`f-${index}`} /> : null
-                })}
-                <div>
-                  <button
-                    ref={ref}
-                    onClick={() => fetchNextPage()}
-                    disabled={!hasNextPage || isFetchingNextPage}
-                  >
-                    {isFetchingNextPage
-                      ? <PostSkeleton />
-                      : hasNextPage
-                        ? "Load Newer"
-                        : "Nothing more to load"}
-                  </button>
-                </div>
-                <div>
-                  {entriesDataIsFetching && !isFetchingNextPage
-                    ? "Background Updating..."
-                    : null}
-                </div>
-              </>
+            <>
+              {entriesData.pages.map((page, index) => {
+                return page ? <PostList data={page} sort={sort} key={`f-${index}`} /> : null;
+              })}
+              <div>
+                <button
+                  ref={ref}
+                  onClick={() => fetchNextPage()}
+                  disabled={!hasNextPage || isFetchingNextPage}
+                >
+                  {isFetchingNextPage ? (
+                    <PostSkeleton />
+                  ) : hasNextPage ? (
+                    'Load Newer'
+                  ) : (
+                    'Nothing more to load'
+                  )}
+                </button>
+              </div>
+              <div>{entriesDataIsFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
+            </>
           </div>
           <div className="col-span-12 md:col-span-12 lg:col-span-4">
             {communityData ? <CommunityDescription data={communityData} /> : <ExploreHive />}
@@ -177,3 +173,10 @@ const ParamPage: FC = () => {
 };
 
 export default ParamPage;
+
+export async function getServerSideProps() {
+  console.log('global.process.env.STM_Config', global.process.env.STM_Config)
+  return {
+    props: { config: global.process.env.STM_Config || siteConfig }
+  };
+}

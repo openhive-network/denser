@@ -99,12 +99,19 @@ export type Subscription = Array<string>;
 
 export const dataLimit = 20;
 
-const endpoint =
-  typeof window !== "undefined"
-    ? window.localStorage.getItem("hive-blog-endpoint")
-      ? JSON.parse(String(window.localStorage.getItem("hive-blog-endpoint")))
-      :  siteConfig.endpoint
-    :  siteConfig.endpoint
+// let globalWithConfig = global as typeof globalThis & {
+//   STM_Config: any;
+// };
+
+// const endpoint =
+//   typeof window !== "undefined"
+//     ? window.localStorage.getItem("hive-blog-endpoint")
+//       ? JSON.parse(String(window.localStorage.getItem("hive-blog-endpoint")))
+//       :  globalWithConfig.$STM_Config
+//     :  globalWithConfig.$STM_Config
+
+// @ts-ignore
+const endpoint = global.STM_Config
 
 if (endpoint) {}
 export const bridgeServer = new Client([`https://${endpoint}`], {
