@@ -33,14 +33,15 @@ const ParamPage: FC = (props: any) => {
   const { sort, username, tag } = useSiteParams();
   const { ref, inView } = useInView();
 
-  console.log('props', props)
-  // @ts-ignore
-  console.log('global.STM_Config', global.STM_Config)
+  console.log('props', props);
 
   useEffect(() => {
-    // @ts-ignore
-    global.STM_Config.endpoint = props.STM_ENDPOINT
-    // @ts-ignore
+    if (typeof window !== 'undefined') {
+      // @ts-ignore
+      window.STM_Config = props.siteConfig || {};
+      // @ts-ignore
+      console.log('PARAMS global', window.STM_Config);
+    }
   }, [props]);
 
   const {
@@ -177,7 +178,17 @@ const ParamPage: FC = (props: any) => {
 export default ParamPage;
 
 export async function getServerSideProps() {
+  // @ts-ignore
+  global.STM_Config = {
+    ...siteConfig,
+    endpoint: global.process.env.STM_ENDPOINT ? global.process.env.STM_ENDPOINT : 'https://hive.blog'
+  };
   return {
-    props: { STM_ENDPOINT: global.process.env.STM_ENDPOINT }
+    props: {
+      siteConfig: {
+        ...siteConfig,
+        endpoint: global.process.env.STM_ENDPOINT ? global.process.env.STM_ENDPOINT : 'https://hive.blog'
+      }
+    }
   };
 }

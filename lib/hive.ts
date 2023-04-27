@@ -29,12 +29,9 @@ export interface DynamicProps {
   vestingRewardPercent: number;
 }
 
-// let globalWithConfig = global as typeof globalThis & {
-//   STM_Config: any;
-// };
-
 // @ts-ignore
-const endpoint = global.STM_Config?.endpoint
+const endpoint = global.STM_Config ? global.STM_Config?.endpoint : 'api'
+console.log('end', endpoint)
 
 export const client = new Client([`https://${endpoint}`], {
   timeout: 3000,
