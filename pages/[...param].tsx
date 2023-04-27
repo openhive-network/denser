@@ -34,11 +34,15 @@ const ParamPage: FC = (props: any) => {
   const { sort, username, tag } = useSiteParams();
   const { ref, inView } = useInView();
 
+  console.log('props', props)
+  // @ts-ignore
+  console.log('global.STM_Config', global.STM_Config)
+
   useEffect(() => {
     // @ts-ignore
-    setConfig(props.config | global.$STM_Config);
+    global.STM_Config.endpoint = props.STM_ENDPOINT
     // @ts-ignore
-    global.STM_Config = props.config
+    setConfig(global.STM_Config);
   }, [props, setConfig]);
 
   const {
@@ -175,8 +179,7 @@ const ParamPage: FC = (props: any) => {
 export default ParamPage;
 
 export async function getServerSideProps() {
-  console.log('global.process.env.STM_Config', global.process.env.STM_Config)
   return {
-    props: { config: global.process.env.STM_Config || siteConfig }
+    props: { STM_ENDPOINT: global.process.env.STM_ENDPOINT }
   };
 }

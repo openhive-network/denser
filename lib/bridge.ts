@@ -99,9 +99,9 @@ export type Subscription = Array<string>;
 
 export const dataLimit = 20;
 
-// let globalWithConfig = global as typeof globalThis & {
-//   STM_Config: any;
-// };
+let globalWithConfig = global as typeof globalThis & {
+  STM_Config: any;
+};
 
 // const endpoint =
 //   typeof window !== "undefined"
@@ -111,9 +111,10 @@ export const dataLimit = 20;
 //     :  globalWithConfig.$STM_Config
 
 // @ts-ignore
-const endpoint = global.STM_Config
+const endpoint = global.STM_Config ? global.STM_Config?.endpoint : siteConfig.endpoint;
+// @ts-ignore
+console.log('IN BRIDGE globalWithConfig.STM_Config', global.STM_Config)
 
-if (endpoint) {}
 export const bridgeServer = new Client([`https://${endpoint}`], {
   timeout: 3000,
   failoverThreshold: 3,
