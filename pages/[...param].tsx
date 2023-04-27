@@ -7,7 +7,7 @@ import PostList from '@/components/post-list';
 import { Skeleton } from '@/components/ui/skeleton';
 import CommunitiesSidebar from '@/components/communities-sidebar';
 import PostSelectFilter from '@/components/post-select-filter';
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
 import ExploreHive from '@/components/explore-hive';
 import UserShortcutsCard from '@/components/user-shortcuts-card';
 import ProfileLayout from '@/components/common/profile-layout';
@@ -29,7 +29,6 @@ const PostSkeleton = () => {
 };
 
 const ParamPage: FC = (props: any) => {
-  const setConfig = useAppStore((state) => state.setConfig);
   const router = useRouter();
   const { sort, username, tag } = useSiteParams();
   const { ref, inView } = useInView();
@@ -42,8 +41,7 @@ const ParamPage: FC = (props: any) => {
     // @ts-ignore
     global.STM_Config.endpoint = props.STM_ENDPOINT
     // @ts-ignore
-    setConfig(global.STM_Config);
-  }, [props, setConfig]);
+  }, [props]);
 
   const {
     data: entriesData,
