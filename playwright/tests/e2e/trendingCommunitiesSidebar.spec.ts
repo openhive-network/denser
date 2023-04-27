@@ -1,6 +1,6 @@
 import { test, expect, Locator } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
-import { CommunitiesPage } from '../support/pages/communitiesPage';
+import { CommunitiesPage } from '../support/pages/communitiesExplorerPage';
 
 test.describe('Home page tests - Trending Communities', () => {
   test('has "Trending Communities" sidebar', async ({ page }) => {
@@ -27,7 +27,7 @@ test.describe('Home page tests - Trending Communities', () => {
 
     await homePage.goto();
     await homePage.getExploreCommunities.click();
-    await communitiesPage.validataCommunitiesPageIsLoaded();
+    await communitiesPage.validataExplorerCommunitiesPageIsLoaded();
   });
 
   test('validate trending communities links are visible and the same as in api', async ({
