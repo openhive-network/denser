@@ -9,7 +9,7 @@ import parseDate from '@/lib/parse-date';
 
 const PostListItem = ({ post, sort }: any) => {
   return (
-    <li>
+    <li data-testid="post-list-item">
       <Card
         className={cn(
           'my-4 hover:bg-accent hover:text-accent-foreground  dark:bg-background/95 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground'
@@ -75,17 +75,17 @@ const PostListItem = ({ post, sort }: any) => {
               <Icons.arrowUpCircle className="mr-1 h-4 w-4 hover:text-red-600" />
               <Icons.arrowDownCircle className="4 mr-1 h-4 hover:text-gray-600" />
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center" data-testid="post-payout">
               <Icons.dollar className="mr-1 h-4 w-4 text-red-600" />
               {post.payout.toFixed(2)}
             </div>
             <Separator orientation="vertical" />
-            <div className="flex items-center">
+            <div className="flex items-center" data-testid="post-total-votes">
               <Icons.star className="mr-1 h-4 w-4" />
               {post.stats.total_votes}
             </div>
             <Separator orientation="vertical" />
-            <div className="flex items-center">
+            <div className="flex items-center" data-testid="post-children">
               <Icons.comment className="mr-1 h-4 w-4" />
               {post.children}
             </div>

@@ -130,7 +130,7 @@ const ParamPage: FC = () => {
               <div className="flex flex-col">
                 <span className="text-sm font-medium">{tag ? 'Community' : 'All posts'}</span>
                 {tag && communityData ? (
-                  <span className="text-xs font-light">{communityData?.title}</span>
+                  <span className="text-xs font-light" data-testid="community-name">{communityData?.title}</span>
                 ) : null}
               </div>
               <PostSelectFilter filter={sort} handleChangeFilter={handleChangeFilter} />
