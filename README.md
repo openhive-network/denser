@@ -15,7 +15,7 @@
 - Static Types with [TypeScript](https://typescriptlang.org)
 - UI Component library [Radix UI](https://www.radix-ui.com/)
 - Javascript library for talking to Hive API [DHive](https://gitlab.syncad.com/hive/dhive)
-- [Hivesigner](https://hivesigner.com/) option for authentication 
+- [Hivesigner](https://hivesigner.com/) option for authentication
 
 ## Getting Started
 
@@ -38,6 +38,14 @@ You can start editing the page by modifying `pages/index.tsx`. The page auto-upd
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+
+## Testing
+### E2E Playwright
+You can run automatic e2e tests in localhost by using node scripts but first run local Denser App by `npm run dev`
+- `npm run pw:test:local:chromium` (to run tests on the Chrome browser engine)
+- `npm run pw:test:local:firefox` (to run tests on the Firefox browser engine)
+- `npm run pw:test:local:webkit` (to run tests on the Safari browser engine)
+- `npm run pw:test:local` (to run tests on the browser engines above)
 
 ## Learn More
 
