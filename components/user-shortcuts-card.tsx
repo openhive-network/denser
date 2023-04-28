@@ -8,6 +8,7 @@ const UserShortcutsCard: FC = () => {
       className={cn(
         'my-4 hidden h-fit w-[300px] flex-col px-8 dark:bg-background/95 dark:text-white md:flex'
       )}
+      data-testid="card-user-shortcuts"
     >
       <CardHeader>
         <CardTitle>Shortcuts</CardTitle>

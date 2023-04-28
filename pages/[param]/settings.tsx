@@ -69,14 +69,14 @@ export default function UserSettings() {
               <Input type="text" id="mutedListDescription" name="mutedListDescription" />
             </div>
           </div>
-          <Button className="my-4 w-44">Update</Button>
+          <Button className="my-4 w-44" data-testid="pps-update-button">Update</Button>
         </div>
 
-        <div className="py-8">
+        <div className="py-8" data-testid="settings-preferences">
           <h2 className="py-4 text-lg font-semibold leading-5 text-slate-900 dark:text-white">Preferences</h2>
 
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-            <div>
+            <div data-testid="choose-language">
               <Select defaultValue="en">
                 <SelectTrigger>
                   <SelectValue placeholder="Choose Language" />
@@ -98,7 +98,7 @@ export default function UserSettings() {
               </Select>
             </div>
 
-            <div>
+            <div data-testid="not-safe-for-work-content">
               <Select defaultValue="hide">
                 <SelectTrigger>
                   <SelectValue placeholder="Not safe for work (NSFW) content" />
@@ -114,7 +114,7 @@ export default function UserSettings() {
               </Select>
             </div>
 
-            <div>
+            <div data-testid="blog-post-rewards">
               <Select defaultValue="50%">
                 <SelectTrigger>
                   <SelectValue placeholder="Blog post rewards" />
@@ -130,7 +130,7 @@ export default function UserSettings() {
               </Select>
             </div>
 
-            <div>
+            <div data-testid="comment-post-rewards">
               <Select defaultValue="50%">
                 <SelectTrigger>
                   <SelectValue placeholder="Comment post rewards" />
@@ -146,7 +146,7 @@ export default function UserSettings() {
               </Select>
             </div>
 
-            <div>
+            <div data-testid="referral-system">
               <Select defaultValue="enabled">
                 <SelectTrigger>
                   <SelectValue placeholder="Referral System" />
@@ -172,6 +172,7 @@ export default function UserSettings() {
           <RadioGroup
             defaultValue="https://api.hive.blog"
             className="w-full gap-0 md:w-8/12"
+            data-testid="api-endpoint-radiogroup"
             onValueChange={(e) => {
               setEndpoint(e);
               Router.reload();
@@ -205,7 +206,7 @@ export default function UserSettings() {
             </div>
           </RadioGroup>
 
-          <div className="my-4 flex w-full max-w-sm items-center space-x-2">
+          <div className="my-4 flex w-full max-w-sm items-center space-x-2" data-testid="add-api-endpoint">
             <Input type="text" placeholder="Add API Endpoint" />
             <Button type="submit">Add</Button>
           </div>

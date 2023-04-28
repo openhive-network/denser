@@ -45,14 +45,14 @@ const ProfileDropdownMenu = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Avatar className="rounded-md">
+        <Avatar className="rounded-md" data-testid="profile-menu">
           {currentProfile && (
             <AvatarImage src={`https://images.hive.blog/u/${currentProfile?.name || ''}/avatar`} />
           )}
           <AvatarFallback>{currentProfile?.name.slice(0, 2).toUpperCase() || ''}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
+      <DropdownMenuContent className="w-56" data-testid="profile-menu-content">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>

@@ -18,11 +18,11 @@ const Sidebar = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="sm" className="w-10 h-10 px-0">
+        <Button variant="ghost" size="sm" className="w-10 h-10 px-0" data-testid="nav-sidebar-menu-button">
           <Icons.sidebarOpen className="h-5 w-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent position="right" size="sm" className="w-5/6 md:w-1/5">
+      <SheetContent position="right" size="sm" className="w-5/6 md:w-1/5" data-testid="nav-sidebar-menu-content">
         <div className="flex flex-col">
           <ul>
             <li>

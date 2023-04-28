@@ -6,7 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "pw:test:local": "playwright test --config=playwright.local3000.config.ts",
+    "pw:test:local:chromium": "playwright test --project=chromium --config=playwright.local3000.config.ts --headed",
+    "pw:test:local:firefox": "playwright test --project=firefox --config=playwright.local3000.config.ts --headed",
+    "pw:test:local:webkit": "playwright test --project=webkit --config=playwright.local3000.config.ts --headed",
+    "pw:test:local:experimental:ui": "playwright test --config=playwright.local3000.config.ts --ui"
   },
   "dependencies": {
     "@ecency/render-helper": "^2.2.22",
@@ -43,6 +48,7 @@
     "big.js": "^6.2.1",
     "class-variance-authority": "^0.5.2",
     "clsx": "^1.2.1",
+    "dotenv": "^16.0.3",
     "eslint": "8.38.0",
     "eslint-config-next": "13.3.0",
     "i": "^0.3.7",
@@ -64,5 +70,8 @@
     "tailwindcss-animate": "^1.0.5",
     "typescript": "5.0.4",
     "zustand": "^4.3.7"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.32.3"
   }
 }
