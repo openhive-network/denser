@@ -1,5 +1,6 @@
 import { test, expect, Locator } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
+import { ProfilePage } from '../support/pages/profilePage';
 import { CommunitiesPage } from '../support/pages/communitiesPage';
 
 test.describe('Communities page tests', () => {
@@ -53,10 +54,7 @@ test.describe('Communities page tests', () => {
     );
   });
 
-  test('validate the community leadership of LeoFinance Community', async ({
-    page,
-    request
-  }) => {
+  test('validate the community leadership of LeoFinance Community', async ({ page, request }) => {
     const homePage = new HomePage(page);
     const communitiesPage = new CommunitiesPage(page);
 
@@ -83,12 +81,102 @@ test.describe('Communities page tests', () => {
 
     // start from 1 index because 0 index it is owner 'hive-167922'
     const leadershipListApiNames: any[] = [];
-    for(let i=1; i < leadershipListApi.length; i++){
-        leadershipListApiNames.push(leadershipListApi[i][0] + ' ' + leadershipListApi[i][1])
+    for (let i = 1; i < leadershipListApi.length; i++) {
+      leadershipListApiNames.push(leadershipListApi[i][0] + ' ' + leadershipListApi[i][1]);
     }
 
     leadershipListFrontElements.forEach(async (element, index) => {
-        expect((await element.textContent()).toLocaleLowerCase()).toContain('@'+String(leadershipListApiNames[index]))
-    })
+      expect((await element.textContent()).toLocaleLowerCase()).toContain(
+        '@' + String(leadershipListApiNames[index])
+      );
+    });
+  });
+
+  test('move to the profile lidership pages of LeoFinance community ', async ({ page }) => {
+    const homePage = new HomePage(page);
+    const profilePage = new ProfilePage(page);
+    const communitiesPage = new CommunitiesPage(page);
+
+    await homePage.goto();
+    await homePage.moveToLeoFinanceCommunities();
+    await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
+
+    const leadershipLinkLists = await communitiesPage.communityLeadershipList.locator('a').all();
+
+    const leadershipLinkNickNamesLists: any[] = [];
+    leadershipLinkLists.forEach((nickNameLink) => {
+      leadershipLinkNickNamesLists.push(nickNameLink.textContent());
+    });
+
+    for (let i = 0; i < leadershipLinkLists.length; i++) {
+      leadershipLinkLists[i].click();
+      await page.waitForSelector(profilePage.profileNickName['_selector']);
+      expect(await profilePage.profileNickName.textContent()).toBe(await leadershipLinkNickNamesLists[i]);
+      await page.goBack();
+      await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
+    }
+  });
+
+  test('validate the community leadership of Pinmapple Community', async ({ page, request }) => {
+    const homePage = new HomePage(page);
+    const communitiesPage = new CommunitiesPage(page);
+
+    await homePage.goto();
+    await homePage.moveToPinmappleCommunities();
+    await communitiesPage.validataCommunitiesPageIsLoaded('Pinmapple');
+
+    const url = process.env.NEXT_PUBLIC_API_NODE_ENDPOINT;
+
+    const responseCommunity = await request.post(`https://${url}/`, {
+      data: {
+        id: 0,
+        jsonrpc: '2.0',
+        method: 'bridge.get_community',
+        params: { name: 'hive-163772', observer: '' } //hive-163772 - Pinmapple community owner
+      },
+      headers: {
+        Accept: 'application/json, text/plain, */*'
+      }
+    });
+
+    const leadershipListApi = (await responseCommunity.json()).result.team;
+    const leadershipListFrontElements = await communitiesPage.communityLeadershipList.all();
+
+    // start from 1 index because 0 index it is owner 'hive-163772'
+    const leadershipListApiNames: any[] = [];
+    for (let i = 1; i < leadershipListApi.length; i++) {
+      leadershipListApiNames.push(leadershipListApi[i][0] + ' ' + leadershipListApi[i][1]);
+    }
+
+    leadershipListFrontElements.forEach(async (element, index) => {
+      expect((await element.textContent()).toLocaleLowerCase()).toContain(
+        '@' + String(leadershipListApiNames[index])
+      );
+    });
+  });
+
+  test('move to the profile lidership pages of Pinmapple community ', async ({ page }) => {
+    const homePage = new HomePage(page);
+    const profilePage = new ProfilePage(page);
+    const communitiesPage = new CommunitiesPage(page);
+
+    await homePage.goto();
+    await homePage.moveToPinmappleCommunities();
+    await communitiesPage.validataCommunitiesPageIsLoaded('Pinmapple');
+
+    const leadershipLinkLists = await communitiesPage.communityLeadershipList.locator('a').all();
+
+    const leadershipLinkNickNamesLists: any[] = [];
+    leadershipLinkLists.forEach((nickNameLink) => {
+      leadershipLinkNickNamesLists.push(nickNameLink.textContent());
+    });
+
+    for (let i = 0; i < leadershipLinkLists.length; i++) {
+      leadershipLinkLists[i].click();
+      await page.waitForSelector(profilePage.profileNickName['_selector']);
+      expect(await profilePage.profileNickName.textContent()).toBe(await leadershipLinkNickNamesLists[i]);
+      await page.goBack();
+      await communitiesPage.validataCommunitiesPageIsLoaded('Pinmapple');
+    }
   });
 });

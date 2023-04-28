@@ -2,7 +2,7 @@ import { Locator, Page, expect } from '@playwright/test';
 
 export class ProfilePage {
   readonly page: Page;
-  readonly profileNickName: Locator;
+  readonly profileNickName: any;
   readonly profileInfo: any;
   readonly profileName: Locator;
   readonly profileAbout: Locator;
