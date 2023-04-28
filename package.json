@@ -10,7 +10,8 @@
     "pw:test:local": "playwright test --config=playwright.local3000.config.ts",
     "pw:test:local:chromium": "playwright test --project=chromium --config=playwright.local3000.config.ts --headed",
     "pw:test:local:firefox": "playwright test --project=firefox --config=playwright.local3000.config.ts --headed",
-    "pw:test:local:webkit": "playwright test --project=webkit --config=playwright.local3000.config.ts --headed"
+    "pw:test:local:webkit": "playwright test --project=webkit --config=playwright.local3000.config.ts --headed",
+    "pw:test:local:experimental:ui": "playwright test --config=playwright.local3000.config.ts --ui"
   },
   "dependencies": {
     "@ecency/render-helper": "^2.2.22",
