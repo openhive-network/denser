@@ -6,6 +6,7 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import moment from 'moment';
 import parseDate from '@/lib/parse-date';
+import accountReputation from '@/lib/account-reputation';
 
 const PostListItem = ({ post, sort }: any) => {
   return (
@@ -34,7 +35,7 @@ const PostListItem = ({ post, sort }: any) => {
                   >
                     @{post.author}
                   </Link>{' '}
-                  ({post.author_reputation.toFixed(0)})
+                  ({accountReputation(post.author_reputation)})
                 </p>
                 {post.author_title ? (
                   <Badge variant="outline" className="ml-1 border-red-600 text-red-600">

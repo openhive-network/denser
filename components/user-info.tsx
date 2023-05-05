@@ -12,6 +12,7 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card"
 import UserAvatar from "@/components/user-avatar"
+import accountReputation from '@/lib/account-reputation';
 
 interface UserHoverCardProps {
   name: string
@@ -47,7 +48,7 @@ export function UserHoverCard({
           {withImage && <UserAvatar username={author} size="normal" />}
           {author}
           <span className="mr-1 block font-normal">
-            ({author_reputation.toFixed(0)})
+            ({accountReputation(author_reputation)})
           </span>
         </div>
       </HoverCardTrigger>
