@@ -27,7 +27,7 @@ function PostPage({post_s, followCount_s, account_s}: any) {
     isLoading: isLoadingPost,
     error: errorPost,
     data: post
-  } = useQuery(['getPost', permlink], () => getPost(username, String(permlink)), {
+  } = useQuery(['getPost', permlink, post_s], () => getPost(username, String(permlink)), {
     initialData: post_s,
     enabled: !!username && !!community && !!permlink
   });
@@ -35,7 +35,7 @@ function PostPage({post_s, followCount_s, account_s}: any) {
     isLoading: isLoadingFollows,
     error: errorFollows,
     data: follows
-  } = useQuery(['followCountData', username], () => getFollowCount(username), {
+  } = useQuery(['followCountData', username, followCount_s], () => getFollowCount(username), {
     initialData: followCount_s,
     enabled: !!username && !!community && !!permlink
   });
@@ -43,7 +43,7 @@ function PostPage({post_s, followCount_s, account_s}: any) {
     isLoading: isLoadingAccounts,
     error: errorAccount,
     data: account
-  } = useQuery(['accountData', username], () => getAccounts([username]), {
+  } = useQuery(['accountData', username, account_s], () => getAccounts([username]), {
     initialData: account_s,
     enabled: !!username && !!community && !!permlink
   });
