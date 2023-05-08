@@ -29,7 +29,7 @@ const PostSkeleton = () => {
 const ParamPage: FC = () => {
   const router = useRouter();
   const { sort, username, tag } = useSiteParams();
-  const { ref, inView } = useInView()
+  const { ref, inView } = useInView();
 
   const {
     data: entriesData,
@@ -40,33 +40,22 @@ const ParamPage: FC = () => {
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
-    refetch,
+    refetch
   } = useInfiniteQuery(
-    ["entriesInfinite", sort, tag],
-    async ({ pageParam }: {pageParam?: any}): Promise<any> => {
-      return await getPostsRanked(
-        sort || 'trending',
-        tag,
-        pageParam?.author,
-        pageParam?.permlink
-      )
+    ['entriesInfinite', sort, tag],
+    async ({ pageParam }: { pageParam?: any }): Promise<any> => {
+      return await getPostsRanked(sort || 'trending', tag, pageParam?.author, pageParam?.permlink);
     },
     {
       getNextPageParam: (lastPage: Entry[]) => {
         return {
-          author:
-            lastPage && lastPage.length > 0
-              ? lastPage[lastPage?.length - 1].author
-              : "",
-          permlink:
-            lastPage && lastPage.length > 0
-              ? lastPage[lastPage?.length - 1].permlink
-              : "",
-        }
+          author: lastPage && lastPage.length > 0 ? lastPage[lastPage?.length - 1].author : '',
+          permlink: lastPage && lastPage.length > 0 ? lastPage[lastPage?.length - 1].permlink : ''
+        };
       },
       enabled: Boolean(sort)
     }
-  )
+  );
 
   const {
     data: communityData,
@@ -101,12 +90,11 @@ const ParamPage: FC = () => {
     [router, tag]
   );
 
-
   useEffect(() => {
     if (inView) {
-      fetchNextPage()
+      fetchNextPage();
     }
-  }, [fetchNextPage, inView])
+  }, [fetchNextPage, inView]);
 
   if (
     (entriesDataIsLoading && entriesDataIsFetching) ||
@@ -130,34 +118,34 @@ const ParamPage: FC = () => {
               <div className="flex flex-col">
                 <span className="text-sm font-medium">{tag ? 'Community' : 'All posts'}</span>
                 {tag && communityData ? (
-                  <span className="text-xs font-light" data-testid="community-name">{communityData?.title}</span>
+                  <span className="text-xs font-light" data-testid="community-name">
+                    {communityData?.title}
+                  </span>
                 ) : null}
               </div>
               <PostSelectFilter filter={sort} handleChangeFilter={handleChangeFilter} />
             </div>
-              <>
-                {entriesData.pages.map((page, index) => {
-                  return page ? <PostList data={page} sort={sort} key={`f-${index}`} /> : null
-                })}
-                <div>
-                  <button
-                    ref={ref}
-                    onClick={() => fetchNextPage()}
-                    disabled={!hasNextPage || isFetchingNextPage}
-                  >
-                    {isFetchingNextPage
-                      ? <PostSkeleton />
-                      : hasNextPage
-                        ? "Load Newer"
-                        : "Nothing more to load"}
-                  </button>
-                </div>
-                <div>
-                  {entriesDataIsFetching && !isFetchingNextPage
-                    ? "Background Updating..."
-                    : null}
-                </div>
-              </>
+            <>
+              {entriesData.pages.map((page, index) => {
+                return page ? <PostList data={page} sort={sort} key={`f-${index}`} /> : null;
+              })}
+              <div>
+                <button
+                  ref={ref}
+                  onClick={() => fetchNextPage()}
+                  disabled={!hasNextPage || isFetchingNextPage}
+                >
+                  {isFetchingNextPage ? (
+                    <PostSkeleton />
+                  ) : hasNextPage ? (
+                    'Load Newer'
+                  ) : (
+                    'Nothing more to load'
+                  )}
+                </button>
+              </div>
+              <div>{entriesDataIsFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
+            </>
           </div>
           <div className="col-span-12 md:col-span-12 lg:col-span-4">
             {communityData ? <CommunityDescription data={communityData} /> : <ExploreHive />}
@@ -171,7 +159,7 @@ const ParamPage: FC = () => {
 
   return (
     <ProfileLayout>
-      <PostList data={accountEntriesData} />
+      <PostList data={accountEntriesData} sort={sort || 'trending'} />
     </ProfileLayout>
   );
 };

@@ -48,7 +48,15 @@ const PostListItem = ({ post, sort }: any) => {
               </p>
               <p className="text-sm">
                 in{` `}
-                <Link href={`/${sort}/${post.community}`} className="hover:text-red-600">{post.community_title}</Link>
+                {post.community ? (
+                  <Link href={`/${sort}/${post.community}`} className="hover:text-red-600">
+                    {post.community_title}
+                  </Link>
+                ) : (
+                  <Link href={`/${sort}/${post.category}`} className="hover:text-red-600">
+                    {post.category}
+                  </Link>
+                )}
                 <span className="mx-1">•</span>
                 {moment(parseDate(post.created)).fromNow()}
               </p>

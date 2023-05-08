@@ -1,5 +1,4 @@
 import parseDate from '@/lib/parse-date';
-import { renderPostBody } from '@ecency/render-helper';
 import {
   ArrowDownCircle,
   ArrowUpCircle,
@@ -15,13 +14,13 @@ import moment from 'moment';
 
 import { Button } from '@/components/ui/button';
 import UserInfo, { UserHoverCard } from '@/components/user-info';
-import { getAccountFull, getAccounts, getFollowCount, getPost } from '@/lib/hive';
-import { dehydrate, QueryClient, useQuery } from '@tanstack/react-query';
+import { getAccounts, getFollowCount, getPost } from '@/lib/hive';
+import { useQuery } from '@tanstack/react-query';
 import { useSiteParams } from '@/components/hooks/use-site-params';
-import { GetServerSideProps } from 'next';
-import { FullAccount } from '@/store/app-types';
+import { DefaultRenderer } from '@hiveio/content-renderer';
+import { getCommunity } from '@/lib/bridge';
 
-function PostPage({post_s, followCount_s, account_s}: any) {
+function PostPage({ post_s, followCount_s, account_s, community_s, post_html }: any) {
   const { username, community, permlink } = useSiteParams();
   const {
     isLoading: isLoadingPost,
@@ -48,11 +47,27 @@ function PostPage({post_s, followCount_s, account_s}: any) {
     enabled: !!username && !!community && !!permlink
   });
 
+  const {
+    isLoading: isLoadingCommunity,
+    error: errorCommunity,
+    data: communityData
+  } = useQuery(['communityData', community, community_s], () => getCommunity(community || community_s.name), {
+    initialData: community_s,
+    enabled: !!username && !!community && !!permlink
+  });
+
   const accountMetadata = !isLoadingAccounts && account ? JSON.parse(account[0].posting_json_metadata) : [];
 
   return (
     <>
-      {!isLoadingPost && !isLoadingFollows && !isLoadingAccounts && post && follows && account ? (
+      {!isLoadingPost &&
+      !isLoadingFollows &&
+      !isLoadingAccounts &&
+      !isLoadingCommunity &&
+      post &&
+      follows &&
+      account &&
+      communityData ? (
         <div className="bg-slate-50 py-8">
           <div className="mx-auto my-0 max-w-4xl bg-white px-8 py-4">
             <h1 className="text-3xl font-bold">{post.title}</h1>
@@ -61,7 +76,7 @@ function PostPage({post_s, followCount_s, account_s}: any) {
                 name={accountMetadata.profile?.name}
                 author={post.author}
                 author_reputation={post.author_reputation}
-                community_title={post.community_title}
+                community_title={communityData.title}
                 created={post.created}
                 following={follows.following_count}
                 followers={follows.follower_count}
@@ -73,9 +88,9 @@ function PostPage({post_s, followCount_s, account_s}: any) {
             <hr />
             <div
               id="articleBody"
-              className="entry-body markdown-view user-selectable prose max-w-full lg:prose-xl"
+              className="entry-body markdown-view user-selectable prose max-w-full"
               dangerouslySetInnerHTML={{
-                __html: renderPostBody(post.body, false)
+                __html: post_html
               }}
             />
             <div className="clear-both">
@@ -145,15 +160,35 @@ function PostPage({post_s, followCount_s, account_s}: any) {
 }
 
 export async function getServerSideProps(context: any) {
-  const username = String(context.params.p2).slice(1)
-  const permlink = String(context.params.permlink)
+  context.res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59');
+  const community = String(context.params.param);
+  const username = String(context.params.p2).slice(1);
+  const permlink = String(context.params.permlink);
 
-  const post_s = await getPost(username, String(permlink))
-  const followCount_s =  await getFollowCount(username)
-  const account_s = await getAccounts([username])
+  const post_s = await getPost(username, String(permlink));
+  const followCount_s = await getFollowCount(username);
+  const account_s = await getAccounts([username]);
+  const community_s = await getCommunity(community);
 
-  return { props: { post_s, followCount_s, account_s } };
+  const renderer = new DefaultRenderer({
+    baseUrl: 'https://hive.blog/',
+    breaks: true,
+    skipSanitization: false,
+    allowInsecureScriptTags: false,
+    addNofollowToLinks: true,
+    doNotShowImages: false,
+    ipfsPrefix: '',
+    assetsWidth: 640,
+    assetsHeight: 480,
+    imageProxyFn: (url: string) => 'https://images.hive.blog/1536x0/' + url,
+    usertagUrlFn: (account: string) => '/@' + account,
+    hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
+    isLinkSafeFn: (url: string) => true
+  });
+
+  const post_html = renderer.render(post_s.body);
+
+  return { props: { post_s, followCount_s, account_s, community_s, post_html } };
 }
-
 
 export default PostPage;
