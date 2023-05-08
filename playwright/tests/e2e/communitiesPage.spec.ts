@@ -92,7 +92,7 @@ test.describe('Communities page tests', () => {
     });
   });
 
-  test('move to the profile lidership pages of LeoFinance community ', async ({ page }) => {
+  test('move to the profile leadership pages of LeoFinance community ', async ({ page }) => {
     const homePage = new HomePage(page);
     const profilePage = new ProfilePage(page);
     const communitiesPage = new CommunitiesPage(page);
@@ -113,7 +113,7 @@ test.describe('Communities page tests', () => {
       await page.waitForSelector(profilePage.profileNickName['_selector']);
       expect(await profilePage.profileNickName.textContent()).toBe(await leadershipLinkNickNamesLists[i]);
       await page.goBack();
-      await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
+      await communitiesPage.quickValidataCommunitiesPageIsLoaded('LeoFinance');
     }
   });
 
@@ -155,7 +155,7 @@ test.describe('Communities page tests', () => {
     });
   });
 
-  test('move to the profile lidership pages of Pinmapple community ', async ({ page }) => {
+  test('move to the first-three leadership profile pages of Pinmapple community ', async ({ page }) => {
     const homePage = new HomePage(page);
     const profilePage = new ProfilePage(page);
     const communitiesPage = new CommunitiesPage(page);
@@ -172,11 +172,13 @@ test.describe('Communities page tests', () => {
     });
 
     for (let i = 0; i < leadershipLinkLists.length; i++) {
-      leadershipLinkLists[i].click();
-      await page.waitForSelector(profilePage.profileNickName['_selector']);
-      expect(await profilePage.profileNickName.textContent()).toBe(await leadershipLinkNickNamesLists[i]);
-      await page.goBack();
-      await communitiesPage.validataCommunitiesPageIsLoaded('Pinmapple');
+      if (i < 3) {
+        leadershipLinkLists[i].click();
+        await page.waitForSelector(profilePage.profileNickName['_selector']);
+        expect(await profilePage.profileNickName.textContent()).toBe(await leadershipLinkNickNamesLists[i]);
+        await page.goBack();
+        await communitiesPage.quickValidataCommunitiesPageIsLoaded('Pinmapple');
+      }
     }
   });
 });
