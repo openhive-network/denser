@@ -55,4 +55,12 @@ export class CommunitiesPage {
     await expect(this.communityDescription).toBeVisible()
     await expect(this.communityRules).toBeVisible()
   }
+
+  async quickValidataCommunitiesPageIsLoaded(communityName: string) {
+    await expect(this.communityNameTitle).toHaveText(communityName);
+    await expect(this.communityDescriptionSidebar).toBeVisible()
+    await expect(this.communityLeadership).toBeVisible()
+    await expect(this.communityDescription).toBeVisible()
+    await expect(this.communityRules).toBeVisible()
+  }
 }

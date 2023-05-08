@@ -31,7 +31,7 @@ test.describe('Home page tests', () => {
     // console.log((await response.json()).result[0])
     const postAuthor = (await response.json()).result[0].author;
     // console.log("Post author: ", await postAuthor)
-    const postAuthorReputation = (await response.json()).result[0].author_reputation.toFixed();
+    const postAuthorReputation = (await response.json()).result[0].author_reputation;
     // console.log("Post author reputation: ", await postAuthorReputation)
     const postTitle = (await response.json()).result[0].title;
     // console.log("Post title: ", await postTitle)
@@ -44,7 +44,7 @@ test.describe('Home page tests', () => {
 
     expect(homePage.getFirstPostAuthor).toHaveText('@' + postAuthor);
     expect(homePage.getFirstPostAuthorReputation).toHaveText(
-      '@' + postAuthor + ' (' + postAuthorReputation + ')'
+      '@' + postAuthor + ' (' + Math.floor(postAuthorReputation) + ')'
     );
     expect(homePage.getFirstPostTitle).toHaveText(postTitle);
     expect(homePage.getFirstPostPayout).toHaveText(postPayout);
@@ -85,7 +85,7 @@ test.describe('Home page tests', () => {
     // console.log((await response.json()).result[0])
     const postAuthor = (await response.json()).result[0].author;
     // console.log("Post author: ", await postAuthor)
-    const postAuthorReputation = (await response.json()).result[0].author_reputation.toFixed();
+    const postAuthorReputation = (await response.json()).result[0].author_reputation;
     // console.log("Post author reputation: ", await postAuthorReputation)
     const postTitle = (await response.json()).result[0].title;
     // console.log("Post title: ", await postTitle)
@@ -98,7 +98,7 @@ test.describe('Home page tests', () => {
 
     expect(homePage.getFirstPostAuthor).toHaveText('@' + postAuthor);
     expect(homePage.getFirstPostAuthorReputation).toHaveText(
-      '@' + postAuthor + ' (' + postAuthorReputation + ')'
+      '@' + postAuthor + ' (' + Math.floor(postAuthorReputation) + ')'
     );
     expect(homePage.getFirstPostTitle).toHaveText(postTitle);
     expect(homePage.getFirstPostPayout).toHaveText(postPayout);
