@@ -60,13 +60,8 @@ function PostPage({ post_s, followCount_s, account_s, community_s, post_html }: 
 
   return (
     <>
-      {!isLoadingPost &&
-      !isLoadingFollows &&
-      !isLoadingAccounts &&
-      !isLoadingCommunity &&
-      post &&
-      follows &&
-      account &&
+      {(!isLoadingPost && !isLoadingFollows && !isLoadingAccounts) ||
+      (!isLoadingCommunity && post && follows && account) ||
       communityData ? (
         <div className="bg-slate-50 py-8">
           <div className="mx-auto my-0 max-w-4xl bg-white px-8 py-4">
@@ -76,7 +71,7 @@ function PostPage({ post_s, followCount_s, account_s, community_s, post_html }: 
                 name={accountMetadata.profile?.name}
                 author={post.author}
                 author_reputation={post.author_reputation}
-                community_title={communityData.title}
+                community_title={communityData?.title}
                 created={post.created}
                 following={follows.following_count}
                 followers={follows.follower_count}
@@ -168,7 +163,10 @@ export async function getServerSideProps(context: any) {
   const post_s = await getPost(username, String(permlink));
   const followCount_s = await getFollowCount(username);
   const account_s = await getAccounts([username]);
-  const community_s = await getCommunity(community);
+  let community_s = null;
+  if (community.startsWith('hive-')) {
+    community_s = await getCommunity(community);
+  }
 
   const renderer = new DefaultRenderer({
     baseUrl: 'https://hive.blog/',
