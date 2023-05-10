@@ -9,77 +9,107 @@ import { cn, getPostSummary } from '@/lib/utils';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { DefaultRenderer } from '@hiveio/content-renderer';
 
 const CommentListItem = ({ comment }: any) => {
+  const renderer = new DefaultRenderer({
+    baseUrl: 'https://hive.blog/',
+    breaks: true,
+    skipSanitization: false,
+    allowInsecureScriptTags: false,
+    addNofollowToLinks: true,
+    doNotShowImages: false,
+    ipfsPrefix: '',
+    assetsWidth: 640,
+    assetsHeight: 480,
+    imageProxyFn: (url: string) => 'https://images.hive.blog/1536x0/' + url,
+    usertagUrlFn: (account: string) => '/@' + account,
+    hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
+    isLinkSafeFn: (url: string) => true
+  });
+
+  const comment_html = renderer.render(comment.body);
+
   return (
-    <li data-testid="comment-list-item">
-      <Card
-        className={cn(
-          'my-4 hover:bg-accent hover:text-accent-foreground  dark:bg-background/95 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground'
-        )}
-      >
-        <CardHeader>
-          <div className="flex items-center">
-            <img
-              className="mr-3 h-[40px] w-[40px] rounded-3xl"
-              height="40"
-              width="40"
-              src={`https://images.hive.blog/u/${comment.author}/avatar`}
-              alt={`${comment.author} profile picture`}
-            />
-            <div className="flex flex-col text-slate-500 dark:text-slate-400">
-              <div>
-                <p>
-                  <Link
-                    href={`@${comment.author}`}
-                    className="bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent"
-                    data-testid="post-author"
-                  >
-                    @{comment.author}
-                  </Link>{' '}
-                  ({comment.author_reputation.toFixed(0)})
+    <>
+      <li data-testid="comment-list-item">
+        <Card
+          className={cn(
+            'my-4 hover:bg-accent hover:text-accent-foreground  dark:bg-background/95 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground'
+          )}
+        >
+          <CardHeader>
+            <div className="flex items-center">
+              <img
+                className="mr-3 h-[40px] w-[40px] rounded-3xl"
+                height="40"
+                width="40"
+                src={`https://images.hive.blog/u/${comment.author}/avatar`}
+                alt={`${comment.author} profile picture`}
+              />
+              <div className="flex flex-col text-slate-500 dark:text-slate-400">
+                <div>
+                  <p>
+                    <Link
+                      href={`@${comment.author}`}
+                      className="bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent"
+                      data-testid="post-author"
+                    >
+                      @{comment.author}
+                    </Link>{' '}
+                    ({comment.author_reputation.toFixed(0)})
+                  </p>
+                </div>
+                <p className="text-sm">
+                  {`in ${comment.community_title}`}
+                  <span className="mx-1">•</span>
+                  {moment(parseDate(comment.created)).fromNow()}
                 </p>
               </div>
-              <p className="text-sm">
-                {`in ${comment.community_title}`}
-                <span className="mx-1">•</span>
-                {moment(parseDate(comment.created)).fromNow()}
-              </p>
             </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <CardTitle>{comment.title}</CardTitle>
-          <CardDescription>{comment.body}</CardDescription>
-        </CardContent>
-        <CardFooter>
-          <div className="flex h-5 items-center space-x-4 text-sm">
-            <div className="flex items-center">
-              <Icons.arrowUpCircle className="mr-1 h-4 w-4 hover:text-red-600" />
-              <Icons.arrowDownCircle className="4 mr-1 h-4 hover:text-gray-600" />
+          </CardHeader>
+          <CardContent>
+            <CardTitle>{comment.title}</CardTitle>
+            <CardDescription
+              dangerouslySetInnerHTML={{
+                __html: comment_html
+              }}
+            />
+          </CardContent>
+          <CardFooter>
+            <div className="flex h-5 items-center space-x-4 text-sm">
+              <div className="flex items-center">
+                <Icons.arrowUpCircle className="mr-1 h-4 w-4 hover:text-red-600" />
+                <Icons.arrowDownCircle className="4 mr-1 h-4 hover:text-gray-600" />
+              </div>
+              <div className="flex items-center">
+                <Icons.dollar className="mr-1 h-4 w-4 text-red-600" />
+                {comment.payout.toFixed(2)}
+              </div>
+              <Separator orientation="vertical" />
+              <div className="flex items-center">
+                <Icons.star className="mr-1 h-4 w-4" />
+                {comment.stats.total_votes}
+              </div>
+              <Separator orientation="vertical" />
+              <div className="flex items-center">
+                <Icons.comment className="mr-1 h-4 w-4" />
+                {comment.children}
+              </div>
+              <Separator orientation="vertical" />
+              <div className="flex items-center">
+                <Icons.forward className="h-4 w-4" />
+              </div>
             </div>
-            <div className="flex items-center">
-              <Icons.dollar className="mr-1 h-4 w-4 text-red-600" />
-              {comment.payout.toFixed(2)}
-            </div>
-            <Separator orientation="vertical" />
-            <div className="flex items-center">
-              <Icons.star className="mr-1 h-4 w-4" />
-              {comment.stats.total_votes}
-            </div>
-            <Separator orientation="vertical" />
-            <div className="flex items-center">
-              <Icons.comment className="mr-1 h-4 w-4" />
-              {comment.children}
-            </div>
-            <Separator orientation="vertical" />
-            <div className="flex items-center">
-              <Icons.forward className="h-4 w-4" />
-            </div>
-          </div>
-        </CardFooter>
-      </Card>
-    </li>
+          </CardFooter>
+        </Card>
+      </li>
+      <ul className="pl-10">
+        {comment?.fullReplies?.map((comment: any) => (
+          <CommentListItem comment={comment} key={comment.post_id} />
+        ))}
+      </ul>
+    </>
   );
   // return (
   //   <li className="list-none" key={comment.id} data-testid="comment-list-item">

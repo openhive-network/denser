@@ -18,9 +18,17 @@ import { getAccounts, getFollowCount, getPost } from '@/lib/hive';
 import { useQuery } from '@tanstack/react-query';
 import { useSiteParams } from '@/components/hooks/use-site-params';
 import { DefaultRenderer } from '@hiveio/content-renderer';
-import { getCommunity } from '@/lib/bridge';
+import { getCommunity, getDiscussion } from '@/lib/bridge';
+import CommentList from '@/components/comment-list';
+import Loading from '@/components/loading';
+import dynamic from 'next/dynamic';
 
-function PostPage({ post_s, followCount_s, account_s, community_s, post_html }: any) {
+const DynamicComments = dynamic(() => import('@/components/comment-list'), {
+  loading: () => <Loading />,
+  ssr: false
+});
+
+function PostPage({ post_s, followCount_s, account_s, discussion_s, community_s, post_html }: any) {
   const { username, community, permlink } = useSiteParams();
   const {
     isLoading: isLoadingPost,
@@ -46,7 +54,14 @@ function PostPage({ post_s, followCount_s, account_s, community_s, post_html }: 
     initialData: account_s,
     enabled: !!username && !!community && !!permlink
   });
-
+  const {
+    isLoading: isLoadingDiscussion,
+    error: errorDiscussion,
+    data: discussion
+  } = useQuery(['discussionData', permlink, discussion_s], () => getDiscussion(username, String(permlink)), {
+    initialData:  discussion_s,
+    enabled: !!username && !!community && !!permlink
+  });
   const {
     isLoading: isLoadingCommunity,
     error: errorCommunity,
@@ -148,6 +163,9 @@ function PostPage({ post_s, followCount_s, account_s, community_s, post_html }: 
               </div>
             </div>
           </div>
+          <div className="mx-auto my-0 max-w-4xl px-8 py-4">
+            <DynamicComments data={Object.keys(discussion).map((key) => discussion[key])} parent={post} />
+          </div>
         </div>
       ) : null}
     </>
@@ -163,6 +181,7 @@ export async function getServerSideProps(context: any) {
   const post_s = await getPost(username, String(permlink));
   const followCount_s = await getFollowCount(username);
   const account_s = await getAccounts([username]);
+  const discussion_s = await getDiscussion(username, String(permlink))
   let community_s = null;
   if (community.startsWith('hive-')) {
     community_s = await getCommunity(community);
@@ -186,7 +205,7 @@ export async function getServerSideProps(context: any) {
 
   const post_html = renderer.render(post_s.body);
 
-  return { props: { post_s, followCount_s, account_s, community_s, post_html } };
+  return { props: { post_s, followCount_s, account_s, discussion_s, community_s, post_html } };
 }
 
 export default PostPage;
