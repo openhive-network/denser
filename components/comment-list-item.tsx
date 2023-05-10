@@ -51,7 +51,7 @@ const CommentListItem = ({ comment }: any) => {
                 <div>
                   <p>
                     <Link
-                      href={`@${comment.author}`}
+                      href={`/@${comment.author}`}
                       className="bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent"
                       data-testid="post-author"
                     >
@@ -71,6 +71,7 @@ const CommentListItem = ({ comment }: any) => {
           <CardContent>
             <CardTitle>{comment.title}</CardTitle>
             <CardDescription
+              className="prose"
               dangerouslySetInnerHTML={{
                 __html: comment_html
               }}
