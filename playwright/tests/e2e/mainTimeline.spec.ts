@@ -170,27 +170,27 @@ test.describe('Home page tests', () => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
-    expect(homePage.getCardExploreHive).toBeVisible();
-    expect(homePage.getCardExploreHiveTitle).toHaveText('Explore Hive');
-    expect(homePage.getCardExploreHiveLinks).toHaveCount(5);
+    await expect(homePage.getCardExploreHive).toBeVisible();
+    await expect(homePage.getCardExploreHiveTitle).toHaveText('Explore Hive');
+    await expect(homePage.getCardExploreHiveLinks).toHaveCount(5);
   });
 
   test('validate that Shortcuts sidebar is visible', async ({ page }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
-    expect(homePage.getCardUserShortcuts).toBeVisible();
-    expect(homePage.getCardUserShortcutsTitle).toHaveText('Shortcuts');
-    expect(homePage.getCardUserShortcutsLinks).toHaveCount(3);
+    await expect(homePage.getCardUserShortcuts).toBeVisible();
+    await expect(homePage.getCardUserShortcutsTitle).toHaveText('Shortcuts');
+    await expect(homePage.getCardUserShortcutsLinks).toHaveCount(3);
   });
 
   test('validate that Trending Communities sidebar is visible', async ({ page }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
-    expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
-    expect(homePage.getTrandingCommunitiesHeader).toHaveText('Trending Communities');
-    expect(homePage.getTrendingCommunitiesSideBarLinks).toHaveCount(13);
+    await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
+    await expect(homePage.getTrandingCommunitiesHeader).toHaveText('Trending Communities');
+    await expect(homePage.getTrendingCommunitiesSideBarLinks).toHaveCount(13);
   });
 
   test('move to the Proposals page', async ({ page }) => {

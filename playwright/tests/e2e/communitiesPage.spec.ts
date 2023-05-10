@@ -85,10 +85,13 @@ test.describe('Communities page tests', () => {
       leadershipListApiNames.push(leadershipListApi[i][0] + ' ' + leadershipListApi[i][1]);
     }
 
-    leadershipListFrontElements.forEach(async (element, index) => {
-      expect((await element.textContent()).toLocaleLowerCase()).toContain(
-        '@' + String(leadershipListApiNames[index])
-      );
+    const leadershipListNamesFrontElements: any[] = [];
+    for (const leadershipFront of leadershipListFrontElements) {
+      leadershipListNamesFrontElements.push(await leadershipFront.textContent());
+    }
+
+    leadershipListNamesFrontElements.forEach((element, index) => {
+      expect(element.toLocaleLowerCase()).toContain(String(leadershipListApiNames[index]));
     });
   });
 
@@ -148,10 +151,13 @@ test.describe('Communities page tests', () => {
       leadershipListApiNames.push(leadershipListApi[i][0] + ' ' + leadershipListApi[i][1]);
     }
 
-    leadershipListFrontElements.forEach(async (element, index) => {
-      expect((await element.textContent()).toLocaleLowerCase()).toContain(
-        '@' + String(leadershipListApiNames[index])
-      );
+    const leadershipListNamesFrontElements: any[] = [];
+    for (const leadershipFront of leadershipListFrontElements) {
+      leadershipListNamesFrontElements.push(await leadershipFront.textContent());
+    }
+
+    leadershipListNamesFrontElements.forEach((element, index) => {
+      expect(element.toLocaleLowerCase()).toContain(String(leadershipListApiNames[index]));
     });
   });
 
