@@ -7,6 +7,9 @@ require("dotenv").config({ path: "./.env.local" });
  */
 // require('dotenv').config();
 
+/* The same default value as in site.ts */
+process.env.NEXT_PUBLIC_API_NODE_ENDPOINT = process.env.NEXT_PUBLIC_API_NODE_ENDPOINT || 'api.hive.blog';
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -35,6 +38,7 @@ export default defineConfig({
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
     actionTimeout: 0,
+    
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: 'http://localhost:3000',
 

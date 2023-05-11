@@ -79,6 +79,35 @@ lint:
   artifacts:
     paths:
       - "npm-lint.log"
+
+e2e-tests:
+  extends: .node-job
+  needs:
+    - docker-build
+  image: mcr.microsoft.com/playwright:v1.33.0-jammy
+  services:
+    - name: $IMAGE_NAME
+      alias: denser
+  variables:
+    API_ENDPOINT: api.hive.blog
+    NEXT_PUBLIC_API_NODE_ENDPOINT: $API_ENDPOINT
+    PORT: 3000
+    DENSER_URL: http://denser:$PORT
+  parallel:
+    matrix:
+      - PROJECT: ['chromium', 'firefox', 'webkit']
+        SHARD_INDEX: [1, 2, 3, 4, 5]
+        SHARD_TOTAL: 5
+  script:
+    - npm ci
+    - npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL
+  artifacts:
+    paths:
+      - playwright-report/
+      - test-results/
+      - results.xml
+    reports:
+      junit: results.xml
       
 publish:
   image: 
@@ -148,6 +177,7 @@ staging:stop:
     - staging:deploy
   variables:
     CONTAINER_NAME: denser
+    GIT_STRATEGY: none
   script: 
     - docker ps -q --filter "name=$CONTAINER_NAME" | grep -q . && docker stop $CONTAINER_NAME
   environment: 
