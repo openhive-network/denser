@@ -136,12 +136,9 @@ staging:deploy:
     name: staging
     action: start
     on_stop: staging:stop
-  when: manual
-  # Replace the above line wit lines below to restrict the job too te default branch
-  # Both staging jobs must have the same rules
-  #rules:
-  #  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-  #    when: manual
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
   tags:
     - hs-denser
 
@@ -156,11 +153,8 @@ staging:stop:
   environment: 
     name: staging
     action: stop
-  when: manual
-  # Replace the above line wit lines below to restrict the job too te default branch
-  # Both staging jobs must have the same rules
-  #rules:
-  #  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-  #    when: manual
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
   tags:
     - hs-denser  
