@@ -32,10 +32,15 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
+  /* 
+    Reporter to use. See https://playwright.dev/docs/test-reporters
+    List reporter may have to be replaced with dot reporter if 
+    the number of tests increases.
+  */
   reporter: [ 
     ['html'], 
-    ['junit', { outputFile: 'results.xml' }] 
+    ['junit', { outputFile: 'results.xml' }],
+    ['list', { printSteps: false }]
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
