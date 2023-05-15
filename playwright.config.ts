@@ -37,11 +37,11 @@ export default defineConfig({
     List reporter may have to be replaced with dot reporter if 
     the number of tests increases.
   */
-  reporter: [ 
-    ['html'], 
-    ['junit', { outputFile: 'results.xml' }],
+  reporter: process.env.CI ? [ 
+    ['html', { open: 'never', outputFolder: `playwright-report/${process.env.PROJECT}/${process.env.SHARD_INDEX}` }],
+    ['junit', { outputFile: `junit/${process.env.PROJECT}/${process.env.SHARD_INDEX}/results.xml` }],
     ['list', { printSteps: false }]
-  ],
+  ] : 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
@@ -51,7 +51,12 @@ export default defineConfig({
     baseURL: process.env.CI ? process.env.DENSER_URL : 'http://localhost:3000',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'retain-on-failure',
+    trace: {
+      mode: 'retain-on-failure',
+      screenshots: true,
+      snapshots: !process.env.CI,
+      sources: true
+    },
   },
 
   /* Configure projects for major browsers */

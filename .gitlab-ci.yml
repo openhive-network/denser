@@ -1,6 +1,7 @@
 stages:
  - build
  - test
+ - test-report-aggregate
  - deploy
 
 variables:
@@ -54,12 +55,12 @@ docker-build:
   script:
     - |
       echo -e "\e[0Ksection_start:$(date +%s):deps[collapsed=true]\r\e[0KInstalling dependencies..." 
-      npm ci
+      npm ci --cache .npm
       echo -e "\e[0Ksection_end:$(date +%s):deps\r\e[0K"
   cache:
-    key: "$CI_JOB_NAME"
+    key: denser-cache-1
     paths:
-      - node_modules/
+      - .npm/
       - .next/
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
@@ -99,15 +100,38 @@ e2e-tests:
         SHARD_INDEX: [1, 2, 3, 4, 5]
         SHARD_TOTAL: 5
   script:
-    - npm ci
-    - npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL
+    - !reference [.node-job, script]
+    - |
+      echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=false]\r\e[0KRunning tests..."
+      npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL
+      echo -e "\e[0Ksection_end:$(date +%s):tests\r\e[0K"
   artifacts:
     paths:
       - playwright-report/
       - test-results/
-      - results.xml
+      - junit/
     reports:
-      junit: results.xml
+      junit: junit/**/**/results.xml
+
+e2e-report-aggregate:
+  extends: .node-job
+  stage: test-report-aggregate
+  needs:
+    - e2e-tests
+  when: always
+  image: mcr.microsoft.com/playwright:v1.33.0-jammy
+  variables:
+    PROJECTS: '["chromium", "firefox", "webkit"]'
+    SHARD_TOTAL: 5 
+  script:
+    - npm install playwright-merge-html-reports --dev
+    - npx playwright test tests/merge-reports --config playwright.merge.config.ts
+  artifacts:
+    paths:
+      - merged-html-report/
+      - playwright-report/
+      - test-results/
+      - junit/
       
 publish:
   image: 
