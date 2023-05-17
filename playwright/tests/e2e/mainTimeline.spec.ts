@@ -180,7 +180,7 @@ test.describe('Home page tests', () => {
     await homePage.goto();
 
     await expect(homePage.getCardUserShortcuts).toBeVisible();
-    await expect(homePage.getCardUserShortcutsTitle).toHaveText('Shortcuts');
+    await expect(homePage.getCardUserShortcutsTitle).toHaveText('Shortcuts 2');
     await expect(homePage.getCardUserShortcutsLinks).toHaveCount(3);
   });
 
@@ -189,7 +189,7 @@ test.describe('Home page tests', () => {
     await homePage.goto();
 
     await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
-    await expect(homePage.getTrandingCommunitiesHeader).toHaveText('Trending Communities');
+    await expect(homePage.getTrandingCommunitiesHeader).toHaveText('Trending Communities 2');
     await expect(homePage.getTrendingCommunitiesSideBarLinks).toHaveCount(13);
   });
 
