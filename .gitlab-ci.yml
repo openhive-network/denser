@@ -90,8 +90,7 @@ e2e-tests:
     - name: $IMAGE_NAME
       alias: denser
   variables:
-    API_ENDPOINT: https://api.hive.blog
-    REACT_APP_API_ENDPOINT: $API_ENDPOINT
+    REACT_APP_API_ENDPOINT: https://api.hive.blog
     PORT: 3000
     DENSER_URL: http://denser:$PORT
   parallel:
@@ -173,6 +172,7 @@ staging:deploy:
     - docker-build
   variables:
     PORT: 3000
+    API_ENDPOINT: https://api.hive.blog
   before_script:
     - |
       echo -e "\e[0Ksection_start:$(date +%s):login[collapsed=true]\r\e[0KLogging to Docker registry..."
@@ -182,6 +182,7 @@ staging:deploy:
     - |
       scripts/run_instance.sh \
         --image="$IMAGE_NAME" \
+        --api-endpoint="$API_ENDPOINT"
         --port=$PORT
   environment:
     name: staging

@@ -4,5 +4,6 @@ services:
     image: registry.gitlab.syncad.com/hive/denser:${IMAGE_TAG:-latest}
     environment:
       - PORT
+      - REACT_APP_API_ENDPOINT
     ports:
       - "${PORT}:${PORT}"

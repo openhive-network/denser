@@ -1,6 +1,5 @@
 # syntax=docker/dockerfile:1.4
 # Build with: docker buildx bake --progress=plain local-build
-# You should run container from this runner image with option `--init`.
 
 FROM node:18.15-alpine3.17 AS base
 
@@ -32,7 +31,7 @@ RUN npm run build
 
 FROM base AS runner
 
-HEALTHCHECK CMD wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
+RUN apk add --no-cache tini
 
 WORKDIR /home/node/app
 RUN chown node /home/node/app
@@ -54,6 +53,8 @@ COPY --from=builder --chown=node /home/node/app/.env* ./
 EXPOSE 3000
 ENV PORT 3000
 
+HEALTHCHECK CMD wget --no-verbose --tries=1 --spider http://localhost:$PORT || exit 1
+
 RUN chmod +x /home/node/app/docker-entrypoint.sh
-ENTRYPOINT ["/home/node/app/docker-entrypoint.sh"]
+ENTRYPOINT ["/sbin/tini", "--", "/home/node/app/docker-entrypoint.sh"]
 CMD ["node", "server.js"]
