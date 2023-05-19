@@ -8,7 +8,7 @@ require("dotenv").config({ path: "./.env.local" });
 // require('dotenv').config();
 
 /* The same default value as in site.ts */
-process.env.NEXT_PUBLIC_API_NODE_ENDPOINT = process.env.NEXT_PUBLIC_API_NODE_ENDPOINT || 'api.hive.blog';
+process.env.REACT_APP_API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT || 'https://api.hive.blog';
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -32,12 +32,12 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
-  /* 
+  /*
     Reporter to use. See https://playwright.dev/docs/test-reporters
-    List reporter may have to be replaced with dot reporter if 
+    List reporter may have to be replaced with dot reporter if
     the number of tests increases.
   */
-  reporter: process.env.CI ? [ 
+  reporter: process.env.CI ? [
     ['html', { open: 'never', outputFolder: `playwright-report/${process.env.PROJECT}/${process.env.SHARD_INDEX}` }],
     ['junit', { outputFile: `junit/${process.env.PROJECT}/${process.env.SHARD_INDEX}/results.xml` }],
     ['list', { printSteps: false }]
@@ -99,7 +99,7 @@ export default defineConfig({
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
   // outputDir: 'test-results/',
-  
+
   /* Run your local dev server before starting the tests */
   // webServer: {
   //   command: 'npm run start',

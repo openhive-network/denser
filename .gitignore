@@ -36,6 +36,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# front-end env script
+public/__ENV.js
+
 # playwright
 /test-results/
 /playwright-report/

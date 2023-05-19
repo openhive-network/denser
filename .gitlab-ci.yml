@@ -26,7 +26,7 @@ docker-build:
       echo -e "\e[0Ksection_start:$(date +%s):login[collapsed=true]\r\e[0KLogging to Docker registry..."
       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
       echo -e "\e[0Ksection_end:$(date +%s):login\r\e[0K"
-  script: 
+  script:
     - |
       echo -e "\e[0Ksection_start:$(date +%s):tag[collapsed=true]\r\e[0KDetermining tag for the new image..."
       if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
@@ -34,12 +34,12 @@ docker-build:
         export TAG="latest"
       else
         echo "Running on branch '$CI_COMMIT_BRANCH': tag = $CI_COMMIT_REF_SLUG"
-        export TAG="$CI_COMMIT_REF_SLUG" 
+        export TAG="$CI_COMMIT_REF_SLUG"
       fi
       echo -e "\e[0Ksection_end:$(date +%s):tag\r\e[0K"
       echo -e "\e[0Ksection_start:$(date +%s):build[collapsed=true]\r\e[0KBaking image "$CI_REGISTRY_IMAGE:$TAG"..."
       scripts/build_instance.sh --progress=plain "$CI_PROJECT_DIR"
-      echo "IMAGE_NAME=$CI_REGISTRY_IMAGE:$TAG" > docker-build.env
+      echo "IMAGE_NAME=$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA" > docker-build.env
       echo -e "\e[0Ksection_end:$(date +%s):build\r\e[0K"
   artifacts:
     reports:
@@ -48,13 +48,13 @@ docker-build:
     - public-runner-docker
 
 .node-job:
-  image: 
+  image:
     name: node:18.15-alpine3.17
     entrypoint: []
   stage: test
   script:
     - |
-      echo -e "\e[0Ksection_start:$(date +%s):deps[collapsed=true]\r\e[0KInstalling dependencies..." 
+      echo -e "\e[0Ksection_start:$(date +%s):deps[collapsed=true]\r\e[0KInstalling dependencies..."
       npm ci --cache .npm
       echo -e "\e[0Ksection_end:$(date +%s):deps\r\e[0K"
   cache:
@@ -71,10 +71,10 @@ docker-build:
 
 lint:
   extends: .node-job
-  script: 
+  script:
     - !reference [.node-job, script]
     - |
-      echo -e "\e[0Ksection_start:$(date +%s):lint[collapsed=true]\r\e[0KRunning linter..." 
+      echo -e "\e[0Ksection_start:$(date +%s):lint[collapsed=true]\r\e[0KRunning linter..."
       npm run lint 2>&1 | tee npm-lint.log
       echo -e "\e[0Ksection_end:$(date +%s):lint\r\e[0K"
   artifacts:
@@ -90,8 +90,8 @@ e2e-tests:
     - name: $IMAGE_NAME
       alias: denser
   variables:
-    API_ENDPOINT: api.hive.blog
-    NEXT_PUBLIC_API_NODE_ENDPOINT: $API_ENDPOINT
+    API_ENDPOINT: https://api.hive.blog
+    REACT_APP_API_ENDPOINT: $API_ENDPOINT
     PORT: 3000
     DENSER_URL: http://denser:$PORT
   parallel:
@@ -122,7 +122,7 @@ e2e-report-aggregate:
   image: mcr.microsoft.com/playwright:v1.33.0-jammy
   variables:
     PROJECTS: '["chromium", "firefox", "webkit"]'
-    SHARD_TOTAL: 5 
+    SHARD_TOTAL: 5
   script:
     - npm install playwright-merge-html-reports --dev
     - npx playwright test tests/merge-reports --config playwright.merge.config.ts
@@ -132,9 +132,9 @@ e2e-report-aggregate:
       - playwright-report/
       - test-results/
       - junit/
-      
+
 publish:
-  image: 
+  image:
     name: node:18.15-alpine3.17
     entrypoint: []
   stage: deploy
@@ -172,20 +172,18 @@ staging:deploy:
   needs:
     - docker-build
   variables:
-    API_ENDPOINT: api.hive.blog
     PORT: 3000
   before_script:
     - |
       echo -e "\e[0Ksection_start:$(date +%s):login[collapsed=true]\r\e[0KLogging to Docker registry..."
       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
       echo -e "\e[0Ksection_end:$(date +%s):login\r\e[0K"
-  script: 
+  script:
     - |
       scripts/run_instance.sh \
         --image="$IMAGE_NAME" \
-        --api-endpoint=$API_ENDPOINT \
         --port=$PORT
-  environment: 
+  environment:
     name: staging
     action: start
     on_stop: staging:stop
@@ -202,13 +200,13 @@ staging:stop:
   variables:
     CONTAINER_NAME: denser
     GIT_STRATEGY: none
-  script: 
+  script:
     - docker ps -q --filter "name=$CONTAINER_NAME" | grep -q . && docker stop $CONTAINER_NAME
-  environment: 
+  environment:
     name: staging
     action: stop
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: manual
   tags:
-    - hs-denser  
+    - hs-denser

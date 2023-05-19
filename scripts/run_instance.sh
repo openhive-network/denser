@@ -8,15 +8,13 @@ Usage: $0 [OPTION[=VALUE]]...
 
 Run a Denser Docker instance
 OPTIONS:
-  --image=IAMGE        Docker image to run (default: 'registry.gitlab.syncad.com/hive/denser:latest')
-  --api-endpoint=URL   API endpoint to be used by the new instance (default: 'api.hive.blog')
+  --image=IMAGE        Docker image to run (default: 'registry.gitlab.syncad.com/hive/denser:latest')
   --port=PORT          Port to be exposed (default: 3000)
   -?|--help            Display this help screen and exit
 EOF
 }
 
 IMAGE=${IMAGE:-"registry.gitlab.syncad.com/hive/denser:latest"}
-API_ENDPOINT=${API_ENDPOINT:-"api.hive.blog"}
 PORT=${PORT:-"3000"}
 
 while [ $# -gt 0 ]; do
@@ -24,10 +22,6 @@ while [ $# -gt 0 ]; do
     --image=*)
         arg="${1#*=}"
         IMAGE="$arg"
-        ;;
-    --api-endpoint=*)
-        arg="${1#*=}"
-        API_ENDPOINT="$arg"
         ;;
     --port=*)
         arg="${1#*=}"
@@ -53,8 +47,8 @@ CONTAINER_NAME="denser"
 
 docker run --detach \
   --rm \
+  --init \
   --publish "$PORT:$PORT" \
   --env PORT="$PORT" \
-  --env API_NODE_ENDPOINT="$API_ENDPOINT" \
   --name "$CONTAINER_NAME" \
   "$IMAGE"

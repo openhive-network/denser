@@ -22,11 +22,11 @@ test.describe('Profile page of @gtg', () => {
       'Joined June 2016'
     );
 
-    const url = process.env.NEXT_PUBLIC_API_NODE_ENDPOINT;
+    const url = process.env.REACT_APP_API_ENDPOINT;
 
     // Compare profile api nickname with nickname displayed on the website
     // and number of posts
-    const responseGetAccounts = await request.post(`https://${url}/`, {
+    const responseGetAccounts = await request.post(`${url}/`, {
       data: {
         id: 0,
         jsonrpc: '2.0',
@@ -45,7 +45,7 @@ test.describe('Profile page of @gtg', () => {
     expect(await profilePage.profileNumberOfPosts.textContent()).toBe(String(profilePostCountApi));
 
     // Compare follower and following number from api to the respondent on the website
-    const responseGetFollowCount = await request.post(`https://${url}/`, {
+    const responseGetFollowCount = await request.post(`${url}/`, {
       data: {
         id: 0,
         jsonrpc: '2.0',
@@ -208,8 +208,8 @@ test.describe('Profile page of @gtg', () => {
       expect(await element.textContent()).toBe(expectedEndpoints[index])
     })
 
-    await expect(profilePage.advancedSettingsApiEndpointButton.first()).toBeChecked()
-    expect(await profilePage.advancedSettingsApiEndpointButton.last().isChecked()).toBeFalsy()
+    await expect(profilePage.advancedSettingsApiEndpointButton.first()).toHaveAttribute('data-state', 'checked')
+    await expect(profilePage.advancedSettingsApiEndpointButton.last()).toHaveAttribute('data-state', 'unchecked')
 
     await expect(profilePage.advancedSettingsApiEndpointAddInput).toHaveAttribute('placeholder', 'Add API Endpoint')
     await expect(profilePage.advancedSettingsApiEndpointAddButton).toHaveText('Add')

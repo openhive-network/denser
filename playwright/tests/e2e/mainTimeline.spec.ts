@@ -14,9 +14,9 @@ test.describe('Home page tests', () => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
-    const url = process.env.NEXT_PUBLIC_API_NODE_ENDPOINT;
+    const url = process.env.REACT_APP_API_ENDPOINT;
 
-    const response = await request.post(`https://${url}/`, {
+    const response = await request.post(`${url}/`, {
       data: {
         id: 0,
         jsonrpc: '2.0',
@@ -68,9 +68,9 @@ test.describe('Home page tests', () => {
     await homePage.getFilterPostsList.getByText('New').locator('..').click();
     await expect(homePage.getFilterPosts).toHaveText('New');
 
-    const url = process.env.NEXT_PUBLIC_API_NODE_ENDPOINT;
+    const url = process.env.REACT_APP_API_ENDPOINT;
 
-    const response = await request.post(`https://${url}/`, {
+    const response = await request.post(`${url}/`, {
       data: {
         id: 0,
         jsonrpc: '2.0',

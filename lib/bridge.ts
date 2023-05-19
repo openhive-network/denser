@@ -107,7 +107,7 @@ const endpoint =
     :  siteConfig.endpoint
 
 if (endpoint) {}
-export const bridgeServer = new Client([`https://${endpoint}`], {
+export const bridgeServer = new Client([`${endpoint}`], {
   timeout: 3000,
   failoverThreshold: 3,
   consoleOnFailover: true

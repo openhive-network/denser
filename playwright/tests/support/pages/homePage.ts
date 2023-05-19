@@ -1,4 +1,5 @@
 import { Locator, Page, expect } from "@playwright/test"
+import env from "@beam-australia/react-env";
 
 export class HomePage {
   readonly page: Page
@@ -130,7 +131,7 @@ export class HomePage {
   }
 
   async moveToNavPostsPage() {
-    const url = process.env.NEXT_PUBLIC_API_NODE_ENDPOINT;
+    const url = env('API_ENDPOINT');
     await this.getNavPostsLink.click()
     await expect(this.page.url()).toBe(`https://${url}/trending`)
   }

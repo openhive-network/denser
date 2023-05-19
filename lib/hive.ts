@@ -36,7 +36,7 @@ const endpoint =
       :  siteConfig.endpoint
     :  siteConfig.endpoint
 
-export const client = new Client([`https://${endpoint}`], {
+export const client = new Client([`${endpoint}`], {
   timeout: 3000,
   failoverThreshold: 3,
   consoleOnFailover: true

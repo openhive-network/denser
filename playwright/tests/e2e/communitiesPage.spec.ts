@@ -24,9 +24,9 @@ test.describe('Communities page tests', () => {
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
 
-    const url = process.env.NEXT_PUBLIC_API_NODE_ENDPOINT;
+    const url = process.env.REACT_APP_API_ENDPOINT;
 
-    const responseCommunity = await request.post(`https://${url}/`, {
+    const responseCommunity = await request.post(`${url}/`, {
       data: {
         id: 0,
         jsonrpc: '2.0',
@@ -62,9 +62,9 @@ test.describe('Communities page tests', () => {
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
 
-    const url = process.env.NEXT_PUBLIC_API_NODE_ENDPOINT;
+    const url = process.env.REACT_APP_API_ENDPOINT;
 
-    const responseCommunity = await request.post(`https://${url}/`, {
+    const responseCommunity = await request.post(`${url}/`, {
       data: {
         id: 0,
         jsonrpc: '2.0',
@@ -128,9 +128,9 @@ test.describe('Communities page tests', () => {
     await homePage.moveToPinmappleCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('Pinmapple');
 
-    const url = process.env.NEXT_PUBLIC_API_NODE_ENDPOINT;
+    const url = process.env.REACT_APP_API_ENDPOINT;
 
-    const responseCommunity = await request.post(`https://${url}/`, {
+    const responseCommunity = await request.post(`${url}/`, {
       data: {
         id: 0,
         jsonrpc: '2.0',

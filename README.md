@@ -43,7 +43,8 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
 
 ### E2E Playwright
 
-You can run automatic e2e tests in localhost by using node scripts but first run local Denser App by `npm run dev`
+You can run automatic e2e tests in localhost by using node scripts but
+first run local Denser App by `npm run dev`
 
 - `npm run pw:test:local:chromium` (to run tests on the Chrome browser engine)
 - `npm run pw:test:local:firefox` (to run tests on the Firefox browser engine)
@@ -96,7 +97,7 @@ Usage: scripts/run_instance.sh [OPTION[=VALUE]]...
 Run a Denser Docker instance
 OPTIONS:
   --image=IAMGE        Docker image to run (default: 'registry.gitlab.syncad.com/hive/denser:latest')
-  --api-endpoint=URL   API endpoint to be used by the new instance (default: 'api.hive.blog')
+  --api-endpoint=URL   API endpoint to be used by the new instance (default: 'https://api.hive.blog')
   --port=PORT          Port to be exposed (default: 3000)
   -?|--help            Display this help screen and exit
 ```
@@ -104,15 +105,15 @@ OPTIONS:
 You can also run the pre-built Docker image with command:
 
 ```bash
-docker run --detach --publish 3000:3000 registry.gitlab.syncad.com/hive/denser:latest
+docker run --detach --init --publish 3000:3000 registry.gitlab.syncad.com/hive/denser:latest
 ```
 
-This will run a single instance of the App on port 3000, connected to [the default API](api.hive.blog).
+This will run a single instance of the App on port 3000, connected to [the default API](https://api.hive.blog).
 
 You can change the port and the default enpoint by using environment variables like so:
 
 ```bash
-docker run --detach --publish 80:80 --env PORT=80 --env API_NODE_ENDPOINT=api.example.com registry.gitlab.syncad.com/hive/denser:latest
+docker run --detach --init --publish 80:80 --env PORT=80 registry.gitlab.syncad.com/hive/denser:latest
 ```
 
 Finally, there are example [Composefile](docker/docker-compose.yml) and accompanying [dotenv](docker/.env) files available if you prefer to go that route.
@@ -124,3 +125,51 @@ To learn more about Next.js and Hive , take a look at the following resources:
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Hive Documentation](https://developers.hive.io/) - learn about Hive Blockchain
 - [Hive Ecosystem](https://hive.io/eco) - checkout apps ecosystem 📱
+
+
+## Passing environment variables to application
+
+We use npm package
+[@beam-australia/react-env](https://github.com/andrewmclagan/react-env)
+for passing environment variables to application in runtime (when we
+start application in shell).
+
+Please note, that environment variables set in shell before application
+start, this way for instance:
+```bash
+export REACT_APP_API_ENDPOINT="https://api.ha.deathwing.me"
+```
+will override everything set in any `*.env` files described below.
+
+Main environment file for application is `.env`. Put all environment
+variables, with their default values, into this file. Keep here values
+used in development, common for all developers. When you want to
+customize anything for your specific development requirement, do it in
+file `.env.local`. This file is ignored by `git`. Values set in
+this file will override values set in `.env` file.
+
+Variables prefixed with `REACT_APP_` are available to the browser and
+server. You can get variable `REACT_APP_API_ENDPOINT`, both in browser
+and on server, this way:
+```javascript
+import env from "@beam-australia/react-env";
+console.log('env("API_ENDPOINT")', env("API_ENDPOINT"));
+```
+Note, that prefix `REACT_APP_` will be omitted, when you use function
+`env()`. You can also get this variable via
+`process.env.REACT_APP_API_ENDPOINT`, but on server only.
+
+Any other variables (not prefixed with `REACT_APP_`) are available to
+server only, via `process.env`. Prefixing these variables is not
+required, however we decided to use another prefix `DENSER_SERVER_` to
+avoid interfering with other shell variables. Note, that prefix won't be
+omitted, so you should use statement like
+```javascript
+process.env.DENSER_SERVER_HIDDEN_SECRET
+```
+to get these variables.
+
+You can create another env files, like `.env.staging`, `.env.test`. Look
+into npm package
+[@beam-australia/react-env](https://github.com/andrewmclagan/react-env)
+documentation, what you can do with them.
