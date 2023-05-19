@@ -173,6 +173,15 @@ docker run --detach --publish 80:80 --env PORT=80 --env REACT_APP_API_ENDPOINT="
 
 Finally, there are example [Composefile](docker/docker-compose.yml) and accompanying [dotenv](docker/.env) files available if you prefer to go that route.
 
+**Note**: You can also set the apps environmantal variables by mounting a custom dotenv file inside the container rather than using the `--env` option - with the `PORT` variable being an exception.
+
+The command would look like this:
+
+```bash
+docker run --detach --publish 3000:3000 --volume /path/to/custom/env/file:/home/node/app/.env.local \
+  registry.gitlab.syncad.com/hive/denser:latest
+```
+
 ## Learn More
 
 To learn more about Next.js and Hive , take a look at the following resources:

@@ -182,7 +182,7 @@ staging:deploy:
     - |
       scripts/run_instance.sh \
         --image="$IMAGE_NAME" \
-        --api-endpoint="$API_ENDPOINT"
+        --api-endpoint="$API_ENDPOINT" \
         --port=$PORT
   environment:
     name: staging
