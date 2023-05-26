@@ -52,7 +52,7 @@ export function UserHoverCard({
           </span>
         </div>
       </HoverCardTrigger>
-      <HoverCardContent className="w-72">
+      <HoverCardContent className="w-72" data-testid="user-hover-card-content">
         <div className="space-y-2 text-black">
           <div className="flex">
             <UserAvatar username={author} size="large" />
@@ -80,20 +80,20 @@ export function UserHoverCard({
             </div>
           </div>
           <div className="grid grid-cols-3 gap-2">
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center" data-testid="user-followers">
               {followers}
               <span>Followers</span>
             </div>
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center" data-testid="user-following">
               {following}
               <span>Following</span>
             </div>
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center" data-testid="user-hp">
               123
               <span>HP</span>
             </div>
           </div>
-          <p>{about}</p>
+          <p data-testid="user-about">{about}</p>
           <div className="flex justify-center text-sm">
             Joined {dateToFormatted(joined, "MMMM YYYY")}
             <span className="mx-1">•</span>
@@ -123,7 +123,7 @@ function UserInfo({
   active,
 }: UserInfoProps) {
   return (
-    <div className="flex items-center py-4 text-slate-500 flex-wrap">
+    <div className="flex items-center py-4 text-slate-500 flex-wrap" data-testid="author-data">
       <UserHoverCard
         name={name}
         author={author}

@@ -80,7 +80,7 @@ function PostPage({ post_s, followCount_s, account_s, discussion_s, community_s,
       communityData ? (
         <div className="bg-slate-50 py-8">
           <div className="mx-auto my-0 max-w-4xl bg-white px-8 py-4">
-            <h1 className="text-3xl font-bold">{post.title}</h1>
+            <h1 className="text-3xl font-bold" data-testid="article-title">{post.title}</h1>
             {accountMetadata ? (
               <UserInfo
                 name={accountMetadata.profile?.name}
@@ -114,7 +114,7 @@ function PostPage({ post_s, followCount_s, account_s, discussion_s, community_s,
                 ))}
               </ul>
             </div>
-            <div className="text-sm text-slate-600">
+            <div className="text-sm text-slate-600" data-testid="author-data-post-footer">
               <div className="my-4 flex justify-between">
                 <div className="flex flex-wrap">
                   <Clock />

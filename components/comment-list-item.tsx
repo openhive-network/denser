@@ -39,7 +39,7 @@ const CommentListItem = ({ comment }: any) => {
           )}
         >
           <CardHeader>
-            <div className="flex items-center">
+            <div className="flex items-center" data-testid="comment-card-header">
               <img
                 className="mr-3 h-[40px] w-[40px] rounded-3xl"
                 height="40"
@@ -53,7 +53,7 @@ const CommentListItem = ({ comment }: any) => {
                     <Link
                       href={`/@${comment.author}`}
                       className="bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent"
-                      data-testid="post-author"
+                      data-testid="comment-author-link"
                     >
                       @{comment.author}
                     </Link>{' '}
@@ -69,16 +69,17 @@ const CommentListItem = ({ comment }: any) => {
             </div>
           </CardHeader>
           <CardContent>
-            <CardTitle>{comment.title}</CardTitle>
+            <CardTitle data-testid="comment-card-title">{comment.title}</CardTitle>
             <CardDescription
               className="prose"
+              data-testid="comment-card-description"
               dangerouslySetInnerHTML={{
                 __html: comment_html
               }}
             />
           </CardContent>
           <CardFooter>
-            <div className="flex h-5 items-center space-x-4 text-sm">
+            <div className="flex h-5 items-center space-x-4 text-sm" data-testid="comment-card-footer">
               <div className="flex items-center">
                 <Icons.arrowUpCircle className="mr-1 h-4 w-4 hover:text-red-600" />
                 <Icons.arrowDownCircle className="4 mr-1 h-4 hover:text-gray-600" />

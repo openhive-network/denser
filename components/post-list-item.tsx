@@ -64,7 +64,7 @@ const PostListItem = ({ post, sort }: any) => {
           </div>
 
           {post.json_metadata.image ? (
-            <Link href={`${post.url}`}>
+            <Link href={`${post.url}`} data-testid="post-image">
               <div className="relative flex h-full max-h-[200px] min-h-[200px] w-full items-center overflow-hidden bg-gray-100 lg:min-w-[320px] lg:max-w-[320px]">
                 <img src={post.json_metadata.image[0]} alt="Post image" />
               </div>
@@ -72,7 +72,7 @@ const PostListItem = ({ post, sort }: any) => {
           ) : null}
         </CardHeader>
         <CardContent>
-          <CardTitle>
+          <CardTitle data-testid="post-title">
             <Link href={`${post.url}`}>{post.title}</Link>
             {post.stats.is_pinned ? <Badge className="ml-1 bg-red-600 text-white">Pinned</Badge> : null}
           </CardTitle>
