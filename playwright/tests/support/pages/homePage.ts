@@ -172,7 +172,7 @@ export class HomePage {
 
   async moveToNavWitnessesPage() {
     await this.getNavWitnessesLink.click();
-    await expect(this.page.url()).toBe(`https://wallet.hive.blog/~witnesses`);
+    await expect(this.page.url()).toBe(`http://denser:3000/~witnesses`);
   }
 
   async moveToNavOurdAppsPage() {

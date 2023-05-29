@@ -36,7 +36,7 @@ export function MainNav() {
           Proposals
         </Link>
         <Link
-          href="https://wallet.hive.blog/~witnesses"
+          href="/~witnesses"
           className={cn(
             'transition-colors hover:text-foreground/80',
             pathname === 'https://wallet.hive.blog/~witnesses' ? 'text-foreground' : 'text-foreground/60'
