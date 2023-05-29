@@ -5,6 +5,9 @@ import sanitize from "sanitize-html"
 import { twMerge } from "tailwind-merge"
 
 import remarkableStripper from "@/lib/remmarkable-stripper"
+import { convertStringToBig } from "./helpers"
+import { DynamicGlobalProperties } from "./hive"
+import { FullAccount } from "@/store/app-types"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -164,6 +167,50 @@ const htmlCharMap = {
   hellip: "…",
   pound: "£",
   copy: "",
+}
+export function delegatedHive(accountData: FullAccount, dynamicData: DynamicGlobalProperties) {
+  const delegated_vests = convertStringToBig(accountData.delegated_vesting_shares);
+  const received_vests = convertStringToBig(accountData.received_vesting_shares);
+  const vests = delegated_vests.minus(received_vests);
+  const total_vests = convertStringToBig(dynamicData.total_vesting_shares);
+  const total_vest_hive = convertStringToBig(dynamicData.total_vesting_fund_hive);
+  const vesting_hivef = total_vest_hive.times(vests.div(total_vests));
+  return vesting_hivef;
+}
+export function getCurrentHpApr(data: DynamicGlobalProperties) {
+  // The inflation was set to 9.5% at block 7m
+  const initialInflationRate = 9.5;
+  const initialBlock = 7000000;
+
+  // It decreases by 0.01% every 250k blocks
+  const decreaseRate = 250000;
+  const decreasePercentPerIncrement = 0.01;
+
+  // How many increments have happened since block 7m?
+  const headBlock = data.head_block_number;
+  const deltaBlocks = headBlock - initialBlock;
+  const decreaseIncrements = deltaBlocks / decreaseRate;
+
+  // Current inflation rate
+  let currentInflationRate = initialInflationRate - decreaseIncrements * decreasePercentPerIncrement;
+
+  // Cannot go lower than 0.95%
+  if (currentInflationRate < 0.95) {
+    currentInflationRate = 0.95;
+  }
+
+  // Now lets calculate the "APR"
+  const vestingRewardPercent = data.vesting_reward_percent / 10000;
+  const virtualSupply = convertStringToBig(data.virtual_supply);
+  const totalVestingFunds = convertStringToBig(data.total_vesting_fund_hive);
+  return virtualSupply.times(currentInflationRate).times(vestingRewardPercent).div(totalVestingFunds);
+}
+export function vestingHive(accountData: FullAccount, dynamicData: DynamicGlobalProperties) {
+  const vests = convertStringToBig(accountData.vesting_shares);
+  const total_vests = convertStringToBig(dynamicData.total_vesting_shares);
+  const total_vest_hive = convertStringToBig(dynamicData.total_vesting_fund_hive);
+  const vesting_hivef = total_vest_hive.times(vests).div(total_vests);
+  return vesting_hivef;
 }
 export function getRoundedAbbreveration(
   numToRefactor: Big,

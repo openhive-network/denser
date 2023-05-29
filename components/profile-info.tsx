@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { QueryClient, dehydrate, useQuery } from '@tanstack/react-query';
 
-import { getAccountFull, getAccounts, getDynamicGlobalProperties } from '@/lib/hive';
+import { getAccountFull, getAccount, getDynamicGlobalProperties } from '@/lib/hive';
+
 import { accountReputation, getHivePower, numberWithCommas } from '@/lib/utils';
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
@@ -26,7 +27,7 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
     isLoading: accountDataIsLoading,
     error: accountDataError,
     data: accountData
-  } = useQuery(['accountData', username], () => getAccounts([username]), {
+  } = useQuery(['accountData', username], () => getAccount(username), {
     enabled: !!username
   });
   const {

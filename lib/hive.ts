@@ -4,8 +4,9 @@ import moment, { Moment } from 'moment';
 
 import { isCommunity, parseAsset, vestsToRshares } from '@/lib/utils';
 import { dataLimit } from './bridge';
-import { AccountFollowStats, AccountProfile, FullAccount } from '@/store/app-types';
+import { AccountFollowStats, AccountHistory, AccountProfile, FullAccount } from '@/store/app-types';
 import { siteConfig } from '@/config/site';
+import { makeBitMaskFilter, operationOrders } from '@hiveio/dhive/lib/utils';
 import Big from 'big.js';
 
 export interface TrendingTag {
@@ -69,6 +70,12 @@ export interface FeedHistory {
     base: string;
     quote: string;
   };
+  price_history: [
+    {
+      base: string;
+      quote: string;
+    }
+  ];
 }
 
 export interface RewardFund {
@@ -348,17 +355,31 @@ export const getDynamicGlobalProperties = (): Promise<DynamicGlobalProperties> =
       virtual_supply: r.virtual_supply
     };
   });
+const op = operationOrders;
+const wallet_operations_bitmask = makeBitMaskFilter([
+  op.transfer,
+  op.transfer_to_vesting,
+  op.withdraw_vesting,
+  op.interest,
+  op.liquidity_reward,
+  op.transfer_to_savings,
+  op.transfer_from_savings,
+  op.escrow_transfer,
+  op.cancel_transfer_from_savings,
+  op.escrow_approve,
+  op.escrow_dispute,
+  op.escrow_release,
+  op.fill_convert_request,
+  op.fill_order,
+  op.claim_reward_balance
+]);
 
 export const getAccountHistory = (
   username: string,
-  filters: any[] | any,
   start: number = -1,
   limit: number = 20
-): Promise<any> => {
-  return filters
-    ? client.call('condenser_api', 'get_account_history', [username, start, limit, ...filters])
-    : client.call('condenser_api', 'get_account_history', [username, start, limit]);
-};
+): Promise<AccountHistory[]> =>
+  client.call('condenser_api', 'get_account_history', [username, start, limit, ...wallet_operations_bitmask]);
 
 export const getFeedHistory = (): Promise<FeedHistory> => client.database.call('get_feed_history');
 
