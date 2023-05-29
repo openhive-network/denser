@@ -6,6 +6,7 @@ import { isCommunity, parseAsset, vestsToRshares } from '@/lib/utils';
 import { dataLimit } from './bridge';
 import { AccountFollowStats, AccountProfile, FullAccount } from '@/store/app-types';
 import { siteConfig } from '@/config/site';
+import Big from 'big.js';
 
 export interface TrendingTag {
   comments: number;
@@ -431,35 +432,62 @@ export interface Witness {
 
 export const getWitnessesByVote = (from: string, limit: number): Promise<Witness[]> =>
   client.call('condenser_api', 'get_witnesses_by_vote', [from, limit]);
-
-export interface Proposal {
-  creator: string;
-  daily_pay: {
-    amount: string;
-    nai: string;
-    precision: number;
+  export interface Proposal {
+    creator: string;
+    daily_pay: {
+      amount: string;
+      nai: string;
+      precision: number;
+    };
+    end_date: string;
+    id: number;
+    permlink: string;
+    proposal_id: number;
+    receiver: string;
+    start_date: string;
+    status: string;
+    subject: string;
+    total_votes: string;
+  }
+  export interface ListItemProps {
+    proposalData: Omit<Proposal, 'daily_pay' | 'total_votes'> & {
+      total_votes: Big;
+      daily_pay: { amount: Big };
+    };
+    totalShares: Big;
+    totalVestingFund: Big;
+  }
+  
+  export interface GetProposalsParams {
+    start: Array<number | string>;
+    limit: number;
+    order: 'by_creator' | 'by_total_votes' | 'by_start_date' | 'by_end_date';
+    order_direction: 'descending' | 'ascending';
+    status: 'all' | 'inactive' | 'active' | 'votable' | 'expired';
+    last_id?: number;
+  }
+  
+  export const DEFAULT_PARAMS_FOR_PROPOSALS: GetProposalsParams = {
+    start: [],
+    limit: 30,
+    order: 'by_total_votes',
+    order_direction: 'descending',
+    status: 'votable'
   };
-  end_date: string;
-  id: number;
-  permlink: string;
-  proposal_id: number;
-  receiver: string;
-  start_date: string;
-  status: string;
-  subject: string;
-  total_votes: string;
-}
-
-export const getProposals = (): Promise<Proposal[]> =>
-  client
-    .call('database_api', 'list_proposals', {
-      start: [-1],
-      limit: 200,
-      order: 'by_total_votes',
-      order_direction: 'descending',
-      status: 'all'
-    })
-    .then((r) => r.proposals);
+  
+  export const getProposals = async (params?: Partial<GetProposalsParams>): Promise<Proposal[]> => {
+    try {
+      const response = await client.call('database_api', 'list_proposals', {
+        ...DEFAULT_PARAMS_FOR_PROPOSALS,
+        ...params
+      });
+      return response.proposals;
+    } catch (error) {
+      console.error('Error:', error);
+      throw error;
+    }
+  };
+  
 
 export interface ProposalVote {
   id: number;
