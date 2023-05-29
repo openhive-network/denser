@@ -30,11 +30,11 @@ export interface DynamicProps {
 }
 
 const endpoint =
-  typeof window !== "undefined"
-    ? window.localStorage.getItem("hive-blog-endpoint")
-      ? JSON.parse(String(window.localStorage.getItem("hive-blog-endpoint")))
-      :  siteConfig.endpoint
-    :  siteConfig.endpoint
+  typeof window !== 'undefined'
+    ? window.localStorage.getItem('hive-blog-endpoint')
+      ? JSON.parse(String(window.localStorage.getItem('hive-blog-endpoint')))
+      : siteConfig.endpoint
+    : siteConfig.endpoint;
 
 export const client = new Client([`${endpoint}`], {
   timeout: 3000,
@@ -408,6 +408,8 @@ export const getVestingDelegations = (
   client.database.call('get_vesting_delegations', [username, from, limit]);
 
 export interface Witness {
+  created: string;
+  id: number;
   total_missed: number;
   url: string;
   props: {
@@ -423,6 +425,8 @@ export interface Witness {
   owner: string;
   signing_key: string;
   last_hbd_exchange_update: string;
+  votes: number;
+  last_confirmed_block_num: number;
 }
 
 export const getWitnessesByVote = (from: string, limit: number): Promise<Witness[]> =>

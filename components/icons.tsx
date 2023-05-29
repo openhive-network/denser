@@ -42,12 +42,24 @@ import {
   MapPin,
   Globe2,
   Instagram,
-  UserPlus, Trash2, AtSign, CalendarClock, Star, Circle, DollarSign, MicOff, SidebarClose, SidebarOpen, Pencil
+  UserPlus,
+  Trash2,
+  AtSign,
+  CalendarClock,
+  Star,
+  Circle,
+  DollarSign,
+  MicOff,
+  SidebarClose,
+  SidebarOpen,
+  Pencil,
+  Link
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
 
 export const Icons = {
+  link: Link,
   pencil: Pencil,
   sidebarClose: SidebarClose,
   sidebarOpen: SidebarOpen,
@@ -157,12 +169,7 @@ export const Icons = {
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 166 165" {...props}>
       <rect x="0.5" width="165" height="165" fill="url(#pattern0)" />
       <defs>
-        <pattern
-          id="pattern0"
-          patternContentUnits="objectBoundingBox"
-          width="1"
-          height="1"
-        >
+        <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
           <use xlinkHref="#image0_21_27547" transform="scale(0.00606061)" />
         </pattern>
         <image
@@ -173,5 +180,5 @@ export const Icons = {
         />
       </defs>
     </svg>
-  ),
+  )
 };

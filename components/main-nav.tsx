@@ -45,6 +45,7 @@ export function MainNav() {
         >
           Witnesses
         </Link>
+
         <Link
           href="https://hive.io/eco/"
           className={cn(

@@ -8,6 +8,8 @@ export interface AccountProfile {
   profile_image?: string;
   website?: string;
   pinned?: string;
+  witness_description?: string;
+  witness_owner?: string;
 }
 
 export interface AccountFollowStats {
