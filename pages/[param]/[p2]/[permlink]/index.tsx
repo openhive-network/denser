@@ -19,17 +19,75 @@ import { useQuery } from '@tanstack/react-query';
 import { useSiteParams } from '@/components/hooks/use-site-params';
 import { DefaultRenderer } from '@hiveio/content-renderer';
 import { getCommunity, getDiscussion } from '@/lib/bridge';
-import CommentList from '@/components/comment-list';
+import { PropsWithChildren, useEffect, useRef, useState } from 'react';
+import Lightbox, { Slide } from 'yet-another-react-lightbox';
+import { Fullscreen, Thumbnails, Zoom } from 'yet-another-react-lightbox/plugins';
+import 'yet-another-react-lightbox/plugins/thumbnails.css';
+import 'yet-another-react-lightbox/styles.css';
 import Loading from '@/components/loading';
 import dynamic from 'next/dynamic';
-
 const DynamicComments = dynamic(() => import('@/components/comment-list'), {
   loading: () => <Loading />,
   ssr: false
 });
+const ImageGalery = ({ children }: PropsWithChildren) => {
+  const [slides, setSlides] = useState<Slide[]>([]);
+  const [index, setIndex] = useState(-1);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const openOnIndex = (index: number) => {
+      return () => setIndex(index);
+    };
+    if (ref.current) {
+      setSlides(
+        Array.from(ref.current.querySelectorAll('img')).map((image: HTMLImageElement) => ({
+          src: image.src,
+          srcSet: [
+            {
+              src: image.src,
+              width: image.width,
+              height: image.height
+            }
+          ]
+        }))
+      );
+      ref.current.querySelectorAll('img').forEach((val, i) => {
+        val.addEventListener('click', openOnIndex(i));
+      });
+    }
+    return () => {
+      ref.current?.querySelectorAll('img').forEach((val, i) => {
+        val.addEventListener('click', openOnIndex(i));
+      });
+    };
+  }, [ref.current]);
+
+  return (
+    <>
+      <Lightbox
+        styles={{ container: { backgroundColor: 'rgba(0, 0, 0, .8)' } }}
+        open={index >= 0}
+        index={index}
+        close={() => setIndex(-1)}
+        slides={slides}
+        plugins={[Fullscreen, Thumbnails, Zoom]}
+      />
+      <div ref={ref}>{children}</div>
+    </>
+  );
+};
 
 function PostPage({ post_s, followCount_s, account_s, discussion_s, community_s, post_html }: any) {
   const { username, community, permlink } = useSiteParams();
+  const {
+    isLoading: isLoadingDiscussion,
+    error: errorDiscussion,
+    data: discussion
+  } = useQuery(['discussionData', permlink, discussion_s], () => getDiscussion(username, String(permlink)), {
+    initialData: discussion_s,
+    enabled: !!username && !!community && !!permlink
+  });
   const {
     isLoading: isLoadingPost,
     error: errorPost,
@@ -54,14 +112,7 @@ function PostPage({ post_s, followCount_s, account_s, discussion_s, community_s,
     initialData: account_s,
     enabled: !!username && !!community && !!permlink
   });
-  const {
-    isLoading: isLoadingDiscussion,
-    error: errorDiscussion,
-    data: discussion
-  } = useQuery(['discussionData', permlink, discussion_s], () => getDiscussion(username, String(permlink)), {
-    initialData:  discussion_s,
-    enabled: !!username && !!community && !!permlink
-  });
+
   const {
     isLoading: isLoadingCommunity,
     error: errorCommunity,
@@ -80,7 +131,9 @@ function PostPage({ post_s, followCount_s, account_s, discussion_s, community_s,
       communityData ? (
         <div className="bg-slate-50 py-8">
           <div className="mx-auto my-0 max-w-4xl bg-white px-8 py-4">
-            <h1 className="text-3xl font-bold" data-testid="article-title">{post.title}</h1>
+            <h1 className="text-3xl font-bold" data-testid="article-title">
+              {post.title}
+            </h1>
             {accountMetadata ? (
               <UserInfo
                 name={accountMetadata.profile?.name}
@@ -96,13 +149,15 @@ function PostPage({ post_s, followCount_s, account_s, discussion_s, community_s,
               />
             ) : null}
             <hr />
-            <div
-              id="articleBody"
-              className="entry-body markdown-view user-selectable prose max-w-full"
-              dangerouslySetInnerHTML={{
-                __html: post_html
-              }}
-            />
+            <ImageGalery>
+              <div
+                id="articleBody"
+                className="entry-body markdown-view user-selectable prose max-w-full"
+                dangerouslySetInnerHTML={{
+                  __html: post_html
+                }}
+              />
+            </ImageGalery>
             <div className="clear-both">
               <ul className="flex gap-2">
                 {post.json_metadata?.tags?.map((tag: string) => (
@@ -181,7 +236,7 @@ export async function getServerSideProps(context: any) {
   const post_s = await getPost(username, String(permlink));
   const followCount_s = await getFollowCount(username);
   const account_s = await getAccounts([username]);
-  const discussion_s = await getDiscussion(username, String(permlink))
+  const discussion_s = await getDiscussion(username, String(permlink));
   let community_s = null;
   if (community.startsWith('hive-')) {
     community_s = await getCommunity(community);
