@@ -240,7 +240,7 @@ review:deploy:
     on_stop: review:stop
   rules:
     - if: $CI_COMMIT_TAG =~ /^rc_.*/
-      when: manual
+      when: on_success
   tags:
     - hs-denser
 
