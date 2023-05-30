@@ -151,10 +151,11 @@ Usage: scripts/run_instance.sh [OPTION[=VALUE]]...
 
 Run a Denser Docker instance
 OPTIONS:
-  --image=IAMGE        Docker image to run (default: 'registry.gitlab.syncad.com/hive/denser:latest')
-  --api-endpoint=URL   API endpoint to be used by the new instance (default: 'https://api.hive.blog')
-  --port=PORT          Port to be exposed (default: 3000)
-  -?|--help            Display this help screen and exit
+  --image=IAMGE         Docker image to run (default: 'registry.gitlab.syncad.com/hive/denser:latest')
+  --api-endpoint=URL    API endpoint to be used by the new instance (default: 'https://api.hive.blog')
+  --port=PORT           Port to be exposed (default: 3000)
+  --container-name=NAME Container name to be used (default: denser)
+  -?|--help             Display this help screen and exit
 ```
 
 You can also run the pre-built Docker image with command:

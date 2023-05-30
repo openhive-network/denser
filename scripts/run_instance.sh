@@ -8,16 +8,18 @@ Usage: $0 [OPTION[=VALUE]]...
 
 Run a Denser Docker instance
 OPTIONS:
-  --image=IMAGE        Docker image to run (default: 'registry.gitlab.syncad.com/hive/denser:latest')
-  --api-endpoint=URL   API endpoint to be used by the new instance (default: 'https://api.hive.blog')
-  --port=PORT          Port to be exposed (default: 3000)
-  -?|--help            Display this help screen and exit
+  --image=IMAGE         Docker image to run (default: 'registry.gitlab.syncad.com/hive/denser:latest')
+  --api-endpoint=URL    API endpoint to be used by the new instance (default: 'https://api.hive.blog')
+  --port=PORT           Port to be exposed (default: 3000)
+  --container-name=NAME Container name to be used (default: denser)
+  -?|--help             Display this help screen and exit
 EOF
 }
 
 IMAGE=${IMAGE:-"registry.gitlab.syncad.com/hive/denser:latest"}
 PORT=${PORT:-"3000"}
 API_ENDPOINT=${API_ENDPOINT:-"https://api.hive.blog"}
+CONTAINER_NAME=${CONTAINER_NAME:-"denser"}
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -33,6 +35,10 @@ while [ $# -gt 0 ]; do
         arg="${1#*=}"
         PORT="$arg"
         ;;
+    --container-name=*)
+        arg="${1#*=}"
+        CONTAINER_NAME="$arg"
+        ;;
     --help|-?)
         print_help
         exit 0
@@ -47,9 +53,7 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-CONTAINER_NAME="denser"
-
-(docker ps -q --filter "name=$CONTAINER_NAME" | grep -q . && docker stop $CONTAINER_NAME) || true
+(docker ps -q --filter "name=$CONTAINER_NAME" | grep -q . && docker stop "$CONTAINER_NAME") || true
 
 docker run --detach \
   --rm \
