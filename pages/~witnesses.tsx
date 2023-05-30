@@ -92,19 +92,19 @@ function WitnessesPage() {
   return (
     <div className="mx-auto max-w-5xl pt-6">
       <div className="mx-2 flex flex-col gap-4">
-        <div className="text-xl md:text-3xl">Witness Voting</div>
-        <p className="text-xs sm:text-sm">
-          <span className="font-bold ">You have 30 votes remaining.</span> You can vote for a maximum of 30
+        <div className="text-xl md:text-3xl" data-testid="witness-header">Witness Voting</div>
+        <p className="text-xs sm:text-sm" data-testid="witness-header-vote">
+          <span className="font-bold " data-testid="witness-header-vote-remaining">You have 30 votes remaining.</span> You can vote for a maximum of 30
           witnesses.
         </p>
-        <p className="text-xs sm:text-sm">
+        <p className="text-xs sm:text-sm" data-testid="witness-header-description">
           Notes: in the list below, the first 100 witnesses are unfiltered, this includes active and inactive
           witnesses. Past the rank of 100, witnesses will be filtered out of the list if they have not
           produced any block for the last 30 days.
         </p>
       </div>
       <table className="mt-4 w-full table-auto text-xs">
-        <thead className=" h-16 bg-slate-200 text-left  dark:bg-slate-900">
+        <thead className=" h-16 bg-slate-200 text-left  dark:bg-slate-900" data-testid="witness-table-head">
           <tr className="sm:text-base">
             <th className="p-2">Rank</th>
             <th className="p-2">Witness</th>
@@ -143,7 +143,7 @@ function WitnessesPage() {
         </tbody>
       </table>
       <div className="my-8 flex flex-col gap-8 p-2">
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4" data-testid="witnesses-vote-box">
           <p className="text-xs sm:text-sm">
             If you would like to vote for a witness outside of the top 200, enter the account name below to
             cast a vote.
@@ -162,7 +162,7 @@ function WitnessesPage() {
             </button>
           </div>
         </div>
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4" data-testid="witnesses-set-proxy-box">
           <p className="text-xs sm:text-sm">
             You can also choose a proxy that will vote for witnesses for you. This will reset your current
             witness selection.

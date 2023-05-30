@@ -1,7 +1,5 @@
 import { Locator, Page, expect } from '@playwright/test';
 import { PostPage } from './postPage';
-import env from '@beam-australia/react-env';
-
 export class HomePage {
   readonly page: Page;
   readonly postPage: PostPage;

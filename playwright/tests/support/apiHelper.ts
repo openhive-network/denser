@@ -102,4 +102,42 @@ export class ApiHelper {
 
     return response.json();
   }
+
+  // Get list of witnesses by vote as json from API
+  async getListWitnessesByVoteAPI(startName: string = '', limit: number = 100) {
+    const url = process.env.REACT_APP_API_ENDPOINT;
+
+    const response = await this.page.request.post(`${url}/`, {
+      data: {
+        id: 0,
+        jsonrpc: '2.0',
+        method: 'condenser_api.get_witnesses_by_vote',
+        params: [`${startName}`, `${limit}`]
+      },
+      headers: {
+        Accept: 'application/json, text/plain, */*'
+      }
+    });
+
+    return response.json();
+  }
+
+  // Get dynamic global properties as json from API
+  async getDynamicGlobalPropertiesAPI() {
+    const url = process.env.REACT_APP_API_ENDPOINT;
+
+    const response = await this.page.request.post(`${url}/`, {
+      data: {
+        id: 0,
+        jsonrpc: '2.0',
+        method: 'condenser_api.get_dynamic_global_properties',
+        params: []
+      },
+      headers: {
+        Accept: 'application/json, text/plain, */*'
+      }
+    });
+
+    return response.json();
+  }
 }

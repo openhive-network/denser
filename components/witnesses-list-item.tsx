@@ -57,7 +57,7 @@ function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemPro
         href={data.url}
         className="flex items-center gap-2 font-semibold hover:text-red-400 dark:hover:text-blue-400"
       >
-        <span>Open external side</span>
+        <span>Open external site</span>
         <Icons.forward className="text-red-600 dark:text-blue-500" />
       </Link>
     );
@@ -107,7 +107,7 @@ function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemPro
         </div>
       </td>
       <td className="font-light md:font-normal">
-        <div className="flex items-center">
+        <div className="flex items-center" data-testid="witness-list-item-info">
           <div className="hidden p-2 sm:block">
             <Link href={`@${data.owner}`}>
               <img
@@ -123,7 +123,7 @@ function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemPro
           </div>
           <div className="flex flex-col gap-1 py-4 sm:px-2">
             <div className="flex items-center gap-2">
-              <Link href={`@${data.owner}`}>
+              <Link href={`@${data.owner}`} data-testid="witness-name-link">
                 {
                   <div
                     className={clsx(
@@ -155,6 +155,7 @@ function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemPro
                 }
                 replace
                 scroll={false}
+                data-testid="witness-highlight-link"
               >
                 <Icons.link className="h-[1em] w-[1em]" />
               </Link>
@@ -173,6 +174,7 @@ function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemPro
               <Link
                 href={`https://hiveblocks.com/b/${data.last_confirmed_block_num}`}
                 className="hover:text-red-600 dark:hover:text-blue-400"
+                data-testid="last-block-number"
               >
                 <span className="font-semibold ">#{data.last_confirmed_block_num}</span>
               </Link>{' '}
@@ -180,12 +182,12 @@ function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemPro
             </div>
             {disableUser ? <></> : <div>Witness age: {moment().from(data.created, true)}</div>}
 
-            <div>{witnessLink()}</div>
+            <div data-testid="witness-external-site-link">{witnessLink()}</div>
           </div>
         </div>
       </td>
       <td className="p-1 sm:p-2 sm:text-sm">
-        <div className="font-medium ">
+        <div className="font-medium " data-testid="witness-votes-received">
           {getRoundedAbbreveration(data.vestsToHp)}
           {' HP'}
         </div>
@@ -196,7 +198,7 @@ function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemPro
         )}
       </td>
       <td className=" sm:p-2 sm:text-sm">
-        <div className="font-medium">${parseFloat(data.hbd_exchange_rate.base)}</div>
+        <div className="font-medium" data-testid="witness-price-feed">${parseFloat(data.hbd_exchange_rate.base)}</div>
         <div className="font-light">{dateToFullRelative(data.last_hbd_exchange_update)}</div>
       </td>
     </tr>
