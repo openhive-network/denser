@@ -247,14 +247,14 @@ review:deploy:
 review:stop:
   stage: deploy
   needs:
-    - staging:deploy
+    - review:deploy
   variables:
     CONTAINER_NAME: denser-review
     GIT_STRATEGY: none
   script:
     - docker ps -q --filter "name=$CONTAINER_NAME" | grep -q . && docker stop $CONTAINER_NAME
   environment:
-    name: staging
+    name: review
     action: stop
   rules:
     - if: $CI_COMMIT_TAG =~ /^rc_.*/
