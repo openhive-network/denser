@@ -173,6 +173,7 @@ staging:deploy:
   variables:
     PORT: 3000
     API_ENDPOINT: https://api.hive.blog
+    CONTAINER_NAME: denser
   before_script:
     - |
       echo -e "\e[0Ksection_start:$(date +%s):login[collapsed=true]\r\e[0KLogging to Docker registry..."
@@ -183,6 +184,7 @@ staging:deploy:
       scripts/run_instance.sh \
         --image="$IMAGE_NAME" \
         --api-endpoint="$API_ENDPOINT" \
+        --container-name="$CONTAINER_NAME" \
         --port=$PORT
   environment:
     name: staging
@@ -211,3 +213,29 @@ staging:stop:
       when: manual
   tags:
     - hs-denser
+
+review:deploy:
+  extends: staging:deploy
+  variables:
+    PORT: 3001
+    CONTAINER_NAME: denser-review
+  environment:
+    name: review
+    action: start
+    on_stop: review:stop
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^rc_.*/
+      when: on_success
+
+review:stop:
+  extends: staging:stop
+  needs:
+    - review:deploy
+  variables:
+    CONTAINER_NAME: denser-review
+  environment:
+    name: review
+    action: stop
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^rc_.*/
+      when: manual
