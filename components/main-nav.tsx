@@ -26,10 +26,10 @@ export function MainNav() {
           Posts
         </Link>
         <Link
-          href="https://wallet.hive.blog/proposals"
+          href="/proposals"
           className={cn(
             'transition-colors hover:text-foreground/80',
-            pathname === 'https://wallet.hive.blog/proposals' ? 'text-foreground' : 'text-foreground/60'
+            pathname === '/proposals' ? 'text-foreground' : 'text-foreground/60'
           )}
           data-testid="nav-proposals-link"
         >
@@ -39,7 +39,7 @@ export function MainNav() {
           href="/~witnesses"
           className={cn(
             'transition-colors hover:text-foreground/80',
-            pathname === 'https://wallet.hive.blog/~witnesses' ? 'text-foreground' : 'text-foreground/60'
+            pathname === '/~witnesses' ? 'text-foreground' : 'text-foreground/60'
           )}
           data-testid="nav-witnesses-link"
         >

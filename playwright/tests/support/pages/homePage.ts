@@ -167,7 +167,8 @@ export class HomePage {
 
   async moveToNavProposalsPage() {
     await this.getNavProposalsLink.click();
-    await expect(this.page.url()).toBe(`https://wallet.hive.blog/proposals`);
+    await this.page.waitForSelector(this.page.locator('[data-testid="proposals-body"]')['_selector']);
+    await expect(this.page.url().includes(`/proposals`)).toBeTruthy();;
   }
 
   async moveToNavWitnessesPage() {

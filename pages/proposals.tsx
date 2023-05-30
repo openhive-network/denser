@@ -106,7 +106,7 @@ function ProposalsPage() {
   }, [proposalsData.fetchNextPage, proposalsData.hasNextPage]);
 
   return (
-    <div className="mx-auto flex max-w-5xl flex-col gap-5 p-5 ">
+    <div className="mx-auto flex max-w-5xl flex-col gap-5 p-5" data-testid="proposals-body">
       <ProposalsFilter
         onChangeFilterStatus={setFilterStatus}
         filterStatus={filterStatus}
