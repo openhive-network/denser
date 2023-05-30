@@ -102,7 +102,7 @@ function WitnessesPage() {
             <th className="p-2">Price feed</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody data-testid="witness-table-body">
           {witnessesLoading || dynamicLoading || accountLoading ? (
             <tr>
               <td className="animate-pulse p-2 text-xl">Loading</td>

@@ -172,7 +172,8 @@ export class HomePage {
 
   async moveToNavWitnessesPage() {
     await this.getNavWitnessesLink.click();
-    await expect(this.page.url()).toBe(`http://denser:3000/~witnesses`);
+    await this.page.waitForSelector(this.page.locator('[data-testid="witness-table-body"]')['_selector']);
+    await expect(this.page.url().includes(`/~witnesses`)).toBeTruthy();
   }
 
   async moveToNavOurdAppsPage() {
