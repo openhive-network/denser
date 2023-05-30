@@ -215,25 +215,10 @@ staging:stop:
     - hs-denser
 
 review:deploy:
-  stage: deploy
-  needs:
-    - docker-build
+  extends: staging:deploy
   variables:
     PORT: 3001
-    API_ENDPOINT: https://api.hive.blog
     CONTAINER_NAME: denser-review
-  before_script:
-    - |
-      echo -e "\e[0Ksection_start:$(date +%s):login[collapsed=true]\r\e[0KLogging to Docker registry..."
-      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-      echo -e "\e[0Ksection_end:$(date +%s):login\r\e[0K"
-  script:
-    - |
-      scripts/run_instance.sh \
-        --image="$IMAGE_NAME" \
-        --api-endpoint="$API_ENDPOINT" \
-        --container-name="$CONTAINER_NAME" \
-        --port=$PORT
   environment:
     name: review
     action: start
@@ -241,23 +226,16 @@ review:deploy:
   rules:
     - if: $CI_COMMIT_TAG =~ /^rc_.*/
       when: on_success
-  tags:
-    - hs-denser
 
 review:stop:
-  stage: deploy
+  extends: staging:stop
   needs:
     - review:deploy
   variables:
     CONTAINER_NAME: denser-review
-    GIT_STRATEGY: none
-  script:
-    - docker ps -q --filter "name=$CONTAINER_NAME" | grep -q . && docker stop $CONTAINER_NAME
   environment:
     name: review
     action: stop
   rules:
     - if: $CI_COMMIT_TAG =~ /^rc_.*/
       when: manual
-  tags:
-    - hs-denser
