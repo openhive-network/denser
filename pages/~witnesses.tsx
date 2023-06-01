@@ -1,3 +1,4 @@
+import { ReactNode, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Big from 'big.js';
 import { Witness, getAccounts, getDynamicGlobalProperties, getWitnessesByVote } from '@/lib/hive';
@@ -6,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { FullAccount } from '@/store/app-types';
 import { convertStringToBig } from '@/lib/helpers';
 import WitnessListItem from '@/components/witnesses-list-item';
+import { useRouter } from 'next/router';
 
 const LAST_BLOCK_AGE_THRESHOLD_IN_SEC = 2592000;
 
@@ -28,6 +30,7 @@ const mapWitnesses =
   };
 export type ExtendWitness = ReturnType<ReturnType<typeof mapWitnesses>>;
 function WitnessesPage() {
+  const [voteInput, setVoteInput] = useState('');
   const {
     data: dynamicData,
     isSuccess: dynamicSuccess,
@@ -76,6 +79,15 @@ function WitnessesPage() {
     },
     { enabled: witnessesSuccess || Boolean(witnessesData) }
   );
+  const router = useRouter();
+
+  useEffect(() => {
+    if (Array.isArray(router.query.highlight)) {
+      setVoteInput(router.query.highlight[0]);
+    } else {
+      setVoteInput(router.query.highlight ?? '');
+    }
+  }, [router.query.highlight]);
 
   return (
     <div className="mx-auto max-w-5xl pt-6">
@@ -140,7 +152,11 @@ function WitnessesPage() {
             <span className="flex h-10 w-10 flex-col items-center justify-center rounded-lg border border-black bg-slate-300 font-bold dark:bg-slate-700">
               <Icons.atSign />
             </span>
-            <Input className="mx-1 max-w-sm" />
+            <Input
+              className="mx-1 max-w-sm"
+              value={voteInput}
+              onChange={(e) => setVoteInput(e.target.value)}
+            />
             <button className="rounded-lg border border-slate-300 bg-red-600 p-2 text-xs font-semibold text-slate-300 sm:text-base">
               VOTE
             </button>

@@ -6,7 +6,7 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import parseDate, { dateToRelative } from '@/lib/parse-date';
 import accountReputation from '@/lib/account-reputation';
-import {proxifyImageSrc} from "@/lib/proxify-images";
+import { proxifyImageSrc } from '@/lib/proxify-images';
 
 const PostListItem = ({ post, sort }: any) => {
   return (
@@ -66,7 +66,11 @@ const PostListItem = ({ post, sort }: any) => {
           {post.json_metadata.image ? (
             <Link href={`${post.url}`} data-testid="post-image">
               <div className="relative flex h-full max-h-[200px] min-h-[200px] w-full items-center overflow-hidden bg-gray-100 lg:min-w-[320px] lg:max-w-[320px]">
-                <img src={proxifyImageSrc(post.json_metadata.image[0], 320, 200 )} alt="Post image" loading="lazy" />
+                <img
+                  src={proxifyImageSrc(post.json_metadata.image[0], 320, 200)}
+                  alt="Post image"
+                  loading="lazy"
+                />
               </div>
             </Link>
           ) : null}
@@ -95,12 +99,12 @@ const PostListItem = ({ post, sort }: any) => {
             </div>
             <Separator orientation="vertical" />
             <div className="flex items-center" data-testid="post-children">
-              <Icons.comment className="mr-1 h-4 w-4" />
+              <Icons.comment className="mr-1 h-4 w-4 cursor-pointer hover:text-red-600" />
               {post.children}
             </div>
             <Separator orientation="vertical" />
             <div className="flex items-center">
-              <Icons.forward className="h-4 w-4" />
+              <Icons.forward className="h-4 w-4 cursor-pointer hover:text-red-600" />
             </div>
           </div>
         </CardFooter>

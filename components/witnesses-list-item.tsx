@@ -7,6 +7,8 @@ import { Icons } from './icons';
 import { FullAccount } from '@/store/app-types';
 import moment from 'moment';
 import { dateToFullRelative } from '@/lib/parse-date';
+import { useRouter } from 'next/router';
+import { useEffect, useRef } from 'react';
 
 const getOwnersString = (owners?: string) => {
   if (!owners) return '';
@@ -21,13 +23,15 @@ interface WitnessListItemProps {
   witnessAccount?: FullAccount;
   headBlock: number;
 }
-const oneWeekInSec = 604800;
+
+const ONE_WEEK_IN_SEC = 604800;
+
 function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemProps) {
   const disableUser = data.signing_key === DISABLED_SIGNING_KEY;
 
   const witnessDescription = witnessAccount?.profile?.witness_description;
-
   const witnessOwner = witnessAccount?.profile?.witness_owner;
+
   function witnessLink() {
     if (disableUser)
       return (
@@ -59,14 +63,46 @@ function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemPro
     );
   }
 
+  const router = useRouter();
+
+  const ref = useRef<HTMLTableRowElement>(null);
+
+  useEffect(() => {
+    let highlight = '';
+    if (Array.isArray(router.query.highlight)) {
+      highlight = router.query.highlight[0];
+    } else {
+      highlight = router.query.highlight ?? '';
+    }
+    if (highlight === data.owner && ref.current) {
+      ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [router.query.highlight]);
+
   return (
-    <tr className="even:bg-slate-100 dark:even:bg-slate-900 ">
+    <tr
+      className={clsx({
+        'bg-red-300 even:bg-red-300 dark:bg-blue-800 dark:even:bg-blue-800':
+          router.query.highlight === data.owner,
+        'even:bg-slate-200 dark:even:bg-slate-900': router.query.highlight !== data.owner
+      })}
+      ref={ref}
+    >
       <td>
         <div className="flex flex-col-reverse items-center gap-1 sm:flex-row sm:p-2">
           <span className="sm:text-sm">{data.rank < 10 ? `0${data.rank}` : data.rank}</span>
           <div className="group relative flex">
             <span className="opocity-75 absolute inline-flex h-6 w-6 rounded-full bg-red-600 p-0 group-hover:animate-ping group-hover:[animation-iteration-count:_1] dark:bg-blue-400 sm:h-8 sm:w-8"></span>
-            <Icons.arrowUpCircle className="relative inline-flex h-6 w-6 rounded-full bg-white text-red-600 dark:bg-slate-800 dark:text-blue-500 sm:h-8 sm:w-8" />
+            <Icons.arrowUpCircle
+              viewBox="1.7 1.7 20.7 20.7"
+              className={clsx(
+                'relative inline-flex h-6 w-6 rounded-full stroke-1 text-red-600 dark:text-blue-500 sm:h-8 sm:w-8',
+                {
+                  'bg-slate-100 dark:bg-slate-900': router.query.highlight !== data.owner,
+                  'bg-red-300  dark:bg-blue-800': router.query.highlight === data.owner
+                }
+              )}
+            />
           </div>
         </div>
       </td>
@@ -110,17 +146,18 @@ function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemPro
                   by {getOwnersString(witnessOwner)}
                 </div>
               )}
-              <button>
-                <Link
-                  href={`/~witnesses?highlight=${data.owner}`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                  }}
-                >
-                  {' '}
-                  <Icons.link className="h-[1em] w-[1em]" />
-                </Link>
-              </button>
+
+              <Link
+                href={
+                  router.query.highlight !== data.owner
+                    ? `/~witnesses?highlight=${data.owner}`
+                    : `/~witnesses`
+                }
+                replace
+                scroll={false}
+              >
+                <Icons.link className="h-[1em] w-[1em]" />
+              </Link>
             </div>
             {!disableUser && witnessDescription && (
               <div className="mb-1 block hidden max-h-16 max-w-lg overflow-y-auto overflow-x-hidden border-b-[1px] border-dotted border-gray-400 p-1 text-center italic sm:block">
@@ -128,7 +165,7 @@ function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemPro
               </div>
             )}
 
-            {data.witnessLastBlockAgeInSecs > oneWeekInSec && (
+            {data.witnessLastBlockAgeInSecs > ONE_WEEK_IN_SEC && (
               <span className="font-semibold">⚠️Has not produced any blocks for over a week.</span>
             )}
             <div>
@@ -165,4 +202,5 @@ function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemPro
     </tr>
   );
 }
+
 export default WitnessListItem;

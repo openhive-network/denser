@@ -111,7 +111,10 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
         <div className="self-center md:text-xl">{getRoundedAbbreveration(totalVotes)}</div>
         <div className="group relative flex">
           <span className="opocity-75 absolute inline-flex h-6 w-6 rounded-full bg-red-600 p-0 group-hover:animate-ping group-hover:[animation-iteration-count:_1] dark:bg-blue-400 sm:h-8 sm:w-8"></span>
-          <Icons.arrowUpCircle className="relative inline-flex h-6 w-6 rounded-full bg-white text-red-600 dark:bg-slate-800 dark:text-blue-500 sm:h-8 sm:w-8" />
+          <Icons.arrowUpCircle
+            viewBox="1.7 1.7 20.7 20.7"
+            className="relative inline-flex h-6 w-6 rounded-full bg-white stroke-1 text-red-600 dark:bg-slate-800 dark:text-blue-500 sm:h-8 sm:w-8"
+          />
         </div>
       </div>
     </div>

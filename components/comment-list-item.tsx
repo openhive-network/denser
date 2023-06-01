@@ -77,8 +77,8 @@ const CommentListItem = ({ comment }: any) => {
           <CardFooter>
             <div className="flex h-5 items-center space-x-4 text-sm" data-testid="comment-card-footer">
               <div className="flex items-center">
-                <Icons.arrowUpCircle className="mr-1 h-4 w-4 hover:text-red-600" />
-                <Icons.arrowDownCircle className="4 mr-1 h-4 hover:text-gray-600" />
+                <Icons.arrowUpCircle className="mr-1 h-4 w-4 cursor-pointer hover:text-red-600" />
+                <Icons.arrowDownCircle className="4 mr-1 h-4 cursor-pointer hover:text-gray-600" />
               </div>
               <div className="flex items-center">
                 <Icons.dollar className="mr-1 h-4 w-4 text-red-600" />
@@ -91,12 +91,12 @@ const CommentListItem = ({ comment }: any) => {
               </div>
               <Separator orientation="vertical" />
               <div className="flex items-center">
-                <Icons.comment className="mr-1 h-4 w-4" />
+                <Icons.comment className="mr-1 h-4 w-4 cursor-pointer hover:text-red-600" />
                 {comment.children}
               </div>
               <Separator orientation="vertical" />
               <div className="flex items-center">
-                <Icons.forward className="h-4 w-4" />
+                <Icons.forward className="h-4 w-4 cursor-pointer hover:text-red-600" />
               </div>
             </div>
           </CardFooter>
