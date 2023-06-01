@@ -26,6 +26,7 @@ export class PostPage {
   readonly commentCardsTitles: Locator;
   readonly commentCardsDescriptions: Locator;
   readonly commentCardsFooters: Locator;
+  readonly commentShowButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -54,6 +55,7 @@ export class PostPage {
     this.commentCardsTitles = page.locator('[data-testid="comment-card-title"]');
     this.commentCardsDescriptions = page.locator('[data-testid="comment-card-description"]');
     this.commentCardsFooters = page.locator('[data-testid="comment-card-footer"]');
+    this.commentShowButton = page.locator('[data-testid="comment-show-button"]');
   }
 
   async gotoHomePage() {

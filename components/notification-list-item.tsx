@@ -1,8 +1,7 @@
 import Link from 'next/link';
 import { Icons } from '@/components/icons';
 import { Progress } from '@/components/ui/progress';
-import parseDate from '@/lib/parse-date';
-import moment from 'moment/moment';
+import parseDate, { dateToRelative } from '@/lib/parse-date';
 
 const NotificationListItem = ({ date, msg, score, type, url }: any) => {
   let icon;
@@ -52,7 +51,7 @@ const NotificationListItem = ({ date, msg, score, type, url }: any) => {
             </Link>
             <span className="flex items-center gap-2">
               {icon}
-              {moment(parseDate(date)).fromNow()}
+              {dateToRelative(date)}
             </span>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { SMTAsset } from "@hiveio/dhive"
+import { SMTAsset } from "@hiveio/dhive/lib/chain/asset"
 import Big from "big.js"
 import { ClassValue, clsx } from "clsx"
 import sanitize from "sanitize-html"

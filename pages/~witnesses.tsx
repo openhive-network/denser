@@ -1,11 +1,9 @@
-import { ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Big from 'big.js';
 import { Witness, getAccounts, getDynamicGlobalProperties, getWitnessesByVote } from '@/lib/hive';
 import { Icons } from '@/components/icons';
 import { Input } from '@/components/ui/input';
 import { FullAccount } from '@/store/app-types';
-import Layout from '@/components/common/layout';
 import { convertStringToBig } from '@/lib/helpers';
 import WitnessListItem from '@/components/witnesses-list-item';
 
@@ -168,7 +166,3 @@ function WitnessesPage() {
   );
 }
 export default WitnessesPage;
-
-WitnessesPage.getLayout = function getLayout(page: ReactNode) {
-  return <Layout>{page}</Layout>;
-};

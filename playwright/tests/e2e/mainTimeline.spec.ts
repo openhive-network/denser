@@ -229,7 +229,7 @@ test.describe('Home page tests', () => {
     await expect(homePage.getNavUserAvatar).toBeVisible();
     await expect(homePage.getNavUserAvatar.locator('img')).toHaveAttribute(
       'src',
-      'https://images.hive.blog/u/gtg/avatar'
+      'https://images.hive.blog/u/gtg/avatar/small'
     );
 
     await homePage.getNavUserAvatar.click();

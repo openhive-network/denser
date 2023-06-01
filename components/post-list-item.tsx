@@ -4,9 +4,9 @@ import { Icons } from '@/components/icons';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import moment from 'moment';
-import parseDate from '@/lib/parse-date';
+import parseDate, { dateToRelative } from '@/lib/parse-date';
 import accountReputation from '@/lib/account-reputation';
+import {proxifyImageSrc} from "@/lib/proxify-images";
 
 const PostListItem = ({ post, sort }: any) => {
   return (
@@ -22,8 +22,9 @@ const PostListItem = ({ post, sort }: any) => {
               className="mr-3 h-[40px] w-[40px] rounded-3xl"
               height="40"
               width="40"
-              src={`https://images.hive.blog/u/${post.author}/avatar`}
+              src={`https://images.hive.blog/u/${post.author}/avatar/small`}
               alt={`${post.author} profile picture`}
+              loading="lazy"
             />
             <div className="flex flex-col text-slate-500 dark:text-slate-400">
               <div>
@@ -58,15 +59,14 @@ const PostListItem = ({ post, sort }: any) => {
                   </Link>
                 )}
                 <span className="mx-1">•</span>
-                {moment(parseDate(post.created)).fromNow()}
+                {dateToRelative(post.created)}
               </p>
             </div>
           </div>
-
           {post.json_metadata.image ? (
             <Link href={`${post.url}`} data-testid="post-image">
               <div className="relative flex h-full max-h-[200px] min-h-[200px] w-full items-center overflow-hidden bg-gray-100 lg:min-w-[320px] lg:max-w-[320px]">
-                <img src={post.json_metadata.image[0]} alt="Post image" />
+                <img src={proxifyImageSrc(post.json_metadata.image[0], 320, 200 )} alt="Post image" loading="lazy" />
               </div>
             </Link>
           ) : null}

@@ -7,7 +7,6 @@ import {
   getDynamicGlobalProperties,
   getProposals
 } from '@/lib/hive';
-import Layout from '@/components/common/layout';
 import { ProposalsFilter } from '@/components/proposals-filter';
 import moment from 'moment';
 import { ProposalListItem } from '@/components/proposals-list-item';
@@ -143,7 +142,3 @@ function ProposalsPage() {
 }
 
 export default ProposalsPage;
-
-ProposalsPage.getLayout = function getLayout(page: any) {
-  return <Layout>{page}</Layout>;
-};

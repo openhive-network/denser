@@ -1,4 +1,4 @@
-import parseDate from '@/lib/parse-date';
+import parseDate, { dateToRelative } from '@/lib/parse-date';
 import {
   ArrowDownCircle,
   ArrowUpCircle,
@@ -10,237 +10,53 @@ import {
   MessageSquare,
   Twitter
 } from 'lucide-react';
-import moment from 'moment';
-
 import { Button } from '@/components/ui/button';
 import UserInfo, { UserHoverCard } from '@/components/user-info';
-import { getAccounts, getFollowCount, getPost } from '@/lib/hive';
+import { getAccount, getFollowCount } from '@/lib/hive';
 import { useQuery } from '@tanstack/react-query';
-import { useSiteParams } from '@/components/hooks/use-site-params';
 import { DefaultRenderer } from '@hiveio/content-renderer';
-import { getCommunity, getDiscussion } from '@/lib/bridge';
-import { PropsWithChildren, useEffect, useRef, useState } from 'react';
-import Lightbox, { Slide } from 'yet-another-react-lightbox';
-import { Fullscreen, Thumbnails, Zoom } from 'yet-another-react-lightbox/plugins';
-import 'yet-another-react-lightbox/plugins/thumbnails.css';
-import 'yet-another-react-lightbox/styles.css';
+import { getCommunity, getDiscussion, getPost } from '@/lib/bridge';
 import Loading from '@/components/loading';
 import dynamic from 'next/dynamic';
+import ImageGallery from '@/components/image-gallery';
+import { proxifyImageSrc } from '@/lib/proxify-images';
+
 const DynamicComments = dynamic(() => import('@/components/comment-list'), {
   loading: () => <Loading />,
   ssr: false
 });
-const ImageGalery = ({ children }: PropsWithChildren) => {
-  const [slides, setSlides] = useState<Slide[]>([]);
-  const [index, setIndex] = useState(-1);
-  const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const openOnIndex = (index: number) => {
-      return () => setIndex(index);
-    };
-    if (ref.current) {
-      setSlides(
-        Array.from(ref.current.querySelectorAll('img')).map((image: HTMLImageElement) => ({
-          src: image.src,
-          srcSet: [
-            {
-              src: image.src,
-              width: image.width,
-              height: image.height
-            }
-          ]
-        }))
-      );
-      ref.current.querySelectorAll('img').forEach((val, i) => {
-        val.addEventListener('click', openOnIndex(i));
-      });
-    }
-    return () => {
-      ref.current?.querySelectorAll('img').forEach((val, i) => {
-        val.addEventListener('click', openOnIndex(i));
-      });
-    };
-  }, [ref.current]);
-
-  return (
-    <>
-      <Lightbox
-        styles={{ container: { backgroundColor: 'rgba(0, 0, 0, .8)' } }}
-        open={index >= 0}
-        index={index}
-        close={() => setIndex(-1)}
-        slides={slides}
-        plugins={[Fullscreen, Thumbnails, Zoom]}
-      />
-      <div ref={ref}>{children}</div>
-    </>
-  );
-};
-
-function PostPage({ post_s, followCount_s, account_s, discussion_s, community_s, post_html }: any) {
-  const { username, community, permlink } = useSiteParams();
+function PostPage({ post_s, community, username, permlink }: any) {
   const {
     isLoading: isLoadingDiscussion,
     error: errorDiscussion,
-    data: discussion
-  } = useQuery(['discussionData', permlink, discussion_s], () => getDiscussion(username, String(permlink)), {
-    initialData: discussion_s,
-    enabled: !!username && !!community && !!permlink
-  });
-  const {
-    isLoading: isLoadingPost,
-    error: errorPost,
-    data: post
-  } = useQuery(['getPost', permlink, post_s], () => getPost(username, String(permlink)), {
-    initialData: post_s,
-    enabled: !!username && !!community && !!permlink
+    data: discussion,
+    refetch: refetchDiscussion
+  } = useQuery(['discussionData', username, permlink], () => getDiscussion(username, String(permlink)), {
+    enabled: false
   });
   const {
     isLoading: isLoadingFollows,
     error: errorFollows,
     data: follows
-  } = useQuery(['followCountData', username, followCount_s], () => getFollowCount(username), {
-    initialData: followCount_s,
-    enabled: !!username && !!community && !!permlink
+  } = useQuery(['followCountData', username], () => getFollowCount(username), {
+    enabled: !!username
   });
   const {
     isLoading: isLoadingAccounts,
     error: errorAccount,
     data: account
-  } = useQuery(['accountData', username, account_s], () => getAccounts([username]), {
-    initialData: account_s,
-    enabled: !!username && !!community && !!permlink
+  } = useQuery(['accountData', username], () => getAccount(username), {
+    enabled: !!username
   });
 
   const {
     isLoading: isLoadingCommunity,
     error: errorCommunity,
     data: communityData
-  } = useQuery(['communityData', community, community_s], () => getCommunity(community || community_s.name), {
-    initialData: community_s,
-    enabled: !!username && !!community && !!permlink
+  } = useQuery(['communityData', community], () => getCommunity(community), {
+    enabled: !!username && !!community && community.startsWith('hive-')
   });
-
-  const accountMetadata = !isLoadingAccounts && account ? JSON.parse(account[0].posting_json_metadata) : [];
-
-  return (
-    <>
-      {(!isLoadingPost && !isLoadingFollows && !isLoadingAccounts) ||
-      (!isLoadingCommunity && post && follows && account) ||
-      communityData ? (
-        <div className="bg-slate-50 py-8">
-          <div className="mx-auto my-0 max-w-4xl bg-white px-8 py-4">
-            <h1 className="text-3xl font-bold" data-testid="article-title">
-              {post.title}
-            </h1>
-            {accountMetadata ? (
-              <UserInfo
-                name={accountMetadata.profile?.name}
-                author={post.author}
-                author_reputation={post.author_reputation}
-                community_title={communityData?.title}
-                created={post.created}
-                following={follows.following_count}
-                followers={follows.follower_count}
-                about={accountMetadata.profile?.about}
-                joined={account[0].created}
-                active={account[0].last_vote_time}
-              />
-            ) : null}
-            <hr />
-            <ImageGalery>
-              <div
-                id="articleBody"
-                className="entry-body markdown-view user-selectable prose max-w-full"
-                dangerouslySetInnerHTML={{
-                  __html: post_html
-                }}
-              />
-            </ImageGalery>
-            <div className="clear-both">
-              <ul className="flex gap-2">
-                {post.json_metadata?.tags?.map((tag: string) => (
-                  <li key={tag}>
-                    <Button variant="ghost" size="sm">
-                      #{tag}
-                    </Button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="text-sm text-slate-600" data-testid="author-data-post-footer">
-              <div className="my-4 flex justify-between">
-                <div className="flex flex-wrap">
-                  <Clock />
-                  <span className="px-1" title={String(moment(parseDate(post.created)))}>
-                    {moment(parseDate(post.created)).fromNow()}
-                  </span>
-                  in
-                  <span className="px-1 font-bold hover:text-red-500">{post.community_title}</span>
-                  by
-                  {accountMetadata ? (
-                    <UserHoverCard
-                      name={accountMetadata.profile?.name}
-                      author={post.author}
-                      author_reputation={post.author_reputation}
-                      following={follows.following_count}
-                      followers={follows.follower_count}
-                      about={accountMetadata.profile?.about}
-                      joined={account[0].created}
-                      active={account[0].last_vote_time}
-                    />
-                  ) : null}
-                </div>
-                <div className="flex">
-                  <CornerUpRight />z<span className="mx-1">|</span>
-                  <span className="text-red-500">Reply</span>
-                  <span className="mx-1">|</span>
-                  <MessageSquare />
-                  <span className="text-red-500">{post.children}</span>
-                </div>
-              </div>
-              <div className="my-4 flex justify-between">
-                <div className="flex gap-4">
-                  <div className="flex gap-1">
-                    <ArrowUpCircle />
-                    <ArrowDownCircle />
-                  </div>
-                  <span className="text-red-500">${post.payout?.toFixed(2)}</span>
-                  <span className="text-red-500">{post.active_votes?.length} votes</span>
-                </div>
-                <div className="flex gap-2">
-                  <Facebook />
-                  <Twitter />
-                  <Linkedin />
-                  <Link2 />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="mx-auto my-0 max-w-4xl px-8 py-4">
-            <DynamicComments data={Object.keys(discussion).map((key) => discussion[key])} parent={post} />
-          </div>
-        </div>
-      ) : null}
-    </>
-  );
-}
-
-export async function getServerSideProps(context: any) {
-  context.res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59');
-  const community = String(context.params.param);
-  const username = String(context.params.p2).slice(1);
-  const permlink = String(context.params.permlink);
-
-  const post_s = await getPost(username, String(permlink));
-  const followCount_s = await getFollowCount(username);
-  const account_s = await getAccounts([username]);
-  const discussion_s = await getDiscussion(username, String(permlink));
-  let community_s = null;
-  if (community.startsWith('hive-')) {
-    community_s = await getCommunity(community);
-  }
 
   const renderer = new DefaultRenderer({
     baseUrl: 'https://hive.blog/',
@@ -252,7 +68,7 @@ export async function getServerSideProps(context: any) {
     ipfsPrefix: '',
     assetsWidth: 640,
     assetsHeight: 480,
-    imageProxyFn: (url: string) => 'https://images.hive.blog/1536x0/' + url,
+    imageProxyFn: (url: string) => proxifyImageSrc(url, 860, 0, 'webp'),
     usertagUrlFn: (account: string) => '/@' + account,
     hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
     isLinkSafeFn: (url: string) => true
@@ -260,7 +76,115 @@ export async function getServerSideProps(context: any) {
 
   const post_html = renderer.render(post_s.body);
 
-  return { props: { post_s, followCount_s, account_s, discussion_s, community_s, post_html } };
+  return (
+    <div className='bg-slate-50 py-8'>
+      <div className='mx-auto my-0 max-w-4xl bg-white px-8 py-4'>
+        <h1 className='text-3xl font-bold' data-testid='article-title'>
+          {post_s.title}
+        </h1>
+        {!isLoadingFollows && follows && !isLoadingAccounts && account ? (
+          <UserInfo
+            name={JSON.parse(account.posting_json_metadata)?.profile?.name}
+            author={post_s.author}
+            author_reputation={post_s.author_reputation}
+            community_title={communityData?.title || ''}
+            created={post_s.created}
+            following={follows?.following_count || 0}
+            followers={follows?.follower_count || 0}
+            about={JSON.parse(account.posting_json_metadata)?.profile?.about}
+            joined={account.created}
+            active={account.last_vote_time}
+          />
+        ) : null}
+        <hr />
+        {post_html ? (<ImageGallery>
+          <div
+            id='articleBody'
+            className='entry-body markdown-view user-selectable prose max-w-full'
+            dangerouslySetInnerHTML={{
+              __html: post_html
+            }}
+          />
+        </ImageGallery>) : <Loading />}
+
+        <div className='clear-both'>
+          <ul className='flex gap-2'>
+            {post_s.json_metadata?.tags?.map((tag: string) => (
+              <li key={tag}>
+                <Button variant='ghost' size='sm'>
+                  #{tag}
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className='text-sm text-slate-600' data-testid='author-data-post-footer'>
+          <div className='my-4 flex justify-between'>
+            <div className='flex flex-wrap'>
+              <Clock />
+              <span className='px-1' title={String(parseDate(post_s.created))}>
+                    {dateToRelative(post_s.created)}
+                  </span>
+              in
+              <span className='px-1 font-bold hover:text-red-500'>{post_s.community_title}</span>
+              by
+              {!isLoadingCommunity && communityData && !isLoadingFollows && follows && !isLoadingAccounts && account ? (
+                <UserHoverCard
+                  name={JSON.parse(account.posting_json_metadata)?.profile?.name}
+                  author={post_s.author}
+                  author_reputation={post_s.author_reputation}
+                  following={follows.following_count}
+                  followers={follows.follower_count}
+                  about={JSON.parse(account.posting_json_metadata)?.profile?.about}
+                  joined={account.created}
+                  active={account.last_vote_time}
+                />
+              ) : null}
+            </div>
+            <div className='flex'>
+              <CornerUpRight />z<span className='mx-1'>|</span>
+              <span className='text-red-500'>Reply</span>
+              <span className='mx-1'>|</span>
+              <MessageSquare />
+              <span className='text-red-500'>{post_s.children}</span>
+            </div>
+          </div>
+          <div className='my-4 flex justify-between'>
+            <div className='flex gap-4'>
+              <div className='flex gap-1'>
+                <ArrowUpCircle />
+                <ArrowDownCircle />
+              </div>
+              <span className='text-red-500'>${post_s.payout?.toFixed(2)}</span>
+              <span className='text-red-500'>{post_s.active_votes?.length} votes</span>
+            </div>
+            <div className='flex gap-2'>
+              <Facebook />
+              <Twitter />
+              <Linkedin />
+              <Link2 />
+            </div>
+          </div>
+        </div>
+      </div>
+      {!isLoadingDiscussion && discussion ? (<div className='mx-auto my-0 max-w-4xl px-8 py-4'>
+        <DynamicComments data={Object.keys(discussion).map((key) => discussion[key])} parent={post_s} />
+      </div>) : <div className='flex justify-center mx-auto my-0 max-w-4xl px-8 py-4'>
+        <Button onClick={() => refetchDiscussion()} data-testid='comment-show-button'>Show comments</Button>
+      </div>}
+    </div>
+  );
+}
+
+export async function getServerSideProps(context: any) {
+  context.res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59');
+  const community = String(context.params.param);
+  const username = String(context.params.p2).slice(1);
+  const permlink = String(context.params.permlink);
+
+  const post_s = await getPost(username, String(permlink));
+
+  return { props: { post_s, community, username, permlink } };
 }
 
 export default PostPage;

@@ -1,13 +1,8 @@
 import { Icons } from '@/components/icons';
-import moment from 'moment/moment';
-import parseDate from '@/lib/parse-date';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Button } from '@/components/ui/button';
-import { ChevronsUpDown } from 'lucide-react';
+import { dateToRelative } from '@/lib/parse-date';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { cn, getPostSummary } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { DefaultRenderer } from '@hiveio/content-renderer';
 
@@ -44,8 +39,9 @@ const CommentListItem = ({ comment }: any) => {
                 className="mr-3 h-[40px] w-[40px] rounded-3xl"
                 height="40"
                 width="40"
-                src={`https://images.hive.blog/u/${comment.author}/avatar`}
+                src={`https://images.hive.blog/u/${comment.author}/avatar/small`}
                 alt={`${comment.author} profile picture`}
+                loading="lazy"
               />
               <div className="flex flex-col text-slate-500 dark:text-slate-400">
                 <div>
@@ -63,7 +59,7 @@ const CommentListItem = ({ comment }: any) => {
                 <p className="text-sm">
                   {`in ${comment.community_title}`}
                   <span className="mx-1">•</span>
-                  {moment(parseDate(comment.created)).fromNow()}
+                  {dateToRelative(comment.created)}
                 </p>
               </div>
             </div>

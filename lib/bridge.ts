@@ -1,4 +1,4 @@
-import { Client } from '@hiveio/dhive';
+import { Client } from '@hiveio/dhive/lib/client';
 import { siteConfig } from '@/config/site';
 
 export interface EntryBeneficiaryRoute {
@@ -100,13 +100,14 @@ export type Subscription = Array<string>;
 export const dataLimit = 20;
 
 const endpoint =
-  typeof window !== "undefined"
-    ? window.localStorage.getItem("hive-blog-endpoint")
-      ? JSON.parse(String(window.localStorage.getItem("hive-blog-endpoint")))
-      :  siteConfig.endpoint
-    :  siteConfig.endpoint
+  typeof window !== 'undefined'
+    ? window.localStorage.getItem('hive-blog-endpoint')
+      ? JSON.parse(String(window.localStorage.getItem('hive-blog-endpoint')))
+      : siteConfig.endpoint
+    : siteConfig.endpoint;
 
-if (endpoint) {}
+if (endpoint) {
+}
 export const bridgeServer = new Client([`${endpoint}`], {
   timeout: 3000,
   failoverThreshold: 3,

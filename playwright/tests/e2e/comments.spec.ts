@@ -12,6 +12,8 @@ test.describe('Comments of post', () => {
 
     await homePage.goto();
     await homePage.moveToTheFirstPostWithCommentsNumberMoreThanZero();
+    await expect(postPage.commentShowButton).toBeVisible();
+    await postPage.commentShowButton.click();
     await expect(postPage.commentCardsHeaders.first()).toBeVisible();
     await expect(postPage.commentCardsTitles.first()).toBeVisible();
     await expect(postPage.commentCardsDescriptions.first()).toBeVisible();
@@ -24,6 +26,8 @@ test.describe('Comments of post', () => {
 
     await homePage.goto();
     await homePage.moveToTheFirstPostWithCommentsNumberMoreThanZero();
+    await expect(postPage.commentShowButton).toBeVisible();
+    await postPage.commentShowButton.click();
     // Before hover
     expect(
       await postPage.getElementCssPropertyValue(
@@ -52,6 +56,8 @@ test.describe('Comments of post', () => {
 
     await homePage.goto();
     await homePage.moveToTheFirstPostWithCommentsNumberMoreThanZero();
+    await expect(postPage.commentShowButton).toBeVisible();
+    await postPage.commentShowButton.click();
     await expect(postPage.commentCardsHeaders.first()).toBeVisible();
 
     const firstCommentAuthorLinkName: any = await postPage.commentAuthorLink.first().textContent();

@@ -47,7 +47,7 @@ const ProfileDropdownMenu = () => {
       <DropdownMenuTrigger asChild>
         <Avatar className="rounded-md" data-testid="profile-menu">
           {currentProfile && (
-            <AvatarImage src={`https://images.hive.blog/u/${currentProfile?.name || ''}/avatar`} />
+            <AvatarImage src={`https://images.hive.blog/u/${currentProfile?.name || ''}/avatar/small`} />
           )}
           <AvatarFallback>{currentProfile?.name.slice(0, 2).toUpperCase() || ''}</AvatarFallback>
         </Avatar>

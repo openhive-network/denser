@@ -1,11 +1,10 @@
-import { Client, RCAPI } from '@hiveio/dhive';
+import { RCAPI } from '@hiveio/dhive/lib/helpers/rc';
 import { RCAccount } from '@hiveio/dhive/lib/chain/rc';
 import moment, { Moment } from 'moment';
 
 import { isCommunity, parseAsset, vestsToRshares } from '@/lib/utils';
-import { dataLimit } from './bridge';
+import { bridgeServer, dataLimit } from './bridge';
 import { AccountFollowStats, AccountHistory, AccountProfile, FullAccount } from '@/store/app-types';
-import { siteConfig } from '@/config/site';
 import { makeBitMaskFilter, operationOrders } from '@hiveio/dhive/lib/utils';
 import Big from 'big.js';
 
@@ -30,19 +29,6 @@ export interface DynamicProps {
   virtualSupply: number;
   vestingRewardPercent: number;
 }
-
-const endpoint =
-  typeof window !== 'undefined'
-    ? window.localStorage.getItem('hive-blog-endpoint')
-      ? JSON.parse(String(window.localStorage.getItem('hive-blog-endpoint')))
-      : siteConfig.endpoint
-    : siteConfig.endpoint;
-
-export const client = new Client([`${endpoint}`], {
-  timeout: 3000,
-  failoverThreshold: 3,
-  consoleOnFailover: true
-});
 
 export interface Vote {
   percent: number;
@@ -175,25 +161,25 @@ const handleError = (error: any) => {
 };
 
 export const getPost = (username: string, permlink: string): Promise<any> =>
-  client.call('condenser_api', 'get_content', [username, permlink]);
+  bridgeServer.call('condenser_api', 'get_content', [username, permlink]);
 
 export const getMarketStatistics = (): Promise<MarketStatistics> =>
-  client.call('condenser_api', 'get_ticker', []);
+  bridgeServer.call('condenser_api', 'get_ticker', []);
 
 export const getOrderBook = (limit: number = 500): Promise<OrdersData> =>
-  client.call('condenser_api', 'get_order_book', [limit]);
+  bridgeServer.call('condenser_api', 'get_order_book', [limit]);
 
 export const getOpenOrder = (user: string): Promise<OpenOrdersData[]> =>
-  client.call('condenser_api', 'get_open_orders', [user]);
+  bridgeServer.call('condenser_api', 'get_open_orders', [user]);
 
 export const getTradeHistory = (limit: number = 1000): Promise<OrdersDataItem[]> => {
   let todayEarlier = moment(Date.now()).subtract(10, 'h').format().split('+')[0];
   let todayNow = moment(Date.now()).format().split('+')[0];
-  return client.call('condenser_api', 'get_trade_history', [todayEarlier, todayNow, limit]);
+  return bridgeServer.call('condenser_api', 'get_trade_history', [todayEarlier, todayNow, limit]);
 };
 
 export const getMarketBucketSizes = (): Promise<number[]> =>
-  client.call('condenser_api', 'get_market_history_buckets', []);
+  bridgeServer.call('condenser_api', 'get_market_history_buckets', []);
 
 export const getMarketHistory = (
   seconds: number,
@@ -202,14 +188,14 @@ export const getMarketHistory = (
 ): Promise<MarketCandlestickDataItem[]> => {
   let todayEarlier = startDate.format().split('+')[0];
   let todayNow = endDate.format().split('+')[0];
-  return client.call('condenser_api', 'get_market_history', [seconds, todayEarlier, todayNow]);
+  return bridgeServer.call('condenser_api', 'get_market_history', [seconds, todayEarlier, todayNow]);
 };
 
 export const getActiveVotes = (author: string, permlink: string): Promise<Vote[]> =>
-  client.database.call('get_active_votes', [author, permlink]);
+  bridgeServer.database.call('get_active_votes', [author, permlink]);
 
 export const getTrendingTags = (afterTag: string = '', limit: number = 250): Promise<string[]> =>
-  client.database.call('get_trending_tags', [afterTag, limit]).then((tags: TrendingTag[]) => {
+  bridgeServer.database.call('get_trending_tags', [afterTag, limit]).then((tags: TrendingTag[]) => {
     return tags
       .filter((x) => x.name !== '')
       .filter((x) => !isCommunity(x.name))
@@ -220,7 +206,7 @@ export const getAllTrendingTags = (
   afterTag: string = '',
   limit: number = 250
 ): Promise<TrendingTag[] | any> =>
-  client.database
+  bridgeServer.database
     .call('get_trending_tags', [afterTag, limit])
     .then((tags: TrendingTag[]) => {
       return tags.filter((x) => x.name !== '').filter((x) => !isCommunity(x.name));
@@ -230,10 +216,10 @@ export const getAllTrendingTags = (
     });
 
 export const lookupAccounts = (q: string, limit = 50): Promise<string[]> =>
-  client.database.call('lookup_accounts', [q, limit]);
+  bridgeServer.database.call('lookup_accounts', [q, limit]);
 
 export const getAccounts = (usernames: string[]): Promise<FullAccount[]> => {
-  return client.database.getAccounts(usernames).then((resp: any[]): FullAccount[] =>
+  return bridgeServer.database.getAccounts(usernames).then((resp: any[]): FullAccount[] =>
     resp.map((x) => {
       const account: FullAccount = {
         name: x.name,
@@ -280,12 +266,14 @@ export const getAccounts = (usernames: string[]): Promise<FullAccount[]> => {
 
       try {
         profile = JSON.parse(x.posting_json_metadata!).profile;
-      } catch (e) {}
+      } catch (e) {
+      }
 
       if (!profile) {
         try {
           profile = JSON.parse(x.json_metadata!).profile;
-        } catch (e) {}
+        } catch (e) {
+        }
       }
 
       if (!profile) {
@@ -312,20 +300,21 @@ export const getAccountFull = (username: string): Promise<FullAccount> =>
     let follow_stats: AccountFollowStats | undefined;
     try {
       follow_stats = await getFollowCount(username);
-    } catch (e) {}
+    } catch (e) {
+    }
 
     return { ...account, follow_stats };
   });
 
 export const getFollowCount = (username: string): Promise<AccountFollowStats> =>
-  client.database.call('get_follow_count', [username]);
+  bridgeServer.database.call('get_follow_count', [username]);
 
 export const getFollowing = (
   follower: string,
   startFollowing: string,
   followType = 'blog',
   limit = 100
-): Promise<Follow[]> => client.database.call('get_following', [follower, startFollowing, followType, limit]);
+): Promise<Follow[]> => bridgeServer.database.call('get_following', [follower, startFollowing, followType, limit]);
 
 export const getFollowers = (
   following: string,
@@ -333,7 +322,7 @@ export const getFollowers = (
   followType = 'blog',
   limit = 100
 ): Promise<Follow[]> =>
-  client.database.call('get_followers', [
+  bridgeServer.database.call('get_followers', [
     following,
     startFollowing === '' ? null : startFollowing,
     followType,
@@ -341,10 +330,10 @@ export const getFollowers = (
   ]);
 
 export const findRcAccounts = (username: string): Promise<RCAccount[]> =>
-  new RCAPI(client).findRCAccounts([username]);
+  new RCAPI(bridgeServer).findRCAccounts([username]);
 
 export const getDynamicGlobalProperties = (): Promise<DynamicGlobalProperties> =>
-  client.database.getDynamicGlobalProperties().then((r: any) => {
+  bridgeServer.database.getDynamicGlobalProperties().then((r: any) => {
     return {
       total_vesting_fund_hive: r.total_vesting_fund_hive || r.total_vesting_fund_steem,
       total_vesting_shares: r.total_vesting_shares,
@@ -379,11 +368,11 @@ export const getAccountHistory = (
   start: number = -1,
   limit: number = 20
 ): Promise<AccountHistory[]> =>
-  client.call('condenser_api', 'get_account_history', [username, start, limit, ...wallet_operations_bitmask]);
+  bridgeServer.call('condenser_api', 'get_account_history', [username, start, limit, ...wallet_operations_bitmask]);
 
-export const getFeedHistory = (): Promise<FeedHistory> => client.database.call('get_feed_history');
+export const getFeedHistory = (): Promise<FeedHistory> => bridgeServer.database.call('get_feed_history');
 
-export const getRewardFund = (): Promise<RewardFund> => client.database.call('get_reward_fund', ['post']);
+export const getRewardFund = (): Promise<RewardFund> => bridgeServer.database.call('get_reward_fund', ['post']);
 
 export const getDynamicProps = async (): Promise<DynamicProps> => {
   const globalDynamic = await getDynamicGlobalProperties();
@@ -427,7 +416,7 @@ export const getVestingDelegations = (
   from: string = '',
   limit: number = 50
 ): Promise<DelegatedVestingShare[]> =>
-  client.database.call('get_vesting_delegations', [username, from, limit]);
+  bridgeServer.database.call('get_vesting_delegations', [username, from, limit]);
 
 export interface Witness {
   created: string;
@@ -452,63 +441,65 @@ export interface Witness {
 }
 
 export const getWitnessesByVote = (from: string, limit: number): Promise<Witness[]> =>
-  client.call('condenser_api', 'get_witnesses_by_vote', [from, limit]);
-  export interface Proposal {
-    creator: string;
-    daily_pay: {
-      amount: string;
-      nai: string;
-      precision: number;
-    };
-    end_date: string;
-    id: number;
-    permlink: string;
-    proposal_id: number;
-    receiver: string;
-    start_date: string;
-    status: string;
-    subject: string;
-    total_votes: string;
-  }
-  export interface ListItemProps {
-    proposalData: Omit<Proposal, 'daily_pay' | 'total_votes'> & {
-      total_votes: Big;
-      daily_pay: { amount: Big };
-    };
-    totalShares: Big;
-    totalVestingFund: Big;
-  }
-  
-  export interface GetProposalsParams {
-    start: Array<number | string>;
-    limit: number;
-    order: 'by_creator' | 'by_total_votes' | 'by_start_date' | 'by_end_date';
-    order_direction: 'descending' | 'ascending';
-    status: 'all' | 'inactive' | 'active' | 'votable' | 'expired';
-    last_id?: number;
-  }
-  
-  export const DEFAULT_PARAMS_FOR_PROPOSALS: GetProposalsParams = {
-    start: [],
-    limit: 30,
-    order: 'by_total_votes',
-    order_direction: 'descending',
-    status: 'votable'
+  bridgeServer.call('condenser_api', 'get_witnesses_by_vote', [from, limit]);
+
+export interface Proposal {
+  creator: string;
+  daily_pay: {
+    amount: string;
+    nai: string;
+    precision: number;
   };
-  
-  export const getProposals = async (params?: Partial<GetProposalsParams>): Promise<Proposal[]> => {
-    try {
-      const response = await client.call('database_api', 'list_proposals', {
-        ...DEFAULT_PARAMS_FOR_PROPOSALS,
-        ...params
-      });
-      return response.proposals;
-    } catch (error) {
-      console.error('Error:', error);
-      throw error;
-    }
+  end_date: string;
+  id: number;
+  permlink: string;
+  proposal_id: number;
+  receiver: string;
+  start_date: string;
+  status: string;
+  subject: string;
+  total_votes: string;
+}
+
+export interface ListItemProps {
+  proposalData: Omit<Proposal, 'daily_pay' | 'total_votes'> & {
+    total_votes: Big;
+    daily_pay: { amount: Big };
   };
-  
+  totalShares: Big;
+  totalVestingFund: Big;
+}
+
+export interface GetProposalsParams {
+  start: Array<number | string>;
+  limit: number;
+  order: 'by_creator' | 'by_total_votes' | 'by_start_date' | 'by_end_date';
+  order_direction: 'descending' | 'ascending';
+  status: 'all' | 'inactive' | 'active' | 'votable' | 'expired';
+  last_id?: number;
+}
+
+export const DEFAULT_PARAMS_FOR_PROPOSALS: GetProposalsParams = {
+  start: [],
+  limit: 30,
+  order: 'by_total_votes',
+  order_direction: 'descending',
+  status: 'votable'
+};
+
+export const getProposals = async (params?: Partial<GetProposalsParams>): Promise<Proposal[]> => {
+  try {
+    const response = await bridgeServer.call('database_api', 'list_proposals', {
+      ...DEFAULT_PARAMS_FOR_PROPOSALS,
+      ...params
+    });
+    return response.proposals;
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+};
+
 
 export interface ProposalVote {
   id: number;
@@ -521,7 +512,7 @@ export const getProposalVotes = (
   voter: string = '',
   limit: number = 300
 ): Promise<ProposalVote[]> =>
-  client
+  bridgeServer
     .call('condenser_api', 'list_proposal_votes', [[proposalId, voter], limit, 'by_proposal_voter'])
     .then((r) => r.filter((x: ProposalVote) => x.proposal.proposal_id === proposalId))
     .then((r) => r.map((x: ProposalVote) => ({ id: x.id, voter: x.voter })));
@@ -535,11 +526,11 @@ export interface WithdrawRoute {
 }
 
 export const getWithdrawRoutes = (account: string): Promise<WithdrawRoute[]> =>
-  client.database.call('get_withdraw_routes', [account, 'outgoing']);
+  bridgeServer.database.call('get_withdraw_routes', [account, 'outgoing']);
 
 export const votingPower = (account: FullAccount): number => {
   // @ts-ignore "Account" is compatible with dhive's "ExtendedAccount"
-  const calc = account && client.rc.calculateVPMana(account);
+  const calc = account && bridgeServer.rc.calculateVPMana(account);
   const { percentage } = calc;
 
   return percentage / 100;
@@ -599,7 +590,7 @@ export const downVotingPower = (account: FullAccount): number => {
 };
 
 export const rcPower = (account: RCAccount): number => {
-  const calc = client.rc.calculateRCMana(account);
+  const calc = bridgeServer.rc.calculateRCMana(account);
   const { percentage } = calc;
   return percentage / 100;
 };
@@ -622,12 +613,12 @@ export interface CollateralizedConversionRequest {
 }
 
 export const getConversionRequests = (account: string): Promise<ConversionRequest[]> =>
-  client.database.call('get_conversion_requests', [account]);
+  bridgeServer.database.call('get_conversion_requests', [account]);
 
 export const getCollateralizedConversionRequests = (
   account: string
 ): Promise<CollateralizedConversionRequest[]> =>
-  client.database.call('get_collateralized_conversion_requests', [account]);
+  bridgeServer.database.call('get_collateralized_conversion_requests', [account]);
 
 export interface SavingsWithdrawRequest {
   id: number;
@@ -640,7 +631,7 @@ export interface SavingsWithdrawRequest {
 }
 
 export const getSavingsWithdrawFrom = (account: string): Promise<SavingsWithdrawRequest[]> =>
-  client.database.call('get_savings_withdraw_from', [account]);
+  bridgeServer.database.call('get_savings_withdraw_from', [account]);
 
 export interface BlogEntry {
   blog: string;
@@ -651,7 +642,7 @@ export interface BlogEntry {
 }
 
 export const getBlogEntries = (username: string, limit: number = dataLimit): Promise<BlogEntry[]> =>
-  client.call('condenser_api', 'get_blog_entries', [username, 0, limit]);
+  bridgeServer.call('condenser_api', 'get_blog_entries', [username, 0, limit]);
 
 // create type for api call result do working search
 // export const searchTag = async (

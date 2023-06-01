@@ -1,4 +1,5 @@
-import { Asset, Authority } from '@hiveio/dhive';
+import { Asset } from '@hiveio/dhive/lib/chain/asset';
+import { Authority } from '@hiveio/dhive/lib/chain/account';
 
 export interface AccountProfile {
   about?: string;

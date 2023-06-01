@@ -6,23 +6,26 @@ export const dateToShow = (d: string): string => {
   const dm = moment(new Date(isTimeZoned)).format("MMMM YYYY")
   return dm.toString()
 }
-export const dateToRelative = (d: string): string => {
+export const dateToRelative = (d: string, short = false): string => {
   const isTimeZoned = d.indexOf(".") !== -1 || d.indexOf("+") !== -1 ? d : `${d}.000Z`;
   const dm = moment(new Date(isTimeZoned));
   const dd = dm.fromNow(true);
-  return dd
-    .replace("a few seconds", "~1s")
-    .replace(" seconds", "s")
-    .replace(" minutes", "m")
-    .replace("a minute", "1m")
-    .replace(" hours", "h")
-    .replace("an hour", "1h")
-    .replace(" days", "d")
-    .replace("a day", "1d")
-    .replace(" months", "M")
-    .replace("a month", "1M")
-    .replace(" years", "y")
-    .replace("a year", "1y");
+  if (short) {
+    return dd
+      .replace("a few seconds", "~1s")
+      .replace(" seconds", "s")
+      .replace(" minutes", "m")
+      .replace("a minute", "1m")
+      .replace(" hours", "h")
+      .replace("an hour", "1h")
+      .replace(" days", "d")
+      .replace("a day", "1d")
+      .replace(" months", "M")
+      .replace("a month", "1M")
+      .replace(" years", "y")
+      .replace("a year", "1y");
+  }
+  return dd;
 };
 
 export const dateToFullRelative = (d: string): string => {
@@ -62,13 +65,14 @@ export const secondDiff = (d: string) => {
   return Math.abs(Math.round(diff));
 };
 
-const parseDate = (d: string): Date => {
-  if (!d) return new Date();
+const parseDate = (d: string): string => {
+  const isTimeZoned = d.indexOf(".") !== -1 || d.indexOf("+") !== -1 ? d : `${d}.000Z`;
+  if (!d) moment(new Date(isTimeZoned))
   try {
     const date = moment(d).isValid() ? moment(d).toDate() : new Date();
-    return new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+    return moment(new Date(date.getTime() - date.getTimezoneOffset() * 60000)).toString();
   } catch (e) {
-    return new Date();
+    return moment(new Date(isTimeZoned)).toString()
   }
 };
 

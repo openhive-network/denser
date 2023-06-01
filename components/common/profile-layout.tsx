@@ -1,10 +1,7 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Award, BellRing, Cast, MessageSquare, Newspaper, Settings, Wallet } from 'lucide-react';
-
 import ProfileInfo from '@/components/profile-info';
-import { Button } from '@/components/ui/button';
 import { useSiteParams } from '@/components/hooks/use-site-params';
 import Loading from '@/components/loading';
 

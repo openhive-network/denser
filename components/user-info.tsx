@@ -3,7 +3,6 @@ import parseDate, {
   dateToFormatted,
   dateToRelative,
 } from "@/lib/parse-date"
-import moment from "moment"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -138,8 +137,8 @@ function UserInfo({
       in
       <span className="ml-1">{community_title}</span>
       <span className="mx-1">•</span>
-      <span title={String(moment(parseDate(created)))}>
-        {moment(parseDate(created)).fromNow()}
+      <span title={String(parseDate(created))}>
+        {dateToRelative((created))}
       </span>
     </div>
   )
