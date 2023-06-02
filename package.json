@@ -18,6 +18,7 @@
     "@hiveio/content-renderer": "^1.0.2",
     "@hiveio/dhive": "^1.2.6",
     "@next/bundle-analyzer": "^13.4.4",
+    "@radix-ui/react-alert-dialog": "^1.0.4",
     "@radix-ui/react-avatar": "^1.0.3",
     "@radix-ui/react-checkbox": "^1.0.4",
     "@radix-ui/react-collapsible": "^1.0.3",

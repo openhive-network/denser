@@ -7,7 +7,18 @@ import { Badge } from '@/components/ui/badge';
 import parseDate, { dateToRelative } from '@/lib/parse-date';
 import accountReputation from '@/lib/account-reputation';
 import { proxifyImageSrc } from '@/lib/proxify-images';
-
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger
+} from '@/components/ui/alert-dialog';
+import { AlertDialogDemo } from './alert-window';
 const PostListItem = ({ post, sort }: any) => {
   return (
     <li data-testid="post-list-item">
@@ -104,7 +115,9 @@ const PostListItem = ({ post, sort }: any) => {
             </div>
             <Separator orientation="vertical" />
             <div className="flex items-center">
-              <Icons.forward className="h-4 w-4 cursor-pointer hover:text-red-600" />
+              <AlertDialogDemo>
+                <Icons.forward className="h-4 w-4 cursor-pointer hover:text-red-600" />
+              </AlertDialogDemo>
             </div>
           </div>
         </CardFooter>
