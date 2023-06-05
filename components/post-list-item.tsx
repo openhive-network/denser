@@ -99,7 +99,12 @@ const PostListItem = ({ post, sort }: any) => {
               <Icons.arrowUpCircle className="mr-1 h-4 w-4 hover:text-red-600" />
               <Icons.arrowDownCircle className="4 mr-1 h-4 hover:text-gray-600" />
             </div>
-            <div className="flex items-center" data-testid="post-payout">
+            <div
+              className={`flex items-center ${
+                Number(post.max_accepted_payout.slice(0, 1)) === 0 ? 'text-gray-600 line-through' : ''
+              }`}
+              data-testid="post-payout"
+            >
               <Icons.dollar className="mr-1 h-4 w-4 text-red-600" />
               {post.payout.toFixed(2)}
             </div>

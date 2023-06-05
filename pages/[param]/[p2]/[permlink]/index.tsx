@@ -77,9 +77,9 @@ function PostPage({ post_s, community, username, permlink }: any) {
   const post_html = renderer.render(post_s.body);
 
   return (
-    <div className='bg-slate-50 py-8'>
-      <div className='mx-auto my-0 max-w-4xl bg-white px-8 py-4'>
-        <h1 className='text-3xl font-bold' data-testid='article-title'>
+    <div className="bg-slate-50 py-8">
+      <div className="mx-auto my-0 max-w-4xl bg-white px-8 py-4">
+        <h1 className="text-3xl font-bold" data-testid="article-title">
           {post_s.title}
         </h1>
         {!isLoadingFollows && follows && !isLoadingAccounts && account ? (
@@ -97,38 +97,47 @@ function PostPage({ post_s, community, username, permlink }: any) {
           />
         ) : null}
         <hr />
-        {post_html ? (<ImageGallery>
-          <div
-            id='articleBody'
-            className='entry-body markdown-view user-selectable prose max-w-full'
-            dangerouslySetInnerHTML={{
-              __html: post_html
-            }}
-          />
-        </ImageGallery>) : <Loading />}
+        {post_html ? (
+          <ImageGallery>
+            <div
+              id="articleBody"
+              className="entry-body markdown-view user-selectable prose max-w-full"
+              dangerouslySetInnerHTML={{
+                __html: post_html
+              }}
+            />
+          </ImageGallery>
+        ) : (
+          <Loading />
+        )}
 
-        <div className='clear-both'>
-          <ul className='flex gap-2'>
+        <div className="clear-both">
+          <ul className="flex flex-wrap gap-2">
             {post_s.json_metadata?.tags?.map((tag: string) => (
               <li key={tag}>
-                <Button variant='ghost' size='sm'>
+                <Button variant="ghost" size="sm">
                   #{tag}
                 </Button>
               </li>
             ))}
           </ul>
         </div>
-        <div className='text-sm text-slate-600' data-testid='author-data-post-footer'>
-          <div className='my-4 flex justify-between'>
-            <div className='flex flex-wrap'>
+        <div className="text-sm text-slate-600" data-testid="author-data-post-footer">
+          <div className="my-4 flex justify-between">
+            <div className="flex flex-wrap">
               <Clock />
-              <span className='px-1' title={String(parseDate(post_s.created))}>
-                    {dateToRelative(post_s.created)}
-                  </span>
+              <span className="px-1" title={String(parseDate(post_s.created))}>
+                {dateToRelative(post_s.created)}
+              </span>
               in
-              <span className='px-1 font-bold hover:text-red-500'>{post_s.community_title}</span>
+              <span className="px-1 font-bold hover:text-red-500">{post_s.community_title}</span>
               by
-              {!isLoadingCommunity && communityData && !isLoadingFollows && follows && !isLoadingAccounts && account ? (
+              {!isLoadingCommunity &&
+              communityData &&
+              !isLoadingFollows &&
+              follows &&
+              !isLoadingAccounts &&
+              account ? (
                 <UserHoverCard
                   name={JSON.parse(account.posting_json_metadata)?.profile?.name}
                   author={post_s.author}
@@ -141,24 +150,24 @@ function PostPage({ post_s, community, username, permlink }: any) {
                 />
               ) : null}
             </div>
-            <div className='flex'>
-              <CornerUpRight />z<span className='mx-1'>|</span>
-              <span className='text-red-500'>Reply</span>
-              <span className='mx-1'>|</span>
+            <div className="flex">
+              <CornerUpRight />z<span className="mx-1">|</span>
+              <span className="text-red-500">Reply</span>
+              <span className="mx-1">|</span>
               <MessageSquare />
-              <span className='text-red-500'>{post_s.children}</span>
+              <span className="text-red-500">{post_s.children}</span>
             </div>
           </div>
-          <div className='my-4 flex justify-between'>
-            <div className='flex gap-4'>
-              <div className='flex gap-1'>
+          <div className="my-4 flex justify-between">
+            <div className="flex gap-4">
+              <div className="flex gap-1">
                 <ArrowUpCircle />
                 <ArrowDownCircle />
               </div>
-              <span className='text-red-500'>${post_s.payout?.toFixed(2)}</span>
-              <span className='text-red-500'>{post_s.active_votes?.length} votes</span>
+              <span className="text-red-500">${post_s.payout?.toFixed(2)}</span>
+              <span className="text-red-500">{post_s.active_votes?.length} votes</span>
             </div>
-            <div className='flex gap-2'>
+            <div className="flex gap-2">
               <Facebook />
               <Twitter />
               <Linkedin />
@@ -167,11 +176,17 @@ function PostPage({ post_s, community, username, permlink }: any) {
           </div>
         </div>
       </div>
-      {!isLoadingDiscussion && discussion ? (<div className='mx-auto my-0 max-w-4xl px-8 py-4'>
-        <DynamicComments data={Object.keys(discussion).map((key) => discussion[key])} parent={post_s} />
-      </div>) : <div className='flex justify-center mx-auto my-0 max-w-4xl px-8 py-4'>
-        <Button onClick={() => refetchDiscussion()} data-testid='comment-show-button'>Show comments</Button>
-      </div>}
+      {!isLoadingDiscussion && discussion ? (
+        <div className="mx-auto my-0 max-w-4xl px-8 py-4">
+          <DynamicComments data={Object.keys(discussion).map((key) => discussion[key])} parent={post_s} />
+        </div>
+      ) : (
+        <div className="mx-auto my-0 flex max-w-4xl justify-center px-8 py-4">
+          <Button onClick={() => refetchDiscussion()} data-testid="comment-show-button">
+            Show comments
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
