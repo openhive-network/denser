@@ -93,6 +93,7 @@ function PostPage({ post_s, community, username, permlink }: any) {
             author_reputation={post_s.author_reputation}
             authored={post_s.json_metadata?.author}
             community_title={communityData?.title || ''}
+            community={community}
             category={post_s.category}
             created={post_s.created}
             following={follows?.following_count || 0}

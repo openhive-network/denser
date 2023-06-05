@@ -101,12 +101,14 @@ export function UserHoverCard({
 interface UserInfoProps extends UserHoverCardProps {
   authored?: string;
   community_title: string;
+  community: string;
   category: string;
   created: string;
 }
 
 function UserInfo({
   authored,
+  community,
   community_title,
   category,
   created,
@@ -134,7 +136,17 @@ function UserInfo({
           withImage
         />
         in
-        <span className="ml-1">{community_title ? community_title : `#${category}`}</span>
+        <span className="ml-1">
+          {community_title ? (
+            <Link href={`/trending/${community}`} className="hover:cursor-pointer hover:text-red-600">
+              {community_title}
+            </Link>
+          ) : (
+            <Link href={`/trending/${category}`} className="hover:cursor-pointer hover:text-red-600">
+              #{category}
+            </Link>
+          )}
+        </span>
         <span className="mx-1">•</span>
         <span title={String(parseDate(created))}>{dateToRelative(created)}</span>
       </div>
