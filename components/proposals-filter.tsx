@@ -41,7 +41,7 @@ export function ProposalsFilter({
           <div>
             <span>STATUS</span>
             <Select defaultValue="" value={filterStatus} onValueChange={onChangeFilterStatus}>
-              <SelectTrigger className="h-[35px] w-[100px]">
+              <SelectTrigger className="h-[35px] w-[100px]" data-testid="proposals-filter-status">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -61,7 +61,7 @@ export function ProposalsFilter({
           <div>
             <span>ORDER BY</span>
             <Select defaultValue="" value={orderValue} onValueChange={onChangeSortOrder}>
-              <SelectTrigger className="h-[35px] w-[120px]">
+              <SelectTrigger className="h-[35px] w-[120px]" data-testid="proposals-order-by">
                 <SelectValue placeholder="Select..." />
               </SelectTrigger>
               <SelectContent>
@@ -83,6 +83,7 @@ export function ProposalsFilter({
           className={clsx('flex self-end transition-transform', {
             'rotate-180': orderDirection === 'ascending'
           })}
+          data-testid="proposals-order-direction"
         >
           <Icons.arrowBigDown className="m-1 h-8 w-8 text-red-600 transition-transform dark:text-blue-500" />
         </button>
