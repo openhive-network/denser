@@ -61,16 +61,22 @@ const PostListItem = ({ post, sort }: any) => {
               <p className="text-sm">
                 in{` `}
                 {post.community ? (
-                  <Link href={`/${sort}/${post.community}`} className="hover:text-red-600">
+                  <Link
+                    href={`/${sort}/${post.community}`}
+                    className="hover:cursor-pointer hover:text-red-600"
+                  >
                     {post.community_title}
                   </Link>
                 ) : (
-                  <Link href={`/${sort}/${post.category}`} className="hover:text-red-600">
-                    {post.category}
+                  <Link
+                    href={`/${sort}/${post.category}`}
+                    className="hover:cursor-pointer hover:text-red-600"
+                  >
+                    #{post.category}
                   </Link>
                 )}
                 <span className="mx-1">•</span>
-                {dateToRelative(post.created)}
+                {dateToRelative(post.created)} ago
               </p>
             </div>
           </div>

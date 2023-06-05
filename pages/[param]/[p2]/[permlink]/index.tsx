@@ -84,16 +84,24 @@ function PostPage({ post_s, community, username, permlink }: any) {
         </h1>
         {!isLoadingFollows && follows && !isLoadingAccounts && account ? (
           <UserInfo
-            name={JSON.parse(account.posting_json_metadata)?.profile?.name}
+            name={
+              account.posting_json_metadata
+                ? JSON.parse(account.posting_json_metadata)?.profile?.name
+                : account.name
+            }
             author={post_s.author}
             author_reputation={post_s.author_reputation}
+            authored={post_s.json_metadata?.author}
             community_title={communityData?.title || ''}
+            category={post_s.category}
             created={post_s.created}
             following={follows?.following_count || 0}
             followers={follows?.follower_count || 0}
-            about={JSON.parse(account.posting_json_metadata)?.profile?.about}
+            about={
+              account.posting_json_metadata ? JSON.parse(account.posting_json_metadata)?.profile?.about : ''
+            }
             joined={account.created}
-            active={account.last_vote_time}
+            active={account.last_post}
           />
         ) : null}
         <hr />
@@ -165,7 +173,7 @@ function PostPage({ post_s, community, username, permlink }: any) {
                 <ArrowDownCircle />
               </div>
               <span className="text-red-500">${post_s.payout?.toFixed(2)}</span>
-              <span className="text-red-500">{post_s.active_votes?.length} votes</span>
+              <span className="text-red-500">{post_s.stats?.total_votes} votes</span>
             </div>
             <div className="flex gap-2">
               <Facebook />

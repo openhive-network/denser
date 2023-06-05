@@ -123,3 +123,9 @@
 .preview-rules ul>li {
   @apply py-1
 }
+
+.prose :where(a):not(:where([class~="not-prose"] *)) {
+  color: #dc2626;
+  text-decoration: none;
+  font-weight: inherit;
+}
