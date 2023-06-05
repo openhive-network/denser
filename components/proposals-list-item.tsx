@@ -5,6 +5,9 @@ import { getRoundedAbbreveration } from '@/lib/utils';
 import { Icons } from './icons';
 import moment from 'moment';
 import { dateToFullRelative } from '@/lib/parse-date';
+import { useEffect, useState } from 'react';
+import { getPostHeader } from '@/lib/bridge';
+import permlink from '@/pages/[param]/[p2]/[permlink]';
 
 function titleSetter(daysStart: string, datsEnd: string, status: string) {
   switch (status) {
@@ -19,11 +22,19 @@ function titleSetter(daysStart: string, datsEnd: string, status: string) {
   }
 }
 export function ProposalListItem({ proposalData, totalShares, totalVestingFund }: ListItemProps) {
+  const [link, setLink] = useState<string>(`${proposalData.creator}/${proposalData.permlink}`);
   const totalHBD = proposalData.daily_pay.amount.times(
     moment(proposalData.end_date).diff(moment(proposalData.start_date), 'd')
   );
   const totalDays = moment(proposalData.end_date).diff(proposalData.start_date, `d`);
   const totalVotes = totalVestingFund.times(proposalData.total_votes).div(totalShares).times(0.000001);
+
+  useEffect(() => {
+    getPostHeader(proposalData.creator, String(proposalData.permlink)).then((res) => {
+      setLink(`${res.category}/@${res.author}/${res.permlink}`);
+    });
+  }, []);
+
   function getFundingType() {
     if (REFUND_ACCOUNTS.includes(proposalData.receiver))
       return (
@@ -44,7 +55,7 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
   return (
     <div className="flex flex-col justify-between bg-white p-2.5 drop-shadow-xl dark:bg-slate-800 sm:flex-row ">
       <div className="w-3/4">
-        <Link href={`@${proposalData.creator}/${proposalData.permlink}`}>
+        <Link href={link}>
           <span className="font-medium text-red-600 hover:text-red-300 dark:text-blue-500 dark:hover:text-blue-400 md:text-xl">
             {proposalData.subject}
             <span className="font-semibold text-slate-500">

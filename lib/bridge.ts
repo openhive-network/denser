@@ -292,3 +292,16 @@ export const getRelationshipBetweenAccounts = (
   following: string
 ): Promise<AccountRelationship | null> =>
   bridgeApiCall<AccountRelationship | null>('get_relationship_between_accounts', [follower, following]);
+
+export interface BasicPostInfo {
+  author: string;
+  permlink: string;
+  category: string;
+  depth: number;
+}
+
+export const getPostHeader = (author: string, permlink: string): Promise<BasicPostInfo> =>
+  bridgeApiCall<BasicPostInfo>('get_post_header', {
+    author,
+    permlink
+  });
