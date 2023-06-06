@@ -81,10 +81,10 @@ export function ProposalsFilter({
         <button
           onClick={handleDirectionToggle}
           className={clsx('flex self-end transition-transform', {
-            'rotate-180': orderDirection === 'descending'
+            'rotate-180': orderDirection === 'ascending'
           })}
         >
-          <Icons.arrowBigDown className="m-1 h-8 w-8 text-red-600 transition-transform hover:rotate-12 dark:text-blue-500" />
+          <Icons.arrowBigDown className="m-1 h-8 w-8 text-red-600 transition-transform dark:text-blue-500" />
         </button>
       </div>
     </div>

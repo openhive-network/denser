@@ -82,8 +82,9 @@ const PostListItem = ({ post, sort }: any) => {
           </div>
           {post.json_metadata.image ? (
             <Link href={`${post.url}`} data-testid="post-image">
-              <div className="relative flex h-full max-h-[200px] min-h-[200px] w-full items-center overflow-hidden bg-gray-100 lg:min-w-[320px] lg:max-w-[320px]">
+              <div className="relative flex h-full max-h-[200px] min-h-fit w-fit items-center overflow-hidden bg-gray-100 lg:min-w-[320px] lg:max-w-[320px]">
                 <img
+                  className="h-ful w-full"
                   src={proxifyImageSrc(post.json_metadata.image[0], 320, 200)}
                   alt="Post image"
                   loading="lazy"
@@ -101,9 +102,9 @@ const PostListItem = ({ post, sort }: any) => {
         </CardContent>
         <CardFooter>
           <div className="flex h-5 items-center space-x-4 text-sm">
-            <div className="flex items-center">
-              <Icons.arrowUpCircle className="mr-1 h-4 w-4 hover:text-red-600" />
-              <Icons.arrowDownCircle className="4 mr-1 h-4 hover:text-gray-600" />
+            <div className="flex items-center gap-2">
+              <Icons.arrowUpCircle className="h-4 w-4 hover:text-red-600 sm:mr-1" />
+              <Icons.arrowDownCircle className="h-4 w-4 hover:text-gray-600 sm:mr-1" />
             </div>
             <div
               className={`flex items-center ${
@@ -111,17 +112,17 @@ const PostListItem = ({ post, sort }: any) => {
               }`}
               data-testid="post-payout"
             >
-              <Icons.dollar className="mr-1 h-4 w-4 text-red-600" />
+              <Icons.dollar className="h-4 w-4 text-red-600 sm:mr-1" />
               {post.payout.toFixed(2)}
             </div>
             <Separator orientation="vertical" />
             <div className="flex items-center" data-testid="post-total-votes">
-              <Icons.star className="mr-1 h-4 w-4" />
+              <Icons.star className="h-4 w-4 sm:mr-1" />
               {post.stats.total_votes}
             </div>
             <Separator orientation="vertical" />
             <div className="flex items-center" data-testid="post-children">
-              <Icons.comment className="mr-1 h-4 w-4 cursor-pointer hover:text-red-600" />
+              <Icons.comment className="h-4 w-4 cursor-pointer hover:text-red-600 sm:mr-1" />
               {post.children}
             </div>
             <Separator orientation="vertical" />

@@ -103,7 +103,6 @@ function ProposalsPage() {
       document.removeEventListener('scroll', handleScroll);
     };
   }, [proposalsData.fetchNextPage, proposalsData.hasNextPage]);
-
   return (
     <div className="mx-auto flex max-w-5xl flex-col gap-5 p-5" data-testid="proposals-body">
       <ProposalsFilter

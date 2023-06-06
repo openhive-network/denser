@@ -5,6 +5,7 @@ import { getRoundedAbbreveration } from '@/lib/utils';
 import { Icons } from './icons';
 import moment from 'moment';
 import { dateToFullRelative } from '@/lib/parse-date';
+import { Badge } from './ui/badge';
 import { useEffect, useState } from 'react';
 import { getPostHeader } from '@/lib/bridge';
 import permlink from '@/pages/[param]/[p2]/[permlink]';
@@ -36,19 +37,9 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
   }, []);
 
   function getFundingType() {
-    if (REFUND_ACCOUNTS.includes(proposalData.receiver))
-      return (
-        <span className="h-fit w-fit w-min rounded-md border-2 border-lime-700 px-1 text-lime-700 ">
-          refund
-        </span>
-      );
+    if (REFUND_ACCOUNTS.includes(proposalData.receiver)) return <Badge variant="lime">refund</Badge>;
 
-    if (BURN_ACCOUNTS.includes(proposalData.receiver))
-      return (
-        <span className="h-fit w-fit w-min rounded-md border-2 border-orange-600 px-1 text-orange-600 ">
-          burn
-        </span>
-      );
+    if (BURN_ACCOUNTS.includes(proposalData.receiver)) return <Badge variant="orange">burn</Badge>;
 
     return null;
   }
@@ -81,11 +72,8 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
             {' HBD)'}
           </div>
           <div className="flex gap-2">
-            <span
-              title={titleSetter(proposalData.start_date, proposalData.end_date, proposalData.status)}
-              className="h-fit w-fit w-min  whitespace-nowrap rounded-md border-2 border-red-600 px-1 text-red-600 dark:border-blue-200 dark:text-blue-200"
-            >
-              {proposalData.status}
+            <span title={titleSetter(proposalData.start_date, proposalData.end_date, proposalData.status)}>
+              <Badge variant="red">{proposalData.status}</Badge>
             </span>
             {getFundingType()}
           </div>

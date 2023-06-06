@@ -148,7 +148,7 @@ function UserInfo({
           )}
         </span>
         <span className="mx-1">•</span>
-        <span title={String(parseDate(created))}>{dateToRelative(created)}</span>
+        <span title={String(parseDate(created))}>{dateToRelative(created)} ago</span>
       </div>
       {authored ? (
         <span className="ml-1 text-xs">

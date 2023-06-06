@@ -53,11 +53,15 @@ export class WitnessPage {
     this.witnessesSetProxyBoxInput = this.witnessesSetProxyBox.locator('input');
     this.witnessesSetProxyBoxButton = this.witnessesSetProxyBox.locator('button');
     this.firstWitnessListMemberRow = this.witnessesListMembers.first();
-    this.firstWitnessNameLink = this.witnessesListItemInfo.locator('[data-testid="witness-name-link"]').first();
-    this.firstWitnessLastBlockNumberLink = this.witnessesListItemInfo.locator('[data-testid="last-block-number"]').first();
+    this.firstWitnessNameLink = this.witnessesListItemInfo
+      .locator('[data-testid="witness-name-link"]')
+      .first();
+    this.firstWitnessLastBlockNumberLink = this.witnessesListItemInfo
+      .locator('[data-testid="last-block-number"]')
+      .first();
     this.firstWitnessRunningVersion = this.firstWitnessLastBlockNumberLink.locator('..');
     this.firstWitnessPriceFeed = page.locator('[data-testid="witness-price-feed"]').first();
-    this.witnessHighLightLinks= page.locator('[data-testid="witness-highlight-link"]');
+    this.witnessHighLightLinks = page.locator('[data-testid="witness-highlight-link"]');
     this.firstWitnessHighLightLink = this.witnessHighLightLinks.first();
     this.witnessesVotesReceived = page.locator('[data-testid="witness-votes-received"]');
     this.firstWitnessVotesReceived = this.witnessesVotesReceived.first();
@@ -121,8 +125,8 @@ export class WitnessPage {
     await expect(this.witnessesVoteBoxInput).toHaveCSS('placeholder', '');
     // button of the voting box
     await expect(this.witnessesVoteBoxButton).toHaveText('VOTE');
-    await expect(this.witnessesVoteBoxButton).toHaveCSS('background-color', 'rgb(220, 38, 38)');
-    await expect(this.witnessesVoteBoxButton).toHaveCSS('color', 'rgb(203, 213, 225)');
+    await expect(this.witnessesVoteBoxButton).toHaveCSS('background-color', 'rgb(255, 0, 0)');
+    await expect(this.witnessesVoteBoxButton).toHaveCSS('color', 'rgb(248, 250, 252)');
   }
 
   async validateWitnessSetProxyBoxStyleText() {
@@ -141,12 +145,12 @@ export class WitnessPage {
     await expect(this.witnessesSetProxyBoxInput).toHaveCSS('placeholder', '');
     // button of the set proxy box
     await expect(this.witnessesSetProxyBoxButton).toHaveText('SET PROXY');
-    await expect(this.witnessesSetProxyBoxButton).toHaveCSS('background-color', 'rgb(220, 38, 38)');
-    await expect(this.witnessesSetProxyBoxButton).toHaveCSS('color', 'rgb(203, 213, 225)');
+    await expect(this.witnessesSetProxyBoxButton).toHaveCSS('background-color', 'rgb(255, 0, 0)');
+    await expect(this.witnessesSetProxyBoxButton).toHaveCSS('color', 'rgb(248, 250, 252)');
   }
 
-  async validateWitnessTableHeadStyleText(){
-    const expectedListOfColumnNames: string[] = [ 'Rank', 'Witness', 'Votes received', 'Price feed' ];
+  async validateWitnessTableHeadStyleText() {
+    const expectedListOfColumnNames: string[] = ['Rank', 'Witness', 'Votes received', 'Price feed'];
     const listOfColumnNames: string[] = await this.witnessesTableHead.locator('tr th').allTextContents();
 
     await expect(listOfColumnNames.toString()).toBe(expectedListOfColumnNames.toString());
@@ -154,5 +158,4 @@ export class WitnessPage {
     await expect(this.witnessesTableHead.locator('th').first()).toHaveCSS('color', 'rgb(15, 23, 42)');
     await expect(this.witnessesTableHead).toHaveCSS('font-weight', '400');
   }
-
 }

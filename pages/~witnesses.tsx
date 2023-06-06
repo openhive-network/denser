@@ -8,6 +8,7 @@ import { FullAccount } from '@/store/app-types';
 import { convertStringToBig } from '@/lib/helpers';
 import WitnessListItem from '@/components/witnesses-list-item';
 import { useRouter } from 'next/router';
+import { Button } from '@/components/ui/button';
 
 const LAST_BLOCK_AGE_THRESHOLD_IN_SEC = 2592000;
 
@@ -92,10 +93,14 @@ function WitnessesPage() {
   return (
     <div className="mx-auto max-w-5xl pt-6">
       <div className="mx-2 flex flex-col gap-4">
-        <div className="text-xl md:text-3xl" data-testid="witness-header">Witness Voting</div>
+        <div className="text-xl md:text-3xl" data-testid="witness-header">
+          Witness Voting
+        </div>
         <p className="text-xs sm:text-sm" data-testid="witness-header-vote">
-          <span className="font-bold " data-testid="witness-header-vote-remaining">You have 30 votes remaining.</span> You can vote for a maximum of 30
-          witnesses.
+          <span className="font-bold " data-testid="witness-header-vote-remaining">
+            You have 30 votes remaining.
+          </span>{' '}
+          You can vote for a maximum of 30 witnesses.
         </p>
         <p className="text-xs sm:text-sm" data-testid="witness-header-description">
           Notes: in the list below, the first 100 witnesses are unfiltered, this includes active and inactive
@@ -157,9 +162,7 @@ function WitnessesPage() {
               value={voteInput}
               onChange={(e) => setVoteInput(e.target.value)}
             />
-            <button className="rounded-lg border border-slate-300 bg-red-600 p-2 text-xs font-semibold text-slate-300 sm:text-base">
-              VOTE
-            </button>
+            <Button variant="destructive">VOTE</Button>
           </div>
         </div>
         <div className="flex flex-col gap-4" data-testid="witnesses-set-proxy-box">
@@ -172,9 +175,7 @@ function WitnessesPage() {
               <Icons.atSign />
             </span>
             <Input className="mx-1 max-w-sm" />
-            <button className="rounded-lg border border-slate-300 bg-red-600 p-2 text-xs font-semibold text-slate-300 sm:text-base">
-              SET PROXY
-            </button>
+            <Button variant="destructive">SET PROXY</Button>
           </div>
         </div>
       </div>
