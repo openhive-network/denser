@@ -13,6 +13,7 @@ import UserShortcutsCard from '@/components/user-shortcuts-card';
 import ProfileLayout from '@/components/common/profile-layout';
 import CommunityDescription from '@/components/community-description';
 import { useInView } from 'react-intersection-observer';
+import CustomError from '@/components/custom-error';
 
 const PostSkeleton = () => {
   return (
@@ -36,6 +37,7 @@ const ParamPage: FC = () => {
     isLoading: entriesDataIsLoading,
     isFetching: entriesDataIsFetching,
     error: entriesDataError,
+    isError: entriesDataIsError,
     status,
     isFetchingNextPage,
     fetchNextPage,
@@ -68,6 +70,7 @@ const ParamPage: FC = () => {
     data: accountEntriesData,
     isLoading: accountEntriesIsLoading,
     isFetching: accountEntriesIsFetching,
+    isError: accountEntriesIsError,
     error: accountEntriesError
   } = useQuery(
     ['accountEntries', username],
@@ -95,6 +98,8 @@ const ParamPage: FC = () => {
       fetchNextPage();
     }
   }, [fetchNextPage, inView]);
+
+  if (accountEntriesIsError || entriesDataIsError) return <CustomError />;
 
   if (
     (entriesDataIsLoading && entriesDataIsFetching) ||
