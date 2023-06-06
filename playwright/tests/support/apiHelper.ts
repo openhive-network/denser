@@ -140,4 +140,39 @@ export class ApiHelper {
 
     return response.json();
   }
+
+  // Get dynamic global properties as json from API
+  // order: 'by_creator' | 'by_total_votes' | 'by_start_date' | 'by_end_date';
+  // orderDirection: 'descending' | 'ascending';
+  // status: 'all' | 'inactive' | 'active' | 'votable' | 'expired';
+  //
+  async getListProposalsAPI(
+    start: Array<number | string> = [],
+    limit: number = 30,
+    order: string = 'by_total_votes',
+    orderDirection: string = 'descending',
+    status: string = 'votable'
+  ) {
+    const url = process.env.REACT_APP_API_ENDPOINT;
+
+    const response = await this.page.request.post(`${url}/`, {
+      data: {
+        id: 0,
+        jsonrpc: '2.0',
+        method: 'database_api.list_proposals',
+        params: {
+          start: start,
+          limit: limit,
+          order: order,
+          order_direction: orderDirection,
+          status: status
+        }
+      },
+      headers: {
+        Accept: 'application/json, text/plain, */*'
+      }
+    });
+
+    return response.json();
+  }
 }

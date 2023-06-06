@@ -59,7 +59,8 @@ test.describe('Proposal page', () => {
     ).toBe('rgb(100, 116, 139)');
   });
 
-  test('validate the styles of the row description of the proposal card in the light mode', async ({
+  // (Status: Votable, Order By: Total Votes, Order: descending)
+  test('validate the styles of the row description of the proposal card in the light mode - default filters', async ({
     page
   }) => {
     const proposalsPage = new ProposalsPage(page);
@@ -88,22 +89,156 @@ test.describe('Proposal page', () => {
         'color'
       )
     ).toBe('rgb(100, 116, 139)');
-    // text and color style of status tag
+
+    // Validate status tags of the first proposal in default filters (Status: Votable, Order By: Total Votes, Order: descending)
+    await proposalsPage.validateFirstProposalStatusTagsDefaultFilters();
+  });
+
+  test('validate the styles of the row description of the proposal card in the light mode - (Status: All, Order By: Total Votes, Order: descending)', async ({
+    page
+  }) => {
+    const proposalsPage = new ProposalsPage(page);
+
+    await proposalsPage.gotoProposalsPage();
+
+    await proposalsPage.selectStatusFilter('All');
+
+    // get row description
+    // color style of dates
     expect(
       await proposalsPage.getElementCssPropertyValue(
-        await proposalsPage.proposalStatusTag.locator('span').first(),
+        await proposalsPage.proposalItemRowDescription.locator('span').first(),
+        'color'
+      )
+    ).toBe('rgb(100, 116, 139)');
+    // color style HBD
+    expect(
+      await proposalsPage.getElementCssPropertyValue(
+        await proposalsPage.proposalItemRowDescription.locator('div > span').first(),
         'color'
       )
     ).toBe('rgb(220, 38, 38)');
+    // color style daily HBD
     expect(
       await proposalsPage.getElementCssPropertyValue(
-        await proposalsPage.proposalStatusTag.locator('span').first(),
-        'border-color'
+        await proposalsPage.proposalItemRowDescription.locator('div').first(),
+        'color'
+      )
+    ).toBe('rgb(100, 116, 139)');
+
+    // Validate status tags of the first proposal in custom filters (Status: all, Order By: Total Votes, Order: descending)
+    await proposalsPage.validateFirstProposalStatusTagsOfCustomFilters([],30,'by_total_votes', 'descending','all');
+  });
+
+  test('validate the styles of the row description of the proposal card in the light mode - (Status: Active, Order By: Total Votes, Order: descending)', async ({
+    page
+  }) => {
+    const proposalsPage = new ProposalsPage(page);
+
+    await proposalsPage.gotoProposalsPage();
+
+    await proposalsPage.selectStatusFilter('Active');
+
+    // get row description
+    // color style of dates
+    expect(
+      await proposalsPage.getElementCssPropertyValue(
+        await proposalsPage.proposalItemRowDescription.locator('span').first(),
+        'color'
+      )
+    ).toBe('rgb(100, 116, 139)');
+    // color style HBD
+    expect(
+      await proposalsPage.getElementCssPropertyValue(
+        await proposalsPage.proposalItemRowDescription.locator('div > span').first(),
+        'color'
       )
     ).toBe('rgb(220, 38, 38)');
+    // color style daily HBD
+    expect(
+      await proposalsPage.getElementCssPropertyValue(
+        await proposalsPage.proposalItemRowDescription.locator('div').first(),
+        'color'
+      )
+    ).toBe('rgb(100, 116, 139)');
 
-    await expect(proposalsPage.proposalStatusTag.locator('span').first()).toHaveText('started');
+    // Validate status tags of the first proposal in custom filters (Status: active, Order By: Total Votes, Order: descending)
+    await proposalsPage.validateFirstProposalStatusTagsOfCustomFilters([],30,'by_total_votes', 'descending','active');
   });
+
+  test('validate the styles of the row description of the proposal card in the light mode - (Status: Inactive, Order By: Total Votes, Order: descending)', async ({
+    page
+  }) => {
+    const proposalsPage = new ProposalsPage(page);
+
+    await proposalsPage.gotoProposalsPage();
+
+    await proposalsPage.selectStatusFilter('Inactive');
+
+    // get row description
+    // color style of dates
+    expect(
+      await proposalsPage.getElementCssPropertyValue(
+        await proposalsPage.proposalItemRowDescription.locator('span').first(),
+        'color'
+      )
+    ).toBe('rgb(100, 116, 139)');
+    // color style HBD
+    expect(
+      await proposalsPage.getElementCssPropertyValue(
+        await proposalsPage.proposalItemRowDescription.locator('div > span').first(),
+        'color'
+      )
+    ).toBe('rgb(220, 38, 38)');
+    // color style daily HBD
+    expect(
+      await proposalsPage.getElementCssPropertyValue(
+        await proposalsPage.proposalItemRowDescription.locator('div').first(),
+        'color'
+      )
+    ).toBe('rgb(100, 116, 139)');
+
+    // Validate status tags of the first proposal in custom filters (Status: inactive, Order By: Total Votes, Order: descending)
+    await proposalsPage.validateFirstProposalStatusTagsOfCustomFilters([],30,'by_total_votes', 'descending','inactive');
+  });
+
+  test('validate the styles of the row description of the proposal card in the light mode - (Status: Expired, Order By: Total Votes, Order: descending)', async ({
+    page
+  }) => {
+    const proposalsPage = new ProposalsPage(page);
+
+    await proposalsPage.gotoProposalsPage();
+
+    await proposalsPage.selectStatusFilter('Expired');
+
+    // get row description
+    // color style of dates
+    expect(
+      await proposalsPage.getElementCssPropertyValue(
+        await proposalsPage.proposalItemRowDescription.locator('span').first(),
+        'color'
+      )
+    ).toBe('rgb(100, 116, 139)');
+    // color style HBD
+    expect(
+      await proposalsPage.getElementCssPropertyValue(
+        await proposalsPage.proposalItemRowDescription.locator('div > span').first(),
+        'color'
+      )
+    ).toBe('rgb(220, 38, 38)');
+    // color style daily HBD
+    expect(
+      await proposalsPage.getElementCssPropertyValue(
+        await proposalsPage.proposalItemRowDescription.locator('div').first(),
+        'color'
+      )
+    ).toBe('rgb(100, 116, 139)');
+
+    // Validate status tags of the first proposal in custom filters (Status: inactive, Order By: Total Votes, Order: descending)
+    await proposalsPage.validateFirstProposalStatusTagsOfCustomFilters([],30,'by_total_votes', 'descending','expired');
+  });
+
+
 
   test('move to the post content of the first propolas in the default proposals page', async ({ page }) => {
     const proposalsPage = new ProposalsPage(page);

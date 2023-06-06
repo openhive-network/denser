@@ -44,7 +44,7 @@ export function ProposalsFilter({
               <SelectTrigger className="h-[35px] w-[100px]" data-testid="proposals-filter-status">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent data-testid="proposals-filter-status-content">
                 <SelectSeparator />
                 <SelectGroup>
                   <SelectLabel>Status</SelectLabel>
