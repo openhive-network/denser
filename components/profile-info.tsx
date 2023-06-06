@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { QueryClient, dehydrate, useQuery } from '@tanstack/react-query';
-
+import { useQuery } from '@tanstack/react-query';
 import { getAccountFull, getAccount, getDynamicGlobalProperties } from '@/lib/hive';
-
 import { accountReputation, getHivePower, numberWithCommas } from '@/lib/utils';
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
@@ -71,14 +69,6 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
   return (
     <div className="mt-[-6rem] px-8 md:w-80" data-testid="profile-info">
       <div className="flex h-40 w-40 items-center justify-center rounded-lg bg-white dark:bg-slate-900">
-        {/*<Image*/}
-        {/*  src={profile.profile_image}*/}
-        {/*  alt="Profile picture"*/}
-        {/*  className="h-36 w-36 rounded-md"*/}
-        {/*  height="144"*/}
-        {/*  width="144"*/}
-        {/*  priority*/}
-        {/*/>*/}
         <img className="h-36 w-36 rounded-md" src={profile?.profile_image} alt="Profile picture" />
       </div>
       <h4 className="mb-4 mt-8 text-xl text-slate-900 dark:text-white" data-testid="profile-name">

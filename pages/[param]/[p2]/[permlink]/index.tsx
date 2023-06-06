@@ -20,6 +20,7 @@ import Loading from '@/components/loading';
 import dynamic from 'next/dynamic';
 import ImageGallery from '@/components/image-gallery';
 import { proxifyImageSrc } from '@/lib/proxify-images';
+import Link from 'next/link';
 
 const DynamicComments = dynamic(() => import('@/components/comment-list'), {
   loading: () => <Loading />,
@@ -136,17 +137,25 @@ function PostPage({ post_s, community, username, permlink }: any) {
             <div className="flex flex-wrap">
               <Clock />
               <span className="px-1" title={String(parseDate(post_s.created))}>
-                {dateToRelative(post_s.created)}
+                {dateToRelative(post_s.created)} ago
               </span>
               in
-              <span className="px-1 font-bold hover:text-red-500">{post_s.community_title}</span>
+              <span className="px-1 font-bold">
+                {post_s.community_title ? (
+                  <Link href={`/trending/${community}`} className="hover:cursor-pointer hover:text-red-600">
+                    {post_s.community_title}
+                  </Link>
+                ) : (
+                  <Link
+                    href={`/trending/${post_s.category}`}
+                    className="hover:cursor-pointer hover:text-red-600"
+                  >
+                    #{post_s.category}
+                  </Link>
+                )}
+              </span>
               by
-              {!isLoadingCommunity &&
-              communityData &&
-              !isLoadingFollows &&
-              follows &&
-              !isLoadingAccounts &&
-              account ? (
+              {!isLoadingFollows && follows && !isLoadingAccounts && account ? (
                 <UserHoverCard
                   name={JSON.parse(account.posting_json_metadata)?.profile?.name}
                   author={post_s.author}
@@ -160,7 +169,8 @@ function PostPage({ post_s, community, username, permlink }: any) {
               ) : null}
             </div>
             <div className="flex">
-              <CornerUpRight />z<span className="mx-1">|</span>
+              <CornerUpRight />
+              <span className="mx-1">|</span>
               <span className="text-red-500">Reply</span>
               <span className="mx-1">|</span>
               <MessageSquare />
@@ -173,7 +183,13 @@ function PostPage({ post_s, community, username, permlink }: any) {
                 <ArrowUpCircle />
                 <ArrowDownCircle />
               </div>
-              <span className="text-red-500">${post_s.payout?.toFixed(2)}</span>
+              <span
+                className={`text-red-500 ${
+                  Number(post_s.max_accepted_payout.slice(0, 1)) === 0 ? '!text-gray-600 line-through' : ''
+                }`}
+              >
+                ${post_s.payout?.toFixed(2)}
+              </span>
               <span className="text-red-500">{post_s.stats?.total_votes} votes</span>
             </div>
             <div className="flex gap-2">
