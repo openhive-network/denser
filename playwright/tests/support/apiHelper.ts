@@ -147,7 +147,7 @@ export class ApiHelper {
   // status: 'all' | 'inactive' | 'active' | 'votable' | 'expired';
   //
   async getListProposalsAPI(
-    start: Array<number | string> = [],
+    start: Array<number | string> = [""],
     limit: number = 30,
     order: string = 'by_total_votes',
     orderDirection: string = 'descending',

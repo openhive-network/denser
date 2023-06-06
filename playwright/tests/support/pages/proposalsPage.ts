@@ -62,8 +62,8 @@ export class ProposalsPage {
   async validateStartedTimeStatusTag(elemLocator: Locator) {
     // validate time status is 'started'
     // text and color style of status tag
-    expect(await this.getElementCssPropertyValue(await elemLocator, 'color')).toBe('rgb(220, 38, 38)');
-    expect(await this.getElementCssPropertyValue(await elemLocator, 'border-color')).toBe('rgb(220, 38, 38)');
+    expect(await this.getElementCssPropertyValue(await elemLocator, 'color')).toBe('rgb(241, 245, 249)');
+    expect(await this.getElementCssPropertyValue(await elemLocator, 'background-color')).toBe('rgb(255, 0, 0)');
 
     await expect(elemLocator).toHaveText('started');
   }
@@ -71,8 +71,8 @@ export class ProposalsPage {
   async validateNotStartedTimeStatusTag(elemLocator: Locator) {
     // validate time status is 'not started'
     // text and color style of status tag
-    expect(await this.getElementCssPropertyValue(await elemLocator, 'color')).toBe('rgb(220, 38, 38)');
-    expect(await this.getElementCssPropertyValue(await elemLocator, 'border-color')).toBe('rgb(220, 38, 38)');
+    expect(await this.getElementCssPropertyValue(await elemLocator, 'color')).toBe('rgb(241, 245, 249)');
+    expect(await this.getElementCssPropertyValue(await elemLocator, 'background-color')).toBe('rgb(255, 0, 0)');
 
     await expect(elemLocator).toHaveText('not started');
   }
@@ -80,24 +80,24 @@ export class ProposalsPage {
   async validateFinishedTimeStatusTag(elemLocator: Locator) {
     // Validate time status is 'finished'
     // text and color style of status tag
-    expect(await this.getElementCssPropertyValue(await elemLocator, 'color')).toBe('rgb(220, 38, 38)');
-    expect(await this.getElementCssPropertyValue(await elemLocator, 'border-color')).toBe('rgb(220, 38, 38)');
+    expect(await this.getElementCssPropertyValue(await elemLocator, 'color')).toBe('rgb(241, 245, 249)');
+    expect(await this.getElementCssPropertyValue(await elemLocator, 'background-color')).toBe('rgb(255, 0, 0)');
 
     await expect(elemLocator).toHaveText('finished');
   }
 
   async validateRefundStatusTag(elemLocator: Locator) {
     // text and color style of status tag
-    expect(await this.getElementCssPropertyValue(await elemLocator, 'color')).toBe('rgb(77, 124, 15)');
-    expect(await this.getElementCssPropertyValue(await elemLocator, 'border-color')).toBe('rgb(77, 124, 15)');
+    expect(await this.getElementCssPropertyValue(await elemLocator, 'color')).toBe('rgb(241, 245, 249)');
+    expect(await this.getElementCssPropertyValue(await elemLocator, 'background-color')).toBe('rgb(77, 124, 15)');
 
     await expect(elemLocator).toHaveText('refund');
   }
 
   async validateBurnStatusTag(elemLocator: Locator) {
     // text and color style of status tag
-    expect(await this.getElementCssPropertyValue(await elemLocator, 'color')).toBe('rgb(234, 88, 12)');
-    expect(await this.getElementCssPropertyValue(await elemLocator, 'border-color')).toBe('rgb(234, 88, 12)');
+    expect(await this.getElementCssPropertyValue(await elemLocator, 'color')).toBe('rgb(241, 245, 249)');
+    expect(await this.getElementCssPropertyValue(await elemLocator, 'background-color')).toBe('rgb(234, 88, 12)');
 
     await expect(elemLocator).toHaveText('burn');
   }
@@ -118,24 +118,24 @@ export class ProposalsPage {
 
     // Validate time status
     if (statusFristProposalAPI === 'active') {
-      await this.validateStartedTimeStatusTag(await this.proposalStatusTag.locator('span').first());
+      await this.validateStartedTimeStatusTag(await this.proposalStatusTag.locator('span div').first());
     } else if (statusFristProposalAPI === 'inactive') {
-      await this.validateNotStartedTimeStatusTag(await this.proposalStatusTag.locator('span').first());
+      await this.validateNotStartedTimeStatusTag(await this.proposalStatusTag.locator('span div').first());
     } else if (statusFristProposalAPI == 'expired') {
-      await this.validateFinishedTimeStatusTag(await this.proposalStatusTag.locator('span').first());
+      await this.validateFinishedTimeStatusTag(await this.proposalStatusTag.locator('span div').first());
     }
 
     // Validate status refund for the receiver 'steem.dao'
     if (receiverFirstProposalAPI === REFUND_ACCOUNTS[0]) {
-      await this.validateRefundStatusTag(await this.proposalStatusTag.locator('span').getByText('refund').first());
+      await this.validateRefundStatusTag(await this.proposalStatusTag.locator('span div').getByText('refund').first());
     }
     // Validate status refund for the receiver 'hive.fund'
     if (receiverFirstProposalAPI === REFUND_ACCOUNTS[1]) {
-      await this.validateRefundStatusTag(await this.proposalStatusTag.locator('span').getByText('refund').first());
+      await this.validateRefundStatusTag(await this.proposalStatusTag.locator('span div').getByText('refund').first());
     }
     // Validate status burn for the receiver 'null'
     if (receiverFirstProposalAPI === BURN_ACCOUNTS[0]) {
-      await this.validateBurnStatusTag(await this.proposalStatusTag.locator('span').getByText('burn').first());
+      await this.validateBurnStatusTag(await this.proposalStatusTag.locator('span div').getByText('burn').first());
     }
   }
 
@@ -161,24 +161,24 @@ export class ProposalsPage {
 
     // Validate time status
     if (statusFristProposalAPI === 'active') {
-      await this.validateStartedTimeStatusTag(await this.proposalStatusTag.locator('span').first());
+      await this.validateStartedTimeStatusTag(await this.proposalStatusTag.locator('span div').first());
     } else if (statusFristProposalAPI === 'inactive') {
-      await this.validateNotStartedTimeStatusTag(await this.proposalStatusTag.locator('span').first());
+      await this.validateNotStartedTimeStatusTag(await this.proposalStatusTag.locator('span div').first());
     } else if (statusFristProposalAPI == 'expired') {
-      await this.validateFinishedTimeStatusTag(await this.proposalStatusTag.locator('span').first());
+      await this.validateFinishedTimeStatusTag(await this.proposalStatusTag.locator('span div').first());
     }
 
     // Validate status refund for the receiver 'steem.dao'
     if (receiverFirstProposalAPI === REFUND_ACCOUNTS[0]) {
-      await this.validateRefundStatusTag(await this.proposalStatusTag.locator('span').getByText('refund').first());
+      await this.validateRefundStatusTag(await this.proposalStatusTag.locator('span div').getByText('refund').first());
     }
     // Validate status refund for the receiver 'hive.fund'
     if (receiverFirstProposalAPI === REFUND_ACCOUNTS[1]) {
-      await this.validateRefundStatusTag(await this.proposalStatusTag.locator('span').getByText('refund').first());
+      await this.validateRefundStatusTag(await this.proposalStatusTag.locator('span div').getByText('refund').first());
     }
     // Validate status burn for the receiver 'null'
     if (receiverFirstProposalAPI === BURN_ACCOUNTS[0]) {
-      await this.validateBurnStatusTag(await this.proposalStatusTag.locator('span').getByText('burn').first());
+      await this.validateBurnStatusTag(await this.proposalStatusTag.locator('span div').getByText('burn').first());
     }
   }
 

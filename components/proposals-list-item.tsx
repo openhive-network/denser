@@ -71,7 +71,7 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
             {getRoundedAbbreveration(proposalData.daily_pay.amount)}
             {' HBD)'}
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2" data-testid="proposal-status-tag">
             <span title={titleSetter(proposalData.start_date, proposalData.end_date, proposalData.status)}>
               <Badge variant="red">{proposalData.status}</Badge>
             </span>
