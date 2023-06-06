@@ -98,7 +98,7 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
       </p>
       <p className="my-4 flex text-slate-900 dark:text-white" data-testid="user-last-time-active">
         <Icons.calendarActive className="mr-2" />
-        Active {profileData?.last_vote_time ? dateToRelative(profileData.last_vote_time) : null}
+        Active {profileData?.last_post ? dateToRelative(profileData.last_post) : null} ago
       </p>
       <p className="my-4 flex text-slate-900 dark:text-white" data-testid="user-joined">
         <Icons.calendarHeart className="mr-2" />
