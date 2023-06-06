@@ -21,6 +21,7 @@ import dynamic from 'next/dynamic';
 import ImageGallery from '@/components/image-gallery';
 import { proxifyImageSrc } from '@/lib/proxify-images';
 import Link from 'next/link';
+import { NextPageContext } from 'next';
 
 const DynamicComments = dynamic(() => import('@/components/comment-list'), {
   loading: () => <Loading />,
@@ -216,15 +217,13 @@ function PostPage({ post_s, community, username, permlink }: any) {
   );
 }
 
-export async function getServerSideProps(context: any) {
-  context.res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59');
-  const community = String(context.params.param);
-  const username = String(context.params.p2).slice(1);
-  const permlink = String(context.params.permlink);
+PostPage.getInitialProps = async (ctx: NextPageContext) => {
+  const community = String(ctx.query.param);
+  const username = String(ctx.query.p2).slice(1);
+  const permlink = String(ctx.query.permlink);
 
   const post_s = await getPost(username, String(permlink));
-
-  return { props: { post_s, community, username, permlink } };
-}
+  return { post_s, community, username, permlink };
+};
 
 export default PostPage;
