@@ -21,7 +21,7 @@ import {
 import { AlertDialogDemo } from './alert-window';
 const PostListItem = ({ post, sort }: any) => {
   return (
-    <li data-testid="post-list-item">
+    <li data-testid="post-list-item" className={sort === 'muted' ? 'opacity-50 hover:opacity-100' : ''}>
       <Card
         className={cn(
           'my-4 hover:bg-accent hover:text-accent-foreground  dark:bg-background/95 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground'
@@ -48,6 +48,11 @@ const PostListItem = ({ post, sort }: any) => {
                     @{post.author}
                   </Link>{' '}
                   ({accountReputation(post.author_reputation)})
+                  {post.blacklists && post.blacklists[0] ? (
+                    <span className="text-red-600" title={post.blacklists[0]}>
+                      ({post.blacklists.length})
+                    </span>
+                  ) : null}
                 </p>
                 {post.author_title ? (
                   <Badge variant="outline" className="ml-1 border-red-600 text-red-600">
@@ -80,7 +85,7 @@ const PostListItem = ({ post, sort }: any) => {
               </p>
             </div>
           </div>
-          {post.json_metadata.image ? (
+          {post.json_metadata.image && post.json_metadata.image[0] ? (
             <Link href={`${post.url}`} data-testid="post-image">
               <div className="relative flex h-full max-h-[200px] min-h-fit w-fit items-center overflow-hidden bg-gray-100 lg:min-w-[320px] lg:max-w-[320px]">
                 <img

@@ -154,12 +154,12 @@ test.describe('Home page tests', () => {
     await expect(homePage.getFilterPosts).toHaveText('Hot');
     // click 'Payout' value of posts filter
     await homePage.getFilterPosts.click();
-    await homePage.getFilterPostsList.getByText('Payout').click();
-    await expect(homePage.getFilterPosts).toHaveText('Payout');
+    await homePage.getFilterPostsList.getByText('Payouts').click();
+    await expect(homePage.getFilterPosts).toHaveText('Payouts');
     // click 'Promoted' value of posts filter
     await homePage.getFilterPosts.click();
-    await homePage.getFilterPostsList.getByText('Promoted').click();
-    await expect(homePage.getFilterPosts).toHaveText('Promoted');
+    await homePage.getFilterPostsList.getByText('Muted').click();
+    await expect(homePage.getFilterPosts).toHaveText('Muted');
     // click 'Trending' value of posts filter
     await homePage.getFilterPosts.click();
     await homePage.getFilterPostsList.getByText('Trending').click();
