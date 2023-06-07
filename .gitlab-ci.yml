@@ -184,8 +184,9 @@ staging:deploy:
       scripts/run_instance.sh \
         --image="$IMAGE_NAME" \
         --api-endpoint="$API_ENDPOINT" \
-        --container-name="$CONTAINER_NAME" \
-        --port=$PORT
+        --name="$CONTAINER_NAME" \
+        --port=$PORT \
+        --detach
   environment:
     name: staging
     action: start

@@ -11,7 +11,8 @@ OPTIONS:
   --image=IMAGE         Docker image to run (default: 'registry.gitlab.syncad.com/hive/denser:latest')
   --api-endpoint=URL    API endpoint to be used by the new instance (default: 'https://api.hive.blog')
   --port=PORT           Port to be exposed (default: 3000)
-  --container-name=NAME Container name to be used (default: denser)
+  --name=NAME           Container name to be used (default: denser)
+  --detach              Run in detached mode 
   -?|--help             Display this help screen and exit
 EOF
 }
@@ -20,6 +21,7 @@ IMAGE=${IMAGE:-"registry.gitlab.syncad.com/hive/denser:latest"}
 PORT=${PORT:-"3000"}
 API_ENDPOINT=${API_ENDPOINT:-"https://api.hive.blog"}
 CONTAINER_NAME=${CONTAINER_NAME:-"denser"}
+DETACH=${DETACH:-false}
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -35,10 +37,13 @@ while [ $# -gt 0 ]; do
         arg="${1#*=}"
         PORT="$arg"
         ;;
-    --container-name=*)
+    --name=*)
         arg="${1#*=}"
         CONTAINER_NAME="$arg"
         ;;
+    --detach)
+        DETACH=true
+        ;;    
     --help|-?)
         print_help
         exit 0
@@ -55,10 +60,23 @@ done
 
 (docker ps -q --filter "name=$CONTAINER_NAME" | grep -q . && docker stop "$CONTAINER_NAME") || true
 
-docker run --detach \
-  --rm \
-  --publish "$PORT:$PORT" \
-  --env PORT="$PORT" \
-  --env REACT_APP_API_ENDPOINT="$API_ENDPOINT" \
-  --name "$CONTAINER_NAME" \
-  "$IMAGE"
+RUN_OPTIONS=(
+    "--rm"
+    "--publish" "$PORT:$PORT"
+    "--env" "PORT=$PORT"
+    "--env" "REACT_APP_API_ENDPOINT=$API_ENDPOINT"
+    "--name" "$CONTAINER_NAME"
+)
+
+if [[ "$DETACH" == "true" ]]; then
+    RUN_OPTIONS+=("--detach")
+fi
+
+docker run "${RUN_OPTIONS[@]}" "$IMAGE"
+# docker run --detach \
+#   --rm \
+#   --publish "$PORT:$PORT" \
+#   --env PORT="$PORT" \
+#   --env REACT_APP_API_ENDPOINT="$API_ENDPOINT" \
+#   --name "$CONTAINER_NAME" \
+#   "$IMAGE"
