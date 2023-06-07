@@ -40,7 +40,6 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
     data: dynamicGlobalData
   } = useQuery(['dynamicGlobalData'], () => getDynamicGlobalProperties());
 
-  console.log('profileData', profileData);
   return username ? (
     <div>
       <div

@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import Link from 'next/link';
 
 const CommunitiesListItem = ({ community }: { community: any }) => {
   return (
@@ -11,7 +12,9 @@ const CommunitiesListItem = ({ community }: { community: any }) => {
     >
       <div className="w-4/5">
         <CardHeader>
-          <CardTitle>{community.title}</CardTitle>
+          <Link href={`trending/${community.name}`}>
+            <CardTitle>{community.title}</CardTitle>
+          </Link>
         </CardHeader>
         <CardContent>
           <p>{community.about}</p>
@@ -27,7 +30,8 @@ const CommunitiesListItem = ({ community }: { community: any }) => {
               <span>{community.admins?.length > 1 ? 'admins' : 'admin'}: </span>
               {community.admins.map((admin: any, index: number) => (
                 <span key={index} className="text-red-600">
-                  {admin} {index !== community.admins.length - 1 ? <span className="mx-1">•</span> : null}
+                  <Link href={`@${admin}`}>{admin}</Link>{' '}
+                  {index !== community.admins.length - 1 ? <span className="mx-1">•</span> : null}
                 </span>
               ))}
             </p>

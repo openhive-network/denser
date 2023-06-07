@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import UserInfo, { UserHoverCard } from '@/components/user-info';
-import { getAccount, getFollowCount } from '@/lib/hive';
+import { getAccount, getFeedHistory, getFollowCount } from '@/lib/hive';
 import { useQuery } from '@tanstack/react-query';
 import { DefaultRenderer } from '@hiveio/content-renderer';
 import { getCommunity, getDiscussion, getPost } from '@/lib/bridge';
@@ -22,6 +22,8 @@ import ImageGallery from '@/components/image-gallery';
 import { proxifyImageSrc } from '@/lib/proxify-images';
 import Link from 'next/link';
 import { NextPageContext } from 'next';
+import DetailsCardHover from '@/components/details-card-hover';
+import DetailsCardVoters from '@/components/details-card-voters';
 
 const DynamicComments = dynamic(() => import('@/components/comment-list'), {
   loading: () => <Loading />,
@@ -59,6 +61,11 @@ function PostPage({ post_s, community, username, permlink }: any) {
   } = useQuery(['communityData', community], () => getCommunity(community), {
     enabled: !!username && !!community && community.startsWith('hive-')
   });
+  const {
+    data: historyFeedData,
+    isLoading: isHistoryFeedLoading,
+    isError: historyFeedError
+  } = useQuery(['feedHistory'], () => getFeedHistory());
 
   const renderer = new DefaultRenderer({
     baseUrl: 'https://hive.blog/',
@@ -141,16 +148,13 @@ function PostPage({ post_s, community, username, permlink }: any) {
                 {dateToRelative(post_s.created)} ago
               </span>
               in
-              <span className="px-1 font-bold">
+              <span className="px-1 text-red-600">
                 {post_s.community_title ? (
-                  <Link href={`/trending/${community}`} className="hover:cursor-pointer hover:text-red-600">
+                  <Link href={`/trending/${community}`} className="hover:cursor-pointer">
                     {post_s.community_title}
                   </Link>
                 ) : (
-                  <Link
-                    href={`/trending/${post_s.category}`}
-                    className="hover:cursor-pointer hover:text-red-600"
-                  >
+                  <Link href={`/trending/${post_s.category}`} className="hover:cursor-pointer">
                     #{post_s.category}
                   </Link>
                 )}
@@ -184,14 +188,22 @@ function PostPage({ post_s, community, username, permlink }: any) {
                 <ArrowUpCircle />
                 <ArrowDownCircle />
               </div>
-              <span
-                className={`text-red-500 ${
-                  Number(post_s.max_accepted_payout.slice(0, 1)) === 0 ? '!text-gray-600 line-through' : ''
-                }`}
-              >
-                ${post_s.payout?.toFixed(2)}
-              </span>
-              <span className="text-red-500">{post_s.stats?.total_votes} votes</span>
+              {!isHistoryFeedLoading && historyFeedData ? (
+                <DetailsCardHover post={post_s} historyFeedData={historyFeedData}>
+                  <span
+                    className={`text-red-500 hover:cursor-pointer  ${
+                      Number(post_s.max_accepted_payout.slice(0, 1)) === 0
+                        ? '!text-gray-600 line-through'
+                        : ''
+                    }`}
+                  >
+                    ${post_s.payout?.toFixed(2)}
+                  </span>
+                </DetailsCardHover>
+              ) : null}
+              <DetailsCardVoters activeVotes={post_s.active_votes}>
+                <span className="text-red-500">{post_s.stats?.total_votes} votes</span>
+              </DetailsCardVoters>
             </div>
             <div className="flex gap-2">
               <Facebook />
@@ -208,7 +220,7 @@ function PostPage({ post_s, community, username, permlink }: any) {
         </div>
       ) : (
         <div className="mx-auto my-0 flex max-w-4xl justify-center px-8 py-4">
-          <Button onClick={() => refetchDiscussion()} data-testid="comment-show-button">
+          <Button id="comments" onClick={() => refetchDiscussion()} data-testid="comment-show-button">
             Show comments
           </Button>
         </div>

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { fmt, cn, getPostSummary } from '@/lib/utils';
+import { cn, getPostSummary } from '@/lib/utils';
 import { Icons } from '@/components/icons';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -8,15 +8,15 @@ import { dateToRelative } from '@/lib/parse-date';
 import accountReputation from '@/lib/account-reputation';
 import { proxifyImageSrc } from '@/lib/proxify-images';
 import { AlertDialogDemo } from './alert-window';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import DetailsCardHover from './details-card-hover';
 
 interface IBeneficiary {
   account: string;
   weight: number;
 }
 
-const PostListItem = ({ post, sort }: any) => {
+const PostListItem = ({ post, sort, historyFeedData }: any) => {
   return (
     <li data-testid="post-list-item" className={sort === 'muted' ? 'opacity-50 hover:opacity-100' : ''}>
       <Card
@@ -153,37 +153,17 @@ const PostListItem = ({ post, sort }: any) => {
                   <Icons.arrowDownCircle className="h-4 w-4 hover:text-gray-600 sm:mr-1" />
                 </div>
 
-                <HoverCard>
-                  <HoverCardTrigger asChild>
-                    <div
-                      className={`flex items-center hover:cursor-pointer ${
-                        Number(post.max_accepted_payout.slice(0, 1)) === 0 ? 'text-gray-600 line-through' : ''
-                      }`}
-                      data-testid="post-payout"
-                    >
-                      <Icons.dollar className="h-4 w-4 text-red-600 sm:mr-1" />
-                      {post.payout.toFixed(2)}
-                    </div>
-                  </HoverCardTrigger>
-                  <HoverCardContent className="flex w-80 flex-col">
-                    <span>Pending payout amount: ${post.payout.toFixed(2)}</span>
-                    <>
-                      {post.beneficiaries.map((beneficiary: IBeneficiary, index: number) => (
-                        <Link
-                          href={`/@${beneficiary.account}`}
-                          className="hover:cursor-pointer hover:text-red-600"
-                          key={index}
-                        >
-                          {beneficiary.account}: {fmt(parseFloat(String(beneficiary.weight)) / 100)}%
-                        </Link>
-                      ))}
-                    </>
-                    <span>Payout in {dateToRelative(post.payout_at)}</span>
-                    {post.max_accepted_payout ? (
-                      <span>Max accepted payout: ${fmt(post.max_accepted_payout.split(' ')[0])}</span>
-                    ) : null}
-                  </HoverCardContent>
-                </HoverCard>
+                <DetailsCardHover post={post} historyFeedData={historyFeedData}>
+                  <div
+                    className={`flex items-center hover:cursor-pointer ${
+                      Number(post.max_accepted_payout.slice(0, 1)) === 0 ? 'text-gray-600 line-through' : ''
+                    }`}
+                    data-testid="post-payout"
+                  >
+                    <Icons.dollar className="h-4 w-4 text-red-600 sm:mr-1" />
+                    {post.payout.toFixed(2)}
+                  </div>
+                </DetailsCardHover>
 
                 <Separator orientation="vertical" />
                 <div className="flex items-center" data-testid="post-total-votes">
@@ -204,7 +184,13 @@ const PostListItem = ({ post, sort }: any) => {
                         </Link>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>{post.children} responses. Click to respond.</p>
+                        <p>{` ${
+                          post.children === 0
+                            ? 'No responses'
+                            : post.children === 1
+                            ? post.children + ' response'
+                            : post.children + ' responses'
+                        }. Click to respond`}</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>

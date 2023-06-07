@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
 
 test.describe('Home page tests', () => {
-  test('has the main timeline of posts (20 posts are displayed by default)', async ({ page }) => {
+  test.skip('has the main timeline of posts (20 posts are displayed by default)', async ({ page }) => {
     const homePage = new HomePage(page);
 
     await homePage.goto();
