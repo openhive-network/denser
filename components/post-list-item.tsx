@@ -9,6 +9,7 @@ import accountReputation from '@/lib/account-reputation';
 import { proxifyImageSrc } from '@/lib/proxify-images';
 import { AlertDialogDemo } from './alert-window';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface IBeneficiary {
   account: string;
@@ -142,9 +143,10 @@ const PostListItem = ({ post, sort }: any) => {
               </CardTitle>
               <CardDescription>
                 <Link href={`${post.url}`}>{getPostSummary(post.json_metadata, post.body)}</Link>
+                <Separator orientation="horizontal" className="my-1" />
               </CardDescription>
             </CardContent>
-            <CardFooter>
+            <CardFooter className="pb-2">
               <div className="flex h-5 items-center space-x-2 text-sm">
                 <div className="flex items-center gap-1">
                   <Icons.arrowUpCircle className="h-4 w-4 hover:text-red-600 sm:mr-1" />
@@ -190,14 +192,39 @@ const PostListItem = ({ post, sort }: any) => {
                 </div>
                 <Separator orientation="vertical" />
                 <div className="flex items-center" data-testid="post-children">
-                  <Icons.comment className="h-4 w-4 cursor-pointer hover:text-red-600 sm:mr-1" />
-                  {post.children}
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Link
+                          href={`${post.url}/#comments`}
+                          className="flex cursor-pointer items-center hover:text-red-600"
+                        >
+                          <Icons.comment className="h-4 w-4 sm:mr-1" />
+                          {post.children}
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{post.children} responses. Click to respond.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
                 <Separator orientation="vertical" />
                 <div className="flex items-center">
-                  <AlertDialogDemo>
-                    <Icons.forward className="h-4 w-4 cursor-pointer hover:text-red-600" />
-                  </AlertDialogDemo>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <AlertDialogDemo>
+                          <Icons.forward className="h-4 w-4 cursor-pointer hover:text-red-600" />
+                        </AlertDialogDemo>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>
+                          Reblog @{post.author}/{post.permlink}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
               </div>
             </CardFooter>

@@ -2,6 +2,7 @@ import { cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FC } from 'react';
 import Link from 'next/link';
+import { Icons } from '@/components/icons';
 
 const ExploreHive: FC = () => {
   return (
@@ -13,15 +14,16 @@ const ExploreHive: FC = () => {
         <CardTitle>Explore Hive</CardTitle>
       </CardHeader>
       <CardContent>
-        <ul className="space-y-1">
+        <ul className="space-y-1 pb-4 font-light">
           <li>
             <Link
               href="https://hive.io"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-red-600 hover:cursor-pointer"
+              className="flex items-center text-red-600 hover:cursor-pointer"
             >
               What is Hive?
+              <Icons.externalLink className="ml-1 h-4 w-4 text-black" />
             </Link>
           </li>
           <li>
@@ -29,9 +31,10 @@ const ExploreHive: FC = () => {
               href="https://hivedapps.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-red-600 hover:cursor-pointer"
+              className="flex items-center text-red-600 hover:cursor-pointer"
             >
               Hive dApps
+              <Icons.externalLink className="ml-1 h-4 w-4 text-black" />
             </Link>
           </li>
           <li>
@@ -39,9 +42,10 @@ const ExploreHive: FC = () => {
               href="https://hiveblocks.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-red-600 hover:cursor-pointer"
+              className="flex items-center text-red-600 hover:cursor-pointer"
             >
               Blockexplorer
+              <Icons.externalLink className="ml-1 h-4 w-4 text-black" />
             </Link>
           </li>
           <li>
@@ -49,9 +53,10 @@ const ExploreHive: FC = () => {
               href="https://wallet.hive.blog/~witnesses"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-red-600 hover:cursor-pointer"
+              className="flex items-center text-red-600 hover:cursor-pointer"
             >
-              Vote for Witnessesv
+              Vote for Witnesses
+              <Icons.externalLink className="ml-1 h-4 w-4 text-black" />
             </Link>
           </li>
           <li>
@@ -59,9 +64,10 @@ const ExploreHive: FC = () => {
               href="https://wallet.hive.blog/proposals"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-red-600 hover:cursor-pointer"
+              className="flex items-center text-red-600 hover:cursor-pointer"
             >
               Hive Proposals
+              <Icons.externalLink className="ml-1 h-4 w-4 text-black" />
             </Link>
           </li>
         </ul>

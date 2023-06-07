@@ -53,12 +53,14 @@ import {
   SidebarClose,
   SidebarOpen,
   Pencil,
-  Link
+  Link,
+  ExternalLink
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
 
 export const Icons = {
+  externalLink: ExternalLink,
   link: Link,
   pencil: Pencil,
   sidebarClose: SidebarClose,
