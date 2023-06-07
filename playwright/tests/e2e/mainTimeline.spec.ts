@@ -42,9 +42,9 @@ test.describe('Home page tests', () => {
     const postChildren = (await response.json()).result[0].children;
     // console.log("Responses to post : ", await postChildren)
 
-    expect(homePage.getFirstPostAuthor).toHaveText('@' + postAuthor);
-    expect(homePage.getFirstPostAuthorReputation).toHaveText(
-      '@' + postAuthor + ' (' + Math.floor(postAuthorReputation) + ')'
+    expect(homePage.getFirstPostAuthor).toHaveText(postAuthor);
+    expect(homePage.getFirstPostAuthorReputation).toContainText(
+      postAuthor + ' (' + Math.floor(postAuthorReputation) + ')'
     );
     expect(homePage.getFirstPostTitle).toHaveText(postTitle);
     expect(homePage.getFirstPostPayout).toHaveText(postPayout);
@@ -96,9 +96,9 @@ test.describe('Home page tests', () => {
     const postChildren = (await response.json()).result[0].children;
     // console.log("Responses to post : ", await postChildren)
 
-    expect(homePage.getFirstPostAuthor).toHaveText('@' + postAuthor);
-    expect(homePage.getFirstPostAuthorReputation).toHaveText(
-      '@' + postAuthor + ' (' + Math.floor(postAuthorReputation) + ')'
+    expect(homePage.getFirstPostAuthor).toHaveText(postAuthor);
+    expect(homePage.getFirstPostAuthorReputation).toContainText(
+      postAuthor + ' (' + Math.floor(postAuthorReputation) + ')'
     );
     expect(homePage.getFirstPostTitle).toHaveText(postTitle);
     expect(homePage.getFirstPostPayout).toHaveText(postPayout);
@@ -175,7 +175,8 @@ test.describe('Home page tests', () => {
     await expect(homePage.getCardExploreHiveLinks).toHaveCount(5);
   });
 
-  test('validate that Shortcuts sidebar is visible', async ({ page }) => {
+  // Shortcuts sidebar is no longer avaiable on the Home Page
+  test.skip('validate that Shortcuts sidebar is visible', async ({ page }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
@@ -184,12 +185,12 @@ test.describe('Home page tests', () => {
     await expect(homePage.getCardUserShortcutsLinks).toHaveCount(3);
   });
 
-  test('validate that Trending Communities sidebar is visible', async ({ page }) => {
+  test('validate that All posts in communities sidebar is visible', async ({ page }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
     await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
-    await expect(homePage.getTrandingCommunitiesHeader).toHaveText('Trending Communities');
+    await expect(homePage.getTrandingCommunitiesHeader).toHaveText('All posts');
     await expect(homePage.getTrendingCommunitiesSideBarLinks).toHaveCount(13);
   });
 
@@ -222,7 +223,8 @@ test.describe('Home page tests', () => {
     await expect(homePage.getNavSearchInput).toHaveAttribute('placeholder', 'Search...');
   });
 
-  test('navigation user avatar and its dropdown list is visible', async ({ page }) => {
+  // gtg profil and his avatar is no longer aviable on the home page
+  test.skip('navigation user avatar and its dropdown list is visible', async ({ page }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
 

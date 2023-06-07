@@ -9,7 +9,6 @@ import CommunitiesSidebar from '@/components/communities-sidebar';
 import PostSelectFilter from '@/components/post-select-filter';
 import { useRouter } from 'next/router';
 import ExploreHive from '@/components/explore-hive';
-import UserShortcutsCard from '@/components/user-shortcuts-card';
 import ProfileLayout from '@/components/common/profile-layout';
 import CommunityDescription from '@/components/community-description';
 import { useInView } from 'react-intersection-observer';
@@ -116,12 +115,15 @@ const ParamPage: FC = () => {
 
   if (!entriesDataIsLoading && entriesData) {
     return (
-      <div className="container mx-auto max-w-screen-xl flex-grow px-4 pb-2 pt-8">
-        <div className="grid grid-cols-12 lg:gap-8 ">
+      <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2 pt-8">
+        <div className="grid grid-cols-12 lg:gap-4 ">
+          <div className="col-span-12 md:col-span-12 lg:col-span-2">
+            <CommunitiesSidebar />
+          </div>
           <div className="col-span-12 mb-5 space-y-5 md:col-span-12 lg:col-span-8">
             <div className="mt-4 flex items-center justify-between">
               <div className="flex flex-col">
-                <span className="text-sm font-medium">{tag ? 'Community' : 'All posts'}</span>
+                <span className="text-md font-medium">{tag ? 'Community' : 'All posts'}</span>
                 {tag && communityData ? (
                   <span className="text-xs font-light" data-testid="community-name">
                     {communityData?.title}
@@ -152,10 +154,8 @@ const ParamPage: FC = () => {
               <div>{entriesDataIsFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
             </>
           </div>
-          <div className="col-span-12 md:col-span-12 lg:col-span-4">
+          <div className="col-span-12 md:col-span-12 lg:col-span-2">
             {communityData ? <CommunityDescription data={communityData} /> : <ExploreHive />}
-            <CommunitiesSidebar />
-            <UserShortcutsCard />
           </div>
         </div>
       </div>

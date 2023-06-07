@@ -2,8 +2,8 @@ import { test, expect, Locator } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
 import { CommunitiesPage } from '../support/pages/communitiesExplorerPage';
 
-test.describe('Home page tests - Trending Communities', () => {
-  test('has "Trending Communities" sidebar', async ({ page }) => {
+test.describe('Home page tests - All posts', () => {
+  test('has "All posts" sidebar', async ({ page }) => {
     const homePage = new HomePage(page);
 
     await homePage.goto();

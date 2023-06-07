@@ -6,7 +6,10 @@ import { ApiHelper } from '../support/apiHelper';
 
 import Big from 'big.js';
 
-test.describe('Witnesses page tests', () => {
+// -------------------------------------------------------------------------------------
+// Below test were passing but due to back to the old view of hive blog are skipped.
+// -------------------------------------------------------------------------------------
+test.describe.skip('Witnesses page tests', () => {
   test('move to the Witnesses page from the Home page', async ({ page }) => {
     const homePage = new HomePage(page);
 

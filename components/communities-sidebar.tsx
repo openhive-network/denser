@@ -17,36 +17,41 @@ const CommunitiesSidebar: FC = () => {
 
   return (
     <Card
-      className={cn(
-        'my-4 hidden h-fit w-[300px] flex-col px-8 dark:bg-background/95 dark:text-white md:flex'
-      )}
+      className={cn('my-4 hidden h-fit w-auto flex-col px-8 dark:bg-background/95 dark:text-white md:flex')}
       data-testid="card-trending-comunities"
     >
-      <CardHeader>
-        <CardTitle className="px-2">Trending Communities</CardTitle>
+      <CardHeader className="px-0 py-4">
+        <CardTitle>
+          <Link href="/trending" className="hover:cursor-pointer hover:text-red-600">
+            All posts
+          </Link>
+        </CardTitle>
       </CardHeader>
       <CardContent>
+        <span className="text-sm text-gray-400">Trending Communities</span>
         <ul>
           {data?.slice(0, 12).map((community) => (
             <li key={community.id}>
-              <Link href={`/trending/${community.name}`}>
-                <Button variant="ghost" size="sm" className="w-full justify-start">
-                  {community.title}
-                </Button>
+              <Link
+                href={`/trending/${community.name}`}
+                className="w-full text-sm font-light hover:cursor-pointer hover:text-red-600"
+              >
+                {community.title}
               </Link>
             </li>
           ))}
-          <li>
-            <Link href={`/communities`}>
-              <Button variant="ghost" size="sm" className="w-full justify-start">
-                Explore communities...
-              </Button>
+          <li className="py-4">
+            <Link
+              href={`/communities`}
+              className="w-full text-sm font-medium hover:cursor-pointer hover:text-red-600"
+            >
+              Explore communities...
             </Link>
           </li>
         </ul>
       </CardContent>
     </Card>
   );
-}
+};
 
 export default CommunitiesSidebar;

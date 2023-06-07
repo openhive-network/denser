@@ -5,12 +5,10 @@ import { FC } from 'react';
 const UserShortcutsCard: FC = () => {
   return (
     <Card
-      className={cn(
-        'my-4 hidden h-fit w-[300px] flex-col px-8 dark:bg-background/95 dark:text-white md:flex'
-      )}
+      className={cn('my-4 hidden h-fit w-auto flex-col px-8 dark:bg-background/95 dark:text-white md:flex')}
       data-testid="card-user-shortcuts"
     >
-      <CardHeader>
+      <CardHeader className="px-0 py-4">
         <CardTitle>Shortcuts</CardTitle>
       </CardHeader>
       <CardContent>

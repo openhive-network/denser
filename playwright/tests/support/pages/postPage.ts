@@ -69,7 +69,7 @@ export class PostPage {
     const firstPostAuthorAndReputation = (await homePage.getFirstPostAuthorReputation.innerText())
       .trim()
       .replace(' ', '')
-      .replace('@', '');
+      .replace('\n', '');
     // console.log('Author HomePage: ' + firstPostAuthorAndReputation);
 
     await this.firstPostImageOnHomePage.click();
@@ -77,7 +77,7 @@ export class PostPage {
 
     await expect(this.articleTitle).toBeVisible();
     // console.log('Author: ', await this.articleAuthorName.textContent())
-    expect(await this.articleAuthorName.textContent()).toBe(firstPostAuthorAndReputation);
+    expect(firstPostAuthorAndReputation.toString()).toContain(await this.articleAuthorName.textContent());
   }
 
   async moveToTheFirstPostInHomePageByPostTitle() {
@@ -85,14 +85,15 @@ export class PostPage {
     const firstPostAuthorAndReputation = (await homePage.getFirstPostAuthorReputation.innerText())
       .trim()
       .replace(' ', '')
-      .replace('@', '');
+      .replace('\n', '');
     const firstPostTitleHomePage = await homePage.getFirstPostTitle.textContent();
 
     await this.firstPostTitleOnHomePage.click();
     await this.page.waitForSelector(this.articleBody['_selector']);
 
     await expect(this.articleTitle).toBeVisible();
-    expect(await this.articleAuthorName.textContent()).toBe(firstPostAuthorAndReputation);
+    // expect(await this.articleAuthorName.textContent()).toBe(firstPostAuthorAndReputation);
+    expect(firstPostAuthorAndReputation.toString()).toContain(await this.articleAuthorName.textContent());
     expect(await this.articleTitle.textContent()).toBe(firstPostTitleHomePage);
   }
 

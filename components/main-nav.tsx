@@ -26,20 +26,24 @@ export function MainNav() {
           Posts
         </Link>
         <Link
-          href="/proposals"
+          href="https://wallet.hive.blog/proposals"
+          target="_blank"
+          rel="noopener noreferrer"
           className={cn(
             'transition-colors hover:text-foreground/80',
-            pathname === '/proposals' ? 'text-foreground' : 'text-foreground/60'
+            pathname === 'https://wallet.hive.blog/proposals"' ? 'text-foreground' : 'text-foreground/60'
           )}
           data-testid="nav-proposals-link"
         >
           Proposals
         </Link>
         <Link
-          href="/~witnesses"
+          href="https://wallet.hive.blog/~witnesses"
+          target="_blank"
+          rel="noopener noreferrer"
           className={cn(
             'transition-colors hover:text-foreground/80',
-            pathname === '/~witnesses' ? 'text-foreground' : 'text-foreground/60'
+            pathname === 'https://wallet.hive.blog/~witnesses' ? 'text-foreground' : 'text-foreground/60'
           )}
           data-testid="nav-witnesses-link"
         >
@@ -48,6 +52,8 @@ export function MainNav() {
 
         <Link
           href="https://hive.io/eco/"
+          target="_blank"
+          rel="noopener noreferrer"
           className={cn(
             'transition-colors hover:text-foreground/80',
             pathname === 'https://hive.io/eco/' ? 'text-foreground' : 'text-foreground/60'

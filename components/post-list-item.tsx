@@ -20,47 +20,45 @@ const PostListItem = ({ post, sort }: any) => {
     <li data-testid="post-list-item" className={sort === 'muted' ? 'opacity-50 hover:opacity-100' : ''}>
       <Card
         className={cn(
-          'my-4 hover:bg-accent hover:text-accent-foreground  dark:bg-background/95 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground'
+          'my-4 px-2 hover:bg-accent  hover:text-accent-foreground dark:bg-background/95 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground'
         )}
       >
-        <CardHeader>
-          <div className="flex items-center">
-            <img
-              className="mr-3 h-[40px] w-[40px] rounded-3xl"
-              height="40"
-              width="40"
-              src={`https://images.hive.blog/u/${post.author}/avatar/small`}
-              alt={`${post.author} profile picture`}
-              loading="lazy"
-            />
-            <div className="flex flex-col text-slate-500 dark:text-slate-400">
-              <div>
-                <p>
-                  <Link
-                    href={`@${post.author}`}
-                    className="bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent"
-                    data-testid="post-author"
-                  >
-                    @{post.author}
-                  </Link>{' '}
-                  ({accountReputation(post.author_reputation)})
-                  {post.blacklists && post.blacklists[0] ? (
-                    <span className="text-red-600" title={post.blacklists[0]}>
-                      ({post.blacklists.length})
-                    </span>
-                  ) : null}
-                </p>
-                {post.author_title ? (
-                  <Badge variant="outline" className="ml-1 border-red-600 text-red-600">
-                    {post.author_title}
-                  </Badge>
-                ) : null}
-              </div>
-              <p className="flex items-center gap-2">
+        <CardHeader className="px-0 py-1">
+          <div className="md:text-md flex items-center text-xs text-slate-500 dark:text-slate-400">
+            <Link href={`@${post.author}`}>
+              <img
+                className="mr-3 h-[24px] w-[24px] rounded-3xl"
+                height="24"
+                width="24"
+                src={`https://images.hive.blog/u/${post.author}/avatar/small`}
+                alt={`${post.author} profile picture`}
+                loading="lazy"
+              />
+            </Link>
+            <div className="flex items-center">
+              <Link
+                href={`@${post.author}`}
+                className="font-medium text-black hover:cursor-pointer hover:text-red-600 dark:text-white"
+                data-testid="post-author"
+              >
+                {post.author}
+              </Link>{' '}
+              ({accountReputation(post.author_reputation)})
+              {post.blacklists && post.blacklists[0] ? (
+                <span className="text-red-600" title={post.blacklists[0]}>
+                  ({post.blacklists.length})
+                </span>
+              ) : null}
+              {post.author_title ? (
+                <Badge variant="outline" className="ml-1 border-red-600 text-red-600">
+                  {post.author_title}
+                </Badge>
+              ) : null}
+              <span className="flex items-center gap-2">
                 {post.percent_hbd === 0 ? <Icons.hive className="h-4 w-4" /> : null}
-              </p>
-              <p className="text-sm">
-                in{` `}
+              </span>
+              <span className="text-xs md:text-sm">
+                &nbsp;in{` `}
                 {post.community ? (
                   <Link
                     href={`/${sort}/${post.community}`}
@@ -77,87 +75,134 @@ const PostListItem = ({ post, sort }: any) => {
                   </Link>
                 )}
                 <span className="mx-1">•</span>
-                {dateToRelative(post.created)} ago
-              </p>
+                <Link href={`${post.url}`} className="hover:cursor-pointer hover:text-red-600">
+                  {dateToRelative(post.created)} ago
+                </Link>
+              </span>
             </div>
           </div>
-          {post.json_metadata.image && post.json_metadata.image[0] ? (
-            <Link href={`${post.url}`} data-testid="post-image">
-              <div className="relative flex h-full max-h-[200px] min-h-fit w-fit items-center overflow-hidden bg-gray-100 lg:min-w-[320px] lg:max-w-[320px]">
-                <img
-                  className="h-ful w-full"
-                  src={proxifyImageSrc(post.json_metadata.image[0], 320, 200)}
-                  alt="Post image"
-                  loading="lazy"
-                />
-              </div>
-            </Link>
-          ) : null}
         </CardHeader>
-        <CardContent>
-          <CardTitle data-testid="post-title">
-            <Link href={`${post.url}`}>{post.title}</Link>
-            {post.stats.is_pinned ? <Badge className="ml-1 bg-red-600 text-white">Pinned</Badge> : null}
-          </CardTitle>
-          <CardDescription>{getPostSummary(post.json_metadata, post.body)}</CardDescription>
-        </CardContent>
-        <CardFooter>
-          <div className="flex h-5 items-center space-x-4 text-sm">
-            <div className="flex items-center gap-2">
-              <Icons.arrowUpCircle className="h-4 w-4 hover:text-red-600 sm:mr-1" />
-              <Icons.arrowDownCircle className="h-4 w-4 hover:text-gray-600 sm:mr-1" />
-            </div>
-
-            <HoverCard>
-              <HoverCardTrigger asChild>
-                <div
-                  className={`flex items-center ${
-                    Number(post.max_accepted_payout.slice(0, 1)) === 0 ? 'text-gray-600 line-through' : ''
-                  }`}
-                  data-testid="post-payout"
-                >
-                  <Icons.dollar className="h-4 w-4 text-red-600 sm:mr-1" />
-                  {post.payout.toFixed(2)}
+        <div className="flex flex-col md:flex-row">
+          <div>
+            {post.json_metadata.image && post.json_metadata.image[0] ? (
+              <Link href={`${post.url}`} data-testid="post-image">
+                <div className="relative mr-3.5 flex h-full max-h-fit min-h-fit items-center overflow-hidden bg-gray-100 md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
+                  <img
+                    className="h-ful w-full"
+                    src={proxifyImageSrc(post.json_metadata.image[0], 640, 400)}
+                    alt="Post image"
+                    loading="lazy"
+                  />
                 </div>
-              </HoverCardTrigger>
-              <HoverCardContent className="flex w-80 flex-col">
-                <span>Pending payout amount: ${post.payout.toFixed(2)}</span>
-                <>
-                  {post.beneficiaries.map((beneficiary: IBeneficiary, index: number) => (
-                    <Link
-                      href={`/@${beneficiary.account}`}
-                      className="hover:cursor-pointer hover:text-red-600"
-                      key={index}
-                    >
-                      {beneficiary.account}: {fmt(parseFloat(String(beneficiary.weight)) / 100)}%
-                    </Link>
-                  ))}
-                </>
-                <span>Payout in {dateToRelative(post.payout_at)}</span>
-                {post.max_accepted_payout ? (
-                  <span>Max accepted payout: ${fmt(post.max_accepted_payout.split(' ')[0])}</span>
-                ) : null}
-              </HoverCardContent>
-            </HoverCard>
-
-            <Separator orientation="vertical" />
-            <div className="flex items-center" data-testid="post-total-votes">
-              <Icons.star className="h-4 w-4 sm:mr-1" />
-              {post.stats.total_votes}
-            </div>
-            <Separator orientation="vertical" />
-            <div className="flex items-center" data-testid="post-children">
-              <Icons.comment className="h-4 w-4 cursor-pointer hover:text-red-600 sm:mr-1" />
-              {post.children}
-            </div>
-            <Separator orientation="vertical" />
-            <div className="flex items-center">
-              <AlertDialogDemo>
-                <Icons.forward className="h-4 w-4 cursor-pointer hover:text-red-600" />
-              </AlertDialogDemo>
-            </div>
+              </Link>
+            ) : post.json_metadata.images && post.json_metadata.images[0] ? (
+              <Link href={`${post.url}`} data-testid="post-image">
+                <div className="relative mr-3.5 flex h-full max-h-fit min-h-fit items-center overflow-hidden bg-gray-100 md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
+                  <img
+                    className="h-ful w-full"
+                    src={proxifyImageSrc(post.json_metadata.images[0], 640, 400)}
+                    alt="Post image"
+                    loading="lazy"
+                  />
+                </div>
+              </Link>
+            ) : post.json_metadata.flow?.pictures && post.json_metadata.flow?.pictures[0] ? (
+              <Link href={`${post.url}`} data-testid="post-image">
+                <div className="relative mr-3.5 flex h-full max-h-fit min-h-fit items-center overflow-hidden bg-gray-100 md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
+                  <img
+                    className="h-ful w-full"
+                    src={proxifyImageSrc(post.json_metadata.flow.pictures[0].url, 640, 400)}
+                    alt="Post image"
+                    loading="lazy"
+                  />
+                </div>
+              </Link>
+            ) : post.json_metadata.links && post.json_metadata.links[0] ? (
+              <Link href={`${post.url}`} data-testid="post-image">
+                <div className="relative mr-3.5 flex h-full max-h-fit min-h-fit items-center overflow-hidden bg-gray-100 md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
+                  <img
+                    className="h-ful w-full"
+                    src={proxifyImageSrc(
+                      post.json_metadata.links[0].slice(0, post.json_metadata.links[0].length - 1),
+                      640,
+                      400
+                    )}
+                    alt="Post image"
+                    loading="lazy"
+                  />
+                </div>
+              </Link>
+            ) : null}
           </div>
-        </CardFooter>
+          <div>
+            <CardContent>
+              <CardTitle data-testid="post-title" className="text-md">
+                <Link href={`${post.url}`}>{post.title}</Link>
+                {post.stats.is_pinned ? <Badge className="ml-1 bg-red-600 text-white">Pinned</Badge> : null}
+              </CardTitle>
+              <CardDescription>
+                <Link href={`${post.url}`}>{getPostSummary(post.json_metadata, post.body)}</Link>
+              </CardDescription>
+            </CardContent>
+            <CardFooter>
+              <div className="flex h-5 items-center space-x-2 text-sm">
+                <div className="flex items-center gap-1">
+                  <Icons.arrowUpCircle className="h-4 w-4 hover:text-red-600 sm:mr-1" />
+                  <Icons.arrowDownCircle className="h-4 w-4 hover:text-gray-600 sm:mr-1" />
+                </div>
+
+                <HoverCard>
+                  <HoverCardTrigger asChild>
+                    <div
+                      className={`flex items-center hover:cursor-pointer ${
+                        Number(post.max_accepted_payout.slice(0, 1)) === 0 ? 'text-gray-600 line-through' : ''
+                      }`}
+                      data-testid="post-payout"
+                    >
+                      <Icons.dollar className="h-4 w-4 text-red-600 sm:mr-1" />
+                      {post.payout.toFixed(2)}
+                    </div>
+                  </HoverCardTrigger>
+                  <HoverCardContent className="flex w-80 flex-col">
+                    <span>Pending payout amount: ${post.payout.toFixed(2)}</span>
+                    <>
+                      {post.beneficiaries.map((beneficiary: IBeneficiary, index: number) => (
+                        <Link
+                          href={`/@${beneficiary.account}`}
+                          className="hover:cursor-pointer hover:text-red-600"
+                          key={index}
+                        >
+                          {beneficiary.account}: {fmt(parseFloat(String(beneficiary.weight)) / 100)}%
+                        </Link>
+                      ))}
+                    </>
+                    <span>Payout in {dateToRelative(post.payout_at)}</span>
+                    {post.max_accepted_payout ? (
+                      <span>Max accepted payout: ${fmt(post.max_accepted_payout.split(' ')[0])}</span>
+                    ) : null}
+                  </HoverCardContent>
+                </HoverCard>
+
+                <Separator orientation="vertical" />
+                <div className="flex items-center" data-testid="post-total-votes">
+                  <Icons.chevronUp className="h-4 w-4 sm:mr-1" />
+                  {post.stats.total_votes}
+                </div>
+                <Separator orientation="vertical" />
+                <div className="flex items-center" data-testid="post-children">
+                  <Icons.comment className="h-4 w-4 cursor-pointer hover:text-red-600 sm:mr-1" />
+                  {post.children}
+                </div>
+                <Separator orientation="vertical" />
+                <div className="flex items-center">
+                  <AlertDialogDemo>
+                    <Icons.forward className="h-4 w-4 cursor-pointer hover:text-red-600" />
+                  </AlertDialogDemo>
+                </div>
+              </div>
+            </CardFooter>
+          </div>
+        </div>
       </Card>
     </li>
   );

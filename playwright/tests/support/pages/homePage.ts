@@ -1,5 +1,7 @@
 import { Locator, Page, expect } from '@playwright/test';
 import { PostPage } from './postPage';
+// @ts-ignore
+import env from '@beam-australia/react-env';
 export class HomePage {
   readonly page: Page;
   readonly postPage: PostPage;
@@ -49,13 +51,13 @@ export class HomePage {
     this.postPage = new PostPage(page);
     this.getTrendingCommunitiesSideBar = page.locator('[data-testid="card-trending-comunities"]');
     this.getTrendingCommunitiesSideBarLinks = this.getTrendingCommunitiesSideBar.locator('div ul li a');
-    this.getTrandingCommunitiesHeader = page.getByText('Trending Communities');
+    this.getTrandingCommunitiesHeader = page.locator('a').getByText('All posts');
     this.getExploreCommunities = page.getByText('Explore communities...');
-    this.getLeoFinanceCommunitiesLink = page.locator('a').getByRole('button', { name: 'LeoFinance' });
+    this.getLeoFinanceCommunitiesLink = this.getTrendingCommunitiesSideBar.locator('a').getByText('LeoFinance');
     this.getHeaderLeoCommunities = page.locator(
       '[class="mt-4 flex items-center justify-between"] span:text("LeoFinance")'
     );
-    this.getPinmappleCommunitiesLink = page.locator('a > button:text("Pinmapple")');
+    this.getPinmappleCommunitiesLink = this.getTrendingCommunitiesSideBar.locator('a:text("Pinmapple")');
     this.getHeaderPinmappleCommunities = page.locator(
       '[class="mt-4 flex items-center justify-between"] span:text("Pinmapple")'
     );
@@ -126,7 +128,7 @@ export class HomePage {
 
     // Validate that you moved to the clicked post author profile page
     const postAuthorNickOnProfilePage = await this.page.locator('[data-testid="profile-nickname"]');
-    await expect(firstPostAuthorNick).toMatch(await postAuthorNickOnProfilePage.innerText());
+    await expect('@'+firstPostAuthorNick).toMatch(await postAuthorNickOnProfilePage.innerText());
   }
 
   async moveToTheFirstPostWithCommentsNumberMoreThanZero() {
@@ -164,20 +166,26 @@ export class HomePage {
   }
 
   async moveToNavProposalsPage() {
+    const pagePromise = this.page.context().waitForEvent('page');
     await this.getNavProposalsLink.click();
-    await this.page.waitForSelector(this.page.locator('[data-testid="proposals-body"]')['_selector']);
-    await expect(this.page.url().includes(`/proposals`)).toBeTruthy();;
+    const newPage = await pagePromise;
+    // await this.page.waitForSelector(this.page.locator('[data-testid="proposals-body"]')['_selector']);
+    await expect(newPage.url().includes(`/proposals`)).toBeTruthy();
   }
 
   async moveToNavWitnessesPage() {
+    const pagePromise = this.page.context().waitForEvent('page');
     await this.getNavWitnessesLink.click();
-    await this.page.waitForSelector(this.page.locator('[data-testid="witness-table-body"]')['_selector']);
-    await expect(this.page.url().includes(`/~witnesses`)).toBeTruthy();
+    const newPage = await pagePromise;
+    // await this.page.waitForSelector(this.page.locator('[data-testid="witness-table-body"]')['_selector']);
+    await expect(newPage.url().includes(`/~witnesses`)).toBeTruthy();
   }
 
   async moveToNavOurdAppsPage() {
+    const pagePromise = this.page.context().waitForEvent('page');
     await this.getNavOurdAppsLink.click();
-    await expect(this.page.url()).toBe(`https://hive.io/eco/`);
+    const newPage = await pagePromise;
+    await expect(newPage.url()).toBe(`https://hive.io/eco/`);
   }
 
   async isTrendingCommunitiesVisible() {
