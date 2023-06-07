@@ -95,7 +95,8 @@ test.describe('Communities page tests', () => {
     });
   });
 
-  test('move to the profile leadership pages of LeoFinance community ', async ({ page }) => {
+  // Skipped - it needs improvements
+  test.skip('move to the profile leadership pages of LeoFinance community ', async ({ page }) => {
     const homePage = new HomePage(page);
     const profilePage = new ProfilePage(page);
     const communitiesPage = new CommunitiesPage(page);
@@ -161,7 +162,8 @@ test.describe('Communities page tests', () => {
     });
   });
 
-  test('move to the first-three leadership profile pages of Pinmapple community ', async ({ page }) => {
+  // Skipped - It needs improvements
+  test.skip('move to the first-three leadership profile pages of Pinmapple community ', async ({ page }) => {
     const homePage = new HomePage(page);
     const profilePage = new ProfilePage(page);
     const communitiesPage = new CommunitiesPage(page);

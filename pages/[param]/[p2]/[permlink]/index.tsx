@@ -80,7 +80,7 @@ function PostPage({ post_s, community, username, permlink }: any) {
 
   return (
     <div className="py-8">
-      <div className="mx-auto my-0 max-w-4xl px-8 py-4">
+      <div className="mx-auto my-0 max-w-4xl bg-white px-8 py-4 dark:bg-slate-900">
         <h1 className="text-3xl font-bold" data-testid="article-title">
           {post_s.title}
         </h1>

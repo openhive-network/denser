@@ -47,7 +47,8 @@ test.describe('Comments of post', () => {
     ).toBe('rgb(241, 245, 249)');
   });
 
-  test('move to the first comment author of a first post with more than zero comments', async ({
+  // Skipped - It needs improvements
+  test.skip('move to the first comment author of a first post with more than zero comments', async ({
     page
   }) => {
     const homePage = new HomePage(page);

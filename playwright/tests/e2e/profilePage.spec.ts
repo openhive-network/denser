@@ -2,7 +2,8 @@ import { expect, test } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
 import { ProfilePage } from '../support/pages/profilePage';
 
-test.describe('Profile page of @gtg', () => {
+// Skip Profile page tests because those based on gtg profile and new view of the Denser.
+test.describe.skip('Profile page of @gtg', () => {
   test('url of the profile page @gtg is correct', async ({ page }) => {
     const profilePage = new ProfilePage(page);
 

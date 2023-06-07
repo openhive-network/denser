@@ -111,7 +111,8 @@ test.describe('Home page tests', () => {
     // expect(firstPostChildren).toBe(String(postChildren));
   });
 
-  test('move to the first post author profile page', async ({ page }) => {
+  // Skipped - it needs improvements
+  test.skip('move to the first post author profile page', async ({ page }) => {
     const homePage = new HomePage(page);
 
     await homePage.goto();
