@@ -128,7 +128,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             </ul>
 
             <ul className="flex h-5 gap-4 text-white">
-              <li className="flex">
+              <li className="flex items-center">
                 <Icons.mapPin className="mr-2" />
                 <span>{profileData?.profile?.location}</span>
               </li>
