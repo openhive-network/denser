@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Icons } from '@/components/icons';
 import { Progress } from '@/components/ui/progress';
 import parseDate, { dateToRelative } from '@/lib/parse-date';
+import clsx from 'clsx';
 
 const NotificationListItem = ({ date, msg, score, type, url }: any) => {
   let icon;
@@ -31,7 +32,7 @@ const NotificationListItem = ({ date, msg, score, type, url }: any) => {
             className="mr-3 h-[40px] w-[40px] rounded-3xl"
             height="40"
             width="40"
-            src={`https://images.hive.blog/u/${m.substring(1)}/avatar`}
+            src={`https://images.hive.blog/u/${m.substring(1)}/avatar/small`}
             alt={`${m} profile picture`}
           />
         </a>
@@ -39,26 +40,26 @@ const NotificationListItem = ({ date, msg, score, type, url }: any) => {
     : null;
 
   return (
-    <>
-      <li className="flex justify-between py-4">
+    <tr className="block w-full px-4 odd:bg-slate-200 odd:dark:bg-slate-900">
+      <td className="flex justify-between py-4">
         <div className="flex items-center">
           {participants}
           <div className="flex flex-col">
             <Link href={`/${url}`}>
-              <span className="bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent">
-                {msg}
+              <span className="">
+                <strong>{msg.split(' ')[0]}</strong>
+                {mentions ? msg.split(new RegExp(`(${mentions[0]})`, 'gi'))[2] : null}
               </span>
             </Link>
-            <span className="flex items-center gap-2">
+            <span className="flex items-center gap-2 text-sm text-gray-400">
               {icon}
               {dateToRelative(date)}
             </span>
           </div>
         </div>
-        <Progress value={score} className="h-[10px] w-[60px]" />
-      </li>
-      <hr />
-    </>
+        <Progress value={score} className="h-[10px] w-[60px] rounded text-red-600" />
+      </td>
+    </tr>
   );
 };
 

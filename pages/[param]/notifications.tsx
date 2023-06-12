@@ -21,24 +21,9 @@ export default function UserNotifications() {
 
   return (
     <LayoutProfile>
-      <div className="flex flex-col w-full">
-          <NotificationActivities data={dataAccountNotification} username={username} />
+      <div className="flex w-full flex-col">
+        <NotificationActivities data={dataAccountNotification} username={username} />
       </div>
     </LayoutProfile>
   );
 }
-
-// export async function getServerSideProps(context) {
-//   const username = String(context.params?.param).slice(1);
-//   const queryClient = new QueryClient()
-//
-//   await queryClient.prefetchQuery(["accountNotification", username], () =>
-//     getAccountNotifications(username)
-//   )
-//
-//   return {
-//     props: {
-//       dehydratedState: dehydrate(queryClient),
-//     },
-//   }
-// }
