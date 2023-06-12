@@ -24,6 +24,17 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
           'my-4 px-2 hover:bg-accent  hover:text-accent-foreground dark:bg-background/95 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground'
         )}
       >
+        {post.reblogged_by ? (
+          <div className="flex items-center gap-2 py-1 text-sm text-gray-400">
+            <Icons.forward className="h-4 w-4" />
+            <span>
+              <Link href={`/${post.reblogged_by[0]}`} className="cursor-pointer hover:text-red-600">
+                {post.reblogged_by[0]}
+              </Link>{' '}
+              reblogged
+            </span>
+          </div>
+        ) : null}
         <CardHeader className="px-0 py-1">
           <div className="md:text-md flex items-center text-xs text-slate-500 dark:text-slate-400">
             <Link href={`@${post.author}`}>
