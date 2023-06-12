@@ -24,6 +24,12 @@ import Link from 'next/link';
 import { NextPageContext } from 'next';
 import DetailsCardHover from '@/components/details-card-hover';
 import DetailsCardVoters from '@/components/details-card-voters';
+import CommentSelectFilter from '@/components/comment-select-filter';
+import { useEffect, useState } from 'react';
+import sorter, { SortOrder } from '@/lib/sorter';
+import { Entry } from 'type-fest';
+import { useRouter } from 'next/router';
+import { useSearchParams } from 'next/navigation';
 
 const DynamicComments = dynamic(() => import('@/components/comment-list'), {
   loading: () => <Loading />,
@@ -34,10 +40,9 @@ function PostPage({ post_s, community, username, permlink }: any) {
   const {
     isLoading: isLoadingDiscussion,
     error: errorDiscussion,
-    data: discussion,
-    refetch: refetchDiscussion
+    data: discussion
   } = useQuery(['discussionData', username, permlink], () => getDiscussion(username, String(permlink)), {
-    enabled: false
+    enabled: !!username && !!permlink
   });
   const {
     isLoading: isLoadingFollows,
@@ -66,6 +71,46 @@ function PostPage({ post_s, community, username, permlink }: any) {
     isLoading: isHistoryFeedLoading,
     isError: historyFeedError
   } = useQuery(['feedHistory'], () => getFeedHistory());
+
+  const [discussionState, setDiscussionState] = useState<any[]>();
+  const [sort, setSort] = useState('');
+  const router = useRouter();
+
+  useEffect(() => {
+    if (discussion) {
+      setDiscussionState(Object.keys(discussion).map((key) => discussion[key]));
+    }
+  }, [isLoadingDiscussion, discussion]);
+
+  useEffect(() => {
+    if (discussionState) {
+      const list = [...discussionState];
+
+      sorter(list, SortOrder['trending']);
+      setDiscussionState(list);
+    }
+  }, [isLoadingDiscussion, discussion]);
+
+  useEffect(() => {
+    if (router.query.sort === 'trending' && discussionState) {
+      const list = [...discussionState];
+
+      sorter(list, SortOrder[router.query.sort]);
+      setDiscussionState(list);
+    }
+    if (router.query.sort === 'votes' && discussionState) {
+      const list = [...discussionState];
+
+      sorter(list, SortOrder[router.query.sort]);
+      setDiscussionState(list);
+    }
+    if (router.query.sort === 'new' && discussionState) {
+      const list = [...discussionState];
+
+      sorter(list, SortOrder[router.query.sort]);
+      setDiscussionState(list);
+    }
+  }, [router.query.sort]);
 
   const renderer = new DefaultRenderer({
     baseUrl: 'https://hive.blog/',
@@ -214,16 +259,19 @@ function PostPage({ post_s, community, username, permlink }: any) {
           </div>
         </div>
       </div>
-      {!isLoadingDiscussion && discussion ? (
+      {!isLoadingDiscussion && discussion && discussionState ? (
         <div className="mx-auto my-0 max-w-4xl px-8 py-4">
-          <DynamicComments data={Object.keys(discussion).map((key) => discussion[key])} parent={post_s} />
+          <div className="flex items-center justify-end">
+            <span>Sort: </span>
+            <CommentSelectFilter />
+          </div>
+          <DynamicComments
+            data={Object.keys(discussionState).map((key: any) => discussionState[key])}
+            parent={post_s}
+          />
         </div>
       ) : (
-        <div className="mx-auto my-0 flex max-w-4xl justify-center px-8 py-4">
-          <Button id="comments" onClick={() => refetchDiscussion()} data-testid="comment-show-button">
-            Show comments
-          </Button>
-        </div>
+        <Loading />
       )}
     </div>
   );

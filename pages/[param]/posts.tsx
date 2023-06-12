@@ -5,13 +5,13 @@ import Loading from '@/components/loading';
 import { useSiteParams } from '@/components/hooks/use-site-params';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PostList from '@/components/post-list';
-import CommentList from '@/components/comment-list';
 import { useRouter } from 'next/router';
+import RepliesList from '@/components/replies-list';
 
 const UserPosts = () => {
   const router = useRouter();
   const { username } = useSiteParams();
-  const sort = router.pathname.split('/')[router.pathname.split('/').length - 1]
+  const sort = router.pathname.split('/')[router.pathname.split('/').length - 1];
   const { isLoading, error, data } = useQuery(
     ['accountReplies', username, sort],
     () => getAccountPosts(sort, username, 'hive.blog'),
@@ -40,7 +40,7 @@ const UserPosts = () => {
             {/*</Button>*/}
           </TabsContent>
           <TabsContent value="comments">
-            <CommentList data={data} />
+            <RepliesList data={data} />
             {/*<Button*/}
             {/*  variant="outline"*/}
             {/*  className="mt-4 mb-8 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"*/}

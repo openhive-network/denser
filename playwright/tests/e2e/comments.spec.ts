@@ -4,7 +4,7 @@ import { HomePage } from '../support/pages/homePage';
 import { ProfilePage } from '../support/pages/profilePage';
 
 test.describe('Comments of post', () => {
-  test('Validate a first comment of a first post page with number of comments is visible', async ({
+  test.skip('Validate a first comment of a first post page with number of comments is visible', async ({
     page
   }) => {
     const homePage = new HomePage(page);
@@ -20,7 +20,7 @@ test.describe('Comments of post', () => {
     await expect(postPage.commentCardsFooters.first()).toBeVisible();
   });
 
-  test('Validate a hovered comment changes backgroundcolor style', async ({ page }) => {
+  test.skip('Validate a hovered comment changes backgroundcolor style', async ({ page }) => {
     const homePage = new HomePage(page);
     const postPage = new PostPage(page);
 

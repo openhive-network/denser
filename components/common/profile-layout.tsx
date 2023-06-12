@@ -43,7 +43,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   return username ? (
     <div>
       <div
-        className="min-h-56 h-56 max-h-56 w-full text-xs text-zinc-50"
+        className="min-h-56 h-fit max-h-72 w-full text-xs text-zinc-50"
         style={{ textShadow: 'rgb(0, 0, 0) 1px 1px 2px' }}
       >
         {profileData?.posting_json_metadata &&
@@ -55,7 +55,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               }') center center no-repeat`,
               backgroundSize: 'cover'
             }}
-            className={`flex h-auto max-h-full min-h-full w-auto min-w-full max-w-full flex-col items-center`}
+            className={`flex h-auto max-h-full min-h-full w-auto min-w-full max-w-full flex-col items-center py-6`}
           >
             <div className="flex items-center">
               <img
