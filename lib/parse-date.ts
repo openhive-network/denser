@@ -1,47 +1,46 @@
-import moment from "moment";
+import moment from 'moment';
 
 export const dateToShow = (d: string): string => {
-  const isTimeZoned =
-    d.indexOf(".") !== -1 || d.indexOf("+") !== -1 ? d : `${d}.000Z`
-  const dm = moment(new Date(isTimeZoned)).format("MMMM YYYY")
-  return dm.toString()
-}
+  const isTimeZoned = d.indexOf('.') !== -1 || d.indexOf('+') !== -1 ? d : `${d}.000Z`;
+  const dm = moment(new Date(isTimeZoned)).format('MMMM YYYY');
+  return dm.toString();
+};
 export const dateToRelative = (d: string, short = false): string => {
-  const isTimeZoned = d.indexOf(".") !== -1 || d.indexOf("+") !== -1 ? d : `${d}.000Z`;
+  const isTimeZoned = d.indexOf('.') !== -1 || d.indexOf('+') !== -1 ? d : `${d}.000Z`;
   const dm = moment(new Date(isTimeZoned));
   const dd = dm.fromNow(true);
   if (short) {
     return dd
-      .replace("a few seconds", "~1s")
-      .replace(" seconds", "s")
-      .replace(" minutes", "m")
-      .replace("a minute", "1m")
-      .replace(" hours", "h")
-      .replace("an hour", "1h")
-      .replace(" days", "d")
-      .replace("a day", "1d")
-      .replace(" months", "M")
-      .replace("a month", "1M")
-      .replace(" years", "y")
-      .replace("a year", "1y");
+      .replace('a few seconds', '~1s')
+      .replace(' seconds', 's')
+      .replace(' minutes', 'm')
+      .replace('a minute', '1m')
+      .replace(' hours', 'h')
+      .replace('an hour', '1h')
+      .replace(' days', 'd')
+      .replace('a day', '1d')
+      .replace(' months', 'M')
+      .replace('a month', '1M')
+      .replace(' years', 'y')
+      .replace('a year', '1y');
   }
   return dd;
 };
 
 export const dateToFullRelative = (d: string): string => {
-  const isTimeZoned = d.indexOf(".") !== -1 || d.indexOf("+") !== -1 ? d : `${d}.000Z`;
+  const isTimeZoned = d.indexOf('.') !== -1 || d.indexOf('+') !== -1 ? d : `${d}.000Z`;
   const dm = moment(new Date(isTimeZoned));
   return dm.fromNow();
 };
 
-export const dateToFormatted = (d: string, format: string = "LLLL"): string => {
-  const isTimeZoned = d.indexOf(".") !== -1 || d.indexOf("+") !== -1 ? d : `${d}.000Z`;
+export const dateToFormatted = (d: string, format: string = 'LLLL'): string => {
+  const isTimeZoned = d.indexOf('.') !== -1 || d.indexOf('+') !== -1 ? d : `${d}.000Z`;
   const dm = moment(new Date(isTimeZoned));
   return dm.format(format);
 };
 
 export const dayDiff = (d: string) => {
-  const isTimeZoned = d.indexOf(".") !== -1 || d.indexOf("+") !== -1 ? d : `${d}.000Z`;
+  const isTimeZoned = d.indexOf('.') !== -1 || d.indexOf('+') !== -1 ? d : `${d}.000Z`;
   const _MS_PER_DAY = 1000 * 60 * 60 * 24;
   const a = new Date(isTimeZoned);
   const b = new Date();
@@ -53,26 +52,36 @@ export const dayDiff = (d: string) => {
 };
 
 export const hourDiff = (d: string) => {
-  const isTimeZoned = d.indexOf(".") !== -1 || d.indexOf("+") !== -1 ? d : `${d}.000Z`;
+  const isTimeZoned = d.indexOf('.') !== -1 || d.indexOf('+') !== -1 ? d : `${d}.000Z`;
   let diff = (new Date().getTime() - new Date(isTimeZoned).getTime()) / 1000;
   diff /= 60 * 60;
   return Math.abs(Math.round(diff));
 };
 
 export const secondDiff = (d: string) => {
-  const isTimeZoned = d.indexOf(".") !== -1 || d.indexOf("+") !== -1 ? d : `${d}.000Z`;
+  const isTimeZoned = d.indexOf('.') !== -1 || d.indexOf('+') !== -1 ? d : `${d}.000Z`;
   let diff = (new Date().getTime() - new Date(isTimeZoned).getTime()) / 1000;
   return Math.abs(Math.round(diff));
 };
 
 const parseDate = (d: string): string => {
-  const isTimeZoned = d.indexOf(".") !== -1 || d.indexOf("+") !== -1 ? d : `${d}.000Z`;
-  if (!d) moment(new Date(isTimeZoned))
+  const isTimeZoned = d.indexOf('.') !== -1 || d.indexOf('+') !== -1 ? d : `${d}.000Z`;
+  if (!d) moment(new Date(isTimeZoned));
   try {
     const date = moment(d).isValid() ? moment(d).toDate() : new Date();
     return moment(new Date(date.getTime() - date.getTimezoneOffset() * 60000)).toString();
   } catch (e) {
-    return moment(new Date(isTimeZoned)).toString()
+    return moment(new Date(isTimeZoned)).toString();
+  }
+};
+
+export const parseDate2 = (d: string): Date => {
+  if (!d) return new Date();
+  try {
+    const date = moment(d).isValid() ? moment(d).toDate() : new Date();
+    return new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  } catch (e) {
+    return new Date();
   }
 };
 

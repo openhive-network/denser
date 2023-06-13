@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import UserInfo, { UserHoverCard } from '@/components/user-info';
-import { getAccount, getFeedHistory, getFollowCount } from '@/lib/hive';
+import { getAccount, getActiveVotes, getFeedHistory, getFollowCount } from '@/lib/hive';
 import { useQuery } from '@tanstack/react-query';
 import { DefaultRenderer } from '@hiveio/content-renderer';
 import { getCommunity, getDiscussion, getPost } from '@/lib/bridge';
@@ -27,9 +27,7 @@ import DetailsCardVoters from '@/components/details-card-voters';
 import CommentSelectFilter from '@/components/comment-select-filter';
 import { useEffect, useState } from 'react';
 import sorter, { SortOrder } from '@/lib/sorter';
-import { Entry } from 'type-fest';
 import { useRouter } from 'next/router';
-import { useSearchParams } from 'next/navigation';
 
 const DynamicComments = dynamic(() => import('@/components/comment-list'), {
   loading: () => <Loading />,
@@ -72,8 +70,15 @@ function PostPage({ post_s, community, username, permlink }: any) {
     isError: historyFeedError
   } = useQuery(['feedHistory'], () => getFeedHistory());
 
+  const {
+    data: activeVotesData,
+    isLoading: isActiveVotesLoading,
+    isError: activeVotesError
+  } = useQuery(['activeVotes'], () => getActiveVotes(username, permlink), {
+    enabled: !!username && !!permlink
+  });
+
   const [discussionState, setDiscussionState] = useState<any[]>();
-  const [sort, setSort] = useState('');
   const router = useRouter();
 
   useEffect(() => {
@@ -249,9 +254,11 @@ function PostPage({ post_s, community, username, permlink }: any) {
                   </span>
                 </DetailsCardHover>
               ) : null}
-              <DetailsCardVoters activeVotes={post_s.active_votes}>
-                <span className="text-red-500">{post_s.stats?.total_votes} votes</span>
-              </DetailsCardVoters>
+              {!isActiveVotesLoading && activeVotesData ? (
+                <DetailsCardVoters activeVotesData={activeVotesData} post={post_s}>
+                  <span className="text-red-500">{post_s.stats?.total_votes} votes</span>
+                </DetailsCardVoters>
+              ) : null}
             </div>
             <div className="flex gap-2">
               <Facebook />

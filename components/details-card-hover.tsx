@@ -19,7 +19,7 @@ export default function DetailsCardHover({ post, historyFeedData, children }: an
   return (
     <HoverCard>
       <HoverCardTrigger asChild>{children}</HoverCardTrigger>
-      <HoverCardContent className="flex w-80 flex-col">
+      <HoverCardContent className="flex w-auto flex-col">
         <span>Pending payout amount: ${post.payout.toFixed(2)}</span>
         <span>
           {' '}
