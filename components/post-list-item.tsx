@@ -158,8 +158,8 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
               </CardTitle>
               <CardDescription>
                 <Link href={`${post.url}`}>{getPostSummary(post.json_metadata, post.body)}</Link>
-                <Separator orientation="horizontal" className="my-1" />
               </CardDescription>
+              <Separator orientation="horizontal" className="my-1" />
             </CardContent>
             <CardFooter className="pb-2">
               <div className="flex h-5 items-center space-x-2 text-sm">

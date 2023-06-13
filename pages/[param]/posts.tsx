@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PostList from '@/components/post-list';
 import { useRouter } from 'next/router';
 import RepliesList from '@/components/replies-list';
+import { getFeedHistory } from '@/lib/hive';
 
 const UserPosts = () => {
   const router = useRouter();
@@ -18,7 +19,14 @@ const UserPosts = () => {
     { enabled: !!username }
   );
 
-  if (isLoading) return <Loading loading={isLoading} />;
+  const {
+    data: historyFeedData,
+    isLoading: historyFeedLoading,
+    isFetching: historyFeedIsFetching,
+    isError: historyFeedError
+  } = useQuery(['feedHistory'], () => getFeedHistory());
+
+  if (isLoading || historyFeedLoading) return <Loading loading={isLoading} />;
 
   return (
     <ProfileLayout>
@@ -30,7 +38,7 @@ const UserPosts = () => {
             <TabsTrigger value="payout">Payouts</TabsTrigger>
           </TabsList>
           <TabsContent value="posts">
-            <PostList data={data} />
+            <PostList data={data} historyFeedData={historyFeedData} />
             {/*<Button*/}
             {/*  variant="outline"*/}
             {/*  className="mt-4 mb-8 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"*/}
@@ -50,7 +58,7 @@ const UserPosts = () => {
             {/*</Button>*/}
           </TabsContent>
           <TabsContent value="payout">
-            <PostList data={data} />
+            <PostList data={data} historyFeedData={historyFeedData} />
             {/*<Button*/}
             {/*  variant="outline"*/}
             {/*  className="mt-4 mb-8 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"*/}

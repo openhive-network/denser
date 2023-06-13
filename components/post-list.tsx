@@ -3,20 +3,15 @@ import { getFeedHistory } from '@/lib/hive';
 import { useQuery } from '@tanstack/react-query';
 import Loading from './loading';
 
-const PostList = ({ data, sort }: { data: any; sort?: string | null }) => {
-  const {
-    data: historyFeedData,
-    isLoading: historyFeedLoading,
-    isError: historyFeedError
-  } = useQuery(['feedHistory'], () => getFeedHistory());
-
-  if (historyFeedLoading) {
-    return <Loading loading={historyFeedLoading} />;
-  }
-  if (!historyFeedData) {
-    return <p className="my-32 text-center text-3xl">Something went wrong</p>;
-  }
-
+const PostList = ({
+  data,
+  sort,
+  historyFeedData
+}: {
+  data: any;
+  sort?: string | null;
+  historyFeedData: any;
+}) => {
   return (
     <ul>
       {data?.map((post: any) => (

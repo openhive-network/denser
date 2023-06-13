@@ -13,6 +13,7 @@ import ProfileLayout from '@/components/common/profile-layout';
 import CommunityDescription from '@/components/community-description';
 import { useInView } from 'react-intersection-observer';
 import CustomError from '@/components/custom-error';
+import { getFeedHistory } from '@/lib/hive';
 
 const PostSkeleton = () => {
   return (
@@ -40,8 +41,7 @@ const ParamPage: FC = () => {
     status,
     isFetchingNextPage,
     fetchNextPage,
-    hasNextPage,
-    refetch
+    hasNextPage
   } = useInfiniteQuery(
     ['entriesInfinite', sort, tag],
     async ({ pageParam }: { pageParam?: any }): Promise<any> => {
@@ -81,6 +81,13 @@ const ParamPage: FC = () => {
     { enabled: Boolean(username) }
   );
 
+  const {
+    data: historyFeedData,
+    isLoading: historyFeedLoading,
+    isFetching: historyFeedIsFetching,
+    isError: historyFeedError
+  } = useQuery(['feedHistory'], () => getFeedHistory());
+
   const handleChangeFilter = useCallback(
     (e: any) => {
       if (tag) {
@@ -98,11 +105,12 @@ const ParamPage: FC = () => {
     }
   }, [fetchNextPage, inView]);
 
-  if (accountEntriesIsError || entriesDataIsError) return <CustomError />;
+  if (accountEntriesIsError || entriesDataIsError || historyFeedError) return <CustomError />;
 
   if (
     (entriesDataIsLoading && entriesDataIsFetching) ||
-    (accountEntriesIsLoading && accountEntriesIsFetching)
+    (accountEntriesIsLoading && accountEntriesIsFetching) ||
+    (historyFeedLoading && historyFeedIsFetching)
   ) {
     return (
       <Loading
@@ -120,7 +128,7 @@ const ParamPage: FC = () => {
           <div className="col-span-12 md:col-span-12 lg:col-span-2">
             <CommunitiesSidebar />
           </div>
-          <div className="col-span-12 mb-5 space-y-5 md:col-span-12 lg:col-span-8">
+          <div className="col-span-12 mb-5 flex flex-col space-y-5 md:col-span-12 lg:col-span-8">
             <div className="mt-4 flex items-center justify-between">
               <div className="flex flex-col">
                 <span className="text-md font-medium">{tag ? 'Community' : 'All posts'}</span>
@@ -134,7 +142,9 @@ const ParamPage: FC = () => {
             </div>
             <>
               {entriesData.pages.map((page, index) => {
-                return page ? <PostList data={page} sort={sort} key={`f-${index}`} /> : null;
+                return page ? (
+                  <PostList data={page} sort={sort} key={`f-${index}`} historyFeedData={historyFeedData} />
+                ) : null;
               })}
               <div>
                 <button
@@ -164,7 +174,7 @@ const ParamPage: FC = () => {
 
   return (
     <ProfileLayout>
-      <PostList data={accountEntriesData} sort={sort || 'trending'} />
+      <PostList data={accountEntriesData} sort={sort || 'trending'} historyFeedData={historyFeedData} />
     </ProfileLayout>
   );
 };
