@@ -132,7 +132,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <Icons.mapPin className="mr-2" />
                 <span>{profileData?.profile?.location}</span>
               </li>
-              <li className="flex">
+              <li className="flex items-center">
                 <Icons.globe2 className="mr-2" />
                 <Link
                   target="_external"
@@ -142,11 +142,11 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   <span>{profileData?.profile?.website}</span>
                 </Link>
               </li>
-              <li className="flex">
+              <li className="flex items-center">
                 <Icons.calendarHeart className="mr-2" />
                 <span>Joined {profileData?.created ? dateToShow(profileData.created) : null}</span>
               </li>
-              <li className="flex">
+              <li className="flex items-center">
                 <Icons.calendarActive className="mr-2" />
                 <span>
                   Active {profileData?.last_post ? dateToRelative(profileData.last_post) : null} ago
