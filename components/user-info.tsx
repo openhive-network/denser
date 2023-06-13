@@ -38,9 +38,7 @@ export function UserHoverCard({
           }`}
         >
           {withImage && <UserAvatar username={author} size="normal" />}
-          <Link href={`/@${author}`} className="hover:cursor-pointer hover:text-red-600">
-            {author}
-          </Link>
+          <span className="hover:cursor-pointer hover:text-red-600">{author}</span>
           <span className="mr-1 block font-normal">({accountReputation(author_reputation)})</span>
         </div>
       </HoverCardTrigger>
@@ -123,7 +121,7 @@ function UserInfo({
 }: UserInfoProps) {
   return (
     <div className="flex flex-col py-4 text-slate-500" data-testid="author-data">
-      <div className="flex  flex-wrap items-center">
+      <div className="flex flex-wrap items-center">
         <UserHoverCard
           name={name}
           author={author}

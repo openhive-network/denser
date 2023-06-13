@@ -31,7 +31,7 @@ const CommunityDescription = ({ data }: { data: any }) => {
   return (
     <Card
       className={cn(
-        'my-4 hidden h-fit w-[390px] flex-col px-8 dark:bg-background/95 dark:text-white md:flex'
+        'my-4 hidden h-fit w-auto flex-col px-8 dark:bg-background/95 dark:text-white md:flex lg:w-[390px]'
       )}
       data-testid="community-description-sidebar"
     >
@@ -57,11 +57,19 @@ const CommunityDescription = ({ data }: { data: any }) => {
           </div>
         </div>
         <div className="my-4 flex flex-col gap-2">
-          <Button size="sm" className="w-full text-center" data-testid="community-subscribe-button">
+          <Button
+            size="sm"
+            className="w-full bg-blue-800 text-center hover:bg-blue-900"
+            data-testid="community-subscribe-button"
+          >
             <Link href={`/communities`}>Subscribe</Link>
           </Button>
 
-          <Button size="sm" className="w-full text-center" data-testid="community-new-post-button">
+          <Button
+            size="sm"
+            className="w-full bg-blue-800 text-center hover:bg-blue-900"
+            data-testid="community-new-post-button"
+          >
             <Link href={`/communities`}>New Post</Link>
           </Button>
         </div>

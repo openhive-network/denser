@@ -269,6 +269,7 @@ function PostPage({ post_s, community, username, permlink }: any) {
           </div>
         </div>
       </div>
+      <div id="comments" />
       {!isLoadingDiscussion && discussion && discussionState ? (
         <div className="mx-auto my-0 max-w-4xl px-8 py-4">
           <div className="flex items-center justify-end">

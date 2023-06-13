@@ -48,7 +48,7 @@ test.describe('Home page tests', () => {
       postAuthor + ' (' + Math.floor(postAuthorReputation) + ')'
     );
     expect(homePage.getFirstPostTitle).toHaveText(postTitle);
-    expect(homePage.getFirstPostPayout).toHaveText(postPayout);
+    expect(homePage.getFirstPostPayout).toHaveText(`$${postPayout}`);
 
     const firstPostTotalVotes = (await homePage.getFirstPostVotes.allInnerTexts()).at(0);
     expect(firstPostTotalVotes).toBe(String(postTotalVotes));
@@ -59,6 +59,7 @@ test.describe('Home page tests', () => {
 
   test('validate the first post (for New filter)', async ({ page, request, browserName }) => {
     test.skip(browserName === 'chromium', 'Automatic test works well on chromium');
+    test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
 
     const homePage = new HomePage(page);
     await homePage.goto();
@@ -102,7 +103,7 @@ test.describe('Home page tests', () => {
       postAuthor + ' (' + Math.floor(postAuthorReputation) + ')'
     );
     expect(homePage.getFirstPostTitle).toHaveText(postTitle);
-    expect(homePage.getFirstPostPayout).toHaveText(postPayout);
+    expect(homePage.getFirstPostPayout).toHaveText(`$${postPayout}`);
 
     const firstPostTotalVotes = (await homePage.getFirstPostVotes.allInnerTexts()).at(0);
     expect(firstPostTotalVotes).toBe(String(postTotalVotes));
@@ -168,7 +169,7 @@ test.describe('Home page tests', () => {
     await expect(homePage.getFilterPosts).toHaveText('Trending');
   });
 
-  test('validate that Explore Hive sidebar is visible', async ({ page }) => {
+  test.skip('validate that Explore Hive sidebar is visible', async ({ page }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
 

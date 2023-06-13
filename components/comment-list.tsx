@@ -17,7 +17,7 @@ const CommentList = ({ data, parent }: { data: any; parent: any }) => {
   const arr = [...mutedContent, ...unmutedContent];
 
   return (
-    <ul className="pl-12" id="comments">
+    <ul className="pl-12">
       {arr?.map((comment: any, index: number) => (
         <div key={`parent-${comment.post_id}-index-${index}`}>
           <CommentListItem

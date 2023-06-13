@@ -10,6 +10,7 @@ import { proxifyImageSrc } from '@/lib/proxify-images';
 import { AlertDialogDemo } from './alert-window';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import DetailsCardHover from './details-card-hover';
+import DialogLogin from '@/components/dialog-login';
 
 interface IBeneficiary {
   account: string;
@@ -164,37 +165,65 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
             <CardFooter className="pb-2">
               <div className="flex h-5 items-center space-x-2 text-sm">
                 <div className="flex items-center gap-1">
-                  <Icons.arrowUpCircle className="h-4 w-4 hover:text-red-600 sm:mr-1" />
-                  <Icons.arrowDownCircle className="h-4 w-4 hover:text-gray-600 sm:mr-1" />
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <DialogLogin>
+                          <Icons.arrowUpCircle className="h-4 w-4 rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1" />
+                        </DialogLogin>
+                      </TooltipTrigger>
+                      <TooltipContent>Upvote</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <DialogLogin>
+                          <Icons.arrowDownCircle className="h-4 w-4 rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
+                        </DialogLogin>
+                      </TooltipTrigger>
+                      <TooltipContent>Downvote</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
 
                 <DetailsCardHover post={post} historyFeedData={historyFeedData}>
                   <div
-                    className={`flex items-center hover:cursor-pointer ${
+                    className={`flex items-center hover:cursor-pointer hover:text-red-600 ${
                       Number(post.max_accepted_payout.slice(0, 1)) === 0 ? 'text-gray-600 line-through' : ''
                     }`}
                     data-testid="post-payout"
                   >
-                    <Icons.dollar className="h-4 w-4 text-red-600 sm:mr-1" />
-                    {post.payout.toFixed(2)}
+                    ${post.payout.toFixed(2)}
                   </div>
                 </DetailsCardHover>
 
                 <Separator orientation="vertical" />
                 <div className="flex items-center" data-testid="post-total-votes">
-                  <Icons.chevronUp className="h-4 w-4 sm:mr-1" />
-                  {post.stats.total_votes}
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger className="flex items-center">
+                        <Icons.chevronUp className="h-4 w-4 sm:mr-1" />
+                        {post.stats.total_votes}
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{post.stats.total_votes} votes</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
                 <Separator orientation="vertical" />
                 <div className="flex items-center" data-testid="post-children">
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger>
+                      <TooltipTrigger className="flex items-center">
+                        <Link href={`${post.url}/#comments`} className="flex cursor-pointer items-center">
+                          <Icons.comment className="h-4 w-4 sm:mr-1" />
+                        </Link>
                         <Link
                           href={`${post.url}/#comments`}
                           className="flex cursor-pointer items-center hover:text-red-600"
                         >
-                          <Icons.comment className="h-4 w-4 sm:mr-1" />
                           {post.children}
                         </Link>
                       </TooltipTrigger>
@@ -216,7 +245,7 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
                     <Tooltip>
                       <TooltipTrigger>
                         <AlertDialogDemo>
-                          <Icons.forward className="h-4 w-4 cursor-pointer hover:text-red-600" />
+                          <Icons.forward className="h-4 w-4 cursor-pointer" />
                         </AlertDialogDemo>
                       </TooltipTrigger>
                       <TooltipContent>

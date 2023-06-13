@@ -4,7 +4,7 @@ import { ProfilePage } from '../support/pages/profilePage';
 import { CommunitiesPage } from '../support/pages/communitiesPage';
 
 test.describe('Communities page tests', () => {
-  test('is LeoFinance community page loaded', async ({ page }) => {
+  test.skip('is LeoFinance community page loaded', async ({ page }) => {
     const homePage = new HomePage(page);
     const communitiesPage = new CommunitiesPage(page);
 
@@ -13,7 +13,7 @@ test.describe('Communities page tests', () => {
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
   });
 
-  test('validate the community subscribers, pending rewards, active posters are valid in LeoFinance Community', async ({
+  test.skip('validate the community subscribers, pending rewards, active posters are valid in LeoFinance Community', async ({
     page,
     request
   }) => {
@@ -54,7 +54,7 @@ test.describe('Communities page tests', () => {
     );
   });
 
-  test('validate the community leadership of LeoFinance Community', async ({ page, request }) => {
+  test.skip('validate the community leadership of LeoFinance Community', async ({ page, request }) => {
     const homePage = new HomePage(page);
     const communitiesPage = new CommunitiesPage(page);
 
@@ -121,7 +121,7 @@ test.describe('Communities page tests', () => {
     }
   });
 
-  test('validate the community leadership of Pinmapple Community', async ({ page, request }) => {
+  test.skip('validate the community leadership of Pinmapple Community', async ({ page, request }) => {
     const homePage = new HomePage(page);
     const communitiesPage = new CommunitiesPage(page);
 

@@ -14,6 +14,7 @@ import CommunityDescription from '@/components/community-description';
 import { useInView } from 'react-intersection-observer';
 import CustomError from '@/components/custom-error';
 import { getFeedHistory } from '@/lib/hive';
+import CommunitySimpleDescription from '@/components/community-simple-description';
 
 const PostSkeleton = () => {
   return (
@@ -124,47 +125,52 @@ const ParamPage: FC = () => {
   if (!entriesDataIsLoading && entriesData) {
     return (
       <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2 pt-8">
-        <div className="grid grid-cols-12 lg:gap-4 ">
-          <div className="col-span-12 md:col-span-12 lg:col-span-2">
+        <div className="grid grid-cols-12 md:gap-4 ">
+          <div className="hidden md:col-span-2 md:flex">
             <CommunitiesSidebar />
           </div>
-          <div className="col-span-12 mb-5 flex flex-col space-y-5 md:col-span-12 lg:col-span-8">
-            <div className="mt-4 flex items-center justify-between">
-              <div className="flex flex-col">
-                <span className="text-md font-medium">{tag ? 'Community' : 'All posts'}</span>
-                {tag && communityData ? (
-                  <span className="text-xs font-light" data-testid="community-name">
-                    {communityData?.title}
-                  </span>
-                ) : null}
-              </div>
-              <PostSelectFilter filter={sort} handleChangeFilter={handleChangeFilter} />
+          <div className="col-span-12 md:col-span-10 lg:col-span-8">
+            <div className="hidden md:col-span-10 md:flex lg:hidden">
+              {communityData ? <CommunitySimpleDescription data={communityData} /> : <ExploreHive />}
             </div>
-            <>
-              {entriesData.pages.map((page, index) => {
-                return page ? (
-                  <PostList data={page} sort={sort} key={`f-${index}`} historyFeedData={historyFeedData} />
-                ) : null;
-              })}
-              <div>
-                <button
-                  ref={ref}
-                  onClick={() => fetchNextPage()}
-                  disabled={!hasNextPage || isFetchingNextPage}
-                >
-                  {isFetchingNextPage ? (
-                    <PostSkeleton />
-                  ) : hasNextPage ? (
-                    'Load Newer'
-                  ) : (
-                    'Nothing more to load'
-                  )}
-                </button>
+            <div className="col-span-12 mb-5 flex flex-col space-y-5 md:col-span-10 lg:col-span-8">
+              <div className="mt-4 flex items-center justify-between">
+                <div className="flex flex-col">
+                  <span className="text-md font-medium">{tag ? 'Community' : 'All posts'}</span>
+                  {tag && communityData ? (
+                    <span className="text-xs font-light" data-testid="community-name">
+                      {communityData?.title}
+                    </span>
+                  ) : null}
+                </div>
+                <PostSelectFilter filter={sort} handleChangeFilter={handleChangeFilter} />
               </div>
-              <div>{entriesDataIsFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
-            </>
+              <>
+                {entriesData.pages.map((page, index) => {
+                  return page ? (
+                    <PostList data={page} sort={sort} key={`f-${index}`} historyFeedData={historyFeedData} />
+                  ) : null;
+                })}
+                <div>
+                  <button
+                    ref={ref}
+                    onClick={() => fetchNextPage()}
+                    disabled={!hasNextPage || isFetchingNextPage}
+                  >
+                    {isFetchingNextPage ? (
+                      <PostSkeleton />
+                    ) : hasNextPage ? (
+                      'Load Newer'
+                    ) : (
+                      'Nothing more to load'
+                    )}
+                  </button>
+                </div>
+                <div>{entriesDataIsFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
+              </>
+            </div>
           </div>
-          <div className="col-span-12 md:col-span-12 lg:col-span-2">
+          <div className="hidden lg:col-span-2 lg:flex">
             {communityData ? <CommunityDescription data={communityData} /> : <ExploreHive />}
           </div>
         </div>

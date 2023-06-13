@@ -17,7 +17,7 @@ const CommunitiesSidebar: FC = () => {
 
   return (
     <Card
-      className={cn('my-4 hidden h-fit w-auto flex-col px-8 dark:bg-background/95 dark:text-white md:flex')}
+      className={cn('my-4 hidden h-fit w-full flex-col px-8 dark:bg-background/95 dark:text-white md:flex')}
       data-testid="card-trending-comunities"
     >
       <CardHeader className="px-0 py-4">
