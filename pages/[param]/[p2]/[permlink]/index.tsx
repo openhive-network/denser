@@ -178,9 +178,12 @@ function PostPage({ post_s, community, username, permlink }: any) {
           <ul className="flex flex-wrap gap-2">
             {post_s.json_metadata?.tags?.map((tag: string) => (
               <li key={tag}>
-                <Button variant="ghost" size="sm">
+                <Link
+                  href={`/trending/${tag}`}
+                  className="my-2 rounded-md bg-accent px-2 py-1 text-sm text-accent-foreground hover:border-[1px] hover:border-accent-foreground"
+                >
                   #{tag}
-                </Button>
+                </Link>
               </li>
             ))}
           </ul>
