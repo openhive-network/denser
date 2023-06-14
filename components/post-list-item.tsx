@@ -169,7 +169,7 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
                     <Tooltip>
                       <TooltipTrigger>
                         <DialogLogin>
-                          <Icons.arrowUpCircle className="h-4 w-4 rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1" />
+                          <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1" />
                         </DialogLogin>
                       </TooltipTrigger>
                       <TooltipContent>Upvote</TooltipContent>
@@ -179,7 +179,7 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
                     <Tooltip>
                       <TooltipTrigger>
                         <DialogLogin>
-                          <Icons.arrowDownCircle className="h-4 w-4 rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
+                          <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
                         </DialogLogin>
                       </TooltipTrigger>
                       <TooltipContent>Downvote</TooltipContent>

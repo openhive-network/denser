@@ -8,6 +8,8 @@ import { DefaultRenderer } from '@hiveio/content-renderer';
 import { proxifyImageSrc } from '@/lib/proxify-images';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { useCallback, useState } from 'react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import DialogLogin from '@/components/dialog-login';
 
 const CommentListItem = ({ comment }: any) => {
   const [openState, setOpenState] = useState('open');
@@ -74,9 +76,27 @@ const CommentListItem = ({ comment }: any) => {
                           className="ml-4 flex h-5 items-center space-x-4 text-sm"
                           data-testid="comment-card-footer"
                         >
-                          <div className="flex items-center">
-                            <Icons.arrowUpCircle className="mr-1 h-4 w-4 cursor-pointer hover:text-red-600" />
-                            <Icons.arrowDownCircle className="4 mr-1 h-4 cursor-pointer hover:text-gray-600" />
+                          <div className="flex items-center gap-1">
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <DialogLogin>
+                                    <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1" />
+                                  </DialogLogin>
+                                </TooltipTrigger>
+                                <TooltipContent>Upvote</TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <DialogLogin>
+                                    <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
+                                  </DialogLogin>
+                                </TooltipTrigger>
+                                <TooltipContent>Downvote</TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
                           </div>
                           <div className="flex items-center">
                             <Icons.dollar className="mr-1 h-4 w-4 text-red-600" />
@@ -111,9 +131,27 @@ const CommentListItem = ({ comment }: any) => {
                       className="flex h-5 items-center space-x-4 text-sm"
                       data-testid="comment-card-footer"
                     >
-                      <div className="flex items-center">
-                        <Icons.arrowUpCircle className="mr-1 h-4 w-4 cursor-pointer hover:text-red-600" />
-                        <Icons.arrowDownCircle className="4 mr-1 h-4 cursor-pointer hover:text-gray-600" />
+                      <div className="flex items-center gap-1">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <DialogLogin>
+                                <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1" />
+                              </DialogLogin>
+                            </TooltipTrigger>
+                            <TooltipContent>Upvote</TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <DialogLogin>
+                                <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
+                              </DialogLogin>
+                            </TooltipTrigger>
+                            <TooltipContent>Downvote</TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       </div>
                       <div className="flex items-center">
                         <Icons.dollar className="mr-1 h-4 w-4 text-red-600" />

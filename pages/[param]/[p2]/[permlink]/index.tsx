@@ -28,6 +28,9 @@ import CommentSelectFilter from '@/components/comment-select-filter';
 import { useEffect, useState } from 'react';
 import sorter, { SortOrder } from '@/lib/sorter';
 import { useRouter } from 'next/router';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import DialogLogin from '@/components/dialog-login';
+import { Icons } from '@/components/icons';
 
 const DynamicComments = dynamic(() => import('@/components/comment-list'), {
   loading: () => <Loading />,
@@ -237,9 +240,27 @@ function PostPage({ post_s, community, username, permlink }: any) {
           </div>
           <div className="my-4 flex justify-between">
             <div className="flex gap-4">
-              <div className="flex gap-1">
-                <ArrowUpCircle />
-                <ArrowDownCircle />
+              <div className="flex items-center gap-1">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <DialogLogin>
+                        <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white" />
+                      </DialogLogin>
+                    </TooltipTrigger>
+                    <TooltipContent>Upvote</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <DialogLogin>
+                        <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white" />
+                      </DialogLogin>
+                    </TooltipTrigger>
+                    <TooltipContent>Downvote</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
               {!isHistoryFeedLoading && historyFeedData ? (
                 <DetailsCardHover post={post_s} historyFeedData={historyFeedData}>
