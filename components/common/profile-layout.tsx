@@ -44,7 +44,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   return username ? (
     <div>
       <div
-        className="min-h-56 h-fit max-h-72 w-full text-xs text-zinc-50"
+        className="min-h-56 l h-fit max-h-72 w-full bg-gray-600 text-sm leading-6 text-zinc-50"
         style={{ textShadow: 'rgb(0, 0, 0) 1px 1px 2px' }}
       >
         {profileData?.posting_json_metadata &&
@@ -70,13 +70,13 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 alt={`${profileData?.profile?.name} profile picture`}
                 loading="lazy"
               />
-              <h4 className="mb-4 mt-8 text-2xl" data-testid="profile-name">
+              <h4 className="text-2xl" data-testid="profile-name">
                 <span className="font-semibold">{profileData?.profile?.name}</span>{' '}
                 <span>({profileData?.reputation ? accountReputation(profileData.reputation) : null})</span>
               </h4>
             </div>
 
-            <p className="my-4 max-w-[420px] text-center text-white" data-testid="profile-about">
+            <p className="my-2 max-w-[420px] text-center text-white" data-testid="profile-about">
               {profileData?.profile?.about}
             </p>
             <ul className="flex h-5 gap-2">
@@ -127,7 +127,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               </li>
             </ul>
 
-            <ul className="flex h-5 gap-4 text-white">
+            <ul className="mt-3 flex h-5 gap-4 text-white">
               <li className="flex items-center">
                 <Icons.mapPin className="mr-2" />
                 <span>{profileData?.profile?.location}</span>
@@ -166,7 +166,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <li>
                   <Link
                     href={`/@${username}`}
-                    className={`flex h-full items-center hover:bg-white hover:text-slate-800 ${
+                    className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800 ${
                       router.asPath === `/@${username}` ? 'dark:text-slate-950' : ''
                     }`}
                   >
@@ -176,7 +176,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <li>
                   <Link
                     href={`/@${username}/posts`}
-                    className={`flex h-full items-center hover:bg-white hover:text-slate-800 ${
+                    className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800 ${
                       router.asPath === `/@${username}/posts` ||
                       router.asPath === `/@${username}/comments` ||
                       router.asPath === `/@${username}/payout`
@@ -190,7 +190,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <li>
                   <Link
                     href={`/@${username}/replies`}
-                    className={`flex h-full items-center hover:bg-white hover:text-slate-800 ${
+                    className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800 ${
                       router.asPath === `/@${username}/replies` ? 'dark:text-slate-950' : ''
                     }`}
                   >
@@ -200,7 +200,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <li>
                   <Link
                     href={`/@${username}/communities`}
-                    className={`flex h-full items-center hover:bg-white hover:text-slate-800 ${
+                    className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800 ${
                       router.asPath === `/@${username}/communities` ? 'dark:text-slate-950' : ''
                     }`}
                   >
@@ -210,7 +210,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <li>
                   <Link
                     href={`/@${username}/notifications`}
-                    className={`flex h-full items-center hover:bg-white hover:text-slate-800 ${
+                    className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800 ${
                       router.asPath === `/@${username}/notifications` ? 'dark:text-slate-950' : ''
                     }`}
                   >
@@ -224,7 +224,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     href={`https://wallet.hive.blog/@${username}/transfers`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex h-full items-center hover:bg-white hover:text-slate-800"
+                    className="flex h-full items-center px-2 hover:bg-white hover:text-slate-800"
                   >
                     Wallet
                   </Link>

@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-import { getAccountPosts } from '@/lib/bridge';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { Entry, getAccountPosts, getPostsRanked } from '@/lib/bridge';
 import ProfileLayout from '@/components/common/profile-layout';
 import Loading from '@/components/loading';
 import { useSiteParams } from '@/components/hooks/use-site-params';
@@ -8,15 +8,45 @@ import PostList from '@/components/post-list';
 import { useRouter } from 'next/router';
 import RepliesList from '@/components/replies-list';
 import { getFeedHistory } from '@/lib/hive';
+import { PostSkeleton } from '@/pages/[...param]';
+import { useInView } from 'react-intersection-observer';
 
 const UserPosts = () => {
   const router = useRouter();
   const { username } = useSiteParams();
+  const { ref, inView } = useInView();
   const sort = router.pathname.split('/')[router.pathname.split('/').length - 1];
-  const { isLoading, error, data } = useQuery(
-    ['accountReplies', username, sort],
-    () => getAccountPosts(sort, username, 'hive.blog'),
-    { enabled: !!username }
+
+  const {
+    data,
+    isLoading,
+    isFetching,
+    error,
+    isError,
+    status,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage
+  } = useInfiniteQuery(
+    ['accountRepliesInfinite', username, sort],
+    async ({ pageParam }: { pageParam?: any }): Promise<any> => {
+      return await getAccountPosts(
+        sort || 'trending',
+        username,
+        'hive.blog',
+        pageParam?.author,
+        pageParam?.permlink
+      );
+    },
+    {
+      getNextPageParam: (lastPage: Entry[]) => {
+        return {
+          author: lastPage && lastPage.length > 0 ? lastPage[lastPage?.length - 1].author : '',
+          permlink: lastPage && lastPage.length > 0 ? lastPage[lastPage?.length - 1].permlink : ''
+        };
+      },
+      enabled: Boolean(sort)
+    }
   );
 
   const {
@@ -38,34 +68,91 @@ const UserPosts = () => {
             <TabsTrigger value="payout">Payouts</TabsTrigger>
           </TabsList>
           <TabsContent value="posts">
-            <PostList data={data} historyFeedData={historyFeedData} />
-            {/*<Button*/}
-            {/*  variant="outline"*/}
-            {/*  className="mt-4 mb-8 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"*/}
-            {/*  onClick={handleLoadMore}*/}
-            {/*>*/}
-            {/*  Load more*/}
-            {/*</Button>*/}
+            {!isLoading && data ? (
+              <>
+                {console.log(
+                  'data?.pages[data.pages.length - 1].length',
+                  data?.pages[data.pages.length - 1].length
+                )}
+                {data.pages.map((page, index) => {
+                  return page ? (
+                    <PostList
+                      data={page}
+                      sort={sort}
+                      key={`posts-${index}`}
+                      historyFeedData={historyFeedData}
+                    />
+                  ) : null;
+                })}
+                <div>
+                  <button
+                    ref={ref}
+                    onClick={() => fetchNextPage()}
+                    disabled={!hasNextPage || isFetchingNextPage}
+                  >
+                    {isFetchingNextPage ? (
+                      <PostSkeleton />
+                    ) : data.pages.length > 1 && data?.pages[data.pages.length - 1].length > 0 ? (
+                      'Load Newer'
+                    ) : null}
+                  </button>
+                </div>
+                <div>{isFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
+              </>
+            ) : null}
           </TabsContent>
           <TabsContent value="comments">
-            <RepliesList data={data} />
-            {/*<Button*/}
-            {/*  variant="outline"*/}
-            {/*  className="mt-4 mb-8 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"*/}
-            {/*  onClick={handleLoadMore}*/}
-            {/*>*/}
-            {/*  Load more*/}
-            {/*</Button>*/}
+            {!isLoading && data ? (
+              <>
+                {data.pages.map((page, index) => {
+                  return page ? <RepliesList data={page} /> : null;
+                })}
+                <div>
+                  <button
+                    ref={ref}
+                    onClick={() => fetchNextPage()}
+                    disabled={!hasNextPage || isFetchingNextPage}
+                  >
+                    {isFetchingNextPage ? (
+                      <PostSkeleton />
+                    ) : data.pages.length > 1 && data?.pages[data.pages.length - 1].length > 0 ? (
+                      'Load Newer'
+                    ) : null}
+                  </button>
+                </div>
+                <div>{isFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
+              </>
+            ) : null}
           </TabsContent>
           <TabsContent value="payout">
-            <PostList data={data} historyFeedData={historyFeedData} />
-            {/*<Button*/}
-            {/*  variant="outline"*/}
-            {/*  className="mt-4 mb-8 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"*/}
-            {/*  onClick={handleLoadMore}*/}
-            {/*>*/}
-            {/*  Load more*/}
-            {/*</Button>*/}
+            {!isLoading && data ? (
+              <>
+                {data.pages.map((page, index) => {
+                  return page ? (
+                    <PostList
+                      data={page}
+                      sort={sort}
+                      key={`payout-${index}`}
+                      historyFeedData={historyFeedData}
+                    />
+                  ) : null;
+                })}
+                <div>
+                  <button
+                    ref={ref}
+                    onClick={() => fetchNextPage()}
+                    disabled={!hasNextPage || isFetchingNextPage}
+                  >
+                    {isFetchingNextPage ? (
+                      <PostSkeleton />
+                    ) : data.pages.length > 1 && data?.pages[data.pages.length - 1].length > 0 ? (
+                      'Load Newer'
+                    ) : null}
+                  </button>
+                </div>
+                <div>{isFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
+              </>
+            ) : null}
           </TabsContent>
         </Tabs>
       </div>

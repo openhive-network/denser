@@ -16,7 +16,7 @@ import CustomError from '@/components/custom-error';
 import { getFeedHistory } from '@/lib/hive';
 import CommunitySimpleDescription from '@/components/community-simple-description';
 
-const PostSkeleton = () => {
+export const PostSkeleton = () => {
   return (
     <div className="flex items-center space-x-4">
       <Skeleton className="h-12 w-12 rounded-full" />
@@ -32,6 +32,7 @@ const ParamPage: FC = () => {
   const router = useRouter();
   const { sort, username, tag } = useSiteParams();
   const { ref, inView } = useInView();
+  const { ref: refAcc, inView: inViewAcc } = useInView();
 
   const {
     data: entriesData,
@@ -70,16 +71,25 @@ const ParamPage: FC = () => {
     data: accountEntriesData,
     isLoading: accountEntriesIsLoading,
     isFetching: accountEntriesIsFetching,
+    error: accountEntriesError,
     isError: accountEntriesIsError,
-    error: accountEntriesError
-  } = useQuery(
-    ['accountEntries', username],
-    async () => {
-      return await getAccountPosts('blog', username, '').then((res) => {
-        return res;
-      });
+    isFetchingNextPage: accountIsFetchingNextPage,
+    fetchNextPage: accountFetchNextPage,
+    hasNextPage: accountHasNextPage
+  } = useInfiniteQuery(
+    ['accountEntriesInfinite', username],
+    async ({ pageParam }: { pageParam?: any }): Promise<any> => {
+      return await getAccountPosts('blog', username, '', pageParam?.author, pageParam?.permlink);
     },
-    { enabled: Boolean(username) }
+    {
+      getNextPageParam: (lastPage: Entry[]) => {
+        return {
+          author: lastPage && lastPage.length > 0 ? lastPage[lastPage?.length - 1].author : '',
+          permlink: lastPage && lastPage.length > 0 ? lastPage[lastPage?.length - 1].permlink : ''
+        };
+      },
+      enabled: Boolean(username)
+    }
   );
 
   const {
@@ -105,6 +115,12 @@ const ParamPage: FC = () => {
       fetchNextPage();
     }
   }, [fetchNextPage, inView]);
+
+  useEffect(() => {
+    if (inViewAcc && accountEntriesData?.pages[accountEntriesData.pages.length - 1].length) {
+      accountFetchNextPage();
+    }
+  }, [accountFetchNextPage, inViewAcc]);
 
   if (accountEntriesIsError || entriesDataIsError || historyFeedError) return <CustomError />;
 
@@ -180,7 +196,32 @@ const ParamPage: FC = () => {
 
   return (
     <ProfileLayout>
-      <PostList data={accountEntriesData} sort={sort || 'trending'} historyFeedData={historyFeedData} />
+      {!accountEntriesIsLoading && accountEntriesData ? (
+        <>
+          {accountEntriesData.pages.map((page, index) => {
+            return page ? (
+              <PostList data={page} key={`x-${index}`} historyFeedData={historyFeedData} />
+            ) : null;
+          })}
+          <div>
+            <button
+              ref={refAcc}
+              onClick={() => accountFetchNextPage()}
+              disabled={!accountHasNextPage || accountIsFetchingNextPage}
+            >
+              {accountIsFetchingNextPage ? (
+                <PostSkeleton />
+              ) : accountEntriesData.pages.length > 1 &&
+                accountEntriesData?.pages[accountEntriesData.pages.length - 1].length > 0 ? (
+                'Load Newer'
+              ) : null}
+            </button>
+          </div>
+          <div>
+            {accountEntriesIsFetching && !accountIsFetchingNextPage ? 'Background Updating...' : null}
+          </div>
+        </>
+      ) : null}
     </ProfileLayout>
   );
 };
