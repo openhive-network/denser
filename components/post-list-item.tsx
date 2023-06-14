@@ -70,6 +70,9 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
               <span className="flex items-center gap-2">
                 {post.percent_hbd === 0 ? <Icons.hive className="h-4 w-4" /> : null}
               </span>
+              {post.author_role && post.author_role !== 'guest' ? (
+                <span className="text-xs md:text-sm">&nbsp;{post.author_role.toUpperCase()}</span>
+              ) : null}
               <span className="text-xs md:text-sm">
                 &nbsp;in{` `}
                 {post.community ? (
@@ -91,6 +94,11 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
                 <Link href={`${post.url}`} className="hover:cursor-pointer hover:text-red-600">
                   {dateToRelative(post.created)} ago
                 </Link>
+                {post.stats.is_pinned ? (
+                  <Badge className="ml-1 bg-red-600 text-white hover:bg-red-600">
+                    <Link href={`${post.url}`}>Pinned</Link>
+                  </Badge>
+                ) : null}
               </span>
             </div>
           </div>
@@ -155,7 +163,6 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
             <CardContent>
               <CardTitle data-testid="post-title" className="text-md">
                 <Link href={`${post.url}`}>{post.title}</Link>
-                {post.stats.is_pinned ? <Badge className="ml-1 bg-red-600 text-white">Pinned</Badge> : null}
               </CardTitle>
               <CardDescription>
                 <Link href={`${post.url}`}>{getPostSummary(post.json_metadata, post.body)}</Link>
@@ -187,7 +194,11 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
                   </TooltipProvider>
                 </div>
 
-                <DetailsCardHover post={post} historyFeedData={historyFeedData}>
+                <DetailsCardHover
+                  post={post}
+                  historyFeedData={historyFeedData}
+                  decline={Number(post.max_accepted_payout.slice(0, 1)) === 0}
+                >
                   <div
                     className={`flex items-center hover:cursor-pointer hover:text-red-600 ${
                       Number(post.max_accepted_payout.slice(0, 1)) === 0 ? 'text-gray-600 line-through' : ''
@@ -207,7 +218,7 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
                         {post.stats.total_votes}
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>{post.stats.total_votes} votes</p>
+                        <p>{post.stats.total_votes > 0 ? post.stats.total_votes : 'no'} votes</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>

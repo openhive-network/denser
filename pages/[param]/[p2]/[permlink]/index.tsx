@@ -263,7 +263,11 @@ function PostPage({ post_s, community, username, permlink }: any) {
                 </TooltipProvider>
               </div>
               {!isHistoryFeedLoading && historyFeedData ? (
-                <DetailsCardHover post={post_s} historyFeedData={historyFeedData}>
+                <DetailsCardHover
+                  post={post_s}
+                  historyFeedData={historyFeedData}
+                  decline={Number(post_s.max_accepted_payout.slice(0, 1)) === 0}
+                >
                   <span
                     className={`text-red-500 hover:cursor-pointer  ${
                       Number(post_s.max_accepted_payout.slice(0, 1)) === 0

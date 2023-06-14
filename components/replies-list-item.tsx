@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import accountReputation from '@/lib/account-reputation';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import DialogLogin from '@/components/dialog-login';
 
 const RepliesListItem = ({ comment }: any) => {
   return (
@@ -83,9 +85,27 @@ const RepliesListItem = ({ comment }: any) => {
           </CardContent>
           <CardFooter>
             <div className="flex h-5 items-center space-x-4 text-sm" data-testid="comment-card-footer">
-              <div className="flex items-center">
-                <Icons.arrowUpCircle className="mr-1 h-4 w-4 cursor-pointer hover:text-red-600" />
-                <Icons.arrowDownCircle className="4 mr-1 h-4 cursor-pointer hover:text-gray-600" />
+              <div className="flex items-center gap-1">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <DialogLogin>
+                        <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1" />
+                      </DialogLogin>
+                    </TooltipTrigger>
+                    <TooltipContent>Upvote</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <DialogLogin>
+                        <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
+                      </DialogLogin>
+                    </TooltipTrigger>
+                    <TooltipContent>Downvote</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
               <div className="flex items-center">
                 <Icons.dollar className="mr-1 h-4 w-4 text-red-600" />
@@ -93,13 +113,44 @@ const RepliesListItem = ({ comment }: any) => {
               </div>
               <Separator orientation="vertical" />
               <div className="flex items-center">
-                <Icons.chevronUp className="mr-1 h-4 w-4" />
-                {comment.stats.total_votes}
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger className="flex items-center">
+                      <Icons.chevronUp className="h-4 w-4 sm:mr-1" />
+                      {comment.stats.total_votes}
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{comment.stats.total_votes > 0 ? comment.stats.total_votes : 'no'} votes</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
               <Separator orientation="vertical" />
               <div className="flex items-center">
-                <Icons.comment className="mr-1 h-4 w-4 cursor-pointer hover:text-red-600" />
-                {comment.children}
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger className="flex items-center">
+                      <Link href={`${comment.url}/#comments`} className="flex cursor-pointer items-center">
+                        <Icons.comment className="h-4 w-4 sm:mr-1" />
+                      </Link>
+                      <Link
+                        href={`${comment.url}/#comments`}
+                        className="flex cursor-pointer items-center hover:text-red-600"
+                      >
+                        {comment.children}
+                      </Link>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{` ${
+                        comment.children === 0
+                          ? 'No responses'
+                          : comment.children === 1
+                          ? comment.children + ' response'
+                          : comment.children + ' responses'
+                      }. Click to respond`}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
             </div>
           </CardFooter>
