@@ -1,5 +1,6 @@
 import { Client } from '@hiveio/dhive/lib/client';
 import { siteConfig } from '@/config/site';
+import { useQuery } from '@tanstack/react-query';
 
 export interface EntryBeneficiaryRoute {
   account: string;
@@ -304,4 +305,17 @@ export const getPostHeader = (author: string, permlink: string): Promise<BasicPo
   bridgeApiCall<BasicPostInfo>('get_post_header', {
     author,
     permlink
+  });
+
+export interface FollowList {
+  name: '';
+  blacklist_description: '';
+  muted_list_description: '';
+}
+export type FollowListType = 'follow_blacklist' | 'follow_muted' | 'blacklisted' | 'muted';
+
+export const getFollowList = (observer: string, follow_type: FollowListType): Promise<FollowList> =>
+  bridgeApiCall<FollowList>('get_follow_list', {
+    observer,
+    follow_type
   });

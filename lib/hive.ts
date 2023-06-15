@@ -7,6 +7,7 @@ import { bridgeServer, dataLimit } from './bridge';
 import { AccountFollowStats, AccountHistory, AccountProfile, FullAccount } from '@/store/app-types';
 import { makeBitMaskFilter, operationOrders } from '@hiveio/dhive/lib/utils';
 import Big from 'big.js';
+import { useInfiniteQuery } from '@tanstack/react-query';
 
 export interface TrendingTag {
   comments: number;
@@ -75,12 +76,6 @@ export interface DelegatedVestingShare {
   delegator: string;
   min_delegation_time: string;
   vesting_shares: string;
-}
-
-export interface Follow {
-  follower: string;
-  following: string;
-  what: string[];
 }
 
 export interface MarketStatistics {
@@ -266,14 +261,12 @@ export const getAccounts = (usernames: string[]): Promise<FullAccount[]> => {
 
       try {
         profile = JSON.parse(x.posting_json_metadata!).profile;
-      } catch (e) {
-      }
+      } catch (e) {}
 
       if (!profile) {
         try {
           profile = JSON.parse(x.json_metadata!).profile;
-        } catch (e) {
-        }
+        } catch (e) {}
       }
 
       if (!profile) {
@@ -300,8 +293,7 @@ export const getAccountFull = (username: string): Promise<FullAccount> =>
     let follow_stats: AccountFollowStats | undefined;
     try {
       follow_stats = await getFollowCount(username);
-    } catch (e) {
-    }
+    } catch (e) {}
 
     return { ...account, follow_stats };
   });
@@ -309,25 +301,52 @@ export const getAccountFull = (username: string): Promise<FullAccount> =>
 export const getFollowCount = (username: string): Promise<AccountFollowStats> =>
   bridgeServer.database.call('get_follow_count', [username]);
 
-export const getFollowing = (
-  follower: string,
-  startFollowing: string,
-  followType = 'blog',
-  limit = 100
-): Promise<Follow[]> => bridgeServer.database.call('get_following', [follower, startFollowing, followType, limit]);
+export interface Follow {
+  follower: string;
+  following: string;
+  what: string[];
+}
 
-export const getFollowers = (
-  following: string,
-  startFollowing: string,
-  followType = 'blog',
-  limit = 100
-): Promise<Follow[]> =>
-  bridgeServer.database.call('get_followers', [
-    following,
-    startFollowing === '' ? null : startFollowing,
-    followType,
-    limit
-  ]);
+export interface GetFollowParams {
+  account: string;
+  start: string | null;
+  type: string;
+  limit: number;
+}
+export const DEFAULT_PARAMS_FOR_FOLLOW: GetFollowParams = {
+  account: '',
+  start: null,
+  type: 'blog',
+  limit: 50
+};
+export const getFollowers = async (params?: Partial<GetFollowParams>): Promise<Follow[]> => {
+  try {
+    const response = await bridgeServer.call('condenser_api', 'get_followers', [
+      params?.account || DEFAULT_PARAMS_FOR_FOLLOW.account,
+      params?.start || DEFAULT_PARAMS_FOR_FOLLOW.start,
+      params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type,
+      params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit
+    ]);
+    return response;
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+};
+export const getFollowing = async (params?: Partial<GetFollowParams>): Promise<Follow[]> => {
+  try {
+    const response = await bridgeServer.call('condenser_api', 'get_following', [
+      params?.account || DEFAULT_PARAMS_FOR_FOLLOW.account,
+      params?.start || DEFAULT_PARAMS_FOR_FOLLOW.start,
+      params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type,
+      params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit
+    ]);
+    return response;
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+};
 
 export const findRcAccounts = (username: string): Promise<RCAccount[]> =>
   new RCAPI(bridgeServer).findRCAccounts([username]);
@@ -368,11 +387,17 @@ export const getAccountHistory = (
   start: number = -1,
   limit: number = 20
 ): Promise<AccountHistory[]> =>
-  bridgeServer.call('condenser_api', 'get_account_history', [username, start, limit, ...wallet_operations_bitmask]);
+  bridgeServer.call('condenser_api', 'get_account_history', [
+    username,
+    start,
+    limit,
+    ...wallet_operations_bitmask
+  ]);
 
 export const getFeedHistory = (): Promise<FeedHistory> => bridgeServer.database.call('get_feed_history');
 
-export const getRewardFund = (): Promise<RewardFund> => bridgeServer.database.call('get_reward_fund', ['post']);
+export const getRewardFund = (): Promise<RewardFund> =>
+  bridgeServer.database.call('get_reward_fund', ['post']);
 
 export const getDynamicProps = async (): Promise<DynamicProps> => {
   const globalDynamic = await getDynamicGlobalProperties();
@@ -499,7 +524,6 @@ export const getProposals = async (params?: Partial<GetProposalsParams>): Promis
     throw error;
   }
 };
-
 
 export interface ProposalVote {
   id: number;

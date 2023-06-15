@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import ProfileInfo from '@/components/profile-info';
 import { useSiteParams } from '@/components/hooks/use-site-params';
 import Loading from '@/components/loading';
 import { useQuery } from '@tanstack/react-query';
 import { getAccount, getAccountFull, getDynamicGlobalProperties } from '@/lib/hive';
-import { accountReputation } from '@/lib/utils';
+import { accountReputation, delegatedHive, numberWithCommas, vestingHive } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
 import { Icons } from '@/components/icons';
-import { dateToRelative, dateToShow } from '@/lib/parse-date';
+import { dateToFullRelative, dateToShow } from '@/lib/parse-date';
 import { proxifyImageUrl } from '@/lib/old-profixy';
 
 interface IProfileLayout {
@@ -40,27 +39,35 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
     error: dynamicGlobalDataError,
     data: dynamicGlobalData
   } = useQuery(['dynamicGlobalData'], () => getDynamicGlobalProperties());
-
+  if (accountDataIsLoading || dynamicGlobalDataIsLoading || profileDataIsLoading) {
+    return <Loading loading={accountDataIsLoading || dynamicGlobalDataIsLoading || profileDataIsLoading} />;
+  }
+  if (!accountData || !dynamicGlobalData || !profileData) {
+    return <p className="my-32 text-center text-3xl">Something went wrong</p>;
+  }
+  const delegated_hive = delegatedHive(accountData, dynamicGlobalData);
+  const vesting_hive = vestingHive(accountData, dynamicGlobalData);
+  const hp = vesting_hive.minus(delegated_hive);
   return username ? (
     <div>
       <div
-        className="min-h-56 l h-fit max-h-72 w-full bg-gray-600 text-sm leading-6 text-zinc-50"
+        className=" w-full bg-gray-600  text-sm leading-6 text-zinc-50 sm:h-fit"
         style={{ textShadow: 'rgb(0, 0, 0) 1px 1px 2px' }}
       >
         {profileData?.posting_json_metadata &&
         JSON.parse(profileData?.posting_json_metadata).profile.cover_image !== '' ? (
           <div
             style={{
-              background: `url('${proxifyImageUrl(
+              background:  JSON.parse(profileData?.posting_json_metadata).profile.cover_image ? `url('${proxifyImageUrl(
                 JSON.parse(profileData?.posting_json_metadata).profile.cover_image,
                 '2048x512'
-              ).replace(/ /g, '%20')}') center center no-repeat`,
+              ).replace(/ /g, '%20')}') center center no-repeat` : '',
 
               backgroundSize: 'cover'
             }}
-            className={`flex h-auto max-h-full min-h-full w-auto min-w-full max-w-full flex-col items-center py-6`}
+            className={`flex h-auto max-h-full min-h-full w-auto min-w-full max-w-full flex-col items-center`}
           >
-            <div className="flex items-center">
+            <div className="mt-4 flex items-center">
               <img
                 className="mr-3 h-[48px] w-[48px] rounded-3xl"
                 height="48"
@@ -69,27 +76,54 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 alt={`${profileData?.profile?.name} profile picture`}
                 loading="lazy"
               />
-              <h4 className="text-2xl" data-testid="profile-name">
-                <span className="font-semibold">{profileData?.profile?.name}</span>{' '}
+              <h4 className="sm:text-2xl" data-testid="profile-name">
+                <span className="font-semibold">{profileData?.name}</span>{' '}
                 <span>({profileData?.reputation ? accountReputation(profileData.reputation) : null})</span>
               </h4>
             </div>
 
-            <p className="my-2 max-w-[420px] text-center text-white" data-testid="profile-about">
+            <p className="my-1 max-w-[420px] text-center text-white sm:my-4" data-testid="profile-about">
               {profileData?.profile?.about}
             </p>
-            <ul className="flex h-5 gap-2">
-              <li>{profileData?.follow_stats?.follower_count} followers</li>
-              <Separator orientation="vertical" className="bg-white" />
-              <li>{profileData?.post_count} posts</li>
-              <Separator orientation="vertical" className="bg-white" />
-              <li>{profileData?.follow_stats?.following_count} following</li>
-              <Separator orientation="vertical" className="bg-white" />
-              <li>123 HP</li>
+            <ul className="my-1 flex h-5 gap-1 text-xs sm:text-sm">
+              <li className="flex items-center gap-1">
+                <Link
+                  href={`/@${profileData.name}/followers`}
+                  className="hover:cursor-pointer hover:text-red-600 hover:underline"
+                >
+                  {profileData?.follow_stats?.follower_count} followers
+                </Link>
+              </li>
+
+              <li className="flex items-center gap-1">
+                {' '}
+                <Separator orientation="vertical" className="bg-white" />
+                <Link
+                  className="hover:cursor-pointer hover:text-red-600 hover:underline"
+                  href={`/@${profileData.name}`}
+                >
+                  {profileData?.post_count} posts{' '}
+                </Link>
+              </li>
+
+              <li className="flex items-center gap-1">
+                <Separator orientation="vertical" className="bg-white" />{' '}
+                <Link
+                  href={`/@${profileData.name}/followed`}
+                  className="hover:cursor-pointer hover:text-red-600 hover:underline"
+                >
+                  {profileData?.follow_stats?.following_count} following
+                </Link>
+              </li>
+
+              <li className="flex items-center gap-1">
+                <Separator orientation="vertical" className="bg-white" />
+                {numberWithCommas(hp.toFixed(0)) + ' HP'}
+              </li>
             </ul>
 
-            <ul className="flex h-5 gap-2">
-              <li>
+            <ul className="my-1 flex flex-wrap justify-center gap-2 text-xs sm:text-sm">
+              <li className="flex items-center gap-1">
                 <Link
                   href={`/@${profileData?.name}/lists/blacklisted`}
                   className="hover:cursor-pointer hover:text-red-600 hover:underline"
@@ -97,8 +131,9 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   Blacklisted Users
                 </Link>
               </li>
-              <Separator orientation="vertical" className="bg-white" />
-              <li>
+
+              <li className="flex items-center gap-1">
+                <Separator orientation="vertical" className="h-4 bg-white" />
                 <Link
                   href={`/@${profileData?.name}/lists/muted`}
                   className="hover:cursor-pointer hover:text-red-600 hover:underline"
@@ -106,8 +141,9 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   Muted Users
                 </Link>
               </li>
-              <Separator orientation="vertical" className="bg-white" />
-              <li>
+
+              <li className="flex items-center gap-1">
+                <Separator orientation="vertical" className="h-4 bg-white" />
                 <Link
                   href={`/@${profileData?.name}/lists/followed_blacklists`}
                   className="hover:cursor-pointer hover:text-red-600 hover:underline"
@@ -115,8 +151,9 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   Followed Blacklists
                 </Link>
               </li>
-              <Separator orientation="vertical" className="bg-white" />
-              <li>
+
+              <li className="flex items-center gap-1">
+                <Separator orientation="vertical" className="bg-white" />
                 <Link
                   href={`/@${profileData?.name}/lists/followed_muted_lists`}
                   className="hover:cursor-pointer hover:text-red-600 hover:underline"
@@ -126,29 +163,36 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               </li>
             </ul>
 
-            <ul className="mt-3 flex h-5 gap-4 text-white">
+            <ul className="my-4 flex h-5 justify-center gap-1 text-xs text-white sm:gap-4 sm:text-sm">
+              {profileData?.profile?.location ? (
+                <li className="flex items-center">
+                  <Icons.mapPin className="m-1" />
+                  <span>{profileData?.profile?.location}</span>
+                </li>
+              ) : null}
+              {profileData?.profile?.website ? (
+                <li className="flex items-center">
+                  <Icons.globe2 className="m-1" />
+                  <Link
+                    target="_external"
+                    className="website-link break-words "
+                    href={`https://${profileData?.profile?.website?.replace(/^(https?|ftp):\/\//, '')}`}
+                  >
+                    <span>{profileData?.profile?.website}</span>
+                  </Link>
+                </li>
+              ) : null}
               <li className="flex items-center">
-                <Icons.mapPin className="mr-2" />
-                <span>{profileData?.profile?.location}</span>
-              </li>
-              <li className="flex items-center">
-                <Icons.globe2 className="mr-2" />
-                <Link
-                  target="_external"
-                  className="website-link"
-                  href={`https://${profileData?.profile?.website?.replace(/^(https?|ftp):\/\//, '')}`}
-                >
-                  <span>{profileData?.profile?.website}</span>
-                </Link>
-              </li>
-              <li className="flex items-center">
-                <Icons.calendarHeart className="mr-2" />
+                <Icons.calendarHeart className="m-1" />
                 <span>Joined {profileData?.created ? dateToShow(profileData.created) : null}</span>
               </li>
               <li className="flex items-center">
-                <Icons.calendarActive className="mr-2" />
+                <Icons.calendarActive className="m-1" />
                 <span>
-                  Active {profileData?.last_post ? dateToRelative(profileData.last_post) : null} ago
+                  Active{' '}
+                  {profileData?.last_vote_time
+                    ? dateToFullRelative(profileData.last_vote_time)
+                    : dateToFullRelative(profileData.last_post)}
                 </span>
               </li>
             </ul>
@@ -160,8 +204,8 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
       <div className="flex flex-col pb-8 md:pb-4 ">
         <div className="w-full">
           <div className="flex h-12 bg-slate-800" data-testid="profile-navigation">
-            <div className="container mx-auto flex max-w-screen-xl justify-between">
-              <ul className="grid h-full grid-cols-2 gap-4 text-white lg:flex lg:gap-8">
+            <div className="container mx-auto flex max-w-screen-xl justify-between justify-between p-0 sm:pl-8">
+              <ul className="flex h-full gap-2 text-xs text-white sm:text-base lg:flex lg:gap-8">
                 <li>
                   <Link
                     href={`/@${username}`}
@@ -217,7 +261,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   </Link>
                 </li>
               </ul>
-              <ul className="flex h-full text-white lg:flex lg:gap-4">
+              <ul className="flex h-full text-xs text-white sm:text-base lg:flex lg:gap-4">
                 <li>
                   <Link
                     href={`https://wallet.hive.blog/@${username}/transfers`}
