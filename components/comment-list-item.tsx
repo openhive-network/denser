@@ -4,35 +4,18 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
-import { DefaultRenderer } from '@hiveio/content-renderer';
-import { proxifyImageSrc } from '@/lib/proxify-images';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { useCallback, useState } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import DialogLogin from '@/components/dialog-login';
 
-const CommentListItem = ({ comment }: any) => {
+const CommentListItem = ({ comment, renderer }: any) => {
   const [openState, setOpenState] = useState('open');
   const triggerOpenRef = useCallback((node: any) => {
     if (node !== null) {
       setOpenState(node.attributes[3].nodeValue);
     }
   }, []);
-  const renderer = new DefaultRenderer({
-    baseUrl: 'https://hive.blog/',
-    breaks: true,
-    skipSanitization: false,
-    allowInsecureScriptTags: false,
-    addNofollowToLinks: true,
-    doNotShowImages: false,
-    ipfsPrefix: '',
-    assetsWidth: 640,
-    assetsHeight: 480,
-    imageProxyFn: (url: string) => proxifyImageSrc(url, 860, 0, 'webp'),
-    usertagUrlFn: (account: string) => '/@' + account,
-    hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
-    isLinkSafeFn: (url: string) => true
-  });
 
   const comment_html = renderer.render(comment.body);
 

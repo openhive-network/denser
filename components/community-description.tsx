@@ -20,7 +20,7 @@ const CommunityDescription = ({ data }: { data: any }) => {
     imageProxyFn: (url: string) => proxifyImageSrc(url, 860, 0, 'webp'),
     usertagUrlFn: (account: string) => '/@' + account,
     hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
-    isLinkSafeFn: (url: string) => true
+    isLinkSafeFn: (url: string) => false
   });
 
   let post_body_html = null;

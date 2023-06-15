@@ -31,6 +31,7 @@ import { useRouter } from 'next/router';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import DialogLogin from '@/components/dialog-login';
 import { Icons } from '@/components/icons';
+import { AlertDialogDemo } from '@/components/alert-window';
 
 const DynamicComments = dynamic(() => import('@/components/comment-list'), {
   loading: () => <Loading />,
@@ -224,12 +225,44 @@ function PostPage({ post_s, community, username, permlink }: any) {
               ) : null}
             </div>
             <div className="flex">
-              <CornerUpRight />
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <AlertDialogDemo>
+                      <Icons.forward className="h-4 w-4 cursor-pointer" />
+                    </AlertDialogDemo>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>
+                      Reblog @{post_s.author}/{post_s.permlink}
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
               <span className="mx-1">|</span>
-              <span className="text-red-500">Reply</span>
+              <span className="flex items-center text-red-500">Reply</span>
               <span className="mx-1">|</span>
-              <MessageSquare />
-              <span className="text-red-500">{post_s.children}</span>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger className="flex items-center">
+                    <Link href={post_s.url} className="flex cursor-pointer items-center">
+                      <Icons.comment className="h-4 w-4 sm:mr-1" />
+                    </Link>
+                    <Link href={post_s.url} className="flex cursor-pointer items-center text-red-600">
+                      {post_s.children}
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>
+                      {post_s.children === 0
+                        ? 'No responses'
+                        : post_s.children === 1
+                        ? post_s.children + ' response'
+                        : post_s.children + ' responses'}
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </div>
           <div className="my-4 flex justify-between">
