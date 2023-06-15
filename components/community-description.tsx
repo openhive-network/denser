@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import ln2list from '@/lib/ln2list';
 import { DefaultRenderer } from '@hiveio/content-renderer';
-import { proxifyImageSrc } from '@/lib/proxify-images';
+import { getDoubleSize, proxifyImageUrl } from '@/lib/old-profixy';
 
 const CommunityDescription = ({ data }: { data: any }) => {
   const renderer = new DefaultRenderer({
@@ -17,7 +17,7 @@ const CommunityDescription = ({ data }: { data: any }) => {
     ipfsPrefix: '',
     assetsWidth: 640,
     assetsHeight: 480,
-    imageProxyFn: (url: string) => proxifyImageSrc(url, 860, 0, 'webp'),
+    imageProxyFn: (url: string) => getDoubleSize(proxifyImageUrl(url, true).replace(/ /g, '%20')),
     usertagUrlFn: (account: string) => '/@' + account,
     hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
     isLinkSafeFn: (url: string) => false

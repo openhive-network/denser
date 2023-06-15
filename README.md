@@ -153,6 +153,7 @@ Run a Denser Docker instance
 OPTIONS:
   --image=IAMGE         Docker image to run (default: 'registry.gitlab.syncad.com/hive/denser:latest')
   --api-endpoint=URL    API endpoint to be used by the new instance (default: 'https://api.hive.blog')
+  --images-endpoint=URL IMAGES endpoint to be used by the new instance (default: 'https://images.hive.blog/')
   --port=PORT           Port to be exposed (default: 3000)
   --name=NAME           Container name to be used (default: denser)
   --detach              Run in detached mode
@@ -170,7 +171,7 @@ This will run a single instance of the application on port 3000, connected to [t
 You can change the port and the default API endpoint by using environment variables like so:
 
 ```bash
-docker run --detach --publish 80:80 --env PORT=80 --env REACT_APP_API_ENDPOINT="https://api.deathwing.me" registry.gitlab.syncad.com/hive/denser:latest
+docker run --detach --publish 80:80 --env PORT=80 --env REACT_APP_API_ENDPOINT="https://api.deathwing.me" --env REACT_APP_IMAGES_ENDPOINT="https://images.hive.blog/" registry.gitlab.syncad.com/hive/denser:latest
 ```
 
 Finally, there are example [Composefile](docker/docker-compose.yml) and accompanying [dotenv](docker/.env) files available if you prefer to go that route.

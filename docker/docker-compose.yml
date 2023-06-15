@@ -5,5 +5,6 @@ services:
     environment:
       - PORT
       - REACT_APP_API_ENDPOINT
+      - REACT_APP_IMAGES_ENDPOINT
     ports:
       - "${PORT}:${PORT}"

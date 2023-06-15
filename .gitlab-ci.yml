@@ -91,6 +91,7 @@ e2e-tests:
       alias: denser
   variables:
     REACT_APP_API_ENDPOINT: https://api.hive.blog
+    REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
     PORT: 3000
     DENSER_URL: http://denser:$PORT
   parallel:
@@ -173,6 +174,7 @@ staging:deploy:
   variables:
     PORT: 3000
     API_ENDPOINT: https://api.hive.blog
+    IMAGES_ENDPOINT: https://images.hive.blog/
     CONTAINER_NAME: denser
   before_script:
     - |

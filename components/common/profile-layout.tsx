@@ -10,7 +10,7 @@ import { accountReputation } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
 import { Icons } from '@/components/icons';
 import { dateToRelative, dateToShow } from '@/lib/parse-date';
-import { proxifyImageSrc } from '@/lib/proxify-images';
+import { proxifyImageUrl } from '@/lib/old-profixy';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -51,12 +51,11 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
         JSON.parse(profileData?.posting_json_metadata).profile.cover_image !== '' ? (
           <div
             style={{
-              background: `url('${proxifyImageSrc(
+              background: `url('${proxifyImageUrl(
                 JSON.parse(profileData?.posting_json_metadata).profile.cover_image,
-                1800,
-                0,
-                'webp'
-              )}') center center no-repeat`,
+                '2048x512'
+              ).replace(/ /g, '%20')}') center center no-repeat`,
+
               backgroundSize: 'cover'
             }}
             className={`flex h-auto max-h-full min-h-full w-auto min-w-full max-w-full flex-col items-center py-6`}

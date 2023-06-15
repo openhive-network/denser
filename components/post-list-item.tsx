@@ -6,12 +6,13 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { dateToRelative } from '@/lib/parse-date';
 import accountReputation from '@/lib/account-reputation';
-import { proxifyImageSrc } from '@/lib/proxify-images';
 import { AlertDialogDemo } from './alert-window';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import DetailsCardHover from './details-card-hover';
 import DialogLogin from '@/components/dialog-login';
 import { useRouter } from 'next/router';
+import { proxifyImageUrl } from '@/lib/old-profixy';
+import { customEndsWith } from '@/lib/ends-with';
 
 interface IBeneficiary {
   account: string;
@@ -112,53 +113,66 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
             {post.json_metadata.image && post.json_metadata.image[0] ? (
               <Link href={`${post.url}`} data-testid="post-image">
                 <div className="relative mr-3.5 flex h-full max-h-fit min-h-fit items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
-                  <img
-                    className="h-ful w-full"
-                    src={proxifyImageSrc(post.json_metadata.image[0], 640, 400)}
-                    alt="Post image"
-                    loading="lazy"
-                  />
+                  <picture className="articles__feature-img h-ful w-full">
+                    <source
+                      srcSet={proxifyImageUrl(post.json_metadata.image[0], '256x512').replace(/ /g, '%20')}
+                      media="(min-width: 1000px)"
+                    />
+                    <img srcSet={post.json_metadata.image[0]} alt="Post image" loading="lazy" />
+                  </picture>
                 </div>
               </Link>
             ) : post.json_metadata.images && post.json_metadata.images[0] ? (
               <Link href={`${post.url}`} data-testid="post-image">
                 <div className="relative mr-3.5 flex h-full max-h-fit min-h-fit items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
-                  <img
-                    className="h-ful w-full"
-                    src={proxifyImageSrc(post.json_metadata.images[0], 640, 400)}
-                    alt="Post image"
-                    loading="lazy"
-                  />
+                  <picture className="articles__feature-img h-ful w-full">
+                    <source
+                      srcSet={proxifyImageUrl(post.json_metadata.images[0], '256x512').replace(/ /g, '%20')}
+                      media="(min-width: 1000px)"
+                    />
+                    <img srcSet={post.json_metadata.images[0]} alt="Post image" loading="lazy" />
+                  </picture>
                 </div>
               </Link>
             ) : post.json_metadata.flow?.pictures && post.json_metadata.flow?.pictures[0] ? (
               <Link href={`${post.url}`} data-testid="post-image">
                 <div className="relative mr-3.5 flex h-full max-h-fit min-h-fit items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
-                  <img
-                    className="h-ful w-full"
-                    src={proxifyImageSrc(post.json_metadata.flow.pictures[0].url, 640, 400)}
-                    alt="Post image"
-                    loading="lazy"
-                  />
+                  <picture className="articles__feature-img h-ful w-full">
+                    <source
+                      srcSet={proxifyImageUrl(post.json_metadata.flow.pictures[0].url, '256x512').replace(
+                        / /g,
+                        '%20'
+                      )}
+                      media="(min-width: 1000px)"
+                    />
+                    <img srcSet={post.json_metadata.flow.pictures[0].url} alt="Post image" loading="lazy" />
+                  </picture>
                 </div>
               </Link>
             ) : post.json_metadata.links &&
               post.json_metadata.links[0] &&
-              post.json_metadata.links[0]
-                .slice(0, post.json_metadata.links[0].length - 1)
-                .endsWith('png' || 'webp' || 'jpeg' || 'jpg') ? (
+              customEndsWith(post.json_metadata.links[0].slice(0, post.json_metadata.links[0].length - 1), [
+                'png',
+                'webp',
+                'jpeg',
+                'jpg'
+              ]) ? (
               <Link href={`${post.url}`} data-testid="post-image">
                 <div className="relative mr-3.5 flex h-full max-h-fit min-h-fit items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
-                  <img
-                    className="h-ful w-full"
-                    src={proxifyImageSrc(
-                      post.json_metadata.links[0].slice(0, post.json_metadata.links[0].length - 1),
-                      640,
-                      400
-                    )}
-                    alt="Post image"
-                    loading="lazy"
-                  />
+                  <picture className="articles__feature-img h-ful w-full">
+                    <source
+                      srcSet={proxifyImageUrl(
+                        post.json_metadata.links[0].slice(0, post.json_metadata.links[0].length - 1),
+                        '256x512'
+                      ).replace(/ /g, '%20')}
+                      media="(min-width: 1000px)"
+                    />
+                    <img
+                      srcSet={post.json_metadata.links[0].slice(0, post.json_metadata.links[0].length - 1)}
+                      alt="Post image"
+                      loading="lazy"
+                    />
+                  </picture>
                 </div>
               </Link>
             ) : null}

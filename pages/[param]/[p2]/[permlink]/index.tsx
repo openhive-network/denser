@@ -1,16 +1,5 @@
 import parseDate, { dateToRelative } from '@/lib/parse-date';
-import {
-  ArrowDownCircle,
-  ArrowUpCircle,
-  Clock,
-  CornerUpRight,
-  Facebook,
-  Link2,
-  Linkedin,
-  MessageSquare,
-  Twitter
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Clock, Facebook, Link2, Linkedin, Twitter } from 'lucide-react';
 import UserInfo, { UserHoverCard } from '@/components/user-info';
 import { getAccount, getActiveVotes, getFeedHistory, getFollowCount } from '@/lib/hive';
 import { useQuery } from '@tanstack/react-query';
@@ -19,7 +8,6 @@ import { getCommunity, getDiscussion, getPost } from '@/lib/bridge';
 import Loading from '@/components/loading';
 import dynamic from 'next/dynamic';
 import ImageGallery from '@/components/image-gallery';
-import { proxifyImageSrc } from '@/lib/proxify-images';
 import Link from 'next/link';
 import { NextPageContext } from 'next';
 import DetailsCardHover from '@/components/details-card-hover';
@@ -32,6 +20,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import DialogLogin from '@/components/dialog-login';
 import { Icons } from '@/components/icons';
 import { AlertDialogDemo } from '@/components/alert-window';
+import { getDoubleSize, proxifyImageUrl } from '@/lib/old-profixy';
 
 const DynamicComments = dynamic(() => import('@/components/comment-list'), {
   loading: () => <Loading />,
@@ -125,7 +114,7 @@ function PostPage({ post_s, community, username, permlink }: any) {
     ipfsPrefix: '',
     assetsWidth: 640,
     assetsHeight: 480,
-    imageProxyFn: (url: string) => proxifyImageSrc(url, 860, 0, 'webp'),
+    imageProxyFn: (url: string) => getDoubleSize(proxifyImageUrl(url, true).replace(/ /g, '%20')),
     usertagUrlFn: (account: string) => '/@' + account,
     hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
     isLinkSafeFn: (url: string) => false
