@@ -86,13 +86,7 @@ function PostPage({ post_s, community, username, permlink }: any) {
 
   useEffect(() => {
     if (discussion) {
-      setDiscussionState(Object.keys(discussion).map((key) => discussion[key]));
-    }
-  }, [isLoadingDiscussion, discussion]);
-
-  useEffect(() => {
-    if (discussionState) {
-      const list = [...discussionState];
+      const list = [...Object.keys(discussion).map((key) => discussion[key])];
 
       sorter(list, SortOrder['trending']);
       setDiscussionState(list);
