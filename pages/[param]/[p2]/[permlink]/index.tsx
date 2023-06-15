@@ -127,7 +127,7 @@ function PostPage({ post_s, community, username, permlink }: any) {
     imageProxyFn: (url: string) => proxifyImageSrc(url, 860, 0, 'webp'),
     usertagUrlFn: (account: string) => '/@' + account,
     hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
-    isLinkSafeFn: (url: string) => true
+    isLinkSafeFn: (url: string) => false
   });
 
   const post_html = renderer.render(post_s.body);
