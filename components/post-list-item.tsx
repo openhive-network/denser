@@ -11,6 +11,7 @@ import { AlertDialogDemo } from './alert-window';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import DetailsCardHover from './details-card-hover';
 import DialogLogin from '@/components/dialog-login';
+import { useRouter } from 'next/router';
 
 interface IBeneficiary {
   account: string;
@@ -18,6 +19,7 @@ interface IBeneficiary {
 }
 
 const PostListItem = ({ post, sort, historyFeedData }: any) => {
+  const router = useRouter();
   return (
     <li data-testid="post-list-item" className={sort === 'muted' ? 'opacity-50 hover:opacity-100' : ''}>
       <Card
@@ -70,7 +72,9 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
               <span className="flex items-center gap-2">
                 {post.percent_hbd === 0 ? <Icons.hive className="h-4 w-4" /> : null}
               </span>
-              {post.author_role && post.author_role !== 'guest' ? (
+              {(router.query.param ? router.query.param[1]?.startsWith('hive-') : false) &&
+              post.author_role &&
+              post.author_role !== 'guest' ? (
                 <span className="text-xs md:text-sm">&nbsp;{post.author_role.toUpperCase()}</span>
               ) : null}
               <span className="text-xs md:text-sm">
