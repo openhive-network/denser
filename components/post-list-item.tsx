@@ -177,12 +177,12 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
               </Link>
             ) : null}
           </div>
-          <div>
+          <div className="md:overflow-hidden">
             <CardContent>
               <CardTitle data-testid="post-title" className="text-md">
                 <Link href={`${post.url}`}>{post.title}</Link>
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="md:whitespace-nowrap md:overflow-hidden md:overflow-ellipsis block w-auto">
                 <Link href={`${post.url}`}>{getPostSummary(post.json_metadata, post.body)}</Link>
               </CardDescription>
               <Separator orientation="horizontal" className="my-1" />
