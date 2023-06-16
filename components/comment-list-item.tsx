@@ -8,9 +8,20 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { useCallback, useState } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import DialogLogin from '@/components/dialog-login';
+import DetailsCardHover from "@/components/details-card-hover";
+import DetailsCardVoters from "@/components/details-card-voters";
+import {useQuery} from "@tanstack/react-query";
+import {getActiveVotes} from "@/lib/hive";
 
-const CommentListItem = ({ comment, renderer }: any) => {
+const CommentListItem = ({ comment, renderer}: any) => {
   const [openState, setOpenState] = useState('open');
+  const {
+    data: activeVotesDataComments,
+    isLoading: isActiveVotesDataCommentsLoading,
+    isError: activeVotesDataCommentsError
+  } = useQuery(['activeVotesDataComments'], () => getActiveVotes(comment.author
+    , comment.permlink));
+
   const triggerOpenRef = useCallback((node: any) => {
     if (node !== null) {
       setOpenState(node.attributes[3].nodeValue);
@@ -141,14 +152,17 @@ const CommentListItem = ({ comment, renderer }: any) => {
                         {comment.payout.toFixed(2)}
                       </div>
                       <Separator orientation="vertical" />
-                      {comment.stats.total_votes ? (
-                        <div className="flex items-center">
-                          {comment.stats.total_votes}
-                          {comment.stats.total_votes > 1 ? ' votes' : ' vote'}
-                        </div>
+                      {!isActiveVotesDataCommentsLoading && activeVotesDataComments ? (
+                        <>
+                          <div className="flex items-center">
+                            <DetailsCardVoters activeVotesData={activeVotesDataComments} post={comment}>
+                              <span className="hover:text-red-600">{comment.stats?.total_votes}{comment.stats.total_votes > 1 ? ' votes' : ' vote'}</span>
+                            </DetailsCardVoters>
+                          </div>
+                          <Separator orientation="vertical" />
+                        </>
                       ) : null}
-                      <Separator orientation="vertical" />
-                      <div className="flex items-center">Reply</div>
+                      <div className="flex items-center hover:text-red-600 hover:cursor-pointer">Reply</div>
                     </div>
                   </CardFooter>
                 </AccordionContent>

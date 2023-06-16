@@ -297,7 +297,7 @@ function PostPage({ post_s, community, username, permlink }: any) {
               ) : null}
               {!isActiveVotesLoading && activeVotesData ? (
                 <DetailsCardVoters activeVotesData={activeVotesData} post={post_s}>
-                  <span className="text-red-500">{post_s.stats?.total_votes} votes</span>
+                  <span className="text-red-500">{post_s.stats?.total_votes}{post_s.stats.total_votes > 1 ? ' votes' : ' vote'}</span>
                 </DetailsCardVoters>
               ) : null}
             </div>
@@ -313,7 +313,7 @@ function PostPage({ post_s, community, username, permlink }: any) {
       <div id="comments" />
       {!isLoadingDiscussion && discussion && discussionState ? (
         <div className="mx-auto my-0 max-w-4xl px-8 py-4">
-          <div className="flex items-center justify-end">
+          <div className="flex items-center justify-end pb-4">
             <span>Sort: </span>
             <CommentSelectFilter />
           </div>

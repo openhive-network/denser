@@ -46,7 +46,7 @@ export default function DetailsCardVoters({
               </Link>
             </li>
           ))}
-          <li className="pt-1.5 text-sm text-gray-500">and {votes.length - 20} more</li>
+          {votes.length > 20 && post.stats ? <li className="pt-1.5 text-sm text-gray-500">and {post.stats.total_votes - 20} more</li> : null}
         </ul>
       </HoverCardContent>
     </HoverCard>
