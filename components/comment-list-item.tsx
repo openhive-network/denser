@@ -152,7 +152,7 @@ const CommentListItem = ({ comment, renderer}: any) => {
                         {comment.payout.toFixed(2)}
                       </div>
                       <Separator orientation="vertical" />
-                      {!isActiveVotesDataCommentsLoading && activeVotesDataComments ? (
+                      {!isActiveVotesDataCommentsLoading && activeVotesDataComments && comment.stats.total_votes > 0 ? (
                         <>
                           <div className="flex items-center">
                             <DetailsCardVoters activeVotesData={activeVotesDataComments} post={comment}>
