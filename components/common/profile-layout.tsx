@@ -68,13 +68,9 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             className={`flex h-auto max-h-full min-h-full w-auto min-w-full max-w-full flex-col items-center`}
           >
             <div className="mt-4 flex items-center">
-              <img
-                className="mr-3 h-[48px] w-[48px] rounded-3xl"
-                height="48"
-                width="48"
-                src={`https://images.hive.blog/u/${profileData?.name}/avatar`}
-                alt={`${profileData?.profile?.name} profile picture`}
-                loading="lazy"
+              <div
+                className="mr-3 h-[48px] w-[48px] rounded-3xl bg-cover bg-no-repeat"
+                style={{ backgroundImage: `url(https://images.hive.blog/u/${profileData?.name}/avatar)`}}
               />
               <h4 className="sm:text-2xl" data-testid="profile-name">
                 <span className="font-semibold">{profileData?.name}</span>{' '}

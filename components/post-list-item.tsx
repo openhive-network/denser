@@ -13,6 +13,7 @@ import DialogLogin from '@/components/dialog-login';
 import { useRouter } from 'next/router';
 import { proxifyImageUrl } from '@/lib/old-profixy';
 import { customEndsWith } from '@/lib/ends-with';
+import { useState } from 'react';
 
 interface IBeneficiary {
   account: string;
@@ -20,7 +21,15 @@ interface IBeneficiary {
 }
 
 const PostListItem = ({ post, sort, historyFeedData }: any) => {
+  const [reveal, setReveal] = useState<boolean>(
+    () => post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw')
+  );
   const router = useRouter();
+
+  function revealPost() {
+    setReveal((reveal) => !reveal);
+  }
+
   return (
     <li data-testid="post-list-item" className={sort === 'muted' ? 'opacity-50 hover:opacity-100' : ''}>
       <Card
@@ -42,13 +51,9 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
         <CardHeader className="px-0 py-1">
           <div className="md:text-md flex items-center text-xs text-slate-500 dark:text-slate-400">
             <Link href={`@${post.author}`}>
-              <img
-                className="mr-3 h-[24px] w-[24px] rounded-3xl"
-                height="24"
-                width="24"
-                src={`https://images.hive.blog/u/${post.author}/avatar/small`}
-                alt={`${post.author} profile picture`}
-                loading="lazy"
+              <div
+                className="mr-3 h-[24px] w-[24px] rounded-3xl bg-cover bg-no-repeat"
+                style={{ backgroundImage: `url(https://images.hive.blog/u/${post.author}/avatar/small)` }}
               />
             </Link>
             <div className="flex items-center">
@@ -61,22 +66,20 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
               </Link>{' '}
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger>
-                    ({accountReputation(post.author_reputation)})
-                  </TooltipTrigger>
+                  <TooltipTrigger>({accountReputation(post.author_reputation)})</TooltipTrigger>
                   <TooltipContent>Reputation</TooltipContent>
                 </Tooltip>
               </TooltipProvider>
-              {post.blacklists && post.blacklists[0] ? (<TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <span className="text-red-600">
-                      ({post.blacklists.length})
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent>{post.blacklists[0]}</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>) : null}
+              {post.blacklists && post.blacklists[0] ? (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <span className="text-red-600">({post.blacklists.length})</span>
+                    </TooltipTrigger>
+                    <TooltipContent>{post.blacklists[0]}</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ) : null}
               {post.author_title ? (
                 <Badge variant="outline" className="ml-1 border-red-600 text-red-600">
                   {post.author_title}
@@ -87,7 +90,7 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
               post.author_role !== 'guest' ? (
                 <span className="text-xs md:text-sm">&nbsp;{post.author_role.toUpperCase()}</span>
               ) : null}
-              <span className="text-xs md:text-sm flex items-center">
+              <span className="flex items-center text-xs md:text-sm">
                 &nbsp;in&nbsp;
                 {post.community ? (
                   <Link
@@ -108,8 +111,9 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
                 <Link href={`${post.url}`} className="hover:cursor-pointer hover:text-red-600">
                   {dateToRelative(post.created)} ago
                 </Link>
-                {post.percent_hbd === 0 ? (<span className="ml-1 flex items-center">
-                   <TooltipProvider>
+                {post.percent_hbd === 0 ? (
+                  <span className="ml-1 flex items-center">
+                    <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger>
                           <Link href={`${post.url}`}>
@@ -119,7 +123,8 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
                         <TooltipContent>Powered Up 100%</TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
-                </span>) : null}
+                  </span>
+                ) : null}
                 {post.stats.is_pinned ? (
                   <Badge className="ml-1 bg-red-600 text-white hover:bg-red-600">
                     <Link href={`${post.url}`}>Pinned</Link>
@@ -131,82 +136,117 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
         </CardHeader>
         <div className="flex flex-col md:flex-row">
           <div>
-            {post.json_metadata.image && post.json_metadata.image[0] ? (
-              <Link href={`${post.url}`} data-testid="post-image">
-                <div className="relative mr-3.5 flex h-full max-h-fit min-h-fit items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
-                  <picture className="articles__feature-img h-ful w-full">
-                    <source
-                      srcSet={proxifyImageUrl(post.json_metadata.image[0], '256x512').replace(/ /g, '%20')}
-                      media="(min-width: 1000px)"
-                    />
-                    <img srcSet={post.json_metadata.image[0]} alt="Post image" loading="lazy" />
-                  </picture>
-                </div>
-              </Link>
-            ) : post.json_metadata.images && post.json_metadata.images[0] ? (
-              <Link href={`${post.url}`} data-testid="post-image">
-                <div className="relative mr-3.5 flex h-full max-h-fit min-h-fit items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
-                  <picture className="articles__feature-img h-ful w-full">
-                    <source
-                      srcSet={proxifyImageUrl(post.json_metadata.images[0], '256x512').replace(/ /g, '%20')}
-                      media="(min-width: 1000px)"
-                    />
-                    <img srcSet={post.json_metadata.images[0]} alt="Post image" loading="lazy" />
-                  </picture>
-                </div>
-              </Link>
-            ) : post.json_metadata.flow?.pictures && post.json_metadata.flow?.pictures[0] ? (
-              <Link href={`${post.url}`} data-testid="post-image">
-                <div className="relative mr-3.5 flex h-full max-h-fit min-h-fit items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
-                  <picture className="articles__feature-img h-ful w-full">
-                    <source
-                      srcSet={proxifyImageUrl(post.json_metadata.flow.pictures[0].url, '256x512').replace(
-                        / /g,
-                        '%20'
-                      )}
-                      media="(min-width: 1000px)"
-                    />
-                    <img srcSet={post.json_metadata.flow.pictures[0].url} alt="Post image" loading="lazy" />
-                  </picture>
-                </div>
-              </Link>
-            ) : post.json_metadata.links &&
-              post.json_metadata.links[0] &&
-              customEndsWith(post.json_metadata.links[0].slice(0, post.json_metadata.links[0].length - 1), [
-                'png',
-                'webp',
-                'jpeg',
-                'jpg'
-              ]) ? (
-              <Link href={`${post.url}`} data-testid="post-image">
-                <div className="relative mr-3.5 flex h-full max-h-fit min-h-fit items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
-                  <picture className="articles__feature-img h-ful w-full">
-                    <source
-                      srcSet={proxifyImageUrl(
-                        post.json_metadata.links[0].slice(0, post.json_metadata.links[0].length - 1),
-                        '256x512'
-                      ).replace(/ /g, '%20')}
-                      media="(min-width: 1000px)"
-                    />
-                    <img
-                      srcSet={post.json_metadata.links[0].slice(0, post.json_metadata.links[0].length - 1)}
-                      alt="Post image"
-                      loading="lazy"
-                    />
-                  </picture>
-                </div>
-              </Link>
+            {!reveal ? (
+              <>
+                {post.json_metadata.image && post.json_metadata.image[0] ? (
+                  <Link href={`${post.url}`} data-testid="post-image">
+                    <div className="relative mr-3.5 flex h-full max-h-fit min-h-fit items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
+                      <picture className="articles__feature-img h-ful w-full">
+                        <source
+                          srcSet={proxifyImageUrl(post.json_metadata.image[0], '256x512').replace(
+                            / /g,
+                            '%20'
+                          )}
+                          media="(min-width: 1000px)"
+                        />
+                        <img srcSet={post.json_metadata.image[0]} alt="Post image" loading="lazy" />
+                      </picture>
+                    </div>
+                  </Link>
+                ) : post.json_metadata.images && post.json_metadata.images[0] ? (
+                  <Link href={`${post.url}`} data-testid="post-image">
+                    <div className="relative mr-3.5 flex h-full max-h-fit min-h-fit items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
+                      <picture className="articles__feature-img h-ful w-full">
+                        <source
+                          srcSet={proxifyImageUrl(post.json_metadata.images[0], '256x512').replace(
+                            / /g,
+                            '%20'
+                          )}
+                          media="(min-width: 1000px)"
+                        />
+                        <img srcSet={post.json_metadata.images[0]} alt="Post image" loading="lazy" />
+                      </picture>
+                    </div>
+                  </Link>
+                ) : post.json_metadata.flow?.pictures && post.json_metadata.flow?.pictures[0] ? (
+                  <Link href={`${post.url}`} data-testid="post-image">
+                    <div className="relative mr-3.5 flex h-full max-h-fit min-h-fit items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
+                      <picture className="articles__feature-img h-ful w-full">
+                        <source
+                          srcSet={proxifyImageUrl(post.json_metadata.flow.pictures[0].url, '256x512').replace(
+                            / /g,
+                            '%20'
+                          )}
+                          media="(min-width: 1000px)"
+                        />
+                        <img
+                          srcSet={post.json_metadata.flow.pictures[0].url}
+                          alt="Post image"
+                          loading="lazy"
+                        />
+                      </picture>
+                    </div>
+                  </Link>
+                ) : post.json_metadata.links &&
+                  post.json_metadata.links[0] &&
+                  customEndsWith(
+                    post.json_metadata.links[0].slice(0, post.json_metadata.links[0].length - 1),
+                    ['png', 'webp', 'jpeg', 'jpg']
+                  ) ? (
+                  <Link href={`${post.url}`} data-testid="post-image">
+                    <div className="relative mr-3.5 flex h-full max-h-fit min-h-fit items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
+                      <picture className="articles__feature-img h-ful w-full">
+                        <source
+                          srcSet={proxifyImageUrl(
+                            post.json_metadata.links[0].slice(0, post.json_metadata.links[0].length - 1),
+                            '256x512'
+                          ).replace(/ /g, '%20')}
+                          media="(min-width: 1000px)"
+                        />
+                        <img
+                          srcSet={post.json_metadata.links[0].slice(
+                            0,
+                            post.json_metadata.links[0].length - 1
+                          )}
+                          alt="Post image"
+                          loading="lazy"
+                        />
+                      </picture>
+                    </div>
+                  </Link>
+                ) : null}
+              </>
             ) : null}
           </div>
           <div className="md:overflow-hidden">
             <CardContent>
-              <CardTitle data-testid="post-title" className="text-md">
-                <Link href={`${post.url}`}>{post.title}</Link>
-              </CardTitle>
-              <CardDescription className="md:whitespace-nowrap md:overflow-hidden md:overflow-ellipsis block w-auto">
-                <Link href={`${post.url}`}>{getPostSummary(post.json_metadata, post.body)}</Link>
-              </CardDescription>
-              <Separator orientation="horizontal" className="my-1" />
+              {!reveal ? (
+                <>
+                  <CardTitle data-testid="post-title" className="text-md">
+                    <Link href={`${post.url}`}>{post.title}</Link>
+                  </CardTitle>
+                  <CardDescription className="block w-auto md:overflow-hidden md:overflow-ellipsis md:whitespace-nowrap">
+                    <Link href={`${post.url}`}>{getPostSummary(post.json_metadata, post.body)}</Link>
+                  </CardDescription>
+                  <Separator orientation="horizontal" className="my-1" />
+                </>
+              ) : (
+                <>
+                  <p>
+                    <Badge variant="outline" className="mx-1 border-red-600 text-red-600">
+                      nsfw
+                    </Badge>
+                    <span className="cursor-pointer text-red-600" onClick={revealPost}>
+                      Reveal this post
+                    </span>{' '}
+                    or{' '}
+                    <Link href="https://signup.hive.io/" className="cursor-pointer text-red-600">
+                      create an account
+                    </Link>{' '}
+                    to save your preferences.
+                  </p>
+                </>
+              )}
             </CardContent>
             <CardFooter className="pb-2">
               <div className="flex h-5 items-center space-x-2 text-sm">

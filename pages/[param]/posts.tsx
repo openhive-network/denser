@@ -70,10 +70,6 @@ const UserPosts = () => {
           <TabsContent value="posts">
             {!isLoading && data ? (
               <>
-                {console.log(
-                  'data?.pages[data.pages.length - 1].length',
-                  data?.pages[data.pages.length - 1].length
-                )}
                 {data.pages.map((page, index) => {
                   return page ? (
                     <PostList
