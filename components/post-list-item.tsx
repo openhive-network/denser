@@ -108,12 +108,7 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
                 <Link href={`${post.url}`} className="hover:cursor-pointer hover:text-red-600">
                   {dateToRelative(post.created)} ago
                 </Link>
-                {post.stats.is_pinned ? (
-                  <Badge className="ml-1 bg-red-600 text-white hover:bg-red-600">
-                    <Link href={`${post.url}`}>Pinned</Link>
-                  </Badge>
-                ) : null}
-                {post.percent_hbd === 0 ? (<span className="mx-1 flex items-center">
+                {post.percent_hbd === 0 ? (<span className="ml-1 flex items-center">
                    <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger>
@@ -125,6 +120,11 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
                       </Tooltip>
                     </TooltipProvider>
                 </span>) : null}
+                {post.stats.is_pinned ? (
+                  <Badge className="ml-1 bg-red-600 text-white hover:bg-red-600">
+                    <Link href={`${post.url}`}>Pinned</Link>
+                  </Badge>
+                ) : null}
               </span>
             </div>
           </div>
