@@ -59,12 +59,24 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
               >
                 {post.author}
               </Link>{' '}
-              ({accountReputation(post.author_reputation)})
-              {post.blacklists && post.blacklists[0] ? (
-                <span className="text-red-600" title={post.blacklists[0]}>
-                  ({post.blacklists.length})
-                </span>
-              ) : null}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    ({accountReputation(post.author_reputation)})
+                  </TooltipTrigger>
+                  <TooltipContent>Reputation</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              {post.blacklists && post.blacklists[0] ? (<TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <span className="text-red-600">
+                      ({post.blacklists.length})
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>{post.blacklists[0]}</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>) : null}
               {post.author_title ? (
                 <Badge variant="outline" className="ml-1 border-red-600 text-red-600">
                   {post.author_title}
