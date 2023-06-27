@@ -70,16 +70,13 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
                   {post.author_title}
                 </Badge>
               ) : null}
-              <span className="flex items-center gap-2">
-                {post.percent_hbd === 0 ? <Icons.hive className="h-4 w-4" /> : null}
-              </span>
               {(router.query.param ? router.query.param[1]?.startsWith('hive-') : false) &&
               post.author_role &&
               post.author_role !== 'guest' ? (
                 <span className="text-xs md:text-sm">&nbsp;{post.author_role.toUpperCase()}</span>
               ) : null}
-              <span className="text-xs md:text-sm">
-                &nbsp;in{` `}
+              <span className="text-xs md:text-sm flex items-center">
+                &nbsp;in&nbsp;
                 {post.community ? (
                   <Link
                     href={`/${sort}/${post.community}`}
@@ -104,6 +101,18 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
                     <Link href={`${post.url}`}>Pinned</Link>
                   </Badge>
                 ) : null}
+                {post.percent_hbd === 0 ? (<span className="mx-1 flex items-center">
+                   <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Link href={`${post.url}`}>
+                            <Icons.hive className="h-4 w-4" />
+                          </Link>
+                        </TooltipTrigger>
+                        <TooltipContent>Powered Up 100%</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                </span>) : null}
               </span>
             </div>
           </div>
