@@ -153,11 +153,11 @@ const ParamPage: FC = () => {
               <div className="mt-4 flex items-center justify-between">
                 <div className="flex flex-col">
                   <span className="text-md font-medium">
-                    {tag && communityData ? `${communityData?.title}` : 'All posts'}
+                    {tag ? communityData ? `${communityData?.title}` : `#${tag}` : 'All posts'}
                   </span>
                   {tag ? (
                     <span className="text-xs font-light" data-testid="community-name">
-                      Community
+                      {tag ? communityData ? 'Community' : 'Unmoderated tag' : ''}
                     </span>
                   ) : null}
                 </div>
