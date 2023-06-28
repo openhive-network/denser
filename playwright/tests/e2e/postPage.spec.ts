@@ -120,13 +120,13 @@ test.describe('Post page tests', () => {
     await postPage.page.waitForTimeout(1000);
 
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'color')).toBe(
-      'rgb(15, 23, 42)'
+      'rgb(220, 38, 38)'
     );
     expect(
       await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'background-color')
-    ).toBe('rgb(254, 226, 226)');
+    ).toBe('rgb(241, 245, 249)');
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'border-color')).toBe(
-      'rgb(239, 68, 68)'
+      'rgb(220, 38, 38)'
     );
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'border-style')).toBe(
       'solid'
@@ -135,7 +135,8 @@ test.describe('Post page tests', () => {
 
   // TO DO the above test for dark theme when it will work
 
-  test('validate Mute button style in the hover card in light theme', async ({ page }) => {
+  // Mute button is no more in the dropdown card after hovering that way test is skipped.
+  test.skip('validate Mute button style in the hover card in light theme', async ({ page }) => {
     const postPage = new PostPage(page);
 
     await postPage.gotoHomePage();

@@ -47,7 +47,7 @@ export class PostPage {
     this.userFollowingHoverCard = page.locator('[data-testid="user-following"]');
     this.userHpHoverCard = page.locator('[data-testid="user-hp"]');
     this.userAboutHoverCard = page.locator('[data-testid="user-about"]');
-    this.buttonFollowHoverCard = page.locator('button').getByText('Follow');
+    this.buttonFollowHoverCard = page.locator('button').getByText('FOLLOW');
     this.buttonMuteHoverCard = page.locator('button').getByText('Mute');
     this.commentListItems = page.locator('[data-testid="comment-list-item"]');
     this.commentAuthorLink = page.locator('[data-testid="comment-author-link"]');
