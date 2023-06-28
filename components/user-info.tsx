@@ -43,28 +43,25 @@ export function UserHoverCard({
         </div>
       </HoverCardTrigger>
       <HoverCardContent className="w-72" data-testid="user-hover-card-content">
-        <div className="space-y-2 text-black">
+        <div className="space-y-2">
           <div className="flex">
-            <UserAvatar username={author} size="large" />
+            <Link href={`/@${author}`}>
+              <UserAvatar username={author} size="large" className="h-[75px] w-[75px]" />
+            </Link>
             <div>
-              <span className="block font-bold">{name}</span>
-              <Link href={`/@${author}`} className="flex hover:cursor-pointer hover:text-red-600">
+              <Link href={`/@${author}`} className="block font-bold hover:cursor-pointer">
+                {name}
+              </Link>
+              <Link href={`/@${author}`} className="flex text-sm text-gray-500 hover:cursor-pointer">
                 <span className="block">{`@${author}`}</span>
               </Link>
               <div className="grid grid-cols-2 gap-2 py-2">
                 <Button
                   variant="outline"
-                  size="sm"
-                  className="border border-red-500 bg-transparent uppercase text-red-500 hover:bg-red-100 dark:border-red-700 dark:text-red-100"
+                  size="xs"
+                  className="border border-red-500 bg-transparent p-1 uppercase text-red-500 hover:border-red-600 hover:text-red-600"
                 >
                   Follow
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="border border-red-500 bg-transparent uppercase text-red-500 hover:bg-red-100 dark:border-red-700 dark:text-red-100"
-                >
-                  Mute
                 </Button>
               </div>
             </div>
@@ -72,20 +69,22 @@ export function UserHoverCard({
           <div className="grid grid-cols-3 gap-2">
             <div className="flex flex-col items-center" data-testid="user-followers">
               {followers}
-              <span>Followers</span>
+              <span className="text-xs">Followers</span>
             </div>
             <div className="flex flex-col items-center" data-testid="user-following">
               {following}
-              <span>Following</span>
+              <span className="text-xs">Following</span>
             </div>
             {/*TODO*/}
             {/*<div className="flex flex-col items-center" data-testid="user-hp">*/}
             {/*  123*/}
-            {/*  <span>HP</span>*/}
+            {/*  <span className="text-xs">HP</span>*/}
             {/*</div>*/}
           </div>
-          <p data-testid="user-about">{about}</p>
-          <div className="flex justify-center text-sm">
+          <p data-testid="user-about" className="text-sm text-gray-500">
+            {about}
+          </p>
+          <div className="flex justify-center text-xs">
             Joined {dateToFormatted(joined, 'MMMM YYYY')}
             <span className="mx-1">•</span>
             Active {dateToRelative(active)} ago
