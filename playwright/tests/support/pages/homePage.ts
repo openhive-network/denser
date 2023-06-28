@@ -2,6 +2,7 @@ import { Locator, Page, expect } from '@playwright/test';
 import { PostPage } from './postPage';
 // @ts-ignore
 import env from '@beam-australia/react-env';
+import { ProfilePage } from './profilePage';
 export class HomePage {
   readonly page: Page;
   readonly postPage: PostPage;
@@ -27,8 +28,13 @@ export class HomePage {
   readonly getNavSidebarMenuContentCloseButton: Locator;
   readonly getHeaderAllCommunities: Locator;
   readonly getMainTimeLineOfPosts: any;
+  readonly getPostCardAvatar: Locator;
+  readonly getFirstPostCardAvatar: Locator;
   readonly getFirstPostAuthor: Locator;
   readonly getFirstPostAuthorReputation: Locator;
+  readonly getFirstPostCardCommunityLink: Locator;
+  readonly getFirstPostCardCategoryLink: Locator;
+  readonly getFirstPostCardTimestampLink: Locator;
   readonly getFirstPostTitle: Locator;
   readonly getFirstPostPayout: Locator;
   readonly getFirstPostVotes: Locator;
@@ -53,7 +59,9 @@ export class HomePage {
     this.getTrendingCommunitiesSideBarLinks = this.getTrendingCommunitiesSideBar.locator('div ul li a');
     this.getTrandingCommunitiesHeader = page.locator('a').getByText('All posts');
     this.getExploreCommunities = page.getByText('Explore communities...');
-    this.getLeoFinanceCommunitiesLink = this.getTrendingCommunitiesSideBar.locator('a').getByText('LeoFinance');
+    this.getLeoFinanceCommunitiesLink = this.getTrendingCommunitiesSideBar
+      .locator('a')
+      .getByText('LeoFinance');
     this.getHeaderLeoCommunities = page.locator(
       '[class="mt-4 flex items-center justify-between"] span:text("LeoFinance")'
     );
@@ -70,8 +78,13 @@ export class HomePage {
       '[class="mt-4 flex items-center justify-between"] span:text("All posts")'
     );
     this.getMainTimeLineOfPosts = page.locator('li[data-testid="post-list-item"]');
+    this.getPostCardAvatar = page.locator('[data-testid="post-card-avatar"]');
+    this.getFirstPostCardAvatar = this.getPostCardAvatar.first();
     this.getFirstPostAuthor = page.locator('[data-testid="post-author"]').first();
     this.getFirstPostAuthorReputation = this.getFirstPostAuthor.locator('..');
+    this.getFirstPostCardCommunityLink = page.locator('[data-testid="post-card-community"]').first();
+    this.getFirstPostCardCategoryLink = page.locator('[data-testid="post-card-category"]').first();
+    this.getFirstPostCardTimestampLink = page.locator('[data-testid="post-card-timestamp"]').first();
     this.getFirstPostTitle = page.locator('li[data-testid="post-list-item"] h3 a').first();
     this.getFirstPostPayout = page.locator('[data-testid="post-payout"]').first();
     this.getFirstPostVotes = page.locator('[data-testid="post-total-votes"]').first();
@@ -82,7 +95,7 @@ export class HomePage {
     this.getThemeModeItem = page.locator('[data-testid="theme-mode-item"]');
     this.getFilterPosts = page.locator('[data-testid="posts-filter"]');
     this.getFilterPostsList = page.locator('[data-testid="posts-filter-list"]');
-    this.getCardExploreHive = page.locator('[data-testid="card-explore-hive"]');
+    this.getCardExploreHive = page.locator('[data-testid="card-explore-hive-desktop"]');
     this.getCardExploreHiveTitle = this.getCardExploreHive.locator('div h3');
     this.getCardExploreHiveLinks = this.getCardExploreHive.locator('div ul li');
     this.getCardUserShortcuts = page.locator('[data-testid="card-user-shortcuts"]');
@@ -123,12 +136,74 @@ export class HomePage {
   }
 
   async moveToFirstPostAuthorProfilePage() {
+    const profilePage = new ProfilePage(this.page);
     const firstPostAuthorNick = await this.getFirstPostAuthor.innerText();
+    // Click the post's author name link
     await this.getFirstPostAuthor.click();
 
     // Validate that you moved to the clicked post author profile page
-    const postAuthorNickOnProfilePage = await this.page.locator('[data-testid="profile-nickname"]');
-    await expect('@'+firstPostAuthorNick).toMatch(await postAuthorNickOnProfilePage.innerText());
+    await this.page.waitForSelector(profilePage.profileName['_selector']);
+    expect(await profilePage.profileName).toBeVisible();
+    await profilePage.profilePostsLink.click();
+    await this.page.waitForSelector(profilePage.page.locator('[data-testid="user-post-menu"]')['_selector']);
+    const firstPostAuthorNameProfilePage = await this.page.locator('[data-testid="post-author"]').first();
+    await expect('@' + firstPostAuthorNick).toMatch(await firstPostAuthorNameProfilePage.innerText());
+  }
+
+  async moveToFirstPostAuthorProfilePageByAvatar() {
+    const profilePage = new ProfilePage(this.page);
+    const firstPostAuthorNick = await this.getFirstPostAuthor.innerText();
+    // Click the post's author avatar link
+    await this.getFirstPostCardAvatar.click();
+
+    // Validate that you moved to the clicked post author profile page
+    await this.page.waitForSelector(profilePage.profileName['_selector']);
+    expect(await profilePage.profileName).toBeVisible();
+    await profilePage.profilePostsLink.click();
+    await this.page.waitForSelector(profilePage.page.locator('[data-testid="user-post-menu"]')['_selector']);
+    const firstPostAuthorNameProfilePage = await this.page.locator('[data-testid="post-author"]').first();
+    await expect('@' + firstPostAuthorNick).toMatch(await firstPostAuthorNameProfilePage.innerText());
+  }
+
+  async moveToFirstPostCommunityOrCategory() {
+    const profilePage = new ProfilePage(this.page);
+    const firstPostAuthorNick = await this.getFirstPostAuthor.innerText();
+
+    const firstPostCardCommunityLink = await this.getFirstPostCardCommunityLink;
+    const firstPostCardCategoryLink = await this.getFirstPostCardCategoryLink;
+
+    if (await firstPostCardCommunityLink.isVisible()) {
+      firstPostCardCommunityLink.click();
+      await this.page.waitForSelector(
+        this.page.locator('[data-testid="short-community-description"]')['_selector']
+      );
+      expect(await this.page.locator('[data-testid="community-name"]').textContent()).toBe(
+        await firstPostCardCommunityLink.textContent()
+      );
+      expect(await this.page.locator('[data-testid="community-name-unmoderated"]').textContent()).toBe(
+        'Community'
+      );
+    } else if (await firstPostCardCategoryLink.isVisible()) {
+      firstPostCardCategoryLink.click();
+      await this.page.waitForSelector(
+        this.page.locator('[data-testid="short-community-description"]')['_selector']
+      );
+      expect(await this.page.locator('[data-testid="community-name"]').textContent()).toBe(
+        await firstPostCardCategoryLink.textContent()
+      );
+      expect(await this.page.locator('[data-testid="community-name-unmoderated"]').textContent()).toBe(
+        'Unmoderated tag'
+      );
+    }
+  }
+
+  async moveToFirstPostContentByClickingTimestamp() {
+    const profilePage = new ProfilePage(this.page);
+    const firstPostCardTitle = await this.getFirstPostTitle.textContent();
+    // Click the post's timestamp link
+    await this.getFirstPostCardTimestampLink.click();
+    await this.page.waitForSelector(this.page.locator('[data-testid="article-title"]')['_selector']);
+    expect(await this.page.locator('[data-testid="article-title"]').textContent()).toBe(firstPostCardTitle);
   }
 
   async moveToTheFirstPostWithCommentsNumberMoreThanZero() {
@@ -194,9 +269,9 @@ export class HomePage {
     await expect(this.getExploreCommunities).toBeEnabled();
   }
 
-  async mainPostsTimelineVisible() {
+  async mainPostsTimelineVisible(amountOfPosts: number) {
     // Validate that there are 20 posts displayed on HomePage as default (without scrolldown)
-    await expect(this.getMainTimeLineOfPosts).toHaveCount(20);
+    await expect(this.getMainTimeLineOfPosts).toHaveCount(amountOfPosts);
   }
 
   async getElementCssPropertyValue(element: Locator, cssProperty: string) {

@@ -53,6 +53,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
       <div
         className=" w-full bg-gray-600  text-sm leading-6 text-zinc-50 sm:h-fit"
         style={{ textShadow: 'rgb(0, 0, 0) 1px 1px 2px' }}
+        data-testid="profile-info"
       >
         {profileData?.posting_json_metadata &&
         JSON.parse(profileData?.posting_json_metadata).profile.cover_image !== '' ? (
@@ -81,7 +82,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             <p className="my-1 max-w-[420px] text-center text-white sm:my-4" data-testid="profile-about">
               {profileData?.profile?.about}
             </p>
-            <ul className="my-1 flex h-5 gap-1 text-xs sm:text-sm">
+            <ul className="my-1 flex h-5 gap-1 text-xs sm:text-sm" data-testid="profile-stats">
               <li className="flex items-center gap-1">
                 <Link
                   href={`/@${profileData.name}/followers`}
@@ -163,7 +164,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               {profileData?.profile?.location ? (
                 <li className="flex items-center">
                   <Icons.mapPin className="m-1" />
-                  <span>{profileData?.profile?.location}</span>
+                  <span data-testid="user-location">{profileData?.profile?.location}</span>
                 </li>
               ) : null}
               {profileData?.profile?.website ? (
@@ -180,11 +181,11 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               ) : null}
               <li className="flex items-center">
                 <Icons.calendarHeart className="m-1" />
-                <span>Joined {profileData?.created ? dateToShow(profileData.created) : null}</span>
+                <span data-testid="user-joined">Joined {profileData?.created ? dateToShow(profileData.created) : null}</span>
               </li>
               <li className="flex items-center">
                 <Icons.calendarActive className="m-1" />
-                <span>
+                <span data-testid="user-last-time-active">
                   Active{' '}
                   {profileData?.last_vote_time
                     ? dateToFullRelative(profileData.last_vote_time)

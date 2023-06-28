@@ -1,9 +1,10 @@
 import { expect, test } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
 import { ProfilePage } from '../support/pages/profilePage';
+import { PostPage } from '../support/pages/postPage';
 
 // Skip Profile page tests because those based on gtg profile and new view of the Denser.
-test.describe.skip('Profile page of @gtg', () => {
+test.describe('Profile page of @gtg', () => {
   test('url of the profile page @gtg is correct', async ({ page }) => {
     const profilePage = new ProfilePage(page);
 
@@ -18,7 +19,7 @@ test.describe.skip('Profile page of @gtg', () => {
     await profilePage.gotoProfilePage('@gtg');
     await profilePage.profileInfoIsVisible(
       '@gtg',
-      'Gandalf the Grey',
+      'gtg (74)',
       'IT Wizard, Hive Witness',
       'Joined June 2016'
     );
@@ -40,10 +41,17 @@ test.describe.skip('Profile page of @gtg', () => {
     });
 
     const profileNameApi = (await responseGetAccounts.json()).result[0].name;
-    await expect(profilePage.profileNickName).toHaveText('@' + profileNameApi);
+
+    await page.waitForSelector(profilePage.profileName['_selector']);
+    expect(await profilePage.profileName).toBeVisible();
+    await profilePage.profilePostsLink.click();
+    await page.waitForSelector(profilePage.page.locator('[data-testid="user-post-menu"]')['_selector']);
+    await expect(profilePage.page.locator('[data-testid="post-author"]').first()).toContainText(
+      profileNameApi
+    );
 
     const profilePostCountApi = (await responseGetAccounts.json()).result[0].post_count;
-    expect(await profilePage.profileNumberOfPosts.textContent()).toBe(String(profilePostCountApi));
+    expect(await profilePage.profileNumberOfPosts.textContent()).toContain(String(profilePostCountApi));
 
     // Compare follower and following number from api to the respondent on the website
     const responseGetFollowCount = await request.post(`${url}/`, {
@@ -61,8 +69,8 @@ test.describe.skip('Profile page of @gtg', () => {
     const followerCount = (await responseGetFollowCount.json()).result.follower_count;
     const followingCount = (await responseGetFollowCount.json()).result.following_count;
 
-    await expect(profilePage.profileFollowers).toHaveText(String(followerCount));
-    await expect(profilePage.profileFollowing).toHaveText(String(followingCount));
+    await expect(profilePage.profileFollowers).toContainText(String(followerCount));
+    await expect(profilePage.profileFollowing).toContainText(String(followingCount));
   });
 
   test('profile navigation of @gtg is loaded', async ({ page }) => {
@@ -72,11 +80,11 @@ test.describe.skip('Profile page of @gtg', () => {
     await profilePage.profileNavigationIsVisible();
   });
 
-  test('profile feed tab of @gtg is loaded', async ({ page }) => {
+  test('profile Blog tab of @gtg is loaded', async ({ page }) => {
     const profilePage = new ProfilePage(page);
 
     await profilePage.gotoProfilePage('@gtg');
-    await profilePage.profileFeedTabIsSelected();
+    await profilePage.profileBlogTabIsSelected();
   });
 
   test('move to Posts Tab', async ({ page }) => {
@@ -136,7 +144,8 @@ test.describe.skip('Profile page of @gtg', () => {
     await profilePage.moveToWalletPage();
   });
 
-  test('move to Settings Tab', async ({ page }) => {
+  // Skipped - Settings Tab is unavailable
+  test.skip('move to Settings Tab', async ({ page }) => {
     const profilePage = new ProfilePage(page);
 
     await profilePage.gotoProfilePage('@gtg');
@@ -144,7 +153,8 @@ test.describe.skip('Profile page of @gtg', () => {
     await profilePage.moveToSettingsTab();
   });
 
-  test('move to Settings Tab and validate public profile settings form is visible', async ({ page }) => {
+  // Skipped - Settings Tab is unavailable
+  test.skip('move to Settings Tab and validate public profile settings form is visible', async ({ page }) => {
     const profilePage = new ProfilePage(page);
 
     await profilePage.gotoProfilePage('@gtg');
@@ -172,7 +182,8 @@ test.describe.skip('Profile page of @gtg', () => {
     await expect(profilePage.ppsButtonUpdate).toBeVisible();
   });
 
-  test('move to Settings Tab and validate preferences settings form is visible', async ({ page }) => {
+  // Skipped - Settings Tab is unavailable
+  test.skip('move to Settings Tab and validate preferences settings form is visible', async ({ page }) => {
     const profilePage = new ProfilePage(page);
 
     await profilePage.gotoProfilePage('@gtg');
@@ -187,7 +198,8 @@ test.describe.skip('Profile page of @gtg', () => {
     await expect(profilePage.preferencesSettingsReferralSystem).toBeVisible();
   });
 
-  test('move to Settings Tab and validate advanced settings form is visible', async ({ page }) => {
+  // Skipped - Settings Tab is unavailable
+  test.skip('move to Settings Tab and validate advanced settings form is visible', async ({ page }) => {
     const profilePage = new ProfilePage(page);
 
     await profilePage.gotoProfilePage('@gtg');
@@ -206,18 +218,28 @@ test.describe.skip('Profile page of @gtg', () => {
     ];
 
     (await profilePage.advancedSettingsApiEndpointList.all()).forEach(async (element, index) => {
-      expect(await element.textContent()).toBe(expectedEndpoints[index])
-    })
+      expect(await element.textContent()).toBe(expectedEndpoints[index]);
+    });
 
-    await expect(profilePage.advancedSettingsApiEndpointButton.first()).toHaveAttribute('data-state', 'checked')
-    await expect(profilePage.advancedSettingsApiEndpointButton.last()).toHaveAttribute('data-state', 'unchecked')
+    await expect(profilePage.advancedSettingsApiEndpointButton.first()).toHaveAttribute(
+      'data-state',
+      'checked'
+    );
+    await expect(profilePage.advancedSettingsApiEndpointButton.last()).toHaveAttribute(
+      'data-state',
+      'unchecked'
+    );
 
-    await expect(profilePage.advancedSettingsApiEndpointAddInput).toHaveAttribute('placeholder', 'Add API Endpoint')
-    await expect(profilePage.advancedSettingsApiEndpointAddButton).toHaveText('Add')
-    await expect(profilePage.advancedSettingsApiResetEndpointsButton).toBeVisible()
+    await expect(profilePage.advancedSettingsApiEndpointAddInput).toHaveAttribute(
+      'placeholder',
+      'Add API Endpoint'
+    );
+    await expect(profilePage.advancedSettingsApiEndpointAddButton).toHaveText('Add');
+    await expect(profilePage.advancedSettingsApiResetEndpointsButton).toBeVisible();
   });
 
-  test('The Follow button changes color when you hover over it (Light theme)', async ({ page }) => {
+  // The Follow button is unavailable
+  test.skip('The Follow button changes color when you hover over it (Light theme)', async ({ page }) => {
     const profilePage = new ProfilePage(page);
     await profilePage.gotoProfilePage('@gtg');
 
@@ -239,7 +261,8 @@ test.describe.skip('Profile page of @gtg', () => {
     ).toBe('rgb(239, 68, 68)');
   });
 
-  test('The Follow button changes color when you hover over it (Dark theme)', async ({ page }) => {
+  // The Follow button is unavailable
+  test.skip('The Follow button changes color when you hover over it (Dark theme)', async ({ page }) => {
     const profilePage = new ProfilePage(page);
     const homePage = new HomePage(page);
 

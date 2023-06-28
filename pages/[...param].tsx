@@ -146,17 +146,17 @@ const ParamPage: FC = () => {
             <CommunitiesSidebar />
           </div>
           <div className="col-span-12 md:col-span-10 lg:col-span-8">
-            <div className="hidden md:col-span-10 md:flex lg:hidden">
+            <div data-testid="card-explore-hive-mobile" className="hidden md:col-span-10 md:flex lg:hidden">
               {communityData ? <CommunitySimpleDescription data={communityData} /> : <ExploreHive />}
             </div>
             <div className="col-span-12 mb-5 flex flex-col space-y-5 md:col-span-10 lg:col-span-8">
               <div className="mt-4 flex items-center justify-between">
                 <div className="flex flex-col">
-                  <span className="text-md font-medium">
+                  <span className="text-md font-medium" data-testid="community-name">
                     {tag ? communityData ? `${communityData?.title}` : `#${tag}` : 'All posts'}
                   </span>
                   {tag ? (
-                    <span className="text-xs font-light" data-testid="community-name">
+                    <span className="text-xs font-light" data-testid="community-name-unmoderated">
                       {tag ? communityData ? 'Community' : 'Unmoderated tag' : ''}
                     </span>
                   ) : null}
@@ -188,7 +188,7 @@ const ParamPage: FC = () => {
               </>
             </div>
           </div>
-          <div className="hidden lg:col-span-2 lg:flex">
+          <div data-testid="card-explore-hive-desktop" className="hidden lg:col-span-2 lg:flex">
             {communityData ? <CommunityDescription data={communityData} /> : <ExploreHive />}
           </div>
         </div>

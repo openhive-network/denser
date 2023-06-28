@@ -8,7 +8,6 @@ const ExploreHive: FC = () => {
   return (
     <Card
       className={cn('my-4 hidden h-fit w-auto flex-col px-8 dark:bg-background/95 dark:text-white md:flex')}
-      data-testid="card-explore-hive"
     >
       <CardHeader className="px-0 py-4">
         <CardTitle>Explore Hive</CardTitle>

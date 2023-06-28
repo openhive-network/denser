@@ -3,11 +3,20 @@ import { expect, test } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
 
 test.describe('Home page tests', () => {
-  test.skip('has the main timeline of posts (20 posts are displayed by default)', async ({ page }) => {
+  test('has the main timeline of posts (20 posts are displayed by default)', async ({ page }) => {
     const homePage = new HomePage(page);
 
     await homePage.goto();
-    await homePage.mainPostsTimelineVisible();
+    await homePage.mainPostsTimelineVisible(20);
+  });
+
+  test('load next the main timeline of posts (40 posts are displayed by default)', async ({ page }) => {
+    const homePage = new HomePage(page);
+
+    await homePage.goto();
+    await homePage.mainPostsTimelineVisible(20);
+    await homePage.page.keyboard.down('End');
+    await homePage.mainPostsTimelineVisible(40);
   });
 
   test('validate the first post (for Trending filter)', async ({ page, request, browserName }) => {
@@ -58,9 +67,6 @@ test.describe('Home page tests', () => {
   });
 
   test('validate the first post (for New filter)', async ({ page, request, browserName }) => {
-    test.skip(browserName === 'chromium', 'Automatic test works well on chromium');
-    test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
-
     const homePage = new HomePage(page);
     await homePage.goto();
 
@@ -112,12 +118,32 @@ test.describe('Home page tests', () => {
     // expect(firstPostChildren).toBe(String(postChildren));
   });
 
-  // Skipped - it needs improvements
-  test.skip('move to the first post author profile page', async ({ page }) => {
+  test('move to the first post author profile page', async ({ page }) => {
     const homePage = new HomePage(page);
 
     await homePage.goto();
     await homePage.moveToFirstPostAuthorProfilePage();
+  });
+
+  test('move to the first post author profile page by avatar clicking', async ({ page }) => {
+    const homePage = new HomePage(page);
+
+    await homePage.goto();
+    await homePage.moveToFirstPostAuthorProfilePageByAvatar();
+  });
+
+  test('move to the first post community or category', async ({ page }) => {
+    const homePage = new HomePage(page);
+
+    await homePage.goto();
+    await homePage.moveToFirstPostCommunityOrCategory();
+  });
+
+  test('move to the first post content by clicking the timestamp', async ({ page }) => {
+    const homePage = new HomePage(page);
+
+    await homePage.goto();
+    await homePage.moveToFirstPostContentByClickingTimestamp();
   });
 
   test('move to the dark mode and back to the light mode', async ({ page }) => {
@@ -137,8 +163,6 @@ test.describe('Home page tests', () => {
   });
 
   test('filtr posts in maintimeline', async ({ browser, browserName }) => {
-    test.skip(browserName === 'chromium', 'Automatic test works well on chromium');
-
     const newContext = await browser.newContext();
     const newPage = await newContext.newPage();
     const homePage = new HomePage(newPage);
@@ -169,13 +193,19 @@ test.describe('Home page tests', () => {
     await expect(homePage.getFilterPosts).toHaveText('Trending');
   });
 
-  test.skip('validate that Explore Hive sidebar is visible', async ({ page }) => {
+  test('validate that Explore Hive sidebar is visible', async ({ page }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
     await expect(homePage.getCardExploreHive).toBeVisible();
     await expect(homePage.getCardExploreHiveTitle).toHaveText('Explore Hive');
     await expect(homePage.getCardExploreHiveLinks).toHaveCount(5);
+    expect(
+      await homePage.getElementCssPropertyValue(
+        await homePage.getCardExploreHiveLinks.locator('a').first(),
+        'color'
+      )
+    ).toBe('rgb(220, 38, 38)');
   });
 
   // Shortcuts sidebar is no longer avaiable on the Home Page
@@ -195,6 +225,12 @@ test.describe('Home page tests', () => {
     await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
     await expect(homePage.getTrandingCommunitiesHeader).toHaveText('All posts');
     await expect(homePage.getTrendingCommunitiesSideBarLinks).toHaveCount(13);
+    expect(
+      await homePage.getElementCssPropertyValue(
+        await homePage.getTrendingCommunitiesSideBarLinks.first(),
+        'color'
+      )
+    ).toBe('rgb(15, 23, 42)');
   });
 
   test('move to the Proposals page', async ({ page }) => {

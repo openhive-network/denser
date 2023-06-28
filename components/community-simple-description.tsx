@@ -19,7 +19,7 @@ const CommunitySimpleDescription = ({ data }: { data: any }) => {
             {data.num_authors} active
           </div>
         </div>
-        <span className="text-sm" data-testid="short-community-description">
+        <span className="text-sm">
           {data.about}
         </span>
       </CardHeader>
@@ -36,7 +36,6 @@ const CommunitySimpleDescription = ({ data }: { data: any }) => {
           <Button
             size="sm"
             className="w-full bg-blue-800 text-center hover:bg-blue-900"
-            data-testid="community-new-post-button"
           >
             <Link href={`/communities`}>New Post</Link>
           </Button>

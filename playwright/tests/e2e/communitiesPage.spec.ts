@@ -95,8 +95,7 @@ test.describe('Communities page tests', () => {
     });
   });
 
-  // Skipped - it needs improvements
-  test.skip('move to the profile leadership pages of LeoFinance community ', async ({ page }) => {
+  test('move to the profile leadership pages of LeoFinance community ', async ({ page }) => {
     const homePage = new HomePage(page);
     const profilePage = new ProfilePage(page);
     const communitiesPage = new CommunitiesPage(page);
@@ -114,8 +113,17 @@ test.describe('Communities page tests', () => {
 
     for (let i = 0; i < leadershipLinkLists.length; i++) {
       leadershipLinkLists[i].click();
-      await page.waitForSelector(profilePage.profileNickName['_selector']);
-      expect(await profilePage.profileNickName.textContent()).toBe(await leadershipLinkNickNamesLists[i]);
+      await page.waitForSelector(profilePage.profileName['_selector']);
+      expect(await profilePage.profileName).toBeVisible();
+      await profilePage.profilePostsLink.click();
+      await page.waitForSelector(profilePage.page.locator('[data-testid="user-post-menu"]')['_selector']);
+
+      if ((await profilePage.page.locator('[data-testid="post-author"]').count()) > 0) {
+        expect(await leadershipLinkNickNamesLists[i]).toContain(
+          await profilePage.page.locator('[data-testid="post-author"]').first().textContent()
+        );
+      }
+      await page.goBack();
       await page.goBack();
       await communitiesPage.quickValidataCommunitiesPageIsLoaded('LeoFinance');
     }
@@ -162,8 +170,7 @@ test.describe('Communities page tests', () => {
     });
   });
 
-  // Skipped - It needs improvements
-  test.skip('move to the first-three leadership profile pages of Pinmapple community ', async ({ page }) => {
+  test('move to the first-three leadership profile pages of Pinmapple community ', async ({ page }) => {
     const homePage = new HomePage(page);
     const profilePage = new ProfilePage(page);
     const communitiesPage = new CommunitiesPage(page);
@@ -182,8 +189,18 @@ test.describe('Communities page tests', () => {
     for (let i = 0; i < leadershipLinkLists.length; i++) {
       if (i < 3) {
         leadershipLinkLists[i].click();
-        await page.waitForSelector(profilePage.profileNickName['_selector']);
-        expect(await profilePage.profileNickName.textContent()).toBe(await leadershipLinkNickNamesLists[i]);
+        await page.waitForSelector(profilePage.profileName['_selector']);
+        expect(await profilePage.profileName).toBeVisible();
+        await profilePage.profilePostsLink.click();
+        await page.waitForSelector(profilePage.page.locator('[data-testid="user-post-menu"]')['_selector']);
+
+        if ((await profilePage.page.locator('[data-testid="post-author"]').count()) > 0) {
+          expect(await leadershipLinkNickNamesLists[i]).toContain(
+            await profilePage.page.locator('[data-testid="post-author"]').first().textContent()
+          );
+        }
+
+        await page.goBack();
         await page.goBack();
         await communitiesPage.quickValidataCommunitiesPageIsLoaded('Pinmapple');
       }

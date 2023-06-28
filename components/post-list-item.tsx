@@ -50,7 +50,7 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
         ) : null}
         <CardHeader className="px-0 py-1">
           <div className="md:text-md flex items-center text-xs text-slate-500 dark:text-slate-400">
-            <Link href={`@${post.author}`}>
+            <Link href={`@${post.author}`} data-testid="post-card-avatar">
               <div
                 className="mr-3 h-[24px] w-[24px] rounded-3xl bg-cover bg-no-repeat"
                 style={{ backgroundImage: `url(https://images.hive.blog/u/${post.author}/avatar/small)` }}
@@ -96,6 +96,7 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
                   <Link
                     href={`/${sort}/${post.community}`}
                     className="hover:cursor-pointer hover:text-red-600"
+                    data-testid="post-card-community"
                   >
                     {post.community_title}
                   </Link>
@@ -103,12 +104,13 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
                   <Link
                     href={`/${sort}/${post.category}`}
                     className="hover:cursor-pointer hover:text-red-600"
+                    data-testid="post-card-category"
                   >
                     #{post.category}
                   </Link>
                 )}
                 <span className="mx-1">•</span>
-                <Link href={`${post.url}`} className="hover:cursor-pointer hover:text-red-600">
+                <Link href={`${post.url}`} className="hover:cursor-pointer hover:text-red-600" data-testid="post-card-timestamp">
                   {dateToRelative(post.created)} ago
                 </Link>
                 {post.percent_hbd === 0 ? (
@@ -289,10 +291,10 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
                 </DetailsCardHover>
 
                 <Separator orientation="vertical" />
-                <div className="flex items-center" data-testid="post-total-votes">
+                <div className="flex items-center">
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger className="flex items-center">
+                      <TooltipTrigger className="flex items-center" data-testid="post-total-votes">
                         <Icons.chevronUp className="h-4 w-4 sm:mr-1" />
                         {post.stats.total_votes}
                       </TooltipTrigger>
