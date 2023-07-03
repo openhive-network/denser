@@ -171,6 +171,8 @@ export class HomePage {
 
     const firstPostCardCommunityLink = await this.getFirstPostCardCommunityLink;
     const firstPostCardCategoryLink = await this.getFirstPostCardCategoryLink;
+    const firstPostCardCommunityLinkText = await this.getFirstPostCardCommunityLink.textContent();
+    const firstPostCardCategoryLinkText = await this.getFirstPostCardCategoryLink.textContent();
 
     if (await firstPostCardCommunityLink.isVisible()) {
       firstPostCardCommunityLink.click();
@@ -178,9 +180,9 @@ export class HomePage {
         this.page.locator('[data-testid="short-community-description"]')['_selector']
       );
       expect(await this.page.locator('[data-testid="community-name"]').textContent()).toBe(
-        await firstPostCardCommunityLink.textContent()
+        await firstPostCardCommunityLinkText
       );
-      expect(await this.page.locator('[data-testid="community-name-unmoderated"]').textContent()).toBe(
+      await expect(await this.page.locator('[data-testid="community-name-unmoderated"]').textContent()).toBe(
         'Community'
       );
     } else if (await firstPostCardCategoryLink.isVisible()) {
@@ -189,7 +191,7 @@ export class HomePage {
         this.page.locator('[data-testid="short-community-description"]')['_selector']
       );
       expect(await this.page.locator('[data-testid="community-name"]').textContent()).toBe(
-        await firstPostCardCategoryLink.textContent()
+        await firstPostCardCategoryLinkText
       );
       expect(await this.page.locator('[data-testid="community-name-unmoderated"]').textContent()).toBe(
         'Unmoderated tag'
