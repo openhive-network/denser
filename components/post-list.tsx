@@ -6,16 +6,24 @@ import Loading from './loading';
 const PostList = ({
   data,
   sort,
-  historyFeedData
+  historyFeedData,
+  isCommunityPage
 }: {
   data: any;
   sort?: string | null;
   historyFeedData: any;
+  isCommunityPage?: boolean;
 }) => {
   return (
     <ul>
       {data?.map((post: any) => (
-        <PostListItem post={post} sort={sort} key={post.post_id} historyFeedData={historyFeedData} />
+        <PostListItem
+          post={post}
+          sort={sort}
+          key={post.post_id}
+          historyFeedData={historyFeedData}
+          isCommunityPage={isCommunityPage}
+        />
       ))}
     </ul>
   );

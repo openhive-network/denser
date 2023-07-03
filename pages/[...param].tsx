@@ -153,11 +153,11 @@ const ParamPage: FC = () => {
               <div className="mt-4 flex items-center justify-between">
                 <div className="flex flex-col">
                   <span className="text-md font-medium" data-testid="community-name">
-                    {tag ? communityData ? `${communityData?.title}` : `#${tag}` : 'All posts'}
+                    {tag ? (communityData ? `${communityData?.title}` : `#${tag}`) : 'All posts'}
                   </span>
                   {tag ? (
                     <span className="text-xs font-light" data-testid="community-name-unmoderated">
-                      {tag ? communityData ? 'Community' : 'Unmoderated tag' : ''}
+                      {tag ? (communityData ? 'Community' : 'Unmoderated tag') : ''}
                     </span>
                   ) : null}
                 </div>
@@ -166,7 +166,13 @@ const ParamPage: FC = () => {
               <>
                 {entriesData.pages.map((page, index) => {
                   return page ? (
-                    <PostList data={page} sort={sort} key={`f-${index}`} historyFeedData={historyFeedData} />
+                    <PostList
+                      data={page}
+                      sort={sort}
+                      key={`f-${index}`}
+                      historyFeedData={historyFeedData}
+                      isCommunityPage={!!communityData}
+                    />
                   ) : null;
                 })}
                 <div>

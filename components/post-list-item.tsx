@@ -20,7 +20,7 @@ interface IBeneficiary {
   weight: number;
 }
 
-const PostListItem = ({ post, sort, historyFeedData }: any) => {
+const PostListItem = ({ post, sort, historyFeedData, isCommunityPage }: any) => {
   const [reveal, setReveal] = useState<boolean>(
     () => post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw')
   );
@@ -91,26 +91,34 @@ const PostListItem = ({ post, sort, historyFeedData }: any) => {
                 <span className="text-xs md:text-sm">&nbsp;{post.author_role.toUpperCase()}</span>
               ) : null}
               <span className="flex items-center text-xs md:text-sm">
-                &nbsp;in&nbsp;
-                {post.community ? (
-                  <Link
-                    href={`/${sort}/${post.community}`}
-                    className="hover:cursor-pointer hover:text-red-600"
-                    data-testid="post-card-community"
-                  >
-                    {post.community_title}
-                  </Link>
-                ) : (
-                  <Link
-                    href={`/${sort}/${post.category}`}
-                    className="hover:cursor-pointer hover:text-red-600"
-                    data-testid="post-card-category"
-                  >
-                    #{post.category}
-                  </Link>
-                )}
-                <span className="mx-1">•</span>
-                <Link href={`${post.url}`} className="hover:cursor-pointer hover:text-red-600" data-testid="post-card-timestamp">
+                {!isCommunityPage ? (
+                  <>
+                    &nbsp;in&nbsp;
+                    {post.community ? (
+                      <Link
+                        href={`/${sort}/${post.community}`}
+                        className="hover:cursor-pointer hover:text-red-600"
+                        data-testid="post-card-community"
+                      >
+                        {post.community_title}
+                      </Link>
+                    ) : (
+                      <Link
+                        href={`/${sort}/${post.category}`}
+                        className="hover:cursor-pointer hover:text-red-600"
+                        data-testid="post-card-category"
+                      >
+                        #{post.category}
+                      </Link>
+                    )}
+                    <span className="mx-1">•</span>
+                  </>
+                ) : null}
+                <Link
+                  href={`${post.url}`}
+                  className="hover:cursor-pointer hover:text-red-600"
+                  data-testid="post-card-timestamp"
+                >
                   {dateToRelative(post.created)} ago
                 </Link>
                 {post.percent_hbd === 0 ? (
