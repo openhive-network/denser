@@ -25,6 +25,37 @@ test.describe('Post page tests', () => {
     await postPage.moveToTheFirstPostInHomePageByPostTitle();
   });
 
+  test('validate the post content pages styles in the dark theme', async ({ page }) => {
+    const homePage = new HomePage(page);
+    const postPage = new PostPage(page);
+
+    await postPage.gotoHomePage();
+    await postPage.moveToTheFirstPostInHomePageByPostTitle();
+    await homePage.changeThemeMode('Dark');
+    await homePage.validateThemeModeIsDark();
+
+    expect(
+      await postPage.getElementCssPropertyValue(postPage.articleTitle, 'background-color')
+    ).toBe('rgba(0, 0, 0, 0)');
+    expect(
+      await postPage.getElementCssPropertyValue(postPage.articleTitle, 'color')
+    ).toBe('rgb(225, 231, 239)');
+
+    expect(
+      await postPage.getElementCssPropertyValue(postPage.articleAuthorData, 'background-color')
+    ).toBe('rgba(0, 0, 0, 0)');
+    expect(
+      await postPage.getElementCssPropertyValue(postPage.articleAuthorData, 'color')
+    ).toBe('rgb(100, 116, 139)');
+
+    expect(
+      await postPage.getElementCssPropertyValue(postPage.articleBody, 'background-color')
+    ).toBe('rgba(0, 0, 0, 0)');
+    expect(
+      await postPage.getElementCssPropertyValue(postPage.articleBody, 'color')
+    ).toBe('rgb(209, 213, 219)');
+  });
+
   test('validate the hover card with author info is displayed after hover username in the post', async ({
     page
   }) => {
@@ -133,7 +164,69 @@ test.describe('Post page tests', () => {
     );
   });
 
-  // TO DO the above test for dark theme when it will work
+  test('validate Follow button style in the hover card in dark theme', async ({ page }) => {
+    const homePage = new HomePage(page);
+    const postPage = new PostPage(page);
+
+    await postPage.gotoHomePage();
+    await postPage.moveToTheFirstPostInHomePageByImage();
+
+    await homePage.changeThemeMode('Dark');
+    await homePage.validateThemeModeIsDark();
+
+    await postPage.articleAuthorName.hover();
+
+    // button styles
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'color')).toBe(
+      'rgb(239, 68, 68)'
+    );
+    expect(
+      await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'background-color')
+    ).toBe('rgba(0, 0, 0, 0)');
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'border-color')).toBe(
+      'rgb(239, 68, 68)'
+    );
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'border-style')).toBe(
+      'solid'
+    );
+
+    // button styles when hovered over it
+    await postPage.buttonFollowHoverCard.hover();
+    await postPage.page.waitForTimeout(1000);
+
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'color')).toBe(
+      'rgb(220, 38, 38)'
+    );
+    expect(
+      await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'background-color')
+    ).toBe('rgb(29, 40, 58)');
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'border-color')).toBe(
+      'rgb(220, 38, 38)'
+    );
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'border-style')).toBe(
+      'solid'
+    );
+  });
+
+  test('validate styles of the hover card in dark mode', async ({ page }) => {
+    const homePage = new HomePage(page);
+    const postPage = new PostPage(page);
+
+    await postPage.gotoHomePage();
+    await postPage.moveToTheFirstPostInHomePageByImage();
+
+    await homePage.changeThemeMode('Dark');
+    await homePage.validateThemeModeIsDark();
+
+    await postPage.articleAuthorName.hover();
+
+    expect(await postPage.getElementCssPropertyValue(postPage.userHoverCard, 'background-color')).toBe(
+      'rgb(3, 7, 17)'
+    );
+    expect(await postPage.getElementCssPropertyValue(postPage.userHoverCard, 'color')).toBe(
+      'rgb(148, 163, 184)'
+    );
+  });
 
   // Mute button is no more in the dropdown card after hovering that way test is skipped.
   test.skip('validate Mute button style in the hover card in light theme', async ({ page }) => {
@@ -175,8 +268,6 @@ test.describe('Post page tests', () => {
       'solid'
     );
   });
-
-  // TO DO the above test for dark theme when it will work
 
   test('validate the post footer is visible', async ({ page }) => {
     const postPage = new PostPage(page);
