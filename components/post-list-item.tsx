@@ -59,7 +59,7 @@ const PostListItem = ({ post, sort, historyFeedData, isCommunityPage }: any) => 
             <div className="flex items-center">
               <Link
                 href={`@${post.author}`}
-                className="font-medium text-black hover:cursor-pointer hover:text-red-600 dark:text-white"
+                className="font-medium text-black hover:cursor-pointer hover:text-red-600 dark:text-white dark:hover:text-red-600"
                 data-testid="post-author"
               >
                 {post.author}
@@ -88,7 +88,7 @@ const PostListItem = ({ post, sort, historyFeedData, isCommunityPage }: any) => 
               {(router.query.param ? router.query.param[1]?.startsWith('hive-') : false) &&
               post.author_role &&
               post.author_role !== 'guest' ? (
-                <span className="text-xs md:text-sm">&nbsp;{post.author_role.toUpperCase()}</span>
+                <span className="text-xs md:text-sm">&nbsp;{post.author_role.toUpperCase()}&nbsp;</span>
               ) : null}
               <span className="flex items-center text-xs md:text-sm">
                 {!isCommunityPage ? (

@@ -33,7 +33,7 @@ const RepliesListItem = ({ comment }: any) => {
               <div className="flex items-center">
                 <Link
                   href={`@${comment.author}`}
-                  className="font-medium text-black hover:cursor-pointer hover:text-red-600 dark:text-white"
+                  className="font-medium text-black hover:cursor-pointer hover:text-red-600 dark:text-white dark:hover:text-red-600"
                   data-testid="post-author"
                 >
                   {comment.author}
