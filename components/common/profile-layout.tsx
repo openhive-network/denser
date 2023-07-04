@@ -51,18 +51,19 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   return username ? (
     <div>
       <div
-        className=" w-full bg-gray-600  text-sm leading-6 text-zinc-50 sm:h-fit"
+        className=" w-full bg-gray-600 text-sm leading-6 text-zinc-50 sm:h-fit"
         style={{ textShadow: 'rgb(0, 0, 0) 1px 1px 2px' }}
         data-testid="profile-info"
       >
-        {profileData?.posting_json_metadata &&
-        JSON.parse(profileData?.posting_json_metadata).profile.cover_image !== '' ? (
+        {profileData?.posting_json_metadata ? (
           <div
             style={{
-              background:  JSON.parse(profileData?.posting_json_metadata).profile.cover_image ? `url('${proxifyImageUrl(
-                JSON.parse(profileData?.posting_json_metadata).profile.cover_image,
-                '2048x512'
-              ).replace(/ /g, '%20')}') center center no-repeat` : '',
+              background: JSON.parse(profileData?.posting_json_metadata).profile.cover_image
+                ? `url('${proxifyImageUrl(
+                    JSON.parse(profileData?.posting_json_metadata).profile.cover_image,
+                    '2048x512'
+                  ).replace(/ /g, '%20')}') center center no-repeat`
+                : '',
 
               backgroundSize: 'cover'
             }}
@@ -71,7 +72,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             <div className="mt-4 flex items-center">
               <div
                 className="mr-3 h-[48px] w-[48px] rounded-3xl bg-cover bg-no-repeat"
-                style={{ backgroundImage: `url(https://images.hive.blog/u/${profileData?.name}/avatar)`}}
+                style={{ backgroundImage: `url(https://images.hive.blog/u/${profileData?.name}/avatar)` }}
               />
               <h4 className="sm:text-2xl" data-testid="profile-name">
                 <span className="font-semibold">{profileData?.name}</span>{' '}
@@ -181,7 +182,9 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               ) : null}
               <li className="flex items-center">
                 <Icons.calendarHeart className="m-1" />
-                <span data-testid="user-joined">Joined {profileData?.created ? dateToShow(profileData.created) : null}</span>
+                <span data-testid="user-joined">
+                  Joined {profileData?.created ? dateToShow(profileData.created) : null}
+                </span>
               </li>
               <li className="flex items-center">
                 <Icons.calendarActive className="m-1" />
