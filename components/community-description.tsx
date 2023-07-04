@@ -34,7 +34,7 @@ const CommunityDescription = ({ data, subs }: { data: Community; subs: Subscript
     <div className="flex w-auto flex-col">
       <Card
         className={cn('my-4 hidden h-fit w-auto flex-col px-4 dark:bg-background/95 dark:text-white md:flex')}
-        data-testid="community-description-sidebar"
+        data-testid="community-info-sidebar"
       >
         <CardHeader className="px-0 font-light">
           <CardTitle>{data.title}</CardTitle>
