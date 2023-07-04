@@ -33,12 +33,7 @@ export default function DetailsCardHover({
   const max_payout = convertStringToBig(post.max_accepted_payout);
   const pending_hp = Big(post.payout - _hbd).div(price_per_hive);
   if (post.payout <= 0) {
-    return (
-      <div className="flex items-center">
-        <Icons.dollar className="mr-1 h-4 w-4 text-red-600" />
-        {post.payout.toFixed(2)}
-      </div>
-    );
+    return <div className="flex items-center">${post.payout.toFixed(2)}</div>;
   }
   return (
     <HoverCard>
