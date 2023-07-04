@@ -21,6 +21,13 @@ export class CommunitiesPage {
   readonly communityRulesHeader: Locator;
   readonly communityRulesContent: Locator;
 
+  readonly getFirstPostListItem: Locator;
+  readonly getFirstPostCardAvatar: Locator;
+  readonly getFirstPostAuthor: Locator;
+  readonly getFirstPostAuthorReputation: Locator;
+  readonly getFirstPostCardTimestampLink: Locator;
+
+
   constructor(page: Page) {
     this.page = page;
     this.communityNameTitle = page.locator('[data-testid="community-name"]');
@@ -41,6 +48,12 @@ export class CommunitiesPage {
     this.communityRules = page.locator('[data-testid="community-rules"]');
     this.communityRulesHeader = this.communityRules.locator('h6');
     this.communityRulesContent = page.locator('[data-testid="community-rules-content"]');
+
+    this.getFirstPostListItem = page.locator('[data-testid="post-list-item"]').first();
+    this.getFirstPostCardAvatar = page.locator('[data-testid="post-card-avatar"]').first();
+    this.getFirstPostAuthor = page.locator('[data-testid="post-author"]').first();
+    this.getFirstPostAuthorReputation = this.getFirstPostAuthor.locator('..');
+    this.getFirstPostCardTimestampLink = page.locator('[data-testid="post-card-timestamp"]').first();
   }
 
   async validataCommunitiesPageIsLoaded(communityName: string) {
