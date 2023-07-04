@@ -32,7 +32,7 @@ const CommunityDescription = ({ data }: { data: any }) => {
     <div className="flex w-auto flex-col">
       <Card
         className={cn('my-4 hidden h-fit w-auto flex-col px-8 dark:bg-background/95 dark:text-white md:flex')}
-        data-testid="community-description-sidebar"
+        data-testid="community-info-sidebar"
       >
         <CardHeader className="px-0">
           <CardTitle>{data.title}</CardTitle>
@@ -90,7 +90,7 @@ const CommunityDescription = ({ data }: { data: any }) => {
 
       <Card
         className={cn('my-4 hidden h-fit w-auto flex-col px-8 dark:bg-background/95 dark:text-white md:flex')}
-        data-testid="community-description-sidebar"
+        data-testid="community-description-rules-sidebar"
       >
         <CardContent className="py-4">
           <div data-testid="community-description">
