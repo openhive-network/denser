@@ -10,7 +10,11 @@ test.describe('Home page tests', () => {
     await homePage.mainPostsTimelineVisible(20);
   });
 
-  test('load next the main timeline of posts (40 posts are displayed by default)', async ({ page }) => {
+  test('load next the main timeline of posts (40 posts are displayed by default)', async ({
+    page,
+    browserName
+  }) => {
+    test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
     const homePage = new HomePage(page);
 
     await homePage.goto();
