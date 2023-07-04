@@ -29,6 +29,7 @@ export class HomePage {
   readonly getHeaderAllCommunities: Locator;
   readonly getMainTimeLineOfPosts: any;
   readonly getPostCardAvatar: Locator;
+  readonly getFirstPostListItem: Locator;
   readonly getFirstPostCardAvatar: Locator;
   readonly getFirstPostAuthor: Locator;
   readonly getFirstPostAuthorReputation: Locator;
@@ -78,6 +79,7 @@ export class HomePage {
       '[class="mt-4 flex items-center justify-between"] span:text("All posts")'
     );
     this.getMainTimeLineOfPosts = page.locator('li[data-testid="post-list-item"]');
+    this.getFirstPostListItem = this.getMainTimeLineOfPosts.first().locator('div').first();
     this.getPostCardAvatar = page.locator('[data-testid="post-card-avatar"]');
     this.getFirstPostCardAvatar = this.getPostCardAvatar.first();
     this.getFirstPostAuthor = page.locator('[data-testid="post-author"]').first();

@@ -166,6 +166,35 @@ test.describe('Home page tests', () => {
     await homePage.validateThemeModeIsSystem();
   });
 
+  test('validate change background color style after hovering the post card in the dark mode', async ({ page }) => {
+    const homePage = new HomePage(page);
+
+    await homePage.goto();
+
+    await homePage.validateThemeModeIsLight();
+    await homePage.changeThemeMode('Dark');
+    await homePage.validateThemeModeIsDark();
+
+    // background color before hovering
+    expect(
+      await homePage.getElementCssPropertyValue(
+        await homePage.getFirstPostListItem,
+        'background-color'
+      )
+    ).toBe('rgba(3, 7, 17, 0.95)');
+
+    await homePage.getFirstPostListItem.hover();
+    await homePage.page.waitForTimeout(1000);
+
+    // background color after hovering
+    expect(
+      await homePage.getElementCssPropertyValue(
+        await homePage.getFirstPostListItem,
+        'background-color'
+      )
+    ).toBe('rgb(29, 40, 58)');
+  });
+
   test('filtr posts in maintimeline', async ({ browser, browserName }) => {
     const newContext = await browser.newContext();
     const newPage = await newContext.newPage();
