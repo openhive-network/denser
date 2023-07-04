@@ -140,7 +140,7 @@ const ParamPage: FC = () => {
 
   if (!entriesDataIsLoading && entriesData) {
     return (
-      <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2 pt-8">
+      <div className="px-43 container mx-auto max-w-screen-2xl flex-grow pb-2 pt-8">
         <div className="grid grid-cols-12 md:gap-4 ">
           <div className="hidden md:col-span-2 md:flex">
             <CommunitiesSidebar />
