@@ -1,6 +1,6 @@
 import { useSiteParams } from '@/components/hooks/use-site-params';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { Entry, getAccountPosts, getCommunity, getPostsRanked } from '@/lib/bridge';
+import { Entry, getAccountPosts, getCommunity, getPostsRanked, getSubscribers } from '@/lib/bridge';
 import Loading from '@/components/loading';
 import { FC, useCallback, useEffect } from 'react';
 import PostList from '@/components/post-list';
@@ -66,7 +66,11 @@ const ParamPage: FC = () => {
     isFetching: communityDataIsFetching,
     error: communityDataError
   } = useQuery(['community', tag, ''], () => getCommunity(tag || '', ''), { enabled: !!tag });
-
+  const {
+    data: subsData,
+    isLoading: subsIsLoading,
+    isError: subsIsError
+  } = useQuery([['subscribers', tag]], () => getSubscribers(tag || ''), { enabled: !!tag });
   const {
     data: accountEntriesData,
     isLoading: accountEntriesIsLoading,
@@ -137,7 +141,6 @@ const ParamPage: FC = () => {
       />
     );
   }
-
   if (!entriesDataIsLoading && entriesData) {
     return (
       <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2 pt-8">
@@ -147,7 +150,11 @@ const ParamPage: FC = () => {
           </div>
           <div className="col-span-12 md:col-span-10 lg:col-span-8">
             <div data-testid="card-explore-hive-mobile" className="hidden md:col-span-10 md:flex lg:hidden">
-              {communityData ? <CommunitySimpleDescription data={communityData} /> : <ExploreHive />}
+              {communityData && subsData ? (
+                <CommunitySimpleDescription data={communityData} subs={subsData} />
+              ) : (
+                <ExploreHive />
+              )}
             </div>
             <div className="col-span-12 mb-5 flex flex-col space-y-5 md:col-span-10 lg:col-span-8">
               <div className="mt-4 flex items-center justify-between">
@@ -195,7 +202,11 @@ const ParamPage: FC = () => {
             </div>
           </div>
           <div data-testid="card-explore-hive-desktop" className="hidden lg:col-span-2 lg:flex">
-            {communityData ? <CommunityDescription data={communityData} /> : <ExploreHive />}
+            {communityData && subsData ? (
+              <CommunityDescription data={communityData} subs={subsData} />
+            ) : (
+              <ExploreHive />
+            )}
           </div>
         </div>
       </div>

@@ -5,35 +5,51 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import DialogLogin from '@/components/dialog-login';
-import DetailsCardHover from "@/components/details-card-hover";
-import DetailsCardVoters from "@/components/details-card-voters";
-import {useQuery} from "@tanstack/react-query";
-import {getActiveVotes} from "@/lib/hive";
+import DetailsCardVoters from '@/components/details-card-voters';
+import { useQuery } from '@tanstack/react-query';
+import { getActiveVotes } from '@/lib/hive';
+import { ReplyTextbox } from './reply-textbox';
+import clsx from 'clsx';
+import { useRouter } from 'next/router';
+import DetailsCardHover from './details-card-hover';
 
-const CommentListItem = ({ comment, renderer}: any) => {
+const CommentListItem = ({ comment, renderer }: any) => {
   const [openState, setOpenState] = useState('open');
   const {
     data: activeVotesDataComments,
     isLoading: isActiveVotesDataCommentsLoading,
     isError: activeVotesDataCommentsError
-  } = useQuery(['activeVotesDataComments'], () => getActiveVotes(comment.author
-    , comment.permlink));
+  } = useQuery(['activeVotesDataComments'], () => getActiveVotes(comment.author, comment.permlink));
 
   const triggerOpenRef = useCallback((node: any) => {
     if (node !== null) {
       setOpenState(node.attributes[3].nodeValue);
     }
   }, []);
+  const router = useRouter();
 
+  const ref = useRef<HTMLTableRowElement>(null);
   const comment_html = renderer.render(comment.body);
+  const [reply, setReply] = useState(false);
+  const commentId = `@${comment.author}/${comment.permlink}`;
+
+  useEffect(() => {
+    //without delay moving to right scroll position but after that imgs loading and we are in wrong scroll position
+    const timeout = setTimeout(() => {
+      if (router.asPath.includes(commentId) && ref.current) {
+        ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, []);
 
   return (
     <>
       <li data-testid="comment-list-item">
-        <div className="flex">
+        <div className="flex" id={commentId} ref={ref}>
           <img
             className="mr-3 h-[40px] w-[40px] rounded-3xl"
             height="40"
@@ -52,7 +68,7 @@ const CommentListItem = ({ comment, renderer}: any) => {
                 <AccordionTrigger className="py-1 !no-underline" ref={triggerOpenRef}>
                   <CardHeader className="p-0">
                     <div className="flex items-center" data-testid="comment-card-header">
-                      <div className="flex text-slate-500 dark:text-slate-400">
+                      <div className="flex items-center text-slate-500 dark:text-slate-400">
                         <span className="text-xs md:text-sm">
                           <Link
                             href={`/@${comment.author}`}
@@ -64,6 +80,12 @@ const CommentListItem = ({ comment, renderer}: any) => {
                           ({comment.author_reputation.toFixed(0)})
                         </span>
                         <span className="ml-1 text-xs md:text-sm">{dateToRelative(comment.created)} ago</span>
+                        <Link
+                          className="p-2"
+                          href={`/${comment.category}/@${comment.author}/${comment.permlink}`}
+                        >
+                          <Icons.link className="h-3 w-3 hover:text-red-500" />
+                        </Link>
                       </div>
                       {openState === 'closed' ? (
                         <div
@@ -92,6 +114,7 @@ const CommentListItem = ({ comment, renderer}: any) => {
                               </Tooltip>
                             </TooltipProvider>
                           </div>
+
                           <div className="flex items-center">
                             <Icons.dollar className="mr-1 h-4 w-4 text-red-600" />
                             {comment.payout.toFixed(2)}
@@ -112,7 +135,7 @@ const CommentListItem = ({ comment, renderer}: any) => {
                   <CardContent className="py-1">
                     <Separator orientation="horizontal" />
                     <CardDescription
-                      className="prose"
+                      className="prose break-words"
                       data-testid="comment-card-description"
                       dangerouslySetInnerHTML={{
                         __html: comment_html
@@ -147,22 +170,38 @@ const CommentListItem = ({ comment, renderer}: any) => {
                           </Tooltip>
                         </TooltipProvider>
                       </div>
-                      <div className="flex items-center">
+                      {/*<DetailsCardHover*/}
+                      {/*  post={comment}*/}
+                      {/*  historyFeedData={historyFeedData}*/}
+                      {/*  decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}*/}
+                      {/*>*/}
+                      <div className="flex items-center hover:cursor-pointer hover:text-red-600">
                         <Icons.dollar className="mr-1 h-4 w-4 text-red-600" />
                         {comment.payout.toFixed(2)}
                       </div>
+                      {/*</DetailsCardHover>*/}
                       <Separator orientation="vertical" />
-                      {!isActiveVotesDataCommentsLoading && activeVotesDataComments && comment.stats.total_votes > 0 ? (
+                      {!isActiveVotesDataCommentsLoading &&
+                      activeVotesDataComments &&
+                      comment.stats.total_votes > 0 ? (
                         <>
                           <div className="flex items-center">
                             <DetailsCardVoters activeVotesData={activeVotesDataComments} post={comment}>
-                              <span className="hover:text-red-600">{comment.stats?.total_votes}{comment.stats.total_votes > 1 ? ' votes' : ' vote'}</span>
+                              <span className="hover:text-red-600">
+                                {comment.stats?.total_votes}
+                                {comment.stats.total_votes > 1 ? ' votes' : ' vote'}
+                              </span>
                             </DetailsCardVoters>
                           </div>
                           <Separator orientation="vertical" />
                         </>
                       ) : null}
-                      <div className="flex items-center hover:text-red-600 hover:cursor-pointer">Reply</div>
+                      <button
+                        onClick={() => setReply(!reply)}
+                        className="flex items-center hover:cursor-pointer hover:text-red-600"
+                      >
+                        Reply
+                      </button>
                     </div>
                   </CardFooter>
                 </AccordionContent>
@@ -171,6 +210,7 @@ const CommentListItem = ({ comment, renderer}: any) => {
           </Card>
         </div>
       </li>
+      {reply ? <ReplyTextbox onSetReply={setReply} /> : null}
     </>
   );
 };

@@ -27,7 +27,9 @@ export function AlertDialogDemo({ children }: any) {
         </AlertDialogHeader>
         <AlertDialogFooter className="gap-2 sm:flex-row-reverse">
           <AlertDialogCancel className="hover:text-red-800">Cancel</AlertDialogCancel>
-          <AlertDialogAction>OK</AlertDialogAction>
+          <AlertDialogAction className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none">
+            OK
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

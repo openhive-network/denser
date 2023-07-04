@@ -1,8 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { Community, Subscription } from '@/lib/bridge';
+import { SubsListDialog } from './subscription-list-dialog';
 
-const CommunitySimpleDescription = ({ data }: { data: any }) => {
+const CommunitySimpleDescription = ({ data, subs }: { data: Community; subs: Subscription[] }) => {
   return (
     <Card
       className="my-4 grid h-fit w-auto grid-cols-3 gap-4 p-2 dark:bg-background/95 dark:text-white"
@@ -11,9 +13,11 @@ const CommunitySimpleDescription = ({ data }: { data: any }) => {
       <CardHeader className="col-span-2 p-0">
         <CardTitle>{data.title}</CardTitle>
         <div className="flex text-sm text-gray-500">
-          <div className="flex flex-col items-center" data-testid="community-simple-subscribers">
-            {data.subscribers} subscribers
-          </div>
+          <SubsListDialog title={data.title} subs={subs}>
+            <div className="flex flex-col items-center" data-testid="community-simple-subscribers">
+              {data.subscribers} subscribers
+            </div>
+          </SubsListDialog>
           <span className="mx-1">•</span>
           <div className="flex flex-col items-center" data-testid="community-simple-active-posters">
             {data.num_authors} active

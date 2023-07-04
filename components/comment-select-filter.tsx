@@ -10,12 +10,12 @@ import { useRouter } from 'next/router';
 
 const CommentSelectFilter = () => {
   const router = useRouter();
-
+  const deafaultSort = router.query.sort?.toString();
   return (
     <Select
-      defaultValue="trending"
+      defaultValue={deafaultSort ? deafaultSort : 'trending'}
       onValueChange={(e) => {
-        router.push(`${router.asPath.split('?')[0]}?sort=${e}#comments`);
+        router.replace(`${router.asPath.split('#')[0].split('?')[0]}?sort=${e}#comments`);
       }}
     >
       <SelectTrigger className="w-fit border-none bg-transparent text-red-600" data-testid="posts-filter">

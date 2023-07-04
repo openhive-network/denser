@@ -21,13 +21,24 @@ import DialogLogin from '@/components/dialog-login';
 import { Icons } from '@/components/icons';
 import { AlertDialogDemo } from '@/components/alert-window';
 import { getDoubleSize, proxifyImageUrl } from '@/lib/old-profixy';
+import { ReplyTextbox } from '@/components/reply-textbox';
 
 const DynamicComments = dynamic(() => import('@/components/comment-list'), {
   loading: () => <Loading />,
   ssr: false
 });
 
-function PostPage({ post_s, community, username, permlink }: any) {
+function PostPage({
+  post_s,
+  community,
+  username,
+  permlink
+}: {
+  post_s: any;
+  community: string;
+  username: string;
+  permlink: string;
+}) {
   const {
     isLoading: isLoadingDiscussion,
     error: errorDiscussion,
@@ -73,32 +84,36 @@ function PostPage({ post_s, community, username, permlink }: any) {
 
   const [discussionState, setDiscussionState] = useState<any[]>();
   const router = useRouter();
+  const isSortOrder = (token: any): token is SortOrder => {
+    return Object.values(SortOrder).includes(token as SortOrder);
+  };
+
+  const test = isSortOrder(router.query.sort);
+  const deafaultSort: SortOrder = isSortOrder(router.query.sort)
+    ? (router.query.sort?.toString() as SortOrder)
+    : SortOrder.trending;
 
   useEffect(() => {
     if (discussion) {
       const list = [...Object.keys(discussion).map((key) => discussion[key])];
-
-      sorter(list, SortOrder['trending']);
+      sorter(list, SortOrder[deafaultSort]);
       setDiscussionState(list);
     }
   }, [isLoadingDiscussion, discussion]);
 
   useEffect(() => {
-    if (router.query.sort === 'trending' && discussionState) {
-      const list = [...discussionState];
-
+    if (router.query.sort === 'trending' && discussion) {
+      const list = [...Object.keys(discussion).map((key) => discussion[key])];
       sorter(list, SortOrder[router.query.sort]);
       setDiscussionState(list);
     }
-    if (router.query.sort === 'votes' && discussionState) {
-      const list = [...discussionState];
-
+    if (router.query.sort === 'votes' && discussion) {
+      const list = [...Object.keys(discussion).map((key) => discussion[key])];
       sorter(list, SortOrder[router.query.sort]);
       setDiscussionState(list);
     }
-    if (router.query.sort === 'new' && discussionState) {
-      const list = [...discussionState];
-
+    if (router.query.sort === 'new' && discussion) {
+      const list = [...Object.keys(discussion).map((key) => discussion[key])];
       sorter(list, SortOrder[router.query.sort]);
       setDiscussionState(list);
     }
@@ -121,13 +136,53 @@ function PostPage({ post_s, community, username, permlink }: any) {
   });
 
   const post_html = renderer.render(post_s.body);
-
+  const commentSite = () => (discussionState && discussionState[0].depth !== 0 ? true : false);
+  const [reply, setReply] = useState(false);
+  const postUrl = () => {
+    if (discussionState) {
+      const objectWithSmallestDepth = discussionState.reduce((smallestDepth, e) => {
+        if (e.depth < smallestDepth.depth) {
+          return e;
+        }
+        return smallestDepth;
+      });
+      return objectWithSmallestDepth.url;
+    }
+  };
+  const parentUrl = () => {
+    if (discussionState) {
+      return (
+        discussionState[0].category +
+        '/@' +
+        discussionState[0].parent_author +
+        '/' +
+        discussionState[0].parent_permlink
+      );
+    }
+  };
   return (
     <div className="py-8">
       <div className="mx-auto my-0 max-w-4xl bg-white px-8 py-4 dark:bg-slate-900">
-        <h1 className="text-3xl font-bold" data-testid="article-title">
-          {post_s.title}
-        </h1>
+        {!commentSite() ? (
+          <h1 className="text-3xl font-bold" data-testid="article-title">
+            {post_s.title}
+          </h1>
+        ) : (
+          <div className="flex flex-col gap-2 bg-green-50 p-2">
+            <h4 className="text-sm">You are viewing a single comment&apos;s thread from:</h4>
+            <h1 data-testid="article-title" className="text-2xl">
+              {post_s.title}
+            </h1>
+            <Link className="text-sm text-slate-500 hover:text-red-500" href={`${postUrl()}`}>
+              • View the full context
+            </Link>
+            {discussionState && !discussionState.some((e) => e.depth === 1) ? (
+              <Link className="text-sm text-slate-500 hover:text-red-500" href={`../../${parentUrl()}`}>
+                • View the direct parent
+              </Link>
+            ) : null}
+          </div>
+        )}
         {!isLoadingFollows && follows && !isLoadingAccounts && account ? (
           <UserInfo
             name={
@@ -167,18 +222,20 @@ function PostPage({ post_s, community, username, permlink }: any) {
         )}
 
         <div className="clear-both">
-          <ul className="flex flex-wrap gap-2">
-            {post_s.json_metadata?.tags?.map((tag: string) => (
-              <li key={tag}>
-                <Link
-                  href={`/trending/${tag}`}
-                  className="my-2 rounded-md bg-accent px-2 py-1 text-sm text-accent-foreground hover:border-[1px] hover:border-accent-foreground"
-                >
-                  #{tag}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          {!commentSite ? (
+            <ul className="flex flex-wrap gap-2">
+              {post_s.json_metadata?.tags?.map((tag: string) => (
+                <li key={tag}>
+                  <Link
+                    href={`/trending/${tag}`}
+                    className="my-2 rounded-md bg-accent px-2 py-1 text-sm text-accent-foreground hover:border-[1px] hover:border-accent-foreground"
+                  >
+                    #{tag}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : null}
         </div>
         <div className="text-sm text-slate-600" data-testid="author-data-post-footer">
           <div className="my-4 flex justify-between">
@@ -213,7 +270,7 @@ function PostPage({ post_s, community, username, permlink }: any) {
                 />
               ) : null}
             </div>
-            <div className="flex">
+            <div className="flex items-center">
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
@@ -229,7 +286,9 @@ function PostPage({ post_s, community, username, permlink }: any) {
                 </Tooltip>
               </TooltipProvider>
               <span className="mx-1">|</span>
-              <span className="flex items-center text-red-500">Reply</span>
+              <button onClick={() => setReply(!reply)} className="flex items-center text-red-500">
+                Reply
+              </button>
               <span className="mx-1">|</span>
               <TooltipProvider>
                 <Tooltip>
@@ -255,7 +314,7 @@ function PostPage({ post_s, community, username, permlink }: any) {
             </div>
           </div>
           <div className="my-4 flex justify-between">
-            <div className="flex gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               <div className="flex items-center gap-1">
                 <TooltipProvider>
                   <Tooltip>
@@ -297,7 +356,10 @@ function PostPage({ post_s, community, username, permlink }: any) {
               ) : null}
               {!isActiveVotesLoading && activeVotesData ? (
                 <DetailsCardVoters activeVotesData={activeVotesData} post={post_s}>
-                  <span className="text-red-500">{post_s.stats?.total_votes}{post_s.stats.total_votes > 1 ? ' votes' : ' vote'}</span>
+                  <span className="text-red-500">
+                    {post_s.stats?.total_votes}
+                    {post_s.stats.total_votes > 1 ? ' votes' : ' vote'}
+                  </span>
                 </DetailsCardVoters>
               ) : null}
             </div>
@@ -311,8 +373,9 @@ function PostPage({ post_s, community, username, permlink }: any) {
         </div>
       </div>
       <div id="comments" />
+      {reply ? <ReplyTextbox onSetReply={setReply} /> : null}
       {!isLoadingDiscussion && discussion && discussionState ? (
-        <div className="mx-auto my-0 max-w-4xl px-8 py-4">
+        <div className="mx-auto my-0 max-w-4xl py-4 sm:px-8">
           <div className="flex items-center justify-end pb-4">
             <span>Sort: </span>
             <CommentSelectFilter />

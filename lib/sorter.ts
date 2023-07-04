@@ -13,51 +13,29 @@ export default (discussion: Entry[], order: SortOrder) => {
     parseAsset(c.author_payout_value).amount +
     parseAsset(c.curator_payout_value).amount;
 
-  const absNegative = (a: Entry) => a.net_rshares < 0;
-
+  const demote = (a: Entry) => a.stats?.gray;
+  const upvotes = (a: Entry) => a.active_votes.filter((v) => v.rshares != 0).length;
   const sortOrders = {
     trending: (a: Entry, b: Entry) => {
-      if (absNegative(a)) {
-        return 1;
-      }
-
-      if (absNegative(b)) {
-        return -1;
-      }
-
       const apayout = allPayout(a);
       const bpayout = allPayout(b);
+      if (demote(a) != demote(b)) return demote(a) ? 1 : -1;
+
       if (apayout !== bpayout) {
         return bpayout - apayout;
       }
-
-      return 0;
+      return b.net_rshares - a.net_rshares;
     },
     votes: (a: Entry, b: Entry) => {
-      const keyA = a.children;
-      const keyB = b.children;
-
-      if (keyA > keyB) return -1;
-      if (keyA < keyB) return 1;
-
-      return 0;
+      return upvotes(b) - upvotes(a);
     },
     new: (a: Entry, b: Entry) => {
-      if (absNegative(a)) {
-        return 1;
-      }
-
-      if (absNegative(b)) {
-        return -1;
-      }
-
       const keyA = Date.parse(a.created);
       const keyB = Date.parse(b.created);
 
-      if (keyA > keyB) return -1;
-      if (keyA < keyB) return 1;
+      if (demote(a) != demote(b)) return demote(a) ? 1 : -1;
 
-      return 0;
+      return keyB - keyA;
     }
   };
 

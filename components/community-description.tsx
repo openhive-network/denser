@@ -5,8 +5,10 @@ import { Button } from '@/components/ui/button';
 import ln2list from '@/lib/ln2list';
 import { DefaultRenderer } from '@hiveio/content-renderer';
 import { getDoubleSize, proxifyImageUrl } from '@/lib/old-profixy';
+import { Community, Subscription } from '@/lib/bridge';
+import { SubsListDialog } from './subscription-list-dialog';
 
-const CommunityDescription = ({ data }: { data: any }) => {
+const CommunityDescription = ({ data, subs }: { data: Community; subs: Subscription[] }) => {
   const renderer = new DefaultRenderer({
     baseUrl: 'https://hive.blog/',
     breaks: true,
@@ -31,11 +33,11 @@ const CommunityDescription = ({ data }: { data: any }) => {
   return (
     <Card
       className={cn(
-        'my-4 hidden h-fit w-auto flex-col px-8 dark:bg-background/95 dark:text-white md:flex lg:w-[390px]'
+        'my-4 hidden h-fit w-auto flex-col px-4 dark:bg-background/95 dark:text-white md:flex lg:w-[390px]'
       )}
       data-testid="community-description-sidebar"
     >
-      <CardHeader>
+      <CardHeader className="px-0 font-light">
         <CardTitle>{data.title}</CardTitle>
         <span className="text-sm" data-testid="short-community-description">
           {data.about}
@@ -43,10 +45,12 @@ const CommunityDescription = ({ data }: { data: any }) => {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-3 text-sm">
-          <div className="flex flex-col items-center" data-testid="community-subscribers">
-            {data.subscribers}
-            <span className="text-center text-xs">subscribers</span>
-          </div>
+          <SubsListDialog title={data.title} subs={subs}>
+            <div className="flex flex-col items-center" data-testid="community-subscribers">
+              {data.subscribers}
+              <span className="text-center text-xs">subscribers</span>
+            </div>
+          </SubsListDialog>
           <div className="flex flex-col items-center" data-testid="community-pending-rewards">
             {data.sum_pending}
             <span className="text-center text-xs">pending rewards</span>
@@ -73,7 +77,7 @@ const CommunityDescription = ({ data }: { data: any }) => {
             <Link href={`/communities`}>New Post</Link>
           </Button>
         </div>
-        <div data-testid="community-leadership">
+        <div data-testid="community-leadership" className="my-6">
           <h6 className="my-1.5 font-semibold leading-none tracking-tight">Leadership</h6>
           <ul className="mt-1.5 text-sm">
             {data.team.slice(1).map((member: any) => (
@@ -91,7 +95,7 @@ const CommunityDescription = ({ data }: { data: any }) => {
           <h6 className="my-1.5 font-semibold leading-none tracking-tight">Description</h6>
           {post_body_html ? (
             <div
-              className="preview-description prose-sm"
+              className="preview-description prose-sm "
               data-testid="community-description-content"
               dangerouslySetInnerHTML={{ __html: post_body_html }}
             />
@@ -99,12 +103,20 @@ const CommunityDescription = ({ data }: { data: any }) => {
         </div>
 
         {data.flag_text.trim() !== '' ? (
-          <div data-testid="community-rules">
+          <div data-testid="community-rules" className="my-6">
             <h6 className="my-1.5 font-semibold leading-none tracking-tight">Rules</h6>
             <div className="preview-rules prose-sm" data-testid="community-rules-content">
               {ln2list(data.flag_text).map((x, i) => (
                 <p key={i + 1}>{`${i + 1}. ${x}`}</p>
               ))}
+            </div>
+          </div>
+        ) : null}
+        {data.lang ? (
+          <div>
+            <h6 className="my-1.5 font-semibold leading-none tracking-tight">Language</h6>
+            <div className="preview-rules" data-testid="community-rules-content">
+              {data.lang}
             </div>
           </div>
         ) : null}
