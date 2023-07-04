@@ -5,10 +5,21 @@ import { Button } from '@/components/ui/button';
 import ln2list from '@/lib/ln2list';
 import { DefaultRenderer } from '@hiveio/content-renderer';
 import { getDoubleSize, proxifyImageUrl } from '@/lib/old-profixy';
-import { Community, Subscription } from '@/lib/bridge';
+import { Community, Subscription, getAccountNotifications } from '@/lib/bridge';
 import { SubsListDialog } from './subscription-list-dialog';
+import { ActivityLogDialog } from './activity-log-dialog';
 
-const CommunityDescription = ({ data, subs }: { data: Community; subs: Subscription[] }) => {
+const CommunityDescription = ({
+  data,
+  subs,
+  notificationData,
+  username
+}: {
+  data: Community;
+  subs: Subscription[];
+  notificationData: any;
+  username: string;
+}) => {
   const renderer = new DefaultRenderer({
     baseUrl: 'https://hive.blog/',
     breaks: true,
@@ -76,7 +87,7 @@ const CommunityDescription = ({ data, subs }: { data: Community; subs: Subscript
               <Link href={`/communities`}>New Post</Link>
             </Button>
           </div>
-          <div data-testid="community-leadership" className="my-6">
+          <div data-testid="community-leadership" className="my-6 flex flex-col">
             <h6 className="my-1.5 font-semibold leading-none tracking-tight">Leadership</h6>
             <ul className="mt-1.5 text-sm">
               {data.team.slice(1).map((member: any) => (
@@ -88,6 +99,11 @@ const CommunityDescription = ({ data, subs }: { data: Community; subs: Subscript
                 </li>
               ))}
             </ul>
+            <div className="self-end text-sm">
+              <ActivityLogDialog username={username} data={notificationData}>
+                Activity Log
+              </ActivityLogDialog>
+            </div>
           </div>
         </CardContent>
       </Card>

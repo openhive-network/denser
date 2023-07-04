@@ -10,10 +10,10 @@ import { useRouter } from 'next/router';
 
 const CommentSelectFilter = () => {
   const router = useRouter();
-  const deafaultSort = router.query.sort?.toString();
+  const defaultSort = router.query.sort?.toString();
   return (
     <Select
-      defaultValue={deafaultSort ? deafaultSort : 'trending'}
+      defaultValue={defaultSort ? defaultSort : 'trending'}
       onValueChange={(e) => {
         router.replace(`${router.asPath.split('#')[0].split('?')[0]}?sort=${e}#comments`);
       }}

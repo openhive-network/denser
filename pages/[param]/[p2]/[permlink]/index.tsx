@@ -89,14 +89,14 @@ function PostPage({
   };
 
   const test = isSortOrder(router.query.sort);
-  const deafaultSort: SortOrder = isSortOrder(router.query.sort)
+  const defaultSort: SortOrder = isSortOrder(router.query.sort)
     ? (router.query.sort?.toString() as SortOrder)
     : SortOrder.trending;
 
   useEffect(() => {
     if (discussion) {
       const list = [...Object.keys(discussion).map((key) => discussion[key])];
-      sorter(list, SortOrder[deafaultSort]);
+      sorter(list, SortOrder[defaultSort]);
       setDiscussionState(list);
     }
   }, [isLoadingDiscussion, discussion]);

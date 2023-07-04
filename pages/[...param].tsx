@@ -1,6 +1,13 @@
 import { useSiteParams } from '@/components/hooks/use-site-params';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { Entry, getAccountPosts, getCommunity, getPostsRanked, getSubscribers } from '@/lib/bridge';
+import {
+  Entry,
+  getAccountNotifications,
+  getAccountPosts,
+  getCommunity,
+  getPostsRanked,
+  getSubscribers
+} from '@/lib/bridge';
 import Loading from '@/components/loading';
 import { FC, useCallback, useEffect } from 'react';
 import PostList from '@/components/post-list';
@@ -59,7 +66,14 @@ const ParamPage: FC = () => {
       enabled: Boolean(sort)
     }
   );
-
+  const {
+    isFetching: accountNotificationIsFetching,
+    isLoading: accountNotificationIsLoading,
+    error: AccountNotificationError,
+    data: dataAccountNotification
+  } = useQuery(['accountNotification', tag], () => getAccountNotifications(tag ? tag : ''), {
+    enabled: !!tag
+  });
   const {
     data: communityData,
     isLoading: communityDataIsLoading,
@@ -131,12 +145,18 @@ const ParamPage: FC = () => {
   if (
     (entriesDataIsLoading && entriesDataIsFetching) ||
     (accountEntriesIsLoading && accountEntriesIsFetching) ||
-    (historyFeedLoading && historyFeedIsFetching)
+    (historyFeedLoading && historyFeedIsFetching) ||
+    (accountNotificationIsLoading && accountNotificationIsFetching)
   ) {
     return (
       <Loading
         loading={
-          entriesDataIsLoading || entriesDataIsFetching || accountEntriesIsLoading || accountEntriesIsFetching
+          entriesDataIsLoading ||
+          entriesDataIsFetching ||
+          accountEntriesIsLoading ||
+          accountEntriesIsFetching ||
+          accountNotificationIsLoading ||
+          accountNotificationIsFetching
         }
       />
     );
@@ -151,7 +171,12 @@ const ParamPage: FC = () => {
           <div className="col-span-12 md:col-span-10 lg:col-span-8">
             <div data-testid="card-explore-hive-mobile" className="hidden md:col-span-10 md:flex lg:hidden">
               {communityData && subsData ? (
-                <CommunitySimpleDescription data={communityData} subs={subsData} />
+                <CommunitySimpleDescription
+                  data={communityData}
+                  subs={subsData}
+                  username={tag ? tag : ' '}
+                  notificationData={dataAccountNotification}
+                />
               ) : (
                 <ExploreHive />
               )}
@@ -203,7 +228,12 @@ const ParamPage: FC = () => {
           </div>
           <div data-testid="card-explore-hive-desktop" className="hidden lg:col-span-2 lg:flex">
             {communityData && subsData ? (
-              <CommunityDescription data={communityData} subs={subsData} />
+              <CommunityDescription
+                data={communityData}
+                subs={subsData}
+                notificationData={dataAccountNotification}
+                username="tag"
+              />
             ) : (
               <ExploreHive />
             )}
