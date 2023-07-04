@@ -70,6 +70,122 @@ test.describe('Home page tests', () => {
     // expect(firstPostChildren).toBe(String(postChildren));
   });
 
+  test('validate the first post header styles (for Trending filter) in the light theme', async ({
+    page
+  }) => {
+    // test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    const homePage = new HomePage(page);
+    await homePage.goto();
+
+    // Post author link color without hovering
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostAuthor, 'color')).toBe(
+      'rgb(0, 0, 0)'
+    );
+    // Post author link color after hovering
+    await homePage.getFirstPostAuthor.hover();
+    await homePage.page.waitForTimeout(1000);
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostAuthor, 'color')).toBe(
+      'rgb(220, 38, 38)'
+    );
+
+    // Community or category link color without hovering in the post card
+    if (await homePage.getFirstPostCardCommunityLink) {
+      // Communitylink color without hovering in the post card
+      expect(
+        await homePage.getElementCssPropertyValue(await homePage.getFirstPostCardCommunityLink, 'color')
+      ).toBe('rgb(100, 116, 139)');
+      // Communitylink color after hovering in the post card
+      await homePage.getFirstPostCardCommunityLink.hover();
+      await homePage.page.waitForTimeout(1000);
+      expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostCardCommunityLink, 'color')).toBe(
+        'rgb(220, 38, 38)'
+      );
+    }
+    if (await homePage.getFirstPostCardCategoryLink) {
+      // Communitylink color without hovering in the post card
+      expect(
+        await homePage.getElementCssPropertyValue(await homePage.getFirstPostCardCategoryLink, 'color')
+      ).toBe('rgb(100, 116, 139)');
+      // Communitylink color after hovering in the post card
+      await homePage.getFirstPostCardCategoryLink.hover();
+      await homePage.page.waitForTimeout(1000);
+      expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostCardCategoryLink, 'color')).toBe(
+        'rgb(220, 38, 38)'
+      );
+    }
+
+    // Timestamp link color without hovering
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostCardTimestampLink, 'color')).toBe(
+      'rgb(100, 116, 139)'
+    );
+    // Timestamp link color after hovering
+    await homePage.getFirstPostCardTimestampLink.hover();
+    await homePage.page.waitForTimeout(1000);
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostCardTimestampLink, 'color')).toBe(
+      'rgb(220, 38, 38)'
+    );
+  });
+
+  test('validate the first post header styles (for Trending filter) in the dark theme', async ({
+    page
+  }) => {
+    // test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    const homePage = new HomePage(page);
+    await homePage.goto();
+
+    // Move to the dark theme
+    await homePage.changeThemeMode('Dark');
+    await homePage.validateThemeModeIsDark();
+
+    // Post author link color without hovering
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostAuthor, 'color')).toBe(
+      'rgb(255, 255, 255)'
+    );
+    // Post author link color after hovering
+    await homePage.getFirstPostAuthor.hover();
+    await homePage.page.waitForTimeout(1000);
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostAuthor, 'color')).toBe(
+      'rgb(220, 38, 38)'
+    );
+
+    // Community or category link color without hovering in the post card
+    if (await homePage.getFirstPostCardCommunityLink) {
+      // Communitylink color without hovering in the post card
+      expect(
+        await homePage.getElementCssPropertyValue(await homePage.getFirstPostCardCommunityLink, 'color')
+      ).toBe('rgb(148, 163, 184)');
+      // Communitylink color after hovering in the post card
+      await homePage.getFirstPostCardCommunityLink.hover();
+      await homePage.page.waitForTimeout(1000);
+      expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostCardCommunityLink, 'color')).toBe(
+        'rgb(220, 38, 38)'
+      );
+    }
+    if (await homePage.getFirstPostCardCategoryLink) {
+      // Communitylink color without hovering in the post card
+      expect(
+        await homePage.getElementCssPropertyValue(await homePage.getFirstPostCardCategoryLink, 'color')
+      ).toBe('rgb(148, 163, 184)');
+      // Communitylink color after hovering in the post card
+      await homePage.getFirstPostCardCategoryLink.hover();
+      await homePage.page.waitForTimeout(1000);
+      expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostCardCategoryLink, 'color')).toBe(
+        'rgb(220, 38, 38)'
+      );
+    }
+
+    // Timestamp link color without hovering
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostCardTimestampLink, 'color')).toBe(
+      'rgb(148, 163, 184)'
+    );
+    // Timestamp link color after hovering
+    await homePage.getFirstPostCardTimestampLink.hover();
+    await homePage.page.waitForTimeout(1000);
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostCardTimestampLink, 'color')).toBe(
+      'rgb(220, 38, 38)'
+    );
+  });
+
   test('validate the first post (for New filter)', async ({ page, request, browserName }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
@@ -166,7 +282,9 @@ test.describe('Home page tests', () => {
     await homePage.validateThemeModeIsSystem();
   });
 
-  test('validate change background color style after hovering the post card in the dark mode', async ({ page }) => {
+  test('validate change background color style after hovering the post card in the dark mode', async ({
+    page
+  }) => {
     const homePage = new HomePage(page);
 
     await homePage.goto();
@@ -177,10 +295,7 @@ test.describe('Home page tests', () => {
 
     // background color before hovering
     expect(
-      await homePage.getElementCssPropertyValue(
-        await homePage.getFirstPostListItem,
-        'background-color'
-      )
+      await homePage.getElementCssPropertyValue(await homePage.getFirstPostListItem, 'background-color')
     ).toBe('rgba(3, 7, 17, 0.95)');
 
     await homePage.getFirstPostListItem.hover();
@@ -188,10 +303,7 @@ test.describe('Home page tests', () => {
 
     // background color after hovering
     expect(
-      await homePage.getElementCssPropertyValue(
-        await homePage.getFirstPostListItem,
-        'background-color'
-      )
+      await homePage.getElementCssPropertyValue(await homePage.getFirstPostListItem, 'background-color')
     ).toBe('rgb(29, 40, 58)');
   });
 
