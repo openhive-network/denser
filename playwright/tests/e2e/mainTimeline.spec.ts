@@ -545,4 +545,108 @@ test.describe('Home page tests', () => {
     await homePage.isTrendingCommunitiesVisible();
   });
 
+  test('validate downvote button styles and the tootpit of the first post in the light theme', async ({ page }) => {
+    const homePage = new HomePage(page);
+    await homePage.goto();
+
+    // Before hovering
+    // Downvote icon color
+    expect(
+      await homePage.getElementCssPropertyValue(
+        await homePage.getFirstPostDownvoteButton.locator('svg'),
+        'color'
+      )
+    ).toBe('rgb(75, 85, 99)');
+
+    // Downvote icon background-color
+    expect(
+      await homePage.getElementCssPropertyValue(
+        await homePage.getFirstPostDownvoteButton.locator('svg'),
+        'background-color'
+      )
+    ).toBe('rgba(0, 0, 0, 0)');
+
+
+    // Hover downvote button
+    await homePage.getFirstPostDownvoteButton.hover();
+    await homePage.page.waitForTimeout(1000);
+    // Validate the tooltip message
+    expect(await homePage.getFirstPostDownvoteButtonTooltip.textContent()).toBe(
+      'DownvoteDownvote'
+    );
+    // Downvote icon color
+    expect(
+      await homePage.getElementCssPropertyValue(
+        await homePage.getFirstPostDownvoteButton.locator('svg'),
+        'color'
+      )
+    ).toBe('rgb(255, 255, 255)');
+
+    // Downvote icon background-color
+    expect(
+      await homePage.getElementCssPropertyValue(
+        await homePage.getFirstPostDownvoteButton.locator('svg'),
+        'background-color'
+      )
+    ).toBe('rgb(75, 85, 99)');
+  });
+
+  test('validate downvote button styles and the tootpit of the first post in the dark theme', async ({ page }) => {
+    const homePage = new HomePage(page);
+    await homePage.goto();
+    await homePage.changeThemeMode('Dark');
+    await homePage.validateThemeModeIsDark();
+
+    // Before hovering
+    // Downvote icon color
+    expect(
+      await homePage.getElementCssPropertyValue(
+        await homePage.getFirstPostDownvoteButton.locator('svg'),
+        'color'
+      )
+    ).toBe('rgb(75, 85, 99)');
+
+    // Downvote icon background-color
+    expect(
+      await homePage.getElementCssPropertyValue(
+        await homePage.getFirstPostDownvoteButton.locator('svg'),
+        'background-color'
+      )
+    ).toBe('rgba(0, 0, 0, 0)');
+
+
+    // Hover downvote button
+    await homePage.getFirstPostDownvoteButton.hover();
+    await homePage.page.waitForTimeout(1000);
+    // Validate the tooltip message
+    expect(await homePage.getFirstPostDownvoteButtonTooltip.textContent()).toBe(
+      'DownvoteDownvote'
+    );
+    // Downvote icon color
+    expect(
+      await homePage.getElementCssPropertyValue(
+        await homePage.getFirstPostDownvoteButton.locator('svg'),
+        'color'
+      )
+    ).toBe('rgb(255, 255, 255)');
+
+    // Downvote icon background-color
+    expect(
+      await homePage.getElementCssPropertyValue(
+        await homePage.getFirstPostDownvoteButton.locator('svg'),
+        'background-color'
+      )
+    ).toBe('rgb(75, 85, 99)');
+  });
+
+  test('click downvote button and move to the dialog "Login to Vote" ', async ({ page }) => {
+    const homePage = new HomePage(page);
+    const loginDialog = new LoginToVoteDialog(page);
+    await homePage.goto();
+
+    await homePage.getFirstPostDownvoteButton.click();
+    await loginDialog.validateLoginToVoteDialogIsVisible();
+    await loginDialog.closeLoginDialog();
+    await homePage.isTrendingCommunitiesVisible();
+  });
 });
