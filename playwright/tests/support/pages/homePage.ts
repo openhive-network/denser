@@ -29,6 +29,12 @@ export class HomePage {
   readonly getHeaderAllCommunities: Locator;
   readonly getMainTimeLineOfPosts: any;
   readonly getPostCardAvatar: Locator;
+  readonly getPostCardFooter: Locator;
+  readonly getUpvoteButton: Locator;
+  readonly getFirstPostUpvoteButton: Locator;
+  readonly getUpvoteButtonTooltip: Locator;
+  readonly getFirstPostUpvoteButtonTooltip: Locator;
+  readonly getFirstPostCardFooter: Locator;
   readonly getFirstPostListItem: Locator;
   readonly getFirstPostCardAvatar: Locator;
   readonly getFirstPostAuthor: Locator;
@@ -92,6 +98,12 @@ export class HomePage {
     this.getFirstPostVotes = page.locator('[data-testid="post-total-votes"]').first();
     this.getFirstPostChildren = page.locator('[data-testid="post-children"]').first();
     this.getPostChildren = page.locator('[data-testid="post-children"]');
+    this.getPostCardFooter = page.locator('[data-testid="post-card-footer"]');
+    this.getUpvoteButton = page.locator('[data-testid="upvote-button"]');
+    this.getFirstPostUpvoteButton = this.getUpvoteButton.first();
+    this.getFirstPostCardFooter = this.getPostCardFooter.first();
+    this.getUpvoteButtonTooltip = page.locator('[data-testid="upvote-button-tooltip"]');
+    this.getFirstPostUpvoteButtonTooltip = this.getUpvoteButtonTooltip.first();
     this.getBody = page.locator('body');
     this.getThemeModeButton = page.locator('[data-testid="theme-mode"]');
     this.getThemeModeItem = page.locator('[data-testid="theme-mode-item"]');

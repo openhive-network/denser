@@ -259,26 +259,26 @@ const PostListItem = ({ post, sort, historyFeedData, isCommunityPage }: any) => 
               )}
             </CardContent>
             <CardFooter className="pb-2">
-              <div className="flex h-5 items-center space-x-2 text-sm">
+              <div className="flex h-5 items-center space-x-2 text-sm" data-testid="post-card-footer">
                 <div className="flex items-center gap-1">
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger>
+                      <TooltipTrigger data-testid="upvote-button">
                         <DialogLogin>
                           <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1" />
                         </DialogLogin>
                       </TooltipTrigger>
-                      <TooltipContent>Upvote</TooltipContent>
+                      <TooltipContent data-testid="upvote-button-tooltip">Upvote</TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger>
+                      <TooltipTrigger data-testid="downvote-button">
                         <DialogLogin>
                           <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
                         </DialogLogin>
                       </TooltipTrigger>
-                      <TooltipContent>Downvote</TooltipContent>
+                      <TooltipContent data-testid="downvote-button-tooltip">Downvote</TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 </div>
