@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useSiteParams } from '@/components/hooks/use-site-params';
@@ -10,6 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { Icons } from '@/components/icons';
 import { dateToFullRelative, dateToShow } from '@/lib/parse-date';
 import { proxifyImageUrl } from '@/lib/old-profixy';
+import { getTwitterInfo } from '@/lib/bridge';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -17,7 +18,6 @@ interface IProfileLayout {
 
 const ProfileLayout = ({ children }: IProfileLayout) => {
   const router = useRouter();
-  const [hivePower, setHivePower] = useState(0);
   const { username } = useSiteParams();
   const {
     isLoading: profileDataIsLoading,
@@ -34,11 +34,32 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   } = useQuery(['accountData', username], () => getAccount(username), {
     enabled: !!username
   });
+  const startTwitterData = {
+    twitter_username: '',
+    twitter_profile: ''
+  };
+
   const {
     isLoading: dynamicGlobalDataIsLoading,
     error: dynamicGlobalDataError,
     data: dynamicGlobalData
   } = useQuery(['dynamicGlobalData'], () => getDynamicGlobalProperties());
+  const [twitterData, setTwitterData] = useState(startTwitterData);
+
+  useEffect(() => {
+    const fetchTwitterData = async () => {
+      try {
+        const response = await getTwitterInfo(username);
+        setTwitterData(response);
+      } catch (error) {
+        console.error('No linked at HivePosh.com');
+      }
+    };
+
+    fetchTwitterData();
+  }, [username]);
+  // const hivebuzzRes = await fetch(`https://hivebuzz.me/api/badges/${username}`);
+
   if (accountDataIsLoading || dynamicGlobalDataIsLoading || profileDataIsLoading) {
     return <Loading loading={accountDataIsLoading || dynamicGlobalDataIsLoading || profileDataIsLoading} />;
   }
@@ -75,9 +96,28 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 style={{ backgroundImage: `url(https://images.hive.blog/u/${profileData?.name}/avatar)` }}
               />
               <h4 className="sm:text-2xl" data-testid="profile-name">
-                <span className="font-semibold">{profileData?.name}</span>{' '}
+                <span className="font-semibold">
+                  {profileData?.profile?.name ? profileData.profile.name : profileData.name}
+                </span>{' '}
                 <span>({profileData?.reputation ? accountReputation(profileData.reputation) : null})</span>
               </h4>
+              {profileData.name ? (
+                <Link href={`https://hivebuzz.me/@${profileData.name}`}>
+                  <img
+                    title={`This is ${profileData.name}'s level badged earned from Hivebuzz programs`}
+                    className="mx-2 w-6 duration-500 ease-in-out hover:w-12"
+                    src={`https://hivebuzz.me/api/level/${profileData.name}?dead`}
+                  />
+                </Link>
+              ) : null}
+              {twitterData.twitter_profile !== '' ? (
+                <Link
+                  href={twitterData.twitter_profile}
+                  title="To get the Twitter badge, link your account at HivePosh.com"
+                >
+                  <Icons.twitter fill="#1da1f2" className="text-blue-400" />
+                </Link>
+              ) : null}
             </div>
 
             <p className="my-1 max-w-[420px] text-center text-white sm:my-4" data-testid="profile-about">
@@ -209,9 +249,13 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <li>
                   <Link
                     href={`/@${username}`}
-                    className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800 ${
-                      router.asPath === `/@${username}` ? 'dark:text-slate-950' : ''
-                    }`}
+                    className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800 
+                    ${
+                      router.asPath === `/@${username}`
+                        ? 'bg-white text-slate-800 dark:bg-slate-950 dark:hover:text-slate-200'
+                        : ''
+                    }
+                    `}
                   >
                     Blog
                   </Link>
@@ -223,7 +267,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                       router.asPath === `/@${username}/posts` ||
                       router.asPath === `/@${username}/comments` ||
                       router.asPath === `/@${username}/payout`
-                        ? 'dark:text-slate-950'
+                        ? 'bg-white text-slate-800 dark:bg-slate-950 dark:hover:text-slate-200'
                         : ''
                     }`}
                   >
@@ -234,7 +278,9 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   <Link
                     href={`/@${username}/replies`}
                     className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800 ${
-                      router.asPath === `/@${username}/replies` ? 'dark:text-slate-950' : ''
+                      router.asPath === `/@${username}/replies`
+                        ? 'bg-white text-slate-800 dark:bg-slate-950 dark:hover:text-slate-200'
+                        : ''
                     }`}
                   >
                     Replies
@@ -244,7 +290,9 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   <Link
                     href={`/@${username}/communities`}
                     className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800 ${
-                      router.asPath === `/@${username}/communities` ? 'dark:text-slate-950' : ''
+                      router.asPath === `/@${username}/communities`
+                        ? 'bg-white text-slate-800 dark:bg-slate-950 dark:hover:text-slate-200'
+                        : ''
                     }`}
                   >
                     Social
@@ -253,8 +301,10 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <li>
                   <Link
                     href={`/@${username}/notifications`}
-                    className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800 ${
-                      router.asPath === `/@${username}/notifications` ? 'dark:text-slate-950' : ''
+                    className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800 dark:hover:text-slate-200 ${
+                      router.asPath === `/@${username}/notifications`
+                        ? 'bg-white text-slate-800 dark:bg-slate-950'
+                        : ''
                     }`}
                   >
                     Notifications

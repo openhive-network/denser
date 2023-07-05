@@ -319,3 +319,29 @@ export const getFollowList = (observer: string, follow_type: FollowListType): Pr
     observer,
     follow_type
   });
+
+export type TwitterInfo = {
+  twitter_username: string;
+  twitter_profile: string;
+};
+
+export const getTwitterInfo = async (payload: string) => {
+  try {
+    const response = await fetch(`https://hiveposh.com/api/v0/twitter/${payload}`);
+    if (!response.ok) {
+      // throw new Error(`Posh API Error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const { error } = data;
+    if (error) {
+      // console.error('Posh API', error.message);
+      throw new Error(`Posh API Error: ${error}`);
+    }
+
+    return data;
+  } catch (error) {
+    // console.error('Posh API', error);
+    throw error;
+  }
+};
