@@ -57,7 +57,7 @@ export class HomePage {
     this.postPage = new PostPage(page);
     this.getTrendingCommunitiesSideBar = page.locator('[data-testid="card-trending-comunities"]');
     this.getTrendingCommunitiesSideBarLinks = this.getTrendingCommunitiesSideBar.locator('div ul li a');
-    this.getTrandingCommunitiesHeader = page.locator('a').getByText('All posts');
+    this.getTrandingCommunitiesHeader = this.getTrendingCommunitiesSideBar.locator('a').getByText('All posts');
     this.getExploreCommunities = page.getByText('Explore communities...');
     this.getLeoFinanceCommunitiesLink = this.getTrendingCommunitiesSideBar
       .locator('a')
