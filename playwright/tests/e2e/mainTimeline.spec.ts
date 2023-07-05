@@ -534,7 +534,7 @@ test.describe('Home page tests', () => {
     ).toBe('rgb(220, 38, 38)');
   });
 
-  test.only('click upvote button and move to the dialog "Login to Vote" ', async ({ page }) => {
+  test('click upvote button and move to the dialog "Login to Vote" ', async ({ page }) => {
     const homePage = new HomePage(page);
     const loginDialog = new LoginToVoteDialog(page);
     await homePage.goto();
