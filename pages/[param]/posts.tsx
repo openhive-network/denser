@@ -10,6 +10,7 @@ import RepliesList from '@/components/replies-list';
 import { getFeedHistory } from '@/lib/hive';
 import { PostSkeleton } from '@/pages/[...param]';
 import { useInView } from 'react-intersection-observer';
+import { useEffect } from 'react';
 
 const UserPosts = () => {
   const router = useRouter();
@@ -45,7 +46,7 @@ const UserPosts = () => {
           permlink: lastPage && lastPage.length > 0 ? lastPage[lastPage?.length - 1].permlink : ''
         };
       },
-      enabled: Boolean(sort)
+      enabled: Boolean(sort) && !!username
     }
   );
 
@@ -55,6 +56,12 @@ const UserPosts = () => {
     isFetching: historyFeedIsFetching,
     isError: historyFeedError
   } = useQuery(['feedHistory'], () => getFeedHistory());
+
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [fetchNextPage, inView]);
 
   if (isLoading || historyFeedLoading) return <Loading loading={isLoading} />;
 
@@ -101,7 +108,7 @@ const UserPosts = () => {
             {!isLoading && data ? (
               <>
                 {data.pages.map((page, index) => {
-                  return page ? <RepliesList data={page} /> : null;
+                  return page ? <RepliesList data={page} key={`replies-${index}`} /> : null;
                 })}
                 <div>
                   <button
