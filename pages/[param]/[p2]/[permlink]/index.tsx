@@ -87,11 +87,8 @@ function PostPage({
   const isSortOrder = (token: any): token is SortOrder => {
     return Object.values(SortOrder).includes(token as SortOrder);
   };
-
-  const test = isSortOrder(router.query.sort);
-  const defaultSort: SortOrder = isSortOrder(router.query.sort)
-    ? (router.query.sort?.toString() as SortOrder)
-    : SortOrder.trending;
+  const query = router.query.sort?.toString();
+  const defaultSort = isSortOrder(query) ? query : SortOrder.trending;
 
   useEffect(() => {
     if (discussion) {

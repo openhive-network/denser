@@ -58,7 +58,6 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
 
     fetchTwitterData();
   }, [username]);
-  // const hivebuzzRes = await fetch(`https://hivebuzz.me/api/badges/${username}`);
 
   if (accountDataIsLoading || dynamicGlobalDataIsLoading || profileDataIsLoading) {
     return <Loading loading={accountDataIsLoading || dynamicGlobalDataIsLoading || profileDataIsLoading} />;
@@ -104,7 +103,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               {profileData.name ? (
                 <Link href={`https://hivebuzz.me/@${profileData.name}`}>
                   <img
-                    title={`This is ${profileData.name}'s level badged earned from Hivebuzz programs`}
+                    alt={`This is ${profileData.name}'s level badged earned from Hivebuzz programs`}
                     className="mx-2 w-6 duration-500 ease-in-out hover:w-12"
                     src={`https://hivebuzz.me/api/level/${profileData.name}?dead`}
                   />
