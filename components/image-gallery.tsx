@@ -40,7 +40,7 @@ const ImageGallery = ({ children }: PropsWithChildren) => {
     };
   }, [ref.current]);
   return (
-    <>
+    <div>
       <Lightbox
         styles={{ container: { backgroundColor: 'rgba(0, 0, 0, .8)' } }}
         open={index >= 0}
@@ -50,7 +50,7 @@ const ImageGallery = ({ children }: PropsWithChildren) => {
         plugins={[Fullscreen, Thumbnails, Zoom]}
       />
       <div ref={ref}>{children}</div>
-    </>
+    </div>
   );
 };
 

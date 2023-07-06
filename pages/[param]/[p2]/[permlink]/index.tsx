@@ -257,7 +257,11 @@ function PostPage({
                 )}
               </span>
               by
-              {!isLoadingFollows && follows && !isLoadingAccounts && account ? (
+              {!isLoadingFollows &&
+              follows &&
+              !isLoadingAccounts &&
+              account &&
+              account.posting_json_metadata ? (
                 <UserHoverCard
                   name={JSON.parse(account.posting_json_metadata)?.profile?.name}
                   author={post_s.author}
