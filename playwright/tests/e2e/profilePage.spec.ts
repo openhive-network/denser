@@ -19,7 +19,7 @@ test.describe('Profile page of @gtg', () => {
     await profilePage.gotoProfilePage('@gtg');
     await profilePage.profileInfoIsVisible(
       '@gtg',
-      'gtg (74)',
+      'Gandalf the Grey (74)',
       'IT Wizard, Hive Witness',
       'Joined June 2016'
     );

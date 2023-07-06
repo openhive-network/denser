@@ -252,7 +252,7 @@ export class ProfilePage {
 
   async profileBlogTabIsSelected() {
     await this.page.waitForSelector(this.postBlogItem['_selector']);
-    expect(await this.getElementCssPropertyValue(this.profileBlogLink, 'color')).toBe('rgb(255, 255, 255)');
+    expect(await this.getElementCssPropertyValue(this.profileBlogLink, 'color')).toBe('rgb(30, 41, 59)');
     await expect(this.postBlogItem).toHaveCount(20);
   }
 
