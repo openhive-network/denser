@@ -1,37 +1,49 @@
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
+import CustomSelect from '@/components/ui/custom-select';
+import { useEffect, useState } from 'react';
 
-const PostSelectFilter = ({ filter, handleChangeFilter }: { filter: any; handleChangeFilter: any }) => {
+export interface FilterOption {
+  readonly value: string;
+  readonly label: string;
+}
+
+export const filterOption: readonly FilterOption[] = [
+  { value: 'trending', label: 'Trending' },
+  { value: 'hot', label: 'Hot' },
+  { value: 'created', label: 'New' },
+  { value: 'payout', label: 'Payouts' },
+  { value: 'muted', label: 'Muted' }
+];
+
+const PostSelectFilter = ({
+  filter,
+  handleChangeFilter
+}: {
+  filter: string;
+  handleChangeFilter: React.Dispatch<any>;
+}) => {
+  const [state, setState] = useState<any>(filterOption.find((el) => el.value === filter));
+
+  useEffect(() => {
+    // setState(filterOption.filter((option) => option.value === filter)[0]);
+    setState(filterOption.find((el) => el.value === filter));
+  }, []);
+
+  console.log('filter', filter);
+  console.log(
+    'filterOption.filter((option) => option.value === filter)[0].value',
+    filterOption.filter((option) => option.value === filter)[0]
+  );
+  console.log('state', state);
+
   return (
-    <Select
-      defaultValue="trending"
-      value={filter}
-      onValueChange={(e) => {
-        handleChangeFilter(e);
+    <CustomSelect
+      value={state}
+      options={filterOption}
+      onChange={(e: { value: string; label: string }) => {
+        handleChangeFilter(e.value);
+        setState(e);
       }}
-    >
-      <SelectTrigger
-        className="w-[180px] bg-white dark:bg-background/95 dark:text-white"
-        data-testid="posts-filter"
-      >
-        <SelectValue placeholder="Select a filter" />
-      </SelectTrigger>
-      <SelectContent data-testid="posts-filter-list">
-        <SelectGroup>
-          <SelectItem value="trending">Trending</SelectItem>
-          <SelectItem value="hot">Hot</SelectItem>
-          <SelectItem value="created">New</SelectItem>
-          <SelectItem value="payout">Payouts</SelectItem>
-          <SelectItem value="muted">Muted</SelectItem>
-        </SelectGroup>
-      </SelectContent>
-    </Select>
+    />
   );
 };
 

@@ -378,7 +378,7 @@ function PostPage({
       {!isLoadingDiscussion && discussion && discussionState ? (
         <div className="mx-auto my-0 max-w-4xl py-4 sm:px-8">
           <div className="flex items-center justify-end pb-4">
-            <span>Sort: </span>
+            <span className="mr-2">Sort: </span>
             <CommentSelectFilter />
           </div>
           <DynamicComments

@@ -193,7 +193,7 @@ const ParamPage: FC = () => {
                     </span>
                   ) : null}
                 </div>
-                <PostSelectFilter filter={sort} handleChangeFilter={handleChangeFilter} />
+                <PostSelectFilter filter={sort || 'trending'} handleChangeFilter={handleChangeFilter} />
               </div>
               <>
                 {entriesData.pages.map((page, index) => {

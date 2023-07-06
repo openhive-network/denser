@@ -1,42 +1,34 @@
 import { useState } from 'react';
+import CustomSelect from '@/components/ui/custom-select';
 
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
+export interface FilterOptionCommunities {
+  readonly value: string;
+  readonly label: string;
+}
+
+export const filterOptionCommunities: readonly FilterOptionCommunities[] = [
+  { value: 'rank', label: 'Rank' },
+  { value: 'subs', label: 'Subscribers' },
+  { value: 'new', label: 'New' }
+];
 
 const CommunitiesSelectFilter = ({
   filter,
   handleChangeFilter
 }: {
-  filter: any;
-  handleChangeFilter: any;
+  filter: string;
+  handleChangeFilter: React.Dispatch<any>;
 }) => {
   const [state, setState] = useState(() => filter);
   return (
-    <Select
-      defaultValue="rank"
-      value={state}
-      onValueChange={(e) => {
-        handleChangeFilter(e);
-        setState(e);
+    <CustomSelect
+      defaultValue={filterOptionCommunities[0]}
+      options={filterOptionCommunities}
+      onChange={(e: { value: string; label: string }) => {
+        handleChangeFilter(e.value);
+        setState(e.value);
       }}
-    >
-      <SelectTrigger className="w-[180px] bg-white dark:bg-background/95 dark:text-white" data-testid="communities-filter">
-        <SelectValue placeholder="Select a filter" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          <SelectItem value="rank">Rank</SelectItem>
-          <SelectItem value="subs">Subscribers</SelectItem>
-          <SelectItem value="new">New</SelectItem>
-        </SelectGroup>
-      </SelectContent>
-    </Select>
+    />
   );
 };
 
