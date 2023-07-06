@@ -129,6 +129,96 @@ test.describe('Communities page tests', () => {
     }
   });
 
+  test('validate the first post header styles (for Trending filter) in the light theme', async ({
+    page
+  }) => {
+    const homePage = new HomePage(page);
+    const communitiesPage = new CommunitiesPage(page);
+
+    await homePage.goto();
+    await homePage.moveToLeoFinanceCommunities();
+    await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
+
+    // Post author link color without hovering
+    expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthor, 'color')).toBe(
+      'rgb(0, 0, 0)'
+    );
+    // Post author link color after hovering
+    await communitiesPage.getFirstPostAuthor.hover();
+    await communitiesPage.page.waitForTimeout(1000);
+    expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthor, 'color')).toBe(
+      'rgb(220, 38, 38)'
+    );
+
+    // Timestamp link color without hovering
+    expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostCardTimestampLink, 'color')).toBe(
+      'rgb(100, 116, 139)'
+    );
+    // Timestamp link color after hovering
+    await communitiesPage.getFirstPostCardTimestampLink.hover();
+    await communitiesPage.page.waitForTimeout(1000);
+    expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostCardTimestampLink, 'color')).toBe(
+      'rgb(220, 38, 38)'
+    );
+    // Author reputation color without hovering
+    expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthorReputation, 'color')).toBe(
+      'rgb(100, 116, 139)'
+    );
+    // Author reputation color after hovering
+    await communitiesPage.getFirstPostAuthorReputation.hover();
+    await communitiesPage.page.waitForTimeout(1000);
+    expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthorReputation, 'color')).toBe(
+      'rgb(100, 116, 139)'
+    );
+  });
+
+  test('validate the first post header styles (for Trending filter) in the dark theme', async ({
+    page
+  }) => {
+    const homePage = new HomePage(page);
+    const communitiesPage = new CommunitiesPage(page);
+
+    await homePage.goto();
+    await homePage.moveToLeoFinanceCommunities();
+    await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
+
+    // Move to the dark theme
+    await homePage.changeThemeMode('Dark');
+    await homePage.validateThemeModeIsDark();
+
+    // Post author link color without hovering
+    expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthor, 'color')).toBe(
+      'rgb(255, 255, 255)'
+    );
+    // Post author link color after hovering
+    await communitiesPage.getFirstPostAuthor.hover();
+    await communitiesPage.page.waitForTimeout(1000);
+    expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthor, 'color')).toBe(
+      'rgb(220, 38, 38)'
+    );
+
+    // Timestamp link color without hovering
+    expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostCardTimestampLink, 'color')).toBe(
+      'rgb(148, 163, 184)'
+    );
+    // Timestamp link color after hovering
+    await communitiesPage.getFirstPostCardTimestampLink.hover();
+    await communitiesPage.page.waitForTimeout(1000);
+    expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostCardTimestampLink, 'color')).toBe(
+      'rgb(220, 38, 38)'
+    );
+    // Author reputation color without hovering
+    expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthorReputation, 'color')).toBe(
+      'rgb(148, 163, 184)'
+    );
+    // Author reputation color after hovering
+    await communitiesPage.getFirstPostAuthorReputation.hover();
+    await communitiesPage.page.waitForTimeout(1000);
+    expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthorReputation, 'color')).toBe(
+      'rgb(148, 163, 184)'
+    );
+  });
+
   test.skip('validate the community leadership of Pinmapple Community', async ({ page, request }) => {
     const homePage = new HomePage(page);
     const communitiesPage = new CommunitiesPage(page);

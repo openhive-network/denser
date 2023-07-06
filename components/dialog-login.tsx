@@ -6,7 +6,7 @@ function DialogLogin({ children }: { children: ReactNode }) {
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px]" data-testid="login-dialog">
         <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
           <div className="mx-auto flex w-[440px] max-w-md flex-col items-center">
             <h2 className="w-full pb-6 text-3xl text-gray-800">Returning Users: Login to Vote</h2>
@@ -87,7 +87,7 @@ function DialogLogin({ children }: { children: ReactNode }) {
                 <Separator orientation="horizontal" className="w-1/3" />
               </div>
               <div className="flex justify-center">
-                <button className="mt-4 flex w-fit justify-center rounded-lg bg-gray-400 px-5 py-2.5 hover:bg-gray-500 focus:outline-none ">
+                <button className="mt-4 flex w-fit justify-center rounded-lg bg-gray-400 px-5 py-2.5 hover:bg-gray-500 focus:outline-none " data-testid="hivesigner-button">
                   <img src="/hivesigner.svg" alt="Hivesigner logo" />
                 </button>
               </div>

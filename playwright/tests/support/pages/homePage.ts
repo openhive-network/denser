@@ -29,6 +29,17 @@ export class HomePage {
   readonly getHeaderAllCommunities: Locator;
   readonly getMainTimeLineOfPosts: any;
   readonly getPostCardAvatar: Locator;
+  readonly getPostCardFooter: Locator;
+  readonly getUpvoteButton: Locator;
+  readonly getFirstPostUpvoteButton: Locator;
+  readonly getUpvoteButtonTooltip: Locator;
+  readonly getDownvoteButton: Locator;
+  readonly getFirstPostDownvoteButton: Locator;
+  readonly getDownvoteButtonTooltip: Locator;
+  readonly getFirstPostDownvoteButtonTooltip: Locator;
+  readonly getFirstPostUpvoteButtonTooltip: Locator;
+  readonly getFirstPostCardFooter: Locator;
+  readonly getFirstPostListItem: Locator;
   readonly getFirstPostCardAvatar: Locator;
   readonly getFirstPostAuthor: Locator;
   readonly getFirstPostAuthorReputation: Locator;
@@ -78,6 +89,7 @@ export class HomePage {
       '[class="mt-4 flex items-center justify-between"] span:text("All posts")'
     );
     this.getMainTimeLineOfPosts = page.locator('li[data-testid="post-list-item"]');
+    this.getFirstPostListItem = this.getMainTimeLineOfPosts.first().locator('div').first();
     this.getPostCardAvatar = page.locator('[data-testid="post-card-avatar"]');
     this.getFirstPostCardAvatar = this.getPostCardAvatar.first();
     this.getFirstPostAuthor = page.locator('[data-testid="post-author"]').first();
@@ -90,6 +102,16 @@ export class HomePage {
     this.getFirstPostVotes = page.locator('[data-testid="post-total-votes"]').first();
     this.getFirstPostChildren = page.locator('[data-testid="post-children"]').first();
     this.getPostChildren = page.locator('[data-testid="post-children"]');
+    this.getPostCardFooter = page.locator('[data-testid="post-card-footer"]');
+    this.getUpvoteButton = page.locator('[data-testid="upvote-button"]');
+    this.getFirstPostUpvoteButton = this.getUpvoteButton.first();
+    this.getFirstPostCardFooter = this.getPostCardFooter.first();
+    this.getUpvoteButtonTooltip = page.locator('[data-testid="upvote-button-tooltip"]');
+    this.getFirstPostUpvoteButtonTooltip = this.getUpvoteButtonTooltip.first();
+    this.getDownvoteButton = page.locator('[data-testid="downvote-button"]');
+    this.getFirstPostDownvoteButton = this.getDownvoteButton.first();
+    this.getDownvoteButtonTooltip = page.locator('[data-testid="downvote-button-tooltip"]');
+    this.getFirstPostDownvoteButtonTooltip = this.getDownvoteButtonTooltip.first();
     this.getBody = page.locator('body');
     this.getThemeModeButton = page.locator('[data-testid="theme-mode"]');
     this.getThemeModeItem = page.locator('[data-testid="theme-mode-item"]');
