@@ -41,7 +41,11 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
     data: dynamicGlobalData
   } = useQuery(['dynamicGlobalData'], () => getDynamicGlobalProperties());
 
-  const { data: twitterData } = useQuery(['twitterData', username], () => getTwitterInfo(username));
+  const { data: twitterData } = useQuery(['twitterData', username], () => getTwitterInfo(username), {
+    enabled: !!username,
+    retry: false,
+    refetchOnWindowFocus: false
+  });
   if (accountDataIsLoading || dynamicGlobalDataIsLoading || profileDataIsLoading) {
     return <Loading loading={accountDataIsLoading || dynamicGlobalDataIsLoading || profileDataIsLoading} />;
   }
