@@ -48,6 +48,7 @@ export class HomePage {
   readonly getFirstPostCardTimestampLink: Locator;
   readonly getFirstPostTitle: Locator;
   readonly getFirstPostPayout: Locator;
+  readonly getFirstPostPayoutTooltip: Locator;
   readonly getFirstPostVotes: Locator;
   readonly getFirstPostChildren: Locator;
   readonly getPostChildren: Locator;
@@ -99,6 +100,7 @@ export class HomePage {
     this.getFirstPostCardTimestampLink = page.locator('[data-testid="post-card-timestamp"]').first();
     this.getFirstPostTitle = page.locator('li[data-testid="post-list-item"] h3 a').first();
     this.getFirstPostPayout = page.locator('[data-testid="post-payout"]').first();
+    this.getFirstPostPayoutTooltip = page.locator('[data-testid="payout-post-card-tooltip"]').first();
     this.getFirstPostVotes = page.locator('[data-testid="post-total-votes"]').first();
     this.getFirstPostChildren = page.locator('[data-testid="post-children"]').first();
     this.getPostChildren = page.locator('[data-testid="post-children"]');

@@ -38,7 +38,7 @@ export default function DetailsCardHover({
   return (
     <HoverCard>
       <HoverCardTrigger asChild>{children}</HoverCardTrigger>
-      <HoverCardContent className="flex w-auto flex-col">
+      <HoverCardContent className="flex w-auto flex-col" data-testid="payout-post-card-tooltip">
         {decline ? (
           <span>Payout declined</span>
         ) : (

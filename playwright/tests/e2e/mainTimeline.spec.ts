@@ -71,6 +71,55 @@ test.describe('Home page tests', () => {
     // expect(firstPostChildren).toBe(String(postChildren));
   });
 
+  test('validate the first post footer payouts styles (for Trending filter) in the light theme', async ({ page }) => {
+    const homePage = new HomePage(page);
+    await homePage.goto();
+
+    // Color of the first post payouts without hovering
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostPayout, 'color')).toBe(
+      'rgb(15, 23, 42)'
+    );
+    await homePage.getFirstPostPayout.hover();
+    await homePage.page.waitForTimeout(1000);
+    // Color of the first post payouts with hovering
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostPayout, 'color')).toBe(
+      'rgb(220, 38, 38)'
+    );
+    // The tooltip is visible by hovering
+    expect(await homePage.getFirstPostPayoutTooltip).toBeVisible();
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostPayoutTooltip, 'color')).toBe(
+      'rgb(15, 23, 42)'
+    );
+  });
+
+  test('validate the first post footer payouts styles (for Trending filter) in the dark theme', async ({ page }) => {
+    const homePage = new HomePage(page);
+    await homePage.goto();
+
+    // Move to the dark theme
+    await homePage.changeThemeMode('Dark');
+    await homePage.validateThemeModeIsDark();
+
+    // Color of the first post payouts without hovering
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostPayout, 'color')).toBe(
+      'rgb(255, 255, 255)'
+    );
+    await homePage.getFirstPostPayout.hover();
+    await homePage.page.waitForTimeout(1000);
+    // Color of the first post payouts with hovering
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostPayout, 'color')).toBe(
+      'rgb(220, 38, 38)'
+    );
+    // The tooltip is visible by hovering
+    expect(await homePage.getFirstPostPayoutTooltip).toBeVisible();
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostPayoutTooltip, 'color')).toBe(
+      'rgb(148, 163, 184)'
+    );
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostPayoutTooltip, 'background-color')).toBe(
+      'rgb(3, 7, 17)'
+    );
+  });
+
   test('validate the first post header styles (for Trending filter) in the light theme', async ({ page }) => {
     // test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
     const homePage = new HomePage(page);
