@@ -34,31 +34,14 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   } = useQuery(['accountData', username], () => getAccount(username), {
     enabled: !!username
   });
-  const startTwitterData = {
-    twitter_username: '',
-    twitter_profile: ''
-  };
 
   const {
     isLoading: dynamicGlobalDataIsLoading,
     error: dynamicGlobalDataError,
     data: dynamicGlobalData
   } = useQuery(['dynamicGlobalData'], () => getDynamicGlobalProperties());
-  const [twitterData, setTwitterData] = useState(startTwitterData);
 
-  useEffect(() => {
-    const fetchTwitterData = async () => {
-      try {
-        const response = await getTwitterInfo(username);
-        setTwitterData(response);
-      } catch (error) {
-        console.error('No linked at HivePosh.com');
-      }
-    };
-
-    fetchTwitterData();
-  }, [username]);
-
+  const { data: twitterData } = useQuery(['twitterData', username], () => getTwitterInfo(username));
   if (accountDataIsLoading || dynamicGlobalDataIsLoading || profileDataIsLoading) {
     return <Loading loading={accountDataIsLoading || dynamicGlobalDataIsLoading || profileDataIsLoading} />;
   }
@@ -109,7 +92,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   />
                 </Link>
               ) : null}
-              {twitterData.twitter_profile !== '' ? (
+              {twitterData ? (
                 <Link
                   href={twitterData.twitter_profile}
                   title="To get the Twitter badge, link your account at HivePosh.com"
