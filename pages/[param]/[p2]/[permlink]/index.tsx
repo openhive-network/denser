@@ -377,7 +377,7 @@ function PostPage({
       {reply ? <ReplyTextbox onSetReply={setReply} /> : null}
       {!isLoadingDiscussion && discussion && discussionState ? (
         <div className="mx-auto my-0 max-w-4xl py-4 sm:px-8">
-          <div className="flex items-center justify-end pb-4">
+          <div className="flex items-center justify-end pb-4" translate="no">
             <span>Sort: </span>
             <CommentSelectFilter />
           </div>
