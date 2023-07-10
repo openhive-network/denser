@@ -120,6 +120,62 @@ test.describe('Home page tests', () => {
     );
   });
 
+  test('validate the first post footer votes styles (for Trending filter) in the light theme', async ({ page }) => {
+    const homePage = new HomePage(page);
+    await homePage.goto();
+
+    // Color of the first post votes without hovering
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostVotes, 'color')).toBe(
+      'rgb(15, 23, 42)'
+    );
+    await homePage.getFirstPostVotes.hover();
+    await homePage.page.waitForTimeout(1000);
+
+    const votes = await homePage.getFirstPostVotes.textContent();
+
+    // Color of the first post votes with hovering
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostVotes, 'color')).toBe(
+      'rgb(15, 23, 42)'
+    );
+
+    // The tooltip is visible by hovering
+    expect(await homePage.getFirstPostVotesTooltip.textContent()).toBe(votes+' votes'+votes+' votes');
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostVotesTooltip, 'color')).toBe(
+      'rgb(15, 23, 42)'
+    );
+  });
+
+  test('validate the first post footer votes styles (for Trending filter) in the dark theme', async ({ page }) => {
+    const homePage = new HomePage(page);
+    await homePage.goto();
+
+    // Move to the dark theme
+    await homePage.changeThemeMode('Dark');
+    await homePage.validateThemeModeIsDark();
+
+    // Color of the first post votes without hovering
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostVotes, 'color')).toBe(
+      'rgb(255, 255, 255)'
+    );
+    await homePage.getFirstPostVotes.hover();
+    await homePage.page.waitForTimeout(1000);
+
+    const votes = await homePage.getFirstPostVotes.textContent();
+
+    // Color of the first post votes with hovering
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostVotes, 'color')).toBe(
+      'rgb(248, 250, 252)'
+    );
+    // The tooltip is visible by hovering
+    expect(await homePage.getFirstPostVotesTooltip.textContent()).toBe(votes+' votes'+votes+' votes');
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostVotesTooltip, 'color')).toBe(
+      'rgb(148, 163, 184)'
+    );
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostVotesTooltip, 'background-color')).toBe(
+      'rgb(3, 7, 17)'
+    );
+  });
+
   test('validate the first post header styles (for Trending filter) in the light theme', async ({ page }) => {
     // test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
     const homePage = new HomePage(page);

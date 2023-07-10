@@ -50,6 +50,7 @@ export class HomePage {
   readonly getFirstPostPayout: Locator;
   readonly getFirstPostPayoutTooltip: Locator;
   readonly getFirstPostVotes: Locator;
+  readonly getFirstPostVotesTooltip: Locator;
   readonly getFirstPostChildren: Locator;
   readonly getPostChildren: Locator;
   readonly getBody: Locator;
@@ -102,6 +103,7 @@ export class HomePage {
     this.getFirstPostPayout = page.locator('[data-testid="post-payout"]').first();
     this.getFirstPostPayoutTooltip = page.locator('[data-testid="payout-post-card-tooltip"]').first();
     this.getFirstPostVotes = page.locator('[data-testid="post-total-votes"]').first();
+    this.getFirstPostVotesTooltip = page.locator('[data-testid="post-card-votes-tooltip"]').first();
     this.getFirstPostChildren = page.locator('[data-testid="post-children"]').first();
     this.getPostChildren = page.locator('[data-testid="post-children"]');
     this.getPostCardFooter = page.locator('[data-testid="post-card-footer"]');

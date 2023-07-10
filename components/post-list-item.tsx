@@ -306,7 +306,7 @@ const PostListItem = ({ post, sort, historyFeedData, isCommunityPage }: any) => 
                         <Icons.chevronUp className="h-4 w-4 sm:mr-1" />
                         {post.stats.total_votes}
                       </TooltipTrigger>
-                      <TooltipContent>
+                      <TooltipContent data-testid="post-card-votes-tooltip">
                         <p>{post.stats.total_votes > 0 ? post.stats.total_votes : 'no'} votes</p>
                       </TooltipContent>
                     </Tooltip>
