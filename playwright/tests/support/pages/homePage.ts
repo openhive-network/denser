@@ -52,6 +52,9 @@ export class HomePage {
   readonly getFirstPostVotes: Locator;
   readonly getFirstPostVotesTooltip: Locator;
   readonly getFirstPostChildren: Locator;
+  readonly getFirstPostChildernIcon: Locator;
+  readonly getFirstPostChildernCommentNumber: Locator;
+  readonly getFirstPostChildernTooltip: Locator;
   readonly getPostChildren: Locator;
   readonly getBody: Locator;
   readonly getThemeModeButton: Locator;
@@ -105,6 +108,9 @@ export class HomePage {
     this.getFirstPostVotes = page.locator('[data-testid="post-total-votes"]').first();
     this.getFirstPostVotesTooltip = page.locator('[data-testid="post-card-votes-tooltip"]').first();
     this.getFirstPostChildren = page.locator('[data-testid="post-children"]').first();
+    this.getFirstPostChildernIcon = this.getFirstPostChildren.locator('a:nth-of-type(1)');
+    this.getFirstPostChildernCommentNumber = this.getFirstPostChildren.locator('a:nth-of-type(2)');
+    this.getFirstPostChildernTooltip = page.locator('[data-testid="post-card-responses"]');
     this.getPostChildren = page.locator('[data-testid="post-children"]');
     this.getPostCardFooter = page.locator('[data-testid="post-card-footer"]');
     this.getUpvoteButton = page.locator('[data-testid="upvote-button"]');
@@ -260,6 +266,15 @@ export class HomePage {
         break;
       }
     }
+  }
+
+  async moveToTheFirstPostCommentContantPageByClickingResponses() {
+    const firstPostCardTitle = await this.getFirstPostTitle.textContent();
+
+    // Click the post's responses link
+    await this.getFirstPostChildren.click();
+    await this.page.waitForSelector(this.page.locator('[data-testid="article-title"]')['_selector']);
+    expect(await this.page.locator('[data-testid="article-title"]').textContent()).toBe(firstPostCardTitle);
   }
 
   async moveToNavPostsPage() {

@@ -67,11 +67,13 @@ test.describe('Home page tests', () => {
     const firstPostTotalVotes = (await homePage.getFirstPostVotes.allInnerTexts()).at(0);
     expect(firstPostTotalVotes).toBe(String(postTotalVotes));
 
-    // const firstPostChildren = (await homePage.getFirstPostChildren.allInnerTexts()).at(0);
-    // expect(firstPostChildren).toBe(String(postChildren));
+    const firstPostChildren = (await homePage.getFirstPostChildren.allInnerTexts()).at(0);
+    expect(firstPostChildren).toBe(String(postChildren));
   });
 
-  test('validate the first post footer payouts styles (for Trending filter) in the light theme', async ({ page }) => {
+  test('validate the first post footer payouts styles (for Trending filter) in the light theme', async ({
+    page
+  }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
@@ -92,7 +94,9 @@ test.describe('Home page tests', () => {
     );
   });
 
-  test('validate the first post footer payouts styles (for Trending filter) in the dark theme', async ({ page }) => {
+  test('validate the first post footer payouts styles (for Trending filter) in the dark theme', async ({
+    page
+  }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
@@ -115,12 +119,14 @@ test.describe('Home page tests', () => {
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostPayoutTooltip, 'color')).toBe(
       'rgb(148, 163, 184)'
     );
-    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostPayoutTooltip, 'background-color')).toBe(
-      'rgb(3, 7, 17)'
-    );
+    expect(
+      await homePage.getElementCssPropertyValue(await homePage.getFirstPostPayoutTooltip, 'background-color')
+    ).toBe('rgb(3, 7, 17)');
   });
 
-  test('validate the first post footer votes styles (for Trending filter) in the light theme', async ({ page }) => {
+  test('validate the first post footer votes styles (for Trending filter) in the light theme', async ({
+    page
+  }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
@@ -139,16 +145,17 @@ test.describe('Home page tests', () => {
     );
 
     // The tooltip is visible by hovering
-    expect(await homePage.getFirstPostVotesTooltip.textContent()).toBe(votes+' votes'+votes+' votes');
+    expect(await homePage.getFirstPostVotesTooltip.textContent()).toBe(votes + ' votes' + votes + ' votes');
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostVotesTooltip, 'color')).toBe(
       'rgb(15, 23, 42)'
     );
   });
 
-  test('validate the first post footer votes styles (for Trending filter) in the dark theme', async ({ page }) => {
+  test('validate the first post footer votes styles (for Trending filter) in the dark theme', async ({
+    page
+  }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
-
     // Move to the dark theme
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
@@ -167,13 +174,100 @@ test.describe('Home page tests', () => {
       'rgb(248, 250, 252)'
     );
     // The tooltip is visible by hovering
-    expect(await homePage.getFirstPostVotesTooltip.textContent()).toBe(votes+' votes'+votes+' votes');
+    expect(await homePage.getFirstPostVotesTooltip.textContent()).toBe(votes + ' votes' + votes + ' votes');
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostVotesTooltip, 'color')).toBe(
       'rgb(148, 163, 184)'
     );
-    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostVotesTooltip, 'background-color')).toBe(
-      'rgb(3, 7, 17)'
+    expect(
+      await homePage.getElementCssPropertyValue(await homePage.getFirstPostVotesTooltip, 'background-color')
+    ).toBe('rgb(3, 7, 17)');
+  });
+
+  test('validate the first post footer responses styles (for Trending filter) in the light theme', async ({
+    page
+  }) => {
+    const homePage = new HomePage(page);
+    await homePage.goto();
+
+    // Color of the first post comments number and icon without hovering
+    expect(
+      await homePage.getElementCssPropertyValue(await homePage.getFirstPostChildernCommentNumber, 'color')
+    ).toBe('rgb(15, 23, 42)');
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostChildernIcon, 'color')).toBe(
+      'rgb(15, 23, 42)'
     );
+
+    await homePage.getFirstPostChildernCommentNumber.hover();
+    await homePage.page.waitForTimeout(1000);
+    // Color of the first post comments number after hovering
+    expect(
+      await homePage.getElementCssPropertyValue(await homePage.getFirstPostChildernCommentNumber, 'color')
+    ).toBe('rgb(220, 38, 38)');
+    // Color of the first post comments icon after hovering
+    await homePage.getFirstPostChildernIcon.hover();
+    await homePage.page.waitForTimeout(1000);
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostChildernIcon, 'color')).toBe(
+      'rgb(15, 23, 42)'
+    );
+
+    await homePage.getFirstPostChildernCommentNumber.hover();
+    await homePage.page.waitForTimeout(1000);
+    const commentNumber = await homePage.getFirstPostChildernCommentNumber.textContent();
+    // The tooltip is visible by hovering
+    if (commentNumber === '0') {
+      expect(await homePage.getFirstPostChildernTooltip.textContent()).toContain(
+        'No responses. Click to respond'
+      );
+    } else if (commentNumber === '1') {
+      expect(await homePage.getFirstPostChildernTooltip.textContent()).toContain(
+        `${commentNumber} response. Click to respond`
+      );
+    } else {
+      expect(await homePage.getFirstPostChildernTooltip.textContent()).toContain(
+        `${commentNumber} responses. Click to respond`
+      );
+    }
+  });
+
+  test('validate the first post footer responses styles (for Trending filter) in the dark theme', async ({
+    page
+  }) => {
+    const homePage = new HomePage(page);
+    await homePage.goto();
+    // Move to the dark theme
+    await homePage.changeThemeMode('Dark');
+    await homePage.validateThemeModeIsDark();
+
+    await homePage.getFirstPostChildernCommentNumber.hover();
+    await homePage.page.waitForTimeout(1000);
+    // Color of the first post comments number after hovering
+    expect(
+      await homePage.getElementCssPropertyValue(await homePage.getFirstPostChildernCommentNumber, 'color')
+    ).toBe('rgb(220, 38, 38)');
+    // Color of the first post comments icon after hovering
+    await homePage.getFirstPostChildernIcon.hover();
+    await homePage.page.waitForTimeout(1000);
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostChildernIcon, 'color')).toBe(
+      'rgb(248, 250, 252)'
+    );
+
+    await homePage.getFirstPostChildernCommentNumber.hover();
+    await homePage.page.waitForTimeout(1000);
+    const commentNumber = await homePage.getFirstPostChildernCommentNumber.textContent();
+    // The tooltip is visible by hovering
+    if (commentNumber === '0') {
+      expect(await homePage.getFirstPostChildernTooltip.textContent()).toContain(
+        'No responses. Click to respond'
+      );
+    } else if (commentNumber === '1') {
+      expect(await homePage.getFirstPostChildernTooltip.textContent()).toContain(
+        `${commentNumber} response. Click to respond`
+      );
+    } else {
+      expect(await homePage.getFirstPostChildernTooltip.textContent()).toContain(
+        `${commentNumber} responses. Click to respond`
+      );
+    }
   });
 
   test('validate the first post header styles (for Trending filter) in the light theme', async ({ page }) => {
@@ -368,6 +462,13 @@ test.describe('Home page tests', () => {
     await homePage.moveToFirstPostContentByClickingTimestamp();
   });
 
+  test('move to the first post content by clicking the responses', async ({ page }) => {
+    const homePage = new HomePage(page);
+
+    await homePage.goto();
+    await homePage.moveToTheFirstPostCommentContantPageByClickingResponses();
+  });
+
   test('move to the dark mode and back to the light mode', async ({ page }) => {
     const homePage = new HomePage(page);
 
@@ -545,7 +646,9 @@ test.describe('Home page tests', () => {
     await expect(homePage.getNavSidebarMenuContent).not.toBeVisible();
   });
 
-  test('validate upvote button styles and the tootpit of the first post in the light theme', async ({ page }) => {
+  test('validate upvote button styles and the tootpit of the first post in the light theme', async ({
+    page
+  }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
@@ -566,14 +669,11 @@ test.describe('Home page tests', () => {
       )
     ).toBe('rgba(0, 0, 0, 0)');
 
-
     // Hover upvote button
     await homePage.getFirstPostUpvoteButton.hover();
     await homePage.page.waitForTimeout(1000);
     // Validate the tooltip message
-    expect(await homePage.getFirstPostUpvoteButtonTooltip.textContent()).toBe(
-      'UpvoteUpvote'
-    );
+    expect(await homePage.getFirstPostUpvoteButtonTooltip.textContent()).toBe('UpvoteUpvote');
     // Upvote icon color
     expect(
       await homePage.getElementCssPropertyValue(
@@ -591,7 +691,9 @@ test.describe('Home page tests', () => {
     ).toBe('rgb(220, 38, 38)');
   });
 
-  test('validate upvote button styles and the tootpit of the first post in the dark theme', async ({ page }) => {
+  test('validate upvote button styles and the tootpit of the first post in the dark theme', async ({
+    page
+  }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
     await homePage.changeThemeMode('Dark');
@@ -614,14 +716,11 @@ test.describe('Home page tests', () => {
       )
     ).toBe('rgba(0, 0, 0, 0)');
 
-
     // Hover upvote button
     await homePage.getFirstPostUpvoteButton.hover();
     await homePage.page.waitForTimeout(1000);
     // Validate the tooltip message
-    expect(await homePage.getFirstPostUpvoteButtonTooltip.textContent()).toBe(
-      'UpvoteUpvote'
-    );
+    expect(await homePage.getFirstPostUpvoteButtonTooltip.textContent()).toBe('UpvoteUpvote');
     // Upvote icon color
     expect(
       await homePage.getElementCssPropertyValue(
@@ -650,7 +749,9 @@ test.describe('Home page tests', () => {
     await homePage.isTrendingCommunitiesVisible();
   });
 
-  test('validate downvote button styles and the tootpit of the first post in the light theme', async ({ page }) => {
+  test('validate downvote button styles and the tootpit of the first post in the light theme', async ({
+    page
+  }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
@@ -671,14 +772,11 @@ test.describe('Home page tests', () => {
       )
     ).toBe('rgba(0, 0, 0, 0)');
 
-
     // Hover downvote button
     await homePage.getFirstPostDownvoteButton.hover();
     await homePage.page.waitForTimeout(1000);
     // Validate the tooltip message
-    expect(await homePage.getFirstPostDownvoteButtonTooltip.textContent()).toBe(
-      'DownvoteDownvote'
-    );
+    expect(await homePage.getFirstPostDownvoteButtonTooltip.textContent()).toBe('DownvoteDownvote');
     // Downvote icon color
     expect(
       await homePage.getElementCssPropertyValue(
@@ -696,7 +794,9 @@ test.describe('Home page tests', () => {
     ).toBe('rgb(75, 85, 99)');
   });
 
-  test('validate downvote button styles and the tootpit of the first post in the dark theme', async ({ page }) => {
+  test('validate downvote button styles and the tootpit of the first post in the dark theme', async ({
+    page
+  }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
     await homePage.changeThemeMode('Dark');
@@ -719,14 +819,11 @@ test.describe('Home page tests', () => {
       )
     ).toBe('rgba(0, 0, 0, 0)');
 
-
     // Hover downvote button
     await homePage.getFirstPostDownvoteButton.hover();
     await homePage.page.waitForTimeout(1000);
     // Validate the tooltip message
-    expect(await homePage.getFirstPostDownvoteButtonTooltip.textContent()).toBe(
-      'DownvoteDownvote'
-    );
+    expect(await homePage.getFirstPostDownvoteButtonTooltip.textContent()).toBe('DownvoteDownvote');
     // Downvote icon color
     expect(
       await homePage.getElementCssPropertyValue(

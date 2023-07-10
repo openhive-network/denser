@@ -327,7 +327,7 @@ const PostListItem = ({ post, sort, historyFeedData, isCommunityPage }: any) => 
                           {post.children}
                         </Link>
                       </TooltipTrigger>
-                      <TooltipContent>
+                      <TooltipContent data-testid="post-card-responses">
                         <p>{` ${
                           post.children === 0
                             ? 'No responses'
