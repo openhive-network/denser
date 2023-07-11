@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
-
 import { HomePage } from '../support/pages/homePage';
 import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
+import { ReblogThisPostDialog } from '../support/pages/reblogThisPostDialog';
 
 test.describe('Home page tests', () => {
   test('has the main timeline of posts (20 posts are displayed by default)', async ({ page }) => {
@@ -851,4 +851,80 @@ test.describe('Home page tests', () => {
     await loginDialog.closeLoginDialog();
     await homePage.isTrendingCommunitiesVisible();
   });
+
+  test('validate reblog button styles in the light theme', async ({ page }) => {
+    const homePage = new HomePage(page);
+    await homePage.goto();
+
+    // Color of reblog button
+    expect(
+      await homePage.getElementCssPropertyValue(
+        await homePage.getFirstPostReblogButton,
+        'color'
+      )
+    ).toBe('rgb(15, 23, 42)');
+
+    // The tooltip message and colors
+    await homePage.getFirstPostReblogButton.hover();
+    expect(await homePage.getFirstPostReblogTooltip.textContent()).toContain('Reblog @');
+    expect(
+      await homePage.getElementCssPropertyValue(
+        await homePage.getFirstPostReblogTooltip,
+        'color'
+      )
+    ).toBe('rgb(15, 23, 42)');
+    expect(
+      await homePage.getElementCssPropertyValue(
+        await homePage.getFirstPostReblogTooltip,
+        'background-color'
+      )
+    ).toBe('rgb(255, 255, 255)');
+
+  });
+
+  test('validate reblog button styles in the dark theme', async ({ page }) => {
+    const homePage = new HomePage(page);
+    await homePage.goto();
+    await homePage.changeThemeMode('Dark');
+    await homePage.validateThemeModeIsDark();
+
+    // Color of reblog button
+    expect(
+      await homePage.getElementCssPropertyValue(
+        await homePage.getFirstPostReblogButton,
+        'color'
+      )
+    ).toBe('rgb(255, 255, 255)');
+
+    // The tooltip message and colors
+    await homePage.getFirstPostReblogButton.hover();
+    expect(await homePage.getFirstPostReblogTooltip.textContent()).toContain('Reblog @');
+    expect(
+      await homePage.getElementCssPropertyValue(
+        await homePage.getFirstPostReblogTooltip,
+        'color'
+      )
+    ).toBe('rgb(148, 163, 184)');
+    expect(
+      await homePage.getElementCssPropertyValue(
+        await homePage.getFirstPostReblogTooltip,
+        'background-color'
+      )
+    ).toBe('rgb(3, 7, 17)');
+  });
+
+  test('move to the reblog this post dialog ', async ({ page }) => {
+    const homePage = new HomePage(page);
+    const reblogDialog = new ReblogThisPostDialog(page);
+    await homePage.goto();
+
+    await homePage.getFirstPostReblogButton.click();
+    await reblogDialog.validateReblogThisPostHeaderIsVisible();
+    await reblogDialog.validateReblogThisPostDescriptionIsVisible();
+    await expect(reblogDialog.getDialogOkButton).toBeVisible();
+    await expect(reblogDialog.getDialogCancelButton).toBeVisible();
+    await reblogDialog.closeReblogDialog();
+    await expect(homePage.getTrandingCommunitiesHeader).toBeVisible();
+  });
+
 });

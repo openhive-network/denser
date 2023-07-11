@@ -340,7 +340,7 @@ const PostListItem = ({ post, sort, historyFeedData, isCommunityPage }: any) => 
                   </TooltipProvider>
                 </div>
                 <Separator orientation="vertical" />
-                <div className="flex items-center">
+                <div className="flex items-center" data-testid="post-card-reblog">
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger>
@@ -348,7 +348,7 @@ const PostListItem = ({ post, sort, historyFeedData, isCommunityPage }: any) => 
                           <Icons.forward className="h-4 w-4 cursor-pointer" />
                         </AlertDialogDemo>
                       </TooltipTrigger>
-                      <TooltipContent>
+                      <TooltipContent data-testid="post-card-reblog-tooltip">
                         <p>
                           Reblog @{post.author}/{post.permlink}
                         </p>

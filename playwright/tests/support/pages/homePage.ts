@@ -34,6 +34,7 @@ export class HomePage {
   readonly getFirstPostUpvoteButton: Locator;
   readonly getUpvoteButtonTooltip: Locator;
   readonly getDownvoteButton: Locator;
+  readonly getReblogButton: Locator;
   readonly getFirstPostDownvoteButton: Locator;
   readonly getDownvoteButtonTooltip: Locator;
   readonly getFirstPostDownvoteButtonTooltip: Locator;
@@ -55,6 +56,8 @@ export class HomePage {
   readonly getFirstPostChildernIcon: Locator;
   readonly getFirstPostChildernCommentNumber: Locator;
   readonly getFirstPostChildernTooltip: Locator;
+  readonly getFirstPostReblogButton: Locator;
+  readonly getFirstPostReblogTooltip: Locator;
   readonly getPostChildren: Locator;
   readonly getBody: Locator;
   readonly getThemeModeButton: Locator;
@@ -122,6 +125,9 @@ export class HomePage {
     this.getFirstPostDownvoteButton = this.getDownvoteButton.first();
     this.getDownvoteButtonTooltip = page.locator('[data-testid="downvote-button-tooltip"]');
     this.getFirstPostDownvoteButtonTooltip = this.getDownvoteButtonTooltip.first();
+    this.getReblogButton = page.locator('[data-testid="post-card-reblog"]');
+    this.getFirstPostReblogButton = this.getReblogButton.first();
+    this.getFirstPostReblogTooltip = page.locator('[data-testid="post-card-reblog-tooltip"]').first();
     this.getBody = page.locator('body');
     this.getThemeModeButton = page.locator('[data-testid="theme-mode"]');
     this.getThemeModeItem = page.locator('[data-testid="theme-mode-item"]');
