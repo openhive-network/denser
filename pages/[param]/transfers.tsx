@@ -241,7 +241,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
               fluctuate. HIVE POWER increases at an APR of approximately{' '}
               {getCurrentHpApr(dynamicData).toFixed(2)}%, subject to blockchain variance.{' '}
               <span className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-blue-400">
-                <Link href="https://wallet.hive.blog/faq.html#How_many_new_tokens_are_generated_by_the_blockchain">
+                <Link href="https://hive.blog/faq.html#How_many_new_tokens_are_generated_by_the_blockchain">
                   See FAQ for details.
                 </Link>
               </span>

@@ -90,7 +90,8 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               {profileData.name ? (
                 <Link href={`https://hivebuzz.me/@${profileData.name}`}>
                   <img
-                    alt={`This is ${profileData.name}'s level badged earned from Hivebuzz programs`}
+                    alt="fish image"
+                    title={`This is ${profileData.name}'s level badged earned from Hivebuzz programs`}
                     className="mx-2 w-6 duration-500 ease-in-out hover:w-12"
                     src={`https://hivebuzz.me/api/level/${profileData.name}?dead`}
                   />
