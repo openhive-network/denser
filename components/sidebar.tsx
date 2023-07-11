@@ -85,7 +85,7 @@ const Sidebar = () => {
             <Separator className="my-2" />
             <li>
               <SheetTitle className="py-1.5">
-                <Link href="/">Privacy Policy</Link>
+                <Link href="/privacy.html">Privacy Policy</Link>
               </SheetTitle>
             </li>
             <li>

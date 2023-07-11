@@ -5,7 +5,7 @@ import fs from 'fs';
 export const getServerSideProps: GetServerSideProps<{
   data: string;
 }> = async () => {
-  const file_path = path.join('lib', 'faq.md');
+  const file_path = path.join('lib', 'markdowns', 'faq.md');
   const data = fs.readFileSync(file_path, { encoding: 'utf8', flag: 'r' });
 
   return { props: { data } };
