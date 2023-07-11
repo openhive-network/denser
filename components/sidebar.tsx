@@ -19,7 +19,7 @@ const Sidebar = () => {
         data-testid="nav-sidebar-menu-content"
       >
         <div className="flex flex-col">
-          <ul className="flex flex-col gap-4">
+          <ul className="flex flex-col gap-2">
             <li>
               <SheetTitle className="py-1.5">
                 <Link href="/welcome">Welcome</Link>
@@ -90,7 +90,7 @@ const Sidebar = () => {
             </li>
             <li>
               <SheetTitle className="py-1.5">
-                <Link href="/">Terms of Service</Link>
+                <Link href="/tos.html">Terms of Service</Link>
               </SheetTitle>
             </li>
           </ul>
