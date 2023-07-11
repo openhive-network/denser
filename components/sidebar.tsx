@@ -1,16 +1,6 @@
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Icons } from '@/components/icons';
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger
-} from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 
@@ -29,10 +19,10 @@ const Sidebar = () => {
         data-testid="nav-sidebar-menu-content"
       >
         <div className="flex flex-col">
-          <ul>
+          <ul className="flex flex-col gap-4">
             <li>
               <SheetTitle className="py-1.5">
-                <Link href="/">Welcome</Link>
+                <Link href="/welcome">Welcome</Link>
               </SheetTitle>
             </li>
             <li>
@@ -42,45 +32,54 @@ const Sidebar = () => {
             </li>
             <li>
               <SheetTitle className="py-1.5">
-                <Link href="/">Block Explorer</Link>
+                <Link href="https://hiveblocks.com" className="flex">
+                  Block Explorer
+                  <Icons.forward className="w-4" />
+                </Link>
               </SheetTitle>
             </li>
             <Separator className="my-2" />
             <li>
               <SheetTitle className="py-1.5">
-                <Link href="/">Stolen Accounts Recovery</Link>
+                <Link href="https://wallet.hive.blog/recover_account_step_1">Stolen Accounts Recovery</Link>
               </SheetTitle>
             </li>
             <li>
               <SheetTitle className="py-1.5">
-                <Link href="/">Change Account Password</Link>
+                <Link href="https://wallet.hive.blog/change_password">Change Account Password</Link>
               </SheetTitle>
             </li>
             <li>
               <SheetTitle className="py-1.5">
-                <Link href="/">Vote for Witnesses</Link>
+                <Link href="https://wallet.hive.blog/~witnesses">Vote for Witnesses</Link>
               </SheetTitle>
             </li>
             <li>
               <SheetTitle className="py-1.5">
-                <Link href="/">Hive Proposals</Link>
-              </SheetTitle>
-            </li>
-            <Separator className="my-2" />
-            <li>
-              <SheetTitle className="py-1.5">
-                <Link href="/">OpenHive Chat</Link>
+                <Link href="https://wallet.hive.blog/proposals">Hive Proposals</Link>
               </SheetTitle>
             </li>
             <Separator className="my-2" />
             <li>
               <SheetTitle className="py-1.5">
-                <Link href="/">Developer Portal</Link>
+                <Link href="https://openhive.chat" className="flex">
+                  OpenHive Chat <Icons.forward className="w-4" />
+                </Link>
+              </SheetTitle>
+            </li>
+            <Separator className="my-2" />
+            <li>
+              <SheetTitle className="py-1.5">
+                <Link href="https://developers.hive.io" className="flex">
+                  Developer Portal <Icons.forward className="w-4" />
+                </Link>
               </SheetTitle>
             </li>
             <li>
               <SheetTitle className="py-1.5">
-                <Link href="/">Hive Whitepaper</Link>
+                <Link href="https://hive.io/whitepaper.pdf" className="flex">
+                  Hive Whitepaper <Icons.forward className="w-4" />
+                </Link>
               </SheetTitle>
             </li>
             <Separator className="my-2" />
