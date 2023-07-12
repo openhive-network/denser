@@ -19,7 +19,7 @@ export default function LinkedInShare({ title, url }: { title: string; url: stri
   };
 
   return (
-    <div className="cursor-pointer hover:text-red-500" onClick={openWindow} title="Share on LinkedIn">
+    <div className="cursor-pointer hover:text-red-600" onClick={openWindow} title="Share on LinkedIn">
       <Linkedin />
     </div>
   );

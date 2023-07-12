@@ -34,11 +34,19 @@ function UserInfo({
         in
         <span className="ml-1">
           {community_title ? (
-            <Link href={`/trending/${community}`} className="hover:cursor-pointer hover:text-red-600">
+            <Link
+              href={`/trending/${community}`}
+              className="hover:cursor-pointer hover:text-red-600"
+              data-testid="comment-community-title"
+            >
               {community_title}
             </Link>
           ) : (
-            <Link href={`/trending/${category}`} className="hover:cursor-pointer hover:text-red-600">
+            <Link
+              href={`/trending/${category}`}
+              className="hover:cursor-pointer hover:text-red-600"
+              data-testid="comment-category-title"
+            >
               #{category}
             </Link>
           )}

@@ -168,11 +168,11 @@ function PostPage({
             <h1 data-testid="article-title" className="text-2xl">
               {post_s.title}
             </h1>
-            <Link className="text-sm text-slate-500 hover:text-red-500" href={`${postUrl()}`}>
+            <Link className="text-sm text-slate-500 hover:text-red-500" href={`${postUrl()}`} data-testid="view-the-full-context">
               • View the full context
             </Link>
             {discussionState && !discussionState.some((e) => e.depth === 1) ? (
-              <Link className="text-sm text-slate-500 hover:text-red-500" href={`../../${parentUrl()}`}>
+              <Link className="text-sm text-slate-500 hover:text-red-500" href={`../../${parentUrl()}`} data-testid="view-the-direct-parent">
                 • View the direct parent
               </Link>
             ) : null}
@@ -229,11 +229,11 @@ function PostPage({
               in
               <span className="px-1 text-red-600">
                 {post_s.community_title ? (
-                  <Link href={`/trending/${community}`} className="hover:cursor-pointer">
+                  <Link href={`/trending/${community}`} className="hover:cursor-pointer" data-testid="footer-comment-community-link">
                     {post_s.community_title}
                   </Link>
                 ) : (
-                  <Link href={`/trending/${post_s.category}`} className="hover:cursor-pointer">
+                  <Link href={`/trending/${post_s.category}`} className="hover:cursor-pointer" data-testid="footer-comment-category-link">
                     #{post_s.category}
                   </Link>
                 )}
@@ -246,7 +246,7 @@ function PostPage({
                 </Badge>
               ) : null}
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center" data-testid="comment-respons-header">
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
@@ -262,13 +262,13 @@ function PostPage({
                 </Tooltip>
               </TooltipProvider>
               <span className="mx-1">|</span>
-              <button onClick={() => setReply(!reply)} className="flex items-center text-red-500">
+              <button onClick={() => setReply(!reply)} className="flex items-center text-red-600" data-testid="comment-reply">
                 Reply
               </button>
               <span className="mx-1">|</span>
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger className="flex items-center">
+                  <TooltipTrigger className="flex items-center" data-testid="comment-respons">
                     <Link href={post_s.url} className="flex cursor-pointer items-center">
                       <Icons.comment className="h-4 w-4 sm:mr-1" />
                     </Link>
@@ -291,7 +291,7 @@ function PostPage({
           </div>
           <div className="my-4 flex justify-between">
             <div className="flex items-center gap-2 sm:gap-4">
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1" data-testid="comment-vote-buttons">
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger>
@@ -320,7 +320,8 @@ function PostPage({
                 post_page
               >
                 <span
-                  className={`text-xs text-red-500 hover:cursor-pointer sm:text-sm ${
+                  data-testid="comment-payout"
+                  className={`text-xs text-red-600 hover:cursor-pointer sm:text-sm ${
                     Number(post_s.max_accepted_payout.slice(0, 1)) === 0 ? '!text-gray-600 line-through' : ''
                   }`}
                 >

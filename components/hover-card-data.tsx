@@ -24,14 +24,14 @@ export function HoverCardData({ author }: { author: string }) {
       {account.data && !account.isLoading && follows.data && !follows.isLoading ? (
         <>
           <div className="flex">
-            <Link href={`/@${author}`}>
-              <UserAvatar username={author} size="large" className="h-[75px] w-[75px]" />
+            <Link href={`/@${author}`} data-testid="hover-card-user-avatar">
+              <UserAvatar username={author} size="large" className="h-[75px] w-[75px]"/>
             </Link>
             <div>
-              <Link href={`/@${author}`} className="block font-bold hover:cursor-pointer">
+              <Link href={`/@${author}`} className="block font-bold hover:cursor-pointer"  data-testid="hover-card-user-name">
                 {JSON.parse(account.data.posting_json_metadata)?.profile?.name}
               </Link>
-              <Link href={`/@${author}`} className="flex text-sm text-gray-500 hover:cursor-pointer">
+              <Link href={`/@${author}`} className="flex text-sm text-gray-500 hover:cursor-pointer" data-testid="hover-card-user-nickname">
                 <span className="block">{`@${author}`}</span>
               </Link>
               <div className="grid grid-cols-2 gap-2 py-2">
@@ -39,6 +39,7 @@ export function HoverCardData({ author }: { author: string }) {
                   variant="outline"
                   size="xs"
                   className="border border-red-500 bg-transparent p-1 uppercase text-red-500 hover:border-red-600 hover:text-red-600"
+                  data-testid="hover-card-user-follow-button"
                 >
                   Follow
                 </Button>

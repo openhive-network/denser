@@ -140,4 +140,29 @@ export class ApiHelper {
 
     return response.json();
   }
+
+  // Get discussion - post comments (Default - author: "gtg", permlink: "hive-hardfork-25-jump-starter-kit")
+  async getDiscussionCommentsAPI(
+    author: string = 'gtg',
+    permlink: string = 'hive-hardfork-25-jump-starter-kit',
+  ) {
+    const url = process.env.REACT_APP_API_ENDPOINT;
+
+    const response = await this.page.request.post(`${url}/`, {
+      data: {
+        id: 0,
+        jsonrpc: '2.0',
+        method: 'bridge.get_discussion',
+        params: {
+          author: `${author}`,
+          permlink: `${permlink}`
+        }
+      },
+      headers: {
+        Accept: 'application/json, text/plain, */*'
+      }
+    });
+
+    return response.json();
+  }
 }

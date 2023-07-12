@@ -7,12 +7,16 @@ export class PostPage {
   readonly firstPostImageOnHomePage: Locator;
   readonly firstPostTitleOnHomePage: Locator;
 
-  readonly articleTitle: Locator;
+  readonly articleTitle: any;
   readonly articleBody: any;
   readonly articleAuthorData: Locator;
   readonly articleAuthorName: Locator;
   readonly articleFooter: Locator;
   readonly userHoverCard: Locator;
+  readonly userHoverCardAvatar: Locator;
+  readonly userHoverCardName: Locator;
+  readonly userHoverCardNickName: Locator;
+  readonly userHoverCardFollowButton: Locator;
   readonly userFollowersHoverCard: Locator;
   readonly userFollowingHoverCard: Locator;
   readonly userHpHoverCard: Locator;
@@ -22,12 +26,27 @@ export class PostPage {
 
   readonly commentListItems: Locator;
   readonly commentCardsHeaders: Locator;
+  readonly commentCardsHeadersAutorAndReputation: Locator;
+  readonly commentCardsHeadersTimeStampLink: Locator;
   readonly commentAuthorLink: Locator;
+  readonly commentAuthorReputation: Locator;
   readonly commentCardsTitles: Locator;
   readonly commentCardsDescriptions: Locator;
   readonly commentCardsFooters: Locator;
+  readonly commentCardsFooterUpvotes: Locator;
+  readonly commentCardsFooterDownvotes: Locator;
+  readonly commentCardsFooterPayoutNonZero: Locator;
+  readonly commentCardsFooterPayoutZero: Locator;
+  readonly commentCardsFooterVotes: Locator;
+  readonly commentCardsFooterReply: Locator;
+  readonly commentCardsFooterReplyEditor: Locator;
   readonly commentShowButton: Locator;
   readonly reputationValue: Locator;
+  readonly commentPageLink: Locator;
+  readonly getFirstCommentPageLink: Locator;
+  readonly getLoadMoreCommentsLink: Locator;
+  readonly getCommentFilter: Locator;
+  readonly getCommentFilterList: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -43,6 +62,10 @@ export class PostPage {
     this.articleAuthorName = this.articleAuthorData.locator('a div');
     this.articleFooter = page.locator('[data-testid="author-data-post-footer"]');
     this.userHoverCard = page.locator('[data-testid="user-hover-card-content"]');
+    this.userHoverCardAvatar = page.locator('[data-testid="hover-card-user-avatar"]');
+    this.userHoverCardName = page.locator('[data-testid="hover-card-user-name"]');
+    this.userHoverCardNickName = page.locator('[data-testid="hover-card-user-nickname"]');
+    this.userHoverCardFollowButton = page.locator('[data-testid="hover-card-user-follow-button"]');
     this.userFollowersHoverCard = page.locator('[data-testid="user-followers"]');
     this.userFollowingHoverCard = page.locator('[data-testid="user-following"]');
     this.userHpHoverCard = page.locator('[data-testid="user-hp"]');
@@ -50,19 +73,40 @@ export class PostPage {
     this.buttonFollowHoverCard = page.locator('button').getByText('FOLLOW');
     this.buttonMuteHoverCard = page.locator('button').getByText('Mute');
     this.commentListItems = page.locator('[data-testid="comment-list-item"]');
-    this.commentAuthorLink = page.locator('[data-testid="comment-author-link"]');
+    this.commentAuthorLink = page.locator('[data-testid="comment-card-header"] [data-testid="author-name-link"]');
+    this.commentAuthorReputation = page.locator('[data-testid="comment-card-header"] [data-testid="author-reputation"]');
     this.commentCardsHeaders = page.locator('[data-testid="comment-card-header"]');
+    this.commentCardsHeadersAutorAndReputation = this.commentAuthorLink.locator('..'); // Parent of commentAuthorLink
+    this.commentCardsHeadersTimeStampLink = page.locator('[data-testid="comment-timestamp-link"]');
     this.commentCardsTitles = page.locator('[data-testid="comment-card-title"]');
     this.commentCardsDescriptions = page.locator('[data-testid="comment-card-description"]');
     this.commentCardsFooters = page.locator('[data-testid="comment-card-footer"]');
+    this.commentCardsFooterUpvotes = page.locator('[data-testid="comment-card-footer-upvote"]');
+    this.commentCardsFooterDownvotes = page.locator('[data-testid="comment-card-footer-downvote"]');
+    this.commentCardsFooterPayoutNonZero = page.locator('[data-testid="comment-card-footer-payout"]');
+    this.commentCardsFooterPayoutZero = page.locator('[data-testid="post-payout"]');
+    this.commentCardsFooterVotes = this.commentCardsFooters.locator('[data-testid="comment-votes"]');
+    this.commentCardsFooterReply = this.commentCardsFooters.locator('[data-testid="comment-card-footer-reply"]');
+    this.commentCardsFooterReplyEditor = page.locator('[data-testid="reply-editor"]');
     this.commentShowButton = page.locator('[data-testid="comment-show-button"]');
     this.reputationValue = page.locator('[data-state="closed"]').first();
+    this.commentPageLink = page.locator('[data-testid="comment-page-link"]');
+    this.getFirstCommentPageLink = this.commentPageLink.first();
+    this.getLoadMoreCommentsLink = page.getByText('Load more...');
+    this.getCommentFilter = page.locator('[data-testid="posts-filter"]');
+    this.getCommentFilterList = page.locator('[data-testid="posts-filter-list"]');
   }
 
   async gotoHomePage() {
     await this.page.goto('/');
     await this.page.waitForLoadState('networkidle');
     await this.page.waitForSelector(this.postListItemOnHomePage['_selector']);
+  }
+
+  async gotoPostPage(communityCategoryName: string, author: string, permlink: string) {
+    await this.page.goto(`/${communityCategoryName}/@${author}/${permlink}/`);
+    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForSelector(this.articleFooter['_selector']);
   }
 
   async moveToTheFirstPostInHomePageByImage() {

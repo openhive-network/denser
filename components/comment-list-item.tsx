@@ -93,7 +93,7 @@ const CommentListItem = ({
                             />
                             <UserHoverCard author={username} author_reputation={comment.author_reputation} />
                             {comment.author_title ? (
-                              <Badge variant="outline" className="mr-1 border-red-600 text-slate-500">
+                              <Badge variant="outline" className="mr-1 border-red-600 text-slate-500" data-testid="comment-user-affiliation-tag">
                                 {comment.author_title}
                               </Badge>
                             ) : null}
@@ -101,12 +101,14 @@ const CommentListItem = ({
                               href={`/${router.query.param}/${router.query.p2}/${router.query.permlink}#@${username}/${comment.permlink}`}
                               className="text- hover:text-red-500 md:text-sm"
                               title={String(parseDate(comment.created))}
+                              data-testid="comment-timestamp-link"
                             >
                               {dateToRelative(comment.created)} ago
                             </Link>
                             <Link
                               className="p-1 sm:p-2"
                               href={`/${comment.category}/@${username}/${comment.permlink}`}
+                              data-testid="comment-page-link"
                             >
                               <Icons.link className="h-3 w-3" />
                             </Link>
@@ -141,7 +143,7 @@ const CommentListItem = ({
                           >
                             <TooltipProvider>
                               <Tooltip>
-                                <TooltipTrigger>
+                                <TooltipTrigger data-testid="comment-card-footer-upvote">
                                   <DialogLogin>
                                     <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1" />
                                   </DialogLogin>
@@ -151,7 +153,7 @@ const CommentListItem = ({
                             </TooltipProvider>
                             <TooltipProvider>
                               <Tooltip>
-                                <TooltipTrigger>
+                                <TooltipTrigger data-testid="comment-card-footer-downvote">
                                   <DialogLogin>
                                     <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
                                   </DialogLogin>
@@ -165,7 +167,7 @@ const CommentListItem = ({
                               decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
                             >
                               <div className="flex items-center hover:cursor-pointer hover:text-red-600 ">
-                                {'$'} {comment.payout.toFixed(2)}
+                                {'$'}{comment.payout.toFixed(2)}
                               </div>
                             </DetailsCardHover>
                             {comment.children ? (
@@ -208,7 +210,7 @@ const CommentListItem = ({
                         <div className="flex items-center gap-1">
                           <TooltipProvider>
                             <Tooltip>
-                              <TooltipTrigger>
+                              <TooltipTrigger data-testid="comment-card-footer-upvote">
                                 <DialogLogin>
                                   <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1" />
                                 </DialogLogin>
@@ -218,7 +220,7 @@ const CommentListItem = ({
                           </TooltipProvider>
                           <TooltipProvider>
                             <Tooltip>
-                              <TooltipTrigger>
+                              <TooltipTrigger data-testid="comment-card-footer-downvote">
                                 <DialogLogin>
                                   <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
                                 </DialogLogin>
@@ -233,11 +235,12 @@ const CommentListItem = ({
                           decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
                         >
                           <div
+                            data-testid="comment-card-footer-payout"
                             className={clsx('flex items-center hover:cursor-pointer hover:text-red-600', {
                               'line-through opacity-50': Number(comment.max_accepted_payout.slice(0, 1)) === 0
                             })}
                           >
-                            {'$'} {comment.payout.toFixed(2)}
+                            {'$'}{comment.payout.toFixed(2)}
                           </div>
                         </DetailsCardHover>
                         <Separator orientation="vertical" className="h-5" />
@@ -257,6 +260,7 @@ const CommentListItem = ({
                         <button
                           onClick={() => setReply(!reply)}
                           className="flex items-center hover:cursor-pointer hover:text-red-600"
+                          data-testid="comment-card-footer-reply"
                         >
                           Reply
                         </button>

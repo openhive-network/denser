@@ -10,7 +10,7 @@ export default function FacebookShare({ url }: { url: string }) {
     );
   };
   return (
-    <div className="cursor-pointer hover:text-red-500" onClick={openWindow} title="Share on Facebook">
+    <div className="cursor-pointer hover:text-red-600" onClick={openWindow} title="Share on Facebook">
       <Facebook />
     </div>
   );

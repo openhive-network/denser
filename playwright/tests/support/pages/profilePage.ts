@@ -214,8 +214,8 @@ export class ProfilePage {
     await this.page.waitForSelector(this.profileInfo['_selector']);
   }
 
-  async profileNickNameIsEqual(nickName: string) {
-    expect(await this.profileNickName.textContent()).toMatch(nickName);
+  async profileNameIsEqual(authorName: string) {
+    expect(await this.profileName.textContent()).toMatch(authorName);
   }
 
   async profileInfoIsVisible(

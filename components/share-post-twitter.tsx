@@ -16,7 +16,7 @@ export default function TwitterShare({ title, url }: { title: string; url: strin
     );
   };
   return (
-    <div className="cursor-pointer hover:text-red-500" onClick={openWindow} title="Share on Twitter">
+    <div className="cursor-pointer hover:text-red-600" onClick={openWindow} title="Share on Twitter">
       <Twitter />
     </div>
   );
