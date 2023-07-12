@@ -49,6 +49,7 @@ COPY --from=builder --chown=node /home/node/app/.next/standalone ./
 COPY --from=builder --chown=node /home/node/app/.next/static ./.next/static
 COPY --from=builder --chown=node /home/node/app/docker/docker-entrypoint.sh /home/node/app/docker-entrypoint.sh
 COPY --from=builder --chown=node /home/node/app/.env* ./
+COPY --from=builder --chown=node /home/node/app/lib/markdowns ./lib/markdowns/
 
 EXPOSE 3000
 ENV PORT 3000
