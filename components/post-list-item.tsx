@@ -135,7 +135,7 @@ const PostListItem = ({ post, sort, price_per_hive, isCommunityPage }: any) => {
                     </TooltipProvider>
                   </span>
                 ) : null}
-                {post.stats.is_pinned ? (
+                {post.stats.is_pinned && isCommunityPage ? (
                   <Badge className="ml-1 bg-red-600 text-white hover:bg-red-600">
                     <Link href={`${post.url}`}>Pinned</Link>
                   </Badge>
