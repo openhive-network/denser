@@ -1,4 +1,3 @@
-export function TextareaDemo() {}
 import Link from 'next/link';
 import { Textarea } from './ui/textarea';
 import { Button } from './ui/button';
@@ -17,7 +16,7 @@ export function ReplyTextbox({ onSetReply }: any) {
   };
 
   return (
-    <div className="mx-8 mb-4 flex w-5/6 flex-col gap-6 p-4 rounded-md border bg-card text-card-foreground shadow-sm">
+    <div className="mx-8 mb-4 flex flex-col gap-6 rounded-md border bg-card p-4 text-card-foreground shadow-sm dark:bg-slate-900">
       <div className="flex flex-col gap-4">
         {' '}
         <Link href={`#`}>
@@ -25,11 +24,11 @@ export function ReplyTextbox({ onSetReply }: any) {
         </Link>
         <div>
           <Textarea
-            className="border-2 border-slate-200 bg-white"
+            className="border-2 border-slate-200 "
             onChange={(e) => setText(e.target.value)}
             placeholder="Reply"
           />
-          <p className="border-2 border-slate-200 border-t-0 text-xs text-slate-500 p-1 font-light bg-gray-100">
+          <p className="border-2 border-t-0 border-slate-200 bg-gray-100 p-1 text-xs font-light text-slate-500 dark:border-black dark:bg-slate-950">
             Insert images by dragging & dropping, pasting from the clipboard, or by{' '}
             <span>
               <Label className="cursor-pointer text-red-500" htmlFor="picture">
@@ -41,9 +40,7 @@ export function ReplyTextbox({ onSetReply }: any) {
           </p>
         </div>
         <div className="flex flex-col md:flex-row">
-          <Button disabled={text === ''}>
-            Post
-          </Button>
+          <Button disabled={text === ''}>Post</Button>
           <Button
             variant="ghost"
             onClick={() => handleCancel()}

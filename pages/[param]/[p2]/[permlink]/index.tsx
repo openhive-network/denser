@@ -22,6 +22,7 @@ import { Icons } from '@/components/icons';
 import { AlertDialogDemo } from '@/components/alert-window';
 import { getDoubleSize, proxifyImageUrl } from '@/lib/old-profixy';
 import { ReplyTextbox } from '@/components/reply-textbox';
+import { SharePost } from '@/components/share-post-dialog';
 
 const DynamicComments = dynamic(() => import('@/components/comment-list'), {
   loading: () => <Loading />,
@@ -165,7 +166,7 @@ function PostPage({
             {post_s.title}
           </h1>
         ) : (
-          <div className="flex flex-col gap-2 bg-green-50 p-2">
+          <div className="flex flex-col gap-2 bg-green-50 p-2 dark:bg-slate-950">
             <h4 className="text-sm">You are viewing a single comment&apos;s thread from:</h4>
             <h1 data-testid="article-title" className="text-2xl">
               {post_s.title}
@@ -368,13 +369,17 @@ function PostPage({
               <Facebook />
               <Twitter />
               <Linkedin />
-              <Link2 />
+              <SharePost path={router.asPath}>
+                <Link2 className="cursor-pointer hover:text-red-600" />
+              </SharePost>
             </div>
           </div>
         </div>
       </div>
-      <div id="comments" />
-      {reply ? <ReplyTextbox onSetReply={setReply} /> : null}
+      <div id="comments" className="flex" />
+      <div className="mx-auto my-0 max-w-4xl py-4">
+        {reply ? <ReplyTextbox onSetReply={setReply} /> : null}
+      </div>
       {!isLoadingDiscussion && discussion && discussionState ? (
         <div className="mx-auto my-0 max-w-4xl py-4 sm:px-8">
           <div className="flex items-center justify-end pb-4" translate="no">
