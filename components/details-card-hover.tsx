@@ -23,7 +23,7 @@ export default function DetailsCardHover({ post, price_per_hive, children, decli
   if (post.payout <= 0) {
     return (
       <div className="flex items-center" data-testid="post-payout">
-        {'$ '}
+        {'$'}
         {post.payout.toFixed(2)}
       </div>
     );

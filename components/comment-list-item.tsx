@@ -117,7 +117,7 @@ const CommentListItem = ({ comment, renderer, price_per_hive }: any) => {
                           </div>
 
                           <div className="flex items-center">
-                            {'$ '} {comment.payout.toFixed(2)}
+                            {'$'} {comment.payout.toFixed(2)}
                           </div>
                           <Separator orientation="vertical" />
                           {comment.stats.total_votes ? (
@@ -176,7 +176,7 @@ const CommentListItem = ({ comment, renderer, price_per_hive }: any) => {
                         decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
                       >
                         <div className="flex items-center hover:cursor-pointer hover:text-red-600">
-                          {'$ '} {comment.payout.toFixed(2)}
+                          {'$'} {comment.payout.toFixed(2)}
                         </div>
                       </DetailsCardHover>
                       <Separator orientation="vertical" />
