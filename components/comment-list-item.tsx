@@ -12,11 +12,10 @@ import DetailsCardVoters from '@/components/details-card-voters';
 import { useQuery } from '@tanstack/react-query';
 import { getActiveVotes } from '@/lib/hive';
 import { ReplyTextbox } from './reply-textbox';
-import clsx from 'clsx';
 import { useRouter } from 'next/router';
 import DetailsCardHover from './details-card-hover';
 
-const CommentListItem = ({ comment, renderer }: any) => {
+const CommentListItem = ({ comment, renderer, price_per_hive }: any) => {
   const [openState, setOpenState] = useState('open');
   const {
     data: activeVotesDataComments,
@@ -72,19 +71,21 @@ const CommentListItem = ({ comment, renderer }: any) => {
                         <span className="text-xs md:text-sm">
                           <Link
                             href={`/@${comment.author}`}
-                            className="font-medium text-black hover:cursor-pointer hover:text-red-600 dark:text-white"
+                            className="font-medium text-black hover:cursor-pointer hover:text-red-600 dark:text-white dark:hover:text-red-500"
                             data-testid="comment-author-link"
                           >
-                            @{comment.author}
+                            {comment.author}
                           </Link>{' '}
                           ({comment.author_reputation.toFixed(0)})
                         </span>
-                        <span className="ml-1 text-xs md:text-sm">{dateToRelative(comment.created)} ago</span>
+                        <span className="ml-1 text-xs hover:text-red-500 md:text-sm">
+                          {dateToRelative(comment.created)} ago
+                        </span>
                         <Link
                           className="p-2"
                           href={`/${comment.category}/@${comment.author}/${comment.permlink}`}
                         >
-                          <Icons.link className="h-3 w-3 hover:text-red-500" />
+                          <Icons.link className="h-3 w-3" />
                         </Link>
                       </div>
                       {openState === 'closed' ? (
@@ -116,8 +117,7 @@ const CommentListItem = ({ comment, renderer }: any) => {
                           </div>
 
                           <div className="flex items-center">
-                            <Icons.dollar className="mr-1 h-4 w-4 text-red-600" />
-                            {comment.payout.toFixed(2)}
+                            {'$ '} {comment.payout.toFixed(2)}
                           </div>
                           <Separator orientation="vertical" />
                           {comment.stats.total_votes ? (
@@ -170,16 +170,15 @@ const CommentListItem = ({ comment, renderer }: any) => {
                           </Tooltip>
                         </TooltipProvider>
                       </div>
-                      {/*<DetailsCardHover*/}
-                      {/*  post={comment}*/}
-                      {/*  historyFeedData={historyFeedData}*/}
-                      {/*  decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}*/}
-                      {/*>*/}
-                      <div className="flex items-center hover:cursor-pointer hover:text-red-600">
-                        <Icons.dollar className="mr-1 h-4 w-4 text-red-600" />
-                        {comment.payout.toFixed(2)}
-                      </div>
-                      {/*</DetailsCardHover>*/}
+                      <DetailsCardHover
+                        post={comment}
+                        price_per_hive={price_per_hive}
+                        decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
+                      >
+                        <div className="flex items-center hover:cursor-pointer hover:text-red-600">
+                          {'$ '} {comment.payout.toFixed(2)}
+                        </div>
+                      </DetailsCardHover>
                       <Separator orientation="vertical" />
                       {!isActiveVotesDataCommentsLoading &&
                       activeVotesDataComments &&

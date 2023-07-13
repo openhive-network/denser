@@ -20,7 +20,7 @@ interface IBeneficiary {
   weight: number;
 }
 
-const PostListItem = ({ post, sort, historyFeedData, isCommunityPage }: any) => {
+const PostListItem = ({ post, sort, price_per_hive, isCommunityPage }: any) => {
   const [reveal, setReveal] = useState<boolean>(
     () => post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw')
   );
@@ -285,7 +285,7 @@ const PostListItem = ({ post, sort, historyFeedData, isCommunityPage }: any) => 
 
                 <DetailsCardHover
                   post={post}
-                  historyFeedData={historyFeedData}
+                  price_per_hive={price_per_hive}
                   decline={Number(post.max_accepted_payout.slice(0, 1)) === 0}
                 >
                   <div

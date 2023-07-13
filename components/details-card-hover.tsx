@@ -5,9 +5,8 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card';
 import { fmt } from '@/lib/utils';
 import Link from 'next/link';
 import { ReactNode } from 'react';
-import { FeedHistory } from '@/lib/hive';
 import { Entry } from '@/lib/bridge';
-import { Icons } from './icons';
+import Loading from './loading';
 interface IBeneficiary {
   account: string;
   weight: number;
@@ -15,26 +14,26 @@ interface IBeneficiary {
 
 type DetailsCardHoverProps = {
   post: Entry;
-  historyFeedData: FeedHistory;
+  price_per_hive: Big;
   children: ReactNode;
   decline?: boolean;
 };
 
-export default function DetailsCardHover({
-  post,
-  historyFeedData,
-  children,
-  decline
-}: DetailsCardHoverProps) {
-  const historyFeedArr = historyFeedData.price_history;
-  const price_per_hive = convertStringToBig(historyFeedArr[historyFeedArr.length - 1].base);
+export default function DetailsCardHover({ post, price_per_hive, children, decline }: DetailsCardHoverProps) {
+  if (post.payout <= 0) {
+    return (
+      <div className="flex items-center" data-testid="post-payout">
+        {'$ '}
+        {post.payout.toFixed(2)}
+      </div>
+    );
+  }
+
   const percent_hbd = post.percent_hbd / 20000;
   const _hbd = post.payout * percent_hbd;
   const max_payout = convertStringToBig(post.max_accepted_payout);
   const pending_hp = Big(post.payout - _hbd).div(price_per_hive);
-  if (post.payout <= 0) {
-    return <div className="flex items-center" data-testid="post-payout">${post.payout.toFixed(2)}</div>;
-  }
+
   return (
     <HoverCard>
       <HoverCardTrigger asChild>{children}</HoverCardTrigger>

@@ -22,6 +22,7 @@ import { useInView } from 'react-intersection-observer';
 import CustomError from '@/components/custom-error';
 import { getFeedHistory } from '@/lib/hive';
 import CommunitySimpleDescription from '@/components/community-simple-description';
+import { convertStringToBig } from '@/lib/helpers';
 
 export const PostSkeleton = () => {
   return (
@@ -146,6 +147,7 @@ const ParamPage: FC = () => {
     (entriesDataIsLoading && entriesDataIsFetching) ||
     (accountEntriesIsLoading && accountEntriesIsFetching) ||
     (historyFeedLoading && historyFeedIsFetching) ||
+    !historyFeedData ||
     (accountNotificationIsLoading && accountNotificationIsFetching)
   ) {
     return (
@@ -161,6 +163,9 @@ const ParamPage: FC = () => {
       />
     );
   }
+
+  const historyFeedArr = historyFeedData?.price_history;
+  const price_per_hive = convertStringToBig(historyFeedArr[historyFeedArr.length - 1].base);
   if (!entriesDataIsLoading && entriesData) {
     return (
       <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2 pt-8">
@@ -204,7 +209,7 @@ const ParamPage: FC = () => {
                       data={page}
                       sort={sort}
                       key={`f-${index}`}
-                      historyFeedData={historyFeedData}
+                      price_per_hive={price_per_hive}
                       isCommunityPage={!!communityData}
                     />
                   ) : null;
@@ -250,9 +255,7 @@ const ParamPage: FC = () => {
       {!accountEntriesIsLoading && accountEntriesData ? (
         <>
           {accountEntriesData.pages.map((page, index) => {
-            return page ? (
-              <PostList data={page} key={`x-${index}`} historyFeedData={historyFeedData} />
-            ) : null;
+            return page ? <PostList data={page} key={`x-${index}`} price_per_hive={price_per_hive} /> : null;
           })}
           <div>
             <button

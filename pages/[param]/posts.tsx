@@ -11,6 +11,7 @@ import { getFeedHistory } from '@/lib/hive';
 import { PostSkeleton } from '@/pages/[...param]';
 import { useInView } from 'react-intersection-observer';
 import { useEffect } from 'react';
+import { convertStringToBig } from '@/lib/helpers';
 
 const UserPosts = () => {
   const router = useRouter();
@@ -64,7 +65,8 @@ const UserPosts = () => {
   }, [fetchNextPage, inView]);
 
   if (isLoading || historyFeedLoading) return <Loading loading={isLoading} />;
-
+  const historyFeedArr = historyFeedData?.price_history || [];
+  const price_per_hive = convertStringToBig(historyFeedArr[historyFeedArr.length - 1].base);
   return (
     <ProfileLayout>
       <div className="flex flex-col">
@@ -83,7 +85,7 @@ const UserPosts = () => {
                       data={page}
                       sort={sort}
                       key={`posts-${index}`}
-                      historyFeedData={historyFeedData}
+                      price_per_hive={price_per_hive}
                     />
                   ) : null;
                 })}
@@ -136,7 +138,7 @@ const UserPosts = () => {
                       data={page}
                       sort={sort}
                       key={`payout-${index}`}
-                      historyFeedData={historyFeedData}
+                      price_per_hive={price_per_hive}
                     />
                   ) : null;
                 })}

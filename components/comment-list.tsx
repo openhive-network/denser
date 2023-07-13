@@ -6,6 +6,8 @@ import { getFeedHistory } from '@/lib/hive';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
+import { convertStringToBig } from '@/lib/helpers';
+import Loading from './loading';
 
 const CommentList = ({ data, parent }: { data: any; parent: any }) => {
   const renderer = new DefaultRenderer({
@@ -42,6 +44,11 @@ const CommentList = ({ data, parent }: { data: any; parent: any }) => {
   );
   const router = useRouter();
   const arr = [...mutedContent, ...unmutedContent];
+  if (historyFeedLoading || !historyFeedData) {
+    return <Loading />;
+  }
+  const historyFeedArr = historyFeedData?.price_history;
+  const price_per_hive = convertStringToBig(historyFeedArr[historyFeedArr.length - 1].base);
   return (
     <ul className="px-2 ">
       {arr?.map((comment: any, index: number) => (
@@ -55,7 +62,7 @@ const CommentList = ({ data, parent }: { data: any; parent: any }) => {
           id={`@${data[index].author}/${data[index].permlink}`}
         >
           <CommentListItem
-            historyFeedData={historyFeedData}
+            price_per_hive={price_per_hive}
             comment={comment}
             renderer={renderer}
             key={`${comment.post_id}-item-${comment.depth}-index-${index}`}

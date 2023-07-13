@@ -23,6 +23,8 @@ import { AlertDialogDemo } from '@/components/alert-window';
 import { getDoubleSize, proxifyImageUrl } from '@/lib/old-profixy';
 import { ReplyTextbox } from '@/components/reply-textbox';
 import { SharePost } from '@/components/share-post-dialog';
+import LinkedInShare from '@/components/share_links';
+import { convertStringToBig } from '@/lib/helpers';
 
 const DynamicComments = dynamic(() => import('@/components/comment-list'), {
   loading: () => <Loading />,
@@ -158,6 +160,11 @@ function PostPage({
       );
     }
   };
+  if (isHistoryFeedLoading || !historyFeedData) {
+    return <Loading />;
+  }
+  const historyFeedArr = historyFeedData?.price_history;
+  const price_per_hive = convertStringToBig(historyFeedArr[historyFeedArr.length - 1].base);
   return (
     <div className="py-8">
       <div className="mx-auto my-0 max-w-4xl bg-white px-8 py-4 dark:bg-slate-900">
@@ -339,23 +346,19 @@ function PostPage({
                   </Tooltip>
                 </TooltipProvider>
               </div>
-              {!isHistoryFeedLoading && historyFeedData ? (
-                <DetailsCardHover
-                  post={post_s}
-                  historyFeedData={historyFeedData}
-                  decline={Number(post_s.max_accepted_payout.slice(0, 1)) === 0}
+              <DetailsCardHover
+                post={post_s}
+                price_per_hive={price_per_hive}
+                decline={Number(post_s.max_accepted_payout.slice(0, 1)) === 0}
+              >
+                <span
+                  className={`text-red-500 hover:cursor-pointer  ${
+                    Number(post_s.max_accepted_payout.slice(0, 1)) === 0 ? '!text-gray-600 line-through' : ''
+                  }`}
                 >
-                  <span
-                    className={`text-red-500 hover:cursor-pointer  ${
-                      Number(post_s.max_accepted_payout.slice(0, 1)) === 0
-                        ? '!text-gray-600 line-through'
-                        : ''
-                    }`}
-                  >
-                    ${post_s.payout?.toFixed(2)}
-                  </span>
-                </DetailsCardHover>
-              ) : null}
+                  ${post_s.payout?.toFixed(2)}
+                </span>
+              </DetailsCardHover>
               {!isActiveVotesLoading && activeVotesData ? (
                 <DetailsCardVoters activeVotesData={activeVotesData} post={post_s}>
                   <span className="text-red-500">
@@ -368,7 +371,7 @@ function PostPage({
             <div className="flex gap-2">
               <Facebook />
               <Twitter />
-              <Linkedin />
+              <LinkedInShare postData={post_s} />
               <SharePost path={router.asPath}>
                 <Link2 className="cursor-pointer hover:text-red-600" />
               </SharePost>
