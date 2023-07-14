@@ -19,7 +19,7 @@ export default function LinkedInShare({ postData }: any) {
   };
 
   return (
-    <div onClick={openWindow}>
+    <div className="cursor-pointer hover:text-red-500" onClick={openWindow} title="Share on LinkedIn">
       <Linkedin />
     </div>
   );

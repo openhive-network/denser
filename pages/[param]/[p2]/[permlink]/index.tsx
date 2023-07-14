@@ -1,5 +1,5 @@
 import parseDate, { dateToRelative } from '@/lib/parse-date';
-import { Clock, Facebook, Link2, Linkedin, Twitter } from 'lucide-react';
+import { Clock, Link2, Twitter } from 'lucide-react';
 import UserInfo, { UserHoverCard } from '@/components/user-info';
 import { getAccount, getActiveVotes, getFeedHistory, getFollowCount } from '@/lib/hive';
 import { useQuery } from '@tanstack/react-query';
@@ -23,8 +23,9 @@ import { AlertDialogDemo } from '@/components/alert-window';
 import { getDoubleSize, proxifyImageUrl } from '@/lib/old-profixy';
 import { ReplyTextbox } from '@/components/reply-textbox';
 import { SharePost } from '@/components/share-post-dialog';
-import LinkedInShare from '@/components/share_links';
+import LinkedInShare from '@/components/share_post_linkedin';
 import { convertStringToBig } from '@/lib/helpers';
+import FacebookShare from '@/components/share_post_facebook';
 
 const DynamicComments = dynamic(() => import('@/components/comment-list'), {
   loading: () => <Loading />,
@@ -369,7 +370,7 @@ function PostPage({
               ) : null}
             </div>
             <div className="flex gap-2">
-              <Facebook />
+              <FacebookShare url={post_s.url} />
               <Twitter />
               <LinkedInShare postData={post_s} />
               <SharePost path={router.asPath}>
