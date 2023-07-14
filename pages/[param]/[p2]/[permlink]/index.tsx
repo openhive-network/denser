@@ -23,9 +23,10 @@ import { AlertDialogDemo } from '@/components/alert-window';
 import { getDoubleSize, proxifyImageUrl } from '@/lib/old-profixy';
 import { ReplyTextbox } from '@/components/reply-textbox';
 import { SharePost } from '@/components/share-post-dialog';
-import LinkedInShare from '@/components/share_post_linkedin';
+import LinkedInShare from '@/components/share-post-linkedin';
 import { convertStringToBig } from '@/lib/helpers';
-import FacebookShare from '@/components/share_post_facebook';
+import FacebookShare from '@/components/share-post-facebook';
+import RedditShare from '@/components/share-post-reddit';
 
 const DynamicComments = dynamic(() => import('@/components/comment-list'), {
   loading: () => <Loading />,
@@ -372,6 +373,7 @@ function PostPage({
             <div className="flex gap-2">
               <FacebookShare url={post_s.url} />
               <Twitter />
+              <RedditShare title={post_s.title} url={post_s.url} />
               <LinkedInShare postData={post_s} />
               <SharePost path={router.asPath}>
                 <Link2 className="cursor-pointer hover:text-red-600" />
