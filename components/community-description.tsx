@@ -8,6 +8,7 @@ import { getDoubleSize, proxifyImageUrl } from '@/lib/old-profixy';
 import { Community, Subscription, getAccountNotifications } from '@/lib/bridge';
 import { SubsListDialog } from './subscription-list-dialog';
 import { ActivityLogDialog } from './activity-log-dialog';
+import { Badge } from '@/components/ui/badge';
 
 const CommunityDescription = ({
   data,
@@ -89,13 +90,18 @@ const CommunityDescription = ({
           </div>
           <div data-testid="community-leadership" className="my-6 flex flex-col">
             <h6 className="my-1.5 font-semibold leading-none tracking-tight">Leadership</h6>
-            <ul className="mt-1.5 text-sm">
+            <ul className="mt-1.5 text-xs">
               {data.team.slice(1).map((member: any) => (
-                <li key={member[0]}>
+                <li key={member[0]} className="pt-0.5">
                   <Link href={`/@${member[0]}`} className="text-red-600 hover:cursor-pointer">
                     @{member[0]}
                   </Link>{' '}
-                  <span className="text-xs text-slate-500">{member[1].toUpperCase()}</span>{' '}
+                  <span className="text-[10px] text-slate-500">{member[1].toUpperCase()}</span>{' '}
+                  {member[2] && member[2] !== '' ? (
+                    <Badge variant="outline" className="ml-0.5 border-red-600 py-0 text-slate-500">
+                      {member[2]}
+                    </Badge>
+                  ) : null}
                 </li>
               ))}
             </ul>

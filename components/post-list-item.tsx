@@ -81,7 +81,7 @@ const PostListItem = ({ post, sort, price_per_hive, isCommunityPage }: any) => {
                 </TooltipProvider>
               ) : null}
               {post.author_title ? (
-                <Badge variant="outline" className="ml-1 border-red-600 text-red-600">
+                <Badge variant="outline" className="ml-1 border-red-600 text-slate-500">
                   {post.author_title}
                 </Badge>
               ) : null}
