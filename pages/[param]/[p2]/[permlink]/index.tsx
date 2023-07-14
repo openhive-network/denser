@@ -4,7 +4,7 @@ import UserInfo, { UserHoverCard } from '@/components/user-info';
 import { getAccount, getActiveVotes, getFeedHistory, getFollowCount } from '@/lib/hive';
 import { useQuery } from '@tanstack/react-query';
 import { DefaultRenderer } from '@hiveio/content-renderer';
-import { getCommunity, getDiscussion, getPost } from '@/lib/bridge';
+import { Entry, getCommunity, getDiscussion, getPost } from '@/lib/bridge';
 import Loading from '@/components/loading';
 import dynamic from 'next/dynamic';
 import ImageGallery from '@/components/image-gallery';
@@ -27,6 +27,7 @@ import LinkedInShare from '@/components/share-post-linkedin';
 import { convertStringToBig } from '@/lib/helpers';
 import FacebookShare from '@/components/share-post-facebook';
 import RedditShare from '@/components/share-post-reddit';
+import TwitterShare from '@/components/share-post-twitter';
 
 const DynamicComments = dynamic(() => import('@/components/comment-list'), {
   loading: () => <Loading />,
@@ -39,7 +40,7 @@ function PostPage({
   username,
   permlink
 }: {
-  post_s: any;
+  post_s: Entry;
   community: string;
   username: string;
   permlink: string;
@@ -365,16 +366,16 @@ function PostPage({
                 <DetailsCardVoters activeVotesData={activeVotesData} post={post_s}>
                   <span className="text-red-500">
                     {post_s.stats?.total_votes}
-                    {post_s.stats.total_votes > 1 ? ' votes' : ' vote'}
+                    {post_s.stats?.total_votes && post_s.stats?.total_votes > 1 ? ' votes' : ' vote'}
                   </span>
                 </DetailsCardVoters>
               ) : null}
             </div>
             <div className="flex gap-2">
               <FacebookShare url={post_s.url} />
-              <Twitter />
+              <TwitterShare title={post_s.title} url={post_s.url} />
+              <LinkedInShare title={post_s.title} url={post_s.url} />
               <RedditShare title={post_s.title} url={post_s.url} />
-              <LinkedInShare postData={post_s} />
               <SharePost path={router.asPath}>
                 <Link2 className="cursor-pointer hover:text-red-600" />
               </SharePost>

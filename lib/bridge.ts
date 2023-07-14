@@ -21,6 +21,7 @@ export interface EntryStat {
 }
 
 export interface JsonMetadata {
+  author: string | undefined;
   tags?: string[];
   description?: string | null;
   app?: any;

@@ -1,12 +1,12 @@
 import { Linkedin } from 'lucide-react';
 
-export default function LinkedInShare({ postData }: any) {
+export default function LinkedInShare({ title, url }: { title: string; url: string }) {
   const winWidth = 720;
   const winHeight = 480;
   const winTop = 0;
   const winLeft = 0;
-  const title = postData.title + ' — ' + 'Hive';
-  const url = 'https://hive.blog' + postData.url;
+  const postTitle = title + ' — ' + 'Hive';
+  const href = 'https://hive.blog' + url;
 
   const q =
     'title=' + encodeURIComponent(title) + '&url=' + encodeURIComponent(url) + '&source=Steemit&mini=true';
