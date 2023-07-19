@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import UserAvatar from '@/components/user-avatar';
 import accountReputation from '@/lib/account-reputation';
+import { Badge } from '@/components/ui/badge';
 
 interface UserHoverCardProps {
   name: string;
@@ -101,6 +102,7 @@ interface UserInfoProps extends UserHoverCardProps {
   community: string;
   category: string;
   created: string;
+  author_title?: string;
 }
 
 function UserInfo({
@@ -112,6 +114,7 @@ function UserInfo({
   name,
   author,
   author_reputation,
+  author_title,
   following,
   followers,
   about,
@@ -132,6 +135,11 @@ function UserInfo({
           active={active}
           withImage
         />
+        {author_title ? (
+          <Badge variant="outline" className="mr-1 border-red-600 text-slate-500">
+            {author_title}
+          </Badge>
+        ) : null}
         in
         <span className="ml-1">
           {community_title ? (

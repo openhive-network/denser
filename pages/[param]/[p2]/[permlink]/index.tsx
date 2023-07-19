@@ -29,6 +29,7 @@ import FacebookShare from '@/components/share-post-facebook';
 import RedditShare from '@/components/share-post-reddit';
 import TwitterShare from '@/components/share-post-twitter';
 import { data } from 'autoprefixer';
+import { Badge } from '@/components/ui/badge';
 
 const DynamicComments = dynamic(() => import('@/components/comment-list'), {
   loading: () => <Loading />,
@@ -200,6 +201,7 @@ function PostPage({
             }
             author={post_s.author}
             author_reputation={post_s.author_reputation}
+            author_title={post_s.author_title}
             authored={post_s.json_metadata?.author}
             community_title={communityData?.title || ''}
             community={community}
@@ -280,6 +282,11 @@ function PostPage({
                   joined={account.created}
                   active={account.last_vote_time}
                 />
+              ) : null}
+              {post_s.author_title ? (
+                <Badge variant="outline" className="border-red-600 text-slate-500">
+                  {post_s.author_title}
+                </Badge>
               ) : null}
             </div>
             <div className="flex items-center">
