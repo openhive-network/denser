@@ -18,7 +18,7 @@
     "@hiveio/content-renderer": "^1.0.2",
     "@hiveio/dhive": "^1.2.7",
     "@hookform/resolvers": "^3.1.1",
-    "@next/bundle-analyzer": "^13.4.9",
+    "@next/bundle-analyzer": "^13.4.10",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.4",
     "@radix-ui/react-avatar": "^1.0.3",
@@ -42,8 +42,8 @@
     "@radix-ui/react-toggle": "^1.0.3",
     "@radix-ui/react-tooltip": "^1.0.6",
     "@tailwindcss/typography": "^0.5.9",
-    "@tanstack/react-query": "^4.29.19",
-    "@tanstack/react-query-devtools": "^4.29.19",
+    "@tanstack/react-query": "^4.29.23",
+    "@tanstack/react-query-devtools": "^4.29.23",
     "@types/big.js": "^6.1.6",
     "@types/node": "18.16.19",
     "@types/react": "18.2.14",
@@ -56,12 +56,12 @@
     "clsx": "^1.2.1",
     "dotenv": "^16.3.1",
     "eslint": "8.44.0",
-    "eslint-config-next": "13.4.9",
+    "eslint-config-next": "13.4.10",
     "i": "^0.3.7",
     "lucide-react": "^0.259.0",
     "moment": "^2.29.4",
     "multihashes": "^4.0.3",
-    "next": "13.4.9",
+    "next": "13.4.10",
     "next-themes": "^0.2.1",
     "npm": "^9.8.0",
     "playwright-merge-html-reports": "^0.2.8",
@@ -76,7 +76,7 @@
     "sanitize-html": "^2.11.0",
     "simple-zustand-devtools": "^1.1.0",
     "tailwind-merge": "^1.13.2",
-    "tailwindcss": "3.3.2",
+    "tailwindcss": "3.3.3",
     "tailwindcss-animate": "^1.0.6",
     "typescript": "5.1.6",
     "yet-another-react-lightbox": "^3.11.3",
@@ -84,7 +84,7 @@
     "zustand": "^4.3.9"
   },
   "devDependencies": {
-    "@playwright/test": "^1.35.1",
+    "@playwright/test": "^1.36.0",
     "@types/yazl": "^2.4.2"
   }
 }

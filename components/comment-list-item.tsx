@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import DialogLogin from '@/components/dialog-login';
 import DetailsCardVoters from '@/components/details-card-voters';
@@ -14,23 +14,24 @@ import { getActiveVotes } from '@/lib/hive';
 import { ReplyTextbox } from './reply-textbox';
 import { useRouter } from 'next/router';
 import DetailsCardHover from './details-card-hover';
+import Big from 'big.js';
 
-const CommentListItem = ({ comment, renderer, price_per_hive }: any) => {
-  const [openState, setOpenState] = useState('open');
+interface Props {
+  comment: any;
+  renderer: any;
+  price_per_hive?: Big;
+}
+
+const CommentListItem = ({ comment, renderer, price_per_hive }: Props) => {
+  const [openState, setOpenState] = useState<boolean>(true);
   const {
     data: activeVotesDataComments,
     isLoading: isActiveVotesDataCommentsLoading,
     isError: activeVotesDataCommentsError
   } = useQuery(['activeVotesDataComments'], () => getActiveVotes(comment.author, comment.permlink));
-
-  const triggerOpenRef = useCallback((node: any) => {
-    if (node !== null) {
-      setOpenState(node.attributes[3].nodeValue);
-    }
-  }, []);
+  const ref = useRef<HTMLTableRowElement>(null);
   const router = useRouter();
 
-  const ref = useRef<HTMLTableRowElement>(null);
   const comment_html = renderer.render(comment.body);
   const [reply, setReply] = useState(false);
   const commentId = `@${comment.author}/${comment.permlink}`;
@@ -64,7 +65,7 @@ const CommentListItem = ({ comment, renderer, price_per_hive }: any) => {
           >
             <Accordion type="single" defaultValue="item-1" collapsible>
               <AccordionItem value="item-1">
-                <AccordionTrigger className="py-1 !no-underline" ref={triggerOpenRef}>
+                <AccordionTrigger className="py-1 !no-underline" onClick={() => setOpenState((val) => !val)}>
                   <CardHeader className="p-0">
                     <div className="flex items-center" data-testid="comment-card-header">
                       <div className="flex items-center text-slate-500 dark:text-slate-400">
@@ -88,7 +89,7 @@ const CommentListItem = ({ comment, renderer, price_per_hive }: any) => {
                           <Icons.link className="h-3 w-3" />
                         </Link>
                       </div>
-                      {openState === 'closed' ? (
+                      {!openState ? (
                         <div
                           className="ml-4 flex h-5 items-center space-x-4 text-sm"
                           data-testid="comment-card-footer"
@@ -115,7 +116,6 @@ const CommentListItem = ({ comment, renderer, price_per_hive }: any) => {
                               </Tooltip>
                             </TooltipProvider>
                           </div>
-
                           <div className="flex items-center">
                             {'$'} {comment.payout.toFixed(2)}
                           </div>

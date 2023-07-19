@@ -85,7 +85,7 @@ e2e-tests:
   extends: .node-job
   needs:
     - docker-build
-  image: mcr.microsoft.com/playwright:v1.35.1-jammy
+  image: mcr.microsoft.com/playwright:v1.36.0-jammy
   services:
     - name: $IMAGE_NAME
       alias: denser
@@ -119,7 +119,7 @@ e2e-report-aggregate:
   needs:
     - e2e-tests
   when: always
-  image: mcr.microsoft.com/playwright:v1.35.1-jammy
+  image: mcr.microsoft.com/playwright:v1.36.0-jammy
   variables:
     PROJECTS: '["chromium", "firefox", "webkit"]'
     SHARD_TOTAL: 5

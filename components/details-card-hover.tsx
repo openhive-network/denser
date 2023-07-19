@@ -14,7 +14,7 @@ interface IBeneficiary {
 
 type DetailsCardHoverProps = {
   post: Entry;
-  price_per_hive: Big;
+  price_per_hive?: Big;
   children: ReactNode;
   decline?: boolean;
 };
@@ -32,7 +32,7 @@ export default function DetailsCardHover({ post, price_per_hive, children, decli
   const percent_hbd = post.percent_hbd / 20000;
   const _hbd = post.payout * percent_hbd;
   const max_payout = convertStringToBig(post.max_accepted_payout);
-  const pending_hp = Big(post.payout - _hbd).div(price_per_hive);
+  const pending_hp = price_per_hive ? Big(post.payout - _hbd).div(price_per_hive) : null;
 
   return (
     <HoverCard>
@@ -45,7 +45,7 @@ export default function DetailsCardHover({ post, price_per_hive, children, decli
             <span>Pending payout amount: ${post.payout.toFixed(2)}</span>
             <span>
               {' '}
-              Breakdown: {_hbd.toFixed(2)} HBD, {pending_hp.toFixed(2)} HP
+              Breakdown: {_hbd.toFixed(2)} HBD, {pending_hp ? <>{pending_hp.toFixed(2)} HP</> : null}
             </span>
             <>
               {post.beneficiaries.map((beneficiary: IBeneficiary, index: number) => (

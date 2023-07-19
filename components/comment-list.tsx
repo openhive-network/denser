@@ -48,7 +48,9 @@ const CommentList = ({ data, parent }: { data: any; parent: any }) => {
     return <Loading />;
   }
   const historyFeedArr = historyFeedData?.price_history;
-  const price_per_hive = convertStringToBig(historyFeedArr[historyFeedArr.length - 1].base);
+  const price_per_hive = historyFeedArr
+    ? convertStringToBig(historyFeedArr[historyFeedArr.length - 1].base)
+    : undefined;
   return (
     <ul className="px-2 ">
       {arr?.map((comment: any, index: number) => (
