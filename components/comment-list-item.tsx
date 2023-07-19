@@ -19,6 +19,7 @@ import { useActiveVotesQuery } from './hooks/use-active-votes';
 import clsx from 'clsx';
 import { useAccountQuery } from './hooks/use-accout';
 import { useFollowsQuery } from './hooks/use-follows';
+import { Badge } from '@/components/ui/badge';
 
 const CommentListItem = ({
   comment,
@@ -110,6 +111,11 @@ const CommentListItem = ({
                                 joined={account.data.created}
                                 active={account.data.last_vote_time}
                               />
+                            ) : null}
+                            {comment.author_title ? (
+                              <Badge variant="outline" className="mr-1 border-red-600 text-slate-500">
+                                {comment.author_title}
+                              </Badge>
                             ) : null}
                             <Link
                               href={`/${router.query.param}/${router.query.p2}/${router.query.permlink}#@${username}/${comment.permlink}`}

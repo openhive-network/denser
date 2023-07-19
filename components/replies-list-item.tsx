@@ -45,7 +45,7 @@ const RepliesListItem = ({ comment }: any) => {
                   </span>
                 ) : null}
                 {comment.author_title ? (
-                  <Badge variant="outline" className="ml-1 border-red-600 text-red-600">
+                  <Badge variant="outline" className="ml-1 border-red-600 text-slate-500">
                     {comment.author_title}
                   </Badge>
                 ) : null}
