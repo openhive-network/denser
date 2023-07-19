@@ -2,14 +2,21 @@ import CommentListItem from '@/components/comment-list-item';
 import { Entry } from '@/lib/bridge';
 import { DefaultRenderer } from '@hiveio/content-renderer';
 import { getDoubleSize, proxifyImageUrl } from '@/lib/old-profixy';
-import { getFeedHistory } from '@/lib/hive';
-import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
-import { convertStringToBig } from '@/lib/helpers';
-import Loading from './loading';
+import Big from 'big.js';
 
-const CommentList = ({ data, parent }: { data: any; parent: any }) => {
+const CommentList = ({
+  data,
+  parent,
+  price_per_hive,
+  parent_depth
+}: {
+  data: Entry[];
+  parent: Entry;
+  price_per_hive: Big;
+  parent_depth: number;
+}) => {
   const renderer = new DefaultRenderer({
     baseUrl: 'https://hive.blog/',
     breaks: true,
@@ -25,11 +32,6 @@ const CommentList = ({ data, parent }: { data: any; parent: any }) => {
     hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
     isLinkSafeFn: (url: string) => false
   });
-  const {
-    data: historyFeedData,
-    isLoading: historyFeedLoading,
-    isError: historyFeedError
-  } = useQuery(['feedHistory'], () => getFeedHistory());
 
   let filtered = data.filter((x: Entry) => {
     return x?.parent_author === parent?.author && x?.parent_permlink === parent?.permlink;
@@ -44,23 +46,19 @@ const CommentList = ({ data, parent }: { data: any; parent: any }) => {
   );
   const router = useRouter();
   const arr = [...mutedContent, ...unmutedContent];
-  if (historyFeedLoading || !historyFeedData) {
-    return <Loading />;
-  }
-  const historyFeedArr = historyFeedData?.price_history;
-  const price_per_hive = historyFeedArr
-    ? convertStringToBig(historyFeedArr[historyFeedArr.length - 1].base)
-    : undefined;
   return (
-    <ul className="px-2 ">
-      {arr?.map((comment: any, index: number) => (
+    <ul>
+      {arr?.map((comment: Entry, index: number) => (
         <div
           key={`parent-${comment.post_id}-index-${index}`}
-          className={clsx('px-2 sm:pl-12', {
-            'm-2 border-2 border-red-600 bg-green-50 p-2 dark:bg-slate-950': router.asPath.includes(
-              `@${comment.author}/${comment.permlink}`
-            )
-          })}
+          className={clsx(
+            'pl-2 ',
+            {
+              'm-2 border-2 border-red-600 bg-green-50 p-2 dark:bg-slate-950':
+                router.asPath.includes(`@${comment.author}/${comment.permlink}`) && comment.depth < 8
+            },
+            { 'pl-3 sm:pl-12': comment.depth > 1 }
+          )}
           id={`@${data[index].author}/${data[index].permlink}`}
         >
           <CommentListItem
@@ -68,12 +66,15 @@ const CommentList = ({ data, parent }: { data: any; parent: any }) => {
             comment={comment}
             renderer={renderer}
             key={`${comment.post_id}-item-${comment.depth}-index-${index}`}
+            parent_depth={parent_depth}
           />
           {comment.children > 0 ? (
             <CommentList
               data={data}
               parent={comment}
               key={`${comment.post_id}-list-${comment.depth}-index-${index}`}
+              price_per_hive={price_per_hive}
+              parent_depth={parent_depth}
             />
           ) : null}
         </div>

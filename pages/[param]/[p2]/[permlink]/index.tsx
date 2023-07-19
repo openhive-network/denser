@@ -28,6 +28,7 @@ import { convertStringToBig } from '@/lib/helpers';
 import FacebookShare from '@/components/share-post-facebook';
 import RedditShare from '@/components/share-post-reddit';
 import TwitterShare from '@/components/share-post-twitter';
+import { data } from 'autoprefixer';
 
 const DynamicComments = dynamic(() => import('@/components/comment-list'), {
   loading: () => <Loading />,
@@ -87,7 +88,6 @@ function PostPage({
   } = useQuery(['activeVotes'], () => getActiveVotes(username, permlink), {
     enabled: !!username && !!permlink
   });
-
   const [discussionState, setDiscussionState] = useState<any[]>();
   const router = useRouter();
   const isSortOrder = (token: any): token is SortOrder => {
@@ -355,7 +355,7 @@ function PostPage({
                 decline={Number(post_s.max_accepted_payout.slice(0, 1)) === 0}
               >
                 <span
-                  className={`text-red-500 hover:cursor-pointer  ${
+                  className={`text-xs text-red-500 hover:cursor-pointer sm:text-sm ${
                     Number(post_s.max_accepted_payout.slice(0, 1)) === 0 ? '!text-gray-600 line-through' : ''
                   }`}
                 >
@@ -364,7 +364,7 @@ function PostPage({
               </DetailsCardHover>
               {!isActiveVotesLoading && activeVotesData ? (
                 <DetailsCardVoters activeVotesData={activeVotesData} post={post_s}>
-                  <span className="text-red-500">
+                  <span className="text-xs text-red-500 sm:text-sm">
                     {post_s.stats?.total_votes}
                     {post_s.stats?.total_votes && post_s.stats?.total_votes > 1 ? ' votes' : ' vote'}
                   </span>
@@ -388,7 +388,7 @@ function PostPage({
         {reply ? <ReplyTextbox onSetReply={setReply} /> : null}
       </div>
       {!isLoadingDiscussion && discussion && discussionState ? (
-        <div className="mx-auto my-0 max-w-4xl py-4 sm:px-8">
+        <div className="mx-auto my-0 max-w-4xl py-4 pr-8">
           <div className="flex items-center justify-end pb-4" translate="no">
             <span>Sort: </span>
             <CommentSelectFilter />
@@ -396,6 +396,8 @@ function PostPage({
           <DynamicComments
             data={Object.keys(discussionState).map((key: any) => discussionState[key])}
             parent={post_s}
+            price_per_hive={price_per_hive}
+            parent_depth={post_s.depth}
           />
         </div>
       ) : (

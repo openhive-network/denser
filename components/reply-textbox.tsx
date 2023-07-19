@@ -18,13 +18,12 @@ export function ReplyTextbox({ onSetReply }: any) {
   return (
     <div className="mx-8 mb-4 flex flex-col gap-6 rounded-md border bg-card p-4 text-card-foreground shadow-sm dark:bg-slate-900">
       <div className="flex flex-col gap-4">
-        {' '}
         <Link href={`#`}>
           <h1 className="text-sm text-red-500">Disable side-by-side editor</h1>
         </Link>
         <div>
           <Textarea
-            className="border-2 border-slate-200 "
+            className="border-2 border-slate-200 dark:text-white"
             onChange={(e) => setText(e.target.value)}
             placeholder="Reply"
           />
@@ -52,10 +51,10 @@ export function ReplyTextbox({ onSetReply }: any) {
       </div>
 
       <div className="flex flex-col gap-4">
-        <div className="flex justify-between">
+        <div className="flex justify-between text-xs">
           <span className="text-slate-500">Preview</span>
           <Link href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax">
-            <span className="text-sm text-red-500">Markdown Styling Guide</span>
+            <span className="text-red-500">Markdown Styling Guide</span>
           </Link>
         </div>
         {text ? (
@@ -63,7 +62,7 @@ export function ReplyTextbox({ onSetReply }: any) {
             dangerouslySetInnerHTML={{
               __html: text
             }}
-            className="prose  max-w-full border-2 border-slate-200 p-2 dark:prose-invert"
+            className="prose max-w-full border-2 border-slate-200 p-2 dark:prose-invert"
           ></div>
         ) : null}
       </div>
