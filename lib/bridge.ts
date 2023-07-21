@@ -108,8 +108,6 @@ const endpoint =
       : siteConfig.endpoint
     : siteConfig.endpoint;
 
-if (endpoint) {
-}
 export const bridgeServer = new Client([`${endpoint}`], {
   timeout: 3000,
   failoverThreshold: 3,
