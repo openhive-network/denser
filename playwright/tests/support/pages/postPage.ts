@@ -27,13 +27,13 @@ export class PostPage {
   readonly commentCardsDescriptions: Locator;
   readonly commentCardsFooters: Locator;
   readonly commentShowButton: Locator;
+  readonly reputationValue: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.postListItemOnHomePage = page.locator('li[data-testid="post-list-item"]');
     this.firstPostImageOnHomePage = page
-      .locator('[data-testid="post-list-item"] [data-testid="post-image"] img')
-      .first();
+      .locator('li[data-testid="post-list-item"]:nth-of-type(1) img');
     this.firstPostTitleOnHomePage = page
       .locator('[data-testid="post-list-item"] [data-testid="post-title"] a')
       .first();
@@ -56,6 +56,7 @@ export class PostPage {
     this.commentCardsDescriptions = page.locator('[data-testid="comment-card-description"]');
     this.commentCardsFooters = page.locator('[data-testid="comment-card-footer"]');
     this.commentShowButton = page.locator('[data-testid="comment-show-button"]');
+    this.reputationValue = page.locator('[data-state="closed"]').first();
   }
 
   async gotoHomePage() {
@@ -104,4 +105,5 @@ export class PostPage {
     // return value of element's css property
     return property;
   }
+
 }

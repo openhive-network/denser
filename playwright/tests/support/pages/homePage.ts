@@ -70,6 +70,7 @@ export class HomePage {
   readonly getCardUserShortcuts: Locator;
   readonly getCardUserShortcutsTitle: Locator;
   readonly getCardUserShortcutsLinks: Locator;
+  readonly postTitle: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -146,6 +147,7 @@ export class HomePage {
     this.getNavSidebarMenu = page.locator('[data-testid="nav-sidebar-menu-button"]');
     this.getNavSidebarMenuContent = page.locator('[data-testid="nav-sidebar-menu-content"]');
     this.getNavSidebarMenuContentCloseButton = this.getNavSidebarMenuContent.locator('button');
+    this.postTitle = page.locator('[data-testid="post-title"]');
   }
 
   async goto() {
@@ -351,5 +353,15 @@ export class HomePage {
 
   async validateThemeModeIsDark() {
     expect(await this.getElementCssPropertyValue(this.getBody, 'background-color')).toBe('rgb(3, 7, 17)');
+  }
+
+  async moveToMutedPosts(){
+    await this.getFilterPosts.click()
+    await this.page.getByText('Muted').click()
+  }
+
+  async moveToFirstPost(){
+    await this.postTitle.first().hover()
+    await this.postTitle.first().click({force:true})
   }
 }
