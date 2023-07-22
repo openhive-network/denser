@@ -6,8 +6,6 @@ const renderer = new HiveContentRenderer.DefaultRenderer({
     skipSanitization: false,
     allowInsecureScriptTags: false,
     addNofollowToLinks: true,
-    addTargetBlankToLink: true,
-    addCssClassToLinks: "hive-class",
     doNotShowImages: false,
     ipfsPrefix: "",
     assetsWidth: 640,
@@ -24,8 +22,6 @@ const input = `
 and some content
 
 Lets mention @engrave on #hive.
-
-[Hive Link](https://hive.io)
 `;
 
 const output = renderer.render(input);

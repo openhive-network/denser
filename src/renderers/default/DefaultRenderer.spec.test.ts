@@ -14,8 +14,6 @@ describe("DefaultRender", () => {
         breaks: true,
         skipSanitization: false,
         allowInsecureScriptTags: false,
-        addTargetBlankToLinks: true,
-        addCssClassToLinks: "hive-test",
         addNofollowToLinks: true,
         doNotShowImages: false,
         ipfsPrefix: "",
@@ -38,23 +36,24 @@ describe("DefaultRender", () => {
         {
             name: "Renders steem mentions correctly",
             raw: "Content @noisy another content",
-            expected:
-                '<p>Content <a href="https://steemit.com/@noisy" class="hive-test">@noisy</a> another content</p>',
+            expected: '<p>Content <a href="https://steemit.com/@noisy">@noisy</a> another content</p>',
         },
         {
             name: "Renders steem hashtags correctly",
             raw: "Content #pl-nuda another content",
-            expected: '<p>Content <a href="/trending/pl-nuda" class="hive-test">#pl-nuda</a> another content</p>',
+            expected: '<p>Content <a href="/trending/pl-nuda">#pl-nuda</a> another content</p>',
         },
         {
             name: "Embeds correctly vimeo video via paste",
-            raw: '<iframe src="https://player.vimeo.com/video/174544848?byline=0" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>',
+            raw:
+                '<iframe src="https://player.vimeo.com/video/174544848?byline=0" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>',
             expected:
                 '<div class="videoWrapper"><iframe frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" src="https://player.vimeo.com/video/174544848" width="640" height="480"></iframe></div>',
         },
         {
             name: "Embeds correctly youtube video via paste",
-            raw: '<iframe width="560" height="315" src="https://www.youtube.com/embed/0nFkmd-A7jA" frameborder="0" allowfullscreen></iframe>',
+            raw:
+                '<iframe width="560" height="315" src="https://www.youtube.com/embed/0nFkmd-A7jA" frameborder="0" allowfullscreen></iframe>',
             expected:
                 '<div class="videoWrapper"><iframe width="640" height="480" src="https://www.youtube.com/embed/0nFkmd-A7jA" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" frameborder="0"></iframe></div>',
         },
@@ -72,20 +71,22 @@ describe("DefaultRender", () => {
         },
         {
             name: "Allows links embedded via <a> tags",
-            raw: '<a href="https://steemit.com/utopian-io/@blockchainstudio/drugswars-revenue-and-transaction-analysis" class="hive-test">Drugwars - revenue and transaction analysis</a>',
+            raw:
+                "<a href='https://steemit.com/utopian-io/@blockchainstudio/drugswars-revenue-and-transaction-analysis'>Drugwars - revenue and transaction analysis</a>",
             expected:
-                '<p><a href="https://steemit.com/utopian-io/@blockchainstudio/drugswars-revenue-and-transaction-analysis" class="hive-test">Drugwars - revenue and transaction analysis</a></p>',
+                '<p><a href="https://steemit.com/utopian-io/@blockchainstudio/drugswars-revenue-and-transaction-analysis">Drugwars - revenue and transaction analysis</a></p>',
         },
 
         {
             name: "Allows links embedded via <a> tags inside of markdown headers",
-            raw: "## <a href='https://steemit.com/utopian-io/@blockchainstudio/drugswars-revenue-and-transaction-analysis' class='hive-test'>Drugwars - revenue and transaction analysis</a>",
+            raw:
+                "## <a href='https://steemit.com/utopian-io/@blockchainstudio/drugswars-revenue-and-transaction-analysis'>Drugwars - revenue and transaction analysis</a>",
             expected:
-                '<h2><a href="https://steemit.com/utopian-io/@blockchainstudio/drugswars-revenue-and-transaction-analysis" class="hive-test">Drugwars - revenue and transaction analysis</a></h2>',
+                '<h2><a href="https://steemit.com/utopian-io/@blockchainstudio/drugswars-revenue-and-transaction-analysis">Drugwars - revenue and transaction analysis</a></h2>',
         },
     ];
 
-    tests.forEach((test) =>
+    tests.forEach(test =>
         it(test.name, () => {
             const renderer = new DefaultRenderer(defaultOptions);
             const rendered = renderer.render(test.raw).trim();
