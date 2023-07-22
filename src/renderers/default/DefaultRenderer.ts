@@ -28,6 +28,8 @@ export class DefaultRenderer {
                 iframeWidth: this.options.assetsWidth,
                 iframeHeight: this.options.assetsHeight,
                 addNofollowToLinks: this.options.addNofollowToLinks,
+                addTargetBlankToLinks: this.options.addTargetBlankToLinks,
+                addCssClassToLinks: this.options.addCssClassToLinks,
                 noImage: this.options.doNotShowImages,
                 isLinkSafeFn: this.options.isLinkSafeFn,
             },
@@ -117,6 +119,8 @@ export namespace DefaultRenderer {
         skipSanitization: boolean;
         allowInsecureScriptTags: boolean;
         addNofollowToLinks: boolean;
+        addTargetBlankToLinks?: boolean;
+        addCssClassToLinks?: string;
         doNotShowImages: boolean;
         ipfsPrefix: string;
         assetsWidth: number;
@@ -133,6 +137,8 @@ export namespace DefaultRenderer {
             ow(o.breaks, "Options.breaks", ow.boolean);
             ow(o.skipSanitization, "Options.skipSanitization", ow.boolean);
             ow(o.addNofollowToLinks, "Options.addNofollowToLinks", ow.boolean);
+            ow(o.addTargetBlankToLinks, "Options.addTargetBlankToLinks", ow.optional.boolean);
+            ow(o.addCssClassToLinks, "Options.addCssClassToLinks", ow.optional.string);
             ow(o.doNotShowImages, "Options.doNotShowImages", ow.boolean);
             ow(o.ipfsPrefix, "Options.ipfsPrefix", ow.string);
             ow(o.assetsWidth, "Options.assetsWidth", ow.number.integer.positive);
