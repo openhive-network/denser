@@ -54,7 +54,7 @@ export class TagTransformingSanitizer {
                 img: ["src", "alt"],
 
                 // title is only set in the case of an external link warning
-                a: ["href", "rel", "title"],
+                a: ["href", "rel", "title", "class"],
             },
             allowedSchemes: ["http", "https", "steem"],
             transformTags: {
@@ -131,7 +131,7 @@ export class TagTransformingSanitizer {
                         "videoWrapper",
                         "phishy",
                     ];
-                    const validClass = classWhitelist.find(e => attribs.class === e);
+                    const validClass = classWhitelist.find((e) => attribs.class === e);
                     if (validClass) {
                         attys.class = validClass;
                     }
@@ -167,6 +167,10 @@ export class TagTransformingSanitizer {
                         // attys.target = '_blank' // pending iframe impl https://mathiasbynens.github.io/rel-noopener/
                         attys.rel = this.options.addNofollowToLinks ? "nofollow noopener" : "noopener";
                         attys.title = this.localization.phishingWarning;
+                        attys.target = this.options.addTargetBlankToLinks ? "_blank" : "_self";
+                    }
+                    if (this.options.addCssClassToLinks) {
+                        attys.class = this.options.addCssClassToLinks ? this.options.addCssClassToLinks : "";
                     }
                     const retTag: sanitize.Tag = {
                         tagName,
@@ -184,6 +188,8 @@ export namespace TagTransformingSanitizer {
         iframeWidth: number;
         iframeHeight: number;
         addNofollowToLinks: boolean;
+        addTargetBlankToLinks?: boolean;
+        addCssClassToLinks?: string;
         noImage: boolean;
         isLinkSafeFn: (url: string) => boolean;
     }
@@ -193,6 +199,8 @@ export namespace TagTransformingSanitizer {
             ow(o.iframeWidth, "TagTransformingSanitizer.Options.iframeWidth", ow.number.integer.positive);
             ow(o.iframeHeight, "TagTransformingSanitizer.Options.iframeHeight", ow.number.integer.positive);
             ow(o.addNofollowToLinks, "TagTransformingSanitizer.Options.addNofollowToLinks", ow.boolean);
+            ow(o.addTargetBlankToLinks, "TagTransformingSanitizer.Options.addTargetBlankToLinks", ow.optional.boolean);
+            ow(o.addCssClassToLinks, "TagTransformingSanitizer.Options.addCssClassToLinks", ow.optional.string);
             ow(o.noImage, "TagTransformingSanitizer.Options.noImage", ow.boolean);
             ow(o.isLinkSafeFn, "TagTransformingSanitizer.Options.isLinkSafeFn", ow.function);
         }
