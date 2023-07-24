@@ -14,16 +14,26 @@ import { useRouter } from 'next/router';
 import { proxifyImageUrl } from '@/lib/old-profixy';
 import { customEndsWith } from '@/lib/ends-with';
 import { useState } from 'react';
+import Big from 'big.js';
+import { Entry } from '@/lib/bridge';
 
 interface IBeneficiary {
   account: string;
   weight: number;
 }
 
-const PostListItem = ({ post, sort, price_per_hive, isCommunityPage }: any) => {
-  const [reveal, setReveal] = useState<boolean>(
-    () => post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw')
-  );
+const PostListItem = ({
+  post,
+  sort,
+  price_per_hive,
+  isCommunityPage
+}: {
+  post: Entry;
+  sort: string | undefined | null;
+  price_per_hive: Big;
+  isCommunityPage: boolean | undefined;
+}) => {
+  const [reveal, setReveal] = useState(post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw'));
   const router = useRouter();
 
   function revealPost() {
@@ -135,7 +145,7 @@ const PostListItem = ({ post, sort, price_per_hive, isCommunityPage }: any) => {
                     </TooltipProvider>
                   </span>
                 ) : null}
-                {post.stats.is_pinned && isCommunityPage ? (
+                {post.stats && post.stats.is_pinned && isCommunityPage ? (
                   <Badge className="ml-1 bg-red-600 text-white hover:bg-red-600">
                     <Link href={`${post.url}`}>Pinned</Link>
                   </Badge>
@@ -304,10 +314,12 @@ const PostListItem = ({ post, sort, price_per_hive, isCommunityPage }: any) => {
                     <Tooltip>
                       <TooltipTrigger className="flex items-center" data-testid="post-total-votes">
                         <Icons.chevronUp className="h-4 w-4 sm:mr-1" />
-                        {post.stats.total_votes}
+                        {post.stats && post.stats.total_votes}
                       </TooltipTrigger>
                       <TooltipContent data-testid="post-card-votes-tooltip">
-                        <p>{post.stats.total_votes > 0 ? post.stats.total_votes : 'no'} votes</p>
+                        <p>
+                          {post.stats && post.stats.total_votes > 0 ? post.stats.total_votes : 'no'} votes
+                        </p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>

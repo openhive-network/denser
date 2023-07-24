@@ -7,6 +7,7 @@ import { dateToFullRelative } from '@/lib/parse-date';
 import ProfileLayout from '@/components/common/profile-layout';
 import Loading from '@/components/loading';
 import Link from 'next/link';
+import { ReactNode } from 'react';
 
 const convertVestsToSteem = (vests: number, dynamicData: DynamicGlobalProperties) => {
   const totalFund = parseFloat(dynamicData.total_vesting_fund_hive);
@@ -78,6 +79,6 @@ function DelegationsPage({ username }: InferGetServerSidePropsType<typeof getSer
   );
 }
 export default DelegationsPage;
-DelegationsPage.getLayout = function getLayout(page: any) {
+DelegationsPage.getLayout = function getLayout(page: ReactNode) {
   return <Layout>{page}</Layout>;
 };

@@ -16,59 +16,76 @@
  * limitations under the License.
  */
 
-import { JSZipObject } from "jszip";
+import { JSZipObject } from 'jszip';
+import { z } from 'zod';
+const locationSchema = z.object({
+  file: z.string(),
+  line: z.number(),
+  column: z.number()
+});
+export type Location = z.infer<typeof locationSchema>;
 
-export type Location = {
-  file: string;
-  line: number;
-  column: number;
-};
+const statsSchema = z.object({
+  total: z.number(),
+  expected: z.number(),
+  unexpected: z.number(),
+  flaky: z.number(),
+  skipped: z.number(),
+  ok: z.boolean(),
+  duration: z.number()
+});
+export type Stats = z.infer<typeof statsSchema>;
 
-export type TestFileSummary = {
-  fileId: string;
-  fileName: string;
-  tests: TestCaseSummary[];
-  stats: Stats;
-};
+const testCaseSummarySchema = z.object({
+  fileId: z.string().optional(),
+  title: z.string(),
+  part: z.string().array().optional(),
+  projectName: z.string(),
+  location: locationSchema,
+  annotations: z
+    .object({
+      type: z.string(),
+      descripton: z.string().optional()
+    })
+    .array(),
+  outcome: z.union([
+    z.literal('skipped'),
+    z.literal('expected'),
+    z.literal('unexpected'),
+    z.literal('flaky')
+  ]),
+  duration: z.number(),
+  ok: z.boolean()
+});
 
-export type TestCaseSummary = {
-  testId: string,
-  title: string;
-  path: string[];
-  projectName: string;
-  location: Location;
-  annotations: { type: string, description?: string }[];
-  outcome: 'skipped' | 'expected' | 'unexpected' | 'flaky';
-  duration: number;
-  ok: boolean;
-};
-export type Stats = {
-  total: number;
-  expected: number;
-  unexpected: number;
-  flaky: number;
-  skipped: number;
-  ok: boolean;
-  duration: number;
-};
+export type TestCaseSummary = z.infer<typeof testCaseSummarySchema>;
+const testFileSummarySchema = z.object({
+  fileId: z.string().optional(),
+  fileName: z.string(),
+  tests: testCaseSummarySchema.array(),
+  stats: statsSchema
+});
+export type testFileSummary = z.infer<typeof testFileSummarySchema>;
 
-export type HTMLReport = {
-  files: TestFileSummary[];
-  stats: Stats;
-  projectNames: string[];
-};
+export const HTMLReportSchema = z.object({
+  files: testFileSummarySchema.array(),
+  stats: statsSchema,
+  projectNames: z.string().array()
+});
+
+export type HTMLReport = z.infer<typeof HTMLReportSchema>;
 
 export type Config = {
-  outputFolderName?: string,
-  outputBasePath?: string
-  overwriteExisting?: boolean
-  debug?: boolean,
-}
+  outputFolderName?: string;
+  outputBasePath?: string;
+  overwriteExisting?: boolean;
+  debug?: boolean;
+};
 
 export type ZipDataFile = {
   relativePath: string;
-  file: JSZipObject,
-}
+  file: JSZipObject;
+};
 
 export interface FileReport {
   fileId: string;

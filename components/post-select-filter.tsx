@@ -7,11 +7,18 @@ import {
   SelectValue
 } from '@/components/ui/select';
 
-const PostSelectFilter = ({ filter, handleChangeFilter }: { filter: any; handleChangeFilter: any }) => {
+const PostSelectFilter = ({
+  filter,
+  handleChangeFilter
+}: {
+  filter: string | null;
+  handleChangeFilter: (e: string) => void;
+}) => {
+  const defaultValue = 'trending';
   return (
     <Select
-      defaultValue="trending"
-      value={filter}
+      defaultValue={defaultValue}
+      value={filter ? filter : defaultValue}
       onValueChange={(e) => {
         handleChangeFilter(e);
       }}

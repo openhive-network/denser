@@ -13,8 +13,8 @@ const CommunitiesSelectFilter = ({
   filter,
   handleChangeFilter
 }: {
-  filter: any;
-  handleChangeFilter: any;
+  filter: string;
+  handleChangeFilter: (e: string) => void;
 }) => {
   const [state, setState] = useState(() => filter);
   return (
@@ -26,7 +26,10 @@ const CommunitiesSelectFilter = ({
         setState(e);
       }}
     >
-      <SelectTrigger className="w-[180px] bg-white dark:bg-background/95 dark:text-white" data-testid="communities-filter">
+      <SelectTrigger
+        className="w-[180px] bg-white dark:bg-background/95 dark:text-white"
+        data-testid="communities-filter"
+      >
         <SelectValue placeholder="Select a filter" />
       </SelectTrigger>
       <SelectContent>

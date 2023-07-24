@@ -145,10 +145,6 @@ export interface OrdersData {
   trading: OrdersDataItem[];
 }
 
-interface ApiError {
-  error: string;
-  data: any;
-}
 export interface Post {
   active_votes: {
     rshares: number;
@@ -159,8 +155,8 @@ export interface Post {
   author_reputation: number;
   author_role: string;
   author_title: string;
-  beneficiaries: [];
-  blacklists: [];
+  beneficiaries: Array<unknown>;
+  blacklists: Array<unknown>;
   body: string;
   category: string;
   children: number;
@@ -176,7 +172,7 @@ export interface Post {
     format: string;
     image: [string];
     tags: string[];
-    users: [];
+    users: Array<unknown>;
   };
   max_accepted_payout: string;
   net_rshares: number;
@@ -187,7 +183,7 @@ export interface Post {
   permlink: string;
   post_id: number;
   promoted: string;
-  replies: [];
+  replies: Array<unknown>;
   stats: {
     flag_weight: number;
     gray: boolean;
@@ -198,10 +194,6 @@ export interface Post {
   updated: string;
   url: string;
 }
-const handleError = (error: any) => {
-  debugger;
-  return { error: 'api error', data: error };
-};
 
 export const getPost = (username: string, permlink: string): Promise<Post> =>
   bridgeServer.call('condenser_api', 'get_content', [username, permlink]);
@@ -248,7 +240,7 @@ export const getTrendingTags = (afterTag: string = '', limit: number = 250): Pro
 export const getAllTrendingTags = (
   afterTag: string = '',
   limit: number = 250
-): Promise<TrendingTag[] | any> =>
+): Promise<TrendingTag[] | void> =>
   bridgeServer.database
     .call('get_trending_tags', [afterTag, limit])
     .then((tags: TrendingTag[]) => {

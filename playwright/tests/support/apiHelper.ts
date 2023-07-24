@@ -82,7 +82,7 @@ export class ApiHelper {
   async getListCommunitiesAPI(
     last: string = '',
     limit: number = 100,
-    query: any = null,
+    query: string | null = null,
     sort: string = 'rank',
     observer: string = ''
   ) {

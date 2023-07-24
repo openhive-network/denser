@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-function useLocalStorage(key: string, initialValue: object | string) {
+// Allow hook to set specyfic type the same API as useState
+function useLocalStorage<T extends string | object>(key: string, initialValue: T) {
   // State to store our value
   // Pass initial state function to useState so logic is only executed once
-  const [storedValue, setStoredValue] = useState(() => {
-    if (typeof window === "undefined") {
+  const [storedValue, setStoredValue] = useState<T | undefined>(() => {
+    if (typeof window === 'undefined') {
       return initialValue;
     }
     try {
@@ -20,15 +21,14 @@ function useLocalStorage(key: string, initialValue: object | string) {
   });
   // Return a wrapped version of useState's setter function that ...
   // ... persists the new value to localStorage.
-  const setValue = (value: any) => {
+  const setValue = (value: T) => {
     try {
       // Allow value to be a function so we have same API as useState
-      const valueToStore =
-        value instanceof Function ? value(storedValue) : value;
+      const valueToStore = value instanceof Function ? value(storedValue) : value;
       // Save state
       setStoredValue(valueToStore);
       // Save to local storage
-      if (typeof window !== "undefined") {
+      if (typeof window !== 'undefined') {
         window.localStorage.setItem(key, JSON.stringify(valueToStore));
       }
     } catch (error) {
@@ -36,7 +36,7 @@ function useLocalStorage(key: string, initialValue: object | string) {
       console.log(error);
     }
   };
-  return [storedValue, setValue];
+  return [storedValue, setValue] as const;
 }
 
-export { useLocalStorage }
+export { useLocalStorage };

@@ -14,7 +14,7 @@ export default function ProfileLists({
 }: {
   username: string;
   variant: string;
-  data: FollowList[] | any;
+  data: FollowList[] | undefined;
 }) {
   const [page, setPage] = useState(0);
   const [filter, setFilter] = useState('');
@@ -31,7 +31,7 @@ export default function ProfileLists({
   };
   const splitArrays = [];
   const chunkSize = 10;
-  if (data && data.length > 0) {
+  if (data && filteredNames && data.length > 0) {
     for (let i = 0; i < filteredNames.length; i += chunkSize) {
       const chunk = filteredNames.slice(i, i + chunkSize);
       splitArrays.push(chunk);
@@ -81,7 +81,7 @@ export default function ProfileLists({
           {variant === 'blacklisted' ? ' blacklist' : variant === 'muted' ? ' mute list' : null} yet
         </p>
         <ul className="flex flex-col sm:w-1/3">
-          {data.length === 0 ? (
+          {data && data.length === 0 ? (
             <li className="bg-slate-200 p-4 text-center text-sm font-bold dark:bg-slate-900 ">
               There are no users on this list yet
             </li>
@@ -130,7 +130,7 @@ export default function ProfileLists({
             Viewing Page {page + 1} of {splitArrays.length}
           </div>
         ) : null}
-        {data.length > 0 ? <div className="text-sm">Users On List: {data.length}</div> : null}
+        {data && data.length > 0 ? <div className="text-sm">Users On List: {data.length}</div> : null}
         <h1 className="text-xl font-bold">Search This List</h1>
         <div className="flex  justify-center bg-slate-200 p-2 dark:bg-slate-900 sm:w-1/3">
           <Input onChange={(e) => onSearchChange(e.target.value)} className="bg-white sm:w-3/4"></Input>

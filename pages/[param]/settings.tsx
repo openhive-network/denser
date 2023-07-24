@@ -69,7 +69,9 @@ export default function UserSettings() {
               <Input type="text" id="mutedListDescription" name="mutedListDescription" />
             </div>
           </div>
-          <Button className="my-4 w-44" data-testid="pps-update-button">Update</Button>
+          <Button className="my-4 w-44" data-testid="pps-update-button">
+            Update
+          </Button>
         </div>
 
         <div className="py-8" data-testid="settings-preferences">

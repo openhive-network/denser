@@ -40,11 +40,11 @@ const CommentList = ({
   });
 
   let mutedContent = filtered.filter(
-    (item: any) => parent && item.depth === 1 && item.parent_author === parent.author
+    (item: Entry) => parent && item.depth === 1 && item.parent_author === parent.author
   );
 
-  let unmutedContent = filtered.filter((md: any) =>
-    mutedContent.every((fd: any) => fd.post_id !== md.post_id)
+  let unmutedContent = filtered.filter((md: Entry) =>
+    mutedContent.every((fd: Entry) => fd.post_id !== md.post_id)
   );
   const router = useRouter();
   const arr = [...mutedContent, ...unmutedContent];

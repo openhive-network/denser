@@ -20,6 +20,7 @@ import clsx from 'clsx';
 import { useAccountQuery } from './hooks/use-accout';
 import { useFollowsQuery } from './hooks/use-follows';
 import { Badge } from '@/components/ui/badge';
+import { DefaultRenderer } from '@hiveio/content-renderer';
 
 const CommentListItem = ({
   comment,
@@ -28,7 +29,7 @@ const CommentListItem = ({
   parent_depth
 }: {
   comment: Entry;
-  renderer: any;
+  renderer: DefaultRenderer;
   price_per_hive: Big;
   parent_depth: number;
 }) => {

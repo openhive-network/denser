@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import ln2list from '@/lib/ln2list';
 import { DefaultRenderer } from '@hiveio/content-renderer';
 import { getDoubleSize, proxifyImageUrl } from '@/lib/old-profixy';
-import { Community, Subscription, getAccountNotifications } from '@/lib/bridge';
+import { AccountNotification, Community, Subscription, getAccountNotifications } from '@/lib/bridge';
 import { SubsListDialog } from './subscription-list-dialog';
 import { ActivityLogDialog } from './activity-log-dialog';
 import { Badge } from '@/components/ui/badge';
@@ -18,7 +18,7 @@ const CommunityDescription = ({
 }: {
   data: Community;
   subs: Subscription[];
-  notificationData: any;
+  notificationData: AccountNotification[] | null | undefined;
   username: string;
 }) => {
   const renderer = new DefaultRenderer({
@@ -93,7 +93,7 @@ const CommunityDescription = ({
           <div data-testid="community-leadership" className="my-6 flex flex-col">
             <h6 className="my-1.5 font-semibold leading-none tracking-tight">Leadership</h6>
             <ul className="mt-1.5 text-xs">
-              {data.team.slice(1).map((member: any) => (
+              {data.team.slice(1).map((member: string[]) => (
                 <li key={member[0]} className="pt-0.5">
                   <Link href={`/@${member[0]}`} className="text-red-600 hover:cursor-pointer">
                     @{member[0]}

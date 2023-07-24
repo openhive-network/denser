@@ -11,7 +11,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Link from 'next/link';
 import Loading from '@/components/loading';
 import TransfersHistoryFilter, { TransferFilters } from '@/components/transfers-history-filter';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const username = ctx.params?.param as string;
@@ -129,7 +129,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
   const conversionValue = 0; //NEED TO LOGIN
   const savings_pending = 0; //NEED TO LOGIN
   const hiveOrders = 0; //NEED TO LOGIN
-  //estimated account value, no correct/TODO
+  //estimated account value, no correct
   const total_hbd = hbd_balance
     .plus(hbd_balance_savings)
     .plus(savings_hbd_pending)
@@ -331,6 +331,6 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
 }
 export default TransfersPage;
 
-TransfersPage.getLayout = function getLayout(page: any) {
+TransfersPage.getLayout = function getLayout(page: ReactNode) {
   return <Layout>{page}</Layout>;
 };

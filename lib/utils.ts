@@ -8,7 +8,7 @@ import remarkableStripper from '@/lib/remmarkable-stripper';
 import { convertStringToBig } from './helpers';
 import { DynamicGlobalProperties, Vote } from './hive';
 import { FullAccount } from '@/store/app-types';
-import { Entry } from '@/lib/bridge';
+import { Entry, JsonMetadata } from '@/lib/bridge';
 import { parseDate2 } from '@/lib/parse-date';
 
 export function cn(...inputs: ClassValue[]) {
@@ -94,11 +94,11 @@ export const accountReputation = (input: string | number): number => {
 };
 
 export const getHivePower = (
-  totalHive: any,
-  totalVests: any,
-  vesting_shares: any,
-  delegated_vesting_shares: any,
-  received_vesting_shares: any
+  totalHive: number,
+  totalVests: number,
+  vesting_shares: number,
+  delegated_vesting_shares: number,
+  received_vesting_shares: number
 ) => {
   const hive = new Big(vesting_shares)
     .minus(new Big(delegated_vesting_shares))
@@ -107,9 +107,9 @@ export const getHivePower = (
   return hive.div(hiveDividedByVests).toFixed(0);
 };
 
-export const numberWithCommas = (x: any) => String(x).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+export const numberWithCommas = (x: string) => x.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
-export function extractBodySummary(body: any, stripQuotes = false) {
+export function extractBodySummary(body: string, stripQuotes = false) {
   let desc = body;
 
   if (stripQuotes) desc = desc.replace(/(^(\n|\r|\s)*)>([\s\S]*?).*\s*/g, '');
@@ -137,7 +137,7 @@ export function extractBodySummary(body: any, stripQuotes = false) {
   return desc;
 }
 
-export function getPostSummary(jsonMetadata: any, body: any, stripQuotes = false) {
+export function getPostSummary(jsonMetadata: JsonMetadata, body: string, stripQuotes = false) {
   const shortDescription = jsonMetadata?.description;
 
   if (!shortDescription) {
@@ -147,8 +147,8 @@ export function getPostSummary(jsonMetadata: any, body: any, stripQuotes = false
   return shortDescription;
 }
 
-export const htmlDecode = (txt: any) =>
-  txt.replace(/&[a-z]+;/g, (ch: any) => {
+export const htmlDecode = (txt: string) =>
+  txt.replace(/&[a-z]+;/g, (ch: string) => {
     // @ts-ignore
     const char = htmlCharMap[ch.substring(1, ch.length - 1)];
     return char ? char : ch;
@@ -254,16 +254,16 @@ export function parsePayoutAmount(amount: string) {
   return parseFloat(String(amount).replace(/\s[A-Z]*$/, ''));
 }
 
-export function fmt(decimal_amount: any, asset = null) {
-  return formatDecimal(decimal_amount).join('') + (asset ? ' ' + asset : '');
+export function fmt(decimal_amount: number | string, asset = null) {
+  return formatDecimal(Number(decimal_amount)).join('') + (asset ? ' ' + asset : '');
 }
 
-function fractional_part_len(value: any) {
+function fractional_part_len(value: number) {
   const parts = (Number(value) + '').split('.');
   return parts.length < 2 ? 0 : parts[1].length;
 }
 
-export function formatDecimal(value: any, decPlaces = 2, truncate0s = true) {
+export function formatDecimal(value: number, decPlaces = 2, truncate0s = true) {
   let fl, j;
   // eslint-disable-next-line no-void,no-restricted-globals
   if (value === null || value === void 0 || isNaN(value)) {

@@ -2,8 +2,9 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
+import { Community } from '@/lib/bridge';
 
-const CommunitiesListItem = ({ community }: { community: any }) => {
+const CommunitiesListItem = ({ community }: { community: Community }) => {
   return (
     <Card
       className={cn(
@@ -25,13 +26,15 @@ const CommunitiesListItem = ({ community }: { community: any }) => {
             authors <span className="mx-1">•</span>
             {community.num_pending} posts
           </p>
-          {community.admins?.length > 0 ? (
+          {community.admins && community.admins?.length > 0 ? (
             <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
               <span>{community.admins?.length > 1 ? 'admins' : 'admin'}: </span>
-              {community.admins.map((admin: any, index: number) => (
+              {community.admins.map((admin: string, index: number) => (
                 <span key={index} className="text-red-600">
                   <Link href={`@${admin}`}>{admin}</Link>{' '}
-                  {index !== community.admins.length - 1 ? <span className="mx-1">•</span> : null}
+                  {community.admins && index !== community.admins.length - 1 ? (
+                    <span className="mx-1">•</span>
+                  ) : null}
                 </span>
               ))}
             </p>

@@ -4,8 +4,8 @@ const remarkable = new Remarkable();
 export default remarkable;
 
 /** Removes all markdown leaving just plain text */
-const remarkableStripper = (md: any) => {
-  md.renderer.render = (tokens: any, options: any, env: any) => {
+const remarkableStripper = (md: Remarkable) => {
+  md.renderer.render = (tokens: any, options, env) => {
     let str = '';
     for (let i = 0; i < tokens.length; i += 1) {
       if (tokens[i].type === 'inline') {

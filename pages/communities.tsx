@@ -1,6 +1,6 @@
 import CommunitiesSidebar from '@/components/communities-sidebar';
 import { Input } from '@/components/ui/input';
-import { useState } from 'react';
+import { useState, FocusEvent } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getCommunities } from '@/lib/bridge';
 import CommunitiesSelectFilter from '@/components/communities-select-filter';
@@ -10,17 +10,17 @@ import Link from 'next/link';
 
 export default function CommunitiesPage() {
   const [sort, setSort] = useState('rank');
-  const [query, setQuery] = useState(null);
+  const [query, setQuery] = useState<string>();
   const {
     isLoading: communitiesDataIsLoading,
     error: communitiesDataError,
     data: communitiesData
   } = useQuery(['communitiesList', sort, query], async () => await getCommunities(sort, query));
 
-  function handleSearchCommunity(e: any) {
+  function handleSearchCommunity(e: FocusEvent<HTMLInputElement>) {
     setQuery(e.target.value);
   }
-  function handleChangeFilter(e: any) {
+  function handleChangeFilter(e: string) {
     setSort(e);
   }
 

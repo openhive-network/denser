@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-const SubscriptionListItem = ({ community }: { community: any }) => {
+const SubscriptionListItem = ({ community }: { community: string[] }) => {
   return (
     <li>
       <Link href={`/trending/${community[0]}`} className="mr-2 text-red-600 hover:underline">

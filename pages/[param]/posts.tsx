@@ -31,7 +31,7 @@ const UserPosts = () => {
     hasNextPage
   } = useInfiniteQuery(
     ['accountRepliesInfinite', username, sort],
-    async ({ pageParam }: { pageParam?: any }): Promise<any> => {
+    async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
       return await getAccountPosts(
         sort || 'trending',
         username,
@@ -41,12 +41,20 @@ const UserPosts = () => {
       );
     },
     {
-      getNextPageParam: (lastPage: Entry[]) => {
+      getNextPageParam: (lastPage) => {
+        if (lastPage && lastPage.length > 0) {
+          return {
+            author: lastPage[lastPage.length - 1].author,
+            permlink: lastPage[lastPage.length - 1].permlink
+          };
+        }
+        if (lastPage === null) return undefined;
         return {
-          author: lastPage && lastPage.length > 0 ? lastPage[lastPage?.length - 1].author : '',
-          permlink: lastPage && lastPage.length > 0 ? lastPage[lastPage?.length - 1].permlink : ''
+          author: '',
+          permlink: ''
         };
       },
+
       enabled: Boolean(sort) && !!username
     }
   );
@@ -67,6 +75,7 @@ const UserPosts = () => {
   if (isLoading || historyFeedLoading) return <Loading loading={isLoading} />;
   const historyFeedArr = historyFeedData?.price_history || [];
   const price_per_hive = convertStringToBig(historyFeedArr[historyFeedArr.length - 1].base);
+  const lastPageData = data?.pages[data?.pages.length - 1];
   return (
     <ProfileLayout>
       <div className="flex flex-col">
@@ -97,7 +106,7 @@ const UserPosts = () => {
                   >
                     {isFetchingNextPage ? (
                       <PostSkeleton />
-                    ) : data.pages.length > 1 && data?.pages[data.pages.length - 1].length > 0 ? (
+                    ) : data.pages.length > 1 && lastPageData && lastPageData.length > 0 ? (
                       'Load Newer'
                     ) : null}
                   </button>
@@ -120,7 +129,7 @@ const UserPosts = () => {
                   >
                     {isFetchingNextPage ? (
                       <PostSkeleton />
-                    ) : data.pages.length > 1 && data?.pages[data.pages.length - 1].length > 0 ? (
+                    ) : data.pages.length > 1 && lastPageData && lastPageData.length > 0 ? (
                       'Load Newer'
                     ) : null}
                   </button>
@@ -150,7 +159,7 @@ const UserPosts = () => {
                   >
                     {isFetchingNextPage ? (
                       <PostSkeleton />
-                    ) : data.pages.length > 1 && data?.pages[data.pages.length - 1].length > 0 ? (
+                    ) : data.pages.length > 1 && lastPageData && lastPageData.length > 0 ? (
                       'Load Newer'
                     ) : null}
                   </button>

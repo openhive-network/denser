@@ -1,7 +1,12 @@
 import BadgeList from '@/components/badge-list';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/lib/bridge';
 
-export default function SocialActivities({ data, peakd }: { data: any; peakd: any }) {
+export default function SocialActivities({ data, peakd }: { data: Badge[]; peakd: Badge[] }) {
+  const filterBadges = (type: string) => {
+    return data?.filter((badge: Badge) => badge.type === type);
+  };
+
   return (
     <Tabs defaultValue="badges" className="mt-8 w-full">
       <TabsList className="flex" data-testid="badges-activity-menu">
@@ -15,16 +20,16 @@ export default function SocialActivities({ data, peakd }: { data: any; peakd: an
         <BadgeList data={peakd} />
       </TabsContent>
       <TabsContent value="activity">
-        <BadgeList data={data?.filter((badge: any) => badge.type === 'activity')} />
+        <BadgeList data={filterBadges('activity')} />
       </TabsContent>
       <TabsContent value="personal">
-        <BadgeList data={data?.filter((badge: any) => badge.type === 'perso')} />
+        <BadgeList data={filterBadges('perso')} />
       </TabsContent>
       <TabsContent value="meetups">
-        <BadgeList data={data?.filter((badge: any) => badge.type === 'meetup')} />
+        <BadgeList data={filterBadges('meetup')} />
       </TabsContent>
       <TabsContent value="challenges">
-        <BadgeList data={data?.filter((badge: any) => badge.type === 'challenge')} />
+        <BadgeList data={filterBadges('challenge')} />
       </TabsContent>
     </Tabs>
   );

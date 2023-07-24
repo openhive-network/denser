@@ -14,31 +14,37 @@
  * @author Anoop Raveendran
  */
 
-import { createWriteStream, existsSync } from "fs";
-import { mkdir, readFile, readdir, copyFile, appendFile, writeFile, rm, lstat } from "fs/promises";
-import path from "path";
-import JSZip from "jszip";
-import yazl from "yazl";
-import Base64Encoder from "./Base64Encoder";
-import type { HTMLReport, Config, ZipDataFile, Stats, FileReport } from "./types";
-
+import { createWriteStream, existsSync } from 'fs';
+import { mkdir, readFile, readdir, copyFile, appendFile, writeFile, rm, lstat } from 'fs/promises';
+import path from 'path';
+import JSZip from 'jszip';
+import yazl from 'yazl';
+import Base64Encoder from './Base64Encoder';
+import {
+  type HTMLReport,
+  type Config,
+  type ZipDataFile,
+  type Stats,
+  type FileReport,
+  HTMLReportSchema
+} from './types';
 const defaultConfig: Required<Config> = {
-  outputFolderName: "merged-html-report",
+  outputFolderName: 'merged-html-report',
   outputBasePath: process.cwd(),
   overwriteExisting: true,
-  debug: false,
-}
+  debug: false
+};
 
-const re = /<script>\nwindow\.playwrightReportBase64\s=\s"data:application\/zip;base64,(.+)<\/script>/
+const re = /<script>\nwindow\.playwrightReportBase64\s=\s"data:application\/zip;base64,(.+)<\/script>/;
 
 async function mergeHTMLReports(inputReportPaths: string[], givenConfig: Config = {}) {
-  if(!Array.isArray(inputReportPaths) || inputReportPaths.length < 1) {
-    console.log("No Input paths provided")
+  if (!Array.isArray(inputReportPaths) || inputReportPaths.length < 1) {
+    console.log('No Input paths provided');
     process.exit(1);
   }
 
   // Merge config with default values
-  const { outputFolderName, outputBasePath, overwriteExisting, debug } = {...defaultConfig, ...givenConfig};
+  const { outputFolderName, outputBasePath, overwriteExisting, debug } = { ...defaultConfig, ...givenConfig };
   const outputPath = path.resolve(outputBasePath, `./${outputFolderName}`);
 
   if (existsSync(outputPath)) {
@@ -46,14 +52,14 @@ async function mergeHTMLReports(inputReportPaths: string[], givenConfig: Config 
       if (debug) {
         console.log('Cleaning output directory');
       }
-      await rm(outputPath, { recursive: true, force: true })
+      await rm(outputPath, { recursive: true, force: true });
     } else {
       throw new Error(`Report merge aborted. Output directory already exists and overwriteExisting set to false.\n
-    path: ${outputPath}\n`)
+    path: ${outputPath}\n`);
     }
   }
 
-  await mkdir(outputPath)
+  await mkdir(outputPath);
 
   let mergedZipContent = new yazl.ZipFile();
   let aggregateReportJson: HTMLReport | null = null;
@@ -61,8 +67,8 @@ async function mergeHTMLReports(inputReportPaths: string[], givenConfig: Config 
   const fileReportMap = new Map<string, FileReport>();
 
   for (let reportDir of inputReportPaths) {
-    console.log(`Processing "${reportDir}"`)
-    const indexHTMLContent = await readFile(reportDir + "/index.html", "utf8");
+    console.log(`Processing "${reportDir}"`);
+    const indexHTMLContent = await readFile(reportDir + '/index.html', 'utf8');
     const [, base64Str] = re.exec(indexHTMLContent) ?? [];
 
     if (!base64Str) throw new Error('index.html does not contain report data');
@@ -71,65 +77,64 @@ async function mergeHTMLReports(inputReportPaths: string[], givenConfig: Config 
       baseIndexHtml = indexHTMLContent.replace(re, '');
     }
 
-    const zipData = Buffer.from(base64Str, "base64").toString("binary");
+    const zipData = Buffer.from(base64Str, 'base64').toString('binary');
     const zipFile = await JSZip.loadAsync(zipData);
     const zipDataFiles: ZipDataFile[] = [];
 
     zipFile.forEach((relativePath, file) => {
       zipDataFiles.push({ relativePath, file });
-    })
+    });
 
-    await Promise.all(zipDataFiles.map(async ({ relativePath, file }) => {
-      const fileContentString = await file.async("string");
-      if (relativePath !== "report.json") {
-        const fileReportJson = JSON.parse(fileContentString) as FileReport;
+    await Promise.all(
+      zipDataFiles.map(async ({ relativePath, file }) => {
+        const fileContentString = await file.async('string');
+        if (relativePath !== 'report.json') {
+          const fileReportJson = JSON.parse(fileContentString) as FileReport;
 
-        if (fileReportMap.has(relativePath)) {
-          if (debug) {
-            console.log('Merging duplicate file report: ' + relativePath);
-          }
-
-          const existingReport = fileReportMap.get(relativePath);
-
-          if (existingReport?.fileId !== fileReportJson.fileId) throw new Error('Error: collision with file ids in two file reports')
-
-          existingReport.tests.push(...fileReportJson.tests);
-        } else {
-          fileReportMap.set(relativePath, fileReportJson);
-        }
-
-      } else {
-        const currentReportJson = JSON.parse(fileContentString);
-        if (debug) {
-          console.log('---------- report.json ----------');
-          console.log(JSON.stringify(currentReportJson, null, 2));
-        }
-        if (!aggregateReportJson) aggregateReportJson = currentReportJson;
-        else {
-          currentReportJson.files.forEach((file: any) => {
-            const existingGroup = aggregateReportJson?.files.find(({ fileId }) => fileId === file.fileId);
-
-            if (existingGroup) {
-              existingGroup.tests.push(...file.tests);
-              mergeStats(existingGroup.stats, file.stats);
-            } else {
-              aggregateReportJson?.files.push(file);
+          if (fileReportMap.has(relativePath)) {
+            if (debug) {
+              console.log('Merging duplicate file report: ' + relativePath);
             }
-          })
 
-         mergeStats(aggregateReportJson.stats, currentReportJson.stats);
+            const existingReport = fileReportMap.get(relativePath);
 
-         aggregateReportJson.projectNames = [
-           ...new Set([
-             ...aggregateReportJson.projectNames,
-             ...currentReportJson.projectNames
-           ])
-         ];
+            if (existingReport?.fileId !== fileReportJson.fileId)
+              throw new Error('Error: collision with file ids in two file reports');
+
+            existingReport.tests.push(...fileReportJson.tests);
+          } else {
+            fileReportMap.set(relativePath, fileReportJson);
+          }
+        } else {
+          const currentReportJson = HTMLReportSchema.parse(JSON.parse(fileContentString));
+          if (debug) {
+            console.log('---------- report.json ----------');
+            console.log(JSON.stringify(currentReportJson, null, 2));
+          }
+          if (!aggregateReportJson) aggregateReportJson = currentReportJson;
+          else {
+            currentReportJson.files.forEach((file) => {
+              const existingGroup = aggregateReportJson?.files.find(({ fileId }) => fileId === file.fileId);
+
+              if (existingGroup) {
+                existingGroup.tests.push(...file.tests);
+                mergeStats(existingGroup.stats, file.stats);
+              } else {
+                aggregateReportJson?.files.push(file);
+              }
+            });
+
+            mergeStats(aggregateReportJson.stats, currentReportJson.stats);
+
+            aggregateReportJson.projectNames = [
+              ...new Set([...aggregateReportJson.projectNames, ...currentReportJson.projectNames])
+            ];
+          }
         }
-      }
-    }));
+      })
+    );
 
-    const contentFolderName = "data";
+    const contentFolderName = 'data';
     const contentFolderPath = path.join(reportDir, contentFolderName);
     const contentOuputPath = path.join(outputPath, contentFolderName);
 
@@ -137,7 +142,7 @@ async function mergeHTMLReports(inputReportPaths: string[], givenConfig: Config 
       await copyDir(contentFolderPath, contentOuputPath, debug);
     }
 
-    const traceFolderName = "trace";
+    const traceFolderName = 'trace';
     const traceFolderPath = path.join(reportDir, traceFolderName);
     const traceOuputPath = path.join(outputPath, traceFolderName);
 
@@ -156,42 +161,40 @@ async function mergeHTMLReports(inputReportPaths: string[], givenConfig: Config 
   if (!baseIndexHtml) throw new Error('Base report index.html not found');
 
   fileReportMap.forEach((fileReport, relativePath) => {
-     mergedZipContent.addBuffer(
-       Buffer.from(JSON.stringify(fileReport)),
-       relativePath,
-     );
-   })
+    mergedZipContent.addBuffer(Buffer.from(JSON.stringify(fileReport)), relativePath);
+  });
 
-  mergedZipContent.addBuffer(
-    Buffer.from(JSON.stringify(aggregateReportJson)),
-    "report.json"
-  );
+  mergedZipContent.addBuffer(Buffer.from(JSON.stringify(aggregateReportJson)), 'report.json');
 
   if (debug) {
     console.log('---------- aggregateReportJson ----------');
     console.log(JSON.stringify(aggregateReportJson, null, 2));
   }
 
-  const indexFilePath = path.join(outputPath, "index.html");
-  await writeFile(indexFilePath, baseIndexHtml + `<script>
-window.playwrightReportBase64 = "data:application/zip;base64,`)
+  const indexFilePath = path.join(outputPath, 'index.html');
+  await writeFile(
+    indexFilePath,
+    baseIndexHtml +
+      `<script>
+window.playwrightReportBase64 = "data:application/zip;base64,`
+  );
 
   await new Promise((f) => {
     mergedZipContent.end(undefined, () => {
       mergedZipContent.outputStream
         .pipe(new Base64Encoder())
-        .pipe(createWriteStream(indexFilePath, { flags: "a" }))
-        .on("close", f);
+        .pipe(createWriteStream(indexFilePath, { flags: 'a' }))
+        .on('close', f);
     });
   });
 
   await appendFile(indexFilePath, '";</script>');
-  console.log(`Successfully merged ${inputReportPaths.length} report${inputReportPaths.length === 1 ? '' : 's'}`);
+  console.log(
+    `Successfully merged ${inputReportPaths.length} report${inputReportPaths.length === 1 ? '' : 's'}`
+  );
 }
 
-export {
-  mergeHTMLReports
-}
+export { mergeHTMLReports };
 
 function mergeStats(base: Stats, added: Stats) {
   base.total += added.total;
@@ -205,37 +208,34 @@ function mergeStats(base: Stats, added: Stats) {
 
 async function copyDir(srcDirPath: string, srcDirOutputPath: string, debug: boolean) {
   await mkdir(srcDirOutputPath, { recursive: true });
-      const traceFiles = await readdir(srcDirPath);
-      await Promise.all(
-        traceFiles.map(async (fileName) => {
-          const srcPath = path.resolve(
-            process.cwd(),
-            path.join(srcDirPath,fileName)
-          );
-          const destPath = path.join(srcDirOutputPath, fileName);
-          if (debug) {
-            console.log({
-              srcPath,
-              destPath
-            });
-          }
+  const traceFiles = await readdir(srcDirPath);
+  await Promise.all(
+    traceFiles.map(async (fileName) => {
+      const srcPath = path.resolve(process.cwd(), path.join(srcDirPath, fileName));
+      const destPath = path.join(srcDirOutputPath, fileName);
+      if (debug) {
+        console.log({
+          srcPath,
+          destPath
+        });
+      }
 
-          const stat = await lstat(srcPath);
-          if (stat.isFile()) {
-            await copyFile(srcPath, destPath);
-          }
-          if (stat.isDirectory()) {
-            await copyDir(srcPath, destPath, debug);
-          }
-          if (stat.isSymbolicLink()) {
-            if (debug) {
-              console.log("Symbolic link - skipping");
-            }
-          }
-          
-          if (debug) {
-            console.log(fileName);
-          }
-        })
-      );
+      const stat = await lstat(srcPath);
+      if (stat.isFile()) {
+        await copyFile(srcPath, destPath);
+      }
+      if (stat.isDirectory()) {
+        await copyDir(srcPath, destPath, debug);
+      }
+      if (stat.isSymbolicLink()) {
+        if (debug) {
+          console.log('Symbolic link - skipping');
+        }
+      }
+
+      if (debug) {
+        console.log(fileName);
+      }
+    })
+  );
 }

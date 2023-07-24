@@ -1,8 +1,6 @@
 import PostListItem from '@/components/post-list-item';
-import { getFeedHistory } from '@/lib/hive';
-import { useQuery } from '@tanstack/react-query';
-import Loading from './loading';
 import Big from 'big.js';
+import { Entry } from '@/lib/bridge';
 
 const PostList = ({
   data,
@@ -10,14 +8,14 @@ const PostList = ({
   price_per_hive,
   isCommunityPage
 }: {
-  data: any;
+  data: Entry[];
   sort?: string | null;
   price_per_hive: Big;
   isCommunityPage?: boolean;
 }) => {
   return (
     <ul>
-      {data?.map((post: any) => (
+      {data?.map((post: Entry) => (
         <PostListItem
           post={post}
           sort={sort}

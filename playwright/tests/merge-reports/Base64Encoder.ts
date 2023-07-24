@@ -1,7 +1,7 @@
 /**
  * Copyright (c) Microsoft Corporation.
  * https://github.com/microsoft/playwright/blob/main/packages/playwright-test/src/reporters/html.ts
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -37,8 +37,7 @@ class Base64Encoder extends Transform {
   }
 
   override _flush(callback: TransformCallback): void {
-    if (this._remainder)
-      this.push(Buffer.from(this._remainder.toString('base64')));
+    if (this._remainder) this.push(Buffer.from(this._remainder.toString('base64')));
     callback();
   }
 }

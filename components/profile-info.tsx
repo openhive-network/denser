@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { getAccountFull, getAccount, getDynamicGlobalProperties } from '@/lib/hive';
-import { accountReputation, getHivePower, numberWithCommas } from '@/lib/utils';
+import { accountReputation, numberWithCommas } from '@/lib/utils';
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { useSiteParams } from '@/components/hooks/use-site-params';
@@ -11,7 +11,7 @@ import Loading from '@/components/loading';
 
 const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
   const [profile, setProfile] = useState<any>(undefined);
-  const [hivePower, setHivePower] = useState(0);
+  const [hivePower, setHivePower] = useState('0');
   const { username } = useSiteParams();
   const {
     isLoading: profileDataIsLoading,
@@ -64,7 +64,8 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
     }
   }, [accountDataIsLoading, profileData]);
 
-  if (profileDataIsLoading || accountDataIsLoading || dynamicGlobalDataIsLoading) return <Loading />;
+  if (profileDataIsLoading || accountDataIsLoading || dynamicGlobalDataIsLoading)
+    return <Loading loading={profileDataIsLoading || accountDataIsLoading || dynamicGlobalDataIsLoading} />;
 
   return (
     <div className="mt-[-6rem] px-8 md:w-80" data-testid="profile-info">

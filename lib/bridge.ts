@@ -20,11 +20,34 @@ export interface EntryStat {
   is_pinned?: boolean;
 }
 
+export type Badge = {
+  name: string;
+  state: string;
+  type: string;
+  id: string;
+  title: string;
+  url: string;
+};
+
 export interface JsonMetadata {
+  image: string;
+  links?: string[];
+  flow?: {
+    pictures: {
+      caption: string;
+      id: number;
+      mime: string;
+      name: string;
+      tags: string[];
+      url: string;
+    }[];
+    tags: string[];
+  };
+  images: string[];
   author: string | undefined;
   tags?: string[];
   description?: string | null;
-  app?: any;
+  app?: string;
   canonical_url?: string;
   format?: string;
   original_author?: string;
@@ -63,8 +86,8 @@ export interface Entry {
   post_id: number;
   id?: number;
   promoted: string;
-  reblogged_by?: string[] | any;
-  replies: any[];
+  reblogged_by?: string[];
+  replies: Array<unknown>;
   stats?: EntryStat;
   title: string;
   updated: string;
@@ -89,7 +112,7 @@ export interface Community {
   num_pending: number;
   subscribers: number;
   sum_pending: number;
-  settings?: any;
+  settings?: object;
   team: CommunityTeam;
   title: string;
   type_id: number;
@@ -114,7 +137,7 @@ export const bridgeServer = new Client([`${endpoint}`], {
   consoleOnFailover: true
 });
 
-const bridgeApiCall = <T>(endpoint: string, params: {}): Promise<T> =>
+const bridgeApiCall = <T>(endpoint: string, params: object): Promise<T> =>
   bridgeServer.call('bridge', endpoint, params);
 
 const resolvePost = (post: Entry, observer: string): Promise<Entry> => {
@@ -216,7 +239,7 @@ export const getPost = (
 
 export interface AccountNotification {
   date: string;
-  id: number;
+  id?: number;
   msg: string;
   score: number;
   type: string;
@@ -265,7 +288,7 @@ export const getCommunities = (
     observer
   });
 
-export const normalizePost = (post: any): Promise<Entry | null> =>
+export const normalizePost = (post: Entry): Promise<Entry | null> =>
   bridgeApiCall<Entry | null>('normalize_post', {
     post
   });
@@ -313,8 +336,8 @@ export interface FollowList {
 }
 export type FollowListType = 'follow_blacklist' | 'follow_muted' | 'blacklisted' | 'muted';
 
-export const getFollowList = (observer: string, follow_type: FollowListType): Promise<FollowList> =>
-  bridgeApiCall<FollowList>('get_follow_list', {
+export const getFollowList = (observer: string, follow_type: FollowListType): Promise<FollowList[]> =>
+  bridgeApiCall<FollowList[]>('get_follow_list', {
     observer,
     follow_type
   });

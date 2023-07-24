@@ -28,11 +28,10 @@ import { convertStringToBig } from '@/lib/helpers';
 import FacebookShare from '@/components/share-post-facebook';
 import RedditShare from '@/components/share-post-reddit';
 import TwitterShare from '@/components/share-post-twitter';
-import { data } from 'autoprefixer';
 import { Badge } from '@/components/ui/badge';
 
 const DynamicComments = dynamic(() => import('@/components/comment-list'), {
-  loading: () => <Loading />,
+  loading: () => <Loading loading={true} />,
   ssr: false
 });
 
@@ -89,7 +88,7 @@ function PostPage({
   } = useQuery(['activeVotes'], () => getActiveVotes(username, permlink), {
     enabled: !!username && !!permlink
   });
-  const [discussionState, setDiscussionState] = useState<any[]>();
+  const [discussionState, setDiscussionState] = useState<Entry[]>();
   const router = useRouter();
   const isSortOrder = (token: any): token is SortOrder => {
     return Object.values(SortOrder).includes(token as SortOrder);
@@ -167,10 +166,11 @@ function PostPage({
     }
   };
   if (isHistoryFeedLoading || !historyFeedData) {
-    return <Loading />;
+    return <Loading loading={isHistoryFeedLoading} />;
   }
   const historyFeedArr = historyFeedData?.price_history;
   const price_per_hive = convertStringToBig(historyFeedArr[historyFeedArr.length - 1].base);
+
   return (
     <div className="py-8">
       <div className="mx-auto my-0 max-w-4xl bg-white px-8 py-4 dark:bg-slate-900">
@@ -230,7 +230,7 @@ function PostPage({
             />
           </ImageGallery>
         ) : (
-          <Loading />
+          <Loading loading={!post_html} />
         )}
 
         <div className="clear-both">
@@ -403,18 +403,25 @@ function PostPage({
             <CommentSelectFilter />
           </div>
           <DynamicComments
-            data={Object.keys(discussionState).map((key: any) => discussionState[key])}
+            data={discussionState}
             parent={post_s}
             price_per_hive={price_per_hive}
             parent_depth={post_s.depth}
           />
         </div>
       ) : (
-        <Loading />
+        <Loading loading={isLoadingDiscussion} />
       )}
     </div>
   );
 }
+//[0,1]
+/*{
+  '0':0,
+  "1":1,
+  "length:2,
+  ...
+}*/
 
 PostPage.getInitialProps = async (ctx: NextPageContext) => {
   const community = String(ctx.query.param);

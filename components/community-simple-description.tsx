@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Community, Subscription } from '@/lib/bridge';
+import { AccountNotification, Community, Subscription } from '@/lib/bridge';
 import { SubsListDialog } from './subscription-list-dialog';
 import { ActivityLogDialog } from './activity-log-dialog';
 
@@ -13,7 +13,7 @@ const CommunitySimpleDescription = ({
 }: {
   data: Community;
   subs: Subscription[];
-  notificationData: any;
+  notificationData: AccountNotification[] | null | undefined;
   username: string;
 }) => {
   return (

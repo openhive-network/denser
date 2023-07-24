@@ -1,10 +1,10 @@
 import Link from 'next/link';
 import { Icons } from '@/components/icons';
 import { Progress } from '@/components/ui/progress';
-import parseDate, { dateToRelative } from '@/lib/parse-date';
-import clsx from 'clsx';
+import { dateToRelative } from '@/lib/parse-date';
+import { AccountNotification } from '@/lib/bridge';
 
-const NotificationListItem = ({ date, msg, score, type, url }: any) => {
+const NotificationListItem = ({ date, msg, score, type, url }: AccountNotification) => {
   let icon;
   switch (type) {
     case 'vote':
@@ -26,7 +26,7 @@ const NotificationListItem = ({ date, msg, score, type, url }: any) => {
   const usernamePattern = /\B@[a-z0-9.-]+/gi;
   const mentions = msg.match(usernamePattern);
   const participants = mentions
-    ? mentions.map((m: any) => (
+    ? mentions.map((m: string) => (
         <a key={m} href={'/' + m}>
           <img
             className="mr-3 h-[40px] w-[40px] rounded-3xl"

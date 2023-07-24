@@ -6,7 +6,6 @@ import { fmt } from '@/lib/utils';
 import Link from 'next/link';
 import { ReactNode } from 'react';
 import { Entry } from '@/lib/bridge';
-import Loading from './loading';
 interface IBeneficiary {
   account: string;
   weight: number;

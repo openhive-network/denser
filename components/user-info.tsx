@@ -76,7 +76,6 @@ export function UserHoverCard({
               {following}
               <span className="text-xs">Following</span>
             </div>
-            {/*TODO*/}
             {/*<div className="flex flex-col items-center" data-testid="user-hp">*/}
             {/*  123*/}
             {/*  <span className="text-xs">HP</span>*/}

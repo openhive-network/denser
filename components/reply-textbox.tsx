@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Label } from '@radix-ui/react-label';
 import { Input } from './ui/input';
 
-export function ReplyTextbox({ onSetReply }: any) {
+export function ReplyTextbox({ onSetReply }: { onSetReply: (e: boolean) => void }) {
   const [text, setText] = useState('');
   const handleCancel = () => {
     if (text === '') return onSetReply(false);

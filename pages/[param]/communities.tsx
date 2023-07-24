@@ -1,21 +1,21 @@
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 
-import { getSubscriptions } from '@/lib/bridge';
+import { Badge, getSubscriptions } from '@/lib/bridge';
 import ProfileLayout from '@/components/common/profile-layout';
 import SocialActivities from '@/components/social-activities';
 import SubscriptionList from '@/components/subscription-list';
 import Loading from '@/components/loading';
 import { useSiteParams } from '@/components/hooks/use-site-params';
+import { GetServerSideProps } from 'next';
 
-const UserCommunities = ({ hivebuzz, peakd }: { hivebuzz: any; peakd: any }) => {
+const UserCommunities = ({ hivebuzz, peakd }: { hivebuzz: Badge[]; peakd: Badge[] }) => {
   const { username } = useSiteParams();
   const {
     isLoading: dataSubscriptionsIsLoading,
     error: dataSubscriptionsError,
     data: dataSubscriptions
   } = useQuery(['listAllSubscription', username], () => getSubscriptions(username), { enabled: !!username });
-
   if (dataSubscriptionsIsLoading) return <Loading loading={dataSubscriptionsIsLoading} />;
 
   return (
@@ -48,25 +48,24 @@ const UserCommunities = ({ hivebuzz, peakd }: { hivebuzz: any; peakd: any }) => 
 export default UserCommunities;
 
 //
-export async function getServerSideProps(context: any) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const username = String(context.params?.param).slice(1);
 
   const hivebuzzRes = await fetch(`https://hivebuzz.me/api/badges/${username}`);
   const hivebuzzJson = await hivebuzzRes.json();
-  const hivebuzzJsonStateOn = hivebuzzJson.filter((badge: any) => badge.state === 'on');
+  const hivebuzzJsonStateOn = hivebuzzJson.filter((badge: Badge) => badge.state === 'on');
 
   const peakdRes = await fetch(`https://peakd.com/api/public/badge/${username}`);
   const peakdJson = await peakdRes.json();
-  const peakdJsonMapedWithURL = peakdJson?.map((obj: any) => ({
+  const peakdJsonMapedWithURL = peakdJson?.map((obj: Badge) => ({
     id: obj.title,
     url: `https://images.hive.blog/u/${obj.name}/avatar`,
     title: obj.title
   }));
-
   return {
     props: {
       hivebuzz: hivebuzzJsonStateOn,
       peakd: peakdJsonMapedWithURL
     }
   };
-}
+};

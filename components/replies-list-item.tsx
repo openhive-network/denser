@@ -8,8 +8,9 @@ import accountReputation from '@/lib/account-reputation';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import DialogLogin from '@/components/dialog-login';
+import { Entry } from '@/lib/bridge';
 
-const RepliesListItem = ({ comment }: any) => {
+const RepliesListItem = ({ comment }: { comment: Entry }) => {
   return (
     <>
       <li data-testid="comment-list-item">
@@ -117,10 +118,13 @@ const RepliesListItem = ({ comment }: any) => {
                   <Tooltip>
                     <TooltipTrigger className="flex items-center">
                       <Icons.chevronUp className="h-4 w-4 sm:mr-1" />
-                      {comment.stats.total_votes}
+                      {comment.stats && comment.stats.total_votes}
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>{comment.stats.total_votes > 0 ? comment.stats.total_votes : 'no'} votes</p>
+                      <p>
+                        {comment.stats && comment.stats.total_votes > 0 ? comment.stats.total_votes : 'no'}{' '}
+                        votes
+                      </p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>

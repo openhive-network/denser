@@ -54,14 +54,21 @@ const ParamPage: FC = () => {
     hasNextPage
   } = useInfiniteQuery(
     ['entriesInfinite', sort, tag],
-    async ({ pageParam }: { pageParam?: any }): Promise<any> => {
+    async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
       return await getPostsRanked(sort || 'trending', tag, pageParam?.author, pageParam?.permlink);
     },
     {
-      getNextPageParam: (lastPage: Entry[]) => {
+      getNextPageParam: (lastPage) => {
+        if (lastPage && lastPage.length > 0) {
+          return {
+            author: lastPage[lastPage.length - 1].author,
+            permlink: lastPage[lastPage.length - 1].permlink
+          };
+        }
+        if (lastPage === null) return undefined;
         return {
-          author: lastPage && lastPage.length > 0 ? lastPage[lastPage?.length - 1].author : '',
-          permlink: lastPage && lastPage.length > 0 ? lastPage[lastPage?.length - 1].permlink : ''
+          author: '',
+          permlink: ''
         };
       },
       enabled: Boolean(sort)
@@ -97,19 +104,27 @@ const ParamPage: FC = () => {
     hasNextPage: accountHasNextPage
   } = useInfiniteQuery(
     ['accountEntriesInfinite', username],
-    async ({ pageParam }: { pageParam?: any }): Promise<any> => {
+    async ({ pageParam }: { pageParam?: Entry }) => {
       return await getAccountPosts('blog', username, '', pageParam?.author, pageParam?.permlink);
     },
     {
-      getNextPageParam: (lastPage: Entry[]) => {
+      getNextPageParam: (lastPage) => {
+        if (lastPage && lastPage.length > 0) {
+          return {
+            author: lastPage[lastPage.length - 1].author,
+            permlink: lastPage[lastPage.length - 1].permlink
+          };
+        }
+        if (lastPage === null) return undefined;
         return {
-          author: lastPage && lastPage.length > 0 ? lastPage[lastPage?.length - 1].author : '',
-          permlink: lastPage && lastPage.length > 0 ? lastPage[lastPage?.length - 1].permlink : ''
+          author: '',
+          permlink: ''
         };
       },
       enabled: Boolean(username)
     }
   );
+  const lastEntriesData = accountEntriesData?.pages[accountEntriesData?.pages.length - 1];
 
   const {
     data: historyFeedData,
@@ -119,7 +134,7 @@ const ParamPage: FC = () => {
   } = useQuery(['feedHistory'], () => getFeedHistory());
 
   const handleChangeFilter = useCallback(
-    (e: any) => {
+    (e: string) => {
       if (tag) {
         router.push(`/${e}/${tag}`, undefined, { shallow: true });
       } else {
@@ -136,7 +151,7 @@ const ParamPage: FC = () => {
   }, [fetchNextPage, inView]);
 
   useEffect(() => {
-    if (inViewAcc && accountEntriesData?.pages[accountEntriesData.pages.length - 1].length) {
+    if (inViewAcc && lastEntriesData && lastEntriesData.length) {
       accountFetchNextPage();
     }
   }, [accountFetchNextPage, inViewAcc]);
@@ -166,6 +181,8 @@ const ParamPage: FC = () => {
 
   const historyFeedArr = historyFeedData?.price_history;
   const price_per_hive = convertStringToBig(historyFeedArr[historyFeedArr.length - 1].base);
+  const lastPageData = accountEntriesData?.pages[accountEntriesData?.pages.length - 1];
+
   if (!entriesDataIsLoading && entriesData) {
     return (
       <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2 pt-8">
@@ -265,8 +282,7 @@ const ParamPage: FC = () => {
             >
               {accountIsFetchingNextPage ? (
                 <PostSkeleton />
-              ) : accountEntriesData.pages.length > 1 &&
-                accountEntriesData?.pages[accountEntriesData.pages.length - 1].length > 0 ? (
+              ) : accountEntriesData.pages.length > 1 && lastPageData && lastPageData.length > 0 ? (
                 'Load Newer'
               ) : null}
             </button>
