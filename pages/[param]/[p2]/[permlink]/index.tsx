@@ -129,6 +129,8 @@ function PostPage({
     skipSanitization: false,
     allowInsecureScriptTags: false,
     addNofollowToLinks: true,
+    addTargetBlankToLinks: true,
+    addCssClassToLinks: 'external-link',
     doNotShowImages: false,
     ipfsPrefix: '',
     assetsWidth: 640,

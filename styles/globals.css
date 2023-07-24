@@ -133,3 +133,21 @@
   font-size: 1.2rem;
   font-weight: 400;
 }
+
+.prose a.external-link {
+  color: #dc2626;
+}
+
+.prose a.external-link:after {
+  content: "";
+  background: url(../public/external-icon.svg);
+  background-size: cover;
+  display: inline-block;
+  width: 0.7em;
+  height: 0.7em;
+  top: 0.05em;
+  position: relative;
+  left: 0.1em;
+  margin-right: 0.1em;
+  opacity: .5;
+}
