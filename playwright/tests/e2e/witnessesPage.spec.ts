@@ -10,17 +10,26 @@ import Big from 'big.js';
 // Below test were passing but due to back to the old view of hive blog are skipped.
 // -------------------------------------------------------------------------------------
 test.describe.skip('Witnesses page tests', () => {
-  test('move to the Witnesses page from the Home page', async ({ page }) => {
-    const homePage = new HomePage(page);
+  let homePage: HomePage;
+  let witnessPage: WitnessPage;
+  let profilePage: ProfilePage;
+  let apiHelper: ApiHelper;
 
+  test.beforeEach(async ({ page }) => {
+    homePage = new HomePage(page);
+    witnessPage = new WitnessPage(page);
+    profilePage = new ProfilePage(page);
+    apiHelper = new ApiHelper(page);
+  });
+
+  test('move to the Witnesses page from the Home page', async ({ page }) => {
+  
     await homePage.goto();
     await homePage.moveToNavWitnessesPage();
   });
 
   test('validate witness page header', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const witnessPage = new WitnessPage(page);
-
+  
     await homePage.goto();
     await homePage.moveToNavWitnessesPage();
 
@@ -30,8 +39,6 @@ test.describe.skip('Witnesses page tests', () => {
   });
 
   test('validate number of displayed witnesses', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const witnessPage = new WitnessPage(page);
 
     await homePage.goto();
     await homePage.moveToNavWitnessesPage();
@@ -41,9 +48,7 @@ test.describe.skip('Witnesses page tests', () => {
   });
 
   test('validate the voting box is visible', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const witnessPage = new WitnessPage(page);
-
+    
     await homePage.goto();
     await homePage.moveToNavWitnessesPage();
 
@@ -51,9 +56,7 @@ test.describe.skip('Witnesses page tests', () => {
   });
 
   test('validate the set proxy box is visible', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const witnessPage = new WitnessPage(page);
-
+    
     await homePage.goto();
     await homePage.moveToNavWitnessesPage();
 
@@ -61,9 +64,7 @@ test.describe.skip('Witnesses page tests', () => {
   });
 
   test('validate the witnesses table head visible', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const witnessPage = new WitnessPage(page);
-
+   
     await homePage.goto();
     await homePage.moveToNavWitnessesPage();
 
@@ -71,10 +72,7 @@ test.describe.skip('Witnesses page tests', () => {
   });
 
   test('validate info about first witness', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const witnessPage = new WitnessPage(page);
-    const apiHelper = new ApiHelper(page);
-
+    
     await homePage.goto();
     await homePage.moveToNavWitnessesPage();
 
@@ -119,9 +117,7 @@ test.describe.skip('Witnesses page tests', () => {
   });
 
   test('highlight the selected witness and validate typeing his name to vote input', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const witnessPage = new WitnessPage(page);
-
+   
     await homePage.goto();
     await homePage.moveToNavWitnessesPage();
 
@@ -152,10 +148,7 @@ test.describe.skip('Witnesses page tests', () => {
   });
 
   test('move to the profile page of the first witness', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const witnessPage = new WitnessPage(page);
-    const profilePage = new ProfilePage(page);
-
+    
     await homePage.goto();
     await homePage.moveToNavWitnessesPage();
 
@@ -167,9 +160,7 @@ test.describe.skip('Witnesses page tests', () => {
   });
 
   test('move to the extra side of the first witness', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const witnessPage = new WitnessPage(page);
-
+   
     await homePage.goto();
     await homePage.moveToNavWitnessesPage();
     await witnessPage.page.waitForTimeout(1000);

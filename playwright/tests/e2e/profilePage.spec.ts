@@ -5,17 +5,23 @@ import { PostPage } from '../support/pages/postPage';
 
 // Skip Profile page tests because those based on gtg profile and new view of the Denser.
 test.describe('Profile page of @gtg', () => {
-  test('url of the profile page @gtg is correct', async ({ page }) => {
-    const profilePage = new ProfilePage(page);
+  let homePage: HomePage;
+  let postPage: PostPage;
+  let profilePage: ProfilePage;
 
+  test.beforeEach(async ({ page }) => {
+    homePage = new HomePage(page);
+    postPage = new PostPage(page);
+    profilePage = new ProfilePage(page);
+  });
+
+  test('url of the profile page @gtg is correct', async ({ page }) => {
     await profilePage.gotoProfilePage('@gtg');
     // Validate URL of page is "http://.../@gtg"
     await expect(profilePage.page).toHaveURL(/ *.\/@gtg$/);
   });
 
   test('profile info of @gtg is loaded', async ({ page, request }) => {
-    const profilePage = new ProfilePage(page);
-
     await profilePage.gotoProfilePage('@gtg');
     await profilePage.profileInfoIsVisible(
       '@gtg',
@@ -74,46 +80,34 @@ test.describe('Profile page of @gtg', () => {
   });
 
   test('profile navigation of @gtg is loaded', async ({ page }) => {
-    const profilePage = new ProfilePage(page);
-
     await profilePage.gotoProfilePage('@gtg');
     await profilePage.profileNavigationIsVisible();
   });
 
   test('profile Blog tab of @gtg is loaded', async ({ page }) => {
-    const profilePage = new ProfilePage(page);
-
     await profilePage.gotoProfilePage('@gtg');
     await profilePage.profileBlogTabIsSelected();
   });
 
   test('move to Posts Tab', async ({ page }) => {
-    const profilePage = new ProfilePage(page);
-
     await profilePage.gotoProfilePage('@gtg');
     await profilePage.profilePostsTabIsNotSelected();
     await profilePage.moveToPostsTab();
   });
 
   test('move to Replies Tab', async ({ page }) => {
-    const profilePage = new ProfilePage(page);
-
     await profilePage.gotoProfilePage('@gtg');
     await profilePage.profileRepliesTabIsNotSelected();
     await profilePage.moveToRepliesTab();
   });
 
   test('move to Social Tab', async ({ page }) => {
-    const profilePage = new ProfilePage(page);
-
     await profilePage.gotoProfilePage('@gtg');
     await profilePage.profileSocialTabIsNotSelected();
     await profilePage.moveToSocialTab();
   });
 
   test('move to Peakd by link in Social Tab', async ({ page }) => {
-    const profilePage = new ProfilePage(page);
-
     await profilePage.gotoProfilePage('@gtg');
     await profilePage.profileSocialTabIsNotSelected();
     await profilePage.moveToSocialTab();
@@ -121,8 +115,6 @@ test.describe('Profile page of @gtg', () => {
   });
 
   test('move to Hivebuzz by link in Social Tab', async ({ page }) => {
-    const profilePage = new ProfilePage(page);
-
     await profilePage.gotoProfilePage('@gtg');
     await profilePage.profileSocialTabIsNotSelected();
     await profilePage.moveToSocialTab();
@@ -130,24 +122,18 @@ test.describe('Profile page of @gtg', () => {
   });
 
   test('move to Notifications Tab', async ({ page }) => {
-    const profilePage = new ProfilePage(page);
-
     await profilePage.gotoProfilePage('@gtg');
     await profilePage.profileNotificationsTabIsNotSelected();
     await profilePage.moveToNotificationsTab();
   });
 
   test('move to Wallet Page', async ({ page }) => {
-    const profilePage = new ProfilePage(page);
-
     await profilePage.gotoProfilePage('@gtg');
     await profilePage.moveToWalletPage();
   });
 
   // Skipped - Settings Tab is unavailable
   test.skip('move to Settings Tab', async ({ page }) => {
-    const profilePage = new ProfilePage(page);
-
     await profilePage.gotoProfilePage('@gtg');
     await profilePage.profileSettingsTabIsNotSelected();
     await profilePage.moveToSettingsTab();
@@ -155,8 +141,6 @@ test.describe('Profile page of @gtg', () => {
 
   // Skipped - Settings Tab is unavailable
   test.skip('move to Settings Tab and validate public profile settings form is visible', async ({ page }) => {
-    const profilePage = new ProfilePage(page);
-
     await profilePage.gotoProfilePage('@gtg');
     await profilePage.profileSettingsTabIsNotSelected();
     await profilePage.moveToSettingsTab();
@@ -184,8 +168,6 @@ test.describe('Profile page of @gtg', () => {
 
   // Skipped - Settings Tab is unavailable
   test.skip('move to Settings Tab and validate preferences settings form is visible', async ({ page }) => {
-    const profilePage = new ProfilePage(page);
-
     await profilePage.gotoProfilePage('@gtg');
     await profilePage.profileSettingsTabIsNotSelected();
     await profilePage.moveToSettingsTab();
@@ -200,8 +182,6 @@ test.describe('Profile page of @gtg', () => {
 
   // Skipped - Settings Tab is unavailable
   test.skip('move to Settings Tab and validate advanced settings form is visible', async ({ page }) => {
-    const profilePage = new ProfilePage(page);
-
     await profilePage.gotoProfilePage('@gtg');
     await profilePage.profileSettingsTabIsNotSelected();
     await profilePage.moveToSettingsTab();
@@ -240,7 +220,6 @@ test.describe('Profile page of @gtg', () => {
 
   // The Follow button is unavailable
   test.skip('The Follow button changes color when you hover over it (Light theme)', async ({ page }) => {
-    const profilePage = new ProfilePage(page);
     await profilePage.gotoProfilePage('@gtg');
 
     expect(await profilePage.getElementCssPropertyValue(profilePage.followButton, 'color')).toBe(
@@ -263,9 +242,6 @@ test.describe('Profile page of @gtg', () => {
 
   // The Follow button is unavailable
   test.skip('The Follow button changes color when you hover over it (Dark theme)', async ({ page }) => {
-    const profilePage = new ProfilePage(page);
-    const homePage = new HomePage(page);
-
     await profilePage.gotoProfilePage('@gtg');
 
     await homePage.changeThemeMode('Dark');

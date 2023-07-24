@@ -5,10 +5,19 @@ import { CommunitiesPage } from '../support/pages/communitiesPage';
 import { ReblogThisPostDialog } from '../support/pages/reblogThisPostDialog';
 
 test.describe('Communities page tests', () => {
-  test('is LeoFinance community page loaded', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const communitiesPage = new CommunitiesPage(page);
+  let homePage: HomePage;
+  let profilePage: ProfilePage;
+  let communitiesPage: CommunitiesPage;
+  let reblogThisPostDialog: ReblogThisPostDialog;
 
+  test.beforeEach(async ({ page }) => {
+    homePage = new HomePage(page);
+    profilePage = new ProfilePage(page);
+    communitiesPage = new CommunitiesPage(page);
+    reblogThisPostDialog = new ReblogThisPostDialog(page);
+  });
+
+  test('is LeoFinance community page loaded', async ({ page }) => {
     await homePage.goto();
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
@@ -18,9 +27,6 @@ test.describe('Communities page tests', () => {
     page,
     request
   }) => {
-    const homePage = new HomePage(page);
-    const communitiesPage = new CommunitiesPage(page);
-
     await homePage.goto();
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
@@ -56,9 +62,6 @@ test.describe('Communities page tests', () => {
   });
 
   test('validate the community leadership of LeoFinance Community', async ({ page, request }) => {
-    const homePage = new HomePage(page);
-    const communitiesPage = new CommunitiesPage(page);
-
     await homePage.goto();
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
@@ -97,10 +100,6 @@ test.describe('Communities page tests', () => {
   });
 
   test('move to the profile leadership pages of LeoFinance community ', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const profilePage = new ProfilePage(page);
-    const communitiesPage = new CommunitiesPage(page);
-
     await homePage.goto();
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
@@ -130,12 +129,7 @@ test.describe('Communities page tests', () => {
     }
   });
 
-  test('validate the first post header styles (for Trending filter) in the light theme', async ({
-    page
-  }) => {
-    const homePage = new HomePage(page);
-    const communitiesPage = new CommunitiesPage(page);
-
+  test('validate the first post header styles (for Trending filter) in the light theme', async ({ page }) => {
     await homePage.goto();
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
@@ -152,33 +146,28 @@ test.describe('Communities page tests', () => {
     );
 
     // Timestamp link color without hovering
-    expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostCardTimestampLink, 'color')).toBe(
-      'rgb(100, 116, 139)'
-    );
+    expect(
+      await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostCardTimestampLink, 'color')
+    ).toBe('rgb(100, 116, 139)');
     // Timestamp link color after hovering
     await communitiesPage.getFirstPostCardTimestampLink.hover();
     await communitiesPage.page.waitForTimeout(1000);
-    expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostCardTimestampLink, 'color')).toBe(
-      'rgb(220, 38, 38)'
-    );
+    expect(
+      await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostCardTimestampLink, 'color')
+    ).toBe('rgb(220, 38, 38)');
     // Author reputation color without hovering
-    expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthorReputation, 'color')).toBe(
-      'rgb(100, 116, 139)'
-    );
+    expect(
+      await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthorReputation, 'color')
+    ).toBe('rgb(100, 116, 139)');
     // Author reputation color after hovering
     await communitiesPage.getFirstPostAuthorReputation.hover();
     await communitiesPage.page.waitForTimeout(1000);
-    expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthorReputation, 'color')).toBe(
-      'rgb(100, 116, 139)'
-    );
+    expect(
+      await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthorReputation, 'color')
+    ).toBe('rgb(100, 116, 139)');
   });
 
-  test('validate the first post header styles (for Trending filter) in the dark theme', async ({
-    page
-  }) => {
-    const homePage = new HomePage(page);
-    const communitiesPage = new CommunitiesPage(page);
-
+  test('validate the first post header styles (for Trending filter) in the dark theme', async ({ page }) => {
     await homePage.goto();
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
@@ -199,31 +188,30 @@ test.describe('Communities page tests', () => {
     );
 
     // Timestamp link color without hovering
-    expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostCardTimestampLink, 'color')).toBe(
-      'rgb(148, 163, 184)'
-    );
+    expect(
+      await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostCardTimestampLink, 'color')
+    ).toBe('rgb(148, 163, 184)');
     // Timestamp link color after hovering
     await communitiesPage.getFirstPostCardTimestampLink.hover();
     await communitiesPage.page.waitForTimeout(1000);
-    expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostCardTimestampLink, 'color')).toBe(
-      'rgb(220, 38, 38)'
-    );
+    expect(
+      await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostCardTimestampLink, 'color')
+    ).toBe('rgb(220, 38, 38)');
     // Author reputation color without hovering
-    expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthorReputation, 'color')).toBe(
-      'rgb(148, 163, 184)'
-    );
+    expect(
+      await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthorReputation, 'color')
+    ).toBe('rgb(148, 163, 184)');
     // Author reputation color after hovering
     await communitiesPage.getFirstPostAuthorReputation.hover();
     await communitiesPage.page.waitForTimeout(1000);
-    expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthorReputation, 'color')).toBe(
-      'rgb(148, 163, 184)'
-    );
+    expect(
+      await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthorReputation, 'color')
+    ).toBe('rgb(148, 163, 184)');
   });
 
-  test('validate the first post footer payouts styles (for Trending filter) in the light theme in the LeoFinance', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const communitiesPage = new CommunitiesPage(page);
-
+  test('validate the first post footer payouts styles (for Trending filter) in the light theme in the LeoFinance', async ({
+    page
+  }) => {
     await homePage.goto();
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
@@ -245,10 +233,9 @@ test.describe('Communities page tests', () => {
     );
   });
 
-  test('validate the first post footer payouts styles (for Trending filter) in the dark theme in the LeoFinance', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const communitiesPage = new CommunitiesPage(page);
-
+  test('validate the first post footer payouts styles (for Trending filter) in the dark theme in the LeoFinance', async ({
+    page
+  }) => {
     await homePage.goto();
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
@@ -272,14 +259,14 @@ test.describe('Communities page tests', () => {
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostPayoutTooltip, 'color')).toBe(
       'rgb(148, 163, 184)'
     );
-    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostPayoutTooltip, 'background-color')).toBe(
-      'rgb(3, 7, 17)'
-    );
+    expect(
+      await homePage.getElementCssPropertyValue(await homePage.getFirstPostPayoutTooltip, 'background-color')
+    ).toBe('rgb(3, 7, 17)');
   });
 
-  test('validate the first post footer votes styles (for Trending filter) in the light theme in the LeoFinance', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const communitiesPage = new CommunitiesPage(page);
+  test('validate the first post footer votes styles (for Trending filter) in the light theme in the LeoFinance', async ({
+    page
+  }) => {
     await homePage.goto();
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
@@ -299,15 +286,15 @@ test.describe('Communities page tests', () => {
     );
 
     // The tooltip is visible by hovering
-    expect(await homePage.getFirstPostVotesTooltip.textContent()).toBe(votes+' votes'+votes+' votes');
+    expect(await homePage.getFirstPostVotesTooltip.textContent()).toBe(votes + ' votes' + votes + ' votes');
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostVotesTooltip, 'color')).toBe(
       'rgb(15, 23, 42)'
     );
   });
 
-  test('validate the first post footer votes styles (for Trending filter) in the dark theme in the LeoFinance', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const communitiesPage = new CommunitiesPage(page);
+  test('validate the first post footer votes styles (for Trending filter) in the dark theme in the LeoFinance', async ({
+    page
+  }) => {
     await homePage.goto();
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
@@ -330,20 +317,16 @@ test.describe('Communities page tests', () => {
       'rgb(248, 250, 252)'
     );
     // The tooltip is visible by hovering
-    expect(await homePage.getFirstPostVotesTooltip.textContent()).toBe(votes+' votes'+votes+' votes');
+    expect(await homePage.getFirstPostVotesTooltip.textContent()).toBe(votes + ' votes' + votes + ' votes');
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostVotesTooltip, 'color')).toBe(
       'rgb(148, 163, 184)'
     );
-    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostVotesTooltip, 'background-color')).toBe(
-      'rgb(3, 7, 17)'
-    );
+    expect(
+      await homePage.getElementCssPropertyValue(await homePage.getFirstPostVotesTooltip, 'background-color')
+    ).toBe('rgb(3, 7, 17)');
   });
 
-
   test('validate the community leadership of Pinmapple Community', async ({ page, request }) => {
-    const homePage = new HomePage(page);
-    const communitiesPage = new CommunitiesPage(page);
-
     await homePage.goto();
     await homePage.moveToPinmappleCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('Pinmapple');
@@ -382,10 +365,6 @@ test.describe('Communities page tests', () => {
   });
 
   test('move to the first-three leadership profile pages of Pinmapple community ', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const profilePage = new ProfilePage(page);
-    const communitiesPage = new CommunitiesPage(page);
-
     await homePage.goto();
     await homePage.moveToPinmappleCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('Pinmapple');
@@ -419,41 +398,27 @@ test.describe('Communities page tests', () => {
   });
 
   test('validate reblog button styles in the light theme', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const communitiesPage = new CommunitiesPage(page);
     await homePage.goto();
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
 
     // Color of reblog button
-    expect(
-      await homePage.getElementCssPropertyValue(
-        await homePage.getFirstPostReblogButton,
-        'color'
-      )
-    ).toBe('rgb(15, 23, 42)');
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogButton, 'color')).toBe(
+      'rgb(15, 23, 42)'
+    );
 
     // The tooltip message and colors
     await homePage.getFirstPostReblogButton.hover();
     expect(await homePage.getFirstPostReblogTooltip.textContent()).toContain('Reblog @');
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogTooltip, 'color')).toBe(
+      'rgb(15, 23, 42)'
+    );
     expect(
-      await homePage.getElementCssPropertyValue(
-        await homePage.getFirstPostReblogTooltip,
-        'color'
-      )
-    ).toBe('rgb(15, 23, 42)');
-    expect(
-      await homePage.getElementCssPropertyValue(
-        await homePage.getFirstPostReblogTooltip,
-        'background-color'
-      )
+      await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogTooltip, 'background-color')
     ).toBe('rgb(255, 255, 255)');
-
   });
 
   test('validate reblog button styles in the dark theme', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const communitiesPage = new CommunitiesPage(page);
     await homePage.goto();
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
@@ -461,45 +426,32 @@ test.describe('Communities page tests', () => {
     await homePage.validateThemeModeIsDark();
 
     // Color of reblog button
-    expect(
-      await homePage.getElementCssPropertyValue(
-        await homePage.getFirstPostReblogButton,
-        'color'
-      )
-    ).toBe('rgb(255, 255, 255)');
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogButton, 'color')).toBe(
+      'rgb(255, 255, 255)'
+    );
 
     // The tooltip message and colors
     await homePage.getFirstPostReblogButton.hover();
     expect(await homePage.getFirstPostReblogTooltip.textContent()).toContain('Reblog @');
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogTooltip, 'color')).toBe(
+      'rgb(148, 163, 184)'
+    );
     expect(
-      await homePage.getElementCssPropertyValue(
-        await homePage.getFirstPostReblogTooltip,
-        'color'
-      )
-    ).toBe('rgb(148, 163, 184)');
-    expect(
-      await homePage.getElementCssPropertyValue(
-        await homePage.getFirstPostReblogTooltip,
-        'background-color'
-      )
+      await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogTooltip, 'background-color')
     ).toBe('rgb(3, 7, 17)');
   });
 
   test('move to the reblog this post dialog ', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const communitiesPage = new CommunitiesPage(page);
-    const reblogDialog = new ReblogThisPostDialog(page);
     await homePage.goto();
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
 
     await homePage.getFirstPostReblogButton.click();
-    await reblogDialog.validateReblogThisPostHeaderIsVisible();
-    await reblogDialog.validateReblogThisPostDescriptionIsVisible();
-    await expect(reblogDialog.getDialogOkButton).toBeVisible();
-    await expect(reblogDialog.getDialogCancelButton).toBeVisible();
-    await reblogDialog.closeReblogDialog();
+    await reblogThisPostDialog.validateReblogThisPostHeaderIsVisible();
+    await reblogThisPostDialog.validateReblogThisPostDescriptionIsVisible();
+    await expect(reblogThisPostDialog.getDialogOkButton).toBeVisible();
+    await expect(reblogThisPostDialog.getDialogCancelButton).toBeVisible();
+    await reblogThisPostDialog.closeReblogDialog();
     await expect(homePage.getTrandingCommunitiesHeader).toBeVisible();
   });
-
 });

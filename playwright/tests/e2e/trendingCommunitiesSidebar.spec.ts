@@ -3,16 +3,17 @@ import { HomePage } from '../support/pages/homePage';
 import { CommunitiesPage } from '../support/pages/communitiesExplorerPage';
 
 test.describe('Home page tests - All posts', () => {
-  test('has "All posts" sidebar', async ({ page }) => {
-    const homePage = new HomePage(page);
+  let homePage: HomePage;
 
+  test.beforeEach(async ({ page }) => {
+    homePage = new HomePage(page);
+  });
+  test('has "All posts" sidebar', async ({ page }) => {
     await homePage.goto();
     await homePage.isTrendingCommunitiesVisible();
   });
 
   test('move from one community to other community and home page next', async ({ page }) => {
-    const homePage = new HomePage(page);
-
     await homePage.goto();
     // move from HomePage to LeoFinance community
     await homePage.moveToLeoFinanceCommunities();
@@ -22,7 +23,6 @@ test.describe('Home page tests - All posts', () => {
   });
 
   test('move to Explore communities... from Home Page', async ({ page }) => {
-    const homePage = new HomePage(page);
     const communitiesPage = new CommunitiesPage(page);
 
     await homePage.goto();
@@ -34,7 +34,6 @@ test.describe('Home page tests - All posts', () => {
     page,
     request
   }) => {
-    const homePage = new HomePage(page);
     await homePage.goto();
 
     const url = process.env.REACT_APP_API_ENDPOINT;

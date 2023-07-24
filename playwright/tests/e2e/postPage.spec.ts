@@ -4,63 +4,67 @@ import { HomePage } from '../support/pages/homePage';
 import { ApiHelper } from '../support/apiHelper';
 
 test.describe('Post page tests', () => {
-  test('move to the first post content on the home page by image', async ({ page }) => {
-    const postPage = new PostPage(page);
+  let homePage: HomePage;
+  let postPage: PostPage;
+  let apiHelper: ApiHelper;
 
+  test.beforeEach(async ({ page }) => {
+    homePage = new HomePage(page);
+    postPage = new PostPage(page);
+    apiHelper = new ApiHelper(page);
+  });
+
+  test('move to the first post content on the home page by image', async ({ page }) => {
+    
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByImage();
   });
 
   test('move to the first post content on the home page by title of this post', async ({ page }) => {
-    const postPage = new PostPage(page);
-
+    
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByPostTitle();
   });
 
   test('validate that title of the post is the same as inside the post', async ({ page }) => {
-    const postPage = new PostPage(page);
-
+    
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByPostTitle();
   });
 
   test('validate the post content pages styles in the dark theme', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const postPage = new PostPage(page);
-
+    
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByPostTitle();
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
-    expect(
-      await postPage.getElementCssPropertyValue(postPage.articleTitle, 'background-color')
-    ).toBe('rgba(0, 0, 0, 0)');
-    expect(
-      await postPage.getElementCssPropertyValue(postPage.articleTitle, 'color')
-    ).toBe('rgb(225, 231, 239)');
+    expect(await postPage.getElementCssPropertyValue(postPage.articleTitle, 'background-color')).toBe(
+      'rgba(0, 0, 0, 0)'
+    );
+    expect(await postPage.getElementCssPropertyValue(postPage.articleTitle, 'color')).toBe(
+      'rgb(225, 231, 239)'
+    );
 
-    expect(
-      await postPage.getElementCssPropertyValue(postPage.articleAuthorData, 'background-color')
-    ).toBe('rgba(0, 0, 0, 0)');
-    expect(
-      await postPage.getElementCssPropertyValue(postPage.articleAuthorData, 'color')
-    ).toBe('rgb(100, 116, 139)');
+    expect(await postPage.getElementCssPropertyValue(postPage.articleAuthorData, 'background-color')).toBe(
+      'rgba(0, 0, 0, 0)'
+    );
+    expect(await postPage.getElementCssPropertyValue(postPage.articleAuthorData, 'color')).toBe(
+      'rgb(100, 116, 139)'
+    );
 
-    expect(
-      await postPage.getElementCssPropertyValue(postPage.articleBody, 'background-color')
-    ).toBe('rgba(0, 0, 0, 0)');
-    expect(
-      await postPage.getElementCssPropertyValue(postPage.articleBody, 'color')
-    ).toBe('rgb(209, 213, 219)');
+    expect(await postPage.getElementCssPropertyValue(postPage.articleBody, 'background-color')).toBe(
+      'rgba(0, 0, 0, 0)'
+    );
+    expect(await postPage.getElementCssPropertyValue(postPage.articleBody, 'color')).toBe(
+      'rgb(209, 213, 219)'
+    );
   });
 
   test('validate the hover card with author info is displayed after hover username in the post', async ({
     page
   }) => {
-    const postPage = new PostPage(page);
-
+    
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByImage();
     await postPage.articleAuthorName.hover();
@@ -68,10 +72,7 @@ test.describe('Post page tests', () => {
   });
 
   test('validate followers and following in the hover card', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const postPage = new PostPage(page);
-    const apiHelper = new ApiHelper(page);
-
+    
     await postPage.gotoHomePage();
     const firstPostAuthorName = (await homePage.getFirstPostAuthor.innerText()).trim().replace('@', '');
     // console.log("First post's author name without @: ", await firstPostAuthorName);
@@ -96,10 +97,7 @@ test.describe('Post page tests', () => {
   });
 
   test('validate user about in the hover card', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const postPage = new PostPage(page);
-    const apiHelper = new ApiHelper(page);
-
+  
     await postPage.gotoHomePage();
     const firstPostAuthorName = (await homePage.getFirstPostAuthor.innerText()).trim().replace('@', '');
 
@@ -125,8 +123,7 @@ test.describe('Post page tests', () => {
   });
 
   test('validate Follow button style in the hover card in light theme', async ({ page }) => {
-    const postPage = new PostPage(page);
-
+    
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByImage();
 
@@ -165,9 +162,7 @@ test.describe('Post page tests', () => {
   });
 
   test('validate Follow button style in the hover card in dark theme', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const postPage = new PostPage(page);
-
+  
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByImage();
 
@@ -209,9 +204,7 @@ test.describe('Post page tests', () => {
   });
 
   test('validate styles of the hover card in dark mode', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const postPage = new PostPage(page);
-
+    
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByImage();
 
@@ -230,8 +223,7 @@ test.describe('Post page tests', () => {
 
   // Mute button is no more in the dropdown card after hovering that way test is skipped.
   test.skip('validate Mute button style in the hover card in light theme', async ({ page }) => {
-    const postPage = new PostPage(page);
-
+    
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByImage();
 
@@ -270,8 +262,7 @@ test.describe('Post page tests', () => {
   });
 
   test('validate the post footer is visible', async ({ page }) => {
-    const postPage = new PostPage(page);
-
+    
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByImage();
     await expect(postPage.articleFooter).toBeVisible();

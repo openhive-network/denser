@@ -1,15 +1,18 @@
 import { expect, test } from '@playwright/test';
 import { PostPage } from '../support/pages/postPage';
 import { HomePage } from '../support/pages/homePage';
-import { ProfilePage } from '../support/pages/profilePage';
 
 test.describe('Comments of post', () => {
+  let homePage: HomePage;
+  let postPage: PostPage;
+
+  test.beforeEach(async ({ page }) => {
+    homePage = new HomePage(page);
+    postPage = new PostPage(page);
+  });
   test('Validate a first comment of a first post page with number of comments is visible', async ({
     page
   }) => {
-    const homePage = new HomePage(page);
-    const postPage = new PostPage(page);
-
     await homePage.goto();
     await homePage.moveToTheFirstPostWithCommentsNumberMoreThanZero();
     await expect(postPage.commentCardsHeaders.first()).toBeVisible();
@@ -18,9 +21,6 @@ test.describe('Comments of post', () => {
   });
 
   test('Validate a hovered comment changes backgroundcolor style', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const postPage = new PostPage(page);
-
     await homePage.goto();
     await homePage.moveToTheFirstPostWithCommentsNumberMoreThanZero();
     // Before hover

@@ -4,9 +4,17 @@ import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
 import { ReblogThisPostDialog } from '../support/pages/reblogThisPostDialog';
 
 test.describe('Home page tests', () => {
-  test('has the main timeline of posts (20 posts are displayed by default)', async ({ page }) => {
-    const homePage = new HomePage(page);
+  let homePage: HomePage;
+  let loginDialog: LoginToVoteDialog;
+  let reblogDialog: ReblogThisPostDialog;
 
+  test.beforeEach(async ({ page }) => {
+    homePage = new HomePage(page);
+    loginDialog = new LoginToVoteDialog(page);
+    reblogDialog = new ReblogThisPostDialog(page);
+  });
+
+  test('has the main timeline of posts (20 posts are displayed by default)', async ({ page }) => {
     await homePage.goto();
     await homePage.mainPostsTimelineVisible(20);
   });
@@ -16,7 +24,6 @@ test.describe('Home page tests', () => {
     browserName
   }) => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
-    const homePage = new HomePage(page);
 
     await homePage.goto();
     await homePage.mainPostsTimelineVisible(20);
@@ -26,7 +33,7 @@ test.describe('Home page tests', () => {
 
   test('validate the first post (for Trending filter)', async ({ page, request, browserName }) => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
-    const homePage = new HomePage(page);
+
     await homePage.goto();
 
     const url = process.env.REACT_APP_API_ENDPOINT;
@@ -74,7 +81,6 @@ test.describe('Home page tests', () => {
   test('validate the first post footer payouts styles (for Trending filter) in the light theme', async ({
     page
   }) => {
-    const homePage = new HomePage(page);
     await homePage.goto();
 
     // Color of the first post payouts without hovering
@@ -97,7 +103,6 @@ test.describe('Home page tests', () => {
   test('validate the first post footer payouts styles (for Trending filter) in the dark theme', async ({
     page
   }) => {
-    const homePage = new HomePage(page);
     await homePage.goto();
 
     // Move to the dark theme
@@ -127,7 +132,6 @@ test.describe('Home page tests', () => {
   test('validate the first post footer votes styles (for Trending filter) in the light theme', async ({
     page
   }) => {
-    const homePage = new HomePage(page);
     await homePage.goto();
 
     // Color of the first post votes without hovering
@@ -154,7 +158,6 @@ test.describe('Home page tests', () => {
   test('validate the first post footer votes styles (for Trending filter) in the dark theme', async ({
     page
   }) => {
-    const homePage = new HomePage(page);
     await homePage.goto();
     // Move to the dark theme
     await homePage.changeThemeMode('Dark');
@@ -186,7 +189,6 @@ test.describe('Home page tests', () => {
   test('validate the first post footer responses styles (for Trending filter) in the light theme', async ({
     page
   }) => {
-    const homePage = new HomePage(page);
     await homePage.goto();
 
     // Color of the first post comments number and icon without hovering
@@ -232,7 +234,6 @@ test.describe('Home page tests', () => {
   test('validate the first post footer responses styles (for Trending filter) in the dark theme', async ({
     page
   }) => {
-    const homePage = new HomePage(page);
     await homePage.goto();
     // Move to the dark theme
     await homePage.changeThemeMode('Dark');
@@ -272,7 +273,7 @@ test.describe('Home page tests', () => {
 
   test('validate the first post header styles (for Trending filter) in the light theme', async ({ page }) => {
     // test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
-    const homePage = new HomePage(page);
+
     await homePage.goto();
 
     // Post author link color without hovering
@@ -326,7 +327,7 @@ test.describe('Home page tests', () => {
 
   test('validate the first post header styles (for Trending filter) in the dark theme', async ({ page }) => {
     // test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
-    const homePage = new HomePage(page);
+
     await homePage.goto();
 
     // Move to the dark theme
@@ -383,7 +384,6 @@ test.describe('Home page tests', () => {
   });
 
   test('validate the first post (for New filter)', async ({ page, request, browserName }) => {
-    const homePage = new HomePage(page);
     await homePage.goto();
 
     // click 'New' value of posts filter
@@ -435,43 +435,31 @@ test.describe('Home page tests', () => {
   });
 
   test('move to the first post author profile page', async ({ page }) => {
-    const homePage = new HomePage(page);
-
     await homePage.goto();
     await homePage.moveToFirstPostAuthorProfilePage();
   });
 
   test('move to the first post author profile page by avatar clicking', async ({ page }) => {
-    const homePage = new HomePage(page);
-
     await homePage.goto();
     await homePage.moveToFirstPostAuthorProfilePageByAvatar();
   });
 
   test('move to the first post community or category', async ({ page }) => {
-    const homePage = new HomePage(page);
-
     await homePage.goto();
     await homePage.moveToFirstPostCommunityOrCategory();
   });
 
   test('move to the first post content by clicking the timestamp', async ({ page }) => {
-    const homePage = new HomePage(page);
-
     await homePage.goto();
     await homePage.moveToFirstPostContentByClickingTimestamp();
   });
 
   test('move to the first post content by clicking the responses', async ({ page }) => {
-    const homePage = new HomePage(page);
-
     await homePage.goto();
     await homePage.moveToTheFirstPostCommentContantPageByClickingResponses();
   });
 
   test('move to the dark mode and back to the light mode', async ({ page }) => {
-    const homePage = new HomePage(page);
-
     await homePage.goto();
 
     await homePage.validateThemeModeIsLight();
@@ -488,8 +476,6 @@ test.describe('Home page tests', () => {
   test('validate change background color style after hovering the post card in the dark mode', async ({
     page
   }) => {
-    const homePage = new HomePage(page);
-
     await homePage.goto();
 
     await homePage.validateThemeModeIsLight();
@@ -513,7 +499,6 @@ test.describe('Home page tests', () => {
   test('filtr posts in maintimeline', async ({ browser, browserName }) => {
     const newContext = await browser.newContext();
     const newPage = await newContext.newPage();
-    const homePage = new HomePage(newPage);
 
     await homePage.goto();
 
@@ -542,7 +527,6 @@ test.describe('Home page tests', () => {
   });
 
   test('validate that Explore Hive sidebar is visible', async ({ page }) => {
-    const homePage = new HomePage(page);
     await homePage.goto();
 
     await expect(homePage.getCardExploreHive).toBeVisible();
@@ -567,7 +551,6 @@ test.describe('Home page tests', () => {
   });
 
   test('validate that All posts in communities sidebar is visible', async ({ page }) => {
-    const homePage = new HomePage(page);
     await homePage.goto();
 
     await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
@@ -582,28 +565,24 @@ test.describe('Home page tests', () => {
   });
 
   test('move to the Proposals page', async ({ page }) => {
-    const homePage = new HomePage(page);
     await homePage.goto();
 
     await homePage.moveToNavProposalsPage();
   });
 
   test('move to the Witnesses page', async ({ page }) => {
-    const homePage = new HomePage(page);
     await homePage.goto();
 
     await homePage.moveToNavWitnessesPage();
   });
 
   test('move to the Our dApps page', async ({ page }) => {
-    const homePage = new HomePage(page);
     await homePage.goto();
 
     await homePage.moveToNavOurdAppsPage();
   });
 
   test('navigation search input is visible', async ({ page }) => {
-    const homePage = new HomePage(page);
     await homePage.goto();
 
     await expect(homePage.getNavSearchInput).toBeVisible();
@@ -612,7 +591,6 @@ test.describe('Home page tests', () => {
 
   // gtg profil and his avatar is no longer aviable on the home page
   test.skip('navigation user avatar and its dropdown list is visible', async ({ page }) => {
-    const homePage = new HomePage(page);
     await homePage.goto();
 
     await expect(homePage.getNavUserAvatar).toBeVisible();
@@ -627,14 +605,12 @@ test.describe('Home page tests', () => {
   });
 
   test('navigation create post button is visible', async ({ page }) => {
-    const homePage = new HomePage(page);
     await homePage.goto();
 
     await expect(homePage.getNavCreatePost).toBeVisible();
   });
 
   test('navigation hamburger menu is visible', async ({ page }) => {
-    const homePage = new HomePage(page);
     await homePage.goto();
 
     await expect(homePage.getNavSidebarMenu).toBeVisible();
@@ -649,7 +625,6 @@ test.describe('Home page tests', () => {
   test('validate upvote button styles and the tootpit of the first post in the light theme', async ({
     page
   }) => {
-    const homePage = new HomePage(page);
     await homePage.goto();
 
     // Before hovering
@@ -694,7 +669,6 @@ test.describe('Home page tests', () => {
   test('validate upvote button styles and the tootpit of the first post in the dark theme', async ({
     page
   }) => {
-    const homePage = new HomePage(page);
     await homePage.goto();
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
@@ -739,8 +713,6 @@ test.describe('Home page tests', () => {
   });
 
   test('click upvote button and move to the dialog "Login to Vote" ', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const loginDialog = new LoginToVoteDialog(page);
     await homePage.goto();
 
     await homePage.getFirstPostUpvoteButton.click();
@@ -752,7 +724,6 @@ test.describe('Home page tests', () => {
   test('validate downvote button styles and the tootpit of the first post in the light theme', async ({
     page
   }) => {
-    const homePage = new HomePage(page);
     await homePage.goto();
 
     // Before hovering
@@ -797,7 +768,6 @@ test.describe('Home page tests', () => {
   test('validate downvote button styles and the tootpit of the first post in the dark theme', async ({
     page
   }) => {
-    const homePage = new HomePage(page);
     await homePage.goto();
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
@@ -842,8 +812,6 @@ test.describe('Home page tests', () => {
   });
 
   test('click downvote button and move to the dialog "Login to Vote" ', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const loginDialog = new LoginToVoteDialog(page);
     await homePage.goto();
 
     await homePage.getFirstPostDownvoteButton.click();
@@ -853,69 +821,46 @@ test.describe('Home page tests', () => {
   });
 
   test('validate reblog button styles in the light theme', async ({ page }) => {
-    const homePage = new HomePage(page);
     await homePage.goto();
 
     // Color of reblog button
-    expect(
-      await homePage.getElementCssPropertyValue(
-        await homePage.getFirstPostReblogButton,
-        'color'
-      )
-    ).toBe('rgb(15, 23, 42)');
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogButton, 'color')).toBe(
+      'rgb(15, 23, 42)'
+    );
 
     // The tooltip message and colors
     await homePage.getFirstPostReblogButton.hover();
     expect(await homePage.getFirstPostReblogTooltip.textContent()).toContain('Reblog @');
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogTooltip, 'color')).toBe(
+      'rgb(15, 23, 42)'
+    );
     expect(
-      await homePage.getElementCssPropertyValue(
-        await homePage.getFirstPostReblogTooltip,
-        'color'
-      )
-    ).toBe('rgb(15, 23, 42)');
-    expect(
-      await homePage.getElementCssPropertyValue(
-        await homePage.getFirstPostReblogTooltip,
-        'background-color'
-      )
+      await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogTooltip, 'background-color')
     ).toBe('rgb(255, 255, 255)');
-
   });
 
   test('validate reblog button styles in the dark theme', async ({ page }) => {
-    const homePage = new HomePage(page);
     await homePage.goto();
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
     // Color of reblog button
-    expect(
-      await homePage.getElementCssPropertyValue(
-        await homePage.getFirstPostReblogButton,
-        'color'
-      )
-    ).toBe('rgb(255, 255, 255)');
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogButton, 'color')).toBe(
+      'rgb(255, 255, 255)'
+    );
 
     // The tooltip message and colors
     await homePage.getFirstPostReblogButton.hover();
     expect(await homePage.getFirstPostReblogTooltip.textContent()).toContain('Reblog @');
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogTooltip, 'color')).toBe(
+      'rgb(148, 163, 184)'
+    );
     expect(
-      await homePage.getElementCssPropertyValue(
-        await homePage.getFirstPostReblogTooltip,
-        'color'
-      )
-    ).toBe('rgb(148, 163, 184)');
-    expect(
-      await homePage.getElementCssPropertyValue(
-        await homePage.getFirstPostReblogTooltip,
-        'background-color'
-      )
+      await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogTooltip, 'background-color')
     ).toBe('rgb(3, 7, 17)');
   });
 
   test('move to the reblog this post dialog ', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const reblogDialog = new ReblogThisPostDialog(page);
     await homePage.goto();
 
     await homePage.getFirstPostReblogButton.click();
@@ -926,5 +871,4 @@ test.describe('Home page tests', () => {
     await reblogDialog.closeReblogDialog();
     await expect(homePage.getTrandingCommunitiesHeader).toBeVisible();
   });
-
 });
