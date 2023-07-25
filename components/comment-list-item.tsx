@@ -1,5 +1,5 @@
 import { Icons } from '@/components/icons';
-import { dateToRelative } from '@/lib/parse-date';
+import parseDate, { dateToRelative } from '@/lib/parse-date';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -12,15 +12,13 @@ import DetailsCardVoters from '@/components/details-card-voters';
 import { ReplyTextbox } from './reply-textbox';
 import { useRouter } from 'next/router';
 import DetailsCardHover from './details-card-hover';
-import { UserHoverCard } from './user-info';
 import Big from 'big.js';
 import { Entry } from '@/lib/bridge';
 import { useActiveVotesQuery } from './hooks/use-active-votes';
 import clsx from 'clsx';
-import { useAccountQuery } from './hooks/use-accout';
-import { useFollowsQuery } from './hooks/use-follows';
 import { Badge } from '@/components/ui/badge';
 import { DefaultRenderer } from '@hiveio/content-renderer';
+import { UserHoverCard } from './user-hover-card';
 
 const CommentListItem = ({
   comment,
@@ -40,9 +38,6 @@ const CommentListItem = ({
 
   const [openState, setOpenState] = useState<boolean>(comment.stats?.gray && hiddenComment ? false : true);
   const [reply, setReply] = useState(false);
-  const activeVotes = useActiveVotesQuery(username, comment.permlink);
-  const follows = useFollowsQuery(username);
-  const account = useAccountQuery(username);
 
   const comment_html = renderer.render(comment.body);
   const commentId = `@${username}/${comment.permlink}`;
@@ -56,7 +51,6 @@ const CommentListItem = ({
     return () => clearTimeout(timeout);
   }, [router.asPath]);
   const currentDepth = comment.depth - parent_depth;
-
   return (
     <>
       {currentDepth < 8 ? (
@@ -97,22 +91,7 @@ const CommentListItem = ({
                               alt={`${username} profile picture`}
                               loading="lazy"
                             />
-                            {!follows.isLoading &&
-                            follows.data &&
-                            !account.isLoading &&
-                            account.data &&
-                            account.data.posting_json_metadata ? (
-                              <UserHoverCard
-                                name={JSON.parse(account.data.posting_json_metadata)?.profile?.name}
-                                author={username}
-                                author_reputation={comment.author_reputation}
-                                following={follows.data.following_count}
-                                followers={follows.data.follower_count}
-                                about={JSON.parse(account.data.posting_json_metadata)?.profile?.about}
-                                joined={account.data.created}
-                                active={account.data.last_vote_time}
-                              />
-                            ) : null}
+                            <UserHoverCard author={username} author_reputation={comment.author_reputation} />
                             {comment.author_title ? (
                               <Badge variant="outline" className="mr-1 border-red-600 text-slate-500">
                                 {comment.author_title}
@@ -121,6 +100,7 @@ const CommentListItem = ({
                             <Link
                               href={`/${router.query.param}/${router.query.p2}/${router.query.permlink}#@${username}/${comment.permlink}`}
                               className="text- hover:text-red-500 md:text-sm"
+                              title={String(parseDate(comment.created))}
                             >
                               {dateToRelative(comment.created)} ago
                             </Link>
@@ -252,18 +232,19 @@ const CommentListItem = ({
                           price_per_hive={price_per_hive}
                           decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
                         >
-                          <div className="flex items-center hover:cursor-pointer hover:text-red-600 ">
+                          <div
+                            className={clsx('flex items-center hover:cursor-pointer hover:text-red-600', {
+                              'line-through opacity-50': Number(comment.max_accepted_payout.slice(0, 1)) === 0
+                            })}
+                          >
                             {'$'} {comment.payout.toFixed(2)}
                           </div>
                         </DetailsCardHover>
                         <Separator orientation="vertical" className="h-5" />
-                        {!activeVotes.isLoading &&
-                        activeVotes.data &&
-                        comment.stats &&
-                        comment.stats.total_votes > 0 ? (
+                        {comment.stats && comment.stats.total_votes > 0 ? (
                           <>
                             <div className="flex items-center">
-                              <DetailsCardVoters activeVotesData={activeVotes.data} post={comment}>
+                              <DetailsCardVoters post={comment}>
                                 <span className="hover:text-red-600">
                                   {comment.stats?.total_votes}
                                   {comment.stats.total_votes > 1 ? ' votes' : ' vote'}

@@ -297,7 +297,7 @@ export function formatDecimal(value: number, decPlaces = 2, truncate0s = true) {
   ];
 }
 
-export const prepareVotes = (entry: Entry, votes: Vote[]): Vote[] => {
+export const prepareVotes = (entry: Entry, votes: Vote[]) => {
   let totalPayout = 0;
 
   const { pending_payout_value, author_payout_value, curator_payout_value, payout } = entry;

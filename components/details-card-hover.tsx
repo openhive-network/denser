@@ -37,34 +37,31 @@ export default function DetailsCardHover({ post, price_per_hive, children, decli
     <HoverCard>
       <HoverCardTrigger asChild>{children}</HoverCardTrigger>
       <HoverCardContent className="flex w-auto flex-col" data-testid="payout-post-card-tooltip">
-        {decline ? (
-          <span>Payout declined</span>
-        ) : (
-          <>
-            <span>Pending payout amount: ${post.payout.toFixed(2)}</span>
+        <>
+          <span>Pending payout amount: ${post.payout.toFixed(2)}</span>
+          {decline ? null : (
             <span>
-              {' '}
               Breakdown: {_hbd.toFixed(2)} HBD, {pending_hp ? <>{pending_hp.toFixed(2)} HP</> : null}
             </span>
-            <>
-              {post.beneficiaries.map((beneficiary: IBeneficiary, index: number) => (
-                <Link
-                  href={`/@${beneficiary.account}`}
-                  className="hover:cursor-pointer hover:text-red-600"
-                  key={index}
-                >
-                  {beneficiary.account}: {fmt(parseFloat(String(beneficiary.weight)) / 100)}%
-                </Link>
-              ))}
-            </>
-            <span>Payout in {dateToRelative(post.payout_at)}</span>
-            {max_payout.eq(0) ? (
-              <span>Payout Declined</span>
-            ) : max_payout.lt(1000000) ? (
-              <span>Max accepted payout: ${fmt(post.max_accepted_payout.split(' ')[0])}</span>
-            ) : null}
+          )}
+          <>
+            {post.beneficiaries.map((beneficiary: IBeneficiary, index: number) => (
+              <Link
+                href={`/@${beneficiary.account}`}
+                className="hover:cursor-pointer hover:text-red-600"
+                key={index}
+              >
+                {beneficiary.account}: {fmt(parseFloat(String(beneficiary.weight)) / 100)}%
+              </Link>
+            ))}
           </>
-        )}
+          <span>Payout in {dateToRelative(post.payout_at)}</span>
+          {max_payout.eq(0) ? (
+            <span>Payout Declined</span>
+          ) : max_payout.lt(1000000) ? (
+            <span>Max accepted payout: ${fmt(post.max_accepted_payout.split(' ')[0])}</span>
+          ) : null}
+        </>
       </HoverCardContent>
     </HoverCard>
   );

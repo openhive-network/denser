@@ -1,6 +1,6 @@
 import parseDate, { dateToRelative } from '@/lib/parse-date';
 import { Clock, Link2, Twitter } from 'lucide-react';
-import UserInfo, { UserHoverCard } from '@/components/user-info';
+import UserInfo from '@/components/user-info';
 import { getAccount, getActiveVotes, getFeedHistory, getFollowCount } from '@/lib/hive';
 import { useQuery } from '@tanstack/react-query';
 import { DefaultRenderer } from '@hiveio/content-renderer';
@@ -29,6 +29,7 @@ import FacebookShare from '@/components/share-post-facebook';
 import RedditShare from '@/components/share-post-reddit';
 import TwitterShare from '@/components/share-post-twitter';
 import { Badge } from '@/components/ui/badge';
+import { UserHoverCard } from '@/components/user-hover-card';
 
 const DynamicComments = dynamic(() => import('@/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -80,7 +81,6 @@ function PostPage({
     isLoading: isHistoryFeedLoading,
     isError: historyFeedError
   } = useQuery(['feedHistory'], () => getFeedHistory());
-
   const {
     data: activeVotesData,
     isLoading: isActiveVotesLoading,
@@ -194,30 +194,16 @@ function PostPage({
             ) : null}
           </div>
         )}
-        {!isLoadingFollows && follows && !isLoadingAccounts && account ? (
-          <UserInfo
-            name={
-              account.posting_json_metadata
-                ? JSON.parse(account.posting_json_metadata)?.profile?.name
-                : account.name
-            }
-            author={post_s.author}
-            author_reputation={post_s.author_reputation}
-            author_title={post_s.author_title}
-            authored={post_s.json_metadata?.author}
-            community_title={communityData?.title || ''}
-            community={community}
-            category={post_s.category}
-            created={post_s.created}
-            following={follows?.following_count || 0}
-            followers={follows?.follower_count || 0}
-            about={
-              account.posting_json_metadata ? JSON.parse(account.posting_json_metadata)?.profile?.about : ''
-            }
-            joined={account.created}
-            active={account.last_post}
-          />
-        ) : null}
+        <UserInfo
+          author={post_s.author}
+          author_reputation={post_s.author_reputation}
+          author_title={post_s.author_title}
+          authored={post_s.json_metadata?.author}
+          community_title={communityData?.title || ''}
+          community={community}
+          category={post_s.category}
+          created={post_s.created}
+        />
         <hr />
         {post_html ? (
           <ImageGallery>
@@ -269,22 +255,7 @@ function PostPage({
                 )}
               </span>
               by
-              {!isLoadingFollows &&
-              follows &&
-              !isLoadingAccounts &&
-              account &&
-              account.posting_json_metadata ? (
-                <UserHoverCard
-                  name={JSON.parse(account.posting_json_metadata)?.profile?.name}
-                  author={post_s.author}
-                  author_reputation={post_s.author_reputation}
-                  following={follows.following_count}
-                  followers={follows.follower_count}
-                  about={JSON.parse(account.posting_json_metadata)?.profile?.about}
-                  joined={account.created}
-                  active={account.last_vote_time}
-                />
-              ) : null}
+              <UserHoverCard author={post_s.author} author_reputation={post_s.author_reputation} />
               {post_s.author_title ? (
                 <Badge variant="outline" className="border-red-600 text-slate-500">
                   {post_s.author_title}
@@ -372,7 +343,7 @@ function PostPage({
                 </span>
               </DetailsCardHover>
               {!isActiveVotesLoading && activeVotesData ? (
-                <DetailsCardVoters activeVotesData={activeVotesData} post={post_s}>
+                <DetailsCardVoters post={post_s}>
                   <span className="text-xs text-red-500 sm:text-sm">
                     {post_s.stats?.total_votes}
                     {post_s.stats?.total_votes && post_s.stats?.total_votes > 1 ? ' votes' : ' vote'}
