@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { cn, getPostSummary } from '@/lib/utils';
+import { cn, extractUrlsFromJsonString, extractYouTubeVideoIds, getPostSummary } from '@/lib/utils';
 import { Icons } from '@/components/icons';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -16,11 +16,6 @@ import { customEndsWith } from '@/lib/ends-with';
 import { useState } from 'react';
 import Big from 'big.js';
 import { Entry } from '@/lib/bridge';
-
-interface IBeneficiary {
-  account: string;
-  weight: number;
-}
 
 const PostListItem = ({
   post,
@@ -39,6 +34,7 @@ const PostListItem = ({
   function revealPost() {
     setReveal((reveal) => !reveal);
   }
+  const youtube_id = extractYouTubeVideoIds(extractUrlsFromJsonString(post.body));
 
   return (
     <li data-testid="post-list-item" className={sort === 'muted' ? 'opacity-50 hover:opacity-100' : ''}>
@@ -228,6 +224,24 @@ const PostListItem = ({
                             0,
                             post.json_metadata.links[0].length - 1
                           )}
+                          alt="Post image"
+                          loading="lazy"
+                        />
+                      </picture>
+                    </div>
+                  </Link>
+                ) : youtube_id[0] ? (
+                  <Link href={`${post.url}`} data-testid="post-image">
+                    <div className="relative mr-3.5 flex h-full max-h-fit min-h-fit items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
+                      <picture className="articles__feature-img h-full w-full">
+                        <source
+                          srcSet={`https://img.youtube.com/vi/${youtube_id[0]}/0.jpg`}
+                          media="(min-width: 1000px)"
+                        />
+
+                        <img
+                          className="w-full"
+                          srcSet={`https://img.youtube.com/vi/${youtube_id[0]}/0.jpg`}
                           alt="Post image"
                           loading="lazy"
                         />

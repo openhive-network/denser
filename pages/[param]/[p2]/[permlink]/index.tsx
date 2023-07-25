@@ -54,20 +54,6 @@ function PostPage({
   } = useQuery(['discussionData', username, permlink], () => getDiscussion(username, String(permlink)), {
     enabled: !!username && !!permlink
   });
-  const {
-    isLoading: isLoadingFollows,
-    error: errorFollows,
-    data: follows
-  } = useQuery(['followCountData', username], () => getFollowCount(username), {
-    enabled: !!username
-  });
-  const {
-    isLoading: isLoadingAccounts,
-    error: errorAccount,
-    data: account
-  } = useQuery(['accountData', username], () => getAccount(username), {
-    enabled: !!username
-  });
 
   const {
     isLoading: isLoadingCommunity,
@@ -139,7 +125,6 @@ function PostPage({
     hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
     isLinkSafeFn: (url: string) => false
   });
-
   const post_html = renderer.render(post_s.body);
   const commentSite = () => (discussionState && discussionState[0].depth !== 0 ? true : false);
   const [reply, setReply] = useState(false);
