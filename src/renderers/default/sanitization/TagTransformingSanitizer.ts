@@ -54,7 +54,7 @@ export class TagTransformingSanitizer {
                 img: ["src", "alt"],
 
                 // title is only set in the case of an external link warning
-                a: ["href", "rel", "title", "class"],
+                a: ["href", "rel", "title", "class", "target"],
             },
             allowedSchemes: ["http", "https", "steem"],
             transformTags: {
