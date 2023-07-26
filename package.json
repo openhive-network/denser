@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@beam-australia/react-env": "^3.1.1",
-    "@hiveio/content-renderer": "^1.1.0",
+    "@hiveio/content-renderer": "^1.1.1",
     "@hiveio/dhive": "^1.2.7",
     "@hookform/resolvers": "^3.1.1",
     "@next/bundle-analyzer": "^13.4.12",
