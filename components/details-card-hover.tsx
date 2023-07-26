@@ -2,7 +2,7 @@ import { dateToRelative } from '@/lib/parse-date';
 import { convertStringToBig } from '@/lib/helpers';
 import Big from 'big.js';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card';
-import { fmt } from '@/lib/utils';
+import { cn, fmt } from '@/lib/utils';
 import Link from 'next/link';
 import { ReactNode } from 'react';
 import { Entry } from '@/lib/bridge';
@@ -16,9 +16,29 @@ type DetailsCardHoverProps = {
   price_per_hive?: Big;
   children: ReactNode;
   decline?: boolean;
+  post_page?: boolean;
 };
 
-export default function DetailsCardHover({ post, price_per_hive, children, decline }: DetailsCardHoverProps) {
+export default function DetailsCardHover({
+  post,
+  price_per_hive,
+  children,
+  decline,
+  post_page
+}: DetailsCardHoverProps) {
+  if (decline) {
+    return (
+      <div
+        className={cn(`flex items-center line-through opacity-50`, { 'text-red-500': post_page })}
+        data-testid="post-payout-decline"
+        title="Payout Declined"
+      >
+        {'$'}
+        {post.payout.toFixed(2)}
+      </div>
+    );
+  }
+
   if (post.payout <= 0) {
     return (
       <div className="flex items-center" data-testid="post-payout">
@@ -39,11 +59,9 @@ export default function DetailsCardHover({ post, price_per_hive, children, decli
       <HoverCardContent className="flex w-auto flex-col" data-testid="payout-post-card-tooltip">
         <>
           <span>Pending payout amount: ${post.payout.toFixed(2)}</span>
-          {decline ? null : (
-            <span>
-              Breakdown: {_hbd.toFixed(2)} HBD, {pending_hp ? <>{pending_hp.toFixed(2)} HP</> : null}
-            </span>
-          )}
+          <span>
+            Breakdown: {_hbd.toFixed(2)} HBD, {pending_hp ? <>{pending_hp.toFixed(2)} HP</> : null}
+          </span>
           <>
             {post.beneficiaries.map((beneficiary: IBeneficiary, index: number) => (
               <Link
@@ -56,11 +74,7 @@ export default function DetailsCardHover({ post, price_per_hive, children, decli
             ))}
           </>
           <span>Payout in {dateToRelative(post.payout_at)}</span>
-          {max_payout.eq(0) ? (
-            <span>Payout Declined</span>
-          ) : max_payout.lt(1000000) ? (
-            <span>Max accepted payout: ${fmt(post.max_accepted_payout.split(' ')[0])}</span>
-          ) : null}
+          <span>Max accepted payout: ${fmt(post.max_accepted_payout.split(' ')[0])}</span>
         </>
       </HoverCardContent>
     </HoverCard>

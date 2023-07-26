@@ -318,6 +318,7 @@ function PostPage({
                 post={post_s}
                 price_per_hive={price_per_hive}
                 decline={Number(post_s.max_accepted_payout.slice(0, 1)) === 0}
+                post_page
               >
                 <span
                   className={`text-xs text-red-500 hover:cursor-pointer sm:text-sm ${
