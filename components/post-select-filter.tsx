@@ -23,10 +23,7 @@ const PostSelectFilter = ({
         handleChangeFilter(e);
       }}
     >
-      <SelectTrigger
-        className="w-[180px] bg-white dark:bg-background/95 dark:text-white"
-        data-testid="posts-filter"
-      >
+      <SelectTrigger className="bg-white dark:bg-background/95 dark:text-white" data-testid="posts-filter">
         <SelectValue placeholder="Select a filter" />
       </SelectTrigger>
       <SelectContent data-testid="posts-filter-list">

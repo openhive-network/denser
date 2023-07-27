@@ -83,11 +83,11 @@ export class HomePage {
       .locator('a')
       .getByText('LeoFinance');
     this.getHeaderLeoCommunities = page.locator(
-      '[class="mt-4 flex items-center justify-between"] span:text("LeoFinance")'
+      '[data-testid="community-name"]'
     );
     this.getPinmappleCommunitiesLink = this.getTrendingCommunitiesSideBar.locator('a:text("Pinmapple")');
     this.getHeaderPinmappleCommunities = page.locator(
-      '[class="mt-4 flex items-center justify-between"] span:text("Pinmapple")'
+      '[data-testid="community-name"]'
     );
     this.getHomeNavLink = page.locator('header a span:text("Hive Blog")');
     this.getNavPostsLink = page.locator('[data-testid="nav-posts-link"]');
@@ -95,7 +95,7 @@ export class HomePage {
     this.getNavWitnessesLink = page.locator('[data-testid="nav-witnesses-link"]');
     this.getNavOurdAppsLink = page.locator('[data-testid="nav-our-dapps-link"]');
     this.getHeaderAllCommunities = page.locator(
-      '[class="mt-4 flex items-center justify-between"] span:text("All posts")'
+      '[data-testid="card-trending-comunities"]'
     );
     this.getMainTimeLineOfPosts = page.locator('li[data-testid="post-list-item"]');
     this.getFirstPostListItem = this.getMainTimeLineOfPosts.first().locator('div').first();

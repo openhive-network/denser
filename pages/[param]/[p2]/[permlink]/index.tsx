@@ -126,7 +126,7 @@ function PostPage({
     isLinkSafeFn: (url: string) => false
   });
   const post_html = renderer.render(post_s.body);
-  const commentSite = () => (discussionState && discussionState[0].depth !== 0 ? true : false);
+  const commentSite = post_s.depth !== 0 ? true : false;
   const [reply, setReply] = useState(false);
   const postUrl = () => {
     if (discussionState) {
@@ -155,11 +155,10 @@ function PostPage({
   }
   const historyFeedArr = historyFeedData?.price_history;
   const price_per_hive = convertStringToBig(historyFeedArr[historyFeedArr.length - 1].base);
-
   return (
     <div className="py-8">
       <div className="mx-auto my-0 max-w-4xl bg-white px-8 py-4 dark:bg-slate-900">
-        {!commentSite() ? (
+        {!commentSite ? (
           <h1 className="text-3xl font-bold" data-testid="article-title">
             {post_s.title}
           </h1>

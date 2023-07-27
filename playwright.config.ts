@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-require("dotenv").config({ path: "./.env.local" });
+require('dotenv').config({ path: './.env.local' });
 
 /**
  * Read environment variables from file.
@@ -37,11 +37,19 @@ export default defineConfig({
     List reporter may have to be replaced with dot reporter if
     the number of tests increases.
   */
-  reporter: process.env.CI ? [
-    ['html', { open: 'never', outputFolder: `playwright-report/${process.env.PROJECT}/${process.env.SHARD_INDEX}` }],
-    ['junit', { outputFile: `junit/${process.env.PROJECT}/${process.env.SHARD_INDEX}/results.xml` }],
-    ['list', { printSteps: false }]
-  ] : 'html',
+  reporter: process.env.CI
+    ? [
+        [
+          'html',
+          {
+            open: 'never',
+            outputFolder: `playwright-report/${process.env.PROJECT}/${process.env.SHARD_INDEX}`
+          }
+        ],
+        ['junit', { outputFile: `junit/${process.env.PROJECT}/${process.env.SHARD_INDEX}/results.xml` }],
+        ['list', { printSteps: false }]
+      ]
+    : 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
@@ -57,24 +65,27 @@ export default defineConfig({
       snapshots: !process.env.CI,
       sources: true
     },
+
+    /* Set viewport for headless to be full-hd */
+    viewport: { width: 1920, height: 1080 }
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'] }
     },
 
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      use: { ...devices['Desktop Firefox'] }
     },
 
     {
       name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
+      use: { ...devices['Desktop Safari'] }
+    }
 
     /* Test against mobile viewports. */
     // {
@@ -95,7 +106,7 @@ export default defineConfig({
     //   name: 'Google Chrome',
     //   use: { ..devices['Desktop Chrome'], channel: 'chrome' },
     // },
-  ],
+  ]
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
   // outputDir: 'test-results/',

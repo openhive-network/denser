@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-require("dotenv").config({ path: "./.env.local" });
+require('dotenv').config({ path: './.env.local' });
 
 /**
  * Read environment variables from file.
@@ -44,24 +44,27 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'retain-on-failure',
+
+    /* Set viewport for headless to be full-hd */
+    viewport: { width: 1920, height: 1080 }
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'] }
     },
 
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      use: { ...devices['Desktop Firefox'] }
     },
 
     {
       name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
+      use: { ...devices['Desktop Safari'] }
+    }
 
     /* Test against mobile viewports. */
     // {
@@ -82,7 +85,7 @@ export default defineConfig({
     //   name: 'Google Chrome',
     //   use: { channel: 'chrome' },
     // },
-  ],
+  ]
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
   // outputDir: 'test-results/',

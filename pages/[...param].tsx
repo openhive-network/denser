@@ -23,6 +23,7 @@ import CustomError from '@/components/custom-error';
 import { getFeedHistory } from '@/lib/hive';
 import CommunitySimpleDescription from '@/components/community-simple-description';
 import { convertStringToBig } from '@/lib/helpers';
+import { CommunitiesSelect } from '@/components/communities-select';
 
 export const PostSkeleton = () => {
   return (
@@ -41,7 +42,6 @@ const ParamPage: FC = () => {
   const { sort, username, tag } = useSiteParams();
   const { ref, inView } = useInView();
   const { ref: refAcc, inView: inViewAcc } = useInView();
-
   const {
     data: entriesData,
     isLoading: entriesDataIsLoading,
@@ -125,7 +125,6 @@ const ParamPage: FC = () => {
     }
   );
   const lastEntriesData = accountEntriesData?.pages[accountEntriesData?.pages.length - 1];
-
   const {
     data: historyFeedData,
     isLoading: historyFeedLoading,
@@ -186,12 +185,12 @@ const ParamPage: FC = () => {
   if (!entriesDataIsLoading && entriesData) {
     return (
       <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2 pt-8">
-        <div className="grid grid-cols-12 md:gap-4 ">
-          <div className="hidden md:col-span-2 md:flex">
+        <div className="grid grid-cols-12 md:gap-4">
+          <div className="hidden md:col-span-3 md:flex xl:col-span-2">
             <CommunitiesSidebar />
           </div>
-          <div className="col-span-12 md:col-span-10 lg:col-span-8">
-            <div data-testid="card-explore-hive-mobile" className="hidden md:col-span-10 md:flex lg:hidden">
+          <div className="col-span-12 md:col-span-9 xl:col-span-8">
+            <div data-testid="card-explore-hive-mobile" className=" md:col-span-10 md:flex xl:hidden">
               {communityData && subsData ? (
                 <CommunitySimpleDescription
                   data={communityData}
@@ -199,23 +198,29 @@ const ParamPage: FC = () => {
                   username={tag ? tag : ' '}
                   notificationData={dataAccountNotification}
                 />
-              ) : (
-                <ExploreHive />
-              )}
+              ) : null}
             </div>
             <div className="col-span-12 mb-5 flex flex-col space-y-5 md:col-span-10 lg:col-span-8">
-              <div className="mt-4 flex items-center justify-between">
-                <div className="flex flex-col">
-                  <span className="text-md font-medium" data-testid="community-name">
+              <div className="mt-4 flex w-full items-center justify-between">
+                <div className="mr-2 flex w-[320px] flex-col">
+                  <span className="text-md hidden font-medium md:block" data-testid="community-name">
                     {tag ? (communityData ? `${communityData?.title}` : `#${tag}`) : 'All posts'}
                   </span>
                   {tag ? (
-                    <span className="text-xs font-light" data-testid="community-name-unmoderated">
+                    <span
+                      className="hidden text-xs font-light md:block"
+                      data-testid="community-name-unmoderated"
+                    >
                       {tag ? (communityData ? 'Community' : 'Unmoderated tag') : ''}
                     </span>
                   ) : null}
+                  <span className="md:hidden" translate="no">
+                    <CommunitiesSelect
+                      username={tag ? (communityData ? `${communityData?.title}` : `#${tag}`) : 'All posts'}
+                    />
+                  </span>
                 </div>
-                <div translate="no">
+                <div translate="no" className="w-[180px]">
                   <PostSelectFilter filter={sort} handleChangeFilter={handleChangeFilter} />
                 </div>
               </div>
@@ -250,7 +255,7 @@ const ParamPage: FC = () => {
               </>
             </div>
           </div>
-          <div data-testid="card-explore-hive-desktop" className="hidden lg:col-span-2 lg:flex">
+          <div data-testid="card-explore-hive-desktop" className="hidden lg:flex xl:col-span-2">
             {communityData && subsData ? (
               <CommunityDescription
                 data={communityData}

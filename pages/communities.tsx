@@ -7,6 +7,7 @@ import CommunitiesSelectFilter from '@/components/communities-select-filter';
 import CommunitiesList from '@/components/communities-list';
 import Loading from '@/components/loading';
 import Link from 'next/link';
+import ExploreHive from '@/components/explore-hive';
 
 export default function CommunitiesPage() {
   const [sort, setSort] = useState('rank');
@@ -27,16 +28,19 @@ export default function CommunitiesPage() {
   if (communitiesDataIsLoading) return <Loading loading={communitiesDataIsLoading} />;
 
   return (
-    <div className="container mx-auto max-w-screen-xl flex-grow px-4 pb-2 pt-8">
-      <div className="grid grid-cols-12 lg:gap-8 ">
-        <div className="col-span-12 mb-5 space-y-5 md:col-span-12 lg:col-span-8">
+    <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2 pt-8">
+      <div className="grid grid-cols-12 md:gap-4">
+        <div className="hidden md:col-span-4 md:flex xl:col-span-2">
+          <CommunitiesSidebar />
+        </div>
+        <div className="col-span-12 md:col-span-8">
           <div className="mt-4 flex items-center justify-between">
             <span className="text-sm font-medium">Communities</span>
             <Link className="text-sm font-medium text-red-600 dark:hover:text-red-800" href={'/'}>
               Create a Community
             </Link>
           </div>
-          <div className="mt-4 flex items-center justify-between">
+          <div className="mt-4 flex items-center justify-between" translate="no">
             <Input
               type="search"
               id="search"
@@ -49,8 +53,8 @@ export default function CommunitiesPage() {
           </div>
           <CommunitiesList data={communitiesData} />
         </div>
-        <div className="col-span-12 md:col-span-12 lg:col-span-4">
-          <CommunitiesSidebar />
+        <div className="hidden lg:flex xl:col-span-2">
+          <ExploreHive />
         </div>
       </div>
     </div>

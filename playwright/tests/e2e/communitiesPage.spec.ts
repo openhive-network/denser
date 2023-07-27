@@ -116,7 +116,7 @@ test.describe('Communities page tests', () => {
       await page.waitForSelector(profilePage.profileName['_selector']);
       expect(await profilePage.profileName).toBeVisible();
       await profilePage.profilePostsLink.click();
-      await page.waitForSelector(profilePage.page.locator('[data-testid="user-post-menu"]')['_selector']);
+      await page.waitForSelector(await profilePage.page.locator('[data-testid="user-post-menu"]')['_selector']);
 
       if ((await profilePage.page.locator('[data-testid="post-author"]').count()) > 0) {
         expect(await leadershipLinkNickNamesLists[i]).toContain(
