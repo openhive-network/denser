@@ -8,6 +8,7 @@ import { useFollowsQuery } from './hooks/use-follows';
 export function HoverCardData({ author }: { author: string }) {
   const follows = useFollowsQuery(author);
   const account = useAccountQuery(author);
+  const about = account.data ? JSON.parse(account.data.posting_json_metadata)?.profile?.about : null;
   return (
     <div className="space-y-2">
       {account.data && !account.isLoading && follows.data && !follows.isLoading ? (
@@ -49,7 +50,7 @@ export function HoverCardData({ author }: { author: string }) {
             {/*</div>*/}
           </div>
           <p data-testid="user-about" className="text-sm text-gray-500">
-            {JSON.parse(account.data.posting_json_metadata)?.profile?.about}
+            {about ? about.slice(0, 157) + (157 < about.length ? '...' : '') : null}
           </p>
           <div className="flex justify-center text-xs">
             Joined {dateToFormatted(account.data.created, 'MMMM YYYY')}

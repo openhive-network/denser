@@ -15,25 +15,21 @@ test.describe('Post page tests', () => {
   });
 
   test('move to the first post content on the home page by image', async ({ page }) => {
-    
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByImage();
   });
 
   test('move to the first post content on the home page by title of this post', async ({ page }) => {
-    
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByPostTitle();
   });
 
   test('validate that title of the post is the same as inside the post', async ({ page }) => {
-    
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByPostTitle();
   });
 
   test('validate the post content pages styles in the dark theme', async ({ page }) => {
-    
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByPostTitle();
     await homePage.changeThemeMode('Dark');
@@ -64,7 +60,6 @@ test.describe('Post page tests', () => {
   test('validate the hover card with author info is displayed after hover username in the post', async ({
     page
   }) => {
-    
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByImage();
     await postPage.articleAuthorName.hover();
@@ -72,7 +67,6 @@ test.describe('Post page tests', () => {
   });
 
   test('validate followers and following in the hover card', async ({ page }) => {
-    
     await postPage.gotoHomePage();
     const firstPostAuthorName = (await homePage.getFirstPostAuthor.innerText()).trim().replace('@', '');
     // console.log("First post's author name without @: ", await firstPostAuthorName);
@@ -97,7 +91,6 @@ test.describe('Post page tests', () => {
   });
 
   test('validate user about in the hover card', async ({ page }) => {
-  
     await postPage.gotoHomePage();
     const firstPostAuthorName = (await homePage.getFirstPostAuthor.innerText()).trim().replace('@', '');
 
@@ -112,7 +105,9 @@ test.describe('Post page tests', () => {
 
     let userAboutAPI: any;
     if (userPostingJsonMetadata.profile.about) {
-      userAboutAPI = await userPostingJsonMetadata.profile.about;
+      userAboutAPI =
+        userPostingJsonMetadata.profile.about.slice(0, 157) +
+        (157 < userPostingJsonMetadata.profile.about.length ? '...' : '');
       // console.log('userAboutAPI: ', await userAboutAPI);
       expect(await postPage.userAboutHoverCard.textContent()).toBe(userAboutAPI);
     } else {
@@ -123,7 +118,6 @@ test.describe('Post page tests', () => {
   });
 
   test('validate Follow button style in the hover card in light theme', async ({ page }) => {
-    
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByImage();
 
@@ -162,7 +156,6 @@ test.describe('Post page tests', () => {
   });
 
   test('validate Follow button style in the hover card in dark theme', async ({ page }) => {
-  
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByImage();
 
@@ -204,7 +197,6 @@ test.describe('Post page tests', () => {
   });
 
   test('validate styles of the hover card in dark mode', async ({ page }) => {
-    
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByImage();
 
@@ -223,7 +215,6 @@ test.describe('Post page tests', () => {
 
   // Mute button is no more in the dropdown card after hovering that way test is skipped.
   test.skip('validate Mute button style in the hover card in light theme', async ({ page }) => {
-    
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByImage();
 
@@ -262,7 +253,6 @@ test.describe('Post page tests', () => {
   });
 
   test('validate the post footer is visible', async ({ page }) => {
-    
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByImage();
     await expect(postPage.articleFooter).toBeVisible();
