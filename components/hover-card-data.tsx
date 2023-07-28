@@ -4,11 +4,21 @@ import UserAvatar from '@/components/user-avatar';
 import Link from 'next/link';
 import { useAccountQuery } from './hooks/use-accout';
 import { useFollowsQuery } from './hooks/use-follows';
+import { delegatedHive, numberWithCommas, vestingHive } from '@/lib/utils';
+import Big from 'big.js';
+import { useDynamicGlobalData } from './hooks/use-dynamic-global-data';
 
 export function HoverCardData({ author }: { author: string }) {
   const follows = useFollowsQuery(author);
   const account = useAccountQuery(author);
   const about = account.data ? JSON.parse(account.data.posting_json_metadata)?.profile?.about : null;
+  const dynamicData = useDynamicGlobalData();
+  const delegated_hive =
+    dynamicData.data && account.data ? delegatedHive(account.data, dynamicData.data) : Big(0);
+  const vesting_hive =
+    dynamicData.data && account.data ? vestingHive(account.data, dynamicData.data) : Big(0);
+  const hp = vesting_hive.minus(delegated_hive);
+
   return (
     <div className="space-y-2">
       {account.data && !account.isLoading && follows.data && !follows.isLoading ? (
@@ -44,10 +54,10 @@ export function HoverCardData({ author }: { author: string }) {
               {follows.data.following_count}
               <span className="text-xs">Following</span>
             </div>
-            {/*<div className="flex flex-col items-center" data-testid="user-hp">*/}
-            {/*  123*/}
-            {/*  <span className="text-xs">HP</span>*/}
-            {/*</div>*/}
+            <div className="flex flex-col items-center" data-testid="user-hp">
+              {numberWithCommas(hp.toFixed(0))}
+              <span className="text-xs">HP</span>
+            </div>
           </div>
           <p data-testid="user-about" className="text-sm text-gray-500">
             {about ? about.slice(0, 157) + (157 < about.length ? '...' : '') : null}
