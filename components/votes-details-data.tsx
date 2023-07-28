@@ -27,11 +27,11 @@ export default function VotersDetailsData({ post }: { post: Entry }) {
         sliced.map((vote: Vote, index: number) => (
           <li key={index}>
             <Link href={`/@${vote.voter}`} className="hover:cursor-pointer hover:text-red-600">
-              {vote.voter}: $
+              {vote.voter}
               {vote.reward
                 ? Math.abs(parseFloat(vote.reward.toString())) < 0.0001
-                  ? 0
-                  : Number(vote.reward).toFixed(2)
+                  ? `: $0`
+                  : `: $${Number(vote.reward).toFixed(2)}`
                 : null}
             </Link>
           </li>
