@@ -26,6 +26,10 @@ export class CommunitiesPage {
   readonly getFirstPostAuthor: Locator;
   readonly getFirstPostAuthorReputation: Locator;
   readonly getFirstPostCardTimestampLink: Locator;
+  readonly getFirstResponses: Locator;
+  readonly postCardResponses: Locator;
+  readonly languageHeader: Locator;
+  readonly communityChoosenLanguage: Locator;
 
 
   constructor(page: Page) {
@@ -48,12 +52,16 @@ export class CommunitiesPage {
     this.communityRules = page.locator('[data-testid="community-rules"]');
     this.communityRulesHeader = this.communityRules.locator('h6');
     this.communityRulesContent = page.locator('[data-testid="community-rules-content"]');
+    this.languageHeader = page.locator('[data-testid="community-language"]').locator('h6')
+    this.communityChoosenLanguage = page.locator('[data-testid="community-choosen-language"]')
 
     this.getFirstPostListItem = page.locator('[data-testid="post-list-item"]').first();
     this.getFirstPostCardAvatar = page.locator('[data-testid="post-card-avatar"]').first();
     this.getFirstPostAuthor = page.locator('[data-testid="post-author"]').first();
     this.getFirstPostAuthorReputation = this.getFirstPostAuthor.locator('..');
     this.getFirstPostCardTimestampLink = page.locator('[data-testid="post-card-timestamp"]').first();
+    this.getFirstResponses = page.locator('[data-testid="post-children"]').first()
+    this.postCardResponses = page.locator('[data-testid="post-card-responses"]')
   }
 
   async validataCommunitiesPageIsLoaded(communityName: string) {

@@ -143,9 +143,9 @@ const CommunityDescription = ({
             </div>
           ) : null}
           {data.lang ? (
-            <div>
+            <div data-testid="community-language">
               <h6 className="my-1.5 font-semibold leading-none tracking-tight">Language</h6>
-              <div className="preview-rules" data-testid="community-rules-content">
+              <div className="preview-rules" data-testid="community-choosen-language">
                 {data.lang}
               </div>
             </div>

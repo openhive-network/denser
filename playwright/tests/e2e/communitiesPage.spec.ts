@@ -3,18 +3,26 @@ import { HomePage } from '../support/pages/homePage';
 import { ProfilePage } from '../support/pages/profilePage';
 import { CommunitiesPage } from '../support/pages/communitiesPage';
 import { ReblogThisPostDialog } from '../support/pages/reblogThisPostDialog';
+import { PostPage } from '../support/pages/postPage';
+import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
 
 test.describe('Communities page tests', () => {
   let homePage: HomePage;
   let profilePage: ProfilePage;
   let communitiesPage: CommunitiesPage;
   let reblogThisPostDialog: ReblogThisPostDialog;
+  let postPage: PostPage;
+  let loginToVoteDialog: LoginToVoteDialog;
 
   test.beforeEach(async ({ page }) => {
     homePage = new HomePage(page);
     profilePage = new ProfilePage(page);
     communitiesPage = new CommunitiesPage(page);
     reblogThisPostDialog = new ReblogThisPostDialog(page);
+    postPage = new PostPage(page);
+    loginToVoteDialog = new LoginToVoteDialog(page);
+
+    await homePage.goto();
   });
 
   test('is LeoFinance community page loaded', async ({ page }) => {
@@ -27,7 +35,6 @@ test.describe('Communities page tests', () => {
     page,
     request
   }) => {
-    await homePage.goto();
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
 
@@ -62,7 +69,6 @@ test.describe('Communities page tests', () => {
   });
 
   test('validate the community leadership of LeoFinance Community', async ({ page, request }) => {
-    await homePage.goto();
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
 
@@ -100,7 +106,6 @@ test.describe('Communities page tests', () => {
   });
 
   test('move to the profile leadership pages of LeoFinance community ', async ({ page }) => {
-    await homePage.goto();
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
 
@@ -116,7 +121,9 @@ test.describe('Communities page tests', () => {
       await page.waitForSelector(profilePage.profileName['_selector']);
       expect(await profilePage.profileName).toBeVisible();
       await profilePage.profilePostsLink.click();
-      await page.waitForSelector(await profilePage.page.locator('[data-testid="user-post-menu"]')['_selector']);
+      await page.waitForSelector(
+        await profilePage.page.locator('[data-testid="user-post-menu"]')['_selector']
+      );
 
       if ((await profilePage.page.locator('[data-testid="post-author"]').count()) > 0) {
         expect(await leadershipLinkNickNamesLists[i]).toContain(
@@ -130,7 +137,6 @@ test.describe('Communities page tests', () => {
   });
 
   test('validate the first post header styles (for Trending filter) in the light theme', async ({ page }) => {
-    await homePage.goto();
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
 
@@ -168,7 +174,6 @@ test.describe('Communities page tests', () => {
   });
 
   test('validate the first post header styles (for Trending filter) in the dark theme', async ({ page }) => {
-    await homePage.goto();
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
 
@@ -212,7 +217,6 @@ test.describe('Communities page tests', () => {
   test('validate the first post footer payouts styles (for Trending filter) in the light theme in the LeoFinance', async ({
     page
   }) => {
-    await homePage.goto();
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
 
@@ -236,7 +240,6 @@ test.describe('Communities page tests', () => {
   test('validate the first post footer payouts styles (for Trending filter) in the dark theme in the LeoFinance', async ({
     page
   }) => {
-    await homePage.goto();
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
 
@@ -267,7 +270,6 @@ test.describe('Communities page tests', () => {
   test('validate the first post footer votes styles (for Trending filter) in the light theme in the LeoFinance', async ({
     page
   }) => {
-    await homePage.goto();
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
 
@@ -295,7 +297,6 @@ test.describe('Communities page tests', () => {
   test('validate the first post footer votes styles (for Trending filter) in the dark theme in the LeoFinance', async ({
     page
   }) => {
-    await homePage.goto();
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
 
@@ -327,7 +328,6 @@ test.describe('Communities page tests', () => {
   });
 
   test('validate the community leadership of Pinmapple Community', async ({ page, request }) => {
-    await homePage.goto();
     await homePage.moveToPinmappleCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('Pinmapple');
 
@@ -365,7 +365,6 @@ test.describe('Communities page tests', () => {
   });
 
   test('move to the first-three leadership profile pages of Pinmapple community ', async ({ page }) => {
-    await homePage.goto();
     await homePage.moveToPinmappleCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('Pinmapple');
 
@@ -398,7 +397,6 @@ test.describe('Communities page tests', () => {
   });
 
   test('validate reblog button styles in the light theme', async ({ page }) => {
-    await homePage.goto();
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
 
@@ -419,7 +417,6 @@ test.describe('Communities page tests', () => {
   });
 
   test('validate reblog button styles in the dark theme', async ({ page }) => {
-    await homePage.goto();
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
     await homePage.changeThemeMode('Dark');
@@ -442,7 +439,6 @@ test.describe('Communities page tests', () => {
   });
 
   test('move to the reblog this post dialog ', async ({ page }) => {
-    await homePage.goto();
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
 
@@ -453,5 +449,110 @@ test.describe('Communities page tests', () => {
     await expect(reblogThisPostDialog.getDialogCancelButton).toBeVisible();
     await reblogThisPostDialog.closeReblogDialog();
     await expect(homePage.getTrandingCommunitiesHeader).toBeVisible();
+  });
+  // new tests
+  test('check if posts in specific communities loading correctly', async ({ page }) => {
+    await homePage.moveToLeoFinanceCommunities();
+    const firstPostTitle = homePage.postTitle.first();
+    const firstPostTitleText = await firstPostTitle.innerText();
+
+    const postAuthor = homePage.getFirstPostAuthor;
+    const postAuthorText = await postAuthor.innerText();
+    const postAuthorTextSubstring = postAuthorText.substring(0, 5);
+
+    await postPage.moveToTheFirstPostInHomePageByPostTitle();
+
+    const articleTitle = await postPage.articleTitle;
+    const articleTitleText = await articleTitle.innerText();
+
+    const articleAuthor = postPage.articleAuthorName;
+    const articleAuthorText = await articleAuthor.innerText();
+    const articleAuthorTextSubstring = articleAuthorText.substring(0, 5);
+
+    await expect(postPage.articleTitle).toBeVisible();
+    await expect(firstPostTitleText).toEqual(articleTitleText);
+    await expect(postPage.articleBody).toBeVisible();
+    await expect(postPage.articleFooter).toBeVisible();
+    await expect(postAuthorTextSubstring).toContain(articleAuthorTextSubstring);
+  });
+
+  test('check if upvote and downvote button are displayed correctly on communities page', async ({
+    page
+  }) => {
+    await homePage.moveToLeoFinanceCommunities();
+    await expect(homePage.getFirstPostUpvoteButton).toBeVisible();
+    await homePage.getFirstPostUpvoteButton.click();
+    await expect(loginToVoteDialog.getLoginDialog).toBeVisible();
+    await loginToVoteDialog.closeLoginDialog();
+
+    await expect(homePage.getFirstPostDownvoteButton).toBeVisible();
+    await homePage.getFirstPostDownvoteButton.click();
+    await expect(loginToVoteDialog.getLoginDialog).toBeVisible();
+    await loginToVoteDialog.closeLoginDialog();
+  });
+
+  test('check if responses are displayed correctly on communities page', async ({
+    page,
+    browserName
+  }) => {
+    test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    await homePage.moveToLeoFinanceCommunities();
+
+    await expect(communitiesPage.getFirstResponses).toBeVisible();
+
+    const responseNumber = await communitiesPage.getFirstResponses.innerText();
+    await communitiesPage.getFirstResponses.hover();
+    const responseHoverText = await communitiesPage.postCardResponses.innerText();
+    await expect(responseHoverText).toContain(`${responseNumber} responses. Click to respond`);
+
+    await communitiesPage.getFirstResponses.click();
+    await expect(postPage.articleFooter).toBeVisible();
+  });
+
+  test('check sidebar on specific communities - description, rules, language', async ({ page, request }) => {
+    await homePage.moveToLeoFinanceCommunities();
+    //description
+    await expect(communitiesPage.communityDescription).toBeVisible();
+    await expect(communitiesPage.communityDescriptionHeader).toBeVisible();
+    await expect(communitiesPage.communityDescriptionConntent).toBeVisible();
+
+    const descriptionHeaderText = await communitiesPage.communityDescriptionHeader.innerText();
+    expect(descriptionHeaderText).toBe('Description');
+    // rules
+    await expect(communitiesPage.communityRules).toBeVisible();
+    await expect(communitiesPage.communityRulesHeader).toBeVisible();
+    await expect(communitiesPage.communityRulesContent).toBeVisible();
+
+    const rulesHeaderText = await communitiesPage.communityRulesHeader.innerText();
+    expect(rulesHeaderText).toBe('Rules');
+
+    //language
+    await expect(communitiesPage.languageHeader).toBeVisible();
+
+    const languageHeaderText = await communitiesPage.languageHeader.innerText();
+
+    expect(languageHeaderText).toBe('Language');
+
+    await expect(communitiesPage.communityChoosenLanguage).toBeVisible();
+
+    const communityChoosenLanguageText = await communitiesPage.communityChoosenLanguage.innerText();
+
+    const url = process.env.REACT_APP_API_ENDPOINT;
+
+    const response = await request.post(`${url}/`, {
+      data: {
+        id: 0,
+        jsonrpc: '2.0',
+        method: 'bridge.list_communities',
+        params: { last: '', limit: 100, query: null, sort: 'rank', observer: '' }
+      },
+      headers: {
+        Accept: 'application/json, text/plain, */*'
+      }
+    });
+
+    const languageApi = (await response.json()).result[0].lang;
+
+    expect(communityChoosenLanguageText).toBe(languageApi);
   });
 });
