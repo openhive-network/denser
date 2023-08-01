@@ -55,7 +55,7 @@ const PostListItem = ({
               </Link>{' '}
               cross-posted{' '}
               <Link
-                href={`${post.original_entry.community}/@${post.original_entry.author}/${post.original_entry.permlink}`}
+                href={`/${post.original_entry.community}/@${post.original_entry.author}/${post.original_entry.permlink}`}
                 className="text-red-600 hover:cursor-pointer"
               >
                 @{post.original_entry.author}/{post.original_entry.permlink}
