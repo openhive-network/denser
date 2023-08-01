@@ -20,7 +20,6 @@ import {
   Plus,
   Settings,
   SunMedium,
-  Trash,
   Twitter,
   User,
   X,
@@ -54,12 +53,14 @@ import {
   SidebarOpen,
   Pencil,
   Link,
-  ExternalLink
+  ExternalLink,
+  Dna
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
 
 export const Icons = {
+  crossPost: Dna,
   externalLink: ExternalLink,
   link: Link,
   pencil: Pencil,
