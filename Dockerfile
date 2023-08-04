@@ -1,61 +1,51 @@
-# syntax=docker/dockerfile:1.4
-# Build with: docker buildx bake --progress=plain local-build
-
-FROM node:18.15-alpine3.17 AS base
-
-
-FROM base AS deps
-
-RUN apk add --no-cache libc6-compat
-WORKDIR /home/node/app
-RUN chown node /home/node/app
-USER node
-RUN mkdir ~/.npm-global
-ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
-ENV PATH=$PATH:/home/node/.npm-global/bin
-RUN npm install -g @beam-australia/react-env@3.1.1
-COPY --chown=node package.json package-lock.json* ./
-RUN npm ci
-
+FROM node:18-alpine AS base
 
 FROM base AS builder
+ARG TURBO_APP_SCOPE
+RUN apk add --no-cache libc6-compat
+RUN apk update
 
-WORKDIR /home/node/app
-RUN chown node /home/node/app
-COPY --from=deps --chown=node /home/node/app/node_modules ./node_modules
-COPY --chown=node . .
-USER node
-ENV NEXT_TELEMETRY_DISABLED 1
-RUN npm run build
+## Set working directory for an App
+WORKDIR /app
+RUN npm i -g turbo
+COPY . .
+## prepare files only for docker and optimise
+RUN turbo prune --scope=${TURBO_APP_SCOPE} --docker
 
+# Add lockfile and package.json's of isolated subworkspace
+FROM base AS installer
+RUN apk add --no-cache libc6-compat
+RUN apk update
+WORKDIR /app
+
+# First install the dependencies (as they change less often)
+RUN npm install -g @beam-australia/react-env@3.1.1
+COPY --from=builder /app/out/json/ .
+COPY --from=builder /app/out/package-lock.json ./package-lock.json
+RUN npm ci
+
+# Build the project
+COPY --from=builder /app/out/full/ .
+RUN npm run build:blog
 
 FROM base AS runner
+WORKDIR /app
 
-RUN apk add --no-cache tini
+# Don't run production as root
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+USER nextjs
 
-WORKDIR /home/node/app
-RUN chown node /home/node/app
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+COPY --from=installer /app/apps/blog/next.config.js .
+COPY --from=installer /app/apps/blog/package.json .
+COPY --from=installer /app/node_modules ./node_modules
 
-USER node
-RUN mkdir ~/.npm-global
-ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
-ENV PATH=$PATH:/home/node/.npm-global/bin
+# Automatically leverage output traces to reduce image size
+# https://nextjs.org/docs/advanced-features/output-file-tracing
+COPY --from=installer --chown=nextjs:nodejs /app/apps/blog/public ./apps/blog/public
+COPY --from=installer --chown=nextjs:nodejs /app/apps/blog/.next/standalone ./
+COPY --from=installer --chown=nextjs:nodejs /app/apps/blog/.next/static ./apps/blog/.next/static
+COPY --from=installer --chown=nextjs:nodejs /app/apps/blog/.env* ./
+COPY --from=installer --chown=nextjs:nodejs /app/apps/blog/lib/markdowns ./apps/blog/lib/markdowns
 
-COPY --from=deps --chown=node /home/node/.npm-global /home/node/.npm-global
-COPY --from=builder --chown=node /home/node/app/public ./public
-COPY --from=builder --chown=node /home/node/app/.next/standalone ./
-COPY --from=builder --chown=node /home/node/app/.next/static ./.next/static
-COPY --from=builder --chown=node /home/node/app/docker/docker-entrypoint.sh /home/node/app/docker-entrypoint.sh
-COPY --from=builder --chown=node /home/node/app/.env* ./
-COPY --from=builder --chown=node /home/node/app/lib/markdowns ./lib/markdowns/
-
-EXPOSE 3000
-ENV PORT 3000
-
-HEALTHCHECK CMD wget --no-verbose --tries=1 --spider http://localhost:$PORT || exit 1
-
-RUN chmod +x /home/node/app/docker-entrypoint.sh
-ENTRYPOINT ["/sbin/tini", "--", "/home/node/app/docker-entrypoint.sh"]
-CMD ["node", "server.js"]
+CMD node apps/blog/server.js

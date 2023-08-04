@@ -6,6 +6,7 @@ variable "CI_COMMIT_TAG" {}
 variable "TAG" {
   default = "latest"
 }
+variable "TURBO_APP_SCOPE" {}
 
 function "notempty" {
   params = [variable]
@@ -19,6 +20,9 @@ target "local-build" {
     notempty(CI_COMMIT_SHA) ? "${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}": "",
     notempty(CI_COMMIT_TAG) ? "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}": ""
   ]
+  args = {
+    TURBO_APP_SCOPE = "${TURBO_APP_SCOPE}"
+  }
 }
 
 target "ci-build" {

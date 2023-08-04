@@ -1,0 +1,11 @@
+{
+  "name": "@hive/tailwindcss-config",
+  "version": "0.1.0",
+  "dependencies": {
+    "@tailwindcss/typography": "^0.5.9",
+    "autoprefixer": "10.4.14",
+    "tailwindcss": "3.3.3",
+    "tailwindcss-animate": "^1.0.6",
+    "postcss": "8.4.25"
+  }
+}

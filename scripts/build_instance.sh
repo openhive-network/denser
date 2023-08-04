@@ -61,6 +61,6 @@ fi
 
 pushd "$SRCROOTDIR"
 
-docker buildx bake --progress="$PROGRESS_DISPLAY" "$TARGET"
+docker buildx bake --provenance=false --progress="$PROGRESS_DISPLAY" "$TARGET"
 
 popd

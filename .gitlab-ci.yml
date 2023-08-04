@@ -10,6 +10,7 @@ variables:
   DOCKER_BUILDER_TAG: "$CI_COMMON_JOB_VERSION"
   DOCKER_DIND_TAG: "$CI_COMMON_JOB_VERSION"
   IMAGE_REMOVER_TAG: "$CI_COMMON_JOB_VERSION"
+  BLOG_APP_SRC_DIR: "apps/blog/"
 
 include:
   - template: Workflows/Branch-Pipelines.gitlab-ci.yml
@@ -17,9 +18,11 @@ include:
     ref: a61b95b922b9f7fe5f6aba3559bdb5e239052700 # develop
     file: '/templates/docker_image_jobs.gitlab-ci.yml'
 
-docker-build:
+docker-build-blog:
   extends: .docker_image_builder_job_template
   stage: build
+  variables:
+    TURBO_APP_SCOPE: "@hive/denser"
   before_script:
     - !reference [.docker_image_builder_job_template, before_script]
     - |
@@ -84,12 +87,13 @@ lint:
 e2e-tests:
   extends: .node-job
   needs:
-    - docker-build
-  image: mcr.microsoft.com/playwright:v1.36.1-jammy
+    - docker-build-blog
+  image: mcr.microsoft.com/playwright:v1.36.0-jammy
   services:
     - name: $IMAGE_NAME
       alias: denser
   variables:
+    TURBO_APP_SRC: apps/blog
     REACT_APP_API_ENDPOINT: https://api.hive.blog
     REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
     PORT: 3000
@@ -103,15 +107,16 @@ e2e-tests:
     - !reference [.node-job, script]
     - |
       echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=false]\r\e[0KRunning tests..."
+      cd $TURBO_APP_SRC
       npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL
       echo -e "\e[0Ksection_end:$(date +%s):tests\r\e[0K"
   artifacts:
     paths:
-      - playwright-report/
-      - test-results/
-      - junit/
+      - ${TURBO_APP_SRC}/playwright-report/
+      - ${TURBO_APP_SRC}/test-results/
+      - ${TURBO_APP_SRC}/junit/
     reports:
-      junit: junit/**/**/results.xml
+      junit: ${TURBO_APP_SRC}/junit/**/**/results.xml
 
 e2e-report-aggregate:
   extends: .node-job
@@ -121,17 +126,17 @@ e2e-report-aggregate:
   when: always
   image: mcr.microsoft.com/playwright:v1.36.1-jammy
   variables:
+    TURBO_APP_SRC: ./apps/blog
     PROJECTS: '["chromium", "firefox", "webkit"]'
     SHARD_TOTAL: 5
   script:
+    - cd $TURBO_APP_SRC
     - npm install playwright-merge-html-reports --dev
     - npx playwright test tests/merge-reports --config playwright.merge.config.ts
   artifacts:
     paths:
-      - merged-html-report/
-      - playwright-report/
-      - test-results/
-      - junit/
+      - ${TURBO_APP_SRC}/merged-html-report/
+      - ${TURBO_APP_SRC}/junit/
 
 publish:
   image:
@@ -170,7 +175,7 @@ publish:
 staging:deploy:
   stage: deploy
   needs:
-    - docker-build
+    - docker-build-blog
   variables:
     PORT: 3000
     API_ENDPOINT: https://api.hive.blog

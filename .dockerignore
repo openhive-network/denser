@@ -2,7 +2,4 @@
 .gitignore
 .gitlab-ci.yml
 
-.next/
-node_modules/
-public/__ENV.js
 .env.local
