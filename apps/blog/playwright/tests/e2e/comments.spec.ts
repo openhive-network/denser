@@ -770,12 +770,16 @@ test.describe('Load more... comments in the post', () => {
 
     // Move to the post "leofinance/@leo-curation/organic-curation-report-week-25"
     await postPage.gotoPostPage('leofinance', 'leo-curation', 'organic-curation-report-week-25');
+    await expect(await postPage.articleTitle).toBeVisible()
     await expect(await postPage.articleTitle).toHaveText('Organic Curation report - Week 25, 2023');
+    await expect(postPage.commentListItems.first()).toBeVisible()
     await expect((await postPage.commentListItems.all()).length).toBe(12);
     // Click "Load more... link" and validate that you moved to the comment view page with the others post
     await postPage.getLoadMoreCommentsLink.click();
+    await expect(await commentViewPage.getReArticleTitle).toBeVisible()
     await expect(await commentViewPage.getReArticleTitle).toHaveText(rePostTitle);
-    await expect((await postPage.commentListItems.all()).length).toBe(3);
+    await expect(postPage.commentListItems.first()).toBeVisible()
+    expect((await postPage.commentListItems.all()).length).toBe(3);
   });
 
   test('Validate sorting the comments in the post "leofinance/@leo-curation/organic-curation-report-week-25"', async ({
