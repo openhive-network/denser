@@ -1,10 +1,10 @@
-import { dateToFormatted, dateToRelative } from '@/blog/lib/parse-date';
+import { dateToFormatted, dateToRelative } from '@hive/ui/lib/parse-date';
 import { Button } from '@hive/ui/components/button';
 import UserAvatar from '@/blog/components/user-avatar';
 import Link from 'next/link';
 import { useAccountQuery } from './hooks/use-accout';
 import { useFollowsQuery } from './hooks/use-follows';
-import { delegatedHive, numberWithCommas, vestingHive } from '@/blog/lib/utils';
+import { delegatedHive, numberWithCommas, vestingHive } from '@hive/ui/lib/utils';
 import Big from 'big.js';
 import { useDynamicGlobalData } from './hooks/use-dynamic-global-data';
 
@@ -25,13 +25,21 @@ export function HoverCardData({ author }: { author: string }) {
         <>
           <div className="flex">
             <Link href={`/@${author}`} data-testid="hover-card-user-avatar">
-              <UserAvatar username={author} size="large" className="h-[75px] w-[75px]"/>
+              <UserAvatar username={author} size="large" className="h-[75px] w-[75px]" />
             </Link>
             <div>
-              <Link href={`/@${author}`} className="block font-bold hover:cursor-pointer"  data-testid="hover-card-user-name">
+              <Link
+                href={`/@${author}`}
+                className="block font-bold hover:cursor-pointer"
+                data-testid="hover-card-user-name"
+              >
                 {JSON.parse(account.data.posting_json_metadata)?.profile?.name}
               </Link>
-              <Link href={`/@${author}`} className="flex text-sm text-gray-500 hover:cursor-pointer" data-testid="hover-card-user-nickname">
+              <Link
+                href={`/@${author}`}
+                className="flex text-sm text-gray-500 hover:cursor-pointer"
+                data-testid="hover-card-user-nickname"
+              >
                 <span className="block">{`@${author}`}</span>
               </Link>
               <div className="grid grid-cols-2 gap-2 py-2">

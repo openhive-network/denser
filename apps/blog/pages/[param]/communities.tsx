@@ -5,7 +5,7 @@ import { Badge, getSubscriptions } from '@/blog/lib/bridge';
 import ProfileLayout from '@/blog/components/common/profile-layout';
 import SocialActivities from '@/blog/components/social-activities';
 import SubscriptionList from '@/blog/components/subscription-list';
-import Loading from '@/blog/components/loading';
+import Loading from '@hive/ui/components/loading';
 import { useSiteParams } from '@/blog/components/hooks/use-site-params';
 import { GetServerSideProps } from 'next';
 

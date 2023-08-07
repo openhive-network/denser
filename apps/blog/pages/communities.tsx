@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getCommunities } from '@/blog/lib/bridge';
 import CommunitiesSelectFilter from '@/blog/components/communities-select-filter';
 import CommunitiesList from '@/blog/components/communities-list';
-import Loading from '@/blog/components/loading';
+import Loading from '@hive/ui/components/loading';
 import Link from 'next/link';
 import ExploreHive from '@/blog/components/explore-hive';
 

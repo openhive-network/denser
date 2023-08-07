@@ -2,8 +2,8 @@ import { ReactNode } from 'react';
 import Head from 'next/head';
 import { Toaster } from '@hive/ui/components/toaster';
 import { useTheme } from 'next-themes';
-import SiteHeader from '@/blog/components/site-header';
-import { TailwindIndicator } from '@/blog/components/tailwind-indicator';
+import { TailwindIndicator } from '../tailwind-indicator';
+import SiteHeader from '../site-header';
 
 interface LayoutProps {
   children: ReactNode;

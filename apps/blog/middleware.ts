@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { bridgeServer, Entry, getPost } from '@/blog/lib/bridge';
 
 // This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {

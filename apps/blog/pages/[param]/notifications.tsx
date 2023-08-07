@@ -4,8 +4,7 @@ import { getAccountNotifications } from '@/blog/lib/bridge';
 import LayoutProfile from '@/blog/components/common/profile-layout';
 import NotificationActivities from '@/blog/components/notification-activities';
 import { useSiteParams } from '@/blog/components/hooks/use-site-params';
-import Loading from '@/blog/components/loading';
-import Layout from '@/blog/components/common/layout';
+import Loading from '@hive/ui/components/loading';
 
 export default function UserNotifications() {
   const { username } = useSiteParams();

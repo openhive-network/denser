@@ -1,8 +1,8 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@hive/ui/components/dialog';
-import { Icons } from './icons';
 import { ReactNode } from 'react';
 import Link from 'next/link';
 import ClipboardCopy from './copy-from-imput';
+import { Icons } from '@hive/ui/components/icons';
 
 export function SharePost({ children, path }: { children: ReactNode; path: string }) {
   return (

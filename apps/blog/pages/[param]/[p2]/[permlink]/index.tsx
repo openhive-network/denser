@@ -1,11 +1,12 @@
-import parseDate, { dateToRelative } from '@/blog/lib/parse-date';
-import { Clock, Link2, Twitter } from 'lucide-react';
+import parseDate, { dateToRelative } from '@hive/ui/lib/parse-date';
+import { Clock, Link2 } from 'lucide-react';
 import UserInfo from '@/blog/components/user-info';
-import { getAccount, getActiveVotes, getFeedHistory, getFollowCount } from '@/blog/lib/hive';
+import { getActiveVotes } from '@/blog/lib/hive';
+import { getFeedHistory } from '@hive/ui/lib/hive';
 import { useQuery } from '@tanstack/react-query';
 import { DefaultRenderer } from '@hiveio/content-renderer';
 import { Entry, getCommunity, getDiscussion, getPost } from '@/blog/lib/bridge';
-import Loading from '@/blog/components/loading';
+import Loading from '@hive/ui/components/loading';
 import dynamic from 'next/dynamic';
 import ImageGallery from '@/blog/components/image-gallery';
 import Link from 'next/link';
@@ -18,13 +19,13 @@ import sorter, { SortOrder } from '@/blog/lib/sorter';
 import { useRouter } from 'next/router';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
 import DialogLogin from '@/blog/components/dialog-login';
-import { Icons } from '@/blog/components/icons';
+import { Icons } from '@hive/ui/components/icons';
 import { AlertDialogDemo } from '@/blog/components/alert-window';
 import { getDoubleSize, proxifyImageUrl } from '@/blog/lib/old-profixy';
 import { ReplyTextbox } from '@/blog/components/reply-textbox';
 import { SharePost } from '@/blog/components/share-post-dialog';
 import LinkedInShare from '@/blog/components/share-post-linkedin';
-import { convertStringToBig } from '@/blog/lib/helpers';
+import { convertStringToBig } from '@hive/ui/lib/helpers';
 import FacebookShare from '@/blog/components/share-post-facebook';
 import RedditShare from '@/blog/components/share-post-reddit';
 import TwitterShare from '@/blog/components/share-post-twitter';
@@ -168,11 +169,19 @@ function PostPage({
             <h1 data-testid="article-title" className="text-2xl">
               {post_s.title}
             </h1>
-            <Link className="text-sm text-slate-500 hover:text-red-500" href={`${postUrl()}`} data-testid="view-the-full-context">
+            <Link
+              className="text-sm text-slate-500 hover:text-red-500"
+              href={`${postUrl()}`}
+              data-testid="view-the-full-context"
+            >
               • View the full context
             </Link>
             {discussionState && !discussionState.some((e) => e.depth === 1) ? (
-              <Link className="text-sm text-slate-500 hover:text-red-500" href={`../../${parentUrl()}`} data-testid="view-the-direct-parent">
+              <Link
+                className="text-sm text-slate-500 hover:text-red-500"
+                href={`../../${parentUrl()}`}
+                data-testid="view-the-direct-parent"
+              >
                 • View the direct parent
               </Link>
             ) : null}
@@ -229,11 +238,19 @@ function PostPage({
               in
               <span className="px-1 text-red-600">
                 {post_s.community_title ? (
-                  <Link href={`/trending/${community}`} className="hover:cursor-pointer" data-testid="footer-comment-community-link">
+                  <Link
+                    href={`/trending/${community}`}
+                    className="hover:cursor-pointer"
+                    data-testid="footer-comment-community-link"
+                  >
                     {post_s.community_title}
                   </Link>
                 ) : (
-                  <Link href={`/trending/${post_s.category}`} className="hover:cursor-pointer" data-testid="footer-comment-category-link">
+                  <Link
+                    href={`/trending/${post_s.category}`}
+                    className="hover:cursor-pointer"
+                    data-testid="footer-comment-category-link"
+                  >
                     #{post_s.category}
                   </Link>
                 )}
@@ -262,7 +279,11 @@ function PostPage({
                 </Tooltip>
               </TooltipProvider>
               <span className="mx-1">|</span>
-              <button onClick={() => setReply(!reply)} className="flex items-center text-red-600" data-testid="comment-reply">
+              <button
+                onClick={() => setReply(!reply)}
+                className="flex items-center text-red-600"
+                data-testid="comment-reply"
+              >
                 Reply
               </button>
               <span className="mx-1">|</span>

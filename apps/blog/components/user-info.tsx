@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import parseDate, { dateToRelative } from '@/blog/lib/parse-date';
+import parseDate, { dateToRelative } from '@hive/ui/lib/parse-date';
 import { Badge } from '@hive/ui/components/badge';
 import { UserHoverCard, UserHoverCardProps } from './user-hover-card';
 

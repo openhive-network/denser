@@ -1,6 +1,6 @@
 import { FC } from 'react';
-import { Icons } from '@/blog/components/icons';
 import Link from 'next/link';
+import { Icons } from '@hive/ui/components/icons';
 
 const CustomError: FC = () => {
   return (

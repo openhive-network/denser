@@ -1,17 +1,17 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { Entry, getAccountPosts, getPostsRanked } from '@/blog/lib/bridge';
 import ProfileLayout from '@/blog/components/common/profile-layout';
-import Loading from '@/blog/components/loading';
+import Loading from '@hive/ui/components/loading';
 import { useSiteParams } from '@/blog/components/hooks/use-site-params';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@hive/ui/components/tabs';
 import PostList from '@/blog/components/post-list';
 import { useRouter } from 'next/router';
 import RepliesList from '@/blog/components/replies-list';
-import { getFeedHistory } from '@/blog/lib/hive';
+import { getFeedHistory } from '@hive/ui/lib/hive';
 import { PostSkeleton } from '@/blog/pages/[...param]';
 import { useInView } from 'react-intersection-observer';
 import { useEffect } from 'react';
-import { convertStringToBig } from '@/blog/lib/helpers';
+import { convertStringToBig } from '@hive/ui/lib/helpers';
 
 const UserPosts = () => {
   const router = useRouter();

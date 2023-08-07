@@ -6,7 +6,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@radix-ui/react-label';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormMessage } from '@hive/ui/components/form';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormMessage
+} from '@hive/ui/components/form';
 import { useForm } from 'react-hook-form';
 
 const accountFormSchema = z.object({

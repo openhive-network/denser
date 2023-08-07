@@ -1,7 +1,6 @@
-import "@hive/tailwindcss-config/globals.css";
+import '@hive/tailwindcss-config/globals.css';
 import type { AppProps } from 'next/app';
 import { lazy, Suspense } from 'react';
-import Loading from '@/blog/components/loading';
 
 const Providers = lazy(() => import('@/blog/components/common/providers'));
 

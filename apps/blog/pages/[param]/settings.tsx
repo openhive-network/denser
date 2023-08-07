@@ -1,5 +1,5 @@
 import Router from 'next/router';
-import { Icons } from '@/blog/components/icons';
+import { Icons } from '@hive/ui/components/icons';
 import ProfileLayout from '@/blog/components/common/profile-layout';
 import { Button } from '@hive/ui/components/button';
 import { Input } from '@hive/ui/components/input';
@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@hive/ui/components/select';
-import { siteConfig } from '@/blog/config/site';
+import { siteConfig } from '@hive/ui/config/site';
 import { useLocalStorage } from '@/blog/components/hooks/use-local-storage';
 
 export default function UserSettings() {

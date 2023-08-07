@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { Button } from '@hive/ui/components/button';
 import { useQuery } from '@tanstack/react-query';
 import { getCommunities } from '@/blog/lib/bridge';
 import { cn } from '@/blog/lib/utils';

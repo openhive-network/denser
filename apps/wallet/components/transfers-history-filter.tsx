@@ -1,5 +1,5 @@
-import { Checkbox } from '@hive/ui/components/checkbox';
-import { Input } from '@hive/ui/components/input';
+import { Checkbox } from "@hive/ui/components/checkbox";
+import { Input } from "@hive/ui/components/input";
 
 export type TransferFilters = {
   search: string;
@@ -12,7 +12,10 @@ interface TransfersHistoryFilterProps {
   onFiltersChange: (value: Partial<TransferFilters>) => void;
   value: TransferFilters;
 }
-function TransfersHistoryFilter({ onFiltersChange, value }: TransfersHistoryFilterProps) {
+function TransfersHistoryFilter({
+  onFiltersChange,
+  value,
+}: TransfersHistoryFilterProps) {
   return (
     <div className="flex flex-col  gap-2 border-b-2 border-zinc-500 p-2 text-xs">
       <h1 className="font-bold">FILTERS</h1>
@@ -23,7 +26,9 @@ function TransfersHistoryFilter({ onFiltersChange, value }: TransfersHistoryFilt
             <Checkbox
               className="border-zinc-700"
               checked={value.rewards}
-              onClick={() => onFiltersChange({ rewards: !value.rewards, search: '' })}
+              onClick={() =>
+                onFiltersChange({ rewards: !value.rewards, search: "" })
+              }
             />
             <span>REWARDS </span>
           </label>
@@ -59,7 +64,9 @@ function TransfersHistoryFilter({ onFiltersChange, value }: TransfersHistoryFilt
               className="border-zinc-500"
               placeholder="username"
               value={value.search}
-              onChange={(e) => onFiltersChange({ search: e.target.value, rewards: false })}
+              onChange={(e) =>
+                onFiltersChange({ search: e.target.value, rewards: false })
+              }
             />
           </div>
         </div>

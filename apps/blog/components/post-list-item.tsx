@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { cn, extractUrlsFromJsonString, extractYouTubeVideoIds, getPostSummary } from '@/blog/lib/utils';
-import { Icons } from '@/blog/components/icons';
+import { Icons } from '@hive/ui/components/icons';
 import {
   Card,
   CardContent,
@@ -11,7 +11,7 @@ import {
 } from '@hive/ui/components/card';
 import { Separator } from '@hive/ui/components/separator';
 import { Badge } from '@hive/ui/components/badge';
-import { dateToRelative } from '@/blog/lib/parse-date';
+import { dateToRelative } from '@hive/ui/lib/parse-date';
 import accountReputation from '@/blog/lib/account-reputation';
 import { AlertDialogDemo } from './alert-window';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';

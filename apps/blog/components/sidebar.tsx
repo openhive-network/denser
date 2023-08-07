@@ -1,5 +1,5 @@
 import { Button } from '@hive/ui/components/button';
-import { Icons } from '@/blog/components/icons';
+import { Icons } from '@hive/ui/components/icons';
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@hive/ui/components/sheet';
 import Link from 'next/link';
 import { Separator } from '@hive/ui/components/separator';

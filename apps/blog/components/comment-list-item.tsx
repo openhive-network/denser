@@ -1,6 +1,6 @@
-import { Icons } from '@/blog/components/icons';
-import parseDate, { dateToRelative } from '@/blog/lib/parse-date';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@hive/ui/components/card';
+import { Icons } from '@hive/ui/components/icons';
+import parseDate, { dateToRelative } from '@hive/ui/lib/parse-date';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@hive/ui/components/card';
 import { cn } from '@/blog/lib/utils';
 import Link from 'next/link';
 import { Separator } from '@hive/ui/components/separator';
@@ -14,7 +14,6 @@ import { useRouter } from 'next/router';
 import DetailsCardHover from './details-card-hover';
 import Big from 'big.js';
 import { Entry } from '@/blog/lib/bridge';
-import { useActiveVotesQuery } from './hooks/use-active-votes';
 import clsx from 'clsx';
 import { Badge } from '@hive/ui/components/badge';
 import { DefaultRenderer } from '@hiveio/content-renderer';
@@ -93,7 +92,11 @@ const CommentListItem = ({
                             />
                             <UserHoverCard author={username} author_reputation={comment.author_reputation} />
                             {comment.author_title ? (
-                              <Badge variant="outline" className="mr-1 border-red-600 text-slate-500" data-testid="comment-user-affiliation-tag">
+                              <Badge
+                                variant="outline"
+                                className="mr-1 border-red-600 text-slate-500"
+                                data-testid="comment-user-affiliation-tag"
+                              >
                                 {comment.author_title}
                               </Badge>
                             ) : null}
@@ -167,7 +170,8 @@ const CommentListItem = ({
                               decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
                             >
                               <div className="flex items-center hover:cursor-pointer hover:text-red-600 ">
-                                {'$'}{comment.payout.toFixed(2)}
+                                {'$'}
+                                {comment.payout.toFixed(2)}
                               </div>
                             </DetailsCardHover>
                             {comment.children ? (
@@ -240,7 +244,8 @@ const CommentListItem = ({
                               'line-through opacity-50': Number(comment.max_accepted_payout.slice(0, 1)) === 0
                             })}
                           >
-                            {'$'}{comment.payout.toFixed(2)}
+                            {'$'}
+                            {comment.payout.toFixed(2)}
                           </div>
                         </DetailsCardHover>
                         <Separator orientation="vertical" className="h-5" />

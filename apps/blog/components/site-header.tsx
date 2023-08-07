@@ -1,12 +1,11 @@
 import { Button } from '@hive/ui/components/button';
-import { Icons } from '@/blog/components/icons';
-import { MainNav } from '@/blog/components/main-nav';
-import { MobileNav } from '@/blog/components/mobile-nav';
-import { ModeToggle } from '@/blog/components/mode-toggle';
-import ProfileDropdownMenu from '@/blog/components/profile-dropdown-menu';
+import { Icons } from '@hive/ui/components/icons';
 import { Input } from '@hive/ui/components/input';
 import { FC } from 'react';
-import Sidebar from '@/blog/components/sidebar';
+import Sidebar from './sidebar';
+import { ModeToggle } from './mode-toggle';
+import { MobileNav } from './mobile-nav';
+import { MainNav } from './main-nav';
 
 const SiteHeader: FC = () => {
   return (

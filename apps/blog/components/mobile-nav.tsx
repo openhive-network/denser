@@ -4,11 +4,11 @@ import * as React from 'react';
 import Link, { LinkProps } from 'next/link';
 import { useRouter } from 'next/navigation';
 import { SidebarOpen } from 'lucide-react';
-import { siteConfig } from '@/blog/config/site';
-import { cn } from '@/blog/lib/utils';
+import { siteConfig } from '@hive/ui/config/site';
+import { cn } from '@hive/ui/lib/utils';
 import { Button } from '@hive/ui/components/button';
 import { Sheet, SheetContent, SheetTrigger } from '@hive/ui/components/sheet';
-import { Icons } from '@/blog/components/icons';
+import { Icons } from '@hive/ui/components/icons';
 
 export function MobileNav() {
   const [open, setOpen] = React.useState(false);

@@ -3,11 +3,10 @@ import { RCAccount } from '@hiveio/dhive/lib/chain/rc';
 import moment, { Moment } from 'moment';
 
 import { isCommunity, parseAsset, vestsToRshares } from '@/blog/lib/utils';
-import { bridgeServer, dataLimit } from './bridge';
-import { AccountFollowStats, AccountHistory, AccountProfile, FullAccount } from '@/blog/store/app-types';
-import { makeBitMaskFilter, operationOrders } from '@hiveio/dhive/lib/utils';
-import Big from 'big.js';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { dataLimit } from './bridge';
+import { AccountFollowStats, FullAccount } from '@hive/ui/store/app-types';
+import { bridgeServer } from '@hive/ui/lib/bridge';
+import { getAccount, getDynamicGlobalProperties, getFeedHistory } from '@hive/ui/lib/hive';
 
 export interface TrendingTag {
   comments: number;
@@ -42,40 +41,9 @@ export interface Vote {
   reward?: number;
 }
 
-export interface DynamicGlobalProperties {
-  hbd_print_rate: number;
-  total_vesting_fund_hive: string;
-  total_vesting_shares: string;
-  hbd_interest_rate: number;
-  head_block_number: number;
-  vesting_reward_percent: number;
-  virtual_supply: string;
-}
-
-export interface FeedHistory {
-  current_median_history: {
-    base: string;
-    quote: string;
-  };
-  price_history: [
-    {
-      base: string;
-      quote: string;
-    }
-  ];
-}
-
 export interface RewardFund {
   recent_claims: string;
   reward_balance: string;
-}
-
-export interface DelegatedVestingShare {
-  id: number;
-  delegatee: string;
-  delegator: string;
-  min_delegation_time: string;
-  vesting_shares: string;
 }
 
 export interface MarketStatistics {
@@ -253,81 +221,6 @@ export const getAllTrendingTags = (
 export const lookupAccounts = (q: string, limit = 50): Promise<string[]> =>
   bridgeServer.database.call('lookup_accounts', [q, limit]);
 
-export const getAccounts = (usernames: string[]): Promise<FullAccount[]> => {
-  return bridgeServer.database.getAccounts(usernames).then((resp: any[]): FullAccount[] =>
-    resp.map((x) => {
-      const account: FullAccount = {
-        name: x.name,
-        owner: x.owner,
-        active: x.active,
-        posting: x.posting,
-        memo_key: x.memo_key,
-        post_count: x.post_count,
-        created: x.created,
-        reputation: x.reputation,
-        posting_json_metadata: x.posting_json_metadata,
-        last_vote_time: x.last_vote_time,
-        last_post: x.last_post,
-        json_metadata: x.json_metadata,
-        reward_hive_balance: x.reward_hive_balance,
-        reward_hbd_balance: x.reward_hbd_balance,
-        reward_vesting_hive: x.reward_vesting_hive,
-        reward_vesting_balance: x.reward_vesting_balance,
-        balance: x.balance,
-        hbd_balance: x.hbd_balance,
-        savings_balance: x.savings_balance,
-        savings_hbd_balance: x.savings_hbd_balance,
-        savings_hbd_last_interest_payment: x.savings_hbd_last_interest_payment,
-        savings_hbd_seconds_last_update: x.savings_hbd_seconds_last_update,
-        savings_hbd_seconds: x.savings_hbd_seconds,
-        next_vesting_withdrawal: x.next_vesting_withdrawal,
-        vesting_shares: x.vesting_shares,
-        delegated_vesting_shares: x.delegated_vesting_shares,
-        received_vesting_shares: x.received_vesting_shares,
-        vesting_withdraw_rate: x.vesting_withdraw_rate,
-        to_withdraw: x.to_withdraw,
-        withdrawn: x.withdrawn,
-        witness_votes: x.witness_votes,
-        proxy: x.proxy,
-        proxied_vsf_votes: x.proxied_vsf_votes,
-        voting_manabar: x.voting_manabar,
-        voting_power: x.voting_power,
-        downvote_manabar: x.downvote_manabar,
-        vesting_balance: x.vesting_balance,
-        __loaded: true
-      };
-
-      let profile: AccountProfile | undefined;
-
-      try {
-        profile = JSON.parse(x.posting_json_metadata!).profile;
-      } catch (e) {}
-
-      if (!profile) {
-        try {
-          profile = JSON.parse(x.json_metadata!).profile;
-        } catch (e) {}
-      }
-
-      if (!profile) {
-        profile = {
-          about: '',
-          cover_image: '',
-          location: '',
-          name: '',
-          profile_image: '',
-          website: ''
-        };
-      }
-
-      return { ...account, profile };
-    })
-  );
-};
-
-export const getAccount = (username: string): Promise<FullAccount> =>
-  getAccounts([username]).then((resp) => resp[0]);
-
 export const getAccountFull = (username: string): Promise<FullAccount> =>
   getAccount(username).then(async (account) => {
     let follow_stats: AccountFollowStats | undefined;
@@ -391,51 +284,6 @@ export const getFollowing = async (params?: Partial<GetFollowParams>): Promise<F
 export const findRcAccounts = (username: string): Promise<RCAccount[]> =>
   new RCAPI(bridgeServer).findRCAccounts([username]);
 
-export const getDynamicGlobalProperties = (): Promise<DynamicGlobalProperties> =>
-  bridgeServer.database.getDynamicGlobalProperties().then((r: any) => {
-    return {
-      total_vesting_fund_hive: r.total_vesting_fund_hive || r.total_vesting_fund_steem,
-      total_vesting_shares: r.total_vesting_shares,
-      hbd_print_rate: r.hbd_print_rate || r.sbd_print_rate,
-      hbd_interest_rate: r.hbd_interest_rate,
-      head_block_number: r.head_block_number,
-      vesting_reward_percent: r.vesting_reward_percent,
-      virtual_supply: r.virtual_supply
-    };
-  });
-const op = operationOrders;
-const wallet_operations_bitmask = makeBitMaskFilter([
-  op.transfer,
-  op.transfer_to_vesting,
-  op.withdraw_vesting,
-  op.interest,
-  op.liquidity_reward,
-  op.transfer_to_savings,
-  op.transfer_from_savings,
-  op.escrow_transfer,
-  op.cancel_transfer_from_savings,
-  op.escrow_approve,
-  op.escrow_dispute,
-  op.escrow_release,
-  op.fill_convert_request,
-  op.fill_order,
-  op.claim_reward_balance
-]);
-
-export const getAccountHistory = (
-  username: string,
-  start: number = -1,
-  limit: number = 20
-): Promise<AccountHistory[]> =>
-  bridgeServer.call('condenser_api', 'get_account_history', [
-    username,
-    start,
-    limit,
-    ...wallet_operations_bitmask
-  ]);
-
-export const getFeedHistory = (): Promise<FeedHistory> => bridgeServer.database.call('get_feed_history');
-
 export const getRewardFund = (): Promise<RewardFund> =>
   bridgeServer.database.call('get_reward_fund', ['post']);
 
@@ -476,110 +324,21 @@ export const getDynamicProps = async (): Promise<DynamicProps> => {
   };
 };
 
-export const getVestingDelegations = (
-  username: string,
-  from: string = '',
-  limit: number = 50
-): Promise<DelegatedVestingShare[]> =>
-  bridgeServer.database.call('get_vesting_delegations', [username, from, limit]);
+// export interface ProposalVote {
+//   id: number;
+//   proposal: Proposal;
+//   voter: string;
+// }
 
-export interface Witness {
-  created: string;
-  id: number;
-  total_missed: number;
-  url: string;
-  props: {
-    account_creation_fee: string;
-    account_subsidy_budget: number;
-    maximum_block_size: number;
-  };
-  hbd_exchange_rate: {
-    base: string;
-  };
-  available_witness_account_subsidies: number;
-  running_version: string;
-  owner: string;
-  signing_key: string;
-  last_hbd_exchange_update: string;
-  votes: number;
-  last_confirmed_block_num: number;
-}
-
-export const getWitnessesByVote = (from: string, limit: number): Promise<Witness[]> =>
-  bridgeServer.call('condenser_api', 'get_witnesses_by_vote', [from, limit]);
-
-export interface Proposal {
-  creator: string;
-  daily_pay: {
-    amount: string;
-    nai: string;
-    precision: number;
-  };
-  end_date: string;
-  id: number;
-  permlink: string;
-  proposal_id: number;
-  receiver: string;
-  start_date: string;
-  status: string;
-  subject: string;
-  total_votes: string;
-}
-
-export interface ListItemProps {
-  proposalData: Omit<Proposal, 'daily_pay' | 'total_votes'> & {
-    total_votes: Big;
-    daily_pay: { amount: Big };
-  };
-  totalShares: Big;
-  totalVestingFund: Big;
-}
-
-export interface GetProposalsParams {
-  start: Array<number | string>;
-  limit: number;
-  order: 'by_creator' | 'by_total_votes' | 'by_start_date' | 'by_end_date';
-  order_direction: 'descending' | 'ascending';
-  status: 'all' | 'inactive' | 'active' | 'votable' | 'expired';
-  last_id?: number;
-}
-
-export const DEFAULT_PARAMS_FOR_PROPOSALS: GetProposalsParams = {
-  start: [],
-  limit: 30,
-  order: 'by_total_votes',
-  order_direction: 'descending',
-  status: 'votable'
-};
-
-export const getProposals = async (params?: Partial<GetProposalsParams>): Promise<Proposal[]> => {
-  try {
-    const response = await bridgeServer.call('database_api', 'list_proposals', {
-      ...DEFAULT_PARAMS_FOR_PROPOSALS,
-      ...params
-    });
-    return response.proposals;
-  } catch (error) {
-    console.error('Error:', error);
-    throw error;
-  }
-};
-
-export interface ProposalVote {
-  id: number;
-  proposal: Proposal;
-  voter: string;
-}
-
-export const getProposalVotes = (
-  proposalId: number,
-  voter: string = '',
-  limit: number = 300
-): Promise<ProposalVote[]> =>
-  bridgeServer
-    .call('condenser_api', 'list_proposal_votes', [[proposalId, voter], limit, 'by_proposal_voter'])
-    .then((r) => r.filter((x: ProposalVote) => x.proposal.proposal_id === proposalId))
-    .then((r) => r.map((x: ProposalVote) => ({ id: x.id, voter: x.voter })));
+// export const getProposalVotes = (
+//   proposalId: number,
+//   voter: string = '',
+//   limit: number = 300
+// ): Promise<ProposalVote[]> =>
+//   bridgeServer
+//     .call('condenser_api', 'list_proposal_votes', [[proposalId, voter], limit, 'by_proposal_voter'])
+//     .then((r) => r.filter((x: ProposalVote) => x.proposal.proposal_id === proposalId))
+//     .then((r) => r.map((x: ProposalVote) => ({ id: x.id, voter: x.voter })));
 
 export interface WithdrawRoute {
   auto_vest: boolean;

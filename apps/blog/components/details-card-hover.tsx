@@ -1,5 +1,5 @@
-import { dateToRelative } from '@/blog/lib/parse-date';
-import { convertStringToBig } from '@/blog/lib/helpers';
+import { dateToRelative } from '@hive/ui/lib/parse-date';
+import { convertStringToBig } from '@hive/ui/lib/helpers';
 import Big from 'big.js';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@hive/ui/components/hover-card';
 import { cn, fmt } from '@/blog/lib/utils';

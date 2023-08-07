@@ -1,4 +1,4 @@
-import { FullAccount } from '@/blog/store/app-types';
+import { FullAccount } from '@hive/ui/store/app-types';
 import { create } from 'zustand';
 import { mountStoreDevtool } from 'simple-zustand-devtools';
 

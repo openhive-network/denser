@@ -1,6 +1,13 @@
-import { Icons } from '@/blog/components/icons';
-import { dateToRelative } from '@/blog/lib/parse-date';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@hive/ui/components/card';
+import { Icons } from '@hive/ui/components/icons';
+import { dateToRelative } from '@hive/ui/lib/parse-date';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from '@hive/ui/components/card';
 import { cn, getPostSummary } from '@/blog/lib/utils';
 import Link from 'next/link';
 import { Separator } from '@hive/ui/components/separator';

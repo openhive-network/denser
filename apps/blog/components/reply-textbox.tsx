@@ -16,7 +16,10 @@ export function ReplyTextbox({ onSetReply }: { onSetReply: (e: boolean) => void 
   };
 
   return (
-    <div className="mx-8 mb-4 flex flex-col gap-6 rounded-md border bg-card p-4 text-card-foreground shadow-sm dark:bg-slate-900" data-testid="reply-editor">
+    <div
+      className="mx-8 mb-4 flex flex-col gap-6 rounded-md border bg-card p-4 text-card-foreground shadow-sm dark:bg-slate-900"
+      data-testid="reply-editor"
+    >
       <div className="flex flex-col gap-4">
         <Link href={`#`}>
           <h1 className="text-sm text-red-500">Disable side-by-side editor</h1>

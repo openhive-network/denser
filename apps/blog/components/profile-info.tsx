@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { getAccountFull, getAccount, getDynamicGlobalProperties } from '@/blog/lib/hive';
-import { accountReputation, numberWithCommas } from '@/blog/lib/utils';
-import { Icons } from '@/blog/components/icons';
+import { getAccountFull } from '@/blog/lib/hive';
+import { getAccount, getDynamicGlobalProperties } from '@hive/ui/lib/hive';
+import { accountReputation } from '@/blog/lib/utils';
+import { numberWithCommas } from '@hive/ui/lib/utils';
+import { Icons } from '@hive/ui/components/icons';
 import { Button } from '@hive/ui/components/button';
 import { useSiteParams } from '@/blog/components/hooks/use-site-params';
-import { dateToRelative, dateToShow } from '@/blog/lib/parse-date';
-import Loading from '@/blog/components/loading';
+import { dateToRelative, dateToShow } from '@hive/ui/lib/parse-date';
+import Loading from '@hive/ui/components/loading';
 
 const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
   const [profile, setProfile] = useState<any>(undefined);

@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { Icons } from '@/blog/components/icons';
+import { Icons } from '@hive/ui/components/icons';
 import { Progress } from '@hive/ui/components/progress';
-import { dateToRelative } from '@/blog/lib/parse-date';
+import { dateToRelative } from '@hive/ui/lib/parse-date';
 import { AccountNotification } from '@/blog/lib/bridge';
 
 const NotificationListItem = ({ date, msg, score, type, url }: AccountNotification) => {

@@ -1,6 +1,4 @@
-import { Client } from '@hiveio/dhive/lib/client';
-import { siteConfig } from '@/blog/config/site';
-import { useQuery } from '@tanstack/react-query';
+import { bridgeApiCall } from '@hive/ui/lib/bridge';
 
 export interface EntryBeneficiaryRoute {
   account: string;
@@ -123,22 +121,6 @@ export type Communities = Community[];
 export type Subscription = Array<string>;
 
 export const dataLimit = 20;
-
-const endpoint =
-  typeof window !== 'undefined'
-    ? window.localStorage.getItem('hive-blog-endpoint')
-      ? JSON.parse(String(window.localStorage.getItem('hive-blog-endpoint')))
-      : siteConfig.endpoint
-    : siteConfig.endpoint;
-
-export const bridgeServer = new Client([`${endpoint}`], {
-  timeout: 3000,
-  failoverThreshold: 3,
-  consoleOnFailover: true
-});
-
-const bridgeApiCall = <T>(endpoint: string, params: object): Promise<T> =>
-  bridgeServer.call('bridge', endpoint, params);
 
 const resolvePost = (post: Entry, observer: string): Promise<Entry> => {
   const { json_metadata: json } = post;
@@ -315,19 +297,6 @@ export const getRelationshipBetweenAccounts = (
   following: string
 ): Promise<AccountRelationship | null> =>
   bridgeApiCall<AccountRelationship | null>('get_relationship_between_accounts', [follower, following]);
-
-export interface BasicPostInfo {
-  author: string;
-  permlink: string;
-  category: string;
-  depth: number;
-}
-
-export const getPostHeader = (author: string, permlink: string): Promise<BasicPostInfo> =>
-  bridgeApiCall<BasicPostInfo>('get_post_header', {
-    author,
-    permlink
-  });
 
 export interface FollowList {
   name: '';

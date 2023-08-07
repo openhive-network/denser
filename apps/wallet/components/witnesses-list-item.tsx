@@ -1,21 +1,21 @@
-import Link from 'next/link';
-import { ExtendWitness } from '@/blog/pages/~witnesses';
-import clsx from 'clsx';
-import { DISABLED_SIGNING_KEY } from '@/blog/lib/constants';
-import { blockGap, getRoundedAbbreveration } from '@/blog/lib/utils';
-import { Icons } from './icons';
-import { FullAccount } from '@/blog/store/app-types';
-import moment from 'moment';
-import { dateToFullRelative } from '@/blog/lib/parse-date';
-import { useRouter } from 'next/router';
-import { useEffect, useRef } from 'react';
+import Link from "next/link";
+import { ExtendWitness } from "@/wallet/pages/~witnesses";
+import clsx from "clsx";
+import { DISABLED_SIGNING_KEY } from "@/wallet/lib/constants";
+import { blockGap, getRoundedAbbreveration } from "@hive/ui/lib/utils";
+import { Icons } from "@hive/ui/components/icons";
+import { FullAccount } from "@hive/ui/store/app-types";
+import moment from "moment";
+import { dateToFullRelative } from "@hive/ui/lib/parse-date";
+import { useRouter } from "next/router";
+import { useEffect, useRef } from "react";
 
 const getOwnersString = (owners?: string) => {
-  if (!owners) return '';
-  const ownersArray = owners.split(',');
+  if (!owners) return "";
+  const ownersArray = owners.split(",");
   const lastOwner = ownersArray.pop();
   if (ownersArray.length === 0) return lastOwner;
-  return ownersArray.join(', ') + ' & ' + lastOwner;
+  return ownersArray.join(", ") + " & " + lastOwner;
 };
 
 interface WitnessListItemProps {
@@ -26,7 +26,11 @@ interface WitnessListItemProps {
 
 const ONE_WEEK_IN_SEC = 604800;
 
-function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemProps) {
+function WitnessListItem({
+  data,
+  headBlock,
+  witnessAccount,
+}: WitnessListItemProps) {
   const disableUser = data.signing_key === DISABLED_SIGNING_KEY;
 
   const witnessDescription = witnessAccount?.profile?.witness_description;
@@ -36,29 +40,29 @@ function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemPro
     if (disableUser)
       return (
         <span>
-          {'Disabled '}
+          {"Disabled "}
           {blockGap(headBlock, data.last_confirmed_block_num)}
         </span>
       );
-    if (!data.url.includes('http')) return <>(No URL provided)</>;
+    if (!data.url.includes("http")) return <>(No URL provided)</>;
 
-    if (data.url.includes('hive.blog') || data.url.includes('localhost'))
+    if (data.url.includes("hive.blog") || data.url.includes("localhost"))
       return (
         <Link
           href={data.url}
-          className="flex items-center gap-2 font-semibold hover:text-red-400 dark:hover:text-blue-400"
+          className="flex items-center gap-2 font-semibold hover:text-red-400 dark:hover:text-red-400"
         >
           <span>Open witness annoucement</span>
-          <Icons.forward className="text-red-600 dark:text-blue-500" />
+          <Icons.forward className="text-red-600 dark:text-red-500" />
         </Link>
       );
     return (
       <Link
         href={data.url}
-        className="flex items-center gap-2 font-semibold hover:text-red-400 dark:hover:text-blue-400"
+        className="flex items-center gap-2 font-semibold hover:text-red-400 dark:hover:text-red-400"
       >
         <span>Open external site</span>
-        <Icons.forward className="text-red-600 dark:text-blue-500" />
+        <Icons.forward className="text-red-600 dark:text-red-500" />
       </Link>
     );
   }
@@ -68,38 +72,43 @@ function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemPro
   const ref = useRef<HTMLTableRowElement>(null);
 
   useEffect(() => {
-    let highlight = '';
+    let highlight = "";
     if (Array.isArray(router.query.highlight)) {
       highlight = router.query.highlight[0];
     } else {
-      highlight = router.query.highlight ?? '';
+      highlight = router.query.highlight ?? "";
     }
     if (highlight === data.owner && ref.current) {
-      ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      ref.current.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   }, [router.query.highlight]);
 
   return (
     <tr
       className={clsx({
-        'bg-red-300 even:bg-red-300 dark:bg-blue-800 dark:even:bg-blue-800':
+        "bg-red-300 even:bg-red-300 dark:bg-red-800 dark:even:bg-red-800":
           router.query.highlight === data.owner,
-        'even:bg-slate-200 dark:even:bg-slate-900': router.query.highlight !== data.owner
+        "even:bg-slate-200 dark:even:bg-slate-900":
+          router.query.highlight !== data.owner,
       })}
       ref={ref}
     >
       <td>
         <div className="flex flex-col-reverse items-center gap-1 sm:flex-row sm:p-2">
-          <span className="sm:text-sm">{data.rank < 10 ? `0${data.rank}` : data.rank}</span>
+          <span className="sm:text-sm">
+            {data.rank < 10 ? `0${data.rank}` : data.rank}
+          </span>
           <div className="group relative flex">
-            <span className="opocity-75 absolute inline-flex h-6 w-6 rounded-full bg-red-600 p-0 group-hover:animate-ping group-hover:[animation-iteration-count:_1] dark:bg-blue-400 sm:h-8 sm:w-8"></span>
+            <span className="opocity-75 absolute inline-flex h-6 w-6 rounded-full bg-red-600 p-0 group-hover:animate-ping group-hover:[animation-iteration-count:_1] dark:bg-red-400 sm:h-8 sm:w-8"></span>
             <Icons.arrowUpCircle
               viewBox="1.7 1.7 20.7 20.7"
               className={clsx(
-                'relative inline-flex h-6 w-6 rounded-full stroke-1 text-red-600 dark:text-blue-500 sm:h-8 sm:w-8',
+                "relative inline-flex h-6 w-6 rounded-full stroke-1 text-red-600 dark:text-red-500 sm:h-8 sm:w-8",
                 {
-                  'bg-slate-100 dark:bg-slate-900': router.query.highlight !== data.owner,
-                  'bg-red-300  dark:bg-blue-800': router.query.highlight === data.owner
+                  "bg-slate-100 dark:bg-slate-900":
+                    router.query.highlight !== data.owner,
+                  "bg-red-300  dark:bg-red-800":
+                    router.query.highlight === data.owner,
                 }
               )}
             />
@@ -111,8 +120,8 @@ function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemPro
           <div className="hidden p-2 sm:block">
             <Link href={`@${data.owner}`}>
               <img
-                className={clsx('mr-3 h-[80px] min-w-[80px] rounded-full', {
-                  'opacity-50': disableUser
+                className={clsx("mr-3 h-[80px] min-w-[80px] rounded-full", {
+                  "opacity-50": disableUser,
                 })}
                 height="40"
                 width="40"
@@ -127,13 +136,14 @@ function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemPro
                 {
                   <div
                     className={clsx(
-                      'font-bold sm:text-base',
+                      "font-bold sm:text-base",
                       {
-                        'text-gray-500 line-through opacity-50 dark:text-gray-300': disableUser
+                        "text-gray-500 line-through opacity-50 dark:text-gray-300":
+                          disableUser,
                       },
                       {
-                        'font-bold text-red-600 hover:text-black dark:text-blue-400 hover:dark:text-blue-200 md:text-lg':
-                          !disableUser
+                        "font-bold text-red-600 hover:text-black dark:text-red-400 hover:dark:text-red-200 md:text-lg":
+                          !disableUser,
                       }
                     )}
                   >
@@ -167,20 +177,29 @@ function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemPro
             )}
 
             {data.witnessLastBlockAgeInSecs > ONE_WEEK_IN_SEC && (
-              <span className="font-semibold">⚠️Has not produced any blocks for over a week.</span>
+              <span className="font-semibold">
+                ⚠️Has not produced any blocks for over a week.
+              </span>
             )}
             <div>
-              Last block{' '}
+              Last block{" "}
               <Link
                 href={`https://hiveblocks.com/b/${data.last_confirmed_block_num}`}
-                className="hover:text-red-600 dark:hover:text-blue-400"
+                className="hover:text-red-600 dark:hover:text-red-400"
                 data-testid="last-block-number"
               >
-                <span className="font-semibold ">#{data.last_confirmed_block_num}</span>
-              </Link>{' '}
-              {blockGap(headBlock, data.last_confirmed_block_num)} v{data.running_version}
+                <span className="font-semibold ">
+                  #{data.last_confirmed_block_num}
+                </span>
+              </Link>{" "}
+              {blockGap(headBlock, data.last_confirmed_block_num)} v
+              {data.running_version}
             </div>
-            {disableUser ? <></> : <div>Witness age: {moment().from(data.created, true)}</div>}
+            {disableUser ? (
+              <></>
+            ) : (
+              <div>Witness age: {moment().from(data.created, true)}</div>
+            )}
 
             <div data-testid="witness-external-site-link">{witnessLink()}</div>
           </div>
@@ -189,7 +208,7 @@ function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemPro
       <td className="p-1 sm:p-2 sm:text-sm">
         <div className="font-medium " data-testid="witness-votes-received">
           {getRoundedAbbreveration(data.vestsToHp)}
-          {' HP'}
+          {" HP"}
         </div>
         {data.requiredHpToRankUp && (
           <div className="font-light">
@@ -198,8 +217,12 @@ function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemPro
         )}
       </td>
       <td className=" sm:p-2 sm:text-sm">
-        <div className="font-medium" data-testid="witness-price-feed">${parseFloat(data.hbd_exchange_rate.base)}</div>
-        <div className="font-light">{dateToFullRelative(data.last_hbd_exchange_update)}</div>
+        <div className="font-medium" data-testid="witness-price-feed">
+          ${parseFloat(data.hbd_exchange_rate.base)}
+        </div>
+        <div className="font-light">
+          {dateToFullRelative(data.last_hbd_exchange_update)}
+        </div>
       </td>
     </tr>
   );

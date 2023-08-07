@@ -2,7 +2,7 @@ import ProfileLayout from '@/blog/components/common/profile-layout';
 import { useFollowersInfiniteQuery } from '@/blog/components/hooks/use-followers-infinitequery';
 import { useSiteParams } from '@/blog/components/hooks/use-site-params';
 import PrevNextButtons from '@/blog/components/prev-next-buttons';
-import { FullAccount } from '@/blog/store/app-types';
+import { FullAccount } from '@hive/ui/store/app-types';
 import { useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useState } from 'react';

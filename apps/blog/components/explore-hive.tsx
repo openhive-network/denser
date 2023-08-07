@@ -2,7 +2,7 @@ import { cn } from '@/blog/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
 import { FC } from 'react';
 import Link from 'next/link';
-import { Icons } from '@/blog/components/icons';
+import { Icons } from '@hive/ui/components/icons';
 
 const ExploreHive: FC = () => {
   return (

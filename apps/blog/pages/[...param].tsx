@@ -8,7 +8,7 @@ import {
   getPostsRanked,
   getSubscribers
 } from '@/blog/lib/bridge';
-import Loading from '@/blog/components/loading';
+import Loading from '@hive/ui/components/loading';
 import { FC, useCallback, useEffect } from 'react';
 import PostList from '@/blog/components/post-list';
 import { Skeleton } from '@hive/ui/components/skeleton';
@@ -20,9 +20,9 @@ import ProfileLayout from '@/blog/components/common/profile-layout';
 import CommunityDescription from '@/blog/components/community-description';
 import { useInView } from 'react-intersection-observer';
 import CustomError from '@/blog/components/custom-error';
-import { getFeedHistory } from '@/blog/lib/hive';
+import { getFeedHistory } from '@hive/ui/lib/hive';
 import CommunitySimpleDescription from '@/blog/components/community-simple-description';
-import { convertStringToBig } from '@/blog/lib/helpers';
+import { convertStringToBig } from '@hive/ui/lib/helpers';
 import { CommunitiesSelect } from '@/blog/components/communities-select';
 
 export const PostSkeleton = () => {
