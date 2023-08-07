@@ -1,1 +1,0 @@
-window.__ENV = {"REACT_APP_API_ENDPOINT":"https://api.hive.blog","REACT_APP_IMAGES_ENDPOINT":"https://images.hive.blog/"};
