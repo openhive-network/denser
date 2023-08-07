@@ -179,7 +179,7 @@ const PostListItem = ({
         </CardHeader>
         <div className="flex flex-col md:flex-row">
           <div>
-            {!reveal ? (
+            {!reveal && post.blacklists.length < 1 ? (
               <>
                 {post.json_metadata.image && post.json_metadata.image[0] ? (
                   <Link href={`${post.url}`} data-testid="post-image">
