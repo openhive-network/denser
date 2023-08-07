@@ -1,7 +1,14 @@
 import Link from 'next/link';
 import { cn, extractUrlsFromJsonString, extractYouTubeVideoIds, getPostSummary } from '@/blog/lib/utils';
 import { Icons } from '@/blog/components/icons';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@hive/ui/components/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from '@hive/ui/components/card';
 import { Separator } from '@hive/ui/components/separator';
 import { Badge } from '@hive/ui/components/badge';
 import { dateToRelative } from '@/blog/lib/parse-date';
@@ -43,6 +50,26 @@ const PostListItem = ({
           'my-4 px-2 hover:bg-accent  hover:text-accent-foreground dark:bg-background/95 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground'
         )}
       >
+        {post.original_entry ? (
+          <div className="mt-2 rounded-sm bg-slate-100 px-2 py-1 text-sm dark:bg-slate-900">
+            <p className="flex items-center gap-1 text-xs md:text-sm">
+              <Icons.crossPost className="h-4 w-4 text-slate-500 dark:text-slate-400" />{' '}
+              <Link
+                className="text-slate-500 hover:cursor-pointer hover:text-red-600 dark:text-slate-400"
+                href={`/@${post.author}`}
+              >
+                {post.author}
+              </Link>{' '}
+              cross-posted{' '}
+              <Link
+                href={`/${post.original_entry.community}/@${post.original_entry.author}/${post.original_entry.permlink}`}
+                className="text-red-600 hover:cursor-pointer"
+              >
+                @{post.original_entry.author}/{post.original_entry.permlink}
+              </Link>
+            </p>
+          </div>
+        ) : null}
         {post.reblogged_by ? (
           <div className="flex items-center gap-2 py-1 text-sm text-gray-400">
             <Icons.forward className="h-4 w-4" />
