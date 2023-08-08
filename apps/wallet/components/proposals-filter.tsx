@@ -53,16 +53,13 @@ export function ProposalsFilter({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectSeparator />
                 <SelectGroup>
-                  <SelectLabel>Status</SelectLabel>
                   <SelectItem value="all">All</SelectItem>
                   <SelectItem value="active">Active</SelectItem>
                   <SelectItem value="inactive">Inactive</SelectItem>
                   <SelectItem value="expired">Expired</SelectItem>
                   <SelectItem value="votable">Votable</SelectItem>
                 </SelectGroup>
-                <SelectSeparator />
               </SelectContent>
             </Select>
           </div>
@@ -77,15 +74,12 @@ export function ProposalsFilter({
                 <SelectValue placeholder="Select..." />
               </SelectTrigger>
               <SelectContent>
-                <SelectSeparator />
                 <SelectGroup>
-                  <SelectLabel>Order By</SelectLabel>
                   <SelectItem value="by_creator">Creator</SelectItem>
                   <SelectItem value="by_start_date">Start Data</SelectItem>
                   <SelectItem value="by_end_date">End Data</SelectItem>
                   <SelectItem value="by_total_votes">Total Votes</SelectItem>
                 </SelectGroup>
-                <SelectSeparator />
               </SelectContent>
             </Select>
           </div>

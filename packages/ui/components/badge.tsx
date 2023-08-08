@@ -15,10 +15,10 @@ const badgeVariants = cva(
         desctructive:
           "bg-destructive hover:bg-secondary/80 border-transparent text-destructive-foreground",
         outline: "text-foreground",
-        red: "text-red-500 cursor-default border-red-500  bg-destructive bg-white dark:bg-slate-800",
-        lime: "bg-white cursor-default border-lime-700 text-lime-700 dark:bg-slate-800",
+        red: "text-red-500 cursor-default border-red-500  bg-destructive bg-white dark:bg-slate-800 cursor-text",
+        lime: "bg-white cursor-default border-lime-700 text-lime-700 dark:bg-slate-800 cursor-text",
         orange:
-          "bg-white border-orange-600 cursor-default text-orange-600 dark:bg-slate-800",
+          "bg-white border-orange-600 cursor-default text-orange-600 dark:bg-slate-800 cursor-text",
       },
     },
     defaultVariants: {

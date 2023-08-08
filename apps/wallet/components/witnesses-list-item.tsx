@@ -99,8 +99,8 @@ function WitnessListItem({
           <span className="sm:text-sm">
             {data.rank < 10 ? `0${data.rank}` : data.rank}
           </span>
-          <div className="group relative flex">
-            <span className="opocity-75 absolute inline-flex h-5 w-5 rounded-full bg-red-600 p-0 group-hover:animate-ping group-hover:[animation-iteration-count:_1] dark:bg-red-400"></span>
+          <div title="vote" className="group relative flex">
+            <span className="opocity-75 absolute inline-flex h-5 w-5 rounded-full bg-red-600 p-0 group-hover:animate-ping dark:bg-red-400"></span>
             <Icons.arrowUpCircle
               viewBox="1.7 1.7 20.7 20.7"
               className={clsx(
@@ -118,7 +118,10 @@ function WitnessListItem({
       </td>
       <td className="font-light md:font-normal">
         <div className="flex" data-testid="witness-list-item-info">
-          <div className="hidden p-2 sm:block self">
+          <div
+            className="hidden p-2 sm:block self"
+            title="Navigate to this user's profile"
+          >
             <Link href={`http://localhost:3000/@${data.owner}`} target="_blank">
               <img
                 className={clsx("mr-1 h-[47px] min-w-[47px] rounded-full", {
@@ -137,6 +140,7 @@ function WitnessListItem({
                 href={`http://localhost:3000/@${data.owner}`}
                 data-testid="witness-name-link"
                 target="_blank"
+                title="Navigate to this user's profile"
               >
                 {
                   <div
@@ -175,7 +179,7 @@ function WitnessListItem({
               </Link>
             </div>
             {!disableUser && witnessDescription && (
-              <div className="mb-1 block hidden max-h-16 max-w-lg overflow-y-auto overflow-x-hidden border-b-[1px] border-dotted border-gray-400 p-1 text-center italic sm:block">
+              <div className="ml-4 mb-1 hidden max-h-16 max-w-lg overflow-y-auto overflow-x-hidden border-b-[1px] border-dotted border-gray-400 p-1 italic sm:block">
                 {witnessDescription}
               </div>
             )}
