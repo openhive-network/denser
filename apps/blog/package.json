@@ -4,7 +4,7 @@
   "private": false,
   "scripts": {
     "dev": "react-env -- next dev",
-    "build": "next build",
+    "build": "react-env -- next build",
     "start": "react-env -- next start",
     "lint": "eslint .",
     "pw:test:local": "playwright test --config=playwright.local3000.config.ts",
