@@ -191,6 +191,7 @@ staging:deploy:
       scripts/run_instance.sh \
         --image="$IMAGE_NAME" \
         --api-endpoint="$API_ENDPOINT" \
+        --images-endpoint="$IMAGES_ENDPOINT" \
         --name="$CONTAINER_NAME" \
         --port=$PORT \
         --detach

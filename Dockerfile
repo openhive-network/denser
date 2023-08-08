@@ -14,19 +14,21 @@ RUN turbo prune --scope=${TURBO_APP_SCOPE} --docker
 
 # Add lockfile and package.json's of isolated subworkspace
 FROM base AS installer
+ARG TURBO_APP_SCOPE
 RUN apk add --no-cache libc6-compat
 RUN apk update
 WORKDIR /app
 
 # First install the dependencies (as they change less often)
-RUN npm install -g @beam-australia/react-env@3.1.1
+RUN npm i -g @beam-australia/react-env@3.1.1
+RUN npm i -g turbo
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/package-lock.json ./package-lock.json
 RUN npm ci
 
 # Build the project
 COPY --from=builder /app/out/full/ .
-RUN npm run build:blog
+RUN turbo run build --filter=${TURBO_APP_SCOPE}
 
 FROM base AS runner
 WORKDIR /app
