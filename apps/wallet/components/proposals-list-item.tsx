@@ -31,7 +31,7 @@ export function ProposalListItem({
   totalVestingFund,
 }: ListItemProps) {
   const [link, setLink] = useState<string>(
-    `${proposalData.creator}/${proposalData.permlink}`
+    `http://localhost:3000/${proposalData.creator}/${proposalData.permlink}`
   );
   const totalHBD = proposalData.daily_pay.amount.times(
     moment(proposalData.end_date).diff(moment(proposalData.start_date), "d")
@@ -48,7 +48,9 @@ export function ProposalListItem({
   useEffect(() => {
     getPostHeader(proposalData.creator, String(proposalData.permlink)).then(
       (res) => {
-        setLink(`${res.category}/@${res.author}/${res.permlink}`);
+        setLink(
+          `http://localhost:3000/${res.category}/@${res.author}/${res.permlink}`
+        );
       }
     );
   }, []);
@@ -104,7 +106,7 @@ export function ProposalListItem({
           </div>
         </div>
         <div className="flex items-center gap-1 text-xs md:text-sm">
-          <Link href={`@${proposalData.creator}`}>
+          <Link href={`http://localhost:3000/@${proposalData.creator}`}>
             <img
               className="h-[30px] w-[30px] rounded-3xl"
               height="40"
@@ -114,7 +116,7 @@ export function ProposalListItem({
             />
           </Link>
           by
-          <Link href={`@${proposalData.creator}`}>
+          <Link href={`http://localhost:3000/@${proposalData.creator}`}>
             <span className="text-red-600 dark:text-red-500 dark:hover:text-red-400">
               {proposalData.creator}
             </span>
@@ -122,7 +124,7 @@ export function ProposalListItem({
           {proposalData.receiver !== proposalData.creator && (
             <span>
               {" for "}
-              <Link href={`@${proposalData.receiver}`}>
+              <Link href={`http://localhost:3000/@${proposalData.receiver}`}>
                 <span className="text-red-600 dark:text-red-500 dark:hover:text-red-400">
                   {proposalData.receiver}
                 </span>

@@ -303,7 +303,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               <ul className="flex h-full text-xs text-white sm:text-base lg:flex lg:gap-4">
                 <li>
                   <Link
-                    href={`https://wallet.hive.blog/@${username}/transfers`}
+                    href={`http://localhost:4000/@${username}/transfers`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex h-full items-center px-2 hover:bg-white hover:text-slate-800"

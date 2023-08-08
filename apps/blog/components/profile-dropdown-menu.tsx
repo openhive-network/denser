@@ -93,7 +93,7 @@ const ProfileDropdownMenu = () => {
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Wallet className="mr-2 h-4 w-4" />
-          <Link href={`https://wallet.hive.blog/@${currentProfile?.name}/transfers`}>Wallet</Link>
+          <Link href={`http://localhost:4000/@${currentProfile?.name}/transfers`}>Wallet</Link>
         </DropdownMenuItem>
         <DropdownMenuItem disabled>
           <Cloud className="mr-2 h-4 w-4" />

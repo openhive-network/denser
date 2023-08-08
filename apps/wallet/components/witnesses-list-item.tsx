@@ -118,7 +118,7 @@ function WitnessListItem({
       <td className="font-light md:font-normal">
         <div className="flex items-center" data-testid="witness-list-item-info">
           <div className="hidden p-2 sm:block">
-            <Link href={`@${data.owner}`}>
+            <Link href={`http://localhost:3000/@${data.owner}`} target="_blank">
               <img
                 className={clsx("mr-3 h-[80px] min-w-[80px] rounded-full", {
                   "opacity-50": disableUser,
@@ -132,7 +132,11 @@ function WitnessListItem({
           </div>
           <div className="flex flex-col gap-1 py-4 sm:px-2">
             <div className="flex items-center gap-2">
-              <Link href={`@${data.owner}`} data-testid="witness-name-link">
+              <Link
+                href={`http://localhost:3000/@${data.owner}`}
+                data-testid="witness-name-link"
+                target="_blank"
+              >
                 {
                   <div
                     className={clsx(

@@ -49,7 +49,7 @@ const ExploreHive: FC = () => {
           </li>
           <li>
             <Link
-              href="https://wallet.hive.blog/~witnesses"
+              href="http://localhost:4000/~witnesses"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center text-red-600 hover:cursor-pointer"
@@ -60,7 +60,7 @@ const ExploreHive: FC = () => {
           </li>
           <li>
             <Link
-              href="https://wallet.hive.blog/proposals"
+              href="http://localhost:4000/proposals"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center text-red-600 hover:cursor-pointer"

@@ -41,22 +41,23 @@ const Sidebar = () => {
             <Separator className="my-2" />
             <li>
               <SheetTitle className="py-1.5">
-                <Link href="https://wallet.hive.blog/recover_account_step_1">Stolen Accounts Recovery</Link>
+          
+                <Link href="http://localhost:4000/recover_account_step_1 ">Stolen Accounts Recovery</Link>
               </SheetTitle>
             </li>
             <li>
               <SheetTitle className="py-1.5">
-                <Link href="https://wallet.hive.blog/change_password">Change Account Password</Link>
+                <Link  href="http://localhost:4000/change_password">Change Account Password</Link>
               </SheetTitle>
             </li>
             <li>
               <SheetTitle className="py-1.5">
-                <Link href="https://wallet.hive.blog/~witnesses">Vote for Witnesses</Link>
+                <Link href="http://localhost:4000/~witnesses">Vote for Witnesses</Link>
               </SheetTitle>
             </li>
             <li>
               <SheetTitle className="py-1.5">
-                <Link href="https://wallet.hive.blog/proposals">Hive Proposals</Link>
+                <Link href="http://localhost:4000/proposals">Hive Proposals</Link>
               </SheetTitle>
             </li>
             <Separator className="my-2" />

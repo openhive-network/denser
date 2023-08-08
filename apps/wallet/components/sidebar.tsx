@@ -32,12 +32,12 @@ const Sidebar = () => {
           <ul className="flex flex-col gap-2">
             <li>
               <SheetTitle className="py-1.5">
-                <Link href="/welcome">Welcome</Link>
+                <Link href="http://localhost:3000/welcome">Welcome</Link>
               </SheetTitle>
             </li>
             <li>
               <SheetTitle className="py-1.5">
-                <Link href="/faq.html">FAQ</Link>
+                <Link href="http://localhost:3000/faq.html">FAQ</Link>
               </SheetTitle>
             </li>
             <li>
@@ -51,28 +51,28 @@ const Sidebar = () => {
             <Separator className="my-2" />
             <li>
               <SheetTitle className="py-1.5">
-                <Link href="https://wallet.hive.blog/recover_account_step_1">
+                <Link href="http://localhost:4000/recover_account_step_1">
                   Stolen Accounts Recovery
                 </Link>
               </SheetTitle>
             </li>
             <li>
               <SheetTitle className="py-1.5">
-                <Link href="https://wallet.hive.blog/change_password">
+                <Link href="http://localhost:4000/change_password">
                   Change Account Password
                 </Link>
               </SheetTitle>
             </li>
             <li>
               <SheetTitle className="py-1.5">
-                <Link href="https://wallet.hive.blog/~witnesses">
+                <Link href="http://localhost:4000/~witnesses">
                   Vote for Witnesses
                 </Link>
               </SheetTitle>
             </li>
             <li>
               <SheetTitle className="py-1.5">
-                <Link href="https://wallet.hive.blog/proposals">
+                <Link href="http://localhost:4000/proposals">
                   Hive Proposals
                 </Link>
               </SheetTitle>
@@ -103,12 +103,16 @@ const Sidebar = () => {
             <Separator className="my-2" />
             <li>
               <SheetTitle className="py-1.5">
-                <Link href="/privacy.html">Privacy Policy</Link>
+                <Link href="http://localhost:3000/privacy.html">
+                  Privacy Policy
+                </Link>
               </SheetTitle>
             </li>
             <li>
               <SheetTitle className="py-1.5">
-                <Link href="/tos.html">Terms of Service</Link>
+                <Link href="http://localhost:3000/tos.html">
+                  Terms of Service
+                </Link>
               </SheetTitle>
             </li>
           </ul>
