@@ -68,15 +68,15 @@ export function ProposalListItem({
     <div className="flex flex-col justify-between bg-white p-2.5 drop-shadow-xl dark:bg-slate-800 sm:flex-row ">
       <div className="w-3/4">
         <Link href={link}>
-          <span className="font-medium text-red-600 hover:text-red-300 dark:text-red-500 dark:hover:text-red-400 md:text-xl">
+          <span className="text-red-500 hover:text-red-300 dark:hover:text-red-400 md:text-lg">
             {proposalData.subject}
-            <span className="font-semibold text-slate-500">
+            <span className="text-slate-500">
               {" #"}
               {proposalData.proposal_id}
             </span>
           </span>
         </Link>
-        <div className="flex flex w-fit flex-col gap-3 py-3 text-xs md:text-sm min-[900px]:flex-row lg:items-center">
+        <div className="flex flex w-fit flex-col gap-3 py-3 text-xs min-[900px]:flex-row lg:items-center">
           <span className="whitespace-nowrap text-slate-500">
             {proposalData.start_date}
             {" - "}
@@ -85,7 +85,7 @@ export function ProposalListItem({
             {" days)"}
           </span>
           <div className="whitespace-nowrap text-slate-500">
-            <span className="font-semibold text-red-600 dark:text-red-200">
+            <span className="font-semibold text-red-500 dark:text-red-200">
               {getRoundedAbbreveration(totalHBD)} {" HBD"}
             </span>{" "}
             {"(Daily "}
@@ -117,7 +117,7 @@ export function ProposalListItem({
           </Link>
           by
           <Link href={`http://localhost:3000/@${proposalData.creator}`}>
-            <span className="text-red-600 dark:text-red-500 dark:hover:text-red-400">
+            <span className="text-red-500 dark:hover:text-red-400">
               {proposalData.creator}
             </span>
           </Link>
@@ -125,7 +125,7 @@ export function ProposalListItem({
             <span>
               {" for "}
               <Link href={`http://localhost:3000/@${proposalData.receiver}`}>
-                <span className="text-red-600 dark:text-red-500 dark:hover:text-red-400">
+                <span className="text-red-500 dark:hover:text-red-400">
                   {proposalData.receiver}
                 </span>
               </Link>
@@ -133,15 +133,15 @@ export function ProposalListItem({
           )}
         </div>
       </div>
-      <div className="mt-3 flex justify-between border-t-2 border-slate-300 p-2  dark:border-slate-600 sm:ml-2 sm:w-32 sm:w-32 sm:flex-col sm:items-center sm:border-l-2 sm:border-t-0 sm:pl-4">
+      <div className="mt-3 flex justify-between sm:justify-around border-t-2 border-slate-300 p-2  dark:border-slate-600 sm:ml-2 sm:w-32 sm:w-32 sm:flex-col sm:items-center sm:border-l-2 sm:border-t-0 sm:pl-4">
         <div className="self-center md:text-xl">
           {getRoundedAbbreveration(totalVotes)}
         </div>
         <div className="group relative flex">
-          <span className="opocity-75 absolute inline-flex h-6 w-6 rounded-full bg-red-600 p-0 group-hover:animate-ping group-hover:[animation-iteration-count:_1] dark:bg-red-400 sm:h-8 sm:w-8"></span>
+          <span className="opocity-75 absolute inline-flex h-6 w-6 rounded-full bg-red-500 p-0 group-hover:animate-ping group-hover:[animation-iteration-count:_1] dark:bg-red-400"></span>
           <Icons.arrowUpCircle
             viewBox="1.7 1.7 20.7 20.7"
-            className="relative inline-flex h-6 w-6 rounded-full bg-white stroke-1 text-red-600 dark:bg-slate-800 dark:text-red-500 sm:h-8 sm:w-8"
+            className="relative inline-flex h-6 w-6 rounded-full bg-white stroke-1 text-red-500 dark:bg-slate-800"
           />
         </div>
       </div>

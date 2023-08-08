@@ -17,9 +17,9 @@ export default function HomePage() {
         </DialogLogin>
       </div>
       <div className="mr-6 sm:mt-6 sm:w-full sm:max-w-lg">
-        <div className="bg-white border-solid border-[1px] border-slate-200 h-[260px] w-full drop-shadow">
-          <div className="bg-white border-solid border-[1px] border-slate-200 h-[260px] right-[-10px] top-[-12px] w-full relative drop-shadow">
-            <div className="bg-white justify-center border-solid border-[1px] border-slate-200 flex flex-col pl-4 sm:pr-4 w-full right-[-10px] top-[-12px] relative gap-4 h-[260px]  drop-shadow">
+        <div className="bg-white border-solid border-[1px] border-slate-200 h-[260px] w-full drop-shadow dark:bg-slate-900">
+          <div className="bg-white border-solid border-[1px] border-slate-200 h-[260px] right-[-10px] top-[-12px] w-full relative drop-shadow dark:bg-slate-900">
+            <div className="bg-white justify-center border-solid border-[1px] border-slate-200 flex flex-col pl-4 sm:pr-4 w-full right-[-10px] top-[-12px] relative gap-4 h-[260px]  drop-shadow dark:bg-slate-900">
               <div className="font-bold text-lg sm:text-2xl">Hive tokens</div>
               <div className="flex gap-3">
                 <Icons.hivetoken />

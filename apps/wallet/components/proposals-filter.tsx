@@ -36,7 +36,7 @@ export function ProposalsFilter({
     );
 
   return (
-    <div className="flex flex-col justify-between gap-2 sm:my-6 sm:flex-row sm:p-2.5">
+    <div className="flex flex-col justify-between gap-2 sm:my-1 sm:flex-row">
       <h1 className="text-xl font-semibold sm:self-center md:text-2xl xl:text-3xl">
         Proposals
       </h1>
@@ -96,7 +96,7 @@ export function ProposalsFilter({
             "rotate-180": orderDirection === "ascending",
           })}
         >
-          <Icons.arrowBigDown className="m-1 h-8 w-8 text-red-600 transition-transform dark:text-red-500" />
+          <Icons.arrowBigDown className="m-1 h-8 w-8 text-red-500 transition-transform" />
         </button>
       </div>
     </div>
