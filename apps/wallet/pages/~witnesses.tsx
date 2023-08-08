@@ -106,14 +106,14 @@ function WitnessesPage() {
   }, [router.query.highlight]);
 
   return (
-    <div className="mx-auto max-w-5xl pt-6">
+    <div className="mx-auto max-w-5xl">
       <div className="mx-2 flex flex-col gap-4">
-        <div className="text-xl md:text-3xl" data-testid="witness-header">
+        <div className="text-xl md:text-4xl" data-testid="witness-header">
           Witness Voting
         </div>
         <p className="text-xs sm:text-sm" data-testid="witness-header-vote">
           <span
-            className="font-bold "
+            className="font-semibold "
             data-testid="witness-header-vote-remaining"
           >
             You have 30 votes remaining.
@@ -132,10 +132,10 @@ function WitnessesPage() {
       </div>
       <table className="mt-4 w-full table-auto text-xs">
         <thead
-          className=" h-16 bg-slate-200 text-left  dark:bg-slate-900"
+          className=" h-10 bg-zinc-100 text-left  dark:bg-slate-900"
           data-testid="witness-table-head"
         >
-          <tr className="sm:text-base">
+          <tr className="sm:text-sm font-semibold">
             <th className="p-2">Rank</th>
             <th className="p-2">Witness</th>
             <th className="p-2">Votes received</th>

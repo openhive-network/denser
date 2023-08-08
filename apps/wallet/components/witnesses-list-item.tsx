@@ -50,6 +50,7 @@ function WitnessListItem({
       return (
         <Link
           href={data.url}
+          target="_blank"
           className="flex items-center gap-2 font-semibold hover:text-red-400 dark:hover:text-red-400"
         >
           <span>Open witness annoucement</span>
@@ -59,6 +60,7 @@ function WitnessListItem({
     return (
       <Link
         href={data.url}
+        target="_blank"
         className="flex items-center gap-2 font-semibold hover:text-red-400 dark:hover:text-red-400"
       >
         <span>Open external site</span>
@@ -86,9 +88,8 @@ function WitnessListItem({
   return (
     <tr
       className={clsx({
-        "bg-red-300 even:bg-red-300 dark:bg-red-800 dark:even:bg-red-800":
-          router.query.highlight === data.owner,
-        "even:bg-slate-200 dark:even:bg-slate-900":
+        "bg-rose-200  dark:bg-rose-800": router.query.highlight === data.owner,
+        "even:bg-zinc-100 dark:even:bg-slate-900":
           router.query.highlight !== data.owner,
       })}
       ref={ref}
@@ -99,15 +100,15 @@ function WitnessListItem({
             {data.rank < 10 ? `0${data.rank}` : data.rank}
           </span>
           <div className="group relative flex">
-            <span className="opocity-75 absolute inline-flex h-6 w-6 rounded-full bg-red-600 p-0 group-hover:animate-ping group-hover:[animation-iteration-count:_1] dark:bg-red-400 sm:h-8 sm:w-8"></span>
+            <span className="opocity-75 absolute inline-flex h-5 w-5 rounded-full bg-red-600 p-0 group-hover:animate-ping group-hover:[animation-iteration-count:_1] dark:bg-red-400"></span>
             <Icons.arrowUpCircle
               viewBox="1.7 1.7 20.7 20.7"
               className={clsx(
-                "relative inline-flex h-6 w-6 rounded-full stroke-1 text-red-600 dark:text-red-500 sm:h-8 sm:w-8",
+                "relative inline-flex h-5 w-5 rounded-full stroke-1 text-red-600 dark:text-red-500 cursor-pointer",
                 {
                   "bg-slate-100 dark:bg-slate-900":
                     router.query.highlight !== data.owner,
-                  "bg-red-300  dark:bg-red-800":
+                  "bg-rose-200  dark:bg-rose-800":
                     router.query.highlight === data.owner,
                 }
               )}
@@ -116,11 +117,11 @@ function WitnessListItem({
         </div>
       </td>
       <td className="font-light md:font-normal">
-        <div className="flex items-center" data-testid="witness-list-item-info">
-          <div className="hidden p-2 sm:block">
+        <div className="flex" data-testid="witness-list-item-info">
+          <div className="hidden p-2 sm:block self">
             <Link href={`http://localhost:3000/@${data.owner}`} target="_blank">
               <img
-                className={clsx("mr-3 h-[80px] min-w-[80px] rounded-full", {
+                className={clsx("mr-1 h-[47px] min-w-[47px] rounded-full", {
                   "opacity-50": disableUser,
                 })}
                 height="40"
@@ -130,7 +131,7 @@ function WitnessListItem({
               />
             </Link>
           </div>
-          <div className="flex flex-col gap-1 py-4 sm:px-2">
+          <div className="flex flex-col gap-1 py-1 sm:px-2">
             <div className="flex items-center gap-2">
               <Link
                 href={`http://localhost:3000/@${data.owner}`}
@@ -140,14 +141,13 @@ function WitnessListItem({
                 {
                   <div
                     className={clsx(
-                      "font-bold sm:text-base",
+                      "font-semibold sm:text-sm",
                       {
                         "text-gray-500 line-through opacity-50 dark:text-gray-300":
                           disableUser,
                       },
                       {
-                        "font-bold text-red-600 hover:text-black dark:text-red-400 hover:dark:text-red-200 md:text-lg":
-                          !disableUser,
+                        "font-bold text-red-500": !disableUser,
                       }
                     )}
                   >
@@ -156,7 +156,7 @@ function WitnessListItem({
                 }
               </Link>
               {witnessOwner && (
-                <div className="text-xs  text-gray-500 sm:text-base sm:font-bold ">
+                <div className="text-xs  text-gray-600 sm:text-sm  ">
                   by {getOwnersString(witnessOwner)}
                 </div>
               )}
@@ -189,7 +189,7 @@ function WitnessListItem({
               Last block{" "}
               <Link
                 href={`https://hiveblocks.com/b/${data.last_confirmed_block_num}`}
-                className="hover:text-red-600 dark:hover:text-red-400"
+                className="text-red-500"
                 data-testid="last-block-number"
               >
                 <span className="font-semibold ">
@@ -209,7 +209,7 @@ function WitnessListItem({
           </div>
         </div>
       </td>
-      <td className="p-1 sm:p-2 sm:text-sm">
+      <td className="p-1 sm:p-2">
         <div className="font-medium " data-testid="witness-votes-received">
           {getRoundedAbbreveration(data.vestsToHp)}
           {" HP"}
@@ -220,7 +220,7 @@ function WitnessListItem({
           </div>
         )}
       </td>
-      <td className=" sm:p-2 sm:text-sm">
+      <td className=" sm:p-2">
         <div className="font-medium" data-testid="witness-price-feed">
           ${parseFloat(data.hbd_exchange_rate.base)}
         </div>
