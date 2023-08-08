@@ -296,14 +296,16 @@ export class HomePage {
   async moveToNavProposalsPage() {
     const pagePromise = this.page.context().waitForEvent('page');
     await this.getNavProposalsLink.click();
+    await this.page.$eval('[data-testid="nav-proposals-link"]', el => el.removeAttribute("target"))
     const newPage = await pagePromise;
     // await this.page.waitForSelector(this.page.locator('[data-testid="proposals-body"]')['_selector']);
-    await expect(newPage.url().includes(`/proposals`)).toBeTruthy();
+    expect(await newPage.url().includes(`/proposals`)).toBeTruthy();
   }
 
   async moveToNavWitnessesPage() {
     const pagePromise = this.page.context().waitForEvent('page');
     await this.getNavWitnessesLink.click();
+    await this.page.$eval('[data-testid="nav-witnesses-link"]', el => el.removeAttribute("target"))
     const newPage = await pagePromise;
     // await this.page.waitForSelector(this.page.locator('[data-testid="witness-table-body"]')['_selector']);
     await expect(newPage.url().includes(`/~witnesses`)).toBeTruthy();
