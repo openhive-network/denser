@@ -13,7 +13,7 @@ test.describe('Home page tests - All posts', () => {
     await homePage.isTrendingCommunitiesVisible();
   });
 
-  test.only('move from one community to other community and home page next', async ({ page }) => {
+  test('move from one community to other community and home page next', async ({ page }) => {
     await homePage.goto();
     // move from HomePage to LeoFinance community
     await homePage.moveToLeoFinanceCommunities();
