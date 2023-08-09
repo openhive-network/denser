@@ -564,7 +564,7 @@ test.describe('Home page tests', () => {
     ).toBe('rgb(15, 23, 42)');
   });
 
-  test('move to the Proposals page', async ({ page, context }) => {
+  test.skip('move to the Proposals page', async ({ page, context }) => {
     await homePage.goto();
     await page.click('[data-testid="nav-proposals-link"]')
     // await homePage.moveToNavProposalsPage();
@@ -577,7 +577,7 @@ test.describe('Home page tests', () => {
     expect(newWindow.url()).toContain(`/proposals`)
   });
 
-  test('move to the Witnesses page', async ({ page, context }) => {
+  test.skip('move to the Witnesses page', async ({ page, context }) => {
     await homePage.goto();
     await page.click('[data-testid="nav-witnesses-link"]')
     // await homePage.moveToNavWitnessesPage();

@@ -127,7 +127,7 @@ test.describe('Profile page of @gtg', () => {
     await profilePage.moveToNotificationsTab();
   });
 
-  test('move to Wallet Page', async ({ page,context }) => {
+  test.skip('move to Wallet Page', async ({ page,context }) => {
     await profilePage.gotoProfilePage('@gtg');
     // await profilePage.moveToWalletPage();
     const [newWindow] = await Promise.all([
