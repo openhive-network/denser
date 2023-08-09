@@ -151,3 +151,7 @@
   margin-right: 0.1em;
   opacity: .5;
 }
+
+.entry-body.prose img {
+  cursor: pointer;
+}
