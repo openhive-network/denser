@@ -69,7 +69,7 @@ export default function ProfileLists({
             : variant === 'followedBlacklist'
             ? 'Followed Blacklists'
             : variant === 'followedMut'
-            ? 'Followed Muted LIsts'
+            ? 'Followed Muted Lists'
             : null}
         </h1>
         <p
