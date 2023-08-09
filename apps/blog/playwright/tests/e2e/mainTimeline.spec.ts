@@ -564,16 +564,29 @@ test.describe('Home page tests', () => {
     ).toBe('rgb(15, 23, 42)');
   });
 
-  test('move to the Proposals page', async ({ page }) => {
+  test('move to the Proposals page', async ({ page, context }) => {
     await homePage.goto();
+    await page.click('[data-testid="nav-proposals-link"]')
+    // await homePage.moveToNavProposalsPage();
 
-    await homePage.moveToNavProposalsPage();
+    const [newWindow] = await Promise.all([
+      context.waitForEvent('page'),
+      await page.click('[data-testid="nav-proposals-link"]')
+    ])
+    await newWindow.waitForLoadState()
+    expect(newWindow.url()).toContain(`/proposals`)
   });
 
-  test('move to the Witnesses page', async ({ page }) => {
+  test('move to the Witnesses page', async ({ page, context }) => {
     await homePage.goto();
-
-    await homePage.moveToNavWitnessesPage();
+    await page.click('[data-testid="nav-witnesses-link"]')
+    // await homePage.moveToNavWitnessesPage();
+    const [newWindow] = await Promise.all([
+      context.waitForEvent('page'),
+      await page.click('[data-testid="nav-witnesses-link"]')
+    ])
+    await newWindow.waitForLoadState()
+    expect(newWindow.url()).toContain(`/~witnesses`)
   });
 
   test('move to the Our dApps page', async ({ page }) => {

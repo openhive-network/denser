@@ -127,9 +127,16 @@ test.describe('Profile page of @gtg', () => {
     await profilePage.moveToNotificationsTab();
   });
 
-  test('move to Wallet Page', async ({ page }) => {
+  test('move to Wallet Page', async ({ page,context }) => {
     await profilePage.gotoProfilePage('@gtg');
-    await profilePage.moveToWalletPage();
+    // await profilePage.moveToWalletPage();
+    const [newWindow] = await Promise.all([
+      context.waitForEvent('page'),
+      await page.locator('[data-testid="profile-navigation"] ul:last-child').getByText('Wallet').click()
+    ])
+    await newWindow.waitForLoadState()
+    expect(newWindow.url()).toContain(`/transfers`)
+    
   });
 
   // Skipped - Settings Tab is unavailable

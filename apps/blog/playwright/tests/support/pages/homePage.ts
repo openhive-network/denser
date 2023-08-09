@@ -294,7 +294,7 @@ export class HomePage {
   }
 
   async moveToNavProposalsPage() {
-    const pagePromise = this.page.context().waitForEvent('page');
+    const pagePromise = await this.page.context().waitForEvent('page');
     await this.getNavProposalsLink.click();
     await this.page.$eval('[data-testid="nav-proposals-link"]', el => el.removeAttribute("target"))
     const newPage = await pagePromise;
