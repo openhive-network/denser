@@ -359,7 +359,7 @@ const PostListItem = ({
                       </TooltipTrigger>
                       <TooltipContent data-testid="post-card-votes-tooltip">
                         <p>
-                          {post.stats && post.stats.total_votes > 0 ? post.stats.total_votes : 'no'} {post.stats && post.stats.total_votes > 1 ? ' votes' : ' vote'}
+                          {post.stats && post.stats.total_votes > 0 ? post.stats.total_votes : 'no'}{post.stats && post.stats.total_votes > 1 ? ' votes' : ' vote'}
                         </p>
                       </TooltipContent>
                     </Tooltip>
