@@ -169,6 +169,7 @@ publish:
   rules:
     - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED == "true"'
       when: manual
+      allow_failure: true
   tags:
     - public-runner-docker
 
@@ -202,6 +203,7 @@ staging:deploy:
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: manual
+      allow_failure: true
   tags:
     - hs-denser
 
@@ -220,6 +222,7 @@ staging:stop:
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: manual
+      allow_failure: true
   tags:
     - hs-denser
 
@@ -248,3 +251,4 @@ review:stop:
   rules:
     - if: $CI_COMMIT_TAG =~ /^rc_.*/
       when: manual
+      allow_failure: true
