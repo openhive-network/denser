@@ -341,6 +341,7 @@ export class HomePage {
   async changeThemeMode(thememode: string) {
     await this.getThemeModeButton.click();
     await this.getThemeModeItem.locator(`span:text(\"${thememode}\")`).click();
+    await this.page.waitForLoadState('networkidle')
   }
 
   async validateThemeModeIsLight() {
@@ -356,6 +357,7 @@ export class HomePage {
   }
 
   async validateThemeModeIsDark() {
+    await this.page.waitForLoadState('networkidle')
     expect(await this.getElementCssPropertyValue(this.getBody, 'background-color')).toBe('rgb(3, 7, 17)');
   }
 

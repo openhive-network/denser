@@ -86,6 +86,12 @@ export class ProfilePage {
   readonly profileFollowing: Locator;
   readonly profileFollowers: Locator;
 
+  readonly followedBlacklists: Locator;
+  readonly followedBlacklistsHeader: Locator;
+  readonly followedMutedLists: Locator;
+  readonly followedMutedListsHeader: Locator;
+
+
   constructor(page: Page) {
     this.page = page;
     this.profileInfo = page.locator('[data-testid="profile-info"]');
@@ -206,6 +212,10 @@ export class ProfilePage {
     this.thirdPartyAppPeakdLink = page.locator('a[href="https://peakd.com/"]');
     this.thirdPartyAppHivebuzzLink = page.locator('a[href="https://hivebuzz.me/"]');
     this.communitySubscriptionHeader = page.getByText('Community Subscriptions');
+    this.followedBlacklists = page.getByText('Followed Blacklists');
+    this.followedBlacklistsHeader = page.locator('h1.text-xl.font-bold').first();
+    this.followedMutedLists = page.getByText('Followed Muted Lists')
+    this.followedMutedListsHeader = page.locator('h1.text-xl.font-bold').first();
   }
 
   async gotoProfilePage(nickName: string) {

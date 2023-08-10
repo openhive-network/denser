@@ -271,4 +271,34 @@ test.describe('Profile page of @gtg', () => {
       await profilePage.getElementCssPropertyValue(await profilePage.followButton, 'background-color')
     ).toBe('rgb(239, 68, 68)');
   });
+// new tests
+  test("User Banner Row - Description",async ({page}) =>{
+    await profilePage.gotoProfilePage('@gtg');
+    await expect(profilePage.profileInfo).toBeVisible()
+    await expect(profilePage.profileAbout).toBeVisible()
+
+    const profileAboutText = await profilePage.profileAbout.innerText()
+
+    await expect(profileAboutText).toEqual('IT Wizard, Hive Witness')
+  })
+
+  test("User Banner Row - User Stats - Blacklisted Users", async ({page, request}) =>{
+    await profilePage.gotoProfilePage('@gtg');
+    await expect(profilePage.followedBlacklists).toBeVisible()
+    await profilePage.followedBlacklists.click()
+    await page.waitForURL('@gtg/lists/followed_blacklists')
+    await expect(page).toHaveURL('@gtg/lists/followed_blacklists')
+    await expect(profilePage.followedBlacklistsHeader).toBeVisible()
+    await expect(profilePage.followedBlacklistsHeader).toHaveText("Followed Blacklists")
+  })
+
+  test("User Banner Row - User Stats - Muted Users", async ({page, request}) =>{
+    await profilePage.gotoProfilePage('@gtg');
+    await expect(profilePage.followedMutedLists).toBeVisible()
+    await profilePage.followedMutedLists.click()
+    await page.waitForURL('@gtg/lists/followed_muted_lists')
+    await expect(page).toHaveURL('@gtg/lists/followed_muted_lists')
+    await expect(profilePage.followedMutedListsHeader).toBeVisible()
+    await expect(profilePage.followedMutedListsHeader).toContainText("Followed Muted")
+  })
 });

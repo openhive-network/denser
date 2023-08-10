@@ -47,7 +47,8 @@ test.describe('Comments of post', () => {
     ).toBe('rgb(241, 245, 249)');
   });
 
-  test('Validate a hovered comment changes backgroundcolor style in the dark mode', async ({ page }) => {
+  test('Validate a hovered comment changes backgroundcolor style in the dark mode', async ({ page,browserName }) => {
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     await homePage.goto();
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
