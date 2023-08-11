@@ -18,11 +18,9 @@ include:
     ref: a61b95b922b9f7fe5f6aba3559bdb5e239052700 # develop
     file: '/templates/docker_image_jobs.gitlab-ci.yml'
 
-docker-build-blog:
+.docker_build_template:
   extends: .docker_image_builder_job_template
   stage: build
-  variables:
-    TURBO_APP_SCOPE: "@hive/denser"
   before_script:
     - !reference [.docker_image_builder_job_template, before_script]
     - |
@@ -42,13 +40,31 @@ docker-build-blog:
       echo -e "\e[0Ksection_end:$(date +%s):tag\r\e[0K"
       echo -e "\e[0Ksection_start:$(date +%s):build[collapsed=true]\r\e[0KBaking image "$CI_REGISTRY_IMAGE:$TAG"..."
       scripts/build_instance.sh --progress=plain "$CI_PROJECT_DIR"
-      echo "IMAGE_NAME=$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA" > docker-build.env
+      echo "IMAGE_NAME=${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:$CI_COMMIT_SHA" > docker-build.env
       echo -e "\e[0Ksection_end:$(date +%s):build\r\e[0K"
   artifacts:
+    paths:
+      - docker-build.env
     reports:
       dotenv: docker-build.env
   tags:
     - public-runner-docker
+
+docker-build-blog:
+  extends: .docker_build_template
+  variables:
+    TURBO_APP_SCOPE: "@hive/blog"
+    TURBO_APP_PATH: "/apps/blog"
+    TURBO_APP_NAME: "blog"
+    TAG: "blog"
+
+docker-build-wallet:
+  extends: .docker_build_template
+  variables:
+    TURBO_APP_SCOPE: "@hive/wallet"
+    TURBO_APP_PATH: "/apps/wallet"
+    TURBO_APP_NAME: "wallet"
+    TAG: "wallet"
 
 .node-job:
   image:
@@ -61,7 +77,7 @@ docker-build-blog:
       npm ci --cache .npm
       echo -e "\e[0Ksection_end:$(date +%s):deps\r\e[0K"
   cache:
-    key: denser-cache-1
+    key: "$TURBO_APP_SCOPE-cache-1"
     paths:
       - .npm/
       - .next/
@@ -72,32 +88,9 @@ docker-build-blog:
   tags:
     - public-runner-docker
 
-lint:
+.e2e_tests_template:
   extends: .node-job
-  script:
-    - !reference [.node-job, script]
-    - |
-      echo -e "\e[0Ksection_start:$(date +%s):lint[collapsed=true]\r\e[0KRunning linter..."
-      npm run lint 2>&1 | tee npm-lint.log
-      echo -e "\e[0Ksection_end:$(date +%s):lint\r\e[0K"
-  artifacts:
-    paths:
-      - "npm-lint.log"
-
-e2e-tests:
-  extends: .node-job
-  needs:
-    - docker-build-blog
   image: mcr.microsoft.com/playwright:v1.36.0-jammy
-  services:
-    - name: $IMAGE_NAME
-      alias: denser
-  variables:
-    TURBO_APP_SRC: apps/blog
-    REACT_APP_API_ENDPOINT: https://api.hive.blog
-    REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
-    PORT: 3000
-    DENSER_URL: http://denser:$PORT
   parallel:
     matrix:
       - PROJECT: ['chromium', 'firefox', 'webkit']
@@ -107,36 +100,81 @@ e2e-tests:
     - !reference [.node-job, script]
     - |
       echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=false]\r\e[0KRunning tests..."
-      cd $TURBO_APP_SRC
+      cd .$TURBO_APP_PATH
       npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL
       echo -e "\e[0Ksection_end:$(date +%s):tests\r\e[0K"
   artifacts:
     paths:
-      - ${TURBO_APP_SRC}/playwright-report/
-      - ${TURBO_APP_SRC}/test-results/
-      - ${TURBO_APP_SRC}/junit/
+      - .${TURBO_APP_PATH}/playwright-report/
+      - .${TURBO_APP_PATH}/test-results/
+      - .${TURBO_APP_PATH}/junit/
     reports:
-      junit: ${TURBO_APP_SRC}/junit/**/**/results.xml
+      junit: .${TURBO_APP_PATH}/junit/**/**/results.xml
 
-e2e-report-aggregate:
+e2e-tests-blog:
+  extends: .e2e_tests_template
+  needs:
+    - docker-build-blog
+  services:
+    - name: $IMAGE_NAME
+      alias: denser
+  variables:
+    TURBO_APP_SCOPE: "@hive/blog"
+    TURBO_APP_PATH: "/apps/blog"
+    REACT_APP_API_ENDPOINT: https://api.hive.blog
+    REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
+    PORT: 3000
+    DENSER_URL: http://denser:$PORT
+
+e2e-tests-wallet:
+  extends: .e2e_tests_template
+  needs:
+    - docker-build-wallet
+  services:
+    - name: $IMAGE_NAME
+      alias: denser
+  variables:
+    TURBO_APP_SCOPE: "@hive/wallet"
+    TURBO_APP_PATH: "/apps/wallet"
+    REACT_APP_API_ENDPOINT: https://api.hive.blog
+    REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
+    PORT: 4000
+    DENSER_URL: http://denser:$PORT
+
+.e2e_report_aggregate_template:
   extends: .node-job
   stage: test-report-aggregate
-  needs:
-    - e2e-tests
   when: always
   image: mcr.microsoft.com/playwright:v1.36.1-jammy
-  variables:
-    TURBO_APP_SRC: ./apps/blog
-    PROJECTS: '["chromium", "firefox", "webkit"]'
-    SHARD_TOTAL: 5
   script:
-    - cd $TURBO_APP_SRC
+    - cd .$TURBO_APP_PATH
     - npm install playwright-merge-html-reports --dev
     - npx playwright test tests/merge-reports --config playwright.merge.config.ts
   artifacts:
     paths:
-      - ${TURBO_APP_SRC}/merged-html-report/
-      - ${TURBO_APP_SRC}/junit/
+      - .${TURBO_APP_PATH}/merged-html-report/
+      - .${TURBO_APP_PATH}/junit/
+
+e2e-report-aggregate-blog:
+  extends: .e2e_report_aggregate_template
+  needs:
+    - e2e-tests-blog
+  variables:
+    TURBO_APP_SCOPE: "@hive/blog"
+    TURBO_APP_PATH: "/apps/blog"
+    PROJECTS: '["chromium", "firefox", "webkit"]'
+    SHARD_TOTAL: 5
+
+e2e-report-aggregate-wallet:
+  extends: .e2e_report_aggregate_template
+  needs:
+    - e2e-tests-wallet
+  variables:
+    TURBO_APP_SCOPE: "@hive/wallet"
+    TURBO_APP_PATH: "/apps/wallet"
+    PROJECTS: '["chromium", "firefox", "webkit"]'
+    SHARD_TOTAL: 5
+
 
 publish:
   image:
@@ -173,15 +211,8 @@ publish:
   tags:
     - public-runner-docker
 
-staging:deploy:
+.deploy_template_for_staging:
   stage: deploy
-  needs:
-    - docker-build-blog
-  variables:
-    PORT: 3000
-    API_ENDPOINT: https://api.hive.blog
-    IMAGES_ENDPOINT: https://images.hive.blog/
-    CONTAINER_NAME: denser
   before_script:
     - |
       echo -e "\e[0Ksection_start:$(date +%s):login[collapsed=true]\r\e[0KLogging to Docker registry..."
@@ -191,15 +222,13 @@ staging:deploy:
     - |
       scripts/run_instance.sh \
         --image="$IMAGE_NAME" \
+        --app-scope="$TURBO_APP_SCOPE" \
+        --app-path="$TURBO_APP_PATH" \
         --api-endpoint="$API_ENDPOINT" \
         --images-endpoint="$IMAGES_ENDPOINT" \
         --name="$CONTAINER_NAME" \
         --port=$PORT \
         --detach
-  environment:
-    name: staging
-    action: start
-    on_stop: staging:stop
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: manual
@@ -207,13 +236,40 @@ staging:deploy:
   tags:
     - hs-denser
 
-staging:stop:
-  stage: deploy
+staging:deploy-blog:
+  extends: .deploy_template_for_staging
   needs:
-    - staging:deploy
+    - docker-build-blog
   variables:
-    CONTAINER_NAME: denser
-    GIT_STRATEGY: none
+    PORT: 3000
+    API_ENDPOINT: https://api.hive.blog
+    IMAGES_ENDPOINT: https://images.hive.blog/
+    CONTAINER_NAME: denser-blog
+    TURBO_APP_SCOPE: "@hive/blog"
+    TURBO_APP_PATH: "/apps/blog"
+  environment:
+    name: staging
+    action: start
+    on_stop: staging:stop-blog
+
+staging:deploy-wallet:
+  extends: .deploy_template_for_staging
+  needs:
+    - docker-build-wallet
+  variables:
+    PORT: 4000
+    API_ENDPOINT: https://api.hive.blog
+    IMAGES_ENDPOINT: https://images.hive.blog/
+    CONTAINER_NAME: denser-wallet
+    TURBO_APP_SCOPE: "@hive/wallet"
+    TURBO_APP_PATH: "/apps/wallet"
+  environment:
+    name: staging
+    action: start
+    on_stop: staging:stop-wallet
+
+.stop_template_for_staging:
+  stage: deploy
   script:
     - docker ps -q --filter "name=$CONTAINER_NAME" | grep -q . && docker stop $CONTAINER_NAME
   environment:
@@ -226,25 +282,68 @@ staging:stop:
   tags:
     - hs-denser
 
-review:deploy:
-  extends: staging:deploy
+staging:stop-blog:
+  extends: .stop_template_for_staging
+  needs:
+    - staging:deploy-blog
+  variables:
+    CONTAINER_NAME: denser-blog
+    GIT_STRATEGY: none
+  
+staging:stop-wallet:
+  extends: .stop_template_for_staging
+  needs:
+    - staging:deploy-wallet
+  variables:
+    CONTAINER_NAME: denser-wallet
+    GIT_STRATEGY: none
+
+review:deploy-blog:
+  extends: staging:deploy-blog
   variables:
     PORT: 3001
-    CONTAINER_NAME: denser-review
+    CONTAINER_NAME: denser-review-blog
   environment:
     name: review
     action: start
-    on_stop: review:stop
+    on_stop: review:stop-blog
   rules:
     - if: $CI_COMMIT_TAG =~ /^rc_.*/
       when: on_success
 
-review:stop:
-  extends: staging:stop
-  needs:
-    - review:deploy
+review:deploy-wallet:
+  extends: staging:deploy-wallet
   variables:
-    CONTAINER_NAME: denser-review
+    PORT: 4001
+    CONTAINER_NAME: denser-review-wallet
+  environment:
+    name: review
+    action: start
+    on_stop: review:stop-wallet
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^rc_.*/
+      when: on_success
+
+review:stop-blog:
+  extends: staging:stop-blog
+  needs:
+    - review:deploy-blog
+  variables:
+    CONTAINER_NAME: denser-review-blog
+  environment:
+    name: review
+    action: stop
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^rc_.*/
+      when: manual
+      allow_failure: true
+
+review:stop-wallet:
+  extends: staging:stop-wallet
+  needs:
+    - review:deploy-wallet
+  variables:
+    CONTAINER_NAME: denser-review-wallet
   environment:
     name: review
     action: stop

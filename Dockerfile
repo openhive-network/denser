@@ -28,9 +28,11 @@ RUN npm ci
 
 # Build the project
 COPY --from=builder /app/out/full/ .
+RUN npm run lint
 RUN turbo run build --filter=${TURBO_APP_SCOPE}
 
 FROM base AS runner
+ARG TURBO_APP_PATH
 WORKDIR /app
 
 # Don't run production as root
@@ -38,16 +40,16 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 USER nextjs
 
-COPY --from=installer /app/apps/blog/next.config.js .
-COPY --from=installer /app/apps/blog/package.json .
+COPY --from=installer /app${TURBO_APP_PATH}/next.config.js .
+COPY --from=installer /app${TURBO_APP_PATH}/package.json .
 COPY --from=installer /app/node_modules ./node_modules
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=installer --chown=nextjs:nodejs /app/apps/blog/public ./apps/blog/public
-COPY --from=installer --chown=nextjs:nodejs /app/apps/blog/.next/standalone ./
-COPY --from=installer --chown=nextjs:nodejs /app/apps/blog/.next/static ./apps/blog/.next/static
-COPY --from=installer --chown=nextjs:nodejs /app/apps/blog/.env* ./
-COPY --from=installer --chown=nextjs:nodejs /app/apps/blog/lib/markdowns ./apps/blog/lib/markdowns
+COPY --from=installer --chown=nextjs:nodejs /app${TURBO_APP_PATH}/public .${TURBO_APP_PATH}/public
+COPY --from=installer --chown=nextjs:nodejs /app${TURBO_APP_PATH}/.next/standalone ./
+COPY --from=installer --chown=nextjs:nodejs /app${TURBO_APP_PATH}/.next/static .${TURBO_APP_PATH}/.next/static
+COPY --from=installer --chown=nextjs:nodejs /app${TURBO_APP_PATH}/.env* ./
+COPY --from=installer --chown=nextjs:nodejs /app${TURBO_APP_PATH}/lib/markdown[s]/ .${TURBO_APP_PATH}/lib/markdowns/
 
-CMD node apps/blog/server.js
+CMD node .${TURBO_APP_PATH}/server.js

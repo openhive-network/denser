@@ -35,6 +35,14 @@ while [ $# -gt 0 ]; do
         arg="${1#*=}"
         API_ENDPOINT="$arg"
         ;;
+    --app-scope=*)
+        arg="${1#*=}"
+        TURBO_APP_SCOPE="$arg"
+        ;;
+    --app-path=*)
+        arg="${1#*=}"
+        TURBO_APP_PATH="$arg"
+        ;;
     --images-endpoint=*)
         arg="${1#*=}"
         IMAGES_ENDPOINT="$arg"
@@ -72,6 +80,8 @@ RUN_OPTIONS=(
     "--env" "PORT=$PORT"
     "--env" "REACT_APP_API_ENDPOINT=$API_ENDPOINT"
     "--env" "REACT_APP_IMAGES_ENDPOINT=$IMAGES_ENDPOINT"
+    "--env" "TURBO_APP_SCOPE=$TURBO_APP_SCOPE"
+    "--env" "TURBO_APP_PATH=$TURBO_APP_PATH"
     "--name" "$CONTAINER_NAME"
 )
 
