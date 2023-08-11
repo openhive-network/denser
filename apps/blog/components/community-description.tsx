@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Button } from '@hive/ui/components/button';
 import ln2list from '@/blog/lib/ln2list';
 import { DefaultRenderer } from '@hiveio/content-renderer';
-import { getDoubleSize, proxifyImageUrl } from '@/blog/lib/old-profixy';
+import { getDoubleSize, proxifyImageUrl } from '@hive/ui/lib/old-profixy';
 import { AccountNotification, Community, Subscription, getAccountNotifications } from '@/blog/lib/bridge';
 import { SubsListDialog } from './subscription-list-dialog';
 import { ActivityLogDialog } from './activity-log-dialog';

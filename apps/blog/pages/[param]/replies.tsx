@@ -1,5 +1,5 @@
 import ProfileLayout from '@/blog/components/common/profile-layout';
-import { useSiteParams } from '@/blog/components/hooks/use-site-params';
+import { useSiteParams } from '@hive/ui/components/hooks/use-site-params';
 import { getAccountPosts } from '@/blog/lib/bridge';
 import { useQuery } from '@tanstack/react-query';
 import RepliesList from '@/blog/components/replies-list';

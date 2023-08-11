@@ -1,7 +1,7 @@
 import CommentListItem from '@/blog/components/comment-list-item';
 import { Entry } from '@/blog/lib/bridge';
 import { DefaultRenderer } from '@hiveio/content-renderer';
-import { getDoubleSize, proxifyImageUrl } from '@/blog/lib/old-profixy';
+import { getDoubleSize, proxifyImageUrl } from '@hive/ui/lib/old-profixy';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import Big from 'big.js';

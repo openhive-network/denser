@@ -18,7 +18,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/
 import DetailsCardHover from './details-card-hover';
 import DialogLogin from '@/blog/components/dialog-login';
 import { useRouter } from 'next/router';
-import { proxifyImageUrl } from '@/blog/lib/old-profixy';
+import { proxifyImageUrl } from '@hive/ui/lib/old-profixy';
 import { customEndsWith } from '@/blog/lib/ends-with';
 import { useState } from 'react';
 import Big from 'big.js';

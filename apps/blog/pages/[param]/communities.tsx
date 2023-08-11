@@ -6,7 +6,7 @@ import ProfileLayout from '@/blog/components/common/profile-layout';
 import SocialActivities from '@/blog/components/social-activities';
 import SubscriptionList from '@/blog/components/subscription-list';
 import Loading from '@hive/ui/components/loading';
-import { useSiteParams } from '@/blog/components/hooks/use-site-params';
+import { useSiteParams } from '@hive/ui/components/hooks/use-site-params';
 import { GetServerSideProps } from 'next';
 
 const UserCommunities = ({ hivebuzz, peakd }: { hivebuzz: Badge[]; peakd: Badge[] }) => {

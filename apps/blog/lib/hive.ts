@@ -4,9 +4,9 @@ import moment, { Moment } from 'moment';
 
 import { isCommunity, parseAsset, vestsToRshares } from '@/blog/lib/utils';
 import { dataLimit } from './bridge';
-import { AccountFollowStats, FullAccount } from '@hive/ui/store/app-types';
+import {  FullAccount } from '@hive/ui/store/app-types';
 import { bridgeServer } from '@hive/ui/lib/bridge';
-import { getAccount, getDynamicGlobalProperties, getFeedHistory } from '@hive/ui/lib/hive';
+import {  getDynamicGlobalProperties, getFeedHistory } from '@hive/ui/lib/hive';
 
 export interface TrendingTag {
   comments: number;
@@ -220,19 +220,6 @@ export const getAllTrendingTags = (
 
 export const lookupAccounts = (q: string, limit = 50): Promise<string[]> =>
   bridgeServer.database.call('lookup_accounts', [q, limit]);
-
-export const getAccountFull = (username: string): Promise<FullAccount> =>
-  getAccount(username).then(async (account) => {
-    let follow_stats: AccountFollowStats | undefined;
-    try {
-      follow_stats = await getFollowCount(username);
-    } catch (e) {}
-
-    return { ...account, follow_stats };
-  });
-
-export const getFollowCount = (username: string): Promise<AccountFollowStats> =>
-  bridgeServer.database.call('get_follow_count', [username]);
 
 export interface Follow {
   follower: string;

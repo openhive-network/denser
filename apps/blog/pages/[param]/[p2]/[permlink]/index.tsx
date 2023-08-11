@@ -21,7 +21,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/
 import DialogLogin from '@/blog/components/dialog-login';
 import { Icons } from '@hive/ui/components/icons';
 import { AlertDialogDemo } from '@/blog/components/alert-window';
-import { getDoubleSize, proxifyImageUrl } from '@/blog/lib/old-profixy';
+import { getDoubleSize, proxifyImageUrl } from '@hive/ui/lib/old-profixy';
 import { ReplyTextbox } from '@/blog/components/reply-textbox';
 import { SharePost } from '@/blog/components/share-post-dialog';
 import LinkedInShare from '@/blog/components/share-post-linkedin';

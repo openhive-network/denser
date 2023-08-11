@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useSiteParams } from '@/blog/components/hooks/use-site-params';
+import { useSiteParams } from '@hive/ui/components/hooks/use-site-params';
 import Loading from '@hive/ui/components/loading';
 import { useQuery } from '@tanstack/react-query';
 import { getAccount, getDynamicGlobalProperties } from '@hive/ui/lib/hive';
-import { getAccountFull } from '@/blog/lib/hive';
+import { getAccountFull } from '@hive/ui/lib/hive';
 import { accountReputation } from '@/blog/lib/utils';
 import { delegatedHive, numberWithCommas, vestingHive } from '@hive/ui/lib/utils';
 import { Separator } from '@hive/ui/components/separator';
 import { Icons } from '@hive/ui/components/icons';
 import { dateToFullRelative, dateToShow } from '@hive/ui/lib/parse-date';
-import { proxifyImageUrl } from '@/blog/lib/old-profixy';
+import { proxifyImageUrl } from '@hive/ui/lib/old-profixy';
 import { getTwitterInfo } from '@/blog/lib/bridge';
 
 interface IProfileLayout {
@@ -241,7 +241,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800 
                     ${
                       router.asPath === `/@${username}`
-                        ? 'bg-white text-slate-800 dark:bg-slate-950 dark:hover:text-slate-200'
+                        ? 'bg-white text-slate-800 dark:bg-slate-950  dark:text-slate-200  dark:hover:text-slate-200'
                         : ''
                     }
                     `}
@@ -256,7 +256,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                       router.asPath === `/@${username}/posts` ||
                       router.asPath === `/@${username}/comments` ||
                       router.asPath === `/@${username}/payout`
-                        ? 'bg-white text-slate-800 dark:bg-slate-950 dark:hover:text-slate-200'
+                        ? 'bg-white text-slate-800 dark:bg-slate-950 dark:hover:text-slate-200  dark:text-slate-200 '
                         : ''
                     }`}
                   >
@@ -268,7 +268,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     href={`/@${username}/replies`}
                     className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800 ${
                       router.asPath === `/@${username}/replies`
-                        ? 'bg-white text-slate-800 dark:bg-slate-950 dark:hover:text-slate-200'
+                        ? 'bg-white text-slate-800 dark:bg-slate-950 dark:hover:text-slate-200  dark:text-slate-200 '
                         : ''
                     }`}
                   >
@@ -280,7 +280,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     href={`/@${username}/communities`}
                     className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800 ${
                       router.asPath === `/@${username}/communities`
-                        ? 'bg-white text-slate-800 dark:bg-slate-950 dark:hover:text-slate-200'
+                        ? 'bg-white text-slate-800 dark:bg-slate-950 dark:hover:text-slate-200  dark:text-slate-200 '
                         : ''
                     }`}
                   >
@@ -290,9 +290,9 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <li>
                   <Link
                     href={`/@${username}/notifications`}
-                    className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800 dark:hover:text-slate-200 ${
+                    className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800 ${
                       router.asPath === `/@${username}/notifications`
-                        ? 'bg-white text-slate-800 dark:bg-slate-950'
+                        ? 'bg-white text-slate-800 dark:bg-slate-950 dark:hover:text-slate-200 dark:text-slate-200 '
                         : ''
                     }`}
                   >
@@ -306,7 +306,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     href={`http://localhost:4000/@${username}/transfers`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex h-full items-center px-2 hover:bg-white hover:text-slate-800"
+                    className="flex h-full items-center px-2 hover:bg-white hover:text-slate-800 mr-4"
                   >
                     Wallet
                   </Link>

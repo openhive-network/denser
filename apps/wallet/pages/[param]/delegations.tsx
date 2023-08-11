@@ -4,11 +4,14 @@ import {
   DynamicGlobalProperties,
   getDynamicGlobalProperties,
 } from "@hive/ui/lib/hive";
+import clsx from "clsx";
 import { getVestingDelegations } from "@/wallet/lib/hive";
 import { numberWithCommas } from "@hive/ui/lib/utils";
 import { dateToFullRelative } from "@hive/ui/lib/parse-date";
 import Loading from "@hive/ui/components/loading";
 import Link from "next/link";
+import ProfileLayout from "@/wallet/components/common/profile-layout";
+import { useRouter } from "next/router";
 
 const convertVestsToSteem = (
   vests: number,
@@ -38,6 +41,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 function DelegationsPage({
   username,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const router = useRouter();
   const {
     data: vestingData,
     isLoading: vestingLoading,
@@ -59,42 +63,51 @@ function DelegationsPage({
     return <p className="my-32 text-center text-3xl">Something went wrong</p>;
   }
   return (
-    <div className="flex flex-col gap-8 ">
-      <div className="flex gap-6 border-b-2 border-zinc-500 px-4 py-2">
-        <Link href={`/@${username}/transfers`}>
-          <div className="hover:text-red-600 dark:hover:text-red-400">
-            Balances
-          </div>
-        </Link>
-        <a href="" className="hover:text-red-600 dark:hover:text-red-400">
-          Delegations
-        </a>
+    <ProfileLayout>
+      <div className="flex flex-col gap-8 ">
+        <div className="flex gap-6 border-b-2 border-zinc-500 px-4 py-2">
+          <Link href={`/@${username}/transfers`}>
+            <div className="hover:text-red-600 dark:hover:text-red-400">
+              Balances
+            </div>
+          </Link>
+          <a
+            href=""
+            className={clsx(
+              router.asPath === `/@${username}/delegations`
+                ? "dark:text-slate-100 text-slate-700 font-bold"
+                : "hover:text-red-600 dark:hover:text-red-400"
+            )}
+          >
+            Delegations
+          </a>
+        </div>
+        <table className="w-full">
+          <tbody>
+            {vestingData?.map((element) => (
+              <tr
+                key={element.id}
+                className="m-0 p-0 text-sm even:bg-slate-100 dark:even:bg-slate-700"
+              >
+                <td className=" px-4 py-2 ">
+                  {numberWithCommas(
+                    convertVestsToSteem(
+                      parseFloat(element.vesting_shares),
+                      dynamicData
+                    )
+                  )}{" "}
+                  HP
+                </td>
+                <td className=" px-4 py-2 ">{element.delegatee}</td>
+                <td className=" px-4 py-2 ">
+                  {dateToFullRelative(element.min_delegation_time)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-      <table className="w-full">
-        <tbody>
-          {vestingData?.map((element) => (
-            <tr
-              key={element.id}
-              className="m-0 p-0 text-sm even:bg-slate-100 dark:even:bg-slate-700"
-            >
-              <td className=" px-4 py-2 ">
-                {numberWithCommas(
-                  convertVestsToSteem(
-                    parseFloat(element.vesting_shares),
-                    dynamicData
-                  )
-                )}{" "}
-                HP
-              </td>
-              <td className=" px-4 py-2 ">{element.delegatee}</td>
-              <td className=" px-4 py-2 ">
-                {dateToFullRelative(element.min_delegation_time)}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    </ProfileLayout>
   );
 }
 export default DelegationsPage;

@@ -1,4 +1,4 @@
-import { useSiteParams } from '@/blog/components/hooks/use-site-params';
+import { useSiteParams } from '@hive/ui/components/hooks/use-site-params';
 import ProfileLists from '@/blog/components/profile-lists-component';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
 

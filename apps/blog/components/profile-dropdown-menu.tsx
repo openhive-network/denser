@@ -25,7 +25,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@hive/ui/components/avatar'
 import Link from 'next/link';
 import { useAppStore } from '@/blog/store/app';
 import { useQuery } from '@tanstack/react-query';
-import { getAccountFull } from '@/blog/lib/hive';
+import { getAccountFull } from '@hive/ui/lib/hive';
 
 const ProfileDropdownMenu = () => {
   const currentProfile = useAppStore((state) => state.currentProfile);

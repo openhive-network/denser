@@ -1,4 +1,4 @@
-import { useSiteParams } from '@/blog/components/hooks/use-site-params';
+import { useSiteParams } from '@hive/ui/components/hooks/use-site-params';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import {
   Entry,

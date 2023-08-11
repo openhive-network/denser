@@ -1,4 +1,8 @@
-import { AccountProfile, FullAccount } from "@ui/store/app-types";
+import {
+  AccountFollowStats,
+  AccountProfile,
+  FullAccount,
+} from "@ui/store/app-types";
 import { bridgeServer } from "./bridge";
 
 export interface DynamicGlobalProperties {
@@ -110,8 +114,21 @@ export interface FeedHistory {
     {
       base: string;
       quote: string;
-    }
+    },
   ];
 }
 export const getFeedHistory = (): Promise<FeedHistory> =>
   bridgeServer.database.call("get_feed_history");
+
+export const getFollowCount = (username: string): Promise<AccountFollowStats> =>
+  bridgeServer.database.call("get_follow_count", [username]);
+
+export const getAccountFull = (username: string): Promise<FullAccount> =>
+  getAccount(username).then(async (account) => {
+    let follow_stats: AccountFollowStats | undefined;
+    try {
+      follow_stats = await getFollowCount(username);
+    } catch (e) {}
+
+    return { ...account, follow_stats };
+  });
