@@ -8,6 +8,7 @@ import { dateToFullRelative } from "@hive/ui/lib/parse-date";
 import { Badge } from "@hive/ui/components/badge";
 import { useEffect, useState } from "react";
 import { getPostHeader } from "@hive/ui/lib/bridge";
+import VoteProposals from "./votes-proposals-dialog";
 
 function titleSetter(daysStart: string, datsEnd: string, status: string) {
   switch (status) {
@@ -153,13 +154,17 @@ export function ProposalListItem({
           )}
         </div>
       </div>
-      <div className="mt-3 flex justify-between sm:justify-around border-t-2 border-slate-300 p-2  dark:border-slate-600 sm:ml-2 sm:w-32 sm:w-32 sm:flex-col sm:items-center sm:border-l-2 sm:border-t-0 sm:pl-4">
-        <div
-          className="self-center md:text-xl cursor-pointer"
-          title={numberWithCommas(totalVotes.toFixed(2)) + " HP"}
+      <div className="mt-3 flex justify-between border-t-2 border-slate-300 p-2  dark:border-slate-600 sm:ml-2 sm:w-32 sm:w-32 sm:flex-col sm:items-center sm:border-l-2 sm:border-t-0 sm:pl-4">
+        <VoteProposals
+          id={proposalData.id}
+          totalShares={totalShares}
+          totalVestingFund={totalVestingFund}
         >
-          {getRoundedAbbreveration(totalVotes)}
-        </div>
+          <div className="self-center md:text-xl">
+            {getRoundedAbbreveration(totalVotes)}
+          </div>
+        </VoteProposals>
+
         <div className="group relative flex">
           <span className="opocity-75 absolute inline-flex h-6 w-6 rounded-full bg-red-500 p-0 group-hover:animate-ping dark:bg-red-400"></span>
           <Icons.arrowUpCircle

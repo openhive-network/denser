@@ -324,21 +324,6 @@ export const getDynamicProps = async (): Promise<DynamicProps> => {
   };
 };
 
-// export interface ProposalVote {
-//   id: number;
-//   proposal: Proposal;
-//   voter: string;
-// }
-
-// export const getProposalVotes = (
-//   proposalId: number,
-//   voter: string = '',
-//   limit: number = 300
-// ): Promise<ProposalVote[]> =>
-//   bridgeServer
-//     .call('condenser_api', 'list_proposal_votes', [[proposalId, voter], limit, 'by_proposal_voter'])
-//     .then((r) => r.filter((x: ProposalVote) => x.proposal.proposal_id === proposalId))
-//     .then((r) => r.map((x: ProposalVote) => ({ id: x.id, voter: x.voter })));
 
 export interface WithdrawRoute {
   auto_vest: boolean;

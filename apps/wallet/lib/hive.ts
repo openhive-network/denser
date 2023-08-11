@@ -130,3 +130,23 @@ export const getAccountHistory = (
     limit,
     ...wallet_operations_bitmask,
   ]);
+export interface ProposalVote {
+  id: number;
+  proposal: Proposal;
+  voter: string;
+}
+
+export const getProposalVotes = (
+  proposalId: number,
+  voter: string = "",
+  limit: number = 1000
+): Promise<ProposalVote[]> =>
+  bridgeServer
+    .call("condenser_api", "list_proposal_votes", [
+      [proposalId, voter],
+      limit,
+      "by_proposal_voter",
+    ])
+    .then((r) =>
+      r.filter((x: ProposalVote) => x.proposal.proposal_id === proposalId)
+    );
