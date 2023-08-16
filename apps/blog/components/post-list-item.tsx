@@ -181,7 +181,22 @@ const PostListItem = ({
           <div>
             {!reveal && post.blacklists.length < 1 ? (
               <>
-                {post.json_metadata.image && post.json_metadata.image[0] ? (
+                {post.original_entry ? (
+                  <Link href={`${post.url}`} data-testid="post-image">
+                    <div className="relative mr-3.5 flex h-full max-h-fit min-h-fit items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
+                      <picture className="articles__feature-img h-ful w-full">
+                        <source
+                          srcSet={proxifyImageUrl(post.original_entry.json_metadata.image[0], '256x512').replace(
+                            / /g,
+                            '%20'
+                          )}
+                          media="(min-width: 1000px)"
+                        />
+                        <img srcSet={post.original_entry.json_metadata.image[0]} alt="Post image" loading="lazy" />
+                      </picture>
+                    </div>
+                  </Link>
+                ) : post.json_metadata.image && post.json_metadata.image[0] ? (
                   <Link href={`${post.url}`} data-testid="post-image">
                     <div className="relative mr-3.5 flex h-full max-h-fit min-h-fit items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
                       <picture className="articles__feature-img h-ful w-full">
