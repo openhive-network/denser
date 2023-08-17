@@ -53,7 +53,7 @@ const NotificationListItem = ({ date, msg, score, type, url }: AccountNotificati
             </Link>
             <span className="flex items-center gap-2 text-sm text-gray-400">
               {icon}
-              {dateToRelative(date)}
+              {`${dateToRelative(date)} ago`}
             </span>
           </div>
         </div>
