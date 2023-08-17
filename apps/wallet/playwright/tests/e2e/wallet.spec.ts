@@ -7,5 +7,6 @@ test.describe('Wallet page tests', () => {
         await page.waitForLoadState('networkidle');
         await page.waitForSelector(page.getByText('Hive wallet login')['_selector']);
         await expect(page.getByText('Hive wallet login')).toBeVisible();
+        await expect(page.url()).toBe('http://localhost:4000/');
     });
 });
