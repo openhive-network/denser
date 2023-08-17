@@ -8,6 +8,8 @@
     "build:blog": "turbo build --filter=@hive/blog",
     "start:blog": "turbo start --filter=@hive/blog",
     "dev:wallet": "turbo dev --filter=@hive/wallet",
+    "dev:auth": "turbo dev --filter=@hive/auth",
+    "build:auth": "turbo build --filter=@hive/auth",
     "build:wallet": "turbo build --filter=@hive/wallet",
     "start:wallet": "turbo start --filter=@hive/wallet",
     "lint": "turbo lint",
@@ -30,6 +32,7 @@
   "workspaces": [
     "apps/blog",
     "apps/wallet",
+    "apps/auth",
     "packages/*"
   ],
   "devDependencies": {
