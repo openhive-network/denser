@@ -19,6 +19,7 @@
     "@hive/eslint-config-custom": "*",
     "@hive/tsconfig": "*",
     "@hive/tailwindcss-config": "*",
+    "@hive/prettier-config-custom": "*",
     "@hiveio/dhive": "^1.2.7",
     "@next/bundle-analyzer": "^13.4.10",
     "@types/big.js": "^6.1.6",
