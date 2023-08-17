@@ -5,10 +5,11 @@ import {
   getDynamicGlobalProperties,
   getFeedHistory,
 } from "@hive/ui/lib/hive";
+import moment from "moment";
 import clsx from "clsx";
 import { getAccountHistory } from "@/wallet/lib/hive";
 import { getCurrentHpApr } from "@/wallet/lib/utils";
-import { delegatedHive, vestingHive } from "@hive/ui/lib/utils";
+import { delegatedHive, vestingHive, powerdownHive } from "@hive/ui/lib/utils";
 import { numberWithCommas } from "@hive/ui/lib/utils";
 import { dateToFullRelative } from "@hive/ui/lib/parse-date";
 import { convertStringToBig } from "@hive/ui/lib/helpers";
@@ -122,25 +123,46 @@ function TransfersPage({
     isError: historyFeedError,
   } = useQuery(["feedHistory"], () => getFeedHistory());
 
-  if (accountLoading || dynamicLoading || historyFeedLoading) {
+  if (
+    accountLoading ||
+    dynamicLoading ||
+    historyFeedLoading ||
+    !accountData ||
+    !dynamicData ||
+    !historyFeedData ||
+    !accountHistoryData
+  ) {
     return (
       <Loading
-        loading={accountLoading || dynamicLoading || historyFeedLoading}
+        loading={
+          accountLoading ||
+          dynamicLoading ||
+          historyFeedLoading ||
+          !accountData ||
+          !dynamicData ||
+          !historyFeedData ||
+          !accountHistoryData
+        }
       />
     );
   }
-  if (!accountData || !dynamicData || !historyFeedData || !accountHistoryData) {
-    return <p className="my-32 text-center text-3xl">Something went wrong</p>;
-  }
 
   const totalFund = convertStringToBig(dynamicData.total_vesting_fund_hive);
-  const historyFeedArr = historyFeedData.price_history;
+  // Price per hive should be current hive price(like in old code) but on wallet.hive.blog look like they count this by median
+  // const historyFeedArr = historyFeedData.price_history;
+  // const price_per_hive = convertStringToBig(historyFeedArr[historyFeedArr.length - 1].base);
   const price_per_hive = convertStringToBig(
-    historyFeedArr[historyFeedArr.length - 1].base
+    historyFeedData.current_median_history.base
+  );
+
+  const totalDays = moment(accountData.next_vesting_withdrawal).diff(
+    moment(),
+    `d`
   );
   const totalShares = convertStringToBig(dynamicData.total_vesting_shares);
   const vesting_hive = vestingHive(accountData, dynamicData);
   const delegated_hive = delegatedHive(accountData, dynamicData);
+  const powerdown_hive = powerdownHive(accountData, dynamicData);
   const received_power_balance =
     (delegated_hive.lt(0) ? "+" : "") +
     numberWithCommas((-delegated_hive).toFixed(3));
@@ -249,15 +271,16 @@ function TransfersPage({
         );
     }
   }
+
   return (
     <ProfileLayout>
-      <div>
-        <div className="flex gap-6 border-b-2 border-zinc-500 px-4 py-2">
+      <div className="flex flex-col w-full items-center ">
+        <div className="flex gap-6 border-b-2 border-zinc-500 px-4 py-2 w-full max-w-6xl">
           <a
             href=""
             className={clsx(
               router.asPath === `/@${username}/transfers`
-                ? "dark:text-slate-100 text-slate-700 font-bold"
+                ? "dark:text-slate-100 text-slate-700 font-semibold"
                 : "hover:text-red-600 dark:hover:text-red-400"
             )}
           >
@@ -269,98 +292,150 @@ function TransfersPage({
             </div>
           </Link>
         </div>
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-col gap-2 p-2">
-            <div className="font-bold">HIVE</div>
-            <p className="text-xs text-zinc-600">
-              Tradeable tokens that may be transferred anywhere at anytime. Hive
-              can be converted to HIVE POWER in a process called powering up.
-            </p>
-            <div className="font-bold">
-              {numberWithCommas(balance_hive.toFixed(3)) + " HIVE"}
-            </div>
+
+        <table className="max-w-6xl table-auto text-sm">
+          <tbody>
+            <tr>
+              <td className="px-2 py-4 sm:px-4">
+                <div className="font-semibold">HIVE</div>
+                <p className="text-xs text-zinc-600 py-2 sm:pb-0 leading-relaxed">
+                  Tradeable tokens that may be transferred anywhere at anytime.
+                  Hive can be converted to HIVE POWER in a process called
+                  powering up.
+                </p>
+                <div className="sm:hidden">
+                  {numberWithCommas(balance_hive.toFixed(3)) + " HIVE"}
+                </div>
+              </td>
+              <td className="font-semibold whitespace-nowrap hidden sm:block p-4">
+                {numberWithCommas(balance_hive.toFixed(3)) + " HIVE"}
+              </td>
+            </tr>
+
+            <tr className="bg-slate-100 dark:bg-slate-900">
+              <td className="px-2 py-4 sm:px-4">
+                <div className="font-semibold">HIVE POWER</div>
+                <p className="text-xs text-zinc-600 py-2 sm:pb-0 leading-relaxed">
+                  Influence tokens which give you more control over post payouts
+                  and allow you to earn on curation rewards. Part of{" "}
+                  {accountData?.name}
+                  &apos;s HIVE POWER is currently delegated. Delegation is
+                  donated for influence or to help new users perform actions on
+                  Hive. Your delegation amount can fluctuate. HIVE POWER
+                  increases at an APR of approximately{" "}
+                  {getCurrentHpApr(dynamicData).toFixed(2)}%, subject to
+                  blockchain variance.{" "}
+                  <span className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400">
+                    <Link href="https://hive.blog/faq.html#How_many_new_tokens_are_generated_by_the_blockchain">
+                      See FAQ for details.
+                    </Link>
+                  </span>
+                </p>
+                <div className="sm:hidden">
+                  <div>
+                    {numberWithCommas(vesting_hive.toFixed(3)) + " HIVE"}
+                  </div>
+                  <div>({received_power_balance + " HIVE"})</div>
+                </div>
+              </td>
+              <td className="font-semibold whitespace-nowrap hidden sm:block p-4 bg-slate-100 dark:bg-slate-900">
+                <div>{numberWithCommas(vesting_hive.toFixed(3)) + " HIVE"}</div>
+                <div>({received_power_balance + " HIVE"})</div>
+              </td>
+            </tr>
+
+            <tr>
+              <td className="px-2 py-4 sm:px-4">
+                <div className="font-semibold">HIVE DOLLARS</div>
+                <p className="text-xs text-zinc-600 py-2 sm:pb-0 leading-relaxed">
+                  Tradeable tokens that may be transferred anywhere at anytime.
+                </p>
+                <div className="sm:hidden">
+                  {"$" + numberWithCommas(hbd_balance.toFixed(3))}
+                </div>
+              </td>
+              <td className="font-semibold whitespace-nowrap hidden sm:block p-4 ">
+                {"$" + numberWithCommas(hbd_balance.toFixed(3))}
+              </td>
+            </tr>
+
+            <tr className=" bg-slate-100 dark:bg-slate-900">
+              <td className="px-2 py-4 sm:px-4">
+                <div className="font-semibold">SAVINGS</div>
+                <p className="text-xs text-zinc-600 py-2 sm:pb-0 leading-relaxed">
+                  &quot;Balances subject to 3 day withdraw waiting period. HBD
+                  interest rate: 20.00% APR (as voted by the{" "}
+                  <span className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400">
+                    {<Link href={`../~witnesses`}>Witnesses</Link>}
+                  </span>
+                  )&quot;
+                </p>
+                <div className="sm:hidden">
+                  <div>{saving_balance_hive.toFixed(3) + " HIVE"}</div>{" "}
+                  <div>
+                    {numberWithCommas("$" + hbd_balance_savings.toFixed(3))}
+                  </div>
+                </div>
+              </td>
+              <td className="font-semibold whitespace-nowrap hidden sm:block p-4 bg-slate-100 dark:bg-slate-900">
+                <div>{saving_balance_hive.toFixed(3) + " HIVE"}</div>
+                <div>
+                  {numberWithCommas("$" + hbd_balance_savings.toFixed(3))}
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td className="px-2 py-4 sm:px-4">
+                <div className="font-semibold">Estimated Account Value</div>
+                <p className="text-xs text-zinc-600 py-2 sm:pb-0 leading-relaxed">
+                  The estimated value is based on an average value of Hive in US
+                  dollars.
+                </p>
+                <div className="sm:hidden">{"$" + total_value}</div>
+              </td>
+              <td className="font-semibold whitespace-nowrap hidden sm:block p-4">
+                {"$" + total_value}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        {powerdown_hive.gt(0) ? (
+          <div className="p-2 sm:p-4 text-sm w-full">
+            The next power down is scheduled to happen in {totalDays}{" "}
+            {totalDays !== 1 ? " days" : "day"}(~
+            {numberWithCommas(powerdown_hive.toFixed(3))} HIVE)
           </div>
-          <div className="flex flex-col gap-2 p-2">
-            <div className="font-bold">HIVE POWER</div>
-            <p className="text-xs text-zinc-600 ">
-              Influence tokens which give you more control over post payouts and
-              allow you to earn on curation rewards. Part of {accountData?.name}
-              &apos;s HIVE POWER is currently delegated. Delegation is donated
-              for influence or to help new users perform actions on Hive. Your
-              delegation amount can fluctuate. HIVE POWER increases at an APR of
-              approximately {getCurrentHpApr(dynamicData).toFixed(2)}%, subject
-              to blockchain variance.{" "}
-              <span className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400">
-                <Link href="https://hive.blog/faq.html#How_many_new_tokens_are_generated_by_the_blockchain">
-                  See FAQ for details.
-                </Link>
-              </span>
+        ) : null}
+        <div className="w-full max-w-6xl">
+          <TransfersHistoryFilter
+            onFiltersChange={(value) => {
+              setFilter((prevFilters) => ({
+                ...prevFilters,
+                ...value,
+              }));
+            }}
+            value={filter}
+          />
+          <div className="p-2 sm:p-4">
+            <div className="font-semibold">Account History</div>
+            <p className="text-xs text-zinc-600 leading-relaxed">
+              Beware of spam and phishing links in transfer memos. Do not open
+              links from users you do not trust. Do not provide your private
+              keys to any third party websites. Transactions will not show until
+              they are confirmed on the blockchain, which may take a few
+              minutes.
             </p>
-            <div className="flex flex-col font-bold ">
-              <span>{numberWithCommas(vesting_hive.toFixed(3)) + " HIVE"}</span>
-              <span>({received_power_balance + " HIVE"})</span>
-            </div>
-          </div>
-          <div className="flex flex-col gap-2 p-2">
-            <div className="font-bold">HIVE DOLLARS</div>
-            <p className="text-xs text-zinc-600">
-              Tradeable tokens that may be transferred anywhere at anytime.
-            </p>
-            <div className="font-bold">
-              {"$" + numberWithCommas(hbd_balance.toFixed(3))}
-            </div>
-          </div>
-          <div className="flex flex-col gap-2 p-2">
-            <div className="font-bold">SAVINGS</div>
-            <p className="text-xs text-zinc-600">
-              &quot;Balances subject to 3 day withdraw waiting period. HBD
-              interest rate: 20.00% APR (as voted by the{" "}
-              <span className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400">
-                {<Link href={`../~witnesses`}>Witnesses</Link>}
-              </span>
-              )&quot;
-            </p>
-            <div className="flex flex-col font-bold">
-              <span>{saving_balance_hive.toFixed(3) + " HIVE"}</span>
-              <span>
-                {numberWithCommas("$" + hbd_balance_savings.toFixed(3))}
-              </span>
-            </div>
-          </div>
-          <div className="flex  flex-col gap-2 p-2">
-            <div className="font-bold">Estimated Account Value</div>
-            <p className="text-xs text-zinc-600">
-              The estimated value is based on an average value of Hive in US
-              dollars.
-            </p>
-            <div className="font-bold">{"$" + total_value}</div>
           </div>
         </div>
-        <TransfersHistoryFilter
-          onFiltersChange={(value) => {
-            setFilter((prevFilters) => ({
-              ...prevFilters,
-              ...value,
-            }));
-          }}
-          value={filter}
-        />
-        <div className="p-2">
-          <div className="font-bold">Account History</div>
-          <p className="text-xs text-zinc-600">
-            Beware of spam and phishing links in transfer memos. Do not open
-            links from users you do not trust. Do not provide your private keys
-            to any third party websites. Transactions will not show until they
-            are confirmed on the blockchain, which may take a few minutes.
-          </p>
-        </div>
+
         {accountHistoryLoading ? (
           <div>Loading</div>
         ) : !accountHistoryData ? (
           <div>error</div>
         ) : (
           accountHistoryData && (
-            <table className="p-2">
+            <table className="p-2 w-full max-w-6xl">
               <tbody>
                 {filteredHistoryList?.reverse().map((element) => {
                   if (!element.operation) return null;

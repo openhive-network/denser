@@ -75,3 +75,21 @@ export function delegatedHive(
   const vesting_hivef = total_vest_hive.times(vests.div(total_vests));
   return vesting_hivef;
 }
+export function powerdownHive(
+  accountData: FullAccount,
+  dynamicData: DynamicGlobalProperties
+) {
+  const withdraw_rate_vests = parseFloat(
+    accountData.vesting_withdraw_rate.split(" ")[0]
+  );
+  const remaining_vests =
+    (parseFloat(accountData.to_withdraw) - parseFloat(accountData.withdrawn)) /
+    1000000;
+  const vests = Math.min(withdraw_rate_vests, remaining_vests);
+  const total_vests = convertStringToBig(dynamicData.total_vesting_shares);
+  const total_vest_hive = convertStringToBig(
+    dynamicData.total_vesting_fund_hive
+  );
+  const powerdown_hivef = total_vest_hive.times(Big(vests).div(total_vests));
+  return powerdown_hivef;
+}

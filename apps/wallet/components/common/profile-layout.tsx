@@ -153,12 +153,16 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                       </div>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56">
-                      <DropdownMenuItem>
-                        <span>Curation rewards</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <span>Author rewards</span>
-                      </DropdownMenuItem>
+                      <Link href={`/@${username}/curation-rewards`}>
+                        <DropdownMenuItem className="cursor-pointer">
+                          Curation rewards
+                        </DropdownMenuItem>{" "}
+                      </Link>
+                      <Link href={`/@${username}/author-rewards`}>
+                        <DropdownMenuItem className="cursor-pointer">
+                          Author rewards
+                        </DropdownMenuItem>
+                      </Link>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </li>
@@ -167,7 +171,6 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <li>
                   <Link
                     href={`http://localhost:4000/@${username}/transfers`}
-                    target="_blank"
                     rel="noopener noreferrer"
                     className={clsx(
                       "flex h-full items-center px-2 hover:bg-white hover:text-slate-800 mr-4",
@@ -184,7 +187,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             </div>
           </div>
         </div>
-        <main className="container mx-auto max-w-screen-xl">{children}</main>
+        <main className="max-w-screen-xl">{children}</main>
       </div>
     </div>
   ) : (

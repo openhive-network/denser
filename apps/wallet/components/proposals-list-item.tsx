@@ -91,7 +91,7 @@ export function ProposalListItem({
             {" - "}
             {proposalData.end_date} {"("}
             {totalDays}
-            {" days)"}
+            {totalDays !== 1 ? " days)" : "day)"}
           </span>
           <div className="whitespace-nowrap text-slate-500">
             <span

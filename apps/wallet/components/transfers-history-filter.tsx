@@ -17,7 +17,7 @@ function TransfersHistoryFilter({
   value,
 }: TransfersHistoryFilterProps) {
   return (
-    <div className="flex flex-col  gap-2 border-b-2 border-zinc-500 p-2 text-xs">
+    <div className="flex flex-col  gap-2 border-b-2 border-zinc-500 p-2 sm:p-4 text-xs">
       <h1 className="font-bold">FILTERS</h1>
 
       <div className="flex gap-1 sm:gap-4">
