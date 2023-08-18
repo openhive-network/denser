@@ -170,7 +170,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               <ul className="flex h-full text-xs text-white sm:text-base lg:flex lg:gap-4">
                 <li>
                   <Link
-                    href={`@${username}/transfers`}
+                    href={`/@${username}/transfers`}
                     rel="noopener noreferrer"
                     className={clsx(
                       "flex h-full items-center px-2 hover:bg-white hover:text-slate-800 mr-4",
@@ -187,7 +187,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             </div>
           </div>
         </div>
-        <main className="max-w-screen-xl">{children}</main>
+        <main className="max-w-screen-xl container p-0">{children}</main>
       </div>
     </div>
   ) : (
