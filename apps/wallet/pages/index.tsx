@@ -13,7 +13,7 @@ export default function HomePage() {
           your Hive profile details.
         </p>
         <DialogLogin>
-          <Button className="rounded-none w-28">Login</Button>
+          <Button className="rounded-none w-28" data-testid="wallet-login-button">Login</Button>
         </DialogLogin>
       </div>
       <div className="mr-6 sm:mt-6 sm:w-full sm:max-w-lg">
@@ -24,7 +24,7 @@ export default function HomePage() {
               <div className="flex gap-3">
                 <Icons.hivetoken />
                 <span className="flex flex-col justify-center">
-                  <span className="font-semibold">Hive</span>
+                  <span className="font-semibold" data-testid="hive-token-label">Hive</span>
                   <p className="text-xs font-light text-slate-500">
                     Liquid platform token
                   </p>
@@ -33,7 +33,7 @@ export default function HomePage() {
               <div className="flex gap-3">
                 <Icons.hivetokenpower />
                 <span className="flex flex-col justify-center">
-                  <span className="font-semibold">Hive power</span>
+                  <span className="font-semibold" data-testid="hive-power-token-label">Hive power</span>
                   <p className="text-xs font-light text-slate-500">
                     Vesting influence token
                   </p>
@@ -42,7 +42,7 @@ export default function HomePage() {
               <div className="flex gap-3">
                 <Icons.hbdtoken />
                 <span className="flex flex-col justify-center">
-                  <span className="font-semibold">HBD</span>
+                  <span className="font-semibold" data-testid="hive-hbd-label">HBD</span>
                   <p className="text-xs font-light text-slate-500">
                     Seeks price stability with USD
                   </p>
