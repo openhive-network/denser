@@ -276,8 +276,8 @@ function TransfersPage({
     <ProfileLayout>
       <div className="flex flex-col w-full items-center ">
         <div className="flex gap-6 border-b-2 border-zinc-500 px-4 py-2 w-full max-w-6xl">
-          <a
-            href=""
+          <Link
+            href="/"
             className={clsx(
               router.asPath === `/@${username}/transfers`
                 ? "dark:text-slate-100 text-slate-700 font-semibold"
@@ -285,7 +285,7 @@ function TransfersPage({
             )}
           >
             Balances
-          </a>
+          </Link>
           <Link href={`/@${username}/delegations`}>
             <div className="hover:text-red-600 dark:hover:text-red-400">
               Delegations
@@ -366,7 +366,7 @@ function TransfersPage({
                   &quot;Balances subject to 3 day withdraw waiting period. HBD
                   interest rate: 20.00% APR (as voted by the{" "}
                   <span className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400">
-                    {<Link href={`../~witnesses`}>Witnesses</Link>}
+                    {<Link href={`/~witnesses`}>Witnesses</Link>}
                   </span>
                   )&quot;
                 </p>

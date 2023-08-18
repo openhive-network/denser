@@ -170,7 +170,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               <ul className="flex h-full text-xs text-white sm:text-base lg:flex lg:gap-4">
                 <li>
                   <Link
-                    href={`http://localhost:4000/@${username}/transfers`}
+                    href={`@${username}/transfers`}
                     rel="noopener noreferrer"
                     className={clsx(
                       "flex h-full items-center px-2 hover:bg-white hover:text-slate-800 mr-4",
