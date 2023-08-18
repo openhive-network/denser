@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AccountNotification, getAccountNotifications } from '@/blog/lib/bridge';
 import NotificationList from '@/blog/components/notification-list';
@@ -13,7 +13,7 @@ const NotificationActivities = ({
   username: string;
 }) => {
   const [state, setState] = useState(data);
-  const lastStateElementId = state && state.length > 0 ? state[state.length - 1].id : null;
+  const [lastStateElementId, setLastStateElementId] = useState(state && state.length > 0 ? state[state.length - 1].id : null);
   const {
     isLoading,
     error,
@@ -24,6 +24,12 @@ const NotificationActivities = ({
     () => getAccountNotifications(username, lastStateElementId, 50),
     { enabled: !!username }
   );
+
+  useEffect(() => {
+    if (state) {
+      setLastStateElementId(state[state.length - 1].id)
+    }
+  }, [state?.length])
 
   function handleLoadMore() {
     if (!isLoading) {
