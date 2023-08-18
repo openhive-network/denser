@@ -16,7 +16,7 @@ export function MainNav() {
           href="http://localhost:3000/trending"
           target="_blank"
           className={cn(
-            "flex h-full items-center transition-colors hover:border-b-2 hover:border-red-600 hover:text-red-600",
+            "flex h-full items-center transition-colors border-b-2 border-white hover:border-red-600 hover:text-red-600",
             pathname === "/trending" ? "text-red-600" : "text-foreground/60"
           )}
           data-testid="nav-posts-link"
@@ -24,10 +24,10 @@ export function MainNav() {
           Posts
         </Link>
         <Link
-          href="http://localhost:4000/proposals"
+          href="/proposals"
           rel="noopener noreferrer"
           className={cn(
-            "flex h-full items-center transition-colors hover:border-b-2 hover:border-red-600 hover:text-red-600",
+            "flex h-full items-center transition-colors border-b-2 border-white hover:border-red-600 hover:text-red-600",
             pathname === "/proposals" ? "text-red-600" : "text-foreground/60"
           )}
           data-testid="nav-proposals-link"
@@ -35,10 +35,10 @@ export function MainNav() {
           Proposals
         </Link>
         <Link
-          href="http://localhost:4000/~witnesses"
+          href="/~witnesses"
           rel="noopener noreferrer"
           className={cn(
-            "flex h-full items-center transition-colors hover:border-b-2 hover:border-red-600 hover:text-red-600",
+            "flex h-full items-center transition-colors border-b-2 border-white hover:border-red-600 hover:text-red-600",
             pathname === "/~witnesses" ? "text-red-600" : "text-foreground/60"
           )}
           data-testid="nav-witnesses-link"
@@ -51,7 +51,7 @@ export function MainNav() {
           target="_blank"
           rel="noopener noreferrer"
           className={cn(
-            "flex h-full items-center transition-colors hover:border-b-2 hover:border-red-600 hover:text-red-600",
+            "flex h-full items-center transition-colors border-b-2 border-white hover:border-red-600 hover:text-red-600",
             pathname === "https://hive.io/eco/"
               ? "text-red-600"
               : "text-foreground/60"

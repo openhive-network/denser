@@ -8,7 +8,31 @@ import {
 } from "@hive/ui/components/sheet";
 import Link from "next/link";
 import { Separator } from "@hive/ui/components/separator";
-
+import clsx from "clsx";
+import { ReactNode } from "react";
+const Item = ({
+  href,
+  children,
+  target = false,
+}: {
+  href: string;
+  children: ReactNode;
+  target?: boolean;
+}) => {
+  return (
+    <li>
+      <SheetTitle className="text-sm font-semibold text-foreground border-b-2 border-white dark:hover:border-red-600 hover:border-red-600 dark:border-slate-950 dark:hover:bg-slate-900 hover:bg-slate-100 cursor-pointer">
+        <Link
+          href={href}
+          className="flex items-center p-4 gap-1"
+          target={clsx(target ? "_blank" : "")}
+        >
+          {children}
+        </Link>
+      </SheetTitle>
+    </li>
+  );
+};
 const Sidebar = () => {
   return (
     <Sheet>
@@ -25,96 +49,50 @@ const Sidebar = () => {
       <SheetContent
         position="right"
         size="sm"
-        className="w-5/6 md:w-1/5"
+        className="w-5/6 md:w-2/6 pt-12 px-0 overflow-auto"
         data-testid="nav-sidebar-menu-content"
       >
         <div className="flex flex-col">
-          <ul className="flex flex-col gap-2">
-            <li>
-              <SheetTitle className="py-1.5">
-                <Link href="http://localhost:3000/welcome">Welcome</Link>
-              </SheetTitle>
-            </li>
-            <li>
-              <SheetTitle className="py-1.5">
-                <Link href="http://localhost:3000/faq.html">FAQ</Link>
-              </SheetTitle>
-            </li>
-            <li>
-              <SheetTitle className="py-1.5">
-                <Link href="https://hiveblocks.com" className="flex">
-                  Block Explorer
-                  <Icons.forward className="w-4" />
-                </Link>
-              </SheetTitle>
-            </li>
+          <ul className="flex flex-col">
+            <Item href="http://localhost:3000/welcome">Welcome</Item>
+            <Item href="http://localhost:3000/faq.html">FAQ</Item>
+            <Item href="https://wallet.hive.blog/market">Currency Market</Item>
             <Separator className="my-2" />
-            <li>
-              <SheetTitle className="py-1.5">
-                <Link href="http://localhost:4000/recover_account_step_1">
-                  Stolen Accounts Recovery
-                </Link>
-              </SheetTitle>
-            </li>
-            <li>
-              <SheetTitle className="py-1.5">
-                <Link href="http://localhost:4000/change_password">
-                  Change Account Password
-                </Link>
-              </SheetTitle>
-            </li>
-            <li>
-              <SheetTitle className="py-1.5">
-                <Link href="http://localhost:4000/~witnesses">
-                  Vote for Witnesses
-                </Link>
-              </SheetTitle>
-            </li>
-            <li>
-              <SheetTitle className="py-1.5">
-                <Link href="http://localhost:4000/proposals">
-                  Hive Proposals
-                </Link>
-              </SheetTitle>
-            </li>
+            <Item href="/~witnesses">Vote for Witnesses</Item>
+            <Item href="/proposals">Hive Proposals</Item>
             <Separator className="my-2" />
-            <li>
-              <SheetTitle className="py-1.5">
-                <Link href="https://openhive.chat" className="flex">
-                  OpenHive Chat <Icons.forward className="w-4" />
-                </Link>
-              </SheetTitle>
+
+            <li className="p-4 text-slate-500 text-sm">
+              Third-party exchanges:
             </li>
+            <Item href="https://blocktrades.us" target>
+              Blocktrades
+              <Icons.forward className="w-4" />
+            </Item>
+            <Item href="https://ionomy.com" target>
+              Ionomy
+              <Icons.forward className="w-4" />
+            </Item>
             <Separator className="my-2" />
-            <li>
-              <SheetTitle className="py-1.5">
-                <Link href="https://developers.hive.io" className="flex">
-                  Developer Portal <Icons.forward className="w-4" />
-                </Link>
-              </SheetTitle>
-            </li>
-            <li>
-              <SheetTitle className="py-1.5">
-                <Link href="https://hive.io/whitepaper.pdf" className="flex">
-                  Hive Whitepaper <Icons.forward className="w-4" />
-                </Link>
-              </SheetTitle>
-            </li>
+            <Item href="https://openhive.chat" target>
+              Hive Chat <Icons.forward className="w-4" />
+            </Item>
+            <Item href="https://hiveprojects.io/" target>
+              Apps Built on Hive <Icons.forward className="w-4" />
+            </Item>
             <Separator className="my-2" />
-            <li>
-              <SheetTitle className="py-1.5">
-                <Link href="http://localhost:3000/privacy.html">
-                  Privacy Policy
-                </Link>
-              </SheetTitle>
-            </li>
-            <li>
-              <SheetTitle className="py-1.5">
-                <Link href="http://localhost:3000/tos.html">
-                  Terms of Service
-                </Link>
-              </SheetTitle>
-            </li>
+            <Item href="https://developers.hive.io" target>
+              Hive API Docs
+              <Icons.forward className="w-4" />
+            </Item>
+            <Item href="https://hive.io/whitepaper.pdf" target>
+              Hive Whitepaper <Icons.forward className="w-4" />
+            </Item>
+            <Separator className="my-2" />
+            <Item href="http://localhost:3000/privacy.html">
+              Privacy Policy
+            </Item>
+            <Item href="http://localhost:3000/tos.html">Terms of Service</Item>
           </ul>
         </div>
       </SheetContent>
