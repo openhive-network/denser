@@ -263,3 +263,17 @@ export function extractYouTubeVideoIds(urls: string[]): string[] {
 
   return youtubeVideoIds;
 }
+
+export function extractPictureFromPostBody(urls: string[]): string[] {
+  const picturesRegex = /(?:https?:\/\/)?(?:images\.hive\.blog)\/([a-zA-Z0-9_\/-]+\.(jpeg|png|jpg|webp))/i;
+
+  const picturesFromPostBody: string[] = [];
+  for (const url of urls) {
+    const match = url.match(picturesRegex);
+    if (match && match[1]) {
+      picturesFromPostBody.push(`https://images.hive.blog/${match[1]}`);
+    }
+  }
+
+  return picturesFromPostBody;
+}

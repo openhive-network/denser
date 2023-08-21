@@ -1,5 +1,11 @@
 import Link from 'next/link';
-import { cn, extractUrlsFromJsonString, extractYouTubeVideoIds, getPostSummary } from '@/blog/lib/utils';
+import {
+  cn,
+  extractPictureFromPostBody,
+  extractUrlsFromJsonString,
+  extractYouTubeVideoIds,
+  getPostSummary
+} from '@/blog/lib/utils';
 import { Icons } from '@hive/ui/components/icons';
 import {
   Card,
@@ -42,6 +48,7 @@ const PostListItem = ({
     setReveal((reveal) => !reveal);
   }
   const youtube_id = extractYouTubeVideoIds(extractUrlsFromJsonString(post.body));
+  const pictures_extracted = extractPictureFromPostBody(extractUrlsFromJsonString(post.body))
 
   return (
     <li data-testid="post-list-item" className={sort === 'muted' ? 'opacity-50 hover:opacity-100' : ''}>
@@ -284,6 +291,25 @@ const PostListItem = ({
                         <img
                           className="w-full"
                           srcSet={`https://img.youtube.com/vi/${youtube_id[0]}/0.jpg`}
+                          alt="Post image"
+                          loading="lazy"
+                        />
+                      </picture>
+                    </div>
+                  </Link>
+                ) : pictures_extracted[0] ? (
+                  <Link href={`${post.url}`} data-testid="post-image">
+                    <div className="relative mr-3.5 flex h-full max-h-fit min-h-fit items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
+                      <picture className="articles__feature-img h-ful w-full">
+                        <source
+                          srcSet={proxifyImageUrl(pictures_extracted[0], '256x512').replace(
+                            / /g,
+                            '%20'
+                          )}
+                          media="(min-width: 1000px)"
+                        />
+                        <img
+                          srcSet={pictures_extracted[0]}
                           alt="Post image"
                           loading="lazy"
                         />
