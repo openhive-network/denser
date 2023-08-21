@@ -112,4 +112,11 @@ test.describe('Muted posts tests', () => {
     await expect(postPage.articleBody).toBeVisible();
     await expect(postPage.articleFooter).toBeVisible();
   });
+
+  test('Check if posts list in  muted tab is displayed correctly', async ({page}) =>{
+    await page.goto('/muted');
+    
+    await expect(homePage.getFirstPostAuthor).toBeVisible()
+    await expect(postPage.postImage).not.toBeVisible()
+  })
 });

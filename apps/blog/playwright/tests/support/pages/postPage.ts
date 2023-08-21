@@ -47,6 +47,7 @@ export class PostPage {
   readonly getLoadMoreCommentsLink: Locator;
   readonly getCommentFilter: Locator;
   readonly getCommentFilterList: Locator;
+  readonly postImage: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -95,6 +96,7 @@ export class PostPage {
     this.getLoadMoreCommentsLink = page.getByText('Load more...');
     this.getCommentFilter = page.locator('[data-testid="posts-filter"]');
     this.getCommentFilterList = page.locator('[data-testid="posts-filter-list"]');
+    this.postImage = page.locator('[data-testid="post-image"]')
   }
 
   async gotoHomePage() {
