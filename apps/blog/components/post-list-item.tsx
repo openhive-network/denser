@@ -17,7 +17,7 @@ import {
 } from '@hive/ui/components/card';
 import { Separator } from '@hive/ui/components/separator';
 import { Badge } from '@hive/ui/components/badge';
-import { dateToRelative } from '@hive/ui/lib/parse-date';
+import parseDate, { dateToRelative } from '@hive/ui/lib/parse-date';
 import accountReputation from '@/blog/lib/account-reputation';
 import { AlertDialogDemo } from './alert-window';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
@@ -159,7 +159,7 @@ const PostListItem = ({
                   className="hover:cursor-pointer hover:text-red-600"
                   data-testid="post-card-timestamp"
                 >
-                  {dateToRelative(post.created)} ago
+                    <span title={String(parseDate(post.created))}>{dateToRelative(post.created)} ago</span>
                 </Link>
                 {post.percent_hbd === 0 ? (
                   <span className="ml-1 flex items-center">
