@@ -177,7 +177,7 @@ const PostListItem = ({
                 ) : null}
                 {post.stats && post.stats.is_pinned && isCommunityPage ? (
                   <Badge className="ml-1 bg-red-600 text-white hover:bg-red-600">
-                    <Link href={`${post.url}`}>Pinned</Link>
+                    <Link href={`${post.url}`} data-testid="post-pinned-tag">Pinned</Link>
                   </Badge>
                 ) : null}
               </span>

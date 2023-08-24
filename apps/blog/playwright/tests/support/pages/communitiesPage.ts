@@ -30,7 +30,14 @@ export class CommunitiesPage {
   readonly postCardResponses: Locator;
   readonly languageHeader: Locator;
   readonly communityChoosenLanguage: Locator;
+  readonly communityPinnedPost: Locator;
+  readonly activityLogButton: Locator;
 
+  readonly subscribersNotificationContent: Locator;
+  readonly subscribersNotificationLocalMenu: Locator
+  readonly subscriberName: Locator;
+  readonly subscribersRowsEven: Locator;
+  readonly subscribersRowsOdd: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -62,6 +69,14 @@ export class CommunitiesPage {
     this.getFirstPostCardTimestampLink = page.locator('[data-testid="post-card-timestamp"]').first();
     this.getFirstResponses = page.locator('[data-testid="post-children"]').first()
     this.postCardResponses = page.locator('[data-testid="post-card-responses"]')
+    this.communityPinnedPost = page.locator('[data-testid="post-pinned-tag"]');
+    this.activityLogButton = this.communityInfoSidebar.getByText('Activity Log');
+
+    this.subscribersNotificationContent = page.locator('[data-testid="notifications-content-all"]');
+    this.subscribersNotificationLocalMenu = page.locator('[data-testid="notifications-local-menu"]');
+    this.subscriberName = page.locator('[data-testid="subscriber-name"]');
+    this.subscribersRowsEven = this.subscribersNotificationContent.locator('tr:nth-of-type(even)');
+    this.subscribersRowsOdd =  this.subscribersNotificationContent.locator('tr:nth-of-type(odd)');
   }
 
   async validataCommunitiesPageIsLoaded(communityName: string) {
