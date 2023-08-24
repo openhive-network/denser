@@ -5,6 +5,7 @@ import { CommunitiesPage } from '../support/pages/communitiesPage';
 import { ReblogThisPostDialog } from '../support/pages/reblogThisPostDialog';
 import { PostPage } from '../support/pages/postPage';
 import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
+import { ApiHelper } from '../support/apiHelper';
 
 test.describe('Communities page tests', () => {
   let homePage: HomePage;
@@ -13,6 +14,7 @@ test.describe('Communities page tests', () => {
   let reblogThisPostDialog: ReblogThisPostDialog;
   let postPage: PostPage;
   let loginToVoteDialog: LoginToVoteDialog;
+  let apiHelper: ApiHelper;
 
   test.beforeEach(async ({ page }) => {
     homePage = new HomePage(page);
@@ -21,12 +23,12 @@ test.describe('Communities page tests', () => {
     reblogThisPostDialog = new ReblogThisPostDialog(page);
     postPage = new PostPage(page);
     loginToVoteDialog = new LoginToVoteDialog(page);
+    apiHelper = new ApiHelper(page);
 
     await homePage.goto();
   });
 
   test('is LeoFinance community page loaded', async ({ page }) => {
-    await homePage.goto();
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
   });
@@ -134,6 +136,29 @@ test.describe('Communities page tests', () => {
       await page.goBack();
       await communitiesPage.quickValidataCommunitiesPageIsLoaded('LeoFinance');
     }
+  });
+
+  test('validate the last post header with the pinned tag in the LeoFinance community', async ({ page }) => {
+    await homePage.moveToLeoFinanceCommunities();
+    await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
+    await expect(communitiesPage.communityPinnedPost.last()).toBeVisible();
+    // Click the last pinned tag of the community articles
+    await communitiesPage.communityPinnedPost.last().click();
+    await page.waitForLoadState('networkidle');
+    await page.waitForSelector(postPage.articleFooter['_selector']);
+    await expect(postPage.articleTitle).toHaveText("LIVE LeoFinance's Project Blank Launch Party!! | New Features, Same Web3 Experience");
+  });
+
+  test('validate the style of pinned tag in the last post header with the pinned tag in the LeoFinance community', async ({ page }) => {
+    await homePage.moveToLeoFinanceCommunities();
+    await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
+    await expect(communitiesPage.communityPinnedPost.first()).toBeVisible();
+    expect(await homePage.getElementCssPropertyValue(await communitiesPage.communityPinnedPost.last(), 'color')).toBe(
+      'rgb(255, 255, 255)'
+    );
+    expect(await homePage.getElementCssPropertyValue(await communitiesPage.communityPinnedPost.last().locator('..'), 'background-color')).toBe(
+      'rgb(220, 38, 38)'
+    );
   });
 
   test('validate the first post header styles (for Trending filter) in the light theme', async ({ page }) => {
@@ -555,4 +580,166 @@ test.describe('Communities page tests', () => {
 
     expect(communityChoosenLanguageText).toBe(languageApi);
   });
+
+  test('move to the dialog of subscribers after clicking Activity Log', async ({ page }) => {
+    const leoFinanceCommunityAccount: string = 'hive-167922';
+    await homePage.moveToLeoFinanceCommunities();
+    await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
+    await communitiesPage.activityLogButton.click();
+    await communitiesPage.page.waitForSelector(communitiesPage.subscribersNotificationContent['_selector']);
+    await expect(communitiesPage.subscribersNotificationContent).toBeVisible();
+    await expect(communitiesPage.subscribersNotificationLocalMenu).toBeVisible();
+
+    // Get list of subscribers by the api request
+    let sub = await apiHelper.getCommunitySubscribersAPI(leoFinanceCommunityAccount);
+
+    // Validate that the first(the newest) subscriber is the same as in the api for LeoFinance Community
+    expect(sub.result[0].msg).toContain(await communitiesPage.subscriberName.first().textContent());
+    // Validate that amount of the subscribers is equal 50 (before clicking Load more button)
+    expect((await communitiesPage.subscriberName.all()).length).toBe(50);
+  });
+
+  test('validate styles of the list of the subscribers in the modal in the light mode', async ({ page }) => {
+    const leoFinanceCommunityAccount: string = 'hive-167922';
+    const widthProgressBar = 60; // 100%
+    await homePage.moveToLeoFinanceCommunities();
+    await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
+    await communitiesPage.activityLogButton.click();
+    await communitiesPage.page.waitForSelector(communitiesPage.subscribersNotificationContent['_selector']);
+
+    // Get list of subscribers by the api request
+    let sub = await apiHelper.getCommunitySubscribersAPI(leoFinanceCommunityAccount);
+    // Values for progress bar of the first subscriber
+    const transformXwidthPercentage = 100 - sub.result[0].score;
+    const transformXwidthValue = (60 * transformXwidthPercentage)/100;
+    // console.log('transformXwidthValue: ', transformXwidthValue );
+
+    // First row of the notifications content table
+    const firstRowOfSubscribers = (await communitiesPage.subscribersRowsOdd.all()).at(0);
+    await expect(await homePage.getElementCssPropertyValue(firstRowOfSubscribers, "background-color")).toBe('rgb(226, 232, 240)');
+    await expect(await homePage.getElementCssPropertyValue(firstRowOfSubscribers, "color")).toBe('rgb(15, 23, 42)');
+    // console.log('First subscriber progress bar - transform css value: ', await homePage.getElementCssPropertyValue(firstRowOfSubscribers?.locator('div[role="progressbar"] div'),"transform"));
+    await expect(await homePage.getElementCssPropertyValue(firstRowOfSubscribers?.locator('div[role="progressbar"] div'),"transform"))
+      .toBe(`matrix(1, 0, 0, 1, -${transformXwidthValue}, 0)`);
+
+    // Second row of the notifications content table
+    // Values for progress bar of the second subscriber
+    const transformXwidthPercentage2 = 100 - sub.result[1].score;
+    const transformXwidthValue2 = (60 * transformXwidthPercentage2)/100;
+    // console.log('transformXwidthValue2: ', transformXwidthValue2 );
+
+    const secondRowOfSubscribers = (await communitiesPage.subscribersRowsEven.all()).at(0);
+    await expect(await homePage.getElementCssPropertyValue(secondRowOfSubscribers, "background-color")).toBe('rgba(0, 0, 0, 0)');
+    await expect(await homePage.getElementCssPropertyValue(secondRowOfSubscribers, "color")).toBe('rgb(15, 23, 42)');
+    await expect(await homePage.getElementCssPropertyValue(secondRowOfSubscribers?.locator('div[role="progressbar"] div'),"transform"))
+      .toBe(`matrix(1, 0, 0, 1, -${transformXwidthValue2}, 0)`);
+  });
+
+  test('validate styles of the list of the subscribers in the modal in the dark mode', async ({ page }) => {
+    const leoFinanceCommunityAccount: string = 'hive-167922';
+    const widthProgressBar = 60; // 100%
+
+    // Move to the dark theme
+    await homePage.changeThemeMode('Dark');
+    await homePage.validateThemeModeIsDark();
+    // Move to the LeoFinance Community
+    await homePage.moveToLeoFinanceCommunities();
+    await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
+    await communitiesPage.activityLogButton.click();
+    await communitiesPage.page.waitForSelector(communitiesPage.subscribersNotificationContent['_selector']);
+
+    // Get list of subscribers by the api request
+    let sub = await apiHelper.getCommunitySubscribersAPI(leoFinanceCommunityAccount);
+    // Values for progress bar of the first subscriber
+    const transformXwidthPercentage = 100 - sub.result[0].score;
+    const transformXwidthValue = (60 * transformXwidthPercentage)/100;
+    // console.log('transformXwidthValue: ', transformXwidthValue );
+
+    // First row of the notifications content table
+    const firstRowOfSubscribers = (await communitiesPage.subscribersRowsOdd.all()).at(0);
+    await expect(await homePage.getElementCssPropertyValue(firstRowOfSubscribers, "background-color")).toBe('rgb(15, 23, 42)');
+    await expect(await homePage.getElementCssPropertyValue(firstRowOfSubscribers, "color")).toBe('rgb(225, 231, 239)');
+    // console.log('First subscriber progress bar - transform css value: ', await homePage.getElementCssPropertyValue(firstRowOfSubscribers?.locator('div[role="progressbar"] div'),"transform"));
+    await expect(await homePage.getElementCssPropertyValue(firstRowOfSubscribers?.locator('div[role="progressbar"] div'),"transform"))
+      .toBe(`matrix(1, 0, 0, 1, -${transformXwidthValue}, 0)`);
+
+    // Second row of the notifications content table
+    // Values for progress bar of the second subscriber
+    const transformXwidthPercentage2 = 100 - sub.result[1].score;
+    const transformXwidthValue2 = (60 * transformXwidthPercentage2)/100;
+    // console.log('transformXwidthValue2: ', transformXwidthValue2 );
+
+    const secondRowOfSubscribers = (await communitiesPage.subscribersRowsEven.all()).at(0);
+    await expect(await homePage.getElementCssPropertyValue(secondRowOfSubscribers, "background-color")).toBe('rgba(0, 0, 0, 0)');
+    await expect(await homePage.getElementCssPropertyValue(secondRowOfSubscribers, "color")).toBe('rgb(225, 231, 239)');
+    await expect(await homePage.getElementCssPropertyValue(secondRowOfSubscribers?.locator('div[role="progressbar"] div'),"transform"))
+      .toBe(`matrix(1, 0, 0, 1, -${transformXwidthValue2}, 0)`);
+  });
+
+  test('validate styles of the menu of list of the subscribers in the modal in the light mode', async ({ page }) => {
+    await homePage.moveToLeoFinanceCommunities();
+    await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
+    await communitiesPage.activityLogButton.click();
+    await communitiesPage.page.waitForSelector(communitiesPage.subscribersNotificationLocalMenu['_selector']);
+    // All button (default)
+    await expect(communitiesPage.subscribersNotificationLocalMenu.getByText('All')).toBeVisible();
+    await expect(await homePage.getElementCssPropertyValue(communitiesPage.subscribersNotificationLocalMenu.getByText('All'),"color")).toBe('rgb(15, 23, 42)');
+    await expect(await homePage.getElementCssPropertyValue(communitiesPage.subscribersNotificationLocalMenu.getByText('All'),"background-color")).toBe('rgb(255, 255, 255)');
+    // Replies button
+    await expect(communitiesPage.subscribersNotificationLocalMenu.getByText('Replies')).toBeVisible();
+    await expect(await homePage.getElementCssPropertyValue(communitiesPage.subscribersNotificationLocalMenu.getByText('Replies'),"color")).toBe('rgb(100, 116, 139)');
+    await expect(await homePage.getElementCssPropertyValue(communitiesPage.subscribersNotificationLocalMenu.getByText('Replies'),"background-color")).toBe('rgba(0, 0, 0, 0)');
+    // Mentions button
+    await expect(communitiesPage.subscribersNotificationLocalMenu.getByText('Mentions')).toBeVisible();
+    await expect(await homePage.getElementCssPropertyValue(communitiesPage.subscribersNotificationLocalMenu.getByText('Mentions'),"color")).toBe('rgb(100, 116, 139)');
+    await expect(await homePage.getElementCssPropertyValue(communitiesPage.subscribersNotificationLocalMenu.getByText('Mentions'),"background-color")).toBe('rgba(0, 0, 0, 0)');
+    // Follows button
+    await expect(communitiesPage.subscribersNotificationLocalMenu.getByText('Follows')).toBeVisible();
+    await expect(await homePage.getElementCssPropertyValue(communitiesPage.subscribersNotificationLocalMenu.getByText('Follows'),"color")).toBe('rgb(100, 116, 139)');
+    await expect(await homePage.getElementCssPropertyValue(communitiesPage.subscribersNotificationLocalMenu.getByText('Follows'),"background-color")).toBe('rgba(0, 0, 0, 0)');
+    // Upvotes button
+    await expect(communitiesPage.subscribersNotificationLocalMenu.getByText('Upvotes')).toBeVisible();
+    await expect(await homePage.getElementCssPropertyValue(communitiesPage.subscribersNotificationLocalMenu.getByText('Upvotes'),"color")).toBe('rgb(100, 116, 139)');
+    await expect(await homePage.getElementCssPropertyValue(communitiesPage.subscribersNotificationLocalMenu.getByText('Upvotes'),"background-color")).toBe('rgba(0, 0, 0, 0)');
+    // Reblogs button
+    await expect(communitiesPage.subscribersNotificationLocalMenu.getByText('Reblogs')).toBeVisible();
+    await expect(await homePage.getElementCssPropertyValue(communitiesPage.subscribersNotificationLocalMenu.getByText('Reblogs'),"color")).toBe('rgb(100, 116, 139)');
+    await expect(await homePage.getElementCssPropertyValue(communitiesPage.subscribersNotificationLocalMenu.getByText('Reblogs'),"background-color")).toBe('rgba(0, 0, 0, 0)');
+  });
+
+  test('validate styles of the menu of list of the subscribers in the modal in the dark mode', async ({ page }) => {
+    // Move to the dark theme
+    await homePage.changeThemeMode('Dark');
+    await homePage.validateThemeModeIsDark();
+    // Move to the LeoFinance Community
+    await homePage.moveToLeoFinanceCommunities();
+    await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
+    await communitiesPage.activityLogButton.click();
+    await communitiesPage.page.waitForSelector(communitiesPage.subscribersNotificationLocalMenu['_selector']);
+    // All button (default)
+    await expect(communitiesPage.subscribersNotificationLocalMenu.getByText('All')).toBeVisible();
+    await expect(await homePage.getElementCssPropertyValue(communitiesPage.subscribersNotificationLocalMenu.getByText('All'),"color")).toBe('rgb(225, 231, 239)');
+    await expect(await homePage.getElementCssPropertyValue(communitiesPage.subscribersNotificationLocalMenu.getByText('All'),"background-color")).toBe('rgb(3, 7, 17)');
+    // Replies button
+    await expect(communitiesPage.subscribersNotificationLocalMenu.getByText('Replies')).toBeVisible();
+    await expect(await homePage.getElementCssPropertyValue(communitiesPage.subscribersNotificationLocalMenu.getByText('Replies'),"color")).toBe('rgb(127, 142, 163)');
+    await expect(await homePage.getElementCssPropertyValue(communitiesPage.subscribersNotificationLocalMenu.getByText('Replies'),"background-color")).toBe('rgba(0, 0, 0, 0)');
+    // Mentions button
+    await expect(communitiesPage.subscribersNotificationLocalMenu.getByText('Mentions')).toBeVisible();
+    await expect(await homePage.getElementCssPropertyValue(communitiesPage.subscribersNotificationLocalMenu.getByText('Mentions'),"color")).toBe('rgb(127, 142, 163)');
+    await expect(await homePage.getElementCssPropertyValue(communitiesPage.subscribersNotificationLocalMenu.getByText('Mentions'),"background-color")).toBe('rgba(0, 0, 0, 0)');
+    // Follows button
+    await expect(communitiesPage.subscribersNotificationLocalMenu.getByText('Follows')).toBeVisible();
+    await expect(await homePage.getElementCssPropertyValue(communitiesPage.subscribersNotificationLocalMenu.getByText('Follows'),"color")).toBe('rgb(127, 142, 163)');
+    await expect(await homePage.getElementCssPropertyValue(communitiesPage.subscribersNotificationLocalMenu.getByText('Follows'),"background-color")).toBe('rgba(0, 0, 0, 0)');
+    // Upvotes button
+    await expect(communitiesPage.subscribersNotificationLocalMenu.getByText('Upvotes')).toBeVisible();
+    await expect(await homePage.getElementCssPropertyValue(communitiesPage.subscribersNotificationLocalMenu.getByText('Upvotes'),"color")).toBe('rgb(127, 142, 163)');
+    await expect(await homePage.getElementCssPropertyValue(communitiesPage.subscribersNotificationLocalMenu.getByText('Upvotes'),"background-color")).toBe('rgba(0, 0, 0, 0)');
+    // Reblogs button
+    await expect(communitiesPage.subscribersNotificationLocalMenu.getByText('Reblogs')).toBeVisible();
+    await expect(await homePage.getElementCssPropertyValue(communitiesPage.subscribersNotificationLocalMenu.getByText('Reblogs'),"color")).toBe('rgb(127, 142, 163)');
+    await expect(await homePage.getElementCssPropertyValue(communitiesPage.subscribersNotificationLocalMenu.getByText('Reblogs'),"background-color")).toBe('rgba(0, 0, 0, 0)');
+  });
+
 });

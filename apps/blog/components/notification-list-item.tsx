@@ -47,7 +47,7 @@ const NotificationListItem = ({ date, msg, score, type, url }: AccountNotificati
           <div className="flex flex-col">
             <Link href={`/${url}`}>
               <span className="">
-                <strong>{msg.split(' ')[0]}</strong>
+                <strong data-testid="subscriber-name">{msg.split(' ')[0]}</strong>
                 {mentions ? msg.split(new RegExp(`(${mentions[0]})`, 'gi'))[2] : null}
               </span>
             </Link>

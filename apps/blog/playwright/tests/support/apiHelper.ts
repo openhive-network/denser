@@ -165,4 +165,24 @@ export class ApiHelper {
 
     return response.json();
   }
+
+    // Get community subscribers as json from API response
+    async getCommunitySubscribersAPI(account: string, limit: number = 50, lastId: number = 0) {
+      const url = process.env.REACT_APP_API_ENDPOINT;
+
+      const responseGetCommunitySubscribers = await this.page.request.post(`${url}/`, {
+        data: {
+          id: 0,
+          jsonrpc: '2.0',
+          method: 'bridge.account_notifications',
+          params: {account: account, limit: limit, last_id: lastId}
+        },
+        headers: {
+          Accept: 'application/json, text/plain, */*'
+        }
+      });
+
+      return responseGetCommunitySubscribers.json();
+    }
+
 }
