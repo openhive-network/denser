@@ -261,7 +261,7 @@ const ParamPage: FC = () => {
                 data={communityData}
                 subs={subsData}
                 notificationData={dataAccountNotification}
-                username="tag"
+                username={tag ? tag : ' '}
               />
             ) : (
               <ExploreHive />

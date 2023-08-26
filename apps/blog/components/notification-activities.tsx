@@ -29,12 +29,15 @@ const NotificationActivities = ({
     if (state) {
       setLastStateElementId(state[state.length - 1].id)
     }
-  }, [state?.length])
+  }, [state, state?.length])
+
+  useEffect(() => {
+    refetch();
+  }, [lastStateElementId, refetch]);
 
   function handleLoadMore() {
     if (!isLoading) {
       setState([...(state ?? []), ...(moreData || [])]);
-      refetch();
     }
   }
 
