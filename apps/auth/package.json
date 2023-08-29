@@ -9,16 +9,16 @@
         "lint": "eslint ."
     },
     "dependencies": {
-        "@hive/ui": "*",
-        "@hive/eslint-config-custom": "*",
-        "@hive/tsconfig": "*",
-        "@hive/tailwindcss-config": "*",
-        "@hive/prettier-config-custom": "*",
         "@beam-australia/react-env": "^3.1.1",
+        "@hive/eslint-config-custom": "*",
+        "@hive/prettier-config-custom": "*",
+        "@hive/tailwindcss-config": "*",
+        "@hive/tsconfig": "*",
+        "@hive/ui": "*",
         "@next/bundle-analyzer": "^13.4.10",
         "next": "13.4.10",
         "next-transpile-modules": "^10.0.1",
+        "react-hook-form": "^7.45.4",
         "typescript": "5.1.6"
-    },
-    "devDependencies": {}
+    }
 }
