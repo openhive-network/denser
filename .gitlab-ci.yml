@@ -6,7 +6,7 @@ stages:
 
 variables:
   # Variables required by Common CI jobs
-  CI_COMMON_JOB_VERSION: "a61b95b922b9f7fe5f6aba3559bdb5e239052700"
+  CI_COMMON_JOB_VERSION: "bade6e0b0c68841ea0b1c001bd453e38d27a6f98"
   DOCKER_BUILDER_TAG: "$CI_COMMON_JOB_VERSION"
   DOCKER_DIND_TAG: "$CI_COMMON_JOB_VERSION"
   IMAGE_REMOVER_TAG: "$CI_COMMON_JOB_VERSION"
@@ -15,7 +15,7 @@ variables:
 include:
   - template: Workflows/Branch-Pipelines.gitlab-ci.yml
   - project: 'hive/common-ci-configuration'
-    ref: a61b95b922b9f7fe5f6aba3559bdb5e239052700 # develop
+    ref: bade6e0b0c68841ea0b1c001bd453e38d27a6f98 # develop
     file: '/templates/docker_image_jobs.gitlab-ci.yml'
 
 .docker_build_template:
@@ -67,6 +67,7 @@ docker-build-wallet:
     TAG: "wallet"
 
 .node-job:
+  extends: .job-defaults
   image:
     name: node:18.15-alpine3.17
     entrypoint: []
@@ -180,6 +181,7 @@ publish:
   image:
     name: node:18.15-alpine3.17
     entrypoint: []
+  extends: .job-defaults  
   stage: deploy
   script:
     # Extract a few values from package.json
@@ -212,6 +214,7 @@ publish:
     - public-runner-docker
 
 .deploy_template_for_staging:
+  extends: .job-defaults
   stage: deploy
   before_script:
     - |
@@ -269,6 +272,7 @@ staging:deploy-wallet:
     on_stop: staging:stop-wallet
 
 .stop_template_for_staging:
+  extends: .job-defaults
   stage: deploy
   script:
     - docker ps -q --filter "name=$CONTAINER_NAME" | grep -q . && docker stop $CONTAINER_NAME
