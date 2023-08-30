@@ -23,6 +23,7 @@
         "typescript": "5.1.6"
     },
     "devDependencies": {
+        "git-revision-webpack-plugin": "^5.0.0",
         "pino-pretty": "^10.2.0"
     }
 }
