@@ -15,12 +15,14 @@
         "@hive/tailwindcss-config": "*",
         "@hive/tsconfig": "*",
         "@hive/ui": "*",
+        "@hookform/resolvers": "^3.1.1",
         "@next/bundle-analyzer": "^13.4.10",
         "next": "13.4.10",
         "next-transpile-modules": "^10.0.1",
         "pino": "^8.15.0",
-        "react-hook-form": "^7.45.4",
-        "typescript": "5.1.6"
+        "react-hook-form": "^7.45.1",
+        "typescript": "5.1.6",
+        "zod": "^3.21.4"
     },
     "devDependencies": {
         "git-revision-webpack-plugin": "^5.0.0",
