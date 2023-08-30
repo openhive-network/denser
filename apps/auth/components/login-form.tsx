@@ -1,14 +1,10 @@
-import { useForm } from 'react-hook-form';
 import { Separator } from "@hive/ui/components/separator";
-import { logger } from "@hive/ui/lib/logger";
+import { getLogger } from "@hive/ui/lib/logging";
 
 function LoginForm() {
-  logger.info('my info');
+  const logger = getLogger('app');
+  logger.info('Starting LoginForm');
 
-  // const { register, handleSubmit, watch, formState: { errors } } = useForm();
-  // const onSubmit = data => console.log(data);
-
-  // console.log(watch("example")); // watch input value by passing the name of it
   return (
     <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
       <div className="mx-auto flex w-[440px] max-w-md flex-col items-center">
