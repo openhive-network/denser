@@ -2,19 +2,39 @@ import { useForm } from "react-hook-form";
 import { Separator } from "@hive/ui/components/separator";
 import { getLogger } from "@hive/ui/lib/logging";
 
-type FormData = {
+type LoginFormData = {
   username: string;
   password: string;
   hiveAuth: boolean,
   remember: boolean,
 };
 
+const loginFormDefaultValues = {
+  username: '',
+  password: '',
+  hiveAuth: false,
+  remember: false,
+}
+
 function LoginForm() {
   const logger = getLogger('app');
   logger.info('Starting LoginForm');
 
-  const { register, setValue, handleSubmit, formState: { errors } } = useForm<FormData>();
-  const onSubmit = handleSubmit(data => console.log('formData', data));
+  const { register, setValue, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
+    defaultValues: loginFormDefaultValues
+  });
+
+  const onError = (errors, e) => console.log('form errors', errors, e);
+
+  const onSubmit = async (data) => {
+    console.log('form data', data);
+    // async request which may result error
+    try {
+      // await fetch()
+    } catch (e) {
+      // handle your error
+    }
+  };
 
   return (
     <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
@@ -22,7 +42,7 @@ function LoginForm() {
         <h2 className="w-full pb-6 text-3xl text-gray-800">
           Login
         </h2>
-        <form method="post" className="w-full" onSubmit={onSubmit}>
+        <form method="post" className="w-full">
 
           <div className="relative mb-5">
             <input
@@ -105,7 +125,7 @@ function LoginForm() {
               type="submit"
               className="w-fit rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-semibold text-white hover:cursor-pointer hover:bg-red-700 focus:outline-none  disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
               // disabled
-              onClick={onSubmit}
+              onClick={handleSubmit(onSubmit)}
             >
               Sign in
             </button>
