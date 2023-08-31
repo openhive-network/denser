@@ -37,10 +37,10 @@ export function ProposalsFilter({
 
   return (
     <div className="flex flex-col justify-between gap-2 sm:my-1 sm:flex-row">
-      <h1 className="text-xl font-semibold sm:self-center md:text-2xl xl:text-3xl">
+      <h1 className="text-xl font-semibold sm:self-center md:text-2xl xl:text-3xl" data-testid="proposals-header-name">
         Proposals
       </h1>
-      <div className="flex justify-between">
+      <div className="flex justify-between" data-testid="proposals-sort-filter">
         <div className="flex gap-2 text-xs font-medium">
           <div>
             <span>STATUS</span>
@@ -49,10 +49,10 @@ export function ProposalsFilter({
               value={filterStatus}
               onValueChange={onChangeFilterStatus}
             >
-              <SelectTrigger className="h-[35px] w-[100px]">
+              <SelectTrigger className="h-[35px] w-[100px]" data-testid="proposals-sort-filter-status">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent data-testid="proposals-sort-filter-status-conntent">
                 <SelectGroup>
                   <SelectItem value="all">All</SelectItem>
                   <SelectItem value="active">Active</SelectItem>
@@ -70,14 +70,14 @@ export function ProposalsFilter({
               value={orderValue}
               onValueChange={onChangeSortOrder}
             >
-              <SelectTrigger className="h-[35px] w-[120px]">
+              <SelectTrigger className="h-[35px] w-[120px]" data-testid="proposals-sort-filter-orderby">
                 <SelectValue placeholder="Select..." />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent data-testid="proposals-sort-filter-orderby-conntent">
                 <SelectGroup>
                   <SelectItem value="by_creator">Creator</SelectItem>
-                  <SelectItem value="by_start_date">Start Data</SelectItem>
-                  <SelectItem value="by_end_date">End Data</SelectItem>
+                  <SelectItem value="by_start_date">Start Date</SelectItem>
+                  <SelectItem value="by_end_date">End Date</SelectItem>
                   <SelectItem value="by_total_votes">Total Votes</SelectItem>
                 </SelectGroup>
               </SelectContent>
@@ -89,6 +89,7 @@ export function ProposalsFilter({
           className={clsx("flex self-end transition-transform", {
             "rotate-180": orderDirection === "ascending",
           })}
+          data-testid="proposals-sort-filter-order-direction"
         >
           <Icons.arrowBigDown className="m-1 h-8 w-8 text-red-500 transition-transform" />
         </button>
