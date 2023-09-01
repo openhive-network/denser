@@ -56,7 +56,7 @@ const Sidebar = () => {
           <ul className="flex flex-col">
             <Item href="http://localhost:3000/welcome">Welcome</Item>
             <Item href="http://localhost:3000/faq.html">FAQ</Item>
-            <Item href="https://wallet.hive.blog/market">Currency Market</Item>
+            <Item href="/market">Currency Market</Item>
             <Separator className="my-2" />
             <Item href="/~witnesses">Vote for Witnesses</Item>
             <Item href="/proposals">Hive Proposals</Item>

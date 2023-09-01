@@ -46,41 +46,6 @@ export interface RewardFund {
   reward_balance: string;
 }
 
-export interface MarketStatistics {
-  hbd_volume: string;
-  highest_bid: string;
-  hive_volume: string;
-  latest: string;
-  lowest_ask: string;
-  percent_change: string;
-}
-
-export interface OpenOrdersData {
-  id: number;
-  created: string;
-  expiration: string;
-  seller: string;
-  orderid: number;
-  for_sale: number;
-  sell_price: {
-    base: string;
-    quote: string;
-  };
-  real_price: string;
-  rewarded: boolean;
-}
-
-export interface OrdersDataItem {
-  created: string;
-  hbd: number;
-  hive: number;
-  order_price: {
-    base: string;
-    quote: string;
-  };
-  real_price: string;
-}
-
 export interface MarketCandlestickDataItem {
   hive: {
     high: number;
@@ -105,12 +70,6 @@ export interface TradeDataItem {
   current_pays: string;
   date: number;
   open_pays: string;
-}
-
-export interface OrdersData {
-  bids: OrdersDataItem[];
-  asks: OrdersDataItem[];
-  trading: OrdersDataItem[];
 }
 
 export interface Post {
@@ -165,21 +124,6 @@ export interface Post {
 
 export const getPost = (username: string, permlink: string): Promise<Post> =>
   bridgeServer.call('condenser_api', 'get_content', [username, permlink]);
-
-export const getMarketStatistics = (): Promise<MarketStatistics> =>
-  bridgeServer.call('condenser_api', 'get_ticker', []);
-
-export const getOrderBook = (limit: number = 500): Promise<OrdersData> =>
-  bridgeServer.call('condenser_api', 'get_order_book', [limit]);
-
-export const getOpenOrder = (user: string): Promise<OpenOrdersData[]> =>
-  bridgeServer.call('condenser_api', 'get_open_orders', [user]);
-
-export const getTradeHistory = (limit: number = 1000): Promise<OrdersDataItem[]> => {
-  let todayEarlier = moment(Date.now()).subtract(10, 'h').format().split('+')[0];
-  let todayNow = moment(Date.now()).format().split('+')[0];
-  return bridgeServer.call('condenser_api', 'get_trade_history', [todayEarlier, todayNow, limit]);
-};
 
 export const getMarketBucketSizes = (): Promise<number[]> =>
   bridgeServer.call('condenser_api', 'get_market_history_buckets', []);
