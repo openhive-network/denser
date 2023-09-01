@@ -13,11 +13,32 @@ import { Icons } from '@hive/ui/components/icons';
 import { dateToFullRelative, dateToShow } from '@hive/ui/lib/parse-date';
 import { proxifyImageUrl } from '@hive/ui/lib/old-profixy';
 import { getTwitterInfo } from '@/blog/lib/bridge';
+import moment from 'moment';
 
 interface IProfileLayout {
   children: React.ReactNode;
 }
 
+function compareDates(dateStrings:string[]) {
+
+  const dates = dateStrings.map((dateStr) => moment(dateStr));
+
+  const today = moment();
+  let closestDate = dates[0];
+  let minDiff = Math.abs(today.diff(dates[0], 'days'));
+
+  dates.forEach((date) => {
+    const diff = Math.abs(date.diff(today, 'days'));
+    if (diff < minDiff) {
+      minDiff = diff;
+      closestDate = date;
+    }
+  });
+
+  const closestDateString = closestDate.format('YYYY-MM-DDTHH:mm:ss');
+
+  return dateToFullRelative(closestDateString);
+}
 const ProfileLayout = ({ children }: IProfileLayout) => {
   const router = useRouter();
   const { username } = useSiteParams();
@@ -57,6 +78,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   const delegated_hive = delegatedHive(accountData, dynamicGlobalData);
   const vesting_hive = vestingHive(accountData, dynamicGlobalData);
   const hp = vesting_hive.minus(delegated_hive);
+
   return username ? (
     <div>
       <div
@@ -64,10 +86,10 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
         style={{ textShadow: 'rgb(0, 0, 0) 1px 1px 2px' }}
         data-testid="profile-info"
       >
-        {profileData?.posting_json_metadata ? (
+        {profileData ? (
           <div
             style={{
-              background: JSON.parse(profileData?.posting_json_metadata).profile.cover_image
+              background:profileData?.posting_json_metadata && JSON.parse(profileData?.posting_json_metadata).profile.cover_image
                 ? `url('${proxifyImageUrl(
                     JSON.parse(profileData?.posting_json_metadata).profile.cover_image,
                     '2048x512'
@@ -87,7 +109,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <span className="font-semibold">
                   {profileData?.profile?.name ? profileData.profile.name : profileData.name}
                 </span>{' '}
-                <span>({profileData?.reputation ? accountReputation(profileData.reputation) : null})</span>
+                <span>({accountReputation(profileData.reputation ? profileData.reputation : 0) })</span>
               </h4>
               {profileData.name ? (
                 <Link href={`https://hivebuzz.me/@${profileData.name}`}>
@@ -129,7 +151,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   className="hover:cursor-pointer hover:text-red-600 hover:underline"
                   href={`/@${profileData.name}`}
                 >
-                  {profileData?.post_count} posts{' '}
+                  {profileData?.post_count===0 ? "No posts" : profileData?.post_count===1 ? "1 post": profileData?.post_count + "posts"} 
                 </Link>
               </li>
 
@@ -139,7 +161,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   href={`/@${profileData.name}/followed`}
                   className="hover:cursor-pointer hover:text-red-600 hover:underline"
                 >
-                  {profileData?.follow_stats?.following_count} following
+                  {profileData?.follow_stats?.following_count===0 || undefined? "Not following anybody":profileData?.follow_stats?.following_count + " following"} 
                 </Link>
               </li>
 
@@ -219,9 +241,8 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <Icons.calendarActive className="m-1" />
                 <span data-testid="user-last-time-active">
                   Active{' '}
-                  {profileData?.last_vote_time
-                    ? dateToFullRelative(profileData.last_vote_time)
-                    : dateToFullRelative(profileData.last_post)}
+              
+                    {compareDates([profileData.created, profileData.last_vote_time, profileData.last_post])}
                 </span>
               </li>
             </ul>
@@ -233,7 +254,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
       <div className="flex flex-col pb-8 md:pb-4 ">
         <div className="w-full">
           <div className="flex h-12 bg-slate-800" data-testid="profile-navigation">
-            <div className="container mx-auto flex max-w-screen-xl justify-between justify-between p-0 sm:pl-8">
+            <div className="container mx-auto flex max-w-screen-xl justify-between p-0 sm:pl-8">
               <ul className="flex h-full gap-2 text-xs text-white sm:text-base lg:flex lg:gap-8">
                 <li>
                   <Link

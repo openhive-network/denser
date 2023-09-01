@@ -271,14 +271,15 @@ const ParamPage: FC = () => {
       </div>
     );
   }
-
   return (
     <ProfileLayout>
       {!accountEntriesIsLoading && accountEntriesData ? (
         <>
-          {accountEntriesData.pages.map((page, index) => {
-            return page ? <PostList data={page} key={`x-${index}`} price_per_hive={price_per_hive} /> : null;
-          })}
+          {accountEntriesData.pages[0]?.length!==0 ? accountEntriesData.pages.map((page, index) => {
+            return page ? <PostList data={page} key={`x-${index}`} price_per_hive={price_per_hive} /> :  null
+          }):<div className='px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm'>
+            Looks like @{username} hasn&apos;t started blogging yet!
+            </div>}
           <div>
             <button
               ref={refAcc}
@@ -296,7 +297,7 @@ const ParamPage: FC = () => {
             {accountEntriesIsFetching && !accountIsFetchingNextPage ? 'Background Updating...' : null}
           </div>
         </>
-      ) : null}
+      ) :null}
     </ProfileLayout>
   );
 };

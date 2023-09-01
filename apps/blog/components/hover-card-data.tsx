@@ -11,7 +11,7 @@ import { useDynamicGlobalData } from './hooks/use-dynamic-global-data';
 export function HoverCardData({ author }: { author: string }) {
   const follows = useFollowsQuery(author);
   const account = useAccountQuery(author);
-  const about = account.data ? JSON.parse(account.data.posting_json_metadata)?.profile?.about : null;
+  const about = account.data&&account.data.posting_json_metadata ? JSON.parse(account.data.posting_json_metadata)?.profile?.about : null;
   const dynamicData = useDynamicGlobalData();
   const delegated_hive =
     dynamicData.data && account.data ? delegatedHive(account.data, dynamicData.data) : Big(0);
@@ -21,7 +21,7 @@ export function HoverCardData({ author }: { author: string }) {
 
   return (
     <div className="space-y-2">
-      {account.data && !account.isLoading && follows.data && !follows.isLoading ? (
+      {account.data && !account.isLoading  && follows.data && !follows.isLoading ? (
         <>
           <div className="flex">
             <Link href={`/@${author}`} data-testid="hover-card-user-avatar">
@@ -33,7 +33,7 @@ export function HoverCardData({ author }: { author: string }) {
                 className="block font-bold hover:cursor-pointer"
                 data-testid="hover-card-user-name"
               >
-                {JSON.parse(account.data.posting_json_metadata)?.profile?.name}
+                {account.data.posting_json_metadata?JSON.parse(account.data.posting_json_metadata)?.profile?.name:null}
               </Link>
               <Link
                 href={`/@${author}`}

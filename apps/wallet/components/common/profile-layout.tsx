@@ -34,7 +34,6 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   if (profileDataIsLoading || !profileData) {
     return <Loading loading={profileDataIsLoading} />;
   }
-
   return username ? (
     <div>
       <div
@@ -42,17 +41,19 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
         style={{ textShadow: "rgb(0, 0, 0) 1px 1px 2px" }}
         data-testid="profile-info"
       >
-        {profileData?.posting_json_metadata ? (
+        {profileData ? (
           <div
             style={{
-              background: JSON.parse(profileData?.posting_json_metadata).profile
-                .cover_image
-                ? `url('${proxifyImageUrl(
-                    JSON.parse(profileData?.posting_json_metadata).profile
-                      .cover_image,
-                    "2048x512"
-                  ).replace(/ /g, "%20")}') center center no-repeat`
-                : "",
+              background:
+                profileData?.posting_json_metadata &&
+                JSON.parse(profileData?.posting_json_metadata).profile
+                  .cover_image
+                  ? `url('${proxifyImageUrl(
+                      JSON.parse(profileData?.posting_json_metadata).profile
+                        .cover_image,
+                      "2048x512"
+                    ).replace(/ /g, "%20")}') center center no-repeat`
+                  : "",
 
               backgroundSize: "cover",
             }}
@@ -128,7 +129,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             className="flex h-12 bg-slate-800"
             data-testid="profile-navigation"
           >
-            <div className="container mx-auto flex max-w-screen-xl justify-between justify-between p-0 sm:pl-8">
+            <div className="container mx-auto flex max-w-screen-xl justify-between p-0 sm:pl-8">
               <ul className="flex h-full gap-2 text-xs text-white sm:text-base lg:flex lg:gap-8">
                 <li>
                   <Link

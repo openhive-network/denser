@@ -9,6 +9,7 @@ import { Badge } from "@hive/ui/components/badge";
 import { useEffect, useState } from "react";
 import { getPostHeader } from "@hive/ui/lib/bridge";
 import VoteProposals from "./votes-proposals-dialog";
+import DialogLogin from "./dialog-login";
 
 function titleSetter(daysStart: string, datsEnd: string, status: string) {
   switch (status) {
@@ -66,7 +67,10 @@ export function ProposalListItem({
     return null;
   }
   return (
-    <div className="flex flex-col justify-between bg-white p-2.5 drop-shadow-xl dark:bg-slate-800 sm:flex-row " data-testid="proposal-list-item">
+    <div
+      className="flex flex-col justify-between bg-white p-2.5 drop-shadow-xl dark:bg-slate-800 sm:flex-row "
+      data-testid="proposal-list-item"
+    >
       <div className="w-3/4">
         <Link
           href={link}
@@ -77,7 +81,10 @@ export function ProposalListItem({
             proposalData.status
           )}
         >
-          <span className="text-red-500 hover:text-red-300 dark:hover:text-red-400 md:text-lg" data-testid="proposal-title">
+          <span
+            className="text-red-500 hover:text-red-300 dark:hover:text-red-400 md:text-lg"
+            data-testid="proposal-title"
+          >
             {proposalData.subject}
             <span className="text-slate-500" data-testid="proposal-id">
               {" #"}
@@ -85,15 +92,21 @@ export function ProposalListItem({
             </span>
           </span>
         </Link>
-        <div className="flex flex w-fit flex-col gap-3 py-3 text-xs min-[900px]:flex-row min-[900px]:items-center">
-          <span className="whitespace-nowrap text-slate-500" data-testid="proposal-date">
+        <div className="flex w-fit flex-col gap-3 py-3 text-xs min-[900px]:flex-row min-[900px]:items-center">
+          <span
+            className="whitespace-nowrap text-slate-500"
+            data-testid="proposal-date"
+          >
             {proposalData.start_date}
             {" - "}
             {proposalData.end_date} {"("}
             {totalDays}
             {totalDays !== 1 ? " days)" : "day)"}
           </span>
-          <div className="whitespace-nowrap text-slate-500" data-testid="proposal-amount">
+          <div
+            className="whitespace-nowrap text-slate-500"
+            data-testid="proposal-amount"
+          >
             <span
               title={numberWithCommas(totalHBD.toFixed(2)) + " HBD"}
               className="font-semibold text-red-500 dark:text-red-200"
@@ -112,7 +125,9 @@ export function ProposalListItem({
                 proposalData.status
               )}
             >
-              <Badge variant="red" data-testid="proposal-status-badge">{proposalData.status}</Badge>
+              <Badge variant="red" data-testid="proposal-status-badge">
+                {proposalData.status}
+              </Badge>
             </span>
             {getFundingType()}
           </div>
@@ -135,7 +150,10 @@ export function ProposalListItem({
             href={`http://localhost:3000/@${proposalData.creator}`}
             target="_blank"
           >
-            <span className="text-red-500 dark:hover:text-red-400" data-testid="proposal-creator">
+            <span
+              className="text-red-500 dark:hover:text-red-400"
+              data-testid="proposal-creator"
+            >
               {proposalData.creator}
             </span>
           </Link>
@@ -146,7 +164,10 @@ export function ProposalListItem({
                 href={`http://localhost:3000/@${proposalData.receiver}`}
                 target="_blank"
               >
-                <span className="text-red-500 dark:hover:text-red-400" data-testid="proposal-receiver">
+                <span
+                  className="text-red-500 dark:hover:text-red-400"
+                  data-testid="proposal-receiver"
+                >
                   {proposalData.receiver}
                 </span>
               </Link>
@@ -154,25 +175,31 @@ export function ProposalListItem({
           )}
         </div>
       </div>
-      <div className="mt-3 flex justify-between border-t-2 border-slate-300 p-2  dark:border-slate-600 sm:ml-2 sm:w-32 sm:w-32 sm:flex-col sm:items-center sm:border-l-2 sm:border-t-0 sm:pl-4">
+      <div className="mt-3 flex justify-between border-t-2 border-slate-300 p-2  dark:border-slate-600 sm:ml-2 sm:w-32 sm:flex-col sm:items-center sm:border-l-2 sm:border-t-0 sm:pl-4">
         <VoteProposals
           id={proposalData.id}
           totalShares={totalShares}
           totalVestingFund={totalVestingFund}
         >
-          <div className="self-center md:text-xl" title={totalVotes.toFixed(2) + " HP"} data-testid="vote-proposal-value">
+          <div
+            className="self-center md:text-xl"
+            title={totalVotes.toFixed(2) + " HP"}
+            data-testid="vote-proposal-value"
+          >
             {getRoundedAbbreveration(totalVotes)}
           </div>
         </VoteProposals>
 
-        <div className="group relative flex">
-          <span className="opocity-75 absolute inline-flex h-6 w-6 rounded-full bg-red-500 p-0 group-hover:animate-ping dark:bg-red-400"></span>
-          <Icons.arrowUpCircle
-            viewBox="1.7 1.7 20.7 20.7"
-            className="relative inline-flex h-6 w-6 rounded-full bg-white stroke-1 text-red-500 dark:bg-slate-800 cursor-pointer"
-            data-testid="voting-button-icon"
-          />
-        </div>
+        <DialogLogin>
+          <div className="group relative flex">
+            <span className="opocity-75 absolute inline-flex h-6 w-6 rounded-full bg-red-500 p-0 group-hover:animate-ping dark:bg-red-400"></span>
+            <Icons.arrowUpCircle
+              viewBox="1.7 1.7 20.7 20.7"
+              className="relative inline-flex h-6 w-6 rounded-full bg-white stroke-1 text-red-500 dark:bg-slate-800 cursor-pointer"
+              data-testid="voting-button-icon"
+            />
+          </div>
+        </DialogLogin>
       </div>
     </div>
   );

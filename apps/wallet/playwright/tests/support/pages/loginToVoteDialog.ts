@@ -16,7 +16,7 @@ export class LoginToVoteDialog {
   constructor(page: Page) {
     this.page = page;
     this.getLoginDialog = page.locator('[data-testid="login-dialog"]');
-    this.getHeaderLoginDialog = this.getLoginDialog.getByText(/Login to Vote/);
+    this.getHeaderLoginDialog = this.getLoginDialog.getByText(/Confirm Password/);
     this.getUsernameInput = page.locator('#firstName');
     this.getPasswordInput = page.locator('#password');
     this.getHiveAuthCheckbox = page.locator('#hiveAuth');
