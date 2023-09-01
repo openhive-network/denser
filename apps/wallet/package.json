@@ -15,11 +15,10 @@
   },
   "dependencies": {
     "@beam-australia/react-env": "^3.1.1",
-    "@hive/ui": "*",
     "@hive/eslint-config-custom": "*",
-    "@hive/tsconfig": "*",
     "@hive/tailwindcss-config": "*",
-    "@hive/prettier-config-custom": "*",
+    "@hive/tsconfig": "*",
+    "@hive/ui": "*",
     "@hiveio/dhive": "^1.2.7",
     "@next/bundle-analyzer": "^13.4.10",
     "@types/big.js": "^6.1.6",
@@ -34,6 +33,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-spinners-kit": "^1.9.1",
+    "recharts": "^2.8.0",
     "typescript": "5.1.6"
   },
   "devDependencies": {

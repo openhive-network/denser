@@ -66,7 +66,7 @@ export function ProposalListItem({
     return null;
   }
   return (
-    <div className="flex flex-col justify-between bg-white p-2.5 drop-shadow-xl dark:bg-slate-800 sm:flex-row ">
+    <div className="flex flex-col justify-between bg-white p-2.5 drop-shadow-xl dark:bg-slate-800 sm:flex-row " data-testid="proposal-list-item">
       <div className="w-3/4">
         <Link
           href={link}
@@ -77,23 +77,23 @@ export function ProposalListItem({
             proposalData.status
           )}
         >
-          <span className="text-red-500 hover:text-red-300 dark:hover:text-red-400 md:text-lg">
+          <span className="text-red-500 hover:text-red-300 dark:hover:text-red-400 md:text-lg" data-testid="proposal-title">
             {proposalData.subject}
-            <span className="text-slate-500">
+            <span className="text-slate-500" data-testid="proposal-id">
               {" #"}
               {proposalData.proposal_id}
             </span>
           </span>
         </Link>
         <div className="flex flex w-fit flex-col gap-3 py-3 text-xs min-[900px]:flex-row min-[900px]:items-center">
-          <span className="whitespace-nowrap text-slate-500">
+          <span className="whitespace-nowrap text-slate-500" data-testid="proposal-date">
             {proposalData.start_date}
             {" - "}
             {proposalData.end_date} {"("}
             {totalDays}
             {totalDays !== 1 ? " days)" : "day)"}
           </span>
-          <div className="whitespace-nowrap text-slate-500">
+          <div className="whitespace-nowrap text-slate-500" data-testid="proposal-amount">
             <span
               title={numberWithCommas(totalHBD.toFixed(2)) + " HBD"}
               className="font-semibold text-red-500 dark:text-red-200"
@@ -112,7 +112,7 @@ export function ProposalListItem({
                 proposalData.status
               )}
             >
-              <Badge variant="red">{proposalData.status}</Badge>
+              <Badge variant="red" data-testid="proposal-status-badge">{proposalData.status}</Badge>
             </span>
             {getFundingType()}
           </div>
@@ -135,7 +135,7 @@ export function ProposalListItem({
             href={`http://localhost:3000/@${proposalData.creator}`}
             target="_blank"
           >
-            <span className="text-red-500 dark:hover:text-red-400">
+            <span className="text-red-500 dark:hover:text-red-400" data-testid="proposal-creator">
               {proposalData.creator}
             </span>
           </Link>
@@ -146,7 +146,7 @@ export function ProposalListItem({
                 href={`http://localhost:3000/@${proposalData.receiver}`}
                 target="_blank"
               >
-                <span className="text-red-500 dark:hover:text-red-400">
+                <span className="text-red-500 dark:hover:text-red-400" data-testid="proposal-receiver">
                   {proposalData.receiver}
                 </span>
               </Link>
@@ -160,7 +160,7 @@ export function ProposalListItem({
           totalShares={totalShares}
           totalVestingFund={totalVestingFund}
         >
-          <div className="self-center md:text-xl">
+          <div className="self-center md:text-xl" title={totalVotes.toFixed(2) + " HP"} data-testid="vote-proposal-value">
             {getRoundedAbbreveration(totalVotes)}
           </div>
         </VoteProposals>
@@ -170,6 +170,7 @@ export function ProposalListItem({
           <Icons.arrowUpCircle
             viewBox="1.7 1.7 20.7 20.7"
             className="relative inline-flex h-6 w-6 rounded-full bg-white stroke-1 text-red-500 dark:bg-slate-800 cursor-pointer"
+            data-testid="voting-button-icon"
           />
         </div>
       </div>
