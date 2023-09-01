@@ -91,7 +91,7 @@ docker-build-wallet:
 
 .e2e_tests_template:
   extends: .node-job
-  image: mcr.microsoft.com/playwright:v1.36.0-jammy
+  image: mcr.microsoft.com/playwright:v1.37.1-jammy
   parallel:
     matrix:
       - PROJECT: ['chromium', 'firefox', 'webkit']
@@ -146,7 +146,7 @@ e2e-tests-wallet:
   extends: .node-job
   stage: test-report-aggregate
   when: always
-  image: mcr.microsoft.com/playwright:v1.36.1-jammy
+  image: mcr.microsoft.com/playwright:v1.37.1-jammy
   script:
     - cd .$TURBO_APP_PATH
     - npm install playwright-merge-html-reports --dev
