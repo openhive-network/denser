@@ -20,13 +20,13 @@ function LoginForm() {
   const logger = getLogger('app');
   logger.info('Starting LoginForm');
 
-  const { register, setValue, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
     defaultValues: loginFormDefaultValues
   });
 
-  const onError = (errors, e) => console.log('form errors', errors, e);
+  // const onError = (errors: any, e: Event) => console.log('form errors', errors, e);
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: LoginFormData) => {
     console.log('form data', data);
     // async request which may result error
     try {
@@ -47,12 +47,10 @@ function LoginForm() {
           <div className="relative mb-5">
             <input
               type="text"
-              id="username"
-              name="username"
               className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 pl-11 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
               placeholder="Enter your username"
-              required
               {...register("username", { required: true })}
+              aria-invalid={errors.username ? "true" : "false"}
             />
             <span className="absolute top-0 h-10 w-10 rounded-bl-lg rounded-tl-lg bg-gray-400 text-gray-600">
               <div className="flex h-full w-full items-center justify-center">
@@ -60,17 +58,16 @@ function LoginForm() {
                 @
               </div>
             </span>
-            {errors.username && <p className="text-red-500 text-sm">Username is required</p>}
+            {errors.username && errors.username.type === "required" && (
+              <p className="text-red-500 text-sm" role="alert">Username is required</p>
+            )}
           </div>
 
           <div>
             <input
               type="text"
-              id="password"
-              name="password"
               className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
               placeholder="Password or WIF"
-              required
               {...register("password")}
             />
             <p className="text-sm text-gray-400">
@@ -81,12 +78,9 @@ function LoginForm() {
           <div className="my-6 flex w-full flex-col">
             <div className="flex items-center py-1">
               <input
-                id="hiveAuth"
-                name="hiveAuth"
                 type="checkbox"
                 value=""
                 className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
-                required
                 {...register("hiveAuth")}
                 />
               <label
@@ -104,11 +98,9 @@ function LoginForm() {
 
             <div className="flex items-center py-1">
               <input
-                id="remember"
                 type="checkbox"
                 value=""
                 className=" h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
-                required
                 {...register("remember")}
               />
               <label
