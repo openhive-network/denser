@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import { Button } from "@hive/ui/components/button";
 import { Witness, getWitnessesByVote } from "@/wallet/lib/hive";
 import WitnessListItem from "@/wallet/components/witnesses-list-item";
+import DialogLogin from "../components/dialog-login";
 
 const LAST_BLOCK_AGE_THRESHOLD_IN_SEC = 2592000;
 
@@ -195,7 +196,9 @@ function WitnessesPage() {
               value={voteInput}
               onChange={(e) => setVoteInput(e.target.value)}
             />
-            <Button variant="destructive">VOTE</Button>
+            <DialogLogin>
+              <Button variant="destructive">VOTE</Button>
+            </DialogLogin>
           </div>
         </div>
         <div
