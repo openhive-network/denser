@@ -283,7 +283,7 @@ export class HomePage {
 
     // Click the post's responses link
     await this.getFirstPostChildren.click();
-    await this.page.waitForSelector(this.page.locator('[data-testid="article-title"]')['_selector']);
+    await this.page.waitForSelector(await this.page.locator('[data-testid="article-title"]')['_selector']);
     expect(await this.page.locator('[data-testid="article-title"]').textContent()).toBe(firstPostCardTitle);
   }
 

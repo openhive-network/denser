@@ -406,13 +406,13 @@ const PostListItem = ({
                 <div className="flex items-center" data-testid="post-children">
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger className="flex items-center gap-1">
+                      <TooltipTrigger className="flex items-center">
                         <Link href={`/${post.category}/@${post.author}/${post.permlink}/#comments`} className="flex cursor-pointer items-center">
                           {post.children>1?<Icons.messagesSquare className="h-4 w-4 sm:mr-1"/>:<Icons.comment className="h-4 w-4 sm:mr-1" />}
                         </Link>
                         <Link
                           href={`/${post.category}/@${post.author}/${post.permlink}/#comments`}
-                          className="flex cursor-pointer items-center hover:text-red-600"
+                          className="flex cursor-pointer items-center hover:text-red-600 pl-1"
                         >
                           {post.children}
                         </Link>
