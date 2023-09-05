@@ -2,7 +2,6 @@ import parseDate, { dateToRelative } from '@hive/ui/lib/parse-date';
 import { Clock, Link2 } from 'lucide-react';
 import UserInfo from '@/blog/components/user-info';
 import { getActiveVotes } from '@/blog/lib/hive';
-import { getFeedHistory } from '@hive/ui/lib/hive';
 import { useQuery } from '@tanstack/react-query';
 import { DefaultRenderer } from '@hiveio/content-renderer';
 import { Entry, getCommunity, getDiscussion, getPost } from '@/blog/lib/bridge';
@@ -25,7 +24,6 @@ import { getDoubleSize, proxifyImageUrl } from '@hive/ui/lib/old-profixy';
 import { ReplyTextbox } from '@/blog/components/reply-textbox';
 import { SharePost } from '@/blog/components/share-post-dialog';
 import LinkedInShare from '@/blog/components/share-post-linkedin';
-import { convertStringToBig } from '@hive/ui/lib/helpers';
 import FacebookShare from '@/blog/components/share-post-facebook';
 import RedditShare from '@/blog/components/share-post-reddit';
 import TwitterShare from '@/blog/components/share-post-twitter';
@@ -63,11 +61,6 @@ function PostPage({
   } = useQuery(['communityData', community], () => getCommunity(community), {
     enabled: !!username && !!community && community.startsWith('hive-')
   });
-  const {
-    data: historyFeedData,
-    isLoading: isHistoryFeedLoading,
-    isError: historyFeedError
-  } = useQuery(['feedHistory'], () => getFeedHistory());
   const {
     data: activeVotesData,
     isLoading: isActiveVotesLoading,
@@ -151,11 +144,7 @@ function PostPage({
       );
     }
   };
-  if (isHistoryFeedLoading || !historyFeedData) {
-    return <Loading loading={isHistoryFeedLoading} />;
-  }
-  const historyFeedArr = historyFeedData?.price_history;
-  const price_per_hive = convertStringToBig(historyFeedArr[historyFeedArr.length - 1].base);
+
   return (
     <div className="py-8">
       <div className="mx-auto my-0 max-w-4xl bg-white px-8 py-4 dark:bg-slate-900">
@@ -336,7 +325,6 @@ function PostPage({
               </div>
               <DetailsCardHover
                 post={post_s}
-                price_per_hive={price_per_hive}
                 decline={Number(post_s.max_accepted_payout.slice(0, 1)) === 0}
                 post_page
               >
@@ -383,7 +371,6 @@ function PostPage({
           <DynamicComments
             data={discussionState}
             parent={post_s}
-            price_per_hive={price_per_hive}
             parent_depth={post_s.depth}
           />
         </div>

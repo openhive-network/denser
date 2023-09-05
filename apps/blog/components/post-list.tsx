@@ -5,12 +5,10 @@ import { Entry } from '@/blog/lib/bridge';
 const PostList = ({
   data,
   sort,
-  price_per_hive,
   isCommunityPage
 }: {
   data: Entry[];
   sort?: string | null;
-  price_per_hive: Big;
   isCommunityPage?: boolean;
 }) => {
   return (
@@ -20,7 +18,6 @@ const PostList = ({
           post={post}
           sort={sort}
           key={post.post_id}
-          price_per_hive={price_per_hive}
           isCommunityPage={isCommunityPage}
         />
       ))}

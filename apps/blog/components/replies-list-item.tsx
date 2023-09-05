@@ -16,6 +16,7 @@ import { Badge } from '@hive/ui/components/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
 import DialogLogin from '@/blog/components/dialog-login';
 import { Entry } from '@/blog/lib/bridge';
+import DetailsCardHover from './details-card-hover';
 
 const RepliesListItem = ({ comment }: { comment: Entry }) => {
   return (
@@ -121,10 +122,14 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
                   </Tooltip>
                 </TooltipProvider>
               </div>
-              <div className="flex items-center">
-                <Icons.dollar className="mr-1 h-4 w-4 text-red-600" />
-                {comment.payout.toFixed(2)}
-              </div>
+              <DetailsCardHover
+                  post={comment}
+                  decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
+              >
+              <div  className={`flex items-center hover:cursor-pointer hover:text-red-600 ${
+                      Number(comment.max_accepted_payout.slice(0, 1)) === 0 ? 'text-gray-600 line-through' : ''
+                    }`}>${comment.payout.toFixed(2)}</div>
+              </DetailsCardHover>
               <Separator orientation="vertical" />
               <div className="flex items-center">
                 <TooltipProvider>
@@ -148,7 +153,7 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
                   <Tooltip>
                     <TooltipTrigger className="flex items-center gap-1">
                       <Link href={`/${comment.category}/@${comment.author}/${comment.permlink}`}className="flex cursor-pointer items-center">
-                        {comment.children>0?<Icons.messagesSquare className="h-4 w-4 sm:mr-1" />:<Icons.comment className="h-4 w-4 sm:mr-1" />}
+                        {comment.children>1?<Icons.messagesSquare className="h-4 w-4 sm:mr-1" />:<Icons.comment className="h-4 w-4 sm:mr-1" />}
                       </Link>
                       <Link
                         href={`/${comment.category}/@${comment.author}/${comment.permlink}`}

@@ -27,18 +27,16 @@ import { useRouter } from 'next/router';
 import { proxifyImageUrl } from '@hive/ui/lib/old-profixy';
 import { customEndsWith } from '@/blog/lib/ends-with';
 import { useState } from 'react';
-import Big from 'big.js';
 import { Entry } from '@/blog/lib/bridge';
+import { convertStringToBig } from '@hive/ui/lib/helpers';
 
 const PostListItem = ({
   post,
   sort,
-  price_per_hive,
   isCommunityPage
 }: {
   post: Entry;
   sort: string | undefined | null;
-  price_per_hive: Big;
   isCommunityPage: boolean | undefined;
 }) => {
   const [reveal, setReveal] = useState(post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw'));
@@ -376,7 +374,6 @@ const PostListItem = ({
 
                 <DetailsCardHover
                   post={post}
-                  price_per_hive={price_per_hive}
                   decline={Number(post.max_accepted_payout.slice(0, 1)) === 0}
                 >
                   <div

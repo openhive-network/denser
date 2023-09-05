@@ -20,9 +20,7 @@ import ProfileLayout from '@/blog/components/common/profile-layout';
 import CommunityDescription from '@/blog/components/community-description';
 import { useInView } from 'react-intersection-observer';
 import CustomError from '@/blog/components/custom-error';
-import { getFeedHistory } from '@hive/ui/lib/hive';
 import CommunitySimpleDescription from '@/blog/components/community-simple-description';
-import { convertStringToBig } from '@hive/ui/lib/helpers';
 import { CommunitiesSelect } from '@/blog/components/communities-select';
 
 export const PostSkeleton = () => {
@@ -125,12 +123,6 @@ const ParamPage: FC = () => {
     }
   );
   const lastEntriesData = accountEntriesData?.pages[accountEntriesData?.pages.length - 1];
-  const {
-    data: historyFeedData,
-    isLoading: historyFeedLoading,
-    isFetching: historyFeedIsFetching,
-    isError: historyFeedError
-  } = useQuery(['feedHistory'], () => getFeedHistory());
 
   const handleChangeFilter = useCallback(
     (e: string) => {
@@ -155,13 +147,11 @@ const ParamPage: FC = () => {
     }
   }, [accountFetchNextPage, inViewAcc]);
 
-  if (accountEntriesIsError || entriesDataIsError || historyFeedError) return <CustomError />;
+  if (accountEntriesIsError || entriesDataIsError) return <CustomError />;
 
   if (
     (entriesDataIsLoading && entriesDataIsFetching) ||
     (accountEntriesIsLoading && accountEntriesIsFetching) ||
-    (historyFeedLoading && historyFeedIsFetching) ||
-    !historyFeedData ||
     (accountNotificationIsLoading && accountNotificationIsFetching)
   ) {
     return (
@@ -177,9 +167,6 @@ const ParamPage: FC = () => {
       />
     );
   }
-
-  const historyFeedArr = historyFeedData?.price_history;
-  const price_per_hive = convertStringToBig(historyFeedArr[historyFeedArr.length - 1].base);
   const lastPageData = accountEntriesData?.pages[accountEntriesData?.pages.length - 1];
 
   if (!entriesDataIsLoading && entriesData) {
@@ -231,7 +218,6 @@ const ParamPage: FC = () => {
                       data={page}
                       sort={sort}
                       key={`f-${index}`}
-                      price_per_hive={price_per_hive}
                       isCommunityPage={!!communityData}
                     />
                   ) : null;
@@ -276,7 +262,7 @@ const ParamPage: FC = () => {
       {!accountEntriesIsLoading && accountEntriesData ? (
         <>
           {accountEntriesData.pages[0]?.length!==0 ? accountEntriesData.pages.map((page, index) => {
-            return page ? <PostList data={page} key={`x-${index}`} price_per_hive={price_per_hive} /> :  null
+            return page ? <PostList data={page} key={`x-${index}`} /> :  null
           }):<div className='px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm'>
             Looks like @{username} hasn&apos;t started blogging yet!
             </div>}
