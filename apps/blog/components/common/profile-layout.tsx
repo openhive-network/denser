@@ -151,7 +151,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   className="hover:cursor-pointer hover:text-red-600 hover:underline"
                   href={`/@${profileData.name}`}
                 >
-                  {profileData?.post_count===0 ? "No posts" : profileData?.post_count===1 ? "1 post": profileData?.post_count + "posts"} 
+                  {profileData?.post_count===0 ? "No posts" : profileData?.post_count===1 ? "1 post": profileData?.post_count + " posts"} 
                 </Link>
               </li>
 

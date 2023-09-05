@@ -49,7 +49,6 @@ const PostListItem = ({
   }
   const youtube_id = extractYouTubeVideoIds(extractUrlsFromJsonString(post.body));
   const pictures_extracted = extractPictureFromPostBody(extractUrlsFromJsonString(post.body))
-
   return (
     <li data-testid="post-list-item" className={sort === 'muted' ? 'opacity-50 hover:opacity-100' : ''}>
       <Card
@@ -81,7 +80,7 @@ const PostListItem = ({
           <div className="flex items-center gap-2 py-1 text-sm text-gray-400">
             <Icons.forward className="h-4 w-4" />
             <span>
-              <Link href={`/${post.reblogged_by[0]}`} className="cursor-pointer hover:text-red-600">
+              <Link href={`/@${post.reblogged_by[0]}`} className="cursor-pointer hover:text-red-600">
                 {post.reblogged_by[0]}
               </Link>{' '}
               reblogged
@@ -90,7 +89,7 @@ const PostListItem = ({
         ) : null}
         <CardHeader className="px-0 py-1">
           <div className="md:text-md flex items-center text-xs text-slate-500 dark:text-slate-400">
-            <Link href={`@${post.author}`} data-testid="post-card-avatar">
+            <Link href={`/@${post.author}`} data-testid="post-card-avatar">
               <div
                 className="mr-3 h-[24px] w-[24px] rounded-3xl bg-cover bg-no-repeat"
                 style={{ backgroundImage: `url(https://images.hive.blog/u/${post.author}/avatar/small)` }}
@@ -98,7 +97,7 @@ const PostListItem = ({
             </Link>
             <div className="flex items-center">
               <Link
-                href={`@${post.author}`}
+                href={`/@${post.author}`}
                 className="font-medium text-black hover:cursor-pointer hover:text-red-600 dark:text-white dark:hover:text-red-600"
                 data-testid="post-author"
               >
@@ -136,7 +135,7 @@ const PostListItem = ({
                     &nbsp;in&nbsp;
                     {post.community ? (
                       <Link
-                        href={`/${sort}/${post.community}`}
+                        href={`/trending/${post.community}`}
                         className="hover:cursor-pointer hover:text-red-600"
                         data-testid="post-card-community"
                       >
@@ -144,7 +143,7 @@ const PostListItem = ({
                       </Link>
                     ) : (
                       <Link
-                        href={`/${sort}/${post.category}`}
+                        href={`/trending/${post.category}`}
                         className="hover:cursor-pointer hover:text-red-600"
                         data-testid="post-card-category"
                       >
@@ -155,7 +154,7 @@ const PostListItem = ({
                   </>
                 ) : null}
                 <Link
-                  href={`${post.url}`}
+                  href={`/${post.category}/@${post.author}/${post.permlink}`}
                   className="hover:cursor-pointer hover:text-red-600"
                   data-testid="post-card-timestamp"
                 >
@@ -298,7 +297,7 @@ const PostListItem = ({
                     </div>
                   </Link>
                 ) : pictures_extracted[0] ? (
-                  <Link href={`${post.url}`} data-testid="post-image">
+                  <Link href={`/${post.url}`} data-testid="post-image">
                     <div className="relative mr-3.5 flex h-full max-h-fit min-h-fit items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
                       <picture className="articles__feature-img h-ful w-full">
                         <source
@@ -325,10 +324,10 @@ const PostListItem = ({
               {!reveal ? (
                 <>
                   <CardTitle data-testid="post-title" className="text-md">
-                    <Link href={`${post.url}`}>{post.title}</Link>
+                    <Link href={`/${post.category}/@${post.author}/${post.permlink}`}>{post.title}</Link>
                   </CardTitle>
                   <CardDescription className="block w-auto md:overflow-hidden md:overflow-ellipsis md:whitespace-nowrap">
-                    <Link href={`${post.url}`}>{getPostSummary(post.json_metadata, post.body)}</Link>
+                    <Link href={`/${post.category}/@${post.author}/${post.permlink}`}>{getPostSummary(post.json_metadata, post.body)}</Link>
                   </CardDescription>
                   <Separator orientation="horizontal" className="my-1" />
                 </>
@@ -410,12 +409,12 @@ const PostListItem = ({
                 <div className="flex items-center" data-testid="post-children">
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger className="flex items-center">
-                        <Link href={`${post.url}/#comments`} className="flex cursor-pointer items-center">
-                          <Icons.comment className="h-4 w-4 sm:mr-1" />
+                      <TooltipTrigger className="flex items-center gap-1">
+                        <Link href={`/${post.category}/@${post.author}/${post.permlink}/#comments`} className="flex cursor-pointer items-center">
+                          {post.children>1?<Icons.messagesSquare className="h-4 w-4 sm:mr-1"/>:<Icons.comment className="h-4 w-4 sm:mr-1" />}
                         </Link>
                         <Link
-                          href={`${post.url}/#comments`}
+                          href={`/${post.category}/@${post.author}/${post.permlink}/#comments`}
                           className="flex cursor-pointer items-center hover:text-red-600"
                         >
                           {post.children}
@@ -434,7 +433,7 @@ const PostListItem = ({
                   </TooltipProvider>
                 </div>
                 <Separator orientation="vertical" />
-                <div className="flex items-center" data-testid="post-card-reblog">
+               {!post.title.includes("RE: ")? <div className="flex items-center" data-testid="post-card-reblog">
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger>
@@ -449,7 +448,7 @@ const PostListItem = ({
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
-                </div>
+                </div>:null}
               </div>
             </CardFooter>
           </div>

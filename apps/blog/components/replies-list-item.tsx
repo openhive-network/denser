@@ -28,7 +28,7 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
         >
           <CardHeader className="px-0 py-1">
             <div className="md:text-md flex items-center text-xs text-slate-500 dark:text-slate-400">
-              <Link href={`@${comment.author}`}>
+              <Link href={`/@${comment.author}`}>
                 <img
                   className="mr-3 h-[24px] w-[24px] rounded-3xl"
                   height="24"
@@ -40,7 +40,7 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
               </Link>
               <div className="flex items-center">
                 <Link
-                  href={`@${comment.author}`}
+                  href={`/@${comment.author}`}
                   className="font-medium text-black hover:cursor-pointer hover:text-red-600 dark:text-white dark:hover:text-red-600"
                   data-testid="post-author"
                 >
@@ -78,7 +78,7 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
                     </Link>
                   )}
                   <span className="mx-1">•</span>
-                  <Link href={`${comment.url}`} className="hover:cursor-pointer hover:text-red-600">
+                  <Link href={`/${comment.category}/@${comment.author}/${comment.permlink}`} className="hover:cursor-pointer hover:text-red-600">
                     {dateToRelative(comment.created)} ago
                   </Link>
                 </span>
@@ -86,9 +86,15 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
             </div>
           </CardHeader>
           <CardContent>
-            <CardTitle data-testid="comment-card-title">{comment.title}</CardTitle>
+            <CardTitle data-testid="comment-card-title">
+              <Link  href={`/${comment.category}/@${comment.author}/${comment.permlink}`} >
+                {comment.title}
+                </Link>
+              </CardTitle>
             <CardDescription className="w-full" data-testid="comment-card-description">
-              {getPostSummary(comment.json_metadata, comment.body)}
+              <Link href={`/${comment.category}/@${comment.author}/${comment.permlink}`}>
+                {getPostSummary(comment.json_metadata, comment.body)}
+                </Link>
             </CardDescription>
           </CardContent>
           <CardFooter>
@@ -129,8 +135,8 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>
-                        {comment.stats && comment.stats.total_votes > 0 ? comment.stats.total_votes : 'no'}{' '}
-                        votes
+                      {comment.stats && comment.stats.total_votes > 0 ? comment.stats.total_votes : 'no'}
+                      {comment.stats && comment.stats.total_votes > 1 ? ' votes' : ' vote'}
                       </p>
                     </TooltipContent>
                   </Tooltip>
@@ -140,12 +146,12 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
               <div className="flex items-center">
                 <TooltipProvider>
                   <Tooltip>
-                    <TooltipTrigger className="flex items-center">
-                      <Link href={`${comment.url}/#comments`} className="flex cursor-pointer items-center">
-                        <Icons.comment className="h-4 w-4 sm:mr-1" />
+                    <TooltipTrigger className="flex items-center gap-1">
+                      <Link href={`/${comment.category}/@${comment.author}/${comment.permlink}`}className="flex cursor-pointer items-center">
+                        {comment.children>0?<Icons.messagesSquare className="h-4 w-4 sm:mr-1" />:<Icons.comment className="h-4 w-4 sm:mr-1" />}
                       </Link>
                       <Link
-                        href={`${comment.url}/#comments`}
+                        href={`/${comment.category}/@${comment.author}/${comment.permlink}`}
                         className="flex cursor-pointer items-center hover:text-red-600"
                       >
                         {comment.children}

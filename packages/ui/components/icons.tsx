@@ -56,6 +56,7 @@ import {
   Link,
   ExternalLink,
   Dna,
+  MessagesSquare,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -116,6 +117,7 @@ export const Icons = {
   check: Check,
   copy: Copy,
   copyDone: ClipboardCheck,
+  messagesSquare: MessagesSquare,
   radix: (props: LucideProps) => (
     <svg viewBox="0 0 25 25" fill="none" {...props}>
       <path
