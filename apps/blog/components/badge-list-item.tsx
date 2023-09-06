@@ -1,7 +1,28 @@
-const BadgeListItem = ({ title, url }: { title: string; url: string }) => {
+import Link from "next/link";
+
+const BadgeListItem = ({
+  title,
+  url,
+  username,
+}: {
+  title: string;
+  url: string;
+  username?: string;
+}) => {
+  const parts = url.split("/");
+  const href = parts[parts.length - 2];
   return (
-    <div className="w-24">
-      <img src={url} alt={title} />
+    <div className=" w-16">
+      <Link
+        href={
+          username
+            ? `https://hivebuzz.me/@${username}`
+            : `https://peakd.com/b/${href}`
+        }
+        target="_blank"
+      >
+        <img src={url} alt={title}/>
+      </Link>
     </div>
   );
 };
