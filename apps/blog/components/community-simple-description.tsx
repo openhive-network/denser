@@ -1,15 +1,25 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
-import Link from 'next/link';
-import { Button } from '@hive/ui/components/button';
-import { AccountNotification, Community, Subscription } from '@/blog/lib/bridge';
-import { SubsListDialog } from './subscription-list-dialog';
-import { ActivityLogDialog } from './activity-log-dialog';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@hive/ui/components/card";
+import Link from "next/link";
+import { Button } from "@hive/ui/components/button";
+import {
+  AccountNotification,
+  Community,
+  Subscription,
+} from "@/blog/lib/bridge";
+import { SubsListDialog } from "./subscription-list-dialog";
+import { ActivityLogDialog } from "./activity-log-dialog";
+import DialogLogin from "./dialog-login";
 
 const CommunitySimpleDescription = ({
   data,
   subs,
   notificationData,
-  username
+  username,
 }: {
   data: Community;
   subs: Subscription[];
@@ -26,12 +36,18 @@ const CommunitySimpleDescription = ({
         <div className="flex">
           <div className="flex w-full text-sm text-gray-500">
             <SubsListDialog title={data.title} subs={subs}>
-              <div className="flex flex-col items-center" data-testid="community-simple-subscribers">
+              <div
+                className="flex flex-col items-center"
+                data-testid="community-simple-subscribers"
+              >
                 {data.subscribers} subscribers
               </div>
             </SubsListDialog>
             <span className="mx-1">•</span>
-            <div className="flex flex-col items-center" data-testid="community-simple-active-posters">
+            <div
+              className="flex flex-col items-center"
+              data-testid="community-simple-active-posters"
+            >
               {data.num_authors} active
             </div>
           </div>
@@ -45,16 +61,20 @@ const CommunitySimpleDescription = ({
       </CardHeader>
       <CardContent className="col-span-1 flex items-center justify-center p-0">
         <div className="my-4 flex flex-col gap-4">
+          <DialogLogin>
+            <Button
+              size="sm"
+              className="w-full bg-blue-800 text-center hover:bg-blue-900"
+              data-testid="community-simple-subscribe-button"
+            >
+              Subscribe
+            </Button>
+          </DialogLogin>
           <Button
             size="sm"
             className="w-full bg-blue-800 text-center hover:bg-blue-900"
-            data-testid="community-simple-subscribe-button"
           >
-            <Link href={`/communities`}>Subscribe</Link>
-          </Button>
-
-          <Button size="sm" className="w-full bg-blue-800 text-center hover:bg-blue-900">
-            <Link href={`/communities`}>New Post</Link>
+            <Link href={`/submit.html?category=${data.name}`}>New Post</Link>
           </Button>
         </div>
       </CardContent>

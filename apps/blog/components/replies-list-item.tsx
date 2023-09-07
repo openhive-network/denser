@@ -24,7 +24,7 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
       <li data-testid="comment-list-item">
         <Card
           className={cn(
-            'my-4 px-2 hover:bg-accent hover:text-accent-foreground  dark:bg-background/95 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground'
+            'mt-4 px-2 hover:bg-accent hover:text-accent-foreground  dark:bg-background/95 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground'
           )}
         >
           <CardHeader className="px-0 py-1">

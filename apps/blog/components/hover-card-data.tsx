@@ -7,6 +7,7 @@ import { useFollowsQuery } from './hooks/use-follows';
 import { delegatedHive, numberWithCommas, vestingHive } from '@hive/ui/lib/utils';
 import Big from 'big.js';
 import { useDynamicGlobalData } from './hooks/use-dynamic-global-data';
+import DialogLogin from './dialog-login';
 
 export function HoverCardData({ author }: { author: string }) {
   const follows = useFollowsQuery(author);
@@ -43,14 +44,16 @@ export function HoverCardData({ author }: { author: string }) {
                 <span className="block">{`@${author}`}</span>
               </Link>
               <div className="grid grid-cols-2 gap-2 py-2">
-                <Button
-                  variant="outline"
-                  size="xs"
-                  className="border border-red-500 bg-transparent p-1 uppercase text-red-500 hover:border-red-600 hover:text-red-600"
-                  data-testid="hover-card-user-follow-button"
-                >
-                  Follow
-                </Button>
+                <DialogLogin>
+                  <Button
+                    variant="outline"
+                    size="xs"
+                    className="border border-red-500 bg-transparent p-1 uppercase text-red-500 hover:border-red-600 hover:text-red-600"
+                    data-testid="hover-card-user-follow-button"
+                  >
+                    Follow
+                  </Button>
+                </DialogLogin>
               </div>
             </div>
           </div>

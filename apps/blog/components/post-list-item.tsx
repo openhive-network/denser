@@ -367,7 +367,7 @@ const PostListItem = ({
                     </div>
                   </Link>
                 ) : (
-                  <Link href={`/${post.url}`} data-testid="post-image">
+                  <Link href={`${post.url}`} data-testid="post-image">
                     <div className="relative mr-3.5 flex max-h-[300px] md:h-full md:min-h-fit items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
                       <img
                         className="w-full bg-cover bg-no-repeat"

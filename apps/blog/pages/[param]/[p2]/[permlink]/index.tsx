@@ -1,45 +1,53 @@
-import parseDate, { dateToRelative } from '@hive/ui/lib/parse-date';
-import { Clock, Link2 } from 'lucide-react';
-import UserInfo from '@/blog/components/user-info';
-import { getActiveVotes } from '@/blog/lib/hive';
-import { useQuery } from '@tanstack/react-query';
-import { DefaultRenderer } from '@hiveio/content-renderer';
-import { Entry, getCommunity, getDiscussion, getPost } from '@/blog/lib/bridge';
-import Loading from '@hive/ui/components/loading';
-import dynamic from 'next/dynamic';
-import ImageGallery from '@/blog/components/image-gallery';
-import Link from 'next/link';
-import { NextPageContext } from 'next';
-import DetailsCardHover from '@/blog/components/details-card-hover';
-import DetailsCardVoters from '@/blog/components/details-card-voters';
-import CommentSelectFilter from '@/blog/components/comment-select-filter';
-import { useEffect, useState } from 'react';
-import sorter, { SortOrder } from '@/blog/lib/sorter';
-import { useRouter } from 'next/router';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
-import DialogLogin from '@/blog/components/dialog-login';
-import { Icons } from '@hive/ui/components/icons';
-import { AlertDialogDemo } from '@/blog/components/alert-window';
-import { getDoubleSize, proxifyImageUrl } from '@hive/ui/lib/old-profixy';
-import { ReplyTextbox } from '@/blog/components/reply-textbox';
-import { SharePost } from '@/blog/components/share-post-dialog';
-import LinkedInShare from '@/blog/components/share-post-linkedin';
-import FacebookShare from '@/blog/components/share-post-facebook';
-import RedditShare from '@/blog/components/share-post-reddit';
-import TwitterShare from '@/blog/components/share-post-twitter';
-import { Badge } from '@hive/ui/components/badge';
-import { UserHoverCard } from '@/blog/components/user-hover-card';
+import parseDate, { dateToRelative } from "@hive/ui/lib/parse-date";
+import { Clock, Link2 } from "lucide-react";
+import UserInfo from "@/blog/components/user-info";
+import { getActiveVotes } from "@/blog/lib/hive";
+import { useQuery } from "@tanstack/react-query";
+import { DefaultRenderer } from "@hiveio/content-renderer";
+import { Entry, getCommunity, getDiscussion, getPost } from "@/blog/lib/bridge";
+import Loading from "@hive/ui/components/loading";
+import dynamic from "next/dynamic";
+import ImageGallery from "@/blog/components/image-gallery";
+import Link from "next/link";
+import { NextPageContext } from "next";
+import DetailsCardHover from "@/blog/components/details-card-hover";
+import DetailsCardVoters from "@/blog/components/details-card-voters";
+import CommentSelectFilter from "@/blog/components/comment-select-filter";
+import { useEffect, useState } from "react";
+import sorter, { SortOrder } from "@/blog/lib/sorter";
+import { useRouter } from "next/router";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@hive/ui/components/tooltip";
+import DialogLogin from "@/blog/components/dialog-login";
+import { Icons } from "@hive/ui/components/icons";
+import { AlertDialogDemo } from "@/blog/components/alert-window";
+import { getDoubleSize, proxifyImageUrl } from "@hive/ui/lib/old-profixy";
+import { ReplyTextbox } from "@/blog/components/reply-textbox";
+import { SharePost } from "@/blog/components/share-post-dialog";
+import LinkedInShare from "@/blog/components/share-post-linkedin";
+import FacebookShare from "@/blog/components/share-post-facebook";
+import RedditShare from "@/blog/components/share-post-reddit";
+import TwitterShare from "@/blog/components/share-post-twitter";
+import { Badge } from "@hive/ui/components/badge";
+import { UserHoverCard } from "@/blog/components/user-hover-card";
 
-const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
-  loading: () => <Loading loading={true} />,
-  ssr: false
-});
+const DynamicComments = dynamic(
+  () => import("@/blog/components/comment-list"),
+  {
+    loading: () => <Loading loading={true} />,
+    ssr: false,
+  }
+);
 
 function PostPage({
   post_s,
   community,
   username,
-  permlink
+  permlink,
 }: {
   post_s: Entry;
   community: string;
@@ -49,24 +57,28 @@ function PostPage({
   const {
     isLoading: isLoadingDiscussion,
     error: errorDiscussion,
-    data: discussion
-  } = useQuery(['discussionData', username, permlink], () => getDiscussion(username, String(permlink)), {
-    enabled: !!username && !!permlink
-  });
+    data: discussion,
+  } = useQuery(
+    ["discussionData", username, permlink],
+    () => getDiscussion(username, String(permlink)),
+    {
+      enabled: !!username && !!permlink,
+    }
+  );
 
   const {
     isLoading: isLoadingCommunity,
     error: errorCommunity,
-    data: communityData
-  } = useQuery(['communityData', community], () => getCommunity(community), {
-    enabled: !!username && !!community && community.startsWith('hive-')
+    data: communityData,
+  } = useQuery(["communityData", community], () => getCommunity(community), {
+    enabled: !!username && !!community && community.startsWith("hive-"),
   });
   const {
     data: activeVotesData,
     isLoading: isActiveVotesLoading,
-    isError: activeVotesError
-  } = useQuery(['activeVotes'], () => getActiveVotes(username, permlink), {
-    enabled: !!username && !!permlink
+    isError: activeVotesError,
+  } = useQuery(["activeVotes"], () => getActiveVotes(username, permlink), {
+    enabled: !!username && !!permlink,
   });
   const [discussionState, setDiscussionState] = useState<Entry[]>();
   const router = useRouter();
@@ -85,17 +97,17 @@ function PostPage({
   }, [isLoadingDiscussion, discussion]);
 
   useEffect(() => {
-    if (router.query.sort === 'trending' && discussion) {
+    if (router.query.sort === "trending" && discussion) {
       const list = [...Object.keys(discussion).map((key) => discussion[key])];
       sorter(list, SortOrder[router.query.sort]);
       setDiscussionState(list);
     }
-    if (router.query.sort === 'votes' && discussion) {
+    if (router.query.sort === "votes" && discussion) {
       const list = [...Object.keys(discussion).map((key) => discussion[key])];
       sorter(list, SortOrder[router.query.sort]);
       setDiscussionState(list);
     }
-    if (router.query.sort === 'new' && discussion) {
+    if (router.query.sort === "new" && discussion) {
       const list = [...Object.keys(discussion).map((key) => discussion[key])];
       sorter(list, SortOrder[router.query.sort]);
       setDiscussionState(list);
@@ -103,33 +115,36 @@ function PostPage({
   }, [router.query.sort]);
 
   const renderer = new DefaultRenderer({
-    baseUrl: 'https://hive.blog/',
+    baseUrl: "https://hive.blog/",
     breaks: true,
     skipSanitization: false,
     allowInsecureScriptTags: false,
     addNofollowToLinks: true,
     addTargetBlankToLinks: true,
-    addCssClassToLinks: 'external-link',
+    addCssClassToLinks: "external-link",
     doNotShowImages: false,
-    ipfsPrefix: '',
+    ipfsPrefix: "",
     assetsWidth: 640,
     assetsHeight: 480,
-    imageProxyFn: (url: string) => getDoubleSize(proxifyImageUrl(url, true).replace(/ /g, '%20')),
-    usertagUrlFn: (account: string) => '/@' + account,
-    hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
-    isLinkSafeFn: (url: string) => false
+    imageProxyFn: (url: string) =>
+      getDoubleSize(proxifyImageUrl(url, true).replace(/ /g, "%20")),
+    usertagUrlFn: (account: string) => "/@" + account,
+    hashtagUrlFn: (hashtag: string) => "/trending/" + hashtag,
+    isLinkSafeFn: (url: string) => false,
   });
   const post_html = renderer.render(post_s.body);
   const commentSite = post_s.depth !== 0 ? true : false;
   const [reply, setReply] = useState(false);
   const postUrl = () => {
     if (discussionState) {
-      const objectWithSmallestDepth = discussionState.reduce((smallestDepth, e) => {
-        if (e.depth < smallestDepth.depth) {
-          return e;
+      const objectWithSmallestDepth = discussionState.reduce(
+        (smallestDepth, e) => {
+          if (e.depth < smallestDepth.depth) {
+            return e;
+          }
+          return smallestDepth;
         }
-        return smallestDepth;
-      });
+      );
       return objectWithSmallestDepth.url;
     }
   };
@@ -137,9 +152,9 @@ function PostPage({
     if (discussionState) {
       return (
         discussionState[0].category +
-        '/@' +
+        "/@" +
         discussionState[0].parent_author +
-        '/' +
+        "/" +
         discussionState[0].parent_permlink
       );
     }
@@ -154,7 +169,9 @@ function PostPage({
           </h1>
         ) : (
           <div className="flex flex-col gap-2 bg-green-50 p-2 dark:bg-slate-950">
-            <h4 className="text-sm">You are viewing a single comment&apos;s thread from:</h4>
+            <h4 className="text-sm">
+              You are viewing a single comment&apos;s thread from:
+            </h4>
             <h1 data-testid="article-title" className="text-2xl">
               {post_s.title}
             </h1>
@@ -181,7 +198,7 @@ function PostPage({
           author_reputation={post_s.author_reputation}
           author_title={post_s.author_title}
           authored={post_s.json_metadata?.author}
-          community_title={communityData?.title || ''}
+          community_title={communityData?.title || ""}
           community={community}
           category={post_s.category}
           created={post_s.created}
@@ -193,7 +210,7 @@ function PostPage({
               id="articleBody"
               className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
               dangerouslySetInnerHTML={{
-                __html: post_html
+                __html: post_html,
               }}
             />
           </ImageGallery>
@@ -217,7 +234,10 @@ function PostPage({
             </ul>
           ) : null}
         </div>
-        <div className="text-sm text-slate-600" data-testid="author-data-post-footer">
+        <div
+          className="text-sm text-slate-600"
+          data-testid="author-data-post-footer"
+        >
           <div className="my-4 flex justify-between">
             <div className="flex flex-wrap">
               <Clock />
@@ -245,14 +265,23 @@ function PostPage({
                 )}
               </span>
               by
-              <UserHoverCard author={post_s.author} author_reputation={post_s.author_reputation} />
+              <UserHoverCard
+                author={post_s.author}
+                author_reputation={post_s.author_reputation}
+              />
               {post_s.author_title ? (
-                <Badge variant="outline" className="border-red-600 text-slate-500">
+                <Badge
+                  variant="outline"
+                  className="border-red-600 text-slate-500"
+                >
                   {post_s.author_title}
                 </Badge>
               ) : null}
             </div>
-            <div className="flex items-center" data-testid="comment-respons-header">
+            <div
+              className="flex items-center"
+              data-testid="comment-respons-header"
+            >
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
@@ -278,21 +307,34 @@ function PostPage({
               <span className="mx-1">|</span>
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger className="flex items-center" data-testid="comment-respons">
-                    <Link href={post_s.url} className="flex cursor-pointer items-center">
-                      <Icons.comment className="h-4 w-4 sm:mr-1" />
+                  <TooltipTrigger
+                    className="flex items-center"
+                    data-testid="comment-respons"
+                  >
+                    <Link
+                      href={post_s.url}
+                      className="flex cursor-pointer items-center"
+                    >
+                      {post_s.children > 1 ? (
+                        <Icons.messagesSquare className="h-4 w-4 sm:mr-1" />
+                      ) : (
+                        <Icons.comment className="h-4 w-4 sm:mr-1" />
+                      )}
                     </Link>
-                    <Link href={post_s.url} className="flex cursor-pointer items-center text-red-600">
+                    <Link
+                      href={post_s.url}
+                      className="flex cursor-pointer items-center text-red-600"
+                    >
                       {post_s.children}
                     </Link>
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>
                       {post_s.children === 0
-                        ? 'No responses'
+                        ? "No responses"
                         : post_s.children === 1
-                        ? post_s.children + ' response'
-                        : post_s.children + ' responses'}
+                        ? post_s.children + " response"
+                        : post_s.children + " responses"}
                     </p>
                   </TooltipContent>
                 </Tooltip>
@@ -301,7 +343,10 @@ function PostPage({
           </div>
           <div className="my-4 flex justify-between">
             <div className="flex items-center gap-2 sm:gap-4">
-              <div className="flex items-center gap-1" data-testid="comment-vote-buttons">
+              <div
+                className="flex items-center gap-1"
+                data-testid="comment-vote-buttons"
+              >
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger>
@@ -331,7 +376,9 @@ function PostPage({
                 <span
                   data-testid="comment-payout"
                   className={`text-xs text-red-600 hover:cursor-pointer sm:text-sm ${
-                    Number(post_s.max_accepted_payout.slice(0, 1)) === 0 ? '!text-gray-600 line-through' : ''
+                    Number(post_s.max_accepted_payout.slice(0, 1)) === 0
+                      ? "!text-gray-600 line-through"
+                      : ""
                   }`}
                 >
                   ${post_s.payout?.toFixed(2)}
@@ -341,7 +388,9 @@ function PostPage({
                 <DetailsCardVoters post={post_s}>
                   <span className="text-xs text-red-500 sm:text-sm">
                     {post_s.stats?.total_votes}
-                    {post_s.stats?.total_votes && post_s.stats?.total_votes > 1 ? ' votes' : ' vote'}
+                    {post_s.stats?.total_votes && post_s.stats?.total_votes > 1
+                      ? " votes"
+                      : " vote"}
                   </span>
                 </DetailsCardVoters>
               ) : null}
