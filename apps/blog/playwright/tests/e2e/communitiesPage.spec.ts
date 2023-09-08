@@ -764,4 +764,25 @@ test.describe('Communities page tests', () => {
     let subscribersUIAfterLoadMoreClick = await communitiesPage.subscriberRow.all();
     expect(subscribersUIAfterLoadMoreClick.length).toBe(2 * subscribersUIBeforeLoadMoreClik.length);
   });
+
+  test('validate Subscribe button styles in the light theme', async ({ page }) => {
+    await homePage.moveToLeoFinanceCommunities();
+    await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
+
+    const communitySubscribeButton = await communitiesPage.communitySubscribeButton;
+
+    // Color of the Subscribe button before hover
+    expect(await homePage.getElementCssPropertyValue(communitySubscribeButton, 'background-color')).toBe(
+      'rgb(30, 64, 175)'
+    );
+    await communitySubscribeButton.hover();
+    await page.waitForTimeout(1000);
+    // Color of the Subscribe button after hover
+    expect(await homePage.getElementCssPropertyValue(communitySubscribeButton, 'background-color')).toBe(
+      'rgb(30, 58, 138)'
+    );
+    await communitySubscribeButton.click();
+    await loginToVoteDialog.validateLoginToVoteDialogIsVisible();
+    await loginToVoteDialog.closeLoginDialog();
+  });
 });
