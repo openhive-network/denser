@@ -1,9 +1,6 @@
 import Link from "next/link";
 import {
   cn,
-  extractPictureFromPostBody,
-  extractUrlsFromJsonString,
-  extractYouTubeVideoIds,
   getPostSummary,
 } from "@/blog/lib/utils";
 import { Icons } from "@hive/ui/components/icons";
@@ -29,10 +26,9 @@ import {
 import DetailsCardHover from "./details-card-hover";
 import DialogLogin from "@/blog/components/dialog-login";
 import { useRouter } from "next/router";
-import { proxifyImageUrl } from "@hive/ui/lib/old-profixy";
-import { customEndsWith } from "@/blog/lib/ends-with";
 import { useState } from "react";
 import { Entry } from "@/blog/lib/bridge";
+import PostImage from "./post-img";
 
 const PostListItem = ({
   post,
@@ -51,16 +47,6 @@ const PostListItem = ({
   function revealPost() {
     setReveal((reveal) => !reveal);
   }
-  const youtube_id = extractYouTubeVideoIds(
-    extractUrlsFromJsonString(post.body)
-  );
-  const pictures_extracted = extractPictureFromPostBody(
-    extractUrlsFromJsonString(post.body)
-  );
-  const regex_for_peakd = /https:\/\/files\.peakd\.com\/[^\s]+\.jpg/;
-  const peakd_img = post.body.match(regex_for_peakd);
-  const regex_for_gif = /\]\((.*?)\)/;
-  const gif = regex_for_gif.exec(post.body);
   return (
     <li
       data-testid="post-list-item"
@@ -226,233 +212,7 @@ const PostListItem = ({
         <div className="flex flex-col md:flex-row">
           <div>
             {!reveal && post.blacklists.length < 1 ? (
-              <>
-                {post.original_entry ? (
-                  <Link
-                    href={`/${post.category}/@${post.author}/${post.permlink}`}
-                    data-testid="post-image"
-                  >
-                    <div className="md:mr-3.5 relative flex h-[210px] sm:h-[360px] items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
-                      <picture className="articles__feature-img h-ful w-full">
-                        <source
-                          srcSet={proxifyImageUrl(
-                            post.original_entry.json_metadata.image[0],
-                            "256x512"
-                          ).replace(/ /g, "%20")}
-                          media="(min-width: 1000px)"
-                        />
-                        <img
-                          srcSet={post.original_entry.json_metadata.image[0]}
-                          alt="Post image"
-                          loading="lazy"
-                        />
-                      </picture>
-                    </div>
-                  </Link>
-                ) 
-                : post.json_metadata.image && post.json_metadata.image[0] ? (
-                  <Link
-                    href={`/${post.category}/@${post.author}/${post.permlink}`}
-                    data-testid="post-image"
-                  >
-                    <div className="md:mr-3.5 relative flex h-[210px] sm:h-[360px] items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
-                      <picture className="articles__feature-img h-ful w-full">
-                        <source
-                          srcSet={proxifyImageUrl(
-                            post.json_metadata.image[0],
-                            "256x512"
-                          ).replace(/ /g, "%20")}
-                          media="(min-width: 1000px)"
-                        />
-                        <img
-                          srcSet={post.json_metadata.image[0]}
-                          alt="Post image"
-                          loading="lazy"
-                          className="w-full"
-                        />
-                      </picture>
-                    </div>
-                  </Link>
-                ) 
-                : post.json_metadata.images &&
-                  post.json_metadata.images[0] ? (
-                  <Link
-                    href={`/${post.category}/@${post.author}/${post.permlink}`}
-                    data-testid="post-image"
-                  >
-                    <div className="md:mr-3.5 relative h-[210px] sm:h-[360px] items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
-                      <picture className="articles__feature-img h-ful w-full">
-                        <source
-                          srcSet={proxifyImageUrl(
-                            post.json_metadata.images[0],
-                            "256x512"
-                          ).replace(/ /g, "%20")}
-                          media="(min-width: 1000px)"
-                        />
-                        <img
-                          srcSet={post.json_metadata.images[0]}
-                          alt="Post image"
-                          loading="lazy"
-                        />
-                      </picture>
-                    </div>
-                  </Link>
-                ) : post.json_metadata.flow?.pictures &&
-                  post.json_metadata.flow?.pictures[0] ? (
-                  <Link
-                    href={`/${post.category}/@${post.author}/${post.permlink}`}
-                    data-testid="post-image"
-                  >
-                    <div className="md:mr-3.5 relative h-[210px] sm:h-[360px] items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
-                      <picture className="articles__feature-img h-ful w-full ">
-                        <source
-                          srcSet={proxifyImageUrl(
-                            post.json_metadata.flow.pictures[0].url,
-                            "256x512"
-                          ).replace(/ /g, "%20")}
-                          media="(min-width: 1000px)"
-                        />
-                        <img
-                          srcSet={post.json_metadata.flow.pictures[0].url}
-                          alt="Post image"
-                          loading="lazy"
-                        />
-                      </picture>
-                    </div>
-                  </Link>
-                ) : post.json_metadata.links &&
-                  post.json_metadata.links[0] &&
-                  customEndsWith(
-                    post.json_metadata.links[0].slice(
-                      0,
-                      post.json_metadata.links[0].length - 1
-                    ),
-                    ["png", "webp", "jpeg", "jpg"]
-                  ) ? (
-                  <Link
-                    href={`/${post.category}/@${post.author}/${post.permlink}`}
-                    data-testid="post-image"
-                  >
-                    <div className="md:mr-3.5 relative h-[210px] sm:h-[360px] items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
-                      <picture className="articles__feature-img h-ful w-full">
-                        <source
-                          srcSet={proxifyImageUrl(
-                            post.json_metadata.links[0].slice(
-                              0,
-                              post.json_metadata.links[0].length - 1
-                            ),
-                            "256x512"
-                          ).replace(/ /g, "%20")}
-                          media="(min-width: 1000px)"
-                        />
-                        <img
-                          srcSet={post.json_metadata.links[0].slice(
-                            0,
-                            post.json_metadata.links[0].length - 1
-                          )}
-                          alt="Post image"
-                          loading="lazy"
-                        />
-                      </picture>
-                    </div>
-                  </Link>
-                ) : youtube_id[0] ? (
-                  <Link
-                    href={`/${post.category}/@${post.author}/${post.permlink}`}
-                    data-testid="post-image"
-                  >
-                    <div className="md:mr-3.5 relative h-[210px] sm:h-[360px] items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
-                      <picture className="articles__feature-img h-full w-full">
-                        <source
-                          srcSet={`https://img.youtube.com/vi/${youtube_id[0]}/0.jpg`}
-                          media="(min-width: 1000px)"
-                        />
-
-                        <img
-                          className="w-full"
-                          srcSet={`https://img.youtube.com/vi/${youtube_id[0]}/0.jpg`}
-                          alt="Post image"
-                          loading="lazy"
-                        />
-                      </picture>
-                    </div>
-                  </Link>
-                ) : pictures_extracted[0] ? (
-                  <Link
-                    href={`/${post.category}/@${post.author}/${post.permlink}`}
-                    data-testid="post-image"
-                  >
-                    <div className="md:mr-3.5 relative h-[210px] sm:h-[360px] items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
-                      <picture className="articles__feature-img h-ful w-full">
-                        <source
-                          srcSet={proxifyImageUrl(
-                            pictures_extracted[0],
-                            "256x512"
-                          ).replace(/ /g, "%20")}
-                          media="(min-width: 1000px)"
-                        />
-                        <img
-                          srcSet={pictures_extracted[0]}
-                          alt="Post image"
-                          loading="lazy"
-                        />
-                      </picture>
-                    </div>
-                  </Link>
-                ) : post.body.includes("untitled.gif") && gif ? (
-                  <Link
-                    href={`/${post.category}/@${post.author}/${post.permlink}`}
-                    data-testid="post-image"
-                  >
-                    <div className="md:mr-3.5 relative h-[210px] sm:h-[360px] items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
-                      <picture className="articles__feature-img h-ful w-full">
-                        <source
-                          srcSet={proxifyImageUrl(gif[1], "256x512").replace(
-                            / /g,
-                            "%20"
-                          )}
-                          media="(min-width: 1000px)"
-                        />
-                        <img srcSet={gif[1]} alt="Post image" loading="lazy" />
-                      </picture>
-                    </div>
-                  </Link>
-                ) : peakd_img !== null ? (
-                  <Link
-                    href={`/${post.category}/@${post.author}/${post.permlink}`}
-                    data-testid="post-image"
-                  >
-                    <div className="md:mr-3.5 relative h-[210px] sm:h-[360px] items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
-                      <picture className="articles__feature-img h-ful w-full">
-                        <source
-                          srcSet={proxifyImageUrl(
-                            peakd_img[0],
-                            "256x512"
-                          ).replace(/ /g, "%20")}
-                          media="(min-width: 1000px)"
-                        />
-                        <img
-                          srcSet={peakd_img[0]}
-                          alt="Post image"
-                          loading="lazy"
-                        />
-                      </picture>
-                    </div>
-                  </Link>
-                ) : !post.title.includes("RE: ") ? (
-                  <Link
-                    href={`/${post.category}/@${post.author}/${post.permlink}`}
-                    data-testid="post-image"
-                  >
-                    <div className="md:mr-3.5 relative h-[210px] sm:h-[360px] md:h-full md:min-h-fit items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
-                      <img
-                        className="w-full bg-cover bg-no-repeat max-h-[425px]"
-                        src={`https://images.hive.blog/u/${post.author}/avatar/large`}
-                      />
-                    </div>
-                  </Link>
-                ) : null}
-              </>
+             <><PostImage post={post}/></>
             ) : null}
           </div>
           <div className="md:overflow-hidden">

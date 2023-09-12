@@ -18,8 +18,10 @@ import DialogLogin from '@/blog/components/dialog-login';
 import { Entry } from '@/blog/lib/bridge';
 import DetailsCardHover from './details-card-hover';
 import clsx from 'clsx';
+import PostImage from './post-img';
 
 const RepliesListItem = ({ comment }: { comment: Entry }) => {
+  console.log(comment)
   return (
     <>
       <li className={clsx({'opacity-60 hover:opacity-100': comment.stats?.gray})} data-testid="comment-list-item">
@@ -87,6 +89,8 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
               </div>
             </div>
           </CardHeader>
+          <div  className="flex flex-col md:flex-row">
+          <PostImage post={comment}/>
           <CardContent>
             <CardTitle data-testid="comment-card-title">
               <Link  href={`/${comment.category}/@${comment.author}/${comment.permlink}`} >
@@ -98,7 +102,7 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
                 {getPostSummary(comment.json_metadata, comment.body)}
                 </Link>
             </CardDescription>
-          </CardContent>
+          </CardContent></div>
           <CardFooter>
             <div className="flex h-5 items-center space-x-4 text-sm" data-testid="comment-card-footer">
               <div className="flex items-center gap-1">

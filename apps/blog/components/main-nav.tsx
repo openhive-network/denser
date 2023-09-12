@@ -7,7 +7,7 @@ export function MainNav() {
 
   return (
     <div className="lg:mr-4 h-full items-center flex justify-between">
-      <nav className="hidden lg:flex h-full items-center space-x-6 text-sm lg:text-base font-medium">
+      <nav className="hidden lg:flex h-full items-center space-x-2 xl:space-x-6 text-sm lg:text-base font-medium">
         <Link
           href="/trending"
           className={cn(

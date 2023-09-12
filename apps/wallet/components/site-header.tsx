@@ -15,7 +15,7 @@ const SiteHeader: FC = () => {
         </Link>
         <div className="flex items-center space-x-2 sm:space-x-4">
           <nav className="flex items-center space-x-1">
-            <div className="hidden sm:flex">
+            <div className="hidden sm:flex gap-1 mx-1">
               <DialogLogin>
                 <Button
                   variant="ghost"

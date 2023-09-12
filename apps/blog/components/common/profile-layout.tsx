@@ -187,7 +187,6 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   href={`/@${profileData.name}/followers`}
                   className="hover:cursor-pointer hover:text-red-600 hover:underline"
                 >
-                  {profileData?.follow_stats?.follower_count} followers
                   {profileData?.follow_stats?.follower_count === 0 || undefined
                     ? "No followers yet"
                     : profileData?.follow_stats?.follower_count + " followers"}

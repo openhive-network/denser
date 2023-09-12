@@ -20,7 +20,7 @@ const SiteHeader: FC = () => {
         <MainNav />
         <div className="flex items-center space-x-2 sm:space-x-4">
           <nav className="flex items-center space-x-1">
-            <div className="hidden sm:flex">
+            <div className="hidden sm:flex gap-1 mx-1">
               <DialogLogin>
                 <Button variant="ghost" className="text-base hover:text-red-500">
                   Login
