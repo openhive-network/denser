@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useForm } from "react-hook-form";
 import { Separator } from "@hive/ui/components/separator";
 import { getLogger } from "@hive/ui/lib/logging";

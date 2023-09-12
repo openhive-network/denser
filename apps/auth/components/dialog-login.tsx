@@ -4,7 +4,7 @@ import {
   DialogTrigger,
 } from "@hive/ui/components/dialog";
 import { ReactNode } from "react";
-import LoginForm from "./login-form";
+import LoginForm from "@/auth/components/login-form";
 
 function DialogLogin({ children }: { children: ReactNode }) {
   return (
