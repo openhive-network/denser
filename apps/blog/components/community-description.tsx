@@ -56,7 +56,7 @@ const CommunityDescription = ({
     post_body_html = renderer.render(data.description);
   }
   return (
-    <div className="flex w-auto flex-col">
+    <div className="flex w-auto flex-col max-w-[240px]">
       <Card
         className={cn(
           "my-4 hidden h-fit w-auto flex-col px-4 dark:bg-background/95 dark:text-white md:flex"

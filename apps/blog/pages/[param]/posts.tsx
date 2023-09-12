@@ -68,7 +68,7 @@ const UserPosts = () => {
     <ProfileLayout>
       <div className="flex flex-col">
         <Tabs defaultValue={sort} className="w-full" onValueChange={(s) => router.push(`/@${username}/${s}`)}>
-          <TabsList className="flex" data-testid="user-post-menu">
+          <TabsList className="flex justify-start" data-testid="user-post-menu">
             <TabsTrigger value="posts">Posts</TabsTrigger>
             <TabsTrigger value="comments">Comments</TabsTrigger>
             <TabsTrigger value="payout">Payouts</TabsTrigger>

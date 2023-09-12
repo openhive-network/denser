@@ -1,24 +1,17 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-
-import { siteConfig } from '@hive/ui/config/site';
 import { cn } from '@hive/ui/lib/utils';
-import { Icons } from '@hive/ui/components/icons';
 
 export function MainNav() {
   const pathname = usePathname();
 
   return (
-    <div className="mr-4 hidden h-full items-center md:flex">
-      <Link href="/trending" className="mr-6 flex items-center space-x-2">
-        <Icons.hive className="h-6 w-6" />
-        <span className="hidden font-bold sm:inline-block">{siteConfig.name}</span>
-      </Link>
-      <nav className="flex h-full items-center items-center space-x-6 text-sm font-medium">
+    <div className="lg:mr-4 h-full items-center flex justify-between">
+      <nav className="hidden lg:flex h-full items-center space-x-6 text-sm lg:text-base font-medium">
         <Link
           href="/trending"
           className={cn(
-            'flex h-full items-center transition-colors hover:border-b-2 hover:border-red-600 hover:text-red-600',
+            'flex h-full items-center transition-colors hover:border-b-2 hover:border-red-600 hover:text-red-600 ml-6',
             pathname === '/trending' ? 'text-red-600' : 'text-foreground/60'
           )}
           data-testid="nav-posts-link"

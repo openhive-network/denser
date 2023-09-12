@@ -17,11 +17,12 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/
 import DialogLogin from '@/blog/components/dialog-login';
 import { Entry } from '@/blog/lib/bridge';
 import DetailsCardHover from './details-card-hover';
+import clsx from 'clsx';
 
 const RepliesListItem = ({ comment }: { comment: Entry }) => {
   return (
     <>
-      <li data-testid="comment-list-item">
+      <li className={clsx({'opacity-60 hover:opacity-100': comment.stats?.gray})} data-testid="comment-list-item">
         <Card
           className={cn(
             'mt-4 px-2 hover:bg-accent hover:text-accent-foreground  dark:bg-background/95 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground'

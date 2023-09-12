@@ -176,7 +176,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               className="my-1 max-w-[420px] text-center text-white sm:my-4"
               data-testid="profile-about"
             >
-              {profileData?.profile?.about}
+            {profileData?.profile?.about ? profileData?.profile?.about.slice(0, 157) + (157 < profileData?.profile?.about.length ? '...' : '') : null}
             </p>
             <ul
               className="my-1 flex h-5 gap-1 text-xs sm:text-sm"
@@ -188,6 +188,9 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   className="hover:cursor-pointer hover:text-red-600 hover:underline"
                 >
                   {profileData?.follow_stats?.follower_count} followers
+                  {profileData?.follow_stats?.follower_count === 0 || undefined
+                    ? "No followers yet"
+                    : profileData?.follow_stats?.follower_count + " followers"}
                 </Link>
               </li>
 
@@ -415,7 +418,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             </div>
           </div>
         </div>
-        <main className="container mx-auto max-w-screen-xl">{children}</main>
+        <main className="container mx-auto max-w-screen-xl pt-4">{children}</main>
       </div>
     </div>
   ) : (

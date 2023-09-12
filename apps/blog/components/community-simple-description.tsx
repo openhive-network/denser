@@ -28,7 +28,7 @@ const CommunitySimpleDescription = ({
 }) => {
   return (
     <Card
-      className="my-4 grid h-fit w-auto grid-cols-3 gap-4 p-2 dark:bg-background/95 dark:text-white"
+      className="my-4 grid h-fit w-full grid-cols-3 gap-4 p-2 dark:bg-background/95 dark:text-white"
       data-testid="community-simple-description-sidebar"
     >
       <CardHeader className="col-span-2 p-0">

@@ -21,7 +21,7 @@ const BadgeListItem = ({
         }
         target="_blank"
       >
-        <img src={url} alt={title}/>
+        <img src={url} alt={title} title={title}/>
       </Link>
     </div>
   );
