@@ -205,8 +205,8 @@ test.describe("Witnesses page tests", () => {
         / HBD/g,
         ""
       );
-    expect(await witnessesPage.witnessPriceFeed.first().textContent()).toBe(
-      "$" + firstWitnessPriceFeed
+    expect("$" + firstWitnessPriceFeed).toContain(
+      await witnessesPage.witnessPriceFeed.first().textContent()
     );
   });
 

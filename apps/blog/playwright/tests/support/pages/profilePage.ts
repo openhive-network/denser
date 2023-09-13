@@ -38,6 +38,26 @@ export class ProfilePage {
   readonly notificationsMenuUpvotesButton: Locator;
   readonly notificationsMenuReblogsButton: Locator;
   readonly notificationsMenuAllContent: Locator;
+  readonly notificationsMenuRepliesContent: Locator;
+  readonly notificationListItemInReplies: Locator;
+  readonly notificationsMenuMentionsContent: Locator;
+  readonly notificationListItemInMentions: Locator;
+  readonly notificationsMenuFollowsContent: Locator;
+  readonly notificationListItemInFollows: Locator;
+  readonly notificationsMenuUpvotesContent: Locator;
+  readonly notificationListItemInUpvotes: Locator;
+  readonly notificationsMenuReblogsContent: Locator;
+  readonly notificationListItemInReblogs: Locator;
+  readonly notificationNickName: Locator;
+  readonly notificationAccountIconLink: Locator;
+  readonly notificationAccountAndMessage: Locator;
+  readonly notificationTimestamp: Locator;
+  readonly notificationListItemInAll: Locator;
+  readonly notificationListItemEvenInAll: Locator;
+  readonly notificationListItemOddInAll: Locator;
+  readonly notificationProgressBar: Locator;
+  readonly notificationLoadMoreButtonInAll: Locator;
+  readonly notificationLoadMoreButtonInReblogs: Locator;
 
   readonly publicProfileSettings: any;
   readonly publicProfileSettingsHeader: Locator;
@@ -160,6 +180,29 @@ export class ProfilePage {
       .locator('[data-testid="notifications-local-menu"]')
       .getByText('Reblogs');
     this.notificationsMenuAllContent = page.locator('[data-testid="notifications-content-all"]');
+    this.notificationsMenuRepliesContent = page.locator('[data-testid="notifications-content-replies"]');
+    this.notificationListItemInReplies = this.notificationsMenuRepliesContent.locator('[data-testid="notification-list-item"]');
+    this.notificationsMenuMentionsContent = page.locator('[data-testid="notifications-content-mentions"]');
+    this.notificationListItemInMentions = this.notificationsMenuMentionsContent.locator('[data-testid="notification-list-item"]');
+    this.notificationsMenuFollowsContent = page.locator('[data-testid="notifications-content-follows"]');
+    this.notificationListItemInFollows = this.notificationsMenuFollowsContent.locator('[data-testid="notification-list-item"]');
+    this.notificationsMenuUpvotesContent = page.locator('[data-testid="notifications-content-upvotes"]');
+    this.notificationListItemInUpvotes = this.notificationsMenuUpvotesContent.locator('[data-testid="notification-list-item"]');
+    this.notificationsMenuReblogsContent = page.locator('[data-testid="notifications-content-reblogs"]');
+    this.notificationListItemInReblogs = this.notificationsMenuReblogsContent.locator('[data-testid="notification-list-item"]');
+
+    this.notificationNickName = page.locator('[data-testid="subscriber-name"]');
+    this.notificationAccountIconLink = page.locator('[data-testid="notification-account-icon-link"]');
+    this.notificationAccountAndMessage = page.locator('[data-testid="notification-account-and-message"]');
+    this.notificationTimestamp = page.locator('[data-testid="notification-timestamp"]');
+    this.notificationListItemInAll = this.notificationsMenuAllContent.locator('[data-testid="notification-list-item"]');
+    this.notificationListItemEvenInAll = this.notificationsMenuAllContent.locator('[data-testid="notification-list-item"]:nth-of-type(even)');
+    this.notificationListItemOddInAll =  this.notificationsMenuAllContent.locator('[data-testid="notification-list-item"]:nth-of-type(odd)');
+    this.notificationProgressBar = page.locator('[data-testid="notification-progress-bar"]');
+    this.notificationLoadMoreButtonInAll = this.notificationsMenuAllContent.getByText('Load more');
+    this.notificationLoadMoreButtonInReblogs = this.notificationsMenuReblogsContent.getByText('Load more');
+    // this.subscribersLoadMoreButton = this.subscribersNotificationContent.getByText('Load more');
+
 
     this.publicProfileSettings = page.locator('[data-testid="public-profile-settings"]');
     this.publicProfileSettingsHeader = this.publicProfileSettings.locator('h2').nth(0);
@@ -220,6 +263,12 @@ export class ProfilePage {
 
   async gotoProfilePage(nickName: string) {
     await this.page.goto(`/${nickName}`);
+    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForSelector(this.profileInfo['_selector']);
+  }
+
+  async gotoNotificationsProfilePage(nickName: string) {
+    await this.page.goto(`/${nickName}/notifications`);
     await this.page.waitForLoadState('networkidle');
     await this.page.waitForSelector(this.profileInfo['_selector']);
   }
