@@ -134,7 +134,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   <Link
                     href={`http://localhost:3000/@${username}`}
                     target="_blank"
-                    className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800 
+                    className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800
                     ${
                       router.asPath === `/@${username}`
                         ? "bg-white text-slate-800 dark:bg-slate-950 dark:hover:text-slate-200"
