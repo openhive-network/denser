@@ -14,7 +14,7 @@ function DialogLogin({ children }: { children: ReactNode }) {
         <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
           <div className="mx-auto flex w-[440px] max-w-md flex-col items-center">
             <h2 className="w-full pb-6 text-3xl text-gray-800">
-              Returning Users: Login to Vote
+              Returning Users: Confirm Password
             </h2>
             <form method="post" className="w-full">
               <div className="relative mb-5">

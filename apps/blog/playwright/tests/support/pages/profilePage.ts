@@ -371,14 +371,18 @@ export class ProfilePage {
   }
 
   async moveToPeakdByLinkInSocialTab() {
+    const pagePromise = this.page.context().waitForEvent('page');
     await this.thirdPartyAppPeakdLink.click();
-    await expect(this.page).toHaveURL('https://peakd.com/');
-    await expect(this.page).toHaveTitle('PeakD');
+    const newPage = await pagePromise;
+    await expect(newPage).toHaveURL('https://peakd.com/');
+    await expect(newPage).toHaveTitle('PeakD');
   }
 
   async moveToHivebuzzByLinkInSocialTab() {
+    const pagePromise = this.page.context().waitForEvent('page');
     await this.thirdPartyAppHivebuzzLink.click();
-    await expect(this.page).toHaveURL('https://hivebuzz.me/');
-    await expect(this.page).toHaveTitle('HiveBuzz');
+    const newPage = await pagePromise;
+    await expect(newPage).toHaveURL('https://hivebuzz.me/');
+    await expect(newPage).toHaveTitle('HiveBuzz');
   }
 }

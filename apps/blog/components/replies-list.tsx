@@ -33,7 +33,7 @@ const RepliesList = ({ data, parent }: { data: Entry[] | null | undefined; paren
     });
 
     return (
-      <ul className="p-2">
+      <ul className="px-2">
         {tmp?.map((comment: Entry) => (
           <RepliesListItem comment={comment} key={comment.post_id} />
         ))}
@@ -42,7 +42,7 @@ const RepliesList = ({ data, parent }: { data: Entry[] | null | undefined; paren
   }
 
   return (
-    <ul className="p-2">
+    <ul className="px-2">
       {data?.map((comment: Entry) => (
         <RepliesListItem comment={comment} key={comment.post_id} />
       ))}

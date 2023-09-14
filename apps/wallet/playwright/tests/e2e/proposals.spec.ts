@@ -1,10 +1,12 @@
 import { expect, test } from "@playwright/test";
 import { ProposalsPage } from "../support/pages/proposalsPage";
 import { ApiHelper } from "../support/apiHelper";
+import { LoginToVoteDialog } from "../support/pages/loginToVoteDialog";
+import { HomePage } from "../../../../blog/playwright/tests/support/pages/homePage";
 import { getRoundedAbbreveration } from "@hive/ui/lib/utils";
 import moment from "moment";
 import Big from "big.js";
-import { HomePage } from "../../../../blog/playwright/tests/support/pages/homePage";
+
 
 test.describe("Proposals page tests", () => {
   let proposalsPage: ProposalsPage;
@@ -708,5 +710,49 @@ test.describe("Proposals page tests", () => {
     // console.log('Title of first proposal in the list: ', await titleProposalFirst.textContent());
     expect(await titleProposalFirst.textContent()).toContain(await newPage.locator('[data-testid="article-title"]').textContent());
     // console.log('Title of post after clicking the proposal: ', await newPage.locator('[data-testid="article-title"]').textContent());
+  });
+
+  // It works on localhost but in CI it cannot move to the new domain page
+  test.skip("move to the proposal creator profile page", async ({ page }) => {
+    await proposalsPage.goToProposalsPage();
+
+    const pagePromise = page.context().waitForEvent('page');
+
+    const proposalCreator = await proposalsPage.proposalCreator.first();
+    const proposalCreatorName = await proposalsPage.proposalCreator.first().textContent();
+    await proposalCreator.click();
+
+    const newPage = await pagePromise;
+
+    let reUrl = new RegExp(`http:\/\/\\w+:3000/@${proposalCreatorName}`);
+    await expect(newPage.url()).toMatch(reUrl);
+  });
+
+  // It works on localhost but in CI it cannot move to the new domain page
+  test.skip("move to the proposal receiver profile page", async ({ page }) => {
+    await proposalsPage.goToProposalsPage();
+
+    const pagePromise = page.context().waitForEvent('page');
+
+    const proposalReceiver = await proposalsPage.proposalReceiver.first();
+    const proposalReceiverName = await proposalsPage.proposalReceiver.first().textContent();
+    await proposalReceiver.click();
+
+    const newPage = await pagePromise;
+
+    let reUrl = new RegExp(`http:\/\/\\w+:3000/@${proposalReceiverName}`);
+    await expect(newPage.url()).toMatch(reUrl);
+  });
+
+  test("move to the login dialog by clicking vote button", async ({ page }) => {
+    const loginDialog = new LoginToVoteDialog(page);
+
+    await proposalsPage.goToProposalsPage();
+    await expect(proposalsPage.page.url()).toMatch(/http:\/\/\w+:4000/); // http://denser:4000 or http://localhost:4000
+
+    // Click vote button in the first proposal
+    await proposalsPage.clickVoteButtonOfFirstProposalItem();
+    await loginDialog.validateLoginToVoteDialogIsVisible();
+    await loginDialog.closeLoginDialog();
   });
 });

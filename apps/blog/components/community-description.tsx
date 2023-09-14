@@ -1,20 +1,31 @@
-import { cn } from '@/blog/lib/utils';
-import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
-import Link from 'next/link';
-import { Button } from '@hive/ui/components/button';
-import ln2list from '@/blog/lib/ln2list';
-import { DefaultRenderer } from '@hiveio/content-renderer';
-import { getDoubleSize, proxifyImageUrl } from '@hive/ui/lib/old-profixy';
-import { AccountNotification, Community, Subscription, getAccountNotifications } from '@/blog/lib/bridge';
-import { SubsListDialog } from './subscription-list-dialog';
-import { ActivityLogDialog } from './activity-log-dialog';
-import { Badge } from '@hive/ui/components/badge';
+import { cn } from "@/blog/lib/utils";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@hive/ui/components/card";
+import Link from "next/link";
+import { Button } from "@hive/ui/components/button";
+import ln2list from "@/blog/lib/ln2list";
+import { DefaultRenderer } from "@hiveio/content-renderer";
+import { getDoubleSize, proxifyImageUrl } from "@hive/ui/lib/old-profixy";
+import {
+  AccountNotification,
+  Community,
+  Subscription,
+  getAccountNotifications,
+} from "@/blog/lib/bridge";
+import { SubsListDialog } from "./subscription-list-dialog";
+import { ActivityLogDialog } from "./activity-log-dialog";
+import { Badge } from "@hive/ui/components/badge";
+import DialogLogin from "./dialog-login";
 
 const CommunityDescription = ({
   data,
   subs,
   notificationData,
-  username
+  username,
 }: {
   data: Community;
   subs: Subscription[];
@@ -22,32 +33,34 @@ const CommunityDescription = ({
   username: string;
 }) => {
   const renderer = new DefaultRenderer({
-    baseUrl: 'https://hive.blog/',
+    baseUrl: "https://hive.blog/",
     breaks: true,
     skipSanitization: false,
     allowInsecureScriptTags: false,
     addNofollowToLinks: true,
     addTargetBlankToLinks: true,
-    addCssClassToLinks: 'external-link',
+    addCssClassToLinks: "external-link",
     doNotShowImages: false,
-    ipfsPrefix: '',
+    ipfsPrefix: "",
     assetsWidth: 640,
     assetsHeight: 480,
-    imageProxyFn: (url: string) => getDoubleSize(proxifyImageUrl(url, true).replace(/ /g, '%20')),
-    usertagUrlFn: (account: string) => '/@' + account,
-    hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
-    isLinkSafeFn: (url: string) => false
+    imageProxyFn: (url: string) =>
+      getDoubleSize(proxifyImageUrl(url, true).replace(/ /g, "%20")),
+    usertagUrlFn: (account: string) => "/@" + account,
+    hashtagUrlFn: (hashtag: string) => "/trending/" + hashtag,
+    isLinkSafeFn: (url: string) => false,
   });
 
   let post_body_html = null;
   if (data.description) {
     post_body_html = renderer.render(data.description);
   }
-
   return (
-    <div className="flex w-auto flex-col">
+    <div className="flex w-auto flex-col max-w-[240px]">
       <Card
-        className={cn('my-4 hidden h-fit w-auto flex-col px-4 dark:bg-background/95 dark:text-white md:flex')}
+        className={cn(
+          "my-4 hidden h-fit w-auto flex-col px-4 dark:bg-background/95 dark:text-white md:flex"
+        )}
         data-testid="community-info-sidebar"
       >
         <CardHeader className="px-0 font-light">
@@ -59,48 +72,71 @@ const CommunityDescription = ({
         <CardContent>
           <div className="grid grid-cols-3 text-sm">
             <SubsListDialog title={data.title} subs={subs}>
-              <div className="flex flex-col items-center" data-testid="community-subscribers">
+              <div
+                className="flex flex-col items-center"
+                data-testid="community-subscribers"
+              >
                 {data.subscribers}
                 <span className="text-center text-xs">subscribers</span>
               </div>
             </SubsListDialog>
-            <div className="flex flex-col items-center" data-testid="community-pending-rewards">
+            <div
+              className="flex flex-col items-center"
+              data-testid="community-pending-rewards"
+            >
               {data.sum_pending}
               <span className="text-center text-xs">pending rewards</span>
             </div>
-            <div className="flex flex-col items-center" data-testid="community-active-posters">
+            <div
+              className="flex flex-col items-center"
+              data-testid="community-active-posters"
+            >
               {data.num_authors}
               <span className="text-center text-xs">active posters</span>
             </div>
           </div>
           <div className="my-4 flex flex-col gap-2">
-            <Button
-              size="sm"
-              className="w-full bg-blue-800 text-center hover:bg-blue-900"
-              data-testid="community-subscribe-button"
-            >
-              <Link href={`/communities`}>Subscribe</Link>
-            </Button>
-
+            <DialogLogin>
+              <Button
+                size="sm"
+                className="w-full bg-blue-800 text-center hover:bg-blue-900"
+                data-testid="community-subscribe-button"
+              >
+                Subscribe
+              </Button>
+            </DialogLogin>
             <Button
               size="sm"
               className="w-full bg-blue-800 text-center hover:bg-blue-900"
               data-testid="community-new-post-button"
             >
-              <Link href={`/communities`}>New Post</Link>
+              <Link href={`submit.html?category=${data.name}`}>New Post</Link>
             </Button>
           </div>
-          <div data-testid="community-leadership" className="my-6 flex flex-col">
-            <h6 className="my-1.5 font-semibold leading-none tracking-tight">Leadership</h6>
+          <div
+            data-testid="community-leadership"
+            className="my-6 flex flex-col"
+          >
+            <h6 className="my-1.5 font-semibold leading-none tracking-tight">
+              Leadership
+            </h6>
             <ul className="mt-1.5 text-xs">
               {data.team.slice(1).map((member: string[]) => (
                 <li key={member[0]} className="pt-0.5">
-                  <Link href={`/@${member[0]}`} className="text-red-600 hover:cursor-pointer">
+                  <Link
+                    href={`/@${member[0]}`}
+                    className="text-red-600 hover:cursor-pointer"
+                  >
                     @{member[0]}
-                  </Link>{' '}
-                  <span className="text-[10px] text-slate-500">{member[1].toUpperCase()}</span>{' '}
-                  {member[2] && member[2] !== '' ? (
-                    <Badge variant="outline" className="ml-0.5 border-red-600 py-0 text-slate-500">
+                  </Link>{" "}
+                  <span className="text-[10px] text-slate-500">
+                    {member[1].toUpperCase()}
+                  </span>{" "}
+                  {member[2] && member[2] !== "" ? (
+                    <Badge
+                      variant="outline"
+                      className="ml-0.5 border-red-600 py-0 text-slate-500"
+                    >
                       {member[2]}
                     </Badge>
                   ) : null}
@@ -117,12 +153,16 @@ const CommunityDescription = ({
       </Card>
 
       <Card
-        className={cn('my-4 hidden h-fit w-auto flex-col px-4 dark:bg-background/95 dark:text-white md:flex')}
+        className={cn(
+          "my-4 hidden h-fit w-auto flex-col px-4 dark:bg-background/95 dark:text-white md:flex"
+        )}
         data-testid="community-description-rules-sidebar"
       >
         <CardContent className="py-4">
           <div data-testid="community-description">
-            <h6 className="my-1.5 font-semibold leading-none tracking-tight">Description</h6>
+            <h6 className="my-1.5 font-semibold leading-none tracking-tight">
+              Description
+            </h6>
             {post_body_html ? (
               <div
                 className="preview-description prose-sm "
@@ -132,10 +172,15 @@ const CommunityDescription = ({
             ) : null}
           </div>
 
-          {data.flag_text.trim() !== '' ? (
+          {data.flag_text.trim() !== "" ? (
             <div data-testid="community-rules" className="my-6">
-              <h6 className="my-1.5 font-semibold leading-none tracking-tight">Rules</h6>
-              <div className="preview-rules prose-sm" data-testid="community-rules-content">
+              <h6 className="my-1.5 font-semibold leading-none tracking-tight">
+                Rules
+              </h6>
+              <div
+                className="preview-rules prose-sm"
+                data-testid="community-rules-content"
+              >
                 {ln2list(data.flag_text).map((x, i) => (
                   <p key={i + 1}>{`${i + 1}. ${x}`}</p>
                 ))}
@@ -144,8 +189,13 @@ const CommunityDescription = ({
           ) : null}
           {data.lang ? (
             <div data-testid="community-language">
-              <h6 className="my-1.5 font-semibold leading-none tracking-tight">Language</h6>
-              <div className="preview-rules" data-testid="community-choosen-language">
+              <h6 className="my-1.5 font-semibold leading-none tracking-tight">
+                Language
+              </h6>
+              <div
+                className="preview-rules"
+                data-testid="community-choosen-language"
+              >
                 {data.lang}
               </div>
             </div>

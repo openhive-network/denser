@@ -16,19 +16,23 @@ import { Badge } from '@hive/ui/components/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
 import DialogLogin from '@/blog/components/dialog-login';
 import { Entry } from '@/blog/lib/bridge';
+import DetailsCardHover from './details-card-hover';
+import clsx from 'clsx';
+import PostImage from './post-img';
 
 const RepliesListItem = ({ comment }: { comment: Entry }) => {
+  console.log(comment)
   return (
     <>
-      <li data-testid="comment-list-item">
+      <li className={clsx({'opacity-60 hover:opacity-100': comment.stats?.gray})} data-testid="comment-list-item">
         <Card
           className={cn(
-            'my-4 px-2 hover:bg-accent hover:text-accent-foreground  dark:bg-background/95 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground'
+            'mt-4 px-2 hover:bg-accent hover:text-accent-foreground  dark:bg-background/95 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground'
           )}
         >
           <CardHeader className="px-0 py-1">
             <div className="md:text-md flex items-center text-xs text-slate-500 dark:text-slate-400">
-              <Link href={`@${comment.author}`}>
+              <Link href={`/@${comment.author}`}>
                 <img
                   className="mr-3 h-[24px] w-[24px] rounded-3xl"
                   height="24"
@@ -40,7 +44,7 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
               </Link>
               <div className="flex items-center">
                 <Link
-                  href={`@${comment.author}`}
+                  href={`/@${comment.author}`}
                   className="font-medium text-black hover:cursor-pointer hover:text-red-600 dark:text-white dark:hover:text-red-600"
                   data-testid="post-author"
                 >
@@ -78,19 +82,27 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
                     </Link>
                   )}
                   <span className="mx-1">•</span>
-                  <Link href={`${comment.url}`} className="hover:cursor-pointer hover:text-red-600">
+                  <Link href={`/${comment.category}/@${comment.author}/${comment.permlink}`} className="hover:cursor-pointer hover:text-red-600">
                     {dateToRelative(comment.created)} ago
                   </Link>
                 </span>
               </div>
             </div>
           </CardHeader>
+          <div  className="flex flex-col md:flex-row">
+          <PostImage post={comment}/>
           <CardContent>
-            <CardTitle data-testid="comment-card-title">{comment.title}</CardTitle>
+            <CardTitle data-testid="comment-card-title">
+              <Link  href={`/${comment.category}/@${comment.author}/${comment.permlink}`} >
+                {comment.title}
+                </Link>
+              </CardTitle>
             <CardDescription className="w-full" data-testid="comment-card-description">
-              {getPostSummary(comment.json_metadata, comment.body)}
+              <Link href={`/${comment.category}/@${comment.author}/${comment.permlink}`}>
+                {getPostSummary(comment.json_metadata, comment.body)}
+                </Link>
             </CardDescription>
-          </CardContent>
+          </CardContent></div>
           <CardFooter>
             <div className="flex h-5 items-center space-x-4 text-sm" data-testid="comment-card-footer">
               <div className="flex items-center gap-1">
@@ -115,10 +127,14 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
                   </Tooltip>
                 </TooltipProvider>
               </div>
-              <div className="flex items-center">
-                <Icons.dollar className="mr-1 h-4 w-4 text-red-600" />
-                {comment.payout.toFixed(2)}
-              </div>
+              <DetailsCardHover
+                  post={comment}
+                  decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
+              >
+              <div  className={`flex items-center hover:cursor-pointer hover:text-red-600 ${
+                      Number(comment.max_accepted_payout.slice(0, 1)) === 0 ? 'text-gray-600 line-through' : ''
+                    }`}>${comment.payout.toFixed(2)}</div>
+              </DetailsCardHover>
               <Separator orientation="vertical" />
               <div className="flex items-center">
                 <TooltipProvider>
@@ -129,8 +145,8 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>
-                        {comment.stats && comment.stats.total_votes > 0 ? comment.stats.total_votes : 'no'}{' '}
-                        votes
+                      {comment.stats && comment.stats.total_votes > 0 ? comment.stats.total_votes : 'no'}
+                      {comment.stats && comment.stats.total_votes > 1 ? ' votes' : ' vote'}
                       </p>
                     </TooltipContent>
                   </Tooltip>
@@ -140,12 +156,12 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
               <div className="flex items-center">
                 <TooltipProvider>
                   <Tooltip>
-                    <TooltipTrigger className="flex items-center">
-                      <Link href={`${comment.url}/#comments`} className="flex cursor-pointer items-center">
-                        <Icons.comment className="h-4 w-4 sm:mr-1" />
+                    <TooltipTrigger className="flex items-center gap-1">
+                      <Link href={`/${comment.category}/@${comment.author}/${comment.permlink}`}className="flex cursor-pointer items-center">
+                        {comment.children>1?<Icons.messagesSquare className="h-4 w-4 sm:mr-1" />:<Icons.comment className="h-4 w-4 sm:mr-1" />}
                       </Link>
                       <Link
-                        href={`${comment.url}/#comments`}
+                        href={`/${comment.category}/@${comment.author}/${comment.permlink}`}
                         className="flex cursor-pointer items-center hover:text-red-600"
                       >
                         {comment.children}

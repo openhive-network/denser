@@ -12,7 +12,6 @@ import DetailsCardVoters from '@/blog/components/details-card-voters';
 import { ReplyTextbox } from './reply-textbox';
 import { useRouter } from 'next/router';
 import DetailsCardHover from './details-card-hover';
-import Big from 'big.js';
 import { Entry } from '@/blog/lib/bridge';
 import clsx from 'clsx';
 import { Badge } from '@hive/ui/components/badge';
@@ -22,12 +21,10 @@ import { UserHoverCard } from './user-hover-card';
 const CommentListItem = ({
   comment,
   renderer,
-  price_per_hive,
   parent_depth
 }: {
   comment: Entry;
   renderer: DefaultRenderer;
-  price_per_hive: Big;
   parent_depth: number;
 }) => {
   const username = comment.author;
@@ -166,7 +163,6 @@ const CommentListItem = ({
                             </TooltipProvider>
                             <DetailsCardHover
                               post={comment}
-                              price_per_hive={price_per_hive}
                               decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
                             >
                               <div className="flex items-center hover:cursor-pointer hover:text-red-600 ">
@@ -235,7 +231,6 @@ const CommentListItem = ({
                         </div>
                         <DetailsCardHover
                           post={comment}
-                          price_per_hive={price_per_hive}
                           decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
                         >
                           <div

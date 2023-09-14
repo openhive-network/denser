@@ -1,33 +1,33 @@
 import { Button } from "@hive/ui/components/button";
 import { Icons } from "@hive/ui/components/icons";
-import { Input } from "@hive/ui/components/input";
 import { FC } from "react";
 import Sidebar from "./sidebar";
 import { ModeToggle } from "./mode-toggle";
-import { MobileNav } from "./mobile-nav";
-import { MainNav } from "./main-nav";
+import Link from "next/link";
+import DialogLogin from "./dialog-login";
 
 const SiteHeader: FC = () => {
   return (
     <header className="supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur">
-      <div className="container flex h-14 items-center">
-        <MainNav />
-        <MobileNav />
-        <div className="flex flex-1 items-center justify-between space-x-2 sm:space-x-4 md:justify-end">
+      <div className="container flex h-14 items-center justify-between w-full">
+        <Link href="/" className="mr-6 flex items-center space-x-2">
+          <Icons.walletlogo className="w-32" />
+        </Link>
+        <div className="flex items-center space-x-2 sm:space-x-4">
           <nav className="flex items-center space-x-1">
-            <Input
-              type="search"
-              placeholder="Search..."
-              className={`md:w-[100px] lg:w-[300px]`}
-            />
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-10 w-10 px-0"
-              data-testid="nav-pencil"
-            >
-              <Icons.pencil className="h-5 w-5" />
-            </Button>
+            <div className="hidden sm:flex gap-1 mx-1">
+              <DialogLogin>
+                <Button
+                  variant="ghost"
+                  className="text-base hover:text-red-500"
+                >
+                  Login
+                </Button>
+              </DialogLogin>
+              <Link href="https://signup.hive.io/">
+                <Button variant="redHover">Sign up</Button>
+              </Link>
+            </div>
             <ModeToggle />
             <Sidebar />
           </nav>

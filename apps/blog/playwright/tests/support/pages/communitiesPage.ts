@@ -36,8 +36,10 @@ export class CommunitiesPage {
   readonly subscribersNotificationContent: Locator;
   readonly subscribersNotificationLocalMenu: Locator
   readonly subscriberName: Locator;
+  readonly subscriberRow: Locator;
   readonly subscribersRowsEven: Locator;
   readonly subscribersRowsOdd: Locator;
+  readonly subscribersLoadMoreButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -75,8 +77,10 @@ export class CommunitiesPage {
     this.subscribersNotificationContent = page.locator('[data-testid="notifications-content-all"]');
     this.subscribersNotificationLocalMenu = page.locator('[data-testid="notifications-local-menu"]');
     this.subscriberName = page.locator('[data-testid="subscriber-name"]');
+    this.subscriberRow = this.subscribersNotificationContent.locator('tr');
     this.subscribersRowsEven = this.subscribersNotificationContent.locator('tr:nth-of-type(even)');
     this.subscribersRowsOdd =  this.subscribersNotificationContent.locator('tr:nth-of-type(odd)');
+    this.subscribersLoadMoreButton = this.subscribersNotificationContent.getByText('Load more');
   }
 
   async validataCommunitiesPageIsLoaded(communityName: string) {

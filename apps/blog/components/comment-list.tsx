@@ -9,12 +9,10 @@ import Big from 'big.js';
 const CommentList = ({
   data,
   parent,
-  price_per_hive,
   parent_depth
 }: {
   data: Entry[];
   parent: Entry;
-  price_per_hive: Big;
   parent_depth: number;
 }) => {
   const renderer = new DefaultRenderer({
@@ -64,7 +62,6 @@ const CommentList = ({
           id={`@${data[index].author}/${data[index].permlink}`}
         >
           <CommentListItem
-            price_per_hive={price_per_hive}
             comment={comment}
             renderer={renderer}
             key={`${comment.post_id}-item-${comment.depth}-index-${index}`}
@@ -75,7 +72,6 @@ const CommentList = ({
               data={data}
               parent={comment}
               key={`${comment.post_id}-list-${comment.depth}-index-${index}`}
-              price_per_hive={price_per_hive}
               parent_depth={parent_depth}
             />
           ) : null}

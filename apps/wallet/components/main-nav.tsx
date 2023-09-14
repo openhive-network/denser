@@ -8,10 +8,7 @@ export function MainNav() {
 
   return (
     <div className="mr-4 hidden h-full items-center md:flex">
-      <Link href="/" className="mr-6 flex items-center space-x-2">
-        <Icons.walletlogo />
-      </Link>
-      <nav className="flex h-full items-center items-center space-x-6 text-sm font-medium">
+      <nav className="hidden lg:flex h-full items-center space-x-6 text-sm lg:text-base font-medium">
         <Link
           href="http://localhost:3000/trending"
           target="_blank"

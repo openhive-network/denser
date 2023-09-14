@@ -20,9 +20,7 @@ import ProfileLayout from '@/blog/components/common/profile-layout';
 import CommunityDescription from '@/blog/components/community-description';
 import { useInView } from 'react-intersection-observer';
 import CustomError from '@/blog/components/custom-error';
-import { getFeedHistory } from '@hive/ui/lib/hive';
 import CommunitySimpleDescription from '@/blog/components/community-simple-description';
-import { convertStringToBig } from '@hive/ui/lib/helpers';
 import { CommunitiesSelect } from '@/blog/components/communities-select';
 
 export const PostSkeleton = () => {
@@ -125,12 +123,6 @@ const ParamPage: FC = () => {
     }
   );
   const lastEntriesData = accountEntriesData?.pages[accountEntriesData?.pages.length - 1];
-  const {
-    data: historyFeedData,
-    isLoading: historyFeedLoading,
-    isFetching: historyFeedIsFetching,
-    isError: historyFeedError
-  } = useQuery(['feedHistory'], () => getFeedHistory());
 
   const handleChangeFilter = useCallback(
     (e: string) => {
@@ -155,13 +147,11 @@ const ParamPage: FC = () => {
     }
   }, [accountFetchNextPage, inViewAcc]);
 
-  if (accountEntriesIsError || entriesDataIsError || historyFeedError) return <CustomError />;
+  if (accountEntriesIsError || entriesDataIsError) return <CustomError />;
 
   if (
     (entriesDataIsLoading && entriesDataIsFetching) ||
     (accountEntriesIsLoading && accountEntriesIsFetching) ||
-    (historyFeedLoading && historyFeedIsFetching) ||
-    !historyFeedData ||
     (accountNotificationIsLoading && accountNotificationIsFetching)
   ) {
     return (
@@ -177,14 +167,11 @@ const ParamPage: FC = () => {
       />
     );
   }
-
-  const historyFeedArr = historyFeedData?.price_history;
-  const price_per_hive = convertStringToBig(historyFeedArr[historyFeedArr.length - 1].base);
   const lastPageData = accountEntriesData?.pages[accountEntriesData?.pages.length - 1];
 
   if (!entriesDataIsLoading && entriesData) {
     return (
-      <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2 pt-8">
+      <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
         <div className="grid grid-cols-12 md:gap-4">
           <div className="hidden md:col-span-3 md:flex xl:col-span-2">
             <CommunitiesSidebar />
@@ -200,8 +187,8 @@ const ParamPage: FC = () => {
                 />
               ) : null}
             </div>
-            <div className="col-span-12 mb-5 flex flex-col space-y-5 md:col-span-10 lg:col-span-8">
-              <div className="mt-4 flex w-full items-center justify-between">
+            <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">
+              <div className="my-4 flex w-full items-center justify-between">
                 <div className="mr-2 flex w-[320px] flex-col">
                   <span className="text-md hidden font-medium md:block" data-testid="community-name">
                     {tag ? (communityData ? `${communityData?.title}` : `#${tag}`) : 'All posts'}
@@ -231,7 +218,6 @@ const ParamPage: FC = () => {
                       data={page}
                       sort={sort}
                       key={`f-${index}`}
-                      price_per_hive={price_per_hive}
                       isCommunityPage={!!communityData}
                     />
                   ) : null;
@@ -271,14 +257,15 @@ const ParamPage: FC = () => {
       </div>
     );
   }
-
   return (
     <ProfileLayout>
       {!accountEntriesIsLoading && accountEntriesData ? (
         <>
-          {accountEntriesData.pages.map((page, index) => {
-            return page ? <PostList data={page} key={`x-${index}`} price_per_hive={price_per_hive} /> : null;
-          })}
+          {accountEntriesData.pages[0]?.length!==0 ? accountEntriesData.pages.map((page, index) => {
+            return page ? <PostList data={page} key={`x-${index}`} /> :  null
+          }):<div className='px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm'>
+            Looks like @{username} hasn&apos;t started blogging yet!
+            </div>}
           <div>
             <button
               ref={refAcc}
@@ -296,7 +283,7 @@ const ParamPage: FC = () => {
             {accountEntriesIsFetching && !accountIsFetchingNextPage ? 'Background Updating...' : null}
           </div>
         </>
-      ) : null}
+      ) :null}
     </ProfileLayout>
   );
 };

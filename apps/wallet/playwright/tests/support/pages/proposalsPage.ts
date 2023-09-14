@@ -72,6 +72,10 @@ export class ProposalsPage {
     await expect(this.proposalsBody).toBeVisible();
   }
 
+  async clickVoteButtonOfFirstProposalItem() {
+    await this.voteProposalButtonIcon.first().click();
+  }
+
   async getElementCssPropertyValue(element: Locator, cssProperty: string) {
     const bcg = await element.evaluate((ele, css) => {
       return window.getComputedStyle(ele).getPropertyValue(css);

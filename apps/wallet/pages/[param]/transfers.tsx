@@ -148,9 +148,6 @@ function TransfersPage({
   }
 
   const totalFund = convertStringToBig(dynamicData.total_vesting_fund_hive);
-  // Price per hive should be current hive price(like in old code) but on wallet.hive.blog look like they count this by median
-  // const historyFeedArr = historyFeedData.price_history;
-  // const price_per_hive = convertStringToBig(historyFeedArr[historyFeedArr.length - 1].base);
   const price_per_hive = convertStringToBig(
     historyFeedData.current_median_history.base
   );
@@ -442,7 +439,7 @@ function TransfersPage({
                   return (
                     <tr
                       key={element.id}
-                      className="m-0 p-0 text-sm text-xs even:bg-slate-100 dark:even:bg-slate-700 sm:text-sm"
+                      className="m-0 p-0 text-xs even:bg-slate-100 dark:even:bg-slate-700 sm:text-sm"
                     >
                       <td className=" px-4 py-2 ">
                         {dateToFullRelative(element.timestamp)}

@@ -1,11 +1,11 @@
 import BadgeListItem from '@/blog/components/badge-list-item';
 import { Badge } from '@/blog/lib/bridge';
 
-const BadgeList = ({ data }: { data: Badge[] }) => {
+const BadgeList = ({ data, username }: { data: Badge[]; username?:string }) => {
   return (
-    <div className="grid grid-cols-8 gap-2">
+    <div className="flex gap-2 flex-wrap">
       {data?.map((badge: Badge) => (
-        <BadgeListItem key={badge.id} title={badge.title} url={badge.url} />
+        <BadgeListItem key={badge.id} title={badge.title} url={badge.url} username={username} />
       ))}
     </div>
   );

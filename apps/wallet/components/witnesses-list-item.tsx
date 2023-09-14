@@ -9,6 +9,7 @@ import moment from "moment";
 import { dateToFullRelative } from "@hive/ui/lib/parse-date";
 import { useRouter } from "next/router";
 import { useEffect, useRef } from "react";
+import DialogLogin from "./dialog-login";
 
 const getOwnersString = (owners?: string) => {
   if (!owners) return "";
@@ -99,21 +100,23 @@ function WitnessListItem({
           <span className="sm:text-sm">
             {data.rank < 10 ? `0${data.rank}` : data.rank}
           </span>
-          <div title="vote" className="group relative flex">
-            <span className="opocity-75 absolute inline-flex h-5 w-5 rounded-full bg-red-600 p-0 group-hover:animate-ping dark:bg-red-400"></span>
-            <Icons.arrowUpCircle
-              viewBox="1.7 1.7 20.7 20.7"
-              className={clsx(
-                "relative inline-flex h-5 w-5 rounded-full stroke-1 text-red-600 dark:text-red-500 cursor-pointer",
-                {
-                  "bg-slate-100 dark:bg-slate-900":
-                    router.query.highlight !== data.owner,
-                  "bg-rose-200  dark:bg-rose-800":
-                    router.query.highlight === data.owner,
-                }
-              )}
-            />
-          </div>
+          <DialogLogin>
+            <div title="vote" className="group relative flex" data-testid="witness-vote">
+              <span className="opocity-75 absolute inline-flex h-5 w-5 rounded-full bg-red-600 p-0 group-hover:animate-ping dark:bg-red-400"></span>
+              <Icons.arrowUpCircle
+                viewBox="1.7 1.7 20.7 20.7"
+                className={clsx(
+                  "relative inline-flex h-5 w-5 rounded-full stroke-1 text-red-600 dark:text-red-500 cursor-pointer",
+                  {
+                    "bg-slate-100 dark:bg-slate-900":
+                      router.query.highlight !== data.owner,
+                    "bg-rose-200  dark:bg-rose-800":
+                      router.query.highlight === data.owner,
+                  }
+                )}
+              />
+            </div>
+          </DialogLogin>
         </div>
       </td>
       <td className="font-light md:font-normal">
@@ -206,7 +209,9 @@ function WitnessListItem({
             {disableUser ? (
               <></>
             ) : (
-              <div>Witness age: {moment().from(data.created, true)}</div>
+              <div data-testid="witness-created">
+                Witness age: {moment().from(data.created, true)}
+              </div>
             )}
 
             <div data-testid="witness-external-site-link">{witnessLink()}</div>
