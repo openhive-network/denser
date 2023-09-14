@@ -48,6 +48,29 @@ export class PostPage {
   readonly getCommentFilter: Locator;
   readonly getCommentFilterList: Locator;
   readonly postImage: Locator;
+  readonly footerAuthorName: Locator;
+  readonly postLabel: Locator;
+  readonly postLabelFooter: Locator;
+  readonly footerCommunityLink: Locator;
+  readonly hoverCardUserAvatar: Locator;
+  readonly footerAuthorNameFirst: Locator;
+  readonly votesButtons: Locator;
+  readonly footerPayouts: Locator;
+  readonly footerReblogBtn: Locator;
+  readonly reblogDialogHeader: Locator;
+  readonly reblogDialogDescription: Locator;
+  readonly reblogDialogCancelBtn: Locator;
+  readonly reblogDialogOkBtn: Locator;
+  readonly reblogDialogCloseBtn: Locator;
+  readonly commentReplay: Locator;
+  readonly commentResponse: Locator;
+  readonly facebookIcon: Locator;
+  readonly twitterIcon: Locator;
+  readonly linkedinIcon: Locator;
+  readonly redditIcon: Locator;
+  readonly sharePostBtn: Locator;
+  readonly sharePostFrame: Locator;
+  readonly hashtagsPosts: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -62,6 +85,8 @@ export class PostPage {
     this.articleAuthorData = page.locator('[data-testid="author-data"]');
     this.articleAuthorName = this.articleAuthorData.locator('a div');
     this.articleFooter = page.locator('[data-testid="author-data-post-footer"]');
+    this.footerAuthorName = page.locator('[data-testid="author-name-link"]').last()
+    this.footerAuthorNameFirst = page.locator('[data-testid="author-name-link"]').first()
     this.userHoverCard = page.locator('[data-testid="user-hover-card-content"]');
     this.userHoverCardAvatar = page.locator('[data-testid="hover-card-user-avatar"]');
     this.userHoverCardName = page.locator('[data-testid="hover-card-user-name"]');
@@ -97,6 +122,27 @@ export class PostPage {
     this.getCommentFilter = page.locator('[data-testid="posts-filter"]');
     this.getCommentFilterList = page.locator('[data-testid="posts-filter-list"]');
     this.postImage = page.locator('[data-testid="post-image"]')
+    this.postLabel = page.locator('div.flex.flex-wrap').locator('.inline-flex.items-center.border.rounded-full').first()
+    this.postLabelFooter = page.locator('div.flex.flex-wrap').locator('.inline-flex.items-center.border.rounded-full').last()
+    this.footerCommunityLink = page.locator('[data-testid="footer-comment-community-link"]')
+    this.hoverCardUserAvatar = page.locator("[data-testid='hover-card-user-avatar']")
+    this.votesButtons = page.locator('[data-testid="comment-vote-buttons"]')
+    this.footerPayouts = page.locator('[data-testid="comment-payout"]')
+    this.footerReblogBtn = page.locator('svg.h-4.w-4.cursor-pointer')
+    this.reblogDialogHeader = page.locator('[data-testid="reblog-dialog-header"]')
+    this.reblogDialogDescription = page.locator('[data-testid="reblog-dialog-description"]')
+    this.reblogDialogCancelBtn = page.locator('[data-testid="reblog-dialog-cancel"]')
+    this.reblogDialogOkBtn = page.locator('[data-testid="reblog-dialog-ok"]')
+    this.reblogDialogCloseBtn = page.locator('[data-testid="reblog-dialog-close"]')
+    this.commentReplay = page.locator('[data-testid="comment-reply"]')
+    this.commentResponse = page.locator('[data-testid="comment-respons"]')
+    this.facebookIcon = page.locator('[title="Share on Facebook"]')
+    this.twitterIcon = page.locator('[title="Share on Twitter"]')
+    this.linkedinIcon = page.locator('[title="Share on LinkedIn"]')
+    this.redditIcon = page.locator('[title="Share on Reddit"]')
+    this.sharePostBtn = page.locator('[data-testid="share-post"]')
+    this.sharePostFrame = page.locator('[role="dialog"]')
+    this.hashtagsPosts = page.locator('[data-testid="hashtags-post"]')
   }
 
   async gotoHomePage() {
@@ -150,6 +196,13 @@ export class PostPage {
     }, cssProperty);
     // return value of element's css property
     return property;
+  }
+
+  async findPostWithLabel() {
+    
+    const postWithLabel = this.page.locator('li[data-testid="post-list-item"]').locator('div.flex.items-center').locator('.inline-flex.items-center.border.rounded-full').first()
+    await expect(postWithLabel).toBeVisible()
+
   }
 
 }
