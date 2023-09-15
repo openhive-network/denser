@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer } from "react";
 import { Input } from "@hive/ui/components/input";
 import { Button } from "@hive/ui/components/button";
 import clsx from "clsx";
@@ -103,7 +103,7 @@ export default function BuyOrSellForm({
           <div className="flex items-center w-24">PRICE</div>
           <div className="flex w-full">
             <Input
-              className="h-8 focus-visible:ring-0 rounded-none text-end text-end"
+              className="h-8 focus-visible:ring-0 rounded-none text-end"
               placeholder="0.0"
               value={state.cost}
               type="number"

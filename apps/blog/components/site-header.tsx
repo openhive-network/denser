@@ -8,8 +8,18 @@ import { MainNav } from "./main-nav";
 import { siteConfig } from "@hive/ui/config/site";
 import Link from "next/link";
 import DialogLogin from "./dialog-login";
+import { useState, KeyboardEvent } from "react";
+import { useRouter } from "next/router";
+
 
 const SiteHeader: FC = () => {
+  const router = useRouter()
+  const [input, setInput] =useState('')
+  const handleEnter = (event:KeyboardEvent<HTMLInputElement>)=>{
+    if (event.key === 'Enter') {
+    router.push(`/search?q=${input}&s=newest`)
+    }
+  }
   return (
     <header className="supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur">
       <div className="container flex h-14 items-center justify-between w-full">
@@ -40,6 +50,9 @@ const SiteHeader: FC = () => {
                   type="search"
                   className="block p-4 pl-10 text-sm rounded-full w-[200px]"
                   placeholder="Search..."
+                  value={input}
+                  onChange={(e)=>setInput(e.target.value)}
+                  onKeyDown={(e)=>handleEnter(e)}
                 />
               </div>
             </div>
