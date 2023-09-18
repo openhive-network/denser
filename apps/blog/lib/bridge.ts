@@ -258,13 +258,12 @@ export const getCommunity = (name: string, observer: string | undefined = ''): P
 export const getCommunities = (
   sort: string,
   query?: string | null,
-  last: string = '',
-  limit: number = 100,
-  observer: string = ''
+  // last: string = '',
+  // limit: number = 100,
+  observer: string = 'hive.blog'
 ): Promise<Community[] | null> =>
   bridgeApiCall<Community[] | null>('list_communities', {
-    last,
-    limit,
+    // limit,
     query,
     sort,
     observer
