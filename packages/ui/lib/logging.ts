@@ -19,7 +19,7 @@ export function getLogLevel(logger: string): string {
  * import { getLogger } from "@hive/ui/lib/logging";
  * const logger = getLogger('app');
  * logger.info("an info message from _app");
- * logger.info({username: 'bamboo', id: 2}, "another info message from _app");
+ * logger.info({username: 'John', id: 2}, "another info message from _app");
  * ```
  *
  * See https://github.com/pinojs/pino/blob/master/docs/api.md.

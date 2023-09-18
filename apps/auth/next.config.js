@@ -9,6 +9,9 @@ const gitRevisionPlugin = new GitRevisionPlugin({
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
+  images: {
+    domains: ['avatars.githubusercontent.com'],
+  },
   experimental: {
     outputFileTracingRoot: path.join(__dirname, '../..'),
   },

@@ -6,7 +6,7 @@ import useUser from '@/auth/lib/use-user';
 export default function LoginPage() {
   // here we just check if user is already logged in and redirect to profile
   const { mutateUser } = useUser({
-    redirectTo: '/profile-sg',
+    redirectTo: '/profile',
     redirectIfFound: true,
   })
 
