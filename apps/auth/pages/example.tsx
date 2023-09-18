@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import fetchJson, { FetchError }  from '../lib/fetchJson';
+import fetchJson, { FetchError } from '@/auth/lib/fetch-json';
 
 export default function ExamplePage() {
     const { isLoading, error, data } = useQuery({

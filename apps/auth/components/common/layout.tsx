@@ -11,7 +11,6 @@ interface LayoutProps {
 
 function Layout({ children }: LayoutProps) {
   const { resolvedTheme } = useTheme();
-
   return (
     <>
       <Head>

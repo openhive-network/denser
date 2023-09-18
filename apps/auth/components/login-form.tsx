@@ -2,6 +2,7 @@
 import { useForm } from "react-hook-form";
 import { Separator } from "@hive/ui/components/separator";
 import { getLogger } from "@hive/ui/lib/logging";
+import fetchJson, { FetchError } from '@/auth/lib/fetch-json';
 
 type LoginFormData = {
   username: string;
@@ -17,7 +18,13 @@ const loginFormDefaultValues = {
   remember: false,
 }
 
-function LoginForm() {
+function LoginForm({
+  errorMessage,
+  mutateUser,
+}: {
+  errorMessage: string
+  mutateUser: any
+}) {
   const logger = getLogger('app');
   logger.info('Starting LoginForm');
 
@@ -29,11 +36,21 @@ function LoginForm() {
 
   const onSubmit = async (data: LoginFormData) => {
     console.log('form data', data);
-    // async request which may result error
+    const body = { username: data.username };
     try {
-      // await fetch()
-    } catch (e) {
-      // handle your error
+      mutateUser(
+        await fetchJson('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        })
+      )
+    } catch (error) {
+      if (error instanceof FetchError) {
+        setErrorMsg(error.data.message)
+      } else {
+        console.error('An unexpected error happened:', error)
+      }
     }
   };
 
@@ -130,6 +147,9 @@ function LoginForm() {
               Cancel
             </button>
           </div>
+
+          {errorMessage && <p className="text-red-500 text-sm" role="alert">{errorMessage}</p>}
+
           <div className="mt-4 flex w-full items-center">
             <Separator orientation="horizontal" className="w-1/3" />
             <span className="w-1/3 text-center text-sm">
