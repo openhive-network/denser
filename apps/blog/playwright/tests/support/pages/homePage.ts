@@ -146,7 +146,7 @@ export class HomePage {
     this.getNavCreatePost = page.locator('[data-testid="nav-pencil"]');
     this.getNavSidebarMenu = page.locator('[data-testid="nav-sidebar-menu-button"]');
     this.getNavSidebarMenuContent = page.locator('[data-testid="nav-sidebar-menu-content"]');
-    this.getNavSidebarMenuContentCloseButton = this.getNavSidebarMenuContent.locator('button');
+    this.getNavSidebarMenuContentCloseButton = page.locator('[data-testid="nav-sidebar-menu-content"] > button');
     this.postTitle = page.locator('[data-testid="post-title"]');
   }
 

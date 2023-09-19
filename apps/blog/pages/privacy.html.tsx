@@ -119,7 +119,7 @@ function Privacy() {
           <p className="mb-4 ">
             <span />
           </p>
-          <ul className="lst-kix_umcklwsd66fi-0 mb-4 text-3xl text-3xl">
+          <ul className="lst-kix_umcklwsd66fi-0 mb-4 text-3xl">
             <li className="mb-4  ">
               <span className="text-sm">• To enable you to access and use the Services</span>
             </li>
@@ -443,7 +443,7 @@ function Privacy() {
           <p className="mb-4 ">
             <span />
           </p>
-          <ul className="lst-kix_5gmcovz1lhm4-0 mb-4 text-3xl text-3xl">
+          <ul className="lst-kix_5gmcovz1lhm4-0 mb-4 text-3xl">
             <li className="mb-4  ">
               <span className="text-sm">• Legal Basis</span>
             </li>

@@ -1,7 +1,7 @@
 import { Button } from "@hive/ui/components/button";
 import { Icons } from "@hive/ui/components/icons";
 import { Input } from "@hive/ui/components/input";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import Sidebar from "./sidebar";
 import { ModeToggle } from "./mode-toggle";
 import { MainNav } from "./main-nav";
@@ -10,35 +10,62 @@ import Link from "next/link";
 import DialogLogin from "./dialog-login";
 import { useState, KeyboardEvent } from "react";
 import { useRouter } from "next/router";
-
+import clsx from "clsx";
 
 const SiteHeader: FC = () => {
-  const router = useRouter()
-  const [input, setInput] =useState('')
-  const handleEnter = (event:KeyboardEvent<HTMLInputElement>)=>{
-    if (event.key === 'Enter') {
-    router.push(`/search?q=${input}&s=newest`)
+  const router = useRouter();
+  const [input, setInput] = useState("");
+  const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      router.push(`/search?q=${input}&s=newest`);
     }
-  }
+  };
+
+  const [isNavHidden, setIsNavHidden] = useState(false);
+  let lastScrollY = typeof window !== "undefined" ? window.scrollY : 0;
+  useEffect(() => {
+    const handleScroll = () => {
+      if (lastScrollY < window.scrollY) {
+        setIsNavHidden(true);
+      } else {
+        setIsNavHidden(false);
+      }
+      lastScrollY = window.scrollY;
+    };
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   return (
-    <header className="supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur">
+    <header
+      className={clsx(
+        "supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur transition ease-in-out",
+        { "translate-y-[-56px]": isNavHidden }
+      )}
+    >
       <div className="container flex h-14 items-center justify-between w-full">
         <Link href="/trending" className="flex items-center space-x-2">
           <Icons.hive className="h-6 w-6" />
           <span className="font-bold sm:inline-block">{siteConfig.name}</span>
         </Link>
+
         <MainNav />
         <div className="flex items-center space-x-2 sm:space-x-4">
           <nav className="flex items-center space-x-1">
             <div className="hidden sm:flex gap-1 mx-1">
               <DialogLogin>
-                <Button variant="ghost" className="text-base hover:text-red-500">
+                <Button
+                  variant="ghost"
+                  className="text-base hover:text-red-500"
+                >
                   Login
                 </Button>
               </DialogLogin>
-              <Link href='https://signup.hive.io/'>
+              <Link href="https://signup.hive.io/">
                 <Button variant="redHover">Sign up</Button>
-                </Link>
+              </Link>
             </div>
 
             <div>
@@ -51,12 +78,12 @@ const SiteHeader: FC = () => {
                   className="block p-4 pl-10 text-sm rounded-full w-[200px]"
                   placeholder="Search..."
                   value={input}
-                  onChange={(e)=>setInput(e.target.value)}
-                  onKeyDown={(e)=>handleEnter(e)}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => handleEnter(e)}
                 />
               </div>
             </div>
-            <Link href='/search'>
+            <Link href="/search">
               <Button
                 variant="ghost"
                 size="sm"
