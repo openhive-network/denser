@@ -266,7 +266,7 @@ test.describe('Post page tests', () => {
   test('Validate Post Header - Timestamp, Post Footer - Timestamp', async ({page}) => {
     await postPage.gotoHomePage();
     await expect(homePage.getFirstPostCardTimestampLink).toBeVisible()
-  
+
     const timestampText = await homePage.getFirstPostCardTimestampLink.innerText()
     await homePage.getFirstPostCardTimestampLink.click()
     await expect(page.locator('span[title]').nth(1)).toBeVisible()
@@ -279,12 +279,12 @@ test.describe('Post page tests', () => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
     await postPage.gotoHomePage();
     const firstPostAuthor = await homePage.getFirstPostAuthor.innerText()
-   
+
     await postPage.moveToTheFirstPostInHomePageByImage();
     await expect(postPage.footerAuthorName).toBeVisible()
 
     const footerAuthorName = await page.locator('[data-testid="author-name-link"]').nth(1).innerText()
-    
+
     await expect(firstPostAuthor).toEqual(footerAuthorName)
   })
 
@@ -304,14 +304,14 @@ test.describe('Post page tests', () => {
     await postPage.gotoHomePage();
     await postPage.postImage.first().click()
     await expect(postPage.articleBody).toBeVisible();
-    
+
     const imgElement = await page.$('img');
 
   if (imgElement) {
     const imgSrc = await imgElement.getAttribute('src');
-    
+
     if (imgSrc) {
-      
+
       console.log('Strona zawiera obrazek. Ścieżka do obrazka: ' + imgSrc);
     } else {
       console.log('Strona zawiera element <img>, ale nie ma zdefiniowanej ścieżki do obrazka.');
@@ -327,21 +327,21 @@ test.describe('Post page tests', () => {
     await postPage.postImage.first().click()
     await expect(postPage.articleBody).toBeVisible();
 
-    
+
     await test.step("Post Footer - Community Link", async () => {
-    const footerCommunityLink = postPage.footerCommunityLink
-  
+    const footerCommunityLink = await postPage.footerCommunityLink
+
     await expect(footerCommunityLink).toBeVisible()
     await expect(footerCommunityLink.getAttribute('href')).toBeTruthy()
-    
+
     await footerCommunityLink.click()
 
     const communityNameText = await communityPage.communityNameTitle.textContent()
     await expect(communityPage.communityNameTitle).toBeVisible()
-    
+
     await page.goBack()
     })
-    
+
 
     await test.step("Post Footer - Author Link", async () => {
     await expect(postPage.footerAuthorName).toBeVisible()
@@ -365,7 +365,7 @@ test.describe('Post page tests', () => {
     await expect(postPage.commentCardsFooterVotes.first()).toBeVisible()
     })
 
-  
+
     await test.step("Post Footer - Reblog", async () => {
     await expect(postPage.footerReblogBtn).toBeVisible()
     await postPage.footerReblogBtn.click()
@@ -399,7 +399,7 @@ test.describe('Post page tests', () => {
       await expect(postPage.linkedinIcon).toBeVisible()
       await expect(postPage.redditIcon).toBeVisible()
     })
-    
+
     await test.step("Post Footer - Share this post link", async () => {
       await expect(postPage.sharePostBtn).toBeVisible()
       await postPage.sharePostBtn.click()
@@ -409,9 +409,9 @@ test.describe('Post page tests', () => {
 
     await test.step("Post Footer - Hash tags", async () => {
       await expect(postPage.hashtagsPosts).toBeVisible()
-    
+
     })
 
   })
-  
+
 });

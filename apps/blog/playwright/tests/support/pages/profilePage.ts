@@ -111,6 +111,22 @@ export class ProfilePage {
   readonly followedMutedLists: Locator;
   readonly followedMutedListsHeader: Locator;
 
+  readonly socialBadgesAchievemntsMenuBar: Locator;
+  readonly socialMenuBarBadges: Locator;
+  readonly socialMenuBarActivity: Locator;
+  readonly socialMenuBarPersonal: Locator;
+  readonly socialMenuBarMeetups: Locator;
+  readonly socialMenuBarChallenges: Locator;
+  readonly socialCommunitySubscriptionsLabel: Locator;
+  readonly socialCommunitySubscriptionsDescription: Locator;
+  readonly socialAuthorSubscribedCommunitiesList: Locator;
+  readonly socialAuthorSubscribedCommunitiesListItem: Locator;
+  readonly socialAuthorSubscribedCommunitiesLink: Locator;
+  readonly socialAuthorSubscribedCommunitiesRoleTag: Locator;
+  readonly socialAuthorSubscribedCommunitiesAffiliationTag: Locator;
+  readonly socialBadgesAchivementsLabel: Locator;
+  readonly socialBadgesAchivementsDescription: Locator;
+  readonly socialBadgeAchivement: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -259,6 +275,23 @@ export class ProfilePage {
     this.followedBlacklistsHeader = page.locator('h1.text-xl.font-bold').first();
     this.followedMutedLists = page.getByText('Followed Muted Lists')
     this.followedMutedListsHeader = page.locator('h1.text-xl.font-bold').first();
+
+    this.socialBadgesAchievemntsMenuBar = page.locator('[data-testid="badges-activity-menu"]');
+    this.socialMenuBarBadges = this.socialBadgesAchievemntsMenuBar.getByText('Badges');
+    this.socialMenuBarActivity  = this.socialBadgesAchievemntsMenuBar.getByText('Activity');
+    this.socialMenuBarPersonal  = this.socialBadgesAchievemntsMenuBar.getByText('Personal');
+    this.socialMenuBarMeetups  = this.socialBadgesAchievemntsMenuBar.getByText('Meetups');
+    this.socialMenuBarChallenges  = this.socialBadgesAchievemntsMenuBar.getByText('Challenges');
+    this.socialCommunitySubscriptionsLabel = page.locator('[data-testid="community-subscriptions-label"]');
+    this.socialCommunitySubscriptionsDescription = page.locator('[data-testid="community-subscriptions-description"]');
+    this.socialAuthorSubscribedCommunitiesList = page.locator('[data-testid="author-subscribed-communities-list"]');
+    this.socialAuthorSubscribedCommunitiesListItem = page.locator('[data-testid="author-community-subscribed-list-item"]');
+    this.socialAuthorSubscribedCommunitiesLink = page.locator('[data-testid="author-community-subscribed-link"]');
+    this.socialAuthorSubscribedCommunitiesRoleTag = page.locator('[data-testid="author-role-community"]');
+    this.socialAuthorSubscribedCommunitiesAffiliationTag = page.locator('[data-testid="author-affiliation-tag"]');
+    this.socialBadgesAchivementsLabel = page.locator('[data-testid="badges-achievements-label"]');
+    this.socialBadgesAchivementsDescription = page.locator('[data-testid="badges-achievements-description"]');
+    this.socialBadgeAchivement = page.locator('[data-testid="badge-achievement"]');
   }
 
   async gotoProfilePage(nickName: string) {
@@ -271,6 +304,13 @@ export class ProfilePage {
     await this.page.goto(`/${nickName}/notifications`);
     await this.page.waitForLoadState('networkidle');
     await this.page.waitForSelector(this.profileInfo['_selector']);
+  }
+
+  async gotoSocialProfilePage(nickName: string) {
+    await this.page.goto(`/${nickName}/communities`);
+    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForSelector(this.profileInfo['_selector']);
+    await this.page.waitForSelector(this.socialBadgesAchievemntsMenuBar['_selector']);
   }
 
   async profileNameIsEqual(authorName: string) {

@@ -21,11 +21,11 @@ const UserCommunities = ({ hivebuzz, peakd }: { hivebuzz: Badge[]; peakd: Badge[
   return (
     <ProfileLayout>
       <div className="flex flex-col py-8">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Community Subscriptions</h2>
-        <p>The author has subscribed to the following Hive Communities</p>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-white" data-testid="community-subscriptions-label">Community Subscriptions</h2>
+        <p data-testid="community-subscriptions-description">The author has subscribed to the following Hive Communities</p>
         <SubscriptionList data={dataSubscriptions} />
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Badges and achievements</h2>
-        <p>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-white" data-testid="badges-achievements-label">Badges and achievements</h2>
+        <p data-testid="badges-achievements-description">
           These are badges received by the author via the third-party apps{' '}
           <Link href="https://peakd.com/" className="text-red-600 hover:underline" target='_blank'>
             Peakd

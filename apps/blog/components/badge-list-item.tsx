@@ -12,7 +12,7 @@ const BadgeListItem = ({
   const parts = url.split("/");
   const href = parts[parts.length - 2];
   return (
-    <div className=" w-16">
+    <div className=" w-16" data-testid="badge-achievement">
       <Link
         href={
           username

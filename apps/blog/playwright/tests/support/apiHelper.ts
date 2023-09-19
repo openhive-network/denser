@@ -204,4 +204,23 @@ export class ApiHelper {
     return responseGetAccountNotifications.json();
   }
 
+  // Get subscribed communitiest by user as json from API response
+  async getSubscribedCommunitiesAPI(account: string) {
+    const url = process.env.REACT_APP_API_ENDPOINT;
+
+    const responseGetCommunitySubscribers = await this.page.request.post(`${url}/`, {
+      data: {
+        id: 0,
+        jsonrpc: '2.0',
+        method: 'bridge.list_all_subscriptions',
+        params: {account: account}
+      },
+      headers: {
+        Accept: 'application/json, text/plain, */*'
+      }
+    });
+
+    return responseGetCommunitySubscribers.json();
+  }
+
 }

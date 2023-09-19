@@ -249,7 +249,7 @@ function PostPage({
                   <Link
                     href={`/trending/${community}`}
                     className="hover:cursor-pointer"
-                    data-testid="footer-comment-community-link"
+                    data-testid="footer-comment-community-category-link"
                   >
                     {post_s.community_title}
                   </Link>
@@ -257,7 +257,7 @@ function PostPage({
                   <Link
                     href={`/trending/${post_s.category}`}
                     className="hover:cursor-pointer"
-                    data-testid="footer-comment-category-link"
+                    data-testid="footer-comment-community-category-link"
                   >
                     #{post_s.category}
                   </Link>

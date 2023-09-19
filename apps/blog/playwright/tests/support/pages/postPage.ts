@@ -124,7 +124,7 @@ export class PostPage {
     this.postImage = page.locator('[data-testid="post-image"]')
     this.postLabel = page.locator('div.flex.flex-wrap').locator('.inline-flex.items-center.border.rounded-full').first()
     this.postLabelFooter = page.locator('div.flex.flex-wrap').locator('.inline-flex.items-center.border.rounded-full').last()
-    this.footerCommunityLink = page.locator('[data-testid="footer-comment-community-link"]')
+    this.footerCommunityLink = page.locator('[data-testid="footer-comment-community-category-link"]')
     this.hoverCardUserAvatar = page.locator("[data-testid='hover-card-user-avatar']")
     this.votesButtons = page.locator('[data-testid="comment-vote-buttons"]')
     this.footerPayouts = page.locator('[data-testid="comment-payout"]')
@@ -199,7 +199,7 @@ export class PostPage {
   }
 
   async findPostWithLabel() {
-    
+
     const postWithLabel = this.page.locator('li[data-testid="post-list-item"]').locator('div.flex.items-center').locator('.inline-flex.items-center.border.rounded-full').first()
     await expect(postWithLabel).toBeVisible()
 
