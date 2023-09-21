@@ -238,7 +238,7 @@ export class HomePage {
     if (await firstPostCardCommunityLink.isVisible()) {
       firstPostCardCommunityLink.click();
       await this.page.waitForSelector(
-        this.page.locator('[data-testid="community-info-sidebar"]')['_selector']
+        await this.page.locator('[data-testid="community-info-sidebar"]')['_selector']
       );
       expect(await this.page.locator('[data-testid="community-name"]').textContent()).toBe(
         await firstPostCardCommunityLinkText
