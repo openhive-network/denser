@@ -56,16 +56,13 @@ const SiteHeader: FC = () => {
           <nav className="flex items-center space-x-1">
             <div className="hidden sm:flex gap-1 mx-1">
               <DialogLogin>
-                <Button
-                  variant="ghost"
-                  className="text-base hover:text-red-500"
-                >
+                <Button variant="ghost" className="text-base hover:text-red-500" data-testid="login-btn">
                   Login
                 </Button>
               </DialogLogin>
-              <Link href="https://signup.hive.io/">
-                <Button variant="redHover">Sign up</Button>
-              </Link>
+              <Link href='https://signup.hive.io/'>
+                <Button variant="redHover" data-testid="signup-btn">Sign up</Button>
+                </Link>
             </div>
 
             <div>
