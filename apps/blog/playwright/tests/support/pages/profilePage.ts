@@ -24,11 +24,29 @@ export class ProfilePage {
 
   readonly postBlogItem: any;
   readonly postsMenu: Locator;
+  readonly postsPostAuthor: Locator;
   readonly postsMenuPostsButton: Locator;
   readonly postsMenuCommentsButton: Locator;
   readonly postsMenuPayoutsButton: Locator;
 
   readonly repliesCommentListItem: any;
+  readonly repliesCommentListItemLoadNewer: Locator;
+  readonly repliesCommentListItemTitle: Locator;
+  readonly repliesCommentListItemDescription: Locator;
+  readonly repliesCommentListItemAvatar: Locator;
+  readonly repliesCommentListItemAvatarLink: Locator;
+  readonly repliesCommentListItemCommunityLink: Locator;
+  readonly repliesCommentListItemTimestamp: Locator;
+  readonly repliesCommentListItemUpvote: Locator;
+  readonly repliesCommentListItemDownvote: Locator;
+  readonly repliesCommentListItemUpvoteTooltip: Locator;
+  readonly repliesCommentListItemDownvoteTooltip: Locator;
+  readonly repliesCommentListItemPayout: Locator;
+  readonly repliesCommentListItemPayoutTooltip: Locator;
+  readonly repliesCommentListItemVotes: Locator;
+  readonly repliesCommentListItemVotesTooltip: Locator;
+  readonly repliesCommentListItemRespond: Locator;
+  readonly repliesCommentListItemRespondTooltip: Locator;
 
   readonly notificationsMenu: any;
   readonly notificationsMenuAllButton: Locator;
@@ -170,11 +188,29 @@ export class ProfilePage {
 
     this.postBlogItem = page.locator('[data-testid="post-list-item"]');
     this.postsMenu = page.locator('[data-testid="user-post-menu"]');
+    this.postsPostAuthor = page.locator('[data-testid="post-author"]');
     this.postsMenuPostsButton = page.locator('[data-testid="user-post-menu"]').getByText('Posts');
     this.postsMenuCommentsButton = page.locator('[data-testid="user-post-menu"]').getByText('Comments');
     this.postsMenuPayoutsButton = page.locator('[data-testid="user-post-menu"]').getByText('Payouts');
 
     this.repliesCommentListItem = page.locator('[data-testid="comment-list-item"]');
+    this.repliesCommentListItemLoadNewer = page.locator('[div > button]').getByText('Load Newer');
+    this.repliesCommentListItemTitle = page.locator('[data-testid="comment-card-title"]');
+    this.repliesCommentListItemDescription = page.locator('[data-testid="comment-card-description"]');
+    this.repliesCommentListItemAvatar = page.locator('[data-testid="comment-author-avatar"]');
+    this.repliesCommentListItemAvatarLink = page.locator('[data-testid="comment-author-avatar-link"]');
+    this.repliesCommentListItemCommunityLink = page.locator('[data-testid="comment-community-category-link"]');
+    this.repliesCommentListItemTimestamp = page.locator('[data-testid="comment-timestamp"]');
+    this.repliesCommentListItemUpvote = page.locator('[data-testid="comment-card-upvote-button"]');
+    this.repliesCommentListItemDownvote = page.locator('[data-testid="comment-card-downvote-button"]');
+    this.repliesCommentListItemUpvoteTooltip = page.locator('[data-testid="comment-card-upvote-tooltip"]');
+    this.repliesCommentListItemDownvoteTooltip = page.locator('[data-testid="comment-card-downvote-tooltip"]');
+    this.repliesCommentListItemPayout = page.locator('[data-testid="post-payout"]');
+    this.repliesCommentListItemPayoutTooltip = page.locator('[data-testid="payout-post-card-tooltip"]');
+    this.repliesCommentListItemVotes = page.locator('[data-testid="comment-vote"]');
+    this.repliesCommentListItemVotesTooltip = page.locator('[data-testid="comment-vote-tooltip"]');
+    this.repliesCommentListItemRespond = page.locator('[data-testid="comment-respond-link"]');
+    this.repliesCommentListItemRespondTooltip = page.locator('[data-testid="comment-respond-tooltip"]');
 
     this.notificationsMenu = page.locator('[data-testid="notifications-local-menu"]');
     this.notificationsMenuAllButton = page
@@ -298,6 +334,13 @@ export class ProfilePage {
     await this.page.goto(`/${nickName}`);
     await this.page.waitForLoadState('networkidle');
     await this.page.waitForSelector(this.profileInfo['_selector']);
+  }
+
+  async gotoRepliesProfilePage(nickName: string) {
+    await this.page.goto(`/${nickName}/replies`);
+    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForSelector(this.profileInfo['_selector']);
+    await this.page.waitForSelector(this.repliesCommentListItem['_selector']);
   }
 
   async gotoNotificationsProfilePage(nickName: string) {

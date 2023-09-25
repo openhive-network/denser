@@ -32,7 +32,7 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
         >
           <CardHeader className="px-0 py-1">
             <div className="md:text-md flex items-center text-xs text-slate-500 dark:text-slate-400">
-              <Link href={`/@${comment.author}`}>
+              <Link href={`/@${comment.author}`} data-testid="comment-author-avatar-link">
                 <img
                   className="mr-3 h-[24px] w-[24px] rounded-3xl"
                   height="24"
@@ -40,6 +40,7 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
                   src={`https://images.hive.blog/u/${comment.author}/avatar/small`}
                   alt={`${comment.author} profile picture`}
                   loading="lazy"
+                  data-testid="comment-author-avatar"
                 />
               </Link>
               <div className="flex items-center">
@@ -70,6 +71,7 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
                     <Link
                       href={`/trending/${comment.community}`}
                       className="hover:cursor-pointer hover:text-red-600"
+                      data-testid="comment-community-category-link"
                     >
                       {comment.community_title}
                     </Link>
@@ -77,12 +79,13 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
                     <Link
                       href={`/trending/${comment.category}`}
                       className="hover:cursor-pointer hover:text-red-600"
+                      data-testid="comment-community-category-link"
                     >
                       #{comment.category}
                     </Link>
                   )}
                   <span className="mx-1">•</span>
-                  <Link href={`/${comment.category}/@${comment.author}/${comment.permlink}`} className="hover:cursor-pointer hover:text-red-600">
+                  <Link href={`/${comment.category}/@${comment.author}/${comment.permlink}`} className="hover:cursor-pointer hover:text-red-600" data-testid="comment-timestamp">
                     {dateToRelative(comment.created)} ago
                   </Link>
                 </span>
@@ -108,22 +111,22 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
               <div className="flex items-center gap-1">
                 <TooltipProvider>
                   <Tooltip>
-                    <TooltipTrigger>
+                    <TooltipTrigger data-testid="comment-card-upvote-button">
                       <DialogLogin>
                         <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1" />
                       </DialogLogin>
                     </TooltipTrigger>
-                    <TooltipContent>Upvote</TooltipContent>
+                    <TooltipContent data-testid="comment-card-upvote-tooltip">Upvote</TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
                 <TooltipProvider>
                   <Tooltip>
-                    <TooltipTrigger>
+                    <TooltipTrigger data-testid="comment-card-downvote-button">
                       <DialogLogin>
                         <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
                       </DialogLogin>
                     </TooltipTrigger>
-                    <TooltipContent>Downvote</TooltipContent>
+                    <TooltipContent data-testid="comment-card-downvote-tooltip">Downvote</TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </div>
@@ -131,7 +134,7 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
                   post={comment}
                   decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
               >
-              <div  className={`flex items-center hover:cursor-pointer hover:text-red-600 ${
+              <div  data-testid="post-payout" className={`flex items-center hover:cursor-pointer hover:text-red-600 ${
                       Number(comment.max_accepted_payout.slice(0, 1)) === 0 ? 'text-gray-600 line-through' : ''
                     }`}>${comment.payout.toFixed(2)}</div>
               </DetailsCardHover>
@@ -139,12 +142,12 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
               <div className="flex items-center">
                 <TooltipProvider>
                   <Tooltip>
-                    <TooltipTrigger className="flex items-center">
+                    <TooltipTrigger className="flex items-center" data-testid="comment-vote">
                       <Icons.chevronUp className="h-4 w-4 sm:mr-1" />
                       {comment.stats && comment.stats.total_votes}
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>
+                      <p data-testid="comment-vote-tooltip">
                       {comment.stats && comment.stats.total_votes > 0 ? comment.stats.total_votes : 'no'}
                       {comment.stats && comment.stats.total_votes > 1 ? ' votes' : ' vote'}
                       </p>
@@ -163,12 +166,13 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
                       <Link
                         href={`/${comment.category}/@${comment.author}/${comment.permlink}`}
                         className="flex cursor-pointer items-center hover:text-red-600"
+                        data-testid="comment-respond-link"
                       >
                         {comment.children}
                       </Link>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>{` ${
+                      <p data-testid="comment-respond-tooltip">{` ${
                         comment.children === 0
                           ? 'No responses'
                           : comment.children === 1
