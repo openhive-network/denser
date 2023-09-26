@@ -1,0 +1,167 @@
+{
+  "global": {
+    "time": ""
+  },
+  "navigation": {
+    "main_nav_bar": {
+      "login": "로그인",
+      "sign_up": "회원가입"
+    },
+    "sidebar": {
+      "welcome": "환영합니다",
+      "faq": "자주 묻는 질문",
+      "vote_for_witnesses": "증인 투표",
+      "hive_proposals": "Hive Proposals",
+      "blocktrades": "Blocktrades",
+      "ionomy": "Ionomy",
+      "openhive_chat": "스팀잇 채팅",
+      "apps_built_on_hive": "스팀잇 앱 센터",
+      "developer_portal": "스팀잇 API 문서",
+      "hive_whitepaper": "스팀 화이트페이퍼",
+      "privacy_policy": "개인정보 방침",
+      "terms_of_service": "이용 약관"
+    },
+    "profil_navbar": {
+      "blog": "블로그",
+      "rewards": "보상",
+      "curation_rewards": "큐레이션 보상",
+      "author_rewards": "저자 보상",
+      "wallet": "지갑"
+    },
+    "wallet_nav": {
+      "balances": "잔고",
+      "delegations": "Delegations"
+    }
+  },
+  "select_sort": {
+    "sort_account_history": {
+      "filters": "Filters",
+      "rewards": "보상",
+      "incoming": "Incoming",
+      "outgoing": "Outgoing",
+      "exclude_less_than_one": "Exclude less than 1 HBD/HIVE",
+      "input_title": "Search by user",
+      "input_placeholder": "사용자 이름"
+    },
+    "sort_proposals": {
+      "status": "Status",
+      "all": "All",
+      "active": "Active",
+      "inactive": "Inactive",
+      "expired": "Expired",
+      "votable": "Votable",
+      "order_by": "Order by",
+      "creator": "Creator",
+      "start_date": "Start date",
+      "end_date": "End date",
+      "total_votes": "Total Votes"
+    }
+  },
+  "wallet_index": {
+    "title": "Hive wallet login",
+    "content": "Welcome to Hive's official Hive blockchain wallet. Use it to transfer Hive tokens, Power up, vote for Hive Witnesses and change your Hive profile details.",
+    "login_button": "로그인",
+    "card": {
+      "title": "Hive tokens",
+      "liquid_platform_token": "Liquid platform token",
+      "vesting_influence_token": "Vesting influence token",
+      "seeks_price_stability": "Seeks price stability with USD"
+    }
+  },
+  "profil": {
+    "joined": "가입일",
+    "hive_description": "교환과 송금이 가능한 토큰입니다.<br/> 파워업을 통해 HIVE을 HIVE POWER으로 전환 하실 수 있습니다.",
+    "hp_description": "스팀잇에서의 영향력을 나타냅니다. 스팀 파워가 높을수록 보팅 금액이 더 높아지고, 큐레이션 보상도 더 많이 받을 수 있습니다. {{username}} 님은 HIVE POWER 를 임대 받고 있습니다. 임대 받는 양은 가입 시기에 따라 가변적입니다 HIVE POWER increases at an APR of approximately 3.07%, subject to blockchain variance. {{link}}.",
+    "hive_dolar_description": "Tradeable tokens that may be transferred anywhere at anytime.",
+    "savings_title": "예금",
+    "savings_description": "3일간의 예치기간이 지나야 출금하실 수 있으며, HBD interest rate: 20.00% APR (as voted by the {{link}})",
+    "estimated_account_value_title": "추정 자산가치",
+    "estimated_account_value_description": "HIVE의 평균 가격을 US달러로 환산한 기준입니다.",
+    "account_history_title": "거래 내역",
+    "account_history_description": "메모에는 스팸과 피싱 링크가 포함 될 수 있으니 주의하십시오. 신뢰할 수없는 사용자의 링크를 열지 마십시오. 또한 다른 어떤 웹 사이트에도 개인키를 공개하지 마십시오. Transactions will not show until they are confirmed on the blockchain, which may take a few minutes.",
+    "account_history_list": {
+      "claim_reward_balance": {
+        "three_rewards": "Claim rewards: {{first_reward}}, {{second_reward}} and {{third_reward}}",
+        "two_rewards": "Claim rewards: {{first_reward}} and {{second_reward}}",
+        "one_reward": "Claim rewards: {{reward}}"
+      },
+      "transfer_to_savings": "Transfer to savings {{value}} to {{username}}",
+      "Received 0.008 HIVE from reward.app": "Received {{value}} from {{username}}"
+    }
+  },
+  "market_page": {
+    "last_price": "현재 가격",
+    "volume": "거래량(24H)",
+    "bid": "Bid",
+    "ask": "Ask",
+    "spread": "매도/매수 갭",
+    "buy_hive": "구매 HIVE",
+    "sell_hive": "판매 HIVE",
+    "price": "가격",
+    "amount": "목표량",
+    "total": "HBD 계",
+    "lowest_ask": "매도 주문 최저가",
+    "highest_bid": "매수 주문 최고가",
+    "buy_orders": "매수 주문",
+    "sell_orders": "매도 주문",
+    "lower": "Lower",
+    "higher": "Higher",
+    "trade_history": "거래 이력",
+    "newer": "최근",
+    "older": "이전"
+  },
+  "witnesses_page": {
+    "title": "증인 투표",
+    "you_have_votes_remaining": {
+      "zero": "더이상 투표 하실 수 없습니다.",
+      "one": "현재 1명에게 투표하실 수 있습니다.",
+      "other": "현재 {{value}}명에게 투표하실 수 있습니다."
+    },
+    "you_can_vote_for_maximum_of_witnesses": "최대 30명에게 투표하실 수 있습니다.",
+    "witness_list_notes": "Notes: in the list below, the first 100 witnesses are unfiltered, this includes active and inactive witnesses. Past the rank of 100, witnesses will be filtered out of the list if they have not produced any block for the last 30 days.",
+    "rank": "Rank",
+    "witness": "증인",
+    "votes_received": "Votes received",
+    "price_feed": "Price feed",
+    "vote": "보팅",
+    "navigate_to_witness_profile": "Navigate to this user's profile",
+    "last_block": "Last block {{block}} ",
+    "just_now": "just now on {{value}}",
+    "recently": "recently {{value}}",
+    "witness_age": "Witness age: ",
+    "open_external_site": "external site",
+    "open_witness_annoucement": "witness thread",
+    "hp_required_to_rank_up": "Need {{value}} to level up",
+    "vote_description": "상위 100위권 밖에 계신 분에게 증인 투표를 하시려면 아래 칸에 해당하는 분의 계정명을 입력하세요.",
+    "proxy_description": "You can also choose a proxy that will vote for witnesses for you. This will reset your current witness selection.",
+    "set_proxy": "위임 설정",
+    "proxy_form": {
+      "title": "Confirm Account Witness Proxy",
+      "description": "You are about to remove your proxy.",
+      "cancel_button": "취소",
+      "ok": "OK"
+    }
+  },
+  "proposals_page": {
+    "proposals": "Proposals",
+    "started": "started",
+    "finished": "finished",
+    "not started": "not started",
+    "refund": "refund",
+    "burn": "burn",
+    "by": "by",
+    "for": "for"
+  },
+  "login_form": {
+    "title": "Returning Users:",
+    "title_action_login": "로그인",
+    "title_action_login_to_vote": "Login to Vote",
+    "username_placeholder": "Enter your username",
+    "password_placeholder": "Password or WIF",
+    "use_hiveauth": "Use HiveAuth",
+    "keep_me_logged_in": "로그인 유지",
+    "more_login_methods": "더 많은 로그인 방법",
+    "login_button": "로그인",
+    "cancel_button": "취소"
+  }
+}

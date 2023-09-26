@@ -1,0 +1,167 @@
+{
+  "global": {
+    "time": ""
+  },
+  "navigation": {
+    "main_nav_bar": {
+      "login": "ログイン",
+      "sign_up": "登録"
+    },
+    "sidebar": {
+      "welcome": "ようこそ",
+      "faq": "FAQ",
+      "vote_for_witnesses": "証人に投票する",
+      "hive_proposals": "Hive Proposals",
+      "blocktrades": "Blocktrades",
+      "ionomy": "Ionomy",
+      "openhive_chat": "Hiveチャット",
+      "apps_built_on_hive": "Hiveアプリセンター",
+      "developer_portal": "HIVE API資料",
+      "hive_whitepaper": "Hiveホワイトペーパー",
+      "privacy_policy": "プライバシーポリシー",
+      "terms_of_service": "利用規約"
+    },
+    "profil_navbar": {
+      "blog": "ブログ",
+      "rewards": "報酬",
+      "curation_rewards": "キュレーション報酬",
+      "author_rewards": "投稿者報酬",
+      "wallet": "ウォレット"
+    },
+    "wallet_nav": {
+      "balances": "残高",
+      "delegations": "Delegations"
+    }
+  },
+  "select_sort": {
+    "sort_account_history": {
+      "filters": "Filters",
+      "rewards": "報酬",
+      "incoming": "Incoming",
+      "outgoing": "Outgoing",
+      "exclude_less_than_one": "Exclude less than 1 HBD/HIVE",
+      "input_title": "Search by user",
+      "input_placeholder": "ユーザー名"
+    },
+    "sort_proposals": {
+      "status": "Status",
+      "all": "All",
+      "active": "アクティブ",
+      "inactive": "Inactive",
+      "expired": "Expired",
+      "votable": "Votable",
+      "order_by": "Order by",
+      "creator": "Creator",
+      "start_date": "Start date",
+      "end_date": "End date",
+      "total_votes": "Total Votes"
+    }
+  },
+  "wallet_index": {
+    "title": "Hive wallet login",
+    "content": "Welcome to Hive's official Hive blockchain wallet. Use it to transfer Hive tokens, Power up, vote for Hive Witnesses and change your Hive profile details.",
+    "login_button": "ログイン",
+    "card": {
+      "title": "Hive tokens",
+      "liquid_platform_token": "Liquid platform token",
+      "vesting_influence_token": "Vesting influence token",
+      "seeks_price_stability": "Seeks price stability with USD"
+    }
+  },
+  "profil": {
+    "joined": "登録年月：",
+    "hive_description": "いつでもどこへでも送ることができる取引可能なトークンです。HIVEはパワーアップによってHIVE POWERに変換できます。",
+    "hp_description": "投稿への支払額の制御権を持ち、キュレーション報酬を得ることが可能になる、プラットフォームにおける影響力を持つトークンです。現在のHIVE POWERの一部は委託されたものです。委託は影響力の寄付や、新規ユーザーがHiveでアクションを起こしやすくするために行われます。委託された額は変動する可能性があります。 HIVE POWER increases at an APR of approximately 3.07%, subject to blockchain variance. {{link}}.",
+    "hive_dolar_description": "Tradeable tokens that may be transferred anywhere at anytime.",
+    "savings_title": "貯蓄口座",
+    "savings_description": "引き出しに3日間の待ち時間が必要となる貯蓄口座です。HBD interest rate: 20.00% APR (as voted by the {{link}})",
+    "estimated_account_value_title": "推定アカウント価格",
+    "estimated_account_value_description": "推定値はHIVEの平均値に基いてUSドルで表されます。",
+    "account_history_title": "履歴",
+    "account_history_description": "送金メモのスパムやフィッシングに注意してください。信用していないユーザーからのリンクを開かないでください。第三者のウェブサイトに秘密キーを提供しないでください。 Transactions will not show until they are confirmed on the blockchain, which may take a few minutes.",
+    "account_history_list": {
+      "claim_reward_balance": {
+        "three_rewards": "Claim rewards: {{first_reward}}, {{second_reward}} and {{third_reward}}",
+        "two_rewards": "Claim rewards: {{first_reward}} and {{second_reward}}",
+        "one_reward": "Claim rewards: {{reward}}"
+      },
+      "transfer_to_savings": "Transfer to savings {{value}} to {{username}}",
+      "Received 0.008 HIVE from reward.app": "Received {{value}} from {{username}}"
+    }
+  },
+  "market_page": {
+    "last_price": "現在値",
+    "volume": "出来高(24h)",
+    "bid": "売値",
+    "ask": "買値",
+    "spread": "スプレッド",
+    "buy_hive": "買うHIVE",
+    "sell_hive": "売るHIVE",
+    "price": "価格",
+    "amount": "数量",
+    "total": "合計",
+    "lowest_ask": "現在買値",
+    "highest_bid": "現在売値",
+    "buy_orders": "買い注文",
+    "sell_orders": "売り注文",
+    "lower": "下へ",
+    "higher": "上へ",
+    "trade_history": "マーケット履歴",
+    "newer": "新しい",
+    "older": "古い"
+  },
+  "witnesses_page": {
+    "title": "証人投票",
+    "you_have_votes_remaining": {
+      "zero": "これ以上投票できません",
+      "one": "あと1人に投票できます",
+      "other": "あと{{value}}人に投票できます"
+    },
+    "you_can_vote_for_maximum_of_witnesses": "最大30人の証人に投票できます",
+    "witness_list_notes": "Notes: in the list below, the first 100 witnesses are unfiltered, this includes active and inactive witnesses. Past the rank of 100, witnesses will be filtered out of the list if they have not produced any block for the last 30 days.",
+    "rank": "Rank",
+    "witness": "証人",
+    "votes_received": "Votes received",
+    "price_feed": "Price feed",
+    "vote": "投票",
+    "navigate_to_witness_profile": "Navigate to this user's profile",
+    "last_block": "Last block {{block}} ",
+    "just_now": "just now on {{value}}",
+    "recently": "recently {{value}}",
+    "witness_age": "Witness age: ",
+    "open_external_site": "external site",
+    "open_witness_annoucement": "証人スレッド",
+    "hp_required_to_rank_up": "Need {{value}} to level up",
+    "vote_description": "トップ100外の証人に投票したい場合、以下の欄にアカウント名を入力して投票してください",
+    "proxy_description": "証人への投票の代理人を選ぶこともできます。この操作はあなたの現在の証人選択をリセットします。",
+    "set_proxy": "代理人を設定",
+    "proxy_form": {
+      "title": "Confirm Account Witness Proxy",
+      "description": "You are about to remove your proxy.",
+      "cancel_button": "キャンセル",
+      "ok": "OK"
+    }
+  },
+  "proposals_page": {
+    "proposals": "Proposals",
+    "started": "started",
+    "finished": "finished",
+    "not started": "not started",
+    "refund": "refund",
+    "burn": "burn",
+    "by": "by",
+    "for": "for"
+  },
+  "login_form": {
+    "title": "再",
+    "title_action_login": "ログイン",
+    "title_action_login_to_vote": "ログインして投票します",
+    "username_placeholder": "ユーザー名を入力してください",
+    "password_placeholder": "パスワードまたはWIF",
+    "use_hiveauth": "Use HiveAuth",
+    "keep_me_logged_in": "ログイン状態を維持する",
+    "more_login_methods": "その他のログイン方法",
+    "login_button": "ログイン",
+    "cancel_button": "キャンセル"
+  }
+}
