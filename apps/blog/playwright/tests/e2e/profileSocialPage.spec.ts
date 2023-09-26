@@ -24,7 +24,8 @@ test.describe('Social tab in the profile page of @gtg', () => {
         expect(await profilePage.socialAuthorSubscribedCommunitiesList).toBeVisible();
         expect(await profilePage.socialBadgesAchivementsLabel).toHaveText('Badges and achievements');
         expect(await profilePage.socialBadgesAchivementsDescription).toHaveText('These are badges received by the author via the third-party apps Peakd & Hivebuzz.');
-        expect(await profilePage.socialBadgesAchievemntsMenuBar).toBeVisible();
+        await profilePage.page.waitForSelector(await profilePage.socialBadgesAchievemntsMenuBar['_selector']);
+        await expect(await profilePage.socialBadgesAchievemntsMenuBar).toBeVisible();
     });
 
     test('validate subscribed communities list', async ({ page }) => {

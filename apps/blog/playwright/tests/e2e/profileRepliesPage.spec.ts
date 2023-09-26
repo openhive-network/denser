@@ -55,7 +55,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
 
     const firstCommentCardTitle: any = await profilePage.repliesCommentListItemTitle.first().textContent();
     const firstCommentCardDescription: any = await profilePage.repliesCommentListItemDescription.first().textContent();
-    await profilePage.repliesCommentListItemDescription.first().click();
+    await profilePage.repliesCommentListItemDescription.locator('a').first().click();
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
     await expect(commentViewPage.getMainCommentContent).toContainText(firstCommentCardDescription);
   });
