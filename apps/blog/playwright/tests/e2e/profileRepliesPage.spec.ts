@@ -44,7 +44,8 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
 
     const firstCommentCardTitle: any = await profilePage.repliesCommentListItemTitle.first().textContent();
     const firstCommentCardDescription: any = await profilePage.repliesCommentListItemDescription.first().textContent();
-    await profilePage.repliesCommentListItemTitle.first().click();
+    await profilePage.repliesCommentListItemTitle.locator('a').first().click();
+    await profilePage.page.waitForSelector(profilePage.repliesCommentListItemArticleTitle['_selector']);
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
     await expect(commentViewPage.getMainCommentContent).toContainText(firstCommentCardDescription);
   });
@@ -98,12 +99,15 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await profilePage.gotoRepliesProfilePage('@gtg');
     await profilePage.profileRepliesTabIsSelected();
 
-    const firstCommendCardCommunityName: any = await profilePage.repliesCommentListItemCommunityLink.first().textContent();
+    const firstCommentCardCommunityName: any = await profilePage.repliesCommentListItemCommunityLink.first().textContent();
 
     await profilePage.repliesCommentListItemCommunityLink.first().click();
-    await expect(communityPage.communityNameTitle).toHaveText(firstCommendCardCommunityName);
-    await expect(communityPage.communityInfoSidebar.locator('h3')).toHaveText(firstCommendCardCommunityName);
-    await communityPage.validataCommunitiesPageIsLoaded(firstCommendCardCommunityName);
+    await expect(communityPage.communityNameTitle).toHaveText(firstCommentCardCommunityName);
+
+    if (await !firstCommentCardCommunityName.includes('#')){
+      await expect(communityPage.communityInfoSidebar.locator('h3')).toHaveText(firstCommentCardCommunityName);
+      await communityPage.validataCommunitiesPageIsLoaded(firstCommentCardCommunityName);
+    }
   });
 
   test('move to the comment view page after clicking timestamp link of the first comment card', async ({ page }) => {

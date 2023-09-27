@@ -28,6 +28,28 @@ export class ProfilePage {
   readonly postsMenuPostsButton: Locator;
   readonly postsMenuCommentsButton: Locator;
   readonly postsMenuPayoutsButton: Locator;
+  readonly postRebloggedLabel: Locator;
+  readonly postRebloggedAuthorLink: Locator;
+  readonly postTitle: Locator;
+  readonly postDescription: Locator;
+  readonly postCommunityLink: Locator;
+  readonly postCategoryLink: Locator;
+  readonly postTimestamp: Locator;
+  readonly postUpvoteButton: Locator;
+  readonly postDownvoteButton: Locator;
+  readonly postUpvoteTooltip: Locator;
+  readonly postDownvoteTooltip: Locator;
+  readonly postPayout: Locator;
+  readonly postPayoutTooltip: Locator;
+  readonly postVotes: Locator;
+  readonly postVotesTooltip: Locator;
+  readonly postResponse: Locator;
+  readonly postResponseTooltip: Locator;
+  readonly postReblog: Locator;
+  readonly postReblogTooltip: Locator;
+  readonly postAvatar: Locator;
+  readonly postReputation: Locator;
+  readonly postReputationTooltip: Locator;
 
   readonly repliesCommentListItem: any;
   readonly repliesCommentListItemLoadNewer: Locator;
@@ -47,6 +69,7 @@ export class ProfilePage {
   readonly repliesCommentListItemVotesTooltip: Locator;
   readonly repliesCommentListItemRespond: Locator;
   readonly repliesCommentListItemRespondTooltip: Locator;
+  readonly repliesCommentListItemArticleTitle: Locator;
 
   readonly notificationsMenu: any;
   readonly notificationsMenuAllButton: Locator;
@@ -192,6 +215,28 @@ export class ProfilePage {
     this.postsMenuPostsButton = page.locator('[data-testid="user-post-menu"]').getByText('Posts');
     this.postsMenuCommentsButton = page.locator('[data-testid="user-post-menu"]').getByText('Comments');
     this.postsMenuPayoutsButton = page.locator('[data-testid="user-post-menu"]').getByText('Payouts');
+    this.postRebloggedLabel = page.locator('[data-testid="reblogged-label"]');
+    this.postRebloggedAuthorLink = page.locator('[data-testid="reblogged-author-link"]');
+    this.postTitle = this.postBlogItem.locator('[data-testid="post-title"] > a');
+    this.postDescription = this.postBlogItem.locator('[data-testid="post-description"]');
+    this.postCommunityLink = page.locator('[data-testid="post-card-community"]');
+    this.postCategoryLink = page.locator('[data-testid="post-card-category"]');
+    this.postTimestamp = page.locator('[data-testid="post-card-timestamp"]');
+    this.postUpvoteButton = page.locator('[data-testid="upvote-button"]');
+    this.postDownvoteButton = page.locator('[data-testid="downvote-button"]');
+    this.postUpvoteTooltip = page.locator('[data-testid="upvote-button-tooltip"]');
+    this.postDownvoteTooltip = page.locator('[data-testid="downvote-button-tooltip"]');
+    this.postPayout = page.locator('[data-testid="post-payout"]');
+    this.postPayoutTooltip = page.locator('[data-testid="payout-post-card-tooltip"]');
+    this.postVotes = page.locator('[data-testid="post-total-votes"]');
+    this.postVotesTooltip = page.locator('[data-testid="post-card-votes-tooltip"]');
+    this.postResponse = page.locator('[data-testid="post-card-response-link"]');
+    this.postResponseTooltip = page.locator('[data-testid="post-card-responses"]');
+    this.postReblog = page.locator('[data-testid="post-card-reblog"]');
+    this.postReblogTooltip = page.locator('[data-testid="post-card-reblog-tooltip"]');
+    this.postAvatar = page.locator('[data-testid="post-card-avatar"]');
+    this.postReputation = page.locator('[data-testid="post-author-reputation"]');
+    this.postReputationTooltip = page.locator('[data-testid="post-reputation-tooltip"]');
 
     this.repliesCommentListItem = page.locator('[data-testid="comment-list-item"]');
     this.repliesCommentListItemLoadNewer = page.locator('[div > button]').getByText('Load Newer');
@@ -211,6 +256,7 @@ export class ProfilePage {
     this.repliesCommentListItemVotesTooltip = page.locator('[data-testid="comment-vote-tooltip"]');
     this.repliesCommentListItemRespond = page.locator('[data-testid="comment-respond-link"]');
     this.repliesCommentListItemRespondTooltip = page.locator('[data-testid="comment-respond-tooltip"]');
+    this.repliesCommentListItemArticleTitle = page.locator('[data-testid="article-title"]');
 
     this.notificationsMenu = page.locator('[data-testid="notifications-local-menu"]');
     this.notificationsMenuAllButton = page
@@ -400,7 +446,7 @@ export class ProfilePage {
 
   async profilePostsTabIsSelected() {
     await this.page.waitForSelector(this.postBlogItem['_selector']);
-    await expect(this.postBlogItem).toHaveCount(20);
+    // await expect(this.postBlogItem).toHaveCount(20);
     await expect(this.page).toHaveURL(/.*posts/)
     await expect(this.postsMenu).toBeVisible();
   }

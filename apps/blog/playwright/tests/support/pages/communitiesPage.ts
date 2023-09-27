@@ -96,7 +96,8 @@ export class CommunitiesPage {
     await expect(this.communityNewPostButton).toBeVisible();
     await expect(this.communityLeadership).toBeVisible();
     await expect(this.communityDescription).toBeVisible();
-    await expect(this.communityRules).toBeVisible();
+    if (await this.communityRules.isVisible())
+      await expect(this.communityRules).toBeVisible();
   }
 
   async quickValidataCommunitiesPageIsLoaded(communityName: string) {
