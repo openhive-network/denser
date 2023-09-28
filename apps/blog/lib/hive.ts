@@ -3,7 +3,7 @@ import { RCAccount } from '@hiveio/dhive/lib/chain/rc';
 import moment, { Moment } from 'moment';
 
 import { isCommunity, parseAsset, vestsToRshares } from '@/blog/lib/utils';
-import { dataLimit } from './bridge';
+import { DATA_LIMIT } from './bridge';
 import {  FullAccount } from '@hive/ui/store/app-types';
 import { bridgeServer } from '@hive/ui/lib/bridge';
 import {  getDynamicGlobalProperties, getFeedHistory } from '@hive/ui/lib/hive';
@@ -380,7 +380,7 @@ export interface BlogEntry {
   reblogged_on: string;
 }
 
-export const getBlogEntries = (username: string, limit: number = dataLimit): Promise<BlogEntry[]> =>
+export const getBlogEntries = (username: string, limit: number = DATA_LIMIT): Promise<BlogEntry[]> =>
   bridgeServer.call('condenser_api', 'get_blog_entries', [username, 0, limit]);
 
 // create type for api call result do working search

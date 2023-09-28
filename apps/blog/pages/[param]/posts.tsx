@@ -1,5 +1,8 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { getAccountPosts } from '@/blog/lib/bridge';
+import {
+  getAccountPosts, 
+  DATA_LIMIT as PER_PAGE,
+ } from '@/blog/lib/bridge';
 import ProfileLayout from '@/blog/components/common/profile-layout';
 import { useSiteParams } from '@hive/ui/components/hooks/use-site-params';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@hive/ui/components/tabs';
@@ -39,17 +42,12 @@ const UserPosts = () => {
     },
     {
       getNextPageParam: (lastPage) => {
-        if (lastPage && lastPage.length > 0) {
+        if (lastPage && lastPage.length === PER_PAGE) {
           return {
             author: lastPage[lastPage.length - 1].author,
             permlink: lastPage[lastPage.length - 1].permlink
           };
         }
-        if (lastPage === null) return undefined;
-        return {
-          author: '',
-          permlink: ''
-        };
       },
 
       enabled: Boolean(sort) && !!username

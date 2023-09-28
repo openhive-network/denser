@@ -120,7 +120,7 @@ export type Communities = Community[];
 
 export type Subscription = Array<string>;
 
-export const dataLimit = 20;
+export const DATA_LIMIT = 20;
 
 const resolvePost = (post: Entry, observer: string): Promise<Entry> => {
   const { json_metadata: json } = post;
@@ -158,7 +158,7 @@ export const getPostsRanked = (
   tag: string = '',
   start_author: string = '',
   start_permlink: string = '',
-  limit: number = dataLimit,
+  limit: number = DATA_LIMIT,
   observer: string = ''
 ): Promise<Entry[] | null> => {
   return bridgeApiCall<Entry[] | null>('get_ranked_posts', {
@@ -183,7 +183,7 @@ export const getAccountPosts = (
   observer: string,
   start_author: string = '',
   start_permlink: string = '',
-  limit: number = dataLimit
+  limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
   return bridgeApiCall<Entry[] | null>('get_account_posts', {
     sort,
