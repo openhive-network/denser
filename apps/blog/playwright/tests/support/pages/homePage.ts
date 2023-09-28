@@ -230,12 +230,10 @@ export class HomePage {
     const profilePage = new ProfilePage(this.page);
     const firstPostAuthorNick = await this.getFirstPostAuthor.innerText();
 
-    const firstPostCardCommunityLink = await this.getFirstPostCardCommunityLink;
-    const firstPostCardCategoryLink = await this.getFirstPostCardCategoryLink;
-    const firstPostCardCommunityLinkText = await this.getFirstPostCardCommunityLink.textContent();
-    const firstPostCardCategoryLinkText = await this.getFirstPostCardCategoryLink.textContent();
+    if (await this.getFirstPostCardCommunityLink.isVisible()) {
+      const firstPostCardCommunityLink = await this.getFirstPostCardCommunityLink;
+      const firstPostCardCommunityLinkText = await this.getFirstPostCardCommunityLink.textContent();
 
-    if (await firstPostCardCommunityLink.isVisible()) {
       firstPostCardCommunityLink.click();
       await this.page.waitForSelector(
         await this.page.locator('[data-testid="community-info-sidebar"]')['_selector']
@@ -246,7 +244,10 @@ export class HomePage {
       await expect(await this.page.locator('[data-testid="community-name-unmoderated"]').textContent()).toBe(
         'Community'
       );
-    } else if (await firstPostCardCategoryLink.isVisible()) {
+    } else if (await this.getFirstPostCardCategoryLink.isVisible()) {
+      const firstPostCardCategoryLink = await this.getFirstPostCardCategoryLink;
+      const firstPostCardCategoryLinkText = await this.getFirstPostCardCategoryLink.textContent();
+
       firstPostCardCategoryLink.click();
       await this.page.waitForSelector(
         this.page.locator('[data-testid="community-info-sidebar"]')['_selector']
