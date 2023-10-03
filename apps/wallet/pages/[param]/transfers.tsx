@@ -56,12 +56,58 @@ type Transfer = {
 };
 type ClaimRewardBalance = {
   type: "claim_reward_balance";
+  memo?: string;
   account?: string;
   reward_hbd: Big;
   reward_hive: Big;
   reward_vests: Big;
 };
-type Operation = Transfer | ClaimRewardBalance;
+type TransferFromSavings = {
+  type: "transfer_from_savings";
+  amount?: string;
+  from?: string;
+  memo?: string;
+  request_id?: number;
+  to?: string;
+};
+type TransferToSavings = {
+  type: "transfer_to_savings";
+  amount?: string;
+  from?: string;
+  memo?: string;
+  to?: string;
+};
+type Interest = {
+  type: "interest";
+  interest?: string;
+  is_saved_into_hbd_balance?: boolean;
+  memo?: string;
+  owner?: string;
+};
+type CancelTransferFromSavings = {
+  type: "cancel_transfer_from_savings";
+  from?: string;
+  memo?: string;
+  request_id?: number;
+};
+type FillOrder = {
+  type: "fill_order";
+  current_orderid?: number;
+  current_owner?: string;
+  current_pays?: string;
+  memo?: string;
+  open_orderid?: number;
+  open_owner?: string;
+  open_pays?: string;
+};
+type Operation =
+  | Transfer
+  | ClaimRewardBalance
+  | TransferFromSavings
+  | TransferToSavings
+  | Interest
+  | CancelTransferFromSavings
+  | FillOrder;
 
 const mapToAccountHistoryObject = ([id, data]: AccountHistory) => {
   const { op, ...rest } = data;
@@ -82,11 +128,46 @@ const mapToAccountHistoryObject = ([id, data]: AccountHistory) => {
           reward_hive: convertStringToBig(op[1]?.reward_hive ?? "0"),
           reward_vests: convertStringToBig(op[1]?.reward_vests ?? "0"),
         }
+      : op && op[0] === "transfer_from_savings"
+      ? {
+          type: "transfer_from_savings",
+          amount: op[1].amount,
+          from: op[1].from,
+          request_id: op[1].request_id,
+          memo: op[1].memo,
+          to: op[1].to,
+        }
+      : op && op[0] === "transfer_to_savings"
+      ? {
+          type: "transfer_to_savings",
+          amount: op[1].amount,
+          from: op[1].from,
+          memo: op[1].memo,
+          to: op[1].to,
+        }
+      : op && op[0] === "interest"
+      ? {
+          type: "interest",
+          interest: op[1].interest,
+          is_saved_into_hbd_balance: op[1].is_saved_into_hbd_balance,
+          owner: op[1].owner,
+        }
+      : op && op[0] === "cancel_transfer_from_savings"
+      ? {
+          type: "cancel_transfer_from_savings",
+          from: op[1].from,
+          request_id: op[1].request_id,
+        }
+      : op && op[0] === "fill_order"
+      ? {
+          type: "fill_order",
+          current_pays: op[1].current_pays,
+          open_pays: op[1].open_pays,
+        }
       : undefined;
 
   return { id, ...rest, operation };
 };
-
 function TransfersPage({
   username,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
@@ -156,6 +237,8 @@ function TransfersPage({
     moment(),
     `d`
   );
+  console.log(accountHistoryData);
+
   const totalShares = convertStringToBig(dynamicData.total_vesting_shares);
   const vesting_hive = vestingHive(accountData, dynamicData);
   const delegated_hive = delegatedHive(accountData, dynamicData);
@@ -267,8 +350,67 @@ function TransfersPage({
           </span>
         );
     }
+    if (operation.type === "transfer_from_savings") {
+      return (
+        <span>
+          {"Transfer from savings "}
+          {operation.amount?.toString()}
+          {" to "}
+          <Link
+            href={`/@${operation.to}`}
+            className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400"
+          >
+            {operation.to}
+          </Link>
+          {" Request ID: "}
+          {operation.request_id}
+        </span>
+      );
+    }
+    if (operation.type === "transfer_to_savings") {
+      return (
+        <span>
+          {"Transfer to savings "}
+          {operation.amount?.toString()}
+          {" to "}
+          <Link
+            href={`/@${operation.to}`}
+            className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400"
+          >
+            {operation.to}
+          </Link>
+        </span>
+      );
+    }
+    if (operation.type === "interest") {
+      return (
+        <span>
+          {"Receive interest of "}
+          {operation.interest}
+        </span>
+      );
+    }
+    if (operation.type === "cancel_transfer_from_savings") {
+      return (
+        <span>
+          {"Cancel transfer from savings (request "}
+          {operation.request_id}
+          {")"}
+        </span>
+      );
+    }
+    if (operation.type === "fill_order") {
+      return (
+        <span>
+          {"Paid "}
+          {operation.current_pays}
+          {" for "}
+          {operation.open_pays}
+        </span>
+      );
+    } else return <div>????</div>;
   }
-
+  // Transfer from savings 0.001 HBD to ura-soulRequest ID: 4329869
   return (
     <ProfileLayout>
       <div className="flex flex-col w-full items-center ">
@@ -360,12 +502,12 @@ function TransfersPage({
               <td className="px-2 py-4 sm:px-4">
                 <div className="font-semibold">SAVINGS</div>
                 <p className="text-xs text-zinc-600 py-2 sm:pb-0 leading-relaxed">
-                  &quot;Balances subject to 3 day withdraw waiting period. HBD
+                  Balances subject to 3 day withdraw waiting period. HBD
                   interest rate: 20.00% APR (as voted by the{" "}
                   <span className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400">
                     {<Link href={`/~witnesses`}>Witnesses</Link>}
                   </span>
-                  )&quot;
+                  )
                 </p>
                 <div className="sm:hidden">
                   <div>{saving_balance_hive.toFixed(3) + " HIVE"}</div>{" "}
@@ -430,34 +572,36 @@ function TransfersPage({
           <div>Loading</div>
         ) : !accountHistoryData ? (
           <div>error</div>
+        ) : filteredHistoryList.length > 0 ? (
+          <table className="p-2 w-full max-w-6xl">
+            <tbody>
+              {filteredHistoryList.reverse().map((element) => {
+                if (!element.operation) return null;
+                return (
+                  <tr
+                    key={element.id}
+                    className="m-0 p-0 text-xs even:bg-slate-100 dark:even:bg-slate-700 sm:text-sm w-full"
+                  >
+                    <td className="px-4 py-2 sm:min-w-[150px]">
+                      {dateToFullRelative(element.timestamp)}
+                    </td>
+                    <td className="px-4 py-2 sm:min-w-[300px]">
+                      {historyItemDescription(element.operation)}
+                    </td>
+                    {element.operation.memo ? (
+                      <td className="break-all px-4 py-2 hidden sm:block">
+                        {element.operation.memo}
+                      </td>
+                    ) : null}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         ) : (
-          accountHistoryData && (
-            <table className="p-2 w-full max-w-6xl">
-              <tbody>
-                {filteredHistoryList?.reverse().map((element) => {
-                  if (!element.operation) return null;
-                  return (
-                    <tr
-                      key={element.id}
-                      className="m-0 p-0 text-xs even:bg-slate-100 dark:even:bg-slate-700 sm:text-sm"
-                    >
-                      <td className=" px-4 py-2 ">
-                        {dateToFullRelative(element.timestamp)}
-                      </td>
-                      <td className=" da px-4 py-2 ">
-                        {historyItemDescription(element.operation)}
-                      </td>
-                      <td className="break-all px-4 py-2 ">
-                        {element.operation.type === "transfer"
-                          ? element.operation.memo
-                          : null}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          )
+          <div className="text-red-300 text-3xl py-12">
+            No transacions found
+          </div>
         )}
       </div>
     </ProfileLayout>
