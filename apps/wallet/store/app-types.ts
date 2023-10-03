@@ -8,8 +8,22 @@ export type AccountHistory = [
     virtual_op: boolean;
     timestamp: string;
     op?: [
-      "claim_reward_balance" | "transfer",
+      (
+        | "claim_reward_balance"
+        | "transfer"
+        | "transfer_from_savings"
+        | "transfer_to_savings"
+        | "interest"
+        | "cancel_transfer_from_savings"
+        | "fill_order"
+      ),
       {
+        open_pays?: string;
+        current_pays?: string;
+        owner?: string;
+        is_saved_into_hbd_balance?: boolean;
+        interest: string;
+        request_id?: number;
         amount?: string;
         from?: string;
         memo?: string;
@@ -18,7 +32,7 @@ export type AccountHistory = [
         reward_hbd?: string;
         reward_hive?: string;
         reward_vests?: string;
-      }
+      },
     ];
-  }
+  },
 ];
