@@ -52,7 +52,7 @@ const SiteHeader: FC = () => {
                 </Link>
               )}
               {user?.isLoggedIn === true && (
-                <Link href="/profile-sg" legacyBehavior>
+                <Link href="/profile" legacyBehavior>
                   <a>
                     <span
                       style={{
