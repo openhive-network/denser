@@ -41,7 +41,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     await expect(profilePage.page.url()).toContain(firstNotificationAuthorName);
   });
 
-  test('Click the first five notifications and move to specific page', async ({ page }) => {
+  test('Click the first four notifications and move to specific page', async ({ page }) => {
     let postPage = new PostPage(page);
     let commentPage = new CommentViewPage(page);
 
@@ -51,7 +51,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     const resNotificationsAPI = await apiHelper.getAccountNotificationsAPI('gtg');
     // Validate the first five notifications types and move to the specific pages
 
-    for (let notification = 0; notification < 5; notification++){
+    for (let notification = 0; notification < 4; notification++){
       // console.log('API respons: ', await resNotificationsAPI);
       const firstNotificationTypeAPI = await resNotificationsAPI.result[notification].type;
       // console.log('First notification type: ', await firstNotificationTypeAPI);

@@ -362,7 +362,7 @@ test.describe('Post page tests', () => {
 
     //
     await test.step("Post Footer - Votes", async () => {
-    await expect(postPage.commentCardsFooterVotes.first()).toBeVisible()
+    await expect(postPage.postFooterVotes.first()).toBeVisible()
     })
 
 

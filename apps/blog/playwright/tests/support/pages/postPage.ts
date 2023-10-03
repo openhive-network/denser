@@ -71,6 +71,7 @@ export class PostPage {
   readonly sharePostBtn: Locator;
   readonly sharePostFrame: Locator;
   readonly hashtagsPosts: Locator;
+  readonly postFooterVotes: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -143,6 +144,7 @@ export class PostPage {
     this.sharePostBtn = page.locator('[data-testid="share-post"]')
     this.sharePostFrame = page.locator('[role="dialog"]')
     this.hashtagsPosts = page.locator('[data-testid="hashtags-post"]')
+    this.postFooterVotes = page.locator('[data-testid="author-data-post-footer"] [data-testid="comment-votes"]');
   }
 
   async gotoHomePage() {
