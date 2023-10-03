@@ -1,9 +1,66 @@
-import { Input } from "@hive/ui";
+import {
+  Input,
+  Label,
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@hive/ui";
+import { Icons } from "@hive/ui/components/icons";
+import { useRouter } from "next/router";
+import { useState, KeyboardEvent } from "react";
 
-export default function UserHoverCard() {
+export default function SearchPage() {
+  const router = useRouter()
+  const [sort, setSort] = useState("newest")
+  const [input, setInput] =useState('')
+  const handleEnter = (event:KeyboardEvent<HTMLInputElement>)=>{
+    if (event.key === 'Enter') {
+    router.push(`/search?q=${input}&s=${sort}`)
+    }
+  }
+  const handleSelect = (e:string)=>{
+    setSort(e)
+    router.push(`/search?q=${input}&s=${e}`)
+  }
   return (
-    <div>
-        <Input/>
+   <div className="flex flex-col gap-12 px-4 py-8"> <div className="flex flex-col gap-4">
+      <div className="relative">
+        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+          <Icons.search className="h-5 w-5 rotate-90" />
+        </div>
+        <Input
+          type="search"
+          className="block p-4 pl-10 text-sm rounded-full "
+          placeholder="Search..."
+          value={input}
+          onChange={(e)=>setInput(e.target.value)}
+          onKeyDown={(e)=>handleEnter(e)}
+        />
+      </div>
+      <div>
+      <Select 
+        defaultValue='newest'
+        value={sort}
+        onValueChange={(e)=>handleSelect(e)}
+      >
+        <Label>Sort by:</Label>
+        <SelectTrigger className="w-[180px]">
+          <SelectValue/>
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem value="newest">Newest</SelectItem>
+            <SelectItem value="popularity">Popularity</SelectItem>
+            <SelectItem value="relevance">Relevance</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+      </div>
+    </div>
+   
     </div>
   );
 }

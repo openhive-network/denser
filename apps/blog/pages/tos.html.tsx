@@ -19,7 +19,7 @@ function TOS({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   });
   const tos_page = renderer.render(data);
   return (
-    <div className="p-12">
+    <div className="mx-auto max-w-3xl my-12 px-4">
       <div className="text-2xl sm:text-5xl">Terms of Service</div>
       <div
         id="articleBody"

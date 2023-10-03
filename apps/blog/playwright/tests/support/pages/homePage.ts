@@ -71,6 +71,16 @@ export class HomePage {
   readonly getCardUserShortcutsTitle: Locator;
   readonly getCardUserShortcutsLinks: Locator;
   readonly postTitle: Locator;
+  readonly loginBtn: Locator;
+  readonly signupBtn: Locator;
+  readonly loginModal: Locator;
+  readonly loginModalHeader: Locator;
+  readonly loginModalUsernameInput: Locator;
+  readonly loginModalPasswordInput: Locator;
+  readonly loginModalHiveAuthText: Locator;
+  readonly loginModalKeepLoggedInText: Locator;
+  readonly hivsignerBtn: Locator;
+  readonly signupPageHeader: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -146,8 +156,18 @@ export class HomePage {
     this.getNavCreatePost = page.locator('[data-testid="nav-pencil"]');
     this.getNavSidebarMenu = page.locator('[data-testid="nav-sidebar-menu-button"]');
     this.getNavSidebarMenuContent = page.locator('[data-testid="nav-sidebar-menu-content"]');
-    this.getNavSidebarMenuContentCloseButton = this.getNavSidebarMenuContent.locator('button');
+    this.getNavSidebarMenuContentCloseButton = page.locator('[data-testid="nav-sidebar-menu-content"] > button');
     this.postTitle = page.locator('[data-testid="post-title"]');
+    this.loginBtn = page.locator('[data-testid="login-btn"]');
+    this.signupBtn = page.locator('[data-testid="signup-btn"]');
+    this.loginModal = page.locator('[role="dialog"]');
+    this.loginModalHeader = page.locator('h2');
+    this.loginModalUsernameInput = page.locator('#firstName');
+    this.loginModalPasswordInput = page.locator('#password');
+    this.loginModalHiveAuthText = page.locator('[for="hiveAuth"]');
+    this.loginModalKeepLoggedInText = page.locator('[for="remember"]');
+    this.hivsignerBtn = page.locator('[data-testid="hivesigner-button"]');
+    this.signupPageHeader = page.locator('h1.pb-3');
   }
 
   async goto() {
@@ -210,15 +230,13 @@ export class HomePage {
     const profilePage = new ProfilePage(this.page);
     const firstPostAuthorNick = await this.getFirstPostAuthor.innerText();
 
-    const firstPostCardCommunityLink = await this.getFirstPostCardCommunityLink;
-    const firstPostCardCategoryLink = await this.getFirstPostCardCategoryLink;
-    const firstPostCardCommunityLinkText = await this.getFirstPostCardCommunityLink.textContent();
-    const firstPostCardCategoryLinkText = await this.getFirstPostCardCategoryLink.textContent();
+    if (await this.getFirstPostCardCommunityLink.isVisible()) {
+      const firstPostCardCommunityLink = await this.getFirstPostCardCommunityLink;
+      const firstPostCardCommunityLinkText = await this.getFirstPostCardCommunityLink.textContent();
 
-    if (await firstPostCardCommunityLink.isVisible()) {
       firstPostCardCommunityLink.click();
       await this.page.waitForSelector(
-        this.page.locator('[data-testid="short-community-description"]')['_selector']
+        await this.page.locator('[data-testid="community-info-sidebar"]')['_selector']
       );
       expect(await this.page.locator('[data-testid="community-name"]').textContent()).toBe(
         await firstPostCardCommunityLinkText
@@ -226,10 +244,13 @@ export class HomePage {
       await expect(await this.page.locator('[data-testid="community-name-unmoderated"]').textContent()).toBe(
         'Community'
       );
-    } else if (await firstPostCardCategoryLink.isVisible()) {
+    } else if (await this.getFirstPostCardCategoryLink.isVisible()) {
+      const firstPostCardCategoryLink = await this.getFirstPostCardCategoryLink;
+      const firstPostCardCategoryLinkText = await this.getFirstPostCardCategoryLink.textContent();
+
       firstPostCardCategoryLink.click();
       await this.page.waitForSelector(
-        this.page.locator('[data-testid="short-community-description"]')['_selector']
+        this.page.locator('[data-testid="community-info-sidebar"]')['_selector']
       );
       expect(await this.page.locator('[data-testid="community-name"]').textContent()).toBe(
         await firstPostCardCategoryLinkText

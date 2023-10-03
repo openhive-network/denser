@@ -20,7 +20,7 @@ function Welcome({ data }: InferGetServerSidePropsType<typeof getServerSideProps
   });
   const welcome_page = renderer.render(data);
   return (
-    <div className="p-4">
+    <div className="mx-auto my-12 max-w-3xl px-4">
       <div
         id="articleBody"
         className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"

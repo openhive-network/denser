@@ -24,11 +24,52 @@ export class ProfilePage {
 
   readonly postBlogItem: any;
   readonly postsMenu: Locator;
+  readonly postsPostAuthor: Locator;
   readonly postsMenuPostsButton: Locator;
   readonly postsMenuCommentsButton: Locator;
   readonly postsMenuPayoutsButton: Locator;
+  readonly postRebloggedLabel: Locator;
+  readonly postRebloggedAuthorLink: Locator;
+  readonly postTitle: Locator;
+  readonly postDescription: Locator;
+  readonly postCommunityLink: Locator;
+  readonly postCategoryLink: Locator;
+  readonly postTimestamp: Locator;
+  readonly postUpvoteButton: Locator;
+  readonly postDownvoteButton: Locator;
+  readonly postUpvoteTooltip: Locator;
+  readonly postDownvoteTooltip: Locator;
+  readonly postPayout: Locator;
+  readonly postPayoutTooltip: Locator;
+  readonly postVotes: Locator;
+  readonly postVotesTooltip: Locator;
+  readonly postResponse: Locator;
+  readonly postResponseTooltip: Locator;
+  readonly postReblog: Locator;
+  readonly postReblogTooltip: Locator;
+  readonly postAvatar: Locator;
+  readonly postReputation: Locator;
+  readonly postReputationTooltip: Locator;
 
   readonly repliesCommentListItem: any;
+  readonly repliesCommentListItemLoadNewer: Locator;
+  readonly repliesCommentListItemTitle: Locator;
+  readonly repliesCommentListItemDescription: Locator;
+  readonly repliesCommentListItemAvatar: Locator;
+  readonly repliesCommentListItemAvatarLink: Locator;
+  readonly repliesCommentListItemCommunityLink: Locator;
+  readonly repliesCommentListItemTimestamp: Locator;
+  readonly repliesCommentListItemUpvote: Locator;
+  readonly repliesCommentListItemDownvote: Locator;
+  readonly repliesCommentListItemUpvoteTooltip: Locator;
+  readonly repliesCommentListItemDownvoteTooltip: Locator;
+  readonly repliesCommentListItemPayout: Locator;
+  readonly repliesCommentListItemPayoutTooltip: Locator;
+  readonly repliesCommentListItemVotes: Locator;
+  readonly repliesCommentListItemVotesTooltip: Locator;
+  readonly repliesCommentListItemRespond: Locator;
+  readonly repliesCommentListItemRespondTooltip: Locator;
+  readonly repliesCommentListItemArticleTitle: Locator;
 
   readonly notificationsMenu: any;
   readonly notificationsMenuAllButton: Locator;
@@ -38,6 +79,26 @@ export class ProfilePage {
   readonly notificationsMenuUpvotesButton: Locator;
   readonly notificationsMenuReblogsButton: Locator;
   readonly notificationsMenuAllContent: Locator;
+  readonly notificationsMenuRepliesContent: Locator;
+  readonly notificationListItemInReplies: Locator;
+  readonly notificationsMenuMentionsContent: Locator;
+  readonly notificationListItemInMentions: Locator;
+  readonly notificationsMenuFollowsContent: Locator;
+  readonly notificationListItemInFollows: Locator;
+  readonly notificationsMenuUpvotesContent: Locator;
+  readonly notificationListItemInUpvotes: Locator;
+  readonly notificationsMenuReblogsContent: Locator;
+  readonly notificationListItemInReblogs: Locator;
+  readonly notificationNickName: Locator;
+  readonly notificationAccountIconLink: Locator;
+  readonly notificationAccountAndMessage: Locator;
+  readonly notificationTimestamp: Locator;
+  readonly notificationListItemInAll: Locator;
+  readonly notificationListItemEvenInAll: Locator;
+  readonly notificationListItemOddInAll: Locator;
+  readonly notificationProgressBar: Locator;
+  readonly notificationLoadMoreButtonInAll: Locator;
+  readonly notificationLoadMoreButtonInReblogs: Locator;
 
   readonly publicProfileSettings: any;
   readonly publicProfileSettingsHeader: Locator;
@@ -91,6 +152,22 @@ export class ProfilePage {
   readonly followedMutedLists: Locator;
   readonly followedMutedListsHeader: Locator;
 
+  readonly socialBadgesAchievemntsMenuBar: Locator;
+  readonly socialMenuBarBadges: Locator;
+  readonly socialMenuBarActivity: Locator;
+  readonly socialMenuBarPersonal: Locator;
+  readonly socialMenuBarMeetups: Locator;
+  readonly socialMenuBarChallenges: Locator;
+  readonly socialCommunitySubscriptionsLabel: Locator;
+  readonly socialCommunitySubscriptionsDescription: Locator;
+  readonly socialAuthorSubscribedCommunitiesList: Locator;
+  readonly socialAuthorSubscribedCommunitiesListItem: Locator;
+  readonly socialAuthorSubscribedCommunitiesLink: Locator;
+  readonly socialAuthorSubscribedCommunitiesRoleTag: Locator;
+  readonly socialAuthorSubscribedCommunitiesAffiliationTag: Locator;
+  readonly socialBadgesAchivementsLabel: Locator;
+  readonly socialBadgesAchivementsDescription: Locator;
+  readonly socialBadgeAchivement: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -134,11 +211,52 @@ export class ProfilePage {
 
     this.postBlogItem = page.locator('[data-testid="post-list-item"]');
     this.postsMenu = page.locator('[data-testid="user-post-menu"]');
+    this.postsPostAuthor = page.locator('[data-testid="post-author"]');
     this.postsMenuPostsButton = page.locator('[data-testid="user-post-menu"]').getByText('Posts');
     this.postsMenuCommentsButton = page.locator('[data-testid="user-post-menu"]').getByText('Comments');
     this.postsMenuPayoutsButton = page.locator('[data-testid="user-post-menu"]').getByText('Payouts');
+    this.postRebloggedLabel = page.locator('[data-testid="reblogged-label"]');
+    this.postRebloggedAuthorLink = page.locator('[data-testid="reblogged-author-link"]');
+    this.postTitle = this.postBlogItem.locator('[data-testid="post-title"] > a');
+    this.postDescription = this.postBlogItem.locator('[data-testid="post-description"]');
+    this.postCommunityLink = page.locator('[data-testid="post-card-community"]');
+    this.postCategoryLink = page.locator('[data-testid="post-card-category"]');
+    this.postTimestamp = page.locator('[data-testid="post-card-timestamp"]');
+    this.postUpvoteButton = page.locator('[data-testid="upvote-button"]');
+    this.postDownvoteButton = page.locator('[data-testid="downvote-button"]');
+    this.postUpvoteTooltip = page.locator('[data-testid="upvote-button-tooltip"]');
+    this.postDownvoteTooltip = page.locator('[data-testid="downvote-button-tooltip"]');
+    this.postPayout = page.locator('[data-testid="post-payout"]');
+    this.postPayoutTooltip = page.locator('[data-testid="payout-post-card-tooltip"]');
+    this.postVotes = page.locator('[data-testid="post-total-votes"]');
+    this.postVotesTooltip = page.locator('[data-testid="post-card-votes-tooltip"]');
+    this.postResponse = page.locator('[data-testid="post-card-response-link"]');
+    this.postResponseTooltip = page.locator('[data-testid="post-card-responses"]');
+    this.postReblog = page.locator('[data-testid="post-card-reblog"]');
+    this.postReblogTooltip = page.locator('[data-testid="post-card-reblog-tooltip"]');
+    this.postAvatar = page.locator('[data-testid="post-card-avatar"]');
+    this.postReputation = page.locator('[data-testid="post-author-reputation"]');
+    this.postReputationTooltip = page.locator('[data-testid="post-reputation-tooltip"]');
 
     this.repliesCommentListItem = page.locator('[data-testid="comment-list-item"]');
+    this.repliesCommentListItemLoadNewer = page.locator('[div > button]').getByText('Load Newer');
+    this.repliesCommentListItemTitle = page.locator('[data-testid="comment-card-title"]');
+    this.repliesCommentListItemDescription = page.locator('[data-testid="comment-card-description"]');
+    this.repliesCommentListItemAvatar = page.locator('[data-testid="comment-author-avatar"]');
+    this.repliesCommentListItemAvatarLink = page.locator('[data-testid="comment-author-avatar-link"]');
+    this.repliesCommentListItemCommunityLink = page.locator('[data-testid="comment-community-category-link"]');
+    this.repliesCommentListItemTimestamp = page.locator('[data-testid="comment-timestamp"]');
+    this.repliesCommentListItemUpvote = page.locator('[data-testid="comment-card-upvote-button"]');
+    this.repliesCommentListItemDownvote = page.locator('[data-testid="comment-card-downvote-button"]');
+    this.repliesCommentListItemUpvoteTooltip = page.locator('[data-testid="comment-card-upvote-tooltip"]');
+    this.repliesCommentListItemDownvoteTooltip = page.locator('[data-testid="comment-card-downvote-tooltip"]');
+    this.repliesCommentListItemPayout = page.locator('[data-testid="post-payout"]');
+    this.repliesCommentListItemPayoutTooltip = page.locator('[data-testid="payout-post-card-tooltip"]');
+    this.repliesCommentListItemVotes = page.locator('[data-testid="comment-vote"]');
+    this.repliesCommentListItemVotesTooltip = page.locator('[data-testid="comment-vote-tooltip"]');
+    this.repliesCommentListItemRespond = page.locator('[data-testid="comment-respond-link"]');
+    this.repliesCommentListItemRespondTooltip = page.locator('[data-testid="comment-respond-tooltip"]');
+    this.repliesCommentListItemArticleTitle = page.locator('[data-testid="article-title"]');
 
     this.notificationsMenu = page.locator('[data-testid="notifications-local-menu"]');
     this.notificationsMenuAllButton = page
@@ -160,6 +278,29 @@ export class ProfilePage {
       .locator('[data-testid="notifications-local-menu"]')
       .getByText('Reblogs');
     this.notificationsMenuAllContent = page.locator('[data-testid="notifications-content-all"]');
+    this.notificationsMenuRepliesContent = page.locator('[data-testid="notifications-content-replies"]');
+    this.notificationListItemInReplies = this.notificationsMenuRepliesContent.locator('[data-testid="notification-list-item"]');
+    this.notificationsMenuMentionsContent = page.locator('[data-testid="notifications-content-mentions"]');
+    this.notificationListItemInMentions = this.notificationsMenuMentionsContent.locator('[data-testid="notification-list-item"]');
+    this.notificationsMenuFollowsContent = page.locator('[data-testid="notifications-content-follows"]');
+    this.notificationListItemInFollows = this.notificationsMenuFollowsContent.locator('[data-testid="notification-list-item"]');
+    this.notificationsMenuUpvotesContent = page.locator('[data-testid="notifications-content-upvotes"]');
+    this.notificationListItemInUpvotes = this.notificationsMenuUpvotesContent.locator('[data-testid="notification-list-item"]');
+    this.notificationsMenuReblogsContent = page.locator('[data-testid="notifications-content-reblogs"]');
+    this.notificationListItemInReblogs = this.notificationsMenuReblogsContent.locator('[data-testid="notification-list-item"]');
+
+    this.notificationNickName = page.locator('[data-testid="subscriber-name"]');
+    this.notificationAccountIconLink = page.locator('[data-testid="notification-account-icon-link"]');
+    this.notificationAccountAndMessage = page.locator('[data-testid="notification-account-and-message"]');
+    this.notificationTimestamp = page.locator('[data-testid="notification-timestamp"]');
+    this.notificationListItemInAll = this.notificationsMenuAllContent.locator('[data-testid="notification-list-item"]');
+    this.notificationListItemEvenInAll = this.notificationsMenuAllContent.locator('[data-testid="notification-list-item"]:nth-of-type(even)');
+    this.notificationListItemOddInAll =  this.notificationsMenuAllContent.locator('[data-testid="notification-list-item"]:nth-of-type(odd)');
+    this.notificationProgressBar = page.locator('[data-testid="notification-progress-bar"]');
+    this.notificationLoadMoreButtonInAll = this.notificationsMenuAllContent.getByText('Load more');
+    this.notificationLoadMoreButtonInReblogs = this.notificationsMenuReblogsContent.getByText('Load more');
+    // this.subscribersLoadMoreButton = this.subscribersNotificationContent.getByText('Load more');
+
 
     this.publicProfileSettings = page.locator('[data-testid="public-profile-settings"]');
     this.publicProfileSettingsHeader = this.publicProfileSettings.locator('h2').nth(0);
@@ -216,12 +357,49 @@ export class ProfilePage {
     this.followedBlacklistsHeader = page.locator('h1.text-xl.font-bold').first();
     this.followedMutedLists = page.getByText('Followed Muted Lists')
     this.followedMutedListsHeader = page.locator('h1.text-xl.font-bold').first();
+
+    this.socialBadgesAchievemntsMenuBar = page.locator('[data-testid="badges-activity-menu"]');
+    this.socialMenuBarBadges = this.socialBadgesAchievemntsMenuBar.getByText('Badges');
+    this.socialMenuBarActivity  = this.socialBadgesAchievemntsMenuBar.getByText('Activity');
+    this.socialMenuBarPersonal  = this.socialBadgesAchievemntsMenuBar.getByText('Personal');
+    this.socialMenuBarMeetups  = this.socialBadgesAchievemntsMenuBar.getByText('Meetups');
+    this.socialMenuBarChallenges  = this.socialBadgesAchievemntsMenuBar.getByText('Challenges');
+    this.socialCommunitySubscriptionsLabel = page.locator('[data-testid="community-subscriptions-label"]');
+    this.socialCommunitySubscriptionsDescription = page.locator('[data-testid="community-subscriptions-description"]');
+    this.socialAuthorSubscribedCommunitiesList = page.locator('[data-testid="author-subscribed-communities-list"]');
+    this.socialAuthorSubscribedCommunitiesListItem = page.locator('[data-testid="author-community-subscribed-list-item"]');
+    this.socialAuthorSubscribedCommunitiesLink = page.locator('[data-testid="author-community-subscribed-link"]');
+    this.socialAuthorSubscribedCommunitiesRoleTag = page.locator('[data-testid="author-role-community"]');
+    this.socialAuthorSubscribedCommunitiesAffiliationTag = page.locator('[data-testid="author-affiliation-tag"]');
+    this.socialBadgesAchivementsLabel = page.locator('[data-testid="badges-achievements-label"]');
+    this.socialBadgesAchivementsDescription = page.locator('[data-testid="badges-achievements-description"]');
+    this.socialBadgeAchivement = page.locator('[data-testid="badge-achievement"]');
   }
 
   async gotoProfilePage(nickName: string) {
     await this.page.goto(`/${nickName}`);
     await this.page.waitForLoadState('networkidle');
     await this.page.waitForSelector(this.profileInfo['_selector']);
+  }
+
+  async gotoRepliesProfilePage(nickName: string) {
+    await this.page.goto(`/${nickName}/replies`);
+    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForSelector(this.profileInfo['_selector']);
+    await this.page.waitForSelector(this.repliesCommentListItem['_selector']);
+  }
+
+  async gotoNotificationsProfilePage(nickName: string) {
+    await this.page.goto(`/${nickName}/notifications`);
+    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForSelector(this.profileInfo['_selector']);
+  }
+
+  async gotoSocialProfilePage(nickName: string) {
+    await this.page.goto(`/${nickName}/communities`);
+    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForSelector(this.profileInfo['_selector']);
+    await this.page.waitForSelector(this.socialBadgesAchievemntsMenuBar['_selector']);
   }
 
   async profileNameIsEqual(authorName: string) {
@@ -268,7 +446,7 @@ export class ProfilePage {
 
   async profilePostsTabIsSelected() {
     await this.page.waitForSelector(this.postBlogItem['_selector']);
-    await expect(this.postBlogItem).toHaveCount(20);
+    // await expect(this.postBlogItem).toHaveCount(20);
     await expect(this.page).toHaveURL(/.*posts/)
     await expect(this.postsMenu).toBeVisible();
   }

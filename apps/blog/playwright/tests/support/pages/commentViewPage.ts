@@ -51,8 +51,8 @@ export class CommentViewPage{
         this.getMainCommentCategoryLink = page.locator('[data-testid="comment-category-title"]');
         this.getMainCommentContent = page.locator('#articleBody');
         this.getMainCommentFooterAuthorData = page.locator('[data-testid="author-data-post-footer"]');
-        this.getMainCommentFooterCommunityLink = page.locator('[data-testid="footer-comment-community-link"]');
-        this.getMainCommentFooterCategoryLink = page.locator('[data-testid="footer-comment-category-link"]');
+        this.getMainCommentFooterCommunityLink = page.locator('[data-testid="footer-comment-community-category-link"]');
+        this.getMainCommentFooterCategoryLink = page.locator('[data-testid="footer-comment-community-category-link"]');
         this.getMainCommentFooterAuthorNameLink = page.locator('[data-testid="author-name-link"]').last();
         this.getMainCommentUpvoteButton = page.locator('[data-testid="comment-vote-buttons"] button').first();
         this.getMainCommentDownvoteButton = page.locator('[data-testid="comment-vote-buttons"] button').last();

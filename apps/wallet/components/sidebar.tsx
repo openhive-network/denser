@@ -3,8 +3,8 @@ import { Icons } from "@hive/ui/components/icons";
 import {
   Sheet,
   SheetContent,
-  SheetTitle,
   SheetTrigger,
+  SheetClose,
 } from "@hive/ui/components/sheet";
 import Link from "next/link";
 import { Separator } from "@hive/ui/components/separator";
@@ -20,16 +20,12 @@ const Item = ({
   target?: boolean;
 }) => {
   return (
-    <li>
-      <SheetTitle className="text-sm font-semibold text-foreground border-b-2 border-white dark:hover:border-red-600 hover:border-red-600 dark:border-slate-950 dark:hover:bg-slate-900 hover:bg-slate-100 cursor-pointer">
-        <Link
-          href={href}
-          className="flex items-center p-4 gap-1"
-          target={clsx(target ? "_blank" : "")}
-        >
+    <li className="text-foreground border-b-2 border-white dark:hover:border-red-600 hover:border-red-600 dark:border-slate-950 dark:hover:bg-slate-900 hover:bg-slate-100 cursor-pointer">
+      <Link href={href} target={clsx(target ? "_blank" : "")}>
+        <SheetClose className="w-full h-full flex items-center p-4 gap-1 text-sm font-semibold">
           {children}
-        </Link>
-      </SheetTitle>
+        </SheetClose>
+      </Link>
     </li>
   );
 };

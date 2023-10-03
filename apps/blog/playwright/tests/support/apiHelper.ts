@@ -166,23 +166,61 @@ export class ApiHelper {
     return response.json();
   }
 
-    // Get community subscribers as json from API response
-    async getCommunitySubscribersAPI(account: string, limit: number = 50, lastId: number = 0) {
-      const url = process.env.REACT_APP_API_ENDPOINT;
+  // Get community subscribers as json from API response
+  async getCommunitySubscribersAPI(account: string, limit: number = 50, lastId: number = 0) {
+    const url = process.env.REACT_APP_API_ENDPOINT;
 
-      const responseGetCommunitySubscribers = await this.page.request.post(`${url}/`, {
-        data: {
-          id: 0,
-          jsonrpc: '2.0',
-          method: 'bridge.account_notifications',
-          params: {account: account, limit: limit, last_id: lastId}
-        },
-        headers: {
-          Accept: 'application/json, text/plain, */*'
-        }
-      });
+    const responseGetCommunitySubscribers = await this.page.request.post(`${url}/`, {
+      data: {
+        id: 0,
+        jsonrpc: '2.0',
+        method: 'bridge.account_notifications',
+        params: {account: account, limit: limit, last_id: lastId}
+      },
+      headers: {
+        Accept: 'application/json, text/plain, */*'
+      }
+    });
 
-      return responseGetCommunitySubscribers.json();
-    }
+    return responseGetCommunitySubscribers.json();
+  }
+
+  // Get account notifications as json from API response
+  async getAccountNotificationsAPI(account: string, limit: number = 50, lastId: number = 0) {
+    const url = process.env.REACT_APP_API_ENDPOINT;
+
+    const responseGetAccountNotifications = await this.page.request.post(`${url}/`, {
+      data: {
+        id: 0,
+        jsonrpc: '2.0',
+        method: 'bridge.account_notifications',
+        params: {account: account, limit: limit, last_id: lastId}
+      },
+      headers: {
+        Accept: 'application/json, text/plain, */*'
+      }
+    });
+
+    return responseGetAccountNotifications.json();
+  }
+
+  // Get subscribed communitiest by user as json from API response
+  async getSubscribedCommunitiesAPI(account: string) {
+    const url = process.env.REACT_APP_API_ENDPOINT;
+
+    const responseGetCommunitySubscribers = await this.page.request.post(`${url}/`, {
+      data: {
+        id: 0,
+        jsonrpc: '2.0',
+        method: 'bridge.list_all_subscriptions',
+        params: {account: account}
+      },
+      headers: {
+        Accept: 'application/json, text/plain, */*'
+      }
+    });
+
+    return responseGetCommunitySubscribers.json();
+  }
 
 }

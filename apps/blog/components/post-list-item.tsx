@@ -80,10 +80,11 @@ const PostListItem = ({
         {post.reblogged_by ? (
           <div className="flex items-center gap-2 py-1 text-sm text-gray-400">
             <Icons.forward className="h-4 w-4" />
-            <span>
+            <span data-testid="reblogged-label">
               <Link
                 href={`/@${post.reblogged_by[0]}`}
                 className="cursor-pointer hover:text-red-600"
+                data-testid="reblogged-author-link"
               >
                 {post.reblogged_by[0]}
               </Link>{" "}
@@ -111,10 +112,10 @@ const PostListItem = ({
               </Link>{" "}
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger>
+                  <TooltipTrigger data-testid="post-author-reputation">
                     ({accountReputation(post.author_reputation)})
                   </TooltipTrigger>
-                  <TooltipContent>Reputation</TooltipContent>
+                  <TooltipContent data-testid="post-reputation-tooltip">Reputation</TooltipContent>
                 </Tooltip>
               </TooltipProvider>
               {post.blacklists && post.blacklists[0] ? (
@@ -229,6 +230,7 @@ const PostListItem = ({
                   <CardDescription className="block w-auto md:overflow-hidden md:overflow-ellipsis md:whitespace-nowrap">
                     <Link
                       href={`/${post.category}/@${post.author}/${post.permlink}`}
+                      data-testid="post-description"
                     >
                       {getPostSummary(post.json_metadata, post.body)}
                     </Link>
@@ -352,6 +354,7 @@ const PostListItem = ({
                         <Link
                           href={`/${post.category}/@${post.author}/${post.permlink}/#comments`}
                           className="flex cursor-pointer items-center hover:text-red-600 pl-1"
+                          data-testid="post-card-response-link"
                         >
                           {post.children}
                         </Link>

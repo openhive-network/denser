@@ -219,7 +219,7 @@ function PostPage({
 
         <div className="clear-both">
           {!commentSite ? (
-            <ul className="flex flex-wrap gap-2">
+            <ul className="flex flex-wrap gap-2" data-testid="hashtags-post">
               {post_s.json_metadata?.tags?.map((tag: string) => (
                 <li key={tag}>
                   <Link
@@ -249,7 +249,7 @@ function PostPage({
                   <Link
                     href={`/trending/${community}`}
                     className="hover:cursor-pointer"
-                    data-testid="footer-comment-community-link"
+                    data-testid="footer-comment-community-category-link"
                   >
                     {post_s.community_title}
                   </Link>
@@ -257,7 +257,7 @@ function PostPage({
                   <Link
                     href={`/trending/${post_s.category}`}
                     className="hover:cursor-pointer"
-                    data-testid="footer-comment-category-link"
+                    data-testid="footer-comment-community-category-link"
                   >
                     #{post_s.category}
                   </Link>
@@ -400,7 +400,7 @@ function PostPage({
               <LinkedInShare title={post_s.title} url={post_s.url} />
               <RedditShare title={post_s.title} url={post_s.url} />
               <SharePost path={router.asPath}>
-                <Link2 className="cursor-pointer hover:text-red-600" />
+                <Link2 className="cursor-pointer hover:text-red-600" data-testid="share-post"/>
               </SharePost>
             </div>
           </div>

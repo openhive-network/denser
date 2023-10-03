@@ -11,6 +11,7 @@ import { Button } from "@hive/ui/components/button";
 import { Witness, getWitnessesByVote } from "@/wallet/lib/hive";
 import WitnessListItem from "@/wallet/components/witnesses-list-item";
 import DialogLogin from "../components/dialog-login";
+import { AlertDialogProxy } from "../components/alert-dialog-proxy";
 
 const LAST_BLOCK_AGE_THRESHOLD_IN_SEC = 2592000;
 
@@ -39,6 +40,7 @@ const mapWitnesses =
 export type ExtendWitness = ReturnType<ReturnType<typeof mapWitnesses>>;
 function WitnessesPage() {
   const [voteInput, setVoteInput] = useState("");
+  const [proxy, setProxy] = useState("");
   const {
     data: dynamicData,
     isSuccess: dynamicSuccess,
@@ -213,8 +215,14 @@ function WitnessesPage() {
             <span className="max-w-12 flex h-10 w-10 flex-col items-center justify-center rounded-lg border border-black bg-slate-300 font-bold dark:bg-slate-700">
               <Icons.atSign />
             </span>
-            <Input className="mx-1 max-w-sm" />
-            <Button variant="destructive">SET PROXY</Button>
+            <Input
+              value={proxy}
+              onChange={(e) => setProxy(e.target.value)}
+              className="mx-1 max-w-sm"
+            />
+            <AlertDialogProxy proxy={proxy}>
+              <Button variant="destructive">SET PROXY</Button>
+            </AlertDialogProxy>
           </div>
         </div>
       </div>

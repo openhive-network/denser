@@ -2,16 +2,19 @@ import { expect, test } from '@playwright/test';
 import { PostPage } from '../support/pages/postPage';
 import { HomePage } from '../support/pages/homePage';
 import { ApiHelper } from '../support/apiHelper';
+import { CommunitiesPage } from '../support/pages/communitiesPage';
 
 test.describe('Post page tests', () => {
   let homePage: HomePage;
   let postPage: PostPage;
   let apiHelper: ApiHelper;
+  let communityPage: CommunitiesPage;
 
   test.beforeEach(async ({ page }) => {
     homePage = new HomePage(page);
     postPage = new PostPage(page);
     apiHelper = new ApiHelper(page);
+    communityPage = new CommunitiesPage(page);
   });
 
   test('move to the first post content on the home page by image', async ({ page }) => {
@@ -257,4 +260,158 @@ test.describe('Post page tests', () => {
     await postPage.moveToTheFirstPostInHomePageByImage();
     await expect(postPage.articleFooter).toBeVisible();
   });
+
+  // new tests
+
+  test('Validate Post Header - Timestamp, Post Footer - Timestamp', async ({page}) => {
+    await postPage.gotoHomePage();
+    await expect(homePage.getFirstPostCardTimestampLink).toBeVisible()
+
+    const timestampText = await homePage.getFirstPostCardTimestampLink.innerText()
+    await homePage.getFirstPostCardTimestampLink.click()
+    await expect(page.locator('span[title]').nth(1)).toBeVisible()
+    await expect(page.locator('span[title]').nth(1)).toHaveText(timestampText)
+
+    await expect(page.locator('.px-1').first()).toHaveText(timestampText)
+  })
+
+  test('Post Footer - Authored by', async ({page, browserName}) =>{
+    test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    await postPage.gotoHomePage();
+    const firstPostAuthor = await homePage.getFirstPostAuthor.innerText()
+
+    await postPage.moveToTheFirstPostInHomePageByImage();
+    await expect(postPage.footerAuthorName).toBeVisible()
+
+    const footerAuthorName = await page.locator('[data-testid="author-name-link"]').nth(1).innerText()
+
+    await expect(firstPostAuthor).toEqual(footerAuthorName)
+  })
+
+  test('Post Header/Footer - Affiliation tag', async ({page}) =>{
+    await page.goto('/hive-160391/@gtg/gtg-witness-update-upcoming-changes-in-hbd-apr');
+    await page.waitForLoadState('networkidle');
+
+    const labelText = await postPage.postLabel.innerText()
+    const labelFooterText = await postPage.postLabelFooter.innerText()
+    await expect(postPage.postLabel).toBeVisible()
+    await expect(postPage.postLabelFooter).toBeVisible()
+
+    await expect(labelText).toEqual(labelFooterText)
+  })
+
+  test('Check: Post Content, Post Content - Image', async ({page}) =>{
+    await postPage.gotoHomePage();
+    await postPage.postImage.first().click()
+    await expect(postPage.articleBody).toBeVisible();
+
+    const imgElement = await page.$('img');
+
+  if (imgElement) {
+    const imgSrc = await imgElement.getAttribute('src');
+
+    if (imgSrc) {
+
+      console.log('Strona zawiera obrazek. Ścieżka do obrazka: ' + imgSrc);
+    } else {
+      console.log('Strona zawiera element <img>, ale nie ma zdefiniowanej ścieżki do obrazka.');
+    }
+  } else {
+    console.log('Strona nie zawiera elementu <img>.');
+    test.fail();
+  }
+  })
+
+  test("Validate Post footer", async ({page, request}) =>{
+    await postPage.gotoHomePage();
+    await postPage.postImage.first().click()
+    await expect(postPage.articleBody).toBeVisible();
+
+
+    await test.step("Post Footer - Community Link", async () => {
+    const footerCommunityLink = await postPage.footerCommunityLink
+
+    await expect(footerCommunityLink).toBeVisible()
+    await expect(footerCommunityLink.getAttribute('href')).toBeTruthy()
+
+    await footerCommunityLink.click()
+
+    const communityNameText = await communityPage.communityNameTitle.textContent()
+    await expect(communityPage.communityNameTitle).toBeVisible()
+
+    await page.goBack()
+    })
+
+
+    await test.step("Post Footer - Author Link", async () => {
+    await expect(postPage.footerAuthorName).toBeVisible()
+    await expect(postPage.footerAuthorName.getAttribute('href')).toBeTruthy()
+    await postPage.footerAuthorNameFirst.click()
+    await expect(postPage.hoverCardUserAvatar).toBeVisible()
+    })
+
+
+    await test.step("Post Footer - Upvote and Downvote", async () => {
+    await expect(postPage.votesButtons).toBeVisible()
+    })
+
+    //
+    await test.step("Post Footer - Payout", async () => {
+    await expect(postPage.footerPayouts).toBeVisible()
+    })
+
+    //
+    await test.step("Post Footer - Votes", async () => {
+    await expect(postPage.commentCardsFooterVotes.first()).toBeVisible()
+    })
+
+
+    await test.step("Post Footer - Reblog", async () => {
+    await expect(postPage.footerReblogBtn).toBeVisible()
+    await postPage.footerReblogBtn.click()
+    await expect(postPage.reblogDialogHeader).toBeVisible()
+    await expect(postPage.reblogDialogHeader).toHaveText('Reblog This Post')
+
+    await expect(postPage.reblogDialogDescription).toBeVisible()
+    await expect(postPage.reblogDialogDescription).toHaveText('This post will be added to your blog and shared with your followers.')
+
+    await expect(postPage.reblogDialogCancelBtn).toBeVisible()
+    await expect(postPage.reblogDialogOkBtn).toBeVisible()
+
+    await expect(postPage.reblogDialogCloseBtn).toBeVisible()
+    await (postPage.reblogDialogCloseBtn).click()
+    })
+
+    //
+    await test.step("Post Footer - Reply", async () => {
+      await expect(postPage.commentReplay).toBeVisible()
+      await postPage.commentReplay.click()
+      await expect(postPage.commentCardsFooterReplyEditor).toBeVisible()
+    })
+
+    await test.step("Post Footer - Responses", async () => {
+      await expect(postPage.commentResponse).toBeVisible()
+    })
+
+    await test.step("Post Footer - Social Media links", async () => {
+      await expect(postPage.facebookIcon).toBeVisible()
+      await expect(postPage.twitterIcon).toBeVisible()
+      await expect(postPage.linkedinIcon).toBeVisible()
+      await expect(postPage.redditIcon).toBeVisible()
+    })
+
+    await test.step("Post Footer - Share this post link", async () => {
+      await expect(postPage.sharePostBtn).toBeVisible()
+      await postPage.sharePostBtn.click()
+      await expect(postPage.sharePostFrame).toBeVisible()
+      await expect(postPage.sharePostFrame).toContainText('Share this post')
+    })
+
+    await test.step("Post Footer - Hash tags", async () => {
+      await expect(postPage.hashtagsPosts).toBeVisible()
+
+    })
+
+  })
+
 });

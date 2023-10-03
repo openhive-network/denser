@@ -27,7 +27,7 @@ const NotificationListItem = ({ date, msg, score, type, url }: AccountNotificati
   const mentions = msg.match(usernamePattern);
   const participants = mentions
     ? mentions.map((m: string) => (
-        <a key={m} href={'/' + m}>
+        <a key={m} href={'/' + m} data-testid="notification-account-icon-link">
           <img
             className="mr-3 h-[40px] w-[40px] rounded-3xl"
             height="40"
@@ -40,24 +40,24 @@ const NotificationListItem = ({ date, msg, score, type, url }: AccountNotificati
     : null;
 
   return (
-    <tr className="block w-full px-4 odd:bg-slate-200 odd:dark:bg-slate-900">
+    <tr className="block w-full px-4 odd:bg-slate-200 odd:dark:bg-slate-900" data-testid="notification-list-item">
       <td className="flex justify-between py-4">
         <div className="flex items-center">
           {participants}
           <div className="flex flex-col">
             <Link href={`/${url}`}>
-              <span className="">
+              <span className="" data-testid="notification-account-and-message">
                 <strong data-testid="subscriber-name">{msg.split(' ')[0]}</strong>
                 {mentions ? msg.split(new RegExp(`(${mentions[0]})`, 'gi'))[2] : null}
               </span>
             </Link>
-            <span className="flex items-center gap-2 text-sm text-gray-400">
+            <span className="flex items-center gap-2 text-sm text-gray-400" data-testid="notification-timestamp">
               {icon}
               {`${dateToRelative(date)} ago`}
             </span>
           </div>
         </div>
-        <Progress value={score} className="h-[10px] w-[60px] rounded text-red-600" />
+        <Progress value={score} className="h-[10px] w-[60px] rounded text-red-600" data-testid="notification-progress-bar"/>
       </td>
     </tr>
   );
