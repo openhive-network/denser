@@ -38,7 +38,7 @@ export default defineConfig({
     the number of tests increases.
   */
   reporter: process.env.CI
-    ? [
+    ? 'dot'/*[
         [
           'html',
           {
@@ -48,8 +48,8 @@ export default defineConfig({
         ],
         ['junit', { outputFile: `junit/${process.env.PROJECT}/${process.env.SHARD_INDEX}/results.xml` }],
         ['list', { printSteps: false }]
-      ]
-    : 'html',
+      ] */
+    : 'dot',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
