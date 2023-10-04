@@ -50,12 +50,12 @@ const PostListItem = ({
   return (
     <li
       data-testid="post-list-item"
-      className={sort === "muted" ? "opacity-50 hover:opacity-100" : ""}
+      className={post.stats?.gray ? "opacity-60 hover:opacity-100" : ""}
     >
       <Card
         className={cn(
-          "mb-4 px-2 hover:bg-accent  hover:text-accent-foreground dark:bg-background/95 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground"
-        )}
+          "mb-4 px-2 hover:bg-accent hover:text-accent-foreground dark:bg-background/95 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground"
+          )}
       >
         {post.original_entry ? (
           <div className="mt-2 rounded-sm bg-slate-100 px-2 py-1 text-sm dark:bg-slate-900">
