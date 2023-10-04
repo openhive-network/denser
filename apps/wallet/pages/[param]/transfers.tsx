@@ -203,15 +203,14 @@ function TransfersPage({
     isLoading: historyFeedLoading,
     isError: historyFeedError,
   } = useQuery(["feedHistory"], () => getFeedHistory());
-
+  console.log(accountHistoryData);
   if (
     accountLoading ||
     dynamicLoading ||
     historyFeedLoading ||
     !accountData ||
     !dynamicData ||
-    !historyFeedData ||
-    !accountHistoryData
+    !historyFeedData
   ) {
     return (
       <Loading
@@ -221,8 +220,7 @@ function TransfersPage({
           historyFeedLoading ||
           !accountData ||
           !dynamicData ||
-          !historyFeedData ||
-          !accountHistoryData
+          !historyFeedData
         }
       />
     );
@@ -237,7 +235,6 @@ function TransfersPage({
     moment(),
     `d`
   );
-  console.log(accountHistoryData);
 
   const totalShares = convertStringToBig(dynamicData.total_vesting_shares);
   const vesting_hive = vestingHive(accountData, dynamicData);
@@ -410,7 +407,7 @@ function TransfersPage({
       );
     } else return <div>????</div>;
   }
-  // Transfer from savings 0.001 HBD to ura-soulRequest ID: 4329869
+
   return (
     <ProfileLayout>
       <div className="flex flex-col w-full items-center ">
@@ -571,8 +568,8 @@ function TransfersPage({
         {accountHistoryLoading ? (
           <div>Loading</div>
         ) : !accountHistoryData ? (
-          <div>error</div>
-        ) : filteredHistoryList.length > 0 ? (
+          <div> No transacions found</div>
+        ) : filteredHistoryList && filteredHistoryList.length > 0 ? (
           <table className="p-2 w-full max-w-6xl">
             <tbody>
               {filteredHistoryList.reverse().map((element) => {

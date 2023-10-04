@@ -323,9 +323,10 @@ const ParamPage: FC = () => {
                 <PostSkeleton />
               ) : accountHasNextPage ? (
                 "Load Newer"
-              ) : (
+              ) : accountEntriesData.pages[0] &&
+                accountEntriesData.pages[0].length > 0 ? (
                 "Nothing more to load"
-              )}
+              ) : null}
             </button>
           </div>
           <div>
