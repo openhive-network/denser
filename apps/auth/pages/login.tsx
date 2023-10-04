@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import LoginForm from "@/auth/components/login-form";
+import { LoginForm, LoginFormData } from "@/auth/components/login-form";
 import useUser from '@/auth/lib/use-user';
 import fetchJson, { FetchError } from '@/auth/lib/fetch-json';
 
@@ -8,9 +8,9 @@ export default function LoginPage() {
   const { mutateUser } = useUser({
     redirectTo: '/profile',
     redirectIfFound: true,
-  })
+  });
 
-  const [errorMsg, setErrorMsg] = useState('')
+  const [errorMsg, setErrorMsg] = useState('');
 
   const onSubmit = async (data: LoginFormData) => {
     console.log('form data', data);
@@ -25,9 +25,9 @@ export default function LoginPage() {
       )
     } catch (error) {
       if (error instanceof FetchError) {
-        setErrorMsg(error.data.message)
+        setErrorMsg(error.data.message);
       } else {
-        console.error('An unexpected error happened:', error)
+        console.error('An unexpected error happened:', error);
       }
     }
   };

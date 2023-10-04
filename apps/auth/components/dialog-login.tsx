@@ -6,7 +6,7 @@ import {
 import { ReactNode } from "react";
 import LoginForm from "@/auth/components/login-form";
 
-function DialogLogin({ children }: { children: ReactNode }) {
+export function DialogLogin({ children }: { children: ReactNode }) {
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -16,5 +16,3 @@ function DialogLogin({ children }: { children: ReactNode }) {
     </Dialog>
   );
 }
-
-export default DialogLogin;

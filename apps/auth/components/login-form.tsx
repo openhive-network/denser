@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { Separator } from "@hive/ui/components/separator";
 import { getLogger } from "@hive/ui/lib/logging";
 
-type LoginFormData = {
+export type LoginFormData = {
   username: string;
   password: string;
   hiveAuth: boolean,
@@ -17,7 +17,7 @@ const loginFormDefaultValues = {
   remember: false,
 }
 
-function LoginForm({
+export function LoginForm({
   errorMessage,
   onSubmit,
 }: {
@@ -149,5 +149,3 @@ function LoginForm({
     </div>
   );
 }
-
-export default LoginForm;
