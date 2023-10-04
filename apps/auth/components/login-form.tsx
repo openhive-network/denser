@@ -2,7 +2,6 @@
 import { useForm } from "react-hook-form";
 import { Separator } from "@hive/ui/components/separator";
 import { getLogger } from "@hive/ui/lib/logging";
-import fetchJson, { FetchError } from '@/auth/lib/fetch-json';
 
 type LoginFormData = {
   username: string;
@@ -20,10 +19,10 @@ const loginFormDefaultValues = {
 
 function LoginForm({
   errorMessage,
-  mutateUser,
+  onSubmit,
 }: {
   errorMessage: string
-  mutateUser: any
+  onSubmit: (data: LoginFormData) => void
 }) {
   const logger = getLogger('app');
   logger.info('Starting LoginForm');
@@ -33,26 +32,6 @@ function LoginForm({
   });
 
   // const onError = (errors: any, e: Event) => console.log('form errors', errors, e);
-
-  const onSubmit = async (data: LoginFormData) => {
-    console.log('form data', data);
-    const body = { username: data.username };
-    try {
-      mutateUser(
-        await fetchJson('/api/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body),
-        })
-      )
-    } catch (error) {
-      if (error instanceof FetchError) {
-        setErrorMsg(error.data.message)
-      } else {
-        console.error('An unexpected error happened:', error)
-      }
-    }
-  };
 
   return (
     <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
