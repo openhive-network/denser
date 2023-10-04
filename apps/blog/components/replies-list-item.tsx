@@ -211,20 +211,13 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
               <div className="flex items-center">
                 <TooltipProvider>
                   <Tooltip>
-                    <TooltipTrigger className="flex items-center gap-1">
-                      <Link
-                        href={`/${comment.category}/@${comment.author}/${comment.permlink}`}
-                        className="flex cursor-pointer items-center"
-                      >
-                        {comment.children > 1 ? (
-                          <Icons.messagesSquare className="h-4 w-4 sm:mr-1" />
-                        ) : (
-                          <Icons.comment className="h-4 w-4 sm:mr-1" />
-                        )}
+                    <TooltipTrigger className="flex items-center">
+                      <Link href={`/${comment.category}/@${comment.author}/${comment.permlink}`}className="flex cursor-pointer items-center">
+                        {comment.children>1?<Icons.messagesSquare className="h-4 w-4" />:<Icons.comment className="h-4 w-4" />}
                       </Link>
                       <Link
                         href={`/${comment.category}/@${comment.author}/${comment.permlink}`}
-                        className="flex cursor-pointer items-center hover:text-red-600"
+                        className="flex cursor-pointer items-center hover:text-red-600 pl-1"
                         data-testid="comment-respond-link"
                       >
                         {comment.children}

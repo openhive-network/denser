@@ -34,6 +34,9 @@ import RedditShare from "@/blog/components/share-post-reddit";
 import TwitterShare from "@/blog/components/share-post-twitter";
 import { Badge } from "@hive/ui/components/badge";
 import { UserHoverCard } from "@/blog/components/user-hover-card";
+import { Button } from "@ui/components/button";
+import { Separator } from "@ui/components";
+import { LeavePageDialog } from "@/blog/components/leave-page-dialog";
 
 const DynamicComments = dynamic(
   () => import("@/blog/components/comment-list"),
@@ -135,6 +138,7 @@ function PostPage({
   const post_html = renderer.render(post_s.body);
   const commentSite = post_s.depth !== 0 ? true : false;
   const [reply, setReply] = useState(false);
+  const [mutedPost, setMutedPost] = useState(post_s.stats?.gray);
   const postUrl = () => {
     if (discussionState) {
       const objectWithSmallestDepth = discussionState.reduce(
@@ -159,6 +163,18 @@ function PostPage({
       );
     }
   };
+  function findLinks(text: string) {
+    const regex = /https?:\/\/[^\s]+/g;
+    const matches = text.replace(/[({\[\])}]/g, " ").match(regex) || [];
+
+    return matches.map((match) => match);
+  }
+  function isImageLink(link: string) {
+    const imageExtensions = ["jpg", "jpeg", "png", "gif", "image"];
+
+    return imageExtensions.some((ext) => link.includes(ext));
+  }
+
   return (
     <div className="py-8">
       <div className="mx-auto my-0 max-w-4xl bg-white px-8 py-4 dark:bg-slate-900">
@@ -201,9 +217,29 @@ function PostPage({
           community={community}
           category={post_s.category}
           created={post_s.created}
+          blacklist={post_s.blacklists}
         />
+        {/* <span className="text-red-600" title={post_s.blacklists[0]}>
+        ({post_s.blacklists.length})
+      </span> */}
         <hr />
-        {post_html ? (
+        {!post_html ? (
+          <Loading loading={!post_html} />
+        ) : mutedPost ? (
+          <div id="articleBody" className="flex flex-col gap-8 py-8">
+            {findLinks(post_s.body).map((e) =>
+              isImageLink(e) ? (
+                <Link href={e} className="text-red-500" key={e}>
+                  (Image not shown due to low ratings)
+                </Link>
+              ) : (
+                <LeavePageDialog link={e} key={e}>
+                  <Icons.externalLink className="w-4 h-4 text-slate-600" />
+                </LeavePageDialog>
+              )
+            )}
+          </div>
+        ) : (
           <ImageGallery>
             <div
               id="articleBody"
@@ -213,10 +249,18 @@ function PostPage({
               }}
             />
           </ImageGallery>
-        ) : (
-          <Loading loading={!post_html} />
         )}
-
+        {mutedPost ? (
+          <>
+            <Separator />
+            <div className="text-red-500 my-8 flex items-center justify-between">
+              Images were hidden due to low ratings.{" "}
+              <Button variant="outlineRed" onClick={() => setMutedPost(false)}>
+                Show
+              </Button>
+            </div>
+          </>
+        ) : null}
         <div className="clear-both">
           {!commentSite ? (
             <ul className="flex flex-wrap gap-2" data-testid="hashtags-post">
@@ -267,6 +311,7 @@ function PostPage({
               <UserHoverCard
                 author={post_s.author}
                 author_reputation={post_s.author_reputation}
+                blacklist={post_s.blacklists}
               />
               {post_s.author_title ? (
                 <Badge
@@ -385,12 +430,12 @@ function PostPage({
               </DetailsCardHover>
               {!isActiveVotesLoading && activeVotesData ? (
                 <DetailsCardVoters post={post_s}>
-                  <span className="text-xs text-red-500 sm:text-sm">
+                { post_s.stats?.total_votes &&post_s.stats?.total_votes !==0? <span className="text-xs text-red-500 sm:text-sm">
                     {post_s.stats?.total_votes}
-                    {post_s.stats?.total_votes && post_s.stats?.total_votes > 1
+                    { post_s.stats?.total_votes > 1
                       ? " votes"
                       : " vote"}
-                  </span>
+                  </span>:null}
                 </DetailsCardVoters>
               ) : null}
             </div>
@@ -400,7 +445,10 @@ function PostPage({
               <LinkedInShare title={post_s.title} url={post_s.url} />
               <RedditShare title={post_s.title} url={post_s.url} />
               <SharePost path={router.asPath}>
-                <Link2 className="cursor-pointer hover:text-red-600" data-testid="share-post"/>
+                <Link2
+                  className="cursor-pointer hover:text-red-600"
+                  data-testid="share-post"
+                />
               </SharePost>
             </div>
           </div>

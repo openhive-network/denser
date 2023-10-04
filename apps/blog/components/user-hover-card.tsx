@@ -7,10 +7,11 @@ import { HoverCardData } from './hover-card-data';
 export interface UserHoverCardProps {
   author: string;
   author_reputation: number;
+  blacklist: string[];
   withImage?: boolean;
 }
 
-export function UserHoverCard({ author, author_reputation, withImage = false }: UserHoverCardProps) {
+export function UserHoverCard({ author, author_reputation, blacklist, withImage = false }: UserHoverCardProps) {
   return (
     <HoverCard>
       <HoverCardTrigger data-testid="author-name-link">
@@ -22,6 +23,11 @@ export function UserHoverCard({ author, author_reputation, withImage = false }: 
       <span title="Reputation" className="mr-1 block font-normal" data-testid="author-reputation">
         ({accountReputation(author_reputation)})
       </span>
+        {blacklist && blacklist[0] ? (
+          <span className="text-red-600" title={blacklist[0]}>
+            ({blacklist.length})
+          </span>
+        ) : null}
       <HoverCardContent className="w-72" data-testid="user-hover-card-content">
         <HoverCardData author={author} />
       </HoverCardContent>
