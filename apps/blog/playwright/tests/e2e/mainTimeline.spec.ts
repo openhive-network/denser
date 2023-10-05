@@ -288,7 +288,7 @@ test.describe('Home page tests', () => {
     );
 
     // Community or category link color without hovering in the post card
-    if (await homePage.getFirstPostCardCommunityLink) {
+    if (await homePage.getFirstPostCardCommunityLink.isVisible()) {
       // Communitylink color without hovering in the post card
       expect(
         await homePage.getElementCssPropertyValue(await homePage.getFirstPostCardCommunityLink, 'color')
@@ -300,7 +300,7 @@ test.describe('Home page tests', () => {
         await homePage.getElementCssPropertyValue(await homePage.getFirstPostCardCommunityLink, 'color')
       ).toBe('rgb(220, 38, 38)');
     }
-    if (await homePage.getFirstPostCardCategoryLink) {
+    if (await homePage.getFirstPostCardCategoryLink.isVisible()) {
       // Communitylink color without hovering in the post card
       expect(
         await homePage.getElementCssPropertyValue(await homePage.getFirstPostCardCategoryLink, 'color')
@@ -346,7 +346,7 @@ test.describe('Home page tests', () => {
     );
 
     // Community or category link color without hovering in the post card
-    if (await homePage.getFirstPostCardCommunityLink) {
+    if (await homePage.getFirstPostCardCommunityLink.isVisible()) {
       // Communitylink color without hovering in the post card
       expect(
         await homePage.getElementCssPropertyValue(await homePage.getFirstPostCardCommunityLink, 'color')
@@ -358,7 +358,7 @@ test.describe('Home page tests', () => {
         await homePage.getElementCssPropertyValue(await homePage.getFirstPostCardCommunityLink, 'color')
       ).toBe('rgb(220, 38, 38)');
     }
-    if (await homePage.getFirstPostCardCategoryLink) {
+    if (await homePage.getFirstPostCardCategoryLink.isVisible()) {
       // Communitylink color without hovering in the post card
       expect(
         await homePage.getElementCssPropertyValue(await homePage.getFirstPostCardCategoryLink, 'color')

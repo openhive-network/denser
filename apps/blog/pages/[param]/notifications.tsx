@@ -9,19 +9,24 @@ import Loading from '@hive/ui/components/loading';
 export default function UserNotifications() {
   const { username } = useSiteParams();
   const {
-    isLoading: accountNotificationIsLoading,
-    error: AccountNotificationError,
-    data: dataAccountNotification
+    isLoading,
+    error,
+    data
   } = useQuery(['accountNotification', username], () => getAccountNotifications(username), {
     enabled: !!username
   });
 
-  if (accountNotificationIsLoading) return <Loading loading={accountNotificationIsLoading} />;
+  if (isLoading) return <Loading loading={isLoading} />;
 
   return (
     <LayoutProfile>
       <div className="flex w-full flex-col">
-        <NotificationActivities data={dataAccountNotification} username={username} />
+        {data &&data.length>0?<NotificationActivities data={data} username={username} />: <div
+                key="empty"
+                className="px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm"
+              >
+                @{username} hasn&apos;t had any notifications yet.
+              </div>}
       </div>
     </LayoutProfile>
   );

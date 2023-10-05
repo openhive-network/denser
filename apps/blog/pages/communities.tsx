@@ -8,10 +8,11 @@ import CommunitiesList from "@/blog/components/communities-list";
 import Loading from "@hive/ui/components/loading";
 import ExploreHive from "@/blog/components/explore-hive";
 import { Icons } from "@hive/ui/components/icons";
+import { Separator } from "@ui/components";
 
 export default function CommunitiesPage() {
   const [sort, setSort] = useState("rank");
-  const [inputQuery, setInputQuery] = useState<string>();
+  const [inputQuery, setInputQuery] = useState<string>("");
   const [query, setQuery] = useState<string | null>();
   const {
     isLoading: communitiesDataIsLoading,
@@ -58,6 +59,7 @@ export default function CommunitiesPage() {
               <Input
                 type="search"
                 id="search"
+                value={inputQuery}
                 placeholder="Search..."
                 autoComplete="off"
                 className="bg-white dark:bg-background/95 dark:text-white block p-4 pl-10 text-sm rounded-full"
@@ -70,7 +72,12 @@ export default function CommunitiesPage() {
               handleChangeFilter={handleChangeFilter}
             />
           </div>
-          <CommunitiesList data={communitiesData} />
+          <Separator className="my-4" />
+          {communitiesData && communitiesData?.length > 0 ? (
+            <CommunitiesList data={communitiesData} />
+          ) : (
+            <div className="w-full py-4">No results for your search</div>
+          )}
         </div>
         <div className="hidden lg:flex xl:col-span-2">
           <ExploreHive />

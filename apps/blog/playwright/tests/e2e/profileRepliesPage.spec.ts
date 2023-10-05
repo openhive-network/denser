@@ -33,7 +33,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     expect(await commentListItemsBeforeLoadMore.length).toBe(20);
 
     await profilePage.page.keyboard.down('End');
-    await page.waitForSelector(await profilePage.page.locator('div > button').getByText('Load Newer')['_selector']);
+    await page.waitForTimeout(1000);
     const commentListItemsAfterScrollDown = await profilePage.repliesCommentListItem.all();
     expect(await commentListItemsAfterScrollDown.length).toBe(40);
   });
@@ -44,9 +44,11 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
 
     const firstCommentCardTitle: any = await profilePage.repliesCommentListItemTitle.first().textContent();
     const firstCommentCardDescription: any = await profilePage.repliesCommentListItemDescription.first().textContent();
-    await profilePage.repliesCommentListItemTitle.first().click();
+    const firstCommentCardDescriptionDots: any = await firstCommentCardDescription.replace(/\u2026/g, '');
+    await profilePage.repliesCommentListItemTitle.locator('a').first().click();
+    await profilePage.page.waitForSelector(profilePage.repliesCommentListItemArticleTitle['_selector']);
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
-    await expect(commentViewPage.getMainCommentContent).toContainText(firstCommentCardDescription);
+    await expect(commentViewPage.getMainCommentContent).toContainText(await firstCommentCardDescriptionDots);
   });
 
   test('move to the comment view page after clicking the card description', async ({ page }) => {
@@ -55,9 +57,10 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
 
     const firstCommentCardTitle: any = await profilePage.repliesCommentListItemTitle.first().textContent();
     const firstCommentCardDescription: any = await profilePage.repliesCommentListItemDescription.first().textContent();
+    const firstCommentCardDescriptionDots: any = await firstCommentCardDescription.replace(/\u2026/g, '');
     await profilePage.repliesCommentListItemDescription.locator('a').first().click();
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
-    await expect(commentViewPage.getMainCommentContent).toContainText(firstCommentCardDescription);
+    await expect(commentViewPage.getMainCommentContent).toContainText(firstCommentCardDescriptionDots);
   });
 
   test('move to the profile page after clicking avatar of the first comment card', async ({ page }) => {
@@ -98,12 +101,15 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await profilePage.gotoRepliesProfilePage('@gtg');
     await profilePage.profileRepliesTabIsSelected();
 
-    const firstCommendCardCommunityName: any = await profilePage.repliesCommentListItemCommunityLink.first().textContent();
+    const firstCommentCardCommunityName: any = await profilePage.repliesCommentListItemCommunityLink.first().textContent();
 
     await profilePage.repliesCommentListItemCommunityLink.first().click();
-    await expect(communityPage.communityNameTitle).toHaveText(firstCommendCardCommunityName);
-    await expect(communityPage.communityInfoSidebar.locator('h3')).toHaveText(firstCommendCardCommunityName);
-    await communityPage.validataCommunitiesPageIsLoaded(firstCommendCardCommunityName);
+    await expect(communityPage.communityNameTitle).toHaveText(firstCommentCardCommunityName);
+
+    if (await !firstCommentCardCommunityName.includes('#')){
+      await expect(communityPage.communityInfoSidebar.locator('h3')).toHaveText(firstCommentCardCommunityName);
+      await communityPage.validataCommunitiesPageIsLoaded(firstCommentCardCommunityName);
+    }
   });
 
   test('move to the comment view page after clicking timestamp link of the first comment card', async ({ page }) => {
@@ -112,9 +118,10 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
 
     const firstCommentCardTitle: any = await profilePage.repliesCommentListItemTitle.first().textContent();
     const firstCommentCardDescription: any = await profilePage.repliesCommentListItemDescription.first().textContent();
+    const firstCommentCardDescriptionDots: any = await firstCommentCardDescription.replace(/\u2026/g, '');
     await profilePage.repliesCommentListItemTimestamp.first().click();
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
-    await expect(commentViewPage.getMainCommentContent).toContainText(firstCommentCardDescription);
+    await expect(commentViewPage.getMainCommentContent).toContainText(firstCommentCardDescriptionDots);
   });
 
   test('move to the login page after clicking upvote of the first comment card', async ({ page }) => {
@@ -248,11 +255,12 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     const firstCommentCardRespond: any = await profilePage.repliesCommentListItemRespond.first();
     const firstCommentCardTitle: any = await profilePage.repliesCommentListItemTitle.first().textContent();
     const firstCommentCardDescription: any = await profilePage.repliesCommentListItemDescription.first().textContent();
+    const firstCommentCardDescriptionDots: any = await firstCommentCardDescription.replace(/\u2026/g, '');
 
     await firstCommentCardRespond.click();
 
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
-    await expect(commentViewPage.getMainCommentContent).toContainText(firstCommentCardDescription);
+    await expect(commentViewPage.getMainCommentContent).toContainText(firstCommentCardDescriptionDots);
   });
 
   test('validate styles and tooltips of response button', async ({ page }) => {

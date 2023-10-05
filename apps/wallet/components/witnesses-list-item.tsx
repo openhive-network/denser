@@ -101,7 +101,11 @@ function WitnessListItem({
             {data.rank < 10 ? `0${data.rank}` : data.rank}
           </span>
           <DialogLogin>
-            <div title="vote" className="group relative flex" data-testid="witness-vote">
+            <div
+              title="vote"
+              className="group relative flex"
+              data-testid="witness-vote"
+            >
               <span className="opocity-75 absolute inline-flex h-5 w-5 rounded-full bg-red-600 p-0 group-hover:animate-ping dark:bg-red-400"></span>
               <Icons.arrowUpCircle
                 viewBox="1.7 1.7 20.7 20.7"
@@ -177,6 +181,7 @@ function WitnessListItem({
                 replace
                 scroll={false}
                 data-testid="witness-highlight-link"
+                title="Use this for linking to this page and highlight the selected witness"
               >
                 <Icons.link className="h-[1em] w-[1em]" />
               </Link>

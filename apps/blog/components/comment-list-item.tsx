@@ -87,7 +87,7 @@ const CommentListItem = ({
                               alt={`${username} profile picture`}
                               loading="lazy"
                             />
-                            <UserHoverCard author={username} author_reputation={comment.author_reputation} />
+                            <UserHoverCard author={username} author_reputation={comment.author_reputation} blacklist={comment.blacklists}/>
                             {comment.author_title ? (
                               <Badge
                                 variant="outline"
