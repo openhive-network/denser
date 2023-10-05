@@ -1,0 +1,167 @@
+{
+  "global": {
+    "time": ""
+  },
+  "navigation": {
+    "main_nav_bar": {
+      "login": "Se connecter",
+      "sign_up": "S'inscrire"
+    },
+    "sidebar": {
+      "welcome": "Bienvenue",
+      "faq": "FAQ",
+      "vote_for_witnesses": "Voter pour les témoins",
+      "hive_proposals": "Hive Proposals",
+      "blocktrades": "Blocktrades",
+      "ionomy": "Ionomy",
+      "openhive_chat": "Salons de discussion Hive",
+      "apps_built_on_hive": "Apps Built on Hive",
+      "api_docs": "Documentation API sur Hive",
+      "hive_whitepaper": "Livre blanc sur le Hive",
+      "privacy_policy": "Politique de confidentialité",
+      "terms_of_service": "Conditions d'utilisation"
+    },
+    "profil_navbar": {
+      "blog": "Blog",
+      "rewards": "Gains",
+      "curation_rewards": "Gains de curation",
+      "author_rewards": "Gains éditoriaux",
+      "wallet": "Portefeuille"
+    },
+    "wallet_nav": {
+      "balances": "Soldes",
+      "delegations": "Delegations"
+    }
+  },
+  "select_sort": {
+    "sort_account_history": {
+      "filters": "Filters",
+      "rewards": "Gains",
+      "incoming": "Incoming",
+      "outgoing": "Outgoing",
+      "exclude_less_than_one": "Exclude less than 1 HBD/HIVE",
+      "input_title": "Search by user",
+      "input_placeholder": "username"
+    },
+    "sort_proposals": {
+      "status": "Status",
+      "all": "All",
+      "active": "Active",
+      "inactive": "Inactive",
+      "expired": "Expired",
+      "votable": "Votable",
+      "order_by": "Order by",
+      "creator": "Creator",
+      "start_date": "Start date",
+      "end_date": "End date",
+      "total_votes": "Total Votes"
+    }
+  },
+  "wallet_index": {
+    "title": "Hive wallet login",
+    "content": "Welcome to Hive's official Hive blockchain wallet. Use it to transfer Hive tokens, Power up, vote for Hive Witnesses and change your Hive profile details.",
+    "login_button": "Se connecter",
+    "card": {
+      "title": "Hive tokens",
+      "liquid_platform_token": "Liquid platform token",
+      "vesting_influence_token": "Vesting influence token",
+      "seeks_price_stability": "Seeks price stability with USD"
+    }
+  },
+  "profil": {
+    "joined": "Inscrit en",
+    "hive_description": "Des jetons négociables peuvent être transférés n'importe où à tout moment. HIVE peuvent être convertis en HIVE POWER lors d'un processus appelé conversion en influence, ou power up.",
+    "hp_description": "Jetons d'influence qui vous donnent plus de contrôle sur les gains potentiels des articles et vous permettent d'augmenter vos gains de curation. Une partie de votre influence, ou HIVE POWER, est actuellement déléguée. La délégation est un don pour augmenter l'influence ou pour encourager les nouveaux utilisateurs à effectuer des actions sur Hive. Le montant délégué peut varier. HIVE POWER increases at an APR of approximately 3.07%, subject to blockchain variance. {{link}}.",
+    "hive_dolar_description": "Tradeable tokens that may be transferred anywhere at anytime.",
+    "savings_title": "EPARGNE",
+    "savings_description": "Le solde dépend de la période de 3 jours d'attente requise pour les retraits. HBD interest rate: 20.00% APR (as voted by the {{link}})",
+    "estimated_account_value_title": "aleur estimée du compte",
+    "estimated_account_value_description": "La valeur estimée est basée sur la valeur moyenne de HIVE en dollars américains.",
+    "account_history_title": "HISTORIQUE",
+    "account_history_description": "Beware of spam and phishing links in transfer memos. Do not open links from users you do not trust. Do not provide your private keys to any third party websites. Transactions will not show until they are confirmed on the blockchain, which may take a few minutes.",
+    "account_history_list": {
+      "claim_reward_balance": {
+        "three_rewards": "Claim rewards: {{first_reward}}, {{second_reward}} and {{third_reward}}",
+        "two_rewards": "Claim rewards: {{first_reward}} and {{second_reward}}",
+        "one_reward": "Claim rewards: {{reward}}"
+      },
+      "transfer_to_savings": "Transfer to savings {{value}} to {{username}}",
+      "Received 0.008 HIVE from reward.app": "Received {{value}} from {{username}}"
+    }
+  },
+  "market_page": {
+    "last_price": "Dernier cours",
+    "volume": "Volume des dernières 24h",
+    "bid": "Offre",
+    "ask": "Demande",
+    "spread": "Ecart",
+    "buy_hive": "Acheter HIVE",
+    "sell_hive": "Vendre HIVE",
+    "price": "Prix",
+    "amount": "Montant",
+    "total": "Total",
+    "lowest_ask": "Demande au taux le plus bas",
+    "highest_bid": "Offre au taux le plus haut",
+    "buy_orders": "Ordres d'achat",
+    "sell_orders": "Ordres de vente",
+    "lower": "Plus bas",
+    "higher": "Plus haut",
+    "trade_history": "Historique des échanges",
+    "newer": "Plus récent",
+    "older": "Plus ancien"
+  },
+  "witnesses_page": {
+    "title": "Votes pour les témoins",
+    "you_have_votes_remaining": {
+      "zero": "Il ne vous reste plus de vote disponible",
+      "one": "Il vous reste 1 vote disponible",
+      "other": "Il vous reste {{value}} votes disponibles"
+    },
+    "you_can_vote_for_maximum_of_witnesses": "Vous pouvez voter pour un maximum de 30 témoins",
+    "witness_list_notes": "Notes: in the list below, the first 100 witnesses are unfiltered, this includes active and inactive witnesses. Past the rank of 100, witnesses will be filtered out of the list if they have not produced any block for the last 30 days.",
+    "rank": "Rank",
+    "witness": "Témoin",
+    "votes_received": "Votes received",
+    "price_feed": "Price feed",
+    "vote": "Voter",
+    "navigate_to_witness_profile": "Navigate to this user's profile",
+    "last_block": "Last block {{block}} ",
+    "just_now": "just now on {{value}}",
+    "recently": "recently {{value}}",
+    "witness_age": "Witness age: ",
+    "open_external_site": "external site",
+    "open_witness_annoucement": "article introductif pour le témoin",
+    "hp_required_to_rank_up": "Need {{value}} to level up",
+    "vote_description": "Si vous voulez voter pour un témoin en dehors du top 100, veuille entrer le nom du compte concerné ci-dessous afin de voter pour lui.",
+    "proxy_description": "Vous pouvez aussi donner une procuration à quelqu'un qui votera pour les témoins en votre nom. Cela annulera votre choix de témoins actuels.",
+    "set_proxy": "Donner une procuration",
+    "proxy_form": {
+      "title": "Confirm Account Witness Proxy",
+      "description": "You are about to remove your proxy.",
+      "cancel_button": "Annuler",
+      "ok": "OK"
+    }
+  },
+  "proposals_page": {
+    "proposals": "Proposals",
+    "started": "started",
+    "finished": "finished",
+    "not started": "not started",
+    "refund": "refund",
+    "burn": "burn",
+    "by": "par",
+    "for": "pour"
+  },
+  "login_form": {
+    "title": "Utilisateurs de retour: ",
+    "title_action_login": "Se connecter",
+    "title_action_login_to_vote": "S'identifier pour voter",
+    "username_placeholder": "Entrez votre nom d'utilisateur",
+    "password_placeholder": "Mot de passe ou WIF",
+    "use_hiveauth": "Use HiveAuth",
+    "keep_me_logged_in": "Gardez-moi connecté",
+    "more_login_methods": "plus de méthodes de connexion",
+    "login_button": "Se connecter",
+    "cancel_button": "Annuler"
+  }
+}

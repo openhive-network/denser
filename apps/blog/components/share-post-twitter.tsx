@@ -1,6 +1,8 @@
 import { Twitter } from 'lucide-react';
+import useTranslation from 'next-translate/useTranslation';
 
 export default function TwitterShare({ title, url }: { title: string; url: string }) {
+  const { t } = useTranslation('common_blog');
   const href = 'https://hive.blog' + url;
   const postTitle = title + ' — ' + 'Hive';
   const winWidth = 640;
@@ -16,7 +18,8 @@ export default function TwitterShare({ title, url }: { title: string; url: strin
     );
   };
   return (
-    <div className="cursor-pointer hover:text-red-600" onClick={openWindow} title="Share on Twitter">
+    <div className='cursor-pointer hover:text-red-600' onClick={openWindow}
+         title={t('post_content.footer.share_on') + ` Twitter`}>
       <Twitter />
     </div>
   );

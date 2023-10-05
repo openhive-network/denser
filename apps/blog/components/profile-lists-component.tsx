@@ -6,16 +6,18 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@h
 import clsx from 'clsx';
 import { FollowList } from '@/blog/lib/bridge';
 import { useState } from 'react';
+import useTranslation from 'next-translate/useTranslation';
 
 export default function ProfileLists({
-  username,
-  variant,
-  data
-}: {
+                                       username,
+                                       variant,
+                                       data
+                                     }: {
   username: string;
   variant: string;
   data: FollowList[] | undefined;
 }) {
+  const { t } = useTranslation('common_blog');
   const [page, setPage] = useState(0);
   const [filter, setFilter] = useState('');
   const filteredNames = data?.filter((value: FollowList) => {
@@ -39,59 +41,52 @@ export default function ProfileLists({
   }
   return (
     <ProfileLayout>
-      <div className="flex  flex-col items-center gap-4 p-4">
-        <Accordion type="single" collapsible className="w-1/3 text-center">
-          <AccordionItem value="item-1">
-            <AccordionTrigger className=" justify-center text-center text-xl ">
-              What Is This?
+      <div className='flex  flex-col items-center gap-4 p-4'>
+        <Accordion type='single' collapsible className='w-1/3 text-center'>
+          <AccordionItem value='item-1'>
+            <AccordionTrigger className=' justify-center text-center text-xl '>
+              {t('cards.user_profil.lists.list.what_is_this')}
             </AccordionTrigger>
             <AccordionContent>
-              This is the new decentralized list system. From here you can manage your own mute list or
-              blacklist, as well as subscribe to the mute lists and blacklists of other users. There are some
-              new fields on the{' '}
-              <Link href={`/@/settings`} className="text-red-600">
-                Settings
-              </Link>{' '}
-              page where you can set a description of how you choose who you&apos;ve added to your lists and
-              if there are any actions that account can take to get removed from them. You can see the
-              descriptions of the lists of other accounts by browsing directly to their personal blacklist or
-              mute list page. These links can be found on their profile page below the follower information.
-              To get started, we recommend that you follow the blacklists/mute lists of these accounts:
-              hive.blog
+              {t('cards.user_profil.lists.list.show_or_hide_descripton', {
+                settings_link: <Link href={`/@/settings`} className='text-red-600'>
+                  Settings
+                </Link>
+              })}
+
             </AccordionContent>
           </AccordionItem>
         </Accordion>
-        <h1 className="text-xl font-bold">
+        <h1 className='text-xl font-bold'>
           {variant === 'blacklisted'
-            ? `Accounts Blacklisted By ${username}`
+            ? t('cards.user_profil.lists.list.accounts_blacklisted_by', { username: username })
             : variant === 'muted'
-            ? `Accounts Muted  ${username}`
-            : variant === 'followedBlacklist'
-            ? 'Followed Blacklists'
-            : variant === 'followedMut'
-            ? 'Followed Muted Lists'
-            : null}
+              ? t('cards.user_profil.lists.list.accounts_muted_by', { username: username })
+              : variant === 'followedBlacklist'
+                ? t('cards.user_profil.lists.followed_blacklists')
+                : variant === 'followedMut'
+                  ? t('cards.user_profil.lists.followed_muted_lists')
+                  : null}
         </h1>
         <p
           className={clsx('text-center text-xs', {
             hidden: variant === 'followedBlacklist' || variant === 'followedMut'
           })}
         >
-          List Description: User hasn&apos;t added a description to their
-          {variant === 'blacklisted' ? ' blacklist' : variant === 'muted' ? ' mute list' : null} yet
+          {t('cards.user_profil.lists.list.list_description')}{t('cards.user_profil.lists.list.description_not_added')}
         </p>
-        <ul className="flex flex-col sm:w-1/3">
+        <ul className='flex flex-col sm:w-1/3'>
           {data && data.length === 0 ? (
-            <li className="bg-slate-200 p-4 text-center text-sm font-bold dark:bg-slate-900 ">
-              There are no users on this list yet
+            <li className='bg-slate-200 p-4 text-center text-sm font-bold dark:bg-slate-900 '>
+              {t('cards.user_profil.lists.list.empty_list')}
             </li>
           ) : splitArrays.length > 0 ? (
             splitArrays[page].map((e: FollowList) => (
               <li
                 key={e.name}
-                className="w-full p-1 font-semibold odd:bg-slate-200 even:bg-slate-100 dark:odd:bg-slate-800 dark:even:bg-slate-900"
+                className='w-full p-1 font-semibold odd:bg-slate-200 even:bg-slate-100 dark:odd:bg-slate-800 dark:even:bg-slate-900'
               >
-                <Link className="text-red-600 " href={`/@${e.name}`}>
+                <Link className='text-red-600 ' href={`/@${e.name}`}>
                   {e.name}
                 </Link>
                 {' ' + e.blacklist_description}
@@ -100,58 +95,58 @@ export default function ProfileLists({
           ) : null}
         </ul>
         {splitArrays.length > 1 ? (
-          <div className="flex gap-2">
-            <Button variant="outlineRed" disabled={page === 0} size="sm" onClick={() => setPage(0)}>
-              FIRST
+          <div className='flex gap-2'>
+            <Button variant='outlineRed' disabled={page === 0} size='sm' onClick={() => setPage(0)}>
+              {t('cards.user_profil.lists.list.first_button')}
             </Button>{' '}
-            <Button variant="outlineRed" disabled={page === 0} size="sm" onClick={() => setPage(page - 1)}>
-              PREVIOUS
+            <Button variant='outlineRed' disabled={page === 0} size='sm' onClick={() => setPage(page - 1)}>
+              {t('cards.user_profil.lists.list.previous_button')}
             </Button>
             <Button
-              variant="outlineRed"
+              variant='outlineRed'
               disabled={page === splitArrays.length - 1}
-              size="sm"
+              size='sm'
               onClick={() => setPage(page + 1)}
             >
-              NEXT
+              {t('cards.user_profil.lists.list.next_button')}
             </Button>
             <Button
-              variant="outlineRed"
+              variant='outlineRed'
               disabled={page === splitArrays.length - 1}
-              size="sm"
+              size='sm'
               onClick={() => setPage(splitArrays.length - 1)}
             >
-              LAST
+              {t('cards.user_profil.lists.list.last_button')}
             </Button>
           </div>
         ) : null}
         {splitArrays.length > 1 ? (
-          <div className="text-sm">
-            Viewing Page {page + 1} of {splitArrays.length}
+          <div className='text-sm'>
+            {t('cards.user_profil.lists.list.viewing_page', { current: page + 1, total: splitArrays.length })}
           </div>
         ) : null}
-        {data && data.length > 0 ? <div className="text-sm">Users On List: {data.length}</div> : null}
-        <h1 className="text-xl font-bold">Search This List</h1>
-        <div className="flex  justify-center bg-slate-200 p-2 dark:bg-slate-900 sm:w-1/3">
-          <Input onChange={(e) => onSearchChange(e.target.value)} className="bg-white sm:w-3/4"></Input>
+        {data && data.length > 0 ? <div
+          className='text-sm'>{t('cards.user_profil.lists.list.users_on_list', { number: data.length })}</div> : null}
+        <h1 className='text-xl font-bold'>{t('cards.user_profil.lists.list.search_this_list')}</h1>
+        <div className='flex  justify-center bg-slate-200 p-2 dark:bg-slate-900 sm:w-1/3'>
+          <Input onChange={(e) => onSearchChange(e.target.value)} className='bg-white sm:w-3/4'></Input>
         </div>
-        <div className="flex flex-col items-center gap-2">
-          <h1 className="text-xl font-bold">Reset Options</h1>
-          <div className="flex gap-2">
-            <Button size="sm" variant="outlineRed" className="text-xs">
-              RESET
+        <div className='flex flex-col items-center gap-2'>
+          <h1 className='text-xl font-bold'>{t('cards.user_profil.lists.list.reset_options')}</h1>
+          <div className='flex gap-2'>
+            <Button size='sm' variant='outlineRed' className='text-xs'>
               {variant === 'blacklisted'
-                ? ' BLACKLIST'
+                ? t('cards.user_profil.lists.list.reset_blacklist')
                 : variant === 'muted'
-                ? ' MUTED LIST'
-                : variant === 'followedBlacklist'
-                ? ' FOLLOWED BLACKLISTS'
-                : variant === 'followedMut'
-                ? ' FOLLOWED MUTED LISTS'
-                : null}
+                  ? t('cards.user_profil.lists.list.reset_muted_list')
+                  : variant === 'followedBlacklist'
+                    ? t('cards.user_profil.lists.list.reset_followed_blacklists')
+                    : variant === 'followedMut'
+                      ? t('cards.user_profil.lists.list.reset_followed_muted_list')
+                      : null}
             </Button>
-            <Button disabled size="sm" className="text-xs">
-              RESET ALL FOLLOWS/LISTS
+            <Button disabled size='sm' className='text-xs'>
+              {t('cards.user_profil.lists.list.reset_all_lists')}
             </Button>
           </div>
         </div>

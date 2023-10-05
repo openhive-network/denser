@@ -23,6 +23,7 @@ import { useInView } from "react-intersection-observer";
 import CustomError from "@/blog/components/custom-error";
 import CommunitySimpleDescription from "@/blog/components/community-simple-description";
 import { CommunitiesSelect } from "@/blog/components/communities-select";
+import useTranslation from "next-translate/useTranslation";
 
 export const PostSkeleton = () => {
   return (
@@ -38,6 +39,7 @@ export const PostSkeleton = () => {
 
 const ParamPage: FC = () => {
   const router = useRouter();
+  const { t } = useTranslation("common_blog")
   const { sort, username, tag } = useSiteParams();
   const { ref, inView } = useInView();
   const { ref: refAcc, inView: inViewAcc } = useInView();
@@ -214,7 +216,7 @@ const ParamPage: FC = () => {
                       ? communityData
                         ? `${communityData?.title}`
                         : `#${tag}`
-                      : "All posts"}
+                      : t('navigation.communities_nav.all_posts')}
                   </span>
                   {tag ? (
                     <span
@@ -235,7 +237,7 @@ const ParamPage: FC = () => {
                           ? communityData
                             ? `${communityData?.title}`
                             : `#${tag}`
-                          : "All posts"
+                          : t('navigation.communities_nav.all_posts')
                       }
                     />
                   </span>

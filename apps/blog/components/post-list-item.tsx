@@ -29,6 +29,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { Entry } from "@/blog/lib/bridge";
 import PostImage from "./post-img";
+import useTranslation from "next-translate/useTranslation";
 
 const PostListItem = ({
   post,
@@ -39,6 +40,7 @@ const PostListItem = ({
   sort: string | undefined | null;
   isCommunityPage: boolean | undefined;
 }) => {
+  const { t } = useTranslation("common_blog")
   const [reveal, setReveal] = useState(
     post.json_metadata?.tags && post.json_metadata?.tags.includes("nsfw")
   );
@@ -88,7 +90,7 @@ const PostListItem = ({
               >
                 {post.reblogged_by[0]}
               </Link>{" "}
-              reblogged
+              {t('cards.reblogged')}
             </span>
           </div>
         ) : null}
@@ -115,7 +117,7 @@ const PostListItem = ({
                   <TooltipTrigger data-testid="post-author-reputation">
                     ({accountReputation(post.author_reputation)})
                   </TooltipTrigger>
-                  <TooltipContent data-testid="post-reputation-tooltip">Reputation</TooltipContent>
+                  <TooltipContent data-testid="post-reputation-tooltip">{t('cards.post_card.reputation_title')}</TooltipContent>
                 </Tooltip>
               </TooltipProvider>
               {post.blacklists && post.blacklists[0] ? (
@@ -150,7 +152,7 @@ const PostListItem = ({
               <span className="flex items-center text-xs md:text-sm">
                 {!isCommunityPage ? (
                   <>
-                    &nbsp;in&nbsp;
+                    &nbsp;{t('cards.post_card.in')}&nbsp;
                     {post.community ? (
                       <Link
                         href={`/trending/${post.community}`}
@@ -202,7 +204,7 @@ const PostListItem = ({
                       href={`/${post.category}/@${post.author}/${post.permlink}`}
                       data-testid="post-pinned-tag"
                     >
-                      Pinned
+                      {t('cards.badges.pinned')}
                     </Link>
                   </Badge>
                 ) : null}
@@ -278,7 +280,7 @@ const PostListItem = ({
                         </DialogLogin>
                       </TooltipTrigger>
                       <TooltipContent data-testid="upvote-button-tooltip">
-                        Upvote
+                        {t('cards.post_card.upvote')}
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -290,7 +292,7 @@ const PostListItem = ({
                         </DialogLogin>
                       </TooltipTrigger>
                       <TooltipContent data-testid="downvote-button-tooltip">
-                        Downvote
+                        {t('cards.post_card.downvote')}
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -325,12 +327,11 @@ const PostListItem = ({
                       </TooltipTrigger>
                       <TooltipContent data-testid="post-card-votes-tooltip">
                         <p>
-                          {post.stats && post.stats.total_votes > 0
-                            ? post.stats.total_votes
-                            : "no"}
+                          {post.stats && post.stats.total_votes === 0
+                            && t('cards.post_card.no_votes')}
                           {post.stats && post.stats.total_votes > 1
-                            ? " votes"
-                            : " vote"}
+                            ? t('cards.post_card.votes', { value: post.stats.total_votes})
+                            : t('cards.post_card.vote')}
                         </p>
                       </TooltipContent>
                     </Tooltip>
@@ -362,11 +363,11 @@ const PostListItem = ({
                       <TooltipContent data-testid="post-card-responses">
                         <p>{` ${
                           post.children === 0
-                            ? "No responses"
+                            ? t('cards.post_card.no_responses')
                             : post.children === 1
-                            ? post.children + " response"
-                            : post.children + " responses"
-                        }. Click to respond`}</p>
+                            ? t('cards.post_card.response')
+                            : t('cards.post_card.responses', { value: post.children})
+                        }. `}{t('cards.post_card.click_to_respond')}</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -386,7 +387,7 @@ const PostListItem = ({
                         </TooltipTrigger>
                         <TooltipContent data-testid="post-card-reblog-tooltip">
                           <p>
-                            Reblog @{post.author}/{post.permlink}
+                            {t('cards.post_card.reblog')} @{post.author}/{post.permlink}
                           </p>
                         </TooltipContent>
                       </Tooltip>

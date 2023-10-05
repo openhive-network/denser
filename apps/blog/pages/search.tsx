@@ -11,11 +11,13 @@ import {
 import { Icons } from "@hive/ui/components/icons";
 import { useRouter } from "next/router";
 import { useState, KeyboardEvent } from "react";
+import useTranslation from "next-translate/useTranslation";
 
 export default function SearchPage() {
   const router = useRouter()
+  const { t } = useTranslation("common_blog")
   const [sort, setSort] = useState("newest")
-  const [input, setInput] =useState('')
+  const [input, setInput] = useState('')
   const handleEnter = (event:KeyboardEvent<HTMLInputElement>)=>{
     if (event.key === 'Enter') {
     router.push(`/search?q=${input}&s=${sort}`)
@@ -52,9 +54,9 @@ export default function SearchPage() {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectItem value="newest">Newest</SelectItem>
-            <SelectItem value="popularity">Popularity</SelectItem>
-            <SelectItem value="relevance">Relevance</SelectItem>
+            <SelectItem value="newest">{t('select_sort.search_sorter.newest')}</SelectItem>
+            <SelectItem value="popularity">{t('select_sort.search_sorter.popularity')}</SelectItem>
+            <SelectItem value="relevance">{t('select_sort.search_sorter.relevance')}</SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>

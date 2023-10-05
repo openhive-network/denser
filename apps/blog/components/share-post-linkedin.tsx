@@ -1,6 +1,8 @@
 import { Linkedin } from 'lucide-react';
+import useTranslation from 'next-translate/useTranslation';
 
 export default function LinkedInShare({ title, url }: { title: string; url: string }) {
+  const { t } = useTranslation('common_blog');
   const winWidth = 720;
   const winHeight = 480;
   const winTop = 0;
@@ -19,7 +21,8 @@ export default function LinkedInShare({ title, url }: { title: string; url: stri
   };
 
   return (
-    <div className="cursor-pointer hover:text-red-600" onClick={openWindow} title="Share on LinkedIn">
+    <div className='cursor-pointer hover:text-red-600' onClick={openWindow}
+         title={t('post_content.footer.share_on') + ` LinkedIn`}>
       <Linkedin />
     </div>
   );

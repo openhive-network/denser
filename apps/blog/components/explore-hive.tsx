@@ -3,70 +3,72 @@ import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/ca
 import { FC } from 'react';
 import Link from 'next/link';
 import { Icons } from '@hive/ui/components/icons';
+import useTranslation from 'next-translate/useTranslation';
 
 const ExploreHive: FC = () => {
+  const { t } = useTranslation('common_blog');
   return (
     <Card
       className={cn('my-4 hidden h-fit w-auto flex-col px-8 dark:bg-background/95 dark:text-white md:flex')}
     >
-      <CardHeader className="px-0 py-4">
-        <CardTitle>Explore Hive</CardTitle>
+      <CardHeader className='px-0 py-4'>
+        <CardTitle>{t('navigation.explore_nav.explore_hive')}</CardTitle>
       </CardHeader>
       <CardContent>
-        <ul className="space-y-1 pb-4 font-light">
+        <ul className='space-y-1 pb-4 font-light'>
           <li>
             <Link
-              href="https://hive.io"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center text-red-600 hover:cursor-pointer"
+              href='https://hive.io'
+              target='_blank'
+              rel='noopener noreferrer'
+              className='flex items-center text-red-600 hover:cursor-pointer'
             >
-              What is Hive?
-              <Icons.externalLink className="ml-1 h-4 w-4 text-black" />
+              {t('navigation.explore_nav.what_is_hive')}
+              <Icons.externalLink className='ml-1 h-4 w-4 text-black' />
             </Link>
           </li>
           <li>
             <Link
-              href="https://hivedapps.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center text-red-600 hover:cursor-pointer"
+              href='https://hivedapps.com/'
+              target='_blank'
+              rel='noopener noreferrer'
+              className='flex items-center text-red-600 hover:cursor-pointer'
             >
-              Hive dApps
-              <Icons.externalLink className="ml-1 h-4 w-4 text-black" />
+              {t('navigation.explore_nav.hive_dapps')}
+              <Icons.externalLink className='ml-1 h-4 w-4 text-black' />
             </Link>
           </li>
           <li>
             <Link
-              href="https://hiveblocks.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center text-red-600 hover:cursor-pointer"
+              href='https://hiveblocks.com/'
+              target='_blank'
+              rel='noopener noreferrer'
+              className='flex items-center text-red-600 hover:cursor-pointer'
             >
-              Blockexplorer
-              <Icons.externalLink className="ml-1 h-4 w-4 text-black" />
+              {t('navigation.explore_nav.blockexplorer')}
+              <Icons.externalLink className='ml-1 h-4 w-4 text-black' />
             </Link>
           </li>
           <li>
             <Link
-              href="http://localhost:4000/~witnesses"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center text-red-600 hover:cursor-pointer"
+              href='http://localhost:4000/~witnesses'
+              target='_blank'
+              rel='noopener noreferrer'
+              className='flex items-center text-red-600 hover:cursor-pointer'
             >
-              Vote for Witnesses
-              <Icons.externalLink className="ml-1 h-4 w-4 text-black" />
+              {t('navigation.explore_nav.vote_for_witnesses')}
+              <Icons.externalLink className='ml-1 h-4 w-4 text-black' />
             </Link>
           </li>
           <li>
             <Link
-              href="http://localhost:4000/proposals"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center text-red-600 hover:cursor-pointer"
+              href='http://localhost:4000/proposals'
+              target='_blank'
+              rel='noopener noreferrer'
+              className='flex items-center text-red-600 hover:cursor-pointer'
             >
-              Hive Proposals
-              <Icons.externalLink className="ml-1 h-4 w-4 text-black" />
+              {t('navigation.explore_nav.hive_proposals')}
+              <Icons.externalLink className='ml-1 h-4 w-4 text-black' />
             </Link>
           </li>
         </ul>

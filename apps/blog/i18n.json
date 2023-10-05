@@ -1,0 +1,19 @@
+{
+  "locales": [
+    "en",
+    "es",
+    "fr",
+    "it",
+    "ja",
+    "ko",
+    "pl",
+    "ru",
+    "zh"
+  ],
+  "defaultLocale": "en",
+  "pages": {
+    "*": [
+      "common_blog"
+    ]
+  }
+}

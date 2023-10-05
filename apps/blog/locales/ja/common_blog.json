@@ -1,0 +1,261 @@
+{
+  "global": {
+    "time": ""
+  },
+  "navigation": {
+    "main_nav_bar": {
+      "posts": "投稿数",
+      "proposals": "Proposals",
+      "witnesses": "証人",
+      "out_dapps": "Our dApps",
+      "login": "ログイン",
+      "sign_up": "登録",
+      "search": "検索..."
+    },
+    "sidebar": {
+      "welcome": "ようこそ",
+      "stolen_account_recovery": "盗難アカウントの回復",
+      "change_account_password": "パスワードの変更",
+      "vote_for_witnesses": "証人に投票する",
+      "faq": "FAQ",
+      "hive_proposals": "Hive Proposals",
+      "openhive_chat": "Hiveチャット",
+      "developer_portal": "Hive API資料",
+      "hive_whitepaper": "Hiveホワイトペーパー",
+      "privacy_policy": "プライバシーポリシー",
+      "terms_of_service": "利用規約"
+    },
+    "communities_nav": {
+      "all_posts": "All posts",
+      "trending_communities": "Trending Communities",
+      "explore_communities": "すべてのタグを見る"
+    },
+    "explore_nav": {
+      "explore_hive": "Explore Hive",
+      "what_is_hive": "What is Hive",
+      "hive_dapps": "Hive dApps",
+      "blockexplorer": "Blockexplorer",
+      "vote_for_witnesses": "証人に投票する",
+      "hive_proposals": "Hive Proposals"
+    },
+    "profil_navbar": {
+      "blog": "ブログ",
+      "posts": "投稿数",
+      "replies": "返信",
+      "social": "Social",
+      "notifications": "Notifications",
+      "wallet": "ウォレット"
+    },
+    "profil_posts_tab_navbar": {
+      "posts": "投稿数",
+      "comments": "コメント",
+      "payouts": "支払額"
+    },
+    "profil_social_tab_navbar": {
+      "badges": "Badges",
+      "activity": "Activity",
+      "personal": "Personal",
+      "meetups": "Meetups",
+      "challenges": "Challenges"
+    },
+    "profil_notifications_tab_navbar": {
+      "all": "All",
+      "replies": "返信",
+      "mentions": "Mentions",
+      "follows": "Follows",
+      "upvotes": "Upvotes",
+      "reblogs": "Reblogs"
+    }
+  },
+  "select_sort": {
+    "posts_sort": {
+      "trending": "トレンド",
+      "hot": "ホット",
+      "new": "新着",
+      "payouts": "支払額",
+      "muted": "Muted"
+    },
+    "sort_comments": {
+      "trending": "トレンド",
+      "votes": "投票数",
+      "age": "日時"
+    },
+    "search_sorter": {
+      "newest": "Newest",
+      "popularity": "Popularity",
+      "relevance": "Relevance"
+    }
+  },
+  "cards": {
+    "reblogged": "Reblogしました",
+    "badges": {
+      "pinned": "Pinned"
+    },
+    "post_card": {
+      "reputation_title": "評価",
+      "in": "in",
+      "upvote": "Upvote",
+      "downvote": "Downvote",
+      "no_votes": "投票がありません",
+      "vote": "1件の投票",
+      "votes": "{{votes}}件の投票",
+      "no_responses": "返信がありません。",
+      "response": "返信は1件です。",
+      "responses": " 返信は%{{responses}}件です。",
+      "click_to_respond": "返信するにはクリックしてください。",
+      "reblog": "Reblog"
+    }
+  },
+  "amount_hover_card": {
+    "pending_payout_amount": "保留支払額 ${{value}}",
+    "breakdown": "Breakdown:",
+    "payout_in": "Payout in",
+    "past_payouts": "支払い済み ${{value}}",
+    "author": "投稿者 ${{value}}",
+    "curators": "キュレーター ${{value}}"
+  },
+  "login_form": {
+    "title": "再",
+    "title_action_login": "ログイン",
+    "title_action_login_to_vote": "ログインして投票します",
+    "username_placeholder": "ユーザー名を入力してください",
+    "password_placeholder": "パスワードまたはWIF",
+    "use_hiveauth": "Use HiveAuth",
+    "keep_me_logged_in": "ログイン状態を維持する",
+    "more_login_methods": "その他のログイン方法",
+    "login_button": "ログイン",
+    "cancel_button": "キャンセル"
+  },
+  "user_profil": {
+    "reputation": "評価",
+    "follow_button": "フォロー",
+    "hive_buzz_badge_title": "This is {{username}}'s level badged earned from Hivebuzz programs",
+    "twitter_badge_title": "To get the Twitter badge, link your account at HivePosh.com",
+    "joined": "登録年月：",
+    "active": "アクティブ",
+    "lists": {
+      "follower_count": {
+        "zero": "フォロワーがいません",
+        "one": "1人のフォロワー",
+        "other": "{{value}}人のフォロワー"
+      },
+      "followed_count": {
+        "zero": "誰もフォローしていません",
+        "one": "1人をフォロー中",
+        "other": "{{value}}人をフォロー中"
+      },
+      "post_count": {
+        "zero": "投稿がありません",
+        "one": "投稿1件",
+        "other": "投稿{{value}} 件"
+      },
+      "blacklisted_users": "Blacklisted Users",
+      "muted_users": "ミュートユーザー",
+      "followed_blacklists": "Followed Blacklists",
+      "followed_muted_lists": "Followed Muted Lists",
+      "followers_pages": "Followers page {{current}} from {{total}}",
+      "followed_pages": "Followed page {{current}} from {{totaol}}",
+      "list": {
+        "what_is_this": "What Is This?",
+        "show_or_hide_descripton": "This is the new decentralized list system. From here you can manage your own mute list or blacklist, as well as subscribe to the mute lists and blacklists of other users. There are some new fields on the {{settings_link}} page where you can set a description of how you choose who you've added to your lists and if there are any actions that account can take to get removed from them. You can see the descriptions of the lists of other accounts by browsing directly to their personal blacklist or mute list page. These links can be found on their profile page below the follower information. To get started, we recommend that you follow the blacklists/mute lists of these accounts: hive.blog",
+        "list_description": "List Description: ",
+        "description_not_added": "User hasn't added a description to their blacklist yet",
+        "empty_list": "There are no users on this list yet",
+        "search_this_list": "Search This List",
+        "accounts_blacklisted_by": "Accounts Blacklisted By {{username}}",
+        "accounts_muted_by": "Accounts Muted By {{username}}",
+        "reset_options": "Reset Options",
+        "reset_blacklist": "Reset Blacklist",
+        "reset_muted_list": "Reset Muted List",
+        "reset_followed_blacklists": "Reset Followed Blacklists",
+        "reset_followed_muted_list": "Reset Followed Muted Lists",
+        "reset_all_lists": "Reset All Follows/Lists",
+        "busy_button": "BUSY, PLEASE WAIT",
+        "first_button": "First",
+        "previous_button": "Previous",
+        "next_button": "Next",
+        "last_button": "Last",
+        "viewing_page": "Viewing Page {{current}} of {{total}}",
+        "users_on_list": "Users On List: {{number}}"
+      }
+    },
+    "social_tab": {
+      "community_subscriptions_title": "Community Subscriptions",
+      "the_author_has_subscribed_to_the_following": "The author has subscribed to the following Hive Communities",
+      "badges_and_achievements_title": "Badges and achievements",
+      "these_are_badges_received_by_the_author": "These are badges received by the author via the third-party apps {{peakd}} & {{hivebuzz}}."
+    },
+    "notifications_tab": {
+      "voted_on_your_post": "@{{username}} voted on your post {{amount}}",
+      "replied_on_your_post": "@{{username}} replied to your post",
+      "replied_to_your_comment": "@{{username}} replied to your comment",
+      "reblogged_on_your_post": "@{{username}} reblogged your post",
+      "followed_you": "@{{username}} followed you",
+      "mentioned_you_and_others": "@{{username}} mentioned you and {{others}} others",
+      "subscribed_to": "@{{username}} subscribed to {{community}}"
+    }
+  },
+  "communities": {
+    "latest_subscribers": "Latest {{username}} Subscribers",
+    "buttons": {
+      "subscribe": "Subscribe",
+      "new_post": "New post",
+      "activity_log": "Activity Log",
+      "subscribers": "subscribers"
+    },
+    "titles": {
+      "pending_rewards": "pending rewards",
+      "active_posters": "active posters",
+      "leadership": "Leadership",
+      "description": "Description",
+      "rules": "Rules",
+      "language": "Language"
+    }
+  },
+  "post_content": {
+    "in": "in",
+    "reputation_title": "評価",
+    "if_comment": {
+      "you_are_viewing_a_single_comments_thread_from": "次のスレッドのコメントの1つを表示しています",
+      "view_the_full_context": "スレッドをすべて表示する",
+      "view_the_direct_parent": "親コメントを表示する"
+    },
+    "header": {
+      "hover_author": {
+        "follow_button": "フォロー",
+        "followers": "フォロワー",
+        "following": "Following",
+        "joined": "登録年月："
+      },
+      "edited": "edited"
+    },
+    "footer": {
+      "by": "by",
+      "upvote": "Upvote",
+      "downvote": "Downvote",
+      "no_votes": "投票がありません",
+      "vote": "1件の投票",
+      "votes": "{{votes}}件の投票",
+      "no_responses": "返信がありません。",
+      "response": "返信は1件です。",
+      "responses": " 返信は%{{responses}}件です。",
+      "reblog": "Reblog",
+      "reply": "返信",
+      "share_on": "Share on ",
+      "share_form": {
+        "copy": "コピー",
+        "copied": "コピーしました！!",
+        "share_this_link": "Share this post",
+        "url_to_this_post": "URL to this post:",
+        "markdown_code_for_a_link_to_this_post": "Markdown code for a link to this post:",
+        "open_in_alternative": "Open in alternative Hive dApps",
+        "open_in": "Open in Block Explorers"
+      }
+    }
+  },
+  "search_page": {
+    "placeholder": "検索",
+    "no_results": "Nothing was found.",
+    "error": "There was an error"
+  }
+}

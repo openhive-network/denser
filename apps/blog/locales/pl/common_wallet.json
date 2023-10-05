@@ -1,0 +1,167 @@
+{
+  "global": {
+    "time": ""
+  },
+  "navigation": {
+    "main_nav_bar": {
+      "login": "Zaloguj się",
+      "sign_up": "Zapisz się"
+    },
+    "sidebar": {
+      "welcome": "Witaj",
+      "faq": "FAQ",
+      "vote_for_witnesses": "Głosuj na delegatów",
+      "hive_proposals": "Hive, Propozycje",
+      "blocktrades": "Blocktrades",
+      "ionomy": "Ionomy",
+      "openhive_chat": "Hive Czat",
+      "apps_built_on_hive": "Aplikacje Hive",
+      "developer_portal": "Dokumentacja Hive API",
+      "hive_whitepaper": "Oficjalna księga Hive",
+      "privacy_policy": "Polityka prywatności",
+      "terms_of_service": "Warunki korzystania z usługi"
+    },
+    "profil_navbar": {
+      "blog": "Blog",
+      "rewards": "Nagrody",
+      "curation_rewards": "Wynagrodzenia kuratorskie",
+      "author_rewards": "Wynagrodzenia autorskie",
+      "wallet": "Portfel"
+    },
+    "wallet_nav": {
+      "balances": "Salda",
+      "delegations": "Delegacje"
+    }
+  },
+  "select_sort": {
+    "sort_account_history": {
+      "filters": "Filtry",
+      "rewards": "Nagrody",
+      "incoming": "Przychodzące",
+      "outgoing": "Wychodzące",
+      "exclude_less_than_one": "Nie pokazuj mniej niż 1 HBD/HIVE",
+      "input_title": "Szukaj po użytkownikach",
+      "input_placeholder": "Nazwa użytkownika"
+    },
+    "sort_proposals": {
+      "status": "Status",
+      "all": "Wszystkie",
+      "active": "Aktywne",
+      "inactive": "Nieaktywne",
+      "expired": "Wygasłe",
+      "votable": "Dostępne",
+      "order_by": "Sortuj po",
+      "creator": "Twórcy",
+      "start_date": "Data startu",
+      "end_date": "Data zakończenia",
+      "total_votes": "Suma głosów"
+    }
+  },
+  "wallet_index": {
+    "title": "Zaloguj się do portfela Hive",
+    "content": "Witaj w oficialnym portfelu Hive blockchain. Użyj go do transferowaniam tokenów, wzmacniania, głosowania na delegatów i zmień detale swojego profilu.",
+    "login_button": "Zaloguj się",
+    "card": {
+      "title": "Tokeny Hive",
+      "liquid_platform_token": "Liquid platform token",
+      "vesting_influence_token": "Vesting influence token",
+      "seeks_price_stability": "Seeks price stability with USD"
+    }
+  },
+  "profil": {
+    "joined": "Dołączono",
+    "hive_description": "Zbywalne tokeny które mogą być przesłane gdziekolwiek w dowolnym momencie. HIVE mogą zostać również przekonwertowane na HIVE POWER w procesie nazywanym zwiększenie mocy.",
+    "hp_description": "Tokeny wpływu, które zwiększają Twój wpływ na podział wypłat za publikowanie treści, oraz pozwalają Ci zarabiać na głosowaniu na treści. Część z Twoich jednostek wpływu HIVE POWER jest Ci oddelegowana. Delegowane jednostek to czasowe użyczenie dla zwiększenia wpływu lub by pomóc nowym użytkownikom platformy w korzystaniu ze Hive. Kwota oddelegowanych jednostek może się zmieniać w czasie. HIVE POWER increases at an APR of approximately 3.07%, subject to blockchain variance. {{link}}.",
+    "hive_dolar_description": "Zbywalne tokeny które mogą być przesłane gdziekolwiek w dowolnym momencie.",
+    "savings_title": "Oszczędności",
+    "savings_description": "Saldo zależy od 3-dniowego okresu karencji wymaganego do wycofania środków, HBD interest rate: 20.00% APR (as voted by the {{link}})",
+    "estimated_account_value_title": "Szacowana wartość konta",
+    "estimated_account_value_description": "Szacowana wartość bazuje na średniej cenie tokenu HIVE w dolarach amerykańskich.",
+    "account_history_title": "Historia",
+    "account_history_description": "Beware of spam and phishing links in transfer memos. Do not open links from users you do not trust. Do not provide your private keys to any third party websites. Transactions will not show until they are confirmed on the blockchain, which may take a few minutes.",
+    "account_history_list": {
+      "claim_reward_balance": {
+        "three_rewards": "Zdobył nagrody: {{first_reward}}, {{second_reward}} i {{third_reward}}",
+        "two_rewards": "Zdobył nagrody: {{first_reward}} aind {{second_reward}}",
+        "one_reward": "Zdobył nagrode: {{reward}}"
+      },
+      "transfer_to_savings": "Przelał {{value}} do {{username}}",
+      "Received 0.008 HIVE from reward.app": "Otrzymał {{value}} od {{username}}"
+    }
+  },
+  "market_page": {
+    "last_price": "Ostatnia cena",
+    "volume": "Wolumen 24h",
+    "bid": "Oferty kupna (BID)",
+    "ask": "Oferty sprzedaży (ASK)",
+    "spread": "Spread",
+    "buy_hive": "Kup HIVE",
+    "sell_hive": "Sprzedaj HIVE",
+    "price": "Cena",
+    "amount": "Liczba",
+    "total": "Razem",
+    "lowest_ask": "Najniższa oferta sprzedaży (ASK)",
+    "highest_bid": "Najwyższa oferta kupna (BID)",
+    "buy_orders": "Oferty zakupu",
+    "sell_orders": "Oferty sprzedaży",
+    "lower": "Niżej",
+    "higher": "Wyżej",
+    "trade_history": "Historia transakcji",
+    "newer": "Nowsze",
+    "older": "Starsze"
+  },
+  "witnesses_page": {
+    "title": "Głosowanie na delegatów",
+    "you_have_votes_remaining": {
+      "zero": "Nie masz już więcej głosów",
+      "one": "Pozostał ci 1 głos",
+      "other": "Pozostało ci {{value}} głosów"
+    },
+    "you_can_vote_for_maximum_of_witnesses": "Możesz głosować co najwyżej na 30 delegatów",
+    "witness_list_notes": "Na poniższej liście znajduje sie 100 pierwszych delegatów, aktywnych jak również nieaktywnych. Każdy delegat powyżej 100 pozycji jest filtrowany i nie wyświetlany jeśli nie wyprodukował bloku w ostatnich 30 dniach.",
+    "rank": "Ranking",
+    "witness": "Delegaci",
+    "votes_received": "Otrzymane głosy",
+    "price_feed": "Price feed",
+    "vote": "Zagłosuj",
+    "navigate_to_witness_profile": "Przejdż do profilu tego użytkownika",
+    "last_block": "Ostatni blok {{block}} ",
+    "just_now": "przed chwilą na {{value}}",
+    "recently": "ostatnio {{value}}",
+    "witness_age": "Wiek konta: ",
+    "open_external_site": "Witryna zewnętrzna",
+    "open_witness_annoucement": "Wątek delegata",
+    "hp_required_to_rank_up": "Potrzebuje {{value}} do awansu",
+    "vote_description": "Jeśli chcesz zagłosować na delegata spoza pierwszej 100, podaj nazwę konta na które chcesz oddać głos.",
+    "proxy_description": "Możesz również wybrać pełnomocnika, który zagłosuje na delegatów za ciebie. Wybór pełnomocnika wyczyści twoje bieżące głosy.",
+    "set_proxy": "Ustaw pełnomocnika",
+    "proxy_form": {
+      "title": "Potwierdź pełnomocnika",
+      "description": "Usuwasz pełnomocnictwo.",
+      "cancel_button": "Zamknij",
+      "ok": "OK"
+    }
+  },
+  "proposals_page": {
+    "proposals": "Propozycje",
+    "started": "rozpoczęte",
+    "finished": "zakończone",
+    "not started": "nie rozpoczęte",
+    "refund": "zrefundowane",
+    "burn": "spalone",
+    "by": "przez",
+    "for": "dla"
+  },
+  "login_form": {
+    "title": "Powracający: ",
+    "title_action_login": "Zaloguj się",
+    "title_action_login_to_vote": "Zaloguj się, aby zagłosować",
+    "username_placeholder": "Podaj nazwę użytkownika",
+    "password_placeholder": "Hasło lub WIF",
+    "use_hiveauth": "Użyj HiveAuth",
+    "keep_me_logged_in": "Nie wylogowuj mnie",
+    "more_login_methods": "więcej metod logowania",
+    "login_button": "Zaloguj się",
+    "cancel_button": "Anuluj"
+  }
+}
