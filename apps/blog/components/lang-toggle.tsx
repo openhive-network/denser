@@ -8,25 +8,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@hive/ui/components/dropdown-menu';
-import { useContext, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useContext } from 'react';
 import { LangContext } from '@/blog/components/common/providers';
-
-
-function usePersistLocaleCookie() {
-  const { locale, defaultLocale } = useRouter();
-
-  useEffect(persistLocaleCookie, [locale, defaultLocale]);
-
-  function persistLocaleCookie() {
-    if (locale !== defaultLocale) {
-      const date = new Date();
-      const expireMs = 100 * 24 * 60 * 60 * 1000; // 100 days
-      date.setTime(date.getTime() + expireMs);
-      document.cookie = `NEXT_LOCALE=${locale};expires=${date.toUTCString()};path=/`;
-    }
-  }
-}
 
 export function LangToggle() {
   const [lang, setLang] = useContext(LangContext);

@@ -13,8 +13,7 @@ import { getDoubleSize, proxifyImageUrl } from '@hive/ui/lib/old-profixy';
 import {
   AccountNotification,
   Community,
-  Subscription,
-  getAccountNotifications
+  Subscription
 } from '@/blog/lib/bridge';
 import { SubsListDialog } from './subscription-list-dialog';
 import { ActivityLogDialog } from './activity-log-dialog';
@@ -79,7 +78,7 @@ const CommunityDescription = ({
                 data-testid='community-subscribers'
               >
                 {data.subscribers}
-                <span className='text-center text-xs'>{t('cards.communities.buttons.subscribers')}</span>
+                <span className='text-center text-xs'>{t('communities.buttons.subscribers')}</span>
               </div>
             </SubsListDialog>
             <div
@@ -87,14 +86,14 @@ const CommunityDescription = ({
               data-testid='community-pending-rewards'
             >
               {data.sum_pending}
-              <span className='text-center text-xs'>{t('cards.communities.titles.pending_rewards')}</span>
+              <span className='text-center text-xs'>{t('communities.titles.pending_rewards')}</span>
             </div>
             <div
               className='flex flex-col items-center'
               data-testid='community-active-posters'
             >
               {data.num_authors}
-              <span className='text-center text-xs'>{t('cards.communities.titles.active_posters')}</span>
+              <span className='text-center text-xs'>{t('communities.titles.active_posters')}</span>
             </div>
           </div>
           <div className='my-4 flex flex-col gap-2'>
@@ -104,7 +103,7 @@ const CommunityDescription = ({
                 className='w-full bg-blue-800 text-center hover:bg-blue-900'
                 data-testid='community-subscribe-button'
               >
-                {t('cards.communities.buttons.subscribe')}
+                {t('communities.buttons.subscribe')}
               </Button>
             </DialogLogin>
             <Button
@@ -112,7 +111,7 @@ const CommunityDescription = ({
               className='w-full bg-blue-800 text-center hover:bg-blue-900'
               data-testid='community-new-post-button'
             >
-              <Link href={`submit.html?category=${data.name}`}>{t('cards.communities.buttons.new_post')}</Link>
+              <Link href={`submit.html?category=${data.name}`}>{t('communities.buttons.new_post')}</Link>
             </Button>
           </div>
           <div
@@ -120,7 +119,7 @@ const CommunityDescription = ({
             className='my-6 flex flex-col'
           >
             <h6 className='my-1.5 font-semibold leading-none tracking-tight'>
-              {t('cards.communities.titles.leadership')}
+              {t('communities.titles.leadership')}
             </h6>
             <ul className='mt-1.5 text-xs'>
               {data.team.slice(1).map((member: string[]) => (
@@ -147,7 +146,7 @@ const CommunityDescription = ({
             </ul>
             <div className='self-end text-sm'>
               <ActivityLogDialog username={username} data={notificationData}>
-                {t('cards.communities.buttons.activity_log')}
+                {t('communities.buttons.activity_log')}
               </ActivityLogDialog>
             </div>
           </div>
@@ -163,7 +162,7 @@ const CommunityDescription = ({
         <CardContent className='py-4'>
           <div data-testid='community-description'>
             <h6 className='my-1.5 font-semibold leading-none tracking-tight'>
-              {t('cards.communities.titles.description')}
+              {t('communities.titles.description')}
             </h6>
             {post_body_html ? (
               <div
@@ -177,7 +176,7 @@ const CommunityDescription = ({
           {data.flag_text.trim() !== '' ? (
             <div data-testid='community-rules' className='my-6'>
               <h6 className='my-1.5 font-semibold leading-none tracking-tight'>
-                {t('cards.communities.titles.rules')}
+                {t('communities.titles.rules')}
               </h6>
               <div
                 className='preview-rules prose-sm'
@@ -192,7 +191,7 @@ const CommunityDescription = ({
           {data.lang ? (
             <div data-testid='community-language'>
               <h6 className='my-1.5 font-semibold leading-none tracking-tight'>
-                {t('cards.communities.titles.language')}
+                {t('communities.titles.language')}
               </h6>
               <div
                 className='preview-rules'
