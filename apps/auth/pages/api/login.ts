@@ -3,6 +3,9 @@ import { withIronSessionApiRoute } from 'iron-session/next';
 import { sessionOptions } from 'lib/session';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getAccount } from '@hive/ui/lib/hive';
+import { getLogger } from "@hive/ui/lib/logging";
+
+const logger = getLogger('app');
 
 async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
   const { username } = await req.body
@@ -35,11 +38,7 @@ export async function getHiveUserProfile(hiveUsername: string): Promise<IHiveUse
   try {
       const chainAccount = await getAccount(hiveUsername);
       if (!chainAccount) {
-          console.error(
-              'gethiveUserProfile error: missing blockchain account',
-              hiveUsername
-              );
-          throw new Error('gethiveUserProfile error: missing blockchain account');
+          throw new Error(`gethiveUserProfile error: missing blockchain account "${hiveUsername}"`);
       }
 
       if (Object.prototype.hasOwnProperty
@@ -74,7 +73,7 @@ export async function getHiveUserProfile(hiveUsername: string): Promise<IHiveUse
       // chainAccount.posting_json_metadata doesn't exist.
 
   } catch (error) {
-      console.error('gethiveUserProfile error', error);
+      logger.error(error);
       throw error;
   }
   return hiveUserProfile;

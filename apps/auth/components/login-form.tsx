@@ -31,8 +31,6 @@ export function LoginForm({
     defaultValues: loginFormDefaultValues
   });
 
-  // const onError = (errors: any, e: Event) => console.log('form errors', errors, e);
-
   return (
     <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
       <div className="mx-auto flex w-[440px] max-w-md flex-col items-center">
