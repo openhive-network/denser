@@ -4,7 +4,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 
 export type User = {
   isLoggedIn: boolean
-  login: string
+  username: string
   avatarUrl: string
 };
 
@@ -17,7 +17,7 @@ async function userRoute(req: NextApiRequest, res: NextApiResponse<User>) {
   } else {
     res.json({
       isLoggedIn: false,
-      login: '',
+      username: '',
       avatarUrl: '',
     });
   }

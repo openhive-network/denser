@@ -11,7 +11,7 @@ async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
   const { username } = await req.body
   try {
     const hiveUserProfile = await getHiveUserProfile(username);
-    const user = { isLoggedIn: true, login: username, avatarUrl: hiveUserProfile.picture } as User;
+    const user = { isLoggedIn: true, username: username, avatarUrl: hiveUserProfile?.picture || '' } as User;
     req.session.user = user;
     await req.session.save();
     res.json(user);
@@ -37,15 +37,22 @@ export async function getHiveUserProfile(hiveUsername: string): Promise<IHiveUse
   // Add properties to user profile.
   try {
       const chainAccount = await getAccount(hiveUsername);
+      logger.debug(`typeof chainAccount: ${typeof chainAccount}`);
+      logger.debug(chainAccount);
       if (!chainAccount) {
           throw new Error(`gethiveUserProfile error: missing blockchain account "${hiveUsername}"`);
       }
 
       if (Object.prototype.hasOwnProperty
               .call(chainAccount, 'posting_json_metadata')) {
-          const postingJsonMetadata = JSON.parse(
+          let postingJsonMetadata: any = {};
+          try {
+            postingJsonMetadata = JSON.parse(
                   chainAccount.posting_json_metadata
                   );
+          } catch (e) {
+            // do nothing
+          }
           if (Object.prototype.hasOwnProperty
                   .call(postingJsonMetadata, 'profile')) {
 
