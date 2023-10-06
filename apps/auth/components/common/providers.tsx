@@ -1,12 +1,8 @@
 import type { ReactNode } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ThemeProvider } from "../theme-provider";
 import Layout from "./layout";
 import { SWRConfig } from 'swr'
-import fetchJson from '@/auth/lib/fetch-json'
-
-const queryClient = new QueryClient();
+import { fetchJson } from '@/auth/lib/fetch-json'
 
 const Providers = ({ children }: { children: ReactNode }) => {
   return (
@@ -14,16 +10,13 @@ const Providers = ({ children }: { children: ReactNode }) => {
       value={{
         fetcher: fetchJson,
         onError: (err) => {
-          console.error('Error in swr', err)
+          console.error('Error in SWR', err)
         },
       }}
     >
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <Layout>{children}</Layout>
-        </ThemeProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <Layout>{children}</Layout>
+      </ThemeProvider>
     </SWRConfig>
   );
 };
