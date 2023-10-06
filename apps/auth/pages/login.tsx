@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { LoginForm, LoginFormData } from "@/auth/components/login-form";
-import useUser from '@/auth/lib/use-user';
+import { useUser } from '@/auth/lib/use-user';
 import fetchJson, { FetchError } from '@/auth/lib/fetch-json';
 
 export default function LoginPage() {

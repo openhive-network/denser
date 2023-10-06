@@ -3,7 +3,7 @@ import Router from 'next/router'
 import useSWR from 'swr'
 import { User } from 'pages/api/user'
 
-export default function useUser({
+export function useUser({
   redirectTo = '/',
   redirectIfFound = false,
 } = {}) {

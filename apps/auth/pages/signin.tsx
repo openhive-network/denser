@@ -10,12 +10,11 @@ export default function SignInPage() {
 
   const onSubmit = async (data: LoginFormData) => {
     console.log('form data', data);
-    const email = data.username;
-    const password = data.password;
+    const { username: email, password} = data;
 
     if (typeof email === 'string' && typeof password === 'string') {
       console.log('bamboo onSubmit', email, password);
-      // signIn({email, password});
+      signIn({email, password});
     }
   };
 

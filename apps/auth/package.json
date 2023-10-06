@@ -19,7 +19,6 @@
         "iron-session": "^6.3.1",
         "next": "13.4.10",
         "next-transpile-modules": "^10.0.1",
-        "octokit": "^3.1.0",
         "pino": "^8.15.0",
         "react-hook-form": "^7.45.1",
         "swr": "^2.2.2",

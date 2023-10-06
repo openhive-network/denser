@@ -1,9 +1,11 @@
-import useUser from '@/auth/lib/use-user';
+'use client'
+
+import { useUser } from '@/auth/lib/use-user';
 
 // Make sure to check https://nextjs.org/docs/basic-features/layouts for more info on how to use layouts
 export default function Profile() {
   const { user } = useUser({
-    redirectTo: '/login',
+    redirectTo: '/signin',
   })
 
   return (
@@ -15,19 +17,13 @@ export default function Profile() {
           <a href="https://nextjs.org/docs/basic-features/pages#static-generation-recommended">
             Static Generation (SG)
           </a>{' '}
-          and the <a href="/api/user">/api/user</a> route (using{' '}
-          <a href="https://github.com/vercel/swr">vercel/SWR</a>)
+          and the <a href="/api/user">/api/user</a> route
         </h2>
         {user && (
           <>
             <p style={{ fontStyle: 'italic' }}>
-              Public data, from{' '}
-              <a href={`https://github.com/${user.login}`}>
-                https://github.com/{user.login}
-              </a>
-              , reduced to `login` and `avatar_url`.
+              Public data from Hive Blockchain
             </p>
-
             <pre>{JSON.stringify(user, null, 2)}</pre>
           </>
         )}

@@ -5,12 +5,12 @@ import { ResponseError } from '../ResponseError';
 import { User } from './useUser';
 
 async function signIn(email: string, password: string): Promise<User> {
-  const response = await fetch('/api/auth/signin', {
+  const response = await fetch('/api/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ username: email, password }),
   })
   if (!response.ok) {
     throw new ResponseError('Failed on sign in request', response);
@@ -28,18 +28,18 @@ export function useSignIn(): IUseSignIn {
   const router = useRouter();
 
   const { mutate: signInMutation } = useMutation<User, unknown, { email: string, password: string }, unknown>(
-    ({
-      email,
-      password
-    }) => signIn(email, password), {
-    onSuccess: (data) => {
-      queryClient.setQueryData([QUERY_KEY.user], data);
-      router.push('/');
-    },
-    onError: (error) => {
-      console.error('Ops.. Error on sign in. Try again!', error);
+    ({email, password}) => signIn(email, password), {
+      onSuccess: (data) => {
+        queryClient.setQueryData([QUERY_KEY.user], data);
+        router.push('/');
+      },
+      onError: (error) => {
+        const message = 'Ops.. Error on sign in. Try again!';
+        console.error(message, error);
+        throw new Error(message);
+      }
     }
-  });
+  );
 
   return signInMutation
 }
