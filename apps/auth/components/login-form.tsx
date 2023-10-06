@@ -114,7 +114,7 @@ export function LoginForm({
               // disabled
               onClick={handleSubmit(onSubmit)}
             >
-              Sign in
+              Login
             </button>
             <button
               type="reset"

@@ -42,7 +42,7 @@ const SiteHeader: FC = () => {
                     size="sm"
                     className="h-10"
                   >
-                    Sign up
+                    Sign Up
                   </Button>
                 </Link>
               )}
