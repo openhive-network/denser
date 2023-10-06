@@ -29,17 +29,17 @@ export default function PayoutHoverContent({ post }: { post: Entry }) {
   const pastPayout = moment(post.payout_at).diff(moment()) < 0;
   if (pastPayout) {
     return <>
-      <span>{t('cards.amount_hover_card.past_payouts', { value: post.payout.toFixed(2) })}</span>
-      <span>- {t('cards.amount_hover_card.author', { value: convertStringToBig(post.author_payout_value).toFixed(2) })}</span>
-      <span>- {t('cards.amount_hover_card.curators', { value: convertStringToBig(post.curator_payout_value).toFixed(2) })}</span>
+      <span>{t('amount_hover_card.past_payouts', { value: post.payout.toFixed(2) })}</span>
+      <span>- {t('amount_hover_card.author', { value: convertStringToBig(post.author_payout_value).toFixed(2) })}</span>
+      <span>- {t('amount_hover_card.curators', { value: convertStringToBig(post.curator_payout_value).toFixed(2) })}</span>
     </>;
   }
 
   return (
     <>
-      <span>{t('cards.amount_hover_card.pending_payout_amount', { value: post.payout.toFixed(2) })}</span>
+      <span>{t('amount_hover_card.pending_payout_amount', { value: post.payout.toFixed(2) })}</span>
       <span>
-          {t('cards.amount_hover_card.breakdown')} {_hbd.toFixed(2)} HBD, {pending_hp ? <>{pending_hp.toFixed(2)} HP</> : null}
+          {t('amount_hover_card.breakdown')} {_hbd.toFixed(2)} HBD, {pending_hp ? <>{pending_hp.toFixed(2)} HP</> : null}
         </span>
       <>
         {post.beneficiaries.map((beneficiary: IBeneficiary, index: number) => (
@@ -52,7 +52,7 @@ export default function PayoutHoverContent({ post }: { post: Entry }) {
           </Link>
         ))}
       </>
-      <span>{t('cards.amount_hover_card.payout_in')} {dateToRelative(post.payout_at)}</span>
+      <span>{t('amount_hover_card.payout_in')} {dateToRelative(post.payout_at)}</span>
       {convertStringToBig(post.max_accepted_payout).lt(1000000) ?
         <span>Max accepted payout: ${fmt(post.max_accepted_payout.split(' ')[0])}</span> : null}
     </>);
