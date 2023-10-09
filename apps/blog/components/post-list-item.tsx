@@ -32,11 +32,9 @@ import PostImage from "./post-img";
 
 const PostListItem = ({
   post,
-  sort,
   isCommunityPage,
 }: {
   post: Entry;
-  sort: string | undefined | null;
   isCommunityPage: boolean | undefined;
 }) => {
   const [reveal, setReveal] = useState(
@@ -50,7 +48,7 @@ const PostListItem = ({
   return (
     <li
       data-testid="post-list-item"
-      className={sort === "muted" ? "opacity-50 hover:opacity-100" : ""}
+      className={post.stats?.gray ? "opacity-50 hover:opacity-100" : ""}
     >
       <Card
         className={cn(

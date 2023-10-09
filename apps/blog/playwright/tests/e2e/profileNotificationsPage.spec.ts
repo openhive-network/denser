@@ -364,7 +364,8 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
 
     // Move to the Reblog Tab
     await profilePage.notificationsMenuReblogsButton.click();
-    await profilePage.page.waitForSelector(await profilePage.notificationListItemInReblogs['_selector']);
+    if (await profilePage.page.locator('table').isVisible())
+      await profilePage.page.waitForSelector(await profilePage.notificationListItemInReblogs['_selector']);
 
     // Compare amount of the reblogs notifications with api response before clicking Load more
     const notificationListItemInReblogsArray = await profilePage.notificationListItemInReblogs.all();

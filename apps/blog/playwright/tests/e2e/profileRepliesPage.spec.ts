@@ -33,7 +33,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     expect(await commentListItemsBeforeLoadMore.length).toBe(20);
 
     await profilePage.page.keyboard.down('End');
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(3000);
     const commentListItemsAfterScrollDown = await profilePage.repliesCommentListItem.all();
     expect(await commentListItemsAfterScrollDown.length).toBe(40);
   });

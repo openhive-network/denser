@@ -16,6 +16,7 @@ export type AccountHistory = [
         | "interest"
         | "cancel_transfer_from_savings"
         | "fill_order"
+        | "transfer_to_vesting"
       ),
       {
         open_pays?: string;
