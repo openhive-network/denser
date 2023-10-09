@@ -1,7 +1,7 @@
-import type { User } from './user';
-import { withIronSessionApiRoute } from 'iron-session/next';
-import { sessionOptions } from '@/auth/lib/session';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { withIronSessionApiRoute } from 'iron-session/next';
+import type { User } from './user';
+import { sessionOptions } from '@/auth/lib/session';
 import { getLogger } from "@hive/ui/lib/logging";
 import { getHiveUserProfile } from '@/auth/lib/hive-user-profile';
 

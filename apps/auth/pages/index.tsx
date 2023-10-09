@@ -1,7 +1,3 @@
-import Link from 'next/link'
-import { Button } from "@hive/ui";
-import DialogLogin from "@/auth/components/dialog-login";
-
 export default function HomePage() {
   return (
     <div className="pt-16 flex flex-col sm:flex-row gap-24 mx-2 sm:gap-0 sm:justify-around">
