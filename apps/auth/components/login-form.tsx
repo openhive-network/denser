@@ -60,7 +60,7 @@ export function LoginForm({
 
           <div>
             <input
-              type="text"
+              type="password"
               className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
               placeholder="Password or WIF"
               {...register("password")}
@@ -111,7 +111,6 @@ export function LoginForm({
             <button
               type="submit"
               className="w-fit rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-semibold text-white hover:cursor-pointer hover:bg-red-700 focus:outline-none  disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
-              // disabled
               onClick={handleSubmit(onSubmit)}
             >
               Login
@@ -119,9 +118,8 @@ export function LoginForm({
             <button
               type="reset"
               className="w-fit rounded-lg bg-transparent px-5 py-2.5 text-center text-sm font-semibold text-gray-500 hover:cursor-pointer hover:text-red-600 focus:outline-none"
-              disabled
             >
-              Cancel
+              Reset
             </button>
           </div>
 
