@@ -8,15 +8,26 @@ import { getHiveUserProfile } from '@/auth/lib/hive-user-profile';
 const logger = getLogger('app');
 
 async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
-  const { username } = await req.body
-  try {
-    const hiveUserProfile = await getHiveUserProfile(username);
-    const user = { isLoggedIn: true, username: username, avatarUrl: hiveUserProfile?.picture || '' } as User;
-    req.session.user = user;
-    await req.session.save();
-    res.json(user);
-  } catch (error) {
-    res.status(500).json({ message: (error as Error).message });
+  if (req.method === 'HEAD') {
+    res.status(204).end();
+  } else if (req.method === 'OPTIONS') {
+    res.status(204).end();
+  } else if (req.method === 'POST') {
+    try {
+      const { username } = await req.body;
+      if (!username) {
+        res.status(400).json({ message: 'Missing username' });
+      }
+      const hiveUserProfile = await getHiveUserProfile(username);
+      const user = { isLoggedIn: true, username: username, avatarUrl: hiveUserProfile?.picture || '' } as User;
+      req.session.user = user;
+      await req.session.save();
+      res.json(user);
+    } catch (error) {
+      res.status(500).json({ message: (error as Error).message });
+    }
+  } else {
+    res.status(405).json({ message: 'Method not allowed' });
   }
 }
 
