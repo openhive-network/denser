@@ -252,7 +252,6 @@ const ParamPage: FC = () => {
                   return page ? (
                     <PostList
                       data={page}
-                      sort={sort}
                       key={`f-${index}`}
                       isCommunityPage={!!communityData}
                     />

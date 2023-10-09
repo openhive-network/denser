@@ -3,7 +3,7 @@ import { Input } from "@hive/ui/components/input";
 
 export type TransferFilters = {
   search: string;
-  rewards: boolean;
+  others: boolean;
   incoming: boolean;
   outcoming: boolean;
   exlude: boolean;
@@ -25,12 +25,10 @@ function TransfersHistoryFilter({
           <label className="flex gap-1 sm:gap-2">
             <Checkbox
               className="border-zinc-700"
-              checked={value.rewards}
-              onClick={() =>
-                onFiltersChange({ rewards: !value.rewards, search: "" })
-              }
+              checked={value.others}
+              onClick={() => onFiltersChange({ others: !value.others })}
             />
-            <span>REWARDS </span>
+            <span>OTHERS</span>
           </label>
           <label className="flex gap-1 sm:gap-2">
             <Checkbox
@@ -38,7 +36,7 @@ function TransfersHistoryFilter({
               checked={value.incoming}
               onClick={() => onFiltersChange({ incoming: !value.incoming })}
             />
-            <span>INCOMING </span>
+            <span>INCOMING</span>
           </label>
           <label className="flex gap-1 sm:gap-2">
             <Checkbox
@@ -65,7 +63,9 @@ function TransfersHistoryFilter({
               placeholder="username"
               value={value.search}
               onChange={(e) =>
-                onFiltersChange({ search: e.target.value, rewards: false })
+                onFiltersChange({
+                  search: e.target.value,
+                })
               }
             />
           </div>

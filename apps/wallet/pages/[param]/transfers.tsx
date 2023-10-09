@@ -42,9 +42,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
 const initialFilters: TransferFilters = {
   search: "",
-  rewards: true,
-  incoming: true,
-  outcoming: true,
+  others: false,
+  incoming: false,
+  outcoming: false,
   exlude: false,
 };
 type Transfer = {
@@ -100,6 +100,14 @@ type FillOrder = {
   open_owner?: string;
   open_pays?: string;
 };
+type TransferToVesting = {
+  type: "transfer_to_vesting";
+  amount?: string;
+  from?: string;
+  memo?: string;
+  to?: string;
+};
+
 type Operation =
   | Transfer
   | ClaimRewardBalance
@@ -107,72 +115,98 @@ type Operation =
   | TransferToSavings
   | Interest
   | CancelTransferFromSavings
+  | TransferToVesting
   | FillOrder;
 
 const mapToAccountHistoryObject = ([id, data]: AccountHistory) => {
   const { op, ...rest } = data;
-  const operation: Operation | undefined =
-    op && op[0] === "transfer"
-      ? {
-          type: "transfer",
-          amount: op[1].amount,
-          from: op[1].from,
-          memo: op[1].memo,
-          to: op[1].to,
-        }
-      : op && op[0] === "claim_reward_balance"
-      ? {
-          type: "claim_reward_balance",
-          account: op[1].account,
-          reward_hbd: convertStringToBig(op[1]?.reward_hbd ?? "0"),
-          reward_hive: convertStringToBig(op[1]?.reward_hive ?? "0"),
-          reward_vests: convertStringToBig(op[1]?.reward_vests ?? "0"),
-        }
-      : op && op[0] === "transfer_from_savings"
-      ? {
-          type: "transfer_from_savings",
-          amount: op[1].amount,
-          from: op[1].from,
-          request_id: op[1].request_id,
-          memo: op[1].memo,
-          to: op[1].to,
-        }
-      : op && op[0] === "transfer_to_savings"
-      ? {
-          type: "transfer_to_savings",
-          amount: op[1].amount,
-          from: op[1].from,
-          memo: op[1].memo,
-          to: op[1].to,
-        }
-      : op && op[0] === "interest"
-      ? {
-          type: "interest",
-          interest: op[1].interest,
-          is_saved_into_hbd_balance: op[1].is_saved_into_hbd_balance,
-          owner: op[1].owner,
-        }
-      : op && op[0] === "cancel_transfer_from_savings"
-      ? {
-          type: "cancel_transfer_from_savings",
-          from: op[1].from,
-          request_id: op[1].request_id,
-        }
-      : op && op[0] === "fill_order"
-      ? {
-          type: "fill_order",
-          current_pays: op[1].current_pays,
-          open_pays: op[1].open_pays,
-        }
-      : undefined;
+  const operation: Operation | undefined = !op
+    ? undefined
+    : op[0] === "transfer"
+    ? {
+        type: "transfer",
+        amount: op[1].amount,
+        from: op[1].from,
+        memo: op[1].memo,
+        to: op[1].to,
+      }
+    : op[0] === "claim_reward_balance"
+    ? {
+        type: "claim_reward_balance",
+        account: op[1].account,
+        reward_hbd: convertStringToBig(op[1]?.reward_hbd ?? "0"),
+        reward_hive: convertStringToBig(op[1]?.reward_hive ?? "0"),
+        reward_vests: convertStringToBig(op[1]?.reward_vests ?? "0"),
+      }
+    : op[0] === "transfer_from_savings"
+    ? {
+        type: "transfer_from_savings",
+        amount: op[1].amount,
+        from: op[1].from,
+        request_id: op[1].request_id,
+        memo: op[1].memo,
+        to: op[1].to,
+      }
+    : op[0] === "transfer_to_savings"
+    ? {
+        type: "transfer_to_savings",
+        amount: op[1].amount,
+        from: op[1].from,
+        memo: op[1].memo,
+        to: op[1].to,
+      }
+    : op[0] === "transfer_to_vesting"
+    ? {
+        type: "transfer_to_vesting",
+        amount: op[1].amount,
+        from: op[1].from,
+        to: op[1].to,
+      }
+    : op[0] === "interest"
+    ? {
+        type: "interest",
+        interest: op[1].interest,
+        is_saved_into_hbd_balance: op[1].is_saved_into_hbd_balance,
+        owner: op[1].owner,
+      }
+    : op[0] === "cancel_transfer_from_savings"
+    ? {
+        type: "cancel_transfer_from_savings",
+        from: op[1].from,
+        request_id: op[1].request_id,
+      }
+    : op[0] === "fill_order"
+    ? {
+        type: "fill_order",
+        current_pays: op[1].current_pays,
+        open_pays: op[1].open_pays,
+      }
+    : undefined;
 
   return { id, ...rest, operation };
 };
+
+const useFilters = (initialFilters: TransferFilters) => {
+  const [rawfilter, setFilter] = useState<TransferFilters>(initialFilters);
+  const noFilters =
+    !rawfilter.incoming && !rawfilter.outcoming && !rawfilter.others;
+
+  const filter: TransferFilters = {
+    ...rawfilter,
+    incoming: rawfilter.incoming || noFilters,
+    outcoming: rawfilter.outcoming || noFilters,
+    others: !rawfilter.search && (rawfilter.others || noFilters),
+  };
+
+  return [rawfilter, filter, setFilter] as const;
+};
+
+type AccountHistoryData = ReturnType<typeof mapToAccountHistoryObject>;
 function TransfersPage({
   username,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const [filter, setFilter] = useState<TransferFilters>(initialFilters);
   const router = useRouter();
+  const [rawFilter, filter, setFilter] = useFilters(initialFilters);
 
   const {
     data: accountData,
@@ -203,7 +237,6 @@ function TransfersPage({
     isLoading: historyFeedLoading,
     isError: historyFeedError,
   } = useQuery(["feedHistory"], () => getFeedHistory());
-  console.log(accountHistoryData);
   if (
     accountLoading ||
     dynamicLoading ||
@@ -269,32 +302,9 @@ function TransfersPage({
     total_hive.times(Big(price_per_hive)).plus(total_hbd).toFixed(2)
   );
 
-  const filteredHistoryList = accountHistoryData?.filter(({ operation }) => {
-    if (!operation) return false;
-    if (operation.type === "transfer") {
-      const opAmount = convertStringToBig(operation.amount ?? "0");
-      if (filter.exlude && opAmount.lt(1)) return false;
-
-      if (!filter.incoming && operation.to === username) return false;
-      if (!filter.outcoming && operation.from === username) return false;
-      return (
-        operation.to?.includes(filter.search) ||
-        operation.from?.includes(filter.search)
-      );
-    }
-    if (operation.type === "claim_reward_balance") {
-      if (
-        filter.exlude &&
-        operation.reward_hbd.lt(1) &&
-        operation.reward_hive.lt(1) &&
-        totalFund.times(operation.reward_vests.div(totalShares)).lt(1)
-      )
-        return false;
-      if (!filter.rewards) return false;
-    }
-
-    return true;
-  });
+  const filteredHistoryList = accountHistoryData?.filter(
+    getFilter({ filter, totalFund, username, totalShares })
+  );
 
   function historyItemDescription(operation: Operation) {
     if (operation.type === "claim_reward_balance") {
@@ -379,6 +389,21 @@ function TransfersPage({
         </span>
       );
     }
+    if (operation.type === "transfer_to_vesting") {
+      return (
+        <span>
+          {"Transfer "}
+          {operation.amount?.toString()}
+          {" to "}
+          <Link
+            href={`/@${operation.to}`}
+            className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400"
+          >
+            {operation.to}
+          </Link>
+        </span>
+      );
+    }
     if (operation.type === "interest") {
       return (
         <span>
@@ -405,7 +430,7 @@ function TransfersPage({
           {operation.open_pays}
         </span>
       );
-    } else return <div>????</div>;
+    } else return <div>error</div>;
   }
 
   return (
@@ -551,7 +576,7 @@ function TransfersPage({
                 ...value,
               }));
             }}
-            value={filter}
+            value={rawFilter}
           />
           <div className="p-2 sm:p-4">
             <div className="font-semibold">Account History</div>
@@ -562,46 +587,133 @@ function TransfersPage({
               they are confirmed on the blockchain, which may take a few
               minutes.
             </p>
+            <HistoryTable
+              isLoading={accountHistoryLoading}
+              historyList={filteredHistoryList}
+              historyItemDescription={historyItemDescription}
+            />
           </div>
         </div>
-
-        {accountHistoryLoading ? (
-          <div>Loading</div>
-        ) : !accountHistoryData ? (
-          <div> No transacions found</div>
-        ) : filteredHistoryList && filteredHistoryList.length > 0 ? (
-          <table className="p-2 w-full max-w-6xl">
-            <tbody>
-              {filteredHistoryList.reverse().map((element) => {
-                if (!element.operation) return null;
-                return (
-                  <tr
-                    key={element.id}
-                    className="m-0 p-0 text-xs even:bg-slate-100 dark:even:bg-slate-700 sm:text-sm w-full"
-                  >
-                    <td className="px-4 py-2 sm:min-w-[150px]">
-                      {dateToFullRelative(element.timestamp)}
-                    </td>
-                    <td className="px-4 py-2 sm:min-w-[300px]">
-                      {historyItemDescription(element.operation)}
-                    </td>
-                    {element.operation.memo ? (
-                      <td className="break-all px-4 py-2 hidden sm:block">
-                        {element.operation.memo}
-                      </td>
-                    ) : null}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        ) : (
-          <div className="text-red-300 text-3xl py-12">
-            No transacions found
-          </div>
-        )}
       </div>
     </ProfileLayout>
   );
 }
+
+interface HistoryTableProps {
+  isLoading: boolean;
+  historyList: AccountHistoryData[] | undefined;
+  historyItemDescription: (operation: Operation) => JSX.Element;
+}
+const HistoryTable = ({
+  isLoading,
+  historyList = [],
+  historyItemDescription,
+}: HistoryTableProps) => {
+  if (isLoading) return <div>Loading</div>;
+  if (historyList.length === 0)
+    return (
+      <div className="text-red-300 text-3xl py-12 text-center">
+        No transacions found
+      </div>
+    );
+
+  return (
+    <table className="p-2 w-full max-w-6xl">
+      <tbody>
+        {historyList.reverse().map((element) =>
+          !element.operation ? null : (
+            <tr
+              key={element.id}
+              className="m-0 p-0 text-xs even:bg-slate-100 dark:even:bg-slate-700 sm:text-sm w-full"
+            >
+              <td className="px-4 py-2 sm:min-w-[150px]">
+                {dateToFullRelative(element.timestamp)}
+              </td>
+              <td className="px-4 py-2 sm:min-w-[300px]">
+                {historyItemDescription(element.operation)}
+              </td>
+              {element.operation.memo ? (
+                <td className="break-all px-4 py-2 hidden sm:block">
+                  {element.operation.memo}
+                </td>
+              ) : null}
+            </tr>
+          )
+        )}
+      </tbody>
+    </table>
+  );
+};
+
 export default TransfersPage;
+
+interface getFilterArgs {
+  filter: TransferFilters;
+  totalFund: Big;
+  totalShares: Big;
+  username: string;
+}
+const getFilter =
+  ({ filter, totalFund, username, totalShares }: getFilterArgs) =>
+  ({ operation }: AccountHistoryData) => {
+    if (!operation) return false;
+    switch (operation.type) {
+      case "transfer":
+        const opAmount = convertStringToBig(operation.amount ?? "0");
+        const incomingFromCurrent =
+          operation.to === username || operation.from !== username;
+        const outcomingFromCurrent =
+          operation.from === username || operation.to !== username;
+        const inSearch =
+          operation.to?.includes(filter.search) ||
+          operation.from?.includes(filter.search);
+
+        return (
+          !(filter.exlude && opAmount.lt(1)) &&
+          (filter.incoming || !incomingFromCurrent) &&
+          (filter.outcoming || !outcomingFromCurrent) &&
+          inSearch
+        );
+      case "claim_reward_balance":
+        if (
+          !filter.others ||
+          (filter.exlude &&
+            operation.reward_hbd.lt(1) &&
+            operation.reward_hive.lt(1) &&
+            totalFund.times(operation.reward_vests.div(totalShares)).lt(1))
+        )
+          return false;
+        break;
+
+      case "transfer_from_savings":
+      case "transfer_to_savings":
+      case "transfer_to_vesting":
+        if (
+          !filter.others ||
+          (filter.exlude && convertStringToBig(operation?.amount || "0").lt(1))
+        )
+          return false;
+        break;
+      case "interest":
+        if (
+          !filter.others ||
+          (filter.exlude &&
+            convertStringToBig(operation?.interest || "0").lt(1))
+        )
+          return false;
+        break;
+      case "fill_order":
+        if (
+          !filter.others ||
+          (filter.exlude &&
+            convertStringToBig(operation?.open_pays || "0").lt(1) &&
+            convertStringToBig(operation?.current_pays || "0").lt(1))
+        )
+          return false;
+        break;
+
+      case "cancel_transfer_from_savings":
+        if (!filter.others || filter.exlude) return false;
+    }
+    return true;
+  };
