@@ -168,6 +168,10 @@ export class ProfilePage {
   readonly socialBadgesAchivementsLabel: Locator;
   readonly socialBadgesAchivementsDescription: Locator;
   readonly socialBadgeAchivement: Locator;
+  readonly blogTabPostsContainer: Locator;
+  readonly firstCommunityLinkPostsComments: Locator;
+  readonly communityName: Locator;
+  readonly communityTimeStamp: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -374,6 +378,10 @@ export class ProfilePage {
     this.socialBadgesAchivementsLabel = page.locator('[data-testid="badges-achievements-label"]');
     this.socialBadgesAchivementsDescription = page.locator('[data-testid="badges-achievements-description"]');
     this.socialBadgeAchivement = page.locator('[data-testid="badge-achievement"]');
+    this.blogTabPostsContainer = page.locator('main.container');
+    this.firstCommunityLinkPostsComments = page.locator('span.text-xs a').first();
+    this.communityName = page.locator('[data-testid="community-name"]');
+    this.communityTimeStamp = page.locator('span.text-xs a').nth(1)
   }
 
   async gotoProfilePage(nickName: string) {
