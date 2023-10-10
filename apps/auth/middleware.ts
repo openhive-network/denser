@@ -26,7 +26,7 @@ const corsOptions: {
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
 
-  if (request.nextUrl.pathname.startsWith('/api')) {
+  if (request.nextUrl.pathname.startsWith('/disable/api')) {
     if (env('DENSER_SERVER_API_CORS_DISABLE') !== "true") {
       // Check allowed origins and set header.
       const origin = request.headers.get('origin') ?? '';
@@ -60,5 +60,5 @@ export async function middleware(request: NextRequest) {
 };
 
 export const config = {
-  matcher: "/api/:path*",
+  matcher: "/disable/api/:path*",
 };
