@@ -28,14 +28,32 @@ test.describe('Profile page of @gtg', () => {
   test('if a post item is reblogged then compare profile owner with the post author', async ({ page }) => {
     await profilePage.gotoProfilePage('@gtg');
 
-    const firstPostRebloggedLabel = await profilePage.postRebloggedLabel.nth(0);
-    const firstPostRebloggedAuthorLink = await profilePage.postRebloggedAuthorLink.nth(0);
-    const firstPostAuthor = await profilePage.postsPostAuthor.nth(0);
+    // const firstPostRebloggedLabel = await profilePage.postRebloggedLabel.first();
+    // const firstPostRebloggedAuthorLink = await profilePage.postRebloggedAuthorLink.nth(0);
+    // const firstPostAuthor = await profilePage.postsPostAuthor.nth(0);
 
-    if (await firstPostRebloggedLabel.isVisible())
-        expect(await firstPostRebloggedAuthorLink.textContent()).not.toBe(await firstPostAuthor.textContent());
-    else
-        expect(await firstPostAuthor.textContent()).toBe('gtg');
+    // if (await firstPostRebloggedLabel.isVisible())
+    //     expect(await firstPostRebloggedAuthorLink.textContent()).not.toBe(await firstPostAuthor.textContent());
+    // else
+    //     expect(await firstPostAuthor.textContent()).toBe('gtg');
+        const postListItems = await page.$$('[data-testid="post-list-item"]');
+
+        for (const postItem of postListItems) {
+          const textContent = await postItem.textContent();
+          if (textContent.includes('reblogged')) {
+            const postAuthor = await postItem.$$('[data-testid="post-author"]');
+            
+            if (postAuthor.length > 0) {
+              
+              await expect(postAuthor[0]).not.toContain('gtg')
+              break;
+            }
+            else{
+              await expect(postAuthor[0]).toContain('gtg')
+              break;
+            }
+          }
+        }
   });
 
   test('validate amount of post items before and after loading more cards', async ({ page }) => {

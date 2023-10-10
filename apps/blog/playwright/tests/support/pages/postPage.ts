@@ -72,6 +72,8 @@ export class PostPage {
   readonly sharePostFrame: Locator;
   readonly hashtagsPosts: Locator;
   readonly postFooterVotes: Locator;
+  readonly postsCommentsTab: Locator;
+  readonly postsCommentsFirstAvatar: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -145,6 +147,8 @@ export class PostPage {
     this.sharePostFrame = page.locator('[role="dialog"]')
     this.hashtagsPosts = page.locator('[data-testid="hashtags-post"]')
     this.postFooterVotes = page.locator('[data-testid="author-data-post-footer"] [data-testid="comment-votes"]');
+    this.postsCommentsTab = page.getByRole('tab', { name: 'Comments' });
+    this.postsCommentsFirstAvatar = page.locator('[data-testid="comment-author-avatar"]').first()
   }
 
   async gotoHomePage() {

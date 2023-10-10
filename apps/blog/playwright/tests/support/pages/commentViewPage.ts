@@ -38,6 +38,10 @@ export class CommentViewPage{
     readonly getResponseCommentPayout: Locator;
     readonly getResponseCommentReply: Locator;
     readonly getResponseCommentCloseOpen: Locator;
+    readonly payoutPostCardTooltip: Locator;
+    readonly commentVote: Locator;
+    readonly commentVoteTooltip: Locator;
+    readonly commentGreenSection: Locator;
 
     constructor(page:Page){
         this.page = page
@@ -77,6 +81,10 @@ export class CommentViewPage{
         this.getResponseCommentPayout = this.getResponseCommentFooter.locator('[data-testid="post-payout"]');
         this.getResponseCommentReply = this.getResponseCommentFooter.locator('[data-testid="comment-card-footer-reply"]');
         this.getResponseCommentCloseOpen = page.locator('[data-testid="comment-close-open"]').nth(1);
+        this.payoutPostCardTooltip = page.getByTestId('payout-post-card-tooltip');
+        this.commentVote = page.locator('[data-testid="comment-vote"]');
+        this.commentVoteTooltip = page.getByTestId('comment-vote-tooltip');
+        this.commentGreenSection = page.locator('.bg-green-50');
     }
 
     async validataCommentViewPageIsLoaded(postTitle: string){
