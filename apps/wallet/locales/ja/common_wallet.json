@@ -2,7 +2,7 @@
   "global": {
     "time": "",
     "loading": "ロード中",
-    "something_went_wrong":"Something went wrong"
+    "something_went_wrong": "Something went wrong"
   },
   "navigation": {
     "main_nav_bar": {
@@ -21,7 +21,9 @@
       "developer_portal": "HIVE API資料",
       "hive_whitepaper": "Hiveホワイトペーパー",
       "privacy_policy": "プライバシーポリシー",
-      "terms_of_service": "利用規約"
+      "terms_of_service": "利用規約",
+      "currency_market": "Currency Market",
+      "third_party_exchanges": "Third-party exchanges:"
     },
     "profil_navbar": {
       "blog": "ブログ",
@@ -54,8 +56,8 @@
       "votable": "Votable",
       "order_by": "Order by",
       "creator": "Creator",
-      "start_date": "Start date",
-      "end_date": "End date",
+      "start_date": "Start Date",
+      "end_date": "End Date",
       "total_votes": "Total Votes"
     }
   },
@@ -111,7 +113,7 @@
     "trade_history": "マーケット履歴",
     "newer": "新しい",
     "older": "古い",
-    "date":"Date"
+    "date": "Date"
   },
   "witnesses_page": {
     "title": "証人投票",
@@ -138,15 +140,15 @@
     "vote_description": "トップ100外の証人に投票したい場合、以下の欄にアカウント名を入力して投票してください",
     "proxy_description": "証人への投票の代理人を選ぶこともできます。この操作はあなたの現在の証人選択をリセットします。",
     "set_proxy": "代理人を設定",
-    "disabled":"Disabled ",
-    "no_url_provided":"No URL provided",
-    "use_this_for_linking_title":"Use this for linking to this page and highlight the selected witness",
-    "has_not_produced_blocks":"⚠️Has not produced any blocks for over a week.",
-    "by":"by",
+    "disabled": "Disabled ",
+    "no_url_provided": "No URL provided",
+    "use_this_for_linking_title": "Use this for linking to this page and highlight the selected witness",
+    "has_not_produced_blocks": "⚠️Has not produced any blocks for over a week.",
+    "by": "by",
     "proxy_form": {
       "title": "Confirm Account Witness Proxy",
       "description": "You are about to remove your proxy.",
-      "set_proxy_to:":"Set proxy to: {{proxy}}",
+      "set_proxy_to:": "Set proxy to: {{proxy}}",
       "cancel_button": "キャンセル",
       "ok": "OK"
     }
@@ -155,22 +157,24 @@
     "proposals": "Proposals",
     "started": "started",
     "finished": "finished",
-    "not started": "not started",
+    "not_started": "not started",
     "refund": "refund",
     "burn": "burn",
     "by": "by",
-    "for": "for"
+    "for": " for "
   },
   "login_form": {
     "title": "再",
     "title_action_login": "ログイン",
     "title_action_login_to_vote": "ログインして投票します",
+    "title_confirm_password": "パスワードを認証する",
     "username_placeholder": "ユーザー名を入力してください",
     "password_placeholder": "パスワードまたはWIF",
     "use_hiveauth": "Use HiveAuth",
     "keep_me_logged_in": "ログイン状態を維持する",
     "more_login_methods": "その他のログイン方法",
     "login_button": "ログイン",
-    "cancel_button": "キャンセル"
+    "cancel_button": "キャンセル",
+    "this_operation_requires_your_key_or_master_password": "この操作には{{authType}}キーまたはマスターパスワードが必要です。"
   }
 }

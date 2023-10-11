@@ -2,7 +2,7 @@
   "global": {
     "time": "",
     "loading": "Chargement en cours",
-    "something_went_wrong":"Something went wrong"
+    "something_went_wrong": "Something went wrong"
   },
   "navigation": {
     "main_nav_bar": {
@@ -21,7 +21,9 @@
       "api_docs": "Documentation API sur Hive",
       "hive_whitepaper": "Livre blanc sur le Hive",
       "privacy_policy": "Politique de confidentialité",
-      "terms_of_service": "Conditions d'utilisation"
+      "terms_of_service": "Conditions d'utilisation",
+      "currency_market": "Currency Market",
+      "third_party_exchanges": "Third-party exchanges:"
     },
     "profil_navbar": {
       "blog": "Blog",
@@ -54,8 +56,8 @@
       "votable": "Votable",
       "order_by": "Order by",
       "creator": "Creator",
-      "start_date": "Start date",
-      "end_date": "End date",
+      "start_date": "Start Date",
+      "end_date": "End Date",
       "total_votes": "Total Votes"
     }
   },
@@ -111,7 +113,7 @@
     "trade_history": "Historique des échanges",
     "newer": "Plus récent",
     "older": "Plus ancien",
-    "date":"Date"
+    "date": "Date"
   },
   "witnesses_page": {
     "title": "Votes pour les témoins",
@@ -138,15 +140,15 @@
     "vote_description": "Si vous voulez voter pour un témoin en dehors du top 100, veuille entrer le nom du compte concerné ci-dessous afin de voter pour lui.",
     "proxy_description": "Vous pouvez aussi donner une procuration à quelqu'un qui votera pour les témoins en votre nom. Cela annulera votre choix de témoins actuels.",
     "set_proxy": "Donner une procuration",
-    "disabled":"Disabled ",
-    "no_url_provided":"No URL provided",
-    "use_this_for_linking_title":"Use this for linking to this page and highlight the selected witness",
-    "has_not_produced_blocks":"⚠️Has not produced any blocks for over a week.",
-    "by":"by",
+    "disabled": "Disabled ",
+    "no_url_provided": "No URL provided",
+    "use_this_for_linking_title": "Use this for linking to this page and highlight the selected witness",
+    "has_not_produced_blocks": "⚠️Has not produced any blocks for over a week.",
+    "by": "by",
     "proxy_form": {
       "title": "Confirm Account Witness Proxy",
       "description": "You are about to remove your proxy.",
-      "set_proxy_to:":"Set proxy to: {{proxy}}",
+      "set_proxy_to:": "Set proxy to: {{proxy}}",
       "cancel_button": "Annuler",
       "ok": "OK"
     }
@@ -155,22 +157,24 @@
     "proposals": "Proposals",
     "started": "started",
     "finished": "finished",
-    "not started": "not started",
+    "not_started": "not started",
     "refund": "refund",
     "burn": "burn",
     "by": "par",
-    "for": "pour"
+    "for": " pour "
   },
   "login_form": {
     "title": "Utilisateurs de retour: ",
     "title_action_login": "Se connecter",
     "title_action_login_to_vote": "S'identifier pour voter",
+    "title_confirm_password": "Confirmez le mot de passe",
     "username_placeholder": "Entrez votre nom d'utilisateur",
     "password_placeholder": "Mot de passe ou WIF",
     "use_hiveauth": "Use HiveAuth",
     "keep_me_logged_in": "Gardez-moi connecté",
     "more_login_methods": "plus de méthodes de connexion",
     "login_button": "Se connecter",
-    "cancel_button": "Annuler"
+    "cancel_button": "Annuler",
+    "this_operation_requires_your_key_or_master_password": "Cette opération nécessite votre clé {{authType}} ou votre mot de passe principal."
   }
 }

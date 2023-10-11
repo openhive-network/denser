@@ -2,7 +2,7 @@
   "global": {
     "time": "",
     "loading": "Wczytywanie",
-    "something_went_wrong":"Something went wrong"
+    "something_went_wrong": "Something went wrong"
   },
   "navigation": {
     "main_nav_bar": {
@@ -21,7 +21,9 @@
       "developer_portal": "Dokumentacja Hive API",
       "hive_whitepaper": "Oficjalna księga Hive",
       "privacy_policy": "Polityka prywatności",
-      "terms_of_service": "Warunki korzystania z usługi"
+      "terms_of_service": "Warunki korzystania z usługi",
+      "currency_market": "Currency Market",
+      "third_party_exchanges": "Zewnętrzne giełdy:"
     },
     "profil_navbar": {
       "blog": "Blog",
@@ -111,7 +113,7 @@
     "trade_history": "Historia transakcji",
     "newer": "Nowsze",
     "older": "Starsze",
-    "date":"Data"
+    "date": "Data"
   },
   "witnesses_page": {
     "title": "Głosowanie na delegatów",
@@ -138,15 +140,15 @@
     "vote_description": "Jeśli chcesz zagłosować na delegata spoza pierwszej 100, podaj nazwę konta na które chcesz oddać głos.",
     "proxy_description": "Możesz również wybrać pełnomocnika, który zagłosuje na delegatów za ciebie. Wybór pełnomocnika wyczyści twoje bieżące głosy.",
     "set_proxy": "Ustaw pełnomocnika",
-    "disabled":"Disabled ",
-    "no_url_provided":"No URL provided",
-    "use_this_for_linking_title":"Use this for linking to this page and highlight the selected witness",
-    "has_not_produced_blocks":"⚠️Has not produced any blocks for over a week.",
-    "by":"by", 
+    "disabled": "Disabled ",
+    "no_url_provided": "No URL provided",
+    "use_this_for_linking_title": "Use this for linking to this page and highlight the selected witness",
+    "has_not_produced_blocks": "⚠️Has not produced any blocks for over a week.",
+    "by": "by",
     "proxy_form": {
       "title": "Potwierdź pełnomocnika",
       "description": "Usuwasz pełnomocnictwo.",
-      "set_proxy_to:":"Przekaż pełnomocnictwo: {{proxy}}",
+      "set_proxy_to:": "Przekaż pełnomocnictwo: {{proxy}}",
       "cancel_button": "Zamknij",
       "ok": "OK"
     }
@@ -155,22 +157,24 @@
     "proposals": "Propozycje",
     "started": "rozpoczęte",
     "finished": "zakończone",
-    "not started": "nie rozpoczęte",
+    "not_started": "nie rozpoczęte",
     "refund": "zrefundowane",
     "burn": "spalone",
     "by": "przez",
-    "for": "dla"
+    "for": " dla "
   },
   "login_form": {
     "title": "Powracający: ",
     "title_action_login": "Zaloguj się",
     "title_action_login_to_vote": "Zaloguj się, aby zagłosować",
+    "title_confirm_password": "Potwierdź hasło",
     "username_placeholder": "Podaj nazwę użytkownika",
     "password_placeholder": "Hasło lub WIF",
     "use_hiveauth": "Użyj HiveAuth",
     "keep_me_logged_in": "Nie wylogowuj mnie",
     "more_login_methods": "więcej metod logowania",
     "login_button": "Zaloguj się",
-    "cancel_button": "Anuluj"
+    "cancel_button": "Anuluj",
+    "this_operation_requires_your_key_or_master_password": "Ta operacja wymaga twojego klucza {{authType}} klub hasła głównego."
   }
 }

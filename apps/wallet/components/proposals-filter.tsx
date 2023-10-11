@@ -13,6 +13,7 @@ import {
 } from "@hive/ui/components/select";
 import { Icons } from "@hive/ui/components/icons";
 import { GetProposalsParams } from "../lib/hive";
+import { useTranslation } from 'next-i18next';
 
 export interface FilterProposalsProps {
   filterStatus: GetProposalsParams["status"];
@@ -30,6 +31,7 @@ export function ProposalsFilter({
   orderDirection,
   onOrderDirection,
 }: FilterProposalsProps) {
+  const { t } = useTranslation('common_wallet');
   const handleDirectionToggle = () =>
     onOrderDirection(
       orderDirection === "descending" ? "ascending" : "descending"
@@ -38,12 +40,12 @@ export function ProposalsFilter({
   return (
     <div className="flex flex-col justify-between gap-2 sm:my-1 sm:flex-row">
       <h1 className="text-xl font-semibold sm:self-center md:text-2xl xl:text-3xl" data-testid="proposals-header-name">
-        Proposals
+        {t('proposals_page.proposals')}
       </h1>
       <div className="flex justify-between" data-testid="proposals-sort-filter">
         <div className="flex gap-2 text-xs font-medium">
           <div>
-            <span>STATUS</span>
+            <span>{t('select_sort.sort_proposals.status')}</span>
             <Select
               defaultValue=""
               value={filterStatus}
@@ -54,17 +56,17 @@ export function ProposalsFilter({
               </SelectTrigger>
               <SelectContent data-testid="proposals-sort-filter-status-conntent">
                 <SelectGroup>
-                  <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
-                  <SelectItem value="expired">Expired</SelectItem>
-                  <SelectItem value="votable">Votable</SelectItem>
+                  <SelectItem value="all">{t('select_sort.sort_proposals.all')}</SelectItem>
+                  <SelectItem value="active">{t('select_sort.sort_proposals.active')}</SelectItem>
+                  <SelectItem value="inactive">{t('select_sort.sort_proposals.inactive')}</SelectItem>
+                  <SelectItem value="expired">{t('select_sort.sort_proposals.expired')}</SelectItem>
+                  <SelectItem value="votable">{t('select_sort.sort_proposals.votable')}</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
           </div>
           <div>
-            <span>ORDER BY</span>
+            <span>{t('select_sort.sort_proposals.order_by')}</span>
             <Select
               defaultValue=""
               value={orderValue}
@@ -75,10 +77,10 @@ export function ProposalsFilter({
               </SelectTrigger>
               <SelectContent data-testid="proposals-sort-filter-orderby-conntent">
                 <SelectGroup>
-                  <SelectItem value="by_creator">Creator</SelectItem>
-                  <SelectItem value="by_start_date">Start Date</SelectItem>
-                  <SelectItem value="by_end_date">End Date</SelectItem>
-                  <SelectItem value="by_total_votes">Total Votes</SelectItem>
+                  <SelectItem value="by_creator">{t('select_sort.sort_proposals.creator')}</SelectItem>
+                  <SelectItem value="by_start_date">{t('select_sort.sort_proposals.start_date')}</SelectItem>
+                  <SelectItem value="by_end_date">{t('select_sort.sort_proposals.end_date')}</SelectItem>
+                  <SelectItem value="by_total_votes">{t('select_sort.sort_proposals.total_votes')}</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>

@@ -2,7 +2,7 @@
   "global": {
     "time": "",
     "loading": "正在载入",
-    "something_went_wrong":"Something went wrong"
+    "something_went_wrong": "Something went wrong"
   },
   "navigation": {
     "main_nav_bar": {
@@ -21,7 +21,9 @@
       "developer_portal": "Hive API文档",
       "hive_whitepaper": "Hive白皮书",
       "privacy_policy": "隐私政策",
-      "terms_of_service": "服务条款"
+      "terms_of_service": "服务条款",
+      "currency_market": "Currency Market",
+      "third_party_exchanges": "Third-party exchanges:"
     },
     "profil_navbar": {
       "blog": "博客",
@@ -54,8 +56,8 @@
       "votable": "Votable",
       "order_by": "Order by",
       "creator": "Creator",
-      "start_date": "Start date",
-      "end_date": "End date",
+      "start_date": "Start Date",
+      "end_date": "End Date",
       "total_votes": "Total Votes"
     }
   },
@@ -111,7 +113,7 @@
     "trade_history": "交易历史",
     "newer": "较新的",
     "older": "较旧的",
-    "date":"Date"
+    "date": "Date"
   },
   "witnesses_page": {
     "title": "见证人投票",
@@ -138,15 +140,15 @@
     "vote_description": "如果你想为100名以外的见证人投票，请输入帐户名称进行投票",
     "proxy_description": "你也可以指定代理人来代替你给见证人投票。这将重置你当前的见证人选择。",
     "set_proxy": "设置投票代理",
-    "disabled":"Disabled ",
-    "no_url_provided":"No URL provided",
-    "use_this_for_linking_title":"Use this for linking to this page and highlight the selected witness",
-    "has_not_produced_blocks":"⚠️Has not produced any blocks for over a week.",
-    "by":"by", 
+    "disabled": "Disabled ",
+    "no_url_provided": "No URL provided",
+    "use_this_for_linking_title": "Use this for linking to this page and highlight the selected witness",
+    "has_not_produced_blocks": "⚠️Has not produced any blocks for over a week.",
+    "by": "by",
     "proxy_form": {
       "title": "Confirm Account Witness Proxy",
       "description": "You are about to remove your proxy.",
-      "set_proxy_to:":"Set proxy to: {{proxy}}",
+      "set_proxy_to:": "Set proxy to: {{proxy}}",
       "cancel_button": "取消",
       "ok": "OK"
     }
@@ -155,22 +157,24 @@
     "proposals": "Proposals",
     "started": "started",
     "finished": "finished",
-    "not started": "not started",
+    "not_started": "not started",
     "refund": "refund",
     "burn": "burn",
     "by": "by",
-    "for": "for"
+    "for": " for "
   },
   "login_form": {
     "title": "返回用户:",
     "title_action_login": "登录",
     "title_action_login_to_vote": "登录后投票",
+    "title_confirm_password": "确认密码",
     "username_placeholder": "输入您的用户名",
     "password_placeholder": "密码或WIF",
     "use_hiveauth": "Use HiveAuth",
     "keep_me_logged_in": "保持登录状态",
     "more_login_methods": "更多登录方法",
     "login_button": "登录",
-    "cancel_button": "取消"
+    "cancel_button": "取消",
+    "this_operation_requires_your_key_or_master_password": "此操作需要您的{{authType}}密钥或主密码。"
   }
 }
