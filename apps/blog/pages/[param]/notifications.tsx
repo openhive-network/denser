@@ -23,13 +23,14 @@ export default function UserNotifications() {
 
   return (
     <LayoutProfile>
-      <div className='flex w-full flex-col'>
-        {data && data.length > 0 ? <NotificationActivities data={data} username={username} /> : <div
-          key='empty'
-          className='px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm'
-        >
-          @{username} hasn&apos;t had any notifications yet.
-        </div>}
+      <div className="flex w-full flex-col">
+        {data && data.length>0?<NotificationActivities data={data} username={username} />: <div
+                key="empty"
+                className="px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm"
+                data-testid="user-has-not-had-any-notifications-yet"
+              >
+                @{username} hasn&apos;t had any notifications yet.
+              </div>}
       </div>
     </LayoutProfile>
   );

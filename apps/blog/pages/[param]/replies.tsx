@@ -59,8 +59,9 @@ export default function UserReplies() {
               <RepliesList data={page} key={`replies-${index}`} />
             ) : (
               <div
-                key='empty'
-                className='px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm'
+                key="empty"
+                className="px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm"
+                data-testid="user-has-not-had-any-replies-yet"
               >
                 @{username} hasn&apos;t had any replies yet.
               </div>
