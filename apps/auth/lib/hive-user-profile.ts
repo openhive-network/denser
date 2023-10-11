@@ -49,7 +49,7 @@ export async function getHiveUserProfile(hiveUsername: string): Promise<HiveUser
         }
     } catch (error) {
         if (!chainAccount) {
-            logger.error(error);
+            // logger.error(error);
             throw error;
         }
     }
