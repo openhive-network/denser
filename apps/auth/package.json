@@ -16,16 +16,17 @@
         "@hive/tsconfig": "*",
         "@hive/ui": "*",
         "@next/bundle-analyzer": "^13.4.10",
+        "cors": "^2.8.5",
         "iron-session": "^6.3.1",
         "next": "13.4.10",
         "next-transpile-modules": "^10.0.1",
-        "nextjs-cors": "^2.1.2",
         "pino": "^8.15.0",
         "react-hook-form": "^7.45.1",
         "swr": "^2.2.2",
         "typescript": "5.1.6"
     },
     "devDependencies": {
+        "@types/cors": "^2.8.14",
         "git-revision-webpack-plugin": "^5.0.0",
         "pino-pretty": "^10.2.0"
     }

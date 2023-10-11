@@ -1,15 +1,4 @@
-import env from "@beam-australia/react-env";
-
-export interface ICorsOptions {
-    origin: boolean | string | RegExp | string[] | RegExp[] | (string|RegExp)[] | (() => unknown);
-    methods: string | string[];
-    allowedHeaders?: string | string[];
-    exposedHeaders?: string | string[];
-    credentials?: boolean;
-    maxAge?: number;
-    preflightContinue: boolean;
-    optionsSuccessStatus: number;
-}
+import { CorsOptions } from 'cors';
 
 const resolveOptionOrigin = (origin: string = ''): boolean | string => {
     console.log(origin);
@@ -30,7 +19,7 @@ const resolveOptionOrigin = (origin: string = ''): boolean | string => {
 // See https://github.com/yonycalsin/nextjs-cors
 // See https://github.com/expressjs/cors
 //
-export const corsOptions: ICorsOptions = {
+export const corsOptionsDefault: CorsOptions = {
     origin: resolveOptionOrigin(process.env.DENSER_SERVER_API_CORS_ALLOW_ORIGIN),
     methods: process.env.DENSER_SERVER_API_CORS_ALLOW_METHODS || "GET,HEAD,PUT,PATCH,POST,DELETE",
     allowedHeaders: process.env.DENSER_SERVER_API_CORS_ALLOW_HEADERS || undefined,

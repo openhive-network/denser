@@ -1,20 +1,30 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { withIronSessionApiRoute } from 'iron-session/next';
-import NextCors from 'nextjs-cors';
+import Cors, { CorsOptions } from 'cors';
 import type { User } from './user';
+import { runMiddleware } from '@/auth/lib/run-middleware';
 import { sessionOptions } from '@/auth/lib/session';
-import { corsOptions } from '@/auth/lib/cors-options';
+import { corsOptionsDefault } from '@/auth/lib/cors-options';
 import { getLogger } from "@hive/ui/lib/logging";
 import { getHiveUserProfile } from '@/auth/lib/hive-user-profile';
 
 const logger = getLogger('app');
 
+
+// Initializing the cors middleware. You can read more about the
+// available options here:
+// https://github.com/expressjs/cors#configuration-options.
+const corsOptions: CorsOptions = {
+  methods: ['HEAD', 'POST'],
+};
+const cors = Cors({
+  ...corsOptionsDefault,
+  ...corsOptions
+})
+
 async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
 
-  const corsOptionsLocal = {
-    methods: ['HEAD', 'POST'],
-  };
-  await NextCors(req, res, {...corsOptions, ...corsOptionsLocal});
+  await runMiddleware(req, res, cors)
 
   if (req.method === 'HEAD') {
     res.status(204).end();
@@ -31,10 +41,8 @@ async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
       await req.session.save();
       res.json(user);
     } catch (error) {
-      if (!res.status) {
-        res.status(500);
-      }
-      res.json({ message: (error as Error).message });
+      let status = 500 || res.status;
+      res.status(status).json({ message: (error as Error).message });
     }
   } else {
     res.status(405).end();
