@@ -7,6 +7,7 @@ import { useTradeHistory } from "./hooks/use-trade-history";
 import { useOrderBook } from "./hooks/use-order-book";
 import moment from "moment";
 import Chart from "./chart";
+import { useTranslation } from 'next-i18next';
 
 interface Market {
   hbd_volume: string;
@@ -63,12 +64,13 @@ const reduced = (data: OrdersItem[]) => {
   );
 };
 const TradeHive = ({ tickerData }: { tickerData: Market }) => {
+  const { t } = useTranslation('common_wallet');
   const { data, isLoading } = useTradeHive();
   const [inputAsk, setInputAsk] = useState(tickerData.lowest_ask.toFixed(6));
   const [inputBid, setInputBid] = useState(tickerData.highest_bid.toFixed(6));
-  const paramsBuy = ["Total HBD($)", "HBD($)", "Hive", "Price"];
-  const paramsSell = ["Price", "Hive", "HBD($)", "Total HBD($)"];
-  const paramsHistory = ["Date", "Price", "Hive", "HBD($)"];
+  const paramsBuy = [t('market_page.total')+ " HBD($)", "HBD($)", "Hive", t('market_page.price')];
+  const paramsSell = [t('market_page.price'), "Hive", "HBD($)", t('market_page.total')+ " HBD($)"];
+  const paramsHistory = [t('market_page.date'), t('market_page.price'), "Hive", "HBD($)"];
 
   if (!data.order || !data.recent || isLoading) {
     return <Loading loading />;
@@ -109,7 +111,7 @@ const TradeHive = ({ tickerData }: { tickerData: Market }) => {
           )}
           params={paramsBuy}
           type="buy"
-          label="Buy Order"
+          label={t('market_page.buy_orders') }
           handleSetterPrices={handleSetterPrices}
         />
         <MarketTable
@@ -118,7 +120,7 @@ const TradeHive = ({ tickerData }: { tickerData: Market }) => {
           )}
           params={paramsSell}
           type="sell"
-          label="Sell Order"
+          label={t('market_page.sell_orders') }
           handleSetterPrices={handleSetterPrices}
         />
       </div>
@@ -126,7 +128,7 @@ const TradeHive = ({ tickerData }: { tickerData: Market }) => {
         <HistoryTable
           data={data.recent.sort((a, b) => moment(b.date).diff(moment(a.date)))}
           params={paramsHistory}
-          label="Trade History"
+          label={t('market_page.trade_history') }
         />
       </div>
     </div>

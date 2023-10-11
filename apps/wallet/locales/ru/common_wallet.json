@@ -1,0 +1,178 @@
+{
+  "global": {
+    "time": "",
+    "loading": "Загрузка",
+    "something_went_wrong":"Something went wrong"
+  },
+  "navigation": {
+    "main_nav_bar": {
+      "login": "Войти",
+      "sign_up": "Регистрация"
+    },
+    "sidebar": {
+      "welcome": "Добро пожаловать",
+      "faq": "ЧаВО",
+      "vote_for_witnesses": "Проголосовать за делегатов",
+      "hive_proposals": "Hive Proposals",
+      "blocktrades": "Blocktrades",
+      "ionomy": "Ionomy",
+      "openhive_chat": "Чат Hive",
+      "apps_built_on_hive": "Центр приложений Hive",
+      "developer_portal": "API-документация Hive",
+      "hive_whitepaper": "Белая книга Hive",
+      "privacy_policy": "Политика Конфиденциальности",
+      "terms_of_service": "Условия пользования"
+    },
+    "profil_navbar": {
+      "blog": "Блог",
+      "rewards": "вознаграждение",
+      "curation_rewards": "Кураторские вознаграждения",
+      "author_rewards": "Авторские вознаграждения",
+      "wallet": "Кошелек"
+    },
+    "wallet_nav": {
+      "balances": "Балансы",
+      "delegations": "Delegations"
+    }
+  },
+  "select_sort": {
+    "sort_account_history": {
+      "filters": "Filters",
+      "rewards": "Rewards",
+      "incoming": "Incoming",
+      "outgoing": "Outgoing",
+      "exclude_less_than_one": "Exclude less than 1 HBD/HIVE",
+      "input_title": "Search by user",
+      "input_placeholder": "Имя пользователя"
+    },
+    "sort_proposals": {
+      "status": "Status",
+      "all": "All",
+      "active": "Active",
+      "inactive": "Inactive",
+      "expired": "Expired",
+      "votable": "Votable",
+      "order_by": "Order by",
+      "creator": "Creator",
+      "start_date": "Start date",
+      "end_date": "End date",
+      "total_votes": "Total Votes"
+    }
+  },
+  "wallet_index": {
+    "title": "Hive wallet login",
+    "content": "Welcome to Hive's official Hive blockchain wallet. Use it to transfer Hive tokens, Power up, vote for Hive Witnesses and change your Hive profile details.",
+    "login_button": "Войти",
+    "card": {
+      "title": "Hive tokens",
+      "liquid_platform_token": "Liquid platform token",
+      "vesting_influence_token": "Vesting influence token",
+      "seeks_price_stability": "Seeks price stability with USD"
+    }
+  },
+  "profil": {
+    "joined": "Присоединился",
+    "hive_description": "Ликвидные цифровые токены, которые могут переданы куда угодно в любой момент. HIVE может быть конвертирован в HIVE POWER, этот процесс называется \"увеличение Силы Голоса\".",
+    "hp_description": "Токены дают вам возможность влиять на вознаграждения за контент, а также возможность зарабатывать на курации контента. Часть HIVE POWER вам делегирована, это увеличивает ваше влияние на платформе. Количество делегированных токенов со временем может изменяться. HIVE POWER increases at an APR of approximately 3.07%, subject to blockchain variance. {{link}}.",
+    "hive_dolar_description": "Ликвидные цифровые токены, которые могут переданы куда угодно в любой момент.",
+    "savings_title": "Сберегательный счет",
+    "savings_description": "Вывод баланса из сейфа на обычный счет, занимает 3 дня, HBD interest rate: 20.00% APR (as voted by the {{link}})",
+    "estimated_account_value_title": "Приблизительная стоимость аккаунта",
+    "estimated_account_value_description": "Сметная стоимость основана на среднем значении %(LIQUID_TOKEN)s в долларах США.",
+    "account_history_title": "ИСТОРИЯ",
+    "account_history_description": "Остерегайтесь спама и фишинговых ссылок в передачах. Не открывайте ссылки от пользователей, которым вы не доверяете. Не предоставляйте свои личные ключи третьим сторонам. Transactions will not show until they are confirmed on the blockchain, which may take a few minutes.",
+    "account_history_list": {
+      "claim_reward_balance": {
+        "three_rewards": "Claim rewards: {{first_reward}}, {{second_reward}} and {{third_reward}}",
+        "two_rewards": "Claim rewards: {{first_reward}} and {{second_reward}}",
+        "one_reward": "Claim rewards: {{reward}}"
+      },
+      "transfer_to_savings": "Transfer to savings {{value}} to {{username}}",
+      "Received 0.008 HIVE from reward.app": "Received {{value}} from {{username}}"
+    }
+  },
+  "market_page": {
+    "last_price": "Последняя цена",
+    "volume": "Объем за 24 часа",
+    "bid": "Покупка",
+    "ask": "Продажа",
+    "spread": "Спред",
+    "buy_hive": "Купить HIVE",
+    "sell_hive": "Продать HIVE",
+    "price": "Цена",
+    "amount": "Количество",
+    "total": "Итого",
+    "lowest_ask": "Лучшая цена продажи",
+    "highest_bid": "Лучшая цена покупки",
+    "buy_orders": "Заказы на покупку",
+    "sell_orders": "Заказы на продажу",
+    "lower": "Дешевле",
+    "higher": "Дороже",
+    "trade_history": "История сделок",
+    "newer": "Новее",
+    "older": "Старее",
+    "date":"Date"
+  },
+  "witnesses_page": {
+    "title": "Топ делегатов",
+    "you_have_votes_remaining": {
+      "zero": "У Вас не осталось голосов.",
+      "one": "У Вас остался 1 голос.",
+      "other": "У Вас осталось {{value}} голосов.",
+      "few": "У Вас осталось {{value}} голоса.",
+      "many": "У Вас осталось {{value}} голосов."
+    },
+    "you_can_vote_for_maximum_of_witnesses": "Вы можете голосовать максимум за 30 делегатов",
+    "witness_list_notes": "Notes: in the list below, the first 100 witnesses are unfiltered, this includes active and inactive witnesses. Past the rank of 100, witnesses will be filtered out of the list if they have not produced any block for the last 30 days.",
+    "rank": "Rank",
+    "witness": "Witness",
+    "votes_received": "Votes received",
+    "price_feed": "Price feed",
+    "vote": "vote",
+    "navigate_to_witness_profile": "Navigate to this user's profile",
+    "last_block": "Last block ",
+    "just_now": "just now on {{value}}",
+    "recently": "recently {{value}}",
+    "witness_age": "Witness age: ",
+    "open_external_site": "Open external site",
+    "open_witness_annoucement": "пост делегата",
+    "hp_required_to_rank_up": "Need {{value}} to level up",
+    "vote_description": "Если вы хотите проголосовать за делегата вне top 100, введите имя аккаунта ниже.",
+    "proxy_description": "Вы также можете выбрать прокси, который будет вместо вас голосовать за делегатов. Это сбросит ваш текущий выбор делегата.",
+    "set_proxy": "Установить прокси",
+    "disabled":"Disabled ",
+    "no_url_provided":"No URL provided",
+    "use_this_for_linking_title":"Use this for linking to this page and highlight the selected witness",
+    "has_not_produced_blocks":"⚠️Has not produced any blocks for over a week.",
+    "by":"by",
+    "proxy_form": {
+      "title": "Confirm Account Witness Proxy",
+      "description": "You are about to remove your proxy.",
+      "set_proxy_to:":"Set proxy to: {{proxy}}",
+      "cancel_button": "Отмена",
+      "ok": "OK"
+    }
+  },
+  "proposals_page": {
+    "proposals": "Proposals",
+    "started": "started",
+    "finished": "finished",
+    "not started": "not started",
+    "refund": "refund",
+    "burn": "burn",
+    "by": "by",
+    "for": "for"
+  },
+  "login_form": {
+    "title": "Вернувшиеся пользователи: ",
+    "title_action_login": "Войти",
+    "title_action_login_to_vote": "Войти, чтобы проголосовать",
+    "username_placeholder": "Введи свое имя пользователя",
+    "password_placeholder": "Пароль или WIF",
+    "use_hiveauth": "Use HiveAuth",
+    "keep_me_logged_in": "Оставить меня залогиненным",
+    "more_login_methods": "больше методов входа",
+    "login_button": "Войти",
+    "cancel_button": "Отмена"
+  }
+}

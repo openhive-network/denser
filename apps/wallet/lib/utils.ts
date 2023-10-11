@@ -1,5 +1,5 @@
-import { convertStringToBig } from "@hive/ui/lib/helpers";
-import { DynamicGlobalProperties } from "@hive/ui/lib/hive";
+import { convertStringToBig } from '@hive/ui/lib/helpers';
+import { DynamicGlobalProperties } from '@hive/ui/lib/hive';
 
 export function getCurrentHpApr(data: DynamicGlobalProperties) {
   // The inflation was set to 9.5% at block 7m
@@ -32,4 +32,17 @@ export function getCurrentHpApr(data: DynamicGlobalProperties) {
     .times(currentInflationRate)
     .times(vestingRewardPercent)
     .div(totalVestingFunds);
+}
+
+export function parseCookie(cookie: string): Record<string, string> {
+  const kv: Record<string, string> = {};
+
+  if (!cookie) return kv;
+
+  cookie.split(';').forEach((part) => {
+    const [k, v] = part.split('=');
+    kv[k] = v;
+  });
+
+  return kv;
 }

@@ -1,0 +1,176 @@
+{
+  "global": {
+    "time": "",
+    "loading": "正在载入",
+    "something_went_wrong":"Something went wrong"
+  },
+  "navigation": {
+    "main_nav_bar": {
+      "login": "登录",
+      "sign_up": "注册"
+    },
+    "sidebar": {
+      "welcome": "欢迎",
+      "faq": "常见问题",
+      "vote_for_witnesses": "投票给见证人",
+      "hive_proposals": "Hive Proposals",
+      "blocktrades": "Blocktrades",
+      "ionomy": "Ionomy",
+      "openhive_chat": "Hive聊天",
+      "apps_built_on_hive": "Hive应用中心",
+      "developer_portal": "Hive API文档",
+      "hive_whitepaper": "Hive白皮书",
+      "privacy_policy": "隐私政策",
+      "terms_of_service": "服务条款"
+    },
+    "profil_navbar": {
+      "blog": "博客",
+      "rewards": "奖励",
+      "curation_rewards": "审查奖励",
+      "author_rewards": "作者奖励",
+      "wallet": "钱包"
+    },
+    "wallet_nav": {
+      "balances": "余额",
+      "delegations": "Delegations"
+    }
+  },
+  "select_sort": {
+    "sort_account_history": {
+      "filters": "Filters",
+      "rewards": "Rewards",
+      "incoming": "Incoming",
+      "outgoing": "Outgoing",
+      "exclude_less_than_one": "Exclude less than 1 HBD/HIVE",
+      "input_title": "Search by user",
+      "input_placeholder": "username"
+    },
+    "sort_proposals": {
+      "status": "Status",
+      "all": "All",
+      "active": "Active",
+      "inactive": "Inactive",
+      "expired": "Expired",
+      "votable": "Votable",
+      "order_by": "Order by",
+      "creator": "Creator",
+      "start_date": "Start date",
+      "end_date": "End date",
+      "total_votes": "Total Votes"
+    }
+  },
+  "wallet_index": {
+    "title": "Hive wallet login",
+    "content": "Welcome to Hive's official Hive blockchain wallet. Use it to transfer Hive tokens, Power up, vote for Hive Witnesses and change your Hive profile details.",
+    "login_button": "登录",
+    "card": {
+      "title": "Hive tokens",
+      "liquid_platform_token": "Liquid platform token",
+      "vesting_influence_token": "Vesting influence token",
+      "seeks_price_stability": "Seeks price stability with USD"
+    }
+  },
+  "profil": {
+    "joined": "加入",
+    "hive_description": "可交易代币可以在任何时候发送到任何地方。HIVE可以在一个被称为Power Up的过程中被转换成HIVE POWER",
+    "hp_description": "代币的影响力可以使你对文章的赏金有更大的控制权，并可以获得审查奖励。 有一部分HIVE POWER是代理给你使用的。代理的HIVE POWER是为了帮助新用户在hive.blog上进行操作。你被代理的数量可能会有波动。HIVE POWER increases at an APR of approximately 3.07%, subject to blockchain variance. {{link}}.",
+    "hive_dolar_description": "可交易代币可以在任何时候发送到任何地方。",
+    "savings_title": "储蓄",
+    "savings_description": "余额取决于3天的提款等待期，HBD interest rate: 20.00% APR (as voted by the {{link}})",
+    "estimated_account_value_title": "账户估值",
+    "estimated_account_value_description": "基于美元计算，HIVE的估值。",
+    "account_history_title": "历史",
+    "account_history_description": "Beware of spam and phishing links in transfer memos. Do not open links from users you do not trust. Do not provide your private keys to any third party websites. Transactions will not show until they are confirmed on the blockchain, which may take a few minutes.",
+    "account_history_list": {
+      "claim_reward_balance": {
+        "three_rewards": "Claim rewards: {{first_reward}}, {{second_reward}} and {{third_reward}}",
+        "two_rewards": "Claim rewards: {{first_reward}} and {{second_reward}}",
+        "one_reward": "Claim rewards: {{reward}}"
+      },
+      "transfer_to_savings": "Transfer to savings {{value}} to {{username}}",
+      "Received 0.008 HIVE from reward.app": "Received {{value}} from {{username}}"
+    }
+  },
+  "market_page": {
+    "last_price": "上一个成交价格",
+    "volume": "24小时交易量",
+    "bid": "买价",
+    "ask": "卖价",
+    "spread": "波动",
+    "buy_hive": "购买 HIVE",
+    "sell_hive": "卖出 HIVE",
+    "price": "价格",
+    "amount": "数量",
+    "total": "总量",
+    "lowest_ask": "最低卖价",
+    "highest_bid": "最高买价",
+    "buy_orders": "买单",
+    "sell_orders": "卖单",
+    "higher": "更高的",
+    "lower": "更低的",
+    "trade_history": "交易历史",
+    "newer": "较新的",
+    "older": "较旧的",
+    "date":"Date"
+  },
+  "witnesses_page": {
+    "title": "见证人投票",
+    "you_have_votes_remaining": {
+      "zero": "你无剩余选票.",
+      "one": "你还剩1张选票.",
+      "other": "你还剩{{value}}张选票."
+    },
+    "you_can_vote_for_maximum_of_witnesses": "你最多可以投票30位见证人",
+    "witness_list_notes": "Notes: in the list below, the first 100 witnesses are unfiltered, this includes active and inactive witnesses. Past the rank of 100, witnesses will be filtered out of the list if they have not produced any block for the last 30 days.",
+    "rank": "Rank",
+    "witness": "Делегаты",
+    "votes_received": "Votes received",
+    "price_feed": "Price feed",
+    "vote": "vote",
+    "navigate_to_witness_profile": "Navigate to this user's profile",
+    "last_block": "Last block ",
+    "just_now": "just now on {{value}}",
+    "recently": "recently {{value}}",
+    "witness_age": "Witness age: ",
+    "open_external_site": "Open external site",
+    "open_witness_annoucement": "见证人帖子",
+    "hp_required_to_rank_up": "Need {{value}} to level up",
+    "vote_description": "如果你想为100名以外的见证人投票，请输入帐户名称进行投票",
+    "proxy_description": "你也可以指定代理人来代替你给见证人投票。这将重置你当前的见证人选择。",
+    "set_proxy": "设置投票代理",
+    "disabled":"Disabled ",
+    "no_url_provided":"No URL provided",
+    "use_this_for_linking_title":"Use this for linking to this page and highlight the selected witness",
+    "has_not_produced_blocks":"⚠️Has not produced any blocks for over a week.",
+    "by":"by", 
+    "proxy_form": {
+      "title": "Confirm Account Witness Proxy",
+      "description": "You are about to remove your proxy.",
+      "set_proxy_to:":"Set proxy to: {{proxy}}",
+      "cancel_button": "取消",
+      "ok": "OK"
+    }
+  },
+  "proposals_page": {
+    "proposals": "Proposals",
+    "started": "started",
+    "finished": "finished",
+    "not started": "not started",
+    "refund": "refund",
+    "burn": "burn",
+    "by": "by",
+    "for": "for"
+  },
+  "login_form": {
+    "title": "返回用户:",
+    "title_action_login": "登录",
+    "title_action_login_to_vote": "登录后投票",
+    "username_placeholder": "输入您的用户名",
+    "password_placeholder": "密码或WIF",
+    "use_hiveauth": "Use HiveAuth",
+    "keep_me_logged_in": "保持登录状态",
+    "more_login_methods": "更多登录方法",
+    "login_button": "登录",
+    "cancel_button": "取消"
+  }
+}

@@ -15,12 +15,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@hive/ui/components/dropdown-menu";
+import { useTranslation } from 'next-i18next';
 
 interface IProfileLayout {
   children: React.ReactNode;
 }
 
 const ProfileLayout = ({ children }: IProfileLayout) => {
+  const { t } = useTranslation('common_wallet');
   const router = useRouter();
   const { username } = useSiteParams();
   const {
@@ -109,7 +111,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               <li className="flex items-center">
                 <Icons.calendarHeart className="m-1" />
                 <span data-testid="user-joined">
-                  Joined{" "}
+                {t('profil.joined')}{" "}
                   {profileData?.created
                     ? dateToShow(profileData.created)
                     : null}
@@ -143,25 +145,25 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     }
                     `}
                   >
-                    Blog
+                    {t('navigation.profil_navbar.blog')}
                   </Link>
                 </li>
                 <li>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <div className="flex h-full items-center px-2 hover:bg-white hover:text-slate-800 cursor-pointer">
-                        Rewards <span className="m-1 rotate-180">^</span>
+                      {t('navigation.profil_navbar.rewards')} <span className="m-1 rotate-180">^</span>
                       </div>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56">
                       <Link href={`/@${username}/curation-rewards`}>
                         <DropdownMenuItem className="cursor-pointer">
-                          Curation rewards
+                        {t('navigation.profil_navbar.curation_rewards')}
                         </DropdownMenuItem>{" "}
                       </Link>
                       <Link href={`/@${username}/author-rewards`}>
                         <DropdownMenuItem className="cursor-pointer">
-                          Author rewards
+                        {t('navigation.profil_navbar.author_rewards')}
                         </DropdownMenuItem>
                       </Link>
                     </DropdownMenuContent>
@@ -181,7 +183,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                         : ""
                     )}
                   >
-                    Wallet
+                    {t('navigation.profil_navbar.wallet')}
                   </Link>
                 </li>
               </ul>

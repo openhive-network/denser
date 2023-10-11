@@ -6,14 +6,16 @@ import {
   SelectTrigger,
   SelectValue
 } from '@hive/ui/components/select';
+import { useTranslation } from 'next-i18next';
 
 const PostSelectFilter = ({
-  filter,
-  handleChangeFilter
-}: {
+                            filter,
+                            handleChangeFilter
+                          }: {
   filter: string | null;
   handleChangeFilter: (e: string) => void;
 }) => {
+  const { t } = useTranslation('common_blog');
   const defaultValue = 'trending';
   return (
     <Select
@@ -23,16 +25,16 @@ const PostSelectFilter = ({
         handleChangeFilter(e);
       }}
     >
-      <SelectTrigger className="bg-white dark:bg-background/95 dark:text-white" data-testid="posts-filter">
-        <SelectValue placeholder="Select a filter" />
+      <SelectTrigger className='bg-white dark:bg-background/95 dark:text-white' data-testid='posts-filter'>
+        <SelectValue placeholder='Select a filter' />
       </SelectTrigger>
-      <SelectContent data-testid="posts-filter-list">
+      <SelectContent data-testid='posts-filter-list'>
         <SelectGroup>
-          <SelectItem value="trending">Trending</SelectItem>
-          <SelectItem value="hot">Hot</SelectItem>
-          <SelectItem value="created">New</SelectItem>
-          <SelectItem value="payout">Payouts</SelectItem>
-          <SelectItem value="muted">Muted</SelectItem>
+          <SelectItem value='trending'>{t('select_sort.posts_sort.trending')}</SelectItem>
+          <SelectItem value='hot'>{t('select_sort.posts_sort.hot')}</SelectItem>
+          <SelectItem value='created'>{t('select_sort.posts_sort.new')}</SelectItem>
+          <SelectItem value='payout'>{t('select_sort.posts_sort.payouts')}</SelectItem>
+          <SelectItem value='muted'>{t('select_sort.posts_sort.muted')}</SelectItem>
         </SelectGroup>
       </SelectContent>
     </Select>

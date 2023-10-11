@@ -5,6 +5,9 @@ import LayoutProfile from '@/blog/components/common/profile-layout';
 import NotificationActivities from '@/blog/components/notification-activities';
 import { useSiteParams } from '@hive/ui/components/hooks/use-site-params';
 import Loading from '@hive/ui/components/loading';
+import { GetServerSideProps } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { i18n } from '@/blog/next-i18next.config';
 
 export default function UserNotifications() {
   const { username } = useSiteParams();
@@ -20,14 +23,22 @@ export default function UserNotifications() {
 
   return (
     <LayoutProfile>
-      <div className="flex w-full flex-col">
-        {data &&data.length>0?<NotificationActivities data={data} username={username} />: <div
-                key="empty"
-                className="px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm"
-              >
-                @{username} hasn&apos;t had any notifications yet.
-              </div>}
+      <div className='flex w-full flex-col'>
+        {data && data.length > 0 ? <NotificationActivities data={data} username={username} /> : <div
+          key='empty'
+          className='px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm'
+        >
+          @{username} hasn&apos;t had any notifications yet.
+        </div>}
       </div>
     </LayoutProfile>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_blog']))
+    }
+  };
+};

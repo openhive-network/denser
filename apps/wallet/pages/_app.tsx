@@ -1,10 +1,21 @@
-import "@hive/tailwindcss-config/globals.css";
-import type { AppProps } from "next/app";
-import { lazy, Suspense } from "react";
+import '@hive/tailwindcss-config/globals.css';
+import type { AppProps } from 'next/app';
+import { lazy, Suspense, useEffect } from 'react';
+import { appWithTranslation } from 'next-i18next';
+import { i18n } from 'next-i18next.config';
+import { parseCookie } from '@/wallet/lib/utils';
 
-const Providers = lazy(() => import("@/wallet/components/common/providers"));
+const Providers = lazy(() => import('@/wallet/components/common/providers'));
 
-export default function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
+  useEffect(() => {
+    const cookieStore = parseCookie(document.cookie);
+
+    if (!cookieStore.hasOwnProperty('NEXT_LOCALE')) {
+      document.cookie = `NEXT_LOCALE=${i18n.defaultLocale};path=/`;
+    }
+  }, []);
+
   return (
     <Suspense fallback={<span>Loading...</span>}>
       <Providers>
@@ -13,3 +24,5 @@ export default function App({ Component, pageProps }: AppProps) {
     </Suspense>
   );
 }
+
+export default appWithTranslation(App);

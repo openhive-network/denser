@@ -1,0 +1,262 @@
+{
+  "global": {
+    "time": ""
+  },
+  "navigation": {
+    "main_nav_bar": {
+      "posts": "Posty",
+      "proposals": "Propozycje",
+      "witnesses": "Delegaci",
+      "out_dapps": "Nasze dApps",
+      "login": "Zaloguj się",
+      "sign_up": "Zapisz się",
+      "search": "Szukaj..."
+    },
+    "sidebar": {
+      "welcome": "Witaj",
+      "stolen_account_recovery": "Odzyskiwanie skradzionego konta",
+      "change_account_password": "Zmiana hasła konta",
+      "vote_for_witnesses": "Głosuj na delegatów",
+      "faq": "FAQ",
+      "hive_proposals": "Hive, Propozycje",
+      "openhive_chat": "OpenHive Czat",
+      "developer_portal": "Dokumentacja Hive API",
+      "hive_whitepaper": "Oficjalna księga Hive",
+      "privacy_policy": "Polityka prywatności",
+      "terms_of_service": "Warunki korzystania z usługi"
+    },
+    "communities_nav": {
+      "all_posts": "Wszystkie posty",
+      "trending_communities": "Popularne Społeczności",
+      "explore_communities": "Pokaż więcej społeczności..."
+    },
+    "explore_nav": {
+      "explore_hive": " Dowiedz się wiecej o Hive",
+      "what_is_hive": "Czym jest Hive",
+      "hive_dapps": "Hive dApps",
+      "blockexplorer": "Blockexplorer",
+      "vote_for_witnesses": "Głosuj na delegatów",
+      "hive_proposals": "Hive, Propozycje"
+    },
+    "profil_navbar": {
+      "blog": "Blog",
+      "posts": "Posty",
+      "replies": "Odpowiedzi",
+      "social": "Społecznościowe",
+      "notifications": "Powiadomienia",
+      "wallet": "Portfel"
+    },
+    "profil_posts_tab_navbar": {
+      "posts": "Posty",
+      "comments": "Komentarze",
+      "payouts": "Wynagrodzenia"
+    },
+    "profil_social_tab_navbar": {
+      "badges": "Odznaki",
+      "activity": "Aktywności",
+      "personal": "Osobiste",
+      "meetups": "Okolicznościowe",
+      "challenges": "Wyzwania"
+    },
+    "profil_notifications_tab_navbar": {
+      "all": "Wszystkie",
+      "replies": "Odpowiedzi",
+      "mentions": "Wzmianki",
+      "follows": "Obserwocje",
+      "upvotes": "Głosy za",
+      "reblogs": "Reblogi"
+    }
+  },
+  "select_sort": {
+    "posts_sort": {
+      "trending": "Popularne",
+      "hot": "Gorące",
+      "new": "Nowe",
+      "payouts": "Wynagrodzenia",
+      "muted": "Wyciszone"
+    },
+    "sort_comments": {
+      "trending": "Popularność",
+      "votes": "Liczba głosów",
+      "age": "Wiek"
+    },
+    "search_sorter": {
+      "newest": "Najnowsze",
+      "popularity": "Popularność",
+      "relevance": "Znaczące"
+    }
+  },
+  "cards": {
+    "reblogged": "zreblogowano",
+    "badges": {
+      "pinned": "Przypięty"
+    },
+    "post_card": {
+      "reputation_title": "Repytacja",
+      "in": "w",
+      "upvote": "Głos za",
+      "downvote": "Głos przeciw",
+      "no_votes": "Brak głosów",
+      "vote": "1 głos",
+      "votes": "{{votes}} głosów",
+      "no_responses": "Brak odpowiedzi. ",
+      "response": "1 odpowiedź. ",
+      "responses": "{{responses}} odpowiedzi. ",
+      "click_to_respond": "Kliknij by odpowiedzieć",
+      "reblog": "Reblog"
+    }
+  },
+  "amount_hover_card": {
+    "pending_payout_amount": "Wypłacana kwota: ${{value}}",
+    "breakdown": "Podział:",
+    "payout_in": "Wypłata za",
+    "past_payouts": "cześniejsze wypłaty ${{value}}",
+    "author": "Autor ${{value}}",
+    "curators": "Kuratorzy ${{value}}"
+  },
+  "login_form": {
+    "title": "Powracający: ",
+    "title_action_login": "Zaloguj się",
+    "title_action_login_to_vote": "Zaloguj się, aby zagłosować",
+    "username_placeholder": "Podaj nazwę użytkownika",
+    "password_placeholder": "Hasło lub WIF",
+    "use_hiveauth": "Użyj HiveAuth",
+    "keep_me_logged_in": "Nie wylogowuj mnie",
+    "more_login_methods": "więcej metod logowania",
+    "login_button": "Zaloguj się",
+    "cancel_button": "Anuluj"
+  },
+  "user_profil": {
+    "reputation": "Reputacja",
+    "follow_button": "Obserwuj",
+    "hive_buzz_badge_title": "To level odznaki użytkownika {{username}} zdobyte z programu Hivebuzz",
+    "twitter_badge_title": "By zdobyć odznake Twittera, podlinkuj twoje konto na HivePosh.com",
+    "joined": "Dołączono",
+    "active": "Ostatnia aktywność",
+    "lists": {
+      "follower_count": {
+        "zero": "Brak obserwujących",
+        "one": "1 obserwujący",
+        "other": "{{value}} obserwujących"
+      },
+      "followed_count": {
+        "zero": "Brak obserwowanych",
+        "one": "1 obserwowany",
+        "other": "{{value}} obserwowanych"
+      },
+      "post_count": {
+        "zero": "Brak wpisów",
+        "one": "1 wpis",
+        "other": "{{value}} wpisów"
+      },
+      "blacklisted_users": "Użytkownicy na Czarnej Liście",
+      "muted_users": "Wyciszeni użytkownicy",
+      "followed_blacklists": "Obserwowane Czarne Listy",
+      "followed_muted_lists": "Obserwowane Wyciszone Listy",
+      "followers_pages": "Obserwujący, strona {{current}} z {{total}}",
+      "followed_pages": "Obserwowani, strona {{current}} z {{total}}",
+      "list": {
+        "what_is_this": "Co to jest?",
+        "show_or_hide_descripton": "This is the new decentralized list system. From here you can manage your own mute list or blacklist, as well as subscribe to the mute lists and blacklists of other users. There are some new fields on the {{settings_link}} page where you can set a description of how you choose who you've added to your lists and if there are any actions that account can take to get removed from them. You can see the descriptions of the lists of other accounts by browsing directly to their personal blacklist or mute list page. These links can be found on their profile page below the follower information. To get started, we recommend that you follow the blacklists/mute lists of these accounts: hive.blog",
+        "list_description": "Opis Listy: ",
+        "description_not_added": "Użytkownik nie dodwał jeszcze opisu do tej listy",
+        "empty_list": "Ta lista jest pusta",
+        "search_this_list": "Szukaj na tej liście",
+        "accounts_blacklisted_by": "Konta Zapisane na Czarną Liste przez {{username}}",
+        "accounts_muted_by": "Konta Wyciszone przez {{username}}",
+        "reset_options": "Zresetuj Opcje",
+        "reset_blacklist": "Zresetuj Czarną Liste",
+        "reset_muted_list": "Zresetuj Liste Wyciszonych",
+        "reset_followed_blacklists": "Zresetuj obserwowane Czarne Listy",
+        "reset_followed_muted_list": "Zresetuj obserwowane Listy Wyciszonych",
+        "reset_all_lists": "Zresetuj wszystkie Obserwacje/Listy",
+        "busy_button": "Proszę czekać",
+        "first_button": "Pierwsza",
+        "previous_button": "Poprzednia",
+        "next_button": "Następna",
+        "last_button": "Ostatnia",
+        "viewing_page": "Strona numer {{current}} z {{total}}",
+        "users_on_list": "Użytkowników na Liście jest: {{number}}"
+      }
+    },
+    "social_tab": {
+      "community_subscriptions_title": "Subskrypcje społeczności",
+      "the_author_has_subscribed_to_the_following": "Autor zasubskrybował poniższe Społeczności Hive",
+      "badges_and_achievements_title": "Odznaki i osiągnięcia",
+      "these_are_badges_received_by_the_author": "Są to odznaki otrzymane przez autora za pośrednictwem zewnętrznych aplikacji {{peakd}} i {{hivebuzz}}."
+    },
+    "notifications_tab": {
+      "voted_on_your_post": "@{{username}} zagłosował na twój post {{amount}}",
+      "replied_on_your_post": "@{{username}} odpowiedzial na twój post",
+      "replied_to_your_comment": "@{{username}} dpowiedzial na twój komentarz",
+      "reblogged_on_your_post": "@{{username}} zreblogował twój post",
+      "followed_you": "@{{username}} zaobserwował twój profil",
+      "mentioned_you_and_others": "@{{username}} wspomniał o tobie i {{others}} innych osobach",
+      "subscribed_to": "@{{username}} zasubskrybował społeczność {{community}}"
+    }
+  },
+  "communities": {
+    "latest_subscribers": "Ostatnie subskrypcje {{username}}",
+    "buttons": {
+      "subscribe": "Subskrybuj",
+      "new_post": "Nowy post",
+      "activity_log": "Dziennik aktywności",
+      "subscribers": "Subskrybenci"
+    },
+    "titles": {
+      "pending_rewards": "spodziewane nagrody",
+      "active_posters": "aktywni postujący",
+      "leadership": "Przewodniczący",
+      "description": "Opis",
+      "rules": "Zasady",
+      "language": "Języki"
+    }
+  },
+  "post_content": {
+    "in": "w",
+    "reputation_title": "Reputacja",
+    "if_comment": {
+      "you_are_viewing_a_single_comments_thread_from": "Przeglądasz wątek pojedynczego komentarza",
+      "view_the_full_context": "Zobacz pełen kontekst.",
+      "view_the_direct_parent": "Zobacz wpis nadrzędny"
+    },
+    "header": {
+      "hover_author": {
+        "follow_button": "Obserwuj",
+        "followers": "Obserwujący",
+        "following": "Obserwowani",
+        "joined": "Dołączono"
+      },
+
+      "edited": "edytowany"
+    },
+    "footer": {
+      "by": "przez",
+      "upvote": "Głos za",
+      "downvote": "Głos przeciw",
+      "no_votes": "Brak głosów",
+      "vote": "1 głos",
+      "votes": "{{votes}} głosów",
+      "no_responses": "Brak odpowiedzi. ",
+      "response": "1 odpowiedź. ",
+      "responses": "{{responses}} odpowiedzi. ",
+      "reblog": "Reblog",
+      "reply": "Odpowiedz",
+      "share_on": "Udostępnij na ",
+      "share_form": {
+        "copy": "KOPIUJ",
+        "copied": "Skopiowano!",
+        "share_this_link": "Udostępnij post",
+        "url_to_this_post": "URL do tego posta:",
+        "markdown_code_for_a_link_to_this_post": "Kod Markdown dla linku do tego posta:",
+        "open_in_alternative": "Alternatywne źródła Hive dApps",
+        "open_in": "Otwórz w Block Explorers"
+      }
+    }
+  },
+  "search_page": {
+    "placeholder": "Szukaj",
+    "no_results": "Nic nie znaleziono.",
+    "error": "Wystąpił błąd"
+  }
+}

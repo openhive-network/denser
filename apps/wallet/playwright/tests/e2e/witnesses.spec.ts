@@ -1,46 +1,46 @@
-import { Locator, expect, test } from "@playwright/test";
-import { WitnessesPage } from "../support/pages/witnessesPage";
-import { LoginToVoteDialog } from "../support/pages/loginToVoteDialog";
-import { ApiHelper } from "../support/apiHelper";
-import { HomePage } from "../../../../blog/playwright/tests/support/pages/homePage";
-import { getRoundedAbbreveration } from "@hive/ui/lib/utils";
-import moment from "moment";
-import Big from "big.js";
+import { Locator, expect, test } from '@playwright/test';
+import { WitnessesPage } from '../support/pages/witnessesPage';
+import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
+import { ApiHelper } from '../support/apiHelper';
+import { HomePage } from '../../../../blog/playwright/tests/support/pages/homePage';
+import { getRoundedAbbreveration } from '@hive/ui/lib/utils';
+import moment from 'moment';
+import Big from 'big.js';
 
-test.describe("Witnesses page tests", () => {
+test.describe('Witnesses page tests', () => {
   let witnessesPage: WitnessesPage;
 
   test.beforeEach(async ({ page }) => {
     witnessesPage = new WitnessesPage(page);
   });
 
-  test("validate the Witness page is loaded", async ({ page }) => {
+  test('validate the Witness page is loaded', async ({ page }) => {
     await witnessesPage.goToWitnessesPage();
   });
 
-  test("validate the witness description header", async ({ page }) => {
+  test('validate the witness description header', async ({ page }) => {
     await witnessesPage.goToWitnessesPage();
     await expect(witnessesPage.witnessHeaderDescription).toContainText(
-      "the first 100 witnesses are unfiltered"
+      'the first 100 witnesses are unfiltered'
     );
     await expect(witnessesPage.witnessHeaderDescription).toContainText(
-      "Past the rank of 100, witnesses will be filtered out of the list"
+      'Past the rank of 100, witnesses will be filtered out of the list'
     );
     await expect(witnessesPage.witnessHeaderDescription).toContainText(
-      "if they have not produced any block for the last 30 days"
+      'if they have not produced any block for the last 30 days'
     );
   });
 
-  test("validate the number of displayed Witnesses and their names", async ({
-    page,
-  }) => {
+  test('validate the number of displayed Witnesses and their names', async ({
+                                                                              page
+                                                                            }) => {
     let apiHelper = new ApiHelper(page);
     const LAST_BLOCK_AGE_THRESHOLD_IN_SEC = 2592000;
     const resDynamicGlobalProperties =
       await apiHelper.getDynamicGlobalPropertiesAPI();
     const headBlock = await resDynamicGlobalProperties.result.head_block_number;
     const resWitnessesByVote = await apiHelper.getListWitnessesByVoteAPI(
-      "",
+      '',
       250
     );
 
@@ -79,12 +79,12 @@ test.describe("Witnesses page tests", () => {
     }
   });
 
-  test("validate table's header in the witnesses rank", async ({ page }) => {
+  test('validate table\'s header in the witnesses rank', async ({ page }) => {
     await witnessesPage.goToWitnessesPage();
     const rankTableHeaderThElements: Locator[] =
-      await witnessesPage.witnessTableHead.locator("th").all();
+      await witnessesPage.witnessTableHead.locator('th').all();
     const rankTableHeaderNames: string[] = await witnessesPage.witnessTableHead
-      .locator("th")
+      .locator('th')
       .allTextContents();
 
     // Validate names of the table's headers
@@ -98,20 +98,20 @@ test.describe("Witnesses page tests", () => {
       expect(
         await witnessesPage.getElementCssPropertyValue(
           tableHeaderThElementLocator,
-          "color"
+          'color'
         )
-      ).toBe("rgb(15, 23, 42)");
+      ).toBe('rgb(15, 23, 42)');
     }
     // Validate table's head background-color
     expect(
       await witnessesPage.getElementCssPropertyValue(
         witnessesPage.witnessTableHead,
-        "background-color"
+        'background-color'
       )
-    ).toBe("rgb(244, 244, 245)");
+    ).toBe('rgb(244, 244, 245)');
   });
 
-  test("validate table's header in the witnesses rank in the dark mode", async ({ page }) => {
+  test('validate table\'s header in the witnesses rank in the dark mode', async ({ page }) => {
     let homePage = new HomePage(page);
 
     await witnessesPage.goToWitnessesPage();
@@ -119,9 +119,9 @@ test.describe("Witnesses page tests", () => {
     await homePage.validateThemeModeIsDark();
 
     const rankTableHeaderThElements: Locator[] =
-      await witnessesPage.witnessTableHead.locator("th").all();
+      await witnessesPage.witnessTableHead.locator('th').all();
     const rankTableHeaderNames: string[] = await witnessesPage.witnessTableHead
-      .locator("th")
+      .locator('th')
       .allTextContents();
 
     // Validate names of the table's headers
@@ -135,28 +135,28 @@ test.describe("Witnesses page tests", () => {
       expect(
         await witnessesPage.getElementCssPropertyValue(
           tableHeaderThElementLocator,
-          "color"
+          'color'
         )
-      ).toBe("rgb(225, 231, 239)");
+      ).toBe('rgb(225, 231, 239)');
     }
     // Validate table's head background-color
     expect(
       await witnessesPage.getElementCssPropertyValue(
         witnessesPage.witnessTableHead,
-        "background-color"
+        'background-color'
       )
-    ).toBe("rgb(15, 23, 42)");
+    ).toBe('rgb(15, 23, 42)');
   });
 
-  test("validate first witness in the witness's rank list", async ({
-    page,
-  }) => {
+  test('validate first witness in the witness\'s rank list', async ({
+                                                                      page
+                                                                    }) => {
     let apiHelper = new ApiHelper(page);
 
     await witnessesPage.goToWitnessesPage();
 
     const resWitnessesByVoteAPI = await apiHelper.getListWitnessesByVoteAPI(
-      "",
+      '',
       250
     );
     const lastConfirmedBlockNum =
@@ -175,8 +175,8 @@ test.describe("Witnesses page tests", () => {
     // Validate Witness external site
     const firstWitnessUrl = await resWitnessesByVoteAPI.result[0].url;
     await expect(
-      witnessesPage.witnessExternalSiteLink.locator("a").first()
-    ).toHaveAttribute("href", firstWitnessUrl);
+      witnessesPage.witnessExternalSiteLink.locator('a').first()
+    ).toHaveAttribute('href', firstWitnessUrl);
 
     // Validate Witness votes received
     const resDynamicGlobalProperties =
@@ -184,39 +184,39 @@ test.describe("Witnesses page tests", () => {
     const totalVesting =
       await resDynamicGlobalProperties.result.total_vesting_fund_hive.replace(
         / HIVE/g,
-        ""
+        ''
       );
     const totalShares =
       await resDynamicGlobalProperties.result.total_vesting_shares.replace(
         / VESTS/g,
-        ""
+        ''
       );
     const witnessVotesAPI = await resWitnessesByVoteAPI.result[0].votes;
     const vestsToHp: Big = Big(
       Big(totalVesting).times(Big(witnessVotesAPI).div(Big(totalShares)))
     ).div(1000000);
     expect(await witnessesPage.witnessVotesReceived.first().textContent()).toBe(
-      getRoundedAbbreveration(vestsToHp) + " HP"
+      getRoundedAbbreveration(vestsToHp) + ' HP'
     );
 
     // Validate Witness price feed
     const firstWitnessPriceFeed =
       await resWitnessesByVoteAPI.result[0].hbd_exchange_rate.base.replace(
         / HBD/g,
-        ""
+        ''
       );
-    expect("$" + firstWitnessPriceFeed).toContain(
+    expect('$' + firstWitnessPriceFeed).toContain(
       await witnessesPage.witnessPriceFeed.first().textContent()
     );
   });
 
   // It works on localhost but in CI it cannot move to the new domain page
-  test.skip("move to the profile page of the first witness by clicking avatar", async ({
-    page,
-  }) => {
+  test.skip('move to the profile page of the first witness by clicking avatar', async ({
+                                                                                         page
+                                                                                       }) => {
     await witnessesPage.goToWitnessesPage();
 
-    const pagePromise = page.context().waitForEvent("page");
+    const pagePromise = page.context().waitForEvent('page');
 
     const firstWitnessName = await witnessesPage.witnessNameLink
       .first()
@@ -231,12 +231,12 @@ test.describe("Witnesses page tests", () => {
   });
 
   // It works on localhost but in CI it cannot move to the new domain page
-  test.skip("move to the profile page of the first witness by clicking name link", async ({
-    page,
-  }) => {
+  test.skip('move to the profile page of the first witness by clicking name link', async ({
+                                                                                            page
+                                                                                          }) => {
     await witnessesPage.goToWitnessesPage();
 
-    const pagePromise = page.context().waitForEvent("page");
+    const pagePromise = page.context().waitForEvent('page');
 
     const firstWitnessName = await witnessesPage.witnessNameLink
       .first()
@@ -251,9 +251,9 @@ test.describe("Witnesses page tests", () => {
   });
 
   // Skip this test due to problems with nodes of hiveblocks.com
-  test.skip("move to the block explorer by clicking last block link", async ({
-    page,
-  }) => {
+  test.skip('move to the block explorer by clicking last block link', async ({
+                                                                               page
+                                                                             }) => {
     await witnessesPage.goToWitnessesPage();
 
     const firstWitnesslastBlockNumber =
@@ -263,144 +263,144 @@ test.describe("Witnesses page tests", () => {
     let reUrl = new RegExp(
       `https:\/\/hiveblocks.com\/b\/${firstWitnesslastBlockNumber
         ?.toString()
-        .replace(/#/g, "")}`
+        .replace(/#/g, '')}`
     );
     expect(page.url()).toMatch(reUrl);
   });
 
-  test("validate witness vote box", async ({ page }) => {
+  test('validate witness vote box', async ({ page }) => {
     await witnessesPage.goToWitnessesPage();
 
-    const voteBoxDescription = await witnessesPage.witnessVoteBox.locator("p");
+    const voteBoxDescription = await witnessesPage.witnessVoteBox.locator('p');
     const voteBoxInput =
-      await witnessesPage.witnessVoteBox.locator("div input");
+      await witnessesPage.witnessVoteBox.locator('div input');
     const voteBoxButton =
-      await witnessesPage.witnessVoteBox.locator("div button");
+      await witnessesPage.witnessVoteBox.locator('div button');
 
     await expect(voteBoxDescription).toHaveText(
-      "If you would like to vote for a witness outside of the top 200, enter the account name below to cast a vote."
+      'If you would like to vote for a witness outside of the top 200, enter the account name below to cast a vote.'
     );
     await expect(voteBoxInput).toBeVisible();
-    await expect(voteBoxInput).toHaveAttribute("value", "");
-    await expect(voteBoxButton).toHaveText("VOTE");
+    await expect(voteBoxInput).toHaveAttribute('value', '');
+    await expect(voteBoxButton).toHaveText('vote');
     expect(
-      await witnessesPage.getElementCssPropertyValue(voteBoxButton, "color")
-    ).toBe("rgb(248, 250, 252)");
+      await witnessesPage.getElementCssPropertyValue(voteBoxButton, 'color')
+    ).toBe('rgb(248, 250, 252)');
     expect(
       await witnessesPage.getElementCssPropertyValue(
         voteBoxButton,
-        "background-color"
+        'background-color'
       )
-    ).toBe("rgb(255, 0, 0)");
+    ).toBe('rgb(255, 0, 0)');
   });
 
-  test("validate witness vote box in the dark mode", async ({ page }) => {
+  test('validate witness vote box in the dark mode', async ({ page }) => {
     let homePage = new HomePage(page);
 
     await witnessesPage.goToWitnessesPage();
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
-    const voteBoxDescription = await witnessesPage.witnessVoteBox.locator("p");
+    const voteBoxDescription = await witnessesPage.witnessVoteBox.locator('p');
     const voteBoxInput =
-      await witnessesPage.witnessVoteBox.locator("div input");
+      await witnessesPage.witnessVoteBox.locator('div input');
     const voteBoxButton =
-      await witnessesPage.witnessVoteBox.locator("div button");
+      await witnessesPage.witnessVoteBox.locator('div button');
 
     await expect(voteBoxDescription).toHaveText(
-      "If you would like to vote for a witness outside of the top 200, enter the account name below to cast a vote."
+      'If you would like to vote for a witness outside of the top 200, enter the account name below to cast a vote.'
     );
     await expect(voteBoxInput).toBeVisible();
-    await expect(voteBoxInput).toHaveAttribute("value", "");
-    await expect(voteBoxButton).toHaveText("VOTE");
+    await expect(voteBoxInput).toHaveAttribute('value', '');
+    await expect(voteBoxButton).toHaveText('vote');
     expect(
-      await witnessesPage.getElementCssPropertyValue(voteBoxButton, "color")
-    ).toBe("rgb(248, 250, 252)");
+      await witnessesPage.getElementCssPropertyValue(voteBoxButton, 'color')
+    ).toBe('rgb(248, 250, 252)');
     expect(
       await witnessesPage.getElementCssPropertyValue(
         voteBoxButton,
-        "background-color"
+        'background-color'
       )
-    ).toBe("rgb(129, 29, 29)");
+    ).toBe('rgb(129, 29, 29)');
     expect(
-      await witnessesPage.getElementCssPropertyValue(voteBoxInput, "color")
-    ).toBe("rgb(225, 231, 239)");
+      await witnessesPage.getElementCssPropertyValue(voteBoxInput, 'color')
+    ).toBe('rgb(225, 231, 239)');
     expect(
       await witnessesPage.getElementCssPropertyValue(
         voteBoxInput,
-        "background-color"
+        'background-color'
       )
-    ).toBe("rgba(0, 0, 0, 0)");
+    ).toBe('rgba(0, 0, 0, 0)');
   });
 
-  test("validate witness proxy box", async ({ page }) => {
+  test('validate witness proxy box', async ({ page }) => {
     await witnessesPage.goToWitnessesPage();
 
     const proxyBoxDescription =
-      await witnessesPage.witnessSetProxyBox.locator("p");
+      await witnessesPage.witnessSetProxyBox.locator('p');
     const proxyBoxInput =
-      await witnessesPage.witnessSetProxyBox.locator("div input");
+      await witnessesPage.witnessSetProxyBox.locator('div input');
     const proxyBoxButton =
-      await witnessesPage.witnessSetProxyBox.locator("div button");
+      await witnessesPage.witnessSetProxyBox.locator('div button');
 
     await expect(proxyBoxDescription).toHaveText(
-      "You can also choose a proxy that will vote for witnesses for you. This will reset your current witness selection."
+      'You can also choose a proxy that will vote for witnesses for you. This will reset your current witness selection.'
     );
     await expect(proxyBoxInput).toBeVisible();
     expect(
       await witnessesPage.getElementCssPropertyValue(
         proxyBoxButton,
-        "border-color"
+        'border-color'
       )
-    ).toBe("rgb(226, 232, 240)");
-    await expect(proxyBoxButton).toHaveText("SET PROXY");
+    ).toBe('rgb(226, 232, 240)');
+    await expect(proxyBoxButton).toHaveText('Set proxy');
     expect(
-      await witnessesPage.getElementCssPropertyValue(proxyBoxButton, "color")
-    ).toBe("rgb(248, 250, 252)");
+      await witnessesPage.getElementCssPropertyValue(proxyBoxButton, 'color')
+    ).toBe('rgb(248, 250, 252)');
     expect(
       await witnessesPage.getElementCssPropertyValue(
         proxyBoxButton,
-        "background-color"
+        'background-color'
       )
-    ).toBe("rgb(255, 0, 0)");
+    ).toBe('rgb(255, 0, 0)');
   });
 
-  test("validate highlighting witnesses by clicking link", async ({ page }) => {
+  test('validate highlighting witnesses by clicking link', async ({ page }) => {
     await witnessesPage.goToWitnessesPage();
 
     const voteBoxInput =
-      await witnessesPage.witnessVoteBox.locator("div input");
+      await witnessesPage.witnessVoteBox.locator('div input');
     const witnessHighlightLink =
       await witnessesPage.witnessHighlightLink.first();
     const firstWitnessTableRow = await witnessesPage.witnessTableBody
-      .locator("tr")
+      .locator('tr')
       .first();
 
     // Validate background-color of the first row in the rand witness table
     expect(
       await witnessesPage.getElementCssPropertyValue(
         firstWitnessTableRow,
-        "background-color"
+        'background-color'
       )
-    ).toBe("rgba(0, 0, 0, 0)");
+    ).toBe('rgba(0, 0, 0, 0)');
     await witnessHighlightLink.click();
     await page.waitForTimeout(1000);
     // Validate background-color of the first row in the rand witness table after clicking highlight link
     expect(
       await witnessesPage.getElementCssPropertyValue(
         firstWitnessTableRow,
-        "background-color"
+        'background-color'
       )
-    ).toBe("rgb(254, 205, 211)");
+    ).toBe('rgb(254, 205, 211)');
 
     // Validate the witness name was typed into the input vote
     const firstWitnessName: any = await witnessesPage.witnessNameLink
       .first()
       .textContent();
-    await expect(voteBoxInput).toHaveAttribute("value", firstWitnessName);
+    await expect(voteBoxInput).toHaveAttribute('value', firstWitnessName);
   });
 
-  test("validate highlighting witnesses by clicking link in the dark mode", async ({ page }) => {
+  test('validate highlighting witnesses by clicking link in the dark mode', async ({ page }) => {
     let homePage = new HomePage(page);
 
     await witnessesPage.goToWitnessesPage();
@@ -408,90 +408,90 @@ test.describe("Witnesses page tests", () => {
     await homePage.validateThemeModeIsDark();
 
     const voteBoxInput =
-      await witnessesPage.witnessVoteBox.locator("div input");
+      await witnessesPage.witnessVoteBox.locator('div input');
     const witnessHighlightLink =
       await witnessesPage.witnessHighlightLink.first();
     const firstWitnessTableRow = await witnessesPage.witnessTableBody
-      .locator("tr")
+      .locator('tr')
       .first();
 
     // Validate background-color of the first row in the rand witness table
     expect(
       await witnessesPage.getElementCssPropertyValue(
         firstWitnessTableRow,
-        "background-color"
+        'background-color'
       )
-    ).toBe("rgba(0, 0, 0, 0)");
+    ).toBe('rgba(0, 0, 0, 0)');
     await witnessHighlightLink.click();
     await page.waitForTimeout(1000);
     // Validate background-color of the first row in the rand witness table after clicking highlight link
     expect(
       await witnessesPage.getElementCssPropertyValue(
         firstWitnessTableRow,
-        "background-color"
+        'background-color'
       )
-    ).toBe("rgb(159, 18, 57)");
+    ).toBe('rgb(159, 18, 57)');
     // Validate color of the witness's nickname
     expect(
       await witnessesPage.getElementCssPropertyValue(
         witnessesPage.witnessNameLink.first().locator('div'),
-        "color"
+        'color'
       )
-    ).toBe("rgb(239, 68, 68)");
+    ).toBe('rgb(239, 68, 68)');
     // Validate color of the witness's votes received
     expect(
       await witnessesPage.getElementCssPropertyValue(
         witnessesPage.witnessVotesReceived.first(),
-        "color"
+        'color'
       )
-    ).toBe("rgb(225, 231, 239)");
+    ).toBe('rgb(225, 231, 239)');
     // Validate the witness name was typed into the input vote
     const firstWitnessName: any = await witnessesPage.witnessNameLink
       .first()
       .textContent();
-    await expect(voteBoxInput).toHaveAttribute("value", firstWitnessName);
+    await expect(voteBoxInput).toHaveAttribute('value', firstWitnessName);
     // Validate color of the witness's open external site before hovering
     expect(
       await witnessesPage.getElementCssPropertyValue(
         witnessesPage.witnessExternalSiteLink.first().locator('a span'),
-        "color"
+        'color'
       )
-    ).toBe("rgb(225, 231, 239)");
+    ).toBe('rgb(225, 231, 239)');
     // Validate color of the witness's open external site after hovering
     await witnessesPage.witnessExternalSiteLink.first().locator('a span').hover();
     expect(
       await witnessesPage.getElementCssPropertyValue(
         witnessesPage.witnessExternalSiteLink.first().locator('a span'),
-        "color"
+        'color'
       )
-    ).toBe("rgb(248, 113, 113)");
+    ).toBe('rgb(248, 113, 113)');
 
   });
 
-  test("move to the login dialog by clicking vote icon of the first witness", async ({
-    page,
-  }) => {
+  test('move to the login dialog by clicking vote icon of the first witness', async ({
+                                                                                       page
+                                                                                     }) => {
     let loginDialog = new LoginToVoteDialog(page);
     await witnessesPage.goToWitnessesPage();
 
     await witnessesPage.witnessVoteIcon.first().click();
     await loginDialog.validateLoginToVoteDialogIsVisible();
     await loginDialog.closeLoginDialog();
-    await expect(witnessesPage.witnessTitle).toHaveText("Witness Voting");
+    await expect(witnessesPage.witnessTitle).toHaveText('Witness Voting');
     await expect(witnessesPage.witnessTableBody).toBeVisible();
   });
 
-  test("move to the login dialog by clicking vote button", async ({ page }) => {
+  test('move to the login dialog by clicking vote button', async ({ page }) => {
     let loginDialog = new LoginToVoteDialog(page);
     const voteBoxButton =
-      await witnessesPage.witnessVoteBox.locator("div button");
+      await witnessesPage.witnessVoteBox.locator('div button');
 
     await witnessesPage.goToWitnessesPage();
 
     await voteBoxButton.click();
     await loginDialog.validateLoginToVoteDialogIsVisible();
     await loginDialog.closeLoginDialog();
-    await expect(witnessesPage.witnessTitle).toHaveText("Witness Voting");
+    await expect(witnessesPage.witnessTitle).toHaveText('Witness Voting');
     await expect(witnessesPage.witnessTableBody).toBeVisible();
   });
 });

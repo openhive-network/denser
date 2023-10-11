@@ -3,6 +3,7 @@ import { Input } from "@hive/ui/components/input";
 import { Button } from "@hive/ui/components/button";
 import clsx from "clsx";
 import { convertStringToBig } from "@hive/ui/lib/helpers";
+import { useTranslation } from 'next-i18next';
 enum ActionType {
   ChangeCostValue = "changeCostValue",
   ChangeAmountValue = "changeAmountValue",
@@ -76,6 +77,7 @@ export default function BuyOrSellForm({
   defaultPrice: string;
   transaction: "sell" | "buy";
 }) {
+  const { t } = useTranslation('common_wallet');
   const [state, dispatch] = useReducer(reducer, {
     cost: price,
     amount: "",
@@ -87,7 +89,7 @@ export default function BuyOrSellForm({
   }, [price]);
 
   const disabled = Boolean(state.amount || state.total);
-  const label = transaction === "sell" ? "SELL HIVE" : "BUY HIVE";
+  const label = transaction === "sell" ? t('market_page.sell_hive') : t('market_page.buy_hive');
   return (
     <div className="flex flex-col gap-8 w-full">
       <div
@@ -100,7 +102,7 @@ export default function BuyOrSellForm({
       </div>
       <div className="flex flex-col gap-4">
         <div className="flex text-sm justify-between w-full">
-          <div className="flex items-center w-24">PRICE</div>
+          <div className="flex items-center w-24">{t('market_page.price')}</div>
           <div className="flex w-full">
             <Input
               className="h-8 focus-visible:ring-0 rounded-none text-end"
@@ -120,7 +122,7 @@ export default function BuyOrSellForm({
           </div>
         </div>{" "}
         <div className="flex text-sm justify-between w-full">
-          <div className="flex items-center w-24">AMOUNT</div>
+          <div className="flex items-center w-24">{t('market_page.amount')}</div>
           <div className="flex w-full">
             <Input
               className="h-8 focus-visible:ring-0 rounded-none text-end"
@@ -140,7 +142,7 @@ export default function BuyOrSellForm({
           </div>
         </div>{" "}
         <div className="flex text-sm justify-between w-full">
-          <div className="flex items-center w-24">TOTAL</div>
+          <div className="flex items-center w-24">{t('market_page.total')}</div>
           <div className="flex w-full">
             <Input
               className="h-8 focus-visible:ring-0 rounded-none text-end"
@@ -171,7 +173,7 @@ export default function BuyOrSellForm({
               })
             }
           >
-            {transaction === "sell" ? "Highest bid" : "Lowest ask"}:{" "}
+            {transaction === "sell" ? t('market_page.highest_bid') : t('market_page.lowest_ask')}:{" "}
           </span>
           <span>{defaultPrice}</span>
         </div>

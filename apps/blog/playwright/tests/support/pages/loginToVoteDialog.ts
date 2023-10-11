@@ -21,7 +21,7 @@ export class LoginToVoteDialog {
     this.getPasswordInput = page.locator('#password');
     this.getHiveAuthCheckbox = page.locator('#hiveAuth');
     this.getKeepMeLoggedInCheckbox = page.locator('#remember');
-    this.getSignInButton = page.locator('button').getByText('Sign in');
+    this.getSignInButton = page.getByRole('button', { name: 'Login' });
     this.getCancelButton = page.locator('button').getByText('Cancel');
     this.getHiveSignerButton = page.locator('[data-testid="hivesigner-button"]');
     this.getCloseDialogButton = page.locator('[data-testid="close-dialog"]');

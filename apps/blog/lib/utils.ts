@@ -203,15 +203,15 @@ export function formatDecimal(value: number, decPlaces = 2, truncate0s = true) {
   // @ts-ignore
   const decPart = decPlaces
     ? decSeparator +
-      // @ts-ignore
-      Math.abs(abs_value - i)
-        .toFixed(decPlaces)
-        .slice(2)
+    // @ts-ignore
+    Math.abs(abs_value - i)
+      .toFixed(decPlaces)
+      .slice(2)
     : '';
   return [
     sign +
-      (j ? i.substr(0, j) + thouSeparator : '') +
-      i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + thouSeparator),
+    (j ? i.substr(0, j) + thouSeparator : '') +
+    i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + thouSeparator),
     decPart
   ];
 }
@@ -244,11 +244,13 @@ export const prepareVotes = (entry: Entry, votes: Vote[]) => {
     });
   });
 };
+
 export function extractUrlsFromJsonString(jsonString: string): string[] {
   const urlRegex = /((?:https?:\/\/|www\.)[^\s]+)/g;
   const matches = jsonString.match(urlRegex);
   return matches || [];
 }
+
 export function extractYouTubeVideoIds(urls: string[]): string[] {
   const youtubeLinkRegex =
     /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed\/|v\/)?([a-zA-Z0-9_-]+)/i;
@@ -276,4 +278,17 @@ export function extractPictureFromPostBody(urls: string[]): string[] {
   }
 
   return picturesFromPostBody;
+}
+
+export function parseCookie(cookie: string): Record<string, string> {
+  const kv: Record<string, string> = {};
+
+  if (!cookie) return kv;
+
+  cookie.split(';').forEach((part) => {
+    const [k, v] = part.split('=');
+    kv[k] = v;
+  });
+
+  return kv;
 }
