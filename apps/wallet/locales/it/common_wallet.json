@@ -2,7 +2,7 @@
   "global": {
     "time": "",
     "loading": "Caricamento",
-    "something_went_wrong":"Something went wrong"
+    "something_went_wrong": "Something went wrong"
   },
   "navigation": {
     "main_nav_bar": {
@@ -21,7 +21,9 @@
       "developer_portal": "Hive API Docs",
       "hive_whitepaper": "Hive Whitepaper",
       "privacy_policy": "Private Policy",
-      "terms_of_service": "Condizioni di servizio"
+      "terms_of_service": "Condizioni di servizio",
+      "currency_market": "Currency Market",
+      "third_party_exchanges": "Third-party exchanges:"
     },
     "profil_navbar": {
       "blog": "Blog",
@@ -54,8 +56,8 @@
       "votable": "Votable",
       "order_by": "Order by",
       "creator": "Creator",
-      "start_date": "Start date",
-      "end_date": "End date",
+      "start_date": "Start Date",
+      "end_date": "End Date",
       "total_votes": "Total Votes"
     }
   },
@@ -111,7 +113,7 @@
     "trade_history": "Cronologia delle Transazioni",
     "newer": "Più recente",
     "older": "Meno recente",
-    "date":"Date"
+    "date": "Date"
   },
   "witnesses_page": {
     "title": "Voto Witness",
@@ -138,15 +140,15 @@
     "vote_description": "Se desideri votare un witness al di fuori della top 100, inserisci di seguito il nome account per effettuare il voto.",
     "proxy_description": "Puoi anche scegliere un proxy che voterà i witnesses per te. Questo resetterà la tua attuale selezione di testimoni.",
     "set_proxy": "Setta il proxy",
-    "disabled":"Disabled ",
-    "no_url_provided":"No URL provided",
-    "use_this_for_linking_title":"Use this for linking to this page and highlight the selected witness",
-    "has_not_produced_blocks":"⚠️Has not produced any blocks for over a week.",
-    "by":"by",
+    "disabled": "Disabled ",
+    "no_url_provided": "No URL provided",
+    "use_this_for_linking_title": "Use this for linking to this page and highlight the selected witness",
+    "has_not_produced_blocks": "⚠️Has not produced any blocks for over a week.",
+    "by": "by",
     "proxy_form": {
       "title": "Confirm Account Witness Proxy",
       "description": "You are about to remove your proxy.",
-      "set_proxy_to:":"Set proxy to: {{proxy}}",
+      "set_proxy_to:": "Set proxy to: {{proxy}}",
       "cancel_button": "Cancella",
       "ok": "OK"
     }
@@ -155,22 +157,24 @@
     "proposals": "Proposals",
     "started": "started",
     "finished": "finished",
-    "not started": "not started",
+    "not_started": "not started",
     "refund": "refund",
     "burn": "burn",
     "by": "da",
-    "for": "per"
+    "for": " per "
   },
   "login_form": {
     "title": "Utenti di ritorno: ",
     "title_action_login": "Login",
     "title_action_login_to_vote": "Effettua il login per votare",
+    "title_confirm_password": "Conferma password",
     "username_placeholder": "Inserisci il tuo username",
     "password_placeholder": "Password o WIF",
     "use_hiveauth": "Use HiveAuth",
     "keep_me_logged_in": "Voglio restare connesso",
     "more_login_methods": "più metodi di accesso",
     "login_button": "Login",
-    "cancel_button": "Cancella"
+    "cancel_button": "Cancella",
+    "this_operation_requires_your_key_or_master_password": "Per eseguire l'operazione è necessaria la propria chiave {{authType}}o Master password. "
   }
 }

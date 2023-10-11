@@ -12,21 +12,28 @@ import moment from 'moment';
 import { ProposalListItem } from '@/wallet/components/proposals-list-item';
 import { convertStringToBig } from '@hive/ui/lib/helpers';
 import { Skeleton } from '@hive/ui/components/skeleton';
+import { GetServerSideProps } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { i18n } from '@/wallet/next-i18next.config';
+import { useTranslation } from 'next-i18next';
+import { TFunction } from 'i18next';
 
-function timeStatus(status: string) {
+function timeStatus(status: string, t: TFunction<'common_wallet', undefined>) {
+
   switch (status) {
     case 'active':
-      return 'started';
+      return t('proposals_page.started');
     case 'inactive':
-      return 'not started';
+      return t('proposals_page.not_started');
     case 'expired':
-      return 'finished';
+      return t('proposals_page.finished');
     default:
       return '';
   }
 }
 
 function ProposalsPage() {
+  const { t } = useTranslation('common_wallet');
   const [filterStatus, setFilterStatus] = useState<
     GetProposalsParams['status']
   >(DEFAULT_PARAMS_FOR_PROPOSALS.status);
@@ -65,7 +72,7 @@ function ProposalsPage() {
               },
               start_date: moment(proposal.start_date).format('MMM D, YYYY'),
               end_date: moment(proposal.end_date).format('MMM D, YYYY'),
-              status: timeStatus(proposal.status)
+              status: timeStatus(proposal.status, t)
             }))
           )
         };
@@ -110,7 +117,7 @@ function ProposalsPage() {
     return () => {
       document.removeEventListener('scroll', handleScroll);
     };
-  }, [proposalsData.fetchNextPage, proposalsData.hasNextPage]);
+  }, [proposalsData, proposalsData.fetchNextPage, proposalsData.hasNextPage]);
   return (
     <div
       className='mx-auto flex max-w-5xl flex-col gap-5 p-5'
@@ -135,7 +142,7 @@ function ProposalsPage() {
         </div>
       ) : !proposalsData.data || !dynamicData ? (
         <p className='my-32 animate-pulse text-center text-3xl'>
-          Something went wrong
+          {t('global.something_went_wrong')}
         </p>
       ) : (
         proposalsData.data.pages.map((page) =>
@@ -155,3 +162,10 @@ function ProposalsPage() {
 
 export default ProposalsPage;
 
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_wallet']))
+    }
+  };
+};

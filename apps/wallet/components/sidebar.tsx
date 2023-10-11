@@ -10,6 +10,7 @@ import Link from "next/link";
 import { Separator } from "@hive/ui/components/separator";
 import clsx from "clsx";
 import { ReactNode } from "react";
+import { useTranslation } from 'next-i18next';
 const Item = ({
   href,
   children,
@@ -30,6 +31,7 @@ const Item = ({
   );
 };
 const Sidebar = () => {
+  const { t } = useTranslation('common_wallet');
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -50,45 +52,47 @@ const Sidebar = () => {
       >
         <div className="flex flex-col">
           <ul className="flex flex-col">
-            <Item href="http://localhost:3000/welcome">Welcome</Item>
-            <Item href="http://localhost:3000/faq.html">FAQ</Item>
-            <Item href="/market">Currency Market</Item>
+            <Item href="http://localhost:3000/welcome">{t('navigation.sidebar.welcome')}</Item>
+            <Item href="http://localhost:3000/faq.html">{t('navigation.sidebar.faq')}</Item>
+            <Item href="/market">{t('navigation.sidebar.currency_market')}</Item>
             <Separator className="my-2" />
-            <Item href="/~witnesses">Vote for Witnesses</Item>
-            <Item href="/proposals">Hive Proposals</Item>
+            <Item href="/~witnesses">{t('navigation.sidebar.vote_for_witnesses')}</Item>
+            <Item href="/proposals">{t('navigation.sidebar.hive_proposals')}</Item>
             <Separator className="my-2" />
 
             <li className="p-4 text-slate-500 text-sm">
-              Third-party exchanges:
+            {t('navigation.sidebar.third_party_exchanges')}
             </li>
             <Item href="https://blocktrades.us" target>
-              Blocktrades
+            {t('navigation.sidebar.blocktrades')}
               <Icons.forward className="w-4" />
             </Item>
             <Item href="https://ionomy.com" target>
-              Ionomy
+            {t('navigation.sidebar.ionomy')}
               <Icons.forward className="w-4" />
             </Item>
             <Separator className="my-2" />
             <Item href="https://openhive.chat" target>
-              Hive Chat <Icons.forward className="w-4" />
+            {t('navigation.sidebar.openhive_chat')} <Icons.forward className="w-4" />
             </Item>
             <Item href="https://hiveprojects.io/" target>
-              Apps Built on Hive <Icons.forward className="w-4" />
+            {t('navigation.sidebar.apps_built_on_hive')} <Icons.forward className="w-4" />
             </Item>
             <Separator className="my-2" />
             <Item href="https://developers.hive.io" target>
-              Hive API Docs
+              {t('navigation.sidebar.developer_portal')}
               <Icons.forward className="w-4" />
             </Item>
             <Item href="https://hive.io/whitepaper.pdf" target>
-              Hive Whitepaper <Icons.forward className="w-4" />
+            {t('navigation.sidebar.hive_whitepaper')} <Icons.forward className="w-4" />
             </Item>
             <Separator className="my-2" />
             <Item href="http://localhost:3000/privacy.html">
-              Privacy Policy
+            {t('navigation.sidebar.privacy_policy')}
             </Item>
-            <Item href="http://localhost:3000/tos.html">Terms of Service</Item>
+            <Item href="http://localhost:3000/tos.html">
+            {t('navigation.sidebar.terms_of_service')}
+            </Item>
           </ul>
         </div>
       </SheetContent>

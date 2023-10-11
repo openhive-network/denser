@@ -2,7 +2,7 @@
   "global": {
     "time": "",
     "loading": "Загрузка",
-    "something_went_wrong":"Something went wrong"
+    "something_went_wrong": "Something went wrong"
   },
   "navigation": {
     "main_nav_bar": {
@@ -21,7 +21,9 @@
       "developer_portal": "API-документация Hive",
       "hive_whitepaper": "Белая книга Hive",
       "privacy_policy": "Политика Конфиденциальности",
-      "terms_of_service": "Условия пользования"
+      "terms_of_service": "Условия пользования",
+      "currency_market": "Currency Market",
+      "third_party_exchanges": "Third-party exchanges:"
     },
     "profil_navbar": {
       "blog": "Блог",
@@ -54,8 +56,8 @@
       "votable": "Votable",
       "order_by": "Order by",
       "creator": "Creator",
-      "start_date": "Start date",
-      "end_date": "End date",
+      "start_date": "Start Date",
+      "end_date": "End Date",
       "total_votes": "Total Votes"
     }
   },
@@ -111,7 +113,7 @@
     "trade_history": "История сделок",
     "newer": "Новее",
     "older": "Старее",
-    "date":"Date"
+    "date": "Date"
   },
   "witnesses_page": {
     "title": "Топ делегатов",
@@ -140,15 +142,15 @@
     "vote_description": "Если вы хотите проголосовать за делегата вне top 100, введите имя аккаунта ниже.",
     "proxy_description": "Вы также можете выбрать прокси, который будет вместо вас голосовать за делегатов. Это сбросит ваш текущий выбор делегата.",
     "set_proxy": "Установить прокси",
-    "disabled":"Disabled ",
-    "no_url_provided":"No URL provided",
-    "use_this_for_linking_title":"Use this for linking to this page and highlight the selected witness",
-    "has_not_produced_blocks":"⚠️Has not produced any blocks for over a week.",
-    "by":"by",
+    "disabled": "Disabled ",
+    "no_url_provided": "No URL provided",
+    "use_this_for_linking_title": "Use this for linking to this page and highlight the selected witness",
+    "has_not_produced_blocks": "⚠️Has not produced any blocks for over a week.",
+    "by": "by",
     "proxy_form": {
       "title": "Confirm Account Witness Proxy",
       "description": "You are about to remove your proxy.",
-      "set_proxy_to:":"Set proxy to: {{proxy}}",
+      "set_proxy_to:": "Set proxy to: {{proxy}}",
       "cancel_button": "Отмена",
       "ok": "OK"
     }
@@ -157,22 +159,24 @@
     "proposals": "Proposals",
     "started": "started",
     "finished": "finished",
-    "not started": "not started",
+    "not_started": "not started",
     "refund": "refund",
     "burn": "burn",
     "by": "by",
-    "for": "for"
+    "for": " for "
   },
   "login_form": {
     "title": "Вернувшиеся пользователи: ",
     "title_action_login": "Войти",
     "title_action_login_to_vote": "Войти, чтобы проголосовать",
+    "title_confirm_password": "Подтвердите пароль",
     "username_placeholder": "Введи свое имя пользователя",
     "password_placeholder": "Пароль или WIF",
     "use_hiveauth": "Use HiveAuth",
     "keep_me_logged_in": "Оставить меня залогиненным",
     "more_login_methods": "больше методов входа",
     "login_button": "Войти",
-    "cancel_button": "Отмена"
+    "cancel_button": "Отмена",
+    "this_operation_requires_your_key_or_master_password": "Для осуществления данной операции нужен ваш {{authType}} ключ или Основной пароль."
   }
 }

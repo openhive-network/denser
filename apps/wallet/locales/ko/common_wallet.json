@@ -2,7 +2,7 @@
   "global": {
     "time": "",
     "loading": "로딩중..",
-    "something_went_wrong":"Something went wrong"
+    "something_went_wrong": "Something went wrong"
   },
   "navigation": {
     "main_nav_bar": {
@@ -21,7 +21,9 @@
       "developer_portal": "스팀잇 API 문서",
       "hive_whitepaper": "스팀 화이트페이퍼",
       "privacy_policy": "개인정보 방침",
-      "terms_of_service": "이용 약관"
+      "terms_of_service": "이용 약관",
+      "currency_market": "Currency Market",
+      "third_party_exchanges": "Third-party exchanges:"
     },
     "profil_navbar": {
       "blog": "블로그",
@@ -54,8 +56,8 @@
       "votable": "Votable",
       "order_by": "Order by",
       "creator": "Creator",
-      "start_date": "Start date",
-      "end_date": "End date",
+      "start_date": "Start Date",
+      "end_date": "End Date",
       "total_votes": "Total Votes"
     }
   },
@@ -111,7 +113,7 @@
     "trade_history": "거래 이력",
     "newer": "최근",
     "older": "이전",
-    "date":"Date"
+    "date": "Date"
   },
   "witnesses_page": {
     "title": "증인 투표",
@@ -138,15 +140,15 @@
     "vote_description": "상위 100위권 밖에 계신 분에게 증인 투표를 하시려면 아래 칸에 해당하는 분의 계정명을 입력하세요.",
     "proxy_description": "You can also choose a proxy that will vote for witnesses for you. This will reset your current witness selection.",
     "set_proxy": "위임 설정",
-    "disabled":"Disabled ",
-    "no_url_provided":"No URL provided",
-    "use_this_for_linking_title":"Use this for linking to this page and highlight the selected witness",
-    "has_not_produced_blocks":"⚠️Has not produced any blocks for over a week.",
-    "by":"by",
+    "disabled": "Disabled ",
+    "no_url_provided": "No URL provided",
+    "use_this_for_linking_title": "Use this for linking to this page and highlight the selected witness",
+    "has_not_produced_blocks": "⚠️Has not produced any blocks for over a week.",
+    "by": "by",
     "proxy_form": {
       "title": "Confirm Account Witness Proxy",
       "description": "You are about to remove your proxy.",
-      "set_proxy_to:":"Set proxy to: {{proxy}}",
+      "set_proxy_to:": "Set proxy to: {{proxy}}",
       "cancel_button": "취소",
       "ok": "OK"
     }
@@ -155,22 +157,24 @@
     "proposals": "Proposals",
     "started": "started",
     "finished": "finished",
-    "not started": "not started",
+    "not_started": "not started",
     "refund": "refund",
     "burn": "burn",
     "by": "by",
-    "for": "for"
+    "for": " for "
   },
   "login_form": {
     "title": "Returning Users:",
     "title_action_login": "로그인",
     "title_action_login_to_vote": "Login to Vote",
+    "title_confirm_password": "Confirm Password",
     "username_placeholder": "Enter your username",
     "password_placeholder": "Password or WIF",
     "use_hiveauth": "Use HiveAuth",
     "keep_me_logged_in": "로그인 유지",
     "more_login_methods": "더 많은 로그인 방법",
     "login_button": "로그인",
-    "cancel_button": "취소"
+    "cancel_button": "취소",
+    "this_operation_requires_your_key_or_master_password": "이 작업은 {{authType}} 키 또는 마스터 비밀번호가 필요합니다."
   }
 }
