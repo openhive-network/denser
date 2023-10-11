@@ -1,11 +1,14 @@
-import ProfileLayout from "@/blog/components/common/profile-layout";
-import { useSiteParams } from "@hive/ui/components/hooks/use-site-params";
-import { getAccountPosts, DATA_LIMIT as PER_PAGE } from "@/blog/lib/bridge";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import RepliesList from "@/blog/components/replies-list";
-import { useEffect } from "react";
-import { useInView } from "react-intersection-observer";
-import { PostSkeleton } from "../[...param]";
+import ProfileLayout from '@/blog/components/common/profile-layout';
+import { useSiteParams } from '@hive/ui/components/hooks/use-site-params';
+import { getAccountPosts, DATA_LIMIT as PER_PAGE } from '@/blog/lib/bridge';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import RepliesList from '@/blog/components/replies-list';
+import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
+import { PostSkeleton } from '../[...param]';
+import { GetServerSideProps } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { i18n } from '@/blog/next-i18next.config';
 
 export default function UserReplies() {
   const { username } = useSiteParams();
@@ -13,16 +16,16 @@ export default function UserReplies() {
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteQuery(
-      ["accountReplies", username, "replies"],
+      ['accountReplies', username, 'replies'],
       async ({
-        pageParam,
-      }: {
+               pageParam
+             }: {
         pageParam?: { author: string; permlink: string };
       }) => {
         return await getAccountPosts(
-          "replies",
+          'replies',
           username,
-          "hive.blog",
+          'hive.blog',
           pageParam?.author,
           pageParam?.permlink
         );
@@ -32,12 +35,12 @@ export default function UserReplies() {
           if (lastPage && lastPage.length === PER_PAGE) {
             return {
               author: lastPage[lastPage.length - 1].author,
-              permlink: lastPage[lastPage.length - 1].permlink,
+              permlink: lastPage[lastPage.length - 1].permlink
             };
           }
         },
 
-        enabled: !!username,
+        enabled: !!username
       }
     );
 
@@ -50,14 +53,14 @@ export default function UserReplies() {
   return (
     <ProfileLayout>
       {!isLoading && data ? (
-        <div className="flex flex-col">
+        <div className='flex flex-col'>
           {data.pages.map((page, index) => {
             return page && page.length > 0 ? (
               <RepliesList data={page} key={`replies-${index}`} />
             ) : (
               <div
-                key="empty"
-                className="px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm"
+                key='empty'
+                className='px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm'
               >
                 @{username} hasn&apos;t had any replies yet.
               </div>
@@ -72,9 +75,9 @@ export default function UserReplies() {
               {isFetchingNextPage ? (
                 <PostSkeleton />
               ) : hasNextPage ? (
-                "Load Newer"
+                'Load Newer'
               ) : data.pages[0] && data.pages[0].length > 0 ? (
-                "Nothing more to load"
+                'Nothing more to load'
               ) : null}
             </button>
           </div>
@@ -83,3 +86,11 @@ export default function UserReplies() {
     </ProfileLayout>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_blog']))
+    }
+  };
+};

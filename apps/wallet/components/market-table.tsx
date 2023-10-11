@@ -1,8 +1,9 @@
 import { Button } from "@hive/ui";
 import clsx from "clsx";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { dateToRelative } from "@hive/ui/lib/parse-date";
 import Big from "big.js";
+import { useTranslation } from 'next-i18next';
 
 export interface OrdersItem {
   total: number;
@@ -36,8 +37,8 @@ export function MarketTable({
   label: string;
   handleSetterPrices: (e: string) => void;
 }) {
+  const { t } = useTranslation('common_wallet');
   const [page, setPage] = useState(0);
-
   const sliceFrom = page * PAGE_SIZE;
   const sliceTo = page * PAGE_SIZE + 10;
   return (
@@ -89,11 +90,11 @@ export function MarketTable({
         onNext={() => {
           setPage((prev) => prev + 1);
         }}
-        nextLabel={type === "buy" ? "Higher" : "Lower"}
+        nextLabel={type === "buy" ? t('market_page.higher') : t('market_page.lower') }
         onPrev={() => {
           setPage((prev) => prev - 1);
         }}
-        prevLabel={type === "sell" ? "Higher" : "Lower"}
+        prevLabel={type === "sell" ? t('market_page.higher') : t('market_page.lower')}
         page={page}
         totalPages={Math.ceil(data.length / PAGE_SIZE) - 1}
       />
@@ -143,14 +144,14 @@ export function HistoryTable({
   params: string[];
   label: string;
 }) {
+  const { t } = useTranslation('common_wallet');
   const [page, setPage] = useState(0);
-
   const sliceFrom = page * PAGE_SIZE;
   const sliceTo = page * PAGE_SIZE + 10;
   return (
     <div
       className={clsx(
-        "mt-4 w-1/2 flex flex-col h-[342px] justify-between w-full"
+        "mt-4 w-1/2 flex flex-col h-[342px] justify-between"
       )}
     >
       <div className="flex flex-col gap-2">
@@ -192,11 +193,11 @@ export function HistoryTable({
         onNext={() => {
           setPage((prev) => prev + 1);
         }}
-        nextLabel="Newer"
+        nextLabel={t('market_page.older')}
         onPrev={() => {
           setPage((prev) => prev - 1);
         }}
-        prevLabel="Older"
+        prevLabel={t('market_page.older')}
         page={page}
         totalPages={Math.ceil(data.length / PAGE_SIZE) - 1}
       />

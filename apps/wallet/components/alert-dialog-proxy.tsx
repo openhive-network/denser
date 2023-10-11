@@ -1,7 +1,6 @@
 import { Button, Separator } from "@hive/ui";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -12,14 +11,16 @@ import {
 } from "@hive/ui/components/alert-dialog";
 import { ReactNode } from "react";
 import DialogLogin from "./dialog-login";
+import { useTranslation } from 'next-i18next';
 
 export function AlertDialogProxy({
   children,
-  proxy,
+  userProxy,
 }: {
   children: ReactNode;
-  proxy: string;
+  userProxy: string;
 }) {
+  const { t } = useTranslation('common_wallet');
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
@@ -27,7 +28,7 @@ export function AlertDialogProxy({
         <AlertDialogHeader className="gap-2">
           <div className="flex items-center justify-between">
             <AlertDialogTitle data-testid="reblog-dialog-header">
-              Confirm Account Witness Proxy{" "}
+              {t('witnesses_page.proxy_form.title')}
             </AlertDialogTitle>
             <AlertDialogCancel
               className="border-none hover:text-red-800"
@@ -38,9 +39,9 @@ export function AlertDialogProxy({
           </div>
           <Separator />
           <AlertDialogDescription data-testid="reblog-dialog-description">
-            {proxy === ""
-              ? "You are about to remove your proxy."
-              : `Set proxy to: ${proxy}`}
+            {userProxy === ""
+              ? t('witnesses_page.proxy_form.description')
+              : t('witnesses_page.proxy_form.set_proxy_to', {proxy: userProxy})}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="gap-2 sm:flex-row-reverse">
@@ -48,14 +49,14 @@ export function AlertDialogProxy({
             className="hover:text-red-800"
             data-testid="reblog-dialog-cancel"
           >
-            Cancel
+            {t('witnesses_page.proxy_form.cancel_button')}
           </AlertDialogCancel>
           <DialogLogin>
             <Button
               className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
               data-testid="reblog-dialog-ok"
             >
-              OK
+              {t('witnesses_page.proxy_form.ok')}
             </Button>
           </DialogLogin>
         </AlertDialogFooter>

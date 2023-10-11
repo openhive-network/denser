@@ -42,9 +42,9 @@ test.describe('Profile page of @gtg', () => {
           const textContent = await postItem.textContent();
           if (textContent.includes('reblogged')) {
             const postAuthor = await postItem.$$('[data-testid="post-author"]');
-            
+
             if (postAuthor.length > 0) {
-              
+
               await expect(postAuthor[0]).not.toContain('gtg')
               break;
             }

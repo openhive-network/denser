@@ -39,6 +39,7 @@
     "moment": "^2.29.4",
     "multihashes": "^4.0.3",
     "next": "13.4.10",
+    "next-i18next": "^14.0.3",
     "next-themes": "^0.2.1",
     "next-transpile-modules": "^10.0.1",
     "npm": "^9.8.0",

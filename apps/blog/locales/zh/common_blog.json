@@ -1,0 +1,261 @@
+{
+  "global": {
+    "time": ""
+  },
+  "navigation": {
+    "main_nav_bar": {
+      "posts": "文章",
+      "proposals": "Proposals",
+      "witnesses": "见证人",
+      "out_dapps": "Our dApps",
+      "login": "登录",
+      "sign_up": "注册",
+      "search": "搜索..."
+    },
+    "sidebar": {
+      "welcome": "欢迎",
+      "stolen_account_recovery": "被盗账户恢复",
+      "change_account_password": "更改帐户密码",
+      "vote_for_witnesses": "投票给见证人",
+      "faq": "常见问题",
+      "hive_proposals": "Hive Proposals",
+      "openhive_chat": "Hive聊天",
+      "developer_portal": "Hive API文档",
+      "hive_whitepaper": "Hive白皮书",
+      "privacy_policy": "隐私政策",
+      "terms_of_service": "服务条款"
+    },
+    "communities_nav": {
+      "all_posts": "All posts",
+      "trending_communities": "Trending Communities",
+      "explore_communities": "显示更多的主题..."
+    },
+    "explore_nav": {
+      "explore_hive": "Explore Hive",
+      "what_is_hive": "What is Hive",
+      "hive_dapps": "Hive应用中心",
+      "blockexplorer": "Blockexplorer",
+      "vote_for_witnesses": "投票给见证人",
+      "hive_proposals": "Hive Proposals"
+    },
+    "profil_navbar": {
+      "blog": "博客",
+      "posts": "文章",
+      "replies": "留言",
+      "social": "Social",
+      "notifications": "Notifications",
+      "wallet": "钱包"
+    },
+    "profil_posts_tab_navbar": {
+      "posts": "文章",
+      "comments": "评论",
+      "payouts": "赏金"
+    },
+    "profil_social_tab_navbar": {
+      "badges": "Badges",
+      "activity": "Activity",
+      "personal": "Personal",
+      "meetups": "Meetups",
+      "challenges": "Challenges"
+    },
+    "profil_notifications_tab_navbar": {
+      "all": "All",
+      "replies": "留言",
+      "mentions": "Mentions",
+      "follows": "Follows",
+      "upvotes": "Upvotes",
+      "reblogs": "Reblogs"
+    }
+  },
+  "select_sort": {
+    "posts_sort": {
+      "trending": "流行",
+      "hot": "热门",
+      "new": "最新",
+      "payouts": "赏金",
+      "muted": "Muted"
+    },
+    "sort_comments": {
+      "trending": "流行",
+      "votes": "点赞数",
+      "age": "时间"
+    },
+    "search_sorter": {
+      "newest": "Newest",
+      "popularity": "Popularity",
+      "relevance": "Relevance"
+    }
+  },
+  "cards": {
+    "reblogged": "已转发的",
+    "badges": {
+      "pinned": "Pinned"
+    },
+    "post_card": {
+      "reputation_title": "声誉",
+      "in": "在",
+      "upvote": "点赞",
+      "downvote": "Downvote",
+      "no_votes": "暂无投票",
+      "vote": "1个投票",
+      "votes": "{{votes}}个投票",
+      "no_responses": "暂无回复。",
+      "response": "1个回复。",
+      "responses": "{{responses}}个回复。",
+      "click_to_respond": "点击回复。",
+      "reblog": "转发"
+    }
+  },
+  "amount_hover_card": {
+    "pending_payout_amount": "待获得赏金${{value}}",
+    "breakdown": "Breakdown:",
+    "payout_in": "Payout in",
+    "past_payouts": "累计赏金${{value}}",
+    "author": "作者收入${{value}}",
+    "curators": "审查收入${{value}}"
+  },
+  "login_form": {
+    "title": "返回用户:",
+    "title_action_login": "登录",
+    "title_action_login_to_vote": "登录后投票",
+    "username_placeholder": "输入您的用户名",
+    "password_placeholder": "密码或WIF",
+    "use_hiveauth": "Use HiveAuth",
+    "keep_me_logged_in": "保持登录状态",
+    "more_login_methods": "更多登录方法",
+    "login_button": "登录",
+    "cancel_button": "取消"
+  },
+  "user_profil": {
+    "reputation": "声誉",
+    "follow_button": "关注",
+    "hive_buzz_badge_title": "This is {{username}}'s level badged earned from Hivebuzz programs",
+    "twitter_badge_title": "To get the Twitter badge, link your account at HivePosh.com",
+    "joined": "加入",
+    "active": "活跃",
+    "lists": {
+      "follower_count": {
+        "zero": "没有关注者",
+        "one": "1个关注者",
+        "other": "{{value}}个关注者"
+      },
+      "followed_count": {
+        "zero": "没有关注任何人",
+        "one": "关注1人",
+        "other": "关注{{value}}人"
+      },
+      "post_count": {
+        "zero": "没有帖子",
+        "one": "1个帖子",
+        "other": "{{value}}个帖子"
+      },
+      "blacklisted_users": "Blacklisted Users",
+      "muted_users": "屏蔽的用户",
+      "followed_blacklists": "Followed Blacklists",
+      "followed_muted_lists": "Followed Muted Lists",
+      "followers_pages": "Followers page {{current}} from {{total}}",
+      "followed_pages": "Followed page {{current}} from {{totaol}}",
+      "list": {
+        "what_is_this": "What Is This?",
+        "show_or_hide_descripton": "This is the new decentralized list system. From here you can manage your own mute list or blacklist, as well as subscribe to the mute lists and blacklists of other users. There are some new fields on the {{settings_link}} page where you can set a description of how you choose who you've added to your lists and if there are any actions that account can take to get removed from them. You can see the descriptions of the lists of other accounts by browsing directly to their personal blacklist or mute list page. These links can be found on their profile page below the follower information. To get started, we recommend that you follow the blacklists/mute lists of these accounts: hive.blog",
+        "list_description": "List Description: ",
+        "description_not_added": "User hasn't added a description to their blacklist yet",
+        "empty_list": "There are no users on this list yet",
+        "search_this_list": "Search This List",
+        "accounts_blacklisted_by": "Accounts Blacklisted By {{username}}",
+        "accounts_muted_by": "Accounts Muted By {{username}}",
+        "reset_options": "Reset Options",
+        "reset_blacklist": "Reset Blacklist",
+        "reset_muted_list": "Reset Muted List",
+        "reset_followed_blacklists": "Reset Followed Blacklists",
+        "reset_followed_muted_list": "Reset Followed Muted Lists",
+        "reset_all_lists": "Reset All Follows/Lists",
+        "busy_button": "BUSY, PLEASE WAIT",
+        "first_button": "First",
+        "previous_button": "以前",
+        "next_button": "下一个",
+        "last_button": "Last",
+        "viewing_page": "Viewing Page {{current}} of {{total}}",
+        "users_on_list": "Users On List: {{number}}"
+      }
+    },
+    "social_tab": {
+      "community_subscriptions_title": "Community Subscriptions",
+      "the_author_has_subscribed_to_the_following": "The author has subscribed to the following Hive Communities",
+      "badges_and_achievements_title": "Badges and achievements",
+      "these_are_badges_received_by_the_author": "These are badges received by the author via the third-party apps "
+    },
+    "notifications_tab": {
+      "voted_on_your_post": "@{{username}} voted on your post {{amount}}",
+      "replied_on_your_post": "@{{username}} replied to your post",
+      "replied_to_your_comment": "@{{username}} replied to your comment",
+      "reblogged_on_your_post": "@{{username}} reblogged your post",
+      "followed_you": "@{{username}} followed you",
+      "mentioned_you_and_others": "@{{username}} mentioned you and {{others}} others",
+      "subscribed_to": "@{{username}} subscribed to {{community}}"
+    }
+  },
+  "communities": {
+    "latest_subscribers": "Latest {{username}} Subscribers",
+    "buttons": {
+      "subscribe": "Subscribe",
+      "new_post": "New post",
+      "activity_log": "Activity Log",
+      "subscribers": "subscribers"
+    },
+    "titles": {
+      "pending_rewards": "pending rewards",
+      "active_posters": "active posters",
+      "leadership": "Leadership",
+      "description": "Description",
+      "rules": "Rules",
+      "language": "Language"
+    }
+  },
+  "post_content": {
+    "in": "在",
+    "reputation_title": "声誉",
+    "if_comment": {
+      "you_are_viewing_a_single_comments_thread_from": "你正在查看单个评论的主题",
+      "view_the_full_context": "查看全文",
+      "view_the_direct_parent": "查看上一级"
+    },
+    "header": {
+      "hover_author": {
+        "follow_button": "关注",
+        "followers": "关注者",
+        "following": "Following",
+        "joined": "加入"
+      },
+      "edited": "edited"
+    },
+    "footer": {
+      "by": "by",
+      "upvote": "点赞",
+      "downvote": "Downvote",
+      "no_votes": "暂无投票",
+      "vote": "1个投票",
+      "votes": "{{votes}}个投票",
+      "no_responses": "暂无回复。",
+      "response": "1个回复。",
+      "responses": "{{responses}}个回复。",
+      "reblog": "转发",
+      "reply": "回复",
+      "share_on": "Share on ",
+      "share_form": {
+        "copy": "复制",
+        "copied": "已复制！!",
+        "share_this_link": "Share this post",
+        "url_to_this_post": "URL to this post:",
+        "markdown_code_for_a_link_to_this_post": "Markdown code for a link to this post:",
+        "open_in_alternative": "其他资源",
+        "open_in": "Open in Block Explorers"
+      }
+    }
+  },
+  "search_page": {
+    "placeholder": "搜索",
+    "no_results": "Nothing was found.",
+    "error": "There was an error"
+  }
+}

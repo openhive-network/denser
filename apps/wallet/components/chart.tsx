@@ -9,8 +9,8 @@ import {
 } from "recharts";
 import { OrdersItem } from "./market-table";
 import Big from "big.js";
-import { convertStringToBig } from "@hive/ui/lib/helpers";
 import { getRoundedAbbreveration } from "@hive/ui/lib/utils";
+import { useTranslation } from 'next-i18next';
 
 export type PayloadOrder = {
   total: number;
@@ -34,7 +34,6 @@ interface Payload {
   name: string;
   payload: PayloadOrder;
 }
-
 function getWindowWidth() {
   return (
     window.innerWidth ||
@@ -42,7 +41,6 @@ function getWindowWidth() {
     document.body.clientWidth
   );
 }
-
 const CustomizedDot = ({
   cy,
   cx,
@@ -104,14 +102,16 @@ const CustomTooltip = ({
   payload?: Payload[];
   label?: number;
 }) => {
+const { t } = useTranslation('common_wallet');
+
   if (active && payload && payload.length) {
     return (
       <div className="bg-slate-300 dark:bg-slate-900 text-sm p-2">
-        <p>{`Price: ${label} $/HIVE`}</p>
+        <p>{t('market_page.price')+`: ${label} $/HIVE`}</p>
         <p>
           {payload[0].value !== 0
-            ? "Bid " + payload[0].value
-            : "Ask " + payload[1].value}
+            ? t('market_page.bid') + payload[0].value
+            : t('market_page.ask') + payload[1].value}
           {" HBD($)"}
         </p>
       </div>

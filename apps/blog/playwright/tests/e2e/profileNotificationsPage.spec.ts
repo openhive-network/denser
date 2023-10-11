@@ -373,7 +373,8 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
 
     // Compare amount of the reblogs notifications with api response after clicking Load more
     await profilePage.notificationLoadMoreButtonInReblogs.click();
-    await profilePage.page.waitForSelector(await profilePage.notificationListItemInReblogs['_selector']);
+    if (await profilePage.page.locator('table').isVisible())
+      await profilePage.page.waitForSelector(await profilePage.notificationListItemInReblogs['_selector']);
     const notificationListItemInReblogsArray2 = await profilePage.notificationListItemInReblogs.all();
     expect(await notificationListItemInReblogsArray2.length).toBe(amountNotificationsReblogType + amountNotificationsReblogType2);
   });

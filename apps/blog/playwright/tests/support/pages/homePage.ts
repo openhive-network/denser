@@ -94,11 +94,11 @@ export class HomePage {
       .getByText('LeoFinance');
     this.getHeaderLeoCommunities = page.locator(
       '[data-testid="community-name"]'
-    );
+    ).getByText("LeoFinance");
     this.getPinmappleCommunitiesLink = this.getTrendingCommunitiesSideBar.locator('a:text("Pinmapple")');
     this.getHeaderPinmappleCommunities = page.locator(
       '[data-testid="community-name"]'
-    );
+    ).getByText("Pinmapple");
     this.getHomeNavLink = page.locator('header a span:text("Hive Blog")');
     this.getNavPostsLink = page.locator('[data-testid="nav-posts-link"]');
     this.getNavProposalsLink = page.locator('[data-testid="nav-proposals-link"]');

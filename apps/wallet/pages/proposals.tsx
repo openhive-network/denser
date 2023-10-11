@@ -1,50 +1,50 @@
-import { useEffect, useState } from "react";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import Big from "big.js";
+import { useEffect, useState } from 'react';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import Big from 'big.js';
 import {
   DEFAULT_PARAMS_FOR_PROPOSALS,
   GetProposalsParams,
-  getProposals,
-} from "@/wallet/lib/hive";
-import { getDynamicGlobalProperties } from "@hive/ui/lib/hive";
-import { ProposalsFilter } from "@/wallet/components/proposals-filter";
-import moment from "moment";
-import { ProposalListItem } from "@/wallet/components/proposals-list-item";
-import { convertStringToBig } from "@hive/ui/lib/helpers";
-import { Skeleton } from "@hive/ui/components/skeleton";
+  getProposals
+} from '@/wallet/lib/hive';
+import { getDynamicGlobalProperties } from '@hive/ui/lib/hive';
+import { ProposalsFilter } from '@/wallet/components/proposals-filter';
+import moment from 'moment';
+import { ProposalListItem } from '@/wallet/components/proposals-list-item';
+import { convertStringToBig } from '@hive/ui/lib/helpers';
+import { Skeleton } from '@hive/ui/components/skeleton';
 
 function timeStatus(status: string) {
   switch (status) {
-    case "active":
-      return "started";
-    case "inactive":
-      return "not started";
-    case "expired":
-      return "finished";
+    case 'active':
+      return 'started';
+    case 'inactive':
+      return 'not started';
+    case 'expired':
+      return 'finished';
     default:
-      return "";
+      return '';
   }
 }
 
 function ProposalsPage() {
   const [filterStatus, setFilterStatus] = useState<
-    GetProposalsParams["status"]
+    GetProposalsParams['status']
   >(DEFAULT_PARAMS_FOR_PROPOSALS.status);
-  const [sortOrder, setSortOrder] = useState<GetProposalsParams["order"]>(
+  const [sortOrder, setSortOrder] = useState<GetProposalsParams['order']>(
     DEFAULT_PARAMS_FOR_PROPOSALS.order
   );
   const [orderDirection, setOrderDirection] = useState<
-    GetProposalsParams["order_direction"]
+    GetProposalsParams['order_direction']
   >(DEFAULT_PARAMS_FOR_PROPOSALS.order_direction);
 
   const proposalsData = useInfiniteQuery(
-    ["proposals", filterStatus, sortOrder, orderDirection],
+    ['proposals', filterStatus, sortOrder, orderDirection],
     ({ pageParam: last_id }) =>
       getProposals({
         last_id,
         status: filterStatus,
         order: sortOrder,
-        order_direction: orderDirection,
+        order_direction: orderDirection
       }),
     {
       getNextPageParam: (lastPage) => {
@@ -61,24 +61,24 @@ function ProposalsPage() {
               ...proposal,
               total_votes: new Big(parseFloat(proposal.total_votes).toFixed(2)),
               daily_pay: {
-                amount: new Big(proposal.daily_pay.amount).div(1000),
+                amount: new Big(proposal.daily_pay.amount).div(1000)
               },
-              start_date: moment(proposal.start_date).format("MMM D, YYYY"),
-              end_date: moment(proposal.end_date).format("MMM D, YYYY"),
-              status: timeStatus(proposal.status),
+              start_date: moment(proposal.start_date).format('MMM D, YYYY'),
+              end_date: moment(proposal.end_date).format('MMM D, YYYY'),
+              status: timeStatus(proposal.status)
             }))
-          ),
+          )
         };
-      },
+      }
     }
   );
   const {
     data: dynamicData,
     isSuccess: dynamicSuccess,
     isLoading: dynamicLoading,
-    isError: dynamicError,
+    isError: dynamicError
   } = useQuery(
-    ["dynamicGlobalProperties"],
+    ['dynamicGlobalProperties'],
     () => getDynamicGlobalProperties(),
     {
       select: (data) => {
@@ -87,9 +87,9 @@ function ProposalsPage() {
           total_vesting_fund_hive: convertStringToBig(
             data.total_vesting_fund_hive
           ),
-          total_vesting_shares: convertStringToBig(data.total_vesting_shares),
+          total_vesting_shares: convertStringToBig(data.total_vesting_shares)
         };
-      },
+      }
     }
   );
 
@@ -106,15 +106,15 @@ function ProposalsPage() {
         fetching = false;
       }
     };
-    document.addEventListener("scroll", handleScroll);
+    document.addEventListener('scroll', handleScroll);
     return () => {
-      document.removeEventListener("scroll", handleScroll);
+      document.removeEventListener('scroll', handleScroll);
     };
   }, [proposalsData.fetchNextPage, proposalsData.hasNextPage]);
   return (
     <div
-      className="mx-auto flex max-w-5xl flex-col gap-5 p-5"
-      data-testid="proposals-body"
+      className='mx-auto flex max-w-5xl flex-col gap-5 p-5'
+      data-testid='proposals-body'
     >
       <ProposalsFilter
         onChangeFilterStatus={setFilterStatus}
@@ -126,15 +126,15 @@ function ProposalsPage() {
       />
 
       {proposalsData.isLoading || dynamicLoading ? (
-        <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-5 p-5">
-          <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
-          <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
-          <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
-          <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
-          <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
+        <div className='mx-auto flex w-full max-w-5xl flex-col items-center gap-5 p-5'>
+          <Skeleton className='h-32 w-full bg-slate-300 dark:bg-slate-900' />
+          <Skeleton className='h-32 w-full bg-slate-300 dark:bg-slate-900' />
+          <Skeleton className='h-32 w-full bg-slate-300 dark:bg-slate-900' />
+          <Skeleton className='h-32 w-full bg-slate-300 dark:bg-slate-900' />
+          <Skeleton className='h-32 w-full bg-slate-300 dark:bg-slate-900' />
         </div>
       ) : !proposalsData.data || !dynamicData ? (
-        <p className="my-32 animate-pulse text-center text-3xl">
+        <p className='my-32 animate-pulse text-center text-3xl'>
           Something went wrong
         </p>
       ) : (
@@ -154,3 +154,4 @@ function ProposalsPage() {
 }
 
 export default ProposalsPage;
+

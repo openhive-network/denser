@@ -17,15 +17,15 @@ test.describe('Home page tests - All posts', () => {
     await homePage.goto();
     // move from HomePage to LeoFinance community
     await homePage.moveToLeoFinanceCommunities();
+    // move from LeoFinance community to Pinmapple community
     await homePage.moveToPinmappleCommunities();
     // move from Pinmapple to Home page
-    // await homePage.moveToHomePage();
-    await page.goBack()
-    await page.waitForLoadState()
-    await page.goBack()
-    await page.waitForLoadState()
-    await expect(homePage.getHeaderLeoCommunities).toBeVisible();
-    await expect(homePage.getHeaderLeoCommunities).toContainText('All posts')
+    await page.goBack();
+    await page.waitForLoadState("networkidle");
+    await page.goBack();
+    await page.waitForLoadState("networkidle");
+    await expect(homePage.getTrandingCommunitiesHeader).toBeVisible();
+    await expect(homePage.getTrandingCommunitiesHeader).toContainText('All posts');
   });
 
   test('move to Explore communities... from Home Page', async ({ page }) => {

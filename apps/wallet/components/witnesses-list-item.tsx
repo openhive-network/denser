@@ -10,6 +10,8 @@ import { dateToFullRelative } from "@hive/ui/lib/parse-date";
 import { useRouter } from "next/router";
 import { useEffect, useRef } from "react";
 import DialogLogin from "./dialog-login";
+import { useTranslation } from 'next-i18next';
+
 
 const getOwnersString = (owners?: string) => {
   if (!owners) return "";
@@ -32,8 +34,8 @@ function WitnessListItem({
   headBlock,
   witnessAccount,
 }: WitnessListItemProps) {
+  const { t } = useTranslation('common_wallet');
   const disableUser = data.signing_key === DISABLED_SIGNING_KEY;
-
   const witnessDescription = witnessAccount?.profile?.witness_description;
   const witnessOwner = witnessAccount?.profile?.witness_owner;
 
@@ -41,11 +43,11 @@ function WitnessListItem({
     if (disableUser)
       return (
         <span>
-          {"Disabled "}
+          {t('witnesses_page.disabled')}
           {blockGap(headBlock, data.last_confirmed_block_num)}
         </span>
       );
-    if (!data.url.includes("http")) return <>(No URL provided)</>;
+    if (!data.url.includes("http")) return <>({t('witnesses_page.no_url_provided')})</>;
 
     if (data.url.includes("hive.blog") || data.url.includes("localhost"))
       return (
@@ -54,7 +56,7 @@ function WitnessListItem({
           target="_blank"
           className="flex items-center gap-2 font-semibold hover:text-red-400 dark:hover:text-red-400"
         >
-          <span>Open witness annoucement</span>
+          <span>{t('witnesses_page.open_witness_annoucement')}</span>
           <Icons.forward className="text-red-600 dark:text-red-500" />
         </Link>
       );
@@ -64,7 +66,7 @@ function WitnessListItem({
         target="_blank"
         className="flex items-center gap-2 font-semibold hover:text-red-400 dark:hover:text-red-400"
       >
-        <span>Open external site</span>
+        <span>{t('witnesses_page.open_external_site')}</span>
         <Icons.forward className="text-red-600 dark:text-red-500" />
       </Link>
     );
@@ -102,7 +104,7 @@ function WitnessListItem({
           </span>
           <DialogLogin>
             <div
-              title="vote"
+              title={t('witnesses_page.vote')}
               className="group relative flex"
               data-testid="witness-vote"
             >
@@ -127,7 +129,7 @@ function WitnessListItem({
         <div className="flex" data-testid="witness-list-item-info">
           <div
             className="hidden p-2 sm:block self"
-            title="Navigate to this user's profile"
+            title={t('witnesses_page.navigate_to_witness_profile')}
           >
             <Link href={`http://localhost:3000/@${data.owner}`} target="_blank">
               <img
@@ -147,7 +149,7 @@ function WitnessListItem({
                 href={`http://localhost:3000/@${data.owner}`}
                 data-testid="witness-name-link"
                 target="_blank"
-                title="Navigate to this user's profile"
+                title={t('witnesses_page.navigate_to_witness_profile')}
               >
                 {
                   <div
@@ -168,7 +170,7 @@ function WitnessListItem({
               </Link>
               {witnessOwner && (
                 <div className="text-xs  text-gray-600 sm:text-sm  ">
-                  by {getOwnersString(witnessOwner)}
+                  {t('witnesses_page.by')} {getOwnersString(witnessOwner)}
                 </div>
               )}
 
@@ -181,7 +183,7 @@ function WitnessListItem({
                 replace
                 scroll={false}
                 data-testid="witness-highlight-link"
-                title="Use this for linking to this page and highlight the selected witness"
+                title={t('witnesses_page.use_this_for_linking_title')}
               >
                 <Icons.link className="h-[1em] w-[1em]" />
               </Link>
@@ -194,11 +196,11 @@ function WitnessListItem({
 
             {data.witnessLastBlockAgeInSecs > ONE_WEEK_IN_SEC && (
               <span className="font-semibold">
-                ⚠️Has not produced any blocks for over a week.
+                {t('witnesses_page.has_not_produced_blocks')}
               </span>
             )}
             <div>
-              Last block{" "}
+            {t('witnesses_page.last_block')}
               <Link
                 href={`https://hiveblocks.com/b/${data.last_confirmed_block_num}`}
                 className="text-red-500"
@@ -215,7 +217,7 @@ function WitnessListItem({
               <></>
             ) : (
               <div data-testid="witness-created">
-                Witness age: {moment().from(data.created, true)}
+                {t('witnesses_page.witness_age')}{moment().from(data.created, true)}
               </div>
             )}
 
@@ -230,7 +232,8 @@ function WitnessListItem({
         </div>
         {data.requiredHpToRankUp && (
           <div className="font-light">
-            Need {getRoundedAbbreveration(data.requiredHpToRankUp)} to level up
+            {t('witnesses_page.hp_required_to_rank_up', 
+            {value: getRoundedAbbreveration(data.requiredHpToRankUp)})}
           </div>
         )}
       </td>

@@ -244,7 +244,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
       await expect(firstCommentCardVote).toBeVisible();
       await firstCommentCardVote.hover();
       await profilePage.page.waitForTimeout(1000);
-      await expect(await profilePage.repliesCommentListItemVotesTooltip.nth(0)).toHaveText('no vote');
+      await expect(await profilePage.repliesCommentListItemVotesTooltip.nth(0)).toHaveText('no votes');
     }
   });
 

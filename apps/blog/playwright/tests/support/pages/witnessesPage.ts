@@ -144,7 +144,7 @@ export class WitnessPage {
     await expect(this.witnessesSetProxyBoxInput).toHaveCSS('border-color', 'rgb(226, 232, 240)');
     await expect(this.witnessesSetProxyBoxInput).toHaveCSS('placeholder', '');
     // button of the set proxy box
-    await expect(this.witnessesSetProxyBoxButton).toHaveText('SET PROXY');
+    await expect(this.witnessesSetProxyBoxButton).toHaveText('Set proxy');
     await expect(this.witnessesSetProxyBoxButton).toHaveCSS('background-color', 'rgb(255, 0, 0)');
     await expect(this.witnessesSetProxyBoxButton).toHaveCSS('color', 'rgb(248, 250, 252)');
   }
