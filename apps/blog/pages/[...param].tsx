@@ -313,7 +313,10 @@ const ParamPage: FC = () => {
               return page ? <PostList data={page} key={`x-${index}`} /> : null;
             })
           ) : (
-            <div className='px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm'>
+            <div
+              className="px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm"
+              data-testid="user-has-not-started-blogging-yet"
+            >
               Looks like @{username} hasn&apos;t started blogging yet!
             </div>
           )}

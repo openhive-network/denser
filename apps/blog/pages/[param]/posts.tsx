@@ -90,7 +90,11 @@ const UserPosts = () => {
                   return page && page.length > 0 ? (
                     <PostList data={page} key={`posts-${index}`} />
                   ) : (
-                    <div key='empty' className='px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm'>
+                    <div
+                      key='empty'
+                      className="px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm"
+                      data-testid="user-has-not-made-any-post-yet"
+                    >
                       Looks like @{username} hasn&apos;t made any posts yet!
                     </div>
                   );
@@ -125,7 +129,11 @@ const UserPosts = () => {
                   return page && page.length > 0 ? (
                     <RepliesList data={page} key={`replies-${index}`} />
                   ) : (
-                    <div key='empty' className='px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm'>
+                    <div
+                      key='empty'
+                      className="px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm"
+                      data-testid="user-has-not-made-any-post-yet"
+                    >
                       Looks like @{username} hasn&apos;t made any posts yet!
                     </div>
                   );
@@ -160,7 +168,11 @@ const UserPosts = () => {
                   return page && page.length > 0 ? (
                     <PostList data={page} key={`payout-${index}`} />
                   ) : (
-                    <div key='empty' className='px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm'>
+                    <div
+                      key='empty'
+                      className="px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm"
+                      data-testid="user-no-pending-payouts"
+                    >
                       No pending payouts.
                     </div>
                   );

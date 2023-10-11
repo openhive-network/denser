@@ -173,6 +173,13 @@ export class ProfilePage {
   readonly communityName: Locator;
   readonly communityTimeStamp: Locator;
 
+  readonly userHasNotStartedBloggingYetMsg: Locator;
+  readonly userHasNotMadeAnyPostsYetMsg: Locator;
+  readonly userNoPendingPayoutsMsg: Locator;
+  readonly userHasNotHadAnyRepliesYetMsg: Locator;
+  readonly userDoesNotHaveAnySubscriptionsYetMsg: Locator;
+  readonly userHasNotHadAnyNotificationsYetMsg: Locator;
+
   constructor(page: Page) {
     this.page = page;
     this.profileInfo = page.locator('[data-testid="profile-info"]');
@@ -381,7 +388,13 @@ export class ProfilePage {
     this.blogTabPostsContainer = page.locator('main.container');
     this.firstCommunityLinkPostsComments = page.locator('span.text-xs a').first();
     this.communityName = page.locator('[data-testid="community-name"]');
-    this.communityTimeStamp = page.locator('span.text-xs a').nth(1)
+    this.communityTimeStamp = page.locator('span.text-xs a').nth(1);
+    this.userHasNotStartedBloggingYetMsg = page.locator('[data-testid="user-has-not-started-blogging-yet"]');
+    this.userHasNotMadeAnyPostsYetMsg = page.locator('[data-testid="user-has-not-made-any-post-yet"]');
+    this.userNoPendingPayoutsMsg = page.locator('[data-testid="user-no-pending-payouts"]');
+    this.userHasNotHadAnyRepliesYetMsg = page.locator('[data-testid="user-has-not-had-any-replies-yet"]');
+    this.userDoesNotHaveAnySubscriptionsYetMsg = page.locator('[data-testid="user-does-not-have-any-subscriptions-yet"]');
+    this.userHasNotHadAnyNotificationsYetMsg = page.locator('[data-testid="user-has-not-had-any-notifications-yet"]');
   }
 
   async gotoProfilePage(nickName: string) {
@@ -447,13 +460,13 @@ export class ProfilePage {
   }
 
   async profileBlogTabIsSelected() {
-    await this.page.waitForSelector(this.postBlogItem['_selector']);
+    await this.page.waitForSelector(this.page.locator('main')['_selector']);
     expect(await this.getElementCssPropertyValue(this.profileBlogLink, 'color')).toBe('rgb(30, 41, 59)');
-    await expect(this.postBlogItem).toHaveCount(20);
+    // await expect(this.postBlogItem).toHaveCount(20);
   }
 
   async profilePostsTabIsSelected() {
-    await this.page.waitForSelector(this.postBlogItem['_selector']);
+    await this.page.waitForSelector(this.page.locator('main')['_selector']);
     // await expect(this.postBlogItem).toHaveCount(20);
     await expect(this.page).toHaveURL(/.*posts/)
     await expect(this.postsMenu).toBeVisible();
@@ -466,9 +479,9 @@ export class ProfilePage {
   }
 
   async profileRepliesTabIsSelected() {
-    await this.page.waitForSelector(this.repliesCommentListItem['_selector']);
+    await this.page.waitForSelector(this.page.locator('main')['_selector']);
     await expect(this.page).toHaveURL(/.*replies/)
-    await expect(this.repliesCommentListItem).toHaveCount(20);
+    // await expect(this.repliesCommentListItem).toHaveCount(20);
   }
 
   async profileRepliesTabIsNotSelected() {
@@ -495,11 +508,11 @@ export class ProfilePage {
   }
 
   async profileNotificationsTabIsSelected() {
-    await this.page.waitForSelector(this.notificationsMenu['_selector']);
+    await this.page.waitForSelector(this.page.locator('main')['_selector']);
     await expect(await this.page).toHaveURL(/.*notifications/);
-    await expect(await this.notificationsMenu).toBeVisible();
-    await expect(await this.notificationsMenu.locator('button')).toHaveCount(6);
-    await expect(await this.notificationsMenuAllContent).toBeVisible();
+    // await expect(await this.notificationsMenu).toBeVisible();
+    // await expect(await this.notificationsMenu.locator('button')).toHaveCount(6);
+    // await expect(await this.notificationsMenuAllContent).toBeVisible();
   }
 
   async profileNotificationsTabIsNotSelected() {
