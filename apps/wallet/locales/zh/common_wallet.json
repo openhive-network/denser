@@ -40,7 +40,7 @@
   "select_sort": {
     "sort_account_history": {
       "filters": "Filters",
-      "rewards": "Rewards",
+      "others": "Others",
       "incoming": "Incoming",
       "outgoing": "Outgoing",
       "exclude_less_than_one": "Exclude less than 1 HBD/HIVE",
@@ -75,23 +75,29 @@
   "profil": {
     "joined": "加入",
     "hive_description": "可交易代币可以在任何时候发送到任何地方。HIVE可以在一个被称为Power Up的过程中被转换成HIVE POWER",
-    "hp_description": "代币的影响力可以使你对文章的赏金有更大的控制权，并可以获得审查奖励。 有一部分HIVE POWER是代理给你使用的。代理的HIVE POWER是为了帮助新用户在hive.blog上进行操作。你被代理的数量可能会有波动。HIVE POWER increases at an APR of approximately 3.07%, subject to blockchain variance. {{link}}.",
+    "hp_description": "代币的影响力可以使你对文章的赏金有更大的控制权，并可以获得审查奖励。 有一部分HIVE POWER是代理给你使用的。代理的HIVE POWER是为了帮助新用户在hive.blog上进行操作。你被代理的数量可能会有波动。HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",
     "hive_dolar_description": "可交易代币可以在任何时候发送到任何地方。",
     "savings_title": "储蓄",
-    "savings_description": "余额取决于3天的提款等待期，HBD interest rate: 20.00% APR (as voted by the {{link}})",
+    "savings_description": "余额取决于3天的提款等待期，HBD interest rate: 20.00% APR (as voted by the ",
     "estimated_account_value_title": "账户估值",
     "estimated_account_value_description": "基于美元计算，HIVE的估值。",
     "account_history_title": "历史",
+    "see_faq_for_details": "See FAQ for details.",
+    "witnesses":"Witnesses",
     "account_history_description": "Beware of spam and phishing links in transfer memos. Do not open links from users you do not trust. Do not provide your private keys to any third party websites. Transactions will not show until they are confirmed on the blockchain, which may take a few minutes.",
-    "account_history_list": {
-      "claim_reward_balance": {
-        "three_rewards": "Claim rewards: {{first_reward}}, {{second_reward}} and {{third_reward}}",
-        "two_rewards": "Claim rewards: {{first_reward}} and {{second_reward}}",
-        "one_reward": "Claim rewards: {{reward}}"
-      },
-      "transfer_to_savings": "Transfer to savings {{value}} to {{username}}",
-      "Received 0.008 HIVE from reward.app": "Received {{value}} from {{username}}"
-    }
+    "no_transactions_found":"No transactions found",
+    "the_next_power_down":"The next power down is scheduled to happen in ",
+    "paid_for":"Paid {{value1}} for {{value2}}",
+    "cancel_transfer_from_savings": "Cancel transfer from savings (request {{number}})",
+    "receive_interest": "'Receive interest of {{number}}",
+    "transfer_to": "Transfer {{value}} to ",
+    "transfer_to_savings_to": "Transfer to savings {{value}} to ",
+    "transfer_from_savings_to": "Transfer from savings {{value}} to ",
+    "request_id": "Request ID: {{value}}",
+    "transfer_to_user": "Transfer {{value}} to ",
+    "received_from_user": "Received {{value}} from ",
+    "claim_rewards": "Claim rewards: ",
+    "and": " and "
   },
   "market_page": {
     "last_price": "上一个成交价格",

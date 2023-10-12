@@ -25,6 +25,8 @@ import { useRouter } from 'next/router';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/wallet/next-i18next.config';
+import { useTranslation } from 'next-i18next';
+import { TFunction } from 'i18next';
 
 const initialFilters: TransferFilters = {
   search: '',
@@ -192,6 +194,7 @@ type AccountHistoryData = ReturnType<typeof mapToAccountHistoryObject>;
 function TransfersPage({
                          username
                        }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const { t } = useTranslation('common_wallet');
   const router = useRouter();
   const [rawFilter, filter, setFilter] = useFilters(initialFilters);
 
@@ -301,16 +304,16 @@ function TransfersPage({
 
       return (
         <span>
-          {'Claim rewards: '}
+          {t('profil.claim_rewards')}
           {displayHBD && (
             <span>
               {operation.reward_hbd.toString() +
                 ' HBD ' +
-                (displayHIVE ? ', ' : 'and ')}
+                (displayHIVE ? ',' :  t('profil.and'))}
             </span>
           )}
           {displayHIVE && (
-            <span>{operation.reward_hive.toString() + ' HIVE and '}</span>
+            <span>{operation.reward_hive.toString() + ' HIVE' +  t('profil.and')}</span>
           )}
           {powerHP.toFixed(3)}
           {' HIVE POWER'}
@@ -321,7 +324,7 @@ function TransfersPage({
       if (operation.to === username)
         return (
           <span>
-            {'Received '} {operation.amount?.toString()} {' from '}{' '}
+            {t('profil.received_from_user', {value: operation.amount?.toString()})}
             <Link
               href={`/@${operation.from}`}
               className='font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400'
@@ -333,8 +336,7 @@ function TransfersPage({
       if (operation.from === username)
         return (
           <span>
-            {'Transfer '}
-            {operation.amount?.toString()} {' to '}{' '}
+          {t('profil.transfer_to_user', {value: operation.amount?.toString()})}
             <Link
               href={`/@${operation.to}`}
               className='font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400'
@@ -347,26 +349,21 @@ function TransfersPage({
     if (operation.type === 'transfer_from_savings') {
       return (
         <span>
-          {'Transfer from savings '}
-          {operation.amount?.toString()}
-          {' to '}
+          {t('profil.transfer_from_savings_to', {value: operation.amount?.toString()})}
           <Link
             href={`/@${operation.to}`}
             className='font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400'
           >
             {operation.to}
           </Link>
-          {' Request ID: '}
-          {operation.request_id}
+          {t('profil.request_id', {value: operation.request_id})}
         </span>
       );
     }
     if (operation.type === 'transfer_to_savings') {
       return (
         <span>
-          {'Transfer to savings '}
-          {operation.amount?.toString()}
-          {' to '}
+          {t('profil.transfer_to_savings_to', {value: operation.amount?.toString()})}
           <Link
             href={`/@${operation.to}`}
             className='font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400'
@@ -379,9 +376,7 @@ function TransfersPage({
     if (operation.type === 'transfer_to_vesting') {
       return (
         <span>
-          {'Transfer '}
-          {operation.amount?.toString()}
-          {' to '}
+          {t('profil.transfer_to', {value: operation.amount?.toString()})}
           <Link
             href={`/@${operation.to}`}
             className='font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400'
@@ -394,27 +389,21 @@ function TransfersPage({
     if (operation.type === 'interest') {
       return (
         <span>
-          {'Receive interest of '}
-          {operation.interest}
+          {t('profil.cancel_transfer_from_savings', {number: operation.interest})}
         </span>
       );
     }
     if (operation.type === 'cancel_transfer_from_savings') {
       return (
         <span>
-          {'Cancel transfer from savings (request '}
-          {operation.request_id}
-          {')'}
+        {t('profil.cancel_transfer_from_savings', {number: operation.request_id})}
         </span>
       );
     }
     if (operation.type === 'fill_order') {
       return (
         <span>
-          {'Paid '}
-          {operation.current_pays}
-          {' for '}
-          {operation.open_pays}
+          {t('profil.paid_for', {value1: operation.current_pays, value2: operation.open_pays})}
         </span>
       );
     } else return <div>error</div>;
@@ -425,18 +414,18 @@ function TransfersPage({
       <div className='flex flex-col w-full items-center '>
         <div className='flex gap-6 border-b-2 border-zinc-500 px-4 py-2 w-full max-w-6xl'>
           <Link
-            href='/'
+            href={`/@${username}/transfers`}
             className={clsx(
               router.asPath === `/@${username}/transfers`
                 ? 'dark:text-slate-100 text-slate-700 font-semibold'
                 : 'hover:text-red-600 dark:hover:text-red-400'
             )}
           >
-            Balances
+            {t('navigation.wallet_nav.balances')}
           </Link>
           <Link href={`/@${username}/delegations`}>
             <div className='hover:text-red-600 dark:hover:text-red-400'>
-              Delegations
+            {t('navigation.wallet_nav.delegations')}
             </div>
           </Link>
         </div>
@@ -447,9 +436,7 @@ function TransfersPage({
             <td className='px-2 py-4 sm:px-4'>
               <div className='font-semibold'>HIVE</div>
               <p className='text-xs text-zinc-600 py-2 sm:pb-0 leading-relaxed'>
-                Tradeable tokens that may be transferred anywhere at anytime.
-                Hive can be converted to HIVE POWER in a process called
-                powering up.
+              {t('profil.hive_description')}
               </p>
               <div className='sm:hidden'>
                 {numberWithCommas(balance_hive.toFixed(3)) + ' HIVE'}
@@ -464,19 +451,13 @@ function TransfersPage({
             <td className='px-2 py-4 sm:px-4'>
               <div className='font-semibold'>HIVE POWER</div>
               <p className='text-xs text-zinc-600 py-2 sm:pb-0 leading-relaxed'>
-                Influence tokens which give you more control over post payouts
-                and allow you to earn on curation rewards. Part of{' '}
-                {accountData?.name}
-                &apos;s HIVE POWER is currently delegated. Delegation is
-                donated for influence or to help new users perform actions on
-                Hive. Your delegation amount can fluctuate. HIVE POWER
-                increases at an APR of approximately{' '}
-                {getCurrentHpApr(dynamicData).toFixed(2)}%, subject to
-                blockchain variance.{' '}
+              {t('profil.hp_description', 
+              {username:accountData.name, value:getCurrentHpApr(dynamicData).toFixed(2)})}
+               {' '}
                 <span
                   className='font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400'>
                     <Link href='https://hive.blog/faq.html#How_many_new_tokens_are_generated_by_the_blockchain'>
-                      See FAQ for details.
+                      {t('profil.see_faq_for_details')}
                     </Link>
                   </span>
               </p>
@@ -497,7 +478,7 @@ function TransfersPage({
             <td className='px-2 py-4 sm:px-4'>
               <div className='font-semibold'>HIVE DOLLARS</div>
               <p className='text-xs text-zinc-600 py-2 sm:pb-0 leading-relaxed'>
-                Tradeable tokens that may be transferred anywhere at anytime.
+                {t('profil.hive_dolar_description')}
               </p>
               <div className='sm:hidden'>
                 {'$' + numberWithCommas(hbd_balance.toFixed(3))}
@@ -510,15 +491,14 @@ function TransfersPage({
 
           <tr className=' bg-slate-100 dark:bg-slate-900'>
             <td className='px-2 py-4 sm:px-4'>
-              <div className='font-semibold'>SAVINGS</div>
+              <div className='font-semibold'>{t('profil.savings_title')}</div>
               <p className='text-xs text-zinc-600 py-2 sm:pb-0 leading-relaxed'>
-                Balances subject to 3 day withdraw waiting period. HBD
-                interest rate: 20.00% APR (as voted by the{' '}
+              {t('profil.savings_description')}
                 <span
                   className='font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400'>
-                    {<Link href={`/~witnesses`}>Witnesses</Link>}
+                    {<Link href={`/~witnesses`}>{t('profil.witnesses')}</Link>}
                   </span>
-                )
+               {")"}
               </p>
               <div className='sm:hidden'>
                 <div>{saving_balance_hive.toFixed(3) + ' HIVE'}</div>
@@ -538,10 +518,9 @@ function TransfersPage({
 
           <tr>
             <td className='px-2 py-4 sm:px-4'>
-              <div className='font-semibold'>Estimated Account Value</div>
+              <div className='font-semibold'>{t('profil.estimated_account_value_title')}</div>
               <p className='text-xs text-zinc-600 py-2 sm:pb-0 leading-relaxed'>
-                The estimated value is based on an average value of Hive in US
-                dollars.
+              {t('profil.estimated_account_value_description')}
               </p>
               <div className='sm:hidden'>{'$' + total_value}</div>
             </td>
@@ -553,7 +532,7 @@ function TransfersPage({
         </table>
         {powerdown_hive.gt(0) ? (
           <div className='p-2 sm:p-4 text-sm w-full'>
-            The next power down is scheduled to happen in {totalDays}{' '}
+            {t('profil.the_next_power_down')} {totalDays}{' '}
             {totalDays !== 1 ? ' days' : 'day'}(~
             {numberWithCommas(powerdown_hive.toFixed(3))} HIVE)
           </div>
@@ -569,18 +548,15 @@ function TransfersPage({
             value={rawFilter}
           />
           <div className='p-2 sm:p-4'>
-            <div className='font-semibold'>Account History</div>
+            <div className='font-semibold'>{t('profil.account_history_title')}</div>
             <p className='text-xs text-zinc-600 leading-relaxed'>
-              Beware of spam and phishing links in transfer memos. Do not open
-              links from users you do not trust. Do not provide your private
-              keys to any third party websites. Transactions will not show until
-              they are confirmed on the blockchain, which may take a few
-              minutes.
+            {t('profil.account_history_description')}
             </p>
             <HistoryTable
               isLoading={accountHistoryLoading}
               historyList={filteredHistoryList}
               historyItemDescription={historyItemDescription}
+              t={t}
             />
           </div>
         </div>
@@ -593,18 +569,20 @@ interface HistoryTableProps {
   isLoading: boolean;
   historyList: AccountHistoryData[] | undefined;
   historyItemDescription: (operation: Operation) => JSX.Element;
+  t: TFunction<'common_wallet', undefined>
 }
 
 const HistoryTable = ({
-                        isLoading,
-                        historyList = [],
-                        historyItemDescription
-                      }: HistoryTableProps) => {
-  if (isLoading) return <div>Loading</div>;
+  t,
+  isLoading,
+  historyList = [],
+  historyItemDescription
+}: HistoryTableProps) => {
+  if (isLoading) return <div>{t('global.loading')}</div>;
   if (historyList.length === 0)
     return (
       <div className='text-red-300 text-3xl py-12 text-center'>
-        No transacions found
+        {t('profil.no_transactions_found')}
       </div>
     );
 

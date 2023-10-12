@@ -14,6 +14,7 @@ import ProfileLayout from '@/wallet/components/common/profile-layout';
 import { useRouter } from 'next/router';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/wallet/next-i18next.config';
+import { useTranslation } from 'next-i18next';
 
 const convertVestsToSteem = (
   vests: number,
@@ -27,6 +28,7 @@ const convertVestsToSteem = (
 function DelegationsPage({
                            username
                          }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const { t } = useTranslation('common_wallet');
   const router = useRouter();
   const {
     data: vestingData,
@@ -46,7 +48,7 @@ function DelegationsPage({
     return <Loading loading={dynamicLoading || vestingLoading} />;
   }
   if (!vestingData || !dynamicData) {
-    return <p className='my-32 text-center text-3xl'>Something went wrong</p>;
+    return <p className='my-32 text-center text-3xl'>{t('global.something_went_wrong')}</p>;
   }
   return (
     <ProfileLayout>
@@ -54,7 +56,7 @@ function DelegationsPage({
         <div className='flex gap-6 border-b-2 border-zinc-500 px-4 py-2'>
           <Link href={`/@${username}/transfers`}>
             <div className='hover:text-red-600 dark:hover:text-red-400'>
-              Balances
+              {t('navigation.wallet_nav.balances')}
             </div>
           </Link>
           <a
@@ -65,7 +67,7 @@ function DelegationsPage({
                 : 'hover:text-red-600 dark:hover:text-red-400'
             )}
           >
-            Delegations
+            {t('navigation.wallet_nav.delegations')}
           </a>
         </div>
         <table className='w-full'>
