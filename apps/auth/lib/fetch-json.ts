@@ -1,8 +1,17 @@
+import { ErrorResponse } from '@/auth/lib/api';
+
+/**
+ * Error specific for our API server. You should not expect the same
+ * shape of `data` object, when http request is sent to the other API
+ * server.
+ *
+ * @export
+ * @class FetchError
+ * @extends {Error}
+ */
 export class FetchError extends Error {
-  response: Response
-  data: {
-    message: string
-  }
+  response: Response;
+  data: ErrorResponse;
 
   constructor({
     message,
@@ -11,21 +20,19 @@ export class FetchError extends Error {
   }: {
     message: string
     response: Response
-    data: {
-      message: string
-    }
+    data: ErrorResponse
   }) {
-    // Pass remaining arguments (including vendor specific ones) to parent constructor.
     super(message);
 
-    // Maintains proper stack trace for where our error was thrown (only available on V8).
+    // Maintains proper stack trace for where our error was thrown (only
+    // available on V8).
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, FetchError);
     }
 
     this.name = 'FetchError';
     this.response = response;
-    this.data = data ?? { message: message };
+    this.data = data ?? { error: { message } };
   }
 }
 

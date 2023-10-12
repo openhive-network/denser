@@ -28,9 +28,10 @@ export default function LoginPage() {
       )
     } catch (error) {
       if (error instanceof FetchError) {
-        setErrorMsg(error.data.message);
+        setErrorMsg(error.data.error?.message || 'Error in fetching data from Hive API server');
       } else {
-        logger.error('An unexpected error happened:', error);
+        logger.error('Unexpected error', error);
+        setErrorMsg('Unexpected error');
       }
     }
   };

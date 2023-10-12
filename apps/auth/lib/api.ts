@@ -26,7 +26,7 @@ export type Method =
     | 'UNLINK';
 
 // Shape of the response when an error is thrown
-interface ErrorResponse {
+export interface ErrorResponse {
     error: {
         message: string;
         err?: any; // Sent for unhandled errors reulting in 500
@@ -39,7 +39,14 @@ type ApiMethodHandlers = {
 };
 
 function errorHandler(err: unknown, res: NextApiResponse<ErrorResponse>) {
-    // Errors with statusCode >= 500 are should not be exposed
+    if (createHttpError.isHttpError(err)) {
+        logger.error('bamboo it is isHttpError');
+        logger.error(`bamboo err.expose: ${err.expose}`);
+    } else {
+        logger.error('bamboo it is not isHttpError');
+    }
+
+    // Errors with statusCode >= 500 should not be exposed
     if (createHttpError.isHttpError(err) && err.expose) {
         // Handle all errors thrown by http-errors module
         return res.status(err.statusCode).json({ error: { message: err.message } });
@@ -49,10 +56,11 @@ function errorHandler(err: unknown, res: NextApiResponse<ErrorResponse>) {
     } else {
         // default to 500 server error
         logger.error(err);
-        return res.status(500).json({
-            error: { message: "Internal Server Error", err: err },
+        const body = {
+            error: { message: "Internal Server Error" },
             status: createHttpError.isHttpError(err) ? err.statusCode : 500,
-        });
+        };
+        return res.status(500).json(body);
     }
 }
 
@@ -87,7 +95,7 @@ export function apiHandler(handler: ApiMethodHandlers) {
             // Check if handler supports current HTTP method.
             const methodHandler = handler[method];
             if (!methodHandler) {
-                // Respond on any HEAD request anyway.
+                // Respond to HEAD request anyway.
                 if (method === 'HEAD') {
                     res.status(200).end();
                 }
