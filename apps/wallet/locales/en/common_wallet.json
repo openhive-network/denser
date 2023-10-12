@@ -40,7 +40,7 @@
   "select_sort": {
     "sort_account_history": {
       "filters": "Filters",
-      "rewards": "Rewards",
+      "others": "Others",
       "incoming": "Incoming",
       "outgoing": "Outgoing",
       "exclude_less_than_one": "Exclude less than 1 HBD/HIVE",
@@ -75,23 +75,29 @@
   "profil": {
     "joined": "Joined",
     "hive_description": "Tradeable tokens that may be transferred anywhere at anytime. Hive can be converted to HIVE POWER in a process called powering up.",
-    "hp_description": "Influence tokens which give you more control over post payouts and allow you to earn on curation rewards. Part of {{username}}'s HIVE POWER is currently delegated. Delegation is donated for influence or to help new users perform actions on Hive. Your delegation amount can fluctuate. HIVE POWER increases at an APR of approximately 3.07%, subject to blockchain variance. {{link}}.",
+    "hp_description": "Influence tokens which give you more control over post payouts and allow you to earn on curation rewards. Part of {{username}}'s HIVE POWER is currently delegated. Delegation is donated for influence or to help new users perform actions on Hive. Your delegation amount can fluctuate. HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",
     "hive_dolar_description": "Tradeable tokens that may be transferred anywhere at anytime.",
     "savings_title": "Savings",
-    "savings_description": "Balances subject to 3 day withdraw waiting period. HBD interest rate: 20.00% APR (as voted by the {{link}})",
+    "savings_description": "Balances subject to 3 day withdraw waiting period. HBD interest rate: 20.00% APR (as voted by the ",
     "estimated_account_value_title": "Estimated Account Value",
     "estimated_account_value_description": "The estimated value is based on an average value of Hive in US dollars.",
     "account_history_title": "Account History",
-    "account_history_description": "Beware of spam and phishing links in transfer memos. Do not open links from users you do not trust. Do not provide your private keys to any third party websites. Transactions will not show until they are confirmed on the blockchain, which may take a few minutes.",
-    "account_history_list": {
-      "claim_reward_balance": {
-        "three_rewards": "Claim rewards: {{first_reward}}, {{second_reward}} and {{third_reward}}",
-        "two_rewards": "Claim rewards: {{first_reward}} and {{second_reward}}",
-        "one_reward": "Claim rewards: {{reward}}"
-      },
-      "transfer_to_savings": "Transfer to savings {{value}} to {{username}}",
-      "Received 0.008 HIVE from reward.app": "Received {{value}} from {{username}}"
-    }
+    "see_faq_for_details": "See FAQ for details.",
+    "no_transactions_found":"No transactions found",
+    "the_next_power_down":"The next power down is scheduled to happen in ",
+    "paid_for":"Paid {{value1}} for {{value2}}",
+    "cancel_transfer_from_savings": "Cancel transfer from savings (request {{number}})",
+    "receive_interest": "'Receive interest of {{number}}",
+    "transfer_to": "Transfer {{value}} to ",
+    "transfer_to_savings_to": "Transfer to savings {{value}} to ",
+    "transfer_from_savings_to": "Transfer from savings {{value}} to ",
+    "request_id": "Request ID: {{value}}",
+    "transfer_to_user": "Transfer {{value}} to ",
+    "received_from_user": "Received {{value}} from ",
+    "claim_rewards": "Claim rewards: ",
+    "and": " and ",
+    "witnesses":"Witnesses",
+    "account_history_description": "Beware of spam and phishing links in transfer memos. Do not open links from users you do not trust. Do not provide your private keys to any third party websites. Transactions will not show until they are confirmed on the blockchain, which may take a few minutes."
   },
   "market_page": {
     "last_price": "Last price",

@@ -40,7 +40,7 @@
   "select_sort": {
     "sort_account_history": {
       "filters": "Filters",
-      "rewards": "Rewards",
+      "others": "Others",
       "incoming": "Incoming",
       "outgoing": "Outgoing",
       "exclude_less_than_one": "Exclude less than 1 HBD/HIVE",
@@ -75,23 +75,29 @@
   "profil": {
     "joined": "Присоединился",
     "hive_description": "Ликвидные цифровые токены, которые могут переданы куда угодно в любой момент. HIVE может быть конвертирован в HIVE POWER, этот процесс называется \"увеличение Силы Голоса\".",
-    "hp_description": "Токены дают вам возможность влиять на вознаграждения за контент, а также возможность зарабатывать на курации контента. Часть HIVE POWER вам делегирована, это увеличивает ваше влияние на платформе. Количество делегированных токенов со временем может изменяться. HIVE POWER increases at an APR of approximately 3.07%, subject to blockchain variance. {{link}}.",
+    "hp_description": "Токены дают вам возможность влиять на вознаграждения за контент, а также возможность зарабатывать на курации контента. Часть HIVE POWER вам делегирована, это увеличивает ваше влияние на платформе. Количество делегированных токенов со временем может изменяться. HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",
     "hive_dolar_description": "Ликвидные цифровые токены, которые могут переданы куда угодно в любой момент.",
     "savings_title": "Сберегательный счет",
-    "savings_description": "Вывод баланса из сейфа на обычный счет, занимает 3 дня, HBD interest rate: 20.00% APR (as voted by the {{link}})",
+    "savings_description": "Вывод баланса из сейфа на обычный счет, занимает 3 дня, HBD interest rate: 20.00% APR (as voted by the ",
     "estimated_account_value_title": "Приблизительная стоимость аккаунта",
     "estimated_account_value_description": "Сметная стоимость основана на среднем значении %(LIQUID_TOKEN)s в долларах США.",
     "account_history_title": "ИСТОРИЯ",
+    "see_faq_for_details": "See FAQ for details.",
+    "witnesses":"Witnesses",
     "account_history_description": "Остерегайтесь спама и фишинговых ссылок в передачах. Не открывайте ссылки от пользователей, которым вы не доверяете. Не предоставляйте свои личные ключи третьим сторонам. Transactions will not show until they are confirmed on the blockchain, which may take a few minutes.",
-    "account_history_list": {
-      "claim_reward_balance": {
-        "three_rewards": "Claim rewards: {{first_reward}}, {{second_reward}} and {{third_reward}}",
-        "two_rewards": "Claim rewards: {{first_reward}} and {{second_reward}}",
-        "one_reward": "Claim rewards: {{reward}}"
-      },
-      "transfer_to_savings": "Transfer to savings {{value}} to {{username}}",
-      "Received 0.008 HIVE from reward.app": "Received {{value}} from {{username}}"
-    }
+    "no_transactions_found":"No transactions found",
+    "the_next_power_down":"The next power down is scheduled to happen in ",
+    "paid_for":"Paid {{value1}} for {{value2}}",
+    "cancel_transfer_from_savings": "Cancel transfer from savings (request {{number}})",
+    "receive_interest": "'Receive interest of {{number}}",
+    "transfer_to": "Transfer {{value}} to ",
+    "transfer_to_savings_to": "Transfer to savings {{value}} to ",
+    "transfer_from_savings_to": "Transfer from savings {{value}} to ",
+    "request_id": "Request ID: {{value}}",
+    "transfer_to_user": "Transfer {{value}} to ",
+    "received_from_user": "Received {{value}} from ",
+    "claim_rewards": "Claim rewards: ",
+    "and": " and "
   },
   "market_page": {
     "last_price": "Последняя цена",

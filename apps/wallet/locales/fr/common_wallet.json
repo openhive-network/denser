@@ -40,7 +40,7 @@
   "select_sort": {
     "sort_account_history": {
       "filters": "Filters",
-      "rewards": "Gains",
+      "others": "Others",
       "incoming": "Incoming",
       "outgoing": "Outgoing",
       "exclude_less_than_one": "Exclude less than 1 HBD/HIVE",
@@ -75,23 +75,29 @@
   "profil": {
     "joined": "Inscrit en",
     "hive_description": "Des jetons négociables peuvent être transférés n'importe où à tout moment. HIVE peuvent être convertis en HIVE POWER lors d'un processus appelé conversion en influence, ou power up.",
-    "hp_description": "Jetons d'influence qui vous donnent plus de contrôle sur les gains potentiels des articles et vous permettent d'augmenter vos gains de curation. Une partie de votre influence, ou HIVE POWER, est actuellement déléguée. La délégation est un don pour augmenter l'influence ou pour encourager les nouveaux utilisateurs à effectuer des actions sur Hive. Le montant délégué peut varier. HIVE POWER increases at an APR of approximately 3.07%, subject to blockchain variance. {{link}}.",
+    "hp_description": "Jetons d'influence qui vous donnent plus de contrôle sur les gains potentiels des articles et vous permettent d'augmenter vos gains de curation. Une partie de votre influence, ou HIVE POWER, est actuellement déléguée. La délégation est un don pour augmenter l'influence ou pour encourager les nouveaux utilisateurs à effectuer des actions sur Hive. Le montant délégué peut varier. HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",
     "hive_dolar_description": "Tradeable tokens that may be transferred anywhere at anytime.",
     "savings_title": "EPARGNE",
-    "savings_description": "Le solde dépend de la période de 3 jours d'attente requise pour les retraits. HBD interest rate: 20.00% APR (as voted by the {{link}})",
+    "savings_description": "Le solde dépend de la période de 3 jours d'attente requise pour les retraits. HBD interest rate: 20.00% APR (as voted by the ",
     "estimated_account_value_title": "aleur estimée du compte",
     "estimated_account_value_description": "La valeur estimée est basée sur la valeur moyenne de HIVE en dollars américains.",
     "account_history_title": "HISTORIQUE",
-    "account_history_description": "Beware of spam and phishing links in transfer memos. Do not open links from users you do not trust. Do not provide your private keys to any third party websites. Transactions will not show until they are confirmed on the blockchain, which may take a few minutes.",
-    "account_history_list": {
-      "claim_reward_balance": {
-        "three_rewards": "Claim rewards: {{first_reward}}, {{second_reward}} and {{third_reward}}",
-        "two_rewards": "Claim rewards: {{first_reward}} and {{second_reward}}",
-        "one_reward": "Claim rewards: {{reward}}"
-      },
-      "transfer_to_savings": "Transfer to savings {{value}} to {{username}}",
-      "Received 0.008 HIVE from reward.app": "Received {{value}} from {{username}}"
-    }
+    "see_faq_for_details": "See FAQ for details.",
+    "no_transactions_found":"No transactions found",
+    "the_next_power_down":"The next power down is scheduled to happen in ",
+    "paid_for":"Paid {{value1}} for {{value2}}",
+    "cancel_transfer_from_savings": "Cancel transfer from savings (request {{number}})",
+    "receive_interest": "'Receive interest of {{number}}",
+    "transfer_to": "Transfer {{value}} to ",
+    "transfer_to_savings_to": "Transfer to savings {{value}} to ",
+    "transfer_from_savings_to": "Transfer from savings {{value}} to ",
+    "request_id": "Request ID: {{value}}",
+    "transfer_to_user": "Transfer {{value}} to ",
+    "received_from_user": "Received {{value}} from ",
+    "claim_rewards": "Claim rewards: ",
+    "and": " and ",
+    "witnesses":"Witnesses",
+    "account_history_description": "Beware of spam and phishing links in transfer memos. Do not open links from users you do not trust. Do not provide your private keys to any third party websites. Transactions will not show until they are confirmed on the blockchain, which may take a few minutes."
   },
   "market_page": {
     "last_price": "Dernier cours",

@@ -40,7 +40,7 @@
   "select_sort": {
     "sort_account_history": {
       "filters": "Filtry",
-      "rewards": "Nagrody",
+      "others": "Inne",
       "incoming": "Przychodzące",
       "outgoing": "Wychodzące",
       "exclude_less_than_one": "Nie pokazuj mniej niż 1 HBD/HIVE",
@@ -75,23 +75,29 @@
   "profil": {
     "joined": "Dołączono",
     "hive_description": "Zbywalne tokeny które mogą być przesłane gdziekolwiek w dowolnym momencie. HIVE mogą zostać również przekonwertowane na HIVE POWER w procesie nazywanym zwiększenie mocy.",
-    "hp_description": "Tokeny wpływu, które zwiększają Twój wpływ na podział wypłat za publikowanie treści, oraz pozwalają Ci zarabiać na głosowaniu na treści. Część z Twoich jednostek wpływu HIVE POWER jest Ci oddelegowana. Delegowane jednostek to czasowe użyczenie dla zwiększenia wpływu lub by pomóc nowym użytkownikom platformy w korzystaniu ze Hive. Kwota oddelegowanych jednostek może się zmieniać w czasie. HIVE POWER increases at an APR of approximately 3.07%, subject to blockchain variance. {{link}}.",
+    "hp_description": "Tokeny wpływu, które zwiększają Twój wpływ na podział wypłat za publikowanie treści, oraz pozwalają Ci zarabiać na głosowaniu na treści. Część z Twoich jednostek wpływu HIVE POWER jest Ci oddelegowana. Delegowane jednostek to czasowe użyczenie dla zwiększenia wpływu lub by pomóc nowym użytkownikom platformy w korzystaniu ze Hive. Kwota oddelegowanych jednostek może się zmieniać w czasie. HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",
     "hive_dolar_description": "Zbywalne tokeny które mogą być przesłane gdziekolwiek w dowolnym momencie.",
     "savings_title": "Oszczędności",
-    "savings_description": "Saldo zależy od 3-dniowego okresu karencji wymaganego do wycofania środków, HBD interest rate: 20.00% APR (as voted by the {{link}})",
+    "savings_description": "Saldo zależy od 3-dniowego okresu karencji wymaganego do wycofania środków, HBD interest rate: 20.00% APR (as voted by the ",
     "estimated_account_value_title": "Szacowana wartość konta",
     "estimated_account_value_description": "Szacowana wartość bazuje na średniej cenie tokenu HIVE w dolarach amerykańskich.",
     "account_history_title": "Historia",
+    "see_faq_for_details": "Zobacz szczegóły.",
+    "witnesses":"Witnesses",
     "account_history_description": "Beware of spam and phishing links in transfer memos. Do not open links from users you do not trust. Do not provide your private keys to any third party websites. Transactions will not show until they are confirmed on the blockchain, which may take a few minutes.",
-    "account_history_list": {
-      "claim_reward_balance": {
-        "three_rewards": "Zdobył nagrody: {{first_reward}}, {{second_reward}} i {{third_reward}}",
-        "two_rewards": "Zdobył nagrody: {{first_reward}} aind {{second_reward}}",
-        "one_reward": "Zdobył nagrode: {{reward}}"
-      },
-      "transfer_to_savings": "Przelał {{value}} do {{username}}",
-      "Received 0.008 HIVE from reward.app": "Otrzymał {{value}} od {{username}}"
-    }
+    "no_transactions_found":"Nie znaleziono transakcji",
+    "the_next_power_down":"The next power down is scheduled to happen in ",
+    "paid_for":"Paid {{value1}} for {{value2}}",
+    "cancel_transfer_from_savings": "Cancel transfer from savings (request {{number}})",
+    "receive_interest": "'Receive interest of {{number}}",
+    "transfer_to": "Przelew {{value}} do ",
+    "transfer_to_savings_to": "Przelew do oszczędności {{value}} do ",
+    "transfer_from_savings_to": "Przelew z oszczędności {{value}} do ",
+    "request_id": "Request ID: {{value}}",
+    "transfer_to_user": "Przelew {{value}} do ",
+    "received_from_user": "Otrzymał {{value}} od ",
+    "claim_rewards": "Zdobył nagrody: ",
+    "and": " i "
   },
   "market_page": {
     "last_price": "Ostatnia cena",
