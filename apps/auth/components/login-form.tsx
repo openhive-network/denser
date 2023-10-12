@@ -123,7 +123,9 @@ export function LoginForm({
             </button>
           </div>
 
-          {errorMessage && <p className="text-red-500 text-sm" role="alert">{errorMessage}</p>}
+          <div>
+            <p className="text-red-500 text-sm" role="alert">{errorMessage || '\u00A0'}</p>
+          </div>
 
           <div className="mt-4 flex w-full items-center">
             <Separator orientation="horizontal" className="w-1/3" />
