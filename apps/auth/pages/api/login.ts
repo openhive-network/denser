@@ -31,7 +31,8 @@ const loginUser: NextApiHandler<User> = async (req, res) => {
   } catch (error) {
     if (error instanceof Error) {
       if ((error.message).startsWith('missing blockchain account')) {
-        throw new createHttpError.NotFound(`Hive user ${username} not found`);
+        throw new createHttpError.NotFound(
+            `Hive user ${username} not found`);
       }
     }
     throw error;

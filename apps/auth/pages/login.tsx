@@ -7,7 +7,8 @@ import { getLogger } from "@hive/ui/lib/logging";
 const logger = getLogger('app');
 
 export default function LoginPage() {
-  // here we just check if user is already logged in and redirect to profile
+  // Here we just check if user is already logged in and we redirect him
+  // to profile page, if he is.
   const { mutateUser } = useUser({
     redirectTo: '/profile',
     redirectIfFound: true,
@@ -16,7 +17,7 @@ export default function LoginPage() {
   const [errorMsg, setErrorMsg] = useState('');
 
   const onSubmit = async (data: LoginFormData) => {
-    logger.info('form data', data);
+    logger.info('onSubmit form data', data);
     setErrorMsg('');
     const body = { username: data.username };
     try {
@@ -29,16 +30,18 @@ export default function LoginPage() {
       )
     } catch (error) {
       if (error instanceof FetchError) {
-        setErrorMsg(error.data.error?.message || 'Error in fetching data from Hive API server');
+        setErrorMsg(error.data.error?.message
+            || 'Error in fetching data from Hive API server');
       } else {
-        logger.error('Unexpected error', error);
+        logger.error('onSubmit unexpected error', error);
         setErrorMsg('Unexpected error');
       }
     }
   };
 
   return (
-    <div className="pt-16 flex flex-col sm:flex-row gap-24 mx-2 sm:gap-0 sm:justify-around">
+    <div className="pt-16 flex flex-col sm:flex-row gap-24 mx-2
+        sm:gap-0 sm:justify-around">
       <div className="flex flex-col gap-3 sm:gap-8 sm:mr-4">
         <LoginForm
           errorMessage={errorMsg}

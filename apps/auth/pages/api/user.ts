@@ -8,7 +8,10 @@ export type User = {
   avatarUrl: string
 };
 
-async function userRoute(req: NextApiRequest, res: NextApiResponse<User>) {
+async function userRoute(
+    req: NextApiRequest,
+    res: NextApiResponse<User>
+    ) {
   if (req.session.user) {
     res.json({
       ...req.session.user,
