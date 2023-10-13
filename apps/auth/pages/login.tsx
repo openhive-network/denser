@@ -17,7 +17,7 @@ export default function LoginPage() {
   const [errorMsg, setErrorMsg] = useState('');
 
   const onSubmit = async (data: LoginFormData) => {
-    logger.info('onSubmit form data', data);
+    logger.debug('onSubmit form data', data);
     setErrorMsg('');
     const body = { username: data.username };
     try {

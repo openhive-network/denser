@@ -11,7 +11,7 @@ import { runMiddleware } from '@/auth/lib/run-middleware';
 import Cors, { CorsOptions } from 'cors';
 import { corsOptionsDefault } from '@/auth/lib/cors-options';
 
-const logger = getLogger('app');
+const logger = getLogger('api');
 
 export type Method =
     | 'GET'
@@ -29,9 +29,9 @@ export type Method =
 export interface ErrorResponse {
     error: {
         message: string;
-        err?: any; // Sent for unhandled errors reulting in 500
+        err?: any; // Sent for unhandled errors reulting in 500.
     };
-    status?: number; // Sent for unhandled errors reulting in 500
+    status?: number; // Sent for unhandled errors reulting in 500.
 }
 
 type ApiMethodHandlers = {
@@ -39,22 +39,15 @@ type ApiMethodHandlers = {
 };
 
 function errorHandler(err: unknown, res: NextApiResponse<ErrorResponse>) {
-    if (createHttpError.isHttpError(err)) {
-        logger.error('bamboo it is isHttpError');
-        logger.error(`bamboo err.expose: ${err.expose}`);
-    } else {
-        logger.error('bamboo it is not isHttpError');
-    }
-
-    // Errors with statusCode >= 500 should not be exposed
     if (createHttpError.isHttpError(err) && err.expose) {
-        // Handle all errors thrown by http-errors module
+        // Handle all errors thrown by http-errors module, except errors
+        // with statusCode >= 500 (these should not be exposed).
         return res.status(err.statusCode).json({ error: { message: err.message } });
     } else if (err instanceof ValidationError) {
-        // Handle yup validation errors
+        // Handle yup validation errors.
         return res.status(400).json({ error: { message: err.errors.join(", ") } });
     } else {
-        // default to 500 server error
+        // Default to 500 server error.
         logger.error(err);
         const body = {
             error: { message: "Internal Server Error" },
@@ -64,9 +57,14 @@ function errorHandler(err: unknown, res: NextApiResponse<ErrorResponse>) {
     }
 }
 
-// Initializing the cors middleware. You can read more about the
-// available options here:
-// https://github.com/expressjs/cors#configuration-options.
+/**
+ * Initializing the cors middleware. You can read more about the
+ * available options here:
+ * https://github.com/expressjs/cors#configuration-options.
+ *
+ * @param {ApiMethodHandlers} handler
+ * @returns
+ */
 const getCors = (handler: ApiMethodHandlers) => {
     const corsOptions: CorsOptions = {
         methods: Object.keys(handler),

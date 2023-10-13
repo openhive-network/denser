@@ -25,7 +25,7 @@ export function LoginForm({
   onSubmit: (data: LoginFormData) => void
 }) {
   const logger = getLogger('app');
-  logger.info('Starting LoginForm');
+  logger.debug('Starting LoginForm');
 
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
     defaultValues: loginFormDefaultValues
