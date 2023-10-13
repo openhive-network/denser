@@ -420,11 +420,12 @@ function TransfersPage({
                 ? 'dark:text-slate-100 text-slate-700 font-semibold'
                 : 'hover:text-red-600 dark:hover:text-red-400'
             )}
+            data-testid="wallet-balances-link"
           >
             {t('navigation.wallet_nav.balances')}
           </Link>
           <Link href={`/@${username}/delegations`}>
-            <div className='hover:text-red-600 dark:hover:text-red-400'>
+            <div className='hover:text-red-600 dark:hover:text-red-400' data-testid="wallet-delegations-link">
             {t('navigation.wallet_nav.delegations')}
             </div>
           </Link>
@@ -435,14 +436,14 @@ function TransfersPage({
           <tr>
             <td className='px-2 py-4 sm:px-4'>
               <div className='font-semibold'>HIVE</div>
-              <p className='text-xs text-zinc-600 py-2 sm:pb-0 leading-relaxed'>
+              <p className='text-xs text-zinc-600 py-2 sm:pb-0 leading-relaxed' data-testid="wallet-hive-description">
               {t('profil.hive_description')}
               </p>
               <div className='sm:hidden'>
                 {numberWithCommas(balance_hive.toFixed(3)) + ' HIVE'}
               </div>
             </td>
-            <td className='font-semibold whitespace-nowrap hidden sm:block p-4'>
+            <td className='font-semibold whitespace-nowrap hidden sm:block p-4' data-testid="wallet-hive-value">
               {numberWithCommas(balance_hive.toFixed(3)) + ' HIVE'}
             </td>
           </tr>
@@ -450,8 +451,8 @@ function TransfersPage({
           <tr className='bg-slate-100 dark:bg-slate-900'>
             <td className='px-2 py-4 sm:px-4'>
               <div className='font-semibold'>HIVE POWER</div>
-              <p className='text-xs text-zinc-600 py-2 sm:pb-0 leading-relaxed'>
-              {t('profil.hp_description', 
+              <p className='text-xs text-zinc-600 py-2 sm:pb-0 leading-relaxed' data-testid="wallet-hive-power-description">
+              {t('profil.hp_description',
               {username:accountData.name, value:getCurrentHpApr(dynamicData).toFixed(2)})}
                {' '}
                 <span
@@ -468,7 +469,7 @@ function TransfersPage({
                 <div>({received_power_balance + ' HIVE'})</div>
               </div>
             </td>
-            <td className='font-semibold whitespace-nowrap hidden sm:block p-4 bg-slate-100 dark:bg-slate-900'>
+            <td className='font-semibold whitespace-nowrap hidden sm:block p-4 bg-slate-100 dark:bg-slate-900' data-testid="wallet-hive-power">
               <div>{numberWithCommas(vesting_hive.toFixed(3)) + ' HIVE'}</div>
               <div>({received_power_balance + ' HIVE'})</div>
             </td>
@@ -477,14 +478,14 @@ function TransfersPage({
           <tr>
             <td className='px-2 py-4 sm:px-4'>
               <div className='font-semibold'>HIVE DOLLARS</div>
-              <p className='text-xs text-zinc-600 py-2 sm:pb-0 leading-relaxed'>
+              <p className='text-xs text-zinc-600 py-2 sm:pb-0 leading-relaxed' data-testid="wallet-hive-dollars-description">
                 {t('profil.hive_dolar_description')}
               </p>
               <div className='sm:hidden'>
                 {'$' + numberWithCommas(hbd_balance.toFixed(3))}
               </div>
             </td>
-            <td className='font-semibold whitespace-nowrap hidden sm:block p-4 '>
+            <td className='font-semibold whitespace-nowrap hidden sm:block p-4 ' data-testid="wallet-hive-dallars-value">
               {'$' + numberWithCommas(hbd_balance.toFixed(3))}
             </td>
           </tr>
@@ -492,7 +493,7 @@ function TransfersPage({
           <tr className=' bg-slate-100 dark:bg-slate-900'>
             <td className='px-2 py-4 sm:px-4'>
               <div className='font-semibold'>{t('profil.savings_title')}</div>
-              <p className='text-xs text-zinc-600 py-2 sm:pb-0 leading-relaxed'>
+              <p className='text-xs text-zinc-600 py-2 sm:pb-0 leading-relaxed' data-testid="wallet-savings-description">
               {t('profil.savings_description')}
                 <span
                   className='font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400'>
@@ -509,8 +510,8 @@ function TransfersPage({
               </div>
             </td>
             <td className='font-semibold whitespace-nowrap hidden sm:block p-4 bg-slate-100 dark:bg-slate-900'>
-              <div>{saving_balance_hive.toFixed(3) + ' HIVE'}</div>
-              <div>
+              <div data-testid="wallet-saving-hive-value">{saving_balance_hive.toFixed(3) + ' HIVE'}</div>
+              <div data-testid="walled-hbd-saving-value">
                 {numberWithCommas('$' + hbd_balance_savings.toFixed(3))}
               </div>
             </td>
@@ -519,12 +520,12 @@ function TransfersPage({
           <tr>
             <td className='px-2 py-4 sm:px-4'>
               <div className='font-semibold'>{t('profil.estimated_account_value_title')}</div>
-              <p className='text-xs text-zinc-600 py-2 sm:pb-0 leading-relaxed'>
+              <p className='text-xs text-zinc-600 py-2 sm:pb-0 leading-relaxed' data-testid="wallet-estimated-account-value-description">
               {t('profil.estimated_account_value_description')}
               </p>
               <div className='sm:hidden'>{'$' + total_value}</div>
             </td>
-            <td className='font-semibold whitespace-nowrap hidden sm:block p-4'>
+            <td className='font-semibold whitespace-nowrap hidden sm:block p-4' data-testid="wallet-estimated-account-value">
               {'$' + total_value}
             </td>
           </tr>
@@ -549,7 +550,7 @@ function TransfersPage({
           />
           <div className='p-2 sm:p-4'>
             <div className='font-semibold'>{t('profil.account_history_title')}</div>
-            <p className='text-xs text-zinc-600 leading-relaxed'>
+            <p className='text-xs text-zinc-600 leading-relaxed' data-testid="wallet-account-history-description">
             {t('profil.account_history_description')}
             </p>
             <HistoryTable
@@ -581,7 +582,7 @@ const HistoryTable = ({
   if (isLoading) return <div>{t('global.loading')}</div>;
   if (historyList.length === 0)
     return (
-      <div className='text-red-300 text-3xl py-12 text-center'>
+      <div className='text-red-300 text-3xl py-12 text-center' data-testid="wallet-account-history-no-transacions-found">
         {t('profil.no_transactions_found')}
       </div>
     );
@@ -594,6 +595,7 @@ const HistoryTable = ({
           <tr
             key={element.id}
             className='m-0 p-0 text-xs even:bg-slate-100 dark:even:bg-slate-700 sm:text-sm w-full'
+            data-testid="wallet-account-history-row"
           >
             <td className='px-4 py-2 sm:min-w-[150px]'>
               {dateToFullRelative(element.timestamp)}

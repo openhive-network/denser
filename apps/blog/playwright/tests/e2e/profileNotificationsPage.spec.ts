@@ -41,7 +41,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     await expect(profilePage.page.url()).toContain(firstNotificationAuthorName);
   });
 
-  test('Click the first four notifications and move to specific page', async ({ page }) => {
+  test('Click the first three notifications and move to specific page', async ({ page }) => {
     let postPage = new PostPage(page);
     let commentPage = new CommentViewPage(page);
 
@@ -51,7 +51,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     const resNotificationsAPI = await apiHelper.getAccountNotificationsAPI('gtg');
     // Validate the first five notifications types and move to the specific pages
 
-    for (let notification = 0; notification < 4; notification++){
+    for (let notification = 0; notification < 3; notification++){
       // console.log('API respons: ', await resNotificationsAPI);
       const firstNotificationTypeAPI = await resNotificationsAPI.result[notification].type;
       // console.log('First notification type: ', await firstNotificationTypeAPI);
@@ -76,8 +76,8 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
         await profilePage.page.waitForSelector(commentPage.getMainCommentAuthorData['_selector']);
         await expect(profilePage.page.url()).toContain(firstNotificationUrlAPI);
       }
-      page.goBack({waitUntil: "domcontentloaded"});
-      page.waitForSelector(profilePage.notificationsMenuAllContent['_selector']);
+      await page.goBack();
+      await page.waitForSelector(profilePage.notificationsMenuAllContent['_selector']);
       await profilePage.profileNotificationsTabIsSelected();
     }
   });

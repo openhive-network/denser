@@ -72,26 +72,27 @@ function DelegationsPage({
         </div>
         <table className='w-full'>
           <tbody>
-          {vestingData?.map((element) => (
-            <tr
-              key={element.id}
-              className='m-0 p-0 text-sm even:bg-slate-100 dark:even:bg-slate-700'
-            >
-              <td className=' px-4 py-2 '>
-                {numberWithCommas(
-                  convertVestsToSteem(
-                    parseFloat(element.vesting_shares),
-                    dynamicData
-                  )
-                )}{' '}
-                HP
-              </td>
-              <td className=' px-4 py-2 '>{element.delegatee}</td>
-              <td className=' px-4 py-2 '>
-                {dateToFullRelative(element.min_delegation_time)}
-              </td>
-            </tr>
-          ))}
+            {vestingData?.map((element) => (
+              <tr
+                key={element.id}
+                className="m-0 p-0 text-sm even:bg-slate-100 dark:even:bg-slate-700"
+                data-testid="wallet-delegation-item"
+              >
+                <td className=" px-4 py-2 ">
+                  {numberWithCommas(
+                    convertVestsToSteem(
+                      parseFloat(element.vesting_shares),
+                      dynamicData
+                    )
+                  )}{" "}
+                  HP
+                </td>
+                <td className=" px-4 py-2 ">{element.delegatee}</td>
+                <td className=" px-4 py-2 ">
+                  {dateToFullRelative(element.min_delegation_time)}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
