@@ -24,7 +24,7 @@ const loginUser: NextApiHandler<User> = async (req, res) => {
   const { username } = data;
   let hiveUserProfile;
   try {
-    hiveUserProfile = (await getAccount(username)).profile;
+    hiveUserProfile = (await getAccount(username))?.profile;
     if (!hiveUserProfile) {
       throw new Error(`missing blockchain account "${username}"`);
     }
