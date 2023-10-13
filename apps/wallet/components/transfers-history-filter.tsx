@@ -29,12 +29,14 @@ function TransfersHistoryFilter({
               className="border-zinc-700"
               checked={value.others}
               onClick={() => onFiltersChange({ others: !value.others })}
+              data-testid="wallet-checkbox-others"
             />
             <span>{t('select_sort.sort_account_history.others')}</span>
           </label>
           <label className="flex gap-1 sm:gap-2">
             <Checkbox
               className="border-zinc-700"
+              data-testid="wallet-checkbox-incoming"
               checked={value.incoming}
               onClick={() => onFiltersChange({ incoming: !value.incoming })}
             />
@@ -43,6 +45,7 @@ function TransfersHistoryFilter({
           <label className="flex gap-1 sm:gap-2">
             <Checkbox
               className="border-zinc-700"
+              data-testid="wallet-checkbox-outcoming"
               checked={value.outcoming}
               onClick={() => onFiltersChange({ outcoming: !value.outcoming })}
             />
@@ -51,6 +54,7 @@ function TransfersHistoryFilter({
           <label className="flex gap-1 sm:gap-2">
             <Checkbox
               className="border-zinc-700"
+              data-testid="wallet-checkbox-exclude-less-than-1-hbd-hive"
               checked={value.exlude}
               onClick={() => onFiltersChange({ exlude: !value.exlude })}
             />
@@ -63,6 +67,7 @@ function TransfersHistoryFilter({
             <Input
               className="border-zinc-500"
               placeholder={t('select_sort.sort_account_history.input_placeholder')}
+              data-testid="wallet-search-input"
               value={value.search}
               onChange={(e) =>
                 onFiltersChange({

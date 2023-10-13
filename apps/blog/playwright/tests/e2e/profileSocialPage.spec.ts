@@ -45,7 +45,7 @@ test.describe('Social tab in the profile page of @gtg', () => {
         let listOfSubscribedCommunitiesUITextContent: string;
         for (let i = 0; i < listOfSubscribedCommunitiesAPI.length; i++) {
             listOfSubscribedCommunitiesUITextContent = await listOfSubscribedCommunitiesUI[i].textContent();
-            console.log('111 ', await listOfSubscribedCommunitiesUITextContent.toLocaleLowerCase())
+            // console.log('111 ', await listOfSubscribedCommunitiesUITextContent.toLocaleLowerCase())
             expect(await listOfSubscribedCommunitiesUITextContent.toLocaleLowerCase())
                 .toContain(await listOfSubscribedCommunitiesAPI[i][1].toLocaleLowerCase()); // Community name
             expect(await listOfSubscribedCommunitiesUITextContent.toLocaleLowerCase())

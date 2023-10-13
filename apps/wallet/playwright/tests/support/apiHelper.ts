@@ -213,13 +213,7 @@ export class ApiHelper {
         id: 0,
         jsonrpc: "2.0",
         method: "condenser_api.list_proposals",
-        params: [
-          start,
-          limit,
-          order,
-          order_direction,
-          status
-        ],
+        params: [start, limit, order, order_direction, status],
       },
       headers: {
         Accept: "application/json, text/plain, */*",
@@ -229,36 +223,74 @@ export class ApiHelper {
     return responseGetListOfProposals.json();
   }
 
-    // Get list of proposals as json from API response from database_api.list_proposals
-    async getListOfProposalsDatabaseAPI(
-      start: [] = [],
-      limit: number = 30,
-      order: string = "by_total_votes",
-      order_direction: string = "descending",
-      status: string = "votable",
-      last_id?: number
-    ) {
-      const url = process.env.REACT_APP_API_ENDPOINT;
+  // Get list of proposals as json from API response from database_api.list_proposals
+  async getListOfProposalsDatabaseAPI(
+    start: [] = [],
+    limit: number = 30,
+    order: string = "by_total_votes",
+    order_direction: string = "descending",
+    status: string = "votable",
+    last_id?: number
+  ) {
+    const url = process.env.REACT_APP_API_ENDPOINT;
 
-      const responseGetListOfProposals = await this.page.request.post(`${url}/`, {
-        data: {
-          id: 0,
-          jsonrpc: "2.0",
-          method: "database_api.list_proposals",
-          params: {
-            start: start,
-            limit: limit,
-            order: order,
-            order_direction: order_direction,
-            status: status,
-            last_id: last_id
-          },
+    const responseGetListOfProposals = await this.page.request.post(`${url}/`, {
+      data: {
+        id: 0,
+        jsonrpc: "2.0",
+        method: "database_api.list_proposals",
+        params: {
+          start: start,
+          limit: limit,
+          order: order,
+          order_direction: order_direction,
+          status: status,
+          last_id: last_id,
         },
-        headers: {
-          Accept: "application/json, text/plain, */*",
-        },
-      });
+      },
+      headers: {
+        Accept: "application/json, text/plain, */*",
+      },
+    });
 
-      return responseGetListOfProposals.json();
-    }
+    return responseGetListOfProposals.json();
+  }
+
+  // Get account history as json from API response
+  async getAccountHistoryAPI(account: string, start: number, limit: number) {
+    const url = process.env.REACT_APP_API_ENDPOINT;
+
+    const responseGetAccountHistory = await this.page.request.post(`${url}/`, {
+      data: {
+        id: 0,
+        jsonrpc: "2.0",
+        method: "condenser_api.get_account_history",
+        params: [account, start, limit, "199284866418737180"], // last parameter: ...wallet_operations_bitmask
+      },
+      headers: {
+        Accept: "application/json, text/plain, */*",
+      },
+    });
+
+    return responseGetAccountHistory.json();
+  }
+
+  // Get account history as json from API response
+  async getVestingDelegationsAPI(account: string, start_account: string, limit: number) {
+    const url = process.env.REACT_APP_API_ENDPOINT;
+
+    const responseGetAccountHistory = await this.page.request.post(`${url}/`, {
+      data: {
+        id: 0,
+        jsonrpc: "2.0",
+        method: "condenser_api.get_vesting_delegations",
+        params: [account, start_account, limit],
+      },
+      headers: {
+        Accept: "application/json, text/plain, */*",
+      },
+    });
+
+    return responseGetAccountHistory.json();
+  }
 }
