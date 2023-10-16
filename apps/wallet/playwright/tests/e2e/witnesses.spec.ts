@@ -3,6 +3,7 @@ import { WitnessesPage } from '../support/pages/witnessesPage';
 import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
 import { ApiHelper } from '../support/apiHelper';
 import { HomePage } from '../../../../blog/playwright/tests/support/pages/homePage';
+import { ConfirmAccountWitnessProxyDialog } from '../support/pages/confirmAccountWitnessProxyDialog';
 import { getRoundedAbbreveration } from '@hive/ui/lib/utils';
 import moment from 'moment';
 import Big from 'big.js';
@@ -376,6 +377,9 @@ test.describe('Witnesses page tests', () => {
       .locator('tr')
       .first();
 
+    // Validate the tooltip message of highlight link after hovering
+    expect(await witnessHighlightLink).toHaveAttribute('title', "Use this for linking to this page and highlight the selected witness");
+
     // Validate background-color of the first row in the rand witness table
     expect(
       await witnessesPage.getElementCssPropertyValue(
@@ -414,6 +418,9 @@ test.describe('Witnesses page tests', () => {
     const firstWitnessTableRow = await witnessesPage.witnessTableBody
       .locator('tr')
       .first();
+
+    // Validate the tooltip message of highlight link after hovering
+    expect(await witnessHighlightLink).toHaveAttribute('title', "Use this for linking to this page and highlight the selected witness");
 
     // Validate background-color of the first row in the rand witness table
     expect(
@@ -494,4 +501,38 @@ test.describe('Witnesses page tests', () => {
     await expect(witnessesPage.witnessTitle).toHaveText('Witness Voting');
     await expect(witnessesPage.witnessTableBody).toBeVisible();
   });
+
+  test('move to the confirm account witness proxy dialog by clicking Set proxy button', async ({ page }) => {
+    let confirmAccountWitnessProxyDialog = new ConfirmAccountWitnessProxyDialog(page);
+
+    const proxyBoxButton =
+      await witnessesPage.witnessSetProxyBox.locator('div button');
+
+    await witnessesPage.goToWitnessesPage();
+    await proxyBoxButton.click();
+    await confirmAccountWitnessProxyDialog.validateConfirmProxyDialogIsVisible();
+    await confirmAccountWitnessProxyDialog.closeConfirmProxyDialog();
+    await expect(witnessesPage.witnessTitle).toHaveText('Witness Voting');
+    await expect(witnessesPage.witnessTableBody).toBeVisible();
+  });
+
+  test('click ok button on the confirm account witness proxy dialog and move to the login dialog', async ({ page }) => {
+    let loginDialog = new LoginToVoteDialog(page);
+    let confirmAccountWitnessProxyDialog = new ConfirmAccountWitnessProxyDialog(page);
+
+    const proxyBoxButton =
+      await witnessesPage.witnessSetProxyBox.locator('div button');
+
+    await witnessesPage.goToWitnessesPage();
+    await proxyBoxButton.click();
+    await confirmAccountWitnessProxyDialog.validateConfirmProxyDialogIsVisible();
+    await confirmAccountWitnessProxyDialog.clickOkButtonInConfirmProxyDialog();
+    await loginDialog.validateLoginToVoteDialogIsVisible();
+    await loginDialog.closeLoginDialog();
+    await confirmAccountWitnessProxyDialog.validateConfirmProxyDialogIsVisible();
+    await confirmAccountWitnessProxyDialog.clickCancelButtonInConfirmProxyDialog();
+    await expect(witnessesPage.witnessTitle).toHaveText('Witness Voting');
+    await expect(witnessesPage.witnessTableBody).toBeVisible();
+  });
+
 });
