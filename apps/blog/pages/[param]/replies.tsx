@@ -9,8 +9,10 @@ import { PostSkeleton } from '../[...param]';
 import { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
+import { useTranslation } from 'next-i18next';
 
 export default function UserReplies() {
+  const { t } = useTranslation('common_blog');
   const { username } = useSiteParams();
   const { ref, inView } = useInView();
 
@@ -63,7 +65,7 @@ export default function UserReplies() {
                 className="px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm"
                 data-testid="user-has-not-had-any-replies-yet"
               >
-                @{username} hasn&apos;t had any replies yet.
+                {t('user_profil.no_replies_yet', {username: username})}
               </div>
             );
           })}
@@ -76,9 +78,9 @@ export default function UserReplies() {
               {isFetchingNextPage ? (
                 <PostSkeleton />
               ) : hasNextPage ? (
-                'Load Newer'
+                t('user_profil.load_newer')
               ) : data.pages[0] && data.pages[0].length > 0 ? (
-                'Nothing more to load'
+                t('user_profil.nothing_more_to_load')
               ) : null}
             </button>
           </div>

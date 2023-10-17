@@ -1,36 +1,79 @@
 import moment from 'moment';
+import { TFunction } from 'i18next';
 
-export const dateToShow = (d: string): string => {
+export const dateToShow = (d: string , t: TFunction<'common_wallet', undefined>): string => {
   const isTimeZoned = d.indexOf('.') !== -1 || d.indexOf('+') !== -1 ? d : `${d}.000Z`;
   const dm = moment(new Date(isTimeZoned)).format('MMMM YYYY');
-  return dm.toString();
+  const dd = dm
+  .replace('January', t('global.months.first'))
+  .replace('February', t('global.months.second'))
+  .replace('March', t('global.months.third'))
+  .replace('April', t('global.months.fourth'))
+  .replace('May', t('global.months.fifth'))
+  .replace('June', t('global.months.sixth'))
+  .replace('July', t('global.months.seventh'))
+  .replace('August', t('global.months.eighth'))
+  .replace('September', t('global.months.ninth'))
+  .replace('October', t('global.months.tenth'))
+  .replace('November', t('global.months.eleventh'))
+  .replace('December', t('global.months.twelfth'))
+
+    return dd;
 };
-export const dateToRelative = (d: string, short = false): string => {
+// export const dateToRelative = (d: string, short = false): string => {
+//   const isTimeZoned = d.indexOf('.') !== -1 || d.indexOf('+') !== -1 ? d : `${d}.000Z`;
+//   const dm = moment(new Date(isTimeZoned));
+//   const dd = dm.fromNow(true);
+//   if (short) {
+//     return dd
+//       .replace('a few seconds', '~1s')
+//       .replace(' seconds', 's')
+//       .replace(' minutes', 'm')
+//       .replace('a minute', '1m')
+//       .replace(' hours', 'h')
+//       .replace('an hour', '1h')
+//       .replace(' days', 'd')
+//       .replace('a day', '1d')
+//       .replace(' months', 'M')
+//       .replace('a month', '1M')
+//       .replace(' years', 'y')
+//       .replace('a year', '1y');
+//   }
+//   return dd;
+// };
+export const dateToRelative = (d: string, t: TFunction<'common_wallet', undefined>): string => {
   const isTimeZoned = d.indexOf('.') !== -1 || d.indexOf('+') !== -1 ? d : `${d}.000Z`;
   const dm = moment(new Date(isTimeZoned));
-  const dd = dm.fromNow(true);
-  if (short) {
-    return dd
-      .replace('a few seconds', '~1s')
-      .replace(' seconds', 's')
-      .replace(' minutes', 'm')
-      .replace('a minute', '1m')
-      .replace(' hours', 'h')
-      .replace('an hour', '1h')
-      .replace(' days', 'd')
-      .replace('a day', '1d')
-      .replace(' months', 'M')
-      .replace('a month', '1M')
-      .replace(' years', 'y')
-      .replace('a year', '1y');
-  }
+  const dd = dm.fromNow().replace('a few seconds', t('global.time.a_few_seconds'))
+  .replace(' seconds', t('global.time.seconds'))
+  .replace(' minutes', t('global.time.minutes'))
+  .replace(' a minute', t('global.time.a_minute'))
+  .replace(' hours', t('global.time.hours'))
+  .replace(' an hour', t('global.time.an_hour'))
+  .replace(' days', t('global.time.days'))
+  .replace(' a day', t('global.time.a_day'))
+  .replace(' months', t('global.time.months'))
+  .replace(' a month', t('global.time.a_month'))
+  .replace(' years', t('global.time.years'))
+  .replace(' a year', t('global.time.a_year'));
   return dd;
 };
-
-export const dateToFullRelative = (d: string): string => {
+export const dateToFullRelative = (d: string, t: TFunction<'common_wallet', undefined>): string => {
   const isTimeZoned = d.indexOf('.') !== -1 || d.indexOf('+') !== -1 ? d : `${d}.000Z`;
   const dm = moment(new Date(isTimeZoned));
-  return dm.fromNow();
+  const dd = dm.fromNow().replace('a few seconds', t('global.time_ago.a_few_seconds'))
+  .replace('seconds ago', t('global.time_ago.seconds'))
+  .replace('minutes ago', t('global.time_ago.minutes'))
+  .replace('a minute ago', t('global.time_ago.a_minute'))
+  .replace('hours ago', t('global.time_ago.hours'))
+  .replace('an hour ago', t('global.time_ago.an_hour'))
+  .replace('days ago', t('global.time_ago.days'))
+  .replace('a day ago', t('global.time_ago.a_day'))
+  .replace('months ago', t('global.time_ago.months'))
+  .replace('a month ago', t('global.time_ago.a_month'))
+  .replace('years ago', t('global.time_ago.years'))
+  .replace('a year ago', t('global.time_ago.a_year'));
+  return dd
 };
 
 export const dateToFormatted = (d: string, format: string = 'LLLL'): string => {

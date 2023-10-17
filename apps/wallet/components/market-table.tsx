@@ -172,7 +172,7 @@ export function HistoryTable({
                 key={Math.random()}
               >
                 <td title={e.date.replace("T", " ")}>
-                  {dateToRelative(e.date)}
+                  {dateToRelative(e.date, t)}
                 </td>
                 <td
                   className={clsx({

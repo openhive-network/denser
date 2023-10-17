@@ -8,8 +8,10 @@ import Loading from '@hive/ui/components/loading';
 import { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
+import { useTranslation } from 'next-i18next';
 
 export default function UserNotifications() {
+  const { t } = useTranslation('common_blog');
   const { username } = useSiteParams();
   const {
     isLoading,
@@ -29,7 +31,7 @@ export default function UserNotifications() {
                 className="px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm"
                 data-testid="user-has-not-had-any-notifications-yet"
               >
-                @{username} hasn&apos;t had any notifications yet.
+                {t('user_profil.no_notifications_yet', {username: username})}
               </div>}
       </div>
     </LayoutProfile>

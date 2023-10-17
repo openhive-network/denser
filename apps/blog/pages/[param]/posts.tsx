@@ -17,8 +17,10 @@ import { useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
+import { useTranslation } from 'next-i18next';
 
 const UserPosts = () => {
+  const { t } = useTranslation('common_blog');
   const router = useRouter();
   const { username } = useSiteParams();
   const { ref, inView } = useInView();
@@ -79,9 +81,9 @@ const UserPosts = () => {
           onValueChange={(s) => router.push(`/@${username}/${s}`)}
         >
           <TabsList className='flex justify-start' data-testid='user-post-menu'>
-            <TabsTrigger value='posts'>Posts</TabsTrigger>
-            <TabsTrigger value='comments'>Comments</TabsTrigger>
-            <TabsTrigger value='payout'>Payouts</TabsTrigger>
+            <TabsTrigger value='posts'>{t('navigation.profil_posts_tab_navbar.posts')}</TabsTrigger>
+            <TabsTrigger value='comments'>{t('navigation.profil_posts_tab_navbar.comments')}</TabsTrigger>
+            <TabsTrigger value='payout'>{t('navigation.profil_posts_tab_navbar.payouts')}</TabsTrigger>
           </TabsList>
           <TabsContent value='posts'>
             {!isLoading && data ? (
@@ -95,7 +97,7 @@ const UserPosts = () => {
                       className="px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm"
                       data-testid="user-has-not-made-any-post-yet"
                     >
-                      Looks like @{username} hasn&apos;t made any posts yet!
+                      {t('user_profil.no_posts_yet', {username:username})}
                     </div>
                   );
                 })}
@@ -134,7 +136,7 @@ const UserPosts = () => {
                       className="px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm"
                       data-testid="user-has-not-made-any-post-yet"
                     >
-                      Looks like @{username} hasn&apos;t made any posts yet!
+                      {t('user_profil.no_posts_yet', {username:username})}
                     </div>
                   );
                 })}
@@ -173,7 +175,7 @@ const UserPosts = () => {
                       className="px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm"
                       data-testid="user-no-pending-payouts"
                     >
-                      No pending payouts.
+                      {t('user_profil.no_pending_payouts')}
                     </div>
                   );
                 })}
@@ -186,9 +188,9 @@ const UserPosts = () => {
                     {isFetchingNextPage ? (
                       <PostSkeleton />
                     ) : hasNextPage ? (
-                      'Load Newer'
+                      t('user_profil.load_newer')
                     ) : data.pages[0] && data.pages[0].length > 0 ? (
-                      'Nothing more to load'
+                      t('user_profil.nothing_more_to_load')
                     ) : null}
                   </button>
                 </div>

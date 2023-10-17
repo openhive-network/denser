@@ -3,8 +3,10 @@ import { prepareVotes } from '@/blog/lib/utils';
 import { Entry } from '@/blog/lib/bridge';
 import Link from 'next/link';
 import { useActiveVotesQuery } from './hooks/use-active-votes';
+import { useTranslation } from 'next-i18next';
 
 export default function VotersDetailsData({ post }: { post: Entry }) {
+  const { t } = useTranslation('common_blog');
   const { data } = useActiveVotesQuery(post.author, post.permlink);
 
   const votes = data && prepareVotes(post, data);
@@ -37,7 +39,7 @@ export default function VotersDetailsData({ post }: { post: Entry }) {
           </li>
         ))}
       {votes && votes.length > 20 && post.stats ? (
-        <li className="pt-1.5 text-sm text-gray-500">and {post.stats.total_votes - 20} more</li>
+        <li className="pt-1.5 text-sm text-gray-500">{t('post_content.footer.and_more',{value: post.stats.total_votes - 20})}</li>
       ) : null}
     </ul>
   );

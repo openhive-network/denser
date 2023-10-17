@@ -11,10 +11,11 @@ import {
   DropdownMenuTrigger
 } from '@hive/ui/components/dropdown-menu';
 import { Icons } from '@hive/ui/components/icons';
+import { useTranslation } from 'next-i18next';
 
 export function ModeToggle() {
   const { setTheme } = useTheme();
-
+const { t } = useTranslation('common_blog')
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -27,15 +28,15 @@ export function ModeToggle() {
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme('light')} data-testid="theme-mode-item">
           <Icons.sun className="mr-2 h-4 w-4" />
-          <span>Light</span>
+          <span>{t('navigation.main_nav_bar.light')}</span>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme('dark')} data-testid="theme-mode-item">
           <Icons.moon className="mr-2 h-4 w-4" />
-          <span>Dark</span>
+          <span>{t('navigation.main_nav_bar.dark')}</span>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme('system')} data-testid="theme-mode-item">
           <Icons.laptop className="mr-2 h-4 w-4" />
-          <span>System</span>
+          <span>{t('navigation.main_nav_bar.system')}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

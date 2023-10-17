@@ -113,7 +113,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <span data-testid="user-joined">
                 {t('profil.joined')}{" "}
                   {profileData?.created
-                    ? dateToShow(profileData.created)
+                    ? dateToShow(profileData.created, t)
                     : null}
                 </span>
               </li>

@@ -26,7 +26,7 @@ const CommentSelectFilter = () => {
       <SelectContent data-testid='posts-filter-list'>
         <SelectGroup>
           <SelectItem value='trending'>{t('select_sort.sort_comments.trending')}</SelectItem>
-          <SelectItem value='votes'>{t('select_sort.sort_comments.trending')}</SelectItem>
+          <SelectItem value='votes'>{t('select_sort.sort_comments.votes')}</SelectItem>
           <SelectItem value='new'>{t('select_sort.sort_comments.age')}</SelectItem>
         </SelectGroup>
       </SelectContent>

@@ -1,5 +1,5 @@
 import { Icons } from '@hive/ui/components/icons';
-import parseDate, { dateToRelative } from '@hive/ui/lib/parse-date';
+import parseDate, { dateToFullRelative } from '@hive/ui/lib/parse-date';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@hive/ui/components/card';
 import { cn } from '@/blog/lib/utils';
 import Link from 'next/link';
@@ -17,6 +17,7 @@ import clsx from 'clsx';
 import { Badge } from '@hive/ui/components/badge';
 import { DefaultRenderer } from '@hiveio/content-renderer';
 import { UserHoverCard } from './user-hover-card';
+import { useTranslation } from 'next-i18next';
 
 const CommentListItem = ({
   comment,
@@ -27,6 +28,7 @@ const CommentListItem = ({
   renderer: DefaultRenderer;
   parent_depth: number;
 }) => {
+  const { t } = useTranslation('common_blog');
   const username = comment.author;
   const router = useRouter();
   const ref = useRef<HTMLTableRowElement>(null);
@@ -103,7 +105,7 @@ const CommentListItem = ({
                               title={String(parseDate(comment.created))}
                               data-testid="comment-timestamp-link"
                             >
-                              {dateToRelative(comment.created)} ago
+                              {dateToFullRelative(comment.created, t)}
                             </Link>
                             <Link
                               className="p-1 sm:p-2"
@@ -121,7 +123,7 @@ const CommentListItem = ({
                           ) : null}
                         </div>
                         {!hiddenComment && comment.stats?.gray && openState ? (
-                          <span className="ml-4 text-xs">Will be hidden due to low rating </span>
+                          <span className="ml-4 text-xs">{t('cards.comment_card.will_be_hidden')}</span>
                         ) : null}
                         {hiddenComment ? (
                           <AccordionTrigger
@@ -132,7 +134,7 @@ const CommentListItem = ({
                               className="ml-4 cursor-pointer text-xs sm:text-sm"
                               onClick={() => setHiddenComment(false)}
                             >
-                              Reveal Comment{' '}
+                              {t('cards.comment_card.reveal_comment')}{' '}
                             </span>
                           </AccordionTrigger>
                         ) : null}
@@ -148,7 +150,7 @@ const CommentListItem = ({
                                     <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1" />
                                   </DialogLogin>
                                 </TooltipTrigger>
-                                <TooltipContent>Upvote</TooltipContent>
+                                <TooltipContent>{t('cards.post_card.upvote')}</TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
                             <TooltipProvider>
@@ -158,7 +160,7 @@ const CommentListItem = ({
                                     <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
                                   </DialogLogin>
                                 </TooltipTrigger>
-                                <TooltipContent>Downvote</TooltipContent>
+                                <TooltipContent>{t('cards.post_card.downvote')}</TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
                             <DetailsCardHover
@@ -174,8 +176,8 @@ const CommentListItem = ({
                               <>
                                 <Separator orientation="vertical" />
                                 <div className="flex items-center">
-                                  {comment.children}
-                                  {comment.children > 1 ? ' replies' : ' reply'}
+                                  {comment.children}{" "}
+                                  {comment.children > 1 ? t('cards.comment_card.replies') : t('cards.comment_card.one_reply')}
                                 </div>
                               </>
                             ) : null}
@@ -215,7 +217,7 @@ const CommentListItem = ({
                                   <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1" />
                                 </DialogLogin>
                               </TooltipTrigger>
-                              <TooltipContent>Upvote</TooltipContent>
+                              <TooltipContent>{t('cards.post_card.upvote')}</TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
                           <TooltipProvider>
@@ -225,7 +227,7 @@ const CommentListItem = ({
                                   <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
                                 </DialogLogin>
                               </TooltipTrigger>
-                              <TooltipContent>Downvote</TooltipContent>
+                              <TooltipContent>{t('cards.post_card.downvote')}</TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
                         </div>
@@ -249,8 +251,9 @@ const CommentListItem = ({
                             <div className="flex items-center">
                               <DetailsCardVoters post={comment}>
                                 <span className="hover:text-red-600">
-                                  {comment.stats?.total_votes}
-                                  {comment.stats.total_votes > 1 ? ' votes' : ' vote'}
+                                  {comment.stats && comment.stats.total_votes > 1
+                                  ? t('cards.post_card.votes', { votes: comment.stats.total_votes })
+                                  : t('cards.post_card.vote')}
                                 </span>
                               </DetailsCardVoters>
                             </div>
@@ -262,7 +265,7 @@ const CommentListItem = ({
                           className="flex items-center hover:cursor-pointer hover:text-red-600"
                           data-testid="comment-card-footer-reply"
                         >
-                          Reply
+                          {t('cards.comment_card.reply')}
                         </button>
                       </div>
                     </CardFooter>
@@ -275,7 +278,7 @@ const CommentListItem = ({
       ) : currentDepth === 8 ? (
         <div className="h-8">
           <Link href={`/${comment.category}/@${username}/${comment.permlink}`} className="text-red-500">
-            Load more...
+          {t('cards.comment_card.load_more')}...
           </Link>
         </div>
       ) : null}

@@ -22,7 +22,7 @@ export function CommunitiesSelect({ username }: { username: string }) {
     getCommunities(sort, query)
   );
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <p>{t('global.loading')}...</p>;
   return (
     <Select
       onValueChange={(e) => {

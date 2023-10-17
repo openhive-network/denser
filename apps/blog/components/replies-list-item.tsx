@@ -1,5 +1,5 @@
 import { Icons } from '@hive/ui/components/icons';
-import parseDate, { dateToRelative } from '@hive/ui/lib/parse-date';
+import parseDate, { dateToFullRelative } from '@hive/ui/lib/parse-date';
 import {
   Card,
   CardContent,
@@ -65,7 +65,7 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
                 >
                   {comment.author}
                 </Link>{' '}
-                ({accountReputation(comment.author_reputation)})
+                <span title={t('cards.post_card.reputation_title')}>({accountReputation(comment.author_reputation)})</span>
                 {comment.blacklists && comment.blacklists[0] ? (
                   <span className='text-red-600' title={comment.blacklists[0]}>
                     ({comment.blacklists.length})
@@ -85,7 +85,7 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
                   ) : null}
                 </span>
                 <span className='text-xs md:text-sm'>
-                  &nbsp;in{` `}
+                  &nbsp;{t('cards.post_card.in')}{` `}
                   {comment.community ? (
                     <Link
                       href={`/trending/${comment.community}`}
@@ -110,7 +110,7 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
                     data-testid='comment-timestamp'
                     title={String(parseDate(comment.created))}
                   >
-                    {dateToRelative(comment.created)} ago
+                    {dateToFullRelative(comment.created, t)}
                   </Link>
                 </span>
               </div>

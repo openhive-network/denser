@@ -75,9 +75,12 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
       } if (firstNotificationTypeAPI == 'reply' || firstNotificationTypeAPI == 'reply_comment'){
         await profilePage.page.waitForSelector(commentPage.getMainCommentAuthorData['_selector']);
         await expect(profilePage.page.url()).toContain(firstNotificationUrlAPI);
+      } if (firstNotificationTypeAPI == 'follow'){
+        await profilePage.page.waitForSelector(profilePage.profileInfo['_selector']);
+        await expect(profilePage.postBlogItem.first()).toBeVisible();
       }
-      await page.goBack();
-      await page.waitForSelector(profilePage.notificationsMenuAllContent['_selector']);
+      await profilePage.page.goBack();
+      await profilePage.page.waitForSelector(profilePage.notificationsMenuAllContent['_selector']);
       await profilePage.profileNotificationsTabIsSelected();
     }
   });

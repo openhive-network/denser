@@ -1,6 +1,49 @@
 {
   "global": {
-    "time": ""
+    "loading": "Wczytywanie",
+    "something_went_wrong": "Coś poszło nie tak",
+    "time_ago": {
+      "a_few_seconds": " Kilka sekund temu",
+      "seconds": " sekund_y temu",
+      "minutes": " minut_y temu",
+      "a_minute": " minute temu",
+      "hours" :" godzin_y temu",
+      "an_hour": " godzine temu",
+      "days": " dni temu",
+      "a_day": " dzień temu",
+      "months": " miesięce_y temu",
+      "a_month": " miesiąc temu",
+      "years": " lat_a temu",
+      "a_year": " rok temu"
+    },
+    "months": {
+      "first": "Styczeń",
+      "second": "Luty",
+      "third": "Marzec",
+      "fourth": "Kwiecień",
+      "fifth": "Maj",
+      "sixth": "Czerwiec",
+      "seventh": "Lipiec",
+      "eighth": "Sierpień",
+      "ninth": "Wrzesień", 
+      "tenth": "Październik",
+      "eleventh": "Listopad",
+      "twelfth": "Grudzień" 
+    },
+    "time": {
+      "a_few_seconds": " Za kilka sekund",
+      "seconds": " sekund_y",
+      "minutes": " minut_y",
+      "a_minute": " minute",
+      "hours" :" godzin_y",
+      "an_hour": " godzina",
+      "days": " dni",
+      "a_day": " dzień",
+      "months": " miesięce_y",
+      "a_month": " miesiąc",
+      "years": " lat_a",
+      "a_year": " rok"
+    }
   },
   "navigation": {
     "main_nav_bar": {
@@ -10,7 +53,10 @@
       "out_dapps": "Nasze dApps",
       "login": "Zaloguj się",
       "sign_up": "Zapisz się",
-      "search": "Szukaj..."
+      "search": "Szukaj...",
+      "light": "Tryb jasny",
+      "dark": "Tryb ciemny",
+      "system": "Domyślny z systemu"
     },
     "sidebar": {
       "welcome": "Witaj",
@@ -31,7 +77,7 @@
       "explore_communities": "Pokaż więcej społeczności..."
     },
     "explore_nav": {
-      "explore_hive": " Dowiedz się wiecej o Hive",
+      "explore_hive": " Dowiedz się więcej o Hive",
       "what_is_hive": "Czym jest Hive",
       "hive_dapps": "Hive dApps",
       "blockexplorer": "Blockexplorer",
@@ -70,12 +116,18 @@
   "select_sort": {
     "posts_sort": {
       "trending": "Popularne",
-      "hot": "Gorące",
+      "hot": "Na czasie",
       "new": "Nowe",
       "payouts": "Wynagrodzenia",
       "muted": "Wyciszone"
     },
+    "communitie_sort":{
+      "rank": "Ranking",
+      "subscribers": "Subskrybcje",
+      "new": "Nowe"
+    },
     "sort_comments": {
+      "sort": "Sortuj po:",
       "trending": "Popularność",
       "votes": "Liczba głosów",
       "age": "Wiek"
@@ -92,27 +144,36 @@
       "pinned": "Przypięty"
     },
     "post_card": {
-      "reputation_title": "Repytacja",
+      "reputation_title": "Reputacja",
       "in": "w",
       "upvote": "Głos za",
       "downvote": "Głos przeciw",
       "no_votes": "Brak głosów",
-      "vote": "1 głos",
-      "votes": "{{votes}} głosów",
+      "vote": "Liczba głosów: 1",
+      "votes": "Liczba głosów: {{votes}}",
       "no_responses": "Brak odpowiedzi. ",
       "response": "1 odpowiedź. ",
       "responses": "{{responses}} odpowiedzi. ",
       "click_to_respond": "Kliknij by odpowiedzieć",
       "reblog": "Reblog"
+    },
+    "comment_card": {
+      "reveal_comment": "Pokaż komentarz",
+      "one_reply": "1 odpowiedź",
+      "replies": "odpowiedzi",
+      "reply": "Odpowiedz",
+      "will_be_hidden": "Komentarz jest ukryte ze względu na niską ocenę",
+      "load_more": "Pokaż więcej"
     }
   },
   "amount_hover_card": {
     "pending_payout_amount": "Wypłacana kwota: ${{value}}",
     "breakdown": "Podział:",
     "payout_in": "Wypłata za",
-    "past_payouts": "cześniejsze wypłaty ${{value}}",
+    "past_payouts": "Wcześniejsze wypłaty ${{value}}",
     "author": "Autor ${{value}}",
-    "curators": "Kuratorzy ${{value}}"
+    "curators": "Kuratorzy ${{value}}",
+    "max_accepted_payout": "Maksymalna wypłata: ${{value}}"
   },
   "login_form": {
     "title": "Powracający: ",
@@ -124,7 +185,8 @@
     "keep_me_logged_in": "Nie wylogowuj mnie",
     "more_login_methods": "więcej metod logowania",
     "login_button": "Zaloguj się",
-    "cancel_button": "Anuluj"
+    "cancel_button": "Anuluj",
+    "this_operation_requires_your_key_or_master_password": "Ta operacja wymaga twojego klucza {{authType}} klub hasła głównego."
   },
   "user_profil": {
     "reputation": "Reputacja",
@@ -133,21 +195,28 @@
     "twitter_badge_title": "By zdobyć odznake Twittera, podlinkuj twoje konto na HivePosh.com",
     "joined": "Dołączono",
     "active": "Ostatnia aktywność",
+    "no_posts_yet":"Wygłąda na to, że @{{username}} nie opublikował jeszcze żadnych wpisów!",
+    "no_blogging_yet":"Wygłąda na to, że @{{username}} nie zaczął jeszcze blogować!",
+    "no_pending_payouts": "Brak wynagrodzeń.",
+    "load_newer": "Załaduj więcej",
+    "nothing_more_to_load": "Wszystko zostało już wyświetlone",
+    "no_replies_yet": "@{{username}} nie ma jeszcze żadnych odpowiedzi.",
+    "no_notifications_yet": "@{{username}} nie ma żadnych powiadomień.",
     "lists": {
       "follower_count": {
         "zero": "Brak obserwujących",
-        "one": "1 obserwujący",
-        "other": "{{value}} obserwujących"
+        "one": "Liczba obserwujących: 1",
+        "other": "Liczba obserwujących: {{value}} "
       },
       "followed_count": {
         "zero": "Brak obserwowanych",
-        "one": "1 obserwowany",
-        "other": "{{value}} obserwowanych"
+        "one": "Liczba obserwowanych: 1",
+        "other": "Liczba obserwowanych: {{value}}"
       },
       "post_count": {
         "zero": "Brak wpisów",
-        "one": "1 wpis",
-        "other": "{{value}} wpisów"
+        "one": "Liczba wpisów: 1",
+        "other": "Liczba wpisów: {{value}}"
       },
       "blacklisted_users": "Użytkownicy na Czarnej Liście",
       "muted_users": "Wyciszeni użytkownicy",
@@ -183,7 +252,8 @@
       "community_subscriptions_title": "Subskrypcje społeczności",
       "the_author_has_subscribed_to_the_following": "Autor zasubskrybował poniższe Społeczności Hive",
       "badges_and_achievements_title": "Odznaki i osiągnięcia",
-      "these_are_badges_received_by_the_author": "Są to odznaki otrzymane przez autora za pośrednictwem zewnętrznych aplikacji {{peakd}} i {{hivebuzz}}."
+      "these_are_badges_received_by_the_author": "Są to odznaki otrzymane przez autora za pośrednictwem zewnętrznych aplikacji ",
+      "you_dont_have_any_subscriptions": "Witaj! Nie masz jeszcze żadnej subscrypcji."
     },
     "notifications_tab": {
       "voted_on_your_post": "@{{username}} zagłosował na twój post {{amount}}",
@@ -196,6 +266,15 @@
     }
   },
   "communities": {
+    "admin": "administrator",
+    "admins": "administratorzy",
+    "subscribers": "subskrybentów",
+    "authors": "autorów",
+    "posts": "postów",
+    "communities": "Społeczności",
+    "community": "Społeczność",
+    "search": "Szukaj...",
+    "no_results": "Brak wyników wyszukiwania",
     "latest_subscribers": "Ostatnie subskrypcje {{username}}",
     "buttons": {
       "subscribe": "Subskrybuj",
@@ -231,12 +310,14 @@
       "edited": "edytowany"
     },
     "footer": {
+      "and_more": "i {{value}} więcej",
+      "in": "w",
       "by": "przez",
       "upvote": "Głos za",
       "downvote": "Głos przeciw",
       "no_votes": "Brak głosów",
-      "vote": "1 głos",
-      "votes": "{{votes}} głosów",
+      "vote": "Liczba głosów: 1",
+      "votes": "Liczba głosów: {{votes}}",
       "no_responses": "Brak odpowiedzi. ",
       "response": "1 odpowiedź. ",
       "responses": "{{responses}} odpowiedzi. ",
@@ -251,6 +332,17 @@
         "markdown_code_for_a_link_to_this_post": "Kod Markdown dla linku do tego posta:",
         "open_in_alternative": "Alternatywne źródła Hive dApps",
         "open_in": "Otwórz w Block Explorers"
+      },
+      "comment":{
+        "disable_editor": "Disable side-by-side editor",
+        "reply": "Odpowiedz",
+        "insert_images": "Wstawaw obrazy, przeciągając i upuszczając, wklejając ze schowka lub za pomocą",
+        "selecting_them": "wyboru ich.",
+        "post": "Wyślij",
+        "cancel": "Anuluj",
+        "preview": "Podgląd",
+        "markdown_styling_guide": "Przewodnik po stylach posta",
+        "exit_editor":"Jesteś pewien że chcesz opuścić tę stronę i anulować pisanie komentarza?"
       }
     }
   },

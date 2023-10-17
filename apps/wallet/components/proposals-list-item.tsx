@@ -11,19 +11,20 @@ import { getPostHeader } from '@hive/ui/lib/bridge';
 import VoteProposals from './votes-proposals-dialog';
 import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
+import { TFunction } from 'i18next';
 
-function titleSetter(daysStart: string, datsEnd: string, status: string) {
+function titleSetter(daysStart: string, datsEnd: string, status: string, t: TFunction<'common_wallet', undefined>) {
   switch (status) {
     case 'started':
       return `Started ${dateToFullRelative(
-        daysStart
-      )} and finish ${dateToFullRelative(datsEnd)}`;
+        daysStart, t
+      )} and finish ${dateToFullRelative(datsEnd, t)}`;
     case 'not started':
       return `Start ${dateToFullRelative(
-        daysStart
-      )} and finish ${dateToFullRelative(datsEnd)}`;
+        daysStart, t
+      )} and finish ${dateToFullRelative(datsEnd, t)}`;
     case `finished`:
-      return `Finished ${dateToFullRelative(datsEnd)}`;
+      return `Finished ${dateToFullRelative(datsEnd, t)}`;
     default:
       return '';
   }
@@ -82,7 +83,8 @@ export function ProposalListItem({
           title={titleSetter(
             proposalData.start_date,
             proposalData.end_date,
-            proposalData.status
+            proposalData.status,
+            t
           )}
         >
           <span
@@ -126,7 +128,8 @@ export function ProposalListItem({
               title={titleSetter(
                 proposalData.start_date,
                 proposalData.end_date,
-                proposalData.status
+                proposalData.status,
+                t
               )}
             >
               <Badge variant='red' data-testid='proposal-status-badge'>

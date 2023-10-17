@@ -1,4 +1,4 @@
-import { dateToFormatted, dateToRelative } from '@hive/ui/lib/parse-date';
+import { dateToFormatted, dateToFullRelative } from '@hive/ui/lib/parse-date';
 import { Button } from '@hive/ui/components/button';
 import UserAvatar from '@/blog/components/user-avatar';
 import Link from 'next/link';
@@ -79,7 +79,7 @@ export function HoverCardData({ author }: { author: string }) {
           <div className='flex justify-center text-xs'>
             {t('post_content.header.hover_author.joined')} {dateToFormatted(account.data.created, 'MMMM YYYY')}
             <span className='mx-1'>•</span>
-            Active {dateToRelative(account.data.last_vote_time)} ago
+            {t('user_profil.active') + " " + dateToFullRelative(account.data.last_vote_time, t)} 
           </div>
         </>
       ) : null}

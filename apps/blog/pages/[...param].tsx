@@ -228,7 +228,7 @@ const ParamPage: FC = () => {
                     >
                       {tag
                         ? communityData
-                          ? 'Community'
+                          ? t('communities.community')
                           : 'Unmoderated tag'
                         : ''}
                     </span>
@@ -271,9 +271,9 @@ const ParamPage: FC = () => {
                     {isFetchingNextPage ? (
                       <PostSkeleton />
                     ) : hasNextPage ? (
-                      'Load Newer'
+                      t('user_profil.load_newer')
                     ) : (
-                      'Nothing more to load'
+                      t('user_profil.nothing_more_to_load')
                     )}
                   </button>
                 </div>
@@ -317,7 +317,7 @@ const ParamPage: FC = () => {
               className="px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm"
               data-testid="user-has-not-started-blogging-yet"
             >
-              Looks like @{username} hasn&apos;t started blogging yet!
+              {t('user_profil.no_blogging_yet', {username: username})}
             </div>
           )}
           <div>
@@ -329,10 +329,10 @@ const ParamPage: FC = () => {
               {accountIsFetchingNextPage ? (
                 <PostSkeleton />
               ) : accountHasNextPage ? (
-                'Load Newer'
+                t('user_profil.load_newer')
               ) : accountEntriesData.pages[0] &&
               accountEntriesData.pages[0].length > 0 ? (
-                'Nothing more to load'
+                t('user_profil.nothing_more_to_load')
               ) : null}
             </button>
           </div>

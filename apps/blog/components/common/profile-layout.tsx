@@ -21,12 +21,13 @@ import moment from 'moment';
 import { Button } from '@hive/ui';
 import DialogLogin from '../dialog-login';
 import { useTranslation } from 'next-i18next';
+import { TFunction } from 'i18next';
 
 interface IProfileLayout {
   children: React.ReactNode;
 }
 
-function compareDates(dateStrings: string[]) {
+function compareDates(dateStrings: string[],t: TFunction<'common_wallet', undefined>) {
   const dates = dateStrings.map((dateStr) => moment(dateStr));
 
   const today = moment();
@@ -42,8 +43,7 @@ function compareDates(dateStrings: string[]) {
   });
 
   const closestDateString = closestDate.format('YYYY-MM-DDTHH:mm:ss');
-
-  return dateToFullRelative(closestDateString);
+  return dateToFullRelative(closestDateString, t);
 }
 
 const ProfileLayout = ({ children }: IProfileLayout) => {
@@ -299,21 +299,21 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               <li className='flex items-center'>
                 <Icons.calendarHeart className='m-1' />
                 <span data-testid='user-joined'>
-                  Joined{' '}
+                {t('user_profil.joined')}{' '}
                   {profileData?.created
-                    ? dateToShow(profileData.created)
+                    ? dateToShow(profileData.created, t)
                     : null}
                 </span>
               </li>
               <li className='flex items-center'>
                 <Icons.calendarActive className='m-1' />
                 <span data-testid='user-last-time-active'>
-                  Active{' '}
+                  {t('user_profil.active')}{' '}
                   {compareDates([
                     profileData.created,
                     profileData.last_vote_time,
                     profileData.last_post
-                  ])}
+                  ], t)}
                 </span>
               </li>
             </ul>
@@ -324,7 +324,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 variant='secondary'
                 size='sm'
               >
-                Follow
+                {t('user_profil.follow_button')}
               </Button>
             </DialogLogin>
           </div>

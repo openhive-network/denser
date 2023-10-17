@@ -51,7 +51,7 @@ const UserCommunities = ({
             className="px-4 py-6 my-12 bg-green-100 dark:bg-slate-700 text-sm"
             data-testid="user-does-not-have-any-subscriptions-yet"
           >
-            Welcome! You don&apos;t have any subscriptions yet.
+            {t('user_profil.social_tab.you_dont_have_any_subscriptions')}
           </div>
         )}
         <h2

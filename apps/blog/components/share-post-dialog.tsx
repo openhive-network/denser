@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@hive/ui/components/dialog';
 import { ReactNode } from 'react';
 import Link from 'next/link';
-import ClipboardCopy from './copy-from-imput';
+import ClipboardCopy from './copy-from-input';
 import { Icons } from '@hive/ui/components/icons';
 import { useTranslation } from 'next-i18next';
 

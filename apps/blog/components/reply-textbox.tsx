@@ -4,12 +4,14 @@ import { Button } from '@hive/ui/components/button';
 import { useState } from 'react';
 import { Label } from '@radix-ui/react-label';
 import { Input } from '@hive/ui/components/input';
+import { useTranslation } from 'next-i18next';
 
 export function ReplyTextbox({ onSetReply }: { onSetReply: (e: boolean) => void }) {
+  const { t } = useTranslation('common_blog');
   const [text, setText] = useState('');
   const handleCancel = () => {
     if (text === '') return onSetReply(false);
-    const confirmed = confirm('Are you sure you want to exit the comment editor?');
+    const confirmed = confirm(t('post_content.footer.comment.exit_editor'));
     if (confirmed) {
       onSetReply(false);
     }
@@ -22,42 +24,41 @@ export function ReplyTextbox({ onSetReply }: { onSetReply: (e: boolean) => void 
     >
       <div className="flex flex-col gap-4">
         <Link href={`#`}>
-          <h1 className="text-sm text-red-500">Disable side-by-side editor</h1>
+          <h1 className="text-sm text-red-500">{t('post_content.footer.comment.disable_editor')}</h1>
         </Link>
         <div>
           <Textarea
             className="border-2 border-slate-200 dark:text-white"
             onChange={(e) => setText(e.target.value)}
-            placeholder="Reply"
+            placeholder={t('post_content.footer.comment.reply')}
           />
           <p className="border-2 border-t-0 border-slate-200 bg-gray-100 p-1 text-xs font-light text-slate-500 dark:border-black dark:bg-slate-950">
-            Insert images by dragging & dropping, pasting from the clipboard, or by{' '}
+            {t('post_content.footer.comment.insert_images')}{' '}
             <span>
               <Label className="cursor-pointer text-red-500" htmlFor="picture">
-                selecting them
+              {t('post_content.footer.comment.selecting_them')}
               </Label>
               <Input id="picture" type="file" className="hidden" />
             </span>
-            .
           </p>
         </div>
         <div className="flex flex-col md:flex-row">
-          <Button disabled={text === ''}>Post</Button>
+          <Button disabled={text === ''}>{t('post_content.footer.comment.post')}</Button>
           <Button
             variant="ghost"
             onClick={() => handleCancel()}
             className="font-thiny text-slate-500 hover:text-red-500"
           >
-            Cancel
+            {t('post_content.footer.comment.cancel')}
           </Button>
         </div>
       </div>
 
       <div className="flex flex-col gap-4">
         <div className="flex justify-between text-xs">
-          <span className="text-slate-500">Preview</span>
+          <span className="text-slate-500">{t('post_content.footer.comment.preview')}</span>
           <Link href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax">
-            <span className="text-red-500">Markdown Styling Guide</span>
+            <span className="text-red-500">{t('post_content.footer.comment.markdown_styling_guide')}</span>
           </Link>
         </div>
         {text ? (

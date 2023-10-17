@@ -4,15 +4,17 @@ import { getCommunities } from '@/blog/lib/bridge';
 import { cn } from '@/blog/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
 import { FC } from 'react';
+import { useTranslation } from 'next-i18next';
 
 const CommunitiesSidebar: FC = () => {
+  const { t } = useTranslation('common_blog');
   const sort = 'rank';
   const query = null;
   const { isLoading, error, data } = useQuery(['communitiesList', sort, query], () =>
     getCommunities(sort, query)
   );
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <p>{t('global.loading')}...</p>;
 
   return (
     <Card
@@ -22,12 +24,12 @@ const CommunitiesSidebar: FC = () => {
       <CardHeader className="px-0 py-4">
         <CardTitle>
           <Link href="/trending" className="hover:cursor-pointer hover:text-red-600">
-            All posts
+          {t('navigation.communities_nav.all_posts')}
           </Link>
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <span className="text-sm text-gray-400">Trending Communities</span>
+        <span className="text-sm text-gray-400">{t('navigation.communities_nav.trending_communities')}</span>
         <ul>
           {data?.slice(0, 12).map((community) => (
             <li key={community.id}>
@@ -44,7 +46,7 @@ const CommunitiesSidebar: FC = () => {
               href={`/communities`}
               className="w-full text-sm font-medium hover:cursor-pointer hover:text-red-600"
             >
-              Explore communities...
+              {t('navigation.communities_nav.explore_communities')}
             </Link>
           </li>
         </ul>
