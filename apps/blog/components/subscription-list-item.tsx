@@ -9,7 +9,7 @@ const SubscriptionListItem = ({ community }: { community: string[] }) => {
         className="mr-2 text-red-600 hover:underline"
         data-testid="author-community-subscribed-link"
       >
-        {community[1]}
+        {community[1]?community[1]:community[0]}
       </Link>
       <span className="font-light text-sm opacity-60" data-testid="author-role-community">
         {community[2].toUpperCase()}

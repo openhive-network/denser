@@ -30,6 +30,20 @@
       "eleventh": "November",
       "twelfth": "December" 
     },
+    "months_short_form": {
+      "first": "Jan",
+      "second": "Feb",
+      "third": "Mar",
+      "fourth": "Apr",
+      "fifth": "May",
+      "sixth": "Jun",
+      "seventh": "Jul",
+      "eighth": "Aug",
+      "ninth": "Sep", 
+      "tenth": "Oct",
+      "eleventh": "Nov",
+      "twelfth": "Dec" 
+    },
     "time": {
       "a_few_seconds": " a few seconds",
       "seconds": " seconds",
@@ -204,7 +218,7 @@
     "proxy_form": {
       "title": "Confirm Account Witness Proxy",
       "description": "You are about to remove your proxy.",
-      "set_proxy_to:": "Set proxy to: {{proxy}}",
+      "set_proxy_to": "Set proxy to: {{proxy}}",
       "cancel_button": "キャンセル",
       "ok": "OK"
     },
@@ -220,6 +234,7 @@
     }
   },
   "proposals_page": {
+    "daily":"Daily",
     "proposals": "Proposals",
     "started": "started",
     "finished": "finished",
@@ -242,5 +257,31 @@
     "login_button": "ログイン",
     "cancel_button": "キャンセル",
     "this_operation_requires_your_key_or_master_password": "この操作には{{authType}}キーまたはマスターパスワードが必要です。"
+  },
+  "change_password_page": {
+    "change_password": "パスワードの変更",
+    "account_name": "アカウント名",
+    "current_password": "現在のパスワード",
+    "recover_password": "アカウント回復",
+    "generated_password": "生成したパスワード",
+    "new": "新着",
+    "click_to_generate_password": "クリックしてパスワードを生成",
+    "re_enter_generate_password": "生成したパスワードを再入力してください",
+    "understand_that": "私はHiveが紛失したパスワードを回復できないことを理解しました",
+    "i_saved_password": "私は生成したパスワードを安全なところに保存しました",
+    "update_password": "パスワードを更新",
+    "required": "必須です",
+    "account_name_should_be_longer": "アカウント名が短すぎます。",
+    "backup_password_by_storing_it": "パスワード管理ツールまたはテキストファイルにパスワードをバックアップすることを強く推奨します",
+    "passwords_do_not_match": "パスワードが一致しません",
+    "the_rules": {
+      "one": "Hiveの第1のルールは：パスワードをなくさないこと。",
+      "second": "Hiveの第2のルールは：パスワードをなくさないでください。",
+      "third": "Hiveの第3のルールは：紛失したパスワードを回復することはできません。",
+      "fourth": "第4のルールは：覚えられるパスワードは安全ではありません。",
+      "fifth": "第5のルールは：ランダムに生成したパスワードのみを使用してください。",
+      "sixth": "第6のルールは：誰にもパスワードを教えないでください。",
+      "seventh": "第7のルールは：いつもパスワードをバックアップしてください。"
   }
+}
 }

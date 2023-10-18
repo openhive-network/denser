@@ -17,6 +17,7 @@ import { useState } from 'react';
 import { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/wallet/next-i18next.config';
+import { useTranslation } from 'next-i18next';
 
 let key = '';
 const accountFormSchema = z.object({
@@ -36,6 +37,7 @@ const accountFormSchema = z.object({
 type AccountFormValues = z.infer<typeof accountFormSchema>;
 
 export default function PostForm() {
+  const { t } = useTranslation('common_wallet');
   const [generatedKey, setGeneratedKey] = useState(false);
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
@@ -59,18 +61,17 @@ export default function PostForm() {
   }
 
   return (
-    <div className='flex gap-4 bg-gray-50 p-2 pb-8 dark:bg-slate-950 flex-col max-w-2xl'>
-      <div className='text-2xl font-bold'>Change Password</div>
+    <div className='flex gap-4 bg-gray-50 p-2 pb-8 dark:bg-slate-950 flex-col max-w-2xl m-auto'>
+      <div className='text-2xl font-bold'>{t('change_password_page.change_password')}</div>
       <Separator />
       <p className='text-sm leading-relaxed text-slate-500'>
-        The first rule of Hive is: Do not lose your password.
-        <br /> The second rule of Hive is: Do not lose your password. <br /> The
-        third rule of Hive is: We cannot recover your password.
-        <br /> The fourth rule: If you can remember the password, it is not
-        secure. <br />
-        The fifth rule: Use only randomly-generated passwords.
-        <br /> The sixth rule: Do not tell anyone your password.
-        <br /> The seventh rule: Always back up your password.
+      {t('change_password_page.the_rules.one')}<br/>
+      {t('change_password_page.the_rules.secund')}<br/>
+      {t('change_password_page.the_rules.third')}<br/>
+      {t('change_password_page.the_rules.fourth')}<br/>
+      {t('change_password_page.the_rules.fifth')}<br/>
+      {t('change_password_page.the_rules.sixth')}<br/>
+      {t('change_password_page.the_rules.seventh')}
       </p>
       <Separator />
       <Form {...form}>
@@ -83,7 +84,7 @@ export default function PostForm() {
             name='name'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>ACCOUNT NAME</FormLabel>
+                <FormLabel>{t('change_password_page.account_name')}</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -97,9 +98,9 @@ export default function PostForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className='flex justify-between'>
-                  <span>CURRENT PASSWORD</span>{' '}
+                  <span>{t('change_password_page.current_password')}</span>{' '}
                   <Link className='text-red-500' href='/recover_account_step_1'>
-                    RECOVER ACCOUNT
+                    {t('change_password_page.recover_password')}
                   </Link>
                 </FormLabel>
                 <FormControl>
@@ -111,7 +112,7 @@ export default function PostForm() {
           />
           <div>
             <div className='text-sm font-semibold'>
-              GENERATED PASSWORD <span className='font-light'>(NEW)</span>
+              {t('change_password_page.generated_password')}<span className='font-light'>({t('change_password_page.new')})</span>
             </div>
             {generatedKey ? (
               <div>
@@ -119,7 +120,7 @@ export default function PostForm() {
                   {key}
                 </code>
                 <div className='text-xs font-bold text-center'>
-                  BACK IT UP BY STORING IN YOUR PASSWORD MANAGER OR A TEXT FILE
+                  {t('change_password_page.backup_password_by_storing_it')}
                 </div>
               </div>
             ) : (
@@ -128,7 +129,7 @@ export default function PostForm() {
                 variant='outlineRed'
                 onClick={() => handleKey()}
               >
-                Click to generate password
+                {t('change_password_page.click_to_generate_password')}
               </Button>
             )}
           </div>
@@ -137,7 +138,7 @@ export default function PostForm() {
             name='genereted_password'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>RE-ENTER GENERATED PASSWORD</FormLabel>
+                <FormLabel>{t('change_password_page.re_enter_generate_password')}</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -158,7 +159,7 @@ export default function PostForm() {
                 </FormControl>
                 <div className='space-y-1 leading-none'>
                   <FormLabel className='text-xs'>
-                    I UNDERSTAND THAT HIVE CANNOT RECOVER LOST PASSWORDS{' '}
+                  {t('change_password_page.understand_that')}{' '}
                   </FormLabel>{' '}
                   <FormMessage />
                 </div>
@@ -179,7 +180,7 @@ export default function PostForm() {
 
                 <div className='space-y-1 leading-none'>
                   <FormLabel className='text-xs'>
-                    I HAVE SECURELY SAVED MY GENERATED PASSWORD
+                    {t('change_password_page.i_saved_password')}
                   </FormLabel>{' '}
                   <FormMessage />
                 </div>
@@ -187,7 +188,7 @@ export default function PostForm() {
             )}
           />
           <Button type='submit' variant='redHover'>
-            Update Password
+            {t('change_password_page.update_password')}
           </Button>
         </form>
       </Form>

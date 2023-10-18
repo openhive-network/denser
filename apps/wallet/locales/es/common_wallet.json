@@ -30,6 +30,20 @@
       "eleventh": "November",
       "twelfth": "December" 
     },
+    "months_short_form": {
+      "first": "Jan",
+      "second": "Feb",
+      "third": "Mar",
+      "fourth": "Apr",
+      "fifth": "May",
+      "sixth": "Jun",
+      "seventh": "Jul",
+      "eighth": "Aug",
+      "ninth": "Sep", 
+      "tenth": "Oct",
+      "eleventh": "Nov",
+      "twelfth": "Dec" 
+    },
     "time": {
       "a_few_seconds": " a few seconds",
       "seconds": " seconds",
@@ -204,7 +218,7 @@
     "proxy_form": {
       "title": "Confirm Account Witness Proxy",
       "description": "You are about to remove your proxy.",
-      "set_proxy_to:": "Set proxy to: {{proxy}}",
+      "set_proxy_to": "Set proxy to: {{proxy}}",
       "cancel_button": "Cancelar",
       "ok": "OK"
     },
@@ -220,6 +234,7 @@
     }
   },
   "proposals_page": {
+    "daily":"Daily",
     "proposals": "Proposals",
     "started": "started",
     "finished": "finished",
@@ -242,5 +257,31 @@
     "login_button": "Iniciar sesión",
     "cancel_button": "Cancelar",
     "this_operation_requires_your_key_or_master_password": "Esta operación requiere {{authType}} contraseña o la contraseña maestra"
+  },
+  "change_password_page": {
+    "change_password": "Cambiar Contraseña",
+    "account_name": "Nombre de cuenta",
+    "current_password": "Contraseña Actual",
+    "recover_password": "Recuperar Cuenta",
+    "generated_password": "Contraseña Generada",
+    "new": "nuevo",
+    "click_to_generate_password": "Confirmar Contraseña",
+    "re_enter_generate_password": "Reintroduce la contraseña generada",
+    "understand_that": "Entiendo que (nombre APP) no puede recuperar contraseñas perdidas",
+    "i_saved_password": "He guardado con seguridad mi contraseña generada",
+    "update_password": "Actualizar Contraseña",
+    "required": "Requerido",
+    "account_name_should_be_longer": "El nombre de usuario debería ser más largo.",
+    "backup_password_by_storing_it": "Haz una copia de seguridad guardándolo en tu monedero de contraseñas o en un archivo de texto",
+    "passwords_do_not_match": "Las contraseñas no coinciden",
+    "the_rules": {
+      "one": "La primera regla de HIVE es: No pierdas tu contraseña.",
+      "second": "La segunda regla de Hive es: No pierdas tu contraseña.",
+      "third": "La tercera regla de  Hive es: No podemos recuperar tu contraseña.",
+      "fourth": "La cuarta regla: Si puedes recordar tu contraseña, esta no es segura.",
+      "fifth": "La quinta regla: Usa sólo contraseñas creadas aleatoriamente.",
+      "sixth": "La sexta regla: No le digas a nadie tu contraseña.",
+      "seventh": "La séptima regla: Haz siempre una copia de seguridad de tu contraseña."
+  }
   }
 }

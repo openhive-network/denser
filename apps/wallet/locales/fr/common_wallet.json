@@ -30,6 +30,20 @@
       "eleventh": "November",
       "twelfth": "December" 
     },
+    "months_short_form": {
+      "first": "Jan",
+      "second": "Feb",
+      "third": "Mar",
+      "fourth": "Apr",
+      "fifth": "May",
+      "sixth": "Jun",
+      "seventh": "Jul",
+      "eighth": "Aug",
+      "ninth": "Sep", 
+      "tenth": "Oct",
+      "eleventh": "Nov",
+      "twelfth": "Dec" 
+    },
     "time": {
       "a_few_seconds": " a few seconds",
       "seconds": " seconds",
@@ -204,7 +218,7 @@
     "proxy_form": {
       "title": "Confirm Account Witness Proxy",
       "description": "You are about to remove your proxy.",
-      "set_proxy_to:": "Set proxy to: {{proxy}}",
+      "set_proxy_to": "Set proxy to: {{proxy}}",
       "cancel_button": "Annuler",
       "ok": "OK"
     },
@@ -220,6 +234,7 @@
     }
   },
   "proposals_page": {
+    "daily":"Daily",
     "proposals": "Proposals",
     "started": "started",
     "finished": "finished",
@@ -242,5 +257,31 @@
     "login_button": "Se connecter",
     "cancel_button": "Annuler",
     "this_operation_requires_your_key_or_master_password": "Cette opération nécessite votre clé {{authType}} ou votre mot de passe principal."
+  },
+  "change_password_page": {
+    "change_password": "Changer le mot de passe",
+    "account_name": "Nom du compte",
+    "current_password": "Mot de passe actuel",
+    "recover_password": "Récupérer un compte",
+    "generated_password": "Mot de passe généré",
+    "new": "nouveau",
+    "click_to_generate_password": "Cliquer ici pour générer un mot de passe",
+    "re_enter_generate_password": "Recopier le mot de passe généré",
+    "understand_that": "Je comprends que Hive ne peut récupérer les mots de passe perdus",
+    "i_saved_password": "J'ai sauvegardé mon mot de passe de façon sécuritaire",
+    "update_password": "Mettre à jour le mot de passe",
+    "required": "Requis",
+    "account_name_should_be_longer": "L'identifiant doit être plus long.",
+    "backup_password_by_storing_it": "A sauvegarder en le copiant dans un fichier texte ou via un logiciel de gestion de mot de passe",
+    "passwords_do_not_match": "Mots de passe différents",
+    "the_rules": {
+      "one": "La première règle de Hive est de ne pas perdre son mot de passe.",
+      "second": "La deuxième règle de Hive est de ne pas perdre son mot de passe.",
+      "third": "La troisième règle de Hive est que nous ne pouvons réinitialiser votre mot de passe.",
+      "fourth": "La quatrième règle est que si vous pouvez vous rappeler de votre mot de passe, il n'est pas assez sécuritaire.",
+      "fifth": "La cinquième règle demande d'utiliser uniquement des mots de passe générés aléatoirement.",
+      "sixth": "La sixième règle est de ne donner à personne son mot de passe.",
+      "seventh": "La septième règle est de faire une sauvegarde de son mot de passe."
+  }
   }
 }

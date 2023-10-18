@@ -30,6 +30,20 @@
       "eleventh": "November",
       "twelfth": "December" 
     },
+    "months_short_form": {
+      "first": "Jan",
+      "second": "Feb",
+      "third": "Mar",
+      "fourth": "Apr",
+      "fifth": "May",
+      "sixth": "Jun",
+      "seventh": "Jul",
+      "eighth": "Aug",
+      "ninth": "Sep", 
+      "tenth": "Oct",
+      "eleventh": "Nov",
+      "twelfth": "Dec" 
+    },
     "time": {
       "a_few_seconds": " a few seconds",
       "seconds": " seconds",
@@ -204,7 +218,7 @@
     "proxy_form": {
       "title": "Confirm Account Witness Proxy",
       "description": "You are about to remove your proxy.",
-      "set_proxy_to:": "Set proxy to: {{proxy}}",
+      "set_proxy_to": "Set proxy to: {{proxy}}",
       "cancel_button": "取消",
       "ok": "OK"
     },
@@ -220,6 +234,7 @@
     }
   },
   "proposals_page": {
+    "daily":"Daily",
     "proposals": "Proposals",
     "started": "started",
     "finished": "finished",
@@ -242,5 +257,31 @@
     "login_button": "登录",
     "cancel_button": "取消",
     "this_operation_requires_your_key_or_master_password": "此操作需要您的{{authType}}密钥或主密码。"
+  },
+  "change_password_page": {
+    "change_password": "修改密码",
+    "account_name": "用户名",
+    "current_password": "当前密码",
+    "recover_password": "恢复账号",
+    "generated_password": "生成密码",
+    "new": "最新",
+    "click_to_generate_password": "点击生成密码",
+    "re_enter_generate_password": "重新输入生成的密码",
+    "understand_that": "我知道Hive无法恢复丢失的密码",
+    "i_saved_password": "我安全地保存了我生成的密码",
+    "update_password": "修改密码",
+    "required": "需要",
+    "account_name_should_be_longer": "账户名应该更长",
+    "backup_password_by_storing_it": "将你的密码备份到密码管理器或者文件",
+    "passwords_do_not_match": "密码不匹配",
+    "the_rules": {
+      "one": "Hive的第一条规则是: 不要丢失你的密码。",
+      "second": "Hive的第二条规则是: 不要丢失你的密码。",
+      "third": "Hive的第三条规则是: 我们无法恢复你的密码。",
+      "fourth": "第四条规则是: 如果你能记住密码，那就不安全了。",
+      "fifth": "第五条规则是: 只能使用随机生成的密码。",
+      "sixth": "第六条规则是: 请不要把你的密码告诉任何人。",
+      "seventh": "第七条规则是: 始终备份你的密码。"
   }
+}
 }

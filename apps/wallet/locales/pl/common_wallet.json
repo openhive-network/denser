@@ -30,6 +30,20 @@
       "eleventh": "Listopad",
       "twelfth": "Grudzień" 
     },
+    "months_short_form": {
+      "first": "St",
+      "second": "Lut",
+      "third": "Mrz",
+      "fourth": "Kw",
+      "fifth": "Maj",
+      "sixth": "Cz",
+      "seventh": "Lip",
+      "eighth": "Sier",
+      "ninth": "Wrz", 
+      "tenth": "Paź",
+      "eleventh": "Lis",
+      "twelfth": "Gr" 
+    },
     "time": {
       "a_few_seconds": " Za kilka sekund",
       "seconds": " sekund_y",
@@ -66,7 +80,7 @@
       "hive_whitepaper": "Oficjalna księga Hive",
       "privacy_policy": "Polityka prywatności",
       "terms_of_service": "Warunki korzystania z usługi",
-      "currency_market": "Currency Market",
+      "currency_market": "Wymiana tokenów",
       "third_party_exchanges": "Zewnętrzne giełdy:"
     },
     "profil_navbar": {
@@ -118,9 +132,9 @@
   },
   "profil": {
     "joined": "Dołączono",
-    "hive_description": "Zbywalne tokeny które mogą być przesłane gdziekolwiek w dowolnym momencie. HIVE mogą zostać również przekonwertowane na HIVE POWER w procesie nazywanym zwiększenie mocy.",
-    "hp_description": "Tokeny wpływu, które zwiększają Twój wpływ na podział wypłat za publikowanie treści, oraz pozwalają Ci zarabiać na głosowaniu na treści. Część z Twoich jednostek wpływu HIVE POWER jest Ci oddelegowana. Delegowane jednostek to czasowe użyczenie dla zwiększenia wpływu lub by pomóc nowym użytkownikom platformy w korzystaniu ze Hive. Kwota oddelegowanych jednostek może się zmieniać w czasie. HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",
-    "hive_dolar_description": "Zbywalne tokeny które mogą być przesłane gdziekolwiek w dowolnym momencie.",
+    "hive_description": "Zbywalne tokeny, które mogą być przesłane gdziekolwiek w dowolnym momencie. HIVE mogą zostać również przekonwertowane na HIVE POWER w procesie nazywanym zwiększenie mocy.",
+    "hp_description": "Tokeny wpływu, które zwiększają Twój wpływ na podział wypłat za publikowanie treści, oraz pozwalają Ci zarabiać na głosowaniu na treści. Część z Twoich jednostek wpływu HIVE POWER jest Ci oddelegowana. Delegowanie jednostek to czasowe użyczenie dla zwiększenia wpływu lub by pomóc nowym użytkownikom platformy w korzystaniu ze Hive. Kwota oddelegowanych jednostek może się zmieniać w czasie. HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",
+    "hive_dolar_description": "Zbywalne tokeny, które mogą być przesłane gdziekolwiek w dowolnym momencie.",
     "savings_title": "Oszczędności",
     "savings_description": "Saldo zależy od 3-dniowego okresu karencji wymaganego do wycofania środków, HBD interest rate: 20.00% APR (as voted by the ",
     "estimated_account_value_title": "Szacowana wartość konta",
@@ -199,12 +213,12 @@
     "disabled": "Disabled ",
     "no_url_provided": "No URL provided",
     "use_this_for_linking_title": "Użyj tego, aby utworzyć link do tej strony i podświetl wybranego delegata",
-    "has_not_produced_blocks": "⚠️Has not produced any blocks for over a week.",
+    "has_not_produced_blocks": "⚠️Od ponad tygodnia nie wyprodukował żadnych bloków.",
     "by": "by",
     "proxy_form": {
       "title": "Potwierdź pełnomocnika",
       "description": "Usuwasz pełnomocnictwo.",
-      "set_proxy_to:": "Przekaż pełnomocnictwo: {{proxy}}",
+      "set_proxy_to": "Przekaż pełnomocnictwo: {{proxy}}",
       "cancel_button": "Zamknij",
       "ok": "OK"
     },
@@ -220,6 +234,7 @@
     }
   },
   "proposals_page": {
+    "daily":"Dziennie",
     "proposals": "Propozycje",
     "started": "rozpoczęte",
     "finished": "zakończone",
@@ -242,5 +257,31 @@
     "login_button": "Zaloguj się",
     "cancel_button": "Anuluj",
     "this_operation_requires_your_key_or_master_password": "Ta operacja wymaga twojego klucza {{authType}} klub hasła głównego."
+  },
+  "change_password_page": {
+    "change_password": "Zmień hasło",
+    "account_name": "Nazwa konta",
+    "current_password": "Obecne hasło",
+    "recover_password": "Odzyskaj konto",
+    "generated_password": "Wygenerowane hasło",
+    "new": "Nowe",
+    "click_to_generate_password": "Kliknij by wygenerować hasło",
+    "re_enter_generate_password": "Podaj ponownie wygenerowane hasło",
+    "understand_that": "Rozumiem, że Hive nie ma możliwości odzyskania utraconych haseł",
+    "i_saved_password": "Zachowałem bezpiecznie moje wygenerowane hasło",
+    "update_password": "Zaktualizuj hasło",
+    "required": "Wymagany",
+    "account_name_should_be_longer": "Nazwa konta powinna być dłuższa",
+    "backup_password_by_storing_it": "Zachowaj je zapisując w menadżerze haseł lub w pliku tekstowym",
+    "passwords_do_not_match": "Hasła się różnią",
+    "the_rules": {
+      "one": "Pierwsza zasada Hive brzmi: Nie zgub swojego hasła.",
+      "second": "Druga zasada Hive brzmi: Nie zgub swojego hasła.",
+      "third": "Trzecia zasada Hive brzmi: Nie mamy możliwości odzyskania Twojego hasła.",
+      "fourth": "Czwarta zasada: Jeśli potrafisz zapamiętać hasło to nie jest ono bezpieczne.",
+      "fifth": "Piąta zasada: Używaj wyłącznie losowo generowanych haseł.",
+      "sixth": "Szósta zasada: Nie ujawniaj nikomu swojego hasła.",
+      "seventh": "Siódma zasada: Zawsze miej kopię zapasową swojego hasła."
   }
+}
 }

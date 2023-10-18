@@ -29,6 +29,21 @@ function titleSetter(daysStart: string, datsEnd: string, status: string, t: TFun
       return '';
   }
 }
+function translateShorDate(data:string, t: TFunction<'common_wallet', undefined>){
+const dd = data.replace('Jan', t('global.months_short_form.first'))
+.replace('Feb', t('global.months_short_form.second'))
+.replace('Mar', t('global.months_short_form.third'))
+.replace('Apr', t('global.months_short_form.fourth'))
+.replace('May', t('global.months_short_form.fifth'))
+.replace('Jun', t('global.months_short_form.sixth'))
+.replace('Jul', t('global.months_short_form.seventh'))
+.replace('Aug', t('global.months_short_form.eighth'))
+.replace('Sep', t('global.months_short_form.ninth'))
+.replace('Oct', t('global.months_short_form.tenth'))
+.replace('Nov', t('global.months_short_form.eleventh'))
+.replace('Dec', t('global.months_short_form.twelfth'))
+return dd
+}
 
 export function ProposalListItem({
                                    proposalData,
@@ -46,6 +61,7 @@ export function ProposalListItem({
     proposalData.start_date,
     `d`
   );
+
   const totalVotes = totalVestingFund
     .times(proposalData.total_votes)
     .div(totalShares)
@@ -103,11 +119,10 @@ export function ProposalListItem({
             className='whitespace-nowrap text-slate-500'
             data-testid='proposal-date'
           >
-            {proposalData.start_date}
+            {translateShorDate(proposalData.start_date, t)}
             {' - '}
-            {proposalData.end_date} {'('}
-            {totalDays}
-            {totalDays !== 1 ? ' days)' : 'day)'}
+            {translateShorDate(proposalData.end_date, t)} {'('}
+            {totalDays !== 1 ? totalDays + t('global.time.days')  : t('global.time.a_day')}{')'}
           </span>
           <div
             className='whitespace-nowrap text-slate-500'
@@ -119,7 +134,7 @@ export function ProposalListItem({
             >
               {getRoundedAbbreveration(totalHBD)} {' HBD'}
             </span>{' '}
-            {'(Daily '}
+            {'('}{t('proposals_page.daily')}{' '}
             {getRoundedAbbreveration(proposalData.daily_pay.amount)}
             {' HBD)'}
           </div>

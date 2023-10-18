@@ -30,6 +30,20 @@
       "eleventh": "November",
       "twelfth": "December" 
     },
+    "months_short_form": {
+      "first": "Jan",
+      "second": "Feb",
+      "third": "Mar",
+      "fourth": "Apr",
+      "fifth": "May",
+      "sixth": "Jun",
+      "seventh": "Jul",
+      "eighth": "Aug",
+      "ninth": "Sep", 
+      "tenth": "Oct",
+      "eleventh": "Nov",
+      "twelfth": "Dec" 
+    },
     "time": {
       "a_few_seconds": " a few seconds",
       "seconds": " seconds",
@@ -206,7 +220,7 @@
     "proxy_form": {
       "title": "Confirm Account Witness Proxy",
       "description": "You are about to remove your proxy.",
-      "set_proxy_to:": "Set proxy to: {{proxy}}",
+      "set_proxy_to": "Set proxy to: {{proxy}}",
       "cancel_button": "Отмена",
       "ok": "OK"
     },
@@ -222,6 +236,7 @@
     }
   },
   "proposals_page": {
+    "daily":"Daily",
     "proposals": "Proposals",
     "started": "started",
     "finished": "finished",
@@ -244,5 +259,31 @@
     "login_button": "Войти",
     "cancel_button": "Отмена",
     "this_operation_requires_your_key_or_master_password": "Для осуществления данной операции нужен ваш {{authType}} ключ или Основной пароль."
+  },
+  "change_password_page": {
+    "change_password": "Сменить пароль",
+    "account_name": "Имя аккаунта",
+    "current_password": "Текущий пароль",
+    "recover_password": "Восстановить аккаунт",
+    "generated_password": "Сгенерированный пароль",
+    "new": "новое",
+    "click_to_generate_password": "Нажмите, чтобы сгененировать пароль",
+    "re_enter_generate_password": "Повторно введите пароль",
+    "understand_that": "Я понимаю, что Hive не может восстановить потерянные пароли",
+    "i_saved_password": "Я надежно сохранил сгенерированный пароль",
+    "update_password": "Обновить пароль",
+    "required": "Обязательно",
+    "account_name_should_be_longer": "Имя аккаунта должно быть длиннее.",
+    "backup_password_by_storing_it": "Сделайте резервную копию в менеджере паролей или текстовом файле",
+    "passwords_do_not_match": "Пароли не совпадают",
+    "the_rules": {
+      "one": "Первое правило сети Hive: не теряйте свой пароль.",
+      "second": "Второе правило Hive: Не теряйте свой пароль.",
+      "third": "Третье правило Hive: мы не можем восстановить ваш пароль.",
+      "fourth": "Четвертое правило: если вы можете запомнить свой пароль, значит он не безопасен.",
+      "fifth": "Пятое правило: используйте только сгенерированные случайным образом пароли.",
+      "sixth": "Шестое правило: Никому не говорите свой пароль.",
+      "seventh": "Седьмое правило: Всегда надежно храните свой пароль."
   }
+}
 }

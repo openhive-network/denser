@@ -30,6 +30,20 @@
       "eleventh": "November",
       "twelfth": "December" 
     },
+    "months_short_form": {
+      "first": "Jan",
+      "second": "Feb",
+      "third": "Mar",
+      "fourth": "Apr",
+      "fifth": "May",
+      "sixth": "Jun",
+      "seventh": "Jul",
+      "eighth": "Aug",
+      "ninth": "Sep", 
+      "tenth": "Oct",
+      "eleventh": "Nov",
+      "twelfth": "Dec" 
+    },
     "time": {
       "a_few_seconds": " a few seconds",
       "seconds": " seconds",
@@ -204,7 +218,7 @@
     "proxy_form": {
       "title": "Confirm Account Witness Proxy",
       "description": "You are about to remove your proxy.",
-      "set_proxy_to:": "Set proxy to: {{proxy}}",
+      "set_proxy_to": "Set proxy to: {{proxy}}",
       "cancel_button": "Cancella",
       "ok": "OK"
     },
@@ -220,6 +234,7 @@
     }
   },
   "proposals_page": {
+    "daily":"Daily",
     "proposals": "Proposals",
     "started": "started",
     "finished": "finished",
@@ -242,5 +257,31 @@
     "login_button": "Login",
     "cancel_button": "Cancella",
     "this_operation_requires_your_key_or_master_password": "Per eseguire l'operazione è necessaria la propria chiave {{authType}}o Master password. "
+  },
+  "change_password_page": {
+    "change_password": "Cambia Password",
+    "account_name": "Nome Account",
+    "current_password": "Password attuale",
+    "recover_password": "Recupera Account",
+    "generated_password": "Password generata",
+    "new": "Nuovo",
+    "click_to_generate_password": "Clicca per generare una password",
+    "re_enter_generate_password": "Inserisci di nuovo la Password Generata",
+    "understand_that": "Ho capito che Hive non può recuperare le password perse",
+    "i_saved_password": "Ho salvato in modo sicuro la mia password generata automaticamente",
+    "update_password": "Aggiorna la password",
+    "required": "Richiesto",
+    "account_name_should_be_longer": "Il nome dell'account deve essere più lungo.",
+    "backup_password_by_storing_it": "Effettua il backup copiando la password in un file di testo o in un gestore di password. ",
+    "passwords_do_not_match": "Le password non corrispondono",
+    "the_rules": {
+      "one": "La prima regola di Hive è: Non perdere la tua password.",
+      "second": "La seconda regola di Hive è: Non perdere la tua password.",
+      "third": "La terza regola di Hive è: Non possiamo recuperare la tua password.",
+      "fourth": "La quarta regola è: Se puoi ricordare la password, non è sicura.",
+      "fifth": "La quinta regola è: Usa solo password generate in modo casuale.",
+      "sixth": "La sesta regola è: Non dire a nessuno la tua password.",
+      "seventh": "La settima regola è: Salva sempre la tua password."
   }
+}
 }

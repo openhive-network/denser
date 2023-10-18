@@ -30,6 +30,20 @@
       "eleventh": "November",
       "twelfth": "December" 
     },
+    "months_short_form": {
+      "first": "Jan",
+      "second": "Feb",
+      "third": "Mar",
+      "fourth": "Apr",
+      "fifth": "May",
+      "sixth": "Jun",
+      "seventh": "Jul",
+      "eighth": "Aug",
+      "ninth": "Sep", 
+      "tenth": "Oct",
+      "eleventh": "Nov",
+      "twelfth": "Dec" 
+    },
     "time": {
       "a_few_seconds": " a few seconds",
       "seconds": " seconds",
@@ -204,7 +218,7 @@
     "proxy_form": {
       "title": "Confirm Account Witness Proxy",
       "description": "You are about to remove your proxy.",
-      "set_proxy_to:": "Set proxy to: {{proxy}}",
+      "set_proxy_to": "Set proxy to: {{proxy}}",
       "cancel_button": "취소",
       "ok": "OK"
     },
@@ -220,6 +234,7 @@
     }
   },
   "proposals_page": {
+    "daily":"Daily",
     "proposals": "Proposals",
     "started": "started",
     "finished": "finished",
@@ -242,5 +257,31 @@
     "login_button": "로그인",
     "cancel_button": "취소",
     "this_operation_requires_your_key_or_master_password": "이 작업은 {{authType}} 키 또는 마스터 비밀번호가 필요합니다."
+  },
+  "change_password_page": {
+    "change_password": "비밀번호 변경",
+    "account_name": "계정 이름",
+    "current_password": "현재 비밀번호",
+    "recover_password": "계정 복구",
+    "generated_password": "생성된 비밀번호",
+    "new": "최신글",
+    "click_to_generate_password": "새 비밀번호를 만드시려면 클릭하세요",
+    "re_enter_generate_password": "위에 생성된 비밀번호를 다시 입력하세요",
+    "understand_that": "비밀번호를 잃어버리면 Hive이 복구해줄 수 없음을 숙지하였습니다.",
+    "i_saved_password": "안전한 곳에 비밀번호를 백업 해 두었습니다.",
+    "update_password": "새 비밀번호 적용",
+    "required": "Required",
+    "account_name_should_be_longer": "계정명이 너무 짧습니다.",
+    "backup_password_by_storing_it": "패스워드는 반드시 관리 프로그램이나 메모장 등을 이용해서 보관하세요.",
+    "passwords_do_not_match": "Passwords do not match",
+    "the_rules": {
+      "one": "Hive 첫번째 규칙: 비밀번호를 잃어버리지 마세요.",
+      "second": "Hive 두번째 규칙: 비밀번호를 잃어버리지 마세요.",
+      "third": "Hive 세번째 규칙: 잃어버린 비밀번호는 복구 해드릴 방법이 없습니다.",
+      "fourth": "네번째 규칙: 기억할수 있는 비밀번호는 안전하지 않은 비밀번호 입니다.",
+      "fifth": "다섯번째 규칙: 무작위로 생성된 비밀번호만 사용하세요.",
+      "sixth": "여섯번째 규칙: 비밀번호는 혼자만 간직하세요.",
+      "seventh": "일곱번째 규칙: 비밀번호를 반드시 백업해 두세요."
   }
+}
 }
