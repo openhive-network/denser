@@ -92,7 +92,8 @@ const SiteHeader: FC = () => {
                     {user?.avatarUrl && (
                       <img
                         className="rounded-md"
-                        src={user?.avatarUrl}
+                        // src={user?.avatarUrl}
+                        src={`https://images.hive.blog/u/${user?.username || ''}/avatar/small`}
                         alt="Profile picture"
                       />
                     )}
