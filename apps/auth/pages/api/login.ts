@@ -37,17 +37,15 @@ const loginUser: NextApiHandler<User> = async (req, res) => {
     }
     throw error;
   }
-
   const user = {
-    isLoggedIn: true,
-    username: username,
-    avatarUrl: hiveUserProfile?.profile_image || ''
-  } as User;
+        isLoggedIn: true,
+        username: username,
+        avatarUrl: hiveUserProfile?.profile_image || ''
+      } as User;
   req.session.user = user;
   await req.session.save();
   res.json(user);
 };
-
 
 export default apiHandler({
   POST: withIronSessionApiRoute(loginUser, sessionOptions),
