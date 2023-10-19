@@ -155,7 +155,7 @@
       "response": "1 odpowiedź. ",
       "responses": "{{responses}} odpowiedzi. ",
       "click_to_respond": "Kliknij by odpowiedzieć",
-      "reblog": "Reblog"
+      "reblog": "Rebloguj"
     },
     "comment_card": {
       "reveal_comment": "Pokaż komentarz",
@@ -186,13 +186,13 @@
     "more_login_methods": "więcej metod logowania",
     "login_button": "Zaloguj się",
     "cancel_button": "Anuluj",
-    "this_operation_requires_your_key_or_master_password": "Ta operacja wymaga twojego klucza {{authType}} klub hasła głównego."
+    "this_operation_requires_your_key_or_master_password": "Ta operacja wymaga twojego klucza {{authType}} lub hasła głównego."
   },
   "user_profil": {
     "reputation": "Reputacja",
     "follow_button": "Obserwuj",
-    "hive_buzz_badge_title": "To level odznaki użytkownika {{username}} zdobyte z programu Hivebuzz",
-    "twitter_badge_title": "By zdobyć odznake Twittera, podlinkuj twoje konto na HivePosh.com",
+    "hive_buzz_badge_title": "To poziom odznaki użytkownika {{username}} zdobyte z programu Hivebuzz",
+    "twitter_badge_title": "By otrzymać odznake Twittera, podlinkuj twoje konto na HivePosh.com",
     "joined": "Dołączono",
     "active": "Ostatnia aktywność",
     "no_posts_yet":"Wygłąda na to, że @{{username}} nie opublikował jeszcze żadnych wpisów!",
@@ -276,6 +276,7 @@
     "search": "Szukaj...",
     "no_results": "Brak wyników wyszukiwania",
     "latest_subscribers": "Ostatnie subskrypcje {{username}}",
+    "unmoderated_tag": "Bez moderacji",
     "buttons": {
       "subscribe": "Subskrybuj",
       "new_post": "Nowy post",
@@ -309,6 +310,15 @@
 
       "edited": "edytowany"
     },
+    "body": {
+      "images_were_hidden": "Obrazki zostały ukryte z powodu niskich ocen.",
+      "show": "Pokaż",
+      "Image_not_shown": "Obrazek zostały ukryty z powodu niskich ocen.",
+      "leave_this_app": "Przechodzenia na stronę zewnętrznych.",
+      "the_link_youve_clicked": "Link, na który kliknąłeś, przeniesie Cię na następującą stronę internetową:",
+      "we_are_just_verifying": "Właśnie sprawdzamy, czy chcesz kontynuować.",
+      "open_link": "Otwórz Link"
+    },
     "footer": {
       "and_more": "i {{value}} więcej",
       "in": "w",
@@ -321,7 +331,7 @@
       "no_responses": "Brak odpowiedzi. ",
       "response": "1 odpowiedź. ",
       "responses": "{{responses}} odpowiedzi. ",
-      "reblog": "Reblog",
+      "reblog": "Rebloguj",
       "reply": "Odpowiedz",
       "share_on": "Udostępnij na ",
       "share_form": {

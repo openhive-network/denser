@@ -214,7 +214,7 @@
     "no_url_provided": "No URL provided",
     "use_this_for_linking_title": "Użyj tego, aby utworzyć link do tej strony i podświetl wybranego delegata",
     "has_not_produced_blocks": "⚠️Od ponad tygodnia nie wyprodukował żadnych bloków.",
-    "by": "by",
+    "by": "przez",
     "proxy_form": {
       "title": "Potwierdź pełnomocnika",
       "description": "Usuwasz pełnomocnictwo.",
@@ -256,7 +256,7 @@
     "more_login_methods": "więcej metod logowania",
     "login_button": "Zaloguj się",
     "cancel_button": "Anuluj",
-    "this_operation_requires_your_key_or_master_password": "Ta operacja wymaga twojego klucza {{authType}} klub hasła głównego."
+    "this_operation_requires_your_key_or_master_password": "Ta operacja wymaga twojego klucza {{authType}} lub hasła głównego."
   },
   "change_password_page": {
     "change_password": "Zmień hasło",

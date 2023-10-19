@@ -1,4 +1,4 @@
-import { dateToFormatted, dateToFullRelative } from '@hive/ui/lib/parse-date';
+import { dateToShow, dateToFullRelative } from '@hive/ui/lib/parse-date';
 import { Button } from '@hive/ui/components/button';
 import UserAvatar from '@/blog/components/user-avatar';
 import Link from 'next/link';
@@ -77,7 +77,7 @@ export function HoverCardData({ author }: { author: string }) {
             {about ? about.slice(0, 157) + (157 < about.length ? '...' : '') : null}
           </p>
           <div className='flex justify-center text-xs'>
-            {t('post_content.header.hover_author.joined')} {dateToFormatted(account.data.created, 'MMMM YYYY')}
+            {t('post_content.header.hover_author.joined')} {dateToShow(account.data.created, t)}
             <span className='mx-1'>•</span>
             {t('user_profil.active') + " " + dateToFullRelative(account.data.last_vote_time, t)} 
           </div>

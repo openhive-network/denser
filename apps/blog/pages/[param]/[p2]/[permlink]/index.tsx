@@ -236,7 +236,7 @@ function PostPage({
             {findLinks(post_s.body).map((e) =>
               isImageLink(e) ? (
                 <Link href={e} className='text-red-500' key={e}>
-                  (Image not shown due to low ratings)
+                  ({t('post_content.body.Image_not_shown')})
                 </Link>
               ) : (
                 <LeavePageDialog link={e} key={e}>
@@ -260,9 +260,9 @@ function PostPage({
           <>
             <Separator />
             <div className='text-red-500 my-8 flex items-center justify-between'>
-              Images were hidden due to low ratings.{' '}
+              {t('post_content.body.images_were_hidden')} 
               <Button variant='outlineRed' onClick={() => setMutedPost(false)}>
-                Show
+                {t('post_content.body.show')}
               </Button>
             </div>
           </>
@@ -341,7 +341,7 @@ function PostPage({
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>
-                      Reblog @{post_s.author}/{post_s.permlink}
+                      {t('post_content.footer.reblog')} @{post_s.author}/{post_s.permlink}
                     </p>
                   </TooltipContent>
                 </Tooltip>

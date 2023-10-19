@@ -13,7 +13,7 @@ export function MainNav() {
         <Link
           href='/trending'
           className={cn(
-            'flex h-full items-center transition-colors hover:border-b-2 hover:border-red-600 hover:text-red-600 ml-6',
+            'flex h-full items-center transition-colors dark:border-slate-950 border-b-2 border-white hover:border-red-600 hover:text-red-600 ml-6 hover:dark:border-red-600',
             pathname === '/trending' ? 'text-red-600' : 'text-foreground/60'
           )}
           data-testid='nav-posts-link'
@@ -25,7 +25,7 @@ export function MainNav() {
           target='_blank'
           rel='noopener noreferrer'
           className={cn(
-            'flex h-full items-center transition-colors hover:border-b-2 hover:border-red-600 hover:text-red-600',
+            'flex h-full items-center transition-colors dark:border-slate-950 border-b-2 border-white hover:border-red-600 hover:text-red-600 hover:dark:border-red-600',
             pathname === '/proposals"' ? 'text-red-600' : 'text-foreground/60'
           )}
           data-testid='nav-proposals-link'
@@ -37,7 +37,7 @@ export function MainNav() {
           target='_blank'
           rel='noopener noreferrer'
           className={cn(
-            'flex h-full items-center transition-colors hover:border-b-2 hover:border-red-600 hover:text-red-600',
+            'flex h-full items-center transition-colors dark:border-slate-950 border-b-2 border-white hover:border-red-600 hover:text-red-600 hover:dark:border-red-600',
             pathname === '/~witnesses' ? 'text-red-600' : 'text-foreground/60'
           )}
           data-testid='nav-witnesses-link'
@@ -50,7 +50,7 @@ export function MainNav() {
           target='_blank'
           rel='noopener noreferrer'
           className={cn(
-            'flex h-full items-center transition-colors hover:border-b-2 hover:border-red-600 hover:text-red-600',
+            'flex h-full items-center transition-colors dark:border-slate-950 border-b-2 border-white hover:border-red-600 hover:text-red-600 hover:dark:border-red-600',
             pathname === 'https://hive.io/eco/' ? 'text-red-600' : 'text-foreground/60'
           )}
           data-testid='nav-our-dapps-link'

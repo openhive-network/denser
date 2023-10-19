@@ -590,7 +590,7 @@ const HistoryTable = ({
   return (
     <table className='p-2 w-full max-w-6xl'>
       <tbody>
-      {historyList.reverse().map((element) =>
+      {[...historyList].reverse().map((element) =>
         !element.operation ? null : (
           <tr
             key={element.id}

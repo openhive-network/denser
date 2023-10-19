@@ -54,7 +54,7 @@ export default function PayoutHoverContent({ post }: { post: Entry }) {
       </>
       <span>{t('amount_hover_card.payout_in')} {dateToRelative(post.payout_at, t).replace("in", "")}</span>
       {convertStringToBig(post.max_accepted_payout).lt(1000000) ?
-        <span>{t('amount_hover_card.ax_accepted_payout',{value: fmt(post.max_accepted_payout.split(' ')[0])})}</span> : null}
+        <span>{t('amount_hover_card.max_accepted_payout',{value: fmt(post.max_accepted_payout.split(' ')[0])})}</span> : null}
     </>);
 
 }

@@ -229,7 +229,7 @@ const ParamPage: FC = () => {
                       {tag
                         ? communityData
                           ? t('communities.community')
-                          : 'Unmoderated tag'
+                          : t('communities.unmoderated_tag')
                         : ''}
                     </span>
                   ) : null}
