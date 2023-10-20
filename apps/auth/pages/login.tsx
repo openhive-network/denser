@@ -1,12 +1,21 @@
 import { useState } from 'react'
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { withIronSessionSsr } from "iron-session/next";
+import secureRandom from 'secure-random';
 import { LoginForm, LoginFormData } from "@/auth/components/login-form";
 import { useUser } from '@/auth/lib/use-user';
 import { fetchJson, FetchError } from '@/auth/lib/fetch-json';
 import { getLogger } from "@hive/ui/lib/logging";
+import { sessionOptions } from '@/auth/lib/session';
 
 const logger = getLogger('app');
 
-export default function LoginPage() {
+export default function LoginPage({
+  loginChallenge
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+
+  logger.info('bamboo loginChallenge', loginChallenge);
+
   // Here we just check if user is already logged in and we redirect him
   // to profile page, if he is.
   const { mutateUser } = useUser({
@@ -51,3 +60,20 @@ export default function LoginPage() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = withIronSessionSsr(
+  async function getServerSideProps({ req }) {
+    let loginChallenge = req.session.loginChallenge;
+    if (!loginChallenge) {
+      loginChallenge = secureRandom.randomBuffer(16).toString('hex');
+      req.session.loginChallenge = loginChallenge;
+      await req.session.save();
+    }
+    return {
+      props: {
+        loginChallenge,
+      },
+    };
+  },
+  sessionOptions
+);
