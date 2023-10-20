@@ -285,5 +285,10 @@
       "sixth": "Шестое правило: Никому не говорите свой пароль.",
       "seventh": "Седьмое правило: Всегда надежно храните свой пароль."
   }
+},
+"four_oh_four": {
+  "this_page_does_not_exist": "Sorry! This page does not exist.",
+  "not_to_worry": "Not to worry. You can head back to",
+  "our_homepage": "our homepage"
 }
 }

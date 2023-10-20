@@ -66,7 +66,7 @@ export default function PostForm() {
       <Separator />
       <p className='text-sm leading-relaxed text-slate-500'>
       {t('change_password_page.the_rules.one')}<br/>
-      {t('change_password_page.the_rules.secund')}<br/>
+      {t('change_password_page.the_rules.second')}<br/>
       {t('change_password_page.the_rules.third')}<br/>
       {t('change_password_page.the_rules.fourth')}<br/>
       {t('change_password_page.the_rules.fifth')}<br/>

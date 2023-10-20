@@ -283,5 +283,10 @@
       "sixth": "La sesta regola è: Non dire a nessuno la tua password.",
       "seventh": "La settima regola è: Salva sempre la tua password."
   }
+},
+"four_oh_four": {
+  "this_page_does_not_exist": "Sorry! This page does not exist.",
+  "not_to_worry": "Not to worry. You can head back to",
+  "our_homepage": "our homepage"
 }
 }

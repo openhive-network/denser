@@ -283,5 +283,10 @@
       "sixth": "여섯번째 규칙: 비밀번호는 혼자만 간직하세요.",
       "seventh": "일곱번째 규칙: 비밀번호를 반드시 백업해 두세요."
   }
+},
+"four_oh_four": {
+  "this_page_does_not_exist": "Sorry! This page does not exist.",
+  "not_to_worry": "Not to worry. You can head back to",
+  "our_homepage": "our homepage"
 }
 }

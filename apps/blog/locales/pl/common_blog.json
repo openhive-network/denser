@@ -191,8 +191,8 @@
   "user_profil": {
     "reputation": "Reputacja",
     "follow_button": "Obserwuj",
-    "hive_buzz_badge_title": "To poziom odznaki użytkownika {{username}} zdobyte z programu Hivebuzz",
-    "twitter_badge_title": "By otrzymać odznake Twittera, podlinkuj twoje konto na HivePosh.com",
+    "hive_buzz_badge_title": "To poziom odznaki użytkownika {{username}} zdobytą z programu Hivebuzz",
+    "twitter_badge_title": "By otrzymać odznakę Twittera, podlinkuj twoje konto na HivePosh.com",
     "joined": "Dołączono",
     "active": "Ostatnia aktywność",
     "no_posts_yet":"Wygłąda na to, że @{{username}} nie opublikował jeszcze żadnych wpisów!",

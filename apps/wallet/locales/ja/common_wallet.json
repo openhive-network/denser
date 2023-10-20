@@ -283,5 +283,10 @@
       "sixth": "第6のルールは：誰にもパスワードを教えないでください。",
       "seventh": "第7のルールは：いつもパスワードをバックアップしてください。"
   }
+},
+"four_oh_four": {
+  "this_page_does_not_exist": "Sorry! This page does not exist.",
+  "not_to_worry": "Not to worry. You can head back to",
+  "our_homepage": "our homepage"
 }
 }

@@ -54,10 +54,10 @@ test.describe('Witnesses page tests', () => {
     let witnessByVoteAPIArray: string[] = [];
 
     for (let i = 0; i < 250; i++) {
-      if (i >= 0 && i < 100) {
+      if (i >= 0 && i < 101) {
         witnessByVoteAPIArray.push(await resWitnessesByVote.result[i].owner);
       }
-      if (i >= 100 && i < 250) {
+      if (i >= 101 && i < 250) {
         witnessLastBlockAgeInSecs =
           (headBlock -
             (await resWitnessesByVote.result[i].last_confirmed_block_num)) *
@@ -70,7 +70,7 @@ test.describe('Witnesses page tests', () => {
     }
     // Validate the length of UI witness elements and specific witnesses from api are equal
     // Displayed witnesses from api are calculated:
-    // - first 100 from api is displayed
+    // - first 101 from api is displayed
     // - next witness are displayed if last block age in secs is less than 30 days
     expect(witnessLinkNameUIArray.length).toBe(witnessByVoteAPIArray.length);
     for (let i = 0; i < witnessLinkNameUIArray.length; i++) {

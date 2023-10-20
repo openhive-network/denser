@@ -195,7 +195,7 @@ function WitnessListItem({
             )}
 
             {data.witnessLastBlockAgeInSecs > ONE_WEEK_IN_SEC && (
-              <span className="font-semibold">
+              <span className="font-semibold" data-testid="witness-has-not-produced-blocks-warning">
                 {t('witnesses_page.has_not_produced_blocks')}
               </span>
             )}
@@ -232,7 +232,7 @@ function WitnessListItem({
         </div>
         {data.requiredHpToRankUp && (
           <div className="font-light">
-            {t('witnesses_page.hp_required_to_rank_up', 
+            {t('witnesses_page.hp_required_to_rank_up',
             {value: getRoundedAbbreveration(data.requiredHpToRankUp)})}
           </div>
         )}
