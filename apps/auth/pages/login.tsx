@@ -14,7 +14,7 @@ export default function LoginPage({
   loginChallenge
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
-  logger.info('bamboo loginChallenge', loginChallenge);
+  logger.info('bamboo LoginPage loginChallenge', loginChallenge);
 
   // Here we just check if user is already logged in and we redirect him
   // to profile page, if he is.

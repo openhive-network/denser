@@ -13,10 +13,10 @@ import type { User } from './user';
 const logger = getLogger('app');
 
 const postUserSchema = Yup.object()
-  .shape({
-    username: Yup.string().required("Username is required!"),
-  })
-  .noUnknown(true);
+    .shape({
+      username: Yup.string().required("Username is required!"),
+    })
+    .noUnknown(true);
 
 
 const loginUser: NextApiHandler<User> = async (req, res) => {
@@ -37,11 +37,11 @@ const loginUser: NextApiHandler<User> = async (req, res) => {
     }
     throw error;
   }
-  const user = {
+  const user: User = {
         isLoggedIn: true,
         username: username,
         avatarUrl: hiveUserProfile?.profile_image || ''
-      } as User;
+      };
   req.session.user = user;
   await req.session.save();
   res.json(user);

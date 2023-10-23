@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 /**
- * Helper method to wait for a middleware to execute before continuing.
- * And to throw an error when an error happens in a middleware.
+ * Helper method to wait for a middleware to execute before continuing,
+ * and to throw an error when an error happens in a middleware.
  * See https://github.com/vercel/next.js/blob/canary/examples/api-routes-cors/pages/api/cors.ts
  *
  * @param {NextApiRequest} req

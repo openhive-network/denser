@@ -1,7 +1,6 @@
 import { CorsOptions } from 'cors';
 
 const resolveOptionOrigin = (origin: string = ''): boolean | string => {
-    console.log(origin);
     if (origin) {
         if (origin.toLowerCase() === "true") {
             return true;
