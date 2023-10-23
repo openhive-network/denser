@@ -3,7 +3,8 @@ import { useUser } from '@/auth/lib/use-user';
 export default function Profile() {
   const { user } = useUser({
     redirectTo: '/login',
-  })
+    redirectIfFound: false,
+  });
 
   return (
     <div className="pt-16 flex flex-col sm:flex-row gap-24 mx-2

@@ -1,11 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
+import { useEffect, useState } from 'react'
 import { useForm } from "react-hook-form";
 import { Separator } from "@hive/ui/components/separator";
 import { getLogger } from "@hive/ui/lib/logging";
+import { hasCompatibleKeychain } from "@/auth/lib/hive-keychain";
 
 export type LoginFormData = {
   username: string;
   password: string;
+  keyChain: boolean;
   hiveAuth: boolean,
   remember: boolean,
 };
@@ -13,6 +16,7 @@ export type LoginFormData = {
 const loginFormDefaultValues = {
   username: '',
   password: '',
+  keyChain: false,
   hiveAuth: false,
   remember: false,
 }
@@ -26,6 +30,13 @@ export function LoginForm({
 }) {
   const logger = getLogger('app');
   logger.debug('Starting LoginForm');
+
+  const [enableKeyChain, setEnableKeyChain] = useState(false)
+
+  useEffect(() => {
+    console.info('bamboo useEffect setEnableKeyChain');
+    setEnableKeyChain(hasCompatibleKeychain());
+  }, []);
 
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
     defaultValues: loginFormDefaultValues
@@ -71,6 +82,28 @@ export function LoginForm({
           </div>
 
           <div className="my-6 flex w-full flex-col">
+
+            <div className="flex items-center py-1">
+              <input
+                type="checkbox"
+                value=""
+                className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
+                {...register("keyChain")}
+                disabled={!enableKeyChain}
+                />
+              <label
+                htmlFor="keyChain"
+                className="ml-2 flex text-sm font-medium text-gray-900"
+              >
+                <img
+                  className="mr-1 h-4 w-4"
+                  src="/images/hivekeychain.png"
+                  alt="Hive KeyChain logo"
+                />
+                Use KeyChain
+              </label>
+            </div>
+
             <div className="flex items-center py-1">
               <input
                 type="checkbox"
@@ -84,7 +117,7 @@ export function LoginForm({
               >
                 <img
                   className="mr-1 h-4 w-4"
-                  src="/hiveauth.png"
+                  src="/images/hiveauth.png"
                   alt="Hiveauth logo"
                 />
                 Use HiveAuth
@@ -105,6 +138,7 @@ export function LoginForm({
                 Keep me logged in
               </label>
             </div>
+
           </div>
 
           <div className="flex items-center justify-between">
@@ -139,7 +173,7 @@ export function LoginForm({
               className="mt-4 flex w-fit justify-center rounded-lg bg-gray-400 px-5 py-2.5 hover:bg-gray-500 focus:outline-none "
               data-testid="hivesigner-button"
             >
-              <img src="/hivesigner.svg" alt="Hivesigner logo" />
+              <img src="/images/hivesigner.svg" alt="Hivesigner logo" />
             </button>
           </div>
         </form>
