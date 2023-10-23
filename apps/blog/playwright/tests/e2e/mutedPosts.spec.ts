@@ -1,14 +1,20 @@
 import { expect, test } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
 import { PostPage } from '../support/pages/postPage';
+import { ProfilePage } from '../support/pages/profilePage';
+import { CommentViewPage } from '../support/pages/commentViewPage';
 
 test.describe('Muted posts tests', () => {
   let homePage: HomePage;
   let postPage: PostPage;
+  let profilePage: ProfilePage;
+  let commentViewPage: CommentViewPage;
 
   test.beforeEach(async ({ page, browserName }) => {
     homePage = new HomePage(page);
     postPage = new PostPage(page);
+    profilePage = new ProfilePage(page);
+    commentViewPage = new CommentViewPage(page);
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
   });
 
@@ -118,5 +124,35 @@ test.describe('Muted posts tests', () => {
     
     await expect(homePage.getFirstPostAuthor).toBeVisible()
     await expect(postPage.postImage).not.toBeVisible()
+  })
+
+  test('Check if image in muted tests are not displayed', async ({page}) =>{
+    await page.goto('/muted');
+    await postPage.moveToTheFirstPostInHomePageByPostTitle();
+    
+    await expect(postPage.mutedPostsBannedImageText).toHaveText('(Image not shown due to low ratings)')
+  })
+
+  test('Check if re comment work correctly', async ({page}) =>{
+    await page.goto('/muted');
+
+    await expect (profilePage.postBlogItem.first()).toBeVisible();
+  
+  const postListItems = await page.$$('[data-testid="post-list-item"]');
+
+  for (const postItem of postListItems) {
+    const textContent = await postItem.textContent();
+    if (textContent.includes('RE:')) {
+      const postTittle = await postItem.$$('.p-1');
+      
+      if (postTittle.length > 0) {
+        
+        await postTittle[0].click();
+        break;
+      }
+    }
+  }
+ 
+  await expect(commentViewPage.commentGreenSection).toBeVisible()
   })
 });

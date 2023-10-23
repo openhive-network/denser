@@ -74,6 +74,7 @@ export class PostPage {
   readonly postFooterVotes: Locator;
   readonly postsCommentsTab: Locator;
   readonly postsCommentsFirstAvatar: Locator;
+  readonly mutedPostsBannedImageText: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -149,6 +150,7 @@ export class PostPage {
     this.postFooterVotes = page.locator('[data-testid="author-data-post-footer"] [data-testid="comment-votes"]');
     this.postsCommentsTab = page.getByRole('tab', { name: 'Comments' });
     this.postsCommentsFirstAvatar = page.locator('[data-testid="comment-author-avatar"]').first()
+    this.mutedPostsBannedImageText = page.locator('.text-red-500').first()
   }
 
   async gotoHomePage() {

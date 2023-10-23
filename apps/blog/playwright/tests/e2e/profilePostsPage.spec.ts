@@ -4,7 +4,6 @@ import { ProfilePage } from '../support/pages/profilePage';
 import { PostPage } from '../support/pages/postPage';
 import { CommunitiesPage } from '../support/pages/communitiesPage';
 import { CommentViewPage } from '../support/pages/commentViewPage';
-import { truncate } from 'fs';
 
 test.describe('Profile page of @gtg', () => {
     let homePage: HomePage;
