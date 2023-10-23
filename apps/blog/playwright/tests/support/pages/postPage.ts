@@ -49,6 +49,7 @@ export class PostPage {
   readonly getCommentFilterList: Locator;
   readonly postImage: Locator;
   readonly footerAuthorName: Locator;
+  readonly footerAuthorNameLink: Locator;
   readonly postLabel: Locator;
   readonly postLabelFooter: Locator;
   readonly footerCommunityLink: Locator;
@@ -89,8 +90,9 @@ export class PostPage {
     this.articleAuthorData = page.locator('[data-testid="author-data"]');
     this.articleAuthorName = this.articleAuthorData.locator('a div');
     this.articleFooter = page.locator('[data-testid="author-data-post-footer"]');
-    this.footerAuthorName = page.locator('[data-testid="author-name-link"]').last()
-    this.footerAuthorNameFirst = page.locator('[data-testid="author-name-link"]').first()
+    this.footerAuthorNameLink = this.articleFooter.locator('[data-testid="author-name-link"]');
+    this.footerAuthorName = page.locator('[data-testid="author-name-link"]').last();
+    this.footerAuthorNameFirst = page.locator('[data-testid="author-name-link"]').first();
     this.userHoverCard = page.locator('[data-testid="user-hover-card-content"]');
     this.userHoverCardAvatar = page.locator('[data-testid="hover-card-user-avatar"]');
     this.userHoverCardName = page.locator('[data-testid="hover-card-user-name"]');
