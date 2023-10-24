@@ -34,7 +34,6 @@ export function LoginForm({
   const [enableKeyChain, setEnableKeyChain] = useState(false)
 
   useEffect(() => {
-    console.info('bamboo useEffect setEnableKeyChain');
     setEnableKeyChain(hasCompatibleKeychain());
   }, []);
 
