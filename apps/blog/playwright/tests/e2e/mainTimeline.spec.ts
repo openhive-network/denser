@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
 import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
 import { ReblogThisPostDialog } from '../support/pages/reblogThisPostDialog';
+import { ProfilePage } from '../support/pages/profilePage';
 
 test.describe('Home page tests', () => {
   let homePage: HomePage;
@@ -65,9 +66,7 @@ test.describe('Home page tests', () => {
     // console.log("Responses to post : ", await postChildren)
 
     expect(homePage.getFirstPostAuthor).toHaveText(postAuthor);
-    expect(homePage.getFirstPostAuthorReputation).toContainText(
-      postAuthor + ' (' + Math.floor(postAuthorReputation) + ')'
-    );
+    expect(homePage.getFirstPostAuthorReputation).toContainText('(' + Math.floor(postAuthorReputation) + ')');
     expect(homePage.getFirstPostTitle).toHaveText(postTitle);
     expect(homePage.getFirstPostPayout).toHaveText(`$${postPayout}`);
 
@@ -421,9 +420,7 @@ test.describe('Home page tests', () => {
     // console.log("Responses to post : ", await postChildren)
 
     expect(homePage.getFirstPostAuthor).toHaveText(postAuthor);
-    expect(homePage.getFirstPostAuthorReputation).toContainText(
-      postAuthor + ' (' + Math.floor(postAuthorReputation) + ')'
-    );
+    expect(homePage.getFirstPostAuthorReputation).toContainText('(' + Math.floor(postAuthorReputation) + ')');
     expect(homePage.getFirstPostTitle).toHaveText(postTitle);
     expect(homePage.getFirstPostPayout).toHaveText(`$${postPayout}`);
 
@@ -884,4 +881,73 @@ test.describe('Home page tests', () => {
     await reblogDialog.closeReblogDialog();
     await expect(homePage.getTrandingCommunitiesHeader).toBeVisible();
   });
+
+  test('validate styles of the reputation in the post card header in the light mode', async ({ page }) => {
+    await homePage.goto();
+
+    // Validate reputation color and tooltip
+    const firstPostReputation = await homePage.getFirstPostAuthorReputation;
+    expect(
+      await homePage.getElementCssPropertyValue(
+      await firstPostReputation,
+      'color'
+      )
+    ).toBe('rgb(100, 116, 139)');
+
+    await firstPostReputation.hover();
+    await homePage.page.waitForTimeout(1000);
+
+    await expect(await homePage.postReputationTooltip).toHaveText('ReputationReputation');
+
+    expect(
+      await homePage.getElementCssPropertyValue(
+      await firstPostReputation,
+      'color'
+      )
+    ).toBe('rgb(100, 116, 139)');
+
+    expect(
+      await homePage.getElementCssPropertyValue(
+      await homePage.postReputationTooltip,
+      'color'
+      )
+    ).toBe('rgb(15, 23, 42)');
+  });
+
+  test('validate styles of the reputation in the post card header in the dark mode', async ({ page }) => {
+    await homePage.goto();
+
+    // Move to the dark theme
+    await homePage.changeThemeMode('Dark');
+    await homePage.validateThemeModeIsDark();
+
+    // Validate reputation color and tooltip
+    const firstPostReputation = await homePage.getFirstPostAuthorReputation;
+    expect(
+      await homePage.getElementCssPropertyValue(
+      await firstPostReputation,
+      'color'
+      )
+    ).toBe('rgb(148, 163, 184)');
+
+    await firstPostReputation.hover();
+    await homePage.page.waitForTimeout(1000);
+
+    await expect(await homePage.postReputationTooltip).toHaveText('ReputationReputation');
+
+    expect(
+      await homePage.getElementCssPropertyValue(
+      await firstPostReputation,
+      'color'
+      )
+    ).toBe('rgb(148, 163, 184)');
+
+    expect(
+      await homePage.getElementCssPropertyValue(
+      await homePage.postReputationTooltip,
+      'color'
+      )
+    ).toBe('rgb(148, 163, 184)');
+  });
+
 });

@@ -81,6 +81,7 @@ export class HomePage {
   readonly loginModalKeepLoggedInText: Locator;
   readonly hivsignerBtn: Locator;
   readonly signupPageHeader: Locator;
+  readonly postReputationTooltip: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -112,7 +113,7 @@ export class HomePage {
     this.getPostCardAvatar = page.locator('[data-testid="post-card-avatar"]');
     this.getFirstPostCardAvatar = this.getPostCardAvatar.first();
     this.getFirstPostAuthor = page.locator('[data-testid="post-author"]').first();
-    this.getFirstPostAuthorReputation = this.getFirstPostAuthor.locator('..');
+    this.getFirstPostAuthorReputation = page.locator('[data-testid="post-author-reputation"]').first();
     this.getFirstPostCardCommunityLink = page.locator('[data-testid="post-card-community"]').first();
     this.getFirstPostCardCategoryLink = page.locator('[data-testid="post-card-category"]').first();
     this.getFirstPostCardTimestampLink = page.locator('[data-testid="post-card-timestamp"]').first();
@@ -168,6 +169,7 @@ export class HomePage {
     this.loginModalKeepLoggedInText = page.locator('[for="remember"]');
     this.hivsignerBtn = page.locator('[data-testid="hivesigner-button"]');
     this.signupPageHeader = page.locator('h1.pb-3');
+    this.postReputationTooltip = page.locator('[data-testid="post-reputation-tooltip"]');
   }
 
   async goto() {

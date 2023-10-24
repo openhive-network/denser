@@ -169,7 +169,7 @@ export class PostPage {
 
   async moveToTheFirstPostInHomePageByImage() {
     const homePage = new HomePage(this.page);
-    const firstPostAuthorAndReputation = (await homePage.getFirstPostAuthorReputation.innerText())
+    const firstPostAuthor = (await homePage.getFirstPostAuthor.innerText())
       .trim()
       .replace(' ', '')
       .replace('\n', '');
@@ -180,12 +180,12 @@ export class PostPage {
 
     await expect(this.articleTitle).toBeVisible();
     // console.log('Author: ', await this.articleAuthorName.textContent())
-    expect(firstPostAuthorAndReputation.toString()).toContain(await this.articleAuthorName.textContent());
+    expect(firstPostAuthor.toString()).toContain(await this.articleAuthorName.textContent());
   }
 
   async moveToTheFirstPostInHomePageByPostTitle() {
     const homePage = new HomePage(this.page);
-    const firstPostAuthorAndReputation = (await homePage.getFirstPostAuthorReputation.innerText())
+    const firstPostAuthor = (await homePage.getFirstPostAuthor.innerText())
       .trim()
       .replace(' ', '')
       .replace('\n', '');
@@ -196,7 +196,7 @@ export class PostPage {
 
     await expect(this.articleTitle).toBeVisible();
     // expect(await this.articleAuthorName.textContent()).toBe(firstPostAuthorAndReputation);
-    // expect(firstPostAuthorAndReputation.toString()).toContain(await this.articleAuthorName.textContent());
+    expect(firstPostAuthor.toString()).toContain(await this.articleAuthorName.textContent());
     // expect(await this.articleTitle.textContent()).toBe(firstPostTitleHomePage);
   }
 
