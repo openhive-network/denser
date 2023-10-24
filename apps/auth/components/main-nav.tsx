@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@hive/ui/lib/utils";
 import { Icons } from "@hive/ui/components/icons";
 
 export function MainNav() {
@@ -8,7 +7,13 @@ export function MainNav() {
 
   return (
     <div className="mr-4 hidden h-full items-center md:flex">
-      <Link href="/" className="mr-6 flex items-center space-x-2">
+      {/*
+      CSS class `keychainify-checked` exists here on `Link`, because
+      enabled Hive Keychain browser extension causes React hydration
+      error without that.
+      TODO Debug this, make an issue in their repo when needed.
+      */}
+      <Link href="/" className="mr-6 flex items-center space-x-2 keychainify-checked">
         <Icons.hivetoken />
       </Link>
     </div>
