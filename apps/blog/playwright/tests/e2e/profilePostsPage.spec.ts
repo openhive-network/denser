@@ -11,7 +11,7 @@ test.describe('Profile page of @gtg', () => {
     let profilePage: ProfilePage;
     let communitiesPage: CommunitiesPage;
     let commentViewPage: CommentViewPage;
-  
+
     test.beforeEach(async ({ page, browserName }) => {
       homePage = new HomePage(page);
       postPage = new PostPage(page);
@@ -22,7 +22,7 @@ test.describe('Profile page of @gtg', () => {
       test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
     });
 
-test('Tab Posts - Posts - List', async ({page, request}) =>{ 
+test('Tab Posts - Posts - List', async ({page, request}) =>{
     await page.goto('/@gtg/posts');
     await expect (profilePage.postBlogItem.first()).toBeVisible()
     const post = await profilePage.postBlogItem.all()
@@ -44,7 +44,7 @@ test('Tab Posts - Posts - List', async ({page, request}) =>{
 
     const postAmount = (await response.json()).result
     const postAmountLenght = postAmount.length
-    
+
     await expect(postAmountLenght).toEqual(postLenght)
 
     await page.evaluate(() => {
@@ -93,7 +93,7 @@ test('Tab Posts - Comments - List', async({page,request}) =>{
   await expect(postPage.commentListItems.first()).toBeVisible()
   const comments = await postPage.commentListItems.all()
   const commentsLenght = await comments.length
-  
+
   const url = process.env.REACT_APP_API_ENDPOINT;
 
     const response = await request.post(`${url}/`, {
@@ -112,9 +112,9 @@ test('Tab Posts - Comments - List', async({page,request}) =>{
     const postAmountLenght = postAmount.length
 
     console.log(postAmount.length)
-    
+
     await expect(postAmountLenght).toEqual(commentsLenght)
-  
+
     await page.evaluate(() => {
       window.scrollBy(0, 3000);
     });
@@ -165,7 +165,7 @@ test('Tab Posts - Comments Header - Community Name Link', async ({page}) =>{
   await profilePage.firstCommunityLinkPostsComments.click()
   await expect(profilePage.communityName).toBeVisible()
   await expect(profilePage.communityName).toHaveText(`${firstCommunityName}`)
-  
+
 })
 
 test('Tab Posts - Comments Header - Timestamp Link', async ({page}) =>{
@@ -204,7 +204,7 @@ test('Tab Posts - Comment Card Footer - Votes', async ({page}) =>{
   await expect(commentViewPage.getResponseCommentPayout.first()).toBeVisible()
   const commentVoteText = await commentViewPage.commentVote.first().textContent()
   await commentViewPage.commentVote.first().hover()
-  
+
   if(commentVoteText === "0"){
     await expect(await commentViewPage.commentVoteTooltip.first().textContent()).toContain('no vote')
   }
@@ -230,7 +230,7 @@ test('Tab Posts - Payouts - List', async ({page, request}) =>{
   await expect (profilePage.postBlogItem.first()).toBeVisible();
   const post = await profilePage.postBlogItem.all()
   const postLenght = await post.length
- 
+
   console.log(postLenght)
   const url = process.env.REACT_APP_API_ENDPOINT;
 
@@ -289,7 +289,7 @@ test('Tab Payouts - Post Card Header - Timestamp', async ({page}) =>{
   await expect (profilePage.postBlogItem.first()).toBeVisible();
   await profilePage.communityTimeStamp.hover()
   await expect(profilePage.communityTimeStamp).toHaveCSS('color', "rgb(220, 38, 38)")
-  
+
  const tittleText = await homePage.postTitle.first().textContent()
 
  await profilePage.communityTimeStamp.click()
@@ -308,16 +308,16 @@ test('Tab Payouts - Post Card Header - Timestamp', async ({page}) =>{
 test("Tab Payouts - ReComment Card Header - Avatar", async ({page}) =>{
   await page.goto('/@gtg/payout');
   await expect (profilePage.postBlogItem.first()).toBeVisible();
-  
+
   const postListItems = await page.$$('[data-testid="post-list-item"]');
 
   for (const postItem of postListItems) {
     const textContent = await postItem.textContent();
     if (textContent.includes('RE:')) {
       const postCardAvatarElements = await postItem.$$('[data-testid="post-card-avatar"]');
-      
+
       if (postCardAvatarElements.length > 0) {
-        
+
         await postCardAvatarElements[0].click();
         break;
       }
@@ -328,19 +328,19 @@ test("Tab Payouts - ReComment Card Header - Avatar", async ({page}) =>{
   await expect(profilePage.blogTabPostsContainer).toBeVisible()
 })
 
-test('Tab Payouts - ReComment Card Header - NickName Link', async({page}) =>{ 
+test('Tab Payouts - ReComment Card Header - NickName Link', async({page}) =>{
   await page.goto('/@gtg/payout');
   await expect (profilePage.postBlogItem.first()).toBeVisible();
-  
+
   const postListItems = await page.$$('[data-testid="post-list-item"]');
 
   for (const postItem of postListItems) {
     const textContent = await postItem.textContent();
     if (textContent.includes('RE:')) {
       const postAuthor = await postItem.$$('[data-testid="post-author"]');
-      
+
       if (postAuthor.length > 0) {
-        
+
         await postAuthor[0].click();
         break;
       }
@@ -354,16 +354,16 @@ test('Tab Payouts - ReComment Card Header - NickName Link', async({page}) =>{
 test('Tab Payouts - ReComment Card Header - Timestamp', async ({page}) =>{
   await page.goto('/@gtg/payout');
   await expect (profilePage.postBlogItem.first()).toBeVisible();
-  
+
   const postListItems = await page.$$('[data-testid="post-list-item"]');
 
   for (const postItem of postListItems) {
     const textContent = await postItem.textContent();
     if (textContent.includes('RE:')) {
       const postCardTimestamp = await postItem.$$('[data-testid="post-card-timestamp"]');
-      
+
       if (postCardTimestamp.length > 0) {
-        
+
         await postCardTimestamp[0].click();
         break;
       }
@@ -376,38 +376,38 @@ test('Tab Payouts - ReComment Card Header - Timestamp', async ({page}) =>{
 test('Tab Payouts - ReComment Card - Title', async ({page}) =>{
   await page.goto('/@gtg/payout');
   await expect (profilePage.postBlogItem.first()).toBeVisible();
-  
+
   const postListItems = await page.$$('[data-testid="post-list-item"]');
 
   for (const postItem of postListItems) {
     const textContent = await postItem.textContent();
     if (textContent.includes('RE:')) {
-      const postTittle = await postItem.$$('.p-1');
-      
+      const postTittle = await postItem.$$('.p-1 [data-testid="post-title"]');
+
       if (postTittle.length > 0) {
-        
+
         await postTittle[0].click();
         break;
       }
     }
   }
- 
+
   await expect(commentViewPage.commentGreenSection).toBeVisible()
 })
 
 test('Tab Payouts - ReComment Card - Description', async ({page}) =>{
   await page.goto('/@gtg/payout');
   await expect (profilePage.postBlogItem.first()).toBeVisible();
-  
+
   const postListItems = await page.$$('[data-testid="post-list-item"]');
 
   for (const postItem of postListItems) {
     const textContent = await postItem.textContent();
     if (textContent.includes('RE:')) {
       const postDescription = await postItem.$$('[data-testid="post-description"]');
-      
+
       if (postDescription.length > 0) {
-        
+
         await postDescription[0].click();
         break;
       }
@@ -420,16 +420,16 @@ test('Tab Payouts - ReComment Card - Description', async ({page}) =>{
 test('Tab Payouts - ReComment Card Footer - Response', async ({page}) =>{
   await page.goto('/@gtg/payout');
   await expect (profilePage.postBlogItem.first()).toBeVisible();
-  
+
   const postListItems = await page.$$('[data-testid="post-list-item"]');
 
   for (const postItem of postListItems) {
     const textContent = await postItem.textContent();
     if (textContent.includes('RE:')) {
       const postDescription = await postItem.$$('[data-testid="post-children"]');
-      
+
       if (postDescription.length > 0) {
-        
+
         await postDescription[0].click();
         break;
       }
@@ -442,14 +442,14 @@ test('Tab Payouts - ReComment Card Footer - Response', async ({page}) =>{
 test('Tab Payouts - ReComment Card Footer - Reblog',async ({page}) =>{
   await page.goto('/@gtg/payout');
   await expect (profilePage.postBlogItem.first()).toBeVisible();
-  
+
   const postListItems = await page.$$('[data-testid="post-list-item"]');
 
 for (const postItem of postListItems) {
   const textContent = await postItem.textContent();
   if (textContent.includes('RE:')) {
     const postDescription = await postItem.$('[data-testid="post-card-reblog"]');
-    
+
     if (postDescription) {
       await postDescription.click();
       break;
@@ -459,6 +459,6 @@ for (const postItem of postListItems) {
   }
 }
 
-  
+
 })
 })
