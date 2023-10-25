@@ -25,9 +25,51 @@ export default function LoginPage({
 
   const [errorMsg, setErrorMsg] = useState('');
 
+  // Build signed message for sending to back-end.
+  const makeSignatures = async (signWith: string, username: string) => {
+    logger.info('in makeSignatures', {signWith, username});
+    const signatures: any = {};
+    const challenge = { token: loginChallenge };
+    const message = JSON.stringify(challenge, null, 0);
+
+    if (signWith === 'keychain') {
+      try {
+        const response: any = await new Promise((resolve) => {
+          window.hive_keychain.requestSignBuffer(
+            username,
+            message,
+            'Posting',
+            (res: any) => {
+              resolve(res);
+          });
+        });
+
+        logger.info({ response });
+        if (response.success) {
+          signatures.posting = response.result;
+        } else {
+          throw new Error(response.error);
+        }
+      } catch (error) {
+        logger.info({ error });
+        throw error;
+      }
+    }
+
+    return signatures;
+
+  }
+
   const onSubmit = async (data: LoginFormData) => {
-    logger.debug('onSubmit form data', data);
+    logger.info('onSubmit form data', data);
     setErrorMsg('');
+
+    if (data.keyChain) {
+      await makeSignatures('keychain', data.username);
+    }
+
+    return;
+
     const body = { username: data.username };
     try {
       mutateUser(
