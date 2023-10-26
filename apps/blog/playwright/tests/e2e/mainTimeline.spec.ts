@@ -3,6 +3,7 @@ import { HomePage } from '../support/pages/homePage';
 import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
 import { ReblogThisPostDialog } from '../support/pages/reblogThisPostDialog';
 import { ProfilePage } from '../support/pages/profilePage';
+import { ApiHelper } from '../support/apiHelper';
 
 test.describe('Home page tests', () => {
   let homePage: HomePage;
@@ -950,4 +951,100 @@ test.describe('Home page tests', () => {
     ).toBe('rgb(148, 163, 184)');
   });
 
+  test('validate styles of the affiliation tag (badge) in the post card in the light mode', async ({
+    page,
+    // browserName
+  }) => {
+    // test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+
+    // Load 40 posts - more likely to occur a badge
+    await homePage.goto();
+    await homePage.mainPostsTimelineVisible(20);
+    await homePage.page.keyboard.down('End');
+    await homePage.mainPostsTimelineVisible(40);
+
+    if (await homePage.postCardAffiliationTag.first().isVisible()) {
+      expect(
+        await homePage.getElementCssPropertyValue(
+        await homePage.postCardAffiliationTag.first(),
+        'color'
+        )
+      ).toBe('rgb(100, 116, 139)');
+      expect(
+        await homePage.getElementCssPropertyValue(
+        await homePage.postCardAffiliationTag.first(),
+        'border-color'
+        )
+      ).toBe('rgb(220, 38, 38)');
+    }
+    else
+      console.log('No affiliation tags on the 40 post cards');
+  });
+
+  test('validate styles of the affiliation tag (badge) in the post card in the dark mode', async ({
+    page,
+    // browserName
+  }) => {
+    // test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+
+    await homePage.goto();
+    // Move to the dark theme
+    await homePage.changeThemeMode('Dark');
+    await homePage.validateThemeModeIsDark();
+    // Load 40 posts - more likely to occur a badge
+    await homePage.mainPostsTimelineVisible(20);
+    await homePage.page.keyboard.down('End');
+    await homePage.mainPostsTimelineVisible(40);
+
+    if (await homePage.postCardAffiliationTag.first().isVisible()) {
+      expect(
+        await homePage.getElementCssPropertyValue(
+        await homePage.postCardAffiliationTag.first(),
+        'color'
+        )
+      ).toBe('rgb(100, 116, 139)');
+      expect(
+        await homePage.getElementCssPropertyValue(
+        await homePage.postCardAffiliationTag.first(),
+        'border-color'
+        )
+      ).toBe('rgb(220, 38, 38)');
+
+    }
+    else
+      console.log('No affiliation tags on the 40 post cards');
+  });
+
+  test('validate the text of the affiliation tag (badge) in the post card in the light mode', async ({
+    page,
+    // browserName
+  }) => {
+    // test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+
+    const apiHelper = new ApiHelper(page);
+    const rankedPostResponse = await apiHelper.getRankedPostsAPI('trending', '', '', 40, '', '');
+    const rankedPostResultLength = await rankedPostResponse.result.length;
+    const elementsWithAffiliationTag: string[] = [];
+
+    for (let i=0; i < rankedPostResultLength; i++){
+      if(await rankedPostResponse.result[i].author_title)
+        await elementsWithAffiliationTag.push(await rankedPostResponse.result[i].author_title)
+    }
+    // console.log('Elements with affiliation tag: ', await elementsWithAffiliationTag);
+
+    // Load 40 posts - more likely to occur a badge
+    await homePage.goto();
+    await homePage.mainPostsTimelineVisible(20);
+    await homePage.page.keyboard.down('End');
+    await homePage.mainPostsTimelineVisible(40);
+
+    if (await homePage.postCardAffiliationTag.first().isVisible()) {
+      // console.log('Text of the first affiliation tag: ', await homePage.postCardAffiliationTag.first().textContent());
+
+      // Compare text the first affiliation tag from UI with the first affiliation tag from API
+      await expect(await homePage.postCardAffiliationTag.first().textContent()).toBe(elementsWithAffiliationTag[0]);
+    }
+    else
+      console.log('No affiliation tags on the 40 post cards');
+  });
 });

@@ -82,6 +82,7 @@ export class HomePage {
   readonly hivsignerBtn: Locator;
   readonly signupPageHeader: Locator;
   readonly postReputationTooltip: Locator;
+  readonly postCardAffiliationTag: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -170,6 +171,7 @@ export class HomePage {
     this.hivsignerBtn = page.locator('[data-testid="hivesigner-button"]');
     this.signupPageHeader = page.locator('h1.pb-3');
     this.postReputationTooltip = page.locator('[data-testid="post-reputation-tooltip"]');
+    this.postCardAffiliationTag = page.locator('[data-testid="affiliation-tag-badge"]');
   }
 
   async goto() {

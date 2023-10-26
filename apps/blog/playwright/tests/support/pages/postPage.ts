@@ -152,7 +152,7 @@ export class PostPage {
     this.postFooterVotes = page.locator('[data-testid="author-data-post-footer"] [data-testid="comment-votes"]');
     this.postsCommentsTab = page.getByRole('tab', { name: 'Comments' });
     this.postsCommentsFirstAvatar = page.locator('[data-testid="comment-author-avatar"]').first()
-    this.mutedPostsBannedImageText = page.locator('.text-red-500').first()
+    this.mutedPostsBannedImageText = page.locator('#articleBody .text-red-500').first()
   }
 
   async gotoHomePage() {
