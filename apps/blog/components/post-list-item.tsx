@@ -186,14 +186,14 @@ const PostListItem = ({
                   <span className='ml-1 flex items-center'>
                     <TooltipProvider>
                       <Tooltip>
-                        <TooltipTrigger>
+                        <TooltipTrigger data-testid="powered-up-100-trigger">
                           <Link
                             href={`/${post.category}/@${post.author}/${post.permlink}`}
                           >
                             <Icons.hive className='h-4 w-4' />
                           </Link>
                         </TooltipTrigger>
-                        <TooltipContent>Powered Up 100%</TooltipContent>
+                        <TooltipContent data-testid="powered-up-100-tooltip">Powered Up 100%</TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   </span>
