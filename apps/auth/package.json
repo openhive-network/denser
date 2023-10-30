@@ -33,6 +33,7 @@
         "@types/cors": "^2.8.14",
         "@types/secure-random": "^1.1.2",
         "git-revision-webpack-plugin": "^5.0.0",
+        "hive-keychain-commons": "^1.2.2",
         "pino-pretty": "^10.2.0"
     }
 }
