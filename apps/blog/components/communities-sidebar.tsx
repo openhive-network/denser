@@ -21,15 +21,10 @@ const CommunitiesSidebar: FC = () => {
       className={cn('my-4 hidden h-fit w-full flex-col px-8 dark:bg-background/95 dark:text-white md:flex')}
       data-testid="card-trending-comunities"
     >
-      <CardHeader className="px-0 py-4">
-        <CardTitle>
-          <Link href="/trending" className="hover:cursor-pointer hover:text-red-600">
-          {t('navigation.communities_nav.all_posts')}
-          </Link>
-        </CardTitle>
-      </CardHeader>
       <CardContent>
-        <span className="text-sm text-gray-400">{t('navigation.communities_nav.trending_communities')}</span>
+        <span className="text-sm font-bold">
+          {t('navigation.communities_nav.trending_communities')}
+        </span>
         <ul>
           {data?.slice(0, 12).map((community) => (
             <li key={community.id}>

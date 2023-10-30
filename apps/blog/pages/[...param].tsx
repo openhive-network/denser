@@ -27,6 +27,7 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetServerSideProps } from 'next';
 import { i18n } from '@/blog/next-i18next.config';
+import MainNavbar from '../components/main-navbar';
 
 export const PostSkeleton = () => {
   return (
@@ -192,7 +193,7 @@ const ParamPage: FC = () => {
       <div className='container mx-auto max-w-screen-2xl flex-grow px-4 pb-2'>
         <div className='grid grid-cols-12 md:gap-4'>
           <div className='hidden md:col-span-3 md:flex xl:col-span-2'>
-            <CommunitiesSidebar />
+            <MainNavbar />
           </div>
           <div className='col-span-12 md:col-span-9 xl:col-span-8'>
             <div
@@ -297,8 +298,8 @@ const ParamPage: FC = () => {
                 username={tag ? tag : ' '}
               />
             ) : (
-              <ExploreHive />
-            )}
+              <CommunitiesSidebar />
+              )}
           </div>
         </div>
       </div>

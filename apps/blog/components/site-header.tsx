@@ -53,21 +53,8 @@ const SiteHeader: FC = () => {
           <Icons.hive className='h-6 w-6' />
           <span className='font-bold sm:inline-block'>{siteConfig.name}</span>
         </Link>
-
-        <MainNav />
         <div className='flex items-center space-x-2 sm:space-x-4'>
           <nav className='flex items-center space-x-1'>
-            <div className='hidden sm:flex gap-1 mx-1'>
-              <DialogLogin>
-                <Button variant='ghost' className='text-base hover:text-red-500' data-testid='login-btn'>
-                  {t('navigation.main_nav_bar.login')}
-                </Button>
-              </DialogLogin>
-              <Link href='https://signup.hive.io/'>
-                <Button variant='redHover' data-testid='signup-btn'>{t('navigation.main_nav_bar.sign_up')}</Button>
-              </Link>
-            </div>
-
             <div>
               <div className='hidden lg:block relative'>
                 <div className='absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none'>
@@ -104,7 +91,16 @@ const SiteHeader: FC = () => {
             </Link>
             <ModeToggle />
             <LangToggle />
-            <Sidebar />
+            <div className='hidden sm:flex gap-1 mx-1'>
+              <DialogLogin>
+                <Button variant='ghost' className='text-base hover:text-red-500' data-testid='login-btn'>
+                  {t('navigation.main_nav_bar.login')}
+                </Button>
+              </DialogLogin>
+              <Link href='https://signup.hive.io/'>
+                <Button variant='redHover' data-testid='signup-btn'>{t('navigation.main_nav_bar.sign_up')}</Button>
+              </Link>
+            </div>
           </nav>
         </div>
       </div>
