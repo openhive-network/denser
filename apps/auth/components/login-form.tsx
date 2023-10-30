@@ -8,16 +8,16 @@ import { hasCompatibleKeychain } from "@/auth/lib/hive-keychain";
 export type LoginFormData = {
   username: string;
   password: string;
-  keyChain: boolean;
-  hiveAuth: boolean,
+  useKeychain: boolean;
+  useHiveauth: boolean,
   remember: boolean,
 };
 
 const loginFormDefaultValues = {
   username: '',
   password: '',
-  keyChain: false,
-  hiveAuth: false,
+  useKeychain: false,
+  useHiveauth: false,
   remember: false,
 }
 
@@ -87,11 +87,11 @@ export function LoginForm({
                 type="checkbox"
                 value=""
                 className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
-                {...register("keyChain")}
+                {...register("useKeychain")}
                 disabled={!enableKeyChain}
                 />
               <label
-                htmlFor="keyChain"
+                htmlFor="useKeychain"
                 className="ml-2 flex text-sm font-medium text-gray-900"
               >
                 <img
@@ -108,10 +108,10 @@ export function LoginForm({
                 type="checkbox"
                 value=""
                 className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
-                {...register("hiveAuth")}
+                {...register("useHiveauth")}
                 />
               <label
-                htmlFor="hiveAuth"
+                htmlFor="useHiveauth"
                 className="ml-2 flex text-sm font-medium text-gray-900"
               >
                 <img
