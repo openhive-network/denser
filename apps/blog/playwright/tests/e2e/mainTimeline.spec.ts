@@ -452,6 +452,35 @@ test.describe('Home page tests', () => {
     await homePage.moveToFirstPostContentByClickingTimestamp();
   });
 
+  test('move to the first post content by clicking the title of the post card', async ({ page }) => {
+    await homePage.goto();
+    await homePage.moveToFirstPostContentByClickingTitilePostCard();
+  });
+
+  test('move to the first post content by clicking the description of the post card', async ({ page }) => {
+    await homePage.goto();
+    await homePage.moveToFirstPostContentByClickingDescriptionPostCard();
+  });
+
+  test('validate styles of the description of the post card in the light mode', async ({ page }) => {
+    await homePage.goto();
+
+    expect(
+      await homePage.getElementCssPropertyValue(await homePage.postDescription.first(), 'color')
+    ).toBe('rgb(100, 116, 139)');
+  });
+
+  test('validate styles of the description of the post card in the dark mode', async ({ page }) => {
+    await homePage.goto();
+    // move to the dark mode
+    await homePage.changeThemeMode('Dark');
+    await homePage.validateThemeModeIsDark();
+
+    expect(
+      await homePage.getElementCssPropertyValue(await homePage.postDescription.first(), 'color')
+    ).toBe('rgb(127, 142, 163)');
+  });
+
   test('move to the first post content by clicking the responses', async ({ page }) => {
     await homePage.goto();
     await homePage.moveToTheFirstPostCommentContantPageByClickingResponses();
@@ -633,7 +662,7 @@ test.describe('Home page tests', () => {
     await expect(homePage.getNavSidebarMenuContent).not.toBeVisible();
   });
 
-  test('validate upvote button styles and the tootpit of the first post in the light theme', async ({
+  test('validate upvote button styles and the tooltip of the first post in the light theme', async ({
     page
   }) => {
     await homePage.goto();
@@ -677,7 +706,7 @@ test.describe('Home page tests', () => {
     ).toBe('rgb(220, 38, 38)');
   });
 
-  test('validate upvote button styles and the tootpit of the first post in the dark theme', async ({
+  test('validate upvote button styles and the tooltip of the first post in the dark theme', async ({
     page
   }) => {
     await homePage.goto();
@@ -732,7 +761,7 @@ test.describe('Home page tests', () => {
     await homePage.isTrendingCommunitiesVisible();
   });
 
-  test('validate downvote button styles and the tootpit of the first post in the light theme', async ({
+  test('validate downvote button styles and the tooltip of the first post in the light theme', async ({
     page
   }) => {
     await homePage.goto();
@@ -776,7 +805,7 @@ test.describe('Home page tests', () => {
     ).toBe('rgb(75, 85, 99)');
   });
 
-  test('validate downvote button styles and the tootpit of the first post in the dark theme', async ({
+  test('validate downvote button styles and the tooltip of the first post in the dark theme', async ({
     page
   }) => {
     await homePage.goto();

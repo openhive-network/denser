@@ -71,6 +71,7 @@ export class HomePage {
   readonly getCardUserShortcutsTitle: Locator;
   readonly getCardUserShortcutsLinks: Locator;
   readonly postTitle: Locator;
+  readonly postDescription: Locator;
   readonly loginBtn: Locator;
   readonly signupBtn: Locator;
   readonly loginModal: Locator;
@@ -163,6 +164,7 @@ export class HomePage {
     this.getNavSidebarMenuContent = page.locator('[data-testid="nav-sidebar-menu-content"]');
     this.getNavSidebarMenuContentCloseButton = page.locator('[data-testid="nav-sidebar-menu-content"] > button');
     this.postTitle = page.locator('[data-testid="post-title"]');
+    this.postDescription = page.locator('[data-testid="post-description"]');
     this.loginBtn = page.locator('[data-testid="login-btn"]');
     this.signupBtn = page.locator('[data-testid="signup-btn"]');
     this.loginModal = page.locator('[role="dialog"]');
@@ -276,6 +278,22 @@ export class HomePage {
     const firstPostCardTitle = await this.getFirstPostTitle.textContent();
     // Click the post's timestamp link
     await this.getFirstPostCardTimestampLink.click();
+    await this.page.waitForSelector(this.page.locator('[data-testid="article-title"]')['_selector']);
+    expect(await this.page.locator('[data-testid="article-title"]').textContent()).toBe(firstPostCardTitle);
+  }
+
+  async moveToFirstPostContentByClickingTitilePostCard() {
+    const firstPostCardTitle = await this.getFirstPostTitle.textContent();
+    // Click the post's title link
+    await this.postTitle.first().click();
+    await this.page.waitForSelector(this.page.locator('[data-testid="article-title"]')['_selector']);
+    expect(await this.page.locator('[data-testid="article-title"]').textContent()).toBe(firstPostCardTitle);
+  }
+
+  async moveToFirstPostContentByClickingDescriptionPostCard() {
+    const firstPostCardTitle = await this.getFirstPostTitle.textContent();
+    // Click the post's description link
+    await this.postDescription.first().click();
     await this.page.waitForSelector(this.page.locator('[data-testid="article-title"]')['_selector']);
     expect(await this.page.locator('[data-testid="article-title"]').textContent()).toBe(firstPostCardTitle);
   }
