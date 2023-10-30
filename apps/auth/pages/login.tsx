@@ -2,11 +2,14 @@ import { useState } from 'react'
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { withIronSessionSsr } from "iron-session/next";
 import secureRandom from 'secure-random';
+import { KeyRole } from '@hiveio/dhive';
+import { KeychainKeyTypes, KeychainKeyTypesLC } from 'hive-keychain-commons';
 import { LoginForm, LoginFormData } from "@/auth/components/login-form";
 import { useUser } from '@/auth/lib/use-user';
 import { fetchJson, FetchError } from '@/auth/lib/fetch-json';
 import { getLogger } from "@hive/ui/lib/logging";
 import { sessionOptions } from '@/auth/lib/session';
+import { Signatures, LoginData } from '@/auth/pages/api/login';
 
 const logger = getLogger('app');
 
@@ -25,10 +28,16 @@ export default function LoginPage({
 
   const [errorMsg, setErrorMsg] = useState('');
 
+  const signatures: Signatures = {};
+
   // Build signed message for sending to back-end.
-  const makeSignatures = async (signWith: string, username: string) => {
-    logger.info('in makeSignatures', {signWith, username});
-    const signatures: any = {};
+  const makeSignatures = async (
+        signWith: string,
+        username: string,
+        keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting
+      ): Promise<Signatures> => {
+    logger.info('in makeSignatures %o', {signWith, username});
+    const signatures: Signatures = {};
     const challenge = { token: loginChallenge };
     const message = JSON.stringify(challenge, null, 0);
 
@@ -38,20 +47,21 @@ export default function LoginPage({
           window.hive_keychain.requestSignBuffer(
             username,
             message,
-            'Posting',
+            KeychainKeyTypes[keyType],
             (res: any) => {
               resolve(res);
-          });
+            }
+          );
         });
 
-        logger.info({ response });
+        logger.info('makeSignatures', { response });
+
         if (response.success) {
           signatures.posting = response.result;
         } else {
           throw new Error(response.error);
         }
       } catch (error) {
-        logger.info({ error });
         throw error;
       }
     }
@@ -64,13 +74,28 @@ export default function LoginPage({
     logger.info('onSubmit form data', data);
     setErrorMsg('');
 
-    if (data.keyChain) {
-      await makeSignatures('keychain', data.username);
+    const { username } = data;
+    let loginType = 'password';
+    let signatures: Signatures = {};
+    let hivesignerToken = '';
+
+    if (data.useKeychain) {
+      try {
+        loginType = 'keychain';
+        signatures = await makeSignatures('keychain', username);
+      } catch (error) {
+        logger.error('onSubmit error in makeSignatures', error);
+        setErrorMsg('Error in signing data for login');
+      }
     }
 
-    return;
+    const body: LoginData = {
+      username,
+      signatures,
+      loginType,
+      hivesignerToken,
+    };
 
-    const body = { username: data.username };
     try {
       mutateUser(
         await fetchJson('/api/login', {
