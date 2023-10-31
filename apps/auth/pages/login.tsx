@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { withIronSessionSsr } from "iron-session/next";
 import secureRandom from 'secure-random';
-import { KeyRole } from '@hiveio/dhive';
+import { KeyRole, PrivateKey, cryptoUtils, HexBuffer } from '@hiveio/dhive';
 import { KeychainKeyTypes, KeychainKeyTypesLC } from 'hive-keychain-commons';
 import { LoginForm, LoginFormData } from "@/auth/components/login-form";
 import { useUser } from '@/auth/lib/use-user';
@@ -32,16 +32,17 @@ export default function LoginPage({
 
   // Build signed message for sending to back-end.
   const makeSignatures = async (
-        signWith: string,
+        loginType: string,
         username: string,
-        keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting
+        password: string, // posting private key
+        keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting,
       ): Promise<Signatures> => {
-    logger.info('in makeSignatures %o', {signWith, username});
+    logger.info('in makeSignatures %o', {loginType, username});
     const signatures: Signatures = {};
     const challenge = { token: loginChallenge };
     const message = JSON.stringify(challenge, null, 0);
 
-    if (signWith === 'keychain') {
+    if (loginType === 'keychain') {
       try {
         const response: any = await new Promise((resolve) => {
           window.hive_keychain.requestSignBuffer(
@@ -53,14 +54,22 @@ export default function LoginPage({
             }
           );
         });
-
-        logger.info('makeSignatures', { response });
-
         if (response.success) {
+          logger.info({signature: response.result});
           signatures.posting = response.result;
         } else {
           throw new Error(response.error);
         }
+      } catch (error) {
+        throw error;
+      }
+    } else if (loginType === 'password' || true) {
+      try {
+        const privateKey = PrivateKey.fromString(password);
+        const bufSha = cryptoUtils.sha256(message);
+        const signature = privateKey.sign(bufSha).toString();
+        logger.info({signature});
+        signatures.posting = signature;
       } catch (error) {
         throw error;
       }
@@ -74,20 +83,23 @@ export default function LoginPage({
     logger.info('onSubmit form data', data);
     setErrorMsg('');
 
-    const { username } = data;
+    const { username, password, useKeychain, useHiveauth } = data;
     let loginType = 'password';
     let signatures: Signatures = {};
     let hivesignerToken = '';
 
-    if (data.useKeychain) {
-      try {
-        loginType = 'keychain';
-        signatures = await makeSignatures('keychain', username);
-      } catch (error) {
-        logger.error('onSubmit error in makeSignatures', error);
-        setErrorMsg('Error in signing data for login');
-      }
+    if (useKeychain) {
+      loginType = 'keychain';
     }
+
+    try {
+      signatures = await makeSignatures(loginType, username, password);
+    } catch (error) {
+      logger.error('onSubmit error in makeSignatures', error);
+      setErrorMsg('Error in signing data for login');
+    }
+
+    logger.info({signatures});
 
     const body: LoginData = {
       username,

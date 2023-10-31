@@ -3,11 +3,15 @@ import * as Yup from "yup";
 import { NextApiHandler } from "next";
 import { withIronSessionApiRoute } from 'iron-session/next';
 
+import * as Dhive from "@hiveio/dhive";
+import { cryptoUtils, PublicKey, Signature } from "@hiveio/dhive";
+
 import { sessionOptions } from '@/auth/lib/session';
 import { getLogger } from "@hive/ui/lib/logging";
 import { getAccount } from '@hive/ui/lib/hive';
 import { apiHandler } from "@/auth/lib/api";
 import type { User } from './user';
+import { FullAccount } from "@hive/ui/store/app-types";
 
 export interface Signatures {
   memo?: string;
@@ -27,6 +31,50 @@ const RE_LOGIN_TYPE = /^(password|hiveauth|hivesigner|keychain)$/;
 
 const logger = getLogger('app');
 
+const validateSignatures = async (
+      chainAccount: FullAccount,
+      signatures: Signatures,
+      message: string = ''
+    ) => {
+
+  logger.info(`Starting validateSignatures for user ${chainAccount.name}`);
+
+  const verify = (type, sigHex, pubkey, weight, weight_threshold) => {
+    logger.info('Starting verify');
+    logger.info({type, sigHex, pubkey, weight, weight_threshold});
+    if (!sigHex) return;
+    if (weight !== 1 || weight_threshold !== 1) {
+      console.error(
+        `/login_account login_challenge unsupported ${type} auth configuration: ${chainAccount.name}`
+      );
+    } else {
+      const sig = Signature.fromString(sigHex);
+      const public_key = PublicKey.fromString(pubkey);
+      const bufSha = cryptoUtils.sha256(message);
+      const verified = public_key.verify(bufSha, sig);
+
+      logger.info(verified);
+
+      if (!verified) {
+        console.error(
+          '/login_account verification failed'
+        );
+      }
+      return verified;
+    }
+  };
+
+  const {
+    posting: {
+      key_auths: [[posting_pubkey, weight]],
+      weight_threshold,
+    },
+  } = chainAccount;
+  const result = verify('posting', signatures.posting,
+    posting_pubkey, weight, weight_threshold);
+  return result;
+};
+
 const loginUser: NextApiHandler<User> = async (req, res) => {
   const postLoginSchema = Yup.object().shape({
     // _csrf: Yup.string().required(),
@@ -43,13 +91,15 @@ const loginUser: NextApiHandler<User> = async (req, res) => {
   });
 
   const data = await postLoginSchema.validate(req.body);
-  const { username } = data;
+  const { username, signatures } = data;
   let hiveUserProfile;
+  let chainAccount;
   try {
-    hiveUserProfile = (await getAccount(username))?.profile;
-    if (!hiveUserProfile) {
+    chainAccount = await getAccount(username);
+    if (!chainAccount) {
       throw new Error(`missing blockchain account "${username}"`);
     }
+    hiveUserProfile = chainAccount?.profile;
   } catch (error) {
     if (error instanceof Error) {
       if ((error.message).startsWith('missing blockchain account')) {
@@ -59,6 +109,22 @@ const loginUser: NextApiHandler<User> = async (req, res) => {
     }
     throw error;
   }
+
+
+  const result = await validateSignatures(
+    chainAccount,
+    signatures,
+    JSON.stringify({ token: req.session.loginChallenge }, null, 0),
+    );
+
+  if (!result) {
+    throw new createHttpError.Unauthorized('Invalid username or password');
+  }
+
+  const auth = { posting: result };
+  // if (ctx.session.a === account) loginType = 'resume';
+  // if (auth.posting) ctx.session.a = account;
+
   const user: User = {
         isLoggedIn: true,
         username: username,
