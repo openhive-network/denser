@@ -57,6 +57,9 @@ import {
   ExternalLink,
   Dna,
   MessagesSquare,
+  Home,
+  Wallet,
+  Info
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -116,6 +119,9 @@ export const Icons = {
   pizza: Pizza,
   check: Check,
   copy: Copy,
+  home: Home,
+  wallet: Wallet,
+  info: Info,
   copyDone: ClipboardCheck,
   messagesSquare: MessagesSquare,
   radix: (props: LucideProps) => (
