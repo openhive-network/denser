@@ -141,21 +141,22 @@ test.describe('Muted posts tests', () => {
 
     await expect (profilePage.postBlogItem.first()).toBeVisible();
 
-  const postListItems = await page.$$('[data-testid="post-list-item"]');
+    const postListItems = await page.$$('[data-testid="post-list-item"]');
 
-  for (const postItem of postListItems) {
-    const textContent = await postItem.textContent();
-    if (textContent.includes('RE:')) {
-      const postTittle = await postItem.$$('.p-1');
+    for (const postItem of postListItems) {
+      const textContent: any = await postItem.textContent();
+      if (textContent.includes('RE:')) {
+        const postTittle = await postItem.$$('[data-testid="post-title"] > a');
 
-      if (postTittle.length > 0) {
+        if (postTittle.length > 0) {
 
-        await postTittle[0].click();
-        break;
+          await postTittle[0].click();
+          break;
+        }
       }
     }
-  }
 
-  await expect(commentViewPage.commentGreenSection).toBeVisible()
+    await page.waitForSelector(commentViewPage.commentGreenSection['_selector']);
+    await expect(commentViewPage.commentGreenSection).toBeVisible()
   })
 });

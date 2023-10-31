@@ -33,6 +33,34 @@ test.describe('Communities page tests', () => {
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
   });
 
+  test('load next the community post cards in the LeoFinance Community', async ({
+    page,
+    browserName
+  }) => {
+    test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+
+    await homePage.moveToLeoFinanceCommunities();
+    await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
+
+    await homePage.mainPostsTimelineVisible(20);
+    await homePage.page.keyboard.down('End');
+    await homePage.mainPostsTimelineVisible(40);
+  });
+
+  test('load next the community post cards in the Pinmapple Community', async ({
+    page,
+    browserName
+  }) => {
+    test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+
+    await homePage.moveToPinmappleCommunities ();
+    await communitiesPage.validataCommunitiesPageIsLoaded('Pinmapple');
+
+    await homePage.mainPostsTimelineVisible(20);
+    await homePage.page.keyboard.down('End');
+    await homePage.mainPostsTimelineVisible(40);
+  });
+
   test('validate the community subscribers, pending rewards, active posters are valid in LeoFinance Community', async ({
     page,
     request
@@ -784,5 +812,46 @@ test.describe('Communities page tests', () => {
     await communitySubscribeButton.click();
     await loginToVoteDialog.validateLoginToVoteDialogIsVisible();
     await loginToVoteDialog.closeLoginDialog();
+  });
+
+  test('validate visibility of the community sidebar depending of the width of the viewport', async ({ page }) => {
+    const sideBarDesktop = await page.locator('[data-testid="card-explore-hive-desktop"]');
+    const sideBarMobile = await page.locator('[data-testid="card-explore-hive-mobile"]');
+
+    await homePage.moveToLeoFinanceCommunities();
+    await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
+
+    // Validate community sidebar visibility before changing viewport size
+    const displayAttributeSideBarDesktopBeforeChangeViewportSize = await homePage.getElementCssPropertyValue(sideBarDesktop, 'display');
+    await expect(displayAttributeSideBarDesktopBeforeChangeViewportSize).toBe('flex');
+    const displayAttributeSideBarMobileBeforeChangeViewportSize =  await homePage.getElementCssPropertyValue(sideBarMobile, 'display');
+    await expect(displayAttributeSideBarMobileBeforeChangeViewportSize).toBe('none');
+
+    // Change width of the viewport size to less than 1280
+    await page.setViewportSize({width: 1279, height: 720 });
+
+    // Validate community sidebar visibility after changing viewport size
+    const displayAttributeSideBarDesktopAfterChangeViewportSize = await homePage.getElementCssPropertyValue(sideBarDesktop, 'display');
+    await expect(displayAttributeSideBarDesktopAfterChangeViewportSize).toBe('none');
+    const displayAttributeSideBarMobileAfterChangeViewportSize = await homePage.getElementCssPropertyValue(sideBarMobile, 'display');
+    await expect(displayAttributeSideBarMobileAfterChangeViewportSize).toBe('flex');
+  });
+
+  test('validate visibility of the trending comminities sidebar depending of the width of the viewport', async ({ page }) => {
+    const trendingCommunitiesSideBar = await page.locator('[data-testid="card-trending-comunities"]');
+
+    await homePage.moveToLeoFinanceCommunities();
+    await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
+
+    // Validate trending communities sidebar visibility before changing viewport size
+    const trendingCommunitiesSideBarBeforeChangeViewportSize = await homePage.getElementCssPropertyValue(trendingCommunitiesSideBar, 'display');
+    await expect(trendingCommunitiesSideBarBeforeChangeViewportSize).toBe('flex');
+
+    // Change width of the viewport size to less than 768 px
+    await page.setViewportSize({width: 767, height: 720 });
+
+    // Validate trending communities sidebar visibility after changing viewport size
+    const trendingCommunitiesSideBarAfterChangeViewportSize = await homePage.getElementCssPropertyValue(trendingCommunitiesSideBar, 'display');
+    await expect(trendingCommunitiesSideBarAfterChangeViewportSize).toBe('none');
   });
 });
