@@ -38,13 +38,13 @@ const RE_LOGIN_TYPE = /^(password|hiveauth|hivesigner|keychain)$/;
 
 const logger = getLogger('app');
 
-const validateSignatures = async (
+const verifySignatures = async (
       chainAccount: FullAccount,
       signatures: Signatures,
       message: string = ''
     ) => {
 
-  logger.info(`Starting validateSignatures for user ${chainAccount.name}`);
+  logger.info(`Starting verifySignatures for user ${chainAccount.name}`);
 
   const verify = (
       type: KeyRole,
@@ -124,7 +124,7 @@ const loginUser: NextApiHandler<User> = async (req, res) => {
   }
 
 
-  const result = await validateSignatures(
+  const result = await verifySignatures(
     chainAccount,
     signatures,
     JSON.stringify({ token: req.session.loginChallenge }, null, 0),
