@@ -4,7 +4,7 @@ import { NextApiHandler } from "next";
 import { withIronSessionApiRoute } from 'iron-session/next';
 
 import * as Dhive from "@hiveio/dhive";
-import { cryptoUtils, PublicKey, Signature } from "@hiveio/dhive";
+import { cryptoUtils, PublicKey, Signature, KeyRole } from "@hiveio/dhive";
 
 import { sessionOptions } from '@/auth/lib/session';
 import { getLogger } from "@hive/ui/lib/logging";
@@ -20,10 +20,17 @@ export interface Signatures {
   owner?: string;
 }
 
+export enum LoginTypes {
+  password = 'password',
+  hiveauth = 'hiveauth',
+  hivesigner = 'hivesigner',
+  keychain = 'keychain',
+}
+
 export interface LoginData {
   username: string;
   signatures: Signatures;
-  loginType: 'password' | 'hiveauth' | 'hivesigner' | 'keychain';
+  loginType: LoginTypes;
   hivesignerToken: string;
 }
 
@@ -39,7 +46,13 @@ const validateSignatures = async (
 
   logger.info(`Starting validateSignatures for user ${chainAccount.name}`);
 
-  const verify = (type, sigHex, pubkey, weight, weight_threshold) => {
+  const verify = (
+      type: KeyRole,
+      sigHex: string,
+      pubkey: string,
+      weight: number,
+      weight_threshold: number
+      ) => {
     logger.info('Starting verify');
     logger.info({type, sigHex, pubkey, weight, weight_threshold});
     if (!sigHex) return;

@@ -2,14 +2,14 @@ import { useState } from 'react'
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { withIronSessionSsr } from "iron-session/next";
 import secureRandom from 'secure-random';
-import { KeyRole, PrivateKey, cryptoUtils, HexBuffer } from '@hiveio/dhive';
+import { KeyRole, PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { KeychainKeyTypes, KeychainKeyTypesLC } from 'hive-keychain-commons';
 import { LoginForm, LoginFormData } from "@/auth/components/login-form";
 import { useUser } from '@/auth/lib/use-user';
 import { fetchJson, FetchError } from '@/auth/lib/fetch-json';
 import { getLogger } from "@hive/ui/lib/logging";
 import { sessionOptions } from '@/auth/lib/session';
-import { Signatures, LoginData } from '@/auth/pages/api/login';
+import { Signatures, LoginData, LoginTypes } from '@/auth/pages/api/login';
 
 const logger = getLogger('app');
 
@@ -28,11 +28,9 @@ export default function LoginPage({
 
   const [errorMsg, setErrorMsg] = useState('');
 
-  const signatures: Signatures = {};
-
-  // Build signed message for sending to back-end.
+  // Create signed message for sending to back-end.
   const makeSignatures = async (
-        loginType: string,
+        loginType: LoginTypes,
         username: string,
         password: string, // posting private key
         keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting,
@@ -42,7 +40,7 @@ export default function LoginPage({
     const challenge = { token: loginChallenge };
     const message = JSON.stringify(challenge, null, 0);
 
-    if (loginType === 'keychain') {
+    if (loginType === LoginTypes.keychain) {
       try {
         const response: any = await new Promise((resolve) => {
           window.hive_keychain.requestSignBuffer(
@@ -63,7 +61,7 @@ export default function LoginPage({
       } catch (error) {
         throw error;
       }
-    } else if (loginType === 'password' || true) {
+    } else if (loginType === LoginTypes.password) {
       try {
         const privateKey = PrivateKey.fromString(password);
         const bufSha = cryptoUtils.sha256(message);
@@ -84,12 +82,12 @@ export default function LoginPage({
     setErrorMsg('');
 
     const { username, password, useKeychain, useHiveauth } = data;
-    let loginType = 'password';
+    let loginType: LoginTypes = LoginTypes.password;
     let signatures: Signatures = {};
     let hivesignerToken = '';
 
     if (useKeychain) {
-      loginType = 'keychain';
+      loginType = LoginTypes.keychain;
     }
 
     try {
@@ -118,9 +116,11 @@ export default function LoginPage({
       )
     } catch (error) {
       if (error instanceof FetchError) {
-        setErrorMsg(error.data.error?.message
-            || 'Error in fetching data from Hive API server');
-      } else {
+        logger.info('onSubmit FetchError', error);
+        // setErrorMsg(error.data.error?.message
+        //     || 'Error in fetching data from Hive API server');
+        setErrorMsg('Error in fetching data from Hive API server');
+        } else {
         logger.error('onSubmit unexpected error', error);
         setErrorMsg('Unexpected error');
       }
