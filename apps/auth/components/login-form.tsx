@@ -31,10 +31,10 @@ export function LoginForm({
   const logger = getLogger('app');
   logger.debug('Starting LoginForm');
 
-  const [enableKeyChain, setEnableKeyChain] = useState(false)
+  const [enableKeychain, setEnableKeychain] = useState(false)
 
   useEffect(() => {
-    setEnableKeyChain(hasCompatibleKeychain());
+    setEnableKeychain(hasCompatibleKeychain());
   }, []);
 
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
@@ -88,7 +88,7 @@ export function LoginForm({
                 value=""
                 className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
                 {...register("useKeychain")}
-                disabled={!enableKeyChain}
+                disabled={!enableKeychain}
                 />
               <label
                 htmlFor="useKeychain"
@@ -97,9 +97,9 @@ export function LoginForm({
                 <img
                   className="mr-1 h-4 w-4"
                   src="/images/hivekeychain.png"
-                  alt="Hive KeyChain logo"
+                  alt="Hive Keychain logo"
                 />
-                Use KeyChain
+                Use Keychain
               </label>
             </div>
 
