@@ -2,21 +2,32 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { getCommunities } from "@/blog/lib/bridge";
 import { cn } from "@/blog/lib/utils";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@hive/ui/components/card";
+import { Card, CardContent } from "@hive/ui/components/card";
 import { FC, ReactNode } from "react";
 import { useTranslation } from "next-i18next";
 import { ExternalLink, Home, Info, Wallet } from "lucide-react";
+import { useRouter } from "next/router";
+import clsx from "clsx";
 
-const Box = ({ children, href }: { children: ReactNode; href: string }) => {
+const Box = ({
+  children,
+  href,
+  externalLink,
+  current_card,
+}: {
+  children: ReactNode;
+  href: string;
+  externalLink?: string;
+  current_card?: boolean;
+}) => {
   return (
     <Link
+      target={externalLink}
       href={href}
-      className="font-semibold flex gap-2 hover:bg-slate-900 hover:text-red-500 px-4 py-1"
+      className={clsx(
+        "font-semibold flex gap-2 hover:bg-slate-900 hover:text-red-500 px-4 py-1",
+        { "bg-red-500 text-white": current_card }
+      )}
     >
       {children}
     </Link>
@@ -24,6 +35,7 @@ const Box = ({ children, href }: { children: ReactNode; href: string }) => {
 };
 
 const MainNavbar: FC = () => {
+  const router = useRouter();
   const { t } = useTranslation("common_blog");
   const sort = "rank";
   const query = null;
@@ -49,10 +61,26 @@ const MainNavbar: FC = () => {
           </div>
           <ul className="text-sm">
             <li>
-              <Box href="/">Home</Box>
+              <Box
+                href="/"
+                current_card={
+                  "/trending" === router.asPath ||
+                  "/hot" === router.asPath ||
+                  "/created" === router.asPath ||
+                  "/payout" === router.asPath ||
+                  "/muted" === router.asPath
+                }
+              >
+                Home
+              </Box>
             </li>
             <li>
-              <Box href="/">All Communities</Box>
+              <Box
+                href="/communities"
+                current_card={"/communities" === router.asPath}
+              >
+                All Communities
+              </Box>
             </li>
           </ul>
         </div>
@@ -63,13 +91,22 @@ const MainNavbar: FC = () => {
           </div>
           <ul className="text-sm">
             <li>
-              <Box href="/">Witnesses</Box>
+              <Box
+                href="http://localhost:4000/~witnesses"
+                externalLink="_blank"
+              >
+                Witnesses
+              </Box>
             </li>
             <li>
-              <Box href="/">Proposals</Box>
+              <Box href="http://localhost:4000/proposals" externalLink="_blank">
+                Proposals
+              </Box>
             </li>
             <li>
-              <Box href="/">Currency Market</Box>
+              <Box href="http://localhost:4000/market" externalLink="_blank">
+                Currency Market
+              </Box>
             </li>
           </ul>
         </div>
@@ -80,25 +117,39 @@ const MainNavbar: FC = () => {
           </div>
           <ul className="text-sm">
             <li>
-              <Box href="/">Block Explorer</Box>
+              <Box href="https://hiveblocks.com/" externalLink="_blank">
+                Block Explorer
+              </Box>
             </li>
             <li>
-              <Box href="/">Hive Chat</Box>
+              <Box href="https://openhive.chat/home" externalLink="_blank">
+                Hive Chat
+              </Box>
             </li>
             <li>
-              <Box href="/">Our dApps</Box>
+              <Box href="https://hive.io/eco" externalLink="_blank">
+                Our dApps
+              </Box>
             </li>
             <li>
-              <Box href="/">Hive API Docs</Box>
+              <Box href="https://developers.hive.io/" externalLink="_blank">
+                Hive API Docs
+              </Box>
             </li>
             <li>
-              <Box href="/">Blocktrades</Box>
+              <Box href="https://blocktrades.us" externalLink="_blank">
+                Blocktrades
+              </Box>
             </li>
             <li>
-              <Box href="/">Ionamy</Box>
+              <Box href="https://ionomy.com" externalLink="_blank">
+                Ionamy
+              </Box>
             </li>
             <li>
-              <Box href="/">Apps Built on Hive</Box>
+              <Box href="https://hiveprojects.io" externalLink="_blank">
+                Apps Built on Hive
+              </Box>
             </li>
           </ul>
         </div>
@@ -109,22 +160,39 @@ const MainNavbar: FC = () => {
           </div>
           <ul className="text-sm">
             <li>
-              <Box href="/">Welcome</Box>
+              <Box href="/welcome" current_card={"/welcome" === router.asPath}>
+                Welcome
+              </Box>
             </li>
             <li>
-              <Box href="/">What is Hive</Box>
+              <Box href="https://hive.io/">What is Hive</Box>
             </li>
             <li>
-              <Box href="/">FAQ</Box>
+              <Box
+                href="/faq.html"
+                current_card={"/faq.html" === router.asPath}
+              >
+                FAQ
+              </Box>
             </li>
             <li>
-              <Box href="/">Hive Whitepaper</Box>
+              <Box href="https://hive.io/whitepaper.pdf">Hive Whitepaper</Box>
             </li>
             <li>
-              <Box href="/">Privacy Policy</Box>
+              <Box
+                href="/privacy.html"
+                current_card={"/privacy.html" === router.asPath}
+              >
+                Privacy Policy
+              </Box>
             </li>
             <li>
-              <Box href="/">Terms of Services</Box>
+              <Box
+                href="/tos.html"
+                current_card={"/tos.html" === router.asPath}
+              >
+                Terms of Services
+              </Box>
             </li>
           </ul>
         </div>
