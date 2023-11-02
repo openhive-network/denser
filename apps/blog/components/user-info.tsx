@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import parseDate, { dateToRelative } from '@hive/ui/lib/parse-date';
+import parseDate, { dateToFullRelative } from '@hive/ui/lib/parse-date';
 import { Badge } from '@hive/ui/components/badge';
 import { UserHoverCard, UserHoverCardProps } from './user-hover-card';
 import { useTranslation } from 'next-i18next';
@@ -68,7 +68,7 @@ function UserInfo({
         </span>
         <span className='mx-1'>•</span>
         <span title={String(parseDate(created))}>
-          {dateToRelative(created)} ago
+          {dateToFullRelative(created, t)}
         </span>
       </div>
       {authored ? (

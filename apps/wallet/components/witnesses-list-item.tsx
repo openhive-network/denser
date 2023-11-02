@@ -6,7 +6,7 @@ import { blockGap, getRoundedAbbreveration } from "@hive/ui/lib/utils";
 import { Icons } from "@hive/ui/components/icons";
 import { FullAccount } from "@hive/ui/store/app-types";
 import moment from "moment";
-import { dateToFullRelative } from "@hive/ui/lib/parse-date";
+import { dateToFullRelative, dateToRelative } from "@hive/ui/lib/parse-date";
 import { useRouter } from "next/router";
 import { useEffect, useRef } from "react";
 import DialogLogin from "./dialog-login";
@@ -44,7 +44,7 @@ function WitnessListItem({
       return (
         <span>
           {t('witnesses_page.disabled')}
-          {blockGap(headBlock, data.last_confirmed_block_num)}
+          {blockGap(headBlock, data.last_confirmed_block_num, t)}
         </span>
       );
     if (!data.url.includes("http")) return <>({t('witnesses_page.no_url_provided')})</>;
@@ -195,7 +195,7 @@ function WitnessListItem({
             )}
 
             {data.witnessLastBlockAgeInSecs > ONE_WEEK_IN_SEC && (
-              <span className="font-semibold">
+              <span className="font-semibold" data-testid="witness-has-not-produced-blocks-warning">
                 {t('witnesses_page.has_not_produced_blocks')}
               </span>
             )}
@@ -210,14 +210,14 @@ function WitnessListItem({
                   #{data.last_confirmed_block_num}
                 </span>
               </Link>{" "}
-              {blockGap(headBlock, data.last_confirmed_block_num)} v
+              {blockGap(headBlock, data.last_confirmed_block_num, t)} v
               {data.running_version}
             </div>
             {disableUser ? (
               <></>
             ) : (
               <div data-testid="witness-created">
-                {t('witnesses_page.witness_age')}{moment().from(data.created, true)}
+                {t('witnesses_page.witness_age')}{dateToRelative(data.created, t).replace("ago", "")}
               </div>
             )}
 
@@ -232,7 +232,7 @@ function WitnessListItem({
         </div>
         {data.requiredHpToRankUp && (
           <div className="font-light">
-            {t('witnesses_page.hp_required_to_rank_up', 
+            {t('witnesses_page.hp_required_to_rank_up',
             {value: getRoundedAbbreveration(data.requiredHpToRankUp)})}
           </div>
         )}
@@ -242,7 +242,7 @@ function WitnessListItem({
           ${parseFloat(data.hbd_exchange_rate.base)}
         </div>
         <div className="font-light">
-          {dateToFullRelative(data.last_hbd_exchange_update)}
+          {dateToFullRelative(data.last_hbd_exchange_update, t)}
         </div>
       </td>
     </tr>

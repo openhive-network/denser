@@ -14,7 +14,7 @@ import {
 } from '@hive/ui/components/card';
 import { Separator } from '@hive/ui/components/separator';
 import { Badge } from '@hive/ui/components/badge';
-import parseDate, { dateToRelative } from '@hive/ui/lib/parse-date';
+import parseDate, { dateToFullRelative } from '@hive/ui/lib/parse-date';
 import accountReputation from '@/blog/lib/account-reputation';
 import { AlertDialogDemo } from './alert-window';
 import {
@@ -179,21 +179,21 @@ const PostListItem = ({
                   data-testid='post-card-timestamp'
                 >
                   <span title={String(parseDate(post.created))}>
-                    {dateToRelative(post.created)} ago
+                    {dateToFullRelative(post.created, t)}
                   </span>
                 </Link>
                 {post.percent_hbd === 0 ? (
                   <span className='ml-1 flex items-center'>
                     <TooltipProvider>
                       <Tooltip>
-                        <TooltipTrigger>
+                        <TooltipTrigger data-testid="powered-up-100-trigger">
                           <Link
                             href={`/${post.category}/@${post.author}/${post.permlink}`}
                           >
                             <Icons.hive className='h-4 w-4' />
                           </Link>
                         </TooltipTrigger>
-                        <TooltipContent>Powered Up 100%</TooltipContent>
+                        <TooltipContent data-testid="powered-up-100-tooltip">Powered Up 100%</TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   </span>

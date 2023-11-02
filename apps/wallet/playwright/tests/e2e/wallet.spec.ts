@@ -238,7 +238,7 @@ test.describe("Wallet page of @gtg tests", () => {
     if (await walletPage.walletAccountHistoryRow.first().isVisible()){
       const firstAccountHistoryOperation = await accountHistoryResult[0][1].op;
       const firstAccountHistoryOperationType: string = await firstAccountHistoryOperation[0];
-      const firstAccountHistoryTransfer = await walletPage.walletAccountHistoryRow.first().locator('td span');
+      const firstAccountHistoryTransfer = await walletPage.walletAccountHistoryRow.first().locator('td > span');
 
       if (firstAccountHistoryOperationType == "claim_reward_balance"){
         await expect(firstAccountHistoryTransfer).toContainText('Claim rewards');

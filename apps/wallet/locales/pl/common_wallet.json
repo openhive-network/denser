@@ -1,13 +1,71 @@
 {
   "global": {
-    "time": "",
     "loading": "Wczytywanie",
-    "something_went_wrong": "Something went wrong"
+    "something_went_wrong": "Coś poszło nie tak",
+    "time_ago": {
+      "a_few_seconds": " Kilka sekund temu",
+      "seconds": " sekund_y temu",
+      "minutes": " minut_y temu",
+      "a_minute": " minute temu",
+      "hours" :" godzin_y temu",
+      "an_hour": " godzine temu",
+      "days": " dni temu",
+      "a_day": " dzień temu",
+      "months": " miesięce_y temu",
+      "a_month": " miesiąc temu",
+      "years": " lat_a temu",
+      "a_year": " rok temu"
+    },
+    "months": {
+      "first": "Styczeń",
+      "second": "Luty",
+      "third": "Marzec",
+      "fourth": "Kwiecień",
+      "fifth": "Maj",
+      "sixth": "Czerwiec",
+      "seventh": "Lipiec",
+      "eighth": "Sierpień",
+      "ninth": "Wrzesień",
+      "tenth": "Październik",
+      "eleventh": "Listopad",
+      "twelfth": "Grudzień"
+    },
+    "months_short_form": {
+      "first": "St",
+      "second": "Lut",
+      "third": "Mrz",
+      "fourth": "Kw",
+      "fifth": "Maj",
+      "sixth": "Cz",
+      "seventh": "Lip",
+      "eighth": "Sier",
+      "ninth": "Wrz",
+      "tenth": "Paź",
+      "eleventh": "Lis",
+      "twelfth": "Gr"
+    },
+    "time": {
+      "a_few_seconds": " Za kilka sekund",
+      "seconds": " sekund_y",
+      "minutes": " minut_y",
+      "a_minute": " minute",
+      "hours" :" godzin_y",
+      "an_hour": " godzina",
+      "days": " dni",
+      "a_day": " dzień",
+      "months": " miesięce_y",
+      "a_month": " miesiąc",
+      "years": " lat_a",
+      "a_year": " rok"
+    }
   },
   "navigation": {
     "main_nav_bar": {
       "login": "Zaloguj się",
-      "sign_up": "Zapisz się"
+      "sign_up": "Zapisz się",
+      "light": "Tryb Jasny",
+      "dark": "Tryb Ciemny",
+      "system": "Domyślny z systemu"
     },
     "sidebar": {
       "welcome": "Witaj",
@@ -22,7 +80,7 @@
       "hive_whitepaper": "Oficjalna księga Hive",
       "privacy_policy": "Polityka prywatności",
       "terms_of_service": "Warunki korzystania z usługi",
-      "currency_market": "Currency Market",
+      "currency_market": "Wymiana tokenów",
       "third_party_exchanges": "Zewnętrzne giełdy:"
     },
     "profil_navbar": {
@@ -74,9 +132,9 @@
   },
   "profil": {
     "joined": "Dołączono",
-    "hive_description": "Zbywalne tokeny które mogą być przesłane gdziekolwiek w dowolnym momencie. HIVE mogą zostać również przekonwertowane na HIVE POWER w procesie nazywanym zwiększenie mocy.",
-    "hp_description": "Tokeny wpływu, które zwiększają Twój wpływ na podział wypłat za publikowanie treści, oraz pozwalają Ci zarabiać na głosowaniu na treści. Część z Twoich jednostek wpływu HIVE POWER jest Ci oddelegowana. Delegowane jednostek to czasowe użyczenie dla zwiększenia wpływu lub by pomóc nowym użytkownikom platformy w korzystaniu ze Hive. Kwota oddelegowanych jednostek może się zmieniać w czasie. HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",
-    "hive_dolar_description": "Zbywalne tokeny które mogą być przesłane gdziekolwiek w dowolnym momencie.",
+    "hive_description": "Zbywalne tokeny, które mogą być przesłane gdziekolwiek w dowolnym momencie. HIVE mogą zostać również przekonwertowane na HIVE POWER w procesie nazywanym zwiększenie mocy.",
+    "hp_description": "Tokeny wpływu, które zwiększają Twój wpływ na podział wypłat za publikowanie treści, oraz pozwalają Ci zarabiać na głosowaniu na treści. Część z Twoich jednostek wpływu HIVE POWER jest Ci oddelegowana. Delegowanie jednostek to czasowe użyczenie dla zwiększenia wpływu lub by pomóc nowym użytkownikom platformy w korzystaniu ze Hive. Kwota oddelegowanych jednostek może się zmieniać w czasie. HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",
+    "hive_dolar_description": "Zbywalne tokeny, które mogą być przesłane gdziekolwiek w dowolnym momencie.",
     "savings_title": "Oszczędności",
     "savings_description": "Saldo zależy od 3-dniowego okresu karencji wymaganego do wycofania środków, HBD interest rate: 20.00% APR (as voted by the ",
     "estimated_account_value_title": "Szacowana wartość konta",
@@ -84,7 +142,7 @@
     "account_history_title": "Historia",
     "see_faq_for_details": "Zobacz szczegóły.",
     "witnesses":"Witnesses",
-    "account_history_description": "Beware of spam and phishing links in transfer memos. Do not open links from users you do not trust. Do not provide your private keys to any third party websites. Transactions will not show until they are confirmed on the blockchain, which may take a few minutes.",
+    "account_history_description": "Uważaj na spam i linki phishingowe w notatkach transakcji. Nie otwieraj linków od użytkowników, którym nie ufasz. Nie udostępniaj swoich kluczy prywatnych żadnym stronom internetowym osób trzecich. Transakcje nie zostaną wyświetlone, dopóki nie zostaną potwierdzone w blockchain, co może zająć kilka minut.",
     "no_transactions_found":"Nie znaleziono transakcji",
     "the_next_power_down":"The next power down is scheduled to happen in ",
     "paid_for":"Paid {{value1}} for {{value2}}",
@@ -97,7 +155,13 @@
     "transfer_to_user": "Przelew {{value}} do ",
     "received_from_user": "Otrzymał {{value}} od ",
     "claim_rewards": "Zdobył nagrody: ",
-    "and": " i "
+    "and": " i ",
+    "estimated_author_rewards_last_week":"Szacowane nagrody autorskie w zeszłym tygodniu:",
+    "author_rewards_history":"Historia nagród autora",
+    "newer":"Nowsze",
+    "older":"Starsze",
+    "estimated_curation_rewards_last_week":"Szacunkowe nagrody kuratorskie w zeszłym tygodniu:",
+    "curation_rewards_history":"Historia nagród kuratorskich"
   },
   "market_page": {
     "last_price": "Ostatnia cena",
@@ -135,7 +199,7 @@
     "votes_received": "Otrzymane głosy",
     "price_feed": "Price feed",
     "vote": "Zagłosuj",
-    "navigate_to_witness_profile": "Przejdż do profilu tego użytkownika",
+    "navigate_to_witness_profile": "Przejdź do profilu tego użytkownika",
     "last_block": "Ostatni blok ",
     "just_now": "przed chwilą na {{value}}",
     "recently": "ostatnio {{value}}",
@@ -148,18 +212,29 @@
     "set_proxy": "Ustaw pełnomocnika",
     "disabled": "Disabled ",
     "no_url_provided": "No URL provided",
-    "use_this_for_linking_title": "Use this for linking to this page and highlight the selected witness",
-    "has_not_produced_blocks": "⚠️Has not produced any blocks for over a week.",
-    "by": "by",
+    "use_this_for_linking_title": "Użyj tego, aby utworzyć link do tej strony i podświetl wybranego delegata",
+    "has_not_produced_blocks": "⚠️Od ponad tygodnia nie wyprodukował żadnych bloków.",
+    "by": "przez",
     "proxy_form": {
       "title": "Potwierdź pełnomocnika",
       "description": "Usuwasz pełnomocnictwo.",
-      "set_proxy_to:": "Przekaż pełnomocnictwo: {{proxy}}",
+      "set_proxy_to": "Przekaż pełnomocnictwo: {{proxy}}",
       "cancel_button": "Zamknij",
       "ok": "OK"
+    },
+    "bock_gap": {
+      "just_now": " przed chwilą",
+      "recently": " ostatnio",
+      "mins_ago": " minut_y temu",
+      "hrs_ago": " godzin_y temu",
+      "days_ago": " dni temu",
+      "weeks_ago": " tygodni_e temu",
+      "months_ago": " miesięce_y temu",
+      "years_ago": " lat_a temu"
     }
   },
   "proposals_page": {
+    "daily":"Dziennie",
     "proposals": "Propozycje",
     "started": "rozpoczęte",
     "finished": "zakończone",
@@ -181,6 +256,37 @@
     "more_login_methods": "więcej metod logowania",
     "login_button": "Zaloguj się",
     "cancel_button": "Anuluj",
-    "this_operation_requires_your_key_or_master_password": "Ta operacja wymaga twojego klucza {{authType}} klub hasła głównego."
+    "this_operation_requires_your_key_or_master_password": "Ta operacja wymaga twojego klucza {{authType}} lub hasła głównego."
+  },
+  "change_password_page": {
+    "change_password": "Zmień hasło",
+    "account_name": "Nazwa konta",
+    "current_password": "Obecne hasło",
+    "recover_password": "Odzyskaj konto",
+    "generated_password": "Wygenerowane hasło",
+    "new": "Nowe",
+    "click_to_generate_password": "Kliknij by wygenerować hasło",
+    "re_enter_generate_password": "Podaj ponownie wygenerowane hasło",
+    "understand_that": "Rozumiem, że Hive nie ma możliwości odzyskania utraconych haseł",
+    "i_saved_password": "Zachowałem bezpiecznie moje wygenerowane hasło",
+    "update_password": "Zaktualizuj hasło",
+    "required": "Wymagany",
+    "account_name_should_be_longer": "Nazwa konta powinna być dłuższa",
+    "backup_password_by_storing_it": "Zachowaj je zapisując w menadżerze haseł lub w pliku tekstowym",
+    "passwords_do_not_match": "Hasła się różnią",
+    "the_rules": {
+      "one": "Pierwsza zasada Hive brzmi: Nie zgub swojego hasła.",
+      "second": "Druga zasada Hive brzmi: Nie zgub swojego hasła.",
+      "third": "Trzecia zasada Hive brzmi: Nie mamy możliwości odzyskania Twojego hasła.",
+      "fourth": "Czwarta zasada: Jeśli potrafisz zapamiętać hasło to nie jest ono bezpieczne.",
+      "fifth": "Piąta zasada: Używaj wyłącznie losowo generowanych haseł.",
+      "sixth": "Szósta zasada: Nie ujawniaj nikomu swojego hasła.",
+      "seventh": "Siódma zasada: Zawsze miej kopię zapasową swojego hasła."
   }
+},
+"four_oh_four": {
+  "this_page_does_not_exist": "Przepraszamy! Ta strona nie istnieje.",
+  "not_to_worry": "Możesz wrócić do",
+  "our_homepage": "naszej strony startowej"
+}
 }

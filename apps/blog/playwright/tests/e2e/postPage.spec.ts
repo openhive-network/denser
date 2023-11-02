@@ -411,7 +411,122 @@ test.describe('Post page tests', () => {
       await expect(postPage.hashtagsPosts).toBeVisible()
 
     })
-
   })
 
+  test('validate styles of the hover card in dark mode by hovering user link in the footer post', async ({ page }) => {
+    await postPage.gotoHomePage();
+    await postPage.moveToTheFirstPostInHomePageByImage();
+
+    await homePage.changeThemeMode('Dark');
+    await homePage.validateThemeModeIsDark();
+
+    await postPage.footerAuthorNameLink.hover();
+
+    expect(await postPage.getElementCssPropertyValue(postPage.userHoverCard, 'background-color')).toBe(
+      'rgb(3, 7, 17)'
+    );
+    expect(await postPage.getElementCssPropertyValue(postPage.userHoverCard, 'color')).toBe(
+      'rgb(148, 163, 184)'
+    );
+  });
+
+  test('validate Follow button style in the hover card in dark theme by hovering the footer post author link', async ({ page }) => {
+    await postPage.gotoHomePage();
+    await postPage.moveToTheFirstPostInHomePageByImage();
+
+    await homePage.changeThemeMode('Dark');
+    await homePage.validateThemeModeIsDark();
+
+    await postPage.footerAuthorNameLink.hover();
+
+    // button styles
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'color')).toBe(
+      'rgb(239, 68, 68)'
+    );
+    expect(
+      await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'background-color')
+    ).toBe('rgba(0, 0, 0, 0)');
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'border-color')).toBe(
+      'rgb(239, 68, 68)'
+    );
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'border-style')).toBe(
+      'solid'
+    );
+
+    // button styles when hovered over it
+    await postPage.buttonFollowHoverCard.hover();
+    await postPage.page.waitForTimeout(1000);
+
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'color')).toBe(
+      'rgb(220, 38, 38)'
+    );
+    expect(
+      await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'background-color')
+    ).toBe('rgb(29, 40, 58)');
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'border-color')).toBe(
+      'rgb(220, 38, 38)'
+    );
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'border-style')).toBe(
+      'solid'
+    );
+  });
+
+  test('validate followers and following in the hover card by hovering the footer post author link (dark mode)', async ({ page }) => {
+    await postPage.gotoHomePage();
+    const firstPostAuthorName = (await homePage.getFirstPostAuthor.innerText()).trim().replace('@', '');
+    // console.log("First post's author name without @: ", await firstPostAuthorName);
+
+    await postPage.moveToTheFirstPostInHomePageByImage();
+
+    await homePage.changeThemeMode('Dark');
+    await homePage.validateThemeModeIsDark();
+
+    await postPage.footerAuthorNameLink.hover();
+
+    const userFollowersAPI = (await apiHelper.getFollowCountAPI(firstPostAuthorName))['result']
+      .follower_count;
+    const userFollowersAPIString = `${userFollowersAPI}Followers`;
+    expect(await postPage.userFollowersHoverCard.textContent()).toBe(userFollowersAPIString);
+
+    const userFollowingAPI = (await apiHelper.getFollowCountAPI(firstPostAuthorName))['result']
+      .following_count;
+    const userFollowingAPIString = `${userFollowingAPI}Following`;
+    expect(await postPage.userFollowingHoverCard.textContent()).toBe(userFollowingAPIString);
+
+    // console.log('API get_accounts: ', await apiHelper.getAccountInfoAPI(firstPostAuthorName));
+    // console.log('API get_follow_count: ', await apiHelper.getFollowCountAPI(firstPostAuthorName));
+    // console.log('API get_ranked_posts: ', await apiHelper.getRankedPostsAPI());
+    // console.log('API get_list_communities: ', await apiHelper.getListCommunitiesAPI());
+  });
+
+  test('validate user about in the hover card by hovering the footer post author link (dark mode)', async ({ page }) => {
+    await postPage.gotoHomePage();
+    const firstPostAuthorName = (await homePage.getFirstPostAuthor.innerText()).trim().replace('@', '');
+
+    await postPage.moveToTheFirstPostInHomePageByImage();
+
+    await homePage.changeThemeMode('Dark');
+    await homePage.validateThemeModeIsDark();
+
+    await postPage.footerAuthorNameLink.hover();
+
+    const userPostingJsonMetadata = await JSON.parse(
+      (
+        await apiHelper.getAccountInfoAPI(firstPostAuthorName)
+      )['result'][0].posting_json_metadata
+    );
+
+    let userAboutAPI: any;
+    if (userPostingJsonMetadata.profile.about) {
+      userAboutAPI =
+        userPostingJsonMetadata.profile.about.slice(0, 157) +
+        (157 < userPostingJsonMetadata.profile.about.length ? '...' : '');
+      // console.log('userAboutAPI: ', await userAboutAPI);
+      expect(await postPage.userAboutHoverCard.textContent()).toBe(userAboutAPI);
+    } else {
+      userAboutAPI = '';
+      // console.log('userAboutAPI: ', await userAboutAPI);
+      expect(await postPage.userAboutHoverCard.textContent()).toBe(userAboutAPI);
+    }
+  });
 });

@@ -4,11 +4,12 @@ import Big from "big.js";
 import { FullAccount } from "@ui/store/app-types";
 import { DynamicGlobalProperties } from "./hive";
 import { convertStringToBig } from "./helpers";
+import { TFunction } from 'i18next';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
-export const blockGap = (head_block: number, last_block: number) => {
+export const blockGap = (head_block: number, last_block: number, t: TFunction<'common_wallet', undefined>) => {
   if (!last_block || last_block < 1) return "forever";
   const secs = (head_block - last_block) * 3;
   const mins = Math.floor(secs / 60);
@@ -18,14 +19,14 @@ export const blockGap = (head_block: number, last_block: number) => {
   const months = Math.floor(days / 30);
   const years = Math.floor(days / 365);
 
-  if (secs < 60) return "just now";
-  if (secs < 120) return "recently";
-  if (mins < 120) return mins + " mins ago";
-  if (hrs < 48) return hrs + " hrs ago";
-  if (days < 14) return days + " days ago";
-  if (weeks < 4) return weeks + " weeks ago";
-  if (months < 24) return months + " months ago";
-  return years + " years ago";
+  if (secs < 60) return t('witnesses_page.bock_gap.just_now');
+  if (secs < 120) return t('witnesses_page.bock_gap.recently');
+  if (mins < 120) return mins + t('witnesses_page.bock_gap.mins_ago');
+  if (hrs < 48) return hrs + t('witnesses_page.bock_gap.hrs_ago');
+  if (days < 14) return days + t('witnesses_page.bock_gap.days_ago');
+  if (weeks < 4) return weeks + t('witnesses_page.bock_gap.weeks_ago');
+  if (months < 24) return months + t('witnesses_page.bock_gap.months_ago');
+  return years + t('witnesses_page.bock_gap.years_ago');
 };
 export function getRoundedAbbreveration(
   numToRefactor: Big,

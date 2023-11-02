@@ -45,10 +45,16 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     const firstCommentCardTitle: any = await profilePage.repliesCommentListItemTitle.first().textContent();
     const firstCommentCardDescription: any = await profilePage.repliesCommentListItemDescription.first().textContent();
     const firstCommentCardDescriptionDots: any = await firstCommentCardDescription.replace(/\u2026/g, '');
+    const firstCommentCardDescriptionWitoutSpaces: any = await firstCommentCardDescriptionDots.replace(/ /g, '');
+    // console.log('firstCommentCardDescriptionDots: ', firstCommentCardDescriptionDots);
+    // console.log('firstCommentCardDescriptionWitoutSpaces: ', firstCommentCardDescriptionWitoutSpaces);
     await profilePage.repliesCommentListItemTitle.locator('a').first().click();
     await profilePage.page.waitForSelector(profilePage.repliesCommentListItemArticleTitle['_selector']);
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
-    await expect(commentViewPage.getMainCommentContent).toContainText(await firstCommentCardDescriptionDots);
+    const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
+    const commentContentWithoutSpaces: any = await commentContent.replace(/ /g, '');
+    // console.log('commentContentWithoutSpaces: ', await commentContentWithoutSpaces);
+    await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
   });
 
   test('move to the comment view page after clicking the card description', async ({ page }) => {
@@ -58,9 +64,12 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     const firstCommentCardTitle: any = await profilePage.repliesCommentListItemTitle.first().textContent();
     const firstCommentCardDescription: any = await profilePage.repliesCommentListItemDescription.first().textContent();
     const firstCommentCardDescriptionDots: any = await firstCommentCardDescription.replace(/\u2026/g, '');
+    const firstCommentCardDescriptionWitoutSpaces: any = await firstCommentCardDescriptionDots.replace(/ /g, '');
     await profilePage.repliesCommentListItemDescription.locator('a').first().click();
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
-    await expect(commentViewPage.getMainCommentContent).toContainText(firstCommentCardDescriptionDots);
+    const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
+    const commentContentWithoutSpaces: any = await commentContent.replace(/ /g, '');
+    await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
   });
 
   test('move to the profile page after clicking avatar of the first comment card', async ({ page }) => {
@@ -119,9 +128,12 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     const firstCommentCardTitle: any = await profilePage.repliesCommentListItemTitle.first().textContent();
     const firstCommentCardDescription: any = await profilePage.repliesCommentListItemDescription.first().textContent();
     const firstCommentCardDescriptionDots: any = await firstCommentCardDescription.replace(/\u2026/g, '');
+    const firstCommentCardDescriptionWitoutSpaces: any = await firstCommentCardDescriptionDots.replace(/ /g, '');
     await profilePage.repliesCommentListItemTimestamp.first().click();
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
-    await expect(commentViewPage.getMainCommentContent).toContainText(firstCommentCardDescriptionDots);
+    const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
+    const commentContentWithoutSpaces: any = await commentContent.replace(/ /g, '');
+    await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
   });
 
   test('move to the login page after clicking upvote of the first comment card', async ({ page }) => {
@@ -256,11 +268,14 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     const firstCommentCardTitle: any = await profilePage.repliesCommentListItemTitle.first().textContent();
     const firstCommentCardDescription: any = await profilePage.repliesCommentListItemDescription.first().textContent();
     const firstCommentCardDescriptionDots: any = await firstCommentCardDescription.replace(/\u2026/g, '');
+    const firstCommentCardDescriptionWitoutSpaces: any = await firstCommentCardDescriptionDots.replace(/ /g, '');
 
     await firstCommentCardRespond.click();
 
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
-    await expect(commentViewPage.getMainCommentContent).toContainText(firstCommentCardDescriptionDots);
+    const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
+    const commentContentWithoutSpaces: any = await commentContent.replace(/ /g, '');
+    await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
   });
 
   test('validate styles and tooltips of response button', async ({ page }) => {

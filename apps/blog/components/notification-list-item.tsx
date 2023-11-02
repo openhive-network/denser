@@ -1,10 +1,12 @@
 import Link from 'next/link';
 import { Icons } from '@hive/ui/components/icons';
 import { Progress } from '@hive/ui/components/progress';
-import { dateToRelative } from '@hive/ui/lib/parse-date';
+import { dateToFullRelative } from '@hive/ui/lib/parse-date';
 import { AccountNotification } from '@/blog/lib/bridge';
+import { useTranslation } from 'next-i18next';
 
 const NotificationListItem = ({ date, msg, score, type, url }: AccountNotification) => {
+  const { t } = useTranslation('common_blog');
   let icon;
   switch (type) {
     case 'vote':
@@ -53,7 +55,7 @@ const NotificationListItem = ({ date, msg, score, type, url }: AccountNotificati
             </Link>
             <span className="flex items-center gap-2 text-sm text-gray-400" data-testid="notification-timestamp">
               {icon}
-              {`${dateToRelative(date)} ago`}
+              {`${dateToFullRelative(date, t)}`}
             </span>
           </div>
         </div>

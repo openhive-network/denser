@@ -3,6 +3,7 @@ import { WitnessesPage } from '../support/pages/witnessesPage';
 import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
 import { ApiHelper } from '../support/apiHelper';
 import { HomePage } from '../../../../blog/playwright/tests/support/pages/homePage';
+import { ConfirmAccountWitnessProxyDialog } from '../support/pages/confirmAccountWitnessProxyDialog';
 import { getRoundedAbbreveration } from '@hive/ui/lib/utils';
 import moment from 'moment';
 import Big from 'big.js';
@@ -53,10 +54,10 @@ test.describe('Witnesses page tests', () => {
     let witnessByVoteAPIArray: string[] = [];
 
     for (let i = 0; i < 250; i++) {
-      if (i >= 0 && i < 100) {
+      if (i >= 0 && i < 101) {
         witnessByVoteAPIArray.push(await resWitnessesByVote.result[i].owner);
       }
-      if (i >= 100 && i < 250) {
+      if (i >= 101 && i < 250) {
         witnessLastBlockAgeInSecs =
           (headBlock -
             (await resWitnessesByVote.result[i].last_confirmed_block_num)) *
@@ -69,7 +70,7 @@ test.describe('Witnesses page tests', () => {
     }
     // Validate the length of UI witness elements and specific witnesses from api are equal
     // Displayed witnesses from api are calculated:
-    // - first 100 from api is displayed
+    // - first 101 from api is displayed
     // - next witness are displayed if last block age in secs is less than 30 days
     expect(witnessLinkNameUIArray.length).toBe(witnessByVoteAPIArray.length);
     for (let i = 0; i < witnessLinkNameUIArray.length; i++) {
@@ -376,6 +377,9 @@ test.describe('Witnesses page tests', () => {
       .locator('tr')
       .first();
 
+    // Validate the tooltip message of highlight link after hovering
+    expect(await witnessHighlightLink).toHaveAttribute('title', "Use this for linking to this page and highlight the selected witness");
+
     // Validate background-color of the first row in the rand witness table
     expect(
       await witnessesPage.getElementCssPropertyValue(
@@ -414,6 +418,9 @@ test.describe('Witnesses page tests', () => {
     const firstWitnessTableRow = await witnessesPage.witnessTableBody
       .locator('tr')
       .first();
+
+    // Validate the tooltip message of highlight link after hovering
+    expect(await witnessHighlightLink).toHaveAttribute('title', "Use this for linking to this page and highlight the selected witness");
 
     // Validate background-color of the first row in the rand witness table
     expect(
@@ -494,4 +501,38 @@ test.describe('Witnesses page tests', () => {
     await expect(witnessesPage.witnessTitle).toHaveText('Witness Voting');
     await expect(witnessesPage.witnessTableBody).toBeVisible();
   });
+
+  test('move to the confirm account witness proxy dialog by clicking Set proxy button', async ({ page }) => {
+    let confirmAccountWitnessProxyDialog = new ConfirmAccountWitnessProxyDialog(page);
+
+    const proxyBoxButton =
+      await witnessesPage.witnessSetProxyBox.locator('div button');
+
+    await witnessesPage.goToWitnessesPage();
+    await proxyBoxButton.click();
+    await confirmAccountWitnessProxyDialog.validateConfirmProxyDialogIsVisible();
+    await confirmAccountWitnessProxyDialog.closeConfirmProxyDialog();
+    await expect(witnessesPage.witnessTitle).toHaveText('Witness Voting');
+    await expect(witnessesPage.witnessTableBody).toBeVisible();
+  });
+
+  test('click ok button on the confirm account witness proxy dialog and move to the login dialog', async ({ page }) => {
+    let loginDialog = new LoginToVoteDialog(page);
+    let confirmAccountWitnessProxyDialog = new ConfirmAccountWitnessProxyDialog(page);
+
+    const proxyBoxButton =
+      await witnessesPage.witnessSetProxyBox.locator('div button');
+
+    await witnessesPage.goToWitnessesPage();
+    await proxyBoxButton.click();
+    await confirmAccountWitnessProxyDialog.validateConfirmProxyDialogIsVisible();
+    await confirmAccountWitnessProxyDialog.clickOkButtonInConfirmProxyDialog();
+    await loginDialog.validateLoginToVoteDialogIsVisible();
+    await loginDialog.closeLoginDialog();
+    await confirmAccountWitnessProxyDialog.validateConfirmProxyDialogIsVisible();
+    await confirmAccountWitnessProxyDialog.clickCancelButtonInConfirmProxyDialog();
+    await expect(witnessesPage.witnessTitle).toHaveText('Witness Voting');
+    await expect(witnessesPage.witnessTableBody).toBeVisible();
+  });
+
 });

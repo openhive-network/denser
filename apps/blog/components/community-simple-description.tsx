@@ -14,6 +14,7 @@ import {
 import { SubsListDialog } from "./subscription-list-dialog";
 import { ActivityLogDialog } from "./activity-log-dialog";
 import DialogLogin from "./dialog-login";
+import { useTranslation } from 'next-i18next';
 
 const CommunitySimpleDescription = ({
   data,
@@ -26,6 +27,7 @@ const CommunitySimpleDescription = ({
   notificationData: AccountNotification[] | null | undefined;
   username: string;
 }) => {
+  const { t } = useTranslation('common_blog');
   return (
     <Card
       className="my-4 grid h-fit w-full grid-cols-3 gap-4 p-2 dark:bg-background/95 dark:text-white"
@@ -40,7 +42,7 @@ const CommunitySimpleDescription = ({
                 className="flex flex-col items-center"
                 data-testid="community-simple-subscribers"
               >
-                {data.subscribers} subscribers
+                {data.subscribers} {t('communities.buttons.subscribers')}
               </div>
             </SubsListDialog>
             <span className="mx-1">•</span>
@@ -48,12 +50,12 @@ const CommunitySimpleDescription = ({
               className="flex flex-col items-center"
               data-testid="community-simple-active-posters"
             >
-              {data.num_authors} active
+              {data.num_authors} {t('communities.titles.active_posters')}
             </div>
           </div>
           <div className="justify-self-end whitespace-nowrap text-sm">
             <ActivityLogDialog username={username} data={notificationData}>
-              Activity Log
+            {t('communities.buttons.activity_log')}
             </ActivityLogDialog>
           </div>
         </div>
@@ -67,14 +69,14 @@ const CommunitySimpleDescription = ({
               className="w-full bg-blue-800 text-center hover:bg-blue-900"
               data-testid="community-simple-subscribe-button"
             >
-              Subscribe
+              {t('communities.buttons.subscribe')}
             </Button>
           </DialogLogin>
           <Button
             size="sm"
             className="w-full bg-blue-800 text-center hover:bg-blue-900"
           >
-            <Link href={`/submit.html?category=${data.name}`}>New Post</Link>
+            <Link href={`/submit.html?category=${data.name}`}>{t('communities.buttons.new_post')}</Link>
           </Button>
         </div>
       </CardContent>

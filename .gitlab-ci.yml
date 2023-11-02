@@ -6,7 +6,7 @@ stages:
 
 variables:
   # Variables required by Common CI jobs
-  CI_COMMON_JOB_VERSION: "bade6e0b0c68841ea0b1c001bd453e38d27a6f98"
+  CI_COMMON_JOB_VERSION: "5c42c8019dd329000fd036668b22eb3eb99a743a"
   DOCKER_BUILDER_TAG: "$CI_COMMON_JOB_VERSION"
   DOCKER_DIND_TAG: "$CI_COMMON_JOB_VERSION"
   IMAGE_REMOVER_TAG: "$CI_COMMON_JOB_VERSION"
@@ -15,7 +15,7 @@ variables:
 include:
   - template: Workflows/Branch-Pipelines.gitlab-ci.yml
   - project: 'hive/common-ci-configuration'
-    ref: bade6e0b0c68841ea0b1c001bd453e38d27a6f98 # develop
+    ref: 5c42c8019dd329000fd036668b22eb3eb99a743a # develop
     file: '/templates/docker_image_jobs.gitlab-ci.yml'
 
 .docker_build_template:

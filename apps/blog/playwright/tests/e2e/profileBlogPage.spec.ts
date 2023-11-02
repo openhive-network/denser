@@ -279,7 +279,7 @@ test.describe('Profile page of @gtg', () => {
         await postCommunityLink.first(),
         'color'
         )
-      ).toBe('rgb(100, 116, 139)');
+      ).toBe('rgb(148, 163, 184)');
 
       // Validate color of community after hovering
       await postCommunityLink.first().hover();

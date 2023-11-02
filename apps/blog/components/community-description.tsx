@@ -71,7 +71,7 @@ const CommunityDescription = ({
           </span>
         </CardHeader>
         <CardContent>
-          <div className='grid grid-cols-3 text-sm'>
+          <div className='flex gap-2 flex-wrap justify-center text-sm'>
             <SubsListDialog title={data.title} subs={subs}>
               <div
                 className='flex flex-col items-center'

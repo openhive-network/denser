@@ -8,7 +8,7 @@ import { numberWithCommas } from '@hive/ui/lib/utils';
 import { Icons } from '@hive/ui/components/icons';
 import { Button } from '@hive/ui/components/button';
 import { useSiteParams } from '@hive/ui/components/hooks/use-site-params';
-import { dateToRelative, dateToShow } from '@hive/ui/lib/parse-date';
+import { dateToFullRelative, dateToShow } from '@hive/ui/lib/parse-date';
 import Loading from '@hive/ui/components/loading';
 import { useTranslation } from 'next-i18next';
 
@@ -79,11 +79,11 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
       </p>
       <p className='my-4 flex text-slate-900 dark:text-white' data-testid='user-last-time-active'>
         <Icons.calendarActive className='mr-2' />
-        {t('cards.user_profil.joined')} {profileData?.last_post ? dateToRelative(profileData.last_post) : null} ago
+        {t('cards.user_profil.joined')} {profileData?.last_post ? dateToFullRelative(profileData.last_post, t) : null}
       </p>
       <p className='my-4 flex text-slate-900 dark:text-white' data-testid='user-joined'>
         <Icons.calendarHeart className='mr-2' />
-        {t('cards.user_profil.active')} {profileData?.created ? dateToShow(profileData.created) : null}
+        {t('cards.user_profil.active')} {profileData?.created ? dateToShow(profileData.created, t) : null}
       </p>
       <p className='my-4 flex text-slate-900 dark:text-white' data-testid='user-location'>
         <Icons.mapPin className='mr-2' />

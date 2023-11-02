@@ -1,8 +1,49 @@
 {
-  "test": "raz dwa trzy cztery",
-  "all_posts": "All posts",
   "global": {
-    "time": ""
+    "loading": "Loading",
+    "something_went_wrong": "Something went wrong",
+    "time_ago": {
+      "a_few_seconds": " a few seconds ago",
+      "seconds": " seconds ago",
+      "minutes": " minutes ago",
+      "a_minute": " a minute ago",
+      "hours" :" hours ago",
+      "an_hour": " an hour ago",
+      "days": " days ago",
+      "a_day": " a day ago",
+      "months": " months ago",
+      "a_month": " a month ago",
+      "years": " years ago",
+      "a_year": " a year ago"
+    },
+    "months": {
+      "first": "January",
+      "second": "February",
+      "third": "March",
+      "fourth": "April",
+      "fifth": "May",
+      "sixth": "June",
+      "seventh": "July",
+      "eighth": "August",
+      "ninth": "September",
+      "tenth": "October",
+      "eleventh": "November",
+      "twelfth": "December"
+    },
+    "time": {
+      "a_few_seconds": " a few seconds",
+      "seconds": " seconds",
+      "minutes": " minutes",
+      "a_minute": " a minute",
+      "hours" :" hours",
+      "an_hour": " an hour",
+      "days": " days",
+      "a_day": " a day",
+      "months": " months",
+      "a_month": " a month",
+      "years": " years",
+      "a_year": " a year"
+    }
   },
   "navigation": {
     "main_nav_bar": {
@@ -12,7 +53,10 @@
       "out_dapps": "Our dApps",
       "login": "Login",
       "sign_up": "Sign up",
-      "search": "Search..."
+      "search": "Search...",
+      "light": "Light",
+      "dark": "Dark",
+      "system" :"System"
     },
     "sidebar": {
       "welcome": "Welcome",
@@ -77,7 +121,13 @@
       "payouts": "Payouts",
       "muted": "Muted"
     },
+    "communitie_sort":{
+      "rank": "Rank",
+      "subscribers": "Subscribers",
+      "new": "New"
+    },
     "sort_comments": {
+      "sort": "Sort:",
       "trending": "Trending",
       "votes": "Votes",
       "age": "Age"
@@ -106,6 +156,14 @@
       "responses": "{{responses}} responses. ",
       "click_to_respond": "Click to respond",
       "reblog": "Reblog"
+    },
+    "comment_card": {
+      "reveal_comment": "Reveal Comment",
+      "one_reply": "reply",
+      "replies": "replies",
+      "reply": "Reply",
+      "will_be_hidden": "Will be hidden due to low rating ",
+      "load_more": "Load more"
     }
   },
   "amount_hover_card": {
@@ -114,7 +172,8 @@
     "payout_in": "Payout in",
     "past_payouts": "Past Payouts ${{value}}",
     "author": "Author ${{value}}",
-    "curators": "Curators ${{value}}"
+    "curators": "Curators ${{value}}",
+    "max_accepted_payout": "Max accepted payout: ${{value}}"
   },
   "login_form": {
     "title": "Returning Users: ",
@@ -126,7 +185,8 @@
     "keep_me_logged_in": "Keep me logged in",
     "more_login_methods": "more login methods",
     "login_button": "Login",
-    "cancel_button": "Cancel"
+    "cancel_button": "Cancel",
+    "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password."
   },
   "user_profil": {
     "reputation": "Reputation",
@@ -135,6 +195,13 @@
     "twitter_badge_title": "To get the Twitter badge, link your account at HivePosh.com",
     "joined": "Joined",
     "active": "Active",
+    "no_posts_yet":"Looks like @{{username}} hasn't made any posts yet!",
+    "no_blogging_yet":"Looks like @{{username}} hasn't started blogging yet!",
+    "no_pending_payouts": "No pending payouts.",
+    "load_newer": "Load Newer",
+    "nothing_more_to_load": "Nothing more to load",
+    "no_replies_yet": "@{{username}} hasn't had any replies yet.",
+    "no_notifications_yet": "@{{username}} hasn't had any notifications yet.",
     "lists": {
       "follower_count": {
         "zero": "No followers",
@@ -185,7 +252,8 @@
       "community_subscriptions_title": "Community Subscriptions",
       "the_author_has_subscribed_to_the_following": "The author has subscribed to the following Hive Communities",
       "badges_and_achievements_title": "Badges and achievements",
-      "these_are_badges_received_by_the_author": "These are badges received by the author via the third-party apps "
+      "these_are_badges_received_by_the_author": "These are badges received by the author via the third-party apps ",
+      "you_dont_have_any_subscriptions": "Welcome! You don't have any subscriptions yet."
     },
     "notifications_tab": {
       "voted_on_your_post": "@{{username}} voted on your post {{amount}}",
@@ -198,7 +266,17 @@
     }
   },
   "communities": {
+    "admin": "admin",
+    "admins": "admins",
+    "subscribers": "subscribers",
+    "authors": "authors",
+    "posts": "posts",
+    "communities": "Communities",
+    "community": "Community",
+    "search": "Search...",
+    "no_results": "No results for your search",
     "latest_subscribers": "Latest {{username}} Subscribers",
+    "unmoderated_tag": "Unmoderated tag",
     "buttons": {
       "subscribe": "Subscribe",
       "new_post": "New post",
@@ -231,7 +309,18 @@
       },
       "edited": "edited"
     },
+    "body": {
+      "images_were_hidden": "Images were hidden due to low ratings.",
+      "show": "Show",
+      "Image_not_shown": "Image not shown due to low ratings",
+      "leave_this_app": "You are about to leave this app.",
+      "the_link_youve_clicked": "The link you've clicked on will lead you to the following website:",
+      "we_are_just_verifying": "We are just verifying with you that you want to continue.",
+      "open_link": "Open Link"
+    },
     "footer": {
+      "and_more": "and {{value}} more",
+      "in": "in",
       "by": "by",
       "upvote": "Upvote",
       "downvote": "Downvote",
@@ -252,6 +341,17 @@
         "markdown_code_for_a_link_to_this_post": "Markdown code for a link to this post:",
         "open_in_alternative": "Open in alternative Hive dApps",
         "open_in": "Open in Block Explorers"
+      },
+      "comment":{
+        "disable_editor": "Disable side-by-side editor",
+        "reply": "Reply",
+        "insert_images": "Insert images by dragging & dropping, pasting from the clipboard, or by ",
+        "selecting_them": "selecting them.",
+        "post": "Post",
+        "cancel": "Cancel",
+        "preview": "Preview",
+        "markdown_styling_guide": "Markdown Styling Guide",
+        "exit_editor":"Are you sure you want to exit the comment editor?"
       }
     }
   },

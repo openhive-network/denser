@@ -532,7 +532,7 @@ function TransfersPage({
           </tbody>
         </table>
         {powerdown_hive.gt(0) ? (
-          <div className='p-2 sm:p-4 text-sm w-full'>
+          <div className='p-2 sm:p-4 text-sm'>
             {t('profil.the_next_power_down')} {totalDays}{' '}
             {totalDays !== 1 ? ' days' : 'day'}(~
             {numberWithCommas(powerdown_hive.toFixed(3))} HIVE)
@@ -590,7 +590,7 @@ const HistoryTable = ({
   return (
     <table className='p-2 w-full max-w-6xl'>
       <tbody>
-      {historyList.reverse().map((element) =>
+      {[...historyList].reverse().map((element) =>
         !element.operation ? null : (
           <tr
             key={element.id}
@@ -598,7 +598,7 @@ const HistoryTable = ({
             data-testid="wallet-account-history-row"
           >
             <td className='px-4 py-2 sm:min-w-[150px]'>
-              {dateToFullRelative(element.timestamp)}
+              {dateToFullRelative(element.timestamp, t)}
             </td>
             <td className='px-4 py-2 sm:min-w-[300px]'>
               {historyItemDescription(element.operation)}
@@ -607,7 +607,7 @@ const HistoryTable = ({
               <td className='break-all px-4 py-2 hidden sm:block'>
                 {element.operation.memo}
               </td>
-            ) : null}
+            ) : <td></td>}
           </tr>
         )
       )}

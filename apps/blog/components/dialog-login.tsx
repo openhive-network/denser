@@ -36,7 +36,7 @@ function DialogLogin({ children }: { children: ReactNode }) {
                   required
                 />
                 <p className='text-sm text-gray-400'>
-                  This operation requires your Posting key or Master password.
+                  {t('login_form.this_operation_requires_your_key_or_master_password',{authType: 'Posting'})}
                 </p>
               </div>
               <div className='my-6 flex w-full flex-col'>

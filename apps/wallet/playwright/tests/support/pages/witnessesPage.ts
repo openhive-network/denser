@@ -20,6 +20,7 @@ export class WitnessesPage {
   readonly witnessSetProxyBox: Locator;
   readonly witnessCreated: Locator;
   readonly witnessVoteIcon: Locator;
+  readonly witnessHasNotProducedBlocksWarning: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -41,6 +42,7 @@ export class WitnessesPage {
     this.witnessSetProxyBox = page.locator('[data-testid="witnesses-set-proxy-box"]');
     this.witnessCreated = page.locator('[data-testid="witness-created"]');
     this.witnessVoteIcon = page.locator('[data-testid="witness-vote"]');
+    this.witnessHasNotProducedBlocksWarning = page.locator('[data-testid="witness-has-not-produced-blocks-warning"]');
   }
 
   async goToWitnessesPage() {

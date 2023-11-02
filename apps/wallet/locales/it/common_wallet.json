@@ -1,13 +1,71 @@
 {
   "global": {
-    "time": "",
-    "loading": "Caricamento",
-    "something_went_wrong": "Something went wrong"
+    "loading": "Loading",
+    "something_went_wrong": "Something went wrong",
+    "time_ago": {
+      "a_few_seconds": " a few seconds ago",
+      "seconds": " seconds ago",
+      "minutes": " minutes ago",
+      "a_minute": " a minute ago",
+      "hours" :" hours ago",
+      "an_hour": " an hour ago",
+      "days": " days ago",
+      "a_day": " a day ago",
+      "months": " months ago",
+      "a_month": " a month ago",
+      "years": " years ago",
+      "a_year": " a year ago"
+    },
+    "months": {
+      "first": "January",
+      "second": "February",
+      "third": "March",
+      "fourth": "April",
+      "fifth": "May",
+      "sixth": "June",
+      "seventh": "July",
+      "eighth": "August",
+      "ninth": "September",
+      "tenth": "October",
+      "eleventh": "November",
+      "twelfth": "December"
+    },
+    "months_short_form": {
+      "first": "Jan",
+      "second": "Feb",
+      "third": "Mar",
+      "fourth": "Apr",
+      "fifth": "May",
+      "sixth": "Jun",
+      "seventh": "Jul",
+      "eighth": "Aug",
+      "ninth": "Sep",
+      "tenth": "Oct",
+      "eleventh": "Nov",
+      "twelfth": "Dec"
+    },
+    "time": {
+      "a_few_seconds": " a few seconds",
+      "seconds": " seconds",
+      "minutes": " minutes",
+      "a_minute": " a minute",
+      "hours" :" hours",
+      "an_hour": " an hour",
+      "days": " days",
+      "a_day": " a day",
+      "months": " months",
+      "a_month": " a month",
+      "years": " years",
+      "a_year": " a year"
+    }
   },
   "navigation": {
     "main_nav_bar": {
       "login": "Login",
-      "sign_up": "Registrati"
+      "sign_up": "Sign up",
+      "light": "Light",
+      "dark": "Dark",
+      "system" :"System"
     },
     "sidebar": {
       "welcome": "Benvenuto",
@@ -97,7 +155,13 @@
     "received_from_user": "Received {{value}} from ",
     "claim_rewards": "Claim rewards: ",
     "and": " and ",
-    "account_history_description": "Beware of spam and phishing links in transfer memos. Do not open links from users you do not trust. Do not provide your private keys to any third party websites. Transactions will not show until they are confirmed on the blockchain, which may take a few minutes."
+    "account_history_description": "Beware of spam and phishing links in transfer memos. Do not open links from users you do not trust. Do not provide your private keys to any third party websites. Transactions will not show until they are confirmed on the blockchain, which may take a few minutes.",
+    "estimated_author_rewards_last_week":"Estimated author rewards last week:",
+    "author_rewards_history":"Author Rewards History",
+    "newer":"Newer",
+    "older":"Older",
+    "estimated_curation_rewards_last_week":"Estimated curation rewards last week:",
+    "curation_rewards_history":"Curation Rewards History"
   },
   "market_page": {
     "last_price": "Ultimo prezzo",
@@ -154,12 +218,23 @@
     "proxy_form": {
       "title": "Confirm Account Witness Proxy",
       "description": "You are about to remove your proxy.",
-      "set_proxy_to:": "Set proxy to: {{proxy}}",
+      "set_proxy_to": "Set proxy to: {{proxy}}",
       "cancel_button": "Cancella",
       "ok": "OK"
+    },
+    "bock_gap": {
+      "just_now": " just now",
+      "recently": " recently",
+      "mins_ago": " mins ago",
+      "hrs_ago": " hrs ago",
+      "days_ago": " days ago",
+      "weeks_ago": " weeks ago",
+      "months_ago": " months ago",
+      "years_ago": " years ago"
     }
   },
   "proposals_page": {
+    "daily":"Daily",
     "proposals": "Proposals",
     "started": "started",
     "finished": "finished",
@@ -182,5 +257,36 @@
     "login_button": "Login",
     "cancel_button": "Cancella",
     "this_operation_requires_your_key_or_master_password": "Per eseguire l'operazione è necessaria la propria chiave {{authType}}o Master password. "
+  },
+  "change_password_page": {
+    "change_password": "Cambia Password",
+    "account_name": "Nome Account",
+    "current_password": "Password attuale",
+    "recover_password": "Recupera Account",
+    "generated_password": "Password generata",
+    "new": "Nuovo",
+    "click_to_generate_password": "Clicca per generare una password",
+    "re_enter_generate_password": "Inserisci di nuovo la Password Generata",
+    "understand_that": "Ho capito che Hive non può recuperare le password perse",
+    "i_saved_password": "Ho salvato in modo sicuro la mia password generata automaticamente",
+    "update_password": "Aggiorna la password",
+    "required": "Richiesto",
+    "account_name_should_be_longer": "Il nome dell'account deve essere più lungo.",
+    "backup_password_by_storing_it": "Effettua il backup copiando la password in un file di testo o in un gestore di password. ",
+    "passwords_do_not_match": "Le password non corrispondono",
+    "the_rules": {
+      "one": "La prima regola di Hive è: Non perdere la tua password.",
+      "second": "La seconda regola di Hive è: Non perdere la tua password.",
+      "third": "La terza regola di Hive è: Non possiamo recuperare la tua password.",
+      "fourth": "La quarta regola è: Se puoi ricordare la password, non è sicura.",
+      "fifth": "La quinta regola è: Usa solo password generate in modo casuale.",
+      "sixth": "La sesta regola è: Non dire a nessuno la tua password.",
+      "seventh": "La settima regola è: Salva sempre la tua password."
   }
+},
+"four_oh_four": {
+  "this_page_does_not_exist": "Sorry! This page does not exist.",
+  "not_to_worry": "Not to worry. You can head back to",
+  "our_homepage": "our homepage"
+}
 }

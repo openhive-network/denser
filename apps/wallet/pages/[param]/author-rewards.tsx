@@ -5,10 +5,12 @@ import { Button } from '@hive/ui';
 import { getAccount } from '@hive/ui/lib/hive';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/wallet/next-i18next.config';
+import { useTranslation } from 'next-i18next';
 
 function AuthorRewardsPage({
                              username
                            }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const { t } = useTranslation('common_wallet');
   const {
     data: accountData,
     isLoading: accountLoading,
@@ -21,7 +23,7 @@ function AuthorRewardsPage({
     <ProfileLayout>
       <div>
         <div className='text-sm flex flex-col sm:flex-row sm:justify-between p-2 sm:p-4 border-b-2'>
-          <div>Estimated author rewards last week:</div>
+          <div>{t('profil.estimated_author_rewards_last_week')}</div>
           <div className='flex flex-col'>
             <div className='flex flex-col'>
               <span>0.000 HIVE POWER</span>
@@ -31,13 +33,13 @@ function AuthorRewardsPage({
           </div>
         </div>
         <div className='flex flex-col gap-4 p-2 sm:p-4'>
-          <h4 className='text-lg'>Author Rewards History</h4>
+          <h4 className='text-lg'>{t('profil.author_rewards_history')}</h4>
           <div className='flex justify-between'>
             <Button variant='outlineRed' size='sm' disabled>
-              Newer
+            {t('profil.newer')}
             </Button>
             <Button variant='outlineRed' size='sm' disabled>
-              Older
+            {t('profil.older')}
             </Button>
           </div>
         </div>

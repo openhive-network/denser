@@ -1,4 +1,4 @@
-import parseDate, { dateToRelative } from '@hive/ui/lib/parse-date';
+import parseDate, { dateToFullRelative } from '@hive/ui/lib/parse-date';
 import { Clock, Link2 } from 'lucide-react';
 import UserInfo from '@/blog/components/user-info';
 import { getActiveVotes } from '@/blog/lib/hive';
@@ -236,7 +236,7 @@ function PostPage({
             {findLinks(post_s.body).map((e) =>
               isImageLink(e) ? (
                 <Link href={e} className='text-red-500' key={e}>
-                  (Image not shown due to low ratings)
+                  ({t('post_content.body.Image_not_shown')})
                 </Link>
               ) : (
                 <LeavePageDialog link={e} key={e}>
@@ -260,9 +260,9 @@ function PostPage({
           <>
             <Separator />
             <div className='text-red-500 my-8 flex items-center justify-between'>
-              Images were hidden due to low ratings.{' '}
+              {t('post_content.body.images_were_hidden')}
               <Button variant='outlineRed' onClick={() => setMutedPost(false)}>
-                Show
+                {t('post_content.body.show')}
               </Button>
             </div>
           </>
@@ -288,12 +288,12 @@ function PostPage({
           data-testid='author-data-post-footer'
         >
           <div className='my-4 flex justify-between'>
-            <div className='flex flex-wrap'>
+            <div className='flex flex-wrap items-center'>
               <Clock />
               <span className='px-1' title={String(parseDate(post_s.created))}>
-                {dateToRelative(post_s.created)} ago
+                {dateToFullRelative(post_s.created, t)}
               </span>
-              in
+              {t('post_content.footer.in')}
               <span className='px-1 text-red-600'>
                 {post_s.community_title ? (
                   <Link
@@ -313,7 +313,7 @@ function PostPage({
                   </Link>
                 )}
               </span>
-              by
+              {t('post_content.footer.by')}
               <UserHoverCard
                 author={post_s.author}
                 author_reputation={post_s.author_reputation}
@@ -341,7 +341,7 @@ function PostPage({
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>
-                      Reblog @{post_s.author}/{post_s.permlink}
+                      {t('post_content.footer.reblog')} @{post_s.author}/{post_s.permlink}
                     </p>
                   </TooltipContent>
                 </Tooltip>
@@ -352,7 +352,7 @@ function PostPage({
                 className='flex items-center text-red-600'
                 data-testid='comment-reply'
               >
-                Reply
+                {t('post_content.footer.reply')}
               </button>
               <span className='mx-1'>|</span>
               <TooltipProvider>
@@ -381,10 +381,10 @@ function PostPage({
                   <TooltipContent>
                     <p>
                       {post_s.children === 0
-                        ? 'No responses'
+                        ? t('post_content.footer.no_response')
                         : post_s.children === 1
-                          ? post_s.children + ' response'
-                          : post_s.children + ' responses'}
+                          ? t('post_content.footer.response')
+                          : t('post_content.footer.responses', {responses: post_s.children}) }
                     </p>
                   </TooltipContent>
                 </Tooltip>
@@ -405,7 +405,7 @@ function PostPage({
                           className='h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white' />
                       </DialogLogin>
                     </TooltipTrigger>
-                    <TooltipContent>Upvote</TooltipContent>
+                    <TooltipContent>{t('post_content.footer.upvote')}</TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
                 <TooltipProvider>
@@ -416,7 +416,7 @@ function PostPage({
                           className='h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white' />
                       </DialogLogin>
                     </TooltipTrigger>
-                    <TooltipContent>Downvote</TooltipContent>
+                    <TooltipContent>{t('post_content.footer.downvote')}</TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </div>
@@ -440,10 +440,9 @@ function PostPage({
                 <DetailsCardVoters post={post_s}>
                   {post_s.stats?.total_votes && post_s.stats?.total_votes !== 0 ?
                     <span className='text-xs text-red-500 sm:text-sm'>
-                    {post_s.stats?.total_votes}
                       {post_s.stats?.total_votes > 1
-                        ? ' votes'
-                        : ' vote'}
+                        ? t('post_content.footer.votes', {votes: post_s.stats?.total_votes})
+                        : t('post_content.footer.vote')}
                   </span> : null}
                 </DetailsCardVoters>
               ) : null}
@@ -470,7 +469,7 @@ function PostPage({
       {!isLoadingDiscussion && discussion && discussionState ? (
         <div className='mx-auto my-0 max-w-4xl py-4 pr-8'>
           <div className='flex items-center justify-end pb-4' translate='no'>
-            <span>Sort: </span>
+            <span>{t('select_sort.sort_comments.sort')}</span>
             <CommentSelectFilter />
           </div>
           <DynamicComments

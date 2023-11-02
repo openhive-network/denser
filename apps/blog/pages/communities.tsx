@@ -12,9 +12,11 @@ import { Separator } from '@ui/components';
 import { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
+import { useTranslation } from 'next-i18next';
 
 export default function CommunitiesPage() {
-  const [sort, setSort] = useState('rank');
+const { t } = useTranslation('common_blog')
+const [sort, setSort] = useState('rank');
   const [inputQuery, setInputQuery] = useState<string>('');
   const [query, setQuery] = useState<string | null>();
   const {
@@ -47,7 +49,7 @@ export default function CommunitiesPage() {
         </div>
         <div className='col-span-12 md:col-span-8'>
           <div className='mt-4 flex items-center justify-between'>
-            <span className='text-sm font-medium sm:text-xl'>Communities</span>
+            <span className='text-sm font-medium sm:text-xl'>{t('communities.communities')}</span>
             {/* <Link className="text-sm font-medium text-red-600 dark:hover:text-red-800" href={'/'}>
               Create a Community
             </Link> */}
@@ -64,7 +66,7 @@ export default function CommunitiesPage() {
                 type='search'
                 id='search'
                 value={inputQuery}
-                placeholder='Search...'
+                placeholder={t('communities.search')}
                 autoComplete='off'
                 className='bg-white dark:bg-background/95 dark:text-white block p-4 pl-10 text-sm rounded-full'
                 onChange={(e) => setInputQuery(e.target.value)}
@@ -80,7 +82,7 @@ export default function CommunitiesPage() {
           {communitiesData && communitiesData?.length > 0 ? (
             <CommunitiesList data={communitiesData} />
           ) : (
-            <div className='w-full py-4'>No results for your search</div>
+            <div className='w-full py-4'>{t('communities.no_results')}</div>
           )}
         </div>
         <div className='hidden lg:flex xl:col-span-2'>

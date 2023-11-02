@@ -26,7 +26,7 @@ export function UserHoverCard({ author, author_reputation, blacklist, withImage 
         ({accountReputation(author_reputation)})
       </span>
       {blacklist && blacklist[0] ? (
-        <span className='text-red-600' title={blacklist[0]}>
+        <span className='text-red-600 mr-1' title={blacklist[0]}>
             ({blacklist.length})
           </span>
       ) : null}

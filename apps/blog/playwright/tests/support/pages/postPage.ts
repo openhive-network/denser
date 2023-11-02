@@ -49,6 +49,7 @@ export class PostPage {
   readonly getCommentFilterList: Locator;
   readonly postImage: Locator;
   readonly footerAuthorName: Locator;
+  readonly footerAuthorNameLink: Locator;
   readonly postLabel: Locator;
   readonly postLabelFooter: Locator;
   readonly footerCommunityLink: Locator;
@@ -74,6 +75,7 @@ export class PostPage {
   readonly postFooterVotes: Locator;
   readonly postsCommentsTab: Locator;
   readonly postsCommentsFirstAvatar: Locator;
+  readonly mutedPostsBannedImageText: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -88,8 +90,9 @@ export class PostPage {
     this.articleAuthorData = page.locator('[data-testid="author-data"]');
     this.articleAuthorName = this.articleAuthorData.locator('a div');
     this.articleFooter = page.locator('[data-testid="author-data-post-footer"]');
-    this.footerAuthorName = page.locator('[data-testid="author-name-link"]').last()
-    this.footerAuthorNameFirst = page.locator('[data-testid="author-name-link"]').first()
+    this.footerAuthorNameLink = this.articleFooter.locator('[data-testid="author-name-link"]');
+    this.footerAuthorName = page.locator('[data-testid="author-name-link"]').last();
+    this.footerAuthorNameFirst = page.locator('[data-testid="author-name-link"]').first();
     this.userHoverCard = page.locator('[data-testid="user-hover-card-content"]');
     this.userHoverCardAvatar = page.locator('[data-testid="hover-card-user-avatar"]');
     this.userHoverCardName = page.locator('[data-testid="hover-card-user-name"]');
@@ -149,6 +152,7 @@ export class PostPage {
     this.postFooterVotes = page.locator('[data-testid="author-data-post-footer"] [data-testid="comment-votes"]');
     this.postsCommentsTab = page.getByRole('tab', { name: 'Comments' });
     this.postsCommentsFirstAvatar = page.locator('[data-testid="comment-author-avatar"]').first()
+    this.mutedPostsBannedImageText = page.locator('#articleBody .text-red-500').first()
   }
 
   async gotoHomePage() {
@@ -165,7 +169,7 @@ export class PostPage {
 
   async moveToTheFirstPostInHomePageByImage() {
     const homePage = new HomePage(this.page);
-    const firstPostAuthorAndReputation = (await homePage.getFirstPostAuthorReputation.innerText())
+    const firstPostAuthor = (await homePage.getFirstPostAuthor.innerText())
       .trim()
       .replace(' ', '')
       .replace('\n', '');
@@ -176,12 +180,12 @@ export class PostPage {
 
     await expect(this.articleTitle).toBeVisible();
     // console.log('Author: ', await this.articleAuthorName.textContent())
-    expect(firstPostAuthorAndReputation.toString()).toContain(await this.articleAuthorName.textContent());
+    expect(firstPostAuthor.toString()).toContain(await this.articleAuthorName.textContent());
   }
 
   async moveToTheFirstPostInHomePageByPostTitle() {
     const homePage = new HomePage(this.page);
-    const firstPostAuthorAndReputation = (await homePage.getFirstPostAuthorReputation.innerText())
+    const firstPostAuthor = (await homePage.getFirstPostAuthor.innerText())
       .trim()
       .replace(' ', '')
       .replace('\n', '');
@@ -192,7 +196,7 @@ export class PostPage {
 
     await expect(this.articleTitle).toBeVisible();
     // expect(await this.articleAuthorName.textContent()).toBe(firstPostAuthorAndReputation);
-    // expect(firstPostAuthorAndReputation.toString()).toContain(await this.articleAuthorName.textContent());
+    expect(firstPostAuthor.toString()).toContain(await this.articleAuthorName.textContent());
     // expect(await this.articleTitle.textContent()).toBe(firstPostTitleHomePage);
   }
 
