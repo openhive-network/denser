@@ -98,6 +98,7 @@ export default function LoginPage({
     } catch (error) {
       logger.error('onSubmit error in makeSignatures', error);
       setErrorMsg('Signing data for login failed');
+      return;
     }
 
     logger.info({signatures});
@@ -119,14 +120,13 @@ export default function LoginPage({
       )
     } catch (error) {
       if (error instanceof FetchError) {
-        logger.info('onSubmit FetchError', error);
+        logger.error('onSubmit FetchError', error);
         // setErrorMsg(error.data.error?.message
-        //     || 'Fetching data from Hive API server failed');
-        setErrorMsg('Fetching data from Hive API server failed');
+        //     || 'Login failed');
       } else {
         logger.error('onSubmit unexpected error', error);
-        setErrorMsg('Unexpected error');
       }
+      setErrorMsg('Login failed');
     }
   };
 
