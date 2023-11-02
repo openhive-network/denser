@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { withIronSessionSsr } from "iron-session/next";
 import secureRandom from 'secure-random';
-import { KeyRole, PrivateKey, cryptoUtils } from '@hiveio/dhive';
+import { KeyRole, PrivateKey, cryptoUtils, HexBuffer } from '@hiveio/dhive';
 import { KeychainKeyTypes, KeychainKeyTypesLC } from 'hive-keychain-commons';
 import { LoginForm, LoginFormData } from "@/auth/components/login-form";
 import { useUser } from '@/auth/lib/use-user';
@@ -53,7 +53,7 @@ export default function LoginPage({
           );
         });
         if (response.success) {
-          logger.info({signature: response.result});
+          logger.info('keychain', {signature: response.result});
           signatures.posting = response.result;
         } else {
           throw new Error(response.error);
@@ -66,9 +66,12 @@ export default function LoginPage({
         const privateKey = PrivateKey.fromString(password);
         const bufSha = cryptoUtils.sha256(message);
         const signature = privateKey.sign(bufSha).toString();
-        logger.info({signature});
+        logger.info('password', {signature});
         signatures.posting = signature;
-      } catch (error) {
+        //
+        // TODO We need to save password on client side.
+        //
+    } catch (error) {
         throw error;
       }
     }
@@ -94,7 +97,7 @@ export default function LoginPage({
       signatures = await makeSignatures(loginType, username, password);
     } catch (error) {
       logger.error('onSubmit error in makeSignatures', error);
-      setErrorMsg('Error in signing data for login');
+      setErrorMsg('Signing data for login failed');
     }
 
     logger.info({signatures});
@@ -118,9 +121,9 @@ export default function LoginPage({
       if (error instanceof FetchError) {
         logger.info('onSubmit FetchError', error);
         // setErrorMsg(error.data.error?.message
-        //     || 'Error in fetching data from Hive API server');
-        setErrorMsg('Error in fetching data from Hive API server');
-        } else {
+        //     || 'Fetching data from Hive API server failed');
+        setErrorMsg('Fetching data from Hive API server failed');
+      } else {
         logger.error('onSubmit unexpected error', error);
         setErrorMsg('Unexpected error');
       }

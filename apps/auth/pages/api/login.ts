@@ -47,30 +47,27 @@ const verifySignatures = async (
   logger.info(`Starting verifySignatures for user ${chainAccount.name}`);
 
   const verify = (
-      type: KeyRole,
+      keyRole: KeyRole,
       sigHex: string,
-      pubkey: string,
+      pubkey: string | PublicKey,
       weight: number,
       weight_threshold: number
       ) => {
     logger.info('Starting verify');
-    logger.info({type, sigHex, pubkey, weight, weight_threshold});
+    logger.info({keyRole, sigHex, pubkey, weight, weight_threshold});
     if (!sigHex) return;
     if (weight !== 1 || weight_threshold !== 1) {
       console.error(
-        `/login_account login_challenge unsupported ${type} auth configuration: ${chainAccount.name}`
+        `loginUser unsupported ${keyRole} auth configuration for user ${chainAccount.name}`
       );
     } else {
       const sig = Signature.fromString(sigHex);
-      const public_key = PublicKey.fromString(pubkey);
+      let publicKey = PublicKey.from(pubkey);
       const bufSha = cryptoUtils.sha256(message);
-      const verified = public_key.verify(bufSha, sig);
-
-      logger.info(verified);
-
+      const verified = publicKey.verify(bufSha, sig);
       if (!verified) {
         console.error(
-          '/login_account verification failed'
+          'loginUser signature verification failed'
         );
       }
       return verified;
@@ -83,7 +80,7 @@ const verifySignatures = async (
       weight_threshold,
     },
   } = chainAccount;
-  const result = verify('posting', signatures.posting,
+  const result = verify('posting', signatures.posting || '',
     posting_pubkey, weight, weight_threshold);
   return result;
 };
