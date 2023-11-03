@@ -10,6 +10,9 @@ import { fetchJson, FetchError } from '@/auth/lib/fetch-json';
 import { getLogger } from "@hive/ui/lib/logging";
 import { sessionOptions } from '@/auth/lib/session';
 import { Signatures, LoginData, LoginTypes } from '@/auth/pages/api/login';
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { i18n } from 'next-i18next.config';
 
 const logger = getLogger('app');
 
@@ -17,7 +20,7 @@ export default function LoginPage({
   loginChallenge
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
-  logger.info('bamboo LoginPage loginChallenge', loginChallenge);
+  const { t } = useTranslation('common_auth');
 
   // Here we just check if user is already logged in and we redirect him
   // to profile page, if he is.
@@ -28,7 +31,8 @@ export default function LoginPage({
 
   const [errorMsg, setErrorMsg] = useState('');
 
-  // Create signed message for sending to back-end.
+  // Create a signature of message (login challenge) for sending to
+  // back-end for verification.
   const makeSignatures = async (
         loginType: LoginTypes,
         username: string,
@@ -97,7 +101,7 @@ export default function LoginPage({
       signatures = await makeSignatures(loginType, username, password);
     } catch (error) {
       logger.error('onSubmit error in makeSignatures', error);
-      setErrorMsg('Signing data for login failed');
+      setErrorMsg(t('pageLogin.signingFailed'));
       return;
     }
 
@@ -122,11 +126,11 @@ export default function LoginPage({
       if (error instanceof FetchError) {
         logger.error('onSubmit FetchError', error);
         // setErrorMsg(error.data.error?.message
-        //     || 'Login failed');
+        //     || t('pageLogin.loginFailed'));
       } else {
         logger.error('onSubmit unexpected error', error);
       }
-      setErrorMsg('Login failed');
+      setErrorMsg(t('pageLogin.loginFailed'));
     }
   };
 
@@ -154,6 +158,9 @@ export const getServerSideProps: GetServerSideProps = withIronSessionSsr(
     return {
       props: {
         loginChallenge,
+        ...(await serverSideTranslations(
+          req.cookies.NEXT_LOCALE! || i18n.defaultLocale,
+          ['common_auth'])),
       },
     };
   },

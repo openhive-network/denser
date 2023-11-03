@@ -1,15 +1,26 @@
-import { lazy, Suspense } from "react";
-import type { AppProps } from "next/app";
 import "@hive/tailwindcss-config/globals.css";
+import type { AppProps } from "next/app";
+import { lazy, Suspense, useEffect } from "react";
+import { appWithTranslation } from 'next-i18next';
+import { i18n } from 'next-i18next.config';
+import { parseCookie } from '@/auth/lib/utils';
 
 const Providers = lazy(() => import("@/auth/components/common/providers"));
 
-export default function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   // Log Git revision details in browser's console.
   if (typeof window !== 'undefined' && window) {
     console.info('GIT VERSION', GIT_VERSION, GIT_COMMITHASH, GIT_BRANCH,
         GIT_LASTCOMMITDATETIME);
   }
+
+  useEffect(() => {
+    const cookieStore = parseCookie(document.cookie);
+    if (!cookieStore.hasOwnProperty('NEXT_LOCALE')) {
+      document.cookie = `NEXT_LOCALE=${i18n.defaultLocale};path=/`;
+    }
+  }, []);
+
   return (
     <Suspense fallback={<span>Loading...</span>}>
       <Providers>
@@ -18,3 +29,5 @@ export default function App({ Component, pageProps }: AppProps) {
     </Suspense>
   );
 }
+
+export default appWithTranslation(App);
