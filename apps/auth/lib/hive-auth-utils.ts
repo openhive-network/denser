@@ -2,7 +2,7 @@ import QRious from 'qrious';
 import { PublicKey, Signature, hash } from '@hiveio/hive-js/lib/auth/ecc';
 import { HasClient } from 'hive-auth-client';
 
-import { isLoggedIn, extractLoginData } from 'app/utils/UserUtil';
+// import { isLoggedIn, extractLoginData } from 'app/utils/UserUtil';
 
 const client = new HasClient('hive-auth.arcange.eu', '', true);
 
@@ -29,19 +29,19 @@ const setKey = (key) => {
     auth.key = key;
 };
 
-const isLoggedInWithHiveAuth = () => {
-    if (!isLoggedIn()) {
-        return false;
-    }
+// const isLoggedInWithHiveAuth = () => {
+//     if (!isLoggedIn()) {
+//         return false;
+//     }
 
-    const now = new Date().getTime();
-    const data = localStorage.getItem('autopost2');
-    const [,,,,,,,, login_with_hiveauth, hiveauth_key, hiveauth_token, hiveauth_token_expires] = extractLoginData(data);
-    return !!login_with_hiveauth
-        && !!hiveauth_key
-        && !!hiveauth_token
-        && now < hiveauth_token_expires;
-};
+//     const now = new Date().getTime();
+//     const data = localStorage.getItem('autopost2');
+//     const [,,,,,,,, login_with_hiveauth, hiveauth_key, hiveauth_token, hiveauth_token_expires] = extractLoginData(data);
+//     return !!login_with_hiveauth
+//         && !!hiveauth_key
+//         && !!hiveauth_token
+//         && now < hiveauth_token_expires;
+// };
 
 const verifyChallenge = (challenge, data) => {
     // Validate signature against account public key
@@ -371,7 +371,7 @@ const HiveAuthUtils = {
     setKey,
     setToken,
     setExpire,
-    isLoggedInWithHiveAuth,
+    // isLoggedInWithHiveAuth,
     broadcast,
     signChallenge,
 };

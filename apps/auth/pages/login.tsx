@@ -1,8 +1,11 @@
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { i18n } from 'next-i18next.config';
 import { useState } from 'react'
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { withIronSessionSsr } from "iron-session/next";
 import secureRandom from 'secure-random';
-import { KeyRole, PrivateKey, cryptoUtils, HexBuffer } from '@hiveio/dhive';
+import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { KeychainKeyTypes, KeychainKeyTypesLC } from 'hive-keychain-commons';
 import { LoginForm, LoginFormData } from "@/auth/components/login-form";
 import { useUser } from '@/auth/lib/use-user';
@@ -10,9 +13,7 @@ import { fetchJson, FetchError } from '@/auth/lib/fetch-json';
 import { getLogger } from "@hive/ui/lib/logging";
 import { sessionOptions } from '@/auth/lib/session';
 import { Signatures, LoginData, LoginTypes } from '@/auth/pages/api/login';
-import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from 'next-i18next.config';
+import HiveAuthUtils from '@/auth/lib/hive-auth-utils';
 
 const logger = getLogger('app');
 
@@ -65,6 +66,26 @@ export default function LoginPage({
       } catch (error) {
         throw error;
       }
+    } else if (loginType === LoginTypes.hiveauth) {
+
+      logger.info('hiveauth');
+
+      const authResponse = await new Promise((resolve) => {
+        HiveAuthUtils.login(username, message, (res) => {
+          resolve(res);
+        });
+      });
+
+      if (authResponse.success) {
+        const {
+          token, expire, key, challengeHex,
+        } = authResponse.hiveAuthData;
+        logger.info('hiveauth', {signature: challengeHex});
+        signatures.posting = challengeHex;
+      } else {
+        throw new Error('Hiveauth login failed');
+      }
+
     } else if (loginType === LoginTypes.password) {
       try {
         const privateKey = PrivateKey.fromString(password);
@@ -86,6 +107,8 @@ export default function LoginPage({
 
   const onSubmit = async (data: LoginFormData) => {
     logger.info('onSubmit form data', data);
+    console.log('bamboo');
+    console.log('logger', logger);
     setErrorMsg('');
 
     const { username, password, useKeychain, useHiveauth } = data;
@@ -95,6 +118,10 @@ export default function LoginPage({
 
     if (useKeychain) {
       loginType = LoginTypes.keychain;
+    }
+
+    if (useHiveauth) {
+      loginType = LoginTypes.hiveauth;
     }
 
     try {
