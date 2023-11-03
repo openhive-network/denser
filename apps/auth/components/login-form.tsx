@@ -132,7 +132,7 @@ export function LoginForm({
               />
               <label
                 htmlFor="remember"
-                className="ml-2 text-sm font-medium text-gray-900"
+                className="ml-2 text-sm font-medium text-gray-900 bamboo"
               >
                 Keep me logged in
               </label>
@@ -160,18 +160,18 @@ export function LoginForm({
             <p className="text-red-500 text-sm" role="alert">{errorMessage || '\u00A0'}</p>
           </div>
 
-          {/* <div className="hiveauth_info">
-            <div id="hiveauth-instructions" className="hiveauth_instructions" />
+          <div className="hiveauth_info">
+            <div id="hiveauth-instructions" className="hiveauth_instructions hidden" />
             <a
               href="#"
               id="hiveauth-qr-link"
-              className="hiveauth_qr keychainify-checked"
+              className="hiveauth_qr keychainify-checked hidden"
               target="_blank"
               rel="noreferrer noopener"
             >
               <canvas id="hiveauth-qr" />
             </a>
-          </div> */}
+          </div>
 
           <div className="mt-4 flex w-full items-center">
             <Separator orientation="horizontal" className="w-1/3" />

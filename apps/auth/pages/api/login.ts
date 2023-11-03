@@ -3,7 +3,7 @@ import * as Yup from "yup";
 import { NextApiHandler } from "next";
 import { withIronSessionApiRoute } from 'iron-session/next';
 
-import * as Dhive from "@hiveio/dhive";
+// import * as Dhive from "@hiveio/dhive";
 import { cryptoUtils, PublicKey, Signature, KeyRole } from "@hiveio/dhive";
 
 import { sessionOptions } from '@/auth/lib/session';

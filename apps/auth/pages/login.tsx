@@ -107,8 +107,6 @@ export default function LoginPage({
 
   const onSubmit = async (data: LoginFormData) => {
     logger.info('onSubmit form data', data);
-    console.log('bamboo');
-    console.log('logger', logger);
     setErrorMsg('');
 
     const { username, password, useKeychain, useHiveauth } = data;
