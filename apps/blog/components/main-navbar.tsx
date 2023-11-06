@@ -26,7 +26,7 @@ const Box = ({
       href={href}
       className={clsx(
         "font-semibold flex gap-2 hover:bg-slate-900 hover:text-red-500 px-4 py-1",
-        { "bg-red-500 text-white": current_card }
+        { "text-red-500 font-extrabold": current_card }
       )}
     >
       {children}

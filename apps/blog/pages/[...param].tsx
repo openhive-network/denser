@@ -31,6 +31,7 @@ import MainNavbar from "../components/main-navbar";
 import Link from "next/link";
 import { Icons } from "@ui/components/icons";
 import { SidebarOpen } from "lucide-react";
+import clsx from "clsx";
 
 export const PostSkeleton = () => {
   return (
@@ -221,7 +222,7 @@ const ParamPage: FC = () => {
                     </li>
                     <li>
                       <Link
-                        className="py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 text-white font-semibold"
+                        className={clsx("py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold", {'text-red-500':router.asPath==='/trending', 'text-white':router.asPath!=='/trending'})}
                         href="/trending"
                       >
                         Trending
@@ -229,7 +230,7 @@ const ParamPage: FC = () => {
                     </li>
                     <li>
                       <Link
-                        className="py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 text-white font-semibold"
+                        className={clsx("py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold", {'text-red-500':router.asPath==='/hot', 'text-white':router.asPath!=='/hot'})}
                         href="/hot"
                       >
                         Hot
@@ -237,7 +238,7 @@ const ParamPage: FC = () => {
                     </li>
                     <li>
                       <Link
-                        className="py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 text-white font-semibold"
+                        className={clsx("py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold", {'text-red-500':router.asPath==='/created', 'text-white':router.asPath!=='/created'})}
                         href="/created"
                       >
                         New
@@ -245,7 +246,7 @@ const ParamPage: FC = () => {
                     </li>
                     <li>
                       <Link
-                        className="py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 text-white font-semibold"
+                        className={clsx("py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold", {'text-red-500':router.asPath==='/payout','text-white':router.asPath!=='/payout'})}
                         href="/payout"
                       >
                         Payouts
@@ -253,7 +254,7 @@ const ParamPage: FC = () => {
                     </li>
                     <li>
                       <Link
-                        className="py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 text-white font-semibold"
+                        className={clsx("py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold", {'text-red-500':router.asPath==='/muted', 'text-white':router.asPath!=='/muted'})}
                         href="/muted"
                       >
                         Muted

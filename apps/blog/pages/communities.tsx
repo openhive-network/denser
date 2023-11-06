@@ -46,15 +46,9 @@ export default function CommunitiesPage() {
     <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2 pt-8">
       <div className="grid grid-cols-12 md:gap-4">
         <div className="hidden md:col-span-4 md:flex xl:col-span-2">
-          <CommunitiesSidebar />
           <MainNavbar />
         </div>
         <div className="col-span-12 md:col-span-8">
-          <div className="mt-4 flex items-center justify-between">
-            <span className="text-sm font-medium sm:text-xl">
-              {t("communities.communities")}
-            </span>
-          </div>
           <div
             className="mt-4 flex items-center justify-between w-full gap-4"
             translate="no"
@@ -74,10 +68,17 @@ export default function CommunitiesPage() {
                 onKeyDown={(e) => handleSearchCommunity(e)}
               />
             </div>
-            <CommunitiesSelectFilter
-              filter={sort}
-              handleChangeFilter={handleChangeFilter}
-            />
+            <ul className="flex gap-2 ">
+              <li 
+                        className="cursor-pointer py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold text-white"
+                        >Rank</li>
+                          <li 
+                        className="cursor-pointer py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold text-white"
+                        >Subscribers</li>
+                          <li 
+                        className="cursor-pointer py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold text-white"
+                        >New</li>
+            </ul>
           </div>
           <Separator className="my-4" />
           {communitiesData && communitiesData?.length > 0 ? (
@@ -87,7 +88,7 @@ export default function CommunitiesPage() {
           )}
         </div>
         <div className="hidden lg:flex xl:col-span-2">
-          <ExploreHive />
+        <CommunitiesSidebar />
         </div>
       </div>
     </div>
