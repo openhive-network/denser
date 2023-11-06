@@ -14,22 +14,18 @@ import { FC, useCallback, useEffect } from "react";
 import PostList from "@/blog/components/post-list";
 import { Skeleton } from "@hive/ui/components/skeleton";
 import CommunitiesSidebar from "@/blog/components/communities-sidebar";
-import PostSelectFilter from "@/blog/components/post-select-filter";
 import { useRouter } from "next/router";
-import ExploreHive from "@/blog/components/explore-hive";
 import ProfileLayout from "@/blog/components/common/profile-layout";
 import CommunityDescription from "@/blog/components/community-description";
 import { useInView } from "react-intersection-observer";
 import CustomError from "@/blog/components/custom-error";
 import CommunitySimpleDescription from "@/blog/components/community-simple-description";
-import { CommunitiesSelect } from "@/blog/components/communities-select";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { GetServerSideProps } from "next";
 import { i18n } from "@/blog/next-i18next.config";
 import MainNavbar from "../components/main-navbar";
 import Link from "next/link";
-import { Icons } from "@ui/components/icons";
 import { SidebarOpen } from "lucide-react";
 import clsx from "clsx";
 
@@ -200,10 +196,7 @@ const ParamPage: FC = () => {
             <MainNavbar />
           </div>
           <div className="col-span-12 md:col-span-9 xl:col-span-8">
-            <div
-              data-testid="card-explore-hive-mobile"
-              className=" md:col-span-10 md:flex xl:hidden"
-            >
+            <div data-testid="card-explore-hive-mobile" className=" ">
               {communityData && subsData ? (
                 <CommunitySimpleDescription
                   data={communityData}
@@ -222,7 +215,14 @@ const ParamPage: FC = () => {
                     </li>
                     <li>
                       <Link
-                        className={clsx("py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold", {'text-red-500':router.asPath==='/trending', 'text-white':router.asPath!=='/trending'})}
+                        className={clsx(
+                          "py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold",
+                          {
+                            "text-red-500 hover:text-white":
+                              router.asPath === "/trending",
+                            "text-white": router.asPath !== "/trending",
+                          }
+                        )}
                         href="/trending"
                       >
                         Trending
@@ -230,7 +230,14 @@ const ParamPage: FC = () => {
                     </li>
                     <li>
                       <Link
-                        className={clsx("py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold", {'text-red-500':router.asPath==='/hot', 'text-white':router.asPath!=='/hot'})}
+                        className={clsx(
+                          "py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold",
+                          {
+                            "text-red-500 hover:text-white":
+                              router.asPath === "/hot",
+                            "text-white": router.asPath !== "/hot",
+                          }
+                        )}
                         href="/hot"
                       >
                         Hot
@@ -238,7 +245,14 @@ const ParamPage: FC = () => {
                     </li>
                     <li>
                       <Link
-                        className={clsx("py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold", {'text-red-500':router.asPath==='/created', 'text-white':router.asPath!=='/created'})}
+                        className={clsx(
+                          "py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold",
+                          {
+                            "text-red-500 hover:text-white":
+                              router.asPath === "/created",
+                            "text-white": router.asPath !== "/created",
+                          }
+                        )}
                         href="/created"
                       >
                         New
@@ -246,7 +260,14 @@ const ParamPage: FC = () => {
                     </li>
                     <li>
                       <Link
-                        className={clsx("py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold", {'text-red-500':router.asPath==='/payout','text-white':router.asPath!=='/payout'})}
+                        className={clsx(
+                          "py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold",
+                          {
+                            "text-red-500 hover:text-white":
+                              router.asPath === "/payout",
+                            "text-white": router.asPath !== "/payout",
+                          }
+                        )}
                         href="/payout"
                       >
                         Payouts
@@ -254,7 +275,14 @@ const ParamPage: FC = () => {
                     </li>
                     <li>
                       <Link
-                        className={clsx("py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold", {'text-red-500':router.asPath==='/muted', 'text-white':router.asPath!=='/muted'})}
+                        className={clsx(
+                          "py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold",
+                          {
+                            "text-red-500 hover:text-white":
+                              router.asPath === "/muted",
+                            "text-white": router.asPath !== "/muted",
+                          }
+                        )}
                         href="/muted"
                       >
                         Muted

@@ -54,11 +54,12 @@ const PostListItem = ({
       className={post.stats?.gray ? 'opacity-50 hover:opacity-100' : ''}
     >
       <Card
-        className={cn(
-          'mb-4 px-2 hover:bg-accent  hover:text-accent-foreground dark:bg-background/95 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground'
-        )}
+className='h-full flex flex-col justify-between hover:bg-accent  hover:text-accent-foreground dark:bg-background/95 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground'
+        // className={cn(
+        //   'mb-4 px-2 h'
+        // )}
       >
-        {post.original_entry ? (
+        {/* {post.original_entry ? (
           <div className='mt-2 rounded-sm bg-slate-100 px-2 py-1 text-sm dark:bg-slate-900'>
             <p className='flex items-center gap-1 text-xs md:text-sm'>
               <Icons.crossPost className='h-4 w-4 text-slate-500 dark:text-slate-400' />{' '}
@@ -92,9 +93,10 @@ const PostListItem = ({
               {t('cards.reblogged')}
             </span>
           </div>
-        ) : null}
-        <CardHeader className='px-0 py-1'>
-          <div className='md:text-md flex items-center text-xs text-slate-500 dark:text-slate-400'>
+        ) : null} */}
+       <div>
+         <CardHeader className='p-1'>
+          <div className='md:text-md flex flex-wrap items-center text-xs text-slate-500 dark:text-slate-400'>
             <Link href={`/@${post.author}`} data-testid='post-card-avatar'>
               <div
                 className='mr-3 h-[24px] w-[24px] rounded-3xl bg-cover bg-no-repeat'
@@ -103,7 +105,7 @@ const PostListItem = ({
                 }}
               />
             </Link>
-            <div className='flex items-center'>
+
               <Link
                 href={`/@${post.author}`}
                 className='font-medium text-black hover:cursor-pointer hover:text-red-600 dark:text-white dark:hover:text-red-600'
@@ -149,7 +151,7 @@ const PostListItem = ({
                   {post.author_title}
                 </Badge>
               ) : null}
-              <span className='flex items-center text-xs md:text-sm'>
+
                 {!isCommunityPage ? (
                   <>
                     &nbsp;{t('cards.post_card.in')}&nbsp;
@@ -208,21 +210,19 @@ const PostListItem = ({
                     </Link>
                   </Badge>
                 ) : null}
-              </span>
+
             </div>
-          </div>
+
         </CardHeader>
-        <div className='flex flex-col md:flex-row'>
-          <div>
+            <CardContent className='w-full p-0'>
+              {!reveal ? (
+                <>
+                  <div>
             {!reveal && post.blacklists.length < 1 ? (
               <><PostImage post={post} /></>
             ) : null}
           </div>
-          <div className='md:overflow-hidden'>
-            <CardContent>
-              {!reveal ? (
-                <>
-                  <CardTitle data-testid='post-title' className='text-md'>
+                  <CardTitle data-testid='post-title' className='text-md p-1 text-red-600'>
                     <Link
                       href={`/${post.category}/@${post.author}/${post.permlink}`}
                     >
@@ -230,7 +230,8 @@ const PostListItem = ({
                     </Link>
                   </CardTitle>
                   <CardDescription
-                    className='block w-auto md:overflow-hidden md:overflow-ellipsis md:whitespace-nowrap'>
+                    className='block w-auto p-1'>
+                      <Separator orientation='horizontal' className='my-1' />
                     <Link
                       href={`/${post.category}/@${post.author}/${post.permlink}`}
                       data-testid='post-description'
@@ -238,7 +239,6 @@ const PostListItem = ({
                       {getPostSummary(post.json_metadata, post.body)}
                     </Link>
                   </CardDescription>
-                  <Separator orientation='horizontal' className='my-1' />
                 </>
               ) : (
                 <>
@@ -266,8 +266,8 @@ const PostListItem = ({
                   </p>
                 </>
               )}
-            </CardContent>
-            <CardFooter className='pb-2'>
+            </CardContent></div>
+            <CardFooter >
               <div
                 className='flex h-5 items-center space-x-2 text-sm'
                 data-testid='post-card-footer'
@@ -399,8 +399,6 @@ const PostListItem = ({
                 ) : null}
               </div>
             </CardFooter>
-          </div>
-        </div>
       </Card>
     </li>
   );

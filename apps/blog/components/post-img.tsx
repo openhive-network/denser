@@ -86,7 +86,7 @@ export default function PostImage({ post }: { post: Entry }) {
           data-testid="post-image"
           className={clsx({ hidden: post.stats?.gray })}
         >
-          <div className="md:mr-3.5 relative flex h-[210px] sm:h-[360px] items-center overflow-hidden bg-transparent md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
+          <div className="relative flex max-h-[180px] items-center overflow-hidden bg-transparent ">
             <picture className="articles__feature-img h-ful w-full">
               <source
                 srcSet={proxifyImageUrl(find_first_img(), "256x512").replace(

@@ -120,7 +120,7 @@ export type Communities = Community[];
 
 export type Subscription = Array<string>;
 
-export const DATA_LIMIT = 20;
+export const DATA_LIMIT = 21;
 
 const resolvePost = (post: Entry, observer: string): Promise<Entry> => {
   const { json_metadata: json } = post;

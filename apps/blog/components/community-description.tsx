@@ -62,63 +62,11 @@ const CommunityDescription = ({
         className={cn(
           'my-4 hidden h-fit w-auto flex-col px-4 dark:bg-background/95 dark:text-white md:flex'
         )}
-        data-testid='community-info-sidebar'
+        data-testid='community-description-rules-sidebar'
       >
-        <CardHeader className='px-0 font-light'>
-          <CardTitle>{data.title}</CardTitle>
-          <span className='text-sm' data-testid='short-community-description'>
-            {data.about}
-          </span>
-        </CardHeader>
-        <CardContent>
-          <div className='flex gap-2 flex-wrap justify-center text-sm'>
-            <SubsListDialog title={data.title} subs={subs}>
-              <div
-                className='flex flex-col items-center'
-                data-testid='community-subscribers'
-              >
-                {data.subscribers}
-                <span className='text-center text-xs'>{t('communities.buttons.subscribers')}</span>
-              </div>
-            </SubsListDialog>
-            <div
-              className='flex flex-col items-center'
-              data-testid='community-pending-rewards'
-            >
-              {data.sum_pending}
-              <span className='text-center text-xs'>{t('communities.titles.pending_rewards')}</span>
-            </div>
-            <div
-              className='flex flex-col items-center'
-              data-testid='community-active-posters'
-            >
-              {data.num_authors}
-              <span className='text-center text-xs'>{t('communities.titles.active_posters')}</span>
-            </div>
-          </div>
-          <div className='my-4 flex flex-col gap-2'>
-            <DialogLogin>
-              <Button
-                size='sm'
-                className='w-full bg-blue-800 text-center hover:bg-blue-900'
-                data-testid='community-subscribe-button'
-              >
-                {t('communities.buttons.subscribe')}
-              </Button>
-            </DialogLogin>
-            <Button
-              size='sm'
-              className='w-full bg-blue-800 text-center hover:bg-blue-900'
-              data-testid='community-new-post-button'
-            >
-              <Link href={`submit.html?category=${data.name}`}>{t('communities.buttons.new_post')}</Link>
-            </Button>
-          </div>
-          <div
-            data-testid='community-leadership'
-            className='my-6 flex flex-col'
-          >
-            <h6 className='my-1.5 font-semibold leading-none tracking-tight'>
+        <CardContent className='py-4'>
+       <div className='mb-8'> 
+        <h6 className='my-1.5 font-semibold leading-none tracking-tight'>
               {t('communities.titles.leadership')}
             </h6>
             <ul className='mt-1.5 text-xs'>
@@ -143,23 +91,7 @@ const CommunityDescription = ({
                   ) : null}
                 </li>
               ))}
-            </ul>
-            <div className='self-end text-sm'>
-              <ActivityLogDialog username={username} data={notificationData}>
-                {t('communities.buttons.activity_log')}
-              </ActivityLogDialog>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card
-        className={cn(
-          'my-4 hidden h-fit w-auto flex-col px-4 dark:bg-background/95 dark:text-white md:flex'
-        )}
-        data-testid='community-description-rules-sidebar'
-      >
-        <CardContent className='py-4'>
+            </ul></div>
           <div data-testid='community-description'>
             <h6 className='my-1.5 font-semibold leading-none tracking-tight'>
               {t('communities.titles.description')}
