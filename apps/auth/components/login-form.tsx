@@ -160,12 +160,12 @@ export function LoginForm({
             <p className="text-red-500 text-sm" role="alert">{errorMessage || '\u00A0'}</p>
           </div>
 
-          <div className="hiveauth_info">
-            <div id="hiveauth-instructions" className="hiveauth_instructions hidden" />
+          <div className="hiveauth-info">
+            <div id="hiveauth-instructions" className="hiveauth-instructions hidden" />
             <a
               href="#"
               id="hiveauth-qr-link"
-              className="hiveauth_qr keychainify-checked hidden"
+              className="hiveauth-qr keychainify-checked hidden"
               target="_blank"
               rel="noreferrer noopener"
             >
