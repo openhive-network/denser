@@ -1,4 +1,4 @@
-import QRious from 'qrious';
+import QRCode from 'qrcode';
 import { HasClient } from 'hive-auth-client';
 import { getLogger } from "@hive/ui/lib/logging";
 import { Signature, HexBuffer, cryptoUtils, PublicKey } from "@hiveio/dhive";
@@ -241,26 +241,20 @@ const login = async (username, challenge, callbackFn) => {
                 key,
                 host: 'wss://hive-auth.arcange.eu',
             };
-
             setKey(key);
-
             const authUri = `has://auth_req/${btoa(JSON.stringify(authPayload))}`;
-
             logger.info('Hive Auth: Generating QR code');
-            const qrLinkElement = document.getElementById('hiveauth-qr-link');
             const qrElement = document.getElementById('hiveauth-qr');
-            const QR = new QRious({
-                element: qrElement,
-                background: 'white',
-                backgroundAlpha: 0.8,
-                foreground: 'black',
-                size: 200,
-            });
-            QR.value = authUri;
-            qrLinkElement.href = authUri;
-            qrLinkElement.classList.remove('hidden');
-            // qrLinkElement.classList.add('block');
-
+            if (qrElement) {
+                QRCode.toCanvas(qrElement, authUri, function (error) {
+                    if (error) logger.error(error)
+                })
+            }
+            const qrLinkElement = document.getElementById('hiveauth-qr-link') as HTMLAnchorElement;
+            if (qrLinkElement) {
+                qrLinkElement.href = authUri;
+                qrLinkElement.classList.remove('hidden');
+            }
             updateLoginInstructions(tt('hiveauthservices.qrInstructions'));
         } else {
             logger.warn('Hive Auth: token expired');
