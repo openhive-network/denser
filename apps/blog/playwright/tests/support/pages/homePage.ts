@@ -71,6 +71,7 @@ export class HomePage {
   readonly getCardUserShortcutsTitle: Locator;
   readonly getCardUserShortcutsLinks: Locator;
   readonly postTitle: Locator;
+  readonly postDescription: Locator;
   readonly loginBtn: Locator;
   readonly signupBtn: Locator;
   readonly loginModal: Locator;
@@ -83,6 +84,9 @@ export class HomePage {
   readonly signupPageHeader: Locator;
   readonly postReputationTooltip: Locator;
   readonly postCardAffiliationTag: Locator;
+  readonly postCardPoweredUp100Trigger: Locator;
+  readonly postCardPoweredUp100TriggerLink: Locator;
+  readonly postCardPoweredUp100Tooltip: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -160,6 +164,7 @@ export class HomePage {
     this.getNavSidebarMenuContent = page.locator('[data-testid="nav-sidebar-menu-content"]');
     this.getNavSidebarMenuContentCloseButton = page.locator('[data-testid="nav-sidebar-menu-content"] > button');
     this.postTitle = page.locator('[data-testid="post-title"]');
+    this.postDescription = page.locator('[data-testid="post-description"]');
     this.loginBtn = page.locator('[data-testid="login-btn"]');
     this.signupBtn = page.locator('[data-testid="signup-btn"]');
     this.loginModal = page.locator('[role="dialog"]');
@@ -172,6 +177,9 @@ export class HomePage {
     this.signupPageHeader = page.locator('h1.pb-3');
     this.postReputationTooltip = page.locator('[data-testid="post-reputation-tooltip"]');
     this.postCardAffiliationTag = page.locator('[data-testid="affiliation-tag-badge"]');
+    this.postCardPoweredUp100Trigger = page.locator('[data-testid="powered-up-100-trigger"]');
+    this.postCardPoweredUp100TriggerLink = this.postCardPoweredUp100Trigger.locator('a');
+    this.postCardPoweredUp100Tooltip = page.locator('[data-testid="powered-up-100-tooltip"]');
   }
 
   async goto() {
@@ -270,6 +278,22 @@ export class HomePage {
     const firstPostCardTitle = await this.getFirstPostTitle.textContent();
     // Click the post's timestamp link
     await this.getFirstPostCardTimestampLink.click();
+    await this.page.waitForSelector(this.page.locator('[data-testid="article-title"]')['_selector']);
+    expect(await this.page.locator('[data-testid="article-title"]').textContent()).toBe(firstPostCardTitle);
+  }
+
+  async moveToFirstPostContentByClickingTitilePostCard() {
+    const firstPostCardTitle = await this.getFirstPostTitle.textContent();
+    // Click the post's title link
+    await this.postTitle.first().click();
+    await this.page.waitForSelector(this.page.locator('[data-testid="article-title"]')['_selector']);
+    expect(await this.page.locator('[data-testid="article-title"]').textContent()).toBe(firstPostCardTitle);
+  }
+
+  async moveToFirstPostContentByClickingDescriptionPostCard() {
+    const firstPostCardTitle = await this.getFirstPostTitle.textContent();
+    // Click the post's description link
+    await this.postDescription.first().click();
     await this.page.waitForSelector(this.page.locator('[data-testid="article-title"]')['_selector']);
     expect(await this.page.locator('[data-testid="article-title"]').textContent()).toBe(firstPostCardTitle);
   }

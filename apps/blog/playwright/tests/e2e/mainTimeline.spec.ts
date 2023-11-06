@@ -452,6 +452,35 @@ test.describe('Home page tests', () => {
     await homePage.moveToFirstPostContentByClickingTimestamp();
   });
 
+  test('move to the first post content by clicking the title of the post card', async ({ page }) => {
+    await homePage.goto();
+    await homePage.moveToFirstPostContentByClickingTitilePostCard();
+  });
+
+  test('move to the first post content by clicking the description of the post card', async ({ page }) => {
+    await homePage.goto();
+    await homePage.moveToFirstPostContentByClickingDescriptionPostCard();
+  });
+
+  test('validate styles of the description of the post card in the light mode', async ({ page }) => {
+    await homePage.goto();
+
+    expect(
+      await homePage.getElementCssPropertyValue(await homePage.postDescription.first(), 'color')
+    ).toBe('rgb(100, 116, 139)');
+  });
+
+  test('validate styles of the description of the post card in the dark mode', async ({ page }) => {
+    await homePage.goto();
+    // move to the dark mode
+    await homePage.changeThemeMode('Dark');
+    await homePage.validateThemeModeIsDark();
+
+    expect(
+      await homePage.getElementCssPropertyValue(await homePage.postDescription.first(), 'color')
+    ).toBe('rgb(127, 142, 163)');
+  });
+
   test('move to the first post content by clicking the responses', async ({ page }) => {
     await homePage.goto();
     await homePage.moveToTheFirstPostCommentContantPageByClickingResponses();
@@ -633,7 +662,7 @@ test.describe('Home page tests', () => {
     await expect(homePage.getNavSidebarMenuContent).not.toBeVisible();
   });
 
-  test('validate upvote button styles and the tootpit of the first post in the light theme', async ({
+  test('validate upvote button styles and the tooltip of the first post in the light theme', async ({
     page
   }) => {
     await homePage.goto();
@@ -677,7 +706,7 @@ test.describe('Home page tests', () => {
     ).toBe('rgb(220, 38, 38)');
   });
 
-  test('validate upvote button styles and the tootpit of the first post in the dark theme', async ({
+  test('validate upvote button styles and the tooltip of the first post in the dark theme', async ({
     page
   }) => {
     await homePage.goto();
@@ -732,7 +761,7 @@ test.describe('Home page tests', () => {
     await homePage.isTrendingCommunitiesVisible();
   });
 
-  test('validate downvote button styles and the tootpit of the first post in the light theme', async ({
+  test('validate downvote button styles and the tooltip of the first post in the light theme', async ({
     page
   }) => {
     await homePage.goto();
@@ -776,7 +805,7 @@ test.describe('Home page tests', () => {
     ).toBe('rgb(75, 85, 99)');
   });
 
-  test('validate downvote button styles and the tootpit of the first post in the dark theme', async ({
+  test('validate downvote button styles and the tooltip of the first post in the dark theme', async ({
     page
   }) => {
     await homePage.goto();
@@ -1046,5 +1075,88 @@ test.describe('Home page tests', () => {
     }
     else
       console.log('No affiliation tags on the 40 post cards');
+  });
+
+  test('validate styles of Powered Up 100% in the post card in the light mode', async ({
+    page,
+    // browserName
+  }) => {
+    // test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+
+    await homePage.goto();
+
+    // Load 40 posts - more likely to occur a badge
+    await homePage.mainPostsTimelineVisible(20);
+    await homePage.page.keyboard.down('End');
+    await homePage.mainPostsTimelineVisible(40);
+
+    if (await homePage.postCardPoweredUp100Trigger.first().isVisible()) {
+      await homePage.postCardPoweredUp100Trigger.first().hover();
+      await expect(homePage.postCardPoweredUp100Tooltip).toHaveText('Powered Up 100%Powered Up 100%');
+      console.log('111 ', await homePage.postCardPoweredUp100Trigger.first());
+      expect(
+        await homePage.getElementCssPropertyValue(
+        await homePage.postCardPoweredUp100Tooltip.first(),
+        'color'
+        )
+      ).toBe('rgb(15, 23, 42)');
+    }
+    else
+      console.log('No Powered Up 100% tags on the 40 post cards');
+  });
+
+  test('validate styles of Powered Up 100% in the post card in the dark mode', async ({
+    page,
+    // browserName
+  }) => {
+    // test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+
+    await homePage.goto();
+    // Move to the dark theme
+    await homePage.changeThemeMode('Dark');
+    await homePage.validateThemeModeIsDark();
+    // Load 40 posts - more likely to occur a badge
+    await homePage.mainPostsTimelineVisible(20);
+    await homePage.page.keyboard.down('End');
+    await homePage.mainPostsTimelineVisible(40);
+
+    if (await homePage.postCardPoweredUp100Trigger.first().isVisible()) {
+      await homePage.postCardPoweredUp100Trigger.first().hover();
+      await expect(homePage.postCardPoweredUp100Tooltip).toHaveText('Powered Up 100%Powered Up 100%');
+      console.log('111 ', await homePage.postCardPoweredUp100Trigger.first());
+      expect(
+        await homePage.getElementCssPropertyValue(
+        await homePage.postCardPoweredUp100Tooltip.first(),
+        'color'
+        )
+      ).toBe('rgb(148, 163, 184)');
+    }
+    else
+      console.log('No Powered Up 100% tags on the 40 post cards');
+  });
+
+  test('move to the post page by clicking Powered Up 100% in the post card ', async ({
+    page,
+    // browserName
+  }) => {
+    // test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+
+    await homePage.goto();
+
+    // Load 40 posts - more likely to occur a badge
+    await homePage.mainPostsTimelineVisible(20);
+    await homePage.page.keyboard.down('End');
+    await homePage.mainPostsTimelineVisible(40);
+
+    if (await homePage.postCardPoweredUp100Trigger.first().isVisible()) {
+      const firstPoweredUp100Link = await homePage.postCardPoweredUp100TriggerLink.first();
+      const urlOfFirstPoweredUp10Link = await firstPoweredUp100Link.getAttribute("href");
+      // console.log('url of the first post ', await firstPoweredUp100Link.getAttribute("href"));
+      await homePage.postCardPoweredUp100Trigger.first().click();
+      await homePage.page.waitForSelector('#articleBody');
+      await expect(homePage.page).toHaveURL(urlOfFirstPoweredUp10Link);
+    }
+    else
+      console.log('No Powered Up 100% tags on the 40 post cards');
   });
 });
