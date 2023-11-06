@@ -70,16 +70,19 @@ export default function LoginPage({
 
       logger.info('hiveauth');
 
-      const authResponse = await new Promise((resolve) => {
+      const authResponse: any = await new Promise((resolve) => {
         HiveAuthUtils.login(username, message, (res) => {
           resolve(res);
         });
       });
 
-      if (authResponse.success) {
+      if (authResponse.success && authResponse.hiveAuthData) {
         const {
           token, expire, key, challengeHex,
         } = authResponse.hiveAuthData;
+
+        // TODO We need to save token, expire, key on client side.
+
         logger.info('hiveauth', {signature: challengeHex});
         signatures.posting = challengeHex;
       } else {

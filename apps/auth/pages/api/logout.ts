@@ -8,7 +8,8 @@ function logoutRoute(req: NextApiRequest, res: NextApiResponse<User>) {
   const user: User = {
         isLoggedIn: false,
         username: '',
-        avatarUrl: ''
+        avatarUrl: '',
+        loginType: '',
       };
   res.json(user)
 }

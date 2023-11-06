@@ -101,7 +101,7 @@ const loginUser: NextApiHandler<User> = async (req, res) => {
   });
 
   const data = await postLoginSchema.validate(req.body);
-  const { username, signatures } = data;
+  const { username, loginType, signatures } = data;
   let hiveUserProfile;
   let chainAccount;
   try {
@@ -137,8 +137,9 @@ const loginUser: NextApiHandler<User> = async (req, res) => {
 
   const user: User = {
         isLoggedIn: true,
-        username: username,
-        avatarUrl: hiveUserProfile?.profile_image || ''
+        username,
+        avatarUrl: hiveUserProfile?.profile_image || '',
+        loginType,
       };
   req.session.user = user;
   await req.session.save();

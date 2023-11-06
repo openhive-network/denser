@@ -6,6 +6,7 @@ export type User = {
   isLoggedIn: boolean
   username: string
   avatarUrl: string
+  loginType: string;
 };
 
 async function userRoute(
@@ -22,6 +23,7 @@ async function userRoute(
       isLoggedIn: false,
       username: '',
       avatarUrl: '',
+      loginType: '',
     });
   }
 }
