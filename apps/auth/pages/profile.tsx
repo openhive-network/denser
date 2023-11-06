@@ -13,10 +13,13 @@ export default function Profile() {
         <h1>Your Hive profile</h1>
         <h2>
           This page uses{' '}
-          <a href="https://nextjs.org/docs/basic-features/pages#static-generation-recommended">
+          <a
+            href="https://nextjs.org/docs/basic-features/pages#static-generation-recommended"
+            className="keychainify-checked"
+          >
             Static Generation (SG)
           </a>{' '}
-          and the <a href="/api/user">/api/user</a> route
+          and the <a href="/api/user" className="keychainify-checked">/api/user</a> route
         </h2>
         {user && (
           <>
