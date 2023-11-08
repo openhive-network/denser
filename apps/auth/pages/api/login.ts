@@ -54,7 +54,7 @@ const verifySignatures = async (
       weight_threshold: number
       ) => {
     logger.info('Starting verify');
-    logger.info({keyRole, sigHex, pubkey, weight, weight_threshold});
+    logger.info({ keyRole, sigHex, pubkey, weight, weight_threshold });
     if (!sigHex) return;
     if (weight !== 1 || weight_threshold !== 1) {
       console.error(
@@ -63,8 +63,8 @@ const verifySignatures = async (
     } else {
       const sig = Signature.fromString(sigHex);
       let publicKey = PublicKey.from(pubkey);
-      const bufSha = cryptoUtils.sha256(message);
-      const verified = publicKey.verify(bufSha, sig);
+      const messageHash = cryptoUtils.sha256(message);
+      const verified = publicKey.verify(messageHash, sig);
       if (!verified) {
         console.error(
           'loginUser signature verification failed'

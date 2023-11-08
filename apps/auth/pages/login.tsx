@@ -40,7 +40,7 @@ export default function LoginPage({
         password: string, // posting private key
         keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting,
       ): Promise<Signatures> => {
-    logger.info('in makeSignatures %o', {loginType, username});
+    logger.info('in makeSignatures %o', {loginType, username, loginChallenge});
     const signatures: Signatures = {};
     const challenge = { token: loginChallenge };
     const message = JSON.stringify(challenge, null, 0);
@@ -92,8 +92,8 @@ export default function LoginPage({
     } else if (loginType === LoginTypes.password) {
       try {
         const privateKey = PrivateKey.fromString(password);
-        const bufSha = cryptoUtils.sha256(message);
-        const signature = privateKey.sign(bufSha).toString();
+        const messageHash = cryptoUtils.sha256(message);
+        const signature = privateKey.sign(messageHash).toString();
         logger.info('password', {signature});
         signatures.posting = signature;
         //
