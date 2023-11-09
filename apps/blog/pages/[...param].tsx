@@ -28,6 +28,7 @@ import MainNavbar from "../components/main-navbar";
 import Link from "next/link";
 import { SidebarOpen } from "lucide-react";
 import clsx from "clsx";
+import TrendingTags from "../components/trending-tags";
 
 export const PostSkeleton = () => {
   return (
@@ -191,11 +192,11 @@ const ParamPage: FC = () => {
   if (!entriesDataIsLoading && entriesData) {
     return (
       <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
-        <div className="grid grid-cols-12 md:gap-4">
+        <div className="grid grid-cols-12 md:gap-4 sm:gap-2">
           <div className="hidden md:col-span-3 md:flex xl:col-span-2">
             <MainNavbar />
           </div>
-          <div className="col-span-12 md:col-span-9 xl:col-span-8">
+          <div className="col-span-12 sm:col-span-11 md:col-span-8 xl:col-span-8">
             <div data-testid="card-explore-hive-mobile" className=" ">
               {communityData && subsData ? (
                 <CommunitySimpleDescription
@@ -327,7 +328,7 @@ const ParamPage: FC = () => {
           </div>
           <div
             data-testid="card-explore-hive-desktop"
-            className="hidden xl:flex xl:col-span-2"
+            className="hidden sm:flex flex-col sm:col-span-1 xl:col-span-2"
           >
             {communityData && subsData ? (
               <CommunityDescription
@@ -339,6 +340,7 @@ const ParamPage: FC = () => {
             ) : (
               <CommunitiesSidebar />
             )}
+            <TrendingTags/>
           </div>
         </div>
       </div>

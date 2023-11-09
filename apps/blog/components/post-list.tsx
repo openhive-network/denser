@@ -9,7 +9,7 @@ const PostList = ({
   isCommunityPage?: boolean;
 }) => {
   return (
-    <ul className='w-full md:grid-cols-2 grid-cols-1 grid gap-2 pb-2'>
+    <ul className='w-full lg:grid-cols-2 grid-cols-1 grid gap-2 pb-2'>
       {data?.map((post: Entry) => (
         <PostListItem
           post={post}
