@@ -96,7 +96,7 @@ className='h-full flex flex-col justify-between hover:bg-accent  hover:text-acce
         ) : null} */}
        <div>
          <CardHeader className='p-1'>
-          <div className='md:text-md flex flex-wrap items-center text-xs text-slate-500 dark:text-slate-400'>
+          <div className='md:text-md flex items-center text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap flex-wrap'>
             <Link href={`/@${post.author}`} data-testid='post-card-avatar'>
               <div
                 className='mr-3 h-[24px] w-[24px] rounded-3xl bg-cover bg-no-repeat'
@@ -146,7 +146,7 @@ className='h-full flex flex-col justify-between hover:bg-accent  hover:text-acce
               {post.author_title ? (
                 <Badge
                   variant='outline'
-                  className='mr-1 border-red-600 text-slate-500'
+                  className='mx-1 border-red-600 text-slate-500'
                 >
                   {post.author_title}
                 </Badge>
@@ -269,7 +269,7 @@ className='h-full flex flex-col justify-between hover:bg-accent  hover:text-acce
             </CardContent></div>
             <CardFooter >
               <div
-                className='flex h-5 items-center space-x-2 text-sm'
+                className='flex h-5 items-center space-x-2 text-sm justify-evenly w-full'
                 data-testid='post-card-footer'
               >
                 <div className='flex items-center gap-1'>
