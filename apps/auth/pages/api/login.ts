@@ -2,10 +2,7 @@ import createHttpError from "http-errors";
 import * as Yup from "yup";
 import { NextApiHandler } from "next";
 import { withIronSessionApiRoute } from 'iron-session/next';
-
-// import * as Dhive from "@hiveio/dhive";
 import { cryptoUtils, PublicKey, Signature, KeyRole } from "@hiveio/dhive";
-
 import { sessionOptions } from '@/auth/lib/session';
 import { getLogger } from "@hive/ui/lib/logging";
 import { getAccount } from '@hive/ui/lib/hive';
@@ -38,36 +35,37 @@ const RE_LOGIN_TYPE = /^(password|hiveauth|hivesigner|keychain)$/;
 
 const logger = getLogger('app');
 
-const verifySignatures = async (
+const verifyLoginChallenge = async (
       chainAccount: FullAccount,
       signatures: Signatures,
       message: string = ''
     ) => {
 
-  logger.info(`Starting verifySignatures for user ${chainAccount.name}`);
+  logger.info(`Starting verifyLoginChallenge for user ${chainAccount.name}`);
 
   const verify = (
       keyRole: KeyRole,
-      sigHex: string,
+      signature: string,
       pubkey: string | PublicKey,
       weight: number,
-      weight_threshold: number
+      weight_threshold: number,
+      message: string
       ) => {
     logger.info('Starting verify');
-    logger.info({ keyRole, sigHex, pubkey, weight, weight_threshold });
-    if (!sigHex) return;
+    logger.info({ keyRole, signature, pubkey, weight, weight_threshold });
+    if (!signature) return;
     if (weight !== 1 || weight_threshold !== 1) {
       console.error(
-        `loginUser unsupported ${keyRole} auth configuration for user ${chainAccount.name}`
+        `verifyLoginChallenge unsupported ${keyRole} auth configuration for user ${chainAccount.name}`
       );
     } else {
-      const sig = Signature.fromString(sigHex);
+      const sig = Signature.fromString(signature);
       let publicKey = PublicKey.from(pubkey);
       const messageHash = cryptoUtils.sha256(message);
       const verified = publicKey.verify(messageHash, sig);
       if (!verified) {
         console.error(
-          'loginUser signature verification failed'
+          'verifyLoginChallenge signature verification failed'
         );
       }
       return verified;
@@ -81,7 +79,7 @@ const verifySignatures = async (
     },
   } = chainAccount;
   const result = verify('posting', signatures.posting || '',
-    posting_pubkey, weight, weight_threshold);
+    posting_pubkey, weight, weight_threshold, message);
   return result;
 };
 
@@ -121,7 +119,7 @@ const loginUser: NextApiHandler<User> = async (req, res) => {
   }
 
 
-  const result = await verifySignatures(
+  const result = await verifyLoginChallenge(
     chainAccount,
     signatures,
     JSON.stringify({ token: req.session.loginChallenge }, null, 0),

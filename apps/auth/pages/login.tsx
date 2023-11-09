@@ -34,13 +34,13 @@ export default function LoginPage({
 
   // Create a signature of message (login challenge) for sending to
   // back-end for verification.
-  const makeSignatures = async (
+  const signLoginChallenge = async (
         loginType: LoginTypes,
         username: string,
         password: string, // posting private key
         keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting,
       ): Promise<Signatures> => {
-    logger.info('in makeSignatures %o', {loginType, username, loginChallenge});
+    logger.info('in signLoginChallenge %o', {loginType, username, loginChallenge});
     const signatures: Signatures = {};
     const challenge = { token: loginChallenge };
     const message = JSON.stringify(challenge, null, 0);
@@ -126,9 +126,9 @@ export default function LoginPage({
     }
 
     try {
-      signatures = await makeSignatures(loginType, username, password);
+      signatures = await signLoginChallenge(loginType, username, password);
     } catch (error) {
-      logger.error('onSubmit error in makeSignatures', error);
+      logger.error('onSubmit error in signLoginChallenge', error);
       setErrorMsg(t('pageLogin.signingFailed'));
       return;
     }
