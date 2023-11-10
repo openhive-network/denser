@@ -82,7 +82,7 @@ const [sort, setSort] = useState('rank');
           {communitiesData && communitiesData?.length > 0 ? (
             <CommunitiesList data={communitiesData} />
           ) : (
-            <div className='w-full py-4'>{t('communities.no_results')}</div>
+            <div className='w-full py-4' data-testid="communities-search-no-results-msg">{t('communities.no_results')}</div>
           )}
         </div>
         <div className='hidden lg:flex xl:col-span-2'>

@@ -19,17 +19,18 @@ return (
       className={cn(
         "my-4 flex hover:bg-accent hover:text-accent-foreground  dark:bg-background/95 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground"
       )}
+      data-testid="community-list-item"
     >
       <div className="w-4/6">
         <CardHeader>
-          <Link href={`trending/${community.name}`} className="text-red-600">
+          <Link href={`trending/${community.name}`} className="text-red-600" data-testid="community-list-item-title">
             <CardTitle>{community.title}</CardTitle>
           </Link>
         </CardHeader>
         <CardContent className="px-6">
-          <p>{community.about}</p>
+          <p data-testid="community-list-item-about">{community.about}</p>
         </CardContent>
-        <CardFooter className="flex flex-col items-start px-6 text-sm">
+        <CardFooter className="flex flex-col items-start px-6 text-sm" data-testid="community-list-item-footer">
           <p className="text-sm font-medium leading-5 text-slate-500 dark:text-slate-400">
             {community.subscribers} {t('communities.subscribers')} <span className="mx-1">•</span>{" "}
             {community.num_authors} {t('communities.authors')} <span className="mx-1">•</span>
@@ -52,7 +53,7 @@ return (
       </div>
       <div className="flex w-2/6 items-center justify-center">
         <DialogLogin>
-          <Button className="bg-blue-800 text-center hover:bg-blue-900">
+          <Button className="bg-blue-800 text-center hover:bg-blue-900" data-testid="community-list-item-subscribe-button">
           {t('communities.buttons.subscribe')}
           </Button>
         </DialogLogin>
