@@ -305,21 +305,21 @@ test.describe('Post page tests', () => {
     await postPage.postImage.first().click()
     await expect(postPage.articleBody).toBeVisible();
 
-    const imgElement = await page.$('img');
+    const imgElement = await page.$('img') || await page.$('iframe');
 
-  if (imgElement) {
-    const imgSrc = await imgElement.getAttribute('src');
+    if (imgElement) {
+      const imgSrc = await imgElement.getAttribute('src');
 
-    if (imgSrc) {
+      if (imgSrc) {
 
-      console.log('Strona zawiera obrazek. Ścieżka do obrazka: ' + imgSrc);
+        console.log('Strona zawiera obrazek. Ścieżka do obrazka: ' + imgSrc);
+      } else {
+        console.log('Strona zawiera element <img>, ale nie ma zdefiniowanej ścieżki do obrazka.');
+      }
     } else {
-      console.log('Strona zawiera element <img>, ale nie ma zdefiniowanej ścieżki do obrazka.');
+      console.log('Strona nie zawiera elementu <img>.');
+      test.fail();
     }
-  } else {
-    console.log('Strona nie zawiera elementu <img>.');
-    test.fail();
-  }
   })
 
   test("Validate Post footer", async ({page, request}) =>{

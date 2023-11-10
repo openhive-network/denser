@@ -382,7 +382,7 @@ test('Tab Payouts - ReComment Card - Title', async ({page}) =>{
   for (const postItem of postListItems) {
     const textContent = await postItem.textContent();
     if (textContent.includes('RE:')) {
-      const postTittle = await postItem.$$('.p-1 [data-testid="post-title"]');
+      const postTittle = await postItem.$$('.p-1 [data-testid="post-title"] > a');
 
       if (postTittle.length > 0) {
 
