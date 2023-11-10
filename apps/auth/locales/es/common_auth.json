@@ -14,5 +14,17 @@
     "failedProcessingChallenge": "failed processing challenge",
     "failedAttaching": "Failed attaching",
     "challengeError": "Challenge Error"
+  },
+  "chainvalidation_js": {
+    "account_name_should": "El nombre de la cuenta debería",
+    "not_be_empty": "No estar vacío",
+    "be_longer": "ser más largo",
+    "be_shorter": "ser más corto.",
+    "each_account_segment_should": "Cada segmento de la cuenta debería",
+    "start_with_a_letter": "comenzar con una letra.",
+    "have_only_letters_digits_or_dashes": "tener sólo letras, dígitos o guiones.",
+    "have_only_one_dash_in_a_row": "tener sólo un guión consecutivo.",
+    "end_with_a_letter_or_digit": "terminar con una legra o dígito.",
+    "verified_exchange_no_memo": "Tienes que incluir un memo para la transferencia al exchange"
   }
 }

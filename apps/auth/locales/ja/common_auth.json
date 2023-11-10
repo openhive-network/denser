@@ -14,5 +14,17 @@
     "failedProcessingChallenge": "failed processing challenge",
     "failedAttaching": "Failed attaching",
     "challengeError": "Challenge Error"
+  },
+  "chainvalidation_js": {
+    "account_name_should": "アカウント名",
+    "not_be_empty": "が入力されていません。",
+    "be_longer": "が短すぎます。",
+    "be_shorter": "が長すぎます。",
+    "each_account_segment_should": "区切られたアカウント名の各部分",
+    "start_with_a_letter": "は文字で始まる必要があります。",
+    "have_only_letters_digits_or_dashes": "には英数字またはダッシュのみが使用できます。",
+    "have_only_one_dash_in_a_row": "にはダッシュを1つだけ使用可能です。",
+    "end_with_a_letter_or_digit": "は英数字で終わります。",
+    "verified_exchange_no_memo": "取引所へ送信するときはメモが必要です。"
   }
 }

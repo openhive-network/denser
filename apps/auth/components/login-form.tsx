@@ -1,6 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from 'react'
 import { useForm } from "react-hook-form";
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 import { Separator } from "@hive/ui/components/separator";
 import { getLogger } from "@hive/ui/lib/logging";
 import { hasCompatibleKeychain } from "@/auth/lib/hive-keychain";
@@ -31,10 +33,10 @@ export function LoginForm({
   const logger = getLogger('app');
   logger.debug('Starting LoginForm');
 
-  const [enableKeychain, setEnableKeychain] = useState(false)
+  const [isKeychainSupported, setIsKeychainSupported] = useState(false)
 
   useEffect(() => {
-    setEnableKeychain(hasCompatibleKeychain());
+    setIsKeychainSupported(hasCompatibleKeychain());
   }, []);
 
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
@@ -88,7 +90,7 @@ export function LoginForm({
                 value=""
                 className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
                 {...register("useKeychain")}
-                disabled={!enableKeychain}
+                disabled={!isKeychainSupported}
                 />
               <label
                 htmlFor="useKeychain"

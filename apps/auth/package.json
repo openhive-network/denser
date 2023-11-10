@@ -15,10 +15,12 @@
         "@hive/tsconfig": "*",
         "@hive/ui": "*",
         "@hiveio/dhive": "^1.2.7",
+        "@hookform/resolvers": "^3.3.1",
         "@next/bundle-analyzer": "^13.4.10",
         "cors": "^2.8.5",
         "hive-auth-client": "^0.1.5",
         "http-errors": "^2.0.0",
+        "i18next": "^23.6.0",
         "iron-session": "^6.3.1",
         "next": "13.4.10",
         "next-i18next": "^14.0.3",
@@ -29,10 +31,12 @@
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-hook-form": "^7.45.1",
+        "react-i18next": "^13.3.1",
         "secure-random": "^1.1.2",
         "swr": "^2.2.2",
         "typescript": "5.1.6",
-        "yup": "^1.3.2"
+        "yup": "^1.3.2",
+        "zod": "^3.21.4"
     },
     "devDependencies": {
         "@hiveio/hive-js": "^2.0.7",

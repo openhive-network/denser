@@ -14,5 +14,17 @@
     "failedProcessingChallenge": "failed processing challenge",
     "failedAttaching": "Failed attaching",
     "challengeError": "Challenge Error"
+  },
+  "chainvalidation_js": {
+    "account_name_should": "帐户名称应该",
+    "not_be_empty": "不是空的。",
+    "be_longer": "更长。",
+    "be_shorter": "更短。",
+    "each_account_segment_should": "每个帐户段应该",
+    "start_with_a_letter": "从一个字母开始。",
+    "have_only_letters_digits_or_dashes": "只有字母、数字或破折号",
+    "have_only_one_dash_in_a_row": "一行只有一个破折号",
+    "end_with_a_letter_or_digit": "字母或数字结尾",
+    "verified_exchange_no_memo": "如果你要转账到交易所，你必须填写备注。"
   }
 }

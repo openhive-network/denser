@@ -1,5 +1,6 @@
 import createHttpError from "http-errors";
 import * as Yup from "yup";
+import * as z from 'zod';
 import { NextApiHandler } from "next";
 import { withIronSessionApiRoute } from 'iron-session/next';
 import { cryptoUtils, PublicKey, Signature, KeyRole } from "@hiveio/dhive";
@@ -51,8 +52,7 @@ const verifyLoginChallenge = async (
       weight_threshold: number,
       message: string
       ) => {
-    logger.info('Starting verify');
-    logger.info({ keyRole, signature, pubkey, weight, weight_threshold });
+    logger.info('Starting verify args: %o', { keyRole, signature, pubkey, weight, weight_threshold });
     if (!signature) return;
     if (weight !== 1 || weight_threshold !== 1) {
       console.error(
@@ -84,6 +84,7 @@ const verifyLoginChallenge = async (
 };
 
 const loginUser: NextApiHandler<User> = async (req, res) => {
+
   const postLoginSchema = Yup.object().shape({
     // _csrf: Yup.string().required(),
     username: Yup.string().required('username is required'),
@@ -92,13 +93,29 @@ const loginUser: NextApiHandler<User> = async (req, res) => {
     }),
     loginType: Yup.string()
       .required('loginType is required')
-      .matches(RE_LOGIN_TYPE),
+      .matches(RE_LOGIN_TYPE, 'invalid loginType'),
     hivesignerToken: Yup.string()
       .defined('hivesignerToken must be defined')
       .strict(true),
   });
 
+  const postLoginSchemaZod = z.object({
+    username: z.string().nonempty('username is required'),
+    signatures: z.object({
+      posting: z.string()
+    }),
+    loginType: z.string()
+      .nonempty('loginType is required')
+      .regex(RE_LOGIN_TYPE, 'invalid loginType'),
+    hivesignerToken: z.string()
+  });
+
+  type PostLoginSchemaZod = z.infer<typeof postLoginSchemaZod>;
+
+  // const dataZod = await postLoginSchemaZod.parseAsync(req.body);
+
   const data = await postLoginSchema.validate(req.body);
+
   const { username, loginType, signatures } = data;
   let hiveUserProfile;
   let chainAccount;

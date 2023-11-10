@@ -14,5 +14,20 @@
     "failedProcessingChallenge": "failed processing challenge",
     "failedAttaching": "Failed attaching",
     "challengeError": "Challenge Error"
+  },
+  "chainvalidation_js": {
+    "account_name_should_not_be_empty": "Nazwa konta nie powinna być pusta.",
+    "account_name_should_be_longer": "Nazwa konta powinna być dłuższa.",
+    "account_name_should_be_shorter": "Nazwa konta powinna być krótsza.",
+    "each_account_segment_should_start_with_a_letter": "Każdy segment nazwy konta powinien zaczynać się od litery.",
+    "each_account_segment_should_have_only_letters_digits_or_dashes": "Każdy segment nazwy konta powinien mieć tylko litery, cyfry lub kreski.",
+    "each_account_segment_should_have_only_one_dash_in_a_row": "Każdy segment nazwy konta powinien mieć tylko jedną kreskę po sobie.",
+    "each_account_segment_should_end_with_a_letter_or_digit": "Każdy segment nazwy konta powinien być zakończony literą lub cyfrą.",
+    "each_account_segment_should_be_longer": "Każdy segment nazwy konta powinien być dłuższy.",
+    "verified_exchange_no_memo": "Musisz dołączyć notatkę do przelewu.",
+    "badactor": "Należy zachować ostrożność przy przesyłaniu tokenów na to konto. Proszę dwukrotnie sprawdzić pisownię pod kątem ewentualnego phishingu.",
+    "memo_has_privatekey": "Proszę nie podawać tego, co wydaje się być kluczem prywatnym lub hasłem.",
+    "memo_is_privatekey": "Nie używaj kluczy prywatnych w memo",
+    "memo_is_password": "Nie używaj haseł w memo"
   }
 }
