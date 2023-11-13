@@ -3,17 +3,21 @@ import { useEffect, useState } from 'react'
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { useTranslation } from 'next-i18next';
 import { Separator } from "@hive/ui/components/separator";
 import { getLogger } from "@hive/ui/lib/logging";
 import { hasCompatibleKeychain } from "@/auth/lib/hive-keychain";
+import { username } from "@/auth/pages/api/login";
 
-export type LoginFormData = {
-  username: string;
-  password: string;
-  useKeychain: boolean;
-  useHiveauth: boolean,
-  remember: boolean,
-};
+const loginFormSchema = z.object({
+  username,
+  password: z.string(),
+  useKeychain: z.boolean(),
+  useHiveauth: z.boolean(),
+  remember: z.boolean(),
+});
+
+export type LoginFormSchema = z.infer<typeof loginFormSchema>;
 
 const loginFormDefaultValues = {
   username: '',
@@ -28,18 +32,20 @@ export function LoginForm({
   onSubmit,
 }: {
   errorMessage: string
-  onSubmit: (data: LoginFormData) => void
+  onSubmit: (data: LoginFormSchema) => void
 }) {
   const logger = getLogger('app');
   logger.debug('Starting LoginForm');
 
+  const { t } = useTranslation('common_auth');
   const [isKeychainSupported, setIsKeychainSupported] = useState(false)
 
   useEffect(() => {
     setIsKeychainSupported(hasCompatibleKeychain());
   }, []);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormSchema>({
+    resolver: zodResolver(loginFormSchema),
     defaultValues: loginFormDefaultValues
   });
 
@@ -56,7 +62,7 @@ export function LoginForm({
               type="text"
               className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 pl-11 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
               placeholder="Enter your username"
-              {...register("username", { required: true })}
+              {...register("username")}
               aria-invalid={errors.username ? "true" : "false"}
             />
             <span className="absolute top-0 h-10 w-10 rounded-bl-lg rounded-tl-lg bg-gray-400 text-gray-600">
@@ -65,8 +71,8 @@ export function LoginForm({
                 @
               </div>
             </span>
-            {errors.username && errors.username.type === "required" && (
-              <p className="text-red-500 text-sm" role="alert">Username is required</p>
+            {errors.username?.message && (
+              <p className="text-red-500 text-sm" role="alert">{t(errors.username.message)}</p>
             )}
           </div>
 
@@ -77,9 +83,9 @@ export function LoginForm({
               placeholder="Password or WIF"
               {...register("password")}
             />
-            <p className="text-sm text-gray-400">
-              This operation requires your Posting key or Master password.
-            </p>
+            {errors.password?.message && (
+              <p className="text-red-500 text-sm" role="alert">{errors.password.message}</p>
+            )}
           </div>
 
           <div className="my-6 flex w-full flex-col">

@@ -7,12 +7,12 @@ import { withIronSessionSsr } from "iron-session/next";
 import secureRandom from 'secure-random';
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { KeychainKeyTypes, KeychainKeyTypesLC } from 'hive-keychain-commons';
-import { LoginForm, LoginFormData } from "@/auth/components/login-form";
+import { LoginForm, LoginFormSchema } from "@/auth/components/login-form";
 import { useUser } from '@/auth/lib/use-user';
 import { fetchJson, FetchError } from '@/auth/lib/fetch-json';
 import { getLogger } from "@hive/ui/lib/logging";
 import { sessionOptions } from '@/auth/lib/session';
-import { Signatures, LoginData, LoginTypes } from '@/auth/pages/api/login';
+import { Signatures, PostLoginSchema, LoginTypes } from '@/auth/pages/api/login';
 import HiveAuthUtils from '@/auth/lib/hive-auth-utils';
 
 const logger = getLogger('app');
@@ -108,7 +108,7 @@ export default function LoginPage({
 
   }
 
-  const onSubmit = async (data: LoginFormData) => {
+  const onSubmit = async (data: LoginFormSchema) => {
     logger.info('onSubmit form data', data);
     setErrorMsg('');
 
@@ -135,10 +135,10 @@ export default function LoginPage({
 
     logger.info({signatures});
 
-    const body: LoginData = {
+    const body: PostLoginSchema = {
       username,
       signatures,
-      loginType,
+      loginType: 'bamboo',
       hivesignerToken,
     };
 

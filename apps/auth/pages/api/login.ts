@@ -11,13 +11,6 @@ import { validateHiveAccountName } from '@/auth/lib/validate-hive-account-name';
 import type { User } from './user';
 import { FullAccount } from "@hive/ui/store/app-types";
 
-export interface Signatures {
-  memo?: string;
-  posting?: string;
-  active?: string;  // const data = await postLoginSchema.validate(req.body);
-
-  owner?: string;
-}
 
 export enum LoginTypes {
   password = 'password',
@@ -26,14 +19,39 @@ export enum LoginTypes {
   keychain = 'keychain',
 }
 
-export interface LoginData {
-  username: string;
-  signatures: Signatures;
-  loginType: LoginTypes;
-  hivesignerToken: string;
-}
+export const username = z.string()
+  .superRefine((val, ctx) => {
+    const result = validateHiveAccountName(val, (v) => v);
+    if (result) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: result,
+        fatal: true,
+      });
+      return z.NEVER;
+    }
+    return true;
+  });
 
-const RE_LOGIN_TYPE = /^(password|hiveauth|hivesigner|keychain)$/;
+const postLoginSchema = z.object({
+  loginType: z.nativeEnum(LoginTypes),
+  hivesignerToken: z.string({
+    required_error: "hivesignerToken is required",
+    invalid_type_error: "hivesignerToken must be a string",
+  }),
+  signatures: z.object({
+      memo: z.string(),
+      posting: z.string(),
+      active: z.string(),
+      owner: z.string(),
+    })
+    .partial(),
+  username,
+});
+
+export type PostLoginSchema = z.infer<typeof postLoginSchema>;
+
+export type Signatures = PostLoginSchema["signatures"];
 
 const logger = getLogger('app');
 
@@ -56,7 +74,7 @@ const verifyLoginChallenge = async (
     logger.info('Starting verify args: %o', { keyRole, signature, pubkey, weight, weight_threshold });
     if (!signature) return;
     if (weight !== 1 || weight_threshold !== 1) {
-      console.error(
+      logger.error(
         `verifyLoginChallenge unsupported ${keyRole} auth configuration for user ${chainAccount.name}`
       );
     } else {
@@ -65,7 +83,7 @@ const verifyLoginChallenge = async (
       const messageHash = cryptoUtils.sha256(message);
       const verified = publicKey.verify(messageHash, sig);
       if (!verified) {
-        console.error(
+        logger.error(
           'verifyLoginChallenge signature verification failed'
         );
       }
@@ -86,36 +104,6 @@ const verifyLoginChallenge = async (
 
 
 const loginUser: NextApiHandler<User> = async (req, res) => {
-
-  const postLoginSchema = z.object({
-    username: z.string()
-        .nonempty('username is required')
-        .superRefine((val, ctx) => {
-            const result = validateHiveAccountName(val, (v) => v);
-            console.log({result});
-            if (result) {
-                ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: result,
-                    fatal: true,
-                });
-                return z.NEVER;
-            }
-            return true;
-          }),
-    signatures: z.object({
-        posting: z.string()
-    }),
-    loginType: z.string()
-        .nonempty('loginType is required')
-        .regex(RE_LOGIN_TYPE, 'invalid loginType'),
-    hivesignerToken: z.string({
-        required_error: "hivesignerToken is required",
-        invalid_type_error: "hivesignerToken must be a string",
-    })
-  });
-
-  type PostLoginSchema = z.infer<typeof postLoginSchema>;
 
   const data: PostLoginSchema = await postLoginSchema.parseAsync(req.body);
 
