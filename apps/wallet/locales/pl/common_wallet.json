@@ -7,11 +7,11 @@
       "seconds": " sekund_y temu",
       "minutes": " minut_y temu",
       "a_minute": " minute temu",
-      "hours" :" godzin_y temu",
+      "hours": " godzin temu",
       "an_hour": " godzine temu",
       "days": " dni temu",
       "a_day": " dzień temu",
-      "months": " miesięce_y temu",
+      "months": " miesięcy temu",
       "a_month": " miesiąc temu",
       "years": " lat_a temu",
       "a_year": " rok temu"
@@ -25,10 +25,10 @@
       "sixth": "Czerwiec",
       "seventh": "Lipiec",
       "eighth": "Sierpień",
-      "ninth": "Wrzesień", 
+      "ninth": "Wrzesień",
       "tenth": "Październik",
       "eleventh": "Listopad",
-      "twelfth": "Grudzień" 
+      "twelfth": "Grudzień"
     },
     "months_short_form": {
       "first": "St",
@@ -39,21 +39,21 @@
       "sixth": "Cz",
       "seventh": "Lip",
       "eighth": "Sier",
-      "ninth": "Wrz", 
+      "ninth": "Wrz",
       "tenth": "Paź",
       "eleventh": "Lis",
-      "twelfth": "Gr" 
+      "twelfth": "Gr"
     },
     "time": {
       "a_few_seconds": " Za kilka sekund",
-      "seconds": " sekund_y",
-      "minutes": " minut_y",
+      "seconds": " sekund",
+      "minutes": " minut",
       "a_minute": " minute",
-      "hours" :" godzin_y",
+      "hours": " godzin",
       "an_hour": " godzina",
       "days": " dni",
       "a_day": " dzień",
-      "months": " miesięce_y",
+      "months": " miesięcy",
       "a_month": " miesiąc",
       "years": " lat_a",
       "a_year": " rok"
@@ -141,11 +141,11 @@
     "estimated_account_value_description": "Szacowana wartość bazuje na średniej cenie tokenu HIVE w dolarach amerykańskich.",
     "account_history_title": "Historia",
     "see_faq_for_details": "Zobacz szczegóły.",
-    "witnesses":"Witnesses",
+    "witnesses": "Witnesses",
     "account_history_description": "Uważaj na spam i linki phishingowe w notatkach transakcji. Nie otwieraj linków od użytkowników, którym nie ufasz. Nie udostępniaj swoich kluczy prywatnych żadnym stronom internetowym osób trzecich. Transakcje nie zostaną wyświetlone, dopóki nie zostaną potwierdzone w blockchain, co może zająć kilka minut.",
-    "no_transactions_found":"Nie znaleziono transakcji",
-    "the_next_power_down":"The next power down is scheduled to happen in ",
-    "paid_for":"Paid {{value1}} for {{value2}}",
+    "no_transactions_found": "Nie znaleziono transakcji",
+    "the_next_power_down": "The next power down is scheduled to happen in ",
+    "paid_for": "Paid {{value1}} for {{value2}}",
     "cancel_transfer_from_savings": "Cancel transfer from savings (request {{number}})",
     "receive_interest": "'Receive interest of {{number}}",
     "transfer_to": "Przelew {{value}} do ",
@@ -156,12 +156,12 @@
     "received_from_user": "Otrzymał {{value}} od ",
     "claim_rewards": "Zdobył nagrody: ",
     "and": " i ",
-    "estimated_author_rewards_last_week":"Szacowane nagrody autorskie w zeszłym tygodniu:",
-    "author_rewards_history":"Historia nagród autora",
-    "newer":"Nowsze",
-    "older":"Starsze",
-    "estimated_curation_rewards_last_week":"Szacunkowe nagrody kuratorskie w zeszłym tygodniu:",
-    "curation_rewards_history":"Historia nagród kuratorskich"
+    "estimated_author_rewards_last_week": "Szacowane nagrody autorskie w zeszłym tygodniu:",
+    "author_rewards_history": "Historia nagród autora",
+    "newer": "Nowsze",
+    "older": "Starsze",
+    "estimated_curation_rewards_last_week": "Szacunkowe nagrody kuratorskie w zeszłym tygodniu:",
+    "curation_rewards_history": "Historia nagród kuratorskich"
   },
   "market_page": {
     "last_price": "Ostatnia cena",
@@ -234,7 +234,7 @@
     }
   },
   "proposals_page": {
-    "daily":"Dziennie",
+    "daily": "Dziennie",
     "proposals": "Propozycje",
     "started": "rozpoczęte",
     "finished": "zakończone",
@@ -282,11 +282,11 @@
       "fifth": "Piąta zasada: Używaj wyłącznie losowo generowanych haseł.",
       "sixth": "Szósta zasada: Nie ujawniaj nikomu swojego hasła.",
       "seventh": "Siódma zasada: Zawsze miej kopię zapasową swojego hasła."
+    }
+  },
+  "four_oh_four": {
+    "this_page_does_not_exist": "Przepraszamy! Ta strona nie istnieje.",
+    "not_to_worry": "Możesz wrócić do",
+    "our_homepage": "naszej strony startowej"
   }
-},
-"four_oh_four": {
-  "this_page_does_not_exist": "Przepraszamy! Ta strona nie istnieje.",
-  "not_to_worry": "Możesz wrócić do",
-  "our_homepage": "naszej strony startowej"
-}
 }
