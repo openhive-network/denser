@@ -4,7 +4,6 @@
 //
 
 import createHttpError from "http-errors";
-import { ValidationError } from "yup";
 import { ZodError } from "zod";
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import { getLogger } from "@hive/ui/lib/logging";
@@ -44,9 +43,6 @@ function errorHandler(err: unknown, res: NextApiResponse<ErrorResponse>) {
         // Handle all errors thrown by http-errors module, except errors
         // with statusCode >= 500 (these should not be exposed).
         return res.status(err.statusCode).json({ error: { message: err.message } });
-    } else if (err instanceof ValidationError) {
-        // Handle yup validation errors.
-        return res.status(400).json({ error: { message: err.errors.join(", ") } });
     } else if (err instanceof ZodError) {
         // Handle zod validation errors.
         const message = err.issues.map((issue) => issue.message).join(", ");

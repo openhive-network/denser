@@ -1,5 +1,4 @@
 import createHttpError from "http-errors";
-import * as Yup from "yup";
 import * as z from 'zod';
 import { NextApiHandler } from "next";
 import { withIronSessionApiRoute } from 'iron-session/next';
@@ -8,13 +7,15 @@ import { sessionOptions } from '@/auth/lib/session';
 import { getLogger } from "@hive/ui/lib/logging";
 import { getAccount } from '@hive/ui/lib/hive';
 import { apiHandler } from "@/auth/lib/api";
+import { validateHiveAccountName } from '@/auth/lib/validate-hive-account-name';
 import type { User } from './user';
 import { FullAccount } from "@hive/ui/store/app-types";
 
 export interface Signatures {
   memo?: string;
   posting?: string;
-  active?: string;
+  active?: string;  // const data = await postLoginSchema.validate(req.body);
+
   owner?: string;
 }
 
@@ -83,38 +84,40 @@ const verifyLoginChallenge = async (
   return result;
 };
 
+
 const loginUser: NextApiHandler<User> = async (req, res) => {
 
-  const postLoginSchema = Yup.object().shape({
-    // _csrf: Yup.string().required(),
-    username: Yup.string().required('username is required'),
-    signatures: Yup.object().shape({
-      posting: Yup.string()
-    }),
-    loginType: Yup.string()
-      .required('loginType is required')
-      .matches(RE_LOGIN_TYPE, 'invalid loginType'),
-    hivesignerToken: Yup.string()
-      .defined('hivesignerToken must be defined')
-      .strict(true),
-  });
-
-  const postLoginSchemaZod = z.object({
-    username: z.string().nonempty('username is required'),
+  const postLoginSchema = z.object({
+    username: z.string()
+        .nonempty('username is required')
+        .superRefine((val, ctx) => {
+            const result = validateHiveAccountName(val, (v) => v);
+            console.log({result});
+            if (result) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: result,
+                    fatal: true,
+                });
+                return z.NEVER;
+            }
+            return true;
+          }),
     signatures: z.object({
-      posting: z.string()
+        posting: z.string()
     }),
     loginType: z.string()
-      .nonempty('loginType is required')
-      .regex(RE_LOGIN_TYPE, 'invalid loginType'),
-    hivesignerToken: z.string()
+        .nonempty('loginType is required')
+        .regex(RE_LOGIN_TYPE, 'invalid loginType'),
+    hivesignerToken: z.string({
+        required_error: "hivesignerToken is required",
+        invalid_type_error: "hivesignerToken must be a string",
+    })
   });
 
-  type PostLoginSchemaZod = z.infer<typeof postLoginSchemaZod>;
+  type PostLoginSchema = z.infer<typeof postLoginSchema>;
 
-  // const dataZod = await postLoginSchemaZod.parseAsync(req.body);
-
-  const data = await postLoginSchema.validate(req.body);
+  const data: PostLoginSchema = await postLoginSchema.parseAsync(req.body);
 
   const { username, loginType, signatures } = data;
   let hiveUserProfile;
