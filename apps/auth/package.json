@@ -6,7 +6,8 @@
         "dev": "react-env -- next dev -p 5000 | npx pino-pretty --colorize",
         "build": "react-env -- next build",
         "start": "react-env -- next start -p 5000",
-        "lint": "eslint ."
+        "lint": "eslint .",
+        "test": "jest --watch"
     },
     "dependencies": {
         "@beam-australia/react-env": "^3.1.1",
@@ -40,6 +41,8 @@
     },
     "devDependencies": {
         "@hiveio/hive-js": "^2.0.7",
+        "@testing-library/jest-dom": "^6.1.4",
+        "@testing-library/react": "^14.1.0",
         "@types/cors": "^2.8.14",
         "@types/node": "^18.16.19",
         "@types/qrcode": "^1.5.4",
@@ -48,6 +51,8 @@
         "@types/secure-random": "^1.1.2",
         "git-revision-webpack-plugin": "^5.0.0",
         "hive-keychain-commons": "^1.2.2",
+        "jest": "^29.7.0",
+        "jest-environment-jsdom": "^29.7.0",
         "pino-pretty": "^10.2.0"
     }
 }
