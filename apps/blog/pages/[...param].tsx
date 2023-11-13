@@ -191,12 +191,12 @@ const ParamPage: FC = () => {
 
   if (!entriesDataIsLoading && entriesData) {
     return (
-      <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
-        <div className="grid grid-cols-12 md:gap-4 sm:gap-2">
-          <div className="hidden md:col-span-3 md:flex xl:col-span-2">
+      <div className="container mx-auto max-w-screen-2xl flex-grow p-1 sm:px-4 sm:pb-2">
+        <div className="grid grid-cols-12 md:gap-4 sm:gap-2 gap-1">
+          <div className="col-span-1 md:col-span-3 xl:col-span-2">
             <MainNavbar />
           </div>
-          <div className="col-span-12 sm:col-span-11 md:col-span-8 xl:col-span-8">
+          <div className="col-span-11 md:col-span-8 xl:col-span-8">
             <div data-testid="card-explore-hive-mobile" className=" ">
               {communityData && subsData ? (
                 <CommunitySimpleDescription
@@ -210,14 +210,11 @@ const ParamPage: FC = () => {
             <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">
               <div className="my-4 flex w-full items-center justify-between">
                 <div className="mr-2 flex w-full flex-col">
-                  <ul className="flex gap-2 py-2">
-                    <li className="md:hidden">
-                      <SidebarOpen />
-                    </li>
+                  <ul className="flex gap-1 sm:gap-2 p-2">
                     <li>
                       <Link
                         className={clsx(
-                          "py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold",
+                          "py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold text-xs sm:text-base",
                           {
                             "text-red-500 hover:text-white":
                               router.asPath === "/trending",
@@ -232,7 +229,7 @@ const ParamPage: FC = () => {
                     <li>
                       <Link
                         className={clsx(
-                          "py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold",
+                          "py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold text-xs sm:text-base",
                           {
                             "text-red-500 hover:text-white":
                               router.asPath === "/hot",
@@ -247,7 +244,7 @@ const ParamPage: FC = () => {
                     <li>
                       <Link
                         className={clsx(
-                          "py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold",
+                          "py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold text-xs sm:text-base",
                           {
                             "text-red-500 hover:text-white":
                               router.asPath === "/created",
@@ -262,7 +259,7 @@ const ParamPage: FC = () => {
                     <li>
                       <Link
                         className={clsx(
-                          "py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold",
+                          "py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold text-xs sm:text-base",
                           {
                             "text-red-500 hover:text-white":
                               router.asPath === "/payout",
@@ -277,7 +274,7 @@ const ParamPage: FC = () => {
                     <li>
                       <Link
                         className={clsx(
-                          "py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold",
+                          "py-2 px-3 bg-slate-800 rounded-2xl hover:bg-red-500 font-semibold text-xs sm:text-base",
                           {
                             "text-red-500 hover:text-white":
                               router.asPath === "/muted",
@@ -326,9 +323,9 @@ const ParamPage: FC = () => {
               </>
             </div>
           </div>
-          <div
+          <div className="hidden sm:flex flex-col sm:col-span-1 xl:col-span-2"
             data-testid="card-explore-hive-desktop"
-            className="hidden sm:flex flex-col sm:col-span-1 xl:col-span-2"
+           
           >
             {communityData && subsData ? (
               <CommunityDescription

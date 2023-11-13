@@ -14,6 +14,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { i18n } from "@/blog/next-i18next.config";
 import { useTranslation } from "next-i18next";
 import MainNavbar from "../components/main-navbar";
+import TrendingTags from "../components/trending-tags";
 
 export default function CommunitiesPage() {
   const { t } = useTranslation("common_blog");
@@ -35,9 +36,6 @@ export default function CommunitiesPage() {
     }
   }
 
-  function handleChangeFilter(e: string) {
-    setSort(e);
-  }
 
   if (communitiesDataIsLoading)
     return <Loading loading={communitiesDataIsLoading} />;
@@ -88,7 +86,7 @@ export default function CommunitiesPage() {
           )}
         </div>
         <div className="hidden lg:flex xl:col-span-2">
-        <CommunitiesSidebar />
+        <TrendingTags />
         </div>
       </div>
     </div>

@@ -25,11 +25,12 @@ const Box = ({
       target={externalLink}
       href={href}
       className={clsx(
-        "font-semibold flex gap-2 hover:bg-slate-900 hover:text-red-500 px-4 py-1",
+        "font-semibold flex gap-2 hover:bg-slate-900 hover:text-red-500 sm:px-4 py-1 justify-center md:justify-start",
         { "text-red-500 font-extrabold": current_card }
       )}
     >
-      {children}
+      <span>00</span>
+      <span className="hidden md:flex">{children}</span>
     </Link>
   );
 };
@@ -49,15 +50,15 @@ const MainNavbar: FC = () => {
   return (
     <Card
       className={cn(
-        "my-4 hidden h-fit w-full flex-col dark:bg-background/95 dark:text-white md:flex"
+        "my-4 h-fit w-full flex-col dark:bg-background/95 dark:text-white flex"
       )}
       data-testid="card-trending-comunities"
     >
       <CardContent className="p-0">
         <div>
-          <div className="font-bold flex gap-2 p-2 bg-slate-950 text-white">
+          <div className="font-bold flex gap-2 p-1 sm:p-2 bg-slate-950 text-white justify-center md:justify-start">
             <Home />
-            Blog
+            <span className="hidden md:flex">Blog</span>
           </div>
           <ul className="text-sm">
             <li>
@@ -85,9 +86,9 @@ const MainNavbar: FC = () => {
           </ul>
         </div>
         <div>
-          <div className="font-bold flex gap-2 p-2 bg-slate-950 text-white">
+          <div className="font-bold flex gap-2 p-1 sm:p-2 bg-slate-950 text-white  justify-center md:justify-start">
             <Wallet />
-            Wallet
+            <span className="hidden md:flex">Wallet</span>
           </div>
           <ul className="text-sm">
             <li>
@@ -111,9 +112,9 @@ const MainNavbar: FC = () => {
           </ul>
         </div>
         <div>
-          <div className="font-bold flex gap-2 p-2 bg-slate-950 text-white">
+          <div className="font-bold flex gap-2 p-1 sm:p-2 bg-slate-950 text-white justify-center md:justify-start">
             <ExternalLink />
-            External Apps
+            <span className="hidden md:flex">External Apps</span>
           </div>
           <ul className="text-sm">
             <li>
@@ -154,9 +155,9 @@ const MainNavbar: FC = () => {
           </ul>
         </div>
         <div>
-          <div className="font-bold flex gap-2 p-2 bg-slate-950 text-white">
+          <div className="font-bold flex gap-2 p-1 sm:p-2 bg-slate-950 text-white justify-center md:justify-start">
             <Info />
-            Explore Hive
+            <span className="hidden md:flex">Explore Hive</span>
           </div>
           <ul className="text-sm">
             <li>
