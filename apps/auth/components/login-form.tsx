@@ -8,10 +8,23 @@ import { Separator } from "@hive/ui/components/separator";
 import { getLogger } from "@hive/ui/lib/logging";
 import { hasCompatibleKeychain } from "@/auth/lib/hive-keychain";
 import { username } from "@/auth/pages/api/login";
+import { validateHivePassword } from "@/auth/lib/validate-hive-password";
 
 const loginFormSchema = z.object({
   username,
-  password: z.string(),
+  password: z.string()
+    .superRefine((val, ctx) => {
+      const result = validateHivePassword(val, (v) => v);
+      if (result) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: result,
+          fatal: true,
+        });
+        return z.NEVER;
+      }
+      return true;
+    }),
   useKeychain: z.boolean(),
   useHiveauth: z.boolean(),
   remember: z.boolean(),
