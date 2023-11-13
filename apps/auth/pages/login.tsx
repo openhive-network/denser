@@ -138,7 +138,7 @@ export default function LoginPage({
     const body: PostLoginSchema = {
       username,
       signatures,
-      loginType: 'bamboo',
+      loginType,
       hivesignerToken,
     };
 
