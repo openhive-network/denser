@@ -32,6 +32,9 @@
     "badactor": "Use caution sending to this account. Please double check your spelling for possible phishing.",
     "memo_has_privatekey": "Please do not include what appears to be a private key or password.",
     "memo_is_privatekey": "Do not use private keys in memos.",
-    "memo_is_password": "Do not use passwords in memos."
+    "memo_is_password": "Do not use passwords in memos.",
+    "invalid_password_format": "Invalid password format.",
+    "invalid_password_checksum": "Invalid password checksum.",
+    "password_should_not_be_empty": "Password should not be empty."
   }
 }

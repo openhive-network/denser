@@ -1,6 +1,9 @@
 import BadActorList from './bad-actor-list';
 
-export function validateHiveAccountName(value: string, translateFn: (v: string) => string = (v) => v ) {
+export function validateHiveAccountName(
+        value: string,
+        translateFn: (v: string) => string = (v) => v
+        ): string | null {
     let i, label, len;
 
     if (!value) {

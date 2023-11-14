@@ -1,4 +1,4 @@
-import {expect, test} from '@jest/globals';
+import { expect, test } from '@jest/globals';
 import { validateHiveAccountName } from '../lib/validate-hive-account-name';
 
 const t = (v) => v;

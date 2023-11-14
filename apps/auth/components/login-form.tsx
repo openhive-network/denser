@@ -24,7 +24,9 @@ const loginFormSchema = z.object({
         return z.NEVER;
       }
       return true;
-    }),
+    })
+    .optional()
+    .or(z.literal('')),
   useKeychain: z.boolean(),
   useHiveauth: z.boolean(),
   remember: z.boolean(),
@@ -97,7 +99,7 @@ export function LoginForm({
               {...register("password")}
             />
             {errors.password?.message && (
-              <p className="text-red-500 text-sm" role="alert">{errors.password.message}</p>
+              <p className="text-red-500 text-sm" role="alert">{t(errors.password.message)}</p>
             )}
           </div>
 
