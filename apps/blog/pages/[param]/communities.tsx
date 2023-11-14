@@ -88,29 +88,37 @@ const UserCommunities = ({
 
 export default UserCommunities;
 
+
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const username = String(context.params?.param).slice(1);
+  let hivebuzzJsonStateOn = [];
+  let peakdJsonMapedWithURL = [];
 
-  const hivebuzzRes = await fetch(`https://hivebuzz.me/api/badges/${username}`);
-  const hivebuzzJson = await hivebuzzRes.json();
-  const hivebuzzJsonStateOn = hivebuzzJson.filter(
-    (badge: Badge) => badge.state === 'on'
-  );
+  try {
+    const username = String(context.params?.param).slice(1);
+    const hivebuzzRes = await fetch(`https://hivebuzz.me/api/badges/${username}`);
+    if (hivebuzzRes.ok) {
+      const hivebuzzJson = await hivebuzzRes.json();
+      hivebuzzJsonStateOn = hivebuzzJson.filter((badge: Badge) => badge.state === 'on');
+    }
+    const peakdRes = await fetch(`https://peakd.com/api/public/badge/${username}`);
+    if (peakdRes.ok) {
+      const peakdJson = await peakdRes.json();
+      peakdJsonMapedWithURL = peakdJson?.map((obj: Badge) => ({
+        id: obj.title,
+        url: `https://images.hive.blog/u/${obj.name}/avatar`,
+        title: obj.title,
+      }));
+    }
 
-  const peakdRes = await fetch(
-    `https://peakd.com/api/public/badge/${username}`
-  );
-  const peakdJson = await peakdRes.json();
-  const peakdJsonMapedWithURL = peakdJson?.map((obj: Badge) => ({
-    id: obj.title,
-    url: `https://images.hive.blog/u/${obj.name}/avatar`,
-    title: obj.title
-  }));
+  } catch (error) {
+    console.error('Error in getServerSideProps');
+  }
+
   return {
     props: {
       hivebuzz: hivebuzzJsonStateOn,
       peakd: peakdJsonMapedWithURL,
-      ...(await serverSideTranslations(context.req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_blog']))
-    }
+      ...(await serverSideTranslations(context.req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_blog'])),
+    },
   };
 };

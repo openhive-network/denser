@@ -80,12 +80,16 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
 
     // Click avatar of the first comment card
     await profilePage.repliesCommentListItemAvatar.first().click();
-    await profilePage.page.waitForSelector(page.locator('[data-testid="post-list-item"]')['_selector']);
-    await profilePage.moveToPostsTab();
-    await profilePage.profilePostsTabIsSelected();
-    const profilePagePostAuthor: any = await profilePage.postsPostAuthor.first().textContent();
-    // Validate the comment author name is the same as autor post in the profile page in posts tab
-    await expect(await firstCommentCardNickName).toContain(await profilePagePostAuthor);
+
+    if (await profilePage.postBlogItem.first().isVisible()) {
+      await profilePage.page.waitForSelector(page.locator('[data-testid="post-list-item"]')['_selector']);
+      await profilePage.moveToPostsTab();
+      await profilePage.profilePostsTabIsSelected();
+      const profilePagePostAuthor: any = await profilePage.postsPostAuthor.first().textContent();
+      // Validate the comment author name is the same as autor post in the profile page in posts tab
+      await expect(await firstCommentCardNickName).toContain(await profilePagePostAuthor);
+    } else
+      await expect (profilePage.userHasNotStartedBloggingYetMsg).toHaveText("Looks like @levex hasn't started blogging yet!");
   });
 
   test('move to the profile page after clicking nickname of the first comment card', async ({ page }) => {
@@ -96,12 +100,16 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
 
     // Click nickname of the first comment card
     await profilePage.postsPostAuthor.first().click();
-    await profilePage.page.waitForSelector(page.locator('[data-testid="post-list-item"]')['_selector']);
-    await profilePage.moveToPostsTab();
-    await profilePage.profilePostsTabIsSelected();
-    const profilePagePostAuthor: any = await profilePage.postsPostAuthor.first().textContent();
-    // Validate the comment author name is the same as autor post in the profile page in posts tab
-    await expect(await firstCommentCardNickName).toContain(await profilePagePostAuthor);
+
+    if (await profilePage.postBlogItem.first().isVisible()) {
+      await profilePage.page.waitForSelector(page.locator('[data-testid="post-list-item"]')['_selector']);
+      await profilePage.moveToPostsTab();
+      await profilePage.profilePostsTabIsSelected();
+      const profilePagePostAuthor: any = await profilePage.postsPostAuthor.first().textContent();
+      // Validate the comment author name is the same as autor post in the profile page in posts tab
+      await expect(await firstCommentCardNickName).toContain(await profilePagePostAuthor);
+    } else
+      await expect (profilePage.userHasNotStartedBloggingYetMsg).toHaveText("Looks like @levex hasn't started blogging yet!");
   });
 
   test('move to the community page after clicking community/category link of the first comment card', async ({ page }) => {
