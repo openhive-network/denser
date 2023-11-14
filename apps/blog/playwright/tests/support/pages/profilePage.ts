@@ -419,6 +419,7 @@ export class ProfilePage {
   async gotoSocialProfilePage(nickName: string) {
     await this.page.goto(`/${nickName}/communities`);
     await this.page.waitForLoadState('networkidle');
+    await this.page.waitForTimeout(1000);
     await this.page.waitForSelector(this.profileInfo['_selector']);
     await this.page.waitForSelector(this.socialBadgesAchievemntsMenuBar['_selector']);
   }

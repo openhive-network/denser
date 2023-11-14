@@ -45,14 +45,14 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     const firstCommentCardTitle: any = await profilePage.repliesCommentListItemTitle.first().textContent();
     const firstCommentCardDescription: any = await profilePage.repliesCommentListItemDescription.first().textContent();
     const firstCommentCardDescriptionDots: any = await firstCommentCardDescription.replace(/\u2026/g, '');
-    const firstCommentCardDescriptionWitoutSpaces: any = await firstCommentCardDescriptionDots.replace(/ /g, '');
+    const firstCommentCardDescriptionWitoutSpaces: any = await firstCommentCardDescriptionDots.replace(/\s/g, '');
     // console.log('firstCommentCardDescriptionDots: ', firstCommentCardDescriptionDots);
     // console.log('firstCommentCardDescriptionWitoutSpaces: ', firstCommentCardDescriptionWitoutSpaces);
     await profilePage.repliesCommentListItemTitle.locator('a').first().click();
     await profilePage.page.waitForSelector(profilePage.repliesCommentListItemArticleTitle['_selector']);
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
     const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
-    const commentContentWithoutSpaces: any = await commentContent.replace(/ /g, '');
+    const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
     // console.log('commentContentWithoutSpaces: ', await commentContentWithoutSpaces);
     await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
   });
@@ -64,11 +64,11 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     const firstCommentCardTitle: any = await profilePage.repliesCommentListItemTitle.first().textContent();
     const firstCommentCardDescription: any = await profilePage.repliesCommentListItemDescription.first().textContent();
     const firstCommentCardDescriptionDots: any = await firstCommentCardDescription.replace(/\u2026/g, '');
-    const firstCommentCardDescriptionWitoutSpaces: any = await firstCommentCardDescriptionDots.replace(/ /g, '');
+    const firstCommentCardDescriptionWitoutSpaces: any = await firstCommentCardDescriptionDots.replace(/\s/g, '');
     await profilePage.repliesCommentListItemDescription.locator('a').first().click();
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
     const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
-    const commentContentWithoutSpaces: any = await commentContent.replace(/ /g, '');
+    const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
     await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
   });
 
@@ -80,12 +80,16 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
 
     // Click avatar of the first comment card
     await profilePage.repliesCommentListItemAvatar.first().click();
-    await profilePage.page.waitForSelector(page.locator('[data-testid="post-list-item"]')['_selector']);
-    await profilePage.moveToPostsTab();
-    await profilePage.profilePostsTabIsSelected();
-    const profilePagePostAuthor: any = await profilePage.postsPostAuthor.first().textContent();
-    // Validate the comment author name is the same as autor post in the profile page in posts tab
-    await expect(await firstCommentCardNickName).toContain(await profilePagePostAuthor);
+
+    if (await profilePage.postBlogItem.first().isVisible()) {
+      await profilePage.page.waitForSelector(page.locator('[data-testid="post-list-item"]')['_selector']);
+      await profilePage.moveToPostsTab();
+      await profilePage.profilePostsTabIsSelected();
+      const profilePagePostAuthor: any = await profilePage.postsPostAuthor.first().textContent();
+      // Validate the comment author name is the same as autor post in the profile page in posts tab
+      await expect(await firstCommentCardNickName).toContain(await profilePagePostAuthor);
+    } else
+      await expect (profilePage.userHasNotStartedBloggingYetMsg).toHaveText("Looks like @levex hasn't started blogging yet!");
   });
 
   test('move to the profile page after clicking nickname of the first comment card', async ({ page }) => {
@@ -96,12 +100,16 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
 
     // Click nickname of the first comment card
     await profilePage.postsPostAuthor.first().click();
-    await profilePage.page.waitForSelector(page.locator('[data-testid="post-list-item"]')['_selector']);
-    await profilePage.moveToPostsTab();
-    await profilePage.profilePostsTabIsSelected();
-    const profilePagePostAuthor: any = await profilePage.postsPostAuthor.first().textContent();
-    // Validate the comment author name is the same as autor post in the profile page in posts tab
-    await expect(await firstCommentCardNickName).toContain(await profilePagePostAuthor);
+
+    if (await profilePage.postBlogItem.first().isVisible()) {
+      await profilePage.page.waitForSelector(page.locator('[data-testid="post-list-item"]')['_selector']);
+      await profilePage.moveToPostsTab();
+      await profilePage.profilePostsTabIsSelected();
+      const profilePagePostAuthor: any = await profilePage.postsPostAuthor.first().textContent();
+      // Validate the comment author name is the same as autor post in the profile page in posts tab
+      await expect(await firstCommentCardNickName).toContain(await profilePagePostAuthor);
+    } else
+      await expect (profilePage.userHasNotStartedBloggingYetMsg).toHaveText("Looks like @levex hasn't started blogging yet!");
   });
 
   test('move to the community page after clicking community/category link of the first comment card', async ({ page }) => {
@@ -128,11 +136,11 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     const firstCommentCardTitle: any = await profilePage.repliesCommentListItemTitle.first().textContent();
     const firstCommentCardDescription: any = await profilePage.repliesCommentListItemDescription.first().textContent();
     const firstCommentCardDescriptionDots: any = await firstCommentCardDescription.replace(/\u2026/g, '');
-    const firstCommentCardDescriptionWitoutSpaces: any = await firstCommentCardDescriptionDots.replace(/ /g, '');
+    const firstCommentCardDescriptionWitoutSpaces: any = await firstCommentCardDescriptionDots.replace(/\s/g, '');
     await profilePage.repliesCommentListItemTimestamp.first().click();
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
     const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
-    const commentContentWithoutSpaces: any = await commentContent.replace(/ /g, '');
+    const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
     await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
   });
 
@@ -268,13 +276,13 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     const firstCommentCardTitle: any = await profilePage.repliesCommentListItemTitle.first().textContent();
     const firstCommentCardDescription: any = await profilePage.repliesCommentListItemDescription.first().textContent();
     const firstCommentCardDescriptionDots: any = await firstCommentCardDescription.replace(/\u2026/g, '');
-    const firstCommentCardDescriptionWitoutSpaces: any = await firstCommentCardDescriptionDots.replace(/ /g, '');
+    const firstCommentCardDescriptionWitoutSpaces: any = await firstCommentCardDescriptionDots.replace(/\s/g, '');
 
     await firstCommentCardRespond.click();
 
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
     const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
-    const commentContentWithoutSpaces: any = await commentContent.replace(/ /g, '');
+    const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
     await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
   });
 

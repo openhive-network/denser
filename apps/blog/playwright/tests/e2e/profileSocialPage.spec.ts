@@ -4,8 +4,14 @@ import { ProfilePage } from '../support/pages/profilePage';
 import { PostPage } from '../support/pages/postPage';
 import { ApiHelper } from '../support/apiHelper';
 
+// Skip annotation was added to these tests due to AxiosError with status code 500 in Peakd
+// Sometimes badges are not loaded
+// Run these tests again when we handle this error in Social Tab or when Peakd fix this bug.
+// See:
+// https://gitlab.syncad.com/hive/denser/-/wikis/Comparison-of-views-of-the-Denser-project-with-the-old-Hive-Blog
+// Exception from the third side (i.e. PeakD)
 
-test.describe('Social tab in the profile page of @gtg', () => {
+test.describe.skip('Social tab in the profile page of @gtg', () => {
     let homePage: HomePage;
     let postPage: PostPage;
     let profilePage: ProfilePage;

@@ -7,7 +7,7 @@
       "seconds": " sekund_y temu",
       "minutes": " minut_y temu",
       "a_minute": " minute temu",
-      "hours" :" godzin_y temu",
+      "hours": " godzin_y temu",
       "an_hour": " godzine temu",
       "days": " dni temu",
       "a_day": " dzień temu",
@@ -25,17 +25,17 @@
       "sixth": "Czerwiec",
       "seventh": "Lipiec",
       "eighth": "Sierpień",
-      "ninth": "Wrzesień", 
+      "ninth": "Wrzesień",
       "tenth": "Październik",
       "eleventh": "Listopad",
-      "twelfth": "Grudzień" 
+      "twelfth": "Grudzień"
     },
     "time": {
       "a_few_seconds": " Za kilka sekund",
       "seconds": " sekund_y",
       "minutes": " minut_y",
       "a_minute": " minute",
-      "hours" :" godzin_y",
+      "hours": " godzin_y",
       "an_hour": " godzina",
       "days": " dni",
       "a_day": " dzień",
@@ -108,7 +108,7 @@
       "all": "Wszystkie",
       "replies": "Odpowiedzi",
       "mentions": "Wzmianki",
-      "follows": "Obserwocje",
+      "follows": "Obserwacje",
       "upvotes": "Głosy za",
       "reblogs": "Reblogi"
     }
@@ -121,7 +121,7 @@
       "payouts": "Wynagrodzenia",
       "muted": "Wyciszone"
     },
-    "communitie_sort":{
+    "communitie_sort": {
       "rank": "Ranking",
       "subscribers": "Subskrybcje",
       "new": "Nowe"
@@ -195,8 +195,8 @@
     "twitter_badge_title": "By otrzymać odznakę Twittera, podlinkuj twoje konto na HivePosh.com",
     "joined": "Dołączono",
     "active": "Ostatnia aktywność",
-    "no_posts_yet":"Wygłąda na to, że @{{username}} nie opublikował jeszcze żadnych wpisów!",
-    "no_blogging_yet":"Wygłąda na to, że @{{username}} nie zaczął jeszcze blogować!",
+    "no_posts_yet": "Wygląda na to, że @{{username}} nie opublikował jeszcze żadnych wpisów!",
+    "no_blogging_yet": "Wygląda na to, że @{{username}} nie zaczął jeszcze blogować!",
     "no_pending_payouts": "Brak wynagrodzeń.",
     "load_newer": "Załaduj więcej",
     "nothing_more_to_load": "Wszystko zostało już wyświetlone",
@@ -307,7 +307,6 @@
         "following": "Obserwowani",
         "joined": "Dołączono"
       },
-
       "edited": "edytowany"
     },
     "body": {
@@ -343,7 +342,7 @@
         "open_in_alternative": "Alternatywne źródła Hive dApps",
         "open_in": "Otwórz w Block Explorers"
       },
-      "comment":{
+      "comment": {
         "disable_editor": "Disable side-by-side editor",
         "reply": "Odpowiedz",
         "insert_images": "Wstaw obrazy, przeciągając i upuszczając, wklejając ze schowka lub za pomocą",
@@ -352,7 +351,7 @@
         "cancel": "Anuluj",
         "preview": "Podgląd",
         "markdown_styling_guide": "Przewodnik po stylach posta",
-        "exit_editor":"Jesteś pewien że chcesz opuścić tę stronę i anulować pisanie komentarza?"
+        "exit_editor": "Jesteś pewien że chcesz opuścić tę stronę i anulować pisanie komentarza?"
       }
     }
   },

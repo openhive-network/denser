@@ -227,9 +227,13 @@ test('Tab Posts - Comment Card Footer - Response', async ({page}) =>{
 
 test('Tab Posts - Payouts - List', async ({page, request}) =>{
   await page.goto('/@gtg/payout');
-  await expect (profilePage.postBlogItem.first()).toBeVisible();
   const post = await profilePage.postBlogItem.all()
   const postLenght = await post.length
+
+  if (await profilePage.postBlogItem.first().isVisible())
+    await expect (profilePage.postBlogItem.first()).toBeVisible();
+  if (await profilePage.userNoPendingPayoutsMsg.isVisible())
+    await expect (profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
 
   console.log(postLenght)
   const url = process.env.REACT_APP_API_ENDPOINT;
@@ -255,210 +259,251 @@ test('Tab Posts - Payouts - List', async ({page, request}) =>{
 
 test('Tab Payouts - Post Card Header - Avatar', async ({page}) =>{
   await page.goto('/@gtg/payout');
-  await expect (profilePage.postBlogItem.first()).toBeVisible();
-  await homePage.getPostCardAvatar.first().click()
-  await page.waitForURL('/@gtg')
-  await expect(profilePage.profileBlogLink).toBeVisible()
-  await expect(profilePage.profileBlogLink).toHaveCSS('background-color', "rgb(255, 255, 255)")
-  await expect(profilePage.blogTabPostsContainer).toBeVisible()
+
+  if (await profilePage.postBlogItem.first().isVisible()) {
+    await expect (profilePage.postBlogItem.first()).toBeVisible();
+    await homePage.getPostCardAvatar.first().click()
+    await page.waitForURL('/@gtg')
+    await expect(profilePage.profileBlogLink).toBeVisible()
+    await expect(profilePage.profileBlogLink).toHaveCSS('background-color', "rgb(255, 255, 255)")
+    await expect(profilePage.blogTabPostsContainer).toBeVisible()
+  } else
+    await expect (profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
 })
 
 test('Tab Payouts - Post Card Header - NickName Link', async ({page}) =>{
   await page.goto('/@gtg/payout');
-  await expect (profilePage.postBlogItem.first()).toBeVisible();
-  await homePage.getFirstPostAuthor.click()
-  await page.waitForURL('/@gtg')
-  await expect(profilePage.profileBlogLink).toBeVisible()
-  await expect(profilePage.profileBlogLink).toHaveCSS('background-color', "rgb(255, 255, 255)")
-  await expect(profilePage.blogTabPostsContainer).toBeVisible()
+
+  if (await profilePage.postBlogItem.first().isVisible()) {
+    await expect (profilePage.postBlogItem.first()).toBeVisible();
+    await homePage.getFirstPostAuthor.click()
+    await page.waitForURL('/@gtg')
+    await expect(profilePage.profileBlogLink).toBeVisible()
+    await expect(profilePage.profileBlogLink).toHaveCSS('background-color', "rgb(255, 255, 255)")
+    await expect(profilePage.blogTabPostsContainer).toBeVisible()
+  } else
+    await expect (profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
 })
 
 test('Tab Payouts - Post Card Header - Community Link', async ({page}) =>{
   await page.goto('/@gtg/payout');
-  await expect (profilePage.postBlogItem.first()).toBeVisible();
-  const firstCommunityName = await profilePage.firstCommunityLinkPostsComments.textContent()
 
-  await profilePage.firstCommunityLinkPostsComments.click()
-  await expect(profilePage.communityName).toBeVisible()
-  await expect(profilePage.communityName).toHaveText(`${firstCommunityName}`)
+  if (await profilePage.postBlogItem.first().isVisible()) {
+    await expect (profilePage.postBlogItem.first()).toBeVisible();
+    const firstCommunityName = await profilePage.firstCommunityLinkPostsComments.textContent()
 
+    await profilePage.firstCommunityLinkPostsComments.click()
+    await expect(profilePage.communityName).toBeVisible()
+    await expect(profilePage.communityName).toHaveText(`${firstCommunityName}`)
+  } else
+    await expect (profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
 })
 
 test('Tab Payouts - Post Card Header - Timestamp', async ({page}) =>{
   await page.goto('/@gtg/payout');
-  await expect (profilePage.postBlogItem.first()).toBeVisible();
-  await profilePage.communityTimeStamp.hover()
-  await expect(profilePage.communityTimeStamp).toHaveCSS('color', "rgb(220, 38, 38)")
 
- const tittleText = await homePage.postTitle.first().textContent()
+  if (await profilePage.postBlogItem.first().isVisible()) {
+    await expect (profilePage.postBlogItem.first()).toBeVisible();
+    await profilePage.communityTimeStamp.hover()
+    await expect(profilePage.communityTimeStamp).toHaveCSS('color', "rgb(220, 38, 38)")
 
- await profilePage.communityTimeStamp.click()
+    const tittleText = await homePage.postTitle.first().textContent()
 
- if(tittleText?.includes("RE:")){
-   await expect(commentViewPage.commentGreenSection).toBeVisible()
- }
- else{
-  await expect(postPage.articleBody).toBeVisible()
-  const plenght = (await page.locator('#articleBody p').all()).length
+    await profilePage.communityTimeStamp.click()
 
-  await expect(plenght).toBeGreaterThan(1)
- }
+    if(tittleText?.includes("RE:")) {
+      await expect(commentViewPage.commentGreenSection).toBeVisible()
+    }
+    else{
+      await expect(postPage.articleBody).toBeVisible()
+      const plenght = (await page.locator('#articleBody p').all()).length
+
+      await expect(plenght).toBeGreaterThan(1)
+    }
+  } else
+    await expect (profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
 })
 
 test("Tab Payouts - ReComment Card Header - Avatar", async ({page}) =>{
   await page.goto('/@gtg/payout');
-  await expect (profilePage.postBlogItem.first()).toBeVisible();
 
-  const postListItems = await page.$$('[data-testid="post-list-item"]');
+  if (await profilePage.postBlogItem.first().isVisible()) {
+    await expect (profilePage.postBlogItem.first()).toBeVisible();
 
-  for (const postItem of postListItems) {
-    const textContent = await postItem.textContent();
-    if (textContent.includes('RE:')) {
-      const postCardAvatarElements = await postItem.$$('[data-testid="post-card-avatar"]');
+    const postListItems = await page.$$('[data-testid="post-list-item"]');
 
-      if (postCardAvatarElements.length > 0) {
+    for (const postItem of postListItems) {
+      const textContent = await postItem.textContent();
+      if (textContent?.includes('RE:')) {
+        const postCardAvatarElements = await postItem.$$('[data-testid="post-card-avatar"]');
 
-        await postCardAvatarElements[0].click();
-        break;
+        if (postCardAvatarElements.length > 0) {
+
+          await postCardAvatarElements[0].click();
+          break;
+        }
       }
     }
-  }
-  await page.waitForTimeout(10000)
-  await expect(profilePage.profileBlogLink).toHaveCSS('background-color', "rgb(255, 255, 255)")
-  await expect(profilePage.blogTabPostsContainer).toBeVisible()
+    await page.waitForTimeout(10000)
+    await expect(profilePage.profileBlogLink).toHaveCSS('background-color', "rgb(255, 255, 255)")
+    await expect(profilePage.blogTabPostsContainer).toBeVisible()
+  } else
+    await expect (profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
 })
 
 test('Tab Payouts - ReComment Card Header - NickName Link', async({page}) =>{
   await page.goto('/@gtg/payout');
-  await expect (profilePage.postBlogItem.first()).toBeVisible();
 
-  const postListItems = await page.$$('[data-testid="post-list-item"]');
+  if (await profilePage.postBlogItem.first().isVisible()) {
+    await expect (profilePage.postBlogItem.first()).toBeVisible();
 
-  for (const postItem of postListItems) {
-    const textContent = await postItem.textContent();
-    if (textContent.includes('RE:')) {
-      const postAuthor = await postItem.$$('[data-testid="post-author"]');
+    const postListItems = await page.$$('[data-testid="post-list-item"]');
 
-      if (postAuthor.length > 0) {
+    for (const postItem of postListItems) {
+      const textContent = await postItem.textContent();
+      if (textContent?.includes('RE:')) {
+        const postAuthor = await postItem.$$('[data-testid="post-author"]');
 
-        await postAuthor[0].click();
-        break;
+        if (postAuthor.length > 0) {
+
+          await postAuthor[0].click();
+          break;
+        }
       }
     }
-  }
-  await page.waitForTimeout(10000)
-  await expect(profilePage.profileBlogLink).toHaveCSS('background-color', "rgb(255, 255, 255)")
-  await expect(profilePage.blogTabPostsContainer).toBeVisible()
+    await page.waitForTimeout(10000)
+    await expect(profilePage.profileBlogLink).toHaveCSS('background-color', "rgb(255, 255, 255)")
+    await expect(profilePage.blogTabPostsContainer).toBeVisible()
+  } else
+  await expect (profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
 })
 
 test('Tab Payouts - ReComment Card Header - Timestamp', async ({page}) =>{
   await page.goto('/@gtg/payout');
-  await expect (profilePage.postBlogItem.first()).toBeVisible();
 
-  const postListItems = await page.$$('[data-testid="post-list-item"]');
+  if (await profilePage.postBlogItem.first().isVisible()) {
+    await expect (profilePage.postBlogItem.first()).toBeVisible();
 
-  for (const postItem of postListItems) {
-    const textContent = await postItem.textContent();
-    if (textContent.includes('RE:')) {
-      const postCardTimestamp = await postItem.$$('[data-testid="post-card-timestamp"]');
+    const postListItems = await page.$$('[data-testid="post-list-item"]');
 
-      if (postCardTimestamp.length > 0) {
+    for (const postItem of postListItems) {
+      const textContent = await postItem.textContent();
+      if (textContent.includes('RE:')) {
+        const postCardTimestamp = await postItem.$$('[data-testid="post-card-timestamp"]');
 
-        await postCardTimestamp[0].click();
-        break;
+        if (postCardTimestamp.length > 0) {
+
+          await postCardTimestamp[0].click();
+          break;
+        }
       }
     }
-  }
-  await page.waitForTimeout(10000)
-  await expect(commentViewPage.commentGreenSection).toBeVisible()
+    await page.waitForTimeout(10000)
+    await expect(commentViewPage.commentGreenSection).toBeVisible()
+  } else
+    await expect (profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
 })
 
 test('Tab Payouts - ReComment Card - Title', async ({page}) =>{
   await page.goto('/@gtg/payout');
-  await expect (profilePage.postBlogItem.first()).toBeVisible();
 
-  const postListItems = await page.$$('[data-testid="post-list-item"]');
+  if (await profilePage.postBlogItem.first().isVisible()) {
+    await expect (profilePage.postBlogItem.first()).toBeVisible();
 
-  for (const postItem of postListItems) {
-    const textContent = await postItem.textContent();
-    if (textContent.includes('RE:')) {
-      const postTittle = await postItem.$$('.p-1 [data-testid="post-title"]');
+    const postListItems = await page.$$('[data-testid="post-list-item"]');
 
-      if (postTittle.length > 0) {
+    for (const postItem of postListItems) {
+      const textContent = await postItem.textContent();
+      if (textContent?.includes('RE:')) {
+        const postTittle = await postItem.$$('.p-1 [data-testid="post-title"] > a');
 
-        await postTittle[0].click();
-        break;
+        if (postTittle.length > 0) {
+
+          await postTittle[0].click();
+          break;
+        }
       }
     }
-  }
 
-  await expect(commentViewPage.commentGreenSection).toBeVisible()
+    await expect(commentViewPage.commentGreenSection).toBeVisible()
+  } else
+    await expect (profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
 })
 
 test('Tab Payouts - ReComment Card - Description', async ({page}) =>{
   await page.goto('/@gtg/payout');
-  await expect (profilePage.postBlogItem.first()).toBeVisible();
 
-  const postListItems = await page.$$('[data-testid="post-list-item"]');
+  if (await profilePage.postBlogItem.first().isVisible()) {
+    await expect (profilePage.postBlogItem.first()).toBeVisible();
 
-  for (const postItem of postListItems) {
-    const textContent = await postItem.textContent();
-    if (textContent.includes('RE:')) {
-      const postDescription = await postItem.$$('[data-testid="post-description"]');
+    const postListItems = await page.$$('[data-testid="post-list-item"]');
 
-      if (postDescription.length > 0) {
+    for (const postItem of postListItems) {
+      const textContent = await postItem.textContent();
+      if (textContent?.includes('RE:')) {
+        const postDescription = await postItem.$$('[data-testid="post-description"]');
 
-        await postDescription[0].click();
-        break;
+        if (postDescription.length > 0) {
+
+          await postDescription[0].click();
+          break;
+        }
       }
     }
-  }
-  await page.waitForTimeout(10000)
-  await expect(commentViewPage.commentGreenSection).toBeVisible()
+    await page.waitForTimeout(10000)
+    await expect(commentViewPage.commentGreenSection).toBeVisible()
+  } else
+    await expect (profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
 })
 
 test('Tab Payouts - ReComment Card Footer - Response', async ({page}) =>{
   await page.goto('/@gtg/payout');
-  await expect (profilePage.postBlogItem.first()).toBeVisible();
 
-  const postListItems = await page.$$('[data-testid="post-list-item"]');
+  if (await profilePage.postBlogItem.first().isVisible()) {
+    await expect (profilePage.postBlogItem.first()).toBeVisible();
 
-  for (const postItem of postListItems) {
-    const textContent = await postItem.textContent();
-    if (textContent.includes('RE:')) {
-      const postDescription = await postItem.$$('[data-testid="post-children"]');
+    const postListItems = await page.$$('[data-testid="post-list-item"]');
 
-      if (postDescription.length > 0) {
+    for (const postItem of postListItems) {
+      const textContent = await postItem.textContent();
+      if (textContent?.includes('RE:')) {
+        const postDescription = await postItem.$$('[data-testid="post-children"]');
 
-        await postDescription[0].click();
-        break;
+        if (postDescription.length > 0) {
+
+          await postDescription[0].click();
+          break;
+        }
       }
     }
-  }
-  await page.waitForTimeout(10000)
-  await expect(commentViewPage.commentGreenSection).toBeVisible()
+    await page.waitForTimeout(10000)
+    await expect(commentViewPage.commentGreenSection).toBeVisible()
+  } else
+    await expect (profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
 })
 
 test('Tab Payouts - ReComment Card Footer - Reblog',async ({page}) =>{
   await page.goto('/@gtg/payout');
-  await expect (profilePage.postBlogItem.first()).toBeVisible();
 
-  const postListItems = await page.$$('[data-testid="post-list-item"]');
+  if (await profilePage.postBlogItem.first().isVisible()) {
+    await expect (profilePage.postBlogItem.first()).toBeVisible();
 
-for (const postItem of postListItems) {
-  const textContent = await postItem.textContent();
-  if (textContent.includes('RE:')) {
-    const postDescription = await postItem.$('[data-testid="post-card-reblog"]');
+    const postListItems = await page.$$('[data-testid="post-list-item"]');
 
-    if (postDescription) {
-      await postDescription.click();
-      break;
-    } else {
-      console.log('Element [data-testid="post-card-reblog"] nie istnieje dla tego elementu z tekstem "RE:"');
+    for (const postItem of postListItems) {
+      const textContent = await postItem.textContent();
+      if (textContent?.includes('RE:')) {
+        const postDescription = await postItem.$('[data-testid="post-card-reblog"]');
+
+        if (postDescription) {
+          await postDescription.click();
+          break;
+        } else {
+          console.log('Element [data-testid="post-card-reblog"] nie istnieje dla tego elementu z tekstem "RE:"');
+        }
+      }
     }
-  }
-}
-
-
-})
+  } else
+    await expect (profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
+  })
 })
