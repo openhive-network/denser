@@ -121,7 +121,7 @@ export class PostPage {
     this.commentCardsFooterReply = this.commentCardsFooters.locator('[data-testid="comment-card-footer-reply"]');
     this.commentCardsFooterReplyEditor = page.locator('[data-testid="reply-editor"]');
     this.commentShowButton = page.locator('[data-testid="comment-show-button"]');
-    this.reputationValue = page.locator('[data-state="closed"]').first();
+    this.reputationValue = page.locator('[data-testid="post-author-reputation"]').first();
     this.commentPageLink = page.locator('[data-testid="comment-page-link"]');
     this.getFirstCommentPageLink = this.commentPageLink.first();
     this.getLoadMoreCommentsLink = page.getByText('Load more...');

@@ -111,15 +111,10 @@ const PostListItem = ({
               >
                 {post.author}
               </Link>{' '}
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger data-testid='post-author-reputation'>
-                    ({accountReputation(post.author_reputation)})
-                  </TooltipTrigger>
-                  <TooltipContent
-                    data-testid='post-reputation-tooltip'>{t('cards.post_card.reputation_title')}</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <span title={t('post_content.reputation_title')} className='mr-1 block font-normal'
+                    data-testid='post-author-reputation'>
+                ({accountReputation(post.author_reputation)})
+              </span>
               {post.blacklists && post.blacklists[0] ? (
                 <TooltipProvider>
                   <Tooltip>
@@ -186,14 +181,14 @@ const PostListItem = ({
                   <span className='ml-1 flex items-center'>
                     <TooltipProvider>
                       <Tooltip>
-                        <TooltipTrigger data-testid="powered-up-100-trigger">
+                        <TooltipTrigger data-testid='powered-up-100-trigger'>
                           <Link
                             href={`/${post.category}/@${post.author}/${post.permlink}`}
                           >
                             <Icons.hive className='h-4 w-4' />
                           </Link>
                         </TooltipTrigger>
-                        <TooltipContent data-testid="powered-up-100-tooltip">Powered Up 100%</TooltipContent>
+                        <TooltipContent data-testid='powered-up-100-tooltip'>Powered Up 100%</TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   </span>
