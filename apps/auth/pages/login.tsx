@@ -9,7 +9,7 @@ import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { KeychainKeyTypes, KeychainKeyTypesLC } from 'hive-keychain-commons';
 import { LoginForm, LoginFormSchema } from "@/auth/components/login-form";
 import { useUser } from '@/auth/lib/use-user';
-import { fetchJson, FetchError } from '@/auth/lib/fetch-json';
+import { fetchJsonUser, FetchError } from '@/auth/lib/fetch-json';
 import { getLogger } from "@hive/ui/lib/logging";
 import { sessionOptions } from '@/auth/lib/session';
 import { Signatures, PostLoginSchema, LoginTypes } from '@/auth/pages/api/login';
@@ -144,7 +144,7 @@ export default function LoginPage({
 
     try {
       mutateUser(
-        await fetchJson('/api/login', {
+        await fetchJsonUser('/api/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body),

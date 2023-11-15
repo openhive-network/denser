@@ -9,7 +9,7 @@ import { MobileNav } from "./mobile-nav";
 import { MainNav } from "./main-nav";
 import { Icons } from "@hive/ui/components/icons";
 import { useUser } from '@/auth/lib/use-user';
-import { fetchJson } from '@/auth/lib/fetch-json';
+import { fetchJsonUser } from '@/auth/lib/fetch-json';
 
 const SiteHeader: FC = () => {
   const router = useRouter();
@@ -20,7 +20,7 @@ const SiteHeader: FC = () => {
   })
   const onLogout = async () => {
     mutateUser(
-      await fetchJson('/api/logout', { method: 'POST' }),
+      await fetchJsonUser('/api/logout', { method: 'POST' }),
       false
     )
     router.push('/')

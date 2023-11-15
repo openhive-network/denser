@@ -58,3 +58,15 @@ export async function fetchJson<JSON = any>(
     data,
   })
 }
+
+export async function fetchJsonUser<JSON = any>(
+  input: RequestInfo,
+  init?: RequestInit
+): Promise<JSON> {
+  const data = await fetchJson(input, init)
+  // Save to local storage
+  if (typeof window !== 'undefined') {
+    window.localStorage.setItem('user', JSON.stringify(data));
+  }
+  return data;
+}
