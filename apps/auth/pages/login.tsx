@@ -126,7 +126,7 @@ export default function LoginPage({
     }
 
     try {
-      signatures = await signLoginChallenge(loginType, username, password);
+      signatures = await signLoginChallenge(loginType, username, password || '');
     } catch (error) {
       logger.error('onSubmit error in signLoginChallenge', error);
       setErrorMsg(t('pageLogin.signingFailed'));
