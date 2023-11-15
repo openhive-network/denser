@@ -7,7 +7,7 @@
         "build": "react-env -- next build",
         "start": "react-env -- next start -p 5000",
         "lint": "eslint .",
-        "test": "jest --watch"
+        "test:jest": "jest --watch"
     },
     "dependencies": {
         "@beam-australia/react-env": "^3.1.1",
