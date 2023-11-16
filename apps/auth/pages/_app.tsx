@@ -7,12 +7,13 @@ import { parseCookie } from '@/auth/lib/utils';
 
 const Providers = lazy(() => import("@/auth/components/common/providers"));
 
+// Log Git revision details in browser's console.
+if (typeof window !== 'undefined' && window) {
+  console.info('GIT VERSION', GIT_VERSION, GIT_COMMITHASH, GIT_BRANCH,
+      GIT_LASTCOMMITDATETIME);
+}
+
 function App({ Component, pageProps }: AppProps) {
-  // Log Git revision details in browser's console.
-  if (typeof window !== 'undefined' && window) {
-    console.info('GIT VERSION', GIT_VERSION, GIT_COMMITHASH, GIT_BRANCH,
-        GIT_LASTCOMMITDATETIME);
-  }
 
   useEffect(() => {
     const cookieStore = parseCookie(document.cookie);
