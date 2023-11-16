@@ -12,13 +12,12 @@ import { useUser } from '@/auth/lib/use-user';
 import { fetchJson } from '@/auth/lib/fetch-json';
 
 const SiteHeader: FC = () => {
-  const router = useRouter();
   const { user, mutateUser } = useUser({
     redirectTo: '',
     redirectIfFound: true,
   })
   const onLogout = async () => {
-    mutateUser(
+    await mutateUser(
       await fetchJson('/api/logout', { method: 'POST' }),
       false
     )
