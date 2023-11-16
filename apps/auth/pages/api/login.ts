@@ -61,8 +61,6 @@ const verifyLoginChallenge = async (
       message: string = ''
     ) => {
 
-  logger.info(`Starting verifyLoginChallenge for user ${chainAccount.name}`);
-
   const verify = (
       keyRole: KeyRole,
       signature: string,
@@ -71,7 +69,11 @@ const verifyLoginChallenge = async (
       weight_threshold: number,
       message: string
       ) => {
-    logger.info('Starting verify args: %o', { keyRole, signature, pubkey, weight, weight_threshold });
+    logger.info(
+      'verifyLoginChallenge args: %o',
+      chainAccount.name,
+      { account: chainAccount.name, keyRole, signature, pubkey, weight, weight_threshold }
+      );
     if (!signature) return;
     if (weight !== 1 || weight_threshold !== 1) {
       logger.error(
@@ -84,7 +86,7 @@ const verifyLoginChallenge = async (
       const verified = publicKey.verify(messageHash, sig);
       if (!verified) {
         logger.error(
-          'verifyLoginChallenge signature verification failed'
+          `verifyLoginChallenge signature verification failed for user ${chainAccount.name}`
         );
       }
       return verified;
