@@ -2,17 +2,32 @@ import { useEffect } from 'react'
 import Router from 'next/router'
 import useSWR from 'swr'
 import { User } from 'pages/api/user'
-import { fetchJsonUser } from '@/auth/lib/fetch-json';
+import { fetchJson } from '@/auth/lib/fetch-json';
 import { useLocalStorage } from '@/auth/lib/use-local-storage';
+import { getLogger } from "@hive/ui/lib/logging";
+
+const logger = getLogger('app');
 
 export function useUser({
   redirectTo = '',
   redirectIfFound = false,
 } = {}) {
-  const { data: user, mutate: mutateUser } = useSWR<User>('/api/user', fetchJsonUser);
+  const { data: user, mutate: mutateUser, isLoading, isValidating, error } = useSWR<User>(
+      '/api/user',
+      fetchJson,
+      {
+        refreshInterval: 1000 * 60 * 60 * 4,
+        revalidateIfStale: false,
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+      }
+      );
 
-  const mutateAndStoreUser = async () => {
-    const data = await mutateUser(arguments);
+  const storeUser = useLocalStorage('user', {})[1];
+
+  const mutateAndStoreUser = async (...args: any[]) => {
+    logger.info('mutateAndStoreUser arguments: %o', ...args);
+    const data: User = await mutateUser() as User;
     storeUser(data);
     return data;
   };
@@ -31,8 +46,7 @@ export function useUser({
     ) {
       Router.push(redirectTo)
     }
-  }, [user, redirectIfFound, redirectTo])
+  }, [user, redirectIfFound, redirectTo]);
 
-  // return { user, mutateUser: mutateAndStoreUser }
-  return { user, mutateUser }
+  return { user, mutateUser: mutateAndStoreUser, isLoading, isValidating, error };
 }
