@@ -14,14 +14,21 @@ const tt = (translationKey: string) => {
     return translationKey;
 };
 
-export interface IAuth {
+export interface HiveAuthData {
     username: string;
     token: string;
     expire: number;
     key: string;
 };
 
-const auth: IAuth = {
+const initialHiveAuthData: HiveAuthData = {
+    username: '',
+    token: '',
+    expire: 0,
+    key: '',
+};
+
+const auth: HiveAuthData = {
     username: '',
     token: '',
     expire: 0,
@@ -389,6 +396,7 @@ const HiveAuthUtils = {
     // isLoggedInWithHiveAuth,
     broadcast,
     signChallenge,
+    initialHiveAuthData,
 };
 
 export default HiveAuthUtils;

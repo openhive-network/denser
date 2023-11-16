@@ -14,6 +14,7 @@ import { getLogger } from "@hive/ui/lib/logging";
 import { sessionOptions } from '@/auth/lib/session';
 import { Signatures, PostLoginSchema, LoginTypes } from '@/auth/pages/api/login';
 import HiveAuthUtils from '@/auth/lib/hive-auth-utils';
+import { useLocalStorage } from '@/auth/lib/use-local-storage';
 
 const logger = getLogger('app');
 
@@ -31,6 +32,8 @@ export default function LoginPage({
   });
 
   const [errorMsg, setErrorMsg] = useState('');
+
+  const [hiveAuthData, setHiveAuthData] = useLocalStorage('hiveAuthData', HiveAuthUtils.initialHiveAuthData);
 
   // Create a signature of message (login challenge) for sending to
   // back-end for verification.
@@ -70,6 +73,11 @@ export default function LoginPage({
 
       logger.info('hiveauth');
 
+      HiveAuthUtils.setUsername(hiveAuthData?.username || '');
+      HiveAuthUtils.setToken(hiveAuthData?.token || '');
+      HiveAuthUtils.setExpire(hiveAuthData?.expire || 0);
+      HiveAuthUtils.setKey(hiveAuthData?.key || '')
+
       const authResponse: any = await new Promise((resolve) => {
         HiveAuthUtils.login(username, message, (res) => {
           resolve(res);
@@ -82,6 +90,7 @@ export default function LoginPage({
         } = authResponse.hiveAuthData;
 
         // TODO We need to save token, expire, key on client side.
+        setHiveAuthData({username, token, expire, key});
 
         logger.info('hiveauth', {signature: challengeHex});
         signatures.posting = challengeHex;

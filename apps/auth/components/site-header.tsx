@@ -3,25 +3,31 @@
 import { Button } from "@hive/ui/components/button";
 import { FC } from "react";
 import Link from "next/link";
-import { useRouter } from 'next/router'
 import { ModeToggle } from "./mode-toggle";
 import { MobileNav } from "./mobile-nav";
 import { MainNav } from "./main-nav";
 import { Icons } from "@hive/ui/components/icons";
 import { useUser } from '@/auth/lib/use-user';
 import { fetchJson } from '@/auth/lib/fetch-json';
+import HiveAuthUtils from '@/auth/lib/hive-auth-utils';
+import { useLocalStorage } from '@/auth/lib/use-local-storage';
 
 const SiteHeader: FC = () => {
   const { user, mutateUser } = useUser({
     redirectTo: '',
     redirectIfFound: true,
-  })
+  });
+
+  const [, setHiveAuthData] = useLocalStorage('hiveAuthData', HiveAuthUtils.initialHiveAuthData);
+
   const onLogout = async () => {
+    setHiveAuthData(HiveAuthUtils.initialHiveAuthData);
+    HiveAuthUtils.logout();
     await mutateUser(
       await fetchJson('/api/logout', { method: 'POST' }),
       false
     )
-  }
+  };
 
   return (
     <header className="supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur">
