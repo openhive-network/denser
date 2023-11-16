@@ -61,7 +61,7 @@ export const dateToRelative = (d: string, t: TFunction<'common_wallet', undefine
 export const dateToFullRelative = (d: string, t: TFunction<'common_wallet', undefined>): string => {
   const isTimeZoned = d.indexOf('.') !== -1 || d.indexOf('+') !== -1 ? d : `${d}.000Z`;
   const dm = moment(new Date(isTimeZoned));
-  const dd = dm.fromNow().replace('a few seconds', t('global.time_ago.a_few_seconds'))
+  const dd = dm.fromNow().replace('a few seconds ago', t('global.time_ago.a_few_seconds'))
   .replace('seconds ago', t('global.time_ago.seconds'))
   .replace('minutes ago', t('global.time_ago.minutes'))
   .replace('a minute ago', t('global.time_ago.a_minute'))
