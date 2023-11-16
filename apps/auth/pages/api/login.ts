@@ -71,7 +71,6 @@ const verifyLoginChallenge = async (
       ) => {
     logger.info(
       'verifyLoginChallenge args: %o',
-      chainAccount.name,
       { account: chainAccount.name, keyRole, signature, pubkey, weight, weight_threshold }
       );
     if (!signature) return;
