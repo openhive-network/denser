@@ -191,12 +191,13 @@ const ParamPage: FC = () => {
 
   if (!entriesDataIsLoading && entriesData) {
     return (
-      <div className="container mx-auto max-w-screen-2xl flex-grow p-1 sm:px-4 sm:pb-2">
+      <div className="container mx-auto max-w-screen-2xl flex-grow p-0">
         <div className="grid grid-cols-12 md:gap-4 sm:gap-2 gap-1">
-          <div className="col-span-1 md:col-span-3 xl:col-span-2">
-            <MainNavbar />
+          <div className="hidden sm:flex sm:col-span-1 xl:col-span-2">
+            {/* <MainNavbar /> */}
+            <CommunitiesSidebar />
           </div>
-          <div className="col-span-11 md:col-span-8 xl:col-span-8">
+          <div className="col-span-12 sm:col-span-9 xl:col-span-8">
             <div data-testid="card-explore-hive-mobile" className=" ">
               {communityData && subsData ? (
                 <CommunitySimpleDescription
@@ -323,7 +324,7 @@ const ParamPage: FC = () => {
               </>
             </div>
           </div>
-          <div className="hidden sm:flex flex-col sm:col-span-1 xl:col-span-2"
+          <div className="hidden sm:flex sm:col-span-2"
             data-testid="card-explore-hive-desktop"
            
           >
@@ -335,9 +336,9 @@ const ParamPage: FC = () => {
                 username={tag ? tag : " "}
               />
             ) : (
-              <CommunitiesSidebar />
+              <TrendingTags/>
             )}
-            <TrendingTags/>
+            
           </div>
         </div>
       </div>

@@ -12,9 +12,9 @@ const TrendingTags = () => {
   }
 
   return (
-    <Card className="my-4 py-3 xl:pt-0 h-fit w-full flex-col dark:bg-background/95 dark:text-white overflow-hidden hidden lg:flex">
-      <CardContent className="p-0">
-        <span className="font-bold gap-2 text-center py-3 bg-slate-950 text-white hidden xl:block">
+    <Card className="border-0 border-l-2 rounded-none py-3 xl:pt-0 h-fit w-full flex-col dark:bg-background/95 dark:text-white overflow-hidden hidden sm:flex">
+      <CardContent className="p-0 flex flex-col items-start my-2">
+        <span className="self-center font-bold text-center p-2 rounded-xl hidden xl:block">
           Trending Tags
         </span>
         <ul className="text-sm flex flex-col">

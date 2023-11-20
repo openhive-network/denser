@@ -19,11 +19,11 @@ const CommunitiesSidebar: FC = () => {
 
   return (
     <Card
-      className={cn('my-4 py-3 xl:pt-0 h-fit w-full flex-col overflow-hidden dark:bg-background/95 dark:text-white')}
+      className={cn('border-0 border-r-2 rounded-none py-3 xl:pt-0 h-fit w-full flex-col overflow-hidden dark:bg-background/95 dark:text-white')}
       data-testid="card-trending-comunities"
     >
       <CardContent className='p-0'>
-        <span className="font-bold gap-2 text-center p-3 bg-slate-950 text-white hidden xl:block ">
+        <span className="font-bold text-center p-3 hidden xl:block ">
           {t('navigation.communities_nav.trending_communities')}
         </span>
         <ul className='text-sm'>
