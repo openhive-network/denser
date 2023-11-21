@@ -43,7 +43,8 @@ export default function LoginPage({
         password: string, // posting private key
         keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting,
       ): Promise<Signatures> => {
-    logger.info('in signLoginChallenge %o', {loginType, username, loginChallenge});
+    logger.info('in signLoginChallenge %o',
+        {loginType, username, loginChallenge});
     const signatures: Signatures = {};
     const challenge = { token: loginChallenge };
     const message = JSON.stringify(challenge, null, 0);
@@ -121,21 +122,17 @@ export default function LoginPage({
     logger.info('onSubmit form data', data);
     setErrorMsg('');
 
-    const { username, password, useKeychain, useHiveauth } = data;
-    let loginType: LoginTypes = LoginTypes.password;
+    const { loginType, username } = data;
+    let password = '';
+    if (data.loginType === LoginTypes.password) {
+      password = data.password;
+    }
     let signatures: Signatures = {};
     let hivesignerToken = '';
 
-    if (useKeychain) {
-      loginType = LoginTypes.keychain;
-    }
-
-    if (useHiveauth) {
-      loginType = LoginTypes.hiveauth;
-    }
-
     try {
-      signatures = await signLoginChallenge(loginType, username, password || '');
+      signatures =
+          await signLoginChallenge(loginType, username, password || '');
     } catch (error) {
       logger.error('onSubmit error in signLoginChallenge', error);
       setErrorMsg(t('pageLogin.signingFailed'));

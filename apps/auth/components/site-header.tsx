@@ -18,7 +18,8 @@ const SiteHeader: FC = () => {
     redirectIfFound: true,
   });
 
-  const [, setHiveAuthData] = useLocalStorage('hiveAuthData', HiveAuthUtils.initialHiveAuthData);
+  const [, setHiveAuthData] = useLocalStorage('hiveAuthData',
+      HiveAuthUtils.initialHiveAuthData);
 
   const onLogout = async () => {
     setHiveAuthData(HiveAuthUtils.initialHiveAuthData);

@@ -12,7 +12,8 @@ export function useUser({
   redirectTo = '',
   redirectIfFound = false,
 } = {}) {
-  const { data: user, mutate: mutateUser, isLoading, isValidating, error } = useSWR<User>(
+  const { data: user, mutate: mutateUser, isLoading, isValidating, error } =
+    useSWR<User>(
       '/api/user',
       fetchJson,
       {
@@ -21,7 +22,7 @@ export function useUser({
         revalidateOnFocus: false,
         revalidateOnReconnect: false,
       }
-      );
+    );
 
   const storeUser = useLocalStorage('user', {})[1];
 
@@ -48,5 +49,6 @@ export function useUser({
     }
   }, [user, redirectIfFound, redirectTo]);
 
-  return { user, mutateUser: mutateAndStoreUser, isLoading, isValidating, error };
+  return { user, mutateUser: mutateAndStoreUser, isLoading,
+      isValidating, error };
 }

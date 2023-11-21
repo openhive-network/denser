@@ -71,7 +71,8 @@ const verifyLoginChallenge = async (
       ) => {
     logger.info(
       'verifyLoginChallenge args: %o',
-      { account: chainAccount.name, keyRole, signature, pubkey, weight, weight_threshold }
+      { account: chainAccount.name, keyRole, signature, pubkey,
+          weight, weight_threshold }
       );
     if (!signature) return;
     if (weight !== 1 || weight_threshold !== 1) {
