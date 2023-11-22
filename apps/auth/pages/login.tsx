@@ -33,7 +33,8 @@ export default function LoginPage({
 
   const [errorMsg, setErrorMsg] = useState('');
 
-  const [hiveAuthData, setHiveAuthData] = useLocalStorage('hiveAuthData', HiveAuthUtils.initialHiveAuthData);
+  const [hiveAuthData, setHiveAuthData] =
+      useLocalStorage('hiveAuthData', HiveAuthUtils.initialHiveAuthData);
 
   // Create a signature of message (login challenge) for sending to
   // back-end for verification.
