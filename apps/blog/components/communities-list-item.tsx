@@ -9,7 +9,7 @@ import {
 } from "@hive/ui/components/card";
 import Link from "next/link";
 import { Community } from "@/blog/lib/bridge";
-import DialogLogin from "./dialog-login";
+import DialogLogin from "./login-form";
 import { useTranslation } from 'next-i18next';
 
 const CommunitiesListItem = ({ community }: { community: Community }) => {

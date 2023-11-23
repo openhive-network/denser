@@ -7,7 +7,7 @@ import { useFollowsQuery } from './hooks/use-follows';
 import { delegatedHive, numberWithCommas, vestingHive } from '@hive/ui/lib/utils';
 import Big from 'big.js';
 import { useDynamicGlobalData } from './hooks/use-dynamic-global-data';
-import DialogLogin from './dialog-login';
+import DialogLogin from './login-form';
 import { useTranslation } from 'next-i18next';
 
 export function HoverCardData({ author }: { author: string }) {

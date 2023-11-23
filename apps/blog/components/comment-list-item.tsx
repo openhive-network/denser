@@ -7,7 +7,7 @@ import { Separator } from '@hive/ui/components/separator';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@hive/ui/components/accordion';
 import { useEffect, useRef, useState } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
-import DialogLogin from '@/blog/components/dialog-login';
+import DialogLogin from '@/blog/components/login-form';
 import DetailsCardVoters from '@/blog/components/details-card-voters';
 import { ReplyTextbox } from './reply-textbox';
 import { useRouter } from 'next/router';

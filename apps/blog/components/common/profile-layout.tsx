@@ -19,7 +19,7 @@ import { proxifyImageUrl } from '@hive/ui/lib/old-profixy';
 import { getTwitterInfo } from '@/blog/lib/bridge';
 import moment from 'moment';
 import { Button } from '@hive/ui';
-import DialogLogin from '../dialog-login';
+import DialogLogin from '../login-form';
 import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
 

@@ -21,7 +21,7 @@ import {
   TooltipProvider,
   TooltipTrigger
 } from '@hive/ui/components/tooltip';
-import DialogLogin from '@/blog/components/dialog-login';
+import DialogLogin from '@/blog/components/login-form';
 import { Icons } from '@hive/ui/components/icons';
 import { AlertDialogDemo } from '@/blog/components/alert-window';
 import { getDoubleSize, proxifyImageUrl } from '@hive/ui/lib/old-profixy';

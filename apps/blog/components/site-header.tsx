@@ -8,13 +8,31 @@ import { LangToggle } from './lang-toggle';
 import { MainNav } from './main-nav';
 import { siteConfig } from '@hive/ui/config/site';
 import Link from 'next/link';
-import DialogLogin from './dialog-login';
 import { useState, KeyboardEvent } from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import { useTranslation } from 'next-i18next';
+import { useUser } from './hooks/use-user';
+import { useLocalStorage } from './hooks/use-local-storage';
+import HiveAuthUtils from '../lib/hive-auth-utils';
+import { fetchJson } from '../lib/fetch-json';
 
 const SiteHeader: FC = () => {
+  const { user, mutateUser } = useUser({
+    redirectTo: '',
+    redirectIfFound: true,
+  });
+  const [, setHiveAuthData] = useLocalStorage('hiveAuthData',
+      HiveAuthUtils.initialHiveAuthData);
+
+  const onLogout = async () => {
+    setHiveAuthData(HiveAuthUtils.initialHiveAuthData);
+    HiveAuthUtils.logout();
+    await mutateUser(
+      await fetchJson('/api/logout', { method: 'POST' }),
+      false
+    )
+  };
   const router = useRouter();
   const { t } = useTranslation('common_blog');
   const [input, setInput] = useState('');
@@ -58,16 +76,27 @@ const SiteHeader: FC = () => {
         <div className='flex items-center space-x-2 sm:space-x-4'>
           <nav className='flex items-center space-x-1'>
             <div className='hidden sm:flex gap-1 mx-1'>
-              <DialogLogin>
-                <Button variant='ghost' className='text-base hover:text-red-500' data-testid='login-btn'>
-                  {t('navigation.main_nav_bar.login')}
-                </Button>
-              </DialogLogin>
-              <Link href='https://signup.hive.io/'>
+              {!user?.isLoggedIn ? (
+                <Link href="/login">                
+                  <Button variant='ghost' className='text-base hover:text-red-500' data-testid='login-btn'>
+                    {t('navigation.main_nav_bar.login')}
+                  </Button>
+              </Link>): <Link
+                    href=""
+                    onClick={async (e) => {
+                      e.preventDefault()
+                      await onLogout();
+                    }}
+                  >
+                  <Button variant='ghost' className='text-base hover:text-red-500' data-testid='login-btn'>
+                    Logout
+                  </Button>
+                </Link>}
+              {!user?.isLoggedIn &&<Link href='https://signup.hive.io/'>
                 <Button variant='redHover' data-testid='signup-btn'>{t('navigation.main_nav_bar.sign_up')}</Button>
-              </Link>
+              </Link>}
             </div>
-
+            
             <div>
               <div className='hidden lg:block relative'>
                 <div className='absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none'>
@@ -104,6 +133,29 @@ const SiteHeader: FC = () => {
             </Link>
             <ModeToggle />
             <LangToggle />
+            {user?.isLoggedIn && (
+                <Link href="/profile">
+                  <Button
+                    variant="redHover"
+                    size="sm"
+                    className="h-10 w-10 px-0"
+                  >
+                    {!user?.avatarUrl && (
+                      <Icons.user
+                        className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
+                      />
+                    )}
+                    {user?.avatarUrl && (
+                      <img
+                        className="rounded-md"
+                        // src={user?.avatarUrl}
+                        src={`https://images.hive.blog/u/${user?.username || ''}/avatar/small`}
+                        alt="Profile picture"
+                      />
+                    )}
+                  </Button>
+                </Link>
+              )}
             <Sidebar />
           </nav>
         </div>

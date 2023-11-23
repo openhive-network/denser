@@ -18,7 +18,7 @@ import {
 import { SubsListDialog } from './subscription-list-dialog';
 import { ActivityLogDialog } from './activity-log-dialog';
 import { Badge } from '@hive/ui/components/badge';
-import DialogLogin from './dialog-login';
+import DialogLogin from './login-form';
 import { useTranslation } from 'next-i18next';
 
 const CommunityDescription = ({

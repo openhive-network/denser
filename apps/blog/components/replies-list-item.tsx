@@ -19,7 +19,6 @@ import {
   TooltipProvider,
   TooltipTrigger
 } from '@hive/ui/components/tooltip';
-import DialogLogin from '@/blog/components/dialog-login';
 import { Entry } from '@/blog/lib/bridge';
 import DetailsCardHover from './details-card-hover';
 import clsx from 'clsx';
@@ -147,10 +146,10 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger data-testid='comment-card-upvote-button'>
-                      <DialogLogin>
+                      {/* <DialogLogin>
                         <Icons.arrowUpCircle
                           className='h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1' />
-                      </DialogLogin>
+                      </DialogLogin> */}
                     </TooltipTrigger>
                     <TooltipContent data-testid='comment-card-upvote-tooltip'>
                       {t('post_content.footer.upvote')}
@@ -160,10 +159,10 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger data-testid='comment-card-downvote-button'>
-                      <DialogLogin>
+                      {/* <DialogLogin>
                         <Icons.arrowDownCircle
                           className='h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1' />
-                      </DialogLogin>
+                      </DialogLogin> */}
                     </TooltipTrigger>
                     <TooltipContent data-testid='comment-card-downvote-tooltip'>
                       {t('post_content.footer.downvote')}

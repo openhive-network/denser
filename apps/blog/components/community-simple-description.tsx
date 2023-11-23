@@ -13,7 +13,7 @@ import {
 } from "@/blog/lib/bridge";
 import { SubsListDialog } from "./subscription-list-dialog";
 import { ActivityLogDialog } from "./activity-log-dialog";
-import DialogLogin from "./dialog-login";
+import DialogLogin from "./login-form";
 import { useTranslation } from 'next-i18next';
 
 const CommunitySimpleDescription = ({

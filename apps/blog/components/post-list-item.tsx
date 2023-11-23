@@ -24,7 +24,6 @@ import {
   TooltipTrigger
 } from '@hive/ui/components/tooltip';
 import DetailsCardHover from './details-card-hover';
-import DialogLogin from '@/blog/components/dialog-login';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { Entry } from '@/blog/lib/bridge';
@@ -271,10 +270,10 @@ const PostListItem = ({
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger data-testid='upvote-button'>
-                        <DialogLogin>
+                        {/* <DialogLogin>
                           <Icons.arrowUpCircle
                             className='h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1' />
-                        </DialogLogin>
+                        </DialogLogin> */}
                       </TooltipTrigger>
                       <TooltipContent data-testid='upvote-button-tooltip'>
                         {t('cards.post_card.upvote')}
@@ -284,10 +283,10 @@ const PostListItem = ({
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger data-testid='downvote-button'>
-                        <DialogLogin>
+                        {/* <DialogLogin>
                           <Icons.arrowDownCircle
                             className='h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1' />
-                        </DialogLogin>
+                        </DialogLogin> */}
                       </TooltipTrigger>
                       <TooltipContent data-testid='downvote-button-tooltip'>
                         {t('cards.post_card.downvote')}
