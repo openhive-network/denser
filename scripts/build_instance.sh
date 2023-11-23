@@ -61,7 +61,7 @@ fi
 
 pushd "$SRCROOTDIR"
 
-./scripts/write-version.js ".${TURBO_APP_PATH}/version.json"
+./scripts/write-version.sh ".${TURBO_APP_PATH}/version.json"
 docker buildx bake --provenance=false --progress="$PROGRESS_DISPLAY" "$TARGET"
 
 popd
