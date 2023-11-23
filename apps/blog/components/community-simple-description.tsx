@@ -13,8 +13,8 @@ import {
 } from "@/blog/lib/bridge";
 import { SubsListDialog } from "./subscription-list-dialog";
 import { ActivityLogDialog } from "./activity-log-dialog";
-import DialogLogin from "./login-form";
 import { useTranslation } from 'next-i18next';
+import LoginDialog from "./login-dialog";
 
 const CommunitySimpleDescription = ({
   data,
@@ -63,7 +63,7 @@ const CommunitySimpleDescription = ({
       </CardHeader>
       <CardContent className="col-span-1 flex items-center justify-center p-0">
         <div className="my-4 flex flex-col gap-4">
-          <DialogLogin>
+          <LoginDialog>
             <Button
               size="sm"
               className="w-full bg-blue-800 text-center hover:bg-blue-900"
@@ -71,7 +71,7 @@ const CommunitySimpleDescription = ({
             >
               {t('communities.buttons.subscribe')}
             </Button>
-          </DialogLogin>
+          </LoginDialog>
           <Button
             size="sm"
             className="w-full bg-blue-800 text-center hover:bg-blue-900"

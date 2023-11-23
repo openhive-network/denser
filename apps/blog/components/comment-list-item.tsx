@@ -7,7 +7,6 @@ import { Separator } from '@hive/ui/components/separator';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@hive/ui/components/accordion';
 import { useEffect, useRef, useState } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
-import DialogLogin from '@/blog/components/login-form';
 import DetailsCardVoters from '@/blog/components/details-card-voters';
 import { ReplyTextbox } from './reply-textbox';
 import { useRouter } from 'next/router';
@@ -18,6 +17,7 @@ import { Badge } from '@hive/ui/components/badge';
 import { DefaultRenderer } from '@hiveio/content-renderer';
 import { UserHoverCard } from './user-hover-card';
 import { useTranslation } from 'next-i18next';
+import LoginDialog from './login-dialog';
 
 const CommentListItem = ({
   comment,
@@ -146,9 +146,9 @@ const CommentListItem = ({
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger data-testid="comment-card-footer-upvote">
-                                  <DialogLogin>
+                                  <LoginDialog>
                                     <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1" />
-                                  </DialogLogin>
+                                  </LoginDialog>
                                 </TooltipTrigger>
                                 <TooltipContent>{t('cards.post_card.upvote')}</TooltipContent>
                               </Tooltip>
@@ -156,9 +156,9 @@ const CommentListItem = ({
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger data-testid="comment-card-footer-downvote">
-                                  <DialogLogin>
+                                  <LoginDialog>
                                     <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
-                                  </DialogLogin>
+                                  </LoginDialog>
                                 </TooltipTrigger>
                                 <TooltipContent>{t('cards.post_card.downvote')}</TooltipContent>
                               </Tooltip>
@@ -213,9 +213,9 @@ const CommentListItem = ({
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger data-testid="comment-card-footer-upvote">
-                                <DialogLogin>
+                                <LoginDialog>
                                   <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1" />
-                                </DialogLogin>
+                                </LoginDialog>
                               </TooltipTrigger>
                               <TooltipContent>{t('cards.post_card.upvote')}</TooltipContent>
                             </Tooltip>
@@ -223,9 +223,9 @@ const CommentListItem = ({
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger data-testid="comment-card-footer-downvote">
-                                <DialogLogin>
+                                <LoginDialog>
                                   <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
-                                </DialogLogin>
+                                </LoginDialog>
                               </TooltipTrigger>
                               <TooltipContent>{t('cards.post_card.downvote')}</TooltipContent>
                             </Tooltip>

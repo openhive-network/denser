@@ -8,19 +8,24 @@ import secureRandom from 'secure-random';
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { KeychainKeyTypes, KeychainKeyTypesLC } from 'hive-keychain-commons';
 import { getLogger } from "@hive/ui/lib/logging";
-import { useUser } from '../components/hooks/use-user';
-import { LoginTypes, PostLoginSchema, Signatures } from './api/login';
-import { useLocalStorage } from '../components/hooks/use-local-storage';
+import { useUser } from './hooks/use-user';
+import { LoginTypes, PostLoginSchema, Signatures } from '../pages/api/login';
+import { useLocalStorage } from './hooks/use-local-storage';
 import HiveAuthUtils from '../lib/hive-auth-utils';
-import { LoginForm, LoginFormSchema } from '../components/login-form';
+import { LoginForm, LoginFormSchema } from './login-form';
 import { FetchError, fetchJson } from '../lib/fetch-json';
 import { sessionOptions } from '../lib/session';
+import { Dialog, DialogContent, DialogTrigger } from '@hive/ui/components/dialog';
 
 const logger = getLogger('app');
 
-export default function LoginPage({
-  loginChallenge
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+type LoginDialogProps = InferGetServerSidePropsType<typeof getServerSideProps> & {
+  children?: React.ReactNode;
+};
+
+export default function LoginDialog({
+  loginChallenge, children
+}: LoginDialogProps) {
 
   const { t } = useTranslation('common_auth');
 
@@ -169,15 +174,17 @@ export default function LoginPage({
   };
 
   return (
-    <div className="pt-16 flex flex-col sm:flex-row gap-24 mx-2
-        sm:gap-0 sm:justify-around">
-      <div className="flex flex-col gap-3 sm:gap-8 sm:mr-4">
+    // <div className="pt-16 flex flex-col sm:flex-row gap-24 mx-2
+    //     sm:gap-0 sm:justify-around">
+    //   <div className="flex flex-col gap-3 sm:gap-8 sm:mr-4">
+      <Dialog>     <DialogTrigger asChild><div>{children}</div></DialogTrigger>
+<DialogContent>
         <LoginForm
           errorMessage={errorMsg}
           onSubmit={onSubmit}
-        />
-      </div>
-    </div>
+        /></DialogContent></Dialog>
+    //   </div>
+    // </div>
   );
 }
 
@@ -200,3 +207,5 @@ export const getServerSideProps: GetServerSideProps = withIronSessionSsr(
   },
   sessionOptions
 );
+
+

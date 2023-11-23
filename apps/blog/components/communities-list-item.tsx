@@ -9,8 +9,8 @@ import {
 } from "@hive/ui/components/card";
 import Link from "next/link";
 import { Community } from "@/blog/lib/bridge";
-import DialogLogin from "./login-form";
 import { useTranslation } from 'next-i18next';
+import LoginDialog from "./login-dialog";
 
 const CommunitiesListItem = ({ community }: { community: Community }) => {
 const { t } = useTranslation('common_blog')
@@ -52,11 +52,11 @@ return (
         </CardFooter>
       </div>
       <div className="flex w-2/6 items-center justify-center">
-        <DialogLogin>
+        <LoginDialog>
           <Button className="bg-blue-800 text-center hover:bg-blue-900" data-testid="community-list-item-subscribe-button">
           {t('communities.buttons.subscribe')}
           </Button>
-        </DialogLogin>
+        </LoginDialog>
       </div>
     </Card>
   );

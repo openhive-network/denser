@@ -21,7 +21,6 @@ import {
   TooltipProvider,
   TooltipTrigger
 } from '@hive/ui/components/tooltip';
-import DialogLogin from '@/blog/components/login-form';
 import { Icons } from '@hive/ui/components/icons';
 import { AlertDialogDemo } from '@/blog/components/alert-window';
 import { getDoubleSize, proxifyImageUrl } from '@hive/ui/lib/old-profixy';
@@ -40,6 +39,7 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
 import { GetServerSideProps } from 'next';
+import LoginDialog from '@/blog/components/login-dialog';
 
 const DynamicComments = dynamic(
   () => import('@/blog/components/comment-list'),
@@ -400,10 +400,10 @@ function PostPage({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger>
-                      <DialogLogin>
+                      <LoginDialog>
                         <Icons.arrowUpCircle
                           className='h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white' />
-                      </DialogLogin>
+                      </LoginDialog>
                     </TooltipTrigger>
                     <TooltipContent>{t('post_content.footer.upvote')}</TooltipContent>
                   </Tooltip>
@@ -411,10 +411,10 @@ function PostPage({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger>
-                      <DialogLogin>
+                      <LoginDialog>
                         <Icons.arrowDownCircle
                           className='h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white' />
-                      </DialogLogin>
+                      </LoginDialog>
                     </TooltipTrigger>
                     <TooltipContent>{t('post_content.footer.downvote')}</TooltipContent>
                   </Tooltip>

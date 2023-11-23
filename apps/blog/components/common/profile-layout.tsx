@@ -19,9 +19,9 @@ import { proxifyImageUrl } from '@hive/ui/lib/old-profixy';
 import { getTwitterInfo } from '@/blog/lib/bridge';
 import moment from 'moment';
 import { Button } from '@hive/ui';
-import DialogLogin from '../login-form';
 import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
+import LoginDialog from '../login-dialog';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -318,7 +318,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               </li>
             </ul>
 
-            <DialogLogin>
+            <LoginDialog>
               <Button
                 className='sm:absolute m-2 hover:text-red-500 sm:right-0'
                 variant='secondary'
@@ -326,7 +326,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               >
                 {t('user_profil.follow_button')}
               </Button>
-            </DialogLogin>
+            </LoginDialog>
           </div>
         ) : (
           <div

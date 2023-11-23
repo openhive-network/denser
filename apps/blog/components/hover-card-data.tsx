@@ -7,8 +7,8 @@ import { useFollowsQuery } from './hooks/use-follows';
 import { delegatedHive, numberWithCommas, vestingHive } from '@hive/ui/lib/utils';
 import Big from 'big.js';
 import { useDynamicGlobalData } from './hooks/use-dynamic-global-data';
-import DialogLogin from './login-form';
 import { useTranslation } from 'next-i18next';
+import LoginDialog from './login-dialog';
 
 export function HoverCardData({ author }: { author: string }) {
   const { t } = useTranslation('common_blog');
@@ -46,7 +46,7 @@ export function HoverCardData({ author }: { author: string }) {
                 <span className='block'>{`@${author}`}</span>
               </Link>
               <div className='grid grid-cols-2 gap-2 py-2'>
-                <DialogLogin>
+                <LoginDialog>
                   <Button
                     variant='outline'
                     size='xs'
@@ -55,7 +55,7 @@ export function HoverCardData({ author }: { author: string }) {
                   >
                     {t('post_content.header.hover_author.follow_button')}
                   </Button>
-                </DialogLogin>
+                </LoginDialog>
               </div>
             </div>
           </div>

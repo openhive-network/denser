@@ -16,6 +16,7 @@ import { useUser } from './hooks/use-user';
 import { useLocalStorage } from './hooks/use-local-storage';
 import HiveAuthUtils from '../lib/hive-auth-utils';
 import { fetchJson } from '../lib/fetch-json';
+import LoginDialog from './login-dialog';
 
 const SiteHeader: FC = () => {
   const { user, mutateUser } = useUser({
@@ -76,27 +77,23 @@ const SiteHeader: FC = () => {
         <div className='flex items-center space-x-2 sm:space-x-4'>
           <nav className='flex items-center space-x-1'>
             <div className='hidden sm:flex gap-1 mx-1'>
-              {!user?.isLoggedIn ? (
-                <Link href="/login">                
+                <LoginDialog>{!user?.isLoggedIn ? (              
                   <Button variant='ghost' className='text-base hover:text-red-500' data-testid='login-btn'>
                     {t('navigation.main_nav_bar.login')}
                   </Button>
-              </Link>): <Link
-                    href=""
-                    onClick={async (e) => {
+              ): 
+                  <Button variant='ghost' className='text-base hover:text-red-500' data-testid='login-btn' onClick={async (e) => {
                       e.preventDefault()
                       await onLogout();
-                    }}
-                  >
-                  <Button variant='ghost' className='text-base hover:text-red-500' data-testid='login-btn'>
+                    }}>
                     Logout
                   </Button>
-                </Link>}
+                }</LoginDialog>
               {!user?.isLoggedIn &&<Link href='https://signup.hive.io/'>
                 <Button variant='redHover' data-testid='signup-btn'>{t('navigation.main_nav_bar.sign_up')}</Button>
               </Link>}
             </div>
-            
+
             <div>
               <div className='hidden lg:block relative'>
                 <div className='absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none'>
