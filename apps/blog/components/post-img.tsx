@@ -25,21 +25,6 @@ export default function PostImage({ post }: { post: Entry }) {
   const other_images_from_body= extractUrlsFromJsonString(post.body)
 
   function find_first_img() {
-    if (post.original_entry) {
-      return post.original_entry.json_metadata.image[0];
-    }
-    if (post.json_metadata.image && post.json_metadata.image[0]) {
-      return post.json_metadata.image[0];
-    }
-    if (post.json_metadata.images && post.json_metadata.images[0]) {
-      return post.json_metadata.images[0];
-    }
-    if (
-      post.json_metadata.flow?.pictures &&
-      post.json_metadata.flow?.pictures[0]
-    ) {
-      return post.json_metadata.flow?.pictures[0].url;
-    }
     if (
       post.json_metadata.links &&
       post.json_metadata.links[0] &&
@@ -56,6 +41,27 @@ export default function PostImage({ post }: { post: Entry }) {
         post.json_metadata.links[0].length - 1
       );
     }
+    if (post.original_entry && post.original_entry.json_metadata.images) {
+      return post.original_entry.json_metadata.images[0]
+    }
+    if (post.original_entry && post.original_entry.json_metadata.image) {
+      return post.original_entry.json_metadata.image[0]
+    } 
+    if (post.json_metadata.image && post.json_metadata.image[0]) {
+      return post.json_metadata.image[0];
+    }
+      if (match && match[1]) {
+      return match[1];
+    }
+    if (post.json_metadata.images && post.json_metadata.images[0]) {
+      return post.json_metadata.images[0];
+    }
+    if (
+      post.json_metadata.flow?.pictures &&
+      post.json_metadata.flow?.pictures[0]
+    ) {
+      return post.json_metadata.flow?.pictures[0].url;
+    }
     if (youtube_id[0]) {
       return `https://img.youtube.com/vi/${youtube_id[0]}/0.jpg`;
     }
@@ -63,21 +69,19 @@ export default function PostImage({ post }: { post: Entry }) {
       return pictures_extracted[0];
     }
     if(other_images_from_body[0]){return other_images_from_body[0]}
-
     if (peakd_img !== null) {
       return peakd_img[0];
     }
     if (matchgif && matchgif[1]) {
       return matchgif[1];
     }
-    if (match && match[1]) {
-      return match[1];
-    }
+  
     if (!post.title.includes("RE: ") && post.depth === 0) {
       return `https://images.hive.blog/u/${post.author}/avatar/large`;
     }
     return "";
   }
+
   return (
     <>
       {find_first_img() ? (
