@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+FILE=${1:-version.json}
 
 write_version() {
 
@@ -8,7 +9,6 @@ write_version() {
   # and writes it as json file.
   #
 
-  FILE=${1:-version.json}
   COMMITHASH="$(git rev-parse HEAD)";
   BRANCH="$(git rev-parse --abbrev-ref HEAD)";
   VERSION="$(git describe --always --tags --dirty)";
@@ -20,7 +20,7 @@ write_version() {
 
   VERSION=$(echo $VERSION | sed -r -e "s/-g[0-9a-fA-F]{8}/-${COMMITHASH:0:8}/")
   JSON="{\"branch\":\"$BRANCH\",\"commithash\":\"$COMMITHASH\",\"version\":\"$VERSION\"}"
-  echo $JSON > version.json
+  echo "$JSON" > "$FILE"
   echo "File $FILE has been created"
 
 }
