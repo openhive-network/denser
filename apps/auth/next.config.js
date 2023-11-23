@@ -1,9 +1,6 @@
 const path = require('path')
 const withTM = require('next-transpile-modules')(["@hive/ui"])
-const { GitRevisionPlugin } = require('git-revision-webpack-plugin')
-const gitRevisionPlugin = new GitRevisionPlugin({
-  versionCommand: 'describe --always --tags --dirty',
-});
+const version = require('./version.json');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -20,13 +17,11 @@ const nextConfig = {
       config.resolve.fallback = { fs: false };
     }
     config.plugins = config.plugins || [];
-    config.plugins.push(gitRevisionPlugin);
     config.plugins.push(
       new webpack.DefinePlugin({
-        GIT_VERSION: JSON.stringify(gitRevisionPlugin.version()),
-        GIT_COMMITHASH: JSON.stringify(gitRevisionPlugin.commithash()),
-        GIT_BRANCH: JSON.stringify(gitRevisionPlugin.branch()),
-        GIT_LASTCOMMITDATETIME: JSON.stringify(gitRevisionPlugin.lastcommitdatetime()),
+        GIT_BRANCH: JSON.stringify(version.branch),
+        GIT_COMMITHASH: JSON.stringify(version.commithash),
+        GIT_VERSION: JSON.stringify(version.version)
       })
     );
 

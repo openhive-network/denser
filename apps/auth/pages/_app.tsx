@@ -9,8 +9,7 @@ const Providers = lazy(() => import("@/auth/components/common/providers"));
 
 // Log Git revision details in browser's console.
 if (typeof window !== 'undefined' && window) {
-  console.info('GIT VERSION', GIT_VERSION, GIT_COMMITHASH, GIT_BRANCH,
-      GIT_LASTCOMMITDATETIME);
+  console.info('GIT VERSION', GIT_VERSION, GIT_COMMITHASH, GIT_BRANCH);
 }
 
 function App({ Component, pageProps }: AppProps) {
