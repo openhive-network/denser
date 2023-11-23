@@ -75,7 +75,7 @@ const verifyChallenge = (challenge: string | Buffer, data: { challenge: string |
 };
 
 const updateModalMessage = (message: string) => {
-    const instructionsContainer = document.getElementById('hive-auth-instructions');
+    const instructionsContainer = document.getElementById('hiveauth-instructions');
     if (instructionsContainer) {
         instructionsContainer.innerHTML = message;
     }
@@ -228,9 +228,13 @@ const clearLoginInstructions = () => {
     if (qrElement) {
         const context = qrElement.getContext('2d');
         if (context) {
-            context.clearRect(0, 0, 200, 200);
+            context.clearRect(0, 0, qrElement.width, qrElement.height)
         }
     }
+    const qrLinkElement = document.getElementById('hiveauth-qr-link') as HTMLAnchorElement;
+    qrLinkElement.href = '#';
+    qrLinkElement.classList.add('hidden');
+
 };
 
 const login = async (username: string, challenge: string, callbackFn: (arg0: { success: boolean; error?: string; hiveAuthData?: { key: string; token: string; expire: number; uuid: string; challengeHex: any; }; }) => void) => {
