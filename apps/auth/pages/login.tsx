@@ -36,6 +36,9 @@ export default function LoginPage({
   const [hiveAuthData, setHiveAuthData] =
       useLocalStorage('hiveAuthData', HiveAuthUtils.initialHiveAuthData);
 
+  const [hiveKeys, setHiveKeys] =
+      useLocalStorage('hiveKeys', {});
+
   // Create a signature of message (login challenge) for sending to
   // back-end for verification.
   const signLoginChallenge = async (
@@ -90,10 +93,7 @@ export default function LoginPage({
         const {
           token, expire, key, challengeHex,
         } = authResponse.hiveAuthData;
-
-        // TODO We need to save token, expire, key on client side.
         setHiveAuthData({username, token, expire, key});
-
         logger.info('hiveauth', {signature: challengeHex});
         signatures.posting = challengeHex;
       } else {
@@ -107,9 +107,7 @@ export default function LoginPage({
         const signature = privateKey.sign(messageHash).toString();
         logger.info('password', {signature});
         signatures.posting = signature;
-        //
-        // TODO We need to save password on client side.
-        //
+        setHiveKeys({...hiveKeys, ...{posting: password}})
     } catch (error) {
         throw error;
       }

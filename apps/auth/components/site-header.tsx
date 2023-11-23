@@ -20,8 +20,11 @@ const SiteHeader: FC = () => {
 
   const [, setHiveAuthData] = useLocalStorage('hiveAuthData',
       HiveAuthUtils.initialHiveAuthData);
+  const [, setHiveKeys] =
+      useLocalStorage('hiveKeys', {});
 
   const onLogout = async () => {
+    setHiveKeys({});
     setHiveAuthData(HiveAuthUtils.initialHiveAuthData);
     HiveAuthUtils.logout();
     await mutateUser(
