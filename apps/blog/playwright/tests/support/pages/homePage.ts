@@ -163,7 +163,7 @@ export class HomePage {
     this.getNavSidebarMenu = page.locator('[data-testid="nav-sidebar-menu-button"]');
     this.getNavSidebarMenuContent = page.locator('[data-testid="nav-sidebar-menu-content"]');
     this.getNavSidebarMenuContentCloseButton = page.locator('[data-testid="nav-sidebar-menu-content"] > button');
-    this.postTitle = page.locator('[data-testid="post-title"]');
+    this.postTitle = page.locator('[data-testid="post-title"] a');
     this.postDescription = page.locator('[data-testid="post-description"]');
     this.loginBtn = page.locator('[data-testid="login-btn"]');
     this.signupBtn = page.locator('[data-testid="signup-btn"]');

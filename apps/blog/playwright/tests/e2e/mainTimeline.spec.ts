@@ -927,7 +927,7 @@ test.describe('Home page tests', () => {
     await firstPostReputation.hover();
     await homePage.page.waitForTimeout(1000);
 
-    await expect(await homePage.postReputationTooltip).toHaveText('ReputationReputation');
+    await expect(homePage.getFirstPostAuthorReputation).toHaveAttribute('title', 'Reputation');
 
     expect(
       await homePage.getElementCssPropertyValue(
@@ -935,13 +935,6 @@ test.describe('Home page tests', () => {
       'color'
       )
     ).toBe('rgb(100, 116, 139)');
-
-    expect(
-      await homePage.getElementCssPropertyValue(
-      await homePage.postReputationTooltip,
-      'color'
-      )
-    ).toBe('rgb(15, 23, 42)');
   });
 
   test('validate styles of the reputation in the post card header in the dark mode', async ({ page }) => {
@@ -960,21 +953,11 @@ test.describe('Home page tests', () => {
       )
     ).toBe('rgb(148, 163, 184)');
 
-    await firstPostReputation.hover();
-    await homePage.page.waitForTimeout(1000);
-
-    await expect(await homePage.postReputationTooltip).toHaveText('ReputationReputation');
+    await expect(homePage.getFirstPostAuthorReputation).toHaveAttribute('title', 'Reputation');
 
     expect(
       await homePage.getElementCssPropertyValue(
       await firstPostReputation,
-      'color'
-      )
-    ).toBe('rgb(148, 163, 184)');
-
-    expect(
-      await homePage.getElementCssPropertyValue(
-      await homePage.postReputationTooltip,
       'color'
       )
     ).toBe('rgb(148, 163, 184)');

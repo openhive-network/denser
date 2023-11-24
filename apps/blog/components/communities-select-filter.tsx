@@ -34,7 +34,7 @@ const [state, setState] = useState(() => filter);
       >
         <SelectValue placeholder="Select a filter" />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent data-testid="communities-filter-item">
         <SelectGroup>
           <SelectItem value="rank">{t('select_sort.communitie_sort.rank')}</SelectItem>
           <SelectItem value="subs">{t('select_sort.communitie_sort.subscribers')}</SelectItem>

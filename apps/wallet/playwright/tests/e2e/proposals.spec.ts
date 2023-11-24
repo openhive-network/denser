@@ -227,6 +227,10 @@ test.describe("Proposals page tests", () => {
 
     const firstProposalVotesValueOnPageDescending =
       await proposalsPage.voteProposalsValue.first().textContent();
+
+    await proposalsPage.page.keyboard.down('End');
+    await proposalsPage.page.waitForTimeout(2000);
+
     const lastProposalVotesValueOnPageDescending =
       await proposalsPage.voteProposalsValue.last().textContent();
 
@@ -238,6 +242,10 @@ test.describe("Proposals page tests", () => {
 
     const firstProposalVotesValueOnPageAscending =
       await proposalsPage.voteProposalsValue.first().textContent();
+
+    await proposalsPage.page.keyboard.down('End');
+    await proposalsPage.page.waitForTimeout(2000);
+
     const lastProposalVotesValueOnPageAscending =
       await proposalsPage.voteProposalsValue.last().textContent();
 

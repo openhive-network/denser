@@ -161,9 +161,8 @@ test.describe('Profile page of @gtg', () => {
       'color'
       )
     ).toBe('rgb(100, 116, 139)');
-    await firstPostReputation.hover();
-    await profilePage.page.waitForTimeout(1000);
-    await expect(await profilePage.postReputationTooltip).toHaveText('ReputationReputation');
+
+    await expect(homePage.getFirstPostAuthorReputation).toHaveAttribute('title', 'Reputation');
 
     // Validate community/category style before hovering
     const firstPostItem: Locator = await profilePage.postBlogItem.first();
@@ -263,9 +262,8 @@ test.describe('Profile page of @gtg', () => {
       'color'
       )
     ).toBe('rgb(148, 163, 184)');
-    await firstPostReputation.hover();
-    await profilePage.page.waitForTimeout(1000);
-    await expect(await profilePage.postReputationTooltip).toHaveText('ReputationReputation');
+
+    await expect(homePage.getFirstPostAuthorReputation).toHaveAttribute('title', 'Reputation');
 
     // Validate community/category style before hovering
     const firstPostItem: Locator = await profilePage.postBlogItem.first();
