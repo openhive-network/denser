@@ -9,6 +9,7 @@ import { getLogger } from "@hive/ui/lib/logging";
 import { LoginTypes, username } from '../pages/api/login';
 import { validateHivePassword } from '../lib/validate-hive-password';
 import { hasCompatibleKeychain } from '../lib/hive-keychain';
+import { Icons } from '@ui/components/icons';
 
 
 const ZodLoginTypesEnum = z.nativeEnum(LoginTypes);
@@ -71,7 +72,7 @@ export function LoginForm({
   const logger = getLogger('app');
   logger.debug('Starting LoginForm');
 
-  const { t } = useTranslation('common_auth');
+  const { t } = useTranslation('common_blog');
   const [isKeychainSupported, setIsKeychainSupported] = useState(false)
 
   useEffect(() => {
@@ -115,7 +116,7 @@ export function LoginForm({
   return (
     <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
       <div className="mx-auto flex w-[440px] max-w-md flex-col items-center">
-        <h2 className="w-full pb-6 text-3xl text-gray-800">
+        <h2 className="w-full pb-6 text-3xl text-gray-800 dark:text-gray-100">
           Login
         </h2>
         <form method="post" className="w-full">
@@ -156,9 +157,11 @@ export function LoginForm({
                 }</p>
             )}
           </div>
-
+<p className='text-sm text-gray-400'>
+                  {t('login_form.this_operation_requires_your_key_or_master_password', { authType: 'Posting' })}
+                </p>
           <div className="my-6 flex w-full flex-col">
-
+          
             <div className="flex items-center py-1">
               <input
                 type="checkbox"
@@ -170,11 +173,11 @@ export function LoginForm({
                 />
               <label
                 htmlFor="useKeychain"
-                className="ml-2 flex text-sm font-medium text-gray-900"
+                className="ml-2 flex text-sm font-medium text-gray-900 dark:text-gray-100"
               >
                 <img
                   className="mr-1 h-4 w-4"
-                  src="/images/hivekeychain.png"
+                  src="/hivekeychain.png"
                   alt="Hive Keychain logo"
                 />
                 Use Keychain
@@ -191,13 +194,11 @@ export function LoginForm({
                 />
               <label
                 htmlFor="useHiveauth"
-                className="ml-2 flex text-sm font-medium text-gray-900"
+                className="ml-2 flex text-sm font-medium text-gray-900 dark:text-gray-100"
               >
-                <img
+                <Icons.hiveauth 
                   className="mr-1 h-4 w-4"
-                  src="/images/hiveauth.png"
-                  alt="Hiveauth logo"
-                />
+                  />
                 Use HiveAuth
               </label>
             </div>
@@ -211,7 +212,7 @@ export function LoginForm({
               />
               <label
                 htmlFor="remember"
-                className="ml-2 text-sm font-medium text-gray-900 bamboo"
+                className="ml-2 text-sm font-medium text-gray-900 bamboo dark:text-gray-100"
               >
                 Keep me logged in
               </label>
@@ -230,7 +231,7 @@ export function LoginForm({
             <button
               type="button"
               onClick={() => reset()}
-              className="w-fit rounded-lg bg-transparent px-5 py-2.5 text-center text-sm font-semibold text-gray-500 hover:cursor-pointer hover:text-red-600 focus:outline-none"
+              className="w-fit rounded-lg bg-transparent px-5 py-2.5 text-center text-sm font-semibold text-gray-500 hover:cursor-pointer hover:text-red-600 focus:outline-none dark:text-gray-100"
             >
               Reset
             </button>
@@ -265,7 +266,7 @@ export function LoginForm({
               className="mt-4 flex w-fit justify-center rounded-lg bg-gray-400 px-5 py-2.5 hover:bg-gray-500 focus:outline-none "
               data-testid="hivesigner-button"
             >
-              <img src="/images/hivesigner.svg" alt="Hivesigner logo" />
+              <img src="/hivesigner.svg" alt="Hivesigner logo" />
             </button>
           </div>
         </form>
