@@ -32,7 +32,7 @@ const SheetPortal = ({
   className,
   children,
   ...props
-}: any) => (
+}: SheetPortalProps) => (
   <SheetPrimitive.Portal className={cn(className)} {...props}>
     <div className={portalVariants({ position })}>{children}</div>
   </SheetPrimitive.Portal>
