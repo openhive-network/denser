@@ -86,7 +86,7 @@ export default function LoginPage({
       const authResponse: any = await new Promise((resolve) => {
         HiveAuthUtils.login(username, message, (res) => {
           resolve(res);
-        });
+        }, t);
       });
 
       if (authResponse.success && authResponse.hiveAuthData) {

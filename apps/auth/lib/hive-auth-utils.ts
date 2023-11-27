@@ -3,16 +3,8 @@ import { HasClient } from 'hive-auth-client';
 import { getLogger } from "@hive/ui/lib/logging";
 import { Signature, HexBuffer, cryptoUtils, PublicKey } from "@hiveio/dhive";
 
-// import { isLoggedIn, extractLoginData } from 'app/utils/UserUtil';
-
 const logger = getLogger('app');
-
 const client = new HasClient('hive-auth.arcange.eu', '', true);
-
-// TODO This is only dummy function for translation.
-const tt = (translationKey: string) => {
-    return translationKey;
-};
 
 export interface HiveAuthData {
     username: string;
@@ -81,9 +73,14 @@ const updateModalMessage = (message: string) => {
     }
 };
 
-const broadcast = (operations: any[], type: string, callbackFn: (arg0: { success: boolean; error?: any; }) => void) => {
+const broadcast = (
+        operations: any[],
+        type: string,
+        callbackFn: (arg0: { success: boolean; error?: any; }) => void,
+        translateFn: (v: string) => string = (v) => v
+        ) => {
     const handleSignPending = () => {
-        updateModalMessage(tt('hiveauthservices.broadcastInstructions'));
+        updateModalMessage(translateFn('hiveauthservices.broadcastInstructions'));
     };
 
     const handleSignSuccess = (message: any) => {
@@ -114,11 +111,11 @@ const broadcast = (operations: any[], type: string, callbackFn: (arg0: { success
 
     const handleRequestExpired = (error: { message: any; }) => {
         logger.error('Hive Auth: broadcast request expired', error.message);
-        updateModalMessage(tt('hiveauthservices.requestExpired'));
+        updateModalMessage(translateFn('hiveauthservices.requestExpired'));
 
         callbackFn({
             success: false,
-            error: tt('hiveauthservices.requestExpired'),
+            error: translateFn('hiveauthservices.requestExpired'),
         });
 
         removeEventHandlers();
@@ -129,7 +126,7 @@ const broadcast = (operations: any[], type: string, callbackFn: (arg0: { success
         clearLoginInstructions();
         callbackFn({
             success: false,
-            error: tt('hiveauthservices.failedAttaching'),
+            error: translateFn('hiveauthservices.failedAttaching'),
         });
         removeEventHandlers();
     };
@@ -152,9 +149,14 @@ const broadcast = (operations: any[], type: string, callbackFn: (arg0: { success
     client.broadcast(auth, type, operations);
 };
 
-const signChallenge = (data: any, keyType = 'posting', callbackFn: (arg0: { result?: any; success: boolean; error?: string; }) => void) => {
+const signChallenge = (
+        data: any,
+        keyType = 'posting',
+        callbackFn: (arg0: { result?: any; success: boolean; error?: string; }) => void,
+        translateFn: (v: string) => string = (v) => v
+        ) => {
     const handleChallengePending = () => {
-        updateModalMessage(tt('hiveauthservices.broadcastInstructions'));
+        updateModalMessage(translateFn('hiveauthservices.broadcastInstructions'));
     };
 
     const handleChallengeSuccess = (e: { data: { challenge: any; }; }) => {
@@ -170,7 +172,7 @@ const signChallenge = (data: any, keyType = 'posting', callbackFn: (arg0: { resu
         logger.error('Hive Auth: challenge failure', e);
         callbackFn({
             success: false,
-            error: tt('hiveauthservices.userRejectedRequest'),
+            error: translateFn('hiveauthservices.userRejectedRequest'),
         });
         removeEventHandlers();
     };
@@ -179,18 +181,18 @@ const signChallenge = (data: any, keyType = 'posting', callbackFn: (arg0: { resu
         logger.error('Hive Auth: challenge error', e);
         callbackFn({
             success: false,
-            error: tt('hiveauthservices.challengeError'),
+            error: translateFn('hiveauthservices.challengeError'),
         });
         removeEventHandlers();
     };
 
     const handleRequestExpired = (error: { message: any; }) => {
         logger.error('Hive Auth: challenge request expired', error.message);
-        updateModalMessage(tt('hiveauthservices.requestExpired'));
+        updateModalMessage(translateFn('hiveauthservices.requestExpired'));
 
         callbackFn({
             success: false,
-            error: tt('hiveauthservices.requestExpired'),
+            error: translateFn('hiveauthservices.requestExpired'),
         });
 
         removeEventHandlers();
@@ -237,8 +239,13 @@ const clearLoginInstructions = () => {
 
 };
 
-const login = async (username: string, challenge: string, callbackFn: (arg0: { success: boolean; error?: string; hiveAuthData?: { key: string; token: string; expire: number; uuid: string; challengeHex: any; }; }) => void) => {
-    updateLoginInstructions(tt('hiveauthservices.connecting'));
+const login = async (
+        username: string,
+        challenge: string,
+        callbackFn: (arg0: { success: boolean; error?: string; hiveAuthData?: { key: string; token: string; expire: number; uuid: string; challengeHex: any; }; }) => void,
+        translateFn: (v: string) => string = (v) => v
+        ) => {
+    updateLoginInstructions(translateFn('hiveauthservices.connecting'));
 
     setUsername(username);
 
@@ -275,13 +282,13 @@ const login = async (username: string, challenge: string, callbackFn: (arg0: { s
                 qrLinkElement.href = authUri;
                 qrLinkElement.classList.remove('hidden');
             }
-            updateLoginInstructions(tt('hiveauthservices.qrInstructions'));
+            updateLoginInstructions(translateFn('hiveauthservices.qrInstructions'));
         } else {
             logger.warn('Hive Auth: token expired');
             clearLoginInstructions();
             callbackFn({
                 success: false,
-                error: tt('hiveauthservices.tokenExpired'),
+                error: translateFn('hiveauthservices.tokenExpired'),
             });
         }
     };
@@ -317,7 +324,7 @@ const login = async (username: string, challenge: string, callbackFn: (arg0: { s
             clearLoginInstructions();
             callbackFn({
                 success: false,
-                error: tt('hiveauthservices.challengeValidationFailed'),
+                error: translateFn('hiveauthservices.challengeValidationFailed'),
             });
         }
 
@@ -330,7 +337,7 @@ const login = async (username: string, challenge: string, callbackFn: (arg0: { s
         clearLoginInstructions();
         callbackFn({
             success: false,
-            error: tt('hiveauthservices.userRejectedRequest'),
+            error: translateFn('hiveauthservices.userRejectedRequest'),
         });
         removeEventHandlers();
     };
@@ -338,11 +345,11 @@ const login = async (username: string, challenge: string, callbackFn: (arg0: { s
     const handleRequestExpired = (error: { message: any; }) => {
         logger.error('Hive Auth: authentication request expired', error.message);
         clearLoginInstructions();
-        updateModalMessage(tt('hiveauthservices.requestExpired'));
+        updateModalMessage(translateFn('hiveauthservices.requestExpired'));
 
         callbackFn({
             success: false,
-            error: tt('hiveauthservices.requestExpired'),
+            error: translateFn('hiveauthservices.requestExpired'),
         });
 
         removeEventHandlers();
@@ -353,7 +360,7 @@ const login = async (username: string, challenge: string, callbackFn: (arg0: { s
         clearLoginInstructions();
         callbackFn({
             success: false,
-            error: tt('hiveauthservices.failedAttaching'),
+            error: translateFn('hiveauthservices.failedAttaching'),
         });
         removeEventHandlers();
     };
