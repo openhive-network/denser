@@ -323,6 +323,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 className='sm:absolute m-2 hover:text-red-500 sm:right-0'
                 variant='secondary'
                 size='sm'
+                data-testid='profile-follow-button'
               >
                 {t('user_profil.follow_button')}
               </Button>
@@ -345,7 +346,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <li>
                   <Link
                     href={`/@${username}`}
-                    className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800 
+                    className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800
                     ${
                       router.asPath === `/@${username}`
                         ? 'bg-white text-slate-800 dark:bg-slate-950  dark:text-slate-200  dark:hover:text-slate-200'
