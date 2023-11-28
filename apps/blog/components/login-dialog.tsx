@@ -1,55 +1,42 @@
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from 'next-i18next.config';
-import { useState } from 'react'
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { withIronSessionSsr } from "iron-session/next";
-import secureRandom from 'secure-random';
+import { ReactNode, useState } from 'react';
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { KeychainKeyTypes, KeychainKeyTypesLC } from 'hive-keychain-commons';
-import { getLogger } from "@hive/ui/lib/logging";
+import { getLogger } from '@hive/ui/lib/logging';
 import { useUser } from './hooks/use-user';
 import { LoginTypes, PostLoginSchema, Signatures } from '../pages/api/login';
 import { useLocalStorage } from './hooks/use-local-storage';
 import HiveAuthUtils from '../lib/hive-auth-utils';
 import { LoginForm, LoginFormSchema } from './login-form';
 import { FetchError, fetchJson } from '../lib/fetch-json';
-import { sessionOptions } from '../lib/session';
 import { Dialog, DialogContent, DialogTrigger } from '@hive/ui/components/dialog';
+import { useAuth } from './auth-provider';
 
 const logger = getLogger('app');
 
-type LoginDialogProps = InferGetServerSidePropsType<typeof getServerSideProps> & {
-  children?: React.ReactNode;
-};
-
-export default function LoginDialog({
-  loginChallenge, children
-}: LoginDialogProps) {
-
+export default function LoginDialog({ children }: { children: ReactNode }) {
   const { t } = useTranslation('common_auth');
 
   // Here we just check if user is already logged in and we redirect him
   // to profile page, if he is.
   const { mutateUser } = useUser({
-    redirectTo: '/profile',
-    redirectIfFound: true,
+    redirectTo: '/trending/my',
+    redirectIfFound: true
   });
 
   const [errorMsg, setErrorMsg] = useState('');
 
   const [hiveAuthData, setHiveAuthData] = useLocalStorage('hiveAuthData', HiveAuthUtils.initialHiveAuthData);
-
+  const loginChallenge = useAuth();
   // Create a signature of message (login challenge) for sending to
   // back-end for verification.
   const signLoginChallenge = async (
-        loginType: LoginTypes,
-        username: string,
-        password: string, // posting private key
-        keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting,
-      ): Promise<Signatures> => {
-    logger.info('in signLoginChallenge %o',
-        {loginType, username, loginChallenge});
+    loginType: LoginTypes,
+    username: string,
+    password: string, // posting private key
+    keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting
+  ): Promise<Signatures> => {
+    logger.info('in signLoginChallenge %o', { loginType, username, loginChallenge });
     const signatures: Signatures = {};
     const challenge = { token: loginChallenge };
     const message = JSON.stringify(challenge, null, 0);
@@ -57,17 +44,12 @@ export default function LoginDialog({
     if (loginType === LoginTypes.keychain) {
       try {
         const response: any = await new Promise((resolve) => {
-          window.hive_keychain.requestSignBuffer(
-            username,
-            message,
-            KeychainKeyTypes[keyType],
-            (res: any) => {
-              resolve(res);
-            }
-          );
+          window.hive_keychain.requestSignBuffer(username, message, KeychainKeyTypes[keyType], (res: any) => {
+            resolve(res);
+          });
         });
         if (response.success) {
-          logger.info('keychain', {signature: response.result});
+          logger.info('keychain', { signature: response.result });
           signatures.posting = response.result;
         } else {
           throw new Error(response.error);
@@ -76,13 +58,12 @@ export default function LoginDialog({
         throw error;
       }
     } else if (loginType === LoginTypes.hiveauth) {
-
       logger.info('hiveauth');
 
       HiveAuthUtils.setUsername(hiveAuthData?.username || '');
       HiveAuthUtils.setToken(hiveAuthData?.token || '');
       HiveAuthUtils.setExpire(hiveAuthData?.expire || 0);
-      HiveAuthUtils.setKey(hiveAuthData?.key || '')
+      HiveAuthUtils.setKey(hiveAuthData?.key || '');
 
       const authResponse: any = await new Promise((resolve) => {
         HiveAuthUtils.login(username, message, (res) => {
@@ -91,37 +72,33 @@ export default function LoginDialog({
       });
 
       if (authResponse.success && authResponse.hiveAuthData) {
-        const {
-          token, expire, key, challengeHex,
-        } = authResponse.hiveAuthData;
+        const { token, expire, key, challengeHex } = authResponse.hiveAuthData;
 
         // TODO We need to save token, expire, key on client side.
-        setHiveAuthData({username, token, expire, key});
+        setHiveAuthData({ username, token, expire, key });
 
-        logger.info('hiveauth', {signature: challengeHex});
+        logger.info('hiveauth', { signature: challengeHex });
         signatures.posting = challengeHex;
       } else {
         throw new Error('Hiveauth login failed');
       }
-
     } else if (loginType === LoginTypes.password) {
       try {
         const privateKey = PrivateKey.fromString(password);
         const messageHash = cryptoUtils.sha256(message);
         const signature = privateKey.sign(messageHash).toString();
-        logger.info('password', {signature});
+        logger.info('password', { signature });
         signatures.posting = signature;
         //
         // TODO We need to save password on client side.
         //
-    } catch (error) {
+      } catch (error) {
         throw error;
       }
     }
 
     return signatures;
-
-  }
+  };
 
   const onSubmit = async (data: LoginFormSchema) => {
     logger.info('onSubmit form data', data);
@@ -136,21 +113,20 @@ export default function LoginDialog({
     let hivesignerToken = '';
 
     try {
-      signatures =
-          await signLoginChallenge(loginType, username, password || '');
+      signatures = await signLoginChallenge(loginType, username, password || '');
     } catch (error) {
       logger.error('onSubmit error in signLoginChallenge', error);
       setErrorMsg(t('pageLogin.signingFailed'));
       return;
     }
 
-    logger.info({signatures});
+    logger.info({ signatures });
 
     const body: PostLoginSchema = {
       username,
       signatures,
       loginType,
-      hivesignerToken,
+      hivesignerToken
     };
 
     try {
@@ -158,9 +134,9 @@ export default function LoginDialog({
         await fetchJson('/api/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body),
+          body: JSON.stringify(body)
         })
-      )
+      );
     } catch (error) {
       if (error instanceof FetchError) {
         logger.error('onSubmit FetchError', error);
@@ -174,38 +150,14 @@ export default function LoginDialog({
   };
 
   return (
-    // <div className="pt-16 flex flex-col sm:flex-row gap-24 mx-2
-    //     sm:gap-0 sm:justify-around">
-    //   <div className="flex flex-col gap-3 sm:gap-8 sm:mr-4">
-      <Dialog>     <DialogTrigger asChild><div>{children}</div></DialogTrigger>
-<DialogContent>
-        <LoginForm
-          errorMessage={errorMsg}
-          onSubmit={onSubmit}
-        /></DialogContent></Dialog>
-    //   </div>
-    // </div>
+    <Dialog>
+      {' '}
+      <DialogTrigger asChild>
+        <div>{children}</div>
+      </DialogTrigger>
+      <DialogContent>
+        <LoginForm errorMessage={errorMsg} onSubmit={onSubmit} />
+      </DialogContent>
+    </Dialog>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = withIronSessionSsr(
-  async function getServerSideProps({ req }) {
-    let loginChallenge = req.session.loginChallenge;
-    if (!loginChallenge) {
-      loginChallenge = secureRandom.randomBuffer(16).toString('hex');
-      req.session.loginChallenge = loginChallenge;
-      await req.session.save();
-    }
-    return {
-      props: {
-        loginChallenge,
-        ...(await serverSideTranslations(
-          req.cookies.NEXT_LOCALE! || i18n.defaultLocale,
-          ['common_blog'])),
-      },
-    };
-  },
-  sessionOptions
-);
-
-
