@@ -181,6 +181,7 @@ export class ProfilePage {
   readonly userHasNotHadAnyNotificationsYetMsg: Locator;
   readonly userBannerBadgeLink: Locator;
   readonly userBannerBadgeImg: Locator;
+  readonly userBannerTwitterBadgeLink: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -399,6 +400,7 @@ export class ProfilePage {
     this.userHasNotHadAnyNotificationsYetMsg = page.locator('[data-testid="user-has-not-had-any-notifications-yet"]');
     this.userBannerBadgeLink = page.locator('[data-testid="profile-badge-link"]');
     this.userBannerBadgeImg = page.locator('[data-testid="profile-badge-image"]');
+    this.userBannerTwitterBadgeLink = page.locator('[data-testid="profile-twitter-badge"]');
   }
 
   async gotoProfilePage(nickName: string) {

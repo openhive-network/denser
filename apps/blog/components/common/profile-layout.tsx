@@ -169,6 +169,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   href={twitterData.twitter_profile}
                   title={t('user_profil.twitter_badge_title')}
                   target='_blank'
+                  data-testid='profile-twitter-badge'
                 >
                   <Icons.twitter fill='#1da1f2' className='text-blue-400' />
                 </Link>

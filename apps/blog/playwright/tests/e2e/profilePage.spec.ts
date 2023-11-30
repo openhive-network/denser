@@ -335,7 +335,7 @@ test.describe('Profile page of @gtg', () => {
     await expect(profilePage.followedMutedListsHeader).toContainText("Followed Muted")
   })
 
-  test("User Banner Row - HiveBuzz program badge",async ({page}) =>{
+  test("User Banner Row - HiveBuzz program badge - @gtg user",async ({page}) =>{
     const titleAttribute: string = "This is gtg's level badged earned from Hivebuzz programs";
     const imgSrc: string = "https://hivebuzz.me/api/level/gtg?dead";
 
@@ -347,5 +347,25 @@ test.describe('Profile page of @gtg', () => {
     await expect(profilePage.userBannerBadgeImg).toHaveAttribute('title', titleAttribute);
     // validate src attribute of the badge image
     await expect(profilePage.userBannerBadgeImg).toHaveAttribute('src', imgSrc);
+  })
+
+  test("User Banner Row - HiveBuzz program badge and twitter - @arcange user",async ({page}) =>{
+    const titleAttribute: string = "This is arcange's level badged earned from Hivebuzz programs";
+    const imgSrc: string = "https://hivebuzz.me/api/level/arcange?dead";
+    const twitterTitleAttribute: string = "To get the Twitter badge, link your account at HivePosh.com";
+    const twitterHrefAttribute: string = "https://twitter.com/thearcange";
+
+    await profilePage.gotoProfilePage('@arcange');
+    await expect(profilePage.profileInfo).toBeVisible()
+    await expect(profilePage.profileAbout).toBeVisible()
+
+    // validate the tooltip as title attribute
+    await expect(profilePage.userBannerBadgeImg).toHaveAttribute('title', titleAttribute);
+    // validate src attribute of the badge image
+    await expect(profilePage.userBannerBadgeImg).toHaveAttribute('src', imgSrc);
+    // validate the tooltip of twitter badge as title attribute
+    await expect(profilePage.userBannerTwitterBadgeLink).toHaveAttribute('title', twitterTitleAttribute);
+    // validate the href attribute of the twitter badge
+    await expect(profilePage.userBannerTwitterBadgeLink).toHaveAttribute('href', twitterHrefAttribute);
   })
 });
