@@ -4,7 +4,6 @@ import { lazy, Suspense, useEffect } from 'react';
 import { appWithTranslation } from 'next-i18next';
 import { i18n } from 'next-i18next.config';
 import { parseCookie } from '@/blog/lib/utils';
-import { AuthProvider } from '../components/auth-provider';
 
 const Providers = lazy(() => import('@/blog/components/common/providers'));
 
@@ -21,14 +20,11 @@ function App({ Component, pageProps }: AppProps) {
       document.cookie = `NEXT_LOCALE=${i18n.defaultLocale};path=/`;
     }
   }, []);
-  const { loginChallenge } = pageProps;
 
   return (
     <Suspense fallback={<span>Loading...</span>}>
       <Providers>
-        <AuthProvider loginChallenge={loginChallenge}>
-          <Component {...pageProps} />
-        </AuthProvider>
+        <Component {...pageProps} />
       </Providers>
     </Suspense>
   );
