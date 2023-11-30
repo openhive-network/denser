@@ -1,10 +1,7 @@
 import { Dialog, DialogContent, DialogTrigger } from '@hive/ui/components/dialog';
-import { FormEventHandler, ReactNode, SyntheticEvent, useState } from 'react';
+import { ReactNode, SyntheticEvent, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
   Select,
   SelectContent,
   SelectGroup,
@@ -17,14 +14,46 @@ import {
   TabsList,
   TabsTrigger
 } from '@ui/components';
-import { AlertCircle } from 'lucide-react';
 import { OnlineClient, isBrowser, AuthStatus, AuthUser } from '@hive/hb-auth';
 import type { KeyAuthorityType } from '@hive/hb-auth';
+import { toast } from '@ui/components/hooks/use-toast';
 
 function DialogHBAuth({ children }: { children: ReactNode }) {
   const { t } = useTranslation('common_blog');
-  const [auth, setAuth] = useState<AuthUser | null>();
-  const [status, setStatus] = useState<AuthStatus>();
+  const [open, setOpen] = useState(false);
+
+  const updateStatus = (user: AuthUser | null = null, err = null) => {
+    if (!user) {
+      toast({
+        title: 'Info!',
+        description: `There is no registered user`,
+        variant: 'default'
+      });
+    } else {
+      if (user.authorized) {
+        toast({
+          title: 'Success!',
+          description: `Authorized with username: @${user.username}`,
+          variant: 'success'
+        });
+        setOpen(false);
+      } else {
+        toast({
+          title: 'Error!',
+          description: `User: ${user.username} requires authorization`,
+          variant: 'destructive'
+        });
+      }
+    }
+
+    if (err) {
+      toast({
+        title: 'Error!',
+        description: `${err}`,
+        variant: 'destructive'
+      });
+    }
+  };
 
   async function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -41,34 +70,29 @@ function DialogHBAuth({ children }: { children: ReactNode }) {
 
       const authClient = await client.initialize();
 
-      console.log('auth', auth);
-      setAuth(auth);
-
       console.log({ username, password, keyType, key });
 
       if (target.name === 'login') {
-        console.log('login');
         authClient
           .authenticate(username, password, keyType as KeyAuthorityType)
           .then(async (status) => {
             const auth = await authClient.getAuthByUser(username);
-            setAuth(auth);
+            updateStatus(auth);
           })
           .catch((err) => {
-            console.log(err);
+            updateStatus(null, err);
           });
       }
 
       if (target.name === 'authorize') {
-        console.log('authorize');
         authClient
           .register(username, password, key, keyType)
           .then(async (status) => {
             const auth = await authClient.getAuthByUser(username);
-            setAuth(auth);
+            updateStatus(auth);
           })
           .catch((err) => {
-            console.log(err);
+            updateStatus(null, err);
           });
       }
 
@@ -77,33 +101,9 @@ function DialogHBAuth({ children }: { children: ReactNode }) {
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[600px]" data-testid="login-dialog-hb-auth">
-        {!auth ? (
-          <Alert>
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Info</AlertTitle>
-            <AlertDescription>There is no registered user</AlertDescription>
-          </Alert>
-        ) : auth.authorized ? (
-          <Alert variant="success">
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Success!</AlertTitle>
-            <AlertDescription>
-              Authorized with username: <strong>@{auth.username}</strong>
-            </AlertDescription>
-          </Alert>
-        ) : (
-          <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Error</AlertTitle>
-            <AlertDescription>
-              User: <strong>{auth.username}</strong> requires authorization
-            </AlertDescription>
-          </Alert>
-        )}
-
         <Tabs defaultValue="login" className="w-full py-4">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="login">Login</TabsTrigger>
