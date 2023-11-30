@@ -153,12 +153,14 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <Link
                   href={`https://hivebuzz.me/@${profileData.name}`}
                   target='_blank'
+                  data-testid='profile-badge-link'
                 >
                   <img
                     alt='fish image'
                     title={t('user_profil.hive_buzz_badge_title', { username: profileData.name })}
                     className='mx-2 w-6 duration-500 ease-in-out hover:w-12'
                     src={`https://hivebuzz.me/api/level/${profileData.name}?dead`}
+                    data-testid='profile-badge-image'
                   />
                 </Link>
               ) : null}

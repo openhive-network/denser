@@ -4,7 +4,6 @@ import { ProfilePage } from '../support/pages/profilePage';
 import { PostPage } from '../support/pages/postPage';
 import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
 
-// Skip Profile page tests because those based on gtg profile and new view of the Denser.
 test.describe('Profile page of @gtg', () => {
   let homePage: HomePage;
   let postPage: PostPage;
@@ -334,5 +333,19 @@ test.describe('Profile page of @gtg', () => {
     await expect(page).toHaveURL('@gtg/lists/followed_muted_lists')
     await expect(profilePage.followedMutedListsHeader).toBeVisible()
     await expect(profilePage.followedMutedListsHeader).toContainText("Followed Muted")
+  })
+
+  test("User Banner Row - HiveBuzz program badge",async ({page}) =>{
+    const titleAttribute: string = "This is gtg's level badged earned from Hivebuzz programs";
+    const imgSrc: string = "https://hivebuzz.me/api/level/gtg?dead";
+
+    await profilePage.gotoProfilePage('@gtg');
+    await expect(profilePage.profileInfo).toBeVisible()
+    await expect(profilePage.profileAbout).toBeVisible()
+
+    // validate the tooltip as title attribute
+    await expect(profilePage.userBannerBadgeImg).toHaveAttribute('title', titleAttribute);
+    // validate src attribute of the badge image
+    await expect(profilePage.userBannerBadgeImg).toHaveAttribute('src', imgSrc);
   })
 });
