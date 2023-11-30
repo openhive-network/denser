@@ -107,7 +107,8 @@ test.describe('Post page tests', () => {
     );
 
     let userAboutAPI: any;
-    if (userPostingJsonMetadata.profile.about) {
+
+    if (await userPostingJsonMetadata.profile && userPostingJsonMetadata.profile.about) {
       userAboutAPI =
         userPostingJsonMetadata.profile.about.slice(0, 157) +
         (157 < userPostingJsonMetadata.profile.about.length ? '...' : '');
@@ -517,7 +518,7 @@ test.describe('Post page tests', () => {
     );
 
     let userAboutAPI: any;
-    if (userPostingJsonMetadata.profile.about) {
+    if (await userPostingJsonMetadata.profile && userPostingJsonMetadata.profile.about) {
       userAboutAPI =
         userPostingJsonMetadata.profile.about.slice(0, 157) +
         (157 < userPostingJsonMetadata.profile.about.length ? '...' : '');
