@@ -211,7 +211,7 @@ export function LoginForm({
               />
               <label
                 htmlFor="remember"
-                className="ml-2 text-sm font-medium text-gray-900 bamboo"
+                className="ml-2 text-sm font-medium text-gray-900"
               >
                 Keep me logged in
               </label>

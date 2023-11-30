@@ -8,8 +8,8 @@ import secureRandom from 'secure-random';
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { KeychainKeyTypes, KeychainKeyTypesLC } from 'hive-keychain-commons';
 import { LoginForm, LoginFormSchema } from "@/auth/components/login-form";
-import { useUser } from '@/auth/lib/use-user';
-import { fetchJson, FetchError } from '@/auth/lib/fetch-json';
+import { useUser } from '@/auth/lib/auth/use-user';
+import { useSignIn } from '@/auth/lib/auth/use-sign-in';
 import { getLogger } from "@hive/ui/lib/logging";
 import { sessionOptions } from '@/auth/lib/session';
 import { Signatures, PostLoginSchema, LoginTypes } from '@/auth/pages/api/login';
@@ -26,7 +26,7 @@ export default function LoginPage({
 
   // Here we just check if user is already logged in and we redirect him
   // to profile page, if he is.
-  const { mutateUser } = useUser({
+  const { user } = useUser({
     redirectTo: '/profile',
     redirectIfFound: true,
   });
@@ -117,6 +117,8 @@ export default function LoginPage({
 
   }
 
+  const signIn = useSignIn();
+
   const onSubmit = async (data: LoginFormSchema) => {
     logger.info('onSubmit form data', data);
     setErrorMsg('');
@@ -148,21 +150,9 @@ export default function LoginPage({
     };
 
     try {
-      mutateUser(
-        await fetchJson('/api/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body),
-        })
-      )
+      await signIn.mutateAsync(body)
     } catch (error) {
-      if (error instanceof FetchError) {
-        logger.error('onSubmit FetchError', error);
-        // setErrorMsg(error.data.error?.message
-        //     || t('pageLogin.loginFailed'));
-      } else {
-        logger.error('onSubmit unexpected error', error);
-      }
+      logger.error('onSubmit unexpected error', error);
       setErrorMsg(t('pageLogin.loginFailed'));
     }
   };
@@ -193,7 +183,8 @@ export const getServerSideProps: GetServerSideProps = withIronSessionSsr(
         loginChallenge,
         ...(await serverSideTranslations(
           req.cookies.NEXT_LOCALE! || i18n.defaultLocale,
-          ['common_auth'])),
+          ['common_auth']
+          )),
       },
     };
   },

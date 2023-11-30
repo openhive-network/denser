@@ -9,6 +9,13 @@ export type User = {
   loginType: string;
 };
 
+export const defaultUser: User = {
+  isLoggedIn: false,
+  username: '',
+  avatarUrl: '',
+  loginType: '',
+};
+
 async function userRoute(
     req: NextApiRequest,
     res: NextApiResponse<User>
@@ -19,12 +26,7 @@ async function userRoute(
       isLoggedIn: true,
     });
   } else {
-    res.json({
-      isLoggedIn: false,
-      username: '',
-      avatarUrl: '',
-      loginType: '',
-    });
+    res.json(defaultUser);
   }
 }
 

@@ -1,26 +1,21 @@
 import type { ReactNode } from "react";
-import { SWRConfig } from 'swr'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { getLogger } from "@hive/ui/lib/logging";
 import { ThemeProvider } from "../theme-provider";
 import Layout from "./layout";
-import { fetchJson } from '@/auth/lib/fetch-json'
-import { getLogger } from "@hive/ui/lib/logging";
 
 const logger = getLogger('app');
+const queryClient = new QueryClient();
 
 const Providers = ({ children }: { children: ReactNode }) => {
   return (
-    <SWRConfig
-      value={{
-        fetcher: fetchJson,
-        onError: (err) => {
-          logger.error('Error in SWR', err)
-        },
-      }}
-    >
+    <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         <Layout>{children}</Layout>
       </ThemeProvider>
-    </SWRConfig>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 };
 

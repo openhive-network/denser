@@ -1,19 +1,28 @@
 /* eslint-disable @next/next/no-img-element */
 
-import { Button } from "@hive/ui/components/button";
-import { FC } from "react";
+import { FC, useState, useEffect } from "react";
 import Link from "next/link";
+import { Button } from "@hive/ui/components/button";
 import { ModeToggle } from "./mode-toggle";
 import { MobileNav } from "./mobile-nav";
 import { MainNav } from "./main-nav";
-import { Icons } from "@hive/ui/components/icons";
-import { useUser } from '@/auth/lib/use-user';
-import { fetchJson } from '@/auth/lib/fetch-json';
+import { useUser } from '@/auth/lib/auth/use-user';
+import { useSignOut } from '@/auth/lib/auth/use-sign-out';
 import HiveAuthUtils from '@/auth/lib/hive-auth-utils';
 import { useLocalStorage } from '@/auth/lib/use-local-storage';
+import { getLogger } from "@hive/ui/lib/logging";
+import { Avatar, AvatarFallback, AvatarImage } from '@hive/ui/components/avatar';
+
+const logger = getLogger('app');
 
 const SiteHeader: FC = () => {
-  const { user, mutateUser } = useUser({
+
+  const [isClient, setIsClient] = useState(false)
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  const { user } = useUser({
     redirectTo: '',
     redirectIfFound: true,
   });
@@ -23,14 +32,16 @@ const SiteHeader: FC = () => {
   const [, setHiveKeys] =
       useLocalStorage('hiveKeys', {});
 
+  const signOut = useSignOut();
   const onLogout = async () => {
     setHiveKeys({});
     setHiveAuthData(HiveAuthUtils.initialHiveAuthData);
     HiveAuthUtils.logout();
-    await mutateUser(
-      await fetchJson('/api/logout', { method: 'POST' }),
-      false
-    )
+    try {
+      await signOut.mutateAsync();
+    } catch (error) {
+      logger.error('Error in logout', error);
+    }
   };
 
   return (
@@ -42,7 +53,7 @@ const SiteHeader: FC = () => {
           <nav className="flex items-center space-x-1">
             <div className="hidden sm:flex gap-1 mx-1">
 
-              {user?.isLoggedIn === false && (
+              {isClient && user?.isLoggedIn === false && (
                 <Link href="https://signup.hive.io/">
                   <Button
                     variant="redHover"
@@ -54,7 +65,7 @@ const SiteHeader: FC = () => {
                 </Link>
               )}
 
-              {user?.isLoggedIn === false && (
+              {isClient && user?.isLoggedIn === false && (
                 <Link href="/login">
                   <Button
                     variant="redHover"
@@ -66,7 +77,7 @@ const SiteHeader: FC = () => {
                 </Link>
               )}
 
-              {user?.isLoggedIn === true && (
+              {isClient && user?.isLoggedIn === true && (
                   <Link
                     href=""
                     onClick={async (e) => {
@@ -84,26 +95,17 @@ const SiteHeader: FC = () => {
                 </Link>
               )}
 
-              {user?.isLoggedIn === true && (
+              {isClient && user?.isLoggedIn === true && (
                 <Link href="/profile">
                   <Button
                     variant="redHover"
                     size="sm"
                     className="h-10 w-10 px-0"
                   >
-                    {!user?.avatarUrl && (
-                      <Icons.user
-                        className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
-                      />
-                    )}
-                    {user?.avatarUrl && (
-                      <img
-                        className="rounded-md"
-                        // src={user?.avatarUrl}
-                        src={`https://images.hive.blog/u/${user?.username || ''}/avatar/small`}
-                        alt="Profile picture"
-                      />
-                    )}
+                    <Avatar className="rounded-md" data-testid="profile-menu">
+                      <AvatarImage src={`https://images.hive.blog/u/${user?.username || ''}/avatar/small`} />
+                      <AvatarFallback>{user?.username.slice(0, 2).toUpperCase() || ''}</AvatarFallback>
+                    </Avatar>
                   </Button>
                 </Link>
               )}
