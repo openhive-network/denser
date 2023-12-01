@@ -24,6 +24,9 @@ import PostImage from './post-img';
 import { useTranslation } from 'next-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { getDynamicGlobalProperties } from '@ui/lib/hive';
+import { authService } from '@/blog/lib/authService';
+import { createWaxFoundation, TBlockHash, createHiveChain, BroadcastTransactionRequest } from '@hive/wax';
+import { useAppStore } from '@/blog/store/app';
 
 const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage: boolean | undefined }) => {
   const { t } = useTranslation('common_blog');
@@ -32,13 +35,41 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
 
   const [enabledDynamic, setEnableDynamic] = useState(false);
   const {
-    data: dynamicData,
-    isSuccess: dynamicSuccess,
-    isLoading: dynamicLoading,
-    isError: dynamicError
-  } = useQuery(['dynamicGlobalProperties'], () => getDynamicGlobalProperties(), {
+    isLoading: dynamicGlobalDataIsLoading,
+    error: dynamicGlobalDataError,
+    data: dynamicGlobalData
+  } = useQuery(['dynamicGlobalData'], () => getDynamicGlobalProperties(), {
     enabled: enabledDynamic
   });
+
+  const currentProfile = useAppStore((state) => state.currentProfile);
+  const currentProfileKeyType = useAppStore((state) => state.currentProfileKeyType);
+
+  async function vote() {
+    setEnableDynamic(true);
+    const authClient = await authService.getOnlineClient();
+    const wax = await createWaxFoundation();
+    const tx = new wax.TransactionBuilder(dynamicGlobalData?.head_block_id as unknown as TBlockHash, '+1m');
+
+    if (currentProfile && currentProfileKeyType && tx) {
+      tx.push({
+        vote: {
+          voter: currentProfile?.name,
+          author: post.author,
+          permlink: post.permlink,
+          weight: 10000
+        }
+      });
+
+      const signature = await authClient.sign(currentProfile?.name, tx.sigDigest, currentProfileKeyType);
+      const transaction = tx.build();
+      transaction.signatures.push(signature);
+      // or you can use tx.sign(signature, currentProfile.posting.key_auths[0] as unknown as string);
+      const transactionRequest = new BroadcastTransactionRequest(tx);
+      const hiveChain = await createHiveChain();
+      await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
+    }
+  }
 
   function revealPost() {
     setReveal((reveal) => !reveal);
@@ -245,10 +276,9 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
                         {/*    onClick={() => setEnableDynamic(true)}*/}
                         {/*  />*/}
                         {/*</DialogLogin>*/}
-
                         <Icons.arrowUpCircle
                           className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1"
-                          onClick={() => setEnableDynamic(true)}
+                          onClick={vote}
                         />
                       </TooltipTrigger>
                       <TooltipContent data-testid="upvote-button-tooltip">

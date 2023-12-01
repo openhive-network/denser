@@ -14,13 +14,32 @@ import {
   TabsList,
   TabsTrigger
 } from '@ui/components';
-import { OnlineClient, isBrowser, AuthStatus, AuthUser } from '@hive/hb-auth';
+import { isBrowser, AuthUser } from '@hive/hb-auth';
 import type { KeyAuthorityType } from '@hive/hb-auth';
 import { toast } from '@ui/components/hooks/use-toast';
+import { authService } from '@/blog/lib/authService';
+import { useAppStore } from '@/blog/store/app';
+import { useQuery } from '@tanstack/react-query';
+import { getAccountFull } from '@ui/lib/hive';
 
 function DialogHBAuth({ children }: { children: ReactNode }) {
   const { t } = useTranslation('common_blog');
   const [open, setOpen] = useState(false);
+  const [username, setUsername] = useState('');
+  const currentProfile = useAppStore((state) => state.currentProfile);
+  const setCurrentProfile = useAppStore((state) => state.setCurrentProfile);
+  const setCurrentProfileKeyType = useAppStore((state) => state.setCurrentProfileKeyType);
+
+  const {
+    isLoading: currentProfileDataIsLoading,
+    error: currenProfileDataError,
+    data: currentProfileData
+  } = useQuery(['currentProfile'], () => getAccountFull(username), {
+    onSuccess: (data) => {
+      setCurrentProfile(data);
+    },
+    enabled: !!username
+  });
 
   const updateStatus = (user: AuthUser | null = null, err = null) => {
     if (!user) {
@@ -65,16 +84,14 @@ function DialogHBAuth({ children }: { children: ReactNode }) {
     const keyType = form.get('keytype') as string as KeyAuthorityType;
     const key = form.get('key') as string;
 
+    setUsername(username);
+
     if (isBrowser) {
-      const client = new OnlineClient();
-
-      const authClient = await client.initialize();
-
-      console.log({ username, password, keyType, key });
+      const authClient = await authService.getOnlineClient();
 
       if (target.name === 'login') {
         authClient
-          .authenticate(username, password, keyType as KeyAuthorityType)
+          .authenticate(username, password, keyType)
           .then(async (status) => {
             const auth = await authClient.getAuthByUser(username);
             updateStatus(auth);
@@ -96,6 +113,7 @@ function DialogHBAuth({ children }: { children: ReactNode }) {
           });
       }
 
+      setCurrentProfileKeyType(keyType);
       target.reset();
     }
   }

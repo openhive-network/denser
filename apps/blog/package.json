@@ -20,6 +20,7 @@
     "@hive/tailwindcss-config": "*",
     "@hive/tsconfig": "*",
     "@hive/ui": "*",
+    "@hive/wax": "^0.0.3-stable.e28a512",
     "@hiveio/content-renderer": "^1.1.0",
     "@hiveio/dhive": "^1.2.7",
     "@hookform/resolvers": "^3.1.1",

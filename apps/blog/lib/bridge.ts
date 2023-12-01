@@ -234,7 +234,11 @@ export const getAccountNotifications = (
   lastId: number | null = null,
   limit = 50
 ): Promise<AccountNotification[] | null> => {
-  const params: { account: string; last_id?: number; limit: number } = {
+  const params: {
+    account: string;
+    last_id?: number;
+    limit: number;
+  } = {
     account,
     limit
   };
@@ -302,6 +306,7 @@ export interface FollowList {
   blacklist_description: '';
   muted_list_description: '';
 }
+
 export type FollowListType = 'follow_blacklist' | 'follow_muted' | 'blacklisted' | 'muted';
 
 export const getFollowList = (observer: string, follow_type: FollowListType): Promise<FollowList[]> =>
