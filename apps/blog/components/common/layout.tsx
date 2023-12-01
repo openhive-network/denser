@@ -15,7 +15,11 @@ function Layout({ children }: LayoutProps) {
   return (
     <>
       <Head>
-        <meta name="theme-color" content={resolvedTheme === 'dark' ? '#030711' : '#ffffff'} />
+        <meta
+          name="theme-color"
+          content={resolvedTheme === 'dark' ? '#030711' : '#ffffff'}
+          http-equiv="ContentSecurityPolicy"
+        />
       </Head>
       <div className="relative flex min-h-screen flex-col">
         <SiteHeader />

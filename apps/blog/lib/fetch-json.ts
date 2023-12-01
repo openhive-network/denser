@@ -1,4 +1,4 @@
-import { ErrorResponse } from '@/blog/lib/api';
+import { ErrorResponse } from './api';
 
 /**
  * Error specific for our API server. You should not expect the same

@@ -12,11 +12,11 @@ import { useState, KeyboardEvent } from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import { useTranslation } from 'next-i18next';
+import { useUser } from './hooks/use-user';
 import { useLocalStorage } from './hooks/use-local-storage';
 import HiveAuthUtils from '../lib/hive-auth-utils';
 import { fetchJson } from '../lib/fetch-json';
 import LoginDialog from './login-dialog';
-import { useUser } from './hooks/use-user';
 
 const SiteHeader: FC = () => {
   const { user, mutateUser } = useUser({
@@ -129,7 +129,7 @@ const SiteHeader: FC = () => {
             <ModeToggle />
             <LangToggle />
             {user?.isLoggedIn && (
-              <Link href="/trending/my">
+              <Link href="/trending">
                 <Button variant="redHover" size="sm" className="h-10 w-10 px-0">
                   {!user?.avatarUrl && (
                     <Icons.user className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />

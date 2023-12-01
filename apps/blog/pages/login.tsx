@@ -26,7 +26,7 @@ export default function LoginPage({
   // Here we just check if user is already logged in and we redirect him
   // to profile page, if he is.
   const { mutateUser } = useUser({
-    redirectTo: '/trending/my',
+    redirectTo: '/trending',
     redirectIfFound: true
   });
 

@@ -1,3 +1,4 @@
+import { getLogger } from '@hive/ui/lib/logging';
 import { cryptoUtils } from '@hiveio/dhive';
 
 export function validateHivePassword(
