@@ -2,7 +2,7 @@ import { User } from '@/auth/pages/api/user'
 
 const USER_LOCAL_STORAGE_KEY = 'user';
 
-export function saveUser(user: User): void {
+export function saveUser(user: User | null | undefined): void {
   if (typeof window !== 'undefined') {
     localStorage.setItem(USER_LOCAL_STORAGE_KEY, JSON.stringify(user));
   }
