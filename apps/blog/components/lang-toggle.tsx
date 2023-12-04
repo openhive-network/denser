@@ -33,17 +33,22 @@ export function LangToggle() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant='ghost' size='sm' className='h-10 w-10 px-0' data-testid='toggle-language'>
-          <span>{lang ? languages.filter(language => language.locale === lang)[0].label : null}</span>
-          <span className='sr-only'>Toggle language</span>
+        <Button variant="ghost" size="sm" className="h-fit px-0 font-normal" data-testid="toggle-language">
+          <span className="mr-2 w-6">
+            {lang ? languages.filter((language) => language.locale === lang)[0].label : null}
+          </span>
+          <span>Toggle language</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align='end'>
+      <DropdownMenuContent align="end">
         {languages.map(({ locale, label }) => (
-          <DropdownMenuItem key={label} onClick={() => {
-            document.cookie = `NEXT_LOCALE=${locale};path=/`;
-            router.reload();
-          }}>
+          <DropdownMenuItem
+            key={label}
+            onClick={() => {
+              document.cookie = `NEXT_LOCALE=${locale};path=/`;
+              router.reload();
+            }}
+          >
             {label}
             <span>{locale}</span>
           </DropdownMenuItem>
