@@ -1,0 +1,9 @@
+{
+    "name": "@hive/prettier-config-custom",
+    "main": "base-prettier.js",
+    "version": "1.0.0",
+    "dependencies": {
+        "eslint-config-prettier": "latest",
+        "prettier-plugin-tailwindcss": "^0.3.0"
+    }
+}

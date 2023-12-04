@@ -25,10 +25,10 @@
       "sixth": "June",
       "seventh": "July",
       "eighth": "August",
-      "ninth": "September", 
+      "ninth": "September",
       "tenth": "October",
       "eleventh": "November",
-      "twelfth": "December" 
+      "twelfth": "December"
     },
     "months_short_form": {
       "first": "Jan",
@@ -39,10 +39,10 @@
       "sixth": "Jun",
       "seventh": "Jul",
       "eighth": "Aug",
-      "ninth": "Sep", 
+      "ninth": "Sep",
       "tenth": "Oct",
       "eleventh": "Nov",
-      "twelfth": "Dec" 
+      "twelfth": "Dec"
     },
     "time": {
       "a_few_seconds": " a few seconds",
