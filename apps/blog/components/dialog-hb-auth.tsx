@@ -92,11 +92,11 @@ function DialogHBAuth({ children }: { children: ReactNode }) {
       if (target.name === 'login') {
         authClient
           .authenticate(username, password, keyType)
-          .then(async (status) => {
+          .then(async () => {
             const auth = await authClient.getAuthByUser(username);
             updateStatus(auth);
           })
-          .catch((err) => {
+          .catch((err: any) => {
             updateStatus(null, err);
           });
       }
@@ -104,11 +104,11 @@ function DialogHBAuth({ children }: { children: ReactNode }) {
       if (target.name === 'authorize') {
         authClient
           .register(username, password, key, keyType)
-          .then(async (status) => {
+          .then(async () => {
             const auth = await authClient.getAuthByUser(username);
             updateStatus(auth);
           })
-          .catch((err) => {
+          .catch((err: any) => {
             updateStatus(null, err);
           });
       }

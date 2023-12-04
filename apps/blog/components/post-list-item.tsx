@@ -27,6 +27,8 @@ import { getDynamicGlobalProperties } from '@ui/lib/hive';
 import { authService } from '@/blog/lib/authService';
 import { createWaxFoundation, TBlockHash, createHiveChain, BroadcastTransactionRequest } from '@hive/wax';
 import { useAppStore } from '@/blog/store/app';
+import { toast } from '@ui/components/hooks/use-toast';
+import DialogHBAuth from '@/blog/components/dialog-hb-auth';
 
 const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage: boolean | undefined }) => {
   const { t } = useTranslation('common_blog');
@@ -45,20 +47,35 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
   const currentProfile = useAppStore((state) => state.currentProfile);
   const currentProfileKeyType = useAppStore((state) => state.currentProfileKeyType);
 
-  async function vote() {
+  async function vote(e: any, type: string) {
     setEnableDynamic(true);
     const authClient = await authService.getOnlineClient();
     const wax = await createWaxFoundation();
     const tx = new wax.TransactionBuilder(dynamicGlobalData?.head_block_id as unknown as TBlockHash, '+1m');
 
     if (currentProfile && currentProfileKeyType && tx) {
-      tx.push({
-        vote: {
+      let vote;
+
+      if (type === 'upvote') {
+        vote = {
           voter: currentProfile?.name,
           author: post.author,
           permlink: post.permlink,
           weight: 10000
-        }
+        };
+      }
+
+      if (type === 'downvote') {
+        vote = {
+          voter: currentProfile?.name,
+          author: post.author,
+          permlink: post.permlink,
+          weight: -10000
+        };
+      }
+
+      tx.push({
+        vote
       });
 
       const signature = await authClient.sign(currentProfile?.name, tx.sigDigest, currentProfileKeyType);
@@ -67,7 +84,32 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
       // or you can use tx.sign(signature, currentProfile.posting.key_auths[0] as unknown as string);
       const transactionRequest = new BroadcastTransactionRequest(tx);
       const hiveChain = await createHiveChain();
-      await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
+      try {
+        await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
+        e.target.classList.add('text-white');
+        console.log('type', type);
+        if (type === 'upvote') {
+          e.target.classList.add('bg-red-600');
+        }
+
+        if (type === 'downvote') {
+          e.target.classList.add('bg-gray-600');
+        }
+      } catch (e) {
+        if (type === 'upvote') {
+          toast({
+            description: 'Your current vote on this comment is identical to this vote.',
+            variant: 'default'
+          });
+        }
+
+        if (type === 'downvote') {
+          toast({
+            description: 'Transaction broadcast error: 0',
+            variant: 'default'
+          });
+        }
+      }
     }
   }
 
@@ -270,16 +312,16 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger data-testid="upvote-button">
-                        {/*<DialogLogin>*/}
-                        {/*  <Icons.arrowUpCircle*/}
-                        {/*    className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1"*/}
-                        {/*    onClick={() => setEnableDynamic(true)}*/}
-                        {/*  />*/}
-                        {/*</DialogLogin>*/}
-                        <Icons.arrowUpCircle
-                          className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1"
-                          onClick={vote}
-                        />
+                        {currentProfile ? (
+                          <Icons.arrowUpCircle
+                            className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1"
+                            onClick={(e) => vote(e, 'upvote')}
+                          />
+                        ) : (
+                          <DialogHBAuth>
+                            <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1" />
+                          </DialogHBAuth>
+                        )}
                       </TooltipTrigger>
                       <TooltipContent data-testid="upvote-button-tooltip">
                         {t('cards.post_card.upvote')}
@@ -289,9 +331,16 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger data-testid="downvote-button">
-                        <DialogLogin>
-                          <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
-                        </DialogLogin>
+                        {currentProfile ? (
+                          <Icons.arrowDownCircle
+                            className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1"
+                            onClick={(e) => vote(e, 'downvote')}
+                          />
+                        ) : (
+                          <DialogHBAuth>
+                            <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
+                          </DialogHBAuth>
+                        )}
                       </TooltipTrigger>
                       <TooltipContent data-testid="downvote-button-tooltip">
                         {t('cards.post_card.downvote')}
