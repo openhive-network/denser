@@ -3,6 +3,7 @@ import { WitnessesPage } from '../support/pages/witnessesPage';
 import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
 import { ApiHelper } from '../support/apiHelper';
 import { HomePage } from '../../../../blog/playwright/tests/support/pages/homePage';
+import { WitnessPage } from '../../../../blog/playwright/tests/support/pages/witnessesPage';
 import { ConfirmAccountWitnessProxyDialog } from '../support/pages/confirmAccountWitnessProxyDialog';
 import { getRoundedAbbreveration } from '@hive/ui/lib/utils';
 import moment from 'moment';
@@ -10,9 +11,13 @@ import Big from 'big.js';
 
 test.describe('Witnesses page tests', () => {
   let witnessesPage: WitnessesPage;
+  let witnessPage: WitnessPage;
+  let homePage: HomePage;
 
   test.beforeEach(async ({ page }) => {
     witnessesPage = new WitnessesPage(page);
+    witnessPage = new WitnessPage(page);
+    homePage = new HomePage(page);
   });
 
   test('validate the Witness page is loaded', async ({ page }) => {
@@ -534,5 +539,19 @@ test.describe('Witnesses page tests', () => {
     await expect(witnessesPage.witnessTitle).toHaveText('Witness Voting');
     await expect(witnessesPage.witnessTableBody).toBeVisible();
   });
+
+  test('Witnesses page - translation', async ({page}) =>{
+    await witnessesPage.goToWitnessesPage();
+    await expect(witnessPage.witnessHeaderTitle).toBeVisible()
+    await homePage.toggleLanguage.click()
+    await expect(homePage.languageMenu).toBeVisible()
+    await page.getByRole('menuitem', { name: 'pl' }).click()
+    await expect(witnessPage.witnessHeaderTitle).toBeVisible()
+    await expect(await witnessPage.witnessHeaderTitle.textContent()).toBe('Głosowanie na delegatów')
+    await expect(await witnessPage.witnessHeaderDescription.textContent()).toBe(
+    'Na poniższej liście znajduje sie 100 pierwszych delegatów, aktywnych jak również nieaktywnych. Każdy delegat powyżej 100 pozycji jest filtrowany i nie wyświetlany jeśli nie wyprodukował bloku w ostatnich 30 dniach.')
+    await expect(page.getByRole('button', { name: 'Zagłosuj' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Ustaw pełnomocnika' })).toBeVisible()
+  })
 
 });

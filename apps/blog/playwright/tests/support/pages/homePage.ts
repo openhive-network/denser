@@ -87,6 +87,9 @@ export class HomePage {
   readonly postCardPoweredUp100Trigger: Locator;
   readonly postCardPoweredUp100TriggerLink: Locator;
   readonly postCardPoweredUp100Tooltip: Locator;
+  readonly toggleLanguage: Locator;
+  readonly languageMenu: Locator;
+  readonly themeMode: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -180,6 +183,9 @@ export class HomePage {
     this.postCardPoweredUp100Trigger = page.locator('[data-testid="powered-up-100-trigger"]');
     this.postCardPoweredUp100TriggerLink = this.postCardPoweredUp100Trigger.locator('a');
     this.postCardPoweredUp100Tooltip = page.locator('[data-testid="powered-up-100-tooltip"]');
+    this.toggleLanguage = page.getByTestId('toggle-language');
+    this.languageMenu = page.locator('[role="menu"]');
+    this.themeMode = page.locator('[data-testid="theme-mode"]')
   }
 
   async goto() {

@@ -2,12 +2,14 @@ import { expect, test } from "@playwright/test";
 import { WalletPage } from "../support/pages/walletPage";
 import { LoginToVoteDialog } from "../support/pages/loginToVoteDialog";
 import { ApiHelper } from "../support/apiHelper";
+import { HomePage } from '../../../../blog/playwright/tests/support/pages/homePage';
 
 test.describe("Wallet page tests", () => {
   let walletPage: WalletPage;
-
+  
   test.beforeEach(async ({ page }) => {
     walletPage = new WalletPage(page);
+    
   });
 
   test("validate that wallet page is loaded", async ({ page }) => {
@@ -36,9 +38,11 @@ test.describe("Wallet page tests", () => {
 
 test.describe("Wallet page of @gtg tests", () => {
   let walletPage: WalletPage;
+  let homePage: HomePage;
 
   test.beforeEach(async ({ page }) => {
     walletPage = new WalletPage(page);
+    homePage = new HomePage(page);
   });
 
   test("validate that wallet of @gtg page is loaded", async ({ page }) => {
@@ -293,4 +297,18 @@ test.describe("Wallet page of @gtg tests", () => {
 
     expect((await walletPage.walletDelegationItem.all()).length).toBe(vestingDelegationAPILength);
   });
+
+  test('Wallet page - translation polish', async({page}) =>{
+    await walletPage.goToWalletPageOfUser("@gtg");
+    await expect(page.locator('.container.p-0').last()).toBeVisible()
+    await homePage.toggleLanguage.click()
+    await expect(homePage.languageMenu).toBeVisible()
+    await page.getByRole('menuitem', { name: 'pl' }).click()
+    await expect(page.locator('.container.p-0').last()).toBeVisible()
+    await expect(page.getByTestId('wallet-balances-link')).toHaveText('Salda')
+    await expect(page.getByRole('link', { name: 'Delegacje' })).toBeVisible()
+    await expect(page.getByTestId('wallet-hive-description')).toHaveText('Zbywalne tokeny, które mogą być przesłane gdziekolwiek w dowolnym momencie. HIVE mogą zostać również przekonwertowane na HIVE POWER w procesie nazywanym zwiększenie mocy.')
+    await expect(page.getByTestId('wallet-hive-power-description')).toContainText('Tokeny wpływu, które zwiększają Twój wpływ na podział wypłat za publikowanie treści, oraz pozwalają Ci zarabiać na głosowaniu na treści. Część z Twoich jednostek wpływu HIVE POWER jest Ci oddelegowana. Delegowanie jednostek to czasowe użyczenie dla zwiększenia wpływu lub by pomóc nowym użytkownikom platformy w korzystaniu ze Hive. Kwota oddelegowanych jednostek może się zmieniać w czasie. ')
+    await expect(page.getByTestId('wallet-account-history-description')).toContainText('Uważaj na spam i linki phishingowe w notatkach transakcji. Nie otwieraj linków od użytkowników, którym nie ufasz. Nie udostępniaj swoich kluczy prywatnych żadnym stronom internetowym osób trzecich. Transakcje nie zostaną wyświetlone, dopóki nie zostaną potwierdzone w blockchain, co może zająć kilka minut.')
+  })
 });

@@ -153,12 +153,14 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <Link
                   href={`https://hivebuzz.me/@${profileData.name}`}
                   target='_blank'
+                  data-testid='profile-badge-link'
                 >
                   <img
                     alt='fish image'
                     title={t('user_profil.hive_buzz_badge_title', { username: profileData.name })}
                     className='mx-2 w-6 duration-500 ease-in-out hover:w-12'
                     src={`https://hivebuzz.me/api/level/${profileData.name}?dead`}
+                    data-testid='profile-badge-image'
                   />
                 </Link>
               ) : null}
@@ -167,6 +169,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   href={twitterData.twitter_profile}
                   title={t('user_profil.twitter_badge_title')}
                   target='_blank'
+                  data-testid='profile-twitter-badge'
                 >
                   <Icons.twitter fill='#1da1f2' className='text-blue-400' />
                 </Link>
@@ -323,6 +326,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 className='sm:absolute m-2 hover:text-red-500 sm:right-0'
                 variant='secondary'
                 size='sm'
+                data-testid='profile-follow-button'
               >
                 {t('user_profil.follow_button')}
               </Button>

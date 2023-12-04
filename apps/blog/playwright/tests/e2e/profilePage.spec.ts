@@ -2,8 +2,8 @@ import { expect, test } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
 import { ProfilePage } from '../support/pages/profilePage';
 import { PostPage } from '../support/pages/postPage';
+import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
 
-// Skip Profile page tests because those based on gtg profile and new view of the Denser.
 test.describe('Profile page of @gtg', () => {
   let homePage: HomePage;
   let postPage: PostPage;
@@ -136,7 +136,7 @@ test.describe('Profile page of @gtg', () => {
     ])
     await newWindow.waitForLoadState()
     expect(newWindow.url()).toContain(`/transfers`)
-    
+
   });
 
   // Skipped - Settings Tab is unavailable
@@ -225,53 +225,86 @@ test.describe('Profile page of @gtg', () => {
     await expect(profilePage.advancedSettingsApiResetEndpointsButton).toBeVisible();
   });
 
-  // The Follow button is unavailable
-  test.skip('The Follow button changes color when you hover over it (Light theme)', async ({ page }) => {
+  test('Move to the login modal after clicking the Follow button', async ({ page }) => {
+    const loginDialog = new LoginToVoteDialog(page);
+    await profilePage.gotoProfilePage('@gtg');
+    await profilePage.followButton.click();
+
+    await loginDialog.validateLoginToVoteDialogIsVisible();
+    await loginDialog.closeLoginDialog();
+    await profilePage.profileNavigationIsVisible();
+  });
+
+  test('Move to the login modal after clicking the Follow button in the notifications tab', async ({ page }) => {
+    const loginDialog = new LoginToVoteDialog(page);
+    await profilePage.gotoProfilePage('@gtg');
+    await profilePage.moveToNotificationsTab();
+    await profilePage.profileNotificationsTabIsSelected();
+    await profilePage.followButton.click();
+
+    await loginDialog.validateLoginToVoteDialogIsVisible();
+    await loginDialog.closeLoginDialog();
+    await profilePage.profileNavigationIsVisible();
+  });
+
+  test('Move to the login modal after clicking the Follow button in the replies tab', async ({ page }) => {
+    const loginDialog = new LoginToVoteDialog(page);
+    await profilePage.gotoProfilePage('@gtg');
+    await profilePage.moveToRepliesTab();
+    await profilePage.profileRepliesTabIsSelected();
+    await profilePage.followButton.click();
+
+    await loginDialog.validateLoginToVoteDialogIsVisible();
+    await loginDialog.closeLoginDialog();
+    await profilePage.profileNavigationIsVisible();
+  });
+
+  test('The Follow button changes color when you hover over it (Light theme)', async ({ page }) => {
     await profilePage.gotoProfilePage('@gtg');
 
     expect(await profilePage.getElementCssPropertyValue(profilePage.followButton, 'color')).toBe(
-      'rgb(220, 38, 38)'
+      'rgb(15, 23, 42)'
     );
     expect(await profilePage.getElementCssPropertyValue(profilePage.followButton, 'background-color')).toBe(
-      'rgba(0, 0, 0, 0)'
+      'rgb(241, 245, 249)'
     );
 
     await profilePage.followButton.hover();
     await profilePage.page.waitForTimeout(1000);
 
     expect(await profilePage.getElementCssPropertyValue(profilePage.followButton, 'color')).toBe(
-      'rgb(255, 255, 255)'
+      'rgb(239, 68, 68)'
     );
     expect(
       await profilePage.getElementCssPropertyValue(await profilePage.followButton, 'background-color')
-    ).toBe('rgb(239, 68, 68)');
+    ).toBe('rgba(241, 245, 249, 0.8)');
   });
 
-  // The Follow button is unavailable
-  test.skip('The Follow button changes color when you hover over it (Dark theme)', async ({ page }) => {
+  test('The Follow button changes color when you hover over it (Dark theme)', async ({ page }) => {
     await profilePage.gotoProfilePage('@gtg');
 
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
+    await homePage.page.waitForTimeout(1000);
 
     expect(await profilePage.getElementCssPropertyValue(profilePage.followButton, 'color')).toBe(
-      'rgb(220, 38, 38)'
+      'rgb(248, 250, 252)'
     );
     expect(await profilePage.getElementCssPropertyValue(profilePage.followButton, 'background-color')).toBe(
-      'rgba(0, 0, 0, 0)'
+      'rgb(15, 23, 42)'
     );
 
     await profilePage.followButton.hover();
     await profilePage.page.waitForTimeout(1000);
 
     expect(await profilePage.getElementCssPropertyValue(profilePage.followButton, 'color')).toBe(
-      'rgb(220, 38, 38)'
+      'rgb(239, 68, 68)'
     );
     expect(
       await profilePage.getElementCssPropertyValue(await profilePage.followButton, 'background-color')
-    ).toBe('rgb(239, 68, 68)');
+    ).toBe('rgba(15, 23, 42, 0.8)');
   });
-// new tests
+
   test("User Banner Row - Description",async ({page}) =>{
     await profilePage.gotoProfilePage('@gtg');
     await expect(profilePage.profileInfo).toBeVisible()
@@ -300,5 +333,39 @@ test.describe('Profile page of @gtg', () => {
     await expect(page).toHaveURL('@gtg/lists/followed_muted_lists')
     await expect(profilePage.followedMutedListsHeader).toBeVisible()
     await expect(profilePage.followedMutedListsHeader).toContainText("Followed Muted")
+  })
+
+  test("User Banner Row - HiveBuzz program badge - @gtg user",async ({page}) =>{
+    const titleAttribute: string = "This is gtg's level badged earned from Hivebuzz programs";
+    const imgSrc: string = "https://hivebuzz.me/api/level/gtg?dead";
+
+    await profilePage.gotoProfilePage('@gtg');
+    await expect(profilePage.profileInfo).toBeVisible()
+    await expect(profilePage.profileAbout).toBeVisible()
+
+    // validate the tooltip as title attribute
+    await expect(profilePage.userBannerBadgeImg).toHaveAttribute('title', titleAttribute);
+    // validate src attribute of the badge image
+    await expect(profilePage.userBannerBadgeImg).toHaveAttribute('src', imgSrc);
+  })
+
+  test("User Banner Row - HiveBuzz program badge and twitter - @arcange user",async ({page}) =>{
+    const titleAttribute: string = "This is arcange's level badged earned from Hivebuzz programs";
+    const imgSrc: string = "https://hivebuzz.me/api/level/arcange?dead";
+    const twitterTitleAttribute: string = "To get the Twitter badge, link your account at HivePosh.com";
+    const twitterHrefAttribute: string = "https://twitter.com/thearcange";
+
+    await profilePage.gotoProfilePage('@arcange');
+    await expect(profilePage.profileInfo).toBeVisible()
+    await expect(profilePage.profileAbout).toBeVisible()
+
+    // validate the tooltip as title attribute
+    await expect(profilePage.userBannerBadgeImg).toHaveAttribute('title', titleAttribute);
+    // validate src attribute of the badge image
+    await expect(profilePage.userBannerBadgeImg).toHaveAttribute('src', imgSrc);
+    // validate the tooltip of twitter badge as title attribute
+    await expect(profilePage.userBannerTwitterBadgeLink).toHaveAttribute('title', twitterTitleAttribute);
+    // validate the href attribute of the twitter badge
+    await expect(profilePage.userBannerTwitterBadgeLink).toHaveAttribute('href', twitterHrefAttribute);
   })
 });

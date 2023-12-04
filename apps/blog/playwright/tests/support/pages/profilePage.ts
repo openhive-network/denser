@@ -179,6 +179,9 @@ export class ProfilePage {
   readonly userHasNotHadAnyRepliesYetMsg: Locator;
   readonly userDoesNotHaveAnySubscriptionsYetMsg: Locator;
   readonly userHasNotHadAnyNotificationsYetMsg: Locator;
+  readonly userBannerBadgeLink: Locator;
+  readonly userBannerBadgeImg: Locator;
+  readonly userBannerTwitterBadgeLink: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -395,6 +398,9 @@ export class ProfilePage {
     this.userHasNotHadAnyRepliesYetMsg = page.locator('[data-testid="user-has-not-had-any-replies-yet"]');
     this.userDoesNotHaveAnySubscriptionsYetMsg = page.locator('[data-testid="user-does-not-have-any-subscriptions-yet"]');
     this.userHasNotHadAnyNotificationsYetMsg = page.locator('[data-testid="user-has-not-had-any-notifications-yet"]');
+    this.userBannerBadgeLink = page.locator('[data-testid="profile-badge-link"]');
+    this.userBannerBadgeImg = page.locator('[data-testid="profile-badge-image"]');
+    this.userBannerTwitterBadgeLink = page.locator('[data-testid="profile-twitter-badge"]');
   }
 
   async gotoProfilePage(nickName: string) {
