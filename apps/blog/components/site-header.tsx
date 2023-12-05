@@ -14,11 +14,16 @@ import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import { useTranslation } from 'next-i18next';
 import DialogHBAuth from '@/blog/components/dialog-hb-auth';
+import { useAppStore } from '../store/app';
+import { authService } from '../lib/authService';
+import { toast } from '@ui/components/hooks/use-toast';
 
 const SiteHeader: FC = () => {
   const router = useRouter();
   const { t } = useTranslation('common_blog');
   const [input, setInput] = useState('');
+  const currentProfile = useAppStore((state) => state.currentProfile);
+  const setCurrentProfile = useAppStore((state) => state.setCurrentProfile);
   const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       router.push(`/search?q=${input}&s=newest`);
@@ -27,6 +32,17 @@ const SiteHeader: FC = () => {
 
   const [isNavHidden, setIsNavHidden] = useState(false);
   let lastScrollY = typeof window !== 'undefined' ? window.scrollY : 0;
+
+  async function handleLogout() {
+    const authClient = await authService.getOnlineClient();
+    authClient.logout();
+    setCurrentProfile(null);
+    toast({
+      description: `You are logout!`,
+      variant: 'success'
+    });
+  }
+
   useEffect(() => {
     const handleScroll = () => {
       if (lastScrollY < window.scrollY) {
@@ -59,12 +75,17 @@ const SiteHeader: FC = () => {
         <div className="flex items-center space-x-2 sm:space-x-4">
           <nav className="flex items-center space-x-1">
             <div className="mx-1 hidden gap-1 sm:flex">
-              <DialogHBAuth>
-                <Button variant="ghost" className="text-base hover:text-red-500">
-                  Login HBAuth
+              {currentProfile ? (
+                <Button variant="ghost" className="text-base hover:text-red-500" onClick={handleLogout}>
+                  Logout HBAuth
                 </Button>
-              </DialogHBAuth>
-
+              ) : (
+                <DialogHBAuth>
+                  <Button variant="ghost" className="text-base hover:text-red-500">
+                    Login HBAuth
+                  </Button>
+                </DialogHBAuth>
+              )}
               {/*<DialogLogin>*/}
               {/*  <Button variant="ghost" className="text-base hover:text-red-500" data-testid="login-btn">*/}
               {/*    {t('navigation.main_nav_bar.login')}*/}

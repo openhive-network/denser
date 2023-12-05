@@ -1,7 +1,7 @@
 import { OnlineClient } from '@hive/hb-auth';
 
 class AuthService {
-  static instance: any;
+  static instance: OnlineClient;
 
   async getOnlineClient() {
     if (!AuthService.instance) {
