@@ -96,26 +96,24 @@ export class HomePage {
     this.postPage = new PostPage(page);
     this.getTrendingCommunitiesSideBar = page.locator('[data-testid="card-trending-comunities"]');
     this.getTrendingCommunitiesSideBarLinks = this.getTrendingCommunitiesSideBar.locator('div ul li a');
-    this.getTrandingCommunitiesHeader = this.getTrendingCommunitiesSideBar.locator('a').getByText('All posts');
+    this.getTrandingCommunitiesHeader = this.getTrendingCommunitiesSideBar
+      .locator('a')
+      .getByText('All posts');
     this.getExploreCommunities = page.getByText('Explore communities...');
     this.getLeoFinanceCommunitiesLink = this.getTrendingCommunitiesSideBar
       .locator('a')
       .getByText('LeoFinance');
-    this.getHeaderLeoCommunities = page.locator(
-      '[data-testid="community-name"]'
-    ).getByText("LeoFinance");
+    this.getHeaderLeoCommunities = page.locator('[data-testid="community-name"]').getByText('LeoFinance');
     this.getPinmappleCommunitiesLink = this.getTrendingCommunitiesSideBar.locator('a:text("Pinmapple")');
-    this.getHeaderPinmappleCommunities = page.locator(
-      '[data-testid="community-name"]'
-    ).getByText("Pinmapple");
+    this.getHeaderPinmappleCommunities = page
+      .locator('[data-testid="community-name"]')
+      .getByText('Pinmapple');
     this.getHomeNavLink = page.locator('header a span:text("Hive Blog")');
     this.getNavPostsLink = page.locator('[data-testid="nav-posts-link"]');
     this.getNavProposalsLink = page.locator('[data-testid="nav-proposals-link"]');
     this.getNavWitnessesLink = page.locator('[data-testid="nav-witnesses-link"]');
     this.getNavOurdAppsLink = page.locator('[data-testid="nav-our-dapps-link"]');
-    this.getHeaderAllCommunities = page.locator(
-      '[data-testid="card-trending-comunities"]'
-    );
+    this.getHeaderAllCommunities = page.locator('[data-testid="card-trending-comunities"]');
     this.getMainTimeLineOfPosts = page.locator('li[data-testid="post-list-item"]');
     this.getFirstPostListItem = this.getMainTimeLineOfPosts.first().locator('div').first();
     this.getPostCardAvatar = page.locator('[data-testid="post-card-avatar"]');
@@ -165,7 +163,9 @@ export class HomePage {
     this.getNavCreatePost = page.locator('[data-testid="nav-pencil"]');
     this.getNavSidebarMenu = page.locator('[data-testid="nav-sidebar-menu-button"]');
     this.getNavSidebarMenuContent = page.locator('[data-testid="nav-sidebar-menu-content"]');
-    this.getNavSidebarMenuContentCloseButton = page.locator('[data-testid="nav-sidebar-menu-content"] > button');
+    this.getNavSidebarMenuContentCloseButton = page.locator(
+      '[data-testid="nav-sidebar-menu-content"] > button'
+    );
     this.postTitle = page.locator('[data-testid="post-title"] a');
     this.postDescription = page.locator('[data-testid="post-description"]');
     this.loginBtn = page.locator('[data-testid="login-btn"]');
@@ -185,7 +185,7 @@ export class HomePage {
     this.postCardPoweredUp100Tooltip = page.locator('[data-testid="powered-up-100-tooltip"]');
     this.toggleLanguage = page.getByTestId('toggle-language');
     this.languageMenu = page.locator('[role="menu"]');
-    this.themeMode = page.locator('[data-testid="theme-mode"]')
+    this.themeMode = page.locator('[data-testid="theme-mode"]');
   }
 
   async goto() {
@@ -201,7 +201,7 @@ export class HomePage {
 
   async moveToLeoFinanceCommunities() {
     await this.getLeoFinanceCommunitiesLink.click();
-    await this.page.waitForRequest('https://api.hive.blog/')
+    await this.page.waitForRequest('https://api.hive.blog/');
     await expect(this.getHeaderLeoCommunities).toBeVisible();
   }
 
@@ -351,7 +351,7 @@ export class HomePage {
   async moveToNavProposalsPage() {
     const pagePromise = await this.page.context().waitForEvent('page');
     await this.getNavProposalsLink.click();
-    await this.page.$eval('[data-testid="nav-proposals-link"]', el => el.removeAttribute("target"))
+    await this.page.$eval('[data-testid="nav-proposals-link"]', (el) => el.removeAttribute('target'));
     const newPage = await pagePromise;
     // await this.page.waitForSelector(this.page.locator('[data-testid="proposals-body"]')['_selector']);
     expect(await newPage.url().includes(`/proposals`)).toBeTruthy();
@@ -360,7 +360,7 @@ export class HomePage {
   async moveToNavWitnessesPage() {
     const pagePromise = this.page.context().waitForEvent('page');
     await this.getNavWitnessesLink.click();
-    await this.page.$eval('[data-testid="nav-witnesses-link"]', el => el.removeAttribute("target"))
+    await this.page.$eval('[data-testid="nav-witnesses-link"]', (el) => el.removeAttribute('target'));
     const newPage = await pagePromise;
     // await this.page.waitForSelector(this.page.locator('[data-testid="witness-table-body"]')['_selector']);
     await expect(newPage.url().includes(`/~witnesses`)).toBeTruthy();
@@ -396,7 +396,7 @@ export class HomePage {
   async changeThemeMode(thememode: string) {
     await this.getThemeModeButton.click();
     await this.getThemeModeItem.locator(`span:text(\"${thememode}\")`).click();
-    await this.page.waitForLoadState('networkidle')
+    await this.page.waitForLoadState('networkidle');
   }
 
   async validateThemeModeIsLight() {
@@ -412,17 +412,24 @@ export class HomePage {
   }
 
   async validateThemeModeIsDark() {
-    await this.page.waitForLoadState('networkidle')
+    await this.page.waitForLoadState('networkidle');
     expect(await this.getElementCssPropertyValue(this.getBody, 'background-color')).toBe('rgb(3, 7, 17)');
   }
 
-  async moveToMutedPosts(){
-    await this.getFilterPosts.click()
-    await this.page.getByText('Muted').click()
+  async moveToMutedPosts() {
+    await this.getFilterPosts.click();
+    await this.page.getByText('Muted').click();
   }
 
-  async moveToFirstPost(){
-    await this.postTitle.first().hover()
-    await this.postTitle.first().click({force:true})
+  async moveToFirstPost() {
+    await this.postTitle.first().hover();
+    await this.postTitle.first().click({ force: true });
+  }
+
+  async moveToWelcomePage() {
+    await this.getNavSidebarMenu.click();
+    await this.getNavSidebarMenuContent.getByRole('button', { name: 'Welcome' }).click();
+    await expect(this.page.getByText('Welcome to Hive!')).toBeVisible();
+    await expect(this.page).toHaveURL('welcome');
   }
 }
