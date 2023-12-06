@@ -1,22 +1,24 @@
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from 'next-i18next.config';
 import { useState, useEffect } from 'react'
-import { GetServerSideProps } from 'next';
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { KeychainKeyTypes, KeychainKeyTypesLC } from 'hive-keychain-commons';
+import { useRouter } from 'next/router';
 import { LoginForm, LoginFormSchema } from "@/auth/components/login-form";
 import { useUser } from '@/auth/lib/auth/use-user';
 import { useSignIn } from '@/auth/lib/auth/use-sign-in';
 import { getLogger } from "@hive/ui/lib/logging";
-import { Signatures, PostLoginSchema, LoginTypes } from '@/auth/pages/api/login';
+import { Signatures, PostLoginSchema } from '@/auth/lib/auth/utils';
 import HiveAuthUtils from '@/auth/lib/hive-auth-utils';
 import { useLocalStorage } from '@/auth/lib/use-local-storage';
 import { parseCookie } from '@/auth/lib/utils';
+import { LoginTypes } from "@/auth/types/common";
 
 const logger = getLogger('app');
 
 export default function LoginPage() {
+
+  const router = useRouter();
+  const slug = router.query.slug as string;
 
   const { t } = useTranslation('common_auth');
 
@@ -136,7 +138,7 @@ export default function LoginPage() {
 
     try {
       signatures =
-          await signLoginChallenge(loginType, username, password || '');
+          await signLoginChallenge(loginType, username || '', password || '');
     } catch (error) {
       logger.error('onSubmit error in signLoginChallenge', error);
       setErrorMsg(t('pageLogin.signingFailed'));
@@ -146,14 +148,14 @@ export default function LoginPage() {
     logger.info({signatures});
 
     const body: PostLoginSchema = {
-      username,
+      username: username || '',
       signatures,
       loginType,
       hivesignerToken,
     };
 
     try {
-      await signIn.mutateAsync(body)
+      await signIn.mutateAsync({ data: body, uid: slug });
     } catch (error) {
       logger.error('onSubmit unexpected error', error);
       setErrorMsg(t('pageLogin.loginFailed'));
@@ -173,10 +175,4 @@ export default function LoginPage() {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  return {
-    props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_auth']))
-    }
-  };
-};
+export { loginPageController as getServerSideProps } from '@/auth/lib/login-page-controller';

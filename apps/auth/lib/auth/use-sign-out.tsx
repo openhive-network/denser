@@ -1,8 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchJson } from '@/auth/lib/fetch-json';
 import { QUERY_KEY } from '@/auth/lib/query-keys';
-import { User, defaultUser } from 'pages/api/user';
+import { defaultUser } from '@/auth/lib/auth/utils';
 import { getLogger } from "@hive/ui/lib/logging";
+import { User } from '@/auth/types/common';
 
 const logger = getLogger('app');
 

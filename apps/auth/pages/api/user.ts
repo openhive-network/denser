@@ -1,20 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { sessionOptions, IronSessionData } from 'lib/session';
+import { sessionOptions } from 'lib/session';
 import { getIronSession } from 'iron-session';
-
-export type User = {
-  isLoggedIn: boolean
-  username: string
-  avatarUrl: string
-  loginType: string;
-};
-
-export const defaultUser: User = {
-  isLoggedIn: false,
-  username: '',
-  avatarUrl: '',
-  loginType: '',
-};
+import { defaultUser } from '@/auth/lib/auth/utils';
+import { User } from '@/auth/types/common';
+import { IronSessionData } from '@/auth/types/common';
 
 async function userRoute(
     req: NextApiRequest,

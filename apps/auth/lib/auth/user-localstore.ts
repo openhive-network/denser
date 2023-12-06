@@ -1,4 +1,4 @@
-import { User } from '@/auth/pages/api/user'
+import { User } from '@/auth/types/common';
 
 const USER_LOCAL_STORAGE_KEY = 'user';
 
