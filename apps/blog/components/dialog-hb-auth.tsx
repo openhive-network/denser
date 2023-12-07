@@ -26,7 +26,7 @@ function DialogHBAuth({ children }: { children: ReactNode }) {
   const { t } = useTranslation('common_blog');
   const [open, setOpen] = useState(false);
   const [username, setUsername] = useState('');
-  const currentProfile = useAppStore((state) => state.currentProfile);
+  const [k, setKey] = useState('');
   const setCurrentProfile = useAppStore((state) => state.setCurrentProfile);
   const setCurrentProfileKeyType = useAppStore((state) => state.setCurrentProfileKeyType);
 
@@ -157,11 +157,12 @@ function DialogHBAuth({ children }: { children: ReactNode }) {
                       className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
                       placeholder="Password"
                       required
+                      disabled={k === 'watch'}
                     />
                   </div>
 
                   <div className="mb-5">
-                    <Select name="keytype">
+                    <Select name="keytype" onValueChange={(e) => setKey(e)}>
                       <SelectTrigger className="w-[200px]">
                         <SelectValue placeholder="Select a key type" />
                       </SelectTrigger>
@@ -170,6 +171,7 @@ function DialogHBAuth({ children }: { children: ReactNode }) {
                           <SelectLabel>Key type</SelectLabel>
                           <SelectItem value="posting">Posting</SelectItem>
                           <SelectItem value="active">Active</SelectItem>
+                          <SelectItem value="watch">Watch Mode</SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>

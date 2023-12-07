@@ -1,13 +1,12 @@
 import { RCAPI } from '@hiveio/dhive/lib/helpers/rc';
 import { RCAccount } from '@hiveio/dhive/lib/chain/rc';
-import moment, { Moment } from 'moment';
+import { Moment } from 'moment';
 
 import { isCommunity, parseAsset, vestsToRshares } from '@/blog/lib/utils';
 import { DATA_LIMIT } from './bridge';
 import { FullAccount } from '@hive/ui/store/app-types';
 import { bridgeServer } from '@hive/ui/lib/bridge';
 import { getDynamicGlobalProperties, getFeedHistory } from '@hive/ui/lib/hive';
-import { transaction } from '@hive/wax';
 
 export interface TrendingTag {
   comments: number;
