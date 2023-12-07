@@ -16,7 +16,7 @@
   "dependencies": {
     "@beam-australia/react-env": "^3.1.1",
     "@hive/eslint-config-custom": "*",
-    "@hive/hb-auth": "^0.0.1-stable.eb5196e",
+    "@hive/hb-auth": "^0.0.1-2d0ad3f",
     "@hive/tailwindcss-config": "*",
     "@hive/tsconfig": "*",
     "@hive/ui": "*",
@@ -62,6 +62,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.37.1",
-    "@types/yazl": "^2.4.2"
+    "@types/yazl": "^2.4.2",
+    "copy-webpack-plugin": "^11.0.0"
   }
 }

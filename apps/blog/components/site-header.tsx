@@ -12,18 +12,21 @@ import DialogLogin from './dialog-login';
 import { useState, KeyboardEvent } from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
+import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'next-i18next';
 import DialogHBAuth from '@/blog/components/dialog-hb-auth';
 import { useAppStore } from '../store/app';
 import { authService } from '../lib/authService';
 import { toast } from '@ui/components/hooks/use-toast';
+import { getAccountFull } from '@ui/lib/hive';
+import { KeyAuthorityType } from '@hive/hb-auth';
 
 const SiteHeader: FC = () => {
   const router = useRouter();
   const { t } = useTranslation('common_blog');
   const [input, setInput] = useState('');
-  const currentProfile = useAppStore((state) => state.currentProfile);
-  const setCurrentProfile = useAppStore((state) => state.setCurrentProfile);
+  const [username, setUsername] = useState<string>('');
+  const {currentProfile,setCurrentProfile, setCurrentProfileKeyType} = useAppStore((state) => state);
   const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       router.push(`/search?q=${input}&s=newest`);
@@ -33,15 +36,30 @@ const SiteHeader: FC = () => {
   const [isNavHidden, setIsNavHidden] = useState(false);
   let lastScrollY = typeof window !== 'undefined' ? window.scrollY : 0;
 
-  async function handleLogout() {
-    const authClient = await authService.getOnlineClient();
-    authClient.logout();
-    setCurrentProfile(null);
-    toast({
-      description: `You are logout!`,
-      variant: 'success'
-    });
-  }
+  const {
+    isLoading: currentProfileDataIsLoading,
+    error: currenProfileDataError,
+    data: currentProfileData,
+    remove
+  } = useQuery(['currentProfile'], () => getAccountFull(username), {
+    onSuccess: (data) => {
+      setCurrentProfile(data);
+    },
+    enabled: !!username
+  });
+
+  // check authorization if user already authorized
+  useEffect(() => {
+    authService.getOnlineClient().then((client) => {
+      client.getAuths().then((auths) => {
+        const user = auths.find((user) => user.authorized);
+        if (user) {
+          setUsername(user?.username)
+          setCurrentProfileKeyType(user?.keyType!)
+        }
+      })
+    })
+  }, [])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,6 +76,20 @@ const SiteHeader: FC = () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  async function handleLogout() {
+    const authClient = await authService.getOnlineClient();
+    await authClient.logout();
+    setCurrentProfile(null);
+    setUsername('');
+    remove();
+
+    toast({
+      description: `You are logout!`,
+      variant: 'success'
+    });
+  }
+
   return (
     <header
       className={clsx(
@@ -80,7 +112,10 @@ const SiteHeader: FC = () => {
                   Logout HBAuth
                 </Button>
               ) : (
-                <DialogHBAuth>
+                <DialogHBAuth onAuthComplete={(username, keyType) => {
+                  setUsername(username);
+                  setCurrentProfileKeyType(keyType)
+                }}>
                   <Button variant="ghost" className="text-base hover:text-red-500">
                     Login HBAuth
                   </Button>
@@ -134,3 +169,5 @@ const SiteHeader: FC = () => {
 };
 
 export default SiteHeader;
+
+
