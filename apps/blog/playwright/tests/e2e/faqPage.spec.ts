@@ -44,7 +44,7 @@ test.describe('Welcome page tests', () => {
     await homePage.moveToFaqPage();
 
     await faqPage.whatIsHiveBlogLink.click();
-    await faqPage.page.waitForTimeout(1000);
+    await faqPage.page.waitForTimeout(5000);
     await expect(faqPage.page).toHaveScreenshot('whatishiveblog.png');
   });
 
