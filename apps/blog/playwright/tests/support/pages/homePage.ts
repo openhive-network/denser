@@ -432,4 +432,11 @@ export class HomePage {
     await expect(this.page.getByText('Welcome to Hive!')).toBeVisible();
     await expect(this.page).toHaveURL('welcome');
   }
+
+  async moveToFaqPage() {
+    await this.getNavSidebarMenu.click();
+    await this.getNavSidebarMenuContent.getByRole('button', { name: 'FAQ' }).click();
+    await expect(this.page.getByRole('heading', { name: 'Hive.blog FAQ' })).toBeVisible();
+    await expect(this.page).toHaveURL('faq.html');
+  }
 }
