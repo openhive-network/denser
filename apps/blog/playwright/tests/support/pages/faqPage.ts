@@ -12,6 +12,8 @@ export class FaqPage {
   readonly mainTitle: Locator;
   readonly isThereGithubPageForHiveBlogLink: Locator;
   readonly firstCaretSign: Locator;
+  readonly canIEarnDigitalTokensOnHiveLink: Locator;
+  readonly caretSignCanIEarnDigitalTokensOnHiveLink: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -25,6 +27,8 @@ export class FaqPage {
     this.mainTitle = this.page.locator('[id="articleBody"] h1').first();
     this.isThereGithubPageForHiveBlogLink = this.page.getByRole('link', {name: 'Is there a Github page for Hive.blog?'});
     this.firstCaretSign = this.page.locator('[href="#Table_of_Contents_General"]').first();
+    this.canIEarnDigitalTokensOnHiveLink = this.page.getByRole('link', {name: 'Can I earn digital tokens on Hive? How?'});
+    this.caretSignCanIEarnDigitalTokensOnHiveLink = this.page.locator('p:nth-child(63) > a');
   }
 
   async getElementCssPropertyValue(element: Locator, cssProperty: string) {

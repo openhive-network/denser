@@ -44,8 +44,20 @@ test.describe('Welcome page tests', () => {
     await homePage.moveToFaqPage();
 
     await faqPage.whatIsHiveBlogLink.click();
-    await faqPage.page.waitForTimeout(5000);
+    await faqPage.page.waitForTimeout(1000);
     await expect(faqPage.page).toHaveScreenshot('whatishiveblog.png');
+  });
+
+  test('move to the "Can I earn digital tokens on Hive? How?" description and come back', async ({ page }) => {
+    await homePage.goto();
+    await homePage.moveToFaqPage();
+
+    await faqPage.canIEarnDigitalTokensOnHiveLink.click();
+    await faqPage.page.waitForTimeout(1000);
+    await expect(faqPage.page).toHaveScreenshot('canIEarnDigitalTokensOnHiveDescription.png');
+    await faqPage.caretSignCanIEarnDigitalTokensOnHiveLink.click();
+    await faqPage.page.waitForTimeout(1000);
+    await expect(faqPage.page).toHaveScreenshot('canIEarnDigitalTokensOnHiveComeBack.png');
   });
 
   test('validate styles of faq page titles and links part in the light mode', async ({ page }) => {
