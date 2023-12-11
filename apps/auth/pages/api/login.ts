@@ -1,9 +1,9 @@
 import createHttpError from "http-errors";
 import * as z from 'zod';
 import { NextApiHandler } from "next";
-import { withIronSessionApiRoute } from 'iron-session/next';
 import { cryptoUtils, PublicKey, Signature, KeyRole } from "@hiveio/dhive";
-import { sessionOptions } from '@/auth/lib/session';
+import { getIronSession } from 'iron-session';
+import { sessionOptions, IronSessionData } from '@/auth/lib/session';
 import { getLogger } from "@hive/ui/lib/logging";
 import { getAccount } from '@hive/ui/lib/hive';
 import { apiHandler } from "@/auth/lib/api";
@@ -128,11 +128,12 @@ const loginUser: NextApiHandler<User> = async (req, res) => {
     throw error;
   }
 
+  const loginChallenge = req.cookies.loginChallengeServer || '';
 
   const result = await verifyLoginChallenge(
     chainAccount,
     signatures,
-    JSON.stringify({ token: req.session.loginChallenge }, null, 0),
+    JSON.stringify({ token: loginChallenge }, null, 0),
     );
 
   if (!result) {
@@ -149,11 +150,12 @@ const loginUser: NextApiHandler<User> = async (req, res) => {
         avatarUrl: hiveUserProfile?.profile_image || '',
         loginType,
       };
-  req.session.user = user;
-  await req.session.save();
+  const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
+  session.user = user;
+  await session.save();
   res.json(user);
 };
 
 export default apiHandler({
-  POST: withIronSessionApiRoute(loginUser, sessionOptions),
+  POST: loginUser,
 });
