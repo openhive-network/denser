@@ -9,7 +9,6 @@ import { LoginForm, LoginFormSchema } from "@/auth/components/login-form";
 import { useUser } from '@/auth/lib/auth/use-user';
 import { useSignIn } from '@/auth/lib/auth/use-sign-in';
 import { getLogger } from "@hive/ui/lib/logging";
-import { sessionOptions } from '@/auth/lib/session';
 import { Signatures, PostLoginSchema, LoginTypes } from '@/auth/pages/api/login';
 import HiveAuthUtils from '@/auth/lib/hive-auth-utils';
 import { useLocalStorage } from '@/auth/lib/use-local-storage';
