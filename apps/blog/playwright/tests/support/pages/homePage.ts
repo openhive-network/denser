@@ -439,4 +439,11 @@ export class HomePage {
     await expect(this.page.getByRole('heading', { name: 'Hive.blog FAQ' })).toBeVisible();
     await expect(this.page).toHaveURL('faq.html');
   }
+
+  async moveToPrivacyPolicyPage() {
+    await this.getNavSidebarMenu.click();
+    await this.getNavSidebarMenuContent.getByRole('button', { name: 'Private Policy' }).click();
+    await expect(this.page.locator('h1').getByText('Privacy Policy')).toBeVisible();
+    await expect(this.page).toHaveURL('privacy.html');
+  }
 }
