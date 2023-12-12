@@ -30,11 +30,11 @@ import { i18n } from '@/blog/next-i18next.config';
 
 export const PostSkeleton = () => {
   return (
-    <div className="flex items-center space-x-4">
-      <Skeleton className="h-12 w-12 rounded-full" />
-      <div className="space-y-2">
-        <Skeleton className="h-4 w-[250px]" />
-        <Skeleton className="h-4 w-[200px]" />
+    <div className='flex items-center space-x-4'>
+      <Skeleton className='h-12 w-12 rounded-full' />
+      <div className='space-y-2'>
+        <Skeleton className='h-4 w-[250px]' />
+        <Skeleton className='h-4 w-[200px]' />
       </div>
     </div>
   );
@@ -58,8 +58,17 @@ const ParamPage: FC = () => {
     hasNextPage
   } = useInfiniteQuery(
     ['entriesInfinite', sort, tag],
-    async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
-      return await getPostsRanked(sort || 'trending', tag, pageParam?.author, pageParam?.permlink);
+    async ({
+             pageParam
+           }: {
+      pageParam?: { author: string; permlink: string };
+    }) => {
+      return await getPostsRanked(
+        sort || 'trending',
+        tag,
+        pageParam?.author,
+        pageParam?.permlink
+      );
     },
     {
       getNextPageParam: (lastPage) => {
@@ -78,9 +87,13 @@ const ParamPage: FC = () => {
     isLoading: accountNotificationIsLoading,
     error: AccountNotificationError,
     data: dataAccountNotification
-  } = useQuery(['accountNotification', tag], () => getAccountNotifications(tag ? tag : ''), {
-    enabled: !!tag
-  });
+  } = useQuery(
+    ['accountNotification', tag],
+    () => getAccountNotifications(tag ? tag : ''),
+    {
+      enabled: !!tag
+    }
+  );
   const {
     data: communityData,
     isLoading: communityDataIsLoading,
@@ -108,7 +121,13 @@ const ParamPage: FC = () => {
   } = useInfiniteQuery(
     ['accountEntriesInfinite', username],
     async ({ pageParam }: { pageParam?: Entry }) => {
-      return await getAccountPosts('blog', username, '', pageParam?.author, pageParam?.permlink);
+      return await getAccountPosts(
+        'blog',
+        username,
+        '',
+        pageParam?.author,
+        pageParam?.permlink
+      );
     },
     {
       getNextPageParam: (lastPage) => {
@@ -122,7 +141,8 @@ const ParamPage: FC = () => {
       enabled: Boolean(username)
     }
   );
-  const lastEntriesData = accountEntriesData?.pages[accountEntriesData?.pages.length - 1];
+  const lastEntriesData =
+    accountEntriesData?.pages[accountEntriesData?.pages.length - 1];
 
   const handleChangeFilter = useCallback(
     (e: string) => {
@@ -169,13 +189,16 @@ const ParamPage: FC = () => {
 
   if (!entriesDataIsLoading && entriesData) {
     return (
-      <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
-        <div className="grid grid-cols-12 md:gap-4">
-          <div className="hidden md:col-span-3 md:flex xl:col-span-2">
+      <div className='container mx-auto max-w-screen-2xl flex-grow px-4 pb-2'>
+        <div className='grid grid-cols-12 md:gap-4'>
+          <div className='hidden md:col-span-3 md:flex xl:col-span-2'>
             <CommunitiesSidebar />
           </div>
-          <div className="col-span-12 md:col-span-9 xl:col-span-8">
-            <div data-testid="card-explore-hive-mobile" className=" md:col-span-10 md:flex xl:hidden">
+          <div className='col-span-12 md:col-span-9 xl:col-span-8'>
+            <div
+              data-testid='card-explore-hive-mobile'
+              className=' md:col-span-10 md:flex xl:hidden'
+            >
               {communityData && subsData ? (
                 <CommunitySimpleDescription
                   data={communityData}
@@ -185,10 +208,13 @@ const ParamPage: FC = () => {
                 />
               ) : null}
             </div>
-            <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">
-              <div className="my-4 flex w-full items-center justify-between">
-                <div className="mr-2 flex w-[320px] flex-col">
-                  <span className="text-md hidden font-medium md:block" data-testid="community-name">
+            <div className='col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8'>
+              <div className='my-4 flex w-full items-center justify-between'>
+                <div className='mr-2 flex w-[320px] flex-col'>
+                  <span
+                    className='text-md hidden font-medium md:block'
+                    data-testid='community-name'
+                  >
                     {tag
                       ? communityData
                         ? `${communityData?.title}`
@@ -197,8 +223,8 @@ const ParamPage: FC = () => {
                   </span>
                   {tag ? (
                     <span
-                      className="hidden text-xs font-light md:block"
-                      data-testid="community-name-unmoderated"
+                      className='hidden text-xs font-light md:block'
+                      data-testid='community-name-unmoderated'
                     >
                       {tag
                         ? communityData
@@ -207,7 +233,7 @@ const ParamPage: FC = () => {
                         : ''}
                     </span>
                   ) : null}
-                  <span className="md:hidden" translate="no">
+                  <span className='md:hidden' translate='no'>
                     <CommunitiesSelect
                       username={
                         tag
@@ -219,14 +245,21 @@ const ParamPage: FC = () => {
                     />
                   </span>
                 </div>
-                <div translate="no" className="w-[180px]">
-                  <PostSelectFilter filter={sort} handleChangeFilter={handleChangeFilter} />
+                <div translate='no' className='w-[180px]'>
+                  <PostSelectFilter
+                    filter={sort}
+                    handleChangeFilter={handleChangeFilter}
+                  />
                 </div>
               </div>
               <>
                 {entriesData.pages.map((page, index) => {
                   return page ? (
-                    <PostList data={page} key={`f-${index}`} isCommunityPage={!!communityData} />
+                    <PostList
+                      data={page}
+                      key={`f-${index}`}
+                      isCommunityPage={!!communityData}
+                    />
                   ) : null;
                 })}
                 <div>
@@ -244,11 +277,18 @@ const ParamPage: FC = () => {
                     )}
                   </button>
                 </div>
-                <div>{entriesDataIsFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
+                <div>
+                  {entriesDataIsFetching && !isFetchingNextPage
+                    ? 'Background Updating...'
+                    : null}
+                </div>
               </>
             </div>
           </div>
-          <div data-testid="card-explore-hive-desktop" className="hidden xl:col-span-2 xl:flex">
+          <div
+            data-testid='card-explore-hive-desktop'
+            className='hidden xl:flex xl:col-span-2'
+          >
             {communityData && subsData ? (
               <CommunityDescription
                 data={communityData}
@@ -274,10 +314,10 @@ const ParamPage: FC = () => {
             })
           ) : (
             <div
-              className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
+              className="px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm"
               data-testid="user-has-not-started-blogging-yet"
             >
-              {t('user_profil.no_blogging_yet', { username: username })}
+              {t('user_profil.no_blogging_yet', {username: username})}
             </div>
           )}
           <div>
@@ -290,13 +330,16 @@ const ParamPage: FC = () => {
                 <PostSkeleton />
               ) : accountHasNextPage ? (
                 t('user_profil.load_newer')
-              ) : accountEntriesData.pages[0] && accountEntriesData.pages[0].length > 0 ? (
+              ) : accountEntriesData.pages[0] &&
+              accountEntriesData.pages[0].length > 0 ? (
                 t('user_profil.nothing_more_to_load')
               ) : null}
             </button>
           </div>
           <div>
-            {accountEntriesIsFetching && !accountIsFetchingNextPage ? 'Background Updating...' : null}
+            {accountEntriesIsFetching && !accountIsFetchingNextPage
+              ? 'Background Updating...'
+              : null}
           </div>
         </>
       ) : null}

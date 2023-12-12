@@ -203,15 +203,15 @@ export function formatDecimal(value: number, decPlaces = 2, truncate0s = true) {
   // @ts-ignore
   const decPart = decPlaces
     ? decSeparator +
-      // @ts-ignore
-      Math.abs(abs_value - i)
-        .toFixed(decPlaces)
-        .slice(2)
+    // @ts-ignore
+    Math.abs(abs_value - i)
+      .toFixed(decPlaces)
+      .slice(2)
     : '';
   return [
     sign +
-      (j ? i.substr(0, j) + thouSeparator : '') +
-      i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + thouSeparator),
+    (j ? i.substr(0, j) + thouSeparator : '') +
+    i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + thouSeparator),
     decPart
   ];
 }
