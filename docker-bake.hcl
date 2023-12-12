@@ -1,7 +1,7 @@
 variable "CI_REGISTRY_IMAGE" {
     default = "registry.gitlab.syncad.com/hive/denser"
 }
-variable "CI_COMMIT_SHA" {}
+variable "CI_COMMIT_SHORT_SHA" {}
 variable "CI_COMMIT_TAG" {}
 variable "TAG" {
   default = "latest"
@@ -23,7 +23,7 @@ target "local-build" {
   dockerfile = "Dockerfile"
   tags = [
     "${CI_REGISTRY_IMAGE}/${trimtagname(TURBO_APP_SCOPE, "@hive/")}:${TAG}",
-    notempty(CI_COMMIT_SHA) ? "${CI_REGISTRY_IMAGE}/${trimtagname(TURBO_APP_SCOPE, "@hive/")}:${CI_COMMIT_SHA}": "",
+    notempty(CI_COMMIT_SHORT_SHA) ? "${CI_REGISTRY_IMAGE}/${trimtagname(TURBO_APP_SCOPE, "@hive/")}:${CI_COMMIT_SHORT_SHA}": "",
     notempty(CI_COMMIT_TAG) ? "${CI_REGISTRY_IMAGE}/${trimtagname(TURBO_APP_SCOPE, "@hive/")}:${CI_COMMIT_TAG}": ""
   ]
   args = {
@@ -38,7 +38,7 @@ target "ci-build" {
     "type=registry,ref=${CI_REGISTRY_IMAGE}/${trimtagname(TURBO_APP_SCOPE, "@hive/")}/cache:${TAG}"
   ]
   cache-to = [
-    "type=registry,mode=max,ref=${CI_REGISTRY_IMAGE}/${trimtagname(TURBO_APP_SCOPE, "@hive/")}/cache:${TAG}"
+    "type=registry,mode=max,image-manifest=true,ref=${CI_REGISTRY_IMAGE}/${trimtagname(TURBO_APP_SCOPE, "@hive/")}/cache:${TAG}"
   ]
   output = [
     "type=registry"
