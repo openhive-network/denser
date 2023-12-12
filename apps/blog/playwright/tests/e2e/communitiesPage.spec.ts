@@ -561,7 +561,12 @@ test.describe('Communities page tests', () => {
     const responseNumber = await communitiesPage.getFirstResponses.innerText();
     await communitiesPage.getFirstResponses.hover();
     const responseHoverText = await communitiesPage.postCardResponses.innerText();
-    await expect(responseHoverText).toContain(`${responseNumber} responses. Click to respond`);
+    if (parseInt(responseNumber, 10) > 1)
+      await expect(responseHoverText).toContain(`${responseNumber} responses. Click to respond`);
+    else if (parseInt(responseNumber, 10) == 1)
+      await expect(responseHoverText).toContain(`${responseNumber} response. Click to respond`);
+    else
+      await expect(responseHoverText).toContain(`No response. Click to respond`);
 
     await communitiesPage.getFirstResponses.click();
     await expect(postPage.articleFooter).toBeVisible();
