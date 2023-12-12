@@ -50,6 +50,14 @@ include:
   tags:
     - public-runner-docker
 
+docker-build-auth:
+  extends: .docker_build_template
+  variables:
+    TURBO_APP_SCOPE: "@hive/auth"
+    TURBO_APP_PATH: "/apps/auth"
+    TURBO_APP_NAME: "auth"
+    TAG: "auth"
+
 docker-build-blog:
   extends: .docker_build_template
   variables:
@@ -102,7 +110,7 @@ docker-build-wallet:
     - |
       echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=false]\r\e[0KRunning tests..."
       cd .$TURBO_APP_PATH
-      npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL
+      npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --update-snapshots
       echo -e "\e[0Ksection_end:$(date +%s):tests\r\e[0K"
   artifacts:
     paths:
@@ -181,7 +189,7 @@ publish:
   image:
     name: node:18.15-alpine3.17
     entrypoint: []
-  extends: .job-defaults  
+  extends: .job-defaults
   stage: deploy
   script:
     # Extract a few values from package.json
@@ -239,6 +247,22 @@ publish:
   tags:
     - hs-denser
 
+staging:deploy-auth:
+  extends: .deploy_template_for_staging
+  needs:
+    - docker-build-auth
+  variables:
+    PORT: 5000
+    API_ENDPOINT: https://api.hive.blog
+    IMAGES_ENDPOINT: https://images.hive.blog/
+    CONTAINER_NAME: denser-auth
+    TURBO_APP_SCOPE: "@hive/auth"
+    TURBO_APP_PATH: "/apps/auth"
+  environment:
+    name: staging
+    action: start
+    on_stop: staging:stop-auth
+
 staging:deploy-blog:
   extends: .deploy_template_for_staging
   needs:
@@ -286,6 +310,14 @@ staging:deploy-wallet:
   tags:
     - hs-denser
 
+staging:stop-auth:
+  extends: .stop_template_for_staging
+  needs:
+    - staging:deploy-auth
+  variables:
+    CONTAINER_NAME: denser-auth
+    GIT_STRATEGY: none
+
 staging:stop-blog:
   extends: .stop_template_for_staging
   needs:
@@ -293,7 +325,7 @@ staging:stop-blog:
   variables:
     CONTAINER_NAME: denser-blog
     GIT_STRATEGY: none
-  
+
 staging:stop-wallet:
   extends: .stop_template_for_staging
   needs:
@@ -301,6 +333,19 @@ staging:stop-wallet:
   variables:
     CONTAINER_NAME: denser-wallet
     GIT_STRATEGY: none
+
+review:deploy-auth:
+  extends: staging:deploy-auth
+  variables:
+    PORT: 5001
+    CONTAINER_NAME: denser-review-auth
+  environment:
+    name: review
+    action: start
+    on_stop: review:stop-auth
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^rc_.*/
+      when: on_success
 
 review:deploy-blog:
   extends: staging:deploy-blog
@@ -327,6 +372,20 @@ review:deploy-wallet:
   rules:
     - if: $CI_COMMIT_TAG =~ /^rc_.*/
       when: on_success
+
+review:stop-auth:
+  extends: staging:stop-auth
+  needs:
+    - review:deploy-auth
+  variables:
+    CONTAINER_NAME: denser-review-auth
+  environment:
+    name: review
+    action: stop
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^rc_.*/
+      when: manual
+      allow_failure: true
 
 review:stop-blog:
   extends: staging:stop-blog

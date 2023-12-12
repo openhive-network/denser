@@ -5,3 +5,4 @@ node_modules
 out
 playwright-report
 test-results
+version.json
