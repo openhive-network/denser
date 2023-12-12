@@ -1,28 +1,31 @@
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from 'next-i18next.config';
-import { useState } from 'react'
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { withIronSessionSsr } from "iron-session/next";
-import secureRandom from 'secure-random';
+import { useState, useEffect } from 'react'
+import { GetServerSideProps } from 'next';
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { KeychainKeyTypes, KeychainKeyTypesLC } from 'hive-keychain-commons';
 import { LoginForm, LoginFormSchema } from "@/auth/components/login-form";
 import { useUser } from '@/auth/lib/auth/use-user';
 import { useSignIn } from '@/auth/lib/auth/use-sign-in';
 import { getLogger } from "@hive/ui/lib/logging";
-import { sessionOptions } from '@/auth/lib/session';
 import { Signatures, PostLoginSchema, LoginTypes } from '@/auth/pages/api/login';
 import HiveAuthUtils from '@/auth/lib/hive-auth-utils';
 import { useLocalStorage } from '@/auth/lib/use-local-storage';
+import { parseCookie } from '@/auth/lib/utils';
 
 const logger = getLogger('app');
 
-export default function LoginPage({
-  loginChallenge
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function LoginPage() {
 
   const { t } = useTranslation('common_auth');
+
+  const [loginChallenge, setLoginChallenge] = useState('');
+
+  useEffect(() => {
+    const cookieStore = parseCookie(document.cookie);
+    setLoginChallenge(cookieStore.loginChallenge || '');
+  }, []);
 
   // Here we just check if user is already logged in and we redirect him
   // to profile page, if he is.
@@ -39,8 +42,8 @@ export default function LoginPage({
   const [hiveKeys, setHiveKeys] =
       useLocalStorage('hiveKeys', {});
 
-  // Create a signature of message (login challenge) for sending to
-  // back-end for verification.
+  // Create a signature of message (json with loginChallenge string) for
+  // sending to back-end for verification.
   const signLoginChallenge = async (
         loginType: LoginTypes,
         username: string,
@@ -170,23 +173,10 @@ export default function LoginPage({
   );
 }
 
-export const getServerSideProps: GetServerSideProps = withIronSessionSsr(
-  async function getServerSideProps({ req }) {
-    let loginChallenge = req.session.loginChallenge;
-    if (!loginChallenge) {
-      loginChallenge = secureRandom.randomBuffer(16).toString('hex');
-      req.session.loginChallenge = loginChallenge;
-      await req.session.save();
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_auth']))
     }
-    return {
-      props: {
-        loginChallenge,
-        ...(await serverSideTranslations(
-          req.cookies.NEXT_LOCALE! || i18n.defaultLocale,
-          ['common_auth']
-          )),
-      },
-    };
-  },
-  sessionOptions
-);
+  };
+};
