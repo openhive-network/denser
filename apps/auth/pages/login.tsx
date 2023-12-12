@@ -12,7 +12,7 @@ import { getLogger } from "@hive/ui/lib/logging";
 import { Signatures, PostLoginSchema, LoginTypes } from '@/auth/pages/api/login';
 import HiveAuthUtils from '@/auth/lib/hive-auth-utils';
 import { useLocalStorage } from '@/auth/lib/use-local-storage';
-import { parseCookie, getCookie } from '@/auth/lib/utils';
+import { parseCookie } from '@/auth/lib/utils';
 
 const logger = getLogger('app');
 
@@ -42,8 +42,8 @@ export default function LoginPage() {
   const [hiveKeys, setHiveKeys] =
       useLocalStorage('hiveKeys', {});
 
-  // Create a signature of message (login challenge) for sending to
-  // back-end for verification.
+  // Create a signature of message (json with loginChallenge string) for
+  // sending to back-end for verification.
   const signLoginChallenge = async (
         loginType: LoginTypes,
         username: string,
