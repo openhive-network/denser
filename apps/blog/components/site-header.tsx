@@ -87,19 +87,7 @@ const SiteHeader: FC = () => {
         <MainNav />
         <div className="flex items-center space-x-2 sm:space-x-4">
           <nav className="flex items-center space-x-1">
-            <div className="mx-1 hidden gap-1 sm:flex">
-              <Login>
-                <Button variant="ghost" className="text-base hover:text-red-500" data-testid="login-btn">
-                  {t('navigation.main_nav_bar.login')}
-                </Button>
-              </Login>
-              <Link href="https://signup.hive.io/">
-                <Button variant="redHover" data-testid="signup-btn">
-                  {t('navigation.main_nav_bar.sign_up')}
-                </Button>
-              </Link>
-            </div>
-            {isClient && user?.isLoggedIn === true && (
+            {isClient && user?.isLoggedIn ? (
               <Link
                 href=""
                 onClick={async (e) => {
@@ -111,6 +99,19 @@ const SiteHeader: FC = () => {
                   Logout
                 </Button>
               </Link>
+            ) : (
+              <div className="mx-1 hidden gap-1 sm:flex">
+                <Login>
+                  <Button variant="ghost" className="text-base hover:text-red-500" data-testid="login-btn">
+                    {t('navigation.main_nav_bar.login')}
+                  </Button>
+                </Login>
+                <Link href="https://signup.hive.io/">
+                  <Button variant="redHover" data-testid="signup-btn">
+                    {t('navigation.main_nav_bar.sign_up')}
+                  </Button>
+                </Link>
+              </div>
             )}
 
             <div>

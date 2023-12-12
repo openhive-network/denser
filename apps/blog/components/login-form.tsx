@@ -65,7 +65,7 @@ export function LoginForm({
   const logger = getLogger('app');
   logger.debug('Starting LoginForm');
 
-  const { t } = useTranslation('common_auth');
+  const { t } = useTranslation('common_blog');
   const [isKeychainSupported, setIsKeychainSupported] = useState(false);
 
   useEffect(() => {
@@ -124,11 +124,11 @@ export function LoginForm({
             <input
               type="text"
               className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 pl-11 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
-              placeholder="Enter your username"
+              placeholder={t('login_form.username_placeholder')}
               {...register('username')}
               aria-invalid={errors.username ? 'true' : 'false'}
             />
-            <span className="absolute top-0 h-10 w-10 rounded-bl-lg rounded-tl-lg bg-gray-400 text-gray-600">
+            <span className="absolute top-0 h-full w-10 rounded-bl-lg rounded-tl-lg bg-gray-400 text-gray-600">
               <div className="flex h-full w-full items-center justify-center"> @</div>
             </span>
             {errors.username?.message && (
@@ -167,7 +167,7 @@ export function LoginForm({
                 onChange={(e) => onKeychainToggle(e)}
               />
               <label htmlFor="useKeychain" className="ml-2 flex text-sm font-medium text-gray-900">
-                <img className="mr-1 h-4 w-4" src="/images/hivekeychain.png" alt="Hive Keychain logo" />
+                <img className="mr-1 h-4 w-4" src="/hivekeychain.png" alt="Hive Keychain logo" />
                 Use Keychain
               </label>
             </div>
@@ -180,9 +180,9 @@ export function LoginForm({
                 {...register('useHiveauth')}
                 onChange={(e) => onHiveauthToggle(e)}
               />
-              <label htmlFor="useHiveauth" className="ml-2 flex text-sm font-medium text-gray-900">
-                <img className="mr-1 h-4 w-4" src="/images/hiveauth.png" alt="Hiveauth logo" />
-                Use HiveAuth
+              <label htmlFor="hiveAuth" className="ml-2 flex text-sm font-medium text-gray-900">
+                <img className="mr-1 h-4 w-4" src="/hiveauth.png" alt="Hiveauth logo" />
+                {t('login_form.use_hiveauth')}
               </label>
             </div>
 
@@ -194,7 +194,7 @@ export function LoginForm({
                 {...register('remember')}
               />
               <label htmlFor="remember" className="ml-2 text-sm font-medium text-gray-900">
-                Keep me logged in
+                {t('login_form.keep_me_logged_in')}
               </label>
             </div>
           </div>
@@ -245,7 +245,7 @@ export function LoginForm({
               className="mt-4 flex w-fit justify-center rounded-lg bg-gray-400 px-5 py-2.5 hover:bg-gray-500 focus:outline-none "
               data-testid="hivesigner-button"
             >
-              <img src="/images/hivesigner.svg" alt="Hivesigner logo" />
+              <img src="/hivesigner.svg" alt="Hivesigner logo" />
             </button>
           </div>
         </form>
