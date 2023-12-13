@@ -100,7 +100,7 @@ export function apiHandler(handler: ApiMethodHandlers) {
                 }
                 // Else throw error.
                 throw new createHttpError.MethodNotAllowed(
-                    `Method ${req.method} Not Allowed on path ${req.url}!`
+                    `Method ${req.method} Not Allowed on path ${req.url}`
                 );
             }
 
