@@ -18,7 +18,7 @@
     "@hiveio/dhive": "^1.2.8",
     "@hookform/resolvers": "^3.3.1",
     "@next/bundle-analyzer": "^14.0.4",
-    "@tanstack/react-query": "^4.29.23",
+    "@tanstack/react-query": "^4.36.1",
     "big.js": "^6.2.1",
     "cors": "^2.8.5",
     "hive-auth-client": "^0.1.5",
@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@hiveio/hive-js": "^2.0.7",
-    "@tanstack/react-query-devtools": "^4.29.23",
+    "@tanstack/react-query-devtools": "^4.36.1",
     "@testing-library/jest-dom": "^6.1.4",
     "@testing-library/react": "^14.1.0",
     "@types/big.js": "^6.1.6",
