@@ -60,7 +60,7 @@
     "zustand": "^4.4.7"
   },
   "devDependencies": {
-    "@playwright/test": "^1.40.1",
+    "@playwright/test": "^1.37.1",
     "@types/yazl": "^2.4.5"
   }
 }
