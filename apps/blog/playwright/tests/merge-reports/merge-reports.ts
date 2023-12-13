@@ -20,7 +20,7 @@ import path from 'path';
 import JSZip from 'jszip';
 import yazl from 'yazl';
 import Base64Encoder from './Base64Encoder';
-import type { HTMLReport, Config, ZipDataFile, Stats, FileReport } from './types';
+import { type HTMLReport, type Config, type ZipDataFile, type Stats, FileReport } from './types';
 import { HTMLReportSchema } from './types';
 const defaultConfig: Required<Config> = {
   outputFolderName: 'merged-html-report',
