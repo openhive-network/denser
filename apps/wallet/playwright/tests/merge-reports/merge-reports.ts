@@ -100,7 +100,7 @@ async function mergeHTMLReports(inputReportPaths: string[], givenConfig: Config 
             fileReportMap.set(relativePath, fileReportJson);
           }
         } else {
-          const currentReportJson = HTMLReportSchema.parse(JSON.parse(fileContentString));
+          const currentReportJson = JSON.parse(fileContentString);
           if (debug) {
             console.log('---------- report.json ----------');
             console.log(JSON.stringify(currentReportJson, null, 2));
