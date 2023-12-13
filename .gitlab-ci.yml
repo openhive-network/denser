@@ -1,16 +1,16 @@
 stages:
- - build
- - test
- - test-report-aggregate
- - deploy
+  - build
+  - test
+  - test-report-aggregate
+  - deploy
 
 variables:
   # Variables required by Common CI jobs
-  CI_COMMON_JOB_VERSION: "5c42c8019dd329000fd036668b22eb3eb99a743a"
-  DOCKER_BUILDER_TAG: "$CI_COMMON_JOB_VERSION"
-  DOCKER_DIND_TAG: "$CI_COMMON_JOB_VERSION"
-  IMAGE_REMOVER_TAG: "$CI_COMMON_JOB_VERSION"
-  BLOG_APP_SRC_DIR: "apps/blog/"
+  CI_COMMON_JOB_VERSION: '5c42c8019dd329000fd036668b22eb3eb99a743a'
+  DOCKER_BUILDER_TAG: '$CI_COMMON_JOB_VERSION'
+  DOCKER_DIND_TAG: '$CI_COMMON_JOB_VERSION'
+  IMAGE_REMOVER_TAG: '$CI_COMMON_JOB_VERSION'
+  BLOG_APP_SRC_DIR: 'apps/blog/'
 
 include:
   - template: Workflows/Branch-Pipelines.gitlab-ci.yml
@@ -39,8 +39,9 @@ include:
       fi
       echo -e "\e[0Ksection_end:$(date +%s):tag\r\e[0K"
       echo -e "\e[0Ksection_start:$(date +%s):build[collapsed=true]\r\e[0KBaking image "$CI_REGISTRY_IMAGE:$TAG"..."
+      git config --global --add safe.directory "$CI_PROJECT_DIR"
       scripts/build_instance.sh --progress=plain "$CI_PROJECT_DIR"
-      echo "IMAGE_NAME=${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:$CI_COMMIT_SHA" > docker-build.env
+      echo "IMAGE_NAME=${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:$CI_COMMIT_SHORT_SHA" > docker-build.env
       echo -e "\e[0Ksection_end:$(date +%s):build\r\e[0K"
   artifacts:
     paths:
@@ -53,31 +54,31 @@ include:
 docker-build-auth:
   extends: .docker_build_template
   variables:
-    TURBO_APP_SCOPE: "@hive/auth"
-    TURBO_APP_PATH: "/apps/auth"
-    TURBO_APP_NAME: "auth"
-    TAG: "auth"
+    TURBO_APP_SCOPE: '@hive/auth'
+    TURBO_APP_PATH: '/apps/auth'
+    TURBO_APP_NAME: 'auth'
+    TAG: 'auth'
 
 docker-build-blog:
   extends: .docker_build_template
   variables:
-    TURBO_APP_SCOPE: "@hive/blog"
-    TURBO_APP_PATH: "/apps/blog"
-    TURBO_APP_NAME: "blog"
-    TAG: "blog"
+    TURBO_APP_SCOPE: '@hive/blog'
+    TURBO_APP_PATH: '/apps/blog'
+    TURBO_APP_NAME: 'blog'
+    TAG: 'blog'
 
 docker-build-wallet:
   extends: .docker_build_template
   variables:
-    TURBO_APP_SCOPE: "@hive/wallet"
-    TURBO_APP_PATH: "/apps/wallet"
-    TURBO_APP_NAME: "wallet"
-    TAG: "wallet"
+    TURBO_APP_SCOPE: '@hive/wallet'
+    TURBO_APP_PATH: '/apps/wallet'
+    TURBO_APP_NAME: 'wallet'
+    TAG: 'wallet'
 
 .node-job:
   extends: .job-defaults
   image:
-    name: node:18.15-alpine3.17
+    name: node:20.10-alpine3.17
     entrypoint: []
   stage: test
   script:
@@ -86,12 +87,12 @@ docker-build-wallet:
       npm ci --cache .npm
       echo -e "\e[0Ksection_end:$(date +%s):deps\r\e[0K"
   cache:
-    key: "$TURBO_APP_SCOPE-cache-1"
+    key: '$TURBO_APP_SCOPE-cache-1'
     paths:
       - .npm/
       - .next/
   artifacts:
-    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
+    name: '$CI_JOB_NAME-$CI_COMMIT_REF_NAME'
     when: always
     expire_in: 1 week
   tags:
@@ -99,7 +100,7 @@ docker-build-wallet:
 
 .e2e_tests_template:
   extends: .node-job
-  image: mcr.microsoft.com/playwright:v1.37.1-jammy
+  image: mcr.microsoft.com/playwright:v1.40.1-jammy
   parallel:
     matrix:
       - PROJECT: ['chromium', 'firefox', 'webkit']
@@ -127,9 +128,11 @@ e2e-tests-blog:
   services:
     - name: $IMAGE_NAME
       alias: denser
+      variables:
+        HEALTHCHECK_TCP_PORT: '3000'
   variables:
-    TURBO_APP_SCOPE: "@hive/blog"
-    TURBO_APP_PATH: "/apps/blog"
+    TURBO_APP_SCOPE: '@hive/blog'
+    TURBO_APP_PATH: '/apps/blog'
     REACT_APP_API_ENDPOINT: https://api.hive.blog
     REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
     PORT: 3000
@@ -142,9 +145,11 @@ e2e-tests-wallet:
   services:
     - name: $IMAGE_NAME
       alias: denser
+      variables:
+        HEALTHCHECK_TCP_PORT: '4000'
   variables:
-    TURBO_APP_SCOPE: "@hive/wallet"
-    TURBO_APP_PATH: "/apps/wallet"
+    TURBO_APP_SCOPE: '@hive/wallet'
+    TURBO_APP_PATH: '/apps/wallet'
     REACT_APP_API_ENDPOINT: https://api.hive.blog
     REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
     PORT: 4000
@@ -154,7 +159,7 @@ e2e-tests-wallet:
   extends: .node-job
   stage: test-report-aggregate
   when: always
-  image: mcr.microsoft.com/playwright:v1.37.1-jammy
+  image: mcr.microsoft.com/playwright:v1.40.1-jammy
   script:
     - cd .$TURBO_APP_PATH
     - npm install playwright-merge-html-reports --dev
@@ -169,8 +174,8 @@ e2e-report-aggregate-blog:
   needs:
     - e2e-tests-blog
   variables:
-    TURBO_APP_SCOPE: "@hive/blog"
-    TURBO_APP_PATH: "/apps/blog"
+    TURBO_APP_SCOPE: '@hive/blog'
+    TURBO_APP_PATH: '/apps/blog'
     PROJECTS: '["chromium", "firefox", "webkit"]'
     SHARD_TOTAL: 5
 
@@ -179,15 +184,14 @@ e2e-report-aggregate-wallet:
   needs:
     - e2e-tests-wallet
   variables:
-    TURBO_APP_SCOPE: "@hive/wallet"
-    TURBO_APP_PATH: "/apps/wallet"
+    TURBO_APP_SCOPE: '@hive/wallet'
+    TURBO_APP_PATH: '/apps/wallet'
     PROJECTS: '["chromium", "firefox", "webkit"]'
     SHARD_TOTAL: 5
 
-
 publish:
   image:
-    name: node:18.15-alpine3.17
+    name: node:20.10-alpine3.17
     entrypoint: []
   extends: .job-defaults
   stage: deploy
@@ -256,8 +260,8 @@ staging:deploy-auth:
     API_ENDPOINT: https://api.hive.blog
     IMAGES_ENDPOINT: https://images.hive.blog/
     CONTAINER_NAME: denser-auth
-    TURBO_APP_SCOPE: "@hive/auth"
-    TURBO_APP_PATH: "/apps/auth"
+    TURBO_APP_SCOPE: '@hive/auth'
+    TURBO_APP_PATH: '/apps/auth'
   environment:
     name: staging
     action: start
@@ -272,8 +276,8 @@ staging:deploy-blog:
     API_ENDPOINT: https://api.hive.blog
     IMAGES_ENDPOINT: https://images.hive.blog/
     CONTAINER_NAME: denser-blog
-    TURBO_APP_SCOPE: "@hive/blog"
-    TURBO_APP_PATH: "/apps/blog"
+    TURBO_APP_SCOPE: '@hive/blog'
+    TURBO_APP_PATH: '/apps/blog'
   environment:
     name: staging
     action: start
@@ -288,8 +292,8 @@ staging:deploy-wallet:
     API_ENDPOINT: https://api.hive.blog
     IMAGES_ENDPOINT: https://images.hive.blog/
     CONTAINER_NAME: denser-wallet
-    TURBO_APP_SCOPE: "@hive/wallet"
-    TURBO_APP_PATH: "/apps/wallet"
+    TURBO_APP_SCOPE: '@hive/wallet'
+    TURBO_APP_PATH: '/apps/wallet'
   environment:
     name: staging
     action: start

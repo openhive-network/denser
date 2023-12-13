@@ -38,7 +38,7 @@
     "packages/*"
   ],
   "devDependencies": {
-    "@turbo/gen": "^1.10.9",
-    "turbo": "^1.10.11"
+    "@turbo/gen": "^1.11.2",
+    "turbo": "^1.11.2"
   }
 }
