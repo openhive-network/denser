@@ -14,12 +14,12 @@
     "pw:test:local:experimental:ui": "playwright test --config=playwright.local3000.config.ts --ui"
   },
   "dependencies": {
-    "@hive/ui": "*",
-    "@hive/eslint-config-custom": "*",
-    "@hive/tsconfig": "*",
-    "@hive/tailwindcss-config": "*",
-    "@hive/prettier-config-custom": "*",
     "@beam-australia/react-env": "^3.1.1",
+    "@hive/eslint-config-custom": "*",
+    "@hive/prettier-config-custom": "*",
+    "@hive/tailwindcss-config": "*",
+    "@hive/tsconfig": "*",
+    "@hive/ui": "*",
     "@hiveio/content-renderer": "^1.1.1",
     "@hiveio/dhive": "^1.2.8",
     "@hookform/resolvers": "^3.1.1",
@@ -61,6 +61,6 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.40.1",
-    "@types/yazl": "^2.4.2"
+    "@types/yazl": "^2.4.5"
   }
 }
