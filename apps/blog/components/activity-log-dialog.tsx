@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogTrigger } from '@hive/ui/components/dialog';
 import NotificationActivities from './notification-activities';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { AccountNotification } from '@/blog/lib/bridge';
 
 export function ActivityLogDialog({
