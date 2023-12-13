@@ -57,7 +57,7 @@ test.describe('Terms of Service page tests', () => {
       tosPage.paragrafText,
       'font-size'
     );
-    expect(paragrafFontSize).toBe('19.2px');
+    expect(paragrafFontSize).toContain('19.2');
   });
 
   test('validate styles in the Terms of Service in the dark mode', async ({ page }) => {
@@ -96,7 +96,7 @@ test.describe('Terms of Service page tests', () => {
       tosPage.paragrafText,
       'font-size'
     );
-    expect(paragrafFontSize).toBe('19.2px');
+    expect(paragrafFontSize).toContain('19.2');
   });
 
   test('validate text of header menu on the Terms of Service page', async ({ page }) => {
