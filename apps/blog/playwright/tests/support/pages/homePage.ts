@@ -446,4 +446,11 @@ export class HomePage {
     await expect(this.page.locator('h1').getByText('Privacy Policy')).toBeVisible();
     await expect(this.page).toHaveURL('privacy.html');
   }
+
+  async moveToTermsOfServicePage() {
+    await this.getNavSidebarMenu.click();
+    await this.getNavSidebarMenuContent.getByRole('button', { name: 'Terms of Service' }).click();
+    await expect(this.page.locator('div').getByText('Terms of Service')).toBeVisible();
+    await expect(this.page).toHaveURL('tos.html');
+  }
 }
