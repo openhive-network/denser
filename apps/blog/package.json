@@ -51,6 +51,7 @@
     "pino": "^8.16.2",
     "playwright-merge-html-reports": "^0.2.8",
     "prettier-plugin-tailwindcss": "^0.5.9",
+    "qrcode": "^1.5.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.49.1",
