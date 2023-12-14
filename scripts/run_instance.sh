@@ -21,6 +21,8 @@ EOF
 IMAGE=${IMAGE:-"registry.gitlab.syncad.com/hive/denser:latest"}
 PORT=${PORT:-"3000"}
 API_ENDPOINT=${API_ENDPOINT:-"https://api.hive.blog"}
+TURBO_APP_SCOPE=${TURBO_APP_SCOPE:-}
+TURBO_APP_PATH=${TURBO_APP_PATH:-}
 IMAGES_ENDPOINT=${IMAGES_ENDPOINT:="https://images.hive.blog/"}
 CONTAINER_NAME=${CONTAINER_NAME:-"denser"}
 DETACH=${DETACH:-false}
