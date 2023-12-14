@@ -63,7 +63,7 @@ test.describe('Translation tests', () => {
     await expect(homePage.languageMenu).toBeVisible()
     await page.getByRole('menuitem', { name: 'pl' }).click()
     await expect(profilePage.profileInfo).toBeVisible()
-    
+
     await expect(page.getByRole('link', { name: 'Liczba obserwujących:' })).toBeVisible()
     await expect(page.getByRole('link', { name: 'Liczba obserwujących:' })).toContainText('Liczba obserwujących:')
     await expect(page.getByRole('link', { name: 'Liczba wpisów:' })).toBeVisible()
@@ -87,7 +87,7 @@ test.describe('Translation tests', () => {
     for (let i = 0; i < profileNavigation.length; i++) {
     const el = profileNavigation[i];
     const TabText = await el.textContent();
-  
+
     await expect(TabText).toEqual(tabs[i]);
 }
   })
@@ -116,7 +116,7 @@ test.describe('Translation tests', () => {
     for (let i = 0; i < userPostMenu.length; i++) {
     const el = userPostMenu[i];
     const TabText = await el.textContent();
-  
+
     await expect(TabText).toEqual(tabs[i]);
 }
   })
@@ -160,7 +160,7 @@ test.describe('Translation tests', () => {
     for (let i = 0; i < notificationsMenu.length; i++) {
     const el = notificationsMenu[i];
     const TabText = await el.textContent();
-  
+
     await expect(TabText).toEqual(tabs[i]);
 }
   })
@@ -261,10 +261,10 @@ test.describe('Translation tests', () => {
     await expect(await homePage.signupBtn.textContent()).toBe('Zapisz się')
 
     await homePage.loginBtn.click()
-    await expect(page.getByRole('heading', { name: 'Powracający: Zaloguj się, aby zagłosować' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Login' })).toBeVisible()
     await expect(page.getByPlaceholder('Podaj nazwę użytkownika')).toBeVisible()
-    await expect(page.getByPlaceholder('Hasło lub WIF')).toBeVisible()
-    await expect(page.getByRole('button', {name: 'Zaloguj się'})).toBeVisible()
+    await expect(page.getByPlaceholder('Password or WIF')).toBeVisible()
+    await expect(page.getByRole('button', {name: 'Login'})).toBeVisible()
     await page.getByTestId('close-dialog').click()
 
     await homePage.themeMode.click()
@@ -293,7 +293,7 @@ test.describe('Translation tests', () => {
       'Oficjalna księga Hive ',
       'Polityka prywatności',
       'Warunki korzystania z usługi'
-      
+
     ]
     await page.goto('/');
     await expect(homePage.getFirstPostTitle).toBeVisible()
@@ -302,7 +302,7 @@ test.describe('Translation tests', () => {
     await page.getByRole('menuitem', { name: 'pl' }).click()
     await expect(homePage.getNavSidebarMenu).toBeVisible()
     await homePage.getNavSidebarMenu.click()
-    
+
     await expect(homePage.getNavSidebarMenuContent).toBeVisible()
     // li.text-foreground
     const menuItems = await page.$$('li.text-foreground');
@@ -310,8 +310,8 @@ test.describe('Translation tests', () => {
     for (let i = 0; i < menuItems.length; i++) {
     const el = menuItems[i];
     const TabText = await el.textContent();
-  
+
     await expect(TabText).toEqual(menuElements[i]);
 }
-  }); 
+  });
 });

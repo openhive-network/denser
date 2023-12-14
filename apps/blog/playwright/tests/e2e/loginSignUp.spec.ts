@@ -49,13 +49,13 @@ test.describe('Login and Sign Up tests', () =>{
   test('Check if after click login button correct modal is open', async ({page}) =>{
     await homePage.loginBtn.click()
     await expect(homePage.loginModal).toBeVisible()
-    await expect(homePage.loginModalHeader).toHaveText("Returning Users: Login to Vote")
+    await expect(homePage.loginModalHeader).toHaveText("Login")
     await expect(homePage.loginModalUsernameInput).toBeVisible()
     await expect(homePage.loginModalPasswordInput).toBeVisible()
     await expect(homePage.loginModalHiveAuthText).toBeVisible()
     await expect(homePage.loginModalKeepLoggedInText).toBeVisible()
     await expect(page.getByRole('button', {name: "Login"})).toBeVisible()
-    await expect(page.getByRole('button', {name: "Cancel"})).toBeVisible()
+    await expect(page.getByRole('button', {name: "Reset"})).toBeVisible()
     await expect(homePage.hivsignerBtn).toBeVisible()
   })
 
