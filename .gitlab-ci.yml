@@ -263,7 +263,7 @@ staging:deploy-auth:
     TURBO_APP_SCOPE: '@hive/auth'
     TURBO_APP_PATH: '/apps/auth'
   environment:
-    name: staging
+    name: staging-auth
     action: start
     on_stop: staging:stop-auth
 
@@ -279,7 +279,7 @@ staging:deploy-blog:
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
   environment:
-    name: staging
+    name: staging-blog
     action: start
     on_stop: staging:stop-blog
 
@@ -295,7 +295,7 @@ staging:deploy-wallet:
     TURBO_APP_SCOPE: '@hive/wallet'
     TURBO_APP_PATH: '/apps/wallet'
   environment:
-    name: staging
+    name: staging-wallet
     action: start
     on_stop: staging:stop-wallet
 
@@ -304,9 +304,6 @@ staging:deploy-wallet:
   stage: deploy
   script:
     - docker ps -q --filter "name=$CONTAINER_NAME" | grep -q . && docker stop $CONTAINER_NAME
-  environment:
-    name: staging
-    action: stop
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: manual
@@ -318,6 +315,9 @@ staging:stop-auth:
   extends: .stop_template_for_staging
   needs:
     - staging:deploy-auth
+  environment:
+    name: staging-auth
+    action: stop
   variables:
     CONTAINER_NAME: denser-auth
     GIT_STRATEGY: none
@@ -326,6 +326,9 @@ staging:stop-blog:
   extends: .stop_template_for_staging
   needs:
     - staging:deploy-blog
+  environment:
+    name: staging-blog
+    action: stop
   variables:
     CONTAINER_NAME: denser-blog
     GIT_STRATEGY: none
@@ -334,6 +337,9 @@ staging:stop-wallet:
   extends: .stop_template_for_staging
   needs:
     - staging:deploy-wallet
+  environment:
+    name: staging-wallet
+    action: stop
   variables:
     CONTAINER_NAME: denser-wallet
     GIT_STRATEGY: none
@@ -344,7 +350,7 @@ review:deploy-auth:
     PORT: 5001
     CONTAINER_NAME: denser-review-auth
   environment:
-    name: review
+    name: review-auth
     action: start
     on_stop: review:stop-auth
   rules:
@@ -357,7 +363,7 @@ review:deploy-blog:
     PORT: 3001
     CONTAINER_NAME: denser-review-blog
   environment:
-    name: review
+    name: review-blog
     action: start
     on_stop: review:stop-blog
   rules:
@@ -370,7 +376,7 @@ review:deploy-wallet:
     PORT: 4001
     CONTAINER_NAME: denser-review-wallet
   environment:
-    name: review
+    name: review-wallet
     action: start
     on_stop: review:stop-wallet
   rules:
@@ -384,7 +390,7 @@ review:stop-auth:
   variables:
     CONTAINER_NAME: denser-review-auth
   environment:
-    name: review
+    name: review-auth
     action: stop
   rules:
     - if: $CI_COMMIT_TAG =~ /^rc_.*/
@@ -398,7 +404,7 @@ review:stop-blog:
   variables:
     CONTAINER_NAME: denser-review-blog
   environment:
-    name: review
+    name: review-blog
     action: stop
   rules:
     - if: $CI_COMMIT_TAG =~ /^rc_.*/
@@ -412,7 +418,7 @@ review:stop-wallet:
   variables:
     CONTAINER_NAME: denser-review-wallet
   environment:
-    name: review
+    name: review-wallet
     action: stop
   rules:
     - if: $CI_COMMIT_TAG =~ /^rc_.*/
