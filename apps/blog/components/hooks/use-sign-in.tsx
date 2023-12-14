@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { QUERY_KEY } from '@/auth/lib/query-keys';
-import { fetchJson } from '@/auth/lib/fetch-json';
-import { User } from '@/auth/pages/api/user';
-import { PostLoginSchema } from '@/auth/pages/api/login';
+import { QUERY_KEY } from '@/blog/lib/query-keys';
+import { fetchJson } from '@/blog/lib/fetch-json';
+import { PostLoginSchema } from '@/blog/pages/api/login';
+import { User } from '@/blog/pages/api/user';
 
 async function signIn(data: PostLoginSchema): Promise<User> {
   return await fetchJson('/api/login', {
