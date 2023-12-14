@@ -18,6 +18,9 @@ EOF
 
 export CI_REGISTRY_IMAGE=${CI_REGISTRY_IMAGE:-"registry.gitlab.syncad.com/hive/denser"}
 export TAG=${TAG:-"latest"}
+export TURBO_APP_SCOPE=${TURBO_APP_SCOPE:-}
+export TURBO_APP_PATH=${TURBO_APP_PATH:-}
+export TURBO_APP_NAME=${TURBO_APP_NAME:-}
 PROGRESS_DISPLAY=${PROGRESS_DISPLAY:-"auto"}
 
 while [ $# -gt 0 ]; do
@@ -33,6 +36,18 @@ while [ $# -gt 0 ]; do
     --progress=*)
         arg="${1#*=}"
         PROGRESS_DISPLAY="$arg"
+        ;;
+    --app-scope=*)
+        arg="${1#*=}"
+        TURBO_APP_SCOPE="$arg"
+        ;;
+    --app-path=*)
+        arg="${1#*=}"
+        TURBO_APP_PATH="$arg"
+        ;;
+    --app-name=*)
+        arg="${1#*=}"
+        TURBO_APP_NAME="$arg"
         ;;
     --help|-?)
         print_help

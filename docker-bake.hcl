@@ -8,37 +8,36 @@ variable "TAG" {
 }
 variable "TURBO_APP_SCOPE" {}
 variable "TURBO_APP_PATH" {}
+variable "TURBO_APP_NAME" {}
 
 function "notempty" {
   params = [variable]
   result = notequal("", variable)
 }
 
-function "trimtagname" {
-  params = [tagname, char_set]
-  result = trim(tagname, char_set)
-}
-
 target "local-build" {
   dockerfile = "Dockerfile"
   tags = [
-    "${CI_REGISTRY_IMAGE}/${trimtagname(TURBO_APP_SCOPE, "@hive/")}:${TAG}",
-    notempty(CI_COMMIT_SHORT_SHA) ? "${CI_REGISTRY_IMAGE}/${trimtagname(TURBO_APP_SCOPE, "@hive/")}:${CI_COMMIT_SHORT_SHA}": "",
-    notempty(CI_COMMIT_TAG) ? "${CI_REGISTRY_IMAGE}/${trimtagname(TURBO_APP_SCOPE, "@hive/")}:${CI_COMMIT_TAG}": ""
+    "${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:${TAG}",
+    notempty(CI_COMMIT_SHORT_SHA) ? "${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:${CI_COMMIT_SHORT_SHA}": "",
+    notempty(CI_COMMIT_TAG) ? "${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:${CI_COMMIT_TAG}": ""
   ]
   args = {
     TURBO_APP_SCOPE = "${TURBO_APP_SCOPE}",
     TURBO_APP_PATH = "${TURBO_APP_PATH}",
   }
+  output = [
+    "type=docker"
+  ]
 }
 
 target "ci-build" {
   inherits = ["local-build"]
   cache-from = [
-    "type=registry,ref=${CI_REGISTRY_IMAGE}/${trimtagname(TURBO_APP_SCOPE, "@hive/")}/cache:${TAG}"
+    "type=registry,ref=${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}/cache:${TAG}"
   ]
   cache-to = [
-    "type=registry,mode=max,image-manifest=true,ref=${CI_REGISTRY_IMAGE}/${trimtagname(TURBO_APP_SCOPE, "@hive/")}/cache:${TAG}"
+    "type=registry,mode=max,image-manifest=true,ref=${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}/cache:${TAG}"
   ]
   output = [
     "type=registry"
