@@ -7,7 +7,7 @@ import { CommunitiesPage } from '../support/pages/communitiesPage';
 import { WitnessPage } from '../support/pages/witnessesPage';
 import { WalletPage } from "../../../../wallet/playwright/tests/support/pages/walletPage";
 
-test.describe.only('Translation tests', () => {
+test.describe('Translation tests', () => {
   let homePage: HomePage;
   let postPage: PostPage;
   let profilePage: ProfilePage;
