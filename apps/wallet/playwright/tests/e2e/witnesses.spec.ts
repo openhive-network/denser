@@ -544,8 +544,8 @@ test.describe('Witnesses page tests', () => {
     await witnessesPage.goToWitnessesPage();
     await expect(witnessPage.witnessHeaderTitle).toBeVisible()
     await homePage.toggleLanguage.click()
-    await expect(homePage.languageMenu).toBeVisible()
-    await page.getByRole('menuitem', { name: 'pl' }).click()
+    await expect(homePage.languageMenu.first()).toBeVisible()
+    await homePage.languageMenuPl.click()
     await expect(witnessPage.witnessHeaderTitle).toBeVisible()
     await expect(await witnessPage.witnessHeaderTitle.textContent()).toBe('Głosowanie na delegatów')
     await expect(await witnessPage.witnessHeaderDescription.textContent()).toBe(
