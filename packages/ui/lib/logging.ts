@@ -1,14 +1,14 @@
-import pino, { Logger } from "pino";
-import env from "@beam-australia/react-env";
+import pino, { Logger } from 'pino';
+import env from '@beam-australia/react-env';
 
 export const logLevelData = {
-    "*": env('LOGGING_LOG_LEVEL') ? env('LOGGING_LOG_LEVEL').toLowerCase() : 'info',
+  '*': env('LOGGING_LOG_LEVEL') ? env('LOGGING_LOG_LEVEL').toLowerCase() : 'info'
 };
 
 export const logLevels = new Map<string, string>(Object.entries(logLevelData));
 
 export function getLogLevel(logger: string): string {
-    return logLevels.get(logger) || logLevels.get("*") || "info";
+  return logLevels.get(logger) || logLevels.get('*') || 'info';
 }
 
 /**
@@ -30,23 +30,22 @@ export function getLogLevel(logger: string): string {
  * @returns {Logger}
  */
 export function getLogger(name: string): Logger {
-    return pino({
-        name,
-        level: getLogLevel(name),
-        useLevelLabels: true,
-        formatters: {
-            level: (label: string) => {
-                return { level: label.toUpperCase() };
-            },
-        },
-        timestamp: pino.stdTimeFunctions.isoTime,
-        browser: {
-            disabled: env('LOGGING_BROWSER_ENABLED') ?
-                env('LOGGING_BROWSER_ENABLED').toLowerCase() === 'true' ?
-                    false
-                    : true
-                : true,
-            asObject: false,
-        }
-    });
+  return pino({
+    name,
+    level: getLogLevel(name),
+    formatters: {
+      level: (label: string) => {
+        return { level: label.toUpperCase() };
+      }
+    },
+    timestamp: pino.stdTimeFunctions.isoTime,
+    browser: {
+      disabled: env('LOGGING_BROWSER_ENABLED')
+        ? env('LOGGING_BROWSER_ENABLED').toLowerCase() === 'true'
+          ? false
+          : true
+        : true,
+      asObject: false
+    }
+  });
 }
