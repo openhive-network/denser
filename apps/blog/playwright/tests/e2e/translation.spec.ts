@@ -28,11 +28,12 @@ test.describe('Translation tests', () => {
   });
 
   test('Check if user can change language', async ({page}) =>{
-    await page.goto('/');
+    await homePage.goto();
     await expect(homePage.toggleLanguage).toBeVisible()
     await homePage.toggleLanguage.click()
-    await expect(homePage.languageMenu).toBeVisible()
-    await page.getByText('pl').click()
+    await homePage.page.waitForSelector(homePage.languageMenu['_selector'])
+    await expect(homePage.languageMenu.first()).toBeVisible()
+    await homePage.languageMenuPl.click()
 
     const postsTabText = await homePage.getNavPostsLink.textContent()
     const proposalsTabText = await homePage.getNavProposalsLink.textContent()
@@ -55,13 +56,13 @@ test.describe('Translation tests', () => {
       'Społecznościowe',
       'Powiadomienia'
     ]
-    await page.goto('/');
+    await homePage.goto();
     await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible()
     await homePage.getFirstPostAuthor.click()
     await expect(profilePage.profileInfo).toBeVisible()
     await homePage.toggleLanguage.click()
-    await expect(homePage.languageMenu).toBeVisible()
-    await page.getByRole('menuitem', { name: 'pl' }).click()
+    await expect(homePage.languageMenu.first()).toBeVisible()
+    await homePage.languageMenuPl.click()
     await expect(profilePage.profileInfo).toBeVisible()
 
     await expect(page.getByRole('link', { name: 'Liczba obserwujących:' })).toBeVisible()
@@ -100,14 +101,14 @@ test.describe('Translation tests', () => {
       'Wynagrodzenia',
     ]
 
-    await page.goto('/');
+    await homePage.goto();
     await homePage.getFirstPostAuthor.click()
     await profilePage.profilePostsLink.click()
     await expect(postPage.userPostMenu).toBeVisible()
     await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible()
     await homePage.toggleLanguage.click()
-    await expect(homePage.languageMenu).toBeVisible()
-    await page.getByRole('menuitem', { name: 'pl' }).click()
+    await expect(homePage.languageMenu.first()).toBeVisible()
+    await homePage.languageMenuPl.click()
     await expect(postPage.userPostMenu).toBeVisible()
     await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible()
 
@@ -122,13 +123,13 @@ test.describe('Translation tests', () => {
   })
 
   test.skip('Profile page - social tab', async ({page}) =>{
-    await page.goto('/');
+    await homePage.goto();
     await homePage.getFirstPostAuthor.click()
     await profilePage.profileSocialLink.click()
     await expect(profilePage.socialCommunitySubscriptionsLabel).toBeVisible()
     await homePage.toggleLanguage.click()
-    await expect(homePage.languageMenu).toBeVisible()
-    await page.getByRole('menuitem', { name: 'pl' }).click()
+    await expect(homePage.languageMenu.first()).toBeVisible()
+    await homePage.languageMenuPl.click()
     await expect(profilePage.socialCommunitySubscriptionsLabel).toBeVisible()
     await expect(profilePage.socialCommunitySubscriptionsLabel).toHaveText('Subskrypcje społeczności')
     await expect(profilePage.socialCommunitySubscriptionsDescription).toHaveText('Autor zasubskrybował poniższe Społeczności Hive')
@@ -146,13 +147,13 @@ test.describe('Translation tests', () => {
       'Głosy za',
       'Reblogi',
     ]
-    await page.goto('/');
+    await homePage.goto();
     await homePage.getFirstPostAuthor.click()
     await profilePage.profileNotificationsLink.click()
     await expect(profilePage.notificationsMenu).toBeVisible()
     await homePage.toggleLanguage.click()
-    await expect(homePage.languageMenu).toBeVisible()
-    await page.getByRole('menuitem', { name: 'pl' }).click()
+    await expect(homePage.languageMenu.first()).toBeVisible()
+    await homePage.languageMenuPl.click()
     await expect(profilePage.notificationsMenu).toBeVisible()
 
     const notificationsMenu = await page.$$('[role="tab"]');
@@ -180,12 +181,13 @@ test.describe('Translation tests', () => {
   // })
 
   test('Community page', async ({page}) =>{
-    await page.goto('/');
+    await homePage.goto();
     await homePage.getLeoFinanceCommunitiesLink.click()
     await expect(homePage.getHeaderLeoCommunities).toBeVisible()
     await homePage.toggleLanguage.click()
-    await expect(homePage.languageMenu).toBeVisible()
-    await page.getByRole('menuitem', { name: 'pl' }).click()
+    await expect(homePage.languageMenu.first()).toBeVisible()
+    await homePage.languageMenuPl.click()
+    await homePage.page.waitForSelector(homePage.getHeaderLeoCommunities['_selector']);
     await expect(homePage.getHeaderLeoCommunities).toBeVisible()
     await expect(await page.locator('[data-testid="community-name-unmoderated"]').textContent()).toBe('Społeczność')
     await expect(await communitiesPage.communitySubscribeButton.textContent()).toBe('Subskrybuj')
@@ -207,12 +209,12 @@ test.describe('Translation tests', () => {
   // })
 
   test('Post page', async ({page}) =>{
-    await page.goto('/');
+    await homePage.goto();
     await homePage.getFirstPostTitle.click()
     await expect(postPage.articleTitle).toBeVisible()
     await homePage.toggleLanguage.click()
-    await expect(homePage.languageMenu).toBeVisible()
-    await page.getByRole('menuitem', { name: 'pl' }).click()
+    await expect(homePage.languageMenu.first()).toBeVisible()
+    await homePage.languageMenuPl.click()
     await expect(postPage.articleTitle).toBeVisible()
     await expect(await postPage.articleAuthorData.textContent()).toContain('temu')
     await expect(await postPage.commentReplay.textContent()).toBe('Odpowiedz')
@@ -232,12 +234,12 @@ test.describe('Translation tests', () => {
   })
 
   test('User hover card', async ({page}) =>{
-    await page.goto('/');
+    await homePage.goto();
     await homePage.getFirstPostTitle.click()
     await expect(postPage.articleTitle).toBeVisible()
     await homePage.toggleLanguage.click()
-    await expect(homePage.languageMenu).toBeVisible()
-    await page.getByRole('menuitem', { name: 'pl' }).click()
+    await expect(homePage.languageMenu.first()).toBeVisible()
+    await homePage.languageMenuPl.click()
     await expect(postPage.articleTitle).toBeVisible()
     await postPage.articleAuthorName.hover()
     await expect(await postPage.userHoverCardFollowButton.textContent()).toBe('Obserwuj')
@@ -246,11 +248,12 @@ test.describe('Translation tests', () => {
   })
 
   test('Home page', async ({page}) =>{
-    await page.goto('/');
+    await homePage.goto();
     await expect(homePage.getFirstPostTitle).toBeVisible()
     await homePage.toggleLanguage.click()
-    await expect(homePage.languageMenu).toBeVisible()
-    await page.getByRole('menuitem', { name: 'pl' }).click()
+    await expect(homePage.languageMenu.first()).toBeVisible()
+    await homePage.languageMenuPl.click()
+    await homePage.page.waitForSelector(homePage.getTrendingCommunitiesSideBar['_selector'])
     await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible()
     await expect(page.getByRole('link', { name: 'Wszystkie posty' })).toBeVisible()
     await expect(page.getByText('Popularne Społeczności')).toBeVisible()
@@ -261,10 +264,11 @@ test.describe('Translation tests', () => {
     await expect(await homePage.signupBtn.textContent()).toBe('Zapisz się')
 
     await homePage.loginBtn.click()
-    await expect(page.getByRole('heading', { name: 'Login' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Zaloguj się' })).toBeVisible()
     await expect(page.getByPlaceholder('Podaj nazwę użytkownika')).toBeVisible()
-    await expect(page.getByPlaceholder('Password or WIF')).toBeVisible()
-    await expect(page.getByRole('button', {name: 'Login'})).toBeVisible()
+    await expect(page.getByPlaceholder('Hasło lub WIF')).toBeVisible()
+    await expect(page.getByRole('button', {name: 'Zaloguj się'})).toBeVisible()
+    await expect(page.getByRole('button', {name: 'Wyczyść formularz'})).toBeVisible()
     await page.getByTestId('close-dialog').click()
 
     await homePage.themeMode.click()
@@ -295,14 +299,15 @@ test.describe('Translation tests', () => {
       'Warunki korzystania z usługi'
 
     ]
-    await page.goto('/');
+    await homePage.goto();
     await expect(homePage.getFirstPostTitle).toBeVisible()
     await homePage.toggleLanguage.click()
-    await expect(homePage.languageMenu).toBeVisible()
-    await page.getByRole('menuitem', { name: 'pl' }).click()
+    await expect(homePage.languageMenu.first()).toBeVisible()
+    await homePage.languageMenuPl.click()
+    await homePage.page.waitForTimeout(3000)
     await expect(homePage.getNavSidebarMenu).toBeVisible()
     await homePage.getNavSidebarMenu.click()
-
+    await homePage.page.waitForSelector(homePage.getNavSidebarMenuContent['_selector'])
     await expect(homePage.getNavSidebarMenuContent).toBeVisible()
     // li.text-foreground
     const menuItems = await page.$$('li.text-foreground');
