@@ -332,8 +332,8 @@
       "reblog": "Reblog",
       "reply": "Reply",
       "no_responses": "No responses. ",
-      "response": "1 response.",
-      "responses": "{{responses}} responses.",
+      "response": "1 response. ",
+      "responses": "{{responses}} responses. ",
       "share_on": "Share on ",
       "share_form": {
         "copy": "COPY",
