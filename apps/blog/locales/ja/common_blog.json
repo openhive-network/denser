@@ -182,6 +182,7 @@
     "username_placeholder": "ユーザー名を入力してください",
     "password_placeholder": "パスワードまたはWIF",
     "use_hiveauth": "Use HiveAuth",
+    "use_hbauth": "Use HB Auth",
     "keep_me_logged_in": "ログイン状態を維持する",
     "more_login_methods": "その他のログイン方法",
     "select_a_key_type": "キーの種類を選択してください",

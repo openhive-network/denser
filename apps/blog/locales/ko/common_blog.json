@@ -182,6 +182,7 @@
     "username_placeholder": "Enter your username",
     "password_placeholder": "Password or WIF",
     "use_hiveauth": "Use HiveAuth",
+    "use_hbauth": "Use HB Auth",
     "keep_me_logged_in": "로그인 유지",
     "more_login_methods": "더 많은 로그인 방법",
     "select_a_key_type": "키 유형 선택",

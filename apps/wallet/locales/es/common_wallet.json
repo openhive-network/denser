@@ -252,6 +252,7 @@
     "username_placeholder": "Introduce tu nombre de usuario",
     "password_placeholder": "Contraseña o WIF",
     "use_hiveauth": "Use HiveAuth",
+    "use_hbauth": "Use HB Auth",
     "keep_me_logged_in": "Manténme logueado",
     "more_login_methods": "más métodos de inicio de sesión",
     "select_a_key_type": "Seleccione un tipo de clave",
