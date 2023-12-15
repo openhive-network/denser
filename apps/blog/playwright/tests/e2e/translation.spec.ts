@@ -264,7 +264,7 @@ test.describe('Translation tests', () => {
     await expect(await homePage.signupBtn.textContent()).toBe('Zapisz się')
 
     await homePage.loginBtn.click()
-    await expect(page.getByRole('heading', { name: 'Logowanie' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Zaloguj się' })).toBeVisible()
     await expect(page.getByPlaceholder('Podaj nazwę użytkownika')).toBeVisible()
     await expect(page.getByPlaceholder('Hasło lub WIF')).toBeVisible()
     await expect(page.getByRole('button', {name: 'Zaloguj się'})).toBeVisible()
