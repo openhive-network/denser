@@ -55,7 +55,7 @@ const loginFormDefaultValues = {
   remember: false
 };
 
-export function LoginForm({
+function LoginForm({
   errorMessage,
   onSubmit
 }: {
@@ -253,3 +253,5 @@ export function LoginForm({
     </div>
   );
 }
+
+export default LoginForm;

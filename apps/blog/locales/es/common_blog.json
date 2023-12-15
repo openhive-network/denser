@@ -7,7 +7,7 @@
       "seconds": " seconds ago",
       "minutes": " minutes ago",
       "a_minute": " a minute ago",
-      "hours" :" hours ago",
+      "hours": " hours ago",
       "an_hour": " an hour ago",
       "days": " days ago",
       "a_day": " a day ago",
@@ -35,7 +35,7 @@
       "seconds": " seconds",
       "minutes": " minutes",
       "a_minute": " a minute",
-      "hours" :" hours",
+      "hours": " hours",
       "an_hour": " an hour",
       "days": " days",
       "a_day": " a day",
@@ -56,7 +56,7 @@
       "search": "Buscar...",
       "light": "Light",
       "dark": "Dark",
-      "system" :"System"
+      "system": "System"
     },
     "sidebar": {
       "welcome": "Bienvenido",
@@ -121,7 +121,7 @@
       "payouts": "Pagos",
       "muted": "Muted"
     },
-    "communitie_sort":{
+    "communitie_sort": {
       "rank": "Rank",
       "subscribers": "Subscribers",
       "new": "New"
@@ -184,6 +184,9 @@
     "use_hiveauth": "Use HiveAuth",
     "keep_me_logged_in": "Manténme logueado",
     "more_login_methods": "más métodos de inicio de sesión",
+    "select_a_key_type": "Seleccione un tipo de clave",
+    "key_type": "Tipo de clave",
+    "authorize_button": "Autorizar",
     "login_button": "Iniciar sesión",
     "cancel_button": "Cancelar",
     "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password."
@@ -195,8 +198,8 @@
     "twitter_badge_title": "To get the Twitter badge, link your account at HivePosh.com",
     "joined": "Unió",
     "active": "Activo",
-    "no_posts_yet":"Looks like @{{username}} hasn't made any posts yet!",
-    "no_blogging_yet":"Looks like @{{username}} hasn't started blogging yet!",
+    "no_posts_yet": "Looks like @{{username}} hasn't made any posts yet!",
+    "no_blogging_yet": "Looks like @{{username}} hasn't started blogging yet!",
     "no_pending_payouts": "No pending payouts.",
     "load_newer": "Load Newer",
     "nothing_more_to_load": "Nothing more to load",
@@ -254,7 +257,6 @@
       "badges_and_achievements_title": "Badges and achievements",
       "these_are_badges_received_by_the_author": "These are badges received by the author via the third-party apps ",
       "you_dont_have_any_subscriptions": "Welcome! You don't have any subscriptions yet."
-
     },
     "notifications_tab": {
       "voted_on_your_post": "@{{username}} voted on your post {{amount}}",
@@ -343,7 +345,7 @@
         "open_in_alternative": "Fuentes alternativas",
         "open_in": "Abierto en Block Explorers"
       },
-      "comment":{
+      "comment": {
         "disable_editor": "Disable side-by-side editor",
         "reply": "Reply",
         "insert_images": "Insert images by dragging & dropping, pasting from the clipboard, or by ",
@@ -352,7 +354,7 @@
         "cancel": "Cancel",
         "preview": "Preview",
         "markdown_styling_guide": "Markdown Styling Guide",
-        "exit_editor":"Are you sure you want to exit the comment editor?"
+        "exit_editor": "Are you sure you want to exit the comment editor?"
       }
     }
   },

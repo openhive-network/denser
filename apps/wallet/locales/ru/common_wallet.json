@@ -7,7 +7,7 @@
       "seconds": " seconds ago",
       "minutes": " minutes ago",
       "a_minute": " a minute ago",
-      "hours" :" hours ago",
+      "hours": " hours ago",
       "an_hour": " an hour ago",
       "days": " days ago",
       "a_day": " a day ago",
@@ -49,7 +49,7 @@
       "seconds": " seconds",
       "minutes": " minutes",
       "a_minute": " a minute",
-      "hours" :" hours",
+      "hours": " hours",
       "an_hour": " an hour",
       "days": " days",
       "a_day": " a day",
@@ -65,7 +65,7 @@
       "sign_up": "Регистрация",
       "light": "Light",
       "dark": "Dark",
-      "system" :"System"
+      "system": "System"
     },
     "sidebar": {
       "welcome": "Добро пожаловать",
@@ -141,11 +141,11 @@
     "estimated_account_value_description": "Сметная стоимость основана на среднем значении %(LIQUID_TOKEN)s в долларах США.",
     "account_history_title": "ИСТОРИЯ",
     "see_faq_for_details": "See FAQ for details.",
-    "witnesses":"Witnesses",
+    "witnesses": "Witnesses",
     "account_history_description": "Остерегайтесь спама и фишинговых ссылок в передачах. Не открывайте ссылки от пользователей, которым вы не доверяете. Не предоставляйте свои личные ключи третьим сторонам. Transactions will not show until they are confirmed on the blockchain, which may take a few minutes.",
-    "no_transactions_found":"No transactions found",
-    "the_next_power_down":"The next power down is scheduled to happen in ",
-    "paid_for":"Paid {{value1}} for {{value2}}",
+    "no_transactions_found": "No transactions found",
+    "the_next_power_down": "The next power down is scheduled to happen in ",
+    "paid_for": "Paid {{value1}} for {{value2}}",
     "cancel_transfer_from_savings": "Cancel transfer from savings (request {{number}})",
     "receive_interest": "'Receive interest of {{number}}",
     "transfer_to": "Transfer {{value}} to ",
@@ -156,12 +156,12 @@
     "received_from_user": "Received {{value}} from ",
     "claim_rewards": "Claim rewards: ",
     "and": " and ",
-    "estimated_author_rewards_last_week":"Estimated author rewards last week:",
-    "author_rewards_history":"Author Rewards History",
-    "newer":"Newer",
-    "older":"Older",
-    "estimated_curation_rewards_last_week":"Estimated curation rewards last week:",
-    "curation_rewards_history":"Curation Rewards History"
+    "estimated_author_rewards_last_week": "Estimated author rewards last week:",
+    "author_rewards_history": "Author Rewards History",
+    "newer": "Newer",
+    "older": "Older",
+    "estimated_curation_rewards_last_week": "Estimated curation rewards last week:",
+    "curation_rewards_history": "Curation Rewards History"
   },
   "market_page": {
     "last_price": "Последняя цена",
@@ -236,7 +236,7 @@
     }
   },
   "proposals_page": {
-    "daily":"Daily",
+    "daily": "Daily",
     "proposals": "Proposals",
     "started": "started",
     "finished": "finished",
@@ -256,6 +256,9 @@
     "use_hiveauth": "Use HiveAuth",
     "keep_me_logged_in": "Оставить меня залогиненным",
     "more_login_methods": "больше методов входа",
+    "select_a_key_type": "Выберите тип ключа",
+    "key_type": "Тип ключа",
+    "authorize_button": "Авторизовать",
     "login_button": "Войти",
     "cancel_button": "Отмена",
     "this_operation_requires_your_key_or_master_password": "Для осуществления данной операции нужен ваш {{authType}} ключ или Основной пароль."
@@ -284,11 +287,11 @@
       "fifth": "Пятое правило: используйте только сгенерированные случайным образом пароли.",
       "sixth": "Шестое правило: Никому не говорите свой пароль.",
       "seventh": "Седьмое правило: Всегда надежно храните свой пароль."
+    }
+  },
+  "four_oh_four": {
+    "this_page_does_not_exist": "Sorry! This page does not exist.",
+    "not_to_worry": "Not to worry. You can head back to",
+    "our_homepage": "our homepage"
   }
-},
-"four_oh_four": {
-  "this_page_does_not_exist": "Sorry! This page does not exist.",
-  "not_to_worry": "Not to worry. You can head back to",
-  "our_homepage": "our homepage"
-}
 }

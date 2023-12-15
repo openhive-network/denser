@@ -254,6 +254,9 @@
     "use_hiveauth": "Użyj HiveAuth",
     "keep_me_logged_in": "Nie wylogowuj mnie",
     "more_login_methods": "więcej metod logowania",
+    "select_a_key_type": "Wybierz typ klucza",
+    "key_type": "Typ klucza",
+    "authorize_button": "Autoryzuj",
     "login_button": "Zaloguj się",
     "cancel_button": "Anuluj",
     "this_operation_requires_your_key_or_master_password": "Ta operacja wymaga twojego klucza {{authType}} lub hasła głównego."

@@ -7,7 +7,7 @@
       "seconds": " seconds ago",
       "minutes": " minutes ago",
       "a_minute": " a minute ago",
-      "hours" :" hours ago",
+      "hours": " hours ago",
       "an_hour": " an hour ago",
       "days": " days ago",
       "a_day": " a day ago",
@@ -35,7 +35,7 @@
       "seconds": " seconds",
       "minutes": " minutes",
       "a_minute": " a minute",
-      "hours" :" hours",
+      "hours": " hours",
       "an_hour": " an hour",
       "days": " days",
       "a_day": " a day",
@@ -56,7 +56,7 @@
       "search": "Search...",
       "light": "Light",
       "dark": "Dark",
-      "system" :"System"
+      "system": "System"
     },
     "sidebar": {
       "welcome": "환영합니다",
@@ -121,7 +121,7 @@
       "payouts": "글보상",
       "muted": "Muted"
     },
-    "communitie_sort":{
+    "communitie_sort": {
       "rank": "Rank",
       "subscribers": "Subscribers",
       "new": "New"
@@ -184,6 +184,9 @@
     "use_hiveauth": "Use HiveAuth",
     "keep_me_logged_in": "로그인 유지",
     "more_login_methods": "더 많은 로그인 방법",
+    "select_a_key_type": "키 유형 선택",
+    "key_type": "키 유형",
+    "authorize_button": "승인하다",
     "login_button": "로그인",
     "cancel_button": "취소",
     "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password."
@@ -195,8 +198,8 @@
     "twitter_badge_title": "To get the Twitter badge, link your account at HivePosh.com",
     "joined": "가입일",
     "active": "액티브",
-    "no_posts_yet":"Looks like @{{username}} hasn't made any posts yet!",
-    "no_blogging_yet":"Looks like @{{username}} hasn't started blogging yet!",
+    "no_posts_yet": "Looks like @{{username}} hasn't made any posts yet!",
+    "no_blogging_yet": "Looks like @{{username}} hasn't started blogging yet!",
     "no_pending_payouts": "No pending payouts.",
     "load_newer": "Load Newer",
     "nothing_more_to_load": "Nothing more to load",
@@ -342,7 +345,7 @@
         "open_in_alternative": "Open in alternative Hive dApps",
         "open_in": "Open in Block Explorers"
       },
-      "comment":{
+      "comment": {
         "disable_editor": "Disable side-by-side editor",
         "reply": "Reply",
         "insert_images": "Insert images by dragging & dropping, pasting from the clipboard, or by ",
@@ -351,7 +354,7 @@
         "cancel": "Cancel",
         "preview": "Preview",
         "markdown_styling_guide": "Markdown Styling Guide",
-        "exit_editor":"Are you sure you want to exit the comment editor?"
+        "exit_editor": "Are you sure you want to exit the comment editor?"
       }
     }
   },

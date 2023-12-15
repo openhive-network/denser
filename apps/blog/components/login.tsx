@@ -8,8 +8,10 @@ import { useLocalStorage } from './hooks/use-local-storage';
 import HiveAuthUtils from '@/blog/lib/hive-auth-utils';
 import { Signatures, PostLoginSchema, LoginTypes } from '@/blog/pages/api/login';
 import { useSignIn } from './hooks/use-sign-in';
-import { LoginFormSchema, LoginForm } from './login-form';
+import LoginForm, { LoginFormSchema } from './login-form';
 import { Dialog, DialogContent, DialogTrigger } from '@hive/ui/components/dialog';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@ui/components';
+import AuthorizeForm from './authorize-form';
 
 const logger = getLogger('app');
 
@@ -141,18 +143,22 @@ export default function Login({ children }: { children: ReactNode }) {
   };
 
   return (
-    // <div
-    //   className="mx-2 flex flex-col gap-24 pt-16 sm:flex-row
-    //     sm:justify-around sm:gap-0"
-    // >
-    //   <div className="flex flex-col gap-3 sm:mr-4 sm:gap-8">
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[600px]" data-testid="login-dialog">
-        <LoginForm errorMessage={errorMsg} onSubmit={onSubmit} />
+        <Tabs defaultValue="login" className="w-full py-4">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="login">Login</TabsTrigger>
+            <TabsTrigger value="authorize">Authorize</TabsTrigger>
+          </TabsList>
+          <TabsContent value="login">
+            <LoginForm errorMessage={errorMsg} onSubmit={onSubmit} />
+          </TabsContent>
+          <TabsContent value="authorize">
+            <AuthorizeForm />
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
-    //   </div>
-    // </div>
   );
 }
