@@ -165,20 +165,6 @@ test.describe('Translation tests', () => {
 }
   })
 
-  // test('Wallet page', async({page}) =>{
-  //   await page.goto('http://localhost:4000/@gtg/transfers')
-  //   await expect(page.locator('.container.p-0').last()).toBeVisible()
-  //   await homePage.toggleLanguage.click()
-  //   await expect(homePage.languageMenu).toBeVisible()
-  //   await page.getByRole('menuitem', { name: 'pl' }).click()
-  //   await expect(page.locator('.container.p-0').last()).toBeVisible()
-  //   await expect(page.getByTestId('wallet-balances-link')).toHaveText('Salda')
-  //   await expect(page.getByRole('link', { name: 'Delegacje' })).toBeVisible()
-  //   await expect(page.getByTestId('wallet-hive-description')).toHaveText('Zbywalne tokeny, które mogą być przesłane gdziekolwiek w dowolnym momencie. HIVE mogą zostać również przekonwertowane na HIVE POWER w procesie nazywanym zwiększenie mocy.')
-  //   await expect(page.getByTestId('wallet-hive-power-description')).toContainText('Tokeny wpływu, które zwiększają Twój wpływ na podział wypłat za publikowanie treści, oraz pozwalają Ci zarabiać na głosowaniu na treści. Część z Twoich jednostek wpływu HIVE POWER jest Ci oddelegowana. Delegowanie jednostek to czasowe użyczenie dla zwiększenia wpływu lub by pomóc nowym użytkownikom platformy w korzystaniu ze Hive. Kwota oddelegowanych jednostek może się zmieniać w czasie. ')
-  //   await expect(page.getByTestId('wallet-account-history-description')).toContainText('Uważaj na spam i linki phishingowe w notatkach transakcji. Nie otwieraj linków od użytkowników, którym nie ufasz. Nie udostępniaj swoich kluczy prywatnych żadnym stronom internetowym osób trzecich. Transakcje nie zostaną wyświetlone, dopóki nie zostaną potwierdzone w blockchain, co może zająć kilka minut.')
-  // })
-
   test('Community page', async ({page}) =>{
     await page.goto('/');
     await homePage.getLeoFinanceCommunitiesLink.click()
@@ -191,20 +177,6 @@ test.describe('Translation tests', () => {
     await expect(await communitiesPage.communitySubscribeButton.textContent()).toBe('Subskrybuj')
     await expect(await communitiesPage.communityNewPostButton.textContent()).toBe('Nowy post')
   })
-
-  // test('Witnesses page', async ({page}) =>{
-  //   await page.goto('http://localhost:4000/~witnesses')
-  //   await expect(witnessPage.witnessHeaderTitle).toBeVisible()
-  //   await homePage.toggleLanguage.click()
-  //   await expect(homePage.languageMenu).toBeVisible()
-  //   await page.getByRole('menuitem', { name: 'pl' }).click()
-  //   await expect(witnessPage.witnessHeaderTitle).toBeVisible()
-  //   await expect(await witnessPage.witnessHeaderTitle.textContent()).toBe('Głosowanie na delegatów')
-  //   await expect(await witnessPage.witnessHeaderDescription.textContent()).toBe(
-  //   'Na poniższej liście znajduje sie 100 pierwszych delegatów, aktywnych jak również nieaktywnych. Każdy delegat powyżej 100 pozycji jest filtrowany i nie wyświetlany jeśli nie wyprodukował bloku w ostatnich 30 dniach.')
-  //   await expect(page.getByRole('button', { name: 'Zagłosuj' })).toBeVisible()
-  //   await expect(page.getByRole('button', { name: 'Ustaw pełnomocnika' })).toBeVisible()
-  // })
 
   test('Post page', async ({page}) =>{
     await page.goto('/');
@@ -304,7 +276,6 @@ test.describe('Translation tests', () => {
     await homePage.getNavSidebarMenu.click()
     
     await expect(homePage.getNavSidebarMenuContent).toBeVisible()
-    // li.text-foreground
     const menuItems = await page.$$('li.text-foreground');
 
     for (let i = 0; i < menuItems.length; i++) {
