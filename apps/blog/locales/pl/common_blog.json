@@ -176,7 +176,7 @@
     "max_accepted_payout": "Maksymalna wypłata: ${{value}}"
   },
   "login_form": {
-    "title": "Logowanie: ",
+    "title": "Powracający: ",
     "title_action_login": "Zaloguj się",
     "title_action_login_to_vote": "Zaloguj się, aby zagłosować",
     "username_placeholder": "Podaj nazwę użytkownika",
