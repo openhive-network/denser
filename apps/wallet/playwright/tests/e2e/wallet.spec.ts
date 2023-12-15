@@ -6,10 +6,10 @@ import { HomePage } from '../../../../blog/playwright/tests/support/pages/homePa
 
 test.describe("Wallet page tests", () => {
   let walletPage: WalletPage;
-  
+
   test.beforeEach(async ({ page }) => {
     walletPage = new WalletPage(page);
-    
+
   });
 
   test("validate that wallet page is loaded", async ({ page }) => {
@@ -302,8 +302,8 @@ test.describe("Wallet page of @gtg tests", () => {
     await walletPage.goToWalletPageOfUser("@gtg");
     await expect(page.locator('.container.p-0').last()).toBeVisible()
     await homePage.toggleLanguage.click()
-    await expect(homePage.languageMenu).toBeVisible()
-    await page.getByRole('menuitem', { name: 'pl' }).click()
+    await expect(homePage.languageMenu.first()).toBeVisible()
+    await homePage.languageMenuPl.click()
     await expect(page.locator('.container.p-0').last()).toBeVisible()
     await expect(page.getByTestId('wallet-balances-link')).toHaveText('Salda')
     await expect(page.getByRole('link', { name: 'Delegacje' })).toBeVisible()

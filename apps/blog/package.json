@@ -14,12 +14,12 @@
     "pw:test:local:experimental:ui": "playwright test --config=playwright.local3000.config.ts --ui"
   },
   "dependencies": {
-    "@hive/ui": "*",
-    "@hive/eslint-config-custom": "*",
-    "@hive/tsconfig": "*",
-    "@hive/tailwindcss-config": "*",
-    "@hive/prettier-config-custom": "*",
     "@beam-australia/react-env": "^3.1.1",
+    "@hive/eslint-config-custom": "*",
+    "@hive/prettier-config-custom": "*",
+    "@hive/tailwindcss-config": "*",
+    "@hive/tsconfig": "*",
+    "@hive/ui": "*",
     "@hiveio/content-renderer": "^1.1.1",
     "@hiveio/dhive": "^1.2.8",
     "@hookform/resolvers": "^3.1.1",
@@ -33,8 +33,13 @@
     "big.js": "^6.2.1",
     "class-variance-authority": "^0.6.1",
     "clsx": "^1.2.1",
+    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
+    "hive-auth-client": "^0.1.5",
+    "hive-keychain-commons": "^1.2.4",
+    "http-errors": "^2.0.0",
     "i": "^0.3.7",
+    "iron-session": "^8.0.1",
     "lucide-react": "^0.259.0",
     "moment": "^2.29.4",
     "multihashes": "^4.0.3",
@@ -43,8 +48,10 @@
     "next-themes": "^0.2.1",
     "next-transpile-modules": "^10.0.1",
     "npm": "^9.8.0",
+    "pino": "^8.16.2",
     "playwright-merge-html-reports": "^0.2.8",
     "prettier-plugin-tailwindcss": "^0.5.9",
+    "qrcode": "^1.5.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.49.1",
@@ -61,6 +68,9 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.40.1",
+    "@types/cors": "^2.8.17",
+    "@types/http-errors": "^2.0.4",
+    "@types/qrcode": "^1.5.5",
     "@types/yazl": "^2.4.2"
   }
 }

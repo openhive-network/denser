@@ -89,6 +89,7 @@ export class HomePage {
   readonly postCardPoweredUp100Tooltip: Locator;
   readonly toggleLanguage: Locator;
   readonly languageMenu: Locator;
+  readonly languageMenuPl: Locator;
   readonly themeMode: Locator;
 
   constructor(page: Page) {
@@ -172,8 +173,8 @@ export class HomePage {
     this.signupBtn = page.locator('[data-testid="signup-btn"]');
     this.loginModal = page.locator('[role="dialog"]');
     this.loginModalHeader = page.locator('h2');
-    this.loginModalUsernameInput = page.locator('#firstName');
-    this.loginModalPasswordInput = page.locator('#password');
+    this.loginModalUsernameInput = page.locator('[name="username"]');
+    this.loginModalPasswordInput = page.locator('[name="password"]');
     this.loginModalHiveAuthText = page.locator('[for="hiveAuth"]');
     this.loginModalKeepLoggedInText = page.locator('[for="remember"]');
     this.hivsignerBtn = page.locator('[data-testid="hivesigner-button"]');
@@ -183,8 +184,9 @@ export class HomePage {
     this.postCardPoweredUp100Trigger = page.locator('[data-testid="powered-up-100-trigger"]');
     this.postCardPoweredUp100TriggerLink = this.postCardPoweredUp100Trigger.locator('a');
     this.postCardPoweredUp100Tooltip = page.locator('[data-testid="powered-up-100-tooltip"]');
-    this.toggleLanguage = page.getByTestId('toggle-language');
-    this.languageMenu = page.locator('[role="menu"]');
+    this.toggleLanguage = page.locator('[data-testid="toggle-language"] span').first();
+    this.languageMenu = page.locator('[role="menuitem"]');
+    this.languageMenuPl = page.locator('[data-testid="pl"]');
     this.themeMode = page.locator('[data-testid="theme-mode"]');
   }
 
