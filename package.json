@@ -40,5 +40,8 @@
   "devDependencies": {
     "@turbo/gen": "^1.11.2",
     "turbo": "^1.11.2"
+  },
+  "volta": {
+    "node": "18.17.0"
   }
 }

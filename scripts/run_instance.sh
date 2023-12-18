@@ -94,10 +94,3 @@ if [[ "$DETACH" == "true" ]]; then
 fi
 
 docker run "${RUN_OPTIONS[@]}" "$IMAGE"
-# docker run --detach \
-#   --rm \
-#   --publish "$PORT:$PORT" \
-#   --env PORT="$PORT" \
-#   --env REACT_APP_API_ENDPOINT="$API_ENDPOINT" \
-#   --name "$CONTAINER_NAME" \
-#   "$IMAGE"
