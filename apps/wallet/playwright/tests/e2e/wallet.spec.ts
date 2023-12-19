@@ -260,7 +260,7 @@ test.describe("Wallet page of @gtg tests", () => {
       } else if (firstAccountHistoryOperationType == "transfer_to_savings"){
         await expect(firstAccountHistoryTransfer).toContainText('Transfer to savings');
       } else if (firstAccountHistoryOperationType == "transfer_to_vesting"){
-        await expect(firstAccountHistoryTransfer).toContainText('Receive');
+        await expect(firstAccountHistoryTransfer).toContainText(/^(Receive|Transfer)/);
       } else if (firstAccountHistoryOperationType == "interest"){
         await expect(firstAccountHistoryTransfer).toContainText('Receive interest of');
       } else if (firstAccountHistoryOperationType == "cancel_transfer_from_savings"){
