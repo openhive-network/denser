@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.5
 FROM node:20-alpine AS base
 
 FROM base AS builder
@@ -20,7 +21,6 @@ RUN apk update
 WORKDIR /app
 
 # First install the dependencies (as they change less often)
-RUN npm i -g @beam-australia/react-env@3.1.1
 RUN npm i -g turbo
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/package-lock.json ./package-lock.json
@@ -35,11 +35,15 @@ FROM base AS runner
 ARG TURBO_APP_PATH
 WORKDIR /app
 
+RUN npm i -g @beam-australia/react-env@3.1.1
+RUN apk add --no-cache tini
+
 # Don't run production as root
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 USER nextjs
 
+COPY --from=builder /app/docker/docker-entrypoint.sh .
 COPY --from=installer /app${TURBO_APP_PATH}/next.config.js .
 COPY --from=installer /app${TURBO_APP_PATH}/package.json .
 COPY --from=installer /app/node_modules ./node_modules
@@ -56,4 +60,5 @@ COPY --from=installer --chown=nextjs:nodejs /app${TURBO_APP_PATH}/lib/markdown[s
 EXPOSE 3000
 EXPOSE 4000
 
+ENTRYPOINT ["/sbin/tini", "--", "/app/docker-entrypoint.sh"]
 CMD node .${TURBO_APP_PATH}/server.js

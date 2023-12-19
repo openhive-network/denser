@@ -3,3 +3,10 @@
 .gitlab-ci.yml
 
 .env.local
+
+.idea
+.turbo
+**/.turbo
+**/.next
+**/node_modules
+node_modules
