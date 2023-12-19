@@ -12,7 +12,10 @@ OPTIONS:
   --registry=URL        Docker registry to assign the image to (default: 'registry.gitlab.syncad.com/hive/denser')
   --tag=TAG             Docker tag to be build (default: 'latest')
   --progress=TYPE       Determines how to display build progress (default: 'auto')
-  -?|--help             Display this help screen and exit
+  --app-scope=SCOPE     App scope (eg. '@hive/auth')
+  --app-path=PATH       App path (eg. '/apps/auth)
+  --app-name=NAME       App name (eg. 'auth')
+  --help|-h|-?          Display this help screen and exit
 EOF
 }
 
@@ -49,7 +52,7 @@ while [ $# -gt 0 ]; do
         arg="${1#*=}"
         TURBO_APP_NAME="$arg"
         ;;
-    --help|-?)
+    --help|-h|-?)
         print_help
         exit 0
         ;;

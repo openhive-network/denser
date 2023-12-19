@@ -151,7 +151,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
       await expect(communityPage.communityInfoSidebar.locator('h3')).toHaveText(
         firstCommentCardCommunityName
       );
-      await communityPage.validataCommunitiesPageIsLoaded(firstCommentCardCommunityName);
+      await communityPage.quickValidataCommunitiesPageIsLoaded(firstCommentCardCommunityName);
     }
   });
 
