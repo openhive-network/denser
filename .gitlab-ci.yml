@@ -256,7 +256,7 @@ staging:deploy-auth:
   needs:
     - docker-build-auth
   variables:
-    PORT: 6000
+    PORT: 8000
     API_ENDPOINT: https://api.hive.blog
     IMAGES_ENDPOINT: https://images.hive.blog/
     CONTAINER_NAME: denser-auth
@@ -347,7 +347,7 @@ staging:stop-wallet:
 review:deploy-auth:
   extends: staging:deploy-auth
   variables:
-    PORT: 6001
+    PORT: 8001
     CONTAINER_NAME: denser-review-auth
   environment:
     name: review-auth

@@ -55,5 +55,6 @@ COPY --from=installer --chown=nextjs:nodejs /app${TURBO_APP_PATH}/lib/markdown[s
 # Expose ports 3000 and 4000 for the sake of GitLab CI healthcheck
 EXPOSE 3000
 EXPOSE 4000
+EXPOSE 8000
 
 CMD node .${TURBO_APP_PATH}/server.js
