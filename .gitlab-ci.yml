@@ -38,10 +38,12 @@ include:
         export TAG="$CI_COMMIT_REF_SLUG"
       fi
       echo -e "\e[0Ksection_end:$(date +%s):tag\r\e[0K"
-      echo -e "\e[0Ksection_start:$(date +%s):build[collapsed=true]\r\e[0KBaking image "$CI_REGISTRY_IMAGE:$TAG"..."
+      echo -e "\e[0Ksection_start:$(date +%s):build[collapsed=true]\r\e[0KBaking image "$CI_REGISTRY_IMAGE/${TURBO_APP_NAME}:${TAG}"..."
       git config --global --add safe.directory "$CI_PROJECT_DIR"
       scripts/build_instance.sh --progress=plain "$CI_PROJECT_DIR"
-      echo "IMAGE_NAME=${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:$CI_COMMIT_SHORT_SHA" > docker-build.env
+      echo "IMAGE_NAME=${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:${CI_COMMIT_SHORT_SHA}" > docker-build.env
+      echo "Unique image tag:"
+      cat docker-build.env
       echo -e "\e[0Ksection_end:$(date +%s):build\r\e[0K"
   artifacts:
     paths:
@@ -57,7 +59,6 @@ docker-build-auth:
     TURBO_APP_SCOPE: '@hive/auth'
     TURBO_APP_PATH: '/apps/auth'
     TURBO_APP_NAME: 'auth'
-    TAG: 'auth'
 
 docker-build-blog:
   extends: .docker_build_template
@@ -65,7 +66,6 @@ docker-build-blog:
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
     TURBO_APP_NAME: 'blog'
-    TAG: 'blog'
 
 docker-build-wallet:
   extends: .docker_build_template
@@ -73,7 +73,6 @@ docker-build-wallet:
     TURBO_APP_SCOPE: '@hive/wallet'
     TURBO_APP_PATH: '/apps/wallet'
     TURBO_APP_NAME: 'wallet'
-    TAG: 'wallet'
 
 .node-job:
   extends: .job-defaults
@@ -256,7 +255,7 @@ staging:deploy-auth:
   needs:
     - docker-build-auth
   variables:
-    PORT: 6000
+    PORT: 7000
     API_ENDPOINT: https://api.hive.blog
     IMAGES_ENDPOINT: https://images.hive.blog/
     CONTAINER_NAME: denser-auth
@@ -347,7 +346,7 @@ staging:stop-wallet:
 review:deploy-auth:
   extends: staging:deploy-auth
   variables:
-    PORT: 6001
+    PORT: 7001
     CONTAINER_NAME: denser-review-auth
   environment:
     name: review-auth
