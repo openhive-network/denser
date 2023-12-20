@@ -12,6 +12,7 @@ import HiveAuthUtils from '@/auth/lib/hive-auth-utils';
 import { useLocalStorage } from '@/auth/lib/use-local-storage';
 import { getLogger } from '@hive/ui/lib/logging';
 import { Avatar, AvatarFallback, AvatarImage } from '@hive/ui/components/avatar';
+import { authService } from '@/auth/lib/hb-auth-service';
 
 const logger = getLogger('app');
 
@@ -40,6 +41,19 @@ const SiteHeader: FC = () => {
       logger.error('Error in logout', error);
     }
   };
+
+  // check authorization if user already authorized
+  useEffect(() => {
+    authService.getOnlineClient().then((client) => {
+      client.getAuths().then((auths) => {
+        const user = auths.find((user) => user.authorized);
+        if (user) {
+          setUsername(user?.username)
+          setCurrentProfileKeyType(user?.keyType!)
+        }
+      })
+    })
+  }, [])
 
   async function handleLogout() {
     const authClient = await authService.getOnlineClient();
