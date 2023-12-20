@@ -49,12 +49,30 @@ const SiteHeader: FC = () => {
         <div className="flex flex-1 items-center justify-between space-x-2 sm:space-x-4 md:justify-end">
           <nav className="flex items-center space-x-1">
             <div className="mx-1 hidden gap-1 sm:flex">
+
               {isClient && user?.isLoggedIn === false && (
                 <Link href="https://signup.hive.io/">
                   <Button variant="redHover" size="sm" className="h-10">
                     Sign Up
                   </Button>
                 </Link>
+              )}
+
+              {isClient && user?.isLoggedIn === true && (
+                <Button variant="ghost" className="text-base hover:text-red-500" onClick={handleLogout}>
+                  Logout HBAuth
+                </Button>
+              )}
+
+              {isClient && user?.isLoggedIn === false && (
+                <DialogHBAuth onAuthComplete={(username, keyType) => {
+                  setUsername(username);
+                  setCurrentProfileKeyType(keyType)
+                }}>
+                  <Button variant="ghost" className="text-base hover:text-red-500">
+                    Login HBAuth
+                  </Button>
+                </DialogHBAuth>
               )}
 
               {isClient && user?.isLoggedIn === false && (
