@@ -45,6 +45,7 @@ const CommunitiesSidebar: FC = () => {
             <Link
               href={`/communities`}
               className="w-full text-sm font-medium hover:cursor-pointer hover:text-red-600"
+              data-testid="explore-communities-link"
             >
               {t('navigation.communities_nav.explore_communities')}
             </Link>

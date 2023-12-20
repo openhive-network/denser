@@ -1,6 +1,6 @@
 import { test, expect, Locator } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
-import { CommunitiesPage } from '../support/pages/communitiesExplorerPage';
+import { CommunitiesExplorePage } from '../support/pages/communitiesExplorerPage';
 
 test.describe('Home page tests - All posts', () => {
   let homePage: HomePage;
@@ -29,7 +29,7 @@ test.describe('Home page tests - All posts', () => {
   });
 
   test('move to Explore communities... from Home Page', async ({ page }) => {
-    const communitiesPage = new CommunitiesPage(page);
+    const communitiesPage = new CommunitiesExplorePage(page);
 
     await homePage.goto();
     await homePage.getExploreCommunities.click();

@@ -41,6 +41,7 @@ export class PostPage {
   readonly commentCardsFooterReply: Locator;
   readonly commentCardsFooterReplyEditor: Locator;
   readonly commentShowButton: Locator;
+  readonly postVoterList: Locator;
   readonly reputationValue: Locator;
   readonly commentPageLink: Locator;
   readonly getFirstCommentPageLink: Locator;
@@ -57,7 +58,9 @@ export class PostPage {
   readonly footerAuthorNameFirst: Locator;
   readonly votesButtons: Locator;
   readonly footerPayouts: Locator;
+  readonly footerPayoutsTooltip: Locator;
   readonly footerReblogBtn: Locator;
+  readonly footerReblogBtnCardList: Locator;
   readonly reblogDialogHeader: Locator;
   readonly reblogDialogDescription: Locator;
   readonly reblogDialogCancelBtn: Locator;
@@ -65,6 +68,7 @@ export class PostPage {
   readonly reblogDialogCloseBtn: Locator;
   readonly commentReplay: Locator;
   readonly commentResponse: Locator;
+  readonly postResponseTooltip: Locator;
   readonly facebookIcon: Locator;
   readonly twitterIcon: Locator;
   readonly linkedinIcon: Locator;
@@ -77,6 +81,10 @@ export class PostPage {
   readonly postsCommentsFirstAvatar: Locator;
   readonly mutedPostsBannedImageText: Locator;
   readonly userPostMenu: Locator;
+  readonly postFooterUpvoteButton: Locator;
+  readonly postFooterUpvoteTooltip: Locator;
+  readonly postFooterDownvoteButton: Locator;
+  readonly postFooterDownvoteTooltip: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -119,6 +127,7 @@ export class PostPage {
     this.commentCardsFooterPayoutNonZero = page.locator('[data-testid="comment-card-footer-payout"]');
     this.commentCardsFooterPayoutZero = page.locator('[data-testid="post-payout"]');
     this.commentCardsFooterVotes = this.commentCardsFooters.locator('[data-testid="comment-votes"]');
+    this.postVoterList = page.locator('[data-testid="list-of-voters"]');
     this.commentCardsFooterReply = this.commentCardsFooters.locator('[data-testid="comment-card-footer-reply"]');
     this.commentCardsFooterReplyEditor = page.locator('[data-testid="reply-editor"]');
     this.commentShowButton = page.locator('[data-testid="comment-show-button"]');
@@ -135,7 +144,9 @@ export class PostPage {
     this.hoverCardUserAvatar = page.locator("[data-testid='hover-card-user-avatar']")
     this.votesButtons = page.locator('[data-testid="comment-vote-buttons"]')
     this.footerPayouts = page.locator('[data-testid="comment-payout"]')
+    this.footerPayoutsTooltip = page.locator('[data-testid="payout-post-card-tooltip"]')
     this.footerReblogBtn = page.locator('svg.h-4.w-4.cursor-pointer')
+    this.footerReblogBtnCardList = page.locator('[data-test="post-footer-reblog-tooltip"]');
     this.reblogDialogHeader = page.locator('[data-testid="reblog-dialog-header"]')
     this.reblogDialogDescription = page.locator('[data-testid="reblog-dialog-description"]')
     this.reblogDialogCancelBtn = page.locator('[data-testid="reblog-dialog-cancel"]')
@@ -143,10 +154,11 @@ export class PostPage {
     this.reblogDialogCloseBtn = page.locator('[data-testid="reblog-dialog-close"]')
     this.commentReplay = page.locator('[data-testid="comment-reply"]')
     this.commentResponse = page.locator('[data-testid="comment-respons"]')
-    this.facebookIcon = page.locator('[title="Share on Facebook"]')
-    this.twitterIcon = page.locator('[title="Share on Twitter"]')
-    this.linkedinIcon = page.locator('[title="Share on LinkedIn"]')
-    this.redditIcon = page.locator('[title="Share on Reddit"]')
+    this.postResponseTooltip = page.locator('[data-testid="post-footer-response-tooltip"]');
+    this.facebookIcon = page.locator('[data-testid="share-on-facebook"]'); // page.locator('[title="Share on Facebook"]')
+    this.twitterIcon = page.locator('[data-testid="share-on-twitter"]'); // page.locator('[title="Share on Twitter"]')
+    this.linkedinIcon = page.locator('[data-testid="share-on-linkedin"]'); // page.locator('[title="Share on LinkedIn"]')
+    this.redditIcon = page.locator('[data-testid="share-on-reddit"]'); // page.locator('[title="Share on Reddit"]')
     this.sharePostBtn = page.locator('[data-testid="share-post"]')
     this.sharePostFrame = page.locator('[role="dialog"]')
     this.hashtagsPosts = page.locator('[data-testid="hashtags-post"]')
@@ -155,6 +167,10 @@ export class PostPage {
     this.postsCommentsFirstAvatar = page.locator('[data-testid="comment-author-avatar"]').first()
     this.mutedPostsBannedImageText = page.locator('#articleBody .text-red-500').first()
     this.userPostMenu = page.getByTestId('user-post-menu')
+    this.postFooterUpvoteButton = page.locator('[data-testid="post-footer-upvote-button"]');
+    this.postFooterUpvoteTooltip = page.locator('[data-testid="post-footer-upvote-tooltip"]');
+    this.postFooterDownvoteButton = page.locator('[data-testid="post-footer-downvote-button"]');
+    this.postFooterDownvoteTooltip = page.locator('[data-testid="post-footer-downvote-tooltip"]');
   }
 
   async gotoHomePage() {

@@ -24,7 +24,7 @@ export default function VotersDetailsData({ post }: { post: Entry }) {
       .slice(0, 20);
 
   return (
-    <ul>
+    <ul data-testid="list-of-voters">
       {sliced &&
         sliced.map((vote: Vote, index: number) => (
           <li key={index}>
