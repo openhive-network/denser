@@ -17,7 +17,7 @@ import {
 import { isBrowser, AuthUser } from '@hive/hb-auth';
 import type { KeyAuthorityType } from '@hive/hb-auth';
 import { toast } from '@ui/components/hooks/use-toast';
-import { authService } from '@/auth/lib/hb-auth-service';
+import { authService } from '@/auth/lib/auth-service';
 
 interface DialogHBAuthProps {
   children: ReactNode;
@@ -81,6 +81,17 @@ function DialogHBAuth({ children, onAuthComplete }: DialogHBAuthProps) {
           .authenticate(username, password, keyType)
           .then(async () => {
             const auth = await authClient.getAuthByUser(username);
+
+            const digest = Buffer.from(
+              JSON.stringify({ token: 'a2627bfc-e97a-425d-a903-a68f1a7b5c5d' }, null, 0)
+              ).toString('hex');
+            const signature = await authClient.sign(
+              auth?.username,
+              digest,
+              'posting'
+              );
+            console.info({digest, signature});
+
             updateStatus(auth);
           })
           .catch((err: any) => {

@@ -12,7 +12,7 @@ import HiveAuthUtils from '@/auth/lib/hive-auth-utils';
 import { useLocalStorage } from '@/auth/lib/use-local-storage';
 import { getLogger } from '@hive/ui/lib/logging';
 import { Avatar, AvatarFallback, AvatarImage } from '@hive/ui/components/avatar';
-import { authService } from '@/auth/lib/hb-auth-service';
+import { authService } from '@/auth/lib/auth-service';
 import DialogHBAuth from '@/auth/components/dialog-hb-auth';
 
 const logger = getLogger('app');
@@ -49,9 +49,10 @@ const SiteHeader: FC = () => {
     const getUser = async () => {
       const client = await authService.getOnlineClient();
       const auths = await client.getAuths();
+      logger.info({auths});
       const user = auths.find((user) => user.authorized);
       if (user) {
-        logger.info('found authorized user: %s', user);
+        logger.info('found authorized user: %o', user);
         // setUsername(user?.username)
         // setCurrentProfileKeyType(user?.keyType!)
       } else {
