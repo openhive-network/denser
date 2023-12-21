@@ -25,7 +25,7 @@ interface DialogHBAuthProps {
 }
 
 function DialogHBAuth({ children, onAuthComplete }: DialogHBAuthProps) {
-  const { t } = useTranslation('common_blog');
+  const { t } = useTranslation('common_auth');
   const [open, setOpen] = useState(false);
   const [k, setKey] = useState('');
 

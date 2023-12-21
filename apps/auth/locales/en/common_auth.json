@@ -36,7 +36,7 @@
   "login_form": {
     "cancel_button": "Cancel",
     "keep_me_logged_in": "Keep me logged in",
-    "login_button": "Login",
+    "login_button": "Submit",
     "more_login_methods": "more login methods",
     "password_placeholder": "Password or WIF",
     "reset_button": "Reset",
