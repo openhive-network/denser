@@ -103,6 +103,9 @@ export default function LoginPage() {
         throw new Error('Hiveauth login failed');
       }
 
+    } else if (loginType === LoginTypes.hbauth) {
+        logger.info('should handle login with hbauth, but it\'s not implemented');
+        throw new Error('Not implemented');
     } else if (loginType === LoginTypes.password) {
       try {
         const privateKey = PrivateKey.fromString(password);
