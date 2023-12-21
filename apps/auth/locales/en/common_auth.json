@@ -44,6 +44,7 @@
     "title_action_login_to_vote": "Login to Vote",
     "title_action_login": "Login",
     "title": "Returning Users: ",
+    "use_hbauth": "Use Hbauth",
     "use_hiveauth": "Use HiveAuth",
     "use_keychain": "Use Keychain",
     "username_placeholder": "Enter your username"

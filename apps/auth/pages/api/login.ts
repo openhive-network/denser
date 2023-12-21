@@ -14,6 +14,7 @@ import { FullAccount } from "@hive/ui/store/app-types";
 
 export enum LoginTypes {
   password = 'password',
+  hbauth = 'hbauth',
   hiveauth = 'hiveauth',
   hivesigner = 'hivesigner',
   keychain = 'keychain',

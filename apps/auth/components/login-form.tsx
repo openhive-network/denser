@@ -32,6 +32,7 @@ const passwordField = z.object({
 
 const commonFields = z.object({
   username,
+  useHbauth: z.boolean(),
   useKeychain: z.boolean(),
   useHiveauth: z.boolean(),
   remember: z.boolean(),
@@ -42,6 +43,8 @@ const commonFieldsWithPassword = commonFields.merge(passwordField)
 const loginFormSchema = z.discriminatedUnion('loginType', [
   z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.password) })
     .merge(commonFieldsWithPassword),
+  z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.hbauth) })
+    .merge(commonFields),
   z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.hiveauth) })
     .merge(commonFields),
   z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.keychain) })
@@ -53,12 +56,13 @@ const loginFormSchema = z.discriminatedUnion('loginType', [
 export type LoginFormSchema = z.infer<typeof loginFormSchema>;
 
 const loginFormDefaultValues = {
-  username: '',
-  password: '',
   loginType: LoginTypes.password,
-  useKeychain: false,
-  useHiveauth: false,
+  password: '',
   remember: false,
+  useHbauth: false,
+  useHiveauth: false,
+  useKeychain: false,
+  username: '',
 }
 
 export function LoginForm({
@@ -91,6 +95,9 @@ export function LoginForm({
       if (getValues('useHiveauth')) {
         setValue('useHiveauth', false);
       }
+      if (getValues('useHbauth')) {
+        setValue('useHbauth', false);
+      }
       trigger('password');
     } else {
       setValue('useKeychain', false);
@@ -105,9 +112,29 @@ export function LoginForm({
       if (getValues('useKeychain')) {
         setValue('useKeychain', false);
       }
+      if (getValues('useHbauth')) {
+        setValue('useHbauth', false);
+      }
       trigger('password');
     } else {
       setValue('useHiveauth', false);
+      setValue('loginType', LoginTypes.password);
+    }
+  };
+
+  const onHbauthToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setValue('useHbauth', true);
+      setValue('loginType', LoginTypes.hbauth);
+      if (getValues('useHiveauth')) {
+        setValue('useHiveauth', false);
+      }
+      if (getValues('useKeychain')) {
+        setValue('useKeychain', false);
+      }
+      trigger('password');
+    } else {
+      setValue('useHbauth', false);
       setValue('loginType', LoginTypes.password);
     }
   };
@@ -199,6 +226,27 @@ export function LoginForm({
                   alt="Hiveauth logo"
                 />
                 {t('login_form.use_hiveauth')}
+              </label>
+            </div>
+
+            <div className="flex items-center py-1">
+              <input
+                type="checkbox"
+                value=""
+                className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
+                {...register("useHbauth")}
+                onChange={e => onHbauthToggle(e)}
+                />
+              <label
+                htmlFor="useHbauth"
+                className="ml-2 flex text-sm font-medium text-gray-900"
+              >
+                <img
+                  className="mr-1 h-4 w-4"
+                  src="/images/hive-blog-twshare.png"
+                  alt="Hbauth logo"
+                />
+                {t('login_form.use_hbauth')}
               </label>
             </div>
 
