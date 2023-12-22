@@ -31,7 +31,7 @@ const passwordField = z.object({
 });
 
 const passwordHbauthField = z.object({
-  passwordHbauth: z.string(),
+  passwordHbauth: z.string().min(1, { message: 'Minimum length 1 character' }),
 });
 
 const commonFields = z.object({
@@ -82,7 +82,9 @@ export function LoginForm({
   logger.debug('Starting LoginForm');
 
   const { t } = useTranslation('common_auth');
-  const [isKeychainSupported, setIsKeychainSupported] = useState(false)
+  const [isKeychainSupported, setIsKeychainSupported] = useState(false);
+  const [disabledPasword, setDisabledPassword] = useState(false);
+  const [disabledPaswordHbauth, setDisabledPasswordHbauth] = useState(true);
 
   useEffect(() => {
     setIsKeychainSupported(hasCompatibleKeychain());
@@ -105,9 +107,13 @@ export function LoginForm({
         setValue('useHbauth', false);
       }
       trigger('password');
+      setDisabledPassword(true);
+      setDisabledPasswordHbauth(true);
     } else {
       setValue('useKeychain', false);
       setValue('loginType', LoginTypes.password);
+      setDisabledPassword(false);
+      setDisabledPasswordHbauth(true);
     }
   };
 
@@ -122,9 +128,13 @@ export function LoginForm({
         setValue('useHbauth', false);
       }
       trigger('password');
+      setDisabledPassword(true);
+      setDisabledPasswordHbauth(true);
     } else {
       setValue('useHiveauth', false);
       setValue('loginType', LoginTypes.password);
+      setDisabledPassword(false);
+      setDisabledPasswordHbauth(true);
     }
   };
 
@@ -139,9 +149,13 @@ export function LoginForm({
         setValue('useKeychain', false);
       }
       trigger('password');
+      setDisabledPassword(true);
+      setDisabledPasswordHbauth(false);
     } else {
       setValue('useHbauth', false);
       setValue('loginType', LoginTypes.password);
+      setDisabledPassword(false);
+      setDisabledPasswordHbauth(true);
     }
   };
 
@@ -160,6 +174,7 @@ export function LoginForm({
               type="text"
               className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 pl-11 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
               placeholder={t('login_form.username_placeholder')}
+              autoComplete="username"
               {...register("username")}
               aria-invalid={errors.username ? "true" : "false"}
             />
@@ -174,11 +189,13 @@ export function LoginForm({
             )}
           </div>
 
-          <div>
+          <div className="relative mb-5">
             <input
               type="password"
               className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
               placeholder={t('login_form.password_placeholder')}
+              autoComplete="current-password"
+              disabled={disabledPasword}
               {...register("password")}
             />
             {/* @ts-ignore */}
@@ -190,11 +207,13 @@ export function LoginForm({
             )}
           </div>
 
-          <div>
+          <div className="relative mb-5">
             <input
               type="password"
               className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
               placeholder={t('login_form.password_hbauth_placeholder')}
+              autoComplete="current-password"
+              disabled={disabledPaswordHbauth}
               {...register("passwordHbauth")}
             />
             {/* @ts-ignore */}
