@@ -43,30 +43,6 @@ const SiteHeader: FC = () => {
     }
   };
 
-  // check authorization if user already authorized
-  useEffect(() => {
-
-    const getUser = async () => {
-      const client = await authService.getOnlineClient();
-      const auths = await client.getAuths();
-      logger.info({auths});
-      const user = auths.find((user) => user.authorized);
-      if (user) {
-        logger.info('found authorized user: %o', user);
-        // setUsername(user?.username)
-        // setCurrentProfileKeyType(user?.keyType!)
-      } else {
-        logger.info('authorized user not found: %s', user);
-      }
-
-    };
-
-    getUser().catch((e) => {
-      logger.error('Caught error in useEffect.getUser()');
-      logger.error(e);
-    });
-  }, [])
-
   async function handleLogout() {
     logger.info('Starting handleLogout');
     // const authClient = await authService.getOnlineClient();

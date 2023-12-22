@@ -1,16 +1,15 @@
 import { OnlineClient } from '@hive/hb-auth';
 
 class AuthService {
-  static instance: OnlineClient;
+  static onlineClient: OnlineClient;
 
   async getOnlineClient() {
-    if (!AuthService.instance) {
-      const client = new OnlineClient();
-      AuthService.instance = await client.initialize();
+    if (!AuthService.onlineClient) {
+      AuthService.onlineClient = await new OnlineClient().initialize();
     }
-
-    return AuthService.instance;
+    return AuthService.onlineClient;
   }
+
 }
 
 export const authService = new AuthService();

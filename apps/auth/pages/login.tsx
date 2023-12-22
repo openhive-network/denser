@@ -13,6 +13,7 @@ import { Signatures, PostLoginSchema, LoginTypes } from '@/auth/pages/api/login'
 import HiveAuthUtils from '@/auth/lib/hive-auth-utils';
 import { useLocalStorage } from '@/auth/lib/use-local-storage';
 import { parseCookie } from '@/auth/lib/utils';
+import { authService } from '@/auth/lib/auth-service';
 
 const logger = getLogger('app');
 
@@ -104,8 +105,32 @@ export default function LoginPage() {
       }
 
     } else if (loginType === LoginTypes.hbauth) {
-        logger.info('should handle login with hbauth, but it\'s not implemented');
+
+        try {
+          const client = await authService.getOnlineClient();
+          const auths = await client.getAuths();
+          logger.info({auths});
+          const user = auths.find((user) => user.username === username);
+          if (user) {
+            logger.info('found user: %o', user);
+            if (user.authorized) {
+              logger.info('user is authorized');
+              // We're ready to sign a message, co login here.
+            } else {
+              logger.info('user is not authorized');
+              // We should tell to unlock wallet (login to wallet).
+            }
+          } else {
+            logger.info('user not found: %s', username);
+            // We should offer adding account to wallet.
+          }
+        } catch (e) {
+          logger.error('Caught error in useEffect.getUser()');
+          logger.error(e);
+        }
+
         throw new Error('Not implemented');
+
     } else if (loginType === LoginTypes.password) {
       try {
         const privateKey = PrivateKey.fromString(password);
