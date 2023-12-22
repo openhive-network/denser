@@ -38,6 +38,7 @@
     "keep_me_logged_in": "Keep me logged in",
     "login_button": "Submit",
     "more_login_methods": "more login methods",
+    "password_hbauth_placeholder": "Password to Hbauth Wallet",
     "password_placeholder": "Password or WIF",
     "reset_button": "Reset",
     "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password.",

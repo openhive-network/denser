@@ -30,6 +30,10 @@ const passwordField = z.object({
     })
 });
 
+const passwordHbauthField = z.object({
+  passwordHbauth: z.string(),
+});
+
 const commonFields = z.object({
   username,
   useHbauth: z.boolean(),
@@ -39,12 +43,13 @@ const commonFields = z.object({
 });
 
 const commonFieldsWithPassword = commonFields.merge(passwordField)
+const commonFieldsWithPasswordHbauth = commonFields.merge(passwordHbauthField)
 
 const loginFormSchema = z.discriminatedUnion('loginType', [
   z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.password) })
     .merge(commonFieldsWithPassword),
   z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.hbauth) })
-    .merge(commonFields),
+    .merge(commonFieldsWithPasswordHbauth),
   z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.hiveauth) })
     .merge(commonFields),
   z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.keychain) })
@@ -58,6 +63,7 @@ export type LoginFormSchema = z.infer<typeof loginFormSchema>;
 const loginFormDefaultValues = {
   loginType: LoginTypes.password,
   password: '',
+  passwordHbauth: '',
   remember: false,
   useHbauth: false,
   useHiveauth: false,
@@ -180,6 +186,22 @@ export function LoginForm({
               <p className="text-red-500 text-sm" role="alert">{
                 /* @ts-ignore */
                 t(errors.password.message)
+                }</p>
+            )}
+          </div>
+
+          <div>
+            <input
+              type="password"
+              className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
+              placeholder={t('login_form.password_hbauth_placeholder')}
+              {...register("passwordHbauth")}
+            />
+            {/* @ts-ignore */}
+            {errors.passwordHbauth?.message && (
+              <p className="text-red-500 text-sm" role="alert">{
+                /* @ts-ignore */
+                t(errors.passwordHbauth.message)
                 }</p>
             )}
           </div>

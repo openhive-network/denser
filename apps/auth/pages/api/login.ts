@@ -87,7 +87,9 @@ const verifyLoginChallenge = async (
       const verified = publicKey.verify(messageHash, sig);
       if (!verified) {
         logger.error(
-          `verifyLoginChallenge signature verification failed for user ${chainAccount.name}`
+          'verifyLoginChallenge signature verification failed for user %s %o',
+          chainAccount.name,
+          {message, messageHash: messageHash.toString('hex'), signature}
         );
       }
       return verified;

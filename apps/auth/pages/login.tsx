@@ -52,7 +52,7 @@ export default function LoginPage() {
         keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting,
       ): Promise<Signatures> => {
     logger.info('in signLoginChallenge %o',
-        {loginType, username, loginChallenge});
+        {loginType, username, loginChallenge, password});
     const signatures: Signatures = {};
     const challenge = { token: loginChallenge };
     const message = JSON.stringify(challenge, null, 0);
@@ -106,30 +106,68 @@ export default function LoginPage() {
 
     } else if (loginType === LoginTypes.hbauth) {
 
-        try {
-          const client = await authService.getOnlineClient();
-          const auths = await client.getAuths();
-          logger.info({auths});
-          const user = auths.find((user) => user.username === username);
-          if (user) {
-            logger.info('found user: %o', user);
-            if (user.authorized) {
-              logger.info('user is authorized');
-              // We're ready to sign a message, co login here.
-            } else {
-              logger.info('user is not authorized');
-              // We should tell to unlock wallet (login to wallet).
-            }
-          } else {
-            logger.info('user not found: %s', username);
-            // We should offer adding account to wallet.
-          }
-        } catch (e) {
-          logger.error('Caught error in useEffect.getUser()');
-          logger.error(e);
+      const sign = async (
+          username: string,
+          password: string,
+          message: string,
+          keyType: 'posting' | 'active' = 'posting',
+          ) => {
+        logger.info('sign args: %o', {username, password, message, keyType});
+
+        const authClient = await authService.getOnlineClient();
+        const auth = await authClient.getAuthByUser(username);
+        logger.info({auth});
+
+        if (!auth) {
+          throw new Error(`No auth for username ${username}`);
         }
 
-        throw new Error('Not implemented');
+        if (!auth.authorized) {
+          const authStatus = await authClient.authenticate(username, password, keyType);
+          logger.info({authStatus});
+          if (!authStatus.ok) {
+            throw new Error(`Unlocking wallet failed`);
+          }
+        }
+
+        const digest = cryptoUtils.sha256(message).toString('hex');
+        const signature = await authClient.sign(
+          username,
+          digest,
+          keyType
+          );
+        logger.info({digest, signature});
+
+        return signature;
+      };
+
+      const checkAuths = async (username: string) => {
+        const authClient = await authService.getOnlineClient();
+        const auths = await authClient.getAuths();
+        logger.info({auths});
+        const user = auths.find((user) => user.username === username);
+        if (user) {
+          logger.info('found user: %o', user);
+          if (user.authorized) {
+            logger.info('user is authorized');
+            // We're ready to sign loginChallenge and proceed.
+          } else {
+            logger.info('user is not authorized');
+            // We should tell to unlock wallet (login to wallet).
+          }
+        } else {
+          logger.info('user not found: %s', username);
+          // We should offer adding account to wallet.
+        }
+      };
+
+      try {
+        signatures.posting = await sign(username, password, message, keyType);
+        await checkAuths(username);
+      } catch (e) {
+        logger.error('Caught error');
+        logger.error(e);
+      }
 
     } else if (loginType === LoginTypes.password) {
       try {
@@ -158,6 +196,8 @@ export default function LoginPage() {
     let password = '';
     if (data.loginType === LoginTypes.password) {
       password = data.password;
+    } else if (data.loginType === LoginTypes.hbauth) {
+      password = data.passwordHbauth;
     }
     let signatures: Signatures = {};
     let hivesignerToken = '';
