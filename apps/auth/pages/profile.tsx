@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next';
+import { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from 'next-i18next.config';
 import { useState, useEffect } from "react";

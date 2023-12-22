@@ -41,7 +41,7 @@ function DialogHBAuth({ children, onAuthComplete }: DialogHBAuthProps) {
         toast({
           title: 'Success!',
           description: `Authorized with username: @${user.username}`,
-          variant: 'success'
+          variant: 'default'
         });
         setOpen(false);
         onAuthComplete(user.username, user.keyType!);
@@ -81,17 +81,6 @@ function DialogHBAuth({ children, onAuthComplete }: DialogHBAuthProps) {
           .authenticate(username, password, keyType)
           .then(async () => {
             const auth = await authClient.getAuthByUser(username);
-
-            const digest = Buffer.from(
-              JSON.stringify({ token: 'a2627bfc-e97a-425d-a903-a68f1a7b5c5d' }, null, 0)
-              ).toString('hex');
-            const signature = await authClient.sign(
-              auth?.username,
-              digest,
-              'posting'
-              );
-            console.info({digest, signature});
-
             updateStatus(auth);
           })
           .catch((err: any) => {

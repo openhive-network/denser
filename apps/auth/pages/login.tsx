@@ -110,7 +110,7 @@ export default function LoginPage() {
           username: string,
           password: string,
           message: string,
-          keyType: 'posting' | 'active' = 'posting',
+          keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting,
           ) => {
         logger.info('sign args: %o', {username, password, message, keyType});
 
@@ -123,7 +123,12 @@ export default function LoginPage() {
         }
 
         if (!auth.authorized) {
-          const authStatus = await authClient.authenticate(username, password, keyType);
+          if (!['posting', 'active'].includes(keyType)) {
+            throw new Error(`Unsupported keyType: ${keyType}`);
+          }
+          const authStatus = await authClient.authenticate(username,
+              password, keyType as unknown as 'posting' | 'active');
+
           logger.info({authStatus});
           if (!authStatus.ok) {
             throw new Error(`Unlocking wallet failed`);
@@ -131,10 +136,13 @@ export default function LoginPage() {
         }
 
         const digest = cryptoUtils.sha256(message).toString('hex');
+        if (!['posting', 'active'].includes(keyType)) {
+          throw new Error(`Unsupported keyType: ${keyType}`);
+        }
         const signature = await authClient.sign(
           username,
           digest,
-          keyType
+          keyType as unknown as 'posting' | 'active'
           );
         logger.info({digest, signature});
 
@@ -163,7 +171,7 @@ export default function LoginPage() {
 
       try {
         signatures.posting = await sign(username, password, message, keyType);
-        await checkAuths(username);
+        // await checkAuths(username);
       } catch (e) {
         logger.error('Caught error');
         logger.error(e);
