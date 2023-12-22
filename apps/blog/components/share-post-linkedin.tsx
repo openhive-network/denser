@@ -22,7 +22,7 @@ export default function LinkedInShare({ title, url }: { title: string; url: stri
 
   return (
     <div className='cursor-pointer hover:text-red-600' onClick={openWindow}
-         title={t('post_content.footer.share_on') + `LinkedIn`}>
+         title={t('post_content.footer.share_on') + `LinkedIn`} data-testid='share-on-linkedin'>
       <Linkedin />
     </div>
   );

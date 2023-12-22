@@ -49,7 +49,7 @@ const [sort, setSort] = useState('rank');
         </div>
         <div className='col-span-12 md:col-span-8'>
           <div className='mt-4 flex items-center justify-between'>
-            <span className='text-sm font-medium sm:text-xl'>{t('communities.communities')}</span>
+            <span className='text-sm font-medium sm:text-xl' data-testid="communities-header">{t('communities.communities')}</span>
             {/* <Link className="text-sm font-medium text-red-600 dark:hover:text-red-800" href={'/'}>
               Create a Community
             </Link> */}
