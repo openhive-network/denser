@@ -43,21 +43,6 @@ const SiteHeader: FC = () => {
     }
   };
 
-  async function handleLogout() {
-    logger.info('Starting handleLogout');
-    // const authClient = await authService.getOnlineClient();
-    // await authClient.logout();
-    // setCurrentProfile(null);
-    // setUsername('');
-    // remove();
-
-    // toast({
-    //   description: `You are logout!`,
-    //   variant: 'success'
-    // });
-  }
-
-
   return (
     <header className="supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur">
       <div className="container flex h-14 items-center">
@@ -67,30 +52,24 @@ const SiteHeader: FC = () => {
           <nav className="flex items-center space-x-1">
             <div className="mx-1 hidden gap-1 sm:flex">
 
+              {isClient && (
+                <DialogHBAuth onAuthComplete={(username, keyType) => {
+                  logger.info('onAuthComplete %o', { username, keyType })
+                  // setUsername(username);
+                  // setCurrentProfileKeyType(keyType)
+                }}>
+                  <Button variant="redHover" size="sm" className="h-10">
+                    Manage HBAuth
+                  </Button>
+                </DialogHBAuth>
+              )}
+
               {isClient && user?.isLoggedIn === false && (
                 <Link href="https://signup.hive.io/">
                   <Button variant="redHover" size="sm" className="h-10">
                     Sign Up
                   </Button>
                 </Link>
-              )}
-
-              {isClient && user?.isLoggedIn === true && (
-                <Button variant="ghost" className="text-base hover:text-red-500" onClick={handleLogout}>
-                  Logout HBAuth
-                </Button>
-              )}
-
-              {isClient && user?.isLoggedIn === false && (
-                <DialogHBAuth onAuthComplete={(username, keyType) => {
-                  logger.info('onAuthComplete %o', { username, keyType })
-                  // setUsername(username);
-                  // setCurrentProfileKeyType(keyType)
-                }}>
-                  <Button variant="ghost" className="text-base hover:text-red-500">
-                    Login HBAuth
-                  </Button>
-                </DialogHBAuth>
               )}
 
               {isClient && user?.isLoggedIn === false && (
