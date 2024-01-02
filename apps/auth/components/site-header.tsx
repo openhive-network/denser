@@ -50,13 +50,11 @@ const SiteHeader: FC = () => {
         <MobileNav />
         <div className="flex flex-1 items-center justify-between space-x-2 sm:space-x-4 md:justify-end">
           <nav className="flex items-center space-x-1">
-            <div className="mx-1 hidden gap-1 sm:flex">
+            <div className="mx-1 gap-1 flex">
 
               {isClient && (
                 <DialogHBAuth onAuthComplete={(username, keyType) => {
                   logger.info('onAuthComplete %o', { username, keyType })
-                  // setUsername(username);
-                  // setCurrentProfileKeyType(keyType)
                 }}>
                   <Button variant="redHover" size="sm" className="h-10">
                     Manage HBAuth
