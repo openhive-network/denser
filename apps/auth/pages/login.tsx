@@ -116,7 +116,7 @@ export default function LoginPage() {
 
         const authClient = await authService.getOnlineClient();
         const auth = await authClient.getAuthByUser(username);
-        logger.info({auth});
+        logger.info('auth: %o', auth);
 
         if (!auth) {
           throw new Error(`No auth for username ${username}`);
@@ -149,29 +149,33 @@ export default function LoginPage() {
         return signature;
       };
 
-      const checkAuths = async (username: string) => {
+      const checkAuths = async (username: string, keyType: string) => {
         const authClient = await authService.getOnlineClient();
         const auths = await authClient.getAuths();
-        logger.info({auths});
-        const user = auths.find((user) => user.username === username);
-        if (user) {
-          logger.info('found user: %o', user);
-          if (user.authorized) {
-            logger.info('user is authorized');
-            // We're ready to sign loginChallenge and proceed.
+        logger.info('auths: %o', auths);
+        const auth = auths.find((auth) => auth.username === username);
+        if (auth) {
+          logger.info('found auth: %o', auth);
+          if (auth.authorized) {
+            if (auth.keyType === keyType) {
+              logger.info('user is authorized and we are ready to proceed');
+              // We're ready to sign loginChallenge and proceed.
+            } else {
+              logger.info('user is authorized, but with incorrect keyType: %s', auth.keyType);
+            }
           } else {
             logger.info('user is not authorized');
             // We should tell to unlock wallet (login to wallet).
           }
         } else {
-          logger.info('user not found: %s', username);
+          logger.info('auth for user not found: %s', username);
           // We should offer adding account to wallet.
         }
       };
 
       try {
+        // await checkAuths(username, 'posting');
         signatures.posting = await sign(username, password, message, keyType);
-        // await checkAuths(username);
       } catch (e) {
         logger.error('Caught error');
         logger.error(e);
