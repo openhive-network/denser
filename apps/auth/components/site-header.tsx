@@ -56,9 +56,11 @@ const SiteHeader: FC = () => {
                 <DialogHBAuth onAuthComplete={(username, keyType) => {
                   logger.info('onAuthComplete %o', { username, keyType })
                 }}>
-                  <Button variant="redHover" size="sm" className="h-10">
-                    Manage HBAuth
-                  </Button>
+                  <Link href="#">
+                    <Button variant="redHover" size="sm" className="h-10">
+                      Manage HBAuth
+                    </Button>
+                  </Link>
                 </DialogHBAuth>
               )}
 
