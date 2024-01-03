@@ -468,7 +468,6 @@ test.describe('Translation tests', () => {
     await homePage.getNavSidebarMenu.click();
     await homePage.page.waitForSelector(homePage.getNavSidebarMenuContent['_selector']);
     await expect(homePage.getNavSidebarMenuContent).toBeVisible();
-    // li.text-foreground
     const menuItems = await page.$$('li.text-foreground');
 
     for (let i = 0; i < menuItems.length; i++) {
