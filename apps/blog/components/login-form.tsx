@@ -32,6 +32,7 @@ const commonFields = z.object({
   username,
   useKeychain: z.boolean(),
   useHiveauth: z.boolean(),
+  useHbAuth: z.boolean(),
   remember: z.boolean()
 });
 
@@ -55,7 +56,7 @@ const loginFormDefaultValues = {
   remember: false
 };
 
-export function LoginForm({
+function LoginForm({
   errorMessage,
   onSubmit
 }: {
@@ -113,6 +114,8 @@ export function LoginForm({
     }
   };
 
+  const onHbAuthToggle = (e: React.ChangeEvent<HTMLInputElement>) => {};
+
   return (
     <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
       <div className="mx-auto flex w-[440px] max-w-md flex-col items-center">
@@ -159,6 +162,7 @@ export function LoginForm({
           <div className="my-6 flex w-full flex-col">
             <div className="flex items-center py-1">
               <input
+                id="useKeychain"
                 type="checkbox"
                 value=""
                 className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
@@ -174,6 +178,7 @@ export function LoginForm({
 
             <div className="flex items-center py-1">
               <input
+                id="hiveAuth"
                 type="checkbox"
                 value=""
                 className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
@@ -183,6 +188,20 @@ export function LoginForm({
               <label htmlFor="hiveAuth" className="ml-2 flex text-sm font-medium text-gray-900">
                 <img className="mr-1 h-4 w-4" src="/hiveauth.png" alt="Hiveauth logo" />
                 {t('login_form.use_hiveauth')}
+              </label>
+            </div>
+
+            <div className="flex items-center py-1">
+              <input
+                id="hbAuth"
+                type="checkbox"
+                value=""
+                className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
+                {...register('useHbAuth')}
+                onChange={(e) => onHbAuthToggle(e)}
+              />
+              <label htmlFor="hbAuth" className="ml-2 flex text-sm font-medium text-gray-900">
+                {t('login_form.use_hbauth')}
               </label>
             </div>
 
@@ -253,3 +272,5 @@ export function LoginForm({
     </div>
   );
 }
+
+export default LoginForm;

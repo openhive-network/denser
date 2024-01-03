@@ -1,5 +1,6 @@
 const path = require('path');
 const withTM = require('next-transpile-modules')(['@hive/ui']);
+const CopyPlugin = require('copy-webpack-plugin');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -12,6 +13,19 @@ const nextConfig = {
     if (!isServer) {
       config.resolve.fallback = { fs: false };
     }
+
+    // copy auth worker
+    config.plugins.push(
+      new CopyPlugin({
+        patterns: [
+          {
+            from: path.join(__dirname, '../../node_modules/@hive/hb-auth/dist/worker.js'),
+            to: path.join(__dirname, 'public/auth/')
+          }
+        ]
+      })
+    );
+
     return config;
   }
 };

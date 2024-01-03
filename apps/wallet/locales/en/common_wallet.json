@@ -7,7 +7,7 @@
       "seconds": " seconds ago",
       "minutes": " minutes ago",
       "a_minute": " a minute ago",
-      "hours" :" hours ago",
+      "hours": " hours ago",
       "an_hour": " an hour ago",
       "days": " days ago",
       "a_day": " a day ago",
@@ -49,7 +49,7 @@
       "seconds": " seconds",
       "minutes": " minutes",
       "a_minute": " a minute",
-      "hours" :" hours",
+      "hours": " hours",
       "an_hour": " an hour",
       "days": " days",
       "a_day": " a day",
@@ -65,7 +65,7 @@
       "sign_up": "Sign up",
       "light": "Light",
       "dark": "Dark",
-      "system" :"System"
+      "system": "System"
     },
     "sidebar": {
       "welcome": "Welcome",
@@ -141,9 +141,9 @@
     "estimated_account_value_description": "The estimated value is based on an average value of Hive in US dollars.",
     "account_history_title": "Account History",
     "see_faq_for_details": "See FAQ for details.",
-    "no_transactions_found":"No transactions found",
-    "the_next_power_down":"The next power down is scheduled to happen in ",
-    "paid_for":"Paid {{value1}} for {{value2}}",
+    "no_transactions_found": "No transactions found",
+    "the_next_power_down": "The next power down is scheduled to happen in ",
+    "paid_for": "Paid {{value1}} for {{value2}}",
     "cancel_transfer_from_savings": "Cancel transfer from savings (request {{number}})",
     "receive_interest": "'Receive interest of {{number}}",
     "transfer_to": "Transfer {{value}} to ",
@@ -154,14 +154,14 @@
     "received_from_user": "Received {{value}} from ",
     "claim_rewards": "Claim rewards: ",
     "and": " and ",
-    "witnesses":"Witnesses",
+    "witnesses": "Witnesses",
     "account_history_description": "Beware of spam and phishing links in transfer memos. Do not open links from users you do not trust. Do not provide your private keys to any third party websites. Transactions will not show until they are confirmed on the blockchain, which may take a few minutes.",
-    "estimated_author_rewards_last_week":"Estimated author rewards last week:",
-    "author_rewards_history":"Author Rewards History",
-    "newer":"Newer",
-    "older":"Older",
-    "estimated_curation_rewards_last_week":"Estimated curation rewards last week:",
-    "curation_rewards_history":"Curation Rewards History"
+    "estimated_author_rewards_last_week": "Estimated author rewards last week:",
+    "author_rewards_history": "Author Rewards History",
+    "newer": "Newer",
+    "older": "Older",
+    "estimated_curation_rewards_last_week": "Estimated curation rewards last week:",
+    "curation_rewards_history": "Curation Rewards History"
   },
   "market_page": {
     "last_price": "Last price",
@@ -234,7 +234,7 @@
     }
   },
   "proposals_page": {
-    "daily":"Daily",
+    "daily": "Daily",
     "proposals": "Proposals",
     "started": "started",
     "finished": "finished",
@@ -252,8 +252,12 @@
     "username_placeholder": "Enter your username",
     "password_placeholder": "Password or WIF",
     "use_hiveauth": "Use HiveAuth",
+    "use_hbauth": "Use HB Auth",
     "keep_me_logged_in": "Keep me logged in",
     "more_login_methods": "more login methods",
+    "select_a_key_type": "Select a key type",
+    "key_type": "Key type",
+    "authorize_button": "Authorize",
     "login_button": "Sign In",
     "cancel_button": "Cancel",
     "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password."
@@ -282,7 +286,7 @@
       "fifth": "The fifth rule: Use only randomly-generated passwords.",
       "sixth": "The sixth rule: Do not tell anyone your password.",
       "seventh": "The seventh rule: Always back up your password."
-  }
+    }
   },
   "four_oh_four": {
     "this_page_does_not_exist": "Sorry! This page does not exist.",

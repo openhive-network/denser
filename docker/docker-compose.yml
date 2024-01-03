@@ -1,10 +1,50 @@
 version: '3.9'
 services:
-  denser:
-    image: registry.gitlab.syncad.com/hive/denser:${IMAGE_TAG:-latest}
+  denser-auth:
+    image: registry.gitlab.syncad.com/hive/denser/auth:${AUTH_IMAGE_TAG:-latest}
     environment:
-      - PORT
-      - REACT_APP_API_ENDPOINT
-      - REACT_APP_IMAGES_ENDPOINT
+      PORT: ${AUTH_PORT}
+      REACT_APP_API_ENDPOINT:
+      REACT_APP_IMAGES_ENDPOINT:
+      TURBO_APP_SCOPE: "@hive/auth"
+      TURBO_APP_PATH: "/apps/auth"
     ports:
-      - "${PORT}:${PORT}"
+      - "${AUTH_PORT}:${AUTH_PORT}"
+    healthcheck:
+      test: ["CMD-SHELL","wget --no-verbose --tries=1 --spider http://$${HOSTNAME}:$${PORT}/ || exit 1"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+  denser-blog:
+    image: registry.gitlab.syncad.com/hive/denser/blog:${BLOG_IMAGE_TAG:-latest}
+    environment:
+      PORT: ${BLOG_PORT}
+      REACT_APP_API_ENDPOINT:
+      REACT_APP_IMAGES_ENDPOINT:
+      TURBO_APP_SCOPE: "@hive/blog"
+      TURBO_APP_PATH: "/apps/blog"
+    ports:
+      - "${BLOG_PORT}:${BLOG_PORT}"
+    healthcheck:
+      test: ["CMD-SHELL","wget --no-verbose --tries=1 --spider http://$${HOSTNAME}:$${PORT}/ || exit 1"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+  denser-wallet:
+    image: registry.gitlab.syncad.com/hive/denser/wallet:${WALLET_IMAGE_TAG:-latest}
+    environment:
+      PORT: ${WALLET_PORT}
+      REACT_APP_API_ENDPOINT:
+      REACT_APP_IMAGES_ENDPOINT:
+      TURBO_APP_SCOPE: "@hive/wallet"
+      TURBO_APP_PATH: "/apps/wallet"
+    ports:
+      - "${WALLET_PORT}:${WALLET_PORT}"
+    healthcheck:
+      test: ["CMD-SHELL","wget --no-verbose --tries=1 --spider http://$${HOSTNAME}:$${PORT}/ || exit 1"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s

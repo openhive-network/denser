@@ -519,7 +519,7 @@ test.describe('Communities page tests', () => {
 
     const postAuthor = homePage.getFirstPostAuthor;
     const postAuthorText = await postAuthor.innerText();
-    const postAuthorTextSubstring = postAuthorText.substring(0, 5);
+    const postAuthorTextSubstring = postAuthorText.substring(0, 5).trim();
 
     await postPage.moveToTheFirstPostInHomePageByPostTitle();
 
@@ -528,7 +528,7 @@ test.describe('Communities page tests', () => {
 
     const articleAuthor = postPage.articleAuthorName;
     const articleAuthorText = await articleAuthor.innerText();
-    const articleAuthorTextSubstring = articleAuthorText.substring(0, 5);
+    const articleAuthorTextSubstring = articleAuthorText.substring(0, 5).trim();
 
     await expect(postPage.articleTitle).toBeVisible();
     await expect(firstPostTitleText).toEqual(articleTitleText);

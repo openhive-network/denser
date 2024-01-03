@@ -11,10 +11,12 @@ OPTIONS:
   --image=IMAGE         Docker image to run (default: 'registry.gitlab.syncad.com/hive/denser:latest')
   --api-endpoint=URL    API endpoint to be used by the new instance (default: 'https://api.hive.blog')
   --images-endpoint=URL IMAGES endpoint to be used by the new instance (default: 'https://api.hive.blog')
+  --app-scope=SCOPE     App scope (eg. '@hive/auth')
+  --app-path=PATH       App path (eg. '/apps/auth)
   --port=PORT           Port to be exposed (default: 3000)
   --name=NAME           Container name to be used (default: denser)
   --detach              Run in detached mode 
-  -?|--help             Display this help screen and exit
+  --help|-h|-?          Display this help screen and exit
 EOF
 }
 
@@ -92,10 +94,3 @@ if [[ "$DETACH" == "true" ]]; then
 fi
 
 docker run "${RUN_OPTIONS[@]}" "$IMAGE"
-# docker run --detach \
-#   --rm \
-#   --publish "$PORT:$PORT" \
-#   --env PORT="$PORT" \
-#   --env REACT_APP_API_ENDPOINT="$API_ENDPOINT" \
-#   --name "$CONTAINER_NAME" \
-#   "$IMAGE"

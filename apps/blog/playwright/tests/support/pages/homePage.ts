@@ -39,6 +39,8 @@ export class HomePage {
   readonly getDownvoteButtonTooltip: Locator;
   readonly getFirstPostDownvoteButtonTooltip: Locator;
   readonly getFirstPostUpvoteButtonTooltip: Locator;
+  readonly getFirstPostResponseButton: Locator;
+  readonly getFirstPostResponseButtonTooltip: Locator;
   readonly getFirstPostCardFooter: Locator;
   readonly getFirstPostListItem: Locator;
   readonly getFirstPostCardAvatar: Locator;
@@ -100,7 +102,7 @@ export class HomePage {
     this.getTrandingCommunitiesHeader = this.getTrendingCommunitiesSideBar
       .locator('a')
       .getByText('All posts');
-    this.getExploreCommunities = page.getByText('Explore communities...');
+    this.getExploreCommunities = page.locator('[data-testid="explore-communities-link"]'); // page.getByText('Explore communities...');
     this.getLeoFinanceCommunitiesLink = this.getTrendingCommunitiesSideBar
       .locator('a')
       .getByText('LeoFinance');
@@ -129,6 +131,8 @@ export class HomePage {
     this.getFirstPostPayoutTooltip = page.locator('[data-testid="payout-post-card-tooltip"]').first();
     this.getFirstPostVotes = page.locator('[data-testid="post-total-votes"]').first();
     this.getFirstPostVotesTooltip = page.locator('[data-testid="post-card-votes-tooltip"]').first();
+    this.getFirstPostResponseButton = page.locator('[data-testid="post-card-response-link"]').first();
+    this.getFirstPostResponseButtonTooltip = page.locator('[data-testid="post-card-responses"]');
     this.getFirstPostChildren = page.locator('[data-testid="post-children"]').first();
     this.getFirstPostChildernIcon = this.getFirstPostChildren.locator('a:nth-of-type(1)');
     this.getFirstPostChildernCommentNumber = this.getFirstPostChildren.locator('a:nth-of-type(2)');

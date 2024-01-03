@@ -336,10 +336,10 @@ function PostPage({
                 <Tooltip>
                   <TooltipTrigger>
                     <AlertDialogDemo>
-                      <Icons.forward className='h-4 w-4 cursor-pointer' />
+                      <Icons.forward className='h-4 w-4 cursor-pointer' data-testid='post-footer-reblog-icon'/>
                     </AlertDialogDemo>
                   </TooltipTrigger>
-                  <TooltipContent>
+                  <TooltipContent data-test='post-footer-reblog-tooltip'>
                     <p>
                       {t('post_content.footer.reblog')} @{post_s.author}/{post_s.permlink}
                     </p>
@@ -378,7 +378,7 @@ function PostPage({
                       {post_s.children}
                     </Link>
                   </TooltipTrigger>
-                  <TooltipContent>
+                  <TooltipContent data-testid='post-footer-response-tooltip'>
                     <p>
                       {post_s.children === 0
                         ? t('post_content.footer.no_response')
@@ -399,24 +399,24 @@ function PostPage({
               >
                 <TooltipProvider>
                   <Tooltip>
-                    <TooltipTrigger>
+                    <TooltipTrigger data-testid='post-footer-upvote-button'>
                       <DialogLogin>
                         <Icons.arrowUpCircle
                           className='h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white' />
                       </DialogLogin>
                     </TooltipTrigger>
-                    <TooltipContent>{t('post_content.footer.upvote')}</TooltipContent>
+                    <TooltipContent data-testid='post-footer-upvote-tooltip'>{t('post_content.footer.upvote')}</TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
                 <TooltipProvider>
                   <Tooltip>
-                    <TooltipTrigger>
+                    <TooltipTrigger data-testid='post-footer-downvote-button'>
                       <DialogLogin>
                         <Icons.arrowDownCircle
                           className='h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white' />
                       </DialogLogin>
                     </TooltipTrigger>
-                    <TooltipContent>{t('post_content.footer.downvote')}</TooltipContent>
+                    <TooltipContent data-testid='post-footer-downvote-tooltip'>{t('post_content.footer.downvote')}</TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </div>
@@ -452,7 +452,7 @@ function PostPage({
               <TwitterShare title={post_s.title} url={post_s.url} />
               <LinkedInShare title={post_s.title} url={post_s.url} />
               <RedditShare title={post_s.title} url={post_s.url} />
-              <SharePost path={router.asPath}>
+              <SharePost path={router.asPath} >
                 <Link2
                   className='cursor-pointer hover:text-red-600'
                   data-testid='share-post'
