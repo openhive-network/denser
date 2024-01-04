@@ -12,7 +12,7 @@
   "dependencies": {
     "@beam-australia/react-env": "^3.1.1",
     "@hive/eslint-config-custom": "*",
-    "@hive/hb-auth": "^0.0.1-2d0ad3f",
+    "@hive/hb-auth": "^0.0.1-stable.d9b0769",
     "@hive/tailwindcss-config": "*",
     "@hive/tsconfig": "*",
     "@hive/ui": "*",
