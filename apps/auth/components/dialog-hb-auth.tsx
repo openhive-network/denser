@@ -110,15 +110,15 @@ function DialogHBAuth({ children, onAuthComplete }: DialogHBAuthProps) {
       <DialogContent className="sm:max-w-[600px]" data-testid="login-dialog-hb-auth">
         <Tabs defaultValue="login" className="w-full py-4">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="login">Login</TabsTrigger>
-            <TabsTrigger value="authorize">Authorize</TabsTrigger>
+            <TabsTrigger value="login">{t('login_form.title_action_unlock_key')}</TabsTrigger>
+            <TabsTrigger value="authorize">{t('login_form.title_action_add_key')}</TabsTrigger>
           </TabsList>
           <TabsContent value="login">
             <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
               <div className="mx-auto flex w-[440px] max-w-md flex-col items-center">
                 <h2 className="w-full pb-6 text-3xl text-gray-800">
-                  {t('login_form.title')}
-                  {t('login_form.title_action_login_to_vote')}
+                  {t('login_form.title_hbauth_form')}
+                  {t('login_form.title_action_unlock_key')}
                 </h2>
                 <form onSubmit={handleSubmit} className="w-full" name="login">
                   <div className="relative mb-5">
@@ -185,8 +185,8 @@ function DialogHBAuth({ children, onAuthComplete }: DialogHBAuthProps) {
             <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
               <div className="mx-auto flex w-[440px] max-w-md flex-col items-center">
                 <h2 className="w-full pb-6 text-3xl text-gray-800">
-                  {t('login_form.title')}
-                  {t('login_form.title_action_login_to_vote')}
+                  {t('login_form.title_hbauth_form')}
+                  {t('login_form.title_action_add_key')}
                 </h2>
                 <form onSubmit={handleSubmit} className="w-full" name="authorize">
                   <div className="relative mb-5">

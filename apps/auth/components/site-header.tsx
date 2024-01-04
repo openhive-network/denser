@@ -58,7 +58,7 @@ const SiteHeader: FC = () => {
                 }}>
                   <Link href="#">
                     <Button variant="redHover" size="sm" className="h-10">
-                      Manage HBAuth
+                      Hbauth
                     </Button>
                   </Link>
                 </DialogHBAuth>
