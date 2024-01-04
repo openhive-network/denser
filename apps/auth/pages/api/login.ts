@@ -14,6 +14,7 @@ import { FullAccount } from "@hive/ui/store/app-types";
 
 export enum LoginTypes {
   password = 'password',
+  hbauth = 'hbauth',
   hiveauth = 'hiveauth',
   hivesigner = 'hivesigner',
   keychain = 'keychain',
@@ -86,7 +87,9 @@ const verifyLoginChallenge = async (
       const verified = publicKey.verify(messageHash, sig);
       if (!verified) {
         logger.error(
-          `verifyLoginChallenge signature verification failed for user ${chainAccount.name}`
+          'verifyLoginChallenge signature verification failed for user %s %o',
+          chainAccount.name,
+          {message, messageHash: messageHash.toString('hex'), signature}
         );
       }
       return verified;

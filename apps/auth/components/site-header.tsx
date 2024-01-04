@@ -12,6 +12,8 @@ import HiveAuthUtils from '@/auth/lib/hive-auth-utils';
 import { useLocalStorage } from '@/auth/lib/use-local-storage';
 import { getLogger } from '@hive/ui/lib/logging';
 import { Avatar, AvatarFallback, AvatarImage } from '@hive/ui/components/avatar';
+import { authService } from '@/auth/lib/auth-service';
+import DialogHBAuth from '@/auth/components/dialog-hb-auth';
 
 const logger = getLogger('app');
 
@@ -48,7 +50,20 @@ const SiteHeader: FC = () => {
         <MobileNav />
         <div className="flex flex-1 items-center justify-between space-x-2 sm:space-x-4 md:justify-end">
           <nav className="flex items-center space-x-1">
-            <div className="mx-1 hidden gap-1 sm:flex">
+            <div className="mx-1 gap-1 flex">
+
+              {isClient && (
+                <DialogHBAuth onAuthComplete={(username, keyType) => {
+                  logger.info('onAuthComplete %o', { username, keyType })
+                }}>
+                  <Link href="#">
+                    <Button variant="redHover" size="sm" className="h-10">
+                      Hbauth
+                    </Button>
+                  </Link>
+                </DialogHBAuth>
+              )}
+
               {isClient && user?.isLoggedIn === false && (
                 <Link href="https://signup.hive.io/">
                   <Button variant="redHover" size="sm" className="h-10">
