@@ -203,15 +203,15 @@ export function formatDecimal(value: number, decPlaces = 2, truncate0s = true) {
   // @ts-ignore
   const decPart = decPlaces
     ? decSeparator +
-    // @ts-ignore
-    Math.abs(abs_value - i)
-      .toFixed(decPlaces)
-      .slice(2)
+      // @ts-ignore
+      Math.abs(abs_value - i)
+        .toFixed(decPlaces)
+        .slice(2)
     : '';
   return [
     sign +
-    (j ? i.substr(0, j) + thouSeparator : '') +
-    i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + thouSeparator),
+      (j ? i.substr(0, j) + thouSeparator : '') +
+      i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + thouSeparator),
     decPart
   ];
 }
@@ -286,9 +286,25 @@ export function parseCookie(cookie: string): Record<string, string> {
   if (!cookie) return kv;
 
   cookie.split(';').forEach((part) => {
-    const [k, v] = part.split('=');
+    const [k, v] = part.trim().split('=');
     kv[k] = v;
   });
 
   return kv;
+}
+
+export function getCookie(cname: string) {
+  let name = cname + '=';
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return '';
 }

@@ -20,14 +20,8 @@ import path from 'path';
 import JSZip from 'jszip';
 import yazl from 'yazl';
 import Base64Encoder from './Base64Encoder';
-import {
-  type HTMLReport,
-  type Config,
-  type ZipDataFile,
-  type Stats,
-  type FileReport,
-  HTMLReportSchema
-} from './types';
+import type { HTMLReport, Config, ZipDataFile, Stats, FileReport } from './types';
+import { HTMLReportSchema } from './types';
 const defaultConfig: Required<Config> = {
   outputFolderName: 'merged-html-report',
   outputBasePath: process.cwd(),
@@ -106,7 +100,7 @@ async function mergeHTMLReports(inputReportPaths: string[], givenConfig: Config 
             fileReportMap.set(relativePath, fileReportJson);
           }
         } else {
-          const currentReportJson = HTMLReportSchema.parse(JSON.parse(fileContentString));
+          const currentReportJson = JSON.parse(fileContentString);
           if (debug) {
             console.log('---------- report.json ----------');
             console.log(JSON.stringify(currentReportJson, null, 2));

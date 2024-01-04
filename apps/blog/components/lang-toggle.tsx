@@ -40,7 +40,7 @@ export function LangToggle() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end'>
         {languages.map(({ locale, label }) => (
-          <DropdownMenuItem key={label} onClick={() => {
+          <DropdownMenuItem data-testid={locale} key={label} onClick={() => {
             document.cookie = `NEXT_LOCALE=${locale};path=/`;
             router.reload();
           }}>

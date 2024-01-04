@@ -228,7 +228,7 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
                       </Link>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p data-testid='comment-respond-tooltip'>{' '}
+                      <p data-testid='comment-respond-tooltip'>
                         {comment.children === 0
                           ? t('post_content.footer.no_responses')
                           : comment.children === 1

@@ -12,12 +12,18 @@ OPTIONS:
   --registry=URL        Docker registry to assign the image to (default: 'registry.gitlab.syncad.com/hive/denser')
   --tag=TAG             Docker tag to be build (default: 'latest')
   --progress=TYPE       Determines how to display build progress (default: 'auto')
-  -?|--help             Display this help screen and exit
+  --app-scope=SCOPE     App scope (eg. '@hive/auth')
+  --app-path=PATH       App path (eg. '/apps/auth)
+  --app-name=NAME       App name (eg. 'auth')
+  --help|-h|-?          Display this help screen and exit
 EOF
 }
 
 export CI_REGISTRY_IMAGE=${CI_REGISTRY_IMAGE:-"registry.gitlab.syncad.com/hive/denser"}
 export TAG=${TAG:-"latest"}
+export TURBO_APP_SCOPE=${TURBO_APP_SCOPE:-}
+export TURBO_APP_PATH=${TURBO_APP_PATH:-}
+export TURBO_APP_NAME=${TURBO_APP_NAME:-}
 PROGRESS_DISPLAY=${PROGRESS_DISPLAY:-"auto"}
 
 while [ $# -gt 0 ]; do
@@ -34,7 +40,19 @@ while [ $# -gt 0 ]; do
         arg="${1#*=}"
         PROGRESS_DISPLAY="$arg"
         ;;
-    --help|-?)
+    --app-scope=*)
+        arg="${1#*=}"
+        TURBO_APP_SCOPE="$arg"
+        ;;
+    --app-path=*)
+        arg="${1#*=}"
+        TURBO_APP_PATH="$arg"
+        ;;
+    --app-name=*)
+        arg="${1#*=}"
+        TURBO_APP_NAME="$arg"
+        ;;
+    --help|-h|-?)
         print_help
         exit 0
         ;;

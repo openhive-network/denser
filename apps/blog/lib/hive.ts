@@ -1,12 +1,12 @@
 import { RCAPI } from '@hiveio/dhive/lib/helpers/rc';
 import { RCAccount } from '@hiveio/dhive/lib/chain/rc';
-import moment, { Moment } from 'moment';
+import { Moment } from 'moment';
 
 import { isCommunity, parseAsset, vestsToRshares } from '@/blog/lib/utils';
 import { DATA_LIMIT } from './bridge';
-import {  FullAccount } from '@hive/ui/store/app-types';
+import { FullAccount } from '@hive/ui/store/app-types';
 import { bridgeServer } from '@hive/ui/lib/bridge';
-import {  getDynamicGlobalProperties, getFeedHistory } from '@hive/ui/lib/hive';
+import { getDynamicGlobalProperties, getFeedHistory } from '@hive/ui/lib/hive';
 
 export interface TrendingTag {
   comments: number;
@@ -255,7 +255,6 @@ export const getDynamicProps = async (): Promise<DynamicProps> => {
   };
 };
 
-
 export interface WithdrawRoute {
   auto_vest: boolean;
   from_account: string;
@@ -382,6 +381,9 @@ export interface BlogEntry {
 
 export const getBlogEntries = (username: string, limit: number = DATA_LIMIT): Promise<BlogEntry[]> =>
   bridgeServer.call('condenser_api', 'get_blog_entries', [username, 0, limit]);
+
+export const brodcastTransaction = (transaction: any): Promise<any> =>
+  bridgeServer.call('network_broadcast_api', 'broadcast_transaction', [transaction]);
 
 // create type for api call result do working search
 // export const searchTag = async (

@@ -1,8 +1,7 @@
-import { UseMutateFunction, useMutation, useQueryClient } from '@tanstack/react-query';
-import Router from 'next/router'
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEY } from '@/auth/lib/query-keys';
 import { fetchJson } from '@/auth/lib/fetch-json';
-import { User } from '@/auth/pages/api/user'
+import { User } from '@/auth/pages/api/user';
 import { PostLoginSchema } from '@/auth/pages/api/login';
 
 async function signIn(data: PostLoginSchema): Promise<User> {
@@ -11,7 +10,7 @@ async function signIn(data: PostLoginSchema): Promise<User> {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify(data)
   });
 }
 

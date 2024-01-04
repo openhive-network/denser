@@ -1,20 +1,20 @@
 import { test, expect, Locator } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
-import { CommunitiesPage } from '../support/pages/communitiesExplorerPage';
+import { CommunitiesExplorePage } from '../support/pages/communitiesExplorerPage';
 import { ApiHelper } from '../support/apiHelper';
 import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
 
 test.describe('Explore communities page tests', () => {
   let homePage: HomePage;
-  let communitiesPage: CommunitiesPage;
+  let communitiesPage: CommunitiesExplorePage;
 
   test.beforeEach(async ({ page }) => {
     homePage = new HomePage(page);
-    communitiesPage = new CommunitiesPage(page);
+    communitiesPage = new CommunitiesExplorePage(page);
   });
 
   test('move to Explore communities... from Home Page', async ({ page }) => {
-    const communitiesPage = new CommunitiesPage(page);
+    const communitiesPage = new CommunitiesExplorePage(page);
 
     await homePage.goto();
     await homePage.getExploreCommunities.click();
@@ -22,7 +22,7 @@ test.describe('Explore communities page tests', () => {
   });
 
   test('validate amount of communities in the Rank list', async ({ page }) => {
-    const communitiesPage = new CommunitiesPage(page);
+    const communitiesPage = new CommunitiesExplorePage(page);
     const apiHelper = new ApiHelper(page);
     const rankCommunitiesListAPI = await apiHelper.getListCommunitiesAPI();
 
@@ -34,7 +34,7 @@ test.describe('Explore communities page tests', () => {
   });
 
   test('validate amount of communities in the Subscribers list', async ({ page }) => {
-    const communitiesPage = new CommunitiesPage(page);
+    const communitiesPage = new CommunitiesExplorePage(page);
     const apiHelper = new ApiHelper(page);
     const subscribersCommunitiesListAPI = await apiHelper.getListCommunitiesAPI('',100,null,'subs','');
 
@@ -49,7 +49,7 @@ test.describe('Explore communities page tests', () => {
   });
 
   test('validate amount of communities in the New list', async ({ page }) => {
-    const communitiesPage = new CommunitiesPage(page);
+    const communitiesPage = new CommunitiesExplorePage(page);
     const apiHelper = new ApiHelper(page);
     const newCommunitiesListAPI = await apiHelper.getListCommunitiesAPI('',100,null,'new','');
 
@@ -64,7 +64,7 @@ test.describe('Explore communities page tests', () => {
   });
 
   test('validate first community title in the Rank list', async ({ page }) => {
-    const communitiesPage = new CommunitiesPage(page);
+    const communitiesPage = new CommunitiesExplorePage(page);
     const apiHelper = new ApiHelper(page);
     const rankCommunitiesListAPI = await apiHelper.getListCommunitiesAPI();
     const firstRankCommunitiesListAPI = await rankCommunitiesListAPI.result[0];
@@ -78,7 +78,7 @@ test.describe('Explore communities page tests', () => {
   });
 
   test('validate first community card description in the Rank list', async ({ page }) => {
-    const communitiesPage = new CommunitiesPage(page);
+    const communitiesPage = new CommunitiesExplorePage(page);
     const apiHelper = new ApiHelper(page);
     const rankCommunitiesListAPI = await apiHelper.getListCommunitiesAPI();
     const firstRankCommunitiesListAPI = await rankCommunitiesListAPI.result[0];
@@ -92,7 +92,7 @@ test.describe('Explore communities page tests', () => {
   });
 
   test('validate first community card subscribers, authors, posts amount in the Rank list', async ({ page }) => {
-    const communitiesPage = new CommunitiesPage(page);
+    const communitiesPage = new CommunitiesExplorePage(page);
     const apiHelper = new ApiHelper(page);
     const rankCommunitiesListAPI = await apiHelper.getListCommunitiesAPI();
     const firstRankCommunitiesListAPI = await rankCommunitiesListAPI.result[0];
@@ -116,7 +116,7 @@ test.describe('Explore communities page tests', () => {
   });
 
   test('move to the login page after clicking subscribe button of the first community', async ({ page }) => {
-    const communitiesPage = new CommunitiesPage(page);
+    const communitiesPage = new CommunitiesExplorePage(page);
     const loginToVoteDialog = new LoginToVoteDialog(page);
 
     await homePage.goto();
@@ -130,7 +130,7 @@ test.describe('Explore communities page tests', () => {
   });
 
   test('validate first community card styles in the light mode', async ({ page }) => {
-    const communitiesPage = new CommunitiesPage(page);
+    const communitiesPage = new CommunitiesExplorePage(page);
 
     await homePage.goto();
     await homePage.getExploreCommunities.click();
@@ -170,7 +170,7 @@ test.describe('Explore communities page tests', () => {
   });
 
   test('validate first community card styles in the dark mode', async ({ page }) => {
-    const communitiesPage = new CommunitiesPage(page);
+    const communitiesPage = new CommunitiesExplorePage(page);
 
     await homePage.goto();
     // move to the dark mode
@@ -214,7 +214,7 @@ test.describe('Explore communities page tests', () => {
   });
 
   test('validate no results for your search message', async ({ page }) => {
-    const communitiesPage = new CommunitiesPage(page);
+    const communitiesPage = new CommunitiesExplorePage(page);
     const nonExistentCommunity: string = 'abcdefgh';
     const noResultsMessage: string = 'No results for your search';
 
@@ -228,7 +228,7 @@ test.describe('Explore communities page tests', () => {
   });
 
   test('validate there is list of communities when you type nothing into the community search', async ({ page }) => {
-    const communitiesPage = new CommunitiesPage(page);
+    const communitiesPage = new CommunitiesExplorePage(page);
     const nonExistentCommunity: string = 'abcdefgh';
     const noResultsMessage: string = 'No results for your search';
     const emptyString: string = '';
@@ -249,7 +249,7 @@ test.describe('Explore communities page tests', () => {
   });
 
   test('validate results of searching community name', async ({ page }) => {
-    const communitiesPage = new CommunitiesPage(page);
+    const communitiesPage = new CommunitiesExplorePage(page);
     const communityName: string = 'LeoFinance';
 
     await homePage.goto();
@@ -270,7 +270,7 @@ test.describe('Explore communities page tests', () => {
 
   test('validate results of searching community name and esc key to clear input search', async ({ page, browserName }) => {
     test.skip(browserName === 'firefox' || browserName === "webkit", 'Automatic test works well on chromium');
-    const communitiesPage = new CommunitiesPage(page);
+    const communitiesPage = new CommunitiesExplorePage(page);
     const communityName: string = 'LeoFinance';
 
     await homePage.goto();

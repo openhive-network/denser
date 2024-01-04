@@ -39,6 +39,8 @@ export class HomePage {
   readonly getDownvoteButtonTooltip: Locator;
   readonly getFirstPostDownvoteButtonTooltip: Locator;
   readonly getFirstPostUpvoteButtonTooltip: Locator;
+  readonly getFirstPostResponseButton: Locator;
+  readonly getFirstPostResponseButtonTooltip: Locator;
   readonly getFirstPostCardFooter: Locator;
   readonly getFirstPostListItem: Locator;
   readonly getFirstPostCardAvatar: Locator;
@@ -89,6 +91,7 @@ export class HomePage {
   readonly postCardPoweredUp100Tooltip: Locator;
   readonly toggleLanguage: Locator;
   readonly languageMenu: Locator;
+  readonly languageMenuPl: Locator;
   readonly themeMode: Locator;
 
   constructor(page: Page) {
@@ -99,7 +102,7 @@ export class HomePage {
     this.getTrandingCommunitiesHeader = this.getTrendingCommunitiesSideBar
       .locator('a')
       .getByText('All posts');
-    this.getExploreCommunities = page.getByText('Explore communities...');
+    this.getExploreCommunities = page.locator('[data-testid="explore-communities-link"]'); // page.getByText('Explore communities...');
     this.getLeoFinanceCommunitiesLink = this.getTrendingCommunitiesSideBar
       .locator('a')
       .getByText('LeoFinance');
@@ -128,6 +131,8 @@ export class HomePage {
     this.getFirstPostPayoutTooltip = page.locator('[data-testid="payout-post-card-tooltip"]').first();
     this.getFirstPostVotes = page.locator('[data-testid="post-total-votes"]').first();
     this.getFirstPostVotesTooltip = page.locator('[data-testid="post-card-votes-tooltip"]').first();
+    this.getFirstPostResponseButton = page.locator('[data-testid="post-card-response-link"]').first();
+    this.getFirstPostResponseButtonTooltip = page.locator('[data-testid="post-card-responses"]');
     this.getFirstPostChildren = page.locator('[data-testid="post-children"]').first();
     this.getFirstPostChildernIcon = this.getFirstPostChildren.locator('a:nth-of-type(1)');
     this.getFirstPostChildernCommentNumber = this.getFirstPostChildren.locator('a:nth-of-type(2)');
@@ -172,8 +177,8 @@ export class HomePage {
     this.signupBtn = page.locator('[data-testid="signup-btn"]');
     this.loginModal = page.locator('[role="dialog"]');
     this.loginModalHeader = page.locator('h2');
-    this.loginModalUsernameInput = page.locator('#firstName');
-    this.loginModalPasswordInput = page.locator('#password');
+    this.loginModalUsernameInput = page.locator('[name="username"]');
+    this.loginModalPasswordInput = page.locator('[name="password"]');
     this.loginModalHiveAuthText = page.locator('[for="hiveAuth"]');
     this.loginModalKeepLoggedInText = page.locator('[for="remember"]');
     this.hivsignerBtn = page.locator('[data-testid="hivesigner-button"]');
@@ -183,8 +188,9 @@ export class HomePage {
     this.postCardPoweredUp100Trigger = page.locator('[data-testid="powered-up-100-trigger"]');
     this.postCardPoweredUp100TriggerLink = this.postCardPoweredUp100Trigger.locator('a');
     this.postCardPoweredUp100Tooltip = page.locator('[data-testid="powered-up-100-tooltip"]');
-    this.toggleLanguage = page.getByTestId('toggle-language');
-    this.languageMenu = page.locator('[role="menu"]');
+    this.toggleLanguage = page.locator('[data-testid="toggle-language"] span').first();
+    this.languageMenu = page.locator('[role="menuitem"]');
+    this.languageMenuPl = page.locator('[data-testid="pl"]');
     this.themeMode = page.locator('[data-testid="theme-mode"]');
   }
 
@@ -438,5 +444,19 @@ export class HomePage {
     await this.getNavSidebarMenuContent.getByRole('button', { name: 'FAQ' }).click();
     await expect(this.page.getByRole('heading', { name: 'Hive.blog FAQ' })).toBeVisible();
     await expect(this.page).toHaveURL('faq.html');
+  }
+
+  async moveToPrivacyPolicyPage() {
+    await this.getNavSidebarMenu.click();
+    await this.getNavSidebarMenuContent.getByRole('button', { name: 'Private Policy' }).click();
+    await expect(this.page.locator('h1').getByText('Privacy Policy')).toBeVisible();
+    await expect(this.page).toHaveURL('privacy.html');
+  }
+
+  async moveToTermsOfServicePage() {
+    await this.getNavSidebarMenu.click();
+    await this.getNavSidebarMenuContent.getByRole('button', { name: 'Terms of Service' }).click();
+    await expect(this.page.locator('div').getByText('Terms of Service')).toBeVisible();
+    await expect(this.page).toHaveURL('tos.html');
   }
 }

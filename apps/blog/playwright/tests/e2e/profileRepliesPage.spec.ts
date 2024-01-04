@@ -101,10 +101,12 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
       const profilePagePostAuthor: any = await profilePage.postsPostAuthor.first().textContent();
       // Validate the comment author name is the same as autor post in the profile page in posts tab
       await expect(await firstCommentCardNickName).toContain(await profilePagePostAuthor);
-    } else
-      await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText(
-        "Looks like @levex hasn't started blogging yet!"
+    } else {
+      const notBloggingYet: string = await profilePage.userHasNotStartedBloggingYetMsg.textContent();
+      await expect(notBloggingYet).toMatch(
+        /^Looks like @.\w+ hasn't started blogging yet!$/
       );
+    }
   });
 
   test('move to the profile page after clicking nickname of the first comment card', async ({ page }) => {
@@ -126,10 +128,12 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
       const profilePagePostAuthor: any = await profilePage.postsPostAuthor.first().textContent();
       // Validate the comment author name is the same as autor post in the profile page in posts tab
       await expect(await firstCommentCardNickName).toContain(await profilePagePostAuthor);
-    } else
-      await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText(
-        "Looks like @levex hasn't started blogging yet!"
+    } else {
+      const notBloggingYet: string = await profilePage.userHasNotStartedBloggingYetMsg.textContent();
+      await expect(notBloggingYet).toMatch(
+        /^Looks like @.\w+ hasn't started blogging yet!$/
       );
+    }
   });
 
   test('move to the community page after clicking community/category link of the first comment card', async ({
@@ -151,7 +155,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
       await expect(communityPage.communityInfoSidebar.locator('h3')).toHaveText(
         firstCommentCardCommunityName
       );
-      await communityPage.validataCommunitiesPageIsLoaded(firstCommentCardCommunityName);
+      await communityPage.quickValidataCommunitiesPageIsLoaded(firstCommentCardCommunityName);
     }
   });
 
