@@ -1,6 +1,6 @@
 import { Locator, Page, expect } from "@playwright/test"
 
-export class CommunitiesPage{
+export class CommunitiesExplorePage{
     readonly page: Page;
     readonly searchInput: Locator;
     readonly combobox: Locator;
@@ -14,6 +14,7 @@ export class CommunitiesPage{
     readonly communityListItemFooter: Locator;
     readonly communityListItemSubscribeButton: Locator;
     readonly noResultsForYourSearch: Locator;
+    readonly communitiesHeaderPage: Locator;
 
     constructor(page:Page){
         this.page = page;
@@ -30,6 +31,7 @@ export class CommunitiesPage{
         this.communityListItemFooter = page.locator('[data-testid="community-list-item-footer"]');
         this.communityListItemSubscribeButton = page.locator('[data-testid="community-list-item-subscribe-button"]');
         this.noResultsForYourSearch = page.locator('[data-testid="communities-search-no-results-msg"]');
+        this.communitiesHeaderPage = page.locator('[data-testid="communities-header"]');
     }
 
     async validataExplorerCommunitiesPageIsLoaded(){
