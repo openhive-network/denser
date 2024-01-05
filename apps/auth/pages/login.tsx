@@ -13,6 +13,7 @@ import { Signatures, PostLoginSchema, LoginTypes } from '@/auth/pages/api/login'
 import HiveAuthUtils from '@/auth/lib/hive-auth-utils';
 import { useLocalStorage } from '@/auth/lib/use-local-storage';
 import { parseCookie } from '@/auth/lib/utils';
+import { authService } from '@/auth/lib/auth-service';
 
 const logger = getLogger('app');
 
@@ -51,7 +52,7 @@ export default function LoginPage() {
         keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting,
       ): Promise<Signatures> => {
     logger.info('in signLoginChallenge %o',
-        {loginType, username, loginChallenge});
+        {loginType, username, loginChallenge, password});
     const signatures: Signatures = {};
     const challenge = { token: loginChallenge };
     const message = JSON.stringify(challenge, null, 0);
@@ -103,6 +104,83 @@ export default function LoginPage() {
         throw new Error('Hiveauth login failed');
       }
 
+    } else if (loginType === LoginTypes.hbauth) {
+
+      const sign = async (
+          username: string,
+          password: string,
+          message: string,
+          keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting,
+          ) => {
+        logger.info('sign args: %o', {username, password, message, keyType});
+
+        const authClient = await authService.getOnlineClient();
+        const auth = await authClient.getAuthByUser(username);
+        logger.info('auth: %o', auth);
+
+        if (!auth) {
+          throw new Error(`No auth for username ${username}`);
+        }
+
+        if (!auth.authorized) {
+          if (!['posting', 'active'].includes(keyType)) {
+            throw new Error(`Unsupported keyType: ${keyType}`);
+          }
+          const authStatus = await authClient.authenticate(username,
+              password, keyType as unknown as 'posting' | 'active');
+
+          logger.info({authStatus});
+          if (!authStatus.ok) {
+            throw new Error(`Unlocking wallet failed`);
+          }
+        }
+
+        const digest = cryptoUtils.sha256(message).toString('hex');
+        if (!['posting', 'active'].includes(keyType)) {
+          throw new Error(`Unsupported keyType: ${keyType}`);
+        }
+        const signature = await authClient.sign(
+          username,
+          digest,
+          keyType as unknown as 'posting' | 'active'
+          );
+        logger.info({digest, signature});
+
+        return signature;
+      };
+
+      const checkAuths = async (username: string, keyType: string) => {
+        const authClient = await authService.getOnlineClient();
+        const auths = await authClient.getAuths();
+        logger.info('auths: %o', auths);
+        const auth = auths.find((auth) => auth.username === username);
+        if (auth) {
+          logger.info('found auth: %o', auth);
+          if (auth.authorized) {
+            if (auth.keyType === keyType) {
+              logger.info('user is authorized and we are ready to proceed');
+              // We're ready to sign loginChallenge and proceed.
+            } else {
+              logger.info('user is authorized, but with incorrect keyType: %s', auth.keyType);
+            }
+          } else {
+            logger.info('user is not authorized');
+            // We should tell to unlock wallet (login to wallet).
+          }
+        } else {
+          logger.info('auth for user not found: %s', username);
+          // We should offer adding account to wallet.
+        }
+      };
+
+      try {
+        // await checkAuths(username, 'posting');
+        signatures.posting = await sign(username, password, message, keyType);
+      } catch (e) {
+        logger.error('Caught error');
+        logger.error(e);
+      }
+
     } else if (loginType === LoginTypes.password) {
       try {
         const privateKey = PrivateKey.fromString(password);
@@ -130,6 +208,8 @@ export default function LoginPage() {
     let password = '';
     if (data.loginType === LoginTypes.password) {
       password = data.password;
+    } else if (data.loginType === LoginTypes.hbauth) {
+      password = data.passwordHbauth;
     }
     let signatures: Signatures = {};
     let hivesignerToken = '';

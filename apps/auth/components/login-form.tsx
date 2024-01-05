@@ -30,18 +30,26 @@ const passwordField = z.object({
     })
 });
 
+const passwordHbauthField = z.object({
+  passwordHbauth: z.string().min(1, { message: 'Minimum length 1 character' }),
+});
+
 const commonFields = z.object({
   username,
+  useHbauth: z.boolean(),
   useKeychain: z.boolean(),
   useHiveauth: z.boolean(),
   remember: z.boolean(),
 });
 
 const commonFieldsWithPassword = commonFields.merge(passwordField)
+const commonFieldsWithPasswordHbauth = commonFields.merge(passwordHbauthField)
 
 const loginFormSchema = z.discriminatedUnion('loginType', [
   z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.password) })
     .merge(commonFieldsWithPassword),
+  z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.hbauth) })
+    .merge(commonFieldsWithPasswordHbauth),
   z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.hiveauth) })
     .merge(commonFields),
   z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.keychain) })
@@ -53,12 +61,14 @@ const loginFormSchema = z.discriminatedUnion('loginType', [
 export type LoginFormSchema = z.infer<typeof loginFormSchema>;
 
 const loginFormDefaultValues = {
-  username: '',
-  password: '',
   loginType: LoginTypes.password,
-  useKeychain: false,
-  useHiveauth: false,
+  password: '',
+  passwordHbauth: '',
   remember: false,
+  useHbauth: false,
+  useHiveauth: false,
+  useKeychain: false,
+  username: '',
 }
 
 export function LoginForm({
@@ -72,7 +82,9 @@ export function LoginForm({
   logger.debug('Starting LoginForm');
 
   const { t } = useTranslation('common_auth');
-  const [isKeychainSupported, setIsKeychainSupported] = useState(false)
+  const [isKeychainSupported, setIsKeychainSupported] = useState(false);
+  const [disabledPasword, setDisabledPassword] = useState(false);
+  const [disabledPaswordHbauth, setDisabledPasswordHbauth] = useState(true);
 
   useEffect(() => {
     setIsKeychainSupported(hasCompatibleKeychain());
@@ -91,10 +103,17 @@ export function LoginForm({
       if (getValues('useHiveauth')) {
         setValue('useHiveauth', false);
       }
+      if (getValues('useHbauth')) {
+        setValue('useHbauth', false);
+      }
       trigger('password');
+      setDisabledPassword(true);
+      setDisabledPasswordHbauth(true);
     } else {
       setValue('useKeychain', false);
       setValue('loginType', LoginTypes.password);
+      setDisabledPassword(false);
+      setDisabledPasswordHbauth(true);
     }
   };
 
@@ -105,10 +124,38 @@ export function LoginForm({
       if (getValues('useKeychain')) {
         setValue('useKeychain', false);
       }
+      if (getValues('useHbauth')) {
+        setValue('useHbauth', false);
+      }
       trigger('password');
+      setDisabledPassword(true);
+      setDisabledPasswordHbauth(true);
     } else {
       setValue('useHiveauth', false);
       setValue('loginType', LoginTypes.password);
+      setDisabledPassword(false);
+      setDisabledPasswordHbauth(true);
+    }
+  };
+
+  const onHbauthToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setValue('useHbauth', true);
+      setValue('loginType', LoginTypes.hbauth);
+      if (getValues('useHiveauth')) {
+        setValue('useHiveauth', false);
+      }
+      if (getValues('useKeychain')) {
+        setValue('useKeychain', false);
+      }
+      trigger('password');
+      setDisabledPassword(true);
+      setDisabledPasswordHbauth(false);
+    } else {
+      setValue('useHbauth', false);
+      setValue('loginType', LoginTypes.password);
+      setDisabledPassword(false);
+      setDisabledPasswordHbauth(true);
     }
   };
 
@@ -116,7 +163,7 @@ export function LoginForm({
     <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
       <div className="mx-auto flex w-[440px] max-w-md flex-col items-center">
         <h2 className="w-full pb-6 text-3xl text-gray-800">
-          Login
+          {t('login_form.title_action_login')}
         </h2>
         <form method="post" className="w-full">
 
@@ -126,7 +173,8 @@ export function LoginForm({
             <input
               type="text"
               className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 pl-11 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
-              placeholder="Enter your username"
+              placeholder={t('login_form.username_placeholder')}
+              autoComplete="username"
               {...register("username")}
               aria-invalid={errors.username ? "true" : "false"}
             />
@@ -141,11 +189,13 @@ export function LoginForm({
             )}
           </div>
 
-          <div>
+          <div className="relative mb-5">
             <input
               type="password"
               className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
-              placeholder="Password or WIF"
+              placeholder={t('login_form.password_placeholder')}
+              autoComplete="current-password"
+              disabled={disabledPasword}
               {...register("password")}
             />
             {/* @ts-ignore */}
@@ -153,6 +203,24 @@ export function LoginForm({
               <p className="text-red-500 text-sm" role="alert">{
                 /* @ts-ignore */
                 t(errors.password.message)
+                }</p>
+            )}
+          </div>
+
+          <div className="relative mb-5">
+            <input
+              type="password"
+              className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
+              placeholder={t('login_form.password_hbauth_placeholder')}
+              autoComplete="current-password"
+              disabled={disabledPaswordHbauth}
+              {...register("passwordHbauth")}
+            />
+            {/* @ts-ignore */}
+            {errors.passwordHbauth?.message && (
+              <p className="text-red-500 text-sm" role="alert">{
+                /* @ts-ignore */
+                t(errors.passwordHbauth.message)
                 }</p>
             )}
           </div>
@@ -177,7 +245,7 @@ export function LoginForm({
                   src="/images/hivekeychain.png"
                   alt="Hive Keychain logo"
                 />
-                Use Keychain
+                {t('login_form.use_keychain')}
               </label>
             </div>
 
@@ -198,7 +266,28 @@ export function LoginForm({
                   src="/images/hiveauth.png"
                   alt="Hiveauth logo"
                 />
-                Use HiveAuth
+                {t('login_form.use_hiveauth')}
+              </label>
+            </div>
+
+            <div className="flex items-center py-1">
+              <input
+                type="checkbox"
+                value=""
+                className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
+                {...register("useHbauth")}
+                onChange={e => onHbauthToggle(e)}
+                />
+              <label
+                htmlFor="useHbauth"
+                className="ml-2 flex text-sm font-medium text-gray-900"
+              >
+                <img
+                  className="mr-1 h-4 w-4"
+                  src="/images/hive-blog-twshare.png"
+                  alt="Hbauth logo"
+                />
+                {t('login_form.use_hbauth')}
               </label>
             </div>
 
@@ -213,7 +302,7 @@ export function LoginForm({
                 htmlFor="remember"
                 className="ml-2 text-sm font-medium text-gray-900"
               >
-                Keep me logged in
+                {t('login_form.keep_me_logged_in')}
               </label>
             </div>
 
@@ -225,14 +314,14 @@ export function LoginForm({
               className="w-fit rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-semibold text-white hover:cursor-pointer hover:bg-red-700 focus:outline-none  disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
               onClick={handleSubmit(onSubmit)}
             >
-              Login
+              {t('login_form.login_button')}
             </button>
             <button
               type="button"
               onClick={() => reset()}
               className="w-fit rounded-lg bg-transparent px-5 py-2.5 text-center text-sm font-semibold text-gray-500 hover:cursor-pointer hover:text-red-600 focus:outline-none"
             >
-              Reset
+              {t('login_form.reset_button')}
             </button>
           </div>
 
@@ -256,7 +345,7 @@ export function LoginForm({
           <div className="mt-4 flex w-full items-center">
             <Separator orientation="horizontal" className="w-1/3" />
             <span className="w-1/3 text-center text-sm">
-              more login methods
+              {t('login_form.more_login_methods')}
             </span>
             <Separator orientation="horizontal" className="w-1/3" />
           </div>

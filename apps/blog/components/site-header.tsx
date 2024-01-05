@@ -29,10 +29,7 @@ const SiteHeader: FC = () => {
     setIsClient(true);
   }, []);
 
-  const { user } = useUser({
-    redirectTo: '/communities',
-    redirectIfFound: true
-  });
+  const { user } = useUser();
   const [, setHiveAuthData] = useLocalStorage('hiveAuthData', HiveAuthUtils.initialHiveAuthData);
   const [, setHiveKeys] = useLocalStorage('hiveKeys', {});
   const signOut = useSignOut();
