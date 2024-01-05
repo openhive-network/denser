@@ -4,7 +4,7 @@ const next = require('next');
 
 const dev = process.env.NODE_ENV !== 'production';
 const hostname = 'localhost';
-const port = 6010;
+const port = 5010;
 // when using middleware `hostname` and `port` must be provided below
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
@@ -17,10 +17,8 @@ app.prepare().then(() => {
       const parsedUrl = parse(req.url, true);
       const { pathname, query } = parsedUrl;
 
-      if (pathname === '/a') {
-        await app.render(req, res, '/a', query);
-      } else if (pathname === '/b') {
-        await app.render(req, res, '/b', query);
+      if (pathname === '/angala') {
+        await app.render(req, res, '/login', query);
       } else {
         await handle(req, res, parsedUrl);
       }
