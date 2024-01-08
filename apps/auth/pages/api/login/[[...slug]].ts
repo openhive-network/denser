@@ -1,8 +1,8 @@
 import createHttpError from "http-errors";
-import * as z from 'zod';
 import { NextApiHandler } from "next";
 import { cryptoUtils, PublicKey, Signature, KeyRole } from "@hiveio/dhive";
 import { getIronSession } from 'iron-session';
+import { oidc } from '@/auth/lib/oidc';
 import { sessionOptions, IronSessionData } from '@/auth/lib/session';
 import { getLogger } from "@hive/ui/lib/logging";
 import { getAccount } from '@hive/ui/lib/hive';
@@ -10,48 +10,7 @@ import { apiHandler } from "@/auth/lib/api";
 import { validateHiveAccountName } from '@/auth/lib/validate-hive-account-name';
 import type { User } from './user';
 import { FullAccount } from "@hive/ui/store/app-types";
-
-
-export enum LoginTypes {
-  password = 'password',
-  hiveauth = 'hiveauth',
-  hivesigner = 'hivesigner',
-  keychain = 'keychain',
-}
-
-export const username = z.string()
-  .superRefine((val, ctx) => {
-    const result = validateHiveAccountName(val, (v) => v);
-    if (result) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: result,
-        fatal: true,
-      });
-      return z.NEVER;
-    }
-    return true;
-  });
-
-const postLoginSchema = z.object({
-  loginType: z.nativeEnum(LoginTypes),
-  hivesignerToken: z.string({
-    required_error: "hivesignerToken is required",
-    invalid_type_error: "hivesignerToken must be a string",
-  }),
-  signatures: z.object({
-      memo: z.string(),
-      posting: z.string(),
-      active: z.string(),
-      owner: z.string(),
-    })
-    .partial(),
-  username,
-});
-
-export type PostLoginSchema = z.infer<typeof postLoginSchema>;
-
-export type Signatures = PostLoginSchema["signatures"];
+import { postLoginSchema, PostLoginSchema } from "@/auth/lib/auth/utils";
 
 const logger = getLogger('app');
 
@@ -110,7 +69,21 @@ const loginUser: NextApiHandler<User> = async (req, res) => {
   const data: PostLoginSchema = await postLoginSchema.parseAsync(req.body);
 
   const { slug } = req.query;
-  logger.info('loginUser slug: %o', slug);
+
+  // try {
+  //   if (slug) {
+  //     const {
+  //       uid, prompt, params, session, returnTo,
+  //     } = await oidc.interactionDetails(req, res);
+  //     logger.info('api loginUser : %o', {
+  //       slug, uid, prompt, params, session, returnTo,
+  //     });
+  //   } else {
+  //     logger.info('api loginUser: no slug');
+  //   }
+  // } catch(e) {
+  //   throw e;
+  // }
 
   const { username, loginType, signatures } = data;
   let hiveUserProfile;

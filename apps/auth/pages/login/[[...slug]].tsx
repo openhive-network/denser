@@ -11,7 +11,7 @@ import { LoginForm, LoginFormSchema } from "@/auth/components/login-form";
 import { useUser } from '@/auth/lib/auth/use-user';
 import { useSignIn } from '@/auth/lib/auth/use-sign-in';
 import { getLogger } from "@hive/ui/lib/logging";
-import { Signatures, PostLoginSchema, LoginTypes } from '@/auth/pages/api/login/[[...slug]]';
+import { Signatures, PostLoginSchema, LoginTypes } from '@/auth/lib/auth/utils';
 import HiveAuthUtils from '@/auth/lib/hive-auth-utils';
 import { useLocalStorage } from '@/auth/lib/use-local-storage';
 import { parseCookie } from '@/auth/lib/utils';
@@ -22,7 +22,7 @@ export default function LoginPage() {
 
   const router = useRouter();
   const { slug } = router.query;
-  logger.info('router.query.slug: %o', slug);
+  const uid = slug ? slug[0] : '';
 
   const { t } = useTranslation('common_auth');
 
@@ -159,12 +159,7 @@ export default function LoginPage() {
     };
 
     try {
-      await signIn.mutateAsync(
-        {
-          data: body,
-          uid: slug ? slug[0] : ''
-        }
-      );
+      await signIn.mutateAsync({ data: body, uid });
     } catch (error) {
       logger.error('onSubmit unexpected error', error);
       setErrorMsg(t('pageLogin.loginFailed'));
