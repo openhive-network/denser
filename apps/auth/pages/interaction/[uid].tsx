@@ -2,16 +2,22 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from 'next-i18next.config';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
+import createHttpError from "http-errors";
 import { oidc } from '@/auth/lib/oidc';
+import { redirect } from 'next/navigation';
 import { getLogger } from "@hive/ui/lib/logging";
 
 const logger = getLogger('app');
 
 export default function InteractionPage({
-  a
+  redirectTo
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
   const uid = router.query.slug;
+
+  // if (redirectTo) {
+  //   router.push(redirectTo);
+  // }
 
   return (
     <div className="pt-16 flex flex-col sm:flex-row gap-24 mx-2
@@ -25,10 +31,7 @@ export default function InteractionPage({
 
 // export async function getServerSideProps<GetServerSideProps>({ req, res }) {
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  // console.log({req});
-  // console.log({res});
-  const a = 12;
-
+  let redirectTo = '';
   try {
     const {
       uid, prompt, params, session,
@@ -38,15 +41,51 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
       uid, prompt, params, session,
     });
 
-    // const client = await oidc.Client.find(params.client_id);
+  //   if (prompt.name === 'login') {
+  //     // return ctx.render('login', {
+  //     //   uid,
+  //     //   details: prompt.details,
+  //     //   params,
+  //     //   session: session ? debug(session) : undefined,
+  //     //   title: 'Sign-In',
+  //     //   dbg: {
+  //     //     params: debug(params),
+  //     //     prompt: debug(prompt),
+  //     //   },
+  //     // })
+
+  //     redirectTo = '/login';
+  //     // redirect('/login');
+
+  //     return {
+  //       redirect: {
+  //         destination: '/login',
+  //         permanent: false,
+  //       },
+  //     };
+  //   } else if (prompt.name === 'consent') {
+  //     // return ctx.render('consent', {
+  //     //   uid,
+  //     //   title: 'Authorize',
+  //     //   clientId: params.client_id,
+  //     //   scope: params.scope.replace(/ /g, ', '),
+  //     //   session: session ? debug(session) : undefined,
+  //     //   dbg: {
+  //     //     params: debug(params),
+  //     //     prompt: debug(prompt),
+  //     //   },
+  //     // })
+  //     throw new createHttpError.NotImplemented();
+  //   } else {
+  //     throw new createHttpError.NotImplemented();
+  //   }
   } catch (err) {
     throw err;
   }
 
-
   return {
     props: {
-      a,
+      redirectTo,
       ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_auth'])),
     },
   };

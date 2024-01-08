@@ -19,6 +19,15 @@ const configuration: Configuration = {
     features: {
         devInteractions: { enabled: false },
     },
+    interactions: {
+        async url(ctx, interaction) {
+            console.log({interaction});
+            if (interaction.prompt.name === 'login') {
+                return `/login/${interaction.uid}`;
+            }
+            return `/interaction/${interaction.uid}`;
+        },
+    },
     jwks: {
         "keys": [
             {

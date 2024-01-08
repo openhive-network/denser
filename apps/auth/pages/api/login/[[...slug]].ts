@@ -109,6 +109,9 @@ const loginUser: NextApiHandler<User> = async (req, res) => {
 
   const data: PostLoginSchema = await postLoginSchema.parseAsync(req.body);
 
+  const { slug } = req.query;
+  logger.info('loginUser slug: %o', slug);
+
   const { username, loginType, signatures } = data;
   let hiveUserProfile;
   let chainAccount;

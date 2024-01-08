@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import Router from 'next/router'
+import Router from 'next/router';
 import { QUERY_KEY } from '@/auth/lib/query-keys';
 import * as userLocalStorage from './user-localstore';
 import { useLocalStorage } from '@/auth/lib/use-local-storage';

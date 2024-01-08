@@ -5,11 +5,13 @@ import { useState, useEffect } from 'react'
 import { GetServerSideProps } from 'next';
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { KeychainKeyTypes, KeychainKeyTypesLC } from 'hive-keychain-commons';
+import { oidc } from '@/auth/lib/oidc';
+import { useRouter } from 'next/router';
 import { LoginForm, LoginFormSchema } from "@/auth/components/login-form";
 import { useUser } from '@/auth/lib/auth/use-user';
 import { useSignIn } from '@/auth/lib/auth/use-sign-in';
 import { getLogger } from "@hive/ui/lib/logging";
-import { Signatures, PostLoginSchema, LoginTypes } from '@/auth/pages/api/login';
+import { Signatures, PostLoginSchema, LoginTypes } from '@/auth/pages/api/login/[[...slug]]';
 import HiveAuthUtils from '@/auth/lib/hive-auth-utils';
 import { useLocalStorage } from '@/auth/lib/use-local-storage';
 import { parseCookie } from '@/auth/lib/utils';
@@ -17,6 +19,10 @@ import { parseCookie } from '@/auth/lib/utils';
 const logger = getLogger('app');
 
 export default function LoginPage() {
+
+  const router = useRouter();
+  const { slug } = router.query;
+  logger.info('router.query.slug: %o', slug);
 
   const { t } = useTranslation('common_auth');
 
@@ -153,7 +159,12 @@ export default function LoginPage() {
     };
 
     try {
-      await signIn.mutateAsync(body)
+      await signIn.mutateAsync(
+        {
+          data: body,
+          uid: slug ? slug[0] : ''
+        }
+      );
     } catch (error) {
       logger.error('onSubmit unexpected error', error);
       setErrorMsg(t('pageLogin.loginFailed'));
@@ -173,10 +184,29 @@ export default function LoginPage() {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+
+  try {
+    const { req, res } = ctx;
+    const { slug } = ctx.query;
+    if (slug) {
+      const {
+        uid, prompt, params, session, returnTo,
+      } = await oidc.interactionDetails(req, res);
+      logger.info('Login page: %o', {
+        slug, uid, prompt, params, session, returnTo,
+      });
+    } else {
+      logger.info('Login page: no slug');
+    }
+  } catch(e) {
+    throw e;
+  }
+
+
   return {
     props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_auth']))
+      ...(await serverSideTranslations(ctx.req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_auth']))
     }
   };
 };
