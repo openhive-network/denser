@@ -122,7 +122,6 @@ const ParamPage: FC = () => {
       enabled: Boolean(username)
     }
   );
-  const lastEntriesData = accountEntriesData?.pages[accountEntriesData?.pages.length - 1];
 
   const handleChangeFilter = useCallback(
     (e: string) => {
@@ -209,7 +208,7 @@ const ParamPage: FC = () => {
                   ) : null}
                   <span className="md:hidden" translate="no">
                     <CommunitiesSelect
-                      username={
+                      title={
                         tag
                           ? communityData
                             ? `${communityData?.title}`
