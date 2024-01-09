@@ -1,12 +1,7 @@
 import * as z from 'zod';
 import { validateHiveAccountName } from '@/auth/lib/validate-hive-account-name';
-
-export enum LoginTypes {
-    password = 'password',
-    hiveauth = 'hiveauth',
-    hivesigner = 'hivesigner',
-    keychain = 'keychain',
-}
+import { User } from '@/auth/types/common';
+import { LoginTypes } from '@/auth/types/common';
 
 export const username = z.string()
     .superRefine((val, ctx) => {
@@ -34,10 +29,17 @@ export const postLoginSchema = z.object({
         active: z.string(),
         owner: z.string(),
     })
-        .partial(),
+    .partial(),
     username,
 });
 
 export type PostLoginSchema = z.infer<typeof postLoginSchema>;
 
 export type Signatures = PostLoginSchema["signatures"];
+
+export const defaultUser: User = {
+    isLoggedIn: false,
+    username: '',
+    avatarUrl: '',
+    loginType: '',
+};

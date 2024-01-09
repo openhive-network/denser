@@ -33,13 +33,13 @@ export default function InteractionPage({
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   let redirectTo = '';
   try {
-    const {
-      uid, prompt, params, session,
-    } = await oidc.interactionDetails(req, res);
+    // const {
+    //   uid, prompt, params, session,
+    // } = await oidc.interactionDetails(req, res);
 
-    logger.info({
-      uid, prompt, params, session,
-    });
+    // logger.info({
+    //   uid, prompt, params, session,
+    // });
 
   //   if (prompt.name === 'login') {
   //     // return ctx.render('login', {

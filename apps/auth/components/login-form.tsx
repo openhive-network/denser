@@ -7,7 +7,8 @@ import { useTranslation } from 'next-i18next';
 import { Separator } from "@hive/ui/components/separator";
 import { getLogger } from "@hive/ui/lib/logging";
 import { hasCompatibleKeychain } from "@/auth/lib/hive-keychain";
-import { username, LoginTypes } from "@/auth/lib/auth/utils";
+import { username } from "@/auth/lib/auth/utils";
+import { LoginTypes } from "@/auth/types/common";
 import { validateHivePassword } from "@/auth/lib/validate-hive-password";
 
 const ZodLoginTypesEnum = z.nativeEnum(LoginTypes);

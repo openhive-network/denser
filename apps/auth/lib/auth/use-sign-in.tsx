@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEY } from '@/auth/lib/query-keys';
 import { fetchJson } from '@/auth/lib/fetch-json';
-import { User } from '@/auth/pages/api/user'
 import { PostLoginSchema } from '@/auth/lib/auth/utils';
+import { User } from '@/auth/types/common';
 
 async function signIn(data: PostLoginSchema, uid: string = ''): Promise<User> {
   const url = uid ? `/api/login/${uid}` : '/api/login';

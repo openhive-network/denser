@@ -3,14 +3,14 @@ import { NextApiHandler } from "next";
 import { cryptoUtils, PublicKey, Signature, KeyRole } from "@hiveio/dhive";
 import { getIronSession } from 'iron-session';
 import { oidc } from '@/auth/lib/oidc';
-import { sessionOptions, IronSessionData } from '@/auth/lib/session';
+import { sessionOptions } from '@/auth/lib/session';
 import { getLogger } from "@hive/ui/lib/logging";
 import { getAccount } from '@hive/ui/lib/hive';
 import { apiHandler } from "@/auth/lib/api";
-import { validateHiveAccountName } from '@/auth/lib/validate-hive-account-name';
-import type { User } from './user';
 import { FullAccount } from "@hive/ui/store/app-types";
-import { postLoginSchema, PostLoginSchema } from "@/auth/lib/auth/utils";
+import { postLoginSchema, PostLoginSchema, Signatures } from "@/auth/lib/auth/utils";
+import { redirect } from 'next/navigation';
+import { User } from '@/auth/types/common';
 
 const logger = getLogger('app');
 
@@ -66,25 +66,24 @@ const verifyLoginChallenge = async (
 
 const loginUser: NextApiHandler<User> = async (req, res) => {
 
-  const data: PostLoginSchema = await postLoginSchema.parseAsync(req.body);
-
   const { slug } = req.query;
-
   // try {
   //   if (slug) {
   //     const {
   //       uid, prompt, params, session, returnTo,
   //     } = await oidc.interactionDetails(req, res);
-  //     logger.info('api loginUser : %o', {
+  //     logger.info('api loginUser: %o', {
   //       slug, uid, prompt, params, session, returnTo,
   //     });
   //   } else {
   //     logger.info('api loginUser: no slug');
   //   }
   // } catch(e) {
-  //   throw e;
+  //   // throw e;
+  //   logger.error(e);
   // }
 
+  const data: PostLoginSchema = await postLoginSchema.parseAsync(req.body);
   const { username, loginType, signatures } = data;
   let hiveUserProfile;
   let chainAccount;
@@ -113,6 +112,20 @@ const loginUser: NextApiHandler<User> = async (req, res) => {
     );
 
   if (!result) {
+    if (slug) {
+      const oidcResult = {
+        error: 'access_denied',
+        error_description: 'Username or password is incorrect.',
+      }
+      // redirect('oidc/auth/' + slug[0]);
+      try {
+        return await oidc.interactionFinished(req, res, oidcResult, {
+          mergeWithLastSubmission: false,
+        });
+      } catch (e) {
+        logger.error(e);
+      }
+    }
     throw new createHttpError.Unauthorized('Invalid username or password');
   }
 

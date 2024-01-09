@@ -5,8 +5,9 @@ import { QUERY_KEY } from '@/auth/lib/query-keys';
 import * as userLocalStorage from './user-localstore';
 import { useLocalStorage } from '@/auth/lib/use-local-storage';
 import { fetchJson } from '@/auth/lib/fetch-json';
-import { User, defaultUser } from 'pages/api/user';
+import { defaultUser } from '@/auth/lib/auth/utils';
 import { getLogger } from "@hive/ui/lib/logging";
+import { User } from '@/auth/types/common';
 
 const logger = getLogger('app');
 

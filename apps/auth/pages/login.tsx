@@ -11,18 +11,18 @@ import { LoginForm, LoginFormSchema } from "@/auth/components/login-form";
 import { useUser } from '@/auth/lib/auth/use-user';
 import { useSignIn } from '@/auth/lib/auth/use-sign-in';
 import { getLogger } from "@hive/ui/lib/logging";
-import { Signatures, PostLoginSchema, LoginTypes } from '@/auth/lib/auth/utils';
+import { Signatures, PostLoginSchema } from '@/auth/lib/auth/utils';
 import HiveAuthUtils from '@/auth/lib/hive-auth-utils';
 import { useLocalStorage } from '@/auth/lib/use-local-storage';
 import { parseCookie } from '@/auth/lib/utils';
+import { LoginTypes } from "@/auth/types/common";
 
 const logger = getLogger('app');
 
 export default function LoginPage() {
 
   const router = useRouter();
-  const { slug } = router.query;
-  const uid = slug ? slug[0] : '';
+  const slug = router.query.slug as string;
 
   const { t } = useTranslation('common_auth');
 
@@ -142,7 +142,7 @@ export default function LoginPage() {
 
     try {
       signatures =
-          await signLoginChallenge(loginType, username, password || '');
+          await signLoginChallenge(loginType, username || '', password || '');
     } catch (error) {
       logger.error('onSubmit error in signLoginChallenge', error);
       setErrorMsg(t('pageLogin.signingFailed'));
@@ -152,14 +152,14 @@ export default function LoginPage() {
     logger.info({signatures});
 
     const body: PostLoginSchema = {
-      username,
+      username: username || '',
       signatures,
       loginType,
       hivesignerToken,
     };
 
     try {
-      await signIn.mutateAsync({ data: body, uid });
+      await signIn.mutateAsync({ data: body, uid: slug });
     } catch (error) {
       logger.error('onSubmit unexpected error', error);
       setErrorMsg(t('pageLogin.loginFailed'));
@@ -179,29 +179,4 @@ export default function LoginPage() {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-
-  try {
-    const { req, res } = ctx;
-    const { slug } = ctx.query;
-    if (slug) {
-      const {
-        uid, prompt, params, session, returnTo,
-      } = await oidc.interactionDetails(req, res);
-      logger.info('Login page: %o', {
-        slug, uid, prompt, params, session, returnTo,
-      });
-    } else {
-      logger.info('Login page: no slug');
-    }
-  } catch(e) {
-    throw e;
-  }
-
-
-  return {
-    props: {
-      ...(await serverSideTranslations(ctx.req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_auth']))
-    }
-  };
-};
+export { loginPageController as getServerSideProps } from '@/auth/lib/login-page-controller';
