@@ -20,7 +20,9 @@ export async function middleware(request: NextRequest) {
         })
       });
       entry = await resp.json();
-      return NextResponse.redirect(new URL(`/${entry.result.community}/@${entry.result.author}/${entry.result.permlink}`, request.url));
+      return NextResponse.redirect(
+        new URL(`/${entry.result.community}/@${entry.result.author}/${entry.result.permlink}`, request.url)
+      );
     } catch (e: any) {
       console.log(e.message);
     }

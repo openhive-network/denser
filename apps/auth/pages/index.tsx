@@ -1,3 +1,7 @@
+import { GetServerSideProps } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { i18n } from 'next-i18next.config';
+
 export default function HomePage() {
   return (
     <div className="pt-16 flex flex-col sm:flex-row gap-24 mx-2
@@ -8,3 +12,11 @@ export default function HomePage() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_auth']))
+    }
+  };
+};
