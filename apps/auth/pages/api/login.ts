@@ -11,6 +11,7 @@ import { FullAccount } from "@hive/ui/store/app-types";
 import { postLoginSchema, PostLoginSchema, Signatures } from "@/auth/lib/auth/utils";
 import { redirect } from 'next/navigation';
 import { User } from '@/auth/types/common';
+import { IronSessionData } from '@/auth/types/common';
 
 const logger = getLogger('app');
 
