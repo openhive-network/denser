@@ -1,11 +1,7 @@
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from 'next-i18next.config';
 import { useState, useEffect } from 'react'
-import { GetServerSideProps } from 'next';
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { KeychainKeyTypes, KeychainKeyTypesLC } from 'hive-keychain-commons';
-import { oidc } from '@/auth/lib/oidc';
 import { useRouter } from 'next/router';
 import { LoginForm, LoginFormSchema } from "@/auth/components/login-form";
 import { useUser } from '@/auth/lib/auth/use-user';
