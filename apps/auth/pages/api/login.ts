@@ -2,16 +2,16 @@ import createHttpError from "http-errors";
 import { NextApiHandler } from "next";
 import { cryptoUtils, PublicKey, Signature, KeyRole } from "@hiveio/dhive";
 import { getIronSession } from 'iron-session';
-import { oidc } from '@/auth/lib/oidc';
-import { sessionOptions } from '@/auth/lib/session';
+import { oidc } from '@angala/lib/oidc';
+import { sessionOptions } from '@angala/lib/session';
 import { getLogger } from "@hive/ui/lib/logging";
 import { getAccount } from '@hive/ui/lib/hive';
-import { apiHandler } from "@/auth/lib/api";
+import { apiHandler } from "@angala/lib/api";
 import { FullAccount } from "@hive/ui/store/app-types";
-import { postLoginSchema, PostLoginSchema, Signatures } from "@/auth/lib/auth/utils";
+import { postLoginSchema, PostLoginSchema, Signatures } from "@angala/lib/auth/utils";
 import { redirect } from 'next/navigation';
-import { User } from '@/auth/types/common';
-import { IronSessionData } from '@/auth/types/common';
+import { User } from '@angala/types/common';
+import { IronSessionData } from '@angala/types/common';
 
 const logger = getLogger('app');
 

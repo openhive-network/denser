@@ -6,6 +6,9 @@
       "@/auth/*": [
         "./*"
       ],
+      "@angala/*": [
+        "../../packages/angala/*"
+      ],
       "@ui/*": [
         "../../packages/ui/*"
       ]

@@ -3,7 +3,7 @@ import type { AppProps } from "next/app";
 import { lazy, Suspense, useEffect } from "react";
 import { appWithTranslation } from 'next-i18next';
 import { i18n } from 'next-i18next.config';
-import { parseCookie } from '@/auth/lib/utils';
+import { parseCookie } from '@angala/lib/utils';
 
 const Providers = lazy(() => import("@/auth/components/common/providers"));
 

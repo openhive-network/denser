@@ -1,4 +1,4 @@
-import { oidc } from '@/auth/lib/oidc';
+import { oidc } from '@angala/lib/oidc';
 import { i18n } from 'next-i18next.config';
 import { getLogger } from "@hive/ui/lib/logging";
 import { GetServerSideProps } from 'next';

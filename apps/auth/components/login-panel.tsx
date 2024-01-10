@@ -4,15 +4,15 @@ import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { KeychainKeyTypes, KeychainKeyTypesLC } from 'hive-keychain-commons';
 import { useRouter } from 'next/router';
 import { LoginForm, LoginFormSchema } from "@/auth/components/login-form";
-import { useUser } from '@/auth/lib/auth/use-user';
-import { useSignIn } from '@/auth/lib/auth/use-sign-in';
+import { useUser } from '@angala/lib/auth/use-user';
+import { useSignIn } from '@angala/lib/auth/use-sign-in';
 import { getLogger } from "@hive/ui/lib/logging";
-import { Signatures, PostLoginSchema } from '@/auth/lib/auth/utils';
-import HiveAuthUtils from '@/auth/lib/hive-auth-utils';
-import { useLocalStorage } from '@/auth/lib/use-local-storage';
-import { parseCookie } from '@/auth/lib/utils';
-import { authService } from '@/auth/lib/auth-service';
-import { LoginTypes } from "@/auth/types/common";
+import { Signatures, PostLoginSchema } from '@angala/lib/auth/utils';
+import HiveAuthUtils from '@angala/lib/hive-auth-utils';
+import { useLocalStorage } from '@angala/lib/use-local-storage';
+import { parseCookie } from '@angala/lib/utils';
+import { authService } from '@angala/lib/auth-service';
+import { LoginTypes } from "@angala/types/common";
 
 const logger = getLogger('app');
 

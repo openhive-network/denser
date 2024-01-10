@@ -3,7 +3,7 @@ import { i18n } from 'next-i18next.config';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
 import createHttpError from "http-errors";
-import { oidc } from '@/auth/lib/oidc';
+import { oidc } from '@angala/lib/oidc';
 import { redirect } from 'next/navigation';
 import { getLogger } from "@hive/ui/lib/logging";
 

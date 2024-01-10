@@ -1,4 +1,4 @@
-import { ErrorResponse } from '@/auth/lib/api';
+import { ErrorResponse } from '@angala/lib/api';
 
 /**
  * Error specific for our API server. You should not expect the same

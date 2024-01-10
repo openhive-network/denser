@@ -11,4 +11,4 @@ export default function LoginPage() {
   );
 }
 
-export { loginPageController as getServerSideProps } from '@/auth/lib/login-page-controller';
+export { loginPageController as getServerSideProps } from '@angala/lib/login-page-controller';

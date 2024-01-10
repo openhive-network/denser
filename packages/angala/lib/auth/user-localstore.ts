@@ -1,4 +1,4 @@
-import { User } from '@/auth/types/common';
+import { User } from '@angala/types/common';
 
 const USER_LOCAL_STORAGE_KEY = 'user';
 
