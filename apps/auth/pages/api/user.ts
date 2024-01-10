@@ -1,21 +1,11 @@
-import { sessionOptions, IronSessionData } from 'lib/session';
-import { NextApiHandler } from "next";
+import { NextApiRequest, NextApiResponse } from 'next';
+import { sessionOptions } from 'lib/session';
 import { getIronSession } from 'iron-session';
+import { defaultUser } from '@/auth/lib/auth/utils';
+import { User } from '@/auth/types/common';
+import { IronSessionData } from '@/auth/types/common';
+import { NextApiHandler } from "next";
 import { apiHandler } from "@/auth/lib/api";
-
-export type User = {
-  isLoggedIn: boolean
-  username: string
-  avatarUrl: string
-  loginType: string;
-};
-
-export const defaultUser: User = {
-  isLoggedIn: false,
-  username: '',
-  avatarUrl: '',
-  loginType: '',
-};
 
 const getUser: NextApiHandler<User> = async (req, res) => {
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);

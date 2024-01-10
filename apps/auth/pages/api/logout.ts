@@ -1,8 +1,10 @@
 import createHttpError from "http-errors";
 import { NextApiHandler } from "next";
 import { getIronSession } from 'iron-session';
-import { sessionOptions, IronSessionData } from '@/auth/lib/session';
-import { User, defaultUser } from 'pages/api/user';
+import { sessionOptions } from '@/auth/lib/session';
+import { defaultUser } from '@/auth/lib/auth/utils';
+import { User } from '@/auth/types/common';
+import { IronSessionData } from '@/auth/types/common';
 import { apiHandler } from "@/auth/lib/api";
 
 const logoutUser: NextApiHandler<User> = async (req, res) => {
