@@ -118,7 +118,7 @@ const ParamPage: FC = () => {
           <span className="text-md mt-4 hidden text-xl font-medium xl:block">My friends</span>
           <span className="xl:hidden" translate="no">
             <CommunitiesSelect
-              username={user?.username}
+              username={user?.username ? user.username : undefined}
               mySubsData={mySubsData}
               title={
                 tag

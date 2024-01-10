@@ -19,7 +19,7 @@ export function CommunitiesSelect({
   username
 }: {
   title: string;
-  mySubsData?: Subscription[] | null | undefined;
+  mySubsData: Subscription[] | null | undefined;
   username?: string;
 }) {
   const router = useRouter();
@@ -48,9 +48,11 @@ export function CommunitiesSelect({
           <SelectGroup>
             <SelectItem value={`../@${username}/feed`}>My friends</SelectItem>
             <SelectItem value={`/my`}>My communities</SelectItem>
-            <SelectItem disabled value="none" className="text-slate-400">
-              My communities
-            </SelectItem>
+            {mySubsData && mySubsData.length > 0 ? (
+              <SelectItem disabled value="none" className="text-slate-400">
+                My communities
+              </SelectItem>
+            ) : null}
             {mySubsData && mySubsData.length > 0
               ? mySubsData?.map((e) => (
                   <SelectItem key={e[0]} value={e[0]}>
