@@ -23,7 +23,7 @@ const configuration: Configuration = {
         async url(ctx, interaction) {
             console.log({interaction});
             if (interaction.prompt.name === 'login') {
-                return `/login/${interaction.uid}`;
+                return `/interaction/${interaction.uid}/login`;
             }
             return `/interaction/${interaction.uid}`;
         },
