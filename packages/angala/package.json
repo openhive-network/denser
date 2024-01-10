@@ -1,0 +1,12 @@
+{
+  "name": "@hive/angala",
+  "version": "0.1.0",
+  "main": "./components/index.tsx",
+  "types": "./components/index.tsx",
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "typescript": "5.3.3"
+  }
+}

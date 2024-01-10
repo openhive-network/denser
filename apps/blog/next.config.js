@@ -1,5 +1,4 @@
 const path = require('path');
-const withTM = require('next-transpile-modules')(['@hive/ui']);
 const CopyPlugin = require('copy-webpack-plugin');
 
 /** @type {import('next').NextConfig} */
@@ -9,6 +8,7 @@ const nextConfig = {
   experimental: {
     outputFileTracingRoot: path.join(__dirname, '../..')
   },
+  transpilePackages: ["@hive/angala", "@hive/ui"],
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = { fs: false };
@@ -33,4 +33,4 @@ const nextConfig = {
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true'
 });
-module.exports = withTM(withBundleAnalyzer(nextConfig));
+module.exports = withBundleAnalyzer(nextConfig);

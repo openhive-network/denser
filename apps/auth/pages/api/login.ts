@@ -67,7 +67,7 @@ const verifyLoginChallenge = async (
 };
 
 
-const loginUser: NextApiHandler<User> = async (req, res) => {
+export const loginUser: NextApiHandler<User> = async (req, res) => {
 
   const { slug } = req.query;
   // try {
