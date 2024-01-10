@@ -7,7 +7,8 @@ import {
   getAccountPosts,
   getCommunity,
   getPostsRanked,
-  getSubscribers
+  getSubscribers,
+  getSubscriptions
 } from '@/blog/lib/bridge';
 import Loading from '@hive/ui/components/loading';
 import { FC, useCallback, useEffect } from 'react';
@@ -27,6 +28,7 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetServerSideProps } from 'next';
 import { i18n } from '@/blog/next-i18next.config';
+import useUser from '../components/hooks/use-user';
 
 export const PostSkeleton = () => {
   return (
@@ -46,6 +48,7 @@ const ParamPage: FC = () => {
   const { sort, username, tag } = useSiteParams();
   const { ref, inView } = useInView();
   const { ref: refAcc, inView: inViewAcc } = useInView();
+  const { user } = useUser();
   const {
     data: entriesData,
     isLoading: entriesDataIsLoading,
@@ -73,6 +76,13 @@ const ParamPage: FC = () => {
       enabled: Boolean(sort)
     }
   );
+  const {
+    data: mySubsData,
+    isLoading: mySubsIsLoading,
+    isError: mySubsIsError
+  } = useQuery([['subscriptions', user?.username]], () => getSubscriptions(user ? user?.username : ''), {
+    enabled: Boolean(user?.username)
+  });
   const {
     isFetching: accountNotificationIsFetching,
     isLoading: accountNotificationIsLoading,
@@ -122,7 +132,6 @@ const ParamPage: FC = () => {
       enabled: Boolean(username)
     }
   );
-  const lastEntriesData = accountEntriesData?.pages[accountEntriesData?.pages.length - 1];
 
   const handleChangeFilter = useCallback(
     (e: string) => {
@@ -209,7 +218,9 @@ const ParamPage: FC = () => {
                   ) : null}
                   <span className="md:hidden" translate="no">
                     <CommunitiesSelect
-                      username={
+                      mySubsData={mySubsData}
+                      username={user?.username ? user.username : undefined}
+                      title={
                         tag
                           ? communityData
                             ? `${communityData?.title}`
