@@ -18,6 +18,10 @@ import { useLocalStorage } from './hooks/use-local-storage';
 import HiveAuthUtils from '../lib/hive-auth-utils';
 import { useSignOut } from './hooks/use-sign-out';
 import { getLogger } from '@ui/lib/logging';
+import dynamic from 'next/dynamic';
+import { UserMenu } from './user-menu';
+
+// const UserMenu = dynamic(() => import('@/blog/components/user-menu'), { ssr: false });
 
 const logger = getLogger('app');
 
@@ -136,8 +140,26 @@ const SiteHeader: FC = () => {
                 <Icons.pencil className="h-5 w-5" />
               </Button>
             </Link>
-            <ModeToggle />
+            <ModeToggle>
+              <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="theme-mode">
+                <Icons.sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                <Icons.moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                <span className="sr-only">Toggle theme</span>
+              </Button>
+            </ModeToggle>
             <LangToggle />
+            {user && (
+              <UserMenu user={user}>
+                {!user?.avatarUrl && (
+                  <img
+                    className="h-10 w-10 cursor-pointer rounded-md px-0"
+                    // src={user?.avatarUrl}
+                    src={`https://images.hive.blog/u/${user?.username || ''}/avatar/small`}
+                    alt="Profile picture"
+                  />
+                )}
+              </UserMenu>
+            )}
             <Sidebar />
           </nav>
         </div>
