@@ -40,6 +40,8 @@ export default function useUser({ redirectTo = '', redirectIfFound = false } = {
     // If no redirect needed, just return (example: already on
     // /dashboard). If user data not yet there (fetch in progress,
     // logged in or not) then don't do anything yet.
+    console.log('redirectTo', redirectTo);
+    console.log('!redirectTo', !redirectTo);
     if (!redirectTo || !user) {
       return;
     }
