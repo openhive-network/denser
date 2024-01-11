@@ -8,7 +8,7 @@ import { User } from '@angala/types/common';
 const logger = getLogger('app');
 
 async function signOut(): Promise<User> {
-  return await fetchJson('/api/logout', {
+  return await fetchJson('/api/auth/logout', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

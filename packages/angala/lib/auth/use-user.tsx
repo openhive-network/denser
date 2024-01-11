@@ -17,7 +17,7 @@ interface IUseUser {
 
 async function getUser(user: User | null | undefined): Promise<User | null> {
   // if (!user) return null;
-  return await fetchJson(`/api/user`);
+  return await fetchJson(`/api/users/me`);
 }
 
 export function useUser({ redirectTo = '', redirectIfFound = false } = {}): IUseUser {

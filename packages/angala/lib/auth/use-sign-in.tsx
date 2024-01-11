@@ -5,7 +5,7 @@ import { PostLoginSchema } from '@angala/lib/auth/utils';
 import { User } from '@angala/types/common';
 
 async function signIn(data: PostLoginSchema, uid: string = ''): Promise<User> {
-  const url = uid ? `/api/login/${uid}` : '/api/login';
+  const url = uid ? `/api/auth/login/${uid}` : '/api/auth/login';
   return await fetchJson(
     url,
     {
