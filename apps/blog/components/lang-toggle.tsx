@@ -54,7 +54,7 @@ export default function LangToggle({ logged }: { logged: Boolean }) {
             }}
           >
             {label}
-            <span>{locale}</span>
+            <span data-testid={locale}>{locale}</span>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
