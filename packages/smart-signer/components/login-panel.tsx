@@ -14,8 +14,7 @@ import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { useSignIn } from '@smart-signer/lib/auth/use-sign-in';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import HiveAuthUtils from '@smart-signer/lib/hive-auth-utils';
-
-import { LoginForm, LoginFormSchema } from "@/auth/components/login-form";
+import { LoginForm, LoginFormSchema } from "@smart-signer/components/login-form";
 
 const logger = getLogger('app');
 

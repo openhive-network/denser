@@ -13,7 +13,7 @@ import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { getLogger } from '@hive/ui/lib/logging';
 import { Avatar, AvatarFallback, AvatarImage } from '@hive/ui/components/avatar';
 import { authService } from '@smart-signer/lib/auth-service';
-import DialogHBAuth from '@/auth/components/dialog-hb-auth';
+import DialogHBAuth from '@smart-signer/components/dialog-hb-auth';
 
 const logger = getLogger('app');
 
