@@ -1,4 +1,7 @@
+import { GetServerSideProps } from 'next';
+import { getTranslations } from '@/auth/lib/get-translations';
 import { LoginPanel } from '@/auth/components/login-panel';
+import { loginPageController } from '@smart-signer/lib/login-page-controller';
 
 export default function LoginPage() {
   return (
@@ -11,4 +14,11 @@ export default function LoginPage() {
   );
 }
 
-export { loginPageController as getServerSideProps } from '@smart-signer/lib/login-page-controller';
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  return {
+    props: {
+      ...(await loginPageController(ctx)),
+      ...(await getTranslations(ctx)),
+    }
+  };
+};

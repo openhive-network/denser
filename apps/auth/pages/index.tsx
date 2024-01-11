@@ -1,6 +1,5 @@
 import { GetServerSideProps } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from 'next-i18next.config';
+import { getTranslations } from '@/auth/lib/get-translations';
 
 export default function HomePage() {
   return (
@@ -13,10 +12,10 @@ export default function HomePage() {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_auth']))
+      ...(await getTranslations(ctx)),
     }
   };
 };

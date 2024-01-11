@@ -1,8 +1,7 @@
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from 'next-i18next.config';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
 import createHttpError from "http-errors";
+import { getTranslations } from '@/auth/lib/get-translations';
 import { oidc } from '@smart-signer/lib/oidc';
 import { redirect } from 'next/navigation';
 import { getLogger } from "@hive/ui/lib/logging";
@@ -86,7 +85,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
     props: {
       redirectTo,
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_auth'])),
+      ...(await getTranslations(ctx)),
     },
   };
 }

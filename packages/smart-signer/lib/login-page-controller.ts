@@ -1,12 +1,10 @@
+import { GetServerSidePropsContext } from 'next';
 import { oidc } from '@smart-signer/lib/oidc';
-import { i18n } from '@/auth/next-i18next.config';
 import { getLogger } from "@hive/ui/lib/logging";
-import { GetServerSideProps } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 const logger = getLogger('app');
 
-export const loginPageController: GetServerSideProps = async (ctx) => {
+export const loginPageController = async (ctx: GetServerSidePropsContext) => {
   try {
     const { req, res } = ctx;
     const slug = ctx.query.slug as string;
@@ -24,9 +22,5 @@ export const loginPageController: GetServerSideProps = async (ctx) => {
     throw e;
   }
 
-  return {
-    props: {
-      ...(await serverSideTranslations(ctx.req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_auth']))
-    }
-  };
+  return {};
 };
