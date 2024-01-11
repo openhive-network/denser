@@ -29,7 +29,7 @@ export default function InteractionPage({
 }
 
 // export async function getServerSideProps<GetServerSideProps>({ req, res }) {
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
   let redirectTo = '';
   try {
     // const {
