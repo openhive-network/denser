@@ -7,13 +7,10 @@ import { ModeToggle } from './mode-toggle';
 import { MobileNav } from './mobile-nav';
 import { MainNav } from './main-nav';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { useSignOut } from '@smart-signer/lib/auth/use-sign-out';
-import HiveAuthUtils from '@smart-signer/lib/hive-auth-utils';
-import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { getLogger } from '@hive/ui/lib/logging';
 import { Avatar, AvatarFallback, AvatarImage } from '@hive/ui/components/avatar';
-import { authService } from '@smart-signer/lib/auth-service';
 import DialogHBAuth from '@smart-signer/components/dialog-hb-auth';
+import { useLogout } from '@smart-signer/lib/auth/use-logout';
 
 const logger = getLogger('app');
 
@@ -28,20 +25,7 @@ const SiteHeader: FC = () => {
     redirectIfFound: true
   });
 
-  const [, setHiveAuthData] = useLocalStorage('hiveAuthData', HiveAuthUtils.initialHiveAuthData);
-  const [, setHiveKeys] = useLocalStorage('hiveKeys', {});
-
-  const signOut = useSignOut();
-  const onLogout = async () => {
-    setHiveKeys({});
-    setHiveAuthData(HiveAuthUtils.initialHiveAuthData);
-    HiveAuthUtils.logout();
-    try {
-      await signOut.mutateAsync();
-    } catch (error) {
-      logger.error('Error in logout', error);
-    }
-  };
+  const onLogout = useLogout()
 
   return (
     <header className="supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur">
