@@ -8,7 +8,6 @@ const nextConfig = {
   experimental: {
     outputFileTracingRoot: path.join(__dirname, '../..')
   },
-  transpilePackages: ["@hive/angala", "@hive/ui"],
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = { fs: false };
