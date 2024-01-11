@@ -6,13 +6,13 @@ import { Button } from '@hive/ui/components/button';
 import { ModeToggle } from './mode-toggle';
 import { MobileNav } from './mobile-nav';
 import { MainNav } from './main-nav';
-import { useUser } from '@angala/lib/auth/use-user';
-import { useSignOut } from '@angala/lib/auth/use-sign-out';
-import HiveAuthUtils from '@angala/lib/hive-auth-utils';
-import { useLocalStorage } from '@angala/lib/use-local-storage';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useSignOut } from '@smart-signer/lib/auth/use-sign-out';
+import HiveAuthUtils from '@smart-signer/lib/hive-auth-utils';
+import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { getLogger } from '@hive/ui/lib/logging';
 import { Avatar, AvatarFallback, AvatarImage } from '@hive/ui/components/avatar';
-import { authService } from '@angala/lib/auth-service';
+import { authService } from '@smart-signer/lib/auth-service';
 import DialogHBAuth from '@/auth/components/dialog-hb-auth';
 
 const logger = getLogger('app');

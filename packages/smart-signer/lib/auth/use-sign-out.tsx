@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchJson } from '@angala/lib/fetch-json';
-import { QUERY_KEY } from '@angala/lib/query-keys';
-import { defaultUser } from '@angala/lib/auth/utils';
+import { fetchJson } from '@smart-signer/lib/fetch-json';
+import { QUERY_KEY } from '@smart-signer/lib/query-keys';
+import { defaultUser } from '@smart-signer/lib/auth/utils';
 import { getLogger } from "@hive/ui/lib/logging";
-import { User } from '@angala/types/common';
+import { User } from '@smart-signer/types/common';
 
 const logger = getLogger('app');
 

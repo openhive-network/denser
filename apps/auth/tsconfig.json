@@ -6,8 +6,8 @@
       "@/auth/*": [
         "./*"
       ],
-      "@angala/*": [
-        "../../packages/angala/*"
+      "@smart-signer/*": [
+        "../../packages/smart-signer/*"
       ],
       "@ui/*": [
         "../../packages/ui/*"

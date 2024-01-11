@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { setLoginChallengeCookies } from '@angala/lib/middleware-challenge-cookies'
+import { setLoginChallengeCookies } from '@smart-signer/lib/middleware-challenge-cookies'
 import { getLogger } from "@hive/ui/lib/logging";
 
 const logger = getLogger('app');

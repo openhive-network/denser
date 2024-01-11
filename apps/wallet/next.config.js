@@ -1,5 +1,5 @@
 const path = require('path');
-const withTM = require('next-transpile-modules')(["@hive/angala", "@hive/ui"])
+const withTM = require('next-transpile-modules')(["@hive/smart-signer", "@hive/ui"])
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {

@@ -1,7 +1,7 @@
 import * as z from 'zod';
-import { validateHiveAccountName } from '@angala/lib/validate-hive-account-name';
-import { User } from '@angala/types/common';
-import { LoginTypes } from '@angala/types/common';
+import { validateHiveAccountName } from '@smart-signer/lib/validate-hive-account-name';
+import { User } from '@smart-signer/types/common';
+import { LoginTypes } from '@smart-signer/types/common';
 
 export const username = z.string()
     .superRefine((val, ctx) => {

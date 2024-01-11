@@ -6,14 +6,14 @@ import { KeychainKeyTypes, KeychainKeyTypesLC } from 'hive-keychain-commons';
 
 import { getLogger } from "@hive/ui/lib/logging";
 
-import { authService } from '@angala/lib/auth-service';
-import { LoginTypes } from "@angala/types/common";
-import { parseCookie } from '@angala/lib/utils';
-import { Signatures, PostLoginSchema } from '@angala/lib/auth/utils';
-import { useLocalStorage } from '@angala/lib/use-local-storage';
-import { useSignIn } from '@angala/lib/auth/use-sign-in';
-import { useUser } from '@angala/lib/auth/use-user';
-import HiveAuthUtils from '@angala/lib/hive-auth-utils';
+import { authService } from '@smart-signer/lib/auth-service';
+import { LoginTypes } from "@smart-signer/types/common";
+import { parseCookie } from '@smart-signer/lib/utils';
+import { Signatures, PostLoginSchema } from '@smart-signer/lib/auth/utils';
+import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
+import { useSignIn } from '@smart-signer/lib/auth/use-sign-in';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import HiveAuthUtils from '@smart-signer/lib/hive-auth-utils';
 
 import { LoginForm, LoginFormSchema } from "@/auth/components/login-form";
 

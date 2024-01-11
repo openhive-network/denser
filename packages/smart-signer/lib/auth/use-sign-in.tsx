@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { QUERY_KEY } from '@angala/lib/query-keys';
-import { fetchJson } from '@angala/lib/fetch-json';
-import { PostLoginSchema } from '@angala/lib/auth/utils';
-import { User } from '@angala/types/common';
+import { QUERY_KEY } from '@smart-signer/lib/query-keys';
+import { fetchJson } from '@smart-signer/lib/fetch-json';
+import { PostLoginSchema } from '@smart-signer/lib/auth/utils';
+import { User } from '@smart-signer/types/common';
 
 async function signIn(data: PostLoginSchema, uid: string = ''): Promise<User> {
   const url = uid ? `/api/auth/login/${uid}` : '/api/auth/login';

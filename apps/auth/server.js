@@ -17,7 +17,7 @@ app.prepare().then(() => {
       const parsedUrl = parse(req.url, true);
       const { pathname, query } = parsedUrl;
 
-      if (pathname === '/angala') {
+      if (pathname === '/smart-signer') {
         await app.render(req, res, '/login', query);
       } else {
         await handle(req, res, parsedUrl);

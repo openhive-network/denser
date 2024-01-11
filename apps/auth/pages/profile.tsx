@@ -2,7 +2,7 @@ import { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from 'next-i18next.config';
 import { useState, useEffect } from "react";
-import { useUser } from '@angala/lib/auth/use-user';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getLogger } from "@hive/ui/lib/logging";
 
 const logger = getLogger('app');

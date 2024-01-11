@@ -1,4 +1,4 @@
-import { User } from '@angala/types/common';
+import { User } from '@smart-signer/types/common';
 
 const USER_LOCAL_STORAGE_KEY = 'user';
 

@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Router from 'next/router';
-import { QUERY_KEY } from '@angala/lib/query-keys';
+import { QUERY_KEY } from '@smart-signer/lib/query-keys';
 import * as userLocalStorage from './user-localstore';
-import { useLocalStorage } from '@angala/lib/use-local-storage';
-import { fetchJson } from '@angala/lib/fetch-json';
-import { defaultUser } from '@angala/lib/auth/utils';
+import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
+import { fetchJson } from '@smart-signer/lib/fetch-json';
+import { defaultUser } from '@smart-signer/lib/auth/utils';
 import { getLogger } from "@hive/ui/lib/logging";
-import { User } from '@angala/types/common';
+import { User } from '@smart-signer/types/common';
 
 const logger = getLogger('app');
 

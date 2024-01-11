@@ -6,10 +6,10 @@ import * as z from 'zod';
 import { useTranslation } from 'next-i18next';
 import { Separator } from "@hive/ui/components/separator";
 import { getLogger } from "@hive/ui/lib/logging";
-import { hasCompatibleKeychain } from "@angala/lib/hive-keychain";
-import { username } from "@angala/lib/auth/utils";
-import { LoginTypes } from "@angala/types/common";
-import { validateHivePassword } from "@angala/lib/validate-hive-password";
+import { hasCompatibleKeychain } from "@smart-signer/lib/hive-keychain";
+import { username } from "@smart-signer/lib/auth/utils";
+import { LoginTypes } from "@smart-signer/types/common";
+import { validateHivePassword } from "@smart-signer/lib/validate-hive-password";
 
 const ZodLoginTypesEnum = z.nativeEnum(LoginTypes);
 type ZodLoginTypesEnum = z.infer<typeof ZodLoginTypesEnum>;

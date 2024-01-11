@@ -17,7 +17,7 @@ import {
 import { isBrowser, AuthUser } from '@hive/hb-auth';
 import type { KeyAuthorityType } from '@hive/hb-auth';
 import { toast } from '@ui/components/hooks/use-toast';
-import { authService } from '@angala/lib/auth-service';
+import { authService } from '@smart-signer/lib/auth-service';
 
 interface DialogHBAuthProps {
   children: ReactNode;

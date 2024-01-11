@@ -11,4 +11,4 @@ export default function LoginPage() {
   );
 }
 
-export { loginPageController as getServerSideProps } from '@angala/lib/login-page-controller';
+export { loginPageController as getServerSideProps } from '@smart-signer/lib/login-page-controller';

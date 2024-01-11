@@ -7,9 +7,9 @@ import createHttpError from "http-errors";
 import { ZodError } from "zod";
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import { getLogger } from "@hive/ui/lib/logging";
-import { runMiddleware } from '@angala/lib/run-middleware';
+import { runMiddleware } from '@smart-signer/lib/run-middleware';
 import Cors, { CorsOptions } from 'cors';
-import { corsOptionsDefault } from '@angala/lib/cors-options';
+import { corsOptionsDefault } from '@smart-signer/lib/cors-options';
 
 const logger = getLogger('api');
 
