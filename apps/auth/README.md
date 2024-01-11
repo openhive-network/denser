@@ -10,7 +10,7 @@ blockchain.
 3. Add api endpoints for login, logout and user info — just copy files
    [pages/api/auth/login.ts](pages/api/auth/login.ts),
    [pages/api/auth/logout.ts](pages/api/auth/logout.ts), and
-   [pages/api/users/me.ts](pages/api/users/me.ts) to the same path in
+   [pages/api/users/me.ts](pages/api/users/me.ts) to the same paths in
    your application.
 4. Use component
    [../../packages/smart-signer/components/login-panel.tsx](../../packages/smart-signer/components/login-panel.tsx)
@@ -22,4 +22,5 @@ blockchain.
 
 ### TODO
 
-1. Managing of Hbauth stuff in a better way.
+1. Manage Hbauth stuff in a better way.
+2. Fix issue with translations for stuff coming from internal package.
