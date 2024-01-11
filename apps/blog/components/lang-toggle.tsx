@@ -9,8 +9,9 @@ import {
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { parseCookie } from '@/blog/lib/utils';
+import clsx from 'clsx';
 
-export function LangToggle() {
+export default function LangToggle({ logged }: { logged: Boolean }) {
   const router = useRouter();
   const [lang, setLang] = useState<string | null>(null);
 
@@ -33,11 +34,14 @@ export function LangToggle() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-fit px-0 font-normal" data-testid="toggle-language">
-          <span className="mr-2 w-6">
-            {lang ? languages.filter((language) => language.locale === lang)[0].label : null}
-          </span>
-          <span>Toggle language</span>
+        <Button
+          variant="ghost"
+          size="sm"
+          className={clsx('flex h-10 w-full p-0 text-start font-normal', { 'h-6': logged })}
+          data-testid="toggle-language"
+        >
+          <span>{lang ? languages.filter((language) => language.locale === lang)[0].label : null}</span>
+          {logged ? <span className="ml-2 w-full">Toggle language</span> : null}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

@@ -57,7 +57,11 @@ import {
   ExternalLink,
   Dna,
   MessagesSquare,
-} from "lucide-react";
+  Clock,
+  Undo,
+  DoorOpen,
+  Wallet
+} from 'lucide-react';
 
 export type Icon = LucideIcon;
 
@@ -117,13 +121,14 @@ export const Icons = {
   check: Check,
   copy: Copy,
   copyDone: ClipboardCheck,
+  clock: Clock,
+  undo: Undo,
+  doorOpen: DoorOpen,
+  wallet: Wallet,
   messagesSquare: MessagesSquare,
   radix: (props: LucideProps) => (
     <svg viewBox="0 0 25 25" fill="none" {...props}>
-      <path
-        d="M12 25C7.58173 25 4 21.4183 4 17C4 12.5817 7.58173 9 12 9V25Z"
-        fill="currentcolor"
-      ></path>
+      <path d="M12 25C7.58173 25 4 21.4183 4 17C4 12.5817 7.58173 9 12 9V25Z" fill="currentcolor"></path>
       <path d="M12 0H4V8H12V0Z" fill="currentcolor"></path>
       <path
         d="M17 8C19.2091 8 21 6.20914 21 4C21 1.79086 19.2091 0 17 0C14.7909 0 13 1.79086 13 4C13 6.20914 14.7909 8 17 8Z"
@@ -178,12 +183,7 @@ export const Icons = {
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 166 165" {...props}>
       <rect x="0.5" width="165" height="165" fill="url(#pattern0)" />
       <defs>
-        <pattern
-          id="pattern0"
-          patternContentUnits="objectBoundingBox"
-          width="1"
-          height="1"
-        >
+        <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
           <use xlinkHref="#image0_21_27547" transform="scale(0.00606061)" />
         </pattern>
         <image
@@ -196,13 +196,7 @@ export const Icons = {
     </svg>
   ),
   hivetoken: (props: LucideProps) => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="46"
-      height="46"
-      viewBox="0 0 400 400"
-      {...props}
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 400 400" {...props}>
       <g transform="translate(0 3)" fill="none" fillRule="evenodd">
         <circle fill="#E31337" cx="200" cy="200" r="190" />
         <g transform="translate(90 105)">
@@ -254,13 +248,7 @@ export const Icons = {
     </svg>
   ),
   hbdtoken: (props: LucideProps) => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="46"
-      height="46"
-      viewBox="0 0 400 400"
-      {...props}
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 400 400" {...props}>
       <g transform="translate(0 3)" fill="none" fillRule="evenodd">
         <circle fill="#00960f" cx="200" cy="200" r="190" />
         <g transform="translate(90 105)">
@@ -289,13 +277,7 @@ export const Icons = {
     </svg>
   ),
   walletlogo: (props: LucideProps) => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="180"
-      height="40"
-      viewBox="0 0 342 100"
-      {...props}
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" width="180" height="40" viewBox="0 0 342 100" {...props}>
       <g fill="none">
         <g fill="#E31337">
           <path d="M82.925566,56.4547061 C83.3085593,56.4547061 83.5477453,56.8691911 83.3558789,57.2003949 L58.7056966,99.7520764 C58.6168076,99.9055185 58.4528192,100 58.2753837,100 L43.2070374,100 C42.824044,100 42.5848581,99.585515 42.7767244,99.2543111 L67.4269067,56.7026297 C67.5157957,56.5491876 67.6797842,56.4547061 67.8572197,56.4547061 L82.925566,56.4547061 Z M68.2700709,44.2579667 C68.0926354,44.2579667 67.9286469,44.1634852 67.8397579,44.010043 L42.7767244,0.745688861 C42.5848581,0.414485006 42.824044,0 43.2070374,0 L58.2753837,0 C58.4528192,0 58.6168076,0.0944815123 58.7056966,0.247923631 L83.7687301,43.5122778 C83.9605965,43.8434817 83.7214106,44.2579667 83.3384172,44.2579667 L68.2700709,44.2579667 Z" />
@@ -311,5 +293,5 @@ export const Icons = {
         />
       </g>
     </svg>
-  ),
+  )
 };
