@@ -1,4 +1,5 @@
 const path = require('path');
+const withTM = require('next-transpile-modules')(["@hive/angala", "@hive/ui"])
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -19,4 +20,5 @@ const nextConfig = {
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true'
 });
-module.exports = withBundleAnalyzer(nextConfig);
+module.exports = withTM(withBundleAnalyzer(nextConfig));
+
