@@ -25,4 +25,5 @@ blockchain.
 ### TODO
 
 1. Manage Hbauth stuff in a better way.
-2. Fix issue with translations for stuff coming from internal package.
+2. Enable signing operations.
+3. Fix issue with translations for stuff coming from internal package.
