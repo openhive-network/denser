@@ -4,23 +4,23 @@ blockchain.
 ## Using in Denser application
 
 1. Implement `@tanstack/react-query` provider in your application, see
-   [../../app/auth/components/common/providers.tsx](../../app/auth/components/common/providers.tsx).
+   [../../apps/auth/components/common/providers.tsx](../../apps/auth/components/common/providers.tsx).
 2. Add function `setLoginChallengeCookies` to your `middleware.ts`, see
-   [../../app/auth/middleware.ts](../../app/auth/middleware.ts).
+   [../../apps/auth/middleware.ts](../../apps/auth/middleware.ts).
 3. Add api endpoints for login, logout and user info — just copy files
-   [../../app/auth/pages/api/auth/login.ts](../../app/auth/pages/api/auth/login.ts),
-   [../../app/auth/pages/api/auth/logout.ts](../../app/auth/pages/api/auth/logout.ts),
+   [../../apps/auth/pages/api/auth/login.ts](../../apps/auth/pages/api/auth/login.ts),
+   [../../apps/auth/pages/api/auth/logout.ts](../../apps/auth/pages/api/auth/logout.ts),
    and
-   [../../app/auth/pages/api/users/me.ts](../../app/auth/pages/api/users/me.ts)
+   [../../apps/auth/pages/api/users/me.ts](../../apps/auth/pages/api/users/me.ts)
    to the same paths in your application.
 4. Use component
    [../../packages/smart-signer/components/login-panel.tsx](../../packages/smart-signer/components/login-panel.tsx)
    to login user, on your login page on in your login dialog, see
-   [../../app/auth/pages/login.tsx](../../app/auth/pages/login.tsx).
+   [../../apps/auth/pages/login.tsx](../../apps/auth/pages/login.tsx).
 5. Use react hook function
    [../../packages/smart-signer/lib/auth/use-logout.ts](../../packages/smart-signer/lib/auth/use-logout.ts)
    to logout user, see
-   [../../app/auth/components/site-header.tsx](../../app/auth/components/site-header.tsx).
+   [../../apps/auth/components/site-header.tsx](../../apps/auth/components/site-header.tsx).
 
 ### TODO
 
