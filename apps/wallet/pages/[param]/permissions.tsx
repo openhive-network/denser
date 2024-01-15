@@ -19,12 +19,12 @@ function Permissions({ username }: InferGetServerSidePropsType<typeof getServerS
           <div className="flex flex-col gap-6 md:flex-row">
             <div className="flex flex-col gap-6 text-sm">
               <p>
-                Any password or key is more likely to get compromised the more it is used. That's why Hive
-                uses a hierarchical key system to keep you safe. You are issued with four keys which have
+                Any password or key is more likely to get compromised the more it is used. That&apos;s why
+                Hive uses a hierarchical key system to keep you safe. You are issued with four keys which have
                 different permissions. For example, the Posting Key (which is intended to be used frequently)
-                has a limited set of permissions for social actions that require less security. You'll need to
-                be more careful with your Active Key since it has permissions to perform wallet related
-                actions
+                has a limited set of permissions for social actions that require less security. You&apos;ll
+                need to be more careful with your Active Key since it has permissions to perform wallet
+                related actions
               </p>
               <p>
                 Please take note of your Hive Keys listed below. Ideally, use a Password Manager (like
@@ -43,7 +43,7 @@ function Permissions({ username }: InferGetServerSidePropsType<typeof getServerS
                 <p>
                   This key should be used for social networking actions, like posting, commenting and voting.
                   This key has a limited set of permissions and it is not able to be used for monetary
-                  actions. So you can't lose money if someone else gets access to this key.
+                  actions. So you can&apos;t lose money if someone else gets access to this key.
                 </p>
                 <p>
                   Use this key to log in to other Hive-powered social networks like Hive.blog, Busy and
@@ -140,8 +140,8 @@ function Permissions({ username }: InferGetServerSidePropsType<typeof getServerS
               <div className="border-bg-border flex flex-col gap-8 border-none p-4 md:border-r-2 md:border-solid">
                 <p>
                   The owner key is required to change the other keys. This key has additional permissions to
-                  recover your account or change your other keys. It's the most important key and should be
-                  securely stored offline.
+                  recover your account or change your other keys. It&apos;s the most important key and should
+                  be securely stored offline.
                 </p>
                 <div className="flex flex-col">
                   <Label htmlFor="ownerKey" className="text-lg font-semibold">
@@ -221,11 +221,11 @@ function Permissions({ username }: InferGetServerSidePropsType<typeof getServerS
             <p>
               Each Hive Key has a public and private key to encrypt and decrypt data. Public keys are
               associated with usernames and can be used to look up associated transactions on the blockchain.
-              Your public keys are not required for login on Hive.blog and you don't need to store these
+              Your public keys are not required for login on Hive.blog and you don&apos;t need to store these
               safely.
             </p>
             <div>
-              <p>View public key information for this account (in the 'Authorities' module):</p>
+              <p>View public key information for this account (in the &apos;Authorities&apos; module):</p>
               <Link href="hiveblocks.com/@guest4test1" className="font-bold text-red-600">
                 hiveblocks.com/@guest4test1
               </Link>
