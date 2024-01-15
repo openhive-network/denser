@@ -1,4 +1,4 @@
-import { ErrorResponse } from '@/auth/lib/api';
+import { ErrorResponse } from '@smart-signer/lib/api';
 
 /**
  * Error specific for our API server. You should not expect the same

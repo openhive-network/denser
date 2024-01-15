@@ -10,3 +10,4 @@
 **/.next
 **/node_modules
 node_modules
+**/public/auth/worker.js

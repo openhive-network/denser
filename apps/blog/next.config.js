@@ -1,5 +1,5 @@
 const path = require('path');
-const withTM = require('next-transpile-modules')(['@hive/ui']);
+const withTM = require('next-transpile-modules')(["@hive/smart-signer", "@hive/ui"])
 const CopyPlugin = require('copy-webpack-plugin');
 
 /** @type {import('next').NextConfig} */

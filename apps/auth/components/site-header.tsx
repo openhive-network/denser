@@ -6,14 +6,11 @@ import { Button } from '@hive/ui/components/button';
 import { ModeToggle } from './mode-toggle';
 import { MobileNav } from './mobile-nav';
 import { MainNav } from './main-nav';
-import { useUser } from '@/auth/lib/auth/use-user';
-import { useSignOut } from '@/auth/lib/auth/use-sign-out';
-import HiveAuthUtils from '@/auth/lib/hive-auth-utils';
-import { useLocalStorage } from '@/auth/lib/use-local-storage';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getLogger } from '@hive/ui/lib/logging';
 import { Avatar, AvatarFallback, AvatarImage } from '@hive/ui/components/avatar';
-import { authService } from '@/auth/lib/auth-service';
-import DialogHBAuth from '@/auth/components/dialog-hb-auth';
+import DialogHBAuth from '@smart-signer/components/dialog-hb-auth';
+import { useLogout } from '@smart-signer/lib/auth/use-logout';
 
 const logger = getLogger('app');
 
@@ -28,20 +25,7 @@ const SiteHeader: FC = () => {
     redirectIfFound: true
   });
 
-  const [, setHiveAuthData] = useLocalStorage('hiveAuthData', HiveAuthUtils.initialHiveAuthData);
-  const [, setHiveKeys] = useLocalStorage('hiveKeys', {});
-
-  const signOut = useSignOut();
-  const onLogout = async () => {
-    setHiveKeys({});
-    setHiveAuthData(HiveAuthUtils.initialHiveAuthData);
-    HiveAuthUtils.logout();
-    try {
-      await signOut.mutateAsync();
-    } catch (error) {
-      logger.error('Error in logout', error);
-    }
-  };
+  const onLogout = useLogout()
 
   return (
     <header className="supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur">

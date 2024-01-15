@@ -3,8 +3,6 @@ import { Icons } from '@hive/ui/components/icons';
 import { Input } from '@hive/ui/components/input';
 import { FC, useEffect } from 'react';
 import Sidebar from './sidebar';
-import { ModeToggle } from './mode-toggle';
-import { LangToggle } from './lang-toggle';
 import { MainNav } from './main-nav';
 import { siteConfig } from '@hive/ui/config/site';
 import Link from 'next/link';
@@ -14,12 +12,11 @@ import clsx from 'clsx';
 import { useTranslation } from 'next-i18next';
 import Login from './login';
 import useUser from './hooks/use-user';
-import { useLocalStorage } from './hooks/use-local-storage';
-import HiveAuthUtils from '../lib/hive-auth-utils';
-import { useSignOut } from './hooks/use-sign-out';
-import { getLogger } from '@ui/lib/logging';
 
-const logger = getLogger('app');
+import dynamic from 'next/dynamic';
+const UserMenu = dynamic(() => import('@/blog/components/user-menu'), { ssr: false });
+const LangToggle = dynamic(() => import('@/blog/components/lang-toggle'), { ssr: false });
+const ModeToggle = dynamic(() => import('@/blog/components/mode-toggle'), { ssr: false });
 
 const SiteHeader: FC = () => {
   const router = useRouter();
@@ -30,19 +27,6 @@ const SiteHeader: FC = () => {
   }, []);
 
   const { user } = useUser();
-  const [, setHiveAuthData] = useLocalStorage('hiveAuthData', HiveAuthUtils.initialHiveAuthData);
-  const [, setHiveKeys] = useLocalStorage('hiveKeys', {});
-  const signOut = useSignOut();
-  const onLogout = async () => {
-    setHiveKeys({});
-    setHiveAuthData(HiveAuthUtils.initialHiveAuthData);
-    HiveAuthUtils.logout();
-    try {
-      await signOut.mutateAsync();
-    } catch (error) {
-      logger.error('Error in logout', error);
-    }
-  };
 
   const [input, setInput] = useState('');
   const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -84,19 +68,7 @@ const SiteHeader: FC = () => {
         <MainNav />
         <div className="flex items-center space-x-2 sm:space-x-4">
           <nav className="flex items-center space-x-1">
-            {isClient && user?.isLoggedIn ? (
-              <Link
-                href=""
-                onClick={async (e) => {
-                  e.preventDefault();
-                  await onLogout();
-                }}
-              >
-                <Button variant="redHover" size="sm" className="h-10">
-                  Logout
-                </Button>
-              </Link>
-            ) : (
+            {isClient && user?.isLoggedIn ? null : (
               <div className="mx-1 hidden gap-1 sm:flex">
                 <Login>
                   <Button variant="ghost" className="text-base hover:text-red-500" data-testid="login-btn">
@@ -136,8 +108,27 @@ const SiteHeader: FC = () => {
                 <Icons.pencil className="h-5 w-5" />
               </Button>
             </Link>
-            <ModeToggle />
-            <LangToggle />
+            {user && !user?.isLoggedIn ? (
+              <ModeToggle>
+                <Button variant="ghost" size="sm" className="h-10 w-full px-0" data-testid="theme-mode">
+                  <Icons.sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                  <Icons.moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                  <span className="hidden">Toggle theme</span>
+                </Button>
+              </ModeToggle>
+            ) : null}
+            {user && !user?.isLoggedIn ? <LangToggle logged={user ? user?.isLoggedIn : false} /> : null}
+            {user && user?.isLoggedIn ? (
+              <UserMenu user={user}>
+                {!user?.avatarUrl && (
+                  <img
+                    className="h-10 w-10 cursor-pointer rounded-md px-0"
+                    src={`https://images.hive.blog/u/${user?.username || ''}/avatar/small`}
+                    alt="Profile picture"
+                  />
+                )}
+              </UserMenu>
+            ) : null}
             <Sidebar />
           </nav>
         </div>
