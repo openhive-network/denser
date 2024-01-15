@@ -115,7 +115,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               <ul className="flex h-full gap-2 text-xs text-white sm:text-base lg:flex lg:gap-8">
                 <li>
                   <Link
-                    href={`:3000/@${username}`}
+                    href={`/@${username}`}
                     target="_blank"
                     className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800 
                     ${

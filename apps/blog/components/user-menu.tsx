@@ -18,12 +18,14 @@ import HiveAuthUtils from '../lib/hive-auth-utils';
 import { useSignOut } from './hooks/use-sign-out';
 import { getLogger } from '@ui/lib/logging';
 import LangToggle from './lang-toggle';
+import env from '@beam-australia/react-env';
 
 const logger = getLogger('app');
 
 const UserMenu = ({ children, user }: { children: ReactNode; user: User }) => {
   const [, setHiveAuthData] = useLocalStorage('hiveAuthData', HiveAuthUtils.initialHiveAuthData);
   const [, setHiveKeys] = useLocalStorage('hiveKeys', {});
+  const walletHost = env('WALLET_ENDPOINT');
   const signOut = useSignOut();
   const onLogout = async () => {
     setHiveKeys({});
@@ -99,7 +101,7 @@ const UserMenu = ({ children, user }: { children: ReactNode; user: User }) => {
           <DropdownMenuItem className="cursor-pointer">
             <Link
               target="_blank"
-              href={`http://localhost:4000/@${user.username}/transfers`}
+              href={`${walletHost}/@${user.username}/transfers`}
               className="flex w-full items-center"
             >
               <Icons.wallet className="mr-2" />

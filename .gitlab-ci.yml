@@ -274,6 +274,7 @@ staging:deploy-blog:
     PORT: 3000
     API_ENDPOINT: https://api.hive.blog
     IMAGES_ENDPOINT: https://images.hive.blog/
+    WALLET_ENDPOINT: https://wallet.openhive.network
     CONTAINER_NAME: denser-blog
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'

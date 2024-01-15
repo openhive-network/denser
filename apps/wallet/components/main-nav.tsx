@@ -10,7 +10,7 @@ export function MainNav() {
     <div className="mr-4 hidden h-full items-center md:flex">
       <nav className="hidden h-full items-center space-x-6 text-sm font-medium lg:flex lg:text-base">
         <Link
-          href=":3000/trending"
+          href="/trending"
           target="_blank"
           className={cn(
             'flex h-full items-center border-b-2 border-white transition-colors hover:border-red-600 hover:text-red-600',
