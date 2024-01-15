@@ -229,7 +229,7 @@
       "followed_blacklists": "Followed Blacklists",
       "followed_muted_lists": "Followed Muted Lists",
       "followers_pages": "Followers page {{current}} from {{total}}",
-      "followed_pages": "Followed page {{current}} from {{totaol}}",
+      "followed_pages": "Followed page {{current}} from {{total}}",
       "list": {
         "what_is_this": "What Is This?",
         "show_or_hide_descripton": "This is the new decentralized list system. From here you can manage your own mute list or blacklist, as well as subscribe to the mute lists and blacklists of other users. There are some new fields on the {{settings_link}} page where you can set a description of how you choose who you've added to your lists and if there are any actions that account can take to get removed from them. You can see the descriptions of the lists of other accounts by browsing directly to their personal blacklist or mute list page. These links can be found on their profile page below the follower information. To get started, we recommend that you follow the blacklists/mute lists of these accounts: hive.blog",
