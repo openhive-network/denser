@@ -30,6 +30,14 @@ blockchain.
    to your `.env` file, see
    [../../apps/auth/.env](../../apps/auth/.env). You can change the
    value for secret to the other random string, of course.
+8. Optionally create environment variables for logger in your
+   `.env.local` file, when you need to see logger messages emitted on
+   lower levels during development, for instance:
+    ```bash
+    REACT_APP_LOGGING_BROWSER_ENABLED="true"
+    REACT_APP_LOGGING_LOG_LEVEL="TRACE"
+    ```
+
 
 ### TODO
 
