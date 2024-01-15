@@ -25,6 +25,11 @@ blockchain.
    [../../packages/smart-signer/lib/auth/use-logout.ts](../../packages/smart-signer/lib/auth/use-logout.ts)
    to logout user, see
    [../../apps/auth/components/site-header.tsx](../../apps/auth/components/site-header.tsx).
+7. Add environment variable
+   `DENSER_SERVER_SECRET_COOKIE_PASSWORD="2gyZ3GDw3LHZKCMEPmPDL3sjREVRXPr8"`
+   to your `.env` file, see
+   [../../apps/auth/.env](../../apps/auth/.env). You can change the
+   value for secret to the other random string, of course.
 
 ### TODO
 
