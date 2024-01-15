@@ -8,7 +8,7 @@ export default function WalletMenu({ username }: { username: string }) {
   const { t } = useTranslation('common_wallet');
   const userAfterLogin = false;
   return (
-    <div className="flex w-full max-w-6xl gap-6 border-b-2 border-zinc-500 px-4 py-2">
+    <div className="max-w flex w-full gap-6 border-b-2 border-zinc-500 px-4 py-2">
       <Link
         href={`/@${username}/transfers`}
         className={clsx(
