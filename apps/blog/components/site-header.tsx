@@ -10,8 +10,6 @@ import { useState, KeyboardEvent } from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import { useTranslation } from 'next-i18next';
-import Login from './login';
-import useUser from './hooks/use-user';
 
 import dynamic from 'next/dynamic';
 const UserMenu = dynamic(() => import('@/blog/components/user-menu'), { ssr: false });
@@ -26,7 +24,7 @@ const SiteHeader: FC = () => {
     setIsClient(true);
   }, []);
 
-  const { user } = useUser();
+  const user = { isLoggedIn: false, avatarUrl: '' };
 
   const [input, setInput] = useState('');
   const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -70,11 +68,11 @@ const SiteHeader: FC = () => {
           <nav className="flex items-center space-x-1">
             {isClient && user?.isLoggedIn ? null : (
               <div className="mx-1 hidden gap-1 sm:flex">
-                <Login>
+                {/* <Login>
                   <Button variant="ghost" className="text-base hover:text-red-500" data-testid="login-btn">
                     {t('navigation.main_nav_bar.login')}
                   </Button>
-                </Login>
+                </Login> */}
                 <Link href="https://signup.hive.io/">
                   <Button variant="redHover" data-testid="signup-btn">
                     {t('navigation.main_nav_bar.sign_up')}
@@ -118,7 +116,7 @@ const SiteHeader: FC = () => {
               </ModeToggle>
             ) : null}
             {user && !user?.isLoggedIn ? <LangToggle logged={user ? user?.isLoggedIn : false} /> : null}
-            {user && user?.isLoggedIn ? (
+            {/* {user && user?.isLoggedIn ? (
               <UserMenu user={user}>
                 {!user?.avatarUrl && (
                   <img
@@ -128,7 +126,7 @@ const SiteHeader: FC = () => {
                   />
                 )}
               </UserMenu>
-            ) : null}
+            ) : null} */}
             <Sidebar />
           </nav>
         </div>

@@ -10,7 +10,6 @@ import { GetServerSideProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
-import { validateHiveAccountName } from '@/blog/lib/validate-hive-account-name';
 
 const UserCommunities = ({ hivebuzz, peakd }: { hivebuzz: Badge[]; peakd: Badge[] }) => {
   const { username } = useSiteParams();
@@ -76,22 +75,21 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   try {
     const username = String(context.params?.param).slice(1);
-    const validatedUsername = validateHiveAccountName(username);
-    const hivebuzzRes = await fetch(`https://hivebuzz.me/api/badges/${validatedUsername}`);
-    if (!validatedUsername) {
-      if (hivebuzzRes.ok) {
-        const hivebuzzJson = await hivebuzzRes.json();
-        hivebuzzJsonStateOn = hivebuzzJson.filter((badge: Badge) => badge.state === 'on');
-      }
-      const peakdRes = await fetch(`https://peakd.com/api/public/badge/${validatedUsername}`);
-      if (peakdRes.ok) {
-        const peakdJson = await peakdRes.json();
-        peakdJsonMapedWithURL = peakdJson?.map((obj: Badge) => ({
-          id: obj.title,
-          url: `https://images.hive.blog/u/${obj.name}/avatar`,
-          title: obj.title
-        }));
-      }
+
+    const hivebuzzRes = await fetch(`https://hivebuzz.me/api/badges/${username}`);
+
+    if (hivebuzzRes.ok) {
+      const hivebuzzJson = await hivebuzzRes.json();
+      hivebuzzJsonStateOn = hivebuzzJson.filter((badge: Badge) => badge.state === 'on');
+    }
+    const peakdRes = await fetch(`https://peakd.com/api/public/badge/${username}`);
+    if (peakdRes.ok) {
+      const peakdJson = await peakdRes.json();
+      peakdJsonMapedWithURL = peakdJson?.map((obj: Badge) => ({
+        id: obj.title,
+        url: `https://images.hive.blog/u/${obj.name}/avatar`,
+        title: obj.title
+      }));
     }
   } catch (error) {
     console.error('Error in getServerSideProps');

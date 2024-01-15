@@ -20,14 +20,13 @@ import { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
 import { useState, useEffect } from 'react';
-import useUser from '@/blog/components/hooks/use-user';
 import { useParams } from 'next/navigation';
 
 export default function UserSettings() {
   const [endpoint, setEndpoint] = useLocalStorage('hive-blog-endpoint', siteConfig.endpoint);
   const [isClient, setIsClient] = useState(false);
   const params = useParams();
-  const { user } = useUser();
+  const user = { isLoggedIn: false, username: 'gtg' };
 
   useEffect(() => {
     setIsClient(true);

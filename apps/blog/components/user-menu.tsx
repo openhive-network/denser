@@ -9,33 +9,12 @@ import {
 } from '@ui/components/dropdown-menu';
 import { ReactNode } from 'react';
 import ModeToggle from './mode-toggle';
-import { User } from '../pages/api/user';
 import Link from 'next/link';
 import { Icons } from '@ui/components/icons';
 import { Button } from '@ui/components';
-import { useLocalStorage } from './hooks/use-local-storage';
-import HiveAuthUtils from '../lib/hive-auth-utils';
-import { useSignOut } from './hooks/use-sign-out';
-import { getLogger } from '@ui/lib/logging';
 import LangToggle from './lang-toggle';
 
-const logger = getLogger('app');
-
-const UserMenu = ({ children, user }: { children: ReactNode; user: User }) => {
-  const [, setHiveAuthData] = useLocalStorage('hiveAuthData', HiveAuthUtils.initialHiveAuthData);
-  const [, setHiveKeys] = useLocalStorage('hiveKeys', {});
-  const signOut = useSignOut();
-  const onLogout = async () => {
-    setHiveKeys({});
-    setHiveAuthData(HiveAuthUtils.initialHiveAuthData);
-    HiveAuthUtils.logout();
-    try {
-      await signOut.mutateAsync();
-    } catch (error) {
-      logger.error('Error in logout', error);
-    }
-  };
-
+const UserMenu = ({ children, user }: { children: ReactNode; user: any }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
@@ -107,7 +86,7 @@ const UserMenu = ({ children, user }: { children: ReactNode; user: User }) => {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer">
-            <Link
+            {/* <Link
               href=""
               onClick={async (e) => {
                 e.preventDefault();
@@ -117,7 +96,7 @@ const UserMenu = ({ children, user }: { children: ReactNode; user: User }) => {
             >
               <Icons.doorOpen className="mr-2" />
               <span className="w-full">Logout</span>
-            </Link>
+            </Link> */}
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
