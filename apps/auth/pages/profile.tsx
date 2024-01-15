@@ -1,9 +1,8 @@
 import { GetServerSideProps } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from 'next-i18next.config';
 import { useState, useEffect } from "react";
-import { useUser } from '@/auth/lib/auth/use-user';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getLogger } from "@hive/ui/lib/logging";
+import { getTranslations } from '@/auth/lib/get-translations';
 
 const logger = getLogger('app');
 
@@ -34,10 +33,10 @@ export default function Profile() {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_auth']))
+      ...(await getTranslations(ctx)),
     }
   };
 };

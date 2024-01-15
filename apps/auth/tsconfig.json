@@ -1,25 +1,29 @@
 {
-    "extends": "@hive/tsconfig/base.json",
-    "compilerOptions": {
-        "baseUrl": ".",
-        "paths": {
-            "@/auth/*": [
-                "./*"
-            ],
-            "@ui/*": [
-                "../../packages/ui/*"
-            ]
-        }
+  "extends": "@hive/tsconfig/base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/auth/*": [
+        "./*"
+      ],
+      "@smart-signer/*": [
+        "../../packages/smart-signer/*"
+      ],
+      "@ui/*": [
+        "../../packages/ui/*"
+      ]
     },
-    "include": [
-        "next-env.d.ts",
-        "**/*.ts",
-        "**/*.tsx",
-        ".next/types/**/*.ts",
-        "../../packages/ui/elements/common/layout.tsx"
-    ],
-    "exclude": [
-        "node_modules",
-        "playwright"
-    ]
+    "strictNullChecks": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "../../packages/ui/elements/common/layout.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "playwright"
+  ]
 }

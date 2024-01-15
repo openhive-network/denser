@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Router from 'next/router';
-import { QUERY_KEY } from '@/auth/lib/query-keys';
+import { QUERY_KEY } from '@smart-signer/lib/query-keys';
 import * as userLocalStorage from './user-localstore';
-import { useLocalStorage } from '@/auth/lib/use-local-storage';
-import { fetchJson } from '@/auth/lib/fetch-json';
-import { User, defaultUser } from 'pages/api/user';
-import { getLogger } from '@hive/ui/lib/logging';
+import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
+import { fetchJson } from '@smart-signer/lib/fetch-json';
+import { defaultUser } from '@smart-signer/lib/auth/utils';
+import { getLogger } from "@hive/ui/lib/logging";
+import { User } from '@smart-signer/types/common';
 
 const logger = getLogger('app');
 
@@ -16,7 +17,7 @@ interface IUseUser {
 
 async function getUser(user: User | null | undefined): Promise<User | null> {
   // if (!user) return null;
-  return await fetchJson(`/api/user`);
+  return await fetchJson(`/api/users/me`);
 }
 
 export function useUser({ redirectTo = '', redirectIfFound = false } = {}): IUseUser {

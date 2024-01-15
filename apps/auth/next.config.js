@@ -1,6 +1,6 @@
 const path = require('path')
-const withTM = require('next-transpile-modules')(["@hive/ui"])
 const version = require('./version.json');
+const withTM = require('next-transpile-modules')(["@hive/smart-signer", "@hive/ui"])
 const CopyPlugin = require('copy-webpack-plugin');
 
 /** @type {import('next').NextConfig} */
@@ -12,6 +12,22 @@ const nextConfig = {
   },
   experimental: {
     outputFileTracingRoot: path.join(__dirname, '../..'),
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/.well-known/openid-configuration',
+        destination: '/api/oidc/.well-known/openid-configuration',
+      },
+      // {
+      //   source: '/interaction/:path*',
+      //   destination: '/api/oidc/interaction/:path*',
+      // },
+      {
+        source: '/oidc/:path*',
+        destination: '/api/oidc/:path*',
+      },
+    ]
   },
   webpack: (config, { isServer, webpack }) => {
     if (!isServer) {
@@ -41,4 +57,5 @@ const nextConfig = {
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true'
 });
+
 module.exports = withTM(withBundleAnalyzer(nextConfig));
