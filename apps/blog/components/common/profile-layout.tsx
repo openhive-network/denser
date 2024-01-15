@@ -18,6 +18,7 @@ import { Button } from '@hive/ui';
 import DialogLogin from '../dialog-login';
 import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
+import env from '@beam-australia/react-env';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -45,6 +46,7 @@ function compareDates(dateStrings: string[], t: TFunction<'common_wallet', undef
 const ProfileLayout = ({ children }: IProfileLayout) => {
   const router = useRouter();
   const { t } = useTranslation('common_blog');
+  const walletHost = env('WALLET_ENDPOINT');
   const { username } = useSiteParams();
   const {
     isLoading: profileDataIsLoading,
@@ -378,7 +380,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               <ul className="flex h-full text-xs text-white sm:text-base lg:flex lg:gap-4">
                 <li>
                   <Link
-                    href={`http://localhost:4000/@${username}/transfers`}
+                    href={`${walletHost}/@${username}/transfers`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="mr-4 flex h-full items-center px-2 hover:bg-white hover:text-slate-800"

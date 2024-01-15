@@ -49,7 +49,7 @@ function translateShorDate(data: string, t: TFunction<'common_wallet', undefined
 
 export function ProposalListItem({ proposalData, totalShares, totalVestingFund }: ListItemProps) {
   const { t } = useTranslation('common_wallet');
-  const [link, setLink] = useState<string>(`:3000/${proposalData.creator}/${proposalData.permlink}`);
+  const [link, setLink] = useState<string>(`/${proposalData.creator}/${proposalData.permlink}`);
   const totalHBD = proposalData.daily_pay.amount.times(
     moment(proposalData.end_date).diff(moment(proposalData.start_date), 'd')
   );
@@ -59,7 +59,7 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
 
   useEffect(() => {
     getPostHeader(proposalData.creator, String(proposalData.permlink)).then((res) => {
-      setLink(`:3000/${res.category}/@${res.author}/${res.permlink}`);
+      setLink(`/${res.category}/@${res.author}/${res.permlink}`);
     });
   }, [proposalData.creator, proposalData.permlink]);
 
@@ -124,7 +124,7 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
           </div>
         </div>
         <div className="flex items-center gap-1 text-xs md:text-sm">
-          <Link href={`:3000/@${proposalData.creator}`} target="_blank">
+          <Link href={`/@${proposalData.creator}`} target="_blank">
             <img
               className="h-[30px] w-[30px] rounded-3xl"
               height="40"
@@ -134,7 +134,7 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
             />
           </Link>
           {t('proposals_page.by')}
-          <Link href={`:3000/@${proposalData.creator}`} target="_blank">
+          <Link href={`/@${proposalData.creator}`} target="_blank">
             <span className="text-red-500 dark:hover:text-red-400" data-testid="proposal-creator">
               {proposalData.creator}
             </span>
@@ -142,7 +142,7 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
           {proposalData.receiver !== proposalData.creator && (
             <span>
               {t('proposals_page.for')}
-              <Link href={`:3000/</span>@${proposalData.receiver}`} target="_blank">
+              <Link href={`/</span>@${proposalData.receiver}`} target="_blank">
                 <span className="text-red-500 dark:hover:text-red-400" data-testid="proposal-receiver">
                   {proposalData.receiver}
                 </span>

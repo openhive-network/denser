@@ -114,7 +114,7 @@ function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemPro
       <td className="font-light md:font-normal">
         <div className="flex" data-testid="witness-list-item-info">
           <div className="self hidden p-2 sm:block" title={t('witnesses_page.navigate_to_witness_profile')}>
-            <Link href={`:3000/@${data.owner}`} target="_blank">
+            <Link href={`/@${data.owner}`} target="_blank">
               <img
                 className={clsx('mr-1 h-[47px] min-w-[47px] rounded-full', {
                   'opacity-50': disableUser
@@ -129,7 +129,7 @@ function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemPro
           <div className="flex flex-col gap-1 py-1 sm:px-2">
             <div className="flex items-center gap-2">
               <Link
-                href={`:3000/@${data.owner}`}
+                href={`/@${data.owner}`}
                 data-testid="witness-name-link"
                 target="_blank"
                 title={t('witnesses_page.navigate_to_witness_profile')}

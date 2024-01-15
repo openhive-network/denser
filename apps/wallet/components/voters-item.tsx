@@ -4,7 +4,7 @@ function VotersItem({ username, hp, proxy }: { username: string; hp: number; pro
   return (
     <div className="flex flex-col gap-1" data-testid="vote-list-item">
       <Link
-        href={`:3000/@${username}`}
+        href={`/@${username}`}
         target="_blank"
         className="text-red-500"
         data-testid="proposal-voter-link-dialog"

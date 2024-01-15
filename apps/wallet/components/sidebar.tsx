@@ -42,8 +42,8 @@ const Sidebar = () => {
       >
         <div className="flex flex-col">
           <ul className="flex flex-col">
-            <Item href=":3000/welcome">{t('navigation.sidebar.welcome')}</Item>
-            <Item href=":3000/faq.html">{t('navigation.sidebar.faq')}</Item>
+            <Item href="/welcome">{t('navigation.sidebar.welcome')}</Item>
+            <Item href="/faq.html">{t('navigation.sidebar.faq')}</Item>
             <Item href="/market">{t('navigation.sidebar.currency_market')}</Item>
             <Separator className="my-2" />
             <Item href="/~witnesses">{t('navigation.sidebar.vote_for_witnesses')}</Item>
@@ -75,8 +75,8 @@ const Sidebar = () => {
               {t('navigation.sidebar.hive_whitepaper')} <Icons.forward className="w-4" />
             </Item>
             <Separator className="my-2" />
-            <Item href=":3000/privacy.html">{t('navigation.sidebar.privacy_policy')}</Item>
-            <Item href=":3000/tos.html">{t('navigation.sidebar.terms_of_service')}</Item>
+            <Item href="/privacy.html">{t('navigation.sidebar.privacy_policy')}</Item>
+            <Item href="/tos.html">{t('navigation.sidebar.terms_of_service')}</Item>
           </ul>
         </div>
       </SheetContent>
