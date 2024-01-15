@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { setLoginChallengeCookies } from '@smart-signer/lib/middleware-challenge-cookies';
 
 // This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {
   console.log('MIDDLEWARE');
+  const res = NextResponse.next();
+
   const tempArr = request.nextUrl.pathname.split('/');
   let entry: any = null;
   if (tempArr.length === 3 && tempArr[1].startsWith('@')) {
@@ -30,6 +33,9 @@ export async function middleware(request: NextRequest) {
 
   if (request.nextUrl.pathname === '/') {
     return NextResponse.redirect(new URL('/trending', request.url));
+  }
+  if (request.nextUrl.pathname.match('/((?!api|_next/static|_next/image|favicon.ico).*)')) {
+    setLoginChallengeCookies(request, res);
   }
 }
 

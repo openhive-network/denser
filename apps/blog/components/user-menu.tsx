@@ -13,8 +13,11 @@ import Link from 'next/link';
 import { Icons } from '@ui/components/icons';
 import { Button } from '@ui/components';
 import LangToggle from './lang-toggle';
+import { useLogout } from '@smart-signer/lib/auth/use-logout';
 
 const UserMenu = ({ children, user }: { children: ReactNode; user: any }) => {
+  const onLogout = useLogout();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
@@ -86,7 +89,7 @@ const UserMenu = ({ children, user }: { children: ReactNode; user: any }) => {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer">
-            {/* <Link
+            <Link
               href=""
               onClick={async (e) => {
                 e.preventDefault();
@@ -96,7 +99,7 @@ const UserMenu = ({ children, user }: { children: ReactNode; user: any }) => {
             >
               <Icons.doorOpen className="mr-2" />
               <span className="w-full">Logout</span>
-            </Link> */}
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>

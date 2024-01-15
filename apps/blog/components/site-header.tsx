@@ -10,11 +10,13 @@ import { useState, KeyboardEvent } from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import { useTranslation } from 'next-i18next';
-
+import { useUser } from '@smart-signer/lib/auth/use-user';
 import dynamic from 'next/dynamic';
+import DialogLogin from './dialog-login';
 const UserMenu = dynamic(() => import('@/blog/components/user-menu'), { ssr: false });
 const LangToggle = dynamic(() => import('@/blog/components/lang-toggle'), { ssr: false });
 const ModeToggle = dynamic(() => import('@/blog/components/mode-toggle'), { ssr: false });
+import { useLogout } from '@smart-signer/lib/auth/use-logout';
 
 const SiteHeader: FC = () => {
   const router = useRouter();
@@ -24,7 +26,9 @@ const SiteHeader: FC = () => {
     setIsClient(true);
   }, []);
 
-  const user = { isLoggedIn: false, avatarUrl: '' };
+  const { user } = useUser();
+  const onLogout = useLogout();
+  console.log(user);
 
   const [input, setInput] = useState('');
   const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -68,11 +72,11 @@ const SiteHeader: FC = () => {
           <nav className="flex items-center space-x-1">
             {isClient && user?.isLoggedIn ? null : (
               <div className="mx-1 hidden gap-1 sm:flex">
-                {/* <Login>
+                <DialogLogin>
                   <Button variant="ghost" className="text-base hover:text-red-500" data-testid="login-btn">
                     {t('navigation.main_nav_bar.login')}
                   </Button>
-                </Login> */}
+                </DialogLogin>
                 <Link href="https://signup.hive.io/">
                   <Button variant="redHover" data-testid="signup-btn">
                     {t('navigation.main_nav_bar.sign_up')}
@@ -116,7 +120,7 @@ const SiteHeader: FC = () => {
               </ModeToggle>
             ) : null}
             {user && !user?.isLoggedIn ? <LangToggle logged={user ? user?.isLoggedIn : false} /> : null}
-            {/* {user && user?.isLoggedIn ? (
+            {user && user?.isLoggedIn ? (
               <UserMenu user={user}>
                 {!user?.avatarUrl && (
                   <img
@@ -126,7 +130,20 @@ const SiteHeader: FC = () => {
                   />
                 )}
               </UserMenu>
-            ) : null} */}
+            ) : null}
+            {isClient && user?.isLoggedIn === true && (
+              <Link
+                href=""
+                onClick={async (e) => {
+                  e.preventDefault();
+                  await onLogout();
+                }}
+              >
+                <Button variant="redHover" size="sm" className="h-10">
+                  Logout
+                </Button>
+              </Link>
+            )}
             <Sidebar />
           </nav>
         </div>
