@@ -11,10 +11,10 @@ export const getServerSideProps: GetServerSideProps<{
   const file_path = path.join('lib', 'markdowns', 'tos.md');
   const data = fs.readFileSync(file_path, { encoding: 'utf8', flag: 'r' });
 
-  return { 
-    props: { 
-      data, 
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_blog'])) } };
+  return {
+    props: {
+      data,
+      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_blog', 'smart-signer'])) } };
 };
 function TOS({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const renderer = new Remarkable({

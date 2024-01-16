@@ -44,6 +44,11 @@ blockchain.
 
     d) add script `clean` to your `package.json`, see
     [../../apps/auth/package.json](../../apps/auth/package.json).
+
+    e) add string `smart-signer` to the array of namespaces loaded in
+    your `serverSideTranslations` handler, see
+    [../../apps/auth/lib/get-translations.ts](../../apps/auth/lib/get-translations.ts).
+
 8. Optionally create environment variables for logger in your
    `.env.local` file, when you need to see logger messages emitted on
    lower levels during development, for instance:
