@@ -1,21 +1,25 @@
 import { Button } from '@hive/ui/components/button';
 import { Icons } from '@hive/ui/components/icons';
 import { Input } from '@hive/ui/components/input';
-import { FC, useEffect } from 'react';
 import Sidebar from './sidebar';
 import { MainNav } from './main-nav';
 import { siteConfig } from '@hive/ui/config/site';
 import Link from 'next/link';
-import { useState, KeyboardEvent } from 'react';
+import { useState, KeyboardEvent, FC, useEffect} from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
+import DialogHBAuth from '@smart-signer/components/dialog-hb-auth';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import dynamic from 'next/dynamic';
+import { getLogger } from '@hive/ui/lib/logging';
 import DialogLogin from './dialog-login';
 const UserMenu = dynamic(() => import('@/blog/components/user-menu'), { ssr: false });
 const LangToggle = dynamic(() => import('@/blog/components/lang-toggle'), { ssr: false });
 const ModeToggle = dynamic(() => import('@/blog/components/mode-toggle'), { ssr: false });
+
+const logger = getLogger('app');
+
 
 const SiteHeader: FC = () => {
   const router = useRouter();
@@ -116,6 +120,17 @@ const SiteHeader: FC = () => {
                 </Button>
               </ModeToggle>
             ) : null}
+            {isClient && (
+                <DialogHBAuth onAuthComplete={(username, keyType) => {
+                  logger.info('onAuthComplete %o', { username, keyType })
+                }}>
+                  <Link href="#">
+                    <Button variant="redHover" size="sm" className="h-10">
+                      Hbauth
+                    </Button>
+                  </Link>
+                </DialogHBAuth>
+              )}
             {user && !user?.isLoggedIn ? <LangToggle logged={user ? user?.isLoggedIn : false} /> : null}
             {user && user?.isLoggedIn ? (
               <UserMenu user={user}>

@@ -1,6 +1,6 @@
 import { Button } from '@hive/ui/components/button';
 import { Icons } from '@hive/ui/components/icons';
-import { FC } from 'react';
+import { FC, useState, useEffect } from 'react';
 import Sidebar from './sidebar';
 import { ModeToggle } from './mode-toggle';
 import Link from 'next/link';
@@ -8,13 +8,20 @@ import DialogLogin from './dialog-login';
 import { LangToggle } from '@/wallet/components/lang-toggle';
 import { useTranslation } from 'next-i18next';
 import { useLogout } from '@smart-signer/lib/auth/use-logout';
+import { getLogger } from '@hive/ui/lib/logging';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import DialogHBAuth from '@smart-signer/components/dialog-hb-auth';
+
+const logger = getLogger('app');
 
 const SiteHeader: FC = () => {
   const { t } = useTranslation('common_wallet');
   const onLogout = useLogout();
   const { user } = useUser();
-
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   return (
     <header className="supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur">
       <div className="container flex h-14 w-full items-center justify-between">
@@ -23,6 +30,17 @@ const SiteHeader: FC = () => {
         </Link>
         <div className="flex items-center space-x-2 sm:space-x-4">
           <nav className="flex items-center space-x-1">
+          {isClient && (
+                <DialogHBAuth onAuthComplete={(username, keyType) => {
+                  logger.info('onAuthComplete %o', { username, keyType })
+                }}>
+                  <Link href="#">
+                    <Button variant="redHover" size="sm" className="h-10">
+                      Hbauth
+                    </Button>
+                  </Link>
+                </DialogHBAuth>
+              )}
             {user && !user?.isLoggedIn ? (
               <div className="mx-1 hidden gap-1 sm:flex">
                 <DialogLogin>
