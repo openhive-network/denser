@@ -29,6 +29,7 @@
     "@types/react-dom": "18.2.17",
     "big.js": "^6.2.1",
     "copy-webpack-plugin": "^12.0.1",
+    "hive-keychain-commons": "^1.2.5",
     "moment": "^2.29.4",
     "next": "14.0.4",
     "next-i18next": "^15.1.1",
