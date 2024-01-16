@@ -2,7 +2,7 @@ const path = require('path');
 
 const i18nConfig = {
   i18n: {
-    defaultNS: 'common_auth',
+    defaultNS: 'common',
     defaultLocale: 'en',
     locales: [
       'en',
@@ -23,7 +23,7 @@ const i18nConfig = {
 /** @type {import('next-i18next').UserConfig} */
 const config = {
   ...i18nConfig,
-  localePath: path.resolve('./locales')
+  localePath: path.resolve('./public/locales')
 };
 
 module.exports = config;

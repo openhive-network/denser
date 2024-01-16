@@ -18,12 +18,15 @@ import { LoginForm, LoginFormSchema } from "@smart-signer/components/login-form"
 
 const logger = getLogger('app');
 
-export function LoginPanel() {
-
+export function LoginPanel({
+  i18nNamespace = 'smart-signer',
+}: {
+  i18nNamespace?: string;
+}) {
   const router = useRouter();
   const slug = router.query.slug as string;
 
-  const { t } = useTranslation('common_auth');
+  const { t } = useTranslation(i18nNamespace);
 
   const [loginChallenge, setLoginChallenge] = useState('');
 

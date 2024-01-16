@@ -22,10 +22,11 @@ import { authService } from '@smart-signer/lib/auth-service';
 interface DialogHBAuthProps {
   children: ReactNode;
   onAuthComplete: (username: string, keyType: KeyAuthorityType) => void;
+  i18nNamespace?: string;
 }
 
-function DialogHBAuth({ children, onAuthComplete }: DialogHBAuthProps) {
-  const { t } = useTranslation('common_auth');
+export function DialogHBAuth({ children, onAuthComplete, i18nNamespace = 'smart-signer' }: DialogHBAuthProps) {
+  const { t } = useTranslation(i18nNamespace);
   const [open, setOpen] = useState(false);
   const [k, setKey] = useState('');
 

@@ -50,6 +50,19 @@ const nextConfig = {
       }]
     }));
 
+    config.plugins.push(new CopyPlugin({
+      patterns: [
+        {
+          from: path.join(__dirname, './locales'),
+          to: path.join(__dirname, 'public/locales/')
+        },
+        {
+          from: path.join(__dirname, '../../packages/smart-signer/locales'),
+          to: path.join(__dirname, 'public/locales/')
+        }
+      ]
+    }));
+
     return config;
   }
 };

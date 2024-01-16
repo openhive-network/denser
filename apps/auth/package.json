@@ -5,8 +5,9 @@
   "types": "./index.ts",
   "private": false,
   "scripts": {
-    "dev": "react-env -- next dev -p 5000 | npx pino-pretty --colorize",
-    "build": "react-env -- next build",
+    "clean": "rm -rf ./public/locales/*",
+    "dev": "npm run clean && react-env -- next dev -p 5000 | npx pino-pretty --colorize",
+    "build": "npm run clean && react-env -- next build",
     "start": "react-env -- next start -p 5000",
     "lint": "eslint .",
     "test:jest": "jest --watch"

@@ -72,16 +72,17 @@ const loginFormDefaultValues = {
 }
 
 export function LoginForm({
-  errorMessage,
-  onSubmit,
+  errorMessage = '',
+  onSubmit = (data: LoginFormSchema) => {},
+  i18nNamespace = 'smart-signer',
 }: {
-  errorMessage: string
-  onSubmit: (data: LoginFormSchema) => void
+  errorMessage: string;
+  onSubmit: (data: LoginFormSchema) => void;
+  i18nNamespace?: string;
 }) {
   const logger = getLogger('app');
-  logger.debug('Starting LoginForm');
 
-  const { t } = useTranslation('common_auth');
+  const { t } = useTranslation(i18nNamespace);
   const [isKeychainSupported, setIsKeychainSupported] = useState(false);
   const [disabledPasword, setDisabledPassword] = useState(false);
   const [disabledPaswordHbauth, setDisabledPasswordHbauth] = useState(true);
