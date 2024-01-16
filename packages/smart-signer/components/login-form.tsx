@@ -243,7 +243,7 @@ export function LoginForm({
               >
                 <img
                   className="mr-1 h-4 w-4"
-                  src="/images/hivekeychain.png"
+                  src="/smart-signer/images/hivekeychain.png"
                   alt="Hive Keychain logo"
                 />
                 {t('login_form.use_keychain')}
@@ -264,7 +264,7 @@ export function LoginForm({
               >
                 <img
                   className="mr-1 h-4 w-4"
-                  src="/images/hiveauth.png"
+                  src="/smart-signer/images/hiveauth.png"
                   alt="Hiveauth logo"
                 />
                 {t('login_form.use_hiveauth')}
@@ -285,7 +285,7 @@ export function LoginForm({
               >
                 <img
                   className="mr-1 h-4 w-4"
-                  src="/images/hive-blog-twshare.png"
+                  src="/smart-signer/images/hive-blog-twshare.png"
                   alt="Hbauth logo"
                 />
                 {t('login_form.use_hbauth')}
@@ -355,7 +355,7 @@ export function LoginForm({
               className="mt-4 flex w-fit justify-center rounded-lg bg-gray-400 px-5 py-2.5 hover:bg-gray-500 focus:outline-none "
               data-testid="hivesigner-button"
             >
-              <img src="/images/hivesigner.svg" alt="Hivesigner logo" />
+              <img src="/smart-signer/images/hivesigner.svg" alt="Hivesigner logo" />
             </button>
           </div>
         </form>

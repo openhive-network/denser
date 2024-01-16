@@ -5,7 +5,7 @@
   "types": "./index.ts",
   "private": false,
   "scripts": {
-    "clean": "rm -rf ./public/locales/*",
+    "clean": "rm -rf ./public/locales/* && rm -rf ./public/smart-signer/*",
     "dev": "npm run clean && react-env -- next dev -p 5000 | npx pino-pretty --colorize",
     "build": "npm run clean && react-env -- next build",
     "start": "react-env -- next start -p 5000",

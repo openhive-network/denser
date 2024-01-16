@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": false,
   "scripts": {
-    "clean": "rm -rf ./public/locales/*",
-    "dev": "react-env -- next dev -p 4000",
-    "build": "next build",
+    "clean": "rm -rf ./public/locales/* && rm -rf ./public/smart-signer/*",
+    "dev": "npm run clean && react-env -- next dev -p 4000 | npx pino-pretty --colorize",
+    "build": "npm run clean && react-env -- next build",
     "start": "react-env -- next start -p 4000",
     "lint": "eslint .",
     "pw:test:local": "playwright test --config=playwright.local4000.config.ts",
