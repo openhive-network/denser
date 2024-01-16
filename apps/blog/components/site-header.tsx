@@ -134,13 +134,13 @@ const SiteHeader: FC = () => {
             {user && !user?.isLoggedIn ? <LangToggle logged={user ? user?.isLoggedIn : false} /> : null}
             {user && user?.isLoggedIn ? (
               <UserMenu user={user}>
-                {!user?.avatarUrl && (
+                {/* {!user?.avatarUrl && ( */}
                   <img
                     className="h-10 w-10 cursor-pointer rounded-md px-0"
                     src={`https://images.hive.blog/u/${user?.username || ''}/avatar/small`}
                     alt="Profile picture"
                   />
-                )}
+                {/* )} */}
               </UserMenu>
             ) : null}
             <Sidebar />
