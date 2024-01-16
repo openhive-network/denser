@@ -11,6 +11,7 @@ import { postLoginSchema, PostLoginSchema, Signatures } from "@smart-signer/lib/
 import { redirect } from 'next/navigation';
 import { User } from '@smart-signer/types/common';
 import { IronSessionData } from '@smart-signer/types/common';
+import { cookieNamePrefix } from '@smart-signer/lib/session';
 
 const logger = getLogger('app');
 
@@ -105,7 +106,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
     throw error;
   }
 
-  const loginChallenge = req.cookies.loginChallengeServer || '';
+  const loginChallenge = req.cookies[`${cookieNamePrefix}login_challenge_server`] || '';
 
   const result = await verifyLoginChallenge(
     chainAccount,

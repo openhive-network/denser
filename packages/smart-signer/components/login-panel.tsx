@@ -13,6 +13,7 @@ import { useSignIn } from '@smart-signer/lib/auth/use-sign-in';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import HiveAuthUtils from '@smart-signer/lib/hive-auth-utils';
 import { LoginForm, LoginFormSchema } from '@smart-signer/components/login-form';
+import { cookieNamePrefix } from '@smart-signer/lib/session';
 
 const logger = getLogger('app');
 
@@ -26,7 +27,7 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
 
   useEffect(() => {
     const cookieStore = parseCookie(document.cookie);
-    setLoginChallenge(cookieStore.loginChallenge || '');
+    setLoginChallenge(cookieStore[`${cookieNamePrefix}login_challenge`] || '');
   }, []);
 
   // Here we just check if user is already logged in and we redirect him
