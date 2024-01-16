@@ -1,20 +1,20 @@
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { cn } from "@hive/ui/lib/utils";
-import { Icons } from "@hive/ui/components/icons";
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { cn } from '@hive/ui/lib/utils';
+import { Icons } from '@hive/ui/components/icons';
 
 export function MainNav() {
   const pathname = usePathname();
 
   return (
     <div className="mr-4 hidden h-full items-center md:flex">
-      <nav className="hidden lg:flex h-full items-center space-x-6 text-sm lg:text-base font-medium">
+      <nav className="hidden h-full items-center space-x-6 text-sm font-medium lg:flex lg:text-base">
         <Link
-          href="http://localhost:3000/trending"
+          href="/trending"
           target="_blank"
           className={cn(
-            "flex h-full items-center transition-colors border-b-2 border-white hover:border-red-600 hover:text-red-600",
-            pathname === "/trending" ? "text-red-600" : "text-foreground/60"
+            'flex h-full items-center border-b-2 border-white transition-colors hover:border-red-600 hover:text-red-600',
+            pathname === '/trending' ? 'text-red-600' : 'text-foreground/60'
           )}
           data-testid="nav-posts-link"
         >
@@ -24,8 +24,8 @@ export function MainNav() {
           href="/proposals"
           rel="noopener noreferrer"
           className={cn(
-            "flex h-full items-center transition-colors border-b-2 border-white hover:border-red-600 hover:text-red-600",
-            pathname === "/proposals" ? "text-red-600" : "text-foreground/60"
+            'flex h-full items-center border-b-2 border-white transition-colors hover:border-red-600 hover:text-red-600',
+            pathname === '/proposals' ? 'text-red-600' : 'text-foreground/60'
           )}
           data-testid="nav-proposals-link"
         >
@@ -35,8 +35,8 @@ export function MainNav() {
           href="/~witnesses"
           rel="noopener noreferrer"
           className={cn(
-            "flex h-full items-center transition-colors border-b-2 border-white hover:border-red-600 hover:text-red-600",
-            pathname === "/~witnesses" ? "text-red-600" : "text-foreground/60"
+            'flex h-full items-center border-b-2 border-white transition-colors hover:border-red-600 hover:text-red-600',
+            pathname === '/~witnesses' ? 'text-red-600' : 'text-foreground/60'
           )}
           data-testid="nav-witnesses-link"
         >
@@ -48,10 +48,8 @@ export function MainNav() {
           target="_blank"
           rel="noopener noreferrer"
           className={cn(
-            "flex h-full items-center transition-colors border-b-2 border-white hover:border-red-600 hover:text-red-600",
-            pathname === "https://hive.io/eco/"
-              ? "text-red-600"
-              : "text-foreground/60"
+            'flex h-full items-center border-b-2 border-white transition-colors hover:border-red-600 hover:text-red-600',
+            pathname === 'https://hive.io/eco/' ? 'text-red-600' : 'text-foreground/60'
           )}
           data-testid="nav-our-dapps-link"
         >

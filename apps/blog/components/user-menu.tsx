@@ -14,9 +14,11 @@ import { Icons } from '@ui/components/icons';
 import { Button } from '@ui/components';
 import LangToggle from './lang-toggle';
 import { useLogout } from '@smart-signer/lib/auth/use-logout';
+import env from '@beam-australia/react-env';
 
 const UserMenu = ({ children, user }: { children: ReactNode; user: any }) => {
   const onLogout = useLogout();
+  const walletHost = env('WALLET_ENDPOINT');
 
   return (
     <DropdownMenu>
@@ -81,7 +83,7 @@ const UserMenu = ({ children, user }: { children: ReactNode; user: any }) => {
           <DropdownMenuItem className="cursor-pointer">
             <Link
               target="_blank"
-              href={`http://localhost:4000/@${user.username}/transfers`}
+              href={`${walletHost}/@${user.username}/transfers`}
               className="flex w-full items-center"
             >
               <Icons.wallet className="mr-2" />

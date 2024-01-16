@@ -26,10 +26,12 @@ import Link from 'next/link';
 import { useAppStore } from '@/blog/store/app';
 import { useQuery } from '@tanstack/react-query';
 import { getAccountFull } from '@hive/ui/lib/hive';
+import env from '@beam-australia/react-env';
 
 const ProfileDropdownMenu = () => {
   const currentProfile = useAppStore((state) => state.currentProfile);
   const setCurrentProfile = useAppStore((state) => state.setCurrentProfile);
+  const walletHost = env('WALLET_ENDPOINT');
 
   const {
     isLoading: currentProfileDataIsLoading,
@@ -93,7 +95,7 @@ const ProfileDropdownMenu = () => {
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Wallet className="mr-2 h-4 w-4" />
-          <Link href={`http://localhost:4000/@${currentProfile?.name}/transfers`}>Wallet</Link>
+          <Link href={`${walletHost}/@${currentProfile?.name}/transfers`}>Wallet</Link>
         </DropdownMenuItem>
         <DropdownMenuItem disabled>
           <Cloud className="mr-2 h-4 w-4" />
