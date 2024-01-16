@@ -43,7 +43,8 @@ blockchain.
     [../../apps/auth/.gitignore](../../apps/auth/.gitignore),
 
     d) add script `clean` to your `package.json`, see
-    [../../apps/auth/package.json](../../apps/auth/package.json).
+    [../../apps/auth/package.json](../../apps/auth/package.json) and use
+    it in `start` and `build` scripts.
 
     e) add string `smart-signer` to the array of namespaces loaded in
     your `serverSideTranslations` handler, see
