@@ -4,7 +4,7 @@ import { i18n } from '@/auth/next-i18next.config';
 
 export const getTranslations = async (
         ctx: GetServerSidePropsContext,
-        localeFiles: string[] = ['common_auth']
+        localeFiles: string[] = ['common', 'smart-signer']
         ) => {
     return await serverSideTranslations(
         ctx.req.cookies.NEXT_LOCALE! || i18n.defaultLocale,

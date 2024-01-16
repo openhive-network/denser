@@ -25,11 +25,25 @@ blockchain.
    [../../packages/smart-signer/lib/auth/use-logout.ts](../../packages/smart-signer/lib/auth/use-logout.ts)
    to logout user, see
    [../../apps/auth/components/site-header.tsx](../../apps/auth/components/site-header.tsx).
-7. Add environment variable
-   `DENSER_SERVER_SECRET_COOKIE_PASSWORD="2gyZ3GDw3LHZKCMEPmPDL3sjREVRXPr8"`
-   to your `.env` file, see
-   [../../apps/auth/.env](../../apps/auth/.env). You can change the
-   value for secret to the other random string, of course.
+7. To use locale stuff from
+   [../../packages/smart-signer/locales](../../packages/smart-signer/locales),
+   you need to import translations's files to a location known to i18n
+   engine used in your application:
+
+    a) set `localePath: path.resolve('./public/locales')` in your
+    `next-i18next.config.js`, see
+    [../../apps/auth/next-i18next.config.js](../../apps/auth/next-i18next.config.js]),
+
+    b) use WebpackCopyPlugin to copy locale files, both for your
+    application and for package `smart-signer`, to your `./public/locales`,
+    see
+    [../../apps/auth/next.config.js](../../apps/auth/next.config.js),
+
+    c) gitignore your `./public/locales`, see
+    [../../apps/auth/.gitignore](../../apps/auth/.gitignore),
+
+    d) add script `clean` to your `package.json`, see
+    [../../apps/auth/package.json](../../apps/auth/package.json).
 8. Optionally create environment variables for logger in your
    `.env.local` file, when you need to see logger messages emitted on
    lower levels during development, for instance:
@@ -39,8 +53,9 @@ blockchain.
    ```
 9. Copy has-client.d.ts to app [../../apps/auth/has-client.d.ts]
 
+
+
 ### TODO
 
-1. Manage Hbauth stuff in a better way.
+1. Manage Hbauth stuff in better way.
 2. Enable signing operations.
-3. Fix issue with translations for stuff coming from internal package.

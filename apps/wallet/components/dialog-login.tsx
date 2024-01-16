@@ -118,7 +118,7 @@ function DialogLogin({ children }: { children: ReactNode }) {
             </form>
           </div>
         </div> */}
-        <LoginPanel t={t}/>
+        <LoginPanel/>
       </DialogContent>
     </Dialog>
   );

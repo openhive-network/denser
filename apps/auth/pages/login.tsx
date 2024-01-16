@@ -2,10 +2,8 @@ import { GetServerSideProps } from 'next';
 import { getTranslations } from '@/auth/lib/get-translations';
 import { LoginPanel } from '@smart-signer/components/login-panel';
 import { loginPageController } from '@smart-signer/lib/login-page-controller';
-import { useTranslation } from 'next-i18next';
 
 export default function LoginPage() {
-  const { t } = useTranslation('common_auth');
 
   return (
     <div
@@ -13,7 +11,7 @@ export default function LoginPage() {
         sm:justify-around sm:gap-0"
     >
       <div className="flex flex-col gap-3 sm:mr-4 sm:gap-8">
-        <LoginPanel t={t}/>
+        <LoginPanel />
       </div>
     </div>
   );

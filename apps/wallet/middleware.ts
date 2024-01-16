@@ -31,9 +31,6 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  if (request.nextUrl.pathname === '/') {
-    return NextResponse.redirect(new URL('/trending', request.url));
-  }
   if (request.nextUrl.pathname.match('/((?!api|_next/static|_next/image|favicon.ico).*)')) {
     setLoginChallengeCookies(request, res);
   }

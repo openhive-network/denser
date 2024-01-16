@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": false,
   "scripts": {
+    "clean": "rm -rf ./public/locales/*",
     "dev": "react-env -- next dev -p 4000",
     "build": "next build",
     "start": "react-env -- next start -p 4000",

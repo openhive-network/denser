@@ -3,9 +3,7 @@ import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { KeychainKeyTypes, KeychainKeyTypesLC } from 'hive-keychain-commons';
-
 import { getLogger } from "@hive/ui/lib/logging";
-
 import { authService } from '@smart-signer/lib/auth-service';
 import { LoginTypes } from "@smart-signer/types/common";
 import { parseCookie } from '@smart-signer/lib/utils';
@@ -18,12 +16,15 @@ import { LoginForm, LoginFormSchema } from "@smart-signer/components/login-form"
 
 const logger = getLogger('app');
 
-export function LoginPanel({t}:any) {
-
+export function LoginPanel({
+  i18nNamespace = 'smart-signer',
+}: {
+  i18nNamespace?: string;
+}) {
   const router = useRouter();
   const slug = router.query.slug as string;
 
-
+  const { t } = useTranslation(i18nNamespace);
 
   const [loginChallenge, setLoginChallenge] = useState('');
 
@@ -248,7 +249,6 @@ export function LoginPanel({t}:any) {
     <LoginForm
         errorMessage={errorMsg}
         onSubmit={onSubmit}
-        t={t}
     />
   );
 }

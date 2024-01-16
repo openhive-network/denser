@@ -105,7 +105,7 @@ function DialogLogin({ children }: { children: any }) {
             </form>
           </div>
         </div> */}
-        <LoginPanel t={t}/>
+        <LoginPanel/>
       </DialogContent>
     </Dialog>
   );
