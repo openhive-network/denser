@@ -41,7 +41,7 @@ const SiteHeader: FC = () => {
                   </Link>
                 </DialogHBAuth>
               )}
-            {user && !user?.isLoggedIn ? (
+            {isClient && user && !user?.isLoggedIn ? (
               <div className="mx-1 hidden gap-1 sm:flex">
                 <DialogLogin>
                   <Button variant="ghost" className="text-base hover:text-red-500">
@@ -53,7 +53,7 @@ const SiteHeader: FC = () => {
                 </Link>
               </div>
             ) : null}
-            {user && user?.isLoggedIn ? (
+            {isClient && user && user?.isLoggedIn ? (
               <Link
                 href=""
                 onClick={async (e) => {

@@ -74,14 +74,16 @@ const loginFormDefaultValues = {
 export function LoginForm({
   errorMessage,
   onSubmit,
+  t
 }: {
   errorMessage: string
   onSubmit: (data: LoginFormSchema) => void
+  t:any
 }) {
   const logger = getLogger('app');
   logger.debug('Starting LoginForm');
 
-  const { t } = useTranslation('common_auth');
+  // const { t } = useTranslation('common_auth');
   const [isKeychainSupported, setIsKeychainSupported] = useState(false);
   const [disabledPasword, setDisabledPassword] = useState(false);
   const [disabledPaswordHbauth, setDisabledPasswordHbauth] = useState(true);
