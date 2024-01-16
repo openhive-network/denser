@@ -16,7 +16,6 @@ import DialogLogin from './dialog-login';
 const UserMenu = dynamic(() => import('@/blog/components/user-menu'), { ssr: false });
 const LangToggle = dynamic(() => import('@/blog/components/lang-toggle'), { ssr: false });
 const ModeToggle = dynamic(() => import('@/blog/components/mode-toggle'), { ssr: false });
-import { useLogout } from '@smart-signer/lib/auth/use-logout';
 
 const SiteHeader: FC = () => {
   const router = useRouter();
@@ -27,8 +26,6 @@ const SiteHeader: FC = () => {
   }, []);
 
   const { user } = useUser();
-  const onLogout = useLogout();
-  console.log(user);
 
   const [input, setInput] = useState('');
   const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -131,19 +128,6 @@ const SiteHeader: FC = () => {
                 )}
               </UserMenu>
             ) : null}
-            {isClient && user?.isLoggedIn === true && (
-              <Link
-                href=""
-                onClick={async (e) => {
-                  e.preventDefault();
-                  await onLogout();
-                }}
-              >
-                <Button variant="redHover" size="sm" className="h-10">
-                  Logout
-                </Button>
-              </Link>
-            )}
             <Sidebar />
           </nav>
         </div>

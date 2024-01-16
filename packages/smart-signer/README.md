@@ -33,11 +33,11 @@ blockchain.
 8. Optionally create environment variables for logger in your
    `.env.local` file, when you need to see logger messages emitted on
    lower levels during development, for instance:
-    ```bash
-    REACT_APP_LOGGING_BROWSER_ENABLED="true"
-    REACT_APP_LOGGING_LOG_LEVEL="TRACE"
-    ```
-
+   ```bash
+   REACT_APP_LOGGING_BROWSER_ENABLED="true"
+   REACT_APP_LOGGING_LOG_LEVEL="TRACE"
+   ```
+9. Copy has-client.d.ts to app [../../apps/auth/has-client.d.ts]
 
 ### TODO
 

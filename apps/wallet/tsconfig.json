@@ -4,9 +4,16 @@
     "baseUrl": ".",
     "paths": {
       "@/wallet/*": ["./*"],
+      "@smart-signer/*": ["../../packages/smart-signer/*"],
       "@ui/*": ["../../packages/ui/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "../../packages/ui/lib/parse-date.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "../../packages/ui/lib/parse-date.ts"
+  ],
   "exclude": ["node_modules", "playwright"]
 }
