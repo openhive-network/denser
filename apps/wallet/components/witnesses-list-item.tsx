@@ -81,7 +81,7 @@ function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemPro
     if (highlight === data.owner && ref.current) {
       ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-  }, [router.query.highlight]);
+  }, [data.owner, router.query.highlight]);
 
   return (
     <tr

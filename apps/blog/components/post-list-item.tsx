@@ -71,7 +71,7 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
 
       if (type === 'downvote') {
         vote = {
-          voter: currentProfile?.name,
+          voter: user.username,
           author: post.author,
           permlink: post.permlink,
           weight: -10000
@@ -318,7 +318,6 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger data-testid="upvote-button">
-                        {console.log('currentProfile', currentProfile)}
                         {user && user.isLoggedIn ? (
                           <Icons.arrowUpCircle
                             className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1"
@@ -338,7 +337,7 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger data-testid="downvote-button">
-                        {currentProfile ? (
+                        {user && user.isLoggedIn ? (
                           <Icons.arrowDownCircle
                             className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1"
                             onClick={(e) => vote(e, 'downvote')}
