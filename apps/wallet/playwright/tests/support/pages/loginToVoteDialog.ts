@@ -5,24 +5,31 @@ export class LoginToVoteDialog {
   readonly getLoginDialog: Locator;
   readonly getHeaderLoginDialog: Locator;
   readonly getUsernameInput: Locator;
-  readonly getPasswordInput: Locator;
+  readonly getPostingPrivateKeyInput: Locator;
+  readonly getHbauthPasswordInput: Locator;
   readonly getHiveAuthCheckbox: Locator;
+  readonly getUseKeychainCheckbox: Locator;
+  readonly getUseHiveauthCheckbox: Locator;
+  readonly getUseHbauthCheckbox: Locator;
   readonly getKeepMeLoggedInCheckbox: Locator;
-  readonly getSignInButton: Locator;
-  readonly getCancelButton: Locator;
+  readonly getSubmitButton: Locator;
+  readonly getResetButton: Locator;
   readonly getHiveSignerButton: Locator;
   readonly getCloseDialogButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.getLoginDialog = page.locator('[data-testid="login-dialog"]');
-    this.getHeaderLoginDialog = this.getLoginDialog.getByText(/Confirm Password/);
-    this.getUsernameInput = page.locator('#firstName');
-    this.getPasswordInput = page.locator('#password');
-    this.getHiveAuthCheckbox = page.locator('#hiveAuth');
-    this.getKeepMeLoggedInCheckbox = page.locator('#remember');
-    this.getSignInButton = page.locator('button').getByText('Sign in');
-    this.getCancelButton = this.getLoginDialog.locator('button').getByText('Cancel');
+    this.getHeaderLoginDialog = this.getLoginDialog.getByText(/Login/);
+    this.getUsernameInput = this.getLoginDialog.locator('[autoComplete="username"]');
+    this.getPostingPrivateKeyInput = this.getLoginDialog.locator('[data-testid="posting-private-key-input"]');
+    this.getHbauthPasswordInput = this.getLoginDialog.locator('[data-testid="hbauth-password-input"]');
+    this.getUseKeychainCheckbox = this.getLoginDialog.locator('input[name="useKeychain"]');
+    this.getUseHiveauthCheckbox = this.getLoginDialog.locator('input[name="useHiveauth"]');
+    this.getUseHbauthCheckbox = this.getLoginDialog.locator('input[name="useHbauth"]');
+    this.getKeepMeLoggedInCheckbox = this.getLoginDialog.locator('input[name="remember"]');
+    this.getSubmitButton = page.getByRole('button', { name: 'Submit' });
+    this.getResetButton = page.locator('button').getByText('Reset');
     this.getHiveSignerButton = page.locator('[data-testid="hivesigner-button"]');
     this.getCloseDialogButton = page.locator('[data-testid="close-dialog"]');
   }
@@ -31,14 +38,16 @@ export class LoginToVoteDialog {
     await this.page.waitForSelector(this.getHeaderLoginDialog['_selector']);
     await expect(this.getHeaderLoginDialog).toBeVisible();
     await expect(this.getUsernameInput).toHaveAttribute('placeholder', 'Enter your username');
-    await expect(this.getPasswordInput).toHaveAttribute('placeholder', 'Password or WIF');
-    await expect(this.getHiveAuthCheckbox).not.toBeChecked();
+    await expect(this.getPostingPrivateKeyInput).toHaveAttribute('placeholder', 'Posting private key');
+    await expect(this.getHbauthPasswordInput).toHaveAttribute('placeholder', 'Hbauth password to unlock key');
+    await expect(this.getUseKeychainCheckbox).not.toBeChecked();
+    await expect(this.getUseHiveauthCheckbox).not.toBeChecked();
+    await expect(this.getUseHbauthCheckbox).not.toBeChecked();
     await expect(this.getKeepMeLoggedInCheckbox).not.toBeChecked();
-    await expect(this.getSignInButton).toBeVisible();
-    await expect(this.getCancelButton).toBeVisible();
+    await expect(this.getSubmitButton).toBeVisible();
+    await expect(this.getResetButton).toBeVisible();
     await expect(this.getHiveSignerButton).toBeVisible();
   }
-
   async closeLoginDialog() {
     await this.getCloseDialogButton.click();
   }

@@ -198,6 +198,7 @@ export function LoginForm({
               autoComplete="current-password"
               disabled={disabledPasword}
               {...register("password")}
+              data-testid="posting-private-key-input"
             />
             {/* @ts-ignore */}
             {errors.password?.message && (
@@ -216,6 +217,7 @@ export function LoginForm({
               autoComplete="current-password"
               disabled={disabledPaswordHbauth}
               {...register("passwordHbauth")}
+              data-testid="hbauth-password-input"
             />
             {/* @ts-ignore */}
             {errors.passwordHbauth?.message && (
