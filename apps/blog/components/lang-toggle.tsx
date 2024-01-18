@@ -16,7 +16,7 @@ export default function LangToggle({ logged }: { logged: Boolean }) {
   const [lang, setLang] = useState<string | null>(null);
 
   useEffect(() => {
-    setLang(parseCookie(document.cookie)['NEXT_LOCALE']);
+    setLang(parseCookie(document.cookie)[' NEXT_LOCALE']);
   }, []);
 
   const languages = [
@@ -49,7 +49,7 @@ export default function LangToggle({ logged }: { logged: Boolean }) {
           <DropdownMenuItem
             key={label}
             onClick={() => {
-              document.cookie = `NEXT_LOCALE=${locale};path=/`;
+              document.cookie = ` NEXT_LOCALE=${locale};`;
               router.reload();
             }}
           >

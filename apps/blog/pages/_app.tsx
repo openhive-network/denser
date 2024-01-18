@@ -11,8 +11,8 @@ function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     const cookieStore = parseCookie(document.cookie);
 
-    if (!cookieStore.hasOwnProperty('NEXT_LOCALE')) {
-      document.cookie = `NEXT_LOCALE=${i18n.defaultLocale};path=/`;
+    if (!cookieStore.hasOwnProperty(' NEXT_LOCALE')) {
+      document.cookie = ` NEXT_LOCALE=${i18n.defaultLocale};`;
     }
   }, []);
 
