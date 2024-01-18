@@ -42,16 +42,11 @@ const nextConfig = {
       })
     );
 
-    // copy hb-auth worker.js
     config.plugins.push(new CopyPlugin({
       patterns: [{
-        from: path.join(__dirname, '../../node_modules/@hive/hb-auth/dist/worker.js'),
-        to: path.join(__dirname, 'public/auth/')
-      }]
-    }));
-
-    config.plugins.push(new CopyPlugin({
-      patterns: [
+          from: path.join(__dirname, '../../node_modules/@hive/hb-auth/dist/worker.js'),
+          to: path.join(__dirname, 'public/auth/')
+        },
         {
           from: path.join(__dirname, './locales'),
           to: path.join(__dirname, 'public/locales/')
@@ -59,6 +54,10 @@ const nextConfig = {
         {
           from: path.join(__dirname, '../../packages/smart-signer/locales'),
           to: path.join(__dirname, 'public/locales/')
+        },
+        {
+          from: path.join(__dirname, '../../packages/smart-signer/public/smart-signer'),
+          to: path.join(__dirname, 'public/smart-signer/')
         }
       ]
     }));

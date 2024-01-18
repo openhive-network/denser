@@ -188,7 +188,7 @@ export class HomePage {
     this.postCardPoweredUp100Trigger = page.locator('[data-testid="powered-up-100-trigger"]');
     this.postCardPoweredUp100TriggerLink = this.postCardPoweredUp100Trigger.locator('a');
     this.postCardPoweredUp100Tooltip = page.locator('[data-testid="powered-up-100-tooltip"]');
-    this.toggleLanguage = page.locator('[data-testid="toggle-language"] span').first();
+    this.toggleLanguage = page.locator('[data-testid="toggle-language"]').first();
     this.languageMenu = page.locator('[role="menuitem"]');
     this.languageMenuPl = page.locator('[data-testid="pl"]');
     this.themeMode = page.locator('[data-testid="theme-mode"]');

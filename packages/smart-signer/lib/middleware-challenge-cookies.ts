@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { cookieNamePrefix } from '@smart-signer/lib/session';
 
 export const setLoginChallengeCookies = (req: NextRequest, res: NextResponse) => {
-    let cookieLoginChallengeServer = req.cookies.has('loginChallengeServer');
+    let cookieLoginChallengeServer = req.cookies.has(`${cookieNamePrefix}login_challenge_server`);
     if (!cookieLoginChallengeServer) {
         const loginChallenge = crypto.randomUUID();
         res.cookies.set({
-            name: 'loginChallengeServer',
+            name: `${cookieNamePrefix}login_challenge_server`,
             value: loginChallenge,
             path: '/',
             sameSite: 'lax',
@@ -14,7 +15,7 @@ export const setLoginChallengeCookies = (req: NextRequest, res: NextResponse) =>
             httpOnly: true,
         });
         res.cookies.set({
-            name: 'loginChallenge',
+            name: `${cookieNamePrefix}login_challenge`,
             value: loginChallenge,
             path: '/',
             sameSite: 'lax',

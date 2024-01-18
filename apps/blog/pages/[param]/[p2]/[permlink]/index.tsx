@@ -506,7 +506,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
       community,
       username,
       permlink,
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_blog']))
+      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_blog', 'smart-signer']))
     }
   };
 };

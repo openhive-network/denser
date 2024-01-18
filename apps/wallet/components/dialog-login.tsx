@@ -1,19 +1,16 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger
-} from '@hive/ui/components/dialog';
+import { Dialog, DialogContent, DialogTrigger } from '@hive/ui/components/dialog';
 import { ReactNode } from 'react';
 import { Separator } from '@hive/ui/components/separator';
 import { useTranslation } from 'next-i18next';
+import { LoginPanel } from '@smart-signer/components/login-panel';
 
 function DialogLogin({ children }: { children: ReactNode }) {
   const { t } = useTranslation('common_wallet');
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className='sm:max-w-[600px]' data-testid='login-dialog'>
-        <div className='flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0'>
+      <DialogContent className="sm:max-w-[600px]" data-testid="login-dialog">
+        {/* <div className='flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0'>
           <div className='mx-auto flex w-[440px] max-w-md flex-col items-center'>
             <h2 className='w-full pb-6 text-3xl text-gray-800'>
               {t('login_form.title')}
@@ -120,7 +117,8 @@ function DialogLogin({ children }: { children: ReactNode }) {
               </div>
             </form>
           </div>
-        </div>
+        </div> */}
+        <LoginPanel/>
       </DialogContent>
     </Dialog>
   );

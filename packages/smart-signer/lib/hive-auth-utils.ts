@@ -384,7 +384,7 @@ const login = async (
         {
             name: 'Hive Blog',
             description: 'Hive Blog',
-            icon: `${window.location.origin}/images/hive-blog-twshare.png`
+            icon: `${window.location.origin}/smart-signer/images/hive-blog-twshare.png`
         },
         challengeData
     );

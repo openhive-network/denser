@@ -3,20 +3,17 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/blog/*": [
-        "./*"
-      ],
-      "@ui/*":["../../packages/ui/*"]
+      "@/blog/*": ["./*"],
+      "@smart-signer/*": ["../../packages/smart-signer/*"],
+      "@ui/*": ["../../packages/ui/*"]
     }
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
-, "../../packages/ui/elements/common/layout.tsx"  ],
-  "exclude": [
-    "node_modules",
-    "playwright"
-  ]
+    ".next/types/**/*.ts",
+    "../../packages/ui/elements/common/layout.tsx"
+  ],
+  "exclude": ["node_modules", "playwright"]
 }

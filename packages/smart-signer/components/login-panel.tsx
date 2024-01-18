@@ -1,28 +1,23 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { KeychainKeyTypes, KeychainKeyTypesLC } from 'hive-keychain-commons';
-
-import { getLogger } from "@hive/ui/lib/logging";
-
+import { getLogger } from '@hive/ui/lib/logging';
 import { authService } from '@smart-signer/lib/auth-service';
-import { LoginTypes } from "@smart-signer/types/common";
+import { LoginTypes } from '@smart-signer/types/common';
 import { parseCookie } from '@smart-signer/lib/utils';
 import { Signatures, PostLoginSchema } from '@smart-signer/lib/auth/utils';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { useSignIn } from '@smart-signer/lib/auth/use-sign-in';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import HiveAuthUtils from '@smart-signer/lib/hive-auth-utils';
-import { LoginForm, LoginFormSchema } from "@smart-signer/components/login-form";
+import { LoginForm, LoginFormSchema } from '@smart-signer/components/login-form';
+import { cookieNamePrefix } from '@smart-signer/lib/session';
 
 const logger = getLogger('app');
 
-export function LoginPanel({
-  i18nNamespace = 'smart-signer',
-}: {
-  i18nNamespace?: string;
-}) {
+export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?: string }) {
   const router = useRouter();
   const slug = router.query.slug as string;
 
@@ -32,34 +27,31 @@ export function LoginPanel({
 
   useEffect(() => {
     const cookieStore = parseCookie(document.cookie);
-    setLoginChallenge(cookieStore.loginChallenge || '');
+    setLoginChallenge(cookieStore[`${cookieNamePrefix}login_challenge`] || '');
   }, []);
 
   // Here we just check if user is already logged in and we redirect him
   // to profile page, if he is.
   const { user } = useUser({
     redirectTo: '/profile',
-    redirectIfFound: true,
+    redirectIfFound: true
   });
 
   const [errorMsg, setErrorMsg] = useState('');
 
-  const [hiveAuthData, setHiveAuthData] =
-      useLocalStorage('hiveAuthData', HiveAuthUtils.initialHiveAuthData);
+  const [hiveAuthData, setHiveAuthData] = useLocalStorage('hiveAuthData', HiveAuthUtils.initialHiveAuthData);
 
-  const [hiveKeys, setHiveKeys] =
-      useLocalStorage('hiveKeys', {});
+  const [hiveKeys, setHiveKeys] = useLocalStorage('hiveKeys', {});
 
   // Create a signature of message (json with loginChallenge string) for
   // sending to back-end for verification.
   const signLoginChallenge = async (
-        loginType: LoginTypes,
-        username: string,
-        password: string, // posting private key
-        keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting,
-      ): Promise<Signatures> => {
-    logger.info('in signLoginChallenge %o',
-        {loginType, username, loginChallenge, password});
+    loginType: LoginTypes,
+    username: string,
+    password: string, // posting private key
+    keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting
+  ): Promise<Signatures> => {
+    logger.info('in signLoginChallenge %o', { loginType, username, loginChallenge, password });
     const signatures: Signatures = {};
     const challenge = { token: loginChallenge };
     const message = JSON.stringify(challenge, null, 0);
@@ -67,17 +59,12 @@ export function LoginPanel({
     if (loginType === LoginTypes.keychain) {
       try {
         const response: any = await new Promise((resolve) => {
-          window.hive_keychain.requestSignBuffer(
-            username,
-            message,
-            KeychainKeyTypes[keyType],
-            (res: any) => {
-              resolve(res);
-            }
-          );
+          window.hive_keychain.requestSignBuffer(username, message, KeychainKeyTypes[keyType], (res: any) => {
+            resolve(res);
+          });
         });
         if (response.success) {
-          logger.info('keychain', {signature: response.result});
+          logger.info('keychain', { signature: response.result });
           signatures.posting = response.result;
         } else {
           throw new Error(response.error);
@@ -86,40 +73,40 @@ export function LoginPanel({
         throw error;
       }
     } else if (loginType === LoginTypes.hiveauth) {
-
       logger.info('hiveauth');
 
       HiveAuthUtils.setUsername(hiveAuthData?.username || '');
       HiveAuthUtils.setToken(hiveAuthData?.token || '');
       HiveAuthUtils.setExpire(hiveAuthData?.expire || 0);
-      HiveAuthUtils.setKey(hiveAuthData?.key || '')
+      HiveAuthUtils.setKey(hiveAuthData?.key || '');
 
       const authResponse: any = await new Promise((resolve) => {
-        HiveAuthUtils.login(username, message, (res) => {
-          resolve(res);
-        }, t);
+        HiveAuthUtils.login(
+          username,
+          message,
+          (res) => {
+            resolve(res);
+          },
+          t
+        );
       });
 
       if (authResponse.success && authResponse.hiveAuthData) {
-        const {
-          token, expire, key, challengeHex,
-        } = authResponse.hiveAuthData;
-        setHiveAuthData({username, token, expire, key});
-        logger.info('hiveauth', {signature: challengeHex});
+        const { token, expire, key, challengeHex } = authResponse.hiveAuthData;
+        setHiveAuthData({ username, token, expire, key });
+        logger.info('hiveauth', { signature: challengeHex });
         signatures.posting = challengeHex;
       } else {
         throw new Error('Hiveauth login failed');
       }
-
     } else if (loginType === LoginTypes.hbauth) {
-
       const sign = async (
-          username: string,
-          password: string,
-          message: string,
-          keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting,
-          ) => {
-        logger.info('sign args: %o', {username, password, message, keyType});
+        username: string,
+        password: string,
+        message: string,
+        keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting
+      ) => {
+        logger.info('sign args: %o', { username, password, message, keyType });
 
         const authClient = await authService.getOnlineClient();
         const auth = await authClient.getAuthByUser(username);
@@ -133,10 +120,13 @@ export function LoginPanel({
           if (!['posting', 'active'].includes(keyType)) {
             throw new Error(`Unsupported keyType: ${keyType}`);
           }
-          const authStatus = await authClient.authenticate(username,
-              password, keyType as unknown as 'posting' | 'active');
+          const authStatus = await authClient.authenticate(
+            username,
+            password,
+            keyType as unknown as 'posting' | 'active'
+          );
 
-          logger.info({authStatus});
+          logger.info({ authStatus });
           if (!authStatus.ok) {
             throw new Error(`Unlocking wallet failed`);
           }
@@ -146,12 +136,8 @@ export function LoginPanel({
         if (!['posting', 'active'].includes(keyType)) {
           throw new Error(`Unsupported keyType: ${keyType}`);
         }
-        const signature = await authClient.sign(
-          username,
-          digest,
-          keyType as unknown as 'posting' | 'active'
-          );
-        logger.info({digest, signature});
+        const signature = await authClient.sign(username, digest, keyType as unknown as 'posting' | 'active');
+        logger.info({ digest, signature });
 
         return signature;
       };
@@ -187,23 +173,21 @@ export function LoginPanel({
         logger.error('Caught error');
         logger.error(e);
       }
-
     } else if (loginType === LoginTypes.password) {
       try {
         const privateKey = PrivateKey.fromString(password);
         const messageHash = cryptoUtils.sha256(message);
         const signature = privateKey.sign(messageHash).toString();
-        logger.info('password', {signature});
+        logger.info('password', { signature });
         signatures.posting = signature;
-        setHiveKeys({...hiveKeys, ...{posting: password}})
-    } catch (error) {
+        setHiveKeys({ ...hiveKeys, ...{ posting: password } });
+      } catch (error) {
         throw error;
       }
     }
 
     return signatures;
-
-  }
+  };
 
   const signIn = useSignIn();
 
@@ -222,21 +206,20 @@ export function LoginPanel({
     let hivesignerToken = '';
 
     try {
-      signatures =
-          await signLoginChallenge(loginType, username || '', password || '');
+      signatures = await signLoginChallenge(loginType, username || '', password || '');
     } catch (error) {
       logger.error('onSubmit error in signLoginChallenge', error);
       setErrorMsg(t('pageLogin.signingFailed'));
       return;
     }
 
-    logger.info({signatures});
+    logger.info({ signatures });
 
     const body: PostLoginSchema = {
       username: username || '',
       signatures,
       loginType,
-      hivesignerToken,
+      hivesignerToken
     };
 
     try {
@@ -247,10 +230,5 @@ export function LoginPanel({
     }
   };
 
-  return (
-    <LoginForm
-        errorMessage={errorMsg}
-        onSubmit={onSubmit}
-    />
-  );
+  return <LoginForm errorMessage={errorMsg} onSubmit={onSubmit} />;
 }

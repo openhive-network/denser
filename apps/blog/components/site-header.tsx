@@ -1,22 +1,25 @@
 import { Button } from '@hive/ui/components/button';
 import { Icons } from '@hive/ui/components/icons';
 import { Input } from '@hive/ui/components/input';
-import { FC, useEffect } from 'react';
 import Sidebar from './sidebar';
 import { MainNav } from './main-nav';
 import { siteConfig } from '@hive/ui/config/site';
 import Link from 'next/link';
-import { useState, KeyboardEvent } from 'react';
+import { useState, KeyboardEvent, FC, useEffect} from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
+import DialogHBAuth from '@smart-signer/components/dialog-hb-auth';
 import { useTranslation } from 'next-i18next';
-import Login from './login';
-import useUser from './hooks/use-user';
-
+import { useUser } from '@smart-signer/lib/auth/use-user';
 import dynamic from 'next/dynamic';
+import { getLogger } from '@hive/ui/lib/logging';
+import DialogLogin from './dialog-login';
 const UserMenu = dynamic(() => import('@/blog/components/user-menu'), { ssr: false });
 const LangToggle = dynamic(() => import('@/blog/components/lang-toggle'), { ssr: false });
 const ModeToggle = dynamic(() => import('@/blog/components/mode-toggle'), { ssr: false });
+
+const logger = getLogger('app');
+
 
 const SiteHeader: FC = () => {
   const router = useRouter();
@@ -70,11 +73,11 @@ const SiteHeader: FC = () => {
           <nav className="flex items-center space-x-1">
             {isClient && user?.isLoggedIn ? null : (
               <div className="mx-1 hidden gap-1 sm:flex">
-                <Login>
+                <DialogLogin>
                   <Button variant="ghost" className="text-base hover:text-red-500" data-testid="login-btn">
                     {t('navigation.main_nav_bar.login')}
                   </Button>
-                </Login>
+                </DialogLogin>
                 <Link href="https://signup.hive.io/">
                   <Button variant="redHover" data-testid="signup-btn">
                     {t('navigation.main_nav_bar.sign_up')}
@@ -117,16 +120,27 @@ const SiteHeader: FC = () => {
                 </Button>
               </ModeToggle>
             ) : null}
+            {isClient && (
+                <DialogHBAuth onAuthComplete={(username, keyType) => {
+                  logger.info('onAuthComplete %o', { username, keyType })
+                }}>
+                  <Link href="#">
+                    <Button variant="redHover" size="sm" className="h-10">
+                      Hbauth
+                    </Button>
+                  </Link>
+                </DialogHBAuth>
+              )}
             {user && !user?.isLoggedIn ? <LangToggle logged={user ? user?.isLoggedIn : false} /> : null}
             {user && user?.isLoggedIn ? (
               <UserMenu user={user}>
-                {!user?.avatarUrl && (
+                {/* {!user?.avatarUrl && ( */}
                   <img
                     className="h-10 w-10 cursor-pointer rounded-md px-0"
                     src={`https://images.hive.blog/u/${user?.username || ''}/avatar/small`}
                     alt="Profile picture"
                   />
-                )}
+                {/* )} */}
               </UserMenu>
             ) : null}
             <Sidebar />

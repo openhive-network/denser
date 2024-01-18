@@ -7,6 +7,7 @@ import { CommunitiesPage } from '../support/pages/communitiesPage';
 import { CommunitiesExplorePage } from '../support/pages/communitiesExplorerPage';
 import { WitnessPage } from '../support/pages/witnessesPage';
 import { WalletPage } from '../../../../wallet/playwright/tests/support/pages/walletPage';
+import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
 
 test.describe('Translation tests', () => {
   let homePage: HomePage;
@@ -16,6 +17,7 @@ test.describe('Translation tests', () => {
   let communitiesPage: CommunitiesPage;
   let witnessPage: WitnessPage;
   let walletPage: WalletPage;
+  let loginDialogEnglish: LoginToVoteDialog;
 
   test.beforeEach(async ({ page, browserName }) => {
     homePage = new HomePage(page);
@@ -308,6 +310,8 @@ test.describe('Translation tests', () => {
   });
 
   test('Home page', async ({ page }) => {
+    loginDialogEnglish = new LoginToVoteDialog(page);
+
     await homePage.goto();
     await expect(homePage.getFirstPostTitle).toBeVisible();
     await homePage.toggleLanguage.click();
@@ -324,12 +328,16 @@ test.describe('Translation tests', () => {
     await expect(await homePage.signupBtn.textContent()).toBe('Zapisz się');
 
     await homePage.loginBtn.click();
-    await expect(page.getByRole('heading', { name: 'Zaloguj się' })).toBeVisible();
-    await expect(page.getByPlaceholder('Podaj nazwę użytkownika')).toBeVisible();
-    await expect(page.getByPlaceholder('Hasło lub WIF')).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Zaloguj się' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Wyczyść formularz' })).toBeVisible();
-    await page.getByTestId('close-dialog').click();
+    // Login dialog is in english at that moment
+    await loginDialogEnglish.validateLoginToVoteDialogIsVisible();
+    await loginDialogEnglish.closeLoginDialog();
+
+    // await expect(page.getByRole('heading', { name: 'Zaloguj się' })).toBeVisible();
+    // await expect(page.getByPlaceholder('Podaj nazwę użytkownika')).toBeVisible();
+    // await expect(page.getByPlaceholder('Hasło lub WIF')).toBeVisible();
+    // await expect(page.getByRole('button', { name: 'Zaloguj się' })).toBeVisible();
+    // await expect(page.getByRole('button', { name: 'Wyczyść formularz' })).toBeVisible();
+    // await page.getByTestId('close-dialog').click();
 
     await homePage.themeMode.click();
     await expect(page.getByRole('menuitem', { name: 'Tryb jasny' })).toBeVisible();

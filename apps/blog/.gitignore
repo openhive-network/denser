@@ -44,3 +44,6 @@ public/__ENV.js
 /playwright-report/
 /playwright/.cache/
 /merged-html-report/
+
+public/locales
+public/smart-signer

@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": false,
   "scripts": {
-    "dev": "react-env -- next dev -p 4000",
-    "build": "next build",
+    "clean": "rm -rf ./public/locales/* && rm -rf ./public/smart-signer/*",
+    "dev": "npm run clean && react-env -- next dev -p 4000 | npx pino-pretty --colorize",
+    "build": "npm run clean && react-env -- next build",
     "start": "react-env -- next start -p 4000",
     "lint": "eslint .",
     "pw:test:local": "playwright test --config=playwright.local4000.config.ts",
@@ -15,8 +16,8 @@
   },
   "dependencies": {
     "@beam-australia/react-env": "^3.1.1",
-    "@hive/smart-signer": "*",
     "@hive/eslint-config-custom": "*",
+    "@hive/smart-signer": "*",
     "@hive/tailwindcss-config": "*",
     "@hive/tsconfig": "*",
     "@hive/ui": "*",
@@ -28,6 +29,8 @@
     "@types/react": "18.2.44",
     "@types/react-dom": "18.2.17",
     "big.js": "^6.2.1",
+    "copy-webpack-plugin": "^12.0.1",
+    "hive-keychain-commons": "^1.2.5",
     "moment": "^2.29.4",
     "next": "14.0.4",
     "next-i18next": "^15.1.1",
@@ -36,9 +39,9 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-spinners-kit": "^1.9.1",
-    "zod": "^3.22.4",
     "recharts": "^2.10.3",
-    "typescript": "5.3.3"
+    "typescript": "5.3.3",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@playwright/test": "^1.40.1"

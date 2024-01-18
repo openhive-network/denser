@@ -23,7 +23,7 @@ const i18nConfig = {
 /** @type {import('next-i18next').UserConfig} */
 const config = {
   ...i18nConfig,
-  localePath: path.resolve('./locales')
+  localePath: path.resolve('./public/locales')
 };
 
 module.exports = config;
