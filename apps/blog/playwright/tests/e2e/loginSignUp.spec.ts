@@ -1,8 +1,10 @@
 import { expect, test } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
+import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
 
 test.describe('Login and Sign Up tests', () =>{
   let homePage: HomePage;
+  let loginToVoteDialog: LoginToVoteDialog;
 
   test.beforeEach(async ({ page }) => {
     homePage = new HomePage(page);
@@ -47,16 +49,10 @@ test.describe('Login and Sign Up tests', () =>{
   });
 
   test('Check if after click login button correct modal is open', async ({page}) =>{
+    loginToVoteDialog = new LoginToVoteDialog(page);
+
     await homePage.loginBtn.click()
-    await expect(homePage.loginModal).toBeVisible()
-    await expect(homePage.loginModalHeader).toHaveText("Login")
-    await expect(homePage.loginModalUsernameInput).toBeVisible()
-    await expect(homePage.loginModalPasswordInput).toBeVisible()
-    await expect(homePage.loginModalHiveAuthText).toBeVisible()
-    await expect(homePage.loginModalKeepLoggedInText).toBeVisible()
-    await expect(page.getByRole('button', {name: "Login"})).toBeVisible()
-    await expect(page.getByRole('button', {name: "Reset"})).toBeVisible()
-    await expect(homePage.hivsignerBtn).toBeVisible()
+    await loginToVoteDialog.validateLoginToVoteDialogIsVisible();
   })
 
   test('Check if after click sign up button correct modal is open', async ({page}) =>{
