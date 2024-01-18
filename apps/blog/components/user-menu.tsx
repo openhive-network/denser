@@ -26,7 +26,7 @@ const UserMenu = ({ children, user }: { children: ReactNode; user: any }) => {
       <DropdownMenuContent className="w-56 ">
         <DropdownMenuLabel className="flex w-full items-center justify-between">
           <span>{user.username}</span>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2" title="Logged in with Hive private key">
             <Icons.hive className="h-4 w-4" />
             <div className="flex flex-col text-sm font-semibold">
               <span>Hive</span>

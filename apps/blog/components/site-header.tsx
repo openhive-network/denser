@@ -5,7 +5,7 @@ import Sidebar from './sidebar';
 import { MainNav } from './main-nav';
 import { siteConfig } from '@hive/ui/config/site';
 import Link from 'next/link';
-import { useState, KeyboardEvent, FC, useEffect} from 'react';
+import { useState, KeyboardEvent, FC, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import DialogHBAuth from '@smart-signer/components/dialog-hb-auth';
@@ -19,7 +19,6 @@ const LangToggle = dynamic(() => import('@/blog/components/lang-toggle'), { ssr:
 const ModeToggle = dynamic(() => import('@/blog/components/mode-toggle'), { ssr: false });
 
 const logger = getLogger('app');
-
 
 const SiteHeader: FC = () => {
   const router = useRouter();
@@ -79,14 +78,26 @@ const SiteHeader: FC = () => {
                   </Button>
                 </DialogLogin>
                 <Link href="https://signup.hive.io/">
-                  <Button variant="redHover" data-testid="signup-btn">
+                  <Button variant="redHover" data-testid="signup-btn" className=" whitespace-nowrap">
                     {t('navigation.main_nav_bar.sign_up')}
                   </Button>
                 </Link>
               </div>
             )}
-
-            <div>
+            {isClient && (
+              <DialogHBAuth
+                onAuthComplete={(username, keyType) => {
+                  logger.info('onAuthComplete %o', { username, keyType });
+                }}
+              >
+                <Link href="#">
+                  <Button variant="redHover" className="hidden gap-1 sm:flex">
+                    Hbauth
+                  </Button>
+                </Link>
+              </DialogHBAuth>
+            )}
+            {/* <div>
               <div className="relative hidden lg:block">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                   <Icons.search className="h-5 w-5 rotate-90" />
@@ -100,9 +111,9 @@ const SiteHeader: FC = () => {
                   onKeyDown={(e) => handleEnter(e)}
                 />
               </div>
-            </div>
+            </div> */}
             <Link href="/search">
-              <Button variant="ghost" size="sm" className="h-10 w-10 px-0 lg:hidden">
+              <Button variant="ghost" size="sm" className="h-10 w-10 px-0 ">
                 <Icons.search className="h-5 w-5 rotate-90" />
               </Button>
             </Link>
@@ -120,26 +131,15 @@ const SiteHeader: FC = () => {
                 </Button>
               </ModeToggle>
             ) : null}
-            {isClient && (
-                <DialogHBAuth onAuthComplete={(username, keyType) => {
-                  logger.info('onAuthComplete %o', { username, keyType })
-                }}>
-                  <Link href="#">
-                    <Button variant="redHover" size="sm" className="h-10">
-                      Hbauth
-                    </Button>
-                  </Link>
-                </DialogHBAuth>
-              )}
             {user && !user?.isLoggedIn ? <LangToggle logged={user ? user?.isLoggedIn : false} /> : null}
             {user && user?.isLoggedIn ? (
               <UserMenu user={user}>
                 {/* {!user?.avatarUrl && ( */}
-                  <img
-                    className="h-10 w-10 cursor-pointer rounded-md px-0"
-                    src={`https://images.hive.blog/u/${user?.username || ''}/avatar/small`}
-                    alt="Profile picture"
-                  />
+                <img
+                  className="h-10 w-10 cursor-pointer rounded-md px-0"
+                  src={`https://images.hive.blog/u/${user?.username || ''}/avatar/small`}
+                  alt="Profile picture"
+                />
                 {/* )} */}
               </UserMenu>
             ) : null}

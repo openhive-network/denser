@@ -165,21 +165,24 @@ export function LoginForm({
   return (
     <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
       <div className="mx-auto flex w-[440px] max-w-md flex-col items-center">
-        <h2 className="w-full pb-6 text-3xl text-gray-800">{t('login_form.title_action_login')}</h2>
+        <h2 className="w-full pb-6 text-3xl text-gray-800 dark:text-slate-300">
+          {t('login_form.title_action_login')}
+        </h2>
         <form method="post" className="w-full">
           <input type="hidden" {...register('loginType')} />
-
-          <div className="relative mb-5">
-            <input
-              type="text"
-              className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 pl-11 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
-              placeholder={t('login_form.username_placeholder')}
-              autoComplete="username"
-              {...register('username')}
-              aria-invalid={errors.username ? 'true' : 'false'}
-            />
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <Icons.atSign className="h-5 w-5" />
+          <div className="mb-5">
+            <div className="relative">
+              <input
+                type="text"
+                className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 pl-11 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500 dark:text-slate-300"
+                placeholder={t('login_form.username_placeholder')}
+                autoComplete="username"
+                {...register('username')}
+                aria-invalid={errors.username ? 'true' : 'false'}
+              />
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                <Icons.atSign className="h-5 w-5" />
+              </div>
             </div>
             {errors.username?.message && (
               <p className="text-sm text-red-500" role="alert">
@@ -191,7 +194,7 @@ export function LoginForm({
           <div className="relative mb-5">
             <input
               type="password"
-              className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
+              className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500 dark:text-slate-300"
               placeholder={t('login_form.password_placeholder')}
               autoComplete="current-password"
               disabled={disabledPasword}
@@ -212,7 +215,7 @@ export function LoginForm({
           <div className="relative mb-5">
             <input
               type="password"
-              className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
+              className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500 dark:text-slate-300"
               placeholder={t('login_form.password_hbauth_placeholder')}
               autoComplete="current-password"
               disabled={disabledPaswordHbauth}
@@ -243,7 +246,7 @@ export function LoginForm({
               />
               <label
                 htmlFor="useKeychain"
-                className="ml-2 flex items-center text-sm font-medium text-gray-900"
+                className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
               >
                 <img
                   className="mr-1 h-4 w-4"
@@ -265,7 +268,7 @@ export function LoginForm({
               />
               <label
                 htmlFor="useHiveauth"
-                className="ml-2 flex items-center text-sm font-medium text-gray-900"
+                className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
               >
                 <img className="mr-1 h-4 w-4" src="/smart-signer/images/hiveauth.png" alt="Hiveauth logo" />
                 {t('login_form.use_hiveauth')}
@@ -281,7 +284,10 @@ export function LoginForm({
                 {...register('useHbauth')}
                 onChange={(e) => onHbauthToggle(e)}
               />
-              <label htmlFor="useHbauth" className="ml-2 flex items-center text-sm font-medium text-gray-900">
+              <label
+                htmlFor="useHbauth"
+                className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
+              >
                 <img
                   className="mr-1 h-4 w-4"
                   src="/smart-signer/images/hive-blog-twshare.png"
@@ -298,7 +304,10 @@ export function LoginForm({
                 className=" h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
                 {...register('remember')}
               />
-              <label htmlFor="remember" className="ml-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="remember"
+                className="ml-2 text-sm font-medium text-gray-900 dark:text-slate-300"
+              >
                 {t('login_form.keep_me_logged_in')}
               </label>
             </div>
