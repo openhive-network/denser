@@ -36,7 +36,6 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
   const router = useRouter();
 
   const { user } = useUser();
-  console.log('user post list item', user);
 
   const [enabledDynamic, setEnableDynamic] = useState(false);
   const {
