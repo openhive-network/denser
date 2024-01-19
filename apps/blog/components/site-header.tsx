@@ -5,7 +5,7 @@ import Sidebar from './sidebar';
 import { MainNav } from './main-nav';
 import { siteConfig } from '@hive/ui/config/site';
 import Link from 'next/link';
-import { useState, KeyboardEvent, FC, useEffect} from 'react';
+import { useState, KeyboardEvent, FC, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import DialogHBAuth from '@smart-signer/components/dialog-hb-auth';
@@ -19,7 +19,6 @@ const LangToggle = dynamic(() => import('@/blog/components/lang-toggle'), { ssr:
 const ModeToggle = dynamic(() => import('@/blog/components/mode-toggle'), { ssr: false });
 
 const logger = getLogger('app');
-
 
 const SiteHeader: FC = () => {
   const router = useRouter();
@@ -61,6 +60,7 @@ const SiteHeader: FC = () => {
         'supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur transition ease-in-out',
         { 'translate-y-[-56px]': isNavHidden }
       )}
+      translate="no"
     >
       <div className="container flex h-14 w-full items-center justify-between">
         <Link href="/trending" className="flex items-center space-x-2">
@@ -79,7 +79,7 @@ const SiteHeader: FC = () => {
                   </Button>
                 </DialogLogin>
                 <Link href="https://signup.hive.io/">
-                  <Button variant="redHover" data-testid="signup-btn">
+                  <Button variant="redHover" className="whitespace-nowrap" data-testid="signup-btn">
                     {t('navigation.main_nav_bar.sign_up')}
                   </Button>
                 </Link>
@@ -121,25 +121,27 @@ const SiteHeader: FC = () => {
               </ModeToggle>
             ) : null}
             {isClient && (
-                <DialogHBAuth onAuthComplete={(username, keyType) => {
-                  logger.info('onAuthComplete %o', { username, keyType })
-                }}>
-                  <Link href="#">
-                    <Button variant="redHover" size="sm" className="h-10">
-                      Hbauth
-                    </Button>
-                  </Link>
-                </DialogHBAuth>
-              )}
+              <DialogHBAuth
+                onAuthComplete={(username, keyType) => {
+                  logger.info('onAuthComplete %o', { username, keyType });
+                }}
+              >
+                <Link href="#">
+                  <Button variant="redHover" size="sm" className="h-10">
+                    Hbauth
+                  </Button>
+                </Link>
+              </DialogHBAuth>
+            )}
             {user && !user?.isLoggedIn ? <LangToggle logged={user ? user?.isLoggedIn : false} /> : null}
             {user && user?.isLoggedIn ? (
               <UserMenu user={user}>
                 {/* {!user?.avatarUrl && ( */}
-                  <img
-                    className="h-10 w-10 cursor-pointer rounded-md px-0"
-                    src={`https://images.hive.blog/u/${user?.username || ''}/avatar/small`}
-                    alt="Profile picture"
-                  />
+                <img
+                  className="h-10 w-10 cursor-pointer rounded-md px-0"
+                  src={`https://images.hive.blog/u/${user?.username || ''}/avatar/small`}
+                  alt="Profile picture"
+                />
                 {/* )} */}
               </UserMenu>
             ) : null}

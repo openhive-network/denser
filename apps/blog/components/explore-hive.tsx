@@ -12,6 +12,7 @@ const ExploreHive: FC = () => {
   return (
     <Card
       className={cn('my-4 hidden h-fit w-auto flex-col px-8 dark:bg-background/95 dark:text-white md:flex')}
+      translate="no"
     >
       <CardHeader className="px-0 py-4">
         <CardTitle>{t('navigation.explore_nav.explore_hive')}</CardTitle>

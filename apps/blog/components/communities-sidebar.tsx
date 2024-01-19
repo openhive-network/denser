@@ -20,11 +20,12 @@ const CommunitiesSidebar: FC = () => {
     <Card
       className={cn('my-4 hidden h-fit w-full flex-col px-8 dark:bg-background/95 dark:text-white md:flex')}
       data-testid="card-trending-comunities"
+      translate="no"
     >
       <CardHeader className="px-0 py-4">
         <CardTitle>
           <Link href="/trending" className="hover:cursor-pointer hover:text-red-600">
-          {t('navigation.communities_nav.all_posts')}
+            {t('navigation.communities_nav.all_posts')}
           </Link>
         </CardTitle>
       </CardHeader>
