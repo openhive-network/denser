@@ -6,7 +6,7 @@ import { MainNav } from './main-nav';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
 import { siteConfig } from '@hive/ui/config/site';
 import Link from 'next/link';
-import { useState, KeyboardEvent, FC, useEffect } from 'react';
+import React, { useState, KeyboardEvent, FC, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import DialogHBAuth from '@smart-signer/components/dialog-hb-auth';
@@ -21,8 +21,7 @@ import ModeToggle from './mode-toggle';
 import UserMenu from '@/blog/components/user-menu';
 import LangToggle from './lang-toggle';
 import { findRcAccounts } from '../lib/hive';
-import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from 'recharts';
-import React, { PureComponent } from 'react';
+import { PieChart, Pie } from 'recharts';
 import { RCAccount } from '@hiveio/dhive/lib/chain/rc';
 
 const logger = getLogger('app');
@@ -136,7 +135,7 @@ const SiteHeader: FC = () => {
                 </Link>
               </div>
             )}
-            {isClient && (
+            {isClient && !user?.isLoggedIn && (
               <DialogHBAuth
                 onAuthComplete={(username, keyType) => {
                   logger.info('onAuthComplete %o', { username, keyType });
