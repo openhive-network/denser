@@ -53,7 +53,7 @@ export default function SearchPage() {
             onValueChange={(e) => handleSelect(e)}
           >
             <Label>Sort by:</Label>
-            <SelectTrigger className='w-[180px]'>
+            <SelectTrigger className='w-[180px]' data-testid="search-sort-by-dropdown-list">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

@@ -283,7 +283,15 @@ export const getSubscribers = (community: string): Promise<Subscription[] | null
   bridgeApiCall<Subscription[] | null>('list_subscribers', {
     community
   });
+export const getUnreadNotifications = (account: string): Promise<UnreadNotifications | null> =>
+  bridgeApiCall<UnreadNotifications | null>('unread_notifications', {
+    account
+  });
 
+export interface UnreadNotifications {
+  lastread: string;
+  unread: number;
+}
 export interface AccountRelationship {
   follows: boolean;
   ignores: boolean;

@@ -29,5 +29,23 @@
     "memo_has_privatekey": "Proszę nie podawać tego, co wydaje się być kluczem prywatnym lub hasłem.",
     "memo_is_privatekey": "Nie używaj kluczy prywatnych w memo",
     "memo_is_password": "Nie używaj haseł w memo"
+  },
+  "login_form": {
+    "cancel_button": "Cancel",
+    "keep_me_logged_in": "Nie wylogowuj mnie",
+    "login_button": "Zaloguj",
+    "more_login_methods": "więcej opcji logowania",
+    "password_hbauth_placeholder": "Hbauth password to unlock key",
+    "password_placeholder": "Posting private key",
+    "reset_button": "Wyczyść formularz",
+    "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password.",
+    "title_action_login": "Zaloguj się",
+    "title_action_unlock_key": "Unlock Key",
+    "title_action_add_key": "Dodaj klucz",
+    "title_hbauth_form": "Hbauth: ",
+    "use_hbauth": "Użyj Hbauth",
+    "use_hiveauth": "Użyj HiveAuth",
+    "use_keychain": "Użyj Keychain",
+    "username_placeholder": "Podaj nazwę użytkownika"
   }
 }
