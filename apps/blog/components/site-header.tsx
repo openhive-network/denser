@@ -124,7 +124,11 @@ const SiteHeader: FC = () => {
             {isClient && user?.isLoggedIn ? null : (
               <div className="mx-1 hidden gap-1 sm:flex">
                 <DialogLogin>
-                  <Button variant="ghost" className="text-base hover:text-red-500" data-testid="login-btn">
+                  <Button
+                    variant="ghost"
+                    className="whitespace-nowrap text-base hover:text-red-500"
+                    data-testid="login-btn"
+                  >
                     {t('navigation.main_nav_bar.login')}
                   </Button>
                 </DialogLogin>

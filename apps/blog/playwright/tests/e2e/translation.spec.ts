@@ -210,7 +210,9 @@ test.describe('Translation tests', () => {
     await expect(communitiesExplorerPage.communityListItemFooter.first()).toContainText('autorów');
     await expect(communitiesExplorerPage.communityListItemFooter.first()).toContainText('postów');
     await expect(communitiesExplorerPage.communityListItemFooter.first()).toContainText('administrator');
-    await expect(communitiesExplorerPage.communityListItemSubscribeButton.first()).toContainText('Subskrybuj');
+    await expect(communitiesExplorerPage.communityListItemSubscribeButton.first()).toContainText(
+      'Subskrybuj'
+    );
   });
 
   // test('Witnesses page', async ({page}) =>{
@@ -446,6 +448,9 @@ test.describe('Translation tests', () => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
     test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     const menuElements = [
+      'Zaloguj się',
+      'Zapisz się',
+      'HBauth',
       'Witaj',
       'FAQ',
       'Block Explorer',
