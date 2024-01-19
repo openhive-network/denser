@@ -15,18 +15,15 @@ import { i18n } from '@/blog/next-i18next.config';
 import { useTranslation } from 'next-i18next';
 
 export default function CommunitiesPage() {
-const { t } = useTranslation('common_blog')
-const [sort, setSort] = useState('rank');
+  const { t } = useTranslation('common_blog');
+  const [sort, setSort] = useState('rank');
   const [inputQuery, setInputQuery] = useState<string>('');
   const [query, setQuery] = useState<string | null>();
   const {
     isLoading: communitiesDataIsLoading,
     error: communitiesDataError,
     data: communitiesData
-  } = useQuery(
-    ['communitiesList', sort, query],
-    async () => await getCommunities(sort, query)
-  );
+  } = useQuery(['communitiesList', sort, query], async () => await getCommunities(sort, query));
 
   function handleSearchCommunity(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') {
@@ -38,54 +35,51 @@ const [sort, setSort] = useState('rank');
     setSort(e);
   }
 
-  if (communitiesDataIsLoading)
-    return <Loading loading={communitiesDataIsLoading} />;
+  if (communitiesDataIsLoading) return <Loading loading={communitiesDataIsLoading} />;
 
   return (
-    <div className='container mx-auto max-w-screen-2xl flex-grow px-4 pb-2 pt-8'>
-      <div className='grid grid-cols-12 md:gap-4'>
-        <div className='hidden md:col-span-4 md:flex xl:col-span-2'>
+    <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2 pt-8">
+      <div className="grid grid-cols-12 md:gap-4">
+        <div className="hidden md:col-span-4 md:flex xl:col-span-2">
           <CommunitiesSidebar />
         </div>
-        <div className='col-span-12 md:col-span-8'>
-          <div className='mt-4 flex items-center justify-between'>
-            <span className='text-sm font-medium sm:text-xl' data-testid="communities-header">{t('communities.communities')}</span>
+        <div className="col-span-12 md:col-span-8">
+          <div className="mt-4 flex items-center justify-between">
+            <span className="text-sm font-medium sm:text-xl" data-testid="communities-header">
+              {t('communities.communities')}
+            </span>
             {/* <Link className="text-sm font-medium text-red-600 dark:hover:text-red-800" href={'/'}>
               Create a Community
             </Link> */}
           </div>
-          <div
-            className='mt-4 flex items-center justify-between w-full gap-4'
-            translate='no'
-          >
-            <div className='relative w-full max-w-md'>
-              <div className='absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none'>
-                <Icons.search className='h-5 w-5 rotate-90' />
+          <div className="mt-4 flex w-full items-center justify-between gap-4" translate="no">
+            <div className="relative w-full max-w-md">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                <Icons.search className="h-5 w-5 rotate-90" />
               </div>
               <Input
-                type='search'
-                id='search'
+                type="search"
+                id="search"
                 value={inputQuery}
                 placeholder={t('communities.search')}
-                autoComplete='off'
-                className='bg-white dark:bg-background/95 dark:text-white block p-4 pl-10 text-sm rounded-full'
+                autoComplete="off"
+                className="block rounded-full bg-white p-4 pl-10 text-sm dark:bg-background/95 dark:text-white"
                 onChange={(e) => setInputQuery(e.target.value)}
                 onKeyDown={(e) => handleSearchCommunity(e)}
               />
             </div>
-            <CommunitiesSelectFilter
-              filter={sort}
-              handleChangeFilter={handleChangeFilter}
-            />
+            <CommunitiesSelectFilter filter={sort} handleChangeFilter={handleChangeFilter} />
           </div>
-          <Separator className='my-4' />
+          <Separator className="my-4" />
           {communitiesData && communitiesData?.length > 0 ? (
             <CommunitiesList data={communitiesData} />
           ) : (
-            <div className='w-full py-4' data-testid="communities-search-no-results-msg">{t('communities.no_results')}</div>
+            <div className="w-full py-4" data-testid="communities-search-no-results-msg">
+              {t('communities.no_results')}
+            </div>
           )}
         </div>
-        <div className='hidden lg:flex xl:col-span-2'>
+        <div className="hidden lg:flex xl:col-span-2">
           <ExploreHive />
         </div>
       </div>
@@ -96,7 +90,10 @@ const [sort, setSort] = useState('rank');
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   return {
     props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_blog', 'smart-signer']))
+      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
+        'common_blog',
+        'smart-signer'
+      ]))
     }
   };
 };

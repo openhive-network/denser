@@ -7,14 +7,19 @@ import { i18n } from '@/blog/next-i18next.config';
 
 export const getServerSideProps: GetServerSideProps<{
   data: string;
-}> = async ({req}) => {
+}> = async ({ req }) => {
   const file_path = path.join('lib', 'markdowns', 'faq.md');
   const data = fs.readFileSync(file_path, { encoding: 'utf8', flag: 'r' });
 
   return {
     props: {
       data,
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_blog', 'smart-signer'])) } };
+      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
+        'common_blog',
+        'smart-signer'
+      ]))
+    }
+  };
 };
 function Faq({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const renderer = new Remarkable({
@@ -25,7 +30,7 @@ function Faq({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   });
   const faq_page = renderer.render(data);
   return (
-    <div className="mx-auto my-12 px-4 max-w-3xl ">
+    <div className="mx-auto my-12 max-w-3xl px-4 ">
       <div
         id="articleBody"
         className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
