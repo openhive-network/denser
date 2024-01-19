@@ -130,11 +130,7 @@ const SiteHeader: FC = () => {
                   </Button>
                 </DialogLogin>
                 <Link href="https://signup.hive.io/">
-<<<<<<< HEAD
-                  <Button variant="redHover" data-testid="signup-btn" className=" whitespace-nowrap">
-=======
                   <Button variant="redHover" className="whitespace-nowrap" data-testid="signup-btn">
->>>>>>> main
                     {t('navigation.main_nav_bar.sign_up')}
                   </Button>
                 </Link>
@@ -187,7 +183,6 @@ const SiteHeader: FC = () => {
                 </Button>
               </ModeToggle>
             ) : null}
-<<<<<<< HEAD
             {isClient && !user?.isLoggedIn ? <LangToggle logged={user ? user?.isLoggedIn : false} /> : null}
             {isClient && user?.isLoggedIn ? (
               <TooltipProvider>
@@ -237,32 +232,6 @@ const SiteHeader: FC = () => {
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
-=======
-            {isClient && (
-              <DialogHBAuth
-                onAuthComplete={(username, keyType) => {
-                  logger.info('onAuthComplete %o', { username, keyType });
-                }}
-              >
-                <Link href="#">
-                  <Button variant="redHover" size="sm" className="h-10">
-                    Hbauth
-                  </Button>
-                </Link>
-              </DialogHBAuth>
-            )}
-            {user && !user?.isLoggedIn ? <LangToggle logged={user ? user?.isLoggedIn : false} /> : null}
-            {user && user?.isLoggedIn ? (
-              <UserMenu user={user}>
-                {/* {!user?.avatarUrl && ( */}
-                <img
-                  className="h-10 w-10 cursor-pointer rounded-md px-0"
-                  src={`https://images.hive.blog/u/${user?.username || ''}/avatar/small`}
-                  alt="Profile picture"
-                />
-                {/* )} */}
-              </UserMenu>
->>>>>>> main
             ) : null}
             <Sidebar />
           </nav>
