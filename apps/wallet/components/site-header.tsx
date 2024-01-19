@@ -30,21 +30,23 @@ const SiteHeader: FC = () => {
         </Link>
         <div className="flex items-center space-x-2 sm:space-x-4">
           <nav className="flex items-center space-x-1">
-          {isClient && (
-                <DialogHBAuth onAuthComplete={(username, keyType) => {
-                  logger.info('onAuthComplete %o', { username, keyType })
-                }}>
-                  <Link href="#">
-                    <Button variant="redHover" size="sm" className="h-10">
-                      Hbauth
-                    </Button>
-                  </Link>
-                </DialogHBAuth>
-              )}
+            {isClient && (
+              <DialogHBAuth
+                onAuthComplete={(username, keyType) => {
+                  logger.info('onAuthComplete %o', { username, keyType });
+                }}
+              >
+                <Link href="#">
+                  <Button variant="redHover" size="sm" className="h-10">
+                    Hbauth
+                  </Button>
+                </Link>
+              </DialogHBAuth>
+            )}
             {isClient && user && !user?.isLoggedIn ? (
               <div className="mx-1 hidden gap-1 sm:flex">
                 <DialogLogin>
-                  <Button variant="ghost" className="text-base hover:text-red-500">
+                  <Button variant="ghost" className="whitespace-nowrap text-base hover:text-red-500">
                     {t('navigation.main_nav_bar.login')}
                   </Button>
                 </DialogLogin>
