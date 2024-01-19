@@ -6,12 +6,9 @@ export default function Document() {
     <Html>
       <Head />
       <body>
-      <Main />
-      <NextScript />
-      <Script
-        src='/__ENV.js'
-        strategy='beforeInteractive'
-      />
+        <Main />
+        <NextScript />
+        <Script src="/__ENV.js" strategy="beforeInteractive" />
       </body>
     </Html>
   );

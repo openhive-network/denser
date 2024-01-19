@@ -7,14 +7,19 @@ import { i18n } from '@/blog/next-i18next.config';
 
 export const getServerSideProps: GetServerSideProps<{
   data: string;
-}> = async ({req}) => {
+}> = async ({ req }) => {
   const file_path = path.join('lib', 'markdowns', 'welcome.md');
   const data = fs.readFileSync(file_path, { encoding: 'utf8', flag: 'r' });
 
   return {
     props: {
       data,
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_blog', 'smart-signer'])) } };
+      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
+        'common_blog',
+        'smart-signer'
+      ]))
+    }
+  };
 };
 function Welcome({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const renderer = new Remarkable({

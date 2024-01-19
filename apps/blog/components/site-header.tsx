@@ -6,7 +6,7 @@ import { MainNav } from './main-nav';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
 import { siteConfig } from '@hive/ui/config/site';
 import Link from 'next/link';
-import React, { useState, KeyboardEvent, FC, useEffect } from 'react';
+import React, { useState, KeyboardEvent, FC, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import DialogHBAuth from '@smart-signer/components/dialog-hb-auth';
@@ -51,6 +51,7 @@ const SiteHeader: FC = () => {
   const router = useRouter();
   const { t } = useTranslation('common_blog');
   const [isClient, setIsClient] = useState(false);
+  const refScrollY = useRef<number>(typeof window !== 'undefined' ? window.scrollY : 0);
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -87,15 +88,15 @@ const SiteHeader: FC = () => {
   };
 
   const [isNavHidden, setIsNavHidden] = useState(false);
-  let lastScrollY = typeof window !== 'undefined' ? window.scrollY : 0;
   useEffect(() => {
+    console.log('HANDLE SCROLL EFFECT');
     const handleScroll = () => {
-      if (lastScrollY < window.scrollY) {
+      if (refScrollY.current < window.scrollY) {
         setIsNavHidden(true);
       } else {
         setIsNavHidden(false);
       }
-      lastScrollY = window.scrollY;
+      refScrollY.current = window.scrollY;
     };
     window.addEventListener('scroll', handleScroll);
 

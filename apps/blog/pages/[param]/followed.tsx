@@ -33,10 +33,11 @@ export default function Followed() {
   };
   return (
     <ProfileLayout>
-      <div className='flex flex-col gap-2 p-2'>
-        <h1 className='self-center p-2'>
+      <div className="flex flex-col gap-2 p-2">
+        <h1 className="self-center p-2">
           {t('user_profil.lists.followed_pages', {
-            current: page + 1, total: profileData?.follow_stats?.follower_count
+            current: page + 1,
+            total: profileData?.follow_stats?.follower_count
               ? Math.ceil(profileData?.follow_stats?.follower_count / LIMIT)
               : '?'
           })}
@@ -52,7 +53,7 @@ export default function Followed() {
           {followingData.data?.pages[page].map((e) => (
             <li
               key={e.following}
-              className='flex h-8 items-center p-2 font-semibold text-red-600 odd:bg-slate-200 even:bg-slate-100 dark:odd:bg-slate-800 dark:even:bg-slate-900'
+              className="flex h-8 items-center p-2 font-semibold text-red-600 odd:bg-slate-200 even:bg-slate-100 dark:odd:bg-slate-800 dark:even:bg-slate-900"
             >
               <Link href={`/@${e.following}`}>{e.following}</Link>
             </li>
@@ -65,9 +66,10 @@ export default function Followed() {
           hasPrevPage={page > 0}
           isLoading={followingData.isFetchingNextPage}
         />
-        <h1 className='self-center p-2'>
+        <h1 className="self-center p-2">
           {t('user_profil.lists.followed_pages', {
-            current: page + 1, total: profileData?.follow_stats?.follower_count
+            current: page + 1,
+            total: profileData?.follow_stats?.follower_count
               ? Math.ceil(profileData?.follow_stats?.follower_count / LIMIT)
               : '?'
           })}
@@ -80,7 +82,10 @@ export default function Followed() {
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   return {
     props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_blog', 'smart-signer']))
+      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
+        'common_blog',
+        'smart-signer'
+      ]))
     }
   };
 };
