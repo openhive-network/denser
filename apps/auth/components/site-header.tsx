@@ -25,7 +25,7 @@ const SiteHeader: FC = () => {
     redirectIfFound: true
   });
 
-  const onLogout = useLogout()
+  const onLogout = useLogout();
 
   return (
     <header className="supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur">
@@ -34,12 +34,13 @@ const SiteHeader: FC = () => {
         <MobileNav />
         <div className="flex flex-1 items-center justify-between space-x-2 sm:space-x-4 md:justify-end">
           <nav className="flex items-center space-x-1">
-            <div className="mx-1 gap-1 flex">
-
+            <div className="mx-1 flex gap-1">
               {isClient && (
-                <DialogHBAuth onAuthComplete={(username, keyType) => {
-                  logger.info('onAuthComplete %o', { username, keyType })
-                }}>
+                <DialogHBAuth
+                  onAuthComplete={(username, keyType) => {
+                    logger.info('onAuthComplete %o', { username, keyType });
+                  }}
+                >
                   <Link href="#">
                     <Button variant="redHover" size="sm" className="h-10">
                       Hbauth
@@ -50,7 +51,7 @@ const SiteHeader: FC = () => {
 
               {isClient && user?.isLoggedIn === false && (
                 <Link href="https://signup.hive.io/">
-                  <Button variant="redHover" size="sm" className="h-10">
+                  <Button variant="redHover" size="sm" className="h-10 whitespace-nowrap">
                     Sign Up
                   </Button>
                 </Link>

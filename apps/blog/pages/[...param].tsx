@@ -195,7 +195,7 @@ const ParamPage: FC = () => {
               ) : null}
             </div>
             <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">
-              <div className="my-4 flex w-full items-center justify-between">
+              <div className="my-4 flex w-full items-center justify-between" translate="no">
                 <div className="mr-2 flex w-[320px] flex-col">
                   <span className="text-md hidden font-medium md:block" data-testid="community-name">
                     {tag
@@ -216,7 +216,7 @@ const ParamPage: FC = () => {
                         : ''}
                     </span>
                   ) : null}
-                  <span className="md:hidden" translate="no">
+                  <span className="md:hidden">
                     <CommunitiesSelect
                       mySubsData={mySubsData}
                       username={user?.username ? user.username : undefined}
@@ -230,7 +230,7 @@ const ParamPage: FC = () => {
                     />
                   </span>
                 </div>
-                <div translate="no" className="w-[180px]">
+                <div className="w-[180px]">
                   <PostSelectFilter filter={sort} handleChangeFilter={handleChangeFilter} />
                 </div>
               </div>

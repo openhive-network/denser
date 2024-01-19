@@ -15,23 +15,20 @@ interface UserInfoProps extends UserHoverCardProps {
 }
 
 function UserInfo({
-                    authored,
-                    community,
-                    community_title,
-                    category,
-                    created,
-                    author,
-                    author_reputation,
-                    author_title,
-                    blacklist
-                  }: UserInfoProps) {
+  authored,
+  community,
+  community_title,
+  category,
+  created,
+  author,
+  author_reputation,
+  author_title,
+  blacklist
+}: UserInfoProps) {
   const { t } = useTranslation('common_blog');
   return (
-    <div
-      className='flex flex-col py-4 text-slate-500'
-      data-testid='author-data'
-    >
-      <div className='flex flex-wrap items-center'>
+    <div className="flex flex-col py-4 text-slate-500" data-testid="author-data">
+      <div className="flex flex-wrap items-center">
         <UserHoverCard
           author={author}
           author_reputation={author_reputation}
@@ -39,45 +36,39 @@ function UserInfo({
           blacklist={blacklist}
         />
         {author_title ? (
-          <Badge
-            variant='outline'
-            className='mr-1 border-red-600 text-slate-500'
-          >
+          <Badge variant="outline" className="mr-1 border-red-600 text-slate-500" translate="no">
             {author_title}
           </Badge>
         ) : null}
         {t('post_content.in')}
-        <span className='ml-1'>
+        <span className="ml-1" translate="no">
           {community_title ? (
             <Link
               href={`/trending/${community}`}
-              className='hover:cursor-pointer hover:text-red-600'
-              data-testid='comment-community-title'
+              className="hover:cursor-pointer hover:text-red-600"
+              data-testid="comment-community-title"
             >
               {community_title}
             </Link>
           ) : (
             <Link
               href={`/trending/${category}`}
-              className='hover:cursor-pointer hover:text-red-600'
-              data-testid='comment-category-title'
+              className="hover:cursor-pointer hover:text-red-600"
+              data-testid="comment-category-title"
             >
               #{category}
             </Link>
           )}
         </span>
-        <span className='mx-1'>•</span>
-        <span title={String(parseDate(created))}>
-          {dateToFullRelative(created, t)}
+        <span className="mx-1" translate="no">
+          •
         </span>
+        <span title={String(parseDate(created))}>{dateToFullRelative(created, t)}</span>
       </div>
       {authored ? (
-        <span className='ml-1 text-xs'>
+        <span className="ml-1 text-xs">
           Authored by{' '}
-          <Link
-            className='hover:cursor-pointer hover:text-red-500'
-            href={`/@${authored}`}
-          >
+          <Link className="hover:cursor-pointer hover:text-red-500" href={`/@${authored}`}>
             @{authored}
           </Link>
         </span>
