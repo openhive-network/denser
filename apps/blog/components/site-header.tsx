@@ -11,12 +11,14 @@ import clsx from 'clsx';
 import DialogHBAuth from '@smart-signer/components/dialog-hb-auth';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import dynamic from 'next/dynamic';
 import { getLogger } from '@hive/ui/lib/logging';
 import DialogLogin from './dialog-login';
-const UserMenu = dynamic(() => import('@/blog/components/user-menu'), { ssr: false });
-const LangToggle = dynamic(() => import('@/blog/components/lang-toggle'), { ssr: false });
-const ModeToggle = dynamic(() => import('@/blog/components/mode-toggle'), { ssr: false });
+import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
+import { useQuery } from '@tanstack/react-query';
+import { getUnreadNotifications } from '../lib/bridge';
+import ModeToggle from './mode-toggle';
+import UserMenu from '@/blog/components/user-menu';
+import LangToggle from './lang-toggle';
 
 const logger = getLogger('app');
 
@@ -29,7 +31,13 @@ const SiteHeader: FC = () => {
   }, []);
 
   const { user } = useUser();
-
+  const { data, isLoading, isError } = useQuery(
+    [['unreadNotifications', user?.username]],
+    () => getUnreadNotifications(user?.username || ''),
+    {
+      enabled: !!user?.username
+    }
+  );
   const [input, setInput] = useState('');
   const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
@@ -122,7 +130,7 @@ const SiteHeader: FC = () => {
                 <Icons.pencil className="h-5 w-5" />
               </Button>
             </Link>
-            {user && !user?.isLoggedIn ? (
+            {isClient && !user?.isLoggedIn ? (
               <ModeToggle>
                 <Button variant="ghost" size="sm" className="h-10 w-full px-0" data-testid="theme-mode">
                   <Icons.sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
@@ -131,16 +139,25 @@ const SiteHeader: FC = () => {
                 </Button>
               </ModeToggle>
             ) : null}
-            {user && !user?.isLoggedIn ? <LangToggle logged={user ? user?.isLoggedIn : false} /> : null}
-            {user && user?.isLoggedIn ? (
+            {isClient && !user?.isLoggedIn ? <LangToggle logged={user ? user?.isLoggedIn : false} /> : null}
+            {isClient && user?.isLoggedIn ? (
               <UserMenu user={user}>
-                {/* {!user?.avatarUrl && ( */}
-                <img
-                  className="h-10 w-10 cursor-pointer rounded-md px-0"
-                  src={`https://images.hive.blog/u/${user?.username || ''}/avatar/small`}
-                  alt="Profile picture"
-                />
-                {/* )} */}
+                <div className="relative inline-flex w-fit cursor-pointer">
+                  {data && data.unread !== 0 ? (
+                    <div className="absolute bottom-auto left-auto right-0 top-0 z-10 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-red-600 px-2.5 py-1 text-center align-baseline text-xs font-bold leading-none text-white">
+                      {data.unread}
+                    </div>
+                  ) : null}
+                  <Avatar>
+                    <AvatarImage
+                      src={`https://images.hive.blog/u/${user?.username}/avatar/small`}
+                      alt="Profile picture"
+                    />
+                    <AvatarFallback>
+                      <Icons.user />
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
               </UserMenu>
             ) : null}
             <Sidebar />

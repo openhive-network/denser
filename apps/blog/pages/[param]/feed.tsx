@@ -20,6 +20,7 @@ import { i18n } from '@/blog/next-i18next.config';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { CommunitiesSelect } from '@/blog/components/communities-select';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 const CommunitiesSidebar = dynamic(() => import('@/blog/components/communities-sidebar'), { ssr: false });
 const CommunitiesMybar = dynamic(() => import('@/blog/components/communities-mybar'), { ssr: false });
 const ExploreHive = dynamic(() => import('@/blog/components/explore-hive'), { ssr: false });
@@ -40,7 +41,7 @@ const ParamPage: FC = () => {
   const { t } = useTranslation('common_blog');
   const { username, tag } = useSiteParams();
   const { ref: refAcc, inView: inViewAcc } = useInView();
-  const user = { isLoggedIn: false, username: 'gtg' };
+  const { user } = useUser();
   const {
     data: accountEntriesData,
     isLoading: accountEntriesIsLoading,
@@ -189,7 +190,10 @@ export default ParamPage;
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   return {
     props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_blog', 'smart-signer']))
+      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
+        'common_blog',
+        'smart-signer'
+      ]))
     }
   };
 };

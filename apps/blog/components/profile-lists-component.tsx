@@ -7,6 +7,7 @@ import clsx from 'clsx';
 import { FollowList } from '@/blog/lib/bridge';
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 
 export default function ProfileLists({
   username,
@@ -17,7 +18,7 @@ export default function ProfileLists({
   variant: string;
   data: FollowList[] | undefined;
 }) {
-  const user = { isLoggedIn: false, username: 'gtg' };
+  const { user } = useUser();
   const { t } = useTranslation('common_blog');
   const [page, setPage] = useState(0);
   const [filter, setFilter] = useState('');
