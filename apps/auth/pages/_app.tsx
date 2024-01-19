@@ -1,11 +1,11 @@
-import "@hive/tailwindcss-config/globals.css";
-import type { AppProps } from "next/app";
-import { lazy, Suspense, useEffect } from "react";
+import '@hive/tailwindcss-config/globals.css';
+import type { AppProps } from 'next/app';
+import { lazy, Suspense, useEffect } from 'react';
 import { appWithTranslation } from 'next-i18next';
 import { i18n } from 'next-i18next.config';
 import { parseCookie } from '@smart-signer/lib/utils';
 
-const Providers = lazy(() => import("@/auth/components/common/providers"));
+const Providers = lazy(() => import('@/auth/components/common/providers'));
 
 // Log Git revision details in browser's console.
 if (typeof window !== 'undefined' && window) {
@@ -13,7 +13,6 @@ if (typeof window !== 'undefined' && window) {
 }
 
 function App({ Component, pageProps }: AppProps) {
-
   useEffect(() => {
     const cookieStore = parseCookie(document.cookie);
     if (!cookieStore.hasOwnProperty('NEXT_LOCALE')) {
@@ -30,4 +29,5 @@ function App({ Component, pageProps }: AppProps) {
   );
 }
 
+// @ts-ignore
 export default appWithTranslation(App);

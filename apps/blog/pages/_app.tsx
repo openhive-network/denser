@@ -25,4 +25,5 @@ function App({ Component, pageProps }: AppProps) {
   );
 }
 
+// @ts-ignore
 export default appWithTranslation(App);

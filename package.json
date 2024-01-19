@@ -38,8 +38,8 @@
     "packages/*"
   ],
   "devDependencies": {
-    "@turbo/gen": "^1.11.2",
-    "turbo": "^1.11.2"
+    "@turbo/gen": "^1.11.3",
+    "turbo": "^1.11.3"
   },
   "volta": {
     "node": "18.17.0"
