@@ -165,7 +165,7 @@ export function LoginForm({
   return (
     <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
       <div className="mx-auto flex w-[440px] max-w-md flex-col items-center">
-        <h2 className="w-full pb-6 text-3xl text-gray-800 dark:text-slate-300">
+        <h2 className="w-full pb-6 text-3xl text-gray-800 dark:text-slate-300" data-testid="login-header">
           {t('login_form.title_action_login')}
         </h2>
         <form method="post" className="w-full">
@@ -318,6 +318,7 @@ export function LoginForm({
               type="submit"
               className="w-fit rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-semibold text-white hover:cursor-pointer hover:bg-red-700 focus:outline-none  disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
               onClick={handleSubmit(onSubmit)}
+              data-testid="login-submit-button"
             >
               {t('login_form.login_button')}
             </button>
@@ -325,6 +326,7 @@ export function LoginForm({
               type="button"
               onClick={() => reset()}
               className="w-fit rounded-lg bg-transparent px-5 py-2.5 text-center text-sm font-semibold text-gray-500 hover:cursor-pointer hover:text-red-600 focus:outline-none"
+              data-testid="login-reset-button"
             >
               {t('login_form.reset_button')}
             </button>
