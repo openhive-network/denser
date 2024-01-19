@@ -622,11 +622,51 @@ test.describe('Home page tests', () => {
     await homePage.moveToNavOurdAppsPage();
   });
 
-  test('navigation search input is visible', async ({ page }) => {
+  // Navbar search input was deleted now is icone to open search page
+  test.skip('navigation search input is visible', async ({ page }) => {
     await homePage.goto();
 
     await expect(homePage.getNavSearchInput).toBeVisible();
     await expect(homePage.getNavSearchInput).toHaveAttribute('placeholder', 'Search...');
+  });
+
+  test('navigation search link is visible', async ({ page }) => {
+    await homePage.goto();
+
+    await expect(homePage.getNavSearchLink).toBeVisible();
+  });
+
+  test('move to the search page', async ({ page }) => {
+    await homePage.goto();
+
+    await expect(homePage.getNavSearchLink).toBeVisible();
+    // click search link in navbar
+    await homePage.getNavSearchLink.click();
+    // validate url was changed to /search
+    await expect(homePage.page).toHaveURL('/search');
+    // validate that input search is visible on the page
+    await expect(homePage.getNavSearchInput).toBeVisible();
+    await expect(homePage.getNavSearchInput).toHaveAttribute('placeholder', 'Search...');
+    // validate the 'sort by' dropdown list is visible
+    await expect(page.locator('[data-testid="search-sort-by-dropdown-list"]')).toBeVisible();
+  });
+
+  test('navigation Hbauth link is visible', async ({ page }) => {
+    await homePage.goto();
+
+    await expect(homePage.getNavHbauthLink).toBeVisible();
+  });
+
+  test('navigation Login link is visible', async ({ page }) => {
+    await homePage.goto();
+
+    await expect(homePage.loginBtn).toBeVisible();
+  });
+
+  test('navigation Sign up link is visible', async ({ page }) => {
+    await homePage.goto();
+
+    await expect(homePage.signupBtn).toBeVisible();
   });
 
   // gtg profil and his avatar is no longer aviable on the home page

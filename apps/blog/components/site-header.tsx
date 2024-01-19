@@ -141,7 +141,7 @@ const SiteHeader: FC = () => {
                   logger.info('onAuthComplete %o', { username, keyType });
                 }}
               >
-                <Link href="#">
+                <Link href="#" data-testid="navbar-hbauth-link">
                   <Button variant="redHover" className="hidden gap-1 sm:flex">
                     Hbauth
                   </Button>
@@ -163,7 +163,7 @@ const SiteHeader: FC = () => {
                 />
               </div>
             </div> */}
-            <Link href="/search">
+            <Link href="/search" data-testid="navbar-search-link">
               <Button variant="ghost" size="sm" className="h-10 w-10 px-0 ">
                 <Icons.search className="h-5 w-5 rotate-90" />
               </Button>
