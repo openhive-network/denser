@@ -28,6 +28,7 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetServerSideProps } from 'next';
 import { i18n } from '@/blog/next-i18next.config';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 
 export const PostSkeleton = () => {
   return (
@@ -47,7 +48,7 @@ const ParamPage: FC = () => {
   const { sort, username, tag } = useSiteParams();
   const { ref, inView } = useInView();
   const { ref: refAcc, inView: inViewAcc } = useInView();
-  const user = { username: 'gtg' };
+  const { user } = useUser();
   const {
     data: entriesData,
     isLoading: entriesDataIsLoading,

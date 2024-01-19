@@ -12,7 +12,7 @@ function App({ Component, pageProps }: AppProps) {
     const cookieStore = parseCookie(document.cookie);
 
     if (!cookieStore.hasOwnProperty('NEXT_LOCALE')) {
-      document.cookie = `NEXT_LOCALE=${i18n.defaultLocale};path=/`;
+      document.cookie = ` NEXT_LOCALE=${i18n.defaultLocale};`;
     }
   }, []);
 
@@ -25,5 +25,4 @@ function App({ Component, pageProps }: AppProps) {
   );
 }
 
-// @ts-ignore
 export default appWithTranslation(App);

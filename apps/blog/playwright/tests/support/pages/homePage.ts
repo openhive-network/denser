@@ -19,7 +19,9 @@ export class HomePage {
   readonly getNavProposalsLink: Locator;
   readonly getNavWitnessesLink: Locator;
   readonly getNavOurdAppsLink: Locator;
+  readonly getNavHbauthLink: Locator;
   readonly getNavSearchInput: Locator;
+  readonly getNavSearchLink: Locator;
   readonly getNavUserAvatar: Locator;
   readonly getNavCreatePost: Locator;
   readonly getNavSidebarMenu: any;
@@ -162,7 +164,10 @@ export class HomePage {
     this.getCardUserShortcuts = page.locator('[data-testid="card-user-shortcuts"]');
     this.getCardUserShortcutsTitle = this.getCardUserShortcuts.locator('div h3');
     this.getCardUserShortcutsLinks = this.getCardUserShortcuts.locator('div ul li');
-    this.getNavSearchInput = page.locator('header div nav input[type="search"]');
+    this.getNavHbauthLink = page.locator('[data-testid="navbar-hbauth-link"]');
+    // this.getNavSearchInput = page.locator('header div nav input[type="search"]'); // old one
+    this.getNavSearchInput = page.locator('input[type="search"]');
+    this.getNavSearchLink = page.locator('[data-testid="navbar-search-link"]');
     this.getNavUserAvatar = page.locator('[data-testid="profile-menu"]');
     this.getNavProfileMenuContent = page.locator('[data-testid="profile-menu-content"]');
     this.getNavCreatePost = page.locator('[data-testid="nav-pencil"]');

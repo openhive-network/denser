@@ -52,7 +52,7 @@ export function MainNav() {
           target="_blank"
           rel="noopener noreferrer"
           className={cn(
-            'flex h-full items-center border-b-2 border-white transition-colors hover:border-red-600 hover:text-red-600 dark:border-slate-950 hover:dark:border-red-600',
+            'flex h-full items-center whitespace-nowrap border-b-2 border-white transition-colors hover:border-red-600 hover:text-red-600 dark:border-slate-950 hover:dark:border-red-600',
             pathname === 'https://hive.io/eco/' ? 'text-red-600' : 'text-foreground/60'
           )}
           data-testid="nav-our-dapps-link"

@@ -12,6 +12,7 @@ import { redirect } from 'next/navigation';
 import { User } from '@smart-signer/types/common';
 import { IronSessionData } from '@smart-signer/types/common';
 import { cookieNamePrefix } from '@smart-signer/lib/session';
+import { checkCsrfHeader } from "@smart-signer/lib/csrf-protection";
 
 const logger = getLogger('app');
 
@@ -68,6 +69,8 @@ const verifyLoginChallenge = async (
 
 
 export const loginUser: NextApiHandler<User> = async (req, res) => {
+
+  checkCsrfHeader(req);
 
   const { slug } = req.query;
   // try {
