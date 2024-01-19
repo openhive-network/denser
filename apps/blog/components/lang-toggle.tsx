@@ -40,7 +40,6 @@ export default function LangToggle({ logged }: { logged: Boolean }) {
           className={clsx('flex h-10 w-full p-0 text-start font-normal', { 'h-6': logged })}
           data-testid="toggle-language"
         >
-          {console.log(lang)}
           <span>{lang ? languages.filter((language) => language.locale === lang)[0].label : null}</span>
           {logged ? <span className="ml-2 w-full">Toggle language</span> : null}
         </Button>
