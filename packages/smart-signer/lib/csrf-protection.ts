@@ -5,8 +5,11 @@ import { getLogger } from "@hive/ui/lib/logging";
 
 const logger = getLogger('app');
 
+//
 // See https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#employing-custom-request-headers-for-ajaxapi
-export const csrfHeaderName = `x-${env('APP_NAME')}-csrf-protection`;
+// If current implementation is not good enough, see https://github.com/amorey/edge-csrf
+//
+export const csrfHeaderName = `x-csrf-token`;
 
 /**
  * Function checks if CSRF protection header exists in request
@@ -16,7 +19,7 @@ export const csrfHeaderName = `x-${env('APP_NAME')}-csrf-protection`;
  */
 export const checkCsrfHeader = (req: NextApiRequest): boolean => {
     if (!Object.hasOwn(req.headers, csrfHeaderName)) {
-      const errorMessage = `Missing CSRF protection header`
+      const errorMessage = `Missing ${csrfHeaderName} header`
       logger.error(errorMessage);
       throw new createHttpError.BadRequest(errorMessage);
     }
