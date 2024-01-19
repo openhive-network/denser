@@ -59,9 +59,14 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
     if (loginType === LoginTypes.keychain) {
       try {
         const response: any = await new Promise((resolve) => {
-          window.hive_keychain.requestSignBuffer(username, message, KeychainKeyTypes[keyType], (res: any) => {
-            resolve(res);
-          });
+          window.hive_keychain.requestSignBuffer(
+            username,
+            message,
+            KeychainKeyTypes[keyType],
+            (res: any) => {
+              resolve(res);
+            }
+          );
         });
         if (response.success) {
           logger.info('keychain', { signature: response.result });
@@ -100,78 +105,15 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
         throw new Error('Hiveauth login failed');
       }
     } else if (loginType === LoginTypes.hbauth) {
-      const sign = async (
-        username: string,
-        password: string,
-        message: string,
-        keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting
-      ) => {
-        logger.info('sign args: %o', { username, password, message, keyType });
-
-        const authClient = await authService.getOnlineClient();
-        const auth = await authClient.getAuthByUser(username);
-        logger.info('auth: %o', auth);
-
-        if (!auth) {
-          throw new Error(`No auth for username ${username}`);
-        }
-
-        if (!auth.authorized) {
-          if (!['posting', 'active'].includes(keyType)) {
-            throw new Error(`Unsupported keyType: ${keyType}`);
-          }
-          const authStatus = await authClient.authenticate(
-            username,
-            password,
-            keyType as unknown as 'posting' | 'active'
-          );
-
-          logger.info({ authStatus });
-          if (!authStatus.ok) {
-            throw new Error(`Unlocking wallet failed`);
-          }
-        }
-
-        const digest = cryptoUtils.sha256(message).toString('hex');
-        if (!['posting', 'active'].includes(keyType)) {
-          throw new Error(`Unsupported keyType: ${keyType}`);
-        }
-        const signature = await authClient.sign(username, digest, keyType as unknown as 'posting' | 'active');
-        logger.info({ digest, signature });
-
-        return signature;
-      };
-
-      const checkAuths = async (username: string, keyType: string) => {
-        const authClient = await authService.getOnlineClient();
-        const auths = await authClient.getAuths();
-        logger.info('auths: %o', auths);
-        const auth = auths.find((auth) => auth.username === username);
-        if (auth) {
-          logger.info('found auth: %o', auth);
-          if (auth.authorized) {
-            if (auth.keyType === keyType) {
-              logger.info('user is authorized and we are ready to proceed');
-              // We're ready to sign loginChallenge and proceed.
-            } else {
-              logger.info('user is authorized, but with incorrect keyType: %s', auth.keyType);
-            }
-          } else {
-            logger.info('user is not authorized');
-            // We should tell to unlock wallet (login to wallet).
-          }
-        } else {
-          logger.info('auth for user not found: %s', username);
-          // We should offer adding account to wallet.
-        }
-      };
-
       try {
         // await checkAuths(username, 'posting');
-        signatures.posting = await sign(username, password, message, keyType);
-      } catch (e) {
-        logger.error('Caught error');
-        logger.error(e);
+        const digest = cryptoUtils.sha256(message).toString('hex');
+        const signature = await authService.sign(username, password,
+            digest, keyType);
+        logger.info('hbauth', { signature });
+        signatures.posting = signature;
+      } catch (error) {
+        throw error;
       }
     } else if (loginType === LoginTypes.password) {
       try {
