@@ -47,7 +47,7 @@ const CommentListItem = ({
       }
     }, 500);
     return () => clearTimeout(timeout);
-  }, [commentId, router.asPath]);
+  }, [router.asPath]);
   const currentDepth = comment.depth - parent_depth;
   return (
     <>
@@ -89,11 +89,7 @@ const CommentListItem = ({
                               alt={`${username} profile picture`}
                               loading="lazy"
                             />
-                            <UserHoverCard
-                              author={username}
-                              author_reputation={comment.author_reputation}
-                              blacklist={comment.blacklists}
-                            />
+                            <UserHoverCard author={username} author_reputation={comment.author_reputation} blacklist={comment.blacklists}/>
                             {comment.author_title ? (
                               <Badge
                                 variant="outline"
@@ -180,10 +176,8 @@ const CommentListItem = ({
                               <>
                                 <Separator orientation="vertical" />
                                 <div className="flex items-center">
-                                  {comment.children}{' '}
-                                  {comment.children > 1
-                                    ? t('cards.comment_card.replies')
-                                    : t('cards.comment_card.one_reply')}
+                                  {comment.children}{" "}
+                                  {comment.children > 1 ? t('cards.comment_card.replies') : t('cards.comment_card.one_reply')}
                                 </div>
                               </>
                             ) : null}
@@ -258,8 +252,8 @@ const CommentListItem = ({
                               <DetailsCardVoters post={comment}>
                                 <span className="hover:text-red-600">
                                   {comment.stats && comment.stats.total_votes > 1
-                                    ? t('cards.post_card.votes', { votes: comment.stats.total_votes })
-                                    : t('cards.post_card.vote')}
+                                  ? t('cards.post_card.votes', { votes: comment.stats.total_votes })
+                                  : t('cards.post_card.vote')}
                                 </span>
                               </DetailsCardVoters>
                             </div>
@@ -284,7 +278,7 @@ const CommentListItem = ({
       ) : currentDepth === 8 ? (
         <div className="h-8">
           <Link href={`/${comment.category}/@${username}/${comment.permlink}`} className="text-red-500">
-            {t('cards.comment_card.load_more')}...
+          {t('cards.comment_card.load_more')}...
           </Link>
         </div>
       ) : null}

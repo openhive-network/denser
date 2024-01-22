@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server';
 import { setLoginChallengeCookies } from '@smart-signer/lib/middleware-challenge-cookies';
 
 export async function middleware(request: NextRequest) {
+
   const { pathname } = request.nextUrl;
   const res = NextResponse.next();
 
@@ -39,7 +40,6 @@ export async function middleware(request: NextRequest) {
   * - favicon.ico (favicon file)
   */
   if (pathname.match('/((?!api|_next/static|_next/image|favicon.ico).*)')) {
-    // @ts-ignore
     setLoginChallengeCookies(request, res);
   }
 
