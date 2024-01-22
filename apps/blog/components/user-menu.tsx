@@ -17,10 +17,11 @@ import { useLogout } from '@smart-signer/lib/auth/use-logout';
 import env from '@beam-australia/react-env';
 import DialogHBAuth from '@smart-signer/components/dialog-hb-auth';
 import { getLogger } from '@hive/ui/lib/logging';
+import { User } from '@smart-signer/types/common';
 
 const logger = getLogger('app');
 
-const UserMenu = ({ children, user }: { children: ReactNode; user: any }) => {
+const UserMenu = ({ children, user }: { children: ReactNode; user: User }) => {
   const onLogout = useLogout();
   const walletHost = env('WALLET_ENDPOINT');
 
