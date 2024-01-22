@@ -1,6 +1,6 @@
 import '@hive/tailwindcss-config/globals.css';
 import type { AppProps } from 'next/app';
-import { ComponentType, lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { appWithTranslation } from 'next-i18next';
 import { i18n } from 'next-i18next.config';
 import { parseCookie } from '@/blog/lib/utils';
@@ -25,4 +25,4 @@ function App({ Component, pageProps }: AppProps) {
   );
 }
 
-export default appWithTranslation(App as any);
+export default appWithTranslation(App);

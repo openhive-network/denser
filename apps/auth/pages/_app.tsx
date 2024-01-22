@@ -29,4 +29,4 @@ function App({ Component, pageProps }: AppProps) {
   );
 }
 
-export default appWithTranslation(App as any);
+export default appWithTranslation(App);
