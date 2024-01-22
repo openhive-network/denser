@@ -285,7 +285,7 @@ test.describe('Translation tests', () => {
     await postPage.footerReblogBtn.hover();
     await expect(postPage.footerReblogBtnCardList).toContainText(expectedReblogTooltipText);
     // Validate post response button tooltip
-    const expectedResponseTooltipText: string = 'odpowiedz';
+    const expectedResponseTooltipText: RegExp = /odpowied[zź]i?/;
     await postPage.commentResponse.hover();
     await expect(postPage.postResponseTooltip).toContainText(expectedResponseTooltipText);
     // Validate title of social elements

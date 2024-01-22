@@ -1,9 +1,8 @@
 import { Dialog, DialogContent, DialogTrigger } from '@hive/ui/components/dialog';
 import { LoginPanel } from '@smart-signer/components/login-panel';
-import { useTranslation } from 'next-i18next';
+import { ReactNode } from 'react';
 
-function DialogLogin({ children }: { children: any }) {
-  const { t } = useTranslation('common_blog');
+function DialogLogin({ children }: { children: ReactNode }) {
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
