@@ -119,9 +119,7 @@ const MyPage: FC = () => {
           <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">
             <div className="my-4 flex w-full items-center justify-between" translate="no">
               <div className="mr-2 flex w-[320px] flex-col">
-                <span className="text-md hidden font-medium md:block" data-testid="community-name">
-                  My communities
-                </span>
+                <span className="text-md hidden font-medium md:block">My communities</span>
                 <span className="md:hidden">
                   <CommunitiesSelect
                     mySubsData={mySubsData}
@@ -142,11 +140,7 @@ const MyPage: FC = () => {
                   ) : null;
                 })
               ) : (
-                <div
-                  key="empty"
-                  className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
-                  data-testid="user-has-not-had-any-replies-yet"
-                >
+                <div key="empty" className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700">
                   No posts in sort: {sort}
                 </div>
               )}
