@@ -1,12 +1,6 @@
 import { useSiteParams } from '@hive/ui/components/hooks/use-site-params';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import {
-  DATA_LIMIT,
-  DATA_LIMIT as PER_PAGE,
-  getCommunity,
-  getPostsRanked,
-  getSubscriptions
-} from '@/blog/lib/bridge';
+import { DATA_LIMIT, DATA_LIMIT as PER_PAGE, getPostsRanked, getSubscriptions } from '@/blog/lib/bridge';
 import Loading from '@hive/ui/components/loading';
 import { FC, useCallback, useEffect } from 'react';
 import PostList from '@/blog/components/post-list';
@@ -14,7 +8,6 @@ import { Skeleton } from '@hive/ui/components/skeleton';
 import PostSelectFilter from '@/blog/components/post-select-filter';
 import { useRouter } from 'next/router';
 import { useInView } from 'react-intersection-observer';
-import CustomError from '@/blog/components/custom-error';
 import { CommunitiesSelect } from '@/blog/components/communities-select';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -50,12 +43,7 @@ const MyPage: FC = () => {
   } = useQuery([['subscriptions', user?.username]], () => getSubscriptions(user ? user?.username : ''), {
     enabled: Boolean(user?.username)
   });
-  const {
-    data: communityData,
-    isLoading: communityDataIsLoading,
-    isFetching: communityDataIsFetching,
-    error: communityDataError
-  } = useQuery(['community', 'my', ''], () => getCommunity('my', ''));
+
   const handleChangeFilter = useCallback(
     (e: string) => {
       router.push(`/${e}/my`, undefined, { shallow: true });
@@ -123,7 +111,7 @@ const MyPage: FC = () => {
                 <span className="md:hidden">
                   <CommunitiesSelect
                     mySubsData={mySubsData}
-                    username={user?.username ? user.username : undefined}
+                    username={user?.username || undefined}
                     title="My Communities"
                   />
                 </span>
@@ -135,9 +123,7 @@ const MyPage: FC = () => {
             <>
               {entriesData ? (
                 entriesData.pages.map((page, index) => {
-                  return page ? (
-                    <PostList data={page} key={`f-${index}`} isCommunityPage={!!communityData} />
-                  ) : null;
+                  return page ? <PostList data={page} key={`f-${index}`} /> : null;
                 })
               ) : (
                 <div key="empty" className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700">
