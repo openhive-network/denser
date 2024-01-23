@@ -49,7 +49,7 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
   const signLoginChallenge = async (
     loginType: LoginTypes,
     username: string,
-    password: string, // posting private key
+    password: string, // posting private key or password to unlock hbauth key
     keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting
   ): Promise<Signatures> => {
     logger.info('in signLoginChallenge %o', { loginType, username, loginChallenge, password });
@@ -66,31 +66,33 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
         throw error;
       }
     } else if (loginType === LoginTypes.hiveauth) {
-      logger.info('hiveauth');
+      try {
+        HiveAuthUtils.setUsername(hiveAuthData?.username || '');
+        HiveAuthUtils.setToken(hiveAuthData?.token || '');
+        HiveAuthUtils.setExpire(hiveAuthData?.expire || 0);
+        HiveAuthUtils.setKey(hiveAuthData?.key || '');
 
-      HiveAuthUtils.setUsername(hiveAuthData?.username || '');
-      HiveAuthUtils.setToken(hiveAuthData?.token || '');
-      HiveAuthUtils.setExpire(hiveAuthData?.expire || 0);
-      HiveAuthUtils.setKey(hiveAuthData?.key || '');
+        const authResponse: any = await new Promise((resolve) => {
+          HiveAuthUtils.login(
+            username,
+            message,
+            (res) => {
+              resolve(res);
+            },
+            t
+          );
+        });
 
-      const authResponse: any = await new Promise((resolve) => {
-        HiveAuthUtils.login(
-          username,
-          message,
-          (res) => {
-            resolve(res);
-          },
-          t
-        );
-      });
-
-      if (authResponse.success && authResponse.hiveAuthData) {
-        const { token, expire, key, challengeHex } = authResponse.hiveAuthData;
-        setHiveAuthData({ username, token, expire, key });
-        logger.info('hiveauth', { signature: challengeHex });
-        signatures.posting = challengeHex;
-      } else {
-        throw new Error('Hiveauth login failed');
+        if (authResponse.success && authResponse.hiveAuthData) {
+          const { token, expire, key, challengeHex } = authResponse.hiveAuthData;
+          setHiveAuthData({ username, token, expire, key });
+          logger.info('hiveauth', { signature: challengeHex });
+          signatures.posting = challengeHex;
+        } else {
+          throw new Error('Hiveauth login failed');
+        }
+      } catch (error) {
+        throw error;
       }
     } else if (loginType === LoginTypes.hbauth) {
       try {
