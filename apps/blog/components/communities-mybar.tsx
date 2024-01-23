@@ -31,7 +31,7 @@ const CommunitiesMybar = ({
         </Link>
       </CardTitle>
       <CardTitle>
-        <Link href="/trending/my" className="text-base hover:cursor-pointer hover:text-red-600">
+        <Link href="../trending/my" className="text-base hover:cursor-pointer hover:text-red-600">
           My communities
         </Link>
       </CardTitle>
