@@ -96,7 +96,7 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
       }
     } else if (loginType === LoginTypes.hbauth) {
       try {
-        // await checkAuths(username, 'posting');
+        // await authService.checkAuths(username, 'posting');
         const digest = cryptoUtils.sha256(message).toString('hex');
         const signature = await authService.sign(username, password,
             digest, keyType);

@@ -1,6 +1,8 @@
 import { OnlineClient } from '@hive/hb-auth';
 import { KeychainKeyTypes, KeychainKeyTypesLC } from 'hive-keychain-commons';
 import { getLogger } from '@hive/ui/lib/logging';
+import createBeekeeperApp from '@hive/beekeeper';
+
 
 const logger = getLogger('app');
 
@@ -65,6 +67,7 @@ class AuthService {
     const authClient = await authService.getOnlineClient();
     const auths = await authClient.getAuths();
     logger.info('auths: %o', auths);
+    // await authClient.logout();
     const auth = auths.find((auth) => auth.username === username);
     if (auth) {
       logger.info('found auth: %o', auth);
