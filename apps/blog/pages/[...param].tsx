@@ -81,7 +81,7 @@ const ParamPage: FC = () => {
     data: mySubsData,
     isLoading: mySubsIsLoading,
     isError: mySubsIsError
-  } = useQuery([['subscriptions', user?.username]], () => getSubscriptions(user ? user?.username : ''), {
+  } = useQuery([['subscriptions', user?.username]], () => getSubscriptions(user?.username || ''), {
     enabled: Boolean(user?.username)
   });
   const {
@@ -89,7 +89,7 @@ const ParamPage: FC = () => {
     isLoading: accountNotificationIsLoading,
     error: AccountNotificationError,
     data: dataAccountNotification
-  } = useQuery(['accountNotification', tag], () => getAccountNotifications(tag ? tag : ''), {
+  } = useQuery(['accountNotification', tag], () => getAccountNotifications(tag || ''), {
     enabled: !!tag
   });
   const {
@@ -97,7 +97,7 @@ const ParamPage: FC = () => {
     isLoading: communityDataIsLoading,
     isFetching: communityDataIsFetching,
     error: communityDataError
-  } = useQuery(['community', tag, ''], () => getCommunity(tag || '', ''), {
+  } = useQuery(['community', tag, ''], () => getCommunity(tag || '', user?.username || ''), {
     enabled: !!tag
   });
   const {
