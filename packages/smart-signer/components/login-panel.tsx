@@ -14,6 +14,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import HiveAuthUtils from '@smart-signer/lib/hive-auth-utils';
 import { LoginForm, LoginFormSchema } from '@smart-signer/components/login-form';
 import { cookieNamePrefix } from '@smart-signer/lib/session';
+import { signMessage as signMessageKeychain } from '@smart-signer/lib/hive-keychain';
 
 const logger = getLogger('app');
 
@@ -58,22 +59,9 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
 
     if (loginType === LoginTypes.keychain) {
       try {
-        const response: any = await new Promise((resolve) => {
-          window.hive_keychain.requestSignBuffer(
-            username,
-            message,
-            KeychainKeyTypes[keyType],
-            (res: any) => {
-              resolve(res);
-            }
-          );
-        });
-        if (response.success) {
-          logger.info('keychain', { signature: response.result });
-          signatures.posting = response.result;
-        } else {
-          throw new Error(response.error);
-        }
+        const signature = await signMessageKeychain(username, message, keyType);
+        logger.info('keychain', { signature });
+        signatures.posting = signature;
       } catch (error) {
         throw error;
       }
