@@ -58,28 +58,58 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
     let signatures: Signatures = {};
     let hivesignerToken = '';
     const signer = new Signer();
-    const challenge = { token: loginChallenge };
-    const message = JSON.stringify(challenge, null, 0);
+    const message = JSON.stringify({ loginChallenge }, null, 0);
 
-    try {
-      signatures = await signer.sign(
-        message,
-        loginType,
-        username,
-        password,
-        KeychainKeyTypesLC.posting,
-        hiveAuthData,
-        setHiveAuthData,
-        t,
-        hiveKeys,
-        setHiveKeys
-        );
-    } catch (error) {
-      logger.error('onSubmit error in signLoginChallenge', error);
-      setErrorMsg(t('pageLogin.signingFailed'));
-      return;
+    if (loginType === LoginTypes.hiveauth) {
+      try {
+        HiveAuthUtils.setUsername(hiveAuthData?.username || '');
+        HiveAuthUtils.setToken(hiveAuthData?.token || '');
+        HiveAuthUtils.setExpire(hiveAuthData?.expire || 0);
+        HiveAuthUtils.setKey(hiveAuthData?.key || '');
+
+        const authResponse: any = await new Promise((resolve) => {
+            HiveAuthUtils.login(
+                username,
+                message,
+                (res) => {
+                    resolve(res);
+                },
+                t
+            );
+        });
+
+        if (authResponse.success && authResponse.hiveAuthData) {
+            const { token, expire, key, challengeHex } = authResponse.hiveAuthData;
+            setHiveAuthData({ username, token, expire, key });
+            logger.info('hiveauth', { signature: challengeHex });
+            signatures.posting = challengeHex;
+        } else {
+            throw new Error('Hiveauth login failed');
+        }
+      } catch (error) {
+        logger.error('onSubmit error in signLoginChallenge', error);
+        setErrorMsg(t('pageLogin.signingFailed'));
+        return;
+      }
+    } else {
+      try {
+        signatures = await signer.sign(
+          message,
+          loginType,
+          username,
+          password,
+          KeychainKeyTypesLC.posting
+          );
+
+          if (loginType === LoginTypes.password) {
+            setHiveKeys({ ...hiveKeys, ...{ posting: password } });
+          }
+      } catch (error) {
+        logger.error('onSubmit error in signLoginChallenge', error);
+        setErrorMsg(t('pageLogin.signingFailed'));
+        return;
+      }
     }
-
     logger.info({ signatures });
 
     const body: PostLoginSchema = {

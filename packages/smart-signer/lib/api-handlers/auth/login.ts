@@ -114,7 +114,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
   const result = await verifyLoginChallenge(
     chainAccount,
     signatures,
-    JSON.stringify({ token: loginChallenge }, null, 0),
+    JSON.stringify({ loginChallenge }, null, 0),
     );
 
   if (!result) {
