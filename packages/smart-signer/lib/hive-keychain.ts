@@ -22,8 +22,8 @@ export function hasCompatibleKeychain() {
 }
 
 export async function signMessage(
-    username: string,
     message: string,
+    username: string,
     keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting
 ): Promise<string> {
     const response: any = await new Promise((resolve) => {
