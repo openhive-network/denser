@@ -77,6 +77,7 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
         };
       }
 
+
       tx.push({
         vote
       });

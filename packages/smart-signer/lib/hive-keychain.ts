@@ -3,6 +3,7 @@ interface HiveKeychain {
     requestSignBuffer: any;
     requestBroadcast: any;
     requestSignedCall: any;
+    requestSignTx: any;
 }
 
 declare global {
@@ -21,7 +22,7 @@ export function hasCompatibleKeychain() {
     return !!result;
 }
 
-export async function signMessage(
+export async function signBuffer(
     message: string,
     username: string,
     keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting
@@ -42,3 +43,33 @@ export async function signMessage(
         throw new Error(response.error);
     }
 }
+
+export const signTx = async (
+    username: string,
+    tx: any,
+    method: KeychainKeyTypesLC = KeychainKeyTypesLC.posting,
+) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        window.hive_keychain.requestSignTx(
+          username,
+          tx,
+          method,
+          (response: any) => {
+
+            console.info('bamboo response', response);
+            reject(response);
+
+            if (response.error) {
+              reject(response);
+            } else {
+              resolve(response);
+            }
+          },
+        );
+      } catch (error) {
+        throw error;
+      }
+    });
+  };
+

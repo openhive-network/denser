@@ -1,7 +1,9 @@
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
-import { KeychainKeyTypesLC } from 'hive-keychain-commons';
+import { getDynamicGlobalProperties } from '@ui/lib/hive';
+import { createWaxFoundation, TBlockHash, createHiveChain, BroadcastTransactionRequest } from '@hive/wax';
+import { KeychainKeyTypesLC, KeychainKeyTypes } from 'hive-keychain-commons';
 import { authService } from '@smart-signer/lib/auth-service';
-import { signMessage as signMessageKeychain } from '@smart-signer/lib/hive-keychain';
+import { signBuffer, signTx } from '@smart-signer/lib/hive-keychain';
 import { Signatures } from '@smart-signer/lib/auth/utils';
 import { LoginTypes } from '@smart-signer/types/common';
 import { getLogger } from '@hive/ui/lib/logging';
@@ -14,11 +16,54 @@ export class Signer {
 
     }
 
+    async createTransaction() {
+
+        //
+        // TODO this does not work. Validation error in Wax. Looks like
+        // a bug in Wax.
+        //
+        // const hiveChain = await createHiveChain();
+        // const tx = await hiveChain.getTransactionBuilder('+1m');
+        // logger.info('bamboo tx', tx.toApi);
+
+        const vote = {
+            voter: 'stirlitz',
+            author: 'holozing',
+            permlink: 'referral-program-is-live',
+            weight: 10000
+        }
+
+        const dynamicGlobalData = await getDynamicGlobalProperties();
+        const wax = await createWaxFoundation();
+        const tx = new wax.TransactionBuilder(dynamicGlobalData?.head_block_id as unknown as TBlockHash, '+1m');
+        tx.push({ vote });
+        logger.info('bamboo tx', tx.toApi());
+
+        const signature = await signTx('stirlitz', JSON.parse(tx.toString()), KeychainKeyTypesLC.posting);
+
+        // const authClient = await authService.getOnlineClient();
+        // const signature = await authClient.sign('stirlitz', tx.sigDigest, 'posting');
+
+        logger.info('bamboo signature', signature);
+
+        const transaction = tx.build();
+        transaction.signatures.push(signature);
+        logger.info('bamboo tx signed', tx.toApi());
+
+        // or you can use tx.sign(signature, currentProfile.posting.key_auths[0] as unknown as string);
+        const transactionRequest = new BroadcastTransactionRequest(tx);
+        const hiveChain = await createHiveChain();
+
+        const result = await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
+        logger.info('bamboo result', result);
+
+    }
+
     async sign(
         message: string,
         loginType: LoginTypes,
         username: string,
-        password: string, // private key or password to unlock hbauth key
+        password: string = '', // private key or password to unlock hbauth key
         keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting
     ): Promise<Signatures> {
         logger.info('in sign %o', { loginType, username, password, keyType, message });
@@ -26,7 +71,7 @@ export class Signer {
 
         if (loginType === LoginTypes.keychain) {
             try {
-                const signature = await signMessageKeychain(
+                const signature = await signBuffer(
                     message,
                     username,
                     keyType
@@ -54,9 +99,14 @@ export class Signer {
                 throw error;
             }
         } else if (loginType === LoginTypes.password) {
+
+            await this.createTransaction();
+            throw new Error('Bamboo!');
+
             try {
                 const privateKey = PrivateKey.fromString(password);
                 const messageHash = cryptoUtils.sha256(message);
+                logger.info('password', { messageHash: messageHash.toString('hex') });
                 const signature = privateKey.sign(messageHash).toString();
                 logger.info('password', { signature });
                 signatures.posting = signature;
