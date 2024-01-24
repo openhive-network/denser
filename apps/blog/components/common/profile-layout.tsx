@@ -20,6 +20,9 @@ import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
 import env from '@beam-australia/react-env';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import { authService } from '@smart-signer/lib/auth-service';
+import { BroadcastTransactionRequest, TBlockHash, createHiveChain, createWaxFoundation } from '@hive/wax';
+import { toast } from '@ui/components/hooks/use-toast';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -87,6 +90,38 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   const vesting_hive = vestingHive(accountData, dynamicGlobalData);
   const hp = vesting_hive.minus(delegated_hive);
 
+  // async function follow(e: any) {
+  //   // setEnableDynamic(true);
+  //   const authClient = await authService.getOnlineClient();
+  //   const wax = await createWaxFoundation();
+  //   const tx = new wax.TransactionBuilder(dynamicGlobalData?.head_block_id as unknown as TBlockHash, '+1m');
+
+  //   if (user && user.isLoggedIn && tx) {
+  //     const follow = {
+  //       // TODO
+  //     };
+
+  //     tx.push({
+  //       follow
+  //     });
+
+  //     const signature = await authClient.sign(user.username, tx.sigDigest, 'posting');
+  //     const transaction = tx.build();
+  //     transaction.signatures.push(signature);
+
+  //     const transactionRequest = new BroadcastTransactionRequest(tx);
+  //     const hiveChain = await createHiveChain();
+  //     try {
+  //       await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
+  //     } catch (e) {
+  //       toast({
+  //         description: 'You already follow this user',
+  //         variant: 'default'
+  //       });
+  //     }
+  //   }
+  // }
+
   return username ? (
     <div>
       <div
@@ -133,6 +168,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   target="_blank"
                   data-testid="profile-badge-link"
                 >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     alt="fish image"
                     title={t('user_profil.hive_buzz_badge_title', { username: profileData.name })}
@@ -293,17 +329,27 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 </span>
               </li>
             </ul>
+            {user?.username !== username && user?.isLoggedIn ? (
+              <div className="m-2 flex gap-2 hover:text-red-500 sm:absolute sm:right-0">
+                <Button
+                  className=" hover:text-red-500 "
+                  variant="secondary"
+                  size="sm"
+                  data-testid="profile-follow-button"
+                >
+                  {t('user_profil.follow_button')}
+                </Button>
 
-            <DialogLogin>
-              <Button
-                className="m-2 hover:text-red-500 sm:absolute sm:right-0"
-                variant="secondary"
-                size="sm"
-                data-testid="profile-follow-button"
-              >
-                {t('user_profil.follow_button')}
-              </Button>
-            </DialogLogin>
+                <Button
+                  className=" hover:text-red-500"
+                  variant="secondary"
+                  size="sm"
+                  data-testid="profile-mute-button"
+                >
+                  {t('user_profil.mute_button')}
+                </Button>
+              </div>
+            ) : null}
           </div>
         ) : (
           <div className={`h-auto max-h-full min-h-full w-auto min-w-full max-w-full bg-gray-600 bg-cover`} />
