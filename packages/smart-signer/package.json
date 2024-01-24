@@ -18,6 +18,7 @@
     "hive-auth-client": "^0.1.5",
     "http-errors": "^2.0.0",
     "iron-session": "^8.0.1",
+    "keychain-sdk": "^0.6.1",
     "next": "^14.0.4",
     "oidc-provider": "^8.4.2",
     "qrcode": "^1.5.3",
