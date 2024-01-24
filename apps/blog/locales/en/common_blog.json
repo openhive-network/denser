@@ -90,7 +90,8 @@
       "replies": "Replies",
       "social": "Social",
       "notifications": "Notifications",
-      "wallet": "Wallet"
+      "wallet": "Wallet",
+      "settings": "Settings"
     },
     "profil_posts_tab_navbar": {
       "posts": "Posts",
