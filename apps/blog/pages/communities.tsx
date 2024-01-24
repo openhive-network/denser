@@ -60,7 +60,7 @@ export default function CommunitiesPage() {
           )}{' '}
         </div>
         <div className="col-span-12 md:col-span-8">
-          <div className="mt-4 flex items-center justify-between">
+          <div className="mt-4 flex items-center justify-between" data-testid="communities-header-title">
             <span className="text-sm font-medium sm:text-xl" data-testid="communities-header">
               {t('communities.communities')}
             </span>

@@ -15,6 +15,7 @@ export class CommunitiesExplorePage{
     readonly communityListItemSubscribeButton: Locator;
     readonly noResultsForYourSearch: Locator;
     readonly communitiesHeaderPage: Locator;
+    readonly communitiesHeaderTitle: Locator;
 
     constructor(page:Page){
         this.page = page;
@@ -32,6 +33,7 @@ export class CommunitiesExplorePage{
         this.communityListItemSubscribeButton = page.locator('[data-testid="community-list-item-subscribe-button"]');
         this.noResultsForYourSearch = page.locator('[data-testid="communities-search-no-results-msg"]');
         this.communitiesHeaderPage = page.locator('[data-testid="communities-header"]');
+        this.communitiesHeaderTitle = page.locator('[data-testid="communities-header-title"]');
     }
 
     async validataExplorerCommunitiesPageIsLoaded(){
