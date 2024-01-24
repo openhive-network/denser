@@ -28,7 +28,7 @@ export default function CommunitiesPage() {
     error: communitiesDataError,
     data: communitiesData
   } = useQuery(
-    ['communitiesList', sort, query],
+    ['communitiesList', sort, query, user?.username],
     async () => await getCommunities(sort, query, user?.username || '')
   );
   const {
