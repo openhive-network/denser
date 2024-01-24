@@ -15,6 +15,7 @@ import { GetServerSideProps } from 'next';
 import { i18n } from '@/blog/next-i18next.config';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 const CommunitiesSidebar = dynamic(() => import('@/blog/components/communities-sidebar'), { ssr: false });
 const CommunitiesMybar = dynamic(() => import('@/blog/components/communities-mybar'), { ssr: false });
 const ExploreHive = dynamic(() => import('@/blog/components/explore-hive'), { ssr: false });
@@ -93,6 +94,7 @@ const MyPage: FC = () => {
   if (entriesDataIsLoading && entriesDataIsFetching) {
     return <Loading loading={entriesDataIsLoading || entriesDataIsFetching} />;
   }
+
   return (
     <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
       <div className="grid grid-cols-12 md:gap-4">
@@ -121,30 +123,38 @@ const MyPage: FC = () => {
               </div>
             </div>
             <>
-              {entriesData ? (
+              {entriesData && entriesData.pages[0]?.length !== 0 ? (
                 entriesData.pages.map((page, index) => {
                   return page ? <PostList data={page} key={`f-${index}`} /> : null;
                 })
               ) : (
-                <div key="empty" className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700">
-                  No posts in sort: {sort}
+                <div
+                  key="empty"
+                  className="flex flex-col gap-6 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
+                >
+                  <span>You haven&apos;t joined any active communities yet!</span>
+                  <Link className="text-xl text-red-500" href="../communities">
+                    Explore Communities
+                  </Link>
                 </div>
               )}
-              <div>
-                <button
-                  ref={ref}
-                  onClick={() => fetchNextPage()}
-                  disabled={!hasNextPage || isFetchingNextPage}
-                >
-                  {isFetchingNextPage ? (
-                    <PostSkeleton />
-                  ) : hasNextPage ? (
-                    t('user_profil.load_newer')
-                  ) : (
-                    t('user_profil.nothing_more_to_load')
-                  )}
-                </button>
-              </div>
+              {entriesData && entriesData.pages[0]?.length !== 0 ? (
+                <div>
+                  <button
+                    ref={ref}
+                    onClick={() => fetchNextPage()}
+                    disabled={!hasNextPage || isFetchingNextPage}
+                  >
+                    {isFetchingNextPage ? (
+                      <PostSkeleton />
+                    ) : hasNextPage ? (
+                      t('user_profil.load_newer')
+                    ) : (
+                      t('user_profil.nothing_more_to_load')
+                    )}
+                  </button>
+                </div>
+              ) : null}
               <div>{entriesDataIsFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
             </>
           </div>

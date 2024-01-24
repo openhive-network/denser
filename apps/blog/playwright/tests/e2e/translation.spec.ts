@@ -201,9 +201,17 @@ test.describe('Translation tests', () => {
     await homePage.toggleLanguage.click();
     await expect(homePage.languageMenu.first()).toBeVisible();
     await homePage.languageMenuPl.click();
+
     await expect(await page.getByTestId('community-name').textContent()).toBe('Wszystkie posty');
     await expect(await homePage.getExploreCommunities).toHaveText('Pokaż więcej społeczności...');
     await homePage.getExploreCommunities.click();
+
+    // Click PL language again
+    // Without this on CI this tests found english page instead polish
+    await homePage.toggleLanguage.click();
+    await expect(homePage.languageMenu.first()).toBeVisible();
+    await homePage.languageMenuPl.click();
+
     await expect(communitiesExplorerPage.communitiesHeaderPage).toHaveText('Społeczności');
     await expect(communitiesExplorerPage.searchInput).toHaveAttribute('placeholder', 'Szukaj...');
     await expect(communitiesExplorerPage.communityListItemFooter.first()).toContainText('subskrybentów');

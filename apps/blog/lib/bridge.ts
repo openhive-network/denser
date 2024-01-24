@@ -114,6 +114,11 @@ export interface Community {
   team: CommunityTeam;
   title: string;
   type_id: number;
+  context: {
+    role: string;
+    subscribed: Boolean;
+    title: string;
+  };
 }
 
 export type Communities = Community[];
