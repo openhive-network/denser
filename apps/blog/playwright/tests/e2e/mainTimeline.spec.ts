@@ -663,6 +663,32 @@ test.describe('Home page tests', () => {
     await expect(homePage.loginBtn).toBeVisible();
   });
 
+  test('validate styles of navigation Login link in the light mode', async ({ page }) => {
+    await homePage.goto();
+
+    await expect(homePage.loginBtn).toBeVisible();
+    await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'color')).toBe('rgb(15, 23, 42)');
+    await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'background-color')).toBe('rgba(0, 0, 0, 0)');
+    await homePage.loginBtn.hover();
+    await homePage.page.waitForTimeout(1000);
+    await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'color')).toBe('rgb(239, 68, 68)');
+    await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'background-color')).toBe('rgb(241, 245, 249)');
+  });
+
+  test('validate styles of navigation Login link in the dark mode', async ({ page }) => {
+    await homePage.goto();
+    await homePage.changeThemeMode('Dark');
+    await homePage.validateThemeModeIsDark();
+    await homePage.page.waitForTimeout(1000);
+    await expect(homePage.loginBtn).toBeVisible();
+    await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'color')).toBe('rgb(225, 231, 239)');
+    await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'background-color')).toBe('rgba(0, 0, 0, 0)');
+    await homePage.loginBtn.hover();
+    await homePage.page.waitForTimeout(1000);
+    await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'color')).toBe('rgb(239, 68, 68)');
+    await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'background-color')).toBe('rgb(29, 40, 58)');
+  });
+
   test('navigation Sign up link is visible', async ({ page }) => {
     await homePage.goto();
 
