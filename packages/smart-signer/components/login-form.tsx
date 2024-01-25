@@ -83,11 +83,14 @@ export function LoginForm({
   const [disabledPaswordHbauth, setDisabledPasswordHbauth] = useState(true);
 
   useEffect(() => {
-    const check = async () => {
-      const result = await hasCompatibleKeychain();
-      setIsKeychainSupported(result);
-    }
-    check().catch(logger.error);;
+    // const check = async () => {
+    //   const result = await hasCompatibleKeychain();
+    //   setIsKeychainSupported(result);
+    // }
+    // check().catch(logger.error);
+
+    setIsKeychainSupported(true);
+
   }, [logger]);
 
   const {

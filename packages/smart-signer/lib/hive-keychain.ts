@@ -5,25 +5,41 @@ const logger = getLogger('app');
 
 // See https://github.com/hive-keychain/keychain-sdk
 
+
 export enum KeychainKeyTypesLC {
   posting = "posting",
   active = "active",
   memo = "memo"
 }
 
-export async function hasCompatibleKeychain() {
-  const keychain = new KeychainSDK(window);
-  return await keychain.isKeychainInstalled();
+// export async function hasCompatibleKeychain() {
+//   const keychain = new KeychainSDK(window);
+//   return await keychain.isKeychainInstalled();
+// }
+
+declare global {
+  interface Window {
+      hive_keychain: HiveKeychain;
+  }
+}
+
+export function hasCompatibleKeychain() {
+  const result = (
+      window.hive_keychain
+      && window.hive_keychain.requestSignBuffer
+      && window.hive_keychain.requestBroadcast
+      && window.hive_keychain.requestSignedCall
+  );
+  return !!result;
 }
 
 
-
-export async function signBuffer(
+export async function signBufferWorking(
   message: string,
   username: string,
   method: KeychainKeyTypes = KeychainKeyTypes.posting,
 ) {
-  // try {
+  try {
     const keychain = new KeychainSDK(window);
     console.log('bamboo %o', keychain);
     const check = await keychain.isKeychainInstalled();
@@ -41,12 +57,12 @@ export async function signBuffer(
       },
     );
     console.log({ signBuffer });
-  // } catch (error) {
-  //   console.log({ error });
-  // }
+  } catch (error) {
+    console.log({ error });
+  }
 }
 
-export const signBufferNew = async (
+export const signBuffer = async (
   message: string,
   username: string,
   method: KeychainKeyTypes = KeychainKeyTypes.posting,
@@ -54,16 +70,14 @@ export const signBufferNew = async (
   logger.info('in signBuffer %o', { message, username, method });
   const keychain = new KeychainSDK(window);
   try {
-    // if (!(await keychain.isKeychainInstalled())) {
-    //   throw new Error('keychain is not installed');
-    // }
-    logger.info('bamboo 1');
+    if (!(await keychain.isKeychainInstalled())) {
+      throw new Error('keychain is not installed');
+    }
     const response = await keychain.signBuffer({
       username,
       message,
       method,
     });
-    logger.info('bamboo 2');
     if (response.error) {
       throw new Error(`signBuffer error: ${response.error}`);
     }
