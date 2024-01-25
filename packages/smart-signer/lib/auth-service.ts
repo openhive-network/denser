@@ -1,5 +1,7 @@
 import { OnlineClient } from '@hive/hb-auth';
-import { KeychainKeyTypes, KeychainKeyTypesLC } from 'hive-keychain-commons';
+import { KeychainKeyTypes } from 'keychain-sdk';
+import { KeychainKeyTypesLC } from '@smart-signer/lib/hive-keychain';
+
 import { getLogger } from '@hive/ui/lib/logging';
 import createBeekeeperApp from '@hive/beekeeper';
 

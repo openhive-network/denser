@@ -1,97 +1,66 @@
-import { KeychainKeyTypes, KeychainKeyTypesLC } from 'hive-keychain-commons';
-import { KeychainSDK } from 'keychain-sdk';
+import { KeychainSDK, KeychainKeyTypes } from 'keychain-sdk';
 
-interface HiveKeychain {
-    requestSignBuffer: any;
-    requestBroadcast: any;
-    requestSignedCall: any;
-    requestSignTx: any;
+// See https://github.com/hive-keychain/keychain-sdk
+
+export enum KeychainKeyTypesLC {
+  posting = "posting",
+  active = "active",
+  memo = "memo"
 }
 
-declare global {
-    interface Window {
-        hive_keychain: HiveKeychain;
-    }
-}
-
-export function hasCompatibleKeychain() {
-    const result = (
-        window.hive_keychain
-        && window.hive_keychain.requestSignBuffer
-        && window.hive_keychain.requestBroadcast
-        && window.hive_keychain.requestSignedCall
-    );
-    return !!result;
+export const hasCompatibleKeychain = async () => {
+  const keychain = new KeychainSDK(window);
+  return await keychain.isKeychainInstalled();
 }
 
 
 export const signBuffer = async(
   message: string,
   username: string,
-  keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting
+  method: KeychainKeyTypes = KeychainKeyTypes.posting,
 ) => {
   const keychain = new KeychainSDK(window);
   try {
-    const signBuffer = await keychain.signBuffer({
-      message,
+    if (!(await keychain.isKeychainInstalled())) {
+      throw new Error('keychain is not installed');
+    }
+    const response = await keychain.signBuffer({
       username,
-      method: keyType,
+      message,
+      method,
     });
-    return signBuffer.result;
+    if (response.error) {
+      throw new Error(`signBuffer error: ${response.error}`);
+    }
+    return response.result;
   } catch (error) {
     throw error;
   }
-
 };
 
-export async function signBufferOld(
-    message: string,
-    username: string,
-    keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting
-): Promise<string> {
-    const response: any = await new Promise((resolve) => {
-        window.hive_keychain.requestSignBuffer(
-            username,
-            message,
-            KeychainKeyTypes[keyType],
-            (res: any) => {
-                resolve(res);
-            }
-        );
-    });
-    if (response.success) {
-        return response.result;
-    } else {
-        throw new Error(response.error);
-    }
-}
 
 export const signTx = async (
     username: string,
     tx: any,
-    method: KeychainKeyTypesLC = KeychainKeyTypesLC.posting,
+    method: KeychainKeyTypes = KeychainKeyTypes.posting,
 ) => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        window.hive_keychain.requestSignTx(
-          username,
-          tx,
-          method,
-          (response: any) => {
-
-            console.info('bamboo response', response);
-            reject(response);
-
-            if (response.error) {
-              reject(response);
-            } else {
-              resolve(response);
-            }
-          },
-        );
-      } catch (error) {
-        throw error;
+    const keychain = new KeychainSDK(window);
+    try {
+      if (!(await keychain.isKeychainInstalled())) {
+        throw new Error('keychain is not installed');
       }
-    });
+      const response = await keychain.signTx({
+        username,
+        method,
+        tx,
+      });
+      console.info('bamboo response', response);
+      if (response.error) {
+        throw new Error(`signTx error: ${response.error}`);
+      }
+      return response;
+    } catch (error) {
+      throw error;
+    }
   };
 

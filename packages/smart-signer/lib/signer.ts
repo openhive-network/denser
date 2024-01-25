@@ -1,7 +1,8 @@
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { getDynamicGlobalProperties } from '@ui/lib/hive';
 import { createWaxFoundation, TBlockHash, createHiveChain, BroadcastTransactionRequest } from '@hive/wax';
-import { KeychainKeyTypesLC, KeychainKeyTypes } from 'hive-keychain-commons';
+import { KeychainKeyTypes } from 'keychain-sdk';
+import { KeychainKeyTypesLC } from '@smart-signer/lib/hive-keychain';
 import { authService } from '@smart-signer/lib/auth-service';
 import { signBuffer, signTx } from '@smart-signer/lib/hive-keychain';
 import { Signatures } from '@smart-signer/lib/auth/utils';
@@ -59,14 +60,29 @@ export class Signer {
 
     }
 
-    async sign(
+    /**
+     * Calculates sha256 digest (hash) of any string and signs it with
+     * Hive private key. It's good for verifying keys, in login
+     * procedure for instance. However it's not good for signing Hive
+     * transactions – those need different hashing method and other
+     * special treatment.
+     *
+     * @param {string} message
+     * @param {LoginTypes} loginType
+     * @param {string} username
+     * @param {string} [password='']
+     * @param {KeychainKeyTypesLC} [keyType=KeychainKeyTypesLC.posting]
+     * @returns {Promise<Signatures>}
+     * @memberof Signer
+     */
+    async signChallenge(
         message: string,
         loginType: LoginTypes,
         username: string,
         password: string = '', // private key or password to unlock hbauth key
         keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting
     ): Promise<Signatures> {
-        logger.info('in sign %o', { loginType, username, password, keyType, message });
+        logger.info('in signChallenge %o', { loginType, username, password, keyType, message });
         const signatures: Signatures = {};
 
         if (loginType === LoginTypes.keychain) {
@@ -99,10 +115,6 @@ export class Signer {
                 throw error;
             }
         } else if (loginType === LoginTypes.password) {
-
-            await this.createTransaction();
-            throw new Error('Bamboo!');
-
             try {
                 const privateKey = PrivateKey.fromString(password);
                 const messageHash = cryptoUtils.sha256(message);

@@ -12,7 +12,7 @@ import HiveAuthUtils from '@smart-signer/lib/hive-auth-utils';
 import { LoginForm, LoginFormSchema } from '@smart-signer/components/login-form';
 import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { Signer } from '@smart-signer/lib/signer';
-import { KeychainKeyTypesLC } from 'hive-keychain-commons';
+import { KeychainKeyTypesLC } from '@smart-signer/lib/hive-keychain';
 
 const logger = getLogger('app');
 
@@ -93,7 +93,7 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
       }
     } else {
       try {
-        signatures = await signer.sign(
+        signatures = await signer.signChallenge(
           message,
           loginType,
           username,
