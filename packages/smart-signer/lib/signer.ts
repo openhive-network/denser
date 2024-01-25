@@ -1,6 +1,6 @@
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { getDynamicGlobalProperties } from '@ui/lib/hive';
-import { createWaxFoundation, TBlockHash, createHiveChain, BroadcastTransactionRequest, vote } from '@hive/wax';
+import { createWaxFoundation, TBlockHash, createHiveChain, BroadcastTransactionRequest, vote, operation } from '@hive/wax';
 import { KeychainKeyTypes } from 'keychain-sdk';
 import { KeychainKeyTypesLC } from '@smart-signer/lib/signer-keychain';
 import { authService } from '@smart-signer/lib/auth-service';
@@ -9,9 +9,12 @@ import { SignerKeychain } from '@smart-signer/lib/signer-keychain';
 import { SignerWif } from '@smart-signer/lib/signer-wif';
 import { Signatures } from '@smart-signer/lib/auth/utils';
 import { LoginTypes } from '@smart-signer/types/common';
-import { getLogger } from '@hive/ui/lib/logging';
 
+export { vote, operation } from '@hive/wax';
+
+import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
+
 
 export class Signer {
 
@@ -91,12 +94,21 @@ export class Signer {
     // it and broadcast.
     async signTransaction(
 
-        operation: any,
+        operation: operation,
 
         loginType: LoginTypes,
         username: string,
         password: string = '', // private key or password to unlock hbauth key
         keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting
-    ): Promise<any> {}
+    ): Promise<any> {
+        try {
+            logger.info('in signTransaction: %o', {
+                operation, loginType, username, password, keyType
+            });
+            throw new Error('not implemented');
+        } catch (error) {
+            throw error;
+        }
+    }
 
 }
