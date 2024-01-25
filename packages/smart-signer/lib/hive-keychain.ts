@@ -1,4 +1,6 @@
 import { KeychainKeyTypes, KeychainKeyTypesLC } from 'hive-keychain-commons';
+import { KeychainSDK } from 'keychain-sdk';
+
 interface HiveKeychain {
     requestSignBuffer: any;
     requestBroadcast: any;
@@ -22,7 +24,27 @@ export function hasCompatibleKeychain() {
     return !!result;
 }
 
-export async function signBuffer(
+
+export const signBuffer = async(
+  message: string,
+  username: string,
+  keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting
+) => {
+  const keychain = new KeychainSDK(window);
+  try {
+    const signBuffer = await keychain.signBuffer({
+      message,
+      username,
+      method: keyType,
+    });
+    return signBuffer.result;
+  } catch (error) {
+    throw error;
+  }
+
+};
+
+export async function signBufferOld(
     message: string,
     username: string,
     keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting
