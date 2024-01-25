@@ -6,7 +6,7 @@ export type User = {
 }
 
 export enum LoginTypes {
-    password = 'password',
+    wif = 'wif',
     hbauth = 'hbauth',
     hiveauth = 'hiveauth',
     hivesigner = 'hivesigner',

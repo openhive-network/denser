@@ -2,9 +2,11 @@ import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { getDynamicGlobalProperties } from '@ui/lib/hive';
 import { createWaxFoundation, TBlockHash, createHiveChain, BroadcastTransactionRequest, vote } from '@hive/wax';
 import { KeychainKeyTypes } from 'keychain-sdk';
-import { KeychainKeyTypesLC } from '@smart-signer/lib/hive-keychain';
+import { KeychainKeyTypesLC } from '@smart-signer/lib/signer-keychain';
 import { authService } from '@smart-signer/lib/auth-service';
-import { signBuffer, signTransaction } from '@smart-signer/lib/hive-keychain';
+import { SignerHbauth } from '@smart-signer/lib/signer-hbauth';
+import { SignerKeychain } from '@smart-signer/lib/signer-keychain';
+import { SignerWif } from '@smart-signer/lib/signer-wif';
 import { Signatures } from '@smart-signer/lib/auth/utils';
 import { LoginTypes } from '@smart-signer/types/common';
 import { getLogger } from '@hive/ui/lib/logging';
@@ -12,10 +14,6 @@ import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
 export class Signer {
-
-    constructor() {
-
-    }
 
     /**
      * Calculates sha256 digest (hash) of any string and signs it with
@@ -43,8 +41,9 @@ export class Signer {
         const signatures: Signatures = {};
 
         if (loginType === LoginTypes.keychain) {
+            const signer = new SignerKeychain();
             try {
-                const signature = await signBuffer(
+                const signature = await signer.signChallenge(
                     message,
                     username,
                     keyType
@@ -57,26 +56,25 @@ export class Signer {
         } else if (loginType === LoginTypes.hiveauth) {
             // not implemented
         } else if (loginType === LoginTypes.hbauth) {
+            const signer = new SignerHbauth();
             try {
-                // await authService.checkAuths(username, 'posting');
-
-                // TODO This digest is good for login only. For other
-                // operations we should use Wax.
-                const digest = cryptoUtils.sha256(message).toString('hex');
-
-                const signature = await authService.signDigest(username, password,
-                    digest, keyType);
+                // await signer.checkAuths(username, 'posting');
+                const signature = await signer.signChallenge(username, password,
+                    message, keyType);
                 logger.info('hbauth', { signature });
                 signatures.posting = signature;
             } catch (error) {
                 throw error;
             }
-        } else if (loginType === LoginTypes.password) {
+        } else if (loginType === LoginTypes.wif) {
+            const signer = new SignerWif();
             try {
-                const privateKey = PrivateKey.fromString(password);
-                const messageHash = cryptoUtils.sha256(message);
-                logger.info('password', { messageHash: messageHash.toString('hex') });
-                const signature = privateKey.sign(messageHash).toString();
+                const signature = await signer.signChallenge(
+                    message,
+                    username,
+                    keyType,
+                    password
+                    );
                 logger.info('password', { signature });
                 signatures.posting = signature;
             } catch (error) {

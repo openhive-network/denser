@@ -12,7 +12,7 @@ import HiveAuthUtils from '@smart-signer/lib/hive-auth-utils';
 import { LoginForm, LoginFormSchema } from '@smart-signer/components/login-form';
 import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { Signer } from '@smart-signer/lib/signer';
-import { KeychainKeyTypesLC } from '@smart-signer/lib/hive-keychain';
+import { KeychainKeyTypesLC } from '@smart-signer/lib/signer-keychain';
 
 const logger = getLogger('app');
 
@@ -50,7 +50,7 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
 
     const { loginType, username } = data;
     let password = '';
-    if (data.loginType === LoginTypes.password) {
+    if (data.loginType === LoginTypes.wif) {
       password = data.password;
     } else if (data.loginType === LoginTypes.hbauth) {
       password = data.passwordHbauth;
@@ -101,7 +101,7 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
           KeychainKeyTypesLC.posting
           );
 
-          if (loginType === LoginTypes.password) {
+          if (loginType === LoginTypes.wif) {
             setHiveKeys({ ...hiveKeys, ...{ posting: password } });
           }
       } catch (error) {
