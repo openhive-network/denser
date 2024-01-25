@@ -29,6 +29,7 @@ import { authService } from '@/blog/lib/authService';
 import { createWaxFoundation, TBlockHash, createHiveChain, BroadcastTransactionRequest } from '@hive/wax';
 import { useAppStore } from '@/blog/store/app';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import { Signer, vote } from '@smart-signer/lib/signer';
 
 const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage: boolean | undefined }) => {
   const { t } = useTranslation('common_blog');
@@ -51,48 +52,31 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
 
   async function vote(e: any, type: string) {
     setEnableDynamic(true);
-    const authClient = await authService.getOnlineClient();
-    const wax = await createWaxFoundation();
-    const tx = new wax.TransactionBuilder(dynamicGlobalData?.head_block_id as unknown as TBlockHash, '+1m');
 
-    // if (currentProfile && currentProfileKeyType && tx) {
-    if (user && user.isLoggedIn && tx) {
-      let vote;
-
-      if (type === 'upvote') {
-        vote = {
-          voter: user.username,
-          author: post.author,
-          permlink: post.permlink,
-          weight: 10000
-        };
-      }
+    // if (currentProfile && currentProfileKeyType) {
+    if (user && user.isLoggedIn) {
+      const vote: vote = {
+        voter: user.username,
+        author: post.author,
+        permlink: post.permlink,
+        weight: 10000
+      };
 
       if (type === 'downvote') {
-        vote = {
-          voter: user.username,
-          author: post.author,
-          permlink: post.permlink,
-          weight: -10000
-        };
+        vote.weight = -10000;
       }
 
-
-      tx.push({
-        vote
-      });
-
-      // const signature = await authClient.sign(currentProfile?.name, tx.sigDigest, currentProfileKeyType);
-
-      const signature = await authClient.sign(user.username, tx.sigDigest, 'posting');
-
-      const transaction = tx.build();
-      transaction.signatures.push(signature);
-      // or you can use tx.sign(signature, currentProfile.posting.key_auths[0] as unknown as string);
-      const transactionRequest = new BroadcastTransactionRequest(tx);
-      const hiveChain = await createHiveChain();
+      const signer = new Signer();
       try {
-        await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
+
+        // TODO FIXME!
+        await signer.signTransaction(
+          { vote },
+          user.loginType,
+          user.username,
+          'wojtek'
+        );
+
         e.target.classList.add('text-white');
         console.log('type', type);
         if (type === 'upvote') {
