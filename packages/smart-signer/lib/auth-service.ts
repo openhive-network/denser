@@ -5,6 +5,8 @@ import { KeychainKeyTypesLC } from '@smart-signer/lib/hive-keychain';
 import { getLogger } from '@hive/ui/lib/logging';
 import createBeekeeperApp from '@hive/beekeeper';
 
+import { getDynamicGlobalProperties } from '@ui/lib/hive';
+import { createWaxFoundation, TBlockHash, createHiveChain, BroadcastTransactionRequest, vote, operation } from '@hive/wax';
 
 const logger = getLogger('app');
 
@@ -19,7 +21,53 @@ class AuthService {
     return AuthService.onlineClient;
   }
 
-  async sign(
+  async signTransaction(operation: operation) {
+
+    //
+    // TODO this does not work. Validation error in Wax. Looks like
+    // a bug in Wax.
+    //
+    // const hiveChain = await createHiveChain();
+    // const tx = await hiveChain.getTransactionBuilder('+1m');
+    // logger.info('bamboo tx', tx.toApi);
+
+    const vote: vote = {
+      voter: 'stirlitz',
+      author: 'holozing',
+      permlink: 'referral-program-is-live',
+      weight: 10000
+    }
+
+    const dynamicGlobalData = await getDynamicGlobalProperties();
+    const wax = await createWaxFoundation();
+    const tx = new wax.TransactionBuilder(dynamicGlobalData?.head_block_id as unknown as TBlockHash, '+1m');
+    tx.push({ vote });
+    logger.info('bamboo tx', tx.toApi());
+
+    const signature = await this.signDigest(
+      'stirlitz',
+      tx.sigDigest,
+      KeychainKeyTypesLC.posting
+      );
+
+    // const authClient = await authService.getOnlineClient();
+    // const signature = await authClient.sign('stirlitz', tx.sigDigest, 'posting');
+
+    logger.info('bamboo signature', signature);
+
+    const transaction = tx.build();
+    transaction.signatures.push(signature);
+    logger.info('bamboo tx signed', tx.toApi());
+
+    const transactionRequest = new BroadcastTransactionRequest(tx);
+    const hiveChain = await createHiveChain();
+
+    const result = await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
+    logger.info('bamboo result', result);
+
+  }
+
+  async signDigest(
     username: string,
     password: string,
     digest: string,

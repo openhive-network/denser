@@ -1,4 +1,5 @@
 import { KeychainSDK, KeychainKeyTypes } from 'keychain-sdk';
+import dhive, { Operation, Transaction } from '@hiveio/dhive';
 import { getLogger } from '@hive/ui/lib/logging';
 
 const logger = getLogger('app');
@@ -12,14 +13,9 @@ export enum KeychainKeyTypesLC {
   memo = "memo"
 }
 
-// export async function hasCompatibleKeychain() {
-//   const keychain = new KeychainSDK(window);
-//   return await keychain.isKeychainInstalled();
-// }
-
 declare global {
   interface Window {
-      hive_keychain: HiveKeychain;
+      hive_keychain: any;
   }
 }
 
@@ -28,38 +24,8 @@ export function hasCompatibleKeychain() {
       window.hive_keychain
       && window.hive_keychain.requestSignBuffer
       && window.hive_keychain.requestBroadcast
-      && window.hive_keychain.requestSignedCall
   );
   return !!result;
-}
-
-
-export async function signBufferWorking(
-  message: string,
-  username: string,
-  method: KeychainKeyTypes = KeychainKeyTypes.posting,
-) {
-  try {
-    const keychain = new KeychainSDK(window);
-    console.log('bamboo %o', keychain);
-    const check = await keychain.isKeychainInstalled();
-    console.log({check});
-    if (!(check)) {
-      throw new Error('keychain is not installed');
-    }
-    console.log('gjsa');
-    const signBuffer = await keychain.signBuffer(
-      {
-        username: 'keychain.tests',
-        message: 'message!!',
-        method: 'Posting',
-        title: 'Login in Into Saturnoman.com\nProceed?',
-      },
-    );
-    console.log({ signBuffer });
-  } catch (error) {
-    console.log({ error });
-  }
 }
 
 export const signBuffer = async (
@@ -87,50 +53,46 @@ export const signBuffer = async (
   }
 };
 
-export async function signBufferOld(
-  message: string,
+
+export const signTransaction = async (
   username: string,
-  keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting
-): Promise<string> {
-  const response: any = await new Promise((resolve) => {
-      window.hive_keychain.requestSignBuffer(
-          username,
-          message,
-          KeychainKeyTypes[keyType],
-          (res: any) => {
-              resolve(res);
-          }
-      );
-  });
-  if (response.success) {
-      return response.result;
-  } else {
-      throw new Error(response.error);
-  }
-}
-
-export const signTx = async (
-    username: string,
-    tx: any,
-    method: KeychainKeyTypes = KeychainKeyTypes.posting,
+  operations: Operation[],
+  method: KeychainKeyTypes = KeychainKeyTypes.posting,
 ) => {
-    const keychain = new KeychainSDK(window);
-    try {
-      if (!(await keychain.isKeychainInstalled())) {
-        throw new Error('keychain is not installed');
-      }
-      const response = await keychain.signTx({
-        username,
-        method,
-        tx,
-      });
-      console.info('bamboo response', response);
-      if (response.error) {
-        throw new Error(`signTx error: ${response.error}`);
-      }
-      return response;
-    } catch (error) {
-      throw error;
+  const keychain = new KeychainSDK(window);
+  try {
+    if (!(await keychain.isKeychainInstalled())) {
+      throw new Error('keychain is not installed');
     }
-  };
 
+    const client = new dhive.Client([
+      'https://api.hive.blog',
+      'https://api.openhive.network'
+    ]);
+    const props = await client.database.getDynamicGlobalProperties();
+    const headBlockNumber = props.head_block_number;
+    const headBlockId = props.head_block_id;
+    const expireTime = 600000;
+
+    const tx: Transaction = {
+      ref_block_num: headBlockNumber & 0xffff,
+      ref_block_prefix: Buffer.from(headBlockId, 'hex').readUInt32LE(4),
+      expiration: new Date(Date.now() + 600000).toISOString().slice(0, -5),
+      operations,
+      extensions: [],
+    };
+
+    const signTx = await keychain.signTx({
+      username,
+      method,
+      tx,
+    });
+    console.info('bamboo signTx: %o', signTx);
+    if (signTx.error) {
+      throw new Error(`signTx error: ${signTx.error}`);
+    }
+    return signTx;
+  } catch (error) {
+    throw error;
+  }
+};

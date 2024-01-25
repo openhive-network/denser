@@ -85,6 +85,7 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
       // const signature = await authClient.sign(currentProfile?.name, tx.sigDigest, currentProfileKeyType);
 
       const signature = await authClient.sign(user.username, tx.sigDigest, 'posting');
+
       const transaction = tx.build();
       transaction.signatures.push(signature);
       // or you can use tx.sign(signature, currentProfile.posting.key_auths[0] as unknown as string);
