@@ -144,7 +144,7 @@ export class Signer {
                 keyType,
             });
         } else {
-            throw new Error('not implemented');
+            throw new Error('Not implemented');
         }
     }
 

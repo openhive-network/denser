@@ -39,7 +39,7 @@ export class SignerKeychain {
     const keychain = new KeychainSDK(window, { rpc: 'https://api.hive.blog' });
     try {
       if (!(await keychain.isKeychainInstalled())) {
-        throw new Error('keychain is not installed');
+        throw new Error('Keychain is not installed');
       }
       const response = await keychain.signBuffer({
         username,
@@ -47,7 +47,7 @@ export class SignerKeychain {
         method: KeychainKeyTypes[keyType],
       });
       if (response.error) {
-        throw new Error(`signBuffer error: ${response.error}`);
+        throw new Error(`Error in signBuffer: ${response.error}`);
       }
       return response.result as unknown as string;
     } catch (error) {
@@ -66,7 +66,7 @@ export class SignerKeychain {
     const keychain = new KeychainSDK(window, { rpc: 'https://api.hive.blog' });
     try {
       if (!(await keychain.isKeychainInstalled())) {
-        throw new Error('keychain is not installed');
+        throw new Error('Keychain is not installed');
       }
 
       // Format operation for Keychain
@@ -90,13 +90,13 @@ export class SignerKeychain {
       )
 
       if (broadcastResult.error) {
-        throw new Error(`signTx error: ${broadcastResult.error}`);
+        throw new Error(`Error in signTx: ${broadcastResult.error}`);
       }
 
       result.result = broadcastResult.result as any;
 
     } catch (error) {
-      logger.trace('SignerKeychain.broadcastOperation error: %o', error);
+      logger.trace('Error in SignerKeychain.broadcastOperation: %o', error);
       result = { success: false, result: '', error: 'Sign failed'};
       throw error;
     }
@@ -114,7 +114,7 @@ export class SignerKeychain {
     const keychain = new KeychainSDK(window, { rpc: 'https://api.hive.blog' });
     try {
       if (!(await keychain.isKeychainInstalled())) {
-        throw new Error('keychain is not installed');
+        throw new Error('Keychain is not installed');
       }
 
       // Format operation for Keychain
@@ -158,7 +158,7 @@ export class SignerKeychain {
         tx,
       });
       if (signResult.error) {
-        throw new Error(`signTx error: ${signResult.error}`);
+        throw new Error(`Error in signTx: ${signResult.error}`);
       }
 
     } catch (error) {
