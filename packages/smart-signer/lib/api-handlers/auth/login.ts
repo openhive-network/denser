@@ -96,12 +96,12 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
   try {
     chainAccount = await getAccount(username);
     if (!chainAccount) {
-      throw new Error(`missing blockchain account "${username}"`);
+      throw new Error(`Missing blockchain account "${username}"`);
     }
     hiveUserProfile = chainAccount?.profile;
   } catch (error) {
     if (error instanceof Error) {
-      if ((error.message).startsWith('missing blockchain account')) {
+      if ((error.message).startsWith('Missing blockchain account')) {
         throw new createHttpError.NotFound(
             `Hive user ${username} not found`);
       }
@@ -114,7 +114,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
   const result = await verifyLoginChallenge(
     chainAccount,
     signatures,
-    JSON.stringify({ token: loginChallenge }, null, 0),
+    JSON.stringify({ loginChallenge }, null, 0),
     );
 
   if (!result) {
