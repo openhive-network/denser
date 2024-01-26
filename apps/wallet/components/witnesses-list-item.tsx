@@ -96,14 +96,22 @@ function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemPro
           <span className="sm:text-sm">{data.rank < 10 ? `0${data.rank}` : data.rank}</span>
           <DialogLogin>
             <div title={t('witnesses_page.vote')} className="group relative flex" data-testid="witness-vote">
-              <span className="opocity-75 absolute inline-flex h-5 w-5 rounded-full bg-red-600 p-0 group-hover:animate-ping dark:bg-red-400"></span>
+              <span
+                className={clsx(
+                  'opocity-75 absolute inline-flex h-5 w-5 rounded-full bg-red-600 p-0 group-hover:animate-ping dark:bg-red-400',
+                  {
+                    'bg-white': data.observer
+                  }
+                )}
+              ></span>
               <Icons.arrowUpCircle
                 viewBox="1.7 1.7 20.7 20.7"
                 className={clsx(
                   'relative inline-flex h-5 w-5 cursor-pointer rounded-full stroke-1 text-red-600 dark:text-red-500',
                   {
                     'bg-slate-100 dark:bg-slate-900': router.query.highlight !== data.owner,
-                    'bg-rose-200  dark:bg-rose-800': router.query.highlight === data.owner
+                    'bg-rose-200  dark:bg-rose-800': router.query.highlight === data.owner,
+                    'bg-rose-600 text-white': data.observer
                   }
                 )}
               />

@@ -112,6 +112,16 @@
       "follows": "Follows",
       "upvotes": "Upvotes",
       "reblogs": "Reblogs"
+    },
+    "user_menu": {
+      "profile": "Profile",
+      "notifications": "Notifications",
+      "comments": "Comments",
+      "replies": "Replies",
+      "toggle_theme": "Theme",
+      "toggle_lang": "Language",
+      "wallet": "Wallet",
+      "logout": "Logout"
     }
   },
   "select_sort": {

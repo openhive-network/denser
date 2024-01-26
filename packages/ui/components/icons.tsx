@@ -60,7 +60,8 @@ import {
   Clock,
   Undo,
   DoorOpen,
-  Wallet
+  Wallet,
+  KeyRound
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -126,6 +127,7 @@ export const Icons = {
   doorOpen: DoorOpen,
   wallet: Wallet,
   messagesSquare: MessagesSquare,
+  keyRound: KeyRound,
   radix: (props: LucideProps) => (
     <svg viewBox="0 0 25 25" fill="none" {...props}>
       <path d="M12 25C7.58173 25 4 21.4183 4 17C4 12.5817 7.58173 9 12 9V25Z" fill="currentcolor"></path>

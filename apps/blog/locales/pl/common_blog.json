@@ -112,6 +112,16 @@
       "follows": "Obserwacje",
       "upvotes": "Głosy za",
       "reblogs": "Reblogi"
+    },
+    "user_menu": {
+      "profile": "Profil",
+      "notifications": "Powiadomienia",
+      "comments": "Komentarze",
+      "replies": "Odpowiedzi",
+      "toggle_theme": "Motyw",
+      "toggle_lang": "Język",
+      "wallet": "Portfel",
+      "logout": "Wylogowuj"
     }
   },
   "select_sort": {
