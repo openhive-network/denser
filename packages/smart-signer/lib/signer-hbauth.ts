@@ -20,44 +20,54 @@ export class SignerHbauth {
     loginType,
     username,
     keyType = KeyTypes.posting
-  }: SignTransaction): Promise<any> {
+  }: SignTransaction): Promise<{ success: boolean, error: string}> {
 
-    //
-    // TODO These lines below do not work. Validation error in Wax
-    // occurs. Looks like a bug in Wax.
-    //
+    let result = { success: true, error: ''};
+    try {
+      //
+      // TODO These lines below do not work. Validation error in Wax
+      // occurs. Looks like a bug in Wax.
+      //
 
-    // const hiveChain = await createHiveChain();
-    // const tx = await hiveChain.getTransactionBuilder('+1m');
+      // const hiveChain = await createHiveChain();
+      // const tx = await hiveChain.getTransactionBuilder('+1m');
 
-    const dynamicGlobalData = await getDynamicGlobalProperties();
-    const wax = await createWaxFoundation();
-    const tx = new wax.TransactionBuilder(dynamicGlobalData?.head_block_id as unknown as TBlockHash, '+1m');
-    tx.push(operation);
-    logger.info('bamboo tx', tx.toApi());
+      const dynamicGlobalData = await getDynamicGlobalProperties();
+      const wax = await createWaxFoundation();
+      const tx = new wax.TransactionBuilder(dynamicGlobalData?.head_block_id as unknown as TBlockHash, '+1m');
+      tx.push(operation);
+      logger.info('bamboo tx', tx.toApi());
 
-    const signature = await this.signDigest(
-      username,
-      'wojtek',
-      tx.sigDigest,
-      keyType
+      const signature = await this.signDigest(
+        tx.sigDigest,
+        username,
+        '',
+        keyType
       );
 
-    // const authClient = await authService.getOnlineClient();
-    // const signature = await authClient.sign('stirlitz', tx.sigDigest, 'posting');
+      // const authClient = await authService.getOnlineClient();
+      // const signature = await authClient.sign('stirlitz', tx.sigDigest, 'posting');
 
-    logger.info('bamboo signature', signature);
+      logger.info('bamboo signature', signature);
 
-    const transaction = tx.build();
-    transaction.signatures.push(signature);
-    logger.info('bamboo tx signed', tx.toApi());
+      const transaction = tx.build();
+      transaction.signatures.push(signature);
+      logger.info('bamboo tx signed', tx.toApi());
 
-    const transactionRequest = new BroadcastTransactionRequest(tx);
-    const hiveChain = await createHiveChain();
+      const transactionRequest = new BroadcastTransactionRequest(tx);
+      const hiveChain = await createHiveChain();
 
-    const result = await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
-    logger.info('bamboo result', result);
+      const result = await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
+      logger.info('bamboo result', result);
 
+    } catch (error) {
+      logger.trace('SignerHbauth.signTransaction error: %o', error);
+      result = { success: false, error: 'Sign failed'};
+      throw error;
+    }
+
+    logger.info('bamboo returning: %o', result);
+    return result;
   }
 
   // Create digest and return its signature made with signDigest.
@@ -69,15 +79,15 @@ export class SignerHbauth {
   }: SignChallenge) {
     const digest = cryptoUtils.sha256(message).toString('hex');
     return this.signDigest(
-      username, password, digest, keyType
+      digest, username, password, keyType
     );
   }
 
 
   async signDigest(
+    digest: string,
     username: string,
     password: string,
-    digest: string,
     keyType: KeyTypes = KeyTypes.posting
   ) {
     logger.info('sign args: %o', { username, password, digest, keyType });
@@ -94,6 +104,14 @@ export class SignerHbauth {
       if (!['posting', 'active'].includes(keyType)) {
         throw new Error(`Unsupported keyType: ${keyType}`);
       }
+
+      if (!password) {
+        // TODO get password from storage or prompt user to input it.
+        const userInput = prompt("Please enter ypur password to unlock wallet", "");
+        password = userInput as string;
+        // throw new Error('No password to unlock wallet')
+      }
+
       const authStatus = await authClient.authenticate(
         username,
         password,

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import { getLogger } from '@hive/ui/lib/logging';
 import { LoginTypes } from '@smart-signer/types/common';
 import { parseCookie } from '@smart-signer/lib/utils';
 import { Signatures, PostLoginSchema } from '@smart-signer/lib/auth/utils';
@@ -14,6 +13,7 @@ import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { Signer } from '@smart-signer/lib/signer';
 import { KeyTypes } from '@smart-signer/types/common';
 
+import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
 export function LoginPanel(

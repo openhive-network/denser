@@ -132,22 +132,14 @@ export class Signer {
         });
         if (loginType === LoginTypes.hbauth) {
             const signer = new SignerHbauth();
-            try {
-                signer.signTransaction({
-                    operation,
-                    loginType,
-                    username,
-                    keyType,
-                });
-            } catch (error) {
-                throw error;
-            }
+            return signer.signTransaction({
+                operation,
+                loginType,
+                username,
+                keyType,
+            });
         } else {
-            try {
-                throw new Error('not implemented');
-            } catch (error) {
-                throw error;
-            }
+            throw new Error('not implemented');
         }
     }
 

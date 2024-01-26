@@ -32,6 +32,9 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Signer, vote } from '@smart-signer/lib/signer';
 import { LoginTypes } from '@smart-signer/types/common';
 
+import { getLogger } from '@hive/ui/lib/logging';
+const logger = getLogger('app');
+
 const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage: boolean | undefined }) => {
   const { t } = useTranslation('common_blog');
   const [reveal, setReveal] = useState(post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw'));
@@ -70,12 +73,11 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
       const signer = new Signer();
       try {
 
-        const result = await signer.signTransaction({
+        await signer.signTransaction({
           operation: { vote },
           loginType: user.loginType,
           username: user.username
         });
-        logger.info('bamboo result: %o', result);
 
         e.target.classList.add('text-white');
         console.log('type', type);
