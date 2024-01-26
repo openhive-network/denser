@@ -102,7 +102,6 @@ export function LoginPanel(
       }
     } else {
       try {
-        logger.info('bamboo KeyTypes.posting', KeyTypes.posting);
         signatures = await signer.signChallenge({
           message,
           loginType,

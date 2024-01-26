@@ -85,10 +85,8 @@ export async function getTransactionDigest(
         ): Promise<{txString: string, digest: THexString}> {
 
     const wax = await createWaxFoundation();
-    logger.info('bamboo operation: %o', operation);
 
     let tx: ITransactionBuilder;
-    logger.info('bamboo txString: %s', txString);
     if (txString) {
         tx = new wax.TransactionBuilder(JSON.parse(txString));
     } else {

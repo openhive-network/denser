@@ -40,7 +40,7 @@ export class SignerWif {
             logger.info('in broadcastOperation: %o', {
                 operation, loginType, username, keyType
             });
-            throw new Error('not implemented');
+            throw new Error('Not implemented');
         } catch (error) {
             throw error;
         }

@@ -45,7 +45,6 @@ export class SignerHbauth {
       const wax = await createWaxFoundation();
       const tx = new wax.TransactionBuilder(dynamicGlobalData?.head_block_id as unknown as TBlockHash, '+1m');
       tx.push(operation);
-      logger.info('bamboo tx', tx.toApi());
 
       const signature = await this.signDigest(
         tx.sigDigest,
@@ -57,17 +56,13 @@ export class SignerHbauth {
       // const authClient = await authService.getOnlineClient();
       // const signature = await authClient.sign('stirlitz', tx.sigDigest, 'posting');
 
-      logger.info('bamboo signature', signature);
-
       const transaction = tx.build();
       transaction.signatures.push(signature);
-      logger.info('bamboo tx signed', tx.toApi());
 
       const transactionRequest = new BroadcastTransactionRequest(tx);
       const hiveChain = await createHiveChain();
 
       const result = await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
-      logger.info('bamboo result', result);
 
     } catch (error) {
       logger.trace('SignerHbauth.broadcastOperation error: %o', error);
@@ -75,7 +70,6 @@ export class SignerHbauth {
       throw error;
     }
 
-    logger.info('bamboo returning: %o', result);
     return result;
   }
 

@@ -89,7 +89,6 @@ export class SignerKeychain {
         }
       )
 
-      console.info('bamboo signTx: %o', broadcastResult);
       if (broadcastResult.error) {
         throw new Error(`signTx error: ${broadcastResult.error}`);
       }
@@ -158,7 +157,6 @@ export class SignerKeychain {
         method: KeychainKeyTypes[keyType],
         tx,
       });
-      console.info('bamboo signTx: %o', signResult);
       if (signResult.error) {
         throw new Error(`signTx error: ${signResult.error}`);
       }
