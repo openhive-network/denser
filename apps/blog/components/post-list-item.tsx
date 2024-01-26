@@ -70,11 +70,12 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
       const signer = new Signer();
       try {
 
-        await signer.signTransaction({
+        const result = await signer.signTransaction({
           operation: { vote },
           loginType: user.loginType,
           username: user.username
         });
+        logger.info('bamboo result: %o', result);
 
         e.target.classList.add('text-white');
         console.log('type', type);

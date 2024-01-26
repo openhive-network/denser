@@ -15,7 +15,12 @@ const logger = getLogger('app');
 export class SignerHbauth {
 
 
-  async signTransaction(operation: operation) {
+  async signTransaction({
+    operation,
+    loginType,
+    username,
+    keyType = KeyTypes.posting
+  }: SignTransaction): Promise<any> {
 
     //
     // TODO These lines below do not work. Validation error in Wax
@@ -32,9 +37,10 @@ export class SignerHbauth {
     logger.info('bamboo tx', tx.toApi());
 
     const signature = await this.signDigest(
-      'stirlitz',
+      username,
+      'wojtek',
       tx.sigDigest,
-      KeyTypes.posting
+      keyType
       );
 
     // const authClient = await authService.getOnlineClient();
@@ -74,7 +80,7 @@ export class SignerHbauth {
     digest: string,
     keyType: KeyTypes = KeyTypes.posting
   ) {
-    logger.info('sign args: %o', { username, password, keyType });
+    logger.info('sign args: %o', { username, password, digest, keyType });
 
     const authClient = await authService.getOnlineClient();
     const auth = await authClient.getAuthByUser(username);

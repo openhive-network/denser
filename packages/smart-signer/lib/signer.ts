@@ -111,22 +111,43 @@ export class Signer {
     }
 
 
-    // Create Hive transaction for given operation or operations, sign
-    // it and broadcast.
+    /**
+     * Create Hive transaction for given operation or operations, sign
+     * it and broadcast.
+     *
+     * @param {SignTransaction} { operation, loginType, username,
+     *         keyType = KeyTypes.posting
+     *     }
+     * @returns {Promise<any>}
+     * @memberof Signer
+     */
     async signTransaction({
         operation,
         loginType,
         username,
         keyType = KeyTypes.posting
     }: SignTransaction): Promise<any> {
-
-        try {
-            logger.info('in signTransaction: %o', {
-                operation, loginType, username, keyType
-            });
-            throw new Error('not implemented');
-        } catch (error) {
-            throw error;
+        logger.info('in signTransaction: %o', {
+            operation, loginType, username, keyType
+        });
+        if (loginType === LoginTypes.hbauth) {
+            const signer = new SignerHbauth();
+            try {
+                signer.signTransaction({
+                    operation,
+                    loginType,
+                    username,
+                    keyType,
+                });
+            } catch (error) {
+                throw error;
+            }
+        } else {
+            try {
+                throw new Error('not implemented');
+            } catch (error) {
+                throw error;
+            }
         }
     }
 
