@@ -83,19 +83,22 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
           e.target.classList.add('bg-gray-600');
         }
       } catch (e) {
-        if (type === 'upvote') {
-          toast({
-            description: 'Your current vote on this comment is identical to this vote.',
-            variant: 'default'
-          });
+        //
+        // TODO Improve messages displayed to user, after we do better
+        // (unified) error handling in smart-signer.
+        //
+        logger.error('got error', e);
+        let description = 'Transaction broadcast error';
+        if (
+          `${e}`.indexOf('vote on this comment is identical') >= 0
+          || `${e.error?.message}`.indexOf('vote on this comment is identical') >= 0
+        ) {
+          description = 'Your current vote on this comment is identical to this vote.'
         }
-
-        if (type === 'downvote') {
-          toast({
-            description: 'Transaction broadcast error: 0',
-            variant: 'default'
-          });
-        }
+        toast({
+          description,
+          variant: 'destructive',
+        });
       }
     }
   }
