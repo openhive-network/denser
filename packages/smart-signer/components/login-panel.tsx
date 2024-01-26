@@ -13,6 +13,7 @@ import { LoginForm, LoginFormSchema } from '@smart-signer/components/login-form'
 import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { Signer } from '@smart-signer/lib/signer';
 import { KeychainKeyTypesLC } from '@smart-signer/lib/signer-keychain';
+import { KeychainKeyTypes } from 'keychain-sdk';
 
 const logger = getLogger('app');
 
@@ -102,13 +103,13 @@ export function LoginPanel(
       }
     } else {
       try {
-        signatures = await signer.signChallenge(
+        signatures = await signer.signChallenge({
           message,
           loginType,
           username,
           password,
-          KeychainKeyTypesLC.posting
-          );
+          keyType: KeychainKeyTypes.posting
+        });
 
           // TODO This should be done in Signer.
           if (loginType === LoginTypes.wif) {

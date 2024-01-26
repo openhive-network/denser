@@ -15,6 +15,20 @@ export { vote, operation } from '@hive/wax';
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
+export interface SignTransaction {
+    operation: operation;
+    loginType: LoginTypes;
+    username: string;
+    keyType?: KeychainKeyTypes
+}
+
+export interface SignChallenge {
+    message: string;
+    loginType: LoginTypes;
+    username: string;
+    password?: string; // private key or password to unlock hbauth key
+    keyType?: KeychainKeyTypes;
+}
 
 export class Signer {
 
@@ -33,13 +47,13 @@ export class Signer {
      * @returns {Promise<Signatures>}
      * @memberof Signer
      */
-    async signChallenge(
-        message: string,
-        loginType: LoginTypes,
-        username: string,
-        password: string = '', // private key or password to unlock hbauth key
-        keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting
-    ): Promise<Signatures> {
+    async signChallenge({
+        message,
+        loginType,
+        username,
+        password = '', // private key or password to unlock hbauth key
+        keyType = KeychainKeyTypes.posting
+    }: SignChallenge): Promise<Signatures> {
         logger.info('in signChallenge %o', { loginType, username, password, keyType, message });
         const signatures: Signatures = {};
 
@@ -62,8 +76,13 @@ export class Signer {
             const signer = new SignerHbauth();
             try {
                 // await signer.checkAuths(username, 'posting');
-                const signature = await signer.signChallenge(username, password,
-                    message, keyType);
+                const signature = await signer.signChallenge({
+                    username,
+                    password,
+                    message,
+                    keyType,
+                    loginType,
+                });
                 logger.info('hbauth', { signature });
                 signatures.posting = signature;
             } catch (error) {
@@ -72,12 +91,13 @@ export class Signer {
         } else if (loginType === LoginTypes.wif) {
             const signer = new SignerWif();
             try {
-                const signature = await signer.signChallenge(
+                const signature = await signer.signChallenge({
                     message,
                     username,
                     keyType,
-                    password
-                    );
+                    password,
+                    loginType,
+                });
                 logger.info('password', { signature });
                 signatures.posting = signature;
             } catch (error) {
@@ -92,18 +112,16 @@ export class Signer {
 
     // Create Hive transaction for given operation or operations, sign
     // it and broadcast.
-    async signTransaction(
+    async signTransaction({
+        operation,
+        loginType,
+        username,
+        keyType = KeychainKeyTypes.posting
+    }: SignTransaction): Promise<any> {
 
-        operation: operation,
-
-        loginType: LoginTypes,
-        username: string,
-        password: string = '', // private key or password to unlock hbauth key
-        keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting
-    ): Promise<any> {
         try {
             logger.info('in signTransaction: %o', {
-                operation, loginType, username, password, keyType
+                operation, loginType, username, keyType
             });
             throw new Error('not implemented');
         } catch (error) {

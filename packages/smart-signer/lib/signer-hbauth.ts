@@ -2,6 +2,7 @@ import { KeychainKeyTypes } from 'keychain-sdk';
 import { KeychainKeyTypesLC } from '@smart-signer/lib/signer-keychain';
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { authService } from '@smart-signer/lib/auth-service';
+import { SignChallenge, SignTransaction } from '@smart-signer/lib/signer';
 
 import { getDynamicGlobalProperties } from '@ui/lib/hive';
 import { createWaxFoundation, TBlockHash, createHiveChain, BroadcastTransactionRequest, vote, operation } from '@hive/wax';
@@ -62,12 +63,12 @@ export class SignerHbauth {
   }
 
   // Create digest and return its signature made with signDigest.
-  async signChallenge(
-    username: string,
-    password: string,
-    message: string,
-    keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting
-  ) {
+  async signChallenge({
+    username,
+    password = '',
+    message,
+    keyType = KeychainKeyTypes.posting
+  }: SignChallenge) {
     const digest = cryptoUtils.sha256(message).toString('hex');
     return this.signDigest(
       username, password, digest, keyType
@@ -79,7 +80,7 @@ export class SignerHbauth {
     username: string,
     password: string,
     digest: string,
-    keyType: KeychainKeyTypesLC = KeychainKeyTypesLC.posting
+    keyType: KeychainKeyTypes = KeychainKeyTypes.posting
   ) {
     logger.info('sign args: %o', { username, password, keyType });
 

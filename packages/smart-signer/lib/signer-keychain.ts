@@ -52,7 +52,7 @@ export class SignerKeychain {
       if (response.error) {
         throw new Error(`signBuffer error: ${response.error}`);
       }
-      return response.result;
+      return response.result as unknown as string;
     } catch (error) {
       throw error;
     }

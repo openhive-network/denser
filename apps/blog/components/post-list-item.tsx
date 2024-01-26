@@ -70,13 +70,11 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
       const signer = new Signer();
       try {
 
-        // TODO FIXME!
-        await signer.signTransaction(
-          { vote },
-          user.loginType,
-          user.username,
-          'wojtek'
-        );
+        await signer.signTransaction({
+          operation: { vote },
+          loginType: user.loginType,
+          username: user.username
+        });
 
         e.target.classList.add('text-white');
         console.log('type', type);

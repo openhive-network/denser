@@ -1,17 +1,23 @@
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { KeychainKeyTypes } from 'keychain-sdk';
 import { KeychainKeyTypesLC } from '@smart-signer/lib/signer-keychain';
-import { getLogger } from '@hive/ui/lib/logging';
+import { SignChallenge, SignTransaction } from '@smart-signer/lib/signer';
 
+import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
 export class SignerWif {
-    async signChallenge (
-        message: string,
-        username: string,
-        method: KeychainKeyTypes = KeychainKeyTypes.posting,
-        password: string, // WIF private key
-    ) {
+
+    async signChallenge ({
+        message,
+        username,
+        keyType = KeychainKeyTypes.posting,
+        password = '', // WIF private key
+    }: SignChallenge) {
+
+        // TODO
+        // if (!password) -> get password from storage
+
         let signature = ''
         try {
             const privateKey = PrivateKey.fromString(password);
@@ -23,4 +29,22 @@ export class SignerWif {
         }
         return signature;
     };
+
+    async signTransaction({
+        operation,
+        loginType,
+        username,
+        keyType = KeychainKeyTypes.posting
+    }: SignTransaction): Promise<any> {
+
+        try {
+            logger.info('in signTransaction: %o', {
+                operation, loginType, username, keyType
+            });
+            throw new Error('not implemented');
+        } catch (error) {
+            throw error;
+        }
+    }
+
 }
