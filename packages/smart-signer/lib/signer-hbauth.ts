@@ -1,12 +1,9 @@
 import { KeyTypes } from '@smart-signer/types/common';
-import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
+import { cryptoUtils } from '@hiveio/dhive';
 import { authService } from '@smart-signer/lib/auth-service';
-import { SignChallenge, SignTransaction } from '@smart-signer/lib/signer';
-
+import { SignChallenge, BroadcastOperation } from '@smart-signer/lib/signer';
 import { getDynamicGlobalProperties } from '@ui/lib/hive';
 import { createWaxFoundation, TBlockHash, createHiveChain, BroadcastTransactionRequest, vote, operation } from '@hive/wax';
-
-import createBeekeeperApp from '@hive/beekeeper';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -14,13 +11,25 @@ const logger = getLogger('app');
 
 export class SignerHbauth {
 
+  // Create digest and return its signature made with signDigest.
+  async signChallenge({
+    username,
+    password = '',
+    message,
+    keyType = KeyTypes.posting
+  }: SignChallenge) {
+    const digest = cryptoUtils.sha256(message).toString('hex');
+    return this.signDigest(
+      digest, username, password, keyType
+    );
+  }
 
-  async signTransaction({
+  async broadcastOperation({
     operation,
     loginType,
     username,
     keyType = KeyTypes.posting
-  }: SignTransaction): Promise<{ success: boolean, error: string}> {
+  }: BroadcastOperation): Promise<{ success: boolean, error: string}> {
 
     let result = { success: true, error: ''};
     try {
@@ -61,7 +70,7 @@ export class SignerHbauth {
       logger.info('bamboo result', result);
 
     } catch (error) {
-      logger.trace('SignerHbauth.signTransaction error: %o', error);
+      logger.trace('SignerHbauth.broadcastOperation error: %o', error);
       result = { success: false, error: 'Sign failed'};
       throw error;
     }
@@ -69,20 +78,6 @@ export class SignerHbauth {
     logger.info('bamboo returning: %o', result);
     return result;
   }
-
-  // Create digest and return its signature made with signDigest.
-  async signChallenge({
-    username,
-    password = '',
-    message,
-    keyType = KeyTypes.posting
-  }: SignChallenge) {
-    const digest = cryptoUtils.sha256(message).toString('hex');
-    return this.signDigest(
-      digest, username, password, keyType
-    );
-  }
-
 
   async signDigest(
     digest: string,
@@ -137,7 +132,6 @@ export class SignerHbauth {
 
     return signature;
   };
-
 
   async checkAuths(username: string, keyType: string) {
     const authClient = await authService.getOnlineClient();

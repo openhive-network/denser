@@ -25,12 +25,9 @@ import { useTranslation } from 'next-i18next';
 import { toast } from '@ui/components/hooks/use-toast';
 import { useQuery } from '@tanstack/react-query';
 import { getDynamicGlobalProperties } from '@ui/lib/hive';
-import { authService } from '@/blog/lib/authService';
-import { createWaxFoundation, TBlockHash, createHiveChain, BroadcastTransactionRequest } from '@hive/wax';
 import { useAppStore } from '@/blog/store/app';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Signer, vote } from '@smart-signer/lib/signer';
-import { LoginTypes } from '@smart-signer/types/common';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -57,7 +54,6 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
   async function vote(e: any, type: string) {
     setEnableDynamic(true);
 
-    // if (currentProfile && currentProfileKeyType) {
     if (user && user.isLoggedIn) {
       const vote: vote = {
         voter: user.username,
@@ -72,13 +68,11 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
 
       const signer = new Signer();
       try {
-
-        await signer.signTransaction({
+        await signer.broadcastOperation({
           operation: { vote },
           loginType: user.loginType,
           username: user.username
         });
-
         e.target.classList.add('text-white');
         console.log('type', type);
         if (type === 'upvote') {

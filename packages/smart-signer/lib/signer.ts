@@ -1,20 +1,16 @@
-import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
-import { getDynamicGlobalProperties } from '@ui/lib/hive';
-import { createWaxFoundation, TBlockHash, createHiveChain, BroadcastTransactionRequest, vote, operation } from '@hive/wax';
-import { authService } from '@smart-signer/lib/auth-service';
+import { operation } from '@hive/wax';
 import { SignerHbauth } from '@smart-signer/lib/signer-hbauth';
 import { SignerKeychain } from '@smart-signer/lib/signer-keychain';
 import { SignerWif } from '@smart-signer/lib/signer-wif';
 import { Signatures } from '@smart-signer/lib/auth/utils';
 import { LoginTypes } from '@smart-signer/types/common';
 import { KeyTypes } from '@smart-signer/types/common';
-
 export { vote, operation } from '@hive/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
-export interface SignTransaction {
+export interface BroadcastOperation {
     operation: operation;
     loginType: LoginTypes;
     username: string;
@@ -34,15 +30,12 @@ export class Signer {
     /**
      * Calculates sha256 digest (hash) of any string and signs it with
      * Hive private key. It's good for verifying keys, in login
-     * procedure for instance. However it's not good for signing Hive
-     * transactions – those need different hashing method and other
+     * procedure for instance. However it's bad for signing Hive
+     * transactions – these need different hashing method and other
      * special treatment.
      *
-     * @param {SignChallenge} {
-     *         message,
-     *         loginType,
-     *         username,
-     *         password = '', // private key or password to unlock hbauth key
+     * @param {SignChallenge} { message, loginType, username, password =
+     *         '', // private key or password to unlock hbauth key
      *         keyType = KeyTypes.posting
      *     }
      * @returns {Promise<Signatures>}
@@ -61,11 +54,13 @@ export class Signer {
         if (loginType === LoginTypes.keychain) {
             const signer = new SignerKeychain();
             try {
-                const signature = await signer.signChallenge(
-                    message,
+                const signature = await signer.signChallenge({
                     username,
-                    keyType
-                    );
+                    password,
+                    message,
+                    keyType,
+                    loginType,
+                });
                 logger.info('keychain', { signature });
                 signatures.posting = signature;
             } catch (error) {
@@ -110,29 +105,39 @@ export class Signer {
 
     }
 
-
     /**
      * Create Hive transaction for given operation or operations, sign
      * it and broadcast.
      *
-     * @param {SignTransaction} { operation, loginType, username,
+     * @param {BroadcastOperation} {
+     *         operation,
+     *         loginType,
+     *         username,
      *         keyType = KeyTypes.posting
      *     }
      * @returns {Promise<any>}
      * @memberof Signer
      */
-    async signTransaction({
+    async broadcastOperation({
         operation,
         loginType,
         username,
         keyType = KeyTypes.posting
-    }: SignTransaction): Promise<any> {
-        logger.info('in signTransaction: %o', {
+    }: BroadcastOperation): Promise<any> {
+        logger.info('in broadcastOperation: %o', {
             operation, loginType, username, keyType
         });
         if (loginType === LoginTypes.hbauth) {
             const signer = new SignerHbauth();
-            return signer.signTransaction({
+            return signer.broadcastOperation({
+                operation,
+                loginType,
+                username,
+                keyType,
+            });
+        } else if (loginType === LoginTypes.keychain) {
+            const signer = new SignerKeychain();
+            return signer.broadcastOperation({
                 operation,
                 loginType,
                 username,
