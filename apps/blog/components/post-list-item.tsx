@@ -89,10 +89,7 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
         //
         logger.error('got error', e);
         let description = 'Transaction broadcast error';
-        if (
-          `${e}`.indexOf('vote on this comment is identical') >= 0
-          || `${e.error?.message}`.indexOf('vote on this comment is identical') >= 0
-        ) {
+        if (`${e}`.indexOf('vote on this comment is identical') >= 0) {
           description = 'Your current vote on this comment is identical to this vote.'
         } else if (`${e}`.indexOf('Not implemented') >= 0) {
           description = 'Method not implemented for this login type.'
