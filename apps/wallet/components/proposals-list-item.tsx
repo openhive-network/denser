@@ -12,6 +12,12 @@ import VoteProposals from './votes-proposals-dialog';
 import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
+import { authService } from '@smart-signer/lib/auth-service';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { toast } from '@ui/components/hooks/use-toast';
+import { getDynamicGlobalProperties } from '@ui/lib/hive';
+import { useQuery } from '@tanstack/react-query';
+import { createWaxFoundation, TBlockHash, createHiveChain, BroadcastTransactionRequest } from '@hive/wax';
 
 function titleSetter(
   daysStart: string,
@@ -49,6 +55,17 @@ function translateShorDate(data: string, t: TFunction<'common_wallet', undefined
 
 export function ProposalListItem({ proposalData, totalShares, totalVestingFund }: ListItemProps) {
   const { t } = useTranslation('common_wallet');
+  const { user } = useUser();
+
+  const [enabledDynamic, setEnableDynamic] = useState(false);
+  const {
+    isLoading: dynamicGlobalDataIsLoading,
+    error: dynamicGlobalDataError,
+    data: dynamicGlobalData
+  } = useQuery(['dynamicGlobalData'], () => getDynamicGlobalProperties(), {
+    enabled: enabledDynamic
+  });
+
   const [link, setLink] = useState<string>(`/${proposalData.creator}/${proposalData.permlink}`);
   const totalHBD = proposalData.daily_pay.amount.times(
     moment(proposalData.end_date).diff(moment(proposalData.start_date), 'd')
@@ -71,6 +88,50 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
       return <Badge variant="orange">{t('proposals_page.burn')}</Badge>;
 
     return null;
+  }
+
+  async function vote(e: any) {
+    console.log('user', user);
+    setEnableDynamic(true);
+    const authClient = await authService.getOnlineClient();
+    console.log('auth', authClient);
+    const wax = await createWaxFoundation();
+    const tx = new wax.TransactionBuilder(dynamicGlobalData?.head_block_id as unknown as TBlockHash, '+1m');
+
+    // if (currentProfile && currentProfileKeyType && tx) {
+    if (tx) {
+      let update_proposal_votes = {
+        voter: 'calcifero',
+        proposal_ids: ['296'],
+        approve: true,
+        extensions: []
+      };
+
+      tx.push({
+        update_proposal_votes
+      });
+
+      // const signature = await authClient.sign(currentProfile?.name, tx.sigDigest, currentProfileKeyType);
+
+      const signature = await authClient.sign('calcifero', tx.sigDigest, 'active');
+      const transaction = tx.build();
+      transaction.signatures.push(signature);
+      // or you can use tx.sign(signature, currentProfile.posting.key_auths[0] as unknown as string);
+      console.log('tx', tx);
+      const transactionRequest = new BroadcastTransactionRequest(tx);
+      const hiveChain = await createHiveChain();
+      console.log('transactionRequest', transactionRequest);
+      try {
+        await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
+        e.target.classList.add('text-white');
+        e.target.classList.add('bg-red-600');
+      } catch (e) {
+        toast({
+          description: 'Your current vote on this comment is identical to this vote.',
+          variant: 'default'
+        });
+      }
+    }
   }
 
   return (
@@ -162,16 +223,17 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
           </div>
         </VoteProposals>
 
-        <DialogLogin>
-          <div className="group relative flex">
-            <span className="opocity-75 absolute inline-flex h-6 w-6 rounded-full bg-red-500 p-0 group-hover:animate-ping dark:bg-red-400"></span>
-            <Icons.arrowUpCircle
-              viewBox="1.7 1.7 20.7 20.7"
-              className="relative inline-flex h-6 w-6 cursor-pointer rounded-full bg-white stroke-1 text-red-500 dark:bg-slate-800"
-              data-testid="voting-button-icon"
-            />
-          </div>
-        </DialogLogin>
+        {/* <DialogLogin> */}
+        <div className="group relative flex">
+          <span className="opocity-75 absolute inline-flex h-6 w-6 rounded-full bg-red-500 p-0 group-hover:animate-ping dark:bg-red-400"></span>
+          <Icons.arrowUpCircle
+            viewBox="1.7 1.7 20.7 20.7"
+            className="relative inline-flex h-6 w-6 cursor-pointer rounded-full bg-white stroke-1 text-red-500 dark:bg-slate-800"
+            data-testid="voting-button-icon"
+            onClick={vote}
+          />
+        </div>
+        {/* </DialogLogin> */}
       </div>
     </div>
   );
