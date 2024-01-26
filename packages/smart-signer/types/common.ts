@@ -2,7 +2,7 @@ export type User = {
     isLoggedIn: boolean
     username: string
     avatarUrl: string
-    loginType: string;
+    loginType: LoginTypes;
 }
 
 export enum LoginTypes {

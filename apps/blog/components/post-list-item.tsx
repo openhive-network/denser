@@ -30,6 +30,7 @@ import { createWaxFoundation, TBlockHash, createHiveChain, BroadcastTransactionR
 import { useAppStore } from '@/blog/store/app';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Signer, vote } from '@smart-signer/lib/signer';
+import { LoginTypes } from '@smart-signer/types/common';
 
 const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage: boolean | undefined }) => {
   const { t } = useTranslation('common_blog');

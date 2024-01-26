@@ -18,12 +18,12 @@ export class SignerHbauth {
   async signTransaction(operation: operation) {
 
     //
-    // TODO this does not work. Validation error in Wax. Looks like
-    // a bug in Wax.
+    // TODO These lines below do not work. Validation error in Wax
+    // occurs. Looks like a bug in Wax.
     //
+
     // const hiveChain = await createHiveChain();
     // const tx = await hiveChain.getTransactionBuilder('+1m');
-    // logger.info('bamboo tx', tx.toApi);
 
     const vote: vote = {
       voter: 'stirlitz',

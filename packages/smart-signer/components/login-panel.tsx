@@ -16,7 +16,9 @@ import { KeychainKeyTypesLC } from '@smart-signer/lib/signer-keychain';
 
 const logger = getLogger('app');
 
-export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?: string }) {
+export function LoginPanel(
+    { i18nNamespace = 'smart-signer' }: { i18nNamespace?: string }
+    ) {
   const router = useRouter();
   const slug = router.query.slug as string;
 
@@ -38,7 +40,8 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
 
   const [errorMsg, setErrorMsg] = useState('');
 
-  const [hiveAuthData, setHiveAuthData] = useLocalStorage('hiveAuthData', HiveAuthUtils.initialHiveAuthData);
+  const [hiveAuthData, setHiveAuthData] =
+    useLocalStorage('hiveAuthData', HiveAuthUtils.initialHiveAuthData);
 
   const [hiveKeys, setHiveKeys] = useLocalStorage('hiveKeys', {});
 
@@ -61,6 +64,11 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
     const message = JSON.stringify({ loginChallenge }, null, 0);
 
     if (loginType === LoginTypes.hiveauth) {
+
+      //
+      // TODO Move logic from this code block to Signer.
+      //
+
       try {
         HiveAuthUtils.setUsername(hiveAuthData?.username || '');
         HiveAuthUtils.setToken(hiveAuthData?.token || '');
@@ -68,26 +76,27 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
         HiveAuthUtils.setKey(hiveAuthData?.key || '');
 
         const authResponse: any = await new Promise((resolve) => {
-            HiveAuthUtils.login(
-                username,
-                message,
-                (res) => {
-                    resolve(res);
-                },
-                t
-            );
+          HiveAuthUtils.login(
+            username,
+            message,
+            (res) => {
+              resolve(res);
+            },
+            t
+          );
         });
 
         if (authResponse.success && authResponse.hiveAuthData) {
-            const { token, expire, key, challengeHex } = authResponse.hiveAuthData;
-            setHiveAuthData({ username, token, expire, key });
-            logger.info('hiveauth', { signature: challengeHex });
-            signatures.posting = challengeHex;
+          const { token, expire, key, challengeHex } =
+              authResponse.hiveAuthData;
+          setHiveAuthData({ username, token, expire, key });
+          logger.info('hiveauth', { signature: challengeHex });
+          signatures.posting = challengeHex;
         } else {
-            throw new Error('Hiveauth login failed');
+          throw new Error('Hiveauth login failed');
         }
       } catch (error) {
-        logger.error('onSubmit error in signLoginChallenge', error);
+        logger.error('onSubmit error in signing loginChallenge', error);
         setErrorMsg(t('pageLogin.signingFailed'));
         return;
       }
@@ -101,6 +110,7 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
           KeychainKeyTypesLC.posting
           );
 
+          // TODO This should be done in Signer.
           if (loginType === LoginTypes.wif) {
             setHiveKeys({ ...hiveKeys, ...{ posting: password } });
           }
