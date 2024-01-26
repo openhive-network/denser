@@ -67,7 +67,7 @@ export class Signer {
                 throw error;
             }
         } else if (loginType === LoginTypes.hiveauth) {
-            // not implemented
+            throw new Error('Not implemented');
         } else if (loginType === LoginTypes.hbauth) {
             const signer = new SignerHbauth();
             try {
