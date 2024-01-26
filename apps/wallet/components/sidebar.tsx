@@ -6,6 +6,10 @@ import { Separator } from '@hive/ui/components/separator';
 import clsx from 'clsx';
 import { ReactNode } from 'react';
 import { useTranslation } from 'next-i18next';
+import DialogHBAuth from '@smart-signer/components/dialog-hb-auth';
+import DialogLogin from './dialog-login';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { getLogger } from '@ui/lib/logging';
 const Item = ({
   href,
   children,
@@ -25,8 +29,11 @@ const Item = ({
     </li>
   );
 };
+const logger = getLogger('app');
+
 const Sidebar = () => {
   const { t } = useTranslation('common_wallet');
+  const { user } = useUser();
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -42,6 +49,39 @@ const Sidebar = () => {
       >
         <div className="flex flex-col">
           <ul className="flex flex-col">
+            {!user?.isLoggedIn && (
+              <li className="cursor-pointer border-b-2 border-white text-foreground hover:border-red-600 hover:bg-slate-100 dark:border-slate-950 dark:hover:border-red-600 dark:hover:bg-slate-900 sm:hidden">
+                <DialogLogin>
+                  <div className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
+                    {t('navigation.main_nav_bar.login')}
+                  </div>
+                </DialogLogin>
+              </li>
+            )}
+            {!user?.isLoggedIn && (
+              <li className="cursor-pointer border-b-2 border-white text-foreground hover:border-red-600 hover:bg-slate-100 dark:border-slate-950 dark:hover:border-red-600 dark:hover:bg-slate-900 sm:hidden">
+                <Link href="https://signup.hive.io/" target="_blank">
+                  <SheetClose className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
+                    {t('navigation.main_nav_bar.sign_up')}
+                    <Icons.forward className="w-4" />
+                  </SheetClose>
+                </Link>
+              </li>
+            )}
+            {!user?.isLoggedIn && (
+              <li className="cursor-pointer border-b-2 border-white text-foreground hover:border-red-600 hover:bg-slate-100 dark:border-slate-950 dark:hover:border-red-600 dark:hover:bg-slate-900 sm:hidden">
+                <DialogHBAuth
+                  onAuthComplete={(username, keyType) => {
+                    logger.info('onAuthComplete %o', { username, keyType });
+                  }}
+                >
+                  <div className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
+                    HBauth
+                  </div>
+                </DialogHBAuth>
+              </li>
+            )}
+            {!user?.isLoggedIn && <Separator className="my-2 sm:hidden" />}
             <Item href="/welcome">{t('navigation.sidebar.welcome')}</Item>
             <Item href="/faq.html">{t('navigation.sidebar.faq')}</Item>
             <Item href="/market">{t('navigation.sidebar.currency_market')}</Item>

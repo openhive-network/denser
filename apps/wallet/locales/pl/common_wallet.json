@@ -93,6 +93,14 @@
     "wallet_nav": {
       "balances": "Salda",
       "delegations": "Delegacje"
+    },
+    "user_menu": {
+      "wallet": "Portfel",
+      "toggle_theme": "Motyw",
+      "toggle_lang": "Język",
+      "change_password": "Zmień hasło",
+      "settings": "Ustawienia",
+      "logout": "Wylogowuj"
     }
   },
   "select_sort": {

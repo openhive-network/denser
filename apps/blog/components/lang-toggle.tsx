@@ -10,13 +10,15 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { parseCookie } from '@/blog/lib/utils';
 import clsx from 'clsx';
+import { useTranslation } from 'next-i18next';
 
 export default function LangToggle({ logged }: { logged: Boolean }) {
   const router = useRouter();
   const [lang, setLang] = useState<string | null>(null);
+  const { t } = useTranslation('common_blog');
 
   useEffect(() => {
-    setLang(parseCookie(document.cookie)['NEXT_LOCALE'] || 'en');
+    setLang(parseCookie(document.cookie)[' NEXT_LOCALE'] || 'en');
   }, []);
 
   const languages = [
@@ -41,7 +43,7 @@ export default function LangToggle({ logged }: { logged: Boolean }) {
           data-testid="toggle-language"
         >
           <span>{lang ? languages.filter((language) => language.locale === lang)[0].label : null}</span>
-          {logged ? <span className="ml-2 w-full">Toggle language</span> : null}
+          {logged ? <span className="ml-2 w-full">{t('navigation.user_menu.toggle_lang')}</span> : null}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

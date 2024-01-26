@@ -90,7 +90,8 @@
       "replies": "Odpowiedzi",
       "social": "Społecznościowe",
       "notifications": "Powiadomienia",
-      "wallet": "Portfel"
+      "wallet": "Portfel",
+      "settings": "Ustawienia"
     },
     "profil_posts_tab_navbar": {
       "posts": "Posty",
@@ -111,6 +112,16 @@
       "follows": "Obserwacje",
       "upvotes": "Głosy za",
       "reblogs": "Reblogi"
+    },
+    "user_menu": {
+      "profile": "Profil",
+      "notifications": "Powiadomienia",
+      "comments": "Komentarze",
+      "replies": "Odpowiedzi",
+      "toggle_theme": "Motyw",
+      "toggle_lang": "Język",
+      "wallet": "Portfel",
+      "logout": "Wylogowuj"
     }
   },
   "select_sort": {
@@ -197,6 +208,9 @@
   "user_profil": {
     "reputation": "Reputacja",
     "follow_button": "Obserwuj",
+    "mute_button": "Blokuj",
+    "unmute_button": "Odblokuj",
+    "unfollow_button": "Przestań obserwować",
     "hive_buzz_badge_title": "To poziom odznaki użytkownika {{username}} zdobytą z programu Hivebuzz",
     "twitter_badge_title": "By otrzymać odznakę Twittera, podlinkuj twoje konto na HivePosh.com",
     "joined": "Dołączono",

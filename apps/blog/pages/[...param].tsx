@@ -29,6 +29,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetServerSideProps } from 'next';
 import { i18n } from '@/blog/next-i18next.config';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import CommunitiesMybar from '../components/communities-mybar';
 
 export const PostSkeleton = () => {
   return (
@@ -80,7 +81,7 @@ const ParamPage: FC = () => {
     data: mySubsData,
     isLoading: mySubsIsLoading,
     isError: mySubsIsError
-  } = useQuery([['subscriptions', user?.username]], () => getSubscriptions(user ? user?.username : ''), {
+  } = useQuery([['subscriptions', user?.username]], () => getSubscriptions(user?.username || ''), {
     enabled: Boolean(user?.username)
   });
   const {
@@ -88,7 +89,7 @@ const ParamPage: FC = () => {
     isLoading: accountNotificationIsLoading,
     error: AccountNotificationError,
     data: dataAccountNotification
-  } = useQuery(['accountNotification', tag], () => getAccountNotifications(tag ? tag : ''), {
+  } = useQuery(['accountNotification', tag], () => getAccountNotifications(tag || ''), {
     enabled: !!tag
   });
   const {
@@ -96,7 +97,7 @@ const ParamPage: FC = () => {
     isLoading: communityDataIsLoading,
     isFetching: communityDataIsFetching,
     error: communityDataError
-  } = useQuery(['community', tag, ''], () => getCommunity(tag || '', ''), {
+  } = useQuery(['community', tag, ''], () => getCommunity(tag || '', user?.username || ''), {
     enabled: !!tag
   });
   const {
@@ -181,7 +182,11 @@ const ParamPage: FC = () => {
       <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
         <div className="grid grid-cols-12 md:gap-4">
           <div className="hidden md:col-span-3 md:flex xl:col-span-2">
-            <CommunitiesSidebar />
+            {user?.isLoggedIn ? (
+              <CommunitiesMybar data={mySubsData} username={user ? user?.username : ''} />
+            ) : (
+              <CommunitiesSidebar />
+            )}{' '}
           </div>
           <div className="col-span-12 md:col-span-9 xl:col-span-8">
             <div data-testid="card-explore-hive-mobile" className=" md:col-span-10 md:flex xl:hidden">
@@ -267,6 +272,8 @@ const ParamPage: FC = () => {
                 notificationData={dataAccountNotification}
                 username={tag ? tag : ' '}
               />
+            ) : user?.isLoggedIn ? (
+              <CommunitiesSidebar />
             ) : (
               <ExploreHive />
             )}

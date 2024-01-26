@@ -19,6 +19,7 @@ import DialogLogin from '../dialog-login';
 import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
 import env from '@beam-australia/react-env';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -45,6 +46,7 @@ function compareDates(dateStrings: string[], t: TFunction<'common_wallet', undef
 
 const ProfileLayout = ({ children }: IProfileLayout) => {
   const router = useRouter();
+  const { user } = useUser();
   const { t } = useTranslation('common_blog');
   const walletHost = env('WALLET_ENDPOINT');
   const { username } = useSiteParams();
@@ -377,7 +379,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   </Link>
                 </li>
               </ul>
-              <ul className="flex h-full text-xs text-white sm:text-base lg:flex lg:gap-4">
+              <ul className="flex h-full flex-wrap text-xs text-white sm:text-base lg:flex lg:gap-4">
                 <li>
                   <Link
                     href={`${walletHost}/@${username}/transfers`}
@@ -388,6 +390,21 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     {t('navigation.profil_navbar.wallet')}
                   </Link>
                 </li>
+                {user?.isLoggedIn && username === user?.username ? (
+                  <li>
+                    <Link
+                      href={`/@${username}/settings`}
+                      rel="noopener noreferrer"
+                      className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800 ${
+                        router.asPath === `/@${username}/settings`
+                          ? 'bg-white text-slate-800 dark:bg-slate-950 dark:text-slate-200 dark:hover:text-slate-200 '
+                          : ''
+                      }`}
+                    >
+                      {t('navigation.profil_navbar.settings')}
+                    </Link>
+                  </li>
+                ) : null}
               </ul>
             </div>
           </div>

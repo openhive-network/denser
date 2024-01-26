@@ -14,7 +14,6 @@ import { Icons } from '@ui/components/icons';
 import { Button } from '@ui/components';
 import LangToggle from './lang-toggle';
 import { useLogout } from '@smart-signer/lib/auth/use-logout';
-import env from '@beam-australia/react-env';
 import DialogHBAuth from '@smart-signer/components/dialog-hb-auth';
 import { getLogger } from '@hive/ui/lib/logging';
 import { User } from '@smart-signer/types/common';
@@ -22,18 +21,9 @@ import { useTranslation } from 'next-i18next';
 
 const logger = getLogger('app');
 
-const UserMenu = ({
-  children,
-  user,
-  notifications
-}: {
-  children: ReactNode;
-  user: User;
-  notifications?: number;
-}) => {
+const UserMenu = ({ children, user }: { children: ReactNode; user: User }) => {
   const onLogout = useLogout();
-  const walletHost = env('WALLET_ENDPOINT');
-  const { t } = useTranslation('common_blog');
+  const { t } = useTranslation('common_wallet');
 
   return (
     <DropdownMenu>
@@ -41,42 +31,15 @@ const UserMenu = ({
       <DropdownMenuContent className="w-56 ">
         <DropdownMenuLabel className="flex w-full items-center justify-between">
           <span>{user.username}</span>
-          <div className="flex items-center space-x-2" title="Logged in with Hive private key">
-            <Icons.hive className="h-4 w-4" />
-            <div className="flex flex-col text-sm font-semibold">
-              <span>Hive</span>
-              <span className="text-red-600">Blog</span>
-            </div>
-          </div>
+          <Icons.walletlogo className=" w-20" />
         </DropdownMenuLabel>
 
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <Link href={`/@${user.username}`}>
-            <DropdownMenuItem className="cursor-pointer">
-              <Icons.user className="mr-2" />
-              <span className="w-full">{t('navigation.user_menu.profile')}</span>
-            </DropdownMenuItem>
-          </Link>
-          <Link href={`/@${user.username}/notifications`}>
-            <DropdownMenuItem className="cursor-pointer">
-              <Icons.clock className="mr-2" />
-              <span className="w-full">
-                {t('navigation.user_menu.notifications')}
-                {notifications && `(${notifications})`}
-              </span>
-            </DropdownMenuItem>
-          </Link>
-          <Link href={`/@${user.username}/comments`}>
-            <DropdownMenuItem className="cursor-pointer">
-              <Icons.comment className="mr-2" />
-              <span className="w-full">{t('navigation.user_menu.comments')}</span>
-            </DropdownMenuItem>
-          </Link>
-          <Link href={`/@${user.username}/replies`}>
-            <DropdownMenuItem className="cursor-pointer">
-              <Icons.undo className="mr-2" />
-              <span className="w-full">{t('navigation.user_menu.replies')}</span>
+          <Link href={`/@${user.username}/transfers`}>
+            <DropdownMenuItem className="flex w-full cursor-pointer items-center">
+              <Icons.wallet className="mr-2" />
+              <span className="w-full">{t('navigation.user_menu.wallet')}</span>
             </DropdownMenuItem>
           </Link>
           <DropdownMenuItem className="cursor-pointer">
@@ -98,16 +61,7 @@ const UserMenu = ({
           <DropdownMenuItem className="cursor-pointer">
             <LangToggle logged={true} />
           </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer">
-            <Link
-              target="_blank"
-              href={`${walletHost}/@${user.username}/transfers`}
-              className="flex w-full items-center"
-            >
-              <Icons.wallet className="mr-2" />
-              <span className="w-full">{t('navigation.user_menu.wallet')}</span>
-            </Link>
-          </DropdownMenuItem>
+
           <DropdownMenuItem className="cursor-pointer">
             <DialogHBAuth
               onAuthComplete={(username, keyType) => {
@@ -120,6 +74,18 @@ const UserMenu = ({
               </Link>
             </DialogHBAuth>
           </DropdownMenuItem>
+          <Link href={`/@${user.username}/password`}>
+            <DropdownMenuItem className="flex w-full cursor-pointer items-center">
+              <Icons.keyRound className="mr-2" />
+              <span className="w-full">{t('navigation.user_menu.change_password')}</span>
+            </DropdownMenuItem>
+          </Link>
+          <Link href={`/@${user.username}/settings`}>
+            <DropdownMenuItem className="flex w-full cursor-pointer items-center">
+              <Icons.settings className="mr-2" />
+              <span className="w-full">{t('navigation.user_menu.settings')}</span>
+            </DropdownMenuItem>
+          </Link>
           <DropdownMenuItem className="cursor-pointer">
             <Link
               href=""

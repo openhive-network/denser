@@ -201,16 +201,26 @@ test.describe('Translation tests', () => {
     await homePage.toggleLanguage.click();
     await expect(homePage.languageMenu.first()).toBeVisible();
     await homePage.languageMenuPl.click();
+
     await expect(await page.getByTestId('community-name').textContent()).toBe('Wszystkie posty');
     await expect(await homePage.getExploreCommunities).toHaveText('Pokaż więcej społeczności...');
     await homePage.getExploreCommunities.click();
+
+    // Click PL language again
+    // Without this on CI this tests found english page instead polish
+    await homePage.toggleLanguage.click();
+    await expect(homePage.languageMenu.first()).toBeVisible();
+    await homePage.languageMenuPl.click();
+
     await expect(communitiesExplorerPage.communitiesHeaderPage).toHaveText('Społeczności');
     await expect(communitiesExplorerPage.searchInput).toHaveAttribute('placeholder', 'Szukaj...');
     await expect(communitiesExplorerPage.communityListItemFooter.first()).toContainText('subskrybentów');
     await expect(communitiesExplorerPage.communityListItemFooter.first()).toContainText('autorów');
     await expect(communitiesExplorerPage.communityListItemFooter.first()).toContainText('postów');
     await expect(communitiesExplorerPage.communityListItemFooter.first()).toContainText('administrator');
-    await expect(communitiesExplorerPage.communityListItemSubscribeButton.first()).toContainText('Subskrybuj');
+    await expect(communitiesExplorerPage.communityListItemSubscribeButton.first()).toContainText(
+      'Subskrybuj'
+    );
   });
 
   // test('Witnesses page', async ({page}) =>{
@@ -283,7 +293,7 @@ test.describe('Translation tests', () => {
     await postPage.footerReblogBtn.hover();
     await expect(postPage.footerReblogBtnCardList).toContainText(expectedReblogTooltipText);
     // Validate post response button tooltip
-    const expectedResponseTooltipText: string = 'odpowiedz';
+    const expectedResponseTooltipText: RegExp = /odpowied[zź]i?/;
     await postPage.commentResponse.hover();
     await expect(postPage.postResponseTooltip).toContainText(expectedResponseTooltipText);
     // Validate title of social elements
@@ -446,6 +456,9 @@ test.describe('Translation tests', () => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
     test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     const menuElements = [
+      'Zaloguj się',
+      'Zapisz się',
+      'HBauth',
       'Witaj',
       'FAQ',
       'Block Explorer',

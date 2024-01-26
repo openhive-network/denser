@@ -1,8 +1,10 @@
-import { bridgeServer } from "@ui/lib/bridge";
-import Big from "big.js";
-import { AccountHistory } from "@/wallet/store/app-types";
-import { makeBitMaskFilter, operationOrders } from "@hiveio/dhive/lib/utils";
-import moment from "moment";
+import { bridgeServer } from '@ui/lib/bridge';
+import Big from 'big.js';
+import { AccountHistory } from '@/wallet/store/app-types';
+import { makeBitMaskFilter, operationOrders } from '@hiveio/dhive/lib/utils';
+import moment from 'moment';
+import { RCAPI } from '@hiveio/dhive/lib/helpers/rc';
+import { RCAccount } from '@hiveio/dhive/lib/chain/rc';
 
 export interface Witness {
   created: string;
@@ -25,38 +27,35 @@ export interface Witness {
   votes: number;
   last_confirmed_block_num: number;
 }
-export const getWitnessesByVote = (
-  from: string,
-  limit: number
-): Promise<Witness[]> =>
-  bridgeServer.call("condenser_api", "get_witnesses_by_vote", [from, limit]);
+export const getWitnessesByVote = (from: string, limit: number): Promise<Witness[]> =>
+  bridgeServer.call('condenser_api', 'get_witnesses_by_vote', [from, limit]);
+export const findRcAccounts = (username: string): Promise<RCAccount[]> =>
+  new RCAPI(bridgeServer).findRCAccounts([username]);
 
 export const DEFAULT_PARAMS_FOR_PROPOSALS: GetProposalsParams = {
   start: [],
   limit: 30,
-  order: "by_total_votes",
-  order_direction: "descending",
-  status: "votable",
+  order: 'by_total_votes',
+  order_direction: 'descending',
+  status: 'votable'
 };
 export interface GetProposalsParams {
   start: Array<number | string>;
   limit: number;
-  order: "by_creator" | "by_total_votes" | "by_start_date" | "by_end_date";
-  order_direction: "descending" | "ascending";
-  status: "all" | "inactive" | "active" | "votable" | "expired";
+  order: 'by_creator' | 'by_total_votes' | 'by_start_date' | 'by_end_date';
+  order_direction: 'descending' | 'ascending';
+  status: 'all' | 'inactive' | 'active' | 'votable' | 'expired';
   last_id?: number;
 }
-export const getProposals = async (
-  params?: Partial<GetProposalsParams>
-): Promise<Proposal[]> => {
+export const getProposals = async (params?: Partial<GetProposalsParams>): Promise<Proposal[]> => {
   try {
-    const response = await bridgeServer.call("database_api", "list_proposals", {
+    const response = await bridgeServer.call('database_api', 'list_proposals', {
       ...DEFAULT_PARAMS_FOR_PROPOSALS,
-      ...params,
+      ...params
     });
     return response.proposals;
   } catch (error) {
-    console.error("Error:", error);
+    console.error('Error:', error);
     throw error;
   }
 };
@@ -78,7 +77,7 @@ export interface Proposal {
   total_votes: string;
 }
 export interface ListItemProps {
-  proposalData: Omit<Proposal, "daily_pay" | "total_votes"> & {
+  proposalData: Omit<Proposal, 'daily_pay' | 'total_votes'> & {
     total_votes: Big;
     daily_pay: { amount: Big };
   };
@@ -87,14 +86,10 @@ export interface ListItemProps {
 }
 export const getVestingDelegations = (
   username: string,
-  from: string = "",
+  from: string = '',
   limit: number = 50
 ): Promise<DelegatedVestingShare[]> =>
-  bridgeServer.database.call("get_vesting_delegations", [
-    username,
-    from,
-    limit,
-  ]);
+  bridgeServer.database.call('get_vesting_delegations', [username, from, limit]);
 export interface DelegatedVestingShare {
   id: number;
   delegatee: string;
@@ -118,18 +113,18 @@ const wallet_operations_bitmask = makeBitMaskFilter([
   op.escrow_release,
   op.fill_convert_request,
   op.fill_order,
-  op.claim_reward_balance,
+  op.claim_reward_balance
 ]);
 export const getAccountHistory = (
   username: string,
   start: number = -1,
   limit: number = 20
 ): Promise<AccountHistory[]> =>
-  bridgeServer.call("condenser_api", "get_account_history", [
+  bridgeServer.call('condenser_api', 'get_account_history', [
     username,
     start,
     limit,
-    ...wallet_operations_bitmask,
+    ...wallet_operations_bitmask
   ]);
 export interface ProposalVote {
   id: number;
@@ -139,18 +134,12 @@ export interface ProposalVote {
 
 export const getProposalVotes = (
   proposalId: number,
-  voter: string = "",
+  voter: string = '',
   limit: number = 1000
 ): Promise<ProposalVote[]> =>
   bridgeServer
-    .call("condenser_api", "list_proposal_votes", [
-      [proposalId, voter],
-      limit,
-      "by_proposal_voter",
-    ])
-    .then((r) =>
-      r.filter((x: ProposalVote) => x.proposal.proposal_id === proposalId)
-    );
+    .call('condenser_api', 'list_proposal_votes', [[proposalId, voter], limit, 'by_proposal_voter'])
+    .then((r) => r.filter((x: ProposalVote) => x.proposal.proposal_id === proposalId));
 export interface MarketStatistics {
   hbd_volume: string;
   highest_bid: string;
@@ -160,7 +149,7 @@ export interface MarketStatistics {
   percent_change: string;
 }
 export const getMarketStatistics = (): Promise<MarketStatistics> =>
-  bridgeServer.call("condenser_api", "get_ticker", []);
+  bridgeServer.call('condenser_api', 'get_ticker', []);
 
 export interface OrdersData {
   bids: OrdersDataItem[];
@@ -194,31 +183,20 @@ export interface OrdersDataItem {
 }
 
 export const getOrderBook = (limit: number = 500): Promise<OrdersData> =>
-  bridgeServer.call("condenser_api", "get_order_book", [limit]);
+  bridgeServer.call('condenser_api', 'get_order_book', [limit]);
 
 export const getOpenOrder = (user: string): Promise<OpenOrdersData[]> =>
-  bridgeServer.call("condenser_api", "get_open_orders", [user]);
+  bridgeServer.call('condenser_api', 'get_open_orders', [user]);
 
-export const getTradeHistory = (
-  limit: number = 1000
-): Promise<OrdersDataItem[]> => {
-  let todayEarlier = moment(Date.now())
-    .subtract(10, "h")
-    .format()
-    .split("+")[0];
-  let todayNow = moment(Date.now()).format().split("+")[0];
-  return bridgeServer.call("condenser_api", "get_trade_history", [
-    todayEarlier,
-    todayNow,
-    limit,
-  ]);
+export const getTradeHistory = (limit: number = 1000): Promise<OrdersDataItem[]> => {
+  let todayEarlier = moment(Date.now()).subtract(10, 'h').format().split('+')[0];
+  let todayNow = moment(Date.now()).format().split('+')[0];
+  return bridgeServer.call('condenser_api', 'get_trade_history', [todayEarlier, todayNow, limit]);
 };
 export interface RecentTradesData {
   date: string;
   current_pays: string;
   open_pays: string;
 }
-export const getRecentTrades = (
-  limit: number = 1000
-): Promise<RecentTradesData[]> =>
-  bridgeServer.call("condenser_api", "get_recent_trades", [limit]);
+export const getRecentTrades = (limit: number = 1000): Promise<RecentTradesData[]> =>
+  bridgeServer.call('condenser_api', 'get_recent_trades', [limit]);

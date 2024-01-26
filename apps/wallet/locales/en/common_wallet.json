@@ -93,6 +93,14 @@
     "wallet_nav": {
       "balances": "Balances",
       "delegations": "Delegations"
+    },
+    "user_menu": {
+      "wallet": "Wallet",
+      "toggle_theme": "Theme",
+      "toggle_lang": "Language",
+      "change_password": "Change Password",
+      "settings": "Settings",
+      "logout": "Logout"
     }
   },
   "select_sort": {

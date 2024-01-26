@@ -9,13 +9,16 @@ import {
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { parseCookie } from '@/wallet/lib/utils';
+import clsx from 'clsx';
+import { useTranslation } from 'next-i18next';
 
-export function LangToggle() {
+export default function LangToggle({ logged }: { logged: Boolean }) {
   const router = useRouter();
   const [lang, setLang] = useState<string | null>(null);
+  const { t } = useTranslation('common_wallet');
 
   useEffect(() => {
-    setLang(parseCookie(document.cookie)[' NEXT_LOCALE']);
+    setLang(parseCookie(document.cookie)[' NEXT_LOCALE'] || 'en');
   }, []);
 
   const languages = [
@@ -33,15 +36,19 @@ export function LangToggle() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="toggle-language">
+        <Button
+          variant="ghost"
+          size="sm"
+          className={clsx('flex h-10 w-full p-0 text-start font-normal', { 'h-6': logged })}
+          data-testid="toggle-language"
+        >
           <span>{lang ? languages.filter((language) => language.locale === lang)[0].label : null}</span>
-          <span className="sr-only">Toggle language</span>
+          {logged ? <span className="ml-2 w-full">{t('navigation.user_menu.toggle_lang')}</span> : null}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {languages.map(({ locale, label }) => (
           <DropdownMenuItem
-            data-testid={locale}
             key={label}
             onClick={() => {
               document.cookie = ` NEXT_LOCALE=${locale};`;
@@ -49,7 +56,7 @@ export function LangToggle() {
             }}
           >
             {label}
-            <span>{locale}</span>
+            <span data-testid={locale}>{locale}</span>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

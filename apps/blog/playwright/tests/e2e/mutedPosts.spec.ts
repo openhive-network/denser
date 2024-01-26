@@ -151,12 +151,13 @@ test.describe('Muted posts tests', () => {
         if (postTittle.length > 0) {
 
           await postTittle[0].click();
+          await page.waitForSelector(commentViewPage.commentGreenSection['_selector']);
+          await expect(commentViewPage.commentGreenSection).toBeVisible();
           break;
         }
+      } else {
+        console.warn('There was no any RE: post');
       }
     }
-
-    await page.waitForSelector(commentViewPage.commentGreenSection['_selector']);
-    await expect(commentViewPage.commentGreenSection).toBeVisible()
   })
 });

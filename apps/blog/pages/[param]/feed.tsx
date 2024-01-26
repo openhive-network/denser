@@ -37,7 +37,7 @@ export const PostSkeleton = () => {
   );
 };
 
-const ParamPage: FC = () => {
+const FeedPage: FC = () => {
   const { t } = useTranslation('common_blog');
   const { username, tag } = useSiteParams();
   const { ref: refAcc, inView: inViewAcc } = useInView();
@@ -57,7 +57,7 @@ const ParamPage: FC = () => {
       return await getAccountPosts(
         'feed',
         username,
-        user ? user.username : 'hive.blog',
+        user?.username || 'hive.blog',
         pageParam?.author,
         pageParam?.permlink
       );
@@ -78,7 +78,7 @@ const ParamPage: FC = () => {
     data: mySubsData,
     isLoading: mySubsIsLoading,
     isError: mySubsIsError
-  } = useQuery([['subscriptions', user?.username]], () => getSubscriptions(user ? user?.username : ''), {
+  } = useQuery([['subscriptions', user?.username]], () => getSubscriptions(user?.username || ''), {
     enabled: Boolean(user?.username)
   });
   const {
@@ -109,7 +109,7 @@ const ParamPage: FC = () => {
       <div className="grid grid-cols-12 md:gap-4">
         <div className="hidden md:col-span-3 md:flex xl:col-span-2">
           {user?.isLoggedIn ? (
-            <CommunitiesMybar data={mySubsData} username={user ? user?.username : ''} />
+            <CommunitiesMybar data={mySubsData} username={user?.username || ''} />
           ) : (
             <CommunitiesSidebar />
           )}
@@ -118,7 +118,7 @@ const ParamPage: FC = () => {
           <span className="text-md mt-4 hidden text-xl font-medium xl:block">My friends</span>
           <span className="xl:hidden" translate="no">
             <CommunitiesSelect
-              username={user?.username ? user.username : undefined}
+              username={user?.username || undefined}
               mySubsData={mySubsData}
               title={
                 tag
@@ -185,7 +185,7 @@ const ParamPage: FC = () => {
   );
 };
 
-export default ParamPage;
+export default FeedPage;
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   return {
