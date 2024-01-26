@@ -1,7 +1,8 @@
 import { KeychainSDK, KeychainKeyTypes } from 'keychain-sdk';
 import dhive, { Operation, Transaction } from '@hiveio/dhive';
-import { getLogger } from '@hive/ui/lib/logging';
+import { KeyTypes } from '@smart-signer/types/common';
 
+import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
 // See https://github.com/hive-keychain/keychain-sdk
@@ -24,19 +25,12 @@ export function hasCompatibleKeychain() {
 }
 
 
-export enum KeychainKeyTypesLC {
-  posting = "posting",
-  active = "active",
-  memo = "memo"
-}
-
-
 export class SignerKeychain {
 
   async signChallenge(
     message: string,
     username: string,
-    method: KeychainKeyTypes = KeychainKeyTypes.posting,
+    method: KeyTypes = KeyTypes.posting,
   ) {
     logger.info('in signBuffer %o', { message, username, method });
     const keychain = new KeychainSDK(window);
@@ -47,7 +41,7 @@ export class SignerKeychain {
       const response = await keychain.signBuffer({
         username,
         message,
-        method,
+        method: KeychainKeyTypes[method],
       });
       if (response.error) {
         throw new Error(`signBuffer error: ${response.error}`);
@@ -62,7 +56,7 @@ export class SignerKeychain {
   async signTransaction(
     username: string,
     operations: Operation[],
-    method: KeychainKeyTypes = KeychainKeyTypes.posting,
+    method: KeyTypes = KeyTypes.posting,
   ) {
     const keychain = new KeychainSDK(window);
     try {
@@ -89,7 +83,7 @@ export class SignerKeychain {
 
       const signTx = await keychain.signTx({
         username,
-        method,
+        method: KeychainKeyTypes[method],
         tx,
       });
       console.info('bamboo signTx: %o', signTx);

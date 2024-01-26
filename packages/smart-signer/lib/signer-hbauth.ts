@@ -1,5 +1,4 @@
-import { KeychainKeyTypes } from 'keychain-sdk';
-import { KeychainKeyTypesLC } from '@smart-signer/lib/signer-keychain';
+import { KeyTypes } from '@smart-signer/types/common';
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { authService } from '@smart-signer/lib/auth-service';
 import { SignChallenge, SignTransaction } from '@smart-signer/lib/signer';
@@ -26,23 +25,16 @@ export class SignerHbauth {
     // const hiveChain = await createHiveChain();
     // const tx = await hiveChain.getTransactionBuilder('+1m');
 
-    const vote: vote = {
-      voter: 'stirlitz',
-      author: 'holozing',
-      permlink: 'referral-program-is-live',
-      weight: 10000
-    }
-
     const dynamicGlobalData = await getDynamicGlobalProperties();
     const wax = await createWaxFoundation();
     const tx = new wax.TransactionBuilder(dynamicGlobalData?.head_block_id as unknown as TBlockHash, '+1m');
-    tx.push({ vote });
+    tx.push(operation);
     logger.info('bamboo tx', tx.toApi());
 
     const signature = await this.signDigest(
       'stirlitz',
       tx.sigDigest,
-      KeychainKeyTypesLC.posting
+      KeyTypes.posting
       );
 
     // const authClient = await authService.getOnlineClient();
@@ -67,7 +59,7 @@ export class SignerHbauth {
     username,
     password = '',
     message,
-    keyType = KeychainKeyTypes.posting
+    keyType = KeyTypes.posting
   }: SignChallenge) {
     const digest = cryptoUtils.sha256(message).toString('hex');
     return this.signDigest(
@@ -80,7 +72,7 @@ export class SignerHbauth {
     username: string,
     password: string,
     digest: string,
-    keyType: KeychainKeyTypes = KeychainKeyTypes.posting
+    keyType: KeyTypes = KeyTypes.posting
   ) {
     logger.info('sign args: %o', { username, password, keyType });
 

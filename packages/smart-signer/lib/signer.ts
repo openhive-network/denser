@@ -1,14 +1,13 @@
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { getDynamicGlobalProperties } from '@ui/lib/hive';
 import { createWaxFoundation, TBlockHash, createHiveChain, BroadcastTransactionRequest, vote, operation } from '@hive/wax';
-import { KeychainKeyTypes } from 'keychain-sdk';
-import { KeychainKeyTypesLC } from '@smart-signer/lib/signer-keychain';
 import { authService } from '@smart-signer/lib/auth-service';
 import { SignerHbauth } from '@smart-signer/lib/signer-hbauth';
 import { SignerKeychain } from '@smart-signer/lib/signer-keychain';
 import { SignerWif } from '@smart-signer/lib/signer-wif';
 import { Signatures } from '@smart-signer/lib/auth/utils';
 import { LoginTypes } from '@smart-signer/types/common';
+import { KeyTypes } from '@smart-signer/types/common';
 
 export { vote, operation } from '@hive/wax';
 
@@ -19,7 +18,7 @@ export interface SignTransaction {
     operation: operation;
     loginType: LoginTypes;
     username: string;
-    keyType?: KeychainKeyTypes
+    keyType?: KeyTypes
 }
 
 export interface SignChallenge {
@@ -27,7 +26,7 @@ export interface SignChallenge {
     loginType: LoginTypes;
     username: string;
     password?: string; // private key or password to unlock hbauth key
-    keyType?: KeychainKeyTypes;
+    keyType?: KeyTypes;
 }
 
 export class Signer {
@@ -39,11 +38,13 @@ export class Signer {
      * transactions – those need different hashing method and other
      * special treatment.
      *
-     * @param {string} message
-     * @param {LoginTypes} loginType
-     * @param {string} username
-     * @param {string} [password='']
-     * @param {KeychainKeyTypesLC} [keyType=KeychainKeyTypesLC.posting]
+     * @param {SignChallenge} {
+     *         message,
+     *         loginType,
+     *         username,
+     *         password = '', // private key or password to unlock hbauth key
+     *         keyType = KeyTypes.posting
+     *     }
      * @returns {Promise<Signatures>}
      * @memberof Signer
      */
@@ -52,7 +53,7 @@ export class Signer {
         loginType,
         username,
         password = '', // private key or password to unlock hbauth key
-        keyType = KeychainKeyTypes.posting
+        keyType = KeyTypes.posting
     }: SignChallenge): Promise<Signatures> {
         logger.info('in signChallenge %o', { loginType, username, password, keyType, message });
         const signatures: Signatures = {};
@@ -116,7 +117,7 @@ export class Signer {
         operation,
         loginType,
         username,
-        keyType = KeychainKeyTypes.posting
+        keyType = KeyTypes.posting
     }: SignTransaction): Promise<any> {
 
         try {

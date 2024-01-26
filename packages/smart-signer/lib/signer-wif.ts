@@ -1,7 +1,6 @@
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
-import { KeychainKeyTypes } from 'keychain-sdk';
-import { KeychainKeyTypesLC } from '@smart-signer/lib/signer-keychain';
 import { SignChallenge, SignTransaction } from '@smart-signer/lib/signer';
+import { KeyTypes } from '@smart-signer/types/common';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -11,7 +10,7 @@ export class SignerWif {
     async signChallenge ({
         message,
         username,
-        keyType = KeychainKeyTypes.posting,
+        keyType = KeyTypes.posting,
         password = '', // WIF private key
     }: SignChallenge) {
 
@@ -34,7 +33,7 @@ export class SignerWif {
         operation,
         loginType,
         username,
-        keyType = KeychainKeyTypes.posting
+        keyType = KeyTypes.posting
     }: SignTransaction): Promise<any> {
 
         try {

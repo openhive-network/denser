@@ -12,8 +12,7 @@ import HiveAuthUtils from '@smart-signer/lib/hive-auth-utils';
 import { LoginForm, LoginFormSchema } from '@smart-signer/components/login-form';
 import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { Signer } from '@smart-signer/lib/signer';
-import { KeychainKeyTypesLC } from '@smart-signer/lib/signer-keychain';
-import { KeychainKeyTypes } from 'keychain-sdk';
+import { KeyTypes } from '@smart-signer/types/common';
 
 const logger = getLogger('app');
 
@@ -103,18 +102,19 @@ export function LoginPanel(
       }
     } else {
       try {
+        logger.info('bamboo KeyTypes.posting', KeyTypes.posting);
         signatures = await signer.signChallenge({
           message,
           loginType,
           username,
           password,
-          keyType: KeychainKeyTypes.posting
+          keyType: KeyTypes.posting
         });
 
-          // TODO This should be done in Signer.
-          if (loginType === LoginTypes.wif) {
-            setHiveKeys({ ...hiveKeys, ...{ posting: password } });
-          }
+        // TODO This should be done in Signer.
+        if (loginType === LoginTypes.wif) {
+          setHiveKeys({ ...hiveKeys, ...{ posting: password } });
+        }
       } catch (error) {
         logger.error('onSubmit error in signLoginChallenge', error);
         setErrorMsg(t('pageLogin.signingFailed'));

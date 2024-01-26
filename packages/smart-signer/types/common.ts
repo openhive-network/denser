@@ -13,6 +13,12 @@ export enum LoginTypes {
     keychain = 'keychain',
 }
 
+export enum KeyTypes {
+    posting = "posting",
+    active = "active",
+    memo = "memo"
+}
+
 export interface IronSessionData {
     user?: User;
 }
