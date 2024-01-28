@@ -68,7 +68,7 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
 
       const signer = new Signer();
       try {
-        await signer.broadcastOperation({
+        await signer.broadcastTransaction({
           operation: { vote },
           loginType: user.loginType,
           username: user.username

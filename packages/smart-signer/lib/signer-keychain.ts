@@ -1,7 +1,7 @@
 import { KeychainSDK, KeychainKeyTypes } from 'keychain-sdk';
 import { Operation, Transaction, OperationName, VirtualOperationName, Client } from '@hiveio/dhive';
 import { KeyTypes, LoginTypes } from '@smart-signer/types/common';
-import { SignChallenge, BroadcastOperation } from '@smart-signer/lib/signer';
+import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -55,12 +55,12 @@ export class SignerKeychain {
     }
   };
 
-  async broadcastOperation({
+  async broadcastTransaction({
     operation,
     loginType,
     username,
     keyType = KeyTypes.posting
-  }: BroadcastOperation): Promise<{ success: boolean, result: any, error: string}> {
+  }: BroadcastTransaction): Promise<{ success: boolean, result: any, error: string}> {
 
     let result = { success: true, result: '', error: ''};
     const keychain = new KeychainSDK(window, { rpc: 'https://api.hive.blog' });
@@ -96,7 +96,7 @@ export class SignerKeychain {
       result.result = broadcastResult.result as any;
 
     } catch (error) {
-      logger.trace('Error in SignerKeychain.broadcastOperation: %o', error);
+      logger.trace('Error in SignerKeychain.broadcastTransaction: %o', error);
       result = { success: false, result: '', error: 'Sign failed'};
       throw error;
     }
@@ -109,7 +109,7 @@ export class SignerKeychain {
     loginType,
     username,
     keyType = KeyTypes.posting
-  }: BroadcastOperation): Promise<any> {
+  }: BroadcastTransaction): Promise<any> {
 
     const keychain = new KeychainSDK(window, { rpc: 'https://api.hive.blog' });
     try {
@@ -162,7 +162,7 @@ export class SignerKeychain {
       }
 
     } catch (error) {
-      logger.trace('SignerKeychain.broadcastOperation error: %o', error);
+      logger.trace('SignerKeychain.broadcastTransaction error: %o', error);
       throw error;
     }
   };

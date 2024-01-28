@@ -1,7 +1,7 @@
 import { KeyTypes } from '@smart-signer/types/common';
 import { cryptoUtils } from '@hiveio/dhive';
 import { authService } from '@smart-signer/lib/auth-service';
-import { SignChallenge, BroadcastOperation } from '@smart-signer/lib/signer';
+import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer';
 import { getDynamicGlobalProperties } from '@ui/lib/hive';
 import { createWaxFoundation, TBlockHash, createHiveChain, BroadcastTransactionRequest, vote, operation } from '@hive/wax';
 
@@ -24,12 +24,12 @@ export class SignerHbauth {
     );
   }
 
-  async broadcastOperation({
+  async broadcastTransaction({
     operation,
     loginType,
     username,
     keyType = KeyTypes.posting
-  }: BroadcastOperation): Promise<{ success: boolean, error: string}> {
+  }: BroadcastTransaction): Promise<{ success: boolean, error: string}> {
 
     let result = { success: true, error: ''};
     try {
@@ -65,7 +65,7 @@ export class SignerHbauth {
       const result = await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
 
     } catch (error) {
-      logger.trace('SignerHbauth.broadcastOperation error: %o', error);
+      logger.trace('SignerHbauth.broadcastTransaction error: %o', error);
       result = { success: false, error: 'Sign failed'};
       throw error;
     }

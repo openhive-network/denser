@@ -10,7 +10,7 @@ export { vote, operation } from '@hive/wax';
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
-export interface BroadcastOperation {
+export interface BroadcastTransaction {
     operation: operation;
     loginType: LoginTypes;
     username: string;
@@ -106,30 +106,27 @@ export class Signer {
     }
 
     /**
-     * Create Hive transaction for given operation or operations, sign
-     * it and broadcast.
+     * Create Hive transaction for given, sign it and broadcast it to
+     * Hive blockchain.
      *
-     * @param {BroadcastOperation} {
-     *         operation,
-     *         loginType,
-     *         username,
+     * @param {BroadcastTransaction} { operation, loginType, username,
      *         keyType = KeyTypes.posting
      *     }
      * @returns {Promise<any>}
      * @memberof Signer
      */
-    async broadcastOperation({
+    async broadcastTransaction({
         operation,
         loginType,
         username,
         keyType = KeyTypes.posting
-    }: BroadcastOperation): Promise<any> {
-        logger.info('in broadcastOperation: %o', {
+    }: BroadcastTransaction): Promise<any> {
+        logger.info('in broadcastTransaction: %o', {
             operation, loginType, username, keyType
         });
         if (loginType === LoginTypes.hbauth) {
             const signer = new SignerHbauth();
-            return signer.broadcastOperation({
+            return signer.broadcastTransaction({
                 operation,
                 loginType,
                 username,
@@ -137,7 +134,7 @@ export class Signer {
             });
         } else if (loginType === LoginTypes.keychain) {
             const signer = new SignerKeychain();
-            return signer.broadcastOperation({
+            return signer.broadcastTransaction({
                 operation,
                 loginType,
                 username,

@@ -1,5 +1,5 @@
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
-import { SignChallenge, BroadcastOperation } from '@smart-signer/lib/signer';
+import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer';
 import { KeyTypes } from '@smart-signer/types/common';
 
 import { getLogger } from '@hive/ui/lib/logging';
@@ -29,15 +29,15 @@ export class SignerWif {
         return signature;
     };
 
-    async broadcastOperation({
+    async broadcastTransaction({
         operation,
         loginType,
         username,
         keyType = KeyTypes.posting
-    }: BroadcastOperation): Promise<any> {
+    }: BroadcastTransaction): Promise<any> {
 
         try {
-            logger.info('in broadcastOperation: %o', {
+            logger.info('in broadcastTransaction: %o', {
                 operation, loginType, username, keyType
             });
             throw new Error('Not implemented');
