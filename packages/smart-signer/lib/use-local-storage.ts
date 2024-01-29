@@ -8,7 +8,7 @@ function useLocalStorage<T extends string | object>(key: string, initialValue: T
   // State to store our value
   // Pass initial state function to useState so logic is only executed once
   const [storedValue, setStoredValue] = useState<T | undefined>(() => {
-    if (typeof window === 'undefined') {
+    if (typeof window === 'undefined' && 'localStorage' in global && global.localStorage) {
       return initialValue;
     }
     try {
@@ -31,7 +31,7 @@ function useLocalStorage<T extends string | object>(key: string, initialValue: T
       // Save state
       setStoredValue(valueToStore);
       // Save to local storage
-      if (typeof window !== 'undefined') {
+      if (typeof window !== 'undefined' && 'localStorage' in global && global.localStorage) {
         window.localStorage.setItem(key, JSON.stringify(valueToStore));
       }
     } catch (error) {

@@ -43,8 +43,6 @@ export function LoginPanel(
   const [hiveAuthData, setHiveAuthData] =
     useLocalStorage('hiveAuthData', HiveAuthUtils.initialHiveAuthData);
 
-  const [hiveKeys, setHiveKeys] = useLocalStorage('hiveKeys', {});
-
   const signIn = useSignIn();
 
   const onSubmit = async (data: LoginFormSchema) => {
@@ -109,11 +107,6 @@ export function LoginPanel(
           password,
           keyType: KeyTypes.posting
         });
-
-        // TODO This should be done in Signer.
-        if (loginType === LoginTypes.wif) {
-          setHiveKeys({ ...hiveKeys, ...{ posting: password } });
-        }
       } catch (error) {
         logger.error('onSubmit error in signLoginChallenge', error);
         setErrorMsg(t('pageLogin.signingFailed'));

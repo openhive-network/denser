@@ -141,6 +141,14 @@ export class Signer {
                 username,
                 keyType,
             });
+        } else if (loginType === LoginTypes.wif) {
+            const signer = new SignerWif();
+            return signer.broadcastTransaction({
+                operation,
+                loginType,
+                username,
+                keyType,
+            });
         } else {
             throw new Error('Not implemented');
         }

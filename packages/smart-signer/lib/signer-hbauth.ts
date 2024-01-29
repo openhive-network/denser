@@ -11,6 +11,10 @@ const logger = getLogger('app');
 
 export class SignerHbauth {
 
+  // constructor() {
+  //   logger.info('bamboo constructor SignerHbauth');
+  // }
+
   // Create digest and return its signature made with signDigest.
   async signChallenge({
     username,
