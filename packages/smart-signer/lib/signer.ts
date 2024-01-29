@@ -94,7 +94,7 @@ export class Signer {
                     password,
                     loginType,
                 });
-                logger.info('password', { signature });
+                logger.info('wif', { signature });
                 signatures.posting = signature;
             } catch (error) {
                 throw error;
