@@ -19,14 +19,10 @@ export class SignerWif extends SignerHbauth {
         storageType = 'localStorage'
     }: SignerWifOptions = {}) {
         super();
-        if (isStorageAvailable(storageType)) {
-            if (storageType = 'localStorage') {
-                this.storage = window.localStorage;
-            } else if (storageType = 'sessionStorage') {
-                this.storage = window.sessionStorage;
-            } else {
-                this.storage = memoryStorage;
-            }
+        if (storageType === 'localStorage' && isStorageAvailable(storageType)) {
+            this.storage = window.localStorage;
+        } else if (storageType === 'sessionStorage' && isStorageAvailable(storageType)) {
+            this.storage = window.sessionStorage;
         } else {
             this.storage = memoryStorage;
         }
@@ -45,8 +41,9 @@ export class SignerWif extends SignerHbauth {
     }
 
     removeAllKeys() {
-        for (const keyType of Object.keys(KeyTypes)) {
-            this.removeKey(keyType);
+        for (const k of Object.keys(KeyTypes)) {
+            const keyType = k as KeyTypes;
+            this.removeKey(KeyTypes[keyType]);
         }
     }
 
