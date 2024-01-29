@@ -40,7 +40,6 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "hive-auth-client": "^0.1.5",
-    "hive-keychain-commons": "^1.2.4",
     "http-errors": "^2.0.0",
     "i": "^0.3.7",
     "iron-session": "^8.0.1",

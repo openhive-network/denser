@@ -7,8 +7,10 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@hive/beekeeper": "^1.27.5-rc0-stable.610e7072c",
     "@hive/hb-auth": "^0.0.1-stable.d9b0769",
     "@hive/ui": "*",
+    "@hive/wax": "^0.0.3-39c8406",
     "@hiveio/dhive": "^1.2.8",
     "@hiveio/hive-js": "^2.0.7",
     "@tanstack/react-query": "^4.36.1",
@@ -16,9 +18,10 @@
     "hive-auth-client": "^0.1.5",
     "http-errors": "^2.0.0",
     "iron-session": "^8.0.1",
+    "keychain-sdk": "^0.6.1",
     "next": "^14.0.4",
-    "qrcode": "^1.5.3",
     "oidc-provider": "^8.4.2",
+    "qrcode": "^1.5.3",
     "react": "^18.2.0",
     "typescript": "5.3.3",
     "zod": "^3.21.4"
