@@ -5,6 +5,7 @@ import { SignerWif } from '@smart-signer/lib/signer-wif';
 import { Signatures } from '@smart-signer/lib/auth/utils';
 import { LoginTypes } from '@smart-signer/types/common';
 import { KeyTypes } from '@smart-signer/types/common';
+// export * from '@hive/wax'; // TODO Consider this.
 export { vote, operation } from '@hive/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
