@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useSiteParams } from '@hive/ui/components/hooks/use-site-params';
@@ -23,6 +23,11 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { authService } from '@smart-signer/lib/auth-service';
 import { BroadcastTransactionRequest, TBlockHash, createHiveChain, createWaxFoundation } from '@hive/wax';
 import { toast } from '@ui/components/hooks/use-toast';
+import { Signer } from '@smart-signer/lib/signer';
+import { getLogger } from '@ui/lib/logging';
+import { useFollowingInfiniteQuery } from '../hooks/use-following-infinitequery';
+import { getFollowing } from '@/blog/lib/hive';
+import { useInfiniteQuery } from '@tanstack/react-query';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -48,11 +53,13 @@ function compareDates(dateStrings: string[], t: TFunction<'common_wallet', undef
 }
 
 const ProfileLayout = ({ children }: IProfileLayout) => {
+  const logger = getLogger('app');
   const router = useRouter();
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
   const walletHost = env('WALLET_ENDPOINT');
   const { username } = useSiteParams();
+  const [isFollow, setIsFollow] = useState(false);
   const {
     isLoading: profileDataIsLoading,
     error: errorProfileData,
@@ -69,6 +76,29 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
     enabled: !!username
   });
 
+  const { data: followingData } = useFollowingInfiniteQuery(user?.username || '', 50);
+
+  // const {
+  //   data: followingData,
+  //   isLoading: followingDataIsLoading,
+  //   isFetching: followingDataIsFetching,
+  //   error: followingDataError,
+  //   isError: followingDataIsError,
+  //   status,
+  //   isFetchingNextPage,
+  //   fetchNextPage,
+  //   hasNextPage
+  // } = useInfiniteQuery(
+  //   ['followingData', user?.username],
+  //   ({ pageParam: last_id }) => getFollowing({ account: user?.username, start: last_id, limit: 50 }),
+  //   {
+  //     enabled: isFollow || Boolean(user?.username),
+  //     getNextPageParam: (lastPage) => {
+  //       return lastPage.length >= 50 ? lastPage[lastPage.length - 1].following : undefined;
+  //     }
+  //   }
+  // );
+
   const {
     isLoading: dynamicGlobalDataIsLoading,
     error: dynamicGlobalDataError,
@@ -80,6 +110,88 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
     retry: false,
     refetchOnWindowFocus: false
   });
+
+  const follow = useCallback(
+    async (e: any, type: string) => {
+      console.log('followingData?.pages', followingData?.pages);
+      console.log('TYPE', type);
+      if (user && user.isLoggedIn) {
+        const what = type === 'follow' ? 'blog' : null;
+        const follow = {
+          id: 'follow',
+          json: JSON.stringify([
+            'follow',
+            {
+              follower: user.username,
+              following: username,
+              what: [what]
+            }
+          ]),
+          required_auths: [],
+          required_posting_auths: [user.username]
+        };
+
+        console.log('follow', follow);
+
+        // if (type === 'follow') {
+        //   vote.weight = -10000;
+        // }
+
+        const signer = new Signer();
+        try {
+          await signer.broadcastTransaction({
+            operation: { custom_json: follow },
+            loginType: user.loginType,
+            username: user.username
+          });
+          // e.target.classList.add('text-white');
+          console.log('type', type);
+          console.log('after followingData?.pages', followingData?.pages);
+          setIsFollow(
+            Boolean(
+              followingData?.pages[0].filter((f) => f.follower === user?.username && f.following === username)
+                .length
+            )
+          );
+          // if (type === 'follow') {
+          //   e.target.classList.add('bg-red-600');
+          // }
+
+          // if (type === 'mute') {
+          //   e.target.classList.add('bg-gray-600');
+          // }
+        } catch (e) {
+          //
+          // TODO Improve messages displayed to user, after we do better
+          // (unified) error handling in smart-signer.
+          //
+          logger.error('got error', e);
+          let description = 'Transaction broadcast error';
+          if (`${e}`.indexOf('vote on this comment is identical') >= 0) {
+            description = 'Your current vote on this comment is identical to this vote.';
+          } else if (`${e}`.indexOf('Not implemented') >= 0) {
+            description = 'Method not implemented for this login type.';
+          }
+          toast({
+            description,
+            variant: 'destructive'
+          });
+        }
+      }
+    },
+    [followingData?.pages, logger, user, username]
+  );
+
+  useEffect(() => {
+    console.log('effect followingData?.pages', followingData?.pages);
+    setIsFollow(
+      Boolean(
+        followingData?.pages[0].filter((f) => f.follower === user?.username && f.following === username)
+          .length
+      )
+    );
+  }, [followingData?.pages, user?.username, username]);
+
   if (accountDataIsLoading || dynamicGlobalDataIsLoading || profileDataIsLoading) {
     return <Loading loading={accountDataIsLoading || dynamicGlobalDataIsLoading || profileDataIsLoading} />;
   }
@@ -89,38 +201,6 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   const delegated_hive = delegatedHive(accountData, dynamicGlobalData);
   const vesting_hive = vestingHive(accountData, dynamicGlobalData);
   const hp = vesting_hive.minus(delegated_hive);
-
-  // async function follow(e: any) {
-  //   // setEnableDynamic(true);
-  //   const authClient = await authService.getOnlineClient();
-  //   const wax = await createWaxFoundation();
-  //   const tx = new wax.TransactionBuilder(dynamicGlobalData?.head_block_id as unknown as TBlockHash, '+1m');
-
-  //   if (user && user.isLoggedIn && tx) {
-  //     const follow = {
-  //       // TODO
-  //     };
-
-  //     tx.push({
-  //       follow
-  //     });
-
-  //     const signature = await authClient.sign(user.username, tx.sigDigest, 'posting');
-  //     const transaction = tx.build();
-  //     transaction.signatures.push(signature);
-
-  //     const transactionRequest = new BroadcastTransactionRequest(tx);
-  //     const hiveChain = await createHiveChain();
-  //     try {
-  //       await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
-  //     } catch (e) {
-  //       toast({
-  //         description: 'You already follow this user',
-  //         variant: 'default'
-  //       });
-  //     }
-  //   }
-  // }
 
   return username ? (
     <div>
@@ -331,23 +411,50 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             </ul>
             {user?.username !== username && user?.isLoggedIn ? (
               <div className="m-2 flex gap-2 hover:text-red-500 sm:absolute sm:right-0">
-                <Button
-                  className=" hover:text-red-500 "
-                  variant="secondary"
-                  size="sm"
-                  data-testid="profile-follow-button"
-                >
-                  {t('user_profil.follow_button')}
-                </Button>
+                {user && user.isLoggedIn ? (
+                  <Button
+                    className=" hover:text-red-500 "
+                    variant="secondary"
+                    size="sm"
+                    data-testid="profile-follow-button"
+                    onClick={(e) => follow(e, isFollow ? '' : 'follow')}
+                  >
+                    {isFollow ? t('user_profil.unfollow_button') : t('user_profil.follow_button')}
+                  </Button>
+                ) : (
+                  <DialogLogin>
+                    <Button
+                      className=" hover:text-red-500 "
+                      variant="secondary"
+                      size="sm"
+                      data-testid="profile-follow-button"
+                    >
+                      {t('user_profil.follow_button')}
+                    </Button>
+                  </DialogLogin>
+                )}
 
-                <Button
-                  className=" hover:text-red-500"
-                  variant="secondary"
-                  size="sm"
-                  data-testid="profile-mute-button"
-                >
-                  {t('user_profil.mute_button')}
-                </Button>
+                {user && user.isLoggedIn ? (
+                  <Button
+                    className=" hover:text-red-500"
+                    variant="secondary"
+                    size="sm"
+                    data-testid="profile-mute-button"
+                  >
+                    {t('user_profil.mute_button')}
+                  </Button>
+                ) : (
+                  <DialogLogin>
+                    <Button
+                      className=" hover:text-red-500"
+                      variant="secondary"
+                      size="sm"
+                      data-testid="profile-mute-button"
+                    >
+                      {t('user_profil.mute_button')}
+                    </Button>
+                  </DialogLogin>
+                )}
               </div>
             ) : null}
           </div>
