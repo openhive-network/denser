@@ -16,7 +16,7 @@ export class SignerHbauth {
     username,
     password = '',
     message,
-    keyType = KeyTypes.posting
+    keyType = KeyTypes.posting,
   }: SignChallenge): Promise<string> {
     const digest = cryptoUtils.sha256(message).toString('hex');
     const signature = this.signDigest(
@@ -30,7 +30,7 @@ export class SignerHbauth {
     operation,
     loginType,
     username,
-    keyType = KeyTypes.posting
+    keyType = KeyTypes.posting,
   }: BroadcastTransaction): Promise<{ success: boolean, error: string}> {
 
     let result = { success: true, error: ''};
@@ -68,7 +68,7 @@ export class SignerHbauth {
 
     } catch (error) {
       logger.trace('SignerHbauth.broadcastTransaction error: %o', error);
-      result = { success: false, error: 'Sign failed'};
+      result = { success: false, error: 'Broadcast failed'};
       throw error;
     }
 

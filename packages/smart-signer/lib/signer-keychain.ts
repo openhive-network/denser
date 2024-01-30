@@ -2,6 +2,7 @@ import { KeychainSDK, KeychainKeyTypes } from 'keychain-sdk';
 import { Operation, Transaction, OperationName, VirtualOperationName, Client } from '@hiveio/dhive';
 import { KeyTypes, LoginTypes } from '@smart-signer/types/common';
 import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer';
+import { operation } from '@hive/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -33,7 +34,7 @@ export class SignerKeychain {
     username,
     keyType = KeyTypes.posting,
     password = '',
-    loginType = LoginTypes.keychain
+    loginType = LoginTypes.keychain,
   }: SignChallenge): Promise<string> {
     logger.info('in SignerKeychain.signChallenge %o', { message, username, keyType });
     const keychain = new KeychainSDK(window, { rpc: 'https://api.hive.blog' });
@@ -57,11 +58,32 @@ export class SignerKeychain {
     }
   };
 
+  /**
+   * Rewrites operation from Wax format to Keychain format.
+   *
+   * @param {operation} operation
+   * @returns
+   * @memberof SignerKeychain
+   */
+  formatOperations(operation: operation) {
+    const operations: Operation[] = [];
+    for (const [key, value] of Object.entries(operation)) {
+      operations.push(
+        [
+          key as OperationName | VirtualOperationName,
+          value
+        ]
+        )
+    }
+    return operations;
+  }
+
+
   async broadcastTransaction({
     operation,
     loginType,
     username,
-    keyType = KeyTypes.posting
+    keyType = KeyTypes.posting,
   }: BroadcastTransaction): Promise<{ success: boolean, result: any, error: string}> {
 
     let result = { success: true, result: '', error: ''};
@@ -70,19 +92,7 @@ export class SignerKeychain {
       if (!(await keychain.isKeychainInstalled())) {
         throw new Error('Keychain is not installed');
       }
-
-      // Format operation for Keychain
-      const operations: Operation[] = [];
-      for (const [key, value] of Object.entries(operation)) {
-        operations.push(
-          [
-            key as OperationName | VirtualOperationName,
-            value
-          ]
-          )
-      }
-
-      // Broadcast
+      const operations = this.formatOperations(operation);
       const broadcastResult = await keychain.broadcast(
         {
           username,

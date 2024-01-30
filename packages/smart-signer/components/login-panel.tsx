@@ -40,9 +40,6 @@ export function LoginPanel(
 
   const [errorMsg, setErrorMsg] = useState('');
 
-  const [hiveAuthData, setHiveAuthData] =
-    useLocalStorage('hiveAuthData', HiveAuthUtils.initialHiveAuthData);
-
   const signIn = useSignIn();
 
   const onSubmit = async (data: LoginFormSchema) => {
@@ -61,59 +58,21 @@ export function LoginPanel(
     const signer = new Signer();
     const message = JSON.stringify({ loginChallenge }, null, 0);
 
-    if (loginType === LoginTypes.hiveauth) {
-
-      //
-      // TODO Move logic from this code block to Signer.
-      //
-
-      try {
-        HiveAuthUtils.setUsername(hiveAuthData?.username || '');
-        HiveAuthUtils.setToken(hiveAuthData?.token || '');
-        HiveAuthUtils.setExpire(hiveAuthData?.expire || 0);
-        HiveAuthUtils.setKey(hiveAuthData?.key || '');
-
-        const authResponse: any = await new Promise((resolve) => {
-          HiveAuthUtils.login(
-            username,
-            message,
-            (res) => {
-              resolve(res);
-            },
-            t
-          );
-        });
-
-        if (authResponse.success && authResponse.hiveAuthData) {
-          const { token, expire, key, challengeHex } =
-              authResponse.hiveAuthData;
-          setHiveAuthData({ username, token, expire, key });
-          logger.info('hiveauth', { signature: challengeHex });
-          signatures.posting = challengeHex;
-        } else {
-          throw new Error('Hiveauth login failed');
-        }
-      } catch (error) {
-        logger.error('onSubmit error in signing loginChallenge', error);
-        setErrorMsg(t('pageLogin.signingFailed'));
-        return;
-      }
-    } else {
-      try {
-        const keyType = KeyTypes.posting;
-        const signature = await signer.signChallenge({
-          message,
-          loginType,
-          username,
-          password,
-          keyType
-        });
-        signatures[keyType] = signature;
-      } catch (error) {
-        logger.error('onSubmit error in signLoginChallenge', error);
-        setErrorMsg(t('pageLogin.signingFailed'));
-        return;
-      }
+    try {
+      const keyType = KeyTypes.posting;
+      const signature = await signer.signChallenge({
+        message,
+        loginType,
+        username,
+        password,
+        keyType,
+        translateFn: t,
+      });
+      signatures[keyType] = signature;
+    } catch (error) {
+      logger.error('onSubmit error in signLoginChallenge', error);
+      setErrorMsg(t('pageLogin.signingFailed'));
+      return;
     }
 
     const body: PostLoginSchema = {

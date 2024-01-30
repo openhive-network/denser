@@ -53,7 +53,7 @@ export class SignerWif extends SignerHbauth {
         message,
         username,
         keyType = KeyTypes.posting,
-        password = '', // WIF private key
+        password = '', // WIF private key,
     }: SignChallenge): Promise<string> {
         try {
             const wif = password ? password : this.getKey(keyType);
