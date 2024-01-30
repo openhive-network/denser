@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query';
 import Big from 'big.js';
 import { getAccount, getDynamicGlobalProperties, getFeedHistory } from '@hive/ui/lib/hive';
 import moment from 'moment';
-import clsx from 'clsx';
 import { getAccountHistory } from '@/wallet/lib/hive';
 import { getCurrentHpApr } from '@/wallet/lib/utils';
 import { delegatedHive, vestingHive, powerdownHive } from '@hive/ui/lib/utils';
@@ -15,14 +14,22 @@ import Link from 'next/link';
 import Loading from '@hive/ui/components/loading';
 import TransfersHistoryFilter, { TransferFilters } from '@/wallet/components/transfers-history-filter';
 import { useState } from 'react';
-import { useRouter } from 'next/router';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/wallet/next-i18next.config';
 import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
 import WalletMenu from '@/wallet/components/wallet-menu';
-
+import { Button } from '@ui/components';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '@ui/components/dropdown-menu';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { TransferDialog } from '@/wallet/components/transfer-dialog';
 const initialFilters: TransferFilters = {
   search: '',
   others: false,
@@ -187,9 +194,8 @@ type AccountHistoryData = ReturnType<typeof mapToAccountHistoryObject>;
 
 function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { t } = useTranslation('common_wallet');
-  const router = useRouter();
   const [rawFilter, filter, setFilter] = useFilters(initialFilters);
-
+  const { user } = useUser();
   const {
     data: accountData,
     isLoading: accountLoading,
@@ -370,128 +376,232 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
       );
     } else return <div>error</div>;
   }
-
+  function OperationsMenu({ triger, options }: { triger: string; options: string[] }) {
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost">
+            <div className="sm:hidden">
+              {triger}
+              <span className="m-1 text-xl">▾</span>
+            </div>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-56">
+          <DropdownMenuGroup>
+            {options.includes('transfer') && <TransferDialog type="transfer">Transfer</TransferDialog>}
+            {options.includes('transferTo') && (
+              <TransferDialog type="transferTo">Transfers to Savings</TransferDialog>
+            )}
+            {options.includes('powerUp') && <TransferDialog type="powerUp">Power up</TransferDialog>}
+            {options.includes('market') && (
+              <DropdownMenuItem className="p-0">
+                <Link href="/market" className="w-full px-2 py-1.5">
+                  Market
+                </Link>
+              </DropdownMenuItem>
+            )}
+            {options.includes('buy') && (
+              <DropdownMenuItem className="p-0">
+                <Link href="https://blocktrades.us" target="_blank" className="w-full px-2 py-1.5">
+                  Buy
+                </Link>
+              </DropdownMenuItem>
+            )}
+            {options.includes('sell') && (
+              <DropdownMenuItem className="p-0">
+                <Link href="https://blocktrades.us" target="_blank" className="w-full px-2 py-1.5">
+                  Sell
+                </Link>
+              </DropdownMenuItem>
+            )}
+            {options.includes('powerDown') && (
+              <TransferDialog type="powerDown">
+                <span>Power Down</span>
+              </TransferDialog>
+            )}
+            {options.includes('delegate') && (
+              <TransferDialog type="delegate">
+                <span>Delegate</span>
+              </TransferDialog>
+            )}
+            {options.includes('withdrawHive') && (
+              <TransferDialog type="withdrawHive">
+                <span>Withdraw Hive</span>
+              </TransferDialog>
+            )}
+            {options.includes('withdrawHiveDollars') && (
+              <TransferDialog type="withdrawHiveDollars">
+                <span>Withdraw Hive Dollars</span>
+              </TransferDialog>
+            )}
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+  }
   return (
     <ProfileLayout>
       <div className="flex w-full flex-col items-center ">
         <WalletMenu username={username} />
-        <table className="max-w-6xl table-auto text-sm">
-          <tbody>
-            <tr>
-              <td className="px-2 py-4 sm:px-4">
-                <div className="font-semibold">HIVE</div>
-                <p
-                  className="py-2 text-xs leading-relaxed text-zinc-600 sm:pb-0"
-                  data-testid="wallet-hive-description"
+        <div>
+          <Link href="https://blocktrades.us" target="_blank">
+            <Button variant="outlineRed" className="mx-2 my-8 border-red-500 text-red-500">
+              Buy Hive or Hive Power
+            </Button>
+          </Link>
+          <table className="max-w-6xl table-auto text-sm">
+            <tbody>
+              <tr>
+                <td className="px-2 py-4 sm:px-4">
+                  <div className="font-semibold">HIVE</div>
+                  <p
+                    className="py-2 text-xs leading-relaxed text-zinc-600 sm:pb-0"
+                    data-testid="wallet-hive-description"
+                  >
+                    {t('profil.hive_description')}
+                  </p>
+                  {user?.username === username ? (
+                    <OperationsMenu
+                      triger={numberWithCommas(balance_hive.toFixed(3)) + ' HIVE'}
+                      options={['transfer', 'transferTo', 'powerUp', 'buy', 'sell', 'market']}
+                    />
+                  ) : (
+                    <div className="sm:hidden">{numberWithCommas(balance_hive.toFixed(3)) + ' HIVE'}</div>
+                  )}
+                </td>
+                <td
+                  className="hidden whitespace-nowrap p-4 font-semibold sm:block"
+                  data-testid="wallet-hive-value"
                 >
-                  {t('profil.hive_description')}
-                </p>
-                <div className="sm:hidden">{numberWithCommas(balance_hive.toFixed(3)) + ' HIVE'}</div>
-              </td>
-              <td
-                className="hidden whitespace-nowrap p-4 font-semibold sm:block"
-                data-testid="wallet-hive-value"
-              >
-                {numberWithCommas(balance_hive.toFixed(3)) + ' HIVE'}
-              </td>
-            </tr>
+                  {numberWithCommas(balance_hive.toFixed(3)) + ' HIVE'}
+                </td>
+              </tr>
+              <tr className="bg-slate-100 dark:bg-slate-900">
+                <td className="px-2 py-4 sm:px-4">
+                  <div className="font-semibold">HIVE POWER</div>
+                  <p
+                    className="py-2 text-xs leading-relaxed text-zinc-600 sm:pb-0"
+                    data-testid="wallet-hive-power-description"
+                  >
+                    {t('profil.hp_description', {
+                      username: accountData.name,
+                      value: getCurrentHpApr(dynamicData).toFixed(2)
+                    })}
+                    <span className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400">
+                      <Link href="https://hive.blog/faq.html#How_many_new_tokens_are_generated_by_the_blockchain">
+                        {t('profil.see_faq_for_details')}
+                      </Link>
+                    </span>
+                  </p>
 
-            <tr className="bg-slate-100 dark:bg-slate-900">
-              <td className="px-2 py-4 sm:px-4">
-                <div className="font-semibold">HIVE POWER</div>
-                <p
-                  className="py-2 text-xs leading-relaxed text-zinc-600 sm:pb-0"
-                  data-testid="wallet-hive-power-description"
+                  {user?.username === username ? (
+                    <OperationsMenu
+                      triger={numberWithCommas(vesting_hive.toFixed(3)) + ' HIVE'}
+                      options={['powerDown', 'delegate']}
+                    />
+                  ) : (
+                    <div className="sm:hidden">
+                      <div>{numberWithCommas(vesting_hive.toFixed(3)) + ' HIVE'}</div>
+                      <div>({received_power_balance + ' HIVE'})</div>
+                    </div>
+                  )}
+                </td>
+                <td
+                  className="hidden whitespace-nowrap bg-slate-100 p-4 font-semibold dark:bg-slate-900 sm:block"
+                  data-testid="wallet-hive-power"
                 >
-                  {t('profil.hp_description', {
-                    username: accountData.name,
-                    value: getCurrentHpApr(dynamicData).toFixed(2)
-                  })}{' '}
-                  <span className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400">
-                    <Link href="https://hive.blog/faq.html#How_many_new_tokens_are_generated_by_the_blockchain">
-                      {t('profil.see_faq_for_details')}
-                    </Link>
-                  </span>
-                </p>
-                <div className="sm:hidden">
                   <div>{numberWithCommas(vesting_hive.toFixed(3)) + ' HIVE'}</div>
                   <div>({received_power_balance + ' HIVE'})</div>
-                </div>
-              </td>
-              <td
-                className="hidden whitespace-nowrap bg-slate-100 p-4 font-semibold dark:bg-slate-900 sm:block"
-                data-testid="wallet-hive-power"
-              >
-                <div>{numberWithCommas(vesting_hive.toFixed(3)) + ' HIVE'}</div>
-                <div>({received_power_balance + ' HIVE'})</div>
-              </td>
-            </tr>
-
-            <tr>
-              <td className="px-2 py-4 sm:px-4">
-                <div className="font-semibold">HIVE DOLLARS</div>
-                <p
-                  className="py-2 text-xs leading-relaxed text-zinc-600 sm:pb-0"
-                  data-testid="wallet-hive-dollars-description"
+                </td>
+              </tr>
+              <tr>
+                <td className="px-2 py-4 sm:px-4">
+                  <div className="font-semibold">HIVE DOLLARS</div>
+                  <p
+                    className="py-2 text-xs leading-relaxed text-zinc-600 sm:pb-0"
+                    data-testid="wallet-hive-dollars-description"
+                  >
+                    {t('profil.hive_dolar_description')}
+                  </p>
+                  {user?.username === username ? (
+                    <OperationsMenu
+                      triger={'$' + numberWithCommas(hbd_balance.toFixed(3))}
+                      options={['transfer', 'transferTo', 'market', 'buy', 'sell']}
+                    />
+                  ) : (
+                    <div className="sm:hidden">{'$' + numberWithCommas(hbd_balance.toFixed(3))}</div>
+                  )}
+                </td>
+                <td
+                  className="hidden whitespace-nowrap p-4 font-semibold sm:block "
+                  data-testid="wallet-hive-dallars-value"
                 >
-                  {t('profil.hive_dolar_description')}
-                </p>
-                <div className="sm:hidden">{'$' + numberWithCommas(hbd_balance.toFixed(3))}</div>
-              </td>
-              <td
-                className="hidden whitespace-nowrap p-4 font-semibold sm:block "
-                data-testid="wallet-hive-dallars-value"
-              >
-                {'$' + numberWithCommas(hbd_balance.toFixed(3))}
-              </td>
-            </tr>
-
-            <tr className=" bg-slate-100 dark:bg-slate-900">
-              <td className="px-2 py-4 sm:px-4">
-                <div className="font-semibold">{t('profil.savings_title')}</div>
-                <p
-                  className="py-2 text-xs leading-relaxed text-zinc-600 sm:pb-0"
-                  data-testid="wallet-savings-description"
+                  {'$' + numberWithCommas(hbd_balance.toFixed(3))}
+                </td>
+              </tr>
+              <tr className=" bg-slate-100 dark:bg-slate-900">
+                <td className="px-2 py-4 sm:px-4">
+                  <div className="font-semibold">{t('profil.savings_title')}</div>
+                  <p
+                    className="py-2 text-xs leading-relaxed text-zinc-600 sm:pb-0"
+                    data-testid="wallet-savings-description"
+                  >
+                    {t('profil.savings_description')}
+                    <span className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400">
+                      {<Link href={`/~witnesses`}>{t('profil.witnesses')}</Link>}
+                    </span>
+                    {')'}
+                  </p>
+                  <div className="sm:hidden">
+                    {user?.username === username ? (
+                      <div className="flex w-fit flex-col items-start gap-2">
+                        <OperationsMenu
+                          triger={saving_balance_hive.toFixed(3) + ' HIVE'}
+                          options={['withdrawHive']}
+                        />
+                        <OperationsMenu
+                          triger={numberWithCommas('$' + hbd_balance_savings.toFixed(3))}
+                          options={['withdrawHiveDollars']}
+                        />
+                      </div>
+                    ) : (
+                      <div>
+                        <div>{saving_balance_hive.toFixed(3) + ' HIVE'}</div>
+                        <div>{numberWithCommas('$' + hbd_balance_savings.toFixed(3))}</div>
+                      </div>
+                    )}
+                  </div>
+                </td>
+                <td className="hidden whitespace-nowrap bg-slate-100 p-4 font-semibold dark:bg-slate-900 sm:block">
+                  <div data-testid="wallet-saving-hive-value">{saving_balance_hive.toFixed(3) + ' HIVE'}</div>
+                  <div data-testid="walled-hbd-saving-value">
+                    {numberWithCommas('$' + hbd_balance_savings.toFixed(3))}
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td className="px-2 py-4 sm:px-4">
+                  <div className="font-semibold">{t('profil.estimated_account_value_title')}</div>
+                  <p
+                    className="py-2 text-xs leading-relaxed text-zinc-600 sm:pb-0"
+                    data-testid="wallet-estimated-account-value-description"
+                  >
+                    {t('profil.estimated_account_value_description')}
+                  </p>
+                  <div className="sm:hidden">{'$' + total_value}</div>
+                </td>
+                <td
+                  className="hidden whitespace-nowrap p-4 font-semibold sm:block"
+                  data-testid="wallet-estimated-account-value"
                 >
-                  {t('profil.savings_description')}
-                  <span className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400">
-                    {<Link href={`/~witnesses`}>{t('profil.witnesses')}</Link>}
-                  </span>
-                  {')'}
-                </p>
-                <div className="sm:hidden">
-                  <div>{saving_balance_hive.toFixed(3) + ' HIVE'}</div>{' '}
-                  <div>{numberWithCommas('$' + hbd_balance_savings.toFixed(3))}</div>
-                </div>
-              </td>
-              <td className="hidden whitespace-nowrap bg-slate-100 p-4 font-semibold dark:bg-slate-900 sm:block">
-                <div data-testid="wallet-saving-hive-value">{saving_balance_hive.toFixed(3) + ' HIVE'}</div>
-                <div data-testid="walled-hbd-saving-value">
-                  {numberWithCommas('$' + hbd_balance_savings.toFixed(3))}
-                </div>
-              </td>
-            </tr>
+                  {'$' + total_value}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-            <tr>
-              <td className="px-2 py-4 sm:px-4">
-                <div className="font-semibold">{t('profil.estimated_account_value_title')}</div>
-                <p
-                  className="py-2 text-xs leading-relaxed text-zinc-600 sm:pb-0"
-                  data-testid="wallet-estimated-account-value-description"
-                >
-                  {t('profil.estimated_account_value_description')}
-                </p>
-                <div className="sm:hidden">{'$' + total_value}</div>
-              </td>
-              <td
-                className="hidden whitespace-nowrap p-4 font-semibold sm:block"
-                data-testid="wallet-estimated-account-value"
-              >
-                {'$' + total_value}
-              </td>
-            </tr>
-          </tbody>
-        </table>
         {powerdown_hive.gt(0) ? (
           <div className="p-2 text-sm sm:p-4">
             {t('profil.the_next_power_down')} {totalDays} {totalDays !== 1 ? ' days' : 'day'}(~
@@ -587,7 +697,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
       username: username.replace('@', ''),
-      ...(await serverSideTranslations(ctx.req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_wallet', 'smart-signer']))
+      ...(await serverSideTranslations(ctx.req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
+        'common_wallet',
+        'smart-signer'
+      ]))
     }
   };
 };

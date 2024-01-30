@@ -66,7 +66,7 @@ const SiteHeader: FC = () => {
   return (
     <header className="supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur">
       <div className="container flex h-14 w-full items-center justify-between">
-        <Link href="/" className="mr-6 flex items-center space-x-2">
+        <Link href="/" className="keychainify-checked mr-6 flex items-center space-x-2">
           <Icons.walletlogo className="w-32" />
         </Link>
         <div className="flex items-center space-x-2 sm:space-x-4">

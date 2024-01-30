@@ -2,13 +2,14 @@ import Link from 'next/link';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 
 export default function WalletMenu({ username }: { username: string }) {
   const router = useRouter();
   const { t } = useTranslation('common_wallet');
-  const userAfterLogin = false;
+  const { user } = useUser();
   return (
-    <div className="max-w flex w-full gap-6 border-b-2 border-zinc-500 px-4 py-2">
+    <div className="max-w flex w-full flex-wrap gap-6 border-b-2 border-zinc-500 px-4 py-2">
       <Link
         href={`/@${username}/transfers`}
         className={clsx(
@@ -32,7 +33,7 @@ export default function WalletMenu({ username }: { username: string }) {
           {t('navigation.wallet_nav.delegations')}
         </div>
       </Link>
-      {userAfterLogin && (
+      {user?.username === username && (
         <Link
           href={`/@${username}/permissions`}
           className={clsx(
@@ -46,7 +47,7 @@ export default function WalletMenu({ username }: { username: string }) {
           </div>
         </Link>
       )}
-      {userAfterLogin && (
+      {user?.username === username && (
         <Link
           href={`/@${username}/password`}
           className={clsx(
@@ -56,11 +57,11 @@ export default function WalletMenu({ username }: { username: string }) {
           )}
         >
           <div className="hover:text-red-600 dark:hover:text-red-400" data-testid="wallet-delegations-link">
-            Cange Password
+            Change Password
           </div>
         </Link>
       )}
-      {userAfterLogin && (
+      {user?.username === username && (
         <Link
           href={`/@${username}/communities`}
           className={clsx(
