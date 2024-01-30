@@ -11,24 +11,28 @@ const logger = getLogger('app');
 
 export class SignerHbauth {
 
+  async destroy() {}
+
   // Create digest and return its signature made with signDigest.
   async signChallenge({
     username,
     password = '',
     message,
-    keyType = KeyTypes.posting
-  }: SignChallenge) {
+    keyType = KeyTypes.posting,
+  }: SignChallenge): Promise<string> {
     const digest = cryptoUtils.sha256(message).toString('hex');
-    return this.signDigest(
+    const signature = this.signDigest(
       digest, username, password, keyType
     );
+    logger.info('hbauth', { signature });
+    return signature;
   }
 
   async broadcastTransaction({
     operation,
     loginType,
     username,
-    keyType = KeyTypes.posting
+    keyType = KeyTypes.posting,
   }: BroadcastTransaction): Promise<{ success: boolean, error: string}> {
 
     let result = { success: true, error: ''};
@@ -66,7 +70,7 @@ export class SignerHbauth {
 
     } catch (error) {
       logger.trace('SignerHbauth.broadcastTransaction error: %o', error);
-      result = { success: false, error: 'Sign failed'};
+      result = { success: false, error: 'Broadcast failed'};
       throw error;
     }
 
@@ -96,7 +100,7 @@ export class SignerHbauth {
 
       if (!password) {
         // TODO get password from storage or prompt user to input it.
-        const userInput = prompt("Please enter ypur password to unlock wallet", "");
+        const userInput = prompt("Please enter your password to unlock wallet", "");
         password = userInput as string;
         // throw new Error('No password to unlock wallet')
       }
@@ -134,20 +138,20 @@ export class SignerHbauth {
     // await authClient.logout();
     const auth = auths.find((auth) => auth.username === username);
     if (auth) {
-      logger.info('found auth: %o', auth);
+      logger.info('Found auth: %o', auth);
       if (auth.authorized) {
         if (auth.keyType === keyType) {
-          logger.info('user is authorized and we are ready to proceed');
+          logger.info('User is authorized and we are ready to proceed');
           // We're ready to sign loginChallenge and proceed.
         } else {
-          logger.info('user is authorized, but with incorrect keyType: %s', auth.keyType);
+          logger.info('User is authorized, but with incorrect keyType: %s', auth.keyType);
         }
       } else {
-        logger.info('user is not authorized');
+        logger.info('User is not authorized');
         // We should tell to unlock wallet (login to wallet).
       }
     } else {
-      logger.info('auth for user not found: %s', username);
+      logger.info('Auth for user not found: %s', username);
       // We should offer adding account to wallet.
     }
   };

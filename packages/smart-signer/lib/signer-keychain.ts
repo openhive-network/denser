@@ -2,6 +2,7 @@ import { KeychainSDK, KeychainKeyTypes } from 'keychain-sdk';
 import { Operation, Transaction, OperationName, VirtualOperationName, Client } from '@hiveio/dhive';
 import { KeyTypes, LoginTypes } from '@smart-signer/types/common';
 import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer';
+import { operation } from '@hive/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -26,16 +27,39 @@ export function hasCompatibleKeychain() {
 }
 
 
+/**
+ * Rewrites operation from Wax format to Keychain format.
+ *
+ * @export
+ * @param {operation} operation
+ * @returns
+ */
+export function formatOperations(operation: operation) {
+  const operations: Operation[] = [];
+  for (const [key, value] of Object.entries(operation)) {
+    operations.push(
+      [
+        key as OperationName | VirtualOperationName,
+        value
+      ]
+    )
+  }
+  return operations;
+}
+
+
 export class SignerKeychain {
+
+  async destroy() {}
 
   async signChallenge({
     message,
     username,
     keyType = KeyTypes.posting,
     password = '',
-    loginType = LoginTypes.keychain
-  }: SignChallenge): Promise<any> {
-    logger.info('in signBuffer %o', { message, username, keyType });
+    loginType = LoginTypes.keychain,
+  }: SignChallenge): Promise<string> {
+    logger.info('in SignerKeychain.signChallenge %o', { message, username, keyType });
     const keychain = new KeychainSDK(window, { rpc: 'https://api.hive.blog' });
     try {
       if (!(await keychain.isKeychainInstalled())) {
@@ -47,9 +71,11 @@ export class SignerKeychain {
         method: KeychainKeyTypes[keyType],
       });
       if (response.error) {
-        throw new Error(`Error in signBuffer: ${response.error}`);
+        throw new Error(`Error in SignerKeychain.signChallenge: ${response.error}`);
       }
-      return response.result as unknown as string;
+      const signature = response.result as unknown as string
+      logger.info('keychain', { signature });
+      return signature;
     } catch (error) {
       throw error;
     }
@@ -59,7 +85,7 @@ export class SignerKeychain {
     operation,
     loginType,
     username,
-    keyType = KeyTypes.posting
+    keyType = KeyTypes.posting,
   }: BroadcastTransaction): Promise<{ success: boolean, result: any, error: string}> {
 
     let result = { success: true, result: '', error: ''};
@@ -68,19 +94,7 @@ export class SignerKeychain {
       if (!(await keychain.isKeychainInstalled())) {
         throw new Error('Keychain is not installed');
       }
-
-      // Format operation for Keychain
-      const operations: Operation[] = [];
-      for (const [key, value] of Object.entries(operation)) {
-        operations.push(
-          [
-            key as OperationName | VirtualOperationName,
-            value
-          ]
-          )
-      }
-
-      // Broadcast
+      const operations = formatOperations(operation);
       const broadcastResult = await keychain.broadcast(
         {
           username,
@@ -90,7 +104,7 @@ export class SignerKeychain {
       )
 
       if (broadcastResult.error) {
-        throw new Error(`Error in signTx: ${broadcastResult.error}`);
+        throw new Error(`Error in SignerKeychain.signChallenge: ${broadcastResult.error}`);
       }
 
       result.result = broadcastResult.result as any;
@@ -104,6 +118,16 @@ export class SignerKeychain {
     return result;
   };
 
+
+  /**
+   * Creates transaction from given operations and signs it.
+   *
+   * @param {BroadcastTransaction} { operation, loginType, username,
+   *     keyType = KeyTypes.posting
+   *   }
+   * @returns {Promise<any>}
+   * @memberof SignerKeychain
+   */
   async signTransaction({
     operation,
     loginType,
@@ -116,16 +140,7 @@ export class SignerKeychain {
       if (!(await keychain.isKeychainInstalled())) {
         throw new Error('Keychain is not installed');
       }
-
-      // Format operation for Keychain
-      const operations: Operation[] = [];
-      for (const [key, value] of Object.entries(operation)) {
-        operations.push([
-          key as OperationName | VirtualOperationName,
-          value
-        ]);
-      }
-
+      const operations = formatOperations(operation);
       const client = new Client(
         [
           'https://api.hive.blog',

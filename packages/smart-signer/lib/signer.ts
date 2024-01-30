@@ -1,10 +1,12 @@
 import { operation } from '@hive/wax';
 import { SignerHbauth } from '@smart-signer/lib/signer-hbauth';
+import { SignerHiveauth } from '@smart-signer/lib/signer-hiveauth';
 import { SignerKeychain } from '@smart-signer/lib/signer-keychain';
 import { SignerWif } from '@smart-signer/lib/signer-wif';
-import { Signatures } from '@smart-signer/lib/auth/utils';
 import { LoginTypes } from '@smart-signer/types/common';
 import { KeyTypes } from '@smart-signer/types/common';
+
+// export * from '@hive/wax'; // TODO Consider this.
 export { vote, operation } from '@hive/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
@@ -14,7 +16,8 @@ export interface BroadcastTransaction {
     operation: operation;
     loginType: LoginTypes;
     username: string;
-    keyType?: KeyTypes
+    keyType?: KeyTypes;
+    translateFn?: (v: string) => string;
 }
 
 export interface SignChallenge {
@@ -23,9 +26,35 @@ export interface SignChallenge {
     username: string;
     password?: string; // private key or password to unlock hbauth key
     keyType?: KeyTypes;
+    translateFn?: (v: string) => string;
 }
 
+
 export class Signer {
+
+    /**
+     * Creates instance of Signer for given `loginType` and returns it.
+     *
+     * @param {LoginTypes} [loginType=LoginTypes.wif]
+     * @returns
+     * @memberof Signer
+     */
+    getSigner(loginType: LoginTypes = LoginTypes.wif) {
+        let signer: SignerHbauth | SignerHiveauth | SignerKeychain | SignerWif;
+        if (loginType === LoginTypes.hbauth) {
+            signer = new SignerHbauth();
+        } else if (loginType === LoginTypes.hiveauth) {
+            signer = new SignerHiveauth();
+        } else if (loginType === LoginTypes.keychain) {
+            signer = new SignerKeychain();
+        } else if (loginType === LoginTypes.wif) {
+            signer = new SignerWif();
+        } else {
+            throw new Error('Invalid loginType');
+        }
+        return signer;
+    }
+
 
     /**
      * Calculates sha256 digest (hash) of any string and signs it with
@@ -35,10 +64,9 @@ export class Signer {
      * special treatment.
      *
      * @param {SignChallenge} { message, loginType, username, password =
-     *         '', // private key or password to unlock hbauth key
-     *         keyType = KeyTypes.posting
+     *         '', keyType = KeyTypes.posting
      *     }
-     * @returns {Promise<Signatures>}
+     * @returns {Promise<string>}
      * @memberof Signer
      */
     async signChallenge({
@@ -46,68 +74,29 @@ export class Signer {
         loginType,
         username,
         password = '', // private key or password to unlock hbauth key
-        keyType = KeyTypes.posting
-    }: SignChallenge): Promise<Signatures> {
+        keyType = KeyTypes.posting,
+        translateFn = (v) => v,
+    }: SignChallenge): Promise<string> {
         logger.info('in signChallenge %o', { loginType, username, password, keyType, message });
-        const signatures: Signatures = {};
-
-        if (loginType === LoginTypes.keychain) {
-            const signer = new SignerKeychain();
-            try {
-                const signature = await signer.signChallenge({
-                    username,
-                    password,
-                    message,
-                    keyType,
-                    loginType,
-                });
-                logger.info('keychain', { signature });
-                signatures.posting = signature;
-            } catch (error) {
-                throw error;
-            }
-        } else if (loginType === LoginTypes.hiveauth) {
-            throw new Error('Not implemented');
-        } else if (loginType === LoginTypes.hbauth) {
-            const signer = new SignerHbauth();
-            try {
-                // await signer.checkAuths(username, 'posting');
-                const signature = await signer.signChallenge({
-                    username,
-                    password,
-                    message,
-                    keyType,
-                    loginType,
-                });
-                logger.info('hbauth', { signature });
-                signatures.posting = signature;
-            } catch (error) {
-                throw error;
-            }
-        } else if (loginType === LoginTypes.wif) {
-            const signer = new SignerWif();
-            try {
-                const signature = await signer.signChallenge({
-                    message,
-                    username,
-                    keyType,
-                    password,
-                    loginType,
-                });
-                logger.info('password', { signature });
-                signatures.posting = signature;
-            } catch (error) {
-                throw error;
-            }
+        const signer = this.getSigner(loginType);
+        try {
+            const signature = await signer.signChallenge({
+                message,
+                username,
+                keyType,
+                password,
+                loginType,
+                translateFn,
+            });
+            return signature;
+        } catch (error) {
+            throw error;
         }
-
-        return signatures;
-
     }
 
     /**
-     * Create Hive transaction for given, sign it and broadcast it to
-     * Hive blockchain.
+     * Creates Hive transaction for given operation, signs it and
+     * broadcasts it to Hive blockchain.
      *
      * @param {BroadcastTransaction} { operation, loginType, username,
      *         keyType = KeyTypes.posting
@@ -119,30 +108,34 @@ export class Signer {
         operation,
         loginType,
         username,
-        keyType = KeyTypes.posting
+        keyType = KeyTypes.posting,
+        translateFn = (v) => v,
     }: BroadcastTransaction): Promise<any> {
         logger.info('in broadcastTransaction: %o', {
             operation, loginType, username, keyType
         });
-        if (loginType === LoginTypes.hbauth) {
-            const signer = new SignerHbauth();
-            return signer.broadcastTransaction({
-                operation,
-                loginType,
-                username,
-                keyType,
-            });
-        } else if (loginType === LoginTypes.keychain) {
-            const signer = new SignerKeychain();
-            return signer.broadcastTransaction({
-                operation,
-                loginType,
-                username,
-                keyType,
-            });
-        } else {
-            throw new Error('Not implemented');
-        }
+        const signer = this.getSigner(loginType);
+        return signer.broadcastTransaction({
+            operation,
+            loginType,
+            username,
+            keyType,
+            translateFn,
+        });
+    }
+
+
+    /**
+     * Clears all user data in storages and memory, does other things,
+     * if required for particular Signer.
+     *
+     * @param {LoginTypes} [loginType=LoginTypes.wif]
+     * @returns
+     * @memberof Signer
+     */
+    async destroy(loginType: LoginTypes) {
+        const signer = this.getSigner(loginType);
+        return signer.destroy();
     }
 
 }
