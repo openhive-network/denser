@@ -34,8 +34,8 @@ export class SignerKeychain {
     keyType = KeyTypes.posting,
     password = '',
     loginType = LoginTypes.keychain
-  }: SignChallenge): Promise<any> {
-    logger.info('in signBuffer %o', { message, username, keyType });
+  }: SignChallenge): Promise<string> {
+    logger.info('in SignerKeychain.signChallenge %o', { message, username, keyType });
     const keychain = new KeychainSDK(window, { rpc: 'https://api.hive.blog' });
     try {
       if (!(await keychain.isKeychainInstalled())) {
@@ -47,9 +47,11 @@ export class SignerKeychain {
         method: KeychainKeyTypes[keyType],
       });
       if (response.error) {
-        throw new Error(`Error in signBuffer: ${response.error}`);
+        throw new Error(`Error in SignerKeychain.signChallenge: ${response.error}`);
       }
-      return response.result as unknown as string;
+      const signature = response.result as unknown as string
+      logger.info('keychain', { signature });
+      return signature;
     } catch (error) {
       throw error;
     }
@@ -90,7 +92,7 @@ export class SignerKeychain {
       )
 
       if (broadcastResult.error) {
-        throw new Error(`Error in signTx: ${broadcastResult.error}`);
+        throw new Error(`Error in SignerKeychain.signChallenge: ${broadcastResult.error}`);
       }
 
       result.result = broadcastResult.result as any;

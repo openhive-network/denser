@@ -11,21 +11,19 @@ const logger = getLogger('app');
 
 export class SignerHbauth {
 
-  // constructor() {
-  //   logger.info('bamboo constructor SignerHbauth');
-  // }
-
   // Create digest and return its signature made with signDigest.
   async signChallenge({
     username,
     password = '',
     message,
     keyType = KeyTypes.posting
-  }: SignChallenge) {
+  }: SignChallenge): Promise<string> {
     const digest = cryptoUtils.sha256(message).toString('hex');
-    return this.signDigest(
+    const signature = this.signDigest(
       digest, username, password, keyType
     );
+    logger.info('hbauth', { signature });
+    return signature;
   }
 
   async broadcastTransaction({

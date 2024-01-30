@@ -52,20 +52,20 @@ export class SignerWif extends SignerHbauth {
         username,
         keyType = KeyTypes.posting,
         password = '', // WIF private key
-    }: SignChallenge) {
-        let signature = ''
+    }: SignChallenge): Promise<string> {
         try {
             const wif = password ? password : this.getKey(keyType);
             if (!wif) throw new Error('No wif key');
             const privateKey = PrivateKey.fromString(wif);
             const messageHash = cryptoUtils.sha256(message);
             logger.info('wif', { messageHash: messageHash.toString('hex') });
-            signature = privateKey.sign(messageHash).toString();
+            const signature = privateKey.sign(messageHash).toString();
             this.saveKey(wif, keyType);
+            logger.info('wif', { signature });
+            return signature;
         } catch (error) {
             throw error;
         }
-        return signature;
     };
 
     async signDigest(

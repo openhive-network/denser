@@ -100,20 +100,21 @@ export function LoginPanel(
       }
     } else {
       try {
-        signatures = await signer.signChallenge({
+        const keyType = KeyTypes.posting;
+        const signature = await signer.signChallenge({
           message,
           loginType,
           username,
           password,
-          keyType: KeyTypes.posting
+          keyType
         });
+        signatures[keyType] = signature;
       } catch (error) {
         logger.error('onSubmit error in signLoginChallenge', error);
         setErrorMsg(t('pageLogin.signingFailed'));
         return;
       }
     }
-    logger.info({ signatures });
 
     const body: PostLoginSchema = {
       username: username || '',
