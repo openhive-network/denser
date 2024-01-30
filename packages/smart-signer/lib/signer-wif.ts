@@ -1,5 +1,5 @@
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
-import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer';
+import { SignChallenge } from '@smart-signer/lib/signer';
 import { KeyTypes } from '@smart-signer/types/common';
 import { SignerHbauth } from '@smart-signer/lib/signer-hbauth';
 import { isStorageAvailable } from '@smart-signer/lib/utils';

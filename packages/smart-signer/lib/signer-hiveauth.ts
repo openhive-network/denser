@@ -1,5 +1,3 @@
-import { KeychainSDK, KeychainKeyTypes } from 'keychain-sdk';
-import { Operation, Transaction, OperationName, VirtualOperationName, Client } from '@hiveio/dhive';
 import { KeyTypes, LoginTypes } from '@smart-signer/types/common';
 import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer';
 import { formatOperations } from '@smart-signer/lib/signer-keychain';
