@@ -2,7 +2,7 @@ import { KeychainSDK, KeychainKeyTypes } from 'keychain-sdk';
 import { Operation, Transaction, OperationName, VirtualOperationName, Client } from '@hiveio/dhive';
 import { KeyTypes, LoginTypes } from '@smart-signer/types/common';
 import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer';
-import { SignerKeychain } from '@smart-signer/lib/signer-keychain';
+import { formatOperations } from '@smart-signer/lib/signer-keychain';
 import HiveAuthUtils from '@smart-signer/lib/hive-auth-utils';
 import { isStorageAvailable } from '@smart-signer/lib/utils';
 import { memoryStorage } from '@smart-signer/lib/memory-storage';
@@ -15,14 +15,13 @@ interface SignerHiveauthOptions {
 }
 
 
-export class SignerHiveauth extends SignerKeychain {
+export class SignerHiveauth {
 
   public storage: Storage;
 
   constructor({
     storageType = 'localStorage'
   }: SignerHiveauthOptions = {}) {
-    super();
     if (storageType === 'localStorage'
         && isStorageAvailable(storageType)) {
       this.storage = window.localStorage;
@@ -32,6 +31,11 @@ export class SignerHiveauth extends SignerKeychain {
     } else {
       this.storage = memoryStorage;
     }
+  }
+
+  async destroy() {
+    HiveAuthUtils.logout();
+    this.storage.removeItem('hiveAuthData');
   }
 
   setHiveAuthData() {
@@ -46,6 +50,7 @@ export class SignerHiveauth extends SignerKeychain {
     HiveAuthUtils.setExpire(hiveAuthData?.expire || 0);
     HiveAuthUtils.setKey(hiveAuthData?.key || '');
   }
+
 
   async signChallenge({
     message,
@@ -83,6 +88,7 @@ export class SignerHiveauth extends SignerKeychain {
     }
   };
 
+
   async broadcastTransaction({
     operation,
     loginType,
@@ -93,7 +99,7 @@ export class SignerHiveauth extends SignerKeychain {
     let result = { success: true, result: '', error: ''};
     try {
       this.setHiveAuthData();
-      const operations = this.formatOperations(operation);
+      const operations = formatOperations(operation);
       const broadcastResponse: any = await new Promise((resolve) => {
         HiveAuthUtils.broadcast(
           operations,

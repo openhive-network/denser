@@ -27,7 +27,30 @@ export function hasCompatibleKeychain() {
 }
 
 
+/**
+ * Rewrites operation from Wax format to Keychain format.
+ *
+ * @export
+ * @param {operation} operation
+ * @returns
+ */
+export function formatOperations(operation: operation) {
+  const operations: Operation[] = [];
+  for (const [key, value] of Object.entries(operation)) {
+    operations.push(
+      [
+        key as OperationName | VirtualOperationName,
+        value
+      ]
+    )
+  }
+  return operations;
+}
+
+
 export class SignerKeychain {
+
+  async destroy() {}
 
   async signChallenge({
     message,
@@ -58,27 +81,6 @@ export class SignerKeychain {
     }
   };
 
-  /**
-   * Rewrites operation from Wax format to Keychain format.
-   *
-   * @param {operation} operation
-   * @returns
-   * @memberof SignerKeychain
-   */
-  formatOperations(operation: operation) {
-    const operations: Operation[] = [];
-    for (const [key, value] of Object.entries(operation)) {
-      operations.push(
-        [
-          key as OperationName | VirtualOperationName,
-          value
-        ]
-        )
-    }
-    return operations;
-  }
-
-
   async broadcastTransaction({
     operation,
     loginType,
@@ -92,7 +94,7 @@ export class SignerKeychain {
       if (!(await keychain.isKeychainInstalled())) {
         throw new Error('Keychain is not installed');
       }
-      const operations = this.formatOperations(operation);
+      const operations = formatOperations(operation);
       const broadcastResult = await keychain.broadcast(
         {
           username,
@@ -116,6 +118,16 @@ export class SignerKeychain {
     return result;
   };
 
+
+  /**
+   * Creates transaction from given operations and signs it.
+   *
+   * @param {BroadcastTransaction} { operation, loginType, username,
+   *     keyType = KeyTypes.posting
+   *   }
+   * @returns {Promise<any>}
+   * @memberof SignerKeychain
+   */
   async signTransaction({
     operation,
     loginType,
@@ -128,16 +140,7 @@ export class SignerKeychain {
       if (!(await keychain.isKeychainInstalled())) {
         throw new Error('Keychain is not installed');
       }
-
-      // Format operation for Keychain
-      const operations: Operation[] = [];
-      for (const [key, value] of Object.entries(operation)) {
-        operations.push([
-          key as OperationName | VirtualOperationName,
-          value
-        ]);
-      }
-
+      const operations = formatOperations(operation);
       const client = new Client(
         [
           'https://api.hive.blog',

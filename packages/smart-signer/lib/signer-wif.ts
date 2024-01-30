@@ -49,6 +49,10 @@ export class SignerWif extends SignerHbauth {
         }
     }
 
+    async destroy() {
+        this.removeAllKeys();
+    }
+
     async signChallenge ({
         message,
         username,

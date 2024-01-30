@@ -29,7 +29,32 @@ export interface SignChallenge {
     translateFn?: (v: string) => string;
 }
 
+
 export class Signer {
+
+    /**
+     * Creates instance of Signer for given `loginType` and returns it.
+     *
+     * @param {LoginTypes} [loginType=LoginTypes.wif]
+     * @returns
+     * @memberof Signer
+     */
+    getSigner(loginType: LoginTypes = LoginTypes.wif) {
+        let signer: SignerHbauth | SignerHiveauth | SignerKeychain | SignerWif;
+        if (loginType === LoginTypes.hbauth) {
+            signer = new SignerHbauth();
+        } else if (loginType === LoginTypes.hiveauth) {
+            signer = new SignerHiveauth();
+        } else if (loginType === LoginTypes.keychain) {
+            signer = new SignerKeychain();
+        } else if (loginType === LoginTypes.wif) {
+            signer = new SignerWif();
+        } else {
+            throw new Error('Invalid loginType');
+        }
+        return signer;
+    }
+
 
     /**
      * Calculates sha256 digest (hash) of any string and signs it with
@@ -53,18 +78,7 @@ export class Signer {
         translateFn = (v) => v,
     }: SignChallenge): Promise<string> {
         logger.info('in signChallenge %o', { loginType, username, password, keyType, message });
-        let signer: Signer;
-        if (loginType === LoginTypes.hbauth) {
-            signer = new SignerHbauth();
-        } else if (loginType === LoginTypes.hiveauth) {
-            signer = new SignerHiveauth();
-        } else if (loginType === LoginTypes.keychain) {
-            signer = new SignerKeychain();
-        } else if (loginType === LoginTypes.wif) {
-            signer = new SignerWif();
-        } else {
-            throw new Error('Invalid loginType');
-        }
+        const signer = this.getSigner(loginType);
         try {
             const signature = await signer.signChallenge({
                 message,
@@ -100,18 +114,7 @@ export class Signer {
         logger.info('in broadcastTransaction: %o', {
             operation, loginType, username, keyType
         });
-        let signer: any;
-        if (loginType === LoginTypes.hbauth) {
-            signer = new SignerHbauth();
-        } else if (loginType === LoginTypes.hiveauth) {
-            signer = new SignerHiveauth();
-        } else if (loginType === LoginTypes.keychain) {
-            signer = new SignerKeychain();
-        } else if (loginType === LoginTypes.wif) {
-            signer = new SignerWif();
-        } else {
-            throw new Error('Invalid loginType');
-        }
+        const signer = this.getSigner(loginType);
         return signer.broadcastTransaction({
             operation,
             loginType,
@@ -119,6 +122,20 @@ export class Signer {
             keyType,
             translateFn,
         });
+    }
+
+
+    /**
+     * Clears all user data in storages and memory, does other things,
+     * if required for particular Signer.
+     *
+     * @param {LoginTypes} [loginType=LoginTypes.wif]
+     * @returns
+     * @memberof Signer
+     */
+    async destroy(loginType: LoginTypes) {
+        const signer = this.getSigner(loginType);
+        return signer.destroy();
     }
 
 }

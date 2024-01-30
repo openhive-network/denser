@@ -1,25 +1,23 @@
 import { getLogger } from '@hive/ui/lib/logging';
-import HiveAuthUtils from '@smart-signer/lib/hive-auth-utils';
-import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { useSignOut } from '@smart-signer/lib/auth/use-sign-out';
 import { toast } from '@ui/components/hooks/use-toast';
-import { SignerWif } from '@smart-signer/lib/signer-wif';
+import { Signer } from '@smart-signer/lib/signer';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 
 const logger = getLogger('app');
 
 export function useLogout() {
-    const [, setHiveAuthData] = useLocalStorage('hiveAuthData', HiveAuthUtils.initialHiveAuthData);
 
     const signOut = useSignOut();
+    const { user } = useUser();
+    const signer = new Signer();
+
     const onLogout = async () => {
       try {
+        if (user && user.loginType) {
+          signer.destroy(user.loginType);
+        }
         await signOut.mutateAsync();
-
-        const signerWif = new SignerWif();
-        signerWif.removeAllKeys()
-
-        setHiveAuthData(HiveAuthUtils.initialHiveAuthData);
-        HiveAuthUtils.logout();
       } catch (error) {
         toast({
           title: 'Error!',

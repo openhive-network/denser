@@ -11,6 +11,8 @@ const logger = getLogger('app');
 
 export class SignerHbauth {
 
+  async destroy() {}
+
   // Create digest and return its signature made with signDigest.
   async signChallenge({
     username,
