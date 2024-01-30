@@ -19,9 +19,11 @@ export class SignerWif extends SignerHbauth {
         storageType = 'localStorage'
     }: SignerWifOptions = {}) {
         super();
-        if (storageType === 'localStorage' && isStorageAvailable(storageType)) {
+        if (storageType === 'localStorage'
+                && isStorageAvailable(storageType)) {
             this.storage = window.localStorage;
-        } else if (storageType === 'sessionStorage' && isStorageAvailable(storageType)) {
+        } else if (storageType === 'sessionStorage'
+                && isStorageAvailable(storageType)) {
             this.storage = window.sessionStorage;
         } else {
             this.storage = memoryStorage;
@@ -58,7 +60,6 @@ export class SignerWif extends SignerHbauth {
             if (!wif) throw new Error('No wif key');
             const privateKey = PrivateKey.fromString(wif);
             const messageHash = cryptoUtils.sha256(message);
-            logger.info('wif', { messageHash: messageHash.toString('hex') });
             const signature = privateKey.sign(messageHash).toString();
             this.saveKey(wif, keyType);
             logger.info('wif', { signature });
@@ -74,7 +75,8 @@ export class SignerWif extends SignerHbauth {
         password: string,
         keyType: KeyTypes = KeyTypes.posting
     ) {
-        logger.info('sign args: %o', { username, password, digest, keyType });
+        const args = { username, password, digest, keyType };
+        logger.info('signDigest args: %o', args);
         let signature = ''
         try {
             const wif = password ? password : this.getKey(keyType);
