@@ -4,6 +4,7 @@ import { SignerKeychain } from '@smart-signer/lib/signer-keychain';
 import { SignerWif } from '@smart-signer/lib/signer-wif';
 import { LoginTypes } from '@smart-signer/types/common';
 import { KeyTypes } from '@smart-signer/types/common';
+
 // export * from '@hive/wax'; // TODO Consider this.
 export { vote, operation } from '@hive/wax';
 
@@ -35,10 +36,9 @@ export class Signer {
      * special treatment.
      *
      * @param {SignChallenge} { message, loginType, username, password =
-     *         '', // private key or password to unlock hbauth key
-     *         keyType = KeyTypes.posting
+     *         '', keyType = KeyTypes.posting
      *     }
-     * @returns {Promise<Signatures>}
+     * @returns {Promise<string>}
      * @memberof Signer
      */
     async signChallenge({
@@ -49,7 +49,6 @@ export class Signer {
         keyType = KeyTypes.posting
     }: SignChallenge): Promise<string> {
         logger.info('in signChallenge %o', { loginType, username, password, keyType, message });
-        // let signer: SignerHbauth | SignerKeychain | SignerWif | undefined;
         let signer: Signer | undefined;
         if (loginType === LoginTypes.hbauth) {
             signer = new SignerHbauth();
@@ -77,8 +76,8 @@ export class Signer {
     }
 
     /**
-     * Create Hive transaction for given, sign it and broadcast it to
-     * Hive blockchain.
+     * Creates Hive transaction for given operation, signs it and
+     * broadcasts it to Hive blockchain.
      *
      * @param {BroadcastTransaction} { operation, loginType, username,
      *         keyType = KeyTypes.posting
