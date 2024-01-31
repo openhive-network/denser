@@ -1,7 +1,8 @@
 import { createWaxFoundation, operation, THexString, ITransactionBuilder } from '@hive/wax/web';
 import { fetchJson } from '@smart-signer/lib/fetch-json';
-import { getLogger } from '@hive/ui/lib/logging';
+import { isBrowser } from '@hive/ui/lib/logger';
 
+import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
 const KEY_TYPES = ['active', 'posting'] as const;
@@ -187,4 +188,25 @@ export async function verifySignature(
   }
 
   return valid;
+}
+
+export function isStorageAvailable(storageType: 'localStorage' | 'sessionStorage') {
+  let storage: Storage;
+  logger.info('Checking availability of %s', storageType);
+  try {
+    if (!isBrowser()) return false;
+    if ((storageType = 'localStorage')) {
+      storage = window.localStorage;
+    } else if ((storageType = 'sessionStorage')) {
+      storage = window.sessionStorage;
+    } else {
+      return false;
+    }
+    const x = '__storage_test__';
+    storage.setItem(x, x);
+    storage.removeItem(x);
+    return true;
+  } catch (e) {
+    return false;
+  }
 }
