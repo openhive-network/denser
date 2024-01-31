@@ -1,12 +1,11 @@
-import { createWaxFoundation, operation, THexString, ITransactionBuilder } from "@hive/wax";
+import { createWaxFoundation, operation, THexString, ITransactionBuilder } from '@hive/wax/web';
 import { fetchJson } from '@smart-signer/lib/fetch-json';
-import { getLogger } from "@hive/ui/lib/logging";
+import { getLogger } from '@hive/ui/lib/logging';
 
 const logger = getLogger('app');
 
-const KEY_TYPES = ["active", "posting"] as const;
+const KEY_TYPES = ['active', 'posting'] as const;
 export type KeyAuthorityType = (typeof KEY_TYPES)[number];
-
 
 export function parseCookie(cookie: string): Record<string, string> {
   const kv: Record<string, string> = {};
@@ -22,10 +21,10 @@ export function parseCookie(cookie: string): Record<string, string> {
 }
 
 export function getCookie(cname: string) {
-  let name = cname + "=";
+  let name = cname + '=';
   let decodedCookie = decodeURIComponent(document.cookie);
   let ca = decodedCookie.split(';');
-  for(let i = 0; i < ca.length; i++) {
+  for (let i = 0; i < ca.length; i++) {
     let c = ca[i];
     while (c.charAt(0) == ' ') {
       c = c.substring(1);
@@ -34,7 +33,7 @@ export function getCookie(cname: string) {
       return c.substring(name.length, c.length);
     }
   }
-  return "";
+  return '';
 }
 
 /**
@@ -58,13 +57,11 @@ export function getCookie(cname: string) {
  * @returns {string} in hex format
  */
 export async function subtleCryptoDigestHex(message: string) {
-    const msgUint8 = new TextEncoder().encode(message); // encode as (utf-8) Uint8Array
-    const hashArrayBuffer = await crypto.subtle.digest("SHA-256", msgUint8); // hash the message
-    const hashArray = Array.from(new Uint8Array(hashArrayBuffer)); // convert ArrayBuffer to byte array
-    const hashHex = hashArray
-        .map((b) => b.toString(16).padStart(2, "0"))
-        .join(""); // convert bytes to hex string
-    return hashHex;
+  const msgUint8 = new TextEncoder().encode(message); // encode as (utf-8) Uint8Array
+  const hashArrayBuffer = await crypto.subtle.digest('SHA-256', msgUint8); // hash the message
+  const hashArray = Array.from(new Uint8Array(hashArrayBuffer)); // convert ArrayBuffer to byte array
+  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
+  return hashHex;
 }
 
 /**
@@ -76,50 +73,48 @@ export async function subtleCryptoDigestHex(message: string) {
  * @param {string} [txString='']
  * @param {*} [hiveApiUrl=this.hiveApiUrl]
  * @returns {Promise<{txString: string, txApi: string, digest:
-* THexString}>}
-*/
+ * THexString}>}
+ */
 export async function getTransactionDigest(
-            operation: operation | null = null,
-            txString: string = '',
-            hiveApiUrl = 'https://api.hive.blog'
-        ): Promise<{txString: string, digest: THexString}> {
+  operation: operation | null = null,
+  txString: string = '',
+  hiveApiUrl = 'https://api.hive.blog'
+): Promise<{ txString: string; digest: THexString }> {
+  const wax = await createWaxFoundation();
 
-    const wax = await createWaxFoundation();
-
-    let tx: ITransactionBuilder;
-    if (txString) {
-        tx = new wax.TransactionBuilder(JSON.parse(txString));
-    } else {
-        // Create transaction, if it does not exist.
-        let dynamicGlobalProps: any;
-        try {
-            dynamicGlobalProps = await fetchJson(hiveApiUrl, {
-                method: "post",
-                body: JSON.stringify({
-                    jsonrpc: "2.0",
-                    method: "database_api.get_dynamic_global_properties",
-                    id: 1,
-                }),
-            });
-        } catch (error) {
-            logger.error('Error in Signer.getTransactionDigest: %o', error);
-            throw error;
-        }
-        const { result: globalProps } = dynamicGlobalProps;
-        tx = new wax.TransactionBuilder(globalProps.head_block_id, "+1m");
+  let tx: ITransactionBuilder;
+  if (txString) {
+    tx = new wax.TransactionBuilder(JSON.parse(txString));
+  } else {
+    // Create transaction, if it does not exist.
+    let dynamicGlobalProps: any;
+    try {
+      dynamicGlobalProps = await fetchJson(hiveApiUrl, {
+        method: 'post',
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'database_api.get_dynamic_global_properties',
+          id: 1
+        })
+      });
+    } catch (error) {
+      logger.error('Error in Signer.getTransactionDigest: %o', error);
+      throw error;
     }
+    const { result: globalProps } = dynamicGlobalProps;
+    tx = new wax.TransactionBuilder(globalProps.head_block_id, '+1m');
+  }
 
-    // Pass operation to transaction, if it exists.
-    if (operation) {
-        tx.push(operation);
-    }
+  // Pass operation to transaction, if it exists.
+  if (operation) {
+    tx.push(operation);
+  }
 
-    return {
-        txString: tx.toString(),
-        digest: tx.sigDigest,
-    };
+  return {
+    txString: tx.toString(),
+    digest: tx.sigDigest
+  };
 }
-
 
 /**
  * Verifies signature of transaction or only signature of digest.
@@ -135,42 +130,39 @@ export async function getTransactionDigest(
  * @returns {Promise<boolean>}
  */
 export async function verifySignature(
-      username: string,
-      digest: THexString,
-      signature: string,
-      keyType: KeyAuthorityType,
-      txString: string = '',
-      hiveApiUrl = 'https://api.hive.blog'
-    ): Promise<boolean> {
+  username: string,
+  digest: THexString,
+  signature: string,
+  keyType: KeyAuthorityType,
+  txString: string = '',
+  hiveApiUrl = 'https://api.hive.blog'
+): Promise<boolean> {
   // Create transaction's digest and compare it with that passed
   // as argument to this method.
   if (txString) {
-    const result = await getTransactionDigest(
-        null,
-        txString
-        );
+    const result = await getTransactionDigest(null, txString);
     if (result.digest !== digest) {
-        logger.info('Digest do not match');
-        return false;
+      logger.info('Digest do not match');
+      return false;
     }
   }
 
   // Check signature of digest passed as argument to this method.
   const body: any = {
-    jsonrpc: "2.0",
-    method: "database_api.verify_signatures",
+    jsonrpc: '2.0',
+    method: 'database_api.verify_signatures',
     params: {
-        hash: digest,
-        signatures: [signature],
-        required_other: [],
-        required_active: [],
-        required_owner: [],
-        required_posting: [],
+      hash: digest,
+      signatures: [signature],
+      required_other: [],
+      required_active: [],
+      required_owner: [],
+      required_posting: []
     },
-    id: 1,
+    id: 1
   };
 
-  if (keyType === "posting") {
+  if (keyType === 'posting') {
     body.params.required_posting.push(username);
   } else {
     body.params.required_active.push(username);
@@ -179,8 +171,8 @@ export async function verifySignature(
   let verifyResponse: any;
   try {
     verifyResponse = await fetchJson(hiveApiUrl, {
-        method: "post",
-        body: JSON.stringify(body),
+      method: 'post',
+      body: JSON.stringify(body)
     });
   } catch (error) {
     logger.error('Error in Signer.verify fetchJson: %o', error);
@@ -188,7 +180,7 @@ export async function verifySignature(
   }
 
   const {
-    result: { valid },
+    result: { valid }
   } = verifyResponse;
   if (!valid) {
     logger.info('Signature is invalid');

@@ -3,11 +3,14 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 
 export const useFollowingInfiniteQuery = (
   account: GetFollowParams['account'],
-  limit: GetFollowParams['limit'] = DEFAULT_PARAMS_FOR_FOLLOW.limit
+  limit: GetFollowParams['limit'] = DEFAULT_PARAMS_FOR_FOLLOW.limit,
+  type?: string,
+  extendedKey?: any[]
 ) => {
+  console.log('czy dostaje type', type);
   return useInfiniteQuery(
-    ['followingData', account],
-    ({ pageParam: last_id }) => getFollowing({ account, start: last_id, limit }),
+    ['followingData', account, ...(extendedKey || [])],
+    ({ pageParam: last_id }) => getFollowing({ account, start: last_id, type, limit }),
     {
       enabled: Boolean(account),
       getNextPageParam: (lastPage) => {
