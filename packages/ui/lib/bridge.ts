@@ -6,7 +6,7 @@ export const bridgeApiCall = <T>(
   params: object
 ): Promise<T> => bridgeServer.call("bridge", endpoint, params);
 const endpoint =
-  typeof window !== "undefined"
+  typeof window !== "undefined" && 'localStorage' in global && global.localStorage
     ? window.localStorage.getItem("hive-blog-endpoint")
       ? JSON.parse(String(window.localStorage.getItem("hive-blog-endpoint")))
       : siteConfig.endpoint

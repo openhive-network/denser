@@ -6,7 +6,7 @@ import * as z from 'zod';
 import { useTranslation } from 'next-i18next';
 import { Separator } from '@hive/ui/components/separator';
 import { getLogger } from '@hive/ui/lib/logging';
-import { hasCompatibleKeychain } from '@smart-signer/lib/hive-keychain';
+import { hasCompatibleKeychain } from '@smart-signer/lib/signer-keychain';
 import { username } from '@smart-signer/lib/auth/utils';
 import { LoginTypes } from '@smart-signer/types/common';
 import { validateHivePassword } from '@smart-signer/lib/validate-hive-password';
@@ -46,7 +46,7 @@ const commonFieldsWithPassword = commonFields.merge(passwordField);
 const commonFieldsWithPasswordHbauth = commonFields.merge(passwordHbauthField);
 
 const loginFormSchema = z.discriminatedUnion('loginType', [
-  z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.password) }).merge(commonFieldsWithPassword),
+  z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.wif) }).merge(commonFieldsWithPassword),
   z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.hbauth) }).merge(commonFieldsWithPasswordHbauth),
   z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.hiveauth) }).merge(commonFields),
   z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.keychain) }).merge(commonFields),
@@ -56,7 +56,7 @@ const loginFormSchema = z.discriminatedUnion('loginType', [
 export type LoginFormSchema = z.infer<typeof loginFormSchema>;
 
 const loginFormDefaultValues = {
-  loginType: LoginTypes.password,
+  loginType: LoginTypes.wif,
   password: '',
   passwordHbauth: '',
   remember: false,
@@ -114,7 +114,7 @@ export function LoginForm({
       setDisabledPasswordHbauth(true);
     } else {
       setValue('useKeychain', false);
-      setValue('loginType', LoginTypes.password);
+      setValue('loginType', LoginTypes.wif);
       setDisabledPassword(false);
       setDisabledPasswordHbauth(true);
     }
@@ -135,7 +135,7 @@ export function LoginForm({
       setDisabledPasswordHbauth(true);
     } else {
       setValue('useHiveauth', false);
-      setValue('loginType', LoginTypes.password);
+      setValue('loginType', LoginTypes.wif);
       setDisabledPassword(false);
       setDisabledPasswordHbauth(true);
     }
@@ -156,7 +156,7 @@ export function LoginForm({
       setDisabledPasswordHbauth(false);
     } else {
       setValue('useHbauth', false);
-      setValue('loginType', LoginTypes.password);
+      setValue('loginType', LoginTypes.wif);
       setDisabledPassword(false);
       setDisabledPasswordHbauth(true);
     }

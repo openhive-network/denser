@@ -6,6 +6,5 @@ const logger = getLogger('app');
 export async function GET(request: NextRequest): Promise<NextResponse> {
   const searchParams = request.nextUrl.searchParams;
   const query = searchParams.get('query');
-  logger.info('bamboo query', {query});
   return new NextResponse('Hello, Next.js!', { status: 200 })
 }

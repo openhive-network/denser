@@ -1,12 +1,13 @@
 {
-    "extends": "@hive/tsconfig/base.json",
-    "compilerOptions": {
-      "baseUrl": ".",
-      "paths": {
-        "@smart-signer/*": ["./*"],
-        "@ui/*": ["../../packages/ui/*"]
-      }
-    },
-    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-    "exclude": ["node_modules"]
+  "extends": "@hive/tsconfig/base.json",
+  "compilerOptions": {
+    "moduleResolution": "Bundler",
+    "baseUrl": ".",
+    "paths": {
+      "@smart-signer/*": ["./*"],
+      "@ui/*": ["../../packages/ui/*"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }

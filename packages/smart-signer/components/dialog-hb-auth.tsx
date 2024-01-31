@@ -175,7 +175,7 @@ export function DialogHBAuth({ children, onAuthComplete, i18nNamespace = 'smart-
                       type="reset"
                       className="w-fit rounded-lg bg-transparent px-5 py-2.5 text-center text-sm font-semibold text-gray-500 hover:cursor-pointer hover:text-red-600 focus:outline-none"
                     >
-                      {t('login_form.cancel_button')}
+                      {t('login_form.reset_button')}
                     </button>
                   </div>
                 </form>
@@ -253,7 +253,7 @@ export function DialogHBAuth({ children, onAuthComplete, i18nNamespace = 'smart-
                       type="reset"
                       className="w-fit rounded-lg bg-transparent px-5 py-2.5 text-center text-sm font-semibold text-gray-500 hover:cursor-pointer hover:text-red-600 focus:outline-none"
                     >
-                      {t('login_form.cancel_button')}
+                      {t('login_form.reset_button')}
                     </button>
                   </div>
                 </form>

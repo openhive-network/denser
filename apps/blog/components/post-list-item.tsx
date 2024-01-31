@@ -25,10 +25,12 @@ import { useTranslation } from 'next-i18next';
 import { toast } from '@ui/components/hooks/use-toast';
 import { useQuery } from '@tanstack/react-query';
 import { getDynamicGlobalProperties } from '@ui/lib/hive';
-import { authService } from '@/blog/lib/authService';
-import { createWaxFoundation, TBlockHash, createHiveChain, BroadcastTransactionRequest } from '@hive/wax';
 import { useAppStore } from '@/blog/store/app';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import { Signer, vote } from '@smart-signer/lib/signer';
+
+import { getLogger } from '@hive/ui/lib/logging';
+const logger = getLogger('app');
 
 const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage: boolean | undefined }) => {
   const { t } = useTranslation('common_blog');
@@ -37,60 +39,26 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
 
   const { user } = useUser();
 
-  const [enabledDynamic, setEnableDynamic] = useState(false);
-  const {
-    isLoading: dynamicGlobalDataIsLoading,
-    error: dynamicGlobalDataError,
-    data: dynamicGlobalData
-  } = useQuery(['dynamicGlobalData'], () => getDynamicGlobalProperties(), {
-    enabled: enabledDynamic
-  });
-
-  const currentProfile = useAppStore((state) => state.currentProfile);
-  const currentProfileKeyType = useAppStore((state) => state.currentProfileKeyType);
-
   async function vote(e: any, type: string) {
-    setEnableDynamic(true);
-    const authClient = await authService.getOnlineClient();
-    const wax = await createWaxFoundation();
-    const tx = new wax.TransactionBuilder(dynamicGlobalData?.head_block_id as unknown as TBlockHash, '+1m');
-
-    // if (currentProfile && currentProfileKeyType && tx) {
-    if (user && user.isLoggedIn && tx) {
-      let vote;
-
-      if (type === 'upvote') {
-        vote = {
-          voter: user.username,
-          author: post.author,
-          permlink: post.permlink,
-          weight: 10000
-        };
-      }
+    if (user && user.isLoggedIn) {
+      const vote: vote = {
+        voter: user.username,
+        author: post.author,
+        permlink: post.permlink,
+        weight: 10000
+      };
 
       if (type === 'downvote') {
-        vote = {
-          voter: user.username,
-          author: post.author,
-          permlink: post.permlink,
-          weight: -10000
-        };
+        vote.weight = -10000;
       }
 
-      tx.push({
-        vote
-      });
-
-      // const signature = await authClient.sign(currentProfile?.name, tx.sigDigest, currentProfileKeyType);
-
-      const signature = await authClient.sign(user.username, tx.sigDigest, 'posting');
-      const transaction = tx.build();
-      transaction.signatures.push(signature);
-      // or you can use tx.sign(signature, currentProfile.posting.key_auths[0] as unknown as string);
-      const transactionRequest = new BroadcastTransactionRequest(tx);
-      const hiveChain = await createHiveChain();
+      const signer = new Signer();
       try {
-        await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
+        await signer.broadcastTransaction({
+          operation: { vote },
+          loginType: user.loginType,
+          username: user.username
+        });
         e.target.classList.add('text-white');
         console.log('type', type);
         if (type === 'upvote') {
@@ -101,19 +69,21 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
           e.target.classList.add('bg-gray-600');
         }
       } catch (e) {
-        if (type === 'upvote') {
-          toast({
-            description: 'Your current vote on this comment is identical to this vote.',
-            variant: 'default'
-          });
+        //
+        // TODO Improve messages displayed to user, after we do better
+        // (unified) error handling in smart-signer.
+        //
+        logger.error('got error', e);
+        let description = 'Transaction broadcast error';
+        if (`${e}`.indexOf('vote on this comment is identical') >= 0) {
+          description = 'Your current vote on this comment is identical to this vote.';
+        } else if (`${e}`.indexOf('Not implemented') >= 0) {
+          description = 'Method not implemented for this login type.';
         }
-
-        if (type === 'downvote') {
-          toast({
-            description: 'Transaction broadcast error: 0',
-            variant: 'default'
-          });
-        }
+        toast({
+          description,
+          variant: 'destructive'
+        });
       }
     }
   }
