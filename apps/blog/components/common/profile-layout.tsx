@@ -101,7 +101,6 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
     const isFollow = Boolean(
       followingData?.pages[0].some((f) => f.follower === user?.username && f.following === username)
     );
-    console.log('EFFECT IS FOLLOW', isFollow);
     setIsFollow(isFollow);
   }, [followingData?.pages, user?.username, username]);
 
@@ -115,8 +114,9 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   async function follow(type: string) {
     if (user && user.isLoggedIn) {
       const customJsonOperations: any[] = [];
+      const fob = new FollowOperationBuilder();
       if (type === 'follow') {
-        new FollowOperationBuilder()
+        fob
           .followBlog(user.username, username)
           .authorize(user.username)
           .build()
@@ -124,7 +124,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
       }
 
       if (type === 'unfollow') {
-        new FollowOperationBuilder()
+        fob
           .resetBlogList(EFollowBlogAction.FOLLOW_BLOG, user.username, username)
           .authorize(user.username)
           .build()
@@ -132,7 +132,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
       }
 
       if (type === 'mute') {
-        new FollowOperationBuilder()
+        fob
           .muteBlog(user.username, username)
           .authorize(user.username)
           .build()
@@ -140,7 +140,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
       }
 
       if (type === 'unmute') {
-        new FollowOperationBuilder()
+        fob
           .resetBlogList(EFollowBlogAction.BOTH, user.username, username)
           .authorize(user.username)
           .build()
