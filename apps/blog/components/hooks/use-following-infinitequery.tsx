@@ -7,7 +7,6 @@ export const useFollowingInfiniteQuery = (
   type?: string,
   extendedKey?: any[]
 ) => {
-  console.log('czy dostaje type', type);
   return useInfiniteQuery(
     ['followingData', account, ...(extendedKey || [])],
     ({ pageParam: last_id }) => getFollowing({ account, start: last_id, type, limit }),
