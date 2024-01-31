@@ -4,10 +4,8 @@ import { useRouter } from 'next/router';
 import { LoginTypes } from '@smart-signer/types/common';
 import { parseCookie } from '@smart-signer/lib/utils';
 import { Signatures, PostLoginSchema } from '@smart-signer/lib/auth/utils';
-import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { useSignIn } from '@smart-signer/lib/auth/use-sign-in';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import HiveAuthUtils from '@smart-signer/lib/hive-auth-utils';
 import { LoginForm, LoginFormSchema } from '@smart-signer/components/login-form';
 import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { Signer } from '@smart-signer/lib/signer';
@@ -16,9 +14,7 @@ import { KeyTypes } from '@smart-signer/types/common';
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
-export function LoginPanel(
-    { i18nNamespace = 'smart-signer' }: { i18nNamespace?: string }
-    ) {
+export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?: string }) {
   const router = useRouter();
   const slug = router.query.slug as string;
 
@@ -66,7 +62,7 @@ export function LoginPanel(
         username,
         password,
         keyType,
-        translateFn: t,
+        translateFn: t
       });
       signatures[keyType] = signature;
     } catch (error) {

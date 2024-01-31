@@ -30,6 +30,7 @@ export class SignerHbauth {
     username,
     keyType = KeyTypes.posting
   }: BroadcastTransaction): Promise<{ success: boolean; error: string }> {
+    console.log('w signer hbauth keyType', keyType);
     let result = { success: true, error: '' };
     try {
       //
@@ -40,10 +41,9 @@ export class SignerHbauth {
       // const hiveChain = await createHiveChain();
       // const tx = await hiveChain.getTransactionBuilder('+1m');
 
-      const dynamicGlobalData = await getDynamicGlobalProperties();
-      const wax = await createWaxFoundation();
-      const tx = new wax.TransactionBuilder(dynamicGlobalData?.head_block_id as unknown as TBlockHash, '+1m');
-      tx.push(operation);
+      const hiveChain = await createHiveChain();
+      const tx = await hiveChain.getTransactionBuilder();
+      tx.push(operation).validate();
 
       const signature = await this.signDigest(tx.sigDigest, username, '', keyType);
 
@@ -54,9 +54,8 @@ export class SignerHbauth {
       transaction.signatures.push(signature);
 
       const transactionRequest = new BroadcastTransactionRequest(tx);
-      const hiveChain = await createHiveChain();
 
-      const result = await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
+      await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
     } catch (error) {
       logger.trace('SignerHbauth.broadcastTransaction error: %o', error);
       result = { success: false, error: 'Broadcast failed' };
