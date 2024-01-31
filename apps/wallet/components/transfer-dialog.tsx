@@ -49,7 +49,7 @@ export function TransferDialog({
     selectCurr: true,
     buttonTitle: 'Next'
   };
-  const [curr, useCurr] = useState(currency);
+  const [curr, setCurr] = useState(currency);
   const [value, setValue] = useState('');
   const [advanced, setAdvanced] = useState(false);
   switch (type) {
@@ -147,8 +147,8 @@ export function TransferDialog({
             <div className="relative col-span-3">
               {data.selectCurr && (
                 <div className="absolute right-0">
-                  <Select name="amout right-0" value={curr} onValueChange={(e) => useCurr(e)}>
-                    <SelectTrigger className="w-fit" onSelect={() => useCurr('hive')}>
+                  <Select name="amout right-0" value={curr} onValueChange={(e) => setCurr(e)}>
+                    <SelectTrigger className="w-fit" onSelect={() => setCurr('hive')}>
                       <SelectValue placeholder={curr} />
                     </SelectTrigger>
                     <SelectContent>
