@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useSiteParams } from '@hive/ui/components/hooks/use-site-params';
@@ -20,6 +20,11 @@ import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
 import env from '@beam-australia/react-env';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import { FollowOperationBuilder, EFollowBlogAction } from '@hive/wax/web';
+import { toast } from '@ui/components/hooks/use-toast';
+import { Signer } from '@smart-signer/lib/signer';
+import { getLogger } from '@ui/lib/logging';
+import { useFollowingInfiniteQuery } from '../hooks/use-following-infinitequery';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -45,6 +50,7 @@ function compareDates(dateStrings: string[], t: TFunction<'common_wallet', undef
 }
 
 const ProfileLayout = ({ children }: IProfileLayout) => {
+  const logger = getLogger('app');
   const router = useRouter();
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
@@ -67,6 +73,19 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   });
 
   const {
+    data: followingData,
+    isLoading: isLoadingFollowingData,
+    isFetching: isFetchingFollowingData
+  } = useFollowingInfiniteQuery(user?.username || '', 50, 'blog', ['blog']);
+  const {
+    data: followingDataIgnore,
+    isLoading: isLoadingFollowingDataIgnore,
+    isFetching: isFetchingFollowingDataIgnore
+  } = useFollowingInfiniteQuery(user?.username || '', 50, 'ignore', ['ignore']);
+  const [isFollow, setIsFollow] = useState(false);
+  const [isMute, setIsMute] = useState(false);
+
+  const {
     isLoading: dynamicGlobalDataIsLoading,
     error: dynamicGlobalDataError,
     data: dynamicGlobalData
@@ -77,6 +96,84 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
     retry: false,
     refetchOnWindowFocus: false
   });
+
+  useEffect(() => {
+    const isFollow = Boolean(
+      followingData?.pages[0].some((f) => f.follower === user?.username && f.following === username)
+    );
+    console.log('EFFECT IS FOLLOW', isFollow);
+    setIsFollow(isFollow);
+  }, [followingData?.pages, user?.username, username]);
+
+  useEffect(() => {
+    const isMute = Boolean(
+      followingDataIgnore?.pages[0].some((f) => f.follower === user?.username && f.following === username)
+    );
+    setIsMute(isMute);
+  }, [followingDataIgnore?.pages, user?.username, username]);
+
+  async function follow(type: string) {
+    if (user && user.isLoggedIn) {
+      const customJsonOperations: any[] = [];
+      if (type === 'follow') {
+        new FollowOperationBuilder()
+          .followBlog(user.username, username)
+          .authorize(user.username)
+          .build()
+          .flushOperations(customJsonOperations);
+      }
+
+      if (type === 'unfollow') {
+        new FollowOperationBuilder()
+          .resetBlogList(EFollowBlogAction.FOLLOW_BLOG, user.username, username)
+          .authorize(user.username)
+          .build()
+          .flushOperations(customJsonOperations);
+      }
+
+      if (type === 'mute') {
+        new FollowOperationBuilder()
+          .muteBlog(user.username, username)
+          .authorize(user.username)
+          .build()
+          .flushOperations(customJsonOperations);
+      }
+
+      if (type === 'unmute') {
+        new FollowOperationBuilder()
+          .resetBlogList(EFollowBlogAction.BOTH, user.username, username)
+          .authorize(user.username)
+          .build()
+          .flushOperations(customJsonOperations);
+      }
+
+      const signer = new Signer();
+      try {
+        await signer.broadcastTransaction({
+          operation: customJsonOperations[0],
+          loginType: user.loginType,
+          username: user.username
+        });
+      } catch (e) {
+        //
+        // TODO Improve messages displayed to user, after we do better
+        // (unified) error handling in smart-signer.
+        //
+        logger.error('got error', e);
+        let description = 'Transaction broadcast error';
+        if (`${e}`.indexOf('vote on this comment is identical') >= 0) {
+          description = 'Your current vote on this comment is identical to this vote.';
+        } else if (`${e}`.indexOf('Not implemented') >= 0) {
+          description = 'Method not implemented for this login type.';
+        }
+        toast({
+          description,
+          variant: 'destructive'
+        });
+      }
+    }
+  }
+
   if (accountDataIsLoading || dynamicGlobalDataIsLoading || profileDataIsLoading) {
     return <Loading loading={accountDataIsLoading || dynamicGlobalDataIsLoading || profileDataIsLoading} />;
   }
@@ -133,6 +230,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   target="_blank"
                   data-testid="profile-badge-link"
                 >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     alt="fish image"
                     title={t('user_profil.hive_buzz_badge_title', { username: profileData.name })}
@@ -293,17 +391,65 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 </span>
               </li>
             </ul>
+            {user?.username !== username ? (
+              <div className="m-2 flex gap-2 hover:text-red-500 sm:absolute sm:right-0">
+                {user && user.isLoggedIn ? (
+                  <Button
+                    className=" hover:text-red-500 "
+                    variant="secondary"
+                    size="sm"
+                    data-testid="profile-follow-button"
+                    onClick={() => {
+                      const nextFollow = !isFollow;
+                      setIsFollow(nextFollow);
+                      follow(nextFollow ? 'follow' : 'unfollow');
+                    }}
+                    disabled={isLoadingFollowingData || isFetchingFollowingData}
+                  >
+                    {isFollow ? t('user_profil.unfollow_button') : t('user_profil.follow_button')}
+                  </Button>
+                ) : (
+                  <DialogLogin>
+                    <Button
+                      className=" hover:text-red-500 "
+                      variant="secondary"
+                      size="sm"
+                      data-testid="profile-follow-button"
+                    >
+                      {t('user_profil.follow_button')}
+                    </Button>
+                  </DialogLogin>
+                )}
 
-            <DialogLogin>
-              <Button
-                className="m-2 hover:text-red-500 sm:absolute sm:right-0"
-                variant="secondary"
-                size="sm"
-                data-testid="profile-follow-button"
-              >
-                {t('user_profil.follow_button')}
-              </Button>
-            </DialogLogin>
+                {user && user.isLoggedIn ? (
+                  <Button
+                    className=" hover:text-red-500"
+                    variant="secondary"
+                    size="sm"
+                    data-testid="profile-mute-button"
+                    onClick={() => {
+                      const nextMute = !isMute;
+                      setIsMute(nextMute);
+                      follow(nextMute ? 'mute' : 'unmute');
+                    }}
+                    disabled={isLoadingFollowingDataIgnore || isFetchingFollowingDataIgnore}
+                  >
+                    {isMute ? t('user_profil.unmute_button') : t('user_profil.mute_button')}
+                  </Button>
+                ) : (
+                  <DialogLogin>
+                    <Button
+                      className=" hover:text-red-500"
+                      variant="secondary"
+                      size="sm"
+                      data-testid="profile-mute-button"
+                    >
+                      {t('user_profil.mute_button')}
+                    </Button>
+                  </DialogLogin>
+                )}
+              </div>
+            ) : null}
           </div>
         ) : (
           <div className={`h-auto max-h-full min-h-full w-auto min-w-full max-w-full bg-gray-600 bg-cover`} />

@@ -39,21 +39,7 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
 
   const { user } = useUser();
 
-  const [enabledDynamic, setEnableDynamic] = useState(false);
-  const {
-    isLoading: dynamicGlobalDataIsLoading,
-    error: dynamicGlobalDataError,
-    data: dynamicGlobalData
-  } = useQuery(['dynamicGlobalData'], () => getDynamicGlobalProperties(), {
-    enabled: enabledDynamic
-  });
-
-  const currentProfile = useAppStore((state) => state.currentProfile);
-  const currentProfileKeyType = useAppStore((state) => state.currentProfileKeyType);
-
   async function vote(e: any, type: string) {
-    setEnableDynamic(true);
-
     if (user && user.isLoggedIn) {
       const vote: vote = {
         voter: user.username,
@@ -90,13 +76,13 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
         logger.error('got error', e);
         let description = 'Transaction broadcast error';
         if (`${e}`.indexOf('vote on this comment is identical') >= 0) {
-          description = 'Your current vote on this comment is identical to this vote.'
+          description = 'Your current vote on this comment is identical to this vote.';
         } else if (`${e}`.indexOf('Not implemented') >= 0) {
-          description = 'Method not implemented for this login type.'
+          description = 'Method not implemented for this login type.';
         }
         toast({
           description,
-          variant: 'destructive',
+          variant: 'destructive'
         });
       }
     }

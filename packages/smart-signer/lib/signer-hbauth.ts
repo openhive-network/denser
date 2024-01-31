@@ -3,13 +3,13 @@ import { cryptoUtils } from '@hiveio/dhive';
 import { authService } from '@smart-signer/lib/auth-service';
 import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer';
 import { getDynamicGlobalProperties } from '@ui/lib/hive';
-import { createWaxFoundation, TBlockHash, createHiveChain, BroadcastTransactionRequest, vote, operation } from '@hive/wax';
+import { createWaxFoundation, TBlockHash, createHiveChain, BroadcastTransactionRequest } from '@hive/wax/web';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
-
 export class SignerHbauth {
+  async destroy() {}
 
   // Create digest and return its signature made with signDigest.
   async signChallenge({
@@ -17,11 +17,11 @@ export class SignerHbauth {
     password = '',
     message,
     keyType = KeyTypes.posting
-  }: SignChallenge) {
+  }: SignChallenge): Promise<string> {
     const digest = cryptoUtils.sha256(message).toString('hex');
-    return this.signDigest(
-      digest, username, password, keyType
-    );
+    const signature = this.signDigest(digest, username, password, keyType);
+    logger.info('hbauth', { signature });
+    return signature;
   }
 
   async broadcastTransaction({
@@ -29,9 +29,8 @@ export class SignerHbauth {
     loginType,
     username,
     keyType = KeyTypes.posting
-  }: BroadcastTransaction): Promise<{ success: boolean, error: string}> {
-
-    let result = { success: true, error: ''};
+  }: BroadcastTransaction): Promise<{ success: boolean; error: string }> {
+    let result = { success: true, error: '' };
     try {
       //
       // TODO These lines below do not work. Validation error in Wax
@@ -46,12 +45,7 @@ export class SignerHbauth {
       const tx = new wax.TransactionBuilder(dynamicGlobalData?.head_block_id as unknown as TBlockHash, '+1m');
       tx.push(operation);
 
-      const signature = await this.signDigest(
-        tx.sigDigest,
-        username,
-        '',
-        keyType
-      );
+      const signature = await this.signDigest(tx.sigDigest, username, '', keyType);
 
       // const authClient = await authService.getOnlineClient();
       // const signature = await authClient.sign('stirlitz', tx.sigDigest, 'posting');
@@ -63,22 +57,16 @@ export class SignerHbauth {
       const hiveChain = await createHiveChain();
 
       const result = await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
-
     } catch (error) {
       logger.trace('SignerHbauth.broadcastTransaction error: %o', error);
-      result = { success: false, error: 'Sign failed'};
+      result = { success: false, error: 'Broadcast failed' };
       throw error;
     }
 
     return result;
   }
 
-  async signDigest(
-    digest: string,
-    username: string,
-    password: string,
-    keyType: KeyTypes = KeyTypes.posting
-  ) {
+  async signDigest(digest: string, username: string, password: string, keyType: KeyTypes = KeyTypes.posting) {
     logger.info('sign args: %o', { username, password, digest, keyType });
 
     const authClient = await authService.getOnlineClient();
@@ -96,7 +84,7 @@ export class SignerHbauth {
 
       if (!password) {
         // TODO get password from storage or prompt user to input it.
-        const userInput = prompt("Please enter ypur password to unlock wallet", "");
+        const userInput = prompt('Please enter your password to unlock wallet', '');
         password = userInput as string;
         // throw new Error('No password to unlock wallet')
       }
@@ -117,15 +105,11 @@ export class SignerHbauth {
       throw new Error(`Unsupported keyType: ${keyType}`);
     }
 
-    const signature = await authClient.sign(
-      username,
-      digest,
-      keyType as unknown as 'posting' | 'active'
-    );
+    const signature = await authClient.sign(username, digest, keyType as unknown as 'posting' | 'active');
     logger.info('hbauth: %o', { digest, signature });
 
     return signature;
-  };
+  }
 
   async checkAuths(username: string, keyType: string) {
     const authClient = await authService.getOnlineClient();
@@ -134,22 +118,21 @@ export class SignerHbauth {
     // await authClient.logout();
     const auth = auths.find((auth) => auth.username === username);
     if (auth) {
-      logger.info('found auth: %o', auth);
+      logger.info('Found auth: %o', auth);
       if (auth.authorized) {
         if (auth.keyType === keyType) {
-          logger.info('user is authorized and we are ready to proceed');
+          logger.info('User is authorized and we are ready to proceed');
           // We're ready to sign loginChallenge and proceed.
         } else {
-          logger.info('user is authorized, but with incorrect keyType: %s', auth.keyType);
+          logger.info('User is authorized, but with incorrect keyType: %s', auth.keyType);
         }
       } else {
-        logger.info('user is not authorized');
+        logger.info('User is not authorized');
         // We should tell to unlock wallet (login to wallet).
       }
     } else {
-      logger.info('auth for user not found: %s', username);
+      logger.info('Auth for user not found: %s', username);
       // We should offer adding account to wallet.
     }
-  };
-
+  }
 }

@@ -1,6 +1,7 @@
 {
   "extends": "@hive/tsconfig/base.json",
   "compilerOptions": {
+    "moduleResolution": "Bundler",
     "baseUrl": ".",
     "paths": {
       "@/wallet/*": ["./*"],
