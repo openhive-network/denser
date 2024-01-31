@@ -23,9 +23,6 @@ import { Entry } from '@/blog/lib/bridge';
 import PostImage from './post-img';
 import { useTranslation } from 'next-i18next';
 import { toast } from '@ui/components/hooks/use-toast';
-import { useQuery } from '@tanstack/react-query';
-import { getDynamicGlobalProperties } from '@ui/lib/hive';
-import { useAppStore } from '@/blog/store/app';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Signer, vote } from '@smart-signer/lib/signer';
 

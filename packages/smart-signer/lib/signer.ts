@@ -7,7 +7,7 @@ import { LoginTypes } from '@smart-signer/types/common';
 import { KeyTypes } from '@smart-signer/types/common';
 
 // export * from '@hive/wax'; // TODO Consider this.
-export { vote, operation } from '@hive/wax/web';
+export { vote, update_proposal_votes, operation } from '@hive/wax/web';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
