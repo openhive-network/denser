@@ -47,7 +47,8 @@ export function TransferDialog({
     amount: '',
     advancedBtn: false,
     selectCurr: true,
-    buttonTitle: 'Next'
+    buttonTitle: 'Next',
+    to: ''
   };
   const [curr, setCurr] = useState(currency);
   const [value, setValue] = useState('');
@@ -63,6 +64,7 @@ export function TransferDialog({
       data.description = 'Protect funds by requiring a 3 day withdraw waiting period.';
       data.amount = curr === 'hive' ? amount.hive : amount.hbd;
       data.advancedBtn = true;
+      data.to = username || '';
       break;
     case 'powerUp':
       data.title = 'Convert to HIVE POWER';
@@ -70,6 +72,7 @@ export function TransferDialog({
         'Influence tokens which give you more control over post payouts and allow you to earn on curation rewards. HIVE POWER is non-transferable and requires 3 months (13 payments) to convert back to Hive.';
       data.amount = curr === 'hive' ? amount.hive : amount.hbd;
       data.advancedBtn = true;
+      data.to = username || '';
       data.selectCurr = false;
       data.buttonTitle = 'Power Up';
       break;
@@ -87,16 +90,19 @@ export function TransferDialog({
       data.title = 'Savings Withdraw';
       data.description = 'Withdraw funds after the required 3 day waiting period.';
       data.amount = amount.savingsHive;
+      data.to = username || '';
       data.advancedBtn = true;
       break;
     case 'withdrawHiveDollars':
       data.title = 'Savings Withdraw';
       data.description = 'Withdraw funds after the required 3 day waiting period.';
       data.amount = amount.savingsHbd;
+      data.to = username || '';
       data.advancedBtn = true;
 
       break;
   }
+  const [addressee, setAddressee] = useState(data.to);
 
   return (
     <Dialog>
@@ -126,7 +132,11 @@ export function TransferDialog({
             <div className="grid grid-cols-4 items-center gap-4">
               To
               <div className="relative col-span-3">
-                <Input className="text-stale-900 block w-full px-3 py-2.5 pl-11" />
+                <Input
+                  className="text-stale-900 block w-full px-3 py-2.5 pl-11"
+                  value={addressee}
+                  onChange={(e) => setAddressee(e.target.value)}
+                />
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                   <Icons.atSign className="h-5 w-5" />
                 </div>
@@ -191,7 +201,7 @@ export function TransferDialog({
             </div>
           )}
         </div>
-        <DialogFooter className="flex flex-row gap-4">
+        <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
           <Button variant="redHover" className="w-fit">
             {data.buttonTitle}
           </Button>

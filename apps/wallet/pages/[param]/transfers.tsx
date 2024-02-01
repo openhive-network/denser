@@ -395,8 +395,8 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost">
-            <div className="sm:hidden">
-              {trigger}
+            <div>
+              <span className="text-red-500">{trigger}</span>
               <span className="m-1 text-xl">▾</span>
             </div>
           </Button>
@@ -474,16 +474,19 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
       </DropdownMenu>
     );
   }
+  console.log(accountHistoryData);
   return (
     <ProfileLayout>
       <div className="flex w-full flex-col items-center ">
         <WalletMenu username={username} />
         <div>
-          <Link href="https://blocktrades.us" target="_blank">
-            <Button variant="outlineRed" className="mx-2 my-8 border-red-500 text-red-500">
-              Buy Hive or Hive Power
-            </Button>
-          </Link>
+          {user?.username === username && (
+            <Link href="https://blocktrades.us" target="_blank">
+              <Button variant="outlineRed" className="mx-2 my-8 border-red-500 text-red-500">
+                Buy Hive or Hive Power
+              </Button>
+            </Link>
+          )}
           <table className="max-w-6xl table-auto text-sm">
             <tbody>
               <tr>
@@ -495,6 +498,22 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                   >
                     {t('profil.hive_description')}
                   </p>
+                  <div className="sm:hidden">
+                    {user?.username === username ? (
+                      <OperationsMenu
+                        currency="hive"
+                        trigger={amount.hive}
+                        options={['transfers', 'transferTo', 'powerUp', 'buy', 'sell', 'market']}
+                      />
+                    ) : (
+                      amount.hive
+                    )}
+                  </div>
+                </td>
+                <td
+                  className="hidden whitespace-nowrap p-4 font-semibold sm:block"
+                  data-testid="wallet-hive-value"
+                >
                   {user?.username === username ? (
                     <OperationsMenu
                       currency="hive"
@@ -502,14 +521,8 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                       options={['transfers', 'transferTo', 'powerUp', 'buy', 'sell', 'market']}
                     />
                   ) : (
-                    <div className="sm:hidden">{amount.hive}</div>
+                    amount.hive
                   )}
-                </td>
-                <td
-                  className="hidden whitespace-nowrap p-4 font-semibold sm:block"
-                  data-testid="wallet-hive-value"
-                >
-                  {amount.hive}
                 </td>
               </tr>
               <tr className="bg-slate-100 dark:bg-slate-900">
@@ -530,21 +543,33 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                     </span>
                   </p>
 
-                  {user?.username === username ? (
-                    <OperationsMenu currency="hive" trigger={amount.hp} options={['powerDown', 'delegate']} />
-                  ) : (
-                    <div className="sm:hidden">
-                      <div>{amount.hp}</div>
-                      <div>({received_power_balance})</div>
-                    </div>
-                  )}
+                  <div className="sm:hidden">
+                    {user?.username === username ? (
+                      <OperationsMenu
+                        currency="hive"
+                        trigger={amount.hp}
+                        options={['powerDown', 'delegate']}
+                      />
+                    ) : (
+                      <div>
+                        <div>{amount.hp}</div>
+                        <div>({received_power_balance})</div>
+                      </div>
+                    )}
+                  </div>
                 </td>
                 <td
                   className="hidden whitespace-nowrap bg-slate-100 p-4 font-semibold dark:bg-slate-900 sm:block"
                   data-testid="wallet-hive-power"
                 >
-                  <div>{amount.hp + ' HIVE'}</div>
-                  <div>({received_power_balance + ' HIVE'})</div>
+                  {user?.username === username ? (
+                    <OperationsMenu currency="hive" trigger={amount.hp} options={['powerDown', 'delegate']} />
+                  ) : (
+                    <div>
+                      <div>{amount.hp + ' HIVE'}</div>
+                      <div>({received_power_balance + ' HIVE'})</div>
+                    </div>
+                  )}
                 </td>
               </tr>
               <tr>
@@ -556,6 +581,22 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                   >
                     {t('profil.hive_dolar_description')}
                   </p>
+                  <div className="sm:hidden">
+                    {user?.username === username ? (
+                      <OperationsMenu
+                        currency="hbd"
+                        trigger={amount.hbd}
+                        options={['transfers', 'transferTo', 'market', 'buy', 'sell']}
+                      />
+                    ) : (
+                      amount.hbd
+                    )}
+                  </div>
+                </td>
+                <td
+                  className="hidden whitespace-nowrap p-4 font-semibold sm:block "
+                  data-testid="wallet-hive-dallars-value"
+                >
                   {user?.username === username ? (
                     <OperationsMenu
                       currency="hbd"
@@ -563,14 +604,8 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                       options={['transfers', 'transferTo', 'market', 'buy', 'sell']}
                     />
                   ) : (
-                    <div className="sm:hidden">{amount.hbd}</div>
+                    amount.hbd
                   )}
-                </td>
-                <td
-                  className="hidden whitespace-nowrap p-4 font-semibold sm:block "
-                  data-testid="wallet-hive-dallars-value"
-                >
-                  {amount.hbd}
                 </td>
               </tr>
               <tr className=" bg-slate-100 dark:bg-slate-900">
@@ -609,8 +644,25 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                   </div>
                 </td>
                 <td className="hidden whitespace-nowrap bg-slate-100 p-4 font-semibold dark:bg-slate-900 sm:block">
-                  <div data-testid="wallet-saving-hive-value">{amount.savingsHive}</div>
-                  <div data-testid="walled-hbd-saving-value">{amount.savingsHbd}</div>
+                  {user?.username === username ? (
+                    <div className="flex w-fit flex-col items-start">
+                      <OperationsMenu
+                        trigger={amount.savingsHive}
+                        currency="hive"
+                        options={['withdrawHive']}
+                      />
+                      <OperationsMenu
+                        currency="hbd"
+                        trigger={amount.savingsHbd}
+                        options={['withdrawHiveDollars']}
+                      />
+                    </div>
+                  ) : (
+                    <div>
+                      <div data-testid="wallet-saving-hive-value">{amount.savingsHive}</div>
+                      <div data-testid="walled-hbd-saving-value">{amount.savingsHbd}</div>
+                    </div>
+                  )}
                 </td>
               </tr>
               <tr>
