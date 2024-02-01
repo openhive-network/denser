@@ -9,9 +9,15 @@ import { Badge } from '@hive/ui/components/badge';
 import { useEffect, useState } from 'react';
 import { getPostHeader } from '@hive/ui/lib/bridge';
 import VoteProposals from './votes-proposals-dialog';
-import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { toast } from '@ui/components/hooks/use-toast';
+import { getDynamicGlobalProperties } from '@ui/lib/hive';
+import { useQuery } from '@tanstack/react-query';
+import { Signer, update_proposal_votes } from '@smart-signer/lib/signer';
+import { logger } from '@ui/lib/logger';
+import DialogLogin from './dialog-login';
 
 function titleSetter(
   daysStart: string,
@@ -49,6 +55,7 @@ function translateShorDate(data: string, t: TFunction<'common_wallet', undefined
 
 export function ProposalListItem({ proposalData, totalShares, totalVestingFund }: ListItemProps) {
   const { t } = useTranslation('common_wallet');
+  const { user } = useUser();
   const [link, setLink] = useState<string>(`/${proposalData.creator}/${proposalData.permlink}`);
   const totalHBD = proposalData.daily_pay.amount.times(
     moment(proposalData.end_date).diff(moment(proposalData.start_date), 'd')
@@ -71,6 +78,44 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
       return <Badge variant="orange">{t('proposals_page.burn')}</Badge>;
 
     return null;
+  }
+
+  async function vote(e: any) {
+    if (user && user.isLoggedIn) {
+      const update_proposal_votes: update_proposal_votes = {
+        voter: user.username,
+        proposal_ids: [String(proposalData.proposal_id)],
+        approve: true,
+        extensions: []
+      };
+
+      const signer = new Signer();
+      try {
+        await signer.broadcastTransaction({
+          operation: { update_proposal_votes },
+          loginType: user.loginType,
+          username: user.username
+        });
+        e.target.classList.add('text-white');
+        e.target.classList.add('bg-red-600');
+      } catch (e) {
+        //
+        // TODO Improve messages displayed to user, after we do better
+        // (unified) error handling in smart-signer.
+        //
+        logger.error('got error', e);
+        let description = 'Transaction broadcast error';
+        if (`${e}`.indexOf('vote on this proposal is identical') >= 0) {
+          description = 'Your current vote on this proposal is identical to this vote.';
+        } else if (`${e}`.indexOf('Not implemented') >= 0) {
+          description = 'Method not implemented for this login type.';
+        }
+        toast({
+          description,
+          variant: 'destructive'
+        });
+      }
+    }
   }
 
   return (
@@ -162,16 +207,29 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
           </div>
         </VoteProposals>
 
-        <DialogLogin>
+        {user && user.isLoggedIn ? (
           <div className="group relative flex">
             <span className="opocity-75 absolute inline-flex h-6 w-6 rounded-full bg-red-500 p-0 group-hover:animate-ping dark:bg-red-400"></span>
             <Icons.arrowUpCircle
               viewBox="1.7 1.7 20.7 20.7"
               className="relative inline-flex h-6 w-6 cursor-pointer rounded-full bg-white stroke-1 text-red-500 dark:bg-slate-800"
               data-testid="voting-button-icon"
+              onClick={vote}
             />
           </div>
-        </DialogLogin>
+        ) : (
+          <DialogLogin>
+            <div className="group relative flex">
+              <span className="opocity-75 absolute inline-flex h-6 w-6 rounded-full bg-red-500 p-0 group-hover:animate-ping dark:bg-red-400"></span>
+              <Icons.arrowUpCircle
+                viewBox="1.7 1.7 20.7 20.7"
+                className="relative inline-flex h-6 w-6 cursor-pointer rounded-full bg-white stroke-1 text-red-500 dark:bg-slate-800"
+                data-testid="voting-button-icon"
+                onClick={vote}
+              />
+            </div>
+          </DialogLogin>
+        )}
       </div>
     </div>
   );
