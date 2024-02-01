@@ -15,7 +15,8 @@ const nextConfig = {
     }
 
     config.plugins.push(new CopyPlugin({
-      patterns: [{
+      patterns: [
+        {
           from: path.join(__dirname, '../../node_modules/@hive/hb-auth/dist/worker.js'),
           to: path.join(__dirname, 'public/auth/')
         },
