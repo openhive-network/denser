@@ -18,7 +18,7 @@ import { useRouter } from 'next/router';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
 import DialogLogin from '@/blog/components/dialog-login';
 import { Icons } from '@hive/ui/components/icons';
-import { AlertDialogDemo } from '@/blog/components/alert-window';
+import { AlertDialogReblog } from '@/blog/components/alert-window';
 import { getDoubleSize, proxifyImageUrl } from '@hive/ui/lib/old-profixy';
 import { ReplyTextbox } from '@/blog/components/reply-textbox';
 import { SharePost } from '@/blog/components/share-post-dialog';
@@ -311,12 +311,12 @@ function PostPage({
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
-                    <AlertDialogDemo>
+                    <AlertDialogReblog username={post_s.author} permlink={post_s.permlink}>
                       <Icons.forward
                         className="h-4 w-4 cursor-pointer"
                         data-testid="post-footer-reblog-icon"
                       />
-                    </AlertDialogDemo>
+                    </AlertDialogReblog>
                   </TooltipTrigger>
                   <TooltipContent data-test="post-footer-reblog-tooltip">
                     <p>

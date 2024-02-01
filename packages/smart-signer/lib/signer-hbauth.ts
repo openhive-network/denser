@@ -30,7 +30,6 @@ export class SignerHbauth {
     username,
     keyType = KeyTypes.posting
   }: BroadcastTransaction): Promise<{ success: boolean; error: string }> {
-    console.log('w signer hbauth keyType', keyType);
     let result = { success: true, error: '' };
     try {
       //

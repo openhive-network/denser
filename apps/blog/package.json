@@ -27,7 +27,7 @@
     "@hive/tailwindcss-config": "*",
     "@hive/tsconfig": "*",
     "@hive/ui": "*",
-    "@hive/wax": "0.3.8-240131102338",
+    "@hive/wax": "0.3.8-240201115232",
     "@hiveio/content-renderer": "^1.1.1",
     "@hiveio/dhive": "^1.2.8",
     "@hookform/resolvers": "^3.1.1",
