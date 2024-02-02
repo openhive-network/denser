@@ -110,14 +110,14 @@ export class Signer extends SignerBase {
     });
   }
 
-    /**
-     * Clears all user data in storages and memory, does other things,
-     * if required for particular Signer.
-     *
-     * @param {LoginTypes}
-     * @returns
-     * @memberof Signer
-     */
-    async destroy(username: string, loginType: LoginTypes) {}
+  /**
+   * Clears all user data in storages and memory, does other things,
+   * if required for particular Signer.
+   *
+   * @param {LoginTypes}
+   * @returns
+   * @memberof Signer
+   */
+  async destroy(username: string, loginType: LoginTypes) { }
 
 }
