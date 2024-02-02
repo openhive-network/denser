@@ -24,13 +24,15 @@ export interface SignChallenge {
 
 export interface SignerOptions {
     apiEndpoint?: string;
-    storageType?: 'localStorage' | 'sessionStorage' | 'memoryStorage';
+    storageType?: StorageType;
 }
+
+type StorageType = 'localStorage' | 'sessionStorage' | 'memoryStorage';
 
 export class SignerBase {
 
     apiEndpoint: string;
-    storageType: 'localStorage' | 'sessionStorage' | 'memoryStorage';
+    storageType: StorageType;
 
     constructor({
         apiEndpoint = 'https://api.hive.blog',
