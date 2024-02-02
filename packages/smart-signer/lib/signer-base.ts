@@ -46,6 +46,8 @@ export class SignerBase {
         return '';
     }
 
-    async broadcastTransaction({}: BroadcastTransaction): Promise<any> {}
+    async broadcastTransaction(
+            {}: BroadcastTransaction
+        ): Promise<{ success: boolean; result: string; error: string }> {}
 
 }

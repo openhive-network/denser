@@ -27,8 +27,8 @@ export class SignerHbauth extends SignerBase {
     operation,
     username,
     keyType = KeyTypes.posting
-  }: BroadcastTransaction): Promise<{ success: boolean; error: string }> {
-    let result = { success: true, error: '' };
+  }: BroadcastTransaction): Promise<{ success: boolean; result: string; error: string }> {
+    let result = { success: true, result: '', error: '' };
     try {
       const hiveChain = await createHiveChain({ apiEndpoint: this.apiEndpoint });
       const tx = await hiveChain.getTransactionBuilder();
@@ -40,7 +40,7 @@ export class SignerHbauth extends SignerBase {
       await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
     } catch (error) {
       logger.trace('SignerHbauth.broadcastTransaction error: %o', error);
-      result = { success: false, error: 'Broadcast failed' };
+      result = { success: false, result: '', error: 'Broadcast failed' };
       throw error;
     }
 
