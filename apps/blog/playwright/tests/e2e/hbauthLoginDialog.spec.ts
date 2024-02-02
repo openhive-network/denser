@@ -24,13 +24,13 @@ test.describe('Login and Sign Up tests', () =>{
     await hbauthLoginDialog.validateHbauthUnlockKeyDialogIsVisible();
 
     await hbauthLoginDialog.hbauthUnlockKeySelectKeyTypeTrigger.click();
-    await page.waitForTimeout(4000);
+    await page.waitForTimeout(1000);
     await hbauthLoginDialog.hbauthUnlockKeySelectKeyType.selectOption('posting');
-    await page.waitForTimeout(4000);
+    await page.waitForTimeout(1000);
     await hbauthLoginDialog.hbauthUnlockKeySelectKeyType.selectOption('active');
-    await page.waitForTimeout(4000);
+    await page.waitForTimeout(1000);
     await hbauthLoginDialog.hbauthUnlockKeySelectKeyType.selectOption('watch');
-    await page.waitForTimeout(4000);
+    await page.waitForTimeout(1000);
   });
 
 
