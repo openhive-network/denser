@@ -31,7 +31,7 @@ export class SignerHiveauth {
     }
   }
 
-  async destroy() {
+  async destroy(username: string) {
     HiveAuthUtils.logout();
     this.storage.removeItem('hiveAuthData');
   }
@@ -55,7 +55,6 @@ export class SignerHiveauth {
     username,
     keyType = KeyTypes.posting,
     password = '',
-    loginType = LoginTypes.keychain,
     translateFn = (v) => v
   }: SignChallenge): Promise<string> {
     logger.info('in SignerHiveauth.signChallenge %o', { message, username, keyType });

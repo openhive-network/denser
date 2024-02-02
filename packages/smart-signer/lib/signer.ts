@@ -128,12 +128,12 @@ export class Signer {
    * Clears all user data in storages and memory, does other things,
    * if required for particular Signer.
    *
-   * @param {LoginTypes} [loginType=LoginTypes.wif]
+   * @param {LoginTypes}
    * @returns
    * @memberof Signer
    */
-  async destroy(loginType: LoginTypes) {
+  async destroy(username: string, loginType: LoginTypes) {
     const signer = this.getSigner(loginType);
-    return signer.destroy();
+    return signer.destroy(username);
   }
 }

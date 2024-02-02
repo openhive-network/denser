@@ -30,27 +30,11 @@ export class SignerWif extends SignerHbauth {
         }
     }
 
-    saveKey(wif: string, keyType = KeyTypes.posting) {
-        this.storage.setItem(`wif.${keyType}`, wif);
-    }
-
-    getKey(keyType = KeyTypes.posting) {
-        return this.storage.getItem(`wif.${keyType}`);
-    }
-
-    removeKey(keyType = KeyTypes.posting) {
-        this.storage.removeItem(`wif.${keyType}`);
-    }
-
-    removeAllKeys() {
+    async destroy(username: string) {
         for (const k of Object.keys(KeyTypes)) {
             const keyType = k as KeyTypes;
-            this.removeKey(KeyTypes[keyType]);
+            this.storage.removeItem(`wif.${username}@${KeyTypes[keyType]}`);
         }
-    }
-
-    async destroy() {
-        this.removeAllKeys();
     }
 
     async signChallenge ({
@@ -60,12 +44,13 @@ export class SignerWif extends SignerHbauth {
         password = '', // WIF private key,
     }: SignChallenge): Promise<string> {
         try {
-            const wif = password ? password : this.getKey(keyType);
+            const wif = password ? password
+                : this.storage.getItem(`wif.${username}@${keyType}`);
             if (!wif) throw new Error('No wif key');
             const privateKey = PrivateKey.fromString(wif);
             const messageHash = cryptoUtils.sha256(message);
             const signature = privateKey.sign(messageHash).toString();
-            this.saveKey(wif, keyType);
+            this.storage.setItem(`wif.${username}@${keyType}`, wif);
             logger.info('wif', { signature });
             return signature;
         } catch (error) {
@@ -83,7 +68,8 @@ export class SignerWif extends SignerHbauth {
         logger.info('signDigest args: %o', args);
         let signature = ''
         try {
-            const wif = password ? password : this.getKey(keyType);
+            const wif = password ? password
+                : this.storage.getItem(`wif.${username}@${keyType}`);
             if (!wif) throw new Error('No wif key');
             const privateKey = PrivateKey.fromString(wif);
             const hash = Buffer.from(digest, 'hex');

@@ -2,8 +2,7 @@ import { KeyTypes } from '@smart-signer/types/common';
 import { cryptoUtils } from '@hiveio/dhive';
 import { authService } from '@smart-signer/lib/auth-service';
 import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer';
-import { getDynamicGlobalProperties } from '@ui/lib/hive';
-import { createWaxFoundation, TBlockHash, createHiveChain, BroadcastTransactionRequest } from '@hive/wax/web';
+import { createHiveChain, BroadcastTransactionRequest } from '@hive/wax/web';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -22,7 +21,7 @@ export class SignerHbauth {
     this.apiEndpoint = apiEndpoint;
   }
 
-  async destroy() {}
+  async destroy(username: string) {}
 
   // Create digest and return its signature made with signDigest.
   async signChallenge({
@@ -45,28 +44,13 @@ export class SignerHbauth {
   }: BroadcastTransaction): Promise<{ success: boolean; error: string }> {
     let result = { success: true, error: '' };
     try {
-      //
-      // TODO These lines below do not work. Validation error in Wax
-      // occurs. Looks like a bug in Wax.
-      //
-
-      // const hiveChain = await createHiveChain();
-      // const tx = await hiveChain.getTransactionBuilder('+1m');
-
       const hiveChain = await createHiveChain();
       const tx = await hiveChain.getTransactionBuilder();
       tx.push(operation).validate();
-
       const signature = await this.signDigest(tx.sigDigest, username, '', keyType);
-
-      // const authClient = await authService.getOnlineClient();
-      // const signature = await authClient.sign('stirlitz', tx.sigDigest, 'posting');
-
       const transaction = tx.build();
       transaction.signatures.push(signature);
-
       const transactionRequest = new BroadcastTransactionRequest(tx);
-
       await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
     } catch (error) {
       logger.trace('SignerHbauth.broadcastTransaction error: %o', error);

@@ -1,5 +1,5 @@
 import { KeychainSDK, KeychainKeyTypes } from 'keychain-sdk';
-import { Operation, Transaction, OperationName, VirtualOperationName, Client } from '@hiveio/dhive';
+import { Operation, Transaction, Client } from '@hiveio/dhive';
 import { KeyTypes, LoginTypes } from '@smart-signer/types/common';
 import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer';
 import { operation } from '@hive/wax/web';
@@ -50,7 +50,7 @@ export class SignerKeychain {
     this.apiEndpoint = apiEndpoint;
   }
 
-  async destroy() {}
+  async destroy(username: string) {}
 
   async signChallenge({
     message,
