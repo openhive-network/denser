@@ -80,4 +80,12 @@ export class HbauthLoginDialog {
     await expect(this.hbauthAddKeySubmitButton).toBeVisible();
     await expect(this.hbauthAddKeyResetButton).toBeVisible();
   }
+
+  async getElementCssPropertyValue(element: Locator, cssProperty: string) {
+    const bcg = await element.evaluate((ele, css) => {
+      return window.getComputedStyle(ele).getPropertyValue(css);
+    }, cssProperty);
+    // return value of element's css property
+    return bcg;
+  }
 }
