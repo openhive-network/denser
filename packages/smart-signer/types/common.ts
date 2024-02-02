@@ -22,3 +22,14 @@ export enum KeyTypes {
 export interface IronSessionData {
     user?: User;
 }
+
+export interface SiteConfigItem {
+    value: any;
+    description: string;
+    userEditable: boolean;
+}
+
+export interface SiteConfig {
+    appName: SiteConfigItem;
+    apiEndpoint: SiteConfigItem;
+}
