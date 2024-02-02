@@ -39,7 +39,7 @@ export class HbauthLoginDialog {
     this.hbauthAddKeyHeader = page.locator('[data-testid="hbauth-add-key-header"]');
     this.hbauthAddKeyUsernameInput = page.locator('[data-testid="hbauth-add-key-username-input"]');
     this.hbauthAddKeyPasswordInput = page.locator('[data-testid="hbauth-add-key-password-input"]');
-    this.hbauthAddKeySelectKeyType = page.locator('[data-testid="hbauth-add-key-select-key-type"]');
+    this.hbauthAddKeySelectKeyType = page.locator('[data-testid="hbauth-add-key-select-key-type"] select');
     this.hbauthAddKeySelectKeyTypeTrigger = page.locator('[data-testid="hbauth-add-key-select-key-type-trigger"]');
     this.hbauthAddKeyPrivateKeyInput = page.locator('[data-testid="hbauth-add-key-private-key-input"]');;
     this.hbauthAddKeySubmitButton = page.locator('[data-testid="hbauth-add-key-submit-button"]');
@@ -49,6 +49,14 @@ export class HbauthLoginDialog {
   }
 
   async validateHbauthDialogIsVisible() {
+    await expect(this.loginDialogHbauth).toBeVisible();
+    await expect(this.hbauthUnlockKeyButton).toBeVisible();
+    await expect(this.hbauthUnlockKeyHeader).toHaveText('Hbauth: Unlock Key');
+    await expect(this.hbauthUnlockKeyUsernameInput).toHaveAttribute('placeholder', 'Enter your username');
+    await expect(this.hbauthUnlockKeyPasswordInput).toHaveAttribute('placeholder', 'Password');
+    await expect(this.hbauthUnlockKeySelectKeyTypeTrigger).toBeVisible();
+    await expect(this.hbauthUnlockKeySubmitButton).toBeVisible();
+    await expect(this.hbauthUnlockKeyResetButton).toBeVisible();
   }
 
   async validateHbauthUnlockKeyDialogIsVisible() {
@@ -62,5 +70,14 @@ export class HbauthLoginDialog {
     await expect(this.hbauthUnlockKeyResetButton).toBeVisible();
   }
 
-  async validateHbauthAddKeyDialogIsVisible() {}
+  async validateHbauthAddKeyDialogIsVisible() {
+    await expect(this.hbauthAddKeyButton).toBeVisible();
+    await expect(this.hbauthAddKeyHeader).toHaveText('Hbauth: Add Key');
+    await expect(this.hbauthAddKeyUsernameInput).toHaveAttribute('placeholder', 'Enter your username');
+    await expect(this.hbauthAddKeyPasswordInput).toHaveAttribute('placeholder', 'Password');
+    await expect(this.hbauthAddKeySelectKeyTypeTrigger).toBeVisible();
+    await expect(this.hbauthAddKeyPrivateKeyInput).toHaveAttribute('placeholder', 'Your private key');
+    await expect(this.hbauthAddKeySubmitButton).toBeVisible();
+    await expect(this.hbauthAddKeyResetButton).toBeVisible();
+  }
 }
