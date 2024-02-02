@@ -29,7 +29,7 @@ export function hasCompatibleKeychain() {
  * @param {operation} operation
  * @returns
  */
-export function formatOperations(operation: operation) {
+export function waxToKeychainOperation(operation: operation) {
   const operations: Operation[] = [];
   for (const [key, value] of Object.entries(operation)) {
     operations.push([key as Operation[0], value as Operation[1]]);
@@ -37,6 +37,15 @@ export function formatOperations(operation: operation) {
   return operations;
 }
 
+/**
+ * Instance interacts with Hive private keys, signs messages or
+ * operations, and sends operations to Hive blockchain. It uses
+ * [Keychain](https://hive-keychain.com/).
+ *
+ * @export
+ * @class SignerKeychain
+ * @extends {SignerBase}
+ */
 export class SignerKeychain extends SignerBase {
 
   async signChallenge({
@@ -77,7 +86,7 @@ export class SignerKeychain extends SignerBase {
       if (!(await keychain.isKeychainInstalled())) {
         throw new Error('Keychain is not installed');
       }
-      const operations = formatOperations(operation);
+      const operations = waxToKeychainOperation(operation);
       const broadcastResult = await keychain.broadcast({
         username,
         operations,
@@ -101,7 +110,9 @@ export class SignerKeychain extends SignerBase {
   /**
    * Creates transaction from given operations and signs it.
    *
-   * @param {BroadcastTransaction} { operation, loginType, username,
+   * @param {BroadcastTransaction} {
+   *     operation,
+   *     username,
    *     keyType = KeyTypes.posting
    *   }
    * @returns {Promise<any>}
@@ -117,7 +128,7 @@ export class SignerKeychain extends SignerBase {
       if (!(await keychain.isKeychainInstalled())) {
         throw new Error('Keychain is not installed');
       }
-      const operations = formatOperations(operation);
+      const operations = waxToKeychainOperation(operation);
       const client = new Client([this.apiEndpoint, 'https://api.openhive.network'], {
         timeout: 3000,
         failoverThreshold: 3,

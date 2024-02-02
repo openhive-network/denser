@@ -6,6 +6,14 @@ export type StorageType = 'localStorage' | 'sessionStorage' | 'memoryStorage';
 type GConstructor<T = {}> = new (...args: any[]) => T;
 type WithStorage = GConstructor<{ storageType: StorageType }>;
 
+/**
+ * Adds Storage, on client side.
+ *
+ * @export
+ * @template TBase
+ * @param {TBase} Base
+ * @returns
+ */
 export function StorageMixin<TBase extends WithStorage>(Base: TBase) {
 
     return class extends Base {

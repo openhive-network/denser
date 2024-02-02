@@ -7,6 +7,17 @@ import { StorageMixin } from '@smart-signer/lib/storage-mixin';
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
+/**
+ * Instance interacts with Hive private keys, signs messages or
+ * operations, and sends operations to Hive blockchain. It uses So known
+ * "Wif" custom tool, based on
+ * [@hiveio/dhive](https://openhive-network.github.io/dhive/) and
+ * browser's localStorage.
+ *
+ * @export
+ * @class SignerWif
+ * @extends {StorageMixin(SignerBase)}
+ */
 export class SignerWif extends StorageMixin(SignerHbauth) {
 
     async destroy(username: string) {

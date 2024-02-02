@@ -14,25 +14,47 @@ export { vote, update_proposal_votes, operation } from '@hive/wax/web';
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
+/**
+ * Instance interacts with Hive private keys, signs messages or
+ * operations, and sends operations to Hive blockchain. It is instance
+ * builder, which delegates particular tasks to other instances, each
+ * responsible for using one of the following tools:
+ *
+ * 1. [Hbauth](https://gitlab.syncad.com/hive/hb-auth), handled in
+ *    SignerHbauth class.
+ * 2. [Keychain](https://hive-keychain.com/), handled in SignerKeychain
+ *    class.
+ * 3. [Hiveauth](https://hiveauth.com/), handled in SignerHiveauthclass.
+ * 4. So known "Wif" custom tool, based on
+ *    [@hiveio/dhive](https://openhive-network.github.io/dhive/) and
+ *    browser's localStorage, handled in SignerWif class.
+ *
+ * @export
+ * @class Signer
+ * @extends {SignerBase}
+ */
 export class Signer extends SignerBase {
 
   /**
    * Creates instance of Signer for given `loginType` and returns it.
    *
+   * @private
    * @param {LoginTypes} [loginType=LoginTypes.wif]
+   * @param {*} [apiEndpoint=this.apiEndpoint]
    * @returns
    * @memberof Signer
    */
   private getSigner(loginType: LoginTypes = LoginTypes.wif, apiEndpoint = this.apiEndpoint) {
     let signer: SignerHbauth | SignerHiveauth | SignerKeychain | SignerWif;
+    const args = { apiEndpoint };
     if (loginType === LoginTypes.hbauth) {
-      signer = new SignerHbauth({ apiEndpoint });
+      signer = new SignerHbauth(args);
     } else if (loginType === LoginTypes.hiveauth) {
-      signer = new SignerHiveauth({ apiEndpoint });
+      signer = new SignerHiveauth(args);
     } else if (loginType === LoginTypes.keychain) {
-      signer = new SignerKeychain({ apiEndpoint });
+      signer = new SignerKeychain(args);
     } else if (loginType === LoginTypes.wif) {
-      signer = new SignerWif({ apiEndpoint });
+      signer = new SignerWif(args);
     } else {
       throw new Error('Invalid loginType');
     }
@@ -46,9 +68,14 @@ export class Signer extends SignerBase {
    * transactions – these need different hashing method and other
    * special treatment.
    *
-   * @param {SignChallenge} { message, loginType, username, password =
-   *         '', keyType = KeyTypes.posting
-   *     }
+   * @param {SignChallenge} {
+   *     message,
+   *     loginType,
+   *     username,
+   *     password = '', // private key or password to unlock hbauth key
+   *     keyType = KeyTypes.posting,
+   *     translateFn = (v) => v
+   *   }
    * @returns {Promise<string>}
    * @memberof Signer
    */
@@ -81,9 +108,13 @@ export class Signer extends SignerBase {
    * Creates Hive transaction for given operation, signs it and
    * broadcasts it to Hive blockchain.
    *
-   * @param {BroadcastTransaction} { operation, loginType, username,
-   *         keyType = KeyTypes.posting
-   *     }
+   * @param {BroadcastTransaction} {
+   *     operation,
+   *     loginType,
+   *     username,
+   *     keyType = KeyTypes.posting,
+   *     translateFn = (v) => v
+   *   }
    * @returns {Promise<any>}
    * @memberof Signer
    */
@@ -114,8 +145,8 @@ export class Signer extends SignerBase {
    * Clears all user data in storages and memory, does other things,
    * if required for particular Signer.
    *
-   * @param {LoginTypes}
-   * @returns
+   * @param {string} username
+   * @param {LoginTypes} loginType
    * @memberof Signer
    */
   async destroy(username: string, loginType: LoginTypes) { }

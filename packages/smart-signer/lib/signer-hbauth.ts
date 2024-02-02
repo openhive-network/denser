@@ -8,6 +8,15 @@ import { SignerBase } from '@smart-signer/lib/signer-base';
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
+/**
+ * Instance interacts with Hive private keys, signs messages or
+ * operations, and sends operations to Hive blockchain. It uses
+ * [Hbauth](https://gitlab.syncad.com/hive/hb-auth).
+ *
+ * @export
+ * @class SignerHbauth
+ * @extends {SignerBase}
+ */
 export class SignerHbauth extends SignerBase {
 
   // Create digest and return its signature made with signDigest.
