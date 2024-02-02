@@ -3,25 +3,12 @@ import { cryptoUtils } from '@hiveio/dhive';
 import { authService } from '@smart-signer/lib/auth-service';
 import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer';
 import { createHiveChain, BroadcastTransactionRequest } from '@hive/wax/web';
+import { SignerBase } from '@smart-signer/lib/signer-base';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
-interface SignerHbauthOptions {
-  apiEndpoint?: string;
-}
-
-export class SignerHbauth {
-
-  public apiEndpoint: string;
-
-  constructor({
-    apiEndpoint = 'https://api.hive.blog'
-  }: SignerHbauthOptions = {}) {
-    this.apiEndpoint = apiEndpoint;
-  }
-
-  async destroy(username: string) {}
+export class SignerHbauth extends SignerBase {
 
   // Create digest and return its signature made with signDigest.
   async signChallenge({
@@ -38,13 +25,12 @@ export class SignerHbauth {
 
   async broadcastTransaction({
     operation,
-    loginType,
     username,
     keyType = KeyTypes.posting
   }: BroadcastTransaction): Promise<{ success: boolean; error: string }> {
     let result = { success: true, error: '' };
     try {
-      const hiveChain = await createHiveChain();
+      const hiveChain = await createHiveChain({ apiEndpoint: this.apiEndpoint });
       const tx = await hiveChain.getTransactionBuilder();
       tx.push(operation).validate();
       const signature = await this.signDigest(tx.sigDigest, username, '', keyType);
@@ -130,4 +116,5 @@ export class SignerHbauth {
       // We should offer adding account to wallet.
     }
   }
+
 }

@@ -1,8 +1,9 @@
 import { KeychainSDK, KeychainKeyTypes } from 'keychain-sdk';
 import { Operation, Transaction, Client } from '@hiveio/dhive';
 import { KeyTypes, LoginTypes } from '@smart-signer/types/common';
-import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer';
+import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer-base';
 import { operation } from '@hive/wax/web';
+import { SignerBase } from '@smart-signer/lib/signer-base';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -36,28 +37,12 @@ export function formatOperations(operation: operation) {
   return operations;
 }
 
-interface SignerKeychainOptions {
-  apiEndpoint?: string;
-}
-
-export class SignerKeychain {
-
-  public apiEndpoint: string;
-
-  constructor({
-    apiEndpoint = 'https://api.hive.blog'
-  }: SignerKeychainOptions = {}) {
-    this.apiEndpoint = apiEndpoint;
-  }
-
-  async destroy(username: string) {}
+export class SignerKeychain extends SignerBase {
 
   async signChallenge({
     message,
     username,
     keyType = KeyTypes.posting,
-    password = '',
-    loginType = LoginTypes.keychain
   }: SignChallenge): Promise<string> {
     logger.info('in SignerKeychain.signChallenge %o', { message, username, keyType });
     const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
@@ -83,7 +68,6 @@ export class SignerKeychain {
 
   async broadcastTransaction({
     operation,
-    loginType,
     username,
     keyType = KeyTypes.posting
   }: BroadcastTransaction): Promise<{ success: boolean; result: any; error: string }> {
@@ -125,7 +109,6 @@ export class SignerKeychain {
    */
   async signTransaction({
     operation,
-    loginType,
     username,
     keyType = KeyTypes.posting
   }: BroadcastTransaction): Promise<any> {
@@ -168,4 +151,5 @@ export class SignerKeychain {
       throw error;
     }
   }
+
 }

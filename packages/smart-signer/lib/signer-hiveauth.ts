@@ -1,35 +1,14 @@
-import { KeyTypes, LoginTypes } from '@smart-signer/types/common';
-import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer';
+import { KeyTypes } from '@smart-signer/types/common';
+import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer-base';
 import { formatOperations } from '@smart-signer/lib/signer-keychain';
 import HiveAuthUtils from '@smart-signer/lib/hive-auth-utils';
-import { isStorageAvailable } from '@smart-signer/lib/utils';
-import { memoryStorage } from '@smart-signer/lib/memory-storage';
+import { SignerBase } from '@smart-signer/lib/signer-base';
+import { StorageMixin } from '@smart-signer/lib/storage-mixin';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
-interface SignerHiveauthOptions {
-  storageType?: 'localStorage' | 'sessionStorage' | 'memoryStorage';
-}
-
-
-export class SignerHiveauth {
-
-  public storage: Storage;
-
-  constructor({
-    storageType = 'localStorage'
-  }: SignerHiveauthOptions = {}) {
-    if (storageType === 'localStorage'
-        && isStorageAvailable(storageType)) {
-      this.storage = window.localStorage;
-    } else if (storageType === 'sessionStorage'
-        && isStorageAvailable(storageType)) {
-      this.storage = window.sessionStorage;
-    } else {
-      this.storage = memoryStorage;
-    }
-  }
+export class SignerHiveauth extends StorageMixin(SignerBase) {
 
   async destroy(username: string) {
     HiveAuthUtils.logout();
@@ -54,7 +33,6 @@ export class SignerHiveauth {
     message,
     username,
     keyType = KeyTypes.posting,
-    password = '',
     translateFn = (v) => v
   }: SignChallenge): Promise<string> {
     logger.info('in SignerHiveauth.signChallenge %o', { message, username, keyType });
@@ -88,8 +66,6 @@ export class SignerHiveauth {
 
   async broadcastTransaction({
     operation,
-    loginType,
-    username,
     keyType = KeyTypes.posting
   }: BroadcastTransaction): Promise<{ success: boolean, result: any, error: string}> {
 

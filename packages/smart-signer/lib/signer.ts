@@ -1,10 +1,12 @@
-import { operation } from '@hive/wax/web';
 import { SignerHbauth } from '@smart-signer/lib/signer-hbauth';
 import { SignerHiveauth } from '@smart-signer/lib/signer-hiveauth';
 import { SignerKeychain } from '@smart-signer/lib/signer-keychain';
 import { SignerWif } from '@smart-signer/lib/signer-wif';
 import { LoginTypes } from '@smart-signer/types/common';
 import { KeyTypes } from '@smart-signer/types/common';
+import { SignerBase, SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer-base';
+
+export type { BroadcastTransaction, SignChallenge, SignerOptions } from '@smart-signer/lib/signer-base';
 
 // export * from '@hive/wax'; // TODO Consider this.
 export { vote, update_proposal_votes, operation } from '@hive/wax/web';
@@ -12,24 +14,8 @@ export { vote, update_proposal_votes, operation } from '@hive/wax/web';
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
-export interface BroadcastTransaction {
-  operation: operation;
-  loginType: LoginTypes;
-  username: string;
-  keyType?: KeyTypes;
-  translateFn?: (v: string) => string;
-}
+export class Signer extends SignerBase {
 
-export interface SignChallenge {
-  message: string;
-  loginType: LoginTypes;
-  username: string;
-  password?: string; // private key or password to unlock hbauth key
-  keyType?: KeyTypes;
-  translateFn?: (v: string) => string;
-}
-
-export class Signer {
   /**
    * Creates instance of Signer for given `loginType` and returns it.
    *
@@ -37,16 +23,16 @@ export class Signer {
    * @returns
    * @memberof Signer
    */
-  getSigner(loginType: LoginTypes = LoginTypes.wif) {
+  getSigner(loginType: LoginTypes = LoginTypes.wif, apiEndpoint = this.apiEndpoint) {
     let signer: SignerHbauth | SignerHiveauth | SignerKeychain | SignerWif;
     if (loginType === LoginTypes.hbauth) {
-      signer = new SignerHbauth();
+      signer = new SignerHbauth({ apiEndpoint });
     } else if (loginType === LoginTypes.hiveauth) {
-      signer = new SignerHiveauth();
+      signer = new SignerHiveauth({ apiEndpoint });
     } else if (loginType === LoginTypes.keychain) {
-      signer = new SignerKeychain();
+      signer = new SignerKeychain({ apiEndpoint });
     } else if (loginType === LoginTypes.wif) {
-      signer = new SignerWif();
+      signer = new SignerWif({ apiEndpoint });
     } else {
       throw new Error('Invalid loginType');
     }
@@ -124,16 +110,14 @@ export class Signer {
     });
   }
 
-  /**
-   * Clears all user data in storages and memory, does other things,
-   * if required for particular Signer.
-   *
-   * @param {LoginTypes}
-   * @returns
-   * @memberof Signer
-   */
-  async destroy(username: string, loginType: LoginTypes) {
-    const signer = this.getSigner(loginType);
-    return signer.destroy(username);
-  }
+    /**
+     * Clears all user data in storages and memory, does other things,
+     * if required for particular Signer.
+     *
+     * @param {LoginTypes}
+     * @returns
+     * @memberof Signer
+     */
+    async destroy(username: string, loginType: LoginTypes) {}
+
 }
