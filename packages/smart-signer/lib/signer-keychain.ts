@@ -31,12 +31,25 @@ export function hasCompatibleKeychain() {
 export function formatOperations(operation: operation) {
   const operations: Operation[] = [];
   for (const [key, value] of Object.entries(operation)) {
-    operations.push([key as OperationName | VirtualOperationName, value]);
+    operations.push([key as Operation[0], value as Operation[1]]);
   }
   return operations;
 }
 
+interface SignerKeychainOptions {
+  apiEndpoint?: string;
+}
+
 export class SignerKeychain {
+
+  public apiEndpoint: string;
+
+  constructor({
+    apiEndpoint = 'https://api.hive.blog'
+  }: SignerKeychainOptions = {}) {
+    this.apiEndpoint = apiEndpoint;
+  }
+
   async destroy() {}
 
   async signChallenge({
@@ -47,7 +60,7 @@ export class SignerKeychain {
     loginType = LoginTypes.keychain
   }: SignChallenge): Promise<string> {
     logger.info('in SignerKeychain.signChallenge %o', { message, username, keyType });
-    const keychain = new KeychainSDK(window, { rpc: 'https://api.hive.blog' });
+    const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
     try {
       if (!(await keychain.isKeychainInstalled())) {
         throw new Error('Keychain is not installed');
@@ -75,7 +88,7 @@ export class SignerKeychain {
     keyType = KeyTypes.posting
   }: BroadcastTransaction): Promise<{ success: boolean; result: any; error: string }> {
     let result = { success: true, result: '', error: '' };
-    const keychain = new KeychainSDK(window, { rpc: 'https://api.hive.blog' });
+    const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
     try {
       if (!(await keychain.isKeychainInstalled())) {
         throw new Error('Keychain is not installed');
@@ -116,13 +129,13 @@ export class SignerKeychain {
     username,
     keyType = KeyTypes.posting
   }: BroadcastTransaction): Promise<any> {
-    const keychain = new KeychainSDK(window, { rpc: 'https://api.hive.blog' });
+    const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
     try {
       if (!(await keychain.isKeychainInstalled())) {
         throw new Error('Keychain is not installed');
       }
       const operations = formatOperations(operation);
-      const client = new Client(['https://api.hive.blog', 'https://api.openhive.network'], {
+      const client = new Client([this.apiEndpoint, 'https://api.openhive.network'], {
         timeout: 3000,
         failoverThreshold: 3,
         consoleOnFailover: true

@@ -8,7 +8,20 @@ import { createWaxFoundation, TBlockHash, createHiveChain, BroadcastTransactionR
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
+interface SignerHbauthOptions {
+  apiEndpoint?: string;
+}
+
 export class SignerHbauth {
+
+  public apiEndpoint: string;
+
+  constructor({
+    apiEndpoint = 'https://api.hive.blog'
+  }: SignerHbauthOptions = {}) {
+    this.apiEndpoint = apiEndpoint;
+  }
+
   async destroy() {}
 
   // Create digest and return its signature made with signDigest.
