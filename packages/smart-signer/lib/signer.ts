@@ -23,7 +23,7 @@ export class Signer extends SignerBase {
    * @returns
    * @memberof Signer
    */
-  getSigner(loginType: LoginTypes = LoginTypes.wif, apiEndpoint = this.apiEndpoint) {
+  private getSigner(loginType: LoginTypes = LoginTypes.wif, apiEndpoint = this.apiEndpoint) {
     let signer: SignerHbauth | SignerHiveauth | SignerKeychain | SignerWif;
     if (loginType === LoginTypes.hbauth) {
       signer = new SignerHbauth({ apiEndpoint });

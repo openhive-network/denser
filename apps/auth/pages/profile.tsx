@@ -27,24 +27,22 @@ export default function Profile() {
   ];
 
   const testVote = async () => {
-    if (user && user.isLoggedIn) {
-      const vote: vote = {
-        voter: user.username,
-        author: 'afhsdfg',
-        permlink: 'sdagjvxbn',
-        weight: 10000
-      };
-
-      const signer = new Signer();
-      try {
-        await signer.broadcastTransaction({
-          operation: { vote },
-          loginType: user.loginType,
-          username: user.username
-        });
-      } catch (error) {
-        logger.error(error);
-      }
+    if (!user || !user.isLoggedIn) return;
+    const vote: vote = {
+      voter: user.username,
+      author: 'afhsdfg',
+      permlink: 'sdagjvxbn',
+      weight: 10000
+    };
+    const signer = new Signer();
+    try {
+      await signer.broadcastTransaction({
+        operation: { vote },
+        loginType: user.loginType,
+        username: user.username
+      });
+    } catch (error) {
+      logger.error(error);
     }
   }
 

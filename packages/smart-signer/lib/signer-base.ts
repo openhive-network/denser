@@ -1,6 +1,7 @@
 import { operation } from '@hive/wax/web';
 import { LoginTypes } from '@smart-signer/types/common';
 import { KeyTypes } from '@smart-signer/types/common';
+import { StorageType } from '@smart-signer/lib/storage-mixin';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -27,8 +28,6 @@ export interface SignerOptions {
     storageType?: StorageType;
 }
 
-type StorageType = 'localStorage' | 'sessionStorage' | 'memoryStorage';
-
 export class SignerBase {
 
     apiEndpoint: string;
@@ -50,6 +49,8 @@ export class SignerBase {
 
     async broadcastTransaction(
             {}: BroadcastTransaction
-        ): Promise<{ success: boolean; result: string; error: string }> {}
+        ): Promise<{ success: boolean; result: string; error: string }> {
+            return { success: false, result: '', error: '' };
+        }
 
 }
