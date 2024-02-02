@@ -41,6 +41,7 @@
     "big.js": "^6.2.1",
     "class-variance-authority": "^0.6.1",
     "clsx": "^1.2.1",
+    "cmdk": "^0.2.1",
     "lucide-react": "^0.259.0",
     "next": "14.0.4",
     "pino": "^8.17.1",

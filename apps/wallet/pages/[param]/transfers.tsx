@@ -474,7 +474,6 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
       </DropdownMenu>
     );
   }
-  console.log(accountHistoryData);
   return (
     <ProfileLayout>
       <div className="flex w-full flex-col items-center ">
