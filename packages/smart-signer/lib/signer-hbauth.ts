@@ -48,7 +48,7 @@ export class SignerHbauth extends SignerBase {
       const transactionRequest = new BroadcastTransactionRequest(tx);
       await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
     } catch (error) {
-      logger.trace('SignerHbauth.broadcastTransaction error: %o', error);
+      logger.error('SignerHbauth.broadcastTransaction error: %o', error);
       result = { success: false, result: '', error: 'Broadcast failed' };
       throw error;
     }

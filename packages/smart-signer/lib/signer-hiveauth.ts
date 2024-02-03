@@ -96,7 +96,7 @@ export class SignerHiveauth extends StorageMixin(SignerBase) {
         throw new Error('SignerHiveauth.broadcastTransaction error');
       }
     } catch (error) {
-      logger.trace('Error in SignerHiveauth.broadcastTransaction: %o', error);
+      logger.error('Error in SignerHiveauth.broadcastTransaction: %o', error);
       result = { success: false, result: '', error: 'Broadcast failed'};
       throw error;
     }

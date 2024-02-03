@@ -99,7 +99,7 @@ export class SignerKeychain extends SignerBase {
 
       result.result = broadcastResult.result as any;
     } catch (error) {
-      logger.trace('Error in SignerKeychain.broadcastTransaction: %o', error);
+      logger.error('Error in SignerKeychain.broadcastTransaction: %o', error);
       result = { success: false, result: '', error: 'Sign failed' };
       throw error;
     }
@@ -158,7 +158,7 @@ export class SignerKeychain extends SignerBase {
         throw new Error(`Error in signTx: ${signResult.error}`);
       }
     } catch (error) {
-      logger.trace('SignerKeychain.broadcastTransaction error: %o', error);
+      logger.error('SignerKeychain.broadcastTransaction error: %o', error);
       throw error;
     }
   }
