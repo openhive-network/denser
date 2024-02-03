@@ -164,7 +164,7 @@ export function LoginForm({
 
   return (
     <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
-      <div className="mx-auto flex w-[440px] max-w-md flex-col items-center">
+      <div className="mx-auto flex w-full max-w-md flex-col items-center">
         <h2 className="w-full pb-6 text-3xl text-gray-800 dark:text-slate-300" data-testid="login-header">
           {t('login_form.title_action_login')}
         </h2>
