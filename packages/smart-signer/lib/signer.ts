@@ -149,6 +149,9 @@ export class Signer extends SignerBase {
    * @param {LoginTypes} loginType
    * @memberof Signer
    */
-  async destroy(username: string, loginType: LoginTypes) { }
+  async destroy(username: string, loginType: LoginTypes) {
+    const signer = this.getSigner(loginType);
+    return signer.destroy(username, loginType);
+  }
 
 }

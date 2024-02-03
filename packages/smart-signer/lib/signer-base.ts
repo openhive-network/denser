@@ -41,7 +41,7 @@ export class SignerBase {
         this.storageType = storageType;
     }
 
-    async destroy(username: string, loginType: LoginTypes) { }
+    async destroy(username: string, loginType: LoginTypes) {}
 
     async signChallenge({}: SignChallenge): Promise<string> {
         return '';

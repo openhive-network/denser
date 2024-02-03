@@ -6,9 +6,7 @@ import { loginPageController } from '@smart-signer/lib/login-page-controller';
 export default function LoginPage() {
 
   return (
-    <div
-      className="mx-2 flex flex-col pt-10"
-    >
+    <div className="mx-2 flex flex-col pt-10">
         <LoginPanel />
     </div>
   );
