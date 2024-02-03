@@ -429,7 +429,7 @@ function PostPage({
       </div>
       <div id="comments" className="flex" />
       <div className="mx-auto my-0 max-w-4xl py-4">
-        {reply ? <ReplyTextbox onSetReply={setReply} /> : null}
+        {reply ? <ReplyTextbox onSetReply={setReply} username={username} permlink={permlink} /> : null}
       </div>
       {!isLoadingDiscussion && discussion && discussionState ? (
         <div className="mx-auto my-0 max-w-4xl py-4 pr-8">

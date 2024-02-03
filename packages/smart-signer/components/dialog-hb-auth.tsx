@@ -25,12 +25,16 @@ interface DialogHBAuthProps {
   i18nNamespace?: string;
 }
 
-export function DialogHBAuth({ children, onAuthComplete, i18nNamespace = 'smart-signer' }: DialogHBAuthProps) {
+export function DialogHBAuth({
+  children,
+  onAuthComplete,
+  i18nNamespace = 'smart-signer'
+}: DialogHBAuthProps) {
   const { t } = useTranslation(i18nNamespace);
   const [open, setOpen] = useState(false);
   const [k, setKey] = useState('');
 
-  const updateStatus = (user: AuthUser | null = null,  err = null) => {
+  const updateStatus = (user: AuthUser | null = null, err = null) => {
     if (!user) {
       toast({
         title: 'Info!',
@@ -137,7 +141,7 @@ export function DialogHBAuth({ children, onAuthComplete, i18nNamespace = 'smart-
                   </div>
                   <div className="mb-5">
                     <input
-                      autoComplete="off"
+                      autoComplete="current-password"
                       type="password"
                       id="password"
                       name="password"
@@ -205,7 +209,7 @@ export function DialogHBAuth({ children, onAuthComplete, i18nNamespace = 'smart-
                   </div>
                   <div className="mb-5">
                     <input
-                      autoComplete="off"
+                      autoComplete="current-password"
                       type="password"
                       id="password"
                       name="password"
