@@ -1,37 +1,25 @@
-import { KeyTypes, LoginTypes } from '@smart-signer/types/common';
-import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer';
-import { formatOperations } from '@smart-signer/lib/signer-keychain';
+import { KeyTypes } from '@smart-signer/types/common';
+import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer-base';
+import { waxToKeychainOperation } from '@smart-signer/lib/signer-keychain';
 import HiveAuthUtils from '@smart-signer/lib/hive-auth-utils';
-import { isStorageAvailable } from '@smart-signer/lib/utils';
-import { memoryStorage } from '@smart-signer/lib/memory-storage';
+import { SignerBase } from '@smart-signer/lib/signer-base';
+import { StorageMixin } from '@smart-signer/lib/storage-mixin';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
-interface SignerHiveauthOptions {
-  storageType?: 'localStorage' | 'sessionStorage' | 'memoryStorage';
-}
+/**
+ * Instance interacts with Hive private keys, signs messages or
+ * operations, and sends operations to Hive blockchain. It uses
+ * [Hiveauth](https://hiveauth.com/).
+ *
+ * @export
+ * @class SignerHiveauth
+ * @extends {StorageMixin(SignerBase)}
+ */
+export class SignerHiveauth extends StorageMixin(SignerBase) {
 
-
-export class SignerHiveauth {
-
-  public storage: Storage;
-
-  constructor({
-    storageType = 'localStorage'
-  }: SignerHiveauthOptions = {}) {
-    if (storageType === 'localStorage'
-        && isStorageAvailable(storageType)) {
-      this.storage = window.localStorage;
-    } else if (storageType === 'sessionStorage'
-        && isStorageAvailable(storageType)) {
-      this.storage = window.sessionStorage;
-    } else {
-      this.storage = memoryStorage;
-    }
-  }
-
-  async destroy() {
+  async destroy(username: string) {
     HiveAuthUtils.logout();
     this.storage.removeItem('hiveAuthData');
   }
@@ -54,8 +42,6 @@ export class SignerHiveauth {
     message,
     username,
     keyType = KeyTypes.posting,
-    password = '',
-    loginType = LoginTypes.keychain,
     translateFn = (v) => v
   }: SignChallenge): Promise<string> {
     logger.info('in SignerHiveauth.signChallenge %o', { message, username, keyType });
@@ -89,15 +75,13 @@ export class SignerHiveauth {
 
   async broadcastTransaction({
     operation,
-    loginType,
-    username,
     keyType = KeyTypes.posting
   }: BroadcastTransaction): Promise<{ success: boolean, result: any, error: string}> {
 
     let result = { success: true, result: '', error: ''};
     try {
       this.setHiveAuthData();
-      const operations = formatOperations(operation);
+      const operations = waxToKeychainOperation(operation);
       const broadcastResponse: any = await new Promise((resolve) => {
         HiveAuthUtils.broadcast(
           operations,
@@ -112,7 +96,7 @@ export class SignerHiveauth {
         throw new Error('SignerHiveauth.broadcastTransaction error');
       }
     } catch (error) {
-      logger.trace('Error in SignerHiveauth.broadcastTransaction: %o', error);
+      logger.error('Error in SignerHiveauth.broadcastTransaction: %o', error);
       result = { success: false, result: '', error: 'Broadcast failed'};
       throw error;
     }

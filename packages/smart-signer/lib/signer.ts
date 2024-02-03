@@ -1,10 +1,12 @@
-import { operation } from '@hive/wax/web';
 import { SignerHbauth } from '@smart-signer/lib/signer-hbauth';
 import { SignerHiveauth } from '@smart-signer/lib/signer-hiveauth';
 import { SignerKeychain } from '@smart-signer/lib/signer-keychain';
 import { SignerWif } from '@smart-signer/lib/signer-wif';
 import { LoginTypes } from '@smart-signer/types/common';
 import { KeyTypes } from '@smart-signer/types/common';
+import { SignerBase, SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer-base';
+
+export type { BroadcastTransaction, SignChallenge, SignerOptions } from '@smart-signer/lib/signer-base';
 
 // export * from '@hive/wax'; // TODO Consider this.
 export { vote, update_proposal_votes, operation } from '@hive/wax/web';
@@ -12,41 +14,47 @@ export { vote, update_proposal_votes, operation } from '@hive/wax/web';
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
-export interface BroadcastTransaction {
-  operation: operation;
-  loginType: LoginTypes;
-  username: string;
-  keyType?: KeyTypes;
-  translateFn?: (v: string) => string;
-}
+/**
+ * Instance interacts with Hive private keys, signs messages or
+ * operations, and sends operations to Hive blockchain. It is instance
+ * builder, which delegates particular tasks to other instances, each
+ * responsible for using one of the following tools:
+ *
+ * 1. [Hbauth](https://gitlab.syncad.com/hive/hb-auth), handled in
+ *    SignerHbauth class.
+ * 2. [Keychain](https://hive-keychain.com/), handled in SignerKeychain
+ *    class.
+ * 3. [Hiveauth](https://hiveauth.com/), handled in SignerHiveauthclass.
+ * 4. So known "Wif" custom tool, based on
+ *    [@hiveio/dhive](https://openhive-network.github.io/dhive/) and
+ *    browser's localStorage, handled in SignerWif class.
+ *
+ * @export
+ * @class Signer
+ * @extends {SignerBase}
+ */
+export class Signer extends SignerBase {
 
-export interface SignChallenge {
-  message: string;
-  loginType: LoginTypes;
-  username: string;
-  password?: string; // private key or password to unlock hbauth key
-  keyType?: KeyTypes;
-  translateFn?: (v: string) => string;
-}
-
-export class Signer {
   /**
    * Creates instance of Signer for given `loginType` and returns it.
    *
+   * @private
    * @param {LoginTypes} [loginType=LoginTypes.wif]
+   * @param {*} [apiEndpoint=this.apiEndpoint]
    * @returns
    * @memberof Signer
    */
-  getSigner(loginType: LoginTypes = LoginTypes.wif) {
+  private getSigner(loginType: LoginTypes = LoginTypes.wif, apiEndpoint = this.apiEndpoint) {
     let signer: SignerHbauth | SignerHiveauth | SignerKeychain | SignerWif;
+    const args = { apiEndpoint };
     if (loginType === LoginTypes.hbauth) {
-      signer = new SignerHbauth();
+      signer = new SignerHbauth(args);
     } else if (loginType === LoginTypes.hiveauth) {
-      signer = new SignerHiveauth();
+      signer = new SignerHiveauth(args);
     } else if (loginType === LoginTypes.keychain) {
-      signer = new SignerKeychain();
+      signer = new SignerKeychain(args);
     } else if (loginType === LoginTypes.wif) {
-      signer = new SignerWif();
+      signer = new SignerWif(args);
     } else {
       throw new Error('Invalid loginType');
     }
@@ -60,9 +68,14 @@ export class Signer {
    * transactions – these need different hashing method and other
    * special treatment.
    *
-   * @param {SignChallenge} { message, loginType, username, password =
-   *         '', keyType = KeyTypes.posting
-   *     }
+   * @param {SignChallenge} {
+   *     message,
+   *     loginType,
+   *     username,
+   *     password = '', // private key or password to unlock hbauth key
+   *     keyType = KeyTypes.posting,
+   *     translateFn = (v) => v
+   *   }
    * @returns {Promise<string>}
    * @memberof Signer
    */
@@ -95,9 +108,13 @@ export class Signer {
    * Creates Hive transaction for given operation, signs it and
    * broadcasts it to Hive blockchain.
    *
-   * @param {BroadcastTransaction} { operation, loginType, username,
-   *         keyType = KeyTypes.posting
-   *     }
+   * @param {BroadcastTransaction} {
+   *     operation,
+   *     loginType,
+   *     username,
+   *     keyType = KeyTypes.posting,
+   *     translateFn = (v) => v
+   *   }
    * @returns {Promise<any>}
    * @memberof Signer
    */
@@ -128,12 +145,10 @@ export class Signer {
    * Clears all user data in storages and memory, does other things,
    * if required for particular Signer.
    *
-   * @param {LoginTypes} [loginType=LoginTypes.wif]
-   * @returns
+   * @param {string} username
+   * @param {LoginTypes} loginType
    * @memberof Signer
    */
-  async destroy(loginType: LoginTypes) {
-    const signer = this.getSigner(loginType);
-    return signer.destroy();
-  }
+  async destroy(username: string, loginType: LoginTypes) { }
+
 }
