@@ -10,7 +10,8 @@ export function useLogout() {
 
     const signOut = useSignOut();
     const { user } = useUser();
-    const signer = new Signer();
+
+    const signer = new Signer(user);
 
     const onLogout = async () => {
       try {

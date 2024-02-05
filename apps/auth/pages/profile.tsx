@@ -34,7 +34,10 @@ export default function Profile() {
       permlink: 'sdagjvxbn',
       weight: 10000
     };
+
+    // FIXME!
     const signer = new Signer(user);
+
     try {
       await signer.broadcastTransaction({
         operation: { vote },

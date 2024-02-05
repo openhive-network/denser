@@ -58,9 +58,17 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
         logger.info('signDigest args: %o', args);
         let signature = ''
         try {
-            const wif = password ? password
+            let wif = password ? password
                 : this.storage.getItem(`wif.${username}@${keyType}`);
+
+            if (!wif) {
+                // TODO get WIF from storage or prompt user to input it.
+                const userInput = prompt(`Please enter your WIF ${KeyTypes.posting} key for user ${username}`, '');
+                wif = userInput as string;
+            }
+
             if (!wif) throw new Error('No wif key');
+
             const privateKey = PrivateKey.fromString(wif);
             const hash = Buffer.from(digest, 'hex');
             signature = privateKey.sign(hash).toString();
