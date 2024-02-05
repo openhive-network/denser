@@ -4,6 +4,7 @@ import { Toaster } from "@hive/ui/components/toaster";
 import { useTheme } from "next-themes";
 import { TailwindIndicator } from "../tailwind-indicator";
 import SiteHeader from "../site-header";
+import { Container as ModalContainer } from 'react-modal-promise';
 
 interface LayoutProps {
   children: ReactNode;
@@ -25,6 +26,7 @@ function Layout({ children }: LayoutProps) {
           {children}
         </div>
       </div>
+      <ModalContainer />
       <Toaster />
       <TailwindIndicator />
     </>

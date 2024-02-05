@@ -4,6 +4,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getTranslations } from '@/auth/lib/get-translations';
 import { Button } from '@hive/ui/components/button';
 import { Signer, vote } from '@smart-signer/lib/signer';
+import { myPromiseModal } from '@/auth/components/alert-dialog-password';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -49,6 +50,19 @@ export default function Profile() {
     }
   }
 
+  const openPromiseModal = async () => {
+    logger.info('Opening myPromiseModal');
+    try {
+      const result = await myPromiseModal({
+        isOpen: true,
+        title: 'Enter your WIF password',
+      });
+      logger.info('Return from myPromiseModal: %s', result);
+    } catch (error) {
+      logger.info('Return from myPromiseModal %s', error);
+    }
+  };
+
   return (
     <div className="pt-16 flex flex-col sm:flex-row gap-24 mx-2
         sm:gap-0 sm:justify-around">
@@ -59,10 +73,15 @@ export default function Profile() {
             You are logged in as user <strong>{user.username}</strong>.
           </p>
         {developerAccounts.includes(user.username) && (
-          <Button onClick={testVote} variant="redHover" size="sm" className="h-10">
-            Test Vote
-          </Button>
-        )}
+          <div>
+            <Button onClick={testVote} variant="redHover" size="sm" className="h-10">
+              Test Vote
+            </Button>
+            <Button onClick={openPromiseModal} variant="redHover" size="sm" className="h-10">
+              Open Promise Modal
+            </Button>
+          </div>
+      )}
         </div>
       )}
     </div>
