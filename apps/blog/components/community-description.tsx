@@ -16,6 +16,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Signer } from '@smart-signer/lib/signer';
 import { logger } from '@ui/lib/logger';
 import { toast } from '@ui/components/hooks/use-toast';
+import { useEffect, useState } from 'react';
 
 const CommunityDescription = ({
   data,
@@ -28,6 +29,7 @@ const CommunityDescription = ({
   notificationData: AccountNotification[] | null | undefined;
   username: string;
 }) => {
+  const [isSubscribe, setIsSubscribe] = useState(() => !data.context.subscribed);
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
   const renderer = new DefaultRenderer({
@@ -52,6 +54,10 @@ const CommunityDescription = ({
   if (data.description) {
     post_body_html = renderer.render(data.description);
   }
+
+  useEffect(() => {
+    setIsSubscribe(!data.context.subscribed);
+  }, [data.context.subscribed]);
 
   async function subscribe(type: string) {
     if (user && user.isLoggedIn) {
@@ -124,12 +130,16 @@ const CommunityDescription = ({
           <div className="my-4 flex flex-col gap-2">
             {user && user.isLoggedIn ? (
               <>
-                {!data.context.subscribed ? (
+                {!isSubscribe ? (
                   <Button
                     size="sm"
                     className="w-full bg-blue-800 text-center hover:bg-blue-900"
                     data-testid="community-subscribe-button"
-                    onClick={() => subscribe('subscribe')}
+                    onClick={() => {
+                      const nextIsSubscribe = !isSubscribe;
+                      setIsSubscribe(nextIsSubscribe);
+                      subscribe('subscribe');
+                    }}
                   >
                     {t('communities.buttons.subscribe')}
                   </Button>
@@ -138,7 +148,11 @@ const CommunityDescription = ({
                     size="sm"
                     variant="outline"
                     className="group relative w-full text-center text-blue-800 hover:border-red-500 hover:text-red-500"
-                    onClick={() => subscribe('unsubscribe')}
+                    onClick={() => {
+                      const nextIsSubscribe = !isSubscribe;
+                      setIsSubscribe(nextIsSubscribe);
+                      subscribe('unsubscribe');
+                    }}
                   >
                     <span className="group-hover:hidden">Joined</span>
                     <span className="hidden group-hover:inline">Leave</span>
