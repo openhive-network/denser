@@ -218,7 +218,10 @@ test.describe('Login and Sign Up tests', () => {
         await hbauthLoginDialog.hbauthUnlockKeyUsernameInput,
         'background-color'
       )
-    ).toBe('rgb(59, 59, 59)');
+      //  webkit: 'rgb(30, 30, 30)'
+      // firefox: 'rgb(43, 42, 51)'
+      //  chrome: 'rgb(59, 59, 59)'
+    ).toMatch(/rgb\(43, 42, 51\)|rgb\(59, 59, 59\)|rgb\(30, 30, 30\)/);
     await expect(
       await hbauthLoginDialog.getElementCssPropertyValue(
         await hbauthLoginDialog.hbauthUnlockKeyUsernameInput,
@@ -237,7 +240,10 @@ test.describe('Login and Sign Up tests', () => {
         await hbauthLoginDialog.hbauthUnlockKeyPasswordInput,
         'background-color'
       )
-    ).toBe('rgb(59, 59, 59)');
+      //  webkit: 'rgb(30, 30, 30)'
+      // firefox: 'rgb(43, 42, 51)'
+      //  chrome: 'rgb(59, 59, 59)'
+      ).toMatch(/rgb\(43, 42, 51\)|rgb\(59, 59, 59\)|rgb\(30, 30, 30\)/);
     await expect(
       await hbauthLoginDialog.getElementCssPropertyValue(
         await hbauthLoginDialog.hbauthUnlockKeyPasswordInput,
@@ -307,6 +313,7 @@ test.describe('Login and Sign Up tests', () => {
     // Move to the Add Key Tab
     await hbauthLoginDialog.hbauthAddKeyButton.click();
     await hbauthLoginDialog.validateHbauthAddKeyDialogIsVisible();
+    await hbauthLoginDialog.page.waitForTimeout(1000);
     // Validate background color of login dialog
     await expect(
       await hbauthLoginDialog.getElementCssPropertyValue(
@@ -476,7 +483,10 @@ test.describe('Login and Sign Up tests', () => {
         await hbauthLoginDialog.hbauthAddKeyUsernameInput,
         'background-color'
       )
-    ).toBe('rgb(59, 59, 59)');
+      //  webkit: 'rgb(30, 30, 30)'
+      // firefox: 'rgb(43, 42, 51)'
+      //  chrome: 'rgb(59, 59, 59)'
+    ).toMatch(/rgb\(43, 42, 51\)|rgb\(59, 59, 59\)|rgb\(30, 30, 30\)/);
     await expect(
       await hbauthLoginDialog.getElementCssPropertyValue(
         await hbauthLoginDialog.hbauthAddKeyUsernameInput,
@@ -495,7 +505,10 @@ test.describe('Login and Sign Up tests', () => {
         await hbauthLoginDialog.hbauthAddKeyPasswordInput,
         'background-color'
       )
-    ).toBe('rgb(59, 59, 59)');
+      //  webkit: 'rgb(30, 30, 30)'
+      // firefox: 'rgb(43, 42, 51)'
+      //  chrome: 'rgb(59, 59, 59)'
+    ).toMatch(/rgb\(43, 42, 51\)|rgb\(59, 59, 59\)|rgb\(30, 30, 30\)/);
     await expect(
       await hbauthLoginDialog.getElementCssPropertyValue(
         await hbauthLoginDialog.hbauthAddKeyPasswordInput,
@@ -527,7 +540,10 @@ test.describe('Login and Sign Up tests', () => {
         await hbauthLoginDialog.hbauthAddKeyPrivateKeyInput,
         'background-color'
       )
-    ).toBe('rgb(59, 59, 59)');
+      //  webkit: 'rgb(30, 30, 30)'
+      // firefox: 'rgb(43, 42, 51)'
+      //  chrome: 'rgb(59, 59, 59)'
+    ).toMatch(/rgb\(43, 42, 51\)|rgb\(59, 59, 59\)|rgb\(30, 30, 30\)/);
     await expect(
       await hbauthLoginDialog.getElementCssPropertyValue(
         await hbauthLoginDialog.hbauthAddKeyPrivateKeyInput,
