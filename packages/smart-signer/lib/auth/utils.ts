@@ -1,7 +1,6 @@
 import * as z from 'zod';
 import { validateHiveAccountName } from '@smart-signer/lib/validate-hive-account-name';
-import { User } from '@smart-signer/types/common';
-import { LoginTypes } from '@smart-signer/types/common';
+import { LoginTypes, StorageTypes, User } from '@smart-signer/types/common';
 
 export const username = z.string()
     .superRefine((val, ctx) => {
@@ -18,7 +17,16 @@ export const username = z.string()
     });
 
 export const postLoginSchema = z.object({
-    loginType: z.nativeEnum(LoginTypes),
+    storageType: z.nativeEnum(StorageTypes, {
+        invalid_type_error: 'Invalid storageType',
+        required_error: 'storageType is required',
+        invalid_enum_value: 'Please select one of the options from StorageTypes',
+    }),
+    loginType: z.nativeEnum(LoginTypes, {
+        invalid_type_error: 'Invalid loginType',
+        required_error: 'loginType is required',
+        invalid_enum_value: 'Please select one of the options from LoginTypes',
+    }),
     hivesignerToken: z.string({
         required_error: "hivesignerToken is required",
         invalid_type_error: "hivesignerToken must be a string",
@@ -42,4 +50,5 @@ export const defaultUser: User = {
     username: '',
     avatarUrl: '',
     loginType: LoginTypes.wif,
+    storageType: StorageTypes.localStorage
 };

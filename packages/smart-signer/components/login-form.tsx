@@ -8,9 +8,11 @@ import { Separator } from '@hive/ui/components/separator';
 import { getLogger } from '@hive/ui/lib/logging';
 import { hasCompatibleKeychain } from '@smart-signer/lib/signer-keychain';
 import { username } from '@smart-signer/lib/auth/utils';
-import { LoginTypes } from '@smart-signer/types/common';
+import { LoginTypes, StorageTypes } from '@smart-signer/types/common';
 import { validateHivePassword } from '@smart-signer/lib/validate-hive-password';
 import { Icons } from '@ui/components/icons';
+
+const ZodStorageTypesEnum = z.nativeEnum(StorageTypes);
 
 const ZodLoginTypesEnum = z.nativeEnum(LoginTypes);
 type ZodLoginTypesEnum = z.infer<typeof ZodLoginTypesEnum>;
@@ -35,6 +37,7 @@ const passwordHbauthField = z.object({
 });
 
 const commonFields = z.object({
+  storageType: z.nativeEnum(StorageTypes),
   username,
   useHbauth: z.boolean(),
   useKeychain: z.boolean(),
@@ -56,6 +59,10 @@ const loginFormSchema = z.discriminatedUnion('loginType', [
 export type LoginFormSchema = z.infer<typeof loginFormSchema>;
 
 const loginFormDefaultValues = {
+
+  // FIXME!
+  storageType: StorageTypes.sessionStorage,
+
   loginType: LoginTypes.wif,
   password: '',
   passwordHbauth: '',
@@ -169,6 +176,7 @@ export function LoginForm({
           {t('login_form.title_action_login')}
         </h2>
         <form method="post" className="w-full">
+          <input type="hidden" {...register('storageType')} />
           <input type="hidden" {...register('loginType')} />
           <div className="mb-5">
             <div className="relative">

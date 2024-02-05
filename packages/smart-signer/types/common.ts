@@ -3,6 +3,13 @@ export type User = {
     username: string
     avatarUrl: string
     loginType: LoginTypes;
+    storageType: StorageTypes; // The storage on client side where user's credentials are stored in.
+}
+
+export enum StorageTypes {
+    localStorage = 'localStorage',
+    sessionStorage = 'sessionStorage',
+    memoryStorage = 'memoryStorage',
 }
 
 export enum LoginTypes {
