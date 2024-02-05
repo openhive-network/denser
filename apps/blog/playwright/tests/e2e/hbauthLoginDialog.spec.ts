@@ -597,4 +597,78 @@ test.describe('Login and Sign Up tests', () => {
     ).toBe('rgb(127, 142, 163)');
   });
 
+  test('Validate Hbauth login dialog styles after hovering and clicking', async ({ page }) => {
+    await homePage.goto();
+    await homePage.getNavHbauthLink.click();
+    await hbauthLoginDialog.validateHbauthUnlockKeyDialogIsVisible();
+    // Validate submit button after hovering
+    await hbauthLoginDialog.hbauthUnlockKeySubmitButton.hover();
+    await expect(
+      await hbauthLoginDialog.getElementCssPropertyValue(await hbauthLoginDialog.hbauthUnlockKeySubmitButton, 'background-color')
+    ).toBe('rgb(185, 28, 28)');
+    await expect(
+      await hbauthLoginDialog.getElementCssPropertyValue(await hbauthLoginDialog.hbauthUnlockKeySubmitButton, 'color')
+    ).toBe('rgb(255, 255, 255)');
+    // Validate reset button after hovering
+    await hbauthLoginDialog.hbauthUnlockKeyResetButton.hover();
+    await expect(
+      await hbauthLoginDialog.getElementCssPropertyValue(await hbauthLoginDialog.hbauthUnlockKeyResetButton, 'background-color')
+    ).toBe('rgba(0, 0, 0, 0)');
+    await expect(
+      await hbauthLoginDialog.getElementCssPropertyValue(await hbauthLoginDialog.hbauthUnlockKeyResetButton, 'color')
+    ).toBe('rgb(220, 38, 38)');
+    // Validate border color of username input after clicking inside
+    await hbauthLoginDialog.hbauthUnlockKeyUsernameInput.click();
+    await expect(
+      await hbauthLoginDialog.getElementCssPropertyValue(await hbauthLoginDialog.hbauthUnlockKeyUsernameInput, 'border-bottom-color')
+    ).toBe('rgb(239, 68, 68)');
+    // Validate border color of password input after clicking inside
+    await hbauthLoginDialog.hbauthUnlockKeyPasswordInput.click();
+    await expect(
+      await hbauthLoginDialog.getElementCssPropertyValue(await hbauthLoginDialog.hbauthUnlockKeyPasswordInput, 'border-bottom-color')
+    ).toBe('rgb(239, 68, 68)');
+  });
+
+  test('Validate Hbauth login dialog styles in Add Key Tab after hovering and clicking in the dark mode', async ({ page }) => {
+    await homePage.goto();
+    await homePage.changeThemeMode('Dark');
+    await homePage.validateThemeModeIsDark();
+    // Open Hbauth dialog
+    await homePage.getNavHbauthLink.click();
+    await hbauthLoginDialog.validateHbauthUnlockKeyDialogIsVisible();
+    // Move to the Hbauth Add Key Dialog
+    await hbauthLoginDialog.hbauthAddKeyButton.click();
+    await hbauthLoginDialog.validateHbauthAddKeyDialogIsVisible();
+    // Validate submit button after hovering
+    await hbauthLoginDialog.hbauthAddKeySubmitButton.hover();
+    await expect(
+      await hbauthLoginDialog.getElementCssPropertyValue(await hbauthLoginDialog.hbauthAddKeySubmitButton, 'background-color')
+    ).toBe('rgb(185, 28, 28)');
+    await expect(
+      await hbauthLoginDialog.getElementCssPropertyValue(await hbauthLoginDialog.hbauthAddKeySubmitButton, 'color')
+    ).toBe('rgb(255, 255, 255)');
+    // Validate reset button after hovering
+    await hbauthLoginDialog.hbauthAddKeyResetButton.hover();
+    await expect(
+      await hbauthLoginDialog.getElementCssPropertyValue(await hbauthLoginDialog.hbauthAddKeyResetButton, 'background-color')
+    ).toBe('rgba(0, 0, 0, 0)');
+    await expect(
+      await hbauthLoginDialog.getElementCssPropertyValue(await hbauthLoginDialog.hbauthAddKeyResetButton, 'color')
+    ).toBe('rgb(220, 38, 38)');
+    // Validate border color of username input after clicking inside
+    await hbauthLoginDialog.hbauthAddKeyUsernameInput.click();
+    await expect(
+      await hbauthLoginDialog.getElementCssPropertyValue(await hbauthLoginDialog.hbauthAddKeyUsernameInput, 'border-bottom-color')
+    ).toBe('rgb(239, 68, 68)');
+    // Validate border color of password input after clicking inside
+    await hbauthLoginDialog.hbauthAddKeyPasswordInput.click();
+    await expect(
+      await hbauthLoginDialog.getElementCssPropertyValue(await hbauthLoginDialog.hbauthAddKeyPasswordInput, 'border-bottom-color')
+    ).toBe('rgb(239, 68, 68)');
+    // Validate border color of private key input after clicking inside
+    await hbauthLoginDialog.hbauthAddKeyPrivateKeyInput.click();
+    await expect(
+      await hbauthLoginDialog.getElementCssPropertyValue(await hbauthLoginDialog.hbauthAddKeyPrivateKeyInput, 'border-bottom-color')
+    ).toBe('rgb(239, 68, 68)');
+  });
 });
