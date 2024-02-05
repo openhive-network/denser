@@ -9,29 +9,33 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@hive/ui/components/alert-dialog';
-import { FollowOperationBuilder } from '@hive/wax/web';
+import { CommunityOperationBuilder } from '@hive/wax/web';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Signer } from '@smart-signer/lib/signer';
+import { Input } from '@ui/components';
 import { toast } from '@ui/components/hooks/use-toast';
 import { logger } from '@ui/lib/logger';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 
-export function AlertDialogReblog({
+export function AlertDialogFlag({
   children,
+  community,
   username,
   permlink
 }: {
   children: ReactNode;
+  community: string;
   username: string;
   permlink: string;
 }) {
   const { user } = useUser();
+  const [notes, setNotes] = useState('');
 
-  async function reblog() {
+  async function flag() {
     if (user && user.isLoggedIn) {
       const customJsonOperations: any[] = [];
-      new FollowOperationBuilder()
-        .reblog(user.username, username, permlink)
+      new CommunityOperationBuilder()
+        .flagPost(community, username, permlink, notes)
         .authorize(user.username)
         .build()
         .flushOperations(customJsonOperations);
@@ -69,23 +73,25 @@ export function AlertDialogReblog({
       <AlertDialogContent className="flex flex-col gap-8 sm:rounded-r-xl ">
         <AlertDialogHeader className="gap-2">
           <div className="flex items-center justify-between">
-            <AlertDialogTitle data-testid="reblog-dialog-header">Reblog This Post</AlertDialogTitle>
-            <AlertDialogCancel className="border-none hover:text-red-800" data-testid="reblog-dialog-close">
+            <AlertDialogTitle data-testid="flag-dialog-header">Oflaguj post</AlertDialogTitle>
+            <AlertDialogCancel className="border-none hover:text-red-800" data-testid="flag-dialog-close">
               X
             </AlertDialogCancel>
           </div>
-          <AlertDialogDescription data-testid="reblog-dialog-description">
-            This post will be added to your blog and shared with your followers.
+          <AlertDialogDescription data-testid="flag-dialog-description">
+            Please provide a note regarding your decision to flag this post, it will be reviewed by community
+            moderators.
+            <Input className="mt-2" value={notes} onChange={(e) => setNotes(e.target.value)} />
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="gap-2 sm:flex-row-reverse">
-          <AlertDialogCancel className="hover:text-red-800" data-testid="reblog-dialog-cancel">
+          <AlertDialogCancel className="hover:text-red-800" data-testid="flag-dialog-cancel">
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
             className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
-            data-testid="reblog-dialog-ok"
-            onClick={reblog}
+            data-testid="flag-dialog-ok"
+            onClick={flag}
           >
             OK
           </AlertDialogAction>

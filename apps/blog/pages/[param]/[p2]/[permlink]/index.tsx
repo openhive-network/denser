@@ -35,6 +35,7 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
 import { GetServerSideProps } from 'next';
+import { AlertDialogFlag } from '@/blog/components/alert-window-flag';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -168,7 +169,11 @@ function PostPage({
 
   return (
     <div className="py-8">
-      <div className="mx-auto my-0 max-w-4xl bg-white px-8 py-4 dark:bg-slate-900">
+      <div className="relative mx-auto my-0 max-w-4xl bg-white px-8 py-4 dark:bg-slate-900">
+        <AlertDialogFlag community={community} username={username} permlink={permlink}>
+          <Icons.flag className="absolute right-0 hover:text-red-500" />
+        </AlertDialogFlag>
+
         {!commentSite ? (
           <h1 className="text-3xl font-bold" data-testid="article-title">
             {post_s.title}
