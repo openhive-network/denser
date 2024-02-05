@@ -465,9 +465,9 @@ test.describe('Home page tests', () => {
   test('validate styles of the description of the post card in the light mode', async ({ page }) => {
     await homePage.goto();
 
-    expect(
-      await homePage.getElementCssPropertyValue(await homePage.postDescription.first(), 'color')
-    ).toBe('rgb(100, 116, 139)');
+    expect(await homePage.getElementCssPropertyValue(await homePage.postDescription.first(), 'color')).toBe(
+      'rgb(100, 116, 139)'
+    );
   });
 
   test('validate styles of the description of the post card in the dark mode', async ({ page }) => {
@@ -476,9 +476,9 @@ test.describe('Home page tests', () => {
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
-    expect(
-      await homePage.getElementCssPropertyValue(await homePage.postDescription.first(), 'color')
-    ).toBe('rgb(127, 142, 163)');
+    expect(await homePage.getElementCssPropertyValue(await homePage.postDescription.first(), 'color')).toBe(
+      'rgb(127, 142, 163)'
+    );
   });
 
   test('move to the first post content by clicking the responses', async ({ page }) => {
@@ -593,27 +593,27 @@ test.describe('Home page tests', () => {
 
   test.skip('move to the Proposals page', async ({ page, context }) => {
     await homePage.goto();
-    await page.click('[data-testid="nav-proposals-link"]')
+    await page.click('[data-testid="nav-proposals-link"]');
     // await homePage.moveToNavProposalsPage();
 
     const [newWindow] = await Promise.all([
       context.waitForEvent('page'),
       await page.click('[data-testid="nav-proposals-link"]')
-    ])
-    await newWindow.waitForLoadState()
-    expect(newWindow.url()).toContain(`/proposals`)
+    ]);
+    await newWindow.waitForLoadState();
+    expect(newWindow.url()).toContain(`/proposals`);
   });
 
   test.skip('move to the Witnesses page', async ({ page, context }) => {
     await homePage.goto();
-    await page.click('[data-testid="nav-witnesses-link"]')
+    await page.click('[data-testid="nav-witnesses-link"]');
     // await homePage.moveToNavWitnessesPage();
     const [newWindow] = await Promise.all([
       context.waitForEvent('page'),
       await page.click('[data-testid="nav-witnesses-link"]')
-    ])
-    await newWindow.waitForLoadState()
-    expect(newWindow.url()).toContain(`/~witnesses`)
+    ]);
+    await newWindow.waitForLoadState();
+    expect(newWindow.url()).toContain(`/~witnesses`);
   });
 
   test('move to the Our dApps page', async ({ page }) => {
@@ -657,10 +657,114 @@ test.describe('Home page tests', () => {
     await expect(homePage.getNavHbauthLink).toBeVisible();
   });
 
+  test('validate styles of navigation Hbauth link in the light mode', async ({ page }) => {
+    await homePage.goto();
+
+    await expect(homePage.getNavHbauthButton).toBeVisible();
+    await expect(await homePage.getElementCssPropertyValue(await homePage.getNavHbauthButton, 'color')).toBe(
+      'rgb(255, 255, 255)'
+    );
+    await expect(
+      await homePage.getElementCssPropertyValue(await homePage.getNavHbauthButton, 'background-color')
+    ).toBe('rgb(31, 41, 55)');
+    await expect(
+      await homePage.getElementCssPropertyValue(await homePage.getNavHbauthButton, 'box-shadow')
+    ).toBe(
+      'rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(220, 38, 38) 0px 4px 6px -1px, rgb(220, 38, 38) 0px 2px 4px -2px'
+    );
+    await homePage.getNavHbauthLink.hover();
+    await homePage.page.waitForTimeout(1000);
+    await expect(await homePage.getElementCssPropertyValue(await homePage.getNavHbauthButton, 'color')).toBe(
+      'rgb(255, 255, 255)'
+    );
+    await expect(
+      await homePage.getElementCssPropertyValue(await homePage.getNavHbauthButton, 'background-color')
+    ).toBe('rgb(220, 38, 38)');
+    await expect(
+      await homePage.getElementCssPropertyValue(await homePage.getNavHbauthButton, 'box-shadow')
+    ).toBe(
+      'rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(31, 41, 55) 0px 4px 6px -1px, rgb(31, 41, 55) 0px 2px 4px -2px'
+    );
+  });
+
+  test('validate styles of navigation Hbauth link in the dark mode', async ({ page }) => {
+    await homePage.goto();
+    await homePage.changeThemeMode('Dark');
+    await homePage.validateThemeModeIsDark();
+    await homePage.page.waitForTimeout(1000);
+    await expect(homePage.getNavHbauthLink).toBeVisible();
+    await expect(await homePage.getElementCssPropertyValue(await homePage.getNavHbauthButton, 'color')).toBe(
+      'rgb(255, 255, 255)'
+    );
+    await expect(
+      await homePage.getElementCssPropertyValue(await homePage.getNavHbauthButton, 'background-color')
+    ).toBe('rgb(31, 41, 55)');
+    await expect(
+      await homePage.getElementCssPropertyValue(await homePage.getNavHbauthButton, 'box-shadow')
+    ).toBe(
+      'rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(220, 38, 38) 0px 4px 6px -1px, rgb(220, 38, 38) 0px 2px 4px -2px'
+    );
+    await homePage.getNavHbauthLink.hover();
+    await homePage.page.waitForTimeout(1000);
+    await expect(await homePage.getElementCssPropertyValue(await homePage.getNavHbauthButton, 'color')).toBe(
+      'rgb(255, 255, 255)'
+    );
+    await expect(
+      await homePage.getElementCssPropertyValue(await homePage.getNavHbauthButton, 'background-color')
+    ).toBe('rgb(220, 38, 38)');
+    await expect(
+      await homePage.getElementCssPropertyValue(await homePage.getNavHbauthButton, 'box-shadow')
+    ).toBe(
+      'rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(31, 41, 55) 0px 4px 6px -1px, rgb(31, 41, 55) 0px 2px 4px -2px'
+    );
+  });
+
   test('navigation Login link is visible', async ({ page }) => {
     await homePage.goto();
 
     await expect(homePage.loginBtn).toBeVisible();
+  });
+
+  test('validate styles of navigation Login link in the light mode', async ({ page }) => {
+    await homePage.goto();
+
+    await expect(homePage.loginBtn).toBeVisible();
+    await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'color')).toBe(
+      'rgb(15, 23, 42)'
+    );
+    await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'background-color')).toBe(
+      'rgba(0, 0, 0, 0)'
+    );
+    await homePage.loginBtn.hover();
+    await homePage.page.waitForTimeout(1000);
+    await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'color')).toBe(
+      'rgb(239, 68, 68)'
+    );
+    await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'background-color')).toBe(
+      'rgb(241, 245, 249)'
+    );
+  });
+
+  test('validate styles of navigation Login link in the dark mode', async ({ page }) => {
+    await homePage.goto();
+    await homePage.changeThemeMode('Dark');
+    await homePage.validateThemeModeIsDark();
+    await homePage.page.waitForTimeout(1000);
+    await expect(homePage.loginBtn).toBeVisible();
+    await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'color')).toBe(
+      'rgb(225, 231, 239)'
+    );
+    await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'background-color')).toBe(
+      'rgba(0, 0, 0, 0)'
+    );
+    await homePage.loginBtn.hover();
+    await homePage.page.waitForTimeout(1000);
+    await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'color')).toBe(
+      'rgb(239, 68, 68)'
+    );
+    await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'background-color')).toBe(
+      'rgb(29, 40, 58)'
+    );
   });
 
   test('navigation Sign up link is visible', async ({ page }) => {
@@ -957,24 +1061,18 @@ test.describe('Home page tests', () => {
 
     // Validate reputation color and tooltip
     const firstPostReputation = await homePage.getFirstPostAuthorReputation;
-    expect(
-      await homePage.getElementCssPropertyValue(
-      await firstPostReputation,
-      'color'
-      )
-    ).toBe('rgb(100, 116, 139)');
+    expect(await homePage.getElementCssPropertyValue(await firstPostReputation, 'color')).toBe(
+      'rgb(100, 116, 139)'
+    );
 
     await firstPostReputation.hover();
     await homePage.page.waitForTimeout(1000);
 
     await expect(homePage.getFirstPostAuthorReputation).toHaveAttribute('title', 'Reputation');
 
-    expect(
-      await homePage.getElementCssPropertyValue(
-      await firstPostReputation,
-      'color'
-      )
-    ).toBe('rgb(100, 116, 139)');
+    expect(await homePage.getElementCssPropertyValue(await firstPostReputation, 'color')).toBe(
+      'rgb(100, 116, 139)'
+    );
   });
 
   test('validate styles of the reputation in the post card header in the dark mode', async ({ page }) => {
@@ -986,25 +1084,19 @@ test.describe('Home page tests', () => {
 
     // Validate reputation color and tooltip
     const firstPostReputation = await homePage.getFirstPostAuthorReputation;
-    expect(
-      await homePage.getElementCssPropertyValue(
-      await firstPostReputation,
-      'color'
-      )
-    ).toBe('rgb(148, 163, 184)');
+    expect(await homePage.getElementCssPropertyValue(await firstPostReputation, 'color')).toBe(
+      'rgb(148, 163, 184)'
+    );
 
     await expect(homePage.getFirstPostAuthorReputation).toHaveAttribute('title', 'Reputation');
 
-    expect(
-      await homePage.getElementCssPropertyValue(
-      await firstPostReputation,
-      'color'
-      )
-    ).toBe('rgb(148, 163, 184)');
+    expect(await homePage.getElementCssPropertyValue(await firstPostReputation, 'color')).toBe(
+      'rgb(148, 163, 184)'
+    );
   });
 
   test('validate styles of the affiliation tag (badge) in the post card in the light mode', async ({
-    page,
+    page
     // browserName
   }) => {
     // test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
@@ -1017,24 +1109,19 @@ test.describe('Home page tests', () => {
 
     if (await homePage.postCardAffiliationTag.first().isVisible()) {
       expect(
-        await homePage.getElementCssPropertyValue(
-        await homePage.postCardAffiliationTag.first(),
-        'color'
-        )
+        await homePage.getElementCssPropertyValue(await homePage.postCardAffiliationTag.first(), 'color')
       ).toBe('rgb(100, 116, 139)');
       expect(
         await homePage.getElementCssPropertyValue(
-        await homePage.postCardAffiliationTag.first(),
-        'border-color'
+          await homePage.postCardAffiliationTag.first(),
+          'border-color'
         )
       ).toBe('rgb(220, 38, 38)');
-    }
-    else
-      console.log('No affiliation tags on the 40 post cards');
+    } else console.log('No affiliation tags on the 40 post cards');
   });
 
   test('validate styles of the affiliation tag (badge) in the post card in the dark mode', async ({
-    page,
+    page
     // browserName
   }) => {
     // test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
@@ -1050,25 +1137,19 @@ test.describe('Home page tests', () => {
 
     if (await homePage.postCardAffiliationTag.first().isVisible()) {
       expect(
-        await homePage.getElementCssPropertyValue(
-        await homePage.postCardAffiliationTag.first(),
-        'color'
-        )
+        await homePage.getElementCssPropertyValue(await homePage.postCardAffiliationTag.first(), 'color')
       ).toBe('rgb(100, 116, 139)');
       expect(
         await homePage.getElementCssPropertyValue(
-        await homePage.postCardAffiliationTag.first(),
-        'border-color'
+          await homePage.postCardAffiliationTag.first(),
+          'border-color'
         )
       ).toBe('rgb(220, 38, 38)');
-
-    }
-    else
-      console.log('No affiliation tags on the 40 post cards');
+    } else console.log('No affiliation tags on the 40 post cards');
   });
 
   test('validate the text of the affiliation tag (badge) in the post card in the light mode', async ({
-    page,
+    page
     // browserName
   }) => {
     // test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
@@ -1078,9 +1159,9 @@ test.describe('Home page tests', () => {
     const rankedPostResultLength = await rankedPostResponse.result.length;
     const elementsWithAffiliationTag: string[] = [];
 
-    for (let i=0; i < rankedPostResultLength; i++){
-      if(await rankedPostResponse.result[i].author_title)
-        await elementsWithAffiliationTag.push(await rankedPostResponse.result[i].author_title)
+    for (let i = 0; i < rankedPostResultLength; i++) {
+      if (await rankedPostResponse.result[i].author_title)
+        await elementsWithAffiliationTag.push(await rankedPostResponse.result[i].author_title);
     }
     // console.log('Elements with affiliation tag: ', await elementsWithAffiliationTag);
 
@@ -1094,14 +1175,14 @@ test.describe('Home page tests', () => {
       // console.log('Text of the first affiliation tag: ', await homePage.postCardAffiliationTag.first().textContent());
 
       // Compare text the first affiliation tag from UI with the first affiliation tag from API
-      await expect(await homePage.postCardAffiliationTag.first().textContent()).toBe(elementsWithAffiliationTag[0]);
-    }
-    else
-      console.log('No affiliation tags on the 40 post cards');
+      await expect(await homePage.postCardAffiliationTag.first().textContent()).toBe(
+        elementsWithAffiliationTag[0]
+      );
+    } else console.log('No affiliation tags on the 40 post cards');
   });
 
   test('validate styles of Powered Up 100% in the post card in the light mode', async ({
-    page,
+    page
     // browserName
   }) => {
     // test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
@@ -1118,18 +1199,13 @@ test.describe('Home page tests', () => {
       await expect(homePage.postCardPoweredUp100Tooltip).toHaveText('Powered Up 100%Powered Up 100%');
       console.log('111 ', await homePage.postCardPoweredUp100Trigger.first());
       expect(
-        await homePage.getElementCssPropertyValue(
-        await homePage.postCardPoweredUp100Tooltip.first(),
-        'color'
-        )
+        await homePage.getElementCssPropertyValue(await homePage.postCardPoweredUp100Tooltip.first(), 'color')
       ).toBe('rgb(15, 23, 42)');
-    }
-    else
-      console.log('No Powered Up 100% tags on the 40 post cards');
+    } else console.log('No Powered Up 100% tags on the 40 post cards');
   });
 
   test('validate styles of Powered Up 100% in the post card in the dark mode', async ({
-    page,
+    page
     // browserName
   }) => {
     // test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
@@ -1148,18 +1224,13 @@ test.describe('Home page tests', () => {
       await expect(homePage.postCardPoweredUp100Tooltip).toHaveText('Powered Up 100%Powered Up 100%');
       console.log('111 ', await homePage.postCardPoweredUp100Trigger.first());
       expect(
-        await homePage.getElementCssPropertyValue(
-        await homePage.postCardPoweredUp100Tooltip.first(),
-        'color'
-        )
+        await homePage.getElementCssPropertyValue(await homePage.postCardPoweredUp100Tooltip.first(), 'color')
       ).toBe('rgb(148, 163, 184)');
-    }
-    else
-      console.log('No Powered Up 100% tags on the 40 post cards');
+    } else console.log('No Powered Up 100% tags on the 40 post cards');
   });
 
   test('move to the post page by clicking Powered Up 100% in the post card ', async ({
-    page,
+    page
     // browserName
   }) => {
     // test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
@@ -1173,13 +1244,11 @@ test.describe('Home page tests', () => {
 
     if (await homePage.postCardPoweredUp100Trigger.first().isVisible()) {
       const firstPoweredUp100Link = await homePage.postCardPoweredUp100TriggerLink.first();
-      const urlOfFirstPoweredUp10Link = await firstPoweredUp100Link.getAttribute("href");
+      const urlOfFirstPoweredUp10Link = await firstPoweredUp100Link.getAttribute('href');
       // console.log('url of the first post ', await firstPoweredUp100Link.getAttribute("href"));
       await homePage.postCardPoweredUp100Trigger.first().click();
       await homePage.page.waitForSelector('#articleBody');
       await expect(homePage.page).toHaveURL(urlOfFirstPoweredUp10Link);
-    }
-    else
-      console.log('No Powered Up 100% tags on the 40 post cards');
+    } else console.log('No Powered Up 100% tags on the 40 post cards');
   });
 });
