@@ -1,33 +1,30 @@
-let ms: { [key: string]: any } = {};
+let ms: { [key: string]: string } = {};
 let msLength = 0;
 
-function getItem(key: string) {
+function getItem(key: string): string | null {
     return key in ms ? ms[key] : null;
 }
 
-function setItem(key: string, value: any) {
+function setItem(key: string, value: string): void {
     ms[key] = value;
     msLength++;
-    return true;
 }
 
-function removeItem(key: string) {
+function removeItem(key: string): void {
     var found = key in ms;
     if (found) {
         msLength--;
-        return delete ms[key];
+        delete ms[key];
     }
-    return false;
 }
 
-function clear() {
+function clear(): void {
     ms = {};
     msLength = 0
-    return true;
 }
 
-function key(n: number) {
-    const k = Object.keys(ms)[n]
+function key(index: number): string | null {
+    const k = Object.keys(ms)[index]
     return (k) ? k : null;
 }
 
