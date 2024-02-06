@@ -22,7 +22,7 @@ export const DialogPassword: FC<DialogPasswordProps & InstanceProps<unknown>> = 
   const [open, setOpen] = useState(isOpen);
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
+  const onSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     const target = e.target as unknown as HTMLFormElement;
     const form = new FormData(e.target as HTMLFormElement);
@@ -55,15 +55,14 @@ export const DialogPassword: FC<DialogPasswordProps & InstanceProps<unknown>> = 
               {t('login_form.title_hbauth_form')}
               {t('login_form.title_action_unlock_key')}
             </h2>
-            <form onSubmit={handleSubmit} className="w-full" name="login">
+            <form onSubmit={onSubmit} className="w-full" name="login">
               <div className="mb-5">
                 <input
                   autoComplete="current-password"
                   type="password"
-                  id="password"
                   name="password"
                   className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
-                  placeholder="Password"
+                  placeholder={t('login_form.password_hbauth_placeholder')}
                 />
               </div>
               <div className="flex items-center justify-between">
