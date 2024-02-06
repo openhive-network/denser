@@ -51,25 +51,14 @@ export default function Profile() {
     }
   }
 
-  const openPromiseModal = async () => {
-    logger.info('Opening myPromiseModal');
-    try {
-      const result = await myPromiseModal({
-        isOpen: true,
-        title: 'Enter your WIF password',
-      });
-      logger.info('Return from myPromiseModal: %s', result);
-    } catch (error) {
-      logger.info('Return from myPromiseModal %s', error);
-    }
-  };
-
   const openDialogPassword = async () => {
     logger.info('Opening DialogPasswordModalPromise');
     try {
       const result = await DialogPasswordModalPromise({
         isOpen: true,
-        title: 'Enter your WIF password',
+        onResolve: () => {},
+        onReject: () => {},
+        variant: 'hbauthUnlockKey'
       });
       logger.info('Return from DialogPasswordModalPromise: %s', result);
     } catch (error) {
@@ -91,11 +80,8 @@ export default function Profile() {
             <Button onClick={testVote} variant="redHover" size="sm" className="h-10">
               Test Vote
             </Button>
-            <Button onClick={openPromiseModal} variant="redHover" size="sm" className="h-10">
-              Open Alert Window
-            </Button>
             <Button onClick={openDialogPassword} variant="redHover" size="sm" className="h-10">
-              Open Promise Modal
+              Open Dialog Password Promise Modal
             </Button>
           </div>
       )}

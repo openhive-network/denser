@@ -1,9 +1,6 @@
 import { Dialog, DialogContent, DialogTrigger } from '@hive/ui/components/dialog';
 import { ReactNode, SyntheticEvent, useState } from 'react';
 import { useTranslation } from 'next-i18next';
-import { isBrowser, AuthUser } from '@hive/hb-auth';
-import type { KeyAuthorityType } from '@hive/hb-auth';
-import { toast } from '@ui/components/hooks/use-toast';
 import { create } from 'react-modal-promise';
 
 import { getLogger } from '@hive/ui/lib/logging';
@@ -12,9 +9,8 @@ const logger = getLogger('app');
 interface DialogPasswordProps {
   children: ReactNode;
   isOpen: boolean;
-  onResolve: any;
-  onReject: any;
-  title: string;
+  onResolve: Function;
+  onReject: Function;
   i18nNamespace?: string;
 }
 
@@ -23,7 +19,6 @@ export function DialogPassword({
   isOpen = false,
   onResolve,
   onReject,
-  title,
   i18nNamespace = 'smart-signer',
 }: DialogPasswordProps) {
   const { t } = useTranslation(i18nNamespace);
@@ -37,13 +32,11 @@ export function DialogPassword({
     const password = form.get('password') as string;
     setPassword(password);
     logger.info('password: %s', password);
-    // target.reset();
     setOpen(false);
     onResolve(password);
   }
 
-  function onOpenChange(value: boolean) {
-    logger.info('in onOpenChange', value);
+  const onOpenChange = (value: boolean) => {
     setOpen(value);
     if (password) {
       onResolve(password);
@@ -75,10 +68,8 @@ export function DialogPassword({
                   name="password"
                   className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
                   placeholder="Password"
-                  // required
                 />
               </div>
-
               <div className="flex items-center justify-between">
                 <button
                   type="submit"
