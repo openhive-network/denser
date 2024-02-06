@@ -33,7 +33,8 @@ const passwordField = z.object({
 });
 
 const passwordHbauthField = z.object({
-  passwordHbauth: z.string().min(1, { message: 'Minimum length 1 character' })
+  // passwordHbauth: z.string().min(1, { message: 'Minimum length 1 character' })
+  passwordHbauth: z.string()
 });
 
 const commonFields = z.object({
