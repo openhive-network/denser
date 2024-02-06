@@ -6,12 +6,12 @@ import { create, InstanceProps } from 'react-modal-promise';
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
-interface DialogPasswordProps {
+interface DialogHbauthPasswordProps {
   children?: ReactNode;
   i18nNamespace?: string;
 }
 
-export const DialogPassword: FC<DialogPasswordProps & InstanceProps<unknown>> = ({
+export const DialogHbauthPassword: FC<DialogHbauthPasswordProps & InstanceProps<unknown>> = ({
   children,
   isOpen = false,
   onResolve,
@@ -87,4 +87,4 @@ export const DialogPassword: FC<DialogPasswordProps & InstanceProps<unknown>> = 
   );
 }
 
-export const DialogPasswordModalPromise = create(DialogPassword);
+export const DialogHbauthPasswordModalPromise = create(DialogHbauthPassword);

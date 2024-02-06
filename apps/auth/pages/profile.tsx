@@ -4,8 +4,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getTranslations } from '@/auth/lib/get-translations';
 import { Button } from '@hive/ui/components/button';
 import { Signer, vote } from '@smart-signer/lib/signer';
-import { myPromiseModal } from '@smart-signer/components/alert-dialog-password';
-import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
+import { DialogHbauthPasswordModalPromise } from '@smart-signer/components/dialog-hbauth-password';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -53,15 +52,12 @@ export default function Profile() {
 
   const openDialogPassword = async () => {
     try {
-      const result = await DialogPasswordModalPromise({
+      const result = await DialogHbauthPasswordModalPromise({
         isOpen: true,
-        onResolve(res) {
-            logger.info('bamboo', res);
-        },
       });
-      logger.info('Return from DialogPasswordModalPromise: %s', result);
+      logger.info('Return from DialogHbauthPasswordModalPromise: %s', result);
     } catch (error) {
-      logger.info('Return from DialogPasswordModalPromise %s', error);
+      logger.info('Return from DialogHbauthPasswordModalPromise %s', error);
     }
   };
 
