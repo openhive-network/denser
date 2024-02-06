@@ -20,6 +20,7 @@ export class HomePage {
   readonly getNavWitnessesLink: Locator;
   readonly getNavOurdAppsLink: Locator;
   readonly getNavHbauthLink: Locator;
+  readonly getNavHbauthButton: Locator;
   readonly getNavSearchInput: Locator;
   readonly getNavSearchLink: Locator;
   readonly getNavUserAvatar: Locator;
@@ -165,6 +166,7 @@ export class HomePage {
     this.getCardUserShortcutsTitle = this.getCardUserShortcuts.locator('div h3');
     this.getCardUserShortcutsLinks = this.getCardUserShortcuts.locator('div ul li');
     this.getNavHbauthLink = page.locator('[data-testid="navbar-hbauth-link"]');
+    this.getNavHbauthButton = this.getNavHbauthLink.locator('button');
     // this.getNavSearchInput = page.locator('header div nav input[type="search"]'); // old one
     this.getNavSearchInput = page.locator('input[type="search"]');
     this.getNavSearchLink = page.locator('[data-testid="navbar-search-link"]');

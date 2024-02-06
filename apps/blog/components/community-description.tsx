@@ -11,6 +11,12 @@ import { ActivityLogDialog } from './activity-log-dialog';
 import { Badge } from '@hive/ui/components/badge';
 import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
+import { CommunityOperationBuilder } from '@hive/wax/web';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { Signer } from '@smart-signer/lib/signer';
+import { logger } from '@ui/lib/logger';
+import { toast } from '@ui/components/hooks/use-toast';
+import { useEffect, useState } from 'react';
 
 const CommunityDescription = ({
   data,
@@ -23,6 +29,8 @@ const CommunityDescription = ({
   notificationData: AccountNotification[] | null | undefined;
   username: string;
 }) => {
+  const [isSubscribe, setIsSubscribe] = useState(() => !data.context.subscribed);
+  const { user } = useUser();
   const { t } = useTranslation('common_blog');
   const renderer = new DefaultRenderer({
     baseUrl: 'https://hive.blog/',
@@ -46,6 +54,50 @@ const CommunityDescription = ({
   if (data.description) {
     post_body_html = renderer.render(data.description);
   }
+
+  useEffect(() => {
+    setIsSubscribe(!data.context.subscribed);
+  }, [data.context.subscribed]);
+
+  async function subscribe(type: string) {
+    if (user && user.isLoggedIn) {
+      const customJsonOperations: any[] = [];
+      const cob = new CommunityOperationBuilder();
+      if (type === 'subscribe') {
+        cob.subscribe(username).authorize(user.username).build().flushOperations(customJsonOperations);
+      }
+
+      if (type === 'unsubscribe') {
+        cob.unsubscribe(username).authorize(user.username).build().flushOperations(customJsonOperations);
+      }
+
+      const signer = new Signer();
+      try {
+        await signer.broadcastTransaction({
+          operation: customJsonOperations[0],
+          loginType: user.loginType,
+          username: user.username
+        });
+      } catch (e) {
+        //
+        // TODO Improve messages displayed to user, after we do better
+        // (unified) error handling in smart-signer.
+        //
+        logger.error('got error', e);
+        let description = 'Transaction broadcast error';
+        if (`${e}`.indexOf('vote on this comment is identical') >= 0) {
+          description = 'Your current vote on this comment is identical to this vote.';
+        } else if (`${e}`.indexOf('Not implemented') >= 0) {
+          description = 'Method not implemented for this login type.';
+        }
+        toast({
+          description,
+          variant: 'destructive'
+        });
+      }
+    }
+  }
+
   return (
     <div className="flex w-auto max-w-[240px] flex-col">
       <Card
@@ -76,7 +128,38 @@ const CommunityDescription = ({
             </div>
           </div>
           <div className="my-4 flex flex-col gap-2">
-            {!data.context.subscribed ? (
+            {user && user.isLoggedIn ? (
+              <>
+                {!isSubscribe ? (
+                  <Button
+                    size="sm"
+                    className="w-full bg-blue-800 text-center hover:bg-blue-900"
+                    data-testid="community-subscribe-button"
+                    onClick={() => {
+                      const nextIsSubscribe = !isSubscribe;
+                      setIsSubscribe(nextIsSubscribe);
+                      subscribe('subscribe');
+                    }}
+                  >
+                    {t('communities.buttons.subscribe')}
+                  </Button>
+                ) : (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="group relative w-full text-center text-blue-800 hover:border-red-500 hover:text-red-500"
+                    onClick={() => {
+                      const nextIsSubscribe = !isSubscribe;
+                      setIsSubscribe(nextIsSubscribe);
+                      subscribe('unsubscribe');
+                    }}
+                  >
+                    <span className="group-hover:hidden">Joined</span>
+                    <span className="hidden group-hover:inline">Leave</span>
+                  </Button>
+                )}
+              </>
+            ) : (
               <DialogLogin>
                 <Button
                   size="sm"
@@ -86,15 +169,6 @@ const CommunityDescription = ({
                   {t('communities.buttons.subscribe')}
                 </Button>
               </DialogLogin>
-            ) : (
-              <Button
-                size="sm"
-                variant="outline"
-                className="group relative w-full text-center text-blue-800 hover:border-red-500 hover:text-red-500"
-              >
-                <span className="group-hover:hidden">Joined</span>
-                <span className="hidden group-hover:inline">Leave</span>
-              </Button>
             )}
             <Button
               size="sm"
@@ -131,7 +205,6 @@ const CommunityDescription = ({
           </div>
         </CardContent>
       </Card>
-
       <Card
         className={cn('my-4 hidden h-fit w-auto flex-col px-4 dark:bg-background/95 dark:text-white md:flex')}
         data-testid="community-description-rules-sidebar"

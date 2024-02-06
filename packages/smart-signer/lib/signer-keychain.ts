@@ -1,8 +1,9 @@
 import { KeychainSDK, KeychainKeyTypes } from 'keychain-sdk';
-import { Operation, Transaction, OperationName, VirtualOperationName, Client } from '@hiveio/dhive';
+import { Operation, Transaction, Client } from '@hiveio/dhive';
 import { KeyTypes, LoginTypes } from '@smart-signer/types/common';
-import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer';
+import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer-base';
 import { operation } from '@hive/wax/web';
+import { SignerBase } from '@smart-signer/lib/signer-base';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -28,26 +29,32 @@ export function hasCompatibleKeychain() {
  * @param {operation} operation
  * @returns
  */
-export function formatOperations(operation: operation) {
+export function waxToKeychainOperation(operation: operation) {
   const operations: Operation[] = [];
   for (const [key, value] of Object.entries(operation)) {
-    operations.push([key as OperationName | VirtualOperationName, value]);
+    operations.push([key as Operation[0], value as Operation[1]]);
   }
   return operations;
 }
 
-export class SignerKeychain {
-  async destroy() {}
+/**
+ * Instance interacts with Hive private keys, signs messages or
+ * operations, and sends operations to Hive blockchain. It uses
+ * [Keychain](https://hive-keychain.com/).
+ *
+ * @export
+ * @class SignerKeychain
+ * @extends {SignerBase}
+ */
+export class SignerKeychain extends SignerBase {
 
   async signChallenge({
     message,
     username,
     keyType = KeyTypes.posting,
-    password = '',
-    loginType = LoginTypes.keychain
   }: SignChallenge): Promise<string> {
     logger.info('in SignerKeychain.signChallenge %o', { message, username, keyType });
-    const keychain = new KeychainSDK(window, { rpc: 'https://api.hive.blog' });
+    const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
     try {
       if (!(await keychain.isKeychainInstalled())) {
         throw new Error('Keychain is not installed');
@@ -70,17 +77,16 @@ export class SignerKeychain {
 
   async broadcastTransaction({
     operation,
-    loginType,
     username,
     keyType = KeyTypes.posting
   }: BroadcastTransaction): Promise<{ success: boolean; result: any; error: string }> {
     let result = { success: true, result: '', error: '' };
-    const keychain = new KeychainSDK(window, { rpc: 'https://api.hive.blog' });
+    const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
     try {
       if (!(await keychain.isKeychainInstalled())) {
         throw new Error('Keychain is not installed');
       }
-      const operations = formatOperations(operation);
+      const operations = waxToKeychainOperation(operation);
       const broadcastResult = await keychain.broadcast({
         username,
         operations,
@@ -93,7 +99,7 @@ export class SignerKeychain {
 
       result.result = broadcastResult.result as any;
     } catch (error) {
-      logger.trace('Error in SignerKeychain.broadcastTransaction: %o', error);
+      logger.error('Error in SignerKeychain.broadcastTransaction: %o', error);
       result = { success: false, result: '', error: 'Sign failed' };
       throw error;
     }
@@ -104,7 +110,9 @@ export class SignerKeychain {
   /**
    * Creates transaction from given operations and signs it.
    *
-   * @param {BroadcastTransaction} { operation, loginType, username,
+   * @param {BroadcastTransaction} {
+   *     operation,
+   *     username,
    *     keyType = KeyTypes.posting
    *   }
    * @returns {Promise<any>}
@@ -112,17 +120,16 @@ export class SignerKeychain {
    */
   async signTransaction({
     operation,
-    loginType,
     username,
     keyType = KeyTypes.posting
   }: BroadcastTransaction): Promise<any> {
-    const keychain = new KeychainSDK(window, { rpc: 'https://api.hive.blog' });
+    const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
     try {
       if (!(await keychain.isKeychainInstalled())) {
         throw new Error('Keychain is not installed');
       }
-      const operations = formatOperations(operation);
-      const client = new Client(['https://api.hive.blog', 'https://api.openhive.network'], {
+      const operations = waxToKeychainOperation(operation);
+      const client = new Client([this.apiEndpoint, 'https://api.openhive.network'], {
         timeout: 3000,
         failoverThreshold: 3,
         consoleOnFailover: true
@@ -151,8 +158,9 @@ export class SignerKeychain {
         throw new Error(`Error in signTx: ${signResult.error}`);
       }
     } catch (error) {
-      logger.trace('SignerKeychain.broadcastTransaction error: %o', error);
+      logger.error('SignerKeychain.broadcastTransaction error: %o', error);
       throw error;
     }
   }
+
 }

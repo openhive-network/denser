@@ -2,14 +2,22 @@ import { KeyTypes } from '@smart-signer/types/common';
 import { cryptoUtils } from '@hiveio/dhive';
 import { authService } from '@smart-signer/lib/auth-service';
 import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer';
-import { getDynamicGlobalProperties } from '@ui/lib/hive';
-import { createWaxFoundation, TBlockHash, createHiveChain, BroadcastTransactionRequest } from '@hive/wax/web';
+import { createHiveChain, BroadcastTransactionRequest } from '@hive/wax/web';
+import { SignerBase } from '@smart-signer/lib/signer-base';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
-export class SignerHbauth {
-  async destroy() {}
+/**
+ * Instance interacts with Hive private keys, signs messages or
+ * operations, and sends operations to Hive blockchain. It uses
+ * [Hbauth](https://gitlab.syncad.com/hive/hb-auth).
+ *
+ * @export
+ * @class SignerHbauth
+ * @extends {SignerBase}
+ */
+export class SignerHbauth extends SignerBase {
 
   // Create digest and return its signature made with signDigest.
   async signChallenge({
@@ -26,38 +34,22 @@ export class SignerHbauth {
 
   async broadcastTransaction({
     operation,
-    loginType,
     username,
     keyType = KeyTypes.posting
-  }: BroadcastTransaction): Promise<{ success: boolean; error: string }> {
-    let result = { success: true, error: '' };
+  }: BroadcastTransaction): Promise<{ success: boolean; result: string; error: string }> {
+    let result = { success: true, result: '', error: '' };
     try {
-      //
-      // TODO These lines below do not work. Validation error in Wax
-      // occurs. Looks like a bug in Wax.
-      //
-
-      // const hiveChain = await createHiveChain();
-      // const tx = await hiveChain.getTransactionBuilder('+1m');
-
-      const hiveChain = await createHiveChain();
+      const hiveChain = await createHiveChain({ apiEndpoint: this.apiEndpoint });
       const tx = await hiveChain.getTransactionBuilder();
       tx.push(operation).validate();
-
       const signature = await this.signDigest(tx.sigDigest, username, '', keyType);
-
-      // const authClient = await authService.getOnlineClient();
-      // const signature = await authClient.sign('stirlitz', tx.sigDigest, 'posting');
-
       const transaction = tx.build();
       transaction.signatures.push(signature);
-
       const transactionRequest = new BroadcastTransactionRequest(tx);
-
       await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
     } catch (error) {
-      logger.trace('SignerHbauth.broadcastTransaction error: %o', error);
-      result = { success: false, error: 'Broadcast failed' };
+      logger.error('SignerHbauth.broadcastTransaction error: %o', error);
+      result = { success: false, result: '', error: 'Broadcast failed' };
       throw error;
     }
 
@@ -133,4 +125,5 @@ export class SignerHbauth {
       // We should offer adding account to wallet.
     }
   }
+
 }
