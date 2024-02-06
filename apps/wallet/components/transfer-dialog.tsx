@@ -12,6 +12,7 @@ import {
 import { Icons } from '@ui/components/icons';
 import { Input } from '@ui/components/input';
 import { ReactNode, useState } from 'react';
+import { Autocompleter } from './autocompleter';
 
 type Amount = {
   hive: string;
@@ -102,7 +103,6 @@ export function TransferDialog({
 
       break;
   }
-  const [addressee, setAddressee] = useState(data.to);
 
   return (
     <Dialog>
@@ -131,15 +131,8 @@ export function TransferDialog({
           {(advanced || !data.advancedBtn) && (
             <div className="grid grid-cols-4 items-center gap-4">
               To
-              <div className="relative col-span-3">
-                <Input
-                  className="text-stale-900 block w-full px-3 py-2.5 pl-11"
-                  value={addressee}
-                  onChange={(e) => setAddressee(e.target.value)}
-                />
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <Icons.atSign className="h-5 w-5" />
-                </div>
+              <div className="col-span-3">
+                <Autocompleter />
               </div>
             </div>
           )}

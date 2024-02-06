@@ -1,7 +1,10 @@
 import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from '@ui/components/command';
-import { KeyboardEvent, useEffect, useRef, useState } from 'react';
-
-export function Autocompleter() {
+import { useEffect, useRef, useState } from 'react';
+type Item = {
+  username: string;
+  about: string;
+};
+export function Autocompleter({ items }: { items?: Item[] }) {
   const [isOpen, setIsOpen] = useState(false);
   const [value, setValue] = useState('');
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -21,36 +24,28 @@ export function Autocompleter() {
       document.removeEventListener('click', handleClickOutside);
     };
   }, []);
-  const items = [
-    { user: 'JohnDoe', about: 'passionate' },
-    { user: 'AliceSmith', about: 'creative' },
-    { user: 'BobJohnson', about: 'enthusiastic' },
-    { user: 'EvaWilliams', about: 'adventurous' },
-    { user: 'MichaelBrown', about: 'analytical' },
-    { user: 'SamanthaLee', about: 'ambitious' },
-    { user: 'DavidMiller', about: 'friendly' },
-    { user: 'OliviaJones', about: 'curious' },
-    { user: 'MatthewClark', about: 'innovative' },
-    { user: 'EmilyWhite', about: 'optimistic' }
-  ];
 
   return (
-    <Command className="rounded-lg border shadow-md">
+    <Command className="w-full border" ref={autocompleteRef}>
       <CommandInput
         ref={inputRef}
         onFocus={handleInputFocus}
         value={value}
-        onValueChange={(e) => setValue(value)}
+        onValueChange={(e) => setValue(e)}
       />
       <CommandList>
-        <CommandGroup className="absolute max-h-24 overflow-scroll bg-white">
-          {items.map((item) => (
-            <CommandItem>
-              <span>{item.user}</span>
-              <span>({item.about})</span>
-            </CommandItem>
-          ))}
-        </CommandGroup>
+        {isOpen && (
+          <CommandGroup className="absolute max-h-36 overflow-scroll bg-white">
+            {items &&
+              items.map((item) => (
+                <CommandItem key={item.username} className="p-0" onSelect={() => setValue(item.username)}>
+                  <div onClick={(e) => setValue(item.username)} className="w-56 px-2 py-1 even:bg-black">
+                    {item.username + `(${item.about})`}
+                  </div>
+                </CommandItem>
+              ))}
+          </CommandGroup>
+        )}
       </CommandList>
     </Command>
   );

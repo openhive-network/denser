@@ -30,6 +30,7 @@ import {
 } from '@ui/components/dropdown-menu';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { TransferDialog } from '@/wallet/components/transfer-dialog';
+
 const initialFilters: TransferFilters = {
   search: '',
   others: false,
@@ -474,6 +475,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
       </DropdownMenu>
     );
   }
+
   return (
     <ProfileLayout>
       <div className="flex w-full flex-col items-center ">
