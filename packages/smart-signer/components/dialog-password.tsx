@@ -1,26 +1,23 @@
 import { Dialog, DialogContent, DialogTrigger } from '@hive/ui/components/dialog';
-import { ReactNode, SyntheticEvent, useState } from 'react';
+import { ReactNode, SyntheticEvent, useState, FC } from 'react';
 import { useTranslation } from 'next-i18next';
-import { create } from 'react-modal-promise';
+import { create, InstanceProps } from 'react-modal-promise';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
 interface DialogPasswordProps {
-  children: ReactNode;
-  isOpen: boolean;
-  onResolve: Function;
-  onReject: Function;
+  children?: ReactNode;
   i18nNamespace?: string;
 }
 
-export function DialogPassword({
+export const DialogPassword: FC<DialogPasswordProps & InstanceProps<unknown>> = ({
   children,
   isOpen = false,
   onResolve,
   onReject,
   i18nNamespace = 'smart-signer',
-}: DialogPasswordProps) {
+}) => {
   const { t } = useTranslation(i18nNamespace);
   const [open, setOpen] = useState(isOpen);
   const [password, setPassword] = useState('');
@@ -31,7 +28,6 @@ export function DialogPassword({
     const form = new FormData(e.target as HTMLFormElement);
     const password = form.get('password') as string;
     setPassword(password);
-    logger.info('password: %s', password);
     setOpen(false);
     onResolve(password);
   }
@@ -87,7 +83,6 @@ export function DialogPassword({
             </form>
           </div>
         </div>
-
       </DialogContent>
     </Dialog>
   );

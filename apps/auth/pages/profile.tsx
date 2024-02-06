@@ -52,13 +52,12 @@ export default function Profile() {
   }
 
   const openDialogPassword = async () => {
-    logger.info('Opening DialogPasswordModalPromise');
     try {
       const result = await DialogPasswordModalPromise({
         isOpen: true,
-        onResolve: () => {},
-        onReject: () => {},
-        variant: 'hbauthUnlockKey'
+        onResolve(res) {
+            logger.info('bamboo', res);
+        },
       });
       logger.info('Return from DialogPasswordModalPromise: %s', result);
     } catch (error) {
@@ -81,7 +80,7 @@ export default function Profile() {
               Test Vote
             </Button>
             <Button onClick={openDialogPassword} variant="redHover" size="sm" className="h-10">
-              Open Dialog Password Promise Modal
+              Password Promise Modal
             </Button>
           </div>
       )}
