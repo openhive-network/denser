@@ -19,14 +19,16 @@ export function AlertDialogPassword({
   onResolve,
   onReject,
   title,
+  i18nNamespace = 'smart-signer',
 }: {
   children: ReactNode;
   isOpen: boolean,
   onResolve: any,
   onReject: any,
   title: string,
+  i18nNamespace?: string;
 }) {
-  const { t } = useTranslation('common_wallet');
+  const { t } = useTranslation(i18nNamespace);
   const [open, setOpen] = useState(isOpen);
   const [wif, setWif] = useState('');
   return (
