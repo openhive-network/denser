@@ -16,6 +16,8 @@ if (typeof window !== 'undefined' && 'localStorage' in global && global.localSto
     );
   }
   endpoint = window.localStorage.getItem(HIVE_BLOG_ENDPOINT);
+} else {
+  endpoint = siteConfig.endpoint;
 }
 
 export const bridgeServer = new Client([`${endpoint}`], {
