@@ -49,7 +49,7 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
     }
     let signatures: Signatures = {};
     let hivesignerToken = '';
-    const signer = new Signer({ storageType });
+    const signer = new Signer();
     const message = JSON.stringify({ loginChallenge }, null, 0);
 
     try {
