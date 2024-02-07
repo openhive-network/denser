@@ -8,7 +8,7 @@ import { FollowList } from '@ui/lib/bridge';
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { operationService } from '@smart-signer/lib/operations';
+import { operationService } from '@operations/index';
 
 export default function ProfileLists({
   username,

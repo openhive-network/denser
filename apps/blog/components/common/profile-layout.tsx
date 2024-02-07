@@ -21,7 +21,7 @@ import { TFunction } from 'i18next';
 import env from '@beam-australia/react-env';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useFollowingInfiniteQuery } from '../hooks/use-following-infinitequery';
-import { operationService } from '@smart-signer/lib/operations';
+import { operationService } from '@operations/index';
 
 interface IProfileLayout {
   children: React.ReactNode;

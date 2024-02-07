@@ -1,17 +1,36 @@
 import { CommunityOperationBuilder, EFollowBlogAction, FollowOperationBuilder } from '@hive/wax/web';
-import { Signer, vote } from './signer';
 import { logger } from '@hive/ui/lib/logger';
 import { toast } from '@hive/ui/components/hooks/use-toast';
-import { User } from '@smart-signer/types/common';
 import { comment } from '@hive/wax/web';
-import { createPermlink } from './utils';
+import { createPermlink } from './lib/utils';
 import { Entry } from '@ui/lib/bridge';
+import { Signer, vote } from '@smart-signer/lib/signer';
+import { User } from '@smart-signer/types/common';
 
 // TODO Check errors message for indexOf for particular method
 
 class OperationService {
   static signer = new Signer();
   description = 'Transaction broadcast error';
+
+  async brodcastTransaction(user: User, operation: any) {
+    try {
+      await OperationService.signer.broadcastTransaction({
+        operation: operation,
+        loginType: user.loginType,
+        username: user.username
+      });
+    } catch (e) {
+      logger.error('got error', e);
+      if (`${e}`.indexOf('Not implemented') >= 0) {
+        this.description = 'Method not implemented for this login type.';
+      }
+      toast({
+        description: this.description,
+        variant: 'destructive'
+      });
+    }
+  }
 
   async vote(e: any, user: User | null, type: string, post: Entry) {
     if (user && user.isLoggedIn) {
@@ -25,30 +44,7 @@ class OperationService {
       if (type === 'downvote') {
         vote.weight = -10000;
       }
-
-      try {
-        await OperationService.signer.broadcastTransaction({
-          operation: { vote },
-          loginType: user.loginType,
-          username: user.username
-        });
-        e.target.classList.add('text-white');
-        if (type === 'upvote') {
-          e.target.classList.add('bg-red-600');
-        }
-
-        if (type === 'downvote') {
-          e.target.classList.add('bg-gray-600');
-        }
-      } catch (e) {
-        if (`${e}`.indexOf('Not implemented') >= 0) {
-          this.description = 'Method not implemented for this login type.';
-        }
-        toast({
-          description: this.description,
-          variant: 'destructive'
-        });
-      }
+      this.brodcastTransaction(user, { vote });
     }
   }
 
@@ -63,22 +59,7 @@ class OperationService {
       if (type === 'unsubscribe') {
         cob.unsubscribe(username).authorize(user.username).build().flushOperations(customJsonOperations);
       }
-
-      try {
-        await OperationService.signer.broadcastTransaction({
-          operation: customJsonOperations[0],
-          loginType: user.loginType,
-          username: user.username
-        });
-      } catch (e) {
-        if (`${e}`.indexOf('Not implemented') >= 0) {
-          this.description = 'Method not implemented for this login type.';
-        }
-        toast({
-          description: this.description,
-          variant: 'destructive'
-        });
-      }
+      this.brodcastTransaction(user, customJsonOperations[0]);
     }
   }
 
@@ -118,22 +99,7 @@ class OperationService {
           .flushOperations(customJsonOperations);
       }
 
-      try {
-        await OperationService.signer.broadcastTransaction({
-          operation: customJsonOperations[0],
-          loginType: user.loginType,
-          username: user.username
-        });
-      } catch (e) {
-        logger.error('got error', e);
-        if (`${e}`.indexOf('Not implemented') >= 0) {
-          this.description = 'Method not implemented for this login type.';
-        }
-        toast({
-          description: this.description,
-          variant: 'destructive'
-        });
-      }
+      this.brodcastTransaction(user, customJsonOperations[0]);
     }
   }
 
@@ -146,22 +112,7 @@ class OperationService {
         .build()
         .flushOperations(customJsonOperations);
 
-      try {
-        await OperationService.signer.broadcastTransaction({
-          operation: customJsonOperations[0],
-          loginType: user.loginType,
-          username: user.username
-        });
-      } catch (e) {
-        logger.error('got error', e);
-        if (`${e}`.indexOf('Not implemented') >= 0) {
-          this.description = 'Method not implemented for this login type.';
-        }
-        toast({
-          description: this.description,
-          variant: 'destructive'
-        });
-      }
+      this.brodcastTransaction(user, customJsonOperations[0]);
     }
   }
 
@@ -174,22 +125,7 @@ class OperationService {
         .build()
         .flushOperations(customJsonOperations);
 
-      try {
-        await OperationService.signer.broadcastTransaction({
-          operation: customJsonOperations[0],
-          loginType: user.loginType,
-          username: user.username
-        });
-      } catch (e) {
-        logger.error('got error', e);
-        if (`${e}`.indexOf('Not implemented') >= 0) {
-          this.description = 'Method not implemented for this login type.';
-        }
-        toast({
-          description: this.description,
-          variant: 'destructive'
-        });
-      }
+      this.brodcastTransaction(user, customJsonOperations[0]);
     }
   }
 
@@ -205,23 +141,7 @@ class OperationService {
         json_metadata: '{"app":"hiveblog/0.1"}'
       };
 
-      const signer = new Signer();
-      try {
-        await signer.broadcastTransaction({
-          operation: { comment },
-          loginType: user.loginType,
-          username: user.username
-        });
-      } catch (e) {
-        logger.error('got error', e);
-        if (`${e}`.indexOf('Not implemented') >= 0) {
-          this.description = 'Method not implemented for this login type.';
-        }
-        toast({
-          description: this.description,
-          variant: 'destructive'
-        });
-      }
+      this.brodcastTransaction(user, { comment });
     }
   }
 }

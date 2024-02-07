@@ -11,7 +11,7 @@ import {
 } from '@hive/ui/components/alert-dialog';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { ReactNode } from 'react';
-import { operationService } from '@smart-signer/lib/operations';
+import { operationService } from '@operations/index';
 
 export function AlertDialogReblog({
   children,

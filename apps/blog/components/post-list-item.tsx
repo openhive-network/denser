@@ -23,7 +23,7 @@ import { Entry } from '@ui/lib/bridge';
 import PostImage from './post-img';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { operationService } from '@smart-signer/lib/operations';
+import { operationService } from '@operations/index';
 
 const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage: boolean | undefined }) => {
   const { t } = useTranslation('common_blog');

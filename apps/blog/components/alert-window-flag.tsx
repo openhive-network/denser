@@ -12,7 +12,7 @@ import {
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Input } from '@ui/components';
 import { ReactNode, useState } from 'react';
-import { operationService } from '@smart-signer/lib/operations';
+import { operationService } from '@operations/index';
 
 export function AlertDialogFlag({
   children,

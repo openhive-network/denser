@@ -8,7 +8,7 @@ import { useTranslation } from 'next-i18next';
 import { DefaultRenderer } from '@hiveio/content-renderer';
 import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { operationService } from '@smart-signer/lib/operations';
+import { operationService } from '@operations/index';
 
 export function ReplyTextbox({
   onSetReply,

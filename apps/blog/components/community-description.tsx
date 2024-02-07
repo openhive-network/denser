@@ -13,7 +13,7 @@ import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useEffect, useState } from 'react';
-import { operationService } from '@smart-signer/lib/operations';
+import { operationService } from '@operations/index';
 
 const CommunityDescription = ({
   data,

@@ -9,6 +9,7 @@
   "dependencies": {
     "@hive/beekeeper": "^1.27.5-rc0-stable.610e7072c",
     "@hive/hb-auth": "^0.0.1-stable.d9b0769",
+    "@hive/operations": "*",
     "@hive/ui": "*",
     "@hive/wax": "0.3.8-240205140723",
     "@hiveio/dhive": "^1.2.8",
@@ -24,19 +25,16 @@
     "qrcode": "^1.5.3",
     "react": "^18.2.0",
     "secure-random": "^1.1.2",
-    "speakingurl": "^14.0.1",
     "typescript": "5.3.3",
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@types/bs58": "^4.0.4",
     "@types/cors": "^2.8.14",
     "@types/http-errors": "^2.0.4",
     "@types/node": "^20.10.4",
     "@types/oidc-provider": "^8.4.2",
     "@types/qrcode": "^1.5.4",
     "@types/react": "^18.2.44",
-    "@types/secure-random": "^1.1.3",
-    "@types/speakingurl": "^13.0.6"
+    "@types/secure-random": "^1.1.3"
   }
 }
