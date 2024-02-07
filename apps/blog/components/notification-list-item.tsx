@@ -42,7 +42,10 @@ const NotificationListItem = ({ date, msg, score, type, url }: AccountNotificati
     : null;
 
   return (
-    <tr className="block w-full px-4 odd:bg-slate-200 odd:dark:bg-slate-900" data-testid="notification-list-item">
+    <tr
+      className="block w-full px-4 odd:bg-slate-200 odd:dark:bg-slate-900"
+      data-testid="notification-list-item"
+    >
       <td className="flex justify-between py-4">
         <div className="flex items-center">
           {participants}
@@ -53,13 +56,20 @@ const NotificationListItem = ({ date, msg, score, type, url }: AccountNotificati
                 {mentions ? msg.split(new RegExp(`(${mentions[0]})`, 'gi'))[2] : null}
               </span>
             </Link>
-            <span className="flex items-center gap-2 text-sm text-gray-400" data-testid="notification-timestamp">
+            <span
+              className="flex items-center gap-2 text-sm text-gray-400"
+              data-testid="notification-timestamp"
+            >
               {icon}
               {`${dateToFullRelative(date, t)}`}
             </span>
           </div>
         </div>
-        <Progress value={score} className="h-[10px] w-[60px] rounded text-red-600" data-testid="notification-progress-bar"/>
+        <Progress
+          value={score}
+          className="h-[10px] w-[60px] rounded text-red-600"
+          data-testid="notification-progress-bar"
+        />
       </td>
     </tr>
   );
