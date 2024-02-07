@@ -24,7 +24,7 @@ import { useParams } from 'next/navigation';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 
 export default function UserSettings() {
-  const [endpoint, setEndpoint] = useLocalStorage('hive-blog-endpoint', siteConfig.endpoint);
+  const [endpoint, setEndpoint] = useLocalStorage('hive-blog-endpoint', siteConfig.endpoint, false);
   const [isClient, setIsClient] = useState(false);
   const params = useParams();
   const { user } = useUser();
