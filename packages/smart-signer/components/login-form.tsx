@@ -60,10 +60,7 @@ const loginFormSchema = z.discriminatedUnion('loginType', [
 export type LoginFormSchema = z.infer<typeof loginFormSchema>;
 
 const loginFormDefaultValues = {
-
-  // FIXME!
-  storageType: StorageTypes.sessionStorage,
-
+  storageType: StorageTypes.localStorage,
   loginType: LoginTypes.wif,
   password: '',
   passwordHbauth: '',
