@@ -20,16 +20,14 @@ export const postLoginSchema = z.object({
     storageType: z.nativeEnum(StorageTypes, {
         invalid_type_error: 'Invalid storageType',
         required_error: 'storageType is required',
-        invalid_enum_value: 'Please select one of the options from StorageTypes',
     }),
     loginType: z.nativeEnum(LoginTypes, {
         invalid_type_error: 'Invalid loginType',
         required_error: 'loginType is required',
-        invalid_enum_value: 'Please select one of the options from LoginTypes',
     }),
     hivesignerToken: z.string({
-        required_error: "hivesignerToken is required",
         invalid_type_error: "hivesignerToken must be a string",
+        required_error: "hivesignerToken is required",
     }),
     signatures: z.object({
         memo: z.string(),
