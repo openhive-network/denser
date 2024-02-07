@@ -12,7 +12,7 @@ import { Separator } from '@hive/ui/components/separator';
 import { Icons } from '@hive/ui/components/icons';
 import { dateToFullRelative, dateToShow } from '@hive/ui/lib/parse-date';
 import { proxifyImageUrl } from '@hive/ui/lib/old-profixy';
-import { getTwitterInfo } from '@/blog/lib/bridge';
+import { getTwitterInfo } from '@ui/lib/bridge';
 import moment from 'moment';
 import { Button } from '@hive/ui';
 import DialogLogin from '../dialog-login';
@@ -20,11 +20,8 @@ import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
 import env from '@beam-australia/react-env';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { FollowOperationBuilder, EFollowBlogAction } from '@hive/wax/web';
-import { toast } from '@ui/components/hooks/use-toast';
-import { Signer } from '@smart-signer/lib/signer';
-import { getLogger } from '@ui/lib/logging';
 import { useFollowingInfiniteQuery } from '../hooks/use-following-infinitequery';
+import { operationService } from '@smart-signer/lib/operations';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -50,7 +47,6 @@ function compareDates(dateStrings: string[], t: TFunction<'common_wallet', undef
 }
 
 const ProfileLayout = ({ children }: IProfileLayout) => {
-  const logger = getLogger('app');
   const router = useRouter();
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
@@ -110,69 +106,6 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
     );
     setIsMute(isMute);
   }, [followingDataIgnore?.pages, user?.username, username]);
-
-  async function follow(type: string) {
-    if (user && user.isLoggedIn) {
-      const customJsonOperations: any[] = [];
-      const fob = new FollowOperationBuilder();
-      if (type === 'follow') {
-        fob
-          .followBlog(user.username, username)
-          .authorize(user.username)
-          .build()
-          .flushOperations(customJsonOperations);
-      }
-
-      if (type === 'unfollow') {
-        fob
-          .resetBlogList(EFollowBlogAction.FOLLOW_BLOG, user.username, username)
-          .authorize(user.username)
-          .build()
-          .flushOperations(customJsonOperations);
-      }
-
-      if (type === 'mute') {
-        fob
-          .muteBlog(user.username, username)
-          .authorize(user.username)
-          .build()
-          .flushOperations(customJsonOperations);
-      }
-
-      if (type === 'unmute') {
-        fob
-          .resetBlogList(EFollowBlogAction.BOTH, user.username, username)
-          .authorize(user.username)
-          .build()
-          .flushOperations(customJsonOperations);
-      }
-
-      const signer = new Signer();
-      try {
-        await signer.broadcastTransaction({
-          operation: customJsonOperations[0],
-          loginType: user.loginType,
-          username: user.username
-        });
-      } catch (e) {
-        //
-        // TODO Improve messages displayed to user, after we do better
-        // (unified) error handling in smart-signer.
-        //
-        logger.error('got error', e);
-        let description = 'Transaction broadcast error';
-        if (`${e}`.indexOf('vote on this comment is identical') >= 0) {
-          description = 'Your current vote on this comment is identical to this vote.';
-        } else if (`${e}`.indexOf('Not implemented') >= 0) {
-          description = 'Method not implemented for this login type.';
-        }
-        toast({
-          description,
-          variant: 'destructive'
-        });
-      }
-    }
-  }
 
   if (accountDataIsLoading || dynamicGlobalDataIsLoading || profileDataIsLoading) {
     return <Loading loading={accountDataIsLoading || dynamicGlobalDataIsLoading || profileDataIsLoading} />;
@@ -402,7 +335,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     onClick={() => {
                       const nextFollow = !isFollow;
                       setIsFollow(nextFollow);
-                      follow(nextFollow ? 'follow' : 'unfollow');
+                      operationService.follow(username, user, nextFollow ? 'follow' : 'unfollow');
                     }}
                     disabled={isLoadingFollowingData || isFetchingFollowingData}
                   >
@@ -430,7 +363,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     onClick={() => {
                       const nextMute = !isMute;
                       setIsMute(nextMute);
-                      follow(nextMute ? 'mute' : 'unmute');
+                      operationService.follow(username, user, nextMute ? 'mute' : 'unmute');
                     }}
                     disabled={isLoadingFollowingDataIgnore || isFetchingFollowingDataIgnore}
                   >

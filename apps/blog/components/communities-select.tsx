@@ -9,7 +9,7 @@ import {
   SelectValue
 } from '@hive/ui/components/select';
 import { useQuery } from '@tanstack/react-query';
-import { Subscription, getCommunities } from '@/blog/lib/bridge';
+import { Subscription, getCommunities } from '@ui/lib/bridge';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 

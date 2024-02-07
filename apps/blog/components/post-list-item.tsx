@@ -19,71 +19,17 @@ import DetailsCardHover from './details-card-hover';
 import DialogLogin from '@/blog/components/dialog-login';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { Entry } from '@/blog/lib/bridge';
+import { Entry } from '@ui/lib/bridge';
 import PostImage from './post-img';
 import { useTranslation } from 'next-i18next';
-import { toast } from '@ui/components/hooks/use-toast';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { Signer, vote } from '@smart-signer/lib/signer';
-
-import { getLogger } from '@hive/ui/lib/logging';
-const logger = getLogger('app');
+import { operationService } from '@smart-signer/lib/operations';
 
 const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage: boolean | undefined }) => {
   const { t } = useTranslation('common_blog');
   const [reveal, setReveal] = useState(post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw'));
   const router = useRouter();
-
   const { user } = useUser();
-
-  async function vote(e: any, type: string) {
-    if (user && user.isLoggedIn) {
-      const vote: vote = {
-        voter: user.username,
-        author: post.author,
-        permlink: post.permlink,
-        weight: 10000
-      };
-
-      if (type === 'downvote') {
-        vote.weight = -10000;
-      }
-
-      const signer = new Signer();
-      try {
-        await signer.broadcastTransaction({
-          operation: { vote },
-          loginType: user.loginType,
-          username: user.username
-        });
-        e.target.classList.add('text-white');
-        console.log('type', type);
-        if (type === 'upvote') {
-          e.target.classList.add('bg-red-600');
-        }
-
-        if (type === 'downvote') {
-          e.target.classList.add('bg-gray-600');
-        }
-      } catch (e) {
-        //
-        // TODO Improve messages displayed to user, after we do better
-        // (unified) error handling in smart-signer.
-        //
-        logger.error('got error', e);
-        let description = 'Transaction broadcast error';
-        if (`${e}`.indexOf('vote on this comment is identical') >= 0) {
-          description = 'Your current vote on this comment is identical to this vote.';
-        } else if (`${e}`.indexOf('Not implemented') >= 0) {
-          description = 'Method not implemented for this login type.';
-        }
-        toast({
-          description,
-          variant: 'destructive'
-        });
-      }
-    }
-  }
 
   function revealPost() {
     setReveal((reveal) => !reveal);
@@ -287,7 +233,7 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
                         {user && user.isLoggedIn ? (
                           <Icons.arrowUpCircle
                             className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1"
-                            onClick={(e) => vote(e, 'upvote')}
+                            onClick={(e) => operationService.vote(e, user, 'upvote', post)}
                           />
                         ) : (
                           <DialogLogin>
@@ -306,7 +252,7 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
                         {user && user.isLoggedIn ? (
                           <Icons.arrowDownCircle
                             className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1"
-                            onClick={(e) => vote(e, 'downvote')}
+                            onClick={(e) => operationService.vote(e, user, 'downvote', post)}
                           />
                         ) : (
                           <DialogLogin>

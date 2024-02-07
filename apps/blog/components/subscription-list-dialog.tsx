@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogTrigger } from '@hive/ui/components/dialog';
 
-import { Subscription } from '@/blog/lib/bridge';
+import { Subscription } from '@ui/lib/bridge';
 import Link from 'next/link';
 import { ReactNode } from 'react';
 

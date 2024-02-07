@@ -9,13 +9,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@hive/ui/components/alert-dialog';
-import { CommunityOperationBuilder } from '@hive/wax/web';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { Signer } from '@smart-signer/lib/signer';
 import { Input } from '@ui/components';
-import { toast } from '@ui/components/hooks/use-toast';
-import { logger } from '@ui/lib/logger';
 import { ReactNode, useState } from 'react';
+import { operationService } from '@smart-signer/lib/operations';
 
 export function AlertDialogFlag({
   children,
@@ -30,42 +27,6 @@ export function AlertDialogFlag({
 }) {
   const { user } = useUser();
   const [notes, setNotes] = useState('');
-
-  async function flag() {
-    if (user && user.isLoggedIn) {
-      const customJsonOperations: any[] = [];
-      new CommunityOperationBuilder()
-        .flagPost(community, username, permlink, notes)
-        .authorize(user.username)
-        .build()
-        .flushOperations(customJsonOperations);
-
-      const signer = new Signer();
-      try {
-        await signer.broadcastTransaction({
-          operation: customJsonOperations[0],
-          loginType: user.loginType,
-          username: user.username
-        });
-      } catch (e) {
-        //
-        // TODO Improve messages displayed to user, after we do better
-        // (unified) error handling in smart-signer.
-        //
-        logger.error('got error', e);
-        let description = 'Transaction broadcast error';
-        if (`${e}`.indexOf('vote on this comment is identical') >= 0) {
-          description = 'Your current vote on this comment is identical to this vote.';
-        } else if (`${e}`.indexOf('Not implemented') >= 0) {
-          description = 'Method not implemented for this login type.';
-        }
-        toast({
-          description,
-          variant: 'destructive'
-        });
-      }
-    }
-  }
 
   return (
     <AlertDialog>
@@ -91,7 +52,7 @@ export function AlertDialogFlag({
           <AlertDialogAction
             className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
             data-testid="flag-dialog-ok"
-            onClick={flag}
+            onClick={() => operationService.flag(username, user, community, permlink, notes)}
           >
             OK
           </AlertDialogAction>

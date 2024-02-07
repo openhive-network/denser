@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { AccountNotification, getAccountNotifications } from '@/blog/lib/bridge';
+import { AccountNotification, getAccountNotifications } from '@ui/lib/bridge';
 import NotificationList from '@/blog/components/notification-list';
 import { Button } from '@hive/ui/components/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@hive/ui/components/tabs';
@@ -18,7 +18,6 @@ const NotificationActivities = ({
   const [lastStateElementId, setLastStateElementId] = useState(
     state && state.length > 0 ? state[state.length - 1].id : null
   );
-
   const {
     isLoading,
     error,

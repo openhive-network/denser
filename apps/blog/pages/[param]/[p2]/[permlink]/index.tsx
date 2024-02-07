@@ -4,7 +4,7 @@ import UserInfo from '@/blog/components/user-info';
 import { getActiveVotes } from '@/blog/lib/hive';
 import { useQuery } from '@tanstack/react-query';
 import { DefaultRenderer } from '@hiveio/content-renderer';
-import { Entry, getCommunity, getDiscussion, getPost } from '@/blog/lib/bridge';
+import { Entry, getCommunity, getDiscussion, getPost } from '@ui/lib/bridge';
 import Loading from '@hive/ui/components/loading';
 import dynamic from 'next/dynamic';
 import ImageGallery from '@/blog/components/image-gallery';

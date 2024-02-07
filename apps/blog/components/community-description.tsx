@@ -5,18 +5,15 @@ import { Button } from '@hive/ui/components/button';
 import ln2list from '@/blog/lib/ln2list';
 import { DefaultRenderer } from '@hiveio/content-renderer';
 import { getDoubleSize, proxifyImageUrl } from '@hive/ui/lib/old-profixy';
-import { AccountNotification, Community, Subscription } from '@/blog/lib/bridge';
+import { AccountNotification, Community, Subscription } from '@ui/lib/bridge';
 import { SubsListDialog } from './subscription-list-dialog';
 import { ActivityLogDialog } from './activity-log-dialog';
 import { Badge } from '@hive/ui/components/badge';
 import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
-import { CommunityOperationBuilder } from '@hive/wax/web';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { Signer } from '@smart-signer/lib/signer';
-import { logger } from '@ui/lib/logger';
-import { toast } from '@ui/components/hooks/use-toast';
 import { useEffect, useState } from 'react';
+import { operationService } from '@smart-signer/lib/operations';
 
 const CommunityDescription = ({
   data,
@@ -59,45 +56,6 @@ const CommunityDescription = ({
     setIsSubscribe(!data.context.subscribed);
   }, [data.context.subscribed]);
 
-  async function subscribe(type: string) {
-    if (user && user.isLoggedIn) {
-      const customJsonOperations: any[] = [];
-      const cob = new CommunityOperationBuilder();
-      if (type === 'subscribe') {
-        cob.subscribe(username).authorize(user.username).build().flushOperations(customJsonOperations);
-      }
-
-      if (type === 'unsubscribe') {
-        cob.unsubscribe(username).authorize(user.username).build().flushOperations(customJsonOperations);
-      }
-
-      const signer = new Signer();
-      try {
-        await signer.broadcastTransaction({
-          operation: customJsonOperations[0],
-          loginType: user.loginType,
-          username: user.username
-        });
-      } catch (e) {
-        //
-        // TODO Improve messages displayed to user, after we do better
-        // (unified) error handling in smart-signer.
-        //
-        logger.error('got error', e);
-        let description = 'Transaction broadcast error';
-        if (`${e}`.indexOf('vote on this comment is identical') >= 0) {
-          description = 'Your current vote on this comment is identical to this vote.';
-        } else if (`${e}`.indexOf('Not implemented') >= 0) {
-          description = 'Method not implemented for this login type.';
-        }
-        toast({
-          description,
-          variant: 'destructive'
-        });
-      }
-    }
-  }
-
   return (
     <div className="flex w-auto max-w-[240px] flex-col">
       <Card
@@ -138,7 +96,7 @@ const CommunityDescription = ({
                     onClick={() => {
                       const nextIsSubscribe = !isSubscribe;
                       setIsSubscribe(nextIsSubscribe);
-                      subscribe('subscribe');
+                      operationService.subscribe(username, user, 'subscribe');
                     }}
                   >
                     {t('communities.buttons.subscribe')}
@@ -151,7 +109,7 @@ const CommunityDescription = ({
                     onClick={() => {
                       const nextIsSubscribe = !isSubscribe;
                       setIsSubscribe(nextIsSubscribe);
-                      subscribe('unsubscribe');
+                      operationService.subscribe(username, user, 'unsubscribe');
                     }}
                   >
                     <span className="group-hover:hidden">Joined</span>

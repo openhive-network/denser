@@ -1,5 +1,5 @@
 import { AccountFollowStats, AccountProfile, FullAccount } from '@ui/store/app-types';
-import { bridgeServer } from './bridge';
+import { bridgeServer } from '@ui/lib/bridge';
 
 export interface DynamicGlobalProperties {
   hbd_print_rate: number;

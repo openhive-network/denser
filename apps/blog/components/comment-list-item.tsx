@@ -12,7 +12,7 @@ import DetailsCardVoters from '@/blog/components/details-card-voters';
 import { ReplyTextbox } from './reply-textbox';
 import { useRouter } from 'next/router';
 import DetailsCardHover from './details-card-hover';
-import { Entry } from '@/blog/lib/bridge';
+import { Entry } from '@ui/lib/bridge';
 import clsx from 'clsx';
 import { Badge } from '@hive/ui/components/badge';
 import { DefaultRenderer } from '@hiveio/content-renderer';

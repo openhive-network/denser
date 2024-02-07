@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { Badge, getSubscriptions } from '@/blog/lib/bridge';
+import { Badge, getSubscriptions } from '@ui/lib/bridge';
 import ProfileLayout from '@/blog/components/common/profile-layout';
 import SocialActivities from '@/blog/components/social-activities';
 import SubscriptionList from '@/blog/components/subscription-list';
