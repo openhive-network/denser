@@ -43,7 +43,10 @@ export class SignerHbauth extends SignerBase {
     keyType = KeyTypes.posting
   }: SignChallenge): Promise<string> {
     const digest = cryptoUtils.sha256(message).toString('hex');
-    const signature = this.signDigest(digest, username, password, keyType);
+
+    await this.checkAuths(username, keyType);
+
+    const signature = await this.signDigest(digest, username, password, keyType);
     logger.info('hbauth', { signature });
     return signature;
   }
@@ -75,6 +78,10 @@ export class SignerHbauth extends SignerBase {
   async signDigest(digest: string, username: string, password: string, keyType: KeyTypes = KeyTypes.posting) {
     logger.info('sign args: %o', { username, password, digest, keyType });
 
+    if (!['posting', 'active'].includes(keyType)) {
+      throw new Error(`Unsupported keyType: ${keyType}`);
+    }
+
     const authClient = await authService.getOnlineClient();
     const auth = await authClient.getAuthByUser(username);
     logger.info('auth: %o', auth);
@@ -83,10 +90,7 @@ export class SignerHbauth extends SignerBase {
       throw new Error(`No auth for username ${username}`);
     }
 
-    if (!auth.authorized) {
-      if (!['posting', 'active'].includes(keyType)) {
-        throw new Error(`Unsupported keyType: ${keyType}`);
-      }
+    if (!auth.authorized || auth.keyType !== keyType) {
 
       if (!password) {
         password = await this.getPasswordFromUser();
@@ -104,10 +108,6 @@ export class SignerHbauth extends SignerBase {
       }
     }
 
-    if (!['posting', 'active'].includes(keyType)) {
-      throw new Error(`Unsupported keyType: ${keyType}`);
-    }
-
     const signature = await authClient.sign(username, digest, keyType as unknown as 'posting' | 'active');
     logger.info('hbauth: %o', { digest, signature });
 
@@ -116,9 +116,15 @@ export class SignerHbauth extends SignerBase {
 
   async checkAuths(username: string, keyType: string) {
     const authClient = await authService.getOnlineClient();
+
     const auths = await authClient.getAuths();
-    logger.info('auths: %o', auths);
+    logger.info('authClient.getAuths();: %o', auths);
+
+    const auths2 = await authClient.getAuthByUser(username);
+    logger.info('authClient.getAuthByUser(username): %o', auths2);
+
     // await authClient.logout();
+
     const auth = auths.find((auth) => auth.username === username);
     if (auth) {
       logger.info('Found auth: %o', auth);
@@ -128,6 +134,7 @@ export class SignerHbauth extends SignerBase {
           // We're ready to sign loginChallenge and proceed.
         } else {
           logger.info('User is authorized, but with incorrect keyType: %s', auth.keyType);
+          // This should not disturb. Wallet is unlocked. This needs testing.
         }
       } else {
         logger.info('User is not authorized');
