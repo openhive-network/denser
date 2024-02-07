@@ -38,7 +38,7 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
                 : this.storage.getItem(`wif.${username}@${keyType}`);
             if (!wif) {
                 wif = await this.getPasswordFromUser({
-                    placeholderKeyI18n: 'login_form.posting_private_key',
+                    i18nKeyPlaceholder: 'login_form.posting_private_key',
                 });
             }
             if (!wif) throw new Error('No wif key');
@@ -68,8 +68,8 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
                 : this.storage.getItem(`wif.${username}@${keyType}`);
             if (!wif) {
                 wif = await this.getPasswordFromUser({
-                    placeholderKeyI18n: 'login_form.posting_private_key_placeholder',
-                    titleKeyI18n: 'login_form.title_wif_dialog_password',
+                    i18nKeyPlaceholder: 'login_form.posting_private_key_placeholder',
+                    i18nKeyTitle: 'login_form.title_wif_dialog_password',
                 });
                 // TODO Should we store this key now?
             }

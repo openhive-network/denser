@@ -7,24 +7,24 @@ import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
 interface DialogPasswordProps {
-  placeholderKeyI18n?: string;
-  titleKeyI18n?: string;
   children?: ReactNode;
+  i18nKeyPlaceholder?: string;
+  i18nKeyTitle?: string;
   i18nNamespace?: string;
 }
 
 export const DialogPassword: FC<DialogPasswordProps & InstanceProps<unknown>> = ({
   children,
-  placeholderKeyI18n = '',
-  titleKeyI18n = '',
   isOpen = false,
   onResolve,
   onReject,
+  i18nKeyPlaceholder = '',
+  i18nKeyTitle = '',
   i18nNamespace = 'smart-signer',
 }) => {
   const { t } = useTranslation(i18nNamespace);
-  const placeholder = placeholderKeyI18n ? t(placeholderKeyI18n) : 'Password';
-  const title = titleKeyI18n ? t(titleKeyI18n) : 'Enter your password';
+  const placeholder = i18nKeyPlaceholder ? t(i18nKeyPlaceholder) : 'Password';
+  const title = i18nKeyTitle ? t(i18nKeyTitle) : 'Enter your password';
   const [open, setOpen] = useState(isOpen);
   const [password, setPassword] = useState('');
 
