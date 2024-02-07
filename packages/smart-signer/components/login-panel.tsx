@@ -30,7 +30,7 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
   // Here we just check if user is already logged in and we redirect him
   // to profile page, if he is.
   const { user } = useUser({
-    redirectTo: '/profile',
+    redirectTo: '/',
     redirectIfFound: true
   });
 
