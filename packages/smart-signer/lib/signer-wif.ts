@@ -12,7 +12,7 @@ const logger = getLogger('app');
  * operations, and sends operations to Hive blockchain. It uses So known
  * "Wif" custom tool, based on
  * [@hiveio/dhive](https://openhive-network.github.io/dhive/) and
- * browser's localStorage.
+ * Web Storage API.
  *
  * @export
  * @class SignerWif
