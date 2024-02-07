@@ -88,7 +88,10 @@ export function ReplyTextbox({
         <div className="flex flex-col md:flex-row">
           <Button
             disabled={text === ''}
-            onClick={() => operationService.addComment(username, user, permlink, cleanedText)}
+            onClick={() => {
+              operationService.addComment(username, user, permlink, cleanedText);
+              setText('');
+            }}
           >
             {t('post_content.footer.comment.post')}
           </Button>
