@@ -61,15 +61,15 @@ test.describe('Translation tests', () => {
     await homePage.languageMenuPl.click();
     await expect(profilePage.profileInfo).toBeVisible();
 
-    await expect(page.getByRole('link', { name: 'Liczba obserwujących:' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Liczba obserwujących:' })).toContainText(
-      'Liczba obserwujących:'
+    await expect(page.getByRole('link', { name: /Liczba obserwujących:| Brak obserwujących/ })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Liczba obserwujących:| Brak obserwujących/ })).toContainText(
+      /Liczba obserwujących:| Brak obserwujących/
     );
-    await expect(page.getByRole('link', { name: 'Liczba wpisów:' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Liczba wpisów:' })).toContainText('Liczba wpisów:');
-    await expect(page.getByRole('link', { name: 'Liczba obserwowanych:' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Liczba obserwowanych:' })).toContainText(
-      'Liczba obserwowanych:'
+    await expect(page.getByRole('link', { name: /Liczba wpisów:| Brak wpisów/ })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Liczba wpisów:| Brak wpisów/ })).toContainText(/Liczba wpisów:| Brak wpisów/);
+    await expect(page.getByRole('link', { name: /Liczba obserwowanych:|Brak obserwowanych/gm })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Liczba obserwowanych:|Brak obserwowanych/gm })).toContainText(
+      /Liczba obserwowanych:|Brak obserwowanych/
     );
     await expect(page.getByRole('link', { name: 'Użytkownicy na Czarnej Liście' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Użytkownicy na Czarnej Liście' })).toContainText(
