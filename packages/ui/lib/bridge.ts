@@ -7,7 +7,7 @@ const HIVE_BLOG_ENDPOINT = 'hive-blog-endpoint';
 export const bridgeApiCall = <T>(endpoint: string, params: object): Promise<T> =>
   bridgeServer.call('bridge', endpoint, params);
 
-let endpoint;
+let endpoint = siteConfig.endpoint;
 if (typeof window !== 'undefined' && 'localStorage' in global && global.localStorage) {
   if (window.localStorage.getItem(HIVE_BLOG_ENDPOINT) === undefined) {
     window.localStorage.setItem(
@@ -15,9 +15,7 @@ if (typeof window !== 'undefined' && 'localStorage' in global && global.localSto
       env('API_ENDPOINT') ? env('API_ENDPOINT') : siteConfig.endpoint
     );
   }
-  endpoint = window.localStorage.getItem(HIVE_BLOG_ENDPOINT);
-} else {
-  endpoint = siteConfig.endpoint;
+  endpoint = window.localStorage.getItem(HIVE_BLOG_ENDPOINT) ?? siteConfig.endpoint;
 }
 
 export const bridgeServer = new Client([`${endpoint}`], {
