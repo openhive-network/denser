@@ -35,10 +35,7 @@ export default function Profile() {
       permlink: 'power-to-the-hive-but-just-a-little',
       weight: 10000
     };
-
-    // FIXME!
-    const signer = new Signer(user);
-
+    const signer = new Signer();
     try {
       await signer.broadcastTransaction({
         operation: { vote },
