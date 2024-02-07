@@ -4,7 +4,7 @@ import { authService } from '@smart-signer/lib/auth-service';
 import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer';
 import { createHiveChain, BroadcastTransactionRequest } from '@hive/wax/web';
 import { SignerBase } from '@smart-signer/lib/signer-base';
-import { DialogHbauthPasswordModalPromise } from '@smart-signer/components/dialog-hbauth-password';
+import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -20,18 +20,19 @@ const logger = getLogger('app');
  */
 export class SignerHbauth extends SignerBase {
 
-  async getPasswordFromUser(): Promise<string> {
+  async getPasswordFromUser(dialogProps: { [key: string]: any } = {}): Promise<string> {
     let password = '';
     try {
-      const result = await DialogHbauthPasswordModalPromise({
+      const result = await DialogPasswordModalPromise({
         isOpen: true,
+        ...dialogProps,
       });
       password = result as string;
-      logger.info('Return from DialogHbauthPasswordModalPromise: %s', result);
+      logger.info('Return from PasswordModalPromise: %s', result);
       return password;
     } catch (error) {
-      logger.error('Return from DialogHbauthPasswordModalPromise %s', error);
-      throw new Error('No password to unlock wallet');
+      logger.error('Return from PasswordModalPromise %s', error);
+      throw new Error('No password from user');
     }
   }
 
@@ -90,10 +91,13 @@ export class SignerHbauth extends SignerBase {
       throw new Error(`No auth for username ${username}`);
     }
 
-    if (!auth.authorized || auth.keyType !== keyType) {
+    if (!auth.authorized) {
 
       if (!password) {
-        password = await this.getPasswordFromUser();
+        password = await this.getPasswordFromUser({
+          placeholderKeyI18n: 'login_form.password_hbauth_placeholder',
+          titleKeyI18n: 'login_form.title_hbauth_dialog_password'
+        });
       }
 
       const authStatus = await authClient.authenticate(

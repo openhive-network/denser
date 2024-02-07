@@ -34,9 +34,15 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
         password = '', // WIF private key,
     }: SignChallenge): Promise<string> {
         try {
-            const wif = password ? password
+            let wif = password ? password
                 : this.storage.getItem(`wif.${username}@${keyType}`);
+            if (!wif) {
+                wif = await this.getPasswordFromUser({
+                    placeholderKeyI18n: 'login_form.posting_private_key',
+                });
+            }
             if (!wif) throw new Error('No wif key');
+
             const privateKey = PrivateKey.fromString(wif);
             const messageHash = cryptoUtils.sha256(message);
             const signature = privateKey.sign(messageHash).toString();
@@ -60,13 +66,13 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
         try {
             let wif = password ? password
                 : this.storage.getItem(`wif.${username}@${keyType}`);
-
             if (!wif) {
-                // TODO get WIF from storage or prompt user to input it.
-                const userInput = prompt(`Please enter your WIF ${KeyTypes.posting} key for user ${username}`, '');
-                wif = userInput as string;
+                wif = await this.getPasswordFromUser({
+                    placeholderKeyI18n: 'login_form.posting_private_key_placeholder',
+                    titleKeyI18n: 'login_form.title_wif_dialog_password',
+                });
+                // TODO Should we store this key now?
             }
-
             if (!wif) throw new Error('No wif key');
 
             const privateKey = PrivateKey.fromString(wif);

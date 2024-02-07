@@ -6,19 +6,25 @@ import { create, InstanceProps } from 'react-modal-promise';
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
-interface DialogHbauthPasswordProps {
+interface DialogPasswordProps {
+  placeholderKeyI18n?: string;
+  titleKeyI18n?: string;
   children?: ReactNode;
   i18nNamespace?: string;
 }
 
-export const DialogHbauthPassword: FC<DialogHbauthPasswordProps & InstanceProps<unknown>> = ({
+export const DialogPassword: FC<DialogPasswordProps & InstanceProps<unknown>> = ({
   children,
+  placeholderKeyI18n = '',
+  titleKeyI18n = '',
   isOpen = false,
   onResolve,
   onReject,
   i18nNamespace = 'smart-signer',
 }) => {
   const { t } = useTranslation(i18nNamespace);
+  const placeholder = placeholderKeyI18n ? t(placeholderKeyI18n) : 'Password';
+  const title = titleKeyI18n ? t(titleKeyI18n) : 'Enter your password';
   const [open, setOpen] = useState(isOpen);
   const [password, setPassword] = useState('');
 
@@ -52,8 +58,7 @@ export const DialogHbauthPassword: FC<DialogHbauthPasswordProps & InstanceProps<
         <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
           <div className="mx-auto flex w-full max-w-md flex-col items-center">
             <h2 className="w-full pb-6 text-3xl text-gray-800">
-              {t('login_form.title_hbauth_form')}
-              {t('login_form.title_action_unlock_key')}
+              {title}
             </h2>
             <form onSubmit={onSubmit} className="w-full" name="login">
               <div className="mb-5">
@@ -62,7 +67,7 @@ export const DialogHbauthPassword: FC<DialogHbauthPasswordProps & InstanceProps<
                   type="password"
                   name="password"
                   className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
-                  placeholder={t('login_form.password_hbauth_placeholder')}
+                  placeholder={placeholder}
                 />
               </div>
               <div className="flex items-center justify-between">
@@ -87,4 +92,4 @@ export const DialogHbauthPassword: FC<DialogHbauthPasswordProps & InstanceProps<
   );
 }
 
-export const DialogHbauthPasswordModalPromise = create(DialogHbauthPassword);
+export const DialogPasswordModalPromise = create(DialogPassword);

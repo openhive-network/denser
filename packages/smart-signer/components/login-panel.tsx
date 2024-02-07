@@ -46,8 +46,6 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
     let password = '';
     if (data.loginType === LoginTypes.wif) {
       password = data.password;
-    } else if (data.loginType === LoginTypes.hbauth) {
-      password = data.passwordHbauth;
     }
     let signatures: Signatures = {};
     let hivesignerToken = '';

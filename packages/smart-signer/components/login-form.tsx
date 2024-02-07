@@ -32,11 +32,6 @@ const passwordField = z.object({
   })
 });
 
-const passwordHbauthField = z.object({
-  // passwordHbauth: z.string().min(1, { message: 'Minimum length 1 character' })
-  passwordHbauth: z.string()
-});
-
 const commonFields = z.object({
   storageType: z.nativeEnum(StorageTypes),
   username,
@@ -47,11 +42,10 @@ const commonFields = z.object({
 });
 
 const commonFieldsWithPassword = commonFields.merge(passwordField);
-const commonFieldsWithPasswordHbauth = commonFields.merge(passwordHbauthField);
 
 const loginFormSchema = z.discriminatedUnion('loginType', [
   z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.wif) }).merge(commonFieldsWithPassword),
-  z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.hbauth) }).merge(commonFieldsWithPasswordHbauth),
+  z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.hbauth) }).merge(commonFields),
   z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.hiveauth) }).merge(commonFields),
   z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.keychain) }).merge(commonFields),
   z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.hivesigner) }).merge(commonFields)
@@ -63,7 +57,6 @@ const loginFormDefaultValues = {
   storageType: StorageTypes.localStorage,
   loginType: LoginTypes.wif,
   password: '',
-  passwordHbauth: '',
   remember: false,
   useHbauth: false,
   useHiveauth: false,
@@ -85,7 +78,6 @@ export function LoginForm({
   const { t } = useTranslation(i18nNamespace);
   const [isKeychainSupported, setIsKeychainSupported] = useState(false);
   const [disabledPasword, setDisabledPassword] = useState(false);
-  const [disabledPaswordHbauth, setDisabledPasswordHbauth] = useState(true);
 
   useEffect(() => {
     setIsKeychainSupported(hasCompatibleKeychain());
@@ -116,12 +108,10 @@ export function LoginForm({
       }
       trigger('password');
       setDisabledPassword(true);
-      setDisabledPasswordHbauth(true);
     } else {
       setValue('useKeychain', false);
       setValue('loginType', LoginTypes.wif);
       setDisabledPassword(false);
-      setDisabledPasswordHbauth(true);
     }
   };
 
@@ -137,12 +127,10 @@ export function LoginForm({
       }
       trigger('password');
       setDisabledPassword(true);
-      setDisabledPasswordHbauth(true);
     } else {
       setValue('useHiveauth', false);
       setValue('loginType', LoginTypes.wif);
       setDisabledPassword(false);
-      setDisabledPasswordHbauth(true);
     }
   };
 
@@ -158,12 +146,10 @@ export function LoginForm({
       }
       trigger('password');
       setDisabledPassword(true);
-      setDisabledPasswordHbauth(false);
     } else {
       setValue('useHbauth', false);
       setValue('loginType', LoginTypes.wif);
       setDisabledPassword(false);
-      setDisabledPasswordHbauth(true);
     }
   };
 
@@ -213,27 +199,6 @@ export function LoginForm({
                 {
                   /* @ts-ignore */
                   t(errors.password.message)
-                }
-              </p>
-            )}
-          </div>
-
-          <div className="relative mb-5">
-            <input
-              type="password"
-              className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500 dark:text-slate-300"
-              placeholder={t('login_form.password_hbauth_placeholder')}
-              autoComplete="current-password"
-              disabled={disabledPaswordHbauth}
-              {...register('passwordHbauth')}
-              data-testid="hbauth-password-input"
-            />
-            {/* @ts-ignore */}
-            {errors.passwordHbauth?.message && (
-              <p className="text-sm text-red-500" role="alert">
-                {
-                  /* @ts-ignore */
-                  t(errors.passwordHbauth.message)
                 }
               </p>
             )}

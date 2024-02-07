@@ -4,7 +4,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getTranslations } from '@/auth/lib/get-translations';
 import { Button } from '@hive/ui/components/button';
 import { Signer, vote } from '@smart-signer/lib/signer';
-import { DialogHbauthPasswordModalPromise } from '@smart-signer/components/dialog-hbauth-password';
+import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -31,8 +31,8 @@ export default function Profile() {
     if (!user || !user.isLoggedIn) return;
     const vote: vote = {
       voter: user.username,
-      author: 'afhsdfg',
-      permlink: 'sdagjvxbn',
+      author: 'gtg',
+      permlink: 'power-to-the-hive-but-just-a-little',
       weight: 10000
     };
 
@@ -52,12 +52,12 @@ export default function Profile() {
 
   const openDialogPassword = async () => {
     try {
-      const result = await DialogHbauthPasswordModalPromise({
+      const result = await DialogPasswordModalPromise({
         isOpen: true,
       });
-      logger.info('Return from DialogHbauthPasswordModalPromise: %s', result);
+      logger.info('Return from DialogPasswordModalPromise: %s', result);
     } catch (error) {
-      logger.info('Return from DialogHbauthPasswordModalPromise %s', error);
+      logger.info('Return from DialogPasswordModalPromise %s', error);
     }
   };
 
