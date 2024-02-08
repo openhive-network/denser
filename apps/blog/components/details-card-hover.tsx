@@ -1,9 +1,8 @@
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@hive/ui/components/hover-card';
-import { cn} from '@/blog/lib/utils';
+import { cn } from '@/blog/lib/utils';
 import { ReactNode } from 'react';
-import { Entry } from '@/blog/lib/bridge';
+import { Entry } from '@ui/lib/bridge';
 import PayoutHoverContent from './payout-hover-content';
-
 
 type DetailsCardHoverProps = {
   post: Entry;
@@ -12,14 +11,7 @@ type DetailsCardHoverProps = {
   post_page?: boolean;
 };
 
-
-
-export default function DetailsCardHover({
-  post,
-  children,
-  decline,
-  post_page
-}: DetailsCardHoverProps) {
+export default function DetailsCardHover({ post, children, decline, post_page }: DetailsCardHoverProps) {
   if (decline) {
     return (
       <div
@@ -46,10 +38,8 @@ export default function DetailsCardHover({
     <HoverCard>
       <HoverCardTrigger asChild>{children}</HoverCardTrigger>
       <HoverCardContent className="flex w-auto flex-col" data-testid="payout-post-card-tooltip">
-         <PayoutHoverContent post={post}/>
+        <PayoutHoverContent post={post} />
       </HoverCardContent>
     </HoverCard>
   );
 }
-
-

@@ -5,12 +5,8 @@ import sanitize from 'sanitize-html';
 import { twMerge } from 'tailwind-merge';
 import remarkableStripper from '@/blog/lib/remmarkable-stripper';
 import { Vote } from './hive';
-import { Entry, JsonMetadata } from '@/blog/lib/bridge';
+import { Entry, JsonMetadata } from '@ui/lib/bridge';
 import { parseDate2 } from '@hive/ui/lib/parse-date';
-import getSlug from 'speakingurl';
-import base58 from 'bs58';
-import secureRandom from 'secure-random';
-import { getPostHeader } from '@ui/lib/bridge';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -295,34 +291,4 @@ export function parseCookie(cookie: string): Record<string, string> {
   });
 
   return kv;
-}
-
-export async function createPermlink(title: string, author: string, postPermlink: string) {
-  let permlink;
-  if (title && title.trim() !== '') {
-    let s = getSlug(title.replace(/[<>]/g, ''), { truncate: 128 });
-    if (s === '') {
-      s = base58.encode(secureRandom.randomBuffer(4));
-    }
-    // only letters numbers and dashes shall survive
-    s = s.toLowerCase().replace(/[^a-z0-9-]+/g, '');
-
-    // ensure the permlink is unique
-    const head = await getPostHeader(author, postPermlink);
-    if (head && !!head.category) {
-      const noise = base58.encode(secureRandom.randomBuffer(4)).toLowerCase();
-      permlink = noise + '-' + s;
-    } else {
-      permlink = s;
-    }
-
-    // ensure permlink conforms to STEEMIT_MAX_PERMLINK_LENGTH
-    if (permlink.length > 255) {
-      permlink = permlink.substring(0, 255);
-    }
-  } else {
-    permlink = Math.floor(Date.now() / 1000).toString(36);
-  }
-
-  return permlink;
 }

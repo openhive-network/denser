@@ -1,13 +1,8 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { getAccountPosts, DATA_LIMIT as PER_PAGE } from '@/blog/lib/bridge';
+import { getAccountPosts, DATA_LIMIT as PER_PAGE } from '@ui/lib/bridge';
 import ProfileLayout from '@/blog/components/common/profile-layout';
 import { useSiteParams } from '@hive/ui/components/hooks/use-site-params';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger
-} from '@hive/ui/components/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@hive/ui/components/tabs';
 import PostList from '@/blog/components/post-list';
 import { useRouter } from 'next/router';
 import RepliesList from '@/blog/components/replies-list';
@@ -24,8 +19,7 @@ const UserPosts = () => {
   const router = useRouter();
   const { username } = useSiteParams();
   const { ref, inView } = useInView();
-  const sort =
-    router.pathname.split('/')[router.pathname.split('/').length - 1];
+  const sort = router.pathname.split('/')[router.pathname.split('/').length - 1];
 
   const {
     data,
@@ -39,11 +33,7 @@ const UserPosts = () => {
     hasNextPage
   } = useInfiniteQuery(
     ['accountRepliesInfinite', username, sort],
-    async ({
-             pageParam
-           }: {
-      pageParam?: { author: string; permlink: string };
-    }) => {
+    async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
       return await getAccountPosts(
         sort || 'trending',
         username,
@@ -74,18 +64,14 @@ const UserPosts = () => {
 
   return (
     <ProfileLayout>
-      <div className='flex flex-col'>
-        <Tabs
-          defaultValue={sort}
-          className='w-full'
-          onValueChange={(s) => router.push(`/@${username}/${s}`)}
-        >
-          <TabsList className='flex justify-start' data-testid='user-post-menu'>
-            <TabsTrigger value='posts'>{t('navigation.profil_posts_tab_navbar.posts')}</TabsTrigger>
-            <TabsTrigger value='comments'>{t('navigation.profil_posts_tab_navbar.comments')}</TabsTrigger>
-            <TabsTrigger value='payout'>{t('navigation.profil_posts_tab_navbar.payouts')}</TabsTrigger>
+      <div className="flex flex-col">
+        <Tabs defaultValue={sort} className="w-full" onValueChange={(s) => router.push(`/@${username}/${s}`)}>
+          <TabsList className="flex justify-start" data-testid="user-post-menu">
+            <TabsTrigger value="posts">{t('navigation.profil_posts_tab_navbar.posts')}</TabsTrigger>
+            <TabsTrigger value="comments">{t('navigation.profil_posts_tab_navbar.comments')}</TabsTrigger>
+            <TabsTrigger value="payout">{t('navigation.profil_posts_tab_navbar.payouts')}</TabsTrigger>
           </TabsList>
-          <TabsContent value='posts'>
+          <TabsContent value="posts">
             {!isLoading && data ? (
               <>
                 {data.pages.map((page, index) => {
@@ -93,11 +79,11 @@ const UserPosts = () => {
                     <PostList data={page} key={`posts-${index}`} />
                   ) : (
                     <div
-                      key='empty'
-                      className="px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm"
+                      key="empty"
+                      className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
                       data-testid="user-has-not-made-any-post-yet"
                     >
-                      {t('user_profil.no_posts_yet', {username:username})}
+                      {t('user_profil.no_posts_yet', { username: username })}
                     </div>
                   );
                 })}
@@ -116,15 +102,11 @@ const UserPosts = () => {
                     ) : null}
                   </button>
                 </div>
-                <div>
-                  {isFetching && !isFetchingNextPage
-                    ? 'Background Updating...'
-                    : null}
-                </div>
+                <div>{isFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
               </>
             ) : null}
           </TabsContent>
-          <TabsContent value='comments'>
+          <TabsContent value="comments">
             {!isLoading && data ? (
               <>
                 {data.pages.map((page, index) => {
@@ -132,11 +114,11 @@ const UserPosts = () => {
                     <RepliesList data={page} key={`replies-${index}`} />
                   ) : (
                     <div
-                      key='empty'
-                      className="px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm"
+                      key="empty"
+                      className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
                       data-testid="user-has-not-made-any-post-yet"
                     >
-                      {t('user_profil.no_posts_yet', {username:username})}
+                      {t('user_profil.no_posts_yet', { username: username })}
                     </div>
                   );
                 })}
@@ -155,15 +137,11 @@ const UserPosts = () => {
                     ) : null}
                   </button>
                 </div>
-                <div>
-                  {isFetching && !isFetchingNextPage
-                    ? 'Background Updating...'
-                    : null}
-                </div>
+                <div>{isFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
               </>
             ) : null}
           </TabsContent>
-          <TabsContent value='payout'>
+          <TabsContent value="payout">
             {!isLoading && data ? (
               <>
                 {data.pages.map((page, index) => {
@@ -171,8 +149,8 @@ const UserPosts = () => {
                     <PostList data={page} key={`payout-${index}`} />
                   ) : (
                     <div
-                      key='empty'
-                      className="px-4 py-6 mt-12 bg-green-100 dark:bg-slate-700 text-sm"
+                      key="empty"
+                      className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
                       data-testid="user-no-pending-payouts"
                     >
                       {t('user_profil.no_pending_payouts')}
@@ -194,11 +172,7 @@ const UserPosts = () => {
                     ) : null}
                   </button>
                 </div>
-                <div>
-                  {isFetching && !isFetchingNextPage
-                    ? 'Background Updating...'
-                    : null}
-                </div>
+                <div>{isFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
               </>
             ) : null}
           </TabsContent>
@@ -213,7 +187,10 @@ export default UserPosts;
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   return {
     props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_blog', 'smart-signer']))
+      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
+        'common_blog',
+        'smart-signer'
+      ]))
     }
   };
 };

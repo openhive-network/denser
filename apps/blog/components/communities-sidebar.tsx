@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { getCommunities } from '@/blog/lib/bridge';
+import { getCommunities } from '@ui/lib/bridge';
 import { cn } from '@/blog/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
 import { FC } from 'react';

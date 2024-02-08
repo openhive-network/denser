@@ -1,15 +1,15 @@
 import CommentListItem from '@/blog/components/comment-list-item';
-import { Entry } from '@/blog/lib/bridge';
+import { Entry } from '@ui/lib/bridge';
 import { DefaultRenderer } from '@hiveio/content-renderer';
 import { getDoubleSize, proxifyImageUrl } from '@hive/ui/lib/old-profixy';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
 
 const CommentList = ({
-                       data,
-                       parent,
-                       parent_depth
-                     }: {
+  data,
+  parent,
+  parent_depth
+}: {
   data: Entry[];
   parent: Entry;
   parent_depth: number;

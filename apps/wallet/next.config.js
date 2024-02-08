@@ -1,5 +1,5 @@
 const path = require('path');
-const withTM = require('next-transpile-modules')(['@hive/smart-signer', '@hive/ui']);
+const withTM = require('next-transpile-modules')(['@hive/smart-signer', '@hive/ui', '@hive/operations']);
 const CopyPlugin = require('copy-webpack-plugin');
 
 /** @type {import('next').NextConfig} */
@@ -14,26 +14,28 @@ const nextConfig = {
       config.resolve.fallback = { fs: false };
     }
 
-    config.plugins.push(new CopyPlugin({
-      patterns: [
-        {
-          from: path.join(__dirname, '../../node_modules/@hive/hb-auth/dist/worker.js'),
-          to: path.join(__dirname, 'public/auth/')
-        },
-        {
-          from: path.join(__dirname, './locales'),
-          to: path.join(__dirname, 'public/locales/')
-        },
-        {
-          from: path.join(__dirname, '../../packages/smart-signer/locales'),
-          to: path.join(__dirname, 'public/locales/')
-        },
-        {
-          from: path.join(__dirname, '../../packages/smart-signer/public/smart-signer'),
-          to: path.join(__dirname, 'public/smart-signer/')
-        }
-      ]
-    }));
+    config.plugins.push(
+      new CopyPlugin({
+        patterns: [
+          {
+            from: path.join(__dirname, '../../node_modules/@hive/hb-auth/dist/worker.js'),
+            to: path.join(__dirname, 'public/auth/')
+          },
+          {
+            from: path.join(__dirname, './locales'),
+            to: path.join(__dirname, 'public/locales/')
+          },
+          {
+            from: path.join(__dirname, '../../packages/smart-signer/locales'),
+            to: path.join(__dirname, 'public/locales/')
+          },
+          {
+            from: path.join(__dirname, '../../packages/smart-signer/public/smart-signer'),
+            to: path.join(__dirname, 'public/smart-signer/')
+          }
+        ]
+      })
+    );
 
     return config;
   }

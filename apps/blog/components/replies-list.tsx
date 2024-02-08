@@ -1,5 +1,5 @@
 import RepliesListItem from '@/blog/components/replies-list-item';
-import { Entry } from '@/blog/lib/bridge';
+import { Entry } from '@ui/lib/bridge';
 
 const RepliesList = ({ data, parent }: { data: Entry[] | null | undefined; parent?: Entry }) => {
   if (data && parent) {
@@ -34,18 +34,14 @@ const RepliesList = ({ data, parent }: { data: Entry[] | null | undefined; paren
 
     return (
       <ul className="px-2">
-        {tmp?.map((comment: Entry) => (
-          <RepliesListItem comment={comment} key={comment.post_id} />
-        ))}
+        {tmp?.map((comment: Entry) => <RepliesListItem comment={comment} key={comment.post_id} />)}
       </ul>
     );
   }
 
   return (
     <ul className="px-2">
-      {data?.map((comment: Entry) => (
-        <RepliesListItem comment={comment} key={comment.post_id} />
-      ))}
+      {data?.map((comment: Entry) => <RepliesListItem comment={comment} key={comment.post_id} />)}
     </ul>
   );
 };

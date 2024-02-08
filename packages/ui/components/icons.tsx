@@ -61,12 +61,16 @@ import {
   Undo,
   DoorOpen,
   Wallet,
-  KeyRound
+  KeyRound,
+  Flag,
+  FlagOff
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
 
 export const Icons = {
+  flag: Flag,
+  unflag: FlagOff,
   crossPost: Dna,
   externalLink: ExternalLink,
   link: Link,
