@@ -1,4 +1,9 @@
-import { CommunityOperationBuilder, EFollowBlogAction, FollowOperationBuilder } from '@hive/wax/web';
+import {
+  CommunityOperationBuilder,
+  EFollowBlogAction,
+  FollowOperationBuilder,
+  operation
+} from '@hive/wax/web';
 import { logger } from '@hive/ui/lib/logger';
 import { toast } from '@hive/ui/components/hooks/use-toast';
 import { comment } from '@hive/wax/web';
@@ -13,7 +18,7 @@ class OperationService {
   static signer = new Signer();
   description = 'Transaction broadcast error';
 
-  async brodcastTransaction(user: User, operation: any) {
+  async brodcastTransaction(user: User, operation: operation) {
     try {
       await OperationService.signer.broadcastTransaction({
         operation: operation,
@@ -50,7 +55,7 @@ class OperationService {
 
   async subscribe(username: string, user: User | null, type: string) {
     if (user && user.isLoggedIn) {
-      const customJsonOperations: any[] = [];
+      const customJsonOperations: operation[] = [];
       const cob = new CommunityOperationBuilder();
       if (type === 'subscribe') {
         cob.subscribe(username).authorize(user.username).build().flushOperations(customJsonOperations);
@@ -65,7 +70,7 @@ class OperationService {
 
   async follow(username: string, user: User | null, type: string) {
     if (user && user.isLoggedIn) {
-      const customJsonOperations: any[] = [];
+      const customJsonOperations: operation[] = [];
       const fob = new FollowOperationBuilder();
       if (type === 'follow') {
         fob
@@ -105,7 +110,7 @@ class OperationService {
 
   async reblog(username: string, user: User | null, permlink: string) {
     if (user && user.isLoggedIn) {
-      const customJsonOperations: any[] = [];
+      const customJsonOperations: operation[] = [];
       new FollowOperationBuilder()
         .reblog(user.username, username, permlink)
         .authorize(user.username)
@@ -118,7 +123,7 @@ class OperationService {
 
   async flag(username: string, user: User | null, community: string, permlink: string, notes: string) {
     if (user && user.isLoggedIn) {
-      const customJsonOperations: any[] = [];
+      const customJsonOperations: operation[] = [];
       new CommunityOperationBuilder()
         .flagPost(community, username, permlink, notes)
         .authorize(user.username)
