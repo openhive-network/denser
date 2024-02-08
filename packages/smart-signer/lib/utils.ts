@@ -111,6 +111,8 @@ export async function getTransactionDigest(
     tx.push(operation);
   }
 
+  logger.info('tx.toString(): %s', tx.toString());
+
   return {
     txString: tx.toString(),
     digest: tx.sigDigest

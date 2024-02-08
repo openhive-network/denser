@@ -64,6 +64,7 @@ export class SignerHbauth extends SignerBase {
       tx.push(operation).validate();
       const signature = await this.signDigest(tx.sigDigest, username, '', keyType);
       const transaction = tx.build();
+      logger.info('SignerHbauth.broadcastTransaction tx: %o', tx.toApi());
       transaction.signatures.push(signature);
       const transactionRequest = new BroadcastTransactionRequest(tx);
       await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
