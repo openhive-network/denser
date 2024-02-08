@@ -8,11 +8,7 @@ import { useTranslation } from 'next-i18next';
 import { DefaultRenderer } from '@hiveio/content-renderer';
 import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { Signer } from '@smart-signer/lib/signer';
-import { logger } from '@ui/lib/logger';
-import { toast } from '@ui/components/hooks/use-toast';
-import { comment } from '@hive/wax/web';
-import { createPermlink } from '../lib/utils';
+import { operationService } from '@operations/index';
 
 export function ReplyTextbox({
   onSetReply,
@@ -63,46 +59,6 @@ export function ReplyTextbox({
     }
   };
 
-  async function addComment(e: any) {
-    if (user && user.isLoggedIn) {
-      const comment: comment = {
-        parent_author: username,
-        parent_permlink: permlink,
-        author: user.username,
-        permlink: await createPermlink('', user.username, permlink),
-        title: '',
-        body: cleanedText,
-        json_metadata: '{"app":"hiveblog/0.1"}'
-      };
-
-      const signer = new Signer();
-      try {
-        await signer.broadcastTransaction({
-          operation: { comment },
-          loginType: user.loginType,
-          username: user.username
-        });
-        setText('');
-      } catch (e) {
-        //
-        // TODO Improve messages displayed to user, after we do better
-        // (unified) error handling in smart-signer.
-        //
-        logger.error('got error', e);
-        let description = 'Transaction broadcast error';
-        if (`${e}`.indexOf('vote on this comment is identical') >= 0) {
-          description = 'Your current vote on this comment is identical to this vote.';
-        } else if (`${e}`.indexOf('Not implemented') >= 0) {
-          description = 'Method not implemented for this login type.';
-        }
-        toast({
-          description,
-          variant: 'destructive'
-        });
-      }
-    }
-  }
-
   return (
     <div
       className="mx-8 mb-4 flex flex-col gap-6 rounded-md border bg-card p-4 text-card-foreground shadow-sm dark:bg-slate-900"
@@ -130,7 +86,13 @@ export function ReplyTextbox({
           </p>
         </div>
         <div className="flex flex-col md:flex-row">
-          <Button disabled={text === ''} onClick={addComment}>
+          <Button
+            disabled={text === ''}
+            onClick={() => {
+              operationService.addComment(username, user, permlink, cleanedText);
+              setText('');
+            }}
+          >
             {t('post_content.footer.comment.post')}
           </Button>
           <Button

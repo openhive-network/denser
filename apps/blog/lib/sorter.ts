@@ -1,4 +1,4 @@
-import { Entry } from '@/blog/lib/bridge';
+import { Entry } from '@ui/lib/bridge';
 import { parseAsset } from '@/blog/lib/utils';
 
 export enum SortOrder {

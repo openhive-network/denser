@@ -1,5 +1,5 @@
 import NotificationListItem from '@/blog/components/notification-list-item';
-import { AccountNotification } from '@/blog/lib/bridge';
+import { AccountNotification } from '@ui/lib/bridge';
 
 const NotificationList = ({ data }: { data: AccountNotification[] | null | undefined }) => {
   return (

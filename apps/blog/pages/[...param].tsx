@@ -9,7 +9,7 @@ import {
   getPostsRanked,
   getSubscribers,
   getSubscriptions
-} from '@/blog/lib/bridge';
+} from '@ui/lib/bridge';
 import Loading from '@hive/ui/components/loading';
 import { FC, useCallback, useEffect } from 'react';
 import PostList from '@/blog/components/post-list';

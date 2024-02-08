@@ -23,6 +23,7 @@
     "oidc-provider": "^8.4.2",
     "qrcode": "^1.5.3",
     "react": "^18.2.0",
+    "secure-random": "^1.1.2",
     "typescript": "5.3.3",
     "zod": "^3.21.4"
   },
@@ -32,6 +33,7 @@
     "@types/node": "^20.10.4",
     "@types/oidc-provider": "^8.4.2",
     "@types/qrcode": "^1.5.4",
-    "@types/react": "^18.2.44"
+    "@types/react": "^18.2.44",
+    "@types/secure-random": "^1.1.3"
   }
 }

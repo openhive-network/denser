@@ -2,7 +2,7 @@ import CommunitiesSidebar from '@/blog/components/communities-sidebar';
 import { Input } from '@hive/ui/components/input';
 import { useState, KeyboardEvent } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getCommunities, getSubscriptions } from '@/blog/lib/bridge';
+import { getCommunities, getSubscriptions } from '@ui/lib/bridge';
 import CommunitiesSelectFilter from '@/blog/components/communities-select-filter';
 import CommunitiesList from '@/blog/components/communities-list';
 import Loading from '@hive/ui/components/loading';

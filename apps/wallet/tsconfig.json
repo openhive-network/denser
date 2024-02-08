@@ -6,6 +6,7 @@
     "paths": {
       "@/wallet/*": ["./*"],
       "@smart-signer/*": ["../../packages/smart-signer/*"],
+      "@operations/*": ["../../packages/operations/*"],
       "@ui/*": ["../../packages/ui/*"]
     }
   },

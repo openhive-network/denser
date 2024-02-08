@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@hive/ui/lib/utils';
-import { Icons } from '@hive/ui/components/icons';
 
 export function MainNav() {
   const pathname = usePathname();

@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import Loading from '@hive/ui/components/loading';
 import { convertStringToBig } from '@hive/ui/lib/helpers';
 import { getFeedHistory } from '@hive/ui/lib/hive';
-import { Entry } from '../lib/bridge';
+import { Entry } from '@ui/lib/bridge';
 import moment from 'moment';
 import { useTranslation } from 'next-i18next';
 
@@ -28,33 +28,49 @@ export default function PayoutHoverContent({ post }: { post: Entry }) {
   const pending_hp = price_per_hive ? Big(post.payout - _hbd).div(price_per_hive) : null;
   const pastPayout = moment(post.payout_at).diff(moment()) < 0;
   if (pastPayout) {
-    return <>
-      <span>{t('amount_hover_card.past_payouts', { value: post.payout.toFixed(2) })}</span>
-      <span>- {t('amount_hover_card.author', { value: convertStringToBig(post.author_payout_value).toFixed(2) })}</span>
-      <span>- {t('amount_hover_card.curators', { value: convertStringToBig(post.curator_payout_value).toFixed(2) })}</span>
-    </>;
+    return (
+      <>
+        <span>{t('amount_hover_card.past_payouts', { value: post.payout.toFixed(2) })}</span>
+        <span>
+          -{' '}
+          {t('amount_hover_card.author', { value: convertStringToBig(post.author_payout_value).toFixed(2) })}
+        </span>
+        <span>
+          -{' '}
+          {t('amount_hover_card.curators', {
+            value: convertStringToBig(post.curator_payout_value).toFixed(2)
+          })}
+        </span>
+      </>
+    );
   }
 
   return (
     <>
       <span>{t('amount_hover_card.pending_payout_amount', { value: post.payout.toFixed(2) })}</span>
       <span>
-          {t('amount_hover_card.breakdown')} {_hbd.toFixed(2)} HBD, {pending_hp ? <>{pending_hp.toFixed(2)} HP</> : null}
-        </span>
+        {t('amount_hover_card.breakdown')} {_hbd.toFixed(2)} HBD,{' '}
+        {pending_hp ? <>{pending_hp.toFixed(2)} HP</> : null}
+      </span>
       <>
         {post.beneficiaries.map((beneficiary: IBeneficiary, index: number) => (
           <Link
             href={`/@${beneficiary.account}`}
-            className='hover:cursor-pointer hover:text-red-600'
+            className="hover:cursor-pointer hover:text-red-600"
             key={index}
           >
             {beneficiary.account}: {fmt(parseFloat(String(beneficiary.weight)) / 100)}%
           </Link>
         ))}
       </>
-      <span>{t('amount_hover_card.payout_in')} {dateToRelative(post.payout_at, t).replace("in", "")}</span>
-      {convertStringToBig(post.max_accepted_payout).lt(1000000) ?
-        <span>{t('amount_hover_card.max_accepted_payout',{value: fmt(post.max_accepted_payout.split(' ')[0])})}</span> : null}
-    </>);
-
+      <span>
+        {t('amount_hover_card.payout_in')} {dateToRelative(post.payout_at, t).replace('in', '')}
+      </span>
+      {convertStringToBig(post.max_accepted_payout).lt(1000000) ? (
+        <span>
+          {t('amount_hover_card.max_accepted_payout', { value: fmt(post.max_accepted_payout.split(' ')[0]) })}
+        </span>
+      ) : null}
+    </>
+  );
 }
