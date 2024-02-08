@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@hive/beekeeper": "^1.27.5-rc0-stable.610e7072c",
-    "@hive/hb-auth": "^0.0.1-stable.d9b0769",
+    "@hive/hb-auth": "^0.0.1-stable.da4052c",
     "@hive/ui": "*",
     "@hive/wax": "0.3.8-240205140723",
     "@hiveio/dhive": "^1.2.8",
