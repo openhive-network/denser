@@ -32,10 +32,6 @@ export interface BasicPostInfo {
 
 export const getPostHeader = (author: string, permlink: string): Promise<BasicPostInfo> =>
   bridgeApiCall<BasicPostInfo>('get_post_header', {
-<<<<<<< HEAD
-    author,
-    permlink
-=======
     author,
     permlink
   });
@@ -261,7 +257,6 @@ export const getPost = (
     }
 
     return resp;
->>>>>>> main
   });
 };
 
