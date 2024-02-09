@@ -53,7 +53,8 @@
     "use_hbauth": "Use Hbauth",
     "use_hiveauth": "Use HiveAuth",
     "use_keychain": "Use Keychain",
-    "username_placeholder": "Enter your username"
+    "username_placeholder": "Enter your username",
+    "working": "Working…"
   },
   "pageLogin": {
     "loginFailed": "Login failed",
