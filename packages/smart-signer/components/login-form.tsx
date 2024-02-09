@@ -5,12 +5,15 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useTranslation } from 'next-i18next';
 import { Separator } from '@hive/ui/components/separator';
-import { getLogger } from '@hive/ui/lib/logging';
 import { hasCompatibleKeychain } from '@smart-signer/lib/signer-keychain';
 import { username } from '@smart-signer/lib/auth/utils';
 import { LoginTypes, StorageTypes } from '@smart-signer/types/common';
 import { validateHivePassword } from '@smart-signer/lib/validate-hive-password';
 import { Icons } from '@ui/components/icons';
+import { toast } from '@ui/components/hooks/use-toast';
+
+import { getLogger } from '@hive/ui/lib/logging';
+const logger = getLogger('app');
 
 const ZodStorageTypesEnum = z.nativeEnum(StorageTypes);
 
@@ -71,7 +74,6 @@ export function LoginForm({
   onSubmit: (data: LoginFormSchema) => void;
   i18nNamespace?: string;
 }) {
-  const logger = getLogger('app');
 
   const { t } = useTranslation(i18nNamespace);
   const [isKeychainSupported, setIsKeychainSupported] = useState(false);
@@ -150,6 +152,14 @@ export function LoginForm({
       setDisabledPassword(false);
     }
   };
+
+  const onHivesignerButtonClick = () => {
+    toast({
+      title: 'Info',
+      description: 'Hivesigner support is not implemented',
+      variant: 'destructive',
+    });
+  }
 
   return (
     <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
@@ -328,6 +338,7 @@ export function LoginForm({
             <button
               className="mt-4 flex w-fit justify-center rounded-lg bg-gray-400 px-5 py-2.5 hover:bg-gray-500 focus:outline-none "
               data-testid="hivesigner-button"
+              onClick={(e) => { e.preventDefault(); onHivesignerButtonClick() }}
             >
               <img src="/smart-signer/images/hivesigner.svg" alt="Hivesigner logo" />
             </button>
