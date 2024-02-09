@@ -1,8 +1,8 @@
 import { createWaxFoundation, operation, THexString, ITransactionBuilder } from '@hive/wax/web';
 import { fetchJson } from '@smart-signer/lib/fetch-json';
 import { isBrowser } from '@hive/ui/lib/logger';
-
 import { getLogger } from '@hive/ui/lib/logging';
+
 const logger = getLogger('app');
 
 const KEY_TYPES = ['active', 'posting'] as const;

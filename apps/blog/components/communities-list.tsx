@@ -1,5 +1,5 @@
 import CommunitiesListItem from '@/blog/components/communities-list-item';
-import { Community } from '@/blog/lib/bridge';
+import { Community } from '@ui/lib/bridge';
 
 const CommunitiesList = ({ data }: { data: Community[] | null | undefined }) => {
   return (

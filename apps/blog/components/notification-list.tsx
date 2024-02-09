@@ -1,9 +1,9 @@
 import NotificationListItem from '@/blog/components/notification-list-item';
-import { AccountNotification } from '@/blog/lib/bridge';
+import { AccountNotification } from '@ui/lib/bridge';
 
 const NotificationList = ({ data }: { data: AccountNotification[] | null | undefined }) => {
   return (
-    <table className="ml-4 py-8 w-full">
+    <table className="w-full py-8">
       <tbody>
         {data?.map((notification: AccountNotification, index: number) => (
           <NotificationListItem

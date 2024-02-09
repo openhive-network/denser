@@ -4,10 +4,11 @@ import { Input } from '@hive/ui/components/input';
 import Link from 'next/link';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@hive/ui/components/accordion';
 import clsx from 'clsx';
-import { FollowList } from '@/blog/lib/bridge';
+import { FollowList } from '@ui/lib/bridge';
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import { operationService } from '@operations/index';
 
 export default function ProfileLists({
   username,
@@ -97,7 +98,16 @@ export default function ProfileLists({
                   {' ' + e.blacklist_description}
                 </span>
                 {user?.isLoggedIn && user?.username === username ? (
-                  <Button variant="outlineRed" className="whitespace-nowrap p-1" size="xs">
+                  <Button
+                    variant="outlineRed"
+                    className="whitespace-nowrap p-1"
+                    size="xs"
+                    onClick={() => {
+                      if (variant === 'muted') {
+                        operationService.follow(username, user, 'unmute');
+                      }
+                    }}
+                  >
                     {variant === 'blacklisted'
                       ? 'unblacklist'
                       : variant === 'muted'

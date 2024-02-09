@@ -1,6 +1,6 @@
 import { Vote } from '@/blog/lib/hive';
 import { prepareVotes } from '@/blog/lib/utils';
-import { Entry } from '@/blog/lib/bridge';
+import { Entry } from '@ui/lib/bridge';
 import Link from 'next/link';
 import { useActiveVotesQuery } from './hooks/use-active-votes';
 import { useTranslation } from 'next-i18next';
@@ -39,7 +39,9 @@ export default function VotersDetailsData({ post }: { post: Entry }) {
           </li>
         ))}
       {votes && votes.length > 20 && post.stats ? (
-        <li className="pt-1.5 text-sm text-gray-500">{t('post_content.footer.and_more',{value: post.stats.total_votes - 20})}</li>
+        <li className="pt-1.5 text-sm text-gray-500">
+          {t('post_content.footer.and_more', { value: post.stats.total_votes - 20 })}
+        </li>
       ) : null}
     </ul>
   );

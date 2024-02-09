@@ -13,7 +13,7 @@ export function MainNav() {
     <div className="flex h-full items-center justify-between lg:mr-4">
       <nav className="hidden h-full items-center space-x-2 text-sm font-medium lg:flex lg:text-base xl:space-x-6">
         <Link
-          href={`${walletHost}/trending`}
+          href={`/trending`}
           className={cn(
             'ml-6 flex h-full items-center border-b-2 border-white transition-colors hover:border-red-600 hover:text-red-600 dark:border-slate-950 hover:dark:border-red-600',
             pathname === '/trending' ? 'text-red-600' : 'text-foreground/60'

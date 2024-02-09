@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
 import Link from 'next/link';
 import { Button } from '@hive/ui/components/button';
-import { AccountNotification, Community, Subscription } from '@/blog/lib/bridge';
+import { AccountNotification, Community, Subscription } from '@ui/lib/bridge';
 import { SubsListDialog } from './subscription-list-dialog';
 import { ActivityLogDialog } from './activity-log-dialog';
 import DialogLogin from './dialog-login';
