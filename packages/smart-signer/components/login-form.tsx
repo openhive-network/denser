@@ -33,7 +33,6 @@ const passwordField = z.object({
 });
 
 const commonFields = z.object({
-  storageType: z.nativeEnum(StorageTypes),
   username,
   useHbauth: z.boolean(),
   useKeychain: z.boolean(),
@@ -54,7 +53,6 @@ const loginFormSchema = z.discriminatedUnion('loginType', [
 export type LoginFormSchema = z.infer<typeof loginFormSchema>;
 
 const loginFormDefaultValues = {
-  storageType: StorageTypes.localStorage,
   loginType: LoginTypes.wif,
   password: '',
   remember: false,
@@ -160,7 +158,6 @@ export function LoginForm({
           {t('login_form.title_action_login')}
         </h2>
         <form method="post" className="w-full">
-          <input type="hidden" {...register('storageType')} />
           <input type="hidden" {...register('loginType')} />
           <div className="mb-5">
             <div className="relative">

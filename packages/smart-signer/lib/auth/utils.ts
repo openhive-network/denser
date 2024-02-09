@@ -17,10 +17,6 @@ export const username = z.string()
     });
 
 export const postLoginSchema = z.object({
-    storageType: z.nativeEnum(StorageTypes, {
-        invalid_type_error: 'Invalid storageType',
-        required_error: 'storageType is required',
-    }),
     loginType: z.nativeEnum(LoginTypes, {
         invalid_type_error: 'Invalid loginType',
         required_error: 'loginType is required',
@@ -48,5 +44,4 @@ export const defaultUser: User = {
     username: '',
     avatarUrl: '',
     loginType: LoginTypes.wif,
-    storageType: StorageTypes.localStorage
 };

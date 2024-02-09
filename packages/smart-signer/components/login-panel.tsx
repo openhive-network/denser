@@ -42,7 +42,7 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
     logger.info('onSubmit form data', data);
     setErrorMsg('');
 
-    const { loginType, username, storageType } = data;
+    const { loginType, username } = data;
     let password = '';
     if (data.loginType === LoginTypes.wif) {
       password = data.password;
@@ -74,7 +74,6 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
       signatures,
       loginType,
       hivesignerToken,
-      storageType,
     };
 
     try {
