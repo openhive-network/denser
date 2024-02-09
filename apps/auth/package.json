@@ -19,7 +19,7 @@
   "dependencies": {
     "@beam-australia/react-env": "^3.1.1",
     "@hive/eslint-config-custom": "*",
-    "@hive/hb-auth": "0.0.1-stable.da4052c",
+    "@hive/hb-auth": "0.0.1-stable.4ce517d",
     "@hive/smart-signer": "*",
     "@hive/tailwindcss-config": "*",
     "@hive/tsconfig": "*",
