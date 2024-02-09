@@ -78,7 +78,7 @@ export function DialogHBAuth({
 
     const form = new FormData(e.target as HTMLFormElement);
     const username = form.get('username') as string;
-    const password = form.get('password') as string;
+    const password = form.get('password') || '' as string;
     const keyType = form.get('keytype') as string as KeyAuthorityType;
     const key = form.get('key') as string;
 
@@ -168,20 +168,6 @@ export function DialogHBAuth({
                       <div className="flex h-full w-full items-center justify-center"> @</div>
                     </span>
                   </div>
-                  <div className="mb-5">
-                    <input
-                      autoComplete="current-password"
-                      type="hidden"
-                      id="password"
-                      name="password"
-                      className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
-                      placeholder="Password"
-                      required
-                      disabled={k === 'watch'}
-                      data-testid="hbauth-unlock-key-password-input"
-                    />
-                  </div>
-
                   <div className="mb-5" data-testid="hbauth-unlock-key-select-key-type">
                     <Select name="keytype" onValueChange={(e) => setKey(e)}>
                       <SelectTrigger className="w-[200px]" data-testid="hbauth-unlock-key-select-key-type-trigger">
