@@ -78,7 +78,7 @@ export function DialogHBAuth({
 
     const form = new FormData(e.target as HTMLFormElement);
     const username = form.get('username') as string;
-    const password = form.get('password') || '' as string;
+    const password = form.get('password') as string;
     const keyType = form.get('keytype') as string as KeyAuthorityType;
     const key = form.get('key') as string;
 
