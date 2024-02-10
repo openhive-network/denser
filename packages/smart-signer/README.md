@@ -57,7 +57,14 @@ blockchain.
    REACT_APP_LOGGING_BROWSER_ENABLED="true"
    REACT_APP_LOGGING_LOG_LEVEL="TRACE"
    ```
-9. Copy has-client.d.ts to app [../../apps/auth/has-client.d.ts]
+9. Copy has-client.d.ts to app [../../apps/auth/has-client.d.ts].
+10. Put component
+    [../../packages/smart-signer/components/modal-container.tsx](../../packages/smart-signer/components/modal-container.tsx)
+    in your layout. This component should always exist in DOM. See
+    [../../apps/auth/components/common/layout.tsx](../../apps/auth/components/common/layout.tsx).
+    If you're already using npm package
+    [react-modal-promise](https://github.com/cudr/react-modal-promise#readme)
+    just ensure you have ModalContainer in your DOM.
 
 
 

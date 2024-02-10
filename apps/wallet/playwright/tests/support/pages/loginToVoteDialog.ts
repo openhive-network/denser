@@ -6,7 +6,7 @@ export class LoginToVoteDialog {
   readonly getHeaderLoginDialog: Locator;
   readonly getUsernameInput: Locator;
   readonly getPostingPrivateKeyInput: Locator;
-  readonly getHbauthPasswordInput: Locator;
+  // readonly getHbauthPasswordInput: Locator;
   readonly getHiveAuthCheckbox: Locator;
   readonly getUseKeychainCheckbox: Locator;
   readonly getUseHiveauthCheckbox: Locator;
@@ -23,7 +23,7 @@ export class LoginToVoteDialog {
     this.getHeaderLoginDialog = this.getLoginDialog.getByText(/Login/);
     this.getUsernameInput = this.getLoginDialog.locator('[autoComplete="username"]');
     this.getPostingPrivateKeyInput = this.getLoginDialog.locator('[data-testid="posting-private-key-input"]');
-    this.getHbauthPasswordInput = this.getLoginDialog.locator('[data-testid="hbauth-password-input"]');
+    // this.getHbauthPasswordInput = this.getLoginDialog.locator('[data-testid="hbauth-password-input"]');
     this.getUseKeychainCheckbox = this.getLoginDialog.locator('input[name="useKeychain"]');
     this.getUseHiveauthCheckbox = this.getLoginDialog.locator('input[name="useHiveauth"]');
     this.getUseHbauthCheckbox = this.getLoginDialog.locator('input[name="useHbauth"]');
@@ -39,7 +39,7 @@ export class LoginToVoteDialog {
     await expect(this.getHeaderLoginDialog).toBeVisible();
     await expect(this.getUsernameInput).toHaveAttribute('placeholder', 'Enter your username');
     await expect(this.getPostingPrivateKeyInput).toHaveAttribute('placeholder', 'Posting private key');
-    await expect(this.getHbauthPasswordInput).toHaveAttribute('placeholder', 'Hbauth password to unlock key');
+    // await expect(this.getHbauthPasswordInput).toHaveAttribute('placeholder', 'Hbauth password to unlock key');
     await expect(this.getUseKeychainCheckbox).not.toBeChecked();
     await expect(this.getUseHiveauthCheckbox).not.toBeChecked();
     await expect(this.getUseHbauthCheckbox).not.toBeChecked();

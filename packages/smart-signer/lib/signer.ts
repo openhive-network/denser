@@ -44,9 +44,13 @@ export class Signer extends SignerBase {
    * @returns
    * @memberof Signer
    */
-  private getSigner(loginType: LoginTypes = LoginTypes.wif, apiEndpoint = this.apiEndpoint) {
+  private getSigner(
+      loginType: LoginTypes = LoginTypes.wif,
+      apiEndpoint = this.apiEndpoint,
+      storageType = this.storageType
+      ) {
     let signer: SignerHbauth | SignerHiveauth | SignerKeychain | SignerWif;
-    const args = { apiEndpoint };
+    const args = { apiEndpoint, storageType };
     if (loginType === LoginTypes.hbauth) {
       signer = new SignerHbauth(args);
     } else if (loginType === LoginTypes.hiveauth) {

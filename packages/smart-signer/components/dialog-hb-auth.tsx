@@ -18,6 +18,10 @@ import { isBrowser, AuthUser } from '@hive/hb-auth';
 import type { KeyAuthorityType } from '@hive/hb-auth';
 import { toast } from '@ui/components/hooks/use-toast';
 import { authService } from '@smart-signer/lib/auth-service';
+import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
+
+import { getLogger } from '@hive/ui/lib/logging';
+const logger = getLogger('app');
 
 interface DialogHBAuthProps {
   children: ReactNode;
@@ -34,7 +38,7 @@ export function DialogHBAuth({
   const [open, setOpen] = useState(false);
   const [k, setKey] = useState('');
 
-  const updateStatus = (user: AuthUser | null = null, err = null) => {
+  const updateStatus = (user: AuthUser | null = null, err: any = null) => {
     if (!user) {
       toast({
         title: 'Info!',
@@ -82,15 +86,39 @@ export function DialogHBAuth({
       const authClient = await authService.getOnlineClient();
 
       if (target.name === 'login') {
-        authClient
-          .authenticate(username, password, keyType)
-          .then(async () => {
-            const auth = await authClient.getAuthByUser(username);
-            updateStatus(auth);
-          })
-          .catch((err: any) => {
-            updateStatus(null, err);
-          });
+        const auth = await authClient.getAuthByUser(username);
+        if (auth?.authorized) {
+          updateStatus(auth);
+        } else {
+          let password = '';
+          try {
+            const result = await DialogPasswordModalPromise({
+              isOpen: true,
+              ...{
+                i18nKeyPlaceholder: 'login_form.password_hbauth_placeholder',
+                i18nKeyTitle: 'login_form.title_hbauth_dialog_password'
+              },
+            });
+            password = result;
+            if (!password) {
+              updateStatus(null, 'No password');
+              return;
+            }
+          } catch (error) {
+            updateStatus(null, 'No password');
+            return;
+          }
+
+          authClient
+            .authenticate(username, password, keyType)
+            .then(async () => {
+              const auth = await authClient.getAuthByUser(username);
+              updateStatus(auth);
+            })
+            .catch((err: any) => {
+              updateStatus(null, err);
+            });
+        }
       }
 
       if (target.name === 'authorize') {
@@ -140,20 +168,6 @@ export function DialogHBAuth({
                       <div className="flex h-full w-full items-center justify-center"> @</div>
                     </span>
                   </div>
-                  <div className="mb-5">
-                    <input
-                      autoComplete="current-password"
-                      type="password"
-                      id="password"
-                      name="password"
-                      className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
-                      placeholder="Password"
-                      required
-                      disabled={k === 'watch'}
-                      data-testid="hbauth-unlock-key-password-input"
-                    />
-                  </div>
-
                   <div className="mb-5" data-testid="hbauth-unlock-key-select-key-type">
                     <Select name="keytype" onValueChange={(e) => setKey(e)}>
                       <SelectTrigger className="w-[200px]" data-testid="hbauth-unlock-key-select-key-type-trigger">
