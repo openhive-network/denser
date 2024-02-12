@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-function useLocalStorage<T extends string | object>(key: string, initialValue: T) {
+function useLocalStorage<T extends string | object>(key: string, initialValue: T, stringify = true) {
   // State to store our value
   // Pass initial state function to useState so logic is only executed once
   const [storedValue, setStoredValue] = useState<T | undefined>(() => {
@@ -27,7 +27,7 @@ function useLocalStorage<T extends string | object>(key: string, initialValue: T
       setStoredValue(valueToStore);
       // Save to local storage
       if (typeof window !== 'undefined') {
-        window.localStorage.setItem(key, JSON.stringify(valueToStore));
+        window.localStorage.setItem(key, stringify ? JSON.stringify(valueToStore) : valueToStore);
       }
     } catch (error) {
       // A more advanced implementation would handle the error case
