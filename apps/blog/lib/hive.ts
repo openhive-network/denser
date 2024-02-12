@@ -8,6 +8,7 @@ import { FullAccount } from '@hive/ui/store/app-types';
 import { bridgeServer } from '@hive/ui/lib/bridge';
 import { getDynamicGlobalProperties, getFeedHistory } from '@hive/ui/lib/hive';
 import { IManabarData } from '@hive/wax/web';
+import moment from 'moment';
 
 export interface TrendingTag {
   comments: number;
@@ -409,12 +410,16 @@ interface Manabars {
   upvote: IManabarData;
   downvote: IManabarData;
   rc: IManabarData;
+  upvoteCooldown: Date;
+  downvoteCooldown: Date;
+  rcCooldown: Date;
 }
 
 interface SingleManabar {
   max: string;
   current: string;
   percentageValue: number;
+  cooldown: string;
 }
 
 interface Manabar {
@@ -427,11 +432,28 @@ export const getManabars = async (
   hiveChain: IHiveChainInterface
 ): Promise<Manabars | null> => {
   try {
+    const upvoteCooldownPromise = hiveChain.calculateManabarFullRegenerationTimeForAccount(accountName, 0);
+    const downvoteCooldownPromise = hiveChain.calculateManabarFullRegenerationTimeForAccount(accountName, 1);
+    const rcCooldownPromise = hiveChain.calculateManabarFullRegenerationTimeForAccount(accountName, 2);
     const upvotePromise = hiveChain.calculateCurrentManabarValueForAccount(accountName, 0);
     const downvotePromise = hiveChain.calculateCurrentManabarValueForAccount(accountName, 1);
     const rcPromise = hiveChain.calculateCurrentManabarValueForAccount(accountName, 2);
-    const manabars = await Promise.all([upvotePromise, downvotePromise, rcPromise]);
-    return { upvote: manabars[0], downvote: manabars[1], rc: manabars[2] };
+    const manabars = await Promise.all([
+      upvotePromise,
+      upvoteCooldownPromise,
+      downvotePromise,
+      downvoteCooldownPromise,
+      rcPromise,
+      rcCooldownPromise
+    ]);
+    return {
+      upvote: manabars[0],
+      upvoteCooldown: manabars[1],
+      downvote: manabars[2],
+      downvoteCooldown: manabars[3],
+      rc: manabars[4],
+      rcCooldown: manabars[5]
+    };
   } catch (error) {
     console.error(error);
     return null;
@@ -443,19 +465,23 @@ export const getManabar = async (
 ): Promise<Manabar | null> => {
   const manabars = await getManabars(accountName, hiveChain!);
   if (!manabars) return null;
-  const { upvote, downvote, rc } = manabars;
+  const { upvote, upvoteCooldown, downvote, downvoteCooldown, rc, rcCooldown } = manabars;
+  const today = moment();
   const processedManabars: Manabar = {
     upvote: {
+      cooldown: (moment(upvoteCooldown).diff(today, 'minutes') / 60).toFixed(2),
       max: upvote.max.toString(),
       current: upvote.current.toString(),
       percentageValue: upvote.percent
     },
     downvote: {
+      cooldown: (moment(downvoteCooldown).diff(today, 'minutes') / 60).toFixed(2),
       max: downvote.max.toString(),
       current: downvote.current.toString(),
       percentageValue: downvote.percent
     },
     rc: {
+      cooldown: (moment(rcCooldown).diff(today, 'minutes') / 60).toFixed(2),
       max: rc.max.toString(),
       current: rc.current.toString(),
       percentageValue: rc.percent

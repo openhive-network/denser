@@ -22,30 +22,8 @@ import UserMenu from '@/blog/components/user-menu';
 import LangToggle from './lang-toggle';
 import { PieChart, Pie } from 'recharts';
 import useManabars from './hooks/useManabars';
-import { findRcAccounts } from '../lib/hive';
-import { RCAccount } from '@hiveio/dhive/lib/chain/rc';
 
 const logger = getLogger('app');
-const calculateRcStats = (userRc: RCAccount[]) => {
-  const manaRegenerationTime = 432000;
-  const currentTime = parseInt((new Date().getTime() / 1000).toFixed(0));
-  const stats = {
-    resourceCreditsPercent: 0,
-    resourceCreditsWaitTime: 0
-  };
-
-  const maxRcMana = parseFloat(userRc[0].max_rc);
-  const rcManaElapsed = currentTime - userRc[0].rc_manabar.last_update_time;
-  let currentRcMana =
-    parseFloat(userRc[0].rc_manabar.current_mana) + (rcManaElapsed * maxRcMana) / manaRegenerationTime;
-  if (currentRcMana > maxRcMana) {
-    currentRcMana = maxRcMana;
-  }
-  stats.resourceCreditsPercent = Math.round((currentRcMana * 100) / maxRcMana);
-  stats.resourceCreditsWaitTime = ((100 - stats.resourceCreditsPercent) * manaRegenerationTime) / 100;
-
-  return stats;
-};
 
 const SiteHeader: FC = () => {
   const router = useRouter();
@@ -56,7 +34,6 @@ const SiteHeader: FC = () => {
   }, []);
   const { user } = useUser();
   const { manabarsData } = useManabars(user?.username);
-  console.log(manabarsData);
   const { data, isLoading, isError } = useQuery(
     [['unreadNotifications', user?.username]],
     () => getUnreadNotifications(user?.username || ''),
@@ -64,19 +41,6 @@ const SiteHeader: FC = () => {
       enabled: !!user?.username
     }
   );
-  const {
-    data: rcData,
-    isLoading: rcLoading,
-    isError: rcError
-  } = useQuery([['findRcAcconut', user?.username]], () => findRcAccounts(user?.username || ''), {
-    enabled: !!user?.username
-  });
-  const stats = rcData
-    ? calculateRcStats(rcData)
-    : {
-        resourceCreditsPercent: 0,
-        resourceCreditsWaitTime: 0
-      };
   const upvoteAngle = (360 * (manabarsData ? manabarsData?.upvote.percentageValue : 0)) / 100;
   const downvoteAngle = (360 * (manabarsData ? manabarsData?.downvote.percentageValue : 0)) / 100;
   const rcAngle = (360 * (manabarsData ? manabarsData?.rc.percentageValue : 0)) / 100;
@@ -275,19 +239,29 @@ const SiteHeader: FC = () => {
                       </div>
                     </UserMenu>
                   </TooltipTrigger>
-                  <TooltipContent className="flex flex-col">
-                    <span>Resource Credits</span>
-                    <span className="text-blue-500">(RC) level: {manabarsData?.rc.percentageValue}%</span>
-                    <span className="text-green-600">
-                      Voting Power: {manabarsData?.upvote.percentageValue}%
-                    </span>
-                    <span className="text-red-600">
-                      Downvote power: {manabarsData?.downvote.percentageValue}%
-                    </span>
-                    {stats.resourceCreditsWaitTime !== 0 ? (
-                      <span>Full in {stats.resourceCreditsWaitTime / 3600}h</span>
-                    ) : null}
-                  </TooltipContent>
+                  {manabarsData && (
+                    <TooltipContent className="flex flex-col">
+                      <span>Resource Credits</span>
+                      <div className="flex flex-col text-blue-600">
+                        <span>(RC) level: {manabarsData.rc.percentageValue}%</span>
+                        {manabarsData.rc.percentageValue !== 100 ? (
+                          <span>Full in: {manabarsData.rc.cooldown}h</span>
+                        ) : null}
+                      </div>
+                      <div className="flex flex-col text-green-600">
+                        <span> Voting Power: {manabarsData.upvote.percentageValue}%</span>
+                        {manabarsData?.upvote.percentageValue !== 100 ? (
+                          <span>Full in: {manabarsData.upvote.cooldown}h</span>
+                        ) : null}
+                      </div>
+                      <div className="flex flex-col text-red-600">
+                        <span> Downvote power: {manabarsData.downvote.percentageValue}%</span>
+                        {manabarsData.downvote.percentageValue !== 100 ? (
+                          <span>Full in: {manabarsData.downvote.cooldown}h</span>
+                        ) : null}
+                      </div>
+                    </TooltipContent>
+                  )}
                 </Tooltip>
               </TooltipProvider>
             ) : null}
