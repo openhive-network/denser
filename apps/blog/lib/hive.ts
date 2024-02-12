@@ -1,12 +1,13 @@
 import { RCAPI } from '@hiveio/dhive/lib/helpers/rc';
 import { RCAccount } from '@hiveio/dhive/lib/chain/rc';
 import { Moment } from 'moment';
-
+import { IHiveChainInterface } from '@hive/wax/web';
 import { isCommunity, parseAsset, vestsToRshares } from '@/blog/lib/utils';
 import { DATA_LIMIT } from '@ui/lib/bridge';
 import { FullAccount } from '@hive/ui/store/app-types';
 import { bridgeServer } from '@hive/ui/lib/bridge';
 import { getDynamicGlobalProperties, getFeedHistory } from '@hive/ui/lib/hive';
+import { IManabarData } from '@hive/wax/web';
 
 export interface TrendingTag {
   comments: number;
@@ -403,3 +404,62 @@ export const brodcastTransaction = (transaction: any): Promise<any> =>
 //   });
 //   return await response.json();
 // };
+
+interface Manabars {
+  upvote: IManabarData;
+  downvote: IManabarData;
+  rc: IManabarData;
+}
+
+interface SingleManabar {
+  max: string;
+  current: string;
+  percentageValue: number;
+}
+
+interface Manabar {
+  upvote: SingleManabar;
+  downvote: SingleManabar;
+  rc: SingleManabar;
+}
+export const getManabars = async (
+  accountName: string,
+  hiveChain: IHiveChainInterface
+): Promise<Manabars | null> => {
+  try {
+    const upvotePromise = hiveChain.calculateCurrentManabarValueForAccount(accountName, 0);
+    const downvotePromise = hiveChain.calculateCurrentManabarValueForAccount(accountName, 1);
+    const rcPromise = hiveChain.calculateCurrentManabarValueForAccount(accountName, 2);
+    const manabars = await Promise.all([upvotePromise, downvotePromise, rcPromise]);
+    return { upvote: manabars[0], downvote: manabars[1], rc: manabars[2] };
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+export const getManabar = async (
+  accountName: string,
+  hiveChain: IHiveChainInterface
+): Promise<Manabar | null> => {
+  const manabars = await getManabars(accountName, hiveChain!);
+  if (!manabars) return null;
+  const { upvote, downvote, rc } = manabars;
+  const processedManabars: Manabar = {
+    upvote: {
+      max: upvote.max.toString(),
+      current: upvote.current.toString(),
+      percentageValue: upvote.percent
+    },
+    downvote: {
+      max: downvote.max.toString(),
+      current: downvote.current.toString(),
+      percentageValue: downvote.percent
+    },
+    rc: {
+      max: rc.max.toString(),
+      current: rc.current.toString(),
+      percentageValue: rc.percent
+    }
+  };
+  return processedManabars;
+};

@@ -20,12 +20,12 @@ import { getUnreadNotifications } from '@ui/lib/bridge';
 import ModeToggle from './mode-toggle';
 import UserMenu from '@/blog/components/user-menu';
 import LangToggle from './lang-toggle';
-import { findRcAccounts } from '../lib/hive';
 import { PieChart, Pie } from 'recharts';
+import useManabars from './hooks/useManabars';
+import { findRcAccounts } from '../lib/hive';
 import { RCAccount } from '@hiveio/dhive/lib/chain/rc';
 
 const logger = getLogger('app');
-
 const calculateRcStats = (userRc: RCAccount[]) => {
   const manaRegenerationTime = 432000;
   const currentTime = parseInt((new Date().getTime() / 1000).toFixed(0));
@@ -54,8 +54,9 @@ const SiteHeader: FC = () => {
   useEffect(() => {
     setIsClient(true);
   }, []);
-
   const { user } = useUser();
+  const { manabarsData } = useManabars(user?.username);
+  console.log(manabarsData);
   const { data, isLoading, isError } = useQuery(
     [['unreadNotifications', user?.username]],
     () => getUnreadNotifications(user?.username || ''),
@@ -76,16 +77,16 @@ const SiteHeader: FC = () => {
         resourceCreditsPercent: 0,
         resourceCreditsWaitTime: 0
       };
-  const chartAngle = (360 * stats.resourceCreditsPercent) / 100;
+  const upvoteAngle = (360 * (manabarsData ? manabarsData?.upvote.percentageValue : 0)) / 100;
+  const downvoteAngle = (360 * (manabarsData ? manabarsData?.downvote.percentageValue : 0)) / 100;
+  const rcAngle = (360 * (manabarsData ? manabarsData?.rc.percentageValue : 0)) / 100;
   const chart = [{ name: '', value: 1 }];
-
   const [input, setInput] = useState('');
   const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       router.push(`/search?q=${input}&s=newest`);
     }
   };
-
   const [isNavHidden, setIsNavHidden] = useState(false);
   let lastScrollY = typeof window !== 'undefined' ? window.scrollY : 0;
   useEffect(() => {
@@ -103,7 +104,6 @@ const SiteHeader: FC = () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
-
   return (
     <header
       className={clsx(
@@ -112,7 +112,7 @@ const SiteHeader: FC = () => {
       )}
       translate="no"
     >
-      <div className="container flex h-14 w-full items-center justify-between">
+      <div className="container flex h-16 w-full items-center justify-between">
         <Link href="/trending" className="flex items-center space-x-2">
           <Icons.hive className="h-6 w-6" />
           <span className="font-bold sm:inline-block">{siteConfig.name}</span>
@@ -190,31 +190,80 @@ const SiteHeader: FC = () => {
             {isClient && user?.isLoggedIn ? (
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger data-testid="comment-card-footer-downvote">
+                  <TooltipTrigger data-testid="comment-card-footer-downvote" className=" cursor-pointer">
                     <UserMenu user={user} notifications={data?.unread}>
-                      <div className="relative inline-flex w-fit cursor-pointer items-center justify-center">
+                      <div className="group relative inline-flex w-fit cursor-pointer items-center justify-center">
                         {data && data.unread !== 0 ? (
-                          <div className="absolute bottom-auto left-auto right-0.5 top-1.5 z-10 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-red-600 px-1.5 py-1 text-center align-baseline text-xs font-bold leading-none text-white">
+                          <div className="absolute bottom-auto left-auto right-0 top-0.5 z-50 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-red-600 px-1.5 py-1 text-center align-baseline text-xs font-bold leading-none text-white">
                             {data.unread}
                           </div>
                         ) : null}
-                        <div className="absolute cursor-pointer">
+                        <div className="absolute z-20 group-hover:hidden">
                           <PieChart width={50} height={50}>
                             <Pie
                               data={chart}
                               cx={20}
                               cy={20}
                               startAngle={90}
-                              endAngle={-chartAngle + 90}
-                              innerRadius={17}
-                              outerRadius={23}
+                              endAngle={-rcAngle + 90}
+                              innerRadius={18}
+                              outerRadius={24}
                               fill="#0088FE"
                               paddingAngle={0}
                               dataKey="value"
                             ></Pie>
                           </PieChart>
                         </div>
-                        <Avatar>
+
+                        <div className="absolute z-20 hidden group-hover:block">
+                          <PieChart width={50} height={50}>
+                            <Pie
+                              data={chart}
+                              cx={20}
+                              cy={20}
+                              startAngle={90}
+                              endAngle={-downvoteAngle + 90}
+                              innerRadius={18}
+                              outerRadius={21.5}
+                              fill="#C01000"
+                              paddingAngle={0}
+                              dataKey="value"
+                            ></Pie>
+                          </PieChart>
+                        </div>
+                        <div className="absolute z-10 hidden group-hover:block">
+                          <PieChart width={60} height={60}>
+                            <Pie
+                              data={chart}
+                              cx={25}
+                              cy={25}
+                              startAngle={90}
+                              endAngle={-upvoteAngle + 90}
+                              innerRadius={21.5}
+                              outerRadius={25}
+                              fill="#00C040"
+                              paddingAngle={0}
+                              dataKey="value"
+                            ></Pie>
+                          </PieChart>
+                        </div>
+                        <div className="absolute hidden group-hover:block">
+                          <PieChart width={70} height={70}>
+                            <Pie
+                              data={chart}
+                              cx={30}
+                              cy={30}
+                              startAngle={90}
+                              endAngle={-rcAngle + 90}
+                              innerRadius={25}
+                              outerRadius={28.5}
+                              fill="#0088FE"
+                              paddingAngle={0}
+                              dataKey="value"
+                            ></Pie>
+                          </PieChart>
+                        </div>
+                        <Avatar className="z-30 h-9 w-9">
                           <AvatarImage
                             src={`https://images.hive.blog/u/${user?.username}/avatar/small`}
                             alt="Profile picture"
@@ -228,7 +277,13 @@ const SiteHeader: FC = () => {
                   </TooltipTrigger>
                   <TooltipContent className="flex flex-col">
                     <span>Resource Credits</span>
-                    <span>(RC) level: {stats.resourceCreditsPercent}%</span>
+                    <span className="text-blue-500">(RC) level: {manabarsData?.rc.percentageValue}%</span>
+                    <span className="text-green-600">
+                      Voting Power: {manabarsData?.upvote.percentageValue}%
+                    </span>
+                    <span className="text-red-600">
+                      Downvote power: {manabarsData?.downvote.percentageValue}%
+                    </span>
                     {stats.resourceCreditsWaitTime !== 0 ? (
                       <span>Full in {stats.resourceCreditsWaitTime / 3600}h</span>
                     ) : null}
