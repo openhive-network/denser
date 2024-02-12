@@ -23,7 +23,7 @@ import { Entry } from '@ui/lib/bridge';
 import PostImage from './post-img';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { operationService } from '@operations/index';
+import { transactionService } from '@transaction/index';
 
 const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage: boolean | undefined }) => {
   const { t } = useTranslation('common_blog');
@@ -233,7 +233,7 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
                         {user && user.isLoggedIn ? (
                           <Icons.arrowUpCircle
                             className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1"
-                            onClick={(e) => operationService.vote(e, user, 'upvote', post)}
+                            onClick={(e) => transactionService.vote(e, user, 'upvote', post)}
                           />
                         ) : (
                           <DialogLogin>
@@ -252,7 +252,7 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
                         {user && user.isLoggedIn ? (
                           <Icons.arrowDownCircle
                             className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1"
-                            onClick={(e) => operationService.vote(e, user, 'downvote', post)}
+                            onClick={(e) => transactionService.vote(e, user, 'downvote', post)}
                           />
                         ) : (
                           <DialogLogin>

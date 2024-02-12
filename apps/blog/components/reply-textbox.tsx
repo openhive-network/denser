@@ -8,7 +8,7 @@ import { useTranslation } from 'next-i18next';
 import { DefaultRenderer } from '@hiveio/content-renderer';
 import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { operationService } from '@operations/index';
+import { transactionService } from '@transaction/index';
 
 export function ReplyTextbox({
   onSetReply,
@@ -89,7 +89,7 @@ export function ReplyTextbox({
           <Button
             disabled={text === ''}
             onClick={() => {
-              operationService.addComment(username, user, permlink, cleanedText);
+              transactionService.addComment(username, user, permlink, cleanedText);
               setText('');
             }}
           >

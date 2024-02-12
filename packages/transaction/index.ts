@@ -2,7 +2,9 @@ import {
   CommunityOperationBuilder,
   EFollowBlogAction,
   FollowOperationBuilder,
-  operation
+  operation,
+  createHiveChain,
+  BroadcastTransactionRequest
 } from '@hive/wax/web';
 import { logger } from '@hive/ui/lib/logger';
 import { toast } from '@hive/ui/components/hooks/use-toast';
@@ -14,17 +16,34 @@ import { User } from '@smart-signer/types/common';
 
 // TODO Check errors message for indexOf for particular method
 
-class OperationService {
+class TransactionService {
   static signer = new Signer();
   description = 'Transaction broadcast error';
 
+  async buildTransaction(operation: operation) {
+    const hiveChain = await createHiveChain({ apiEndpoint: 'https://api.hive.blog' });
+    const tx = await hiveChain.getTransactionBuilder();
+    tx.push(operation).validate();
+    logger.info('SignerHbauth.broadcastTransaction tx: %o', tx.toApi());
+    const transaction = tx.build();
+    // in here sign transaction via signer
+
+    return { tx, transaction };
+  }
+
   async brodcastTransaction(user: User, operation: operation) {
     try {
-      await OperationService.signer.broadcastTransaction({
-        operation: operation,
+      const hiveChain = await createHiveChain({ apiEndpoint: 'https://api.hive.blog' });
+      // In here we must build transaction via buildTransaction method, then sign with TransactionService.signer.sign or something like this and then broadcastTransaction
+      const { tx, transaction } = await this.buildTransaction(operation);
+      const signature = await TransactionService.signer.broadcastTransaction({
+        tx: tx,
         loginType: user.loginType,
         username: user.username
       });
+      transaction.signatures.push(signature);
+      const transactionRequest = new BroadcastTransactionRequest(tx);
+      await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
     } catch (e) {
       logger.error('got error', e);
       if (`${e}`.indexOf('Not implemented') >= 0) {
@@ -151,4 +170,4 @@ class OperationService {
   }
 }
 
-export const operationService = new OperationService();
+export const transactionService = new TransactionService();

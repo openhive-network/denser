@@ -24,7 +24,7 @@
     "@hive/hb-auth": "^0.0.1-stable.d9b0769",
     "@hive/prettier-config-custom": "*",
     "@hive/smart-signer": "*",
-    "@hive/operations": "*",
+    "@hive/transaction": "*",
     "@hive/tailwindcss-config": "*",
     "@hive/tsconfig": "*",
     "@hive/ui": "*",

@@ -8,7 +8,7 @@ import { FollowList } from '@ui/lib/bridge';
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { operationService } from '@operations/index';
+import { transactionService } from '@transaction/index';
 
 export default function ProfileLists({
   username,
@@ -104,7 +104,7 @@ export default function ProfileLists({
                     size="xs"
                     onClick={() => {
                       if (variant === 'muted') {
-                        operationService.follow(username, user, 'unmute');
+                        TransactionService.follow(username, user, 'unmute');
                       }
                     }}
                   >

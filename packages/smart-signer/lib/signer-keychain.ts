@@ -47,12 +47,7 @@ export function waxToKeychainOperation(operation: operation) {
  * @extends {SignerBase}
  */
 export class SignerKeychain extends SignerBase {
-
-  async signChallenge({
-    message,
-    username,
-    keyType = KeyTypes.posting,
-  }: SignChallenge): Promise<string> {
+  async signChallenge({ message, username, keyType = KeyTypes.posting }: SignChallenge): Promise<string> {
     logger.info('in SignerKeychain.signChallenge %o', { message, username, keyType });
     const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
     try {
@@ -162,5 +157,4 @@ export class SignerKeychain extends SignerBase {
       throw error;
     }
   }
-
 }

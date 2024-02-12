@@ -13,7 +13,7 @@ import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useEffect, useState } from 'react';
-import { operationService } from '@operations/index';
+import { transactionService } from '@transaction/index';
 
 const CommunityDescription = ({
   data,
@@ -96,7 +96,7 @@ const CommunityDescription = ({
                     onClick={() => {
                       const nextIsSubscribe = !isSubscribe;
                       setIsSubscribe(nextIsSubscribe);
-                      operationService.subscribe(username, user, 'subscribe');
+                      transactionService.subscribe(username, user, 'subscribe');
                     }}
                   >
                     {t('communities.buttons.subscribe')}
@@ -109,7 +109,7 @@ const CommunityDescription = ({
                     onClick={() => {
                       const nextIsSubscribe = !isSubscribe;
                       setIsSubscribe(nextIsSubscribe);
-                      operationService.subscribe(username, user, 'unsubscribe');
+                      transactionService.subscribe(username, user, 'unsubscribe');
                     }}
                   >
                     <span className="group-hover:hidden">Joined</span>

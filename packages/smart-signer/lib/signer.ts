@@ -34,7 +34,6 @@ const logger = getLogger('app');
  * @extends {SignerBase}
  */
 export class Signer extends SignerBase {
-
   /**
    * Creates instance of Signer for given `loginType` and returns it.
    *
@@ -45,10 +44,10 @@ export class Signer extends SignerBase {
    * @memberof Signer
    */
   private getSigner(
-      loginType: LoginTypes = LoginTypes.wif,
-      apiEndpoint = this.apiEndpoint,
-      storageType = this.storageType
-      ) {
+    loginType: LoginTypes = LoginTypes.wif,
+    apiEndpoint = this.apiEndpoint,
+    storageType = this.storageType
+  ) {
     let signer: SignerHbauth | SignerHiveauth | SignerKeychain | SignerWif;
     const args = { apiEndpoint, storageType };
     if (loginType === LoginTypes.hbauth) {
@@ -123,21 +122,21 @@ export class Signer extends SignerBase {
    * @memberof Signer
    */
   async broadcastTransaction({
-    operation,
+    tx,
     loginType,
     username,
     keyType = KeyTypes.posting,
     translateFn = (v) => v
   }: BroadcastTransaction): Promise<any> {
     logger.info('in broadcastTransaction: %o', {
-      operation,
+      tx,
       loginType,
       username,
       keyType
     });
     const signer = this.getSigner(loginType);
     return signer.broadcastTransaction({
-      operation,
+      tx,
       loginType,
       username,
       keyType,
@@ -157,5 +156,4 @@ export class Signer extends SignerBase {
     const signer = this.getSigner(loginType);
     return signer.destroy(username, loginType);
   }
-
 }

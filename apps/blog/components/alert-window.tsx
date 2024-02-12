@@ -11,7 +11,7 @@ import {
 } from '@hive/ui/components/alert-dialog';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { ReactNode } from 'react';
-import { operationService } from '@operations/index';
+import { transactionService } from '@transaction/index';
 
 export function AlertDialogReblog({
   children,
@@ -46,7 +46,7 @@ export function AlertDialogReblog({
           <AlertDialogAction
             className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
             data-testid="reblog-dialog-ok"
-            onClick={() => operationService.reblog(username, user, permlink)}
+            onClick={() => transactionService.reblog(username, user, permlink)}
           >
             OK
           </AlertDialogAction>

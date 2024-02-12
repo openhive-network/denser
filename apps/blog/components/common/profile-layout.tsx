@@ -21,7 +21,7 @@ import { TFunction } from 'i18next';
 import env from '@beam-australia/react-env';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useFollowingInfiniteQuery } from '../hooks/use-following-infinitequery';
-import { operationService } from '@operations/index';
+import { transactionService } from '@transaction/index';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -335,7 +335,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     onClick={() => {
                       const nextFollow = !isFollow;
                       setIsFollow(nextFollow);
-                      operationService.follow(username, user, nextFollow ? 'follow' : 'unfollow');
+                      transactionService.follow(username, user, nextFollow ? 'follow' : 'unfollow');
                     }}
                     disabled={isLoadingFollowingData || isFetchingFollowingData}
                   >
@@ -363,7 +363,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     onClick={() => {
                       const nextMute = !isMute;
                       setIsMute(nextMute);
-                      operationService.follow(username, user, nextMute ? 'mute' : 'unmute');
+                      transactionService.follow(username, user, nextMute ? 'mute' : 'unmute');
                     }}
                     disabled={isLoadingFollowingDataIgnore || isFetchingFollowingDataIgnore}
                   >

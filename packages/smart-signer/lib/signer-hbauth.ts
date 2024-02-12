@@ -2,7 +2,6 @@ import { KeyTypes } from '@smart-signer/types/common';
 import { cryptoUtils } from '@hiveio/dhive';
 import { authService } from '@smart-signer/lib/auth-service';
 import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer';
-import { createHiveChain, BroadcastTransactionRequest } from '@hive/wax/web';
 import { SignerBase } from '@smart-signer/lib/signer-base';
 import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
 
@@ -19,13 +18,12 @@ const logger = getLogger('app');
  * @extends {SignerBase}
  */
 export class SignerHbauth extends SignerBase {
-
   async getPasswordFromUser(dialogProps: { [key: string]: any } = {}): Promise<string> {
     let password = '';
     try {
       const result = await DialogPasswordModalPromise({
         isOpen: true,
-        ...dialogProps,
+        ...dialogProps
       });
       password = result as string;
       logger.info('Return from PasswordModalPromise: %s', result);
@@ -53,28 +51,19 @@ export class SignerHbauth extends SignerBase {
   }
 
   async broadcastTransaction({
-    operation,
+    tx,
     username,
     keyType = KeyTypes.posting
-  }: BroadcastTransaction): Promise<{ success: boolean; result: string; error: string }> {
-    let result = { success: true, result: '', error: '' };
+  }: BroadcastTransaction): Promise<string> {
+    let signature;
     try {
-      const hiveChain = await createHiveChain({ apiEndpoint: this.apiEndpoint });
-      const tx = await hiveChain.getTransactionBuilder();
-      tx.push(operation).validate();
-      const signature = await this.signDigest(tx.sigDigest, username, '', keyType);
-      const transaction = tx.build();
-      logger.info('SignerHbauth.broadcastTransaction tx: %o', tx.toApi());
-      transaction.signatures.push(signature);
-      const transactionRequest = new BroadcastTransactionRequest(tx);
-      await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
+      signature = await this.signDigest(tx.sigDigest, username, '', keyType);
     } catch (error) {
       logger.error('SignerHbauth.broadcastTransaction error: %o', error);
-      result = { success: false, result: '', error: 'Broadcast failed' };
       throw error;
     }
 
-    return result;
+    return signature;
   }
 
   async signDigest(digest: string, username: string, password: string, keyType: KeyTypes = KeyTypes.posting) {
@@ -93,7 +82,6 @@ export class SignerHbauth extends SignerBase {
     }
 
     if (!auth.authorized) {
-
       if (!password) {
         password = await this.getPasswordFromUser({
           i18nKeyPlaceholder: 'login_form.password_hbauth_placeholder',
@@ -150,5 +138,4 @@ export class SignerHbauth extends SignerBase {
       // We should offer adding account to wallet.
     }
   }
-
 }
