@@ -12,7 +12,7 @@ const logger = getLogger('app');
  * operations, and sends operations to Hive blockchain. It uses So known
  * "Wif" custom tool, based on
  * [@hiveio/dhive](https://openhive-network.github.io/dhive/) and
- * browser's localStorage.
+ * Web Storage API.
  *
  * @export
  * @class SignerWif
@@ -34,9 +34,15 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
         password = '', // WIF private key,
     }: SignChallenge): Promise<string> {
         try {
-            const wif = password ? password
+            let wif = password ? password
                 : this.storage.getItem(`wif.${username}@${keyType}`);
+            if (!wif) {
+                wif = await this.getPasswordFromUser({
+                    i18nKeyPlaceholder: 'login_form.posting_private_key',
+                });
+            }
             if (!wif) throw new Error('No wif key');
+
             const privateKey = PrivateKey.fromString(wif);
             const messageHash = cryptoUtils.sha256(message);
             const signature = privateKey.sign(messageHash).toString();
@@ -58,9 +64,17 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
         logger.info('signDigest args: %o', args);
         let signature = ''
         try {
-            const wif = password ? password
+            let wif = password ? password
                 : this.storage.getItem(`wif.${username}@${keyType}`);
+            if (!wif) {
+                wif = await this.getPasswordFromUser({
+                    i18nKeyPlaceholder: 'login_form.posting_private_key_placeholder',
+                    i18nKeyTitle: 'login_form.title_wif_dialog_password',
+                });
+                // TODO Should we store this key now?
+            }
             if (!wif) throw new Error('No wif key');
+
             const privateKey = PrivateKey.fromString(wif);
             const hash = Buffer.from(digest, 'hex');
             signature = privateKey.sign(hash).toString();

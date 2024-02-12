@@ -5,12 +5,17 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useTranslation } from 'next-i18next';
 import { Separator } from '@hive/ui/components/separator';
-import { getLogger } from '@hive/ui/lib/logging';
 import { hasCompatibleKeychain } from '@smart-signer/lib/signer-keychain';
 import { username } from '@smart-signer/lib/auth/utils';
-import { LoginTypes } from '@smart-signer/types/common';
+import { LoginTypes, StorageTypes } from '@smart-signer/types/common';
 import { validateHivePassword } from '@smart-signer/lib/validate-hive-password';
 import { Icons } from '@ui/components/icons';
+import { toast } from '@ui/components/hooks/use-toast';
+
+import { getLogger } from '@hive/ui/lib/logging';
+const logger = getLogger('app');
+
+const ZodStorageTypesEnum = z.nativeEnum(StorageTypes);
 
 const ZodLoginTypesEnum = z.nativeEnum(LoginTypes);
 type ZodLoginTypesEnum = z.infer<typeof ZodLoginTypesEnum>;
@@ -30,10 +35,6 @@ const passwordField = z.object({
   })
 });
 
-const passwordHbauthField = z.object({
-  passwordHbauth: z.string().min(1, { message: 'Minimum length 1 character' })
-});
-
 const commonFields = z.object({
   username,
   useHbauth: z.boolean(),
@@ -43,11 +44,10 @@ const commonFields = z.object({
 });
 
 const commonFieldsWithPassword = commonFields.merge(passwordField);
-const commonFieldsWithPasswordHbauth = commonFields.merge(passwordHbauthField);
 
 const loginFormSchema = z.discriminatedUnion('loginType', [
   z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.wif) }).merge(commonFieldsWithPassword),
-  z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.hbauth) }).merge(commonFieldsWithPasswordHbauth),
+  z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.hbauth) }).merge(commonFields),
   z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.hiveauth) }).merge(commonFields),
   z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.keychain) }).merge(commonFields),
   z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.hivesigner) }).merge(commonFields)
@@ -58,7 +58,6 @@ export type LoginFormSchema = z.infer<typeof loginFormSchema>;
 const loginFormDefaultValues = {
   loginType: LoginTypes.wif,
   password: '',
-  passwordHbauth: '',
   remember: false,
   useHbauth: false,
   useHiveauth: false,
@@ -75,12 +74,10 @@ export function LoginForm({
   onSubmit: (data: LoginFormSchema) => void;
   i18nNamespace?: string;
 }) {
-  const logger = getLogger('app');
 
   const { t } = useTranslation(i18nNamespace);
   const [isKeychainSupported, setIsKeychainSupported] = useState(false);
   const [disabledPasword, setDisabledPassword] = useState(false);
-  const [disabledPaswordHbauth, setDisabledPasswordHbauth] = useState(true);
 
   useEffect(() => {
     setIsKeychainSupported(hasCompatibleKeychain());
@@ -89,7 +86,7 @@ export function LoginForm({
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     setValue,
     getValues,
     trigger,
@@ -111,12 +108,10 @@ export function LoginForm({
       }
       trigger('password');
       setDisabledPassword(true);
-      setDisabledPasswordHbauth(true);
     } else {
       setValue('useKeychain', false);
       setValue('loginType', LoginTypes.wif);
       setDisabledPassword(false);
-      setDisabledPasswordHbauth(true);
     }
   };
 
@@ -132,12 +127,10 @@ export function LoginForm({
       }
       trigger('password');
       setDisabledPassword(true);
-      setDisabledPasswordHbauth(true);
     } else {
       setValue('useHiveauth', false);
       setValue('loginType', LoginTypes.wif);
       setDisabledPassword(false);
-      setDisabledPasswordHbauth(true);
     }
   };
 
@@ -153,14 +146,20 @@ export function LoginForm({
       }
       trigger('password');
       setDisabledPassword(true);
-      setDisabledPasswordHbauth(false);
     } else {
       setValue('useHbauth', false);
       setValue('loginType', LoginTypes.wif);
       setDisabledPassword(false);
-      setDisabledPasswordHbauth(true);
     }
   };
+
+  const onHivesignerButtonClick = () => {
+    toast({
+      title: 'Info',
+      description: 'Hivesigner support is not implemented',
+      variant: 'destructive',
+    });
+  }
 
   return (
     <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
@@ -207,27 +206,6 @@ export function LoginForm({
                 {
                   /* @ts-ignore */
                   t(errors.password.message)
-                }
-              </p>
-            )}
-          </div>
-
-          <div className="relative mb-5">
-            <input
-              type="password"
-              className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500 dark:text-slate-300"
-              placeholder={t('login_form.password_hbauth_placeholder')}
-              autoComplete="current-password"
-              disabled={disabledPaswordHbauth}
-              {...register('passwordHbauth')}
-              data-testid="hbauth-password-input"
-            />
-            {/* @ts-ignore */}
-            {errors.passwordHbauth?.message && (
-              <p className="text-sm text-red-500" role="alert">
-                {
-                  /* @ts-ignore */
-                  t(errors.passwordHbauth.message)
                 }
               </p>
             )}
@@ -316,11 +294,13 @@ export function LoginForm({
           <div className="flex items-center justify-between">
             <button
               type="submit"
-              className="w-fit rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-semibold text-white hover:cursor-pointer hover:bg-red-700 focus:outline-none  disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
+              className="min-w-24 rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-semibold text-white hover:cursor-pointer hover:bg-red-700 focus:outline-none  disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
               onClick={handleSubmit(onSubmit)}
               data-testid="login-submit-button"
+              disabled={isSubmitting}
             >
-              {t('login_form.login_button')}
+              {!isSubmitting && t('login_form.login_button')}
+              {isSubmitting && t('login_form.working')}
             </button>
             <button
               type="button"
@@ -360,6 +340,7 @@ export function LoginForm({
             <button
               className="mt-4 flex w-fit justify-center rounded-lg bg-gray-400 px-5 py-2.5 hover:bg-gray-500 focus:outline-none "
               data-testid="hivesigner-button"
+              onClick={(e) => { e.preventDefault(); onHivesignerButtonClick() }}
             >
               <img src="/smart-signer/images/hivesigner.svg" alt="Hivesigner logo" />
             </button>

@@ -4,6 +4,7 @@ import { authService } from '@smart-signer/lib/auth-service';
 import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer';
 import { createHiveChain, BroadcastTransactionRequest } from '@hive/wax/web';
 import { SignerBase } from '@smart-signer/lib/signer-base';
+import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -19,6 +20,22 @@ const logger = getLogger('app');
  */
 export class SignerHbauth extends SignerBase {
 
+  async getPasswordFromUser(dialogProps: { [key: string]: any } = {}): Promise<string> {
+    let password = '';
+    try {
+      const result = await DialogPasswordModalPromise({
+        isOpen: true,
+        ...dialogProps,
+      });
+      password = result as string;
+      logger.info('Return from PasswordModalPromise: %s', result);
+      return password;
+    } catch (error) {
+      logger.error('Return from PasswordModalPromise %s', error);
+      throw new Error('No password from user');
+    }
+  }
+
   // Create digest and return its signature made with signDigest.
   async signChallenge({
     username,
@@ -27,7 +44,10 @@ export class SignerHbauth extends SignerBase {
     keyType = KeyTypes.posting
   }: SignChallenge): Promise<string> {
     const digest = cryptoUtils.sha256(message).toString('hex');
-    const signature = this.signDigest(digest, username, password, keyType);
+
+    await this.checkAuths(username, keyType);
+
+    const signature = await this.signDigest(digest, username, password, keyType);
     logger.info('hbauth', { signature });
     return signature;
   }
@@ -44,6 +64,7 @@ export class SignerHbauth extends SignerBase {
       tx.push(operation).validate();
       const signature = await this.signDigest(tx.sigDigest, username, '', keyType);
       const transaction = tx.build();
+      logger.info('SignerHbauth.broadcastTransaction tx: %o', tx.toApi());
       transaction.signatures.push(signature);
       const transactionRequest = new BroadcastTransactionRequest(tx);
       await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
@@ -59,6 +80,10 @@ export class SignerHbauth extends SignerBase {
   async signDigest(digest: string, username: string, password: string, keyType: KeyTypes = KeyTypes.posting) {
     logger.info('sign args: %o', { username, password, digest, keyType });
 
+    if (!['posting', 'active'].includes(keyType)) {
+      throw new Error(`Unsupported keyType: ${keyType}`);
+    }
+
     const authClient = await authService.getOnlineClient();
     const auth = await authClient.getAuthByUser(username);
     logger.info('auth: %o', auth);
@@ -68,15 +93,12 @@ export class SignerHbauth extends SignerBase {
     }
 
     if (!auth.authorized) {
-      if (!['posting', 'active'].includes(keyType)) {
-        throw new Error(`Unsupported keyType: ${keyType}`);
-      }
 
       if (!password) {
-        // TODO get password from storage or prompt user to input it.
-        const userInput = prompt('Please enter your password to unlock wallet', '');
-        password = userInput as string;
-        // throw new Error('No password to unlock wallet')
+        password = await this.getPasswordFromUser({
+          i18nKeyPlaceholder: 'login_form.password_hbauth_placeholder',
+          i18nKeyTitle: 'login_form.title_hbauth_dialog_password'
+        });
       }
 
       const authStatus = await authClient.authenticate(
@@ -91,10 +113,6 @@ export class SignerHbauth extends SignerBase {
       }
     }
 
-    if (!['posting', 'active'].includes(keyType)) {
-      throw new Error(`Unsupported keyType: ${keyType}`);
-    }
-
     const signature = await authClient.sign(username, digest, keyType as unknown as 'posting' | 'active');
     logger.info('hbauth: %o', { digest, signature });
 
@@ -103,9 +121,15 @@ export class SignerHbauth extends SignerBase {
 
   async checkAuths(username: string, keyType: string) {
     const authClient = await authService.getOnlineClient();
+
     const auths = await authClient.getAuths();
-    logger.info('auths: %o', auths);
+    logger.info('authClient.getAuths();: %o', auths);
+
+    const auths2 = await authClient.getAuthByUser(username);
+    logger.info('authClient.getAuthByUser(username): %o', auths2);
+
     // await authClient.logout();
+
     const auth = auths.find((auth) => auth.username === username);
     if (auth) {
       logger.info('Found auth: %o', auth);
@@ -115,6 +139,7 @@ export class SignerHbauth extends SignerBase {
           // We're ready to sign loginChallenge and proceed.
         } else {
           logger.info('User is authorized, but with incorrect keyType: %s', auth.keyType);
+          // This should not disturb. Wallet is unlocked. This needs testing.
         }
       } else {
         logger.info('User is not authorized');
