@@ -19,7 +19,7 @@
   "dependencies": {
     "@beam-australia/react-env": "^3.1.1",
     "@hive/eslint-config-custom": "*",
-    "@hive/hb-auth": "0.0.1-stable.4ce517d",
+    "@hive/hb-auth": "^0.0.1-stable.4ce517d",
     "@hive/smart-signer": "*",
     "@hive/tailwindcss-config": "*",
     "@hive/tsconfig": "*",
@@ -37,6 +37,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.45.1",
+    "react-modal-promise": "^1.0.2",
     "typescript": "5.3.3",
     "zod": "^3.21.4"
   },

@@ -5,6 +5,9 @@ import { useTheme } from "next-themes";
 import { TailwindIndicator } from "../tailwind-indicator";
 import SiteHeader from "../site-header";
 
+// import { ModalContainer } from '@smart-signer/components/modal-container';
+import { Container as ModalContainer } from 'react-modal-promise';
+
 interface LayoutProps {
   children: ReactNode;
 }
@@ -25,6 +28,7 @@ function Layout({ children }: LayoutProps) {
           {children}
         </div>
       </div>
+      <ModalContainer />
       <Toaster />
       <TailwindIndicator />
     </>

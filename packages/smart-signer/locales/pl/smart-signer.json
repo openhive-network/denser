@@ -46,6 +46,7 @@
     "use_hbauth": "Użyj Hbauth",
     "use_hiveauth": "Użyj HiveAuth",
     "use_keychain": "Użyj Keychain",
-    "username_placeholder": "Podaj nazwę użytkownika"
+    "username_placeholder": "Podaj nazwę użytkownika",
+    "working": "Pracuję…"
   }
 }

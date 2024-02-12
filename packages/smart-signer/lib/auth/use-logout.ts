@@ -10,11 +10,11 @@ export function useLogout() {
 
     const signOut = useSignOut();
     const { user } = useUser();
-    const signer = new Signer();
 
     const onLogout = async () => {
       try {
         if (user && user.loginType && user.username) {
+          const signer = new Signer();
           signer.destroy(user.username, user.loginType);
         }
         await signOut.mutateAsync();

@@ -7,7 +7,7 @@ export class HbauthLoginDialog {
   readonly hbauthAddKeyButton: Locator;
   readonly hbauthUnlockKeyHeader: Locator;
   readonly hbauthUnlockKeyUsernameInput: Locator;
-  readonly hbauthUnlockKeyPasswordInput: Locator;
+  // readonly hbauthUnlockKeyPasswordInput: Locator;
   readonly hbauthUnlockKeySelectKeyType: Locator;
   readonly hbauthUnlockKeySelectKeyTypeTrigger: Locator;
   readonly hbauthUnlockKeySubmitButton: Locator;
@@ -30,7 +30,7 @@ export class HbauthLoginDialog {
     this.hbauthAddKeyButton = page.locator('[data-testid="hbauth-add-key-button"]');
     this.hbauthUnlockKeyHeader = page.locator('[data-testid="hbauth-unlock-key-header"]');
     this.hbauthUnlockKeyUsernameInput = page.locator('[data-testid="hbauth-unlock-key-username-input"]');
-    this.hbauthUnlockKeyPasswordInput = page.locator('[data-testid="hbauth-unlock-key-password-input"]');
+    // this.hbauthUnlockKeyPasswordInput = page.locator('[data-testid="hbauth-unlock-key-password-input"]');
     this.hbauthUnlockKeySelectKeyType = page.locator('[data-testid="hbauth-unlock-key-select-key-type"] select');
     this.hbauthUnlockKeySelectKeyTypeTrigger = page.locator('[data-testid="hbauth-unlock-key-select-key-type-trigger"]');
     this.hbauthUnlockKeySubmitButton = page.locator('[data-testid="hbauth-unlock-key-submit-button"]');
@@ -53,7 +53,7 @@ export class HbauthLoginDialog {
     await expect(this.hbauthUnlockKeyButton).toBeVisible();
     await expect(this.hbauthUnlockKeyHeader).toHaveText('Hbauth: Unlock Key');
     await expect(this.hbauthUnlockKeyUsernameInput).toHaveAttribute('placeholder', 'Enter your username');
-    await expect(this.hbauthUnlockKeyPasswordInput).toHaveAttribute('placeholder', 'Password');
+    // await expect(this.hbauthUnlockKeyPasswordInput).toHaveAttribute('placeholder', 'Password');
     await expect(this.hbauthUnlockKeySelectKeyTypeTrigger).toBeVisible();
     await expect(this.hbauthUnlockKeySubmitButton).toBeVisible();
     await expect(this.hbauthUnlockKeyResetButton).toBeVisible();
@@ -64,7 +64,7 @@ export class HbauthLoginDialog {
     await expect(this.hbauthUnlockKeyButton).toBeVisible();
     await expect(this.hbauthUnlockKeyHeader).toHaveText('Hbauth: Unlock Key');
     await expect(this.hbauthUnlockKeyUsernameInput).toHaveAttribute('placeholder', 'Enter your username');
-    await expect(this.hbauthUnlockKeyPasswordInput).toHaveAttribute('placeholder', 'Password');
+    // await expect(this.hbauthUnlockKeyPasswordInput).toHaveAttribute('placeholder', 'Password');
     await expect(this.hbauthUnlockKeySelectKeyTypeTrigger).toBeVisible();
     await expect(this.hbauthUnlockKeySubmitButton).toBeVisible();
     await expect(this.hbauthUnlockKeyResetButton).toBeVisible();

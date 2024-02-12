@@ -4,6 +4,7 @@ import { Toaster } from '@hive/ui/components/toaster';
 import { useTheme } from 'next-themes';
 import { TailwindIndicator } from '../tailwind-indicator';
 import SiteHeader from '../site-header';
+import { ModalContainer } from '@smart-signer/components/modal-container';
 
 interface LayoutProps {
   children: ReactNode;
@@ -21,6 +22,7 @@ function Layout({ children }: LayoutProps) {
         <SiteHeader />
         <div className="flex-1 bg-slate-50 dark:bg-background/95">{children}</div>
       </div>
+      <ModalContainer />
       <Toaster />
       <TailwindIndicator />
     </>

@@ -30,7 +30,7 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
   // Here we just check if user is already logged in and we redirect him
   // to profile page, if he is.
   const { user } = useUser({
-    redirectTo: '/profile',
+    redirectTo: '/',
     redirectIfFound: true
   });
 
@@ -46,8 +46,6 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
     let password = '';
     if (data.loginType === LoginTypes.wif) {
       password = data.password;
-    } else if (data.loginType === LoginTypes.hbauth) {
-      password = data.passwordHbauth;
     }
     let signatures: Signatures = {};
     let hivesignerToken = '';
@@ -75,7 +73,7 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
       username: username || '',
       signatures,
       loginType,
-      hivesignerToken
+      hivesignerToken,
     };
 
     try {
