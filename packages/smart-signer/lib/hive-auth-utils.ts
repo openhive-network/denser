@@ -59,6 +59,10 @@ const setKey = (key: string) => {
 
 const verifyChallenge = (challenge: string | Buffer, data: { challenge: string | Buffer | HexBuffer | number[]; pubkey: string | PublicKey; }) => {
     // Validate signature against account public key
+
+    // TODO We should get public key from Hive blockchain and validate
+    // against it. We shouldn't trust pubkey coming in data!
+
     const sig = Signature.fromString(
         HexBuffer.from(data.challenge).toString())
     const buf = cryptoUtils.sha256(challenge);
