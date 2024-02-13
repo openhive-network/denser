@@ -552,6 +552,7 @@ export class ProfilePage {
   }
 
   async moveToSocialTab() {
+    await this.page.waitForTimeout(3000);
     await this.profileSocialLink.click();
     await this.profileSocialTabIsSelected();
   }
