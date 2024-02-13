@@ -336,6 +336,23 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                       const nextFollow = !isFollow;
                       setIsFollow(nextFollow);
                       transactionService.follow(username, user, nextFollow ? 'follow' : 'unfollow');
+
+                      // example usage
+                      transactionService.followTransaction((builder) => {
+                        if (nextFollow) {
+                          builder.followBlog(user.username, username);
+                        } else {
+                          builder.unfollowBlog(user.username, username);
+                        }
+                      })
+
+                      transactionService.regularTransaction((builder) => {
+                        builder.push({
+                          vote: {
+                            // ....
+                          }
+                        })
+                      })
                     }}
                     disabled={isLoadingFollowingData || isFetchingFollowingData}
                   >

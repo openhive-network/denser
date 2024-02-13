@@ -4,7 +4,10 @@ import {
   FollowOperationBuilder,
   operation,
   createHiveChain,
-  BroadcastTransactionRequest
+  BroadcastTransactionRequest,
+  IHiveChainInterface,
+  ITransactionBuilder,
+  IHiveAppsOperation
 } from '@hive/wax/web';
 import { logger } from '@hive/ui/lib/logger';
 import { toast } from '@hive/ui/components/hooks/use-toast';
@@ -19,41 +22,65 @@ import { User } from '@smart-signer/types/common';
 class TransactionService {
   static signer = new Signer();
   description = 'Transaction broadcast error';
+  static hiveChain: IHiveChainInterface;
 
-  async buildTransaction(operation: operation) {
-    const hiveChain = await createHiveChain({ apiEndpoint: 'https://api.hive.blog' });
-    const tx = await hiveChain.getTransactionBuilder();
-    tx.push(operation).validate();
-    logger.info('SignerHbauth.broadcastTransaction tx: %o', tx.toApi());
-    const transaction = tx.build();
-    // in here sign transaction via signer
+  async getHiveChain(): Promise<IHiveChainInterface> {
+    if (!TransactionService.hiveChain) {
+      TransactionService.hiveChain = await createHiveChain({ apiEndpoint: 'https://api.hive.blog' });
+    }
 
-    return { tx, transaction };
+    return TransactionService.hiveChain;
   }
 
-  async brodcastTransaction(user: User, operation: operation) {
-    try {
-      const hiveChain = await createHiveChain({ apiEndpoint: 'https://api.hive.blog' });
-      // In here we must build transaction via buildTransaction method, then sign with TransactionService.signer.sign or something like this and then broadcastTransaction
-      const { tx, transaction } = await this.buildTransaction(operation);
-      const signature = await TransactionService.signer.broadcastTransaction({
-        tx: tx,
-        loginType: user.loginType,
-        username: user.username
-      });
-      transaction.signatures.push(signature);
-      const transactionRequest = new BroadcastTransactionRequest(tx);
-      await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
-    } catch (e) {
-      logger.error('got error', e);
-      if (`${e}`.indexOf('Not implemented') >= 0) {
-        this.description = 'Method not implemented for this login type.';
-      }
-      toast({
-        description: this.description,
-        variant: 'destructive'
-      });
-    }
+  async followTransaction(cb: (builder: FollowOperationBuilder) => void): Promise<void> {
+    // specific builder for ops
+    const builder = new FollowOperationBuilder();
+
+    // wait until callback 
+    cb(builder);
+    
+    await this.processTransaction(builder.build());
+  }
+
+  async communityTransaction(cb: (builder: CommunityOperationBuilder) => void): Promise<void> {
+    // specific builder for ops
+    const builder = new CommunityOperationBuilder();
+
+    // wait until callback 
+    cb(builder);
+    
+    await this.processTransaction(builder.build());
+  }
+
+  async regularTransaction(cb: (builder: ITransactionBuilder) => void): Promise<void> {
+    // specific builder for ops
+    const txBuilder = await (await this.getHiveChain()).getTransactionBuilder()
+
+    // wait until callback 
+    cb(txBuilder);
+    
+    await this.processTransaction(txBuilder.build().operations);
+  }
+  
+  async processTransaction(ops: IHiveAppsOperation): Promise<void> {
+    // main tx builder
+    const txBuilder = await (await this.getHiveChain()).getTransactionBuilder()
+
+    // push all specific ops to main tx builder
+    txBuilder.push(ops);
+    
+    // validate
+    txBuilder.validate();
+
+    // Sign using smart-signer
+    // pass to smart-signer txBuilder.sigDigest
+    const signedTx = TransactionService.signer.signTransaction(txBuilder)
+
+    // broadcast
+    const broadcastReq = new BroadcastTransactionRequest(signedTx)
+    await (await this.getHiveChain()).api.network_broadcast_api.broadcast_transaction(broadcastReq)
+
+    // Return Result??
   }
 
   async vote(e: any, user: User | null, type: string, post: Entry) {
@@ -86,6 +113,7 @@ class TransactionService {
       this.brodcastTransaction(user, customJsonOperations[0]);
     }
   }
+
 
   async follow(username: string, user: User | null, type: string) {
     if (user && user.isLoggedIn) {
@@ -169,5 +197,6 @@ class TransactionService {
     }
   }
 }
+
 
 export const transactionService = new TransactionService();
