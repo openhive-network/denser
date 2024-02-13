@@ -56,10 +56,10 @@ export default function Profile() {
     const { username, loginType } = user;
     const signer = new Signer({ username, loginType });
     try {
-      const { txApiString, txSigDigest } = await signer.createTransaction({
+      const { digest, transaction } = await signer.createTransaction({
         operation: { vote },
       });
-      const signature = await signer.signTransaction({ txApiString, txSigDigest });
+      const signature = await signer.signTransaction({ digest, transaction });
       logger.info('signature: %s', signature);
     } catch (error) {
       logger.error(error);

@@ -9,7 +9,7 @@ const logger = getLogger('app');
 
 /**
  * Instance interacts with Hive private keys, signs messages or
- * operations, and sends operations to Hive blockchain. It uses So known
+ * operations, and sends operations to Hive blockchain. It uses so known
  * "Wif" custom tool, based on
  * [@hiveio/dhive](https://openhive-network.github.io/dhive/) and
  * Web Storage API.
