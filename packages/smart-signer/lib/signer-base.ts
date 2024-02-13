@@ -8,8 +8,8 @@ import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
 export interface SignTransaction {
-    txSigDigest: THexString;
-    txApiString: string;
+    digest: THexString;
+    transaction: string;
 }
 
 export interface BroadcastTransaction {
@@ -66,10 +66,10 @@ export class SignerBase {
     }
 
     async createTransaction({ operation }: BroadcastTransaction) {
-        return { txApiString: '', txSigDigest: '' };
+        return { transaction: '', digest: '' };
     }
 
-    async signTransaction({txSigDigest, txApiString}: SignTransaction) {
+    async signTransaction({digest, transaction}: SignTransaction) {
         return '';
     }
 

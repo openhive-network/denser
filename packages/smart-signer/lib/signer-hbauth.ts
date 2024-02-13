@@ -57,7 +57,7 @@ export class SignerHbauth extends SignerBase {
       const hiveChain = await createHiveChain({ apiEndpoint });
       const tx = await hiveChain.getTransactionBuilder();
       tx.push(operation).validate();
-      const result = { txApiString: tx.toApi(), txSigDigest: tx.sigDigest }
+      const result = { transaction: tx.toApi(), digest: tx.sigDigest }
       logger.info('createTransaction result: %o', result);
       return result;
     } catch (error) {
@@ -91,18 +91,18 @@ export class SignerHbauth extends SignerBase {
   }
 
 
-  async signTransaction({ txSigDigest, txApiString }: SignTransaction) {
+  async signTransaction({ digest, transaction }: SignTransaction) {
     const wax = await createWaxFoundation();
     let tx: ITransactionBuilder;
 
-    // tx = new wax.TransactionBuilder(JSON.parse(txApiString));
-    tx = wax.TransactionBuilder.fromApi(txApiString);
-    logger.info('signTransaction digests: %o', {txSigDigest, 'tx.sigDigest': tx.sigDigest})
-    if (txSigDigest !== tx.sigDigest) throw new Error('Digests do not match');
+    // tx = new wax.TransactionBuilder(JSON.parse(transaction));
+    tx = wax.TransactionBuilder.fromApi(transaction);
+    logger.info('signTransaction digests: %o', {digest, 'tx.sigDigest': tx.sigDigest})
+    if (digest !== tx.sigDigest) throw new Error('Digests do not match');
 
-    // Show txApiString to user and get his consent to sign it.
+    // Show transaction to user and get his consent to sign it.
 
-    return this.signDigest(txSigDigest, '');
+    return this.signDigest(digest, '');
   }
 
 

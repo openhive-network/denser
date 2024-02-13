@@ -137,9 +137,9 @@ export class Signer extends SignerBase {
     return signer.createTransaction({ operation });
   }
 
-  async signTransaction({txSigDigest, txApiString}: SignTransaction) {
+  async signTransaction({digest, transaction}: SignTransaction) {
     const signer = this.getSigner();
-    return signer.signTransaction({txSigDigest, txApiString});
+    return signer.signTransaction({digest, transaction});
   }
 
 }
