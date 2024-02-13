@@ -36,9 +36,9 @@ class TransactionService {
     // specific builder for ops
     const builder = new FollowOperationBuilder();
 
-    // wait until callback 
+    // wait until callback
     cb(builder);
-    
+
     await this.processTransaction(builder.build());
   }
 
@@ -46,157 +46,50 @@ class TransactionService {
     // specific builder for ops
     const builder = new CommunityOperationBuilder();
 
-    // wait until callback 
+    // wait until callback
     cb(builder);
-    
+
     await this.processTransaction(builder.build());
   }
 
   async regularTransaction(cb: (builder: ITransactionBuilder) => void): Promise<void> {
     // specific builder for ops
-    const txBuilder = await (await this.getHiveChain()).getTransactionBuilder()
+    const txBuilder = await (await this.getHiveChain()).getTransactionBuilder();
 
-    // wait until callback 
+    // wait until callback
     cb(txBuilder);
-    
+
     await this.processTransaction(txBuilder.build().operations);
   }
-  
+
   async processTransaction(ops: IHiveAppsOperation): Promise<void> {
     // main tx builder
-    const txBuilder = await (await this.getHiveChain()).getTransactionBuilder()
+    const txBuilder = await (await this.getHiveChain()).getTransactionBuilder();
 
     // push all specific ops to main tx builder
     txBuilder.push(ops);
-    
+
     // validate
     txBuilder.validate();
 
     // Sign using smart-signer
     // pass to smart-signer txBuilder.sigDigest
-    const signedTx = TransactionService.signer.signTransaction(txBuilder)
+    const signedTx = TransactionService.signer.signTransaction(txBuilder);
 
-    // broadcast
-    const broadcastReq = new BroadcastTransactionRequest(signedTx)
-    await (await this.getHiveChain()).api.network_broadcast_api.broadcast_transaction(broadcastReq)
+    // create broadcast request
+    const broadcastReq = new BroadcastTransactionRequest(signedTx);
 
-    // Return Result??
-  }
-
-  async vote(e: any, user: User | null, type: string, post: Entry) {
-    if (user && user.isLoggedIn) {
-      const vote: vote = {
-        voter: user.username,
-        author: post.author,
-        permlink: post.permlink,
-        weight: 10000
-      };
-
-      if (type === 'downvote') {
-        vote.weight = -10000;
-      }
-      this.brodcastTransaction(user, { vote });
-    }
-  }
-
-  async subscribe(username: string, user: User | null, type: string) {
-    if (user && user.isLoggedIn) {
-      const customJsonOperations: operation[] = [];
-      const cob = new CommunityOperationBuilder();
-      if (type === 'subscribe') {
-        cob.subscribe(username).authorize(user.username).build().flushOperations(customJsonOperations);
-      }
-
-      if (type === 'unsubscribe') {
-        cob.unsubscribe(username).authorize(user.username).build().flushOperations(customJsonOperations);
-      }
-      this.brodcastTransaction(user, customJsonOperations[0]);
-    }
-  }
-
-
-  async follow(username: string, user: User | null, type: string) {
-    if (user && user.isLoggedIn) {
-      const customJsonOperations: operation[] = [];
-      const fob = new FollowOperationBuilder();
-      if (type === 'follow') {
-        fob
-          .followBlog(user.username, username)
-          .authorize(user.username)
-          .build()
-          .flushOperations(customJsonOperations);
-      }
-
-      if (type === 'unfollow') {
-        fob
-          .resetBlogList(EFollowBlogAction.FOLLOW_BLOG, user.username, username) // This is for change because we pass what:["reset_following_list"], this is wrong we need to pass what: []
-          .authorize(user.username)
-          .build()
-          .flushOperations(customJsonOperations);
-      }
-
-      if (type === 'mute') {
-        fob
-          .muteBlog(user.username, username)
-          .authorize(user.username)
-          .build()
-          .flushOperations(customJsonOperations);
-      }
-
-      if (type === 'unmute') {
-        fob
-          .resetBlogList(EFollowBlogAction.BOTH, user.username, username)
-          .authorize(user.username)
-          .build()
-          .flushOperations(customJsonOperations);
-      }
-
-      this.brodcastTransaction(user, customJsonOperations[0]);
-    }
-  }
-
-  async reblog(username: string, user: User | null, permlink: string) {
-    if (user && user.isLoggedIn) {
-      const customJsonOperations: operation[] = [];
-      new FollowOperationBuilder()
-        .reblog(user.username, username, permlink)
-        .authorize(user.username)
-        .build()
-        .flushOperations(customJsonOperations);
-
-      this.brodcastTransaction(user, customJsonOperations[0]);
-    }
-  }
-
-  async flag(username: string, user: User | null, community: string, permlink: string, notes: string) {
-    if (user && user.isLoggedIn) {
-      const customJsonOperations: operation[] = [];
-      new CommunityOperationBuilder()
-        .flagPost(community, username, permlink, notes)
-        .authorize(user.username)
-        .build()
-        .flushOperations(customJsonOperations);
-
-      this.brodcastTransaction(user, customJsonOperations[0]);
-    }
-  }
-
-  async addComment(username: string, user: User | null, permlink: string, cleanedText: string) {
-    if (user && user.isLoggedIn) {
-      const comment: comment = {
-        parent_author: username,
-        parent_permlink: permlink,
-        author: user.username,
-        permlink: await createPermlink('', user.username, permlink),
-        title: '',
-        body: cleanedText,
-        json_metadata: '{"app":"hiveblog/0.1"}'
-      };
-
-      this.brodcastTransaction(user, { comment });
+    // do broadcast
+    try {
+      await (await this.getHiveChain()).api.network_broadcast_api.broadcast_transaction(broadcastReq);
+    } catch (e) {
+      logger.error('got error', e);
+      toast({
+        description: e as String,
+        variant: 'destructive'
+      });
     }
   }
 }
-
 
 export const transactionService = new TransactionService();

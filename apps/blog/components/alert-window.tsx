@@ -43,13 +43,19 @@ export function AlertDialogReblog({
           <AlertDialogCancel className="hover:text-red-800" data-testid="reblog-dialog-cancel">
             Cancel
           </AlertDialogCancel>
-          <AlertDialogAction
-            className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
-            data-testid="reblog-dialog-ok"
-            onClick={() => transactionService.reblog(username, user, permlink)}
-          >
-            OK
-          </AlertDialogAction>
+          {user && user.isLoggedIn ? (
+            <AlertDialogAction
+              className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
+              data-testid="reblog-dialog-ok"
+              onClick={() => {
+                transactionService.followTransaction((builder) => {
+                  builder.reblog(user.username, username, permlink);
+                });
+              }}
+            >
+              OK
+            </AlertDialogAction>
+          ) : null}
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

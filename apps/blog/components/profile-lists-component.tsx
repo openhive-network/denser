@@ -104,7 +104,9 @@ export default function ProfileLists({
                     size="xs"
                     onClick={() => {
                       if (variant === 'muted') {
-                        TransactionService.follow(username, user, 'unmute');
+                        transactionService.followTransaction((builder) => {
+                          builder.unmuteBlog(user.username, username);
+                        });
                       }
                     }}
                   >

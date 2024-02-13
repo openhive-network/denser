@@ -9,6 +9,7 @@ import { DefaultRenderer } from '@hiveio/content-renderer';
 import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { transactionService } from '@transaction/index';
+import { createPermlink } from '@transaction/lib/utils';
 
 export function ReplyTextbox({
   onSetReply,
@@ -23,6 +24,7 @@ export function ReplyTextbox({
   const { t } = useTranslation('common_blog');
   const [text, setText] = useState('');
   const [cleanedText, setCleanedText] = useState('');
+  const [replyPermlink, setReplyPermlink] = useState('');
 
   const renderer = useMemo(
     () =>
@@ -50,6 +52,17 @@ export function ReplyTextbox({
     const nextCleanedText = text ? renderer.render(text) : '';
     setCleanedText(nextCleanedText);
   }, [renderer, text]);
+
+  useEffect(() => {
+    const createReplyPermlink = async () => {
+      if (user && user.isLoggedIn) {
+        const permlink = await createPermlink('', user.username, permlink);
+        setReplyPermlink(permlink);
+      }
+    };
+
+    createReplyPermlink();
+  }, [user, permlink]);
 
   const handleCancel = () => {
     if (text === '') return onSetReply(false);
@@ -86,15 +99,29 @@ export function ReplyTextbox({
           </p>
         </div>
         <div className="flex flex-col md:flex-row">
-          <Button
-            disabled={text === ''}
-            onClick={() => {
-              transactionService.addComment(username, user, permlink, cleanedText);
-              setText('');
-            }}
-          >
-            {t('post_content.footer.comment.post')}
-          </Button>
+          {user && user.isLoggedIn ? (
+            <Button
+              disabled={text === ''}
+              onClick={() => {
+                transactionService.regularTransaction((builder) => {
+                  builder.push({
+                    comment: {
+                      parent_author: username,
+                      parent_permlink: permlink,
+                      author: user.username,
+                      permlink: replyPermlink,
+                      title: '',
+                      body: cleanedText,
+                      json_metadata: '{"app":"hiveblog/0.1"}'
+                    }
+                  });
+                });
+                setText('');
+              }}
+            >
+              {t('post_content.footer.comment.post')}
+            </Button>
+          ) : null}
           <Button
             variant="ghost"
             onClick={() => handleCancel()}

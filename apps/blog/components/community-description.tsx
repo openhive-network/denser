@@ -96,7 +96,13 @@ const CommunityDescription = ({
                     onClick={() => {
                       const nextIsSubscribe = !isSubscribe;
                       setIsSubscribe(nextIsSubscribe);
-                      transactionService.subscribe(username, user, 'subscribe');
+                      transactionService.communityTransaction((builder) => {
+                        if (nextIsSubscribe) {
+                          builder.subscribe(username);
+                        } else {
+                          builder.unsubscribe(username);
+                        }
+                      });
                     }}
                   >
                     {t('communities.buttons.subscribe')}
@@ -109,7 +115,9 @@ const CommunityDescription = ({
                     onClick={() => {
                       const nextIsSubscribe = !isSubscribe;
                       setIsSubscribe(nextIsSubscribe);
-                      transactionService.subscribe(username, user, 'unsubscribe');
+                      transactionService.communityTransaction((builder) => {
+                        builder.unsubscribe(username);
+                      }
                     }}
                   >
                     <span className="group-hover:hidden">Joined</span>

@@ -233,7 +233,18 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
                         {user && user.isLoggedIn ? (
                           <Icons.arrowUpCircle
                             className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1"
-                            onClick={(e) => transactionService.vote(e, user, 'upvote', post)}
+                            onClick={(e) =>
+                              transactionService.regularTransaction((builder) => {
+                                builder.push({
+                                  vote: {
+                                    voter: user.username,
+                                    author: post.author,
+                                    permlink: post.permlink,
+                                    weight: 10000
+                                  }
+                                });
+                              })
+                            }
                           />
                         ) : (
                           <DialogLogin>
@@ -252,7 +263,18 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
                         {user && user.isLoggedIn ? (
                           <Icons.arrowDownCircle
                             className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1"
-                            onClick={(e) => transactionService.vote(e, user, 'downvote', post)}
+                            onClick={(e) =>
+                              transactionService.regularTransaction((builder) => {
+                                builder.push({
+                                  vote: {
+                                    voter: user.username,
+                                    author: post.author,
+                                    permlink: post.permlink,
+                                    weight: -10000
+                                  }
+                                });
+                              })
+                            }
                           />
                         ) : (
                           <DialogLogin>
