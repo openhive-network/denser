@@ -155,7 +155,7 @@ const SiteHeader: FC = () => {
             {isClient && user?.isLoggedIn ? (
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger data-testid="comment-card-footer-downvote" className=" cursor-pointer">
+                  <TooltipTrigger data-testid="comment-card-footer-downvote" className="cursor-pointer">
                     <UserMenu user={user} notifications={data?.unread}>
                       <div className="group relative inline-flex w-fit cursor-pointer items-center justify-center">
                         {data && data.unread !== 0 ? (
@@ -163,7 +163,7 @@ const SiteHeader: FC = () => {
                             {data.unread}
                           </div>
                         ) : null}
-                        <div className="absolute z-20 group-hover:hidden">
+                        <div className="absolute z-20 group-hover:invisible group-hover:delay-300 group-hover:duration-300 group-hover:animate-out group-hover:zoom-out-75">
                           <PieChart width={50} height={50}>
                             <Pie
                               data={chart}
@@ -180,7 +180,7 @@ const SiteHeader: FC = () => {
                           </PieChart>
                         </div>
 
-                        <div className="absolute z-20 hidden group-hover:block">
+                        <div className="invisible absolute z-20 group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50">
                           <PieChart width={50} height={50}>
                             <Pie
                               data={chart}
@@ -196,7 +196,7 @@ const SiteHeader: FC = () => {
                             ></Pie>
                           </PieChart>
                         </div>
-                        <div className="absolute z-10 hidden group-hover:block">
+                        <div className="invisible absolute z-10 group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50">
                           <PieChart width={60} height={60}>
                             <Pie
                               data={chart}
@@ -212,7 +212,7 @@ const SiteHeader: FC = () => {
                             ></Pie>
                           </PieChart>
                         </div>
-                        <div className="absolute hidden group-hover:block">
+                        <div className="invisible absolute group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50">
                           <PieChart width={70} height={70}>
                             <Pie
                               data={chart}
