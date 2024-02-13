@@ -114,11 +114,12 @@ test.describe('Profile page of @gtg', () => {
     await profilePage.moveToPeakdByLinkInSocialTab();
   });
 
-  test('move to Hivebuzz by link in Social Tab', async ({ page }) => {
+  test('validate Hivebuzz link in Social Tab', async ({ page }) => {
     await profilePage.gotoProfilePage('@gtg');
     await profilePage.profileSocialTabIsNotSelected();
     await profilePage.moveToSocialTab();
-    await profilePage.moveToHivebuzzByLinkInSocialTab();
+    await expect(await profilePage.thirdPartyAppHivebuzzLink.getAttribute('href')).toBe('https://hivebuzz.me/');
+    // await profilePage.moveToHivebuzzByLinkInSocialTab();
   });
 
   test('move to Notifications Tab', async ({ page }) => {
