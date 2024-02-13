@@ -19,7 +19,7 @@ const logger = getLogger('app');
  */
 export class SignerHiveauth extends StorageMixin(SignerBase) {
 
-  async destroy(username: string) {
+  async destroy() {
     HiveAuthUtils.logout();
     this.storage.removeItem('hiveAuthData');
   }

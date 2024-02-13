@@ -28,32 +28,39 @@ export default function Profile() {
     'stirlitz',
   ];
 
-  const testVote = async () => {
+  const vote: vote = {
+    voter: user.username,
+    author: 'gtg',
+
+    // permlink: 'power-to-the-hive-but-just-a-little',
+    permlink: 'non-existing-permlink-q523-73867',
+
+    weight: 10000
+  };
+
+  const testSignerBroadcast = async () => {
     if (!user || !user.isLoggedIn) return;
-    const vote: vote = {
-      voter: user.username,
-      author: 'gtg',
-
-      // permlink: 'power-to-the-hive-but-just-a-little',
-      permlink: 'non-existing-permlink-q523-73867',
-
-      weight: 10000
-    };
-
-    // {
-    //   "voter": "guest4test",
-    //   "author": "gtg",
-    //   "permlink": "non-existing-permlink-q523-73867",
-    //   "weight": 10000
-    // }
-
-    const signer = new Signer();
+    const { username, loginType } = user;
+    const signer = new Signer({ username, loginType });
     try {
       await signer.broadcastTransaction({
         operation: { vote },
-        loginType: user.loginType,
-        username: user.username
       });
+    } catch (error) {
+      logger.error(error);
+    }
+  }
+
+  const testSignerSign = async () => {
+    if (!user || !user.isLoggedIn) return;
+    const { username, loginType } = user;
+    const signer = new Signer({ username, loginType });
+    try {
+      const { txApiString, txSigDigest } = await signer.createTransaction({
+        operation: { vote },
+      });
+      const signature = await signer.signTransaction({ txApiString, txSigDigest });
+      logger.info('signature: %s', signature);
     } catch (error) {
       logger.error(error);
     }
@@ -104,8 +111,11 @@ export default function Profile() {
           </p>
         {developerAccounts.includes(user.username) && (
           <div className="flex flex-col gap-3">
-            <Button onClick={testVote} variant="redHover" size="sm" className="h-10">
-              Test Vote
+            <Button onClick={testSignerBroadcast} variant="redHover" size="sm" className="h-10">
+              Test Signer Broadcast
+            </Button>
+            <Button onClick={testSignerSign} variant="redHover" size="sm" className="h-10">
+              Test Signer Sign
             </Button>
             <Button onClick={openDialogPassword} variant="redHover" size="sm" className="h-10">
               Password Promise Modal

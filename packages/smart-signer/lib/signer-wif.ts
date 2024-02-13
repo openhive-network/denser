@@ -20,19 +20,18 @@ const logger = getLogger('app');
  */
 export class SignerWif extends StorageMixin(SignerHbauth) {
 
-    async destroy(username: string) {
+    async destroy() {
         for (const k of Object.keys(KeyTypes)) {
             const keyType = k as KeyTypes;
-            this.storage.removeItem(`wif.${username}@${KeyTypes[keyType]}`);
+            this.storage.removeItem(`wif.${this.username}@${KeyTypes[keyType]}`);
         }
     }
 
     async signChallenge ({
         message,
-        username,
-        keyType = KeyTypes.posting,
         password = '', // WIF private key,
     }: SignChallenge): Promise<string> {
+        const { username, keyType } = this;
         try {
             let wif = password ? password
                 : this.storage.getItem(`wif.${username}@${keyType}`);
