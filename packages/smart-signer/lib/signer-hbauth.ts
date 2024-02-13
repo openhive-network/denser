@@ -105,7 +105,6 @@ export class SignerHbauth extends SignerBase {
     return this.signDigest(digest, '');
   }
 
-
   async signDigest(digest: THexString, password: string) {
     const { username, keyType } = this;
     logger.info('sign args: %o', { password, digest, username, keyType });

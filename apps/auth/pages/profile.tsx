@@ -8,6 +8,7 @@ import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-pass
 import { verifySignature } from '@smart-signer/lib/utils';
 
 import { getLogger } from '@hive/ui/lib/logging';
+import { SignerKeychain } from '@smart-signer/lib/signer-keychain';
 const logger = getLogger('app');
 
 export default function Profile() {
@@ -51,7 +52,7 @@ export default function Profile() {
     }
   }
 
-  const testSignerSign = async () => {
+  const testSignerSignHbauth = async () => {
     if (!user || !user.isLoggedIn) return;
     const { username, loginType } = user;
     const signer = new Signer({ username, loginType });
@@ -60,6 +61,18 @@ export default function Profile() {
         operation: { vote },
       });
       const signature = await signer.signTransaction({ digest, transaction });
+      logger.info('signature: %s', signature);
+    } catch (error) {
+      logger.error(error);
+    }
+  }
+
+  const testSignerSignKeychain = async () => {
+    if (!user || !user.isLoggedIn) return;
+    const { username, loginType } = user;
+    const signer = new SignerKeychain({ username, loginType });
+    try {
+      const signature = await signer.signTransactionOld({operation: { vote }});
       logger.info('signature: %s', signature);
     } catch (error) {
       logger.error(error);
@@ -114,8 +127,11 @@ export default function Profile() {
             <Button onClick={testSignerBroadcast} variant="redHover" size="sm" className="h-10">
               Test Signer Broadcast
             </Button>
-            <Button onClick={testSignerSign} variant="redHover" size="sm" className="h-10">
-              Test Signer Sign
+            <Button onClick={testSignerSignHbauth} variant="redHover" size="sm" className="h-10">
+              Test Signer Sign Hbauth
+            </Button>
+            <Button onClick={testSignerSignKeychain} variant="redHover" size="sm" className="h-10">
+              Test Signer Sign Keychain
             </Button>
             <Button onClick={openDialogPassword} variant="redHover" size="sm" className="h-10">
               Password Promise Modal
