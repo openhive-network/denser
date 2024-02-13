@@ -22,9 +22,19 @@ import { i18n } from '@/blog/next-i18next.config';
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import { cn } from '@hive/ui/lib/utils';
+
+const DEFAULTS_ENDPOINTS = [
+  'https://api.hive.blog',
+  'https://rpc.ausbit.dev',
+  'https://anyx.io',
+  'https://api.deathwing.me'
+];
 
 export default function UserSettings() {
+  const [endpoints, setEndpoints] = useLocalStorage('hive-blog-endpoints', DEFAULTS_ENDPOINTS);
   const [endpoint, setEndpoint] = useLocalStorage('hive-blog-endpoint', siteConfig.endpoint, false);
+  const [newEndpoint, setNewEndpoint] = useState('');
   const [isClient, setIsClient] = useState(false);
   const params = useParams();
   const { user } = useUser();
@@ -193,14 +203,12 @@ export default function UserSettings() {
           <h4 className="text-md py-2 font-semibold leading-5 text-slate-900 dark:text-white">
             API Endpoint Options
           </h4>
-
           <RadioGroup
-            defaultValue="https://api.hive.blog"
+            defaultValue={endpoint}
             className="w-full gap-0 md:w-8/12"
             data-testid="api-endpoint-radiogroup"
             onValueChange={(e) => {
               setEndpoint(e);
-              Router.reload();
             }}
             value={endpoint}
           >
@@ -209,31 +217,36 @@ export default function UserSettings() {
               <span>Preferred?</span>
               <span>Remove</span>
             </div>
-            <div className="grid grid-cols-3 items-center bg-slate-100 p-2 dark:bg-slate-500">
-              <Label htmlFor="e1">https://api.hive.blog</Label>
-              <RadioGroupItem value="https://api.hive.blog" id="e1" className="border-red-600" />
-              <Icons.trash />
-            </div>
-            <div className="grid grid-cols-3 items-center bg-slate-200 p-2 dark:bg-slate-600">
-              <Label htmlFor="e2">https://rpc.ausbit.dev</Label>
-              <RadioGroupItem value="https://rpc.ausbit.dev" id="e2" className="border-red-600" disabled />
-              <Icons.trash />
-            </div>
-            <div className="grid grid-cols-3 items-center bg-slate-100 p-2 dark:bg-slate-500">
-              <Label htmlFor="e3">https://anyx.io</Label>
-              <RadioGroupItem value="https://anyx.io" id="e3" className="border-red-600" />
-              <Icons.trash />
-            </div>
-            <div className="grid grid-cols-3 items-center bg-slate-200 p-2 dark:bg-slate-600">
-              <Label htmlFor="e4">https://api.deathwing.me</Label>
-              <RadioGroupItem value="https://api.deathwing.me" id="e4" className="border-red-600" />
-              <Icons.trash />
-            </div>
+            {endpoints?.map((endpoint, index) => (
+              <div
+                key={endpoint}
+                className={cn(
+                  'grid grid-cols-3 items-center p-2',
+                  index % 2 === 0 ? 'bg-slate-100 dark:bg-slate-500' : '  bg-slate-200 p-2 dark:bg-slate-600'
+                )}
+              >
+                <Label htmlFor={`e#{index}`}>{endpoint}</Label>
+                <RadioGroupItem value={endpoint} id={`e#{index}`} className="border-red-600" />
+                <Icons.trash />
+              </div>
+            ))}
           </RadioGroup>
 
           <div className="my-4 flex w-full max-w-sm items-center space-x-2" data-testid="add-api-endpoint">
-            <Input type="text" placeholder="Add API Endpoint" />
-            <Button type="submit">Add</Button>
+            <Input
+              type="text"
+              placeholder="Add API Endpoint"
+              value={newEndpoint}
+              onChange={(e) => setNewEndpoint(e.target.value)}
+            />
+            <Button
+              type="submit"
+              onClick={() =>
+                setEndpoints(endpoints ? [...endpoints, newEndpoint] : [...DEFAULTS_ENDPOINTS, newEndpoint])
+              }
+            >
+              Add
+            </Button>
           </div>
 
           <Button className="my-4 w-44">Reset Endpoints</Button>
