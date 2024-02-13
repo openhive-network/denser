@@ -6,7 +6,7 @@ interface SingleManabar {
   max: string;
   current: string;
   percentageValue: number;
-  cooldown: string;
+  cooldown: Date;
 }
 
 interface Manabars {

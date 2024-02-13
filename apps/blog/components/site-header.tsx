@@ -22,6 +22,7 @@ import UserMenu from '@/blog/components/user-menu';
 import LangToggle from './lang-toggle';
 import { PieChart, Pie } from 'recharts';
 import useManabars from './hooks/useManabars';
+import { hoursAndMinutes } from '../lib/utils';
 
 const logger = getLogger('app');
 
@@ -245,19 +246,19 @@ const SiteHeader: FC = () => {
                       <div className="flex flex-col text-blue-600">
                         <span>(RC) level: {manabarsData.rc.percentageValue}%</span>
                         {manabarsData.rc.percentageValue !== 100 ? (
-                          <span>Full in: {manabarsData.rc.cooldown}h</span>
+                          <span>Full in: {hoursAndMinutes(manabarsData.rc.cooldown, t)}</span>
                         ) : null}
                       </div>
                       <div className="flex flex-col text-green-600">
                         <span> Voting Power: {manabarsData.upvote.percentageValue}%</span>
                         {manabarsData?.upvote.percentageValue !== 100 ? (
-                          <span>Full in: {manabarsData.upvote.cooldown}h</span>
+                          <span>Full in: {hoursAndMinutes(manabarsData.upvote.cooldown, t)}</span>
                         ) : null}
                       </div>
                       <div className="flex flex-col text-red-600">
                         <span> Downvote power: {manabarsData.downvote.percentageValue}%</span>
                         {manabarsData.downvote.percentageValue !== 100 ? (
-                          <span>Full in: {manabarsData.downvote.cooldown}h</span>
+                          <span>Full in: {hoursAndMinutes(manabarsData.downvote.cooldown, t)}</span>
                         ) : null}
                       </div>
                     </TooltipContent>

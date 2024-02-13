@@ -8,7 +8,6 @@ import { FullAccount } from '@hive/ui/store/app-types';
 import { bridgeServer } from '@hive/ui/lib/bridge';
 import { getDynamicGlobalProperties, getFeedHistory } from '@hive/ui/lib/hive';
 import { IManabarData } from '@hive/wax/web';
-import moment from 'moment';
 
 export interface TrendingTag {
   comments: number;
@@ -419,7 +418,7 @@ interface SingleManabar {
   max: string;
   current: string;
   percentageValue: number;
-  cooldown: string;
+  cooldown: Date;
 }
 
 interface Manabar {
@@ -466,22 +465,22 @@ export const getManabar = async (
   const manabars = await getManabars(accountName, hiveChain!);
   if (!manabars) return null;
   const { upvote, upvoteCooldown, downvote, downvoteCooldown, rc, rcCooldown } = manabars;
-  const today = moment();
+
   const processedManabars: Manabar = {
     upvote: {
-      cooldown: (moment(upvoteCooldown).diff(today, 'minutes') / 60).toFixed(2),
+      cooldown: upvoteCooldown,
       max: upvote.max.toString(),
       current: upvote.current.toString(),
       percentageValue: upvote.percent
     },
     downvote: {
-      cooldown: (moment(downvoteCooldown).diff(today, 'minutes') / 60).toFixed(2),
+      cooldown: downvoteCooldown,
       max: downvote.max.toString(),
       current: downvote.current.toString(),
       percentageValue: downvote.percent
     },
     rc: {
-      cooldown: (moment(rcCooldown).diff(today, 'minutes') / 60).toFixed(2),
+      cooldown: rcCooldown,
       max: rc.max.toString(),
       current: rc.current.toString(),
       percentageValue: rc.percent
