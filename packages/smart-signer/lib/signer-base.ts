@@ -24,21 +24,33 @@ export interface SignChallenge {
 }
 
 export interface SignerOptions {
+    username: string;
     apiEndpoint?: string;
     storageType?: StorageType;
+    keyType?: KeyTypes.posting;
+    loginType?: LoginTypes;
 }
 
 export class SignerBase {
 
     apiEndpoint: string;
     storageType: StorageType;
+    keyType: KeyTypes;
+    loginType: LoginTypes;
+    username: string;
 
     constructor({
+        username,
         apiEndpoint = 'https://api.hive.blog',
-        storageType = 'localStorage'
-    }: SignerOptions = {}) {
+        storageType = 'localStorage',
+        keyType = KeyTypes.posting,
+        loginType = LoginTypes.hbauth,
+    }: SignerOptions) {
+        this.username = username;
         this.apiEndpoint = apiEndpoint;
         this.storageType = storageType;
+        this.keyType = keyType;
+        this.loginType = loginType;
     }
 
     async destroy(username: string, loginType: LoginTypes) {}
