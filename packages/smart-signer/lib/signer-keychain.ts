@@ -50,9 +50,8 @@ export class SignerKeychain extends SignerBase {
 
   async signChallenge({
     message,
-    username,
-    keyType = KeyTypes.posting,
   }: SignChallenge): Promise<string> {
+    const { username, keyType } = this;
     logger.info('in SignerKeychain.signChallenge %o', { message, username, keyType });
     const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
     try {
@@ -77,9 +76,8 @@ export class SignerKeychain extends SignerBase {
 
   async broadcastTransaction({
     operation,
-    username,
-    keyType = KeyTypes.posting
   }: BroadcastTransaction): Promise<{ success: boolean; result: any; error: string }> {
+    const { username, keyType } = this;
     let result = { success: true, result: '', error: '' };
     const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
     try {
@@ -118,11 +116,10 @@ export class SignerKeychain extends SignerBase {
    * @returns {Promise<any>}
    * @memberof SignerKeychain
    */
-  async signTransaction({
+  async signTransactionOld({
     operation,
-    username,
-    keyType = KeyTypes.posting
   }: BroadcastTransaction): Promise<any> {
+    const { username, keyType } = this;
     const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
     try {
       if (!(await keychain.isKeychainInstalled())) {

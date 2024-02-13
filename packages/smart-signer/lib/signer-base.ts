@@ -27,7 +27,7 @@ export interface SignerOptions {
     username: string;
     apiEndpoint?: string;
     storageType?: StorageType;
-    keyType?: KeyTypes.posting;
+    keyType?: KeyTypes;
     loginType?: LoginTypes;
 }
 

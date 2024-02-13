@@ -55,10 +55,9 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
 
     async signDigest(
         digest: string,
-        username: string,
         password: string,
-        keyType: KeyTypes = KeyTypes.posting
     ) {
+        const { username, keyType } = this;
         const args = { username, password, digest, keyType };
         logger.info('signDigest args: %o', args);
         let signature = ''

@@ -3,7 +3,6 @@ import { SignerHiveauth } from '@smart-signer/lib/signer-hiveauth';
 import { SignerKeychain } from '@smart-signer/lib/signer-keychain';
 import { SignerWif } from '@smart-signer/lib/signer-wif';
 import { LoginTypes } from '@smart-signer/types/common';
-import { KeyTypes } from '@smart-signer/types/common';
 import { SignerBase, SignChallenge, BroadcastTransaction, SignTransaction } from '@smart-signer/lib/signer-base';
 import { createHiveChain, BroadcastTransactionRequest, THexString } from '@hive/wax/web';
 
@@ -141,7 +140,6 @@ export class Signer extends SignerBase {
   async signTransaction({txSigDigest, txApiString}: SignTransaction) {
     const signer = this.getSigner();
     return signer.signTransaction({txSigDigest, txApiString});
-
   }
 
 }

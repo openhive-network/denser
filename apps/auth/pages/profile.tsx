@@ -29,7 +29,7 @@ export default function Profile() {
   ];
 
   const vote: vote = {
-    voter: user.username,
+    voter: user?.username || '',
     author: 'gtg',
 
     // permlink: 'power-to-the-hive-but-just-a-little',
