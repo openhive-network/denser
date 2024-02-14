@@ -24,17 +24,18 @@ import PostImage from './post-img';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { operationService } from '@operations/index';
+import clsx from 'clsx';
 
 const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage: boolean | undefined }) => {
   const { t } = useTranslation('common_blog');
   const [reveal, setReveal] = useState(post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw'));
   const router = useRouter();
   const { user } = useUser();
+  const checkVote = post.active_votes.find((e) => e.voter === user?.username);
 
   function revealPost() {
     setReveal((reveal) => !reveal);
   }
-
   return (
     <li data-testid="post-list-item" className={post.stats?.gray ? 'opacity-50 hover:opacity-100' : ''}>
       <Card
@@ -232,7 +233,10 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
                       <TooltipTrigger data-testid="upvote-button">
                         {user && user.isLoggedIn ? (
                           <Icons.arrowUpCircle
-                            className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1"
+                            className={clsx(
+                              'h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1',
+                              { 'bg-red-600 text-white': checkVote && checkVote?.rshares > 0 }
+                            )}
                             onClick={(e) => operationService.vote(e, user, 'upvote', post)}
                           />
                         ) : (
@@ -251,7 +255,10 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
                       <TooltipTrigger data-testid="downvote-button">
                         {user && user.isLoggedIn ? (
                           <Icons.arrowDownCircle
-                            className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1"
+                            className={clsx(
+                              'h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
+                              { 'bg-gray-600 text-white': checkVote && checkVote?.rshares < 0 }
+                            )}
                             onClick={(e) => operationService.vote(e, user, 'downvote', post)}
                           />
                         ) : (
@@ -265,6 +272,29 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
+                  {checkVote && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>{checkVote?.rshares === 0 && 'Voted'}</TooltipTrigger>
+                        <TooltipContent className="flex flex-col">
+                          <span>
+                            You voted but your Hive Power is too low to check if you upvote or downvote.
+                          </span>
+                          <span>
+                            Boost your Hive Power in
+                            <Link
+                              className="font-bold hover:text-red-600"
+                              target="_blank"
+                              href={`https://wallet.openhive.network/${user?.username}/transfers`}
+                            >
+                              {' Wallet '}
+                            </Link>
+                            to see more
+                          </span>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
                 </div>
 
                 <DetailsCardHover post={post} decline={Number(post.max_accepted_payout.slice(0, 1)) === 0}>
