@@ -8,6 +8,7 @@ import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-pass
 import { verifySignature } from '@smart-signer/lib/utils';
 
 import { getLogger } from '@hive/ui/lib/logging';
+import { SignerKeychain } from '@smart-signer/lib/signer-keychain';
 const logger = getLogger('app');
 
 export default function Profile() {
@@ -28,32 +29,51 @@ export default function Profile() {
     'stirlitz',
   ];
 
-  const testVote = async () => {
+  const vote: vote = {
+    voter: user?.username || '',
+    author: 'gtg',
+
+    // permlink: 'power-to-the-hive-but-just-a-little',
+    permlink: 'non-existing-permlink-q523-73867',
+
+    weight: 10000
+  };
+
+  const testSignerBroadcast = async () => {
     if (!user || !user.isLoggedIn) return;
-    const vote: vote = {
-      voter: user.username,
-      author: 'gtg',
-
-      // permlink: 'power-to-the-hive-but-just-a-little',
-      permlink: 'non-existing-permlink-q523-73867',
-
-      weight: 10000
-    };
-
-    // {
-    //   "voter": "guest4test",
-    //   "author": "gtg",
-    //   "permlink": "non-existing-permlink-q523-73867",
-    //   "weight": 10000
-    // }
-
-    const signer = new Signer();
+    const { username, loginType } = user;
+    const signer = new Signer({ username, loginType });
     try {
       await signer.broadcastTransaction({
         operation: { vote },
-        loginType: user.loginType,
-        username: user.username
       });
+    } catch (error) {
+      logger.error(error);
+    }
+  }
+
+  const testSignerSignHbauth = async () => {
+    if (!user || !user.isLoggedIn) return;
+    const { username, loginType } = user;
+    const signer = new Signer({ username, loginType });
+    try {
+      const { digest, transaction } = await signer.createTransaction({
+        operation: { vote },
+      });
+      const signature = await signer.signTransaction({ digest, transaction });
+      logger.info('signature: %s', signature);
+    } catch (error) {
+      logger.error(error);
+    }
+  }
+
+  const testSignerSignKeychain = async () => {
+    if (!user || !user.isLoggedIn) return;
+    const { username, loginType } = user;
+    const signer = new SignerKeychain({ username, loginType });
+    try {
+      const signature = await signer.signTransactionOld({operation: { vote }});
+      logger.info('signature: %s', signature);
     } catch (error) {
       logger.error(error);
     }
@@ -104,8 +124,14 @@ export default function Profile() {
           </p>
         {developerAccounts.includes(user.username) && (
           <div className="flex flex-col gap-3">
-            <Button onClick={testVote} variant="redHover" size="sm" className="h-10">
-              Test Vote
+            <Button onClick={testSignerBroadcast} variant="redHover" size="sm" className="h-10">
+              Test Signer Broadcast
+            </Button>
+            <Button onClick={testSignerSignHbauth} variant="redHover" size="sm" className="h-10">
+              Test Signer Sign Hbauth
+            </Button>
+            <Button onClick={testSignerSignKeychain} variant="redHover" size="sm" className="h-10">
+              Test Signer Sign Keychain
             </Button>
             <Button onClick={openDialogPassword} variant="redHover" size="sm" className="h-10">
               Password Promise Modal

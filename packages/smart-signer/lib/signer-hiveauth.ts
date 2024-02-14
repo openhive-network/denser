@@ -19,7 +19,7 @@ const logger = getLogger('app');
  */
 export class SignerHiveauth extends StorageMixin(SignerBase) {
 
-  async destroy(username: string) {
+  async destroy() {
     HiveAuthUtils.logout();
     this.storage.removeItem('hiveAuthData');
   }
@@ -40,10 +40,9 @@ export class SignerHiveauth extends StorageMixin(SignerBase) {
 
   async signChallenge({
     message,
-    username,
-    keyType = KeyTypes.posting,
     translateFn = (v) => v
   }: SignChallenge): Promise<string> {
+    const { username, keyType } = this;
     logger.info('in SignerHiveauth.signChallenge %o', { message, username, keyType });
     try {
       this.setHiveAuthData();
@@ -75,9 +74,8 @@ export class SignerHiveauth extends StorageMixin(SignerBase) {
 
   async broadcastTransaction({
     operation,
-    keyType = KeyTypes.posting
   }: BroadcastTransaction): Promise<{ success: boolean, result: any, error: string}> {
-
+    const { keyType } = this;
     let result = { success: true, result: '', error: ''};
     try {
       this.setHiveAuthData();

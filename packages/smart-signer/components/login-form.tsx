@@ -56,10 +56,10 @@ const loginFormSchema = z.discriminatedUnion('loginType', [
 export type LoginFormSchema = z.infer<typeof loginFormSchema>;
 
 const loginFormDefaultValues = {
-  loginType: LoginTypes.wif,
+  loginType: LoginTypes.hbauth,
   password: '',
   remember: false,
-  useHbauth: false,
+  useHbauth: true,
   useHiveauth: false,
   useKeychain: false,
   username: ''
@@ -77,7 +77,7 @@ export function LoginForm({
 
   const { t } = useTranslation(i18nNamespace);
   const [isKeychainSupported, setIsKeychainSupported] = useState(false);
-  const [disabledPasword, setDisabledPassword] = useState(false);
+  const [disabledPasword, setDisabledPassword] = useState(true);
 
   useEffect(() => {
     setIsKeychainSupported(hasCompatibleKeychain());
@@ -212,6 +212,29 @@ export function LoginForm({
           </div>
 
           <div className="my-6 flex w-full flex-col">
+
+            <div className="flex items-center py-1">
+              <input
+                id="useHbauth"
+                type="checkbox"
+                value=""
+                className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
+                {...register('useHbauth')}
+                onChange={(e) => onHbauthToggle(e)}
+              />
+              <label
+                htmlFor="useHbauth"
+                className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
+              >
+                <img
+                  className="mr-1 h-4 w-4"
+                  src="/smart-signer/images/hive-blog-twshare.png"
+                  alt="Hbauth logo"
+                />
+                {t('login_form.use_hbauth')}
+              </label>
+            </div>
+
             <div className="flex items-center py-1">
               <input
                 type="checkbox"
@@ -255,27 +278,6 @@ export function LoginForm({
 
             <div className="flex items-center py-1">
               <input
-                id="useHbauth"
-                type="checkbox"
-                value=""
-                className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
-                {...register('useHbauth')}
-                onChange={(e) => onHbauthToggle(e)}
-              />
-              <label
-                htmlFor="useHbauth"
-                className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
-              >
-                <img
-                  className="mr-1 h-4 w-4"
-                  src="/smart-signer/images/hive-blog-twshare.png"
-                  alt="Hbauth logo"
-                />
-                {t('login_form.use_hbauth')}
-              </label>
-            </div>
-            <div className="flex items-center py-1">
-              <input
                 id="remember"
                 type="checkbox"
                 value=""
@@ -289,12 +291,13 @@ export function LoginForm({
                 {t('login_form.keep_me_logged_in')}
               </label>
             </div>
+
           </div>
 
           <div className="flex items-center justify-between">
             <button
               type="submit"
-              className="min-w-24 rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-semibold text-white hover:cursor-pointer hover:bg-red-700 focus:outline-none  disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
+              className="w-fit rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-semibold text-white hover:cursor-pointer hover:bg-red-700 focus:outline-none disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
               onClick={handleSubmit(onSubmit)}
               data-testid="login-submit-button"
               disabled={isSubmitting}

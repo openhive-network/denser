@@ -3,10 +3,19 @@ import { SignerHiveauth } from '@smart-signer/lib/signer-hiveauth';
 import { SignerKeychain } from '@smart-signer/lib/signer-keychain';
 import { SignerWif } from '@smart-signer/lib/signer-wif';
 import { LoginTypes } from '@smart-signer/types/common';
-import { KeyTypes } from '@smart-signer/types/common';
-import { SignerBase, SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer-base';
+import {
+  SignerBase,
+  SignChallenge,
+  BroadcastTransaction,
+  SignTransaction
+} from '@smart-signer/lib/signer-base';
 
-export type { BroadcastTransaction, SignChallenge, SignerOptions } from '@smart-signer/lib/signer-base';
+export type {
+  BroadcastTransaction,
+  SignChallenge,
+  SignerOptions,
+  SignTransaction
+} from '@smart-signer/lib/signer-base';
 
 // export * from '@hive/wax'; // TODO Consider this.
 export { vote, update_proposal_votes, operation } from '@hive/wax/web';
@@ -38,18 +47,13 @@ export class Signer extends SignerBase {
    * Creates instance of Signer for given `loginType` and returns it.
    *
    * @private
-   * @param {LoginTypes} [loginType=LoginTypes.wif]
-   * @param {*} [apiEndpoint=this.apiEndpoint]
    * @returns
    * @memberof Signer
    */
-  private getSigner(
-    loginType: LoginTypes = LoginTypes.wif,
-    apiEndpoint = this.apiEndpoint,
-    storageType = this.storageType
-  ) {
+  private getSigner() {
     let signer: SignerHbauth | SignerHiveauth | SignerKeychain | SignerWif;
-    const args = { apiEndpoint, storageType };
+    const { username, apiEndpoint, storageType, keyType, loginType } = this;
+    const args = { username, apiEndpoint, storageType, keyType, loginType };
     if (loginType === LoginTypes.hbauth) {
       signer = new SignerHbauth(args);
     } else if (loginType === LoginTypes.hiveauth) {
@@ -73,10 +77,7 @@ export class Signer extends SignerBase {
    *
    * @param {SignChallenge} {
    *     message,
-   *     loginType,
-   *     username,
    *     password = '', // private key or password to unlock hbauth key
-   *     keyType = KeyTypes.posting,
    *     translateFn = (v) => v
    *   }
    * @returns {Promise<string>}
@@ -84,21 +85,16 @@ export class Signer extends SignerBase {
    */
   async signChallenge({
     message,
-    loginType,
-    username,
     password = '', // private key or password to unlock hbauth key
-    keyType = KeyTypes.posting,
     translateFn = (v) => v
   }: SignChallenge): Promise<string> {
+    const { loginType, username, keyType } = this;
     logger.info('in signChallenge %o', { loginType, username, password, keyType, message });
-    const signer = this.getSigner(loginType);
+    const signer = this.getSigner();
     try {
       const signature = await signer.signChallenge({
         message,
-        username,
-        keyType,
         password,
-        loginType,
         translateFn
       });
       return signature;
@@ -113,47 +109,41 @@ export class Signer extends SignerBase {
    *
    * @param {BroadcastTransaction} {
    *     operation,
-   *     loginType,
-   *     username,
-   *     keyType = KeyTypes.posting,
    *     translateFn = (v) => v
    *   }
    * @returns {Promise<any>}
    * @memberof Signer
    */
-  async broadcastTransaction({
-    tx,
-    loginType,
-    username,
-    keyType = KeyTypes.posting,
-    translateFn = (v) => v
-  }: BroadcastTransaction): Promise<any> {
+  async broadcastTransaction({ operation, translateFn = (v) => v }: BroadcastTransaction): Promise<any> {
     logger.info('in broadcastTransaction: %o', {
-      tx,
-      loginType,
-      username,
-      keyType
+      operation
     });
-    const signer = this.getSigner(loginType);
+    const signer = this.getSigner();
     return signer.broadcastTransaction({
-      tx,
-      loginType,
-      username,
-      keyType,
+      operation,
       translateFn
     });
   }
 
   /**
-   * Clears all user data in storages and memory, does other things,
-   * if required for particular Signer.
+   * Clears all user data in storages and memory, does other required
+   * things for particular Signer.
    *
-   * @param {string} username
-   * @param {LoginTypes} loginType
+   * @returns
    * @memberof Signer
    */
-  async destroy(username: string, loginType: LoginTypes) {
-    const signer = this.getSigner(loginType);
-    return signer.destroy(username, loginType);
+  async destroy() {
+    const signer = this.getSigner();
+    return signer.destroy();
+  }
+
+  async createTransaction({ operation }: BroadcastTransaction) {
+    const signer = this.getSigner();
+    return signer.createTransaction({ operation });
+  }
+
+  async signTransaction({ digest, transaction }: SignTransaction) {
+    const signer = this.getSigner();
+    return signer.signTransaction({ digest, transaction });
   }
 }
