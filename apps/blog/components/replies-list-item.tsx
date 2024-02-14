@@ -14,12 +14,12 @@ import { Separator } from '@hive/ui/components/separator';
 import accountReputation from '@/blog/lib/account-reputation';
 import { Badge } from '@hive/ui/components/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
-import DialogLogin from '@/blog/components/dialog-login';
 import { Entry } from '@ui/lib/bridge';
 import DetailsCardHover from './details-card-hover';
 import clsx from 'clsx';
 import PostImage from './post-img';
 import { useTranslation } from 'next-i18next';
+import VotesComponent from './votes';
 
 const RepliesListItem = ({ comment }: { comment: Entry }) => {
   const { t } = useTranslation('common_blog');
@@ -123,32 +123,7 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
           </div>
           <CardFooter>
             <div className="flex h-5 items-center space-x-4 text-sm" data-testid="comment-card-footer">
-              <div className="flex items-center gap-1">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger data-testid="comment-card-upvote-button">
-                      <DialogLogin>
-                        <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1" />
-                      </DialogLogin>
-                    </TooltipTrigger>
-                    <TooltipContent data-testid="comment-card-upvote-tooltip">
-                      {t('post_content.footer.upvote')}
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger data-testid="comment-card-downvote-button">
-                      <DialogLogin>
-                        <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
-                      </DialogLogin>
-                    </TooltipTrigger>
-                    <TooltipContent data-testid="comment-card-downvote-tooltip">
-                      {t('post_content.footer.downvote')}
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
+              <VotesComponent post={comment} />
               <DetailsCardHover
                 post={comment}
                 decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
