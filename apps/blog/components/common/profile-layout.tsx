@@ -22,6 +22,7 @@ import env from '@beam-australia/react-env';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useFollowingInfiniteQuery } from '../hooks/use-following-infinitequery';
 import { transactionService } from '@transaction/index';
+import { FollowOperationBuilder } from '@hive/wax/web';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -335,11 +336,21 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     onClick={() => {
                       const nextFollow = !isFollow;
                       setIsFollow(nextFollow);
-                      transactionService.followTransaction((builder) => {
+                      transactionService.processHiveAppOperation((builder) => {
                         if (nextFollow) {
-                          builder.followBlog(user.username, username);
+                          builder.push(
+                            new FollowOperationBuilder()
+                              .followBlog(user.username, username)
+                              .authorize(user.username)
+                              .build()
+                          );
                         } else {
-                          builder.unfollowBlog(user.username, username);
+                          builder.push(
+                            new FollowOperationBuilder()
+                              .unfollowBlog(user.username, username)
+                              .authorize(user.username)
+                              .build()
+                          );
                         }
                       });
                     }}
@@ -369,11 +380,21 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     onClick={() => {
                       const nextMute = !isMute;
                       setIsMute(nextMute);
-                      transactionService.followTransaction((builder) => {
+                      transactionService.processHiveAppOperation((builder) => {
                         if (nextMute) {
-                          builder.muteBlog(user.username, username);
+                          builder.push(
+                            new FollowOperationBuilder()
+                              .muteBlog(user.username, username)
+                              .authorize(user.username)
+                              .build()
+                          );
                         } else {
-                          builder.unmuteBlog(user.username, username);
+                          builder.push(
+                            new FollowOperationBuilder()
+                              .unmuteBlog(user.username, username)
+                              .authorize(user.username)
+                              .build()
+                          );
                         }
                       });
                     }}

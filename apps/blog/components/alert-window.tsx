@@ -12,6 +12,7 @@ import {
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { ReactNode } from 'react';
 import { transactionService } from '@transaction/index';
+import { FollowOperationBuilder } from '@hive/wax/web';
 
 export function AlertDialogReblog({
   children,
@@ -48,8 +49,13 @@ export function AlertDialogReblog({
               className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
               data-testid="reblog-dialog-ok"
               onClick={() => {
-                transactionService.followTransaction((builder) => {
-                  builder.reblog(user.username, username, permlink);
+                transactionService.processHiveAppOperation((builder) => {
+                  builder.push(
+                    new FollowOperationBuilder()
+                      .reblog(user.username, username, permlink)
+                      .authorize(user.username)
+                      .build()
+                  );
                 });
               }}
             >

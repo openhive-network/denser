@@ -103,18 +103,21 @@ export function ReplyTextbox({
             <Button
               disabled={text === ''}
               onClick={() => {
-                transactionService.regularTransaction((builder) => {
-                  builder.push({
-                    comment: {
-                      parent_author: username,
-                      parent_permlink: permlink,
-                      author: user.username,
-                      permlink: replyPermlink,
-                      title: '',
-                      body: cleanedText,
-                      json_metadata: '{"app":"hiveblog/0.1"}'
-                    }
-                  });
+                transactionService.processHiveAppOperation((builder) => {
+                  builder
+                    .push({
+                      comment: {
+                        parent_author: username,
+                        parent_permlink: permlink,
+                        author: user.username,
+                        permlink: replyPermlink,
+                        title: '',
+                        body: cleanedText,
+                        json_metadata: '{"app":"hiveblog/0.1"}'
+                      }
+                    })
+                    .authorize(user.username)
+                    .build();
                 });
                 setText('');
               }}

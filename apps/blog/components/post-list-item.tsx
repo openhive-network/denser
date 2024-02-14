@@ -234,15 +234,18 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
                           <Icons.arrowUpCircle
                             className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1"
                             onClick={(e) =>
-                              transactionService.regularTransaction((builder) => {
-                                builder.push({
-                                  vote: {
-                                    voter: user.username,
-                                    author: post.author,
-                                    permlink: post.permlink,
-                                    weight: 10000
-                                  }
-                                });
+                              transactionService.processHiveAppOperation((builder) => {
+                                builder
+                                  .push({
+                                    vote: {
+                                      voter: user.username,
+                                      author: post.author,
+                                      permlink: post.permlink,
+                                      weight: 10000
+                                    }
+                                  })
+                                  .authorize(user.username)
+                                  .build();
                               })
                             }
                           />
@@ -264,15 +267,18 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
                           <Icons.arrowDownCircle
                             className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1"
                             onClick={(e) =>
-                              transactionService.regularTransaction((builder) => {
-                                builder.push({
-                                  vote: {
-                                    voter: user.username,
-                                    author: post.author,
-                                    permlink: post.permlink,
-                                    weight: -10000
-                                  }
-                                });
+                              transactionService.processHiveAppOperation((builder) => {
+                                builder
+                                  .push({
+                                    vote: {
+                                      voter: user.username,
+                                      author: post.author,
+                                      permlink: post.permlink,
+                                      weight: -10000
+                                    }
+                                  })
+                                  .authorize(user.username)
+                                  .build();
                               })
                             }
                           />

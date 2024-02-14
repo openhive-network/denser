@@ -1,8 +1,6 @@
 import {
   CommunityOperationBuilder,
-  EFollowBlogAction,
   FollowOperationBuilder,
-  operation,
   createHiveChain,
   BroadcastTransactionRequest,
   IHiveChainInterface,
@@ -11,13 +9,7 @@ import {
 } from '@hive/wax/web';
 import { logger } from '@hive/ui/lib/logger';
 import { toast } from '@hive/ui/components/hooks/use-toast';
-import { comment } from '@hive/wax/web';
-import { createPermlink } from './lib/utils';
-import { Entry } from '@ui/lib/bridge';
-import { Signer, vote } from '@smart-signer/lib/signer';
-import { User } from '@smart-signer/types/common';
-
-// TODO Check errors message for indexOf for particular method
+import { Signer } from '@smart-signer/lib/signer';
 
 class TransactionService {
   static signer = new Signer();
@@ -32,52 +24,27 @@ class TransactionService {
     return TransactionService.hiveChain;
   }
 
-  async followTransaction(cb: (builder: FollowOperationBuilder) => void): Promise<void> {
-    // specific builder for ops
-    const builder = new FollowOperationBuilder();
-
-    // wait until callback
-    cb(builder);
-
-    await this.processTransaction(builder.build());
-  }
-
-  async communityTransaction(cb: (builder: CommunityOperationBuilder) => void): Promise<void> {
-    // specific builder for ops
-    const builder = new CommunityOperationBuilder();
-
-    // wait until callback
-    cb(builder);
-
-    await this.processTransaction(builder.build());
-  }
-
-  async regularTransaction(cb: (builder: ITransactionBuilder) => void): Promise<void> {
-    // specific builder for ops
+  async processHiveAppOperation(cb: (opBuilder: ITransactionBuilder) => void) {
     const txBuilder = await (await this.getHiveChain()).getTransactionBuilder();
 
-    // wait until callback
     cb(txBuilder);
-
-    await this.processTransaction(txBuilder.build().operations);
+    await this.processTransaction(txBuilder);
   }
 
-  async processTransaction(ops: IHiveAppsOperation): Promise<void> {
-    // main tx builder
-    const txBuilder = await (await this.getHiveChain()).getTransactionBuilder();
-
-    // push all specific ops to main tx builder
-    txBuilder.push(ops);
-
+  async processTransaction(txBuilder: ITransactionBuilder): Promise<void> {
     // validate
     txBuilder.validate();
 
     // Sign using smart-signer
     // pass to smart-signer txBuilder.sigDigest
-    const signedTx = TransactionService.signer.signTransaction(txBuilder);
+    const signature = await TransactionService.signer.signTransaction({
+      digest: txBuilder.sigDigest,
+      transaction: txBuilder.build() // builded transaction
+    });
 
+    txBuilder.build(signature);
     // create broadcast request
-    const broadcastReq = new BroadcastTransactionRequest(signedTx);
+    const broadcastReq = new BroadcastTransactionRequest(txBuilder);
 
     // do broadcast
     try {

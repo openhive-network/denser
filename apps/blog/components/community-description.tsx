@@ -14,6 +14,7 @@ import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useEffect, useState } from 'react';
 import { transactionService } from '@transaction/index';
+import { CommunityOperationBuilder } from '@hive/wax';
 
 const CommunityDescription = ({
   data,
@@ -96,11 +97,21 @@ const CommunityDescription = ({
                     onClick={() => {
                       const nextIsSubscribe = !isSubscribe;
                       setIsSubscribe(nextIsSubscribe);
-                      transactionService.communityTransaction((builder) => {
+                      transactionService.processHiveAppOperation((builder) => {
                         if (nextIsSubscribe) {
-                          builder.subscribe(username);
+                          builder.push(
+                            new CommunityOperationBuilder()
+                              .subscribe(username)
+                              .authorize(user.username)
+                              .build()
+                          );
                         } else {
-                          builder.unsubscribe(username);
+                          builder.push(
+                            new CommunityOperationBuilder()
+                              .unsubscribe(username)
+                              .authorize(user.username)
+                              .build()
+                          );
                         }
                       });
                     }}
@@ -115,9 +126,14 @@ const CommunityDescription = ({
                     onClick={() => {
                       const nextIsSubscribe = !isSubscribe;
                       setIsSubscribe(nextIsSubscribe);
-                      transactionService.communityTransaction((builder) => {
-                        builder.unsubscribe(username);
-                      }
+                      transactionService.processHiveAppOperation((builder) => {
+                        builder.push(
+                          new CommunityOperationBuilder()
+                            .unsubscribe(username)
+                            .authorize(user.username)
+                            .build()
+                        );
+                      });
                     }}
                   >
                     <span className="group-hover:hidden">Joined</span>
