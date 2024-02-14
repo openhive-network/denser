@@ -260,10 +260,10 @@ export class ProfilePage {
     this.repliesCommentListItemAvatarLink = page.locator('[data-testid="comment-author-avatar-link"]');
     this.repliesCommentListItemCommunityLink = page.locator('[data-testid="comment-community-category-link"]');
     this.repliesCommentListItemTimestamp = page.locator('[data-testid="comment-timestamp"]');
-    this.repliesCommentListItemUpvote = page.locator('[data-testid="comment-card-upvote-button"]');
-    this.repliesCommentListItemDownvote = page.locator('[data-testid="comment-card-downvote-button"]');
-    this.repliesCommentListItemUpvoteTooltip = page.locator('[data-testid="comment-card-upvote-tooltip"]');
-    this.repliesCommentListItemDownvoteTooltip = page.locator('[data-testid="comment-card-downvote-tooltip"]');
+    this.repliesCommentListItemUpvote = page.locator('[data-testid="comment-card-footer"] [data-testid="upvote-button"]');
+    this.repliesCommentListItemDownvote = page.locator('[data-testid="comment-card-footer"] [data-testid="downvote-button"]');
+    this.repliesCommentListItemUpvoteTooltip = page.locator('[data-testid="upvote-button-tooltip"]');
+    this.repliesCommentListItemDownvoteTooltip = page.locator('[data-testid="downvote-button-tooltip"]');
     this.repliesCommentListItemPayout = page.locator('[data-testid="post-payout"]');
     this.repliesCommentListItemPayoutTooltip = page.locator('[data-testid="payout-post-card-tooltip"]');
     this.repliesCommentListItemVotes = page.locator('[data-testid="comment-vote"]');
