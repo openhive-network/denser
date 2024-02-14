@@ -353,7 +353,8 @@ test.describe('Post page tests', () => {
 
 
     await test.step("Post Footer - Upvote and Downvote", async () => {
-    await expect(postPage.votesButtons).toBeVisible()
+    await expect(postPage.upvoteButton).toBeVisible()
+    await expect(postPage.downvoteButton).toBeVisible()
     })
 
     //

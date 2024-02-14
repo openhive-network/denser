@@ -272,12 +272,12 @@ test.describe('Translation tests', () => {
     await homePage.languageMenuPl.click();
     await expect(postPage.articleTitle).toBeVisible();
     // Validate post footer upvote and downvote buttons tooltips
-    await postPage.page.waitForTimeout(2000);
+    await postPage.page.waitForTimeout(3000);
     const expectedUpvoteTooltipText: string = 'Głos zaGłos za';
     const expectedDownvoteTooltipText: string = 'Głos przeciwGłos przeciw';
-    await postPage.postFooterUpvoteButton.hover();
+    await postPage.upvoteButton.locator('svg').hover();
     await expect(postPage.postFooterUpvoteTooltip).toContainText(expectedUpvoteTooltipText);
-    await postPage.postFooterDownvoteButton.hover();
+    await postPage.downvoteButton.locator('svg').hover();
     await expect(postPage.postFooterDownvoteTooltip).toContainText(expectedDownvoteTooltipText);
     // Validate post footer payout tooltip
     const expectedPayoutsTooltipText1: string = 'Wypłacana kwota';

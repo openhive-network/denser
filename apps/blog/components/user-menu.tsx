@@ -15,12 +15,8 @@ import { Button } from '@ui/components';
 import LangToggle from './lang-toggle';
 import { useLogout } from '@smart-signer/lib/auth/use-logout';
 import env from '@beam-australia/react-env';
-import DialogHBAuth from '@smart-signer/components/dialog-hb-auth';
-import { getLogger } from '@hive/ui/lib/logging';
 import { User } from '@smart-signer/types/common';
 import { useTranslation } from 'next-i18next';
-
-const logger = getLogger('app');
 
 const UserMenu = ({
   children,
@@ -107,18 +103,6 @@ const UserMenu = ({
               <Icons.wallet className="mr-2" />
               <span className="w-full">{t('navigation.user_menu.wallet')}</span>
             </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer">
-            <DialogHBAuth
-              onAuthComplete={(username, keyType) => {
-                logger.info('onAuthComplete %o', { username, keyType });
-              }}
-            >
-              <Link href="#" data-testid="navbar-hbauth-link" className="flex w-full items-center">
-                <Icons.hiveauth className="mr-2 h-6 w-5" />
-                <span className="w-full">Hbauth</span>
-              </Link>
-            </DialogHBAuth>
           </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer">
             <Link

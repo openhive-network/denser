@@ -56,7 +56,8 @@ export class PostPage {
   readonly footerCommunityLink: Locator;
   readonly hoverCardUserAvatar: Locator;
   readonly footerAuthorNameFirst: Locator;
-  readonly votesButtons: Locator;
+  readonly upvoteButton: Locator;
+  readonly downvoteButton: Locator;
   readonly footerPayouts: Locator;
   readonly footerPayoutsTooltip: Locator;
   readonly footerReblogBtn: Locator;
@@ -122,8 +123,8 @@ export class PostPage {
     this.commentCardsTitles = page.locator('[data-testid="comment-card-title"]');
     this.commentCardsDescriptions = page.locator('[data-testid="comment-card-description"]');
     this.commentCardsFooters = page.locator('[data-testid="comment-card-footer"]');
-    this.commentCardsFooterUpvotes = page.locator('[data-testid="comment-card-footer-upvote"]');
-    this.commentCardsFooterDownvotes = page.locator('[data-testid="comment-card-footer-downvote"]');
+    this.commentCardsFooterUpvotes = this.commentCardsFooters.locator('[data-testid="upvote-button"]');
+    this.commentCardsFooterDownvotes = this.commentCardsFooters.locator('[data-testid="downvote-button"]');
     this.commentCardsFooterPayoutNonZero = page.locator('[data-testid="comment-card-footer-payout"]');
     this.commentCardsFooterPayoutZero = page.locator('[data-testid="post-payout"]');
     this.commentCardsFooterVotes = this.commentCardsFooters.locator('[data-testid="comment-votes"]');
@@ -142,7 +143,8 @@ export class PostPage {
     this.postLabelFooter = page.locator('div.flex.flex-wrap').locator('.inline-flex.items-center.border.rounded-full').last()
     this.footerCommunityLink = page.locator('[data-testid="footer-comment-community-category-link"]')
     this.hoverCardUserAvatar = page.locator("[data-testid='hover-card-user-avatar']")
-    this.votesButtons = page.locator('[data-testid="comment-vote-buttons"]')
+    this.upvoteButton = this.articleFooter.locator('[data-testid="upvote-button"]');
+    this.downvoteButton = this.articleFooter.locator('[data-testid="downvote-button"]');
     this.footerPayouts = page.locator('[data-testid="comment-payout"]')
     this.footerPayoutsTooltip = page.locator('[data-testid="payout-post-card-tooltip"]')
     this.footerReblogBtn = page.locator('svg.h-4.w-4.cursor-pointer')
@@ -167,10 +169,8 @@ export class PostPage {
     this.postsCommentsFirstAvatar = page.locator('[data-testid="comment-author-avatar"]').first()
     this.mutedPostsBannedImageText = page.locator('#articleBody .text-red-500').first()
     this.userPostMenu = page.getByTestId('user-post-menu')
-    this.postFooterUpvoteButton = page.locator('[data-testid="post-footer-upvote-button"]');
-    this.postFooterUpvoteTooltip = page.locator('[data-testid="post-footer-upvote-tooltip"]');
-    this.postFooterDownvoteButton = page.locator('[data-testid="post-footer-downvote-button"]');
-    this.postFooterDownvoteTooltip = page.locator('[data-testid="post-footer-downvote-tooltip"]');
+    this.postFooterUpvoteTooltip = page.locator('[data-testid="upvote-button-tooltip"]');
+    this.postFooterDownvoteTooltip = page.locator('[data-testid="downvote-button-tooltip"]');
   }
 
   async gotoHomePage() {
