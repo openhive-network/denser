@@ -1,12 +1,13 @@
 import { RCAPI } from '@hiveio/dhive/lib/helpers/rc';
 import { RCAccount } from '@hiveio/dhive/lib/chain/rc';
 import { Moment } from 'moment';
-
+import { IHiveChainInterface } from '@hive/wax/web';
 import { isCommunity, parseAsset, vestsToRshares } from '@/blog/lib/utils';
 import { DATA_LIMIT } from '@ui/lib/bridge';
 import { FullAccount } from '@hive/ui/store/app-types';
 import { bridgeServer } from '@hive/ui/lib/bridge';
 import { getDynamicGlobalProperties, getFeedHistory } from '@hive/ui/lib/hive';
+import { IManabarData } from '@hive/wax/web';
 
 export interface TrendingTag {
   comments: number;
@@ -403,3 +404,87 @@ export const brodcastTransaction = (transaction: any): Promise<any> =>
 //   });
 //   return await response.json();
 // };
+
+interface Manabars {
+  upvote: IManabarData;
+  downvote: IManabarData;
+  rc: IManabarData;
+  upvoteCooldown: Date;
+  downvoteCooldown: Date;
+  rcCooldown: Date;
+}
+
+interface SingleManabar {
+  max: string;
+  current: string;
+  percentageValue: number;
+  cooldown: Date;
+}
+
+interface Manabar {
+  upvote: SingleManabar;
+  downvote: SingleManabar;
+  rc: SingleManabar;
+}
+export const getManabars = async (
+  accountName: string,
+  hiveChain: IHiveChainInterface
+): Promise<Manabars | null> => {
+  try {
+    const upvoteCooldownPromise = hiveChain.calculateManabarFullRegenerationTimeForAccount(accountName, 0);
+    const downvoteCooldownPromise = hiveChain.calculateManabarFullRegenerationTimeForAccount(accountName, 1);
+    const rcCooldownPromise = hiveChain.calculateManabarFullRegenerationTimeForAccount(accountName, 2);
+    const upvotePromise = hiveChain.calculateCurrentManabarValueForAccount(accountName, 0);
+    const downvotePromise = hiveChain.calculateCurrentManabarValueForAccount(accountName, 1);
+    const rcPromise = hiveChain.calculateCurrentManabarValueForAccount(accountName, 2);
+    const manabars = await Promise.all([
+      upvotePromise,
+      upvoteCooldownPromise,
+      downvotePromise,
+      downvoteCooldownPromise,
+      rcPromise,
+      rcCooldownPromise
+    ]);
+    return {
+      upvote: manabars[0],
+      upvoteCooldown: manabars[1],
+      downvote: manabars[2],
+      downvoteCooldown: manabars[3],
+      rc: manabars[4],
+      rcCooldown: manabars[5]
+    };
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+export const getManabar = async (
+  accountName: string,
+  hiveChain: IHiveChainInterface
+): Promise<Manabar | null> => {
+  const manabars = await getManabars(accountName, hiveChain!);
+  if (!manabars) return null;
+  const { upvote, upvoteCooldown, downvote, downvoteCooldown, rc, rcCooldown } = manabars;
+
+  const processedManabars: Manabar = {
+    upvote: {
+      cooldown: upvoteCooldown,
+      max: upvote.max.toString(),
+      current: upvote.current.toString(),
+      percentageValue: upvote.percent
+    },
+    downvote: {
+      cooldown: downvoteCooldown,
+      max: downvote.max.toString(),
+      current: downvote.current.toString(),
+      percentageValue: downvote.percent
+    },
+    rc: {
+      cooldown: rcCooldown,
+      max: rc.max.toString(),
+      current: rc.current.toString(),
+      percentageValue: rc.percent
+    }
+  };
+  return processedManabars;
+};
