@@ -16,7 +16,6 @@ import { useEffect, useState } from 'react';
 import sorter, { SortOrder } from '@/blog/lib/sorter';
 import { useRouter } from 'next/router';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
-import DialogLogin from '@/blog/components/dialog-login';
 import { Icons } from '@hive/ui/components/icons';
 import { AlertDialogReblog } from '@/blog/components/alert-window';
 import { getDoubleSize, proxifyImageUrl } from '@hive/ui/lib/old-profixy';
@@ -36,6 +35,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
 import { GetServerSideProps } from 'next';
 import { AlertDialogFlag } from '@/blog/components/alert-window-flag';
+import VotesComponent from '@/blog/components/votes';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -368,32 +368,7 @@ function PostPage({
           </div>
           <div className="my-4 flex justify-between">
             <div className="flex items-center gap-2 sm:gap-4">
-              <div className="flex items-center gap-1" data-testid="comment-vote-buttons">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger data-testid="post-footer-upvote-button">
-                      <DialogLogin>
-                        <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white" />
-                      </DialogLogin>
-                    </TooltipTrigger>
-                    <TooltipContent data-testid="post-footer-upvote-tooltip">
-                      {t('post_content.footer.upvote')}
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger data-testid="post-footer-downvote-button">
-                      <DialogLogin>
-                        <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white" />
-                      </DialogLogin>
-                    </TooltipTrigger>
-                    <TooltipContent data-testid="post-footer-downvote-tooltip">
-                      {t('post_content.footer.downvote')}
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
+              <VotesComponent post={post_s} />
               <DetailsCardHover
                 post={post_s}
                 decline={Number(post_s.max_accepted_payout.slice(0, 1)) === 0}

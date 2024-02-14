@@ -16,22 +16,17 @@ import accountReputation from '@/blog/lib/account-reputation';
 import { AlertDialogReblog } from './alert-window';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
 import DetailsCardHover from './details-card-hover';
-import DialogLogin from '@/blog/components/dialog-login';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { Entry } from '@ui/lib/bridge';
 import PostImage from './post-img';
 import { useTranslation } from 'next-i18next';
-import { useUser } from '@smart-signer/lib/auth/use-user';
-import { operationService } from '@operations/index';
-import clsx from 'clsx';
+import VotesComponent from './votes';
 
 const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage: boolean | undefined }) => {
   const { t } = useTranslation('common_blog');
   const [reveal, setReveal] = useState(post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw'));
   const router = useRouter();
-  const { user } = useUser();
-  const checkVote = post.active_votes.find((e) => e.voter === user?.username);
 
   function revealPost() {
     setReveal((reveal) => !reveal);
@@ -227,75 +222,7 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
             </CardContent>
             <CardFooter className="pb-2">
               <div className="flex h-5 items-center space-x-2 text-sm" data-testid="post-card-footer">
-                <div className="flex items-center gap-1">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger data-testid="upvote-button">
-                        {user && user.isLoggedIn ? (
-                          <Icons.arrowUpCircle
-                            className={clsx(
-                              'h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1',
-                              { 'bg-red-600 text-white': checkVote && checkVote?.rshares > 0 }
-                            )}
-                            onClick={(e) => operationService.vote(e, user, 'upvote', post)}
-                          />
-                        ) : (
-                          <DialogLogin>
-                            <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1" />
-                          </DialogLogin>
-                        )}
-                      </TooltipTrigger>
-                      <TooltipContent data-testid="upvote-button-tooltip">
-                        {t('cards.post_card.upvote')}
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger data-testid="downvote-button">
-                        {user && user.isLoggedIn ? (
-                          <Icons.arrowDownCircle
-                            className={clsx(
-                              'h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
-                              { 'bg-gray-600 text-white': checkVote && checkVote?.rshares < 0 }
-                            )}
-                            onClick={(e) => operationService.vote(e, user, 'downvote', post)}
-                          />
-                        ) : (
-                          <DialogLogin>
-                            <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
-                          </DialogLogin>
-                        )}
-                      </TooltipTrigger>
-                      <TooltipContent data-testid="downvote-button-tooltip">
-                        {t('cards.post_card.downvote')}
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                  {checkVote && (
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>{checkVote?.rshares === 0 && 'Voted'}</TooltipTrigger>
-                        <TooltipContent className="flex flex-col">
-                          <span>
-                            You voted but your Hive Power is too low to check if you upvote or downvote.
-                          </span>
-                          <span>
-                            Boost your Hive Power in
-                            <Link
-                              className="font-bold hover:text-red-600"
-                              target="_blank"
-                              href={`https://wallet.openhive.network/${user?.username}/transfers`}
-                            >
-                              {' Wallet '}
-                            </Link>
-                            to see more
-                          </span>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
-                </div>
+                <VotesComponent post={post} />
 
                 <DetailsCardHover post={post} decline={Number(post.max_accepted_payout.slice(0, 1)) === 0}>
                   <div
