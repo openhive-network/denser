@@ -52,6 +52,21 @@ export class SignerHbauth extends SignerBase {
     return signature;
   }
 
+  async transmitTransaction(transaction: transaction) {
+    const wax = await createWaxFoundation();
+    const txBuilder = new wax.TransactionBuilder(transaction);
+    const broadcastReq = new BroadcastTransactionRequest(txBuilder);
+    const hiveChain = await createHiveChain({ apiEndpoint: this.apiEndpoint });
+    try {
+      const result = await hiveChain.api.network_broadcast_api.broadcast_transaction(broadcastReq);
+      logger.info('transmitTransaction result: %o', result);
+      return result;
+    } catch (e) {
+      logger.error('got error', e);
+      throw e;
+    }
+  }
+
   async broadcastTransaction({
     operation
   }: BroadcastTransaction): Promise<{ success: boolean; result: string; error: string }> {
