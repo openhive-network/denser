@@ -9,6 +9,7 @@ import { SignerKeychain } from '@smart-signer/lib/signer-keychain';
 import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
 import { verifySignature } from '@smart-signer/lib/utils';
 import { THexString, transaction, createHiveChain, createWaxFoundation, operation, ITransactionBuilder, BroadcastTransactionRequest } from '@hive/wax/web';
+import { waxToKeychainOperation } from '@smart-signer/lib/signer-keychain';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -35,8 +36,8 @@ export default function Profile() {
     voter: user?.username || '',
     author: 'gtg',
 
-    // permlink: 'power-to-the-hive-but-just-a-little',
-    permlink: 'non-existing-permlink-q523-73867',
+    permlink: 'power-to-the-hive-but-just-a-little',
+    // permlink: 'non-existing-permlink-q523-73867',
 
     weight: 10000
   };
@@ -63,7 +64,7 @@ export default function Profile() {
         operation: { vote },
       });
       const wax = await createWaxFoundation();
-      const txBuilder = new wax.TransactionBuilder(transaction);
+      const txBuilder = new wax.TransactionBuilder(transaction as transaction);
       const tx = txBuilder.build();
 
       const signerKeychain = new SignerKeychain({ username, loginType });
@@ -73,6 +74,17 @@ export default function Profile() {
       });
       logger.info('signature SignerKeychain: %s', signatureKeychain);
 
+      // Rewrite operations to Keychain format.
+      const operations = waxToKeychainOperation(tx.operations);
+
+      const message = JSON.stringify({...tx, ...{ operations } }, null, 0); // not working (missing posting authority)
+      // const message = JSON.stringify(tx, null, 0); // not working (missing posting authority)
+
+      const signatureKeychainChallenge = await signerKeychain.signChallenge({
+        message
+      });
+      logger.info('signature signatureKeychainChallenge: %s', signatureKeychainChallenge);
+
       const signerHbauth = new SignerHbauth({ username, loginType });
       const signatureHbauth = await signerHbauth.signTransaction({
         digest: txBuilder.sigDigest,
@@ -80,7 +92,9 @@ export default function Profile() {
       });
       logger.info('signature SignerHbauth: %s', signatureHbauth);
 
-      const t = txBuilder.build(signatureKeychain);
+      const t = txBuilder.build(signatureKeychain); // it  works
+      // const t = txBuilder.build(signatureKeychainChallenge); // not working (missing posting authority)
+
       signerHbauth.transmitTransaction(t);
 
     } catch (error) {

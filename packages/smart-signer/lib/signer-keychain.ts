@@ -70,9 +70,9 @@ export class SignerKeychain extends SignerBase {
         message,
         method: KeychainKeyTypes[keyType]
       });
-      logger.info('keychain response', { response });
+      logger.info('SignerKeychain.signChallenge keychain response: %o', response);
       if (response.error) {
-        throw new Error(`Error in SignerKeychain.signChallenge: ${response.error}`);
+        throw new Error(`Error in SignerKeychain.SignerKeychain.signChallenge: ${response.error}`);
       }
       const signature = response.result as unknown as string;
       logger.info('keychain', { signature });
@@ -98,9 +98,9 @@ export class SignerKeychain extends SignerBase {
         operations,
         method: KeychainKeyTypes[keyType]
       });
-
+      logger.info('SignerKeychain.broadcastTransaction keychain response: %o', broadcastResult);
       if (broadcastResult.error) {
-        throw new Error(`Error in SignerKeychain.signChallenge: ${broadcastResult.error}`);
+        throw new Error(`Error in SignerKeychain.broadcastTransaction: ${broadcastResult.error}`);
       }
 
       result.result = broadcastResult.result as any;
@@ -157,13 +157,13 @@ export class SignerKeychain extends SignerBase {
         method: KeychainKeyTypes[keyType],
         tx
       });
-      logger.info(signResult);
+      logger.info('SignerKeychain.signTransactionOld keychain response: %o', signResult);
       if (signResult.error) {
         throw new Error(`Error in signTx: ${signResult.error}`);
       }
       return signResult.result.signatures[0];
     } catch (error) {
-      logger.error('SignerKeychain.broadcastTransaction error: %o', error);
+      logger.error('SignerKeychain.signTransactionOld error: %o', error);
       throw error;
     }
   }
@@ -194,7 +194,7 @@ export class SignerKeychain extends SignerBase {
         method: KeychainKeyTypes[keyType],
         tx: { ...tx, ...{ operations } }
       });
-      logger.info(signResult);
+      logger.info('SignerKeychain.signTransaction keychain response: %o', signResult);
       if (signResult.error) {
         throw new Error(`Error in signTx: ${signResult.error}`);
       }
