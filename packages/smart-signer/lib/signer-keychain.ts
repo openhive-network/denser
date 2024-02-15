@@ -70,6 +70,7 @@ export class SignerKeychain extends SignerBase {
         message,
         method: KeychainKeyTypes[keyType]
       });
+      logger.info('keychain response', { response });
       if (response.error) {
         throw new Error(`Error in SignerKeychain.signChallenge: ${response.error}`);
       }
