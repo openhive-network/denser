@@ -44,7 +44,15 @@ const verifyLoginChallenge = async (
       const sig = Signature.fromString(signature);
       let publicKey = PublicKey.from(pubkey);
       const messageHash = cryptoUtils.sha256(message);
-      const verified = publicKey.verify(messageHash, sig);
+
+      // Recover public key from signature (you need to know digest);
+      const publicKeyRecoveredFromSignature = sig.recover(messageHash).toString();
+      // We check whether publicKeyRecoveredFromSignature is listed
+      // in account posting key auths.
+
+      const verified = publicKeyRecoveredFromSignature === pubkey
+          && publicKey.verify(messageHash, sig);
+
       if (!verified) {
         logger.error(
           'verifyLoginChallenge signature verification failed for user %s %o',
