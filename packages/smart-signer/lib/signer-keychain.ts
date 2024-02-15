@@ -56,6 +56,7 @@ export function waxToKeychainOperation(operation: operation | operation[]) {
  * @extends {SignerBase}
  */
 export class SignerKeychain extends SignerBase {
+
   async signChallenge({ message }: SignChallenge): Promise<string> {
     const { username, keyType } = this;
     logger.info('in SignerKeychain.signChallenge %o', { message, username, keyType });
@@ -179,6 +180,7 @@ export class SignerKeychain extends SignerBase {
     // matter of fact Keychain extension could do it.
 
     const tx = txBuilder.build();
+    // Rewrite operations to Keychain format.
     const operations = waxToKeychainOperation(tx.operations);
 
     try {
@@ -195,7 +197,7 @@ export class SignerKeychain extends SignerBase {
       if (signResult.error) {
         throw new Error(`Error in signTx: ${signResult.error}`);
       }
-      return '';
+      return signResult.result.signatures[0];
     } catch (error) {
       logger.error('SignerKeychain.signTransaction error: %o', error);
       throw error;

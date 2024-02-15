@@ -23,6 +23,7 @@ const logger = getLogger('app');
  * @extends {SignerBase}
  */
 export class SignerHbauth extends SignerBase {
+
   async getPasswordFromUser(dialogProps: { [key: string]: any } = {}): Promise<string> {
     let password = '';
     try {
