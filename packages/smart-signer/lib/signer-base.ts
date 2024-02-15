@@ -1,4 +1,4 @@
-import { operation } from '@hive/wax/web';
+import { operation, transaction } from '@hive/wax/web';
 import { LoginTypes } from '@smart-signer/types/common';
 import { KeyTypes } from '@smart-signer/types/common';
 import { StorageType } from '@smart-signer/lib/storage-mixin';
@@ -9,7 +9,7 @@ const logger = getLogger('app');
 
 export interface SignTransaction {
   digest: THexString;
-  transaction: string;
+  transaction: transaction;
 }
 
 export interface BroadcastTransaction {

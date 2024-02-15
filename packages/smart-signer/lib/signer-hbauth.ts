@@ -93,8 +93,11 @@ export class SignerHbauth extends SignerBase {
     const wax = await createWaxFoundation();
     let tx: ITransactionBuilder;
 
-    // tx = new wax.TransactionBuilder(JSON.parse(transaction));
-    tx = wax.TransactionBuilder.fromApi(transaction);
+    // When transaction is string, e.g. got from transaction.toApi().
+    // tx = wax.TransactionBuilder.fromApi(transaction);
+
+    tx = new wax.TransactionBuilder(transaction);
+
     logger.info('signTransaction digests: %o', { digest, 'tx.sigDigest': tx.sigDigest });
     if (digest !== tx.sigDigest) throw new Error('Digests do not match');
 
