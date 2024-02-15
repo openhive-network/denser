@@ -1,6 +1,6 @@
 import { cryptoUtils } from '@hiveio/dhive';
 import { authService } from '@smart-signer/lib/auth-service';
-import { createHiveChain, BroadcastTransactionRequest, THexString } from '@hive/wax/web';
+import { createHiveChain, BroadcastTransactionRequest, THexString, transaction } from '@hive/wax/web';
 import {
   SignChallenge,
   BroadcastTransaction,
@@ -51,21 +51,6 @@ export class SignerHbauth extends SignerBase {
     return signature;
   }
 
-  async createTransaction({ operation }: BroadcastTransaction) {
-    const { apiEndpoint } = this;
-    try {
-      const hiveChain = await createHiveChain({ apiEndpoint });
-      const tx = await hiveChain.getTransactionBuilder();
-      tx.push(operation).validate();
-      const result = { transaction: tx.toApi(), digest: tx.sigDigest };
-      logger.info('createTransaction result: %o', result);
-      return result;
-    } catch (error) {
-      logger.error('SignerHbauth.createTransaction error: %o', error);
-      throw error;
-    }
-  }
-
   async broadcastTransaction({
     operation
   }: BroadcastTransaction): Promise<{ success: boolean; result: string; error: string }> {
@@ -73,13 +58,13 @@ export class SignerHbauth extends SignerBase {
     const { apiEndpoint } = this;
     try {
       const hiveChain = await createHiveChain({ apiEndpoint });
-      const tx = await hiveChain.getTransactionBuilder();
-      tx.push(operation).validate();
-      const signature = await this.signDigest(tx.sigDigest, '');
-      const transaction = tx.build();
-      logger.info('SignerHbauth.broadcastTransaction tx: %o', tx.toApi());
+      const txBuilder = await hiveChain.getTransactionBuilder();
+      txBuilder.push(operation).validate();
+      const signature = await this.signDigest(txBuilder.sigDigest, '');
+      const transaction = txBuilder.build();
+      logger.info('SignerHbauth.broadcastTransaction tx: %o', txBuilder.toApi());
       transaction.signatures.push(signature);
-      const transactionRequest = new BroadcastTransactionRequest(tx);
+      const transactionRequest = new BroadcastTransactionRequest(txBuilder);
       await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
     } catch (error) {
       logger.error('SignerHbauth.broadcastTransaction error: %o', error);
@@ -91,15 +76,14 @@ export class SignerHbauth extends SignerBase {
 
   async signTransaction({ digest, transaction }: SignTransaction) {
     const wax = await createWaxFoundation();
-    let tx: ITransactionBuilder;
 
     // When transaction is string, e.g. got from transaction.toApi().
-    // tx = wax.TransactionBuilder.fromApi(transaction);
+    // const txBuilder = wax.TransactionBuilder.fromApi(transaction);
 
-    tx = new wax.TransactionBuilder(transaction);
+    const txBuilder = new wax.TransactionBuilder(transaction);
 
-    logger.info('signTransaction digests: %o', { digest, 'tx.sigDigest': tx.sigDigest });
-    if (digest !== tx.sigDigest) throw new Error('Digests do not match');
+    logger.info('signTransaction digests: %o', { digest, 'tx.sigDigest': txBuilder.sigDigest });
+    if (digest !== txBuilder.sigDigest) throw new Error('Digests do not match');
 
     // Show transaction to user and get his consent to sign it.
 

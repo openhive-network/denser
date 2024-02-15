@@ -6,6 +6,7 @@ import { Button } from '@hive/ui/components/button';
 import { Signer, vote } from '@smart-signer/lib/signer';
 import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
 import { verifySignature } from '@smart-signer/lib/utils';
+import { THexString, transaction, createHiveChain, createWaxFoundation, operation, ITransactionBuilder } from '@hive/wax/web';
 
 import { getLogger } from '@hive/ui/lib/logging';
 import { SignerKeychain } from '@smart-signer/lib/signer-keychain';
@@ -57,10 +58,16 @@ export default function Profile() {
     const { username, loginType } = user;
     const signer = new Signer({ username, loginType });
     try {
-      const { digest, transaction } = await signer.createTransaction({
+      const transaction = await signer.createTransaction({
         operation: { vote },
       });
-      const signature = await signer.signTransaction({ digest, transaction });
+      const wax = await createWaxFoundation();
+      const txBuilder = new wax.TransactionBuilder(transaction);
+      const tx = txBuilder.build();
+      const signature = await signer.signTransaction({
+        digest: txBuilder.sigDigest,
+        transaction: tx
+      });
       logger.info('signature: %s', signature);
     } catch (error) {
       logger.error(error);

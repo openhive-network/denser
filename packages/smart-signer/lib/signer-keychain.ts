@@ -6,8 +6,7 @@ import {
   SignTransaction,
   SignerBase
 } from '@smart-signer/lib/signer-base';
-import { createWaxFoundation, operation, ITransactionBuilder } from '@hive/wax/web';
-import { createHiveChain } from '@hive/wax/web';
+import { createHiveChain, createWaxFoundation, operation, ITransactionBuilder } from '@hive/wax/web';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -27,18 +26,24 @@ export function hasCompatibleKeychain() {
 }
 
 /**
- * Rewrites operation from Wax format to Keychain format.
+ * Rewrites operations from Wax format to Keychain format.
  *
  * @export
- * @param {operation} operation
+ * @param {(operation | operation[])} operation
  * @returns
  */
-export function waxToKeychainOperation(operation: operation) {
-  const operations: Operation[] = [];
-  for (const [key, value] of Object.entries(operation)) {
-    operations.push([key as Operation[0], value as Operation[1]]);
+export function waxToKeychainOperation(operation: operation | operation[]) {
+  const keychainOperations: Operation[] = [];
+
+  if (!Array.isArray(operation)) operation = [operation];
+
+  for (const o of operation) {
+    for (const [key, value] of Object.entries(o)) {
+      keychainOperations.push([key as Operation[0], value as Operation[1]]);
+    }
   }
-  return operations;
+
+  return keychainOperations;
 }
 
 /**
@@ -161,35 +166,20 @@ export class SignerKeychain extends SignerBase {
     }
   }
 
-  async createTransaction({ operation }: BroadcastTransaction) {
-    const { apiEndpoint } = this;
-    try {
-      const hiveChain = await createHiveChain({ apiEndpoint });
-      const tx = await hiveChain.getTransactionBuilder();
-      tx.push(operation).validate();
-      const result = { transaction: tx.toApi(), digest: tx.sigDigest };
-      logger.info('createTransaction result: %o', result);
-      return result;
-    } catch (error) {
-      logger.error('SignerHbauth.createTransaction error: %o', error);
-      throw error;
-    }
-  }
-
   async signTransaction({ digest, transaction }: SignTransaction) {
     const { username, keyType } = this;
     const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
 
     const wax = await createWaxFoundation();
-    let tx: ITransactionBuilder;
-
-    // tx = new wax.TransactionBuilder(JSON.parse(transaction));
-    tx = wax.TransactionBuilder.fromApi(transaction);
-    logger.info('signTransaction digests: %o', { digest, 'tx.sigDigest': tx.sigDigest });
-    if (digest !== tx.sigDigest) throw new Error('Digests do not match');
+    const txBuilder = new wax.TransactionBuilder(transaction);
+    logger.info('signTransaction digests: %o', { digest, 'txBuilder.sigDigest': txBuilder.sigDigest });
+    if (digest !== txBuilder.sigDigest) throw new Error('Digests do not match');
 
     // Show transaction to user and get his consent to sign it. But as a
     // matter of fact Keychain extension could do it.
+
+    const tx = txBuilder.build();
+    const operations = waxToKeychainOperation(tx.operations);
 
     try {
       if (!(await keychain.isKeychainInstalled())) {
@@ -199,7 +189,7 @@ export class SignerKeychain extends SignerBase {
       const signResult = await keychain.signTx({
         username,
         method: KeychainKeyTypes[keyType],
-        tx: JSON.parse(transaction)
+        tx: { ...tx, ...{ operations } }
       });
       logger.info(signResult);
       if (signResult.error) {

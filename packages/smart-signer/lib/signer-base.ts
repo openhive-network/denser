@@ -1,8 +1,7 @@
-import { operation, transaction } from '@hive/wax/web';
 import { LoginTypes } from '@smart-signer/types/common';
 import { KeyTypes } from '@smart-signer/types/common';
 import { StorageType } from '@smart-signer/lib/storage-mixin';
-import { THexString } from '@hive/wax/web';
+import { THexString, transaction, createHiveChain, createWaxFoundation, operation, ITransactionBuilder } from '@hive/wax/web';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -67,7 +66,18 @@ export class SignerBase {
   }
 
   async createTransaction({ operation }: BroadcastTransaction) {
-    return { transaction: '', digest: '' };
+    const { apiEndpoint } = this;
+    try {
+      const hiveChain = await createHiveChain({ apiEndpoint });
+      const txBuilder = await hiveChain.getTransactionBuilder();
+      txBuilder.push(operation).validate();
+      const tx = txBuilder.build();
+      logger.info('createTransaction result: %o', tx);
+      return tx;
+    } catch (error) {
+      logger.error('createTransaction error: %o', error);
+      throw error;
+    }
   }
 
   async signTransaction({ digest, transaction }: SignTransaction) {
