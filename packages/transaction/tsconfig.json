@@ -1,6 +1,7 @@
 {
   "extends": "@hive/tsconfig/base.json",
   "compilerOptions": {
+    "target": "es2017",
     "moduleResolution": "Bundler",
     "baseUrl": ".",
     "paths": {

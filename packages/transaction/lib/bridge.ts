@@ -1,38 +1,37 @@
-import { Client } from '@hiveio/dhive/lib/client';
-import { siteConfig } from '@ui/config/site';
-import env from '@beam-australia/react-env';
-import { createHiveChain, TWaxExtended } from '@hive/wax/web';
+import { createHiveChain } from '@hive/wax/web';
 
-const HIVE_BLOG_ENDPOINT = 'hive-blog-endpoint';
+const chain = await createHiveChain();
 
-export const bridgeApiCall = <T>(endpoint: string, params: object): Promise<T> =>
-  bridgeServer.call('bridge', endpoint, params);
-
-let endpoint = siteConfig.endpoint;
-if (typeof window !== 'undefined' && 'localStorage' in global && global.localStorage) {
-  if (window.localStorage.getItem(HIVE_BLOG_ENDPOINT) === undefined) {
-    window.localStorage.setItem(
-      HIVE_BLOG_ENDPOINT,
-      env('API_ENDPOINT') ? env('API_ENDPOINT') : siteConfig.endpoint
-    );
-  }
-  endpoint = window.localStorage.getItem(HIVE_BLOG_ENDPOINT) ?? siteConfig.endpoint;
-}
-
-export const bridgeServer = new Client([`${endpoint}`], {
-  timeout: 3000,
-  failoverThreshold: 3,
-  consoleOnFailover: true
-});
-export interface BasicPostInfo {
+export interface IBasicPostInfo {
   author: string;
   permlink: string;
   category: string;
   depth: number;
 }
 
+class BasicPostInfoParams {
+  author!: string;
+  permlink!: string;
+}
+
+class BasicPostInfo {
+  author!: string;
+  permlink!: string;
+  category!: string;
+  depth!: number;
+}
+
+const BasicPostInfoData = {
+  bridge: {
+    get_post_header: {
+      params: BasicPostInfoParams,
+      result: BasicPostInfo
+    }
+  }
+};
+
 export const getPostHeader = (author: string, permlink: string): Promise<BasicPostInfo> =>
-  bridgeApiCall<BasicPostInfo>('get_post_header', {
+  chain.extend(BasicPostInfoData).api.bridge.get_post_header({
     author,
     permlink
   });
@@ -195,9 +194,7 @@ const resolvePosts = (posts: Entry[], observer: string): Promise<Entry[]> => {
   return Promise.all(promises);
 };
 
-const chain = await createHiveChain();
-
-class IGetPostsRanked {
+class GetPostsRanked {
   sort!: string;
   tag!: string;
   start_author!: string;
@@ -206,16 +203,14 @@ class IGetPostsRanked {
   observer!: string;
 }
 
-const MyData = {
+const GetPostsRankedData = {
   bridge: {
     get_ranked_posts: {
-      params: IGetPostsRanked,
-      result: Array<Entry>
+      params: GetPostsRanked,
+      result: Array<Entry> || null
     }
   }
 };
-
-const extended: TWaxExtended<typeof MyData> = chain.extend(MyData);
 
 export const getPostsRanked = (
   sort: string,
@@ -225,8 +220,9 @@ export const getPostsRanked = (
   limit: number = DATA_LIMIT,
   observer: string = ''
 ): Promise<Entry[] | null> => {
-  return extended.api.bridge
-    .get_ranked_posts({
+  return chain
+    .extend(GetPostsRankedData)
+    .api.bridge.get_ranked_posts({
       sort,
       start_author,
       start_permlink,
@@ -243,6 +239,23 @@ export const getPostsRanked = (
     });
 };
 
+class GetAccountPosts {
+  sort!: string;
+  start_author!: string;
+  start_permlink!: string;
+  limit!: number;
+  observer!: string;
+}
+
+const GetAccountPostsData = {
+  bridge: {
+    get_account_posts: {
+      params: GetAccountPosts,
+      result: Array<Entry> || null
+    }
+  }
+};
+
 export const getAccountPosts = (
   sort: string,
   account: string,
@@ -251,20 +264,37 @@ export const getAccountPosts = (
   start_permlink: string = '',
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
-  return bridgeApiCall<Entry[] | null>('get_account_posts', {
-    sort,
-    account,
-    start_author,
-    start_permlink,
-    limit,
-    observer
-  }).then((resp) => {
-    if (resp) {
-      return resolvePosts(resp, observer);
-    }
+  return chain
+    .extend(GetAccountPostsData)
+    .api.bridge.get_account_posts({
+      sort,
+      start_author,
+      start_permlink,
+      limit,
+      observer
+    })
+    .then((resp) => {
+      if (resp) {
+        return resolvePosts(resp, observer);
+      }
 
-    return resp;
-  });
+      return resp;
+    });
+};
+
+class GetPost {
+  author!: string;
+  permlink!: string;
+  observer!: string;
+}
+
+const GetPostData = {
+  bridge: {
+    get_post: {
+      params: GetPost,
+      result: Array<Entry> || null
+    }
+  }
 };
 
 export const getPost = (
@@ -272,17 +302,20 @@ export const getPost = (
   permlink: string = '',
   observer: string = ''
 ): Promise<Entry | null> => {
-  return bridgeApiCall<Entry | null>('get_post', {
-    author,
-    permlink,
-    observer
-  }).then((resp) => {
-    if (resp) {
-      return resolvePost(resp, observer);
-    }
+  return chain
+    .extend(GetPostData)
+    .api.bridge.get_post({
+      author,
+      permlink,
+      observer
+    })
+    .then((resp) => {
+      if (resp) {
+        return resolvePost(resp, observer);
+      }
 
-    return resp;
-  });
+      return resp;
+    });
 };
 
 export interface AccountNotification {
@@ -321,14 +354,29 @@ export const getDiscussion = (author: string, permlink: string): Promise<Record<
 export const getCommunity = (name: string, observer: string | undefined = ''): Promise<Community | null> =>
   bridgeApiCall<Community | null>('get_community', { name, observer });
 
+class GetCommunities {
+  sort!: string;
+  query!: string | null | undefined;
+  observer!: string;
+}
+
+const GetCommunitiesData = {
+  bridge: {
+    list_communities: {
+      params: GetCommunities,
+      result: Array<Community> || null
+    }
+  }
+};
+
 export const getCommunities = (
   sort: string,
-  query?: string | null,
+  query?: string,
   // last: string = '',
   // limit: number = 100,
   observer: string = 'hive.blog'
 ): Promise<Community[] | null> =>
-  bridgeApiCall<Community[] | null>('list_communities', {
+  chain.extend(GetCommunitiesData).api.bridge.list_communities({
     // limit,
     query,
     sort,

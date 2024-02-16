@@ -12,7 +12,7 @@ import { toast } from '@hive/ui/components/hooks/use-toast';
 import { Signer } from '@smart-signer/lib/signer';
 
 class TransactionService {
-  static signer = new Signer();
+  static signer = new Signer({ username: 'calcifero' });
   description = 'Transaction broadcast error';
   static hiveChain: IHiveChainInterface;
 
