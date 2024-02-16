@@ -43,10 +43,11 @@ export default function Profile() {
     weight: 10000
   };
 
+  const { username, loginType } = user;
   const signerOptions: SignerOptions = {
-    username: user.username,
+    username,
+    loginType,
     keyType: KeyTypes.posting,
-    loginType: user.loginType,
     apiEndpoint: 'https://api.hive.blog',
     storageType: 'localStorage',
   };

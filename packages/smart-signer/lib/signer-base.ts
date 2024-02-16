@@ -24,8 +24,8 @@ export interface SignChallenge {
 
 export interface SignerOptions {
   username: string;
-  keyType: KeyTypes;
   loginType: LoginTypes;
+  keyType: KeyTypes;
   apiEndpoint: string;
   storageType: StorageType;
 }
@@ -33,15 +33,15 @@ export interface SignerOptions {
 export class SignerBase {
 
   username: string;
-  keyType: KeyTypes;
   loginType: LoginTypes;
+  keyType: KeyTypes;
   apiEndpoint: string;
   storageType: StorageType;
 
   constructor({
     username,
-    keyType,
     loginType,
+    keyType,
     apiEndpoint,
     storageType,
   }: SignerOptions) {
@@ -50,15 +50,15 @@ export class SignerBase {
     } else {
       throw new Error('SignerBase constructor: username must be non-empty string');
     }
-    if (keyType) {
-      this.keyType = keyType;
-    } else {
-      throw new Error('SignerBase constructor: keyType must be non-empty string');
-    }
     if (loginType) {
       this.loginType = loginType;
     } else {
       throw new Error('SignerBase constructor: loginType must be non-empty string');
+    }
+    if (keyType) {
+      this.keyType = keyType;
+    } else {
+      throw new Error('SignerBase constructor: keyType must be non-empty string');
     }
     if (apiEndpoint) {
       this.apiEndpoint = apiEndpoint;
