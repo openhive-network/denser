@@ -19,7 +19,7 @@ export type {
 } from '@smart-signer/lib/signer-base';
 
 // export * from '@hive/wax'; // TODO Consider this.
-export { vote, update_proposal_votes, operation } from '@hive/wax/web';
+// import { vote, update_proposal_votes, operation } from '@hive/wax/web';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
