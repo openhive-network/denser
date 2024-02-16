@@ -4,7 +4,7 @@
   "private": false,
   "scripts": {
     "clean": "rm -rf ./public/auth/* && rm -rf ./public/locales/* && rm -rf ./public/smart-signer/*",
-    "copy:worker": "cp ../../node_modules/@hive/smart-signer/node_modules/@hive/hb-auth/dist/worker.js ./public/auth/",
+    "copy:worker": "cp ../../node_modules/@hive/hb-auth/dist/worker.js ./public/auth/",
     "predev": "npm run clean",
     "dev": "react-env -- next dev -p 3000 | npx pino-pretty --colorize",
     "prebuild": "npm run clean",
@@ -21,7 +21,7 @@
   "dependencies": {
     "@beam-australia/react-env": "^3.1.1",
     "@hive/eslint-config-custom": "*",
-    "@hive/hb-auth": "0.0.1-stable.240213151740",
+    "@hive/hb-auth": "^0.0.1-stable.240213151740",
     "@hive/prettier-config-custom": "*",
     "@hive/smart-signer": "*",
     "@hive/tailwindcss-config": "*",

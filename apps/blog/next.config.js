@@ -18,7 +18,7 @@ const nextConfig = {
       new CopyPlugin({
         patterns: [
           {
-            from: path.join(__dirname, '../../node_modules/@hive/smart-signer/node_modules/@hive/hb-auth/dist/worker.js'),
+            from: path.join(__dirname, '../../node_modules/@hive/hb-auth/dist/worker.js'),
             to: path.join(__dirname, 'public/auth/')
           },
           {
