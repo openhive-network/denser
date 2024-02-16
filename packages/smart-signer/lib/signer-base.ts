@@ -24,31 +24,52 @@ export interface SignChallenge {
 
 export interface SignerOptions {
   username: string;
-  apiEndpoint?: string;
-  storageType?: StorageType;
-  keyType?: KeyTypes;
-  loginType?: LoginTypes;
+  keyType: KeyTypes;
+  loginType: LoginTypes;
+  apiEndpoint: string;
+  storageType: StorageType;
 }
 
 export class SignerBase {
-  apiEndpoint: string;
-  storageType: StorageType;
+
+  username: string;
   keyType: KeyTypes;
   loginType: LoginTypes;
-  username: string;
+  apiEndpoint: string;
+  storageType: StorageType;
 
   constructor({
     username,
-    apiEndpoint = 'https://api.hive.blog',
-    storageType = 'localStorage',
-    keyType = KeyTypes.posting,
-    loginType = LoginTypes.hbauth
+    keyType,
+    loginType,
+    apiEndpoint,
+    storageType,
   }: SignerOptions) {
-    this.username = username;
-    this.apiEndpoint = apiEndpoint;
-    this.storageType = storageType;
-    this.keyType = keyType;
-    this.loginType = loginType;
+    if (username) {
+      this.username = username;
+    } else {
+      throw new Error('SignerBase constructor: username must be non-empty string');
+    }
+    if (keyType) {
+      this.keyType = keyType;
+    } else {
+      throw new Error('SignerBase constructor: keyType must be non-empty string');
+    }
+    if (loginType) {
+      this.loginType = loginType;
+    } else {
+      throw new Error('SignerBase constructor: loginType must be non-empty string');
+    }
+    if (apiEndpoint) {
+      this.apiEndpoint = apiEndpoint;
+    } else {
+      throw new Error('SignerBase constructor: apiEndpoint must be non-empty string');
+    }
+    if (storageType) {
+      this.storageType = storageType;
+    } else {
+      throw new Error('SignerBase constructor: storageType must be non-empty string');
+    }
   }
 
   async destroy() {}

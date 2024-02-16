@@ -3,13 +3,14 @@ import { useState, useEffect } from "react";
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getTranslations } from '@/auth/lib/get-translations';
 import { Button } from '@hive/ui/components/button';
-import { Signer, vote } from '@smart-signer/lib/signer';
+import { Signer, vote, SignerOptions } from '@smart-signer/lib/signer';
 import { SignerHbauth } from '@smart-signer/lib/signer-hbauth';
 import { SignerKeychain } from '@smart-signer/lib/signer-keychain';
 import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
 import { verifySignature } from '@smart-signer/lib/utils';
 import { THexString, transaction, createHiveChain, createWaxFoundation, operation, ITransactionBuilder, BroadcastTransactionRequest } from '@hive/wax/web';
 import { waxToKeychainOperation } from '@smart-signer/lib/signer-keychain';
+import { KeyTypes } from '@smart-signer/types/common';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -42,10 +43,17 @@ export default function Profile() {
     weight: 10000
   };
 
+  const signerOptions: SignerOptions = {
+    username: user.username,
+    keyType: KeyTypes.posting,
+    loginType: user.loginType,
+    apiEndpoint: 'https://api.hive.blog',
+    storageType: 'localStorage',
+  };
+
   const testSignerBroadcast = async () => {
     if (!user || !user.isLoggedIn) return;
-    const { username, loginType } = user;
-    const signer = new Signer({ username, loginType });
+    const signer = new Signer(signerOptions);
     try {
       await signer.broadcastTransaction({
         operation: { vote },
@@ -57,9 +65,8 @@ export default function Profile() {
 
   const testSignerSign = async () => {
     if (!user || !user.isLoggedIn) return;
-    const { username, loginType } = user;
     try {
-      const signer = new Signer({ username, loginType });
+      const signer = new Signer(signerOptions);
       const transaction = await signer.createTransaction({
         operation: { vote },
       });
@@ -67,7 +74,7 @@ export default function Profile() {
       const txBuilder = new wax.TransactionBuilder(transaction as transaction);
       const tx = txBuilder.build();
 
-      const signerKeychain = new SignerKeychain({ username, loginType });
+      const signerKeychain = new SignerKeychain(signerOptions);
       const signatureKeychain = await signerKeychain.signTransaction({
         digest: txBuilder.sigDigest,
         transaction: tx
@@ -85,7 +92,7 @@ export default function Profile() {
       });
       logger.info('signature signatureKeychainChallenge: %s', signatureKeychainChallenge);
 
-      const signerHbauth = new SignerHbauth({ username, loginType });
+      const signerHbauth = new SignerHbauth(signerOptions);
       const signatureHbauth = await signerHbauth.signTransaction({
         digest: txBuilder.sigDigest,
         transaction: tx
@@ -104,8 +111,7 @@ export default function Profile() {
 
   const testSignerSignKeychain = async () => {
     if (!user || !user.isLoggedIn) return;
-    const { username, loginType } = user;
-    const signer = new SignerKeychain({ username, loginType });
+    const signer = new SignerKeychain(signerOptions);
     try {
       const signature = await signer.signTransactionOld({operation: { vote }});
       logger.info('signature: %s', signature);
