@@ -7,7 +7,8 @@ import {
   SignerBase,
   SignChallenge,
   BroadcastTransaction,
-  SignTransaction
+  SignTransaction,
+  SignerOptions
 } from '@smart-signer/lib/signer-base';
 
 export type {
@@ -22,6 +23,33 @@ export { vote, update_proposal_votes, operation } from '@hive/wax/web';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
+
+export type RegisteredSigners = {
+  [key: string]: any;
+}
+
+const registeredSigners: RegisteredSigners = {};
+registeredSigners[LoginTypes.hbauth] = SignerHbauth;
+registeredSigners[LoginTypes.hiveauth] = SignerHiveauth;
+registeredSigners[LoginTypes.keychain] = SignerKeychain;
+registeredSigners[LoginTypes.wif] = SignerWif;
+
+export function signerFactory({
+  username,
+  loginType,
+  keyType,
+  apiEndpoint,
+  storageType,
+}: SignerOptions): SignerHbauth | SignerHiveauth | SignerKeychain | SignerWif {
+  return new registeredSigners[loginType]({
+    username,
+    loginType,
+    keyType,
+    apiEndpoint,
+    storageType,
+  }) as SignerHbauth | SignerHiveauth | SignerKeychain | SignerWif;
+}
+
 
 /**
  * Instance interacts with Hive private keys, signs messages or
@@ -44,28 +72,19 @@ const logger = getLogger('app');
  */
 export class Signer extends SignerBase {
   /**
-   * Creates instance of Signer for given `loginType` and returns it.
+   * Creates instance of `signer` for given `loginType` and returns it.
    *
    * @private
    * @returns
    * @memberof Signer
    */
-  private getSigner() {
-    let signer: SignerHbauth | SignerHiveauth | SignerKeychain | SignerWif;
+  private getSigner(): SignerHbauth | SignerHiveauth | SignerKeychain | SignerWif {
     const { username, apiEndpoint, storageType, keyType, loginType } = this;
-    const args = { username, apiEndpoint, storageType, keyType, loginType };
-    if (loginType === LoginTypes.hbauth) {
-      signer = new SignerHbauth(args);
-    } else if (loginType === LoginTypes.hiveauth) {
-      signer = new SignerHiveauth(args);
-    } else if (loginType === LoginTypes.keychain) {
-      signer = new SignerKeychain(args);
-    } else if (loginType === LoginTypes.wif) {
-      signer = new SignerWif(args);
-    } else {
-      throw new Error('Invalid loginType');
+    const options = { username, apiEndpoint, storageType, keyType, loginType };
+    if (registeredSigners[loginType]) {
+      return signerFactory(options);
     }
-    return signer;
+    throw new Error('Invalid loginType');
   }
 
   /**

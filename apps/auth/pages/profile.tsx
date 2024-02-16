@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getTranslations } from '@/auth/lib/get-translations';
 import { Button } from '@hive/ui/components/button';
-import { Signer, vote, SignerOptions } from '@smart-signer/lib/signer';
+import { Signer, vote, SignerOptions, signerFactory } from '@smart-signer/lib/signer';
 import { SignerHbauth } from '@smart-signer/lib/signer-hbauth';
 import { SignerKeychain } from '@smart-signer/lib/signer-keychain';
 import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
