@@ -2,13 +2,13 @@ import { User } from '@smart-signer/types/common';
 
 const USER_LOCAL_STORAGE_KEY = 'user';
 
-export function saveUser(user: User | null | undefined): void {
+export function saveUser(user: User): void {
   if (typeof window !== 'undefined' && 'localStorage' in global && global.localStorage) {
     localStorage.setItem(USER_LOCAL_STORAGE_KEY, JSON.stringify(user));
   }
 }
 
-export function getUser(): User | undefined {
+export function getUser(): User {
   if (typeof window !== 'undefined' && 'localStorage' in global && global.localStorage) {
     const user = localStorage.getItem(USER_LOCAL_STORAGE_KEY);
     return user ? JSON.parse(user) : undefined;

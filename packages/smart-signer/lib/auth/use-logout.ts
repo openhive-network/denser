@@ -1,9 +1,10 @@
-import { getLogger } from '@hive/ui/lib/logging';
 import { useSignOut } from '@smart-signer/lib/auth/use-sign-out';
 import { toast } from '@ui/components/hooks/use-toast';
-import { Signer } from '@smart-signer/lib/signer';
+import { Signer, SignerOptions } from '@smart-signer/lib/signer';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import { KeyTypes } from '@smart-signer/types/common';
 
+import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
 export function useLogout() {
@@ -11,11 +12,20 @@ export function useLogout() {
     const signOut = useSignOut();
     const { user } = useUser();
 
+    const { username, loginType } = user;
+    const signerOptions: SignerOptions = {
+      username,
+      loginType,
+      keyType: KeyTypes.posting,
+      apiEndpoint: 'https://api.hive.blog',
+      storageType: 'localStorage',
+    };
+
     const onLogout = async () => {
       try {
         if (user && user.loginType && user.username) {
           const { username } = user;
-          const signer = new Signer({ username });
+          const signer = new Signer(signerOptions);
           signer.destroy();
         }
         await signOut.mutateAsync();
