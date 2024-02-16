@@ -111,72 +111,81 @@ type Operation =
 
 const mapToAccountHistoryObject = ([id, data]: AccountHistory) => {
   const { op, ...rest } = data;
-  const operation: Operation | undefined = !op
-    ? undefined
-    : op[0] === 'transfer'
-    ? {
+  let operation: Operation | undefined;
+  if (!op) return undefined;
+  switch (op[0]) {
+    default:
+      operation = undefined;
+    case 'transfer':
+      operation = {
         type: 'transfer',
         amount: op[1].amount,
         from: op[1].from,
         memo: op[1].memo,
         to: op[1].to
-      }
-    : op[0] === 'claim_reward_balance'
-    ? {
+      };
+      break;
+    case 'claim_reward_balance':
+      operation = {
         type: 'claim_reward_balance',
         account: op[1].account,
         reward_hbd: convertStringToBig(op[1]?.reward_hbd ?? '0'),
         reward_hive: convertStringToBig(op[1]?.reward_hive ?? '0'),
         reward_vests: convertStringToBig(op[1]?.reward_vests ?? '0')
-      }
-    : op[0] === 'transfer_from_savings'
-    ? {
+      };
+      break;
+    case 'transfer_from_savings':
+      operation = {
         type: 'transfer_from_savings',
         amount: op[1].amount,
         from: op[1].from,
         request_id: op[1].request_id,
         memo: op[1].memo,
         to: op[1].to
-      }
-    : op[0] === 'transfer_to_savings'
-    ? {
+      };
+      break;
+    case 'transfer_to_savings':
+      operation = {
         type: 'transfer_to_savings',
         amount: op[1].amount,
         from: op[1].from,
         memo: op[1].memo,
         to: op[1].to
-      }
-    : op[0] === 'transfer_to_vesting'
-    ? {
+      };
+      break;
+    case 'transfer_to_vesting':
+      operation = {
         type: 'transfer_to_vesting',
         amount: op[1].amount,
         from: op[1].from,
         to: op[1].to
-      }
-    : op[0] === 'interest'
-    ? {
+      };
+      break;
+    case 'interest':
+      operation = {
         type: 'interest',
         interest: op[1].interest,
         is_saved_into_hbd_balance: op[1].is_saved_into_hbd_balance,
         owner: op[1].owner
-      }
-    : op[0] === 'cancel_transfer_from_savings'
-    ? {
+      };
+      break;
+    case 'cancel_transfer_from_savings':
+      operation = {
         type: 'cancel_transfer_from_savings',
         from: op[1].from,
         request_id: op[1].request_id
-      }
-    : op[0] === 'fill_order'
-    ? {
+      };
+      break;
+    case 'fill_order':
+      operation = {
         type: 'fill_order',
         current_pays: op[1].current_pays,
         open_pays: op[1].open_pays
-      }
-    : undefined;
-
+      };
+      break;
+  }
   return { id, ...rest, operation };
 };
-
 export type AccountHistoryData = ReturnType<typeof mapToAccountHistoryObject>;
 
 function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServerSideProps>) {
@@ -192,9 +201,9 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
   );
   const { data: openOrdersData, isLoading: openOrdersLoading } = useQuery(
     ['openOrders', user?.username],
-    () => getOpenOrder(user?.username || ''),
+    () => getOpenOrder(user!.username),
     {
-      enabled: !!user?.username
+      enabled: Boolean(user?.username)!
     }
   );
   const { data: dynamicData, isLoading: dynamicLoading } = useQuery(['dynamicGlobalProperties'], () =>
@@ -273,40 +282,64 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
     savingsHbd: '$' + numberWithCommas(hbd_balance_savings.toFixed(3))
   };
   function historyItemDescription(operation: Operation) {
-    if (operation.type === 'claim_reward_balance') {
-      const powerHP = totalFund.times(operation.reward_vests.div(totalShares));
-      const displayHBD = operation.reward_hbd.gt(0);
-      const displayHIVE = operation.reward_hive.gt(0);
-
-      return (
-        <span>
-          {t('profil.claim_rewards')}
-          {displayHBD && (
-            <span>{operation.reward_hbd.toString() + ' HBD ' + (displayHIVE ? ',' : t('profil.and'))}</span>
-          )}
-          {displayHIVE && <span>{operation.reward_hive.toString() + ' HIVE' + t('profil.and')}</span>}
-          {powerHP.toFixed(3)}
-          {' HIVE POWER'}
-        </span>
-      );
-    }
-    if (operation.type === 'transfer') {
-      if (operation.to === username)
+    switch (operation.type) {
+      case 'claim_reward_balance':
+        const powerHP = totalFund.times(operation.reward_vests.div(totalShares));
+        const displayHBD = operation.reward_hbd.gt(0);
+        const displayHIVE = operation.reward_hive.gt(0);
         return (
           <span>
-            {t('profil.received_from_user', { value: operation.amount?.toString() })}
-            <Link
-              href={`/@${operation.from}`}
-              className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400"
-            >
-              {operation.from}
-            </Link>
+            {t('profil.claim_rewards')}
+            {displayHBD && (
+              <span>{operation.reward_hbd.toString() + ' HBD ' + (displayHIVE ? ',' : t('profil.and'))}</span>
+            )}
+            {displayHIVE && <span>{operation.reward_hive.toString() + ' HIVE' + t('profil.and')}</span>}
+            {powerHP.toFixed(3)}
+            {' HIVE POWER'}
           </span>
         );
-      if (operation.from === username)
+      case 'transfer_from_savings':
         return (
           <span>
-            {t('profil.transfer_to_user', { value: operation.amount?.toString() })}
+            {t('profil.transfer_from_savings_to', { value: operation.amount?.toString() })}
+            <Link
+              href={`/@${operation.to}`}
+              className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400"
+            >
+              {operation.to}
+            </Link>
+            {t('profil.request_id', { value: operation.request_id })}
+          </span>
+        );
+      case 'transfer':
+        if (operation.to === username)
+          return (
+            <span>
+              {t('profil.received_from_user', { value: operation.amount?.toString() })}
+              <Link
+                href={`/@${operation.from}`}
+                className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400"
+              >
+                {operation.from}
+              </Link>
+            </span>
+          );
+        if (operation.from === username)
+          return (
+            <span>
+              {t('profil.transfer_to_user', { value: operation.amount?.toString() })}
+              <Link
+                href={`/@${operation.to}`}
+                className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400"
+              >
+                {operation.to}
+              </Link>
+            </span>
+          );
+      case 'transfer_to_savings':
+        return (
+          <span>
+            {t('profil.transfer_to_savings_to', { value: operation.amount?.toString() })}
             <Link
               href={`/@${operation.to}`}
               className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400"
@@ -315,58 +348,29 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
             </Link>
           </span>
         );
+      case 'transfer_to_vesting':
+        return (
+          <span>
+            {t('profil.transfer_to', { value: operation.amount?.toString() })}
+            <Link
+              href={`/@${operation.to}`}
+              className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400"
+            >
+              {operation.to}
+            </Link>
+          </span>
+        );
+      case 'interest':
+        return <span>{t('profil.cancel_transfer_from_savings', { number: operation.interest })}</span>;
+      case 'cancel_transfer_from_savings':
+        return <span>{t('profil.cancel_transfer_from_savings', { number: operation.request_id })}</span>;
+      case 'fill_order':
+        return (
+          <span>{t('profil.paid_for', { value1: operation.current_pays, value2: operation.open_pays })}</span>
+        );
+      default:
+        return <div>error</div>;
     }
-    if (operation.type === 'transfer_from_savings') {
-      return (
-        <span>
-          {t('profil.transfer_from_savings_to', { value: operation.amount?.toString() })}
-          <Link
-            href={`/@${operation.to}`}
-            className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400"
-          >
-            {operation.to}
-          </Link>
-          {t('profil.request_id', { value: operation.request_id })}
-        </span>
-      );
-    }
-    if (operation.type === 'transfer_to_savings') {
-      return (
-        <span>
-          {t('profil.transfer_to_savings_to', { value: operation.amount?.toString() })}
-          <Link
-            href={`/@${operation.to}`}
-            className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400"
-          >
-            {operation.to}
-          </Link>
-        </span>
-      );
-    }
-    if (operation.type === 'transfer_to_vesting') {
-      return (
-        <span>
-          {t('profil.transfer_to', { value: operation.amount?.toString() })}
-          <Link
-            href={`/@${operation.to}`}
-            className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400"
-          >
-            {operation.to}
-          </Link>
-        </span>
-      );
-    }
-    if (operation.type === 'interest') {
-      return <span>{t('profil.cancel_transfer_from_savings', { number: operation.interest })}</span>;
-    }
-    if (operation.type === 'cancel_transfer_from_savings') {
-      return <span>{t('profil.cancel_transfer_from_savings', { number: operation.request_id })}</span>;
-    }
-    if (operation.type === 'fill_order') {
-      return (
-        <span>{t('profil.paid_for', { value1: operation.current_pays, value2: operation.open_pays })}</span>
-      );
-    } else return <div>error</div>;
   }
 
   return (
@@ -740,22 +744,23 @@ const HistoryTable = ({ t, isLoading, historyList = [], historyItemDescription }
   return (
     <table className="w-full max-w-6xl p-2">
       <tbody>
-        {[...historyList].reverse().map((element) =>
-          !element.operation ? null : (
-            <tr
-              key={element.id}
-              className="m-0 w-full p-0 text-xs even:bg-slate-100 dark:even:bg-slate-700 sm:text-sm"
-              data-testid="wallet-account-history-row"
-            >
-              <td className="px-4 py-2 sm:min-w-[150px]">{dateToFullRelative(element.timestamp, t)}</td>
-              <td className="px-4 py-2 sm:min-w-[300px]">{historyItemDescription(element.operation)}</td>
-              {element.operation.memo ? (
-                <td className="hidden break-all px-4 py-2 sm:block">{element.operation.memo}</td>
-              ) : (
-                <td></td>
-              )}
-            </tr>
-          )
+        {[...historyList].reverse().map(
+          (element) =>
+            element && (
+              <tr
+                key={element.id}
+                className="m-0 w-full p-0 text-xs even:bg-slate-100 dark:even:bg-slate-700 sm:text-sm"
+                data-testid="wallet-account-history-row"
+              >
+                <td className="px-4 py-2 sm:min-w-[150px]">{dateToFullRelative(element.timestamp, t)}</td>
+                <td className="px-4 py-2 sm:min-w-[300px]">{historyItemDescription(element.operation)}</td>
+                {element.operation.memo ? (
+                  <td className="hidden break-all px-4 py-2 sm:block">{element.operation.memo}</td>
+                ) : (
+                  <td></td>
+                )}
+              </tr>
+            )
         )}
       </tbody>
     </table>
