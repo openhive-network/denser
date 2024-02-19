@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { DISABLED_SIGNING_KEY } from '@/wallet/lib/constants';
 import { blockGap, getRoundedAbbreveration } from '@hive/ui/lib/utils';
 import { Icons } from '@hive/ui/components/icons';
-import { FullAccount } from '@hive/ui/store/app-types';
+import { FullAccount } from '@transaction/lib/app-types';
 import moment from 'moment';
 import { dateToFullRelative, dateToRelative } from '@hive/ui/lib/parse-date';
 import { useRouter } from 'next/router';

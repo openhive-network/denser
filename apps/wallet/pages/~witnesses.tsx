@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Big from 'big.js';
-import { getAccount, getAccounts, getDynamicGlobalProperties } from '@hive/ui/lib/hive';
+import { getAccount, getAccounts, getDynamicGlobalProperties } from '@transaction/lib/hive';
 import { Icons } from '@hive/ui/components/icons';
 import { Input } from '@hive/ui/components/input';
-import { FullAccount } from '@hive/ui/store/app-types';
+import { FullAccount } from '@transaction/lib/app-types';
 import { convertStringToBig } from '@hive/ui/lib/helpers';
 import { useRouter } from 'next/router';
 import { Button } from '@hive/ui/components/button';

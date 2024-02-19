@@ -1,7 +1,7 @@
 import { convertStringToBig } from '@hive/ui/lib/helpers';
-import { DynamicGlobalProperties } from '@hive/ui/lib/hive';
+import { IDynamicGlobalProperties } from '@transaction/lib/hive';
 
-export function getCurrentHpApr(data: DynamicGlobalProperties) {
+export function getCurrentHpApr(data: IDynamicGlobalProperties) {
   // The inflation was set to 9.5% at block 7m
   const initialInflationRate = 9.5;
   const initialBlock = 7000000;
@@ -16,8 +16,7 @@ export function getCurrentHpApr(data: DynamicGlobalProperties) {
   const decreaseIncrements = deltaBlocks / decreaseRate;
 
   // Current inflation rate
-  let currentInflationRate =
-    initialInflationRate - decreaseIncrements * decreasePercentPerIncrement;
+  let currentInflationRate = initialInflationRate - decreaseIncrements * decreasePercentPerIncrement;
 
   // Cannot go lower than 0.95%
   if (currentInflationRate < 0.95) {
@@ -28,10 +27,7 @@ export function getCurrentHpApr(data: DynamicGlobalProperties) {
   const vestingRewardPercent = data.vesting_reward_percent / 10000;
   const virtualSupply = convertStringToBig(data.virtual_supply);
   const totalVestingFunds = convertStringToBig(data.total_vesting_fund_hive);
-  return virtualSupply
-    .times(currentInflationRate)
-    .times(vestingRewardPercent)
-    .div(totalVestingFunds);
+  return virtualSupply.times(currentInflationRate).times(vestingRewardPercent).div(totalVestingFunds);
 }
 
 export function parseCookie(cookie: string): Record<string, string> {

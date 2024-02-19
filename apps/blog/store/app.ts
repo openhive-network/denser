@@ -1,7 +1,7 @@
-import { FullAccount } from '@hive/ui/store/app-types';
 import { KeyAuthorityType } from '@hive/hb-auth';
 import { create } from 'zustand';
 import { mountStoreDevtool } from 'simple-zustand-devtools';
+import { FullAccount } from '@transaction/lib/app-types';
 
 interface AppState {
   currentProfile: FullAccount | null;

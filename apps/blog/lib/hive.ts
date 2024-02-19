@@ -4,9 +4,9 @@ import { Moment } from 'moment';
 import { IHiveChainInterface } from '@hive/wax/web';
 import { isCommunity, parseAsset, vestsToRshares } from '@/blog/lib/utils';
 import { DATA_LIMIT } from '@transaction/lib/bridge';
-import { FullAccount } from '@hive/ui/store/app-types';
+import { FullAccount } from '@transaction/lib/app-types';
 import { bridgeServer } from '@hive/ui/lib/bridge';
-import { getDynamicGlobalProperties, getFeedHistory } from '@hive/ui/lib/hive';
+import { getDynamicGlobalProperties, getFeedHistory } from '@transaction/lib/hive';
 import { IManabarData } from '@hive/wax/web';
 
 export interface TrendingTag {

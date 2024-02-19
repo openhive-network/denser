@@ -1,4 +1,4 @@
-import { getAccount } from '@hive/ui/lib/hive';
+import { getAccount } from '@transaction/lib/hive';
 import { useQuery } from '@tanstack/react-query';
 
 export const useAccountQuery = (username: string) => {

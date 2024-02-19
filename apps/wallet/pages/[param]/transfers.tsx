@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import Big from 'big.js';
-import { getAccount, getDynamicGlobalProperties, getFeedHistory } from '@hive/ui/lib/hive';
+import { getAccount, getDynamicGlobalProperties, getFeedHistory } from '@transaction/lib/hive';
 import moment from 'moment';
 import { getAccountHistory } from '@/wallet/lib/hive';
 import { getCurrentHpApr } from '@/wallet/lib/utils';
