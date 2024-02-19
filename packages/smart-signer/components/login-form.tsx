@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useTranslation } from 'next-i18next';
 import { Separator } from '@hive/ui/components/separator';
-import { hasCompatibleKeychain } from '@smart-signer/lib/signer-keychain';
+import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { username } from '@smart-signer/lib/auth/utils';
 import { LoginTypes, StorageTypes } from '@smart-signer/types/common';
 import { validateHivePassword } from '@smart-signer/lib/validate-hive-password';

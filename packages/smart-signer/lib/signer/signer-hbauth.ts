@@ -1,28 +1,26 @@
 import { cryptoUtils } from '@hiveio/dhive';
 import { authService } from '@smart-signer/lib/auth-service';
-import { createHiveChain, BroadcastTransactionRequest, THexString, transaction } from '@hive/wax/web';
+import { THexString } from '@hive/wax/web';
 import {
   SignChallenge,
-  BroadcastTransaction,
   SignTransaction,
-  SignerBase
-} from '@smart-signer/lib/signer-base';
+  Signer
+} from '@smart-signer/lib/signer/signer';
 import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
-import { createWaxFoundation, operation, ITransactionBuilder } from '@hive/wax/web';
+import { createWaxFoundation } from '@hive/wax/web';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
 /**
- * Instance interacts with Hive private keys, signs messages or
- * operations, and sends operations to Hive blockchain. It uses
- * [Hbauth](https://gitlab.syncad.com/hive/hb-auth).
+ * Signs challenges (any strings) or Hive transactions with Hive private
+ * keys, using [Hbauth](https://gitlab.syncad.com/hive/hb-auth).
  *
  * @export
  * @class SignerHbauth
- * @extends {SignerBase}
+ * @extends {Signer}
  */
-export class SignerHbauth extends SignerBase {
+export class SignerHbauth extends Signer {
 
   async destroy() {}
 

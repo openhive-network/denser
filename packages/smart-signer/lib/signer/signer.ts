@@ -1,7 +1,7 @@
 import { LoginTypes } from '@smart-signer/types/common';
 import { KeyTypes } from '@smart-signer/types/common';
 import { StorageType } from '@smart-signer/lib/storage-mixin';
-import { THexString, transaction, createHiveChain, createWaxFoundation, operation, ITransactionBuilder } from '@hive/wax/web';
+import { THexString, transaction } from '@hive/wax/web';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -9,11 +9,6 @@ const logger = getLogger('app');
 export interface SignTransaction {
   digest: THexString;
   transaction: transaction;
-}
-
-export interface BroadcastTransaction {
-  operation: operation;
-  translateFn?: (v: string) => string;
 }
 
 export interface SignChallenge {
@@ -30,7 +25,15 @@ export interface SignerOptions {
   storageType: StorageType;
 }
 
-export abstract class SignerBase {
+/**
+ * Signs challenges (any strings) or Hive transactions with Hive private
+ * keys.
+ *
+ * @export
+ * @abstract
+ * @class Signer
+ */
+export abstract class Signer {
 
   username: string;
   loginType: LoginTypes;
@@ -48,27 +51,27 @@ export abstract class SignerBase {
     if (username) {
       this.username = username;
     } else {
-      throw new Error('SignerBase constructor: username must be non-empty string');
+      throw new Error('Signer constructor: username must be non-empty string');
     }
     if (loginType) {
       this.loginType = loginType;
     } else {
-      throw new Error('SignerBase constructor: loginType must be non-empty string');
+      throw new Error('Signer constructor: loginType must be non-empty string');
     }
     if (keyType) {
       this.keyType = keyType;
     } else {
-      throw new Error('SignerBase constructor: keyType must be non-empty string');
+      throw new Error('Signer constructor: keyType must be non-empty string');
     }
     if (apiEndpoint) {
       this.apiEndpoint = apiEndpoint;
     } else {
-      throw new Error('SignerBase constructor: apiEndpoint must be non-empty string');
+      throw new Error('Signer constructor: apiEndpoint must be non-empty string');
     }
     if (storageType) {
       this.storageType = storageType;
     } else {
-      throw new Error('SignerBase constructor: storageType must be non-empty string');
+      throw new Error('Signer constructor: storageType must be non-empty string');
     }
   }
 
@@ -78,7 +81,7 @@ export abstract class SignerBase {
    *
    * @abstract
    * @returns {Promise<void>}
-   * @memberof SignerBase
+   * @memberof Signer
    */
   abstract destroy(): Promise<void>;
 
@@ -92,7 +95,7 @@ export abstract class SignerBase {
    * @abstract
    * @param {SignChallenge} {}
    * @returns {Promise<string>}
-   * @memberof SignerBase
+   * @memberof Signer
    */
   abstract signChallenge({}: SignChallenge): Promise<string>;
 
@@ -102,7 +105,7 @@ export abstract class SignerBase {
    * @abstract
    * @param {SignTransaction} { digest, transaction }
    * @returns {Promise<string>}
-   * @memberof SignerBase
+   * @memberof Signer
    */
   abstract signTransaction({ digest, transaction }: SignTransaction): Promise<string>;
 

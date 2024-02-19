@@ -1,22 +1,21 @@
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
-import { SignChallenge } from '@smart-signer/lib/signer';
+import { SignChallenge } from '@smart-signer/lib/signer/signer';
 import { KeyTypes } from '@smart-signer/types/common';
-import { SignerHbauth } from '@smart-signer/lib/signer-hbauth';
+import { SignerHbauth } from '@smart-signer/lib/signer/signer-hbauth';
 import { StorageMixin } from '@smart-signer/lib/storage-mixin';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
 /**
- * Instance interacts with Hive private keys, signs messages or
- * operations, and sends operations to Hive blockchain. It uses so known
- * "Wif" custom tool, based on
- * [@hiveio/dhive](https://openhive-network.github.io/dhive/) and
- * Web Storage API.
+ * Signs challenges (any strings) or Hive transactions with Hive private
+ * keys, using so known "Wif" custom tool, based on
+ * [@hiveio/dhive](https://openhive-network.github.io/dhive/) and Web
+ * Storage API.
  *
  * @export
  * @class SignerWif
- * @extends {StorageMixin(SignerBase)}
+ * @extends {StorageMixin(Signer)}
  */
 export class SignerWif extends StorageMixin(SignerHbauth) {
 

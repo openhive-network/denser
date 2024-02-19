@@ -1,27 +1,12 @@
-import { SignerHbauth } from '@smart-signer/lib/signer-hbauth';
-import { SignerHiveauth } from '@smart-signer/lib/signer-hiveauth';
-import { SignerKeychain } from '@smart-signer/lib/signer-keychain';
-import { SignerWif } from '@smart-signer/lib/signer-wif';
+import { SignerHbauth } from '@smart-signer/lib/signer/signer-hbauth';
+import { SignerHiveauth } from '@smart-signer/lib/signer/signer-hiveauth';
+import { SignerKeychain } from '@smart-signer/lib/signer/signer-keychain';
+import { SignerWif } from '@smart-signer/lib/signer/signer-wif';
 import { LoginTypes } from '@smart-signer/types/common';
-import {
-  SignerBase,
-  SignChallenge,
-  BroadcastTransaction,
-  SignTransaction,
-  SignerOptions
-} from '@smart-signer/lib/signer-base';
+import { SignerOptions } from '@smart-signer/lib/signer/signer';
 
-export type {
-  BroadcastTransaction,
-  SignChallenge,
-  SignerOptions,
-  SignTransaction
-} from '@smart-signer/lib/signer-base';
+export type SignerTool = SignerHbauth | SignerHiveauth | SignerKeychain | SignerWif;
 
-import { getLogger } from '@hive/ui/lib/logging';
-const logger = getLogger('app');
-
-export type Signer = SignerHbauth | SignerHiveauth | SignerKeychain | SignerWif;
 export type RegisteredSigners = {
   [key in LoginTypes]?: any;
 }
@@ -38,18 +23,18 @@ export function signerFactory({
   keyType,
   apiEndpoint,
   storageType,
-}: SignerOptions): Signer {
+}: SignerOptions): SignerTool {
   return new registeredSigners[loginType]({
     username,
     loginType,
     keyType,
     apiEndpoint,
     storageType,
-  }) as Signer;
+  }) as SignerTool;
 }
 
 /**
- * Creates instance of one of `Signer` for given `loginType` and
+ * Creates instance of one of `SignerTool` for given `loginType` and
  * returns it. Instance signs challenges or Hive transactions with Hive
  * private keys and returns signature. Following tools are used:
  *
@@ -62,11 +47,11 @@ export function signerFactory({
  *    [@hiveio/dhive](https://openhive-network.github.io/dhive/) and
  *    browser's localStorage, handled in SignerWif class.
  *
- * @private
- * @returns
- * @memberof Signer
+ * @export
+ * @param {SignerOptions} options
+ * @returns {SignerTool}
  */
-export function getSigner(options: SignerOptions): Signer {
+export function getSigner(options: SignerOptions): SignerTool {
   const { loginType } = options;
   if (registeredSigners[loginType]) {
     return signerFactory(options);

@@ -1,6 +1,7 @@
 import { useSignOut } from '@smart-signer/lib/auth/use-sign-out';
 import { toast } from '@ui/components/hooks/use-toast';
-import { Signer, SignerOptions } from '@smart-signer/lib/signer';
+import { SignerOptions } from '@smart-signer/lib/signer/signer';
+import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { KeyTypes } from '@smart-signer/types/common';
 
@@ -25,7 +26,7 @@ export function useLogout() {
       try {
         if (user && user.loginType && user.username) {
           const { username } = user;
-          const signer = new Signer(signerOptions);
+          const signer = getSigner(signerOptions);
           signer.destroy();
         }
         await signOut.mutateAsync();

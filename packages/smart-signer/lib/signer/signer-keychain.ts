@@ -1,12 +1,11 @@
 import { KeychainSDK, KeychainKeyTypes } from 'keychain-sdk';
-import { Operation, Transaction, Client } from '@hiveio/dhive';
+import { Operation } from '@hiveio/dhive';
 import {
   SignChallenge,
-  BroadcastTransaction,
   SignTransaction,
-  SignerBase
-} from '@smart-signer/lib/signer-base';
-import { createHiveChain, createWaxFoundation, operation, ITransactionBuilder } from '@hive/wax/web';
+  Signer
+} from '@smart-signer/lib/signer/signer';
+import { createWaxFoundation, operation } from '@hive/wax/web';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -47,15 +46,16 @@ export function waxToKeychainOperation(operation: operation | operation[]) {
 }
 
 /**
- * Instance interacts with Hive private keys, signs messages or
- * operations, and sends operations to Hive blockchain. It uses
- * [Keychain](https://hive-keychain.com/).
+ * Signs challenges (any strings) or Hive transactions with Hive private
+ * keys, using [Keychain](https://hive-keychain.com/).
  *
  * @export
  * @class SignerKeychain
- * @extends {SignerBase}
+ * @extends {Signer}
  */
-export class SignerKeychain extends SignerBase {
+export class SignerKeychain extends Signer {
+
+  async destroy() {}
 
   async signChallenge({ message }: SignChallenge): Promise<string> {
     const { username, keyType } = this;
@@ -82,61 +82,6 @@ export class SignerKeychain extends SignerBase {
     }
   }
 
-  /**
-   * Creates transaction from given operations and signs it.
-   *
-   * @param {BroadcastTransaction} {
-   *     operation,
-   *     username,
-   *     keyType = KeyTypes.posting
-   *   }
-   * @returns {Promise<any>}
-   * @memberof SignerKeychain
-   */
-  async signTransactionOld({ operation }: BroadcastTransaction): Promise<any> {
-    const { username, keyType } = this;
-    const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
-    try {
-      if (!(await keychain.isKeychainInstalled())) {
-        throw new Error('Keychain is not installed');
-      }
-      const operations = waxToKeychainOperation(operation);
-      const client = new Client([this.apiEndpoint, 'https://api.openhive.network'], {
-        timeout: 3000,
-        failoverThreshold: 3,
-        consoleOnFailover: true
-      });
-
-      const props = await client.database.getDynamicGlobalProperties();
-      const headBlockNumber = props.head_block_number;
-      const headBlockId = props.head_block_id;
-      const expireTime = 600000;
-
-      const tx: Transaction = {
-        ref_block_num: headBlockNumber & 0xffff,
-        ref_block_prefix: Buffer.from(headBlockId, 'hex').readUInt32LE(4),
-        expiration: new Date(Date.now() + expireTime).toISOString().slice(0, -5),
-        operations,
-        extensions: []
-      };
-
-      // Sign transaction
-      const signResult = await keychain.signTx({
-        username,
-        method: KeychainKeyTypes[keyType],
-        tx
-      });
-      logger.info('SignerKeychain.signTransactionOld keychain response: %o', signResult);
-      if (signResult.error) {
-        throw new Error(`Error in signTx: ${signResult.error}`);
-      }
-      return signResult.result.signatures[0];
-    } catch (error) {
-      logger.error('SignerKeychain.signTransactionOld error: %o', error);
-      throw error;
-    }
-  }
-
   async signTransaction({ digest, transaction }: SignTransaction) {
     const { username, keyType } = this;
     const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
@@ -147,7 +92,7 @@ export class SignerKeychain extends SignerBase {
     if (digest !== txBuilder.sigDigest) throw new Error('Digests do not match');
 
     // Show transaction to user and get his consent to sign it. But as a
-    // matter of fact Keychain extension could do it.
+    // matter of fact Keychain extension does it.
 
     const tx = txBuilder.build();
     // Rewrite operations to Keychain format.
@@ -173,4 +118,5 @@ export class SignerKeychain extends SignerBase {
       throw error;
     }
   }
+
 }

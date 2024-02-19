@@ -8,7 +8,8 @@ import { useSignIn } from '@smart-signer/lib/auth/use-sign-in';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { LoginForm, LoginFormSchema } from '@smart-signer/components/login-form';
 import { cookieNamePrefix } from '@smart-signer/lib/session';
-import { Signer, SignerOptions } from '@smart-signer/lib/signer';
+import { SignerOptions } from '@smart-signer/lib/signer/signer';
+import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { KeyTypes } from '@smart-signer/types/common';
 
 import { getLogger } from '@hive/ui/lib/logging';
@@ -56,7 +57,7 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
       apiEndpoint: 'https://api.hive.blog',
       storageType: 'localStorage',
     };
-    const signer = new Signer(signerOptions);
+    const signer = getSigner(signerOptions);
     const message = JSON.stringify({ loginChallenge }, null, 0);
 
     try {

@@ -1,22 +1,19 @@
-import { KeyTypes } from '@smart-signer/types/common';
-import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer-base';
-import { waxToKeychainOperation } from '@smart-signer/lib/signer-keychain';
+import { SignChallenge } from '@smart-signer/lib/signer/signer';
 import HiveAuthUtils from '@smart-signer/lib/hive-auth-utils';
-import { SignerBase, SignTransaction } from '@smart-signer/lib/signer-base';
+import { SignTransaction } from '@smart-signer/lib/signer/signer';
 import { StorageMixin } from '@smart-signer/lib/storage-mixin';
-import { SignerHbauth } from '@smart-signer/lib/signer-hbauth';
+import { SignerHbauth } from '@smart-signer/lib/signer/signer-hbauth';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
 /**
- * Instance interacts with Hive private keys, signs messages or
- * operations, and sends operations to Hive blockchain. It uses
- * [Hiveauth](https://hiveauth.com/).
+ * Signs challenges (any strings) or Hive transactions with Hive private
+ * keys, using [Hiveauth](https://hiveauth.com/).
  *
  * @export
  * @class SignerHiveauth
- * @extends {StorageMixin(SignerBase)}
+ * @extends {StorageMixin(SignerHbauth)}
  */
 export class SignerHiveauth extends StorageMixin(SignerHbauth) {
 

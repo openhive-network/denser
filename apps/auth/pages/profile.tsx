@@ -3,13 +3,14 @@ import { useState, useEffect } from "react";
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getTranslations } from '@/auth/lib/get-translations';
 import { Button } from '@hive/ui/components/button';
-import { Signer, SignerOptions, signerFactory, getSigner } from '@smart-signer/lib/signer';
-import { SignerHbauth } from '@smart-signer/lib/signer-hbauth';
-import { SignerKeychain } from '@smart-signer/lib/signer-keychain';
+import { SignerOptions } from '@smart-signer/lib/signer/signer';
+import { getSigner } from '@smart-signer/lib/signer/get-signer';
+import { SignerHbauth } from '@smart-signer/lib/signer/signer-hbauth';
+import { SignerKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
 import { verifySignature } from '@smart-signer/lib/utils';
 import { vote, THexString, transaction, createHiveChain, createWaxFoundation, operation, ITransactionBuilder, BroadcastTransactionRequest } from '@hive/wax/web';
-import { waxToKeychainOperation } from '@smart-signer/lib/signer-keychain';
+import { waxToKeychainOperation } from '@smart-signer/lib/signer/signer-keychain';
 import { KeyTypes } from '@smart-signer/types/common';
 
 import { getLogger } from '@hive/ui/lib/logging';
@@ -52,21 +53,39 @@ export default function Profile() {
     storageType: 'localStorage',
   };
 
-  const testSignerSign = async () => {
+  const broadcast = async () => {
     if (!user || !user.isLoggedIn) return;
     try {
-
-      const s = getSigner(signerOptions);
-
-
-
-      const signer = new Signer(signerOptions);
-      const transaction = await signer.createTransaction({
-        operation: { vote },
-      });
-      const wax = await createWaxFoundation();
-      const txBuilder = new wax.TransactionBuilder(transaction as transaction);
+      const signer = getSigner(signerOptions);
+      const hiveChain = await createHiveChain();
+      const txBuilder = await hiveChain.getTransactionBuilder();
+      txBuilder.push({ vote });
+      txBuilder.validate();
       const tx = txBuilder.build();
+      const signature = await signer.signTransaction({
+        digest: txBuilder.sigDigest,
+        transaction: tx
+      });
+      logger.info('broadcast signature: %s', signature);
+      txBuilder.build(signature);
+      const request = new BroadcastTransactionRequest(txBuilder);
+
+      // Transmit
+      const result = await hiveChain.api.network_broadcast_api.broadcast_transaction(request);
+      logger.info('broadcast result: %o', result);
+
+    } catch (error) {
+      logger.error(error);
+    }
+  };
+
+  const sign = async () => {
+    if (!user || !user.isLoggedIn) return;
+    try {
+      const hiveChain = await createHiveChain();
+      const txBuilder = await hiveChain.getTransactionBuilder();
+      txBuilder.push({ vote });
+      const tx = txBuilder.build()
 
       const signerKeychain = new SignerKeychain(signerOptions);
       const signatureKeychain = await signerKeychain.signTransaction({
@@ -93,22 +112,15 @@ export default function Profile() {
       });
       logger.info('signature SignerHbauth: %s', signatureHbauth);
 
-      const t = txBuilder.build(signatureKeychain); // it  works
-      // const t = txBuilder.build(signatureKeychainChallenge); // not working (missing posting authority)
+      txBuilder.build(signatureKeychain); // it  works
+      // txBuilder.build(signatureKeychainChallenge); // not working (missing posting authority)
 
-      signerHbauth.transmitTransaction(t);
+      const request = new BroadcastTransactionRequest(txBuilder);
 
-    } catch (error) {
-      logger.error(error);
-    }
-  }
+      // Transmit
+      const result = await hiveChain.api.network_broadcast_api.broadcast_transaction(request);
+      logger.info('broadcast result: %o', result);
 
-  const testSignerSignKeychain = async () => {
-    if (!user || !user.isLoggedIn) return;
-    const signer = new SignerKeychain(signerOptions);
-    try {
-      const signature = await signer.signTransactionOld({operation: { vote }});
-      logger.info('signature: %s', signature);
     } catch (error) {
       logger.error(error);
     }
@@ -159,11 +171,11 @@ export default function Profile() {
           </p>
         {developerAccounts.includes(user.username) && (
           <div className="flex flex-col gap-3">
-            <Button onClick={testSignerSign} variant="redHover" size="sm" className="h-10">
-              Test Signer Sign
+            <Button onClick={broadcast} variant="redHover" size="sm" className="h-10">
+              Broadcast
             </Button>
-            <Button onClick={testSignerSignKeychain} variant="redHover" size="sm" className="h-10">
-              Test Signer Sign Keychain
+            <Button onClick={sign} variant="redHover" size="sm" className="h-10">
+              Sign
             </Button>
             <Button onClick={openDialogPassword} variant="redHover" size="sm" className="h-10">
               Password Promise Modal
