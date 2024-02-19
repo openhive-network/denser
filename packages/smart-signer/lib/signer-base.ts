@@ -30,7 +30,7 @@ export interface SignerOptions {
   storageType: StorageType;
 }
 
-export class SignerBase {
+export abstract class SignerBase {
 
   username: string;
   loginType: LoginTypes;
@@ -72,28 +72,38 @@ export class SignerBase {
     }
   }
 
-  async destroy() {}
+  /**
+   * Clears all user data in storages and memory, does other required
+   * things for particular Signer.
+   *
+   * @abstract
+   * @returns {Promise<void>}
+   * @memberof SignerBase
+   */
+  abstract destroy(): Promise<void>;
 
-  async signChallenge({}: SignChallenge): Promise<string> {
-    return '';
-  }
+  /**
+   * Calculates sha256 digest (hash) of any string and signs it with
+   * Hive private key. It's good for verifying keys, in login
+   * procedure for instance. However it's bad for signing Hive
+   * transactions – these need different hashing method and other
+   * special treatment.
+   *
+   * @abstract
+   * @param {SignChallenge} {}
+   * @returns {Promise<string>}
+   * @memberof SignerBase
+   */
+  abstract signChallenge({}: SignChallenge): Promise<string>;
 
-  async createTransaction({ operation }: BroadcastTransaction) {
-    const { apiEndpoint } = this;
-    try {
-      const hiveChain = await createHiveChain({ apiEndpoint });
-      const txBuilder = await hiveChain.getTransactionBuilder();
-      txBuilder.push(operation).validate();
-      const tx = txBuilder.build();
-      logger.info('createTransaction result: %o', tx);
-      return tx;
-    } catch (error) {
-      logger.error('createTransaction error: %o', error);
-      throw error;
-    }
-  }
+  /**
+   * Signs Hive transaction with Hive private key and returns signature.
+   *
+   * @abstract
+   * @param {SignTransaction} { digest, transaction }
+   * @returns {Promise<string>}
+   * @memberof SignerBase
+   */
+  abstract signTransaction({ digest, transaction }: SignTransaction): Promise<string>;
 
-  async signTransaction({ digest, transaction }: SignTransaction) {
-    return '';
-  }
 }

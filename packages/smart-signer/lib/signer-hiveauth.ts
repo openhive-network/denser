@@ -2,8 +2,9 @@ import { KeyTypes } from '@smart-signer/types/common';
 import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer-base';
 import { waxToKeychainOperation } from '@smart-signer/lib/signer-keychain';
 import HiveAuthUtils from '@smart-signer/lib/hive-auth-utils';
-import { SignerBase } from '@smart-signer/lib/signer-base';
+import { SignerBase, SignTransaction } from '@smart-signer/lib/signer-base';
 import { StorageMixin } from '@smart-signer/lib/storage-mixin';
+import { SignerHbauth } from '@smart-signer/lib/signer-hbauth';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -17,11 +18,15 @@ const logger = getLogger('app');
  * @class SignerHiveauth
  * @extends {StorageMixin(SignerBase)}
  */
-export class SignerHiveauth extends StorageMixin(SignerBase) {
+export class SignerHiveauth extends StorageMixin(SignerHbauth) {
 
   async destroy() {
     HiveAuthUtils.logout();
     this.storage.removeItem('hiveAuthData');
+  }
+
+  async signTransaction({ digest, transaction }: SignTransaction): Promise<string> {
+    throw new Error('Not implemented');
   }
 
   setHiveAuthData() {
