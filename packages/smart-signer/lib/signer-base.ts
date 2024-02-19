@@ -78,6 +78,14 @@ export class SignerBase {
     return '';
   }
 
+  async broadcastTransaction({}: BroadcastTransaction): Promise<{
+    success: boolean;
+    result: string;
+    error: string;
+  }> {
+    return { success: false, result: '', error: '' };
+  }
+
   async createTransaction({ operation }: BroadcastTransaction) {
     const { apiEndpoint } = this;
     try {
