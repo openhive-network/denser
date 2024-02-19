@@ -71,35 +71,4 @@ export class SignerHiveauth extends StorageMixin(SignerBase) {
     }
   };
 
-
-  async broadcastTransaction({
-    operation,
-  }: BroadcastTransaction): Promise<{ success: boolean, result: any, error: string}> {
-    const { keyType } = this;
-    let result = { success: true, result: '', error: ''};
-    try {
-      this.setHiveAuthData();
-      const operations = waxToKeychainOperation(operation);
-      const broadcastResponse: any = await new Promise((resolve) => {
-        HiveAuthUtils.broadcast(
-          operations,
-          keyType,
-          (res) => {
-            resolve(res);
-          }
-        );
-      });
-      logger.info('SignerHiveauth.broadcastTransaction response: %o', broadcastResponse);
-      if (!broadcastResponse.success) {
-        throw new Error('SignerHiveauth.broadcastTransaction error');
-      }
-    } catch (error) {
-      logger.error('Error in SignerHiveauth.broadcastTransaction: %o', error);
-      result = { success: false, result: '', error: 'Broadcast failed'};
-      throw error;
-    }
-
-    return result;
-  };
-
 }

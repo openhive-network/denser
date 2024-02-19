@@ -82,37 +82,6 @@ export class SignerKeychain extends SignerBase {
     }
   }
 
-  async broadcastTransaction({
-    operation
-  }: BroadcastTransaction): Promise<{ success: boolean; result: any; error: string }> {
-    const { username, keyType } = this;
-    let result = { success: true, result: '', error: '' };
-    const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
-    try {
-      if (!(await keychain.isKeychainInstalled())) {
-        throw new Error('Keychain is not installed');
-      }
-      const operations = waxToKeychainOperation(operation);
-      const broadcastResult = await keychain.broadcast({
-        username,
-        operations,
-        method: KeychainKeyTypes[keyType]
-      });
-      logger.info('SignerKeychain.broadcastTransaction keychain response: %o', broadcastResult);
-      if (broadcastResult.error) {
-        throw new Error(`Error in SignerKeychain.broadcastTransaction: ${broadcastResult.error}`);
-      }
-
-      result.result = broadcastResult.result as any;
-    } catch (error) {
-      logger.error('Error in SignerKeychain.broadcastTransaction: %o', error);
-      result = { success: false, result: '', error: 'Sign failed' };
-      throw error;
-    }
-
-    return result;
-  }
-
   /**
    * Creates transaction from given operations and signs it.
    *

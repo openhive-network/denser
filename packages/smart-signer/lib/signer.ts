@@ -121,28 +121,6 @@ export class Signer extends SignerBase {
   }
 
   /**
-   * Creates Hive transaction for given operation, signs it and
-   * broadcasts it to Hive blockchain.
-   *
-   * @param {BroadcastTransaction} {
-   *     operation,
-   *     translateFn = (v) => v
-   *   }
-   * @returns {Promise<any>}
-   * @memberof Signer
-   */
-  async broadcastTransaction({ operation, translateFn = (v) => v }: BroadcastTransaction): Promise<any> {
-    logger.info('in broadcastTransaction: %o', {
-      operation
-    });
-    const signer = this.getSigner();
-    return signer.broadcastTransaction({
-      operation,
-      translateFn
-    });
-  }
-
-  /**
    * Clears all user data in storages and memory, does other required
    * things for particular Signer.
    *

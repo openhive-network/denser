@@ -52,18 +52,6 @@ export default function Profile() {
     storageType: 'localStorage',
   };
 
-  const testSignerBroadcast = async () => {
-    if (!user || !user.isLoggedIn) return;
-    const signer = new Signer(signerOptions);
-    try {
-      await signer.broadcastTransaction({
-        operation: { vote },
-      });
-    } catch (error) {
-      logger.error(error);
-    }
-  }
-
   const testSignerSign = async () => {
     if (!user || !user.isLoggedIn) return;
     try {
@@ -166,9 +154,6 @@ export default function Profile() {
           </p>
         {developerAccounts.includes(user.username) && (
           <div className="flex flex-col gap-3">
-            <Button onClick={testSignerBroadcast} variant="redHover" size="sm" className="h-10">
-              Test Signer Broadcast
-            </Button>
             <Button onClick={testSignerSign} variant="redHover" size="sm" className="h-10">
               Test Signer Sign
             </Button>
