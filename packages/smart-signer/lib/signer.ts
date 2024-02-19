@@ -18,14 +18,12 @@ export type {
   SignTransaction
 } from '@smart-signer/lib/signer-base';
 
-// export * from '@hive/wax'; // TODO Consider this.
-// import { vote, update_proposal_votes, operation } from '@hive/wax/web';
-
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
+export type Signers = SignerHbauth | SignerHiveauth | SignerKeychain | SignerWif;
 export type RegisteredSigners = {
-  [key: string]: any;
+  [key in LoginTypes]?: any;
 }
 
 const registeredSigners: RegisteredSigners = {};
@@ -40,14 +38,14 @@ export function signerFactory({
   keyType,
   apiEndpoint,
   storageType,
-}: SignerOptions): SignerHbauth | SignerHiveauth | SignerKeychain | SignerWif {
+}: SignerOptions): Signers {
   return new registeredSigners[loginType]({
     username,
     loginType,
     keyType,
     apiEndpoint,
     storageType,
-  }) as SignerHbauth | SignerHiveauth | SignerKeychain | SignerWif;
+  }) as Signers;
 }
 
 
@@ -78,7 +76,7 @@ export class Signer extends SignerBase {
    * @returns
    * @memberof Signer
    */
-  private getSigner(): SignerHbauth | SignerHiveauth | SignerKeychain | SignerWif {
+  private getSigner(): Signers {
     const { username, apiEndpoint, storageType, keyType, loginType } = this;
     const options = { username, apiEndpoint, storageType, keyType, loginType };
     if (registeredSigners[loginType]) {
