@@ -1,4 +1,4 @@
-import { FollowListType, getFollowList } from '@ui/lib/bridge';
+import { FollowListType, getFollowList } from '@transaction/lib/bridge';
 import { useQuery } from '@tanstack/react-query';
 
 export const useFollowListQuery = (username: string, type: FollowListType) => {

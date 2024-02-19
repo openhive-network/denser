@@ -4,7 +4,7 @@ import { Input } from '@hive/ui/components/input';
 import Link from 'next/link';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@hive/ui/components/accordion';
 import clsx from 'clsx';
-import { FollowList } from '@ui/lib/bridge';
+import { IFollowList } from '@transaction/lib/bridge';
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
@@ -18,13 +18,13 @@ export default function ProfileLists({
 }: {
   username: string;
   variant: string;
-  data: FollowList[] | undefined;
+  data: IFollowList[] | undefined;
 }) {
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
   const [page, setPage] = useState(0);
   const [filter, setFilter] = useState('');
-  const filteredNames = data?.filter((value: FollowList) => {
+  const filteredNames = data?.filter((value: IFollowList) => {
     const searchWord = filter.toLowerCase();
     const userName = value.name.toLowerCase();
     if (userName.includes(searchWord)) {
@@ -87,7 +87,7 @@ export default function ProfileLists({
               {t('user_profil.lists.list.empty_list')}
             </li>
           ) : splitArrays.length > 0 ? (
-            splitArrays[page].map((e: FollowList) => (
+            splitArrays[page].map((e: IFollowList) => (
               <li
                 key={e.name}
                 className="flex w-full items-center justify-between p-1 font-semibold odd:bg-slate-200 even:bg-slate-100 dark:odd:bg-slate-800 dark:even:bg-slate-900"

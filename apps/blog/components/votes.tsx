@@ -3,7 +3,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Icons } from '@ui/components/icons';
 import DialogLogin from './dialog-login';
 import clsx from 'clsx';
-import { Entry } from '@ui/lib/bridge';
+import type { Entry } from '@transaction/lib/bridge';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';

@@ -1,6 +1,6 @@
 import { Vote } from '@/blog/lib/hive';
 import { prepareVotes } from '@/blog/lib/utils';
-import { Entry } from '@ui/lib/bridge';
+import type { Entry } from '@transaction/lib/bridge';
 import Link from 'next/link';
 import { useActiveVotesQuery } from './hooks/use-active-votes';
 import { useTranslation } from 'next-i18next';

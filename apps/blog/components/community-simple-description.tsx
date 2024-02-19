@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
 import Link from 'next/link';
 import { Button } from '@hive/ui/components/button';
-import { AccountNotification, Community, Subscription } from '@ui/lib/bridge';
+import type { Community, Subscription } from '@transaction/lib/bridge';
+import { IAccountNotification } from '@transaction/lib/bridge';
 import { SubsListDialog } from './subscription-list-dialog';
 import { ActivityLogDialog } from './activity-log-dialog';
 import DialogLogin from './dialog-login';
@@ -15,7 +16,7 @@ const CommunitySimpleDescription = ({
 }: {
   data: Community;
   subs: Subscription[];
-  notificationData: AccountNotification[] | null | undefined;
+  notificationData: IAccountNotification[] | null | undefined;
   username: string;
 }) => {
   const { t } = useTranslation('common_blog');

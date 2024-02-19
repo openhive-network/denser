@@ -1,37 +1,27 @@
-import { createHiveChain } from '@hive/wax/web';
+import { TWaxApiRequest, createHiveChain } from '@hive/wax/web';
 
 const chain = await createHiveChain();
 
-export interface IBasicPostInfo {
+interface IGetPostHeader {
   author: string;
   permlink: string;
   category: string;
   depth: number;
 }
 
-class BasicPostInfoParams {
-  author!: string;
-  permlink!: string;
+interface IGetPostHeaderParams {
+  author: string;
+  permlink: string;
 }
 
-class BasicPostInfo {
-  author!: string;
-  permlink!: string;
-  category!: string;
-  depth!: number;
-}
-
-const BasicPostInfoData = {
+type GetPostHeaderData = {
   bridge: {
-    get_post_header: {
-      params: BasicPostInfoParams,
-      result: BasicPostInfo
-    }
-  }
+    get_post_header: TWaxApiRequest<IGetPostHeaderParams, IGetPostHeader>;
+  };
 };
 
-export const getPostHeader = (author: string, permlink: string): Promise<BasicPostInfo> =>
-  chain.extend(BasicPostInfoData).api.bridge.get_post_header({
+export const getPostHeader = (author: string, permlink: string): Promise<IGetPostHeader> =>
+  chain.extend<GetPostHeaderData>().api.bridge.get_post_header({
     author,
     permlink
   });
@@ -194,22 +184,19 @@ const resolvePosts = (posts: Entry[], observer: string): Promise<Entry[]> => {
   return Promise.all(promises);
 };
 
-class GetPostsRanked {
-  sort!: string;
-  tag!: string;
-  start_author!: string;
-  start_permlink!: string;
-  limit!: number;
-  observer!: string;
+interface IGetPostsRanked {
+  sort: string;
+  tag: string;
+  start_author: string;
+  start_permlink: string;
+  limit: number;
+  observer: string;
 }
 
-const GetPostsRankedData = {
+type GetPostsRankedData = {
   bridge: {
-    get_ranked_posts: {
-      params: GetPostsRanked,
-      result: Array<Entry> || null
-    }
-  }
+    get_ranked_posts: TWaxApiRequest<IGetPostsRanked, Entry[] | null>;
+  };
 };
 
 export const getPostsRanked = (
@@ -221,7 +208,7 @@ export const getPostsRanked = (
   observer: string = ''
 ): Promise<Entry[] | null> => {
   return chain
-    .extend(GetPostsRankedData)
+    .extend<GetPostsRankedData>()
     .api.bridge.get_ranked_posts({
       sort,
       start_author,
@@ -239,21 +226,19 @@ export const getPostsRanked = (
     });
 };
 
-class GetAccountPosts {
-  sort!: string;
-  start_author!: string;
-  start_permlink!: string;
-  limit!: number;
-  observer!: string;
+interface IGetAccountPosts {
+  sort: string;
+  account: string;
+  start_author: string;
+  start_permlink: string;
+  limit: number;
+  observer: string;
 }
 
-const GetAccountPostsData = {
+type GetAccountPostsData = {
   bridge: {
-    get_account_posts: {
-      params: GetAccountPosts,
-      result: Array<Entry> || null
-    }
-  }
+    get_account_posts: TWaxApiRequest<IGetAccountPosts, Entry[] | null>;
+  };
 };
 
 export const getAccountPosts = (
@@ -265,9 +250,10 @@ export const getAccountPosts = (
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
   return chain
-    .extend(GetAccountPostsData)
+    .extend<GetAccountPostsData>()
     .api.bridge.get_account_posts({
       sort,
+      account,
       start_author,
       start_permlink,
       limit,
@@ -282,19 +268,16 @@ export const getAccountPosts = (
     });
 };
 
-class GetPost {
-  author!: string;
-  permlink!: string;
-  observer!: string;
+interface IGetPost {
+  author: string;
+  permlink: string;
+  observer: string;
 }
 
-const GetPostData = {
+type GetPostData = {
   bridge: {
-    get_post: {
-      params: GetPost,
-      result: Array<Entry> || null
-    }
-  }
+    get_post: TWaxApiRequest<IGetPost, Entry | null>;
+  };
 };
 
 export const getPost = (
@@ -303,7 +286,7 @@ export const getPost = (
   observer: string = ''
 ): Promise<Entry | null> => {
   return chain
-    .extend(GetPostData)
+    .extend<GetPostData>()
     .api.bridge.get_post({
       author,
       permlink,
@@ -318,7 +301,13 @@ export const getPost = (
     });
 };
 
-export interface AccountNotification {
+interface IGetAccountNotifications {
+  account: string;
+  lastId?: number;
+  limit: number;
+}
+
+export interface IAccountNotification {
   date: string;
   id?: number;
   msg: string;
@@ -327,12 +316,18 @@ export interface AccountNotification {
   url: string;
 }
 
+type GetAccountNotificationsData = {
+  bridge: {
+    account_notifications: TWaxApiRequest<IGetAccountNotifications, IAccountNotification[] | null>;
+  };
+};
+
 // I have problem with this func, I pass good account name but RPC call it with empty string
 export const getAccountNotifications = (
   account: string,
   lastId: number | null = null,
   limit = 50
-): Promise<AccountNotification[] | null> => {
+): Promise<IAccountNotification[] | null> => {
   const params: { account: string; last_id?: number; limit: number } = {
     account,
     limit
@@ -342,92 +337,170 @@ export const getAccountNotifications = (
     params.last_id = lastId;
   }
 
-  return bridgeApiCall<AccountNotification[] | null>('account_notifications', params);
+  return chain.extend<GetAccountNotificationsData>().api.bridge.account_notifications(params);
+};
+
+interface IGetDiscussion {
+  author: string;
+  permlink: string;
+}
+
+type GetDiscussionData = {
+  bridge: {
+    get_discussion: TWaxApiRequest<IGetDiscussion, Record<string, Entry> | null>;
+  };
 };
 
 export const getDiscussion = (author: string, permlink: string): Promise<Record<string, Entry> | null> =>
-  bridgeApiCall<Record<string, Entry> | null>('get_discussion', {
+  chain.extend<GetDiscussionData>().api.bridge.get_discussion({
     author,
     permlink
   });
 
-export const getCommunity = (name: string, observer: string | undefined = ''): Promise<Community | null> =>
-  bridgeApiCall<Community | null>('get_community', { name, observer });
-
-class GetCommunities {
-  sort!: string;
-  query!: string | null | undefined;
-  observer!: string;
+interface IGetCommunity {
+  name: string;
+  observer?: string;
 }
 
-const GetCommunitiesData = {
+type GetCommunityData = {
   bridge: {
-    list_communities: {
-      params: GetCommunities,
-      result: Array<Community> || null
-    }
-  }
+    get_community: TWaxApiRequest<IGetCommunity, Community | null>;
+  };
+};
+
+export const getCommunity = (name: string, observer: string | undefined = ''): Promise<Community | null> =>
+  chain.extend<GetCommunityData>().api.bridge.get_community({ name, observer });
+
+interface IGetCommunities {
+  sort: string;
+  query?: string | null;
+  observer: string;
+}
+
+type GetCommunitiesData = {
+  bridge: {
+    list_communities: TWaxApiRequest<IGetCommunities, Community[] | null>;
+  };
 };
 
 export const getCommunities = (
   sort: string,
-  query?: string,
+  query?: string | null,
   // last: string = '',
   // limit: number = 100,
   observer: string = 'hive.blog'
 ): Promise<Community[] | null> =>
-  chain.extend(GetCommunitiesData).api.bridge.list_communities({
+  chain.extend<GetCommunitiesData>().api.bridge.list_communities({
     // limit,
     query,
     sort,
     observer
   });
 
+interface IGetNormalizePost {
+  post: Entry;
+}
+
+type GetNormalizePost = {
+  bridge: {
+    normalize_post: TWaxApiRequest<IGetNormalizePost, Entry | null>;
+  };
+};
+
 export const normalizePost = (post: Entry): Promise<Entry | null> =>
-  bridgeApiCall<Entry | null>('normalize_post', {
+  chain.extend<GetNormalizePost>().api.bridge.normalize_post({
     post
   });
 
+interface IGetSubscriptions {
+  account: string;
+}
+
+type GetSubscriptions = {
+  bridge: {
+    list_all_subscriptions: TWaxApiRequest<IGetSubscriptions, Subscription[] | null>;
+  };
+};
+
 export const getSubscriptions = (account: string): Promise<Subscription[] | null> =>
-  bridgeApiCall<Subscription[] | null>('list_all_subscriptions', {
+  chain.extend<GetSubscriptions>().api.bridge.list_all_subscriptions({
     account
   });
+
+interface IGetSubscribers {
+  community: string;
+}
+
+type GetSubscribers = {
+  bridge: {
+    list_subscribers: TWaxApiRequest<IGetSubscribers, Subscription[] | null>;
+  };
+};
 
 export const getSubscribers = (community: string): Promise<Subscription[] | null> =>
-  bridgeApiCall<Subscription[] | null>('list_subscribers', {
+  chain.extend<GetSubscribers>().api.bridge.list_subscribers({
     community
   });
-export const getUnreadNotifications = (account: string): Promise<UnreadNotifications | null> =>
-  bridgeApiCall<UnreadNotifications | null>('unread_notifications', {
-    account
-  });
 
-export interface UnreadNotifications {
+export interface IUnreadNotificationsParams {
+  account: string;
+}
+
+export interface IUnreadNotifications {
   lastread: string;
   unread: number;
 }
-export interface AccountRelationship {
+
+type GetUnreadNotifications = {
+  bridge: {
+    unread_notifications: TWaxApiRequest<IUnreadNotificationsParams, IUnreadNotifications | null>;
+  };
+};
+
+export const getUnreadNotifications = (account: string): Promise<IUnreadNotifications | null> =>
+  chain.extend<GetUnreadNotifications>().api.bridge.unread_notifications({
+    account
+  });
+
+export interface IAccountRelationship {
   follows: boolean;
   ignores: boolean;
   is_blacklisted: boolean;
   follows_blacklists: boolean;
 }
 
+type GetAccountRelationship = {
+  bridge: {
+    get_relationship_between_accounts: TWaxApiRequest<string[], IAccountRelationship | null>;
+  };
+};
+
 export const getRelationshipBetweenAccounts = (
   follower: string,
   following: string
-): Promise<AccountRelationship | null> =>
-  bridgeApiCall<AccountRelationship | null>('get_relationship_between_accounts', [follower, following]);
+): Promise<IAccountRelationship | null> =>
+  chain.extend<GetAccountRelationship>().api.bridge.get_relationship_between_accounts([follower, following]);
 
-export interface FollowList {
+export type FollowListType = 'follow_blacklist' | 'follow_muted' | 'blacklisted' | 'muted';
+export interface IFollowListParams {
+  observer: string;
+  follow_type: FollowListType;
+}
+
+export interface IFollowList {
   name: '';
   blacklist_description: '';
   muted_list_description: '';
 }
-export type FollowListType = 'follow_blacklist' | 'follow_muted' | 'blacklisted' | 'muted';
 
-export const getFollowList = (observer: string, follow_type: FollowListType): Promise<FollowList[]> =>
-  bridgeApiCall<FollowList[]>('get_follow_list', {
+type GetFollowList = {
+  bridge: {
+    get_follow_list: TWaxApiRequest<IFollowListParams, IFollowList[]>;
+  };
+};
+
+export const getFollowList = (observer: string, follow_type: FollowListType): Promise<IFollowList[]> =>
+  chain.extend<GetFollowList>().api.bridge.get_follow_list({
     observer,
     follow_type
   });

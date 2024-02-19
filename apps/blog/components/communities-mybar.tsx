@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { cn } from '@/blog/lib/utils';
 import { Card, CardContent, CardTitle } from '@hive/ui/components/card';
 import { useTranslation } from 'next-i18next';
-import { Subscription } from '@ui/lib/bridge';
+import type { Subscription } from '@transaction/lib/bridge';
 
 const CommunitiesMybar = ({
   data,

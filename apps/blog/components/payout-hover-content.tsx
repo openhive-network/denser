@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import Loading from '@hive/ui/components/loading';
 import { convertStringToBig } from '@hive/ui/lib/helpers';
 import { getFeedHistory } from '@hive/ui/lib/hive';
-import { Entry } from '@ui/lib/bridge';
+import type { Entry } from '@transaction/lib/bridge';
 import moment from 'moment';
 import { useTranslation } from 'next-i18next';
 

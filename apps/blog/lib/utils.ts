@@ -5,7 +5,7 @@ import sanitize from 'sanitize-html';
 import { twMerge } from 'tailwind-merge';
 import remarkableStripper from '@/blog/lib/remmarkable-stripper';
 import { Vote } from './hive';
-import { Entry, JsonMetadata } from '@ui/lib/bridge';
+import type { Entry, JsonMetadata } from '@transaction/lib/bridge';
 import { parseDate2 } from '@hive/ui/lib/parse-date';
 import moment from 'moment';
 import { TFunction } from 'i18next';

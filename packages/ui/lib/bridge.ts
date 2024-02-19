@@ -1,7 +1,6 @@
 import { Client } from '@hiveio/dhive/lib/client';
 import { siteConfig } from '@ui/config/site';
 import env from '@beam-australia/react-env';
-import { createHiveChain, TWaxExtended } from '@hive/wax/web';
 
 const HIVE_BLOG_ENDPOINT = 'hive-blog-endpoint';
 
@@ -195,28 +194,6 @@ const resolvePosts = (posts: Entry[], observer: string): Promise<Entry[]> => {
   return Promise.all(promises);
 };
 
-const chain = await createHiveChain();
-
-class IGetPostsRanked {
-  sort!: string;
-  tag!: string;
-  start_author!: string;
-  start_permlink!: string;
-  limit!: number;
-  observer!: string;
-}
-
-const MyData = {
-  bridge: {
-    get_ranked_posts: {
-      params: IGetPostsRanked,
-      result: Array<Entry>
-    }
-  }
-};
-
-const extended: TWaxExtended<typeof MyData> = chain.extend(MyData);
-
 export const getPostsRanked = (
   sort: string,
   tag: string = '',
@@ -225,22 +202,20 @@ export const getPostsRanked = (
   limit: number = DATA_LIMIT,
   observer: string = ''
 ): Promise<Entry[] | null> => {
-  return extended.api.bridge
-    .get_ranked_posts({
-      sort,
-      start_author,
-      start_permlink,
-      limit,
-      tag,
-      observer
-    })
-    .then((resp) => {
-      if (resp) {
-        return resolvePosts(resp, observer);
-      }
+  return bridgeApiCall<Entry[] | null>('get_ranked_posts', {
+    sort,
+    start_author,
+    start_permlink,
+    limit,
+    tag,
+    observer
+  }).then((resp) => {
+    if (resp) {
+      return resolvePosts(resp, observer);
+    }
 
-      return resp;
-    });
+    return resp;
+  });
 };
 
 export const getAccountPosts = (
@@ -285,7 +260,7 @@ export const getPost = (
   });
 };
 
-export interface AccountNotification {
+export interface IAccountNotification {
   date: string;
   id?: number;
   msg: string;
@@ -295,11 +270,11 @@ export interface AccountNotification {
 }
 
 // I have problem with this func, I pass good account name but RPC call it with empty string
-export const getAccountNotifications = (
+export const getIAccountNotifications = (
   account: string,
   lastId: number | null = null,
   limit = 50
-): Promise<AccountNotification[] | null> => {
+): Promise<IAccountNotification[] | null> => {
   const params: { account: string; last_id?: number; limit: number } = {
     account,
     limit
@@ -309,7 +284,7 @@ export const getAccountNotifications = (
     params.last_id = lastId;
   }
 
-  return bridgeApiCall<AccountNotification[] | null>('account_notifications', params);
+  return bridgeApiCall<IAccountNotification[] | null>('account_notifications', params);
 };
 
 export const getDiscussion = (author: string, permlink: string): Promise<Record<string, Entry> | null> =>

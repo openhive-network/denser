@@ -5,7 +5,7 @@ import { Button } from '@hive/ui/components/button';
 import ln2list from '@/blog/lib/ln2list';
 import { DefaultRenderer } from '@hiveio/content-renderer';
 import { getDoubleSize, proxifyImageUrl } from '@hive/ui/lib/old-profixy';
-import { AccountNotification, Community, Subscription } from '@ui/lib/bridge';
+import { type Community, type Subscription, IAccountNotification } from '@transaction/lib/bridge';
 import { SubsListDialog } from './subscription-list-dialog';
 import { ActivityLogDialog } from './activity-log-dialog';
 import { Badge } from '@hive/ui/components/badge';
@@ -24,7 +24,7 @@ const CommunityDescription = ({
 }: {
   data: Community;
   subs: Subscription[];
-  notificationData: AccountNotification[] | null | undefined;
+  notificationData: IAccountNotification[] | null | undefined;
   username: string;
 }) => {
   const [isSubscribe, setIsSubscribe] = useState(() => !data.context.subscribed);

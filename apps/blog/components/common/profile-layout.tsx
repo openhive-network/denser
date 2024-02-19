@@ -12,7 +12,7 @@ import { Separator } from '@hive/ui/components/separator';
 import { Icons } from '@hive/ui/components/icons';
 import { dateToFullRelative, dateToShow } from '@hive/ui/lib/parse-date';
 import { proxifyImageUrl } from '@hive/ui/lib/old-profixy';
-import { getTwitterInfo } from '@ui/lib/bridge';
+import { getTwitterInfo } from '@transaction/lib/bridge';
 import moment from 'moment';
 import { Button } from '@hive/ui';
 import DialogLogin from '../dialog-login';
