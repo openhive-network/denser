@@ -1,5 +1,5 @@
 import { expect, test } from '@jest/globals';
-import { validateHiveAccountName } from '../../../packages/smart-signer/lib/validate-hive-account-name';
+import { validateHiveAccountName } from '../../../packages/smart-signer/lib/validators/validate-hive-account-name';
 
 const t = (v) => v;
 const runValidateHiveAccountName = (v) => {

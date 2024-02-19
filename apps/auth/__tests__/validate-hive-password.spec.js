@@ -1,5 +1,5 @@
 import { expect, test } from '@jest/globals';
-import { validateHivePassword } from '../../../packages/smart-signer/lib/validate-hive-password';
+import { validateHivePassword } from '../../../packages/smart-signer/lib/validators/validate-hive-password';
 
 const t = (v) => v;
 const runValidateHivePassword = (v) => {

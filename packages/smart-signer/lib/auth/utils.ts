@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import { validateHiveAccountName } from '@smart-signer/lib/validate-hive-account-name';
+import { validateHiveAccountName } from '@smart-signer/lib/validators/validate-hive-account-name';
 import { LoginTypes, StorageTypes, User } from '@smart-signer/types/common';
 
 export const username = z.string()
