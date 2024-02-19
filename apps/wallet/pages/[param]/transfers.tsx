@@ -112,80 +112,70 @@ type Operation =
 const mapToAccountHistoryObject = ([id, data]: AccountHistory) => {
   const { op, ...rest } = data;
   let operation: Operation | undefined;
-  if (!op) return undefined;
-  switch (op[0]) {
-    default:
-      operation = undefined;
-    case 'transfer':
-      operation = {
-        type: 'transfer',
-        amount: op[1].amount,
-        from: op[1].from,
-        memo: op[1].memo,
-        to: op[1].to
-      };
-      break;
-    case 'claim_reward_balance':
-      operation = {
-        type: 'claim_reward_balance',
-        account: op[1].account,
-        reward_hbd: convertStringToBig(op[1]?.reward_hbd ?? '0'),
-        reward_hive: convertStringToBig(op[1]?.reward_hive ?? '0'),
-        reward_vests: convertStringToBig(op[1]?.reward_vests ?? '0')
-      };
-      break;
-    case 'transfer_from_savings':
-      operation = {
-        type: 'transfer_from_savings',
-        amount: op[1].amount,
-        from: op[1].from,
-        request_id: op[1].request_id,
-        memo: op[1].memo,
-        to: op[1].to
-      };
-      break;
-    case 'transfer_to_savings':
-      operation = {
-        type: 'transfer_to_savings',
-        amount: op[1].amount,
-        from: op[1].from,
-        memo: op[1].memo,
-        to: op[1].to
-      };
-      break;
-    case 'transfer_to_vesting':
-      operation = {
-        type: 'transfer_to_vesting',
-        amount: op[1].amount,
-        from: op[1].from,
-        to: op[1].to
-      };
-      break;
-    case 'interest':
-      operation = {
-        type: 'interest',
-        interest: op[1].interest,
-        is_saved_into_hbd_balance: op[1].is_saved_into_hbd_balance,
-        owner: op[1].owner
-      };
-      break;
-    case 'cancel_transfer_from_savings':
-      operation = {
-        type: 'cancel_transfer_from_savings',
-        from: op[1].from,
-        request_id: op[1].request_id
-      };
-      break;
-    case 'fill_order':
-      operation = {
-        type: 'fill_order',
-        current_pays: op[1].current_pays,
-        open_pays: op[1].open_pays
-      };
-      break;
+  if (!op) operation = undefined;
+  if (op) {
+    switch (op[0]) {
+      default:
+        operation = undefined;
+      case 'transfer':
+        operation = {
+          type: 'transfer',
+          amount: op[1].amount,
+          from: op[1].from,
+          memo: op[1].memo,
+          to: op[1].to
+        };
+        break;
+      case 'claim_reward_balance':
+        operation = {
+          type: 'claim_reward_balance',
+          account: op[1].account,
+          reward_hbd: convertStringToBig(op[1]?.reward_hbd ?? '0'),
+          reward_hive: convertStringToBig(op[1]?.reward_hive ?? '0'),
+          reward_vests: convertStringToBig(op[1]?.reward_vests ?? '0')
+        };
+        break;
+      case 'transfer_from_savings':
+        operation = {
+          type: 'transfer_from_savings',
+          amount: op[1].amount,
+          from: op[1].from,
+          request_id: op[1].request_id,
+          memo: op[1].memo,
+          to: op[1].to
+        };
+        break;
+      case 'transfer_to_savings':
+        operation = {
+          type: 'transfer_to_savings',
+          amount: op[1].amount,
+          from: op[1].from,
+          memo: op[1].memo,
+          to: op[1].to
+        };
+        break;
+      case 'transfer_to_vesting':
+        operation = { type: 'transfer_to_vesting', amount: op[1].amount, from: op[1].from, to: op[1].to };
+        break;
+      case 'interest':
+        operation = {
+          type: 'interest',
+          interest: op[1].interest,
+          is_saved_into_hbd_balance: op[1].is_saved_into_hbd_balance,
+          owner: op[1].owner
+        };
+        break;
+      case 'cancel_transfer_from_savings':
+        operation = { type: 'cancel_transfer_from_savings', from: op[1].from, request_id: op[1].request_id };
+        break;
+      case 'fill_order':
+        operation = { type: 'fill_order', current_pays: op[1].current_pays, open_pays: op[1].open_pays };
+        break;
+    }
   }
   return { id, ...rest, operation };
 };
+
 export type AccountHistoryData = ReturnType<typeof mapToAccountHistoryObject>;
 
 function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServerSideProps>) {
@@ -746,7 +736,7 @@ const HistoryTable = ({ t, isLoading, historyList = [], historyItemDescription }
       <tbody>
         {[...historyList].reverse().map(
           (element) =>
-            element && (
+            element.operation && (
               <tr
                 key={element.id}
                 className="m-0 w-full p-0 text-xs even:bg-slate-100 dark:even:bg-slate-700 sm:text-sm"
