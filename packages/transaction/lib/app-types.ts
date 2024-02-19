@@ -1,5 +1,6 @@
 import { ApiAccount } from '@hive/wax/web';
 
+export type ExpApiAccount = ApiAccount;
 export interface AccountProfile {
   about?: string;
   cover_image?: string;

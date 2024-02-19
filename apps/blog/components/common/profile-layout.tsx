@@ -113,9 +113,9 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   if (!accountData || !dynamicGlobalData || !profileData) {
     return <p className="my-32 text-center text-3xl">Something went wrong</p>;
   }
-  const delegated_hive = 0; //delegatedHive(accountData, dynamicGlobalData);
-  const vesting_hive = 0; //vestingHive(accountData, dynamicGlobalData);
-  const hp = 0; // vesting_hive.minus(delegated_hive);
+  const delegated_hive = delegatedHive(accountData, dynamicGlobalData);
+  const vesting_hive = vestingHive(accountData, dynamicGlobalData);
+  const hp = vesting_hive.minus(delegated_hive);
 
   return username ? (
     <div>

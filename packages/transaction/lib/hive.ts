@@ -1,31 +1,17 @@
 import { AccountFollowStats, AccountProfile, FullAccount } from 'lib/app-types';
-import { ApiAccount, TWaxApiRequest, createHiveChain } from '@hive/wax/web';
+import {
+  ApiAccount,
+  TWaxApiRequest,
+  createHiveChain,
+  GetDynamicGlobalPropertiesResponse
+} from '@hive/wax/web';
 
 const chain = await createHiveChain();
 
-export interface IDynamicGlobalProperties {
-  hbd_print_rate: number;
-  total_vesting_fund_hive: string;
-  total_vesting_shares: string;
-  hbd_interest_rate: number;
-  head_block_number: number;
-  head_block_id: string;
-  vesting_reward_percent: number;
-  virtual_supply: string;
-}
+export type IDynamicGlobalProperties = GetDynamicGlobalPropertiesResponse;
+
 export const getDynamicGlobalProperties = (): Promise<IDynamicGlobalProperties> =>
-  chain.api.database_api.get_dynamic_global_properties({}).then((r: any) => {
-    return {
-      total_vesting_fund_hive: r.total_vesting_fund_hive || r.total_vesting_fund_steem,
-      total_vesting_shares: r.total_vesting_shares,
-      hbd_print_rate: r.hbd_print_rate || r.sbd_print_rate,
-      hbd_interest_rate: r.hbd_interest_rate,
-      head_block_number: r.head_block_number,
-      head_block_id: r.head_block_id,
-      vesting_reward_percent: r.vesting_reward_percent,
-      virtual_supply: r.virtual_supply
-    };
-  });
+  chain.api.database_api.get_dynamic_global_properties({});
 
 export const getAccounts = (usernames: string[]): Promise<FullAccount[]> => {
   return chain.api.database_api
