@@ -23,7 +23,10 @@ const logger = getLogger('app');
  */
 export class SignerHbauth extends Signer {
 
-  async destroy() {}
+  async destroy() {
+    const authClient = await hbauthService.getOnlineClient();
+    await authClient.logout();
+  }
 
   async getPasswordFromUser(dialogProps: { [key: string]: any } = {}): Promise<string> {
     let password = '';
@@ -110,7 +113,6 @@ export class SignerHbauth extends Signer {
 
     const signature = await authClient.sign(username, digest, keyType as unknown as 'posting' | 'active');
     logger.info('hbauth: %o', { digest, signature });
-
     return signature;
   }
 
