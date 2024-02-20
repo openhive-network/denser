@@ -12,7 +12,7 @@ import {
 import { isCommunity, parseAsset, vestsToRshares } from '@hive/blog/lib/utils';
 import { DATA_LIMIT } from './bridge';
 
-const chain = await createHiveChain();
+export const chain = await createHiveChain();
 
 export type IDynamicGlobalProperties = GetDynamicGlobalPropertiesResponse;
 

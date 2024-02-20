@@ -1,6 +1,5 @@
 import { TWaxApiRequest, createHiveChain } from '@hive/wax/web';
-
-const chain = await createHiveChain();
+import { chain } from './hive';
 
 interface IGetPostHeader {
   author: string;
