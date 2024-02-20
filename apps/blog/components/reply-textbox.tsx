@@ -56,8 +56,8 @@ export function ReplyTextbox({
   useEffect(() => {
     const createReplyPermlink = async () => {
       if (user && user.isLoggedIn) {
-        const permlink = await createPermlink('', user.username, permlink);
-        setReplyPermlink(permlink);
+        const plink = await createPermlink('', user.username, permlink);
+        setReplyPermlink(plink);
       }
     };
 
