@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { BURN_ACCOUNTS, REFUND_ACCOUNTS } from '@/wallet/lib/constants';
-import { ListItemProps } from '@/wallet/lib/hive';
+import { IListItemProps } from '@/wallet/lib/hive';
 import { getRoundedAbbreveration, numberWithCommas } from '@hive/ui/lib/utils';
 import { Icons } from '@hive/ui/components/icons';
 import moment from 'moment';
@@ -52,7 +52,7 @@ function translateShorDate(data: string, t: TFunction<'common_wallet', undefined
   return dd;
 }
 
-export function ProposalListItem({ proposalData, totalShares, totalVestingFund }: ListItemProps) {
+export function ProposalListItem({ proposalData, totalShares, totalVestingFund }: IListItemProps) {
   const { t } = useTranslation('common_wallet');
   const { user } = useUser();
   const [link, setLink] = useState<string>(`/${proposalData.creator}/${proposalData.permlink}`);
