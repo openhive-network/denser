@@ -1,6 +1,6 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { useHiveChainContext } from '../hive-chain-context';
-import { getManabar } from '@/blog/lib/hive';
+import { getManabar } from '@transaction/lib/hive';
 
 interface SingleManabar {
   max: string;

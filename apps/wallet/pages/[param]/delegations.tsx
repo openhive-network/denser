@@ -15,8 +15,8 @@ import { useTranslation } from 'next-i18next';
 import WalletMenu from '@/wallet/components/wallet-menu';
 
 const convertVestsToSteem = (vests: number, dynamicData: IDynamicGlobalProperties) => {
-  const totalFund = parseFloat(dynamicData.total_vesting_fund_hive);
-  const totalShares = parseFloat(dynamicData.total_vesting_shares);
+  const totalFund = parseFloat(dynamicData.total_vesting_fund_hive.amount);
+  const totalShares = parseFloat(dynamicData.total_vesting_shares.amount);
   return ((vests * totalFund) / totalShares).toFixed(2);
 };
 

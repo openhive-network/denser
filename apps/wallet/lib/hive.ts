@@ -2,21 +2,12 @@ import Big from 'big.js';
 import { AccountHistory } from '@/wallet/store/app-types';
 import { makeBitMaskFilter, operationOrders } from '@hiveio/dhive/lib/utils';
 import moment from 'moment';
-import { NaiAsset, TWaxApiRequest, createHiveChain } from '@hive/wax/web';
+import { TWaxApiRequest, createHiveChain, RcAccount } from '@hive/wax/web';
 
 const chain = await createHiveChain();
 
 export declare type Bignum = string;
 
-export interface RCAccount {
-  account: string;
-  rc_manabar: {
-    current_mana: Bignum;
-    last_update_time: number;
-  };
-  max_rc_creation_adjustment: NaiAsset | string;
-  max_rc: Bignum;
-}
 export interface IWitness {
   created: string;
   id: number;
@@ -50,11 +41,11 @@ export const getWitnessesByVote = (from: string, limit: number): Promise<IWitnes
 
 type GetFindRcAccountsData = {
   rc_api: {
-    find_rc_accounts: TWaxApiRequest<string[], RCAccount[]>;
+    find_rc_accounts: TWaxApiRequest<string[], RcAccount[]>;
   };
 };
 
-export const findRcAccounts = (username: string): Promise<RCAccount[]> =>
+export const findRcAccounts = (username: string): Promise<RcAccount[]> =>
   chain.extend<GetFindRcAccountsData>().api.rc_api.find_rc_accounts([username]);
 
 export const DEFAULT_PARAMS_FOR_PROPOSALS: IGetProposalsParams = {

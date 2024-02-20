@@ -493,14 +493,14 @@ export interface IFollowList {
   muted_list_description: '';
 }
 
-type GetFollowList = {
+type GetFollowListData = {
   bridge: {
     get_follow_list: TWaxApiRequest<IFollowListParams, IFollowList[]>;
   };
 };
 
 export const getFollowList = (observer: string, follow_type: FollowListType): Promise<IFollowList[]> =>
-  chain.extend<GetFollowList>().api.bridge.get_follow_list({
+  chain.extend<GetFollowListData>().api.bridge.get_follow_list({
     observer,
     follow_type
   });
