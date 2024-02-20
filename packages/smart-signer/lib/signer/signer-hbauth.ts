@@ -1,5 +1,6 @@
 import { cryptoUtils } from '@hiveio/dhive';
-import { authService } from '@smart-signer/lib/auth-service';
+import { hbauthService } from '@smart-signer/lib/hbauth-service';
+import { OnlineClient } from '@hive/hb-auth';
 import { THexString } from '@hive/wax/web';
 import {
   SignChallenge,
@@ -76,7 +77,10 @@ export class SignerHbauth extends Signer {
       throw new Error(`Unsupported keyType: ${keyType}`);
     }
 
-    const authClient = await authService.getOnlineClient();
+    // TODO Pass correct config options here.
+    const authClient = await hbauthService.getOnlineClient();
+    // const authClient = await new OnlineClient().initialize();
+
     const auth = await authClient.getAuthByUser(username);
     logger.info('auth: %o', auth);
 
@@ -111,7 +115,9 @@ export class SignerHbauth extends Signer {
   }
 
   async checkAuths(username: string, keyType: string) {
-    const authClient = await authService.getOnlineClient();
+    // TODO Pass correct config options here.
+    const authClient = await hbauthService.getOnlineClient();
+    // const authClient = await new OnlineClient().initialize();
 
     const auths = await authClient.getAuths();
     logger.info('authClient.getAuths();: %o', auths);
