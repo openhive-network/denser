@@ -76,8 +76,8 @@ export abstract class Signer {
   }
 
   /**
-   * Clears all user data in storages and memory, does other required
-   * things for particular Signer.
+   * Clears all user data in storages and memory, does other things
+   * required before destroying auth session.
    *
    * @abstract
    * @returns {Promise<void>}
@@ -86,27 +86,27 @@ export abstract class Signer {
   abstract destroy(): Promise<void>;
 
   /**
-   * Calculates sha256 digest (hash) of any string and signs it with
-   * Hive private key. It's good for verifying keys, in login
-   * procedure for instance. However it's bad for signing Hive
-   * transactions – these need different hashing method and other
+   * Calculates sha256 digest (hash) of any string (challenge) and signs
+   * it with Hive private key. It's good for verifying private keys, in
+   * login procedure for instance. However it's bad for signing Hive
+   * transactions, because this needs other hashing method and other
    * special treatment.
    *
    * @abstract
-   * @param {SignChallenge} {}
+   * @param {SignChallenge} arg
    * @returns {Promise<string>}
    * @memberof Signer
    */
-  abstract signChallenge({}: SignChallenge): Promise<string>;
+  abstract signChallenge(arg: SignChallenge): Promise<string>;
 
   /**
    * Signs Hive transaction with Hive private key and returns signature.
    *
    * @abstract
-   * @param {SignTransaction} { digest, transaction }
+   * @param {SignTransaction} arg
    * @returns {Promise<string>}
    * @memberof Signer
    */
-  abstract signTransaction({ digest, transaction }: SignTransaction): Promise<string>;
+  abstract signTransaction(arg: SignTransaction): Promise<string>;
 
 }

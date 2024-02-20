@@ -70,10 +70,13 @@ export class SignerKeychain extends Signer {
         message,
         method: KeychainKeyTypes[keyType]
       });
+      // There's not digest in response.
       logger.info('SignerKeychain.signChallenge keychain response: %o', response);
       if (response.error) {
         throw new Error(`Error in SignerKeychain.SignerKeychain.signChallenge: ${response.error}`);
       }
+      // TODO We can also return response.publicKey. This could be
+      // useful in signature's verification.
       const signature = response.result as unknown as string;
       logger.info('keychain', { signature });
       return signature;
@@ -102,7 +105,7 @@ export class SignerKeychain extends Signer {
       if (!(await keychain.isKeychainInstalled())) {
         throw new Error('Keychain is not installed');
       }
-      // Sign transaction
+      // Sign transaction. There's not digest nor publicKey in response.
       const signResult = await keychain.signTx({
         username,
         method: KeychainKeyTypes[keyType],
