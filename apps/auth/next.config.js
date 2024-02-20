@@ -1,6 +1,6 @@
-const path = require('path')
+const path = require('path');
 const version = require('./version.json');
-const withTM = require('next-transpile-modules')(["@hive/smart-signer", "@hive/ui"])
+const withTM = require('next-transpile-modules')(['@hive/smart-signer', '@hive/ui']);
 const CopyPlugin = require('copy-webpack-plugin');
 
 /** @type {import('next').NextConfig} */
@@ -8,16 +8,17 @@ const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
   images: {
-    domains: ['avatars.githubusercontent.com'],
+    domains: ['avatars.githubusercontent.com']
   },
+  transpilePackages: ['@hive/transaction'],
   experimental: {
-    outputFileTracingRoot: path.join(__dirname, '../..'),
+    outputFileTracingRoot: path.join(__dirname, '../..')
   },
   async rewrites() {
     return [
       {
         source: '/.well-known/openid-configuration',
-        destination: '/api/oidc/.well-known/openid-configuration',
+        destination: '/api/oidc/.well-known/openid-configuration'
       },
       // {
       //   source: '/interaction/:path*',
@@ -25,9 +26,9 @@ const nextConfig = {
       // },
       {
         source: '/oidc/:path*',
-        destination: '/api/oidc/:path*',
-      },
-    ]
+        destination: '/api/oidc/:path*'
+      }
+    ];
   },
   webpack: (config, { isServer, webpack }) => {
     if (!isServer) {
@@ -42,26 +43,28 @@ const nextConfig = {
       })
     );
 
-    config.plugins.push(new CopyPlugin({
-      patterns: [
-        {
-          from: path.join(__dirname, '../../node_modules/@hive/hb-auth/dist/worker.js'),
-          to: path.join(__dirname, 'public/auth/')
-        },
-        {
-          from: path.join(__dirname, './locales'),
-          to: path.join(__dirname, 'public/locales/')
-        },
-        {
-          from: path.join(__dirname, '../../packages/smart-signer/locales'),
-          to: path.join(__dirname, 'public/locales/')
-        },
-        {
-          from: path.join(__dirname, '../../packages/smart-signer/public/smart-signer'),
-          to: path.join(__dirname, 'public/smart-signer/')
-        }
-      ]
-    }));
+    config.plugins.push(
+      new CopyPlugin({
+        patterns: [
+          {
+            from: path.join(__dirname, '../../node_modules/@hive/hb-auth/dist/worker.js'),
+            to: path.join(__dirname, 'public/auth/')
+          },
+          {
+            from: path.join(__dirname, './locales'),
+            to: path.join(__dirname, 'public/locales/')
+          },
+          {
+            from: path.join(__dirname, '../../packages/smart-signer/locales'),
+            to: path.join(__dirname, 'public/locales/')
+          },
+          {
+            from: path.join(__dirname, '../../packages/smart-signer/public/smart-signer'),
+            to: path.join(__dirname, 'public/smart-signer/')
+          }
+        ]
+      })
+    );
 
     return config;
   }

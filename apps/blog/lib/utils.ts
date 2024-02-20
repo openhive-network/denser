@@ -3,7 +3,7 @@ import Big from 'big.js';
 import { ClassValue, clsx } from 'clsx';
 import sanitize from 'sanitize-html';
 import { twMerge } from 'tailwind-merge';
-import remarkableStripper from '@/blog/lib/remmarkable-stripper';
+import remarkableStripper from '../lib/remmarkable-stripper';
 import { IVote } from '@transaction/lib/hive';
 import type { Entry, JsonMetadata } from '@transaction/lib/bridge';
 import { parseDate2 } from '@hive/ui/lib/parse-date';

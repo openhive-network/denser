@@ -7,7 +7,7 @@ import moment from 'moment';
 import { dateToFullRelative } from '@hive/ui/lib/parse-date';
 import { Badge } from '@hive/ui/components/badge';
 import { useEffect, useState } from 'react';
-import { getPostHeader } from '@hive/ui/lib/bridge';
+import { getPostHeader } from '@transaction/lib/bridge';
 import VoteProposals from './votes-proposals-dialog';
 import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
@@ -186,7 +186,6 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
                         extensions: []
                       }
                     })
-                    .authorize(user.username)
                     .build();
                 });
 

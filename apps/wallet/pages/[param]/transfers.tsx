@@ -231,10 +231,10 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
     );
   }
 
-  const totalFund = convertStringToBig(dynamicData.total_vesting_fund_hive);
+  const totalFund = convertStringToBig(dynamicData.total_vesting_fund_hive.amount);
   const price_per_hive = convertStringToBig(historyFeedData.current_median_history.base);
   const totalDays = moment(accountData.next_vesting_withdrawal).diff(moment(), `d`);
-  const totalShares = convertStringToBig(dynamicData.total_vesting_shares);
+  const totalShares = convertStringToBig(dynamicData.total_vesting_shares.amount);
   const vesting_hive = vestingHive(accountData, dynamicData);
   const delegated_hive = delegatedHive(accountData, dynamicData);
   const powerdown_hive = powerdownHive(accountData, dynamicData);
