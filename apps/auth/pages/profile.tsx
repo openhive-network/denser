@@ -35,11 +35,11 @@ export default function Profile() {
   ];
 
   const vote: vote = {
-    voter: user?.username || '',
+    voter: user.username,
     author: 'gtg',
 
-    permlink: 'power-to-the-hive-but-just-a-little',
-    // permlink: 'non-existing-permlink-q523-73867',
+    // permlink: 'power-to-the-hive-but-just-a-little',
+    permlink: 'non-existing-permlink-q523-73867',
 
     weight: 10000
   };

@@ -5,9 +5,12 @@ import { Signature, HexBuffer, cryptoUtils, PublicKey } from "@hiveio/dhive";
 import { getLogger } from "@hive/ui/lib/logging";
 const logger = getLogger('app');
 
+//
 // See:
 // 1. https://github.com/hiveauth/hive-auth-wrapper.
 // 2. https://github.com/quochuy/hive-auth-client.
+// 3. https://github.com/Mintrawa/hive-auth-client.
+//
 
 
 // import CryptoJS from 'crypto-js';
