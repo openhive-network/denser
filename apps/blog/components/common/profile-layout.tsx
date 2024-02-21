@@ -22,6 +22,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useFollowingInfiniteQuery } from '../hooks/use-following-infinitequery';
 import { transactionService } from '@transaction/index';
 import { FollowOperationBuilder } from '@hive/wax/web';
+import { useSigner } from '@/blog/components/hooks/use-signer';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -49,6 +50,7 @@ function compareDates(dateStrings: string[], t: TFunction<'common_wallet', undef
 const ProfileLayout = ({ children }: IProfileLayout) => {
   const router = useRouter();
   const { user } = useUser();
+  const { signerOptions } = useSigner();
   const { t } = useTranslation('common_blog');
   const walletHost = env('WALLET_ENDPOINT');
   const { username } = useSiteParams();
@@ -333,23 +335,26 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     onClick={() => {
                       const nextFollow = !isFollow;
                       setIsFollow(nextFollow);
-                      transactionService.processHiveAppOperation((builder) => {
-                        if (nextFollow) {
-                          builder.push(
-                            new FollowOperationBuilder()
-                              .followBlog(user.username, username)
-                              .authorize(user.username)
-                              .build()
-                          );
-                        } else {
-                          builder.push(
-                            new FollowOperationBuilder()
-                              .unfollowBlog(user.username, username)
-                              .authorize(user.username)
-                              .build()
-                          );
-                        }
-                      });
+                      transactionService.processHiveAppOperation(
+                        (builder) => {
+                          if (nextFollow) {
+                            builder.push(
+                              new FollowOperationBuilder()
+                                .followBlog(user.username, username)
+                                .authorize(user.username)
+                                .build()
+                            );
+                          } else {
+                            builder.push(
+                              new FollowOperationBuilder()
+                                .unfollowBlog(user.username, username)
+                                .authorize(user.username)
+                                .build()
+                            );
+                          }
+                        },
+                        signerOptions
+                      );
                     }}
                     disabled={isLoadingFollowingData || isFetchingFollowingData}
                   >
@@ -377,23 +382,26 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     onClick={() => {
                       const nextMute = !isMute;
                       setIsMute(nextMute);
-                      transactionService.processHiveAppOperation((builder) => {
-                        if (nextMute) {
-                          builder.push(
-                            new FollowOperationBuilder()
-                              .muteBlog(user.username, username)
-                              .authorize(user.username)
-                              .build()
-                          );
-                        } else {
-                          builder.push(
-                            new FollowOperationBuilder()
-                              .unmuteBlog(user.username, username)
-                              .authorize(user.username)
-                              .build()
-                          );
-                        }
-                      });
+                      transactionService.processHiveAppOperation(
+                        (builder) => {
+                          if (nextMute) {
+                            builder.push(
+                              new FollowOperationBuilder()
+                                .muteBlog(user.username, username)
+                                .authorize(user.username)
+                                .build()
+                            );
+                          } else {
+                            builder.push(
+                              new FollowOperationBuilder()
+                                .unmuteBlog(user.username, username)
+                                .authorize(user.username)
+                                .build()
+                            );
+                          }
+                        },
+                        signerOptions
+                      );
                     }}
                     disabled={isLoadingFollowingDataIgnore || isFetchingFollowingDataIgnore}
                   >

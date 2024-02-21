@@ -8,9 +8,11 @@ import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { transactionService } from '@transaction/index';
+import { useSigner } from '@/blog/components/hooks/use-signer';
 
 const VotesComponent = ({ post }: { post: Entry }) => {
   const { user } = useUser();
+  const { signerOptions } = useSigner();
   const { t } = useTranslation('common_blog');
   const [isClient, setIsClient] = useState(false);
   useEffect(() => {
@@ -30,19 +32,22 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                   { 'bg-red-600 text-white': checkVote && checkVote?.rshares > 0 }
                 )}
                 onClick={(e) =>
-                  transactionService.processHiveAppOperation((builder) => {
-                    builder
-                      .push({
-                        vote: {
-                          voter: user.username,
-                          author: post.author,
-                          permlink: post.permlink,
-                          weight: 10000
-                        }
-                      })
-                      .authorize(user.username)
-                      .build();
-                  })
+                  transactionService.processHiveAppOperation(
+                    (builder) => {
+                      builder
+                        .push({
+                          vote: {
+                            voter: user.username,
+                            author: post.author,
+                            permlink: post.permlink,
+                            weight: 10000
+                          }
+                        })
+                        .authorize(user.username)
+                        .build();
+                    },
+                    signerOptions
+                  )
                 }
               />
             ) : (
@@ -64,19 +69,22 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                   { 'bg-gray-600 text-white': checkVote && checkVote?.rshares < 0 }
                 )}
                 onClick={(e) =>
-                  transactionService.processHiveAppOperation((builder) => {
-                    builder
-                      .push({
-                        vote: {
-                          voter: user.username,
-                          author: post.author,
-                          permlink: post.permlink,
-                          weight: -10000
-                        }
-                      })
-                      .authorize(user.username)
-                      .build();
-                  })
+                  transactionService.processHiveAppOperation(
+                    (builder) => {
+                      builder
+                        .push({
+                          vote: {
+                            voter: user.username,
+                            author: post.author,
+                            permlink: post.permlink,
+                            weight: -10000
+                          }
+                        })
+                        .authorize(user.username)
+                        .build();
+                    },
+                    signerOptions
+                  )
                 }
               />
             ) : (

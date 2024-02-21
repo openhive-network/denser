@@ -15,6 +15,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useEffect, useState } from 'react';
 import { transactionService } from '@transaction/index';
 import { CommunityOperationBuilder } from '@hive/wax';
+import { useSigner } from '@/blog/components/hooks/use-signer';
 
 const CommunityDescription = ({
   data,
@@ -29,6 +30,7 @@ const CommunityDescription = ({
 }) => {
   const [isSubscribe, setIsSubscribe] = useState(() => !data.context.subscribed);
   const { user } = useUser();
+  const { signerOptions } = useSigner();
   const { t } = useTranslation('common_blog');
   const renderer = new DefaultRenderer({
     baseUrl: 'https://hive.blog/',
@@ -97,23 +99,26 @@ const CommunityDescription = ({
                     onClick={() => {
                       const nextIsSubscribe = !isSubscribe;
                       setIsSubscribe(nextIsSubscribe);
-                      transactionService.processHiveAppOperation((builder) => {
-                        if (nextIsSubscribe) {
-                          builder.push(
-                            new CommunityOperationBuilder()
-                              .subscribe(username)
-                              .authorize(user.username)
-                              .build()
-                          );
-                        } else {
-                          builder.push(
-                            new CommunityOperationBuilder()
-                              .unsubscribe(username)
-                              .authorize(user.username)
-                              .build()
-                          );
-                        }
-                      });
+                      transactionService.processHiveAppOperation(
+                        (builder) => {
+                          if (nextIsSubscribe) {
+                            builder.push(
+                              new CommunityOperationBuilder()
+                                .subscribe(username)
+                                .authorize(user.username)
+                                .build()
+                            );
+                          } else {
+                            builder.push(
+                              new CommunityOperationBuilder()
+                                .unsubscribe(username)
+                                .authorize(user.username)
+                                .build()
+                            );
+                          }
+                        },
+                        signerOptions
+                      );
                     }}
                   >
                     {t('communities.buttons.subscribe')}
@@ -126,14 +131,17 @@ const CommunityDescription = ({
                     onClick={() => {
                       const nextIsSubscribe = !isSubscribe;
                       setIsSubscribe(nextIsSubscribe);
-                      transactionService.processHiveAppOperation((builder) => {
-                        builder.push(
-                          new CommunityOperationBuilder()
-                            .unsubscribe(username)
-                            .authorize(user.username)
-                            .build()
-                        );
-                      });
+                      transactionService.processHiveAppOperation(
+                        (builder) => {
+                          builder.push(
+                            new CommunityOperationBuilder()
+                              .unsubscribe(username)
+                              .authorize(user.username)
+                              .build()
+                          );
+                        },
+                        signerOptions
+                      );
                     }}
                   >
                     <span className="group-hover:hidden">Joined</span>

@@ -10,6 +10,7 @@ import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { transactionService } from '@transaction/index';
 import { FollowOperationBuilder } from '@hive/wax/web';
+import { useSigner } from '@/blog/components/hooks/use-signer';
 
 export default function ProfileLists({
   username,
@@ -21,6 +22,7 @@ export default function ProfileLists({
   data: IFollowList[] | undefined;
 }) {
   const { user } = useUser();
+  const { signerOptions } = useSigner();
   const { t } = useTranslation('common_blog');
   const [page, setPage] = useState(0);
   const [filter, setFilter] = useState('');
@@ -105,14 +107,17 @@ export default function ProfileLists({
                     size="xs"
                     onClick={() => {
                       if (variant === 'muted') {
-                        transactionService.processHiveAppOperation((builder) => {
-                          builder.push(
-                            new FollowOperationBuilder()
-                              .unmuteBlog(user.username, username)
-                              .authorize(user.username)
-                              .build()
-                          );
-                        });
+                        transactionService.processHiveAppOperation(
+                          (builder) => {
+                            builder.push(
+                              new FollowOperationBuilder()
+                                .unmuteBlog(user.username, username)
+                                .authorize(user.username)
+                                .build()
+                            );
+                          },
+                          signerOptions
+                        );
                       }
                     }}
                   >

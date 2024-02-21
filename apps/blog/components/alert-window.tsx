@@ -13,6 +13,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { ReactNode } from 'react';
 import { transactionService } from '@transaction/index';
 import { FollowOperationBuilder } from '@hive/wax/web';
+import { useSigner } from '@/blog/components/hooks/use-signer';
 
 export function AlertDialogReblog({
   children,
@@ -24,6 +25,7 @@ export function AlertDialogReblog({
   permlink: string;
 }) {
   const { user } = useUser();
+  const { signerOptions } = useSigner();
 
   return (
     <AlertDialog>
@@ -49,14 +51,17 @@ export function AlertDialogReblog({
               className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
               data-testid="reblog-dialog-ok"
               onClick={() => {
-                transactionService.processHiveAppOperation((builder) => {
-                  builder.push(
-                    new FollowOperationBuilder()
-                      .reblog(user.username, username, permlink)
-                      .authorize(user.username)
-                      .build()
-                  );
-                });
+                transactionService.processHiveAppOperation(
+                  (builder) => {
+                    builder.push(
+                      new FollowOperationBuilder()
+                        .reblog(user.username, username, permlink)
+                        .authorize(user.username)
+                        .build()
+                    );
+                  },
+                  signerOptions
+                );
               }}
             >
               OK

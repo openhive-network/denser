@@ -10,6 +10,7 @@ import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { transactionService } from '@transaction/index';
 import { createPermlink } from '@transaction/lib/utils';
+import { useSigner } from '@/blog/components/hooks/use-signer';
 
 export function ReplyTextbox({
   onSetReply,
@@ -21,6 +22,7 @@ export function ReplyTextbox({
   permlink: string;
 }) {
   const { user } = useUser();
+  const { signerOptions } = useSigner();
   const { t } = useTranslation('common_blog');
   const [text, setText] = useState('');
   const [cleanedText, setCleanedText] = useState('');
@@ -103,21 +105,24 @@ export function ReplyTextbox({
             <Button
               disabled={text === ''}
               onClick={() => {
-                transactionService.processHiveAppOperation((builder) => {
-                  builder
-                    .push({
-                      comment: {
-                        parent_author: username,
-                        parent_permlink: permlink,
-                        author: user.username,
-                        permlink: replyPermlink,
-                        title: '',
-                        body: cleanedText,
-                        json_metadata: '{"app":"hiveblog/0.1"}'
-                      }
-                    })
-                    .build();
-                });
+                transactionService.processHiveAppOperation(
+                  (builder) => {
+                    builder
+                      .push({
+                        comment: {
+                          parent_author: username,
+                          parent_permlink: permlink,
+                          author: user.username,
+                          permlink: replyPermlink,
+                          title: '',
+                          body: cleanedText,
+                          json_metadata: '{"app":"hiveblog/0.1"}'
+                        }
+                      })
+                      .build();
+                  },
+                  signerOptions
+                );
                 setText('');
               }}
             >

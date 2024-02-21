@@ -9,10 +9,11 @@ import {
 } from '@hive/wax/web';
 import { logger } from '@hive/ui/lib/logger';
 import { toast } from '@hive/ui/components/hooks/use-toast';
-import { Signer } from '@smart-signer/lib/signer';
+import { getSigner } from '@smart-signer/lib/signer/get-signer';
+import { SignerOptions } from '@smart-signer/lib/signer/signer';
+import { KeyTypes } from '@smart-signer/types/common';
 
 class TransactionService {
-  static signer = new Signer({ username: 'calcifero' });
   description = 'Transaction broadcast error';
   static hiveChain: IHiveChainInterface;
 
@@ -24,20 +25,28 @@ class TransactionService {
     return TransactionService.hiveChain;
   }
 
-  async processHiveAppOperation(cb: (opBuilder: ITransactionBuilder) => void) {
+  async processHiveAppOperation(
+    cb: (opBuilder: ITransactionBuilder) => void,
+    signerOptions: SignerOptions
+  ) {
     const txBuilder = await (await this.getHiveChain()).getTransactionBuilder();
 
     cb(txBuilder);
-    await this.processTransaction(txBuilder);
+    await this.processTransaction(txBuilder, signerOptions);
   }
 
-  async processTransaction(txBuilder: ITransactionBuilder): Promise<void> {
+  async processTransaction(
+    txBuilder: ITransactionBuilder,
+    signerOptions: SignerOptions
+  ): Promise<void> {
     // validate
     txBuilder.validate();
 
     // Sign using smart-signer
     // pass to smart-signer txBuilder.sigDigest
-    const signature = await TransactionService.signer.signTransaction({
+    const signer = getSigner(signerOptions);
+
+    const signature = await signer.signTransaction({
       digest: txBuilder.sigDigest,
       transaction: txBuilder.build() // builded transaction
     });
