@@ -1,7 +1,7 @@
 import getSlug from 'speakingurl';
 import base58 from 'bs58';
 import secureRandom from 'secure-random';
-import { getPostHeader } from '@transaction/lib/bridge';
+import { getPostHeader } from './bridge';
 
 export async function createPermlink(title: string, author: string, postPermlink: string) {
   let permlink;
