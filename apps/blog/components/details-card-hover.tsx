@@ -1,7 +1,7 @@
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@hive/ui/components/hover-card';
 import { cn } from '@/blog/lib/utils';
 import { ReactNode } from 'react';
-import { Entry } from '@ui/lib/bridge';
+import type { Entry } from '@transaction/lib/bridge';
 import PayoutHoverContent from './payout-hover-content';
 
 type DetailsCardHoverProps = {

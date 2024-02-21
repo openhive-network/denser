@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { customEndsWith } from '../lib/ends-with';
 import { proxifyImageUrl } from '@hive/ui/lib/old-profixy';
 import { extractPictureFromPostBody, extractUrlsFromJsonString, extractYouTubeVideoIds } from '../lib/utils';
-import { Entry } from '@ui/lib/bridge';
+import type { Entry } from '@transaction/lib/bridge';
 import clsx from 'clsx';
 
 export default function PostImage({ post }: { post: Entry }) {

@@ -1,5 +1,5 @@
 import CommentListItem from '@/blog/components/comment-list-item';
-import { Entry } from '@ui/lib/bridge';
+import type { Entry } from '@transaction/lib/bridge';
 import { DefaultRenderer } from '@hiveio/content-renderer';
 import { getDoubleSize, proxifyImageUrl } from '@hive/ui/lib/old-profixy';
 import { useRouter } from 'next/router';

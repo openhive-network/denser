@@ -56,8 +56,8 @@ export function ReplyTextbox({
   useEffect(() => {
     const createReplyPermlink = async () => {
       if (user && user.isLoggedIn) {
-        const permlink = await createPermlink('', user.username, permlink);
-        setReplyPermlink(permlink);
+        const plink = await createPermlink('', user.username, permlink);
+        setReplyPermlink(plink);
       }
     };
 
@@ -116,7 +116,6 @@ export function ReplyTextbox({
                         json_metadata: '{"app":"hiveblog/0.1"}'
                       }
                     })
-                    .authorize(user.username)
                     .build();
                 });
                 setText('');

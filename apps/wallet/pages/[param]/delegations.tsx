@@ -1,6 +1,6 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useQuery } from '@tanstack/react-query';
-import { DynamicGlobalProperties, getDynamicGlobalProperties } from '@hive/ui/lib/hive';
+import { IDynamicGlobalProperties, getDynamicGlobalProperties } from '@transaction/lib/hive';
 import clsx from 'clsx';
 import { getVestingDelegations } from '@/wallet/lib/hive';
 import { numberWithCommas } from '@hive/ui/lib/utils';
@@ -14,9 +14,9 @@ import { i18n } from '@/wallet/next-i18next.config';
 import { useTranslation } from 'next-i18next';
 import WalletMenu from '@/wallet/components/wallet-menu';
 
-const convertVestsToSteem = (vests: number, dynamicData: DynamicGlobalProperties) => {
-  const totalFund = parseFloat(dynamicData.total_vesting_fund_hive);
-  const totalShares = parseFloat(dynamicData.total_vesting_shares);
+const convertVestsToSteem = (vests: number, dynamicData: IDynamicGlobalProperties) => {
+  const totalFund = parseFloat(dynamicData.total_vesting_fund_hive.amount);
+  const totalShares = parseFloat(dynamicData.total_vesting_shares.amount);
   return ((vests * totalFund) / totalShares).toFixed(2);
 };
 
@@ -81,7 +81,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
       username: username.replace('@', ''),
-      ...(await serverSideTranslations(ctx.req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_wallet', 'smart-signer']))
+      ...(await serverSideTranslations(ctx.req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
+        'common_wallet',
+        'smart-signer'
+      ]))
     }
   };
 };

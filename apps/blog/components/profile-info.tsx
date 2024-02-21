@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { getAccountFull } from '@hive/ui/lib/hive';
-import { getAccount, getDynamicGlobalProperties } from '@hive/ui/lib/hive';
+import { getAccountFull, getAccount, getDynamicGlobalProperties } from '@transaction/lib/hive';
 import { accountReputation } from '@/blog/lib/utils';
 import { numberWithCommas } from '@hive/ui/lib/utils';
 import { Icons } from '@hive/ui/components/icons';

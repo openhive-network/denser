@@ -1,6 +1,6 @@
 import BadgeList from '@/blog/components/badge-list';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@hive/ui/components/tabs';
-import { Badge } from '@ui/lib/bridge';
+import type { Badge } from '@transaction/lib/bridge';
 import { useTranslation } from 'next-i18next';
 
 export default function SocialActivities({

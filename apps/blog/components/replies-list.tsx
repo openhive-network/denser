@@ -1,5 +1,5 @@
 import RepliesListItem from '@/blog/components/replies-list-item';
-import { Entry } from '@ui/lib/bridge';
+import type { Entry } from '@transaction/lib/bridge';
 
 const RepliesList = ({ data, parent }: { data: Entry[] | null | undefined; parent?: Entry }) => {
   if (data && parent) {

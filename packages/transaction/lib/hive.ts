@@ -1,22 +1,111 @@
-import { RCAPI } from '@hiveio/dhive/lib/helpers/rc';
-import { RCAccount } from '@hiveio/dhive/lib/chain/rc';
 import { Moment } from 'moment';
-import { IHiveChainInterface } from '@hive/wax/web';
-import { isCommunity, parseAsset, vestsToRshares } from '@/blog/lib/utils';
-import { DATA_LIMIT } from '@ui/lib/bridge';
-import { FullAccount } from '@hive/ui/store/app-types';
-import { bridgeServer } from '@hive/ui/lib/bridge';
-import { getDynamicGlobalProperties, getFeedHistory } from '@hive/ui/lib/hive';
-import { IManabarData } from '@hive/wax/web';
+import { AccountFollowStats, AccountProfile, FullAccount } from 'lib/app-types';
+import {
+  ApiAccount,
+  TWaxApiRequest,
+  createHiveChain,
+  GetDynamicGlobalPropertiesResponse,
+  IManabarData,
+  IHiveChainInterface,
+  transaction
+} from '@hive/wax/web';
+import { isCommunity, parseAsset, vestsToRshares } from '@hive/blog/lib/utils';
+import { DATA_LIMIT } from './bridge';
 
-export interface TrendingTag {
+export const chain = await createHiveChain();
+
+export type IDynamicGlobalProperties = GetDynamicGlobalPropertiesResponse;
+
+export const getDynamicGlobalProperties = (): Promise<IDynamicGlobalProperties> =>
+  chain.api.database_api.get_dynamic_global_properties({});
+
+export const getAccounts = (usernames: string[]): Promise<FullAccount[]> => {
+  return chain.api.database_api
+    .find_accounts({ accounts: usernames })
+    .then((resp: { accounts: ApiAccount[] }): FullAccount[] =>
+      resp.accounts.map((x: ApiAccount) => {
+        let profile: AccountProfile | undefined;
+
+        try {
+          profile = JSON.parse(x.posting_json_metadata!).profile;
+        } catch (e) {}
+
+        if (!profile) {
+          try {
+            profile = JSON.parse(x.json_metadata!).profile;
+          } catch (e) {}
+        }
+
+        if (!profile) {
+          profile = {
+            about: '',
+            cover_image: '',
+            location: '',
+            name: '',
+            profile_image: '',
+            website: ''
+          };
+        }
+
+        return { ...x, profile };
+      })
+    );
+};
+export const getAccount = (username: string): Promise<FullAccount> =>
+  getAccounts([username]).then((resp) => resp[0]);
+
+export const getAccountFull = (username: string): Promise<FullAccount> =>
+  getAccount(username).then(async (account) => {
+    let follow_stats: AccountFollowStats | undefined;
+    try {
+      follow_stats = await getFollowCount(username);
+    } catch (e) {}
+
+    return { ...account, follow_stats };
+  });
+
+export interface IFeedHistory {
+  current_median_history: {
+    base: string;
+    quote: string;
+  };
+  price_history: [
+    {
+      base: string;
+      quote: string;
+    }
+  ];
+}
+
+type GetFeedHistoryData = {
+  database: {
+    get_feed_history: TWaxApiRequest<void, IFeedHistory>;
+  };
+};
+
+export const getFeedHistory = (): Promise<IFeedHistory> =>
+  chain.extend<GetFeedHistoryData>().api.database.get_feed_history();
+
+interface IFollowCount {
+  username: string;
+}
+type GetFollowCountData = {
+  database: {
+    get_follow_count: TWaxApiRequest<IFollowCount, AccountFollowStats>;
+  };
+};
+
+export const getFollowCount = (username: string): Promise<AccountFollowStats> =>
+  chain.extend<GetFollowCountData>().api.database.get_follow_count({ username });
+
+export interface ITrendingTag {
   comments: number;
   name: string;
   top_posts: number;
   total_payouts: string;
 }
 
-export interface DynamicProps {
+export interface IDynamicProps {
   hivePerMVests: number;
   base: number;
   quote: number;
@@ -31,7 +120,7 @@ export interface DynamicProps {
   vestingRewardPercent: number;
 }
 
-export interface Vote {
+export interface IVote {
   percent: number;
   reputation: number;
   rshares: string;
@@ -42,12 +131,12 @@ export interface Vote {
   reward?: number;
 }
 
-export interface RewardFund {
+export interface IRewardFund {
   recent_claims: string;
   reward_balance: string;
 }
 
-export interface MarketCandlestickDataItem {
+export interface IMarketCandlestickDataItem {
   hive: {
     high: number;
     low: number;
@@ -67,13 +156,13 @@ export interface MarketCandlestickDataItem {
   seconds: number;
 }
 
-export interface TradeDataItem {
+export interface ITradeDataItem {
   current_pays: string;
   date: number;
   open_pays: string;
 }
 
-export interface Post {
+export interface IPost {
   active_votes: {
     rshares: number;
     voter: string;
@@ -123,103 +212,161 @@ export interface Post {
   url: string;
 }
 
-export const getPost = (username: string, permlink: string): Promise<Post> =>
-  bridgeServer.call('condenser_api', 'get_content', [username, permlink]);
+type GetPostData = {
+  condenser_api: {
+    get_content: TWaxApiRequest<string[], IPost>;
+  };
+};
+
+export const getPost = (username: string, permlink: string): Promise<IPost> =>
+  chain.extend<GetPostData>().api.condenser_api.get_content([username, permlink]);
+
+type GetMarketBucketSizesData = {
+  condenser_api: {
+    get_market_history_buckets: TWaxApiRequest<void[], number[]>;
+  };
+};
 
 export const getMarketBucketSizes = (): Promise<number[]> =>
-  bridgeServer.call('condenser_api', 'get_market_history_buckets', []);
+  chain.extend<GetMarketBucketSizesData>().api.condenser_api.get_market_history_buckets([]);
+
+type GetMarketHistoryData = {
+  condenser_api: {
+    get_market_history: TWaxApiRequest<(string | number)[], IMarketCandlestickDataItem[]>;
+  };
+};
 
 export const getMarketHistory = (
   seconds: number,
   startDate: Moment,
   endDate: Moment
-): Promise<MarketCandlestickDataItem[]> => {
-  let todayEarlier = startDate.format().split('+')[0];
-  let todayNow = endDate.format().split('+')[0];
-  return bridgeServer.call('condenser_api', 'get_market_history', [seconds, todayEarlier, todayNow]);
+): Promise<IMarketCandlestickDataItem[]> => {
+  let todayEarlier: string = startDate.format().split('+')[0];
+  let todayNow: string = endDate.format().split('+')[0];
+  return chain
+    .extend<GetMarketHistoryData>()
+    .api.condenser_api.get_market_history([seconds, todayEarlier, todayNow]);
 };
 
-export const getActiveVotes = (author: string, permlink: string): Promise<Vote[]> =>
-  bridgeServer.database.call('get_active_votes', [author, permlink]);
+type GetActiveVotesData = {
+  database_api: {
+    get_active_votes: TWaxApiRequest<string[], IVote[]>;
+  };
+};
+
+export const getActiveVotes = (author: string, permlink: string): Promise<IVote[]> =>
+  chain.extend<GetActiveVotesData>().api.database_api.get_active_votes([author, permlink]);
+
+type GetTrendingTagsData = {
+  database_api: {
+    get_trending_tags: TWaxApiRequest<(string | number)[], ITrendingTag[]>;
+  };
+};
 
 export const getTrendingTags = (afterTag: string = '', limit: number = 250): Promise<string[]> =>
-  bridgeServer.database.call('get_trending_tags', [afterTag, limit]).then((tags: TrendingTag[]) => {
-    return tags
-      .filter((x) => x.name !== '')
-      .filter((x) => !isCommunity(x.name))
-      .map((x) => x.name);
-  });
+  chain
+    .extend<GetTrendingTagsData>()
+    .api.database_api.get_trending_tags([afterTag, limit])
+    .then((tags: ITrendingTag[]) => {
+      return tags
+        .filter((x: ITrendingTag) => x.name !== '')
+        .filter((x: ITrendingTag) => !isCommunity(x.name))
+        .map((x: ITrendingTag) => x.name);
+    });
 
 export const getAllTrendingTags = (
   afterTag: string = '',
   limit: number = 250
-): Promise<TrendingTag[] | void> =>
-  bridgeServer.database
-    .call('get_trending_tags', [afterTag, limit])
-    .then((tags: TrendingTag[]) => {
+): Promise<ITrendingTag[] | void> =>
+  chain
+    .extend<GetTrendingTagsData>()
+    .api.database_api.get_trending_tags([afterTag, limit])
+    .then((tags: ITrendingTag[]) => {
       return tags.filter((x) => x.name !== '').filter((x) => !isCommunity(x.name));
     })
     .catch((reason) => {
       debugger;
     });
 
-export const lookupAccounts = (q: string, limit = 50): Promise<string[]> =>
-  bridgeServer.database.call('lookup_accounts', [q, limit]);
+type LookupAccountsData = {
+  database_api: {
+    lookup_accounts: TWaxApiRequest<(string | number)[], string[]>;
+  };
+};
 
-export interface Follow {
+export const lookupAccounts = (q: string, limit = 50): Promise<string[]> =>
+  chain.extend<LookupAccountsData>().api.database_api.lookup_accounts([q, limit]);
+
+export interface IFollow {
   follower: string;
   following: string;
   what: string[];
 }
 
-export interface GetFollowParams {
+export interface IGetFollowParams {
   account: string;
   start: string | null;
   type: string;
   limit: number;
 }
-export const DEFAULT_PARAMS_FOR_FOLLOW: GetFollowParams = {
+export const DEFAULT_PARAMS_FOR_FOLLOW: IGetFollowParams = {
   account: '',
   start: null,
   type: 'blog',
   limit: 50
 };
-export const getFollowers = async (params?: Partial<GetFollowParams>): Promise<Follow[]> => {
-  try {
-    const response = await bridgeServer.call('condenser_api', 'get_followers', [
-      params?.account || DEFAULT_PARAMS_FOR_FOLLOW.account,
-      params?.start || DEFAULT_PARAMS_FOR_FOLLOW.start,
-      params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type,
-      params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit
-    ]);
-    return response;
-  } catch (error) {
-    console.error('Error:', error);
-    throw error;
-  }
+
+type GetFollowersData = {
+  condenser_api: {
+    get_followers: TWaxApiRequest<(string | number | null)[], IFollow[]>;
+  };
 };
-export const getFollowing = async (params?: Partial<GetFollowParams>): Promise<Follow[]> => {
+export const getFollowers = async (params?: Partial<IGetFollowParams>): Promise<IFollow[]> => {
   try {
-    const response = await bridgeServer.call('condenser_api', 'get_following', [
-      params?.account || DEFAULT_PARAMS_FOR_FOLLOW.account,
-      params?.start || DEFAULT_PARAMS_FOR_FOLLOW.start,
-      params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type,
-      params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit
-    ]);
-    return response;
+    return chain
+      .extend<GetFollowersData>()
+      .api.condenser_api.get_followers([
+        params?.account || DEFAULT_PARAMS_FOR_FOLLOW.account,
+        params?.start || DEFAULT_PARAMS_FOR_FOLLOW.start,
+        params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type,
+        params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit
+      ]);
   } catch (error) {
     console.error('Error:', error);
     throw error;
   }
 };
 
-export const findRcAccounts = (username: string): Promise<RCAccount[]> =>
-  new RCAPI(bridgeServer).findRCAccounts([username]);
+type GetFollowingData = {
+  condenser_api: {
+    get_following: TWaxApiRequest<(string | number | null)[], IFollow[]>;
+  };
+};
+export const getFollowing = async (params?: Partial<IGetFollowParams>): Promise<IFollow[]> => {
+  try {
+    return chain
+      .extend<GetFollowingData>()
+      .api.condenser_api.get_following([
+        params?.account || DEFAULT_PARAMS_FOR_FOLLOW.account,
+        params?.start || DEFAULT_PARAMS_FOR_FOLLOW.start,
+        params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type,
+        params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit
+      ]);
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+};
 
-export const getRewardFund = (): Promise<RewardFund> =>
-  bridgeServer.database.call('get_reward_fund', ['post']);
+type GetRewardFundData = {
+  database_api: {
+    get_reward_fund: TWaxApiRequest<string[], IRewardFund>;
+  };
+};
+export const getRewardFund = (): Promise<IRewardFund> =>
+  chain.extend<GetRewardFundData>().api.database_api.get_reward_fund(['post']);
 
-export const getDynamicProps = async (): Promise<DynamicProps> => {
+export const getDynamicProps = async (): Promise<IDynamicProps> => {
   const globalDynamic = await getDynamicGlobalProperties();
   const feedHistory = await getFeedHistory();
   const rewardFund = await getRewardFund();
@@ -264,16 +411,13 @@ export interface WithdrawRoute {
   to_account: string;
 }
 
-export const getWithdrawRoutes = (account: string): Promise<WithdrawRoute[]> =>
-  bridgeServer.database.call('get_withdraw_routes', [account, 'outgoing']);
-
-export const votingPower = (account: FullAccount): number => {
-  // @ts-ignore "Account" is compatible with dhive's "ExtendedAccount"
-  const calc = account && bridgeServer.rc.calculateVPMana(account);
-  const { percentage } = calc;
-
-  return percentage / 100;
+type GetWithdrawRoutesData = {
+  database_api: {
+    get_withdraw_routes: TWaxApiRequest<string[], WithdrawRoute[]>;
+  };
 };
+export const getWithdrawRoutes = (account: string): Promise<WithdrawRoute[]> =>
+  chain.extend<GetWithdrawRoutesData>().api.database_api.get_withdraw_routes([account, 'outgoing']);
 
 export const powerRechargeTime = (power: number) => {
   const missingPower = 100 - power;
@@ -282,7 +426,7 @@ export const powerRechargeTime = (power: number) => {
 
 export const votingValue = (
   account: FullAccount,
-  dynamicProps: DynamicProps,
+  dynamicProps: IDynamicProps,
   votingPower: number,
   weight: number = 10000
 ): number => {
@@ -302,10 +446,10 @@ const HIVE_VOTING_MANA_REGENERATION_SECONDS = 5 * 60 * 60 * 24; //5 days
 
 export const downVotingPower = (account: FullAccount): number => {
   const totalShares =
-    parseFloat(account.vesting_shares) +
-    parseFloat(account.received_vesting_shares) -
-    parseFloat(account.delegated_vesting_shares) -
-    parseFloat(account.vesting_withdraw_rate);
+    parseFloat(account.vesting_shares.amount) +
+    parseFloat(account.received_vesting_shares.amount) -
+    parseFloat(account.delegated_vesting_shares.amount) -
+    parseFloat(account.vesting_withdraw_rate.amount);
   const elapsed = Math.floor(Date.now() / 1000) - account.downvote_manabar.last_update_time;
   const maxMana = (totalShares * 1000000) / 4;
 
@@ -328,13 +472,7 @@ export const downVotingPower = (account: FullAccount): number => {
   return currentManaPerc;
 };
 
-export const rcPower = (account: RCAccount): number => {
-  const calc = bridgeServer.rc.calculateRCMana(account);
-  const { percentage } = calc;
-  return percentage / 100;
-};
-
-export interface ConversionRequest {
+export interface IConversionRequest {
   amount: string;
   conversion_date: string;
   id: number;
@@ -342,7 +480,7 @@ export interface ConversionRequest {
   requestid: number;
 }
 
-export interface CollateralizedConversionRequest {
+export interface ICollateralizedConversionRequest {
   collateral_amount: string;
   conversion_date: string;
   converted_amount: string;
@@ -351,13 +489,25 @@ export interface CollateralizedConversionRequest {
   requestid: number;
 }
 
-export const getConversionRequests = (account: string): Promise<ConversionRequest[]> =>
-  bridgeServer.database.call('get_conversion_requests', [account]);
+type GetConversionRequestsData = {
+  database_api: {
+    get_conversion_requests: TWaxApiRequest<string[], IConversionRequest[]>;
+  };
+};
+export const getConversionRequests = (account: string): Promise<IConversionRequest[]> =>
+  chain.extend<GetConversionRequestsData>().api.database_api.get_conversion_requests([account]);
 
+type GetCollateralizedConversionRequestsData = {
+  database_api: {
+    get_collateralized_conversion_requests: TWaxApiRequest<string[], ICollateralizedConversionRequest[]>;
+  };
+};
 export const getCollateralizedConversionRequests = (
   account: string
-): Promise<CollateralizedConversionRequest[]> =>
-  bridgeServer.database.call('get_collateralized_conversion_requests', [account]);
+): Promise<ICollateralizedConversionRequest[]> =>
+  chain
+    .extend<GetCollateralizedConversionRequestsData>()
+    .api.database_api.get_collateralized_conversion_requests([account]);
 
 export interface SavingsWithdrawRequest {
   id: number;
@@ -369,8 +519,13 @@ export interface SavingsWithdrawRequest {
   complete: string;
 }
 
+type GetSavingsWithdrawFromData = {
+  database_api: {
+    get_savings_withdraw_from: TWaxApiRequest<string[], SavingsWithdrawRequest[]>;
+  };
+};
 export const getSavingsWithdrawFrom = (account: string): Promise<SavingsWithdrawRequest[]> =>
-  bridgeServer.database.call('get_savings_withdraw_from', [account]);
+  chain.extend<GetSavingsWithdrawFromData>().api.database_api.get_savings_withdraw_from([account]);
 
 export interface BlogEntry {
   blog: string;
@@ -380,11 +535,21 @@ export interface BlogEntry {
   reblogged_on: string;
 }
 
+type GetBlogEntriesData = {
+  condenser_api: {
+    get_blog_entries: TWaxApiRequest<(string | number)[], BlogEntry[]>;
+  };
+};
 export const getBlogEntries = (username: string, limit: number = DATA_LIMIT): Promise<BlogEntry[]> =>
-  bridgeServer.call('condenser_api', 'get_blog_entries', [username, 0, limit]);
+  chain.extend<GetBlogEntriesData>().api.condenser_api.get_blog_entries([username, 0, limit]);
 
+type BrodcastTransactionData = {
+  network_broadcast_api: {
+    broadcast_transaction: TWaxApiRequest<transaction[], transaction>;
+  };
+};
 export const brodcastTransaction = (transaction: any): Promise<any> =>
-  bridgeServer.call('network_broadcast_api', 'broadcast_transaction', [transaction]);
+  chain.extend<BrodcastTransactionData>().api.network_broadcast_api.broadcast_transaction([transaction]);
 
 // create type for api call result do working search
 // export const searchTag = async (
@@ -405,7 +570,7 @@ export const brodcastTransaction = (transaction: any): Promise<any> =>
 //   return await response.json();
 // };
 
-interface Manabars {
+interface IManabars {
   upvote: IManabarData;
   downvote: IManabarData;
   rc: IManabarData;
@@ -414,7 +579,7 @@ interface Manabars {
   rcCooldown: Date;
 }
 
-interface SingleManabar {
+interface ISingleManabar {
   max: string;
   current: string;
   percentageValue: number;
@@ -422,14 +587,14 @@ interface SingleManabar {
 }
 
 interface Manabar {
-  upvote: SingleManabar;
-  downvote: SingleManabar;
-  rc: SingleManabar;
+  upvote: ISingleManabar;
+  downvote: ISingleManabar;
+  rc: ISingleManabar;
 }
 export const getManabars = async (
   accountName: string,
   hiveChain: IHiveChainInterface
-): Promise<Manabars | null> => {
+): Promise<IManabars | null> => {
   try {
     const upvoteCooldownPromise = hiveChain.calculateManabarFullRegenerationTimeForAccount(accountName, 0);
     const downvoteCooldownPromise = hiveChain.calculateManabarFullRegenerationTimeForAccount(accountName, 1);

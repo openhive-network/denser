@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Big from 'big.js';
-import { getAccount, getAccounts, getDynamicGlobalProperties } from '@hive/ui/lib/hive';
+import { getAccount, getAccounts, getDynamicGlobalProperties } from '@transaction/lib/hive';
 import { Icons } from '@hive/ui/components/icons';
 import { Input } from '@hive/ui/components/input';
-import { FullAccount } from '@hive/ui/store/app-types';
+import { FullAccount } from '@transaction/lib/app-types';
 import { convertStringToBig } from '@hive/ui/lib/helpers';
 import { useRouter } from 'next/router';
 import { Button } from '@hive/ui/components/button';
-import { Witness, getWitnessesByVote } from '@/wallet/lib/hive';
+import { IWitness, getWitnessesByVote } from '@/wallet/lib/hive';
 import WitnessListItem from '@/wallet/components/witnesses-list-item';
 import DialogLogin from '../components/dialog-login';
 import { AlertDialogProxy } from '../components/alert-dialog-proxy';
@@ -22,7 +22,7 @@ const LAST_BLOCK_AGE_THRESHOLD_IN_SEC = 2592000;
 
 const mapWitnesses =
   (totalVesting: Big, totalShares: Big, headBlock: number, observer?: string[]) =>
-  (witness: Witness, i: number, witnessList: Witness[]) => {
+  (witness: IWitness, i: number, witnessList: IWitness[]) => {
     const vestsToHpPrev = witnessList[i - 1]
       ? totalVesting.times(Big(witnessList[i - 1].votes).div(totalShares)).div(1000000)
       : 0;
@@ -54,8 +54,8 @@ function WitnessesPage() {
     select: (data) => {
       return {
         ...data,
-        total_vesting_fund_hive: convertStringToBig(data.total_vesting_fund_hive),
-        total_vesting_shares: convertStringToBig(data.total_vesting_shares)
+        total_vesting_fund_hive: convertStringToBig(data.total_vesting_fund_hive.amount),
+        total_vesting_shares: convertStringToBig(data.total_vesting_shares.amount)
       };
     }
   });

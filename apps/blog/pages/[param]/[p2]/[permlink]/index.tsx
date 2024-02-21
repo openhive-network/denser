@@ -1,10 +1,10 @@
 import parseDate, { dateToFullRelative } from '@hive/ui/lib/parse-date';
 import { Clock, Link2 } from 'lucide-react';
 import UserInfo from '@/blog/components/user-info';
-import { getActiveVotes } from '@/blog/lib/hive';
+import { getActiveVotes } from '@transaction/lib/hive';
 import { useQuery } from '@tanstack/react-query';
 import { DefaultRenderer } from '@hiveio/content-renderer';
-import { Entry, getCommunity, getDiscussion, getPost } from '@ui/lib/bridge';
+import { Entry, getCommunity, getDiscussion, getPost } from '@transaction/lib/bridge';
 import Loading from '@hive/ui/components/loading';
 import dynamic from 'next/dynamic';
 import ImageGallery from '@/blog/components/image-gallery';

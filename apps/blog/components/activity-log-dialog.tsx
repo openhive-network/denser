@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogTrigger } from '@hive/ui/components/dialog';
 import NotificationActivities from './notification-activities';
 import type { ReactNode } from 'react';
-import { AccountNotification } from '@ui/lib/bridge';
+import { IAccountNotification } from '@transaction/lib/bridge';
 
 export function ActivityLogDialog({
   children,
@@ -9,7 +9,7 @@ export function ActivityLogDialog({
   username
 }: {
   children: ReactNode;
-  data: AccountNotification[] | null | undefined;
+  data: IAccountNotification[] | null | undefined;
   username: string;
 }) {
   return (

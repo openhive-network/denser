@@ -4,15 +4,14 @@ import { useRouter } from 'next/router';
 import { useSiteParams } from '@hive/ui/components/hooks/use-site-params';
 import Loading from '@hive/ui/components/loading';
 import { useQuery } from '@tanstack/react-query';
-import { getAccount, getDynamicGlobalProperties } from '@hive/ui/lib/hive';
-import { getAccountFull } from '@hive/ui/lib/hive';
+import { getAccount, getDynamicGlobalProperties, getAccountFull } from '@transaction/lib/hive';
 import { accountReputation } from '@/blog/lib/utils';
 import { delegatedHive, numberWithCommas, vestingHive } from '@hive/ui/lib/utils';
 import { Separator } from '@hive/ui/components/separator';
 import { Icons } from '@hive/ui/components/icons';
 import { dateToFullRelative, dateToShow } from '@hive/ui/lib/parse-date';
 import { proxifyImageUrl } from '@hive/ui/lib/old-profixy';
-import { getTwitterInfo } from '@ui/lib/bridge';
+import { getTwitterInfo } from '@transaction/lib/bridge';
 import moment from 'moment';
 import { Button } from '@hive/ui';
 import DialogLogin from '../dialog-login';
@@ -149,9 +148,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 }}
               />
               <h4 className="sm:text-2xl" data-testid="profile-name">
-                <span className="font-semibold">
-                  {profileData?.profile?.name ? profileData.profile.name : profileData.name}
-                </span>{' '}
+                <span className="font-semibold">{profileData?.name}</span>{' '}
                 <span
                   title={`This is ${username}s's reputation score.\n\nThe reputation score is based on the history of votes received by the account, and is used to hide low quality content.`}
                 >
@@ -187,7 +184,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             </div>
 
             <p className="my-1 max-w-[420px] text-center text-white sm:my-4" data-testid="profile-about">
-              {profileData?.profile?.about
+              {profileData?.about
                 ? profileData?.profile?.about.slice(0, 157) +
                   (157 < profileData?.profile?.about.length ? '...' : '')
                 : null}

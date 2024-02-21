@@ -1,12 +1,14 @@
-import { bridgeServer } from '@ui/lib/bridge';
 import Big from 'big.js';
 import { AccountHistory } from '@/wallet/store/app-types';
 import { makeBitMaskFilter, operationOrders } from '@hiveio/dhive/lib/utils';
 import moment from 'moment';
-import { RCAPI } from '@hiveio/dhive/lib/helpers/rc';
-import { RCAccount } from '@hiveio/dhive/lib/chain/rc';
+import { TWaxApiRequest, createHiveChain, RcAccount } from '@hive/wax/web';
 
-export interface Witness {
+const chain = await createHiveChain();
+
+export declare type Bignum = string;
+
+export interface IWitness {
   created: string;
   id: number;
   total_missed: number;
@@ -27,19 +29,33 @@ export interface Witness {
   votes: number;
   last_confirmed_block_num: number;
 }
-export const getWitnessesByVote = (from: string, limit: number): Promise<Witness[]> =>
-  bridgeServer.call('condenser_api', 'get_witnesses_by_vote', [from, limit]);
-export const findRcAccounts = (username: string): Promise<RCAccount[]> =>
-  new RCAPI(bridgeServer).findRCAccounts([username]);
 
-export const DEFAULT_PARAMS_FOR_PROPOSALS: GetProposalsParams = {
+type GetWitnessesByVoteData = {
+  condenser_api: {
+    get_witnesses_by_vote: TWaxApiRequest<(string | number)[], IWitness[]>;
+  };
+};
+
+export const getWitnessesByVote = (from: string, limit: number): Promise<IWitness[]> =>
+  chain.extend<GetWitnessesByVoteData>().api.condenser_api.get_witnesses_by_vote([from, limit]);
+
+type GetFindRcAccountsData = {
+  rc_api: {
+    find_rc_accounts: TWaxApiRequest<string[], RcAccount[]>;
+  };
+};
+
+export const findRcAccounts = (username: string): Promise<RcAccount[]> =>
+  chain.extend<GetFindRcAccountsData>().api.rc_api.find_rc_accounts([username]);
+
+export const DEFAULT_PARAMS_FOR_PROPOSALS: IGetProposalsParams = {
   start: [],
   limit: 30,
   order: 'by_total_votes',
   order_direction: 'descending',
   status: 'votable'
 };
-export interface GetProposalsParams {
+export interface IGetProposalsParams {
   start: Array<number | string>;
   limit: number;
   order: 'by_creator' | 'by_total_votes' | 'by_start_date' | 'by_end_date';
@@ -47,9 +63,15 @@ export interface GetProposalsParams {
   status: 'all' | 'inactive' | 'active' | 'votable' | 'expired';
   last_id?: number;
 }
-export const getProposals = async (params?: Partial<GetProposalsParams>): Promise<Proposal[]> => {
+type GetProposalsData = {
+  database_api: {
+    list_proposals: TWaxApiRequest<Partial<IGetProposalsParams>, { proposals: IProposal[] }>;
+  };
+};
+
+export const getProposals = async (params?: Partial<IGetProposalsParams>): Promise<IProposal[]> => {
   try {
-    const response = await bridgeServer.call('database_api', 'list_proposals', {
+    const response = await chain.extend<GetProposalsData>().api.database_api.list_proposals({
       ...DEFAULT_PARAMS_FOR_PROPOSALS,
       ...params
     });
@@ -59,7 +81,7 @@ export const getProposals = async (params?: Partial<GetProposalsParams>): Promis
     throw error;
   }
 };
-export interface Proposal {
+export interface IProposal {
   creator: string;
   daily_pay: {
     amount: string;
@@ -76,21 +98,28 @@ export interface Proposal {
   subject: string;
   total_votes: string;
 }
-export interface ListItemProps {
-  proposalData: Omit<Proposal, 'daily_pay' | 'total_votes'> & {
+export interface IListItemProps {
+  proposalData: Omit<IProposal, 'daily_pay' | 'total_votes'> & {
     total_votes: Big;
     daily_pay: { amount: Big };
   };
   totalShares: Big;
   totalVestingFund: Big;
 }
+
+type GetVestingDelegationsData = {
+  database_api: {
+    get_vesting_delegations: TWaxApiRequest<(string | number)[], IDelegatedVestingShare[]>;
+  };
+};
+
 export const getVestingDelegations = (
   username: string,
   from: string = '',
   limit: number = 50
-): Promise<DelegatedVestingShare[]> =>
-  bridgeServer.database.call('get_vesting_delegations', [username, from, limit]);
-export interface DelegatedVestingShare {
+): Promise<IDelegatedVestingShare[]> =>
+  chain.extend<GetVestingDelegationsData>().api.database_api.get_vesting_delegations([username, from, limit]);
+export interface IDelegatedVestingShare {
   id: number;
   delegatee: string;
   delegator: string;
@@ -115,32 +144,44 @@ const wallet_operations_bitmask = makeBitMaskFilter([
   op.fill_order,
   op.claim_reward_balance
 ]);
+
+type GetAccountHistoryData = {
+  condenser_api: {
+    get_account_history: TWaxApiRequest<(string | number)[], AccountHistory[]>;
+  };
+};
+
 export const getAccountHistory = (
   username: string,
   start: number = -1,
   limit: number = 20
 ): Promise<AccountHistory[]> =>
-  bridgeServer.call('condenser_api', 'get_account_history', [
-    username,
-    start,
-    limit,
-    ...wallet_operations_bitmask
-  ]);
-export interface ProposalVote {
+  chain
+    .extend<GetAccountHistoryData>()
+    .api.condenser_api.get_account_history([username, start, limit, , ...wallet_operations_bitmask]);
+
+export interface IProposalVote {
   id: number;
-  proposal: Proposal;
+  proposal: IProposal;
   voter: string;
 }
+
+type GetProposalVotesData = {
+  condenser_api: {
+    list_proposal_votes: TWaxApiRequest<(string | number | (string | number)[])[], IProposalVote[]>;
+  };
+};
 
 export const getProposalVotes = (
   proposalId: number,
   voter: string = '',
   limit: number = 1000
-): Promise<ProposalVote[]> =>
-  bridgeServer
-    .call('condenser_api', 'list_proposal_votes', [[proposalId, voter], limit, 'by_proposal_voter'])
-    .then((r) => r.filter((x: ProposalVote) => x.proposal.proposal_id === proposalId));
-export interface MarketStatistics {
+): Promise<IProposalVote[]> =>
+  chain
+    .extend<GetProposalVotesData>()
+    .api.condenser_api.list_proposal_votes([[proposalId, voter], limit, 'by_proposal_voter'])
+    .then((r) => r.filter((x: IProposalVote) => x.proposal.proposal_id === proposalId));
+export interface IMarketStatistics {
   hbd_volume: string;
   highest_bid: string;
   hive_volume: string;
@@ -148,15 +189,22 @@ export interface MarketStatistics {
   lowest_ask: string;
   percent_change: string;
 }
-export const getMarketStatistics = (): Promise<MarketStatistics> =>
-  bridgeServer.call('condenser_api', 'get_ticker', []);
 
-export interface OrdersData {
-  bids: OrdersDataItem[];
-  asks: OrdersDataItem[];
-  trading: OrdersDataItem[];
+type GetMarketStatisticsData = {
+  condenser_api: {
+    get_ticker: TWaxApiRequest<void[], IMarketStatistics>;
+  };
+};
+
+export const getMarketStatistics = (): Promise<IMarketStatistics> =>
+  chain.extend<GetMarketStatisticsData>().api.condenser_api.get_ticker([]);
+
+export interface IOrdersData {
+  bids: IOrdersDataItem[];
+  asks: IOrdersDataItem[];
+  trading: IOrdersDataItem[];
 }
-export interface OpenOrdersData {
+export interface IOpenOrdersData {
   id: number;
   created: string;
   expiration: string;
@@ -171,7 +219,7 @@ export interface OpenOrdersData {
   rewarded: boolean;
 }
 
-export interface OrdersDataItem {
+export interface IOrdersDataItem {
   created: string;
   hbd: number;
   hive: number;
@@ -182,21 +230,48 @@ export interface OrdersDataItem {
   real_price: string;
 }
 
-export const getOrderBook = (limit: number = 500): Promise<OrdersData> =>
-  bridgeServer.call('condenser_api', 'get_order_book', [limit]);
+type GetOrderBookData = {
+  condenser_api: {
+    get_order_book: TWaxApiRequest<number[], IOrdersData>;
+  };
+};
 
-export const getOpenOrder = (user: string): Promise<OpenOrdersData[]> =>
-  bridgeServer.call('condenser_api', 'get_open_orders', [user]);
+export const getOrderBook = (limit: number = 500): Promise<IOrdersData> =>
+  chain.extend<GetOrderBookData>().api.condenser_api.get_order_book([limit]);
 
-export const getTradeHistory = (limit: number = 1000): Promise<OrdersDataItem[]> => {
+type GetOpenOrderData = {
+  condenser_api: {
+    get_open_orders: TWaxApiRequest<string[], IOpenOrdersData[]>;
+  };
+};
+
+export const getOpenOrder = (user: string): Promise<IOpenOrdersData[]> =>
+  chain.extend<GetOpenOrderData>().api.condenser_api.get_open_orders([user]);
+
+type GetTradeHistoryData = {
+  condenser_api: {
+    get_trade_history: TWaxApiRequest<(string | number)[], IOrdersDataItem[]>;
+  };
+};
+
+export const getTradeHistory = (limit: number = 1000): Promise<IOrdersDataItem[]> => {
   let todayEarlier = moment(Date.now()).subtract(10, 'h').format().split('+')[0];
   let todayNow = moment(Date.now()).format().split('+')[0];
-  return bridgeServer.call('condenser_api', 'get_trade_history', [todayEarlier, todayNow, limit]);
+  return chain
+    .extend<GetTradeHistoryData>()
+    .api.condenser_api.get_trade_history([todayEarlier, todayNow, limit]);
 };
-export interface RecentTradesData {
+export interface IRecentTradesData {
   date: string;
   current_pays: string;
   open_pays: string;
 }
-export const getRecentTrades = (limit: number = 1000): Promise<RecentTradesData[]> =>
-  bridgeServer.call('condenser_api', 'get_recent_trades', [limit]);
+
+type GetRecentTradesyData = {
+  condenser_api: {
+    get_recent_trades: TWaxApiRequest<number[], IRecentTradesData[]>;
+  };
+};
+
+export const getRecentTrades = (limit: number = 1000): Promise<IRecentTradesData[]> =>
+  chain.extend<GetRecentTradesyData>().api.condenser_api.get_recent_trades([limit]);

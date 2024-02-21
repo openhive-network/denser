@@ -144,7 +144,7 @@ export class ApiHelper {
   // Get discussion - post comments (Default - author: "gtg", permlink: "hive-hardfork-25-jump-starter-kit")
   async getDiscussionCommentsAPI(
     author: string = 'gtg',
-    permlink: string = 'hive-hardfork-25-jump-starter-kit',
+    permlink: string = 'hive-hardfork-25-jump-starter-kit'
   ) {
     const url = process.env.REACT_APP_API_ENDPOINT;
 
@@ -175,7 +175,7 @@ export class ApiHelper {
         id: 0,
         jsonrpc: '2.0',
         method: 'bridge.account_notifications',
-        params: {account: account, limit: limit, last_id: lastId}
+        params: { account: account, limit: limit, last_id: lastId }
       },
       headers: {
         Accept: 'application/json, text/plain, */*'
@@ -194,7 +194,7 @@ export class ApiHelper {
         id: 0,
         jsonrpc: '2.0',
         method: 'bridge.account_notifications',
-        params: {account: account, limit: limit, last_id: lastId}
+        params: { account: account, limit: limit, last_id: lastId }
       },
       headers: {
         Accept: 'application/json, text/plain, */*'
@@ -213,7 +213,7 @@ export class ApiHelper {
         id: 0,
         jsonrpc: '2.0',
         method: 'bridge.list_all_subscriptions',
-        params: {account: account}
+        params: { account: account }
       },
       headers: {
         Accept: 'application/json, text/plain, */*'
@@ -222,5 +222,4 @@ export class ApiHelper {
 
     return responseGetCommunitySubscribers.json();
   }
-
 }
