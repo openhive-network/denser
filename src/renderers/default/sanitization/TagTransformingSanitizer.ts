@@ -54,7 +54,7 @@ export class TagTransformingSanitizer {
                 img: ["src", "alt"],
 
                 // title is only set in the case of an external link warning
-                a: ["href", "rel", "title", "class", "target"],
+                a: ["href", "rel", "title", "class", "target", "id"],
             },
             allowedSchemes: ["http", "https", "steem"],
             transformTags: {
@@ -161,7 +161,7 @@ export class TagTransformingSanitizer {
                         href = "#";
                     }
                     href = href.trim();
-                    const attys: sanitize.Attributes = { href };
+                    const attys: sanitize.Attributes = { ...attribs, href };
                     // If it's not a (relative or absolute) steemit URL...
                     if (!this.options.isLinkSafeFn(href)) {
                         // attys.target = '_blank' // pending iframe impl https://mathiasbynens.github.io/rel-noopener/
