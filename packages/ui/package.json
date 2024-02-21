@@ -7,11 +7,11 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@hive/wax": "0.3.8-240219101438",
     "@hive/eslint-config-custom": "*",
     "@hive/prettier-config-custom": "*",
     "@hive/tailwindcss-config": "*",
     "@hive/tsconfig": "*",
+    "@hive/wax": "^0.3.8-240219101438",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.4",
     "@radix-ui/react-avatar": "^1.0.3",
