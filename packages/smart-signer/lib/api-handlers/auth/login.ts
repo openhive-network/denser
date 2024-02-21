@@ -68,10 +68,14 @@ const verifyLoginChallenge = async (
 
   const {
     posting: {
-      key_auths: [[posting_pubkey, weight]],
+      key_auths,
       weight_threshold
     }
   } = chainAccount;
+
+  const posting_pubkey = key_auths[0][0];
+  const weight = key_auths[0][1];
+
   const result = verify(
     'posting',
     signatures.posting || '',

@@ -1,5 +1,5 @@
 import { Moment } from 'moment';
-import { AccountFollowStats, AccountProfile, FullAccount } from 'lib/app-types';
+import { AccountFollowStats, AccountProfile, FullAccount } from './app-types';
 import {
   ApiAccount,
   TWaxApiRequest,
