@@ -43,6 +43,8 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
     logger.info('onSubmit form data', data);
     setErrorMsg('');
 
+    const message = JSON.stringify({ loginChallenge }, null, 0);
+
     const { loginType, username } = data;
     let password = '';
     if (data.loginType === LoginTypes.wif) {
@@ -50,6 +52,7 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
     }
     let signatures: Signatures = {};
     let hivesignerToken = '';
+
     const signerOptions: SignerOptions = {
       username,
       loginType,
@@ -58,7 +61,6 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
       storageType: 'localStorage',
     };
     const signer = getSigner(signerOptions);
-    const message = JSON.stringify({ loginChallenge }, null, 0);
 
     try {
       const keyType = KeyTypes.posting;

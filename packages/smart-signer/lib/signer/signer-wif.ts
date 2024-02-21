@@ -42,10 +42,10 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
             if (!wif) throw new Error('No wif key');
 
             const privateKey = PrivateKey.fromString(wif);
-            const messageHash = cryptoUtils.sha256(message);
-            const signature = privateKey.sign(messageHash).toString();
+            const digestBuf = cryptoUtils.sha256(message);
+            const signature = privateKey.sign(digestBuf).toString();
             this.storage.setItem(`wif.${username}@${keyType}`, wif);
-            logger.info('wif', { signature });
+            logger.info('wif', { signature, digest: digestBuf.toString('hex') });
             return signature;
         } catch (error) {
             throw error;
