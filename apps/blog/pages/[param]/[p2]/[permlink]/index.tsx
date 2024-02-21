@@ -3,7 +3,6 @@ import { Clock, Link2 } from 'lucide-react';
 import UserInfo from '@/blog/components/user-info';
 import { getActiveVotes } from '@/blog/lib/hive';
 import { useQuery } from '@tanstack/react-query';
-import { DefaultRenderer } from '@hiveio/content-renderer';
 import { Entry, getCommunity, getDiscussion, getPost } from '@ui/lib/bridge';
 import Loading from '@hive/ui/components/loading';
 import dynamic from 'next/dynamic';
@@ -18,7 +17,6 @@ import { useRouter } from 'next/router';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
 import { Icons } from '@hive/ui/components/icons';
 import { AlertDialogReblog } from '@/blog/components/alert-window';
-import { getDoubleSize, proxifyImageUrl } from '@hive/ui/lib/old-profixy';
 import { ReplyTextbox } from '@/blog/components/reply-textbox';
 import { SharePost } from '@/blog/components/share-post-dialog';
 import LinkedInShare from '@/blog/components/share-post-linkedin';
@@ -36,6 +34,7 @@ import { i18n } from '@/blog/next-i18next.config';
 import { GetServerSideProps } from 'next';
 import { AlertDialogFlag } from '@/blog/components/alert-window-flag';
 import VotesComponent from '@/blog/components/votes';
+import { renderPostBody } from '@ecency/render-helper';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -110,24 +109,14 @@ function PostPage({
     }
   }, [discussion, router.query.sort]);
 
-  const renderer = new DefaultRenderer({
-    baseUrl: 'https://hive.blog/',
-    breaks: true,
-    skipSanitization: false,
-    allowInsecureScriptTags: false,
-    addNofollowToLinks: true,
-    addTargetBlankToLinks: true,
-    addCssClassToLinks: 'external-link',
-    doNotShowImages: false,
-    ipfsPrefix: '',
-    assetsWidth: 640,
-    assetsHeight: 480,
-    imageProxyFn: (url: string) => getDoubleSize(proxifyImageUrl(url, true).replace(/ /g, '%20')),
-    usertagUrlFn: (account: string) => '/@' + account,
-    hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
-    isLinkSafeFn: (url: string) => false
-  });
-  const post_html = renderer.render(post_s.body);
+  function replaceLinkIdToDataId(str: string) {
+    return str.replace(/<a id="/g, '<a data-id="');
+  }
+
+  const renderedBody = {
+    __html: renderPostBody(replaceLinkIdToDataId(post_s.body), false)
+  };
+
   const commentSite = post_s.depth !== 0 ? true : false;
   const [reply, setReply] = useState(false);
   const [mutedPost, setMutedPost] = useState(post_s.stats?.gray);
@@ -219,8 +208,8 @@ function PostPage({
         ({post_s.blacklists.length})
       </span> */}
         <hr />
-        {!post_html ? (
-          <Loading loading={!post_html} />
+        {!renderedBody ? (
+          <Loading loading={!renderedBody} />
         ) : mutedPost ? (
           <div id="articleBody" className="flex flex-col gap-8 py-8">
             {findLinks(post_s.body).map((e) =>
@@ -240,9 +229,7 @@ function PostPage({
             <div
               id="articleBody"
               className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
-              dangerouslySetInnerHTML={{
-                __html: post_html
-              }}
+              dangerouslySetInnerHTML={renderedBody}
             />
           </ImageGallery>
         )}

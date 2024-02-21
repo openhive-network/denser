@@ -20,11 +20,12 @@
   },
   "dependencies": {
     "@beam-australia/react-env": "^3.1.1",
+    "@ecency/render-helper": "^2.2.31",
     "@hive/eslint-config-custom": "*",
     "@hive/hb-auth": "^0.0.1-stable.d9b0769",
+    "@hive/operations": "*",
     "@hive/prettier-config-custom": "*",
     "@hive/smart-signer": "*",
-    "@hive/operations": "*",
     "@hive/tailwindcss-config": "*",
     "@hive/tsconfig": "*",
     "@hive/ui": "*",
