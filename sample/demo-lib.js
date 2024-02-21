@@ -16,7 +16,6 @@ const renderer = new HiveContentRenderer.DefaultRenderer({
     usertagUrlFn: (account) => "/@" + account,
     hashtagUrlFn: (hashtag) => "/trending/" + hashtag,
     isLinkSafeFn: (url) => true,
-    addCssClass: (url) => true,
 });
 
 const input = `

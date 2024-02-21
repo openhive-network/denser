@@ -10,7 +10,7 @@ import { DefaultRenderer } from "./DefaultRenderer";
 
 describe("DefaultRender", () => {
     const defaultOptions: DefaultRenderer.Options = {
-        baseUrl: "https://steemit.com/",
+        baseUrl: "https://hive.blog/",
         breaks: true,
         skipSanitization: false,
         allowInsecureScriptTags: false,
@@ -22,9 +22,9 @@ describe("DefaultRender", () => {
         assetsWidth: 640,
         assetsHeight: 480,
         imageProxyFn: (url: string) => url,
-        usertagUrlFn: (account: string) => `https://steemit.com/@${account}`,
+        usertagUrlFn: (account: string) => `https://hive.blog/@${account}`,
         hashtagUrlFn: (hashtag: string) => `/trending/${hashtag}`,
-        isLinkSafeFn: (url: string) => true, // !!url.match(/^(\/(?!\/)|https:\/\/steemit.com)/),
+        isLinkSafeFn: (url: string) => true, // !!url.match(/^(\/(?!\/)|https:\/\/hive.blog)/),
     };
 
     const tests = [
@@ -36,13 +36,13 @@ describe("DefaultRender", () => {
             expected: "<h1>Header H1</h1>\n<p>Some paragraph</p>\n<h2>Header H2</h2>\n<p>Another paragraph</p>",
         },
         {
-            name: "Renders steem mentions correctly",
+            name: "Renders hive mentions correctly",
             raw: "Content @noisy another content",
             expected:
-                '<p>Content <a href="https://steemit.com/@noisy" class="hive-test">@noisy</a> another content</p>',
+                '<p>Content <a href="https://hive.blog/@noisy" class="hive-test">@noisy</a> another content</p>',
         },
         {
-            name: "Renders steem hashtags correctly",
+            name: "Renders hive hashtags correctly",
             raw: "Content #pl-nuda another content",
             expected: '<p>Content <a href="/trending/pl-nuda" class="hive-test">#pl-nuda</a> another content</p>',
         },
@@ -72,17 +72,26 @@ describe("DefaultRender", () => {
         },
         {
             name: "Allows links embedded via <a> tags",
-            raw: '<a href="https://steemit.com/utopian-io/@blockchainstudio/drugswars-revenue-and-transaction-analysis" class="hive-test">Drugwars - revenue and transaction analysis</a>',
+            raw: '<a href="https://hive.blog/utopian-io/@blockchainstudio/drugswars-revenue-and-transaction-analysis" class="hive-test">Drugwars - revenue and transaction analysis</a>',
             expected:
-                '<p><a href="https://steemit.com/utopian-io/@blockchainstudio/drugswars-revenue-and-transaction-analysis" class="hive-test">Drugwars - revenue and transaction analysis</a></p>',
+                '<p><a href="https://hive.blog/utopian-io/@blockchainstudio/drugswars-revenue-and-transaction-analysis" class="hive-test">Drugwars - revenue and transaction analysis</a></p>',
         },
-
         {
             name: "Allows links embedded via <a> tags inside of markdown headers",
-            raw: "## <a href='https://steemit.com/utopian-io/@blockchainstudio/drugswars-revenue-and-transaction-analysis' class='hive-test'>Drugwars - revenue and transaction analysis</a>",
+            raw: "## <a href='https://hive.blog/utopian-io/@blockchainstudio/drugswars-revenue-and-transaction-analysis' class='hive-test'>Drugwars - revenue and transaction analysis</a>",
             expected:
-                '<h2><a href="https://steemit.com/utopian-io/@blockchainstudio/drugswars-revenue-and-transaction-analysis" class="hive-test">Drugwars - revenue and transaction analysis</a></h2>',
+                '<h2><a href="https://hive.blog/utopian-io/@blockchainstudio/drugswars-revenue-and-transaction-analysis" class="hive-test">Drugwars - revenue and transaction analysis</a></h2>',
         },
+        {
+            name: "Allow for anchor id tags",
+            raw: "<a id='anchor'></a>",
+            expected: '<p><a href="#" id="anchor" class="hive-test"></a></p>',
+        },
+           {
+            name: "Should remove additional unsafe attributes from a tag",
+            raw: "<a fake='test'></a>",
+            expected: '<p><a href="#" class="hive-test"></a></p>',
+        }
     ];
 
     tests.forEach((test) =>
