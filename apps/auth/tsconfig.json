@@ -4,9 +4,18 @@
     "moduleResolution": "Bundler",
     "baseUrl": ".",
     "paths": {
-      "@/auth/*": ["./*"],
-      "@smart-signer/*": ["../../packages/smart-signer/*"],
-      "@ui/*": ["../../packages/ui/*"]
+      "@/auth/*": [
+        "./*"
+      ],
+      "@smart-signer/*": [
+        "../../packages/smart-signer/*"
+      ],
+      "@transaction/*": [
+        "../../packages/transaction/*"
+      ],
+      "@ui/*": [
+        "../../packages/ui/*"
+      ]
     },
     "strictNullChecks": true
   },
@@ -17,5 +26,8 @@
     ".next/types/**/*.ts",
     "../../packages/ui/elements/common/layout.tsx"
   ],
-  "exclude": ["node_modules", "playwright"]
+  "exclude": [
+    "node_modules",
+    "playwright"
+  ]
 }
