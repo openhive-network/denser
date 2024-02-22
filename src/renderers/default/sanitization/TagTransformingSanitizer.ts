@@ -169,8 +169,14 @@ export class TagTransformingSanitizer {
                         attys.title = this.localization.phishingWarning;
                         attys.target = this.options.addTargetBlankToLinks ? "_blank" : "_self";
                     }
-                    if (this.options.addCssClassToLinks) {
-                        attys.class = this.options.addCssClassToLinks ? this.options.addCssClassToLinks : "";
+                    if (this.options.addExternalCssClassToMatchingLinksFn(href)) {
+                        attys.class = this.options.cssClassForExternalLinks
+                            ? this.options.cssClassForExternalLinks
+                            : "";
+                    } else {
+                        attys.class = this.options.cssClassForInternalLinks
+                            ? this.options.cssClassForInternalLinks
+                            : "";
                     }
                     const retTag: sanitize.Tag = {
                         tagName,
@@ -189,9 +195,11 @@ export namespace TagTransformingSanitizer {
         iframeHeight: number;
         addNofollowToLinks: boolean;
         addTargetBlankToLinks?: boolean;
-        addCssClassToLinks?: string;
+        cssClassForInternalLinks?: string;
+        cssClassForExternalLinks?: string;
         noImage: boolean;
         isLinkSafeFn: (url: string) => boolean;
+        addExternalCssClassToMatchingLinksFn: (url: string) => boolean;
     }
 
     export namespace Options {
@@ -200,9 +208,23 @@ export namespace TagTransformingSanitizer {
             ow(o.iframeHeight, "TagTransformingSanitizer.Options.iframeHeight", ow.number.integer.positive);
             ow(o.addNofollowToLinks, "TagTransformingSanitizer.Options.addNofollowToLinks", ow.boolean);
             ow(o.addTargetBlankToLinks, "TagTransformingSanitizer.Options.addTargetBlankToLinks", ow.optional.boolean);
-            ow(o.addCssClassToLinks, "TagTransformingSanitizer.Options.addCssClassToLinks", ow.optional.string);
+            ow(
+                o.cssClassForInternalLinks,
+                "TagTransformingSanitizer.Options.cssClassForInternalLinks",
+                ow.optional.string,
+            );
+            ow(
+                o.cssClassForExternalLinks,
+                "TagTransformingSanitizer.Options.cssClassForExternalLinks",
+                ow.optional.string,
+            );
             ow(o.noImage, "TagTransformingSanitizer.Options.noImage", ow.boolean);
             ow(o.isLinkSafeFn, "TagTransformingSanitizer.Options.isLinkSafeFn", ow.function);
+            ow(
+                o.addExternalCssClassToMatchingLinksFn,
+                "TagTransformingSanitizer.Options.addExternalCssClassToMatchingLinksFn",
+                ow.function,
+            );
         }
     }
 }

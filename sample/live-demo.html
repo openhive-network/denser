@@ -129,7 +129,8 @@ https://youtu.be/B7C83L6iWJQ
                 allowInsecureScriptTags: false,
                 addNofollowToLinks: true,
                 addTargetBlankToLinks: true,
-                addCssClassToLinks: "hive-test",
+                cssClassForInternalLinks: "hive-test",
+                cssClassForExternalLinks: "external",
                 doNotShowImages: false,
                 ipfsPrefix: "",
                 assetsWidth: 640,
@@ -138,6 +139,7 @@ https://youtu.be/B7C83L6iWJQ
                 usertagUrlFn: (account) => "https://hive.blog/@" + account,
                 hashtagUrlFn: (hashtag) => "https://hive.blog/trending/" + hashtag,
                 isLinkSafeFn: (url) => true,
+                addExternalCssClassToMatchingLinksFn: (url) => true,
             });
 
             $(document).ready(() => {

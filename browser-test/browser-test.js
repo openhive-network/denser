@@ -9,7 +9,8 @@ const defaultOptions = {
     allowInsecureScriptTags: false,
     addTargetBlankToLinks: true,
     addNofollowToLinks: true,
-    addCssClassToLinks: "hive-class",
+    cssClassForInternalLinks: "hive-class",
+    cssClassForExternalLinks: "hive-class external",
     doNotShowImages: false,
     ipfsPrefix: "",
     assetsWidth: 640,
@@ -18,6 +19,7 @@ const defaultOptions = {
     usertagUrlFn: (account) => `https://hive.blog/@${account}`,
     hashtagUrlFn: (hashtag) => `/trending/${hashtag}`,
     isLinkSafeFn: (url) => true, // !!url.match(/^(\/(?!\/)|https:\/\/hive.blog)/),
+    addExternalCssClassToMatchingLinksFn: (url) => !url.match(/^(\/(?!\/)|https:\/\/hive.blog)/),
 };
 
 const renderInBrowser = ClientFunction((options, markup) => {
@@ -44,11 +46,11 @@ test("Does not crash on mixed-img markup", async (t) => {
         .eql(expected);
 });
 
-test("Renders properly simple link markup with class hive-test", async (t) => {
+test("Renders properly simple link markup with classes hive-test, external", async (t) => {
     const markup = "[Hive Link](https://hive.io)";
 
     await t
         .click(Selector("#awaiter"))
         .expect(renderInBrowser({ ...defaultOptions }, markup))
-        .eql(`<p><a href="https://hive.io" class="hive-class">Hive Link</a></p>\n`);
+        .eql(`<p><a href="https://hive.io" class="hive-class external">Hive Link</a></p>\n`);
 });

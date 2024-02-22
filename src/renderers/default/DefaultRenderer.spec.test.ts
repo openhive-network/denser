@@ -15,7 +15,8 @@ describe("DefaultRender", () => {
         skipSanitization: false,
         allowInsecureScriptTags: false,
         addTargetBlankToLinks: true,
-        addCssClassToLinks: "hive-test",
+        cssClassForInternalLinks: "hive-test",
+        cssClassForExternalLinks: "hive-test external",
         addNofollowToLinks: true,
         doNotShowImages: false,
         ipfsPrefix: "",
@@ -25,6 +26,7 @@ describe("DefaultRender", () => {
         usertagUrlFn: (account: string) => `https://hive.blog/@${account}`,
         hashtagUrlFn: (hashtag: string) => `/trending/${hashtag}`,
         isLinkSafeFn: (url: string) => true, // !!url.match(/^(\/(?!\/)|https:\/\/hive.blog)/),
+        addExternalCssClassToMatchingLinksFn: (url: string) => !url.match(/^(\/(?!\/)|https:\/\/hive.blog)/),
     };
 
     const tests = [
@@ -38,8 +40,7 @@ describe("DefaultRender", () => {
         {
             name: "Renders hive mentions correctly",
             raw: "Content @noisy another content",
-            expected:
-                '<p>Content <a href="https://hive.blog/@noisy" class="hive-test">@noisy</a> another content</p>',
+            expected: '<p>Content <a href="https://hive.blog/@noisy" class="hive-test">@noisy</a> another content</p>',
         },
         {
             name: "Renders hive hashtags correctly",
@@ -85,13 +86,18 @@ describe("DefaultRender", () => {
         {
             name: "Allow for anchor id tags",
             raw: "<a id='anchor'></a>",
-            expected: '<p><a href="#" id="anchor" class="hive-test"></a></p>',
+            expected: '<p><a href="#" id="anchor" class="hive-test external"></a></p>',
         },
-           {
+        {
+            name: "Allows links embedded via <a> tags with additional class added when condition is matching",
+            raw: '<a href="https://www.google.com" class="hive-test">Google</a>',
+            expected: '<p><a href="https://www.google.com" class="hive-test external">Google</a></p>',
+        },
+        {
             name: "Should remove additional unsafe attributes from a tag",
             raw: "<a fake='test'></a>",
-            expected: '<p><a href="#" class="hive-test"></a></p>',
-        }
+            expected: '<p><a href="#" class="hive-test external"></a></p>',
+        },
     ];
 
     tests.forEach((test) =>
