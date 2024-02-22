@@ -12,14 +12,15 @@ import {
 import { isCommunity, parseAsset, vestsToRshares } from '@hive/blog/lib/utils';
 import { DATA_LIMIT } from './bridge';
 
-export const chain = await createHiveChain();
-
 export type IDynamicGlobalProperties = GetDynamicGlobalPropertiesResponse;
 
-export const getDynamicGlobalProperties = (): Promise<IDynamicGlobalProperties> =>
-  chain.api.database_api.get_dynamic_global_properties({});
+export const getDynamicGlobalProperties = async (): Promise<IDynamicGlobalProperties> => {
+  const chain = await createHiveChain();
+  return chain.api.database_api.get_dynamic_global_properties({});
+}
 
-export const getAccounts = (usernames: string[]): Promise<FullAccount[]> => {
+export const getAccounts = async (usernames: string[]): Promise<FullAccount[]> => {
+  const chain = await createHiveChain();
   return chain.api.database_api
     .find_accounts({ accounts: usernames })
     .then((resp: { accounts: ApiAccount[] }): FullAccount[] =>
@@ -83,9 +84,10 @@ type GetFeedHistoryData = {
   };
 };
 
-export const getFeedHistory = (): Promise<IFeedHistory> =>
-  chain.extend<GetFeedHistoryData>().api.database.get_feed_history();
-
+export const getFeedHistory = async (): Promise<IFeedHistory> => {
+  const chain = await createHiveChain();
+  return chain.extend<GetFeedHistoryData>().api.database.get_feed_history();
+}
 interface IFollowCount {
   username: string;
 }
@@ -95,8 +97,10 @@ type GetFollowCountData = {
   };
 };
 
-export const getFollowCount = (username: string): Promise<AccountFollowStats> =>
-  chain.extend<GetFollowCountData>().api.database.get_follow_count({ username });
+export const getFollowCount = async (username: string): Promise<AccountFollowStats> => {
+  const chain = await createHiveChain();
+  return chain.extend<GetFollowCountData>().api.database.get_follow_count({ username });
+}
 
 export interface ITrendingTag {
   comments: number;
@@ -218,8 +222,10 @@ type GetPostData = {
   };
 };
 
-export const getPost = (username: string, permlink: string): Promise<IPost> =>
-  chain.extend<GetPostData>().api.condenser_api.get_content([username, permlink]);
+export const getPost = async (username: string, permlink: string): Promise<IPost> => {
+  const chain = await createHiveChain();
+  return chain.extend<GetPostData>().api.condenser_api.get_content([username, permlink]);
+}
 
 type GetMarketBucketSizesData = {
   condenser_api: {
@@ -227,8 +233,10 @@ type GetMarketBucketSizesData = {
   };
 };
 
-export const getMarketBucketSizes = (): Promise<number[]> =>
-  chain.extend<GetMarketBucketSizesData>().api.condenser_api.get_market_history_buckets([]);
+export const getMarketBucketSizes = async (): Promise<number[]> => {
+  const chain = await createHiveChain();
+  return chain.extend<GetMarketBucketSizesData>().api.condenser_api.get_market_history_buckets([]);
+}
 
 type GetMarketHistoryData = {
   condenser_api: {
@@ -236,13 +244,14 @@ type GetMarketHistoryData = {
   };
 };
 
-export const getMarketHistory = (
+export const getMarketHistory = async (
   seconds: number,
   startDate: Moment,
   endDate: Moment
 ): Promise<IMarketCandlestickDataItem[]> => {
   let todayEarlier: string = startDate.format().split('+')[0];
   let todayNow: string = endDate.format().split('+')[0];
+  const chain = await createHiveChain();
   return chain
     .extend<GetMarketHistoryData>()
     .api.condenser_api.get_market_history([seconds, todayEarlier, todayNow]);
@@ -254,8 +263,10 @@ type GetActiveVotesData = {
   };
 };
 
-export const getActiveVotes = (author: string, permlink: string): Promise<IVote[]> =>
-  chain.extend<GetActiveVotesData>().api.database_api.get_active_votes([author, permlink]);
+export const getActiveVotes = async (author: string, permlink: string): Promise<IVote[]> => {
+  const chain = await createHiveChain();
+  return chain.extend<GetActiveVotesData>().api.database_api.get_active_votes([author, permlink]);
+}
 
 type GetTrendingTagsData = {
   database_api: {
@@ -263,8 +274,9 @@ type GetTrendingTagsData = {
   };
 };
 
-export const getTrendingTags = (afterTag: string = '', limit: number = 250): Promise<string[]> =>
-  chain
+export const getTrendingTags = async (afterTag: string = '', limit: number = 250): Promise<string[]> => {
+  const chain = await createHiveChain();
+  return chain
     .extend<GetTrendingTagsData>()
     .api.database_api.get_trending_tags([afterTag, limit])
     .then((tags: ITrendingTag[]) => {
@@ -273,12 +285,14 @@ export const getTrendingTags = (afterTag: string = '', limit: number = 250): Pro
         .filter((x: ITrendingTag) => !isCommunity(x.name))
         .map((x: ITrendingTag) => x.name);
     });
+}
 
-export const getAllTrendingTags = (
+export const getAllTrendingTags = async (
   afterTag: string = '',
   limit: number = 250
-): Promise<ITrendingTag[] | void> =>
-  chain
+): Promise<ITrendingTag[] | void> => {
+  const chain = await createHiveChain();
+  return chain
     .extend<GetTrendingTagsData>()
     .api.database_api.get_trending_tags([afterTag, limit])
     .then((tags: ITrendingTag[]) => {
@@ -287,6 +301,7 @@ export const getAllTrendingTags = (
     .catch((reason) => {
       debugger;
     });
+}
 
 type LookupAccountsData = {
   database_api: {
@@ -294,8 +309,10 @@ type LookupAccountsData = {
   };
 };
 
-export const lookupAccounts = (q: string, limit = 50): Promise<string[]> =>
-  chain.extend<LookupAccountsData>().api.database_api.lookup_accounts([q, limit]);
+export const lookupAccounts = async (q: string, limit = 50): Promise<string[]> => {
+  const chain = await createHiveChain();
+  return chain.extend<LookupAccountsData>().api.database_api.lookup_accounts([q, limit]);
+}
 
 export interface IFollow {
   follower: string;
@@ -323,6 +340,7 @@ type GetFollowersData = {
 };
 export const getFollowers = async (params?: Partial<IGetFollowParams>): Promise<IFollow[]> => {
   try {
+    const chain = await createHiveChain();
     return chain
       .extend<GetFollowersData>()
       .api.condenser_api.get_followers([
@@ -344,6 +362,7 @@ type GetFollowingData = {
 };
 export const getFollowing = async (params?: Partial<IGetFollowParams>): Promise<IFollow[]> => {
   try {
+    const chain = await createHiveChain();
     return chain
       .extend<GetFollowingData>()
       .api.condenser_api.get_following([
@@ -363,8 +382,10 @@ type GetRewardFundData = {
     get_reward_fund: TWaxApiRequest<string[], IRewardFund>;
   };
 };
-export const getRewardFund = (): Promise<IRewardFund> =>
-  chain.extend<GetRewardFundData>().api.database_api.get_reward_fund(['post']);
+export const getRewardFund = async (): Promise<IRewardFund> => {
+  const chain = await createHiveChain();
+  return chain.extend<GetRewardFundData>().api.database_api.get_reward_fund(['post']);
+}
 
 export const getDynamicProps = async (): Promise<IDynamicProps> => {
   const globalDynamic = await getDynamicGlobalProperties();
@@ -416,8 +437,10 @@ type GetWithdrawRoutesData = {
     get_withdraw_routes: TWaxApiRequest<string[], WithdrawRoute[]>;
   };
 };
-export const getWithdrawRoutes = (account: string): Promise<WithdrawRoute[]> =>
-  chain.extend<GetWithdrawRoutesData>().api.database_api.get_withdraw_routes([account, 'outgoing']);
+export const getWithdrawRoutes = async (account: string): Promise<WithdrawRoute[]> => {
+  const chain = await createHiveChain();
+  return chain.extend<GetWithdrawRoutesData>().api.database_api.get_withdraw_routes([account, 'outgoing']);
+}
 
 export const powerRechargeTime = (power: number) => {
   const missingPower = 100 - power;
@@ -494,20 +517,24 @@ type GetConversionRequestsData = {
     get_conversion_requests: TWaxApiRequest<string[], IConversionRequest[]>;
   };
 };
-export const getConversionRequests = (account: string): Promise<IConversionRequest[]> =>
-  chain.extend<GetConversionRequestsData>().api.database_api.get_conversion_requests([account]);
+export const getConversionRequests = async (account: string): Promise<IConversionRequest[]> => {
+  const chain = await createHiveChain();
+  return chain.extend<GetConversionRequestsData>().api.database_api.get_conversion_requests([account]);
+}
 
 type GetCollateralizedConversionRequestsData = {
   database_api: {
     get_collateralized_conversion_requests: TWaxApiRequest<string[], ICollateralizedConversionRequest[]>;
   };
 };
-export const getCollateralizedConversionRequests = (
+export const getCollateralizedConversionRequests = async (
   account: string
-): Promise<ICollateralizedConversionRequest[]> =>
-  chain
+): Promise<ICollateralizedConversionRequest[]> => {
+  const chain = await createHiveChain();
+  return chain
     .extend<GetCollateralizedConversionRequestsData>()
     .api.database_api.get_collateralized_conversion_requests([account]);
+}
 
 export interface SavingsWithdrawRequest {
   id: number;
@@ -524,8 +551,10 @@ type GetSavingsWithdrawFromData = {
     get_savings_withdraw_from: TWaxApiRequest<string[], SavingsWithdrawRequest[]>;
   };
 };
-export const getSavingsWithdrawFrom = (account: string): Promise<SavingsWithdrawRequest[]> =>
-  chain.extend<GetSavingsWithdrawFromData>().api.database_api.get_savings_withdraw_from([account]);
+export const getSavingsWithdrawFrom = async (account: string): Promise<SavingsWithdrawRequest[]> => {
+  const chain = await createHiveChain();
+  return chain.extend<GetSavingsWithdrawFromData>().api.database_api.get_savings_withdraw_from([account]);
+}
 
 export interface BlogEntry {
   blog: string;
@@ -540,16 +569,20 @@ type GetBlogEntriesData = {
     get_blog_entries: TWaxApiRequest<(string | number)[], BlogEntry[]>;
   };
 };
-export const getBlogEntries = (username: string, limit: number = DATA_LIMIT): Promise<BlogEntry[]> =>
-  chain.extend<GetBlogEntriesData>().api.condenser_api.get_blog_entries([username, 0, limit]);
+export const getBlogEntries = async (username: string, limit: number = DATA_LIMIT): Promise<BlogEntry[]> => {
+  const chain = await createHiveChain();
+  return chain.extend<GetBlogEntriesData>().api.condenser_api.get_blog_entries([username, 0, limit]);
+}
 
 type BrodcastTransactionData = {
   network_broadcast_api: {
     broadcast_transaction: TWaxApiRequest<transaction[], transaction>;
   };
 };
-export const brodcastTransaction = (transaction: any): Promise<any> =>
-  chain.extend<BrodcastTransactionData>().api.network_broadcast_api.broadcast_transaction([transaction]);
+export const brodcastTransaction = async (transaction: any): Promise<any> => {
+  const chain = await createHiveChain();
+  return chain.extend<BrodcastTransactionData>().api.network_broadcast_api.broadcast_transaction([transaction]);
+}
 
 // create type for api call result do working search
 // export const searchTag = async (

@@ -1,5 +1,4 @@
 import { TWaxApiRequest, createHiveChain } from '@hive/wax/web';
-import { chain } from './hive';
 
 interface IGetPostHeader {
   author: string;
@@ -19,11 +18,13 @@ type GetPostHeaderData = {
   };
 };
 
-export const getPostHeader = (author: string, permlink: string): Promise<IGetPostHeader> =>
-  chain.extend<GetPostHeaderData>().api.bridge.get_post_header({
+export const getPostHeader = async (author: string, permlink: string): Promise<IGetPostHeader> => {
+  const chain = await createHiveChain();
+  return chain.extend<GetPostHeaderData>().api.bridge.get_post_header({
     author,
     permlink
   });
+}
 
 export interface EntryBeneficiaryRoute {
   account: string;
@@ -198,7 +199,7 @@ type GetPostsRankedData = {
   };
 };
 
-export const getPostsRanked = (
+export const getPostsRanked = async (
   sort: string,
   tag: string = '',
   start_author: string = '',
@@ -206,6 +207,7 @@ export const getPostsRanked = (
   limit: number = DATA_LIMIT,
   observer: string = ''
 ): Promise<Entry[] | null> => {
+  const chain = await createHiveChain();
   return chain
     .extend<GetPostsRankedData>()
     .api.bridge.get_ranked_posts({
@@ -240,7 +242,7 @@ type GetAccountPostsData = {
   };
 };
 
-export const getAccountPosts = (
+export const getAccountPosts = async (
   sort: string,
   account: string,
   observer: string,
@@ -248,6 +250,7 @@ export const getAccountPosts = (
   start_permlink: string = '',
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
+  const chain = await createHiveChain();
   return chain
     .extend<GetAccountPostsData>()
     .api.bridge.get_account_posts({
@@ -279,11 +282,12 @@ type GetPostData = {
   };
 };
 
-export const getPost = (
+export const getPost = async (
   author: string = '',
   permlink: string = '',
   observer: string = ''
 ): Promise<Entry | null> => {
+  const chain = await createHiveChain();
   return chain
     .extend<GetPostData>()
     .api.bridge.get_post({
@@ -322,7 +326,7 @@ type GetAccountNotificationsData = {
 };
 
 // I have problem with this func, I pass good account name but RPC call it with empty string
-export const getAccountNotifications = (
+export const getAccountNotifications = async (
   account: string,
   lastId: number | null = null,
   limit = 50
@@ -335,7 +339,7 @@ export const getAccountNotifications = (
   if (lastId) {
     params.last_id = lastId;
   }
-
+  const chain = await createHiveChain();
   return chain.extend<GetAccountNotificationsData>().api.bridge.account_notifications(params);
 };
 
@@ -350,11 +354,13 @@ type GetDiscussionData = {
   };
 };
 
-export const getDiscussion = (author: string, permlink: string): Promise<Record<string, Entry> | null> =>
-  chain.extend<GetDiscussionData>().api.bridge.get_discussion({
+export const getDiscussion = async (author: string, permlink: string): Promise<Record<string, Entry> | null> => {
+  const chain = await createHiveChain();
+  return chain.extend<GetDiscussionData>().api.bridge.get_discussion({
     author,
     permlink
   });
+}
 
 interface IGetCommunity {
   name: string;
@@ -367,8 +373,10 @@ type GetCommunityData = {
   };
 };
 
-export const getCommunity = (name: string, observer: string | undefined = ''): Promise<Community | null> =>
-  chain.extend<GetCommunityData>().api.bridge.get_community({ name, observer });
+export const getCommunity = async (name: string, observer: string | undefined = ''): Promise<Community | null> => {
+  const chain = await createHiveChain();
+  return chain.extend<GetCommunityData>().api.bridge.get_community({ name, observer });
+}
 
 interface IGetCommunities {
   sort: string;
@@ -382,19 +390,21 @@ type GetCommunitiesData = {
   };
 };
 
-export const getCommunities = (
+export const getCommunities = async (
   sort: string,
   query?: string | null,
   // last: string = '',
   // limit: number = 100,
   observer: string = 'hive.blog'
-): Promise<Community[] | null> =>
-  chain.extend<GetCommunitiesData>().api.bridge.list_communities({
+): Promise<Community[] | null> => {
+  const chain = await createHiveChain();
+  return chain.extend<GetCommunitiesData>().api.bridge.list_communities({
     // limit,
     query,
     sort,
     observer
   });
+}
 
 interface IGetNormalizePost {
   post: Entry;
@@ -406,10 +416,12 @@ type GetNormalizePost = {
   };
 };
 
-export const normalizePost = (post: Entry): Promise<Entry | null> =>
-  chain.extend<GetNormalizePost>().api.bridge.normalize_post({
+export const normalizePost = async (post: Entry): Promise<Entry | null> => {
+  const chain = await createHiveChain();
+  return chain.extend<GetNormalizePost>().api.bridge.normalize_post({
     post
   });
+}
 
 interface IGetSubscriptions {
   account: string;
@@ -421,10 +433,12 @@ type GetSubscriptions = {
   };
 };
 
-export const getSubscriptions = (account: string): Promise<Subscription[] | null> =>
-  chain.extend<GetSubscriptions>().api.bridge.list_all_subscriptions({
+export const getSubscriptions = async (account: string): Promise<Subscription[] | null> => {
+  const chain = await createHiveChain();
+  return chain.extend<GetSubscriptions>().api.bridge.list_all_subscriptions({
     account
   });
+}
 
 interface IGetSubscribers {
   community: string;
@@ -436,10 +450,12 @@ type GetSubscribers = {
   };
 };
 
-export const getSubscribers = (community: string): Promise<Subscription[] | null> =>
-  chain.extend<GetSubscribers>().api.bridge.list_subscribers({
+export const getSubscribers = async (community: string): Promise<Subscription[] | null> => {
+  const chain = await createHiveChain();
+  return chain.extend<GetSubscribers>().api.bridge.list_subscribers({
     community
   });
+}
 
 export interface IUnreadNotificationsParams {
   account: string;
@@ -456,10 +472,12 @@ type GetUnreadNotifications = {
   };
 };
 
-export const getUnreadNotifications = (account: string): Promise<IUnreadNotifications | null> =>
-  chain.extend<GetUnreadNotifications>().api.bridge.unread_notifications({
+export const getUnreadNotifications = async (account: string): Promise<IUnreadNotifications | null> => {
+  const chain = await createHiveChain();
+  return chain.extend<GetUnreadNotifications>().api.bridge.unread_notifications({
     account
   });
+}
 
 export interface IAccountRelationship {
   follows: boolean;
@@ -474,11 +492,13 @@ type GetAccountRelationship = {
   };
 };
 
-export const getRelationshipBetweenAccounts = (
+export const getRelationshipBetweenAccounts = async (
   follower: string,
   following: string
-): Promise<IAccountRelationship | null> =>
-  chain.extend<GetAccountRelationship>().api.bridge.get_relationship_between_accounts([follower, following]);
+): Promise<IAccountRelationship | null> => {
+  const chain = await createHiveChain();
+  return chain.extend<GetAccountRelationship>().api.bridge.get_relationship_between_accounts([follower, following]);
+}
 
 export type FollowListType = 'follow_blacklist' | 'follow_muted' | 'blacklisted' | 'muted';
 export interface IFollowListParams {
@@ -498,11 +518,13 @@ type GetFollowListData = {
   };
 };
 
-export const getFollowList = (observer: string, follow_type: FollowListType): Promise<IFollowList[]> =>
-  chain.extend<GetFollowListData>().api.bridge.get_follow_list({
+export const getFollowList = async (observer: string, follow_type: FollowListType): Promise<IFollowList[]> => {
+  const chain = await createHiveChain();
+  return chain.extend<GetFollowListData>().api.bridge.get_follow_list({
     observer,
     follow_type
   });
+}
 
 export type TwitterInfo = {
   twitter_username: string;
