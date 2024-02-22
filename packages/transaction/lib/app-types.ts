@@ -19,4 +19,5 @@ export interface AccountFollowStats {
 }
 export interface FullAccount extends ApiAccount {
   profile?: AccountProfile;
+  follow_stats?: AccountFollowStats;
 }

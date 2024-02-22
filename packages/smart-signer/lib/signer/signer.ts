@@ -34,20 +34,13 @@ export interface SignerOptions {
  * @class Signer
  */
 export abstract class Signer {
-
   username: string;
   loginType: LoginTypes;
   keyType: KeyTypes;
   apiEndpoint: string;
   storageType: StorageType;
 
-  constructor({
-    username,
-    loginType,
-    keyType,
-    apiEndpoint,
-    storageType,
-  }: SignerOptions) {
+  constructor({ username, loginType, keyType, apiEndpoint, storageType }: SignerOptions) {
     if (username) {
       this.username = username;
     } else {
@@ -108,5 +101,4 @@ export abstract class Signer {
    * @memberof Signer
    */
   abstract signTransaction(arg: SignTransaction): Promise<string>;
-
 }

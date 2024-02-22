@@ -1,5 +1,5 @@
 import type { Entry } from '@transaction/lib/bridge';
-import { parseAsset } from '@/blog/lib/utils';
+import { parseAsset } from '@ui/lib/utils';
 
 export enum SortOrder {
   trending = 'trending',

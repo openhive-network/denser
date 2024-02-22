@@ -8,7 +8,8 @@ import {
   CardHeader,
   CardTitle
 } from '@hive/ui/components/card';
-import { cn, getPostSummary } from '@/blog/lib/utils';
+import { getPostSummary } from '@/blog/lib/utils';
+import { cn } from '@ui/lib/utils';
 import Link from 'next/link';
 import { Separator } from '@hive/ui/components/separator';
 import accountReputation from '@/blog/lib/account-reputation';

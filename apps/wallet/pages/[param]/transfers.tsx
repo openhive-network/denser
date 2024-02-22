@@ -240,10 +240,10 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
   const powerdown_hive = powerdownHive(accountData, dynamicData);
   const received_power_balance =
     (delegated_hive.lt(0) ? '+' : '') + numberWithCommas((-delegated_hive).toFixed(3));
-  const saving_balance_hive = convertStringToBig(accountData.savings_balance);
-  const hbd_balance = convertStringToBig(accountData.hbd_balance);
-  const hbd_balance_savings = convertStringToBig(accountData.savings_hbd_balance);
-  const balance_hive = convertStringToBig(accountData.balance);
+  const saving_balance_hive = convertStringToBig(accountData.savings_balance.amount);
+  const hbd_balance = convertStringToBig(accountData.hbd_balance.amount);
+  const hbd_balance_savings = convertStringToBig(accountData.savings_hbd_balance.amount);
+  const balance_hive = convertStringToBig(accountData.balance.amount);
   const savings_hbd_pending = 0; //from withdraw?
   const hbdOrders = 0; // from openOrdersData
   const conversionValue = 0; //??

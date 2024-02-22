@@ -1,7 +1,7 @@
 import { Icons } from '@hive/ui/components/icons';
 import parseDate, { dateToFullRelative } from '@hive/ui/lib/parse-date';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@hive/ui/components/card';
-import { cn } from '@/blog/lib/utils';
+import { cn } from '@ui/lib/utils';
 import Link from 'next/link';
 import { Separator } from '@hive/ui/components/separator';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@hive/ui/components/accordion';

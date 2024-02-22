@@ -4,7 +4,67 @@ import Big from 'big.js';
 import { convertStringToBig } from './helpers';
 import { TFunction } from 'i18next';
 import type { ExpApiAccount } from '@hive/transaction/lib/app-types';
-import type { IDynamicGlobalProperties } from '@hive/transaction/lib/hive';
+import type { IDynamicGlobalProperties, IVote } from '@hive/transaction/lib/hive';
+import { NaiAsset } from '@hive/wax';
+import { Entry } from '@hive/transaction/lib/bridge';
+import { parseDate2 } from './parse-date';
+
+export const isCommunity = (s: string): boolean => s.match(/^hive-\d+/) !== null;
+
+export interface Asset {
+  amount: number;
+  symbol: Symbol;
+}
+
+export const parseAsset = (sval: string | NaiAsset): Asset => {
+  if (typeof sval === 'string') {
+    const sp = sval.split(' ');
+    // @ts-ignore
+    return { amount: parseFloat(sp[0]), symbol: Symbol[sp[1]] };
+  } else {
+    // @ts-ignore
+    return {
+      amount: parseFloat(sval.amount.toString()) / Math.pow(10, sval.precision),
+      // @ts-ignore
+      symbol: NaiMap[sval.nai]
+    };
+  }
+};
+
+export const prepareVotes = (entry: Entry, votes: IVote[]) => {
+  let totalPayout = 0;
+
+  const { pending_payout_value, author_payout_value, curator_payout_value, payout } = entry;
+
+  if (pending_payout_value && author_payout_value && curator_payout_value) {
+    totalPayout =
+      parseAsset(entry.pending_payout_value).amount +
+      parseAsset(entry.author_payout_value).amount +
+      parseAsset(entry.curator_payout_value).amount;
+  }
+
+  if (payout && Number(totalPayout.toFixed(3)) !== payout) {
+    totalPayout += payout;
+  }
+  const voteRshares = votes && votes.reduce((a, b) => a + parseFloat(b.rshares), 0);
+  const ratio = totalPayout / voteRshares;
+
+  return votes.map((a) => {
+    const rew = parseFloat(a.rshares) * ratio;
+
+    return Object.assign({}, a, {
+      reward: rew,
+      timestamp: parseDate2(a.time).getTime(),
+      percent: a.percent / 100
+    });
+  });
+};
+
+export const vestsToRshares = (vests: number, votingPower: number, votePerc: number): number => {
+  const vestingShares = vests * 1e6;
+  const power = (votingPower * votePerc) / 1e4 / 50 + 1;
+  return (power * vestingShares) / 1e4;
+};
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -64,12 +124,12 @@ export function delegatedHive(accountData: ExpApiAccount, dynamicData: IDynamicG
 }
 export function powerdownHive(accountData: ExpApiAccount, dynamicData: IDynamicGlobalProperties) {
   const withdraw_rate_vests = parseFloat(accountData.vesting_withdraw_rate.amount.split(' ')[0]);
-  const to_withdraw = typeof accountData.to_withdraw === 'number' ?
-    accountData.to_withdraw
-    : parseFloat(accountData.to_withdraw);
-  const withdrawn = typeof accountData.withdrawn === 'number' ?
-    accountData.withdrawn
-    : parseFloat(accountData.withdrawn);
+  const to_withdraw =
+    typeof accountData.to_withdraw === 'number'
+      ? accountData.to_withdraw
+      : parseFloat(accountData.to_withdraw);
+  const withdrawn =
+    typeof accountData.withdrawn === 'number' ? accountData.withdrawn : parseFloat(accountData.withdrawn);
   const remaining_vests = (to_withdraw - withdrawn) / 1000000;
   const vests = Math.min(withdraw_rate_vests, remaining_vests);
   const total_vests = convertStringToBig(dynamicData.total_vesting_shares.amount);

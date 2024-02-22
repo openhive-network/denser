@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { cn } from '@/blog/lib/utils';
+import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardTitle } from '@hive/ui/components/card';
 import { useTranslation } from 'next-i18next';
 import type { Subscription } from '@transaction/lib/bridge';

@@ -4,7 +4,12 @@ import { useRouter } from 'next/router';
 import { useSiteParams } from '@hive/ui/components/hooks/use-site-params';
 import Loading from '@hive/ui/components/loading';
 import { useQuery } from '@tanstack/react-query';
-import { getAccount, getDynamicGlobalProperties, getAccountFull } from '@transaction/lib/hive';
+import {
+  getAccount,
+  getDynamicGlobalProperties,
+  getAccountFull,
+  getAccountReputation
+} from '@transaction/lib/hive';
 import { accountReputation } from '@/blog/lib/utils';
 import { delegatedHive, numberWithCommas, vestingHive } from '@hive/ui/lib/utils';
 import { Separator } from '@hive/ui/components/separator';
@@ -59,6 +64,14 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
     error: errorProfileData,
     data: profileData
   } = useQuery(['profileData', username], () => getAccountFull(username), {
+    enabled: !!username
+  });
+
+  const {
+    isLoading: accountReputationIsLoading,
+    error: accountReputationError,
+    data: accountReputationData
+  } = useQuery(['accountReputationData', username], () => getAccountReputation(username, 1), {
     enabled: !!username
   });
 
@@ -126,7 +139,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
         style={{ textShadow: 'rgb(0, 0, 0) 1px 1px 2px' }}
         data-testid="profile-info"
       >
-        {profileData ? (
+        {profileData && accountReputationData ? (
           <div
             style={{
               background:
@@ -154,7 +167,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <span
                   title={`This is ${username}s's reputation score.\n\nThe reputation score is based on the history of votes received by the account, and is used to hide low quality content.`}
                 >
-                  ({accountReputation(profileData.reputation ? profileData.reputation : 0)})
+                  ({accountReputation(accountReputationData.repuation ? accountReputationData.repuation : 0)})
                 </span>
               </h4>
               {profileData.name ? (
@@ -186,7 +199,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             </div>
 
             <p className="my-1 max-w-[420px] text-center text-white sm:my-4" data-testid="profile-about">
-              {profileData?.about
+              {profileData?.profile?.about
                 ? profileData?.profile?.about.slice(0, 157) +
                   (157 < profileData?.profile?.about.length ? '...' : '')
                 : null}
@@ -335,26 +348,23 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     onClick={() => {
                       const nextFollow = !isFollow;
                       setIsFollow(nextFollow);
-                      transactionService.processHiveAppOperation(
-                        (builder) => {
-                          if (nextFollow) {
-                            builder.push(
-                              new FollowOperationBuilder()
-                                .followBlog(user.username, username)
-                                .authorize(user.username)
-                                .build()
-                            );
-                          } else {
-                            builder.push(
-                              new FollowOperationBuilder()
-                                .unfollowBlog(user.username, username)
-                                .authorize(user.username)
-                                .build()
-                            );
-                          }
-                        },
-                        signerOptions
-                      );
+                      transactionService.processHiveAppOperation((builder) => {
+                        if (nextFollow) {
+                          builder.push(
+                            new FollowOperationBuilder()
+                              .followBlog(user.username, username)
+                              .authorize(user.username)
+                              .build()
+                          );
+                        } else {
+                          builder.push(
+                            new FollowOperationBuilder()
+                              .unfollowBlog(user.username, username)
+                              .authorize(user.username)
+                              .build()
+                          );
+                        }
+                      }, signerOptions);
                     }}
                     disabled={isLoadingFollowingData || isFetchingFollowingData}
                   >
@@ -382,26 +392,23 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     onClick={() => {
                       const nextMute = !isMute;
                       setIsMute(nextMute);
-                      transactionService.processHiveAppOperation(
-                        (builder) => {
-                          if (nextMute) {
-                            builder.push(
-                              new FollowOperationBuilder()
-                                .muteBlog(user.username, username)
-                                .authorize(user.username)
-                                .build()
-                            );
-                          } else {
-                            builder.push(
-                              new FollowOperationBuilder()
-                                .unmuteBlog(user.username, username)
-                                .authorize(user.username)
-                                .build()
-                            );
-                          }
-                        },
-                        signerOptions
-                      );
+                      transactionService.processHiveAppOperation((builder) => {
+                        if (nextMute) {
+                          builder.push(
+                            new FollowOperationBuilder()
+                              .muteBlog(user.username, username)
+                              .authorize(user.username)
+                              .build()
+                          );
+                        } else {
+                          builder.push(
+                            new FollowOperationBuilder()
+                              .unmuteBlog(user.username, username)
+                              .authorize(user.username)
+                              .build()
+                          );
+                        }
+                      }, signerOptions);
                     }}
                     disabled={isLoadingFollowingDataIgnore || isFetchingFollowingDataIgnore}
                   >

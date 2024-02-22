@@ -1,5 +1,5 @@
 import { IVote } from '@transaction/lib/hive';
-import { prepareVotes } from '@/blog/lib/utils';
+import { prepareVotes } from '@ui/lib/utils';
 import type { Entry } from '@transaction/lib/bridge';
 import Link from 'next/link';
 import { useActiveVotesQuery } from './hooks/use-active-votes';

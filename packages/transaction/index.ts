@@ -1,18 +1,14 @@
 import {
-  CommunityOperationBuilder,
-  FollowOperationBuilder,
   createHiveChain,
   BroadcastTransactionRequest,
   IHiveChainInterface,
-  ITransactionBuilder,
-  IHiveAppsOperation
+  ITransactionBuilder
 } from '@hive/wax/web';
 import { toast } from '@hive/ui/components/hooks/use-toast';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
-import { KeyTypes } from '@smart-signer/types/common';
 
-import { getLogger } from "@hive/ui/lib/logging";
+import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
 class TransactionService {
@@ -27,20 +23,14 @@ class TransactionService {
     return TransactionService.hiveChain;
   }
 
-  async processHiveAppOperation(
-    cb: (opBuilder: ITransactionBuilder) => void,
-    signerOptions: SignerOptions
-  ) {
+  async processHiveAppOperation(cb: (opBuilder: ITransactionBuilder) => void, signerOptions: SignerOptions) {
     const txBuilder = await (await this.getHiveChain()).getTransactionBuilder();
 
     cb(txBuilder);
     await this.processTransaction(txBuilder, signerOptions);
   }
 
-  async processTransaction(
-    txBuilder: ITransactionBuilder,
-    signerOptions: SignerOptions
-  ): Promise<void> {
+  async processTransaction(txBuilder: ITransactionBuilder, signerOptions: SignerOptions): Promise<void> {
     // validate
     txBuilder.validate();
 

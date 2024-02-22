@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { getAccountFull, getAccount, getDynamicGlobalProperties } from '@transaction/lib/hive';
+import {
+  getAccountFull,
+  getAccount,
+  getDynamicGlobalProperties,
+  getAccountReputation
+} from '@transaction/lib/hive';
 import { accountReputation } from '@/blog/lib/utils';
 import { numberWithCommas } from '@hive/ui/lib/utils';
 import { Icons } from '@hive/ui/components/icons';
@@ -23,7 +28,13 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
   } = useQuery(['profileData', username], () => getAccountFull(username), {
     enabled: !!username
   });
-
+  const {
+    isLoading: accountReputationIsLoading,
+    error: accountReputationError,
+    data: accountReputationData
+  } = useQuery(['accountReputationData', username], () => getAccountReputation(username, 1), {
+    enabled: !!username
+  });
   const {
     isLoading: accountDataIsLoading,
     error: accountDataError,
@@ -64,7 +75,7 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
       <h4 className="mb-4 mt-8 text-xl text-slate-900 dark:text-white" data-testid="profile-name">
         {profileData?.profile?.name}{' '}
         <span className="text-slate-600">
-          ({profileData?.reputation ? accountReputation(profileData.reputation) : null})
+          ({accountReputationData?.repuation ? accountReputation(accountReputationData.repuation) : null})
         </span>
       </h4>
       <h6

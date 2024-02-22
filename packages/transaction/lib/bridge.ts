@@ -24,7 +24,7 @@ export const getPostHeader = async (author: string, permlink: string): Promise<I
     author,
     permlink
   });
-}
+};
 
 export interface EntryBeneficiaryRoute {
   account: string;
@@ -354,13 +354,16 @@ type GetDiscussionData = {
   };
 };
 
-export const getDiscussion = async (author: string, permlink: string): Promise<Record<string, Entry> | null> => {
+export const getDiscussion = async (
+  author: string,
+  permlink: string
+): Promise<Record<string, Entry> | null> => {
   const chain = await createHiveChain();
   return chain.extend<GetDiscussionData>().api.bridge.get_discussion({
     author,
     permlink
   });
-}
+};
 
 interface IGetCommunity {
   name: string;
@@ -373,10 +376,13 @@ type GetCommunityData = {
   };
 };
 
-export const getCommunity = async (name: string, observer: string | undefined = ''): Promise<Community | null> => {
+export const getCommunity = async (
+  name: string,
+  observer: string | undefined = ''
+): Promise<Community | null> => {
   const chain = await createHiveChain();
   return chain.extend<GetCommunityData>().api.bridge.get_community({ name, observer });
-}
+};
 
 interface IGetCommunities {
   sort: string;
@@ -404,7 +410,7 @@ export const getCommunities = async (
     sort,
     observer
   });
-}
+};
 
 interface IGetNormalizePost {
   post: Entry;
@@ -421,7 +427,7 @@ export const normalizePost = async (post: Entry): Promise<Entry | null> => {
   return chain.extend<GetNormalizePost>().api.bridge.normalize_post({
     post
   });
-}
+};
 
 interface IGetSubscriptions {
   account: string;
@@ -438,7 +444,7 @@ export const getSubscriptions = async (account: string): Promise<Subscription[] 
   return chain.extend<GetSubscriptions>().api.bridge.list_all_subscriptions({
     account
   });
-}
+};
 
 interface IGetSubscribers {
   community: string;
@@ -455,7 +461,7 @@ export const getSubscribers = async (community: string): Promise<Subscription[] 
   return chain.extend<GetSubscribers>().api.bridge.list_subscribers({
     community
   });
-}
+};
 
 export interface IUnreadNotificationsParams {
   account: string;
@@ -477,7 +483,7 @@ export const getUnreadNotifications = async (account: string): Promise<IUnreadNo
   return chain.extend<GetUnreadNotifications>().api.bridge.unread_notifications({
     account
   });
-}
+};
 
 export interface IAccountRelationship {
   follows: boolean;
@@ -497,8 +503,10 @@ export const getRelationshipBetweenAccounts = async (
   following: string
 ): Promise<IAccountRelationship | null> => {
   const chain = await createHiveChain();
-  return chain.extend<GetAccountRelationship>().api.bridge.get_relationship_between_accounts([follower, following]);
-}
+  return chain
+    .extend<GetAccountRelationship>()
+    .api.bridge.get_relationship_between_accounts([follower, following]);
+};
 
 export type FollowListType = 'follow_blacklist' | 'follow_muted' | 'blacklisted' | 'muted';
 export interface IFollowListParams {
@@ -518,13 +526,16 @@ type GetFollowListData = {
   };
 };
 
-export const getFollowList = async (observer: string, follow_type: FollowListType): Promise<IFollowList[]> => {
+export const getFollowList = async (
+  observer: string,
+  follow_type: FollowListType
+): Promise<IFollowList[]> => {
   const chain = await createHiveChain();
   return chain.extend<GetFollowListData>().api.bridge.get_follow_list({
     observer,
     follow_type
   });
-}
+};
 
 export type TwitterInfo = {
   twitter_username: string;

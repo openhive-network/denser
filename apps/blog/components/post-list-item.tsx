@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { cn, getPostSummary } from '@/blog/lib/utils';
+import { getPostSummary } from '@/blog/lib/utils';
+import { cn } from '@ui/lib/utils';
 import { Icons } from '@hive/ui/components/icons';
 import {
   Card,

@@ -1,5 +1,5 @@
 import { Button } from '@hive/ui/components/button';
-import { cn } from '@/blog/lib/utils';
+import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@hive/ui/components/card';
 import Link from 'next/link';
 import type { Community } from '@transaction/lib/bridge';
