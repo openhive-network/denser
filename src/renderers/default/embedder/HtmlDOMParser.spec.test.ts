@@ -1,5 +1,5 @@
 /**
- * Based on: https://github.com/steemit/condenser/raw/master/src/shared/HtmlReady.test.js
+ * Based on: https://github.com/openhive-network/condenser/blob/master/src/shared/HtmlReady.test.js
  */
 
 // tslint:disable max-line-length
@@ -16,21 +16,15 @@ describe("HtmlDOMParser", () => {
         imageProxyFn: (url: string) => url,
         usertagUrlFn: (account: string) => `/@${account}`,
         hashtagUrlFn: (hashtag: string) => `/trending/${hashtag}`,
-        baseUrl: "https://steemit.com/",
+        baseUrl: "https://hive.blog/",
         width: 640,
         height: 480,
         hideImages: false,
     };
 
-    /*it("should return an empty string if input cannot be parsed", () => {
-        const teststring = "teststring lol"; // this string causes the xmldom parser to fail & error out
-        const parser = new HtmlDOMParser(htmlParserOptions);
-        expect(parser.parse(teststring).getParsedDocumentAsString()).to.equal("");
-    });*/
-
-    it("should allow links where the text portion and href contains steemit.com", () => {
+    it("should allow links where the text portion and href contains hive.blog", () => {
         const dirty =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://steemit.com/signup" xmlns="http://www.w3.org/1999/xhtml">https://steemit.com/signup</a></xml>';
+            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://hive.blog/signup" xmlns="http://www.w3.org/1999/xhtml">https://hive.blog/signup</a></xml>';
         const parser = new HtmlDOMParser(htmlParserOptions);
         const res = parser.parse(dirty).getParsedDocumentAsString();
         expect(res).to.equal(dirty);
@@ -49,57 +43,55 @@ describe("HtmlDOMParser", () => {
         expect(externalDomainResult).to.equal(externalDomainDirty);
     });
 
-    it("should not allow links where the text portion contains steemit.com but the link does not", () => {
-        // There isn't an easy way to mock counterpart, even with proxyquire, so we just test for the missing translation message -- ugly but ok
-
+    it("should not allow links where the text portion contains hive.blog but the link does not", () => {
         const dirty =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://steamit.com/signup" xmlns="http://www.w3.org/1999/xhtml">https://steemit.com/signup</a></xml>';
+            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://steamit.com/signup" xmlns="http://www.w3.org/1999/xhtml">https://hive.blog/signup</a></xml>';
         const cleansed =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><div title="Link expanded to plain text; beware of a potential phishing attempt" class="phishy">https://steemit.com/signup / https://steamit.com/signup</div></xml>';
+            '<xml xmlns="http://www.w3.org/1999/xhtml"><div title="Link expanded to plain text; beware of a potential phishing attempt" class="phishy">https://hive.blog/signup / https://steamit.com/signup</div></xml>';
         const res = new HtmlDOMParser(htmlParserOptions).parse(dirty).getParsedDocumentAsString();
         expect(res).to.equal(cleansed);
 
         const cased =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://steamit.com/signup" xmlns="http://www.w3.org/1999/xhtml">https://Steemit.com/signup</a></xml>';
+            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://steamit.com/signup" xmlns="http://www.w3.org/1999/xhtml">https://hive.blog/signup</a></xml>';
         const cleansedcased =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><div title="Link expanded to plain text; beware of a potential phishing attempt" class="phishy">https://Steemit.com/signup / https://steamit.com/signup</div></xml>';
+            '<xml xmlns="http://www.w3.org/1999/xhtml"><div title="Link expanded to plain text; beware of a potential phishing attempt" class="phishy">https://hive.blog/signup / https://steamit.com/signup</div></xml>';
         const rescased = new HtmlDOMParser(htmlParserOptions).parse(cased).getParsedDocumentAsString();
         expect(rescased).to.equal(cleansedcased);
 
         const withuser =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://steamit.com/signup" xmlns="http://www.w3.org/1999/xhtml">https://official@steemit.com/signup</a></xml>';
+            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://steamit.com/signup" xmlns="http://www.w3.org/1999/xhtml">https://official@hive.blog/signup</a></xml>';
         const cleansedwithuser =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><div title="Link expanded to plain text; beware of a potential phishing attempt" class="phishy">https://official@steemit.com/signup / https://steamit.com/signup</div></xml>';
+            '<xml xmlns="http://www.w3.org/1999/xhtml"><div title="Link expanded to plain text; beware of a potential phishing attempt" class="phishy">https://official@hive.blog/signup / https://steamit.com/signup</div></xml>';
         const reswithuser = new HtmlDOMParser(htmlParserOptions).parse(withuser).getParsedDocumentAsString();
         expect(reswithuser).to.equal(cleansedwithuser);
 
         const noendingslash =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://steamit.com" xmlns="http://www.w3.org/1999/xhtml">https://steemit.com</a></xml>';
+            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://steamit.com" xmlns="http://www.w3.org/1999/xhtml">https://hive.blog</a></xml>';
         const cleansednoendingslash =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><div title="Link expanded to plain text; beware of a potential phishing attempt" class="phishy">https://steemit.com / https://steamit.com</div></xml>';
+            '<xml xmlns="http://www.w3.org/1999/xhtml"><div title="Link expanded to plain text; beware of a potential phishing attempt" class="phishy">https://hive.blog / https://steamit.com</div></xml>';
         const resnoendingslash = new HtmlDOMParser(htmlParserOptions).parse(noendingslash).getParsedDocumentAsString();
         expect(resnoendingslash).to.equal(cleansednoendingslash);
 
         // make sure extra-domain in-page links are also caught by our phishy link scan.
         const domainInpage =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://steamit.com#really-evil-inpage-component" xmlns="http://www.w3.org/1999/xhtml">https://steemit.com</a></xml>';
+            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://steamit.com#really-evil-inpage-component" xmlns="http://www.w3.org/1999/xhtml">https://hive.blog</a></xml>';
         const cleanDomainInpage =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><div title="Link expanded to plain text; beware of a potential phishing attempt" class="phishy">https://steemit.com / https://steamit.com#really-evil-inpage-component</div></xml>';
+            '<xml xmlns="http://www.w3.org/1999/xhtml"><div title="Link expanded to plain text; beware of a potential phishing attempt" class="phishy">https://hive.blog / https://steamit.com#really-evil-inpage-component</div></xml>';
         const resDomainInpage = new HtmlDOMParser(htmlParserOptions).parse(domainInpage).getParsedDocumentAsString();
         expect(resDomainInpage).to.equal(cleanDomainInpage);
 
-        // anchor links including steemit.com should be allowed
+        // anchor links including hive.blog should be allowed
         const inpage =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="#https://steamit.com/unlikelyinpagelink" xmlns="http://www.w3.org/1999/xhtml">Go down lower for https://steemit.com info!</a></xml>';
+            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="#https://steamit.com/unlikelyinpagelink" xmlns="http://www.w3.org/1999/xhtml">Go down lower for https://hive.blog info!</a></xml>';
         const cleanInpage =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="#https://steamit.com/unlikelyinpagelink" xmlns="http://www.w3.org/1999/xhtml">Go down lower for https://steemit.com info!</a></xml>';
+            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="#https://steamit.com/unlikelyinpagelink" xmlns="http://www.w3.org/1999/xhtml">Go down lower for https://hive.blog info!</a></xml>';
         const resinpage = new HtmlDOMParser(htmlParserOptions).parse(inpage).getParsedDocumentAsString();
         expect(resinpage).to.equal(cleanInpage);
 
         const noprotocol =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://steamit.com/" xmlns="http://www.w3.org/1999/xhtml">for a good time, visit steemit.com today</a></xml>';
+            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://steamit.com/" xmlns="http://www.w3.org/1999/xhtml">for a good time, visit hive.blog today</a></xml>';
         const cleansednoprotocol =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><div title="Link expanded to plain text; beware of a potential phishing attempt" class="phishy">for a good time, visit steemit.com today / https://steamit.com/</div></xml>';
+            '<xml xmlns="http://www.w3.org/1999/xhtml"><div title="Link expanded to plain text; beware of a potential phishing attempt" class="phishy">for a good time, visit hive.blog today / https://steamit.com/</div></xml>';
         const resnoprotocol = new HtmlDOMParser(htmlParserOptions).parse(noprotocol).getParsedDocumentAsString();
         expect(resnoprotocol).to.equal(cleansednoprotocol);
     });
@@ -132,18 +124,18 @@ describe("HtmlDOMParser", () => {
 
     it("should not link usernames at the front of linked text", () => {
         const nameinsidelinkfirst =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://steemit.com/signup">@hihi</a></xml>';
+            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://hive.blog/signup">@hihi</a></xml>';
         const htmlified =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://steemit.com/signup">@hihi</a></xml>';
+            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://hive.blog/signup">@hihi</a></xml>';
         const res = new HtmlDOMParser(htmlParserOptions).parse(nameinsidelinkfirst).getParsedDocumentAsString();
         expect(res).to.equal(htmlified);
     });
 
     it("should not link usernames in the middle of linked text", () => {
         const nameinsidelinkmiddle =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://steemit.com/signup">hi @hihi</a></xml>';
+            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://hive.blog/signup">hi @hihi</a></xml>';
         const htmlified =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://steemit.com/signup">hi @hihi</a></xml>';
+            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://hive.blog/signup">hi @hihi</a></xml>';
         const res = new HtmlDOMParser(htmlParserOptions).parse(nameinsidelinkmiddle).getParsedDocumentAsString();
         expect(res).to.equal(htmlified);
     });
@@ -172,7 +164,7 @@ describe("HtmlDOMParser", () => {
 
     it("should not mistake usernames in valid comment urls as mentions", () => {
         const url =
-            "https://steemit.com/spam/@test-safari/34gfex-december-spam#@test-safari/re-test-safari-34gfex-december-spam-20180110t234627522z";
+            "https://hive.blog/spam/@test-safari/34gfex-december-spam#@test-safari/re-test-safari-34gfex-december-spam-20180110t234627522z";
         const prefix = '<xml xmlns="http://www.w3.org/1999/xhtml">';
         const suffix = "</xml>";
         const input = prefix + url + suffix;
@@ -192,9 +184,9 @@ describe("HtmlDOMParser", () => {
 
     it("should detect urls that are phishy", () => {
         const dirty =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://steewit.com/signup" xmlns="http://www.w3.org/1999/xhtml">https://steemit.com/signup</a></xml>';
+            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://steewit.com/signup" xmlns="http://www.w3.org/1999/xhtml">https://hive.blog/signup</a></xml>';
         const cleansed =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><div title="Link expanded to plain text; beware of a potential phishing attempt" class="phishy">https://steemit.com/signup / https://steewit.com/signup</div></xml>';
+            '<xml xmlns="http://www.w3.org/1999/xhtml"><div title="Link expanded to plain text; beware of a potential phishing attempt" class="phishy">https://hive.blog/signup / https://steewit.com/signup</div></xml>';
         const res = new HtmlDOMParser(htmlParserOptions).parse(dirty).getParsedDocumentAsString();
         expect(res).to.equal(cleansed);
     });

@@ -1,5 +1,5 @@
 /**
- * This file is based on https://github.com/steemit/condenser/blob/master/src/app/utils/SanitizeConfig.js
+ * This file is based on https://github.com/openhive-network/condenser/blob/master/src/app/utils/SanitizeConfig.js
  */
 import ow from "ow";
 import * as sanitize from "sanitize-html";
@@ -162,7 +162,7 @@ export class TagTransformingSanitizer {
                     }
                     href = href.trim();
                     const attys: sanitize.Attributes = { ...attribs, href };
-                    // If it's not a (relative or absolute) steemit URL...
+                    // If it's not a (relative or absolute) URL...
                     if (!this.options.isLinkSafeFn(href)) {
                         // attys.target = '_blank' // pending iframe impl https://mathiasbynens.github.io/rel-noopener/
                         attys.rel = this.options.addNofollowToLinks ? "nofollow noopener" : "noopener";

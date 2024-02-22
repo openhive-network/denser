@@ -1,5 +1,5 @@
 /**
- * Based on: https://github.com/steemit/condenser/raw/master/src/shared/HtmlReady.js
+ * Based on: https://github.com/openhive-network/condenser/blob/master/src/shared/HtmlReady.js
  */
 // tslint:disable max-classes-per-file
 import * as xmldom from "@xmldom/xmldom";
@@ -302,7 +302,7 @@ export class HtmlDOMParser {
         }
     }
 
-    // For all img elements with non-local URLs, prepend the proxy URL (e.g. `https://img0.steemit.com/0x0/`)
+    // For all img elements with non-local URLs, prepend the proxy URL (e.g. `https://images.hive.blog/0x0/`)
     private proxifyImages(doc: Document) {
         if (!doc) {
             return;
@@ -317,7 +317,7 @@ export class HtmlDOMParser {
 
     private normalizeUrl(url: any) {
         if (this.options.ipfsPrefix) {
-            // Convert //ipfs/xxx  or /ipfs/xxx  into  https://steemit.com/ipfs/xxxxx
+            // Convert //ipfs/xxx  or /ipfs/xxx  into  https://images.hive.blog/ipfs/xxxxx
             if (/^\/?\/ipfs\//.test(url)) {
                 const slash = url.charAt(1) === "/" ? 1 : 0;
                 url = url.substring(slash + "/ipfs/".length); // start with only 1 /

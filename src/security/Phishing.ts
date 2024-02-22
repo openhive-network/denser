@@ -1,5 +1,5 @@
 /**
- * Based on: https://raw.githubusercontent.com/steemit/condenser/master/src/app/utils/Phishing.js
+ * Based on: https://github.com/openhive-network/condenser/blob/master/src/app/utils/Phishing.js
  */
 
 const domains = [

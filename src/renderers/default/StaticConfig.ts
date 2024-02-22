@@ -1,6 +1,6 @@
 /**
  * This file is based on
- *  - https://github.com/steemit/condenser/blob/master/src/app/utils/SanitizeConfig.js
+ *  - https://github.com/openhive-network/condenser/blob/master/src/app/utils/SanitizeConfig.js
  */
 // tslint:disable max-line-length
 export class StaticConfig {
