@@ -64,7 +64,13 @@ export function delegatedHive(accountData: ExpApiAccount, dynamicData: IDynamicG
 }
 export function powerdownHive(accountData: ExpApiAccount, dynamicData: IDynamicGlobalProperties) {
   const withdraw_rate_vests = parseFloat(accountData.vesting_withdraw_rate.amount.split(' ')[0]);
-  const remaining_vests = (parseFloat(accountData.to_withdraw) - parseFloat(accountData.withdrawn)) / 1000000;
+  const to_withdraw = typeof accountData.to_withdraw === 'number' ?
+    accountData.to_withdraw
+    : parseFloat(accountData.to_withdraw);
+  const withdrawn = typeof accountData.withdrawn === 'number' ?
+    accountData.withdrawn
+    : parseFloat(accountData.withdrawn);
+  const remaining_vests = (to_withdraw - withdrawn) / 1000000;
   const vests = Math.min(withdraw_rate_vests, remaining_vests);
   const total_vests = convertStringToBig(dynamicData.total_vesting_shares.amount);
   const total_vest_hive = convertStringToBig(dynamicData.total_vesting_fund_hive.amount);
