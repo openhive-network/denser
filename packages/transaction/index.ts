@@ -60,8 +60,15 @@ class TransactionService {
       await (await this.getHiveChain()).api.network_broadcast_api.broadcast_transaction(broadcastReq);
     } catch (e) {
       logger.error('got error', e);
+      const isError = (err: unknown): err is Error => err instanceof Error;
+      let description: 'Unknown error';
+      if (isError(e)) {
+        description = e.message;
+      } else if (typeof e === 'string') {
+        description = e;
+      }
       toast({
-        description: e as String,
+        description,
         variant: 'destructive'
       });
     }
