@@ -6,12 +6,13 @@ services:
       PORT: ${AUTH_PORT}
       REACT_APP_API_ENDPOINT:
       REACT_APP_IMAGES_ENDPOINT:
-      TURBO_APP_SCOPE: "@hive/auth"
-      TURBO_APP_PATH: "/apps/auth"
+      REACT_APP_SITE_DOMAIN:
+      TURBO_APP_SCOPE: '@hive/auth'
+      TURBO_APP_PATH: '/apps/auth'
     ports:
-      - "${AUTH_PORT}:${AUTH_PORT}"
+      - '${AUTH_PORT}:${AUTH_PORT}'
     healthcheck:
-      test: ["CMD-SHELL","wget --no-verbose --tries=1 --spider http://$${HOSTNAME}:$${PORT}/ || exit 1"]
+      test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://$${HOSTNAME}:$${PORT}/ || exit 1']
       interval: 1m30s
       timeout: 30s
       retries: 5
@@ -22,12 +23,13 @@ services:
       PORT: ${BLOG_PORT}
       REACT_APP_API_ENDPOINT:
       REACT_APP_IMAGES_ENDPOINT:
-      TURBO_APP_SCOPE: "@hive/blog"
-      TURBO_APP_PATH: "/apps/blog"
+      REACT_APP_SITE_DOMAIN:
+      TURBO_APP_SCOPE: '@hive/blog'
+      TURBO_APP_PATH: '/apps/blog'
     ports:
-      - "${BLOG_PORT}:${BLOG_PORT}"
+      - '${BLOG_PORT}:${BLOG_PORT}'
     healthcheck:
-      test: ["CMD-SHELL","wget --no-verbose --tries=1 --spider http://$${HOSTNAME}:$${PORT}/ || exit 1"]
+      test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://$${HOSTNAME}:$${PORT}/ || exit 1']
       interval: 1m30s
       timeout: 30s
       retries: 5
@@ -38,12 +40,13 @@ services:
       PORT: ${WALLET_PORT}
       REACT_APP_API_ENDPOINT:
       REACT_APP_IMAGES_ENDPOINT:
-      TURBO_APP_SCOPE: "@hive/wallet"
-      TURBO_APP_PATH: "/apps/wallet"
+      REACT_APP_SITE_DOMAIN:
+      TURBO_APP_SCOPE: '@hive/wallet'
+      TURBO_APP_PATH: '/apps/wallet'
     ports:
-      - "${WALLET_PORT}:${WALLET_PORT}"
+      - '${WALLET_PORT}:${WALLET_PORT}'
     healthcheck:
-      test: ["CMD-SHELL","wget --no-verbose --tries=1 --spider http://$${HOSTNAME}:$${PORT}/ || exit 1"]
+      test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://$${HOSTNAME}:$${PORT}/ || exit 1']
       interval: 1m30s
       timeout: 30s
       retries: 5

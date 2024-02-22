@@ -3,8 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/ca
 import Link from 'next/link';
 import { Button } from '@hive/ui/components/button';
 import ln2list from '@/blog/lib/ln2list';
-import { DefaultRenderer } from '@hiveio/content-renderer';
-import { getDoubleSize, proxifyImageUrl } from '@hive/ui/lib/old-profixy';
 import { AccountNotification, Community, Subscription } from '@ui/lib/bridge';
 import { SubsListDialog } from './subscription-list-dialog';
 import { ActivityLogDialog } from './activity-log-dialog';
@@ -12,8 +10,9 @@ import { Badge } from '@hive/ui/components/badge';
 import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { operationService } from '@operations/index';
+import { HiveRendererContext } from './hive-renderer-context';
 
 const CommunityDescription = ({
   data,
@@ -29,27 +28,11 @@ const CommunityDescription = ({
   const [isSubscribe, setIsSubscribe] = useState(() => !data.context.subscribed);
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
-  const renderer = new DefaultRenderer({
-    baseUrl: 'https://hive.blog/',
-    breaks: true,
-    skipSanitization: false,
-    allowInsecureScriptTags: false,
-    addNofollowToLinks: true,
-    addTargetBlankToLinks: true,
-    addCssClassToLinks: 'external-link',
-    doNotShowImages: false,
-    ipfsPrefix: '',
-    assetsWidth: 640,
-    assetsHeight: 480,
-    imageProxyFn: (url: string) => getDoubleSize(proxifyImageUrl(url, true).replace(/ /g, '%20')),
-    usertagUrlFn: (account: string) => '/@' + account,
-    hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
-    isLinkSafeFn: (url: string) => false
-  });
+  const { hiveRenderer } = useContext(HiveRendererContext);
 
   let post_body_html = null;
-  if (data.description) {
-    post_body_html = renderer.render(data.description);
+  if (data.description && hiveRenderer) {
+    post_body_html = hiveRenderer.render(data.description);
   }
 
   useEffect(() => {

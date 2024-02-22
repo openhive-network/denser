@@ -6,7 +6,7 @@ type HiveChainContextType = {
   setHiveChain: (hiveChain: IHiveChainInterface) => void;
 };
 
-const HiveChainContext = createContext<HiveChainContextType>({
+export const HiveChainContext = createContext<HiveChainContextType>({
   hiveChain: undefined,
   setHiveChain: () => {}
 });

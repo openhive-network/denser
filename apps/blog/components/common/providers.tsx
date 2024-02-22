@@ -4,6 +4,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ThemeProvider } from '../theme-provider';
 import Layout from './layout';
 import { HiveChainProvider } from '../hive-chain-context';
+import { HiveContentRendererProvider } from '../hive-renderer-context';
 
 const queryClient = new QueryClient();
 
@@ -11,9 +12,11 @@ const Providers = ({ children }: { children: ReactNode }) => {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        <HiveChainProvider>
-          <Layout>{children}</Layout>
-        </HiveChainProvider>
+        <HiveContentRendererProvider>
+          <HiveChainProvider>
+            <Layout>{children}</Layout>
+          </HiveChainProvider>
+        </HiveContentRendererProvider>
       </ThemeProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
