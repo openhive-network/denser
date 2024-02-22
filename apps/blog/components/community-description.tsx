@@ -47,11 +47,9 @@ const CommunityDescription = ({
     usertagUrlFn: (account: string) => '/@' + account,
     hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
     isLinkSafeFn: (url: string) =>
-      !!url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) &&
-      !!url.match(`^(/(?!/)|https://${env('SITE_DOMAIN')})`),
+      !!url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) && !!url.match(`^(/(?!/)|${env('SITE_DOMAIN')})`),
     addExternalCssClassToMatchingLinksFn: (url: string) =>
-      !url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) &&
-      !url.match(`^(/(?!/)|https://${env('SITE_DOMAIN')})`)
+      !url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) && !url.match(`^(/(?!/)${env('SITE_DOMAIN')})`)
   });
 
   let post_body_html = null;

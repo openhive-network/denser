@@ -45,10 +45,9 @@ export function ReplyTextbox({
         hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
         isLinkSafeFn: (url: string) =>
           !!url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) &&
-          !!url.match(`^(/(?!/)|https://${env('SITE_DOMAIN')})`),
+          !!url.match(`^(/(?!/)|${env('SITE_DOMAIN')})`),
         addExternalCssClassToMatchingLinksFn: (url: string) =>
-          !url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) &&
-          !url.match(`^(/(?!/)|https://${env('SITE_DOMAIN')})`)
+          !url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) && !url.match(`^(/(?!/)|${env('SITE_DOMAIN')})`)
       }),
     []
   );

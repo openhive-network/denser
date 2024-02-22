@@ -26,7 +26,6 @@ API_ENDPOINT=${API_ENDPOINT:-"https://api.hive.blog"}
 TURBO_APP_SCOPE=${TURBO_APP_SCOPE:-}
 TURBO_APP_PATH=${TURBO_APP_PATH:-}
 IMAGES_ENDPOINT=${IMAGES_ENDPOINT:="https://images.hive.blog/"}
-SITE_DOMAIN=${SITE_DOMAIN:="blog.openhive.network"}
 CONTAINER_NAME=${CONTAINER_NAME:-"denser"}
 DETACH=${DETACH:-false}
 
@@ -51,10 +50,6 @@ while [ $# -gt 0 ]; do
     --images-endpoint=*)
         arg="${1#*=}"
         IMAGES_ENDPOINT="$arg"
-        ;;
-    --site-domain=*)
-        arg="${1#*=}"
-        SITE_DOMAIN="$arg"
         ;;
     --port=*)
         arg="${1#*=}"
@@ -89,7 +84,6 @@ RUN_OPTIONS=(
     "--env" "PORT=$PORT"
     "--env" "REACT_APP_API_ENDPOINT=$API_ENDPOINT"
     "--env" "REACT_APP_IMAGES_ENDPOINT=$IMAGES_ENDPOINT"
-    "--env" "REACT_APP_SITE_DOMAIN=$SITE_DOMAIN"
     "--env" "TURBO_APP_SCOPE=$TURBO_APP_SCOPE"
     "--env" "TURBO_APP_PATH=$TURBO_APP_PATH"
     "--name" "$CONTAINER_NAME"
