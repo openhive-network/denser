@@ -51,8 +51,8 @@ export class LinkSanitizer {
     }
 
     private prependUnknownProtocolLink(url: string): string {
-        // If this link is not relative, http, https, or steem -- add https.
-        if (!/^((#)|(\/(?!\/))|(((steem|https?):)?\/\/))/.test(url)) {
+        // If this link is not relative, http, https, or hive -- add https.
+        if (!/^((#)|(\/(?!\/))|(((hive|https?):)?\/\/))/.test(url)) {
             url = "https://" + url;
         }
         return url;

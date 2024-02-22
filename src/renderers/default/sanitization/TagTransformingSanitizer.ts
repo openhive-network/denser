@@ -56,7 +56,7 @@ export class TagTransformingSanitizer {
                 // title is only set in the case of an external link warning
                 a: ["href", "rel", "title", "class", "target", "id"],
             },
-            allowedSchemes: ["http", "https", "steem"],
+            allowedSchemes: ["http", "https", "hive"],
             transformTags: {
                 iframe: (tagName: string, attribs: sanitize.Attributes) => {
                     const srcAtty = attribs.src;

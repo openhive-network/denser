@@ -141,25 +141,25 @@ describe("HtmlDOMParser", () => {
     });
 
     it("should make relative links absolute with https by default", () => {
-        const noRelativeHttpHttpsOrSteem =
+        const noRelativeHttpHttpsOrHive =
             '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="land.com"> zippy </a> </xml>';
-        const cleansedRelativeHttpHttpsOrSteem =
+        const cleansedRelativeHttpHttpsOrHive =
             '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://land.com"> zippy </a> </xml>';
-        const resNoRelativeHttpHttpsOrSteem = new HtmlDOMParser(htmlParserOptions)
-            .parse(noRelativeHttpHttpsOrSteem)
+        const resNoRelativeHttpHttpsOrHive = new HtmlDOMParser(htmlParserOptions)
+            .parse(noRelativeHttpHttpsOrHive)
             .getParsedDocumentAsString();
-        expect(resNoRelativeHttpHttpsOrSteem).to.equal(cleansedRelativeHttpHttpsOrSteem);
+        expect(resNoRelativeHttpHttpsOrHive).to.equal(cleansedRelativeHttpHttpsOrHive);
     });
 
-    it("should allow the steem uri scheme for vessel links", () => {
-        const noRelativeHttpHttpsOrSteem =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="steem://veins.com"> arteries </a> </xml>';
-        const cleansedRelativeHttpHttpsOrSteem =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="steem://veins.com"> arteries </a> </xml>';
-        const resNoRelativeHttpHttpsOrSteem = new HtmlDOMParser(htmlParserOptions)
-            .parse(noRelativeHttpHttpsOrSteem)
+    it("should allow the hive uri scheme for vessel links", () => {
+        const noRelativeHttpHttpsOrHive =
+            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="hive://veins.com"> arteries </a> </xml>';
+        const cleansedRelativeHttpHttpsOrHive =
+            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="hive://veins.com"> arteries </a> </xml>';
+        const resNoRelativeHttpHttpsOrHive = new HtmlDOMParser(htmlParserOptions)
+            .parse(noRelativeHttpHttpsOrHive)
             .getParsedDocumentAsString();
-        expect(resNoRelativeHttpHttpsOrSteem).to.equal(cleansedRelativeHttpHttpsOrSteem);
+        expect(resNoRelativeHttpHttpsOrHive).to.equal(cleansedRelativeHttpHttpsOrHive);
     });
 
     it("should not mistake usernames in valid comment urls as mentions", () => {
