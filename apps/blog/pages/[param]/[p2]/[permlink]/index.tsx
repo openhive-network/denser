@@ -36,6 +36,7 @@ import { i18n } from '@/blog/next-i18next.config';
 import { GetServerSideProps } from 'next';
 import { AlertDialogFlag } from '@/blog/components/alert-window-flag';
 import VotesComponent from '@/blog/components/votes';
+import env from '@beam-australia/react-env';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -117,7 +118,8 @@ function PostPage({
     allowInsecureScriptTags: false,
     addNofollowToLinks: true,
     addTargetBlankToLinks: true,
-    addCssClassToLinks: 'external-link',
+    cssClassForInternalLinks: 'link',
+    cssClassForExternalLinks: 'link link-external',
     doNotShowImages: false,
     ipfsPrefix: '',
     assetsWidth: 640,
@@ -125,7 +127,14 @@ function PostPage({
     imageProxyFn: (url: string) => getDoubleSize(proxifyImageUrl(url, true).replace(/ /g, '%20')),
     usertagUrlFn: (account: string) => '/@' + account,
     hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
-    isLinkSafeFn: (url: string) => false
+    isLinkSafeFn: (url: string) =>
+      (!!url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) &&
+        !!url.match(`^(/(?!/)|https://${env('SITE_DOMAIN')})`)) ||
+      !!url.match(`^(/(?!/)|#)`),
+    addExternalCssClassToMatchingLinksFn: (url: string) =>
+      !url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) &&
+      !url.match(`^(/(?!/)|https://${env('SITE_DOMAIN')})`) &&
+      !url.match(`^(/(?!/)|#)`)
   });
   const post_html = renderer.render(post_s.body);
   const commentSite = post_s.depth !== 0 ? true : false;

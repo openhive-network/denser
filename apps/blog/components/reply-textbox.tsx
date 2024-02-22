@@ -9,6 +9,7 @@ import { DefaultRenderer } from '@hiveio/content-renderer';
 import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { operationService } from '@operations/index';
+import env from '@beam-australia/react-env';
 
 export function ReplyTextbox({
   onSetReply,
@@ -33,7 +34,8 @@ export function ReplyTextbox({
         allowInsecureScriptTags: false,
         addNofollowToLinks: true,
         addTargetBlankToLinks: true,
-        addCssClassToLinks: 'external-link',
+        cssClassForInternalLinks: 'link',
+        cssClassForExternalLinks: 'link link-external',
         doNotShowImages: false,
         ipfsPrefix: '',
         assetsWidth: 640,
@@ -41,7 +43,12 @@ export function ReplyTextbox({
         imageProxyFn: (url: string) => getDoubleSize(proxifyImageUrl(url, true).replace(/ /g, '%20')),
         usertagUrlFn: (account: string) => '/@' + account,
         hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
-        isLinkSafeFn: (url: string) => false
+        isLinkSafeFn: (url: string) =>
+          !!url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) &&
+          !!url.match(`^(/(?!/)|https://${env('SITE_DOMAIN')})`),
+        addExternalCssClassToMatchingLinksFn: (url: string) =>
+          !url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) &&
+          !url.match(`^(/(?!/)|https://${env('SITE_DOMAIN')})`)
       }),
     []
   );

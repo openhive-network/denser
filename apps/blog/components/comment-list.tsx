@@ -4,6 +4,7 @@ import { DefaultRenderer } from '@hiveio/content-renderer';
 import { getDoubleSize, proxifyImageUrl } from '@hive/ui/lib/old-profixy';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
+import env from '@beam-australia/react-env';
 
 const CommentList = ({
   data,
@@ -21,7 +22,8 @@ const CommentList = ({
     allowInsecureScriptTags: false,
     addNofollowToLinks: true,
     addTargetBlankToLinks: true,
-    addCssClassToLinks: 'external-link',
+    cssClassForInternalLinks: 'link',
+    cssClassForExternalLinks: 'link link-external',
     doNotShowImages: false,
     ipfsPrefix: '',
     assetsWidth: 640,
@@ -29,7 +31,12 @@ const CommentList = ({
     imageProxyFn: (url: string) => getDoubleSize(proxifyImageUrl(url, true).replace(/ /g, '%20')),
     usertagUrlFn: (account: string) => '/@' + account,
     hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
-    isLinkSafeFn: (url: string) => false
+    isLinkSafeFn: (url: string) =>
+      !!url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) &&
+      !!url.match(`^(/(?!/)|https://${env('SITE_DOMAIN')})`),
+    addExternalCssClassToMatchingLinksFn: (url: string) =>
+      !url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) &&
+      !url.match(`^(/(?!/)|https://${env('SITE_DOMAIN')})`)
   });
 
   let filtered = data.filter((x: Entry) => {

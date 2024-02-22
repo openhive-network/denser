@@ -14,6 +14,7 @@ import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useEffect, useState } from 'react';
 import { operationService } from '@operations/index';
+import env from '@beam-australia/react-env';
 
 const CommunityDescription = ({
   data,
@@ -36,7 +37,8 @@ const CommunityDescription = ({
     allowInsecureScriptTags: false,
     addNofollowToLinks: true,
     addTargetBlankToLinks: true,
-    addCssClassToLinks: 'external-link',
+    cssClassForInternalLinks: 'link',
+    cssClassForExternalLinks: 'link link-external',
     doNotShowImages: false,
     ipfsPrefix: '',
     assetsWidth: 640,
@@ -44,7 +46,12 @@ const CommunityDescription = ({
     imageProxyFn: (url: string) => getDoubleSize(proxifyImageUrl(url, true).replace(/ /g, '%20')),
     usertagUrlFn: (account: string) => '/@' + account,
     hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
-    isLinkSafeFn: (url: string) => false
+    isLinkSafeFn: (url: string) =>
+      !!url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) &&
+      !!url.match(`^(/(?!/)|https://${env('SITE_DOMAIN')})`),
+    addExternalCssClassToMatchingLinksFn: (url: string) =>
+      !url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) &&
+      !url.match(`^(/(?!/)|https://${env('SITE_DOMAIN')})`)
   });
 
   let post_body_html = null;
