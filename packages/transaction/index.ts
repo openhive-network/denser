@@ -7,11 +7,13 @@ import {
   ITransactionBuilder,
   IHiveAppsOperation
 } from '@hive/wax/web';
-import { logger } from '@hive/ui/lib/logger';
 import { toast } from '@hive/ui/components/hooks/use-toast';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { KeyTypes } from '@smart-signer/types/common';
+
+import { getLogger } from "@hive/ui/lib/logging";
+const logger = getLogger('app');
 
 class TransactionService {
   description = 'Transaction broadcast error';
@@ -61,7 +63,7 @@ class TransactionService {
     } catch (e) {
       logger.error('got error', e);
       const isError = (err: unknown): err is Error => err instanceof Error;
-      let description: 'Unknown error';
+      let description = 'Unknown error';
       if (isError(e)) {
         description = e.message;
       } else if (typeof e === 'string') {
