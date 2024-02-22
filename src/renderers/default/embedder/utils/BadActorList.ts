@@ -145,6 +145,7 @@ bittrext
 bittrexx
 bittrexxx
 bittrez
+bittriex
 bittrix
 bittrrex
 bittrrx
@@ -912,6 +913,6 @@ yunbi
 zenieix
 `
     .trim()
-    .split("\n");
+    .split('\n');
 
 export default list;
