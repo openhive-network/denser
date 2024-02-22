@@ -3,7 +3,6 @@ import { Clock, Link2 } from 'lucide-react';
 import UserInfo from '@/blog/components/user-info';
 import { getActiveVotes } from '@/blog/lib/hive';
 import { useQuery } from '@tanstack/react-query';
-import { DefaultRenderer } from '@hiveio/content-renderer';
 import { Entry, getCommunity, getDiscussion, getPost } from '@ui/lib/bridge';
 import Loading from '@hive/ui/components/loading';
 import dynamic from 'next/dynamic';
@@ -12,13 +11,12 @@ import Link from 'next/link';
 import DetailsCardHover from '@/blog/components/details-card-hover';
 import DetailsCardVoters from '@/blog/components/details-card-voters';
 import CommentSelectFilter from '@/blog/components/comment-select-filter';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import sorter, { SortOrder } from '@/blog/lib/sorter';
 import { useRouter } from 'next/router';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
 import { Icons } from '@hive/ui/components/icons';
 import { AlertDialogReblog } from '@/blog/components/alert-window';
-import { getDoubleSize, proxifyImageUrl } from '@hive/ui/lib/old-profixy';
 import { ReplyTextbox } from '@/blog/components/reply-textbox';
 import { SharePost } from '@/blog/components/share-post-dialog';
 import LinkedInShare from '@/blog/components/share-post-linkedin';
@@ -36,7 +34,7 @@ import { i18n } from '@/blog/next-i18next.config';
 import { GetServerSideProps } from 'next';
 import { AlertDialogFlag } from '@/blog/components/alert-window-flag';
 import VotesComponent from '@/blog/components/votes';
-import env from '@beam-australia/react-env';
+import { HiveRendererContext } from '@/blog/components/hive-renderer-context';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -111,32 +109,7 @@ function PostPage({
     }
   }, [discussion, router.query.sort]);
 
-  const renderer = new DefaultRenderer({
-    baseUrl: 'https://hive.blog/',
-    breaks: true,
-    skipSanitization: false,
-    allowInsecureScriptTags: false,
-    addNofollowToLinks: true,
-    addTargetBlankToLinks: true,
-    cssClassForInternalLinks: 'link',
-    cssClassForExternalLinks: 'link link-external',
-    doNotShowImages: false,
-    ipfsPrefix: '',
-    assetsWidth: 640,
-    assetsHeight: 480,
-    imageProxyFn: (url: string) => getDoubleSize(proxifyImageUrl(url, true).replace(/ /g, '%20')),
-    usertagUrlFn: (account: string) => '/@' + account,
-    hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
-    isLinkSafeFn: (url: string) =>
-      (!!url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) &&
-        !!url.match(`^(/(?!/)|${env('SITE_DOMAIN')})`)) ||
-      !!url.match(`^(/(?!/)|#)`),
-    addExternalCssClassToMatchingLinksFn: (url: string) =>
-      !url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) &&
-      !url.match(`^(/(?!/)|${env('SITE_DOMAIN')})`) &&
-      !url.match(`^(/(?!/)|#)`)
-  });
-  const post_html = renderer.render(post_s.body);
+  const { hiveRenderer } = useContext(HiveRendererContext);
   const commentSite = post_s.depth !== 0 ? true : false;
   const [reply, setReply] = useState(false);
   const [mutedPost, setMutedPost] = useState(post_s.stats?.gray);
@@ -228,8 +201,8 @@ function PostPage({
         ({post_s.blacklists.length})
       </span> */}
         <hr />
-        {!post_html ? (
-          <Loading loading={!post_html} />
+        {!hiveRenderer ? (
+          <Loading loading={!hiveRenderer} />
         ) : mutedPost ? (
           <div id="articleBody" className="flex flex-col gap-8 py-8">
             {findLinks(post_s.body).map((e) =>
@@ -250,7 +223,7 @@ function PostPage({
               id="articleBody"
               className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
               dangerouslySetInnerHTML={{
-                __html: post_html
+                __html: hiveRenderer.render(post_s.body)
               }}
             />
           </ImageGallery>

@@ -1,15 +1,13 @@
 import Link from 'next/link';
 import { Textarea } from '@hive/ui/components/textarea';
 import { Button } from '@hive/ui/components/button';
-import { useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Label } from '@radix-ui/react-label';
 import { Input } from '@hive/ui/components/input';
 import { useTranslation } from 'next-i18next';
-import { DefaultRenderer } from '@hiveio/content-renderer';
-import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { operationService } from '@operations/index';
-import env from '@beam-australia/react-env';
+import { HiveRendererContext } from './hive-renderer-context';
 
 export function ReplyTextbox({
   onSetReply,
@@ -25,37 +23,14 @@ export function ReplyTextbox({
   const [text, setText] = useState('');
   const [cleanedText, setCleanedText] = useState('');
 
-  const renderer = useMemo(
-    () =>
-      new DefaultRenderer({
-        baseUrl: 'https://hive.blog/',
-        breaks: true,
-        skipSanitization: false,
-        allowInsecureScriptTags: false,
-        addNofollowToLinks: true,
-        addTargetBlankToLinks: true,
-        cssClassForInternalLinks: 'link',
-        cssClassForExternalLinks: 'link link-external',
-        doNotShowImages: false,
-        ipfsPrefix: '',
-        assetsWidth: 640,
-        assetsHeight: 480,
-        imageProxyFn: (url: string) => getDoubleSize(proxifyImageUrl(url, true).replace(/ /g, '%20')),
-        usertagUrlFn: (account: string) => '/@' + account,
-        hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
-        isLinkSafeFn: (url: string) =>
-          !!url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) &&
-          !!url.match(`^(/(?!/)|${env('SITE_DOMAIN')})`),
-        addExternalCssClassToMatchingLinksFn: (url: string) =>
-          !url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) && !url.match(`^(/(?!/)|${env('SITE_DOMAIN')})`)
-      }),
-    []
-  );
+  const { hiveRenderer } = useContext(HiveRendererContext);
 
   useEffect(() => {
-    const nextCleanedText = text ? renderer.render(text) : '';
-    setCleanedText(nextCleanedText);
-  }, [renderer, text]);
+    if (hiveRenderer) {
+      const nextCleanedText = text ? hiveRenderer.render(text) : '';
+      setCleanedText(nextCleanedText);
+    }
+  }, [hiveRenderer, text]);
 
   const handleCancel = () => {
     if (text === '') return onSetReply(false);
