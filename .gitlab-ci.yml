@@ -2,7 +2,7 @@ stages:
   - test
   - release
 
-image: node:14.19.0
+image: node:20.11.1
 
 before_script:
   - npm ci

@@ -2,7 +2,7 @@
  * This file is based on https://github.com/openhive-network/condenser/blob/master/src/app/utils/SanitizeConfig.js
  */
 import ow from "ow";
-import * as sanitize from "sanitize-html";
+import sanitize from "sanitize-html";
 
 import { Log } from "../../../Log";
 import { DefaultRendererLocalization } from "../DefaultRendererLocalization";
