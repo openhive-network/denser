@@ -9,6 +9,12 @@ variable "TAG" {
 variable "TURBO_APP_SCOPE" {}
 variable "TURBO_APP_PATH" {}
 variable "TURBO_APP_NAME" {}
+variable "BUILD_TIME" {}
+variable "GIT_COMMIT_SHA" {}
+variable "GIT_CURRENT_BRANCH" {}
+variable "GIT_LAST_LOG_MESSAGE" {}
+variable "GIT_LAST_COMMITTER" {}
+variable "GIT_LAST_COMMIT_DATE" {}
 
 function "notempty" {
   params = [variable]
@@ -25,6 +31,13 @@ target "local-build" {
   args = {
     TURBO_APP_SCOPE = "${TURBO_APP_SCOPE}",
     TURBO_APP_PATH = "${TURBO_APP_PATH}",
+    TURBO_APP_NAME = "${TURBO_APP_NAME}",
+    BUILD_TIME = "${BUILD_TIME}",
+    GIT_COMMIT_SHA = "${GIT_COMMIT_SHA}",
+    GIT_CURRENT_BRANCH = "${GIT_CURRENT_BRANCH}",
+    GIT_LAST_LOG_MESSAGE = "${GIT_LAST_LOG_MESSAGE}",
+    GIT_LAST_COMMITTER = "${GIT_LAST_COMMITTER}",
+    GIT_LAST_COMMIT_DATE = "${GIT_LAST_COMMIT_DATE}",
   }
   output = [
     "type=docker"
