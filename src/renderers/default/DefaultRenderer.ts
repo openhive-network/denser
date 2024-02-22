@@ -29,9 +29,11 @@ export class DefaultRenderer {
                 iframeHeight: this.options.assetsHeight,
                 addNofollowToLinks: this.options.addNofollowToLinks,
                 addTargetBlankToLinks: this.options.addTargetBlankToLinks,
-                addCssClassToLinks: this.options.addCssClassToLinks,
+                cssClassForInternalLinks: this.options.cssClassForInternalLinks,
+                cssClassForExternalLinks: this.options.cssClassForExternalLinks,
                 noImage: this.options.doNotShowImages,
                 isLinkSafeFn: this.options.isLinkSafeFn,
+                addExternalCssClassToMatchingLinksFn: this.options.addExternalCssClassToMatchingLinksFn,
             },
             localization,
         );
@@ -120,7 +122,8 @@ export namespace DefaultRenderer {
         allowInsecureScriptTags: boolean;
         addNofollowToLinks: boolean;
         addTargetBlankToLinks?: boolean;
-        addCssClassToLinks?: string;
+        cssClassForInternalLinks?: string;
+        cssClassForExternalLinks?: string;
         doNotShowImages: boolean;
         ipfsPrefix: string;
         assetsWidth: number;
@@ -129,6 +132,7 @@ export namespace DefaultRenderer {
         hashtagUrlFn: (hashtag: string) => string;
         usertagUrlFn: (account: string) => string;
         isLinkSafeFn: (url: string) => boolean;
+        addExternalCssClassToMatchingLinksFn: (url: string) => boolean;
     }
 
     export namespace Options {
@@ -138,7 +142,8 @@ export namespace DefaultRenderer {
             ow(o.skipSanitization, "Options.skipSanitization", ow.boolean);
             ow(o.addNofollowToLinks, "Options.addNofollowToLinks", ow.boolean);
             ow(o.addTargetBlankToLinks, "Options.addTargetBlankToLinks", ow.optional.boolean);
-            ow(o.addCssClassToLinks, "Options.addCssClassToLinks", ow.optional.string);
+            ow(o.cssClassForInternalLinks, "Options.cssClassForInternalLinks", ow.optional.string);
+            ow(o.cssClassForExternalLinks, "Options.cssClassForExternalLinks", ow.optional.string);
             ow(o.doNotShowImages, "Options.doNotShowImages", ow.boolean);
             ow(o.ipfsPrefix, "Options.ipfsPrefix", ow.string);
             ow(o.assetsWidth, "Options.assetsWidth", ow.number.integer.positive);
@@ -147,6 +152,11 @@ export namespace DefaultRenderer {
             ow(o.hashtagUrlFn, "Options.hashtagUrlFn", ow.function);
             ow(o.usertagUrlFn, "Options.usertagUrlFn", ow.function);
             ow(o.isLinkSafeFn, "TagTransformingSanitizer.Options.isLinkSafeFn", ow.function);
+            ow(
+                o.addExternalCssClassToMatchingLinksFn,
+                "TagTransformingSanitizer.Options.addExternalCssClassToMatchingLinksFn",
+                ow.function,
+            );
         }
     }
 }

@@ -7,7 +7,8 @@ const renderer = new HiveContentRenderer.DefaultRenderer({
     allowInsecureScriptTags: false,
     addNofollowToLinks: true,
     addTargetBlankToLink: true,
-    addCssClassToLinks: "hive-class",
+    cssClassForInternalLinks: "hive-class",
+    cssClassForExternalLinks: "external",
     doNotShowImages: false,
     ipfsPrefix: "",
     assetsWidth: 640,
@@ -16,6 +17,7 @@ const renderer = new HiveContentRenderer.DefaultRenderer({
     usertagUrlFn: (account) => "/@" + account,
     hashtagUrlFn: (hashtag) => "/trending/" + hashtag,
     isLinkSafeFn: (url) => true,
+    addExternalCssClassToMatchingLinksFn: (url) => true,
 });
 
 const input = `
