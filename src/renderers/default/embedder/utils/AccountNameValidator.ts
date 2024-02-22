@@ -38,10 +38,6 @@ export class AccountNameValidator {
                 return localization.accountNameWrongSegment;
                 // each_account_segment_should_have_only_letters_digits_or_dashes
             }
-            if (/--/.test(label)) {
-                return localization.accountNameWrongSegment;
-                // each_account_segment_should_have_only_one_dash_in_a_row
-            }
             if (!/[a-z0-9]$/.test(label)) {
                 return localization.accountNameWrongSegment;
                 // each_account_segment_should_end_with_a_letter_or_digit
