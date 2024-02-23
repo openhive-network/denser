@@ -16,13 +16,14 @@
     "build:node": "tsc -p tsconfig.build.json",
     "build:browser": "rm -rf dist/browser/ && NODE_ENV=production webpack --mode=production --config webpack.config.js",
     "build": "npm run build:cleanbefore && npm run lint && npm run build:node && npm run build:browser",
-    "prepare": "NODE_ENV=production npm run build",
+    "prepare": "npm run hooks:install && NODE_ENV=production npm run build",
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint ./src --ext .js,.jsx,.ts,.tsx --fix",
     "test": "mocha 'src/**/*.test.ts'",
     "verify:browser": "testcafe --selector-timeout 2000 --assertion-timeout 2000 chrome browser-test/browser-test.js",
     "verify:puppeteer": "testcafe --selector-timeout 2000 --assertion-timeout 2000 puppeteer browser-test/browser-test.js",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "hooks:install": "husky"
   },
   "dependencies": {
     "@xmldom/xmldom": "0.8.1",
@@ -73,11 +74,6 @@
       "scope-case": [
         0
       ]
-    }
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
   "repository": {
