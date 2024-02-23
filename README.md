@@ -164,14 +164,10 @@ $ npm run test
 
 Integration tests are run with testcafe. Please note you need to rebuild the library before running the tests in order to have the latest version of the library embedded in the test page. Run `npm run build` before running the tests.
 
-To run integration tests with the default browser (chrome):
+To run integration tests with your default browser (chrome):
 ```bash
-$ npm run verify:browser
-```
-
-To run integration tests with headless puppeteer:
-```bash
-$ npm run verify:puppeteer
+$ npm run verify:chrome
+$ npm run verify:firefox
 ```
 
 ## Linting

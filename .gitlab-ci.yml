@@ -25,10 +25,12 @@ test:unit:
 
 test:browser:
   stage: test
-  image: alekzonder/puppeteer
+  image:
+    name: testcafe/testcafe
+    entrypoint: ["/bin/sh", "-c"]
   script:
     - NODE_ENV=production npm run build
-    - npm run verify:puppeteer
+    - npm run verify:ci
 
 release:
   stage: release
