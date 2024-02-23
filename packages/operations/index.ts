@@ -4,8 +4,8 @@ import {
   FollowOperationBuilder,
   operation
 } from '@hive/wax/web';
-import { logger } from '@hive/ui/lib/logger';
-import { toast } from '@hive/ui/components/hooks/use-toast';
+import { logger } from '@ui/lib/logger';
+import { toast } from '@ui/components/hooks/use-toast';
 import { comment } from '@hive/wax/web';
 import { createPermlink } from './lib/utils';
 import { Entry } from '@ui/lib/bridge';

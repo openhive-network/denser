@@ -1,5 +1,5 @@
-import { convertStringToBig } from '@hive/ui/lib/helpers';
-import { DynamicGlobalProperties } from '@hive/ui/lib/hive';
+import { convertStringToBig } from '@ui/lib/helpers';
+import { DynamicGlobalProperties } from '@ui/lib/hive';
 import { AccountHistoryData } from '../pages/[param]/transfers';
 import { TransferFilters } from '@/wallet/components/transfers-history-filter';
 

@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import Link, { LinkProps } from "next/link";
-import { useRouter } from "next/navigation";
-import { SidebarOpen } from "lucide-react";
-import { siteConfig } from "@hive/ui/config/site";
-import { cn } from "@hive/ui/lib/utils";
-import { Button } from "@hive/ui/components/button";
-import { Sheet, SheetContent, SheetTrigger } from "@hive/ui/components/sheet";
-import { Icons } from "@hive/ui/components/icons";
+import * as React from 'react';
+import Link, { LinkProps } from 'next/link';
+import { useRouter } from 'next/navigation';
+import { SidebarOpen } from 'lucide-react';
+import { siteConfig } from '@ui/config/site';
+import { cn } from '@ui/lib/utils';
+import { Button } from '@ui/components/button';
+import { Sheet, SheetContent, SheetTrigger } from '@ui/components/sheet';
+import { Icons } from '@ui/components/icons';
 
 export function MobileNav() {
   const [open, setOpen] = React.useState(false);
@@ -25,11 +25,7 @@ export function MobileNav() {
         </Button>
       </SheetTrigger>
       <SheetContent size="xl" position="left" className="pr-0">
-        <MobileLink
-          href="/"
-          className="flex items-center"
-          onOpenChange={setOpen}
-        >
+        <MobileLink href="/" className="flex items-center" onOpenChange={setOpen}>
           <Icons.hive className="mr-2 h-4 w-4" />
           <span className="font-bold">{siteConfig.name}</span>
         </MobileLink>
@@ -44,13 +40,7 @@ interface MobileLinkProps extends LinkProps {
   className?: string;
 }
 
-function MobileLink({
-  href,
-  onOpenChange,
-  className,
-  children,
-  ...props
-}: MobileLinkProps) {
+function MobileLink({ href, onOpenChange, className, children, ...props }: MobileLinkProps) {
   const router = useRouter();
   return (
     <Link

@@ -8,7 +8,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger
-} from '@hive/ui/components/alert-dialog';
+} from '@ui/components/alert-dialog';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { ReactNode } from 'react';
 import { operationService } from '@operations/index';

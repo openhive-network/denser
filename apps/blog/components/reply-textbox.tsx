@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import { Textarea } from '@hive/ui/components/textarea';
-import { Button } from '@hive/ui/components/button';
+import { Textarea } from '@ui/components/textarea';
+import { Button } from '@ui/components/button';
 import { useContext, useEffect, useState } from 'react';
 import { Label } from '@radix-ui/react-label';
-import { Input } from '@hive/ui/components/input';
+import { Input } from '@ui/components/input';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { operationService } from '@operations/index';

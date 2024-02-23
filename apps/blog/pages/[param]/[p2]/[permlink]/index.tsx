@@ -1,4 +1,4 @@
-import parseDate, { dateToFullRelative } from '@hive/ui/lib/parse-date';
+import parseDate, { dateToFullRelative } from '@ui/lib/parse-date';
 import { Clock, Link2 } from 'lucide-react';
 import UserInfo from '@/blog/components/user-info';
 import { getActiveVotes } from '@/blog/lib/hive';

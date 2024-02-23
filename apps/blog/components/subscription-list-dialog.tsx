@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTrigger } from '@hive/ui/components/dialog';
+import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
 
 import { Subscription } from '@ui/lib/bridge';
 import Link from 'next/link';

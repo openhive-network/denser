@@ -6,7 +6,7 @@ import { twMerge } from 'tailwind-merge';
 import remarkableStripper from '@/blog/lib/remmarkable-stripper';
 import { Vote } from './hive';
 import { Entry, JsonMetadata } from '@ui/lib/bridge';
-import { parseDate2 } from '@hive/ui/lib/parse-date';
+import { parseDate2 } from '@ui/lib/parse-date';
 import moment from 'moment';
 import { TFunction } from 'i18next';
 

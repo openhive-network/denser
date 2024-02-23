@@ -7,8 +7,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger
-} from '@hive/ui/components/dropdown-menu';
-import { Icons } from '@hive/ui/components/icons';
+} from '@ui/components/dropdown-menu';
+import { Icons } from '@ui/components/icons';
 import { useTranslation } from 'next-i18next';
 
 export default function ModeToggle({ children }: { children: React.ReactNode }) {

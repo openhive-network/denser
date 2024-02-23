@@ -1,4 +1,4 @@
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Icons } from '@ui/components/icons';
 import DialogLogin from './dialog-login';

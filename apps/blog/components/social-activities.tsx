@@ -1,5 +1,5 @@
 import BadgeList from '@/blog/components/badge-list';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@hive/ui/components/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components/tabs';
 import { Badge } from '@ui/lib/bridge';
 import { useTranslation } from 'next-i18next';
 

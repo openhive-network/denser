@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { getLogger } from "@hive/ui/lib/logging";
+import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
 

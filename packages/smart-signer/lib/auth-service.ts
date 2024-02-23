@@ -1,10 +1,9 @@
 import { OnlineClient } from '@hive/hb-auth';
 
-import { getLogger } from '@hive/ui/lib/logging';
+import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 class AuthService {
-
   static onlineClient: OnlineClient;
 
   async getOnlineClient() {
@@ -13,7 +12,6 @@ class AuthService {
     }
     return AuthService.onlineClient;
   }
-
 }
 
 export const authService = new AuthService();

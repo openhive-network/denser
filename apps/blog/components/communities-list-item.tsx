@@ -1,6 +1,6 @@
-import { Button } from '@hive/ui/components/button';
+import { Button } from '@ui/components/button';
 import { cn } from '@/blog/lib/utils';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@hive/ui/components/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@ui/components/card';
 import Link from 'next/link';
 import { Community } from '@ui/lib/bridge';
 import DialogLogin from './dialog-login';

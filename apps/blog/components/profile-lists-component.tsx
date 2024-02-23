@@ -1,8 +1,8 @@
 import ProfileLayout from '@/blog/components/common/profile-layout';
-import { Button } from '@hive/ui/components/button';
-import { Input } from '@hive/ui/components/input';
+import { Button } from '@ui/components/button';
+import { Input } from '@ui/components/input';
 import Link from 'next/link';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@hive/ui/components/accordion';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@ui/components/accordion';
 import clsx from 'clsx';
 import { FollowList } from '@ui/lib/bridge';
 import { useState } from 'react';

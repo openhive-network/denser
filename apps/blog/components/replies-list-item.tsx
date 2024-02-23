@@ -1,19 +1,12 @@
-import { Icons } from '@hive/ui/components/icons';
-import parseDate, { dateToFullRelative } from '@hive/ui/lib/parse-date';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from '@hive/ui/components/card';
+import { Icons } from '@ui/components/icons';
+import parseDate, { dateToFullRelative } from '@ui/lib/parse-date';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@ui/components/card';
 import { cn, getPostSummary } from '@/blog/lib/utils';
 import Link from 'next/link';
-import { Separator } from '@hive/ui/components/separator';
+import { Separator } from '@ui/components/separator';
 import accountReputation from '@/blog/lib/account-reputation';
-import { Badge } from '@hive/ui/components/badge';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
+import { Badge } from '@ui/components/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { Entry } from '@ui/lib/bridge';
 import DetailsCardHover from './details-card-hover';
 import clsx from 'clsx';

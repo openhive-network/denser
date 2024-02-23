@@ -1,13 +1,13 @@
 import Link from 'next/link';
 import { BURN_ACCOUNTS, REFUND_ACCOUNTS } from '@/wallet/lib/constants';
 import { ListItemProps } from '@/wallet/lib/hive';
-import { getRoundedAbbreveration, numberWithCommas } from '@hive/ui/lib/utils';
-import { Icons } from '@hive/ui/components/icons';
+import { getRoundedAbbreveration, numberWithCommas } from '@ui/lib/utils';
+import { Icons } from '@ui/components/icons';
 import moment from 'moment';
-import { dateToFullRelative } from '@hive/ui/lib/parse-date';
-import { Badge } from '@hive/ui/components/badge';
+import { dateToFullRelative } from '@ui/lib/parse-date';
+import { Badge } from '@ui/components/badge';
 import { useEffect, useState } from 'react';
-import { getPostHeader } from '@hive/ui/lib/bridge';
+import { getPostHeader } from '@ui/lib/bridge';
 import VoteProposals from './votes-proposals-dialog';
 import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';

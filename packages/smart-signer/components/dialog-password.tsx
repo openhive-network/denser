@@ -1,9 +1,9 @@
-import { Dialog, DialogContent, DialogTrigger } from '@hive/ui/components/dialog';
+import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
 import { ReactNode, SyntheticEvent, useState, FC } from 'react';
 import { useTranslation } from 'next-i18next';
 import { create, InstanceProps } from 'react-modal-promise';
 
-import { getLogger } from '@hive/ui/lib/logging';
+import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 interface DialogPasswordProps {
@@ -20,7 +20,7 @@ export const DialogPassword: FC<DialogPasswordProps & InstanceProps<unknown>> = 
   onReject,
   i18nKeyPlaceholder = '',
   i18nKeyTitle = '',
-  i18nNamespace = 'smart-signer',
+  i18nNamespace = 'smart-signer'
 }) => {
   const { t } = useTranslation(i18nNamespace);
   const placeholder = i18nKeyPlaceholder ? t(i18nKeyPlaceholder) : 'Password';
@@ -36,7 +36,7 @@ export const DialogPassword: FC<DialogPasswordProps & InstanceProps<unknown>> = 
     setPassword(password);
     setOpen(false);
     onResolve(password);
-  }
+  };
 
   const onOpenChange = (value: boolean) => {
     setOpen(value);
@@ -45,11 +45,11 @@ export const DialogPassword: FC<DialogPasswordProps & InstanceProps<unknown>> = 
     } else {
       onReject('rejected');
     }
-  }
+  };
 
   const onInteractOutside = (e: any) => {
     e.preventDefault();
-  }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -57,9 +57,7 @@ export const DialogPassword: FC<DialogPasswordProps & InstanceProps<unknown>> = 
       <DialogContent className="sm:max-w-[600px]" onInteractOutside={onInteractOutside}>
         <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
           <div className="mx-auto flex w-full max-w-md flex-col items-center">
-            <h2 className="w-full pb-6 text-3xl text-gray-800">
-              {title}
-            </h2>
+            <h2 className="w-full pb-6 text-3xl text-gray-800">{title}</h2>
             <form onSubmit={onSubmit} className="w-full" name="login">
               <div className="mb-5">
                 <input
@@ -90,6 +88,6 @@ export const DialogPassword: FC<DialogPasswordProps & InstanceProps<unknown>> = 
       </DialogContent>
     </Dialog>
   );
-}
+};
 
 export const DialogPasswordModalPromise = create(DialogPassword);

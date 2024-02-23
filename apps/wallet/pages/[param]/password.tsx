@@ -1,8 +1,8 @@
-import { Button } from '@hive/ui/components/button';
-import { Input } from '@hive/ui/components/input';
+import { Button } from '@ui/components/button';
+import { Input } from '@ui/components/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@hive/ui/components/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@ui/components/form';
 import { useForm } from 'react-hook-form';
 import { Checkbox, Separator } from '@hive/ui';
 import Link from 'next/link';
@@ -187,7 +187,10 @@ export default function PostForm() {
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   return {
     props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_wallet', 'smart-signer']))
+      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
+        'common_wallet',
+        'smart-signer'
+      ]))
     }
   };
 };

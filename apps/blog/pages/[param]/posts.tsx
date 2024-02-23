@@ -1,8 +1,8 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { getAccountPosts, DATA_LIMIT as PER_PAGE } from '@ui/lib/bridge';
 import ProfileLayout from '@/blog/components/common/profile-layout';
-import { useSiteParams } from '@hive/ui/components/hooks/use-site-params';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@hive/ui/components/tabs';
+import { useSiteParams } from '@ui/components/hooks/use-site-params';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components/tabs';
 import PostList from '@/blog/components/post-list';
 import { useRouter } from 'next/router';
 import RepliesList from '@/blog/components/replies-list';

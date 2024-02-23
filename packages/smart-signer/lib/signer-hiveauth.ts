@@ -5,7 +5,7 @@ import HiveAuthUtils from '@smart-signer/lib/hive-auth-utils';
 import { SignerBase } from '@smart-signer/lib/signer-base';
 import { StorageMixin } from '@smart-signer/lib/storage-mixin';
 
-import { getLogger } from '@hive/ui/lib/logging';
+import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 /**
@@ -18,7 +18,6 @@ const logger = getLogger('app');
  * @extends {StorageMixin(SignerBase)}
  */
 export class SignerHiveauth extends StorageMixin(SignerBase) {
-
   async destroy(username: string) {
     HiveAuthUtils.logout();
     this.storage.removeItem('hiveAuthData');
@@ -36,7 +35,6 @@ export class SignerHiveauth extends StorageMixin(SignerBase) {
     HiveAuthUtils.setExpire(hiveAuthData?.expire || 0);
     HiveAuthUtils.setKey(hiveAuthData?.key || '');
   }
-
 
   async signChallenge({
     message,
@@ -59,8 +57,7 @@ export class SignerHiveauth extends StorageMixin(SignerBase) {
       });
 
       if (authResponse.success && authResponse.hiveAuthData) {
-        const { token, expire, key, challengeHex: signature } =
-            authResponse.hiveAuthData;
+        const { token, expire, key, challengeHex: signature } = authResponse.hiveAuthData;
         this.storage.setItem('hiveAuthData', JSON.stringify({ username, token, expire, key }));
         logger.info('hiveauth', { signature });
         return signature as string;
@@ -70,26 +67,20 @@ export class SignerHiveauth extends StorageMixin(SignerBase) {
     } catch (error) {
       throw error;
     }
-  };
-
+  }
 
   async broadcastTransaction({
     operation,
     keyType = KeyTypes.posting
-  }: BroadcastTransaction): Promise<{ success: boolean, result: any, error: string}> {
-
-    let result = { success: true, result: '', error: ''};
+  }: BroadcastTransaction): Promise<{ success: boolean; result: any; error: string }> {
+    let result = { success: true, result: '', error: '' };
     try {
       this.setHiveAuthData();
       const operations = waxToKeychainOperation(operation);
       const broadcastResponse: any = await new Promise((resolve) => {
-        HiveAuthUtils.broadcast(
-          operations,
-          keyType,
-          (res) => {
-            resolve(res);
-          }
-        );
+        HiveAuthUtils.broadcast(operations, keyType, (res) => {
+          resolve(res);
+        });
       });
       logger.info('SignerHiveauth.broadcastTransaction response: %o', broadcastResponse);
       if (!broadcastResponse.success) {
@@ -97,11 +88,10 @@ export class SignerHiveauth extends StorageMixin(SignerBase) {
       }
     } catch (error) {
       logger.error('Error in SignerHiveauth.broadcastTransaction: %o', error);
-      result = { success: false, result: '', error: 'Broadcast failed'};
+      result = { success: false, result: '', error: 'Broadcast failed' };
       throw error;
     }
 
     return result;
-  };
-
+  }
 }

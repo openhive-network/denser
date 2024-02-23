@@ -1,11 +1,11 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useQuery } from '@tanstack/react-query';
-import { DynamicGlobalProperties, getDynamicGlobalProperties } from '@hive/ui/lib/hive';
+import { DynamicGlobalProperties, getDynamicGlobalProperties } from '@ui/lib/hive';
 import clsx from 'clsx';
 import { getVestingDelegations } from '@/wallet/lib/hive';
-import { numberWithCommas } from '@hive/ui/lib/utils';
-import { dateToFullRelative } from '@hive/ui/lib/parse-date';
-import Loading from '@hive/ui/components/loading';
+import { numberWithCommas } from '@ui/lib/utils';
+import { dateToFullRelative } from '@ui/lib/parse-date';
+import Loading from '@ui/components/loading';
 import Link from 'next/link';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
 import { useRouter } from 'next/router';
@@ -81,7 +81,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
       username: username.replace('@', ''),
-      ...(await serverSideTranslations(ctx.req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_wallet', 'smart-signer']))
+      ...(await serverSideTranslations(ctx.req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
+        'common_wallet',
+        'smart-signer'
+      ]))
     }
   };
 };

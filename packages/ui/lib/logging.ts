@@ -16,7 +16,7 @@ export function getLogLevel(logger: string): string {
  *
  * Use this way:
  * ```
- * import { getLogger } from "@hive/ui/lib/logging";
+ * import { getLogger } from "@ui/lib/logging";
  * const logger = getLogger('app');
  * logger.info("an info message from _app");
  * logger.info({username: 'John', id: 2}, "another info message from _app");

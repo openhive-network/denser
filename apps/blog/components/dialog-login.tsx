@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTrigger } from '@hive/ui/components/dialog';
+import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
 import { LoginPanel } from '@smart-signer/components/login-panel';
 import { ReactNode } from 'react';
 
