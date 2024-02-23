@@ -2,7 +2,7 @@ import Big from 'big.js';
 import { AccountHistory } from '@/wallet/store/app-types';
 import { makeBitMaskFilter, operationOrders } from '@hiveio/dhive/lib/utils';
 import moment from 'moment';
-import { TWaxApiRequest, createHiveChain, RcAccount } from '@hive/wax/web';
+import { TWaxApiRequest, createHiveChain, RcAccount, NaiAsset } from '@hive/wax/web';
 
 export declare type Bignum = string;
 
@@ -18,6 +18,7 @@ export interface IWitness {
   };
   hbd_exchange_rate: {
     base: string;
+    quote: string;
   };
   available_witness_account_subsidies: number;
   running_version: string;

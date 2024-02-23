@@ -111,6 +111,7 @@ type Operation =
 
 const mapToAccountHistoryObject = ([id, data]: AccountHistory) => {
   const { op, ...rest } = data;
+  console.log('op', op);
   let operation: Operation | undefined;
   if (!op) operation = undefined;
   if (op) {
@@ -232,7 +233,8 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
   }
 
   const totalFund = convertStringToBig(dynamicData.total_vesting_fund_hive.amount);
-  const price_per_hive = convertStringToBig(historyFeedData.current_median_history.base);
+  console.log('istoryFeedData', historyFeedData);
+  const price_per_hive = 0; //convertStringToBig(historyFeedData.current_median_history.base);
   const totalDays = moment(accountData.next_vesting_withdrawal).diff(moment(), `d`);
   const totalShares = convertStringToBig(dynamicData.total_vesting_shares.amount);
   const vesting_hive = vestingHive(accountData, dynamicData);

@@ -23,13 +23,11 @@ test.describe.skip('Witnesses page tests', () => {
   });
 
   test('move to the Witnesses page from the Home page', async ({ page }) => {
-  
     await homePage.goto();
     await homePage.moveToNavWitnessesPage();
   });
 
   test('validate witness page header', async ({ page }) => {
-  
     await homePage.goto();
     await homePage.moveToNavWitnessesPage();
 
@@ -39,7 +37,6 @@ test.describe.skip('Witnesses page tests', () => {
   });
 
   test('validate number of displayed witnesses', async ({ page }) => {
-
     await homePage.goto();
     await homePage.moveToNavWitnessesPage();
 
@@ -48,7 +45,6 @@ test.describe.skip('Witnesses page tests', () => {
   });
 
   test('validate the voting box is visible', async ({ page }) => {
-    
     await homePage.goto();
     await homePage.moveToNavWitnessesPage();
 
@@ -56,7 +52,6 @@ test.describe.skip('Witnesses page tests', () => {
   });
 
   test('validate the set proxy box is visible', async ({ page }) => {
-    
     await homePage.goto();
     await homePage.moveToNavWitnessesPage();
 
@@ -64,7 +59,6 @@ test.describe.skip('Witnesses page tests', () => {
   });
 
   test('validate the witnesses table head visible', async ({ page }) => {
-   
     await homePage.goto();
     await homePage.moveToNavWitnessesPage();
 
@@ -72,7 +66,6 @@ test.describe.skip('Witnesses page tests', () => {
   });
 
   test('validate info about first witness', async ({ page }) => {
-    
     await homePage.goto();
     await homePage.moveToNavWitnessesPage();
 
@@ -81,7 +74,7 @@ test.describe.skip('Witnesses page tests', () => {
     const nameFirstWitnessAPI = await firstWitnessInfoAPI.owner;
     const lastConfirmedBlockNumberOfFirstWitnessAPI = await firstWitnessInfoAPI.last_confirmed_block_num;
     const runningVersionOfFirstWitnessAPI = await firstWitnessInfoAPI.running_version;
-    const priceFeedOfFirstWitnessAPI = await firstWitnessInfoAPI.hbd_exchange_rate.base;
+    const priceFeedOfFirstWitnessAPI = await firstWitnessInfoAPI.hbd_exchange_rate.base.amount;
 
     expect(nameFirstWitnessAPI).toBe(await witnessPage.firstWitnessNameLink.textContent());
     expect('#' + lastConfirmedBlockNumberOfFirstWitnessAPI).toBe(
@@ -117,7 +110,6 @@ test.describe.skip('Witnesses page tests', () => {
   });
 
   test('highlight the selected witness and validate typeing his name to vote input', async ({ page }) => {
-   
     await homePage.goto();
     await homePage.moveToNavWitnessesPage();
 
@@ -148,7 +140,6 @@ test.describe.skip('Witnesses page tests', () => {
   });
 
   test('move to the profile page of the first witness', async ({ page }) => {
-    
     await homePage.goto();
     await homePage.moveToNavWitnessesPage();
 
@@ -160,7 +151,6 @@ test.describe.skip('Witnesses page tests', () => {
   });
 
   test('move to the extra side of the first witness', async ({ page }) => {
-   
     await homePage.goto();
     await homePage.moveToNavWitnessesPage();
     await witnessPage.page.waitForTimeout(1000);

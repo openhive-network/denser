@@ -22,7 +22,7 @@ export default function PayoutHoverContent({ post }: { post: Entry }) {
     return <Loading loading />;
   }
   const historyFeedArr = data?.price_history;
-  const price_per_hive = convertStringToBig(historyFeedArr[historyFeedArr.length - 1].base);
+  const price_per_hive = convertStringToBig(historyFeedArr[historyFeedArr.length - 1].base.amount);
   const percent_hbd = post.percent_hbd / 20000;
   const _hbd = post.payout * percent_hbd;
   const pending_hp = price_per_hive ? Big(post.payout - _hbd).div(price_per_hive) : null;

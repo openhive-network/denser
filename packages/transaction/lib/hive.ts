@@ -7,7 +7,8 @@ import {
   GetDynamicGlobalPropertiesResponse,
   IManabarData,
   IHiveChainInterface,
-  transaction
+  transaction,
+  NaiAsset
 } from '@hive/wax/web';
 import { isCommunity, parseAsset } from '@ui/lib/utils';
 import { vestsToRshares } from '@ui/lib/utils';
@@ -68,26 +69,26 @@ export const getAccountFull = (username: string): Promise<FullAccount> =>
 
 export interface IFeedHistory {
   current_median_history: {
-    base: string;
-    quote: string;
+    base: NaiAsset;
+    quote: NaiAsset;
   };
   price_history: [
     {
-      base: string;
-      quote: string;
+      base: NaiAsset;
+      quote: NaiAsset;
     }
   ];
 }
 
 type GetFeedHistoryData = {
-  database: {
+  database_api: {
     get_feed_history: TWaxApiRequest<void, IFeedHistory>;
   };
 };
 
 export const getFeedHistory = async (): Promise<IFeedHistory> => {
   const chain = await createHiveChain();
-  return chain.extend<GetFeedHistoryData>().api.database.get_feed_history();
+  return chain.extend<GetFeedHistoryData>().api.database_api.get_feed_history();
 };
 
 type GetFollowCountData = {
