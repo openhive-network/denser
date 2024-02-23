@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@ui/components/card';
 import Link from 'next/link';
 import { Button } from '@hive/ui/components/button';
 import type { Community, Subscription } from '@transaction/lib/bridge';

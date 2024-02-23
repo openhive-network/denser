@@ -1,10 +1,10 @@
 import Router from 'next/router';
-import { Icons } from '@hive/ui/components/icons';
+import { Icons } from '@ui/components/icons';
 import ProfileLayout from '@/blog/components/common/profile-layout';
-import { Button } from '@hive/ui/components/button';
-import { Input } from '@hive/ui/components/input';
-import { Label } from '@hive/ui/components/label';
-import { RadioGroup, RadioGroupItem } from '@hive/ui/components/radio-group';
+import { Button } from '@ui/components/button';
+import { Input } from '@ui/components/input';
+import { Label } from '@ui/components/label';
+import { RadioGroup, RadioGroupItem } from '@ui/components/radio-group';
 import {
   Select,
   SelectContent,
@@ -13,8 +13,8 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue
-} from '@hive/ui/components/select';
-import { siteConfig } from '@hive/ui/config/site';
+} from '@ui/components/select';
+import { siteConfig } from '@ui/config/site';
 import { useLocalStorage } from '@/blog/components/hooks/use-local-storage';
 import { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -22,7 +22,7 @@ import { i18n } from '@/blog/next-i18next.config';
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { cn } from '@hive/ui/lib/utils';
+import { cn } from '@ui/lib/utils';
 
 const DEFAULTS_ENDPOINTS = [
   'https://api.hive.blog',

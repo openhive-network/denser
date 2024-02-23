@@ -1,4 +1,4 @@
-import { dateToRelative } from '@hive/ui/lib/parse-date';
+import { dateToRelative } from '@ui/lib/parse-date';
 import Big from 'big.js';
 import Link from 'next/link';
 import { fmt } from '../lib/utils';

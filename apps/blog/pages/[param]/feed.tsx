@@ -1,4 +1,4 @@
-import { useSiteParams } from '@hive/ui/components/hooks/use-site-params';
+import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import {
   DATA_LIMIT as PER_PAGE,
@@ -10,7 +10,7 @@ import {
 import Loading from '@hive/ui/components/loading';
 import { FC, useEffect } from 'react';
 import PostList from '@/blog/components/post-list';
-import { Skeleton } from '@hive/ui/components/skeleton';
+import { Skeleton } from '@ui/components/skeleton';
 import { useInView } from 'react-intersection-observer';
 import CustomError from '@/blog/components/custom-error';
 import { useTranslation } from 'next-i18next';

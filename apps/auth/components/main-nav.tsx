@@ -1,6 +1,6 @@
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Icons } from "@hive/ui/components/icons";
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Icons } from '@ui/components/icons';
 
 export function MainNav() {
   const pathname = usePathname();
@@ -13,7 +13,7 @@ export function MainNav() {
       error without that.
       TODO Debug this, make an issue in their repo when needed.
       */}
-      <Link href="/" className="mr-6 flex items-center space-x-2 keychainify-checked">
+      <Link href="/" className="keychainify-checked mr-6 flex items-center space-x-2">
         <Icons.hivetoken />
       </Link>
     </div>

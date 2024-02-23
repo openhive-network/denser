@@ -6,7 +6,7 @@ import * as userLocalStorage from './user-localstore';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { fetchJson } from '@smart-signer/lib/fetch-json';
 import { defaultUser } from '@smart-signer/lib/auth/utils';
-import { getLogger } from "@hive/ui/lib/logging";
+import { getLogger } from '@ui/lib/logging';
 import { User } from '@smart-signer/types/common';
 
 const logger = getLogger('app');

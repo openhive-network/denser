@@ -4,7 +4,7 @@ import { SignChallenge, SignTransaction, Signer } from '@smart-signer/lib/signer
 import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
 import { THexString, createWaxFoundation } from '@hive/wax/web';
 
-import { getLogger } from '@hive/ui/lib/logging';
+import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 /**

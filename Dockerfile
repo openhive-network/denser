@@ -33,6 +33,28 @@ RUN turbo run build --filter=${TURBO_APP_SCOPE}
 
 FROM base AS runner
 ARG TURBO_APP_PATH
+ARG TURBO_APP_NAME
+ARG BUILD_TIME
+ARG GIT_COMMIT_SHA
+ARG GIT_CURRENT_BRANCH
+ARG GIT_LAST_LOG_MESSAGE
+ARG GIT_LAST_COMMITTER
+ARG GIT_LAST_COMMIT_DATE
+LABEL org.opencontainers.image.created="$BUILD_TIME"
+LABEL org.opencontainers.image.url="https://hive.io/"
+LABEL org.opencontainers.image.documentation="https://gitlab.syncad.com/hive/denser"
+LABEL org.opencontainers.image.source="https://gitlab.syncad.com/hive/denser"
+#LABEL org.opencontainers.image.version="${VERSION}"
+LABEL org.opencontainers.image.revision="$GIT_COMMIT_SHA"
+LABEL org.opencontainers.image.licenses="MIT"
+LABEL org.opencontainers.image.ref.name="Denser $TURBO_APP_NAME"
+LABEL org.opencontainers.image.title="Denser $TURBO_APP_NAME Image"
+LABEL org.opencontainers.image.description="Runs Denser $TURBO_APP_NAME application"
+LABEL io.hive.image.branch="$GIT_CURRENT_BRANCH"
+LABEL io.hive.image.commit.log_message="$GIT_LAST_LOG_MESSAGE"
+LABEL io.hive.image.commit.author="$GIT_LAST_COMMITTER"
+LABEL io.hive.image.commit.date="$GIT_LAST_COMMIT_DATE"
+
 WORKDIR /app
 
 RUN npm i -g @beam-australia/react-env@3.1.1

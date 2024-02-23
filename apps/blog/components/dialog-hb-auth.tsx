@@ -17,28 +17,20 @@ import {
 import { isBrowser, AuthUser } from '@hive/hb-auth';
 import type { KeyAuthorityType } from '@hive/hb-auth';
 import { toast } from '@ui/components/hooks/use-toast';
-import { hbauthService } from '@smart-signer/lib/hbauth-service';
-import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
-
-import { getLogger } from '@ui/lib/logging';
-const logger = getLogger('app');
+import { authService } from '@smart-signer/lib/auth-service';
 
 interface DialogHBAuthProps {
   children: ReactNode;
   onAuthComplete: (username: string, keyType: KeyAuthorityType) => void;
-  i18nNamespace?: string;
 }
 
-export function DialogHBAuth({
-  children,
-  onAuthComplete,
-  i18nNamespace = 'smart-signer'
-}: DialogHBAuthProps) {
-  const { t } = useTranslation(i18nNamespace);
+// This component is a reference how to use hb-auth for main login dialog
+function DialogHBAuth({ children, onAuthComplete }: DialogHBAuthProps) {
+  const { t } = useTranslation('common_blog');
   const [open, setOpen] = useState(false);
   const [k, setKey] = useState('');
 
-  const updateStatus = (user: AuthUser | null = null, err: any = null) => {
+  const updateStatus = (user: AuthUser | null = null, err = null) => {
     if (!user) {
       toast({
         title: 'Info!',
@@ -50,7 +42,7 @@ export function DialogHBAuth({
         toast({
           title: 'Success!',
           description: `Authorized with username: @${user.username}`,
-          variant: 'default'
+          variant: 'success'
         });
         setOpen(false);
         onAuthComplete(user.username, user.keyType!);
@@ -83,42 +75,18 @@ export function DialogHBAuth({
     const key = form.get('key') as string;
 
     if (isBrowser) {
-      const authClient = await hbauthService.getOnlineClient();
+      const authClient = await authService.getOnlineClient();
 
       if (target.name === 'login') {
-        const auth = await authClient.getAuthByUser(username);
-        if (auth?.authorized) {
-          updateStatus(auth);
-        } else {
-          let password = '';
-          try {
-            const result = await DialogPasswordModalPromise({
-              isOpen: true,
-              ...{
-                i18nKeyPlaceholder: 'login_form.password_hbauth_placeholder',
-                i18nKeyTitle: 'login_form.title_hbauth_dialog_password'
-              }
-            });
-            password = result;
-            if (!password) {
-              updateStatus(null, 'No password');
-              return;
-            }
-          } catch (error) {
-            updateStatus(null, 'No password');
-            return;
-          }
-
-          authClient
-            .authenticate(username, password, keyType)
-            .then(async () => {
-              const auth = await authClient.getAuthByUser(username);
-              updateStatus(auth);
-            })
-            .catch((err: any) => {
-              updateStatus(null, err);
-            });
-        }
+        authClient
+          .authenticate(username, password, keyType)
+          .then(async () => {
+            const auth = await authClient.getAuthByUser(username);
+            updateStatus(auth);
+          })
+          .catch((err: any) => {
+            updateStatus(null, err);
+          });
       }
 
       if (target.name === 'authorize') {
@@ -143,19 +111,15 @@ export function DialogHBAuth({
       <DialogContent className="sm:max-w-[600px]" data-testid="login-dialog-hb-auth">
         <Tabs defaultValue="login" className="w-full py-4">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="login" data-testid="hbauth-unlock-key-button">
-              {t('login_form.title_action_unlock_key')}
-            </TabsTrigger>
-            <TabsTrigger value="authorize" data-testid="hbauth-add-key-button">
-              {t('login_form.title_action_add_key')}
-            </TabsTrigger>
+            <TabsTrigger value="login">Login</TabsTrigger>
+            <TabsTrigger value="authorize">Authorize</TabsTrigger>
           </TabsList>
           <TabsContent value="login">
             <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
-              <div className="mx-auto flex w-full max-w-md flex-col items-center">
-                <h2 className="w-full pb-6 text-3xl text-gray-800" data-testid="hbauth-unlock-key-header">
-                  {t('login_form.title_hbauth_form')}
-                  {t('login_form.title_action_unlock_key')}
+              <div className="mx-auto flex w-[440px] max-w-md flex-col items-center">
+                <h2 className="w-full pb-6 text-3xl text-gray-800">
+                  {t('login_form.title')}
+                  {t('login_form.title_action_login_to_vote')}
                 </h2>
                 <form onSubmit={handleSubmit} className="w-full" name="login">
                   <div className="relative mb-5">
@@ -166,18 +130,27 @@ export function DialogHBAuth({
                       className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 pl-11 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
                       placeholder={t('login_form.username_placeholder')}
                       required
-                      data-testid="hbauth-unlock-key-username-input"
                     />
                     <span className="absolute top-0 h-full w-10 rounded-bl-lg rounded-tl-lg bg-gray-400 text-gray-600">
                       <div className="flex h-full w-full items-center justify-center"> @</div>
                     </span>
                   </div>
-                  <div className="mb-5" data-testid="hbauth-unlock-key-select-key-type">
+                  <div className="mb-5">
+                    <input
+                      autoComplete="off"
+                      type="password"
+                      id="password"
+                      name="password"
+                      className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
+                      placeholder="Password"
+                      required
+                      disabled={k === 'watch'}
+                    />
+                  </div>
+
+                  <div className="mb-5">
                     <Select name="keytype" onValueChange={(e) => setKey(e)}>
-                      <SelectTrigger
-                        className="w-[200px]"
-                        data-testid="hbauth-unlock-key-select-key-type-trigger"
-                      >
+                      <SelectTrigger className="w-[200px]">
                         <SelectValue placeholder="Select a key type" />
                       </SelectTrigger>
                       <SelectContent>
@@ -195,16 +168,14 @@ export function DialogHBAuth({
                     <button
                       type="submit"
                       className="w-fit rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-semibold text-white hover:cursor-pointer hover:bg-red-700 focus:outline-none  disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
-                      data-testid="hbauth-unlock-key-submit-button"
                     >
                       {t('login_form.login_button')}
                     </button>
                     <button
                       type="reset"
                       className="w-fit rounded-lg bg-transparent px-5 py-2.5 text-center text-sm font-semibold text-gray-500 hover:cursor-pointer hover:text-red-600 focus:outline-none"
-                      data-testid="hbauth-unlock-key-reset-button"
                     >
-                      {t('login_form.reset_button')}
+                      {t('login_form.cancel_button')}
                     </button>
                   </div>
                 </form>
@@ -213,10 +184,10 @@ export function DialogHBAuth({
           </TabsContent>
           <TabsContent value="authorize">
             <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
-              <div className="mx-auto flex w-full max-w-md flex-col items-center">
-                <h2 className="w-full pb-6 text-3xl text-gray-800" data-testid="hbauth-add-key-header">
-                  {t('login_form.title_hbauth_form')}
-                  {t('login_form.title_action_add_key')}
+              <div className="mx-auto flex w-[440px] max-w-md flex-col items-center">
+                <h2 className="w-full pb-6 text-3xl text-gray-800">
+                  {t('login_form.title')}
+                  {t('login_form.title_action_login_to_vote')}
                 </h2>
                 <form onSubmit={handleSubmit} className="w-full" name="authorize">
                   <div className="relative mb-5">
@@ -227,7 +198,6 @@ export function DialogHBAuth({
                       className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 pl-11 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
                       placeholder={t('login_form.username_placeholder')}
                       required
-                      data-testid="hbauth-add-key-username-input"
                     />
                     <span className="absolute top-0 h-full w-10 rounded-bl-lg rounded-tl-lg bg-gray-400 text-gray-600">
                       <div className="flex h-full w-full items-center justify-center"> @</div>
@@ -235,23 +205,19 @@ export function DialogHBAuth({
                   </div>
                   <div className="mb-5">
                     <input
-                      autoComplete="current-password"
+                      autoComplete="off"
                       type="password"
                       id="password"
                       name="password"
                       className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
                       placeholder="Password"
                       required
-                      data-testid="hbauth-add-key-password-input"
                     />
                   </div>
 
-                  <div className="mb-5" data-testid="hbauth-add-key-select-key-type">
+                  <div className="mb-5">
                     <Select name="keytype">
-                      <SelectTrigger
-                        className="w-[200px]"
-                        data-testid="hbauth-add-key-select-key-type-trigger"
-                      >
+                      <SelectTrigger className="w-[200px]">
                         <SelectValue placeholder="Select a key type" />
                       </SelectTrigger>
                       <SelectContent>
@@ -273,7 +239,6 @@ export function DialogHBAuth({
                       className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
                       placeholder="Your private key"
                       required
-                      data-testid="hbauth-add-key-private-key-input"
                     />
                   </div>
 
@@ -281,16 +246,14 @@ export function DialogHBAuth({
                     <button
                       type="submit"
                       className="w-fit rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-semibold text-white hover:cursor-pointer hover:bg-red-700 focus:outline-none  disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
-                      data-testid="hbauth-add-key-submit-button"
                     >
                       {t('login_form.login_button')}
                     </button>
                     <button
                       type="reset"
                       className="w-fit rounded-lg bg-transparent px-5 py-2.5 text-center text-sm font-semibold text-gray-500 hover:cursor-pointer hover:text-red-600 focus:outline-none"
-                      data-testid="hbauth-add-key-reset-button"
                     >
-                      {t('login_form.reset_button')}
+                      {t('login_form.cancel_button')}
                     </button>
                   </div>
                 </form>

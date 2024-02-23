@@ -9,35 +9,35 @@ import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
 export function useLogout() {
+  const signOut = useSignOut();
+  const { user } = useUser();
 
-    const signOut = useSignOut();
-    const { user } = useUser();
+  const { username, loginType } = user;
+  const signerOptions: SignerOptions = {
+    username,
+    loginType,
+    keyType: KeyTypes.posting,
+    apiEndpoint: 'https://api.hive.blog',
+    storageType: 'localStorage'
+  };
 
-    const { username, loginType } = user;
-    const signerOptions: SignerOptions = {
-      username,
-      loginType,
-      keyType: KeyTypes.posting,
-      apiEndpoint: 'https://api.hive.blog',
-      storageType: 'localStorage',
-    };
-
-    const onLogout = async () => {
-      try {
-        if (user && user.loginType && user.username) {
-          const { username } = user;
-          const signer = getSigner(signerOptions);
-          signer.destroy();
-        }
-        await signOut.mutateAsync();
-      } catch (error) {
-        toast({
-          title: 'Error!',
-          description: 'Logout failed',
-          variant: 'destructive'
-        });
-        logger.error('Error in logout', error);
+  const onLogout = async () => {
+    try {
+      if (user && user.loginType && user.username) {
+        const { username } = user;
+        const signer = getSigner(signerOptions);
+        signer.destroy();
       }
-    };
-    return onLogout;
+      await signOut.mutateAsync();
+    } catch (error) {
+      toast({
+        title: 'Error!',
+        description: 'Logout failed',
+        variant: 'destructive'
+      });
+      logger.error('Error in logout', error);
+    }
+    await signOut.mutateAsync();
+  };
+  return onLogout;
 }

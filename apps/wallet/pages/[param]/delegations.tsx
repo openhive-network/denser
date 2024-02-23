@@ -1,12 +1,10 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useQuery } from '@tanstack/react-query';
 import { IDynamicGlobalProperties, getDynamicGlobalProperties } from '@transaction/lib/hive';
-import clsx from 'clsx';
 import { getVestingDelegations } from '@/wallet/lib/hive';
-import { numberWithCommas } from '@hive/ui/lib/utils';
-import { dateToFullRelative } from '@hive/ui/lib/parse-date';
-import Loading from '@hive/ui/components/loading';
-import Link from 'next/link';
+import { numberWithCommas } from '@ui/lib/utils';
+import { dateToFullRelative } from '@ui/lib/parse-date';
+import Loading from '@ui/components/loading';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
 import { useRouter } from 'next/router';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';

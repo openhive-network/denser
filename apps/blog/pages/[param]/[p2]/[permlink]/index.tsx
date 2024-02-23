@@ -1,4 +1,4 @@
-import parseDate, { dateToFullRelative } from '@hive/ui/lib/parse-date';
+import parseDate, { dateToFullRelative } from '@ui/lib/parse-date';
 import { Clock, Link2 } from 'lucide-react';
 import UserInfo from '@/blog/components/user-info';
 import { getActiveVotes } from '@transaction/lib/hive';
@@ -11,11 +11,11 @@ import Link from 'next/link';
 import DetailsCardHover from '@/blog/components/details-card-hover';
 import DetailsCardVoters from '@/blog/components/details-card-voters';
 import CommentSelectFilter from '@/blog/components/comment-select-filter';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import sorter, { SortOrder } from '@/blog/lib/sorter';
 import { useRouter } from 'next/router';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
-import { Icons } from '@hive/ui/components/icons';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+import { Icons } from '@ui/components/icons';
 import { AlertDialogReblog } from '@/blog/components/alert-window';
 import { ReplyTextbox } from '@/blog/components/reply-textbox';
 import { SharePost } from '@/blog/components/share-post-dialog';
@@ -23,7 +23,7 @@ import LinkedInShare from '@/blog/components/share-post-linkedin';
 import FacebookShare from '@/blog/components/share-post-facebook';
 import RedditShare from '@/blog/components/share-post-reddit';
 import TwitterShare from '@/blog/components/share-post-twitter';
-import { Badge } from '@hive/ui/components/badge';
+import { Badge } from '@ui/components/badge';
 import { UserHoverCard } from '@/blog/components/user-hover-card';
 import { Button } from '@ui/components/button';
 import { Separator } from '@ui/components';
@@ -53,6 +53,7 @@ function PostPage({
   permlink: string;
 }) {
   const { t } = useTranslation('common_blog');
+  const anchorRef = useRef();
   const {
     isLoading: isLoadingDiscussion,
     error: errorDiscussion,
@@ -148,6 +149,13 @@ function PostPage({
 
     return imageExtensions.some((ext) => link.includes(ext));
   }
+
+  useEffect(() => {
+    const id = router.asPath.split('#')[1];
+    document.getElementById(id)?.scrollIntoView({
+      behavior: 'smooth'
+    });
+  }, [router, hiveRenderer]);
 
   return (
     <div className="py-8">

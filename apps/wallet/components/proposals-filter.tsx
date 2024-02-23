@@ -1,13 +1,10 @@
 import * as React from 'react';
 import clsx from 'clsx';
-
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
-  SelectSeparator,
   SelectTrigger,
   SelectValue
 } from '@hive/ui/components/select';

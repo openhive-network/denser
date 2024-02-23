@@ -8,12 +8,12 @@ import {
   getAccountReputation
 } from '@transaction/lib/hive';
 import { accountReputation } from '@/blog/lib/utils';
-import { numberWithCommas } from '@hive/ui/lib/utils';
-import { Icons } from '@hive/ui/components/icons';
-import { Button } from '@hive/ui/components/button';
-import { useSiteParams } from '@hive/ui/components/hooks/use-site-params';
-import { dateToFullRelative, dateToShow } from '@hive/ui/lib/parse-date';
-import Loading from '@hive/ui/components/loading';
+import { numberWithCommas } from '@ui/lib/utils';
+import { Icons } from '@ui/components/icons';
+import { Button } from '@ui/components/button';
+import { useSiteParams } from '@ui/components/hooks/use-site-params';
+import { dateToFullRelative, dateToShow } from '@ui/lib/parse-date';
+import Loading from '@ui/components/loading';
 import { useTranslation } from 'next-i18next';
 
 const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {

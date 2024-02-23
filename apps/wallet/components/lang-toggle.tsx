@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { Button } from '@hive/ui/components/button';
+import { Button } from '@ui/components/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger
-} from '@hive/ui/components/dropdown-menu';
+} from '@ui/components/dropdown-menu';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { parseCookie } from '@/wallet/lib/utils';

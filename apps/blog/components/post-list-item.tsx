@@ -15,7 +15,7 @@ import { Badge } from '@hive/ui/components/badge';
 import parseDate, { dateToFullRelative } from '@hive/ui/lib/parse-date';
 import accountReputation from '@/blog/lib/account-reputation';
 import { AlertDialogReblog } from './alert-window';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import DetailsCardHover from './details-card-hover';
 import { useRouter } from 'next/router';
 import { useState } from 'react';

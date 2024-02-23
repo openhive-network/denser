@@ -15,7 +15,7 @@ import { Button } from '@ui/components';
 import LangToggle from './lang-toggle';
 import { useLogout } from '@smart-signer/lib/auth/use-logout';
 import DialogHBAuth from '@smart-signer/components/dialog-hb-auth';
-import { getLogger } from '@hive/ui/lib/logging';
+import { getLogger } from '@ui/lib/logging';
 import { User } from '@smart-signer/types/common';
 import { useTranslation } from 'next-i18next';
 

@@ -7,7 +7,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@hive/ui/components/select';
+} from '@ui/components/select';
 import { useTranslation } from 'next-i18next';
 
 const CommunitiesSelectFilter = ({
@@ -17,8 +17,8 @@ const CommunitiesSelectFilter = ({
   filter: string;
   handleChangeFilter: (e: string) => void;
 }) => {
-const { t } = useTranslation('common_blog')
-const [state, setState] = useState(() => filter);
+  const { t } = useTranslation('common_blog');
+  const [state, setState] = useState(() => filter);
   return (
     <Select
       defaultValue="rank"

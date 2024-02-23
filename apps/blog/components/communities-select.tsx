@@ -7,7 +7,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@hive/ui/components/select';
+} from '@ui/components/select';
 import { useQuery } from '@tanstack/react-query';
 import { type Subscription, getCommunities } from '@transaction/lib/bridge';
 import { useRouter } from 'next/router';

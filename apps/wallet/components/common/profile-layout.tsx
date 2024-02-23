@@ -1,8 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useSiteParams } from '@hive/ui/components/hooks/use-site-params';
-import Loading from '@hive/ui/components/loading';
+import { useSiteParams } from '@ui/components/hooks/use-site-params';
+import Loading from '@ui/components/loading';
 import { useQuery } from '@tanstack/react-query';
 import { getAccountFull } from '@transaction/lib/hive';
 import { Icons } from '@hive/ui/components/icons';
@@ -14,7 +14,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger
-} from '@hive/ui/components/dropdown-menu';
+} from '@ui/components/dropdown-menu';
 import { useTranslation } from 'next-i18next';
 
 interface IProfileLayout {

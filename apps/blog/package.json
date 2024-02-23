@@ -74,7 +74,7 @@
     "zustand": "^4.4.7"
   },
   "devDependencies": {
-    "@playwright/test": "^1.40.1",
+    "@playwright/test": "^1.41.1",
     "@types/cors": "^2.8.17",
     "@types/http-errors": "^2.0.4",
     "@types/qrcode": "^1.5.5",

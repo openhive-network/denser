@@ -5,10 +5,9 @@ import { getIronSession } from 'iron-session';
 import { oidc } from '@smart-signer/lib/oidc';
 import { sessionOptions } from '@smart-signer/lib/session';
 import { getLogger } from '@hive/ui/lib/logging';
-import { getAccount } from '@hive/transaction/lib/hive';
-import { FullAccount } from '@hive/transaction/lib/app-types';
+import { getAccount } from '@transaction/lib/hive';
+import { FullAccount } from '@transaction/lib/app-types';
 import { postLoginSchema, PostLoginSchema, Signatures } from '@smart-signer/lib/auth/utils';
-import { redirect } from 'next/navigation';
 import { User } from '@smart-signer/types/common';
 import { IronSessionData } from '@smart-signer/types/common';
 import { cookieNamePrefix } from '@smart-signer/lib/session';
@@ -52,8 +51,7 @@ const verifyLoginChallenge = async (
       // We check whether publicKeyRecoveredFromSignature is listed
       // in account posting key auths.
 
-      const verified = publicKeyRecoveredFromSignature === pubkey
-          && publicKey.verify(messageHash, sig);
+      const verified = publicKeyRecoveredFromSignature === pubkey && publicKey.verify(messageHash, sig);
 
       if (!verified) {
         logger.error('verifyLoginChallenge signature verification failed for user %s %o', chainAccount.name, {
@@ -67,10 +65,7 @@ const verifyLoginChallenge = async (
   };
 
   const {
-    posting: {
-      key_auths,
-      weight_threshold
-    }
+    posting: { key_auths, weight_threshold }
   } = chainAccount;
 
   const posting_pubkey = key_auths[0][0];

@@ -1,5 +1,5 @@
-import { Checkbox } from "@hive/ui/components/checkbox";
-import { Input } from "@hive/ui/components/input";
+import { Checkbox } from '@ui/components/checkbox';
+import { Input } from '@ui/components/input';
 import { useTranslation } from 'next-i18next';
 
 export type TransferFilters = {
@@ -13,13 +13,10 @@ interface TransfersHistoryFilterProps {
   onFiltersChange: (value: Partial<TransferFilters>) => void;
   value: TransferFilters;
 }
-function TransfersHistoryFilter({
-  onFiltersChange,
-  value,
-}: TransfersHistoryFilterProps) {
+function TransfersHistoryFilter({ onFiltersChange, value }: TransfersHistoryFilterProps) {
   const { t } = useTranslation('common_wallet');
   return (
-    <div className="flex flex-col  gap-2 border-b-2 border-zinc-500 p-2 sm:p-4 text-xs">
+    <div className="flex flex-col  gap-2 border-b-2 border-zinc-500 p-2 text-xs sm:p-4">
       <h1 className="font-bold">{t('select_sort.sort_account_history.filters')}</h1>
 
       <div className="flex gap-1 sm:gap-4">
@@ -71,7 +68,7 @@ function TransfersHistoryFilter({
               value={value.search}
               onChange={(e) =>
                 onFiltersChange({
-                  search: e.target.value,
+                  search: e.target.value
                 })
               }
             />

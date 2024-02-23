@@ -1,13 +1,13 @@
 import CommunitiesSidebar from '@/blog/components/communities-sidebar';
-import { Input } from '@hive/ui/components/input';
+import { Input } from '@ui/components/input';
 import { useState, KeyboardEvent } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getCommunities, getSubscriptions } from '@transaction/lib/bridge';
 import CommunitiesSelectFilter from '@/blog/components/communities-select-filter';
 import CommunitiesList from '@/blog/components/communities-list';
-import Loading from '@hive/ui/components/loading';
+import Loading from '@ui/components/loading';
 import ExploreHive from '@/blog/components/explore-hive';
-import { Icons } from '@hive/ui/components/icons';
+import { Icons } from '@ui/components/icons';
 import { Separator } from '@ui/components';
 import { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';

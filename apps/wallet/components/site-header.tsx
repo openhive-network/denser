@@ -1,5 +1,5 @@
-import { Button } from '@hive/ui/components/button';
-import { Icons } from '@hive/ui/components/icons';
+import { Button } from '@ui/components/button';
+import { Icons } from '@ui/components/icons';
 import { FC, useState, useEffect } from 'react';
 import Sidebar from './sidebar';
 import ModeToggle from './mode-toggle';
@@ -8,7 +8,7 @@ import DialogLogin from './dialog-login';
 import LangToggle from '@/wallet/components/lang-toggle';
 import { useTranslation } from 'next-i18next';
 import { useLogout } from '@smart-signer/lib/auth/use-logout';
-import { getLogger } from '@hive/ui/lib/logging';
+import { getLogger } from '@ui/lib/logging';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogHBAuth from '@smart-signer/components/dialog-hb-auth';
 import UserMenu from './user-menu';

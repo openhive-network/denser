@@ -9,20 +9,11 @@ import { SignerHbauth } from '@smart-signer/lib/signer/signer-hbauth';
 import { SignerKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
 import { verifySignature } from '@smart-signer/lib/utils';
-import {
-  vote,
-  THexString,
-  transaction,
-  createHiveChain,
-  createWaxFoundation,
-  operation,
-  ITransactionBuilder,
-  BroadcastTransactionRequest
-} from '@hive/wax/web';
+import { vote, createHiveChain, BroadcastTransactionRequest } from '@hive/wax/web';
 import { waxToKeychainOperation } from '@smart-signer/lib/signer/signer-keychain';
 import { KeyTypes } from '@smart-signer/types/common';
 
-import { getLogger } from '@hive/ui/lib/logging';
+import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 export default function Profile() {
