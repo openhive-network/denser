@@ -2,11 +2,12 @@
  * This file is based on
  *  - https://github.com/openhive-network/condenser/blob/master/src/app/utils/SanitizeConfig.js
  */
-// tslint:disable max-line-length
+
 export class StaticConfig {
     public static sanitization = {
         iframeWhitelist: [
             {
+                // eslint-disable-next-line security/detect-unsafe-regex
                 re: /^(https?:)?\/\/player.vimeo.com\/video\/.*/i,
                 fn: (src: string) => {
                     // <iframe src="https://player.vimeo.com/video/179213493" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
@@ -21,6 +22,7 @@ export class StaticConfig {
                 }
             },
             {
+                // eslint-disable-next-line security/detect-unsafe-regex
                 re: /^(https?:)?\/\/www.youtube.com\/embed\/.*/i,
                 fn: (src: string) => {
                     return src.replace(/\?.+$/, ''); // strip query string (yt: autoplay=1,controls=0,showinfo=0, etc)
@@ -46,6 +48,7 @@ export class StaticConfig {
                 }
             },
             {
+                // eslint-disable-next-line security/detect-unsafe-regex
                 re: /^(https?:)?\/\/player.twitch.tv\/.*/i,
                 fn: (src: string) => {
                     // <iframe src="https://player.twitch.tv/?channel=ninja" frameborder="0" allowfullscreen="true" scrolling="no" height="378" width="620">

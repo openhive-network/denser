@@ -12,10 +12,10 @@
     "access": "public"
   },
   "scripts": {
-    "build:cleanbefore": "rm -rf dist",
+    "build:clean": "rm -rf dist",
     "build:node": "tsc -p tsconfig.build.json",
     "build:browser": "rm -rf dist/browser/ && NODE_ENV=production webpack --mode=production --config webpack.config.js",
-    "build": "npm run build:cleanbefore && npm run lint && npm run build:node && npm run build:browser",
+    "build": "npm run build:clean && npm run build:node && npm run build:browser",
     "prepare": "npm run hooks:install && NODE_ENV=production npm run build",
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint ./src --ext .js,.jsx,.ts,.tsx --fix",

@@ -1,5 +1,3 @@
-// tslint:disable max-line-length quotemark
-
 import {expect} from 'chai';
 import {JSDOM} from 'jsdom';
 import 'mocha';

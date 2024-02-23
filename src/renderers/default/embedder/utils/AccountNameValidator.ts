@@ -5,7 +5,6 @@ import {LocalizationOptions} from '../../LocalizationOptions';
 import BadActorList from './BadActorList';
 
 export class AccountNameValidator {
-    // tslint:disable cyclomatic-complexity
     public static validateAccountName(value: string, localization: LocalizationOptions) {
         let i;
         let label;

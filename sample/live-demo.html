@@ -139,6 +139,7 @@ https://youtu.be/B7C83L6iWJQ
                 hashtagUrlFn: (hashtag) => "https://hive.blog/trending/" + hashtag,
                 isLinkSafeFn: (url) => true,
                 addExternalCssClassToMatchingLinksFn: (url) => true,
+                ipfsPrefix: "https://ipfs.io/ipfs/",
             });
 
             $(document).ready(() => {
@@ -166,10 +167,8 @@ https://youtu.be/B7C83L6iWJQ
                     let author = "";
                     let permlink = "";
                     if (link.length > 0) {
-                        /* tslint:disable max-line-length */
                         const regex =
                             /^\/?(?:https?:\/\/(?:hive\.blog|peakd\.com|ecency\.com))?(?:\/?[^\/\n]*\/)?@?([^\/\n]+)\/([^\/\n]+)$/giu;
-                        /* tslint:disable max-line-length */
                         const match = regex.exec(link);
                         if (match && match.length > 1) {
                             author = match[1];

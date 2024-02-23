@@ -9,6 +9,11 @@
 /sample
 /tslint.json
 /tsconfig.lint.json
+/tsconfig.build.json
 *.test.ts
 /dist/browser/statistics.html
 .gitlab-ci.yml
+.mocharc.yml
+.nvmrc
+.eslintrc
+.prettierrc.js

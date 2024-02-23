@@ -1,5 +1,3 @@
-// tslint:disable member-ordering
-
 export abstract class AbstractVideoEmbedder {
     public abstract markEmbedIfFound(textNode: HTMLObjectElement): {image?: string; link?: string} | undefined;
     public abstract processEmbedIfRelevant(embedType: string, id: string, size: {width: number; height: number}, htmlElementKey: string): string | undefined;

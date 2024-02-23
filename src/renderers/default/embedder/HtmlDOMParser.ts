@@ -1,7 +1,7 @@
 /**
  * Based on: https://github.com/openhive-network/condenser/blob/master/src/shared/HtmlReady.js
  */
-// tslint:disable max-classes-per-file
+
 import * as xmldom from '@xmldom/xmldom';
 import ChainedError from 'typescript-chained-error';
 import {Log} from '../../../Log';

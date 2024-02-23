@@ -7,14 +7,23 @@ image: node:20.11.1
 before_script:
   - npm ci
 
-test:
+lint:code:
   stage: test
   script:
-      - NODE_ENV=production npm run build
-      - npm run test
-      - node sample/demo-local.js
+    - npm run lint
 
-verify:
+lint:commit message:
+  stage: test
+  script:
+    - echo "${CI_COMMIT_MESSAGE}" | npx commitlint
+
+test:unit:
+  stage: test
+  script:
+      - npm run test
+      - NODE_ENV=production npm run build && node sample/demo-local.js
+
+test:browser:
   stage: test
   image: alekzonder/puppeteer
   script:
