@@ -5,7 +5,7 @@ import {
   getAccountFull,
   getAccount,
   getDynamicGlobalProperties,
-  getAccountReputation
+  getAccountReputations
 } from '@transaction/lib/hive';
 import { accountReputation } from '@/blog/lib/utils';
 import { numberWithCommas } from '@ui/lib/utils';
@@ -32,7 +32,7 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
     isLoading: accountReputationIsLoading,
     error: accountReputationError,
     data: accountReputationData
-  } = useQuery(['accountReputationData', username], () => getAccountReputation(username, 1), {
+  } = useQuery(['accountReputationData', username], () => getAccountReputations(username, 1), {
     enabled: !!username
   });
   const {
@@ -75,7 +75,7 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
       <h4 className="mb-4 mt-8 text-xl text-slate-900 dark:text-white" data-testid="profile-name">
         {profileData?.profile?.name}{' '}
         <span className="text-slate-600">
-          ({accountReputationData?.repuation ? accountReputation(accountReputationData.repuation) : null})
+          ({accountReputation(accountReputationData?.reputations[0].reputation ?? 0)})
         </span>
       </h4>
       <h6
