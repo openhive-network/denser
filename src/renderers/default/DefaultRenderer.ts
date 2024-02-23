@@ -117,7 +117,7 @@ export class DefaultRenderer {
         ow(o.cssClassForInternalLinks, 'RendererOptions.cssClassForInternalLinks', ow.optional.string);
         ow(o.cssClassForExternalLinks, 'RendererOptions.cssClassForExternalLinks', ow.optional.string);
         ow(o.doNotShowImages, 'RendererOptions.doNotShowImages', ow.boolean);
-        ow(o.ipfsPrefix, 'RendererOptions.ipfsPrefix', ow.string);
+        ow(o.ipfsPrefix, 'RendererOptions.ipfsPrefix', ow.optional.string);
         ow(o.assetsWidth, 'RendererOptions.assetsWidth', ow.number.integer.positive);
         ow(o.assetsHeight, 'RendererOptions.assetsHeight', ow.number.integer.positive);
         ow(o.imageProxyFn, 'RendererOptions.imageProxyFn', ow.function);
@@ -137,7 +137,7 @@ export interface RendererOptions {
     cssClassForInternalLinks?: string;
     cssClassForExternalLinks?: string;
     doNotShowImages: boolean;
-    ipfsPrefix: string;
+    ipfsPrefix?: string;
     assetsWidth: number;
     assetsHeight: number;
     imageProxyFn: (url: string) => string;

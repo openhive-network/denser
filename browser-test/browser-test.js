@@ -12,7 +12,6 @@ const defaultOptions = {
     cssClassForInternalLinks: "hive-class",
     cssClassForExternalLinks: "hive-class external",
     doNotShowImages: false,
-    ipfsPrefix: "",
     assetsWidth: 640,
     assetsHeight: 480,
     imageProxyFn: (url) => url,

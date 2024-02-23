@@ -9,7 +9,6 @@ Portable library that renders Hive posts and comments to string. It supports mar
 Features:
 
 -   supports markdown and html
-
 -   sanitizes html and protects from XSS
 
 **Credit**: this library is based on the code from condenser. It's aim is to allow other projects display Hive content the right way without porting the same code over and over.
@@ -34,7 +33,6 @@ const renderer = new DefaultRenderer({
     allowInsecureScriptTags: false,
     addNofollowToLinks: true,
     doNotShowImages: false,
-    ipfsPrefix: "",
     assetsWidth: 640,
     assetsHeight: 480,
     imageProxyFn: (url: string) => url,
@@ -62,7 +60,8 @@ See [demo](https://hive.pages.syncad.com/hive-renderer/) and [its source](https:
         allowInsecureScriptTags: false,
         addNofollowToLinks: true,
         doNotShowImages: false,
-        ipfsPrefix: "",
+        cssClassForInternalLinks: "link",
+        cssClassForExternalLinks: "external",
         assetsWidth: 640,
         assetsHeight: 480,
         imageProxyFn: (url) => url,

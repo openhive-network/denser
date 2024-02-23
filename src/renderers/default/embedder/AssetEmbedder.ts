@@ -28,7 +28,7 @@ export class AssetEmbedder {
 
     public static validate(o: AssetEmbedderOptions) {
         ow(o, 'AssetEmbedderOptions', ow.object);
-        ow(o.ipfsPrefix, 'AssetEmbedderOptions.ipfsPrefix', ow.string);
+        ow(o.ipfsPrefix, 'AssetEmbedderOptions.ipfsPrefix', ow.optional.string);
         ow(o.width, 'AssetEmbedderOptions.width', ow.number.integer.positive);
         ow(o.height, 'AssetEmbedderOptions.height', ow.number.integer.positive);
         ow(o.hideImages, 'AssetEmbedderOptions.hideImages', ow.boolean);
@@ -40,7 +40,7 @@ export class AssetEmbedder {
 }
 
 export interface AssetEmbedderOptions {
-    ipfsPrefix: string;
+    ipfsPrefix?: string;
     width: number;
     height: number;
     hideImages: boolean;

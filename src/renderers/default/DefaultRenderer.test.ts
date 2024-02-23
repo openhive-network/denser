@@ -17,7 +17,6 @@ describe('DefaultRender', () => {
         cssClassForExternalLinks: 'hive-test external',
         addNofollowToLinks: true,
         doNotShowImages: false,
-        ipfsPrefix: '',
         assetsWidth: 640,
         assetsHeight: 480,
         imageProxyFn: (url: string) => url,
@@ -136,5 +135,56 @@ describe('DefaultRender', () => {
 
         const expected = `<p><img src="brokenimg.jpg" /></p>\n`;
         expect(rendered).to.be.equal(expected);
+    });
+
+    it('Should convert new lines to <br /> tags if breaks options is set to true for markdown input', () => {
+        const renderer = new DefaultRenderer({...defaultOptions, breaks: true});
+        const rendered = renderer.render(`test\ntest`).trim();
+        expect(rendered).to.be.equal('<p>test<br />\ntest</p>');
+    });
+
+    it('Should not convert new lines to <br> tags if breaks options is set to false for markdown input', () => {
+        const renderer = new DefaultRenderer({...defaultOptions, breaks: false});
+        const rendered = renderer.render(`test\ntest`).trim();
+        expect(rendered).to.be.equal('<p>test\ntest</p>');
+    });
+
+    it('Should not convert new lines to <br> tags if breaks options is set to true for html input', () => {
+        const renderer = new DefaultRenderer({...defaultOptions, breaks: true});
+        const rendered = renderer.render(`<p>test\ntest</p>`).trim();
+        expect(rendered).to.be.equal('<p>test\ntest</p>');
+    });
+
+    it('Should add <pre> tag to hide images if doNotShowImages option is set to true', () => {
+        const renderer = new DefaultRenderer({...defaultOptions, doNotShowImages: true});
+        const rendered = renderer.render(`![img.jpg](https://img.jpg)`).trim();
+        expect(rendered).to.be.equal('<p></p><pre>https://img.jpg</pre><p></p>');
+    });
+
+    it('Should add <pre> tag to hide images if doNotShowImages option is set to true for html input', () => {
+        const renderer = new DefaultRenderer({...defaultOptions, doNotShowImages: true});
+        const rendered = renderer.render(`<img src="https://img.jpg" />`).trim();
+        expect(rendered).to.be.equal('<p></p><pre>https://img.jpg</pre><p></p>');
+    });
+
+    [
+        '/ipfs/QmQqzMTavQgT4f4T5v6PWBp7XNKtoPmC9jvn12WPT3gkSE',
+        '//ipfs/QmQqzMTavQgT4f4T5v6PWBp7XNKtoPmC9jvn12WPT3gkSE',
+        `ipfs://QmQqzMTavQgT4f4T5v6PWBp7XNKtoPmC9jvn12WPT3gkSE`
+    ].forEach((ipfsLink) => {
+        it(`Should prefix ifps link (${ipfsLink}) with ipfsPrefix`, () => {
+            const renderer = new DefaultRenderer({...defaultOptions, ipfsPrefix: 'https://gateway.io/ipfs'});
+            const rendered = renderer.render(`![img.jpg](${ipfsLink})`).trim();
+            expect(rendered).to.be.equal('<p><img src="https://gateway.io/ipfs/QmQqzMTavQgT4f4T5v6PWBp7XNKtoPmC9jvn12WPT3gkSE" alt="img.jpg" /></p>');
+        });
+    });
+
+    it('should prefix ipfs links with ipfsPrefix regardless if the prefix contains a trailing slash or not', () => {
+        const renderer1 = new DefaultRenderer({...defaultOptions, ipfsPrefix: 'https://gateway.io/ipfs'});
+        const renderer2 = new DefaultRenderer({...defaultOptions, ipfsPrefix: 'https://gateway.io/ipfs/'});
+        const rendered1 = renderer1.render(`![img.jpg](ipfs://QmQqzMTavQgT4f4T5v6PWBp7XNKtoPmC9jvn12WPT3gkSE)`).trim();
+        const rendered2 = renderer2.render(`![img.jpg](ipfs://QmQqzMTavQgT4f4T5v6PWBp7XNKtoPmC9jvn12WPT3gkSE)`).trim();
+        expect(rendered1).to.be.equal('<p><img src="https://gateway.io/ipfs/QmQqzMTavQgT4f4T5v6PWBp7XNKtoPmC9jvn12WPT3gkSE" alt="img.jpg" /></p>');
+        expect(rendered2).to.be.equal('<p><img src="https://gateway.io/ipfs/QmQqzMTavQgT4f4T5v6PWBp7XNKtoPmC9jvn12WPT3gkSE" alt="img.jpg" /></p>');
     });
 });

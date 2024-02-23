@@ -303,11 +303,11 @@ export class HtmlDOMParser {
 
     private normalizeUrl(url: any) {
         if (this.options.ipfsPrefix) {
-            // Convert //ipfs/xxx  or /ipfs/xxx  into  https://images.hive.blog/ipfs/xxxxx
-            if (/^\/?\/ipfs\//.test(url)) {
-                const slash = url.charAt(1) === '/' ? 1 : 0;
-                url = url.substring(slash + '/ipfs/'.length); // start with only 1 /
-                return this.options.ipfsPrefix + '/' + url;
+            // Convert //ipfs/xxx  or /ipfs/xxx or ipfs://xxx into  ${ipfsPrefix}/xxx
+            if (linksRe.ipfsProtocol.test(url)) {
+                const [protocol] = url.match(linksRe.ipfsProtocol);
+                const cid = url.replace(protocol, '');
+                return `${this.options.ipfsPrefix.replace(/\/+$/, '')}/${cid}`;
             }
         }
         return url;

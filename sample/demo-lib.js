@@ -9,7 +9,6 @@ const renderer = new HiveContentRenderer.DefaultRenderer({
     addTargetBlankToLink: true,
     cssClassForInternalLinks: "hive-class",
     doNotShowImages: false,
-    ipfsPrefix: "",
     assetsWidth: 640,
     assetsHeight: 480,
     imageProxyFn: (url) => url,
