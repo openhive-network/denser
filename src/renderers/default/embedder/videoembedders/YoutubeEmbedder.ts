@@ -1,11 +1,10 @@
-import { Log } from "../../../../Log";
-import linksRe from "../utils/Links";
-
-import { AbstractVideoEmbedder } from "./AbstractVideoEmbedder";
+import {Log} from '../../../../Log';
+import linksRe from '../utils/Links';
+import {AbstractVideoEmbedder} from './AbstractVideoEmbedder';
 
 export class YoutubeEmbedder extends AbstractVideoEmbedder {
     /** @return {id, url} or <b>null</b> */
-    public static getYoutubeMetadataFromLink(data: string): { id: string; url: string; thumbnail: string } | null {
+    public static getYoutubeMetadataFromLink(data: string): {id: string; url: string; thumbnail: string} | null {
         if (!data) {
             return null;
         }
@@ -25,11 +24,11 @@ export class YoutubeEmbedder extends AbstractVideoEmbedder {
         return {
             id,
             url,
-            thumbnail: "https://img.youtube.com/vi/" + id + "/0.jpg",
+            thumbnail: 'https://img.youtube.com/vi/' + id + '/0.jpg'
         };
     }
 
-    private static TYPE = "youtube";
+    private static TYPE = 'youtube';
 
     public markEmbedIfFound(child: HTMLObjectElement) {
         try {
@@ -42,19 +41,14 @@ export class YoutubeEmbedder extends AbstractVideoEmbedder {
             const embedMarker = AbstractVideoEmbedder.getEmbedMarker(yt.id, YoutubeEmbedder.TYPE);
             child.data = data.replace(yt.url, embedMarker);
 
-            return { image: yt.thumbnail, link: yt.url };
+            return {image: yt.thumbnail, link: yt.url};
         } catch (error) {
             Log.log().error(error);
         }
         return undefined;
     }
 
-    public processEmbedIfRelevant(
-        embedType: string,
-        id: string,
-        size: { width: number; height: number },
-        htmlElementKey: string,
-    ): string | undefined {
+    public processEmbedIfRelevant(embedType: string, id: string, size: {width: number; height: number}): string | undefined {
         if (embedType !== YoutubeEmbedder.TYPE) return undefined;
 
         const ytUrl = `https://www.youtube.com/embed/${id}`;

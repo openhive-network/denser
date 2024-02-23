@@ -1,18 +1,18 @@
-import { AbstractVideoEmbedder } from "./AbstractVideoEmbedder";
-import { TwitchEmbedder } from "./TwitchEmbedder";
-import { VimeoEmbedder } from "./VimeoEmbedder";
-import { YoutubeEmbedder } from "./YoutubeEmbedder";
+import {AbstractVideoEmbedder} from './AbstractVideoEmbedder';
+import {TwitchEmbedder} from './TwitchEmbedder';
+import {VimeoEmbedder} from './VimeoEmbedder';
+import {YoutubeEmbedder} from './YoutubeEmbedder';
 
 export class VideoEmbedders {
     public static LIST: AbstractVideoEmbedder[] = [
         //
         new YoutubeEmbedder(),
         new VimeoEmbedder(),
-        new TwitchEmbedder(),
+        new TwitchEmbedder()
     ];
 
-    public static processTextNodeAndInsertEmbeds(node: HTMLObjectElement): { links: string[]; images: string[] } {
-        const out: { links: string[]; images: string[] } = { links: [], images: [] };
+    public static processTextNodeAndInsertEmbeds(node: HTMLObjectElement): {links: string[]; images: string[]} {
+        const out: {links: string[]; images: string[]} = {links: [], images: []};
 
         for (const embedder of VideoEmbedders.LIST) {
             const markResult = embedder.markEmbedIfFound(node);
@@ -24,7 +24,7 @@ export class VideoEmbedders {
         return out;
     }
 
-    public static insertMarkedEmbedsToRenderedOutput(input: string, size: { width: number; height: number }): string {
+    public static insertMarkedEmbedsToRenderedOutput(input: string, size: {width: number; height: number}): string {
         return AbstractVideoEmbedder.insertAllEmbeds(VideoEmbedders.LIST, input, size);
     }
 }

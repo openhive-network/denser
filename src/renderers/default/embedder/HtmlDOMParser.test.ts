@@ -1,28 +1,24 @@
 /**
  * Based on: https://github.com/openhive-network/condenser/blob/master/src/shared/HtmlReady.test.js
  */
+import {expect} from 'chai';
+import 'mocha';
+import {AssetEmbedderOptions} from './AssetEmbedder';
+import {HtmlDOMParser} from './HtmlDOMParser';
 
-// tslint:disable max-line-length
-import { expect } from "chai";
-import "mocha";
-
-/* global describe, it, before, beforeEach, after, afterEach */
-import { AssetEmbedderOptions } from "./AssetEmbedderOptions";
-import { HtmlDOMParser } from "./HtmlDOMParser";
-
-describe("HtmlDOMParser", () => {
+describe('HtmlDOMParser', () => {
     const htmlParserOptions: AssetEmbedderOptions = {
-        ipfsPrefix: "",
+        ipfsPrefix: '',
         imageProxyFn: (url: string) => url,
         usertagUrlFn: (account: string) => `/@${account}`,
         hashtagUrlFn: (hashtag: string) => `/trending/${hashtag}`,
-        baseUrl: "https://hive.blog/",
+        baseUrl: 'https://hive.blog/',
         width: 640,
         height: 480,
-        hideImages: false,
+        hideImages: false
     };
 
-    it("should allow links where the text portion and href contains hive.blog", () => {
+    it('should allow links where the text portion and href contains hive.blog', () => {
         const dirty =
             '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://hive.blog/signup" xmlns="http://www.w3.org/1999/xhtml">https://hive.blog/signup</a></xml>';
         const parser = new HtmlDOMParser(htmlParserOptions);
@@ -30,9 +26,8 @@ describe("HtmlDOMParser", () => {
         expect(res).to.equal(dirty);
     });
 
-    it("should allow in-page links ", () => {
-        const dirty =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="#some-link" xmlns="http://www.w3.org/1999/xhtml">a link location</a></xml>';
+    it('should allow in-page links ', () => {
+        const dirty = '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="#some-link" xmlns="http://www.w3.org/1999/xhtml">a link location</a></xml>';
         const parser = new HtmlDOMParser(htmlParserOptions);
         const res = parser.parse(dirty).getParsedDocumentAsString();
         expect(res).to.equal(dirty);
@@ -43,7 +38,7 @@ describe("HtmlDOMParser", () => {
         expect(externalDomainResult).to.equal(externalDomainDirty);
     });
 
-    it("should not allow links where the text portion contains hive.blog but the link does not", () => {
+    it('should not allow links where the text portion contains hive.blog but the link does not', () => {
         const dirty =
             '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://steamit.com/signup" xmlns="http://www.w3.org/1999/xhtml">https://hive.blog/signup</a></xml>';
         const cleansed =
@@ -65,8 +60,7 @@ describe("HtmlDOMParser", () => {
         const reswithuser = new HtmlDOMParser(htmlParserOptions).parse(withuser).getParsedDocumentAsString();
         expect(reswithuser).to.equal(cleansedwithuser);
 
-        const noendingslash =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://steamit.com" xmlns="http://www.w3.org/1999/xhtml">https://hive.blog</a></xml>';
+        const noendingslash = '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://steamit.com" xmlns="http://www.w3.org/1999/xhtml">https://hive.blog</a></xml>';
         const cleansednoendingslash =
             '<xml xmlns="http://www.w3.org/1999/xhtml"><div title="Link expanded to plain text; beware of a potential phishing attempt" class="phishy">https://hive.blog / https://steamit.com</div></xml>';
         const resnoendingslash = new HtmlDOMParser(htmlParserOptions).parse(noendingslash).getParsedDocumentAsString();
@@ -96,7 +90,7 @@ describe("HtmlDOMParser", () => {
         expect(resnoprotocol).to.equal(cleansednoprotocol);
     });
 
-    it("should allow more than one link per post", () => {
+    it('should allow more than one link per post', () => {
         const somanylinks = '<xml xmlns="http://www.w3.org/1999/xhtml">https://foo.com and https://blah.com</xml>';
         const htmlified =
             '<xml xmlns="http://www.w3.org/1999/xhtml"><span><a href="https://foo.com">https://foo.com</a> and <a href="https://blah.com">https://blah.com</a></span></xml>';
@@ -104,85 +98,68 @@ describe("HtmlDOMParser", () => {
         expect(res).to.equal(htmlified);
     });
 
-    it("should link usernames", () => {
+    it('should link usernames', () => {
         const textwithmentions = '<xml xmlns="http://www.w3.org/1999/xhtml">@username (@a1b2, whatever</xml>';
-        const htmlified =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><span><a href="/@username">@username</a> (<a href="/@a1b2">@a1b2</a>, whatever</span></xml>';
+        const htmlified = '<xml xmlns="http://www.w3.org/1999/xhtml"><span><a href="/@username">@username</a> (<a href="/@a1b2">@a1b2</a>, whatever</span></xml>';
         const res = new HtmlDOMParser(htmlParserOptions).parse(textwithmentions).getParsedDocumentAsString();
         expect(res).to.equal(htmlified);
     });
 
-    it("should detect only valid mentions", () => {
-        const textwithmentions = "@abc @xx (@aaa1) @_x @eee, @fff! https://x.com/@zzz/test";
-        const res = new HtmlDOMParser(htmlParserOptions)
-            .setMutateEnabled(false)
-            .parse(textwithmentions)
-            .getState();
-        const usertags = Array.from(res.usertags).join(",");
-        expect(usertags).to.equal("abc,aaa1,eee,fff");
+    it('should detect only valid mentions', () => {
+        const textwithmentions = '@abc @xx (@aaa1) @_x @eee, @fff! https://x.com/@zzz/test';
+        const res = new HtmlDOMParser(htmlParserOptions).setMutateEnabled(false).parse(textwithmentions).getState();
+        const usertags = Array.from(res.usertags).join(',');
+        expect(usertags).to.equal('abc,aaa1,eee,fff');
     });
 
-    it("should not link usernames at the front of linked text", () => {
-        const nameinsidelinkfirst =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://hive.blog/signup">@hihi</a></xml>';
-        const htmlified =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://hive.blog/signup">@hihi</a></xml>';
+    it('should not link usernames at the front of linked text', () => {
+        const nameinsidelinkfirst = '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://hive.blog/signup">@hihi</a></xml>';
+        const htmlified = '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://hive.blog/signup">@hihi</a></xml>';
         const res = new HtmlDOMParser(htmlParserOptions).parse(nameinsidelinkfirst).getParsedDocumentAsString();
         expect(res).to.equal(htmlified);
     });
 
-    it("should not link usernames in the middle of linked text", () => {
-        const nameinsidelinkmiddle =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://hive.blog/signup">hi @hihi</a></xml>';
-        const htmlified =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://hive.blog/signup">hi @hihi</a></xml>';
+    it('should not link usernames in the middle of linked text', () => {
+        const nameinsidelinkmiddle = '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://hive.blog/signup">hi @hihi</a></xml>';
+        const htmlified = '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://hive.blog/signup">hi @hihi</a></xml>';
         const res = new HtmlDOMParser(htmlParserOptions).parse(nameinsidelinkmiddle).getParsedDocumentAsString();
         expect(res).to.equal(htmlified);
     });
 
-    it("should make relative links absolute with https by default", () => {
-        const noRelativeHttpHttpsOrHive =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="land.com"> zippy </a> </xml>';
-        const cleansedRelativeHttpHttpsOrHive =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://land.com"> zippy </a> </xml>';
-        const resNoRelativeHttpHttpsOrHive = new HtmlDOMParser(htmlParserOptions)
-            .parse(noRelativeHttpHttpsOrHive)
-            .getParsedDocumentAsString();
+    it('should make relative links absolute with https by default', () => {
+        const noRelativeHttpHttpsOrHive = '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="land.com"> zippy </a> </xml>';
+        const cleansedRelativeHttpHttpsOrHive = '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://land.com"> zippy </a> </xml>';
+        const resNoRelativeHttpHttpsOrHive = new HtmlDOMParser(htmlParserOptions).parse(noRelativeHttpHttpsOrHive).getParsedDocumentAsString();
         expect(resNoRelativeHttpHttpsOrHive).to.equal(cleansedRelativeHttpHttpsOrHive);
     });
 
-    it("should allow the hive uri scheme for vessel links", () => {
-        const noRelativeHttpHttpsOrHive =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="hive://veins.com"> arteries </a> </xml>';
-        const cleansedRelativeHttpHttpsOrHive =
-            '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="hive://veins.com"> arteries </a> </xml>';
-        const resNoRelativeHttpHttpsOrHive = new HtmlDOMParser(htmlParserOptions)
-            .parse(noRelativeHttpHttpsOrHive)
-            .getParsedDocumentAsString();
+    it('should allow the hive uri scheme for vessel links', () => {
+        const noRelativeHttpHttpsOrHive = '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="hive://veins.com"> arteries </a> </xml>';
+        const cleansedRelativeHttpHttpsOrHive = '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="hive://veins.com"> arteries </a> </xml>';
+        const resNoRelativeHttpHttpsOrHive = new HtmlDOMParser(htmlParserOptions).parse(noRelativeHttpHttpsOrHive).getParsedDocumentAsString();
         expect(resNoRelativeHttpHttpsOrHive).to.equal(cleansedRelativeHttpHttpsOrHive);
     });
 
-    it("should not mistake usernames in valid comment urls as mentions", () => {
-        const url =
-            "https://hive.blog/spam/@test-safari/34gfex-december-spam#@test-safari/re-test-safari-34gfex-december-spam-20180110t234627522z";
+    it('should not mistake usernames in valid comment urls as mentions', () => {
+        const url = 'https://hive.blog/spam/@test-safari/34gfex-december-spam#@test-safari/re-test-safari-34gfex-december-spam-20180110t234627522z';
         const prefix = '<xml xmlns="http://www.w3.org/1999/xhtml">';
-        const suffix = "</xml>";
+        const suffix = '</xml>';
         const input = prefix + url + suffix;
-        const expected = prefix + '<span><a href="' + url + '">' + url + "</a></span>" + suffix;
+        const expected = prefix + '<span><a href="' + url + '">' + url + '</a></span>' + suffix;
         const result = new HtmlDOMParser(htmlParserOptions).parse(input).getParsedDocumentAsString();
         expect(result).to.equal(expected);
     });
 
-    it("should not modify text when mention contains invalid username", () => {
-        const body = "valid mention match but invalid username..@usernamewaytoolong";
+    it('should not modify text when mention contains invalid username', () => {
+        const body = 'valid mention match but invalid username..@usernamewaytoolong';
         const prefix = '<xml xmlns="http://www.w3.org/1999/xhtml">';
-        const suffix = "</xml>";
+        const suffix = '</xml>';
         const input = prefix + body + suffix;
         const result = new HtmlDOMParser(htmlParserOptions).parse(input).getParsedDocumentAsString();
         expect(result).to.equal(input);
     });
 
-    it("should detect urls that are phishy", () => {
+    it('should detect urls that are phishy', () => {
         const dirty =
             '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://steewit.com/signup" xmlns="http://www.w3.org/1999/xhtml">https://hive.blog/signup</a></xml>';
         const cleansed =
@@ -191,18 +168,16 @@ describe("HtmlDOMParser", () => {
         expect(res).to.equal(cleansed);
     });
 
-    it("should not omit text on same line as youtube link", () => {
-        const testString = "<html><p>before text https://www.youtube.com/watch?v=NrS9vvNgx7I after text</p></html>";
-        const htmlified =
-            '<html xmlns="http://www.w3.org/1999/xhtml"><p>before text ~~~ embed:NrS9vvNgx7I youtube ~~~ after text</p></html>';
+    it('should not omit text on same line as youtube link', () => {
+        const testString = '<html><p>before text https://www.youtube.com/watch?v=NrS9vvNgx7I after text</p></html>';
+        const htmlified = '<html xmlns="http://www.w3.org/1999/xhtml"><p>before text ~~~ embed:NrS9vvNgx7I youtube ~~~ after text</p></html>';
         const res = new HtmlDOMParser(htmlParserOptions).parse(testString).getParsedDocumentAsString();
         expect(res).to.equal(htmlified);
     });
 
-    it("should not omit text on same line as vimeo link", () => {
-        const testString = "<html><p>before text https://vimeo.com/193628816/ after text</p></html>";
-        const htmlified =
-            '<html xmlns="http://www.w3.org/1999/xhtml"><p>before text ~~~ embed:193628816 vimeo ~~~ after text</p></html>';
+    it('should not omit text on same line as vimeo link', () => {
+        const testString = '<html><p>before text https://vimeo.com/193628816/ after text</p></html>';
+        const htmlified = '<html xmlns="http://www.w3.org/1999/xhtml"><p>before text ~~~ embed:193628816 vimeo ~~~ after text</p></html>';
         const res = new HtmlDOMParser(htmlParserOptions).parse(testString).getParsedDocumentAsString();
         expect(res).to.equal(htmlified);
     });

@@ -1,23 +1,20 @@
 /**
  * Based on: https://raw.githubusercontent.com/openhive-network/condenser/master/src/app/utils/ChainValidation.js
  */
-import { DefaultRendererLocalization } from "../../DefaultRendererLocalization";
-
-import BadActorList from "./BadActorList";
+import {LocalizationOptions} from '../../LocalizationOptions';
+import BadActorList from './BadActorList';
 
 export class AccountNameValidator {
     // tslint:disable cyclomatic-complexity
-    public static validateAccountName(value: string, localization: DefaultRendererLocalization) {
+    public static validateAccountName(value: string, localization: LocalizationOptions) {
         let i;
         let label;
         let len;
-        let length;
-        let ref;
 
         if (!value) {
             return localization.accountNameWrongLength;
         }
-        length = value.length;
+        const length = value.length;
         if (length < 3) {
             return localization.accountNameWrongLength;
         }
@@ -27,7 +24,7 @@ export class AccountNameValidator {
         if (BadActorList.includes(value)) {
             return localization.accountNameBadActor;
         }
-        ref = value.split(".");
+        const ref = value.split('.');
         for (i = 0, len = ref.length; i < len; i++) {
             label = ref[i];
             if (!/^[a-z]/.test(label)) {

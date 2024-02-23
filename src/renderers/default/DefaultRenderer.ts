@@ -1,27 +1,21 @@
-import ow from "ow";
-// @ts-ignore
-import { Remarkable } from "remarkable";
-
-import { SecurityChecker } from "../../security/SecurityChecker";
-
-import { DefaultRendererLocalization } from "./DefaultRendererLocalization";
-import { AssetEmbedder } from "./embedder/AssetEmbedder";
-import { PreliminarySanitizer } from "./sanitization/PreliminarySanitizer";
-import { TagTransformingSanitizer } from "./sanitization/TagTransformingSanitizer";
+import ow from 'ow';
+import {Remarkable} from 'remarkable';
+import {SecurityChecker} from '../../security/SecurityChecker';
+import {AssetEmbedder} from './embedder/AssetEmbedder';
+import {Localization, LocalizationOptions} from './LocalizationOptions';
+import {PreliminarySanitizer} from './sanitization/PreliminarySanitizer';
+import {TagTransformingSanitizer} from './sanitization/TagTransformingSanitizer';
 
 export class DefaultRenderer {
-    private options: DefaultRenderer.Options;
+    private options: RendererOptions;
     private tagTransformingSanitizer: TagTransformingSanitizer;
     private embedder: AssetEmbedder;
 
-    public constructor(
-        options: DefaultRenderer.Options,
-        localization: DefaultRendererLocalization = DefaultRendererLocalization.DEFAULT,
-    ) {
-        DefaultRenderer.Options.validate(options);
+    public constructor(options: RendererOptions, localization: LocalizationOptions = Localization.DEFAULT) {
+        this.validate(options);
         this.options = options;
 
-        DefaultRendererLocalization.validate(localization);
+        Localization.validate(localization);
 
         this.tagTransformingSanitizer = new TagTransformingSanitizer(
             {
@@ -33,9 +27,9 @@ export class DefaultRenderer {
                 cssClassForExternalLinks: this.options.cssClassForExternalLinks,
                 noImage: this.options.doNotShowImages,
                 isLinkSafeFn: this.options.isLinkSafeFn,
-                addExternalCssClassToMatchingLinksFn: this.options.addExternalCssClassToMatchingLinksFn,
+                addExternalCssClassToMatchingLinksFn: this.options.addExternalCssClassToMatchingLinksFn
             },
-            localization,
+            localization
         );
 
         this.embedder = new AssetEmbedder(
@@ -47,14 +41,14 @@ export class DefaultRenderer {
                 imageProxyFn: this.options.imageProxyFn,
                 hashtagUrlFn: this.options.hashtagUrlFn,
                 usertagUrlFn: this.options.usertagUrlFn,
-                baseUrl: this.options.baseUrl,
+                baseUrl: this.options.baseUrl
             },
-            localization,
+            localization
         );
     }
 
     public render(input: string): string {
-        ow(input, "input", ow.string.nonEmpty);
+        ow(input, 'input', ow.string.nonEmpty);
         return this.doRender(input);
     }
 
@@ -67,7 +61,7 @@ export class DefaultRenderer {
         text = this.wrapRenderedTextWithHtmlIfNeeded(text);
         text = this.embedder.markAssets(text);
         text = this.sanitize(text);
-        SecurityChecker.checkSecurity(text, { allowScriptTag: this.options.allowInsecureScriptTags });
+        SecurityChecker.checkSecurity(text, {allowScriptTag: this.options.allowInsecureScriptTags});
         text = this.embedder.insertAssets(text);
 
         return text;
@@ -78,15 +72,15 @@ export class DefaultRenderer {
             html: true, // remarkable renders first then sanitize runs...
             breaks: this.options.breaks,
             typographer: false, // https://github.com/jonschlinkert/remarkable/issues/142#issuecomment-221546793
-            quotes: "“”‘’",
+            quotes: '“”‘’'
         });
         return renderer.render(text);
     }
 
     private wrapRenderedTextWithHtmlIfNeeded(renderedText: string): string {
         // If content isn't wrapped with an html element at this point, add it.
-        if (renderedText.indexOf("<html>") !== 0) {
-            renderedText = "<html>" + renderedText + "</html>";
+        if (renderedText.indexOf('<html>') !== 0) {
+            renderedText = '<html>' + renderedText + '</html>';
         }
         return renderedText;
     }
@@ -112,51 +106,43 @@ export class DefaultRenderer {
 
         return this.tagTransformingSanitizer.sanitize(text);
     }
+
+    private validate(o: RendererOptions) {
+        ow(o, 'RendererOptions', ow.object);
+        ow(o.baseUrl, 'RendererOptions.baseUrl', ow.string.nonEmpty);
+        ow(o.breaks, 'RendererOptions.breaks', ow.boolean);
+        ow(o.skipSanitization, 'RendererOptions.skipSanitization', ow.boolean);
+        ow(o.addNofollowToLinks, 'RendererOptions.addNofollowToLinks', ow.boolean);
+        ow(o.addTargetBlankToLinks, 'RendererOptions.addTargetBlankToLinks', ow.optional.boolean);
+        ow(o.cssClassForInternalLinks, 'RendererOptions.cssClassForInternalLinks', ow.optional.string);
+        ow(o.cssClassForExternalLinks, 'RendererOptions.cssClassForExternalLinks', ow.optional.string);
+        ow(o.doNotShowImages, 'RendererOptions.doNotShowImages', ow.boolean);
+        ow(o.ipfsPrefix, 'RendererOptions.ipfsPrefix', ow.string);
+        ow(o.assetsWidth, 'RendererOptions.assetsWidth', ow.number.integer.positive);
+        ow(o.assetsHeight, 'RendererOptions.assetsHeight', ow.number.integer.positive);
+        ow(o.imageProxyFn, 'RendererOptions.imageProxyFn', ow.function);
+        ow(o.hashtagUrlFn, 'RendererOptions.hashtagUrlFn', ow.function);
+        ow(o.usertagUrlFn, 'RendererOptions.usertagUrlFn', ow.function);
+        ow(o.isLinkSafeFn, 'RendererOptions.isLinkSafeFn', ow.function);
+        ow(o.addExternalCssClassToMatchingLinksFn, 'RendererOptions.addExternalCssClassToMatchingLinksFn', ow.function);
+    }
 }
-
-export namespace DefaultRenderer {
-    export interface Options {
-        baseUrl: string;
-        breaks: boolean;
-        skipSanitization: boolean;
-        allowInsecureScriptTags: boolean;
-        addNofollowToLinks: boolean;
-        addTargetBlankToLinks?: boolean;
-        cssClassForInternalLinks?: string;
-        cssClassForExternalLinks?: string;
-        doNotShowImages: boolean;
-        ipfsPrefix: string;
-        assetsWidth: number;
-        assetsHeight: number;
-        imageProxyFn: (url: string) => string;
-        hashtagUrlFn: (hashtag: string) => string;
-        usertagUrlFn: (account: string) => string;
-        isLinkSafeFn: (url: string) => boolean;
-        addExternalCssClassToMatchingLinksFn: (url: string) => boolean;
-    }
-
-    export namespace Options {
-        export function validate(o: Options) {
-            ow(o.baseUrl, "Options.baseUrl", ow.string.nonEmpty);
-            ow(o.breaks, "Options.breaks", ow.boolean);
-            ow(o.skipSanitization, "Options.skipSanitization", ow.boolean);
-            ow(o.addNofollowToLinks, "Options.addNofollowToLinks", ow.boolean);
-            ow(o.addTargetBlankToLinks, "Options.addTargetBlankToLinks", ow.optional.boolean);
-            ow(o.cssClassForInternalLinks, "Options.cssClassForInternalLinks", ow.optional.string);
-            ow(o.cssClassForExternalLinks, "Options.cssClassForExternalLinks", ow.optional.string);
-            ow(o.doNotShowImages, "Options.doNotShowImages", ow.boolean);
-            ow(o.ipfsPrefix, "Options.ipfsPrefix", ow.string);
-            ow(o.assetsWidth, "Options.assetsWidth", ow.number.integer.positive);
-            ow(o.assetsHeight, "Options.assetsHeight", ow.number.integer.positive);
-            ow(o.imageProxyFn, "Options.imageProxyFn", ow.function);
-            ow(o.hashtagUrlFn, "Options.hashtagUrlFn", ow.function);
-            ow(o.usertagUrlFn, "Options.usertagUrlFn", ow.function);
-            ow(o.isLinkSafeFn, "TagTransformingSanitizer.Options.isLinkSafeFn", ow.function);
-            ow(
-                o.addExternalCssClassToMatchingLinksFn,
-                "TagTransformingSanitizer.Options.addExternalCssClassToMatchingLinksFn",
-                ow.function,
-            );
-        }
-    }
+export interface RendererOptions {
+    baseUrl: string;
+    breaks: boolean;
+    skipSanitization: boolean;
+    allowInsecureScriptTags: boolean;
+    addNofollowToLinks: boolean;
+    addTargetBlankToLinks?: boolean;
+    cssClassForInternalLinks?: string;
+    cssClassForExternalLinks?: string;
+    doNotShowImages: boolean;
+    ipfsPrefix: string;
+    assetsWidth: number;
+    assetsHeight: number;
+    imageProxyFn: (url: string) => string;
+    hashtagUrlFn: (hashtag: string) => string;
+    usertagUrlFn: (account: string) => string;
+    isLinkSafeFn: (url: string) => boolean;
+    addExternalCssClassToMatchingLinksFn: (url: string) => boolean;
 }

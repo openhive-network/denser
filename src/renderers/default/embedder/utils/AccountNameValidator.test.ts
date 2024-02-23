@@ -1,34 +1,33 @@
-import { expect } from "chai";
+import {expect} from 'chai';
+import {Localization} from '../../LocalizationOptions';
+import {AccountNameValidator} from './AccountNameValidator';
 
-import { DefaultRendererLocalization } from "../../DefaultRendererLocalization";
-
-import { AccountNameValidator } from "./AccountNameValidator";
-
-describe("AccountNameValidator", () => {
-    ["", "a", "aa", "nametoolongtohandle"].forEach((input) => {
+describe('AccountNameValidator', () => {
+    ['', 'a', 'aa', 'nametoolongtohandle'].forEach((input) => {
         it(`should return accountNameWrongLength for invalid account name (${input})`, () => {
-            const actual = AccountNameValidator.validateAccountName(input, DefaultRendererLocalization.DEFAULT);
-            expect(actual).to.be.equal(DefaultRendererLocalization.DEFAULT.accountNameWrongLength);
+            const actual = AccountNameValidator.validateAccountName(input, Localization.DEFAULT);
+            expect(actual).to.be.equal(Localization.DEFAULT.accountNameWrongLength);
         });
     });
 
-    it("should return accountNameBadActor for bad actor account name", () => {
-        const actual = AccountNameValidator.validateAccountName("aalpha", DefaultRendererLocalization.DEFAULT);
-        expect(actual).to.be.equal(DefaultRendererLocalization.DEFAULT.accountNameBadActor);
+    it('should return accountNameBadActor for bad actor account name', () => {
+        const actual = AccountNameValidator.validateAccountName('aalpha', Localization.DEFAULT);
+        expect(actual).to.be.equal(Localization.DEFAULT.accountNameBadActor);
     });
 
-    ["something.", ".something", "a..a", "something.a", "a.something", "a.a.a", "something.ab", "123", "3speak", "something.123", "-something", "something-"].forEach((input) => {
-        it(`should return accountNameWrongSegment for invalid account name (${input})`, () => {
-            const actual = AccountNameValidator.validateAccountName(input, DefaultRendererLocalization.DEFAULT);
-            expect(actual).to.be.equal(DefaultRendererLocalization.DEFAULT.accountNameWrongSegment);
-        });
-    });
+    ['something.', '.something', 'a..a', 'something.a', 'a.something', 'a.a.a', 'something.ab', '123', '3speak', 'something.123', '-something', 'something-'].forEach(
+        (input) => {
+            it(`should return accountNameWrongSegment for invalid account name (${input})`, () => {
+                const actual = AccountNameValidator.validateAccountName(input, Localization.DEFAULT);
+                expect(actual).to.be.equal(Localization.DEFAULT.accountNameWrongSegment);
+            });
+        }
+    );
 
-    ["engrave", "hive--blocks", "something.abc"].forEach((input) => {
+    ['engrave', 'hive--blocks', 'something.abc'].forEach((input) => {
         it(`should return null for valid account name (${input})`, () => {
-            const actual = AccountNameValidator.validateAccountName(input, DefaultRendererLocalization.DEFAULT);
+            const actual = AccountNameValidator.validateAccountName(input, Localization.DEFAULT);
             expect(actual).to.be.equal(null);
         });
     });
-
 });

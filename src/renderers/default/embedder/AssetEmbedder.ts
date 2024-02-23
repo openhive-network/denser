@@ -1,15 +1,14 @@
-import { DefaultRendererLocalization } from "../DefaultRendererLocalization";
-
-import { AssetEmbedderOptions } from "./AssetEmbedderOptions";
-import { HtmlDOMParser } from "./HtmlDOMParser";
-import { VideoEmbedders } from "./videoembedders/VideoEmbedders";
+import ow from 'ow';
+import {LocalizationOptions} from '../LocalizationOptions';
+import {HtmlDOMParser} from './HtmlDOMParser';
+import {VideoEmbedders} from './videoembedders/VideoEmbedders';
 
 export class AssetEmbedder {
     private options: AssetEmbedderOptions;
-    private localization: DefaultRendererLocalization;
+    private localization: LocalizationOptions;
 
-    public constructor(options: AssetEmbedderOptions, localization: DefaultRendererLocalization) {
-        AssetEmbedderOptions.validate(options);
+    public constructor(options: AssetEmbedderOptions, localization: LocalizationOptions) {
+        AssetEmbedder.validate(options);
         this.options = options;
         this.localization = localization;
     }
@@ -22,8 +21,31 @@ export class AssetEmbedder {
     public insertAssets(input: string): string {
         const size = {
             width: this.options.width,
-            height: this.options.height,
+            height: this.options.height
         };
         return VideoEmbedders.insertMarkedEmbedsToRenderedOutput(input, size);
     }
+
+    public static validate(o: AssetEmbedderOptions) {
+        ow(o, 'AssetEmbedderOptions', ow.object);
+        ow(o.ipfsPrefix, 'AssetEmbedderOptions.ipfsPrefix', ow.string);
+        ow(o.width, 'AssetEmbedderOptions.width', ow.number.integer.positive);
+        ow(o.height, 'AssetEmbedderOptions.height', ow.number.integer.positive);
+        ow(o.hideImages, 'AssetEmbedderOptions.hideImages', ow.boolean);
+        ow(o.baseUrl, 'AssetEmbedderOptions.baseUrl', ow.string.nonEmpty);
+        ow(o.imageProxyFn, 'AssetEmbedderOptions.imageProxyFn', ow.function);
+        ow(o.hashtagUrlFn, 'AssetEmbedderOptions.hashtagUrlFn', ow.function);
+        ow(o.usertagUrlFn, 'AssetEmbedderOptions.usertagUrlFn', ow.function);
+    }
+}
+
+export interface AssetEmbedderOptions {
+    ipfsPrefix: string;
+    width: number;
+    height: number;
+    hideImages: boolean;
+    baseUrl: string;
+    imageProxyFn: (url: string) => string;
+    hashtagUrlFn: (hashtag: string) => string;
+    usertagUrlFn: (account: string) => string;
 }

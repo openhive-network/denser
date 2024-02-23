@@ -4,6 +4,6 @@ export class PreliminarySanitizer {
     }
 
     private static stripHtmlComments(text: string) {
-        return text.replace(/<!--([\s\S]+?)(-->|$)/g, "(html comment removed: $1)");
+        return text.replace(/<!--([\s\S]+?)(-->|$)/g, '(html comment removed: $1)');
     }
 }

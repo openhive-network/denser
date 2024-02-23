@@ -1,10 +1,9 @@
-import { Log } from "../../../../Log";
-import linksRe from "../utils/Links";
-
-import { AbstractVideoEmbedder } from "./AbstractVideoEmbedder";
+import {Log} from '../../../../Log';
+import linksRe from '../utils/Links';
+import {AbstractVideoEmbedder} from './AbstractVideoEmbedder';
 
 export class VimeoEmbedder extends AbstractVideoEmbedder {
-    private static TYPE = "vimeo";
+    private static TYPE = 'vimeo';
 
     public markEmbedIfFound(child: HTMLObjectElement) {
         try {
@@ -17,19 +16,14 @@ export class VimeoEmbedder extends AbstractVideoEmbedder {
 
             child.data = data.replace(vimeo.url, embedMarker);
 
-            return { link: vimeo.canonical };
+            return {link: vimeo.canonical};
         } catch (error) {
             Log.log().error(error);
         }
         return undefined;
     }
 
-    public processEmbedIfRelevant(
-        embedType: string,
-        id: string,
-        size: { width: number; height: number },
-        htmlElementKey: string,
-    ): string | undefined {
+    public processEmbedIfRelevant(embedType: string, id: string, size: {width: number; height: number}, htmlElementKey: string): string | undefined {
         if (embedType !== VimeoEmbedder.TYPE) return undefined;
         const url = `https://player.vimeo.com/video/${id}`;
         return `<div className="videoWrapper">
@@ -58,7 +52,7 @@ export class VimeoEmbedder extends AbstractVideoEmbedder {
         return {
             id: m[1],
             url: m[0],
-            canonical: `https://player.vimeo.com/video/${m[1]}`,
+            canonical: `https://player.vimeo.com/video/${m[1]}`
             // thumbnail: requires a callback - http://stackoverflow.com/questions/1361149/get-img-thumbnails-from-vimeo
         };
     }
