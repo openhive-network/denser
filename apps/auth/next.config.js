@@ -1,6 +1,6 @@
 const path = require('path');
 const version = require('./version.json');
-const withTM = require('next-transpile-modules')(['@hive/smart-signer', '@hive/ui']);
+const withTM = require('next-transpile-modules')(['@hive/smart-signer', '@hive/ui', '@hive/transaction']);
 const CopyPlugin = require('copy-webpack-plugin');
 
 /** @type {import('next').NextConfig} */
@@ -10,7 +10,6 @@ const nextConfig = {
   images: {
     domains: ['avatars.githubusercontent.com']
   },
-  transpilePackages: ['@hive/transaction'],
   experimental: {
     outputFileTracingRoot: path.join(__dirname, '../..')
   },
