@@ -89,18 +89,16 @@ export const getFeedHistory = async (): Promise<IFeedHistory> => {
   const chain = await createHiveChain();
   return chain.extend<GetFeedHistoryData>().api.database.get_feed_history();
 };
-interface IFollowCount {
-  username: string;
-}
+
 type GetFollowCountData = {
-  database: {
-    get_follow_count: TWaxApiRequest<IFollowCount, AccountFollowStats>;
+  condenser_api: {
+    get_follow_count: TWaxApiRequest<string[], AccountFollowStats>;
   };
 };
 
 export const getFollowCount = async (username: string): Promise<AccountFollowStats> => {
   const chain = await createHiveChain();
-  return chain.extend<GetFollowCountData>().api.database.get_follow_count({ username });
+  return chain.extend<GetFollowCountData>().api.condenser_api.get_follow_count([username]);
 };
 
 export interface ITrendingTag {
