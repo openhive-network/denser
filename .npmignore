@@ -8,6 +8,7 @@
 /.DS_Store
 /sample
 /tslint.json
+/tsconfig.json
 /tsconfig.lint.json
 /tsconfig.build.json
 *.test.ts
@@ -17,3 +18,8 @@
 .nvmrc
 .eslintrc
 .prettierrc.js
+.husky
+.run
+browser-test
+webpack.config.js
+.idea
