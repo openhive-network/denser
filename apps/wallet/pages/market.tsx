@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import { getAccount } from '@hive/ui/lib/hive';
-import { convertStringToBig } from '@hive/ui/lib/helpers';
-import Loading from '@hive/ui/components/loading';
+import { getAccount } from '@ui/lib/hive';
+import { convertStringToBig } from '@ui/lib/helpers';
+import Loading from '@ui/components/loading';
 import Big from 'big.js';
 import clsx from 'clsx';
 import { useMarket } from '@/wallet/components/hooks/use-market';
@@ -12,12 +12,12 @@ import { i18n } from '@/wallet/next-i18next.config';
 import { useTranslation } from 'next-i18next';
 
 const Box = ({
-               label,
-               value,
-               diff,
-               percent = false,
-               dollar = false
-             }: {
+  label,
+  value,
+  diff,
+  percent = false,
+  dollar = false
+}: {
   label: string;
   value: string;
   diff?: string;
@@ -25,11 +25,9 @@ const Box = ({
   dollar?: boolean;
 }) => {
   return (
-    <div className='text-xs flex drop-shadow-md bg-slate-100 px-2 dark:bg-slate-800'>
-      <span className='py-1 pr-2 border-r-[1px] border-black font-semibold'>
-        {label}
-      </span>
-      <span className='py-1 pl-2'>
+    <div className="flex bg-slate-100 px-2 text-xs drop-shadow-md dark:bg-slate-800">
+      <span className="border-r-[1px] border-black py-1 pr-2 font-semibold">{label}</span>
+      <span className="py-1 pl-2">
         {dollar ? '$' : null}
         {value}
         {percent ? '%' : null}
@@ -69,8 +67,8 @@ function Market() {
       .div(tickerData.highest_bid.plus(tickerData.lowest_ask))
   );
   return (
-    <div className='flex flex-col gap-4 px-4 pb-8 items-center'>
-      <div className='flex gap-1 w-full flex-wrap justify-center'>
+    <div className="flex flex-col items-center gap-4 px-4 pb-8">
+      <div className="flex w-full flex-wrap justify-center gap-1">
         <Box
           label={t('market_page.last_price')}
           value={convertStringToBig(tickerData.latest).toFixed(6)}
@@ -97,7 +95,10 @@ export default Market;
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   return {
     props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_wallet', 'smart-signer']))
+      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
+        'common_wallet',
+        'smart-signer'
+      ]))
     }
   };
 };

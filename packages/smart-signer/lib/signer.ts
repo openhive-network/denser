@@ -11,7 +11,7 @@ export type { BroadcastTransaction, SignChallenge, SignerOptions } from '@smart-
 // export * from '@hive/wax'; // TODO Consider this.
 export { vote, update_proposal_votes, operation } from '@hive/wax/web';
 
-import { getLogger } from '@hive/ui/lib/logging';
+import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 /**
@@ -34,7 +34,6 @@ const logger = getLogger('app');
  * @extends {SignerBase}
  */
 export class Signer extends SignerBase {
-
   /**
    * Creates instance of Signer for given `loginType` and returns it.
    *
@@ -45,10 +44,10 @@ export class Signer extends SignerBase {
    * @memberof Signer
    */
   private getSigner(
-      loginType: LoginTypes = LoginTypes.wif,
-      apiEndpoint = this.apiEndpoint,
-      storageType = this.storageType
-      ) {
+    loginType: LoginTypes = LoginTypes.wif,
+    apiEndpoint = this.apiEndpoint,
+    storageType = this.storageType
+  ) {
     let signer: SignerHbauth | SignerHiveauth | SignerKeychain | SignerWif;
     const args = { apiEndpoint, storageType };
     if (loginType === LoginTypes.hbauth) {
@@ -157,5 +156,4 @@ export class Signer extends SignerBase {
     const signer = this.getSigner(loginType);
     return signer.destroy(username, loginType);
   }
-
 }

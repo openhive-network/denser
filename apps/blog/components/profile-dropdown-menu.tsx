@@ -20,12 +20,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from '@hive/ui/components/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@hive/ui/components/avatar';
+} from '@ui/components/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '@ui/components/avatar';
 import Link from 'next/link';
 import { useAppStore } from '@/blog/store/app';
 import { useQuery } from '@tanstack/react-query';
-import { getAccountFull } from '@hive/ui/lib/hive';
+import { getAccountFull } from '@ui/lib/hive';
 import env from '@beam-australia/react-env';
 
 const ProfileDropdownMenu = () => {

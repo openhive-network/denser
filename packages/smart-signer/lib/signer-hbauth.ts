@@ -6,7 +6,7 @@ import { createHiveChain, BroadcastTransactionRequest } from '@hive/wax/web';
 import { SignerBase } from '@smart-signer/lib/signer-base';
 import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
 
-import { getLogger } from '@hive/ui/lib/logging';
+import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 /**
@@ -19,13 +19,12 @@ const logger = getLogger('app');
  * @extends {SignerBase}
  */
 export class SignerHbauth extends SignerBase {
-
   async getPasswordFromUser(dialogProps: { [key: string]: any } = {}): Promise<string> {
     let password = '';
     try {
       const result = await DialogPasswordModalPromise({
         isOpen: true,
-        ...dialogProps,
+        ...dialogProps
       });
       password = result as string;
       logger.info('Return from PasswordModalPromise: %s', result);
@@ -93,7 +92,6 @@ export class SignerHbauth extends SignerBase {
     }
 
     if (!auth.authorized) {
-
       if (!password) {
         password = await this.getPasswordFromUser({
           i18nKeyPlaceholder: 'login_form.password_hbauth_placeholder',
@@ -150,5 +148,4 @@ export class SignerHbauth extends SignerBase {
       // We should offer adding account to wallet.
     }
   }
-
 }

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { cn } from '@/blog/lib/utils';
-import { Card, CardContent, CardTitle } from '@hive/ui/components/card';
+import { Card, CardContent, CardTitle } from '@ui/components/card';
 import { useTranslation } from 'next-i18next';
 import { Subscription } from '@ui/lib/bridge';
 

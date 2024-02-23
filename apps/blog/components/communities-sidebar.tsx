@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { getCommunities } from '@ui/lib/bridge';
 import { cn } from '@/blog/lib/utils';
-import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@ui/components/card';
 import { FC } from 'react';
 import { useTranslation } from 'next-i18next';
 

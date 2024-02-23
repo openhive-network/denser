@@ -11,7 +11,7 @@ import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { Signer } from '@smart-signer/lib/signer';
 import { KeyTypes } from '@smart-signer/types/common';
 
-import { getLogger } from '@hive/ui/lib/logging';
+import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?: string }) {
@@ -73,7 +73,7 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
       username: username || '',
       signatures,
       loginType,
-      hivesignerToken,
+      hivesignerToken
     };
 
     try {

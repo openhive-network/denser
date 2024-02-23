@@ -2,13 +2,13 @@
 
 import { FC, useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Button } from '@hive/ui/components/button';
+import { Button } from '@ui/components/button';
 import { ModeToggle } from './mode-toggle';
 import { MobileNav } from './mobile-nav';
 import { MainNav } from './main-nav';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { getLogger } from '@hive/ui/lib/logging';
-import { Avatar, AvatarFallback, AvatarImage } from '@hive/ui/components/avatar';
+import { getLogger } from '@ui/lib/logging';
+import { Avatar, AvatarFallback, AvatarImage } from '@ui/components/avatar';
 import DialogHBAuth from '@smart-signer/components/dialog-hb-auth';
 import { useLogout } from '@smart-signer/lib/auth/use-logout';
 

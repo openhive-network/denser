@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@ui/components/card';
 import { cn } from '@/blog/lib/utils';
 import { FC } from 'react';
 

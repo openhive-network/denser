@@ -5,7 +5,7 @@ import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer-ba
 import { operation } from '@hive/wax/web';
 import { SignerBase } from '@smart-signer/lib/signer-base';
 
-import { getLogger } from '@hive/ui/lib/logging';
+import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 // See https://github.com/hive-keychain/keychain-sdk
@@ -47,12 +47,7 @@ export function waxToKeychainOperation(operation: operation) {
  * @extends {SignerBase}
  */
 export class SignerKeychain extends SignerBase {
-
-  async signChallenge({
-    message,
-    username,
-    keyType = KeyTypes.posting,
-  }: SignChallenge): Promise<string> {
+  async signChallenge({ message, username, keyType = KeyTypes.posting }: SignChallenge): Promise<string> {
     logger.info('in SignerKeychain.signChallenge %o', { message, username, keyType });
     const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
     try {
@@ -162,5 +157,4 @@ export class SignerKeychain extends SignerBase {
       throw error;
     }
   }
-
 }

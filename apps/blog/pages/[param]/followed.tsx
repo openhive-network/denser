@@ -1,8 +1,8 @@
 import ProfileLayout from '@/blog/components/common/profile-layout';
 import { useFollowingInfiniteQuery } from '@/blog/components/hooks/use-following-infinitequery';
-import { useSiteParams } from '@hive/ui/components/hooks/use-site-params';
+import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import PrevNextButtons from '@/blog/components/prev-next-buttons';
-import { FullAccount } from '@hive/ui/store/app-types';
+import { FullAccount } from '@ui/store/app-types';
 import { useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useState } from 'react';

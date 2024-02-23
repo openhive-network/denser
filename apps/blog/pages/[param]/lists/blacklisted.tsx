@@ -1,4 +1,4 @@
-import { useSiteParams } from '@hive/ui/components/hooks/use-site-params';
+import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import ProfileLists from '@/blog/components/profile-lists-component';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
 import { GetServerSideProps } from 'next';
@@ -11,13 +11,16 @@ export default function Blacklist() {
   if (blacklistedQuery.isLoading) {
     return <div>Loading</div>;
   }
-  return <ProfileLists username={username} variant='blacklisted' data={blacklistedQuery.data} />;
+  return <ProfileLists username={username} variant="blacklisted" data={blacklistedQuery.data} />;
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   return {
     props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_blog', 'smart-signer']))
+      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
+        'common_blog',
+        'smart-signer'
+      ]))
     }
   };
 };

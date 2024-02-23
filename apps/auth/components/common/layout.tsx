@@ -1,9 +1,9 @@
-import { ReactNode } from "react";
-import Head from "next/head";
-import { Toaster } from "@hive/ui/components/toaster";
-import { useTheme } from "next-themes";
-import { TailwindIndicator } from "../tailwind-indicator";
-import SiteHeader from "../site-header";
+import { ReactNode } from 'react';
+import Head from 'next/head';
+import { Toaster } from '@ui/components/toaster';
+import { useTheme } from 'next-themes';
+import { TailwindIndicator } from '../tailwind-indicator';
+import SiteHeader from '../site-header';
 
 // import { ModalContainer } from '@smart-signer/components/modal-container';
 import { Container as ModalContainer } from 'react-modal-promise';
@@ -17,16 +17,11 @@ function Layout({ children }: LayoutProps) {
   return (
     <>
       <Head>
-        <meta
-          name="theme-color"
-          content={resolvedTheme === "dark" ? "#030711" : "#ffffff"}
-        />
+        <meta name="theme-color" content={resolvedTheme === 'dark' ? '#030711' : '#ffffff'} />
       </Head>
       <div className="relative flex min-h-screen flex-col">
         <SiteHeader />
-        <div className="flex-1 bg-slate-50 dark:bg-background/95">
-          {children}
-        </div>
+        <div className="flex-1 bg-slate-50 dark:bg-background/95">{children}</div>
       </div>
       <ModalContainer />
       <Toaster />

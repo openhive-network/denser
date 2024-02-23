@@ -1,7 +1,7 @@
 import { Label } from '@radix-ui/react-label';
 import { useState } from 'react';
-import { Input } from '@hive/ui/components/input';
-import { Button } from '@hive/ui/components/button';
+import { Input } from '@ui/components/input';
+import { Button } from '@ui/components/button';
 import { useTranslation } from 'next-i18next';
 
 export default function ClipboardCopy({ copyText, label }: { copyText: string; label: string }) {
@@ -33,11 +33,11 @@ export default function ClipboardCopy({ copyText, label }: { copyText: string; l
   };
 
   return (
-    <div className='flex flex-col gap-2'>
-      <Label htmlFor='name'>{label}</Label>
-      <div className='flex w-full items-center gap-2'>
-        <Input readOnly value={copyText} className='col-span-3' />
-        <Button onClick={handleCopyClick} type='submit' className='w-28'>
+    <div className="flex flex-col gap-2">
+      <Label htmlFor="name">{label}</Label>
+      <div className="flex w-full items-center gap-2">
+        <Input readOnly value={copyText} className="col-span-3" />
+        <Button onClick={handleCopyClick} type="submit" className="w-28">
           {isCopied ? t('post_content.footer.share_form.copied') : t('post_content.footer.share_form.copy')}
         </Button>
       </div>

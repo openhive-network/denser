@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { Icons } from '@hive/ui/components/icons';
-import { Progress } from '@hive/ui/components/progress';
-import { dateToFullRelative } from '@hive/ui/lib/parse-date';
+import { Icons } from '@ui/components/icons';
+import { Progress } from '@ui/components/progress';
+import { dateToFullRelative } from '@ui/lib/parse-date';
 import { AccountNotification } from '@ui/lib/bridge';
 import { useTranslation } from 'next-i18next';
 

@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AccountNotification, getAccountNotifications } from '@ui/lib/bridge';
 import NotificationList from '@/blog/components/notification-list';
-import { Button } from '@hive/ui/components/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@hive/ui/components/tabs';
+import { Button } from '@ui/components/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components/tabs';
 import { useTranslation } from 'next-i18next';
 
 const NotificationActivities = ({

@@ -1,4 +1,4 @@
-import { Button, Separator } from "@hive/ui";
+import { Button, Separator } from '@hive/ui';
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -7,19 +7,13 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@hive/ui/components/alert-dialog";
-import { ReactNode } from "react";
-import DialogLogin from "./dialog-login";
+  AlertDialogTrigger
+} from '@ui/components/alert-dialog';
+import { ReactNode } from 'react';
+import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
 
-export function AlertDialogProxy({
-  children,
-  userProxy,
-}: {
-  children: ReactNode;
-  userProxy: string;
-}) {
+export function AlertDialogProxy({ children, userProxy }: { children: ReactNode; userProxy: string }) {
   const { t } = useTranslation('common_wallet');
   return (
     <AlertDialog>
@@ -30,25 +24,19 @@ export function AlertDialogProxy({
             <AlertDialogTitle data-testid="reblog-dialog-header">
               {t('witnesses_page.proxy_form.title')}
             </AlertDialogTitle>
-            <AlertDialogCancel
-              className="border-none hover:text-red-800"
-              data-testid="reblog-dialog-close"
-            >
+            <AlertDialogCancel className="border-none hover:text-red-800" data-testid="reblog-dialog-close">
               X
             </AlertDialogCancel>
           </div>
           <Separator />
           <AlertDialogDescription data-testid="reblog-dialog-description">
-            {userProxy === ""
+            {userProxy === ''
               ? t('witnesses_page.proxy_form.description')
-              : t('witnesses_page.proxy_form.set_proxy_to', {proxy: userProxy})}
+              : t('witnesses_page.proxy_form.set_proxy_to', { proxy: userProxy })}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="gap-2 sm:flex-row-reverse">
-          <AlertDialogCancel
-            className="hover:text-red-800"
-            data-testid="reblog-dialog-cancel"
-          >
+          <AlertDialogCancel className="hover:text-red-800" data-testid="reblog-dialog-cancel">
             {t('witnesses_page.proxy_form.cancel_button')}
           </AlertDialogCancel>
           <DialogLogin>

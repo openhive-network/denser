@@ -1,6 +1,6 @@
 import { FC, PropsWithChildren, createContext, useContext, useEffect, useState } from 'react';
 import { DefaultRenderer } from '@hiveio/content-renderer';
-import { getDoubleSize, proxifyImageUrl } from '@hive/ui/lib/old-profixy';
+import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
 import env from '@beam-australia/react-env';
 
 type HiveRendererContextType = {

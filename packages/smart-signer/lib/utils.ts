@@ -1,7 +1,7 @@
 import { createWaxFoundation, operation, THexString, ITransactionBuilder } from '@hive/wax/web';
 import { fetchJson } from '@smart-signer/lib/fetch-json';
-import { isBrowser } from '@hive/ui/lib/logger';
-import { getLogger } from '@hive/ui/lib/logging';
+import { isBrowser } from '@ui/lib/logger';
+import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
 

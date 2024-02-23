@@ -1,4 +1,4 @@
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@hive/ui/components/hover-card';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@ui/components/hover-card';
 import { cn } from '@/blog/lib/utils';
 import { ReactNode } from 'react';
 import { Entry } from '@ui/lib/bridge';

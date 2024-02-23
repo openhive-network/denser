@@ -1,12 +1,12 @@
 import { cn } from '@/blog/lib/utils';
-import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@ui/components/card';
 import Link from 'next/link';
-import { Button } from '@hive/ui/components/button';
+import { Button } from '@ui/components/button';
 import ln2list from '@/blog/lib/ln2list';
 import { AccountNotification, Community, Subscription } from '@ui/lib/bridge';
 import { SubsListDialog } from './subscription-list-dialog';
 import { ActivityLogDialog } from './activity-log-dialog';
-import { Badge } from '@hive/ui/components/badge';
+import { Badge } from '@ui/components/badge';
 import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';

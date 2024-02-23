@@ -1,8 +1,8 @@
-import { Button } from '@hive/ui/components/button';
-import { Icons } from '@hive/ui/components/icons';
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@hive/ui/components/sheet';
+import { Button } from '@ui/components/button';
+import { Icons } from '@ui/components/icons';
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@ui/components/sheet';
 import Link from 'next/link';
-import { Separator } from '@hive/ui/components/separator';
+import { Separator } from '@ui/components/separator';
 import clsx from 'clsx';
 import { ReactNode } from 'react';
 import { useTranslation } from 'next-i18next';

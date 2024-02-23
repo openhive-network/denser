@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import parseDate, { dateToFullRelative } from '@hive/ui/lib/parse-date';
-import { Badge } from '@hive/ui/components/badge';
+import parseDate, { dateToFullRelative } from '@ui/lib/parse-date';
+import { Badge } from '@ui/components/badge';
 import { UserHoverCard, UserHoverCardProps } from './user-hover-card';
 import { useTranslation } from 'next-i18next';
 

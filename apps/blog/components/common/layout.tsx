@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import Head from 'next/head';
-import { Toaster } from '@hive/ui/components/toaster';
+import { Toaster } from '@ui/components/toaster';
 import { useTheme } from 'next-themes';
 import { TailwindIndicator } from '../tailwind-indicator';
 import SiteHeader from '../site-header';
