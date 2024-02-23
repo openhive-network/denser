@@ -8,7 +8,7 @@ import {
   getAccount,
   getDynamicGlobalProperties,
   getAccountFull,
-  getAccountReputation
+  getAccountReputations
 } from '@transaction/lib/hive';
 import { accountReputation } from '@/blog/lib/utils';
 import { delegatedHive, numberWithCommas, vestingHive } from '@hive/ui/lib/utils';
@@ -71,7 +71,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
     isLoading: accountReputationIsLoading,
     error: accountReputationError,
     data: accountReputationData
-  } = useQuery(['accountReputationData', username], () => getAccountReputation(username, 1), {
+  } = useQuery(['accountReputationData', username], () => getAccountReputations(username, 1), {
     enabled: !!username
   });
 
@@ -139,7 +139,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
         style={{ textShadow: 'rgb(0, 0, 0) 1px 1px 2px' }}
         data-testid="profile-info"
       >
-        {profileData && accountReputationData ? (
+        {profileData && accountReputationData?.reputations ? (
           <div
             style={{
               background:
@@ -167,7 +167,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <span
                   title={`This is ${username}s's reputation score.\n\nThe reputation score is based on the history of votes received by the account, and is used to hide low quality content.`}
                 >
-                  ({accountReputation(accountReputationData.repuation ? accountReputationData.repuation : 0)})
+                  ({accountReputation(accountReputationData.reputations[0].reputation ?? 0)})
                 </span>
               </h4>
               {profileData.name ? (
@@ -213,10 +213,10 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   {profileData?.follow_stats?.follower_count === 0 || undefined
                     ? t('user_profil.lists.follower_count.zero')
                     : profileData?.follow_stats?.follower_count === 1
-                    ? t('user_profil.lists.follower_count.one')
-                    : t('user_profil.lists.follower_count.other', {
-                        value: profileData?.follow_stats?.follower_count
-                      })}
+                      ? t('user_profil.lists.follower_count.one')
+                      : t('user_profil.lists.follower_count.other', {
+                          value: profileData?.follow_stats?.follower_count
+                        })}
                 </Link>
               </li>
 
@@ -233,8 +233,8 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   {profileData?.post_count === 0
                     ? t('user_profil.lists.post_count.zero')
                     : profileData?.post_count === 1
-                    ? t('user_profil.lists.post_count.one')
-                    : t('user_profil.lists.post_count.other', { value: profileData?.post_count })}
+                      ? t('user_profil.lists.post_count.one')
+                      : t('user_profil.lists.post_count.other', { value: profileData?.post_count })}
                 </Link>
               </li>
 
@@ -250,10 +250,10 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   {profileData?.follow_stats?.following_count === 0 || undefined
                     ? t('user_profil.lists.followed_count.zero')
                     : profileData?.follow_stats?.following_count === 1
-                    ? t('user_profil.lists.followed_count.one')
-                    : t('user_profil.lists.followed_count.other', {
-                        value: profileData?.follow_stats?.following_count
-                      })}
+                      ? t('user_profil.lists.followed_count.one')
+                      : t('user_profil.lists.followed_count.other', {
+                          value: profileData?.follow_stats?.following_count
+                        })}
                 </Link>
               </li>
 

@@ -228,22 +228,34 @@ export const getPost = async (username: string, permlink: string): Promise<IPost
   return chain.extend<GetPostData>().api.condenser_api.get_content([username, permlink]);
 };
 
+interface IAccountReputationParams {
+  account_lower_bound: string;
+  limit: number;
+}
+
 interface IAccountReputation {
   account: string;
-  repuation: number;
+  reputation: number;
+}
+
+interface IAccountReputations {
+  reputations: IAccountReputation[];
 }
 
 type GetAccountReputationData = {
   reputation_api: {
-    get_account_reputation: TWaxApiRequest<(string | number)[], IAccountReputation>;
+    get_account_reputations: TWaxApiRequest<IAccountReputationParams, IAccountReputations>;
   };
 };
 
-export const getAccountReputation = async (username: string, limit: number): Promise<IAccountReputation> => {
+export const getAccountReputations = async (
+  account_lower_bound: string,
+  limit: number
+): Promise<IAccountReputations> => {
   const chain = await createHiveChain();
   return chain
     .extend<GetAccountReputationData>()
-    .api.reputation_api.get_account_reputation([username, limit]);
+    .api.reputation_api.get_account_reputations({ account_lower_bound, limit });
 };
 
 type GetMarketBucketSizesData = {
