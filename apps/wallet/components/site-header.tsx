@@ -57,7 +57,7 @@ const SiteHeader: FC = () => {
     enabled: !!user?.username
   });
   const stats = rcData
-    ? calculateRcStats(rcData)
+    ? calculateRcStats(rcData.rc_accounts)
     : {
         resourceCreditsPercent: 0,
         resourceCreditsWaitTime: 0

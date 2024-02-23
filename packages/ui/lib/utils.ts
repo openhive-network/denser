@@ -103,7 +103,8 @@ export function getRoundedAbbreveration(
     t = t.div(1000);
   }
 
-  return numToRefactor.div(new Big(1000).pow(mulIndex)).toFixed(toComma) + multiplicators[mulIndex - 1];
+  // To check I change mulIndex - 1 to mulIndex because UI reveive K not M
+  return numToRefactor.div(new Big(1000).pow(mulIndex)).toFixed(toComma) + multiplicators[mulIndex];
 }
 export const numberWithCommas = (x: string) => x.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 export function vestingHive(accountData: ExpApiAccount, dynamicData: IDynamicGlobalProperties) {

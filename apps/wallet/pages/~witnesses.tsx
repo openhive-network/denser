@@ -100,16 +100,16 @@ function WitnessesPage() {
   } = useQuery(['wintesses'], () => getWitnessesByVote('', 250), {
     select: (witnesses) => {
       // TODO: check this logic to be good!
-      const witnessVotes = listWitnessVotesData?.votes.filter((vote) => {
-        if (vote.witness === user?.username) return vote.witness;
-      });
-      return witnesses
-        .map(mapWitnesses(totalVesting, totalShares, headBlock, witnessVotes as unknown as string[]))
-        .filter(
-          (witness) =>
-            witness.rank <= 101 || witness.witnessLastBlockAgeInSecs <= LAST_BLOCK_AGE_THRESHOLD_IN_SEC
-          //&& !myVote need LOGIN
-        );
+      const witnessVotes = listWitnessVotesData?.votes
+        .filter((vote) => {
+          if (vote.witness === user?.username) return vote;
+        })
+        .map((witnessObj) => witnessObj.witness);
+      return witnesses.map(mapWitnesses(totalVesting, totalShares, headBlock, witnessVotes)).filter(
+        (witness) =>
+          witness.rank <= 101 || witness.witnessLastBlockAgeInSecs <= LAST_BLOCK_AGE_THRESHOLD_IN_SEC
+        //&& !myVote need LOGIN
+      );
     },
     enabled: dynamicSuccess
   });

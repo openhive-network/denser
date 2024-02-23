@@ -41,13 +41,13 @@ export const getWitnessesByVote = async (from: string, limit: number): Promise<I
 
 type GetFindRcAccountsData = {
   rc_api: {
-    find_rc_accounts: TWaxApiRequest<string[], RcAccount[]>;
+    find_rc_accounts: TWaxApiRequest<string[], { rc_accounts: RcAccount[] }>;
   };
 };
 
-export const findRcAccounts = async (username: string): Promise<RcAccount[]> => {
+export const findRcAccounts = async (username: string): Promise<{ rc_accounts: RcAccount[] }> => {
   const chain = await createHiveChain();
-  return chain.extend<GetFindRcAccountsData>().api.rc_api.find_rc_accounts([username]);
+  return chain.extend<GetFindRcAccountsData>().api.rc_api.find_rc_accounts({ accounts: [username] });
 };
 
 export const DEFAULT_PARAMS_FOR_PROPOSALS: IGetProposalsParams = {
