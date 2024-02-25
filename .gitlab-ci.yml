@@ -20,8 +20,13 @@ lint:commit message:
 test:unit:
   stage: test
   script:
-      - npm run test
+      - npm run test:coverage
       - NODE_ENV=production npm run build && node sample/demo-local.js
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
 
 test:browser:
   stage: test
