@@ -39,12 +39,7 @@ export class StaticConfig {
                     if (!m || m.length !== 2) {
                         return null;
                     }
-                    return (
-                        'https://w.soundcloud.com/player/?url=' +
-                        m[1] +
-                        '&auto_play=false&hide_related=false&show_comments=true' +
-                        '&show_user=true&show_reposts=false&visual=true'
-                    );
+                    return `https://w.soundcloud.com/player/?url=${m[1]}&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&visual=true`;
                 }
             },
             {
@@ -52,6 +47,12 @@ export class StaticConfig {
                 re: /^(https?:)?\/\/player.twitch.tv\/.*/i,
                 fn: (src: string) => {
                     // <iframe src="https://player.twitch.tv/?channel=ninja" frameborder="0" allowfullscreen="true" scrolling="no" height="378" width="620">
+                    return src;
+                }
+            },
+            {
+                re: /^https:\/\/open\.spotify\.com\/(embed|embed-podcast)\/(playlist|show|episode|album|track|artist)\/(.*)/i,
+                fn: (src: string) => {
                     return src;
                 }
             }

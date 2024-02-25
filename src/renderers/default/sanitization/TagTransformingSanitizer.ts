@@ -4,7 +4,7 @@
 import ow from 'ow';
 import sanitize from 'sanitize-html';
 import {Log} from '../../../Log';
-import {Localization, LocalizationOptions} from '../LocalizationOptions';
+import {Localization, LocalizationOptions} from '../Localization';
 import {StaticConfig} from '../StaticConfig';
 
 export class TagTransformingSanitizer {
@@ -50,8 +50,8 @@ export class TagTransformingSanitizer {
             },
             allowedSchemes: ['http', 'https', 'hive'],
             transformTags: {
-                iframe: (tagName: string, attribs: sanitize.Attributes) => {
-                    const srcAtty = attribs.src;
+                iframe: (tagName: string, attributes: sanitize.Attributes) => {
+                    const srcAtty = attributes.src;
                     for (const item of StaticConfig.sanitization.iframeWhitelist) {
                         if (item.re.test(srcAtty)) {
                             const src = typeof item.fn === 'function' ? item.fn(srcAtty) : srcAtty;
@@ -63,10 +63,8 @@ export class TagTransformingSanitizer {
                                 attribs: {
                                     frameborder: '0',
                                     allowfullscreen: 'allowfullscreen',
-
                                     // deprecated but required for vimeo : https://vimeo.com/forums/help/topic:278181
                                     webkitallowfullscreen: 'webkitallowfullscreen',
-
                                     mozallowfullscreen: 'mozallowfullscreen', // deprecated but required for vimeo
                                     src,
                                     width: this.options.iframeWidth + '',
@@ -76,7 +74,7 @@ export class TagTransformingSanitizer {
                             return iframeToBeReturned;
                         }
                     }
-                    Log.log().warn('Blocked, did not match iframe "src" white list urls:', tagName, attribs);
+                    Log.log().warn('Blocked, did not match iframe "src" white list urls:', tagName, attributes);
                     this.sanitizationErrors.push('Invalid iframe URL: ' + srcAtty);
 
                     const retTag: sanitize.Tag = {tagName: 'div', text: `(Unsupported ${srcAtty})`, attribs: {}};

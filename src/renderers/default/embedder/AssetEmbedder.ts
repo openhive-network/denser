@@ -1,7 +1,7 @@
 import ow from 'ow';
-import {LocalizationOptions} from '../LocalizationOptions';
+import {LocalizationOptions} from '../Localization';
+import {Embedders} from './embedders/Embedders';
 import {HtmlDOMParser} from './HtmlDOMParser';
-import {VideoEmbedders} from './videoembedders/VideoEmbedders';
 
 export class AssetEmbedder {
     private options: AssetEmbedderOptions;
@@ -23,7 +23,7 @@ export class AssetEmbedder {
             width: this.options.width,
             height: this.options.height
         };
-        return VideoEmbedders.insertMarkedEmbedsToRenderedOutput(input, size);
+        return Embedders.insertMarkedEmbedsToRenderedOutput(input, size);
     }
 
     public static validate(o: AssetEmbedderOptions) {

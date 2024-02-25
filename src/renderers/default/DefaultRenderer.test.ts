@@ -91,7 +91,79 @@ describe('DefaultRender', () => {
         {
             name: 'Should remove additional unsafe attributes from a tag',
             raw: "<a fake='test'></a>",
-            expected: '<p><a class="hive-test"></a></p>'
+            expected: '<p><a class="hive-test external"></a></p>'
+        },
+        {
+            name: 'Spotify playlist link should be embedded correctly',
+            raw: 'https://open.spotify.com/playlist/1zLvUhumbFIEdfxYQcgUxk',
+            expected:
+                '<p><div class="videoWrapper"><iframe src="https://open.spotify.com/embed/playlist/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div></p>'
+        },
+        {
+            name: 'Spotify track link should be embedded correctly',
+            raw: 'https://open.spotify.com/track/3Qm86XLflmIXVm1wcwkgDK',
+            expected:
+                '<p><div class="videoWrapper"><iframe src="https://open.spotify.com/embed/track/3Qm86XLflmIXVm1wcwkgDK" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div></p>'
+        },
+        {
+            name: 'Spotify album link should be embedded correctly',
+            raw: 'https://open.spotify.com/album/1zLvUhumbFIEdfxYQcgUxk',
+            expected:
+                '<p><div class="videoWrapper"><iframe src="https://open.spotify.com/embed/album/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div></p>'
+        },
+        {
+            name: 'Spotify episode link should be embedded correctly',
+            raw: 'https://open.spotify.com/episode/1zLvUhumbFIEdfxYQcgUxk',
+            expected:
+                '<p><div class="videoWrapper"><iframe src="https://open.spotify.com/embed-podcast/episode/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div></p>'
+        },
+        {
+            name: 'Spotify show link should be embedded correctly',
+            raw: 'https://open.spotify.com/show/1zLvUhumbFIEdfxYQcgUxk',
+            expected:
+                '<p><div class="videoWrapper"><iframe src="https://open.spotify.com/embed-podcast/show/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div></p>'
+        },
+        {
+            name: 'Spotify artist link should be embedded correctly',
+            raw: 'https://open.spotify.com/artist/1zLvUhumbFIEdfxYQcgUxk',
+            expected:
+                '<p><div class="videoWrapper"><iframe src="https://open.spotify.com/embed/artist/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div></p>'
+        },
+        {
+            name: 'Spotify embed playlist via iframe should be embedded correctly',
+            raw: '<iframe src="https://open.spotify.com/embed/playlist/1zLvUhumbFIEdfxYQcgUxk" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>',
+            expected:
+                '<div class="videoWrapper"><iframe src="https://open.spotify.com/embed/playlist/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen"></iframe></div>'
+        },
+        {
+            name: 'Spotify embed track via iframe should be embedded correctly',
+            raw: '<iframe src="https://open.spotify.com/embed/track/3Qm86XLflmIXVm1wcwkgDK" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>',
+            expected:
+                '<div class="videoWrapper"><iframe src="https://open.spotify.com/embed/track/3Qm86XLflmIXVm1wcwkgDK" width="640" height="480" frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen"></iframe></div>'
+        },
+        {
+            name: 'Spotify embed album via iframe should be embedded correctly',
+            raw: '<iframe src="https://open.spotify.com/embed/album/1zLvUhumbFIEdfxYQcgUxk" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>',
+            expected:
+                '<div class="videoWrapper"><iframe src="https://open.spotify.com/embed/album/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen"></iframe></div>'
+        },
+        {
+            name: 'Spotify embed episode via iframe should be embedded correctly',
+            raw: '<iframe src="https://open.spotify.com/embed-podcast/episode/1zLvUhumbFIEdfxYQcgUxk" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>',
+            expected:
+                '<div class="videoWrapper"><iframe src="https://open.spotify.com/embed-podcast/episode/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen"></iframe></div>'
+        },
+        {
+            name: 'Spotify embed show via iframe should be embedded correctly',
+            raw: '<iframe src="https://open.spotify.com/embed-podcast/show/1zLvUhumbFIEdfxYQcgUxk" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>',
+            expected:
+                '<div class="videoWrapper"><iframe src="https://open.spotify.com/embed-podcast/show/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen"></iframe></div>'
+        },
+        {
+            name: 'Spotify embed artist via iframe should be embedded correctly',
+            raw: '<iframe src="https://open.spotify.com/embed/artist/1zLvUhumbFIEdfxYQcgUxk" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>',
+            expected:
+                '<div class="videoWrapper"><iframe src="https://open.spotify.com/embed/artist/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen"></iframe></div>'
         }
     ];
 

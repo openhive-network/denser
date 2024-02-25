@@ -2,7 +2,7 @@ import ow from 'ow';
 import {Remarkable} from 'remarkable';
 import {SecurityChecker} from '../../security/SecurityChecker';
 import {AssetEmbedder} from './embedder/AssetEmbedder';
-import {Localization, LocalizationOptions} from './LocalizationOptions';
+import {Localization, LocalizationOptions} from './Localization';
 import {PreliminarySanitizer} from './sanitization/PreliminarySanitizer';
 import {TagTransformingSanitizer} from './sanitization/TagTransformingSanitizer';
 

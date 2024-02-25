@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {Localization} from '../../LocalizationOptions';
+import {Localization} from '../../Localization';
 import {AccountNameValidator} from './AccountNameValidator';
 
 describe('AccountNameValidator', () => {

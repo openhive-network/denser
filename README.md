@@ -8,8 +8,12 @@ Portable library that renders Hive posts and comments to string. It supports mar
 
 Features:
 
--   supports markdown and html
--   sanitizes html and protects from XSS
+- supports markdown and html
+- sanitizes html and protects from XSS
+- embeds images, videos, and other assets via links or iframes
+- ensures links are safe to display and begins with `https://` protocol
+- linkify #tags and @username mentions
+- proxify images if needed and appropriate function is provided
 
 **Credit**: this library is based on the code from condenser. It's aim is to allow other projects display Hive content the right way without porting the same code over and over.
 

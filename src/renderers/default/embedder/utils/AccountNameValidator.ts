@@ -1,7 +1,7 @@
 /**
  * Based on: https://raw.githubusercontent.com/openhive-network/condenser/master/src/app/utils/ChainValidation.js
  */
-import {LocalizationOptions} from '../../LocalizationOptions';
+import {LocalizationOptions} from '../../Localization';
 import BadActorList from './BadActorList';
 
 export class AccountNameValidator {

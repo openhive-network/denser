@@ -6,12 +6,12 @@ import * as xmldom from '@xmldom/xmldom';
 import ChainedError from 'typescript-chained-error';
 import {Log} from '../../../Log';
 import {LinkSanitizer} from '../../../security/LinkSanitizer';
-import {Localization, LocalizationOptions} from '../LocalizationOptions';
+import {Localization, LocalizationOptions} from '../Localization';
 import {AssetEmbedder, AssetEmbedderOptions} from './AssetEmbedder';
+import {Embedders} from './embedders/Embedders';
+import {YoutubeEmbedder} from './embedders/YoutubeEmbedder';
 import {AccountNameValidator} from './utils/AccountNameValidator';
 import linksRe, {any as linksAny} from './utils/Links';
-import {VideoEmbedders} from './videoembedders/VideoEmbedders';
-import {YoutubeEmbedder} from './videoembedders/YoutubeEmbedder';
 
 export class HtmlDOMParser {
     private options: AssetEmbedderOptions;
@@ -146,6 +146,7 @@ export class HtmlDOMParser {
         (child as any).parentNode.replaceChild(this.domParser.parseFromString(`<div class="videoWrapper">${html}</div>`), child);
     }
 
+    // TODO this is youtube specific but should be executed for all iframes and embedders
     private reportIframeLink(url: string) {
         const yt = YoutubeEmbedder.getYoutubeMetadataFromLink(url);
         if (yt) {
@@ -185,7 +186,7 @@ export class HtmlDOMParser {
                 return;
             }
 
-            const embedResp = VideoEmbedders.processTextNodeAndInsertEmbeds(child);
+            const embedResp = Embedders.processTextNodeAndInsertEmbeds(child);
             embedResp.images.forEach((img) => this.state.images.add(img));
             embedResp.links.forEach((link) => this.state.links.add(link));
 
@@ -221,8 +222,7 @@ export class HtmlDOMParser {
             }
 
             this.state.links.add(sanitizedLink);
-            const out = `<a href="${this.normalizeUrl(ln)}">${sanitizedLink}</a>`;
-            return out;
+            return `<a href="${this.normalizeUrl(ln)}">${sanitizedLink}</a>`;
         });
 
         // hashtag
