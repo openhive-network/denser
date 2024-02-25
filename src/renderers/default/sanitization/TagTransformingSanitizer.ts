@@ -61,14 +61,14 @@ export class TagTransformingSanitizer {
                             const iframeToBeReturned: sanitize.Tag = {
                                 tagName: 'iframe',
                                 attribs: {
-                                    frameborder: '0',
-                                    allowfullscreen: 'allowfullscreen',
-                                    // deprecated but required for vimeo : https://vimeo.com/forums/help/topic:278181
-                                    webkitallowfullscreen: 'webkitallowfullscreen',
-                                    mozallowfullscreen: 'mozallowfullscreen', // deprecated but required for vimeo
                                     src,
                                     width: this.options.iframeWidth + '',
-                                    height: this.options.iframeHeight + ''
+                                    height: this.options.iframeHeight + '',
+                                    // some of there are deprecated but required for some embeds
+                                    frameborder: '0',
+                                    allowfullscreen: 'allowfullscreen',
+                                    webkitallowfullscreen: 'webkitallowfullscreen',
+                                    mozallowfullscreen: 'mozallowfullscreen'
                                 }
                             };
                             return iframeToBeReturned;

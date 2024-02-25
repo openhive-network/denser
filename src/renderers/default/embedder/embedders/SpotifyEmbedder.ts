@@ -36,7 +36,9 @@ export class SpotifyEmbedder extends AbstractEmbedder {
                 return undefined;
             }
             return {
-                ...metadata
+                id: metadata.id,
+                url: metadata.url,
+                image: metadata.canonical
             };
         } catch (error) {
             Log.log().error(error);

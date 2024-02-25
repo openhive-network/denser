@@ -1,23 +1,28 @@
 import {Log} from '../../../../Log';
-import linksRe from '../utils/Links';
 import {AbstractEmbedder, EmbedMetadata} from './AbstractEmbedder';
 
 export class YoutubeEmbedder extends AbstractEmbedder {
-    public static getYoutubeMetadataFromLink(data: string): {id: string; url: string; thumbnail: string} | null {
+    public type = 'youtube';
+
+    private static readonly linkRegex =
+        /https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/watch\?v=|youtu.be\/[^watch]|youtube\.com\/(embed|shorts)\/)([A-Za-z0-9_-]+)[^ ]*/i;
+    private static readonly idRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/watch\?v=|youtu.be\/|youtube\.com\/(embed|shorts)\/)([A-Za-z0-9_-]+)/i;
+
+    public static getYoutubeMetadataFromLink(data: string): {id: string; url: string; thumbnail: string} | undefined {
         if (!data) {
-            return null;
+            return undefined;
         }
 
-        const m1 = data.match(linksRe.youTube);
-        const url = m1 ? m1[0] : null;
+        const m1 = data.match(YoutubeEmbedder.linkRegex);
+        const url = m1 ? m1[0] : undefined;
         if (!url) {
-            return null;
+            return undefined;
         }
 
-        const m2 = url.match(linksRe.youTubeId);
-        const id = m2 && m2.length >= 2 ? m2[1] : null;
+        const m2 = url.match(YoutubeEmbedder.idRegex);
+        const id = m2 && m2.length >= 2 ? m2[2] : undefined;
         if (!id) {
-            return null;
+            return undefined;
         }
 
         return {
@@ -27,8 +32,6 @@ export class YoutubeEmbedder extends AbstractEmbedder {
         };
     }
 
-    public type = 'youtube';
-
     public getEmbedMetadata(child: HTMLObjectElement): EmbedMetadata | undefined {
         try {
             const metadata = YoutubeEmbedder.getYoutubeMetadataFromLink(child.data);
@@ -36,7 +39,9 @@ export class YoutubeEmbedder extends AbstractEmbedder {
                 return undefined;
             }
             return {
-                ...metadata
+                id: metadata.id,
+                url: metadata.url,
+                image: metadata.thumbnail
             };
         } catch (error) {
             Log.log().error(error);

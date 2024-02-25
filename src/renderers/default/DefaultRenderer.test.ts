@@ -49,24 +49,6 @@ describe('DefaultRender', () => {
                 '<div class="videoWrapper"><iframe frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" src="https://player.vimeo.com/video/174544848" width="640" height="480"></iframe></div>'
         },
         {
-            name: 'Embeds correctly youtube video via paste',
-            raw: '<iframe width="560" height="315" src="https://www.youtube.com/embed/0nFkmd-A7jA" frameborder="0" allowfullscreen></iframe>',
-            expected:
-                '<div class="videoWrapper"><iframe width="640" height="480" src="https://www.youtube.com/embed/0nFkmd-A7jA" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" frameborder="0"></iframe></div>'
-        },
-        {
-            name: 'Embeds correctly youtube video via youtube.com link',
-            raw: 'https://www.youtube.com/embed/0nFkmd-A7jA',
-            expected:
-                '<p><div class="videoWrapper"><iframe width="640" height="480" src="https://www.youtube.com/embed/0nFkmd-A7jA" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" frameborder="0"></iframe></div></p>'
-        },
-        {
-            name: 'Embeds correctly youtube video via youtu.be link',
-            raw: 'https://www.youtu.be/0nFkmd-A7jA',
-            expected:
-                '<p><div class="videoWrapper"><iframe width="640" height="480" src="https://www.youtube.com/embed/0nFkmd-A7jA" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" frameborder="0"></iframe></div></p>'
-        },
-        {
             name: 'Allows links embedded via <a> tags',
             raw: '<a href="https://hive.blog/utopian-io/@blockchainstudio/drugswars-revenue-and-transaction-analysis" class="hive-test">Drugwars - revenue and transaction analysis</a>',
             expected:
@@ -164,6 +146,42 @@ describe('DefaultRender', () => {
             raw: '<iframe src="https://open.spotify.com/embed/artist/1zLvUhumbFIEdfxYQcgUxk" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>',
             expected:
                 '<div class="videoWrapper"><iframe src="https://open.spotify.com/embed/artist/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen"></iframe></div>'
+        },
+        {
+            name: 'Youtube link with www should be embedded correctly',
+            raw: 'https://www.youtube.com/watch?v=0nFkmd-A7jA',
+            expected:
+                '<p><div class="videoWrapper"><iframe width="640" height="480" src="https://www.youtube.com/embed/0nFkmd-A7jA" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" frameborder="0"></iframe></div></p>'
+        },
+        {
+            name: 'Youtube link without www should be embedded correctly',
+            raw: 'https://youtube.com/watch?v=0nFkmd-A7jA',
+            expected:
+                '<p><div class="videoWrapper"><iframe width="640" height="480" src="https://www.youtube.com/embed/0nFkmd-A7jA" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" frameborder="0"></iframe></div></p>'
+        },
+        {
+            name: 'Youtube link with embed should be embedded correctly',
+            raw: 'https://www.youtube.com/embed/0nFkmd-A7jA',
+            expected:
+                '<p><div class="videoWrapper"><iframe width="640" height="480" src="https://www.youtube.com/embed/0nFkmd-A7jA" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" frameborder="0"></iframe></div></p>'
+        },
+        {
+            name: 'Youtube shorted link with watch should be embedded correctly',
+            raw: 'https://youtu.be/watch?v=0nFkmd-A7jA',
+            expected:
+                '<p><div class="videoWrapper"><iframe width="640" height="480" src="https://www.youtube.com/embed/0nFkmd-A7jA" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" frameborder="0"></iframe></div></p>'
+        },
+        {
+            name: 'Youtube shorted link should be embedded correctly',
+            raw: 'https://youtu.be/0nFkmd-A7jA',
+            expected:
+                '<p><div class="videoWrapper"><iframe width="640" height="480" src="https://www.youtube.com/embed/0nFkmd-A7jA" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" frameborder="0"></iframe></div></p>'
+        },
+        {
+            name: 'Youtube embed via iframe should be embedded correctly',
+            raw: '<iframe width="560" height="315" src="https://www.youtube.com/embed/0nFkmd-A7jA" frameborder="0" allowfullscreen></iframe>',
+            expected:
+                '<div class="videoWrapper"><iframe width="640" height="480" src="https://www.youtube.com/embed/0nFkmd-A7jA" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" frameborder="0"></iframe></div>'
         }
     ];
 
@@ -175,8 +193,8 @@ describe('DefaultRender', () => {
             const renderedNode = JSDOM.fragment(rendered);
             const comparisonNode = JSDOM.fragment(test.expected);
 
-            Log.log().debug('rendered', rendered);
-            Log.log().debug('expected', test.expected);
+            Log.log().info('rendered', rendered);
+            Log.log().info('expected', test.expected);
 
             expect(renderedNode.isEqualNode(comparisonNode)).to.be.equal(true);
         })

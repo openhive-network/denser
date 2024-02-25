@@ -23,7 +23,6 @@ export const any = (flags = 'i') => new RegExp(urlSet(), flags);
 // TODO verify if we should pass baseUrl here
 export const local = (flags = 'i') => new RegExp(urlSet({domain: '(?:localhost|(?:.*\\.)?hive.blog)'}), flags);
 export const remote = (flags = 'i') => new RegExp(urlSet({domain: `(?!localhost|(?:.*\\.)?hive.blog)${domainPath}`}), flags);
-export const youTube = (flags = 'i') => new RegExp(urlSet({domain: '(?:(?:.*.)?(youtube\\.com|youtu\\.be))'}), flags);
 export const image = (flags = 'i') => new RegExp(urlSet({path: imagePath}), flags);
 export const imageFile = (flags = 'i') => new RegExp(imagePath, flags);
 
@@ -33,8 +32,6 @@ export default {
     remote: remote(),
     image: image(),
     imageFile: imageFile(),
-    youTube: youTube(),
-    youTubeId: /(?:youtube.com\/watch\?v=|(?:youtu.be\/)|(?:youtube.com\/embed\/))([A-Za-z0-9_-]+)/i,
     vimeo: /https?:\/\/(?:vimeo.com\/|player.vimeo.com\/video\/)([0-9]+)\/*/,
     vimeoId: /(?:vimeo.com\/|player.vimeo.com\/video\/)([0-9]+)/,
     twitch: /https?:\/\/(?:www.)?twitch.tv\/(?:(videos)\/)?([a-zA-Z0-9][\w]{3,24})/i,
