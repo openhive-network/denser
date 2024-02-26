@@ -68,51 +68,21 @@ export function LoginForm({
     defaultValues: loginFormDefaultValues
   });
 
-  const onKeychainToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) {
-      setValue('useKeychain', true);
-      setValue('loginType', LoginTypes.keychain);
-      if (getValues('useHiveauth')) {
-        setValue('useHiveauth', false);
-      }
-      if (getValues('useHbauth')) {
-        setValue('useHbauth', false);
-      }
-    } else {
-      setValue('useKeychain', false);
-      setValue('loginType', LoginTypes.wif);
-    }
+  const titleCase = (word: string) => {
+    return word.charAt(0).toUpperCase() + word.slice(1);
   };
 
-  const onHiveauthToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onCheckboxToggle = (e: React.ChangeEvent<HTMLInputElement>, loginType: LoginTypes) => {
     if (e.target.checked) {
-      setValue('useHiveauth', true);
-      setValue('loginType', LoginTypes.hiveauth);
-      if (getValues('useKeychain')) {
-        setValue('useKeychain', false);
-      }
-      if (getValues('useHbauth')) {
-        setValue('useHbauth', false);
+      setValue(`use${titleCase(loginType)}` as any, true);
+      setValue('loginType', LoginTypes[loginType]);
+      for (const l of Object.keys(LoginTypes)) {
+        if (l === loginType) continue;
+        setValue(`use${titleCase(l)}` as any, false);
       }
     } else {
-      setValue('useHiveauth', false);
-      setValue('loginType', LoginTypes.wif);
-    }
-  };
-
-  const onHbauthToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) {
-      setValue('useHbauth', true);
-      setValue('loginType', LoginTypes.hbauth);
-      if (getValues('useHiveauth')) {
-        setValue('useHiveauth', false);
-      }
-      if (getValues('useKeychain')) {
-        setValue('useKeychain', false);
-      }
-    } else {
-      setValue('useHbauth', false);
-      setValue('loginType', LoginTypes.wif);
+      setValue(`use${titleCase(loginType)}` as any, false);
+      setValue('loginType', loginFormDefaultValues.loginType);
     }
   };
 
@@ -165,7 +135,7 @@ export function LoginForm({
                 value=""
                 className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
                 {...register('useHbauth')}
-                onChange={(e) => onHbauthToggle(e)}
+                onChange={(e) => onCheckboxToggle(e, LoginTypes.hbauth)}
               />
               <label
                 htmlFor="useHbauth"
@@ -188,7 +158,7 @@ export function LoginForm({
                 className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
                 {...register('useKeychain')}
                 disabled={!isKeychainSupported}
-                onChange={(e) => onKeychainToggle(e)}
+                onChange={(e) => onCheckboxToggle(e, LoginTypes.keychain)}
               />
               <label
                 htmlFor="useKeychain"
@@ -210,7 +180,7 @@ export function LoginForm({
                 value=""
                 className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
                 {...register('useHiveauth')}
-                onChange={(e) => onHiveauthToggle(e)}
+                onChange={(e) => onCheckboxToggle(e, LoginTypes.hiveauth)}
               />
               <label
                 htmlFor="useHiveauth"
