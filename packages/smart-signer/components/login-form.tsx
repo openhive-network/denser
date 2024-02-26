@@ -82,6 +82,7 @@ export function LoginForm({
       }
     } else {
       setValue(`use${titleCase(loginType)}` as any, false);
+      setValue(`use${titleCase(loginFormDefaultValues.loginType)}` as any, true);
       setValue('loginType', loginFormDefaultValues.loginType);
     }
   };
