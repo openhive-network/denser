@@ -10,20 +10,17 @@ import { username } from '@smart-signer/lib/auth/utils';
 import { LoginTypes, StorageTypes } from '@smart-signer/types/common';
 import { Icons } from '@ui/components/icons';
 import { toast } from '@ui/components/hooks/use-toast';
+import { RadioGroup, RadioGroupItem } from '@ui/components/radio-group';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
-
-const ZodStorageTypesEnum = z.nativeEnum(StorageTypes);
-
-const ZodLoginTypesEnum = z.nativeEnum(LoginTypes);
-type ZodLoginTypesEnum = z.infer<typeof ZodLoginTypesEnum>;
 
 const loginFormSchema = z.object({
   username,
   useHbauth: z.boolean(),
   useKeychain: z.boolean(),
   useHiveauth: z.boolean(),
+  useWif: z.boolean(),
   remember: z.boolean(),
   loginType: z.nativeEnum(LoginTypes),
 });
@@ -36,6 +33,7 @@ const loginFormDefaultValues = {
   useHbauth: true,
   useHiveauth: false,
   useKeychain: false,
+  useWif: false,
   username: ''
 };
 
@@ -60,8 +58,6 @@ export function LoginForm({
     handleSubmit,
     formState: { errors, isSubmitting },
     setValue,
-    getValues,
-    trigger,
     reset
   } = useForm<LoginFormSchema>({
     resolver: zodResolver(loginFormSchema),
@@ -187,8 +183,34 @@ export function LoginForm({
                 htmlFor="useHiveauth"
                 className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
               >
-                <img className="mr-1 h-4 w-4" src="/smart-signer/images/hiveauth.png" alt="Hiveauth logo" />
+                <img
+                  className="mr-1 h-4 w-4"
+                  src="/smart-signer/images/hiveauth.png"
+                  alt="Hiveauth logo"
+                />
                 {t('login_form.use_hiveauth')}
+              </label>
+            </div>
+
+            <div className="flex items-center py-1">
+              <input
+                id="useWif"
+                type="checkbox"
+                value=""
+                className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
+                {...register('useWif')}
+                onChange={(e) => onCheckboxToggle(e, LoginTypes.wif)}
+              />
+              <label
+                htmlFor="useWif"
+                className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
+              >
+                <img
+                  className="mr-1 h-4 w-4"
+                  src="/smart-signer/images/hive-blog-twshare.png"
+                  alt="Wif logo"
+                />
+                {t('login_form.use_wif')}
               </label>
             </div>
 
