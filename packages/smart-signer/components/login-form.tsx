@@ -218,7 +218,6 @@ export function LoginForm({
 
 
             <RadioGroup
-              className="RadioGroupRoot"
               defaultValue={LoginTypes.hbauth}
               onValueChange={(v) => {
                 logger.info('bamboo value:', v);
@@ -230,6 +229,7 @@ export function LoginForm({
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <RadioGroupItem
                   value={LoginTypes.hbauth}
+                  className="border-2 border-gray-600 focus:ring-transparent"
                   id="r1"
                 />
                 <label
@@ -248,6 +248,7 @@ export function LoginForm({
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <RadioGroupItem
                   value={LoginTypes.keychain}
+                  className="border-2 border-gray-600 focus:ring-transparent"
                   id="r2"
                   disabled={!isKeychainSupported}
                 />
@@ -267,6 +268,7 @@ export function LoginForm({
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <RadioGroupItem
                   value={LoginTypes.hiveauth}
+                  className="border-2 border-gray-600 focus:ring-transparent"
                   id="r3"
                 />
                 <label
@@ -285,6 +287,7 @@ export function LoginForm({
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <RadioGroupItem
                   value={LoginTypes.wif}
+                  className="border-2 border-gray-600 focus:ring-transparent"
                   id="r4"
                 />
                 <label
