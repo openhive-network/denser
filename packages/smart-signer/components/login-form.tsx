@@ -23,6 +23,7 @@ const loginFormSchema = z.object({
   useWif: z.boolean(),
   remember: z.boolean(),
   loginType: z.nativeEnum(LoginTypes),
+  bamboo: z.nativeEnum(LoginTypes),
 });
 
 export type LoginFormSchema = z.infer<typeof loginFormSchema>;
@@ -34,7 +35,8 @@ const loginFormDefaultValues = {
   useHiveauth: false,
   useKeychain: false,
   useWif: false,
-  username: ''
+  username: '',
+  bamboo: LoginTypes.hbauth,
 };
 
 export function LoginForm({
@@ -213,6 +215,93 @@ export function LoginForm({
                 {t('login_form.use_wif')}
               </label>
             </div>
+
+
+            <RadioGroup
+              className="RadioGroupRoot"
+              defaultValue={LoginTypes.hbauth}
+              onValueChange={(v) => {
+                logger.info('bamboo value:', v);
+                setValue('bamboo', v as LoginTypes);
+              }}
+              aria-label="Login Type"
+            >
+
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <RadioGroupItem
+                  value={LoginTypes.hbauth}
+                  id="r1"
+                />
+                <label
+                  className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
+                  htmlFor="r1"
+                >
+                  <img
+                    className="mr-1 h-4 w-4"
+                    src="/smart-signer/images/hive-blog-twshare.png"
+                    alt="Hbauth logo"
+                  />
+                  {t('login_form.use_hbauth')}
+                </label>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <RadioGroupItem
+                  value={LoginTypes.keychain}
+                  id="r2"
+                  disabled={!isKeychainSupported}
+                />
+                <label
+                  className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
+                  htmlFor="r2"
+                >
+                  <img
+                    className="mr-1 h-4 w-4"
+                    src="/smart-signer/images/hivekeychain.png"
+                    alt="Hive Keychain logo"
+                  />
+                  {t('login_form.use_keychain')}
+                </label>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <RadioGroupItem
+                  value={LoginTypes.hiveauth}
+                  id="r3"
+                />
+                <label
+                  className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
+                  htmlFor="r3"
+                >
+                  <img
+                    className="mr-1 h-4 w-4"
+                    src="/smart-signer/images/hiveauth.png"
+                    alt="Hiveauth logo"
+                  />
+                  {t('login_form.use_hiveauth')}
+                </label>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <RadioGroupItem
+                  value={LoginTypes.wif}
+                  id="r4"
+                />
+                <label
+                  className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
+                  htmlFor="r4"
+                >
+                  <img
+                    className="mr-1 h-4 w-4"
+                    src="/smart-signer/images/hive-blog-twshare.png"
+                    alt="Wif logo"
+                  />
+                  {t('login_form.use_wif')}
+                </label>
+              </div>
+
+            </RadioGroup>
+
 
             <div className="flex items-center py-1">
               <input
