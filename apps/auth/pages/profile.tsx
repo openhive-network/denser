@@ -8,6 +8,7 @@ import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerHbauth } from '@smart-signer/lib/signer/signer-hbauth';
 import { SignerKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
+import { DialogWifModalPromise } from '@smart-signer/components/dialog-wif';
 import { verifySignature } from '@smart-signer/lib/utils';
 import { vote, createHiveChain, BroadcastTransactionRequest } from '@hive/wax/web';
 import { waxToKeychainOperation } from '@smart-signer/lib/signer/signer-keychain';
@@ -130,6 +131,17 @@ export default function Profile() {
     }
   };
 
+  const openDialogWif = async () => {
+    try {
+      const result = await DialogWifModalPromise({
+        isOpen: true
+      });
+      logger.info('Return from DialogWifModalPromise: %s', result);
+    } catch (error) {
+      logger.info('Return from DialogWifModalPromise %s', error);
+    }
+  };
+
   const verify = async () => {
     const keychainTxJson =
       '{"ref_block_num":48287,"ref_block_prefix":3867306819,"expiration":"2024-02-08T09:06:59","operations":[["vote",{"voter":"guest4test","author":"gtg","permlink":"non-existing-permlink-q523-73867","weight":10000}]],"extensions":[]}';
@@ -168,11 +180,14 @@ export default function Profile() {
               <Button onClick={sign} variant="redHover" size="sm" className="h-10">
                 Sign
               </Button>
+              <Button onClick={verify} variant="redHover" size="sm" className="h-10">
+                Verify
+              </Button>
               <Button onClick={openDialogPassword} variant="redHover" size="sm" className="h-10">
                 Password Promise Modal
               </Button>
-              <Button onClick={verify} variant="redHover" size="sm" className="h-10">
-                Verify
+              <Button onClick={openDialogWif} variant="redHover" size="sm" className="h-10">
+                Wif Promise Modal
               </Button>
             </div>
           )}
