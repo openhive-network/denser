@@ -43,12 +43,6 @@ describe('DefaultRender', () => {
             expected: '<p>Content <a href="/trending/pl-nuda" class="hive-test">#pl-nuda</a> another content</p>'
         },
         {
-            name: 'Embeds correctly vimeo video via paste',
-            raw: '<iframe src="https://player.vimeo.com/video/174544848?byline=0" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>',
-            expected:
-                '<div class="videoWrapper"><iframe frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" src="https://player.vimeo.com/video/174544848" width="640" height="480"></iframe></div>'
-        },
-        {
             name: 'Allows links embedded via <a> tags',
             raw: '<a href="https://hive.blog/utopian-io/@blockchainstudio/drugswars-revenue-and-transaction-analysis" class="hive-test">Drugwars - revenue and transaction analysis</a>',
             expected:
@@ -182,6 +176,24 @@ describe('DefaultRender', () => {
             raw: '<iframe width="560" height="315" src="https://www.youtube.com/embed/0nFkmd-A7jA" frameborder="0" allowfullscreen></iframe>',
             expected:
                 '<div class="videoWrapper"><iframe width="640" height="480" src="https://www.youtube.com/embed/0nFkmd-A7jA" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" frameborder="0"></iframe></div>'
+        },
+        {
+            name: 'Vimeo link via iframe should be embedded correctly',
+            raw: '<iframe src="https://player.vimeo.com/video/174544848?byline=0" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>',
+            expected:
+                '<div class="videoWrapper"><iframe frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" src="https://player.vimeo.com/video/174544848" width="640" height="480"></iframe></div>'
+        },
+        {
+            name: 'Vimeo link should be embedded correctly',
+            raw: 'https://vimeo.com/174544848',
+            expected:
+                '<p><div class="videoWrapper"><iframe src="https://player.vimeo.com/video/174544848" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div></p>'
+        },
+        {
+            name: 'Vimeo link without player should be embedded correctly',
+            raw: 'https://vimeo.com/174544848',
+            expected:
+                '<p><div class="videoWrapper"><iframe src="https://player.vimeo.com/video/174544848" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div></p>'
         }
     ];
 
@@ -193,8 +205,8 @@ describe('DefaultRender', () => {
             const renderedNode = JSDOM.fragment(rendered);
             const comparisonNode = JSDOM.fragment(test.expected);
 
-            Log.log().info('rendered', rendered);
-            Log.log().info('expected', test.expected);
+            Log.log().debug('rendered', rendered);
+            Log.log().debug('expected', test.expected);
 
             expect(renderedNode.isEqualNode(comparisonNode)).to.be.equal(true);
         })

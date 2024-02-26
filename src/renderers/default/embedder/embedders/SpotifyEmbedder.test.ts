@@ -1,5 +1,4 @@
 import {expect} from 'chai';
-import {JSDOM} from 'jsdom';
 import {SpotifyEmbedder} from './SpotifyEmbedder';
 
 describe('SpotifyEmbedder', () => {
@@ -76,8 +75,7 @@ describe('SpotifyEmbedder', () => {
     ].forEach((test) => {
         it(test.description, () => {
             const embedder = new SpotifyEmbedder();
-            const node = new JSDOM().window.document.createElement('object');
-            node.data = test.input as string;
+            const node = {data: test.input} as HTMLObjectElement;
             const result = embedder.getEmbedMetadata(node);
 
             expect(result).to.be.deep.equal(test.expected);
@@ -100,8 +98,7 @@ describe('SpotifyEmbedder', () => {
             throw new Error('mock error');
         };
         const embedder = new SpotifyEmbedder();
-        const node = new JSDOM().window.document.createElement('object');
-        node.data = 'https://open.spotify.com/playlist/1zLvUhumbFIEdfxYQcgUxk';
+        const node = {data: 'https://open.spotify.com/playlist/1zLvUhumbFIEdfxYQcgUxk'} as HTMLObjectElement;
         const result = embedder.getEmbedMetadata(node);
 
         expect(result).to.be.undefined;

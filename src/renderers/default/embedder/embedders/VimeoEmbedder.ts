@@ -1,19 +1,21 @@
 import {Log} from '../../../../Log';
-import linksRe from '../utils/Links';
 import {AbstractEmbedder, EmbedMetadata} from './AbstractEmbedder';
 
 export class VimeoEmbedder extends AbstractEmbedder {
     public type = 'vimeo';
 
+    private static readonly regex = /https?:\/\/(?:vimeo.com\/|player.vimeo.com\/video\/)([0-9]+)\/*/;
+
     public getEmbedMetadata(child: HTMLObjectElement): EmbedMetadata | undefined {
         try {
             const data = child.data;
-            const vimeo = this.vimeoId(data);
-            if (!vimeo) {
+            const metadata = this.extractMetadata(data);
+            if (!metadata) {
                 return undefined;
             }
             return {
-                ...vimeo
+                id: metadata.id,
+                url: metadata.url
             };
         } catch (error) {
             Log.log().error(error);
@@ -22,15 +24,18 @@ export class VimeoEmbedder extends AbstractEmbedder {
     }
 
     public processEmbed(id: string, size: {width: number; height: number}): string {
-        const url = `https://player.vimeo.com/video/${id}`;
-        return `<div class="videoWrapper"><iframe src=${url} width=${size.width} height=${size.height} frameBorder="0" webkitallowfullscreen mozallowfullscreen allowFullScreen></iframe></div>`;
+        return `<div class="videoWrapper"><iframe src=${this.generateCanonicalUrl(id)} width=${size.width} height=${size.height} frameBorder="0" webkitallowfullscreen mozallowfullscreen allowFullScreen></iframe></div>`;
     }
 
-    private vimeoId(data: string) {
+    private generateCanonicalUrl(id: string) {
+        return `https://player.vimeo.com/video/${id}`;
+    }
+
+    private extractMetadata(data: string) {
         if (!data) {
             return null;
         }
-        const m = data.match(linksRe.vimeo);
+        const m = data.match(VimeoEmbedder.regex);
         if (!m || m.length < 2) {
             return null;
         }
@@ -38,8 +43,7 @@ export class VimeoEmbedder extends AbstractEmbedder {
         return {
             id: m[1],
             url: m[0],
-            canonical: `https://player.vimeo.com/video/${m[1]}`
-            // thumbnail: requires a callback - http://stackoverflow.com/questions/1361149/get-img-thumbnails-from-vimeo
+            canonical: this.generateCanonicalUrl(m[1])
         };
     }
 }

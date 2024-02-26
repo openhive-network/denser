@@ -10,7 +10,11 @@ describe('YoutubeEmbedder', () => {
         'https://youtu.be/umvcUpmIie8',
         'https://youtu.be/watch?v=umvcUpmIie8',
         'https://www.youtube.com/embed/umvcUpmIie8',
-        'https://youtube.com/embed/umvcUpmIie8'
+        'https://youtube.com/embed/umvcUpmIie8',
+        // additional query parameters
+        'https://www.youtube.com/watch?v=umvcUpmIie8&feature=youtu.be&t=14s',
+        'https://www.youtube.com/watch?v=umvcUpmIie8&t=14s',
+        'https://youtu.be/umvcUpmIie8?t=7s'
     ].forEach((input) => {
         it('should properly return metadata for youtube video link', () => {
             const expected = {
@@ -19,8 +23,7 @@ describe('YoutubeEmbedder', () => {
                 image: 'https://img.youtube.com/vi/umvcUpmIie8/0.jpg'
             };
             const embedder = new YoutubeEmbedder();
-            const node = new JSDOM().window.document.createElement('object');
-            node.data = input;
+            const node = {data: input} as HTMLObjectElement;
             const metadata = embedder.getEmbedMetadata(node);
             expect(metadata).to.be.deep.equal(expected);
         });
@@ -38,8 +41,7 @@ describe('YoutubeEmbedder', () => {
                 image: 'https://img.youtube.com/vi/_R4ScrD0O8c/0.jpg'
             };
             const embedder = new YoutubeEmbedder();
-            const node = new JSDOM().window.document.createElement('object');
-            node.data = input;
+            const node = {data: input} as HTMLObjectElement;
             const metadata = embedder.getEmbedMetadata(node);
             expect(metadata).to.be.deep.equal(expected);
         });
@@ -58,18 +60,15 @@ describe('YoutubeEmbedder', () => {
     ].forEach((input) => {
         it('should return undefined for invalid input', () => {
             const embedder = new YoutubeEmbedder();
-            const node = new JSDOM().window.document.createElement('object');
-            node.data = input;
+            const node = {data: input} as HTMLObjectElement;
             const metadata = embedder.getEmbedMetadata(node);
             expect(metadata).to.be.undefined;
         });
     });
 
     it('should return undefined for empty input', () => {
-        const input = '';
         const embedder = new YoutubeEmbedder();
-        const node = new JSDOM().window.document.createElement('object');
-        node.data = input;
+        const node = {data: ''} as HTMLObjectElement;
         const metadata = embedder.getEmbedMetadata(node);
         expect(metadata).to.be.undefined;
     });
