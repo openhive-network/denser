@@ -12,6 +12,7 @@ import { verifySignature } from '@smart-signer/lib/utils';
 import { vote, createHiveChain, BroadcastTransactionRequest } from '@hive/wax/web';
 import { waxToKeychainOperation } from '@smart-signer/lib/signer/signer-keychain';
 import { KeyTypes } from '@smart-signer/types/common';
+import { fetchJson } from '@smart-signer/lib/fetch-json';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -33,8 +34,8 @@ export default function Profile() {
     voter: user.username,
     author: 'gtg',
 
-    // permlink: 'power-to-the-hive-but-just-a-little',
-    permlink: 'non-existing-permlink-q523-73867',
+    permlink: 'power-to-the-hive-but-just-a-little',
+    // permlink: 'non-existing-permlink-q523-73867',
 
     weight: 10000
   };
@@ -63,10 +64,30 @@ export default function Profile() {
       });
       logger.info('broadcast signature: %s', signature);
       txBuilder.build(signature);
-      const request = new BroadcastTransactionRequest(txBuilder);
+      const broadcastReq = new BroadcastTransactionRequest(txBuilder);
+
+      const trx = {
+        trx: JSON.parse(txBuilder.toApi()),
+        max_block_age: -1,
+      };
+
+      logger.info('broadcast transaction: %o', trx);
+      const data = {
+        jsonrpc: "2.0",
+        method: "network_broadcast_api.broadcast_transaction",
+        params: trx,
+        id: 1
+      };
+      logger.info('broadcast data: %o', data);
+
+      const fetchResult = await fetchJson('https://api.hive.blog', {
+        method: 'POST',
+        body: JSON.stringify(data, null, 0)
+      });
+      logger.info('broadcast fetchResult: %o', fetchResult);
 
       // Transmit
-      const result = await hiveChain.api.network_broadcast_api.broadcast_transaction(request);
+      const result = await hiveChain.api.network_broadcast_api.broadcast_transaction(broadcastReq);
       logger.info('broadcast result: %o', result);
     } catch (error) {
       logger.error(error);
