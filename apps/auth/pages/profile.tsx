@@ -64,7 +64,9 @@ export default function Profile() {
       });
       logger.info('broadcast signature: %s', signature);
       txBuilder.build(signature);
+      logger.info('broadcast txBuilder: %o', txBuilder);
       const broadcastReq = new BroadcastTransactionRequest(txBuilder);
+      logger.info('broadcast broadcastReq: %o', broadcastReq);
 
       const trx = {
         trx: JSON.parse(txBuilder.toApi()),
