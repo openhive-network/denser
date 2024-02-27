@@ -1,4 +1,4 @@
-import { getFollowCount } from '@ui/lib/hive';
+import { getFollowCount } from '@transaction/lib/hive';
 import { useQuery } from '@tanstack/react-query';
 
 export const useFollowsQuery = (username: string) => {

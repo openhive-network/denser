@@ -12,7 +12,9 @@ import {
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Input } from '@ui/components';
 import { ReactNode, useState } from 'react';
-import { operationService } from '@operations/index';
+import { transactionService } from '@transaction/index';
+import { CommunityOperationBuilder } from '@hive/wax/web';
+import { useSigner } from '@/blog/components/hooks/use-signer';
 
 export function AlertDialogFlag({
   children,
@@ -26,6 +28,7 @@ export function AlertDialogFlag({
   permlink: string;
 }) {
   const { user } = useUser();
+  const { signerOptions } = useSigner();
   const [notes, setNotes] = useState('');
 
   return (
@@ -49,13 +52,24 @@ export function AlertDialogFlag({
           <AlertDialogCancel className="hover:text-red-800" data-testid="flag-dialog-cancel">
             Cancel
           </AlertDialogCancel>
-          <AlertDialogAction
-            className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
-            data-testid="flag-dialog-ok"
-            onClick={() => operationService.flag(username, user, community, permlink, notes)}
-          >
-            OK
-          </AlertDialogAction>
+          {user && user.isLoggedIn ? (
+            <AlertDialogAction
+              className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
+              data-testid="flag-dialog-ok"
+              onClick={() => {
+                transactionService.processHiveAppOperation((builder) => {
+                  builder.push(
+                    new CommunityOperationBuilder()
+                      .flagPost(community, username, permlink, notes)
+                      .authorize(user.username)
+                      .build()
+                  );
+                }, signerOptions);
+              }}
+            >
+              OK
+            </AlertDialogAction>
+          ) : null}
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

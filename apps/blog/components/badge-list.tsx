@@ -1,5 +1,5 @@
 import BadgeListItem from '@/blog/components/badge-list-item';
-import { Badge } from '@ui/lib/bridge';
+import type { Badge } from '@transaction/lib/bridge';
 
 const BadgeList = ({ data, username }: { data: Badge[]; username?: string }) => {
   return (

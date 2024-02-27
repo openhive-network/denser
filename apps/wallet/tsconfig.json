@@ -1,12 +1,13 @@
 {
   "extends": "@hive/tsconfig/base.json",
   "compilerOptions": {
+    "target": "es2017",
     "moduleResolution": "Bundler",
     "baseUrl": ".",
     "paths": {
       "@/wallet/*": ["./*"],
       "@smart-signer/*": ["../../packages/smart-signer/*"],
-      "@operations/*": ["../../packages/operations/*"],
+      "@transaction/*": ["../../packages/transaction/*"],
       "@ui/*": ["../../packages/ui/*"]
     }
   },

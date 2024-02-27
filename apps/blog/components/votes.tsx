@@ -2,15 +2,19 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/co
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Icons } from '@ui/components/icons';
 import DialogLogin from './dialog-login';
-import { operationService } from '@operations/index';
 import clsx from 'clsx';
-import { Entry } from '@ui/lib/bridge';
+import type { Entry } from '@transaction/lib/bridge';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { transactionService } from '@transaction/index';
+import { useSigner } from '@/blog/components/hooks/use-signer';
+import env from '@beam-australia/react-env';
 
 const VotesComponent = ({ post }: { post: Entry }) => {
+  const walletHost = env('WALLET_ENDPOINT');
   const { user } = useUser();
+  const { signerOptions } = useSigner();
   const { t } = useTranslation('common_blog');
   const [isClient, setIsClient] = useState(false);
   useEffect(() => {
@@ -29,7 +33,20 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                   'h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1',
                   { 'bg-red-600 text-white': checkVote && checkVote?.rshares > 0 }
                 )}
-                onClick={(e) => operationService.vote(e, user, 'upvote', post)}
+                onClick={(e) =>
+                  transactionService.processHiveAppOperation((builder) => {
+                    builder
+                      .push({
+                        vote: {
+                          voter: user.username,
+                          author: post.author,
+                          permlink: post.permlink,
+                          weight: 10000
+                        }
+                      })
+                      .build();
+                  }, signerOptions)
+                }
               />
             ) : (
               <DialogLogin>
@@ -49,7 +66,20 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                   'h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
                   { 'bg-gray-600 text-white': checkVote && checkVote?.rshares < 0 }
                 )}
-                onClick={(e) => operationService.vote(e, user, 'downvote', post)}
+                onClick={(e) =>
+                  transactionService.processHiveAppOperation((builder) => {
+                    builder
+                      .push({
+                        vote: {
+                          voter: user.username,
+                          author: post.author,
+                          permlink: post.permlink,
+                          weight: -10000
+                        }
+                      })
+                      .build();
+                  }, signerOptions)
+                }
               />
             ) : (
               <DialogLogin>
@@ -73,7 +103,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                 <Link
                   className="font-bold hover:text-red-600"
                   target="_blank"
-                  href={`https://wallet.openhive.network/${user?.username}/transfers`}
+                  href={`${walletHost}/${user?.username}/transfers`}
                 >
                   {' Wallet '}
                 </Link>

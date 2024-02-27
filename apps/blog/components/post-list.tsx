@@ -1,5 +1,5 @@
 import PostListItem from '@/blog/components/post-list-item';
-import { Entry } from '@ui/lib/bridge';
+import type { Entry } from '@transaction/lib/bridge';
 
 const PostList = ({ data, isCommunityPage }: { data: Entry[]; isCommunityPage?: boolean }) => {
   return (

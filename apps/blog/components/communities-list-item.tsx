@@ -1,8 +1,8 @@
-import { Button } from '@ui/components/button';
-import { cn } from '@/blog/lib/utils';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@ui/components/card';
+import { Button } from '@hive/ui/components/button';
+import { cn } from '@ui/lib/utils';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@hive/ui/components/card';
 import Link from 'next/link';
-import { Community } from '@ui/lib/bridge';
+import type { Community } from '@transaction/lib/bridge';
 import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';

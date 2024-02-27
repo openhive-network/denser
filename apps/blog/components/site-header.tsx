@@ -16,7 +16,7 @@ import { getLogger } from '@ui/lib/logging';
 import DialogLogin from './dialog-login';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import { useQuery } from '@tanstack/react-query';
-import { getUnreadNotifications } from '@ui/lib/bridge';
+import { getUnreadNotifications } from '@transaction/lib/bridge';
 import ModeToggle from './mode-toggle';
 import UserMenu from '@/blog/components/user-menu';
 import LangToggle from './lang-toggle';

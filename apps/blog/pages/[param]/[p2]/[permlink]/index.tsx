@@ -1,10 +1,10 @@
 import parseDate, { dateToFullRelative } from '@ui/lib/parse-date';
 import { Clock, Link2 } from 'lucide-react';
 import UserInfo from '@/blog/components/user-info';
-import { getActiveVotes } from '@/blog/lib/hive';
+import { getActiveVotes } from '@transaction/lib/hive';
 import { useQuery } from '@tanstack/react-query';
-import { Entry, getCommunity, getDiscussion, getPost } from '@ui/lib/bridge';
-import Loading from '@ui/components/loading';
+import { Entry, getCommunity, getDiscussion, getPost } from '@transaction/lib/bridge';
+import Loading from '@hive/ui/components/loading';
 import dynamic from 'next/dynamic';
 import ImageGallery from '@/blog/components/image-gallery';
 import Link from 'next/link';
@@ -346,7 +346,7 @@ function PostPage({
                   <TooltipContent data-testid="post-footer-response-tooltip">
                     <p>
                       {post_s.children === 0
-                        ? t('post_content.footer.no_response')
+                        ? t('post_content.footer.no_responses')
                         : post_s.children === 1
                         ? t('post_content.footer.response')
                         : t('post_content.footer.responses', { responses: post_s.children })}

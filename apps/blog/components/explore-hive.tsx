@@ -1,5 +1,5 @@
-import { cn } from '@/blog/lib/utils';
-import { Card, CardContent, CardHeader, CardTitle } from '@ui/components/card';
+import { cn } from '@ui/lib/utils';
+import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
 import { FC } from 'react';
 import Link from 'next/link';
 import { Icons } from '@ui/components/icons';

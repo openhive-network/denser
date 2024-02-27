@@ -1,37 +1,35 @@
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
-import { SignChallenge } from '@smart-signer/lib/signer';
+import { SignChallenge } from '@smart-signer/lib/signer/signer';
 import { KeyTypes } from '@smart-signer/types/common';
-import { SignerHbauth } from '@smart-signer/lib/signer-hbauth';
+import { SignerHbauth } from '@smart-signer/lib/signer/signer-hbauth';
 import { StorageMixin } from '@smart-signer/lib/storage-mixin';
 
-import { getLogger } from '@ui/lib/logging';
+import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
 /**
- * Instance interacts with Hive private keys, signs messages or
- * operations, and sends operations to Hive blockchain. It uses So known
- * "Wif" custom tool, based on
- * [@hiveio/dhive](https://openhive-network.github.io/dhive/) and
- * Web Storage API.
+ * Signs challenges (any strings) or Hive transactions with Hive private
+ * keys, using so known "Wif" custom tool, based on
+ * [@hiveio/dhive](https://openhive-network.github.io/dhive/) and Web
+ * Storage API.
  *
  * @export
  * @class SignerWif
- * @extends {StorageMixin(SignerBase)}
+ * @extends {StorageMixin(Signer)}
  */
 export class SignerWif extends StorageMixin(SignerHbauth) {
-  async destroy(username: string) {
+  async destroy() {
     for (const k of Object.keys(KeyTypes)) {
       const keyType = k as KeyTypes;
-      this.storage.removeItem(`wif.${username}@${KeyTypes[keyType]}`);
+      this.storage.removeItem(`wif.${this.username}@${KeyTypes[keyType]}`);
     }
   }
 
   async signChallenge({
     message,
-    username,
-    keyType = KeyTypes.posting,
     password = '' // WIF private key,
   }: SignChallenge): Promise<string> {
+    const { username, keyType } = this;
     try {
       let wif = password ? password : this.storage.getItem(`wif.${username}@${keyType}`);
       if (!wif) {
@@ -42,17 +40,18 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
       if (!wif) throw new Error('No wif key');
 
       const privateKey = PrivateKey.fromString(wif);
-      const messageHash = cryptoUtils.sha256(message);
-      const signature = privateKey.sign(messageHash).toString();
+      const digestBuf = cryptoUtils.sha256(message);
+      const signature = privateKey.sign(digestBuf).toString();
       this.storage.setItem(`wif.${username}@${keyType}`, wif);
-      logger.info('wif', { signature });
+      logger.info('wif', { signature, digest: digestBuf.toString('hex') });
       return signature;
     } catch (error) {
       throw error;
     }
   }
 
-  async signDigest(digest: string, username: string, password: string, keyType: KeyTypes = KeyTypes.posting) {
+  async signDigest(digest: string, password: string) {
+    const { username, keyType } = this;
     const args = { username, password, digest, keyType };
     logger.info('signDigest args: %o', args);
     let signature = '';

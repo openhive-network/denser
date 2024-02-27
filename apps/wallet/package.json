@@ -21,11 +21,12 @@
   "dependencies": {
     "@beam-australia/react-env": "^3.1.1",
     "@hive/eslint-config-custom": "*",
-    "@hive/operations": "*",
     "@hive/smart-signer": "*",
     "@hive/tailwindcss-config": "*",
+    "@hive/transaction": "*",
     "@hive/tsconfig": "*",
     "@hive/ui": "*",
+    "@hive/wax": "^0.3.8-240222134308",
     "@hiveio/dhive": "^1.2.8",
     "@hookform/resolvers": "^3.3.2",
     "@next/bundle-analyzer": "^14.0.4",
@@ -44,10 +45,10 @@
     "react-dom": "18.2.0",
     "react-spinners-kit": "^1.9.1",
     "recharts": "^2.10.3",
-    "typescript": "5.3.3",
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@playwright/test": "^1.41.1"
+    "@playwright/test": "^1.41.1",
+    "typescript": "5.3.3"
   }
 }

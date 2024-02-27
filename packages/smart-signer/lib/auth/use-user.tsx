@@ -12,19 +12,18 @@ import { User } from '@smart-signer/types/common';
 const logger = getLogger('app');
 
 interface IUseUser {
-  user: User | null;
+  user: User;
 }
 
-async function getUser(user: User | null | undefined): Promise<User | null> {
-  // if (!user) return null;
+async function getUser(): Promise<User> {
   return await fetchJson(`/api/users/me`);
 }
 
 export function useUser({ redirectTo = '', redirectIfFound = false } = {}): IUseUser {
   const [storedUser, storeUser] = useLocalStorage('user', defaultUser);
-  const { data: user } = useQuery<User | null>(
+  const { data: user } = useQuery<User>(
     [QUERY_KEY.user],
-    async (): Promise<User | null> => getUser(user),
+    async (): Promise<User> => getUser(),
     {
       refetchOnMount: false,
       refetchOnWindowFocus: false,
@@ -37,7 +36,7 @@ export function useUser({ redirectTo = '', redirectIfFound = false } = {}): IUse
   );
 
   useEffect(() => {
-    userLocalStorage.saveUser(user);
+    userLocalStorage.saveUser(user || defaultUser);
   }, [user]);
 
   useEffect(() => {
@@ -59,6 +58,6 @@ export function useUser({ redirectTo = '', redirectIfFound = false } = {}): IUse
   }, [user, redirectIfFound, redirectTo]);
 
   return {
-    user: user ?? null
+    user: user ?? defaultUser
   };
 }

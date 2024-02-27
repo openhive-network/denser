@@ -4,11 +4,10 @@ import { cryptoUtils, PublicKey, Signature, KeyRole } from '@hiveio/dhive';
 import { getIronSession } from 'iron-session';
 import { oidc } from '@smart-signer/lib/oidc';
 import { sessionOptions } from '@smart-signer/lib/session';
-import { getLogger } from '@ui/lib/logging';
-import { getAccount } from '@ui/lib/hive';
-import { FullAccount } from '@ui/store/app-types';
+import { getLogger } from '@hive/ui/lib/logging';
+import { getAccount } from '@transaction/lib/hive';
+import { FullAccount } from '@transaction/lib/app-types';
 import { postLoginSchema, PostLoginSchema, Signatures } from '@smart-signer/lib/auth/utils';
-import { redirect } from 'next/navigation';
 import { User } from '@smart-signer/types/common';
 import { IronSessionData } from '@smart-signer/types/common';
 import { cookieNamePrefix } from '@smart-signer/lib/session';
@@ -46,7 +45,14 @@ const verifyLoginChallenge = async (
       const sig = Signature.fromString(signature);
       let publicKey = PublicKey.from(pubkey);
       const messageHash = cryptoUtils.sha256(message);
-      const verified = publicKey.verify(messageHash, sig);
+
+      // Recover public key from signature (you need to know digest);
+      const publicKeyRecoveredFromSignature = sig.recover(messageHash).toString();
+      // We check whether publicKeyRecoveredFromSignature is listed
+      // in account posting key auths.
+
+      const verified = publicKeyRecoveredFromSignature === pubkey && publicKey.verify(messageHash, sig);
+
       if (!verified) {
         logger.error('verifyLoginChallenge signature verification failed for user %s %o', chainAccount.name, {
           message,
@@ -59,11 +65,12 @@ const verifyLoginChallenge = async (
   };
 
   const {
-    posting: {
-      key_auths: [[posting_pubkey, weight]],
-      weight_threshold
-    }
+    posting: { key_auths, weight_threshold }
   } = chainAccount;
+
+  const posting_pubkey = key_auths[0][0];
+  const weight = key_auths[0][1];
+
   const result = verify(
     'posting',
     signatures.posting || '',

@@ -1,5 +1,5 @@
 import CommentListItem from '@/blog/components/comment-list-item';
-import { Entry } from '@ui/lib/bridge';
+import { Entry } from '@transaction/lib/bridge';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import { useContext } from 'react';

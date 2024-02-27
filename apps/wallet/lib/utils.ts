@@ -1,9 +1,9 @@
-import { convertStringToBig } from '@ui/lib/helpers';
-import { DynamicGlobalProperties } from '@ui/lib/hive';
+import { convertStringToBig } from '@hive/ui/lib/helpers';
+import { IDynamicGlobalProperties } from '@transaction/lib/hive';
 import { AccountHistoryData } from '../pages/[param]/transfers';
 import { TransferFilters } from '@/wallet/components/transfers-history-filter';
 
-export function getCurrentHpApr(data: DynamicGlobalProperties) {
+export function getCurrentHpApr(data: IDynamicGlobalProperties) {
   // The inflation was set to 9.5% at block 7m
   const initialInflationRate = 9.5;
   const initialBlock = 7000000;

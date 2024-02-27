@@ -1,26 +1,23 @@
 import * as React from 'react';
 import clsx from 'clsx';
-
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
-  SelectSeparator,
   SelectTrigger,
   SelectValue
-} from '@ui/components/select';
-import { Icons } from '@ui/components/icons';
-import { GetProposalsParams } from '../lib/hive';
+} from '@hive/ui/components/select';
+import { Icons } from '@hive/ui/components/icons';
+import { IGetProposalsParams } from '../lib/hive';
 import { useTranslation } from 'next-i18next';
 
 export interface FilterProposalsProps {
-  filterStatus: GetProposalsParams['status'];
+  filterStatus: IGetProposalsParams['status'];
   onChangeFilterStatus: (value: FilterProposalsProps['filterStatus']) => void;
-  orderValue: GetProposalsParams['order'];
+  orderValue: IGetProposalsParams['order'];
   onChangeSortOrder: (value: FilterProposalsProps['orderValue']) => void;
-  orderDirection: GetProposalsParams['order_direction'];
+  orderDirection: IGetProposalsParams['order_direction'];
   onOrderDirection: (value: FilterProposalsProps['orderDirection']) => void;
 }
 export function ProposalsFilter({

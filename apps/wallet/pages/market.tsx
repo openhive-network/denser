@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import { getAccount } from '@ui/lib/hive';
-import { convertStringToBig } from '@ui/lib/helpers';
-import Loading from '@ui/components/loading';
+import { getAccount } from '@transaction/lib/hive';
+import { convertStringToBig } from '@hive/ui/lib/helpers';
+import Loading from '@hive/ui/components/loading';
 import Big from 'big.js';
 import clsx from 'clsx';
 import { useMarket } from '@/wallet/components/hooks/use-market';

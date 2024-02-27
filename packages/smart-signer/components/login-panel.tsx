@@ -8,7 +8,8 @@ import { useSignIn } from '@smart-signer/lib/auth/use-sign-in';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { LoginForm, LoginFormSchema } from '@smart-signer/components/login-form';
 import { cookieNamePrefix } from '@smart-signer/lib/session';
-import { Signer } from '@smart-signer/lib/signer';
+import { SignerOptions } from '@smart-signer/lib/signer/signer';
+import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { KeyTypes } from '@smart-signer/types/common';
 
 import { getLogger } from '@ui/lib/logging';
@@ -42,6 +43,8 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
     logger.info('onSubmit form data', data);
     setErrorMsg('');
 
+    const message = JSON.stringify({ loginChallenge }, null, 0);
+
     const { loginType, username } = data;
     let password = '';
     if (data.loginType === LoginTypes.wif) {
@@ -49,17 +52,21 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
     }
     let signatures: Signatures = {};
     let hivesignerToken = '';
-    const signer = new Signer();
-    const message = JSON.stringify({ loginChallenge }, null, 0);
+
+    const signerOptions: SignerOptions = {
+      username,
+      loginType,
+      keyType: KeyTypes.posting,
+      apiEndpoint: 'https://api.hive.blog',
+      storageType: 'localStorage',
+    };
+    const signer = getSigner(signerOptions);
 
     try {
       const keyType = KeyTypes.posting;
       const signature = await signer.signChallenge({
         message,
-        loginType,
-        username,
         password,
-        keyType,
         translateFn: t
       });
       signatures[keyType] = signature;

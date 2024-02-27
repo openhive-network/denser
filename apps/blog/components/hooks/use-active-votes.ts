@@ -1,4 +1,4 @@
-import { getActiveVotes } from '@/blog/lib/hive';
+import { getActiveVotes } from '@transaction/lib/hive';
 import { useQuery } from '@tanstack/react-query';
 
 export const useActiveVotesQuery = (username: string, permlink: string) => {

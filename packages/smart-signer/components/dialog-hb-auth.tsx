@@ -17,7 +17,7 @@ import {
 import { isBrowser, AuthUser } from '@hive/hb-auth';
 import type { KeyAuthorityType } from '@hive/hb-auth';
 import { toast } from '@ui/components/hooks/use-toast';
-import { authService } from '@smart-signer/lib/auth-service';
+import { hbauthService } from '@smart-signer/lib/hbauth-service';
 import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
 
 import { getLogger } from '@ui/lib/logging';
@@ -83,7 +83,7 @@ export function DialogHBAuth({
     const key = form.get('key') as string;
 
     if (isBrowser) {
-      const authClient = await authService.getOnlineClient();
+      const authClient = await hbauthService.getOnlineClient();
 
       if (target.name === 'login') {
         const auth = await authClient.getAuthByUser(username);

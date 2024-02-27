@@ -1,16 +1,16 @@
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { getAccountNotifications } from '@transaction/lib/bridge';
 import {
   DATA_LIMIT as PER_PAGE,
   Entry,
-  getAccountNotifications,
   getAccountPosts,
   getCommunity,
-  getPostsRanked,
   getSubscribers,
-  getSubscriptions
-} from '@ui/lib/bridge';
-import Loading from '@ui/components/loading';
+  getSubscriptions,
+  getPostsRanked
+} from '@transaction/lib/bridge';
+import Loading from '@hive/ui/components/loading';
 import { FC, useCallback, useEffect } from 'react';
 import PostList from '@/blog/components/post-list';
 import { Skeleton } from '@ui/components/skeleton';
@@ -85,11 +85,11 @@ const ParamPage: FC = () => {
     enabled: Boolean(user?.username)
   });
   const {
-    isFetching: accountNotificationIsFetching,
-    isLoading: accountNotificationIsLoading,
+    isFetching: AccountNotificationIsFetching,
+    isLoading: AccountNotificationIsLoading,
     error: AccountNotificationError,
     data: dataAccountNotification
-  } = useQuery(['accountNotification', tag], () => getAccountNotifications(tag || ''), {
+  } = useQuery(['AccountNotification', tag], () => getAccountNotifications(tag || ''), {
     enabled: !!tag
   });
   const {
@@ -161,7 +161,7 @@ const ParamPage: FC = () => {
   if (
     (entriesDataIsLoading && entriesDataIsFetching) ||
     (accountEntriesIsLoading && accountEntriesIsFetching) ||
-    (accountNotificationIsLoading && accountNotificationIsFetching)
+    (AccountNotificationIsLoading && AccountNotificationIsFetching)
   ) {
     return (
       <Loading
@@ -170,8 +170,8 @@ const ParamPage: FC = () => {
           entriesDataIsFetching ||
           accountEntriesIsLoading ||
           accountEntriesIsFetching ||
-          accountNotificationIsLoading ||
-          accountNotificationIsFetching
+          AccountNotificationIsLoading ||
+          AccountNotificationIsFetching
         }
       />
     );

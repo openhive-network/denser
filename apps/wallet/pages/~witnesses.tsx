@@ -1,14 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Big from 'big.js';
-import { getAccount, getAccounts, getDynamicGlobalProperties } from '@ui/lib/hive';
-import { Icons } from '@ui/components/icons';
-import { Input } from '@ui/components/input';
-import { FullAccount } from '@ui/store/app-types';
-import { convertStringToBig } from '@ui/lib/helpers';
+import {
+  getAccount,
+  getAccounts,
+  getDynamicGlobalProperties,
+  getListWitnessVotes
+} from '@transaction/lib/hive';
+import { Icons } from '@hive/ui/components/icons';
+import { Input } from '@hive/ui/components/input';
+import { FullAccount } from '@transaction/lib/app-types';
+import { convertStringToBig } from '@hive/ui/lib/helpers';
 import { useRouter } from 'next/router';
-import { Button } from '@ui/components/button';
-import { Witness, getWitnessesByVote } from '@/wallet/lib/hive';
+import { Button } from '@hive/ui/components/button';
+import { IWitness, getWitnessesByVote } from '@/wallet/lib/hive';
 import WitnessListItem from '@/wallet/components/witnesses-list-item';
 import DialogLogin from '../components/dialog-login';
 import { AlertDialogProxy } from '../components/alert-dialog-proxy';
@@ -22,7 +27,7 @@ const LAST_BLOCK_AGE_THRESHOLD_IN_SEC = 2592000;
 
 const mapWitnesses =
   (totalVesting: Big, totalShares: Big, headBlock: number, observer?: string[]) =>
-  (witness: Witness, i: number, witnessList: Witness[]) => {
+  (witness: IWitness, i: number, witnessList: IWitness[]) => {
     const vestsToHpPrev = witnessList[i - 1]
       ? totalVesting.times(Big(witnessList[i - 1].votes).div(totalShares)).div(1000000)
       : 0;
@@ -70,6 +75,19 @@ function WitnessesPage() {
 
     { enabled: user?.isLoggedIn }
   );
+
+  const {
+    isLoading: listWitnessVotesIsLoading,
+    error: listWitnessVotesError,
+    data: listWitnessVotesData
+  } = useQuery(
+    ['listWitnessVotesData', user?.username || ''],
+    () => getListWitnessVotes(user?.username, 30, 'by_account_witness'),
+    {
+      enabled: user?.isLoggedIn
+    }
+  );
+
   const headBlock = dynamicData?.head_block_number ?? 0;
   const totalVesting = dynamicData?.total_vesting_fund_hive ?? Big(0);
   const totalShares = dynamicData?.total_vesting_shares ?? Big(0);
@@ -81,13 +99,17 @@ function WitnessesPage() {
     isError: witnessError
   } = useQuery(['wintesses'], () => getWitnessesByVote('', 250), {
     select: (witnesses) => {
-      return witnesses
-        .map(mapWitnesses(totalVesting, totalShares, headBlock, observerData?.witness_votes))
-        .filter(
-          (witness) =>
-            witness.rank <= 101 || witness.witnessLastBlockAgeInSecs <= LAST_BLOCK_AGE_THRESHOLD_IN_SEC
-          //&& !myVote need LOGIN
-        );
+      // TODO: check this logic to be good!
+      const witnessVotes = listWitnessVotesData?.votes
+        .filter((vote) => {
+          if (vote.witness === user?.username) return vote;
+        })
+        .map((witnessObj) => witnessObj.witness);
+      return witnesses.map(mapWitnesses(totalVesting, totalShares, headBlock, witnessVotes)).filter(
+        (witness) =>
+          witness.rank <= 101 || witness.witnessLastBlockAgeInSecs <= LAST_BLOCK_AGE_THRESHOLD_IN_SEC
+        //&& !myVote need LOGIN
+      );
     },
     enabled: dynamicSuccess
   });

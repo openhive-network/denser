@@ -4,11 +4,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useTranslation } from 'next-i18next';
-import { Separator } from '@ui/components/separator';
-import { hasCompatibleKeychain } from '@smart-signer/lib/signer-keychain';
+import { Separator } from '@hive/ui/components/separator';
+import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { username } from '@smart-signer/lib/auth/utils';
 import { LoginTypes, StorageTypes } from '@smart-signer/types/common';
-import { validateHivePassword } from '@smart-signer/lib/validate-hive-password';
+import { validateHivePassword } from '@smart-signer/lib/validators/validate-hive-password';
 import { Icons } from '@ui/components/icons';
 import { toast } from '@ui/components/hooks/use-toast';
 
@@ -56,10 +56,10 @@ const loginFormSchema = z.discriminatedUnion('loginType', [
 export type LoginFormSchema = z.infer<typeof loginFormSchema>;
 
 const loginFormDefaultValues = {
-  loginType: LoginTypes.wif,
+  loginType: LoginTypes.hbauth,
   password: '',
   remember: false,
-  useHbauth: false,
+  useHbauth: true,
   useHiveauth: false,
   useKeychain: false,
   username: ''
@@ -76,7 +76,7 @@ export function LoginForm({
 }) {
   const { t } = useTranslation(i18nNamespace);
   const [isKeychainSupported, setIsKeychainSupported] = useState(false);
-  const [disabledPasword, setDisabledPassword] = useState(false);
+  const [disabledPasword, setDisabledPassword] = useState(true);
 
   useEffect(() => {
     setIsKeychainSupported(hasCompatibleKeychain());
@@ -213,6 +213,28 @@ export function LoginForm({
           <div className="my-6 flex w-full flex-col">
             <div className="flex items-center py-1">
               <input
+                id="useHbauth"
+                type="checkbox"
+                value=""
+                className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
+                {...register('useHbauth')}
+                onChange={(e) => onHbauthToggle(e)}
+              />
+              <label
+                htmlFor="useHbauth"
+                className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
+              >
+                <img
+                  className="mr-1 h-4 w-4"
+                  src="/smart-signer/images/hive-blog-twshare.png"
+                  alt="Hbauth logo"
+                />
+                {t('login_form.use_hbauth')}
+              </label>
+            </div>
+
+            <div className="flex items-center py-1">
+              <input
                 type="checkbox"
                 id="useKeychain"
                 value=""
@@ -254,27 +276,6 @@ export function LoginForm({
 
             <div className="flex items-center py-1">
               <input
-                id="useHbauth"
-                type="checkbox"
-                value=""
-                className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
-                {...register('useHbauth')}
-                onChange={(e) => onHbauthToggle(e)}
-              />
-              <label
-                htmlFor="useHbauth"
-                className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
-              >
-                <img
-                  className="mr-1 h-4 w-4"
-                  src="/smart-signer/images/hive-blog-twshare.png"
-                  alt="Hbauth logo"
-                />
-                {t('login_form.use_hbauth')}
-              </label>
-            </div>
-            <div className="flex items-center py-1">
-              <input
                 id="remember"
                 type="checkbox"
                 value=""
@@ -293,7 +294,7 @@ export function LoginForm({
           <div className="flex items-center justify-between">
             <button
               type="submit"
-              className="min-w-24 rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-semibold text-white hover:cursor-pointer hover:bg-red-700 focus:outline-none  disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
+              className="w-fit rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-semibold text-white hover:cursor-pointer hover:bg-red-700 focus:outline-none disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
               onClick={handleSubmit(onSubmit)}
               data-testid="login-submit-button"
               disabled={isSubmitting}

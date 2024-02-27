@@ -6,8 +6,11 @@ import { Label } from '@radix-ui/react-label';
 import { Input } from '@ui/components/input';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { operationService } from '@operations/index';
+import { transactionService } from '@transaction/index';
+import { createPermlink } from '@transaction/lib/utils';
+import { useSigner } from '@/blog/components/hooks/use-signer';
 import { HiveRendererContext } from './hive-renderer-context';
+import DialogLogin from './dialog-login';
 
 export function ReplyTextbox({
   onSetReply,
@@ -19,9 +22,11 @@ export function ReplyTextbox({
   permlink: string;
 }) {
   const { user } = useUser();
+  const { signerOptions } = useSigner();
   const { t } = useTranslation('common_blog');
   const [text, setText] = useState('');
   const [cleanedText, setCleanedText] = useState('');
+  const [replyPermlink, setReplyPermlink] = useState('');
 
   const { hiveRenderer } = useContext(HiveRendererContext);
 
@@ -31,6 +36,17 @@ export function ReplyTextbox({
       setCleanedText(nextCleanedText);
     }
   }, [hiveRenderer, text]);
+
+  useEffect(() => {
+    const createReplyPermlink = async () => {
+      if (user && user.isLoggedIn) {
+        const plink = await createPermlink('', user.username, permlink);
+        setReplyPermlink(plink);
+      }
+    };
+
+    createReplyPermlink();
+  }, [user, permlink]);
 
   const handleCancel = () => {
     if (text === '') return onSetReply(false);
@@ -67,15 +83,35 @@ export function ReplyTextbox({
           </p>
         </div>
         <div className="flex flex-col md:flex-row">
-          <Button
-            disabled={text === ''}
-            onClick={() => {
-              operationService.addComment(username, user, permlink, cleanedText);
-              setText('');
-            }}
-          >
-            {t('post_content.footer.comment.post')}
-          </Button>
+          {user && user.isLoggedIn ? (
+            <Button
+              disabled={text === ''}
+              onClick={() => {
+                transactionService.processHiveAppOperation((builder) => {
+                  builder
+                    .push({
+                      comment: {
+                        parent_author: username,
+                        parent_permlink: permlink,
+                        author: user.username,
+                        permlink: replyPermlink,
+                        title: '',
+                        body: cleanedText,
+                        json_metadata: '{"app":"hiveblog/0.1"}'
+                      }
+                    })
+                    .build();
+                }, signerOptions);
+                setText('');
+              }}
+            >
+              {t('post_content.footer.comment.post')}
+            </Button>
+          ) : (
+            <DialogLogin>
+              <Button disabled={text === ''}> {t('post_content.footer.comment.post')}</Button>
+            </DialogLogin>
+          )}
           <Button
             variant="ghost"
             onClick={() => handleCancel()}

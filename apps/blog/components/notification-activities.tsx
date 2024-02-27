@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { AccountNotification, getAccountNotifications } from '@ui/lib/bridge';
+import { IAccountNotification, getAccountNotifications } from '@transaction/lib/bridge';
 import NotificationList from '@/blog/components/notification-list';
 import { Button } from '@ui/components/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components/tabs';
@@ -10,7 +10,7 @@ const NotificationActivities = ({
   data,
   username
 }: {
-  data: AccountNotification[] | null | undefined;
+  data: IAccountNotification[] | null | undefined;
   username: string;
 }) => {
   const { t } = useTranslation('common_blog');
@@ -24,7 +24,7 @@ const NotificationActivities = ({
     refetch,
     data: moreData
   } = useQuery(
-    ['accountNotificationMoreData', username],
+    ['AccountNotificationMoreData', username],
     () => getAccountNotifications(username, lastStateElementId, 50),
     { enabled: !!username }
   );
@@ -70,7 +70,7 @@ const NotificationActivities = ({
       <TabsContent value="replies" data-testid="notifications-content-replies">
         <NotificationList
           data={state?.filter(
-            (row: AccountNotification) => row.type === 'reply_comment' || row.type === 'reply'
+            (row: IAccountNotification) => row.type === 'reply_comment' || row.type === 'reply'
           )}
         />
         {showButton && (
@@ -84,7 +84,7 @@ const NotificationActivities = ({
         )}
       </TabsContent>
       <TabsContent value="mentions" data-testid="notifications-content-mentions">
-        <NotificationList data={state?.filter((row: AccountNotification) => row.type === 'mention')} />
+        <NotificationList data={state?.filter((row: IAccountNotification) => row.type === 'mention')} />
         {showButton && (
           <Button
             variant="outline"
@@ -96,7 +96,7 @@ const NotificationActivities = ({
         )}
       </TabsContent>
       <TabsContent value="follows" data-testid="notifications-content-follows">
-        <NotificationList data={state?.filter((row: AccountNotification) => row.type === 'follow')} />
+        <NotificationList data={state?.filter((row: IAccountNotification) => row.type === 'follow')} />
         {showButton && (
           <Button
             variant="outline"
@@ -108,7 +108,7 @@ const NotificationActivities = ({
         )}
       </TabsContent>
       <TabsContent value="upvotes" data-testid="notifications-content-upvotes">
-        <NotificationList data={state?.filter((row: AccountNotification) => row.type === 'vote')} />
+        <NotificationList data={state?.filter((row: IAccountNotification) => row.type === 'vote')} />
         {showButton && (
           <Button
             variant="outline"
@@ -120,7 +120,7 @@ const NotificationActivities = ({
         )}
       </TabsContent>
       <TabsContent value="reblogs" data-testid="notifications-content-reblogs">
-        <NotificationList data={state?.filter((row: AccountNotification) => row.type === 'reblog')} />
+        <NotificationList data={state?.filter((row: IAccountNotification) => row.type === 'reblog')} />
         {showButton && (
           <Button
             variant="outline"

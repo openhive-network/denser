@@ -42,7 +42,7 @@ export class LoginToVoteDialog {
     // await expect(this.getHbauthPasswordInput).toHaveAttribute('placeholder', 'Hbauth password to unlock key');
     await expect(this.getUseKeychainCheckbox).not.toBeChecked();
     await expect(this.getUseHiveauthCheckbox).not.toBeChecked();
-    await expect(this.getUseHbauthCheckbox).not.toBeChecked();
+    await expect(this.getUseHbauthCheckbox).toBeChecked();
     await expect(this.getKeepMeLoggedInCheckbox).not.toBeChecked();
     await expect(this.getSubmitButton).toBeVisible();
     await expect(this.getResetButton).toBeVisible();
@@ -57,7 +57,7 @@ export class LoginToVoteDialog {
     // await expect(this.getHbauthPasswordInput).toHaveAttribute('placeholder', 'Hbauth password to unlock key');
     await expect(this.getUseKeychainCheckbox).not.toBeChecked();
     await expect(this.getUseHiveauthCheckbox).not.toBeChecked();
-    await expect(this.getUseHbauthCheckbox).not.toBeChecked();
+    await expect(this.getUseHbauthCheckbox).toBeChecked();
     await expect(this.getKeepMeLoggedInCheckbox).not.toBeChecked();
     await expect(this.getSubmitButton).toBeVisible();
     await expect(this.getSubmitButton).toHaveText('Zaloguj');

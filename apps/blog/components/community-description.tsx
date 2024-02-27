@@ -1,9 +1,9 @@
-import { cn } from '@/blog/lib/utils';
-import { Card, CardContent, CardHeader, CardTitle } from '@ui/components/card';
+import { cn } from '@ui/lib/utils';
+import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
 import Link from 'next/link';
 import { Button } from '@ui/components/button';
 import ln2list from '@/blog/lib/ln2list';
-import { AccountNotification, Community, Subscription } from '@ui/lib/bridge';
+import { type Community, type Subscription, IAccountNotification } from '@transaction/lib/bridge';
 import { SubsListDialog } from './subscription-list-dialog';
 import { ActivityLogDialog } from './activity-log-dialog';
 import { Badge } from '@ui/components/badge';
@@ -11,7 +11,9 @@ import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useContext, useEffect, useState } from 'react';
-import { operationService } from '@operations/index';
+import { transactionService } from '@transaction/index';
+import { CommunityOperationBuilder } from '@hive/wax/web';
+import { useSigner } from '@/blog/components/hooks/use-signer';
 import { HiveRendererContext } from './hive-renderer-context';
 
 const CommunityDescription = ({
@@ -22,11 +24,12 @@ const CommunityDescription = ({
 }: {
   data: Community;
   subs: Subscription[];
-  notificationData: AccountNotification[] | null | undefined;
+  notificationData: IAccountNotification[] | null | undefined;
   username: string;
 }) => {
   const [isSubscribe, setIsSubscribe] = useState(() => !data.context.subscribed);
   const { user } = useUser();
+  const { signerOptions } = useSigner();
   const { t } = useTranslation('common_blog');
   const { hiveRenderer } = useContext(HiveRendererContext);
 
@@ -79,7 +82,23 @@ const CommunityDescription = ({
                     onClick={() => {
                       const nextIsSubscribe = !isSubscribe;
                       setIsSubscribe(nextIsSubscribe);
-                      operationService.subscribe(username, user, 'subscribe');
+                      transactionService.processHiveAppOperation((builder) => {
+                        if (nextIsSubscribe) {
+                          builder.push(
+                            new CommunityOperationBuilder()
+                              .subscribe(username)
+                              .authorize(user.username)
+                              .build()
+                          );
+                        } else {
+                          builder.push(
+                            new CommunityOperationBuilder()
+                              .unsubscribe(username)
+                              .authorize(user.username)
+                              .build()
+                          );
+                        }
+                      }, signerOptions);
                     }}
                   >
                     {t('communities.buttons.subscribe')}
@@ -92,7 +111,14 @@ const CommunityDescription = ({
                     onClick={() => {
                       const nextIsSubscribe = !isSubscribe;
                       setIsSubscribe(nextIsSubscribe);
-                      operationService.subscribe(username, user, 'unsubscribe');
+                      transactionService.processHiveAppOperation((builder) => {
+                        builder.push(
+                          new CommunityOperationBuilder()
+                            .unsubscribe(username)
+                            .authorize(user.username)
+                            .build()
+                        );
+                      }, signerOptions);
                     }}
                   >
                     <span className="group-hover:hidden">Joined</span>

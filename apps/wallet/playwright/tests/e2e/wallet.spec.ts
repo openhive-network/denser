@@ -271,7 +271,7 @@ test.describe("Wallet page of @gtg tests", () => {
         console.log("Other transaction!!! - Check it!");
       }
     } else {
-      await expect(await walletPage.walletAccountHistoryNoTransactionMsg).toContainText('No transacions found');
+      await expect(await walletPage.walletAccountHistoryNoTransactionMsg).toContainText('No transactions found');
     }
   });
 

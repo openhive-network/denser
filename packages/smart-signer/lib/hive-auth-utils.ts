@@ -1,9 +1,47 @@
 import QRCode from 'qrcode';
 import { HasClient } from 'hive-auth-client';
-import { getLogger } from '@ui/lib/logging';
 import { Signature, HexBuffer, cryptoUtils, PublicKey } from '@hiveio/dhive';
 
+import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
+
+//
+// See:
+// 1. https://github.com/hiveauth/hive-auth-wrapper.
+// 2. https://github.com/quochuy/hive-auth-client.
+// 3. https://github.com/Mintrawa/hive-auth-client.
+//
+
+// import CryptoJS from 'crypto-js';
+// export class EnhancedHasClient extends HasClient {
+
+//   // This doesn't work. Error message visible in Keychain Mobile
+//   // Application says, that signing transactions is not implemented.
+
+//   /**
+//    * Sends a broadcast request to the server
+//    * @param {Object} authData
+//    * @param {string} authData.username
+//    * @param {string=} authData.token
+//    * @param {number=} authData.expire
+//    * @param {string=} authData.key
+//    * @param {string} keyType
+//    * @param {Array} ops
+//    */
+//   broadcast(authData, keyType, ops) {
+//     this.assert(authData, 'authData', [['username', 'string'], ['token', 'string'], ['key', 'string']]);
+//     this.assert(ops, 'ops', []);
+
+//     this.authKey = authData.key;
+//     const data = CryptoJS.AES.encrypt(JSON.stringify({ key_type: keyType, ops, broadcast: false }), authData.key).toString();
+//     const payload = { cmd: 'sign_req', account: authData.username, token: authData.token, data };
+//     this.send(JSON.stringify(payload));
+//     this.currentRequestExpire = new Date().getTime() + this.timeout;
+//     this.setExpireTimeout();
+//   }
+// }
+// const client = new EnhancedHasClient('hive-auth.arcange.eu', '', true);
+
 const client = new HasClient('hive-auth.arcange.eu', '', true);
 
 export interface HiveAuthData {
@@ -62,6 +100,10 @@ const verifyChallenge = (
   data: { challenge: string | Buffer | HexBuffer | number[]; pubkey: string | PublicKey }
 ) => {
   // Validate signature against account public key
+
+  // TODO We should get public key from Hive blockchain and validate
+  // against it. We shouldn't trust pubkey coming in data!
+
   const sig = Signature.fromString(HexBuffer.from(data.challenge).toString());
   const buf = cryptoUtils.sha256(challenge);
   const publicKey = PublicKey.from(data.pubkey);

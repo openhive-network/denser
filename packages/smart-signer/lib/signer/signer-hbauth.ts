@@ -1,24 +1,26 @@
-import { KeyTypes } from '@smart-signer/types/common';
 import { cryptoUtils } from '@hiveio/dhive';
-import { authService } from '@smart-signer/lib/auth-service';
-import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer';
-import { createHiveChain, BroadcastTransactionRequest } from '@hive/wax/web';
-import { SignerBase } from '@smart-signer/lib/signer-base';
+import { hbauthService } from '@smart-signer/lib/hbauth-service';
+import { SignChallenge, SignTransaction, Signer } from '@smart-signer/lib/signer/signer';
 import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
+import { THexString, createWaxFoundation } from '@hive/wax/web';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 /**
- * Instance interacts with Hive private keys, signs messages or
- * operations, and sends operations to Hive blockchain. It uses
- * [Hbauth](https://gitlab.syncad.com/hive/hb-auth).
+ * Signs challenges (any strings) or Hive transactions with Hive private
+ * keys, using [Hbauth](https://gitlab.syncad.com/hive/hb-auth).
  *
  * @export
  * @class SignerHbauth
- * @extends {SignerBase}
+ * @extends {Signer}
  */
-export class SignerHbauth extends SignerBase {
+export class SignerHbauth extends Signer {
+  async destroy() {
+    const authClient = await hbauthService.getOnlineClient();
+    await authClient.logout();
+  }
+
   async getPasswordFromUser(dialogProps: { [key: string]: any } = {}): Promise<string> {
     let password = '';
     try {
@@ -36,54 +38,45 @@ export class SignerHbauth extends SignerBase {
   }
 
   // Create digest and return its signature made with signDigest.
-  async signChallenge({
-    username,
-    password = '',
-    message,
-    keyType = KeyTypes.posting
-  }: SignChallenge): Promise<string> {
+  async signChallenge({ password = '', message }: SignChallenge): Promise<string> {
+    const { username, keyType } = this;
     const digest = cryptoUtils.sha256(message).toString('hex');
 
     await this.checkAuths(username, keyType);
 
-    const signature = await this.signDigest(digest, username, password, keyType);
+    const signature = await this.signDigest(digest, password);
     logger.info('hbauth', { signature });
     return signature;
   }
 
-  async broadcastTransaction({
-    operation,
-    username,
-    keyType = KeyTypes.posting
-  }: BroadcastTransaction): Promise<{ success: boolean; result: string; error: string }> {
-    let result = { success: true, result: '', error: '' };
-    try {
-      const hiveChain = await createHiveChain({ apiEndpoint: this.apiEndpoint });
-      const tx = await hiveChain.getTransactionBuilder();
-      tx.push(operation).validate();
-      const signature = await this.signDigest(tx.sigDigest, username, '', keyType);
-      const transaction = tx.build();
-      logger.info('SignerHbauth.broadcastTransaction tx: %o', tx.toApi());
-      transaction.signatures.push(signature);
-      const transactionRequest = new BroadcastTransactionRequest(tx);
-      await hiveChain.api.network_broadcast_api.broadcast_transaction(transactionRequest);
-    } catch (error) {
-      logger.error('SignerHbauth.broadcastTransaction error: %o', error);
-      result = { success: false, result: '', error: 'Broadcast failed' };
-      throw error;
-    }
+  async signTransaction({ digest, transaction }: SignTransaction) {
+    const wax = await createWaxFoundation();
 
-    return result;
+    // When transaction is string, e.g. got from transaction.toApi().
+    // const txBuilder = wax.TransactionBuilder.fromApi(transaction);
+
+    const txBuilder = new wax.TransactionBuilder(transaction);
+
+    logger.info('signTransaction digests: %o', { digest, 'tx.sigDigest': txBuilder.sigDigest });
+    if (digest !== txBuilder.sigDigest) throw new Error('Digests do not match');
+
+    // Show transaction to user and get his consent to sign it.
+
+    return this.signDigest(digest, '');
   }
 
-  async signDigest(digest: string, username: string, password: string, keyType: KeyTypes = KeyTypes.posting) {
-    logger.info('sign args: %o', { username, password, digest, keyType });
+  async signDigest(digest: THexString, password: string) {
+    const { username, keyType } = this;
+    logger.info('sign args: %o', { password, digest, username, keyType });
 
     if (!['posting', 'active'].includes(keyType)) {
       throw new Error(`Unsupported keyType: ${keyType}`);
     }
 
-    const authClient = await authService.getOnlineClient();
+    // TODO Pass correct config options here.
+    const authClient = await hbauthService.getOnlineClient();
+    // const authClient = await new OnlineClient().initialize();
+
     const auth = await authClient.getAuthByUser(username);
     logger.info('auth: %o', auth);
 
@@ -113,12 +106,13 @@ export class SignerHbauth extends SignerBase {
 
     const signature = await authClient.sign(username, digest, keyType as unknown as 'posting' | 'active');
     logger.info('hbauth: %o', { digest, signature });
-
     return signature;
   }
 
   async checkAuths(username: string, keyType: string) {
-    const authClient = await authService.getOnlineClient();
+    // TODO Pass correct config options here.
+    const authClient = await hbauthService.getOnlineClient();
+    // const authClient = await new OnlineClient().initialize();
 
     const auths = await authClient.getAuths();
     logger.info('authClient.getAuths();: %o', auths);

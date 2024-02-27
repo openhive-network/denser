@@ -65,10 +65,3 @@ blockchain.
     If you're already using npm package
     [react-modal-promise](https://github.com/cudr/react-modal-promise#readme)
     just ensure you have ModalContainer in your DOM.
-
-
-
-### TODO
-
-1. Manage Hbauth stuff in better way.
-2. Enable signing operations.

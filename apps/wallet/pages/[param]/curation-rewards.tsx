@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getAccount } from '@ui/lib/hive';
+import { getAccount } from '@transaction/lib/hive';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
 import { Button } from '@hive/ui';

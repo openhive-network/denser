@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import Big from 'big.js';
-import { DEFAULT_PARAMS_FOR_PROPOSALS, GetProposalsParams, getProposals } from '@/wallet/lib/hive';
-import { getDynamicGlobalProperties } from '@ui/lib/hive';
+import { DEFAULT_PARAMS_FOR_PROPOSALS, IGetProposalsParams, getProposals } from '@/wallet/lib/hive';
+import { getDynamicGlobalProperties } from '@transaction/lib/hive';
 import { ProposalsFilter } from '@/wallet/components/proposals-filter';
 import moment from 'moment';
 import { ProposalListItem } from '@/wallet/components/proposals-list-item';
@@ -29,11 +29,13 @@ function timeStatus(status: string, t: TFunction<'common_wallet', undefined>) {
 
 function ProposalsPage() {
   const { t } = useTranslation('common_wallet');
-  const [filterStatus, setFilterStatus] = useState<GetProposalsParams['status']>(
+  const [filterStatus, setFilterStatus] = useState<IGetProposalsParams['status']>(
     DEFAULT_PARAMS_FOR_PROPOSALS.status
   );
-  const [sortOrder, setSortOrder] = useState<GetProposalsParams['order']>(DEFAULT_PARAMS_FOR_PROPOSALS.order);
-  const [orderDirection, setOrderDirection] = useState<GetProposalsParams['order_direction']>(
+  const [sortOrder, setSortOrder] = useState<IGetProposalsParams['order']>(
+    DEFAULT_PARAMS_FOR_PROPOSALS.order
+  );
+  const [orderDirection, setOrderDirection] = useState<IGetProposalsParams['order_direction']>(
     DEFAULT_PARAMS_FOR_PROPOSALS.order_direction
   );
 

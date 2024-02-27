@@ -11,7 +11,11 @@ import {
 } from '@ui/components/alert-dialog';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { ReactNode } from 'react';
-import { operationService } from '@operations/index';
+import { transactionService } from '@transaction/index';
+import { FollowOperationBuilder } from '@hive/wax/web';
+import { useSigner } from '@/blog/components/hooks/use-signer';
+import DialogLogin from './dialog-login';
+import { Button } from '@ui/components/button';
 
 export function AlertDialogReblog({
   children,
@@ -23,6 +27,7 @@ export function AlertDialogReblog({
   permlink: string;
 }) {
   const { user } = useUser();
+  const { signerOptions } = useSigner();
 
   return (
     <AlertDialog>
@@ -43,13 +48,27 @@ export function AlertDialogReblog({
           <AlertDialogCancel className="hover:text-red-800" data-testid="reblog-dialog-cancel">
             Cancel
           </AlertDialogCancel>
-          <AlertDialogAction
-            className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
-            data-testid="reblog-dialog-ok"
-            onClick={() => operationService.reblog(username, user, permlink)}
-          >
-            OK
-          </AlertDialogAction>
+          {user && user.isLoggedIn ? (
+            <AlertDialogAction
+              className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
+              onClick={() => {
+                transactionService.processHiveAppOperation((builder) => {
+                  builder.push(
+                    new FollowOperationBuilder()
+                      .reblog(user.username, username, permlink)
+                      .authorize(user.username)
+                      .build()
+                  );
+                }, signerOptions);
+              }}
+            >
+              OK
+            </AlertDialogAction>
+          ) : (
+            <DialogLogin>
+              <Button data-testid="reblog-dialog-ok">OK</Button>
+            </DialogLogin>
+          )}
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

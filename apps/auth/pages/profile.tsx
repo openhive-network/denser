@@ -2,10 +2,16 @@ import { GetServerSideProps } from 'next';
 import { useState, useEffect } from 'react';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getTranslations } from '@/auth/lib/get-translations';
-import { Button } from '@ui/components/button';
-import { Signer, vote } from '@smart-signer/lib/signer';
+import { Button } from '@hive/ui/components/button';
+import { SignerOptions } from '@smart-signer/lib/signer/signer';
+import { getSigner } from '@smart-signer/lib/signer/get-signer';
+import { SignerHbauth } from '@smart-signer/lib/signer/signer-hbauth';
+import { SignerKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
 import { verifySignature } from '@smart-signer/lib/utils';
+import { vote, createHiveChain, BroadcastTransactionRequest } from '@hive/wax/web';
+import { waxToKeychainOperation } from '@smart-signer/lib/signer/signer-keychain';
+import { KeyTypes } from '@smart-signer/types/common';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -23,32 +29,91 @@ export default function Profile() {
 
   const developerAccounts = ['guest4test', 'guest4test7', 'stirlitz'];
 
-  const testVote = async () => {
+  const vote: vote = {
+    voter: user.username,
+    author: 'gtg',
+
+    // permlink: 'power-to-the-hive-but-just-a-little',
+    permlink: 'non-existing-permlink-q523-73867',
+
+    weight: 10000
+  };
+
+  const { username, loginType } = user;
+  const signerOptions: SignerOptions = {
+    username,
+    loginType,
+    keyType: KeyTypes.posting,
+    apiEndpoint: 'https://api.hive.blog',
+    storageType: 'localStorage'
+  };
+
+  const broadcast = async () => {
     if (!user || !user.isLoggedIn) return;
-    const vote: vote = {
-      voter: user.username,
-      author: 'gtg',
-
-      // permlink: 'power-to-the-hive-but-just-a-little',
-      permlink: 'non-existing-permlink-q523-73867',
-
-      weight: 10000
-    };
-
-    // {
-    //   "voter": "guest4test",
-    //   "author": "gtg",
-    //   "permlink": "non-existing-permlink-q523-73867",
-    //   "weight": 10000
-    // }
-
-    const signer = new Signer();
     try {
-      await signer.broadcastTransaction({
-        operation: { vote },
-        loginType: user.loginType,
-        username: user.username
+      const signer = getSigner(signerOptions);
+      const hiveChain = await createHiveChain();
+      const txBuilder = await hiveChain.getTransactionBuilder();
+      txBuilder.push({ vote });
+      txBuilder.validate();
+      const tx = txBuilder.build();
+      const signature = await signer.signTransaction({
+        digest: txBuilder.sigDigest,
+        transaction: tx
       });
+      logger.info('broadcast signature: %s', signature);
+      txBuilder.build(signature);
+      const request = new BroadcastTransactionRequest(txBuilder);
+
+      // Transmit
+      const result = await hiveChain.api.network_broadcast_api.broadcast_transaction(request);
+      logger.info('broadcast result: %o', result);
+    } catch (error) {
+      logger.error(error);
+    }
+  };
+
+  const sign = async () => {
+    if (!user || !user.isLoggedIn) return;
+    try {
+      const hiveChain = await createHiveChain();
+      const txBuilder = await hiveChain.getTransactionBuilder();
+      txBuilder.push({ vote });
+      const tx = txBuilder.build();
+
+      const signerKeychain = new SignerKeychain(signerOptions);
+      const signatureKeychain = await signerKeychain.signTransaction({
+        digest: txBuilder.sigDigest,
+        transaction: tx
+      });
+      logger.info('signature SignerKeychain: %s', signatureKeychain);
+
+      // Rewrite operations to Keychain format.
+      const operations = waxToKeychainOperation(tx.operations);
+
+      const message = JSON.stringify({ ...tx, ...{ operations } }, null, 0); // not working (missing posting authority)
+      // const message = JSON.stringify(tx, null, 0); // not working (missing posting authority)
+
+      const signatureKeychainChallenge = await signerKeychain.signChallenge({
+        message
+      });
+      logger.info('signature signatureKeychainChallenge: %s', signatureKeychainChallenge);
+
+      const signerHbauth = new SignerHbauth(signerOptions);
+      const signatureHbauth = await signerHbauth.signTransaction({
+        digest: txBuilder.sigDigest,
+        transaction: tx
+      });
+      logger.info('signature SignerHbauth: %s', signatureHbauth);
+
+      txBuilder.build(signatureKeychain); // it  works
+      // txBuilder.build(signatureKeychainChallenge); // not working (missing posting authority)
+
+      const request = new BroadcastTransactionRequest(txBuilder);
+
+      // Transmit
+      const result = await hiveChain.api.network_broadcast_api.broadcast_transaction(request);
+      logger.info('broadcast result: %o', result);
     } catch (error) {
       logger.error(error);
     }
@@ -97,8 +162,11 @@ export default function Profile() {
           </p>
           {developerAccounts.includes(user.username) && (
             <div className="flex flex-col gap-3">
-              <Button onClick={testVote} variant="redHover" size="sm" className="h-10">
-                Test Vote
+              <Button onClick={broadcast} variant="redHover" size="sm" className="h-10">
+                Broadcast
+              </Button>
+              <Button onClick={sign} variant="redHover" size="sm" className="h-10">
+                Sign
               </Button>
               <Button onClick={openDialogPassword} variant="redHover" size="sm" className="h-10">
                 Password Promise Modal
