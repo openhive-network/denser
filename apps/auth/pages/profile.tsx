@@ -65,8 +65,6 @@ export default function Profile() {
       logger.info('broadcast signature: %s', signature);
       txBuilder.build(signature);
       logger.info('broadcast txBuilder: %o', txBuilder);
-      const broadcastReq = new BroadcastTransactionRequest(txBuilder);
-      logger.info('broadcast broadcastReq: %o', broadcastReq);
 
       const trx = {
         trx: JSON.parse(txBuilder.toApi()),
@@ -87,6 +85,9 @@ export default function Profile() {
         body: JSON.stringify(data, null, 0)
       });
       logger.info('broadcast fetchResult: %o', fetchResult);
+
+      const broadcastReq = new BroadcastTransactionRequest(txBuilder);
+      logger.info('broadcast broadcastReq: %o', broadcastReq);
 
       // Transmit
       const result = await hiveChain.api.network_broadcast_api.broadcast_transaction(broadcastReq);
