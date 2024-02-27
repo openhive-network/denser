@@ -27,8 +27,8 @@ export function getCurrentHpApr(data: IDynamicGlobalProperties) {
 
   // Now lets calculate the "APR"
   const vestingRewardPercent = data.vesting_reward_percent / 10000;
-  const virtualSupply = convertStringToBig(data.virtual_supply.amount);
-  const totalVestingFunds = convertStringToBig(data.total_vesting_fund_hive.amount);
+  const virtualSupply = convertStringToBig(data.virtual_supply);
+  const totalVestingFunds = convertStringToBig(data.total_vesting_fund_hive);
   return virtualSupply.times(currentInflationRate).times(vestingRewardPercent).div(totalVestingFunds);
 }
 

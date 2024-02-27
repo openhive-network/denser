@@ -59,8 +59,8 @@ function WitnessesPage() {
     select: (data) => {
       return {
         ...data,
-        total_vesting_fund_hive: convertStringToBig(data.total_vesting_fund_hive.amount),
-        total_vesting_shares: convertStringToBig(data.total_vesting_shares.amount)
+        total_vesting_fund_hive: convertStringToBig(data.total_vesting_fund_hive),
+        total_vesting_shares: convertStringToBig(data.total_vesting_shares)
       };
     }
   });

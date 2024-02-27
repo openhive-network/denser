@@ -4,12 +4,7 @@ import { useRouter } from 'next/router';
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import Loading from '@ui/components/loading';
 import { useQuery } from '@tanstack/react-query';
-import {
-  getAccount,
-  getDynamicGlobalProperties,
-  getAccountFull,
-  getAccountReputations
-} from '@transaction/lib/hive';
+import { getAccount, getDynamicGlobalProperties, getAccountFull } from '@transaction/lib/hive';
 import { accountReputation } from '@/blog/lib/utils';
 import { delegatedHive, numberWithCommas, vestingHive } from '@hive/ui/lib/utils';
 import { Separator } from '@hive/ui/components/separator';
@@ -66,15 +61,6 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   } = useQuery(['profileData', username], () => getAccountFull(username), {
     enabled: !!username
   });
-
-  const {
-    isLoading: accountReputationIsLoading,
-    error: accountReputationError,
-    data: accountReputationData
-  } = useQuery(['accountReputationData', username], () => getAccountReputations(username, 1), {
-    enabled: !!username
-  });
-
   const {
     isLoading: accountDataIsLoading,
     error: accountDataError,
@@ -139,7 +125,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
         style={{ textShadow: 'rgb(0, 0, 0) 1px 1px 2px' }}
         data-testid="profile-info"
       >
-        {profileData && accountReputationData?.reputations ? (
+        {profileData ? (
           <div
             style={{
               background:
@@ -167,7 +153,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <span
                   title={`This is ${username}s's reputation score.\n\nThe reputation score is based on the history of votes received by the account, and is used to hide low quality content.`}
                 >
-                  ({accountReputation(accountReputationData.reputations[0].reputation ?? 0)})
+                  ({profileData?.reputation ? accountReputation(profileData.reputation) : null})
                 </span>
               </h4>
               {profileData.name ? (

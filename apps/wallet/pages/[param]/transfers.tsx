@@ -232,20 +232,20 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
     );
   }
 
-  const totalFund = convertStringToBig(dynamicData.total_vesting_fund_hive.amount);
+  const totalFund = convertStringToBig(dynamicData.total_vesting_fund_hive);
   console.log('istoryFeedData', historyFeedData);
   const price_per_hive = 0; //convertStringToBig(historyFeedData.current_median_history.base);
   const totalDays = moment(accountData.next_vesting_withdrawal).diff(moment(), `d`);
-  const totalShares = convertStringToBig(dynamicData.total_vesting_shares.amount);
+  const totalShares = convertStringToBig(dynamicData.total_vesting_shares);
   const vesting_hive = vestingHive(accountData, dynamicData);
   const delegated_hive = delegatedHive(accountData, dynamicData);
   const powerdown_hive = powerdownHive(accountData, dynamicData);
   const received_power_balance =
     (delegated_hive.lt(0) ? '+' : '') + numberWithCommas((-delegated_hive).toFixed(3));
-  const saving_balance_hive = convertStringToBig(accountData.savings_balance.amount);
-  const hbd_balance = convertStringToBig(accountData.hbd_balance.amount);
-  const hbd_balance_savings = convertStringToBig(accountData.savings_hbd_balance.amount);
-  const balance_hive = convertStringToBig(accountData.balance.amount);
+  const saving_balance_hive = convertStringToBig(accountData.savings_balance);
+  const hbd_balance = convertStringToBig(accountData.hbd_balance);
+  const hbd_balance_savings = convertStringToBig(accountData.savings_hbd_balance);
+  const balance_hive = convertStringToBig(accountData.balance);
   const savings_hbd_pending = 0; //from withdraw?
   const hbdOrders = 0; // from openOrdersData
   const conversionValue = 0; //??

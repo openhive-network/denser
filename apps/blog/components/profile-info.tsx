@@ -1,12 +1,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import {
-  getAccountFull,
-  getAccount,
-  getDynamicGlobalProperties,
-  getAccountReputations
-} from '@transaction/lib/hive';
+import { getAccountFull, getAccount, getDynamicGlobalProperties } from '@transaction/lib/hive';
 import { accountReputation } from '@/blog/lib/utils';
 import { numberWithCommas } from '@ui/lib/utils';
 import { Icons } from '@ui/components/icons';
@@ -26,13 +21,6 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
     error: errorProfileData,
     data: profileData
   } = useQuery(['profileData', username], () => getAccountFull(username), {
-    enabled: !!username
-  });
-  const {
-    isLoading: accountReputationIsLoading,
-    error: accountReputationError,
-    data: accountReputationData
-  } = useQuery(['accountReputationData', username], () => getAccountReputations(username, 1), {
     enabled: !!username
   });
   const {
@@ -75,7 +63,7 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
       <h4 className="mb-4 mt-8 text-xl text-slate-900 dark:text-white" data-testid="profile-name">
         {profileData?.profile?.name}{' '}
         <span className="text-slate-600">
-          ({accountReputation(accountReputationData?.reputations[0].reputation ?? 0)})
+          ({profileData?.reputation ? accountReputation(profileData.reputation) : null})
         </span>
       </h4>
       <h6

@@ -1,10 +1,8 @@
 import { Moment } from 'moment';
 import { AccountFollowStats, AccountProfile, FullAccount } from './app-types';
 import {
-  ApiAccount,
   TWaxApiRequest,
   createHiveChain,
-  GetDynamicGlobalPropertiesResponse,
   IManabarData,
   IHiveChainInterface,
   transaction,
@@ -14,19 +12,96 @@ import { isCommunity, parseAsset } from '@ui/lib/utils';
 import { vestsToRshares } from '@ui/lib/utils';
 import { DATA_LIMIT } from './bridge';
 
-export type IDynamicGlobalProperties = GetDynamicGlobalPropertiesResponse;
+export interface IDynamicGlobalProperties {
+  hbd_print_rate: number;
+  total_vesting_fund_hive: string;
+  total_vesting_shares: string;
+  hbd_interest_rate: number;
+  head_block_number: number;
+  head_block_id: string;
+  vesting_reward_percent: number;
+  virtual_supply: string;
+}
+
+type GetDynamicGlobalProperties = {
+  condenser_api: {
+    get_dynamic_global_properties: TWaxApiRequest<void, IDynamicGlobalProperties>;
+  };
+};
 
 export const getDynamicGlobalProperties = async (): Promise<IDynamicGlobalProperties> => {
   const chain = await createHiveChain();
-  return chain.api.database_api.get_dynamic_global_properties({});
+  return chain
+    .extend<GetDynamicGlobalProperties>()
+    .api.condenser_api.get_dynamic_global_properties()
+    .then((r: any) => {
+      return {
+        total_vesting_fund_hive: r.total_vesting_fund_hive || r.total_vesting_fund_steem,
+        total_vesting_shares: r.total_vesting_shares,
+        hbd_print_rate: r.hbd_print_rate || r.sbd_print_rate,
+        hbd_interest_rate: r.hbd_interest_rate,
+        head_block_number: r.head_block_number,
+        head_block_id: r.head_block_id,
+        vesting_reward_percent: r.vesting_reward_percent,
+        virtual_supply: r.virtual_supply
+      };
+    });
+};
+
+type GetAccountsnData = {
+  condenser_api: {
+    find_accounts: TWaxApiRequest<string[], FullAccount[]>;
+  };
 };
 
 export const getAccounts = async (usernames: string[]): Promise<FullAccount[]> => {
   const chain = await createHiveChain();
-  return chain.api.database_api
-    .find_accounts({ accounts: usernames })
-    .then((resp: { accounts: ApiAccount[] }): FullAccount[] =>
-      resp.accounts.map((x: ApiAccount) => {
+  return chain
+    .extend<GetAccountsnData>()
+    .api.condenser_api.find_accounts(usernames)
+    .then((resp: any[]): FullAccount[] =>
+      resp.map((x) => {
+        const account: FullAccount = {
+          name: x.name,
+          owner: x.owner,
+          active: x.active,
+          posting: x.posting,
+          memo_key: x.memo_key,
+          post_count: x.post_count,
+          created: x.created,
+          reputation: x.reputation,
+          posting_json_metadata: x.posting_json_metadata,
+          last_vote_time: x.last_vote_time,
+          last_post: x.last_post,
+          json_metadata: x.json_metadata,
+          reward_hive_balance: x.reward_hive_balance,
+          reward_hbd_balance: x.reward_hbd_balance,
+          reward_vesting_hive: x.reward_vesting_hive,
+          reward_vesting_balance: x.reward_vesting_balance,
+          balance: x.balance,
+          hbd_balance: x.hbd_balance,
+          savings_balance: x.savings_balance,
+          savings_hbd_balance: x.savings_hbd_balance,
+          savings_hbd_last_interest_payment: x.savings_hbd_last_interest_payment,
+          savings_hbd_seconds_last_update: x.savings_hbd_seconds_last_update,
+          savings_hbd_seconds: x.savings_hbd_seconds,
+          next_vesting_withdrawal: x.next_vesting_withdrawal,
+          vesting_shares: x.vesting_shares,
+          delegated_vesting_shares: x.delegated_vesting_shares,
+          received_vesting_shares: x.received_vesting_shares,
+          vesting_withdraw_rate: x.vesting_withdraw_rate,
+          to_withdraw: x.to_withdraw,
+          withdrawn: x.withdrawn,
+          witness_votes: x.witness_votes,
+          proxy: x.proxy,
+          proxied_vsf_votes: x.proxied_vsf_votes,
+          voting_manabar: x.voting_manabar,
+          voting_power: x.voting_power,
+          downvote_manabar: x.downvote_manabar,
+          vesting_balance: x.vesting_balance,
+          __loaded: true
+        };
+
         let profile: AccountProfile | undefined;
 
         try {
@@ -50,10 +125,11 @@ export const getAccounts = async (usernames: string[]): Promise<FullAccount[]> =
           };
         }
 
-        return { ...x, profile };
+        return { ...account, profile };
       })
     );
 };
+
 export const getAccount = (username: string): Promise<FullAccount> =>
   getAccounts([username]).then((resp) => resp[0]);
 
@@ -238,23 +314,24 @@ interface IAccountReputation {
 }
 
 interface IAccountReputations {
-  reputations: IAccountReputation[];
+  account: string;
+  reputation: number;
 }
 
 type GetAccountReputationData = {
-  reputation_api: {
-    get_account_reputations: TWaxApiRequest<IAccountReputationParams, IAccountReputations>;
+  condenser_api: {
+    get_account_reputations: TWaxApiRequest<IAccountReputationParams, IAccountReputations[]>;
   };
 };
 
 export const getAccountReputations = async (
   account_lower_bound: string,
   limit: number
-): Promise<IAccountReputations> => {
+): Promise<IAccountReputations[]> => {
   const chain = await createHiveChain();
   return chain
     .extend<GetAccountReputationData>()
-    .api.reputation_api.get_account_reputations({ account_lower_bound, limit });
+    .api.condenser_api.get_account_reputations({ account_lower_bound, limit });
 };
 
 type GetMarketBucketSizesData = {
@@ -288,14 +365,14 @@ export const getMarketHistory = async (
 };
 
 type GetActiveVotesData = {
-  database_api: {
+  condenser_api: {
     get_active_votes: TWaxApiRequest<string[], IVote[]>;
   };
 };
 
 export const getActiveVotes = async (author: string, permlink: string): Promise<IVote[]> => {
   const chain = await createHiveChain();
-  return chain.extend<GetActiveVotesData>().api.database_api.get_active_votes([author, permlink]);
+  return chain.extend<GetActiveVotesData>().api.condenser_api.get_active_votes([author, permlink]);
 };
 
 type GetTrendingTagsData = {
@@ -499,10 +576,10 @@ const HIVE_VOTING_MANA_REGENERATION_SECONDS = 5 * 60 * 60 * 24; //5 days
 
 export const downVotingPower = (account: FullAccount): number => {
   const totalShares =
-    parseFloat(account.vesting_shares.amount) +
-    parseFloat(account.received_vesting_shares.amount) -
-    parseFloat(account.delegated_vesting_shares.amount) -
-    parseFloat(account.vesting_withdraw_rate.amount);
+    parseFloat(account.vesting_shares) +
+    parseFloat(account.received_vesting_shares) -
+    parseFloat(account.delegated_vesting_shares) -
+    parseFloat(account.vesting_withdraw_rate);
   const elapsed = Math.floor(Date.now() / 1000) - account.downvote_manabar.last_update_time;
   const maxMana = (totalShares * 1000000) / 4;
 

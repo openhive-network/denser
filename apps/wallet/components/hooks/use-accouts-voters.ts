@@ -17,7 +17,7 @@ export const useAccountQuery = (username: string[], totalShares: Big, totalVesti
       return users.map((user) => ({
         name: user.name,
         hp: parseFloat(
-          totalShares.times(convertStringToBig(user.vesting_shares.amount).div(totalVestingFund)).toFixed(2)
+          totalShares.times(convertStringToBig(user.vesting_shares).div(totalVestingFund)).toFixed(2)
         ),
         proxy: calculateProxyHp(user)?.toFixed(2)
       }));
