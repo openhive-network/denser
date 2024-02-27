@@ -162,10 +162,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               />
               <h4 className="sm:text-2xl" data-testid="profile-name">
                 <span className="font-semibold">
-                  {' '}
-                  {profileData.posting_json_metadata
-                    ? JSON.parse(profileData.posting_json_metadata)?.profile?.name
-                    : null}
+                  {profileData?.profile?.name ? profileData.profile.name : profileData.name}
                 </span>{' '}
                 <span
                   title={`This is ${username}s's reputation score.\n\nThe reputation score is based on the history of votes received by the account, and is used to hide low quality content.`}

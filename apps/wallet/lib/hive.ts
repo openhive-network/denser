@@ -112,7 +112,7 @@ export interface IListItemProps {
 }
 
 type GetVestingDelegationsData = {
-  database_api: {
+  condenser_api: {
     get_vesting_delegations: TWaxApiRequest<(string | number)[], IDelegatedVestingShare[]>;
   };
 };
@@ -125,7 +125,7 @@ export const getVestingDelegations = async (
   const chain = await createHiveChain();
   return chain
     .extend<GetVestingDelegationsData>()
-    .api.database_api.get_vesting_delegations([username, from, limit]);
+    .api.condenser_api.get_vesting_delegations([username, from, limit]);
 };
 
 export interface IDelegatedVestingShare {
@@ -168,7 +168,7 @@ export const getAccountHistory = async (
   const chain = await createHiveChain();
   return chain
     .extend<GetAccountHistoryData>()
-    .api.condenser_api.get_account_history([username, start, limit, , ...wallet_operations_bitmask]);
+    .api.condenser_api.get_account_history([username, start, limit, ...wallet_operations_bitmask]);
 };
 
 export interface IProposalVote {
