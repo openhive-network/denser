@@ -14,6 +14,8 @@ import { ReactNode } from 'react';
 import { transactionService } from '@transaction/index';
 import { FollowOperationBuilder } from '@hive/wax/web';
 import { useSigner } from '@/blog/components/hooks/use-signer';
+import DialogLogin from './dialog-login';
+import { Button } from '@ui/components/button';
 
 export function AlertDialogReblog({
   children,
@@ -51,22 +53,23 @@ export function AlertDialogReblog({
               className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
               data-testid="reblog-dialog-ok"
               onClick={() => {
-                transactionService.processHiveAppOperation(
-                  (builder) => {
-                    builder.push(
-                      new FollowOperationBuilder()
-                        .reblog(user.username, username, permlink)
-                        .authorize(user.username)
-                        .build()
-                    );
-                  },
-                  signerOptions
-                );
+                transactionService.processHiveAppOperation((builder) => {
+                  builder.push(
+                    new FollowOperationBuilder()
+                      .reblog(user.username, username, permlink)
+                      .authorize(user.username)
+                      .build()
+                  );
+                }, signerOptions);
               }}
             >
               OK
             </AlertDialogAction>
-          ) : null}
+          ) : (
+            <DialogLogin>
+              <Button>OK</Button>
+            </DialogLogin>
+          )}
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
