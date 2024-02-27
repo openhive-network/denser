@@ -9,6 +9,7 @@ import { hasCompatibleKeychain } from '@smart-signer/lib/signer-keychain';
 import { username } from '@smart-signer/lib/auth/utils';
 import { LoginTypes, StorageTypes } from '@smart-signer/types/common';
 import { validateHivePassword } from '@smart-signer/lib/validators/validate-hive-password';
+import { titleCase } from '@smart-signer/lib/utils';
 import { Icons } from '@ui/components/icons';
 import { toast } from '@ui/components/hooks/use-toast';
 
@@ -56,10 +57,10 @@ const loginFormSchema = z.discriminatedUnion('loginType', [
 export type LoginFormSchema = z.infer<typeof loginFormSchema>;
 
 const loginFormDefaultValues = {
-  loginType: LoginTypes.wif,
+  loginType: LoginTypes.hbauth,
   password: '',
   remember: false,
-  useHbauth: false,
+  useHbauth: true,
   useHiveauth: false,
   useKeychain: false,
   username: ''
@@ -76,7 +77,7 @@ export function LoginForm({
 }) {
   const { t } = useTranslation(i18nNamespace);
   const [isKeychainSupported, setIsKeychainSupported] = useState(false);
-  const [disabledPasword, setDisabledPassword] = useState(false);
+  const [disabledPasword, setDisabledPassword] = useState(true);
 
   useEffect(() => {
     setIsKeychainSupported(hasCompatibleKeychain());
@@ -95,58 +96,17 @@ export function LoginForm({
     defaultValues: loginFormDefaultValues
   });
 
-  const onKeychainToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onCheckboxToggle = (e: React.ChangeEvent<HTMLInputElement>, loginType: LoginTypes) => {
     if (e.target.checked) {
-      setValue('useKeychain', true);
-      setValue('loginType', LoginTypes.keychain);
-      if (getValues('useHiveauth')) {
-        setValue('useHiveauth', false);
-      }
-      if (getValues('useHbauth')) {
-        setValue('useHbauth', false);
+      setValue(`use${titleCase(loginType)}` as any, true);
+      setValue('loginType', LoginTypes[loginType]);
+      for (const l of Object.keys(LoginTypes)) {
+        if (l === loginType) continue;
+        setValue(`use${titleCase(l)}` as any, false);
       }
       trigger('password');
       setDisabledPassword(true);
     } else {
-      setValue('useKeychain', false);
-      setValue('loginType', LoginTypes.wif);
-      setDisabledPassword(false);
-    }
-  };
-
-  const onHiveauthToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) {
-      setValue('useHiveauth', true);
-      setValue('loginType', LoginTypes.hiveauth);
-      if (getValues('useKeychain')) {
-        setValue('useKeychain', false);
-      }
-      if (getValues('useHbauth')) {
-        setValue('useHbauth', false);
-      }
-      trigger('password');
-      setDisabledPassword(true);
-    } else {
-      setValue('useHiveauth', false);
-      setValue('loginType', LoginTypes.wif);
-      setDisabledPassword(false);
-    }
-  };
-
-  const onHbauthToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) {
-      setValue('useHbauth', true);
-      setValue('loginType', LoginTypes.hbauth);
-      if (getValues('useHiveauth')) {
-        setValue('useHiveauth', false);
-      }
-      if (getValues('useKeychain')) {
-        setValue('useKeychain', false);
-      }
-      trigger('password');
-      setDisabledPassword(true);
-    } else {
-      setValue('useHbauth', false);
       setValue('loginType', LoginTypes.wif);
       setDisabledPassword(false);
     }
@@ -211,6 +171,29 @@ export function LoginForm({
           </div>
 
           <div className="my-6 flex w-full flex-col">
+
+            <div className="flex items-center py-1">
+              <input
+                id="useHbauth"
+                type="checkbox"
+                value=""
+                className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
+                {...register('useHbauth')}
+                onChange={(e) => onCheckboxToggle(e, LoginTypes.hbauth)}
+              />
+              <label
+                htmlFor="useHbauth"
+                className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
+              >
+                <img
+                  className="mr-1 h-4 w-4"
+                  src="/smart-signer/images/hive-blog-twshare.png"
+                  alt="Hbauth logo"
+                />
+                {t('login_form.use_hbauth')}
+              </label>
+            </div>
+
             <div className="flex items-center py-1">
               <input
                 type="checkbox"
@@ -219,7 +202,7 @@ export function LoginForm({
                 className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
                 {...register('useKeychain')}
                 disabled={!isKeychainSupported}
-                onChange={(e) => onKeychainToggle(e)}
+                onChange={(e) => onCheckboxToggle(e, LoginTypes.keychain)}
               />
               <label
                 htmlFor="useKeychain"
@@ -241,7 +224,7 @@ export function LoginForm({
                 value=""
                 className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
                 {...register('useHiveauth')}
-                onChange={(e) => onHiveauthToggle(e)}
+                onChange={(e) => onCheckboxToggle(e, LoginTypes.hiveauth)}
               />
               <label
                 htmlFor="useHiveauth"
@@ -252,27 +235,6 @@ export function LoginForm({
               </label>
             </div>
 
-            <div className="flex items-center py-1">
-              <input
-                id="useHbauth"
-                type="checkbox"
-                value=""
-                className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
-                {...register('useHbauth')}
-                onChange={(e) => onHbauthToggle(e)}
-              />
-              <label
-                htmlFor="useHbauth"
-                className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
-              >
-                <img
-                  className="mr-1 h-4 w-4"
-                  src="/smart-signer/images/hive-blog-twshare.png"
-                  alt="Hbauth logo"
-                />
-                {t('login_form.use_hbauth')}
-              </label>
-            </div>
             <div className="flex items-center py-1">
               <input
                 id="remember"
