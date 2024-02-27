@@ -196,28 +196,6 @@ export function LoginForm({
 
             <div className="flex items-center py-1">
               <input
-                id="useHbauth"
-                type="checkbox"
-                value=""
-                className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
-                {...register('useHbauth')}
-                onChange={(e) => onHbauthToggle(e)}
-              />
-              <label
-                htmlFor="useHbauth"
-                className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
-              >
-                <img
-                  className="mr-1 h-4 w-4"
-                  src="/smart-signer/images/hive-blog-twshare.png"
-                  alt="Hbauth logo"
-                />
-                {t('login_form.use_hbauth')}
-              </label>
-            </div>
-
-            <div className="flex items-center py-1">
-              <input
                 type="checkbox"
                 id="useKeychain"
                 value=""
