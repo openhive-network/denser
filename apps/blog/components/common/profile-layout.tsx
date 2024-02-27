@@ -66,7 +66,6 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   } = useQuery(['profileData', username], () => getAccountFull(username), {
     enabled: !!username
   });
-
   const {
     isLoading: accountReputationIsLoading,
     error: accountReputationError,
@@ -101,6 +100,13 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
     error: dynamicGlobalDataError,
     data: dynamicGlobalData
   } = useQuery(['dynamicGlobalData'], () => getDynamicGlobalProperties());
+  const {
+    isLoading: accountReputationIsLoading,
+    error: accountReputationError,
+    data: accountReputationData
+  } = useQuery(['accountReputationData', username], () => getAccountReputations(username, 1), {
+    enabled: !!username
+  });
 
   const { data: twitterData } = useQuery(['twitterData', username], () => getTwitterInfo(username), {
     enabled: !!username,
@@ -132,7 +138,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   const vesting_hive = vestingHive(accountData, dynamicGlobalData);
   const hp = vesting_hive.minus(delegated_hive);
 
-  return username ? (
+  return username && accountReputationData ? (
     <div>
       <div
         className=" w-full bg-gray-600 text-sm leading-6 text-zinc-50 sm:h-fit"
@@ -167,7 +173,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <span
                   title={`This is ${username}s's reputation score.\n\nThe reputation score is based on the history of votes received by the account, and is used to hide low quality content.`}
                 >
-                  ({accountReputation(accountReputationData.reputations[0].reputation ?? 0)})
+                  ({accountReputation(accountReputationData[0].reputation ?? 0)})
                 </span>
               </h4>
               {profileData.name ? (
@@ -180,7 +186,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   <img
                     alt="fish image"
                     title={t('user_profil.hive_buzz_badge_title', { username: profileData.name })}
-                    className="mx-2 w-6 duration-500 ease-in-out hover:w-12"
+                    className="mx-2 hidden w-6 duration-500 ease-in-out hover:w-12"
                     src={`https://hivebuzz.me/api/level/${profileData.name}?dead`}
                     data-testid="profile-badge-image"
                   />

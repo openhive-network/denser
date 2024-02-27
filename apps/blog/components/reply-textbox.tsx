@@ -10,6 +10,7 @@ import { transactionService } from '@transaction/index';
 import { createPermlink } from '@transaction/lib/utils';
 import { useSigner } from '@/blog/components/hooks/use-signer';
 import { HiveRendererContext } from './hive-renderer-context';
+import DialogLogin from './dialog-login';
 
 export function ReplyTextbox({
   onSetReply,
@@ -86,30 +87,31 @@ export function ReplyTextbox({
             <Button
               disabled={text === ''}
               onClick={() => {
-                transactionService.processHiveAppOperation(
-                  (builder) => {
-                    builder
-                      .push({
-                        comment: {
-                          parent_author: username,
-                          parent_permlink: permlink,
-                          author: user.username,
-                          permlink: replyPermlink,
-                          title: '',
-                          body: cleanedText,
-                          json_metadata: '{"app":"hiveblog/0.1"}'
-                        }
-                      })
-                      .build();
-                  },
-                  signerOptions
-                );
+                transactionService.processHiveAppOperation((builder) => {
+                  builder
+                    .push({
+                      comment: {
+                        parent_author: username,
+                        parent_permlink: permlink,
+                        author: user.username,
+                        permlink: replyPermlink,
+                        title: '',
+                        body: cleanedText,
+                        json_metadata: '{"app":"hiveblog/0.1"}'
+                      }
+                    })
+                    .build();
+                }, signerOptions);
                 setText('');
               }}
             >
               {t('post_content.footer.comment.post')}
             </Button>
-          ) : null}
+          ) : (
+            <DialogLogin>
+              <Button disabled={text === ''}> {t('post_content.footer.comment.post')}</Button>
+            </DialogLogin>
+          )}
           <Button
             variant="ghost"
             onClick={() => handleCancel()}

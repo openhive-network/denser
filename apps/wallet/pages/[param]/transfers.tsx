@@ -232,7 +232,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
     );
   }
 
-  const totalFund = convertStringToBig(dynamicData.total_vesting_fund_hive.amount);
+  const totalFund = convertStringToBig(dynamicData.total_vesting_fund_hive);
   console.log('istoryFeedData', historyFeedData);
   const price_per_hive = 0; //convertStringToBig(historyFeedData.current_median_history.base);
   const totalDays = moment(accountData.next_vesting_withdrawal).diff(moment(), `d`);

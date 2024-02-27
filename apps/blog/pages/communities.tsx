@@ -16,8 +16,10 @@ import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import CommunitiesMybar from '../components/communities-mybar';
 import Link from 'next/link';
+import env from '@beam-australia/react-env';
 
 export default function CommunitiesPage() {
+  const walletHost = env('WALLET_ENDPOINT');
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
   const [sort, setSort] = useState('rank');
@@ -67,7 +69,7 @@ export default function CommunitiesPage() {
             {user?.isLoggedIn ? (
               <Link
                 className="text-sm font-medium text-red-600 dark:hover:text-red-800"
-                href={`https://wallet.openhive.network/@${user.username}/communities`}
+                href={`${walletHost}/@${user.username}/communities`}
               >
                 Create a Community
               </Link>

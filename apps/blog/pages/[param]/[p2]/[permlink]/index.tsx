@@ -346,7 +346,7 @@ function PostPage({
                   <TooltipContent data-testid="post-footer-response-tooltip">
                     <p>
                       {post_s.children === 0
-                        ? t('post_content.footer.no_response')
+                        ? t('post_content.footer.no_responses')
                         : post_s.children === 1
                         ? t('post_content.footer.response')
                         : t('post_content.footer.responses', { responses: post_s.children })}

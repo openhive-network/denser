@@ -180,9 +180,6 @@ export default function Profile() {
               <Button onClick={sign} variant="redHover" size="sm" className="h-10">
                 Sign
               </Button>
-              <Button onClick={verify} variant="redHover" size="sm" className="h-10">
-                Verify
-              </Button>
               <Button onClick={openDialogPassword} variant="redHover" size="sm" className="h-10">
                 Password Promise Modal
               </Button>
