@@ -9,8 +9,10 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { transactionService } from '@transaction/index';
 import { useSigner } from '@/blog/components/hooks/use-signer';
+import env from '@beam-australia/react-env';
 
 const VotesComponent = ({ post }: { post: Entry }) => {
+  const walletHost = env('WALLET_ENDPOINT');
   const { user } = useUser();
   const { signerOptions } = useSigner();
   const { t } = useTranslation('common_blog');
@@ -101,7 +103,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                 <Link
                   className="font-bold hover:text-red-600"
                   target="_blank"
-                  href={`https://wallet.openhive.network/${user?.username}/transfers`}
+                  href={`${walletHost}/${user?.username}/transfers`}
                 >
                   {' Wallet '}
                 </Link>
