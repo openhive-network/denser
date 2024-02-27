@@ -25,7 +25,7 @@ export interface IDynamicGlobalProperties {
 
 type GetDynamicGlobalProperties = {
   condenser_api: {
-    get_dynamic_global_properties: TWaxApiRequest<void, IDynamicGlobalProperties>;
+    get_dynamic_global_properties: TWaxApiRequest<[], IDynamicGlobalProperties>;
   };
 };
 
@@ -33,7 +33,7 @@ export const getDynamicGlobalProperties = async (): Promise<IDynamicGlobalProper
   const chain = await createHiveChain();
   return chain
     .extend<GetDynamicGlobalProperties>()
-    .api.condenser_api.get_dynamic_global_properties()
+    .api.condenser_api.get_dynamic_global_properties([])
     .then((r: any) => {
       return {
         total_vesting_fund_hive: r.total_vesting_fund_hive || r.total_vesting_fund_steem,
@@ -50,7 +50,7 @@ export const getDynamicGlobalProperties = async (): Promise<IDynamicGlobalProper
 
 type GetAccountsnData = {
   condenser_api: {
-    find_accounts: TWaxApiRequest<string[], FullAccount[]>;
+    get_accounts: TWaxApiRequest<[string[]], FullAccount[]>;
   };
 };
 
@@ -58,7 +58,7 @@ export const getAccounts = async (usernames: string[]): Promise<FullAccount[]> =
   const chain = await createHiveChain();
   return chain
     .extend<GetAccountsnData>()
-    .api.condenser_api.find_accounts(usernames)
+    .api.condenser_api.get_accounts([usernames])
     .then((resp: any[]): FullAccount[] =>
       resp.map((x) => {
         const account: FullAccount = {
