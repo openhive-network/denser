@@ -94,13 +94,14 @@ export function LoginForm({
     });
   };
 
-  const radioGroupItem = (loginType: LoginTypes) => {
+  const radioGroupItem = (loginType: LoginTypes, disabled: boolean = false) => {
     return (
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <RadioGroupItem
           value={loginType}
           className="border-2 border-gray-600 focus:ring-transparent"
           id={`radio-${loginType}`}
+          disabled={disabled}
         />
         <label
           className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
@@ -162,7 +163,7 @@ export function LoginForm({
                 && radioGroupItem(LoginTypes.hbauth)}
 
               {allowLoginTypes.includes(LoginTypes.keychain)
-                && radioGroupItem(LoginTypes.keychain)}
+                && radioGroupItem(LoginTypes.keychain, !isKeychainSupported)}
 
               {allowLoginTypes.includes(LoginTypes.hiveauth)
                 && radioGroupItem(LoginTypes.hiveauth)}
