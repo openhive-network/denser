@@ -58,7 +58,7 @@ export type LoginType = keyof typeof loginTypes;
 export interface LoginFormOptions {
   errorMessage: string;
   onSubmit: (data: LoginFormSchema) => void;
-  allowLoginTypes: LoginTypes[];
+  allowLoginTypes?: LoginTypes[];
   i18nNamespace?: string;
 }
 
