@@ -88,6 +88,7 @@ export default function Profile() {
 
       const broadcastReq = new BroadcastTransactionRequest(txBuilder);
       logger.info('broadcast broadcastReq: %o', broadcastReq);
+      logger.info('broadcast JSON.stringify(broadcastReq): %o', JSON.stringify(broadcastReq));
 
       // Transmit
       const result = await hiveChain.api.network_broadcast_api.broadcast_transaction(broadcastReq);
