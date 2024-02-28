@@ -17,7 +17,8 @@ const accountFormSchema = z.object({
   postArea: z.string().min(1, { message: '' }),
   postSummary: z.string().max(140, { message: '' }),
   tags: z.string(),
-  author: z.string().regex(/^[a-zA-Z1-9]+$/, 'Must contain only letters and numbers'),
+  author: z.string().regex(/^$|^[[a-zAZ1-9]+$/, 'Must contain only letters and numbers'),
+  // author: z.string(),
   category: z.string({ required_error: '' })
 });
 type AccountFormValues = z.infer<typeof accountFormSchema>;
@@ -41,8 +42,6 @@ export default function PostForm({ username }: { username: string }) {
 
   return (
     <div className="sm:flex-ro flex flex-col gap-4 bg-gray-50 p-8 dark:bg-slate-950">
-      <MdEditor />
-
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <h1 className="text-sm text-red-500">Disable side-by-side editor</h1>
@@ -64,7 +63,7 @@ export default function PostForm({ username }: { username: string }) {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Textarea placeholder="Post content" {...field} />
+                  <MdEditor data={field} />
                 </FormControl>
                 <FormDescription className="border-x-2 border-b-2 border-slate-200 px-3 pb-1 text-xs text-slate-500 dark:border-slate-900">
                   Insert images by dragging & dropping, pasting from the clipboard, or by{' '}
@@ -162,7 +161,7 @@ export default function PostForm({ username }: { username: string }) {
           </Button>
         </form>
       </Form>
-      <div className="flex h-fit w-1/2 flex-col gap-4">
+      <div className="flex h-fit flex-col gap-4">
         <div className="flex flex-col-reverse sm:flex-row sm:justify-between">
           <span className="text-slate-500">Preview</span>
           <Link href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax">
@@ -175,7 +174,7 @@ export default function PostForm({ username }: { username: string }) {
             dangerouslySetInnerHTML={{
               __html: form.watch('postArea')
             }}
-            className="prose h-fit max-w-full break-words border-2 border-slate-200 p-2  dark:prose-invert"
+            className="prose h-fit break-words border-2 border-slate-200 p-2 dark:prose-invert"
           ></div>
         ) : null}
       </div>

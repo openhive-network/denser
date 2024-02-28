@@ -1,8 +1,17 @@
 import '@uiw/react-md-editor/markdown-editor.css';
 import dynamic from 'next/dynamic';
-import { Dispatch, MutableRefObject, SetStateAction, useCallback, useRef, useState } from 'react';
+import {
+  ChangeEvent,
+  Dispatch,
+  MutableRefObject,
+  SetStateAction,
+  useCallback,
+  useRef,
+  useState
+} from 'react';
 import * as commands from '@uiw/react-md-editor/commands';
 import { useTheme } from 'next-themes';
+import { ContextStore } from '@uiw/react-md-editor';
 
 const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false });
 
@@ -50,8 +59,18 @@ export const onImageDrop = async (
   await Promise.all(files.map(async (file) => onImageUpload_DnD(file, setMarkdown)));
 };
 
-const MdEditor = () => {
-  const [value, setValue] = useState('**Hello world!!!**');
+const MdEditor = (data: {
+  data: {
+    value: string | undefined;
+    onChange:
+      | ((
+          value?: string | undefined,
+          event?: ChangeEvent<HTMLTextAreaElement> | undefined,
+          state?: ContextStore | undefined
+        ) => void)
+      | undefined;
+  };
+}) => {
   const { resolvedTheme } = useTheme();
 
   const inputRef = useRef(null);
@@ -91,7 +110,7 @@ const MdEditor = () => {
       event.preventDefault();
       event.stopPropagation();
       setIsDrag(false);
-      await onImageDrop(event.dataTransfer, setValue);
+      await onImageDrop(event.dataTransfer, () => data.data.onChange);
     },
     []
   );
@@ -148,9 +167,9 @@ const MdEditor = () => {
         <div data-color-mode={resolvedTheme === 'dark' ? 'dark' : 'light'}>
           <MDEditor
             ref={editorRef}
-            value={value}
+            value={data.data.value}
             //@ts-ignore
-            onChange={setValue}
+            onChange={data.data.onChange}
             commands={[...(commands.getCommands() as any), imgBtn(inputRef, textApiRef)]}
           />
         </div>
