@@ -1,6 +1,6 @@
 import { operation } from '@hive/wax/web';
 import { LoginType } from '@smart-signer/types/common';
-import { KeyTypes } from '@smart-signer/types/common';
+import { KeyType } from '@smart-signer/types/common';
 import { StorageType } from '@smart-signer/lib/storage-mixin';
 
 import { getLogger } from '@ui/lib/logging';
@@ -10,7 +10,7 @@ export interface BroadcastTransaction {
   operation: operation;
   loginType: LoginType;
   username: string;
-  keyType?: KeyTypes;
+  keyType?: KeyType;
   translateFn?: (v: string) => string;
 }
 
@@ -19,7 +19,7 @@ export interface SignChallenge {
   loginType: LoginType;
   username: string;
   password?: string; // private key or password to unlock hbauth key
-  keyType?: KeyTypes;
+  keyType?: KeyType;
   translateFn?: (v: string) => string;
 }
 

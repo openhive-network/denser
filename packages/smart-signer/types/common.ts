@@ -19,7 +19,7 @@ export enum LoginType {
     hivesigner = 'hivesigner',
 }
 
-export enum KeyTypes {
+export enum KeyType {
     posting = "posting",
     active = "active"
 }

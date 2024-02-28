@@ -1,6 +1,6 @@
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { SignChallenge } from '@smart-signer/lib/signer/signer';
-import { KeyTypes } from '@smart-signer/types/common';
+import { KeyType } from '@smart-signer/types/common';
 import { SignerHbauth } from '@smart-signer/lib/signer/signer-hbauth';
 import { StorageMixin } from '@smart-signer/lib/storage-mixin';
 
@@ -19,9 +19,9 @@ const logger = getLogger('app');
  */
 export class SignerWif extends StorageMixin(SignerHbauth) {
   async destroy() {
-    for (const k of Object.keys(KeyTypes)) {
-      const keyType = k as KeyTypes;
-      this.storage.removeItem(`wif.${this.username}@${KeyTypes[keyType]}`);
+    for (const k of Object.keys(KeyType)) {
+      const keyType = k as KeyType;
+      this.storage.removeItem(`wif.${this.username}@${KeyType[keyType]}`);
     }
   }
 

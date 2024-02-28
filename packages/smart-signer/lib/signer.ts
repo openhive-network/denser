@@ -3,7 +3,7 @@ import { SignerHiveauth } from '@smart-signer/lib/signer-hiveauth';
 import { SignerKeychain } from '@smart-signer/lib/signer-keychain';
 import { SignerWif } from '@smart-signer/lib/signer-wif';
 import { LoginType } from '@smart-signer/types/common';
-import { KeyTypes } from '@smart-signer/types/common';
+import { KeyType } from '@smart-signer/types/common';
 import { SignerBase, SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer-base';
 
 export type { BroadcastTransaction, SignChallenge, SignerOptions } from '@smart-signer/lib/signer-base';
@@ -76,7 +76,7 @@ export class Signer extends SignerBase {
    *     loginType,
    *     username,
    *     password = '', // private key or password to unlock hbauth key
-   *     keyType = KeyTypes.posting,
+   *     keyType = KeyType.posting,
    *     translateFn = (v) => v
    *   }
    * @returns {Promise<string>}
@@ -87,7 +87,7 @@ export class Signer extends SignerBase {
     loginType,
     username,
     password = '', // private key or password to unlock hbauth key
-    keyType = KeyTypes.posting,
+    keyType = KeyType.posting,
     translateFn = (v) => v
   }: SignChallenge): Promise<string> {
     logger.info('in signChallenge %o', { loginType, username, password, keyType, message });
@@ -115,7 +115,7 @@ export class Signer extends SignerBase {
    *     operation,
    *     loginType,
    *     username,
-   *     keyType = KeyTypes.posting,
+   *     keyType = KeyType.posting,
    *     translateFn = (v) => v
    *   }
    * @returns {Promise<any>}
@@ -125,7 +125,7 @@ export class Signer extends SignerBase {
     operation,
     loginType,
     username,
-    keyType = KeyTypes.posting,
+    keyType = KeyType.posting,
     translateFn = (v) => v
   }: BroadcastTransaction): Promise<any> {
     logger.info('in broadcastTransaction: %o', {

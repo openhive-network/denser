@@ -1,6 +1,6 @@
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
-import { KeyTypes } from '@smart-signer/types/common';
+import { KeyType } from '@smart-signer/types/common';
 
 export const useSigner = () => {
   const { user } = useUser();
@@ -8,7 +8,7 @@ export const useSigner = () => {
   const signerOptions: SignerOptions = {
     username,
     loginType,
-    keyType: KeyTypes.posting,
+    keyType: KeyType.posting,
     apiEndpoint: 'https://api.hive.blog',
     storageType: 'localStorage',
   };

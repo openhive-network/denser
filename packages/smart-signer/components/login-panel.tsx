@@ -10,7 +10,7 @@ import { LoginForm, LoginFormSchema } from '@smart-signer/components/login-form'
 import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
-import { KeyTypes } from '@smart-signer/types/common';
+import { KeyType } from '@smart-signer/types/common';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -56,14 +56,14 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
     const signerOptions: SignerOptions = {
       username,
       loginType,
-      keyType: KeyTypes.posting,
+      keyType: KeyType.posting,
       apiEndpoint: 'https://api.hive.blog',
       storageType: 'localStorage',
     };
     const signer = getSigner(signerOptions);
 
     try {
-      const keyType = KeyTypes.posting;
+      const keyType = KeyType.posting;
       const signature = await signer.signChallenge({
         message,
         password,

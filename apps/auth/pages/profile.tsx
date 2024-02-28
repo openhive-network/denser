@@ -12,7 +12,7 @@ import { DialogWifModalPromise } from '@smart-signer/components/dialog-wif';
 import { verifySignature } from '@smart-signer/lib/utils';
 import { vote, createHiveChain, BroadcastTransactionRequest } from '@hive/wax/web';
 import { waxToKeychainOperation } from '@smart-signer/lib/signer/signer-keychain';
-import { KeyTypes } from '@smart-signer/types/common';
+import { KeyType } from '@smart-signer/types/common';
 import { fetchJson } from '@smart-signer/lib/fetch-json';
 
 import { getLogger } from '@ui/lib/logging';
@@ -45,7 +45,7 @@ export default function Profile() {
   const signerOptions: SignerOptions = {
     username,
     loginType,
-    keyType: KeyTypes.posting,
+    keyType: KeyType.posting,
     apiEndpoint: 'https://api.hive.blog',
     storageType: 'localStorage'
   };

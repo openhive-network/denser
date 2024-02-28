@@ -1,6 +1,6 @@
 import { KeychainSDK, KeychainKeyTypes } from 'keychain-sdk';
 import { Operation, Transaction, Client } from '@hiveio/dhive';
-import { KeyTypes, LoginType } from '@smart-signer/types/common';
+import { KeyType, LoginType } from '@smart-signer/types/common';
 import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer-base';
 import { operation } from '@hive/wax/web';
 import { SignerBase } from '@smart-signer/lib/signer-base';
@@ -47,7 +47,7 @@ export function waxToKeychainOperation(operation: operation) {
  * @extends {SignerBase}
  */
 export class SignerKeychain extends SignerBase {
-  async signChallenge({ message, username, keyType = KeyTypes.posting }: SignChallenge): Promise<string> {
+  async signChallenge({ message, username, keyType = KeyType.posting }: SignChallenge): Promise<string> {
     logger.info('in SignerKeychain.signChallenge %o', { message, username, keyType });
     const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
     try {
@@ -73,7 +73,7 @@ export class SignerKeychain extends SignerBase {
   async broadcastTransaction({
     operation,
     username,
-    keyType = KeyTypes.posting
+    keyType = KeyType.posting
   }: BroadcastTransaction): Promise<{ success: boolean; result: any; error: string }> {
     let result = { success: true, result: '', error: '' };
     const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
@@ -108,7 +108,7 @@ export class SignerKeychain extends SignerBase {
    * @param {BroadcastTransaction} {
    *     operation,
    *     username,
-   *     keyType = KeyTypes.posting
+   *     keyType = KeyType.posting
    *   }
    * @returns {Promise<any>}
    * @memberof SignerKeychain
@@ -116,7 +116,7 @@ export class SignerKeychain extends SignerBase {
   async signTransaction({
     operation,
     username,
-    keyType = KeyTypes.posting
+    keyType = KeyType.posting
   }: BroadcastTransaction): Promise<any> {
     const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
     try {
