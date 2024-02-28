@@ -1,6 +1,5 @@
 import { Button } from '@ui/components/button';
 import { Input } from '@ui/components/input';
-import { Textarea } from '@ui/components/textarea';
 import Link from 'next/link';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@ui/components/select';
 import { Label } from '@radix-ui/react-label';
@@ -41,9 +40,9 @@ export default function PostForm({ username }: { username: string }) {
   }
 
   return (
-    <div className="sm:flex-ro flex flex-col gap-4 bg-gray-50 p-8 dark:bg-slate-950">
+    <div className="flex flex-col gap-4 bg-gray-50 p-8 dark:bg-slate-950 sm:flex-row">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 md:w-1/2">
           <h1 className="text-sm text-red-500">Disable side-by-side editor</h1>
           <FormField
             control={form.control}
@@ -161,7 +160,7 @@ export default function PostForm({ username }: { username: string }) {
           </Button>
         </form>
       </Form>
-      <div className="flex h-fit flex-col gap-4">
+      <div className="flex h-fit flex-col gap-4 md:w-1/2">
         <div className="flex flex-col-reverse sm:flex-row sm:justify-between">
           <span className="text-slate-500">Preview</span>
           <Link href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax">

@@ -34,7 +34,7 @@ export function AdvancedSettingsPostForm({ children, username }: { children: Rea
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="h-full overflow-scroll sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="text-2xl">Advanced settings</DialogTitle>
           <Separator />
@@ -122,9 +122,9 @@ export function AdvancedSettingsPostForm({ children, username }: { children: Rea
 function Item() {
   return (
     <div className="flex items-center gap-5">
-      <Input value={'21' + '%'} disabled className="w-16" />
+      <Input value={'21' + '%'} className="w-16" />
       <div className="relative col-span-3">
-        <Input disabled value={'username'} className="block w-full px-3 py-2.5 pl-11" />
+        <Input value={'username'} className="block w-full px-3 py-2.5 pl-11" />
         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
           <Icons.atSign className="h-5 w-5" />
         </div>

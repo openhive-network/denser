@@ -164,13 +164,16 @@ const MdEditor = (data: {
         onChange={inputImageHandler}
       />
       <div onDragEnter={startDragHandler} className="relative">
-        <div data-color-mode={resolvedTheme === 'dark' ? 'dark' : 'light'}>
+        <div>
           <MDEditor
             ref={editorRef}
+            preview="edit"
             value={data.data.value}
             //@ts-ignore
             onChange={data.data.onChange}
             commands={[...(commands.getCommands() as any), imgBtn(inputRef, textApiRef)]}
+            //@ts-ignore
+            style={{ '--color-canvas-default': 'transparent' }}
           />
         </div>
         {isDrag && (
