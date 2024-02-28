@@ -1,11 +1,18 @@
-import { Button } from '@ui/components/button';
-import { Input } from '@ui/components/input';
+import { Button } from '@hive/ui/components/button';
+import { Input } from '@hive/ui/components/input';
 import Link from 'next/link';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@ui/components/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@hive/ui/components/select';
 import { Label } from '@radix-ui/react-label';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormMessage } from '@ui/components/form';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormMessage
+} from '@hive/ui/components/form';
 import { useForm } from 'react-hook-form';
 import useManabars from './hooks/useManabars';
 import { AdvancedSettingsPostForm } from './advanced_settings_post_form';
@@ -15,41 +22,46 @@ import clsx from 'clsx';
 import { useLocalStorage } from './hooks/use-local-storage';
 
 const accountFormSchema = z.object({
-  title: z.string().min(2, { message: '' }),
-  postArea: z.string().min(1, { message: '' }),
-  postSummary: z.string().max(140, { message: '' }),
+  title: z.string().min(2),
+  postArea: z.string().min(1),
+  postSummary: z.string().max(140),
   tags: z.string(),
   author: z.string().regex(/^$|^[[a-zAZ1-9]+$/, 'Must contain only letters and numbers'),
-  category: z.string({ required_error: '' })
+  category: z.string()
 });
 type AccountFormValues = z.infer<typeof accountFormSchema>;
+
+const defaultValues = {
+  title: '',
+  postArea: '',
+  postSummary: '',
+  tags: '',
+  author: '',
+  category: 'blog'
+};
+const getValues = (storedPost?: AccountFormValues) => ({
+  title: storedPost?.title ?? '',
+  postArea: storedPost?.postArea ?? '',
+  postSummary: storedPost?.postSummary ?? '',
+  tags: storedPost?.tags ?? '',
+  author: storedPost?.author ?? '',
+  category: storedPost?.category ?? 'blog'
+});
 
 export default function PostForm({ username }: { username: string }) {
   const [preview, setPreview] = useState(false);
   const { manabarsData } = useManabars(username);
-  const defaultValues = {
-    title: '',
-    postArea: '',
-    postSummary: '',
-    tags: '',
-    author: '',
-    category: 'blog'
-  };
+
   const [storedPost, storePost] = useLocalStorage<AccountFormValues>('postData', defaultValues);
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
-    values: {
-      title: storedPost?.title ? storedPost?.title : '',
-      postArea: storedPost?.postArea ? storedPost?.postArea : '',
-      postSummary: storedPost?.postSummary ? storedPost?.postSummary : '',
-      tags: storedPost?.tags ? storedPost?.tags : '',
-      author: storedPost?.author ? storedPost?.author : '',
-      category: storedPost?.category ? storedPost?.category : 'blog'
-    }
+    values: getValues(storedPost)
   });
+  const watchedValues = form.watch();
+
   useEffect(() => {
-    storePost(form.watch());
-  }, [JSON.stringify(form.watch())]);
+    storePost(watchedValues);
+  }, [JSON.stringify(watchedValues)]);
 
   function onSubmit(data: AccountFormValues) {
     console.log(JSON.stringify(data, null, 2));
@@ -63,9 +75,13 @@ export default function PostForm({ username }: { username: string }) {
           className={clsx('space-y-8 md:w-1/2', { 'md:w-full': !preview })}
         >
           <div className="flex items-center justify-between">
-            <h1 className="text-sm text-red-500">Disable side-by-side editor</h1>
-            <Button onClick={() => setPreview(!preview)} variant="link" className="hover:text-red-500">
-              {preview ? <span>Hide preview</span> : <span>Show preview</span>}
+            <h1 className="text-sm text-destructive">Disable side-by-side editor</h1>
+            <Button
+              onClick={() => setPreview((prev) => !prev)}
+              variant="link"
+              className="hover:text-destructive"
+            >
+              {preview ? 'Hide' : 'Show'} preview
             </Button>
           </div>
           <FormField
@@ -88,7 +104,7 @@ export default function PostForm({ username }: { username: string }) {
                 <FormControl>
                   <MdEditor data={field} />
                 </FormControl>
-                <FormDescription className="border-x-2 border-b-2 border-slate-200 px-3 pb-1 text-xs text-slate-500 dark:border-slate-900">
+                <FormDescription className="border-x-2 border-b-2 border-border px-3 pb-1 text-xs text-destructive">
                   Insert images by dragging & dropping, pasting from the clipboard, or by{' '}
                   <span>
                     <Label className="cursor-pointer text-red-500" htmlFor="picture">
@@ -113,7 +129,7 @@ export default function PostForm({ username }: { username: string }) {
                 <FormMessage />
               </FormItem>
             )}
-          />{' '}
+          />
           <FormField
             control={form.control}
             name="tags"
@@ -142,7 +158,7 @@ export default function PostForm({ username }: { username: string }) {
             <span>Post options:</span>
             <span className="text-xs">Author rewards:{' 50% HBD / 50% HP'}</span>
             <AdvancedSettingsPostForm username={username}>
-              <span className="cursor-pointer text-xs text-red-500">Advanced settings</span>
+              <span className="cursor-pointer text-xs text-destructive">Advanced settings</span>
             </AdvancedSettingsPostForm>
           </div>
           <div className="flex flex-col gap-2">
@@ -177,10 +193,10 @@ export default function PostForm({ username }: { username: string }) {
           </Button>
           <Button
             onClick={() => {
-              form.reset(), storePost(defaultValues);
+              form.reset(defaultValues);
             }}
             variant="ghost"
-            className="font-thiny text-slate-500 hover:text-red-500"
+            className="font-thiny text-foreground/60 hover:text-destructive"
           >
             Clean
           </Button>
@@ -193,16 +209,16 @@ export default function PostForm({ username }: { username: string }) {
             target="_blank"
             href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax"
           >
-            <span className="text-sm text-red-500">Markdown Styling Guide</span>
+            <span className="text-sm text-destructive">Markdown Styling Guide</span>
           </Link>
         </div>
 
-        {form.watch('postArea') ? (
+        {watchedValues.postArea ? (
           <div
             dangerouslySetInnerHTML={{
-              __html: form.watch('postArea')
+              __html: watchedValues.postArea
             }}
-            className="prose h-fit break-words border-2 border-slate-200 p-2 dark:prose-invert"
+            className="prose h-fit break-words border-2 border-border p-2 dark:prose-invert"
           ></div>
         ) : null}
       </div>

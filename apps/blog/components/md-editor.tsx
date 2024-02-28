@@ -173,7 +173,7 @@ const MdEditor = (data: {
             onChange={data.data.onChange}
             commands={[...(commands.getCommands() as any), imgBtn(inputRef, textApiRef)]}
             //@ts-ignore
-            style={{ '--color-canvas-default': 'transparent' }}
+            style={{ '--color-canvas-default': 'var(--background)' }}
           />
         </div>
         {isDrag && (
