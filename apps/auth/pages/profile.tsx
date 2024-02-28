@@ -170,7 +170,7 @@ export default function Profile() {
         <div className="flex flex-col gap-3 sm:mr-4 sm:gap-8">
           <h1>Your Hive profile</h1>
           <p>
-            You are logged in as user <strong>{user.username}</strong>.
+            You are logged in as user <strong>{user.username}</strong> with {user.loginType} method.
           </p>
           {developerAccounts.includes(user.username) && (
             <div className="flex flex-col gap-3">
