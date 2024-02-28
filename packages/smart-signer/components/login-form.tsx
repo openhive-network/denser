@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next';
 import { Separator } from '@hive/ui/components/separator';
 import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { username } from '@smart-signer/lib/auth/utils';
-import { LoginTypes, StorageTypes } from '@smart-signer/types/common';
+import { LoginType, StorageTypes } from '@smart-signer/types/common';
 import { validateHivePassword } from '@smart-signer/lib/validators/validate-hive-password';
 import { titleCase } from '@smart-signer/lib/utils';
 import { Icons } from '@ui/components/icons';
@@ -18,8 +18,8 @@ const logger = getLogger('app');
 
 const ZodStorageTypesEnum = z.nativeEnum(StorageTypes);
 
-const ZodLoginTypesEnum = z.nativeEnum(LoginTypes);
-type ZodLoginTypesEnum = z.infer<typeof ZodLoginTypesEnum>;
+const ZodLoginTypeEnum = z.nativeEnum(LoginType);
+type ZodLoginTypeEnum = z.infer<typeof ZodLoginTypeEnum>;
 
 const passwordField = z.object({
   password: z.string().superRefine((val, ctx) => {
@@ -47,17 +47,17 @@ const commonFields = z.object({
 const commonFieldsWithPassword = commonFields.merge(passwordField);
 
 const loginFormSchema = z.discriminatedUnion('loginType', [
-  z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.wif) }).merge(commonFieldsWithPassword),
-  z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.hbauth) }).merge(commonFields),
-  z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.hiveauth) }).merge(commonFields),
-  z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.keychain) }).merge(commonFields),
-  z.object({ loginType: z.literal(ZodLoginTypesEnum.enum.hivesigner) }).merge(commonFields)
+  z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.wif) }).merge(commonFieldsWithPassword),
+  z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.hbauth) }).merge(commonFields),
+  z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.hiveauth) }).merge(commonFields),
+  z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.keychain) }).merge(commonFields),
+  z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.hivesigner) }).merge(commonFields)
 ]);
 
 export type LoginFormSchema = z.infer<typeof loginFormSchema>;
 
 const loginFormDefaultValues = {
-  loginType: LoginTypes.hbauth,
+  loginType: LoginType.hbauth,
   password: '',
   remember: false,
   useHbauth: true,
@@ -96,18 +96,18 @@ export function LoginForm({
     defaultValues: loginFormDefaultValues
   });
 
-  const onCheckboxToggle = (e: React.ChangeEvent<HTMLInputElement>, loginType: LoginTypes) => {
+  const onCheckboxToggle = (e: React.ChangeEvent<HTMLInputElement>, loginType: LoginType) => {
     if (e.target.checked) {
       setValue(`use${titleCase(loginType)}` as any, true);
-      setValue('loginType', LoginTypes[loginType]);
-      for (const l of Object.keys(LoginTypes)) {
+      setValue('loginType', LoginType[loginType]);
+      for (const l of Object.keys(LoginType)) {
         if (l === loginType) continue;
         setValue(`use${titleCase(l)}` as any, false);
       }
       trigger('password');
       setDisabledPassword(true);
     } else {
-      setValue('loginType', LoginTypes.wif);
+      setValue('loginType', LoginType.wif);
       setDisabledPassword(false);
     }
   };
@@ -179,7 +179,7 @@ export function LoginForm({
                 value=""
                 className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
                 {...register('useHbauth')}
-                onChange={(e) => onCheckboxToggle(e, LoginTypes.hbauth)}
+                onChange={(e) => onCheckboxToggle(e, LoginType.hbauth)}
               />
               <label
                 htmlFor="useHbauth"
@@ -202,7 +202,7 @@ export function LoginForm({
                 className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
                 {...register('useKeychain')}
                 disabled={!isKeychainSupported}
-                onChange={(e) => onCheckboxToggle(e, LoginTypes.keychain)}
+                onChange={(e) => onCheckboxToggle(e, LoginType.keychain)}
               />
               <label
                 htmlFor="useKeychain"
@@ -224,7 +224,7 @@ export function LoginForm({
                 value=""
                 className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
                 {...register('useHiveauth')}
-                onChange={(e) => onCheckboxToggle(e, LoginTypes.hiveauth)}
+                onChange={(e) => onCheckboxToggle(e, LoginType.hiveauth)}
               />
               <label
                 htmlFor="useHiveauth"

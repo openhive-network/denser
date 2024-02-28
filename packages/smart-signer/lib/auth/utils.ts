@@ -1,6 +1,6 @@
 import * as z from 'zod';
 import { validateHiveAccountName } from '@smart-signer/lib/validators/validate-hive-account-name';
-import { LoginTypes, StorageTypes, User } from '@smart-signer/types/common';
+import { LoginType, StorageTypes, User } from '@smart-signer/types/common';
 
 export const username = z.string()
     .superRefine((val, ctx) => {
@@ -17,7 +17,7 @@ export const username = z.string()
     });
 
 export const postLoginSchema = z.object({
-    loginType: z.nativeEnum(LoginTypes, {
+    loginType: z.nativeEnum(LoginType, {
         invalid_type_error: 'Invalid loginType',
         required_error: 'loginType is required',
     }),
@@ -43,5 +43,5 @@ export const defaultUser: User = {
     isLoggedIn: false,
     username: '',
     avatarUrl: '',
-    loginType: LoginTypes.wif,
+    loginType: LoginType.wif,
 };

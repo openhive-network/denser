@@ -1,6 +1,6 @@
 import { KeychainSDK, KeychainKeyTypes } from 'keychain-sdk';
 import { Operation, Transaction, Client } from '@hiveio/dhive';
-import { KeyTypes, LoginTypes } from '@smart-signer/types/common';
+import { KeyTypes, LoginType } from '@smart-signer/types/common';
 import { SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer-base';
 import { operation } from '@hive/wax/web';
 import { SignerBase } from '@smart-signer/lib/signer-base';

@@ -2,7 +2,7 @@ import { SignerHbauth } from '@smart-signer/lib/signer-hbauth';
 import { SignerHiveauth } from '@smart-signer/lib/signer-hiveauth';
 import { SignerKeychain } from '@smart-signer/lib/signer-keychain';
 import { SignerWif } from '@smart-signer/lib/signer-wif';
-import { LoginTypes } from '@smart-signer/types/common';
+import { LoginType } from '@smart-signer/types/common';
 import { KeyTypes } from '@smart-signer/types/common';
 import { SignerBase, SignChallenge, BroadcastTransaction } from '@smart-signer/lib/signer-base';
 
@@ -38,25 +38,25 @@ export class Signer extends SignerBase {
    * Creates instance of Signer for given `loginType` and returns it.
    *
    * @private
-   * @param {LoginTypes} [loginType=LoginTypes.wif]
+   * @param {LoginType} [loginType=LoginType.wif]
    * @param {*} [apiEndpoint=this.apiEndpoint]
    * @returns
    * @memberof Signer
    */
   private getSigner(
-    loginType: LoginTypes = LoginTypes.wif,
+    loginType: LoginType = LoginType.wif,
     apiEndpoint = this.apiEndpoint,
     storageType = this.storageType
   ) {
     let signer: SignerHbauth | SignerHiveauth | SignerKeychain | SignerWif;
     const args = { apiEndpoint, storageType };
-    if (loginType === LoginTypes.hbauth) {
+    if (loginType === LoginType.hbauth) {
       signer = new SignerHbauth(args);
-    } else if (loginType === LoginTypes.hiveauth) {
+    } else if (loginType === LoginType.hiveauth) {
       signer = new SignerHiveauth(args);
-    } else if (loginType === LoginTypes.keychain) {
+    } else if (loginType === LoginType.keychain) {
       signer = new SignerKeychain(args);
-    } else if (loginType === LoginTypes.wif) {
+    } else if (loginType === LoginType.wif) {
       signer = new SignerWif(args);
     } else {
       throw new Error('Invalid loginType');
@@ -149,10 +149,10 @@ export class Signer extends SignerBase {
    * if required for particular Signer.
    *
    * @param {string} username
-   * @param {LoginTypes} loginType
+   * @param {LoginType} loginType
    * @memberof Signer
    */
-  async destroy(username: string, loginType: LoginTypes) {
+  async destroy(username: string, loginType: LoginType) {
     const signer = this.getSigner(loginType);
     return signer.destroy(username, loginType);
   }

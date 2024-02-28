@@ -2,7 +2,7 @@ export type User = {
     isLoggedIn: boolean
     username: string
     avatarUrl: string
-    loginType: LoginTypes;
+    loginType: LoginType;
 }
 
 export enum StorageTypes {
@@ -11,12 +11,12 @@ export enum StorageTypes {
     memoryStorage = 'memoryStorage',
 }
 
-export enum LoginTypes {
-    wif = 'wif',
+export enum LoginType {
     hbauth = 'hbauth',
-    hiveauth = 'hiveauth',
-    hivesigner = 'hivesigner',
     keychain = 'keychain',
+    hiveauth = 'hiveauth',
+    wif = 'wif',
+    hivesigner = 'hivesigner',
 }
 
 export enum KeyTypes {

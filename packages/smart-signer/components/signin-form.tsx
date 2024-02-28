@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next';
 import { Separator } from '@hive/ui/components/separator';
 import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { username } from '@smart-signer/lib/auth/utils';
-import { LoginTypes, StorageTypes } from '@smart-signer/types/common';
+import { LoginType, StorageTypes } from '@smart-signer/types/common';
 import { Icons } from '@ui/components/icons';
 import { toast } from '@ui/components/hooks/use-toast';
 import { RadioGroup, RadioGroupItem } from '@ui/components/radio-group';
@@ -18,7 +18,7 @@ const logger = getLogger('app');
 
 const loginFormSchema = z.object({
   username,
-  loginType: z.nativeEnum(LoginTypes),
+  loginType: z.nativeEnum(LoginType),
   remember: z.boolean(),
 });
 
@@ -26,7 +26,7 @@ export type LoginFormSchema = z.infer<typeof loginFormSchema>;
 
 const loginFormDefaultValues = {
   username: '',
-  loginType: LoginTypes.hbauth,
+  loginType: LoginType.hbauth,
   remember: false,
 };
 
@@ -53,19 +53,19 @@ export const loginTypes = {
   },
 };
 
-export type LoginType = keyof typeof loginTypes;
+// export type LoginType = keyof typeof loginTypes;
 
 export interface LoginFormOptions {
   errorMessage: string;
   onSubmit: (data: LoginFormSchema) => void;
-  allowLoginTypes?: LoginTypes[];
+  allowLoginType?: LoginType[];
   i18nNamespace?: string;
 }
 
 export function LoginForm({
   errorMessage = '',
   onSubmit = (data: LoginFormSchema) => {},
-  allowLoginTypes = Object.keys(LoginTypes) as LoginTypes[],
+  allowLoginType = Object.keys(LoginType) as LoginType[],
   i18nNamespace = 'smart-signer'
 }: LoginFormOptions) {
   const { t } = useTranslation(i18nNamespace);
@@ -94,7 +94,10 @@ export function LoginForm({
     });
   };
 
-  const radioGroupItem = (loginType: LoginTypes, disabled: boolean = false) => {
+  const radioGroupItem = (
+    loginType: LoginType,
+    disabled: boolean = false
+  ): JSX.Element => {
     return (
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <RadioGroupItem
@@ -117,6 +120,19 @@ export function LoginForm({
       </div>
     );
   };
+
+  const radioGroupItems: JSX.Element[] = [];
+  allowLoginType.forEach((item, index) => {
+    if (loginTypes[item].type === 'internal') {
+      let element: JSX.Element;
+      if (item === LoginType.keychain) {
+        element = radioGroupItem(item, !isKeychainSupported);
+      } else {
+        element = radioGroupItem(item, false);
+      }
+      radioGroupItems.push(<div key={index}>{element}</div>);
+    }
+  });
 
   return (
     <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
@@ -153,24 +169,12 @@ export function LoginForm({
 
             <RadioGroup
               defaultValue={loginFormDefaultValues.loginType}
-              onValueChange={(v) => {
-                setValue('loginType', v as LoginTypes);
+              onValueChange={(v: string) => {
+                setValue('loginType', v as LoginType);
               }}
               aria-label="Login Type"
             >
-
-              {allowLoginTypes.includes(LoginTypes.hbauth)
-                && radioGroupItem(LoginTypes.hbauth)}
-
-              {allowLoginTypes.includes(LoginTypes.keychain)
-                && radioGroupItem(LoginTypes.keychain, !isKeychainSupported)}
-
-              {allowLoginTypes.includes(LoginTypes.hiveauth)
-                && radioGroupItem(LoginTypes.hiveauth)}
-
-              {allowLoginTypes.includes(LoginTypes.wif)
-                && radioGroupItem(LoginTypes.wif)}
-
+              {radioGroupItems}
             </RadioGroup>
 
             <div className="flex items-center py-1">
@@ -217,7 +221,7 @@ export function LoginForm({
             </p>
           </div>
 
-          {allowLoginTypes.includes(LoginTypes.hiveauth) && (
+          {allowLoginType.includes(LoginType.hiveauth) && (
             <div className="hiveauth-info">
               <div id="hiveauth-instructions" className="hiveauth-instructions hidden" />
               <a
@@ -232,7 +236,7 @@ export function LoginForm({
             </div>
           )}
 
-          {allowLoginTypes.includes(LoginTypes.hivesigner) && (
+          {allowLoginType.includes(LoginType.hivesigner) && (
             <div className="mt-4 flex w-full items-center">
               <Separator orientation="horizontal" className="w-1/3" />
               <span className="w-1/3 text-center text-sm">{t('login_form.more_login_methods')}</span>
@@ -240,7 +244,7 @@ export function LoginForm({
             </div>
           )}
 
-          {allowLoginTypes.includes(LoginTypes.hivesigner) && (
+          {allowLoginType.includes(LoginType.hivesigner) && (
             <div className="flex justify-center">
               <button
                 className="mt-4 flex w-fit justify-center rounded-lg bg-gray-400 px-5 py-2.5 hover:bg-gray-500 focus:outline-none "
@@ -251,7 +255,7 @@ export function LoginForm({
                 }}
               >
                 <img
-                  src={loginTypes[LoginTypes.hivesigner].logo}
+                  src={loginTypes[LoginType.hivesigner].logo}
                   alt="Hivesigner logo"
                 />
               </button>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import { LoginTypes } from '@smart-signer/types/common';
+import { LoginType } from '@smart-signer/types/common';
 import { parseCookie } from '@smart-signer/lib/utils';
 import { Signatures, PostLoginSchema } from '@smart-signer/lib/auth/utils';
 import { useSignIn } from '@smart-signer/lib/auth/use-sign-in';

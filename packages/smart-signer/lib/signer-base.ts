@@ -1,5 +1,5 @@
 import { operation } from '@hive/wax/web';
-import { LoginTypes } from '@smart-signer/types/common';
+import { LoginType } from '@smart-signer/types/common';
 import { KeyTypes } from '@smart-signer/types/common';
 import { StorageType } from '@smart-signer/lib/storage-mixin';
 
@@ -8,7 +8,7 @@ const logger = getLogger('app');
 
 export interface BroadcastTransaction {
   operation: operation;
-  loginType: LoginTypes;
+  loginType: LoginType;
   username: string;
   keyType?: KeyTypes;
   translateFn?: (v: string) => string;
@@ -16,7 +16,7 @@ export interface BroadcastTransaction {
 
 export interface SignChallenge {
   message: string;
-  loginType: LoginTypes;
+  loginType: LoginType;
   username: string;
   password?: string; // private key or password to unlock hbauth key
   keyType?: KeyTypes;
@@ -37,7 +37,7 @@ export class SignerBase {
     this.storageType = storageType;
   }
 
-  async destroy(username: string, loginType: LoginTypes) {}
+  async destroy(username: string, loginType: LoginType) {}
 
   async signChallenge({}: SignChallenge): Promise<string> {
     return '';
