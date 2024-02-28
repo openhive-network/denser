@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next';
 import { Separator } from '@hive/ui/components/separator';
 import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { username } from '@smart-signer/lib/auth/utils';
-import { LoginType, StorageTypes } from '@smart-signer/types/common';
+import { LoginType, StorageType } from '@smart-signer/types/common';
 import { Icons } from '@ui/components/icons';
 import { toast } from '@ui/components/hooks/use-toast';
 import { RadioGroup, RadioGroupItem } from '@ui/components/radio-group';

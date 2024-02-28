@@ -1,6 +1,6 @@
 import * as z from 'zod';
 import { validateHiveAccountName } from '@smart-signer/lib/validators/validate-hive-account-name';
-import { LoginType, StorageTypes, User } from '@smart-signer/types/common';
+import { LoginType, StorageType, User } from '@smart-signer/types/common';
 
 export const username = z.string()
     .superRefine((val, ctx) => {

@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next';
 import { Separator } from '@hive/ui/components/separator';
 import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { username } from '@smart-signer/lib/auth/utils';
-import { LoginType, StorageTypes } from '@smart-signer/types/common';
+import { LoginType, StorageType } from '@smart-signer/types/common';
 import { validateHivePassword } from '@smart-signer/lib/validators/validate-hive-password';
 import { titleCase } from '@smart-signer/lib/utils';
 import { Icons } from '@ui/components/icons';
@@ -16,7 +16,7 @@ import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
-const ZodStorageTypesEnum = z.nativeEnum(StorageTypes);
+const ZodStorageTypeEnum = z.nativeEnum(StorageType);
 
 const ZodLoginTypeEnum = z.nativeEnum(LoginType);
 type ZodLoginTypeEnum = z.infer<typeof ZodLoginTypeEnum>;

@@ -5,7 +5,7 @@ export type User = {
     loginType: LoginType;
 }
 
-export enum StorageTypes {
+export enum StorageType {
     localStorage = 'localStorage',
     sessionStorage = 'sessionStorage',
     memoryStorage = 'memoryStorage',
