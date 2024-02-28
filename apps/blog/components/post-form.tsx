@@ -116,7 +116,7 @@ export default function PostForm({ username }: { username: string }) {
           <div className="flex flex-col gap-2">
             <span>Post options:</span>
             <span className="text-xs">Author rewards:{' 50% HBD / 50% HP'}</span>
-            <AdvancedSettingsPostForm>
+            <AdvancedSettingsPostForm username={username}>
               <span className="cursor-pointer text-xs text-red-500">Advanced settings</span>
             </AdvancedSettingsPostForm>
           </div>
