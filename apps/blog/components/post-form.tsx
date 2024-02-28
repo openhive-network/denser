@@ -10,6 +10,9 @@ import { useForm } from 'react-hook-form';
 import useManabars from './hooks/useManabars';
 import { AdvancedSettingsPostForm } from './advanced_settings_post_form';
 import MdEditor from './md-editor';
+import { useEffect, useState } from 'react';
+import clsx from 'clsx';
+import { useLocalStorage } from './hooks/use-local-storage';
 
 const accountFormSchema = z.object({
   title: z.string().min(2, { message: '' }),
@@ -17,33 +20,54 @@ const accountFormSchema = z.object({
   postSummary: z.string().max(140, { message: '' }),
   tags: z.string(),
   author: z.string().regex(/^$|^[[a-zAZ1-9]+$/, 'Must contain only letters and numbers'),
-  // author: z.string(),
   category: z.string({ required_error: '' })
 });
 type AccountFormValues = z.infer<typeof accountFormSchema>;
 
 export default function PostForm({ username }: { username: string }) {
+  const [preview, setPreview] = useState(false);
   const { manabarsData } = useManabars(username);
+  const defaultValues = {
+    title: '',
+    postArea: '',
+    postSummary: '',
+    tags: '',
+    author: '',
+    category: 'blog'
+  };
+  const [storedPost, storePost] = useLocalStorage<AccountFormValues>('postData', defaultValues);
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
-    defaultValues: {
-      title: '',
-      postArea: '',
-      postSummary: '',
-      tags: '',
-      author: '',
-      category: 'myBlog'
+    values: {
+      title: storedPost?.title ? storedPost?.title : '',
+      postArea: storedPost?.postArea ? storedPost?.postArea : '',
+      postSummary: storedPost?.postSummary ? storedPost?.postSummary : '',
+      tags: storedPost?.tags ? storedPost?.tags : '',
+      author: storedPost?.author ? storedPost?.author : '',
+      category: storedPost?.category ? storedPost?.category : 'blog'
     }
   });
+  useEffect(() => {
+    storePost(form.watch());
+  }, [JSON.stringify(form.watch())]);
+
   function onSubmit(data: AccountFormValues) {
     console.log(JSON.stringify(data, null, 2));
+    storePost(defaultValues);
   }
-
   return (
     <div className="flex flex-col gap-4 bg-gray-50 p-8 dark:bg-slate-950 sm:flex-row">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 md:w-1/2">
-          <h1 className="text-sm text-red-500">Disable side-by-side editor</h1>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className={clsx('space-y-8 md:w-1/2', { 'md:w-full': !preview })}
+        >
+          <div className="flex items-center justify-between">
+            <h1 className="text-sm text-red-500">Disable side-by-side editor</h1>
+            <Button onClick={() => setPreview(!preview)} variant="link" className="hover:text-red-500">
+              {preview ? <span>Hide preview</span> : <span>Show preview</span>}
+            </Button>
+          </div>
           <FormField
             control={form.control}
             name="title"
@@ -96,7 +120,7 @@ export default function PostForm({ username }: { username: string }) {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="enter your tags separated by a space" {...field} />
+                  <Input placeholder="Enter your tags separated by a space" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -136,11 +160,11 @@ export default function PostForm({ username }: { username: string }) {
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a verified email to display" />
+                          <SelectValue placeholder="Select category" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="myBlog">My blog</SelectItem>
+                        <SelectItem value="blog">My blog</SelectItem>
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -152,7 +176,9 @@ export default function PostForm({ username }: { username: string }) {
             Submit
           </Button>
           <Button
-            onClick={() => form.reset()}
+            onClick={() => {
+              form.reset(), storePost(defaultValues);
+            }}
             variant="ghost"
             className="font-thiny text-slate-500 hover:text-red-500"
           >
@@ -160,10 +186,13 @@ export default function PostForm({ username }: { username: string }) {
           </Button>
         </form>
       </Form>
-      <div className="flex h-fit flex-col gap-4 md:w-1/2">
+      <div className={clsx('flex h-fit flex-col gap-4 md:w-1/2', { hidden: !preview })}>
         <div className="flex flex-col-reverse sm:flex-row sm:justify-between">
           <span className="text-slate-500">Preview</span>
-          <Link href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax">
+          <Link
+            target="_blank"
+            href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax"
+          >
             <span className="text-sm text-red-500">Markdown Styling Guide</span>
           </Link>
         </div>
