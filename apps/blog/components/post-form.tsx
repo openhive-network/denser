@@ -10,6 +10,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormMessage } 
 import { useForm } from 'react-hook-form';
 import useManabars from './hooks/useManabars';
 import { AdvancedSettingsPostForm } from './advanced_settings_post_form';
+import MdEditor from './md-editor';
 
 const accountFormSchema = z.object({
   title: z.string().min(2, { message: '' }),
@@ -39,7 +40,9 @@ export default function PostForm({ username }: { username: string }) {
   }
 
   return (
-    <div className="flex flex-col gap-4 bg-gray-50 p-8 dark:bg-slate-950 sm:flex-row">
+    <div className="sm:flex-ro flex flex-col gap-4 bg-gray-50 p-8 dark:bg-slate-950">
+      <MdEditor />
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <h1 className="text-sm text-red-500">Disable side-by-side editor</h1>
