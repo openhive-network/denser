@@ -58,14 +58,14 @@ export const loginTypeDetails = {
 export interface LoginFormOptions {
   errorMessage: string;
   onSubmit: (data: LoginFormSchema) => void;
-  allowLoginType?: LoginType[];
+  enabledLoginTypes?: LoginType[];
   i18nNamespace?: string;
 }
 
 export function LoginForm({
   errorMessage = '',
   onSubmit = (data: LoginFormSchema) => {},
-  allowLoginType = Object.keys(LoginType) as LoginType[],
+  enabledLoginTypes = Object.keys(LoginType) as LoginType[],
   i18nNamespace = 'smart-signer'
 }: LoginFormOptions) {
   const { t } = useTranslation(i18nNamespace);
@@ -122,7 +122,7 @@ export function LoginForm({
   };
 
   const radioGroupItems: JSX.Element[] = [];
-  allowLoginType.forEach((loginType: LoginType, index: number) => {
+  enabledLoginTypes.forEach((loginType: LoginType, index: number) => {
     if (loginTypeDetails[loginType].type === 'internal') {
       let element: JSX.Element;
       if (loginType === LoginType.keychain) {
@@ -221,7 +221,7 @@ export function LoginForm({
             </p>
           </div>
 
-          {allowLoginType.includes(LoginType.hiveauth) && (
+          {enabledLoginTypes.includes(LoginType.hiveauth) && (
             <div className="hiveauth-info">
               <div id="hiveauth-instructions" className="hiveauth-instructions hidden" />
               <a
@@ -236,7 +236,7 @@ export function LoginForm({
             </div>
           )}
 
-          {allowLoginType.includes(LoginType.hivesigner) && (
+          {enabledLoginTypes.includes(LoginType.hivesigner) && (
             <div className="mt-4 flex w-full items-center">
               <Separator orientation="horizontal" className="w-1/3" />
               <span className="w-1/3 text-center text-sm">{t('login_form.more_login_methods')}</span>
@@ -244,7 +244,7 @@ export function LoginForm({
             </div>
           )}
 
-          {allowLoginType.includes(LoginType.hivesigner) && (
+          {enabledLoginTypes.includes(LoginType.hivesigner) && (
             <div className="flex justify-center">
               <button
                 className="mt-4 flex w-fit justify-center rounded-lg bg-gray-400 px-5 py-2.5 hover:bg-gray-500 focus:outline-none "
