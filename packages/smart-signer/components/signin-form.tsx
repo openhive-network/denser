@@ -30,7 +30,7 @@ const loginFormDefaultValues = {
   remember: false,
 };
 
-export const loginTypes = {
+export const loginTypeDetails = {
   hbauth: {
     logo: "/smart-signer/images/hive-blog-twshare.png",
     type: "internal",
@@ -53,7 +53,7 @@ export const loginTypes = {
   },
 };
 
-// export type LoginType = keyof typeof loginTypes;
+// export type LoginType = keyof typeof loginTypeDetails;
 
 export interface LoginFormOptions {
   errorMessage: string;
@@ -112,7 +112,7 @@ export function LoginForm({
         >
           <img
             className="mr-1 h-4 w-4"
-            src={loginTypes[loginType].logo}
+            src={loginTypeDetails[loginType].logo}
             alt={`${titleCase(loginType)} Logo`}
           />
           {t(`login_form.use_${loginType}`)}
@@ -122,13 +122,13 @@ export function LoginForm({
   };
 
   const radioGroupItems: JSX.Element[] = [];
-  allowLoginType.forEach((item, index) => {
-    if (loginTypes[item].type === 'internal') {
+  allowLoginType.forEach((loginType: LoginType, index: number) => {
+    if (loginTypeDetails[loginType].type === 'internal') {
       let element: JSX.Element;
-      if (item === LoginType.keychain) {
-        element = radioGroupItem(item, !isKeychainSupported);
+      if (loginType === LoginType.keychain) {
+        element = radioGroupItem(loginType, !isKeychainSupported);
       } else {
-        element = radioGroupItem(item, false);
+        element = radioGroupItem(loginType, false);
       }
       radioGroupItems.push(<div key={index}>{element}</div>);
     }
@@ -255,7 +255,7 @@ export function LoginForm({
                 }}
               >
                 <img
-                  src={loginTypes[LoginType.hivesigner].logo}
+                  src={loginTypeDetails[LoginType.hivesigner].logo}
                   alt="Hivesigner logo"
                 />
               </button>

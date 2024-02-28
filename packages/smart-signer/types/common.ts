@@ -20,8 +20,8 @@ export enum LoginType {
 }
 
 export enum KeyType {
-    posting = "posting",
-    active = "active"
+    posting = 'posting',
+    active = 'active'
 }
 
 export interface IronSessionData {
