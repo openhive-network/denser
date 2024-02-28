@@ -43,5 +43,5 @@ export const defaultUser: User = {
     isLoggedIn: false,
     username: '',
     avatarUrl: '',
-    loginType: LoginType.wif,
+    loginType: LoginType.hbauth,
 };
