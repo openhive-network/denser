@@ -362,6 +362,31 @@
       }
     }
   },
+  "submit_page": {
+    "disable_side": "옆에 에디터 비활성화",
+    "enable_side": "옆에 에디터 활성화",
+    "string_must_contain": "문자열은 적어도 {{num}} 자를 포함해야 합니다",
+    "must_contain_only": "글자와 숫자만 포함해야 합니다",
+    "hide_preview": "미리보기 숨기기",
+    "show_preview": "미리보기 표시",
+    "title": "제목",
+    "insert_images_by_dragging": "드래그 앤 드롭, 클립 보드에서 붙여넣기 또는 ",
+    "selecting_them": "선택하여 이미지 삽입",
+    "post_summary": "게시물 요약 (게시물 및 SEO용, 최대 140자)",
+    "enter_your_tags": "스페이스로 구분된 태그 입력",
+    "author_if_different": "작성자(현재 계정과 다를 경우)",
+    "post_options": "게시 옵션:",
+    "author_rewards": "작성자 보상:",
+    "advanced_settings": "고급 설정",
+    "account_stats": "계정 통계:",
+    "resource_credits": "리소스 크레딧 (RC) 레벨: {{value}} %",
+    "posting_to": "게시 대상:",
+    "my_blog": "내 블로그",
+    "preview": "미리보기",
+    "submit": "제출",
+    "clean": "정리",
+    "markdown_styling_guide": "마크다운 스타일 가이드"
+  },
   "search_page": {
     "placeholder": "Search",
     "no_results": "Nothing was found.",

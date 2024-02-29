@@ -20,16 +20,7 @@ import MdEditor from './md-editor';
 import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { useLocalStorage } from './hooks/use-local-storage';
-
-const accountFormSchema = z.object({
-  title: z.string().min(2),
-  postArea: z.string().min(1),
-  postSummary: z.string().max(140),
-  tags: z.string(),
-  author: z.string().regex(/^$|^[[a-zAZ1-9]+$/, 'Must contain only letters and numbers'),
-  category: z.string()
-});
-type AccountFormValues = z.infer<typeof accountFormSchema>;
+import { useTranslation } from 'next-i18next';
 
 const defaultValues = {
   title: '',
@@ -39,20 +30,32 @@ const defaultValues = {
   author: '',
   category: 'blog'
 };
-const getValues = (storedPost?: AccountFormValues) => ({
-  title: storedPost?.title ?? '',
-  postArea: storedPost?.postArea ?? '',
-  postSummary: storedPost?.postSummary ?? '',
-  tags: storedPost?.tags ?? '',
-  author: storedPost?.author ?? '',
-  category: storedPost?.category ?? 'blog'
-});
 
 export default function PostForm({ username }: { username: string }) {
-  const [preview, setPreview] = useState(false);
+  const [preview, setPreview] = useState(true);
+  const [sideBySide, setSideBySide] = useState(false);
   const { manabarsData } = useManabars(username);
-
   const [storedPost, storePost] = useLocalStorage<AccountFormValues>('postData', defaultValues);
+  const { t } = useTranslation('common_blog');
+
+  const accountFormSchema = z.object({
+    title: z.string().min(2, t('submit_page.string_must_contain', { num: 2 })),
+    postArea: z.string().min(1, t('submit_page.string_must_contain', { num: 1 })),
+    postSummary: z.string().max(140),
+    tags: z.string(),
+    author: z.string().regex(/^$|^[[a-zAZ1-9]+$/, t('submit_page.must_contain_only')),
+    category: z.string()
+  });
+  type AccountFormValues = z.infer<typeof accountFormSchema>;
+
+  const getValues = (storedPost?: AccountFormValues) => ({
+    title: storedPost?.title ?? '',
+    postArea: storedPost?.postArea ?? '',
+    postSummary: storedPost?.postSummary ?? '',
+    tags: storedPost?.tags ?? '',
+    author: storedPost?.author ?? '',
+    category: storedPost?.category ?? 'blog'
+  });
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
     values: getValues(storedPost)
@@ -68,20 +71,29 @@ export default function PostForm({ username }: { username: string }) {
     storePost(defaultValues);
   }
   return (
-    <div className="flex flex-col gap-4 bg-gray-50 p-8 dark:bg-slate-950 sm:flex-row">
+    <div
+      className={clsx(' flex flex-col gap-4 bg-white p-8 dark:bg-slate-950', {
+        ' sm:flex-row': sideBySide
+      })}
+    >
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className={clsx('space-y-8 md:w-1/2', { 'md:w-full': !preview })}
+          className={clsx('space-y-8 md:w-1/2', { 'md:w-full': !preview || !sideBySide })}
         >
           <div className="flex items-center justify-between">
-            <h1 className="text-sm text-destructive">Disable side-by-side editor</h1>
+            <h1
+              className="cursor-pointer text-sm text-destructive"
+              onClick={() => setSideBySide((prev) => !prev)}
+            >
+              {sideBySide ? t('submit_page.disable_side') : t('submit_page.enable_side')}
+            </h1>
             <Button
               onClick={() => setPreview((prev) => !prev)}
               variant="link"
               className="hover:text-destructive"
             >
-              {preview ? 'Hide' : 'Show'} preview
+              {preview ? t('submit_page.hide_preview') : t('submit_page.show_preview')}
             </Button>
           </div>
           <FormField
@@ -90,7 +102,7 @@ export default function PostForm({ username }: { username: string }) {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="Title" {...field} />
+                  <Input placeholder={t('submit_page.title')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -105,10 +117,10 @@ export default function PostForm({ username }: { username: string }) {
                   <MdEditor data={field} />
                 </FormControl>
                 <FormDescription className="border-x-2 border-b-2 border-border px-3 pb-1 text-xs text-destructive">
-                  Insert images by dragging & dropping, pasting from the clipboard, or by{' '}
+                  {t('submit_page.insert_images_by_dragging')},
                   <span>
                     <Label className="cursor-pointer text-red-500" htmlFor="picture">
-                      selecting them
+                      {t('submit_page.selecting_them')}
                     </Label>
                     <Input id="picture" type="file" className="hidden" />
                   </span>
@@ -124,7 +136,7 @@ export default function PostForm({ username }: { username: string }) {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="Post summary(for posts & SEO, max 140 chars)" {...field} />
+                  <Input placeholder={t('submit_page.post_summary')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -136,7 +148,7 @@ export default function PostForm({ username }: { username: string }) {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="Enter your tags separated by a space" {...field} />
+                  <Input placeholder={t('submit_page.enter_your_tags')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -148,22 +160,29 @@ export default function PostForm({ username }: { username: string }) {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="Author(if different from current account)" {...field} />
+                  <Input placeholder={t('submit_page.author_if_different')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
           <div className="flex flex-col gap-2">
-            <span>Post options:</span>
-            <span className="text-xs">Author rewards:{' 50% HBD / 50% HP'}</span>
+            <span>{'submit_page.post_options'}</span>
+            <span className="text-xs">
+              {t('submit_page.author_rewards')}
+              {' 50% HBD / 50% HP'}
+            </span>
             <AdvancedSettingsPostForm username={username}>
-              <span className="cursor-pointer text-xs text-destructive">Advanced settings</span>
+              <span className="cursor-pointer text-xs text-destructive">
+                {t('submit_page.advanced_settings')}
+              </span>
             </AdvancedSettingsPostForm>
           </div>
           <div className="flex flex-col gap-2">
-            <span>Post options:</span>
-            <span className="text-xs">Author rewards:{' ' + manabarsData?.rc.percentageValue + '%'}</span>
+            <span>{t('submit_page.account_stats')}</span>
+            <span className="text-xs">
+              {t('submit_page.resource_credits', { value: manabarsData?.rc.percentageValue })}
+            </span>
           </div>
           <FormField
             control={form.control}
@@ -171,7 +190,7 @@ export default function PostForm({ username }: { username: string }) {
             render={({ field }) => (
               <FormItem>
                 <div className="flex flex-wrap items-center gap-4">
-                  Posting to:
+                  {t('submit_page.posting_to')}
                   <FormControl>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
@@ -180,7 +199,7 @@ export default function PostForm({ username }: { username: string }) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="blog">My blog</SelectItem>
+                        <SelectItem value="blog">{t('submit_page.my_blog')}</SelectItem>
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -189,7 +208,7 @@ export default function PostForm({ username }: { username: string }) {
             )}
           />
           <Button type="submit" variant="redHover">
-            Submit
+            {t('submit_page.submit')}
           </Button>
           <Button
             onClick={() => {
@@ -198,18 +217,20 @@ export default function PostForm({ username }: { username: string }) {
             variant="ghost"
             className="font-thiny text-foreground/60 hover:text-destructive"
           >
-            Clean
+            {t('submit_page.clean')}
           </Button>
         </form>
       </Form>
-      <div className={clsx('flex h-fit flex-col gap-4 md:w-1/2', { hidden: !preview })}>
+      <div
+        className={clsx('flex h-fit flex-col gap-4 md:w-1/2', { hidden: !preview, 'md:w-full': !sideBySide })}
+      >
         <div className="flex flex-col-reverse sm:flex-row sm:justify-between">
-          <span className="text-slate-500">Preview</span>
+          <span className="text-slate-500">{t('submit_page.preview')}</span>
           <Link
             target="_blank"
             href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax"
           >
-            <span className="text-sm text-destructive">Markdown Styling Guide</span>
+            <span className="text-sm text-destructive">{t('submit_page.markdown_styling_guide')}</span>
           </Link>
         </div>
 
@@ -218,7 +239,7 @@ export default function PostForm({ username }: { username: string }) {
             dangerouslySetInnerHTML={{
               __html: watchedValues.postArea
             }}
-            className="prose h-fit break-words border-2 border-border p-2 dark:prose-invert"
+            className="prose h-fit self-center break-words border-2 border-border p-2 dark:prose-invert"
           ></div>
         ) : null}
       </div>
