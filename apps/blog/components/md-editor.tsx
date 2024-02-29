@@ -172,6 +172,7 @@ const MdEditor = (data: {
             //@ts-ignore
             onChange={data.data.onChange}
             commands={[...(commands.getCommands() as any), imgBtn(inputRef, textApiRef)]}
+            extraCommands={[]}
             //@ts-ignore
             style={{ '--color-canvas-default': 'var(--background)' }}
           />

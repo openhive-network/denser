@@ -17,10 +17,14 @@ import { useForm } from 'react-hook-form';
 import useManabars from './hooks/useManabars';
 import { AdvancedSettingsPostForm } from './advanced_settings_post_form';
 import MdEditor from './md-editor';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { useLocalStorage } from './hooks/use-local-storage';
 import { useTranslation } from 'next-i18next';
+import { HiveRendererContext } from './hive-renderer-context';
+import { transactionService } from '@transaction/index';
+import { useSigner } from './hooks/use-signer';
+import { createPermlink } from '@transaction/lib/utils';
 
 const defaultValues = {
   title: '',
@@ -32,8 +36,11 @@ const defaultValues = {
 };
 
 export default function PostForm({ username }: { username: string }) {
+  const { signerOptions } = useSigner();
+  const { hiveRenderer } = useContext(HiveRendererContext);
   const [preview, setPreview] = useState(true);
   const [sideBySide, setSideBySide] = useState(false);
+  const [postPermlink, setPostPermlink] = useState('');
   const { manabarsData } = useManabars(username);
   const [storedPost, storePost] = useLocalStorage<AccountFormValues>('postData', defaultValues);
   const { t } = useTranslation('common_blog');
@@ -66,8 +73,32 @@ export default function PostForm({ username }: { username: string }) {
     storePost(watchedValues);
   }, [JSON.stringify(watchedValues)]);
 
+  useEffect(() => {
+    const createPostPermlink = async () => {
+      const plink = await createPermlink(storedPost?.title ?? '', username, storedPost?.title ?? '');
+      setPostPermlink(plink);
+    };
+
+    createPostPermlink();
+  }, [username, storedPost?.title]);
+
   function onSubmit(data: AccountFormValues) {
-    console.log(JSON.stringify(data, null, 2));
+    transactionService.processHiveAppOperation((builder) => {
+      const tags = JSON.stringify(storedPost?.tags.split(' ') ?? []);
+      builder
+        .push({
+          comment: {
+            parent_author: '',
+            parent_permlink: storedPost?.tags.split(' ')[0] ?? '',
+            author: username,
+            permlink: postPermlink,
+            title: storedPost?.title ?? '',
+            body: watchedValues.postArea,
+            json_metadata: `{\"tags\":${tags},\"app\":\"hiveblog/0.1\",\"format\":\"markdown\"}`
+          }
+        })
+        .build();
+    }, signerOptions);
     storePost(defaultValues);
   }
   return (
@@ -167,7 +198,7 @@ export default function PostForm({ username }: { username: string }) {
             )}
           />
           <div className="flex flex-col gap-2">
-            <span>{'submit_page.post_options'}</span>
+            <span>{t('submit_page.post_options')}</span>
             <span className="text-xs">
               {t('submit_page.author_rewards')}
               {' 50% HBD / 50% HP'}
@@ -234,10 +265,10 @@ export default function PostForm({ username }: { username: string }) {
           </Link>
         </div>
 
-        {watchedValues.postArea ? (
+        {watchedValues.postArea && hiveRenderer ? (
           <div
             dangerouslySetInnerHTML={{
-              __html: watchedValues.postArea
+              __html: hiveRenderer.render(watchedValues.postArea)
             }}
             className="prose h-fit self-center break-words border-2 border-border p-2 dark:prose-invert"
           ></div>
