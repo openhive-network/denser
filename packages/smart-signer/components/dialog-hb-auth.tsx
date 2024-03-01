@@ -2,13 +2,6 @@ import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
 import { ReactNode, SyntheticEvent, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
   Tabs,
   TabsContent,
   TabsList,
@@ -19,6 +12,8 @@ import type { KeyAuthorityType } from '@hive/hb-auth';
 import { toast } from '@ui/components/hooks/use-toast';
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
 import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
+import { RadioGroup } from '@ui/components/radio-group';
+import { radioGroupItems, IRadioGroupItem } from '@smart-signer/components/radio-group-item';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -36,7 +31,7 @@ export function DialogHBAuth({
 }: DialogHBAuthProps) {
   const { t } = useTranslation(i18nNamespace);
   const [open, setOpen] = useState(false);
-  const [k, setKey] = useState('');
+  const [keyTypeSwitch, setKeyTypeSwitch] = useState<KeyAuthorityType>('posting');
 
   const updateStatus = (user: AuthUser | null = null, err: any = null) => {
     if (!user) {
@@ -79,8 +74,10 @@ export function DialogHBAuth({
     const form = new FormData(e.target as HTMLFormElement);
     const username = form.get('username') as string;
     const password = form.get('password') as string;
-    const keyType = form.get('keytype') as string as KeyAuthorityType;
+    const keyType = form.get('keyType') as KeyAuthorityType;
     const key = form.get('key') as string;
+
+    logger.info('handleSubmit input data: %o', { username, keyType, keyTypeSwitch, password, key });
 
     if (isBrowser) {
       const authClient = await hbauthService.getOnlineClient();
@@ -137,6 +134,23 @@ export function DialogHBAuth({
     }
   }
 
+  const items: IRadioGroupItem[] = [
+    {
+      value: 'posting',
+      disabled: false,
+      labelText: t(`login_form.posting_private_key_placeholder`),
+      labelImageSrc: '',
+      labelImageAlt: ''
+    },
+    {
+      value: 'active',
+      disabled: false,
+      labelText: t(`login_form.active_private_key_placeholder`),
+      labelImageSrc: '',
+      labelImageAlt: ''
+    }
+  ];
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -173,7 +187,8 @@ export function DialogHBAuth({
                     </span>
                   </div>
                   <div className="mb-5" data-testid="hbauth-unlock-key-select-key-type">
-                    <Select name="keytype" onValueChange={(e) => setKey(e)}>
+
+                    {/* <Select name="keytype" onValueChange={(e) => setKey(e)}>
                       <SelectTrigger
                         className="w-[200px]"
                         data-testid="hbauth-unlock-key-select-key-type-trigger"
@@ -188,7 +203,20 @@ export function DialogHBAuth({
                           <SelectItem value="watch">Watch Mode</SelectItem>
                         </SelectGroup>
                       </SelectContent>
-                    </Select>
+                    </Select> */}
+
+                    <RadioGroup
+                      defaultValue={keyTypeSwitch}
+                      onValueChange={(v: KeyAuthorityType) => {
+                        setKeyTypeSwitch(v)
+                      }}
+                      name='keyType'
+                      aria-label="Key Type"
+                    >
+                      <h3>Key Type</h3>
+                      {radioGroupItems(items)}
+                    </RadioGroup>
+
                   </div>
 
                   <div className="flex items-center justify-between">
@@ -247,7 +275,8 @@ export function DialogHBAuth({
                   </div>
 
                   <div className="mb-5" data-testid="hbauth-add-key-select-key-type">
-                    <Select name="keytype">
+
+                    {/* <Select name="keytype">
                       <SelectTrigger
                         className="w-[200px]"
                         data-testid="hbauth-add-key-select-key-type-trigger"
@@ -261,7 +290,20 @@ export function DialogHBAuth({
                           <SelectItem value="active">Active</SelectItem>
                         </SelectGroup>
                       </SelectContent>
-                    </Select>
+                    </Select> */}
+
+                    <RadioGroup
+                      defaultValue={keyTypeSwitch}
+                      onValueChange={(v: KeyAuthorityType) => {
+                        setKeyTypeSwitch(v);
+                      }}
+                      name='keyType'
+                      aria-label="Key Type"
+                    >
+                      <h3>Key Type</h3>
+                      {radioGroupItems(items)}
+                    </RadioGroup>
+
                   </div>
 
                   <div className="mb-5">
