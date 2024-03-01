@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { getCommunities } from '@ui/lib/bridge';
-import { cn } from '@/blog/lib/utils';
+import { getCommunities } from '@transaction/lib/bridge';
+import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
 import { FC } from 'react';
 import { useTranslation } from 'next-i18next';

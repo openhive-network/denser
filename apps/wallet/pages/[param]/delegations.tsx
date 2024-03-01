@@ -1,12 +1,10 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useQuery } from '@tanstack/react-query';
-import { DynamicGlobalProperties, getDynamicGlobalProperties } from '@hive/ui/lib/hive';
-import clsx from 'clsx';
+import { IDynamicGlobalProperties, getDynamicGlobalProperties } from '@transaction/lib/hive';
 import { getVestingDelegations } from '@/wallet/lib/hive';
-import { numberWithCommas } from '@hive/ui/lib/utils';
-import { dateToFullRelative } from '@hive/ui/lib/parse-date';
-import Loading from '@hive/ui/components/loading';
-import Link from 'next/link';
+import { numberWithCommas } from '@ui/lib/utils';
+import { dateToFullRelative } from '@ui/lib/parse-date';
+import Loading from '@ui/components/loading';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
 import { useRouter } from 'next/router';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -14,7 +12,7 @@ import { i18n } from '@/wallet/next-i18next.config';
 import { useTranslation } from 'next-i18next';
 import WalletMenu from '@/wallet/components/wallet-menu';
 
-const convertVestsToSteem = (vests: number, dynamicData: DynamicGlobalProperties) => {
+const convertVestsToSteem = (vests: number, dynamicData: IDynamicGlobalProperties) => {
   const totalFund = parseFloat(dynamicData.total_vesting_fund_hive);
   const totalShares = parseFloat(dynamicData.total_vesting_shares);
   return ((vests * totalFund) / totalShares).toFixed(2);
@@ -81,7 +79,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
       username: username.replace('@', ''),
-      ...(await serverSideTranslations(ctx.req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_wallet', 'smart-signer']))
+      ...(await serverSideTranslations(ctx.req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
+        'common_wallet',
+        'smart-signer'
+      ]))
     }
   };
 };

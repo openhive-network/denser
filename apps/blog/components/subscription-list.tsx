@@ -1,5 +1,5 @@
 import SubscriptionListItem from '@/blog/components/subscription-list-item';
-import { Subscription } from '@ui/lib/bridge';
+import type { Subscription } from '@transaction/lib/bridge';
 
 const SubscriptionList = ({ data }: { data: Subscription[] | null | undefined }) => {
   return (

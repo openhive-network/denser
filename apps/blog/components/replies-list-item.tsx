@@ -8,13 +8,14 @@ import {
   CardHeader,
   CardTitle
 } from '@hive/ui/components/card';
-import { cn, getPostSummary } from '@/blog/lib/utils';
+import { getPostSummary } from '@/blog/lib/utils';
+import { cn } from '@ui/lib/utils';
 import Link from 'next/link';
-import { Separator } from '@hive/ui/components/separator';
+import { Separator } from '@ui/components/separator';
 import accountReputation from '@/blog/lib/account-reputation';
 import { Badge } from '@hive/ui/components/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
-import { Entry } from '@ui/lib/bridge';
+import type { Entry } from '@transaction/lib/bridge';
 import DetailsCardHover from './details-card-hover';
 import clsx from 'clsx';
 import PostImage from './post-img';

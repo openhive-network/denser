@@ -1,10 +1,10 @@
-import { dateToShow, dateToFullRelative } from '@hive/ui/lib/parse-date';
-import { Button } from '@hive/ui/components/button';
+import { dateToShow, dateToFullRelative } from '@ui/lib/parse-date';
+import { Button } from '@ui/components/button';
 import UserAvatar from '@/blog/components/user-avatar';
 import Link from 'next/link';
 import { useAccountQuery } from './hooks/use-accout';
 import { useFollowsQuery } from './hooks/use-follows';
-import { delegatedHive, numberWithCommas, vestingHive } from '@hive/ui/lib/utils';
+import { delegatedHive, numberWithCommas, vestingHive } from '@ui/lib/utils';
 import Big from 'big.js';
 import { useDynamicGlobalData } from './hooks/use-dynamic-global-data';
 import DialogLogin from './dialog-login';

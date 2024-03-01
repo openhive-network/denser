@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
-import { cn } from '@/blog/lib/utils';
+import { cn } from '@ui/lib/utils';
 import { FC } from 'react';
 
 const UserShortcutsCard: FC = () => {

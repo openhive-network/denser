@@ -11,7 +11,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@hive/ui/components/select';
+} from '@ui/components/select';
 
 function Communities({ username }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { t } = useTranslation('common_wallet');
@@ -80,7 +80,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
       username: username.replace('@', ''),
-      ...(await serverSideTranslations(ctx.req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_wallet', 'smart-signer']))
+      ...(await serverSideTranslations(ctx.req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
+        'common_wallet',
+        'smart-signer'
+      ]))
     }
   };
 };

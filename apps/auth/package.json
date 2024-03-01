@@ -21,8 +21,10 @@
     "@hive/eslint-config-custom": "*",
     "@hive/smart-signer": "*",
     "@hive/tailwindcss-config": "*",
+    "@hive/transaction": "*",
     "@hive/tsconfig": "*",
     "@hive/ui": "*",
+    "@hive/wax": "^0.3.8-240228091712",
     "@hiveio/dhive": "^1.2.8",
     "@hookform/resolvers": "^3.3.1",
     "@tanstack/react-query": "^4.36.1",
@@ -37,7 +39,6 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.45.1",
     "react-modal-promise": "^1.0.2",
-    "typescript": "5.3.3",
     "zod": "^3.21.4"
   },
   "devDependencies": {
@@ -54,6 +55,7 @@
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "next-transpile-modules": "^10.0.1",
-    "pino-pretty": "^10.2.0"
+    "pino-pretty": "^10.2.0",
+    "typescript": "5.3.3"
   }
 }

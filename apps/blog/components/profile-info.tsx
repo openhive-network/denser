@@ -1,15 +1,19 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { getAccountFull } from '@hive/ui/lib/hive';
-import { getAccount, getDynamicGlobalProperties } from '@hive/ui/lib/hive';
+import {
+  getAccountFull,
+  getAccount,
+  getDynamicGlobalProperties,
+  getAccountReputations
+} from '@transaction/lib/hive';
 import { accountReputation } from '@/blog/lib/utils';
-import { numberWithCommas } from '@hive/ui/lib/utils';
-import { Icons } from '@hive/ui/components/icons';
-import { Button } from '@hive/ui/components/button';
-import { useSiteParams } from '@hive/ui/components/hooks/use-site-params';
-import { dateToFullRelative, dateToShow } from '@hive/ui/lib/parse-date';
-import Loading from '@hive/ui/components/loading';
+import { numberWithCommas } from '@ui/lib/utils';
+import { Icons } from '@ui/components/icons';
+import { Button } from '@ui/components/button';
+import { useSiteParams } from '@ui/components/hooks/use-site-params';
+import { dateToFullRelative, dateToShow } from '@ui/lib/parse-date';
+import Loading from '@ui/components/loading';
 import { useTranslation } from 'next-i18next';
 
 const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
@@ -24,7 +28,6 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
   } = useQuery(['profileData', username], () => getAccountFull(username), {
     enabled: !!username
   });
-
   const {
     isLoading: accountDataIsLoading,
     error: accountDataError,
@@ -32,6 +35,14 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
   } = useQuery(['accountData', username], () => getAccount(username), {
     enabled: !!username
   });
+  const {
+    isLoading: accountReputationIsLoading,
+    error: accountReputationError,
+    data: accountReputationData
+  } = useQuery(['accountReputationData', username], () => getAccountReputations(username, 1), {
+    enabled: !!username
+  });
+
   const {
     isLoading: dynamicGlobalDataIsLoading,
     error: dynamicGlobalDataError,
@@ -65,7 +76,7 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
       <h4 className="mb-4 mt-8 text-xl text-slate-900 dark:text-white" data-testid="profile-name">
         {profileData?.profile?.name}{' '}
         <span className="text-slate-600">
-          ({profileData?.reputation ? accountReputation(profileData.reputation) : null})
+          ({accountReputation(accountReputationData ? accountReputationData[0].reputation : 0)})
         </span>
       </h4>
       <h6

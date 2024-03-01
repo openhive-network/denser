@@ -2,10 +2,10 @@ import Link from 'next/link';
 import { Icons } from '@hive/ui/components/icons';
 import { Progress } from '@hive/ui/components/progress';
 import { dateToFullRelative } from '@hive/ui/lib/parse-date';
-import { AccountNotification } from '@ui/lib/bridge';
+import { IAccountNotification } from '@transaction/lib/bridge';
 import { useTranslation } from 'next-i18next';
 
-const NotificationListItem = ({ date, msg, score, type, url }: AccountNotification) => {
+const NotificationListItem = ({ date, msg, score, type, url }: IAccountNotification) => {
   const { t } = useTranslation('common_blog');
   let icon;
   switch (type) {

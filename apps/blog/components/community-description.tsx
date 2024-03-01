@@ -1,20 +1,20 @@
-import { cn } from '@/blog/lib/utils';
+import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
 import Link from 'next/link';
-import { Button } from '@hive/ui/components/button';
+import { Button } from '@ui/components/button';
 import ln2list from '@/blog/lib/ln2list';
-import { DefaultRenderer } from '@hiveio/content-renderer';
-import { getDoubleSize, proxifyImageUrl } from '@hive/ui/lib/old-profixy';
-import { AccountNotification, Community, Subscription } from '@ui/lib/bridge';
+import { type Community, type Subscription, IAccountNotification } from '@transaction/lib/bridge';
 import { SubsListDialog } from './subscription-list-dialog';
 import { ActivityLogDialog } from './activity-log-dialog';
-import { Badge } from '@hive/ui/components/badge';
+import { Badge } from '@ui/components/badge';
 import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { transactionService } from '@transaction/index';
-import { CommunityOperationBuilder } from '@hive/wax';
+import { CommunityOperationBuilder } from '@hive/wax/web';
+import { useSigner } from '@/blog/components/hooks/use-signer';
+import { HiveRendererContext } from './hive-renderer-context';
 
 const CommunityDescription = ({
   data,
@@ -24,33 +24,18 @@ const CommunityDescription = ({
 }: {
   data: Community;
   subs: Subscription[];
-  notificationData: AccountNotification[] | null | undefined;
+  notificationData: IAccountNotification[] | null | undefined;
   username: string;
 }) => {
   const [isSubscribe, setIsSubscribe] = useState(() => !data.context.subscribed);
   const { user } = useUser();
+  const { signerOptions } = useSigner();
   const { t } = useTranslation('common_blog');
-  const renderer = new DefaultRenderer({
-    baseUrl: 'https://hive.blog/',
-    breaks: true,
-    skipSanitization: false,
-    allowInsecureScriptTags: false,
-    addNofollowToLinks: true,
-    addTargetBlankToLinks: true,
-    addCssClassToLinks: 'external-link',
-    doNotShowImages: false,
-    ipfsPrefix: '',
-    assetsWidth: 640,
-    assetsHeight: 480,
-    imageProxyFn: (url: string) => getDoubleSize(proxifyImageUrl(url, true).replace(/ /g, '%20')),
-    usertagUrlFn: (account: string) => '/@' + account,
-    hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
-    isLinkSafeFn: (url: string) => false
-  });
+  const { hiveRenderer } = useContext(HiveRendererContext);
 
   let post_body_html = null;
-  if (data.description) {
-    post_body_html = renderer.render(data.description);
+  if (data.description && hiveRenderer) {
+    post_body_html = hiveRenderer.render(data.description);
   }
 
   useEffect(() => {
@@ -113,7 +98,7 @@ const CommunityDescription = ({
                               .build()
                           );
                         }
-                      });
+                      }, signerOptions);
                     }}
                   >
                     {t('communities.buttons.subscribe')}
@@ -133,7 +118,7 @@ const CommunityDescription = ({
                             .authorize(user.username)
                             .build()
                         );
-                      });
+                      }, signerOptions);
                     }}
                   >
                     <span className="group-hover:hidden">Joined</span>

@@ -1,7 +1,9 @@
 import { convertStringToBig } from '@hive/ui/lib/helpers';
-import { DynamicGlobalProperties } from '@hive/ui/lib/hive';
+import { IDynamicGlobalProperties } from '@transaction/lib/hive';
+import { AccountHistoryData } from '../pages/[param]/transfers';
+import { TransferFilters } from '@/wallet/components/transfers-history-filter';
 
-export function getCurrentHpApr(data: DynamicGlobalProperties) {
+export function getCurrentHpApr(data: IDynamicGlobalProperties) {
   // The inflation was set to 9.5% at block 7m
   const initialInflationRate = 9.5;
   const initialBlock = 7000000;
@@ -16,8 +18,7 @@ export function getCurrentHpApr(data: DynamicGlobalProperties) {
   const decreaseIncrements = deltaBlocks / decreaseRate;
 
   // Current inflation rate
-  let currentInflationRate =
-    initialInflationRate - decreaseIncrements * decreasePercentPerIncrement;
+  let currentInflationRate = initialInflationRate - decreaseIncrements * decreasePercentPerIncrement;
 
   // Cannot go lower than 0.95%
   if (currentInflationRate < 0.95) {
@@ -28,10 +29,7 @@ export function getCurrentHpApr(data: DynamicGlobalProperties) {
   const vestingRewardPercent = data.vesting_reward_percent / 10000;
   const virtualSupply = convertStringToBig(data.virtual_supply);
   const totalVestingFunds = convertStringToBig(data.total_vesting_fund_hive);
-  return virtualSupply
-    .times(currentInflationRate)
-    .times(vestingRewardPercent)
-    .div(totalVestingFunds);
+  return virtualSupply.times(currentInflationRate).times(vestingRewardPercent).div(totalVestingFunds);
 }
 
 export function parseCookie(cookie: string): Record<string, string> {
@@ -46,3 +44,64 @@ export function parseCookie(cookie: string): Record<string, string> {
 
   return kv;
 }
+
+interface getFilterArgs {
+  filter: TransferFilters;
+  totalFund: Big;
+  totalShares: Big;
+  username: string;
+}
+
+export const getFilter =
+  ({ filter, totalFund, username, totalShares }: getFilterArgs) =>
+  ({ operation }: AccountHistoryData) => {
+    if (!operation) return false;
+    switch (operation.type) {
+      case 'transfer':
+        const opAmount = convertStringToBig(operation.amount ?? '0');
+        const incomingFromCurrent = operation.to === username || operation.from !== username;
+        const outcomingFromCurrent = operation.from === username || operation.to !== username;
+        const inSearch = operation.to?.includes(filter.search) || operation.from?.includes(filter.search);
+
+        return (
+          !(filter.exlude && opAmount.lt(1)) &&
+          (filter.incoming || !incomingFromCurrent) &&
+          (filter.outcoming || !outcomingFromCurrent) &&
+          inSearch
+        );
+      case 'claim_reward_balance':
+        if (
+          !filter.others ||
+          (filter.exlude &&
+            operation.reward_hbd.lt(1) &&
+            operation.reward_hive.lt(1) &&
+            totalFund.times(operation.reward_vests.div(totalShares)).lt(1))
+        )
+          return false;
+        break;
+
+      case 'transfer_from_savings':
+      case 'transfer_to_savings':
+      case 'transfer_to_vesting':
+        if (!filter.others || (filter.exlude && convertStringToBig(operation?.amount || '0').lt(1)))
+          return false;
+        break;
+      case 'interest':
+        if (!filter.others || (filter.exlude && convertStringToBig(operation?.interest || '0').lt(1)))
+          return false;
+        break;
+      case 'fill_order':
+        if (
+          !filter.others ||
+          (filter.exlude &&
+            convertStringToBig(operation?.open_pays || '0').lt(1) &&
+            convertStringToBig(operation?.current_pays || '0').lt(1))
+        )
+          return false;
+        break;
+
+      case 'cancel_transfer_from_savings':
+        if (!filter.others || filter.exlude) return false;
+    }
+    return true;
+  };

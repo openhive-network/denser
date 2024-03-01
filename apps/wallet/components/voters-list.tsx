@@ -1,20 +1,19 @@
-import Big from "big.js";
-import { useProposalsVotersQuery } from "./hooks/use-proposals-voters";
-import { useAccountQuery } from "./hooks/use-accouts-voters";
-import VotersItem from "./voters-item";
-import Loading from "@hive/ui/components/loading";
+import Big from 'big.js';
+import { useProposalsVotersQuery } from './hooks/use-proposals-voters';
+import { useAccountQuery } from './hooks/use-accouts-voters';
+import VotersItem from './voters-item';
+import Loading from '@ui/components/loading';
 
 function VotersList({
   id,
   totalShares,
-  totalVestingFund,
+  totalVestingFund
 }: {
   id: number;
   totalShares: Big;
   totalVestingFund: Big;
 }) {
-  const { data: votersData, isLoading: votersIsLoading } =
-    useProposalsVotersQuery(id);
+  const { data: votersData, isLoading: votersIsLoading } = useProposalsVotersQuery(id);
   const usernames = votersData ? votersData.map((e) => e.voter) : [];
   const { data: accData, isLoading: accIsLoading } = useAccountQuery(
     usernames,
@@ -39,14 +38,9 @@ function VotersList({
     );
   }
   return (
-    <div className="grid justify-center text-center sm:grid-cols-2 text-sm gap-y-6">
+    <div className="grid justify-center gap-y-6 text-center text-sm sm:grid-cols-2">
       {sortedData?.map((e) => (
-        <VotersItem
-          key={e.name}
-          username={e.name}
-          hp={e.hp}
-          proxy={e.proxy ? parseFloat(e.proxy) : 0}
-        />
+        <VotersItem key={e.name} username={e.name} hp={e.hp} proxy={e.proxy ? parseFloat(e.proxy) : 0} />
       ))}
     </div>
   );

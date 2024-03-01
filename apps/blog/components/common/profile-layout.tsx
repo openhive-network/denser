@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useSiteParams } from '@hive/ui/components/hooks/use-site-params';
-import Loading from '@hive/ui/components/loading';
+import { useSiteParams } from '@ui/components/hooks/use-site-params';
+import Loading from '@ui/components/loading';
 import { useQuery } from '@tanstack/react-query';
-import { getAccount, getDynamicGlobalProperties } from '@hive/ui/lib/hive';
-import { getAccountFull } from '@hive/ui/lib/hive';
+import {
+  getAccount,
+  getDynamicGlobalProperties,
+  getAccountFull,
+  getAccountReputations
+} from '@transaction/lib/hive';
 import { accountReputation } from '@/blog/lib/utils';
 import { delegatedHive, numberWithCommas, vestingHive } from '@hive/ui/lib/utils';
 import { Separator } from '@hive/ui/components/separator';
 import { Icons } from '@hive/ui/components/icons';
 import { dateToFullRelative, dateToShow } from '@hive/ui/lib/parse-date';
 import { proxifyImageUrl } from '@hive/ui/lib/old-profixy';
-import { getTwitterInfo } from '@ui/lib/bridge';
+import { getTwitterInfo } from '@transaction/lib/bridge';
 import moment from 'moment';
 import { Button } from '@hive/ui';
 import DialogLogin from '../dialog-login';
@@ -23,6 +27,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useFollowingInfiniteQuery } from '../hooks/use-following-infinitequery';
 import { transactionService } from '@transaction/index';
 import { FollowOperationBuilder } from '@hive/wax/web';
+import { useSigner } from '@/blog/components/hooks/use-signer';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -50,6 +55,7 @@ function compareDates(dateStrings: string[], t: TFunction<'common_wallet', undef
 const ProfileLayout = ({ children }: IProfileLayout) => {
   const router = useRouter();
   const { user } = useUser();
+  const { signerOptions } = useSigner();
   const { t } = useTranslation('common_blog');
   const walletHost = env('WALLET_ENDPOINT');
   const { username } = useSiteParams();
@@ -60,7 +66,6 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   } = useQuery(['profileData', username], () => getAccountFull(username), {
     enabled: !!username
   });
-
   const {
     isLoading: accountDataIsLoading,
     error: accountDataError,
@@ -87,6 +92,13 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
     error: dynamicGlobalDataError,
     data: dynamicGlobalData
   } = useQuery(['dynamicGlobalData'], () => getDynamicGlobalProperties());
+  const {
+    isLoading: accountReputationIsLoading,
+    error: accountReputationError,
+    data: accountReputationData
+  } = useQuery(['accountReputationData', username], () => getAccountReputations(username, 1), {
+    enabled: !!username
+  });
 
   const { data: twitterData } = useQuery(['twitterData', username], () => getTwitterInfo(username), {
     enabled: !!username,
@@ -118,7 +130,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   const vesting_hive = vestingHive(accountData, dynamicGlobalData);
   const hp = vesting_hive.minus(delegated_hive);
 
-  return username ? (
+  return username && accountReputationData ? (
     <div>
       <div
         className=" w-full bg-gray-600 text-sm leading-6 text-zinc-50 sm:h-fit"
@@ -155,7 +167,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <span
                   title={`This is ${username}s's reputation score.\n\nThe reputation score is based on the history of votes received by the account, and is used to hide low quality content.`}
                 >
-                  ({accountReputation(profileData.reputation ? profileData.reputation : 0)})
+                  ({accountReputation(accountReputationData[0].reputation ?? 0)})
                 </span>
               </h4>
               {profileData.name ? (
@@ -168,7 +180,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   <img
                     alt="fish image"
                     title={t('user_profil.hive_buzz_badge_title', { username: profileData.name })}
-                    className="mx-2 w-6 duration-500 ease-in-out hover:w-12"
+                    className="mx-2 hidden w-6 duration-500 ease-in-out hover:w-12"
                     src={`https://hivebuzz.me/api/level/${profileData.name}?dead`}
                     data-testid="profile-badge-image"
                   />
@@ -201,10 +213,10 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   {profileData?.follow_stats?.follower_count === 0 || undefined
                     ? t('user_profil.lists.follower_count.zero')
                     : profileData?.follow_stats?.follower_count === 1
-                    ? t('user_profil.lists.follower_count.one')
-                    : t('user_profil.lists.follower_count.other', {
-                        value: profileData?.follow_stats?.follower_count
-                      })}
+                      ? t('user_profil.lists.follower_count.one')
+                      : t('user_profil.lists.follower_count.other', {
+                          value: profileData?.follow_stats?.follower_count
+                        })}
                 </Link>
               </li>
 
@@ -221,8 +233,8 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   {profileData?.post_count === 0
                     ? t('user_profil.lists.post_count.zero')
                     : profileData?.post_count === 1
-                    ? t('user_profil.lists.post_count.one')
-                    : t('user_profil.lists.post_count.other', { value: profileData?.post_count })}
+                      ? t('user_profil.lists.post_count.one')
+                      : t('user_profil.lists.post_count.other', { value: profileData?.post_count })}
                 </Link>
               </li>
 
@@ -238,10 +250,10 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   {profileData?.follow_stats?.following_count === 0 || undefined
                     ? t('user_profil.lists.followed_count.zero')
                     : profileData?.follow_stats?.following_count === 1
-                    ? t('user_profil.lists.followed_count.one')
-                    : t('user_profil.lists.followed_count.other', {
-                        value: profileData?.follow_stats?.following_count
-                      })}
+                      ? t('user_profil.lists.followed_count.one')
+                      : t('user_profil.lists.followed_count.other', {
+                          value: profileData?.follow_stats?.following_count
+                        })}
                 </Link>
               </li>
 
@@ -352,7 +364,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                               .build()
                           );
                         }
-                      });
+                      }, signerOptions);
                     }}
                     disabled={isLoadingFollowingData || isFetchingFollowingData}
                   >
@@ -396,7 +408,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                               .build()
                           );
                         }
-                      });
+                      }, signerOptions);
                     }}
                     disabled={isLoadingFollowingDataIgnore || isFetchingFollowingDataIgnore}
                   >

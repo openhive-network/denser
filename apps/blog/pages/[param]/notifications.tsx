@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { getAccountNotifications } from '@ui/lib/bridge';
+import { getAccountNotifications } from '@transaction/lib/bridge';
 import LayoutProfile from '@/blog/components/common/profile-layout';
 import NotificationActivities from '@/blog/components/notification-activities';
-import { useSiteParams } from '@hive/ui/components/hooks/use-site-params';
-import Loading from '@hive/ui/components/loading';
+import { useSiteParams } from '@ui/components/hooks/use-site-params';
+import Loading from '@ui/components/loading';
 import { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
@@ -14,7 +14,7 @@ export default function UserNotifications() {
   const { t } = useTranslation('common_blog');
   const { username } = useSiteParams();
   const { isLoading, error, data } = useQuery(
-    ['accountNotification', username],
+    ['AccountNotification', username],
     () => getAccountNotifications(username),
     {
       enabled: !!username

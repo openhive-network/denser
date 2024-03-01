@@ -1,24 +1,24 @@
 {
   "name": "@hive/transaction",
   "version": "0.1.0",
-  "main": ".index.ts",
-  "types": ".index.ts",
+  "main": "./index.ts",
+  "types": "./index.ts",
   "scripts": {
     "lint": "eslint ."
   },
   "dependencies": {
     "@hive/smart-signer": "*",
-    "@hive/wax": "0.3.8-240213130607",
+    "@hive/wax": "^0.3.8-240228091712",
     "@hiveio/dhive": "^1.2.8",
     "@hiveio/hive-js": "^2.0.7",
     "secure-random": "^1.1.2",
-    "speakingurl": "^14.0.1",
-    "typescript": "5.3.3"
+    "speakingurl": "^14.0.1"
   },
   "devDependencies": {
     "@types/bs58": "^4.0.4",
     "@types/node": "^20.10.4",
     "@types/secure-random": "^1.1.3",
-    "@types/speakingurl": "^13.0.6"
+    "@types/speakingurl": "^13.0.6",
+    "typescript": "5.3.3"
   }
 }

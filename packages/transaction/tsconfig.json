@@ -1,11 +1,12 @@
 {
   "extends": "@hive/tsconfig/base.json",
   "compilerOptions": {
+    "target": "ES2022",
     "moduleResolution": "Bundler",
     "baseUrl": ".",
     "paths": {
-      "@smart-signer/*": ["../../packages/smart-signer/*"],
-      "@ui/*": ["../../packages/ui/*"]
+      "@smart-signer/*": ["../smart-signer/*"],
+      "@ui/*": ["../ui/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

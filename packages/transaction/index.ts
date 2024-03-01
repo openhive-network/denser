@@ -1,18 +1,17 @@
 import {
-  CommunityOperationBuilder,
-  FollowOperationBuilder,
   createHiveChain,
   BroadcastTransactionRequest,
   IHiveChainInterface,
-  ITransactionBuilder,
-  IHiveAppsOperation
+  ITransactionBuilder
 } from '@hive/wax/web';
-import { logger } from '@hive/ui/lib/logger';
 import { toast } from '@hive/ui/components/hooks/use-toast';
-import { Signer } from '@smart-signer/lib/signer';
+import { getSigner } from '@smart-signer/lib/signer/get-signer';
+import { SignerOptions } from '@smart-signer/lib/signer/signer';
+
+import { getLogger } from '@hive/ui/lib/logging';
+const logger = getLogger('app');
 
 class TransactionService {
-  static signer = new Signer();
   description = 'Transaction broadcast error';
   static hiveChain: IHiveChainInterface;
 
@@ -24,20 +23,22 @@ class TransactionService {
     return TransactionService.hiveChain;
   }
 
-  async processHiveAppOperation(cb: (opBuilder: ITransactionBuilder) => void) {
+  async processHiveAppOperation(cb: (opBuilder: ITransactionBuilder) => void, signerOptions: SignerOptions) {
     const txBuilder = await (await this.getHiveChain()).getTransactionBuilder();
 
     cb(txBuilder);
-    await this.processTransaction(txBuilder);
+    await this.processTransaction(txBuilder, signerOptions);
   }
 
-  async processTransaction(txBuilder: ITransactionBuilder): Promise<void> {
+  async processTransaction(txBuilder: ITransactionBuilder, signerOptions: SignerOptions): Promise<void> {
     // validate
     txBuilder.validate();
 
     // Sign using smart-signer
     // pass to smart-signer txBuilder.sigDigest
-    const signature = await TransactionService.signer.signTransaction({
+    const signer = getSigner(signerOptions);
+
+    const signature = await signer.signTransaction({
       digest: txBuilder.sigDigest,
       transaction: txBuilder.build() // builded transaction
     });
@@ -51,8 +52,15 @@ class TransactionService {
       await (await this.getHiveChain()).api.network_broadcast_api.broadcast_transaction(broadcastReq);
     } catch (e) {
       logger.error('got error', e);
+      const isError = (err: unknown): err is Error => err instanceof Error;
+      let description = 'Unknown error';
+      if (isError(e)) {
+        description = e.message;
+      } else if (typeof e === 'string') {
+        description = e;
+      }
       toast({
-        description: e as String,
+        description,
         variant: 'destructive'
       });
     }

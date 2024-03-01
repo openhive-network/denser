@@ -16,7 +16,6 @@ const logger = getLogger('app');
  * @extends {StorageMixin(SignerHbauth)}
  */
 export class SignerHiveauth extends StorageMixin(SignerHbauth) {
-
   async destroy() {
     HiveAuthUtils.logout();
     this.storage.removeItem('hiveAuthData');
@@ -39,11 +38,7 @@ export class SignerHiveauth extends StorageMixin(SignerHbauth) {
     HiveAuthUtils.setKey(hiveAuthData?.key || '');
   }
 
-
-  async signChallenge({
-    message,
-    translateFn = (v) => v
-  }: SignChallenge): Promise<string> {
+  async signChallenge({ message, translateFn = (v) => v }: SignChallenge): Promise<string> {
     const { username, keyType } = this;
     logger.info('in SignerHiveauth.signChallenge %o', { message, username, keyType });
     try {
@@ -60,8 +55,7 @@ export class SignerHiveauth extends StorageMixin(SignerHbauth) {
       });
 
       if (authResponse.success && authResponse.hiveAuthData) {
-        const { token, expire, key, challengeHex: signature } =
-            authResponse.hiveAuthData;
+        const { token, expire, key, challengeHex: signature } = authResponse.hiveAuthData;
         this.storage.setItem('hiveAuthData', JSON.stringify({ username, token, expire, key }));
         logger.info('hiveauth', { signature });
         return signature as string;
@@ -71,6 +65,5 @@ export class SignerHiveauth extends StorageMixin(SignerHbauth) {
     } catch (error) {
       throw error;
     }
-  };
-
+  }
 }

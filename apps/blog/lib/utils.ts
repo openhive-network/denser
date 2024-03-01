@@ -1,26 +1,9 @@
-import { SMTAsset } from '@hiveio/dhive/lib/chain/asset';
 import Big from 'big.js';
-import { ClassValue, clsx } from 'clsx';
 import sanitize from 'sanitize-html';
-import { twMerge } from 'tailwind-merge';
-import remarkableStripper from '@/blog/lib/remmarkable-stripper';
-import { Vote } from './hive';
-import { Entry, JsonMetadata } from '@ui/lib/bridge';
-import { parseDate2 } from '@hive/ui/lib/parse-date';
+import remarkableStripper from '../lib/remmarkable-stripper';
+import { JsonMetadata } from '@transaction/lib/bridge';
 import moment from 'moment';
 import { TFunction } from 'i18next';
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-
-export const vestsToRshares = (vests: number, votingPower: number, votePerc: number): number => {
-  const vestingShares = vests * 1e6;
-  const power = (votingPower * votePerc) / 1e4 / 50 + 1;
-  return (power * vestingShares) / 1e4;
-};
-
-export const isCommunity = (s: string) => s.match(/^hive-\d+/) !== null;
 
 export enum Symbol {
   HIVE = 'HIVE',
@@ -34,26 +17,6 @@ export enum NaiMap {
   '@@000000013' = 'HBD',
   '@@000000037' = 'VESTS'
 }
-
-export interface Asset {
-  amount: number;
-  symbol: Symbol;
-}
-
-export const parseAsset = (sval: string | SMTAsset): Asset => {
-  if (typeof sval === 'string') {
-    const sp = sval.split(' ');
-    // @ts-ignore
-    return { amount: parseFloat(sp[0]), symbol: Symbol[sp[1]] };
-  } else {
-    // @ts-ignore
-    return {
-      amount: parseFloat(sval.amount.toString()) / Math.pow(10, sval.precision),
-      // @ts-ignore
-      symbol: NaiMap[sval.nai]
-    };
-  }
-};
 
 const isHumanReadable = (input: number): boolean => {
   return Math.abs(input) > 0 && Math.abs(input) <= 100;
@@ -217,35 +180,6 @@ export function formatDecimal(value: number, decPlaces = 2, truncate0s = true) {
     decPart
   ];
 }
-
-export const prepareVotes = (entry: Entry, votes: Vote[]) => {
-  let totalPayout = 0;
-
-  const { pending_payout_value, author_payout_value, curator_payout_value, payout } = entry;
-
-  if (pending_payout_value && author_payout_value && curator_payout_value) {
-    totalPayout =
-      parseAsset(entry.pending_payout_value).amount +
-      parseAsset(entry.author_payout_value).amount +
-      parseAsset(entry.curator_payout_value).amount;
-  }
-
-  if (payout && Number(totalPayout.toFixed(3)) !== payout) {
-    totalPayout += payout;
-  }
-  const voteRshares = votes && votes.reduce((a, b) => a + parseFloat(b.rshares), 0);
-  const ratio = totalPayout / voteRshares;
-
-  return votes.map((a) => {
-    const rew = parseFloat(a.rshares) * ratio;
-
-    return Object.assign({}, a, {
-      reward: rew,
-      timestamp: parseDate2(a.time).getTime(),
-      percent: a.percent / 100
-    });
-  });
-};
 
 export function extractUrlsFromJsonString(jsonString: string): string[] {
   const urlRegex = /((?:https?:\/\/|www\.)[^\s]+)/g;

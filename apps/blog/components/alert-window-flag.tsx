@@ -8,12 +8,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger
-} from '@hive/ui/components/alert-dialog';
+} from '@ui/components/alert-dialog';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Input } from '@ui/components';
 import { ReactNode, useState } from 'react';
 import { transactionService } from '@transaction/index';
 import { CommunityOperationBuilder } from '@hive/wax/web';
+import { useSigner } from '@/blog/components/hooks/use-signer';
 
 export function AlertDialogFlag({
   children,
@@ -27,6 +28,7 @@ export function AlertDialogFlag({
   permlink: string;
 }) {
   const { user } = useUser();
+  const { signerOptions } = useSigner();
   const [notes, setNotes] = useState('');
 
   return (
@@ -62,7 +64,7 @@ export function AlertDialogFlag({
                       .authorize(user.username)
                       .build()
                   );
-                });
+                }, signerOptions);
               }}
             >
               OK

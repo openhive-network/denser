@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { cn } from '@hive/ui/lib/utils';
+import { cn } from '@ui/lib/utils';
 
 export function MainNav() {
   const pathname = usePathname();

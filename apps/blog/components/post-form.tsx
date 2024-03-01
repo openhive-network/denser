@@ -1,19 +1,12 @@
-import { Button } from '@hive/ui/components/button';
-import { Input } from '@hive/ui/components/input';
-import { Textarea } from '@hive/ui/components/textarea';
+import { Button } from '@ui/components/button';
+import { Input } from '@ui/components/input';
+import { Textarea } from '@ui/components/textarea';
 import Link from 'next/link';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@hive/ui/components/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@ui/components/select';
 import { Label } from '@radix-ui/react-label';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormMessage
-} from '@hive/ui/components/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormMessage } from '@ui/components/form';
 import { useForm } from 'react-hook-form';
 
 const accountFormSchema = z.object({

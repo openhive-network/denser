@@ -1,16 +1,20 @@
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Icons } from '@ui/components/icons';
 import DialogLogin from './dialog-login';
 import clsx from 'clsx';
-import { Entry } from '@ui/lib/bridge';
+import type { Entry } from '@transaction/lib/bridge';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { transactionService } from '@transaction/index';
+import { useSigner } from '@/blog/components/hooks/use-signer';
+import env from '@beam-australia/react-env';
 
 const VotesComponent = ({ post }: { post: Entry }) => {
+  const walletHost = env('WALLET_ENDPOINT');
   const { user } = useUser();
+  const { signerOptions } = useSigner();
   const { t } = useTranslation('common_blog');
   const [isClient, setIsClient] = useState(false);
   useEffect(() => {
@@ -40,9 +44,8 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                           weight: 10000
                         }
                       })
-                      .authorize(user.username)
                       .build();
-                  })
+                  }, signerOptions)
                 }
               />
             ) : (
@@ -74,9 +77,8 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                           weight: -10000
                         }
                       })
-                      .authorize(user.username)
                       .build();
-                  })
+                  }, signerOptions)
                 }
               />
             ) : (
@@ -101,7 +103,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                 <Link
                   className="font-bold hover:text-red-600"
                   target="_blank"
-                  href={`https://wallet.openhive.network/${user?.username}/transfers`}
+                  href={`${walletHost}/${user?.username}/transfers`}
                 >
                   {' Wallet '}
                 </Link>

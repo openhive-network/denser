@@ -1,7 +1,7 @@
 import env from '@beam-australia/react-env';
 import createHttpError from 'http-errors';
 import { NextApiRequest } from 'next';
-import { getLogger } from "@hive/ui/lib/logging";
+import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
 
@@ -18,10 +18,10 @@ export const csrfHeaderName = `x-csrf-token`;
  * @param {NextApiRequest} req
  */
 export const checkCsrfHeader = (req: NextApiRequest): boolean => {
-    if (!Object.hasOwn(req.headers, csrfHeaderName)) {
-      const errorMessage = `Missing ${csrfHeaderName} header`
-      logger.error(errorMessage);
-      throw new createHttpError.BadRequest(errorMessage);
-    }
-    return true;
-}
+  if (!Object.hasOwn(req.headers, csrfHeaderName)) {
+    const errorMessage = `Missing ${csrfHeaderName} header`;
+    logger.error(errorMessage);
+    throw new createHttpError.BadRequest(errorMessage);
+  }
+  return true;
+};

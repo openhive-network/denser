@@ -12,7 +12,7 @@ import { validateHivePassword } from '@smart-signer/lib/validators/validate-hive
 import { Icons } from '@ui/components/icons';
 import { toast } from '@ui/components/hooks/use-toast';
 
-import { getLogger } from '@hive/ui/lib/logging';
+import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 const ZodStorageTypesEnum = z.nativeEnum(StorageTypes);
@@ -74,7 +74,6 @@ export function LoginForm({
   onSubmit: (data: LoginFormSchema) => void;
   i18nNamespace?: string;
 }) {
-
   const { t } = useTranslation(i18nNamespace);
   const [isKeychainSupported, setIsKeychainSupported] = useState(false);
   const [disabledPasword, setDisabledPassword] = useState(true);
@@ -157,9 +156,9 @@ export function LoginForm({
     toast({
       title: 'Info',
       description: 'Hivesigner support is not implemented',
-      variant: 'destructive',
+      variant: 'destructive'
     });
-  }
+  };
 
   return (
     <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
@@ -212,7 +211,6 @@ export function LoginForm({
           </div>
 
           <div className="my-6 flex w-full flex-col">
-
             <div className="flex items-center py-1">
               <input
                 id="useHbauth"
@@ -291,7 +289,6 @@ export function LoginForm({
                 {t('login_form.keep_me_logged_in')}
               </label>
             </div>
-
           </div>
 
           <div className="flex items-center justify-between">
@@ -343,7 +340,10 @@ export function LoginForm({
             <button
               className="mt-4 flex w-fit justify-center rounded-lg bg-gray-400 px-5 py-2.5 hover:bg-gray-500 focus:outline-none "
               data-testid="hivesigner-button"
-              onClick={(e) => { e.preventDefault(); onHivesignerButtonClick() }}
+              onClick={(e) => {
+                e.preventDefault();
+                onHivesignerButtonClick();
+              }}
             >
               <img src="/smart-signer/images/hivesigner.svg" alt="Hivesigner logo" />
             </button>

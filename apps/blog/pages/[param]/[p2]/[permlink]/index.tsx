@@ -1,10 +1,9 @@
-import parseDate, { dateToFullRelative } from '@hive/ui/lib/parse-date';
+import parseDate, { dateToFullRelative } from '@ui/lib/parse-date';
 import { Clock, Link2 } from 'lucide-react';
 import UserInfo from '@/blog/components/user-info';
-import { getActiveVotes } from '@/blog/lib/hive';
+import { getActiveVotes } from '@transaction/lib/hive';
 import { useQuery } from '@tanstack/react-query';
-import { DefaultRenderer } from '@hiveio/content-renderer';
-import { Entry, getCommunity, getDiscussion, getPost } from '@ui/lib/bridge';
+import { Entry, getCommunity, getDiscussion, getPost } from '@transaction/lib/bridge';
 import Loading from '@hive/ui/components/loading';
 import dynamic from 'next/dynamic';
 import ImageGallery from '@/blog/components/image-gallery';
@@ -12,20 +11,19 @@ import Link from 'next/link';
 import DetailsCardHover from '@/blog/components/details-card-hover';
 import DetailsCardVoters from '@/blog/components/details-card-voters';
 import CommentSelectFilter from '@/blog/components/comment-select-filter';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import sorter, { SortOrder } from '@/blog/lib/sorter';
 import { useRouter } from 'next/router';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
-import { Icons } from '@hive/ui/components/icons';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+import { Icons } from '@ui/components/icons';
 import { AlertDialogReblog } from '@/blog/components/alert-window';
-import { getDoubleSize, proxifyImageUrl } from '@hive/ui/lib/old-profixy';
 import { ReplyTextbox } from '@/blog/components/reply-textbox';
 import { SharePost } from '@/blog/components/share-post-dialog';
 import LinkedInShare from '@/blog/components/share-post-linkedin';
 import FacebookShare from '@/blog/components/share-post-facebook';
 import RedditShare from '@/blog/components/share-post-reddit';
 import TwitterShare from '@/blog/components/share-post-twitter';
-import { Badge } from '@hive/ui/components/badge';
+import { Badge } from '@ui/components/badge';
 import { UserHoverCard } from '@/blog/components/user-hover-card';
 import { Button } from '@ui/components/button';
 import { Separator } from '@ui/components';
@@ -36,6 +34,7 @@ import { i18n } from '@/blog/next-i18next.config';
 import { GetServerSideProps } from 'next';
 import { AlertDialogFlag } from '@/blog/components/alert-window-flag';
 import VotesComponent from '@/blog/components/votes';
+import { HiveRendererContext } from '@/blog/components/hive-renderer-context';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -54,6 +53,7 @@ function PostPage({
   permlink: string;
 }) {
   const { t } = useTranslation('common_blog');
+  const anchorRef = useRef();
   const {
     isLoading: isLoadingDiscussion,
     error: errorDiscussion,
@@ -110,24 +110,7 @@ function PostPage({
     }
   }, [discussion, router.query.sort]);
 
-  const renderer = new DefaultRenderer({
-    baseUrl: 'https://hive.blog/',
-    breaks: true,
-    skipSanitization: false,
-    allowInsecureScriptTags: false,
-    addNofollowToLinks: true,
-    addTargetBlankToLinks: true,
-    addCssClassToLinks: 'external-link',
-    doNotShowImages: false,
-    ipfsPrefix: '',
-    assetsWidth: 640,
-    assetsHeight: 480,
-    imageProxyFn: (url: string) => getDoubleSize(proxifyImageUrl(url, true).replace(/ /g, '%20')),
-    usertagUrlFn: (account: string) => '/@' + account,
-    hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
-    isLinkSafeFn: (url: string) => false
-  });
-  const post_html = renderer.render(post_s.body);
+  const { hiveRenderer } = useContext(HiveRendererContext);
   const commentSite = post_s.depth !== 0 ? true : false;
   const [reply, setReply] = useState(false);
   const [mutedPost, setMutedPost] = useState(post_s.stats?.gray);
@@ -166,6 +149,13 @@ function PostPage({
 
     return imageExtensions.some((ext) => link.includes(ext));
   }
+
+  useEffect(() => {
+    const id = router.asPath.split('#')[1];
+    document.getElementById(id)?.scrollIntoView({
+      behavior: 'smooth'
+    });
+  }, [router, hiveRenderer]);
 
   return (
     <div className="py-8">
@@ -219,8 +209,8 @@ function PostPage({
         ({post_s.blacklists.length})
       </span> */}
         <hr />
-        {!post_html ? (
-          <Loading loading={!post_html} />
+        {!hiveRenderer ? (
+          <Loading loading={!hiveRenderer} />
         ) : mutedPost ? (
           <div id="articleBody" className="flex flex-col gap-8 py-8">
             {findLinks(post_s.body).map((e) =>
@@ -241,7 +231,7 @@ function PostPage({
               id="articleBody"
               className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
               dangerouslySetInnerHTML={{
-                __html: post_html
+                __html: hiveRenderer.render(post_s.body)
               }}
             />
           </ImageGallery>
@@ -356,7 +346,7 @@ function PostPage({
                   <TooltipContent data-testid="post-footer-response-tooltip">
                     <p>
                       {post_s.children === 0
-                        ? t('post_content.footer.no_response')
+                        ? t('post_content.footer.no_responses')
                         : post_s.children === 1
                         ? t('post_content.footer.response')
                         : t('post_content.footer.responses', { responses: post_s.children })}

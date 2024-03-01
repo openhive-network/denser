@@ -1,14 +1,14 @@
-import { Button } from '@hive/ui/components/button';
-import { Icons } from '@hive/ui/components/icons';
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@hive/ui/components/sheet';
+import { Button } from '@ui/components/button';
+import { Icons } from '@ui/components/icons';
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@ui/components/sheet';
 import Link from 'next/link';
-import { Separator } from '@hive/ui/components/separator';
+import { Separator } from '@ui/components/separator';
 import clsx from 'clsx';
 import { ReactNode } from 'react';
 import { useTranslation } from 'next-i18next';
 import env from '@beam-australia/react-env';
 import DialogLogin from './dialog-login';
-import { getLogger } from '@hive/ui/lib/logging';
+import { getLogger } from '@ui/lib/logging';
 import DialogHBAuth from '@smart-signer/components/dialog-hb-auth';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 

@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTrigger } from '@hive/ui/components/dialog';
+import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
 import { ReactNode, SyntheticEvent, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import {
@@ -20,7 +20,7 @@ import { toast } from '@ui/components/hooks/use-toast';
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
 import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
 
-import { getLogger } from '@hive/ui/lib/logging';
+import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 interface DialogHBAuthProps {
@@ -97,7 +97,7 @@ export function DialogHBAuth({
               ...{
                 i18nKeyPlaceholder: 'login_form.password_hbauth_placeholder',
                 i18nKeyTitle: 'login_form.title_hbauth_dialog_password'
-              },
+              }
             });
             password = result;
             if (!password) {
@@ -143,8 +143,12 @@ export function DialogHBAuth({
       <DialogContent className="sm:max-w-[600px]" data-testid="login-dialog-hb-auth">
         <Tabs defaultValue="login" className="w-full py-4">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="login" data-testid="hbauth-unlock-key-button">{t('login_form.title_action_unlock_key')}</TabsTrigger>
-            <TabsTrigger value="authorize" data-testid="hbauth-add-key-button">{t('login_form.title_action_add_key')}</TabsTrigger>
+            <TabsTrigger value="login" data-testid="hbauth-unlock-key-button">
+              {t('login_form.title_action_unlock_key')}
+            </TabsTrigger>
+            <TabsTrigger value="authorize" data-testid="hbauth-add-key-button">
+              {t('login_form.title_action_add_key')}
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="login">
             <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
@@ -170,7 +174,10 @@ export function DialogHBAuth({
                   </div>
                   <div className="mb-5" data-testid="hbauth-unlock-key-select-key-type">
                     <Select name="keytype" onValueChange={(e) => setKey(e)}>
-                      <SelectTrigger className="w-[200px]" data-testid="hbauth-unlock-key-select-key-type-trigger">
+                      <SelectTrigger
+                        className="w-[200px]"
+                        data-testid="hbauth-unlock-key-select-key-type-trigger"
+                      >
                         <SelectValue placeholder="Select a key type" />
                       </SelectTrigger>
                       <SelectContent>
@@ -241,7 +248,10 @@ export function DialogHBAuth({
 
                   <div className="mb-5" data-testid="hbauth-add-key-select-key-type">
                     <Select name="keytype">
-                      <SelectTrigger className="w-[200px]" data-testid="hbauth-add-key-select-key-type-trigger">
+                      <SelectTrigger
+                        className="w-[200px]"
+                        data-testid="hbauth-add-key-select-key-type-trigger"
+                      >
                         <SelectValue placeholder="Select a key type" />
                       </SelectTrigger>
                       <SelectContent>

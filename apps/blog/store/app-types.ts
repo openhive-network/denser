@@ -1,4 +1,4 @@
-import { FullAccount } from '@hive/ui/store/app-types';
+import { FullAccount } from '@ui/store/app-types';
 
 export interface BaseAccount {
   name: string;

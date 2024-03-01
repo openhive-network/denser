@@ -1,5 +1,5 @@
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@hive/ui/components/hover-card';
-import { Entry } from '@ui/lib/bridge';
+import type { Entry } from '@transaction/lib/bridge';
 import { ReactNode } from 'react';
 import VotersDetailsData from './votes-details-data';
 

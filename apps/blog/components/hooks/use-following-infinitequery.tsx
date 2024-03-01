@@ -1,9 +1,9 @@
-import { DEFAULT_PARAMS_FOR_FOLLOW, GetFollowParams, getFollowing } from '@/blog/lib/hive';
+import { DEFAULT_PARAMS_FOR_FOLLOW, IGetFollowParams, getFollowing } from '@transaction/lib/hive';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 export const useFollowingInfiniteQuery = (
-  account: GetFollowParams['account'],
-  limit: GetFollowParams['limit'] = DEFAULT_PARAMS_FOR_FOLLOW.limit,
+  account: IGetFollowParams['account'],
+  limit: IGetFollowParams['limit'] = DEFAULT_PARAMS_FOR_FOLLOW.limit,
   type?: string,
   extendedKey?: any[]
 ) => {

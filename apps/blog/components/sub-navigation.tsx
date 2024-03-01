@@ -1,5 +1,5 @@
 'use client';
-import { Separator } from '@hive/ui/components/separator';
+import { Separator } from '@ui/components/separator';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 

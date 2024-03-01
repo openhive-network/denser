@@ -1,5 +1,5 @@
-import { Button } from '@hive/ui/components/button';
-import { Icons } from '@hive/ui/components/icons';
+import { Button } from '@ui/components/button';
+import { Icons } from '@ui/components/icons';
 import { FC, useState, useEffect } from 'react';
 import Sidebar from './sidebar';
 import ModeToggle from './mode-toggle';
@@ -8,7 +8,7 @@ import DialogLogin from './dialog-login';
 import LangToggle from '@/wallet/components/lang-toggle';
 import { useTranslation } from 'next-i18next';
 import { useLogout } from '@smart-signer/lib/auth/use-logout';
-import { getLogger } from '@hive/ui/lib/logging';
+import { getLogger } from '@ui/lib/logging';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogHBAuth from '@smart-signer/components/dialog-hb-auth';
 import UserMenu from './user-menu';
@@ -16,12 +16,12 @@ import { PieChart, Pie } from 'recharts';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import { useQuery } from '@tanstack/react-query';
 import { findRcAccounts } from '../lib/hive';
-import { RCAccount } from '@hiveio/dhive/lib/chain/rc';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
+import { RcAccount } from '@hive/wax/web';
 
 const logger = getLogger('app');
 
-const calculateRcStats = (userRc: RCAccount[]) => {
+const calculateRcStats = (userRc: RcAccount[]) => {
   const manaRegenerationTime = 432000;
   const currentTime = parseInt((new Date().getTime() / 1000).toFixed(0));
   const stats = {
@@ -29,10 +29,11 @@ const calculateRcStats = (userRc: RCAccount[]) => {
     resourceCreditsWaitTime: 0
   };
 
-  const maxRcMana = parseFloat(userRc[0].max_rc);
+  const maxRcMana = parseFloat(String(userRc[0].max_rc));
   const rcManaElapsed = currentTime - userRc[0].rc_manabar.last_update_time;
   let currentRcMana =
-    parseFloat(userRc[0].rc_manabar.current_mana) + (rcManaElapsed * maxRcMana) / manaRegenerationTime;
+    parseFloat(String(userRc[0].rc_manabar.current_mana)) +
+    (rcManaElapsed * maxRcMana) / manaRegenerationTime;
   if (currentRcMana > maxRcMana) {
     currentRcMana = maxRcMana;
   }
@@ -56,7 +57,7 @@ const SiteHeader: FC = () => {
     enabled: !!user?.username
   });
   const stats = rcData
-    ? calculateRcStats(rcData)
+    ? calculateRcStats(rcData.rc_accounts)
     : {
         resourceCreditsPercent: 0,
         resourceCreditsWaitTime: 0

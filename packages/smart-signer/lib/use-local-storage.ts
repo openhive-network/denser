@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { getLogger } from "@hive/ui/lib/logging";
+import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
 // Allow hook to set specific type the same API as useState

@@ -1,6 +1,6 @@
-import { Vote } from '@/blog/lib/hive';
-import { prepareVotes } from '@/blog/lib/utils';
-import { Entry } from '@ui/lib/bridge';
+import { IVote } from '@transaction/lib/hive';
+import { prepareVotes } from '@ui/lib/utils';
+import type { Entry } from '@transaction/lib/bridge';
 import Link from 'next/link';
 import { useActiveVotesQuery } from './hooks/use-active-votes';
 import { useTranslation } from 'next-i18next';
@@ -26,7 +26,7 @@ export default function VotersDetailsData({ post }: { post: Entry }) {
   return (
     <ul data-testid="list-of-voters">
       {sliced &&
-        sliced.map((vote: Vote, index: number) => (
+        sliced.map((vote: IVote, index: number) => (
           <li key={index}>
             <Link href={`/@${vote.voter}`} className="hover:cursor-pointer hover:text-red-600">
               {vote.voter}

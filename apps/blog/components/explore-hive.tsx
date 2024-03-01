@@ -1,8 +1,8 @@
-import { cn } from '@/blog/lib/utils';
+import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
 import { FC } from 'react';
 import Link from 'next/link';
-import { Icons } from '@hive/ui/components/icons';
+import { Icons } from '@ui/components/icons';
 import { useTranslation } from 'next-i18next';
 import env from '@beam-australia/react-env';
 

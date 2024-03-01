@@ -1,15 +1,16 @@
 import Link from 'next/link';
-import { Textarea } from '@hive/ui/components/textarea';
-import { Button } from '@hive/ui/components/button';
-import { useEffect, useMemo, useState } from 'react';
+import { Textarea } from '@ui/components/textarea';
+import { Button } from '@ui/components/button';
+import { useContext, useEffect, useState } from 'react';
 import { Label } from '@radix-ui/react-label';
-import { Input } from '@hive/ui/components/input';
+import { Input } from '@ui/components/input';
 import { useTranslation } from 'next-i18next';
-import { DefaultRenderer } from '@hiveio/content-renderer';
-import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { transactionService } from '@transaction/index';
 import { createPermlink } from '@transaction/lib/utils';
+import { useSigner } from '@/blog/components/hooks/use-signer';
+import { HiveRendererContext } from './hive-renderer-context';
+import DialogLogin from './dialog-login';
 
 export function ReplyTextbox({
   onSetReply,
@@ -21,43 +22,26 @@ export function ReplyTextbox({
   permlink: string;
 }) {
   const { user } = useUser();
+  const { signerOptions } = useSigner();
   const { t } = useTranslation('common_blog');
   const [text, setText] = useState('');
   const [cleanedText, setCleanedText] = useState('');
   const [replyPermlink, setReplyPermlink] = useState('');
 
-  const renderer = useMemo(
-    () =>
-      new DefaultRenderer({
-        baseUrl: 'https://hive.blog/',
-        breaks: true,
-        skipSanitization: false,
-        allowInsecureScriptTags: false,
-        addNofollowToLinks: true,
-        addTargetBlankToLinks: true,
-        addCssClassToLinks: 'external-link',
-        doNotShowImages: false,
-        ipfsPrefix: '',
-        assetsWidth: 640,
-        assetsHeight: 480,
-        imageProxyFn: (url: string) => getDoubleSize(proxifyImageUrl(url, true).replace(/ /g, '%20')),
-        usertagUrlFn: (account: string) => '/@' + account,
-        hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
-        isLinkSafeFn: (url: string) => false
-      }),
-    []
-  );
+  const { hiveRenderer } = useContext(HiveRendererContext);
 
   useEffect(() => {
-    const nextCleanedText = text ? renderer.render(text) : '';
-    setCleanedText(nextCleanedText);
-  }, [renderer, text]);
+    if (hiveRenderer) {
+      const nextCleanedText = text ? hiveRenderer.render(text) : '';
+      setCleanedText(nextCleanedText);
+    }
+  }, [hiveRenderer, text]);
 
   useEffect(() => {
     const createReplyPermlink = async () => {
       if (user && user.isLoggedIn) {
-        const permlink = await createPermlink('', user.username, permlink);
-        setReplyPermlink(permlink);
+        const plink = await createPermlink('', user.username, permlink);
+        setReplyPermlink(plink);
       }
     };
 
@@ -116,15 +100,18 @@ export function ReplyTextbox({
                         json_metadata: '{"app":"hiveblog/0.1"}'
                       }
                     })
-                    .authorize(user.username)
                     .build();
-                });
+                }, signerOptions);
                 setText('');
               }}
             >
               {t('post_content.footer.comment.post')}
             </Button>
-          ) : null}
+          ) : (
+            <DialogLogin>
+              <Button disabled={text === ''}> {t('post_content.footer.comment.post')}</Button>
+            </DialogLogin>
+          )}
           <Button
             variant="ghost"
             onClick={() => handleCancel()}

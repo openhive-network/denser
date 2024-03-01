@@ -1050,7 +1050,8 @@ test.describe('Home page tests', () => {
     await homePage.getFirstPostReblogButton.click();
     await reblogDialog.validateReblogThisPostHeaderIsVisible();
     await reblogDialog.validateReblogThisPostDescriptionIsVisible();
-    await expect(reblogDialog.getDialogOkButton).toBeVisible();
+    // TODO: Check it only if user logged in
+    // await expect(reblogDialog.getDialogOkButton).toBeVisible();
     await expect(reblogDialog.getDialogCancelButton).toBeVisible();
     await reblogDialog.closeReblogDialog();
     await expect(homePage.getTrandingCommunitiesHeader).toBeVisible();
