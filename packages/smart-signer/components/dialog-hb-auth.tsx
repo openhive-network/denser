@@ -213,9 +213,9 @@ export function DialogHBAuth({
                         setKeyTypeSwitch(v)
                       }}
                       name='keyType'
-                      aria-label="Key Type"
+                      aria-label={t('login_form.title_select_key_type')}
                     >
-                      <h3>Key Type</h3>
+                      <h3>{t('login_form.title_select_key_type')}</h3>
                       {radioGroupItems(items)}
                     </RadioGroup>
 
@@ -300,9 +300,9 @@ export function DialogHBAuth({
                         setKeyTypeSwitch(v);
                       }}
                       name='keyType'
-                      aria-label="Key Type"
+                      aria-label={t('login_form.title_select_key_type')}
                     >
-                      <h3>Key Type</h3>
+                      <h3>{t('login_form.title_select_key_type')}</h3>
                       {radioGroupItems(items)}
                     </RadioGroup>
 
