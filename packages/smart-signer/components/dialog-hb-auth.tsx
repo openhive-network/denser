@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
-import { ReactNode, SyntheticEvent, useState } from 'react';
+import { ReactNode, SyntheticEvent, useState, useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
 import {
   Tabs,
@@ -20,18 +20,20 @@ const logger = getLogger('app');
 
 interface DialogHBAuthProps {
   children: ReactNode;
-  onAuthComplete: (username: string, keyType: KeyAuthorityType) => void;
+  defaultKeyType?: KeyAuthorityType;
+  onAuthComplete?: (username: string, keyType: KeyAuthorityType) => void;
   i18nNamespace?: string;
 }
 
 export function DialogHBAuth({
   children,
-  onAuthComplete,
+  defaultKeyType = 'posting',
+  onAuthComplete = (username: string, keyType: KeyAuthorityType) => { return },
   i18nNamespace = 'smart-signer'
 }: DialogHBAuthProps) {
   const { t } = useTranslation(i18nNamespace);
   const [open, setOpen] = useState(false);
-  const [keyTypeSwitch, setKeyTypeSwitch] = useState<KeyAuthorityType>('posting');
+  const [keyTypeSwitch, setKeyTypeSwitch] = useState<KeyAuthorityType>(defaultKeyType);
 
   const updateStatus = (user: AuthUser | null = null, err: any = null) => {
     if (!user) {
