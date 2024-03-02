@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
-import { ReactNode, SyntheticEvent, useState, useEffect } from 'react';
+import { ReactNode, SyntheticEvent, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import {
   Tabs,
@@ -21,6 +21,7 @@ const logger = getLogger('app');
 interface DialogHBAuthProps {
   children: ReactNode;
   defaultKeyType?: KeyAuthorityType;
+  resetToDefaultKeyTypeOnOpen?: boolean;
   onAuthComplete?: (username: string, keyType: KeyAuthorityType) => void;
   i18nNamespace?: string;
 }
@@ -28,6 +29,7 @@ interface DialogHBAuthProps {
 export function DialogHBAuth({
   children,
   defaultKeyType = 'posting',
+  resetToDefaultKeyTypeOnOpen = true,
   onAuthComplete = (username: string, keyType: KeyAuthorityType) => { return },
   i18nNamespace = 'smart-signer'
 }: DialogHBAuthProps) {
@@ -154,7 +156,16 @@ export function DialogHBAuth({
   ];
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={
+        (open: boolean) => {
+          setOpen(open);
+          // Reset key to default value on every dialog open.
+          if (resetToDefaultKeyTypeOnOpen && open) setKeyTypeSwitch(defaultKeyType);
+        }
+      }
+    >
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[600px]" data-testid="login-dialog-hb-auth">
         <Tabs defaultValue="login" className="w-full py-4">
