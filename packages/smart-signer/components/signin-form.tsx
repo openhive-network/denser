@@ -11,7 +11,7 @@ import { LoginType, StorageType } from '@smart-signer/types/common';
 import { Icons } from '@ui/components/icons';
 import { toast } from '@ui/components/hooks/use-toast';
 import { RadioGroup, RadioGroupItem } from '@ui/components/radio-group';
-import { titleCase } from '@smart-signer/lib/utils';
+import { pascalCase } from 'change-case';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -30,7 +30,16 @@ const loginFormDefaultValues = {
   remember: false,
 };
 
-export const loginTypeDetails = {
+export interface LoginTypeDetail {
+  logo: string;
+  type: 'internal' | 'external'
+}
+
+export type LoginTypeDetails = {
+  [key in keyof typeof LoginType]: LoginTypeDetail;
+};
+
+export const loginTypeDetails: LoginTypeDetails = {
   hbauth: {
     logo: "/smart-signer/images/hive-blog-twshare.png",
     type: "internal",
@@ -52,8 +61,6 @@ export const loginTypeDetails = {
     type: "internal",
   },
 };
-
-// export type LoginType = keyof typeof loginTypeDetails;
 
 export interface LoginFormOptions {
   errorMessage: string;
@@ -113,7 +120,8 @@ export function LoginForm({
           <img
             className="mr-1 h-4 w-4"
             src={loginTypeDetails[loginType].logo}
-            alt={`${titleCase(loginType)} Logo`}
+
+            alt={`${pascalCase(loginType)} Logo`}
           />
           {t(`login_form.use_${loginType}`)}
         </label>

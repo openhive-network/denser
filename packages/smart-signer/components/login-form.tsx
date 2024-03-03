@@ -9,9 +9,9 @@ import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain'
 import { username } from '@smart-signer/lib/auth/utils';
 import { LoginType, StorageType } from '@smart-signer/types/common';
 import { validateHivePassword } from '@smart-signer/lib/validators/validate-hive-password';
-import { titleCase } from '@smart-signer/lib/utils';
 import { Icons } from '@ui/components/icons';
 import { toast } from '@ui/components/hooks/use-toast';
+import { pascalCase } from 'change-case';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -98,11 +98,11 @@ export function LoginForm({
 
   const onCheckboxToggle = (e: React.ChangeEvent<HTMLInputElement>, loginType: LoginType) => {
     if (e.target.checked) {
-      setValue(`use${titleCase(loginType)}` as any, true);
-      setValue('loginType', LoginType[loginType]);
+      setValue(`use${pascalCase(loginType)}` as any, true);
+      setValue('loginType', loginType);
       for (const l of Object.keys(LoginType)) {
         if (l === loginType) continue;
-        setValue(`use${titleCase(l)}` as any, false);
+        setValue(`use${pascalCase(l)}` as any, false);
       }
       trigger('password');
       setDisabledPassword(true);

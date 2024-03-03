@@ -213,10 +213,6 @@ export function isStorageAvailable(storageType: 'localStorage' | 'sessionStorage
   }
 }
 
-export function titleCase (word: string) {
-  return word.charAt(0).toUpperCase() + word.slice(1);
-};
-
 /**
  * Returns enum key for enum value.
  *
