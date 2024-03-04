@@ -2,7 +2,8 @@ import Big from 'big.js';
 import { AccountHistory } from '@/wallet/store/app-types';
 import { makeBitMaskFilter, operationOrders } from '@hiveio/dhive/lib/utils';
 import moment from 'moment';
-import { TWaxApiRequest, createHiveChain, RcAccount, NaiAsset } from '@hive/wax/web';
+import { TWaxApiRequest, RcAccount } from '@hive/wax/web';
+import { hiveChainService } from '@transaction/lib/hive-chain-service';
 
 export declare type Bignum = string;
 
@@ -36,7 +37,7 @@ type GetWitnessesByVoteData = {
 };
 
 export const getWitnessesByVote = async (from: string, limit: number): Promise<IWitness[]> => {
-  const chain = await createHiveChain();
+  const chain = await hiveChainService.getHiveChain();
   return chain.extend<GetWitnessesByVoteData>().api.condenser_api.get_witnesses_by_vote([from, limit]);
 };
 
@@ -47,7 +48,7 @@ type GetFindRcAccountsData = {
 };
 
 export const findRcAccounts = async (username: string): Promise<{ rc_accounts: RcAccount[] }> => {
-  const chain = await createHiveChain();
+  const chain = await hiveChainService.getHiveChain();
   return chain.extend<GetFindRcAccountsData>().api.rc_api.find_rc_accounts({ accounts: [username] });
 };
 
@@ -73,7 +74,7 @@ type GetProposalsData = {
 };
 
 export const getProposals = async (params?: Partial<IGetProposalsParams>): Promise<IProposal[]> => {
-  const chain = await createHiveChain();
+  const chain = await hiveChainService.getHiveChain();
   try {
     const response = await chain.extend<GetProposalsData>().api.database_api.list_proposals({
       ...DEFAULT_PARAMS_FOR_PROPOSALS,
@@ -122,7 +123,7 @@ export const getVestingDelegations = async (
   from: string = '',
   limit: number = 50
 ): Promise<IDelegatedVestingShare[]> => {
-  const chain = await createHiveChain();
+  const chain = await hiveChainService.getHiveChain();
   return chain
     .extend<GetVestingDelegationsData>()
     .api.condenser_api.get_vesting_delegations([username, from, limit]);
@@ -165,7 +166,7 @@ export const getAccountHistory = async (
   start: number = -1,
   limit: number = 20
 ): Promise<AccountHistory[]> => {
-  const chain = await createHiveChain();
+  const chain = await hiveChainService.getHiveChain();
   return chain
     .extend<GetAccountHistoryData>()
     .api.condenser_api.get_account_history([username, start, limit, ...wallet_operations_bitmask]);
@@ -188,7 +189,7 @@ export const getProposalVotes = async (
   voter: string = '',
   limit: number = 1000
 ): Promise<IProposalVote[]> => {
-  const chain = await createHiveChain();
+  const chain = await hiveChainService.getHiveChain();
   return chain
     .extend<GetProposalVotesData>()
     .api.condenser_api.list_proposal_votes([[proposalId, voter], limit, 'by_proposal_voter'])
@@ -210,7 +211,7 @@ type GetMarketStatisticsData = {
 };
 
 export const getMarketStatistics = async (): Promise<IMarketStatistics> => {
-  const chain = await createHiveChain();
+  const chain = await hiveChainService.getHiveChain();
   return chain.extend<GetMarketStatisticsData>().api.condenser_api.get_ticker([]);
 };
 
@@ -252,7 +253,7 @@ type GetOrderBookData = {
 };
 
 export const getOrderBook = async (limit: number = 500): Promise<IOrdersData> => {
-  const chain = await createHiveChain();
+  const chain = await hiveChainService.getHiveChain();
   return chain.extend<GetOrderBookData>().api.condenser_api.get_order_book([limit]);
 };
 
@@ -263,7 +264,7 @@ type GetOpenOrderData = {
 };
 
 export const getOpenOrder = async (user: string): Promise<IOpenOrdersData[]> => {
-  const chain = await createHiveChain();
+  const chain = await hiveChainService.getHiveChain();
   return chain.extend<GetOpenOrderData>().api.condenser_api.get_open_orders([user]);
 };
 
@@ -276,7 +277,7 @@ type GetTradeHistoryData = {
 export const getTradeHistory = async (limit: number = 1000): Promise<IOrdersDataItem[]> => {
   let todayEarlier = moment(Date.now()).subtract(10, 'h').format().split('+')[0];
   let todayNow = moment(Date.now()).format().split('+')[0];
-  const chain = await createHiveChain();
+  const chain = await hiveChainService.getHiveChain();
   return chain
     .extend<GetTradeHistoryData>()
     .api.condenser_api.get_trade_history([todayEarlier, todayNow, limit]);
@@ -294,6 +295,6 @@ type GetRecentTradesyData = {
 };
 
 export const getRecentTrades = async (limit: number = 1000): Promise<IRecentTradesData[]> => {
-  const chain = await createHiveChain();
+  const chain = await hiveChainService.getHiveChain();
   return chain.extend<GetRecentTradesyData>().api.condenser_api.get_recent_trades([limit]);
 };
