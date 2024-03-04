@@ -7,7 +7,7 @@ import {
 import { toast } from '@hive/ui/components/hooks/use-toast';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
-import { hiveChainService } from './hive-chain-service';
+import { hiveChainService } from './lib/hive-chain-service';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
