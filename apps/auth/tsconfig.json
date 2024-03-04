@@ -17,7 +17,9 @@
         "../../packages/ui/*"
       ]
     },
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "strictPropertyInitialization": false,
+    "experimentalDecorators": true
   },
   "include": [
     "next-env.d.ts",
