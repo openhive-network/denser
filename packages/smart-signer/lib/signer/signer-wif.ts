@@ -81,7 +81,6 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
           i18nKeyPlaceholder: 'login_form.posting_private_key_placeholder',
           i18nKeyTitle: 'login_form.title_wif_dialog_password'
         });
-        // TODO Should we store this key now?
       }
       if (!wif) throw new Error('No wif key');
 
