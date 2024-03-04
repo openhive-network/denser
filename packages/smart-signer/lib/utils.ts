@@ -216,3 +216,17 @@ export function isStorageAvailable(storageType: 'localStorage' | 'sessionStorage
 export function titleCase (word: string) {
   return word.charAt(0).toUpperCase() + word.slice(1);
 };
+
+/**
+ * Returns enum key for enum value.
+ *
+ * @export
+ * @template T
+ * @param {T} myEnum
+ * @param {string} enumValue
+ * @returns {(keyof T | null)}
+ */
+export function getEnumKeyByEnumValue<T extends {[index: string]: string}>(myEnum: T, enumValue: string): keyof T | null {
+  const keys = Object.keys(myEnum).filter(x => myEnum[x] == enumValue);
+  return keys.length > 0 ? keys[0] : null;
+}
