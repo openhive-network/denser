@@ -92,13 +92,6 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
     error: dynamicGlobalDataError,
     data: dynamicGlobalData
   } = useQuery(['dynamicGlobalData'], () => getDynamicGlobalProperties());
-  const {
-    isLoading: accountReputationIsLoading,
-    error: accountReputationError,
-    data: accountReputationData
-  } = useQuery(['accountReputationData', username], () => getAccountReputations(username, 1), {
-    enabled: !!username
-  });
 
   const { data: twitterData } = useQuery(['twitterData', username], () => getTwitterInfo(username), {
     enabled: !!username,
@@ -130,7 +123,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   const vesting_hive = vestingHive(accountData, dynamicGlobalData);
   const hp = vesting_hive.minus(delegated_hive);
 
-  return username && accountReputationData ? (
+  return username ? (
     <div>
       <div
         className=" w-full bg-gray-600 text-sm leading-6 text-zinc-50 sm:h-fit"
@@ -167,7 +160,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <span
                   title={`This is ${username}s's reputation score.\n\nThe reputation score is based on the history of votes received by the account, and is used to hide low quality content.`}
                 >
-                  ({accountReputation(accountReputationData[0].reputation ?? 0)})
+                  ({profileData?.reputation ? accountReputation(profileData.reputation) : null})
                 </span>
               </h4>
               {profileData.name ? (
