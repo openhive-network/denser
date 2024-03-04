@@ -140,20 +140,18 @@ export class TagTransformingSanitizer {
                     return retTag;
                 },
                 a: (tagName, attribs) => {
+                    const attys: sanitize.Attributes = {...attribs};
                     let {href} = attribs;
-                    if (!href) {
-                        href = '#';
+                    if (href) {
+                        href = href.trim();
+                        attys.href = href;
                     }
-                    href = href.trim();
-                    const attys: sanitize.Attributes = {...attribs, href};
-                    // If it's not a (relative or absolute) URL...
-                    if (!this.options.isLinkSafeFn(href)) {
-                        // attys.target = '_blank' // pending iframe impl https://mathiasbynens.github.io/rel-noopener/
+                    if (href && !this.options.isLinkSafeFn(href)) {
                         attys.rel = this.options.addNofollowToLinks ? 'nofollow noopener' : 'noopener';
                         attys.title = this.localization.phishingWarning;
                         attys.target = this.options.addTargetBlankToLinks ? '_blank' : '_self';
                     }
-                    if (this.options.addExternalCssClassToMatchingLinksFn(href)) {
+                    if (href && this.options.addExternalCssClassToMatchingLinksFn(href)) {
                         attys.class = this.options.cssClassForExternalLinks ? this.options.cssClassForExternalLinks : '';
                     } else {
                         attys.class = this.options.cssClassForInternalLinks ? this.options.cssClassForInternalLinks : '';

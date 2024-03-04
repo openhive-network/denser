@@ -81,7 +81,7 @@ describe('DefaultRender', () => {
         {
             name: 'Allow for anchor id tags',
             raw: "<a id='anchor'></a>",
-            expected: '<p><a href="#" id="anchor" class="hive-test external"></a></p>'
+            expected: '<p><a id="anchor" class="hive-test"></a></p>'
         },
         {
             name: 'Allows links embedded via <a> tags with additional class added when condition is matching',
@@ -91,7 +91,7 @@ describe('DefaultRender', () => {
         {
             name: 'Should remove additional unsafe attributes from a tag',
             raw: "<a fake='test'></a>",
-            expected: '<p><a href="#" class="hive-test external"></a></p>'
+            expected: '<p><a class="hive-test"></a></p>'
         }
     ];
 
