@@ -15,6 +15,8 @@ import { hiveChainService } from './hive-chain-service';
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
+const chain = await hiveChainService.getHiveChain();
+
 export interface IDynamicGlobalProperties {
   hbd_print_rate: number;
   total_vesting_fund_hive: string;
@@ -33,7 +35,6 @@ type GetDynamicGlobalProperties = {
 };
 
 export const getDynamicGlobalProperties = async (): Promise<IDynamicGlobalProperties> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain
     .extend<GetDynamicGlobalProperties>()
     .api.condenser_api.get_dynamic_global_properties([])
@@ -58,7 +59,6 @@ type GetAccountsnData = {
 };
 
 export const getAccounts = async (usernames: string[]): Promise<FullAccount[]> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain
     .extend<GetAccountsnData>()
     .api.condenser_api.get_accounts([usernames])
@@ -166,7 +166,6 @@ type GetFeedHistoryData = {
 };
 
 export const getFeedHistory = async (): Promise<IFeedHistory> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain.extend<GetFeedHistoryData>().api.database_api.get_feed_history();
 };
 
@@ -177,7 +176,6 @@ type GetFollowCountData = {
 };
 
 export const getFollowCount = async (username: string): Promise<AccountFollowStats> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain.extend<GetFollowCountData>().api.condenser_api.get_follow_count([username]);
 };
 
@@ -302,7 +300,6 @@ type GetPostData = {
 };
 
 export const getPost = async (username: string, permlink: string): Promise<IPost> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain.extend<GetPostData>().api.condenser_api.get_content([username, permlink]);
 };
 
@@ -331,7 +328,6 @@ export const getAccountReputations = async (
   account_lower_bound: string,
   limit: number
 ): Promise<IAccountReputations[]> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain
     .extend<GetAccountReputationData>()
     .api.condenser_api.get_account_reputations({ account_lower_bound, limit });
@@ -344,7 +340,6 @@ type GetMarketBucketSizesData = {
 };
 
 export const getMarketBucketSizes = async (): Promise<number[]> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain.extend<GetMarketBucketSizesData>().api.condenser_api.get_market_history_buckets([]);
 };
 
@@ -361,7 +356,6 @@ export const getMarketHistory = async (
 ): Promise<IMarketCandlestickDataItem[]> => {
   let todayEarlier: string = startDate.format().split('+')[0];
   let todayNow: string = endDate.format().split('+')[0];
-  const chain = await hiveChainService.getHiveChain();
   return chain
     .extend<GetMarketHistoryData>()
     .api.condenser_api.get_market_history([seconds, todayEarlier, todayNow]);
@@ -374,7 +368,6 @@ type GetActiveVotesData = {
 };
 
 export const getActiveVotes = async (author: string, permlink: string): Promise<IVote[]> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain.extend<GetActiveVotesData>().api.condenser_api.get_active_votes([author, permlink]);
 };
 
@@ -385,7 +378,6 @@ type GetTrendingTagsData = {
 };
 
 export const getTrendingTags = async (afterTag: string = '', limit: number = 250): Promise<string[]> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain
     .extend<GetTrendingTagsData>()
     .api.database_api.get_trending_tags([afterTag, limit])
@@ -401,7 +393,6 @@ export const getAllTrendingTags = async (
   afterTag: string = '',
   limit: number = 250
 ): Promise<ITrendingTag[] | void> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain
     .extend<GetTrendingTagsData>()
     .api.database_api.get_trending_tags([afterTag, limit])
@@ -420,7 +411,6 @@ type LookupAccountsData = {
 };
 
 export const lookupAccounts = async (q: string, limit = 50): Promise<string[]> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain.extend<LookupAccountsData>().api.database_api.lookup_accounts([q, limit]);
 };
 
@@ -450,7 +440,6 @@ type GetFollowersData = {
 };
 export const getFollowers = async (params?: Partial<IGetFollowParams>): Promise<IFollow[]> => {
   try {
-    const chain = await hiveChainService.getHiveChain();
     return chain
       .extend<GetFollowersData>()
       .api.condenser_api.get_followers([
@@ -472,7 +461,6 @@ type GetFollowingData = {
 };
 export const getFollowing = async (params?: Partial<IGetFollowParams>): Promise<IFollow[]> => {
   try {
-    const chain = await hiveChainService.getHiveChain();
     return chain
       .extend<GetFollowingData>()
       .api.condenser_api.get_following([
@@ -493,7 +481,6 @@ type GetRewardFundData = {
   };
 };
 export const getRewardFund = async (): Promise<IRewardFund> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain.extend<GetRewardFundData>().api.database_api.get_reward_fund(['post']);
 };
 
@@ -548,7 +535,6 @@ type GetWithdrawRoutesData = {
   };
 };
 export const getWithdrawRoutes = async (account: string): Promise<WithdrawRoute[]> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain.extend<GetWithdrawRoutesData>().api.database_api.get_withdraw_routes([account, 'outgoing']);
 };
 
@@ -628,7 +614,6 @@ type GetConversionRequestsData = {
   };
 };
 export const getConversionRequests = async (account: string): Promise<IConversionRequest[]> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain.extend<GetConversionRequestsData>().api.database_api.get_conversion_requests([account]);
 };
 
@@ -640,7 +625,6 @@ type GetCollateralizedConversionRequestsData = {
 export const getCollateralizedConversionRequests = async (
   account: string
 ): Promise<ICollateralizedConversionRequest[]> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain
     .extend<GetCollateralizedConversionRequestsData>()
     .api.database_api.get_collateralized_conversion_requests([account]);
@@ -662,7 +646,6 @@ type GetSavingsWithdrawFromData = {
   };
 };
 export const getSavingsWithdrawFrom = async (account: string): Promise<SavingsWithdrawRequest[]> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain.extend<GetSavingsWithdrawFromData>().api.database_api.get_savings_withdraw_from([account]);
 };
 
@@ -680,7 +663,6 @@ type GetBlogEntriesData = {
   };
 };
 export const getBlogEntries = async (username: string, limit: number = DATA_LIMIT): Promise<BlogEntry[]> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain.extend<GetBlogEntriesData>().api.condenser_api.get_blog_entries([username, 0, limit]);
 };
 
@@ -690,7 +672,6 @@ type BrodcastTransactionData = {
   };
 };
 export const brodcastTransaction = async (transaction: any): Promise<any> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain
     .extend<BrodcastTransactionData>()
     .api.network_broadcast_api.broadcast_transaction([transaction]);
@@ -819,7 +800,6 @@ export const getListWitnessVotes = async (
   limit: number,
   order: string
 ): Promise<IListWitnessVotes> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain
     .extend<GetListWitnessVotesData>()
     .api.database_api.list_witness_votes({ start: [username, ''], limit, order });

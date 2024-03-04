@@ -1,6 +1,8 @@
 import { TWaxApiRequest } from '@hive/wax/web';
 import { hiveChainService } from './hive-chain-service';
 
+const chain = await hiveChainService.getHiveChain();
+
 interface IGetPostHeader {
   author: string;
   permlink: string;
@@ -20,7 +22,6 @@ type GetPostHeaderData = {
 };
 
 export const getPostHeader = async (author: string, permlink: string): Promise<IGetPostHeader> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain.extend<GetPostHeaderData>().api.bridge.get_post_header({
     author,
     permlink
@@ -208,7 +209,6 @@ export const getPostsRanked = async (
   limit: number = DATA_LIMIT,
   observer: string = ''
 ): Promise<Entry[] | null> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain
     .extend<GetPostsRankedData>()
     .api.bridge.get_ranked_posts({
@@ -251,7 +251,6 @@ export const getAccountPosts = async (
   start_permlink: string = '',
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain
     .extend<GetAccountPostsData>()
     .api.bridge.get_account_posts({
@@ -288,7 +287,6 @@ export const getPost = async (
   permlink: string = '',
   observer: string = ''
 ): Promise<Entry | null> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain
     .extend<GetPostData>()
     .api.bridge.get_post({
@@ -340,7 +338,6 @@ export const getAccountNotifications = async (
   if (lastId) {
     params.last_id = lastId;
   }
-  const chain = await hiveChainService.getHiveChain();
   return chain.extend<GetAccountNotificationsData>().api.bridge.account_notifications(params);
 };
 
@@ -359,7 +356,6 @@ export const getDiscussion = async (
   author: string,
   permlink: string
 ): Promise<Record<string, Entry> | null> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain.extend<GetDiscussionData>().api.bridge.get_discussion({
     author,
     permlink
@@ -381,7 +377,6 @@ export const getCommunity = async (
   name: string,
   observer: string | undefined = ''
 ): Promise<Community | null> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain.extend<GetCommunityData>().api.bridge.get_community({ name, observer });
 };
 
@@ -404,7 +399,6 @@ export const getCommunities = async (
   // limit: number = 100,
   observer: string = 'hive.blog'
 ): Promise<Community[] | null> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain.extend<GetCommunitiesData>().api.bridge.list_communities({
     // limit,
     query,
@@ -424,7 +418,6 @@ type GetNormalizePost = {
 };
 
 export const normalizePost = async (post: Entry): Promise<Entry | null> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain.extend<GetNormalizePost>().api.bridge.normalize_post({
     post
   });
@@ -441,7 +434,6 @@ type GetSubscriptions = {
 };
 
 export const getSubscriptions = async (account: string): Promise<Subscription[] | null> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain.extend<GetSubscriptions>().api.bridge.list_all_subscriptions({
     account
   });
@@ -458,7 +450,6 @@ type GetSubscribers = {
 };
 
 export const getSubscribers = async (community: string): Promise<Subscription[] | null> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain.extend<GetSubscribers>().api.bridge.list_subscribers({
     community
   });
@@ -480,7 +471,6 @@ type GetUnreadNotifications = {
 };
 
 export const getUnreadNotifications = async (account: string): Promise<IUnreadNotifications | null> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain.extend<GetUnreadNotifications>().api.bridge.unread_notifications({
     account
   });
@@ -503,7 +493,6 @@ export const getRelationshipBetweenAccounts = async (
   follower: string,
   following: string
 ): Promise<IAccountRelationship | null> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain
     .extend<GetAccountRelationship>()
     .api.bridge.get_relationship_between_accounts([follower, following]);
@@ -531,7 +520,6 @@ export const getFollowList = async (
   observer: string,
   follow_type: FollowListType
 ): Promise<IFollowList[]> => {
-  const chain = await hiveChainService.getHiveChain();
   return chain.extend<GetFollowListData>().api.bridge.get_follow_list({
     observer,
     follow_type
