@@ -47,12 +47,13 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
       let wif = password ? password : this.storage.getItem(`wif.${username}@${keyType}`);
       if (!wif) {
         wif = await this.getPasswordFromUser({
-          i18nKeyPlaceholder: 'login_form.posting_private_key'
+          i18nKeyPlaceholder: 'login_form.posting_private_key_placeholder'
         });
       }
       if (!wif) throw new Error('No WIF key');
       // We don't know, if this WIF is correct, so we need to verify it.
       if (await this.verifyPrivateKey(wif)) {
+        // TODO Ask user if he wants to store this key.
         this.storage.setItem(`wif.${username}@${keyType}`, wif);
       } else {
         throw new Error('Invalid WIF key');
