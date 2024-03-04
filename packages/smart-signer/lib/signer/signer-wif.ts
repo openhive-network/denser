@@ -3,6 +3,7 @@ import { SignChallenge } from '@smart-signer/lib/signer/signer';
 import { KeyType } from '@smart-signer/types/common';
 import { SignerHbauth } from '@smart-signer/lib/signer/signer-hbauth';
 import { StorageMixin } from '@smart-signer/lib/storage-mixin';
+import { createHiveChain, IHiveChainInterface } from '@hive/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -25,6 +26,18 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
     }
   }
 
+  async verifyPrivateKey(wif: string) {
+    const privateKey = PrivateKey.fromString(wif);
+    const publicKey = privateKey.createPublic('STM');
+    const hiveChain: IHiveChainInterface = await createHiveChain();
+    const referencedAccounts = (await hiveChain.api.account_by_key_api.get_key_references({ keys: [publicKey.toString()] })).accounts;
+    logger.info('referencedAccounts: %o', referencedAccounts);
+    if (referencedAccounts[0].includes(this.username)) {
+      return true;
+    }
+    return false;
+  }
+
   async signChallenge({
     message,
     password = '' // WIF private key,
@@ -37,12 +50,17 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
           i18nKeyPlaceholder: 'login_form.posting_private_key'
         });
       }
-      if (!wif) throw new Error('No wif key');
+      if (!wif) throw new Error('No WIF key');
+      // We don't know, if this WIF is correct, so we need to verify it.
+      if (await this.verifyPrivateKey(wif)) {
+        this.storage.setItem(`wif.${username}@${keyType}`, wif);
+      } else {
+        throw new Error('Invalid WIF key');
+      }
 
       const privateKey = PrivateKey.fromString(wif);
       const digestBuf = cryptoUtils.sha256(message);
       const signature = privateKey.sign(digestBuf).toString();
-      this.storage.setItem(`wif.${username}@${keyType}`, wif);
       logger.info('wif', { signature, digest: digestBuf.toString('hex') });
       return signature;
     } catch (error) {
