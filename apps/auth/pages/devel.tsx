@@ -10,7 +10,7 @@ import { SignerKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
 import { DialogWifModalPromise } from '@smart-signer/components/dialog-wif';
 import { verifySignature } from '@smart-signer/lib/utils';
-import { vote, createHiveChain, BroadcastTransactionRequest } from '@hive/wax/web';
+import { vote, createHiveChain, BroadcastTransactionRequest, ApiTransaction } from '@hive/wax/web';
 import { waxToKeychainOperation } from '@smart-signer/lib/signer/signer-keychain';
 import { KeyType } from '@smart-signer/types/common';
 import { fetchJson } from '@smart-signer/lib/fetch-json';
@@ -51,6 +51,35 @@ export default function Profile() {
     storageType: 'localStorage'
   };
 
+  const getSigningKeys = async () => {
+    if (!user || !user.isLoggedIn) return;
+    try {
+      const signer = getSigner(signerOptions);
+      const hiveChain = await createHiveChain();
+      const txBuilder = await hiveChain.getTransactionBuilder();
+      txBuilder.push({ vote });
+      txBuilder.validate();
+      const tx = txBuilder.build();
+      const signature = await signer.signTransaction({
+        digest: txBuilder.sigDigest,
+        transaction: tx
+      });
+      logger.info('broadcast signature: %s', signature);
+      txBuilder.build(signature);
+      logger.info('broadcast txBuilder: %o', txBuilder);
+      const trx = {
+        trx: JSON.parse(txBuilder.toApi()),
+        max_block_age: -1,
+      };
+
+      logger.info('broadcast transaction: %o', trx);
+
+      main(JSON.parse(txBuilder.toApi()) as ApiTransaction, user.username);
+
+    } catch (error) {
+      logger.error(error);
+    }
+  }
 
   const broadcast = async () => {
     if (!user || !user.isLoggedIn) return;
@@ -68,11 +97,6 @@ export default function Profile() {
       logger.info('broadcast signature: %s', signature);
       txBuilder.build(signature);
       logger.info('broadcast txBuilder: %o', txBuilder);
-
-
-
-      return;
-
       const trx = {
         trx: JSON.parse(txBuilder.toApi()),
         max_block_age: -1,
@@ -205,6 +229,9 @@ export default function Profile() {
           </p>
           {developerAccounts.includes(user.username) && (
             <div className="flex flex-col gap-3">
+              <Button onClick={getSigningKeys} variant="redHover" size="sm" className="h-10">
+                getSigningKeys
+              </Button>
               <Button onClick={broadcast} variant="redHover" size="sm" className="h-10">
                 Broadcast
               </Button>
