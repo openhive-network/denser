@@ -288,7 +288,9 @@
       "subscribe": "Subscribe",
       "new_post": "New post",
       "activity_log": "Activity Log",
-      "subscribers": "subscribers"
+      "subscribers": "subscribers",
+      "leave": "떠나다",
+      "joined": "가입한"
     },
     "titles": {
       "pending_rewards": "pending rewards",

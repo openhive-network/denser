@@ -301,7 +301,9 @@
       "subscribe": "Subskrybuj",
       "new_post": "Nowy post",
       "activity_log": "Dziennik aktywności",
-      "subscribers": "Subskrybenci"
+      "subscribers": "Subskrybenci",
+      "leave": "Opuścić",
+      "joined": "Dołączono"
     },
     "titles": {
       "pending_rewards": "spodziewane nagrody",
