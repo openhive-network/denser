@@ -29,6 +29,7 @@ import { transactionService } from '@transaction/index';
 import { FollowOperationBuilder } from '@hive/wax/web';
 import { useSigner } from '@/blog/components/hooks/use-signer';
 import FollowButton from '../follow-button';
+import MuteButton from '../mute-button';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -74,12 +75,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   } = useQuery(['accountData', username], () => getAccount(username), {
     enabled: !!username
   });
-  const {
-    data: followingDataIgnore,
-    isLoading: isLoadingFollowingDataIgnore,
-    isFetching: isFetchingFollowingDataIgnore
-  } = useFollowingInfiniteQuery(user.username, 50, 'ignore', ['ignore']);
-  const [isMute, setIsMute] = useState(false);
+  const mute = useFollowingInfiniteQuery(user.username, 50, 'ignore', ['ignore']);
 
   const {
     isLoading: dynamicGlobalDataIsLoading,
@@ -92,13 +88,6 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
     refetchOnWindowFocus: false
   });
   const following = useFollowingInfiniteQuery(user.username, 1000, 'blog', ['blog']);
-
-  useEffect(() => {
-    const isMute = Boolean(
-      followingDataIgnore?.pages[0].some((f) => f.follower === user.username && f.following === username)
-    );
-    setIsMute(isMute);
-  }, [followingDataIgnore?.pages, user.username, username]);
 
   if (accountDataIsLoading || dynamicGlobalDataIsLoading || profileDataIsLoading) {
     return <Loading loading={accountDataIsLoading || dynamicGlobalDataIsLoading || profileDataIsLoading} />;
@@ -204,7 +193,6 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 className="flex items-center
               gap-1"
               >
-                {' '}
                 <Separator orientation="vertical" className="bg-white" />
                 <Link
                   className="hover:cursor-pointer hover:text-red-600 hover:underline"
@@ -317,54 +305,14 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 </span>
               </li>
             </ul>
-            {user.username !== username ? (
+            {user.username !== username && (
               <div className="m-2 flex gap-2 hover:text-red-500 sm:absolute sm:right-0">
                 <FollowButton username={username} user={user} variant="secondary" list={following} />
-                {user.isLoggedIn ? (
-                  <Button
-                    className=" hover:text-red-500"
-                    variant="secondary"
-                    size="sm"
-                    data-testid="profile-mute-button"
-                    onClick={() => {
-                      const nextMute = !isMute;
-                      setIsMute(nextMute);
-                      transactionService.processHiveAppOperation((builder) => {
-                        if (nextMute) {
-                          builder.push(
-                            new FollowOperationBuilder()
-                              .muteBlog(user.username, username)
-                              .authorize(user.username)
-                              .build()
-                          );
-                        } else {
-                          builder.push(
-                            new FollowOperationBuilder()
-                              .unmuteBlog(user.username, username)
-                              .authorize(user.username)
-                              .build()
-                          );
-                        }
-                      }, signerOptions);
-                    }}
-                    disabled={isLoadingFollowingDataIgnore || isFetchingFollowingDataIgnore}
-                  >
-                    {isMute ? t('user_profil.unmute_button') : t('user_profil.mute_button')}
-                  </Button>
-                ) : (
-                  <DialogLogin>
-                    <Button
-                      className=" hover:text-red-500"
-                      variant="secondary"
-                      size="sm"
-                      data-testid="profile-mute-button"
-                    >
-                      {t('user_profil.mute_button')}
-                    </Button>
-                  </DialogLogin>
+                {user.isLoggedIn && (
+                  <MuteButton username={username} user={user} variant="secondary" list={mute} />
                 )}
               </div>
-            ) : null}
+            )}
           </div>
         ) : (
           <div className={`h-auto max-h-full min-h-full w-auto min-w-full max-w-full bg-gray-600 bg-cover`} />
