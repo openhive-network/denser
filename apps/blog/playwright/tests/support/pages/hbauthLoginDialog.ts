@@ -52,6 +52,7 @@ export class HbauthLoginDialog {
   }
 
   async validateHbauthDialogIsVisible() {
+    await this.page.waitForSelector(this.loginDialogHbauth['_selector']);
     await expect(this.loginDialogHbauth).toBeVisible();
     await expect(this.hbauthUnlockKeyButton).toBeVisible();
     await expect(this.hbauthUnlockKeyHeader).toHaveText('Hbauth: Unlock Key');
@@ -62,6 +63,7 @@ export class HbauthLoginDialog {
   }
 
   async validateHbauthUnlockKeyDialogIsVisible() {
+    await this.page.waitForSelector(this.loginDialogHbauth['_selector']);
     await expect(this.loginDialogHbauth).toBeVisible();
     await expect(this.hbauthUnlockKeyButton).toBeVisible();
     await expect(this.hbauthUnlockKeyHeader).toHaveText('Hbauth: Unlock Key');
