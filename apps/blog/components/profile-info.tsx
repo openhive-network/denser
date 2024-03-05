@@ -35,13 +35,6 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
   } = useQuery(['accountData', username], () => getAccount(username), {
     enabled: !!username
   });
-  const {
-    isLoading: accountReputationIsLoading,
-    error: accountReputationError,
-    data: accountReputationData
-  } = useQuery(['accountReputationData', username], () => getAccountReputations(username, 1), {
-    enabled: !!username
-  });
 
   const {
     isLoading: dynamicGlobalDataIsLoading,
@@ -76,7 +69,7 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
       <h4 className="mb-4 mt-8 text-xl text-slate-900 dark:text-white" data-testid="profile-name">
         {profileData?.profile?.name}{' '}
         <span className="text-slate-600">
-          ({accountReputation(accountReputationData ? accountReputationData[0].reputation : 0)})
+          ({profileData?.reputation ? accountReputation(profileData.reputation) : null})
         </span>
       </h4>
       <h6
