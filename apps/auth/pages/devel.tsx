@@ -1,3 +1,12 @@
+//
+// Code in this file is a developer's stuff. It is not intented to show
+// this page publicly on production server. Also the code on this page
+// may not be compatible with the other part of application, may be
+// outdated, and so on. Please don't care about this code when you do a
+// review. The only thing to review is existence of this file – it
+// should not exist in main branch.
+//
+
 import { GetServerSideProps } from 'next';
 import { useState, useEffect } from 'react';
 import { useUser } from '@smart-signer/lib/auth/use-user';
