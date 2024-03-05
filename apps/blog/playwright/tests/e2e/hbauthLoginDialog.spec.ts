@@ -22,14 +22,10 @@ test.describe('Login and Sign Up tests', () => {
     await homePage.getNavHbauthLink.click();
     await hbauthLoginDialog.validateHbauthUnlockKeyDialogIsVisible();
 
-    await expect(hbauthLoginDialog.hbauthUnlockKeySelectKeyTypeTrigger).toHaveText('Select a key type');
-    await hbauthLoginDialog.hbauthUnlockKeySelectKeyTypeTrigger.click();
-    await hbauthLoginDialog.hbauthUnlockKeySelectKeyType.selectOption('posting');
-    await expect(hbauthLoginDialog.hbauthUnlockKeySelectKeyTypeTrigger).toHaveText('Posting');
-    await hbauthLoginDialog.hbauthUnlockKeySelectKeyType.selectOption('active');
-    await expect(hbauthLoginDialog.hbauthUnlockKeySelectKeyTypeTrigger).toHaveText('Active');
-    await hbauthLoginDialog.hbauthUnlockKeySelectKeyType.selectOption('watch');
-    await expect(hbauthLoginDialog.hbauthUnlockKeySelectKeyTypeTrigger).toHaveText('Watch Mode');
+    await expect(hbauthLoginDialog.hbauthUnlockKeyTypeRadioPostingPrivateKey).toBeChecked();
+    await hbauthLoginDialog.hbauthUnlockKeyTypeRadioActivePrivateKey.check();
+    await expect(hbauthLoginDialog.hbauthUnlockKeyTypeRadioActivePrivateKey).toBeChecked();
+    await expect(hbauthLoginDialog.hbauthUnlockKeyTypeRadioPostingPrivateKey).not.toBeChecked();
   });
 
   test('Validate Hbauth Add Key login dialog is visible', async ({ page }) => {
@@ -47,13 +43,11 @@ test.describe('Login and Sign Up tests', () => {
     // Move to the Add Key Tab
     await hbauthLoginDialog.hbauthAddKeyButton.click();
     await hbauthLoginDialog.validateHbauthAddKeyDialogIsVisible();
-    // Validate select list
-    await expect(hbauthLoginDialog.hbauthAddKeySelectKeyTypeTrigger).toHaveText('Select a key type');
-    await hbauthLoginDialog.hbauthAddKeySelectKeyTypeTrigger.click();
-    await hbauthLoginDialog.hbauthAddKeySelectKeyType.selectOption('posting');
-    await expect(hbauthLoginDialog.hbauthAddKeySelectKeyTypeTrigger).toHaveText('Posting');
-    await hbauthLoginDialog.hbauthAddKeySelectKeyType.selectOption('active');
-    await expect(hbauthLoginDialog.hbauthAddKeySelectKeyTypeTrigger).toHaveText('Active');
+    // Validate key type radio buttons
+    await expect(hbauthLoginDialog.hbauthAddKeyTypeRadioPostingPrivateKey).toBeChecked();
+    await hbauthLoginDialog.hbauthAddKeyTypeRadioActivePrivateKey.check();
+    await expect(hbauthLoginDialog.hbauthAddKeyTypeRadioActivePrivateKey).toBeChecked();
+    await expect(hbauthLoginDialog.hbauthAddKeyTypeRadioPostingPrivateKey).not.toBeChecked();
   });
 
   test('Validate base style of Hbauth in Unlock Key in the light mode', async ({ page }) => {
@@ -107,38 +101,19 @@ test.describe('Login and Sign Up tests', () => {
         'border'
       )
     ).toBe('1px solid rgb(209, 213, 219)');
-    // Validate color, background color and border of the unlock key password input
-    // await expect(
-    //   await hbauthLoginDialog.getElementCssPropertyValue(
-    //     await hbauthLoginDialog.hbauthUnlockKeyPasswordInput,
-    //     'background-color'
-    //   )
-    // ).toBe('rgb(255, 255, 255)');
-    // await expect(
-    //   await hbauthLoginDialog.getElementCssPropertyValue(
-    //     await hbauthLoginDialog.hbauthUnlockKeyPasswordInput,
-    //     'color'
-    //   )
-    // ).toBe('rgb(17, 24, 39)');
-    // await expect(
-    //   await hbauthLoginDialog.getElementCssPropertyValue(
-    //     await hbauthLoginDialog.hbauthUnlockKeyPasswordInput,
-    //     'border'
-    //   )
-    // ).toBe('1px solid rgb(209, 213, 219)');
-    // Validate color and border of the unlock key select list
+    // Validate color and border of the type key radio buttons
     await expect(
       await hbauthLoginDialog.getElementCssPropertyValue(
-        await hbauthLoginDialog.hbauthUnlockKeySelectKeyTypeTrigger,
+        await hbauthLoginDialog.hbauthUnlockKeyTypeRadioPostingPrivateKey,
         'color'
       )
     ).toBe('rgb(15, 23, 42)');
     await expect(
       await hbauthLoginDialog.getElementCssPropertyValue(
-        await hbauthLoginDialog.hbauthUnlockKeySelectKeyTypeTrigger,
+        await hbauthLoginDialog.hbauthUnlockKeyTypeRadioPostingPrivateKey,
         'border'
       )
-    ).toBe('1px solid rgb(226, 232, 240)');
+    ).toBe('2px solid rgb(75, 85, 99)');
     // Validate color, background color of the unlock key submit button
     await expect(
       await hbauthLoginDialog.getElementCssPropertyValue(
@@ -234,41 +209,19 @@ test.describe('Login and Sign Up tests', () => {
         'border'
       )
     ).toBe('1px solid rgb(209, 213, 219)');
-    // // Validate color, background color and border of the unlock key password input
-    // await expect(
-    //   await hbauthLoginDialog.getElementCssPropertyValue(
-    //     await hbauthLoginDialog.hbauthUnlockKeyPasswordInput,
-    //     'background-color'
-    //   )
-    //   //  webkit: 'rgb(30, 30, 30)'
-    //   // firefox: 'rgb(43, 42, 51)'
-    //   //  chrome: 'rgb(59, 59, 59)'
-    //   ).toMatch(/rgb\(43, 42, 51\)|rgb\(59, 59, 59\)|rgb\(30, 30, 30\)/);
-    // await expect(
-    //   await hbauthLoginDialog.getElementCssPropertyValue(
-    //     await hbauthLoginDialog.hbauthUnlockKeyPasswordInput,
-    //     'color'
-    //   )
-    // ).toBe('rgb(17, 24, 39)');
-    // await expect(
-    //   await hbauthLoginDialog.getElementCssPropertyValue(
-    //     await hbauthLoginDialog.hbauthUnlockKeyPasswordInput,
-    //     'border'
-    //   )
-    // ).toBe('1px solid rgb(209, 213, 219)');
     // Validate color and border of the unlock key select list
     await expect(
       await hbauthLoginDialog.getElementCssPropertyValue(
-        await hbauthLoginDialog.hbauthUnlockKeySelectKeyTypeTrigger,
+        await hbauthLoginDialog.hbauthUnlockKeyTypeRadioActivePrivateKey,
         'color'
       )
     ).toBe('rgb(225, 231, 239)');
     await expect(
       await hbauthLoginDialog.getElementCssPropertyValue(
-        await hbauthLoginDialog.hbauthUnlockKeySelectKeyTypeTrigger,
+        await hbauthLoginDialog.hbauthUnlockKeyTypeRadioActivePrivateKey,
         'border'
       )
-    ).toBe('1px solid rgb(29, 40, 58)');
+    ).toBe('2px solid rgb(75, 85, 99)');
     // Validate color, background color of the unlock key submit button
     await expect(
       await hbauthLoginDialog.getElementCssPropertyValue(
@@ -373,19 +326,19 @@ test.describe('Login and Sign Up tests', () => {
         'border'
       )
     ).toBe('1px solid rgb(209, 213, 219)');
-    // Validate color and border of the add key select list
+    // Validate color and border of the add key radio buttons
     await expect(
       await hbauthLoginDialog.getElementCssPropertyValue(
-        await hbauthLoginDialog.hbauthAddKeySelectKeyTypeTrigger,
+        await hbauthLoginDialog.hbauthAddKeyTypeRadioPostingPrivateKey,
         'color'
       )
     ).toBe('rgb(15, 23, 42)');
     await expect(
       await hbauthLoginDialog.getElementCssPropertyValue(
-        await hbauthLoginDialog.hbauthAddKeySelectKeyTypeTrigger,
+        await hbauthLoginDialog.hbauthAddKeyTypeRadioPostingPrivateKey,
         'border'
       )
-    ).toBe('1px solid rgb(226, 232, 240)');
+    ).toBe('2px solid rgb(75, 85, 99)');
     // Validate color, background color and border of the add key private key input
     await expect(
       await hbauthLoginDialog.getElementCssPropertyValue(
@@ -524,16 +477,16 @@ test.describe('Login and Sign Up tests', () => {
     // Validate color and border of the add key select list
     await expect(
       await hbauthLoginDialog.getElementCssPropertyValue(
-        await hbauthLoginDialog.hbauthAddKeySelectKeyTypeTrigger,
+        await hbauthLoginDialog.hbauthAddKeyTypeRadioActivePrivateKey,
         'color'
       )
     ).toBe('rgb(225, 231, 239)');
     await expect(
       await hbauthLoginDialog.getElementCssPropertyValue(
-        await hbauthLoginDialog.hbauthAddKeySelectKeyTypeTrigger,
+        await hbauthLoginDialog.hbauthAddKeyTypeRadioActivePrivateKey,
         'border'
       )
-    ).toBe('1px solid rgb(29, 40, 58)');
+    ).toBe('2px solid rgb(75, 85, 99)');
     // Validate color, background color and border of the add key private key input
     await expect(
       await hbauthLoginDialog.getElementCssPropertyValue(
@@ -622,11 +575,6 @@ test.describe('Login and Sign Up tests', () => {
     await expect(
       await hbauthLoginDialog.getElementCssPropertyValue(await hbauthLoginDialog.hbauthUnlockKeyUsernameInput, 'border-bottom-color')
     ).toBe('rgb(239, 68, 68)');
-    // // Validate border color of password input after clicking inside
-    // await hbauthLoginDialog.hbauthUnlockKeyPasswordInput.click();
-    // await expect(
-    //   await hbauthLoginDialog.getElementCssPropertyValue(await hbauthLoginDialog.hbauthUnlockKeyPasswordInput, 'border-bottom-color')
-    // ).toBe('rgb(239, 68, 68)');
   });
 
   test('Validate Hbauth login dialog styles in Add Key Tab after hovering and clicking in the dark mode', async ({ page }) => {

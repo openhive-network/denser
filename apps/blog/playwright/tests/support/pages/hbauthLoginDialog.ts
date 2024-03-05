@@ -7,9 +7,9 @@ export class HbauthLoginDialog {
   readonly hbauthAddKeyButton: Locator;
   readonly hbauthUnlockKeyHeader: Locator;
   readonly hbauthUnlockKeyUsernameInput: Locator;
-  // readonly hbauthUnlockKeyPasswordInput: Locator;
   readonly hbauthUnlockKeySelectKeyType: Locator;
-  readonly hbauthUnlockKeySelectKeyTypeTrigger: Locator;
+  readonly hbauthUnlockKeyTypeRadioPostingPrivateKey: Locator;
+  readonly hbauthUnlockKeyTypeRadioActivePrivateKey: Locator;
   readonly hbauthUnlockKeySubmitButton: Locator;
   readonly hbauthUnlockKeyResetButton: Locator;
 
@@ -18,6 +18,8 @@ export class HbauthLoginDialog {
   readonly hbauthAddKeyPasswordInput: Locator;
   readonly hbauthAddKeySelectKeyType: Locator;
   readonly hbauthAddKeySelectKeyTypeTrigger: Locator;
+  readonly hbauthAddKeyTypeRadioPostingPrivateKey: Locator;
+  readonly hbauthAddKeyTypeRadioActivePrivateKey: Locator;
   readonly hbauthAddKeyPrivateKeyInput: Locator;
   readonly hbauthAddKeySubmitButton: Locator;
   readonly hbauthAddKeyResetButton: Locator;
@@ -30,17 +32,18 @@ export class HbauthLoginDialog {
     this.hbauthAddKeyButton = page.locator('[data-testid="hbauth-add-key-button"]');
     this.hbauthUnlockKeyHeader = page.locator('[data-testid="hbauth-unlock-key-header"]');
     this.hbauthUnlockKeyUsernameInput = page.locator('[data-testid="hbauth-unlock-key-username-input"]');
-    // this.hbauthUnlockKeyPasswordInput = page.locator('[data-testid="hbauth-unlock-key-password-input"]');
-    this.hbauthUnlockKeySelectKeyType = page.locator('[data-testid="hbauth-unlock-key-select-key-type"] select');
-    this.hbauthUnlockKeySelectKeyTypeTrigger = page.locator('[data-testid="hbauth-unlock-key-select-key-type-trigger"]');
+    this.hbauthUnlockKeySelectKeyType = page.locator('[data-testid="hbauth-unlock-key-select-key-type"]');
+    this.hbauthUnlockKeyTypeRadioPostingPrivateKey = this.hbauthUnlockKeySelectKeyType.locator('button[data-testid="radio-button"]').first();
+    this.hbauthUnlockKeyTypeRadioActivePrivateKey = this.hbauthUnlockKeySelectKeyType.locator('button[data-testid="radio-button"]').last();
     this.hbauthUnlockKeySubmitButton = page.locator('[data-testid="hbauth-unlock-key-submit-button"]');
     this.hbauthUnlockKeyResetButton = page.locator('[data-testid="hbauth-unlock-key-reset-button"]');
 
     this.hbauthAddKeyHeader = page.locator('[data-testid="hbauth-add-key-header"]');
     this.hbauthAddKeyUsernameInput = page.locator('[data-testid="hbauth-add-key-username-input"]');
     this.hbauthAddKeyPasswordInput = page.locator('[data-testid="hbauth-add-key-password-input"]');
-    this.hbauthAddKeySelectKeyType = page.locator('[data-testid="hbauth-add-key-select-key-type"] select');
-    this.hbauthAddKeySelectKeyTypeTrigger = page.locator('[data-testid="hbauth-add-key-select-key-type-trigger"]');
+    this.hbauthAddKeySelectKeyType = page.locator('[data-testid="hbauth-add-key-select-key-type"]');
+    this.hbauthAddKeyTypeRadioPostingPrivateKey = this.hbauthAddKeySelectKeyType.locator('button[data-testid="radio-button"]').first();
+    this.hbauthAddKeyTypeRadioActivePrivateKey = this.hbauthAddKeySelectKeyType.locator('button[data-testid="radio-button"]').last();
     this.hbauthAddKeyPrivateKeyInput = page.locator('[data-testid="hbauth-add-key-private-key-input"]');;
     this.hbauthAddKeySubmitButton = page.locator('[data-testid="hbauth-add-key-submit-button"]');
     this.hbauthAddKeyResetButton = page.locator('[data-testid="hbauth-add-key-reset-button"]');
@@ -53,8 +56,7 @@ export class HbauthLoginDialog {
     await expect(this.hbauthUnlockKeyButton).toBeVisible();
     await expect(this.hbauthUnlockKeyHeader).toHaveText('Hbauth: Unlock Key');
     await expect(this.hbauthUnlockKeyUsernameInput).toHaveAttribute('placeholder', 'Enter your username');
-    // await expect(this.hbauthUnlockKeyPasswordInput).toHaveAttribute('placeholder', 'Password');
-    await expect(this.hbauthUnlockKeySelectKeyTypeTrigger).toBeVisible();
+    await expect(this.hbauthUnlockKeySelectKeyType).toBeVisible();
     await expect(this.hbauthUnlockKeySubmitButton).toBeVisible();
     await expect(this.hbauthUnlockKeyResetButton).toBeVisible();
   }
@@ -64,8 +66,8 @@ export class HbauthLoginDialog {
     await expect(this.hbauthUnlockKeyButton).toBeVisible();
     await expect(this.hbauthUnlockKeyHeader).toHaveText('Hbauth: Unlock Key');
     await expect(this.hbauthUnlockKeyUsernameInput).toHaveAttribute('placeholder', 'Enter your username');
-    // await expect(this.hbauthUnlockKeyPasswordInput).toHaveAttribute('placeholder', 'Password');
-    await expect(this.hbauthUnlockKeySelectKeyTypeTrigger).toBeVisible();
+    await expect(this.hbauthUnlockKeyTypeRadioPostingPrivateKey).toBeVisible();
+    await expect(this.hbauthUnlockKeyTypeRadioActivePrivateKey).toBeVisible();
     await expect(this.hbauthUnlockKeySubmitButton).toBeVisible();
     await expect(this.hbauthUnlockKeyResetButton).toBeVisible();
   }
@@ -75,7 +77,8 @@ export class HbauthLoginDialog {
     await expect(this.hbauthAddKeyHeader).toHaveText('Hbauth: Add Key');
     await expect(this.hbauthAddKeyUsernameInput).toHaveAttribute('placeholder', 'Enter your username');
     await expect(this.hbauthAddKeyPasswordInput).toHaveAttribute('placeholder', 'Password');
-    await expect(this.hbauthAddKeySelectKeyTypeTrigger).toBeVisible();
+    await expect(this.hbauthAddKeyTypeRadioPostingPrivateKey).toBeVisible();
+    await expect(this.hbauthAddKeyTypeRadioActivePrivateKey).toBeVisible();
     await expect(this.hbauthAddKeyPrivateKeyInput).toHaveAttribute('placeholder', 'Your private key');
     await expect(this.hbauthAddKeySubmitButton).toBeVisible();
     await expect(this.hbauthAddKeyResetButton).toBeVisible();
