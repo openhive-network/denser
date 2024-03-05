@@ -13,6 +13,7 @@ import { i18n } from '@/blog/next-i18next.config';
 import { useFollowingInfiniteQuery } from '@/blog/components/hooks/use-following-infinitequery';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import FollowButton from '@/blog/components/follow-button';
+import MuteButton from '@/blog/components/mute-button';
 
 const LIMIT = 50;
 export default function Followers() {
@@ -23,6 +24,7 @@ export default function Followers() {
   const profileData = useQueryClient().getQueryData<FullAccount>(['profileData', username]);
   const followersData = useFollowersInfiniteQuery(username, LIMIT);
   const following = useFollowingInfiniteQuery(user.username, 50, 'blog', ['blog']);
+  const mute = useFollowingInfiniteQuery(user.username, 50, 'ignore', ['ignore']);
 
   const handleNextPage = () => {
     if (!followersData.data) return;
@@ -64,6 +66,7 @@ export default function Followers() {
               {!user.isLoggedIn || user.username === e.follower ? null : (
                 <div>
                   <FollowButton username={e.follower} user={user} variant="basic" list={following} />
+                  <MuteButton username={e.follower} user={user} variant="basic" list={mute} />
                 </div>
               )}
             </li>

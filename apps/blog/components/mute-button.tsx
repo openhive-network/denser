@@ -46,7 +46,7 @@ const MuteButton = ({
       {user.isLoggedIn ? (
         <Button
           className=" hover:text-red-500"
-          variant="secondary"
+          variant={variant}
           size="sm"
           data-testid="profile-mute-button"
           onClick={() => {
@@ -78,7 +78,7 @@ const MuteButton = ({
         <DialogLogin>
           <Button
             className=" hover:text-red-500"
-            variant="secondary"
+            variant={variant}
             size="sm"
             data-testid="profile-mute-button"
           >
