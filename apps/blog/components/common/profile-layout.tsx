@@ -74,7 +74,6 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   } = useQuery(['accountData', username], () => getAccount(username), {
     enabled: !!username
   });
-
   const {
     data: followingDataIgnore,
     isLoading: isLoadingFollowingDataIgnore,
@@ -87,12 +86,12 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
     error: dynamicGlobalDataError,
     data: dynamicGlobalData
   } = useQuery(['dynamicGlobalData'], () => getDynamicGlobalProperties());
-
   const { data: twitterData } = useQuery(['twitterData', username], () => getTwitterInfo(username), {
     enabled: !!username,
     retry: false,
     refetchOnWindowFocus: false
   });
+  const following = useFollowingInfiniteQuery(user?.username || '', 1000, 'blog', ['blog']);
 
   useEffect(() => {
     const isMute = Boolean(
@@ -320,7 +319,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             </ul>
             {user?.username !== username ? (
               <div className="m-2 flex gap-2 hover:text-red-500 sm:absolute sm:right-0">
-                <FollowButton username={username} user={user} variant="secondary" />
+                <FollowButton username={username} user={user} variant="secondary" list={following} />
                 {user && user.isLoggedIn ? (
                   <Button
                     className=" hover:text-red-500"

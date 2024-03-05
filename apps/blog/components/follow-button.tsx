@@ -2,16 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { Button } from '@hive/ui';
 import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
-import { useFollowingInfiniteQuery } from './hooks/use-following-infinitequery';
 import { transactionService } from '@transaction/index';
 import { FollowOperationBuilder } from '@hive/wax/web';
 import { useSigner } from '@/blog/components/hooks/use-signer';
 import { User } from '@smart-signer/types/common';
+import { IFollow } from '@transaction/lib/hive';
+import { UseInfiniteQueryResult } from '@tanstack/react-query';
 
 const FollowButton = ({
   username,
   user,
-  variant
+  variant,
+  list
 }: {
   username: string;
   user: User;
@@ -27,21 +29,21 @@ const FollowButton = ({
     | 'basic'
     | null
     | undefined;
+  list: UseInfiniteQueryResult<IFollow[], unknown>;
 }) => {
-  const [isFollow, setIsFollow] = useState(false);
   const { signerOptions } = useSigner();
   const { t } = useTranslation('common_blog');
-  const {
-    data: followingData,
-    isLoading: isLoadingFollowingData,
-    isFetching: isFetchingFollowingData
-  } = useFollowingInfiniteQuery(user?.username || '', 50, 'blog', ['blog']);
+  const [isFollow, setIsFollow] = useState(false);
+
   useEffect(() => {
     const isFollow = Boolean(
-      followingData?.pages[0].some((f) => f.follower === user?.username && f.following === username)
+      list.data?.pages[0].some(
+        (f: { follower: string; following: string }) =>
+          f.follower === user.username && f.following === username
+      )
     );
     setIsFollow(isFollow);
-  }, [followingData?.pages, user?.username, username]);
+  }, [list.data?.pages, user?.username, username]);
   return (
     <>
       {user && user.isLoggedIn ? (
@@ -71,7 +73,7 @@ const FollowButton = ({
               }
             }, signerOptions);
           }}
-          disabled={isLoadingFollowingData || isFetchingFollowingData}
+          disabled={list.isLoading || list.isFetching}
         >
           {isFollow ? t('user_profil.unfollow_button') : t('user_profil.follow_button')}
         </Button>

@@ -21,6 +21,8 @@ export default function Followed() {
   const profileData = useQueryClient().getQueryData<FullAccount>(['profileData', username]);
   const { user } = useUser();
   const followingData = useFollowingInfiniteQuery(username, LIMIT);
+  const following = useFollowingInfiniteQuery(user?.username || '', 50, 'blog', ['blog']);
+
   const handleNextPage = () => {
     if (!followingData.data) return;
 
@@ -60,7 +62,7 @@ export default function Followed() {
               <Link href={`/@${e.following}`}>{e.following}</Link>
               {user && user.username === e.following ? null : (
                 <div>
-                  <FollowButton username={e.following} user={user} variant="basic" />
+                  <FollowButton username={e.following} user={user} variant="basic" list={following} />
                 </div>
               )}
             </li>

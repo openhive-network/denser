@@ -52,7 +52,7 @@ export function HoverCardData({ author }: { author: string }) {
                 <span className="block">{`@${author}`}</span>
               </Link>
               <div className="grid grid-cols-2 gap-2 py-2">
-                <FollowButton user={user} username={author} variant="secondary" />
+                {/* <FollowButton user={user} username={author} variant="secondary" /> */}
               </div>
             </div>
           </div>
