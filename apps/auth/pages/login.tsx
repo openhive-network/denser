@@ -1,7 +1,9 @@
 import { GetServerSideProps } from 'next';
 import { getTranslations } from '@/auth/lib/get-translations';
 import { loginPageController } from '@smart-signer/lib/login-page-controller';
-import { LoginPanel } from '@smart-signer/components/login-panel';
+
+// import { LoginPanel } from '@smart-signer/components/login-panel';
+import { LoginPanel } from '@smart-signer/components/signin-panel';
 
 export default function LoginPage() {
 
