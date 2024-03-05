@@ -28,6 +28,7 @@ import { useFollowingInfiniteQuery } from '../hooks/use-following-infinitequery'
 import { transactionService } from '@transaction/index';
 import { FollowOperationBuilder } from '@hive/wax/web';
 import { useSigner } from '@/blog/components/hooks/use-signer';
+import FollowButton from '../follow-button';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -75,16 +76,10 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   });
 
   const {
-    data: followingData,
-    isLoading: isLoadingFollowingData,
-    isFetching: isFetchingFollowingData
-  } = useFollowingInfiniteQuery(user?.username || '', 50, 'blog', ['blog']);
-  const {
     data: followingDataIgnore,
     isLoading: isLoadingFollowingDataIgnore,
     isFetching: isFetchingFollowingDataIgnore
   } = useFollowingInfiniteQuery(user?.username || '', 50, 'ignore', ['ignore']);
-  const [isFollow, setIsFollow] = useState(false);
   const [isMute, setIsMute] = useState(false);
 
   const {
@@ -98,13 +93,6 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
     retry: false,
     refetchOnWindowFocus: false
   });
-
-  useEffect(() => {
-    const isFollow = Boolean(
-      followingData?.pages[0].some((f) => f.follower === user?.username && f.following === username)
-    );
-    setIsFollow(isFollow);
-  }, [followingData?.pages, user?.username, username]);
 
   useEffect(() => {
     const isMute = Boolean(
@@ -332,50 +320,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             </ul>
             {user?.username !== username ? (
               <div className="m-2 flex gap-2 hover:text-red-500 sm:absolute sm:right-0">
-                {user && user.isLoggedIn ? (
-                  <Button
-                    className=" hover:text-red-500 "
-                    variant="secondary"
-                    size="sm"
-                    data-testid="profile-follow-button"
-                    onClick={() => {
-                      const nextFollow = !isFollow;
-                      setIsFollow(nextFollow);
-                      transactionService.processHiveAppOperation((builder) => {
-                        if (nextFollow) {
-                          builder.push(
-                            new FollowOperationBuilder()
-                              .followBlog(user.username, username)
-                              .authorize(user.username)
-                              .build()
-                          );
-                        } else {
-                          builder.push(
-                            new FollowOperationBuilder()
-                              .unfollowBlog(user.username, username)
-                              .authorize(user.username)
-                              .build()
-                          );
-                        }
-                      }, signerOptions);
-                    }}
-                    disabled={isLoadingFollowingData || isFetchingFollowingData}
-                  >
-                    {isFollow ? t('user_profil.unfollow_button') : t('user_profil.follow_button')}
-                  </Button>
-                ) : (
-                  <DialogLogin>
-                    <Button
-                      className=" hover:text-red-500 "
-                      variant="secondary"
-                      size="sm"
-                      data-testid="profile-follow-button"
-                    >
-                      {t('user_profil.follow_button')}
-                    </Button>
-                  </DialogLogin>
-                )}
-
+                <FollowButton username={username} />
                 {user && user.isLoggedIn ? (
                   <Button
                     className=" hover:text-red-500"
