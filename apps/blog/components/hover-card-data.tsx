@@ -9,12 +9,14 @@ import { useDynamicGlobalData } from './hooks/use-dynamic-global-data';
 import { useTranslation } from 'next-i18next';
 import FollowButton from './follow-button';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useFollowingInfiniteQuery } from './hooks/use-following-infinitequery';
 
 export function HoverCardData({ author }: { author: string }) {
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
   const follows = useFollowsQuery(author);
   const account = useAccountQuery(author);
+  const following = useFollowingInfiniteQuery(user.username || '', 50, 'blog', ['blog']);
   const about =
     account.data && account.data.posting_json_metadata
       ? JSON.parse(account.data.posting_json_metadata)?.profile?.about
@@ -52,7 +54,9 @@ export function HoverCardData({ author }: { author: string }) {
                 <span className="block">{`@${author}`}</span>
               </Link>
               <div className="grid grid-cols-2 gap-2 py-2">
-                {/* <FollowButton user={user} username={author} variant="secondary" /> */}
+                {user.username === author ? null : (
+                  <FollowButton username={author} user={user} variant="secondary" list={following} />
+                )}
               </div>
             </div>
           </div>

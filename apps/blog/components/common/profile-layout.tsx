@@ -78,7 +78,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
     data: followingDataIgnore,
     isLoading: isLoadingFollowingDataIgnore,
     isFetching: isFetchingFollowingDataIgnore
-  } = useFollowingInfiniteQuery(user?.username || '', 50, 'ignore', ['ignore']);
+  } = useFollowingInfiniteQuery(user.username, 50, 'ignore', ['ignore']);
   const [isMute, setIsMute] = useState(false);
 
   const {
@@ -91,14 +91,14 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
     retry: false,
     refetchOnWindowFocus: false
   });
-  const following = useFollowingInfiniteQuery(user?.username || '', 1000, 'blog', ['blog']);
+  const following = useFollowingInfiniteQuery(user.username, 1000, 'blog', ['blog']);
 
   useEffect(() => {
     const isMute = Boolean(
-      followingDataIgnore?.pages[0].some((f) => f.follower === user?.username && f.following === username)
+      followingDataIgnore?.pages[0].some((f) => f.follower === user.username && f.following === username)
     );
     setIsMute(isMute);
-  }, [followingDataIgnore?.pages, user?.username, username]);
+  }, [followingDataIgnore?.pages, user.username, username]);
 
   if (accountDataIsLoading || dynamicGlobalDataIsLoading || profileDataIsLoading) {
     return <Loading loading={accountDataIsLoading || dynamicGlobalDataIsLoading || profileDataIsLoading} />;
@@ -317,10 +317,10 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 </span>
               </li>
             </ul>
-            {user?.username !== username ? (
+            {user.username !== username ? (
               <div className="m-2 flex gap-2 hover:text-red-500 sm:absolute sm:right-0">
                 <FollowButton username={username} user={user} variant="secondary" list={following} />
-                {user && user.isLoggedIn ? (
+                {user.isLoggedIn ? (
                   <Button
                     className=" hover:text-red-500"
                     variant="secondary"
@@ -451,7 +451,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     {t('navigation.profil_navbar.wallet')}
                   </Link>
                 </li>
-                {user?.isLoggedIn && username === user?.username ? (
+                {user.isLoggedIn && username === user.username ? (
                   <li>
                     <Link
                       href={`/@${username}/settings`}

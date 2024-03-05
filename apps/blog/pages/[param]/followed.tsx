@@ -60,7 +60,7 @@ export default function Followed() {
               className="flex items-center justify-between px-3 font-semibold text-red-600 odd:bg-slate-200 even:bg-slate-100 dark:odd:bg-slate-800 dark:even:bg-slate-900"
             >
               <Link href={`/@${e.following}`}>{e.following}</Link>
-              {user && user.username === e.following ? null : (
+              {!user.isLoggedIn || user.username === e.following ? null : (
                 <div>
                   <FollowButton username={e.following} user={user} variant="basic" list={following} />
                 </div>

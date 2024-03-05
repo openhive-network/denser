@@ -46,7 +46,7 @@ const FollowButton = ({
   }, [list.data?.pages, user?.username, username]);
   return (
     <>
-      {user && user.isLoggedIn ? (
+      {user.isLoggedIn ? (
         <Button
           className=" hover:text-red-500 "
           variant={variant}
