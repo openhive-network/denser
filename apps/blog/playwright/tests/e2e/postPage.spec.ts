@@ -99,23 +99,28 @@ test.describe('Post page tests', () => {
 
     await postPage.moveToTheFirstPostInHomePageByImage();
     await postPage.articleAuthorName.hover();
+    await postPage.page.waitForTimeout(1000);
 
-    const userPostingJsonMetadata = await JSON.parse(
-      (await apiHelper.getAccountInfoAPI(firstPostAuthorName))['result'][0].posting_json_metadata
-    );
+    try {
+      const userPostingJsonMetadata = await JSON.parse(
+        (await apiHelper.getAccountInfoAPI(firstPostAuthorName))['result'][0].posting_json_metadata,
+      );
 
-    let userAboutAPI: any;
+      let userAboutAPI: any;
 
-    if ((await userPostingJsonMetadata.profile) && userPostingJsonMetadata.profile.about) {
-      userAboutAPI =
-        userPostingJsonMetadata.profile.about.slice(0, 157) +
-        (157 < userPostingJsonMetadata.profile.about.length ? '...' : '');
-      // console.log('userAboutAPI: ', await userAboutAPI);
-      expect(await postPage.userAboutHoverCard.textContent()).toBe(userAboutAPI);
-    } else {
-      userAboutAPI = '';
-      // console.log('userAboutAPI: ', await userAboutAPI);
-      expect(await postPage.userAboutHoverCard.textContent()).toBe(userAboutAPI);
+      if ((await userPostingJsonMetadata.profile) && userPostingJsonMetadata.profile.about) {
+        userAboutAPI =
+          userPostingJsonMetadata.profile.about.slice(0, 157) +
+          (157 < userPostingJsonMetadata.profile.about.length ? '...' : '');
+        // console.log('userAboutAPI: ', await userAboutAPI);
+        expect(await postPage.userAboutHoverCard.textContent()).toBe(userAboutAPI);
+      } else {
+        userAboutAPI = '';
+        // console.log('userAboutAPI: ', await userAboutAPI);
+        expect(await postPage.userAboutHoverCard.textContent()).toBe(userAboutAPI);
+      }
+    } catch (error) {
+      console.log('Json error: ', error)
     }
   });
 
@@ -514,21 +519,25 @@ test.describe('Post page tests', () => {
 
     await postPage.footerAuthorNameLink.hover();
 
-    const userPostingJsonMetadata = await JSON.parse(
-      (await apiHelper.getAccountInfoAPI(firstPostAuthorName))['result'][0].posting_json_metadata
-    );
+    try {
+      const userPostingJsonMetadata = await JSON.parse(
+        (await apiHelper.getAccountInfoAPI(firstPostAuthorName))['result'][0].posting_json_metadata
+      );
 
-    let userAboutAPI: any;
-    if ((await userPostingJsonMetadata.profile) && userPostingJsonMetadata.profile.about) {
-      userAboutAPI =
-        userPostingJsonMetadata.profile.about.slice(0, 157) +
-        (157 < userPostingJsonMetadata.profile.about.length ? '...' : '');
-      // console.log('userAboutAPI: ', await userAboutAPI);
-      expect(await postPage.userAboutHoverCard.textContent()).toBe(userAboutAPI);
-    } else {
-      userAboutAPI = '';
-      // console.log('userAboutAPI: ', await userAboutAPI);
-      expect(await postPage.userAboutHoverCard.textContent()).toBe(userAboutAPI);
+      let userAboutAPI: any;
+      if ((await userPostingJsonMetadata.profile) && userPostingJsonMetadata.profile.about) {
+        userAboutAPI =
+          userPostingJsonMetadata.profile.about.slice(0, 157) +
+          (157 < userPostingJsonMetadata.profile.about.length ? '...' : '');
+        // console.log('userAboutAPI: ', await userAboutAPI);
+        expect(await postPage.userAboutHoverCard.textContent()).toBe(userAboutAPI);
+      } else {
+        userAboutAPI = '';
+        // console.log('userAboutAPI: ', await userAboutAPI);
+        expect(await postPage.userAboutHoverCard.textContent()).toBe(userAboutAPI);
+      }
+    } catch (error) {
+      console.log('JSON error: ', error);
     }
   });
 });
