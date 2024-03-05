@@ -2,16 +2,34 @@ import React, { useEffect, useState } from 'react';
 import { Button } from '@hive/ui';
 import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useFollowingInfiniteQuery } from './hooks/use-following-infinitequery';
 import { transactionService } from '@transaction/index';
 import { FollowOperationBuilder } from '@hive/wax/web';
 import { useSigner } from '@/blog/components/hooks/use-signer';
+import { User } from '@smart-signer/types/common';
 
-const FollowButton = ({ username }: { username: string }) => {
+const FollowButton = ({
+  username,
+  user,
+  variant
+}: {
+  username: string;
+  user: User;
+  variant:
+    | 'default'
+    | 'destructive'
+    | 'outline'
+    | 'secondary'
+    | 'ghost'
+    | 'outlineRed'
+    | 'link'
+    | 'redHover'
+    | 'basic'
+    | null
+    | undefined;
+}) => {
   const [isFollow, setIsFollow] = useState(false);
   const { signerOptions } = useSigner();
-  const { user } = useUser();
   const { t } = useTranslation('common_blog');
   const {
     data: followingData,
@@ -24,13 +42,12 @@ const FollowButton = ({ username }: { username: string }) => {
     );
     setIsFollow(isFollow);
   }, [followingData?.pages, user?.username, username]);
-
   return (
     <>
       {user && user.isLoggedIn ? (
         <Button
           className=" hover:text-red-500 "
-          variant="secondary"
+          variant={variant}
           size="sm"
           data-testid="profile-follow-button"
           onClick={() => {
@@ -62,7 +79,7 @@ const FollowButton = ({ username }: { username: string }) => {
         <DialogLogin>
           <Button
             className=" hover:text-red-500 "
-            variant="secondary"
+            variant={variant}
             size="sm"
             data-testid="profile-follow-button"
           >

@@ -320,7 +320,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             </ul>
             {user?.username !== username ? (
               <div className="m-2 flex gap-2 hover:text-red-500 sm:absolute sm:right-0">
-                <FollowButton username={username} />
+                <FollowButton username={username} user={user} variant="secondary" />
                 {user && user.isLoggedIn ? (
                   <Button
                     className=" hover:text-red-500"
