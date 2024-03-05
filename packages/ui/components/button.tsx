@@ -18,7 +18,7 @@ const buttonVariants = cva(
         link: 'underline-offset-4 hover:underline text-primary',
         redHover:
           'text-base disabled:bg-gray-400 hover:bg-red-600 bg-gray-800 rounded-none text-white shadow-md shadow-red-600 hover:shadow-gray-800 disabled:shadow-none',
-        basic: 'h-2 border-input'
+        basic: 'h-2 border-input text-black hover:text-red-600'
       },
       size: {
         default: 'h-10 py-2 px-4',
