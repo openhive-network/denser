@@ -305,14 +305,14 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 </span>
               </li>
             </ul>
-            {user.username !== username && (
+            {user.username !== username ? (
               <div className="m-2 flex gap-2 hover:text-red-500 sm:absolute sm:right-0">
                 <FollowButton username={username} user={user} variant="secondary" list={following} />
-                {user.isLoggedIn && (
+                {user.isLoggedIn ? (
                   <MuteButton username={username} user={user} variant="secondary" list={mute} />
-                )}
+                ) : null}
               </div>
-            )}
+            ) : null}
           </div>
         ) : (
           <div className={`h-auto max-h-full min-h-full w-auto min-w-full max-w-full bg-gray-600 bg-cover`} />

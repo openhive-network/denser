@@ -59,9 +59,9 @@ export function HoverCardData({ author }: { author: string }) {
                 {user.username === author ? null : (
                   <>
                     <FollowButton username={author} user={user} variant="secondary" list={following} />
-                    {user.isLoggedIn && (
-                      <MuteButton username={author} user={user} variant="basic" list={mute} />
-                    )}
+                    {user.isLoggedIn ? (
+                      <MuteButton username={author} user={user} variant="secondary" list={mute} />
+                    ) : null}
                   </>
                 )}
               </div>
