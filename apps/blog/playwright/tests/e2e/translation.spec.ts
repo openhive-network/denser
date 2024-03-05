@@ -314,12 +314,14 @@ test.describe('Translation tests', () => {
     await homePage.languageMenuPl.click();
     await expect(postPage.articleTitle).toBeVisible();
     await postPage.articleAuthorName.hover();
+    await page.waitForTimeout(3000);
     await expect(await postPage.userHoverCardFollowButton.textContent()).toBe('Obserwuj');
     await expect(await postPage.userFollowingHoverCard.textContent()).toContain('Obserwowani');
     await expect(await postPage.userFollowersHoverCard.textContent()).toContain('Obserwujący');
   });
 
   test('Home page', async ({ page }) => {
+    await page.waitForTimeout(3000);
     loginDialogEnglish = new LoginToVoteDialog(page);
 
     await homePage.goto();
