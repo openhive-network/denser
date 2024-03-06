@@ -13,7 +13,7 @@ export const HiveRendererContext = createContext<HiveRendererContextType>({
   setHiveRenderer: () => {}
 });
 
-export const useHiveChainContext = () => useContext(HiveRendererContext);
+export const useHiveRendererContext = () => useContext(HiveRendererContext);
 export const HiveContentRendererProvider: FC<PropsWithChildren> = ({ children }) => {
   const [hiveRenderer, setHiveRenderer] = useState<DefaultRenderer | undefined>(undefined);
   const createRenderer = async () => {

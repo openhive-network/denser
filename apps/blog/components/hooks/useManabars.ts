@@ -1,6 +1,8 @@
+import { IHiveChainInterface } from '@hive/wax';
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
-import { useHiveChainContext } from '../hive-chain-context';
 import { getManabar } from '@transaction/lib/hive';
+import { hiveChainService } from '@transaction/lib/hive-chain-service'
+import { useEffect, useState } from 'react';
 
 interface SingleManabar {
   max: string;
@@ -16,7 +18,19 @@ interface Manabars {
 }
 
 const useManabars = (accountName?: string) => {
-  const { hiveChain } = useHiveChainContext();
+  const [hiveChain, setHiveChain] = useState<IHiveChainInterface | null>();
+
+useEffect(() => {
+  (async () => {
+    try {
+      // await async "fetchBooks()" function
+      const chain = await hiveChainService.getHiveChain()
+      setHiveChain(chain);
+    } catch (err) {
+      console.log('Error occured when awaiting hiveChainService');
+    }
+  })();
+}, []);
 
   const {
     data: manabarsData,
