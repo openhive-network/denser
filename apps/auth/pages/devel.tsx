@@ -23,7 +23,7 @@ import { vote, createHiveChain, BroadcastTransactionRequest, ApiTransaction } fr
 import { waxToKeychainOperation } from '@smart-signer/lib/signer/signer-keychain';
 import { KeyType } from '@smart-signer/types/common';
 import { fetchJson } from '@smart-signer/lib/fetch-json';
-import { authorityChecker } from '@smart-signer/lib/authority-checker';
+import { authorityChecker, AuthorityLevel } from '@smart-signer/lib/authority-checker';
 import { pascalCase } from 'change-case';
 
 import { getLogger } from '@ui/lib/logging';
@@ -84,7 +84,11 @@ export default function Profile() {
 
       logger.info('transaction: %o', trx);
 
-      await main(JSON.parse(txBuilder.toApi()) as ApiTransaction, user.username);
+      await authorityChecker(
+        JSON.parse(txBuilder.toApi()) as ApiTransaction,
+        user.username,
+        AuthorityLevel.POSTING
+        );
 
     } catch (error) {
       logger.error(error);

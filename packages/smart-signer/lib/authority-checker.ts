@@ -24,7 +24,7 @@ class VerifyAuthorityResponse {
   public valid: boolean;
 };
 
-enum AuthorityLevel {
+export enum AuthorityLevel {
   ACTIVE,
   POSTING,
   OWNER
@@ -56,8 +56,7 @@ const authorityStrictChecker = async (
 
     logger.info(`Found # ${foundAccountInfo.length} account info(s)...`);
 
-    for (let i in findAccountsResponse.accounts) {
-      const accountInfo = findAccountsResponse.accounts[i];
+    for (const accountInfo of findAccountsResponse.accounts) {
 
       let authorityToVerify: ApiAuthority;
 
@@ -93,7 +92,8 @@ const authorityStrictChecker = async (
 
 export const authorityChecker = async (
   txJSON: ApiTransaction,
-  expectedSignerAccount: string
+  expectedSignerAccount: string,
+  expectedAuthorityLevel: AuthorityLevel
 ): Promise<void> =>  {
 
   logger.info('txJSON', txJSON);
@@ -107,9 +107,8 @@ export const authorityChecker = async (
   const extendedChain: TExtendedHiveChain =
     hiveChain.extend(DatabaseApiExtensions);
 
-  let expectedAuthorityLevel: AuthorityLevel = AuthorityLevel.POSTING;
-
-  const authorityVerificationResult = await extendedChain.api.database_api.verify_authority({ trx: txJSON });
+  const authorityVerificationResult = await extendedChain.api.database_api
+    .verify_authority({ trx: txJSON });
 
   if (authorityVerificationResult.valid) {
     logger.info([
