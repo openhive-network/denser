@@ -29,8 +29,12 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
   async verifyPrivateKey(wif: string) {
     const privateKey = PrivateKey.fromString(wif);
     const publicKey = privateKey.createPublic('STM');
+    logger.info('publicKey: %o', publicKey.toString());
     const hiveChain: IHiveChainInterface = await createHiveChain();
-    const referencedAccounts = (await hiveChain.api.account_by_key_api.get_key_references({ keys: [publicKey.toString()] })).accounts;
+    const referencedAccounts = (
+      await hiveChain.api.account_by_key_api
+      .get_key_references({ keys: [publicKey.toString()] })
+      ).accounts;
     logger.info('referencedAccounts: %o', referencedAccounts);
     if (referencedAccounts[0].includes(this.username)) {
       return true;
@@ -51,12 +55,19 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
         });
       }
       if (!wif) throw new Error('No WIF key');
-      // We don't know, if this WIF is correct, so we need to verify it.
-      if (await this.verifyPrivateKey(wif)) {
-        // TODO Ask user if he wants to store this key.
-        this.storage.setItem(`wif.${username}@${keyType}`, wif);
-      } else {
-        throw new Error('Invalid WIF key');
+
+      // TODO Ask user if he wants to store the key. If he answers
+      // "yes", verify the key before storing it.
+      const storeKey: boolean = true;
+
+      if (storeKey) {
+        // We don't know, if this key is correct, so we need to verify
+        // it. We don't want to store incorrect key.
+        if (await this.verifyPrivateKey(wif)) {
+          this.storage.setItem(`wif.${username}@${keyType}`, wif);
+        } else {
+          throw new Error('Invalid WIF key');
+        }
       }
 
       const privateKey = PrivateKey.fromString(wif);
