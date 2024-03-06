@@ -310,7 +310,7 @@ test.describe('Translation tests', () => {
     await homePage.toggleLanguage.click();
     await expect(homePage.languageMenu.first()).toBeVisible();
     await homePage.languageMenuPl.click();
-    await page.waitForTimeout(4000);
+    await page.waitForTimeout(10000);
     await homePage.getFirstPostTitle.click();
     await expect(postPage.articleTitle).toBeVisible();
     await postPage.articleAuthorName.hover();
