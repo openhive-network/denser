@@ -1,9 +1,16 @@
 import {Log} from '../../../../Log';
+import {AssetEmbedderOptions} from '../AssetEmbedder';
 import linksRe from '../utils/Links';
 import {AbstractEmbedder, EmbedMetadata} from './AbstractEmbedder';
 
 export class TwitchEmbedder extends AbstractEmbedder {
     public type = 'twitch';
+    private readonly domain: string;
+
+    public constructor(options: AssetEmbedderOptions) {
+        super();
+        this.domain = new URL(options.baseUrl).hostname;
+    }
 
     public getEmbedMetadata(child: HTMLObjectElement): EmbedMetadata | undefined {
         try {
@@ -23,7 +30,7 @@ export class TwitchEmbedder extends AbstractEmbedder {
     }
 
     public processEmbed(id: string, size: {width: number; height: number}): string {
-        const url = `https://player.twitch.tv/${id}`;
+        const url = `https://player.twitch.tv/${id}&parent=${this.domain}`;
         return `<div class="videoWrapper"><iframe src=${url} width=${size.width} height=${size.height} frameBorder="0" allowFullScreen></iframe></div>`;
     }
 

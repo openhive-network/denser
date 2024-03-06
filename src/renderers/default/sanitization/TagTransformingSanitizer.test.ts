@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {Localization} from '../LocalizationOptions';
+import {Localization} from '../Localization';
 import {TagTransformingSanitizer} from './TagTransformingSanitizer';
 
 const options = {

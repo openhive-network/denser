@@ -1,7 +1,7 @@
 import ow from 'ow';
 import {Remarkable} from 'remarkable';
 import {SecurityChecker} from '../../security/SecurityChecker';
-import {AssetEmbedder} from './embedder/AssetEmbedder';
+import {HtmlDOMParser} from './embedder/HtmlDOMParser';
 import {Localization, LocalizationOptions} from './Localization';
 import {PreliminarySanitizer} from './sanitization/PreliminarySanitizer';
 import {TagTransformingSanitizer} from './sanitization/TagTransformingSanitizer';
@@ -9,7 +9,7 @@ import {TagTransformingSanitizer} from './sanitization/TagTransformingSanitizer'
 export class DefaultRenderer {
     private options: RendererOptions;
     private tagTransformingSanitizer: TagTransformingSanitizer;
-    private embedder: AssetEmbedder;
+    private domParser: HtmlDOMParser;
 
     public constructor(options: RendererOptions, localization: LocalizationOptions = Localization.DEFAULT) {
         this.validate(options);
@@ -32,16 +32,16 @@ export class DefaultRenderer {
             localization
         );
 
-        this.embedder = new AssetEmbedder(
+        this.domParser = new HtmlDOMParser(
             {
-                ipfsPrefix: this.options.ipfsPrefix,
                 width: this.options.assetsWidth,
                 height: this.options.assetsHeight,
-                hideImages: this.options.doNotShowImages,
+                ipfsPrefix: this.options.ipfsPrefix,
+                baseUrl: this.options.baseUrl,
                 imageProxyFn: this.options.imageProxyFn,
                 hashtagUrlFn: this.options.hashtagUrlFn,
                 usertagUrlFn: this.options.usertagUrlFn,
-                baseUrl: this.options.baseUrl
+                hideImages: this.options.doNotShowImages
             },
             localization
         );
@@ -59,10 +59,10 @@ export class DefaultRenderer {
         text = isHtml ? text : this.renderMarkdown(text);
 
         text = this.wrapRenderedTextWithHtmlIfNeeded(text);
-        text = this.embedder.markAssets(text);
+        text = this.domParser.parse(text).getParsedDocumentAsString();
         text = this.sanitize(text);
         SecurityChecker.checkSecurity(text, {allowScriptTag: this.options.allowInsecureScriptTags});
-        text = this.embedder.insertAssets(text);
+        text = this.domParser.embedder.insertAssets(text);
 
         return text;
     }

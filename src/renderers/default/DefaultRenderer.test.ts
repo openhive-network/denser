@@ -67,7 +67,7 @@ describe('DefaultRender', () => {
         {
             name: 'Should remove additional unsafe attributes from a tag',
             raw: "<a fake='test'></a>",
-            expected: '<p><a class="hive-test external"></a></p>'
+            expected: '<p><a class="hive-test"></a></p>'
         },
         {
             name: 'Spotify playlist link should be embedded correctly',

@@ -11,7 +11,7 @@ export class LinkSanitizer {
         this.validate(options);
         this.options = options;
         this.baseUrl = new URL(this.options.baseUrl);
-        this.topLevelsBaseDomain = this.getTopLevelBaseDomainFromBaseUrl(this.baseUrl);
+        this.topLevelsBaseDomain = LinkSanitizer.getTopLevelBaseDomainFromBaseUrl(this.baseUrl);
     }
 
     public sanitizeLink(url: string, urlTitle: string): string | false {
@@ -37,7 +37,7 @@ export class LinkSanitizer {
         return url;
     }
 
-    private getTopLevelBaseDomainFromBaseUrl(url: URL) {
+    private static getTopLevelBaseDomainFromBaseUrl(url: URL) {
         const regex = /([^\s/$.?#]+\.[^\s/$.?#]+)$/g;
         const m = regex.exec(url.hostname);
         if (m && m[0]) return m[0];

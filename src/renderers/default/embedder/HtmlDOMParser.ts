@@ -8,7 +8,6 @@ import {Log} from '../../../Log';
 import {LinkSanitizer} from '../../../security/LinkSanitizer';
 import {Localization, LocalizationOptions} from '../Localization';
 import {AssetEmbedder, AssetEmbedderOptions} from './AssetEmbedder';
-import {Embedders} from './embedders/Embedders';
 import {YoutubeEmbedder} from './embedders/YoutubeEmbedder';
 import {AccountNameValidator} from './utils/AccountNameValidator';
 import linksRe, {any as linksAny} from './utils/Links';
@@ -17,6 +16,7 @@ export class HtmlDOMParser {
     private options: AssetEmbedderOptions;
     private localization: LocalizationOptions;
     private linkSanitizer: LinkSanitizer;
+    public embedder: AssetEmbedder;
 
     private domParser = new xmldom.DOMParser({
         errorHandler: {
@@ -41,6 +41,20 @@ export class HtmlDOMParser {
         this.linkSanitizer = new LinkSanitizer({
             baseUrl: this.options.baseUrl
         });
+
+        this.embedder = new AssetEmbedder(
+            {
+                ipfsPrefix: this.options.ipfsPrefix,
+                width: this.options.width,
+                height: this.options.height,
+                hideImages: this.options.hideImages,
+                imageProxyFn: this.options.imageProxyFn,
+                hashtagUrlFn: this.options.hashtagUrlFn,
+                usertagUrlFn: this.options.usertagUrlFn,
+                baseUrl: this.options.baseUrl
+            },
+            localization
+        );
 
         this.state = {
             hashtags: new Set(),
@@ -147,6 +161,7 @@ export class HtmlDOMParser {
     }
 
     // TODO this is youtube specific but should be executed for all iframes and embedders
+    // TODO https://gitlab.syncad.com/hive/hive-renderer/-/issues/17
     private reportIframeLink(url: string) {
         const yt = YoutubeEmbedder.getYoutubeMetadataFromLink(url);
         if (yt) {
@@ -186,7 +201,7 @@ export class HtmlDOMParser {
                 return;
             }
 
-            const embedResp = Embedders.processTextNodeAndInsertEmbeds(child);
+            const embedResp = this.embedder.processTextNodeAndInsertEmbeds(child);
             embedResp.images.forEach((img) => this.state.images.add(img));
             embedResp.links.forEach((link) => this.state.links.add(link));
 
