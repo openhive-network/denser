@@ -23,7 +23,7 @@ import { vote, createHiveChain, BroadcastTransactionRequest, ApiTransaction } fr
 import { waxToKeychainOperation } from '@smart-signer/lib/signer/signer-keychain';
 import { KeyType } from '@smart-signer/types/common';
 import { fetchJson } from '@smart-signer/lib/fetch-json';
-import { main } from '@smart-signer/lib/get-signing-keys';
+import { authorityChecker } from '@smart-signer/lib/authority-checker';
 import { pascalCase } from 'change-case';
 
 import { getLogger } from '@ui/lib/logging';
@@ -74,15 +74,15 @@ export default function Profile() {
         digest: txBuilder.sigDigest,
         transaction: tx
       });
-      logger.info('broadcast signature: %s', signature);
+      logger.info('signature: %s', signature);
       txBuilder.build(signature);
-      logger.info('broadcast txBuilder: %o', txBuilder);
+      logger.info('txBuilder: %o', txBuilder);
       const trx = {
         trx: JSON.parse(txBuilder.toApi()),
         max_block_age: -1,
       };
 
-      logger.info('broadcast transaction: %o', trx);
+      logger.info('transaction: %o', trx);
 
       await main(JSON.parse(txBuilder.toApi()) as ApiTransaction, user.username);
 
