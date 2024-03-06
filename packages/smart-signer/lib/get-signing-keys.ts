@@ -53,7 +53,7 @@ const authorityStrictChecker = async (
 
     const foundAccountInfo = findAccountsResponse.accounts;
 
-    console.log(`Found # ${foundAccountInfo.length} account info(s)...`);
+    logger.info(`Found # ${foundAccountInfo.length} account info(s)...`);
 
     for (let i in findAccountsResponse.accounts) {
       const accountInfo = findAccountsResponse.accounts[i];
@@ -97,22 +97,43 @@ export const main = async (
 
   logger.info('txJSON', txJSON);
 
+  /// This is your tx received from KeyChain after signing
+  const exampleTxJSON = {
+    "expiration": "2024-02-21T06:55:40",
+    "extensions": [],
+    "operations": [
+      {
+        "type": "account_update2_operation",
+        "value": {
+          "account": "thatcryptodave",
+          "extensions": [],
+          "json_metadata": "",
+          "posting_json_metadata": "{\"name\":\"David P.\",\"about\":\"\",\"website\":\"\",\"location\":\"Ontario, Canada\",\"birthday\":\"03.28.1984\",\"profile\":{\"name\":\"David P.\",\"about\":\"\",\"website\":\"\",\"location\":\"Ontario, Canada\",\"birthday\":\"03.28.1984\",\"profile_image\":\"\",\"cover_image\":\"\"}}"
+        }
+      }
+    ],
+    "signatures": [
+      "1f6ad21ddf9f57f1a94c1462185744cb0ea779ec1e99899f2556a3ce02b18d1b810fcddaccb349a53037798aea8023909447df756db461235ba5b63984d515c977"
+    ],
+    "ref_block_num": 26295,
+    "ref_block_prefix": 26859167
+  };
+
   const hiveChain: IHiveChainInterface = await createHiveChain();
   const txBuilder = hiveChain.TransactionBuilder.fromApi(txJSON);
 
   const sigDigest = txBuilder.sigDigest;
-  console.log(`sigDigest of passed transaction is: ${sigDigest}`);
+  logger.info(`sigDigest of passed transaction is: ${sigDigest}`);
 
   const extendedChain: TExtendedHiveChain =
     hiveChain.extend(DatabaseApiExtensions);
 
   let expectedAuthorityLevel: AuthorityLevel = AuthorityLevel.POSTING;
 
-  const authorityVerificationResult =
-    await extendedChain.api.database_api.verify_authority({ trx: txJSON });
+  const authorityVerificationResult = await extendedChain.api.database_api.verify_authority({ trx: txJSON });
 
   if (authorityVerificationResult.valid) {
-    console.log([
+    logger.info([
       "Transaction is CORRECTLY signed, going to additionally validate ",
       "that key used to generate signature is directly specified ",
       "in Signer account authority"
@@ -133,7 +154,7 @@ export const main = async (
         new Array<Array<string>>(...referencedAccounts);
       const acntList = acnts.join(",");
 
-      console.log([
+      logger.info([
         `Public key used to sign transaction: ${key} `,
         `is referenced by account(s): ${acntList}`
       ].join());
@@ -142,18 +163,18 @@ export const main = async (
         key, expectedSignerAccount, expectedAuthorityLevel, extendedChain);
 
       if (directSigner)
-        console.log([
+        logger.info([
           `The account: ${expectedSignerAccount} `,
           `directly authorized the transaction`
         ].join());
       else
-        console.log([
+        logger.info([
           `WARNING: some other account(s): ${acntList} `,
           `than: ${expectedSignerAccount} authorized the transaction`
         ].join());
     }
   }
   else {
-    console.log("Transaction has specified INVALID authority");
+    logger.info("Transaction has specified INVALID authority");
   }
 };
