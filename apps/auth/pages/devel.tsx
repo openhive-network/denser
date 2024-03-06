@@ -84,7 +84,7 @@ export default function Profile() {
 
       logger.info('broadcast transaction: %o', trx);
 
-      main(JSON.parse(txBuilder.toApi()) as ApiTransaction, user.username);
+      await main(JSON.parse(txBuilder.toApi()) as ApiTransaction, user.username);
 
     } catch (error) {
       logger.error(error);

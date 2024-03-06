@@ -1,7 +1,6 @@
 import {
   createHiveChain,
   IHiveChainInterface,
-  transaction,
   ApiTransaction,
   ApiAuthority,
   TAccountName,
@@ -41,8 +40,10 @@ const DatabaseApiExtensions = {
 
 type TExtendedHiveChain = TWaxExtended<typeof DatabaseApiExtensions>;
 
+
 const authorityStrictChecker = async (
-  public_key: string, signer: TAccountName,
+  public_key: string,
+  signer: TAccountName,
   expectedAuthorityLevel: AuthorityLevel,
   extendedHiveChain: TExtendedHiveChain
 ): Promise<boolean> => {
@@ -88,33 +89,13 @@ const authorityStrictChecker = async (
 
 }
 
-export const main = async (txJSON: ApiTransaction, expectedSignerAccount: string): Promise<void> =>  {
+
+export const main = async (
+  txJSON: ApiTransaction,
+  expectedSignerAccount: string
+): Promise<void> =>  {
 
   logger.info('txJSON', txJSON);
-
-  /// This is your tx received from KeyChain after signing
-  const txJSONbroken = {
-    "expiration": "2024-02-21T06:55:40",
-    "extensions": [],
-    "operations": [
-      {
-        "type": "account_update2_operation",
-        "value": {
-          "account": "thatcryptodave",
-          "extensions": [],
-          "json_metadata": "",
-          "posting_json_metadata": "{\"name\":\"David P.\",\"about\":\"\",\"website\":\"\",\"location\":\"Ontario, Canada\",\"birthday\":\"03.28.1984\",\"profile\":{\"name\":\"David P.\",\"about\":\"\",\"website\":\"\",\"location\":\"Ontario, Canada\",\"birthday\":\"03.28.1984\",\"profile_image\":\"\",\"cover_image\":\"\"}}"
-        }
-      }
-    ],
-    "signatures": [
-      "1f6ad21ddf9f57f1a94c1462185744cb0ea779ec1e99899f2556a3ce02b18d1b810fcddaccb349a53037798aea8023909447df756db461235ba5b63984d515c977"
-    ],
-    "ref_block_num": 26295,
-    "ref_block_prefix": 26859167
-  };
-
-  const tx: transaction = transaction.fromJSON(txJSON);
 
   const hiveChain: IHiveChainInterface = await createHiveChain();
   const txBuilder = hiveChain.TransactionBuilder.fromApi(txJSON);
@@ -122,36 +103,54 @@ export const main = async (txJSON: ApiTransaction, expectedSignerAccount: string
   const sigDigest = txBuilder.sigDigest;
   console.log(`sigDigest of passed transaction is: ${sigDigest}`);
 
-  const extendedChain: TExtendedHiveChain = hiveChain.extend(DatabaseApiExtensions);
+  const extendedChain: TExtendedHiveChain =
+    hiveChain.extend(DatabaseApiExtensions);
 
-  // const expectedSignerAccount: string = "thatcryptodave";
   let expectedAuthorityLevel: AuthorityLevel = AuthorityLevel.POSTING;
 
-  const authorityVerificationResult = await extendedChain.api.database_api.verify_authority({ trx: txJSON });
-
-  console.log('bamboo');
+  const authorityVerificationResult =
+    await extendedChain.api.database_api.verify_authority({ trx: txJSON });
 
   if (authorityVerificationResult.valid) {
-    console.log("Transaction is CORRECTLY signed, going to additionally validate that key used to genrate signature is directly specified in Signer account authority");
+    console.log([
+      "Transaction is CORRECTLY signed, going to additionally validate ",
+      "that key used to generate signature is directly specified ",
+      "in Signer account authority"
+    ].join());
 
     const signatureKeys = txBuilder.signatureKeys;
 
-    /// Below is some additional code just to make a reverse check for public keys used to generate given signature
+    /// Below is some additional code just to make a reverse check for
+    /// public keys used to generate given signature
     for (let i in signatureKeys) {
       const key = "STM" + signatureKeys[i];
-      const referencedAccounts = (await hiveChain.api.account_by_key_api.get_key_references({ keys: [key] })).accounts;
+      const referencedAccounts = (
+        await hiveChain.api.account_by_key_api
+        .get_key_references({ keys: [key] })
+        ).accounts;
 
-      const acnts: Array<Array<string>> = new Array<Array<string>>(...referencedAccounts);
+      const acnts: Array<Array<string>> =
+        new Array<Array<string>>(...referencedAccounts);
       const acntList = acnts.join(",");
 
-      console.log(`Public key used to sign transaction: ${key} is referenced by account(s): ${acntList}`);
+      console.log([
+        `Public key used to sign transaction: ${key} `,
+        `is referenced by account(s): ${acntList}`
+      ].join());
 
-      const directSigner = await authorityStrictChecker(key, expectedSignerAccount, expectedAuthorityLevel, extendedChain);
+      const directSigner = await authorityStrictChecker(
+        key, expectedSignerAccount, expectedAuthorityLevel, extendedChain);
 
       if (directSigner)
-        console.log(`The account: ${expectedSignerAccount} directly authorized the transaction`);
+        console.log([
+          `The account: ${expectedSignerAccount} `,
+          `directly authorized the transaction`
+        ].join());
       else
-        console.log(`WARNING: some other account(s): ${acntList} than: ${expectedSignerAccount} authorized the transaction`);
+        console.log([
+          `WARNING: some other account(s): ${acntList} `,
+          `than: ${expectedSignerAccount} authorized the transaction`
+        ].join());
     }
   }
   else {
