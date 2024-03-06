@@ -1,15 +1,23 @@
 {
   "extends": "@hive/tsconfig/base.json",
   "compilerOptions": {
-    "target": "es2017",
     "moduleResolution": "Bundler",
     "baseUrl": ".",
     "paths": {
-      "@/wallet/*": ["./*"],
-      "@smart-signer/*": ["../../packages/smart-signer/*"],
-      "@transaction/*": ["../../packages/transaction/*"],
-      "@ui/*": ["../../packages/ui/*"]
-    }
+      "@/wallet/*": [
+        "./*"
+      ],
+      "@smart-signer/*": [
+        "../../packages/smart-signer/*"
+      ],
+      "@transaction/*": [
+        "../../packages/transaction/*"
+      ],
+      "@ui/*": [
+        "../../packages/ui/*"
+      ]
+    },
+    "module": "esnext"
   },
   "include": [
     "next-env.d.ts",
@@ -18,5 +26,8 @@
     ".next/types/**/*.ts",
     "../../packages/ui/lib/parse-date.ts"
   ],
-  "exclude": ["node_modules", "playwright"]
+  "exclude": [
+    "node_modules",
+    "playwright"
+  ]
 }

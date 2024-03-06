@@ -197,7 +197,7 @@ export class HomePage {
     this.postCardPoweredUp100Tooltip = page.locator('[data-testid="powered-up-100-tooltip"]');
     this.toggleLanguage = page.locator('[data-testid="toggle-language"]').first();
     this.languageMenu = page.locator('[role="menuitem"]');
-    this.languageMenuPl = page.locator('[data-testid="pl"]');
+    this.languageMenuPl = page.locator('[data-testid="pl"]').locator('..');
     this.themeMode = page.locator('[data-testid="theme-mode"]');
   }
 
