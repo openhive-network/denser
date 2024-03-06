@@ -13,12 +13,14 @@ test.describe('Login and Sign Up tests', () => {
 
   test('Validate Hbauth login dialog is visible', async ({ page }) => {
     await homePage.goto();
+    await homePage.page.waitForSelector(homePage.getNavHbauthButton['_selector']);
     await homePage.getNavHbauthLink.click();
     await hbauthLoginDialog.validateHbauthUnlockKeyDialogIsVisible();
   });
 
   test('Select a key type in Unlock Key', async ({ page }) => {
     await homePage.goto();
+    await homePage.page.waitForSelector(homePage.getNavHbauthButton['_selector']);
     await homePage.getNavHbauthLink.click();
     await hbauthLoginDialog.validateHbauthUnlockKeyDialogIsVisible();
 
@@ -30,6 +32,7 @@ test.describe('Login and Sign Up tests', () => {
 
   test('Validate Hbauth Add Key login dialog is visible', async ({ page }) => {
     await homePage.goto();
+    await homePage.page.waitForSelector(homePage.getNavHbauthButton['_selector']);
     await homePage.getNavHbauthLink.click();
     await hbauthLoginDialog.validateHbauthUnlockKeyDialogIsVisible();
     // Move to the Add Key Tab
@@ -39,6 +42,7 @@ test.describe('Login and Sign Up tests', () => {
 
   test('Select a key type in Add Key', async ({ page }) => {
     await homePage.goto();
+    await homePage.page.waitForSelector(homePage.getNavHbauthButton['_selector']);
     await homePage.getNavHbauthLink.click();
     // Move to the Add Key Tab
     await hbauthLoginDialog.hbauthAddKeyButton.click();
@@ -52,6 +56,7 @@ test.describe('Login and Sign Up tests', () => {
 
   test('Validate base style of Hbauth in Unlock Key in the light mode', async ({ page }) => {
     await homePage.goto();
+    await homePage.page.waitForSelector(homePage.getNavHbauthButton['_selector']);
     await homePage.getNavHbauthLink.click();
     await hbauthLoginDialog.validateHbauthUnlockKeyDialogIsVisible();
 
@@ -156,7 +161,7 @@ test.describe('Login and Sign Up tests', () => {
     await homePage.goto();
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
-
+    await homePage.page.waitForSelector(homePage.getNavHbauthButton['_selector']);
     await homePage.getNavHbauthLink.click();
     await hbauthLoginDialog.validateHbauthUnlockKeyDialogIsVisible();
 
@@ -262,6 +267,7 @@ test.describe('Login and Sign Up tests', () => {
 
   test('Validate base style of Hbauth in Add Key in the light mode', async ({ page }) => {
     await homePage.goto();
+    await homePage.page.waitForSelector(homePage.getNavHbauthButton['_selector']);
     await homePage.getNavHbauthLink.click();
     // Move to the Add Key Tab
     await hbauthLoginDialog.hbauthAddKeyButton.click();
@@ -404,6 +410,7 @@ test.describe('Login and Sign Up tests', () => {
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
     // Open Hbauth login dialog
+    await homePage.page.waitForSelector(homePage.getNavHbauthButton['_selector']);
     await homePage.getNavHbauthLink.click();
     // Move to the Add Key Tab
     await hbauthLoginDialog.hbauthAddKeyButton.click();
@@ -552,6 +559,7 @@ test.describe('Login and Sign Up tests', () => {
 
   test('Validate Hbauth login dialog styles after hovering and clicking', async ({ page }) => {
     await homePage.goto();
+    await homePage.page.waitForSelector(homePage.getNavHbauthButton['_selector']);
     await homePage.getNavHbauthLink.click();
     await hbauthLoginDialog.validateHbauthUnlockKeyDialogIsVisible();
     // Validate submit button after hovering
@@ -582,6 +590,7 @@ test.describe('Login and Sign Up tests', () => {
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
     // Open Hbauth dialog
+    await homePage.page.waitForSelector(homePage.getNavHbauthButton['_selector']);
     await homePage.getNavHbauthLink.click();
     await hbauthLoginDialog.validateHbauthUnlockKeyDialogIsVisible();
     // Move to the Hbauth Add Key Dialog
