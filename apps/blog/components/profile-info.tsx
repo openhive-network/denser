@@ -5,6 +5,7 @@ import {
   getAccountFull,
   getAccount,
   getDynamicGlobalProperties,
+  getAccountReputations,
 } from '@transaction/lib/hive';
 import { accountReputation } from '@/blog/lib/utils';
 import { numberWithCommas } from '@ui/lib/utils';
@@ -40,6 +41,13 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
     error: dynamicGlobalDataError,
     data: dynamicGlobalData
   } = useQuery(['dynamicGlobalData'], () => getDynamicGlobalProperties());
+  const {
+    isLoading: accountReputationIsLoading,
+    error: accountReputationError,
+    data: accountReputationData
+  } = useQuery(['accountReputationData', username], () => getAccountReputations(username, 1), {
+    enabled: !!username
+  });
 
   useEffect(() => {
     if (!profileDataIsLoading && profileData?.posting_json_metadata) {
@@ -72,7 +80,7 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
       <h4 className="mb-4 mt-8 text-xl text-slate-900 dark:text-white" data-testid="profile-name">
         {profileData.profile?.name}{' '}
         <span className="text-slate-600">
-          ({accountReputation(profileData.reputation) ?? null})
+          ({accountReputationData && accountReputationData[0].reputation ? accountReputation(accountReputationData[0].reputation) : accountReputation(profileData.reputation)})
         </span>
       </h4>
       <h6
