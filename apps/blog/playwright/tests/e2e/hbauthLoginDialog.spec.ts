@@ -15,7 +15,7 @@ test.describe('Login and Sign Up tests', () => {
     await homePage.goto();
     await homePage.page.waitForTimeout(10000);
     // await homePage.page.waitForSelector(homePage.getNavHbauthButton['_selector']);
-    await homePage.getNavHbauthLink.click();
+    await homePage.getNavHbauthButton.click();
     await hbauthLoginDialog.validateHbauthUnlockKeyDialogIsVisible();
   });
 
