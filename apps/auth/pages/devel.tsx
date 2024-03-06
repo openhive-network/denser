@@ -24,6 +24,7 @@ import { waxToKeychainOperation } from '@smart-signer/lib/signer/signer-keychain
 import { KeyType } from '@smart-signer/types/common';
 import { fetchJson } from '@smart-signer/lib/fetch-json';
 import { main } from '@smart-signer/lib/get-signing-keys';
+import { pascalCase } from 'change-case';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -234,7 +235,8 @@ export default function Profile() {
         <div className="flex flex-col gap-3 sm:mr-4 sm:gap-8">
           <h1>Your Hive profile</h1>
           <p>
-            You are logged in as user <strong>{user.username}</strong> with {user.loginType} method.
+            You are logged in as user <strong>{user.username}</strong>{' '}
+            with <strong>{pascalCase(user.loginType)}</strong> method.
           </p>
           {developerAccounts.includes(user.username) && (
             <div className="flex flex-col gap-3">
