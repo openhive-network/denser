@@ -13,7 +13,7 @@ export const HiveRendererContext = createContext<HiveRendererContextType>({
   setHiveRenderer: () => {}
 });
 
-export const useHiveChainContext = () => useContext(HiveRendererContext);
+export const useHiveRendererContext = () => useContext(HiveRendererContext);
 export const HiveContentRendererProvider: FC<PropsWithChildren> = ({ children }) => {
   const [hiveRenderer, setHiveRenderer] = useState<DefaultRenderer | undefined>(undefined);
   const createRenderer = async () => {
@@ -24,8 +24,8 @@ export const HiveContentRendererProvider: FC<PropsWithChildren> = ({ children })
       allowInsecureScriptTags: false,
       addNofollowToLinks: true,
       addTargetBlankToLinks: true,
-      cssClassForInternalLinks: 'link',
-      cssClassForExternalLinks: 'link link-external',
+      cssClassForInternalLinks: '',
+      cssClassForExternalLinks: 'link-external',
       doNotShowImages: false,
       ipfsPrefix: '',
       assetsWidth: 640,

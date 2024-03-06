@@ -17,7 +17,8 @@
         "../../packages/ui/*"
       ]
     },
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "module": "esnext"
   },
   "include": [
     "next-env.d.ts",

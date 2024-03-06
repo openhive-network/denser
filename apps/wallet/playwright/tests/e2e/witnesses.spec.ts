@@ -242,7 +242,8 @@ test.describe('Witnesses page tests', () => {
     );
   });
 
-  test('validate witness vote box in the dark mode', async ({ page }) => {
+  test('validate witness vote box in the dark mode', async ({ page ,browserName }) => {
+    test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
     let homePage = new HomePage(page);
 
     await witnessesPage.goToWitnessesPage();

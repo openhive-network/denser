@@ -5,7 +5,7 @@ import {
   getAccountFull,
   getAccount,
   getDynamicGlobalProperties,
-  getAccountReputations
+  getAccountReputations,
 } from '@transaction/lib/hive';
 import { accountReputation } from '@/blog/lib/utils';
 import { numberWithCommas } from '@ui/lib/utils';
@@ -35,6 +35,12 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
   } = useQuery(['accountData', username], () => getAccount(username), {
     enabled: !!username
   });
+
+  const {
+    isLoading: dynamicGlobalDataIsLoading,
+    error: dynamicGlobalDataError,
+    data: dynamicGlobalData
+  } = useQuery(['dynamicGlobalData'], () => getDynamicGlobalProperties());
   const {
     isLoading: accountReputationIsLoading,
     error: accountReputationError,
@@ -42,12 +48,6 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
   } = useQuery(['accountReputationData', username], () => getAccountReputations(username, 1), {
     enabled: !!username
   });
-
-  const {
-    isLoading: dynamicGlobalDataIsLoading,
-    error: dynamicGlobalDataError,
-    data: dynamicGlobalData
-  } = useQuery(['dynamicGlobalData'], () => getDynamicGlobalProperties());
 
   useEffect(() => {
     if (!profileDataIsLoading && profileData?.posting_json_metadata) {
@@ -68,22 +68,26 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
   if (profileDataIsLoading || accountDataIsLoading || dynamicGlobalDataIsLoading)
     return <Loading loading={profileDataIsLoading || accountDataIsLoading || dynamicGlobalDataIsLoading} />;
 
+    if (!accountData || !dynamicGlobalData || !profileData) {
+      return <p className="my-32 text-center text-3xl">Something went wrong</p>;
+    }
+
   return (
     <div className="mt-[-6rem] px-8 md:w-80" data-testid="profile-info">
       <div className="flex h-40 w-40 items-center justify-center rounded-lg bg-white dark:bg-slate-900">
         <img className="h-36 w-36 rounded-md" src={profile?.profile_image} alt="Profile picture" />
       </div>
       <h4 className="mb-4 mt-8 text-xl text-slate-900 dark:text-white" data-testid="profile-name">
-        {profileData?.profile?.name}{' '}
+        {profileData.profile?.name}{' '}
         <span className="text-slate-600">
-          ({accountReputation(accountReputationData ? accountReputationData[0].reputation : 0)})
+          ({accountReputationData && accountReputationData[0].reputation ? accountReputation(accountReputationData[0].reputation) : accountReputation(profileData.reputation)})
         </span>
       </h4>
       <h6
         className="my-4 bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent"
         data-testid="profile-nickname"
       >
-        @{profileData?.name}
+        @{profileData.name}
       </h6>
       <p className="my-4" data-testid="profile-about">
         {profile?.about}
@@ -91,20 +95,20 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
       <p className="my-4 flex text-slate-900 dark:text-white" data-testid="user-last-time-active">
         <Icons.calendarActive className="mr-2" />
         {t('cards.user_profil.joined')}{' '}
-        {profileData?.last_post ? dateToFullRelative(profileData.last_post, t) : null}
+        {profileData.last_post ? dateToFullRelative(profileData.last_post, t) : null}
       </p>
       <p className="my-4 flex text-slate-900 dark:text-white" data-testid="user-joined">
         <Icons.calendarHeart className="mr-2" />
-        {t('cards.user_profil.active')} {profileData?.created ? dateToShow(profileData.created, t) : null}
+        {t('cards.user_profil.active')} {profileData.created ? dateToShow(profileData.created, t) : null}
       </p>
       <p className="my-4 flex text-slate-900 dark:text-white" data-testid="user-location">
         <Icons.mapPin className="mr-2" />
-        {profileData?.profile?.location}
+        {profileData.profile?.location}
       </p>
 
       <div className="my-4 grid grid-cols-2 gap-4" data-testid="profile-stats">
         <div className="flex flex-col">
-          <span className="text-slate-900 dark:text-white">{profileData?.post_count}</span>
+          <span className="text-slate-900 dark:text-white">{profileData.post_count}</span>
           Number of posts
         </div>
         <div className="flex flex-col">
@@ -112,11 +116,11 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
           HP
         </div>
         <div className="flex flex-col">
-          <span className="text-slate-900 dark:text-white">{profileData?.follow_stats?.following_count}</span>
+          <span className="text-slate-900 dark:text-white">{profileData.follow_stats?.following_count}</span>
           Following
         </div>
         <div className="flex flex-col">
-          <span className="text-slate-900 dark:text-white">{profileData?.follow_stats?.follower_count}</span>
+          <span className="text-slate-900 dark:text-white">{profileData.follow_stats?.follower_count}</span>
           Followers
         </div>
       </div>
@@ -145,15 +149,15 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
 
       <div data-testid="user-links">
         <h6 className="text-slate-900 dark:text-white">Links</h6>
-        {profileData?.profile?.website ? (
+        {profileData.profile?.website ? (
           <p className="my-3 flex flex-wrap">
             <Icons.globe2 className="mr-2" />
             <Link
               target="_external"
               className="website-link"
-              href={`https://${profileData?.profile?.website.replace(/^(https?|ftp):\/\//, '')}`}
+              href={`https://${profileData.profile?.website.replace(/^(https?|ftp):\/\//, '')}`}
             >
-              <span className="text-slate-900 dark:text-white">{profileData?.profile?.website}</span>
+              <span className="text-slate-900 dark:text-white">{profileData.profile?.website}</span>
             </Link>
           </p>
         ) : null}
