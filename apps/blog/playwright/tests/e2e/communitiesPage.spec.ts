@@ -566,7 +566,7 @@ test.describe('Communities page tests', () => {
     else if (parseInt(responseNumber, 10) == 1)
       await expect(responseHoverText).toContain(`${responseNumber} response. Click to respond`);
     else
-      await expect(responseHoverText).toContain(`No response. Click to respond`);
+      await expect(responseHoverText).toContain(`No responses. Click to respond`);
 
     await communitiesPage.getFirstResponses.click();
     await expect(postPage.articleFooter).toBeVisible();

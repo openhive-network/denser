@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
@@ -8,6 +8,7 @@ import {
   getAccount,
   getDynamicGlobalProperties,
   getAccountFull,
+  getAccountReputations,
 } from '@transaction/lib/hive';
 import { accountReputation } from '@/blog/lib/utils';
 import { delegatedHive, numberWithCommas, vestingHive } from '@hive/ui/lib/utils';
@@ -81,6 +82,15 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
     error: dynamicGlobalDataError,
     data: dynamicGlobalData
   } = useQuery(['dynamicGlobalData'], () => getDynamicGlobalProperties());
+
+  const {
+    isLoading: accountReputationIsLoading,
+    error: accountReputationError,
+    data: accountReputationData
+  } = useQuery(['accountReputationData', username], () => getAccountReputations(username, 1), {
+    enabled: !!username
+  });
+
   const { data: twitterData } = useQuery(['twitterData', username], () => getTwitterInfo(username), {
     enabled: !!username,
     retry: false,
@@ -135,7 +145,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <span
                   title={`This is ${username}s's reputation score.\n\nThe reputation score is based on the history of votes received by the account, and is used to hide low quality content.`}
                 >
-                  ({accountReputation(profileData.reputation) ?? null})
+                  ({accountReputationData && accountReputationData[0].reputation ? accountReputation(accountReputationData[0].reputation) : accountReputation(profileData.reputation)})
                 </span>
               </h4>
               {profileData.name ? (
