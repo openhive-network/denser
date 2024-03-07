@@ -250,7 +250,7 @@ publish:
   tags:
     - hs-denser
 
-.staging:deploy-auth:
+staging:deploy-auth:
   extends: .deploy_template_for_staging
   needs:
     - docker-build-auth
@@ -283,7 +283,7 @@ staging:deploy-blog:
     action: start
     on_stop: staging:stop-blog
 
-.staging:deploy-wallet:
+staging:deploy-wallet:
   extends: .deploy_template_for_staging
   needs:
     - docker-build-wallet
@@ -311,7 +311,7 @@ staging:deploy-blog:
   tags:
     - hs-denser
 
-.staging:stop-auth:
+staging:stop-auth:
   extends: .stop_template_for_staging
   needs:
     - staging:deploy-auth
@@ -333,7 +333,7 @@ staging:stop-blog:
     CONTAINER_NAME: denser-blog
     GIT_STRATEGY: none
 
-.staging:stop-wallet:
+staging:stop-wallet:
   extends: .stop_template_for_staging
   needs:
     - staging:deploy-wallet
@@ -344,7 +344,7 @@ staging:stop-blog:
     CONTAINER_NAME: denser-wallet
     GIT_STRATEGY: none
 
-.review:deploy-auth:
+review:deploy-auth:
   extends: staging:deploy-auth
   variables:
     PORT: 7001
@@ -370,7 +370,7 @@ review:deploy-blog:
     - if: $CI_COMMIT_TAG =~ /^rc_.*/
       when: on_success
 
-.review:deploy-wallet:
+review:deploy-wallet:
   extends: staging:deploy-wallet
   variables:
     PORT: 4001
@@ -383,7 +383,7 @@ review:deploy-blog:
     - if: $CI_COMMIT_TAG =~ /^rc_.*/
       when: on_success
 
-.review:stop-auth:
+review:stop-auth:
   extends: staging:stop-auth
   needs:
     - review:deploy-auth
@@ -411,7 +411,7 @@ review:stop-blog:
       when: manual
       allow_failure: true
 
-.review:stop-wallet:
+review:stop-wallet:
   extends: staging:stop-wallet
   needs:
     - review:deploy-wallet
