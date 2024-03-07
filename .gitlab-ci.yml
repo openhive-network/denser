@@ -100,11 +100,11 @@ include:
 .e2e_tests_template:
   extends: .node-job
   image: mcr.microsoft.com/playwright:v1.41.1-jammy
-  parallel:
-    matrix:
-      - PROJECT: ['chromium', 'firefox', 'webkit']
-        SHARD_INDEX: [1, 2, 3, 4, 5]
-        SHARD_TOTAL: 5
+  # parallel:
+  #   matrix:
+  #     - PROJECT: ['chromium', 'firefox', 'webkit']
+  #       SHARD_INDEX: [1, 2, 3, 4, 5]
+  #       SHARD_TOTAL: 5
   script:
     - !reference [.node-job, script]
     - |
