@@ -5,8 +5,9 @@ import type { Community, Subscription } from '@transaction/lib/bridge';
 import { IAccountNotification } from '@transaction/lib/bridge';
 import { SubsListDialog } from './subscription-list-dialog';
 import { ActivityLogDialog } from './activity-log-dialog';
-import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
+import SubscribeCommunity from './subscribe-community';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 
 const CommunitySimpleDescription = ({
   data,
@@ -20,6 +21,7 @@ const CommunitySimpleDescription = ({
   username: string;
 }) => {
   const { t } = useTranslation('common_blog');
+  const { user } = useUser();
   return (
     <Card
       className="my-4 grid h-fit w-full grid-cols-3 gap-4 p-2 dark:bg-background/95 dark:text-white"
@@ -49,26 +51,7 @@ const CommunitySimpleDescription = ({
       </CardHeader>
       <CardContent className="col-span-1 flex items-center justify-center p-0">
         <div className="my-4 flex flex-col gap-4">
-          {!data.context.subscribed ? (
-            <DialogLogin>
-              <Button
-                size="sm"
-                className="w-full bg-blue-800 text-center hover:bg-blue-900"
-                data-testid="community-simple-subscribe-button"
-              >
-                {t('communities.buttons.subscribe')}
-              </Button>
-            </DialogLogin>
-          ) : (
-            <Button
-              size="sm"
-              variant="outline"
-              className="group relative w-full text-center text-blue-800 hover:border-red-500 hover:text-red-500"
-            >
-              <span className="group-hover:hidden">Joined</span>
-              <span className="hidden group-hover:inline">Leave</span>
-            </Button>
-          )}
+          <SubscribeCommunity user={user} username={username} subStatus={data.context.subscribed} />
 
           <Button size="sm" className="hover: w-full bg-blue-800 text-center">
             <Link href={`/submit.html?category=${data.name}`}>{t('communities.buttons.new_post')}</Link>

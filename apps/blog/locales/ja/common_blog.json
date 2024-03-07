@@ -288,7 +288,9 @@
       "subscribe": "Subscribe",
       "new_post": "New post",
       "activity_log": "Activity Log",
-      "subscribers": "subscribers"
+      "subscribers": "subscribers",
+      "leave": "去る (Saru)",
+      "joined": "参加した (Sanka shita)"
     },
     "titles": {
       "pending_rewards": "pending rewards",

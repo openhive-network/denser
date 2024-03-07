@@ -294,7 +294,9 @@
       "subscribe": "Subscribe",
       "new_post": "New post",
       "activity_log": "Activity Log",
-      "subscribers": "subscribers"
+      "subscribers": "subscribers",
+      "leave": "Уходить",
+      "joined": "Присоединиться"
     },
     "titles": {
       "pending_rewards": "pending rewards",

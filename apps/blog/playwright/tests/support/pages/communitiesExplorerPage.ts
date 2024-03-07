@@ -30,7 +30,7 @@ export class CommunitiesExplorePage{
         this.communityListItemTitle = page.locator('[data-testid="community-list-item-title"]');
         this.communityListItemAbout = page.locator('[data-testid="community-list-item-about"]');
         this.communityListItemFooter = page.locator('[data-testid="community-list-item-footer"]');
-        this.communityListItemSubscribeButton = page.locator('[data-testid="community-list-item-subscribe-button"]');
+        this.communityListItemSubscribeButton = page.locator('[data-testid="community-subscribe-button"]');
         this.noResultsForYourSearch = page.locator('[data-testid="communities-search-no-results-msg"]');
         this.communitiesHeaderPage = page.locator('[data-testid="communities-header"]');
         this.communitiesHeaderTitle = page.locator('[data-testid="communities-header-title"]');

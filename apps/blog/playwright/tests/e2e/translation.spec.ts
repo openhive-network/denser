@@ -191,7 +191,10 @@ test.describe('Translation tests', () => {
     await expect(await page.locator('[data-testid="community-name-unmoderated"]').textContent()).toBe(
       'Społeczność'
     );
-    await expect(await communitiesPage.communitySubscribeButton.textContent()).toBe('Subskrybuj');
+    if(!await communitiesPage.communitySubscribeButton.first().isVisible())
+      await expect(await communitiesPage.communitySubscribeButton.last().textContent()).toBe('Subskrybuj');
+    else
+      await expect(await communitiesPage.communitySubscribeButton.first().textContent()).toBe('Subskrybuj');
     await expect(await communitiesPage.communityNewPostButton.textContent()).toBe('Nowy post');
   });
 
@@ -205,13 +208,13 @@ test.describe('Translation tests', () => {
     await expect(await page.getByTestId('community-name').textContent()).toBe('Wszystkie posty');
     await expect(await homePage.getExploreCommunities).toHaveText('Pokaż więcej społeczności...');
     await homePage.getExploreCommunities.click();
-
+    await page.waitForTimeout(10000);
     // Click PL language again
     // Without this on CI this tests found english page instead polish
     await homePage.toggleLanguage.click();
     await expect(homePage.languageMenu.first()).toBeVisible();
     await homePage.languageMenuPl.click();
-
+    await page.waitForTimeout(2000);
     await expect(communitiesExplorerPage.communitiesHeaderPage).toHaveText('Społeczności');
     await expect(communitiesExplorerPage.searchInput).toHaveAttribute('placeholder', 'Szukaj...');
     await expect(communitiesExplorerPage.communityListItemFooter.first()).toContainText('subskrybentów');

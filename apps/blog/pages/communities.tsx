@@ -30,15 +30,15 @@ export default function CommunitiesPage() {
     error: communitiesDataError,
     data: communitiesData
   } = useQuery(
-    ['communitiesList', sort, query, user?.username],
-    async () => await getCommunities(sort, query, user?.username || '')
+    ['communitiesList', sort, query, user.username],
+    async () => await getCommunities(sort, query, user.username)
   );
   const {
     data: mySubsData,
     isLoading: mySubsIsLoading,
     isError: mySubsIsError
-  } = useQuery([['subscriptions', user?.username]], () => getSubscriptions(user?.username || ''), {
-    enabled: Boolean(user?.username)
+  } = useQuery([['subscriptions', user.username]], () => getSubscriptions(user.username), {
+    enabled: Boolean(user.username)
   });
   function handleSearchCommunity(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') {
@@ -55,18 +55,18 @@ export default function CommunitiesPage() {
     <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2 pt-8">
       <div className="grid grid-cols-12 md:gap-4">
         <div className="hidden md:col-span-4 md:flex xl:col-span-2">
-          {user?.isLoggedIn ? (
-            <CommunitiesMybar data={mySubsData} username={user ? user?.username : ''} />
+          {user.isLoggedIn ? (
+            <CommunitiesMybar data={mySubsData} username={user.username} />
           ) : (
             <CommunitiesSidebar />
-          )}{' '}
+          )}
         </div>
         <div className="col-span-12 md:col-span-8">
           <div className="mt-4 flex items-center justify-between" data-testid="communities-header-title">
             <span className="text-sm font-medium sm:text-xl" data-testid="communities-header">
               {t('communities.communities')}
             </span>
-            {user?.isLoggedIn ? (
+            {user.isLoggedIn ? (
               <Link
                 className="text-sm font-medium text-red-600 dark:hover:text-red-800"
                 href={`${walletHost}/@${user.username}/communities`}
@@ -103,7 +103,7 @@ export default function CommunitiesPage() {
           )}
         </div>
         <div className="hidden lg:flex xl:col-span-2">
-          {user?.isLoggedIn ? <CommunitiesSidebar /> : <ExploreHive />}{' '}
+          {user.isLoggedIn ? <CommunitiesSidebar /> : <ExploreHive />}{' '}
         </div>
       </div>
     </div>
