@@ -1,11 +1,10 @@
-import { Button } from '@hive/ui/components/button';
 import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@hive/ui/components/card';
 import Link from 'next/link';
 import type { Community } from '@transaction/lib/bridge';
-import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import SubscribeCommunity from './subscribe-community';
 
 const CommunitiesListItem = ({ community }: { community: Community }) => {
   const { user } = useUser();
@@ -13,7 +12,7 @@ const CommunitiesListItem = ({ community }: { community: Community }) => {
   return (
     <Card
       className={cn(
-        'my-4 flex hover:bg-accent hover:text-accent-foreground  dark:bg-background/95 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground'
+        'my-4 flex justify-between hover:bg-accent  hover:text-accent-foreground dark:bg-background/95 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground'
       )}
       data-testid="community-list-item"
     >
@@ -54,26 +53,8 @@ const CommunitiesListItem = ({ community }: { community: Community }) => {
           ) : null}
         </CardFooter>
       </div>
-      <div className="flex w-2/6 items-center justify-center">
-        {community.context.subscribed && user?.isLoggedIn ? (
-          <Button
-            size="sm"
-            variant="outline"
-            className="group relative px-4 text-center text-blue-800 hover:border-red-500 hover:text-red-500"
-          >
-            <span className="group-hover:hidden">Joined</span>
-            <span className="hidden group-hover:inline">Leave</span>
-          </Button>
-        ) : (
-          <DialogLogin>
-            <Button
-              className="bg-blue-800 text-center hover:bg-blue-900"
-              data-testid="community-list-item-subscribe-button"
-            >
-              {t('communities.buttons.subscribe')}
-            </Button>
-          </DialogLogin>
-        )}
+      <div className="mr-4 flex w-24 items-center">
+        <SubscribeCommunity user={user} username={community.name} subStatus={community.context.subscribed} />
       </div>
     </Card>
   );

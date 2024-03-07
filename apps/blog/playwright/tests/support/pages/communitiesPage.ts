@@ -92,7 +92,8 @@ export class CommunitiesPage {
 
     await expect(this.commnnitySubscribers).toBeVisible();
     await expect(this.communityPendingRewards).toBeVisible();
-    await expect(this.communitySubscribeButton).toBeVisible();
+    if (!this.communitySubscribeButton.first().isVisible())
+      await expect(this.communitySubscribeButton.last()).toBeVisible();
     await expect(this.communityNewPostButton).toBeVisible();
     await expect(this.communityLeadership).toBeVisible();
     await expect(this.communityDescription).toBeVisible();

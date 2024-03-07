@@ -261,23 +261,25 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger className="flex items-center">
-                        <Link
-                          href={`/${post.category}/@${post.author}/${post.permlink}/#comments`}
-                          className="flex cursor-pointer items-center"
-                        >
-                          {post.children > 1 ? (
-                            <Icons.messagesSquare className="h-4 w-4 sm:mr-1" />
-                          ) : (
-                            <Icons.comment className="h-4 w-4 sm:mr-1" />
-                          )}
-                        </Link>
-                        <Link
-                          href={`/${post.category}/@${post.author}/${post.permlink}/#comments`}
-                          className="flex cursor-pointer items-center pl-1 hover:text-red-600"
-                          data-testid="post-card-response-link"
-                        >
-                          {post.children}
-                        </Link>
+                        <>
+                          <Link
+                            href={`/${post.category}/@${post.author}/${post.permlink}/#comments`}
+                            className="flex cursor-pointer items-center"
+                          >
+                            {post.children > 1 ? (
+                              <Icons.messagesSquare className="h-4 w-4 sm:mr-1" />
+                            ) : (
+                              <Icons.comment className="h-4 w-4 sm:mr-1" />
+                            )}
+                          </Link>
+                          <Link
+                            href={`/${post.category}/@${post.author}/${post.permlink}/#comments`}
+                            className="flex cursor-pointer items-center pl-1 hover:text-red-600"
+                            data-testid="post-card-response-link"
+                          >
+                            {post.children}
+                          </Link>
+                        </>
                       </TooltipTrigger>
                       <TooltipContent data-testid="post-card-responses">
                         <p>

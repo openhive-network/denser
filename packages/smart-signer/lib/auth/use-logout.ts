@@ -3,7 +3,7 @@ import { toast } from '@ui/components/hooks/use-toast';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { KeyTypes } from '@smart-signer/types/common';
+import { KeyType } from '@smart-signer/types/common';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -16,7 +16,7 @@ export function useLogout() {
   const signerOptions: SignerOptions = {
     username,
     loginType,
-    keyType: KeyTypes.posting,
+    keyType: KeyType.posting,
     apiEndpoint: 'https://api.hive.blog',
     storageType: 'localStorage'
   };

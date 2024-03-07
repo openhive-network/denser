@@ -81,7 +81,7 @@ const ParamPage: FC = () => {
     data: mySubsData,
     isLoading: mySubsIsLoading,
     isError: mySubsIsError
-  } = useQuery([['subscriptions', user?.username]], () => getSubscriptions(user?.username || ''), {
+  } = useQuery([['subscriptions', user?.username]], () => getSubscriptions(user.username), {
     enabled: Boolean(user?.username)
   });
   const {
@@ -97,7 +97,7 @@ const ParamPage: FC = () => {
     isLoading: communityDataIsLoading,
     isFetching: communityDataIsFetching,
     error: communityDataError
-  } = useQuery(['community', tag, ''], () => getCommunity(tag || '', user?.username || ''), {
+  } = useQuery(['community', tag, ''], () => getCommunity(tag || '', user.username), {
     enabled: !!tag
   });
   const {
@@ -183,7 +183,7 @@ const ParamPage: FC = () => {
         <div className="grid grid-cols-12 md:gap-4">
           <div className="hidden md:col-span-3 md:flex xl:col-span-2">
             {user?.isLoggedIn ? (
-              <CommunitiesMybar data={mySubsData} username={user ? user?.username : ''} />
+              <CommunitiesMybar data={mySubsData} username={user.username} />
             ) : (
               <CommunitiesSidebar />
             )}{' '}

@@ -288,7 +288,9 @@
       "subscribe": "Subscribe",
       "new_post": "New post",
       "activity_log": "Activity Log",
-      "subscribers": "subscribers"
+      "subscribers": "subscribers",
+      "leave": "去る (Saru)",
+      "joined": "参加した (Sanka shita)"
     },
     "titles": {
       "pending_rewards": "pending rewards",
@@ -361,6 +363,31 @@
         "exit_editor": "Are you sure you want to exit the comment editor?"
       }
     }
+  },
+  "submit_page": {
+    "disable_side": "サイドバイサイドエディターを無効にする",
+    "enable_side": "サイドバイサイドエディターを有効にする",
+    "string_must_contain": "文字列は少なくとも{{num}}文字含まれている必要があります",
+    "must_contain_only": "文字と数字のみを含む必要があります",
+    "hide_preview": "プレビューを非表示",
+    "show_preview": "プレビューを表示",
+    "title": "タイトル",
+    "insert_images_by_dragging": "画像の挿入はドラッグ＆ドロップ、クリップボードからの貼り付け、または ",
+    "selecting_them": "選択してください",
+    "post_summary": "投稿の要約（投稿およびSEO用、最大140文字）",
+    "enter_your_tags": "スペースで区切られたタグを入力してください",
+    "author_if_different": "著者（現在のアカウントと異なる場合）",
+    "post_options": "投稿オプション:",
+    "author_rewards": "著者の報酬:",
+    "advanced_settings": "高度な設定",
+    "account_stats": "アカウント統計:",
+    "resource_credits": "リソースクレジット（RC）レベル: {{value}} %",
+    "posting_to": "投稿先:",
+    "my_blog": "マイブログ",
+    "preview": "プレビュー",
+    "submit": "送信",
+    "clean": "クリーン",
+    "markdown_styling_guide": "Markdownスタイルガイド"
   },
   "search_page": {
     "placeholder": "検索",
