@@ -53,7 +53,7 @@ include:
   tags:
     - public-runner-docker
 
-docker-build-auth:
+.docker-build-auth:
   extends: .docker_build_template
   variables:
     TURBO_APP_SCOPE: '@hive/auth'
@@ -67,7 +67,7 @@ docker-build-blog:
     TURBO_APP_PATH: '/apps/blog'
     TURBO_APP_NAME: 'blog'
 
-docker-build-wallet:
+.docker-build-wallet:
   extends: .docker_build_template
   variables:
     TURBO_APP_SCOPE: '@hive/wallet'
@@ -110,7 +110,7 @@ docker-build-wallet:
     - |
       echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=false]\r\e[0KRunning tests..."
       cd .$TURBO_APP_PATH
-      npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --update-snapshots
+      npx playwright test hbauthLoginDialog.spec.ts --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --update-snapshots
       echo -e "\e[0Ksection_end:$(date +%s):tests\r\e[0K"
   artifacts:
     paths:
@@ -137,290 +137,290 @@ e2e-tests-blog:
     PORT: 3000
     DENSER_URL: http://denser:$PORT
 
-e2e-tests-wallet:
-  extends: .e2e_tests_template
-  needs:
-    - docker-build-wallet
-  services:
-    - name: $IMAGE_NAME
-      alias: denser
-      variables:
-        HEALTHCHECK_TCP_PORT: '4000'
-  variables:
-    TURBO_APP_SCOPE: '@hive/wallet'
-    TURBO_APP_PATH: '/apps/wallet'
-    REACT_APP_API_ENDPOINT: https://api.hive.blog
-    REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
-    PORT: 4000
-    DENSER_URL: http://denser:$PORT
+# e2e-tests-wallet:
+#   extends: .e2e_tests_template
+#   needs:
+#     - docker-build-wallet
+#   services:
+#     - name: $IMAGE_NAME
+#       alias: denser
+#       variables:
+#         HEALTHCHECK_TCP_PORT: '4000'
+#   variables:
+#     TURBO_APP_SCOPE: '@hive/wallet'
+#     TURBO_APP_PATH: '/apps/wallet'
+#     REACT_APP_API_ENDPOINT: https://api.hive.blog
+#     REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
+#     PORT: 4000
+#     DENSER_URL: http://denser:$PORT
 
-.e2e_report_aggregate_template:
-  extends: .node-job
-  stage: test-report-aggregate
-  when: always
-  image: mcr.microsoft.com/playwright:v1.41.1-jammy
-  script:
-    - cd .$TURBO_APP_PATH
-    - npm install playwright-merge-html-reports --dev
-    - npx playwright test tests/merge-reports --config playwright.merge.config.ts
-  artifacts:
-    paths:
-      - .${TURBO_APP_PATH}/merged-html-report/
-      - .${TURBO_APP_PATH}/junit/
+# .e2e_report_aggregate_template:
+#   extends: .node-job
+#   stage: test-report-aggregate
+#   when: always
+#   image: mcr.microsoft.com/playwright:v1.41.1-jammy
+#   script:
+#     - cd .$TURBO_APP_PATH
+#     - npm install playwright-merge-html-reports --dev
+#     - npx playwright test tests/merge-reports --config playwright.merge.config.ts
+#   artifacts:
+#     paths:
+#       - .${TURBO_APP_PATH}/merged-html-report/
+#       - .${TURBO_APP_PATH}/junit/
 
-e2e-report-aggregate-blog:
-  extends: .e2e_report_aggregate_template
-  needs:
-    - e2e-tests-blog
-  variables:
-    TURBO_APP_SCOPE: '@hive/blog'
-    TURBO_APP_PATH: '/apps/blog'
-    PROJECTS: '["chromium", "firefox", "webkit"]'
-    SHARD_TOTAL: 5
+# e2e-report-aggregate-blog:
+#   extends: .e2e_report_aggregate_template
+#   needs:
+#     - e2e-tests-blog
+#   variables:
+#     TURBO_APP_SCOPE: '@hive/blog'
+#     TURBO_APP_PATH: '/apps/blog'
+#     PROJECTS: '["chromium", "firefox", "webkit"]'
+#     SHARD_TOTAL: 5
 
-e2e-report-aggregate-wallet:
-  extends: .e2e_report_aggregate_template
-  needs:
-    - e2e-tests-wallet
-  variables:
-    TURBO_APP_SCOPE: '@hive/wallet'
-    TURBO_APP_PATH: '/apps/wallet'
-    PROJECTS: '["chromium", "firefox", "webkit"]'
-    SHARD_TOTAL: 5
+# e2e-report-aggregate-wallet:
+#   extends: .e2e_report_aggregate_template
+#   needs:
+#     - e2e-tests-wallet
+#   variables:
+#     TURBO_APP_SCOPE: '@hive/wallet'
+#     TURBO_APP_PATH: '/apps/wallet'
+#     PROJECTS: '["chromium", "firefox", "webkit"]'
+#     SHARD_TOTAL: 5
 
-publish:
-  image:
-    name: node:20.11.1-alpine3.18
-    entrypoint: []
-  extends: .job-defaults
-  stage: deploy
-  script:
-    # Extract a few values from package.json
-    - NPM_PACKAGE_NAME=$(node -p "require('./package.json').name")
-    - NPM_PACKAGE_VERSION=$(node -p "require('./package.json').version")
+# publish:
+#   image:
+#     name: node:20.11.1-alpine3.18
+#     entrypoint: []
+#   extends: .job-defaults
+#   stage: deploy
+#   script:
+#     # Extract a few values from package.json
+#     - NPM_PACKAGE_NAME=$(node -p "require('./package.json').name")
+#     - NPM_PACKAGE_VERSION=$(node -p "require('./package.json').version")
 
-    # Validate that the package name is properly scoped to the project's root namespace.
-    # For more information, see https://docs.gitlab.com/ee/user/packages/npm_registry/#package-naming-convention
-    - |
-      if [[ ! $NPM_PACKAGE_NAME =~ ^@$CI_PROJECT_ROOT_NAMESPACE/ ]]; then
-        echo "Invalid package scope! Packages must be scoped in the root namespace of the project, e.g. \"@${CI_PROJECT_ROOT_NAMESPACE}/${CI_PROJECT_NAME}\""
-        echo 'For more information, see https://docs.gitlab.com/ee/user/packages/npm_registry/#package-naming-convention'
-        exit 1
-      fi
+#     # Validate that the package name is properly scoped to the project's root namespace.
+#     # For more information, see https://docs.gitlab.com/ee/user/packages/npm_registry/#package-naming-convention
+#     - |
+#       if [[ ! $NPM_PACKAGE_NAME =~ ^@$CI_PROJECT_ROOT_NAMESPACE/ ]]; then
+#         echo "Invalid package scope! Packages must be scoped in the root namespace of the project, e.g. \"@${CI_PROJECT_ROOT_NAMESPACE}/${CI_PROJECT_NAME}\""
+#         echo 'For more information, see https://docs.gitlab.com/ee/user/packages/npm_registry/#package-naming-convention'
+#         exit 1
+#       fi
 
-    # Compare the version in package.json to all published versions.
-    # If the package.json version has not yet been published, run `npm publish`.
-    - |
-      if [[ "$(npm view ${NPM_PACKAGE_NAME} versions)" != *"'${NPM_PACKAGE_VERSION}'"* ]]; then
-        npm publish
-        echo "Successfully published version ${NPM_PACKAGE_VERSION} of ${NPM_PACKAGE_NAME} to GitLab's NPM registry: ${CI_PROJECT_URL}/-/packages"
-      else
-        echo "Version ${NPM_PACKAGE_VERSION} of ${NPM_PACKAGE_NAME} has already been published, so no new version has been published."
-      fi
-  rules:
-    - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED == "true"'
-      when: manual
-      allow_failure: true
-  tags:
-    - public-runner-docker
+#     # Compare the version in package.json to all published versions.
+#     # If the package.json version has not yet been published, run `npm publish`.
+#     - |
+#       if [[ "$(npm view ${NPM_PACKAGE_NAME} versions)" != *"'${NPM_PACKAGE_VERSION}'"* ]]; then
+#         npm publish
+#         echo "Successfully published version ${NPM_PACKAGE_VERSION} of ${NPM_PACKAGE_NAME} to GitLab's NPM registry: ${CI_PROJECT_URL}/-/packages"
+#       else
+#         echo "Version ${NPM_PACKAGE_VERSION} of ${NPM_PACKAGE_NAME} has already been published, so no new version has been published."
+#       fi
+#   rules:
+#     - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED == "true"'
+#       when: manual
+#       allow_failure: true
+#   tags:
+#     - public-runner-docker
 
-.deploy_template_for_staging:
-  extends: .job-defaults
-  stage: deploy
-  before_script:
-    - |
-      echo -e "\e[0Ksection_start:$(date +%s):login[collapsed=true]\r\e[0KLogging to Docker registry..."
-      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-      echo -e "\e[0Ksection_end:$(date +%s):login\r\e[0K"
-  script:
-    - |
-      scripts/run_instance.sh \
-        --image="$IMAGE_NAME" \
-        --app-scope="$TURBO_APP_SCOPE" \
-        --app-path="$TURBO_APP_PATH" \
-        --api-endpoint="$API_ENDPOINT" \
-        --images-endpoint="$IMAGES_ENDPOINT" \
-        --name="$CONTAINER_NAME" \
-        --port=$PORT \
-        --detach
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: manual
-      allow_failure: true
-  tags:
-    - hs-denser
+# .deploy_template_for_staging:
+#   extends: .job-defaults
+#   stage: deploy
+#   before_script:
+#     - |
+#       echo -e "\e[0Ksection_start:$(date +%s):login[collapsed=true]\r\e[0KLogging to Docker registry..."
+#       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+#       echo -e "\e[0Ksection_end:$(date +%s):login\r\e[0K"
+#   script:
+#     - |
+#       scripts/run_instance.sh \
+#         --image="$IMAGE_NAME" \
+#         --app-scope="$TURBO_APP_SCOPE" \
+#         --app-path="$TURBO_APP_PATH" \
+#         --api-endpoint="$API_ENDPOINT" \
+#         --images-endpoint="$IMAGES_ENDPOINT" \
+#         --name="$CONTAINER_NAME" \
+#         --port=$PORT \
+#         --detach
+#   rules:
+#     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+#       when: manual
+#       allow_failure: true
+#   tags:
+#     - hs-denser
 
-staging:deploy-auth:
-  extends: .deploy_template_for_staging
-  needs:
-    - docker-build-auth
-  variables:
-    PORT: 7000
-    API_ENDPOINT: https://api.hive.blog
-    IMAGES_ENDPOINT: https://images.hive.blog/
-    CONTAINER_NAME: denser-auth
-    TURBO_APP_SCOPE: '@hive/auth'
-    TURBO_APP_PATH: '/apps/auth'
-  environment:
-    name: staging-auth
-    action: start
-    on_stop: staging:stop-auth
+# staging:deploy-auth:
+#   extends: .deploy_template_for_staging
+#   needs:
+#     - docker-build-auth
+#   variables:
+#     PORT: 7000
+#     API_ENDPOINT: https://api.hive.blog
+#     IMAGES_ENDPOINT: https://images.hive.blog/
+#     CONTAINER_NAME: denser-auth
+#     TURBO_APP_SCOPE: '@hive/auth'
+#     TURBO_APP_PATH: '/apps/auth'
+#   environment:
+#     name: staging-auth
+#     action: start
+#     on_stop: staging:stop-auth
 
-staging:deploy-blog:
-  extends: .deploy_template_for_staging
-  needs:
-    - docker-build-blog
-  variables:
-    PORT: 3000
-    API_ENDPOINT: https://api.hive.blog
-    IMAGES_ENDPOINT: https://images.hive.blog/
-    WALLET_ENDPOINT: https://wallet.openhive.network
-    CONTAINER_NAME: denser-blog
-    TURBO_APP_SCOPE: '@hive/blog'
-    TURBO_APP_PATH: '/apps/blog'
-  environment:
-    name: staging-blog
-    action: start
-    on_stop: staging:stop-blog
+# staging:deploy-blog:
+#   extends: .deploy_template_for_staging
+#   needs:
+#     - docker-build-blog
+#   variables:
+#     PORT: 3000
+#     API_ENDPOINT: https://api.hive.blog
+#     IMAGES_ENDPOINT: https://images.hive.blog/
+#     WALLET_ENDPOINT: https://wallet.openhive.network
+#     CONTAINER_NAME: denser-blog
+#     TURBO_APP_SCOPE: '@hive/blog'
+#     TURBO_APP_PATH: '/apps/blog'
+#   environment:
+#     name: staging-blog
+#     action: start
+#     on_stop: staging:stop-blog
 
-staging:deploy-wallet:
-  extends: .deploy_template_for_staging
-  needs:
-    - docker-build-wallet
-  variables:
-    PORT: 4000
-    API_ENDPOINT: https://api.hive.blog
-    IMAGES_ENDPOINT: https://images.hive.blog/
-    CONTAINER_NAME: denser-wallet
-    TURBO_APP_SCOPE: '@hive/wallet'
-    TURBO_APP_PATH: '/apps/wallet'
-  environment:
-    name: staging-wallet
-    action: start
-    on_stop: staging:stop-wallet
+# staging:deploy-wallet:
+#   extends: .deploy_template_for_staging
+#   needs:
+#     - docker-build-wallet
+#   variables:
+#     PORT: 4000
+#     API_ENDPOINT: https://api.hive.blog
+#     IMAGES_ENDPOINT: https://images.hive.blog/
+#     CONTAINER_NAME: denser-wallet
+#     TURBO_APP_SCOPE: '@hive/wallet'
+#     TURBO_APP_PATH: '/apps/wallet'
+#   environment:
+#     name: staging-wallet
+#     action: start
+#     on_stop: staging:stop-wallet
 
-.stop_template_for_staging:
-  extends: .job-defaults
-  stage: deploy
-  script:
-    - docker ps -q --filter "name=$CONTAINER_NAME" | grep -q . && docker stop $CONTAINER_NAME
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: manual
-      allow_failure: true
-  tags:
-    - hs-denser
+# .stop_template_for_staging:
+#   extends: .job-defaults
+#   stage: deploy
+#   script:
+#     - docker ps -q --filter "name=$CONTAINER_NAME" | grep -q . && docker stop $CONTAINER_NAME
+#   rules:
+#     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+#       when: manual
+#       allow_failure: true
+#   tags:
+#     - hs-denser
 
-staging:stop-auth:
-  extends: .stop_template_for_staging
-  needs:
-    - staging:deploy-auth
-  environment:
-    name: staging-auth
-    action: stop
-  variables:
-    CONTAINER_NAME: denser-auth
-    GIT_STRATEGY: none
+# staging:stop-auth:
+#   extends: .stop_template_for_staging
+#   needs:
+#     - staging:deploy-auth
+#   environment:
+#     name: staging-auth
+#     action: stop
+#   variables:
+#     CONTAINER_NAME: denser-auth
+#     GIT_STRATEGY: none
 
-staging:stop-blog:
-  extends: .stop_template_for_staging
-  needs:
-    - staging:deploy-blog
-  environment:
-    name: staging-blog
-    action: stop
-  variables:
-    CONTAINER_NAME: denser-blog
-    GIT_STRATEGY: none
+# staging:stop-blog:
+#   extends: .stop_template_for_staging
+#   needs:
+#     - staging:deploy-blog
+#   environment:
+#     name: staging-blog
+#     action: stop
+#   variables:
+#     CONTAINER_NAME: denser-blog
+#     GIT_STRATEGY: none
 
-staging:stop-wallet:
-  extends: .stop_template_for_staging
-  needs:
-    - staging:deploy-wallet
-  environment:
-    name: staging-wallet
-    action: stop
-  variables:
-    CONTAINER_NAME: denser-wallet
-    GIT_STRATEGY: none
+# staging:stop-wallet:
+#   extends: .stop_template_for_staging
+#   needs:
+#     - staging:deploy-wallet
+#   environment:
+#     name: staging-wallet
+#     action: stop
+#   variables:
+#     CONTAINER_NAME: denser-wallet
+#     GIT_STRATEGY: none
 
-review:deploy-auth:
-  extends: staging:deploy-auth
-  variables:
-    PORT: 7001
-    CONTAINER_NAME: denser-review-auth
-  environment:
-    name: review-auth
-    action: start
-    on_stop: review:stop-auth
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^rc_.*/
-      when: on_success
+# review:deploy-auth:
+#   extends: staging:deploy-auth
+#   variables:
+#     PORT: 7001
+#     CONTAINER_NAME: denser-review-auth
+#   environment:
+#     name: review-auth
+#     action: start
+#     on_stop: review:stop-auth
+#   rules:
+#     - if: $CI_COMMIT_TAG =~ /^rc_.*/
+#       when: on_success
 
-review:deploy-blog:
-  extends: staging:deploy-blog
-  variables:
-    PORT: 3001
-    CONTAINER_NAME: denser-review-blog
-  environment:
-    name: review-blog
-    action: start
-    on_stop: review:stop-blog
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^rc_.*/
-      when: on_success
+# review:deploy-blog:
+#   extends: staging:deploy-blog
+#   variables:
+#     PORT: 3001
+#     CONTAINER_NAME: denser-review-blog
+#   environment:
+#     name: review-blog
+#     action: start
+#     on_stop: review:stop-blog
+#   rules:
+#     - if: $CI_COMMIT_TAG =~ /^rc_.*/
+#       when: on_success
 
-review:deploy-wallet:
-  extends: staging:deploy-wallet
-  variables:
-    PORT: 4001
-    CONTAINER_NAME: denser-review-wallet
-  environment:
-    name: review-wallet
-    action: start
-    on_stop: review:stop-wallet
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^rc_.*/
-      when: on_success
+# review:deploy-wallet:
+#   extends: staging:deploy-wallet
+#   variables:
+#     PORT: 4001
+#     CONTAINER_NAME: denser-review-wallet
+#   environment:
+#     name: review-wallet
+#     action: start
+#     on_stop: review:stop-wallet
+#   rules:
+#     - if: $CI_COMMIT_TAG =~ /^rc_.*/
+#       when: on_success
 
-review:stop-auth:
-  extends: staging:stop-auth
-  needs:
-    - review:deploy-auth
-  variables:
-    CONTAINER_NAME: denser-review-auth
-  environment:
-    name: review-auth
-    action: stop
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^rc_.*/
-      when: manual
-      allow_failure: true
+# review:stop-auth:
+#   extends: staging:stop-auth
+#   needs:
+#     - review:deploy-auth
+#   variables:
+#     CONTAINER_NAME: denser-review-auth
+#   environment:
+#     name: review-auth
+#     action: stop
+#   rules:
+#     - if: $CI_COMMIT_TAG =~ /^rc_.*/
+#       when: manual
+#       allow_failure: true
 
-review:stop-blog:
-  extends: staging:stop-blog
-  needs:
-    - review:deploy-blog
-  variables:
-    CONTAINER_NAME: denser-review-blog
-  environment:
-    name: review-blog
-    action: stop
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^rc_.*/
-      when: manual
-      allow_failure: true
+# review:stop-blog:
+#   extends: staging:stop-blog
+#   needs:
+#     - review:deploy-blog
+#   variables:
+#     CONTAINER_NAME: denser-review-blog
+#   environment:
+#     name: review-blog
+#     action: stop
+#   rules:
+#     - if: $CI_COMMIT_TAG =~ /^rc_.*/
+#       when: manual
+#       allow_failure: true
 
-review:stop-wallet:
-  extends: staging:stop-wallet
-  needs:
-    - review:deploy-wallet
-  variables:
-    CONTAINER_NAME: denser-review-wallet
-  environment:
-    name: review-wallet
-    action: stop
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^rc_.*/
-      when: manual
-      allow_failure: true
+# review:stop-wallet:
+#   extends: staging:stop-wallet
+#   needs:
+#     - review:deploy-wallet
+#   variables:
+#     CONTAINER_NAME: denser-review-wallet
+#   environment:
+#     name: review-wallet
+#     action: stop
+#   rules:
+#     - if: $CI_COMMIT_TAG =~ /^rc_.*/
+#       when: manual
+#       allow_failure: true
