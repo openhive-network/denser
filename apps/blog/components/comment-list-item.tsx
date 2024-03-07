@@ -17,6 +17,7 @@ import { DefaultRenderer } from '@hiveio/content-renderer';
 import { UserHoverCard } from './user-hover-card';
 import { useTranslation } from 'next-i18next';
 import VotesComponent from './votes';
+import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 
 const CommentListItem = ({
   comment,
@@ -32,12 +33,17 @@ const CommentListItem = ({
   const router = useRouter();
   const ref = useRef<HTMLTableRowElement>(null);
   const [hiddenComment, setHiddenComment] = useState(comment.stats?.gray);
-
   const [openState, setOpenState] = useState<boolean>(comment.stats?.gray && hiddenComment ? false : true);
-  const [reply, setReply] = useState(false);
-
   const comment_html = renderer.render(comment.body);
   const commentId = `@${username}/${comment.permlink}`;
+  const storageId = `replybox-/${username}/${comment.permlink}`;
+  const [storedBox, storeBox] = useLocalStorage<Boolean>(storageId, false);
+  const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
+  useEffect(() => {
+    if (reply) {
+      storeBox(reply);
+    }
+  }, [reply]);
   useEffect(() => {
     //without delay moving to right scroll position but after that imgs loading and we are in wrong scroll position
     const timeout = setTimeout(() => {
@@ -227,7 +233,9 @@ const CommentListItem = ({
                           </>
                         ) : null}
                         <button
-                          onClick={() => setReply(!reply)}
+                          onClick={() => {
+                            setReply(!reply), localStorage.removeItem(storageId);
+                          }}
                           className="flex items-center hover:cursor-pointer hover:text-red-600"
                           data-testid="comment-card-footer-reply"
                         >
@@ -248,7 +256,14 @@ const CommentListItem = ({
           </Link>
         </div>
       ) : null}
-      <ReplyTextbox onSetReply={setReply} reply={reply} username={username} permlink={comment.permlink} />
+      {reply ? (
+        <ReplyTextbox
+          onSetReply={setReply}
+          username={username}
+          permlink={comment.permlink}
+          storageId={storageId}
+        />
+      ) : null}
     </>
   );
 };

@@ -15,14 +15,14 @@ import { useLocalStorage } from './hooks/use-local-storage';
 
 export function ReplyTextbox({
   onSetReply,
-  reply,
   username,
-  permlink
+  permlink,
+  storageId
 }: {
   onSetReply: (e: boolean) => void;
-  reply: boolean;
   username: string;
   permlink: string;
+  storageId: string;
 }) {
   const [storedPost, storePost] = useLocalStorage<string>(`replyTo-/${username}/${permlink}`, '');
   const { user } = useUser();
@@ -37,7 +37,7 @@ export function ReplyTextbox({
     if (hiveRenderer) {
       const nextCleanedText = text ? hiveRenderer.render(text) : '';
       setCleanedText(nextCleanedText);
-      if (reply) {
+      if (text) {
         storePost(text);
       }
     }
@@ -55,6 +55,7 @@ export function ReplyTextbox({
   }, [user, permlink]);
 
   const handleCancel = () => {
+    localStorage.removeItem(storageId);
     if (text === '') return onSetReply(false);
     const confirmed = confirm(t('post_content.footer.comment.exit_editor'));
     if (confirmed) {
@@ -64,97 +65,90 @@ export function ReplyTextbox({
   };
 
   return (
-    <div>
-      {reply ? (
-        <div
-          className="mx-8 mb-4 flex flex-col gap-6 rounded-md border bg-card p-4 text-card-foreground shadow-sm dark:bg-slate-900"
-          data-testid="reply-editor"
-        >
-          <div className="flex flex-col gap-4">
-            <Link href={`#`}>
-              <h1 className="text-sm text-red-500">{t('post_content.footer.comment.disable_editor')}</h1>
-            </Link>
-            <div>
-              <Textarea
-                className="border-2 border-slate-200 dark:text-white"
-                onChange={(e) => setText(e.target.value)}
-                placeholder={t('post_content.footer.comment.reply')}
-                value={text}
-              />
-              <p className="border-2 border-t-0 border-slate-200 bg-gray-100 p-1 text-xs font-light text-slate-500 dark:border-black dark:bg-slate-950">
-                {t('post_content.footer.comment.insert_images')}{' '}
-                <span>
-                  <Label className="cursor-pointer text-red-500" htmlFor="picture">
-                    {t('post_content.footer.comment.selecting_them')}
-                  </Label>
-                  <Input id="picture" type="file" className="hidden" />
-                </span>
-              </p>
-            </div>
-            <div className="flex flex-col md:flex-row">
-              {user && user.isLoggedIn ? (
-                <Button
-                  disabled={text === ''}
-                  onClick={() => {
-                    transactionService.processHiveAppOperation((builder) => {
-                      builder
-                        .push({
-                          comment: {
-                            parent_author: username,
-                            parent_permlink: permlink,
-                            author: user.username,
-                            permlink: replyPermlink,
-                            title: '',
-                            body: cleanedText,
-                            json_metadata: '{"app":"hiveblog/0.1"}'
-                          }
-                        })
-                        .build();
-                    }, signerOptions);
-                    setText('');
-                    localStorage.removeItem(`replyTo-/${username}/${permlink}`);
-                    onSetReply(false);
-                  }}
-                >
-                  {t('post_content.footer.comment.post')}
-                </Button>
-              ) : (
-                <DialogLogin>
-                  <Button disabled={text === ''}> {t('post_content.footer.comment.post')}</Button>
-                </DialogLogin>
-              )}
-              <Button
-                variant="ghost"
-                onClick={() => handleCancel()}
-                className="font-thiny text-slate-500 hover:text-red-500"
-              >
-                {t('post_content.footer.comment.cancel')}
-              </Button>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-4">
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-500">{t('post_content.footer.comment.preview')}</span>
-              <Link href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax">
-                <span className="text-red-500">
-                  {t('post_content.footer.comment.markdown_styling_guide')}
-                </span>
-              </Link>
-            </div>
-            {cleanedText ? (
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: cleanedText
-                }}
-                className="prose max-w-full border-2 border-slate-200 p-2 dark:prose-invert"
-              ></div>
-            ) : null}
-          </div>
+    <div
+      className="mx-8 mb-4 flex flex-col gap-6 rounded-md border bg-card p-4 text-card-foreground shadow-sm dark:bg-slate-900"
+      data-testid="reply-editor"
+    >
+      <div className="flex flex-col gap-4">
+        <Link href={`#`}>
+          <h1 className="text-sm text-red-500">{t('post_content.footer.comment.disable_editor')}</h1>
+        </Link>
+        <div>
+          <Textarea
+            className="border-2 border-slate-200 dark:text-white"
+            onChange={(e) => setText(e.target.value)}
+            placeholder={t('post_content.footer.comment.reply')}
+            value={text}
+          />
+          <p className="border-2 border-t-0 border-slate-200 bg-gray-100 p-1 text-xs font-light text-slate-500 dark:border-black dark:bg-slate-950">
+            {t('post_content.footer.comment.insert_images')}{' '}
+            <span>
+              <Label className="cursor-pointer text-red-500" htmlFor="picture">
+                {t('post_content.footer.comment.selecting_them')}
+              </Label>
+              <Input id="picture" type="file" className="hidden" />
+            </span>
+          </p>
         </div>
-      ) : (
-        <></>
-      )}
+        <div className="flex flex-col md:flex-row">
+          {user && user.isLoggedIn ? (
+            <Button
+              disabled={text === ''}
+              onClick={() => {
+                transactionService.processHiveAppOperation((builder) => {
+                  builder
+                    .push({
+                      comment: {
+                        parent_author: username,
+                        parent_permlink: permlink,
+                        author: user.username,
+                        permlink: replyPermlink,
+                        title: '',
+                        body: cleanedText,
+                        json_metadata: '{"app":"hiveblog/0.1"}'
+                      }
+                    })
+                    .build();
+                }, signerOptions);
+                setText('');
+                localStorage.removeItem(`replyTo-/${username}/${permlink}`);
+                localStorage.removeItem(storageId);
+                onSetReply(false);
+              }}
+            >
+              {t('post_content.footer.comment.post')}
+            </Button>
+          ) : (
+            <DialogLogin>
+              <Button disabled={text === ''}> {t('post_content.footer.comment.post')}</Button>
+            </DialogLogin>
+          )}
+          <Button
+            variant="ghost"
+            onClick={() => handleCancel()}
+            className="font-thiny text-slate-500 hover:text-red-500"
+          >
+            {t('post_content.footer.comment.cancel')}
+          </Button>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-4">
+        <div className="flex justify-between text-xs">
+          <span className="text-slate-500">{t('post_content.footer.comment.preview')}</span>
+          <Link href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax">
+            <span className="text-red-500">{t('post_content.footer.comment.markdown_styling_guide')}</span>
+          </Link>
+        </div>
+        {cleanedText ? (
+          <div
+            dangerouslySetInnerHTML={{
+              __html: cleanedText
+            }}
+            className="prose max-w-full border-2 border-slate-200 p-2 dark:prose-invert"
+          ></div>
+        ) : null}
+      </div>
     </div>
   );
 }
