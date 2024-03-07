@@ -63,7 +63,7 @@ export class HbauthLoginDialog {
   }
 
   async validateHbauthUnlockKeyDialogIsVisible() {
-    await this.page.waitForTimeout(5000);
+    // await this.page.waitForTimeout(5000);
     await this.page.waitForSelector(this.loginDialogHbauth['_selector']);
     await expect(this.loginDialogHbauth).toBeVisible();
     await expect(this.hbauthUnlockKeyButton).toBeVisible();
