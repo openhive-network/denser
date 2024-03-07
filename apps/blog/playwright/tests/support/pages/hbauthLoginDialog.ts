@@ -72,7 +72,7 @@ export class HbauthLoginDialog {
     await expect(this.hbauthUnlockKeyTypeRadioPostingPrivateKey).toBeVisible();
     await expect(this.hbauthUnlockKeyTypeRadioActivePrivateKey).toBeVisible();
     await expect(this.hbauthUnlockKeySubmitButton).toBeVisible();
-    await expect(this.hbauthUnlockKeyResetButton).not.toBeVisible();
+    await expect(this.hbauthUnlockKeyResetButton).toBeVisible();
   }
 
   async validateHbauthAddKeyDialogIsVisible() {
