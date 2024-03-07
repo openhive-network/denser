@@ -60,7 +60,7 @@ include:
     TURBO_APP_PATH: '/apps/auth'
     TURBO_APP_NAME: 'auth'
 
-docker-build-blog:
+.docker-build-blog:
   extends: .docker_build_template
   variables:
     TURBO_APP_SCOPE: '@hive/blog'
