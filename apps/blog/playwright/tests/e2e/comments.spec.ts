@@ -515,13 +515,13 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
 
     // button styles
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'color')).toBe(
-      'rgb(239, 68, 68)'
+      'rgb(15, 23, 42)'
     );
     expect(
       await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'background-color')
-    ).toBe('rgba(0, 0, 0, 0)');
+    ).toBe('rgb(241, 245, 249)');
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'border-color')).toBe(
-      'rgb(239, 68, 68)'
+      'rgb(226, 232, 240)'
     );
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'border-style')).toBe(
       'solid'
@@ -532,13 +532,13 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await postPage.page.waitForTimeout(1000);
 
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'color')).toBe(
-      'rgb(220, 38, 38)'
+      'rgb(239, 68, 68)'
     );
     expect(
       await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'background-color')
-    ).toBe('rgb(241, 245, 249)');
+    ).toBe('rgba(241, 245, 249, 0.8)');
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'border-color')).toBe(
-      'rgb(220, 38, 38)'
+      'rgb(226, 232, 240)'
     );
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'border-style')).toBe(
       'solid'
