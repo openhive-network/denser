@@ -218,7 +218,7 @@ export function DialogHBAuth({
                       </SelectContent>
                     </Select> */}
 
-                    <RadioGroup
+                    {/* <RadioGroup
                       defaultValue={keyTypeSwitch}
                       onValueChange={(v: KeyAuthorityType) => {
                         setKeyTypeSwitch(v)
@@ -228,7 +228,7 @@ export function DialogHBAuth({
                     >
                       <h3>{t('login_form.title_select_key_type')}</h3>
                       {radioGroupItems(items)}
-                    </RadioGroup>
+                    </RadioGroup> */}
 
                   </div>
 
@@ -305,7 +305,7 @@ export function DialogHBAuth({
                       </SelectContent>
                     </Select> */}
 
-                    <RadioGroup
+                    {/* <RadioGroup
                       defaultValue={keyTypeSwitch}
                       onValueChange={(v: KeyAuthorityType) => {
                         setKeyTypeSwitch(v);
@@ -315,7 +315,7 @@ export function DialogHBAuth({
                     >
                       <h3>{t('login_form.title_select_key_type')}</h3>
                       {radioGroupItems(items)}
-                    </RadioGroup>
+                    </RadioGroup> */}
 
                   </div>
 
