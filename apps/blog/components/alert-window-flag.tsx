@@ -14,7 +14,7 @@ import { Input } from '@ui/components';
 import { ReactNode, useState } from 'react';
 import { transactionService } from '@transaction/index';
 import { CommunityOperationBuilder } from '@hive/wax/web';
-import { useSigner } from '@/blog/components/hooks/use-signer';
+import { useSigner } from '@smart-signer/lib/use-signer';
 
 export function AlertDialogFlag({
   children,

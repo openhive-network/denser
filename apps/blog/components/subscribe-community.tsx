@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 import { useEffect, useState } from 'react';
 import { transactionService } from '@transaction/index';
 import { CommunityOperationBuilder } from '@hive/wax/web';
-import { useSigner } from '@/blog/components/hooks/use-signer';
+import { useSigner } from '@smart-signer/lib/use-signer';
 import { User } from '@smart-signer/types/common';
 
 const SubscribeCommunity = ({

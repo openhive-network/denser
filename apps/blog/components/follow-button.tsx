@@ -4,7 +4,7 @@ import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
 import { transactionService } from '@transaction/index';
 import { FollowOperationBuilder } from '@hive/wax/web';
-import { useSigner } from '@/blog/components/hooks/use-signer';
+import { useSigner } from '@smart-signer/lib/use-signer';
 import { User } from '@smart-signer/types/common';
 import { IFollow } from '@transaction/lib/hive';
 import { UseInfiniteQueryResult } from '@tanstack/react-query';
