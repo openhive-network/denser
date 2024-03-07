@@ -23,7 +23,7 @@ import { useLocalStorage } from './hooks/use-local-storage';
 import { useTranslation } from 'next-i18next';
 import { HiveRendererContext } from './hive-renderer-context';
 import { transactionService } from '@transaction/index';
-import { useSigner } from './hooks/use-signer';
+import { useSigner } from '@smart-signer/lib/use-signer';
 import { createPermlink } from '@transaction/lib/utils';
 
 const defaultValues = {
