@@ -4,11 +4,20 @@
     "moduleResolution": "Bundler",
     "baseUrl": ".",
     "paths": {
-      "@/blog/*": ["./*"],
-      "@smart-signer/*": ["../../packages/smart-signer/*"],
-      "@transaction/*": ["../../packages/transaction/*"],
-      "@ui/*": ["../../packages/ui/*"]
-    }
+      "@/blog/*": [
+        "./*"
+      ],
+      "@smart-signer/*": [
+        "../../packages/smart-signer/*"
+      ],
+      "@transaction/*": [
+        "../../packages/transaction/*"
+      ],
+      "@ui/*": [
+        "../../packages/ui/*"
+      ]
+    },
+    "module": "esnext"
   },
   "include": [
     "next-env.d.ts",
@@ -17,5 +26,8 @@
     ".next/types/**/*.ts",
     "../../packages/ui/elements/common/layout.tsx"
   ],
-  "exclude": ["node_modules", "playwright"]
+  "exclude": [
+    "node_modules",
+    "playwright"
+  ]
 }

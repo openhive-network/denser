@@ -362,6 +362,31 @@
       }
     }
   },
+  "submit_page": {
+    "disable_side": "禁用并排编辑器",
+    "enable_side": "启用并排编辑器",
+    "string_must_contain": "字符串必须包含至少{{num}}个字符",
+    "must_contain_only": "只能包含字母和数字",
+    "hide_preview": "隐藏预览",
+    "show_preview": "显示预览",
+    "title": "标题",
+    "insert_images_by_dragging": "通过拖放、从剪贴板粘贴或",
+    "selecting_them": "选择它们插入图像",
+    "post_summary": "文章摘要（用于文章和SEO，最多140个字符）",
+    "enter_your_tags": "输入以空格分隔的标签",
+    "author_if_different": "作者（如果与当前帐户不同）",
+    "post_options": "文章选项：",
+    "author_rewards": "作者奖励：",
+    "advanced_settings": "高级设置",
+    "account_stats": "帐户统计：",
+    "resource_credits": "资源积分（RC）水平：{{value}}%",
+    "posting_to": "发布到：",
+    "my_blog": "我的博客",
+    "preview": "预览",
+    "submit": "提交",
+    "clean": "清除",
+    "markdown_styling_guide": "Markdown样式指南"
+  },
   "search_page": {
     "placeholder": "搜索",
     "no_results": "Nothing was found.",

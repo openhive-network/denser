@@ -375,6 +375,31 @@
       }
     }
   },
+  "submit_page": {
+    "disable_side": "Przenieś podgląd pod formularz",
+    "enable_side": "Przenieś podgląd obok formularza",
+    "string_must_contain": "Tekst musi zawierać conajmniej {{num}} znak(i)",
+    "must_contain_only": "Może zawierać tylko litery i liczby",
+    "hide_preview": "Schowaj podgląd",
+    "show_preview": "Pokaż podgląd",
+    "title": "Tytuł",
+    "insert_images_by_dragging": "Wstaw obrazki przez przeciągnij i upuść.wklejanie ze schowka,lub przez ",
+    "selecting_them": "wybieranie ich.",
+    "post_summary": "Streszczenie posta(w miniaturce posta, maksymalnie 140 znaków)",
+    "enter_your_tags": "Wpisz tagi oddzielone spacją",
+    "author_if_different": "Autor(jeśli inny niż obecne konto)",
+    "post_options": "Opcje posta:",
+    "author_rewards": "Wynagrodzenie autora:",
+    "advanced_settings": "Ustawienia zaawansowane",
+    "account_stats": "Statystyki konta:",
+    "resource_credits": "Resource Credits (RC) level: {{value}} %",
+    "posting_to": "Posting to:",
+    "my_blog": "Mój blog",
+    "preview": "Podgląd",
+    "submit": "Wyślij",
+    "clean": "Wyczyść",
+    "markdown_styling_guide": "Przewodnik formatowania z użyciem Markdown"
+  },
   "search_page": {
     "placeholder": "Szukaj",
     "no_results": "Nic nie znaleziono.",

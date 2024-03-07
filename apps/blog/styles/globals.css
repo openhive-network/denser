@@ -76,7 +76,9 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: 'rlig' 1, 'calt' 1;
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
   }
 }
 
@@ -139,7 +141,7 @@
 }
 
 .prose a.external-link:after {
-  content: "";
+  content: '';
   background: url(../public/external-icon.svg);
   background-size: cover;
   display: inline-block;
@@ -149,5 +151,9 @@
   position: relative;
   left: 0.1em;
   margin-right: 0.1em;
-  opacity: .5;
+  opacity: 0.5;
+}
+
+.w-md-editor-preview {
+  @apply entry-body markdown-view user-selectable prose max-w-full dark:prose-invert;
 }
