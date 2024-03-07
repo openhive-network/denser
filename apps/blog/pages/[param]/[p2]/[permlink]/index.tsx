@@ -83,7 +83,10 @@ function PostPage({
   };
   const query = router.query.sort?.toString();
   const defaultSort = isSortOrder(query) ? query : SortOrder.trending;
-
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   useEffect(() => {
     if (discussion) {
       const list = [...Object.keys(discussion).map((key) => discussion[key])];
@@ -348,8 +351,8 @@ function PostPage({
                       {post_s.children === 0
                         ? t('post_content.footer.no_responses')
                         : post_s.children === 1
-                        ? t('post_content.footer.response')
-                        : t('post_content.footer.responses', { responses: post_s.children })}
+                          ? t('post_content.footer.response')
+                          : t('post_content.footer.responses', { responses: post_s.children })}
                     </p>
                   </TooltipContent>
                 </Tooltip>
@@ -399,7 +402,9 @@ function PostPage({
       </div>
       <div id="comments" className="flex" />
       <div className="mx-auto my-0 max-w-4xl py-4">
-        {reply ? <ReplyTextbox onSetReply={setReply} username={username} permlink={permlink} /> : null}
+        {isClient ? (
+          <ReplyTextbox onSetReply={setReply} reply={reply} username={username} permlink={permlink} />
+        ) : null}
       </div>
       {!isLoadingDiscussion && discussion && discussionState ? (
         <div className="mx-auto my-0 max-w-4xl py-4 pr-8">

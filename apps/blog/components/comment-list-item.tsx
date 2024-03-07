@@ -248,7 +248,7 @@ const CommentListItem = ({
           </Link>
         </div>
       ) : null}
-      {reply ? <ReplyTextbox onSetReply={setReply} username={username} permlink={comment.permlink} /> : null}
+      <ReplyTextbox onSetReply={setReply} reply={reply} username={username} permlink={comment.permlink} />
     </>
   );
 };
