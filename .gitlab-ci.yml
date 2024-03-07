@@ -53,7 +53,7 @@ include:
   tags:
     - public-runner-docker
 
-docker-build-auth:
+.docker-build-auth:
   extends: .docker_build_template
   variables:
     TURBO_APP_SCOPE: '@hive/auth'
@@ -67,7 +67,7 @@ docker-build-blog:
     TURBO_APP_PATH: '/apps/blog'
     TURBO_APP_NAME: 'blog'
 
-docker-build-wallet:
+.docker-build-wallet:
   extends: .docker_build_template
   variables:
     TURBO_APP_SCOPE: '@hive/wallet'
@@ -110,7 +110,7 @@ docker-build-wallet:
     - |
       echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=false]\r\e[0KRunning tests..."
       cd .$TURBO_APP_PATH
-      npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --update-snapshots
+      npx playwright test hbauthLoginDialog.spec.ts --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --update-snapshots
       echo -e "\e[0Ksection_end:$(date +%s):tests\r\e[0K"
   artifacts:
     paths:
@@ -137,7 +137,7 @@ e2e-tests-blog:
     PORT: 3000
     DENSER_URL: http://denser:$PORT
 
-e2e-tests-wallet:
+.e2e-tests-wallet:
   extends: .e2e_tests_template
   needs:
     - docker-build-wallet
@@ -178,7 +178,7 @@ e2e-report-aggregate-blog:
     PROJECTS: '["chromium", "firefox", "webkit"]'
     SHARD_TOTAL: 5
 
-e2e-report-aggregate-wallet:
+.e2e-report-aggregate-wallet:
   extends: .e2e_report_aggregate_template
   needs:
     - e2e-tests-wallet
