@@ -2,20 +2,20 @@ import { SignerHbauth } from '@smart-signer/lib/signer/signer-hbauth';
 import { SignerHiveauth } from '@smart-signer/lib/signer/signer-hiveauth';
 import { SignerKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { SignerWif } from '@smart-signer/lib/signer/signer-wif';
-import { LoginTypes } from '@smart-signer/types/common';
+import { LoginType } from '@smart-signer/types/common';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 
 export type SignerTool = SignerHbauth | SignerHiveauth | SignerKeychain | SignerWif;
 
 export type RegisteredSigners = {
-  [key in LoginTypes]?: any;
+  [key in LoginType]?: any;
 }
 
 const registeredSigners: RegisteredSigners = {};
-registeredSigners[LoginTypes.hbauth] = SignerHbauth;
-registeredSigners[LoginTypes.hiveauth] = SignerHiveauth;
-registeredSigners[LoginTypes.keychain] = SignerKeychain;
-registeredSigners[LoginTypes.wif] = SignerWif;
+registeredSigners[LoginType.hbauth] = SignerHbauth;
+registeredSigners[LoginType.hiveauth] = SignerHiveauth;
+registeredSigners[LoginType.keychain] = SignerKeychain;
+registeredSigners[LoginType.wif] = SignerWif;
 
 export function signerFactory({
   username,

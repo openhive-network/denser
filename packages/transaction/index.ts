@@ -23,7 +23,7 @@ class TransactionService {
       await this.processTransaction(txBuilder, signerOptions);
     } catch (error) {
       this.handleError(error);
-    } 
+    }
 
 }
 
@@ -45,7 +45,7 @@ class TransactionService {
     const broadcastReq = new BroadcastTransactionRequest(txBuilder);
 
     // do broadcast
-    await (await hiveChainService.getHiveChain()).api.network_broadcast_api.broadcast_transaction(broadcastReq);  
+    await (await hiveChainService.getHiveChain()).api.network_broadcast_api.broadcast_transaction(broadcastReq);
 }
 
   handleError (e: any) {
