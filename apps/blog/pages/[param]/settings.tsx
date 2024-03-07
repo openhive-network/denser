@@ -1,4 +1,4 @@
-import Router from 'next/router';
+import Router, { useRouter } from 'next/router';
 import { Icons } from '@ui/components/icons';
 import ProfileLayout from '@/blog/components/common/profile-layout';
 import { Button } from '@ui/components/button';
@@ -26,6 +26,7 @@ import { cn } from '@ui/lib/utils';
 
 const DEFAULTS_ENDPOINTS = [
   'https://api.hive.blog',
+  'https://api.openhive.network',
   'https://rpc.ausbit.dev',
   'https://anyx.io',
   'https://api.deathwing.me'
@@ -37,6 +38,7 @@ export default function UserSettings() {
   const [newEndpoint, setNewEndpoint] = useState('');
   const [isClient, setIsClient] = useState(false);
   const params = useParams();
+  const router = useRouter();
   const { user } = useUser();
 
   useEffect(() => {
@@ -209,6 +211,7 @@ export default function UserSettings() {
             data-testid="api-endpoint-radiogroup"
             onValueChange={(e) => {
               setEndpoint(e);
+              router.reload();
             }}
             value={endpoint}
           >
