@@ -962,8 +962,12 @@ test.describe('Communities page tests', () => {
   test('validate Subscribe button styles in the light theme', async ({ page }) => {
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
+    let communitySubscribeButton;
 
-    const communitySubscribeButton = await communitiesPage.communitySubscribeButton;
+    if(!await communitiesPage.communitySubscribeButton.first().isVisible())
+      communitySubscribeButton = await communitiesPage.communitySubscribeButton.last();
+    else
+      communitySubscribeButton = await communitiesPage.communitySubscribeButton.first();
 
     // Color of the Subscribe button before hover
     expect(await homePage.getElementCssPropertyValue(communitySubscribeButton, 'background-color')).toBe(
