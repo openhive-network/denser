@@ -6,7 +6,7 @@ import { parseCookie } from '@smart-signer/lib/utils';
 import { Signatures, PostLoginSchema } from '@smart-signer/lib/auth/utils';
 import { useSignIn } from '@smart-signer/lib/auth/use-sign-in';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { LoginForm, LoginFormSchema } from '@smart-signer/components/login-form';
+import { LoginForm, LoginFormSchema } from '@smart-signer/components/signin-form';
 import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
@@ -46,10 +46,6 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
     const message = JSON.stringify({ loginChallenge }, null, 0);
 
     const { loginType, username } = data;
-    let password = '';
-    if (data.loginType === LoginType.wif) {
-      password = data.password;
-    }
     let signatures: Signatures = {};
     let hivesignerToken = '';
 
@@ -66,7 +62,7 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
       const keyType = KeyType.posting;
       const signature = await signer.signChallenge({
         message,
-        password,
+        password: '',
         translateFn: t
       });
       signatures[keyType] = signature;

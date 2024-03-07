@@ -294,7 +294,9 @@
       "subscribe": "Subscribe",
       "new_post": "New post",
       "activity_log": "Activity Log",
-      "subscribers": "subscribers"
+      "subscribers": "subscribers",
+      "leave": "Уходить",
+      "joined": "Присоединиться"
     },
     "titles": {
       "pending_rewards": "pending rewards",
@@ -367,6 +369,31 @@
         "exit_editor": "Are you sure you want to exit the comment editor?"
       }
     }
+  },
+  "submit_page": {
+    "disable_side": "Отключить редактор рядом",
+    "enable_side": "Включить редактор рядом",
+    "string_must_contain": "Строка должна содержать не менее {{num}} символов",
+    "must_contain_only": "Должно содержать только буквы и цифры",
+    "hide_preview": "Скрыть превью",
+    "show_preview": "Показать превью",
+    "title": "Заголовок",
+    "insert_images_by_dragging": "Вставить изображения перетаскиванием, вставкой из буфера обмена или",
+    "selecting_them": "выбрав их",
+    "post_summary": "Краткое содержание (для постов и SEO, максимум 140 символов)",
+    "enter_your_tags": "Введите ваши теги, разделенные пробелом",
+    "author_if_different": "Автор (если отличается от текущего аккаунта)",
+    "post_options": "Опции поста:",
+    "author_rewards": "Награды автора:",
+    "advanced_settings": "Дополнительные настройки",
+    "account_stats": "Статистика аккаунта:",
+    "resource_credits": "Уровень ресурсных кредитов (RC): {{value}} %",
+    "posting_to": "Постинг в:",
+    "my_blog": "Мой блог",
+    "preview": "Предварительный просмотр",
+    "submit": "Отправить",
+    "clean": "Очистить",
+    "markdown_styling_guide": "Руководство по стилю Markdown"
   },
   "search_page": {
     "placeholder": "Поиск",

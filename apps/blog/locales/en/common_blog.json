@@ -300,7 +300,9 @@
       "subscribe": "Subscribe",
       "new_post": "New post",
       "activity_log": "Activity Log",
-      "subscribers": "subscribers"
+      "subscribers": "subscribers",
+      "leave": "Leave",
+      "joined": "Joined"
     },
     "titles": {
       "pending_rewards": "pending rewards",
@@ -373,6 +375,31 @@
         "exit_editor": "Are you sure you want to exit the comment editor?"
       }
     }
+  },
+  "submit_page": {
+    "disable_side": "Disable side-by-side editor",
+    "enable_side": "Enable side-by-side editor",
+    "string_must_contain": "String must contain at least {{num}} character(s)",
+    "must_contain_only": "Must contain only letters and numbers",
+    "hide_preview": "Hide preview",
+    "show_preview": "Show preview",
+    "title": "Title",
+    "insert_images_by_dragging": "Insert images by dragging & dropping, pasting from the clipboard, or by ",
+    "selecting_them": "selecting them",
+    "post_summary": "Post summary(for posts & SEO, max 140 chars)",
+    "enter_your_tags": "Enter your tags separated by a space",
+    "author_if_different": "Author(if different from current account)",
+    "post_options": "Post options:",
+    "author_rewards": "Author rewards:",
+    "advanced_settings": "Advanced settings",
+    "account_stats": "Account stats:",
+    "resource_credits": "Resource Credits (RC) level: {{value}} %",
+    "posting_to": "Posting to:",
+    "my_blog": "My blog",
+    "preview": "Preview",
+    "submit": "Submit",
+    "clean": "Clean",
+    "markdown_styling_guide": "Markdown Styling Guide"
   },
   "search_page": {
     "placeholder": "Search",

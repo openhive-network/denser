@@ -1,5 +1,5 @@
-import { LoginTypes } from '@smart-signer/types/common';
-import { KeyTypes } from '@smart-signer/types/common';
+import { LoginType } from '@smart-signer/types/common';
+import { KeyType } from '@smart-signer/types/common';
 import { StorageType } from '@smart-signer/lib/storage-mixin';
 import { THexString, transaction } from '@hive/wax/web';
 
@@ -19,8 +19,8 @@ export interface SignChallenge {
 
 export interface SignerOptions {
   username: string;
-  loginType: LoginTypes;
-  keyType: KeyTypes;
+  loginType: LoginType;
+  keyType: KeyType;
   apiEndpoint: string;
   storageType: StorageType;
 }
@@ -35,8 +35,8 @@ export interface SignerOptions {
  */
 export abstract class Signer {
   username: string;
-  loginType: LoginTypes;
-  keyType: KeyTypes;
+  loginType: LoginType;
+  keyType: KeyType;
   apiEndpoint: string;
   storageType: StorageType;
 

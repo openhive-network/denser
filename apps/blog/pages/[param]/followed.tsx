@@ -10,6 +10,9 @@ import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
+import FollowButton from '@/blog/components/follow-button';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import MuteButton from '@/blog/components/mute-button';
 
 const LIMIT = 50;
 export default function Followed() {
@@ -17,8 +20,11 @@ export default function Followed() {
   const { t } = useTranslation('common_blog');
   const [page, setPage] = useState(0);
   const profileData = useQueryClient().getQueryData<FullAccount>(['profileData', username]);
-
+  const { user } = useUser();
   const followingData = useFollowingInfiniteQuery(username, LIMIT);
+  const following = useFollowingInfiniteQuery(user?.username || '', 50, 'blog', ['blog']);
+  const mute = useFollowingInfiniteQuery(user.username, 50, 'ignore', ['ignore']);
+
   const handleNextPage = () => {
     if (!followingData.data) return;
 
@@ -53,9 +59,15 @@ export default function Followed() {
           {followingData.data?.pages[page].map((e) => (
             <li
               key={e.following}
-              className="flex h-8 items-center p-2 font-semibold text-red-600 odd:bg-slate-200 even:bg-slate-100 dark:odd:bg-slate-800 dark:even:bg-slate-900"
+              className="flex items-center justify-between px-3 font-semibold text-red-600 odd:bg-slate-200 even:bg-slate-100 dark:odd:bg-slate-800 dark:even:bg-slate-900"
             >
               <Link href={`/@${e.following}`}>{e.following}</Link>
+              {!user.isLoggedIn || user.username === e.following ? null : (
+                <div className="flex gap-2">
+                  <FollowButton username={e.following} user={user} variant="basic" list={following} />
+                  <MuteButton username={e.following} user={user} variant="basic" list={mute} />
+                </div>
+              )}
             </li>
           ))}
         </ul>
