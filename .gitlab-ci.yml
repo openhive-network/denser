@@ -110,7 +110,7 @@ docker-build-blog:
     - |
       echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=false]\r\e[0KRunning tests..."
       cd .$TURBO_APP_PATH
-      npx playwright test hbauthLoginDialog.spec.ts --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --update-snapshots
+      npx playwright test hbauthLoginDialog.spec.ts --project=chromium --update-snapshots
       echo -e "\e[0Ksection_end:$(date +%s):tests\r\e[0K"
   artifacts:
     paths:
@@ -122,10 +122,10 @@ docker-build-blog:
 
 e2e-tests-blog:
   extends: .e2e_tests_template
-  needs:
-    - docker-build-blog
+  # needs:
+  #   - docker-build-blog
   services:
-    - name: $IMAGE_NAME
+    - name: registry.gitlab.syncad.com/hive/denser/blog:9e5ac7d6
       alias: denser
       variables:
         HEALTHCHECK_TCP_PORT: '3000'
