@@ -21,7 +21,7 @@ class VerifyAuthorityRequest {
 };
 
 class VerifyAuthorityResponse {
-  public valid: boolean;
+  public valid!: boolean;
 };
 
 export enum AuthorityLevel {
