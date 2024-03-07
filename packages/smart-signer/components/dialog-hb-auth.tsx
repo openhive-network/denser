@@ -156,16 +156,7 @@ export function DialogHBAuth({
   ];
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={
-        (open: boolean) => {
-          setOpen(open);
-          // Reset key to default value on every dialog open.
-          if (resetToDefaultKeyTypeOnOpen && open) setKeyTypeSwitch(defaultKeyType);
-        }
-      }
-    >
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[600px]" data-testid="login-dialog-hb-auth">
         <Tabs defaultValue="login" className="w-full py-4">
