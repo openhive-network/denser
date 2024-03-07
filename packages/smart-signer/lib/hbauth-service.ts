@@ -3,18 +3,18 @@ import { OnlineClient } from '@hive/hb-auth';
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
-class HbhbauthService {
+class HbauthService {
 
   static onlineClient: OnlineClient;
 
   async getOnlineClient() {
-    if (!HbhbauthService.onlineClient) {
+    if (!HbauthService.onlineClient) {
       // TODO Pass correct config options here.
-      HbhbauthService.onlineClient = await new OnlineClient().initialize();
+      HbauthService.onlineClient = await new OnlineClient().initialize();
     }
-    return HbhbauthService.onlineClient;
+    return HbauthService.onlineClient;
   }
 
 }
 
-export const hbauthService = new HbhbauthService();
+export const hbauthService = new HbauthService();
