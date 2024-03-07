@@ -110,7 +110,7 @@ include:
     - |
       echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=false]\r\e[0KRunning tests..."
       cd .$TURBO_APP_PATH
-      npx playwright test hbauthLoginDialog.spec.ts --project=chromium --update-snapshots
+      npx playwright test hbauthLoginDialog.spec.ts --project=chromium --update-snapshots --headed
       echo -e "\e[0Ksection_end:$(date +%s):tests\r\e[0K"
   artifacts:
     paths:
@@ -154,29 +154,29 @@ e2e-tests-blog:
 #     PORT: 4000
 #     DENSER_URL: http://denser:$PORT
 
-# .e2e_report_aggregate_template:
-#   extends: .node-job
-#   stage: test-report-aggregate
-#   when: always
-#   image: mcr.microsoft.com/playwright:v1.41.1-jammy
-#   script:
-#     - cd .$TURBO_APP_PATH
-#     - npm install playwright-merge-html-reports --dev
-#     - npx playwright test tests/merge-reports --config playwright.merge.config.ts
-#   artifacts:
-#     paths:
-#       - .${TURBO_APP_PATH}/merged-html-report/
-#       - .${TURBO_APP_PATH}/junit/
+.e2e_report_aggregate_template:
+  extends: .node-job
+  stage: test-report-aggregate
+  when: always
+  image: mcr.microsoft.com/playwright:v1.41.1-jammy
+  script:
+    - cd .$TURBO_APP_PATH
+    - npm install playwright-merge-html-reports --dev
+    - npx playwright test tests/merge-reports --config playwright.merge.config.ts
+  artifacts:
+    paths:
+      - .${TURBO_APP_PATH}/merged-html-report/
+      - .${TURBO_APP_PATH}/junit/
 
-# e2e-report-aggregate-blog:
-#   extends: .e2e_report_aggregate_template
-#   needs:
-#     - e2e-tests-blog
-#   variables:
-#     TURBO_APP_SCOPE: '@hive/blog'
-#     TURBO_APP_PATH: '/apps/blog'
-#     PROJECTS: '["chromium", "firefox", "webkit"]'
-#     SHARD_TOTAL: 5
+e2e-report-aggregate-blog:
+  extends: .e2e_report_aggregate_template
+  needs:
+    - e2e-tests-blog
+  variables:
+    TURBO_APP_SCOPE: '@hive/blog'
+    TURBO_APP_PATH: '/apps/blog'
+    PROJECTS: '["chromium", "firefox", "webkit"]'
+    SHARD_TOTAL: 5
 
 # e2e-report-aggregate-wallet:
 #   extends: .e2e_report_aggregate_template
