@@ -1,5 +1,4 @@
 import { dateToShow, dateToFullRelative } from '@ui/lib/parse-date';
-import { Button } from '@ui/components/button';
 import UserAvatar from '@/blog/components/user-avatar';
 import Link from 'next/link';
 import { useAccountQuery } from './hooks/use-accout';
@@ -7,13 +6,19 @@ import { useFollowsQuery } from './hooks/use-follows';
 import { delegatedHive, numberWithCommas, vestingHive } from '@ui/lib/utils';
 import Big from 'big.js';
 import { useDynamicGlobalData } from './hooks/use-dynamic-global-data';
-import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
+import FollowButton from './follow-button';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useFollowingInfiniteQuery } from './hooks/use-following-infinitequery';
+import MuteButton from './mute-button';
 
 export function HoverCardData({ author }: { author: string }) {
   const { t } = useTranslation('common_blog');
+  const { user } = useUser();
   const follows = useFollowsQuery(author);
   const account = useAccountQuery(author);
+  const following = useFollowingInfiniteQuery(user.username || '', 50, 'blog', ['blog']);
+  const mute = useFollowingInfiniteQuery(user.username, 50, 'ignore', ['ignore']);
   const about =
     account.data && account.data.posting_json_metadata
       ? JSON.parse(account.data.posting_json_metadata)?.profile?.about
@@ -51,16 +56,14 @@ export function HoverCardData({ author }: { author: string }) {
                 <span className="block">{`@${author}`}</span>
               </Link>
               <div className="grid grid-cols-2 gap-2 py-2">
-                <DialogLogin>
-                  <Button
-                    variant="outline"
-                    size="xs"
-                    className="border border-red-500 bg-transparent p-1 uppercase text-red-500 hover:border-red-600 hover:text-red-600"
-                    data-testid="hover-card-user-follow-button"
-                  >
-                    {t('post_content.header.hover_author.follow_button')}
-                  </Button>
-                </DialogLogin>
+                {user.username === author ? null : (
+                  <>
+                    <FollowButton username={author} user={user} variant="secondary" list={following} />
+                    {user.isLoggedIn ? (
+                      <MuteButton username={author} user={user} variant="secondary" list={mute} />
+                    ) : null}
+                  </>
+                )}
               </div>
             </div>
           </div>
