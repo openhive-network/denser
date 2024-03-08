@@ -6,6 +6,21 @@ export type StorageType = 'localStorage' | 'sessionStorage' | 'memoryStorage';
 type GConstructor<T = {}> = new (...args: any[]) => T;
 type WithStorage = GConstructor<{ storageType: StorageType }>;
 
+export interface StorageBaseOptions {
+    storageType: StorageType;
+}
+
+export class StorageBase {
+    storageType: StorageType;
+    constructor({ storageType = 'localStorage' }: StorageBaseOptions) {
+        if (storageType) {
+            this.storageType = storageType;
+        } else {
+            throw new Error('StorageBase constructor: storageType must be non-empty string');
+        }
+    }
+}
+
 /**
  * Adds Storage, on client side.
  *

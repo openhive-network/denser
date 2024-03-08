@@ -13,7 +13,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { ReactNode } from 'react';
 import { transactionService } from '@transaction/index';
 import { FollowOperationBuilder } from '@hive/wax/web';
-import { useSigner } from '@/blog/components/hooks/use-signer';
+import { useSigner } from '@smart-signer/lib/use-signer';
 import DialogLogin from './dialog-login';
 import { Button } from '@ui/components/button';
 
