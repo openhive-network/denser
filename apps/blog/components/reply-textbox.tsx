@@ -11,29 +11,35 @@ import { createPermlink } from '@transaction/lib/utils';
 import { useSigner } from '@smart-signer/lib/use-signer';
 import { HiveRendererContext } from './hive-renderer-context';
 import DialogLogin from './dialog-login';
+import { useLocalStorage } from './hooks/use-local-storage';
 
 export function ReplyTextbox({
   onSetReply,
   username,
-  permlink
+  permlink,
+  storageId
 }: {
   onSetReply: (e: boolean) => void;
   username: string;
   permlink: string;
+  storageId: string;
 }) {
+  const [storedPost, storePost] = useLocalStorage<string>(`replyTo-/${username}/${permlink}`, '');
   const { user } = useUser();
   const { signerOptions } = useSigner();
   const { t } = useTranslation('common_blog');
-  const [text, setText] = useState('');
+  const [text, setText] = useState(storedPost ? storedPost : '');
   const [cleanedText, setCleanedText] = useState('');
   const [replyPermlink, setReplyPermlink] = useState('');
-
   const { hiveRenderer } = useContext(HiveRendererContext);
 
   useEffect(() => {
     if (hiveRenderer) {
       const nextCleanedText = text ? hiveRenderer.render(text) : '';
       setCleanedText(nextCleanedText);
+      if (text) {
+        storePost(text);
+      }
     }
   }, [hiveRenderer, text]);
 
@@ -49,10 +55,12 @@ export function ReplyTextbox({
   }, [user, permlink]);
 
   const handleCancel = () => {
+    localStorage.removeItem(storageId);
     if (text === '') return onSetReply(false);
     const confirmed = confirm(t('post_content.footer.comment.exit_editor'));
     if (confirmed) {
       onSetReply(false);
+      localStorage.removeItem(`replyTo-/${username}/${permlink}`);
     }
   };
 
@@ -103,6 +111,9 @@ export function ReplyTextbox({
                     .build();
                 }, signerOptions);
                 setText('');
+                localStorage.removeItem(`replyTo-/${username}/${permlink}`);
+                localStorage.removeItem(storageId);
+                onSetReply(false);
               }}
             >
               {t('post_content.footer.comment.post')}

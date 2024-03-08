@@ -59,7 +59,7 @@ const UserMenu = ({
               <Icons.clock className="mr-2" />
               <span className="w-full">
                 {t('navigation.user_menu.notifications')}
-                {notifications && `(${notifications})`}
+                {notifications ? `(${notifications})` : null}
               </span>
             </DropdownMenuItem>
           </Link>

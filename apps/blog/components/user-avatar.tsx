@@ -15,7 +15,7 @@ function UserAvatar({ username, size, className }: Props) {
   return (
     <span
       className={clsx(
-        `mr-2 block h-12 w-12 rounded-full bg-slate-500 bg-cover bg-center bg-no-repeat`,
+        `mr-2 block h-12 w-12 rounded-full bg-transparent bg-cover bg-center bg-no-repeat`,
         className
       )}
       style={{ backgroundImage: `url(${imageSrc})` }}
