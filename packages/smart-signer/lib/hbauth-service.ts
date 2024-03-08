@@ -28,7 +28,7 @@ class HbauthService extends StorageMixin(StorageBase) {
       }
       await this.setOnlineClient({ node });
     }
-    logger.info('Returning existing instance of HbauthService.onlineClient');
+    // logger.info('Returning existing instance of HbauthService.onlineClient');
     return HbauthService.onlineClient;
   }
 
@@ -37,7 +37,7 @@ class HbauthService extends StorageMixin(StorageBase) {
       ...defaultClientOptions,
       ...options
     };
-    // logger.info('Creating instance of HbauthService.onlineClient with options: %o', clientOptions);
+    logger.info('Creating instance of HbauthService.onlineClient with options: %o', clientOptions);
     HbauthService.onlineClient = await new OnlineClient(clientOptions).initialize();
   }
 
