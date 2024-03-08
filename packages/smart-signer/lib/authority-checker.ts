@@ -1,28 +1,14 @@
 import {
-  transaction,
   createHiveChain,
   IHiveChainInterface,
   ApiTransaction,
   ApiAuthority,
   TAccountName,
-  TWaxExtended,
   ApiKeyAuth
 } from '@hive/wax/web';
-import { Type } from "class-transformer";
-import { ValidateNested } from "class-validator";
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
-
-class VerifyAuthorityRequest {
-  @ValidateNested()
-  // @Type(() => ApiTransaction)
-  public trx!: ApiTransaction;
-};
-
-class VerifyAuthorityResponse {
-  public valid!: boolean;
-};
 
 export enum AuthorityLevel {
   ACTIVE,
@@ -30,26 +16,14 @@ export enum AuthorityLevel {
   OWNER
 };
 
-const DatabaseApiExtensions = {
-  database_api: {
-    verify_authority: {
-      params: VerifyAuthorityRequest,
-      result: VerifyAuthorityResponse
-    }
-  }
-};
-
-type TExtendedHiveChain = TWaxExtended<typeof DatabaseApiExtensions>;
-
-
 const authorityStrictChecker = async (
   publicKey: string,
   signer: TAccountName,
   expectedAuthorityLevel: AuthorityLevel,
-  extendedHiveChain: TExtendedHiveChain
+  hiveChain: IHiveChainInterface
 ): Promise<boolean> => {
   try {
-    const findAccountsResponse = await extendedHiveChain.api.database_api
+    const findAccountsResponse = await hiveChain.api.database_api
         .find_accounts({ accounts: [signer] });
 
     const foundAccountInfo = findAccountsResponse.accounts;
@@ -104,11 +78,8 @@ export const authorityChecker = async (
   const sigDigest = txBuilder.sigDigest;
   logger.info(`sigDigest of passed transaction is: ${sigDigest}`);
 
-  const extendedChain: TExtendedHiveChain =
-    hiveChain.extend(DatabaseApiExtensions);
-
-  const authorityVerificationResult = await extendedChain.api.database_api
-    .verify_authority({ trx: txJSON });
+  const authorityVerificationResult = await hiveChain.api.database_api
+      .verify_authority({ trx: txJSON });
 
   if (authorityVerificationResult.valid) {
     logger.info([
@@ -119,8 +90,8 @@ export const authorityChecker = async (
 
     const signatureKeys = txBuilder.signatureKeys;
 
-    /// Below is some additional code just to make a reverse check for
-    /// public keys used to generate given signature
+    // Below is some additional code just to make a reverse check for
+    // public keys used to generate given signature
     for (let i in signatureKeys) {
       const key = "STM" + signatureKeys[i];
       const referencedAccounts = (
@@ -138,7 +109,7 @@ export const authorityChecker = async (
       ].join(' '));
 
       const directSigner = await authorityStrictChecker(
-        key, expectedSignerAccount, expectedAuthorityLevel, extendedChain);
+        key, expectedSignerAccount, expectedAuthorityLevel, hiveChain);
 
       if (directSigner)
         logger.info([
