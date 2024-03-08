@@ -288,7 +288,9 @@
       "subscribe": "Subscribe",
       "new_post": "New post",
       "activity_log": "Activity Log",
-      "subscribers": "subscribers"
+      "subscribers": "subscribers",
+      "leave": "Partir",
+      "joined": "Rejoindre"
     },
     "titles": {
       "pending_rewards": "pending rewards",
@@ -361,6 +363,31 @@
         "exit_editor": "Are you sure you want to exit the comment editor?"
       }
     }
+  },
+  "submit_page": {
+    "disable_side": "Désactiver l'éditeur côte à côte",
+    "enable_side": "Activer l'éditeur côte à côte",
+    "string_must_contain": "La chaîne doit contenir au moins {{num}} caractère(s)",
+    "must_contain_only": "Doit contenir uniquement des lettres et des chiffres",
+    "hide_preview": "Masquer l'aperçu",
+    "show_preview": "Afficher l'aperçu",
+    "title": "Titre",
+    "insert_images_by_dragging": "Insérer des images en les faisant glisser et en les déposant, en les collant depuis le presse-papiers, ou en ",
+    "selecting_them": "les sélectionnant",
+    "post_summary": "Résumé de la publication (pour les articles et le référencement, max 140 caractères)",
+    "enter_your_tags": "Saisissez vos balises séparées par un espace",
+    "author_if_different": "Auteur (si différent du compte actuel)",
+    "post_options": "Options de publication :",
+    "author_rewards": "Récompenses de l'auteur :",
+    "advanced_settings": "Paramètres avancés",
+    "account_stats": "Statistiques du compte :",
+    "resource_credits": "Niveau de crédits de ressources (RC) : {{value}} %",
+    "posting_to": "Publication sur :",
+    "my_blog": "Mon blog",
+    "preview": "Aperçu",
+    "submit": "Envoyer",
+    "clean": "Nettoyer",
+    "markdown_styling_guide": "Guide de mise en forme Markdown"
   },
   "search_page": {
     "placeholder": "Rechercher",

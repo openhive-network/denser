@@ -54,6 +54,7 @@
     "use_hbauth": "Use Hbauth",
     "use_hiveauth": "Use HiveAuth",
     "use_keychain": "Use Keychain",
+    "use_wif": "Use WIF",
     "username_placeholder": "Enter your username",
     "working": "Working…"
   },

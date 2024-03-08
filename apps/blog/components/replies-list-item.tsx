@@ -165,23 +165,25 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger className="flex items-center">
-                      <Link
-                        href={`/${comment.category}/@${comment.author}/${comment.permlink}`}
-                        className="flex cursor-pointer items-center"
-                      >
-                        {comment.children > 1 ? (
-                          <Icons.messagesSquare className="h-4 w-4" />
-                        ) : (
-                          <Icons.comment className="h-4 w-4" />
-                        )}
-                      </Link>
-                      <Link
-                        href={`/${comment.category}/@${comment.author}/${comment.permlink}`}
-                        className="flex cursor-pointer items-center pl-1 hover:text-red-600"
-                        data-testid="comment-respond-link"
-                      >
-                        {comment.children}
-                      </Link>
+                      <>
+                        <Link
+                          href={`/${comment.category}/@${comment.author}/${comment.permlink}`}
+                          className="flex cursor-pointer items-center"
+                        >
+                          {comment.children > 1 ? (
+                            <Icons.messagesSquare className="h-4 w-4" />
+                          ) : (
+                            <Icons.comment className="h-4 w-4" />
+                          )}
+                        </Link>
+                        <Link
+                          href={`/${comment.category}/@${comment.author}/${comment.permlink}`}
+                          className="flex cursor-pointer items-center pl-1 hover:text-red-600"
+                          data-testid="comment-respond-link"
+                        >
+                          {comment.children}
+                        </Link>
+                      </>
                     </TooltipTrigger>
                     <TooltipContent>
                       <p data-testid="comment-respond-tooltip">

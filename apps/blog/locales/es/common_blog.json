@@ -288,7 +288,9 @@
       "subscribe": "Subscribe",
       "new_post": "New post",
       "activity_log": "Activity Log",
-      "subscribers": "subscribers"
+      "subscribers": "subscribers",
+      "leave": "Salir",
+      "joined": "Unirse"
     },
     "titles": {
       "pending_rewards": "pending rewards",
@@ -361,6 +363,31 @@
         "exit_editor": "Are you sure you want to exit the comment editor?"
       }
     }
+  },
+  "submit_page": {
+    "disable_side": "Deshabilitar el editor en paralelo",
+    "enable_side": "Habilitar el editor en paralelo",
+    "string_must_contain": "La cadena debe contener al menos {{num}} caracteres",
+    "must_contain_only": "debe contener solo letras y números",
+    "hide_preview": "Ocultar vista previa",
+    "show_preview": "Mostrar vista previa",
+    "title": "Título",
+    "insert_images_by_dragging": "Insertar imágenes arrastrando y soltando, pegando desde el portapapeles o mediante ",
+    "selecting_them": "seleccionándolas",
+    "post_summary": "Resumen de la publicación (para publicaciones y SEO, máximo 140 caracteres)",
+    "enter_your_tags": "Ingresa tus etiquetas separadas por un espacio",
+    "author_if_different": "Autor (si es diferente de la cuenta actual)",
+    "post_options": "Opciones de publicación:",
+    "author_rewards": "Recompensas del autor:",
+    "advanced_settings": "Configuraciones avanzadas",
+    "account_stats": "Estadísticas de la cuenta:",
+    "resource_credits": "Nivel de Créditos de Recursos (RC): {{value}} %",
+    "posting_to": "Publicando en:",
+    "my_blog": "Mi blog",
+    "preview": "Vista previa",
+    "submit": "Enviar",
+    "clean": "Limpiar",
+    "markdown_styling_guide": "Guía de Estilo Markdown"
   },
   "search_page": {
     "placeholder": "Buscar",

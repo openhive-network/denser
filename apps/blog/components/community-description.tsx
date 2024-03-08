@@ -7,14 +7,11 @@ import { type Community, type Subscription, IAccountNotification } from '@transa
 import { SubsListDialog } from './subscription-list-dialog';
 import { ActivityLogDialog } from './activity-log-dialog';
 import { Badge } from '@ui/components/badge';
-import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { useContext, useEffect, useState } from 'react';
-import { transactionService } from '@transaction/index';
-import { CommunityOperationBuilder } from '@hive/wax/web';
-import { useSigner } from '@/blog/components/hooks/use-signer';
+import { useContext } from 'react';
 import { HiveRendererContext } from './hive-renderer-context';
+import SubscribeCommunity from './subscribe-community';
 
 const CommunityDescription = ({
   data,
@@ -27,9 +24,7 @@ const CommunityDescription = ({
   notificationData: IAccountNotification[] | null | undefined;
   username: string;
 }) => {
-  const [isSubscribe, setIsSubscribe] = useState(() => !data.context.subscribed);
   const { user } = useUser();
-  const { signerOptions } = useSigner();
   const { t } = useTranslation('common_blog');
   const { hiveRenderer } = useContext(HiveRendererContext);
 
@@ -37,10 +32,6 @@ const CommunityDescription = ({
   if (data.description && hiveRenderer) {
     post_body_html = hiveRenderer.render(data.description);
   }
-
-  useEffect(() => {
-    setIsSubscribe(!data.context.subscribed);
-  }, [data.context.subscribed]);
 
   return (
     <div className="flex w-auto max-w-[240px] flex-col">
@@ -72,71 +63,7 @@ const CommunityDescription = ({
             </div>
           </div>
           <div className="my-4 flex flex-col gap-2">
-            {user && user.isLoggedIn ? (
-              <>
-                {!isSubscribe ? (
-                  <Button
-                    size="sm"
-                    className="w-full bg-blue-800 text-center hover:bg-blue-900"
-                    data-testid="community-subscribe-button"
-                    onClick={() => {
-                      const nextIsSubscribe = !isSubscribe;
-                      setIsSubscribe(nextIsSubscribe);
-                      transactionService.processHiveAppOperation((builder) => {
-                        if (nextIsSubscribe) {
-                          builder.push(
-                            new CommunityOperationBuilder()
-                              .subscribe(username)
-                              .authorize(user.username)
-                              .build()
-                          );
-                        } else {
-                          builder.push(
-                            new CommunityOperationBuilder()
-                              .unsubscribe(username)
-                              .authorize(user.username)
-                              .build()
-                          );
-                        }
-                      }, signerOptions);
-                    }}
-                  >
-                    {t('communities.buttons.subscribe')}
-                  </Button>
-                ) : (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="group relative w-full text-center text-blue-800 hover:border-red-500 hover:text-red-500"
-                    onClick={() => {
-                      const nextIsSubscribe = !isSubscribe;
-                      setIsSubscribe(nextIsSubscribe);
-                      transactionService.processHiveAppOperation((builder) => {
-                        builder.push(
-                          new CommunityOperationBuilder()
-                            .unsubscribe(username)
-                            .authorize(user.username)
-                            .build()
-                        );
-                      }, signerOptions);
-                    }}
-                  >
-                    <span className="group-hover:hidden">Joined</span>
-                    <span className="hidden group-hover:inline">Leave</span>
-                  </Button>
-                )}
-              </>
-            ) : (
-              <DialogLogin>
-                <Button
-                  size="sm"
-                  className="w-full bg-blue-800 text-center hover:bg-blue-900"
-                  data-testid="community-subscribe-button"
-                >
-                  {t('communities.buttons.subscribe')}
-                </Button>
-              </DialogLogin>
-            )}
+            <SubscribeCommunity user={user} username={username} subStatus={data.context.subscribed} />
             <Button
               size="sm"
               className="w-full bg-blue-800 text-center hover:bg-blue-900"
