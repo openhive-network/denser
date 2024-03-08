@@ -35,6 +35,7 @@ import { GetServerSideProps } from 'next';
 import { AlertDialogFlag } from '@/blog/components/alert-window-flag';
 import VotesComponent from '@/blog/components/votes';
 import { HiveRendererContext } from '@/blog/components/hive-renderer-context';
+import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -83,7 +84,18 @@ function PostPage({
   };
   const query = router.query.sort?.toString();
   const defaultSort = isSortOrder(query) ? query : SortOrder.trending;
-
+  const storageId = `replybox-/${username}/${post_s.permlink}`;
+  const [isClient, setIsClient] = useState(false);
+  const [storedBox, storeBox] = useLocalStorage<Boolean>(storageId, false);
+  const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
+  useEffect(() => {
+    if (reply) {
+      storeBox(reply);
+    }
+  }, [reply]);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   useEffect(() => {
     if (discussion) {
       const list = [...Object.keys(discussion).map((key) => discussion[key])];
@@ -112,7 +124,6 @@ function PostPage({
 
   const { hiveRenderer } = useContext(HiveRendererContext);
   const commentSite = post_s.depth !== 0 ? true : false;
-  const [reply, setReply] = useState(false);
   const [mutedPost, setMutedPost] = useState(post_s.stats?.gray);
   const postUrl = () => {
     if (discussionState) {
@@ -322,7 +333,9 @@ function PostPage({
               </TooltipProvider>
               <span className="mx-1">|</span>
               <button
-                onClick={() => setReply(!reply)}
+                onClick={() => {
+                  setReply(!reply), localStorage.removeItem(storageId);
+                }}
                 className="flex items-center text-red-600"
                 data-testid="comment-reply"
               >
@@ -348,8 +361,8 @@ function PostPage({
                       {post_s.children === 0
                         ? t('post_content.footer.no_responses')
                         : post_s.children === 1
-                        ? t('post_content.footer.response')
-                        : t('post_content.footer.responses', { responses: post_s.children })}
+                          ? t('post_content.footer.response')
+                          : t('post_content.footer.responses', { responses: post_s.children })}
                     </p>
                   </TooltipContent>
                 </Tooltip>
@@ -399,7 +412,9 @@ function PostPage({
       </div>
       <div id="comments" className="flex" />
       <div className="mx-auto my-0 max-w-4xl py-4">
-        {reply ? <ReplyTextbox onSetReply={setReply} username={username} permlink={permlink} /> : null}
+        {reply ? (
+          <ReplyTextbox onSetReply={setReply} username={username} permlink={permlink} storageId={storageId} />
+        ) : null}
       </div>
       {!isLoadingDiscussion && discussion && discussionState ? (
         <div className="mx-auto my-0 max-w-4xl py-4 pr-8">
