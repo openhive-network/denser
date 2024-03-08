@@ -25,6 +25,7 @@ const SiteHeader: FC = () => {
     redirectIfFound: true
   });
 
+
   const onLogout = useLogout();
 
   return (
@@ -36,11 +37,7 @@ const SiteHeader: FC = () => {
           <nav className="flex items-center space-x-1">
             <div className="mx-1 flex gap-1">
               {isClient && (
-                <DialogHBAuth
-                  onAuthComplete={(username, keyType) => {
-                    logger.info('onAuthComplete %o', { username, keyType });
-                  }}
-                >
+                <DialogHBAuth>
                   <Link href="#">
                     <Button variant="redHover" size="sm" className="h-10">
                       Hbauth

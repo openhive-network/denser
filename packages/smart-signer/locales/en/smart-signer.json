@@ -49,6 +49,7 @@
     "title_action_add_key": "Add Key",
     "title_hbauth_form": "Hbauth: ",
     "title_hbauth_dialog_password": "Hbauth: password to unlock key",
+    "title_select_key_type": "Key Type",
     "title_wif_dialog_password": "Enter your WIF key",
     "use_hbauth": "Use Hbauth",
     "use_hiveauth": "Use HiveAuth",
