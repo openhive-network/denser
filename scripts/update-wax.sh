@@ -35,3 +35,5 @@ install_packages() {
 
 uninstall_packages
 install_packages
+
+echo "Done"
