@@ -11,7 +11,7 @@ import { createPermlink } from '@transaction/lib/utils';
 import { useSigner } from '@smart-signer/lib/use-signer';
 import { HiveRendererContext } from './hive-renderer-context';
 import DialogLogin from './dialog-login';
-import { useLocalStorage } from './hooks/use-local-storage';
+import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 
 export function ReplyTextbox({
   onSetReply,

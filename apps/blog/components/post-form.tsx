@@ -19,14 +19,14 @@ import { AdvancedSettingsPostForm } from './advanced_settings_post_form';
 import MdEditor from './md-editor';
 import { useContext, useEffect, useState } from 'react';
 import clsx from 'clsx';
-import { useLocalStorage } from './hooks/use-local-storage';
+import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { useTranslation } from 'next-i18next';
 import { HiveRendererContext } from './hive-renderer-context';
 import { transactionService } from '@transaction/index';
 import { useSigner } from '@smart-signer/lib/use-signer';
 import { createPermlink } from '@transaction/lib/utils';
 
-const defaultValues = {
+const defaultValues: AccountFormValues = {
   title: '',
   postArea: '',
   postSummary: '',

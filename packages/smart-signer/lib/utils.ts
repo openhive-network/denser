@@ -192,9 +192,12 @@ export async function verifySignature(
   return valid;
 }
 
-export function isStorageAvailable(storageType: 'localStorage' | 'sessionStorage') {
+export function isStorageAvailable(
+  storageType: 'localStorage' | 'sessionStorage',
+  strict: boolean = false // if true also tries to read and write to storage
+) {
   let storage: Storage;
-  logger.info('Checking availability of %s', storageType);
+  // logger.info('Checking availability of %s', storageType);
   try {
     if (!isBrowser()) return false;
     if ((storageType = 'localStorage')) {
@@ -204,9 +207,11 @@ export function isStorageAvailable(storageType: 'localStorage' | 'sessionStorage
     } else {
       return false;
     }
-    const x = '__storage_test__';
-    storage.setItem(x, x);
-    storage.removeItem(x);
+    if (strict) {
+      const x = '__storage_test__';
+      storage.setItem(x, x);
+      storage.removeItem(x);
+    }
     return true;
   } catch (e) {
     return false;
