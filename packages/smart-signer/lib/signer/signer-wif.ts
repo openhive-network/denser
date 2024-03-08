@@ -48,7 +48,8 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
   }: SignChallenge): Promise<string> {
     const { username, keyType } = this;
     try {
-      let wif = password ? password : this.storage.getItem(`wif.${username}@${keyType}`);
+      const storedPassword = this.storage.getItem(`wif.${username}@${keyType}`);
+      let wif = storedPassword ? JSON.parse(storedPassword) : password;
       if (!wif) {
         wif = await this.getPasswordFromUser({
           i18nKeyPlaceholder: 'login_form.posting_private_key_placeholder'
@@ -64,7 +65,7 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
         // We don't know, if this key is correct, so we need to verify
         // it. We don't want to store incorrect key.
         if (await this.verifyPrivateKey(wif)) {
-          this.storage.setItem(`wif.${username}@${keyType}`, wif);
+          this.storage.setItem(`wif.${username}@${keyType}`, JSON.stringify(wif));
         } else {
           throw new Error('Invalid WIF key');
         }
@@ -86,7 +87,9 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
     logger.info('signDigest args: %o', args);
     let signature = '';
     try {
-      let wif = password ? password : this.storage.getItem(`wif.${username}@${keyType}`);
+      let wif = password ?
+          password
+          : JSON.parse(this.storage.getItem(`wif.${username}@${keyType}`) || '');
       if (!wif) {
         wif = await this.getPasswordFromUser({
           i18nKeyPlaceholder: 'login_form.posting_private_key_placeholder',

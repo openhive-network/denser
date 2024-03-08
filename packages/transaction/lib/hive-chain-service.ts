@@ -10,7 +10,8 @@ export class HiveChainService extends StorageMixin(StorageBase) {
 
   async getHiveChain(): Promise<IHiveChainInterface> {
     if (!HiveChainService.hiveChain) {
-      let apiEndpoint = this.storage.getItem('hive-blog-endpoint');
+      const storedApiEndpoint = this.storage.getItem('hive-blog-endpoint');
+      let apiEndpoint: string = storedApiEndpoint ? JSON.parse(storedApiEndpoint) : '';
       if (!apiEndpoint) {
         apiEndpoint = siteConfig.endpoint;
       }

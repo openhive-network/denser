@@ -21,7 +21,8 @@ class HbauthService extends StorageMixin(StorageBase) {
 
   async getOnlineClient() {
     if (!HbauthService.onlineClient) {
-      let node = this.storage.getItem('hive-blog-endpoint');
+      const storedNode = this.storage.getItem('hive-blog-endpoint');
+      let node: string = storedNode ? JSON.parse(storedNode) : '';
       if (!node) {
         node = siteConfig.endpoint;
       }
