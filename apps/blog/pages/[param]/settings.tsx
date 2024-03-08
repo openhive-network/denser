@@ -15,7 +15,7 @@ import {
   SelectValue
 } from '@ui/components/select';
 import { siteConfig } from '@ui/config/site';
-import { useLocalStorage } from '@/blog/components/hooks/use-local-storage';
+import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
@@ -34,7 +34,7 @@ const DEFAULTS_ENDPOINTS = [
 
 export default function UserSettings() {
   const [endpoints, setEndpoints] = useLocalStorage('hive-blog-endpoints', DEFAULTS_ENDPOINTS);
-  const [endpoint, setEndpoint] = useLocalStorage('hive-blog-endpoint', siteConfig.endpoint, false);
+  const [endpoint, setEndpoint] = useLocalStorage('hive-blog-endpoint', siteConfig.endpoint);
   const [newEndpoint, setNewEndpoint] = useState('');
   const [isClient, setIsClient] = useState(false);
   const params = useParams();
