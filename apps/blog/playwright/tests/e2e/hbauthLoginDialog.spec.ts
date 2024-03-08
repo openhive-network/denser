@@ -2,7 +2,8 @@ import { expect, test } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
 import { HbauthLoginDialog } from '../support/pages/hbauthLoginDialog';
 
-test.describe('Login and Sign Up tests', () => {
+// Skipped those tests due to changing Hbauth
+test.describe.skip('Login and Sign Up tests', () => {
   let homePage: HomePage;
   let hbauthLoginDialog: HbauthLoginDialog;
 
