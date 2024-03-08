@@ -20,7 +20,7 @@ async function getUser(): Promise<User> {
 }
 
 export function useUser({ redirectTo = '', redirectIfFound = false } = {}): IUseUser {
-  const [storedUser, storeUser] = useLocalStorage('user', defaultUser);
+  const [storedUser, storeUser] = useLocalStorage<User>('user', defaultUser);
   const { data: user } = useQuery<User>(
     [QUERY_KEY.user],
     async (): Promise<User> => getUser(),

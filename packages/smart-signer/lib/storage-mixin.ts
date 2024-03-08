@@ -38,10 +38,10 @@ export function StorageMixin<TBase extends WithStorage>(Base: TBase) {
         constructor(...args: any[]) {
             super(...args);
             if (this.storageType === 'localStorage'
-                    && isStorageAvailable(this.storageType)) {
+                    && isStorageAvailable(this.storageType, true)) {
                 this.storage = window.localStorage;
             } else if (this.storageType === 'sessionStorage'
-                    && isStorageAvailable(this.storageType)) {
+                    && isStorageAvailable(this.storageType, true)) {
                 this.storage = window.sessionStorage;
             } else {
                 this.storage = memoryStorage;
