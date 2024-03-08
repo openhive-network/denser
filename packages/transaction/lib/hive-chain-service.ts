@@ -1,30 +1,29 @@
 import { createHiveChain, IHiveChainInterface, IWaxOptionsChain } from '@hive/wax/web';
 import { siteConfig } from '@ui/config/site';
+import { StorageMixin, StorageBase } from '@smart-signer/lib/storage-mixin';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
-let apiEndpoint = siteConfig.endpoint;
-if (typeof window !== 'undefined') {
-  let hiveBlogEndpoint = window.localStorage.getItem('hive-blog-endpoint');
-  apiEndpoint = hiveBlogEndpoint ? hiveBlogEndpoint : siteConfig.endpoint;
-}
-
-export class HiveChainService {
+export class HiveChainService extends StorageMixin(StorageBase) {
   static hiveChain: IHiveChainInterface;
 
   async getHiveChain(): Promise<IHiveChainInterface> {
     if (!HiveChainService.hiveChain) {
+      let apiEndpoint = this.storage.getItem('hive-blog-endpoint');
+      if (!apiEndpoint) {
+        apiEndpoint = siteConfig.endpoint;
+      }
       await this.setHiveChain({ apiEndpoint });
     }
-    logger.info('Returning existing instance of HiveChain');
+    // logger.info('Returning existing instance of HiveChainService.HiveChain');
     return HiveChainService.hiveChain;
   }
 
   async setHiveChain(options?: Partial<IWaxOptionsChain>) {
-    logger.info('Creating instance of HiveChain with options: %o', options);
+    logger.info('Creating instance of HiveChainService.HiveChain with options: %o', options);
     HiveChainService.hiveChain = await createHiveChain(options);
   }
 }
 
-export const hiveChainService = new HiveChainService();
+export const hiveChainService = new HiveChainService({ storageType: 'localStorage' });
