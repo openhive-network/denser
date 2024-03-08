@@ -24,8 +24,7 @@ class TransactionService {
     } catch (error) {
       this.handleError(error);
     }
-
-}
+  }
 
   async processTransaction(txBuilder: ITransactionBuilder, signerOptions: SignerOptions): Promise<void> {
     // validate
@@ -45,10 +44,12 @@ class TransactionService {
     const broadcastReq = new BroadcastTransactionRequest(txBuilder);
 
     // do broadcast
-    await (await hiveChainService.getHiveChain()).api.network_broadcast_api.broadcast_transaction(broadcastReq);
-}
+    await (
+      await hiveChainService.getHiveChain()
+    ).api.network_broadcast_api.broadcast_transaction(broadcastReq);
+  }
 
-  handleError (e: any) {
+  handleError(e: any) {
     logger.error('got error', e);
     const isError = (err: unknown): err is Error => err instanceof Error;
     const isWaxError = (err: unknown): err is WaxChainApiError => err instanceof WaxChainApiError;
@@ -57,13 +58,12 @@ class TransactionService {
       const error = e as any;
       // this is temporary solution for "wait 5 minut after create another post" error
       if (error?.apiError?.code === -32003) {
-        description = error?.apiError?.data?.stack[0]?.format
+        description = error?.apiError?.data?.stack[0]?.format;
       } else {
         description = error?.message ?? 'Unknown error';
       }
-    }
-    else if (isError(e)) {
-        description = e.message;
+    } else if (isError(e)) {
+      description = e.message;
     } else if (typeof e === 'string') {
       description = e;
     }
@@ -72,7 +72,6 @@ class TransactionService {
       variant: 'destructive'
     });
   }
-
 }
 
 export const transactionService = new TransactionService();
