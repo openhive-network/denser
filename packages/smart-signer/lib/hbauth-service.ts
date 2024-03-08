@@ -10,10 +10,13 @@ const logger = getLogger('app');
 // [#7](https://gitlab.syncad.com/hive/hb-auth/-/issues/7) is resolved.
 //
 const defaultClientOptions: ClientOptions = {
+  sessionTimeout: 900,
   chainId: 'beeab0de00000000000000000000000000000000000000000000000000000000',
   node: 'https://api.hive.blog',
   workerUrl: '/auth/worker.js',
 };
+
+const hbauthUseStrictMode = false;
 
 class HbauthService extends StorageMixin(StorageBase) {
 
@@ -25,19 +28,19 @@ class HbauthService extends StorageMixin(StorageBase) {
       if (!node) {
         node = siteConfig.endpoint;
       }
-      await this.setOnlineClient({ node });
+      await this.setOnlineClient(hbauthUseStrictMode, { node });
     }
     logger.info('Returning existing instance of HbauthService.onlineClient');
     return HbauthService.onlineClient;
   }
 
-  async setOnlineClient(options: Partial<ClientOptions>) {
+  async setOnlineClient(strict: boolean, options: Partial<ClientOptions>) {
     const clientOptions = {
       ...defaultClientOptions,
       ...options
     };
     logger.info('Creating instance of HbauthService.onlineClient with options: %o', clientOptions);
-    HbauthService.onlineClient = await new OnlineClient(clientOptions).initialize();
+    HbauthService.onlineClient = await new OnlineClient(strict, clientOptions).initialize();
   }
 
 }
