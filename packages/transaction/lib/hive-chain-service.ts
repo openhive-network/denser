@@ -1,6 +1,6 @@
 import { createHiveChain, IHiveChainInterface, IWaxOptionsChain } from '@hive/wax/web';
-
 import { siteConfig } from '@ui/config/site';
+
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
