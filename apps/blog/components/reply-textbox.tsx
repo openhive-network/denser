@@ -8,7 +8,7 @@ import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { transactionService } from '@transaction/index';
 import { createPermlink } from '@transaction/lib/utils';
-import { useSigner } from '@/blog/components/hooks/use-signer';
+import { useSigner } from '@smart-signer/lib/use-signer';
 import { HiveRendererContext } from './hive-renderer-context';
 import DialogLogin from './dialog-login';
 import { useLocalStorage } from './hooks/use-local-storage';

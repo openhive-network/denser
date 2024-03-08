@@ -14,7 +14,7 @@ import { TFunction } from 'i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';
 import { transactionService } from '@transaction/index';
-import { useSigner } from '@/wallet/components/hooks/use-signer';
+import { useSigner } from '@smart-signer/lib/use-signer';
 
 function titleSetter(
   daysStart: string,

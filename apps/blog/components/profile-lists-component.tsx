@@ -10,7 +10,7 @@ import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { transactionService } from '@transaction/index';
 import { FollowOperationBuilder } from '@hive/wax/web';
-import { useSigner } from '@/blog/components/hooks/use-signer';
+import { useSigner } from '@smart-signer/lib/use-signer';
 
 export default function ProfileLists({
   username,
