@@ -26,7 +26,7 @@ import { transactionService } from '@transaction/index';
 import { useSigner } from '@smart-signer/lib/use-signer';
 import { createPermlink } from '@transaction/lib/utils';
 
-const defaultValues: AccountFormValues = {
+const defaultValues = {
   title: '',
   postArea: '',
   postSummary: '',
