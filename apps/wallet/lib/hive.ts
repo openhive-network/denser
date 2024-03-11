@@ -4,6 +4,7 @@ import { makeBitMaskFilter, operationOrders } from '@hiveio/dhive/lib/utils';
 import moment from 'moment';
 import { TWaxApiRequest, RcAccount } from '@hive/wax/web';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import { ProposalData, IProposal } from '@transaction/lib/types';
 
 const chain = await hiveChainService.getHiveChain();
 
@@ -85,28 +86,9 @@ export const getProposals = async (params?: Partial<IGetProposalsParams>): Promi
     throw error;
   }
 };
-export interface IProposal {
-  creator: string;
-  daily_pay: {
-    amount: string;
-    nai: string;
-    precision: number;
-  };
-  end_date: string;
-  id: number;
-  permlink: string;
-  proposal_id: number;
-  receiver: string;
-  start_date: string;
-  status: string;
-  subject: string;
-  total_votes: string;
-}
+
 export interface IListItemProps {
-  proposalData: Omit<IProposal, 'daily_pay' | 'total_votes'> & {
-    total_votes: Big;
-    daily_pay: { amount: Big };
-  };
+  proposalData: ProposalData;
   totalShares: Big;
   totalVestingFund: Big;
 }

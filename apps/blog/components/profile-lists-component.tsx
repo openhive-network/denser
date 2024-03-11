@@ -9,7 +9,6 @@ import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { transactionService } from '@transaction/index';
-import { FollowOperationBuilder } from '@hive/wax/web';
 import { useSigner } from '@smart-signer/lib/use-signer';
 
 export default function ProfileLists({
@@ -68,12 +67,12 @@ export default function ProfileLists({
           {variant === 'blacklisted'
             ? t('user_profil.lists.list.accounts_blacklisted_by', { username: username })
             : variant === 'muted'
-            ? t('user_profil.lists.list.accounts_muted_by', { username: username })
-            : variant === 'followedBlacklist'
-            ? t('user_profil.lists.followed_blacklists')
-            : variant === 'followedMut'
-            ? t('user_profil.lists.followed_muted_lists')
-            : null}
+              ? t('user_profil.lists.list.accounts_muted_by', { username: username })
+              : variant === 'followedBlacklist'
+                ? t('user_profil.lists.followed_blacklists')
+                : variant === 'followedMut'
+                  ? t('user_profil.lists.followed_muted_lists')
+                  : null}
         </h1>
         <p
           className={clsx('text-center text-xs', {
@@ -107,29 +106,19 @@ export default function ProfileLists({
                     size="xs"
                     onClick={() => {
                       if (variant === 'muted') {
-                        transactionService.processHiveAppOperation(
-                          (builder) => {
-                            builder.push(
-                              new FollowOperationBuilder()
-                                .unmuteBlog(user.username, username)
-                                .authorize(user.username)
-                                .build()
-                            );
-                          },
-                          signerOptions
-                        );
+                        transactionService.unmute(username, user, signerOptions);
                       }
                     }}
                   >
                     {variant === 'blacklisted'
                       ? 'unblacklist'
                       : variant === 'muted'
-                      ? 'unmute'
-                      : variant === 'followedBlacklist'
-                      ? t('unfollow blacklist')
-                      : variant === 'followedMut'
-                      ? t('unfollow muted list')
-                      : null}
+                        ? 'unmute'
+                        : variant === 'followedBlacklist'
+                          ? t('unfollow blacklist')
+                          : variant === 'followedMut'
+                            ? t('unfollow muted list')
+                            : null}
                   </Button>
                 ) : null}
               </li>
@@ -190,12 +179,12 @@ export default function ProfileLists({
               {variant === 'blacklisted'
                 ? t('user_profil.lists.list.reset_blacklist')
                 : variant === 'muted'
-                ? t('user_profil.lists.list.reset_muted_list')
-                : variant === 'followedBlacklist'
-                ? t('user_profil.lists.list.reset_followed_blacklists')
-                : variant === 'followedMut'
-                ? t('user_profil.lists.list.reset_followed_muted_list')
-                : null}
+                  ? t('user_profil.lists.list.reset_muted_list')
+                  : variant === 'followedBlacklist'
+                    ? t('user_profil.lists.list.reset_followed_blacklists')
+                    : variant === 'followedMut'
+                      ? t('user_profil.lists.list.reset_followed_muted_list')
+                      : null}
             </Button>
             <Button disabled size="sm" className="text-xs">
               {t('user_profil.lists.list.reset_all_lists')}

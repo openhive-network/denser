@@ -1,6 +1,7 @@
 import {
   BroadcastTransactionRequest,
   CommunityOperationBuilder,
+  FollowOperationBuilder,
   ITransactionBuilder,
   WaxChainApiError
 } from '@hive/wax/web';
@@ -9,7 +10,7 @@ import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
 import { getLogger } from '@hive/ui/lib/logging';
-import { FlagData, Vote } from 'lib/types';
+import { FlagData, Vote, Comment, ProposalData } from './lib/types';
 import { User } from '@smart-signer/types/common';
 const logger = getLogger('app');
 
@@ -50,31 +51,95 @@ class TransactionService {
   }
 
   async vote(vote: Vote, signerOptions: SignerOptions) {
-    transactionService.processHiveAppOperation((builder) => {
+    await transactionService.processHiveAppOperation((builder) => {
       builder.push({ vote }).build();
     }, signerOptions);
   }
 
   async subscribe(username: string, user: User, signerOptions: SignerOptions) {
-    transactionService.processHiveAppOperation((builder) => {
+    await transactionService.processHiveAppOperation((builder) => {
       builder.push(new CommunityOperationBuilder().subscribe(username).authorize(user.username).build());
     }, signerOptions);
   }
 
   async unsubscribe(username: string, user: User, signerOptions: SignerOptions) {
-    transactionService.processHiveAppOperation((builder) => {
+    await transactionService.processHiveAppOperation((builder) => {
       builder.push(new CommunityOperationBuilder().unsubscribe(username).authorize(user.username).build());
     }, signerOptions);
   }
 
   async flag(flagData: FlagData, user: User, signerOptions: SignerOptions) {
-    transactionService.processHiveAppOperation((builder) => {
+    await transactionService.processHiveAppOperation((builder) => {
       builder.push(
         new CommunityOperationBuilder()
           .flagPost(flagData.community, flagData.username, flagData.permlink, flagData.notes)
           .authorize(user.username)
           .build()
       );
+    }, signerOptions);
+  }
+
+  async reblog(username: string, permlink: string, user: User, signerOptions: SignerOptions) {
+    await transactionService.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .reblog(user.username, username, permlink)
+          .authorize(user.username)
+          .build()
+      );
+    }, signerOptions);
+  }
+
+  async follow(username: string, user: User, signerOptions: SignerOptions) {
+    await transactionService.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder().followBlog(user.username, username).authorize(user.username).build()
+      );
+    }, signerOptions);
+  }
+
+  async unfollow(username: string, user: User, signerOptions: SignerOptions) {
+    await transactionService.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder().unfollowBlog(user.username, username).authorize(user.username).build()
+      );
+    }, signerOptions);
+  }
+
+  async mute(username: string, user: User, signerOptions: SignerOptions) {
+    await transactionService.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder().muteBlog(user.username, username).authorize(user.username).build()
+      );
+    }, signerOptions);
+  }
+
+  async unmute(username: string, user: User, signerOptions: SignerOptions) {
+    await transactionService.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder().unmuteBlog(user.username, username).authorize(user.username).build()
+      );
+    }, signerOptions);
+  }
+
+  async comment(comment: Comment, signerOptions: SignerOptions) {
+    await transactionService.processHiveAppOperation((builder) => {
+      builder.push({ comment }).build();
+    }, signerOptions);
+  }
+
+  async updateProposalVotes(proposalData: ProposalData, user: User, signerOptions: SignerOptions) {
+    await transactionService.processHiveAppOperation((builder) => {
+      builder
+        .push({
+          update_proposal_votes: {
+            voter: user.username,
+            proposal_ids: [String(proposalData.proposal_id)],
+            approve: true,
+            extensions: []
+          }
+        })
+        .build();
     }, signerOptions);
   }
 

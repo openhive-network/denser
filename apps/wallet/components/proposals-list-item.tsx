@@ -175,22 +175,7 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
               className="relative inline-flex h-6 w-6 cursor-pointer rounded-full bg-white stroke-1 text-red-500 dark:bg-slate-800"
               data-testid="voting-button-icon"
               onClick={(e: React.MouseEvent<HTMLOrSVGElement>) => {
-                transactionService.processHiveAppOperation(
-                  (builder) => {
-                    builder
-                      .push({
-                        update_proposal_votes: {
-                          voter: user.username,
-                          proposal_ids: [String(proposalData.proposal_id)],
-                          approve: true,
-                          extensions: []
-                        }
-                      })
-                      .build();
-                  },
-                  signerOptions
-                );
-
+                transactionService.updateProposalVotes(proposalData, user, signerOptions);
                 (e.target as HTMLElement).classList.add('text-white');
                 (e.target as HTMLElement).classList.add('bg-red-600');
               }}
