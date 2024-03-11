@@ -9,7 +9,6 @@ import { ProposalData, IProposal } from '@transaction/lib/types';
 const chain = await hiveChainService.getHiveChain();
 
 export declare type Bignum = string;
-
 export interface IWitness {
   created: string;
   id: number;

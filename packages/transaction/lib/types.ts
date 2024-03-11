@@ -1,25 +1,8 @@
-export type Vote = {
-  voter: string;
-  author: string;
-  permlink: string;
-  weight: number;
-};
-
 export type FlagData = {
   community: string;
   username: string;
   permlink: string;
   notes: string;
-};
-
-export type Comment = {
-  parent_author: string;
-  parent_permlink: string;
-  author: string;
-  permlink: string;
-  title: string;
-  body: string;
-  json_metadata: string; // TODO: This is to change in near future of metadata options
 };
 
 export interface IProposal {

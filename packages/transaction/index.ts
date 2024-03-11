@@ -3,14 +3,16 @@ import {
   CommunityOperationBuilder,
   FollowOperationBuilder,
   ITransactionBuilder,
-  WaxChainApiError
+  WaxChainApiError,
+  comment,
+  vote
 } from '@hive/wax/web';
 import { toast } from '@hive/ui/components/hooks/use-toast';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
 import { getLogger } from '@hive/ui/lib/logging';
-import { FlagData, Vote, Comment, ProposalData } from './lib/types';
+import { FlagData, ProposalData } from './lib/types';
 import { User } from '@smart-signer/types/common';
 const logger = getLogger('app');
 
@@ -50,7 +52,7 @@ class TransactionService {
     ).api.network_broadcast_api.broadcast_transaction(broadcastReq);
   }
 
-  async vote(vote: Vote, signerOptions: SignerOptions) {
+  async vote(vote: vote, signerOptions: SignerOptions) {
     await transactionService.processHiveAppOperation((builder) => {
       builder.push({ vote }).build();
     }, signerOptions);
@@ -122,7 +124,7 @@ class TransactionService {
     }, signerOptions);
   }
 
-  async comment(comment: Comment, signerOptions: SignerOptions) {
+  async comment(comment: comment, signerOptions: SignerOptions) {
     await transactionService.processHiveAppOperation((builder) => {
       builder.push({ comment }).build();
     }, signerOptions);
