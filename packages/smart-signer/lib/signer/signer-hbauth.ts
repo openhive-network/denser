@@ -67,7 +67,7 @@ export class SignerHbauth extends Signer {
 
   async signDigest(digest: THexString, password: string) {
     const { username, keyType } = this;
-    logger.info('sign args: %o', { password, digest, username, keyType });
+    logger.info('signDigest args: %o', { password, digest, username, keyType });
 
     if (!['posting', 'active'].includes(keyType)) {
       throw new Error(`Unsupported keyType: ${keyType}`);
@@ -92,19 +92,23 @@ export class SignerHbauth extends Signer {
         });
       }
 
+      logger.info('authClient.authenticate args: %o', { username, password, keyType });
       const authStatus = await authClient.authenticate(
         username,
         password,
         keyType as unknown as 'posting' | 'active'
       );
-
       logger.info('authStatus', { authStatus });
       if (!authStatus.ok) {
         throw new Error(`Unlocking wallet failed`);
       }
     }
 
-    const signature = await authClient.sign(username, digest, keyType as unknown as 'posting' | 'active');
+    const signature = await authClient.sign(
+      username,
+      digest,
+      keyType as unknown as 'posting' | 'active'
+    );
     logger.info('hbauth: %o', { digest, signature });
     return signature;
   }

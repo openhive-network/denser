@@ -11,6 +11,25 @@ import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { KeyType } from '@smart-signer/types/common';
+import { useSigner } from '@smart-signer/lib/use-signer';
+import { transactionService } from '@transaction/index';
+import { hiveChainService } from '@transaction/lib/hive-chain-service'
+import {
+  createHiveChain,
+  IHiveChainInterface,
+  transaction,
+  ApiTransaction,
+  ApiAuthority,
+  TAccountName,
+  TWaxExtended,
+  ApiKeyAuth,
+  operation,
+  vote,
+  transfer,
+  ApiOperation
+} from '@hive/wax'
+import { authorityChecker, AuthorityLevel } from '@smart-signer/lib/authority-checker';
+
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -18,10 +37,11 @@ const logger = getLogger('app');
 export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?: string }) {
   const router = useRouter();
   const slug = router.query.slug as string;
-
   const { t } = useTranslation(i18nNamespace);
-
   const [loginChallenge, setLoginChallenge] = useState('');
+  const { signerOptions } = useSigner();
+  const [errorMsg, setErrorMsg] = useState('');
+  const signIn = useSignIn();
 
   useEffect(() => {
     const cookieStore = parseCookie(document.cookie);
@@ -35,42 +55,94 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
     redirectIfFound: true
   });
 
-  const [errorMsg, setErrorMsg] = useState('');
-
-  const signIn = useSignIn();
 
   const onSubmit = async (data: LoginFormSchema) => {
     logger.info('onSubmit form data', data);
     setErrorMsg('');
-
-    const message = JSON.stringify({ loginChallenge }, null, 0);
-
     const { loginType, username } = data;
     let signatures: Signatures = {};
     let hivesignerToken = '';
+    let authorityLevel: AuthorityLevel;
 
-    const signerOptions: SignerOptions = {
-      username,
-      loginType,
-      keyType: KeyType.posting,
-      apiEndpoint: 'https://api.hive.blog',
-      storageType: 'localStorage',
-    };
-    const signer = getSigner(signerOptions);
+    // TODO The value for keyType will be passed from form in new UI.
+    // const keyType: KeyType = KeyType.posting;
+    const keyType: KeyType = KeyType.active;
+
+    let operation: operation;
+    if (keyType === KeyType.posting) {
+      authorityLevel = AuthorityLevel.POSTING;
+      operation = {
+        vote: {
+          voter: username,
+          author: "author",
+          permlink: loginChallenge,
+          weight: 10000,
+        }
+      };
+    } else if (keyType === KeyType.active) {
+      authorityLevel = AuthorityLevel.ACTIVE;
+      operation = {
+        transfer: {
+          from_account: username,
+          to_account: username,
+          amount: {
+            amount: "1",
+            precision: 3,
+            nai: "@@000000021"
+          },
+          memo: loginChallenge,
+        }
+      };
+    } else {
+      throw new Error('Unsupported keyType');
+    }
 
     try {
-      const keyType = KeyType.posting;
-      const signature = await signer.signChallenge({
-        message,
-        password: '',
-        translateFn: t
+      const hiveChain = await hiveChainService.getHiveChain();
+      const txBuilder = await hiveChain.getTransactionBuilder();
+      txBuilder.push({ ...operation });
+      txBuilder.validate();
+      const tx = txBuilder.build();
+
+      const loginSignerOptions: SignerOptions = {
+        ...signerOptions,
+        ...{
+          username,
+          loginType,
+          keyType
+        }
+      };
+      const signer = getSigner(loginSignerOptions);
+
+      const signature = await signer.signTransaction({
+        digest: txBuilder.sigDigest,
+        transaction: tx
       });
+      logger.info('signature: %s', signature);
+      txBuilder.build(signature);
+      logger.info('txBuilder: %o', txBuilder);
+      const trx = {
+        trx: JSON.parse(txBuilder.toApi()),
+        max_block_age: -1,
+      };
+
+      logger.info('transaction: %o', trx);
+
+      await authorityChecker(
+        JSON.parse(txBuilder.toApi()) as ApiTransaction,
+        username,
+        authorityLevel
+        );
+
       signatures[keyType] = signature;
+
+      throw new Error('Fake error bamboo');
     } catch (error) {
       logger.error('onSubmit error in signLoginChallenge', error);
       setErrorMsg(t('pageLogin.signingFailed'));
       return;
     }
+
 
     const body: PostLoginSchema = {
       username: username || '',

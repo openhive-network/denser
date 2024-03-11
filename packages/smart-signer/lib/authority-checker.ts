@@ -70,7 +70,7 @@ export const authorityChecker = async (
   expectedAuthorityLevel: AuthorityLevel
 ): Promise<void> =>  {
   try {
-    logger.info('txJSON', txJSON);
+    logger.info('authorityChecker args', { txJSON, expectedSignerAccount, expectedAuthorityLevel });
 
     const hiveChain: IHiveChainInterface = await createHiveChain();
     const txBuilder = hiveChain.TransactionBuilder.fromApi(txJSON);
