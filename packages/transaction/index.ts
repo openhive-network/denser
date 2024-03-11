@@ -5,14 +5,15 @@ import {
   ITransactionBuilder,
   WaxChainApiError,
   comment,
-  vote
+  vote,
+  update_proposal_votes
 } from '@hive/wax/web';
 import { toast } from '@hive/ui/components/hooks/use-toast';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
 import { getLogger } from '@hive/ui/lib/logging';
-import { FlagData, ProposalData } from './lib/types';
+import { FlagData } from './lib/types';
 import { User } from '@smart-signer/types/common';
 const logger = getLogger('app');
 
@@ -130,15 +131,15 @@ class TransactionService {
     }, signerOptions);
   }
 
-  async updateProposalVotes(proposalData: ProposalData, user: User, signerOptions: SignerOptions) {
+  async updateProposalVotes(proposalData: update_proposal_votes, signerOptions: SignerOptions) {
     await transactionService.processHiveAppOperation((builder) => {
       builder
         .push({
           update_proposal_votes: {
-            voter: user.username,
-            proposal_ids: [String(proposalData.proposal_id)],
-            approve: true,
-            extensions: []
+            voter: proposalData.voter,
+            proposal_ids: proposalData.proposal_ids,
+            approve: proposalData.approve,
+            extensions: proposalData.extensions
           }
         })
         .build();

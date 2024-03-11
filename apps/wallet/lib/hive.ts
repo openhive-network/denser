@@ -4,11 +4,33 @@ import { makeBitMaskFilter, operationOrders } from '@hiveio/dhive/lib/utils';
 import moment from 'moment';
 import { TWaxApiRequest, RcAccount } from '@hive/wax/web';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
-import { ProposalData, IProposal } from '@transaction/lib/types';
 
 const chain = await hiveChainService.getHiveChain();
 
 export declare type Bignum = string;
+
+export interface IProposal {
+  creator: string;
+  daily_pay: {
+    amount: string;
+    nai: string;
+    precision: number;
+  };
+  end_date: string;
+  id: number;
+  permlink: string;
+  proposal_id: number;
+  receiver: string;
+  start_date: string;
+  status: string;
+  subject: string;
+  total_votes: string;
+}
+
+export type ProposalData = Omit<IProposal, 'daily_pay' | 'total_votes'> & {
+  total_votes: Big;
+  daily_pay: { amount: Big };
+};
 export interface IWitness {
   created: string;
   id: number;
