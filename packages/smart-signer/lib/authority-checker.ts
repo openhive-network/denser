@@ -69,61 +69,66 @@ export const authorityChecker = async (
   expectedSignerAccount: string,
   expectedAuthorityLevel: AuthorityLevel
 ): Promise<void> =>  {
+  try {
+    logger.info('txJSON', txJSON);
 
-  logger.info('txJSON', txJSON);
+    const hiveChain: IHiveChainInterface = await createHiveChain();
+    const txBuilder = hiveChain.TransactionBuilder.fromApi(txJSON);
 
-  const hiveChain: IHiveChainInterface = await createHiveChain();
-  const txBuilder = hiveChain.TransactionBuilder.fromApi(txJSON);
+    const sigDigest = txBuilder.sigDigest;
+    logger.info(`sigDigest of passed transaction is: ${sigDigest}`);
 
-  const sigDigest = txBuilder.sigDigest;
-  logger.info(`sigDigest of passed transaction is: ${sigDigest}`);
+    const authorityVerificationResult = await hiveChain.api.database_api
+        .verify_authority({ trx: txJSON });
 
-  const authorityVerificationResult = await hiveChain.api.database_api
-      .verify_authority({ trx: txJSON });
-
-  if (authorityVerificationResult.valid) {
-    logger.info([
-      "Transaction is CORRECTLY signed, going to additionally validate",
-      "that key used to generate signature is directly specified",
-      "in Signer account authority"
-    ].join(' '));
-
-    const signatureKeys = txBuilder.signatureKeys;
-
-    // Below is some additional code just to make a reverse check for
-    // public keys used to generate given signature
-    for (let i in signatureKeys) {
-      const key = "STM" + signatureKeys[i];
-      const referencedAccounts = (
-        await hiveChain.api.account_by_key_api
-        .get_key_references({ keys: [key] })
-        ).accounts;
-
-      const acnts: Array<Array<string>> =
-        new Array<Array<string>>(...referencedAccounts);
-      const acntList = acnts.join(",");
-
+    if (authorityVerificationResult.valid) {
       logger.info([
-        `Public key used to sign transaction: ${key}`,
-        `is referenced by account(s): ${acntList}`
+        "Transaction is CORRECTLY signed, going to additionally validate",
+        "that key used to generate signature is directly specified",
+        "in Signer account authority"
       ].join(' '));
 
-      const directSigner = await authorityStrictChecker(
-        key, expectedSignerAccount, expectedAuthorityLevel, hiveChain);
+      const signatureKeys = txBuilder.signatureKeys;
 
-      if (directSigner)
+      // Below is some additional code just to make a reverse check for
+      // public keys used to generate given signature
+      for (const signatureKey of signatureKeys) {
+        const key = "STM" + signatureKey;
+        const referencedAccounts = (
+          await hiveChain.api.account_by_key_api
+          .get_key_references({ keys: [key] })
+          ).accounts;
+
+        const accounts: Array<Array<string>> =
+          new Array<Array<string>>(...referencedAccounts);
+        const accountList = accounts.join(",");
+
         logger.info([
-          `The account: ${expectedSignerAccount}`,
-          `directly authorized the transaction`
+          `Public key used to sign transaction: ${key}`,
+          `is referenced by account(s): ${accountList}`
         ].join(' '));
-      else
-        logger.info([
-          `WARNING: some other account(s): ${acntList}`,
-          `than: ${expectedSignerAccount} authorized the transaction`
-        ].join(' '));
+
+        const directSigner = await authorityStrictChecker(
+          key, expectedSignerAccount, expectedAuthorityLevel, hiveChain);
+
+        if (directSigner)
+          logger.info([
+            `The account: ${expectedSignerAccount}`,
+            `directly authorized the transaction`
+          ].join(' '));
+        else
+          logger.info([
+            `WARNING: some other account(s): ${accountList}`,
+            `than: ${expectedSignerAccount} authorized the transaction`
+          ].join(' '));
+      }
     }
+    else {
+      logger.info("Transaction has specified INVALID authority");
+    }
+  } catch (error) {
+    logger.error('error in authorityChecker: %o', error);
+    throw error;
   }
-  else {
-    logger.info("Transaction has specified INVALID authority");
-  }
+
 };
