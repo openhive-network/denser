@@ -1,7 +1,6 @@
 import {
-  createHiveChain,
   BroadcastTransactionRequest,
-  IHiveChainInterface,
+  CommunityOperationBuilder,
   ITransactionBuilder,
   WaxChainApiError
 } from '@hive/wax/web';
@@ -9,8 +8,9 @@ import { toast } from '@hive/ui/components/hooks/use-toast';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
-
 import { getLogger } from '@hive/ui/lib/logging';
+import { FlagData, Vote } from 'lib/types';
+import { User } from '@smart-signer/types/common';
 const logger = getLogger('app');
 
 class TransactionService {
@@ -47,6 +47,35 @@ class TransactionService {
     await (
       await hiveChainService.getHiveChain()
     ).api.network_broadcast_api.broadcast_transaction(broadcastReq);
+  }
+
+  async vote(vote: Vote, signerOptions: SignerOptions) {
+    transactionService.processHiveAppOperation((builder) => {
+      builder.push({ vote }).build();
+    }, signerOptions);
+  }
+
+  async subscribe(username: string, user: User, signerOptions: SignerOptions) {
+    transactionService.processHiveAppOperation((builder) => {
+      builder.push(new CommunityOperationBuilder().subscribe(username).authorize(user.username).build());
+    }, signerOptions);
+  }
+
+  async unsubscribe(username: string, user: User, signerOptions: SignerOptions) {
+    transactionService.processHiveAppOperation((builder) => {
+      builder.push(new CommunityOperationBuilder().unsubscribe(username).authorize(user.username).build());
+    }, signerOptions);
+  }
+
+  async flag(flagData: FlagData, user: User, signerOptions: SignerOptions) {
+    transactionService.processHiveAppOperation((builder) => {
+      builder.push(
+        new CommunityOperationBuilder()
+          .flagPost(flagData.community, flagData.username, flagData.permlink, flagData.notes)
+          .authorize(user.username)
+          .build()
+      );
+    }, signerOptions);
   }
 
   handleError(e: any) {
