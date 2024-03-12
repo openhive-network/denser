@@ -60,7 +60,9 @@ function PostPage({
     error: errorDiscussion,
     data: discussion
   } = useQuery(['discussionData', username, permlink], () => getDiscussion(username, String(permlink)), {
-    enabled: !!username && !!permlink
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false
   });
 
   const {
@@ -101,6 +103,7 @@ function PostPage({
       const list = [...Object.keys(discussion).map((key) => discussion[key])];
       sorter(list, SortOrder[defaultSort]);
       setDiscussionState(list);
+      console.log('LIST', list);
     }
   }, [isLoadingDiscussion, discussion, defaultSort]);
 

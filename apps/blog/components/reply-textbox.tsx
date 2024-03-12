@@ -12,6 +12,7 @@ import { useSigner } from '@smart-signer/lib/use-signer';
 import { HiveRendererContext } from './hive-renderer-context';
 import DialogLogin from './dialog-login';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
+import { useUpdateReplaysData } from './hooks/use-update-replays';
 
 export function ReplyTextbox({
   onSetReply,
@@ -32,6 +33,43 @@ export function ReplyTextbox({
   const [cleanedText, setCleanedText] = useState('');
   const [replyPermlink, setReplyPermlink] = useState('');
   const { hiveRenderer } = useContext(HiveRendererContext);
+  const { mutate } = useUpdateReplaysData(username, permlink);
+
+  const handleAddReplyClick = () => {
+    const reply = {
+      'calcifero/local': {
+        post_id: 12345,
+        active_votes: [],
+        author: 'calcifero',
+        author_payout_value: '0.000 HBD',
+        author_reputation: 40.95,
+        beneficiaries: [],
+        blacklists: [],
+        body: '## from code',
+        category: 'mutate',
+        children: 15,
+        created: '2024-03-06T14:25:33',
+        curator_payout_value: '0.000 HBD',
+        depth: 0,
+        is_paidout: false,
+        json_metadata: { tags: ['test'], app: 'hiveblog/0.1', format: 'markdown' },
+        max_accepted_payout: '1000000.000 HBD',
+        net_rshares: 532048136619,
+        payout: 0.304,
+        payout_at: '2024-03-13T14:25:33',
+        pending_payout_value: '0.304 HBD',
+        percent_hbd: 10000,
+        permlink: 'er-8',
+        promoted: '0.000 HBD',
+        replies: [],
+        stats: { hide: false, gray: false, total_votes: 3, flag_weight: 0 },
+        title: 'er 8',
+        updated: '2024-03-06T14:25:33',
+        url: '/test/@calcifero/er-8'
+      }
+    };
+    mutate(reply);
+  };
 
   useEffect(() => {
     if (hiveRenderer) {
@@ -95,21 +133,22 @@ export function ReplyTextbox({
             <Button
               disabled={text === ''}
               onClick={() => {
-                transactionService.processHiveAppOperation((builder) => {
-                  builder
-                    .push({
-                      comment: {
-                        parent_author: username,
-                        parent_permlink: permlink,
-                        author: user.username,
-                        permlink: replyPermlink,
-                        title: '',
-                        body: cleanedText,
-                        json_metadata: '{"app":"hiveblog/0.1"}'
-                      }
-                    })
-                    .build();
-                }, signerOptions);
+                handleAddReplyClick();
+                // transactionService.processHiveAppOperation((builder) => {
+                //   builder
+                //     .push({
+                //       comment: {
+                //         parent_author: username,
+                //         parent_permlink: permlink,
+                //         author: user.username,
+                //         permlink: replyPermlink,
+                //         title: '',
+                //         body: cleanedText,
+                //         json_metadata: '{"app":"hiveblog/0.1"}'
+                //       }
+                //     })
+                //     .build();
+                // }, signerOptions);
                 setText('');
                 localStorage.removeItem(`replyTo-/${username}/${permlink}`);
                 localStorage.removeItem(storageId);
