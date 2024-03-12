@@ -11,9 +11,9 @@ import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
 export enum AuthorityLevel {
-  ACTIVE,
-  POSTING,
-  OWNER
+  ACTIVE = 'ACTIVE',
+  POSTING = 'POSTING',
+  OWNER = 'OWNER',
 };
 
 const authorityStrictChecker = async (
