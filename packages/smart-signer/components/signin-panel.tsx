@@ -65,8 +65,8 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
     let authorityLevel: AuthorityLevel;
 
     // TODO The value for keyType will be passed from form in new UI.
-    // const keyType: KeyType = KeyType.posting;
-    const keyType: KeyType = KeyType.active;
+    const keyType: KeyType = KeyType.posting;
+    // const keyType: KeyType = KeyType.active;
 
     let operation: operation;
     if (keyType === KeyType.posting) {
@@ -120,13 +120,8 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
       });
       logger.info('signature: %s', signature);
       txBuilder.build(signature);
-      logger.info('txBuilder: %o', txBuilder);
-      const trx = {
-        trx: JSON.parse(txBuilder.toApi()),
-        max_block_age: -1,
-      };
 
-      logger.info('transaction: %o', trx);
+      logger.info('transaction: %o', JSON.parse(txBuilder.toApi()));
 
       await authorityChecker(
         JSON.parse(txBuilder.toApi()) as ApiTransaction,
