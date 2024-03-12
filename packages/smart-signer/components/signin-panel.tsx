@@ -65,8 +65,9 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
     let authorityLevel: AuthorityLevel;
 
     // TODO The value for keyType will be passed from form in new UI.
-    // const keyType: KeyType = KeyType.posting;
-    const keyType: KeyType = KeyType.active;
+    const keyType: KeyType = KeyType.posting;
+    // TODO login with active key does not work.
+    // const keyType: KeyType = KeyType.active;
 
     let operation: operation;
     if (keyType === KeyType.posting) {
