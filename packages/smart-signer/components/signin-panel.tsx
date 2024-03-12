@@ -65,8 +65,8 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
     let authorityLevel: AuthorityLevel;
 
     // TODO The value for keyType will be passed from form in new UI.
-    const keyType: KeyType = KeyType.posting;
-    // const keyType: KeyType = KeyType.active;
+    // const keyType: KeyType = KeyType.posting;
+    const keyType: KeyType = KeyType.active;
 
     let operation: operation;
     if (keyType === KeyType.posting) {
@@ -100,7 +100,7 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
     try {
       const hiveChain = await hiveChainService.getHiveChain();
       const txBuilder = await hiveChain.getTransactionBuilder();
-      txBuilder.push({ ...operation });
+      txBuilder.push(operation);
       txBuilder.validate();
       const tx = txBuilder.build();
 
@@ -113,7 +113,6 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
         }
       };
       const signer = getSigner(loginSignerOptions);
-
       const signature = await signer.signTransaction({
         digest: txBuilder.sigDigest,
         transaction: tx
@@ -121,10 +120,16 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
       logger.info('signature: %s', signature);
       txBuilder.build(signature);
 
-      logger.info('transaction: %o', JSON.parse(txBuilder.toApi()));
+      logger.info('transaction: %o', {
+        toApi: txBuilder.toApi(),
+        toString: txBuilder.toString(),
+        parsedToApi: JSON.parse(txBuilder.toApi()),
+        parsedToString: JSON.parse(txBuilder.toString()),
+      });
 
       await authorityChecker(
         JSON.parse(txBuilder.toApi()) as ApiTransaction,
+        // JSON.parse(txBuilder.toString()) as ApiTransaction,
         username,
         authorityLevel
         );
@@ -132,6 +137,7 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
       signatures[keyType] = signature;
 
       throw new Error('Fake error bamboo');
+
     } catch (error) {
       logger.error('onSubmit error in signLoginChallenge', error);
       setErrorMsg(t('pageLogin.signingFailed'));
