@@ -128,16 +128,17 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
         parsedToString: JSON.parse(txBuilder.toString()),
       });
 
+      // FIXME temporary solution. The logic that verifies user's
+      // signature will be moved to server.
       await authorityChecker(
         JSON.parse(txBuilder.toApi()) as ApiTransaction,
-        // JSON.parse(txBuilder.toString()) as ApiTransaction,
         username,
         authorityLevel
         );
 
       signatures[keyType] = signature;
 
-      throw new Error('Fake error bamboo');
+      throw new Error('Fake Error');
 
     } catch (error) {
       logger.error('onSubmit error in signLoginChallenge', error);
@@ -145,7 +146,7 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
       return;
     }
 
-
+    // TODO in new implementation this request will change.
     const body: PostLoginSchema = {
       username: username || '',
       signatures,
