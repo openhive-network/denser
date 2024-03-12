@@ -9,7 +9,6 @@ import { MainNav } from './main-nav';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getLogger } from '@ui/lib/logging';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components/avatar';
-import DialogHBAuth from '@smart-signer/components/dialog-hb-auth';
 import { useLogout } from '@smart-signer/lib/auth/use-logout';
 
 const logger = getLogger('app');
@@ -36,15 +35,6 @@ const SiteHeader: FC = () => {
         <div className="flex flex-1 items-center justify-between space-x-2 sm:space-x-4 md:justify-end">
           <nav className="flex items-center space-x-1">
             <div className="mx-1 flex gap-1">
-              {isClient && (
-                <DialogHBAuth>
-                  <Link href="#">
-                    <Button variant="redHover" size="sm" className="h-10">
-                      Hbauth
-                    </Button>
-                  </Link>
-                </DialogHBAuth>
-              )}
 
               {isClient && user?.isLoggedIn === false && (
                 <Link href="https://signup.hive.io/">
