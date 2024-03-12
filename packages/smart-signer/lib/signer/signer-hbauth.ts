@@ -56,11 +56,11 @@ export class SignerHbauth extends Signer {
     // const txBuilder = wax.TransactionBuilder.fromApi(transaction);
 
     const txBuilder = new wax.TransactionBuilder(transaction);
+    if (digest !== txBuilder.sigDigest) {
+      throw new Error('Digests do not match');
+    }
 
-    logger.info('signTransaction digests: %o', { digest, 'tx.sigDigest': txBuilder.sigDigest });
-    if (digest !== txBuilder.sigDigest) throw new Error('Digests do not match');
-
-    // Show transaction to user and get his consent to sign it.
+    // TODO Show transaction in UI and get user's consent to sign it.
 
     return this.signDigest(digest, '');
   }
@@ -73,19 +73,17 @@ export class SignerHbauth extends Signer {
       throw new Error(`Unsupported keyType: ${keyType}`);
     }
 
-    // TODO Pass correct config options here.
     const authClient = await hbauthService.getOnlineClient();
-    // const authClient = await new OnlineClient().initialize();
 
     const auth = await authClient.getAuthByUser(username);
     logger.info('auth: %o', auth);
-
     if (!auth) {
       throw new Error(`No auth for username ${username}`);
     }
 
     if (!auth.authorized) {
       if (!password) {
+        // TODO pass username and keyType as well, and show them in UI.
         password = await this.getPasswordFromUser({
           i18nKeyPlaceholder: 'login_form.password_hbauth_placeholder',
           i18nKeyTitle: 'login_form.title_hbauth_dialog_password'
