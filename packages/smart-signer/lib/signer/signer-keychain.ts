@@ -1,11 +1,11 @@
 import { KeychainSDK, KeychainKeyTypes } from 'keychain-sdk';
-import { Operation } from '@hiveio/dhive';
+import { Operation, TransferOperation } from '@hiveio/dhive';
 import {
   SignChallenge,
   SignTransaction,
   Signer
 } from '@smart-signer/lib/signer/signer';
-import { createWaxFoundation, operation } from '@hive/wax/web';
+import { createWaxFoundation, operation, ApiTransaction, ApiOperation } from '@hive/wax/web';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -38,7 +38,22 @@ export function waxToKeychainOperation(operation: operation | operation[]) {
 
   for (const o of operation) {
     for (const [key, value] of Object.entries(o)) {
-      keychainOperations.push([key as Operation[0], value as Operation[1]]);
+      if (key === 'transfer') {
+        // Naive workaroud for transfer, just to make login working.
+        // TODO Should be changed after upcoming update in Wax.
+        const transferOperation: TransferOperation = [
+          'transfer',
+          {
+            from: value['from_account'],
+            to: value['to_account'],
+            amount: '0.001 HIVE',
+            memo: value['memo'],
+          }
+        ];
+        keychainOperations.push(transferOperation);
+      } else {
+        keychainOperations.push([key as Operation[0], value as Operation[1]]);
+      }
     }
   }
 
@@ -98,6 +113,14 @@ export class SignerKeychain extends Signer {
     // matter of fact Keychain extension does it.
 
     const tx = txBuilder.build();
+
+    // TODO We could also pass the other format. Not sure here.
+    // const tx: ApiTransaction = JSON.parse(txBuilder.toApi());
+
+    logger.info('signTransaction tx: %o', tx);
+    logger.info('signTransaction tx: %o',
+      { tx, toApi: txBuilder.toApi(), toString: txBuilder.toString() });
+
     // Rewrite operations to Keychain format.
     const operations = waxToKeychainOperation(tx.operations);
 
