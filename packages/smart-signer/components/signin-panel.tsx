@@ -115,16 +115,29 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
         }
       };
       const signer = getSigner(loginSignerOptions);
-      const transaction = await signer.signTransaction({
+
+      let returnSignedTransaction = false;
+      if (loginType = LoginType.keychain) {
+        returnSignedTransaction = true;
+      }
+
+      const signedTransactionOrSignature = await signer.signTransaction({
         digest: txBuilder.sigDigest,
         transaction: tx,
-        returnSignedTransaction: true,
+        returnSignedTransaction,
       });
-      logger.info('transaction: %o', transaction);
-      txBuilder.build(transaction);
+
+      logger.info('signedTransactionOrSignature: %o', signedTransactionOrSignature);
+      txBuilder.build(signedTransactionOrSignature);
       txBuilder.validate();
-      for (const s of transaction.signatures) {
-        txBuilder.build(s);
+
+      // This loop is required for Keychain, because there're not any
+      // signatures in txBuilder now. Bug in txBuilder?
+      if (loginType = LoginType.keychain) {
+        for (const s of signedTransactionOrSignature.signatures) {
+          txBuilder.build(s);
+        }
+        txBuilder.validate();
       }
 
       logger.info('transaction: %o', {
