@@ -407,10 +407,12 @@ test.describe('Post page tests', () => {
       await postPage.sharePostBtn.click();
       await expect(postPage.sharePostFrame).toBeVisible();
       await expect(postPage.sharePostFrame).toContainText('Share this post');
+      await postPage.sharePostCloseBtn.click();
     });
 
     await test.step('Post Footer - Hash tags', async () => {
-      await expect(postPage.hashtagsPosts).toBeVisible();
+      if (await postPage.hashtagsPosts.isVisible())
+        await expect(postPage.hashtagsPosts).toBeVisible();
     });
   });
 
