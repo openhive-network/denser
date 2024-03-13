@@ -5,7 +5,7 @@ import {
   SignTransaction,
   Signer
 } from '@smart-signer/lib/signer/signer';
-import { createWaxFoundation, operation, ApiTransaction, ApiOperation } from '@hive/wax/web';
+import { createWaxFoundation, operation, transaction as waxTransaction, ApiTransaction, ApiOperation } from '@hive/wax/web';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -100,7 +100,7 @@ export class SignerKeychain extends Signer {
     }
   }
 
-  async signTransaction({ digest, transaction }: SignTransaction) {
+  async signTransaction({ digest, transaction, returnSignedTransaction = false }: SignTransaction) {
     const { username, keyType } = this;
     const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
 
@@ -137,6 +137,10 @@ export class SignerKeychain extends Signer {
       logger.info('SignerKeychain.signTransaction keychain response: %o', signResult);
       if (signResult.error) {
         throw new Error(`Error in signTx: ${signResult.error}`);
+      }
+      if (returnSignedTransaction) {
+        const signedTransaction: waxTransaction = waxTransaction.fromJSON(signResult.result);
+        return signedTransaction;
       }
       return signResult.result.signatures[0];
     } catch (error) {

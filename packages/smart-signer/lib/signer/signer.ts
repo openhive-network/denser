@@ -9,6 +9,7 @@ const logger = getLogger('app');
 export interface SignTransaction {
   digest: THexString;
   transaction: transaction;
+  returnSignedTransaction?: boolean;
 }
 
 export interface SignChallenge {
@@ -100,5 +101,5 @@ export abstract class Signer {
    * @returns {Promise<string>}
    * @memberof Signer
    */
-  abstract signTransaction(arg: SignTransaction): Promise<string>;
+  abstract signTransaction(arg: SignTransaction): Promise<string> | Promise<any>;
 }
