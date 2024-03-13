@@ -34,18 +34,15 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                   { 'bg-red-600 text-white': checkVote && checkVote?.rshares > 0 }
                 )}
                 onClick={(e) =>
-                  transactionService.processHiveAppOperation((builder) => {
-                    builder
-                      .push({
-                        vote: {
-                          voter: user.username,
-                          author: post.author,
-                          permlink: post.permlink,
-                          weight: 10000
-                        }
-                      })
-                      .build();
-                  }, signerOptions)
+                  transactionService.vote(
+                    {
+                      voter: user.username,
+                      author: post.author,
+                      permlink: post.permlink,
+                      weight: 10000
+                    },
+                    signerOptions
+                  )
                 }
               />
             ) : (
@@ -67,18 +64,15 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                   { 'bg-gray-600 text-white': checkVote && checkVote?.rshares < 0 }
                 )}
                 onClick={(e) =>
-                  transactionService.processHiveAppOperation((builder) => {
-                    builder
-                      .push({
-                        vote: {
-                          voter: user.username,
-                          author: post.author,
-                          permlink: post.permlink,
-                          weight: -10000
-                        }
-                      })
-                      .build();
-                  }, signerOptions)
+                  transactionService.vote(
+                    {
+                      voter: user.username,
+                      author: post.author,
+                      permlink: post.permlink,
+                      weight: -10000
+                    },
+                    signerOptions
+                  )
                 }
               />
             ) : (

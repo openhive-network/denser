@@ -55,8 +55,8 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
   const { user } = useUser();
   const { signerOptions } = useSigner();
   const [link, setLink] = useState<string>(`/${proposalData.creator}/${proposalData.permlink}`);
-  const totalHBD = proposalData.daily_pay.amount.times(
-    moment(proposalData.end_date).diff(moment(proposalData.start_date), 'd')
+  const totalHBD = proposalData.daily_pay?.amount.times(
+    moment(proposalData?.end_date).diff(moment(proposalData.start_date), 'd')
   );
   const totalDays = moment(proposalData.end_date).diff(proposalData.start_date, `d`);
 
@@ -175,22 +175,15 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
               className="relative inline-flex h-6 w-6 cursor-pointer rounded-full bg-white stroke-1 text-red-500 dark:bg-slate-800"
               data-testid="voting-button-icon"
               onClick={(e: React.MouseEvent<HTMLOrSVGElement>) => {
-                transactionService.processHiveAppOperation(
-                  (builder) => {
-                    builder
-                      .push({
-                        update_proposal_votes: {
-                          voter: user.username,
-                          proposal_ids: [String(proposalData.proposal_id)],
-                          approve: true,
-                          extensions: []
-                        }
-                      })
-                      .build();
+                transactionService.updateProposalVotes(
+                  {
+                    voter: user.username,
+                    proposal_ids: [String(proposalData.proposal_id)],
+                    approve: true,
+                    extensions: []
                   },
                   signerOptions
                 );
-
                 (e.target as HTMLElement).classList.add('text-white');
                 (e.target as HTMLElement).classList.add('bg-red-600');
               }}

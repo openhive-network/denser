@@ -3,7 +3,6 @@ import { Button } from '@hive/ui';
 import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
 import { transactionService } from '@transaction/index';
-import { FollowOperationBuilder } from '@hive/wax/web';
 import { useSigner } from '@smart-signer/lib/use-signer';
 import { User } from '@smart-signer/types/common';
 import { IFollow } from '@transaction/lib/hive';
@@ -52,23 +51,11 @@ const MuteButton = ({
           onClick={() => {
             const nextMute = !isMute;
             setIsMute(nextMute);
-            transactionService.processHiveAppOperation((builder) => {
-              if (nextMute) {
-                builder.push(
-                  new FollowOperationBuilder()
-                    .muteBlog(user.username, username)
-                    .authorize(user.username)
-                    .build()
-                );
-              } else {
-                builder.push(
-                  new FollowOperationBuilder()
-                    .unmuteBlog(user.username, username)
-                    .authorize(user.username)
-                    .build()
-                );
-              }
-            }, signerOptions);
+            if (nextMute) {
+              transactionService.mute(username, user, signerOptions);
+            } else {
+              transactionService.unmute(username, user, signerOptions);
+            }
           }}
           disabled={list.isLoading || list.isFetching}
         >
