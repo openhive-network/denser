@@ -11,14 +11,145 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { transactionService } from '@transaction/index';
 import { FollowOperationBuilder } from '@hive/wax/web';
 import { useSigner } from '@smart-signer/lib/use-signer';
+import { SignerOptions } from '@smart-signer/lib/signer/signer';
 
+function deleteFromList(
+  toUser: string,
+  fromUser: string,
+  variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute',
+  signerOptions: SignerOptions
+) {
+  switch (variant) {
+    case 'blacklisted': {
+      transactionService.processHiveAppOperation((builder) => {
+        builder.push(
+          new FollowOperationBuilder().unblacklistBlog(fromUser, toUser).authorize(fromUser).build()
+        );
+      }, signerOptions);
+      break;
+    }
+    case 'muted': {
+      transactionService.processHiveAppOperation((builder) => {
+        builder.push(new FollowOperationBuilder().unmuteBlog(fromUser, toUser).authorize(fromUser).build());
+      }, signerOptions);
+      break;
+    }
+    case 'followedBlacklist': {
+      transactionService.processHiveAppOperation((builder) => {
+        builder.push(
+          new FollowOperationBuilder().unfollowBlacklistBlog(fromUser, toUser).authorize(fromUser).build()
+        );
+      }, signerOptions);
+      break;
+    }
+    case 'followedMute': {
+      transactionService.processHiveAppOperation((builder) => {
+        builder.push(
+          new FollowOperationBuilder().unfollowMutedBlog(fromUser, toUser).authorize(fromUser).build()
+        );
+      }, signerOptions);
+      break;
+    }
+  }
+}
+function addToList(
+  toUser: string,
+  fromUser: string,
+  variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute',
+  signerOptions: SignerOptions
+) {
+  switch (variant) {
+    case 'blacklisted': {
+      transactionService.processHiveAppOperation((builder) => {
+        builder.push(
+          new FollowOperationBuilder()
+            .blacklistBlog(fromUser, '', ...toUser.split(', '))
+            .authorize(fromUser)
+            .build()
+        );
+      }, signerOptions);
+      break;
+    }
+    case 'muted': {
+      transactionService.processHiveAppOperation((builder) => {
+        builder.push(
+          new FollowOperationBuilder()
+            .muteBlog(fromUser, '', ...toUser.split(', '))
+            .authorize(fromUser)
+            .build()
+        );
+      }, signerOptions);
+      break;
+    }
+    case 'followedBlacklist': {
+      transactionService.processHiveAppOperation((builder) => {
+        builder.push(
+          new FollowOperationBuilder()
+            .followBlacklistBlog(fromUser, '', ...toUser.split(', '))
+            .authorize(fromUser)
+            .build()
+        );
+      }, signerOptions);
+      break;
+    }
+    case 'followedMute': {
+      transactionService.processHiveAppOperation((builder) => {
+        builder.push(
+          new FollowOperationBuilder()
+            .followMutedBlog(fromUser, '', ...toUser.split(', '))
+            .authorize(fromUser)
+            .build()
+        );
+      }, signerOptions);
+      break;
+    }
+  }
+}
+function resetList(
+  fromUser: string,
+  variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute',
+  signerOptions: SignerOptions
+) {
+  switch (variant) {
+    case 'blacklisted': {
+      transactionService.processHiveAppOperation((builder) => {
+        builder.push(
+          new FollowOperationBuilder().resetBlacklistBlog(fromUser, 'all').authorize(fromUser).build()
+        );
+      }, signerOptions);
+      break;
+    }
+    case 'muted': {
+      transactionService.processHiveAppOperation((builder) => {
+        builder.push(new FollowOperationBuilder().resetAllBlog(fromUser, 'all').authorize(fromUser).build());
+      }, signerOptions);
+      break;
+    }
+    case 'followedBlacklist': {
+      transactionService.processHiveAppOperation((builder) => {
+        builder.push(
+          new FollowOperationBuilder().resetFollowBlacklistBlog(fromUser, 'all').authorize(fromUser).build()
+        );
+      }, signerOptions);
+      break;
+    }
+    case 'followedMute': {
+      transactionService.processHiveAppOperation((builder) => {
+        builder.push(
+          new FollowOperationBuilder().resetFollowMutedBlog(fromUser, 'all').authorize(fromUser).build()
+        );
+      }, signerOptions);
+      break;
+    }
+  }
+}
 export default function ProfileLists({
   username,
   variant,
   data
 }: {
   username: string;
-  variant: string;
+  variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute';
   data: IFollowList[] | undefined;
 }) {
   const { user } = useUser();
@@ -26,6 +157,10 @@ export default function ProfileLists({
   const { t } = useTranslation('common_blog');
   const [page, setPage] = useState(0);
   const [filter, setFilter] = useState('');
+  const [addValue, setAddValue] = useState('');
+  const splitArrays = [];
+  const chunkSize = 10;
+  const userOwner = user.username === username && user.isLoggedIn;
   const filteredNames = data?.filter((value: IFollowList) => {
     const searchWord = filter.toLowerCase();
     const userName = value.name.toLowerCase();
@@ -37,8 +172,6 @@ export default function ProfileLists({
   const onSearchChange = (e: string) => {
     setFilter(e);
   };
-  const splitArrays = [];
-  const chunkSize = 10;
   if (data && filteredNames && data.length > 0) {
     for (let i = 0; i < filteredNames.length; i += chunkSize) {
       const chunk = filteredNames.slice(i, i + chunkSize);
@@ -50,17 +183,15 @@ export default function ProfileLists({
       <div className="flex  flex-col items-center gap-4 p-4">
         <Accordion type="single" collapsible className="w-1/3 text-center">
           <AccordionItem value="item-1">
-            <AccordionTrigger className=" justify-center text-center text-xl ">
+            <AccordionTrigger className="justify-center text-center text-xl ">
               {t('user_profil.lists.list.what_is_this')}
             </AccordionTrigger>
             <AccordionContent>
-              {t('user_profil.lists.list.show_or_hide_descripton', {
-                settings_link: (
-                  <Link href={`/@/settings`} className="text-red-600">
-                    Settings
-                  </Link>
-                )
-              })}
+              {t('user_profil.lists.list.show_or_hide_descripton_one')}
+              <Link href={`/@/settings`} className="text-red-600">
+                {t('user_profil.lists.list.settings')}
+              </Link>
+              {t('user_profil.lists.list.show_or_hide_descripton_two')}
             </AccordionContent>
           </AccordionItem>
         </Accordion>
@@ -68,16 +199,16 @@ export default function ProfileLists({
           {variant === 'blacklisted'
             ? t('user_profil.lists.list.accounts_blacklisted_by', { username: username })
             : variant === 'muted'
-            ? t('user_profil.lists.list.accounts_muted_by', { username: username })
-            : variant === 'followedBlacklist'
-            ? t('user_profil.lists.followed_blacklists')
-            : variant === 'followedMut'
-            ? t('user_profil.lists.followed_muted_lists')
-            : null}
+              ? t('user_profil.lists.list.accounts_muted_by', { username: username })
+              : variant === 'followedBlacklist'
+                ? t('user_profil.lists.followed_blacklists')
+                : variant === 'followedMute'
+                  ? t('user_profil.lists.followed_muted_lists')
+                  : null}
         </h1>
         <p
           className={clsx('text-center text-xs', {
-            hidden: variant === 'followedBlacklist' || variant === 'followedMut'
+            hidden: variant === 'followedBlacklist' || variant === 'followedMute'
           })}
         >
           {t('user_profil.lists.list.list_description')}
@@ -100,36 +231,24 @@ export default function ProfileLists({
                   </Link>
                   {' ' + e.blacklist_description}
                 </span>
-                {user?.isLoggedIn && user?.username === username ? (
+                {userOwner ? (
                   <Button
                     variant="outlineRed"
                     className="whitespace-nowrap p-1"
                     size="xs"
                     onClick={() => {
-                      if (variant === 'muted') {
-                        transactionService.processHiveAppOperation(
-                          (builder) => {
-                            builder.push(
-                              new FollowOperationBuilder()
-                                .unmuteBlog(user.username, username)
-                                .authorize(user.username)
-                                .build()
-                            );
-                          },
-                          signerOptions
-                        );
-                      }
+                      deleteFromList(e.name, user.username, variant, signerOptions);
                     }}
                   >
                     {variant === 'blacklisted'
-                      ? 'unblacklist'
+                      ? t('user_profil.lists.list.unblacklist')
                       : variant === 'muted'
-                      ? 'unmute'
-                      : variant === 'followedBlacklist'
-                      ? t('unfollow blacklist')
-                      : variant === 'followedMut'
-                      ? t('unfollow muted list')
-                      : null}
+                        ? t('user_profil.lists.list.unmute')
+                        : variant === 'followedBlacklist'
+                          ? t('user_profil.lists.list.unfollow_blacklist')
+                          : variant === 'followedMute'
+                            ? t('user_profil.lists.list.unfollow_muted_list')
+                            : null}
                   </Button>
                 ) : null}
               </li>
@@ -170,38 +289,61 @@ export default function ProfileLists({
         {data && data.length > 0 ? (
           <div className="text-sm">{t('user_profil.lists.list.users_on_list', { number: data.length })}</div>
         ) : null}
-        {user?.isLoggedIn && user?.username === username ? (
+        {userOwner ? (
           <div className="flex flex-col items-center">
-            <h1 className="text-xl font-bold">Add Account(s) To List</h1>
-            <span className="text-sm">(single account or comma separated list)</span>
+            <h1 className="text-xl font-bold">{t('user_profil.lists.list.add_account_to_list')}</h1>
+            <span className="text-sm">{t('user_profil.lists.list.single_account')}</span>
             <div className="flex w-full justify-center bg-slate-200 p-2 dark:bg-slate-900">
-              <Input className="bg-white sm:w-3/4"></Input>
-            </div>{' '}
+              <Input
+                className="bg-white sm:w-3/4"
+                value={addValue}
+                onChange={(e) => setAddValue(e.target.value)}
+              />
+            </div>
+            {addValue ? (
+              <Button
+                className="mt-2"
+                onClick={() => {
+                  addToList(addValue, user.username, variant, signerOptions), setAddValue('');
+                }}
+              >
+                {t('user_profil.lists.list.add_to_list')}
+              </Button>
+            ) : null}
           </div>
         ) : null}
         <h1 className="text-xl font-bold">{t('user_profil.lists.list.search_this_list')}</h1>
         <div className="flex  justify-center bg-slate-200 p-2 dark:bg-slate-900 sm:w-1/3">
-          <Input onChange={(e) => onSearchChange(e.target.value)} className="bg-white sm:w-3/4"></Input>
+          <Input onChange={(e) => onSearchChange(e.target.value)} className="bg-white sm:w-3/4" />
         </div>
-        <div className="flex flex-col items-center gap-2">
-          <h1 className="text-xl font-bold">{t('user_profil.lists.list.reset_options')}</h1>
-          <div className="flex gap-2">
-            <Button size="sm" variant="outlineRed" className="text-xs">
-              {variant === 'blacklisted'
-                ? t('user_profil.lists.list.reset_blacklist')
-                : variant === 'muted'
-                ? t('user_profil.lists.list.reset_muted_list')
-                : variant === 'followedBlacklist'
-                ? t('user_profil.lists.list.reset_followed_blacklists')
-                : variant === 'followedMut'
-                ? t('user_profil.lists.list.reset_followed_muted_list')
-                : null}
-            </Button>
-            <Button disabled size="sm" className="text-xs">
-              {t('user_profil.lists.list.reset_all_lists')}
-            </Button>
+        {userOwner ? (
+          <div className="flex flex-col items-center gap-2">
+            <h1 className="text-xl font-bold">{t('user_profil.lists.list.reset_options')}</h1>
+            <div className="flex gap-2">
+              <Button
+                onClick={() => {
+                  resetList(user.username, variant, signerOptions);
+                }}
+                size="sm"
+                variant="outlineRed"
+                className="text-xs"
+              >
+                {variant === 'blacklisted'
+                  ? t('user_profil.lists.list.reset_blacklist')
+                  : variant === 'muted'
+                    ? t('user_profil.lists.list.reset_muted_list')
+                    : variant === 'followedBlacklist'
+                      ? t('user_profil.lists.list.reset_followed_blacklists')
+                      : variant === 'followedMute'
+                        ? t('user_profil.lists.list.reset_followed_muted_list')
+                        : null}
+              </Button>
+              <Button disabled size="sm" className="text-xs">
+                {t('user_profil.lists.list.reset_all_lists')}
+              </Button>
+            </div>
           </div>
-        </div>
+        ) : null}
       </div>
     </ProfileLayout>
   );

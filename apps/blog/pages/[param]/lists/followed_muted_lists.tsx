@@ -11,7 +11,7 @@ export default function FollowedMutedList() {
   if (followedMuteQuery.isLoading) {
     return <div>Loading</div>;
   }
-  return <ProfileLists username={username} variant="followedMut" data={followedMuteQuery.data} />;
+  return <ProfileLists username={username} variant="followedMute" data={followedMuteQuery.data} />;
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
