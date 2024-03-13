@@ -95,21 +95,18 @@ export function ReplyTextbox({
             <Button
               disabled={text === ''}
               onClick={() => {
-                transactionService.processHiveAppOperation((builder) => {
-                  builder
-                    .push({
-                      comment: {
-                        parent_author: username,
-                        parent_permlink: permlink,
-                        author: user.username,
-                        permlink: replyPermlink,
-                        title: '',
-                        body: cleanedText,
-                        json_metadata: '{"app":"hiveblog/0.1"}'
-                      }
-                    })
-                    .build();
-                }, signerOptions);
+                transactionService.comment(
+                  {
+                    parent_author: username,
+                    parent_permlink: permlink,
+                    author: user.username,
+                    permlink: replyPermlink,
+                    title: '',
+                    body: cleanedText,
+                    json_metadata: '{"app":"hiveblog/0.1"}'
+                  },
+                  signerOptions
+                );
                 setText('');
                 localStorage.removeItem(`replyTo-/${username}/${permlink}`);
                 localStorage.removeItem(storageId);

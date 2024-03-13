@@ -9,6 +9,28 @@ const chain = await hiveChainService.getHiveChain();
 
 export declare type Bignum = string;
 
+export interface IProposal {
+  creator: string;
+  daily_pay: {
+    amount: string;
+    nai: string;
+    precision: number;
+  };
+  end_date: string;
+  id: number;
+  permlink: string;
+  proposal_id: number;
+  receiver: string;
+  start_date: string;
+  status: string;
+  subject: string;
+  total_votes: string;
+}
+
+export type ProposalData = Omit<IProposal, 'daily_pay' | 'total_votes'> & {
+  total_votes: Big;
+  daily_pay: { amount: Big };
+};
 export interface IWitness {
   created: string;
   id: number;
@@ -85,28 +107,9 @@ export const getProposals = async (params?: Partial<IGetProposalsParams>): Promi
     throw error;
   }
 };
-export interface IProposal {
-  creator: string;
-  daily_pay: {
-    amount: string;
-    nai: string;
-    precision: number;
-  };
-  end_date: string;
-  id: number;
-  permlink: string;
-  proposal_id: number;
-  receiver: string;
-  start_date: string;
-  status: string;
-  subject: string;
-  total_votes: string;
-}
+
 export interface IListItemProps {
-  proposalData: Omit<IProposal, 'daily_pay' | 'total_votes'> & {
-    total_votes: Big;
-    daily_pay: { amount: Big };
-  };
+  proposalData: ProposalData;
   totalShares: Big;
   totalVestingFund: Big;
 }
