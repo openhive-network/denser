@@ -238,7 +238,11 @@ export default function PostForm({ username }: { username: string }) {
               </FormItem>
             )}
           />
-          <Button type="submit" variant="redHover">
+          <Button
+            type="submit"
+            variant="redHover"
+            disabled={!storedPost?.title || storedPost.tags.length === 0}
+          >
             {t('submit_page.submit')}
           </Button>
           <Button
