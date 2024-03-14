@@ -7,7 +7,7 @@ import {
   comment,
   vote,
   update_proposal_votes
-} from '@hive/wax/web';
+} from '@hive/wax';
 import { toast } from '@hive/ui/components/hooks/use-toast';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';

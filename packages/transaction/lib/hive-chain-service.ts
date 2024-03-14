@@ -1,4 +1,4 @@
-import { createHiveChain, IHiveChainInterface, IWaxOptionsChain } from '@hive/wax/web';
+import { createHiveChain, IHiveChainInterface, IWaxOptionsChain } from '@hive/wax';
 import { siteConfig } from '@ui/config/site';
 import { StorageMixin, StorageBase } from '@smart-signer/lib/storage-mixin';
 
