@@ -5,8 +5,9 @@ import {
   ApiAuthority,
   TAccountName,
   ApiKeyAuth,
-  transaction
-} from '@hive/wax/web';
+  transaction,
+  TTransactionPackType
+} from '@hive/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -141,24 +142,32 @@ const authorityStrictChecker = async (
 
 
 export const authorityChecker = async (
-  txJSON: ApiTransaction,
+  tx: ApiTransaction,
   expectedSignerAccount: string,
-  expectedAuthorityLevel: AuthorityLevel
+  expectedAuthorityLevel: AuthorityLevel,
+  pack: TTransactionPackType
 ): Promise<void> =>  {
   try {
     logger.info('authorityChecker args',
-      { txJSON, expectedSignerAccount, expectedAuthorityLevel });
+      { tx, expectedSignerAccount, expectedAuthorityLevel, pack });
 
-    // const txInput: transaction = transaction.fromJSON(txJSON_2);
+    // const txJSON: transaction = transaction.fromJSON(tx);
+    const txJSON = tx;
+
+    logger.info('bamboo txJSON: %o', txJSON);
 
     const hiveChain: IHiveChainInterface = await createHiveChain();
     const txBuilder = hiveChain.TransactionBuilder.fromApi(txJSON);
+    logger.info('bamboo txBuilder: %o', txBuilder);
 
     const sigDigest = txBuilder.sigDigest;
     logger.info(`sigDigest of passed transaction is: ${sigDigest}`);
 
     const authorityVerificationResult = await hiveChain.api.database_api
-        .verify_authority({ trx: txJSON });
+        .verify_authority({
+          trx: JSON.parse(txBuilder.toApi()),
+          pack
+        });
 
     if (authorityVerificationResult.valid) {
       logger.info([

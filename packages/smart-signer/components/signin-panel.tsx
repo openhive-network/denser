@@ -26,7 +26,8 @@ import {
   operation,
   vote,
   transfer,
-  ApiOperation
+  ApiOperation,
+  TTransactionPackType
 } from '@hive/wax'
 import { authorityChecker, AuthorityLevel } from '@smart-signer/lib/authority-checker';
 
@@ -59,47 +60,43 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
   const onSubmit = async (data: LoginFormSchema) => {
     logger.info('onSubmit form data', data);
     setErrorMsg('');
-    const { loginType, username } = data;
-    let signatures: Signatures = {};
-    let hivesignerToken = '';
-    let authorityLevel: AuthorityLevel;
 
-    // TODO The value for keyType will be passed from form in new UI.
-    const keyType: KeyType = KeyType.posting;
-    // TODO login with active key does not work.
-    // const keyType: KeyType = KeyType.active;
+    try {
+      const { loginType, username } = data;
+      let signatures: Signatures = {};
+      let hivesignerToken = '';
+      let authorityLevel: AuthorityLevel;
 
-    let operation: operation;
-    if (keyType === KeyType.posting) {
-      authorityLevel = AuthorityLevel.POSTING;
-      operation = {
-        vote: {
+      // TODO The value for keyType will be passed from form in new UI.
+      // const keyType: KeyType = KeyType.posting;
+      // TODO login with active key does not work.
+      const keyType: KeyType = KeyType.active;
+
+      const hiveChain = await hiveChainService.getHiveChain();
+
+      let operation: operation;
+      if (keyType === KeyType.posting) {
+        authorityLevel = AuthorityLevel.POSTING;
+        const voteLoginChallenge: vote = vote.create({
           voter: username,
           author: "author",
           permlink: loginChallenge,
           weight: 10000,
-        }
-      };
-    } else if (keyType === KeyType.active) {
-      authorityLevel = AuthorityLevel.ACTIVE;
-      operation = {
-        transfer: {
+        });
+        operation = { vote: voteLoginChallenge };
+      } else if (keyType === KeyType.active) {
+        authorityLevel = AuthorityLevel.ACTIVE;
+        const transferLoginChallenge: transfer = transfer.create({
           from_account: username,
           to_account: username,
-          amount: {
-            amount: "1",
-            precision: 3,
-            nai: "@@000000021"
-          },
+          amount: hiveChain.hive(1),
           memo: loginChallenge,
-        }
-      };
-    } else {
-      throw new Error('Unsupported keyType');
-    }
+        });
+        operation = { transfer: transferLoginChallenge };
+      } else {
+        throw new Error('Unsupported keyType');
+      }
 
-    try {
-      const hiveChain = await hiveChainService.getHiveChain();
       const txBuilder = await hiveChain.getTransactionBuilder();
       txBuilder.push(operation);
       txBuilder.validate();
@@ -133,7 +130,8 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
       await authorityChecker(
         JSON.parse(txBuilder.toApi()) as ApiTransaction,
         username,
-        authorityLevel
+        authorityLevel,
+        TTransactionPackType.HF_26
         );
 
       signatures[keyType] = signature;
