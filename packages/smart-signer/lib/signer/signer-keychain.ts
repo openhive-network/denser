@@ -5,7 +5,7 @@ import {
   SignTransaction,
   Signer
 } from '@smart-signer/lib/signer/signer';
-import { createWaxFoundation, operation, ApiTransaction, ApiOperation } from '@hive/wax/web';
+import { createWaxFoundation, operation, ApiTransaction, ApiOperation } from '@hive/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -141,5 +141,4 @@ export class SignerKeychain extends Signer {
       throw error;
     }
   }
-
 }

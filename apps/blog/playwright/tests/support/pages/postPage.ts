@@ -76,6 +76,7 @@ export class PostPage {
   readonly redditIcon: Locator;
   readonly sharePostBtn: Locator;
   readonly sharePostFrame: Locator;
+  readonly sharePostCloseBtn: Locator;
   readonly hashtagsPosts: Locator;
   readonly postFooterVotes: Locator;
   readonly postsCommentsTab: Locator;
@@ -163,6 +164,7 @@ export class PostPage {
     this.redditIcon = page.locator('[data-testid="share-on-reddit"]'); // page.locator('[title="Share on Reddit"]')
     this.sharePostBtn = page.locator('[data-testid="share-post"]')
     this.sharePostFrame = page.locator('[role="dialog"]')
+    this.sharePostCloseBtn = page.locator('[data-testid="close-dialog"]');
     this.hashtagsPosts = page.locator('[data-testid="hashtags-post"]')
     this.postFooterVotes = page.locator('[data-testid="author-data-post-footer"] [data-testid="comment-votes"]');
     this.postsCommentsTab = page.getByRole('tab', { name: 'Comments' });

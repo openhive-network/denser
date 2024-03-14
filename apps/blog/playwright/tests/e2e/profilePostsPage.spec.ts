@@ -184,14 +184,23 @@ test.describe('Profile page of @gtg', () => {
     await page.goto('/@gtg/comments');
     await expect(commentViewPage.getResponseCommentPayout.first()).toBeVisible();
     await page.waitForTimeout(2000);
+    const firstPayout = await commentViewPage.getResponseCommentPayout.first();
     const payoutText = await commentViewPage.getResponseCommentPayout.first().textContent();
     await expect(commentViewPage.getResponseCommentPayout.first()).toBeVisible();
 
     if (payoutText.includes('0.00')) {
+      if (await firstPayout.getAttribute('data-state') == 'closed') {
+        await commentViewPage.getResponseCommentPayout.first().hover();
+        await commentViewPage.page.waitForTimeout(1000);
+        await expect(commentViewPage.getResponseCommentPayout.first()).toHaveCSS('color', 'rgb(220, 38, 38)');
+      } else {
       await commentViewPage.getResponseCommentPayout.first().hover();
+      await commentViewPage.page.waitForTimeout(1000);
       await expect(commentViewPage.getResponseCommentPayout.first()).toHaveCSS('color', 'rgb(15, 23, 42)');
+      }
     } else {
       await commentViewPage.getResponseCommentPayout.first().hover();
+      await commentViewPage.page.waitForTimeout(1000);
       await expect(commentViewPage.getResponseCommentPayout.first()).toHaveCSS('color', 'rgb(220, 38, 38)');
       await expect(commentViewPage.payoutPostCardTooltip).toBeVisible();
     }

@@ -2,7 +2,7 @@ import { cryptoUtils } from '@hiveio/dhive';
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
 import { SignChallenge, SignTransaction, Signer } from '@smart-signer/lib/signer/signer';
 import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
-import { THexString, createWaxFoundation } from '@hive/wax/web';
+import { THexString, createWaxFoundation } from '@hive/wax';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');

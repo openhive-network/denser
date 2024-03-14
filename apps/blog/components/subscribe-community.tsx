@@ -3,7 +3,6 @@ import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
 import { useEffect, useState } from 'react';
 import { transactionService } from '@transaction/index';
-import { CommunityOperationBuilder } from '@hive/wax/web';
 import { useSigner } from '@smart-signer/lib/use-signer';
 import { User } from '@smart-signer/types/common';
 
@@ -36,17 +35,11 @@ const SubscribeCommunity = ({
               onClick={() => {
                 const nextIsSubscribe = !isSubscribe;
                 setIsSubscribe(nextIsSubscribe);
-                transactionService.processHiveAppOperation((builder) => {
-                  if (nextIsSubscribe) {
-                    builder.push(
-                      new CommunityOperationBuilder().subscribe(username).authorize(user.username).build()
-                    );
-                  } else {
-                    builder.push(
-                      new CommunityOperationBuilder().unsubscribe(username).authorize(user.username).build()
-                    );
-                  }
-                }, signerOptions);
+                if (nextIsSubscribe) {
+                  transactionService.subscribe(username, user, signerOptions);
+                } else {
+                  transactionService.unsubscribe(username, user, signerOptions);
+                }
               }}
             >
               {t('communities.buttons.subscribe')}
@@ -59,11 +52,7 @@ const SubscribeCommunity = ({
               onClick={() => {
                 const nextIsSubscribe = !isSubscribe;
                 setIsSubscribe(nextIsSubscribe);
-                transactionService.processHiveAppOperation((builder) => {
-                  builder.push(
-                    new CommunityOperationBuilder().unsubscribe(username).authorize(user.username).build()
-                  );
-                }, signerOptions);
+                transactionService.unsubscribe(username, user, signerOptions);
               }}
             >
               <span className="group-hover:hidden">{t('communities.buttons.joined')}</span>

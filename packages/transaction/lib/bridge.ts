@@ -1,4 +1,4 @@
-import { TWaxApiRequest } from '@hive/wax/web';
+import { TWaxApiRequest } from '@hive/wax';
 import { hiveChainService } from './hive-chain-service';
 
 const chain = await hiveChainService.getHiveChain();

@@ -13,7 +13,6 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Input } from '@ui/components';
 import { ReactNode, useState } from 'react';
 import { transactionService } from '@transaction/index';
-import { CommunityOperationBuilder } from '@hive/wax/web';
 import { useSigner } from '@smart-signer/lib/use-signer';
 
 export function AlertDialogFlag({
@@ -57,14 +56,7 @@ export function AlertDialogFlag({
               className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
               data-testid="flag-dialog-ok"
               onClick={() => {
-                transactionService.processHiveAppOperation((builder) => {
-                  builder.push(
-                    new CommunityOperationBuilder()
-                      .flagPost(community, username, permlink, notes)
-                      .authorize(user.username)
-                      .build()
-                  );
-                }, signerOptions);
+                transactionService.flag({ community, username, permlink, notes }, user, signerOptions);
               }}
             >
               OK
