@@ -26,8 +26,7 @@ import {
   operation,
   vote,
   transfer,
-  ApiOperation,
-  transaction as waxTranaction
+  ApiOperation
 } from '@hive/wax'
 import { authorityChecker, AuthorityLevel } from '@smart-signer/lib/authority-checker';
 
@@ -66,9 +65,9 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
     let authorityLevel: AuthorityLevel;
 
     // TODO The value for keyType will be passed from form in new UI.
-    // const keyType: KeyType = KeyType.posting;
+    const keyType: KeyType = KeyType.posting;
     // TODO login with active key does not work.
-    const keyType: KeyType = KeyType.active;
+    // const keyType: KeyType = KeyType.active;
 
     let operation: operation;
     if (keyType === KeyType.posting) {
@@ -115,17 +114,12 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
         }
       };
       const signer = getSigner(loginSignerOptions);
-      const transaction = await signer.signTransaction({
+      const signature = await signer.signTransaction({
         digest: txBuilder.sigDigest,
-        transaction: tx,
-        returnSignedTransaction: true,
+        transaction: tx
       });
-      logger.info('transaction: %o', transaction);
-      txBuilder.build(transaction);
-      txBuilder.validate();
-      for (const s of transaction.signatures) {
-        txBuilder.build(s);
-      }
+      logger.info('signature: %s', signature);
+      txBuilder.build(signature);
 
       logger.info('transaction: %o', {
         toApi: txBuilder.toApi(),
