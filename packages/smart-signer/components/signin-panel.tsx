@@ -125,13 +125,18 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
         parsedToString: JSON.parse(txBuilder.toString()),
       });
 
+      let pack = TTransactionPackType.HF_26;
+      if (loginType === LoginType.keychain) {
+        pack = TTransactionPackType.LEGACY;
+      }
+
       // FIXME temporary solution. The logic that verifies user's
       // signature will be moved to server.
       await authorityChecker(
         JSON.parse(txBuilder.toApi()) as ApiTransaction,
         username,
         authorityLevel,
-        TTransactionPackType.HF_26
+        pack
         );
 
       signatures[keyType] = signature;

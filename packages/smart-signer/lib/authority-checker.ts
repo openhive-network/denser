@@ -162,6 +162,8 @@ export const authorityChecker = async (
 
     const sigDigest = txBuilder.sigDigest;
     logger.info(`sigDigest of passed transaction is: ${sigDigest}`);
+    const legacySigDigest = txBuilder.legacy_sigDigest;
+    logger.info(`legacy_sigDigest of passed transaction is: ${legacySigDigest}`);
 
     const authorityVerificationResult = await hiveChain.api.database_api
         .verify_authority({
