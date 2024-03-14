@@ -120,6 +120,8 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
         parsedToString: JSON.parse(txBuilder.toString()),
       });
 
+      // TODO this should not be hardcoded here. This property must be
+      // defined elsewhere.
       let pack = TTransactionPackType.HF_26;
       if (loginType === LoginType.keychain) {
         pack = TTransactionPackType.LEGACY;

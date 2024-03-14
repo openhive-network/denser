@@ -92,53 +92,59 @@ export const authorityChecker = async (
           pack
         });
 
-    if (authorityVerificationResult.valid) {
+    if (!authorityVerificationResult.valid) {
+        throw new Error("Transaction has specified INVALID authority")
+    }
+
+    logger.info([
+      "Transaction is CORRECTLY signed, going to additionally validate",
+      "that key used to generate signature is directly specified",
+      "in Signer account authority"
+    ].join(' '));
+
+    let signatureKeys: string[] = [];
+    if (pack === TTransactionPackType.HF_26) {
+      signatureKeys = txBuilder.signatureKeys;
+    } else if (pack === TTransactionPackType.LEGACY) {
+      signatureKeys = txBuilder.legacy_signatureKeys;
+    }
+
+    // Below is some additional code just to make a reverse check for
+    // public keys used to generate given signature
+    for (const signatureKey of signatureKeys) {
+      const key = "STM" + signatureKey;
+      logger.info('Checking public key: %s', key);
+      const referencedAccounts = (
+        await hiveChain.api.account_by_key_api
+        .get_key_references({ keys: [key] })
+        ).accounts;
+
+      const accounts: Array<Array<string>> =
+        new Array<Array<string>>(...referencedAccounts);
+      const accountList = accounts.join(",");
+
       logger.info([
-        "Transaction is CORRECTLY signed, going to additionally validate",
-        "that key used to generate signature is directly specified",
-        "in Signer account authority"
+        `Public key used to sign transaction: ${key}`,
+        `is referenced by account(s): ${accountList}`,
       ].join(' '));
 
-      const signatureKeys = txBuilder.signatureKeys;
+      const directSigner = await authorityStrictChecker(
+        key, expectedSignerAccount, expectedAuthorityLevel, hiveChain);
 
-      // Below is some additional code just to make a reverse check for
-      // public keys used to generate given signature
-      for (const signatureKey of signatureKeys) {
-        const key = "STM" + signatureKey;
-        const referencedAccounts = (
-          await hiveChain.api.account_by_key_api
-          .get_key_references({ keys: [key] })
-          ).accounts;
-
-        const accounts: Array<Array<string>> =
-          new Array<Array<string>>(...referencedAccounts);
-        const accountList = accounts.join(",");
-
+      if (directSigner)
         logger.info([
-          `Public key used to sign transaction: ${key}`,
-          `is referenced by account(s): ${accountList}`,
+          `The account: ${expectedSignerAccount}`,
+          `directly authorized the transaction`
         ].join(' '));
-
-        const directSigner = await authorityStrictChecker(
-          key, expectedSignerAccount, expectedAuthorityLevel, hiveChain);
-
-        if (directSigner)
-          logger.info([
-            `The account: ${expectedSignerAccount}`,
-            `directly authorized the transaction`
-          ].join(' '));
-        else
-          logger.info([
-            `WARNING: some other account(s): ${accountList}`,
-            `than: ${expectedSignerAccount} authorized the transaction`
-          ].join(' '));
-      }
+      else
+        logger.info([
+          `WARNING: some other account(s): ${accountList}`,
+          `than: ${expectedSignerAccount} authorized the transaction`
+        ].join(' '));
     }
-    else {
-      logger.info("Transaction has specified INVALID authority");
-    }
+
   } catch (error) {
-    logger.error('error in authorityChecker: %o', error);
+    logger.error('Error in authorityChecker: %o', error);
     throw error;
   }
 
