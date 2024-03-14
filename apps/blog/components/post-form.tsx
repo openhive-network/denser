@@ -83,17 +83,12 @@ export default function PostForm({ username }: { username: string }) {
   }, [username, storedPost?.title]);
 
   function onSubmit(data: AccountFormValues) {
-    const tags = JSON.stringify(storedPost?.tags.split(' ') ?? []);
-    transactionService.comment(
-      {
-        parent_author: '',
-        parent_permlink: storedPost?.tags.split(' ')[0] ?? '',
-        author: username,
-        permlink: postPermlink,
-        title: storedPost?.title ?? '',
-        body: watchedValues.postArea,
-        json_metadata: `{\"tags\":${tags},\"app\":\"hiveblog/0.1\",\"format\":\"markdown\"}`
-      },
+    const tags = storedPost?.tags.split(' ') ?? [];
+    transactionService.post(
+      postPermlink,
+      storedPost?.title ?? '',
+      watchedValues.postArea,
+      tags,
       signerOptions
     );
     storePost(defaultValues);

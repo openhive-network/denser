@@ -176,12 +176,9 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
               data-testid="voting-button-icon"
               onClick={(e: React.MouseEvent<HTMLOrSVGElement>) => {
                 transactionService.updateProposalVotes(
-                  {
-                    voter: user.username,
-                    proposal_ids: [String(proposalData.proposal_id)],
-                    approve: true,
-                    extensions: []
-                  },
+                  [String(proposalData.proposal_id)],
+                  true,
+                  [],
                   signerOptions
                 );
                 (e.target as HTMLElement).classList.add('text-white');

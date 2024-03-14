@@ -52,9 +52,9 @@ const MuteButton = ({
             const nextMute = !isMute;
             setIsMute(nextMute);
             if (nextMute) {
-              transactionService.mute(username, user, signerOptions);
+              transactionService.mute(username, signerOptions);
             } else {
-              transactionService.unmute(username, user, signerOptions);
+              transactionService.unmute(username, signerOptions);
             }
           }}
           disabled={list.isLoading || list.isFetching}

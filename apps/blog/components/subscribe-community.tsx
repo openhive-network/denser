@@ -36,9 +36,9 @@ const SubscribeCommunity = ({
                 const nextIsSubscribe = !isSubscribe;
                 setIsSubscribe(nextIsSubscribe);
                 if (nextIsSubscribe) {
-                  transactionService.subscribe(username, user, signerOptions);
+                  transactionService.subscribe(username, signerOptions);
                 } else {
-                  transactionService.unsubscribe(username, user, signerOptions);
+                  transactionService.unsubscribe(username, signerOptions);
                 }
               }}
             >
@@ -52,7 +52,7 @@ const SubscribeCommunity = ({
               onClick={() => {
                 const nextIsSubscribe = !isSubscribe;
                 setIsSubscribe(nextIsSubscribe);
-                transactionService.unsubscribe(username, user, signerOptions);
+                transactionService.unsubscribe(username, signerOptions);
               }}
             >
               <span className="group-hover:hidden">{t('communities.buttons.joined')}</span>

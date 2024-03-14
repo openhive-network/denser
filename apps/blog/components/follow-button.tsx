@@ -55,9 +55,9 @@ const FollowButton = ({
             const nextFollow = !isFollow;
             setIsFollow(nextFollow);
             if (nextFollow) {
-              transactionService.follow(username, user, signerOptions);
+              transactionService.follow(username, signerOptions);
             } else {
-              transactionService.unfollow(username, user, signerOptions);
+              transactionService.unfollow(username, signerOptions);
             }
           }}
           disabled={list.isLoading || list.isFetching}

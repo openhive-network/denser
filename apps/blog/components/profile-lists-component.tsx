@@ -106,7 +106,7 @@ export default function ProfileLists({
                     size="xs"
                     onClick={() => {
                       if (variant === 'muted') {
-                        transactionService.unmute(username, user, signerOptions);
+                        transactionService.unmute(username, signerOptions);
                       }
                     }}
                   >

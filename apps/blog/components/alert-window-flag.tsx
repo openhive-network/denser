@@ -56,7 +56,7 @@ export function AlertDialogFlag({
               className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
               data-testid="flag-dialog-ok"
               onClick={() => {
-                transactionService.flag({ community, username, permlink, notes }, user, signerOptions);
+                transactionService.flag(community, username, permlink, notes, signerOptions);
               }}
             >
               OK

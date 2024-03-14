@@ -95,18 +95,7 @@ export function ReplyTextbox({
             <Button
               disabled={text === ''}
               onClick={() => {
-                transactionService.comment(
-                  {
-                    parent_author: username,
-                    parent_permlink: permlink,
-                    author: user.username,
-                    permlink: replyPermlink,
-                    title: '',
-                    body: cleanedText,
-                    json_metadata: '{"app":"hiveblog/0.1"}'
-                  },
-                  signerOptions
-                );
+                transactionService.comment(username, permlink, cleanedText, signerOptions);
                 setText('');
                 localStorage.removeItem(`replyTo-/${username}/${permlink}`);
                 localStorage.removeItem(storageId);
