@@ -3,7 +3,7 @@ import { SignChallenge, SignerOptions } from '@smart-signer/lib/signer/signer';
 import { KeyType } from '@smart-signer/types/common';
 import { SignerHbauth } from '@smart-signer/lib/signer/signer-hbauth';
 import { StorageMixin } from '@smart-signer/lib/storage-mixin';
-import { createHiveChain, IHiveChainInterface, TTransactionPackType } from '@hive/wax';
+import { createHiveChain, IHiveChainInterface, TTransactionPackType, THexString } from '@hive/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -34,6 +34,7 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
     }
   }
 
+  // This verifies key in strict mode.
   async verifyPrivateKey(wif: string) {
     const privateKey = PrivateKey.fromString(wif);
     const publicKey = privateKey.createPublic('STM');
@@ -60,13 +61,15 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
       let wif = storedPassword ? JSON.parse(storedPassword) : password;
       if (!wif) {
         wif = await this.getPasswordFromUser({
-          i18nKeyPlaceholder: 'login_form.posting_private_key_placeholder'
+          i18nKeyPlaceholder: ['login_form.private_key_placeholder', {keyType}],
+          i18nKeyTitle: ['login_form.title_wif_dialog_password']
         });
       }
       if (!wif) throw new Error('No WIF key');
 
       // TODO Ask user if he wants to store the key. If he answers
-      // "yes", verify the key before storing it.
+      // "yes", verify the key before storing it. Another option: return
+      // callback to store key after successful login.
       const storeKey: boolean = true;
 
       if (storeKey) {
@@ -89,29 +92,43 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
     }
   }
 
-  async signDigest(digest: string, password: string) {
+  async signDigest(digest: THexString, password: string) {
     const { username, keyType } = this;
     const args = { username, password, digest, keyType };
     logger.info('signDigest args: %o', args);
-    let signature = '';
     try {
       let wif = password ?
           password
           : JSON.parse(this.storage.getItem(`wif.${username}@${keyType}`) || '""');
       if (!wif) {
         wif = await this.getPasswordFromUser({
-          i18nKeyPlaceholder: ['login_form.posting_private_key_placeholder'],
+          i18nKeyPlaceholder: ['login_form.private_key_placeholder', {keyType}],
           i18nKeyTitle: ['login_form.title_wif_dialog_password']
         });
       }
       if (!wif) throw new Error('No wif key');
 
+      // TODO Ask user if he wants to store the key. If he answers
+      // "yes", verify the key and store it. Another option: return
+      // callback to store key after successful login.
+      const storeKey: boolean = true;
+
+      if (storeKey) {
+        // We don't know, if this key is correct, so we need to verify
+        // it. We don't want to store incorrect key.
+        if (await this.verifyPrivateKey(wif)) {
+          this.storage.setItem(`wif.${username}@${keyType}`, JSON.stringify(wif));
+        } else {
+          // throw new Error('Invalid WIF key');
+        }
+      }
+
       const privateKey = PrivateKey.fromString(wif);
       const hash = Buffer.from(digest, 'hex');
-      signature = privateKey.sign(hash).toString();
+      const signature = privateKey.sign(hash).toString();
+      return signature;
     } catch (error) {
       throw error;
     }
-    return signature;
   }
 }

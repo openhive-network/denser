@@ -34,6 +34,7 @@
     "verifyPostingKeyInstructions": "'Please use your HiveAuth compatible mobile wallet app to verify your posting key.'"
   },
   "login_form": {
+    "private_key_placeholder": "Your {{keyType}} private key",
     "active_private_key_placeholder": "Active private key",
     "cancel_button": "Cancel",
     "keep_me_logged_in": "Keep me logged in",
