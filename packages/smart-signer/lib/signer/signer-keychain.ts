@@ -3,9 +3,10 @@ import { Operation, TransferOperation } from '@hiveio/dhive';
 import {
   SignChallenge,
   SignTransaction,
-  Signer
+  Signer,
+  SignerOptions
 } from '@smart-signer/lib/signer/signer';
-import { createWaxFoundation, operation, ApiTransaction, ApiOperation } from '@hive/wax';
+import { createWaxFoundation, operation, ApiTransaction, ApiOperation, TTransactionPackType } from '@hive/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -69,6 +70,13 @@ export function waxToKeychainOperation(operation: operation | operation[]) {
  * @extends {Signer}
  */
 export class SignerKeychain extends Signer {
+
+  constructor(
+    signerOptions: SignerOptions,
+    pack: TTransactionPackType = TTransactionPackType.LEGACY
+    ) {
+    super(signerOptions, pack);
+  }
 
   async destroy(): Promise<void> {}
 

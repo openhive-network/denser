@@ -1,8 +1,8 @@
 import { cryptoUtils } from '@hiveio/dhive';
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
-import { SignChallenge, SignTransaction, Signer } from '@smart-signer/lib/signer/signer';
+import { SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
 import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
-import { THexString, createWaxFoundation } from '@hive/wax';
+import { THexString, createWaxFoundation, TTransactionPackType } from '@hive/wax';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -16,6 +16,14 @@ const logger = getLogger('app');
  * @extends {Signer}
  */
 export class SignerHbauth extends Signer {
+
+  constructor(
+    signerOptions: SignerOptions,
+    pack: TTransactionPackType = TTransactionPackType.HF_26
+    ) {
+    super(signerOptions, pack);
+  }
+
   async destroy() {
     const authClient = await hbauthService.getOnlineClient();
     await authClient.logout();
@@ -81,6 +89,8 @@ export class SignerHbauth extends Signer {
       throw new Error(`No auth for username ${username}`);
     }
 
+    await this.checkAuths(this.username, this.keyType);
+
     if (!auth.authorized) {
       if (!password) {
         // TODO pass username and keyType as well, and show them in UI.
@@ -117,7 +127,7 @@ export class SignerHbauth extends Signer {
     // const authClient = await new OnlineClient().initialize();
 
     const auths = await authClient.getAuths();
-    logger.info('authClient.getAuths();: %o', auths);
+    logger.info('authClient.getAuths(): %o', auths);
 
     const auths2 = await authClient.getAuthByUser(username);
     logger.info('authClient.getAuthByUser(username): %o', auths2);

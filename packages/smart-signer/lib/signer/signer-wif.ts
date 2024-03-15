@@ -1,9 +1,9 @@
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
-import { SignChallenge } from '@smart-signer/lib/signer/signer';
+import { SignChallenge, SignerOptions } from '@smart-signer/lib/signer/signer';
 import { KeyType } from '@smart-signer/types/common';
 import { SignerHbauth } from '@smart-signer/lib/signer/signer-hbauth';
 import { StorageMixin } from '@smart-signer/lib/storage-mixin';
-import { createHiveChain, IHiveChainInterface } from '@hive/wax';
+import { createHiveChain, IHiveChainInterface, TTransactionPackType } from '@hive/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -19,6 +19,14 @@ const logger = getLogger('app');
  * @extends {StorageMixin(Signer)}
  */
 export class SignerWif extends StorageMixin(SignerHbauth) {
+
+  constructor(
+    signerOptions: SignerOptions,
+    pack: TTransactionPackType = TTransactionPackType.HF_26
+    ) {
+    super(signerOptions, pack);
+  }
+
   async destroy() {
     for (const k of Object.keys(KeyType)) {
       const keyType = k as KeyType;

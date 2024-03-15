@@ -1,8 +1,9 @@
 import { SignChallenge } from '@smart-signer/lib/signer/signer';
 import HiveAuthUtils from '@smart-signer/lib/hive-auth-utils';
-import { SignTransaction } from '@smart-signer/lib/signer/signer';
-import { StorageMixin } from '@smart-signer/lib/storage-mixin';
-import { SignerHbauth } from '@smart-signer/lib/signer/signer-hbauth';
+import { SignTransaction, SignerOptions } from '@smart-signer/lib/signer/signer';
+import { StorageMixin, StorageBase } from '@smart-signer/lib/storage-mixin';
+import { SignerKeychain } from '@smart-signer/lib/signer/signer-keychain';
+import { createWaxFoundation, operation, ApiTransaction, ApiOperation, TTransactionPackType } from '@hive/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -15,7 +16,15 @@ const logger = getLogger('app');
  * @class SignerHiveauth
  * @extends {StorageMixin(SignerHbauth)}
  */
-export class SignerHiveauth extends StorageMixin(SignerHbauth) {
+export class SignerHiveauth extends StorageMixin(SignerKeychain) {
+
+  constructor(
+    signerOptions: SignerOptions,
+    pack: TTransactionPackType = TTransactionPackType.LEGACY
+    ) {
+    super(signerOptions, pack);
+  }
+
   async destroy() {
     HiveAuthUtils.logout();
     this.storage.removeItem('hiveAuthData');
@@ -66,4 +75,5 @@ export class SignerHiveauth extends StorageMixin(SignerHbauth) {
       throw error;
     }
   }
+
 }

@@ -13,7 +13,7 @@ import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { KeyType } from '@smart-signer/types/common';
 import { useSigner } from '@smart-signer/lib/use-signer';
 import { transactionService } from '@transaction/index';
-import { hiveChainService } from '@transaction/lib/hive-chain-service'
+import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import {
   createHiveChain,
   IHiveChainInterface,
@@ -28,7 +28,7 @@ import {
   transfer,
   ApiOperation,
   TTransactionPackType
-} from '@hive/wax'
+} from '@hive/wax';
 import { authorityChecker, AuthorityLevel } from '@smart-signer/lib/authority-checker';
 
 
@@ -107,6 +107,7 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
         }
       };
       const signer = getSigner(loginSignerOptions);
+      const pack = signer.pack;
       const signature = await signer.signTransaction({
         digest: txBuilder.sigDigest,
         transaction: tx
@@ -115,19 +116,12 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
       txBuilder.build(signature);
 
       logger.info('transaction: %o', {
+        pack,
         toApi: txBuilder.toApi(),
         toString: txBuilder.toString(),
         parsedToApi: JSON.parse(txBuilder.toApi()),
         parsedToString: JSON.parse(txBuilder.toString()),
       });
-
-      // TODO this should not be hardcoded here. This property must be
-      // defined in other place, related to LoginType. In Signer,
-      // probably.
-      let pack = TTransactionPackType.HF_26;
-      if (loginType === LoginType.keychain) {
-        pack = TTransactionPackType.LEGACY;
-      }
 
       // FIXME temporary solution. The logic that verifies user's
       // signature will be moved to server.
