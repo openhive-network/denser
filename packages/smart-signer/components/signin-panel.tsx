@@ -43,7 +43,7 @@ const DynamicLoginForm = dynamic(() => import('@smart-signer/components/signin-f
 
 export function LoginPanel(
   {
-    strict = true,
+    strict = false,
     i18nNamespace = 'smart-signer'
   }: {
     strict: boolean; // if true use strict authentication
@@ -79,10 +79,10 @@ export function LoginPanel(
       const { loginType, username, keyType } = data;
       let signatures: Signatures = {};
       let hivesignerToken = '';
-      let authorityLevel: AuthorityLevel;
 
       const hiveChain = await hiveChainService.getHiveChain();
 
+      let authorityLevel: AuthorityLevel;
       let operation: operation;
       if (keyType === KeyType.posting) {
         authorityLevel = AuthorityLevel.POSTING;
