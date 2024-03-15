@@ -145,22 +145,132 @@ class TransactionService {
     }, signerOptions);
   }
 
-  async mute(username: string, signerOptions: SignerOptions) {
+  async mute(otherBlogs: string, signerOptions: SignerOptions, blog = '') {
     await this.processHiveAppOperation((builder) => {
       builder.push(
         new FollowOperationBuilder()
-          .muteBlog(signerOptions.username, username)
+          .muteBlog(signerOptions.username, blog, ...otherBlogs.split(', '))
           .authorize(signerOptions.username)
           .build()
       );
     }, signerOptions);
   }
 
-  async unmute(username: string, signerOptions: SignerOptions) {
+  async unmute(blog: string, signerOptions: SignerOptions) {
     await this.processHiveAppOperation((builder) => {
       builder.push(
         new FollowOperationBuilder()
-          .unmuteBlog(signerOptions.username, username)
+          .unmuteBlog(signerOptions.username, blog)
+          .authorize(signerOptions.username)
+          .build()
+      );
+    }, signerOptions);
+  }
+
+  async blacklistBlog(otherBlogs: string, signerOptions: SignerOptions, blog = '') {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .blacklistBlog(signerOptions.username, blog, ...otherBlogs.split(', '))
+          .authorize(signerOptions.username)
+          .build()
+      );
+    }, signerOptions);
+  }
+
+  async unblacklistBlog(blog: string, signerOptions: SignerOptions) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .unblacklistBlog(signerOptions.username, blog)
+          .authorize(signerOptions.username)
+          .build()
+      );
+    }, signerOptions);
+  }
+
+  async followBlacklistBlog(otherBlogs: string, signerOptions: SignerOptions, blog = '') {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .followBlacklistBlog(signerOptions.username, blog, ...otherBlogs.split(', '))
+          .authorize(signerOptions.username)
+          .build()
+      );
+    }, signerOptions);
+  }
+
+  async unfollowBlacklistBlog(blog: string, signerOptions: SignerOptions) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .unfollowBlacklistBlog(signerOptions.username, blog)
+          .authorize(signerOptions.username)
+          .build()
+      );
+    }, signerOptions);
+  }
+
+  async followMutedBlog(otherBlogs: string, signerOptions: SignerOptions, blog = '') {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .followMutedBlog(signerOptions.username, blog, ...otherBlogs.split(', '))
+          .authorize(signerOptions.username)
+          .build()
+      );
+    }, signerOptions);
+  }
+
+  async resetAllBlog(signerOptions: SignerOptions) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .resetAllBlog(signerOptions.username, 'all')
+          .authorize(signerOptions.username)
+          .build()
+      );
+    }, signerOptions);
+  }
+
+  async resetBlacklistBlog(signerOptions: SignerOptions) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .resetBlacklistBlog(signerOptions.username, 'all')
+          .authorize(signerOptions.username)
+          .build()
+      );
+    }, signerOptions);
+  }
+
+  async resetFollowBlacklistBlog(signerOptions: SignerOptions) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .resetFollowBlacklistBlog(signerOptions.username, 'all')
+          .authorize(signerOptions.username)
+          .build()
+      );
+    }, signerOptions);
+  }
+
+  async resetFollowMutedBlog(signerOptions: SignerOptions) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .resetFollowMutedBlog(signerOptions.username, 'all')
+          .authorize(signerOptions.username)
+          .build()
+      );
+    }, signerOptions);
+  }
+
+  async unfollowMutedBlog(blog: string, signerOptions: SignerOptions) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .unfollowMutedBlog(signerOptions.username, blog)
           .authorize(signerOptions.username)
           .build()
       );
