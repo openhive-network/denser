@@ -89,7 +89,7 @@ export class SignerHbauth extends Signer {
       throw new Error(`No auth for username ${username}`);
     }
 
-    await this.checkAuths(this.username, this.keyType);
+    await this.checkAuths(username, keyType);
 
     if (!auth.authorized) {
       if (!password) {
@@ -129,8 +129,8 @@ export class SignerHbauth extends Signer {
     const auths = await authClient.getAuths();
     logger.info('authClient.getAuths(): %o', auths);
 
-    const auths2 = await authClient.getAuthByUser(username);
-    logger.info('authClient.getAuthByUser(username): %o', auths2);
+    const authsByUser = await authClient.getAuthByUser(username);
+    logger.info('authClient.getAuthByUser(username): %o', authsByUser);
 
     // await authClient.logout();
 
