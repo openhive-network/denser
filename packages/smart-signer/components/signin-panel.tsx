@@ -66,6 +66,7 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
       let signatures: Signatures = {};
       let hivesignerToken = '';
       let authorityLevel: AuthorityLevel;
+      const strict = false;
 
       const hiveChain = await hiveChainService.getHiveChain();
 
@@ -121,7 +122,8 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
       });
 
       // TODO this should not be hardcoded here. This property must be
-      // defined elsewhere.
+      // defined in other place, related to LoginType. In Signer,
+      // probably.
       let pack = TTransactionPackType.HF_26;
       if (loginType === LoginType.keychain) {
         pack = TTransactionPackType.LEGACY;
@@ -129,15 +131,24 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
 
       // FIXME temporary solution. The logic that verifies user's
       // signature will be moved to server.
-      await authorityChecker(
+      const isAuthenticated = await authorityChecker(
         JSON.parse(txBuilder.toApi()) as ApiTransaction,
         username,
         authorityLevel,
-        pack
+        pack,
+        strict
         );
+
+      const mode = strict ? 'strict' : 'non-strict';
+      if (isAuthenticated) {
+        logger.info('User %s passed authentication in %s mode', username, mode);
+      } else {
+        logger.info('User %s failed authentication in %s mode', username, mode);
+      }
 
       signatures[keyType] = signature;
 
+      // FIXME
       throw new Error('Fake Error');
 
     } catch (error) {

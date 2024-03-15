@@ -45,7 +45,7 @@ const authorityStrictChecker = async (
         authorityToVerify = accountInfo.owner;
           break;
         default:
-          throw "Bad value";
+          throw new Error("Bad value");
       }
       const keyMatchResult: boolean = authorityToVerify.key_auths.some(
         (auth: ApiKeyAuth): boolean => { return auth["0"] === publicKey; }
@@ -63,28 +63,18 @@ const authorityStrictChecker = async (
 
 
 export const authorityChecker = async (
-  tx: ApiTransaction,
+  txJSON: ApiTransaction,
   expectedSignerAccount: string,
   expectedAuthorityLevel: AuthorityLevel,
-  pack: TTransactionPackType
-): Promise<void> =>  {
+  pack: TTransactionPackType,
+  strict: boolean     // check if signer key is directly in key authority
+): Promise<boolean> =>  {
   try {
     logger.info('authorityChecker args',
-      { tx, expectedSignerAccount, expectedAuthorityLevel, pack });
-
-    // const txJSON: transaction = transaction.fromJSON(tx);
-    const txJSON = tx;
-
-    logger.info('bamboo txJSON: %o', txJSON);
+      { txJSON, expectedSignerAccount, expectedAuthorityLevel, pack });
 
     const hiveChain: IHiveChainInterface = await createHiveChain();
     const txBuilder = hiveChain.TransactionBuilder.fromApi(txJSON);
-    logger.info('bamboo txBuilder: %o', txBuilder);
-
-    const sigDigest = txBuilder.sigDigest;
-    logger.info(`sigDigest of passed transaction is: ${sigDigest}`);
-    const legacySigDigest = txBuilder.legacy_sigDigest;
-    logger.info(`legacy_sigDigest of passed transaction is: ${legacySigDigest}`);
 
     const authorityVerificationResult = await hiveChain.api.database_api
         .verify_authority({
@@ -93,15 +83,19 @@ export const authorityChecker = async (
         });
 
     if (!authorityVerificationResult.valid) {
-        throw new Error("Transaction has specified INVALID authority")
+        logger.info("Transaction has specified invalid authority");
+        return false;
     }
 
+    logger.info('Transaction is correctly signed');
+    if (!strict) return true;
+
     logger.info([
-      "Transaction is CORRECTLY signed, going to additionally validate",
-      "that key used to generate signature is directly specified",
-      "in Signer account authority"
+      "Going to validate, that key used to generate signature is",
+      "directly specified in signer key authority"
     ].join(' '));
 
+    // Extract public keys from signatures.
     let signatureKeys: string[] = [];
     if (pack === TTransactionPackType.HF_26) {
       signatureKeys = txBuilder.signatureKeys;
@@ -113,7 +107,6 @@ export const authorityChecker = async (
     // public keys used to generate given signature
     for (const signatureKey of signatureKeys) {
       const key = "STM" + signatureKey;
-      logger.info('Checking public key: %s', key);
       const referencedAccounts = (
         await hiveChain.api.account_by_key_api
         .get_key_references({ keys: [key] })
@@ -129,19 +122,25 @@ export const authorityChecker = async (
       ].join(' '));
 
       const directSigner = await authorityStrictChecker(
-        key, expectedSignerAccount, expectedAuthorityLevel, hiveChain);
+        key, expectedSignerAccount, expectedAuthorityLevel, hiveChain
+        );
 
-      if (directSigner)
+      if (directSigner) {
         logger.info([
           `The account: ${expectedSignerAccount}`,
           `directly authorized the transaction`
         ].join(' '));
-      else
+        return true;
+      } else {
         logger.info([
           `WARNING: some other account(s): ${accountList}`,
           `than: ${expectedSignerAccount} authorized the transaction`
         ].join(' '));
+      }
+
     }
+
+    return false;
 
   } catch (error) {
     logger.error('Error in authorityChecker: %o', error);
