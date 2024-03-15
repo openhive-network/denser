@@ -41,7 +41,15 @@ const DynamicLoginForm = dynamic(() => import('@smart-signer/components/signin-f
   ssr: false
 });
 
-export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?: string }) {
+export function LoginPanel(
+  {
+    strict = true,
+    i18nNamespace = 'smart-signer'
+  }: {
+    strict: boolean; // if true use strict authentication
+    i18nNamespace?: string
+  }
+  ) {
   const router = useRouter();
   const slug = router.query.slug as string;
   const { t } = useTranslation(i18nNamespace);
@@ -72,7 +80,6 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
       let signatures: Signatures = {};
       let hivesignerToken = '';
       let authorityLevel: AuthorityLevel;
-      const strict = false;
 
       const hiveChain = await hiveChainService.getHiveChain();
 
