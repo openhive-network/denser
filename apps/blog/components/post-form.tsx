@@ -39,12 +39,12 @@ export default function PostForm({ username }: { username: string }) {
   const { signerOptions } = useSigner();
   const { hiveRenderer } = useContext(HiveRendererContext);
   const [preview, setPreview] = useState(true);
-  const [sideBySide, setSideBySide] = useState(false);
+  const [sideBySide, setSideBySide] = useState(true);
   const [postPermlink, setPostPermlink] = useState('');
   const { manabarsData } = useManabars(username);
   const [storedPost, storePost] = useLocalStorage<AccountFormValues>('postData', defaultValues);
   const { t } = useTranslation('common_blog');
-
+  console.log(sideBySide);
   const accountFormSchema = z.object({
     title: z.string().min(2, t('submit_page.string_must_contain', { num: 2 })),
     postArea: z.string().min(1, t('submit_page.string_must_contain', { num: 1 })),
@@ -101,13 +101,13 @@ export default function PostForm({ username }: { username: string }) {
   return (
     <div
       className={clsx(' flex flex-col gap-4 bg-white p-8 dark:bg-slate-950', {
-        ' sm:flex-row': sideBySide
+        ' lg:flex-row': sideBySide
       })}
     >
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className={clsx('space-y-8 md:w-1/2', { 'md:w-full': !preview || !sideBySide })}
+          className={clsx('space-y-8 lg:w-1/2', { 'lg:w-full': !preview || !sideBySide })}
         >
           <div className="flex items-center justify-between">
             <h1
@@ -254,7 +254,7 @@ export default function PostForm({ username }: { username: string }) {
         </form>
       </Form>
       <div
-        className={clsx('flex h-fit flex-col gap-4 md:w-1/2', { hidden: !preview, 'md:w-full': !sideBySide })}
+        className={clsx('flex h-fit flex-col gap-4 lg:w-1/2', { hidden: !preview, 'lg:w-full': !sideBySide })}
       >
         <div className="flex flex-col-reverse sm:flex-row sm:justify-between">
           <span className="text-slate-500">{t('submit_page.preview')}</span>
