@@ -8,8 +8,9 @@ const logger = getLogger('app');
 
 interface DialogPasswordProps {
   children?: ReactNode;
-  i18nKeyPlaceholder?: string;
-  i18nKeyTitle?: string;
+  i18nKeyDescription?: [string, { [key: string]: string; }];
+  i18nKeyPlaceholder?: [string, { [key: string]: string; }];
+  i18nKeyTitle?: [string, { [key: string]: string; }];
   i18nNamespace?: string;
 }
 
@@ -18,13 +19,15 @@ export const DialogPassword: FC<DialogPasswordProps & InstanceProps<unknown>> = 
   isOpen = false,
   onResolve,
   onReject,
-  i18nKeyPlaceholder = '',
-  i18nKeyTitle = '',
+  i18nKeyDescription = ['', {}],
+  i18nKeyPlaceholder = ['', {}],
+  i18nKeyTitle = ['', {}],
   i18nNamespace = 'smart-signer'
 }) => {
   const { t } = useTranslation(i18nNamespace);
-  const placeholder = i18nKeyPlaceholder ? t(i18nKeyPlaceholder) : 'Password';
-  const title = i18nKeyTitle ? t(i18nKeyTitle) : 'Enter your password';
+  const description = i18nKeyDescription[0] ? t(...i18nKeyDescription) : '';
+  const placeholder = i18nKeyPlaceholder[0] ? t(...i18nKeyPlaceholder) : 'Password';
+  const title = i18nKeyTitle[0] ? t(...i18nKeyTitle) : 'Enter your password';
   const [open, setOpen] = useState(isOpen);
   const [password, setPassword] = useState('');
 
@@ -57,8 +60,9 @@ export const DialogPassword: FC<DialogPasswordProps & InstanceProps<unknown>> = 
       <DialogContent className="sm:max-w-[600px]" onInteractOutside={onInteractOutside}>
         <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
           <div className="mx-auto flex w-full max-w-md flex-col items-center">
-            <h2 className="w-full pb-6 text-3xl text-gray-800">{title}</h2>
-            <form onSubmit={onSubmit} className="w-full" name="login">
+            <p className="w-full text-xl text-gray-800">{title}</p>
+            {description && <p className="w-full text-gray-600">{description}</p>}
+            <form onSubmit={onSubmit} className="w-full pt-6" name="login">
               <div className="mb-5">
                 <input
                   autoComplete="current-password"

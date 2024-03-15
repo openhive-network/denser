@@ -9,8 +9,9 @@ const logger = getLogger('app');
 
 interface DialogWifProps {
   children?: ReactNode;
-  i18nKeyPlaceholder?: string;
-  i18nKeyTitle?: string;
+  i18nKeyDescription?: [string, { [key: string]: string; }];
+  i18nKeyPlaceholder?: [string, { [key: string]: string; }];
+  i18nKeyTitle?: [string, { [key: string]: string; }];
   i18nNamespace?: string;
 }
 
@@ -19,13 +20,15 @@ export const DialogWif: FC<DialogWifProps & InstanceProps<unknown>> = ({
   isOpen = false,
   onResolve,
   onReject,
-  i18nKeyPlaceholder = '',
-  i18nKeyTitle = '',
+  i18nKeyDescription = ['', {}],
+  i18nKeyPlaceholder = ['', {}],
+  i18nKeyTitle = ['', {}],
   i18nNamespace = 'smart-signer'
 }) => {
   const { t } = useTranslation(i18nNamespace);
-  const placeholder = i18nKeyPlaceholder ? t(i18nKeyPlaceholder) : 'Password';
-  const title = i18nKeyTitle ? t(i18nKeyTitle) : 'Enter your password';
+  const description = i18nKeyDescription[0] ? t(...i18nKeyDescription) : '';
+  const placeholder = i18nKeyPlaceholder[0] ? t(...i18nKeyPlaceholder) : 'Password';
+  const title = i18nKeyTitle[0] ? t(...i18nKeyTitle) : 'Enter your password';
   const [open, setOpen] = useState(isOpen);
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');

@@ -50,7 +50,7 @@ export class SignerHbauth extends Signer {
     const { username, keyType } = this;
     const digest = cryptoUtils.sha256(message).toString('hex');
 
-    await this.checkAuths(username, keyType);
+    await this.checkAuth(username, keyType);
 
     const signature = await this.signDigest(digest, password);
     logger.info('hbauth', { signature });
@@ -83,20 +83,19 @@ export class SignerHbauth extends Signer {
 
     const authClient = await hbauthService.getOnlineClient();
 
-    const auth = await authClient.getAuthByUser(username);
-    logger.info('auth: %o', auth);
-    if (!auth) {
-      throw new Error(`No auth for username ${username}`);
-    }
+    const checkAuthResult = await this.checkAuth(username, keyType);
 
-    await this.checkAuths(username, keyType);
+    // const auth = await authClient.getAuthByUser(username);
+    // logger.info('auth: %o', auth);
+    // if (!auth) {
+    //   throw new Error(`No auth for username ${username}`);
+    // }
 
-    if (!auth.authorized) {
+    if (!checkAuthResult) {
       if (!password) {
-        // TODO pass username and keyType as well, and show them in UI.
         password = await this.getPasswordFromUser({
-          i18nKeyPlaceholder: 'login_form.password_hbauth_placeholder',
-          i18nKeyTitle: 'login_form.title_hbauth_dialog_password'
+          i18nKeyPlaceholder: ['login_form.password_hbauth_placeholder'],
+          // i18nKeyDescription: ['login_form.title_hbauth_dialog_password', {username, keyType}]
         });
       }
 
@@ -121,37 +120,36 @@ export class SignerHbauth extends Signer {
     return signature;
   }
 
-  async checkAuths(username: string, keyType: string) {
-    // TODO Pass correct config options here.
-    const authClient = await hbauthService.getOnlineClient();
-    // const authClient = await new OnlineClient().initialize();
+  async checkAuth(username: string, keyType: string): Promise<boolean> {
 
+    const authClient = await hbauthService.getOnlineClient();
     const auths = await authClient.getAuths();
     logger.info('authClient.getAuths(): %o', auths);
-
     const authsByUser = await authClient.getAuthByUser(username);
     logger.info('authClient.getAuthByUser(username): %o', authsByUser);
-
-    // await authClient.logout();
-
     const auth = auths.find((auth) => auth.username === username);
     if (auth) {
-      logger.info('Found auth: %o', auth);
+      logger.info('Found auth for user %s: %o', username, auth);
       if (auth.authorized) {
         if (auth.keyType === keyType) {
-          logger.info('User is authorized and we are ready to proceed');
+          logger.info('User %s is authorized and we are ready to proceed', username);
           // We're ready to sign loginChallenge and proceed.
+          return true;
         } else {
-          logger.info('User is authorized, but with incorrect keyType: %s', auth.keyType);
-          // This should not disturb. Wallet is unlocked. This needs testing.
+          logger.info('User %s is authorized, but with incorrect keyType: %s', username, auth.keyType);
+          // This should not disturb. Wallet is unlocked.
+          return true;
         }
       } else {
-        logger.info('User is not authorized');
-        // We should tell to unlock wallet (login to wallet).
+        logger.info('User %s exists but is not authorized. Hint: unlock key %s', username, keyType);
+        // We should tell to unlock wallet.
+        return false;
       }
     } else {
-      logger.info('Auth for user not found: %s', username);
-      // We should offer adding account to wallet.
+      const message = `Auth for user ${username} not found. Hint: add ${keyType} key to hbauth.`;
+      logger.info(message);
+      // We should offer adding key to wallet.
+      throw new Error(message);
     }
   }
 }

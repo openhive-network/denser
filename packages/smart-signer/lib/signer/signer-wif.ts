@@ -97,11 +97,11 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
     try {
       let wif = password ?
           password
-          : JSON.parse(this.storage.getItem(`wif.${username}@${keyType}`) || '');
+          : JSON.parse(this.storage.getItem(`wif.${username}@${keyType}`) || '""');
       if (!wif) {
         wif = await this.getPasswordFromUser({
-          i18nKeyPlaceholder: 'login_form.posting_private_key_placeholder',
-          i18nKeyTitle: 'login_form.title_wif_dialog_password'
+          i18nKeyPlaceholder: ['login_form.posting_private_key_placeholder'],
+          i18nKeyTitle: ['login_form.title_wif_dialog_password']
         });
       }
       if (!wif) throw new Error('No wif key');
