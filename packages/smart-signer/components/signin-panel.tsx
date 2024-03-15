@@ -6,7 +6,7 @@ import { parseCookie } from '@smart-signer/lib/utils';
 import { Signatures, PostLoginSchema } from '@smart-signer/lib/auth/utils';
 import { useSignIn } from '@smart-signer/lib/auth/use-sign-in';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { LoginForm, LoginFormSchema } from '@smart-signer/components/signin-form';
+import { LoginFormSchema } from '@smart-signer/components/signin-form';
 import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
@@ -30,10 +30,16 @@ import {
   TTransactionPackType
 } from '@hive/wax';
 import { authorityChecker, AuthorityLevel } from '@smart-signer/lib/authority-checker';
-
+import Loading from '@hive/ui/components/loading';
+import dynamic from 'next/dynamic';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
+
+const DynamicLoginForm = dynamic(() => import('@smart-signer/components/signin-form'), {
+  // loading: () => <Loading loading={true} />,
+  ssr: false
+});
 
 export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?: string }) {
   const router = useRouter();
@@ -135,9 +141,15 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
 
       const mode = strict ? 'strict' : 'non-strict';
       if (isAuthenticated) {
-        logger.info('User %s passed authentication in %s mode', username, mode);
+        logger.info(
+          'User %s passed authentication in %s mode with key type %s',
+          username, mode, keyType
+          );
       } else {
-        logger.info('User %s failed authentication in %s mode', username, mode);
+        logger.info(
+          'User %s failed authentication in %s mode with key type %s',
+          username, mode, keyType
+          );
       }
 
       signatures[keyType] = signature;
@@ -167,5 +179,5 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
     }
   };
 
-  return <LoginForm errorMessage={errorMsg} onSubmit={onSubmit} />;
+  return <DynamicLoginForm errorMessage={errorMsg} onSubmit={onSubmit} />;
 }

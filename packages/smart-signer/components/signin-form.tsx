@@ -72,7 +72,7 @@ export interface LoginFormOptions {
   i18nNamespace?: string;
 }
 
-export function LoginForm({
+export default function LoginForm({
   errorMessage = '',
   onSubmit = (data: LoginFormSchema) => {},
   enabledLoginTypes = Object.keys(LoginType) as LoginType[],
