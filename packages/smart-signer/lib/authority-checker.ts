@@ -87,7 +87,7 @@ export const authorityChecker = async (
         return false;
     }
 
-    logger.info('Transaction is correctly signed');
+    logger.info('Transaction is signed correctly');
     if (!strict) return true;
 
     logger.info([
