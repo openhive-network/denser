@@ -45,12 +45,12 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
 
     const message = JSON.stringify({ loginChallenge }, null, 0);
 
-    const { loginType, username } = data;
+    const { loginType, username, keyType } = data;
     let password = '';
     if (data.loginType === LoginType.wif) {
       password = data.password;
     }
-    let signatures: Signatures = {};
+    const signatures: Signatures = {posting: '', active: ''};
     let hivesignerToken = '';
 
     const signerOptions: SignerOptions = {
@@ -63,7 +63,6 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
     const signer = getSigner(signerOptions);
 
     try {
-      const keyType = KeyType.posting;
       const signature = await signer.signChallenge({
         message,
         password,
@@ -80,7 +79,8 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
       username: username || '',
       signatures,
       loginType,
-      hivesignerToken
+      hivesignerToken,
+      keyType,
     };
 
     try {

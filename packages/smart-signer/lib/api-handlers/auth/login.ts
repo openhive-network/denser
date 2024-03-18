@@ -103,7 +103,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
   // }
 
   const data: PostLoginSchema = await postLoginSchema.parseAsync(req.body);
-  const { username, loginType, signatures } = data;
+  const { username, loginType, signatures, keyType } = data;
   let hiveUserProfile;
   let chainAccount;
   try {
@@ -155,7 +155,8 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
     isLoggedIn: true,
     username,
     avatarUrl: hiveUserProfile?.profile_image || '',
-    loginType
+    loginType,
+    keyType
   };
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
   session.user = user;

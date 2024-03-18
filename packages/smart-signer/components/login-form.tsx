@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next';
 import { Separator } from '@hive/ui/components/separator';
 import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { username } from '@smart-signer/lib/auth/utils';
-import { LoginType, StorageType } from '@smart-signer/types/common';
+import { LoginType, StorageType, KeyType } from '@smart-signer/types/common';
 import { validateHivePassword } from '@smart-signer/lib/validators/validate-hive-password';
 import { Icons } from '@ui/components/icons';
 import { toast } from '@ui/components/hooks/use-toast';
@@ -41,7 +41,11 @@ const commonFields = z.object({
   useHbauth: z.boolean(),
   useKeychain: z.boolean(),
   useHiveauth: z.boolean(),
-  remember: z.boolean()
+  remember: z.boolean(),
+  keyType: z.nativeEnum(KeyType, {
+    invalid_type_error: 'Invalid keyType',
+    required_error: 'keyType is required',
+  }),
 });
 
 const commonFieldsWithPassword = commonFields.merge(passwordField);
@@ -63,7 +67,8 @@ const loginFormDefaultValues = {
   useHbauth: true,
   useHiveauth: false,
   useKeychain: false,
-  username: ''
+  username: '',
+  keyType: KeyType.posting,
 };
 
 export function LoginForm({
