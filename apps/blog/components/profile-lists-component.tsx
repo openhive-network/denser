@@ -11,131 +11,67 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { transactionService } from '@transaction/index';
 
 function deleteFromList(
-  toUser: string,
-  fromUser: string,
-  variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute',
-  signerOptions: SignerOptions
+  username: string,
+  variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute'
 ) {
   switch (variant) {
     case 'blacklisted': {
-      transactionService.processHiveAppOperation((builder) => {
-        builder.push(
-          new FollowOperationBuilder().unblacklistBlog(fromUser, toUser).authorize(fromUser).build()
-        );
-      }, signerOptions);
+      transactionService.unblacklistBlog(username);
       break;
     }
     case 'muted': {
-      transactionService.processHiveAppOperation((builder) => {
-        builder.push(new FollowOperationBuilder().unmuteBlog(fromUser, toUser).authorize(fromUser).build());
-      }, signerOptions);
+      transactionService.unmute(username);
       break;
     }
     case 'followedBlacklist': {
-      transactionService.processHiveAppOperation((builder) => {
-        builder.push(
-          new FollowOperationBuilder().unfollowBlacklistBlog(fromUser, toUser).authorize(fromUser).build()
-        );
-      }, signerOptions);
+      transactionService.unfollowBlacklistBlog(username);
       break;
     }
     case 'followedMute': {
-      transactionService.processHiveAppOperation((builder) => {
-        builder.push(
-          new FollowOperationBuilder().unfollowMutedBlog(fromUser, toUser).authorize(fromUser).build()
-        );
-      }, signerOptions);
+      transactionService.unfollowMutedBlog(username);
       break;
     }
   }
 }
 function addToList(
-  toUser: string,
-  fromUser: string,
-  variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute',
-  signerOptions: SignerOptions
+  usernames: string,
+  variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute'
 ) {
   switch (variant) {
     case 'blacklisted': {
-      transactionService.processHiveAppOperation((builder) => {
-        builder.push(
-          new FollowOperationBuilder()
-            .blacklistBlog(fromUser, '', ...toUser.split(', '))
-            .authorize(fromUser)
-            .build()
-        );
-      }, signerOptions);
+      transactionService.blacklistBlog(usernames);
       break;
     }
     case 'muted': {
-      transactionService.processHiveAppOperation((builder) => {
-        builder.push(
-          new FollowOperationBuilder()
-            .muteBlog(fromUser, '', ...toUser.split(', '))
-            .authorize(fromUser)
-            .build()
-        );
-      }, signerOptions);
+      transactionService.mute(usernames);
       break;
     }
     case 'followedBlacklist': {
-      transactionService.processHiveAppOperation((builder) => {
-        builder.push(
-          new FollowOperationBuilder()
-            .followBlacklistBlog(fromUser, '', ...toUser.split(', '))
-            .authorize(fromUser)
-            .build()
-        );
-      }, signerOptions);
+      transactionService.followBlacklistBlog(usernames);
       break;
     }
     case 'followedMute': {
-      transactionService.processHiveAppOperation((builder) => {
-        builder.push(
-          new FollowOperationBuilder()
-            .followMutedBlog(fromUser, '', ...toUser.split(', '))
-            .authorize(fromUser)
-            .build()
-        );
-      }, signerOptions);
+      transactionService.followMutedBlog(usernames);
       break;
     }
   }
 }
-function resetList(
-  fromUser: string,
-  variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute',
-  signerOptions: SignerOptions
-) {
+function resetList(variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute') {
   switch (variant) {
     case 'blacklisted': {
-      transactionService.processHiveAppOperation((builder) => {
-        builder.push(
-          new FollowOperationBuilder().resetBlacklistBlog(fromUser, 'all').authorize(fromUser).build()
-        );
-      }, signerOptions);
+      transactionService.resetBlacklistBlog();
       break;
     }
     case 'muted': {
-      transactionService.processHiveAppOperation((builder) => {
-        builder.push(new FollowOperationBuilder().resetAllBlog(fromUser, 'all').authorize(fromUser).build());
-      }, signerOptions);
+      transactionService.resetAllBlog();
       break;
     }
     case 'followedBlacklist': {
-      transactionService.processHiveAppOperation((builder) => {
-        builder.push(
-          new FollowOperationBuilder().resetFollowBlacklistBlog(fromUser, 'all').authorize(fromUser).build()
-        );
-      }, signerOptions);
+      transactionService.resetFollowBlacklistBlog();
       break;
     }
     case 'followedMute': {
-      transactionService.processHiveAppOperation((builder) => {
-        builder.push(
-          new FollowOperationBuilder().resetFollowMutedBlog(fromUser, 'all').authorize(fromUser).build()
-        );
-      }, signerOptions);
+      transactionService.resetFollowMutedBlog();
       break;
     }
   }
@@ -157,14 +93,16 @@ export default function ProfileLists({
   const splitArrays = [];
   const chunkSize = 10;
   const userOwner = user.username === username && user.isLoggedIn;
-  const filteredNames = data?.filter((value: IFollowList) => {
-    const searchWord = filter.toLowerCase();
-    const userName = value.name.toLowerCase();
-    if (userName.includes(searchWord)) {
-      return true;
-    }
-    return false;
-  });
+  const filteredNames = data
+    ?.filter((e) => e.name !== 'null')
+    .filter((value: IFollowList) => {
+      const searchWord = filter.toLowerCase();
+      const userName = value.name.toLowerCase();
+      if (userName.includes(searchWord)) {
+        return true;
+      }
+      return false;
+    });
   const onSearchChange = (e: string) => {
     setFilter(e);
   };
@@ -233,7 +171,7 @@ export default function ProfileLists({
                     className="whitespace-nowrap p-1"
                     size="xs"
                     onClick={() => {
-                      deleteFromList(e.name, user.username, variant, signerOptions);
+                      deleteFromList(e.name, variant);
                     }}
                   >
                     {variant === 'blacklisted'
@@ -282,9 +220,7 @@ export default function ProfileLists({
             {t('user_profil.lists.list.viewing_page', { current: page + 1, total: splitArrays.length })}
           </div>
         ) : null}
-        {data && data.length > 0 ? (
-          <div className="text-sm">{t('user_profil.lists.list.users_on_list', { number: data.length })}</div>
-        ) : null}
+        {data && data.length > 0 ? <div className="text-sm"></div> : null}
         {userOwner ? (
           <div className="flex flex-col items-center">
             <h1 className="text-xl font-bold">{t('user_profil.lists.list.add_account_to_list')}</h1>
@@ -300,7 +236,7 @@ export default function ProfileLists({
               <Button
                 className="mt-2"
                 onClick={() => {
-                  addToList(addValue, user.username, variant, signerOptions), setAddValue('');
+                  addToList(addValue, variant), setAddValue('');
                 }}
               >
                 {t('user_profil.lists.list.add_to_list')}
@@ -318,7 +254,7 @@ export default function ProfileLists({
             <div className="flex gap-2">
               <Button
                 onClick={() => {
-                  resetList(user.username, variant, signerOptions);
+                  resetList(variant);
                 }}
                 size="sm"
                 variant="outlineRed"
