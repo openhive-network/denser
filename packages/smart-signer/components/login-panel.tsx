@@ -19,10 +19,11 @@ const logger = getLogger('app');
 export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?: string }) {
   const router = useRouter();
   const slug = router.query.slug as string;
-
   const { t } = useTranslation(i18nNamespace);
   const [loginChallenge, setLoginChallenge] = useState('');
   const { signerOptions } = useSigner();
+  const [errorMsg, setErrorMsg] = useState('');
+  const signIn = useSignIn();
 
   useEffect(() => {
     const cookieStore = parseCookie(document.cookie);
@@ -36,21 +37,11 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
     redirectIfFound: true
   });
 
-  const [errorMsg, setErrorMsg] = useState('');
-
-  const signIn = useSignIn();
-
   const onSubmit = async (data: LoginFormSchema) => {
     logger.info('onSubmit form data', data);
     setErrorMsg('');
 
-    const message = JSON.stringify({ loginChallenge }, null, 0);
-
     const { loginType, username, keyType } = data;
-    let password = '';
-    if (data.loginType === LoginType.wif) {
-      password = data.password;
-    }
     const signatures: Signatures = {posting: '', active: ''};
     let hivesignerToken = '';
 
@@ -62,9 +53,14 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
         keyType
       }
     };
-    const signer = getSigner(loginSignerOptions);
 
     try {
+      let password = '';
+      if (data.loginType === LoginType.wif) {
+        password = data.password;
+      }
+      const message = JSON.stringify({ loginChallenge }, null, 0);
+      const signer = getSigner(loginSignerOptions);
       const signature = await signer.signChallenge({
         message,
         password,
@@ -78,7 +74,7 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
     }
 
     const body: PostLoginSchema = {
-      username: username || '',
+      username,
       signatures,
       loginType,
       hivesignerToken,

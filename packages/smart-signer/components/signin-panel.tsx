@@ -70,16 +70,24 @@ export function LoginPanel(
     redirectIfFound: true
   });
 
-
   const onSubmit = async (data: LoginFormSchema) => {
     logger.info('onSubmit form data', data);
     setErrorMsg('');
 
-    try {
-      const { loginType, username, keyType } = data;
-      let signatures: Signatures = {};
-      let hivesignerToken = '';
+  const { loginType, username, keyType } = data;
+  const signatures: Signatures = {posting: '', active: ''};
+  let hivesignerToken = '';
 
+  const loginSignerOptions: SignerOptions = {
+    ...signerOptions,
+    ...{
+      username,
+      loginType,
+      keyType
+    }
+  };
+
+  try {
       const hiveChain = await hiveChainService.getHiveChain();
 
       let authorityLevel: AuthorityLevel;
@@ -111,14 +119,6 @@ export function LoginPanel(
       txBuilder.validate();
       const tx = txBuilder.build();
 
-      const loginSignerOptions: SignerOptions = {
-        ...signerOptions,
-        ...{
-          username,
-          loginType,
-          keyType
-        }
-      };
       const signer = getSigner(loginSignerOptions);
       const pack = signer.pack;
       const signature = await signer.signTransaction({
@@ -162,7 +162,7 @@ export function LoginPanel(
       signatures[keyType] = signature;
 
       // FIXME
-      throw new Error('Fake Error');
+      // throw new Error('Fake Error');
 
     } catch (error) {
       logger.error('onSubmit error in signLoginChallenge', error);
@@ -172,10 +172,11 @@ export function LoginPanel(
 
     // TODO in new implementation this request will change.
     const body: PostLoginSchema = {
-      username: username || '',
+      username,
       signatures,
       loginType,
-      hivesignerToken
+      hivesignerToken,
+      keyType,
     };
 
     try {
