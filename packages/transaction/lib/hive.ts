@@ -1,12 +1,6 @@
 import { Moment } from 'moment';
 import { AccountFollowStats, AccountProfile, FullAccount } from './app-types';
-import {
-  TWaxApiRequest,
-  IManabarData,
-  IHiveChainInterface,
-  transaction,
-  NaiAsset
-} from '@hive/wax/web';
+import { TWaxApiRequest, IManabarData, IHiveChainInterface, transaction, NaiAsset } from '@hive/wax';
 import { isCommunity, parseAsset } from '@ui/lib/utils';
 import { vestsToRshares } from '@ui/lib/utils';
 import { DATA_LIMIT } from './bridge';

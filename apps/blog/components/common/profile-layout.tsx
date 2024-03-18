@@ -8,7 +8,7 @@ import {
   getAccount,
   getDynamicGlobalProperties,
   getAccountFull,
-  getAccountReputations,
+  getAccountReputations
 } from '@transaction/lib/hive';
 import { accountReputation } from '@/blog/lib/utils';
 import { delegatedHive, numberWithCommas, vestingHive } from '@hive/ui/lib/utils';
@@ -18,16 +18,11 @@ import { dateToFullRelative, dateToShow } from '@hive/ui/lib/parse-date';
 import { proxifyImageUrl } from '@hive/ui/lib/old-profixy';
 import { getTwitterInfo } from '@transaction/lib/bridge';
 import moment from 'moment';
-import { Button } from '@hive/ui';
-import DialogLogin from '../dialog-login';
 import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
 import env from '@beam-australia/react-env';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useFollowingInfiniteQuery } from '../hooks/use-following-infinitequery';
-import { transactionService } from '@transaction/index';
-import { FollowOperationBuilder } from '@hive/wax/web';
-import { useSigner } from '@smart-signer/lib/use-signer';
 import FollowButton from '../follow-button';
 import MuteButton from '../mute-button';
 
@@ -57,7 +52,6 @@ function compareDates(dateStrings: string[], t: TFunction<'common_wallet', undef
 const ProfileLayout = ({ children }: IProfileLayout) => {
   const router = useRouter();
   const { user } = useUser();
-  const { signerOptions } = useSigner();
   const { t } = useTranslation('common_blog');
   const walletHost = env('WALLET_ENDPOINT');
   const { username } = useSiteParams();
@@ -145,7 +139,11 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <span
                   title={`This is ${username}s's reputation score.\n\nThe reputation score is based on the history of votes received by the account, and is used to hide low quality content.`}
                 >
-                  ({accountReputationData && accountReputationData[0].reputation ? accountReputation(accountReputationData[0].reputation) : accountReputation(profileData.reputation)})
+                  (
+                  {accountReputationData && accountReputationData[0].reputation
+                    ? accountReputation(accountReputationData[0].reputation)
+                    : accountReputation(profileData.reputation)}
+                  )
                 </span>
               </h4>
               {profileData.name ? (

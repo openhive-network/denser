@@ -1,4 +1,4 @@
-import { createHiveChain, IHiveChainInterface, IWaxOptionsChain } from '@hive/wax/web';
+import { createHiveChain, IHiveChainInterface, IWaxOptionsChain } from '@hive/wax';
 import { siteConfig } from '@ui/config/site';
 import { StorageMixin, StorageBase } from '@smart-signer/lib/storage-mixin';
 
@@ -24,6 +24,11 @@ export class HiveChainService extends StorageMixin(StorageBase) {
   async setHiveChain(options?: Partial<IWaxOptionsChain>) {
     logger.info('Creating instance of HiveChainService.HiveChain with options: %o', options);
     HiveChainService.hiveChain = await createHiveChain(options);
+  }
+
+  async setHiveChainEndpoint(newEndpoint: string) {
+    logger.info('Changing HiveChainService.HiveChain.endpointUrl with newEndpoint: %o', newEndpoint);
+    HiveChainService.hiveChain.endpointUrl = newEndpoint;
   }
 }
 

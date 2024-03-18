@@ -3,7 +3,6 @@ import { Button } from '@hive/ui';
 import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
 import { transactionService } from '@transaction/index';
-import { useSigner } from '@smart-signer/lib/use-signer';
 import { User } from '@smart-signer/types/common';
 import { IFollow } from '@transaction/lib/hive';
 import { UseInfiniteQueryResult } from '@tanstack/react-query';
@@ -30,7 +29,6 @@ const MuteButton = ({
     | undefined;
   list: UseInfiniteQueryResult<IFollow[], unknown>;
 }) => {
-  const { signerOptions } = useSigner();
   const { t } = useTranslation('common_blog');
   const [isMute, setIsMute] = useState(false);
 
@@ -52,9 +50,9 @@ const MuteButton = ({
             const nextMute = !isMute;
             setIsMute(nextMute);
             if (nextMute) {
-              transactionService.mute(username, user, signerOptions);
+              transactionService.mute(username);
             } else {
-              transactionService.unmute(username, user, signerOptions);
+              transactionService.unmute(username);
             }
           }}
           disabled={list.isLoading || list.isFetching}

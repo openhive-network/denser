@@ -4,39 +4,40 @@ import {
   FollowOperationBuilder,
   ITransactionBuilder,
   WaxChainApiError,
-  comment,
-  vote,
-  update_proposal_votes
-} from '@hive/wax/web';
+  future_extensions
+} from '@hive/wax';
 import { toast } from '@hive/ui/components/hooks/use-toast';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
 import { getLogger } from '@hive/ui/lib/logging';
-import { FlagData } from './lib/types';
-import { User } from '@smart-signer/types/common';
 const logger = getLogger('app');
 
 class TransactionService {
   description = 'Transaction broadcast error';
+  signerOptions!: SignerOptions;
 
-  async processHiveAppOperation(cb: (opBuilder: ITransactionBuilder) => void, signerOptions: SignerOptions) {
+  setSignerOptions(signerOptions: SignerOptions) {
+    this.signerOptions = signerOptions;
+  }
+
+  async processHiveAppOperation(cb: (opBuilder: ITransactionBuilder) => void) {
     try {
       const txBuilder = await (await hiveChainService.getHiveChain()).getTransactionBuilder();
       cb(txBuilder);
-      await this.processTransaction(txBuilder, signerOptions);
+      await this.processTransaction(txBuilder);
     } catch (error) {
       this.handleError(error);
     }
   }
 
-  async processTransaction(txBuilder: ITransactionBuilder, signerOptions: SignerOptions): Promise<void> {
+  async processTransaction(txBuilder: ITransactionBuilder): Promise<void> {
     // validate
     txBuilder.validate();
 
     // Sign using smart-signer
     // pass to smart-signer txBuilder.sigDigest
-    const signer = getSigner(signerOptions);
+    const signer = getSigner(this.signerOptions);
 
     const signature = await signer.signTransaction({
       digest: txBuilder.sigDigest,
@@ -53,97 +54,256 @@ class TransactionService {
     ).api.network_broadcast_api.broadcast_transaction(broadcastReq);
   }
 
-  async vote(vote: vote, signerOptions: SignerOptions) {
-    await transactionService.processHiveAppOperation((builder) => {
-      builder.push({ vote }).build();
-    }, signerOptions);
-  }
-
-  async subscribe(username: string, user: User, signerOptions: SignerOptions) {
-    await transactionService.processHiveAppOperation((builder) => {
-      builder.push(new CommunityOperationBuilder().subscribe(username).authorize(user.username).build());
-    }, signerOptions);
-  }
-
-  async unsubscribe(username: string, user: User, signerOptions: SignerOptions) {
-    await transactionService.processHiveAppOperation((builder) => {
-      builder.push(new CommunityOperationBuilder().unsubscribe(username).authorize(user.username).build());
-    }, signerOptions);
-  }
-
-  async flag(flagData: FlagData, user: User, signerOptions: SignerOptions) {
-    await transactionService.processHiveAppOperation((builder) => {
-      builder.push(
-        new CommunityOperationBuilder()
-          .flagPost(flagData.community, flagData.username, flagData.permlink, flagData.notes)
-          .authorize(user.username)
-          .build()
-      );
-    }, signerOptions);
-  }
-
-  async reblog(username: string, permlink: string, user: User, signerOptions: SignerOptions) {
-    await transactionService.processHiveAppOperation((builder) => {
-      builder.push(
-        new FollowOperationBuilder()
-          .reblog(user.username, username, permlink)
-          .authorize(user.username)
-          .build()
-      );
-    }, signerOptions);
-  }
-
-  async follow(username: string, user: User, signerOptions: SignerOptions) {
-    await transactionService.processHiveAppOperation((builder) => {
-      builder.push(
-        new FollowOperationBuilder().followBlog(user.username, username).authorize(user.username).build()
-      );
-    }, signerOptions);
-  }
-
-  async unfollow(username: string, user: User, signerOptions: SignerOptions) {
-    await transactionService.processHiveAppOperation((builder) => {
-      builder.push(
-        new FollowOperationBuilder().unfollowBlog(user.username, username).authorize(user.username).build()
-      );
-    }, signerOptions);
-  }
-
-  async mute(username: string, user: User, signerOptions: SignerOptions) {
-    await transactionService.processHiveAppOperation((builder) => {
-      builder.push(
-        new FollowOperationBuilder().muteBlog(user.username, username).authorize(user.username).build()
-      );
-    }, signerOptions);
-  }
-
-  async unmute(username: string, user: User, signerOptions: SignerOptions) {
-    await transactionService.processHiveAppOperation((builder) => {
-      builder.push(
-        new FollowOperationBuilder().unmuteBlog(user.username, username).authorize(user.username).build()
-      );
-    }, signerOptions);
-  }
-
-  async comment(comment: comment, signerOptions: SignerOptions) {
-    await transactionService.processHiveAppOperation((builder) => {
-      builder.push({ comment }).build();
-    }, signerOptions);
-  }
-
-  async updateProposalVotes(proposalData: update_proposal_votes, signerOptions: SignerOptions) {
-    await transactionService.processHiveAppOperation((builder) => {
+  async upVote(author: string, permlink: string, weight = 10000) {
+    await this.processHiveAppOperation((builder) => {
       builder
         .push({
-          update_proposal_votes: {
-            voter: proposalData.voter,
-            proposal_ids: proposalData.proposal_ids,
-            approve: proposalData.approve,
-            extensions: proposalData.extensions
+          vote: {
+            voter: this.signerOptions.username,
+            author,
+            permlink,
+            weight
           }
         })
         .build();
-    }, signerOptions);
+    });
+  }
+
+  async downVote(author: string, permlink: string, weight = -10000) {
+    await this.processHiveAppOperation((builder) => {
+      builder
+        .push({
+          vote: {
+            voter: this.signerOptions.username,
+            author,
+            permlink,
+            weight
+          }
+        })
+        .build();
+    });
+  }
+
+  async subscribe(username: string) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new CommunityOperationBuilder().subscribe(username).authorize(this.signerOptions.username).build()
+      );
+    });
+  }
+
+  async unsubscribe(username: string) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new CommunityOperationBuilder().unsubscribe(username).authorize(this.signerOptions.username).build()
+      );
+    });
+  }
+
+  async flag(community: string, username: string, permlink: string, notes: string) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new CommunityOperationBuilder()
+          .flagPost(community, username, permlink, notes)
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    });
+  }
+
+  async reblog(username: string, permlink: string) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .reblog(this.signerOptions.username, username, permlink)
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    });
+  }
+
+  async follow(username: string) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .followBlog(this.signerOptions.username, username)
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    });
+  }
+
+  async unfollow(username: string) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .unfollowBlog(this.signerOptions.username, username)
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    });
+  }
+
+  async mute(otherBlogs: string, blog = '') {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .muteBlog(this.signerOptions.username, blog, ...otherBlogs.split(', '))
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    });
+  }
+
+  async unmute(blog: string) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .unmuteBlog(this.signerOptions.username, blog)
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    });
+  }
+
+  async blacklistBlog(otherBlogs: string, blog = '') {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .blacklistBlog(this.signerOptions.username, blog, ...otherBlogs.split(', '))
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    });
+  }
+
+  async unblacklistBlog(blog: string) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .unblacklistBlog(this.signerOptions.username, blog)
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    });
+  }
+
+  async followBlacklistBlog(otherBlogs: string, blog = '') {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .followBlacklistBlog(this.signerOptions.username, blog, ...otherBlogs.split(', '))
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    });
+  }
+
+  async unfollowBlacklistBlog(blog: string) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .unfollowBlacklistBlog(this.signerOptions.username, blog)
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    });
+  }
+
+  async followMutedBlog(otherBlogs: string, blog = '') {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .followMutedBlog(this.signerOptions.username, blog, ...otherBlogs.split(', '))
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    });
+  }
+
+  async resetAllBlog() {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .resetAllBlog(this.signerOptions.username, 'all')
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    });
+  }
+
+  async resetBlacklistBlog() {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .resetBlacklistBlog(this.signerOptions.username, 'all')
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    });
+  }
+
+  async resetFollowBlacklistBlog() {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .resetFollowBlacklistBlog(this.signerOptions.username, 'all')
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    });
+  }
+
+  async resetFollowMutedBlog() {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .resetFollowMutedBlog(this.signerOptions.username, 'all')
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    });
+  }
+
+  async unfollowMutedBlog(blog: string) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .unfollowMutedBlog(this.signerOptions.username, blog)
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    });
+  }
+
+  async comment(parentAuthor: string, parentPermlink: string, body: string) {
+    await this.processHiveAppOperation((builder) => {
+      builder.pushReply(parentAuthor, parentPermlink, this.signerOptions.username, body).build();
+    });
+  }
+
+  async post(permlink: string, title: string, body: string, tags: string[]) {
+    await this.processHiveAppOperation((builder) => {
+      builder
+        .pushArticle(this.signerOptions.username, permlink, title, body)
+        .pushTags(tags[0], ...tags.slice(1))
+        .build();
+    });
+  }
+
+  async updateProposalVotes(proposal_ids: string[], approve: boolean, extensions: future_extensions[]) {
+    await this.processHiveAppOperation((builder) => {
+      builder
+        .push({
+          update_proposal_votes: {
+            voter: this.signerOptions.username,
+            proposal_ids,
+            approve,
+            extensions
+          }
+        })
+        .build();
+    });
   }
 
   handleError(e: any) {
