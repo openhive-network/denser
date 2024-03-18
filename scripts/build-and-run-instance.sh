@@ -53,10 +53,10 @@ Positional arguments (or env variables instead):
 
 Example commands:
 
-./scripts/build-and-run-instance.sh "blog"
-./scripts/build-and-run-instance.sh "blog" "8090"
-DENSER_APP_NAME="blog" ./scripts/build-and-run-instance.sh
-export DENSER_APP_NAME="blog" ; ./scripts/build-and-run-instance.sh
+./scripts/build-and-run-instance.sh \"blog\"
+./scripts/build-and-run-instance.sh \"blog\" \"8090\"
+DENSER_APP_NAME=\"blog\" ./scripts/build-and-run-instance.sh
+export DENSER_APP_NAME=\"blog\" ; ./scripts/build-and-run-instance.sh
 "
 
   if [ "${PORT:-}not-set" == "not-set" ]; then

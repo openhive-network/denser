@@ -13,7 +13,7 @@ OPTIONS:
   --tag=TAG             Docker tag to be build (default: 'latest')
   --progress=TYPE       Determines how to display build progress (default: 'auto')
   --app-scope=SCOPE     App scope (eg. '@hive/auth')
-  --app-path=PATH       App path (eg. '/apps/auth)
+  --app-path=PATH       App path (eg. '/apps/auth')
   --app-name=NAME       App name (eg. 'auth')
   --help|-h|-?          Display this help screen and exit
 EOF
