@@ -12,11 +12,22 @@ import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { KeyType } from '@smart-signer/types/common';
 import { useSigner } from '@smart-signer/lib/use-signer';
+import { TTransactionPackType } from '@hive/wax';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
-export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?: string }) {
+export function LoginPanel(
+  {
+    authenticateOnBackend,
+    strict,
+    i18nNamespace = 'smart-signer'
+  }: {
+    authenticateOnBackend: boolean,
+    strict: boolean; // if true use strict authentication
+    i18nNamespace?: string
+  }
+) {
   const router = useRouter();
   const slug = router.query.slug as string;
   const { t } = useTranslation(i18nNamespace);
@@ -74,11 +85,15 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
     }
 
     const body: PostLoginSchema = {
+      authenticateOnBackend,
       username,
       signatures,
       loginType,
       hivesignerToken,
       keyType,
+      strict,
+      pack: TTransactionPackType.HF_26,
+      txJSON: '',
     };
 
     try {

@@ -43,13 +43,21 @@ const DynamicLoginForm = dynamic(() => import('@smart-signer/components/signin-f
 
 export function LoginPanel(
   {
-    strict = false,
-    i18nNamespace = 'smart-signer'
-  }: {
+    authenticateOnBackend,
+    strict,
+    i18nNamespace = 'smart-signer',
+    enabledLoginTypes = [
+      LoginType.hbauth,
+      LoginType.keychain,
+      LoginType.wif,
+    ]
+}: {
+    authenticateOnBackend: boolean,
     strict: boolean; // if true use strict authentication
     i18nNamespace?: string
+    enabledLoginTypes?: LoginType[];
   }
-  ) {
+) {
   const router = useRouter();
   const slug = router.query.slug as string;
   const { t } = useTranslation(i18nNamespace);
@@ -75,7 +83,7 @@ export function LoginPanel(
     setErrorMsg('');
 
   const { loginType, username, keyType } = data;
-  const signatures: Signatures = {posting: '', active: ''};
+  const signatures: Signatures = { posting: '', active: '' };
   let hivesignerToken = '';
 
   const loginSignerOptions: SignerOptions = {
@@ -90,10 +98,8 @@ export function LoginPanel(
   try {
       const hiveChain = await hiveChainService.getHiveChain();
 
-      let authorityLevel: AuthorityLevel;
       let operation: operation;
       if (keyType === KeyType.posting) {
-        authorityLevel = AuthorityLevel.POSTING;
         const voteLoginChallenge: vote = vote.create({
           voter: username,
           author: "author",
@@ -102,7 +108,6 @@ export function LoginPanel(
         });
         operation = { vote: voteLoginChallenge };
       } else if (keyType === KeyType.active) {
-        authorityLevel = AuthorityLevel.ACTIVE;
         const transferLoginChallenge: transfer = transfer.create({
           from_account: username,
           to_account: username,
@@ -136,33 +141,21 @@ export function LoginPanel(
         parsedToString: JSON.parse(txBuilder.toString()),
       });
 
-      // FIXME temporary solution. The logic that verifies user's
-      // signature will be moved to server.
-      const isAuthenticated = await authorityChecker(
-        JSON.parse(txBuilder.toApi()) as ApiTransaction,
-        username,
-        authorityLevel,
-        pack,
-        strict
-        );
-
-      const mode = strict ? 'strict' : 'non-strict';
-      if (isAuthenticated) {
-        logger.info(
-          'User %s passed authentication in %s mode with key type %s',
-          username, mode, keyType
-          );
-      } else {
-        logger.info(
-          'User %s failed authentication in %s mode with key type %s',
-          username, mode, keyType
-          );
-      }
-
       signatures[keyType] = signature;
 
-      // FIXME
-      // throw new Error('Fake Error');
+      const signInData: PostLoginSchema = {
+        username,
+        loginType,
+        hivesignerToken,
+        keyType,
+        txJSON: txBuilder.toApi(),
+        pack,
+        strict,
+        signatures,
+        authenticateOnBackend,
+      };
+
+      await signIn.mutateAsync({ data: signInData, uid: slug });
 
     } catch (error) {
       logger.error('onSubmit error in signLoginChallenge', error);
@@ -170,22 +163,11 @@ export function LoginPanel(
       return;
     }
 
-    // TODO in new implementation this request will change.
-    const body: PostLoginSchema = {
-      username,
-      signatures,
-      loginType,
-      hivesignerToken,
-      keyType,
-    };
-
-    try {
-      await signIn.mutateAsync({ data: body, uid: slug });
-    } catch (error) {
-      logger.error('onSubmit unexpected error', error);
-      setErrorMsg(t('pageLogin.loginFailed'));
-    }
   };
 
-  return <DynamicLoginForm errorMessage={errorMsg} onSubmit={onSubmit} />;
+  return <DynamicLoginForm
+    errorMessage={errorMsg}
+    onSubmit={onSubmit}
+    enabledLoginTypes={enabledLoginTypes}
+  />;
 }

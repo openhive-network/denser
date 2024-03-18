@@ -7,7 +7,10 @@ export default function LoginPage() {
 
   return (
     <div className="mx-2 flex flex-col pt-10">
-        <LoginPanel />
+        <LoginPanel
+          authenticateOnBackend={true}
+          strict={true}
+        />
     </div>
   );
 }

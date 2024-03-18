@@ -61,7 +61,6 @@ const authorityStrictChecker = async (
 
 }
 
-
 export const authorityChecker = async (
   txJSON: ApiTransaction,
   expectedSignerAccount: string,
