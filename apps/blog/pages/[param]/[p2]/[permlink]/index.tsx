@@ -167,7 +167,7 @@ function PostPage({
       behavior: 'smooth'
     });
   }, [router, hiveRenderer]);
-
+  console.log(post_s);
   return (
     <div className="py-8">
       <div className="relative mx-auto my-0 max-w-4xl bg-white px-8 py-4 dark:bg-slate-900">
@@ -261,7 +261,7 @@ function PostPage({
         <div className="clear-both">
           {!commentSite ? (
             <ul className="flex flex-wrap gap-2" data-testid="hashtags-post">
-              {post_s.json_metadata?.tags?.map((tag: string) => (
+              {post_s.json_metadata?.tags?.slice(1).map((tag: string) => (
                 <li key={tag}>
                   <Link
                     href={`/trending/${tag}`}
