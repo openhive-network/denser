@@ -13,7 +13,7 @@ import {
   FormItem,
   FormMessage
 } from '@hive/ui/components/form';
-import { useForm } from 'react-hook-form';
+import { Noop, RefCallBack, useForm } from 'react-hook-form';
 import useManabars from './hooks/useManabars';
 import { AdvancedSettingsPostForm } from './advanced_settings_post_form';
 import MdEditor from './md-editor';
@@ -25,6 +25,8 @@ import { HiveRendererContext } from './hive-renderer-context';
 import { transactionService } from '@transaction/index';
 import { useSigner } from '@smart-signer/lib/use-signer';
 import { createPermlink } from '@transaction/lib/utils';
+import { useQuery } from '@tanstack/react-query';
+import { getSubscriptions } from '@transaction/lib/bridge';
 
 const defaultValues = {
   title: '',
@@ -32,7 +34,7 @@ const defaultValues = {
   postSummary: '',
   tags: '',
   author: '',
-  category: 'blog'
+  category: ''
 };
 
 export default function PostForm({ username }: { username: string }) {
@@ -44,23 +46,31 @@ export default function PostForm({ username }: { username: string }) {
   const { manabarsData } = useManabars(username);
   const [storedPost, storePost] = useLocalStorage<AccountFormValues>('postData', defaultValues);
   const { t } = useTranslation('common_blog');
+  const [postCategory, setPostCategory] = useState<string>();
+
+  const {
+    data: mySubsData,
+    isLoading: mySubsIsLoading,
+    isError: mySubsIsError
+  } = useQuery([['subscriptions', username]], () => getSubscriptions(username), {
+    enabled: Boolean(username)
+  });
   const accountFormSchema = z.object({
     title: z.string().min(2, t('submit_page.string_must_contain', { num: 2 })),
     postArea: z.string().min(1, t('submit_page.string_must_contain', { num: 1 })),
     postSummary: z.string().max(140),
-    tags: z.string(),
+    tags: z.string().min(1),
     author: z.string().regex(/^$|^[[a-zAZ1-9]+$/, t('submit_page.must_contain_only')),
     category: z.string()
   });
   type AccountFormValues = z.infer<typeof accountFormSchema>;
-
   const getValues = (storedPost?: AccountFormValues) => ({
     title: storedPost?.title ?? '',
     postArea: storedPost?.postArea ?? '',
     postSummary: storedPost?.postSummary ?? '',
     tags: storedPost?.tags ?? '',
     author: storedPost?.author ?? '',
-    category: storedPost?.category ?? 'blog'
+    category: storedPost?.category ?? ''
   });
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
@@ -80,7 +90,6 @@ export default function PostForm({ username }: { username: string }) {
 
     createPostPermlink();
   }, [username, storedPost?.title]);
-
   function onSubmit(data: AccountFormValues) {
     const tags = JSON.stringify(storedPost?.tags.split(' ') ?? []);
     transactionService.comment(
@@ -96,6 +105,13 @@ export default function PostForm({ username }: { username: string }) {
       signerOptions
     );
     storePost(defaultValues);
+  }
+  console.log(postCategory)
+  function handlerSelect(element:string) {
+    setPostCategory(element)
+    storePost({ ...storedPost, tags: postCategory ? postCategory + ' ' + storedPost.tags : storedPost.tags});
+    console.log(postCategory)
+    console.log(storedPost)
   }
   return (
     <div className={clsx({ container: !sideBySide || !preview })}>
@@ -220,7 +236,7 @@ export default function PostForm({ username }: { username: string }) {
                   <div className="flex flex-wrap items-center gap-4">
                     {t('submit_page.posting_to')}
                     <FormControl>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={(e) => handlerSelect(e)} value={postCategory}  >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select category" />
@@ -228,6 +244,11 @@ export default function PostForm({ username }: { username: string }) {
                         </FormControl>
                         <SelectContent>
                           <SelectItem value="blog">{t('submit_page.my_blog')}</SelectItem>
+                          {mySubsData?.map((e) => (
+                            <SelectItem key={e[0]} value={e[0]}>
+                              {e[1]}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </FormControl>
