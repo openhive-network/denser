@@ -3,7 +3,6 @@ import { Button } from '@hive/ui';
 import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
 import { transactionService } from '@transaction/index';
-import { useSigner } from '@smart-signer/lib/use-signer';
 import { User } from '@smart-signer/types/common';
 import { IFollow } from '@transaction/lib/hive';
 import { UseInfiniteQueryResult } from '@tanstack/react-query';
@@ -30,7 +29,6 @@ const FollowButton = ({
     | undefined;
   list: UseInfiniteQueryResult<IFollow[], unknown>;
 }) => {
-  const { signerOptions } = useSigner();
   const { t } = useTranslation('common_blog');
   const [isFollow, setIsFollow] = useState(false);
 
@@ -55,9 +53,9 @@ const FollowButton = ({
             const nextFollow = !isFollow;
             setIsFollow(nextFollow);
             if (nextFollow) {
-              transactionService.follow(username, user, signerOptions);
+              transactionService.follow(username);
             } else {
-              transactionService.unfollow(username, user, signerOptions);
+              transactionService.unfollow(username);
             }
           }}
           disabled={list.isLoading || list.isFetching}

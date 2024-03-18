@@ -3,10 +3,11 @@ stages:
   - test
   - test-report-aggregate
   - deploy
+  - publish
 
 variables:
   # Variables required by Common CI jobs
-  CI_COMMON_JOB_VERSION: '5c42c8019dd329000fd036668b22eb3eb99a743a'
+  CI_COMMON_JOB_VERSION: '7ea99b10bbf0f9b1fbb88f52a78ead4c82f15d75'
   DOCKER_BUILDER_TAG: '$CI_COMMON_JOB_VERSION'
   DOCKER_DIND_TAG: '$CI_COMMON_JOB_VERSION'
   IMAGE_REMOVER_TAG: '$CI_COMMON_JOB_VERSION'
@@ -15,7 +16,7 @@ variables:
 include:
   - template: Workflows/Branch-Pipelines.gitlab-ci.yml
   - project: 'hive/common-ci-configuration'
-    ref: 5c42c8019dd329000fd036668b22eb3eb99a743a # develop
+    ref: 7ea99b10bbf0f9b1fbb88f52a78ead4c82f15d75 # develop
     file: '/templates/docker_image_jobs.gitlab-ci.yml'
 
 .docker_build_template:
@@ -424,3 +425,40 @@ review:stop-wallet:
     - if: $CI_COMMIT_TAG =~ /^rc_.*/
       when: manual
       allow_failure: true
+
+
+build_and_publish_auth_image:
+  stage: publish
+  extends: .publish_docker_image_template
+  variables:
+    TURBO_APP_SCOPE: '@hive/auth'
+    TURBO_APP_PATH: '/apps/auth'
+    TURBO_APP_NAME: 'auth'
+  script:
+    - scripts/ci-helpers/build_and_publish_instance.sh
+  tags:
+    - public-runner-docker
+
+build_and_publish_blog_image:
+  stage: publish
+  extends: .publish_docker_image_template
+  variables:
+    TURBO_APP_SCOPE: '@hive/blog'
+    TURBO_APP_PATH: '/apps/blog'
+    TURBO_APP_NAME: 'blog'
+  script:
+    - scripts/ci-helpers/build_and_publish_instance.sh
+  tags:
+    - public-runner-docker
+
+build_and_publish_wallet_image:
+  stage: publish
+  extends: .publish_docker_image_template
+  variables:
+    TURBO_APP_SCOPE: '@hive/wallet'
+    TURBO_APP_PATH: '/apps/wallet'
+    TURBO_APP_NAME: 'wallet'
+  script:
+    - scripts/ci-helpers/build_and_publish_instance.sh
+  tags:
+    - public-runner-docker

@@ -23,7 +23,6 @@ import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { useTranslation } from 'next-i18next';
 import { HiveRendererContext } from './hive-renderer-context';
 import { transactionService } from '@transaction/index';
-import { useSigner } from '@smart-signer/lib/use-signer';
 import { createPermlink } from '@transaction/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { getSubscriptions } from '@transaction/lib/bridge';
@@ -38,7 +37,6 @@ const defaultValues = {
 };
 
 export default function PostForm({ username }: { username: string }) {
-  const { signerOptions } = useSigner();
   const { hiveRenderer } = useContext(HiveRendererContext);
   const [preview, setPreview] = useState(true);
   const [sideBySide, setSideBySide] = useState(true);
@@ -98,19 +96,8 @@ export default function PostForm({ username }: { username: string }) {
     createPostPermlink();
   }, [username, storedPost?.title]);
   function onSubmit(data: AccountFormValues) {
-    const tags = JSON.stringify(storedPost?.tags.split(' ') ?? []);
-    transactionService.comment(
-      {
-        parent_author: '',
-        parent_permlink: storedPost?.tags.split(' ')[0] ?? '',
-        author: username,
-        permlink: postPermlink,
-        title: storedPost?.title ?? '',
-        body: watchedValues.postArea,
-        json_metadata: `{\"tags\":${tags},\"app\":\"hiveblog/0.1\",\"format\":\"markdown\"}`
-      },
-      signerOptions
-    );
+    const tags = storedPost?.tags.split(' ') ?? [];
+    transactionService.post(postPermlink, storedPost?.title ?? '', watchedValues.postArea, tags);
     storePost(defaultValues);
   }
   return (
