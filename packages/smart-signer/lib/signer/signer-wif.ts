@@ -4,6 +4,7 @@ import { KeyType } from '@smart-signer/types/common';
 import { SignerHbauth } from '@smart-signer/lib/signer/signer-hbauth';
 import { StorageMixin } from '@smart-signer/lib/storage-mixin';
 import { createHiveChain, IHiveChainInterface, TTransactionPackType, THexString } from '@hive/wax';
+import { verifyPrivateKey } from '@smart-signer/lib/utils';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -34,23 +35,6 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
     }
   }
 
-  // This verifies key in strict mode.
-  async verifyPrivateKey(wif: string) {
-    const privateKey = PrivateKey.fromString(wif);
-    const publicKey = privateKey.createPublic('STM');
-    logger.info('publicKey: %o', publicKey.toString());
-    const hiveChain: IHiveChainInterface = await createHiveChain();
-    const referencedAccounts = (
-      await hiveChain.api.account_by_key_api
-      .get_key_references({ keys: [publicKey.toString()] })
-      ).accounts;
-    logger.info('referencedAccounts: %o', referencedAccounts);
-    if (referencedAccounts[0].includes(this.username)) {
-      return true;
-    }
-    return false;
-  }
-
   async signChallenge({
     message,
     password = '' // WIF private key,
@@ -75,7 +59,7 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
       if (storeKey) {
         // We don't know, if this key is correct, so we need to verify
         // it. We don't want to store incorrect key.
-        if (await this.verifyPrivateKey(wif)) {
+        if (await verifyPrivateKey(this.username, wif, this.keyType, this.apiEndpoint)) {
           this.storage.setItem(`wif.${username}@${keyType}`, JSON.stringify(wif));
         } else {
           throw new Error('Invalid WIF key');
@@ -116,10 +100,10 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
       if (storeKey) {
         // We don't know, if this key is correct, so we need to verify
         // it. We don't want to store incorrect key.
-        if (await this.verifyPrivateKey(wif)) {
+        if (await verifyPrivateKey(this.username, wif, this.keyType, this.apiEndpoint)) {
           this.storage.setItem(`wif.${username}@${keyType}`, JSON.stringify(wif));
         } else {
-          // throw new Error('Invalid WIF key');
+          throw new Error('Invalid WIF key');
         }
       }
 

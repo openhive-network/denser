@@ -1,8 +1,11 @@
 import { createWaxFoundation, operation, THexString, ITransactionBuilder } from '@hive/wax';
 import { fetchJson } from '@smart-signer/lib/fetch-json';
 import { isBrowser } from '@ui/lib/logger';
-import { getLogger } from '@ui/lib/logging';
+import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
+import { KeyType } from '@smart-signer/types/common';
+import { createHiveChain, IHiveChainInterface, TTransactionPackType, THexString } from '@hive/wax';
 
+import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 const KEY_TYPES = ['active', 'posting'] as const;
@@ -233,4 +236,43 @@ export function getEnumKeyByEnumValue<T extends { [index: string]: string }>(
 ): keyof T | null {
   const keys = Object.keys(myEnum).filter((x) => myEnum[x] == enumValue);
   return keys.length > 0 ? keys[0] : null;
+}
+
+export async function verifyPrivateKey(
+  username: string,
+  wif: string,
+  keyType: KeyType,
+  apiEndpoint: string,
+  strict: boolean = false
+): Promise<boolean> {
+  const privateKey = PrivateKey.fromString(wif);
+  const digestBuf = cryptoUtils.sha256(crypto.randomUUID());
+  const signature = privateKey.sign(digestBuf).toString();
+  const publicKey = privateKey.createPublic('STM');
+  logger.info('publicKey: %o', publicKey.toString());
+
+  const valid = verifySignature(
+      username,
+      digestBuf.toString('hex'),
+      signature,
+      keyType,
+      '',
+      apiEndpoint
+      );
+
+  if (!valid) return valid;
+  if (!strict) return valid;
+
+  const hiveChain: IHiveChainInterface = await createHiveChain();
+
+  const [referencedAccounts] = (
+      await hiveChain.api.account_by_key_api
+          .get_key_references({ keys: [publicKey.toString()] })
+  ).accounts;
+  logger.info('referencedAccounts: %o', referencedAccounts);
+  if (referencedAccounts.includes(username)) {
+      return true;
+  }
+
+  return false;
 }
