@@ -46,7 +46,6 @@ export default function PostForm({ username }: { username: string }) {
   const { manabarsData } = useManabars(username);
   const [storedPost, storePost] = useLocalStorage<AccountFormValues>('postData', defaultValues);
   const { t } = useTranslation('common_blog');
-  const [postCategory, setPostCategory] = useState<string>();
 
   const {
     data: mySubsData,
@@ -59,10 +58,18 @@ export default function PostForm({ username }: { username: string }) {
     title: z.string().min(2, t('submit_page.string_must_contain', { num: 2 })),
     postArea: z.string().min(1, t('submit_page.string_must_contain', { num: 1 })),
     postSummary: z.string().max(140),
-    tags: z.string().min(1),
+    tags: z
+      .string()
+      .refine((v) => !((v.match(/hive-/g) || []).length > 1), {
+        message: 'Za duzo community'
+      })
+      .refine((v) => v.split(/\s+/).length <= 8, {
+        message: 'Za duzo tagow'
+      }),
     author: z.string().regex(/^$|^[[a-zAZ1-9]+$/, t('submit_page.must_contain_only')),
     category: z.string()
   });
+
   type AccountFormValues = z.infer<typeof accountFormSchema>;
   const getValues = (storedPost?: AccountFormValues) => ({
     title: storedPost?.title ?? '',
@@ -105,13 +112,6 @@ export default function PostForm({ username }: { username: string }) {
       signerOptions
     );
     storePost(defaultValues);
-  }
-  console.log(postCategory)
-  function handlerSelect(element:string) {
-    setPostCategory(element)
-    storePost({ ...storedPost, tags: postCategory ? postCategory + ' ' + storedPost.tags : storedPost.tags});
-    console.log(postCategory)
-    console.log(storedPost)
   }
   return (
     <div className={clsx({ container: !sideBySide || !preview })}>
@@ -236,7 +236,9 @@ export default function PostForm({ username }: { username: string }) {
                   <div className="flex flex-wrap items-center gap-4">
                     {t('submit_page.posting_to')}
                     <FormControl>
-                      <Select onValueChange={(e) => handlerSelect(e)} value={postCategory}  >
+                      <Select
+                        onValueChange={(e) => storePost({ ...storedPost, tags: e + ' ' + storedPost.tags })}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select category" />
