@@ -25,6 +25,11 @@ export class HiveChainService extends StorageMixin(StorageBase) {
     logger.info('Creating instance of HiveChainService.HiveChain with options: %o', options);
     HiveChainService.hiveChain = await createHiveChain(options);
   }
+
+  async setHiveChainEndpoint(newEndpoint: string) {
+    logger.info('Changing HiveChainService.HiveChain.endpointUrl with newEndpoint: %o', newEndpoint);
+    HiveChainService.hiveChain.endpointUrl = newEndpoint;
+  }
 }
 
 export const hiveChainService = new HiveChainService({ storageType: 'localStorage' });
