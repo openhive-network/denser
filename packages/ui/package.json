@@ -49,6 +49,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.45.1",
+    "react-spinners-kit": "^1.9.1",
     "tailwind-merge": "^1.13.2"
   },
   "devDependencies": {

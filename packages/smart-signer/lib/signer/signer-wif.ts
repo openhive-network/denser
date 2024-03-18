@@ -103,7 +103,7 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
       if (!wif) {
         wif = await this.getPasswordFromUser({
           i18nKeyPlaceholder: ['login_form.private_key_placeholder', {keyType}],
-          i18nKeyTitle: ['login_form.title_wif_dialog_password']
+          i18nKeyTitle: ['login_form.title_wif_dialog_password', {}]
         });
       }
       if (!wif) throw new Error('No wif key');
