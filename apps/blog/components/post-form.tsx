@@ -13,7 +13,7 @@ import {
   FormItem,
   FormMessage
 } from '@hive/ui/components/form';
-import { Noop, RefCallBack, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import useManabars from './hooks/useManabars';
 import { AdvancedSettingsPostForm } from './advanced_settings_post_form';
 import MdEditor from './md-editor';
@@ -26,6 +26,7 @@ import { transactionService } from '@transaction/index';
 import { createPermlink } from '@transaction/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { getSubscriptions } from '@transaction/lib/bridge';
+import { useRouter } from 'next/router';
 
 const defaultValues = {
   title: '',
@@ -38,6 +39,7 @@ const defaultValues = {
 
 export default function PostForm({ username }: { username: string }) {
   const { hiveRenderer } = useContext(HiveRendererContext);
+  const router = useRouter();
   const [preview, setPreview] = useState(true);
   const [sideBySide, setSideBySide] = useState(true);
   const [postPermlink, setPostPermlink] = useState('');
@@ -59,10 +61,10 @@ export default function PostForm({ username }: { username: string }) {
     tags: z
       .string()
       .refine((v) => !((v.match(/hive-/g) || []).length > 1), {
-        message: 'Za duzo community'
+        message: t('submit_page.to_many_communities')
       })
       .refine((v) => v.split(/\s+/).length <= 8, {
-        message: 'Za duzo tagow'
+        message: t('submit_page.to_many_tags')
       }),
     author: z.string().regex(/^$|^[[a-zAZ1-9]+$/, t('submit_page.must_contain_only')),
     category: z.string()
@@ -95,11 +97,17 @@ export default function PostForm({ username }: { username: string }) {
 
     createPostPermlink();
   }, [username, storedPost?.title]);
+
   function onSubmit(data: AccountFormValues) {
     const tags = storedPost?.tags.split(' ') ?? [];
-    transactionService.post(postPermlink, storedPost?.title ?? '', watchedValues.postArea, tags);
-    storePost(defaultValues);
+    try {
+      transactionService.post(postPermlink, storedPost?.title ?? '', watchedValues.postArea, tags);
+    } finally {
+      storePost(defaultValues);
+      router.push(`/created/${tags[0]}`);
+    }
   }
+
   return (
     <div className={clsx({ container: !sideBySide || !preview })}>
       <div

@@ -286,6 +286,7 @@ class TransactionService {
     await this.processHiveAppOperation((builder) => {
       builder
         .pushArticle(this.signerOptions.username, permlink, title, body)
+        .setCategory(tags[0])
         .pushTags(tags[0], ...tags.slice(1))
         .build();
     });

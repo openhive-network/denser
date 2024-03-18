@@ -374,6 +374,8 @@
     }
   },
   "submit_page": {
+    "to_many_communities": "Troppa comunità",
+    "to_many_tags": "Troppi tag",
     "disable_side": "Disabilita l'editor affiancato",
     "enable_side": "Abilita l'editor affiancato",
     "string_must_contain": "La stringa deve contenere almeno {{num}} carattere(i)",
