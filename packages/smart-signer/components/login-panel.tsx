@@ -11,6 +11,7 @@ import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { KeyType } from '@smart-signer/types/common';
+import { useSigner } from '@smart-signer/lib/use-signer';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -20,8 +21,8 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
   const slug = router.query.slug as string;
 
   const { t } = useTranslation(i18nNamespace);
-
   const [loginChallenge, setLoginChallenge] = useState('');
+  const { signerOptions } = useSigner();
 
   useEffect(() => {
     const cookieStore = parseCookie(document.cookie);
@@ -53,14 +54,15 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
     const signatures: Signatures = {posting: '', active: ''};
     let hivesignerToken = '';
 
-    const signerOptions: SignerOptions = {
-      username,
-      loginType,
-      keyType: KeyType.posting,
-      apiEndpoint: 'https://api.hive.blog',
-      storageType: 'localStorage',
+    const loginSignerOptions: SignerOptions = {
+      ...signerOptions,
+      ...{
+        username,
+        loginType,
+        keyType
+      }
     };
-    const signer = getSigner(signerOptions);
+    const signer = getSigner(loginSignerOptions);
 
     try {
       const signature = await signer.signChallenge({
