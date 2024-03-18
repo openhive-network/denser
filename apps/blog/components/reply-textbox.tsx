@@ -8,7 +8,6 @@ import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { transactionService } from '@transaction/index';
 import { createPermlink } from '@transaction/lib/utils';
-import { useSigner } from '@smart-signer/lib/use-signer';
 import { HiveRendererContext } from './hive-renderer-context';
 import DialogLogin from './dialog-login';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
@@ -26,7 +25,6 @@ export function ReplyTextbox({
 }) {
   const [storedPost, storePost] = useLocalStorage<string>(`replyTo-/${username}/${permlink}`, '');
   const { user } = useUser();
-  const { signerOptions } = useSigner();
   const { t } = useTranslation('common_blog');
   const [text, setText] = useState(storedPost ? storedPost : '');
   const [cleanedText, setCleanedText] = useState('');
@@ -95,7 +93,7 @@ export function ReplyTextbox({
             <Button
               disabled={text === ''}
               onClick={() => {
-                transactionService.comment(username, permlink, cleanedText, signerOptions);
+                transactionService.comment(username, permlink, cleanedText);
                 setText('');
                 localStorage.removeItem(`replyTo-/${username}/${permlink}`);
                 localStorage.removeItem(storageId);

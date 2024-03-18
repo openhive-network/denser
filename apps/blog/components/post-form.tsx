@@ -23,7 +23,6 @@ import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { useTranslation } from 'next-i18next';
 import { HiveRendererContext } from './hive-renderer-context';
 import { transactionService } from '@transaction/index';
-import { useSigner } from '@smart-signer/lib/use-signer';
 import { createPermlink } from '@transaction/lib/utils';
 
 const defaultValues = {
@@ -36,7 +35,6 @@ const defaultValues = {
 };
 
 export default function PostForm({ username }: { username: string }) {
-  const { signerOptions } = useSigner();
   const { hiveRenderer } = useContext(HiveRendererContext);
   const [preview, setPreview] = useState(true);
   const [sideBySide, setSideBySide] = useState(false);
@@ -84,13 +82,7 @@ export default function PostForm({ username }: { username: string }) {
 
   function onSubmit(data: AccountFormValues) {
     const tags = storedPost?.tags.split(' ') ?? [];
-    transactionService.post(
-      postPermlink,
-      storedPost?.title ?? '',
-      watchedValues.postArea,
-      tags,
-      signerOptions
-    );
+    transactionService.post(postPermlink, storedPost?.title ?? '', watchedValues.postArea, tags);
     storePost(defaultValues);
   }
   return (

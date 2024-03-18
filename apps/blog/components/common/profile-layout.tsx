@@ -23,7 +23,6 @@ import { TFunction } from 'i18next';
 import env from '@beam-australia/react-env';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useFollowingInfiniteQuery } from '../hooks/use-following-infinitequery';
-import { useSigner } from '@smart-signer/lib/use-signer';
 import FollowButton from '../follow-button';
 import MuteButton from '../mute-button';
 
@@ -53,7 +52,6 @@ function compareDates(dateStrings: string[], t: TFunction<'common_wallet', undef
 const ProfileLayout = ({ children }: IProfileLayout) => {
   const router = useRouter();
   const { user } = useUser();
-  const { signerOptions } = useSigner();
   const { t } = useTranslation('common_blog');
   const walletHost = env('WALLET_ENDPOINT');
   const { username } = useSiteParams();
