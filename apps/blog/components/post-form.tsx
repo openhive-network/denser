@@ -13,7 +13,7 @@ import {
   FormItem,
   FormMessage
 } from '@hive/ui/components/form';
-import { useForm } from 'react-hook-form';
+import { Noop, RefCallBack, useForm } from 'react-hook-form';
 import useManabars from './hooks/useManabars';
 import { AdvancedSettingsPostForm } from './advanced_settings_post_form';
 import MdEditor from './md-editor';
@@ -24,6 +24,8 @@ import { useTranslation } from 'next-i18next';
 import { HiveRendererContext } from './hive-renderer-context';
 import { transactionService } from '@transaction/index';
 import { createPermlink } from '@transaction/lib/utils';
+import { useQuery } from '@tanstack/react-query';
+import { getSubscriptions } from '@transaction/lib/bridge';
 
 const defaultValues = {
   title: '',
@@ -31,35 +33,49 @@ const defaultValues = {
   postSummary: '',
   tags: '',
   author: '',
-  category: 'blog'
+  category: ''
 };
 
 export default function PostForm({ username }: { username: string }) {
   const { hiveRenderer } = useContext(HiveRendererContext);
   const [preview, setPreview] = useState(true);
-  const [sideBySide, setSideBySide] = useState(false);
+  const [sideBySide, setSideBySide] = useState(true);
   const [postPermlink, setPostPermlink] = useState('');
   const { manabarsData } = useManabars(username);
   const [storedPost, storePost] = useLocalStorage<AccountFormValues>('postData', defaultValues);
   const { t } = useTranslation('common_blog');
 
+  const {
+    data: mySubsData,
+    isLoading: mySubsIsLoading,
+    isError: mySubsIsError
+  } = useQuery([['subscriptions', username]], () => getSubscriptions(username), {
+    enabled: Boolean(username)
+  });
   const accountFormSchema = z.object({
     title: z.string().min(2, t('submit_page.string_must_contain', { num: 2 })),
     postArea: z.string().min(1, t('submit_page.string_must_contain', { num: 1 })),
     postSummary: z.string().max(140),
-    tags: z.string(),
+    tags: z
+      .string()
+      .refine((v) => !((v.match(/hive-/g) || []).length > 1), {
+        message: 'Za duzo community'
+      })
+      .refine((v) => v.split(/\s+/).length <= 8, {
+        message: 'Za duzo tagow'
+      }),
     author: z.string().regex(/^$|^[[a-zAZ1-9]+$/, t('submit_page.must_contain_only')),
     category: z.string()
   });
-  type AccountFormValues = z.infer<typeof accountFormSchema>;
 
+  type AccountFormValues = z.infer<typeof accountFormSchema>;
   const getValues = (storedPost?: AccountFormValues) => ({
     title: storedPost?.title ?? '',
     postArea: storedPost?.postArea ?? '',
     postSummary: storedPost?.postSummary ?? '',
     tags: storedPost?.tags ?? '',
     author: storedPost?.author ?? '',
-    category: storedPost?.category ?? 'blog'
+    category: storedPost?.category ?? ''
   });
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
@@ -79,188 +95,199 @@ export default function PostForm({ username }: { username: string }) {
 
     createPostPermlink();
   }, [username, storedPost?.title]);
-
   function onSubmit(data: AccountFormValues) {
     const tags = storedPost?.tags.split(' ') ?? [];
     transactionService.post(postPermlink, storedPost?.title ?? '', watchedValues.postArea, tags);
     storePost(defaultValues);
   }
   return (
-    <div
-      className={clsx(' flex flex-col gap-4 bg-white p-8 dark:bg-slate-950', {
-        ' sm:flex-row': sideBySide
-      })}
-    >
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className={clsx('space-y-8 md:w-1/2', { 'md:w-full': !preview || !sideBySide })}
-        >
-          <div className="flex items-center justify-between">
-            <h1
-              className="cursor-pointer text-sm text-destructive"
-              onClick={() => setSideBySide((prev) => !prev)}
-            >
-              {sideBySide ? t('submit_page.disable_side') : t('submit_page.enable_side')}
-            </h1>
-            <Button
-              onClick={() => setPreview((prev) => !prev)}
-              variant="link"
-              className="hover:text-destructive"
-            >
-              {preview ? t('submit_page.hide_preview') : t('submit_page.show_preview')}
-            </Button>
-          </div>
-          <FormField
-            control={form.control}
-            name="title"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input placeholder={t('submit_page.title')} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="postArea"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <MdEditor data={field} />
-                </FormControl>
-                <FormDescription className="border-x-2 border-b-2 border-border px-3 pb-1 text-xs text-destructive">
-                  {t('submit_page.insert_images_by_dragging')},
-                  <span>
-                    <Label className="cursor-pointer text-red-500" htmlFor="picture">
-                      {t('submit_page.selecting_them')}
-                    </Label>
-                    <Input id="picture" type="file" className="hidden" />
-                  </span>
-                  .
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="postSummary"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input placeholder={t('submit_page.post_summary')} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="tags"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input placeholder={t('submit_page.enter_your_tags')} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="author"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input placeholder={t('submit_page.author_if_different')} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="flex flex-col gap-2">
-            <span>{t('submit_page.post_options')}</span>
-            <span className="text-xs">
-              {t('submit_page.author_rewards')}
-              {' 50% HBD / 50% HP'}
-            </span>
-            <AdvancedSettingsPostForm username={username}>
-              <span className="cursor-pointer text-xs text-destructive">
-                {t('submit_page.advanced_settings')}
-              </span>
-            </AdvancedSettingsPostForm>
-          </div>
-          <div className="flex flex-col gap-2">
-            <span>{t('submit_page.account_stats')}</span>
-            <span className="text-xs">
-              {t('submit_page.resource_credits', { value: manabarsData?.rc.percentageValue })}
-            </span>
-          </div>
-          <FormField
-            control={form.control}
-            name="category"
-            render={({ field }) => (
-              <FormItem>
-                <div className="flex flex-wrap items-center gap-4">
-                  {t('submit_page.posting_to')}
-                  <FormControl>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select category" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="blog">{t('submit_page.my_blog')}</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                </div>
-              </FormItem>
-            )}
-          />
-          <Button
-            type="submit"
-            variant="redHover"
-            disabled={!storedPost?.title || storedPost.tags.length === 0}
-          >
-            {t('submit_page.submit')}
-          </Button>
-          <Button
-            onClick={() => {
-              form.reset(defaultValues);
-            }}
-            variant="ghost"
-            className="font-thiny text-foreground/60 hover:text-destructive"
-          >
-            {t('submit_page.clean')}
-          </Button>
-        </form>
-      </Form>
+    <div className={clsx({ container: !sideBySide || !preview })}>
       <div
-        className={clsx('flex h-fit flex-col gap-4 md:w-1/2', { hidden: !preview, 'md:w-full': !sideBySide })}
+        className={clsx('flex flex-col gap-4 bg-white p-8 dark:bg-slate-950', {
+          'lg:flex-row': sideBySide
+        })}
       >
-        <div className="flex flex-col-reverse sm:flex-row sm:justify-between">
-          <span className="text-slate-500">{t('submit_page.preview')}</span>
-          <Link
-            target="_blank"
-            href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax"
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className={clsx('space-y-8 lg:w-1/2', { 'lg:w-full': !preview || !sideBySide })}
           >
-            <span className="text-sm text-destructive">{t('submit_page.markdown_styling_guide')}</span>
-          </Link>
-        </div>
+            <div className="flex items-center justify-between">
+              <h1
+                className="cursor-pointer text-sm text-destructive"
+                onClick={() => setSideBySide((prev) => !prev)}
+              >
+                {sideBySide ? t('submit_page.disable_side') : t('submit_page.enable_side')}
+              </h1>
+              <Button
+                onClick={() => setPreview((prev) => !prev)}
+                variant="link"
+                className="hover:text-destructive"
+              >
+                {preview ? t('submit_page.hide_preview') : t('submit_page.show_preview')}
+              </Button>
+            </div>
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input placeholder={t('submit_page.title')} {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="postArea"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <MdEditor data={field} />
+                  </FormControl>
+                  <FormDescription className="border-x-2 border-b-2 border-border px-3 pb-1 text-xs text-destructive">
+                    {t('submit_page.insert_images_by_dragging')},
+                    <span>
+                      <Label className="cursor-pointer text-red-500" htmlFor="picture">
+                        {t('submit_page.selecting_them')}
+                      </Label>
+                      <Input id="picture" type="file" className="hidden" />
+                    </span>
+                    .
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="postSummary"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input placeholder={t('submit_page.post_summary')} {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="tags"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input placeholder={t('submit_page.enter_your_tags')} {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="author"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input placeholder={t('submit_page.author_if_different')} {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="flex flex-col gap-2">
+              <span>{t('submit_page.post_options')}</span>
+              <span className="text-xs">
+                {t('submit_page.author_rewards')}
+                {' 50% HBD / 50% HP'}
+              </span>
+              <AdvancedSettingsPostForm username={username}>
+                <span className="cursor-pointer text-xs text-destructive">
+                  {t('submit_page.advanced_settings')}
+                </span>
+              </AdvancedSettingsPostForm>
+            </div>
+            <div className="flex flex-col gap-2">
+              <span>{t('submit_page.account_stats')}</span>
+              <span className="text-xs">
+                {t('submit_page.resource_credits', { value: manabarsData?.rc.percentageValue })}
+              </span>
+            </div>
+            <FormField
+              control={form.control}
+              name="category"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex flex-wrap items-center gap-4">
+                    {t('submit_page.posting_to')}
+                    <FormControl>
+                      <Select
+                        onValueChange={(e) => storePost({ ...storedPost, tags: e + ' ' + storedPost.tags })}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select category" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="blog">{t('submit_page.my_blog')}</SelectItem>
+                          {mySubsData?.map((e) => (
+                            <SelectItem key={e[0]} value={e[0]}>
+                              {e[1]}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                  </div>
+                </FormItem>
+              )}
+            />
+            <Button
+              type="submit"
+              variant="redHover"
+              disabled={!storedPost?.title || storedPost.tags.length === 0}
+            >
+              {t('submit_page.submit')}
+            </Button>
+            <Button
+              onClick={() => {
+                form.reset(defaultValues);
+              }}
+              variant="ghost"
+              className="font-thiny text-foreground/60 hover:text-destructive"
+            >
+              {t('submit_page.clean')}
+            </Button>
+          </form>
+        </Form>
+        <div
+          className={clsx('flex h-fit flex-col gap-4 lg:w-1/2', {
+            hidden: !preview,
+            'lg:w-full': !sideBySide
+          })}
+        >
+          <div className="flex flex-col-reverse sm:flex-row sm:justify-between">
+            <span className="text-slate-500">{t('submit_page.preview')}</span>
+            <Link
+              target="_blank"
+              href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax"
+            >
+              <span className="text-sm text-destructive">{t('submit_page.markdown_styling_guide')}</span>
+            </Link>
+          </div>
 
-        {watchedValues.postArea && hiveRenderer ? (
-          <div
-            dangerouslySetInnerHTML={{
-              __html: hiveRenderer.render(watchedValues.postArea)
-            }}
-            className="prose h-fit self-center break-words border-2 border-border p-2 dark:prose-invert"
-          ></div>
-        ) : null}
+          {watchedValues.postArea && hiveRenderer ? (
+            <div
+              dangerouslySetInnerHTML={{
+                __html: hiveRenderer.render(watchedValues.postArea)
+              }}
+              className="prose h-fit self-center break-words border-2 border-border p-2 dark:prose-invert"
+            ></div>
+          ) : null}
+        </div>
       </div>
     </div>
   );

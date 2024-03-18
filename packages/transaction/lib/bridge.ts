@@ -505,9 +505,9 @@ export interface IFollowListParams {
 }
 
 export interface IFollowList {
-  name: '';
-  blacklist_description: '';
-  muted_list_description: '';
+  name: string;
+  blacklist_description: string;
+  muted_list_description: string;
 }
 
 type GetFollowListData = {
