@@ -94,7 +94,7 @@ export class SignerHbauth extends Signer {
     if (!checkAuthResult) {
       if (!password) {
         password = await this.getPasswordFromUser({
-          i18nKeyPlaceholder: ['login_form.password_hbauth_placeholder'],
+          i18nKeyPlaceholder: ['login_form.password_hbauth_placeholder', {}],
           // i18nKeyDescription: ['login_form.title_hbauth_dialog_password', {username, keyType}]
         });
       }

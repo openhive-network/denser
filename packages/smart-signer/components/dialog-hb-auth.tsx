@@ -95,10 +95,8 @@ export function DialogHBAuth({
           try {
             const result = await DialogPasswordModalPromise({
               isOpen: true,
-              ...{
-                i18nKeyPlaceholder: ['login_form.password_hbauth_placeholder'],
-                // i18nKeyDescription: ['login_form.title_hbauth_dialog_password', {username, keyType}]
-              }
+              i18nKeyPlaceholder: ['login_form.password_hbauth_placeholder', {}]
+              // i18nKeyDescription: ['login_form.title_hbauth_dialog_password', {username, keyType}]
             });
             password = result;
             if (!password) {
