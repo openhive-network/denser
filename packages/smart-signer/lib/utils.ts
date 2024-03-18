@@ -1,9 +1,11 @@
-import { createWaxFoundation, operation, THexString, ITransactionBuilder } from '@hive/wax';
+import { createWaxFoundation, operation, THexString, ITransactionBuilder, TWaxExtended } from '@hive/wax';
+import { Type } from "class-transformer"
+import { ValidateNested } from "class-validator"
 import { fetchJson } from '@smart-signer/lib/fetch-json';
 import { isBrowser } from '@ui/lib/logger';
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { KeyType } from '@smart-signer/types/common';
-import { createHiveChain, IHiveChainInterface, TTransactionPackType, THexString } from '@hive/wax';
+import { hiveChainService } from '@transaction/lib/hive-chain-service';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -122,6 +124,32 @@ export async function getTransactionDigest(
   };
 }
 
+
+class VerifySignaturesRequest {
+  hash!: string;
+  signatures!: string[];
+  required_other!: string[];
+  required_active!: string[];
+  required_owner!: string[];
+  required_posting!: string[];
+};
+
+class VerifySignaturesResponse {
+  public valid!: boolean;
+};
+
+const DatabaseApiExtensions = {
+  database_api: {
+    verify_signatures: {
+      params: VerifySignaturesRequest,
+      result: VerifySignaturesResponse
+    }
+  }
+};
+
+
+type TExtendedHiveChain = TWaxExtended<typeof DatabaseApiExtensions>;
+
 /**
  * Verifies signature of transaction or only signature of digest.
  * Uses "@hive/wax" package to create digest nad Hive API
@@ -153,41 +181,26 @@ export async function verifySignature(
     }
   }
 
-  // Check signature of digest passed as argument to this method.
-  const body: any = {
-    jsonrpc: '2.0',
-    method: 'database_api.verify_signatures',
-    params: {
-      hash: digest,
-      signatures: [signature],
-      required_other: [],
-      required_active: [],
-      required_owner: [],
-      required_posting: []
-    },
-    id: 1
+  const params: VerifySignaturesRequest = {
+    hash: digest,
+    signatures: [signature],
+    required_other: [],
+    required_active: [],
+    required_owner: [],
+    required_posting: []
   };
 
   if (keyType === 'posting') {
-    body.params.required_posting.push(username);
+    params.required_posting.push(username);
   } else {
-    body.params.required_active.push(username);
+    params.required_active.push(username);
   }
 
-  let verifyResponse: any;
-  try {
-    verifyResponse = await fetchJson(hiveApiUrl, {
-      method: 'post',
-      body: JSON.stringify(body)
-    });
-  } catch (error) {
-    logger.error('Error in Signer.verify fetchJson: %o', error);
-    throw error;
-  }
+  const hiveChain = await hiveChainService.getHiveChain();
+  const extendedChain: TExtendedHiveChain = hiveChain.extend(DatabaseApiExtensions);
 
-  const {
-    result: { valid }
-  } = verifyResponse;
+  const { valid } = await extendedChain.api.database_api.verify_signatures(params);
+
   if (!valid) {
     logger.info('Signature is invalid');
   }
@@ -263,7 +276,7 @@ export async function verifyPrivateKey(
   if (!valid) return valid;
   if (!strict) return valid;
 
-  const hiveChain: IHiveChainInterface = await createHiveChain();
+  const hiveChain = await hiveChainService.getHiveChain();
 
   const [referencedAccounts] = (
       await hiveChain.api.account_by_key_api
