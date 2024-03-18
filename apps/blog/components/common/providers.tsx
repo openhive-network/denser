@@ -12,7 +12,7 @@ const Providers = ({ children }: { children: ReactNode }) => {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         <HiveContentRendererProvider>
-            <Layout>{children}</Layout>
+          <Layout>{children}</Layout>
         </HiveContentRendererProvider>
       </ThemeProvider>
       <ReactQueryDevtools initialIsOpen={false} />

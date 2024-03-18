@@ -3,7 +3,6 @@ import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
 import { useEffect, useState } from 'react';
 import { transactionService } from '@transaction/index';
-import { useSigner } from '@smart-signer/lib/use-signer';
 import { User } from '@smart-signer/types/common';
 
 const SubscribeCommunity = ({
@@ -16,7 +15,6 @@ const SubscribeCommunity = ({
   subStatus: Boolean;
 }) => {
   const [isSubscribe, setIsSubscribe] = useState(() => subStatus);
-  const { signerOptions } = useSigner();
   const { t } = useTranslation('common_blog');
 
   useEffect(() => {
@@ -36,9 +34,9 @@ const SubscribeCommunity = ({
                 const nextIsSubscribe = !isSubscribe;
                 setIsSubscribe(nextIsSubscribe);
                 if (nextIsSubscribe) {
-                  transactionService.subscribe(username, user, signerOptions);
+                  transactionService.subscribe(username);
                 } else {
-                  transactionService.unsubscribe(username, user, signerOptions);
+                  transactionService.unsubscribe(username);
                 }
               }}
             >
@@ -52,7 +50,7 @@ const SubscribeCommunity = ({
               onClick={() => {
                 const nextIsSubscribe = !isSubscribe;
                 setIsSubscribe(nextIsSubscribe);
-                transactionService.unsubscribe(username, user, signerOptions);
+                transactionService.unsubscribe(username);
               }}
             >
               <span className="group-hover:hidden">{t('communities.buttons.joined')}</span>
