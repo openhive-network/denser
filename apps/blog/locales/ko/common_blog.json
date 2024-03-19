@@ -374,6 +374,8 @@
     }
   },
   "submit_page": {
+    "to_many_communities": "커뮤니티가 너무 많음",
+    "to_many_tags": "태그가 너무 많습니다",
     "disable_side": "옆에 에디터 비활성화",
     "enable_side": "옆에 에디터 활성화",
     "string_must_contain": "문자열은 적어도 {{num}} 자를 포함해야 합니다",

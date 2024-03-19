@@ -1,6 +1,7 @@
 import {
   BroadcastTransactionRequest,
   CommunityOperationBuilder,
+  EFollowBlogAction,
   FollowOperationBuilder,
   ITransactionBuilder,
   WaxChainApiError,
@@ -166,6 +167,17 @@ class TransactionService {
     });
   }
 
+  async resetBlogList() {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .resetBlogList(EFollowBlogAction.MUTE_BLOG, this.signerOptions.username, 'all')
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    });
+  }
+
   async blacklistBlog(otherBlogs: string, blog = '') {
     await this.processHiveAppOperation((builder) => {
       builder.push(
@@ -286,6 +298,7 @@ class TransactionService {
     await this.processHiveAppOperation((builder) => {
       builder
         .pushArticle(this.signerOptions.username, permlink, title, body)
+        .setCategory(tags[0])
         .pushTags(tags[0], ...tags.slice(1))
         .build();
     });

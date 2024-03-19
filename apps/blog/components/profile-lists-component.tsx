@@ -63,7 +63,7 @@ function resetList(variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'fol
       break;
     }
     case 'muted': {
-      transactionService.resetAllBlog();
+      transactionService.resetBlogList();
       break;
     }
     case 'followedBlacklist': {

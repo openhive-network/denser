@@ -374,6 +374,8 @@
     }
   },
   "submit_page": {
+    "to_many_communities": "Demasiada comunidad",
+    "to_many_tags": "Demasiadas etiquetas",
     "disable_side": "Deshabilitar el editor en paralelo",
     "enable_side": "Habilitar el editor en paralelo",
     "string_must_contain": "La cadena debe contener al menos {{num}} caracteres",
