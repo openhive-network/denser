@@ -1,9 +1,9 @@
 import { SignChallenge } from '@smart-signer/lib/signer/signer';
 import HiveAuthUtils from '@smart-signer/lib/hive-auth-utils';
 import { SignTransaction, SignerOptions } from '@smart-signer/lib/signer/signer';
-import { StorageMixin, StorageBase } from '@smart-signer/lib/storage-mixin';
+import { StorageMixin } from '@smart-signer/lib/storage-mixin';
 import { SignerKeychain } from '@smart-signer/lib/signer/signer-keychain';
-import { createWaxFoundation, operation, ApiTransaction, ApiOperation, TTransactionPackType } from '@hive/wax';
+import { TTransactionPackType } from '@hive/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');

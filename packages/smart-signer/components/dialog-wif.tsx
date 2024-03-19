@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
-import { ReactNode, SyntheticEvent, useState, FC } from 'react';
+import { ReactNode, useState, FC } from 'react';
 import { useTranslation } from 'next-i18next';
 import { create, InstanceProps } from 'react-modal-promise';
 import { PasswordForm, PasswordFormSchema } from '@smart-signer/components/password-form';

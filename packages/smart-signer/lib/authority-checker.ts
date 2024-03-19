@@ -5,7 +5,6 @@ import {
   ApiAuthority,
   TAccountName,
   ApiKeyAuth,
-  transaction,
   TTransactionPackType
 } from '@hive/wax';
 

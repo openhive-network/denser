@@ -84,13 +84,6 @@ export class SignerHbauth extends Signer {
     const authClient = await hbauthService.getOnlineClient();
 
     const checkAuthResult = await this.checkAuth(username, keyType);
-
-    // const auth = await authClient.getAuthByUser(username);
-    // logger.info('auth: %o', auth);
-    // if (!auth) {
-    //   throw new Error(`No auth for username ${username}`);
-    // }
-
     if (!checkAuthResult) {
       if (!password) {
         password = await this.getPasswordFromUser({

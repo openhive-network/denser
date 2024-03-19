@@ -12,24 +12,8 @@ import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { KeyType } from '@smart-signer/types/common';
 import { useSigner } from '@smart-signer/lib/use-signer';
-import { transactionService } from '@transaction/index';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
-import {
-  createHiveChain,
-  IHiveChainInterface,
-  transaction,
-  ApiTransaction,
-  ApiAuthority,
-  TAccountName,
-  TWaxExtended,
-  ApiKeyAuth,
-  operation,
-  vote,
-  transfer,
-  ApiOperation,
-  TTransactionPackType
-} from '@hive/wax';
-import { authorityChecker, AuthorityLevel } from '@smart-signer/lib/authority-checker';
+import { operation, vote, transfer } from '@hive/wax';
 import Loading from '@hive/ui/components/loading';
 import dynamic from 'next/dynamic';
 

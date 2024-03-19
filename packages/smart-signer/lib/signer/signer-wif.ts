@@ -3,7 +3,7 @@ import { SignChallenge, SignerOptions } from '@smart-signer/lib/signer/signer';
 import { KeyType } from '@smart-signer/types/common';
 import { SignerHbauth } from '@smart-signer/lib/signer/signer-hbauth';
 import { StorageMixin } from '@smart-signer/lib/storage-mixin';
-import { createHiveChain, IHiveChainInterface, TTransactionPackType, THexString } from '@hive/wax';
+import { TTransactionPackType, THexString } from '@hive/wax';
 import { verifyPrivateKey } from '@smart-signer/lib/utils';
 
 import { getLogger } from '@hive/ui/lib/logging';

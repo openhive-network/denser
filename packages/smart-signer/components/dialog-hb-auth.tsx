@@ -1,12 +1,7 @@
 import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
 import { ReactNode, SyntheticEvent, useState } from 'react';
 import { useTranslation } from 'next-i18next';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger
-} from '@ui/components';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components';
 import { isBrowser, AuthUser } from '@hive/hb-auth';
 import type { KeyAuthorityType } from '@hive/hb-auth';
 import { toast } from '@ui/components/hooks/use-toast';
