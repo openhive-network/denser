@@ -374,6 +374,8 @@
     }
   },
   "submit_page": {
+    "to_many_communities": "Trop de communauté",
+    "to_many_tags": "Trop de tags",
     "disable_side": "Désactiver l'éditeur côte à côte",
     "enable_side": "Activer l'éditeur côte à côte",
     "string_must_contain": "La chaîne doit contenir au moins {{num}} caractère(s)",

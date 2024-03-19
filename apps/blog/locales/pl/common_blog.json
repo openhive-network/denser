@@ -387,6 +387,8 @@
     }
   },
   "submit_page": {
+    "to_many_communities": "Za dużo community",
+    "to_many_tags": "Za dużo tagow",
     "disable_side": "Przenieś podgląd pod formularz",
     "enable_side": "Przenieś podgląd obok formularza",
     "string_must_contain": "Tekst musi zawierać conajmniej {{num}} znak(i)",

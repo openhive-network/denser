@@ -386,6 +386,8 @@
     }
   },
   "submit_page": {
+    "to_many_communities": "Too much community",
+    "to_many_tags": "Too many tags",
     "disable_side": "Disable side-by-side editor",
     "enable_side": "Enable side-by-side editor",
     "string_must_contain": "String must contain at least {{num}} character(s)",

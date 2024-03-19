@@ -374,6 +374,8 @@
     }
   },
   "submit_page": {
+    "to_many_communities": "コミュニティが多すぎる",
+    "to_many_tags": "タグが多すぎ",
     "disable_side": "サイドバイサイドエディターを無効にする",
     "enable_side": "サイドバイサイドエディターを有効にする",
     "string_must_contain": "文字列は少なくとも{{num}}文字含まれている必要があります",

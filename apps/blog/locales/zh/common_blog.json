@@ -374,6 +374,8 @@
     }
   },
   "submit_page": {
+    "to_many_communities": "社区太多",
+    "to_many_tags": "标签太多",
     "disable_side": "禁用并排编辑器",
     "enable_side": "启用并排编辑器",
     "string_must_contain": "字符串必须包含至少{{num}}个字符",
