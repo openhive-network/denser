@@ -1,6 +1,7 @@
 import {
   BroadcastTransactionRequest,
   CommunityOperationBuilder,
+  EFollowBlogAction,
   FollowOperationBuilder,
   ITransactionBuilder,
   WaxChainApiError,
@@ -160,6 +161,17 @@ class TransactionService {
       builder.push(
         new FollowOperationBuilder()
           .unmuteBlog(this.signerOptions.username, blog)
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    });
+  }
+
+  async resetBlogList() {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .resetBlogList(EFollowBlogAction.MUTE_BLOG, this.signerOptions.username, 'all')
           .authorize(this.signerOptions.username)
           .build()
       );

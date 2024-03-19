@@ -98,10 +98,10 @@ export default function PostForm({ username }: { username: string }) {
     createPostPermlink();
   }, [username, storedPost?.title]);
 
-  function onSubmit(data: AccountFormValues) {
+  async function onSubmit(data: AccountFormValues) {
     const tags = storedPost?.tags.split(' ') ?? [];
     try {
-      transactionService.post(postPermlink, storedPost?.title ?? '', watchedValues.postArea, tags);
+      await transactionService.post(postPermlink, storedPost?.title ?? '', watchedValues.postArea, tags);
     } finally {
       storePost(defaultValues);
       router.push(`/created/${tags[0]}`);
