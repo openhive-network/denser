@@ -131,9 +131,9 @@ export async function getTransactionDigest(
 ): Promise<{ txString: string; digest: THexString }> {
   const wax = await createWaxFoundation();
 
-  let tx: ITransactionBuilder;
+  let txBuilder: ITransactionBuilder;
   if (txString) {
-    tx = new wax.TransactionBuilder(JSON.parse(txString));
+    txBuilder = new wax.TransactionBuilder(JSON.parse(txString));
   } else {
     // Create transaction, if it does not exist.
     let dynamicGlobalProps: any;
@@ -147,23 +147,23 @@ export async function getTransactionDigest(
         })
       });
     } catch (error) {
-      logger.error('Error in Signer.getTransactionDigest: %o', error);
+      logger.error('Error in getTransactionDigest: %o', error);
       throw error;
     }
     const { result: globalProps } = dynamicGlobalProps;
-    tx = new wax.TransactionBuilder(globalProps.head_block_id, '+1m');
+    txBuilder = new wax.TransactionBuilder(globalProps.head_block_id, '+1m');
   }
 
   // Pass operation to transaction, if it exists.
   if (operation) {
-    tx.push(operation);
+    txBuilder.push(operation);
   }
 
-  logger.info('tx.toString(): %s', tx.toString());
+  logger.info('tx.toString(): %s', txBuilder.toString());
 
   return {
-    txString: tx.toString(),
-    digest: tx.sigDigest
+    txString: txBuilder.toString(),
+    digest: txBuilder.sigDigest
   };
 }
 
