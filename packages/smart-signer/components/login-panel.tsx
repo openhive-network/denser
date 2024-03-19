@@ -84,15 +84,15 @@ export function LoginPanel(
     }
 
     const body: PostLoginSchema = {
-      authenticateOnBackend,
       username,
-      signatures,
       loginType,
       hivesignerToken,
       keyType,
-      strict,
+      txJSON: '""',
       pack: TTransactionPackType.HF_26,
-      txJSON: '',
+      strict,
+      signatures,
+      authenticateOnBackend,
     };
 
     try {
