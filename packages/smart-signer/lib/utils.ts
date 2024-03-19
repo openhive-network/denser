@@ -42,6 +42,49 @@ export function getCookie(cname: string) {
   return '';
 }
 
+export function isStorageAvailable(
+  storageType: 'localStorage' | 'sessionStorage',
+  strict: boolean = false // if true also tries to read and write to storage
+) {
+  let storage: Storage;
+  // logger.info('Checking availability of %s', storageType);
+  try {
+    if (!isBrowser()) return false;
+    if ((storageType = 'localStorage')) {
+      storage = window.localStorage;
+    } else if ((storageType = 'sessionStorage')) {
+      storage = window.sessionStorage;
+    } else {
+      return false;
+    }
+    if (strict) {
+      const x = '__storage_test__';
+      storage.setItem(x, x);
+      storage.removeItem(x);
+    }
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+/**
+ * Returns enum key for enum value.
+ *
+ * @export
+ * @template T
+ * @param {T} myEnum
+ * @param {string} enumValue
+ * @returns {(keyof T | null)}
+ */
+export function getEnumKeyByEnumValue<T extends { [index: string]: string }>(
+  myEnum: T,
+  enumValue: string
+): keyof T | null {
+  const keys = Object.keys(myEnum).filter((x) => myEnum[x] == enumValue);
+  return keys.length > 0 ? keys[0] : null;
+}
+
 /**
  * Calculates a digest and converts it to a hex string with Web Crypto
  * API. Normally the digest is returned as an ArrayBuffer, but for
@@ -124,7 +167,6 @@ export async function getTransactionDigest(
   };
 }
 
-
 class VerifySignaturesRequest {
   hash!: string;
   signatures!: string[];
@@ -147,7 +189,6 @@ const DatabaseApiExtensions = {
   }
 };
 
-
 type TExtendedHiveChain = TWaxExtended<typeof DatabaseApiExtensions>;
 
 /**
@@ -168,11 +209,9 @@ export async function verifySignature(
   digest: THexString,
   signature: string,
   keyType: KeyAuthorityType,
-  txString: string = '',
-  hiveApiUrl = 'https://api.hive.blog'
+  txString: string = ''
 ): Promise<boolean> {
-  // Create transaction's digest and compare it with that passed
-  // as argument to this method.
+  // Create transaction's digest and compare it with argument `digest`.
   if (txString) {
     const result = await getTransactionDigest(null, txString);
     if (result.digest !== digest) {
@@ -208,49 +247,6 @@ export async function verifySignature(
   return valid;
 }
 
-export function isStorageAvailable(
-  storageType: 'localStorage' | 'sessionStorage',
-  strict: boolean = false // if true also tries to read and write to storage
-) {
-  let storage: Storage;
-  // logger.info('Checking availability of %s', storageType);
-  try {
-    if (!isBrowser()) return false;
-    if ((storageType = 'localStorage')) {
-      storage = window.localStorage;
-    } else if ((storageType = 'sessionStorage')) {
-      storage = window.sessionStorage;
-    } else {
-      return false;
-    }
-    if (strict) {
-      const x = '__storage_test__';
-      storage.setItem(x, x);
-      storage.removeItem(x);
-    }
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-
-/**
- * Returns enum key for enum value.
- *
- * @export
- * @template T
- * @param {T} myEnum
- * @param {string} enumValue
- * @returns {(keyof T | null)}
- */
-export function getEnumKeyByEnumValue<T extends { [index: string]: string }>(
-  myEnum: T,
-  enumValue: string
-): keyof T | null {
-  const keys = Object.keys(myEnum).filter((x) => myEnum[x] == enumValue);
-  return keys.length > 0 ? keys[0] : null;
-}
-
 export async function verifyPrivateKey(
   username: string,
   wif: string,
@@ -258,33 +254,37 @@ export async function verifyPrivateKey(
   apiEndpoint: string,
   strict: boolean = false
 ): Promise<boolean> {
+  // Generate public key and sign random string.
   const privateKey = PrivateKey.fromString(wif);
   const digestBuf = cryptoUtils.sha256(crypto.randomUUID());
   const signature = privateKey.sign(digestBuf).toString();
   const publicKey = privateKey.createPublic('STM');
-  logger.info('publicKey: %o', publicKey.toString());
+  logger.info('verifyPrivateKey publicKey: %s', publicKey.toString());
 
-  const valid = verifySignature(
-      username,
-      digestBuf.toString('hex'),
-      signature,
-      keyType,
-      '',
-      apiEndpoint
-      );
+  // Verify signature.
+  const valid: boolean = await verifySignature(
+    username,
+    digestBuf.toString('hex'),
+    signature,
+    keyType,
+    ''
+  );
 
+  // Return false when signature is not valid.
   if (!valid) return valid;
+  // No other checks when `strict` is false.
   if (!strict) return valid;
 
+  // Check whether username directly signed the string.
   const hiveChain = await hiveChainService.getHiveChain();
 
   const [referencedAccounts] = (
-      await hiveChain.api.account_by_key_api
-          .get_key_references({ keys: [publicKey.toString()] })
+    await hiveChain.api.account_by_key_api
+      .get_key_references({ keys: [publicKey.toString()] })
   ).accounts;
-  logger.info('referencedAccounts: %o', referencedAccounts);
+  logger.info('verifyPrivateKey referencedAccounts: %o', referencedAccounts);
   if (referencedAccounts.includes(username)) {
-      return true;
+    return true;
   }
 
   return false;
