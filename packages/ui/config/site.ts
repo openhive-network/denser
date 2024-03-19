@@ -1,4 +1,4 @@
-import env from "@beam-australia/react-env";
+import env from '@beam-australia/react-env';
 
 export const siteConfig = {
   name: 'Hive Blog',
