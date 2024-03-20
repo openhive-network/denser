@@ -28,37 +28,41 @@ const passwordFormDefaultValues = {
   password: '',
 };
 
-export interface PasswordFormCaptions {
-  title?: string;
-  description?: string;
-  inputPasswordPlaceholder?: string;
-  submitButtonName?: string;
-  submitButtonNameWhenWorking?: string;
-  resetButtonName?: string;
+// captions for inputs, buttons, form title etc.
+export interface PasswordFormI18nKeysForCaptions {
+  title?: string | [string, {[key: string]: string}];
+  description?: string | [string, {[key: string]: string}];
+  inputPasswordPlaceholder?: string | [string, {[key: string]: string}];
+  submitButtonName?: string | [string, {[key: string]: string}];
+  submitButtonNameWhenWorking?: string | [string, {[key: string]: string}];
+  resetButtonName?: string | [string, {[key: string]: string}];
 }
 
 export function PasswordForm({
   errorMessage = '',
   onSubmit = (data: PasswordFormSchema) => {},
-  formCaptions = {}, // captions for inputs, buttons, form title etc.
+  i18nKeysForCaptions = {}, // captions for inputs, buttons, form title etc.
   i18nNamespace = 'smart-signer'
 }: {
   errorMessage: string;
   onSubmit: (data: PasswordFormSchema) => void;
-  formCaptions?: PasswordFormCaptions;
+  i18nKeysForCaptions?: PasswordFormI18nKeysForCaptions;
   i18nNamespace?: string;
 }) {
   const { t } = useTranslation(i18nNamespace);
+  const t2 = (args: string | [string, {[key: string]: string}]) =>
+    Array.isArray(args) ? t(...args) : t(args);
 
-  const defaultCaptions = {
-    title: t('password_form.password_form_title'),
+  const defaultI18nKeysForCaptions = {
+    title: 'password_form.password_form_title',
     description: '',
-    inputPasswordPlaceholder: t('password_form.password_placeholder'),
-    submitButtonName: t('login_form.login_button'),
-    submitButtonNameWhenWorking: t('login_form.working'),
-    resetButtonName: t('login_form.reset_button'),
+    inputPasswordPlaceholder: 'password_form.password_placeholder',
+    submitButtonName: 'login_form.login_button',
+    submitButtonNameWhenWorking: 'login_form.working',
+    resetButtonName: 'login_form.reset_button',
   };
-  const captions = {...defaultCaptions, formCaptions};
+  const captionKey: Required<PasswordFormI18nKeysForCaptions> =
+    {...defaultI18nKeysForCaptions, ...i18nKeysForCaptions};
 
   const {
     register,
@@ -74,8 +78,8 @@ export function PasswordForm({
     <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
       <div className="mx-auto flex w-full max-w-md flex-col items-center">
 
-        <h2 className="w-full text-xl">{captions.title}</h2>
-        {captions.description && <p className="w-full">{captions.description}</p>}
+        <h2 className="w-full text-xl">{t2(captionKey.title)}</h2>
+        {captionKey.description && <p className="w-full">{t2(captionKey.description)}</p>}
 
         <form method="post" className="w-full mt-6">
 
@@ -83,7 +87,7 @@ export function PasswordForm({
             <input
               type="password"
               className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500 dark:text-slate-300"
-              placeholder={captions.inputPasswordPlaceholder}
+              placeholder={t2(captionKey.inputPasswordPlaceholder)}
               autoComplete="current-password"
               {...register('password')}
               data-testid="posting-private-key-input"
@@ -107,8 +111,8 @@ export function PasswordForm({
               data-testid="password-submit-button"
               disabled={isSubmitting}
             >
-              {!isSubmitting && captions.submitButtonName}
-              {isSubmitting && captions.submitButtonNameWhenWorking}
+              {!isSubmitting && t2(captionKey.submitButtonName)}
+              {isSubmitting && t2(captionKey.submitButtonNameWhenWorking)}
             </button>
 
             {/* Reset Button */}
@@ -118,7 +122,7 @@ export function PasswordForm({
               className="w-fit rounded-lg bg-transparent px-5 py-2.5 text-center text-sm font-semibold text-gray-500 hover:cursor-pointer hover:text-red-600 focus:outline-none"
               data-testid="password-reset-button"
             >
-              {captions.resetButtonName}
+              {t2(captionKey.resetButtonName)}
             </button>
 
           </div>

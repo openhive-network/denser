@@ -2,14 +2,14 @@ import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
 import { ReactNode, useState, FC } from 'react';
 import { useTranslation } from 'next-i18next';
 import { create, InstanceProps } from 'react-modal-promise';
-import { PasswordForm, PasswordFormSchema, PasswordFormCaptions } from '@smart-signer/components/password-form';
+import { PasswordForm, PasswordFormSchema, PasswordFormI18nKeysForCaptions } from '@smart-signer/components/password-form';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 interface DialogWifProps {
   children?: ReactNode;
-  formCaptions?: PasswordFormCaptions;
+  i18nKeysForCaptions?: PasswordFormI18nKeysForCaptions;
   i18nNamespace?: string;
 }
 
@@ -18,7 +18,7 @@ export const DialogWif: FC<DialogWifProps & InstanceProps<unknown>> = ({
   isOpen = false,
   onResolve,
   onReject,
-  formCaptions = {},
+  i18nKeysForCaptions = {},
   i18nNamespace = 'smart-signer'
 }) => {
   const { t } = useTranslation(i18nNamespace);
@@ -55,7 +55,7 @@ export const DialogWif: FC<DialogWifProps & InstanceProps<unknown>> = ({
         <PasswordForm
           onSubmit={onSubmit}
           errorMessage={errorMsg}
-          formCaptions={formCaptions}
+          i18nKeysForCaptions={i18nKeysForCaptions}
         />
       </DialogContent>
     </Dialog>
