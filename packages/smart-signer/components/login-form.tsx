@@ -8,7 +8,7 @@ import { Separator } from '@hive/ui/components/separator';
 import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { username } from '@smart-signer/lib/auth/utils';
 import { LoginType, StorageType, KeyType } from '@smart-signer/types/common';
-import { validateHivePassword } from '@smart-signer/lib/validators/validate-hive-password';
+import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
 import { Icons } from '@ui/components/icons';
 import { toast } from '@ui/components/hooks/use-toast';
 import { pascalCase } from 'change-case';
@@ -23,7 +23,7 @@ type ZodLoginTypeEnum = z.infer<typeof ZodLoginTypeEnum>;
 
 const passwordField = z.object({
   password: z.string().superRefine((val, ctx) => {
-    const result = validateHivePassword(val, (v) => v);
+    const result = validateWifKey(val, (v) => v);
     if (result) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,

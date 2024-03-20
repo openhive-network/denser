@@ -2,14 +2,14 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useTranslation } from 'next-i18next';
-import { validateHivePassword } from '@smart-signer/lib/validators/validate-hive-password';
+import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 const passwordFormSchema = z.object({
   password: z.string().superRefine((val, ctx) => {
-    const result = validateHivePassword(val, (v) => v);
+    const result = validateWifKey(val, (v) => v);
     if (result) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
