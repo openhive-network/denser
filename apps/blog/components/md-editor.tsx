@@ -12,19 +12,99 @@ import {
 import * as commands from '@uiw/react-md-editor/commands';
 import { useTheme } from 'next-themes';
 import { ContextStore } from '@uiw/react-md-editor';
+import env from '@beam-australia/react-env';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { cryptoUtils } from '@hiveio/dhive';
+import { getSigner } from '@smart-signer/lib/signer/get-signer';
+import { KeyType, LoginType } from '@smart-signer/types/common';
+import { Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
 
 const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false });
 
-export const uploadImg = () =>
-  'https://images.unsplash.com/photo-1689671439720-47c45b6a7a74?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw1fHx8ZW58MHx8fHx8&auto=format&fit=crop&w=500&q=60';
+export const uploadImg = async (file: any, username: string, signer: Signer) => {
+  let data, dataBs64;
+  if (file) {
+    // drag and drop
+    const reader = new FileReader();
+    data = new Promise((resolve) => {
+      reader.addEventListener('load', () => {
+        const result = Buffer.from(reader.result, 'binary');
+        resolve(result);
+      });
+      reader.readAsBinaryString(file);
+    });
+  }
 
-export const onImageUpload = async (file: string, api: any) => {
-  // const url = await uploadImg(file);
-  const url = await uploadImg();
+  // The challenge needs to be prefixed with a constant (both on the server and checked on the client) to make sure the server can't easily make the client sign a transaction doing something else.
+  // const prefix = Buffer.from('ImageSigningChallenge');
+  // const buf = Buffer.concat([prefix, data]);
+  // const bufSha = hash.sha256(buf);
 
-  const insertedMarkdown =
-    `**![](${url})**` +
-    `<!--rehype:style=display: flex; justify-content: center; width: 100%; max-width: 500px; margin: auto; margin-top: 4px; margin-bottom: 4px; -->`;
+  const formData = new FormData();
+  if (file) {
+    formData.append('file', file);
+  }
+
+  data = await data;
+  const prefix = Buffer.from('ImageSigningChallenge');
+  const buf = Buffer.concat([prefix, data]);
+  const bufSha = cryptoUtils.sha256(buf);
+
+  let sig;
+  let postUrl;
+  console.log('bufSha', bufSha);
+  sig = await signer.signChallenge({
+    message: bufSha.toString(),
+    password: ''
+  });
+
+  console.log('sig', sig);
+
+  postUrl = `${env('IMAGES_ENDPOINT')}${username}/${sig}`;
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', postUrl);
+  xhr.onload = function () {
+    console.log(xhr.status, xhr.responseText);
+    if (xhr.status === 200) {
+      try {
+        const res = JSON.parse(xhr.responseText);
+        const { error } = res;
+        if (error) {
+          console.error('upload_error', error, xhr.responseText);
+          // progress({ error: 'Error: ' + error });
+          return;
+        }
+
+        const { url } = res;
+        // progress({ url });
+      } catch (e) {
+        console.error('upload_error2', 'not json', e, xhr.responseText);
+        // progress({ error: 'Error: response not JSON' });
+      }
+    } else {
+      console.error('upload_error3', xhr.status, xhr.statusText);
+      // progress({ error: `Error: ${xhr.status}: ${xhr.statusText}` });
+    }
+  };
+  xhr.onerror = function (error) {
+    console.error('xhr', filename, error);
+    // progress({ error: 'Unable to contact the server.' });
+  };
+  xhr.upload.onprogress = function (event) {
+    if (event.lengthComputable) {
+      const percent = Math.round((event.loaded / event.total) * 100);
+      // progress({ message: `Uploading ${percent}%` });
+    }
+  };
+  xhr.send(formData);
+  console.log('xhr.response', xhr.response);
+};
+
+export const onImageUpload = async (file: string, api: any, username: string, signer: Signer) => {
+  const url = await uploadImg(file, username, signer);
+
+  const insertedMarkdown = `**![nazwa](${url})**`;
   if (!insertedMarkdown) return;
 
   api.replaceSelection(insertedMarkdown);
@@ -32,14 +112,13 @@ export const onImageUpload = async (file: string, api: any) => {
 
 export const onImageUpload_DnD = async (
   file: any,
-  setMarkdown: { (value: SetStateAction<string>): void; (arg0: (prev: any) => string): void }
+  setMarkdown: { (value: SetStateAction<string>): void; (arg0: (prev: any) => string): void },
+  username: string
 ) => {
   // const url = await uploadImg(file);
-  const url = await uploadImg();
+  const url = await uploadImg(file, username);
 
-  const insertedMarkdown =
-    `**![](${url})**` +
-    `<!--rehype:style=display: flex; justify-content: center; width: 100%; max-width: 500px; margin: auto; margin-top: 4px; margin-bottom: 4px; -->`;
+  const insertedMarkdown = `**![](${url})**`;
   if (!insertedMarkdown) return;
 
   setMarkdown((prev) => prev + insertedMarkdown);
@@ -71,7 +150,17 @@ const MdEditor = (data: {
       | undefined;
   };
 }) => {
+  const { user } = useUser();
+
   const { resolvedTheme } = useTheme();
+  const signerOptions: SignerOptions = {
+    username: user.username,
+    loginType: LoginType.hbauth,
+    keyType: KeyType.posting,
+    apiEndpoint: 'https://api.hive.blog',
+    storageType: 'localStorage'
+  };
+  const signer = getSigner(signerOptions);
 
   const inputRef = useRef(null);
   const editorRef = useRef(null);
@@ -82,7 +171,7 @@ const MdEditor = (data: {
   const inputImageHandler = useCallback(async (event: { target: { files: string | any[] } }) => {
     if (event.target.files && event.target.files.length === 1) {
       setInsertImg('');
-      await onImageUpload(event.target.files[0], textApiRef.current);
+      await onImageUpload(event.target.files[0], textApiRef.current, user.username, signer);
     }
   }, []);
 
