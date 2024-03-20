@@ -7,25 +7,31 @@ import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
+const passwordWif = z.string().superRefine((val, ctx) => {
+  const result = validateWifKey(val, (v) => v);
+  if (result) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: result,
+      fatal: true
+    });
+    return z.NEVER;
+  }
+  return true;
+});
+
+const passwordRegular = z.string().min(1).max(512);
+
 const passwordFormSchema = z.object({
-  password: z.string().superRefine((val, ctx) => {
-    const result = validateWifKey(val, (v) => v);
-    if (result) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: result,
-        fatal: true
-      });
-      return z.NEVER;
-    }
-    return true;
-  })
+  password: passwordWif,
+  storePassword: z.boolean(),
 });
 
 export type PasswordFormSchema = z.infer<typeof passwordFormSchema>;
 
 const passwordFormDefaultValues = {
   password: '',
+  storePassword: false,
 };
 
 // captions for inputs, buttons, form title etc.
@@ -33,23 +39,31 @@ export interface PasswordFormI18nKeysForCaptions {
   title?: string | [string, {[key: string]: string}];
   description?: string | [string, {[key: string]: string}];
   inputPasswordPlaceholder?: string | [string, {[key: string]: string}];
+  inputStorePasswordLabel?: string | [string, {[key: string]: string}];
   submitButtonName?: string | [string, {[key: string]: string}];
   submitButtonNameWhenWorking?: string | [string, {[key: string]: string}];
   resetButtonName?: string | [string, {[key: string]: string}];
 }
 
+export interface PasswordFormOptions {
+  mode?: 'regular' | 'wif'
+  showInputStorePassword?: boolean;
+  errorMessage?: string;
+  onSubmit?: (data: PasswordFormSchema) => any;
+  i18nKeysForCaptions?: PasswordFormI18nKeysForCaptions;
+  i18nNamespace?: string;
+}
+
 export function PasswordForm({
+  mode = 'regular',
+  showInputStorePassword = true,
   errorMessage = '',
   onSubmit = (data: PasswordFormSchema) => {},
   i18nKeysForCaptions = {}, // captions for inputs, buttons, form title etc.
   i18nNamespace = 'smart-signer'
-}: {
-  errorMessage: string;
-  onSubmit: (data: PasswordFormSchema) => void;
-  i18nKeysForCaptions?: PasswordFormI18nKeysForCaptions;
-  i18nNamespace?: string;
-}) {
+}: PasswordFormOptions) {
   const { t } = useTranslation(i18nNamespace);
+  const randomValue = crypto.randomUUID()
   const t2 = (args: string | [string, {[key: string]: string}]) =>
     Array.isArray(args) ? t(...args) : t(args);
 
@@ -57,6 +71,7 @@ export function PasswordForm({
     title: 'password_form.password_form_title',
     description: '',
     inputPasswordPlaceholder: 'password_form.password_placeholder',
+    inputStorePasswordLabel: 'password_form.store_password_label',
     submitButtonName: 'login_form.login_button',
     submitButtonNameWhenWorking: 'login_form.working',
     resetButtonName: 'login_form.reset_button',
@@ -101,7 +116,25 @@ export function PasswordForm({
             )}
           </div>
 
-          <div className="flex items-center justify-between">
+          { showInputStorePassword && (
+            <div className="flex items-center py-1 mb-5">
+              <input
+                id={`store-password-${randomValue}`}
+                type="checkbox"
+                value=""
+                className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
+                {...register('storePassword')}
+              />
+              <label
+                htmlFor={`store-password-${randomValue}`}
+                className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
+              >
+                {t2(captionKey.inputStorePasswordLabel)}
+              </label>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between mt-10">
 
             {/* Submit Button */}
             <button

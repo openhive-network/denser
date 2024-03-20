@@ -65,6 +65,8 @@
   },
   "password_form": {
     "password_placeholder": "Password",
-    "password_form_title": "Enter your password"
+    "password_form_title": "Enter your password",
+    "store_key_label": "Store key",
+    "store_password_label": "Store password"
   }
 }

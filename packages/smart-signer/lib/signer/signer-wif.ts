@@ -6,7 +6,7 @@ import { StorageMixin } from '@smart-signer/lib/storage-mixin';
 import { TTransactionPackType, THexString } from '@hive/wax';
 import { verifyPrivateKey } from '@smart-signer/lib/utils';
 import { DialogWifModalPromise } from '@smart-signer/components/dialog-wif';
-import { PasswordFormI18nKeysForCaptions } from '@smart-signer/components/password-form';
+import { PasswordFormOptions } from '@smart-signer/components/password-form';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -47,11 +47,16 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
       const storedWif = this.storage.getItem(`wif.${username}@${keyType}`);
       let wif = storedWif ? JSON.parse(storedWif) : password;
       if (!wif) {
-        const formCaptions: PasswordFormI18nKeysForCaptions = {
-          inputPasswordPlaceholder: ['login_form.private_key_placeholder', {keyType}],
-          title: 'login_form.title_wif_dialog_password',
+        const formOptions: PasswordFormOptions = {
+          mode: "wif",
+          showInputStorePassword: true,
+          i18nKeysForCaptions: {
+            inputPasswordPlaceholder: ['login_form.private_key_placeholder', {keyType}],
+            inputStorePasswordLabel: 'password_form.store_key_label',
+            title: 'login_form.title_wif_dialog_password',
+          },
         };
-        wif = await this.getPasswordFromUser(formCaptions);
+        wif = await this.getPasswordFromUser(formOptions);
         // TODO Ask user if he wants to store the key. If he answers
         // "yes", verify the key before storing it. Another option: return
         // callback to store key after successful login.
@@ -90,11 +95,15 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
           password
           : JSON.parse(this.storage.getItem(`wif.${username}@${keyType}`) || '""');
       if (!wif) {
-        const formCaptions: PasswordFormI18nKeysForCaptions = {
-          inputPasswordPlaceholder: ['login_form.private_key_placeholder', {keyType}],
-          title: 'login_form.title_wif_dialog_password',
+        const formOptions: PasswordFormOptions = {
+          mode: "wif",
+          showInputStorePassword: true,
+          i18nKeysForCaptions: {
+            inputPasswordPlaceholder: ['login_form.private_key_placeholder', {keyType}],
+            title: 'login_form.title_wif_dialog_password',
+          },
         };
-        wif = await this.getPasswordFromUser(formCaptions);
+        wif = await this.getPasswordFromUser(formOptions);
         // TODO Ask user if he wants to store the key. If he answers
         // "yes", verify the key and store it. Another option: return
         // callback to store key after successful login.
@@ -122,13 +131,13 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
   }
 
   async getPasswordFromUser(
-    i18nKeysForCaptions: PasswordFormI18nKeysForCaptions = {}
+    formOptions: PasswordFormOptions = {}
   ): Promise<string> {
     let password = '';
     try {
       const result = await DialogWifModalPromise({
         isOpen: true,
-        i18nKeysForCaptions
+        ...formOptions
       });
       password = result as string;
       logger.info('Return from PasswordModalPromise: %s', result);
