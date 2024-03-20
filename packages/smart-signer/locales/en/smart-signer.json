@@ -62,5 +62,9 @@
   "pageLogin": {
     "loginFailed": "Login failed",
     "signingFailed": "Signing data for login failed"
+  },
+  "password_form": {
+    "password_placeholder": "Password",
+    "password_form_title": "Enter your password"
   }
 }

@@ -25,9 +25,9 @@ export const DialogPassword: FC<DialogPasswordProps & InstanceProps<unknown>> = 
   i18nNamespace = 'smart-signer'
 }) => {
   const { t } = useTranslation(i18nNamespace);
+  const title = i18nKeyTitle[0] ? t(...i18nKeyTitle) : 'Enter your password';
   const description = i18nKeyDescription[0] ? t(...i18nKeyDescription) : '';
   const placeholder = i18nKeyPlaceholder[0] ? t(...i18nKeyPlaceholder) : 'Password';
-  const title = i18nKeyTitle[0] ? t(...i18nKeyTitle) : 'Enter your password';
   const [open, setOpen] = useState(isOpen);
   const [password, setPassword] = useState('');
 
@@ -60,8 +60,8 @@ export const DialogPassword: FC<DialogPasswordProps & InstanceProps<unknown>> = 
       <DialogContent className="sm:max-w-[600px]" onInteractOutside={onInteractOutside}>
         <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
           <div className="mx-auto flex w-full max-w-md flex-col items-center">
-            <p className="w-full text-xl text-gray-800">{title}</p>
-            {description && <p className="w-full text-gray-600">{description}</p>}
+            <h2 className="w-full text-xl">{title}</h2>
+            {description && <p className="w-full">{description}</p>}
             <form onSubmit={onSubmit} className="w-full pt-6" name="login">
               <div className="mb-5">
                 <input
