@@ -69,7 +69,7 @@ export function LoginPanel(
       if (data.loginType === LoginType.wif) {
         password = data.password;
       }
-      const message = JSON.stringify({ loginChallenge }, null, 0);
+      const message = JSON.stringify({ loginChallenge });
       const signer = getSigner(loginSignerOptions);
       const signature = await signer.signChallenge({
         message,
