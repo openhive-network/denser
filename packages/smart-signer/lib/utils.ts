@@ -105,11 +105,24 @@ export function getEnumKeyByEnumValue<T extends { [index: string]: string }>(
  * @param {string} message
  * @returns {string} in hex format
  */
-export async function subtleCryptoDigestHex(message: string) {
-  const msgUint8 = new TextEncoder().encode(message); // encode as (utf-8) Uint8Array
-  const hashArrayBuffer = await crypto.subtle.digest('SHA-256', msgUint8); // hash the message
-  const hashArray = Array.from(new Uint8Array(hashArrayBuffer)); // convert ArrayBuffer to byte array
-  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
+export async function subtleCryptoDigestHex(message: string | Buffer) {
+  let msgUint8: Buffer | Uint8Array;
+  if (typeof message === 'string') {
+    // encode as (utf-8) Uint8Array
+    msgUint8 = new TextEncoder().encode(message);
+  } else {
+    msgUint8 = message;
+  }
+  // hash the message
+  const hashArrayBuffer = await crypto.subtle.digest(
+    'SHA-256', msgUint8
+    );
+  // convert ArrayBuffer to byte array
+  const hashArray = Array.from(new Uint8Array(hashArrayBuffer));
+  // convert bytes to hex string
+  const hashHex = hashArray.map(
+    (b) => b.toString(16).padStart(2, '0')
+    ).join('');
   return hashHex;
 }
 
