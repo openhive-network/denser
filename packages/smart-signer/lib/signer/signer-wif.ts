@@ -41,32 +41,16 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
     message,
     password = '' // WIF private key,
   }: SignChallenge): Promise<string> {
-    const { username, keyType } = this;
-    let storeKey: boolean = false;
-    try {
-      const storedWif = this.storage.getItem(`wif.${username}@${keyType}`);
-      let wif = storedWif ? JSON.parse(storedWif) : password;
-      if (!wif) {
-        wif = await this.getPasswordFromUser();
-      }
-      if (!wif) throw new Error('No WIF key');
-
-      const privateKey: PrivateKey = PrivateKey.fromString(wif);
-      const digestBuf: Buffer = cryptoUtils.sha256(message);
-      const signature: string = privateKey.sign(digestBuf).toString();
-      logger.info('wif', { signature, digest: digestBuf.toString('hex') });
-      return signature;
-    } catch (error) {
-      throw error;
-    }
+    const digest: Buffer = cryptoUtils.sha256(message);
+    return this.signDigest(digest, password)
   }
 
-  async signDigest(digest: THexString, password: string) {
+  async signDigest(digest: THexString | Buffer, password: string) {
     const { username, keyType } = this;
     const args = { username, password, digest, keyType };
     logger.info('signDigest args: %o', args);
-    let storeKey: boolean = false;
     try {
+      // Resolve WIF key
       let wif = password ?
           password
           : JSON.parse(this.storage.getItem(`wif.${username}@${keyType}`) || '""');
@@ -75,9 +59,15 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
       }
       if (!wif) throw new Error('No WIF key');
 
+      // Convert digest to Buffer, if it is string.
+      if (typeof digest === 'string') {
+        digest = Buffer.from(digest, 'hex');
+      }
+
+      // Sign digest
       const privateKey = PrivateKey.fromString(wif);
-      const hash = Buffer.from(digest, 'hex');
-      const signature = privateKey.sign(hash).toString();
+      const signature = privateKey.sign(digest).toString();
+
       return signature;
     } catch (error) {
       throw error;
