@@ -8,10 +8,11 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@ui/components/dialog';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@hive/ui/components/select';
 import Link from 'next/link';
 import { Icons } from '@ui/components/icons';
+import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 
 type AccountFormValues = {
   title: string;
@@ -44,29 +45,39 @@ export function AdvancedSettingsPostForm({
   const [splitRewards, setSplitRewards] = useState(100);
   const [customPayout, setCustomPayout] = useState(false);
   const [customValue, setCustomValue] = useState('');
+  const [template, setTemplate] = useState('');
+  const [storedTemplate, storeTemplate] = useLocalStorage<any>(template, '');
   const handleAddAccount = () => {
-    setBeneficiaries([...beneficiaries, { percent: '0', username: '' }]);
+    setBeneficiaries((prev) => [...prev, { percent: '0', username: '' }]);
   };
+  useEffect(() => {
+    const combinedPercentage = beneficiaries.reduce<number>((acc, beneficier) => {
+      return acc + +beneficier.percent;
+    }, 0);
+    setSplitRewards(100 - combinedPercentage);
+  }, [JSON.stringify(beneficiaries)]);
 
-  const handleDeleteItem = (index: number, percent: number) => {
+  const handleDeleteItem = (index: number) => {
     setBeneficiaries((prev) => {
       const newItems = [...prev];
       newItems.splice(index, 1);
       return newItems;
     });
-
-    setSplitRewards((prev) => prev + percent);
   };
 
-  const handleChangePercent = (index: number, percentChange: string) => {
+  const handleEditBeneficiary = (index: number, percent: string, username: string) => {
     setBeneficiaries((prev) => {
-      const newItems = [...prev];
-      newItems[index].percent = percentChange;
-      return newItems;
+      const updated = prev.map((beneficiary, beneficierIndex) =>
+        index !== beneficierIndex ? beneficiary : { percent, username }
+      );
+      const combinedPercentage = updated.reduce<number>((acc, beneficier) => {
+        return acc + Number(beneficier.percent);
+      }, 0);
+      setSplitRewards(100 - combinedPercentage);
+      return updated;
     });
-
-    setSplitRewards((prev) => prev - Number(percentChange));
   };
+
   function handlerMaxPayout(e: string) {
     switch (e) {
       case 'noLimit':
@@ -149,12 +160,17 @@ export function AdvancedSettingsPostForm({
               </li>
               {beneficiaries.map((item, index) => (
                 <div className="flex" key={index}>
-                  <Item onChangePercent={(percentChange) => handleChangePercent(index, percentChange)} />
+                  <Item
+                    onChangeBeneficiary={(percent, username) =>
+                      handleEditBeneficiary(index, percent, username)
+                    }
+                    beneficiary={item}
+                  />
                   <Button
                     variant="link"
                     size="xs"
                     className="text-red-500"
-                    onClick={() => handleDeleteItem(index, Number(item.percent))}
+                    onClick={() => handleDeleteItem(index)}
                   >
                     Delete
                   </Button>
@@ -184,7 +200,11 @@ export function AdvancedSettingsPostForm({
                   <SelectItem value="1">1</SelectItem>
                 </SelectContent>
               </Select>
-              <Input placeholder="Name of a new template" />
+              <Input
+                placeholder="Name of a new template"
+                value={template}
+                onChange={(e) => setTemplate(e.target.value)}
+              />
             </div>
           </div>
         </div>
@@ -197,33 +217,25 @@ export function AdvancedSettingsPostForm({
     </Dialog>
   );
 }
-function Item({ onChangePercent }: { onChangePercent: (percentChange: string) => void }) {
-  const [user, setUser] = useState({ percent: '0', username: '' });
 
+interface ItemProps {
+  onChangeBeneficiary: (percent: string, username: string) => void;
+  beneficiary: { percent: string; username: string };
+}
+function Item({ onChangeBeneficiary, beneficiary }: ItemProps) {
   return (
     <li className="flex items-center gap-5">
       <Input
-        value={user.percent}
+        type="number"
+        value={beneficiary.percent}
         className="w-16"
-        onChange={(e) => {
-          setUser((prev) => {
-            return { ...prev, percent: e.target.value };
-          });
-          const percentChange = parseInt(e.target.value, 10);
-          if (!isNaN(percentChange) && percentChange !== 0) {
-            onChangePercent(percentChange.toString());
-          }
-        }}
+        onChange={(e) => onChangeBeneficiary(e.target.value, beneficiary.username)}
       />
       <div className="relative col-span-3">
         <Input
-          value={user.username}
+          value={beneficiary.username}
           className="block w-full px-3 py-2.5 pl-11"
-          onChange={(e) => {
-            setUser((prev) => {
-              return { ...prev, username: e.target.value };
-            });
-          }}
+          onChange={(e) => onChangeBeneficiary(beneficiary.percent, e.target.value)}
         />
         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
           <Icons.atSign className="h-5 w-5" />
