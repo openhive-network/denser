@@ -53,7 +53,7 @@ export class SignerHbauth extends Signer {
     await this.checkAuth(username, keyType);
 
     const signature = await this.signDigest(digest, password);
-    logger.info('hbauth', { signature });
+    logger.info('hbauth', { signature, digest });
     return signature;
   }
 

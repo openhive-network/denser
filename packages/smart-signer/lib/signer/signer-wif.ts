@@ -75,9 +75,9 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
         }
       }
 
-      const privateKey = PrivateKey.fromString(wif);
-      const digestBuf = cryptoUtils.sha256(message);
-      const signature = privateKey.sign(digestBuf).toString();
+      const privateKey: PrivateKey = PrivateKey.fromString(wif);
+      const digestBuf: Buffer = cryptoUtils.sha256(message);
+      const signature: string = privateKey.sign(digestBuf).toString();
       logger.info('wif', { signature, digest: digestBuf.toString('hex') });
       return signature;
     } catch (error) {
