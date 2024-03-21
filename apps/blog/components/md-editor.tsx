@@ -21,7 +21,7 @@ import { Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
 
 const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false });
 
-export const uploadImg = async (file: any, username: string, signer: Signer) => {
+export const uploadImg = async (file: any, username: string, signer: Signer): Promise<string> => {
   let data, dataBs64;
   if (file) {
     // drag and drop
@@ -47,7 +47,7 @@ export const uploadImg = async (file: any, username: string, signer: Signer) => 
 
   data = await data;
   const prefix = Buffer.from('ImageSigningChallenge');
-  const buf = Buffer.concat([prefix, data]);
+  const buf = Buffer.concat([prefix, data as unknown as Uint8Array]);
   const bufSha = cryptoUtils.sha256(buf);
 
   let sig;
@@ -63,71 +63,98 @@ export const uploadImg = async (file: any, username: string, signer: Signer) => 
 
   postUrl = `${env('IMAGES_ENDPOINT')}${username}/${sig}`;
 
-  const xhr = new XMLHttpRequest();
-  xhr.open('POST', postUrl);
-  xhr.onload = function () {
-    console.log(xhr.status, xhr.responseText);
-    if (xhr.status === 200) {
-      try {
-        const res = JSON.parse(xhr.responseText);
-        const { error } = res;
-        if (error) {
-          console.error('upload_error', error, xhr.responseText);
-          // progress({ error: 'Error: ' + error });
-          return;
-        }
+  const response = await fetch(postUrl, { method: 'POST', body: formData });
+  const resJSON = await response.json();
+  return resJSON.url;
 
-        const { url } = res;
-        // progress({ url });
-      } catch (e) {
-        console.error('upload_error2', 'not json', e, xhr.responseText);
-        // progress({ error: 'Error: response not JSON' });
-      }
-    } else {
-      console.error('upload_error3', xhr.status, xhr.statusText);
-      // progress({ error: `Error: ${xhr.status}: ${xhr.statusText}` });
-    }
-  };
-  xhr.onerror = function (error) {
-    console.error('xhr', filename, error);
-    // progress({ error: 'Unable to contact the server.' });
-  };
-  xhr.upload.onprogress = function (event) {
-    if (event.lengthComputable) {
-      const percent = Math.round((event.loaded / event.total) * 100);
-      // progress({ message: `Uploading ${percent}%` });
-    }
-  };
-  xhr.send(formData);
-  console.log('xhr.response', xhr.response);
+  // let retUrl = 'ret';
+  // const xhr = new XMLHttpRequest();
+  // console.log('before xhr open');
+  // xhr.open('POST', postUrl);
+  // xhr.onload = function () {
+  //   console.log('onload');
+  //   console.log(xhr.status, xhr.responseText);
+  //   if (xhr.status === 200) {
+  //     try {
+  //       const res = JSON.parse(xhr.responseText);
+  //       const { error } = res;
+  //       if (error) {
+  //         console.error('upload_error', error, xhr.responseText);
+  //         // progress({ error: 'Error: ' + error });
+  //         return;
+  //       }
+
+  //       const { url } = res;
+  //       console.log('I am here and have this url', url, 'the same as retUrl', retUrl);
+  //       // progress({ url });
+  //     } catch (e) {
+  //       console.error('upload_error2', 'not json', e, xhr.responseText);
+  //       // progress({ error: 'Error: response not JSON' });
+  //     }
+  //   } else {
+  //     console.error('upload_error3', xhr.status, xhr.statusText);
+  //     // progress({ error: `Error: ${xhr.status}: ${xhr.statusText}` });
+  //   }
+  // };
+  // xhr.onloadend = function () {
+  //   console.log('onloadedend');
+  // };
+  // xhr.onerror = function (error) {
+  //   console.error('xhr', file, error);
+  //   // progress({ error: 'Unable to contact the server.' });
+  // };
+  // xhr.upload.onprogress = function (event) {
+  //   if (event.lengthComputable) {
+  //     const percent = Math.round((event.loaded / event.total) * 100);
+  //     // progress({ message: `Uploading ${percent}%` });
+  //   }
+  // };
+  // xhr.send(formData);
+  // console.log('but after change retUrl what I have here', retUrl);
+  // xhr.onreadystatechange = function () {
+  //   if (xhr.readyState == 4 && xhr.status == 200) {
+  //     const res = JSON.parse(xhr.responseText);
+  //     const { url } = res;
+  //     console.log('onreadystatechange res', res, 'url', url);
+  //     retUrl = url;
+  //   }
+  // };
+  // return retUrl;
 };
 
 export const onImageUpload = async (file: string, api: any, username: string, signer: Signer) => {
   const url = await uploadImg(file, username, signer);
+  console.log('returned url', url);
 
-  const insertedMarkdown = `**![nazwa](${url})**`;
+  const insertedMarkdown = `**![handUpload](${url})**`;
   if (!insertedMarkdown) return;
 
   api.replaceSelection(insertedMarkdown);
 };
 
-export const onImageUpload_DnD = async (
-  file: any,
-  setMarkdown: { (value: SetStateAction<string>): void; (arg0: (prev: any) => string): void },
-  username: string
-) => {
+export const onImageUpload_DnD = async (file: any, api: any, username: string, signer: Signer) => {
   // const url = await uploadImg(file);
-  const url = await uploadImg(file, username);
+  const url = await uploadImg(file, username, signer);
+  console.log('url in onImageUpload_DnD', url);
 
-  const insertedMarkdown = `**![](${url})**`;
+  const insertedMarkdown = `**![${file.name}](${url})**`;
+  console.log('insertedMarkdown before', insertedMarkdown);
+
   if (!insertedMarkdown) return;
 
-  setMarkdown((prev) => prev + insertedMarkdown);
+  api.replaceSelection(insertedMarkdown);
+  // setMarkdown((prev) => {
+  //   console.log('prev markdown', prev);
+  //   console.log('insertedMarkdown in SET', insertedMarkdown);
+  //   return prev + insertedMarkdown;
+  // });
 };
 
 export const onImageDrop = async (
   dataTransfer: { items: string | any[]; files: { item: (arg0: number) => any } },
-  setMarkdown: Dispatch<SetStateAction<string>>
+  api: any,
+  username: string,
+  signer: Signer
 ) => {
   const files = [];
 
@@ -135,8 +162,9 @@ export const onImageDrop = async (
     const file = dataTransfer.files.item(index);
     if (file) files.push(file);
   }
+  console.log('files in onImageDrop', files);
 
-  await Promise.all(files.map(async (file) => onImageUpload_DnD(file, setMarkdown)));
+  await Promise.all(files.map(async (file) => onImageUpload_DnD(file, api, username, signer)));
 };
 
 const MdEditor = (data: {
@@ -200,7 +228,7 @@ const MdEditor = (data: {
       event.preventDefault();
       event.stopPropagation();
       setIsDrag(false);
-      await onImageDrop(event.dataTransfer, () => data.data.onChange);
+      await onImageDrop(event.dataTransfer, textApiRef.current, signer.username, signer);
     },
     []
   );
@@ -259,12 +287,12 @@ const MdEditor = (data: {
             ref={editorRef}
             preview="edit"
             value={data.data.value}
-            //@ts-ignore
             onChange={data.data.onChange}
             commands={[...(commands.getCommands() as any), imgBtn(inputRef, textApiRef)]}
             extraCommands={[]}
             //@ts-ignore
             style={{ '--color-canvas-default': 'var(--background)' }}
+            onDrop={(event) => console.log('onDrop', event)}
           />
         </div>
         {isDrag && (

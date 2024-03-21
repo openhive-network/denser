@@ -286,6 +286,7 @@ export default function PostForm({ username }: { username: string }) {
               <span className="text-sm text-destructive">{t('submit_page.markdown_styling_guide')}</span>
             </Link>
           </div>
+          {console.log('watchedValues.postArea', watchedValues.postArea)}
 
           {watchedValues.postArea && hiveRenderer ? (
             <div
