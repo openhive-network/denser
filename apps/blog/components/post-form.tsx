@@ -34,7 +34,10 @@ const defaultValues = {
   postSummary: '',
   tags: '',
   author: '',
-  category: ''
+  category: '',
+  beneficiaries: [],
+  maxAcceptedPayout: null,
+  payoutType: '50%'
 };
 
 export default function PostForm({ username }: { username: string }) {
@@ -67,7 +70,15 @@ export default function PostForm({ username }: { username: string }) {
         message: t('submit_page.to_many_tags')
       }),
     author: z.string().regex(/^$|^[[a-zAZ1-9]+$/, t('submit_page.must_contain_only')),
-    category: z.string()
+    category: z.string(),
+    beneficiaries: z.array(
+      z.object({
+        username: z.string(),
+        percent: z.string()
+      })
+    ),
+    maxAcceptedPayout: z.number().nullable(),
+    payoutType: z.string()
   });
 
   type AccountFormValues = z.infer<typeof accountFormSchema>;
@@ -77,7 +88,10 @@ export default function PostForm({ username }: { username: string }) {
     postSummary: storedPost?.postSummary ?? '',
     tags: storedPost?.tags ?? '',
     author: storedPost?.author ?? '',
-    category: storedPost?.category ?? ''
+    category: storedPost?.category ?? '',
+    beneficiaries: storedPost?.beneficiaries ?? [],
+    maxAcceptedPayout: storedPost?.maxAcceptedPayout ?? 0,
+    payoutType: storedPost?.payoutType ?? ''
   });
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
@@ -211,7 +225,7 @@ export default function PostForm({ username }: { username: string }) {
                 {t('submit_page.author_rewards')}
                 {' 50% HBD / 50% HP'}
               </span>
-              <AdvancedSettingsPostForm username={username}>
+              <AdvancedSettingsPostForm username={username} onChangeStore={storePost} data={storedPost}>
                 <span className="cursor-pointer text-xs text-destructive">
                   {t('submit_page.advanced_settings')}
                 </span>

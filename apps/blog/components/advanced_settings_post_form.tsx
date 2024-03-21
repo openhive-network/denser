@@ -13,18 +13,43 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import Link from 'next/link';
 import { Icons } from '@ui/components/icons';
 
-export function AdvancedSettingsPostForm({ children, username }: { children: ReactNode; username: string }) {
-  const [rewards, setRewards] = useState('50%');
-  const [maxPayout, setMaxPayout] = useState<string | null>(null);
-  const [items, setItems] = useState<{ percent: number; username: string }[]>([]);
-  const [splitRewards, setSplitRewards] = useState(100);
+type AccountFormValues = {
+  title: string;
+  postArea: string;
+  postSummary: string;
+  tags: string;
+  author: string;
+  category: string;
+  beneficiaries: {
+    username: string;
+    percent: string;
+  }[];
+  maxAcceptedPayout: number | null;
+  payoutType: string;
+};
 
+export function AdvancedSettingsPostForm({
+  children,
+  username,
+  onChangeStore,
+  data
+}: {
+  children: ReactNode;
+  username: string;
+  onChangeStore: (data: AccountFormValues) => void;
+  data: AccountFormValues;
+}) {
+  const [rewards, setRewards] = useState('50%');
+  const [beneficiaries, setBeneficiaries] = useState<{ percent: string; username: string }[]>([]);
+  const [splitRewards, setSplitRewards] = useState(100);
+  const [customPayout, setCustomPayout] = useState(false);
+  const [customValue, setCustomValue] = useState('');
   const handleAddAccount = () => {
-    setItems([...items, { percent: 0, username: '' }]);
+    setBeneficiaries([...beneficiaries, { percent: '0', username: '' }]);
   };
 
   const handleDeleteItem = (index: number, percent: number) => {
-    setItems((prev) => {
+    setBeneficiaries((prev) => {
       const newItems = [...prev];
       newItems.splice(index, 1);
       return newItems;
@@ -33,30 +58,39 @@ export function AdvancedSettingsPostForm({ children, username }: { children: Rea
     setSplitRewards((prev) => prev + percent);
   };
 
-  const handleChangePercent = (index: number, percentChange: number) => {
-    setItems((prev) => {
+  const handleChangePercent = (index: number, percentChange: string) => {
+    setBeneficiaries((prev) => {
       const newItems = [...prev];
       newItems[index].percent = percentChange;
       return newItems;
     });
 
-    setSplitRewards((prev) => prev - percentChange);
+    setSplitRewards((prev) => prev - Number(percentChange));
   };
   function handlerMaxPayout(e: string) {
     switch (e) {
       case 'noLimit':
-        setMaxPayout(null);
+        setRewards('50%');
+        setCustomPayout(false);
         break;
       case 'decline':
-        setMaxPayout('0');
         setRewards('0%');
+        setCustomPayout(false);
         break;
       case 'custom':
-        setMaxPayout('');
+        setRewards((prev) => (prev === '0' || '50%' ? '50%' : '100%'));
+        setCustomPayout(true);
         break;
     }
   }
-
+  function onSave() {
+    onChangeStore({
+      ...data,
+      beneficiaries: beneficiaries,
+      maxAcceptedPayout: customPayout || customValue === '0' ? Number(customValue) : null,
+      payoutType: rewards
+    });
+  }
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -80,13 +114,9 @@ export function AdvancedSettingsPostForm({ children, username }: { children: Rea
                   <SelectItem value="custom">Custom value</SelectItem>
                 </SelectContent>
               </Select>
-              {typeof maxPayout === 'string' && (
-                <Input
-                  type="number"
-                  value={maxPayout ? maxPayout : ''}
-                  onChange={(e) => setMaxPayout(e.target.value)}
-                />
-              )}
+              {customPayout ? (
+                <Input type="number" value={customValue} onChange={(e) => setCustomValue(e.target.value)} />
+              ) : null}
             </div>
           </div>
           <div className="flex flex-col gap-3">
@@ -117,14 +147,14 @@ export function AdvancedSettingsPostForm({ children, username }: { children: Rea
                   </div>
                 </div>
               </li>
-              {items.map((item, index) => (
+              {beneficiaries.map((item, index) => (
                 <div className="flex" key={index}>
                   <Item onChangePercent={(percentChange) => handleChangePercent(index, percentChange)} />
                   <Button
                     variant="link"
                     size="xs"
                     className="text-red-500"
-                    onClick={() => handleDeleteItem(index, item.percent)}
+                    onClick={() => handleDeleteItem(index, Number(item.percent))}
                   >
                     Delete
                   </Button>
@@ -132,7 +162,7 @@ export function AdvancedSettingsPostForm({ children, username }: { children: Rea
               ))}
             </ul>
 
-            {items.length < 8 ? (
+            {beneficiaries.length < 8 ? (
               <Button
                 variant="link"
                 className="h-fit w-fit px-0 py-1 text-xs text-red-500"
@@ -159,7 +189,7 @@ export function AdvancedSettingsPostForm({ children, username }: { children: Rea
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit" variant="redHover" disabled>
+          <Button type="submit" variant="redHover" onClick={() => onSave()}>
             Save
           </Button>
         </DialogFooter>
@@ -167,7 +197,7 @@ export function AdvancedSettingsPostForm({ children, username }: { children: Rea
     </Dialog>
   );
 }
-function Item({ onChangePercent }: { onChangePercent: (percentChange: number) => void }) {
+function Item({ onChangePercent }: { onChangePercent: (percentChange: string) => void }) {
   const [user, setUser] = useState({ percent: '0', username: '' });
 
   return (
@@ -181,7 +211,7 @@ function Item({ onChangePercent }: { onChangePercent: (percentChange: number) =>
           });
           const percentChange = parseInt(e.target.value, 10);
           if (!isNaN(percentChange) && percentChange !== 0) {
-            onChangePercent(percentChange);
+            onChangePercent(percentChange.toString());
           }
         }}
       />
