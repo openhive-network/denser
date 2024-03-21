@@ -53,8 +53,9 @@ export const uploadImg = async (file: any, username: string, signer: Signer) => 
   let sig;
   let postUrl;
   console.log('bufSha', bufSha);
+
   sig = await signer.signChallenge({
-    message: bufSha.toString(),
+    message: buf,
     password: ''
   });
 
@@ -155,7 +156,7 @@ const MdEditor = (data: {
   const { resolvedTheme } = useTheme();
   const signerOptions: SignerOptions = {
     username: user.username,
-    loginType: LoginType.hbauth,
+    loginType: user.loginType,
     keyType: KeyType.posting,
     apiEndpoint: 'https://api.hive.blog',
     storageType: 'localStorage'

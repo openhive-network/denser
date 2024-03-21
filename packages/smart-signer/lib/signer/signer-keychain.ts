@@ -62,7 +62,7 @@ export class SignerKeychain extends Signer {
       }
       const response = await keychain.signBuffer({
         username,
-        message,
+        message: typeof message === 'string' ? message : JSON.stringify(message),
         method: KeychainKeyTypes[keyType]
       });
       // There's not digest in response.
