@@ -45,16 +45,9 @@ export class SignerHbauth extends Signer {
     }
   }
 
-  // Create digest and return its signature made with signDigest.
   async signChallenge({ password = '', message }: SignChallenge): Promise<string> {
-    const { username, keyType } = this;
     const digest = cryptoUtils.sha256(message).toString('hex');
-
-    await this.checkAuth(username, keyType);
-
-    const signature = await this.signDigest(digest, password);
-    logger.info('hbauth', { signature, digest });
-    return signature;
+    return this.signDigest(digest, password);
   }
 
   async signTransaction({ digest, transaction }: SignTransaction) {
