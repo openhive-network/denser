@@ -79,7 +79,7 @@ export function LoginPanel(
       signatures[keyType] = signature;
     } catch (error) {
       logger.error('onSubmit error in signLoginChallenge', error);
-      setErrorMsg(t('pageLogin.signingFailed'));
+      setErrorMsg(t('pageLogin.loginFailed'));
       return;
     }
 

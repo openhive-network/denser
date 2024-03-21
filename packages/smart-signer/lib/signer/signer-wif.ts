@@ -47,33 +47,9 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
       const storedWif = this.storage.getItem(`wif.${username}@${keyType}`);
       let wif = storedWif ? JSON.parse(storedWif) : password;
       if (!wif) {
-        const formOptions: PasswordFormOptions = {
-          mode: "wif",
-          showInputStorePassword: true,
-          i18nKeysForCaptions: {
-            inputPasswordPlaceholder: ['login_form.private_key_placeholder', {keyType}],
-            inputStorePasswordLabel: 'password_form.store_key_label',
-            title: 'login_form.title_wif_dialog_password',
-          },
-        };
-        wif = await this.getPasswordFromUser(formOptions);
-        // TODO Ask user if he wants to store the key. If he answers
-        // "yes", verify the key before storing it. Another option: return
-        // callback to store key after successful login.
-        storeKey = true;
+        wif = await this.getPasswordFromUser();
       }
       if (!wif) throw new Error('No WIF key');
-
-
-      if (storeKey) {
-        // We don't know, if this key is correct, so we need to verify
-        // it. We don't want to store incorrect key.
-        if (await verifyPrivateKey(this.username, wif, this.keyType, this.apiEndpoint)) {
-          this.storage.setItem(`wif.${username}@${keyType}`, JSON.stringify(wif));
-        } else {
-          throw new Error('Invalid WIF key');
-        }
-      }
 
       const privateKey: PrivateKey = PrivateKey.fromString(wif);
       const digestBuf: Buffer = cryptoUtils.sha256(message);
@@ -95,31 +71,9 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
           password
           : JSON.parse(this.storage.getItem(`wif.${username}@${keyType}`) || '""');
       if (!wif) {
-        const formOptions: PasswordFormOptions = {
-          mode: "wif",
-          showInputStorePassword: true,
-          i18nKeysForCaptions: {
-            inputPasswordPlaceholder: ['login_form.private_key_placeholder', {keyType}],
-            title: 'login_form.title_wif_dialog_password',
-          },
-        };
-        wif = await this.getPasswordFromUser(formOptions);
-        // TODO Ask user if he wants to store the key. If he answers
-        // "yes", verify the key and store it. Another option: return
-        // callback to store key after successful login.
-        const storeKey: boolean = true;
+        wif = await this.getPasswordFromUser();
       }
-      if (!wif) throw new Error('No wif key');
-
-      if (storeKey) {
-        // We don't know, if this key is correct, so we need to verify
-        // it. We don't want to store incorrect key.
-        if (await verifyPrivateKey(this.username, wif, this.keyType, this.apiEndpoint)) {
-          this.storage.setItem(`wif.${username}@${keyType}`, JSON.stringify(wif));
-        } else {
-          throw new Error('Invalid WIF key');
-        }
-      }
+      if (!wif) throw new Error('No WIF key');
 
       const privateKey = PrivateKey.fromString(wif);
       const hash = Buffer.from(digest, 'hex');
@@ -130,21 +84,48 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
     }
   }
 
-  async getPasswordFromUser(
-    formOptions: PasswordFormOptions = {}
-  ): Promise<string> {
-    let password = '';
+  async getPasswordFromUser(): Promise<any> {
+    const { username, keyType, apiEndpoint } = this;
+    const passwordFormOptions: PasswordFormOptions = {
+      mode: "wif",
+      showInputStorePassword: true,
+      i18nKeysForCaptions: {
+        inputPasswordPlaceholder: [
+          'login_form.private_key_placeholder',
+          {keyType}
+        ],
+        inputStorePasswordLabel: 'password_form.store_key_label',
+        title: 'login_form.title_wif_dialog_password',
+      },
+    };
+
     try {
-      const result = await DialogWifModalPromise({
+      const {
+        password: wif,
+        storePassword: storeKey
+      } = await DialogWifModalPromise({
         isOpen: true,
-        ...formOptions
+        passwordFormOptions
       });
-      password = result as string;
-      logger.info('Return from PasswordModalPromise: %s', result);
-      return password;
+
+      if (storeKey) {
+        // We must verify key before storing it.
+        if (await verifyPrivateKey(
+            username, wif, keyType, apiEndpoint
+            )) {
+          this.storage.setItem(
+            `wif.${username}@${keyType}`,
+            JSON.stringify(wif)
+            );
+        } else {
+          throw new Error('Invalid WIF key from user');
+        }
+      }
+
+      return wif;
     } catch (error) {
-      logger.error('Return from PasswordModalPromise %s', error);
-      throw new Error('No password from user');
+      logger.error('Error in getPasswordFromUser %o', error);
+      throw new Error('No WIF key from user');
     }
   }
 

@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
 import { ReactNode, useState, FC } from 'react';
 import { useTranslation } from 'next-i18next';
 import { create, InstanceProps } from 'react-modal-promise';
-import { PasswordForm, PasswordFormSchema, PasswordFormOptions } from '@smart-signer/components/password-form';
+import { PasswordForm, PasswordFormSchema, PasswordFormOptions, passwordFormDefaultValues } from '@smart-signer/components/password-form';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -24,6 +24,7 @@ export const DialogWif: FC<DialogWifProps & InstanceProps<unknown>> = ({
   const { t } = useTranslation(i18nNamespace);
   const [open, setOpen] = useState(isOpen);
   const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState(passwordFormDefaultValues);
   const [errorMsg, setErrorMsg] = useState('');
 
   const onSubmit = async (data: PasswordFormSchema) => {
@@ -31,14 +32,15 @@ export const DialogWif: FC<DialogWifProps & InstanceProps<unknown>> = ({
     const { password } = data;
     setErrorMsg('');
     setPassword(password);
+    setFormData(data);
     setOpen(false);
-    onResolve(password);
+    onResolve(data);
   };
 
   const onOpenChange = (value: boolean) => {
     setOpen(value);
     if (password) {
-      onResolve(password);
+      onResolve(formData);
     } else {
       onReject('rejected');
     }

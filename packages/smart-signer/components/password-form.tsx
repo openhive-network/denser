@@ -29,7 +29,7 @@ const passwordFormSchema = z.object({
 
 export type PasswordFormSchema = z.infer<typeof passwordFormSchema>;
 
-const passwordFormDefaultValues = {
+export const passwordFormDefaultValues = {
   password: '',
   storePassword: false,
 };
@@ -46,7 +46,7 @@ export interface PasswordFormI18nKeysForCaptions {
 }
 
 export interface PasswordFormOptions {
-  mode?: 'regular' | 'wif'
+  mode?: 'hbauth' | 'wif'
   showInputStorePassword?: boolean;
   errorMessage?: string;
   onSubmit?: (data: PasswordFormSchema) => any;
@@ -55,7 +55,7 @@ export interface PasswordFormOptions {
 }
 
 export function PasswordForm({
-  mode = 'regular',
+  mode = 'hbauth',
   showInputStorePassword = true,
   errorMessage = '',
   onSubmit = (data: PasswordFormSchema) => {},

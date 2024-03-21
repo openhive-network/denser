@@ -143,7 +143,7 @@ export function LoginPanel(
 
     } catch (error) {
       logger.error('onSubmit error in signLoginChallenge', error);
-      setErrorMsg(t('pageLogin.signingFailed'));
+      setErrorMsg(t('pageLogin.loginFailed'));
       return;
     }
 
