@@ -13,7 +13,9 @@ export enum PasswordFormMode {
 }
 
 // Hbauth password (de facto regular password)
-const passwordHbauth = z.string().min(1).max(512);
+const passwordHbauth = z.string()
+  .min(1, 'Password must contain at least 1 character')
+  .max(512, 'Password must contain at most 512 characters');
 
 const passwordFormSchemaHbauth = z.object({
   password: passwordHbauth,

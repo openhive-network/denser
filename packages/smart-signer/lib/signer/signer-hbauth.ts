@@ -1,8 +1,9 @@
 import { cryptoUtils } from '@hiveio/dhive';
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
 import { SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
-import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
 import { THexString, createWaxFoundation, TTransactionPackType } from '@hive/wax';
+import { DialogWifModalPromise } from '@smart-signer/components/dialog-wif';
+import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/password-form';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -29,23 +30,39 @@ export class SignerHbauth extends Signer {
     await authClient.logout();
   }
 
-  async getPasswordFromUser(dialogProps: { [key: string]: any } = {}): Promise<string> {
-    let password = '';
+  /**
+   * Displays dialog and asks user to enter password for unlocking
+   * wallet.
+   *
+   * @returns {Promise<string>}
+   * @memberof SignerHbauth
+   */
+  async getPasswordFromUser(): Promise<string> {
+    const passwordFormOptions: PasswordFormOptions = {
+      mode: PasswordFormMode.HBAUTH,
+      showInputStorePassword: false,
+      i18nKeysForCaptions: {
+        inputPasswordPlaceholder: 'login_form.password_hbauth_placeholder',
+      },
+    };
+
     try {
-      const result = await DialogPasswordModalPromise({
+      const {
+        password
+      } = await DialogWifModalPromise({
         isOpen: true,
-        ...dialogProps
+        passwordFormOptions
       });
-      password = result as string;
-      logger.info('Return from PasswordModalPromise: %s', result);
       return password;
     } catch (error) {
-      logger.error('Return from PasswordModalPromise %s', error);
+      logger.error('Error in getPasswordFromUser: %o', error);
       throw new Error('No password from user');
     }
   }
 
-  async signChallenge({ password = '', message }: SignChallenge): Promise<string> {
+  async signChallenge(
+    { password = '', message }: SignChallenge
+    ): Promise<string> {
     const digest = cryptoUtils.sha256(message).toString('hex');
     return this.signDigest(digest, password);
   }
@@ -79,11 +96,9 @@ export class SignerHbauth extends Signer {
     const checkAuthResult = await this.checkAuth(username, keyType);
     if (!checkAuthResult) {
       if (!password) {
-        password = await this.getPasswordFromUser({
-          i18nKeyPlaceholder: ['login_form.password_hbauth_placeholder', {}],
-          // i18nKeyDescription: ['login_form.title_hbauth_dialog_password', {username, keyType}]
-        });
+        password = await this.getPasswordFromUser();
       }
+      if (!password) throw new Error('No password to unlock key');
 
       logger.info('authClient.authenticate args: %o', { username, password, keyType });
       const authStatus = await authClient.authenticate(
@@ -93,7 +108,7 @@ export class SignerHbauth extends Signer {
       );
       logger.info('authStatus', { authStatus });
       if (!authStatus.ok) {
-        throw new Error(`Unlocking wallet failed`);
+        throw new Error(`Unlocking key failed`);
       }
     }
 

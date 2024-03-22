@@ -6,9 +6,10 @@ import { isBrowser, AuthUser } from '@hive/hb-auth';
 import type { KeyAuthorityType } from '@hive/hb-auth';
 import { toast } from '@ui/components/hooks/use-toast';
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
-import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
+import { DialogWifModalPromise } from '@smart-signer/components/dialog-wif';
 import { RadioGroup } from '@ui/components/radio-group';
 import { radioGroupItems, IRadioGroupItem } from '@smart-signer/components/radio-group-item';
+import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/password-form';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -88,12 +89,22 @@ export function DialogHBAuth({
         } else {
           let password = '';
           try {
-            const result = await DialogPasswordModalPromise({
+            const passwordFormOptions: PasswordFormOptions = {
+              mode: PasswordFormMode.HBAUTH,
+              showInputStorePassword: false,
+              i18nKeysForCaptions: {
+                inputPasswordPlaceholder: 'login_form.password_hbauth_placeholder',
+              },
+            };
+
+            const {
+              password: result
+            } = await DialogWifModalPromise({
               isOpen: true,
-              i18nKeyPlaceholder: ['login_form.password_hbauth_placeholder', {}]
-              // i18nKeyDescription: ['login_form.title_hbauth_dialog_password', {username, keyType}]
+              passwordFormOptions
             });
             password = result;
+
             if (!password) {
               updateStatus(null, 'No password');
               return;

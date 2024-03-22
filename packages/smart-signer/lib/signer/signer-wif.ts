@@ -78,10 +78,10 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
    * Displays dialog and asks user to enter password (WIF key). Also
    * triggers storing this password, if user wants this.
    *
-   * @returns {Promise<any>}
+   * @returns {Promise<string>}
    * @memberof SignerWif
    */
-  async getPasswordFromUser(): Promise<any> {
+  async getPasswordFromUser(): Promise<string> {
     const { keyType } = this;
     const passwordFormOptions: PasswordFormOptions = {
       mode: PasswordFormMode.WIF,
@@ -111,7 +111,7 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
 
       return wif;
     } catch (error) {
-      logger.error('Error in getPasswordFromUser %o', error);
+      logger.error('Error in getPasswordFromUser: %o', error);
       throw new Error('No WIF key from user');
     }
   }
