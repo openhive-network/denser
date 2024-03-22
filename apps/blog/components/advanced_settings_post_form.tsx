@@ -29,6 +29,16 @@ type AccountFormValues = {
   payoutType: string;
 };
 
+type Template = {
+  title: string;
+  beneficiaries: {
+    username: string;
+    percent: string;
+  }[];
+  maxAcceptedPayout: number | null;
+  payoutType: string;
+};
+
 export function AdvancedSettingsPostForm({
   children,
   username,
@@ -45,14 +55,14 @@ export function AdvancedSettingsPostForm({
   const [splitRewards, setSplitRewards] = useState(100);
   const [customPayout, setCustomPayout] = useState(false);
   const [customValue, setCustomValue] = useState('');
-  const [template, setTemplate] = useState('');
-  const [storedTemplate, storeTemplate] = useLocalStorage<any>(template, '');
+  const [templateTitle, setTemplateTitle] = useState('');
+  const [storedTemplate, storeTemplate] = useLocalStorage<Template[]>(`hivePostTemplates-${username}`, []);
   const handleAddAccount = () => {
     setBeneficiaries((prev) => [...prev, { percent: '0', username: '' }]);
   };
   useEffect(() => {
-    const combinedPercentage = beneficiaries.reduce<number>((acc, beneficier) => {
-      return acc + +beneficier.percent;
+    const combinedPercentage = beneficiaries.reduce<number>((acc, beneficiary) => {
+      return acc + +beneficiary.percent;
     }, 0);
     setSplitRewards(100 - combinedPercentage);
   }, [JSON.stringify(beneficiaries)]);
@@ -67,11 +77,11 @@ export function AdvancedSettingsPostForm({
 
   const handleEditBeneficiary = (index: number, percent: string, username: string) => {
     setBeneficiaries((prev) => {
-      const updated = prev.map((beneficiary, beneficierIndex) =>
-        index !== beneficierIndex ? beneficiary : { percent, username }
+      const updated = prev.map((beneficiary, beneficiaryIndex) =>
+        index !== beneficiaryIndex ? beneficiary : { percent, username }
       );
-      const combinedPercentage = updated.reduce<number>((acc, beneficier) => {
-        return acc + Number(beneficier.percent);
+      const combinedPercentage = updated.reduce<number>((acc, beneficiary) => {
+        return acc + Number(beneficiary.percent);
       }, 0);
       setSplitRewards(100 - combinedPercentage);
       return updated;
@@ -95,6 +105,17 @@ export function AdvancedSettingsPostForm({
     }
   }
   function onSave() {
+    if (templateTitle !== '') {
+      storeTemplate([
+        ...storedTemplate,
+        {
+          title: templateTitle,
+          beneficiaries: beneficiaries,
+          maxAcceptedPayout: customPayout || customValue === '0' ? Number(customValue) : null,
+          payoutType: rewards
+        }
+      ]);
+    }
     onChangeStore({
       ...data,
       beneficiaries: beneficiaries,
@@ -202,8 +223,8 @@ export function AdvancedSettingsPostForm({
               </Select>
               <Input
                 placeholder="Name of a new template"
-                value={template}
-                onChange={(e) => setTemplate(e.target.value)}
+                value={templateTitle}
+                onChange={(e) => setTemplateTitle(e.target.value)}
               />
             </div>
           </div>
