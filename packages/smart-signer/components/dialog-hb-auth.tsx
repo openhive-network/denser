@@ -6,7 +6,7 @@ import { isBrowser, AuthUser } from '@hive/hb-auth';
 import type { KeyAuthorityType } from '@hive/hb-auth';
 import { toast } from '@ui/components/hooks/use-toast';
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
-import { DialogWifModalPromise } from '@smart-signer/components/dialog-wif';
+import { PasswordDialogModalPromise } from '@smart-signer/components/password-dialog';
 import { RadioGroup } from '@ui/components/radio-group';
 import { radioGroupItems, IRadioGroupItem } from '@smart-signer/components/radio-group-item';
 import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/password-form';
@@ -99,7 +99,7 @@ export function DialogHBAuth({
 
             const {
               password: result
-            } = await DialogWifModalPromise({
+            } = await PasswordDialogModalPromise({
               isOpen: true,
               passwordFormOptions
             });

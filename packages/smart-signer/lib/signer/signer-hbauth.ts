@@ -2,7 +2,7 @@ import { cryptoUtils } from '@hiveio/dhive';
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
 import { SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
 import { THexString, createWaxFoundation, TTransactionPackType } from '@hive/wax';
-import { DialogWifModalPromise } from '@smart-signer/components/dialog-wif';
+import { PasswordDialogModalPromise } from '@smart-signer/components/password-dialog';
 import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/password-form';
 
 import { getLogger } from '@ui/lib/logging';
@@ -49,7 +49,7 @@ export class SignerHbauth extends Signer {
     try {
       const {
         password
-      } = await DialogWifModalPromise({
+      } = await PasswordDialogModalPromise({
         isOpen: true,
         passwordFormOptions
       });

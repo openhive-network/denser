@@ -22,9 +22,8 @@ const passwordFormSchemaHbauth = z.object({
 });
 export type PasswordFormSchemaHbauth = z.infer<typeof passwordFormSchemaHbauth>;
 
-export const passwordFormDefaultValues = {
+export const passwordFormDefaultValuesHbauth = {
   password: '',
-  storePassword: false,
 };
 
 // Wif password
@@ -47,6 +46,11 @@ const passwordFormSchemaWif = z.object({
   storePassword: z.boolean(),
 });
 export type PasswordFormSchemaWif = z.infer<typeof passwordFormSchemaWif>;
+
+export const passwordFormDefaultValuesWif = {
+  password: '',
+  storePassword: false,
+};
 
 // captions for inputs, buttons, form title etc.
 export interface PasswordFormI18nKeysForCaptions {
@@ -94,10 +98,13 @@ export function PasswordForm({
     {...defaultI18nKeysForCaptions, ...i18nKeysForCaptions};
 
   let resolver;
+  let passwordFormDefaultValues;
   if (mode === PasswordFormMode.HBAUTH) {
     resolver = passwordFormSchemaHbauth;
+    passwordFormDefaultValues = passwordFormDefaultValuesHbauth
   } else if (mode === PasswordFormMode.WIF) {
     resolver = passwordFormSchemaWif;
+    passwordFormDefaultValues = passwordFormDefaultValuesWif
   } else {
     throw new Error('Invalid mode');
   }

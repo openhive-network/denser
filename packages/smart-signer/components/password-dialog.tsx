@@ -2,18 +2,21 @@ import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
 import { ReactNode, useState, FC } from 'react';
 import { useTranslation } from 'next-i18next';
 import { create, InstanceProps } from 'react-modal-promise';
-import { PasswordForm, PasswordFormSchema, PasswordFormOptions, passwordFormDefaultValues } from '@smart-signer/components/password-form';
+import {
+  PasswordForm, PasswordFormSchemaHbauth, PasswordFormSchemaWif,
+  PasswordFormOptions, passwordFormDefaultValuesWif
+} from '@smart-signer/components/password-form';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
-interface DialogWifProps {
+interface PasswordDialogProps {
   children?: ReactNode;
   passwordFormOptions?: PasswordFormOptions;
   i18nNamespace?: string;
 }
 
-export const DialogWif: FC<DialogWifProps & InstanceProps<unknown>> = ({
+export const PasswordDialog: FC<PasswordDialogProps & InstanceProps<unknown>> = ({
   children,
   isOpen = false,
   onResolve,
@@ -24,10 +27,15 @@ export const DialogWif: FC<DialogWifProps & InstanceProps<unknown>> = ({
   const { t } = useTranslation(i18nNamespace);
   const [open, setOpen] = useState(isOpen);
   const [password, setPassword] = useState('');
-  const [formData, setFormData] = useState(passwordFormDefaultValues);
+  const [formData, setFormData] =
+    useState<PasswordFormSchemaHbauth | PasswordFormSchemaWif>(
+      passwordFormDefaultValuesWif
+      );
   const [errorMsg, setErrorMsg] = useState('');
 
-  const onSubmit = async (data: PasswordFormSchema) => {
+  const onSubmit = async (
+      data: PasswordFormSchemaHbauth | PasswordFormSchemaWif
+      ) => {
     logger.info('onSubmit form data', data);
     const { password } = data;
     setErrorMsg('');
@@ -59,7 +67,8 @@ export const DialogWif: FC<DialogWifProps & InstanceProps<unknown>> = ({
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[600px]" onInteractOutside={onInteractOutside}>
+      <DialogContent className="sm:max-w-[600px]"
+          onInteractOutside={onInteractOutside}>
         <PasswordForm
           onSubmit={onSubmit}
           errorMessage={errorMsg}
@@ -72,4 +81,4 @@ export const DialogWif: FC<DialogWifProps & InstanceProps<unknown>> = ({
   );
 };
 
-export const DialogWifModalPromise = create(DialogWif);
+export const PasswordDialogModalPromise = create(PasswordDialog);

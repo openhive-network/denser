@@ -5,7 +5,7 @@ import { SignerHbauth } from '@smart-signer/lib/signer/signer-hbauth';
 import { StorageMixin } from '@smart-signer/lib/storage-mixin';
 import { TTransactionPackType, THexString } from '@hive/wax';
 import { verifyPrivateKey } from '@smart-signer/lib/utils';
-import { DialogWifModalPromise } from '@smart-signer/components/dialog-wif';
+import { PasswordDialogModalPromise } from '@smart-signer/components/password-dialog';
 import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/password-form';
 
 import { getLogger } from '@hive/ui/lib/logging';
@@ -100,7 +100,7 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
       const {
         password: wif,
         storePassword: storeKey
-      } = await DialogWifModalPromise({
+      } = await PasswordDialogModalPromise({
         isOpen: true,
         passwordFormOptions
       });
