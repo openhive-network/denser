@@ -50,22 +50,33 @@ export function AdvancedSettingsPostForm({
   onChangeStore: (data: AccountFormValues) => void;
   data: AccountFormValues;
 }) {
-  const [rewards, setRewards] = useState('50%');
-  const [beneficiaries, setBeneficiaries] = useState<{ percent: string; username: string }[]>([]);
+  const [rewards, setRewards] = useState(data ? data.payoutType : '50%');
   const [splitRewards, setSplitRewards] = useState(100);
-  const [customPayout, setCustomPayout] = useState(false);
-  const [customValue, setCustomValue] = useState('');
+  const [customPayout, setCustomPayout] = useState(data.maxAcceptedPayout !== null);
   const [templateTitle, setTemplateTitle] = useState('');
+  const [beneficiaries, setBeneficiaries] = useState<{ percent: string; username: string }[]>(
+    data ? data.beneficiaries : []
+  );
+  const [customValue, setCustomValue] = useState(
+    data.maxAcceptedPayout !== null ? data.maxAcceptedPayout : ''
+  );
   const [storedTemplate, storeTemplate] = useLocalStorage<Template[]>(`hivePostTemplates-${username}`, []);
-  const handleAddAccount = () => {
-    setBeneficiaries((prev) => [...prev, { percent: '0', username: '' }]);
-  };
+  const hasDuplicateUsernames = beneficiaries.reduce((acc, beneficiary, index, array) => {
+    const isDuplicate = array.slice(index + 1).some((b) => b.username === beneficiary.username);
+    return acc || isDuplicate;
+  }, false);
+  const isTemplateStored = storedTemplate.some((template) => template.title === templateTitle);
+
   useEffect(() => {
     const combinedPercentage = beneficiaries.reduce<number>((acc, beneficiary) => {
       return acc + +beneficiary.percent;
     }, 0);
     setSplitRewards(100 - combinedPercentage);
   }, [JSON.stringify(beneficiaries)]);
+
+  const handleAddAccount = () => {
+    setBeneficiaries((prev) => [...prev, { percent: '0', username: '' }]);
+  };
 
   const handleDeleteItem = (index: number) => {
     setBeneficiaries((prev) => {
@@ -88,7 +99,7 @@ export function AdvancedSettingsPostForm({
     });
   };
 
-  function handlerMaxPayout(e: string) {
+  function handleMaxPayout(e: 'noLimit' | 'decline' | 'custom') {
     switch (e) {
       case 'noLimit':
         setRewards('50%');
@@ -104,6 +115,22 @@ export function AdvancedSettingsPostForm({
         break;
     }
   }
+
+  function handleTamplates(e: string) {
+    const template = storedTemplate.find((template) => template.title === e);
+    setBeneficiaries(template ? template?.beneficiaries : []);
+    if (template?.maxAcceptedPayout === null) {
+      handleMaxPayout('noLimit');
+    }
+    if (template?.maxAcceptedPayout === 0) {
+      handleMaxPayout('decline');
+    } else {
+      handleMaxPayout('custom');
+      setCustomValue(typeof template?.maxAcceptedPayout === 'number' ? template.maxAcceptedPayout : 0);
+    }
+    setRewards(template ? template.payoutType : '50%');
+  }
+
   function onSave() {
     if (templateTitle !== '') {
       storeTemplate([
@@ -136,7 +163,10 @@ export function AdvancedSettingsPostForm({
             <span className="text-lg font-bold">Maximum Accepted Payout</span>
             <span>HBD value of the maximum payout this post will receive.</span>
             <div className="flex flex-col gap-1">
-              <Select onValueChange={(e) => handlerMaxPayout(e)} defaultValue="noLimit">
+              <Select
+                onValueChange={(e: 'noLimit' | 'decline' | 'custom') => handleMaxPayout(e)}
+                defaultValue="noLimit"
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -147,7 +177,12 @@ export function AdvancedSettingsPostForm({
                 </SelectContent>
               </Select>
               {customPayout ? (
-                <Input type="number" value={customValue} onChange={(e) => setCustomValue(e.target.value)} />
+                <>
+                  <Input type="number" value={customValue} onChange={(e) => setCustomValue(e.target.value)} />
+                  {Number(customValue) < 0 ? (
+                    <div className="p-2 text-red-600">Cannot be less than 0</div>
+                  ) : null}
+                </>
               ) : null}
             </div>
           </div>
@@ -173,7 +208,7 @@ export function AdvancedSettingsPostForm({
               <li className="flex items-center gap-5">
                 <Input value={splitRewards + '%'} disabled className="w-16" />
                 <div className="relative col-span-3">
-                  <Input disabled value={'username'} className="block w-full px-3 py-2.5 pl-11" />
+                  <Input disabled value={username} className="block w-full px-3 py-2.5 pl-11" />
                   <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                     <Icons.atSign className="h-5 w-5" />
                   </div>
@@ -198,6 +233,12 @@ export function AdvancedSettingsPostForm({
                 </div>
               ))}
             </ul>
+            {splitRewards < 0 ? (
+              <div className="p-2 text-red-600">Your percent cannot be less than 0</div>
+            ) : null}
+            {hasDuplicateUsernames ? (
+              <div className="p-2 text-red-600">Beneficiaries cannot be repeated</div>
+            ) : null}
 
             {beneficiaries.length < 8 ? (
               <Button
@@ -213,12 +254,19 @@ export function AdvancedSettingsPostForm({
             <span className="text-lg font-bold">Post templates</span>
             <span>Manage your post templates, other settings here will also be saved/loaded.</span>
             <div className="flex flex-col gap-1">
-              <Select>
+              <Select defaultValue="" onValueChange={(e) => handleTamplates(e)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Choose a template to load" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="1">1</SelectItem>
+                  <SelectItem value="">Choose a template to load</SelectItem>
+                  {storedTemplate
+                    ? storedTemplate.map((e) => (
+                        <SelectItem key={e.title} value={e.title}>
+                          {e.title}
+                        </SelectItem>
+                      ))
+                    : null}
                 </SelectContent>
               </Select>
               <Input
@@ -226,6 +274,9 @@ export function AdvancedSettingsPostForm({
                 value={templateTitle}
                 onChange={(e) => setTemplateTitle(e.target.value)}
               />
+              {isTemplateStored ? (
+                <div className="p-2 text-red-600">Beneficiaries cannot be repeated</div>
+              ) : null}
             </div>
           </div>
         </div>
