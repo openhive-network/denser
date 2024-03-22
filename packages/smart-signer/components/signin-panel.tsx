@@ -13,7 +13,7 @@ import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { KeyType } from '@smart-signer/types/common';
 import { useSigner } from '@smart-signer/lib/use-signer';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
-import { operation, vote, transfer } from '@hive/wax';
+import { operation, vote, transfer, ApiOperation } from '@hive/wax';
 import dynamic from 'next/dynamic';
 
 import { getLogger } from '@ui/lib/logging';
@@ -27,6 +27,47 @@ interface LoginPanelOptions {
   strict: boolean; // if true use strict authentication
   i18nNamespace?: string
   enabledLoginTypes?: LoginType[];
+}
+
+async function getOperationForLogin(
+  username: string,
+  keyType: KeyType,
+  loginChallenge: string
+): Promise<operation> {
+  const hiveChain = await hiveChainService.getHiveChain();
+  let operation: operation;
+  if (keyType === KeyType.posting) {
+    const voteLoginChallenge: vote = vote.create({
+      voter: username,
+      author: "author",
+      permlink: loginChallenge,
+      weight: 10000,
+    });
+    operation = { vote: voteLoginChallenge };
+  } else if (keyType === KeyType.active) {
+    const transferLoginChallenge: transfer = transfer.create({
+      from_account: username,
+      to_account: username,
+      amount: hiveChain.hive(1),
+      memo: loginChallenge,
+    });
+    operation = { transfer: transferLoginChallenge };
+  } else {
+    throw new Error('Unsupported keyType');
+  }
+  return operation;
+}
+
+function getLoginChallengeFromOperationForLogin(operation: ApiOperation, keyType: KeyType): string {
+  let loginChallenge = '';
+  if (keyType === KeyType.posting) {
+    loginChallenge = (operation as any).value['permlink'];
+  } else if (keyType === KeyType.active) {
+    loginChallenge = (operation as any).value['memo'];
+  } else {
+    throw new Error('Unsupported keyType');
+  }
+  return loginChallenge;
 }
 
 export function LoginPanel(
@@ -65,43 +106,23 @@ export function LoginPanel(
     logger.info('onSubmit form data', data);
     setErrorMsg('');
 
-  const { loginType, username, keyType } = data;
-  const signatures: Signatures = { posting: '', active: '' };
-  let hivesignerToken = '';
+    const { loginType, username, keyType } = data;
+    const signatures: Signatures = { posting: '', active: '' };
+    let hivesignerToken = '';
 
-  const loginSignerOptions: SignerOptions = {
-    ...signerOptions,
-    ...{
-      username,
-      loginType,
-      keyType
-    }
-  };
-
-  try {
-      const hiveChain = await hiveChainService.getHiveChain();
-
-      let operation: operation;
-      if (keyType === KeyType.posting) {
-        const voteLoginChallenge: vote = vote.create({
-          voter: username,
-          author: "author",
-          permlink: loginChallenge,
-          weight: 10000,
-        });
-        operation = { vote: voteLoginChallenge };
-      } else if (keyType === KeyType.active) {
-        const transferLoginChallenge: transfer = transfer.create({
-          from_account: username,
-          to_account: username,
-          amount: hiveChain.hive(1),
-          memo: loginChallenge,
-        });
-        operation = { transfer: transferLoginChallenge };
-      } else {
-        throw new Error('Unsupported keyType');
+    const loginSignerOptions: SignerOptions = {
+      ...signerOptions,
+      ...{
+        username,
+        loginType,
+        keyType
       }
+    };
 
+    try {
+      const hiveChain = await hiveChainService.getHiveChain();
+      const operation: operation = await getOperationForLogin(
+          username, keyType, loginChallenge);
       const txBuilder = await hiveChain.getTransactionBuilder();
       txBuilder.push(operation);
       txBuilder.validate();
@@ -115,16 +136,13 @@ export function LoginPanel(
       });
       logger.info('signature: %s', signature);
       txBuilder.build(signature);
+      signatures[keyType] = signature;
 
       logger.info('transaction: %o', {
         pack,
         toApi: txBuilder.toApi(),
-        toString: txBuilder.toString(),
-        parsedToApi: JSON.parse(txBuilder.toApi()),
-        parsedToString: JSON.parse(txBuilder.toString()),
+        toApiParsed: JSON.parse(txBuilder.toApi()),
       });
-
-      signatures[keyType] = signature;
 
       const signInData: PostLoginSchema = {
         username,
@@ -137,15 +155,12 @@ export function LoginPanel(
         signatures,
         authenticateOnBackend,
       };
-
       await signIn.mutateAsync({ data: signInData, uid: slug });
-
     } catch (error) {
       logger.error('onSubmit error in signLoginChallenge', error);
       setErrorMsg(t('pageLogin.loginFailed'));
       return;
     }
-
   };
 
   return <DynamicLoginForm
