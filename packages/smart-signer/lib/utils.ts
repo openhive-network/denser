@@ -1,6 +1,4 @@
 import { createWaxFoundation, operation, THexString, ITransactionBuilder, TWaxExtended } from '@hive/wax';
-import { Type } from "class-transformer"
-import { ValidateNested } from "class-validator"
 import { fetchJson } from '@smart-signer/lib/fetch-json';
 import { isBrowser } from '@ui/lib/logger';
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';

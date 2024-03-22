@@ -10,11 +10,11 @@ import { LoginFormSchema } from '@smart-signer/components/signin-form';
 import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
-import { KeyType } from '@smart-signer/types/common';
 import { useSigner } from '@smart-signer/lib/use-signer';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
-import { operation, vote, transfer, ApiOperation } from '@hive/wax';
+import { operation } from '@hive/wax';
 import dynamic from 'next/dynamic';
+import { getOperationForLogin } from '@smart-signer/lib/login-operation';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -27,47 +27,6 @@ interface LoginPanelOptions {
   strict: boolean; // if true use strict authentication
   i18nNamespace?: string
   enabledLoginTypes?: LoginType[];
-}
-
-async function getOperationForLogin(
-  username: string,
-  keyType: KeyType,
-  loginChallenge: string
-): Promise<operation> {
-  const hiveChain = await hiveChainService.getHiveChain();
-  let operation: operation;
-  if (keyType === KeyType.posting) {
-    const voteLoginChallenge: vote = vote.create({
-      voter: username,
-      author: "author",
-      permlink: loginChallenge,
-      weight: 10000,
-    });
-    operation = { vote: voteLoginChallenge };
-  } else if (keyType === KeyType.active) {
-    const transferLoginChallenge: transfer = transfer.create({
-      from_account: username,
-      to_account: username,
-      amount: hiveChain.hive(1),
-      memo: loginChallenge,
-    });
-    operation = { transfer: transferLoginChallenge };
-  } else {
-    throw new Error('Unsupported keyType');
-  }
-  return operation;
-}
-
-function getLoginChallengeFromOperationForLogin(operation: ApiOperation, keyType: KeyType): string {
-  let loginChallenge = '';
-  if (keyType === KeyType.posting) {
-    loginChallenge = (operation as any).value['permlink'];
-  } else if (keyType === KeyType.active) {
-    loginChallenge = (operation as any).value['memo'];
-  } else {
-    throw new Error('Unsupported keyType');
-  }
-  return loginChallenge;
 }
 
 export function LoginPanel(
@@ -121,8 +80,8 @@ export function LoginPanel(
 
     try {
       const hiveChain = await hiveChainService.getHiveChain();
-      const operation: operation = await getOperationForLogin(
-          username, keyType, loginChallenge);
+      const operation: operation =
+        await getOperationForLogin(username, keyType, loginChallenge);
       const txBuilder = await hiveChain.getTransactionBuilder();
       txBuilder.push(operation);
       txBuilder.validate();

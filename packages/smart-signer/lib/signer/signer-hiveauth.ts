@@ -55,7 +55,7 @@ export class SignerHiveauth extends StorageMixin(SignerKeychain) {
       const authResponse: any = await new Promise((resolve) => {
         HiveAuthUtils.login(
           username,
-          message,
+          typeof message === 'string' ? message : JSON.stringify(message),
           (res) => {
             resolve(res);
           },
