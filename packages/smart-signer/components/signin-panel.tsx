@@ -14,16 +14,20 @@ import { KeyType } from '@smart-signer/types/common';
 import { useSigner } from '@smart-signer/lib/use-signer';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { operation, vote, transfer } from '@hive/wax';
-import Loading from '@hive/ui/components/loading';
 import dynamic from 'next/dynamic';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
-const DynamicLoginForm = dynamic(() => import('@smart-signer/components/signin-form'), {
-  // loading: () => <Loading loading={true} />,
-  ssr: false
-});
+const DynamicLoginForm = dynamic(
+  () => import('@smart-signer/components/signin-form'), {ssr: false});
+
+interface LoginPanelOptions {
+  authenticateOnBackend: boolean,
+  strict: boolean; // if true use strict authentication
+  i18nNamespace?: string
+  enabledLoginTypes?: LoginType[];
+}
 
 export function LoginPanel(
   {
@@ -35,12 +39,7 @@ export function LoginPanel(
       LoginType.keychain,
       LoginType.wif,
     ]
-}: {
-    authenticateOnBackend: boolean,
-    strict: boolean; // if true use strict authentication
-    i18nNamespace?: string
-    enabledLoginTypes?: LoginType[];
-  }
+  }: LoginPanelOptions
 ) {
   const router = useRouter();
   const slug = router.query.slug as string;

@@ -16,16 +16,18 @@ import { TTransactionPackType } from '@hive/wax';
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
+interface LoginPanelOptions {
+  authenticateOnBackend: boolean,
+  strict: boolean; // if true use strict authentication
+  i18nNamespace?: string;
+}
+
 export function LoginPanel(
   {
     authenticateOnBackend,
     strict,
     i18nNamespace = 'smart-signer'
-  }: {
-    authenticateOnBackend: boolean,
-    strict: boolean; // if true use strict authentication
-    i18nNamespace?: string;
-  }
+  }: LoginPanelOptions
 ) {
   const router = useRouter();
   const slug = router.query.slug as string;
