@@ -6,14 +6,14 @@ import { StorageMixin } from '@smart-signer/lib/storage-mixin';
 import { TTransactionPackType, THexString } from '@hive/wax';
 import { verifyPrivateKey } from '@smart-signer/lib/utils';
 import { DialogWifModalPromise } from '@smart-signer/components/dialog-wif';
-import { PasswordFormOptions } from '@smart-signer/components/password-form';
+import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/password-form';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
 /**
- * Signs challenges (any strings) or Hive transactions with Hive private
- * keys, using so known "Wif" custom tool, based on
+ * Signs challenges (any strings or byte arrays) or Hive transactions
+ * with Hive private keys, using so known "Wif" custom tool, based on
  * [@hiveio/dhive](https://openhive-network.github.io/dhive/) and Web
  * Storage API.
  *
@@ -74,10 +74,17 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
     }
   }
 
+  /**
+   * Displays dialog and asks user to enter password (WIF key). Also
+   * triggers storing this password, if user wants this.
+   *
+   * @returns {Promise<any>}
+   * @memberof SignerWif
+   */
   async getPasswordFromUser(): Promise<any> {
-    const { username, keyType, apiEndpoint } = this;
+    const { keyType } = this;
     const passwordFormOptions: PasswordFormOptions = {
-      mode: "wif",
+      mode: PasswordFormMode.WIF,
       showInputStorePassword: true,
       i18nKeysForCaptions: {
         inputPasswordPlaceholder: [
@@ -99,23 +106,34 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
       });
 
       if (storeKey) {
-        // We must verify key before storing it.
-        if (await verifyPrivateKey(
-            username, wif, keyType, apiEndpoint
-            )) {
-          this.storage.setItem(
-            `wif.${username}@${keyType}`,
-            JSON.stringify(wif)
-            );
-        } else {
-          throw new Error('Invalid WIF key from user');
-        }
+        this.storePassword(wif);
       }
 
       return wif;
     } catch (error) {
       logger.error('Error in getPasswordFromUser %o', error);
       throw new Error('No WIF key from user');
+    }
+  }
+
+  /**
+   * Stores password (WIF key) for future use.
+   *
+   * @param {''} wif
+   * @memberof SignerWif
+   */
+  async storePassword(wif: '') {
+    const { username, keyType, apiEndpoint } = this;
+    // Verify key before storing it.
+    if (await verifyPrivateKey(
+      username, wif, keyType, apiEndpoint
+      )) {
+    this.storage.setItem(
+      `wif.${username}@${keyType}`,
+      JSON.stringify(wif)
+      );
+    } else {
+      throw new Error('Invalid WIF key');
     }
   }
 

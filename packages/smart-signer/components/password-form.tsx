@@ -7,6 +7,26 @@ import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
+export enum PasswordFormMode {
+  HBAUTH = 'hbauth',
+  WIF = 'wif',
+}
+
+// Hbauth password (de facto regular password)
+const passwordHbauth = z.string().min(1).max(512);
+
+const passwordFormSchemaHbauth = z.object({
+  password: passwordHbauth,
+});
+export type PasswordFormSchemaHbauth = z.infer<typeof passwordFormSchemaHbauth>;
+
+export const passwordFormDefaultValues = {
+  password: '',
+  storePassword: false,
+};
+
+// Wif password
+
 const passwordWif = z.string().superRefine((val, ctx) => {
   const result = validateWifKey(val, (v) => v);
   if (result) {
@@ -20,19 +40,11 @@ const passwordWif = z.string().superRefine((val, ctx) => {
   return true;
 });
 
-const passwordRegular = z.string().min(1).max(512);
-
-const passwordFormSchema = z.object({
+const passwordFormSchemaWif = z.object({
   password: passwordWif,
   storePassword: z.boolean(),
 });
-
-export type PasswordFormSchema = z.infer<typeof passwordFormSchema>;
-
-export const passwordFormDefaultValues = {
-  password: '',
-  storePassword: false,
-};
+export type PasswordFormSchemaWif = z.infer<typeof passwordFormSchemaWif>;
 
 // captions for inputs, buttons, form title etc.
 export interface PasswordFormI18nKeysForCaptions {
@@ -46,19 +58,19 @@ export interface PasswordFormI18nKeysForCaptions {
 }
 
 export interface PasswordFormOptions {
-  mode?: 'hbauth' | 'wif'
+  mode?: PasswordFormMode;
   showInputStorePassword?: boolean;
   errorMessage?: string;
-  onSubmit?: (data: PasswordFormSchema) => any;
+  onSubmit?: (data: PasswordFormSchemaHbauth | PasswordFormSchemaWif) => any;
   i18nKeysForCaptions?: PasswordFormI18nKeysForCaptions;
   i18nNamespace?: string;
 }
 
 export function PasswordForm({
-  mode = 'hbauth',
+  mode = PasswordFormMode.HBAUTH,
   showInputStorePassword = true,
   errorMessage = '',
-  onSubmit = (data: PasswordFormSchema) => {},
+  onSubmit = (data: PasswordFormSchemaHbauth | PasswordFormSchemaWif) => {},
   i18nKeysForCaptions = {}, // captions for inputs, buttons, form title etc.
   i18nNamespace = 'smart-signer'
 }: PasswordFormOptions) {
@@ -79,13 +91,22 @@ export function PasswordForm({
   const captionKey: Required<PasswordFormI18nKeysForCaptions> =
     {...defaultI18nKeysForCaptions, ...i18nKeysForCaptions};
 
+  let resolver;
+  if (mode === PasswordFormMode.HBAUTH) {
+    resolver = passwordFormSchemaHbauth;
+  } else if (mode === PasswordFormMode.WIF) {
+    resolver = passwordFormSchemaWif;
+  } else {
+    throw new Error('Invalid mode');
+  }
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset
-  } = useForm<PasswordFormSchema>({
-    resolver: zodResolver(passwordFormSchema),
+  } = useForm<PasswordFormSchemaHbauth | PasswordFormSchemaWif>({
+    resolver: zodResolver(resolver),
     defaultValues: passwordFormDefaultValues
   });
 
