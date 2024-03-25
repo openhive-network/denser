@@ -10,6 +10,8 @@ import { IronSessionData } from '@smart-signer/types/common';
 import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { checkCsrfHeader } from '@smart-signer/lib/csrf-protection';
 import { verifyLoginChallenge } from '@smart-signer/lib/verify-login-challenge';
+import { verifyLogin } from '@smart-signer/lib/auth/use-sign-in';
+import { getLoginChallengeFromTransactionForLogin } from '@smart-signer/lib/login-operation'
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -35,6 +37,8 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
   //   logger.error(e);
   // }
 
+  const loginChallenge = req.cookies[`${cookieNamePrefix}login_challenge_server`] || '';
+
   const data: PostLoginSchema = await postLoginSchema.parseAsync(req.body);
   const { username, loginType, signatures, keyType } = data;
   let hiveUserProfile;
@@ -54,13 +58,20 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
     throw error;
   }
 
-  const loginChallenge = req.cookies[`${cookieNamePrefix}login_challenge_server`] || '';
+  // Check whether correct loginChallenge is enclosed in data.
+  const reguestLoginChallenge =
+    getLoginChallengeFromTransactionForLogin(JSON.parse(data.txJSON), keyType);
 
-  const result = verifyLoginChallenge(
-    chainAccount,
-    signatures,
-    JSON.stringify({ loginChallenge })
-  );
+  if (reguestLoginChallenge !== loginChallenge) {
+    throw new createHttpError[401]('Invalid login challenge');
+  }
+
+  let result;
+  try {
+    result = await verifyLogin(data);
+  } catch (error) {
+    // swallow error
+  }
 
   if (!result) {
     if (slug) {

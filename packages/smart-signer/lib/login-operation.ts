@@ -1,5 +1,5 @@
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
-import { operation, vote, transfer, ApiOperation } from '@hive/wax';
+import { operation, vote, transfer, ApiOperation, ApiTransaction } from '@hive/wax';
 import { KeyType } from '@smart-signer/types/common';
 
 export async function getOperationForLogin(
@@ -29,6 +29,14 @@ export async function getOperationForLogin(
         throw new Error('Unsupported keyType');
     }
     return operation;
+}
+
+export function getLoginChallengeFromTransactionForLogin(
+    tx: ApiTransaction,
+    keyType: KeyType
+): string {
+    const operation: ApiOperation = tx.operations[0];
+    return getLoginChallengeFromOperationForLogin(operation, keyType);
 }
 
 export function getLoginChallengeFromOperationForLogin(

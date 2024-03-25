@@ -31,7 +31,7 @@ const logger = getLogger('app');
  * @param {string} [uid='']
  * @returns {Promise<User>}
  */
-async function signInFrontend(data: PostLoginSchema, uid: string = ''): Promise<User> {
+export async function verifyLogin(data: PostLoginSchema, uid: string = ''): Promise<User> {
   const { username, keyType, pack, strict, loginType } = data;
   let authorityLevel: AuthorityLevel;
   if (keyType === KeyType.posting) {
@@ -75,7 +75,7 @@ async function signInFrontend(data: PostLoginSchema, uid: string = ''): Promise<
     return user;
 
   } catch (error) {
-    logger.error('error in signInFrontend', error);
+    logger.error('error in verifyLogin', error);
     throw error;
   }
 }
@@ -104,7 +104,7 @@ async function signIn(data: PostLoginSchema, uid: string = ''): Promise<User> {
   if (authenticateOnBackend) {
     return signInBackend(data, uid);
   } else {
-    return signInFrontend(data, uid);
+    return verifyLogin(data, uid);
   }
 }
 

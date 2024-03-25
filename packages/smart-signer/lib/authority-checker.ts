@@ -68,7 +68,7 @@ export const authorityChecker = async (
   strict: boolean     // check if signer key is directly in key authority
 ): Promise<boolean> =>  {
   try {
-    logger.info('authorityChecker args',
+    logger.info('authorityChecker args: %o',
       { txJSON, expectedSignerAccount, expectedAuthorityLevel, pack });
 
     const hiveChain: IHiveChainInterface = await createHiveChain();

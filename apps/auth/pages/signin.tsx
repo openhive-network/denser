@@ -9,7 +9,7 @@ export default function LoginPage() {
   return (
     <div className="mx-2 flex flex-col pt-10">
         <LoginPanel
-          authenticateOnBackend={false}
+          authenticateOnBackend={true}
           strict={false}
           enabledLoginTypes={[
             LoginType.hbauth,
