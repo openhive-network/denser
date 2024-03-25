@@ -177,7 +177,9 @@ export default function PostForm({ username }: { username: string }) {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <MdEditor data={field} />
+                    <MdEditor onChange={(value) => {
+                      form.setValue('postArea', value)
+                    }} />
                   </FormControl>
                   <FormDescription className="border-x-2 border-b-2 border-border px-3 pb-1 text-xs text-destructive">
                     {t('submit_page.insert_images_by_dragging')},
