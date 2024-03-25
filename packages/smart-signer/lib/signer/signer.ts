@@ -12,7 +12,7 @@ export interface SignTransaction {
 }
 
 export interface SignChallenge {
-  message: string;
+  message: string | Buffer;
   password?: string; // private key or password to unlock hbauth key
   translateFn?: (v: string) => string;
 }

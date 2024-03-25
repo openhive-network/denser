@@ -46,7 +46,7 @@ export class SignerHiveauth extends StorageMixin(SignerHbauth) {
       const authResponse: any = await new Promise((resolve) => {
         HiveAuthUtils.login(
           username,
-          message,
+          message.toString(),
           (res) => {
             resolve(res);
           },
