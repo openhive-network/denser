@@ -49,7 +49,6 @@ export default function PostForm({ username }: { username: string }) {
   const { manabarsData } = useManabars(username);
   const [storedPost, storePost] = useLocalStorage<AccountFormValues>('postData', defaultValues);
   const { t } = useTranslation('common_blog');
-
   const {
     data: mySubsData,
     isLoading: mySubsIsLoading,
@@ -223,7 +222,7 @@ export default function PostForm({ username }: { username: string }) {
               <span>{t('submit_page.post_options')}</span>
               <span className="text-xs">
                 {t('submit_page.author_rewards')}
-                {storedPost?.payoutType === '100%' ? ' Power up 100%' : ' 50% HBD / 50% HP'}
+                {storedPost?.payoutType === '100%' ? t('submit_page.power_up') : ' 50% HBD / 50% HP'}
               </span>
               <AdvancedSettingsPostForm username={username} onChangeStore={storePost} data={storedPost}>
                 <span className="cursor-pointer text-xs text-destructive">

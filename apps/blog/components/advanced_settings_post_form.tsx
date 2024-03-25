@@ -14,6 +14,7 @@ import Link from 'next/link';
 import { Icons } from '@ui/components/icons';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { toast } from '@ui/components/hooks/use-toast';
+import { useTranslation } from 'next-i18next';
 
 type AccountFormValues = {
   title: string;
@@ -51,6 +52,7 @@ export function AdvancedSettingsPostForm({
   onChangeStore: (data: AccountFormValues) => void;
   data: AccountFormValues;
 }) {
+  const { t } = useTranslation('common_blog');
   const [rewards, setRewards] = useState(data ? data.payoutType : '50%');
   const [splitRewards, setSplitRewards] = useState(100);
   const [templateTitle, setTemplateTitle] = useState('');
@@ -73,7 +75,7 @@ export function AdvancedSettingsPostForm({
 
   useEffect(() => {
     const combinedPercentage = beneficiaries.reduce<number>((acc, beneficiary) => {
-      return acc + +beneficiary.percent;
+      return acc + Number(beneficiary.percent);
     }, 0);
     setSplitRewards(100 - combinedPercentage);
   }, [JSON.stringify(beneficiaries)]);
@@ -178,7 +180,7 @@ export function AdvancedSettingsPostForm({
       payoutType: rewards
     });
     toast({
-      title: 'Changes saved',
+      title: t('submit_page.advanced_settings_dialog.changes_saved'),
       variant: 'success'
     });
   }
@@ -187,13 +189,17 @@ export function AdvancedSettingsPostForm({
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="h-full overflow-scroll sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle className="text-2xl">Advanced settings</DialogTitle>
+          <DialogTitle className="text-2xl">
+            {t('submit_page.advanced_settings_dialog.advanced_settings')}
+          </DialogTitle>
           <Separator />
         </DialogHeader>
         <div className="flex flex-col gap-4 text-xs">
           <div className="flex flex-col gap-3">
-            <span className="text-lg font-bold">Maximum Accepted Payout</span>
-            <span>HBD value of the maximum payout this post will receive.</span>
+            <span className="text-lg font-bold">
+              {t('submit_page.advanced_settings_dialog.maximum_accepted_payout')}
+            </span>
+            <span>{t('submit_page.advanced_settings_dialog.value_of_the_maximum')}</span>
             <div className="flex flex-col gap-1">
               <Select
                 onValueChange={(e: 'noLimit' | 'decline' | 'custom') => handleMaxPayout(e)}
@@ -203,36 +209,46 @@ export function AdvancedSettingsPostForm({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="noLimit">No limit</SelectItem>
-                  <SelectItem value="decline">Decline Payout</SelectItem>
-                  <SelectItem value="custom">Custom value</SelectItem>
+                  <SelectItem value="noLimit">
+                    {t('submit_page.advanced_settings_dialog.no_limit')}
+                  </SelectItem>
+                  <SelectItem value="decline">
+                    {t('submit_page.advanced_settings_dialog.decline_payout')}
+                  </SelectItem>
+                  <SelectItem value="custom">
+                    {t('submit_page.advanced_settings_dialog.custom_value')}
+                  </SelectItem>
                 </SelectContent>
               </Select>
               {maxPayout === 'custom' ? (
                 <>
                   <Input type="number" value={customValue} onChange={(e) => setCustomValue(e.target.value)} />
                   {Number(customValue) < 0 ? (
-                    <div className="p-2 text-red-600">Cannot be less than 0</div>
+                    <div className="p-2 text-red-600">
+                      {t('submit_page.advanced_settings_dialog.cannot_be_less_than')}
+                    </div>
                   ) : null}
                 </>
               ) : null}
             </div>
           </div>
           <div className="flex flex-col gap-3">
-            <span className="text-lg font-bold">Author rewards</span>
-            <span>What type of tokens do you want as rewards from this post?</span>
+            <span className="text-lg font-bold">
+              {t('submit_page.advanced_settings_dialog.author_rewards')}
+            </span>
+            <span>{t('submit_page.advanced_settings_dialog.what_type_of_tokens')}</span>
             <Select defaultValue={rewards} onValueChange={(e) => setRewards(e)}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="50%">50% HBD / 50% HP</SelectItem>
-                <SelectItem value="100%">Power up 100%</SelectItem>
+                <SelectItem value="50%">{'50% HBD / 50% HP'}</SelectItem>
+                <SelectItem value="100%">{t('submit_page.advanced_settings_dialog.power_up')}</SelectItem>
               </SelectContent>
             </Select>
-            <span>Default: {'50% HBD / 50% HP'}</span>
+            <span>{t('submit_page.advanced_settings_dialog.default')}</span>
             <Link href={`/@${username}/settings`} className="text-red-500">
-              Update
+              {t('submit_page.advanced_settings_dialog.update')}
             </Link>
           </div>
           <div>
@@ -260,19 +276,21 @@ export function AdvancedSettingsPostForm({
                     className="text-red-500"
                     onClick={() => handleDeleteItem(index)}
                   >
-                    Delete
+                    {t('submit_page.advanced_settings_dialog.delete')}
                   </Button>
                 </div>
               ))}
             </ul>
             {splitRewards < 0 ? (
-              <div className="p-2 text-red-600">Your percent cannot be less than 0</div>
+              <div className="p-2 text-red-600">{t('submit_page.advanced_settings_dialog.your_percent')}</div>
             ) : null}
             {hasDuplicateUsernames ? (
-              <div className="p-2 text-red-600">Beneficiaries cannot be repeated</div>
+              <div className="p-2 text-red-600">
+                {t('submit_page.advanced_settings_dialog.beneficiaries_cannot')}
+              </div>
             ) : null}
             {beneficiariesNames ? (
-              <div className="p-2 text-red-600">The account name should be longer</div>
+              <div className="p-2 text-red-600">{t('submit_page.advanced_settings_dialog.account_name')}</div>
             ) : null}
             {beneficiaries.length < 8 ? (
               <Button
@@ -280,20 +298,26 @@ export function AdvancedSettingsPostForm({
                 className="h-fit w-fit px-0 py-1 text-xs text-red-500"
                 onClick={handleAddAccount}
               >
-                Add Account
+                {t('submit_page.advanced_settings_dialog.add_account')}
               </Button>
             ) : null}
           </div>
           <div className="flex flex-col gap-3">
-            <span className="text-lg font-bold">Post templates</span>
-            <span>Manage your post templates, other settings here will also be saved/loaded.</span>
+            <span className="text-lg font-bold">
+              {t('submit_page.advanced_settings_dialog.post_templates')}
+            </span>
+            <span>{t('submit_page.advanced_settings_dialog.manage_your_post_templates')}</span>
             <div className="flex flex-col gap-1">
               <Select defaultValue={selectTemplate} onValueChange={(e) => handleTamplates(e)}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Choose a template to load" />
+                  <SelectValue
+                    placeholder={t('submit_page.advanced_settings_dialog.choose_a_template_to_load')}
+                  />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Choose a template to load</SelectItem>
+                  <SelectItem value="">
+                    {t('submit_page.advanced_settings_dialog.choose_a_template_to_load')}
+                  </SelectItem>
                   {storedTemplates
                     ? storedTemplates.map((e) => (
                         <SelectItem key={e.title} value={e.title}>
@@ -304,11 +328,15 @@ export function AdvancedSettingsPostForm({
                 </SelectContent>
               </Select>
               <Input
-                placeholder="Name of a new template"
+                placeholder={t('submit_page.advanced_settings_dialog.name_of_a_new_template')}
                 value={templateTitle}
                 onChange={(e) => handleTemplateTitle(e.target.value)}
               />
-              {isTemplateStored ? <div className="p-2 text-red-600">Template name is taken</div> : null}
+              {isTemplateStored ? (
+                <div className="p-2 text-red-600">
+                  {t('submit_page.advanced_settings_dialog.template_name_is_taken')}
+                </div>
+              ) : null}
             </div>
           </div>
         </div>
@@ -325,11 +353,11 @@ export function AdvancedSettingsPostForm({
               beneficiariesNames
             }
           >
-            Save
+            {t('submit_page.advanced_settings_dialog.save')}
           </Button>
           {selectTemplate !== '' ? (
             <Button variant="redHover" onClick={() => deleteTemplate(selectTemplate)} className="mb-2">
-              Delete Template
+              {t('submit_page.advanced_settings_dialog.delete_template')}
             </Button>
           ) : null}
         </DialogFooter>
