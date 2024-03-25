@@ -2,6 +2,15 @@ import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { operation, vote, transfer, ApiOperation, ApiTransaction } from '@hive/wax';
 import { KeyType } from '@smart-signer/types/common';
 
+/**
+ * Create fake transaction for signing in login flow.
+ *
+ * @export
+ * @param {string} username
+ * @param {KeyType} keyType
+ * @param {string} loginChallenge
+ * @returns {Promise<operation>}
+ */
 export async function getOperationForLogin(
     username: string,
     keyType: KeyType,
@@ -31,6 +40,14 @@ export async function getOperationForLogin(
     return operation;
 }
 
+/**
+ * Get `loginChallenge` from fake transaction in login flow.
+ *
+ * @export
+ * @param {ApiTransaction} tx
+ * @param {KeyType} keyType
+ * @returns {string}
+ */
 export function getLoginChallengeFromTransactionForLogin(
     tx: ApiTransaction,
     keyType: KeyType
@@ -39,6 +56,14 @@ export function getLoginChallengeFromTransactionForLogin(
     return getLoginChallengeFromOperationForLogin(operation, keyType);
 }
 
+/**
+ * Get `loginChallenge` from fake operation in login flow.
+ *
+ * @export
+ * @param {ApiOperation} operation
+ * @param {KeyType} keyType
+ * @returns {string}
+ */
 export function getLoginChallengeFromOperationForLogin(
     operation: ApiOperation,
     keyType: KeyType

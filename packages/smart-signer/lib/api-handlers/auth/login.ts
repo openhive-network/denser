@@ -58,19 +58,28 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
     throw error;
   }
 
-  // Check whether correct loginChallenge is enclosed in data.
-  const reguestLoginChallenge =
-    getLoginChallengeFromTransactionForLogin(JSON.parse(data.txJSON), keyType);
+  let result: boolean = false;
 
-  if (reguestLoginChallenge !== loginChallenge) {
-    throw new createHttpError[401]('Invalid login challenge');
-  }
+  if (JSON.parse(data.txJSON)) {
+    // Check whether loginChallenge is correct.
+    const reguestLoginChallenge =
+      getLoginChallengeFromTransactionForLogin(JSON.parse(data.txJSON), keyType);
+    if (reguestLoginChallenge !== loginChallenge) {
+      throw new createHttpError[401]('Invalid login challenge');
+    }
 
-  let result;
-  try {
-    result = await verifyLogin(data);
-  } catch (error) {
-    // swallow error
+    // Verify signature in passed transaction.
+    try {
+      result = !!(await verifyLogin(data));
+    } catch (error) {
+      // swallow error
+    }
+  } else {
+    result = verifyLoginChallenge(
+      chainAccount,
+      signatures,
+      JSON.stringify({ loginChallenge })
+    );
   }
 
   if (!result) {

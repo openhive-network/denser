@@ -5,27 +5,13 @@ import { PostLoginSchema } from '@smart-signer/lib/auth/utils';
 import { User, KeyType } from '@smart-signer/types/common';
 import { csrfHeaderName } from '@smart-signer/lib/csrf-protection';
 import { authorityChecker, AuthorityLevel } from '@smart-signer/lib/authority-checker';
-import {
-  createHiveChain,
-  IHiveChainInterface,
-  transaction,
-  ApiTransaction,
-  ApiAuthority,
-  TAccountName,
-  TWaxExtended,
-  ApiKeyAuth,
-  operation,
-  vote,
-  transfer,
-  ApiOperation,
-  TTransactionPackType
-} from '@hive/wax';
+import { ApiTransaction } from '@hive/wax';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 /**
- * Authenticate user on client side only.
+ * Authenticate user by checking signature in fake transaction.
  *
  * @param {PostLoginSchema} data
  * @param {string} [uid='']
@@ -71,7 +57,6 @@ export async function verifyLogin(data: PostLoginSchema, uid: string = ''): Prom
       loginType,
       keyType,
     };
-
     return user;
 
   } catch (error) {
