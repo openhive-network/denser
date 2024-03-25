@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import Link from 'next/link';
 import { Icons } from '@ui/components/icons';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
+import { toast } from '@ui/components/hooks/use-toast';
 
 type AccountFormValues = {
   title: string;
@@ -52,20 +53,23 @@ export function AdvancedSettingsPostForm({
 }) {
   const [rewards, setRewards] = useState(data ? data.payoutType : '50%');
   const [splitRewards, setSplitRewards] = useState(100);
-  const [customPayout, setCustomPayout] = useState(data.maxAcceptedPayout !== null);
   const [templateTitle, setTemplateTitle] = useState('');
+  const [maxPayout, setMaxPayout] = useState('noLimit');
+  const [selectTemplate, setSelectTemplate] = useState('');
   const [beneficiaries, setBeneficiaries] = useState<{ percent: string; username: string }[]>(
     data ? data.beneficiaries : []
   );
   const [customValue, setCustomValue] = useState(
     data.maxAcceptedPayout !== null ? data.maxAcceptedPayout : ''
   );
-  const [storedTemplate, storeTemplate] = useLocalStorage<Template[]>(`hivePostTemplates-${username}`, []);
+  const [storedTemplates, storeTemplates] = useLocalStorage<Template[]>(`hivePostTemplates-${username}`, []);
   const hasDuplicateUsernames = beneficiaries.reduce((acc, beneficiary, index, array) => {
     const isDuplicate = array.slice(index + 1).some((b) => b.username === beneficiary.username);
     return acc || isDuplicate;
   }, false);
-  const isTemplateStored = storedTemplate.some((template) => template.title === templateTitle);
+  const isTemplateStored = storedTemplates.some((template) => template.title === templateTitle);
+  const beneficiariesNames =
+    beneficiaries.length !== 0 ? beneficiaries.some((beneficiary) => beneficiary.username.length < 3) : false;
 
   useEffect(() => {
     const combinedPercentage = beneficiaries.reduce<number>((acc, beneficiary) => {
@@ -99,26 +103,30 @@ export function AdvancedSettingsPostForm({
     });
   };
 
+  function deleteTemplate(templateName: string) {
+    storeTemplates(storedTemplates.filter((e) => e.title !== templateName));
+  }
+
   function handleMaxPayout(e: 'noLimit' | 'decline' | 'custom') {
     switch (e) {
       case 'noLimit':
         setRewards('50%');
-        setCustomPayout(false);
+        setMaxPayout(e);
         break;
       case 'decline':
         setRewards('0%');
-        setCustomPayout(false);
+        setMaxPayout(e);
         break;
       case 'custom':
         setRewards((prev) => (prev === '0' || '50%' ? '50%' : '100%'));
-        setCustomPayout(true);
+        setMaxPayout(e);
         break;
     }
   }
 
   function handleTamplates(e: string) {
-    const template = storedTemplate.find((template) => template.title === e);
-    setBeneficiaries(template ? template?.beneficiaries : []);
+    const template = storedTemplates.find((template) => template.title === e);
+    setBeneficiaries(template ? template.beneficiaries : []);
     if (template?.maxAcceptedPayout === null) {
       handleMaxPayout('noLimit');
     }
@@ -129,16 +137,36 @@ export function AdvancedSettingsPostForm({
       setCustomValue(typeof template?.maxAcceptedPayout === 'number' ? template.maxAcceptedPayout : 0);
     }
     setRewards(template ? template.payoutType : '50%');
+    setSelectTemplate(e);
   }
-
+  function handleTemplateTitle(e: string) {
+    setSelectTemplate('');
+    setTemplateTitle(e);
+  }
   function onSave() {
+    if (selectTemplate !== '') {
+      storeTemplates(
+        storedTemplates.map((stored) =>
+          stored.title !== selectTemplate
+            ? stored
+            : {
+                title: selectTemplate,
+                beneficiaries: beneficiaries,
+                maxAcceptedPayout: customValue === '0' ? Number(customValue) : null,
+                payoutType: rewards
+              }
+        )
+      );
+    }
+
     if (templateTitle !== '') {
-      storeTemplate([
-        ...storedTemplate,
+      setTemplateTitle('');
+      storeTemplates([
+        ...storedTemplates,
         {
           title: templateTitle,
           beneficiaries: beneficiaries,
-          maxAcceptedPayout: customPayout || customValue === '0' ? Number(customValue) : null,
+          maxAcceptedPayout: customValue === '0' ? Number(customValue) : null,
           payoutType: rewards
         }
       ]);
@@ -146,8 +174,12 @@ export function AdvancedSettingsPostForm({
     onChangeStore({
       ...data,
       beneficiaries: beneficiaries,
-      maxAcceptedPayout: customPayout || customValue === '0' ? Number(customValue) : null,
+      maxAcceptedPayout: customValue === '0' ? Number(customValue) : null,
       payoutType: rewards
+    });
+    toast({
+      title: 'Changes saved',
+      variant: 'success'
     });
   }
   return (
@@ -165,7 +197,7 @@ export function AdvancedSettingsPostForm({
             <div className="flex flex-col gap-1">
               <Select
                 onValueChange={(e: 'noLimit' | 'decline' | 'custom') => handleMaxPayout(e)}
-                defaultValue="noLimit"
+                defaultValue={maxPayout}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -176,7 +208,7 @@ export function AdvancedSettingsPostForm({
                   <SelectItem value="custom">Custom value</SelectItem>
                 </SelectContent>
               </Select>
-              {customPayout ? (
+              {maxPayout === 'custom' ? (
                 <>
                   <Input type="number" value={customValue} onChange={(e) => setCustomValue(e.target.value)} />
                   {Number(customValue) < 0 ? (
@@ -216,7 +248,7 @@ export function AdvancedSettingsPostForm({
               </li>
               {beneficiaries.map((item, index) => (
                 <div className="flex" key={index}>
-                  <Item
+                  <Beneficiary
                     onChangeBeneficiary={(percent, username) =>
                       handleEditBeneficiary(index, percent, username)
                     }
@@ -239,7 +271,9 @@ export function AdvancedSettingsPostForm({
             {hasDuplicateUsernames ? (
               <div className="p-2 text-red-600">Beneficiaries cannot be repeated</div>
             ) : null}
-
+            {beneficiariesNames ? (
+              <div className="p-2 text-red-600">The account name should be longer</div>
+            ) : null}
             {beneficiaries.length < 8 ? (
               <Button
                 variant="link"
@@ -254,14 +288,14 @@ export function AdvancedSettingsPostForm({
             <span className="text-lg font-bold">Post templates</span>
             <span>Manage your post templates, other settings here will also be saved/loaded.</span>
             <div className="flex flex-col gap-1">
-              <Select defaultValue="" onValueChange={(e) => handleTamplates(e)}>
+              <Select defaultValue={selectTemplate} onValueChange={(e) => handleTamplates(e)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Choose a template to load" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="">Choose a template to load</SelectItem>
-                  {storedTemplate
-                    ? storedTemplate.map((e) => (
+                  {storedTemplates
+                    ? storedTemplates.map((e) => (
                         <SelectItem key={e.title} value={e.title}>
                           {e.title}
                         </SelectItem>
@@ -272,18 +306,32 @@ export function AdvancedSettingsPostForm({
               <Input
                 placeholder="Name of a new template"
                 value={templateTitle}
-                onChange={(e) => setTemplateTitle(e.target.value)}
+                onChange={(e) => handleTemplateTitle(e.target.value)}
               />
-              {isTemplateStored ? (
-                <div className="p-2 text-red-600">Beneficiaries cannot be repeated</div>
-              ) : null}
+              {isTemplateStored ? <div className="p-2 text-red-600">Template name is taken</div> : null}
             </div>
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit" variant="redHover" onClick={() => onSave()}>
+          <Button
+            type="submit"
+            variant="redHover"
+            onClick={() => onSave()}
+            disabled={
+              Number(customValue) < 0 ||
+              splitRewards < 0 ||
+              hasDuplicateUsernames ||
+              isTemplateStored ||
+              beneficiariesNames
+            }
+          >
             Save
           </Button>
+          {selectTemplate !== '' ? (
+            <Button variant="redHover" onClick={() => deleteTemplate(selectTemplate)} className="mb-2">
+              Delete Template
+            </Button>
+          ) : null}
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -294,7 +342,7 @@ interface ItemProps {
   onChangeBeneficiary: (percent: string, username: string) => void;
   beneficiary: { percent: string; username: string };
 }
-function Item({ onChangeBeneficiary, beneficiary }: ItemProps) {
+function Beneficiary({ onChangeBeneficiary, beneficiary }: ItemProps) {
   return (
     <li className="flex items-center gap-5">
       <Input

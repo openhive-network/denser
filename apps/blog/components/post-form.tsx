@@ -223,7 +223,7 @@ export default function PostForm({ username }: { username: string }) {
               <span>{t('submit_page.post_options')}</span>
               <span className="text-xs">
                 {t('submit_page.author_rewards')}
-                {' 50% HBD / 50% HP'}
+                {storedPost?.payoutType === '100%' ? ' Power up 100%' : ' 50% HBD / 50% HP'}
               </span>
               <AdvancedSettingsPostForm username={username} onChangeStore={storePost} data={storedPost}>
                 <span className="cursor-pointer text-xs text-destructive">
