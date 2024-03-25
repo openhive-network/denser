@@ -56,6 +56,7 @@ export async function verifyLogin(data: PostLoginSchema, uid: string = ''): Prom
       avatarUrl: '',
       loginType,
       keyType,
+      authenticateOnBackend: false,
     };
     return user;
 

@@ -40,7 +40,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
   const loginChallenge = req.cookies[`${cookieNamePrefix}login_challenge_server`] || '';
 
   const data: PostLoginSchema = await postLoginSchema.parseAsync(req.body);
-  const { username, loginType, signatures, keyType } = data;
+  const { username, loginType, signatures, keyType, authenticateOnBackend } = data;
   let hiveUserProfile;
   let chainAccount;
   try {
@@ -109,7 +109,8 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
     username,
     avatarUrl: hiveUserProfile?.profile_image || '',
     loginType,
-    keyType
+    keyType,
+    authenticateOnBackend
   };
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
   session.user = user;

@@ -61,4 +61,5 @@ export const defaultUser: User = {
     avatarUrl: '',
     loginType: LoginType.hbauth,
     keyType: KeyType.posting,
+    authenticateOnBackend: true,
 };

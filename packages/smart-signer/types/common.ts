@@ -23,6 +23,7 @@ export type User = {
     avatarUrl: string
     loginType: LoginType;
     keyType: KeyType;
+    authenticateOnBackend: boolean;
 }
 
 export interface IronSessionData {
