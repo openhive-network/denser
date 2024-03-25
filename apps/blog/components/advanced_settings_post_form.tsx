@@ -24,8 +24,8 @@ type AccountFormValues = {
   author: string;
   category: string;
   beneficiaries: {
-    username: string;
-    percent: string;
+    account: string;
+    weight: string;
   }[];
   maxAcceptedPayout: number | null;
   payoutType: string;
@@ -34,8 +34,8 @@ type AccountFormValues = {
 type Template = {
   title: string;
   beneficiaries: {
-    username: string;
-    percent: string;
+    account: string;
+    weight: string;
   }[];
   maxAcceptedPayout: number | null;
   payoutType: string;
@@ -58,7 +58,7 @@ export function AdvancedSettingsPostForm({
   const [templateTitle, setTemplateTitle] = useState('');
   const [maxPayout, setMaxPayout] = useState('noLimit');
   const [selectTemplate, setSelectTemplate] = useState('');
-  const [beneficiaries, setBeneficiaries] = useState<{ percent: string; username: string }[]>(
+  const [beneficiaries, setBeneficiaries] = useState<{ weight: string; account: string }[]>(
     data ? data.beneficiaries : []
   );
   const [customValue, setCustomValue] = useState(
@@ -66,22 +66,22 @@ export function AdvancedSettingsPostForm({
   );
   const [storedTemplates, storeTemplates] = useLocalStorage<Template[]>(`hivePostTemplates-${username}`, []);
   const hasDuplicateUsernames = beneficiaries.reduce((acc, beneficiary, index, array) => {
-    const isDuplicate = array.slice(index + 1).some((b) => b.username === beneficiary.username);
+    const isDuplicate = array.slice(index + 1).some((b) => b.account === beneficiary.account);
     return acc || isDuplicate;
   }, false);
   const isTemplateStored = storedTemplates.some((template) => template.title === templateTitle);
   const beneficiariesNames =
-    beneficiaries.length !== 0 ? beneficiaries.some((beneficiary) => beneficiary.username.length < 3) : false;
+    beneficiaries.length !== 0 ? beneficiaries.some((beneficiary) => beneficiary.account.length < 3) : false;
 
   useEffect(() => {
     const combinedPercentage = beneficiaries.reduce<number>((acc, beneficiary) => {
-      return acc + Number(beneficiary.percent);
+      return acc + Number(beneficiary.weight);
     }, 0);
     setSplitRewards(100 - combinedPercentage);
   }, [JSON.stringify(beneficiaries)]);
 
   const handleAddAccount = () => {
-    setBeneficiaries((prev) => [...prev, { percent: '0', username: '' }]);
+    setBeneficiaries((prev) => [...prev, { weight: '0', account: '' }]);
   };
 
   const handleDeleteItem = (index: number) => {
@@ -92,13 +92,13 @@ export function AdvancedSettingsPostForm({
     });
   };
 
-  const handleEditBeneficiary = (index: number, percent: string, username: string) => {
+  const handleEditBeneficiary = (index: number, weight: string, account: string) => {
     setBeneficiaries((prev) => {
       const updated = prev.map((beneficiary, beneficiaryIndex) =>
-        index !== beneficiaryIndex ? beneficiary : { percent, username }
+        index !== beneficiaryIndex ? beneficiary : { weight, account }
       );
       const combinedPercentage = updated.reduce<number>((acc, beneficiary) => {
-        return acc + Number(beneficiary.percent);
+        return acc + Number(beneficiary.weight);
       }, 0);
       setSplitRewards(100 - combinedPercentage);
       return updated;
@@ -109,13 +109,13 @@ export function AdvancedSettingsPostForm({
     storeTemplates(storedTemplates.filter((e) => e.title !== templateName));
   }
 
-  function handleMaxPayout(e: 'noLimit' | 'decline' | 'custom') {
+  function handleMaxPayout(e: 'no_max' | '0' | 'custom') {
     switch (e) {
-      case 'noLimit':
+      case 'no_max':
         setRewards('50%');
         setMaxPayout(e);
         break;
-      case 'decline':
+      case '0':
         setRewards('0%');
         setMaxPayout(e);
         break;
@@ -130,10 +130,10 @@ export function AdvancedSettingsPostForm({
     const template = storedTemplates.find((template) => template.title === e);
     setBeneficiaries(template ? template.beneficiaries : []);
     if (template?.maxAcceptedPayout === null) {
-      handleMaxPayout('noLimit');
+      handleMaxPayout('no_max');
     }
     if (template?.maxAcceptedPayout === 0) {
-      handleMaxPayout('decline');
+      handleMaxPayout('0');
     } else {
       handleMaxPayout('custom');
       setCustomValue(typeof template?.maxAcceptedPayout === 'number' ? template.maxAcceptedPayout : 0);
@@ -202,7 +202,7 @@ export function AdvancedSettingsPostForm({
             <span>{t('submit_page.advanced_settings_dialog.value_of_the_maximum')}</span>
             <div className="flex flex-col gap-1">
               <Select
-                onValueChange={(e: 'noLimit' | 'decline' | 'custom') => handleMaxPayout(e)}
+                onValueChange={(e: '0' | 'no_max' | 'custom') => handleMaxPayout(e)}
                 defaultValue={maxPayout}
               >
                 <SelectTrigger>
@@ -265,9 +265,7 @@ export function AdvancedSettingsPostForm({
               {beneficiaries.map((item, index) => (
                 <div className="flex" key={index}>
                   <Beneficiary
-                    onChangeBeneficiary={(percent, username) =>
-                      handleEditBeneficiary(index, percent, username)
-                    }
+                    onChangeBeneficiary={(weight, account) => handleEditBeneficiary(index, weight, account)}
                     beneficiary={item}
                   />
                   <Button
@@ -367,23 +365,23 @@ export function AdvancedSettingsPostForm({
 }
 
 interface ItemProps {
-  onChangeBeneficiary: (percent: string, username: string) => void;
-  beneficiary: { percent: string; username: string };
+  onChangeBeneficiary: (weight: string, account: string) => void;
+  beneficiary: { weight: string; account: string };
 }
 function Beneficiary({ onChangeBeneficiary, beneficiary }: ItemProps) {
   return (
     <li className="flex items-center gap-5">
       <Input
         type="number"
-        value={beneficiary.percent}
+        value={beneficiary.weight}
         className="w-16"
-        onChange={(e) => onChangeBeneficiary(e.target.value, beneficiary.username)}
+        onChange={(e) => onChangeBeneficiary(e.target.value, beneficiary.account)}
       />
       <div className="relative col-span-3">
         <Input
-          value={beneficiary.username}
+          value={beneficiary.account}
           className="block w-full px-3 py-2.5 pl-11"
-          onChange={(e) => onChangeBeneficiary(beneficiary.percent, e.target.value)}
+          onChange={(e) => onChangeBeneficiary(beneficiary.weight, e.target.value)}
         />
         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
           <Icons.atSign className="h-5 w-5" />

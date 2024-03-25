@@ -27,6 +27,7 @@ import { createPermlink } from '@transaction/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { getSubscriptions } from '@transaction/lib/bridge';
 import { useRouter } from 'next/router';
+import { hiveChainService } from '@transaction/lib/hive-chain-service';
 
 const defaultValues = {
   title: '',
@@ -72,8 +73,8 @@ export default function PostForm({ username }: { username: string }) {
     category: z.string(),
     beneficiaries: z.array(
       z.object({
-        username: z.string(),
-        percent: z.string()
+        account: z.string(),
+        weight: z.string()
       })
     ),
     maxAcceptedPayout: z.number().nullable(),
@@ -112,9 +113,19 @@ export default function PostForm({ username }: { username: string }) {
   }, [username, storedPost?.title]);
 
   async function onSubmit(data: AccountFormValues) {
+    const chain = await hiveChainService.getHiveChain();
     const tags = storedPost?.tags.split(' ') ?? [];
+    const maxAcceptedPayout = await chain.hbd(Number(storedPost.maxAcceptedPayout));
     try {
-      await transactionService.post(postPermlink, storedPost?.title ?? '', watchedValues.postArea, tags);
+      await transactionService.post(
+        postPermlink,
+        storedPost?.title ?? '',
+        watchedValues.postArea,
+        storedPost.beneficiaries,
+        Number(storedPost.payoutType.slice(0, 2)),
+        maxAcceptedPayout,
+        tags
+      );
     } finally {
       storePost(defaultValues);
       router.push(`/created/${tags[0]}`);
@@ -224,6 +235,7 @@ export default function PostForm({ username }: { username: string }) {
                 {t('submit_page.author_rewards')}
                 {storedPost?.payoutType === '100%' ? t('submit_page.power_up') : ' 50% HBD / 50% HP'}
               </span>
+              {console.log('storedPost', storedPost)}
               <AdvancedSettingsPostForm username={username} onChangeStore={storePost} data={storedPost}>
                 <span className="cursor-pointer text-xs text-destructive">
                   {t('submit_page.advanced_settings')}

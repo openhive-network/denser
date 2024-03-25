@@ -68,3 +68,8 @@ export interface FullAccount {
   __loaded?: true;
   proxyVotes?: Array<unknown>;
 }
+
+export interface Beneficiarie {
+  account: string;
+  weight: string;
+}
