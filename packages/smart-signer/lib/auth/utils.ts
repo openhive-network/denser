@@ -1,16 +1,7 @@
 import * as z from 'zod';
 import { validateHiveAccountName } from '@smart-signer/lib/validators/validate-hive-account-name';
-import { LoginType, StorageType, User, KeyType } from '@smart-signer/types/common';
-import {
-    createHiveChain,
-    IHiveChainInterface,
-    ApiTransaction,
-    ApiAuthority,
-    TAccountName,
-    ApiKeyAuth,
-    transaction,
-    TTransactionPackType
-} from '@hive/wax';
+import { LoginType, User, KeyType } from '@smart-signer/types/common';
+import { TTransactionPackType } from '@hive/wax';
 
 export const username = z.string()
     .superRefine((val, ctx) => {
@@ -47,7 +38,6 @@ export const postLoginSchema = z.object({
     strict: z.boolean(),
     txJSON: z.string(),
     authenticateOnBackend: z.boolean(),
-    // .partial(),
     username,
 });
 
