@@ -1,44 +1,41 @@
 import '@uiw/react-md-editor/markdown-editor.css';
 import dynamic from 'next/dynamic';
 import {
-  ChangeEvent,
   Dispatch,
+  FC,
   MutableRefObject,
   SetStateAction,
   useCallback,
+  useEffect,
   useRef,
   useState
 } from 'react';
 import * as commands from '@uiw/react-md-editor/commands';
 import { useTheme } from 'next-themes';
-import { ContextStore } from '@uiw/react-md-editor';
 import env from '@beam-australia/react-env';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { cryptoUtils } from '@hiveio/dhive';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
-import { KeyType, LoginType } from '@smart-signer/types/common';
+import { KeyType } from '@smart-signer/types/common';
 import { Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
+import { ICommand, TextAreaTextApi } from '@uiw/react-md-editor';
 
 const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false });
 
-export const uploadImg = async (file: any, username: string, signer: Signer): Promise<string> => {
-  let data, dataBs64;
+export const uploadImg = async (file: File, username: string, signer: Signer): Promise<string> => {
+  let data;
+
   if (file) {
-    // drag and drop
     const reader = new FileReader();
+
     data = new Promise((resolve) => {
       reader.addEventListener('load', () => {
-        const result = Buffer.from(reader.result, 'binary');
+        const result = Buffer.from(reader.result!.toString(), 'binary');
         resolve(result);
       });
       reader.readAsBinaryString(file);
     });
   }
-
-  // The challenge needs to be prefixed with a constant (both on the server and checked on the client) to make sure the server can't easily make the client sign a transaction doing something else.
-  // const prefix = Buffer.from('ImageSigningChallenge');
-  // const buf = Buffer.concat([prefix, data]);
-  // const bufSha = hash.sha256(buf);
 
   const formData = new FormData();
   if (file) {
@@ -52,107 +49,31 @@ export const uploadImg = async (file: any, username: string, signer: Signer): Pr
 
   let sig;
   let postUrl;
-  console.log('bufSha', bufSha);
 
   sig = await signer.signChallenge({
     message: buf,
     password: ''
   });
 
-  console.log('sig', sig);
-
   postUrl = `${env('IMAGES_ENDPOINT')}${username}/${sig}`;
 
   const response = await fetch(postUrl, { method: 'POST', body: formData });
   const resJSON = await response.json();
   return resJSON.url;
-
-  // let retUrl = 'ret';
-  // const xhr = new XMLHttpRequest();
-  // console.log('before xhr open');
-  // xhr.open('POST', postUrl);
-  // xhr.onload = function () {
-  //   console.log('onload');
-  //   console.log(xhr.status, xhr.responseText);
-  //   if (xhr.status === 200) {
-  //     try {
-  //       const res = JSON.parse(xhr.responseText);
-  //       const { error } = res;
-  //       if (error) {
-  //         console.error('upload_error', error, xhr.responseText);
-  //         // progress({ error: 'Error: ' + error });
-  //         return;
-  //       }
-
-  //       const { url } = res;
-  //       console.log('I am here and have this url', url, 'the same as retUrl', retUrl);
-  //       // progress({ url });
-  //     } catch (e) {
-  //       console.error('upload_error2', 'not json', e, xhr.responseText);
-  //       // progress({ error: 'Error: response not JSON' });
-  //     }
-  //   } else {
-  //     console.error('upload_error3', xhr.status, xhr.statusText);
-  //     // progress({ error: `Error: ${xhr.status}: ${xhr.statusText}` });
-  //   }
-  // };
-  // xhr.onloadend = function () {
-  //   console.log('onloadedend');
-  // };
-  // xhr.onerror = function (error) {
-  //   console.error('xhr', file, error);
-  //   // progress({ error: 'Unable to contact the server.' });
-  // };
-  // xhr.upload.onprogress = function (event) {
-  //   if (event.lengthComputable) {
-  //     const percent = Math.round((event.loaded / event.total) * 100);
-  //     // progress({ message: `Uploading ${percent}%` });
-  //   }
-  // };
-  // xhr.send(formData);
-  // console.log('but after change retUrl what I have here', retUrl);
-  // xhr.onreadystatechange = function () {
-  //   if (xhr.readyState == 4 && xhr.status == 200) {
-  //     const res = JSON.parse(xhr.responseText);
-  //     const { url } = res;
-  //     console.log('onreadystatechange res', res, 'url', url);
-  //     retUrl = url;
-  //   }
-  // };
-  // return retUrl;
 };
 
-export const onImageUpload = async (file: string, api: any, username: string, signer: Signer) => {
+export const onImageUpload = async (file: File, setMarkdown: Dispatch<SetStateAction<string>>, username: string, signer: Signer) => {
   const url = await uploadImg(file, username, signer);
-  console.log('returned url', url);
-
-  const insertedMarkdown = `**![handUpload](${url})**`;
-  if (!insertedMarkdown) return;
-
-  api.replaceSelection(insertedMarkdown);
-};
-
-export const onImageUpload_DnD = async (file: any, api: any, username: string, signer: Signer) => {
-  // const url = await uploadImg(file);
-  const url = await uploadImg(file, username, signer);
-  console.log('url in onImageUpload_DnD', url);
-
-  const insertedMarkdown = `**![${file.name}](${url})**`;
-  console.log('insertedMarkdown before', insertedMarkdown);
+  const insertedMarkdown = `**![${file.name}](${url})** `;
 
   if (!insertedMarkdown) return;
 
-  api.replaceSelection(insertedMarkdown);
-  // setMarkdown((prev) => {
-  //   console.log('prev markdown', prev);
-  //   console.log('insertedMarkdown in SET', insertedMarkdown);
-  //   return prev + insertedMarkdown;
-  // });
+  setMarkdown((prev: string): string => prev + insertedMarkdown);
 };
 
 export const onImageDrop = async (
-  dataTransfer: { items: string | any[]; files: { item: (arg0: number) => any } },
-  api: any,
+  dataTransfer: DataTransfer,
+  setMarkdown: Dispatch<SetStateAction<string>>,
   username: string,
   signer: Signer
 ) => {
@@ -162,24 +83,17 @@ export const onImageDrop = async (
     const file = dataTransfer.files.item(index);
     if (file) files.push(file);
   }
-  console.log('files in onImageDrop', files);
 
-  await Promise.all(files.map(async (file) => onImageUpload_DnD(file, api, username, signer)));
+  await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer)));
 };
 
-const MdEditor = (data: {
-  data: {
-    value: string | undefined;
-    onChange:
-      | ((
-          value?: string | undefined,
-          event?: ChangeEvent<HTMLTextAreaElement> | undefined,
-          state?: ContextStore | undefined
-        ) => void)
-      | undefined;
-  };
-}) => {
+interface MdEditorProps {
+  onChange: (value: string) => void;
+}
+
+const MdEditor: FC<MdEditorProps> = ({ onChange }) => {
   const { user } = useUser();
+  const [formValue, setFormValue] = useState<string>('');
 
   const { resolvedTheme } = useTheme();
   const signerOptions: SignerOptions = {
@@ -191,20 +105,23 @@ const MdEditor = (data: {
   };
   const signer = getSigner(signerOptions);
 
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
   const editorRef = useRef(null);
-  const textApiRef = useRef(null);
+  const textApiRef = useRef<TextAreaTextApi>(null) as MutableRefObject<TextAreaTextApi>;
   const [isDrag, setIsDrag] = useState(false);
   const [insertImg, setInsertImg] = useState('');
 
-  const inputImageHandler = useCallback(async (event: { target: { files: string | any[] } }) => {
+  useEffect(() => {
+    onChange(formValue);
+  }, [formValue]);
+
+  const inputImageHandler = useCallback(async (event: { target: { files: FileList } }) => {
     if (event.target.files && event.target.files.length === 1) {
       setInsertImg('');
-      await onImageUpload(event.target.files[0], textApiRef.current, user.username, signer);
+      await onImageUpload(event.target.files[0], setFormValue, user.username, signer);
     }
   }, []);
 
-  // Drag and Drop
   const startDragHandler = (event: {
     preventDefault: () => void;
     stopPropagation: () => void;
@@ -224,16 +141,16 @@ const MdEditor = (data: {
   };
 
   const dropHandler = useCallback(
-    async (event: { preventDefault: () => void; stopPropagation: () => void; dataTransfer: any }) => {
+    async (event: { preventDefault: () => void; stopPropagation: () => void; dataTransfer: DataTransfer }) => {
       event.preventDefault();
       event.stopPropagation();
       setIsDrag(false);
-      await onImageDrop(event.dataTransfer, textApiRef.current, signer.username, signer);
+      await onImageDrop(event.dataTransfer, setFormValue, signer.username, signer);
     },
     []
   );
 
-  const imgBtn = (inputRef: any, textApiRef: MutableRefObject<null>) => ({
+  const imgBtn = (inputRef: MutableRefObject<HTMLInputElement>): commands.ICommand => ({
     name: 'Text To Image',
     keyCommand: 'text2image',
     render: (
@@ -259,14 +176,14 @@ const MdEditor = (data: {
         </button>
       );
     },
-    execute: (state: any, api: null) => {
-      inputRef.current.click();
+    execute: (state: commands.ExecuteState, api: TextAreaTextApi) => {
+      inputRef.current?.click();
       textApiRef.current = api;
     }
   });
 
-  const editChoice = (inputRef: MutableRefObject<null>, textApiRef: MutableRefObject<null>) => [
-    imgBtn(inputRef, textApiRef)
+  const editChoice = (inputRef: MutableRefObject<HTMLInputElement>) => [
+    imgBtn(inputRef)
   ];
 
   return (
@@ -286,13 +203,12 @@ const MdEditor = (data: {
           <MDEditor
             ref={editorRef}
             preview="edit"
-            value={data.data.value}
-            onChange={data.data.onChange}
-            commands={[...(commands.getCommands() as any), imgBtn(inputRef, textApiRef)]}
+            value={formValue}
+            onChange={(value) => { setFormValue(value || '') }}
+            commands={[...(commands.getCommands() as ICommand[]), imgBtn(inputRef)]}
             extraCommands={[]}
             //@ts-ignore
             style={{ '--color-canvas-default': 'var(--background)' }}
-            onDrop={(event) => console.log('onDrop', event)}
           />
         </div>
         {isDrag && (
