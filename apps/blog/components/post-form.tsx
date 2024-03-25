@@ -27,6 +27,7 @@ import { createPermlink } from '@transaction/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { getSubscriptions } from '@transaction/lib/bridge';
 import { useRouter } from 'next/router';
+import { hiveChainService } from '@transaction/lib/hive-chain-service';
 
 const defaultValues = {
   title: '',
@@ -34,7 +35,10 @@ const defaultValues = {
   postSummary: '',
   tags: '',
   author: '',
-  category: ''
+  category: '',
+  beneficiaries: [],
+  maxAcceptedPayout: null,
+  payoutType: '50%'
 };
 
 export default function PostForm({ username }: { username: string }) {
@@ -46,7 +50,6 @@ export default function PostForm({ username }: { username: string }) {
   const { manabarsData } = useManabars(username);
   const [storedPost, storePost] = useLocalStorage<AccountFormValues>('postData', defaultValues);
   const { t } = useTranslation('common_blog');
-
   const {
     data: mySubsData,
     isLoading: mySubsIsLoading,
@@ -67,7 +70,15 @@ export default function PostForm({ username }: { username: string }) {
         message: t('submit_page.to_many_tags')
       }),
     author: z.string().regex(/^$|^[[a-zAZ1-9]+$/, t('submit_page.must_contain_only')),
-    category: z.string()
+    category: z.string(),
+    beneficiaries: z.array(
+      z.object({
+        account: z.string(),
+        weight: z.string()
+      })
+    ),
+    maxAcceptedPayout: z.number().nullable(),
+    payoutType: z.string()
   });
 
   type AccountFormValues = z.infer<typeof accountFormSchema>;
@@ -77,7 +88,10 @@ export default function PostForm({ username }: { username: string }) {
     postSummary: storedPost?.postSummary ?? '',
     tags: storedPost?.tags ?? '',
     author: storedPost?.author ?? '',
-    category: storedPost?.category ?? ''
+    category: storedPost?.category ?? '',
+    beneficiaries: storedPost?.beneficiaries ?? [],
+    maxAcceptedPayout: storedPost?.maxAcceptedPayout ?? 0,
+    payoutType: storedPost?.payoutType ?? ''
   });
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
@@ -99,9 +113,19 @@ export default function PostForm({ username }: { username: string }) {
   }, [username, storedPost?.title]);
 
   async function onSubmit(data: AccountFormValues) {
+    const chain = await hiveChainService.getHiveChain();
     const tags = storedPost?.tags.split(' ') ?? [];
+    const maxAcceptedPayout = await chain.hbd(Number(storedPost.maxAcceptedPayout));
     try {
-      await transactionService.post(postPermlink, storedPost?.title ?? '', watchedValues.postArea, tags);
+      await transactionService.post(
+        postPermlink,
+        storedPost?.title ?? '',
+        watchedValues.postArea,
+        storedPost.beneficiaries,
+        Number(storedPost.payoutType.slice(0, 2)),
+        maxAcceptedPayout,
+        tags
+      );
     } finally {
       storePost(defaultValues);
       router.push(`/created/${tags[0]}`);
@@ -211,9 +235,9 @@ export default function PostForm({ username }: { username: string }) {
               <span>{t('submit_page.post_options')}</span>
               <span className="text-xs">
                 {t('submit_page.author_rewards')}
-                {' 50% HBD / 50% HP'}
+                {storedPost?.payoutType === '100%' ? t('submit_page.power_up') : ' 50% HBD / 50% HP'}
               </span>
-              <AdvancedSettingsPostForm username={username}>
+              <AdvancedSettingsPostForm username={username} onChangeStore={storePost} data={storedPost}>
                 <span className="cursor-pointer text-xs text-destructive">
                   {t('submit_page.advanced_settings')}
                 </span>
