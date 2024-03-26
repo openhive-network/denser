@@ -23,10 +23,6 @@ export enum Steps {
     OTHER_LOGIN_DETAILS
 }
 
-export interface ProcessAuthFn {
-    (loginType: LoginType, username: string, keyType: KeyType): Promise<void>
-}
-
 const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ preferredKeyTypes, onComplete, i18nNamespace = 'smart-signer' }, ref) => {
     // component controllers
     const [step, setStep] = useState<Steps>(Steps.SAFE_STORAGE_LOGIN);
@@ -45,19 +41,23 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ preferredKeyTyp
 
     // final form handlers
     // TODO: replace with function
-    const { onSubmit } = useProcessAuth(t);
+    const { submitAuth, signAuth, isSigned } = useProcessAuth(t);
 
-    async function processAuth(loginType: LoginType, username: string, keyType: KeyType): Promise<void> {
+    async function sign(loginType: LoginType, username: string, keyType: KeyType): Promise<void> {
         const schema: LoginFormSchema = {
             loginType,
             username,
             keyType,
             remember: false // TODO: handle this if required
         }
+        await signAuth(schema);
+    }
 
-        await onSubmit(schema);
+    async function submit(): Promise<void> {
+        await submitAuth();
         onComplete();
     }
+
 
     return <div className="flex min-h-[350px] h-full">
 
@@ -69,8 +69,10 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ preferredKeyTyp
                     onSetStep={(step: Steps) => {
                         setStep(step);
                     }}
-                    onProcessAuth={processAuth}
+                    sign={sign}
+                    submit={submit}
                     i18nNamespace={i18nNamespace}
+                    isSigned={isSigned}
                 />
             )
         }

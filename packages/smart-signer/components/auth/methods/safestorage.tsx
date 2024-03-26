@@ -22,7 +22,7 @@ import {
     FormMessage
 } from "@hive/ui";
 import Step from "../step"
-import { ProcessAuthFn, Steps } from "../form";
+import { Steps } from "../form";
 import { KeyType, LoginType } from "@smart-signer/types/common";
 
 const formSchema = z.object({
@@ -36,14 +36,16 @@ export type SafeStorageRef = { cancel: () => Promise<void>; };
 
 export interface SafeStorageProps {
     onSetStep: (step: Steps) => void;
-    onProcessAuth: ProcessAuthFn;
     preferredKeyTypes: KeyAuthorityType[];
     i18nNamespace: string;
+    isSigned?: boolean;
+    sign: (loginType: LoginType, username: string, keyType: KeyType) => Promise<void>;
+    submit: () => Promise<void>;
 }
 
 type SafeStorageForm = z.infer<typeof formSchema>;
 
-const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, onProcessAuth, preferredKeyTypes, i18nNamespace }, ref) => {
+const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, sign, submit, preferredKeyTypes, i18nNamespace, isSigned }, ref) => {
     useImperativeHandle(ref, () => ({
         async cancel() {
             await cancelAuth();
@@ -65,10 +67,6 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, o
             keyType: preferredKeyTypes[0]
         },
     });
-
-    async function onSubmit(values: SafeStorageForm) {
-        // no use currently
-    }
 
     async function onSave(values: SafeStorageForm) {
         const { username, password, wif, keyType } = values;
@@ -111,10 +109,21 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, o
         }
     }
 
+    async function onSign({username, keyType }: SafeStorageForm): Promise<void> {
+        await sign(LoginType.hbauth, username, KeyType[keyType]);
+    }
+
+    async function onSubmitAuth(): Promise<void> {
+        setLoading(true);
+        await submit();
+        setLoading(false);
+    }
+
     async function finalize({ username, keyType }: SafeStorageForm) {
         try {
             setLoading(true);
-            await onProcessAuth(LoginType.hbauth, username, KeyType[keyType]);
+            await sign(LoginType.hbauth, username, KeyType[keyType]);
+            await submit();
         } catch (error) {
             setError((error as Error).message);
         } finally {
@@ -184,7 +193,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, o
             <Form {...form}>
                 {!userFound?.unlocked ?
                     (
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" name="register">
+                        <form className="space-y-4" name="register">
                             {/* Username */}
                             <FormField
                                 control={form.control}
@@ -306,13 +315,15 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, o
                     )
                     :
                     (
-                        <form onSubmit={form.handleSubmit(finalize)}>
+                        <form onSubmit={form.handleSubmit(onSubmitAuth)}>
                             <p className="mb-4">
                                 {t("login_form.signin_safe_storage.description_unlocked_detailed")}
                             </p>
-                            {/* TODO: signin two steps */}
-                            <Button className='w-full' type='submit' disabled={form.getFieldState('keyType').invalid}>
-                                {t("login_form.signin_safe_storage.button_signin")}
+
+                            <Button className="w-full mb-4" type="submit" disabled={isSigned} onClick={form.handleSubmit(onSign)}>{t("login_form.signin_safe_storage.button_sign_auth")}</Button>
+   
+                            <Button className='w-full' type='submit' disabled={form.getFieldState('keyType').invalid || !isSigned}>
+                                {t("login_form.signin_safe_storage.button_signin_unlocked")}
                             </Button>
                             <Separator className='my-4' />
 

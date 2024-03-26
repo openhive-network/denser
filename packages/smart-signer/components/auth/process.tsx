@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, MutableRefObject, useMemo } from "react";
 import { useRouter } from "next/router";
 import { TFunction } from 'next-i18next';
 import { cookieNamePrefix } from "@smart-signer/lib/session";
@@ -18,8 +18,9 @@ export interface LoginFormSchema extends SignInFormSchema {
 export const useProcessAuth = (t: TFunction) => {
   const router = useRouter();
   const slug = router.query.slug as string;
-
+  const authDataRef = useRef<PostLoginSchema | null>(null) as MutableRefObject<PostLoginSchema | null>
   const [loginChallenge, setLoginChallenge] = useState('');
+  const [isSigned, setIsSigned] = useState(false);
 
   useEffect(() => {
     const cookieStore = parseCookie(document.cookie);
@@ -30,9 +31,7 @@ export const useProcessAuth = (t: TFunction) => {
 
   const signIn = useSignIn();
 
-  const onSubmit = async (data: LoginFormSchema) => {
-    /// TODO: handle offline as two parts
-    /// 1. step
+  const signAuth = async (data: LoginFormSchema): Promise<void> => {
     logger.info('onSubmit form data', data);
     setErrorMsg('');
 
@@ -61,7 +60,7 @@ export const useProcessAuth = (t: TFunction) => {
     } catch (error) {
       logger.error('onSubmit error in signLoginChallenge', error);
       setErrorMsg(t('pageLogin.signingFailed'));
-      return;
+      return Promise.reject(error);
     }
 
     const body: PostLoginSchema = {
@@ -71,18 +70,32 @@ export const useProcessAuth = (t: TFunction) => {
       hivesignerToken
     };
 
-    /// 2. step
+    authDataRef.current = body;
+    setIsSigned(true);
+    return Promise.resolve();
+  }
+
+  const submitAuth = async () => {
     try {
-      await signIn.mutateAsync({ data: body, uid: slug });
+      if (authDataRef.current) {
+        await signIn.mutateAsync({ data: authDataRef.current, uid: slug });
+      } else {
+        throw new Error('Unexpected error while processing authorization');
+      }
     } catch (error) {
       logger.error('onSubmit unexpected error', error);
       setErrorMsg(t('pageLogin.loginFailed'));
       throw errorMsg;
+    } finally {
+      authDataRef.current = null;
+      setIsSigned(false);
     }
   };
 
   return {
-    onSubmit,
+    signAuth,
+    submitAuth,
+    isSigned,
     errorMsg
   }
 }
