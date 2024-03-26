@@ -8,6 +8,8 @@ import { Icons } from '@hive/ui/components/icons';
 import Step from './step';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 import { useProcessAuth, LoginFormSchema } from './process';
+import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
+import Methods from './methods/methods';
 
 export interface SignInFormProps {
     preferredKeyTypes: KeyAuthorityType[]; // This option is set only for safe storage (hb-auth)
@@ -28,6 +30,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ preferredKeyTyp
     const [step, setStep] = useState<Steps>(Steps.SAFE_STORAGE_LOGIN);
     const { t } = useTranslation(i18nNamespace);
     const safeStorageRef = useRef<SafeStorageRef>(null);
+    const [lastLoggedInUser, setLastLoggedInUser] = useLocalStorage<string>('lastLoggedInUser', '');
 
     // provide methods to outside from here
     useImperativeHandle(ref, () => ({
@@ -53,26 +56,26 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ preferredKeyTyp
         await signAuth(schema);
     }
 
-    async function submit(): Promise<void> {
+    async function submit(username: string): Promise<void> {
         await submitAuth();
+        setLastLoggedInUser(username);
         onComplete();
     }
 
 
-    return <div className="flex min-h-[350px] h-full">
+    return <div className="flex max-h-[400px] h-min pb-4">
 
         {
             step === Steps.SAFE_STORAGE_LOGIN && (
                 <SafeStorage
                     ref={safeStorageRef}
                     preferredKeyTypes={preferredKeyTypes}
-                    onSetStep={(step: Steps) => {
-                        setStep(step);
-                    }}
+                    onSetStep={setStep}
                     sign={sign}
                     submit={submit}
                     i18nNamespace={i18nNamespace}
                     isSigned={isSigned}
+                    lastLoggedInUser={lastLoggedInUser}
                 />
             )
         }
@@ -80,15 +83,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ preferredKeyTyp
         {
             // TODO: Extract this to separate component 
             (step === Steps.OTHER_LOGIN_OPTIONS &&
-                <Step title={t("login_form.other_signin_options")}>
-
-                    <Button className='w-full' type='button' variant="secondary" onClick={() => {
-                        setStep(Steps.SAFE_STORAGE_LOGIN);
-                    }}>
-                        <Icons.chevronLeft className='mr-2 h-4 w-4' />{t("login_form.go_back_button")}
-                    </Button>
-
-                </Step>
+                <Methods onSetStep={setStep} i18nNamespace={i18nNamespace} />
             )
         }
     </div>

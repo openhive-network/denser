@@ -19,7 +19,11 @@ import {
     FormField,
     FormItem,
     FormControl,
-    FormMessage
+    FormMessage,
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem
 } from "@hive/ui";
 import Step from "../step"
 import { Steps } from "../form";
@@ -40,12 +44,13 @@ export interface SafeStorageProps {
     i18nNamespace: string;
     isSigned?: boolean;
     sign: (loginType: LoginType, username: string, keyType: KeyType) => Promise<void>;
-    submit: () => Promise<void>;
+    submit: (username: string) => Promise<void>;
+    lastLoggedInUser?: string;
 }
 
 type SafeStorageForm = z.infer<typeof formSchema>;
 
-const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, sign, submit, preferredKeyTypes, i18nNamespace, isSigned }, ref) => {
+const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, sign, submit, preferredKeyTypes, i18nNamespace, isSigned, lastLoggedInUser }, ref) => {
     useImperativeHandle(ref, () => ({
         async cancel() {
             await cancelAuth();
@@ -109,13 +114,13 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
         }
     }
 
-    async function onSign({username, keyType }: SafeStorageForm): Promise<void> {
+    async function onSign({ username, keyType }: SafeStorageForm): Promise<void> {
         await sign(LoginType.hbauth, username, KeyType[keyType]);
     }
 
-    async function onSubmitAuth(): Promise<void> {
+    async function onSubmitAuth({ username }: SafeStorageForm): Promise<void> {
         setLoading(true);
-        await submit();
+        await submit(username);
         setLoading(false);
     }
 
@@ -123,7 +128,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
         try {
             setLoading(true);
             await sign(LoginType.hbauth, username, KeyType[keyType]);
-            await submit();
+            await submit(username);
         } catch (error) {
             setError((error as Error).message);
         } finally {
@@ -135,16 +140,16 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
         form.reset();
         await authClient?.current?.logout();
         const users = await authClient.current?.getAuths() || [];
-        setDefaultUser(users);
+        setDefaultUser();
         setAuthUsers(users);
         setLoading(false);
     }
 
-    function setDefaultUser(auths: AuthUser[]) {
-        // pre-set existing user, for now it is first in the list
-        // TODO: set last login otherwise show dropdown
-        if (auths.length)
-            form.setValue('username', auths[0].username);
+    function setDefaultUser() {
+        // pre-set existing user
+        // check if there is already last logged in user and set
+        if (lastLoggedInUser)
+            form.setValue('username', lastLoggedInUser);
     }
 
     useEffect(() => {
@@ -155,8 +160,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
 
                 const auths = await authClient.current.getAuths();
 
-                // pre-set existing user, for now it is first in the list
-                setDefaultUser(auths);
+                setDefaultUser();
 
                 setAuthUsers(auths);
             } catch (error) {
@@ -202,7 +206,36 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
                                     <FormItem>
                                         <FormControl>
                                             {/* Place holder, enter username if there is no user, otherwise select user from menu or enter new user*/}
-                                            <Input placeholder={t("login_form.signin_safe_storage.placeholder_username")} type='text' {...field} />
+                                            <div className="flex relative">
+                                                <Input placeholder={t("login_form.signin_safe_storage.placeholder_username")} type='text' {...field} />
+                                                {authUsers.length ? (
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger className="absolute right-0 top-0">
+                                                            <Button variant="ghost" type="button">
+                                                                <Icons.chevronDown />
+                                                            </Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent className="w-56 absolute -right-7" side="bottom">
+                                                            {
+                                                                authUsers.map(({ username }) => {
+                                                                    return (
+                                                                        <DropdownMenuItem
+                                                                            className="cursor-pointer p-2"
+                                                                            key={username} onSelect={() => {
+                                                                                form.setValue('username', username);
+                                                                                form.trigger();
+                                                                            }}
+                                                                            disabled={form.getValues().username === username}
+                                                                        >
+                                                                            {username}
+                                                                        </DropdownMenuItem>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                ) : null}
+                                            </div>
                                             {/* Show select menu if there is length of auth users */}
                                         </FormControl>
                                         {errors.username && <FormMessage className="font-normal">{t(errors.username?.message!)}</FormMessage>}
@@ -321,7 +354,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
                             </p>
 
                             <Button className="w-full mb-4" type="submit" disabled={isSigned} onClick={form.handleSubmit(onSign)}>{t("login_form.signin_safe_storage.button_sign_auth")}</Button>
-   
+
                             <Button className='w-full' type='submit' disabled={form.getFieldState('keyType').invalid || !isSigned}>
                                 {t("login_form.signin_safe_storage.button_signin_unlocked")}
                             </Button>

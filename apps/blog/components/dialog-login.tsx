@@ -10,13 +10,15 @@ function DialogLogin({ children }: { children: ReactNode }) {
   }
 
   return (
-    <Dialog onOpenChange={async (open) => {
-      if (!open) {
-        await signInFormRef?.current?.cancel();
-      }
-    }}>
+    <Dialog
+    modal={true}
+      onOpenChange={async (open) => {
+        if (!open) {
+          await signInFormRef?.current?.cancel();
+        }
+      }}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[450px]" data-testid="login-dialog" onInteractOutside={(e) => e.preventDefault()}>
+      <DialogContent className="max-w-[380px] sm:max-w-[450px] p-0 sm:px-0 rounded-md" data-testid="login-dialog" onInteractOutside={(e) => e.preventDefault()}>
         <SignInForm ref={signInFormRef} preferredKeyTypes={['posting']} onComplete={onComplete} />
       </DialogContent>
     </Dialog>
