@@ -426,6 +426,18 @@
       "template_name_is_taken": "Le nom du modèle est déjà pris",
       "save": "Enregistrer",
       "delete_template": "Supprimer le modèle"
+    },
+    "category_selector": {
+      "tag_your_story": "Mots clés (jusqu'à 5 mots clés), le premier d'entre eux étant votre catégorie principale.",
+      "select_a_tag": "Sélectionner un mot clé",
+      "maximum_tag_length_is_24_characters": "La longueur d'un mot clé est d'au maximum 24 caractères",
+      "use_limited_amount_of_categories": "Veuillez s'il-vous-plaît n'utiliser que {{amount}} catégories",
+      "use_only_lowercase_letters": "Veuillez n'utiliser que des lettres minuscules",
+      "use_one_dash": "Veuillez n'utiliser qu'un seul trait d'union",
+      "use_spaces_to_separate_tags": "Veuillez utiliser des espaces pour séparer les mots clés",
+      "use_only_allowed_characters": "Veuillez n'utilisez que des lettres minuscules, des chiffres et au plus un trait d'union",
+      "must_start_with_a_letter": "Le premier caractère doit être une lettre",
+      "must_end_with_a_letter_or_number": "Le dernier caractère doit être une lettre ou un chiffre"
     }
   },
   "search_page": {

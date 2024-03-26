@@ -426,6 +426,18 @@
       "template_name_is_taken": "Il nome del modello è già stato preso",
       "save": "Salva",
       "delete_template": "Elimina modello"
+    },
+    "category_selector": {
+      "tag_your_story": "Tag (massimo 5). Il primo tag è la categoria principale. ",
+      "select_a_tag": "Seleziona un tag",
+      "maximum_tag_length_is_24_characters": "La lunghezza massima di un tag è 24 caratteri",
+      "use_limited_amount_of_categories": "Utilizzare solo {{amount}} categorie",
+      "use_only_lowercase_letters": "Usa solo caratteri minuscoli",
+      "use_one_dash": "Usa solo un trattino",
+      "use_spaces_to_separate_tags": "Usa gli spazi per separare i tag",
+      "use_only_allowed_characters": "Usa solo lettere minuscole, cifre e un trattino",
+      "must_start_with_a_letter": "Deve iniziare con una lettera",
+      "must_end_with_a_letter_or_number": "Deve terminare con una lettera o un numero"
     }
   },
   "search_page": {

@@ -438,6 +438,19 @@
       "template_name_is_taken": "Template name is taken",
       "save": "Save",
       "delete_template": "Delete Template"
+    },
+    "category_selector": {
+      "tag_your_story": "Tag (up to 8 tags), the first tag is your main category.",
+      "select_a_tag": "Select a tag",
+      "maximum_tag_length_is_24_characters": "Maximum tag length is 24 characters",
+      "use_limited_amount_of_categories": "Please use only {{amount}} tags",
+      "use_only_lowercase_letters": "Use only lowercase letters",
+      "use_one_dash": "Use only one dash",
+      "use_spaces_to_separate_tags": "Use spaces to separate tags",
+      "use_only_allowed_characters": "Use only lowercase letters, digits and one dash",
+      "must_start_with_a_letter": "Must start with a letter",
+      "must_end_with_a_letter_or_number": "Must end with a letter or number",
+      "must_not_include_hivemind_community_owner": "Post already has hive tag by default, please do not include another 'hive-' tag."
     }
   },
   "search_page": {

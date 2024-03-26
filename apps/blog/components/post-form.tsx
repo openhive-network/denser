@@ -28,6 +28,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getSubscriptions } from '@transaction/lib/bridge';
 import { useRouter } from 'next/router';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import { TFunction } from 'i18next';
 
 const defaultValues = {
   title: '',
@@ -40,6 +41,36 @@ const defaultValues = {
   maxAcceptedPayout: null,
   payoutType: '50%'
 };
+
+const MAX_TAGS = 8;
+function validateTagInput(value: string, required = true, t: TFunction<'common_wallet', undefined>) {
+  if (!value || value.trim() === '') return required ? t('g.required') : null;
+  const tags = value.trim().replace(/#/g, '').split(/ +/);
+
+  return tags.length > MAX_TAGS
+    ? t('submit_page.category_selector.use_limited_amount_of_categories', {
+        amount: MAX_TAGS
+      })
+    : tags.find((c) => c.length > 24)
+      ? t('submit_page.category_selector.maximum_tag_length_is_24_characters')
+      : tags.find((c) => c.split('-').length > 2)
+        ? t('submit_page.category_selector.use_one_dash')
+        : tags.find((c) => c.indexOf(',') >= 0)
+          ? t('submit_page.category_selector.use_spaces_to_separate_tags')
+          : tags.find((c) => /[A-Z]/.test(c))
+            ? t('submit_page.category_selector.use_only_lowercase_letters')
+            : tags.find((c) => !/^[a-z0-9-#]+$/.test(c))
+              ? t('submit_page.category_selector.use_only_allowed_characters')
+              : tags.find((c) => !/^[a-z-#]/.test(c))
+                ? t('submit_page.category_selector.must_start_with_a_letter')
+                : tags.find((c) => !/[a-z0-9]$/.test(c))
+                  ? t('submit_page.category_selector.must_end_with_a_letter_or_number')
+                  : tags.filter((c) => c.substring(0, 5) === 'hive-').length > 1
+                    ? t('submit_page.category_selector.must_not_include_hivemind_community_owner', {
+                        hive: tags.filter((c) => c.substring(0, 5) === 'hive-')[0]
+                      })
+                    : null;
+}
 
 export default function PostForm({ username }: { username: string }) {
   const { hiveRenderer } = useContext(HiveRendererContext);
@@ -98,7 +129,7 @@ export default function PostForm({ username }: { username: string }) {
     values: getValues(storedPost)
   });
   const watchedValues = form.watch();
-
+  const tagsCheck = validateTagInput(watchedValues.tags, false, t);
   useEffect(() => {
     storePost(watchedValues);
   }, [JSON.stringify(watchedValues)]);
@@ -217,6 +248,7 @@ export default function PostForm({ username }: { username: string }) {
                   <FormControl>
                     <Input placeholder={t('submit_page.enter_your_tags')} {...field} />
                   </FormControl>
+                  <div className="p-2 text-xs text-red-500">{tagsCheck}</div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -285,7 +317,7 @@ export default function PostForm({ username }: { username: string }) {
             <Button
               type="submit"
               variant="redHover"
-              disabled={!storedPost?.title || storedPost.tags.length === 0}
+              disabled={!storedPost?.title || storedPost.tags.length === 0 || Boolean(tagsCheck)}
             >
               {t('submit_page.submit')}
             </Button>

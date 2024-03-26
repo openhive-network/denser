@@ -439,6 +439,19 @@
       "template_name_is_taken": "Nazwa szablonu jest już zajęta",
       "save": "Zapisz",
       "delete_template": "Usuń szablon"
+    },
+    "category_selector": {
+      "tag_your_story": "Kategorie (do 5 kategorii), pierwsza kategoria określa główną.",
+      "select_a_tag": "Wybierz kategorię",
+      "maximum_tag_length_is_24_characters": "Maksymalna długość nazwy kategorii to 24 znaki",
+      "use_limited_amount_of_categories": "Użyj proszę co najwyżej {{amount}} kategorii",
+      "use_only_lowercase_letters": "Użyj wyłącznie małych liter",
+      "use_one_dash": "Użyj tylko jednego myślnika",
+      "use_spaces_to_separate_tags": "Użyj spacji do oddzielenia nazw kategorii",
+      "use_only_allowed_characters": "Możesz użyć wyłącznie małych liter, cyfr i jednego znaku myślnika",
+      "must_start_with_a_letter": "Musi zaczynać się od litery",
+      "must_end_with_a_letter_or_number": "Musi kończyć się literą lub cyfrą",
+      "must_not_include_hivemind_community_owner": "Tag hive został dodany do wpisu automatycznie, proszę nie dodawaj go ponownie."
     }
   },
   "search_page": {

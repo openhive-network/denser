@@ -432,6 +432,18 @@
       "template_name_is_taken": "Имя шаблона уже занято",
       "save": "Сохранить",
       "delete_template": "Удалить шаблон"
+    },
+    "category_selector": {
+      "tag_your_story": "Добавь теги (до 5 штук), первый тег станет основной категорией.",
+      "select_a_tag": "Выбрать тег",
+      "maximum_tag_length_is_24_characters": "Максимальная длина категории 24 знака",
+      "use_limited_amount_of_categories": "Пожалуйста, используйте только {{amount}} категории",
+      "use_only_lowercase_letters": "Используйте только символы нижнего регистра",
+      "use_one_dash": "Используйте только одно тире",
+      "use_spaces_to_separate_tags": "Используйте пробел чтобы разделить теги",
+      "use_only_allowed_characters": "Используйте только строчные буквы, цифры и одно тире",
+      "must_start_with_a_letter": "Должно начинаться с буквы",
+      "must_end_with_a_letter_or_number": "Должно заканчиваться с буквы или номера"
     }
   },
   "search_page": {
