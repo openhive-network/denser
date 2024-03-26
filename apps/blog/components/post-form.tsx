@@ -46,7 +46,6 @@ const MAX_TAGS = 8;
 function validateTagInput(value: string, required = true, t: TFunction<'common_wallet', undefined>) {
   if (!value || value.trim() === '') return required ? t('g.required') : null;
   const tags = value.trim().replace(/#/g, '').split(/ +/);
-
   return tags.length > MAX_TAGS
     ? t('submit_page.category_selector.use_limited_amount_of_categories', {
         amount: MAX_TAGS
@@ -75,6 +74,23 @@ function validateTagInput(value: string, required = true, t: TFunction<'common_w
                       : null;
 }
 
+function validateSummoryInput(value: string, t: TFunction<'common_wallet', undefined>) {
+  const markdownRegex = /(?:\*[\w\s]*\*|#[\w\s]*#|_[\w\s]*_|~[\w\s]*~|\]\s*\(|\]\s*\[)/;
+  const htmlTagRegex = /<\/?[\w\s="/.':;#-/?]+>/gi;
+  return markdownRegex.test(value)
+    ? t('submit_page.markdown_not_supported')
+    : htmlTagRegex.test(value)
+      ? t('submit_page.html_not_supported')
+      : null;
+}
+
+function validateAltUsernameInput(value: string, t: TFunction<'common_wallet', undefined>) {
+  const altAuthorAllowedCharactersRegex = /^[\w.\d-]+$/;
+  return value !== '' && !altAuthorAllowedCharactersRegex.test(value)
+    ? t('submit_page.must_contain_only')
+    : null;
+}
+
 export default function PostForm({ username }: { username: string }) {
   const { hiveRenderer } = useContext(HiveRendererContext);
   const router = useRouter();
@@ -91,23 +107,13 @@ export default function PostForm({ username }: { username: string }) {
   } = useQuery([['subscriptions', username]], () => getSubscriptions(username), {
     enabled: Boolean(username)
   });
-  const markdownRegex = /(?:\*[\w\s]*\*|#[\w\s]*#|_[\w\s]*_|~[\w\s]*~|]\s*\(|]\s*\[)/;
-  const htmlTagRegex = /<\/?[\w\s="/.':;#-/?]+>/gi;
-  const altAuthorAllowedCharactersRegex = /^[\w.\d-]+$/;
 
   const accountFormSchema = z.object({
     title: z.string().min(2, t('submit_page.string_must_contain', { num: 2 })),
     postArea: z.string().min(1, t('submit_page.string_must_contain', { num: 1 })),
-    postSummary: z
-      .string()
-      .max(140, t('submit_page.maximum_characters', { num: 140 }))
-      .regex(markdownRegex, t('submit_page.markdown_not_supported'))
-      .regex(htmlTagRegex, t('submit_page.html_not_supported')),
+    postSummary: z.string().max(140, t('submit_page.maximum_characters', { num: 140 })),
     tags: z.string(),
-    author: z
-      .string()
-      .max(50, t('submit_page.maximum_characters', { num: 50 }))
-      .regex(altAuthorAllowedCharactersRegex, t('submit_page.must_contain_only')),
+    author: z.string().max(50, t('submit_page.maximum_characters', { num: 50 })),
     category: z.string(),
     beneficiaries: z.array(
       z.object({
@@ -137,6 +143,9 @@ export default function PostForm({ username }: { username: string }) {
   });
   const watchedValues = form.watch();
   const tagsCheck = validateTagInput(watchedValues.tags, false, t);
+  const summaryCheck = validateSummoryInput(watchedValues.postSummary, t);
+  const altUsernameCheck = validateAltUsernameInput(watchedValues.author, t);
+
   useEffect(() => {
     storePost(watchedValues);
   }, [JSON.stringify(watchedValues)]);
@@ -189,6 +198,7 @@ export default function PostForm({ username }: { username: string }) {
                 {sideBySide ? t('submit_page.disable_side') : t('submit_page.enable_side')}
               </h1>
               <Button
+                type="button"
                 onClick={() => setPreview((prev) => !prev)}
                 variant="link"
                 className="hover:text-destructive"
@@ -222,7 +232,7 @@ export default function PostForm({ username }: { username: string }) {
                     />
                   </FormControl>
                   <FormDescription className="border-x-2 border-b-2 border-border px-3 pb-1 text-xs text-destructive">
-                    {t('submit_page.insert_images_by_dragging')},
+                    {t('submit_page.insert_images_by_dragging')}
                     <span>
                       <Label className="cursor-pointer text-red-500" htmlFor="picture">
                         {t('submit_page.selecting_them')}
@@ -243,6 +253,8 @@ export default function PostForm({ username }: { username: string }) {
                   <FormControl>
                     <Input placeholder={t('submit_page.post_summary')} {...field} />
                   </FormControl>
+                  <div className="text-xs text-red-500">{summaryCheck}</div>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -268,6 +280,7 @@ export default function PostForm({ username }: { username: string }) {
                   <FormControl>
                     <Input placeholder={t('submit_page.author_if_different')} {...field} />
                   </FormControl>
+                  <div className="text-xs text-red-500">{altUsernameCheck}</div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -324,7 +337,13 @@ export default function PostForm({ username }: { username: string }) {
             <Button
               type="submit"
               variant="redHover"
-              disabled={!storedPost?.title || storedPost.tags.length === 0 || Boolean(tagsCheck)}
+              disabled={
+                !storedPost?.title ||
+                storedPost.tags.length === 0 ||
+                Boolean(tagsCheck) ||
+                Boolean(summaryCheck) ||
+                Boolean(altUsernameCheck)
+              }
             >
               {t('submit_page.submit')}
             </Button>
