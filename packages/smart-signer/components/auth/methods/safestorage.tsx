@@ -1,5 +1,5 @@
 /* Sign-in with safe storage (use beekeeper wallet through hb-auth) */
-import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'next-i18next';
 import { AuthUser, AuthorizationError, KeyAuthorityType, OnlineClient } from "@hive/hb-auth";
@@ -145,12 +145,10 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
         setLoading(false);
     }
 
-    function setDefaultUser() {
-        // pre-set existing user
-        // check if there is already last logged in user and set
+    const setDefaultUser = useCallback(() => {
         if (lastLoggedInUser)
             form.setValue('username', lastLoggedInUser);
-    }
+    }, [lastLoggedInUser, form])
 
     useEffect(() => {
         (async () => {
@@ -169,7 +167,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
                 setLoading(false);
             }
         })();
-    }, []);
+    }, [setDefaultUser]);
 
     const userFound = useMemo(() => {
         const found = authUsers.filter((user) => user.username === form.getValues().username)[0];
@@ -185,6 +183,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
         }
 
         return found;
+        /* eslint-disable react-hooks/exhaustive-deps */
     }, [form.getValues().username, authUsers]);
 
     if (loading === undefined) return null;
@@ -373,5 +372,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
         </Step >
     )
 });
+
+SafeStorage.displayName = 'SafeStorage';
 
 export default SafeStorage;

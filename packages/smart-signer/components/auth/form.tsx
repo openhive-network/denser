@@ -89,4 +89,6 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ preferredKeyTyp
     </div>
 })
 
+SignInForm.displayName = 'SignInForm';
+
 export default SignInForm;
