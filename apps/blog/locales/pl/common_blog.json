@@ -387,8 +387,6 @@
     }
   },
   "submit_page": {
-    "to_many_communities": "Za dużo community",
-    "to_many_tags": "Za dużo tagow",
     "disable_side": "Przenieś podgląd pod formularz",
     "enable_side": "Przenieś podgląd obok formularza",
     "string_must_contain": "Tekst musi zawierać conajmniej {{num}} znak(i)",
@@ -451,7 +449,8 @@
       "use_only_allowed_characters": "Możesz użyć wyłącznie małych liter, cyfr i jednego znaku myślnika",
       "must_start_with_a_letter": "Musi zaczynać się od litery",
       "must_end_with_a_letter_or_number": "Musi kończyć się literą lub cyfrą",
-      "must_not_include_hivemind_community_owner": "Tag hive został dodany do wpisu automatycznie, proszę nie dodawaj go ponownie."
+      "must_not_include_hivemind_community_owner": "Post już ma domyślnie tag 'hive', proszę nie dodawać innego tagu 'hive-'",
+      "tags_cannot_be_repeated": "Tagi nie mogą się powtarzać"
     }
   },
   "search_page": {

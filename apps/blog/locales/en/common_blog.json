@@ -386,8 +386,6 @@
     }
   },
   "submit_page": {
-    "to_many_communities": "Too much community",
-    "to_many_tags": "Too many tags",
     "disable_side": "Disable side-by-side editor",
     "enable_side": "Enable side-by-side editor",
     "string_must_contain": "String must contain at least {{num}} character(s)",
@@ -450,7 +448,8 @@
       "use_only_allowed_characters": "Use only lowercase letters, digits and one dash",
       "must_start_with_a_letter": "Must start with a letter",
       "must_end_with_a_letter_or_number": "Must end with a letter or number",
-      "must_not_include_hivemind_community_owner": "Post already has hive tag by default, please do not include another 'hive-' tag."
+      "must_not_include_hivemind_community_owner": "Post already has hive tag by default, please do not include another 'hive-' tag.",
+      "tags_cannot_be_repeated": "Tags cannot be repeated"
     }
   },
   "search_page": {

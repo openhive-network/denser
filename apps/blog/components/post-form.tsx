@@ -66,10 +66,13 @@ function validateTagInput(value: string, required = true, t: TFunction<'common_w
                 : tags.find((c) => !/[a-z0-9]$/.test(c))
                   ? t('submit_page.category_selector.must_end_with_a_letter_or_number')
                   : tags.filter((c) => c.substring(0, 5) === 'hive-').length > 1
-                    ? t('submit_page.category_selector.must_not_include_hivemind_community_owner', {
-                        hive: tags.filter((c) => c.substring(0, 5) === 'hive-')[0]
-                      })
-                    : null;
+                    ? t('submit_page.category_selector.must_not_include_hivemind_community_owner')
+                    : tags.reduce((acc, tag, index, array) => {
+                          const isDuplicate = array.slice(index + 1).some((b) => b === tag);
+                          return acc || isDuplicate;
+                        }, false)
+                      ? t('submit_page.category_selector.tags_cannot_be_repeated')
+                      : null;
 }
 
 export default function PostForm({ username }: { username: string }) {
@@ -142,10 +145,9 @@ export default function PostForm({ username }: { username: string }) {
 
     createPostPermlink();
   }, [username, storedPost?.title]);
-
   async function onSubmit(data: AccountFormValues) {
     const chain = await hiveChainService.getHiveChain();
-    const tags = storedPost?.tags.split(' ') ?? [];
+    const tags = storedPost?.tags.replace(/#/g, '').split(' ') ?? [];
     const maxAcceptedPayout = await chain.hbd(Number(storedPost.maxAcceptedPayout));
     try {
       await transactionService.post(

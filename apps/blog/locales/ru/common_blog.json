@@ -380,8 +380,6 @@
     }
   },
   "submit_page": {
-    "to_many_communities": "Слишком много сообщества",
-    "to_many_tags": "Слишком много тегов",
     "disable_side": "Отключить редактор рядом",
     "enable_side": "Включить редактор рядом",
     "string_must_contain": "Строка должна содержать не менее {{num}} символов",
@@ -443,7 +441,9 @@
       "use_spaces_to_separate_tags": "Используйте пробел чтобы разделить теги",
       "use_only_allowed_characters": "Используйте только строчные буквы, цифры и одно тире",
       "must_start_with_a_letter": "Должно начинаться с буквы",
-      "must_end_with_a_letter_or_number": "Должно заканчиваться с буквы или номера"
+      "must_end_with_a_letter_or_number": "Должно заканчиваться с буквы или номера",
+      "must_not_include_hivemind_community_owner": "Пост уже имеет тег 'hive' по умолчанию, пожалуйста, не добавляйте другой тег 'hive-'",
+      "tags_cannot_be_repeated": "Теги не могут повторяться"
     }
   },
   "search_page": {

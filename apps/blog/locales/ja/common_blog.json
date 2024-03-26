@@ -374,8 +374,6 @@
     }
   },
   "submit_page": {
-    "to_many_communities": "コミュニティが多すぎる",
-    "to_many_tags": "タグが多すぎ",
     "disable_side": "サイドバイサイドエディターを無効にする",
     "enable_side": "サイドバイサイドエディターを有効にする",
     "string_must_contain": "文字列は少なくとも{{num}}文字含まれている必要があります",
@@ -437,7 +435,9 @@
       "use_spaces_to_separate_tags": "タグを区切るのにはスペースを使用してください。",
       "use_only_allowed_characters": "英小文字、数字、ダッシュのみ使用可能です。",
       "must_start_with_a_letter": "文字で始める必要があります。",
-      "must_end_with_a_letter_or_number": "文字または数字で終わる必要があります。"
+      "must_end_with_a_letter_or_number": "文字または数字で終わる必要があります。",
+      "must_not_include_hivemind_community_owner": "投稿には既にデフォルトでハイブタグが含まれていますので、他の 'hive-' タグを含めないでください。",
+      "tags_cannot_be_repeated": "タグを繰り返すことはできません"
     }
   },
   "search_page": {

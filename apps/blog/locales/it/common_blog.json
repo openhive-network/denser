@@ -374,8 +374,6 @@
     }
   },
   "submit_page": {
-    "to_many_communities": "Troppa comunità",
-    "to_many_tags": "Troppi tag",
     "disable_side": "Disabilita l'editor affiancato",
     "enable_side": "Abilita l'editor affiancato",
     "string_must_contain": "La stringa deve contenere almeno {{num}} carattere(i)",
@@ -437,7 +435,9 @@
       "use_spaces_to_separate_tags": "Usa gli spazi per separare i tag",
       "use_only_allowed_characters": "Usa solo lettere minuscole, cifre e un trattino",
       "must_start_with_a_letter": "Deve iniziare con una lettera",
-      "must_end_with_a_letter_or_number": "Deve terminare con una lettera o un numero"
+      "must_end_with_a_letter_or_number": "Deve terminare con una lettera o un numero",
+      "must_not_include_hivemind_community_owner": "Il post ha già il tag 'hive' per impostazione predefinita, per favore non includere un altro tag 'hive-'",
+      "tags_cannot_be_repeated": "I tag non possono essere ripetuti"
     }
   },
   "search_page": {

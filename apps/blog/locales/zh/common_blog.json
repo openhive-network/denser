@@ -374,8 +374,6 @@
     }
   },
   "submit_page": {
-    "to_many_communities": "社区太多",
-    "to_many_tags": "标签太多",
     "disable_side": "禁用并排编辑器",
     "enable_side": "启用并排编辑器",
     "string_must_contain": "字符串必须包含至少{{num}}个字符",
@@ -437,7 +435,9 @@
       "use_spaces_to_separate_tags": "使用空格分隔标签",
       "use_only_allowed_characters": "只使用小写字母、数字和一个破折号",
       "must_start_with_a_letter": "必须从一个字母开始",
-      "must_end_with_a_letter_or_number": "必须以字母或数字结尾"
+      "must_end_with_a_letter_or_number": "必须以字母或数字结尾",
+      "must_not_include_hivemind_community_owner": "帖子已经默认包含了 'hive' 标签，请不要再包含另一个 'hive-' 标签。",
+      "tags_cannot_be_repeated": "标签不能重复"
     }
   },
   "search_page": {
