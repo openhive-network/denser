@@ -23,6 +23,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { cn } from '@ui/lib/utils';
+import { hiveChainService } from '@transaction/lib/hive-chain-service';
 
 const DEFAULTS_ENDPOINTS = [
   'https://api.hive.blog',
@@ -209,9 +210,9 @@ export default function UserSettings() {
             defaultValue={endpoint}
             className="w-full gap-0 md:w-8/12"
             data-testid="api-endpoint-radiogroup"
-            onValueChange={(e) => {
-              setEndpoint(e);
-              router.reload();
+            onValueChange={async (newEndpoint) => {
+              setEndpoint(newEndpoint);
+              await hiveChainService.setHiveChainEndpoint(newEndpoint);
             }}
             value={endpoint}
           >

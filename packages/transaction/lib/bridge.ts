@@ -1,4 +1,4 @@
-import { TWaxApiRequest } from '@hive/wax/web';
+import { TWaxApiRequest } from '@hive/wax';
 import { hiveChainService } from './hive-chain-service';
 
 const chain = await hiveChainService.getHiveChain();
@@ -505,9 +505,9 @@ export interface IFollowListParams {
 }
 
 export interface IFollowList {
-  name: '';
-  blacklist_description: '';
-  muted_list_description: '';
+  name: string;
+  blacklist_description: string;
+  muted_list_description: string;
 }
 
 type GetFollowListData = {

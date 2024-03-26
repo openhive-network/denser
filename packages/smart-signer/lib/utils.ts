@@ -1,4 +1,4 @@
-import { createWaxFoundation, operation, THexString, ITransactionBuilder } from '@hive/wax/web';
+import { createWaxFoundation, operation, THexString, ITransactionBuilder } from '@hive/wax';
 import { fetchJson } from '@smart-signer/lib/fetch-json';
 import { isBrowser } from '@ui/lib/logger';
 import { getLogger } from '@ui/lib/logging';
@@ -227,7 +227,10 @@ export function isStorageAvailable(
  * @param {string} enumValue
  * @returns {(keyof T | null)}
  */
-export function getEnumKeyByEnumValue<T extends {[index: string]: string}>(myEnum: T, enumValue: string): keyof T | null {
-  const keys = Object.keys(myEnum).filter(x => myEnum[x] == enumValue);
+export function getEnumKeyByEnumValue<T extends { [index: string]: string }>(
+  myEnum: T,
+  enumValue: string
+): keyof T | null {
+  const keys = Object.keys(myEnum).filter((x) => myEnum[x] == enumValue);
   return keys.length > 0 ? keys[0] : null;
 }

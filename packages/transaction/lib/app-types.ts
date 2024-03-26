@@ -1,4 +1,4 @@
-import { ApiAccount } from '@hive/wax/web';
+import { ApiAccount } from '@hive/wax';
 import { Authority } from '@hiveio/dhive/lib/chain/account';
 import { Asset } from '@hiveio/dhive/lib/chain/asset';
 
@@ -67,4 +67,9 @@ export interface FullAccount {
   follow_stats?: AccountFollowStats;
   __loaded?: true;
   proxyVotes?: Array<unknown>;
+}
+
+export interface Beneficiarie {
+  account: string;
+  weight: string;
 }

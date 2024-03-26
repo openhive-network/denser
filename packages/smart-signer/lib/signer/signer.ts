@@ -1,7 +1,7 @@
 import { LoginType } from '@smart-signer/types/common';
 import { KeyType } from '@smart-signer/types/common';
 import { StorageType } from '@smart-signer/lib/storage-mixin';
-import { THexString, transaction } from '@hive/wax/web';
+import { THexString, transaction } from '@hive/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -12,7 +12,7 @@ export interface SignTransaction {
 }
 
 export interface SignChallenge {
-  message: string;
+  message: string | Buffer;
   password?: string; // private key or password to unlock hbauth key
   translateFn?: (v: string) => string;
 }

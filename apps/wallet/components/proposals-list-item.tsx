@@ -14,7 +14,6 @@ import { TFunction } from 'i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';
 import { transactionService } from '@transaction/index';
-import { useSigner } from '@smart-signer/lib/use-signer';
 
 function titleSetter(
   daysStart: string,
@@ -53,10 +52,9 @@ function translateShorDate(data: string, t: TFunction<'common_wallet', undefined
 export function ProposalListItem({ proposalData, totalShares, totalVestingFund }: IListItemProps) {
   const { t } = useTranslation('common_wallet');
   const { user } = useUser();
-  const { signerOptions } = useSigner();
   const [link, setLink] = useState<string>(`/${proposalData.creator}/${proposalData.permlink}`);
-  const totalHBD = proposalData.daily_pay.amount.times(
-    moment(proposalData.end_date).diff(moment(proposalData.start_date), 'd')
+  const totalHBD = proposalData.daily_pay?.amount.times(
+    moment(proposalData?.end_date).diff(moment(proposalData.start_date), 'd')
   );
   const totalDays = moment(proposalData.end_date).diff(proposalData.start_date, `d`);
 
@@ -175,22 +173,7 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
               className="relative inline-flex h-6 w-6 cursor-pointer rounded-full bg-white stroke-1 text-red-500 dark:bg-slate-800"
               data-testid="voting-button-icon"
               onClick={(e: React.MouseEvent<HTMLOrSVGElement>) => {
-                transactionService.processHiveAppOperation(
-                  (builder) => {
-                    builder
-                      .push({
-                        update_proposal_votes: {
-                          voter: user.username,
-                          proposal_ids: [String(proposalData.proposal_id)],
-                          approve: true,
-                          extensions: []
-                        }
-                      })
-                      .build();
-                  },
-                  signerOptions
-                );
-
+                transactionService.updateProposalVotes([String(proposalData.proposal_id)], true, []);
                 (e.target as HTMLElement).classList.add('text-white');
                 (e.target as HTMLElement).classList.add('bg-red-600');
               }}

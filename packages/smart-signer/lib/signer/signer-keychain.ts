@@ -1,11 +1,7 @@
 import { KeychainSDK, KeychainKeyTypes } from 'keychain-sdk';
 import { Operation } from '@hiveio/dhive';
-import {
-  SignChallenge,
-  SignTransaction,
-  Signer
-} from '@smart-signer/lib/signer/signer';
-import { createWaxFoundation, operation } from '@hive/wax/web';
+import { SignChallenge, SignTransaction, Signer } from '@smart-signer/lib/signer/signer';
+import { createWaxFoundation, operation } from '@hive/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -54,7 +50,6 @@ export function waxToKeychainOperation(operation: operation | operation[]) {
  * @extends {Signer}
  */
 export class SignerKeychain extends Signer {
-
   async destroy() {}
 
   async signChallenge({ message }: SignChallenge): Promise<string> {
@@ -67,7 +62,7 @@ export class SignerKeychain extends Signer {
       }
       const response = await keychain.signBuffer({
         username,
-        message,
+        message: typeof message === 'string' ? message : JSON.stringify(message),
         method: KeychainKeyTypes[keyType]
       });
       // There's not digest in response.
@@ -121,5 +116,4 @@ export class SignerKeychain extends Signer {
       throw error;
     }
   }
-
 }

@@ -58,7 +58,7 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
       loginType,
       keyType: KeyType.posting,
       apiEndpoint: 'https://api.hive.blog',
-      storageType: 'localStorage',
+      storageType: 'localStorage'
     };
     const signer = getSigner(signerOptions);
 

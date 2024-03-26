@@ -9,6 +9,8 @@ import { useTranslation } from 'next-i18next';
 import DialogLogin from './dialog-login';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getLogger } from '@ui/lib/logging';
+import version from '../version.json';
+
 const Item = ({
   href,
   children,
@@ -103,6 +105,7 @@ const Sidebar = () => {
             <Separator className="my-2" />
             <Item href="/privacy.html">{t('navigation.sidebar.privacy_policy')}</Item>
             <Item href="/tos.html">{t('navigation.sidebar.terms_of_service')}</Item>
+            <span className="text-center text-xs font-light">Version: {version.commithash.slice(0, 8)}</span>
           </ul>
         </div>
       </SheetContent>

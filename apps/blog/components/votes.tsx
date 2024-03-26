@@ -8,13 +8,11 @@ import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { transactionService } from '@transaction/index';
-import { useSigner } from '@smart-signer/lib/use-signer';
 import env from '@beam-australia/react-env';
 
 const VotesComponent = ({ post }: { post: Entry }) => {
   const walletHost = env('WALLET_ENDPOINT');
   const { user } = useUser();
-  const { signerOptions } = useSigner();
   const { t } = useTranslation('common_blog');
   const [isClient, setIsClient] = useState(false);
   useEffect(() => {
@@ -33,20 +31,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                   'h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1',
                   { 'bg-red-600 text-white': checkVote && checkVote?.rshares > 0 }
                 )}
-                onClick={(e) =>
-                  transactionService.processHiveAppOperation((builder) => {
-                    builder
-                      .push({
-                        vote: {
-                          voter: user.username,
-                          author: post.author,
-                          permlink: post.permlink,
-                          weight: 10000
-                        }
-                      })
-                      .build();
-                  }, signerOptions)
-                }
+                onClick={(e) => transactionService.upVote(post.author, post.permlink)}
               />
             ) : (
               <DialogLogin>
@@ -66,20 +51,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                   'h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
                   { 'bg-gray-600 text-white': checkVote && checkVote?.rshares < 0 }
                 )}
-                onClick={(e) =>
-                  transactionService.processHiveAppOperation((builder) => {
-                    builder
-                      .push({
-                        vote: {
-                          voter: user.username,
-                          author: post.author,
-                          permlink: post.permlink,
-                          weight: -10000
-                        }
-                      })
-                      .build();
-                  }, signerOptions)
-                }
+                onClick={(e) => transactionService.downVote(post.author, post.permlink)}
               />
             ) : (
               <DialogLogin>

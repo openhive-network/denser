@@ -56,10 +56,19 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await profilePage.repliesCommentListItemTitle.locator('a').first().click();
     await profilePage.page.waitForSelector(profilePage.repliesCommentListItemArticleTitle['_selector']);
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
-    const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
-    const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
     // console.log('commentContentWithoutSpaces: ', await commentContentWithoutSpaces);
-    await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
+
+    if (await page.getByText('Images were hidden due to low ratings.').isVisible()){
+      await page.locator('button').getByText('Show').click();
+      const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
+      const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
+      await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
+    }
+    else {
+      const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
+      const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
+      await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
+    }
   });
 
   test('move to the comment view page after clicking the card description', async ({ page }) => {
@@ -77,9 +86,18 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     );
     await profilePage.repliesCommentListItemDescription.locator('a').first().click();
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
-    const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
-    const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
-    await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
+
+    if (await page.getByText('Images were hidden due to low ratings.').isVisible()){
+      await page.locator('button').getByText('Show').click();
+      const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
+      const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
+      await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
+    }
+    else {
+      const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
+      const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
+      await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
+    }
   });
 
   test('move to the profile page after clicking avatar of the first comment card', async ({ page }) => {
@@ -176,9 +194,18 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     );
     await profilePage.repliesCommentListItemTimestamp.first().click();
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
-    const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
-    const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
-    await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
+
+    if (await page.getByText('Images were hidden due to low ratings.').isVisible()){
+      await page.locator('button').getByText('Show').click();
+      const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
+      const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
+      await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
+    }
+    else {
+      const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
+      const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
+      await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
+    }
   });
 
   test('move to the login page after clicking upvote of the first comment card', async ({ page }) => {
@@ -319,9 +346,18 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await firstCommentCardRespond.click();
 
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
-    const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
-    const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
-    await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
+
+    if (await page.getByText('Images were hidden due to low ratings.').isVisible()){
+      await page.locator('button').getByText('Show').click();
+      const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
+      const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
+      await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
+    }
+    else {
+      const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
+      const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
+      await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
+    }
   });
 
   test('validate styles and tooltips of response button', async ({ page }) => {
