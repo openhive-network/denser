@@ -1,5 +1,5 @@
 /* Sign-in with safe storage (use beekeeper wallet through hb-auth) */
-import { FC, forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'next-i18next';
 import { AuthUser, AuthorizationError, KeyAuthorityType, OnlineClient } from "@hive/hb-auth";
@@ -133,6 +133,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, o
 
     function setDefaultUser(auths: AuthUser[]) {
         // pre-set existing user, for now it is first in the list
+        // TODO: set last login otherwise show dropdown
         if (auths.length)
             form.setValue('username', auths[0].username);
     }
@@ -305,14 +306,11 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, o
                     )
                     :
                     (
-                        // update description here
-                        // Say, select key type to authoirze
-                        // add button, authorize 
                         <form onSubmit={form.handleSubmit(finalize)}>
                             <p className="mb-4">
                                 {t("login_form.signin_safe_storage.description_unlocked_detailed")}
                             </p>
-
+                            {/* TODO: signin two steps */}
                             <Button className='w-full' type='submit' disabled={form.getFieldState('keyType').invalid}>
                                 {t("login_form.signin_safe_storage.button_signin")}
                             </Button>

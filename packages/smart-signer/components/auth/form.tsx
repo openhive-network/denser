@@ -7,8 +7,7 @@ import { Button } from '@hive/ui';
 import { Icons } from '@hive/ui/components/icons';
 import Step from './step';
 import { KeyType, LoginType } from '@smart-signer/types/common';
-import { useProcessAuth } from './process';
-import { LoginFormSchema } from '../signin-form';
+import { useProcessAuth, LoginFormSchema } from './process';
 
 export interface SignInFormProps {
     preferredKeyTypes: KeyAuthorityType[]; // This option is set only for safe storage (hb-auth)
@@ -42,16 +41,17 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ preferredKeyTyp
             // set cancelled state
             await safeStorageRef.current?.cancel();
         }
-    }))
-
+    }));
 
     // final form handlers
+    // TODO: replace with function
     const { onSubmit } = useProcessAuth(t);
 
     async function processAuth(loginType: LoginType, username: string, keyType: KeyType): Promise<void> {
         const schema: LoginFormSchema = {
             loginType,
             username,
+            keyType,
             remember: false // TODO: handle this if required
         }
 
