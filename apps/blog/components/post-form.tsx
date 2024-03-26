@@ -126,9 +126,10 @@ export default function PostForm({ username }: { username: string }) {
         maxAcceptedPayout,
         tags
       );
-    } finally {
       storePost(defaultValues);
       router.push(`/created/${tags[0]}`);
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -179,7 +180,7 @@ export default function PostForm({ username }: { username: string }) {
                   <FormControl>
                     <MdEditor
                       onChange={(value) => {
-                        form.setValue('postArea', value)
+                        form.setValue('postArea', value);
                       }}
                       persistedValue={storedPost.postArea}
                     />
