@@ -89,11 +89,12 @@ export const onImageDrop = async (
 
 interface MdEditorProps {
   onChange: (value: string) => void;
+  persistedValue: string;
 }
 
-const MdEditor: FC<MdEditorProps> = ({ onChange }) => {
+const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '' }) => {
   const { user } = useUser();
-  const [formValue, setFormValue] = useState<string>('');
+  const [formValue, setFormValue] = useState<string>(persistedValue);
 
   const { resolvedTheme } = useTheme();
   const signerOptions: SignerOptions = {
