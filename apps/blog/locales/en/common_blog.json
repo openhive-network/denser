@@ -410,6 +410,9 @@
     "clean": "Clean",
     "markdown_styling_guide": "Markdown Styling Guide",
     "power_up": " Power up 100%",
+    "maximum_characters": "Maximum {{num}} characters",
+    "markdown_not_supported": "Markdown is not supported here",
+    "html_not_supported": "HTML is not supported here",
     "advanced_settings_dialog": {
       "changes_saved": "Changes saved",
       "advanced_settings": "Advanced settings",

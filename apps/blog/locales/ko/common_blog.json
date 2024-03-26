@@ -398,6 +398,9 @@
     "clean": "정리",
     "markdown_styling_guide": "마크다운 스타일 가이드",
     "power_up": "100% 파워 업",
+    "maximum_characters": "{{num}} 자 이내",
+    "markdown_not_supported": "여기에서는 Markdown을 지원하지 않습니다",
+    "html_not_supported": "여기에서는 HTML을 지원하지 않습니다",
     "advanced_settings_dialog": {
       "changes_saved": "변경 사항이 저장되었습니다",
       "advanced_settings": "고급 설정",

@@ -398,6 +398,9 @@
     "clean": "Limpiar",
     "markdown_styling_guide": "Guía de Estilo Markdown",
     "power_up": "Potenciar al 100%",
+    "maximum_characters": "Máximo de {{num}} caracteres",
+    "markdown_not_supported": "Markdown no es compatible aquí",
+    "html_not_supported": "HTML no es compatible aquí",
     "advanced_settings_dialog": {
       "changes_saved": "Cambios guardados",
       "advanced_settings": "Configuración avanzada",

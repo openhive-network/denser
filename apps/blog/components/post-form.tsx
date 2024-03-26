@@ -91,19 +91,23 @@ export default function PostForm({ username }: { username: string }) {
   } = useQuery([['subscriptions', username]], () => getSubscriptions(username), {
     enabled: Boolean(username)
   });
+  const markdownRegex = /(?:\*[\w\s]*\*|#[\w\s]*#|_[\w\s]*_|~[\w\s]*~|]\s*\(|]\s*\[)/;
+  const htmlTagRegex = /<\/?[\w\s="/.':;#-/?]+>/gi;
+  const altAuthorAllowedCharactersRegex = /^[\w.\d-]+$/;
+
   const accountFormSchema = z.object({
     title: z.string().min(2, t('submit_page.string_must_contain', { num: 2 })),
     postArea: z.string().min(1, t('submit_page.string_must_contain', { num: 1 })),
-    postSummary: z.string().max(140),
-    tags: z
+    postSummary: z
       .string()
-      .refine((v) => !((v.match(/hive-/g) || []).length > 1), {
-        message: t('submit_page.to_many_communities')
-      })
-      .refine((v) => v.split(/\s+/).length <= 8, {
-        message: t('submit_page.to_many_tags')
-      }),
-    author: z.string().regex(/^$|^[[a-zAZ1-9]+$/, t('submit_page.must_contain_only')),
+      .max(140, t('submit_page.maximum_characters', { num: 140 }))
+      .regex(markdownRegex, t('submit_page.markdown_not_supported'))
+      .regex(htmlTagRegex, t('submit_page.html_not_supported')),
+    tags: z.string(),
+    author: z
+      .string()
+      .max(50, t('submit_page.maximum_characters', { num: 50 }))
+      .regex(altAuthorAllowedCharactersRegex, t('submit_page.must_contain_only')),
     category: z.string(),
     beneficiaries: z.array(
       z.object({
@@ -250,7 +254,7 @@ export default function PostForm({ username }: { username: string }) {
                   <FormControl>
                     <Input placeholder={t('submit_page.enter_your_tags')} {...field} />
                   </FormControl>
-                  <div className="p-2 text-xs text-red-500">{tagsCheck}</div>
+                  <div className="text-xs text-red-500">{tagsCheck}</div>
                   <FormMessage />
                 </FormItem>
               )}

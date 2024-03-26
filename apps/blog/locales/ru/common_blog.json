@@ -404,6 +404,9 @@
     "clean": "Очистить",
     "markdown_styling_guide": "Руководство по стилю Markdown",
     "power_up": "Увеличить на 100%",
+    "maximum_characters": "Максимум {{num}} символов",
+    "markdown_not_supported": "Markdown здесь не поддерживается",
+    "html_not_supported": "HTML здесь не поддерживается",
     "advanced_settings_dialog": {
       "changes_saved": "Изменения сохранены",
       "advanced_settings": "Расширенные настройки",

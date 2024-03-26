@@ -398,6 +398,9 @@
     "clean": "Pulisci",
     "markdown_styling_guide": "Guida alla formattazione Markdown",
     "power_up": "Potenzia al 100%",
+    "maximum_characters": "Massimo {{num}} caratteri",
+    "markdown_not_supported": "Markdown non è supportato qui",
+    "html_not_supported": "HTML non è supportato qui",
     "advanced_settings_dialog": {
       "changes_saved": "Modifiche salvate",
       "advanced_settings": "Impostazioni avanzate",

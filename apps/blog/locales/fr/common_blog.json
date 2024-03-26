@@ -398,6 +398,9 @@
     "clean": "Nettoyer",
     "markdown_styling_guide": "Guide de mise en forme Markdown",
     "power_up": "Mise à niveau à 100%",
+    "maximum_characters": "Maximum de {{num}} caractères",
+    "markdown_not_supported": "Markdown n'est pas pris en charge ici",
+    "html_not_supported": "HTML n'est pas pris en charge ici",
     "advanced_settings_dialog": {
       "changes_saved": "Changements enregistrés",
       "advanced_settings": "Paramètres avancés",

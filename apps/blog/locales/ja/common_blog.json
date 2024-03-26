@@ -398,6 +398,9 @@
     "clean": "クリーン",
     "markdown_styling_guide": "Markdownスタイルガイド",
     "power_up": "100% パワーアップ",
+    "maximum_characters": "{{num}} 文字まで",
+    "markdown_not_supported": "ここではMarkdownはサポートされていません",
+    "html_not_supported": "ここではHTMLはサポートされていません",
     "advanced_settings_dialog": {
       "changes_saved": "変更が保存されました",
       "advanced_settings": "高度な設定",

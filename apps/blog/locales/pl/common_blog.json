@@ -411,6 +411,9 @@
     "clean": "Wyczyść",
     "markdown_styling_guide": "Przewodnik formatowania z użyciem Markdown",
     "power_up": "Wzmocnij o 100%",
+    "maximum_characters": "Maksymalnie {{num}} znaków",
+    "markdown_not_supported": "Markdown nie jest obsługiwany tutaj",
+    "html_not_supported": "HTML nie jest obsługiwany tutaj",
     "advanced_settings_dialog": {
       "changes_saved": "Zmiany zostały zapisane",
       "advanced_settings": "Zaawansowane ustawienia",

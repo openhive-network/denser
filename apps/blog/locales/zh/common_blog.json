@@ -398,6 +398,9 @@
     "clean": "清除",
     "markdown_styling_guide": "Markdown样式指南",
     "power_up": "100% 动力增强",
+    "maximum_characters": "最多{{num}}个字符",
+    "markdown_not_supported": "此处不支持Markdown",
+    "html_not_supported": "此处不支持HTML",
     "advanced_settings_dialog": {
       "changes_saved": "更改已保存",
       "advanced_settings": "高级设置",
