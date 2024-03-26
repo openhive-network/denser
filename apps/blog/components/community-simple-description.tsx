@@ -1,6 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@ui/components/card';
-import Link from 'next/link';
-import { Button } from '@hive/ui/components/button';
 import type { Community, Subscription } from '@transaction/lib/bridge';
 import { IAccountNotification } from '@transaction/lib/bridge';
 import { SubsListDialog } from './subscription-list-dialog';
@@ -8,6 +6,7 @@ import { ActivityLogDialog } from './activity-log-dialog';
 import { useTranslation } from 'next-i18next';
 import SubscribeCommunity from './subscribe-community';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import NewPost from './new_post_button';
 
 const CommunitySimpleDescription = ({
   data,
@@ -52,10 +51,7 @@ const CommunitySimpleDescription = ({
       <CardContent className="col-span-1 flex items-center justify-center p-0">
         <div className="my-4 flex flex-col gap-4">
           <SubscribeCommunity user={user} username={username} subStatus={data.context.subscribed} />
-
-          <Button size="sm" className="hover: w-full bg-blue-800 text-center">
-            <Link href={`/submit.html?category=${data.name}`}>{t('communities.buttons.new_post')}</Link>
-          </Button>
+          <NewPost name={data.name} />
         </div>
       </CardContent>
     </Card>
