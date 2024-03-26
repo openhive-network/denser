@@ -3,6 +3,7 @@ import { hbauthService } from '@smart-signer/lib/hbauth-service';
 import { SignChallenge, SignTransaction, Signer } from '@smart-signer/lib/signer/signer';
 import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
 import { THexString, createWaxFoundation } from '@hive/wax';
+import { AuthStatus } from '@hive/hb-auth';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -45,7 +46,6 @@ export class SignerHbauth extends Signer {
     await this.checkAuths(username, keyType);
 
     const signature = await this.signDigest(digest, password);
-    logger.info('hbauth', { signature, digest });
     return signature;
   }
 
@@ -92,11 +92,32 @@ export class SignerHbauth extends Signer {
         });
       }
 
-      const authStatus = await authClient.authenticate(
-        username,
-        password,
-        keyType as unknown as 'posting' | 'active'
-      );
+      let authStatus: AuthStatus = {ok: false};
+      try {
+        authStatus = await authClient.authenticate(
+          username,
+          password,
+          keyType as unknown as 'posting' | 'active'
+        );
+      } catch (error) {
+        logger.error("Error in signDigest, when trying to authenticate user: %o", error);
+
+        //
+        // TODO AuthorizationError is not exported in hb-auth yet (issue
+        // created). Check this in their newer version and use
+        // `instanceof` if possible.
+        //
+
+        // if (error instanceof AuthorizationError)
+
+        if (error && `${error}` === "AuthorizationError: User is already logged in") {
+          logger.info('Swallowing error: AuthorizationError: User is already logged in');
+          // Swallow this error, it's OK.
+          authStatus.ok = true;
+        } else {
+          throw error;
+        }
+      }
 
       logger.info('authStatus', { authStatus });
       if (!authStatus.ok) {
@@ -105,7 +126,7 @@ export class SignerHbauth extends Signer {
     }
 
     const signature = await authClient.sign(username, digest, keyType as unknown as 'posting' | 'active');
-    logger.info('hbauth: %o', { digest, signature });
+    logger.info('SignerHbauth.signDigest: %o', { digest, signature });
     return signature;
   }
 

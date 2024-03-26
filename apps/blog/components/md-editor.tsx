@@ -20,46 +20,60 @@ import { KeyType } from '@smart-signer/types/common';
 import { Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
 import { ICommand, TextAreaTextApi } from '@uiw/react-md-editor';
 
+import { getLogger } from '@ui/lib/logging';
+const logger = getLogger('app');
+
 const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false });
 
-export const uploadImg = async (file: File, username: string, signer: Signer): Promise<string> => {
-  let data;
+/**
+ * Uploads image to Imagehoster, see
+ * https://gitlab.syncad.com/hive/imagehoster. Function returns url to
+ * image on server or empty string in case of any error.
+ *
+ * @param {File} file
+ * @param {string} username
+ * @param {Signer} signer
+ * @returns {Promise<string>}
+ */
+const uploadImg = async (file: File, username: string, signer: Signer): Promise<string> => {
+  try {
+    let data;
 
-  if (file) {
-    const reader = new FileReader();
+    if (file) {
+      const reader = new FileReader();
 
-    data = new Promise((resolve) => {
-      reader.addEventListener('load', () => {
-        const result = Buffer.from(reader.result!.toString(), 'binary');
-        resolve(result);
+      data = new Promise((resolve) => {
+        reader.addEventListener('load', () => {
+          const result = Buffer.from(reader.result!.toString(), 'binary');
+          resolve(result);
+        });
+        reader.readAsBinaryString(file);
       });
-      reader.readAsBinaryString(file);
+    }
+
+    const formData = new FormData();
+    if (file) {
+      formData.append('file', file);
+    }
+
+    data = await data;
+    const prefix = Buffer.from('ImageSigningChallenge');
+    const buf = Buffer.concat([prefix, data as unknown as Uint8Array]);
+
+    const sig = await signer.signChallenge({
+      message: buf,
+      password: ''
     });
+
+    const postUrl = `${env('IMAGES_ENDPOINT')}${username}/${sig}`;
+
+    const response = await fetch(postUrl, { method: 'POST', body: formData });
+    const resJSON = await response.json();
+    return resJSON.url;
+  } catch (error) {
+    logger.error('Error when uploading file %s: %o', file.name, error);
   }
-
-  const formData = new FormData();
-  if (file) {
-    formData.append('file', file);
-  }
-
-  data = await data;
-  const prefix = Buffer.from('ImageSigningChallenge');
-  const buf = Buffer.concat([prefix, data as unknown as Uint8Array]);
-  const bufSha = cryptoUtils.sha256(buf);
-
-  let sig;
-  let postUrl;
-
-  sig = await signer.signChallenge({
-    message: buf,
-    password: ''
-  });
-
-  postUrl = `${env('IMAGES_ENDPOINT')}${username}/${sig}`;
-
-  const response = await fetch(postUrl, { method: 'POST', body: formData });
-  const resJSON = await response.json();
-  return resJSON.url;
+  return '';
 };
 
 export const onImageUpload = async (file: File, setMarkdown: Dispatch<SetStateAction<string>>, username: string, signer: Signer) => {
@@ -84,6 +98,12 @@ export const onImageDrop = async (
     if (file) files.push(file);
   }
 
+  // Upload first file. We need to unlock key in Hbauth. This is rather
+  // ugly workaround.
+  if (files.length > 1) {
+    await onImageUpload(files.shift() as File, setMarkdown, username, signer)
+  }
+  // Upload the rest of files.
   await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer)));
 };
 
