@@ -11,9 +11,9 @@ import { useProcessAuth } from './process';
 import { LoginFormSchema } from '../signin-form';
 
 export interface SignInFormProps {
-    // This option is set only for safe storage (hb-auth)
-    preferredKeyTypes: KeyAuthorityType[]
+    preferredKeyTypes: KeyAuthorityType[]; // This option is set only for safe storage (hb-auth)
     onComplete: () => void;
+    i18nNamespace?: string;
 }
 
 export type SignInFormRef = { cancel: () => void; };
@@ -28,10 +28,10 @@ export interface ProcessAuthFn {
     (loginType: LoginType, username: string, keyType: KeyType): Promise<void>
 }
 
-const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ preferredKeyTypes, onComplete }, ref) => {
+const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ preferredKeyTypes, onComplete, i18nNamespace = 'smart-signer' }, ref) => {
     // component controllers
     const [step, setStep] = useState<Steps>(Steps.SAFE_STORAGE_LOGIN);
-    const { t } = useTranslation(); // TODO: add NS here
+    const { t } = useTranslation(i18nNamespace);
 
     // provide methods to outside from here
     useImperativeHandle(ref, () => ({
@@ -42,7 +42,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ preferredKeyTyp
         }
     }))
 
-    
+
     // final form handlers
     const { errorMsg, onSubmit } = useProcessAuth(t);
 
@@ -70,6 +70,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ preferredKeyTyp
                         setStep(step);
                     }}
                     onProcessAuth={processAuth}
+                    i18nNamespace={i18nNamespace}
                 />
             )
         }

@@ -1,6 +1,7 @@
 /* Sign-in with safe storage (use beekeeper wallet through hb-auth) */
 import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'next-i18next';
 import { AuthUser, AuthorizationError, KeyAuthorityType, OnlineClient } from "@hive/hb-auth";
 import { z } from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -35,12 +36,14 @@ export interface SafeStorageProps {
     onSetStep: (step: Steps) => void;
     onProcessAuth: ProcessAuthFn;
     preferredKeyTypes: KeyAuthorityType[];
+    i18nNamespace: string
 }
 
 type SafeStorageForm = z.infer<typeof formSchema>;
 
-const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferredKeyTypes }) => {
+const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferredKeyTypes, i18nNamespace }) => {
     const authClient = useRef<OnlineClient>();
+    const { t } = useTranslation(i18nNamespace);
     const [description, setDescription] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -55,36 +58,33 @@ const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferred
         },
     });
 
-    // 2. Define a submit handler
     async function onSubmit(values: SafeStorageForm) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        const { keyType, password, username, wif } = values;
-        alert('this called first')
+        // no use currently
     }
 
     async function onSave(values: SafeStorageForm) {
         const { username, password, wif, keyType } = values;
 
         try {
+            setLoading(true);
             await authClient.current?.register(username, password, wif, keyType);
-            form.reset();
             await finalize(values);
+            form.reset();
         } catch (error) {
-            // handle error for register
+            setError(t('')) // todo: set error
         }
     }
 
     async function onAuthenticate(values: SafeStorageForm) {
         const { username, password, keyType } = values;
         try {
+            setLoading(true);
             await authClient.current?.authenticate(username, password, keyType);
             // authorize by signing challenge here
             // complete process, close modal.
             await finalize(values);
         } catch (error) {
-            console.error(error);
-            // handle error for sign in
+            setError(t('')) // todo: set error
         }
     };
 
@@ -95,16 +95,18 @@ const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferred
             form.setValue('password', '');
             form.setValue('wif', '');
         } catch (error) {
-            console.error(error);
-            // handle error for unlock
+            setError(t('')) // todo: set error
         }
     }
 
-    async function finalize({username, keyType}: SafeStorageForm) {
+    async function finalize({ username, keyType }: SafeStorageForm) {
         try {
+            setLoading(true);
             await onProcessAuth(LoginType.hbauth, username, KeyType[keyType]);
         } catch (error) {
-            // final error here
+            setError(t('')) // todo: set error
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -115,6 +117,7 @@ const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferred
         setDefaultUser(users);
         setAuthUsers(users);
         setDescription('Your keys are not exposed to network');
+        setLoading(false);
     }
 
     function setDefaultUser(auths: AuthUser[]) {
@@ -148,22 +151,19 @@ const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferred
 
         if (found?.username) {
             if (found?.unlocked) {
-                setDescription(`Unlocked with ${form.getValues().keyType} key`);
+                setDescription(t("login_form.signin_safe_storage.description_unlocked", { keyType: form.getValues().keyType }));
             } else {
-                setDescription('Unlock user with password');
+                setDescription(t("login_form.signin_safe_storage.description_unlock"));
             }
         } else {
-            setDescription(`Save your ${form.getValues().keyType} key by filling form below`);
+            setDescription(t("login_form.signin_safe_storage.description_save", { keyType: form.getValues().keyType }));
         }
 
         return found;
     }, [form.getValues().username, authUsers]);
 
-    // render form fields based on safe storage user status
-    if (loading) return <span>loading...</span>
-
     return (
-        <Step title='Sign in with safe storage' description={description}>
+        <Step title={t("login_form.signin_safe_storage.title")} description={description} loading={loading}>
             <Form {...form}>
                 {!userFound?.unlocked ?
                     (
@@ -172,14 +172,14 @@ const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferred
                             <FormField
                                 control={form.control}
                                 name="username"
-                                render={({ field }) => (
+                                render={({ field, formState: { errors } }) => (
                                     <FormItem>
                                         <FormControl>
                                             {/* Place holder, enter username if there is no user, otherwise select user from menu or enter new user*/}
                                             <Input placeholder='Username' type='text' {...field} />
                                             {/* Show select menu if there is length of auth users */}
                                         </FormControl>
-                                        <FormMessage />
+                                        {errors.username && <FormMessage>{t(errors.username?.message!)}</FormMessage>}
                                     </FormItem>
                                 )}
                             />
