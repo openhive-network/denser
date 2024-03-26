@@ -1,26 +1,19 @@
 /* Component that manages all available sign-in options */
 import { forwardRef, useImperativeHandle, useState } from 'react';
+import { useTranslation } from 'next-i18next';
 import { KeyAuthorityType } from '@hive/hb-auth';
 import SafeStorage from './methods/safestorage';
 import { Button } from '@hive/ui';
 import { Icons } from '@hive/ui/components/icons';
 import Step from './step';
-import { PostLoginSchema } from '@smart-signer/lib/auth/utils';
 import { KeyType, LoginType } from '@smart-signer/types/common';
-
-// Todo: Add steps/slides
-
-/**
- * 1. slide options for safe storage sign-in and others button
- * 2. other options keychain, hiveauth, hivesigner
- * 3. specific view for selected sign in type from 2.
- * 
- * TODO: !!! Suspense first for each option
- */
+import { useProcessAuth } from './process';
+import { LoginFormSchema } from '../signin-form';
 
 export interface SignInFormProps {
     // This option is set only for safe storage (hb-auth)
     preferredKeyTypes: KeyAuthorityType[]
+    onComplete: () => void;
 }
 
 export type SignInFormRef = { cancel: () => void; };
@@ -35,9 +28,10 @@ export interface ProcessAuthFn {
     (loginType: LoginType, username: string, keyType: KeyType): Promise<void>
 }
 
-const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ preferredKeyTypes }, ref) => {
+const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ preferredKeyTypes, onComplete }, ref) => {
     // component controllers
     const [step, setStep] = useState<Steps>(Steps.SAFE_STORAGE_LOGIN);
+    const { t } = useTranslation(); // TODO: add NS here
 
     // provide methods to outside from here
     useImperativeHandle(ref, () => ({
@@ -48,12 +42,21 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ preferredKeyTyp
         }
     }))
 
-    // form handlers
+    
+    // final form handlers
+    const { errorMsg, onSubmit } = useProcessAuth(t);
+
     async function processAuth(loginType: LoginType, username: string, keyType: KeyType): Promise<void> {
         console.log('got for processing', username, loginType, keyType);
-        // const schema: PostLoginSchema =  {
 
-        // }
+        const schema: LoginFormSchema = {
+            loginType,
+            username,
+            remember: false // TODO: handle this if required
+        }
+
+        await onSubmit(schema);
+        onComplete();
     }
 
     // TODO: Add proper loader indicator
