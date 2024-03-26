@@ -1,5 +1,5 @@
 /* Sign-in with safe storage (use beekeeper wallet through hb-auth) */
-import { FC, useEffect, useMemo, useRef, useState } from "react";
+import { FC, forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'next-i18next';
 import { AuthUser, AuthorizationError, KeyAuthorityType, OnlineClient } from "@hive/hb-auth";
@@ -32,16 +32,24 @@ const formSchema = z.object({
     keyType: z.enum(['posting', 'active'])
 })
 
+export type SafeStorageRef = { cancel: () => Promise<void>; };
+
 export interface SafeStorageProps {
     onSetStep: (step: Steps) => void;
     onProcessAuth: ProcessAuthFn;
     preferredKeyTypes: KeyAuthorityType[];
-    i18nNamespace: string
+    i18nNamespace: string;
 }
 
 type SafeStorageForm = z.infer<typeof formSchema>;
 
-const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferredKeyTypes, i18nNamespace }) => {
+const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, onProcessAuth, preferredKeyTypes, i18nNamespace }, ref) => {
+    useImperativeHandle(ref, () => ({
+        async cancel() {
+            await cancelAuth();
+        }
+    }))
+
     const authClient = useRef<OnlineClient>();
     const { t } = useTranslation(i18nNamespace);
     const [description, setDescription] = useState('');
@@ -83,11 +91,8 @@ const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferred
             setLoading(true);
             setError(null);
             await authClient.current?.authenticate(username, password, keyType);
-            // authorize by signing challenge here
-            // complete process, close modal.
             await finalize(values);
         } catch (error) {
-            console.log((error as AuthorizationError).message);
             setError((error as AuthorizationError).message);
             setLoading(false);
         }
@@ -101,7 +106,7 @@ const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferred
             form.setValue('password', '');
             form.setValue('wif', '');
         } catch (error) {
-            setError(t('')) // todo: set error
+            setError((error as AuthorizationError).message);
             setLoading(false);
         }
     }
@@ -111,7 +116,7 @@ const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferred
             setLoading(true);
             await onProcessAuth(LoginType.hbauth, username, KeyType[keyType]);
         } catch (error) {
-            setError(t('')) // todo: set error
+            setError((error as Error).message);
         } finally {
             setLoading(false);
         }
@@ -325,6 +330,6 @@ const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferred
             </Form>
         </Step >
     )
-}
+});
 
 export default SafeStorage;

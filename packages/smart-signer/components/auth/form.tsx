@@ -1,8 +1,8 @@
 /* Component that manages all available sign-in options */
-import { forwardRef, useImperativeHandle, useState } from 'react';
+import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { KeyAuthorityType } from '@hive/hb-auth';
-import SafeStorage from './methods/safestorage';
+import SafeStorage, { SafeStorageRef } from './methods/safestorage';
 import { Button } from '@hive/ui';
 import { Icons } from '@hive/ui/components/icons';
 import Step from './step';
@@ -16,7 +16,7 @@ export interface SignInFormProps {
     i18nNamespace?: string;
 }
 
-export type SignInFormRef = { cancel: () => void; };
+export type SignInFormRef = { cancel: () => Promise<void>; };
 
 export enum Steps {
     SAFE_STORAGE_LOGIN = 1,
@@ -32,19 +32,21 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ preferredKeyTyp
     // component controllers
     const [step, setStep] = useState<Steps>(Steps.SAFE_STORAGE_LOGIN);
     const { t } = useTranslation(i18nNamespace);
+    const safeStorageRef = useRef<SafeStorageRef>(null);
 
     // provide methods to outside from here
     useImperativeHandle(ref, () => ({
         // this may be called for clearing process
         // when cancel sign in flow
-        cancel() {
+        async cancel() {
             // set cancelled state
+            await safeStorageRef.current?.cancel();
         }
     }))
 
 
     // final form handlers
-    const { errorMsg, onSubmit } = useProcessAuth(t);
+    const { onSubmit } = useProcessAuth(t);
 
     async function processAuth(loginType: LoginType, username: string, keyType: KeyType): Promise<void> {
         const schema: LoginFormSchema = {
@@ -62,6 +64,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ preferredKeyTyp
         {
             step === Steps.SAFE_STORAGE_LOGIN && (
                 <SafeStorage
+                    ref={safeStorageRef}
                     preferredKeyTypes={preferredKeyTypes}
                     onSetStep={(step: Steps) => {
                         setStep(step);

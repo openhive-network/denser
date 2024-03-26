@@ -71,6 +71,7 @@ export const useProcessAuth = (t: TFunction) => {
         } catch (error) {
           logger.error('onSubmit unexpected error', error);
           setErrorMsg(t('pageLogin.loginFailed'));
+          throw errorMsg;
         }
       };
 

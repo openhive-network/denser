@@ -1,17 +1,23 @@
-import { ReactNode } from 'react';
+import { ReactNode, useRef } from 'react';
 import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
-import AuthForm from '@smart-signer/components/auth/form';
+import SignInForm, { SignInFormRef } from '@smart-signer/components/auth/form';
 
 function DialogLogin({ children }: { children: ReactNode }) {
+  const signInFormRef = useRef<SignInFormRef>(null);
+
   function onComplete() {
     // do smth when completed here
   }
 
   return (
-    <Dialog>
+    <Dialog onOpenChange={async (open) => {
+      if (!open) {
+        await signInFormRef?.current?.cancel();
+      }
+    }}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[450px]" data-testid="login-dialog" onInteractOutside={(e) => e.preventDefault()}>
-        <AuthForm preferredKeyTypes={['posting']} onComplete={onComplete} />
+        <SignInForm ref={signInFormRef} preferredKeyTypes={['posting']} onComplete={onComplete} />
       </DialogContent>
     </Dialog>
   );
