@@ -7,7 +7,7 @@ function DialogLogin({ children }: { children: ReactNode }) {
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[450px]" data-testid="login-dialog">
-        <AuthForm />
+        <AuthForm preferredKeyTypes={['posting']} />
       </DialogContent>
     </Dialog>
   );

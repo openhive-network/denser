@@ -1,9 +1,12 @@
 /* Component that manages all available sign-in options */
 import { forwardRef, useImperativeHandle, useState } from 'react';
+import { KeyAuthorityType } from '@hive/hb-auth';
 import SafeStorage from './methods/safestorage';
 import { Button } from '@hive/ui';
 import { Icons } from '@hive/ui/components/icons';
 import Step from './step';
+import { PostLoginSchema } from '@smart-signer/lib/auth/utils';
+import { KeyType, LoginType } from '@smart-signer/types/common';
 
 // Todo: Add steps/slides
 
@@ -15,16 +18,24 @@ import Step from './step';
  * TODO: !!! Suspense first for each option
  */
 
-export interface SignInFormProps { }
+export interface SignInFormProps {
+    // This option is set only for safe storage (hb-auth)
+    preferredKeyTypes: KeyAuthorityType[]
+}
+
 export type SignInFormRef = { cancel: () => void; };
 
-enum Steps {
+export enum Steps {
     SAFE_STORAGE_LOGIN = 1,
     OTHER_LOGIN_OPTIONS,
     OTHER_LOGIN_DETAILS
 }
 
-const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ }, ref) => {
+export interface ProcessAuthFn {
+    (loginType: LoginType, username: string, keyType: KeyType): Promise<void>
+}
+
+const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ preferredKeyTypes }, ref) => {
     // component controllers
     const [step, setStep] = useState<Steps>(Steps.SAFE_STORAGE_LOGIN);
 
@@ -38,15 +49,26 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ }, ref) => {
     }))
 
     // form handlers
+    async function processAuth(loginType: LoginType, username: string, keyType: KeyType): Promise<void> {
+        console.log('got for processing', username, loginType, keyType);
+        // const schema: PostLoginSchema =  {
 
+        // }
+    }
 
     // TODO: Add proper loader indicator
     return <div className="flex min-h-[350px] h-full">
 
         {
-            step === Steps.SAFE_STORAGE_LOGIN && <SafeStorage onSetStep={() => {
-                setStep(Steps.OTHER_LOGIN_OPTIONS);
-            }} />
+            step === Steps.SAFE_STORAGE_LOGIN && (
+                <SafeStorage
+                    preferredKeyTypes={preferredKeyTypes}
+                    onSetStep={(step: Steps) => {
+                        setStep(step);
+                    }}
+                    onProcessAuth={processAuth}
+                />
+            )
         }
 
         {
