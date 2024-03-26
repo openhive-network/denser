@@ -38,7 +38,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ preferredKeyTyp
         // this may be called for clearing process
         // when cancel sign in flow
         cancel() {
-            console.log('form cancelled')
+            // set cancelled state
         }
     }))
 
@@ -47,8 +47,6 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ preferredKeyTyp
     const { errorMsg, onSubmit } = useProcessAuth(t);
 
     async function processAuth(loginType: LoginType, username: string, keyType: KeyType): Promise<void> {
-        console.log('got for processing', username, loginType, keyType);
-
         const schema: LoginFormSchema = {
             loginType,
             username,
@@ -59,7 +57,6 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ preferredKeyTyp
         onComplete();
     }
 
-    // TODO: Add proper loader indicator
     return <div className="flex min-h-[350px] h-full">
 
         {
@@ -78,12 +75,12 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ preferredKeyTyp
         {
             // TODO: Extract this to separate component 
             (step === Steps.OTHER_LOGIN_OPTIONS &&
-                <Step title='Other sign in options'>
+                <Step title={t("login_form.other_signin_options")}>
 
                     <Button className='w-full' type='button' variant="secondary" onClick={() => {
                         setStep(Steps.SAFE_STORAGE_LOGIN);
                     }}>
-                        <Icons.chevronLeft className='mr-2 h-4 w-4' />Go Back
+                        <Icons.chevronLeft className='mr-2 h-4 w-4' />{t("login_form.go_back_button")}
                     </Button>
 
                 </Step>

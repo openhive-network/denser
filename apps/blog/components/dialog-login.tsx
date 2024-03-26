@@ -4,7 +4,7 @@ import AuthForm from '@smart-signer/components/auth/form';
 
 function DialogLogin({ children }: { children: ReactNode }) {
   function onComplete() {
-    alert('completed');
+    // do smth when completed here
   }
 
   return (

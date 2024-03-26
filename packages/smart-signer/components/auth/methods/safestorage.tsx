@@ -45,7 +45,7 @@ const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferred
     const authClient = useRef<OnlineClient>();
     const { t } = useTranslation(i18nNamespace);
     const [description, setDescription] = useState('');
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState<boolean | undefined>(undefined);
     const [error, setError] = useState<string | null>(null);
     const [authUsers, setAuthUsers] = useState<AuthUser[]>([]);
     const form = useForm<SafeStorageForm>({
@@ -67,11 +67,13 @@ const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferred
 
         try {
             setLoading(true);
+            setError(null);
             await authClient.current?.register(username, password, wif, keyType);
             await finalize(values);
             form.reset();
         } catch (error) {
-            setError(t('')) // todo: set error
+            setError((error as AuthorizationError).message);
+            setLoading(false);
         }
     }
 
@@ -79,23 +81,28 @@ const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferred
         const { username, password, keyType } = values;
         try {
             setLoading(true);
+            setError(null);
             await authClient.current?.authenticate(username, password, keyType);
             // authorize by signing challenge here
             // complete process, close modal.
             await finalize(values);
         } catch (error) {
-            setError(t('')) // todo: set error
+            console.log((error as AuthorizationError).message);
+            setError((error as AuthorizationError).message);
+            setLoading(false);
         }
     };
 
     async function onUnlock({ username, password }: SafeStorageForm) {
         try {
+            setError(null);
             await authClient.current?.unlock(username, password);
             setAuthUsers(await authClient.current?.getAuths() || []);
             form.setValue('password', '');
             form.setValue('wif', '');
         } catch (error) {
             setError(t('')) // todo: set error
+            setLoading(false);
         }
     }
 
@@ -116,7 +123,6 @@ const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferred
         const users = await authClient.current?.getAuths() || [];
         setDefaultUser(users);
         setAuthUsers(users);
-        setDescription('Your keys are not exposed to network');
         setLoading(false);
     }
 
@@ -138,8 +144,8 @@ const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferred
                 setDefaultUser(auths);
 
                 setAuthUsers(auths);
-            } catch (err) {
-                setError((err as AuthorizationError).message);
+            } catch (error) {
+                setError((error as AuthorizationError).message);
             } finally {
                 setLoading(false);
             }
@@ -162,8 +168,13 @@ const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferred
         return found;
     }, [form.getValues().username, authUsers]);
 
+    if (loading === undefined) return null;
+
     return (
-        <Step title={t("login_form.signin_safe_storage.title")} description={description} loading={loading}>
+        <Step title={t("login_form.signin_safe_storage.title")} description={<div>
+            <div>{description}</div>
+            {error && <div className="text-destructive text-sm">{error}</div>}
+        </div>} loading={loading}>
             <Form {...form}>
                 {!userFound?.unlocked ?
                     (
@@ -176,10 +187,10 @@ const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferred
                                     <FormItem>
                                         <FormControl>
                                             {/* Place holder, enter username if there is no user, otherwise select user from menu or enter new user*/}
-                                            <Input placeholder='Username' type='text' {...field} />
+                                            <Input placeholder={t("login_form.signin_safe_storage.placeholder_username")} type='text' {...field} />
                                             {/* Show select menu if there is length of auth users */}
                                         </FormControl>
-                                        {errors.username && <FormMessage>{t(errors.username?.message!)}</FormMessage>}
+                                        {errors.username && <FormMessage className="font-normal">{t(errors.username?.message!)}</FormMessage>}
                                     </FormItem>
                                 )}
                             />
@@ -191,9 +202,9 @@ const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferred
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormControl>
-                                            <Input placeholder='Password' type='password' {...field} />
+                                            <Input placeholder={t("login_form.signin_safe_storage.placeholder_password")} type='password' {...field} />
                                         </FormControl>
-                                        <FormMessage />
+                                        <FormMessage className="font-normal" />
                                     </FormItem>
                                 )}
                             />
@@ -205,9 +216,9 @@ const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferred
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormControl>
-                                            <Input placeholder={`${`WIF ${form.getValues().keyType} private key`}`} type='text' {...field} />
+                                            <Input placeholder={t("login_form.signin_safe_storage.placeholder_wif", { keyType: form.getValues().keyType })} type='text' {...field} />
                                         </FormControl>
-                                        <FormMessage />
+                                        <FormMessage className="font-normal" />
                                     </FormItem>
                                 )}
                             />}
@@ -232,7 +243,7 @@ const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferred
                                                         }
                                                     </RadioGroup>
                                                 </FormControl>
-                                                <FormMessage />
+                                                <FormMessage className="font-normal" />
                                             </FormItem>
                                         )}
                                     />
@@ -252,7 +263,7 @@ const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferred
                                                     disabled={!form.formState.isDirty}
                                                     onClick={form.handleSubmit(onAuthenticate)}
                                                 >
-                                                    Sign in
+                                                    {t("login_form.signin_safe_storage.button_signin")}
                                                 </Button>
                                                 <Button
                                                     className='w-full flex-1 ml-2'
@@ -261,7 +272,7 @@ const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferred
                                                     disabled={!form.formState.isDirty}
                                                     onClick={form.handleSubmit(onUnlock)}
                                                 >
-                                                    Unlock Offline
+                                                    {t("login_form.signin_safe_storage.button_unlock")}
                                                 </Button></>
                                         )
                                         :
@@ -271,7 +282,7 @@ const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferred
                                             disabled={!form.formState.isDirty}
                                             onClick={form.handleSubmit(onSave)}
                                         >
-                                            Save and sign in
+                                            {t("login_form.signin_safe_storage.button_save")}
                                         </Button>
                                 }
                             </div>
@@ -283,7 +294,7 @@ const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferred
                                 cancelAuth();
                                 onSetStep(Steps.OTHER_LOGIN_OPTIONS);
                             }}>
-                                <Icons.keyRound className='mr-2 h-4 w-4' />Other sign in options
+                                <Icons.keyRound className='mr-2 h-4 w-4' />{t("login_form.signin_safe_storage.button_other")}
                             </Button>
                         </form>
                     )
@@ -294,17 +305,19 @@ const SafeStorage: FC<SafeStorageProps> = ({ onSetStep, onProcessAuth, preferred
                         // add button, authorize 
                         <form onSubmit={form.handleSubmit(finalize)}>
                             <p className="mb-4">
-                                Your authorization tx is signed offline. Now you can continue authorization.
+                                {t("login_form.signin_safe_storage.description_unlocked_detailed")}
                             </p>
 
-                            <Button className='w-full' type='submit' disabled={form.getFieldState('keyType').invalid}>Authorize</Button>
+                            <Button className='w-full' type='submit' disabled={form.getFieldState('keyType').invalid}>
+                                {t("login_form.signin_safe_storage.button_signin")}
+                            </Button>
                             <Separator className='my-4' />
 
                             <Button className='w-full' type='button' variant="secondary" onClick={() => {
                                 cancelAuth();
                                 onSetStep(Steps.SAFE_STORAGE_LOGIN);
                             }}>
-                                Cancel
+                                {t("login_form.signin_safe_storage.button_cancel")}
                             </Button>
                         </form>
                     )
