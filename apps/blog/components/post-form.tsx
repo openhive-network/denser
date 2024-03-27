@@ -172,9 +172,10 @@ export default function PostForm({ username }: { username: string }) {
         maxAcceptedPayout,
         tags
       );
-    } finally {
       storePost(defaultValues);
       router.push(`/created/${tags[0]}`);
+    } catch (error) {
+      console.error(error);
     }
   }
 
