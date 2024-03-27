@@ -63,7 +63,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ preferredKeyTyp
     }
 
 
-    return <div className="flex max-h-[400px] h-min pb-4">
+    return <div className="flex max-h-[460px] h-min pb-4">
 
         {
             step === Steps.SAFE_STORAGE_LOGIN && (
