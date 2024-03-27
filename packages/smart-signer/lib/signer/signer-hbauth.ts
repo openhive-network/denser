@@ -137,8 +137,8 @@ export class SignerHbauth extends Signer {
           // We're ready to sign loginChallenge and proceed.
           return true;
         } else {
-          logger.info('User is authorized, but with incorrect keyType: %s', auth.loggedInKeyType);
-          // This should not disturb. Wallet is unlocked. This needs testing.
+          logger.info('User %s is authorized, but with incorrect keyType: %s', username, auth.loggedInKeyType);
+          // This should not disturb. Wallet is unlocked.
           return true;
         }
       } else {
