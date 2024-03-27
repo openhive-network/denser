@@ -18,7 +18,7 @@ function DialogLogin({ children }: { children: ReactNode }) {
         }
       }}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="max-w-[380px] sm:max-w-[450px] p-0 sm:px-0 rounded-md" data-testid="login-dialog" onInteractOutside={(e) => e.preventDefault()}>
+      <DialogContent className="max-w-[380px] sm:max-w-[450px] p-0 sm:px-0 rounded-md mt-32 sm:mt-auto" data-testid="login-dialog" onInteractOutside={(e) => e.preventDefault()}>
         <SignInForm ref={signInFormRef} preferredKeyTypes={['posting']} onComplete={onComplete} />
       </DialogContent>
     </Dialog>

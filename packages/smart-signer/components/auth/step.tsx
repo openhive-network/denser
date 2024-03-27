@@ -6,12 +6,12 @@ export interface StepProps {
     title?: string;
     description?: ReactNode;
     footer?: ReactNode;
-    loading?: boolean
+    loading?: boolean;
 }
 
 const Step: FC<PropsWithChildren<StepProps>> = ({ children, description, title, footer, loading = false }) => {
     return (
-        <Card className='border-none shadow-none w-full'>
+        <Card className='border-none shadow-none w-full bg-transparent dark:bg-background/95 dark:text-white'>
             {loading &&
                 <div className="absolute flex justify-center items-center top-0 left-0 right-0 bottom-0 rounded-md">
                     <div className="absolute top-0 left-0 right-0 bottom-0 bg-black opacity-10 rounded-md" />

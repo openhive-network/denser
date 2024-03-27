@@ -31,10 +31,12 @@ import { KeyType, LoginType } from "@smart-signer/types/common";
 
 const formSchema = z.object({
     username,
-    password: z.string(),
+    password: z.string().min(6, {
+        message: "Password length should be more than 6 characters"
+    }),
     wif: z.string(),
     keyType: z.enum(['posting', 'active'])
-})
+});
 
 export type SafeStorageRef = { cancel: () => Promise<void>; };
 
@@ -70,9 +72,9 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
             password: "",
             wif: "",
             keyType: preferredKeyTypes[0]
-        },
+        }
     });
-
+    
     async function onSave(values: SafeStorageForm) {
         const { username, password, wif, keyType } = values;
 
@@ -101,28 +103,30 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
         }
     };
 
-    async function onUnlock({ username, password }: SafeStorageForm) {
-        try {
-            setError(null);
-            await authClient.current?.unlock(username, password);
-            setAuthUsers(await authClient.current?.getAuths() || []);
-            form.setValue('password', '');
-            form.setValue('wif', '');
-        } catch (error) {
-            setError((error as AuthorizationError).message);
-            setLoading(false);
-        }
-    }
+    {/* TODO: Re-work offline flow */ }
+    // async function onUnlock({ username, password }: SafeStorageForm) {
+    //     try {
+    //         setError(null);
+    //         await authClient.current?.unlock(username, password);
+    //         setAuthUsers(await authClient.current?.getAuths() || []);
+    //         form.setValue('password', '');
+    //         form.setValue('wif', '');
+    //     } catch (error) {
+    //         setError((error as AuthorizationError).message);
+    //         setLoading(false);
+    //     }
+    // }
 
-    async function onSign({ username, keyType }: SafeStorageForm): Promise<void> {
-        await sign(LoginType.hbauth, username, KeyType[keyType]);
-    }
+    {/* TODO: Re-work offline flow */ }
+    // async function onSign({ username, keyType }: SafeStorageForm): Promise<void> {
+    //     await sign(LoginType.hbauth, username, KeyType[keyType]);
+    // }
 
-    async function onSubmitAuth({ username }: SafeStorageForm): Promise<void> {
-        setLoading(true);
-        await submit(username);
-        setLoading(false);
-    }
+    // async function onSubmitAuth({ username }: SafeStorageForm): Promise<void> {
+    //     setLoading(true);
+    //     await submit(username);
+    //     setLoading(false);
+    // }
 
     async function finalize({ username, keyType }: SafeStorageForm) {
         try {
@@ -194,125 +198,124 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
             {error && <div className="text-destructive text-sm">{error}</div>}
         </div>} loading={loading}>
             <Form {...form}>
-                {!userFound?.unlocked ?
-                    (
-                        <form className="space-y-4" name="register">
-                            {/* Username */}
-                            <FormField
-                                control={form.control}
-                                name="username"
-                                render={({ field, formState: { errors } }) => (
-                                    <FormItem>
-                                        <FormControl>
-                                            {/* Place holder, enter username if there is no user, otherwise select user from menu or enter new user*/}
-                                            <div className="flex relative">
-                                                <Input placeholder={t("login_form.signin_safe_storage.placeholder_username")} type='text' {...field} />
-                                                {authUsers.length ? (
-                                                    <DropdownMenu>
-                                                        <DropdownMenuTrigger className="absolute right-0 top-0">
-                                                            <Button variant="ghost" type="button">
-                                                                <Icons.chevronDown />
-                                                            </Button>
-                                                        </DropdownMenuTrigger>
-                                                        <DropdownMenuContent className="w-56 absolute -right-7" side="bottom">
-                                                            {
-                                                                authUsers.map(({ username }) => {
-                                                                    return (
-                                                                        <DropdownMenuItem
-                                                                            className="cursor-pointer p-2"
-                                                                            key={username} onSelect={() => {
-                                                                                form.setValue('username', username);
-                                                                                form.trigger();
-                                                                            }}
-                                                                            disabled={form.getValues().username === username}
-                                                                        >
-                                                                            {username}
-                                                                        </DropdownMenuItem>
-                                                                    )
-                                                                })
-                                                            }
-                                                        </DropdownMenuContent>
-                                                    </DropdownMenu>
-                                                ) : null}
-                                            </div>
-                                            {/* Show select menu if there is length of auth users */}
-                                        </FormControl>
-                                        {errors.username && <FormMessage className="font-normal">{t(errors.username?.message!)}</FormMessage>}
-                                    </FormItem>
-                                )}
-                            />
+                <form className="space-y-4" name="register" onSubmit={form.handleSubmit(() =>  null)}>
+                    {/* Username */}
+                    <FormField
+                        control={form.control}
+                        name="username"
+                        render={({ field, formState: { errors } }) => (
+                            <FormItem>
+                                <FormControl>
+                                    {/* Place holder, enter username if there is no user, otherwise select user from menu or enter new user*/}
+                                    <div className="flex relative">
+                                        <Input placeholder={t("login_form.signin_safe_storage.placeholder_username")} type='text' {...field} />
+                                        {authUsers.length ? (
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger className="absolute right-0 top-0">
+                                                    <Button variant="ghost" type="button">
+                                                        <Icons.chevronDown />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent className="w-56 absolute -right-7" side="bottom">
+                                                    {
+                                                        authUsers.map(({ username }) => {
+                                                            return (
+                                                                <DropdownMenuItem
+                                                                    className="cursor-pointer p-2"
+                                                                    key={username} onSelect={() => {
+                                                                        form.setValue('username', username);
+                                                                        form.trigger();
+                                                                    }}
+                                                                    disabled={form.getValues().username === username}
+                                                                >
+                                                                    {username}
+                                                                </DropdownMenuItem>
+                                                            )
+                                                        })
+                                                    }
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        ) : null}
+                                    </div>
+                                    {/* Show select menu if there is length of auth users */}
+                                </FormControl>
+                                {errors.username && <FormMessage className="font-normal">{t(errors.username?.message!)}</FormMessage>}
+                            </FormItem>
+                        )}
+                    />
 
-                            {/* Password */}
+                    {/* Password */}
+                    <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                    <Input placeholder={t("login_form.signin_safe_storage.placeholder_password")} type='password' {...field} />
+                                </FormControl>
+                                <FormMessage className="font-normal" />
+                            </FormItem>
+                        )}
+                    />
+
+                    {/* WIF */}
+                    {!userFound && <FormField
+                        control={form.control}
+                        name="wif"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                    <Input placeholder={t("login_form.signin_safe_storage.placeholder_wif", { keyType: form.getValues().keyType })} type='password' {...field} />
+                                </FormControl>
+                                <FormMessage className="font-normal" />
+                            </FormItem>
+                        )}
+                    />}
+
+                    {/* Key Type selection is shown if there is more than one preferred key type */}
+                    {
+                        preferredKeyTypes.length > 1 && (
                             <FormField
                                 control={form.control}
-                                name="password"
+                                name="keyType"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormControl>
-                                            <Input placeholder={t("login_form.signin_safe_storage.placeholder_password")} type='password' {...field} />
+                                            <RadioGroup className='flex mb-8' onValueChange={field.onChange} defaultValue={field.value} {...field}>
+                                                {
+                                                    preferredKeyTypes.map((type) => {
+                                                        return <div key={type} className="flex items-center space-x-2">
+                                                            <RadioGroupItem value={type} id={type} />
+                                                            <Label htmlFor={type} className="capitalize">{type}</Label>
+                                                        </div>
+                                                    })
+                                                }
+                                            </RadioGroup>
                                         </FormControl>
                                         <FormMessage className="font-normal" />
                                     </FormItem>
                                 )}
                             />
+                        )
+                    }
 
-                            {/* WIF */}
-                            {!userFound && <FormField
-                                control={form.control}
-                                name="wif"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormControl>
-                                            <Input placeholder={t("login_form.signin_safe_storage.placeholder_wif", { keyType: form.getValues().keyType })} type='text' {...field} />
-                                        </FormControl>
-                                        <FormMessage className="font-normal" />
-                                    </FormItem>
-                                )}
-                            />}
-
-                            {/* Key Type selection is shown if there is more than one preferred key type */}
-                            {
-                                preferredKeyTypes.length > 1 && (
-                                    <FormField
-                                        control={form.control}
-                                        name="keyType"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormControl>
-                                                    <RadioGroup className='flex mb-8' onValueChange={field.onChange} defaultValue={field.value} {...field}>
-                                                        {
-                                                            preferredKeyTypes.map((type) => {
-                                                                return <div key={type} className="flex items-center space-x-2">
-                                                                    <RadioGroupItem value={type} id={type} />
-                                                                    <Label htmlFor={type} className="capitalize">{type}</Label>
-                                                                </div>
-                                                            })
-                                                        }
-                                                    </RadioGroup>
-                                                </FormControl>
-                                                <FormMessage className="font-normal" />
-                                            </FormItem>
-                                        )}
-                                    />
-                                )
-                            }
-
-                            {/* Show this for new user, otherwise show unlock then authorize */}
-                            <div className="flex">
-                                {
-                                    userFound
-                                        ?
-                                        (
-                                            <>
-                                                <Button
-                                                    className='w-full flex-1'
-                                                    type='submit'
-                                                    disabled={!form.formState.isDirty}
-                                                    onClick={form.handleSubmit(onAuthenticate)}
-                                                >
-                                                    {t("login_form.signin_safe_storage.button_signin")}
-                                                </Button>
-                                                <Button
+                    {/* Show this for new user, otherwise show unlock then authorize */}
+                    <div className="flex">
+                        {
+                            userFound
+                                ?
+                                (
+                                    <>
+                                        <Button
+                                            className='w-full flex-1 bg-red-600 hover:bg-red-500 text-white'
+                                            type='submit'
+                                            disabled={!form.formState.isValid}
+                                            onClick={form.handleSubmit(onAuthenticate)}
+                                        >
+                                            {t("login_form.signin_safe_storage.button_signin")}
+                                        </Button>
+                                        {/* TODO: Re-work offline flow */}
+                                        {/* <Button
                                                     className='w-full flex-1 ml-2'
                                                     type="submit"
                                                     variant={"outline"}
@@ -320,33 +323,34 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
                                                     onClick={form.handleSubmit(onUnlock)}
                                                 >
                                                     {t("login_form.signin_safe_storage.button_unlock")}
-                                                </Button></>
-                                        )
-                                        :
-                                        <Button
-                                            className='w-full flex-1'
-                                            type='submit'
-                                            disabled={!form.formState.isDirty}
-                                            onClick={form.handleSubmit(onSave)}
-                                        >
-                                            {t("login_form.signin_safe_storage.button_save")}
-                                        </Button>
-                                }
-                            </div>
+                                                </Button> */}
+                                    </>
+                                )
+                                :
+                                <Button
+                                    className='w-full flex-1 bg-red-600 hover:bg-red-500 text-white'
+                                    type='submit'
+                                    disabled={!form.formState.isValid}
+                                    onClick={form.handleSubmit(onSave)}
+                                >
+                                    {t("login_form.signin_safe_storage.button_save")}
+                                </Button>
+                        }
+                    </div>
+
+                    <Separator className='my-4' />
+
+                    <Button className='w-full' type='button' variant="secondary" onClick={() => {
+                        cancelAuth();
+                        onSetStep(Steps.OTHER_LOGIN_OPTIONS);
+                    }}>
+                        <Icons.keyRound className='mr-2 h-4 w-4' />{t("login_form.signin_safe_storage.button_other")}
+                    </Button>
+                </form>
 
 
-                            <Separator className='my-4' />
-
-                            <Button className='w-full' type='button' variant="secondary" onClick={() => {
-                                cancelAuth();
-                                onSetStep(Steps.OTHER_LOGIN_OPTIONS);
-                            }}>
-                                <Icons.keyRound className='mr-2 h-4 w-4' />{t("login_form.signin_safe_storage.button_other")}
-                            </Button>
-                        </form>
-                    )
-                    :
-                    (
+                {/* TODO: Re-work offline flow */}
+                {/* (
                         <form onSubmit={form.handleSubmit(onSubmitAuth)}>
                             <p className="mb-4">
                                 {t("login_form.signin_safe_storage.description_unlocked_detailed")}
@@ -366,8 +370,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
                                 {t("login_form.signin_safe_storage.button_cancel")}
                             </Button>
                         </form>
-                    )
-                }
+                    ) */}
+
             </Form>
         </Step >
     )
