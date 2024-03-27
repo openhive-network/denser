@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@ui/components/select';
+import { Label } from '@ui/components/label';
 
 function Communities({ username }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { t } = useTranslation('common_wallet');
@@ -26,8 +27,8 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
 
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
             <div data-testid="choose-language">
-              <div className="py-1 text-sm">Choose Language</div>
-              <Select defaultValue="en">
+              <Label htmlFor="choose-language">Choose Language</Label>
+              <Select defaultValue="en" name="choose-language">
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -47,8 +48,8 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
               </Select>
             </div>
             <div>
-              <div className="py-1 text-sm">Choose Your Preferred API Node</div>
-              <Select defaultValue="api">
+              <Label htmlFor="choose-api-node">Choose Your Preferred API Node</Label>
+              <Select defaultValue="api" name="choose-api-node">
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
