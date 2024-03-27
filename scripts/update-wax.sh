@@ -2,8 +2,8 @@
 
 set -euo pipefail
 
-WAX_VERSION=${1} # prefixed with @
-HBAUTH_VERSION=${2} # prefixed with @
+WAX_VERSION=${1} # full package name, e.g. @hive/wax@0.3.8-stable.240325165906
+HBAUTH_VERSION=${2} # full package name, e.g. @hive/hb-auth@0.0.1-stable.240327151528
 
 uninstall_packages() {
   echo "Uninstalling packages"
