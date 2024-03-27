@@ -4,6 +4,7 @@ import {
   EFollowBlogAction,
   FollowOperationBuilder,
   ITransactionBuilder,
+  NaiAsset,
   WaxChainApiError,
   future_extensions
 } from '@hive/wax';
@@ -11,6 +12,7 @@ import { toast } from '@hive/ui/components/hooks/use-toast';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
+import { Beneficiarie } from './lib/app-types';
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
@@ -50,9 +52,13 @@ class TransactionService {
     const broadcastReq = new BroadcastTransactionRequest(txBuilder);
 
     // do broadcast
-    await (
-      await hiveChainService.getHiveChain()
-    ).api.network_broadcast_api.broadcast_transaction(broadcastReq);
+    try {
+      await (
+        await hiveChainService.getHiveChain()
+      ).api.network_broadcast_api.broadcast_transaction(broadcastReq);
+    } catch (error) {
+      this.handleError(error);
+    }
   }
 
   async upVote(author: string, permlink: string, weight = 10000) {
@@ -294,13 +300,30 @@ class TransactionService {
     });
   }
 
-  async post(permlink: string, title: string, body: string, tags: string[]) {
+  async post(
+    permlink: string,
+    title: string,
+    body: string,
+    beneficiaries: Beneficiarie[],
+    percentHbd: number,
+    maxAcceptedPayout: NaiAsset,
+    tags: string[]
+  ) {
     await this.processHiveAppOperation((builder) => {
-      builder
+      const op = builder
         .pushArticle(this.signerOptions.username, permlink, title, body)
         .setCategory(tags[0])
-        .pushTags(tags[0], ...tags.slice(1))
-        .build();
+        .setPercentHbd(percentHbd)
+        .setMaxAcceptedPayout(maxAcceptedPayout)
+        .pushTags(tags[0], ...tags.slice(1));
+
+      beneficiaries.forEach((beneficiarie) => {
+        op.addBeneficiary(beneficiarie.account, Number(beneficiarie.weight));
+      });
+
+      op.build();
+
+      builder.build();
     });
   }
 

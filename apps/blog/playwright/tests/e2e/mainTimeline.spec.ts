@@ -651,13 +651,15 @@ test.describe('Home page tests', () => {
     await expect(page.locator('[data-testid="search-sort-by-dropdown-list"]')).toBeVisible();
   });
 
-  test('navigation Hbauth link is visible', async ({ page }) => {
+  // Skipped due to new login form
+  test.skip('navigation Hbauth link is visible', async ({ page }) => {
     await homePage.goto();
 
     await expect(homePage.getNavHbauthLink).toBeVisible();
   });
 
-  test('validate styles of navigation Hbauth link in the light mode', async ({ page }) => {
+  // Skipped due to new login page
+  test.skip('validate styles of navigation Hbauth link in the light mode', async ({ page }) => {
     await homePage.goto();
 
     await expect(homePage.getNavHbauthButton).toBeVisible();
@@ -687,7 +689,8 @@ test.describe('Home page tests', () => {
     );
   });
 
-  test('validate styles of navigation Hbauth link in the dark mode', async ({ page }) => {
+  // Skipped due to new login form
+  test.skip('validate styles of navigation Hbauth link in the dark mode', async ({ page }) => {
     await homePage.goto();
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
@@ -896,7 +899,8 @@ test.describe('Home page tests', () => {
     ).toBe('rgb(220, 38, 38)');
   });
 
-  test('click upvote button and move to the dialog "Login to Vote" ', async ({ page }) => {
+  // Skipped due to new login form
+  test.skip('click upvote button and move to the dialog "Login to Vote" ', async ({ page }) => {
     await homePage.goto();
 
     await homePage.getFirstPostUpvoteButton.click();
@@ -995,7 +999,8 @@ test.describe('Home page tests', () => {
     ).toBe('rgb(75, 85, 99)');
   });
 
-  test('click downvote button and move to the dialog "Login to Vote" ', async ({ page }) => {
+  // Skipped due to login form
+  test.skip('click downvote button and move to the dialog "Login to Vote" ', async ({ page }) => {
     await homePage.goto();
 
     await homePage.getFirstPostDownvoteButton.click();

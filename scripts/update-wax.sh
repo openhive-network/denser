@@ -2,8 +2,8 @@
 
 set -euo pipefail
 
-WAX_VERSION=${1} # prefixed with @
-HBAUTH_VERSION=${2} # prefixed with @
+WAX_VERSION=${1} # full package name, e.g. @hive/wax@0.3.8-stable.240325165906
+HBAUTH_VERSION=${2} # full package name, e.g. @hive/hb-auth@0.0.1-stable.240327151528
 
 uninstall_packages() {
   echo "Uninstalling packages"
@@ -22,15 +22,15 @@ uninstall_packages() {
 install_packages() {
   echo "Installing packages"
 
-  npm install --save "@hive/wax${WAX_VERSION}" --workspace=apps/auth
-  npm install --save "@hive/wax${WAX_VERSION}" --workspace=apps/blog
-  npm install --save "@hive/wax${WAX_VERSION}" --workspace=apps/wallet
+  npm install --save "${WAX_VERSION}" --workspace=apps/auth
+  npm install --save "${WAX_VERSION}" --workspace=apps/blog
+  npm install --save "${WAX_VERSION}" --workspace=apps/wallet
 
-  npm install --save "@hive/wax${WAX_VERSION}" --workspace=packages/smart-signer
-  npm install --save "@hive/wax${WAX_VERSION}" --workspace=packages/transaction
-  npm install --save "@hive/wax${WAX_VERSION}" --workspace=packages/ui
+  npm install --save "${WAX_VERSION}" --workspace=packages/smart-signer
+  npm install --save "${WAX_VERSION}" --workspace=packages/transaction
+  npm install --save "${WAX_VERSION}" --workspace=packages/ui
 
-  npm install --save "@hive/hb-auth${HBAUTH_VERSION}" --workspace=packages/smart-signer
+  npm install --save "${HBAUTH_VERSION}" --workspace=packages/smart-signer
 }
 
 uninstall_packages

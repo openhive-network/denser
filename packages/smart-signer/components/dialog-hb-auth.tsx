@@ -48,7 +48,7 @@ export function DialogHBAuth({
           variant: 'default'
         });
         setOpen(false);
-        onAuthComplete(user.username, user.keyType!);
+        onAuthComplete(user.username, user.loggedInKeyType!);
       } else {
         toast({
           title: 'Error!',

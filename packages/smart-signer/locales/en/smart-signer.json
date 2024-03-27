@@ -57,7 +57,26 @@
     "use_keychain": "Use Keychain",
     "use_wif": "Use WIF",
     "username_placeholder": "Enter your username",
-    "working": "Working…"
+    "working": "Working…",
+    "other_signin_options": "Other sign in options",
+    "go_back_button": "Go back",
+    "signin_safe_storage": {
+      "title": "Sign in with safe storage",
+      "description_unlock": "Unlock user with password",
+      "description_unlocked": "Unlocked with {{keyType}} key",
+      "description_save": "Save your {{keyType}} key by filling form below",
+      "description_unlocked_detailed": "By clicking button below sign authorization tx in offline mode.",
+      "placeholder_username": "Username",
+      "placeholder_password": "Password",
+      "placeholder_wif": "WIF {{keyType}} private key",
+      "button_signin": "Sign in",
+      "button_unlock": "Unlock offline",
+      "button_save": "Save and sign in",
+      "button_other": "Other sign in options",
+      "button_cancel": "Cancel",
+      "button_sign_auth": "Sign auth tx",
+      "button_signin_unlocked": "Sign in with signed tx"
+    }
   },
   "pageLogin": {
     "loginFailed": "Login failed",
