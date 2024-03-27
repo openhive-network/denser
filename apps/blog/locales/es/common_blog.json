@@ -401,6 +401,7 @@
     "maximum_characters": "Máximo de {{num}} caracteres",
     "markdown_not_supported": "Markdown no es compatible aquí",
     "html_not_supported": "HTML no es compatible aquí",
+    "advanced_tooltip": "Aquí puedes establecer opciones de publicación como la división de recompensas del autor, el pago máximo aceptado, los beneficiarios y las plantillas de publicación",
     "advanced_settings_dialog": {
       "changes_saved": "Cambios guardados",
       "advanced_settings": "Configuración avanzada",

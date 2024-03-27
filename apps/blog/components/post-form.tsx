@@ -292,7 +292,10 @@ export default function PostForm({ username }: { username: string }) {
                 {storedPost?.payoutType === '100%' ? t('submit_page.power_up') : ' 50% HBD / 50% HP'}
               </span>
               <AdvancedSettingsPostForm username={username} onChangeStore={storePost} data={storedPost}>
-                <span className="cursor-pointer text-xs text-destructive">
+                <span
+                  className="cursor-pointer text-xs text-destructive"
+                  title={t('submit_page.advanced_tooltip')}
+                >
                   {t('submit_page.advanced_settings')}
                 </span>
               </AdvancedSettingsPostForm>
