@@ -10,7 +10,9 @@ export class CommunitiesPage {
   readonly communityPendingRewards: Locator;
   readonly communityActivePosters: Locator;
   readonly communitySubscribeButton: Locator;
+  readonly communitySubscribeButtonMobilePage: Locator;
   readonly communityNewPostButton: Locator;
+  readonly communityNewPostButtonMobilePage: Locator;
   readonly communityLeadership: Locator;
   readonly communityLeadershipHeader: Locator;
   readonly communityLeadershipList: Locator;
@@ -50,8 +52,13 @@ export class CommunitiesPage {
     this.commnnitySubscribers = page.locator('[data-testid="community-subscribers"]');
     this.communityPendingRewards = page.locator('[data-testid="community-pending-rewards"]');
     this.communityActivePosters = page.locator('[data-testid="community-active-posters"]');
-    this.communitySubscribeButton = page.locator('[data-testid="community-subscribe-button"]');
-    this.communityNewPostButton = page.locator('[data-testid="community-new-post-button"]');
+
+    this.communitySubscribeButton = page.locator('[data-testid="community-info-sidebar"] [data-testid="community-subscribe-button"]');
+    this.communitySubscribeButtonMobilePage = page.locator('[data-testid="community-simple-description-sidebar"] [data-testid="community-subscribe-button"]');
+
+    this.communityNewPostButton = page.locator('[data-testid="community-info-sidebar"] [data-testid="community-new-post-button"]');
+    this.communityNewPostButtonMobilePage = page.locator('[data-testid="community-simple-description-sidebar"] [data-testid="community-new-post-button"]');
+
     this.communityLeadership = page.locator('[data-testid="community-leadership"]');
     this.communityLeadershipHeader = this.communityLeadership.locator('h6');
     this.communityLeadershipList = this.communityLeadership.locator('ul li');
@@ -92,9 +99,10 @@ export class CommunitiesPage {
 
     await expect(this.commnnitySubscribers).toBeVisible();
     await expect(this.communityPendingRewards).toBeVisible();
-    if (!this.communitySubscribeButton.first().isVisible())
-      await expect(this.communitySubscribeButton.last()).toBeVisible();
-    await expect(this.communityNewPostButton).toBeVisible();
+    if (!this.communitySubscribeButton.isVisible())
+      await expect(this.communitySubscribeButtonMobilePage).toBeVisible();
+    if (!this.communityNewPostButton.isVisible())
+      await expect(this.communityNewPostButtonMobilePage).toBeVisible();
     await expect(this.communityLeadership).toBeVisible();
     await expect(this.communityDescription).toBeVisible();
     if (await this.communityRules.isVisible())
