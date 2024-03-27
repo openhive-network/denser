@@ -374,8 +374,6 @@
     }
   },
   "submit_page": {
-    "to_many_communities": "커뮤니티가 너무 많음",
-    "to_many_tags": "태그가 너무 많습니다",
     "disable_side": "옆에 에디터 비활성화",
     "enable_side": "옆에 에디터 활성화",
     "string_must_contain": "문자열은 적어도 {{num}} 자를 포함해야 합니다",
@@ -400,6 +398,10 @@
     "clean": "정리",
     "markdown_styling_guide": "마크다운 스타일 가이드",
     "power_up": "100% 파워 업",
+    "maximum_characters": "{{num}} 자 이내",
+    "markdown_not_supported": "여기에서는 Markdown을 지원하지 않습니다",
+    "html_not_supported": "여기에서는 HTML을 지원하지 않습니다",
+    "advanced_tooltip": "여기서는 작성자 보상 분할, 최대 허용 지급액, 수혜자 및 게시물 템플릿과 같은 게시 옵션을 설정할 수 있습니다",
     "advanced_settings_dialog": {
       "changes_saved": "변경 사항이 저장되었습니다",
       "advanced_settings": "고급 설정",
@@ -426,6 +428,20 @@
       "template_name_is_taken": "템플릿 이름이 이미 사용되었습니다",
       "save": "저장",
       "delete_template": "템플릿 삭제"
+    },
+    "category_selector": {
+      "tag_your_story": "태그는 최대 5개까지 입력 할 수 있습니다. 메인이 될 태그는 가장 먼저 입력하세요.",
+      "select_a_tag": "태그를 선택하세요.",
+      "maximum_tag_length_is_24_characters": "태그는 24 글자까지 가능합니다.",
+      "use_limited_amount_of_categories": "태그는 최대 {{amount}} 개 까지 입력 가능합니다.",
+      "use_only_lowercase_letters": "소문자만 사용해 주세요.",
+      "use_one_dash": "대쉬는 한개만 사용 가능합니다.",
+      "use_spaces_to_separate_tags": "태그와 태그 사이는 공백으로 구분 하세요.",
+      "use_only_allowed_characters": "소문자, 숫자 그리고 대쉬만 사용 가능합니다.",
+      "must_start_with_a_letter": "태그는 반드시 문자로 시작해야 합니다.",
+      "must_end_with_a_letter_or_number": "태그는 반드시 문자나 숫자로 끝나야 합니다.",
+      "must_not_include_hivemind_community_owner": "게시물은 이미 기본적으로 하이브 태그가 포함되어 있으므로 다른 '하이브-' 태그를 포함하지 마십시오.",
+      "tags_cannot_be_repeated": "태그를 반복해서 사용할 수 없습니다"
     }
   },
   "search_page": {

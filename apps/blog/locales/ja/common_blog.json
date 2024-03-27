@@ -374,8 +374,6 @@
     }
   },
   "submit_page": {
-    "to_many_communities": "コミュニティが多すぎる",
-    "to_many_tags": "タグが多すぎ",
     "disable_side": "サイドバイサイドエディターを無効にする",
     "enable_side": "サイドバイサイドエディターを有効にする",
     "string_must_contain": "文字列は少なくとも{{num}}文字含まれている必要があります",
@@ -400,6 +398,10 @@
     "clean": "クリーン",
     "markdown_styling_guide": "Markdownスタイルガイド",
     "power_up": "100% パワーアップ",
+    "maximum_characters": "{{num}} 文字まで",
+    "markdown_not_supported": "ここではMarkdownはサポートされていません",
+    "html_not_supported": "ここではHTMLはサポートされていません",
+    "advanced_tooltip": "ここでは、投稿オプションを設定できます。投稿者の報酬分配、最大受け入れ支払額、受益者、投稿テンプレートなどが含まれます",
     "advanced_settings_dialog": {
       "changes_saved": "変更が保存されました",
       "advanced_settings": "高度な設定",
@@ -426,6 +428,20 @@
       "template_name_is_taken": "テンプレート名は使用されています",
       "save": "保存",
       "delete_template": "テンプレートを削除"
+    },
+    "category_selector": {
+      "tag_your_story": "タグ(最大5つ)。1つ目のタグはメインカテゴリです。日本語の投稿には japanese を含めてください。",
+      "select_a_tag": "タグを選択してください",
+      "maximum_tag_length_is_24_characters": "タグの最大長は24文字です。",
+      "use_limited_amount_of_categories": "タグは{{amount}}個以下にしてください。",
+      "use_only_lowercase_letters": "小文字のみ使用してください。",
+      "use_one_dash": "ダッシュは1つまで使用可能です。",
+      "use_spaces_to_separate_tags": "タグを区切るのにはスペースを使用してください。",
+      "use_only_allowed_characters": "英小文字、数字、ダッシュのみ使用可能です。",
+      "must_start_with_a_letter": "文字で始める必要があります。",
+      "must_end_with_a_letter_or_number": "文字または数字で終わる必要があります。",
+      "must_not_include_hivemind_community_owner": "投稿には既にデフォルトでハイブタグが含まれていますので、他の 'hive-' タグを含めないでください。",
+      "tags_cannot_be_repeated": "タグを繰り返すことはできません"
     }
   },
   "search_page": {

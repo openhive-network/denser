@@ -374,8 +374,6 @@
     }
   },
   "submit_page": {
-    "to_many_communities": "Demasiada comunidad",
-    "to_many_tags": "Demasiadas etiquetas",
     "disable_side": "Deshabilitar el editor en paralelo",
     "enable_side": "Habilitar el editor en paralelo",
     "string_must_contain": "La cadena debe contener al menos {{num}} caracteres",
@@ -400,6 +398,10 @@
     "clean": "Limpiar",
     "markdown_styling_guide": "Guía de Estilo Markdown",
     "power_up": "Potenciar al 100%",
+    "maximum_characters": "Máximo de {{num}} caracteres",
+    "markdown_not_supported": "Markdown no es compatible aquí",
+    "html_not_supported": "HTML no es compatible aquí",
+    "advanced_tooltip": "Aquí puedes establecer opciones de publicación como la división de recompensas del autor, el pago máximo aceptado, los beneficiarios y las plantillas de publicación",
     "advanced_settings_dialog": {
       "changes_saved": "Cambios guardados",
       "advanced_settings": "Configuración avanzada",
@@ -426,6 +428,20 @@
       "template_name_is_taken": "El nombre de la plantilla ya está en uso",
       "save": "Guardar",
       "delete_template": "Eliminar plantilla"
+    },
+    "category_selector": {
+      "tag_your_story": "Etiqueta (hasta 5 etiquetas), la primera etiqueta es tu principal categoría.",
+      "select_a_tag": "Selecciona una etiqueta",
+      "maximum_tag_length_is_24_characters": "La longitud máxima de la etiqueta es de 24 caracteres",
+      "use_limited_amount_of_categories": "Por favor usa sólo {{amount}} categorías",
+      "use_only_lowercase_letters": "Usa sólo letras minúsculas",
+      "use_one_dash": "Usa sólo un guión",
+      "use_spaces_to_separate_tags": "Usa espacios para separar las etiquetas",
+      "use_only_allowed_characters": "Usa sólo letras minúsculas, dígitos y un guión",
+      "must_start_with_a_letter": "Debe empezar con una letra",
+      "must_end_with_a_letter_or_number": "Debe terminar con una letra o número",
+      "must_not_include_hivemind_community_owner": "La publicación ya tiene la etiqueta 'hive' por defecto, por favor no incluya otra etiqueta 'hive-'",
+      "tags_cannot_be_repeated": "Las etiquetas no pueden repetirse"
     }
   },
   "search_page": {
