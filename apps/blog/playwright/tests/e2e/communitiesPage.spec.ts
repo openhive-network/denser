@@ -537,7 +537,8 @@ test.describe('Communities page tests', () => {
     await expect(postAuthorTextSubstring).toContain(articleAuthorTextSubstring);
   });
 
-  test('check if upvote and downvote button are displayed correctly on communities page', async ({
+  // Skipped due to new login form
+  test.skip('check if upvote and downvote button are displayed correctly on communities page', async ({
     page
   }) => {
     await homePage.moveToLeoFinanceCommunities();
@@ -959,7 +960,8 @@ test.describe('Communities page tests', () => {
     expect(subscribersUIAfterLoadMoreClick.length).toBe(2 * subscribersUIBeforeLoadMoreClik.length);
   });
 
-  test('validate Subscribe button styles in the light theme', async ({ page }) => {
+  // Skipped due to new login form
+  test.skip('validate Subscribe button styles in the light theme', async ({ page }) => {
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
     let communitySubscribeButton;

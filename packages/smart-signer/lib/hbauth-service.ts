@@ -16,7 +16,7 @@ const defaultClientOptions: ClientOptions = {
   workerUrl: '/auth/worker.js',
 };
 
-const hbauthUseStrictMode = false;
+const hbauthUseStrictMode = true;
 
 class HbauthService extends StorageMixin(StorageBase) {
 

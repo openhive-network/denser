@@ -126,11 +126,11 @@ export class SignerHbauth extends Signer {
     if (auth) {
       logger.info('Found auth: %o', auth);
       if (auth.authorized) {
-        if (auth.keyType === keyType) {
+        if (auth.loggedInKeyType === keyType) {
           logger.info('User is authorized and we are ready to proceed');
           // We're ready to sign loginChallenge and proceed.
         } else {
-          logger.info('User is authorized, but with incorrect keyType: %s', auth.keyType);
+          logger.info('User is authorized, but with incorrect keyType: %s', auth.loggedInKeyType);
           // This should not disturb. Wallet is unlocked. This needs testing.
         }
       } else {

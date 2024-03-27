@@ -14,7 +14,6 @@ import { Icons } from '@ui/components/icons';
 import { Button } from '@ui/components';
 import LangToggle from './lang-toggle';
 import { useLogout } from '@smart-signer/lib/auth/use-logout';
-import DialogHBAuth from '@smart-signer/components/dialog-hb-auth';
 import { getLogger } from '@ui/lib/logging';
 import { User } from '@smart-signer/types/common';
 import { useTranslation } from 'next-i18next';
@@ -62,18 +61,6 @@ const UserMenu = ({ children, user }: { children: ReactNode; user: User }) => {
             <LangToggle logged={true} />
           </DropdownMenuItem>
 
-          <DropdownMenuItem className="cursor-pointer">
-            <DialogHBAuth
-              onAuthComplete={(username, keyType) => {
-                logger.info('onAuthComplete %o', { username, keyType });
-              }}
-            >
-              <Link href="#" data-testid="navbar-hbauth-link" className="flex w-full items-center">
-                <Icons.hiveauth className="mr-2 h-6 w-5" />
-                <span className="w-full">Hbauth</span>
-              </Link>
-            </DialogHBAuth>
-          </DropdownMenuItem>
           <Link href={`/@${user.username}/password`}>
             <DropdownMenuItem className="flex w-full cursor-pointer items-center">
               <Icons.keyRound className="mr-2" />

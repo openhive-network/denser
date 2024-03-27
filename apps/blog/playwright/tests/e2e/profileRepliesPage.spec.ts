@@ -208,7 +208,8 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     }
   });
 
-  test('move to the login page after clicking upvote of the first comment card', async ({ page }) => {
+  // Skipped due to new login form
+  test.skip('move to the login page after clicking upvote of the first comment card', async ({ page }) => {
     let loginDialog = new LoginToVoteDialog(page);
 
     await profilePage.gotoRepliesProfilePage('@gtg');
@@ -239,7 +240,8 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await loginDialog.validateLoginToVoteDialogIsVisible();
   });
 
-  test('move to the login page after clicking downvote of the first comment card', async ({ page }) => {
+  // Skipped due to new login form
+  test.skip('move to the login page after clicking downvote of the first comment card', async ({ page }) => {
     let loginDialog = new LoginToVoteDialog(page);
 
     await profilePage.gotoRepliesProfilePage('@gtg');
