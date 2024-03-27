@@ -17,26 +17,26 @@ const Methods: FC<MethodsProps> = ({ onSetStep, i18nNamespace = 'smart-signer' }
     return (
         <Step title={t("login_form.other_signin_options")}>
             <div className='flex flex-col items-start'>
-                <Button className='py-6 w-full flex' type='button' variant="ghost">
-                    {/* Add logo for that */}
-                    < div className='flex flex-1 items-center' > <Icons.keyRound className='w-8 h-8 mr-4' /> Sign in with WIF (Legacy)</div >
-                </Button >
-
-                <Separator className='w-full my-1' />
-                <Button className='py-6 w-full flex' type='button' variant="ghost">
-                    {/* Add logo for that */}
-                    < div className='flex flex-1 items-center' > <Icons.hiveauth className='w-8 h-8 mr-4' /> HiveAuth</div >
-                </Button >
-
-                <Separator className='w-full my-1' />
                 <Button className='py-6 w-full flex justify-start' type='button' variant="ghost">
                     {/* Add logo for that */}
                     <Icons.keyRound className='w-8 h-8 mr-4' /> Hive Keychain extension
                 </Button>
 
                 <Separator className='w-full my-1' />
+                <Button className='py-6 w-full flex' type='button' variant="ghost">
+                    {/* Add logo for that */}
+                    < div className='flex flex-1 items-center' > <Icons.keyRound className='w-8 h-8 mr-4' /> Sign in with WIF (Legacy)</div >
+                </Button >
 
-                <Button className='py-6 w-full flex justify-start' type='button' variant="ghost">
+                <Separator className='w-full my-1' />
+                <Button disabled className='py-6 w-full flex' type='button' variant="ghost">
+                    {/* Add logo for that */}
+                    < div className='flex flex-1 items-center' > <Icons.hiveauth className='w-8 h-8 mr-4' /> HiveAuth</div >
+                </Button >
+
+                <Separator className='w-full my-1' />
+
+                <Button disabled className='py-6 w-full flex justify-start' type='button' variant="ghost">
                     <Icons.hivesigner className='w-8 h-8 mr-4' /> HiveSigner
                 </Button>
 
