@@ -3,7 +3,7 @@ import base58 from 'bs58';
 import secureRandom from 'secure-random';
 import { getPostHeader } from './bridge';
 
-export async function createPermlink(title: string, author: string, postPermlink: string) {
+export async function createPermlink(title: string, author: string) {
   let permlink;
   if (title && title.trim() !== '') {
     let s = getSlug(title.replace(/[<>]/g, ''), { truncate: 128 });
@@ -14,10 +14,7 @@ export async function createPermlink(title: string, author: string, postPermlink
     s = s.toLowerCase().replace(/[^a-z0-9-]+/g, '');
 
     // ensure the permlink is unique
-    let head = undefined;
-    try {
-      head = await getPostHeader(author, postPermlink);
-    } catch (e) {}
+    let head = await getPostHeader(author, s);
     if (head && !!head.category) {
       const noise = base58.encode(secureRandom.randomBuffer(4)).toLowerCase();
       permlink = noise + '-' + s;
