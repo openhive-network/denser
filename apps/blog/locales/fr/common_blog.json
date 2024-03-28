@@ -374,6 +374,8 @@
     }
   },
   "submit_page": {
+    "my_communities": "Mes communautés",
+    "others_communities": "Autres communautés",
     "disable_side": "Désactiver l'éditeur côte à côte",
     "enable_side": "Activer l'éditeur côte à côte",
     "string_must_contain": "La chaîne doit contenir au moins {{num}} caractère(s)",
@@ -430,7 +432,8 @@
       "delete_template": "Supprimer le modèle"
     },
     "category_selector": {
-      "tag_your_story": "Mots clés (jusqu'à 5 mots clés), le premier d'entre eux étant votre catégorie principale.",
+      "required": "Requis lorsque vous publiez sur Mon Blog",
+      "tag_your_story": "Tags jusqu'à 8",
       "select_a_tag": "Sélectionner un mot clé",
       "maximum_tag_length_is_24_characters": "La longueur d'un mot clé est d'au maximum 24 caractères",
       "use_limited_amount_of_categories": "Veuillez s'il-vous-plaît n'utiliser que {{amount}} catégories",

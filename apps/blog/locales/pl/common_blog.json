@@ -387,6 +387,8 @@
     }
   },
   "submit_page": {
+    "my_communities": "Moje Społeczności",
+    "others_communities": "Inne Społeczności",
     "disable_side": "Przenieś podgląd pod formularz",
     "enable_side": "Przenieś podgląd obok formularza",
     "string_must_contain": "Tekst musi zawierać conajmniej {{num}} znak(i)",
@@ -443,7 +445,8 @@
       "delete_template": "Usuń szablon"
     },
     "category_selector": {
-      "tag_your_story": "Kategorie (do 5 kategorii), pierwsza kategoria określa główną.",
+      "required": "Wymagane przy publikowaniu na Moim Blogu",
+      "tag_your_story": "Maksymalnie 8 tagów.",
       "select_a_tag": "Wybierz kategorię",
       "maximum_tag_length_is_24_characters": "Maksymalna długość nazwy kategorii to 24 znaki",
       "use_limited_amount_of_categories": "Użyj proszę co najwyżej {{amount}} kategorii",

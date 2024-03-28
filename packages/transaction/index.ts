@@ -307,12 +307,13 @@ class TransactionService {
     beneficiaries: Beneficiarie[],
     percentHbd: number,
     maxAcceptedPayout: NaiAsset,
-    tags: string[]
+    tags: string[],
+    category: string
   ) {
     await this.processHiveAppOperation((builder) => {
       const op = builder
         .pushArticle(this.signerOptions.username, permlink, title, body)
-        .setCategory(tags[0])
+        .setCategory(category !== 'blog' ? category : tags[0])
         .setPercentHbd(percentHbd)
         .setMaxAcceptedPayout(maxAcceptedPayout)
         .pushTags(tags[0], ...tags.slice(1));

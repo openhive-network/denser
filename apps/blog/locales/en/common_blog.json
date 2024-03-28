@@ -386,6 +386,8 @@
     }
   },
   "submit_page": {
+    "my_communities": "My Communities",
+    "others_communities": "Others Communities",
     "disable_side": "Disable side-by-side editor",
     "enable_side": "Enable side-by-side editor",
     "string_must_contain": "String must contain at least {{num}} character(s)",
@@ -442,7 +444,8 @@
       "delete_template": "Delete Template"
     },
     "category_selector": {
-      "tag_your_story": "Tag (up to 8 tags), the first tag is your main category.",
+      "required": "Required when post to My Blog",
+      "tag_your_story": "Tags up to 8",
       "select_a_tag": "Select a tag",
       "maximum_tag_length_is_24_characters": "Maximum tag length is 24 characters",
       "use_limited_amount_of_categories": "Please use only {{amount}} tags",
