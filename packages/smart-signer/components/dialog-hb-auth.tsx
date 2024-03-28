@@ -1,19 +1,15 @@
 import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
 import { ReactNode, SyntheticEvent, useState } from 'react';
 import { useTranslation } from 'next-i18next';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger
-} from '@ui/components';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components';
 import { isBrowser, AuthUser } from '@hive/hb-auth';
 import type { KeyAuthorityType } from '@hive/hb-auth';
 import { toast } from '@ui/components/hooks/use-toast';
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
-import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
+import { PasswordDialogModalPromise } from '@smart-signer/components/password-dialog';
 import { RadioGroup } from '@ui/components/radio-group';
 import { radioGroupItems, IRadioGroupItem } from '@smart-signer/components/radio-group-item';
+import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/password-form';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -52,7 +48,7 @@ export function DialogHBAuth({
           variant: 'default'
         });
         setOpen(false);
-        onAuthComplete(user.username, user.keyType!);
+        onAuthComplete(user.username, user.loggedInKeyType!);
       } else {
         toast({
           title: 'Error!',
@@ -93,14 +89,22 @@ export function DialogHBAuth({
         } else {
           let password = '';
           try {
-            const result = await DialogPasswordModalPromise({
+            const passwordFormOptions: PasswordFormOptions = {
+              mode: PasswordFormMode.HBAUTH,
+              showInputStorePassword: false,
+              i18nKeysForCaptions: {
+                inputPasswordPlaceholder: 'login_form.password_hbauth_placeholder',
+              },
+            };
+
+            const {
+              password: result
+            } = await PasswordDialogModalPromise({
               isOpen: true,
-              ...{
-                i18nKeyPlaceholder: 'login_form.password_hbauth_placeholder',
-                i18nKeyTitle: 'login_form.title_hbauth_dialog_password'
-              }
+              passwordFormOptions
             });
             password = result;
+
             if (!password) {
               updateStatus(null, 'No password');
               return;

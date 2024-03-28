@@ -374,8 +374,8 @@
     }
   },
   "submit_page": {
-    "to_many_communities": "社区太多",
-    "to_many_tags": "标签太多",
+    "my_communities": "我的社群",
+    "others_communities": "其他社群",
     "disable_side": "禁用并排编辑器",
     "enable_side": "启用并排编辑器",
     "string_must_contain": "字符串必须包含至少{{num}}个字符",
@@ -400,6 +400,10 @@
     "clean": "清除",
     "markdown_styling_guide": "Markdown样式指南",
     "power_up": "100% 动力增强",
+    "maximum_characters": "最多{{num}}个字符",
+    "markdown_not_supported": "此处不支持Markdown",
+    "html_not_supported": "此处不支持HTML",
+    "advanced_tooltip": "在这里，您可以设置帖子选项，如作者奖励分配、最大接受的支付、受益人和帖子模板",
     "advanced_settings_dialog": {
       "changes_saved": "更改已保存",
       "advanced_settings": "高级设置",
@@ -426,6 +430,21 @@
       "template_name_is_taken": "模板名称已被使用",
       "save": "保存",
       "delete_template": "删除模板"
+    },
+    "category_selector": {
+      "required": "在发布到我的博客时需要",
+      "tag_your_story": "最多标记8个",
+      "select_a_tag": "选择一个标签",
+      "maximum_tag_length_is_24_characters": "最大标签长度为24个字符",
+      "use_limited_amount_of_categories": "请只使用{{amount}}个类别",
+      "use_only_lowercase_letters": "只使用小写字母",
+      "use_one_dash": "只使用一个破折号",
+      "use_spaces_to_separate_tags": "使用空格分隔标签",
+      "use_only_allowed_characters": "只使用小写字母、数字和一个破折号",
+      "must_start_with_a_letter": "必须从一个字母开始",
+      "must_end_with_a_letter_or_number": "必须以字母或数字结尾",
+      "must_not_include_hivemind_community_owner": "帖子已经默认包含了 'hive' 标签，请不要再包含另一个 'hive-' 标签。",
+      "tags_cannot_be_repeated": "标签不能重复"
     }
   },
   "search_page": {

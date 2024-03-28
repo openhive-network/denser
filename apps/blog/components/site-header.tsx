@@ -9,7 +9,6 @@ import Link from 'next/link';
 import React, { useState, KeyboardEvent, FC, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
-import DialogHBAuth from '@smart-signer/components/dialog-hb-auth';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getLogger } from '@ui/lib/logging';
@@ -103,19 +102,6 @@ const SiteHeader: FC = () => {
                   </Button>
                 </Link>
               </div>
-            )}
-            {isClient && !user?.isLoggedIn && (
-              <DialogHBAuth
-                onAuthComplete={(username, keyType) => {
-                  logger.info('onAuthComplete %o', { username, keyType });
-                }}
-              >
-                <Link href="#" data-testid="navbar-hbauth-link">
-                  <Button variant="redHover" className="hidden gap-1 sm:flex">
-                    Hbauth
-                  </Button>
-                </Link>
-              </DialogHBAuth>
             )}
             {/* <div>
               <div className="relative hidden lg:block">

@@ -7,10 +7,11 @@ import { useTranslation } from 'next-i18next';
 import { Separator } from '@hive/ui/components/separator';
 import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { username } from '@smart-signer/lib/auth/utils';
-import { LoginType, StorageType } from '@smart-signer/types/common';
+import { LoginType, KeyType } from '@smart-signer/types/common';
 import { Icons } from '@ui/components/icons';
 import { toast } from '@ui/components/hooks/use-toast';
 import { RadioGroup, RadioGroupItem } from '@ui/components/radio-group';
+import { radioGroupItems, IRadioGroupItem } from '@smart-signer/components/radio-group-item';
 import { pascalCase } from 'change-case';
 
 import { getLogger } from '@ui/lib/logging';
@@ -20,6 +21,7 @@ const loginFormSchema = z.object({
   username,
   loginType: z.nativeEnum(LoginType),
   remember: z.boolean(),
+  keyType: z.nativeEnum(KeyType),
 });
 
 export type LoginFormSchema = z.infer<typeof loginFormSchema>;
@@ -28,6 +30,7 @@ const loginFormDefaultValues = {
   username: '',
   loginType: LoginType.hbauth,
   remember: false,
+  keyType: KeyType.posting,
 };
 
 export interface LoginTypeDetail {
@@ -69,7 +72,7 @@ export interface LoginFormOptions {
   i18nNamespace?: string;
 }
 
-export function LoginForm({
+export default function LoginForm({
   errorMessage = '',
   onSubmit = (data: LoginFormSchema) => {},
   enabledLoginTypes = Object.keys(LoginType) as LoginType[],
@@ -129,7 +132,7 @@ export function LoginForm({
     );
   };
 
-  const radioGroupItems: JSX.Element[] = [];
+  const loginTypeRadioGroupItems: JSX.Element[] = [];
   enabledLoginTypes.forEach((loginType: LoginType, index: number) => {
     if (loginTypeDetails[loginType].type === 'internal') {
       let element: JSX.Element;
@@ -138,9 +141,27 @@ export function LoginForm({
       } else {
         element = radioGroupItem(loginType, false);
       }
-      radioGroupItems.push(<div key={index}>{element}</div>);
+      loginTypeRadioGroupItems.push(<div key={index}>{element}</div>);
     }
   });
+
+  const keyTypeItems: IRadioGroupItem[] = [
+    {
+      value: 'posting',
+      disabled: false,
+      labelText: t(`login_form.posting_private_key_placeholder`),
+      labelImageSrc: '',
+      labelImageAlt: ''
+    },
+    {
+      value: 'active',
+      disabled: false,
+      labelText: t(`login_form.active_private_key_placeholder`),
+      labelImageSrc: '',
+      labelImageAlt: ''
+    }
+  ];
+
 
   return (
     <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
@@ -174,7 +195,6 @@ export function LoginForm({
           </div>
 
           <div className="my-6 flex w-full flex-col">
-
             <RadioGroup
               defaultValue={loginFormDefaultValues.loginType}
               onValueChange={(v: string) => {
@@ -182,9 +202,25 @@ export function LoginForm({
               }}
               aria-label="Login Type"
             >
-              {radioGroupItems}
+              {loginTypeRadioGroupItems}
             </RadioGroup>
+          </div>
 
+          <div className="my-6 flex w-full flex-col">
+            <RadioGroup
+              defaultValue={loginFormDefaultValues.keyType}
+              onValueChange={(v: KeyType) => {
+                setValue('keyType', v as KeyType);
+              }}
+              name='keyType'
+              aria-label={t('login_form.title_select_key_type')}
+            >
+              <h3>{t('login_form.title_select_key_type')}</h3>
+              {radioGroupItems(keyTypeItems)}
+            </RadioGroup>
+          </div>
+
+          <div className="my-6 flex w-full flex-col">
             <div className="flex items-center py-1">
               <input
                 id="remember"

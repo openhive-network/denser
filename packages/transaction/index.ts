@@ -52,9 +52,13 @@ class TransactionService {
     const broadcastReq = new BroadcastTransactionRequest(txBuilder);
 
     // do broadcast
-    await (
-      await hiveChainService.getHiveChain()
-    ).api.network_broadcast_api.broadcast_transaction(broadcastReq);
+    try {
+      await (
+        await hiveChainService.getHiveChain()
+      ).api.network_broadcast_api.broadcast_transaction(broadcastReq);
+    } catch (error) {
+      this.handleError(error);
+    }
   }
 
   async upVote(author: string, permlink: string, weight = 10000) {
@@ -303,12 +307,13 @@ class TransactionService {
     beneficiaries: Beneficiarie[],
     percentHbd: number,
     maxAcceptedPayout: NaiAsset,
-    tags: string[]
+    tags: string[],
+    category: string
   ) {
     await this.processHiveAppOperation((builder) => {
       const op = builder
         .pushArticle(this.signerOptions.username, permlink, title, body)
-        .setCategory(tags[0])
+        .setCategory(category !== 'blog' ? category : tags[0])
         .setPercentHbd(percentHbd)
         .setMaxAcceptedPayout(maxAcceptedPayout)
         .pushTags(tags[0], ...tags.slice(1));

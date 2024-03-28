@@ -9,7 +9,10 @@ function DialogLogin({ children }: { children: ReactNode }) {
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[600px]" data-testid="login-dialog">
-        <LoginPanel />
+        <LoginPanel
+          authenticateOnBackend={false}
+          strict={false}
+        />
       </DialogContent>
     </Dialog>
   );

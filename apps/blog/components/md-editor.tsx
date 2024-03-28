@@ -19,6 +19,7 @@ import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { KeyType } from '@smart-signer/types/common';
 import { Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
 import { ICommand, TextAreaTextApi } from '@uiw/react-md-editor';
+import { useSigner } from '@smart-signer/lib/use-signer';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -109,20 +110,16 @@ export const onImageDrop = async (
 
 interface MdEditorProps {
   onChange: (value: string) => void;
+  persistedValue: string;
 }
 
-const MdEditor: FC<MdEditorProps> = ({ onChange }) => {
+const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '' }) => {
   const { user } = useUser();
-  const [formValue, setFormValue] = useState<string>('');
+  const [formValue, setFormValue] = useState<string>(persistedValue);
 
   const { resolvedTheme } = useTheme();
-  const signerOptions: SignerOptions = {
-    username: user.username,
-    loginType: user.loginType,
-    keyType: KeyType.posting,
-    apiEndpoint: 'https://api.hive.blog',
-    storageType: 'localStorage'
-  };
+
+  const { signerOptions } = useSigner();
   const signer = getSigner(signerOptions);
 
   const inputRef = useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;

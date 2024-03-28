@@ -113,13 +113,13 @@ export default function UserSettings() {
 
               <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
                 <div data-testid="choose-language">
-                  <Select defaultValue="en">
+                  <Label htmlFor="choose-language">Choose Language</Label>
+                  <Select defaultValue="en" name="choose-language">
                     <SelectTrigger>
                       <SelectValue placeholder="Choose Language" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectLabel>Choose Language</SelectLabel>
                         <SelectItem value="en">English</SelectItem>
                         <SelectItem value="es">Spanish Español</SelectItem>
                         <SelectItem value="ru">Russian русский</SelectItem>
@@ -135,13 +135,13 @@ export default function UserSettings() {
                 </div>
 
                 <div data-testid="not-safe-for-work-content">
-                  <Select defaultValue="hide">
+                  <Label htmlFor="not-safe-for-work-content">Not safe for work (NSFW) content</Label>
+                  <Select defaultValue="hide" name="not-safe-for-work-content">
                     <SelectTrigger>
                       <SelectValue placeholder="Not safe for work (NSFW) content" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectLabel>Not safe for work (NSFW) content</SelectLabel>
                         <SelectItem value="hide">Always hide</SelectItem>
                         <SelectItem value="warn">Always warn</SelectItem>
                         <SelectItem value="show">Always show</SelectItem>
@@ -151,13 +151,13 @@ export default function UserSettings() {
                 </div>
 
                 <div data-testid="blog-post-rewards">
-                  <Select defaultValue="50%">
+                  <Label htmlFor="blog-post-rewards">Blog post rewards</Label>
+                  <Select defaultValue="50%" name="blog-post-rewards">
                     <SelectTrigger>
                       <SelectValue placeholder="Blog post rewards" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectLabel>Blog post rewards</SelectLabel>
                         <SelectItem value="0%">Decline Payout</SelectItem>
                         <SelectItem value="50%">50% HBD / 50% HP</SelectItem>
                         <SelectItem value="100%">Power Up 100%</SelectItem>
@@ -167,13 +167,13 @@ export default function UserSettings() {
                 </div>
 
                 <div data-testid="comment-post-rewards">
-                  <Select defaultValue="50%">
+                  <Label htmlFor="comment-post-rewards">Comment post rewards</Label>
+                  <Select defaultValue="50%" name="comment-post-rewards">
                     <SelectTrigger>
                       <SelectValue placeholder="Comment post rewards" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectLabel>Comment post rewards</SelectLabel>
                         <SelectItem value="0%">Decline Payout</SelectItem>
                         <SelectItem value="50%">50% HBD / 50% HP</SelectItem>
                         <SelectItem value="100%">Power Up 100%</SelectItem>
@@ -183,13 +183,13 @@ export default function UserSettings() {
                 </div>
 
                 <div data-testid="referral-system">
-                  <Select defaultValue="enabled">
+                  <Label htmlFor="referral-system">Referral System</Label>
+                  <Select defaultValue="enabled" name="referral-system">
                     <SelectTrigger>
                       <SelectValue placeholder="Referral System" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectLabel>Referral System</SelectLabel>
                         <SelectItem value="enabled">Use Default Beneficiaries</SelectItem>
                         <SelectItem value="disabled">Opt-Out Referral System</SelectItem>
                       </SelectGroup>

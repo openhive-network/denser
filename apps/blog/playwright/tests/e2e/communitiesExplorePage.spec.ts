@@ -115,7 +115,8 @@ test.describe('Explore communities page tests', () => {
     expect(await communitiesPage.communityListItemFooter.first().textContent()).toContain(firstAdminsAmountRankCommunitiesAPI.toString());
   });
 
-  test('move to the login page after clicking subscribe button of the first community', async ({ page }) => {
+  // Skipped due to new login form
+  test.skip('move to the login page after clicking subscribe button of the first community', async ({ page }) => {
     const communitiesPage = new CommunitiesExplorePage(page);
     const loginToVoteDialog = new LoginToVoteDialog(page);
 

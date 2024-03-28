@@ -8,7 +8,7 @@ import {
   getAccount,
   getDynamicGlobalProperties,
   getAccountFull,
-  getAccountReputations
+  getAccountReputations,
 } from '@transaction/lib/hive';
 import { accountReputation } from '@/blog/lib/utils';
 import { delegatedHive, numberWithCommas, vestingHive } from '@hive/ui/lib/utils';

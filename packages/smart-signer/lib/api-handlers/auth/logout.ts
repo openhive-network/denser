@@ -1,4 +1,3 @@
-import createHttpError from 'http-errors';
 import { NextApiHandler } from 'next';
 import { getIronSession } from 'iron-session';
 import { sessionOptions } from '@smart-signer/lib/session';

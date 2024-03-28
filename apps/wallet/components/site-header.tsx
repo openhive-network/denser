@@ -10,7 +10,6 @@ import { useTranslation } from 'next-i18next';
 import { useLogout } from '@smart-signer/lib/auth/use-logout';
 import { getLogger } from '@ui/lib/logging';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import DialogHBAuth from '@smart-signer/components/dialog-hb-auth';
 import UserMenu from './user-menu';
 import { PieChart, Pie } from 'recharts';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
@@ -86,19 +85,6 @@ const SiteHeader: FC = () => {
                 </Link>
               </div>
             ) : null}
-            {isClient && !user?.isLoggedIn && (
-              <DialogHBAuth
-                onAuthComplete={(username, keyType) => {
-                  logger.info('onAuthComplete %o', { username, keyType });
-                }}
-              >
-                <Link href="#" data-testid="navbar-hbauth-link">
-                  <Button variant="redHover" className="hidden gap-1 sm:flex">
-                    Hbauth
-                  </Button>
-                </Link>
-              </DialogHBAuth>
-            )}
             {isClient && !user?.isLoggedIn ? (
               <ModeToggle>
                 <Button variant="ghost" size="sm" className="h-10 w-full px-0" data-testid="theme-mode">

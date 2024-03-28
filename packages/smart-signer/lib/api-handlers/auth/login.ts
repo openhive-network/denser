@@ -1,86 +1,21 @@
 import createHttpError from 'http-errors';
 import { NextApiHandler } from 'next';
-import { cryptoUtils, PublicKey, Signature, KeyRole } from '@hiveio/dhive';
 import { getIronSession } from 'iron-session';
 import { oidc } from '@smart-signer/lib/oidc';
 import { sessionOptions } from '@smart-signer/lib/session';
-import { getLogger } from '@hive/ui/lib/logging';
 import { getAccount } from '@transaction/lib/hive';
-import { FullAccount } from '@transaction/lib/app-types';
-import { postLoginSchema, PostLoginSchema, Signatures } from '@smart-signer/lib/auth/utils';
+import { postLoginSchema, PostLoginSchema } from '@smart-signer/lib/auth/utils';
 import { User } from '@smart-signer/types/common';
 import { IronSessionData } from '@smart-signer/types/common';
 import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { checkCsrfHeader } from '@smart-signer/lib/csrf-protection';
+import { verifyLoginChallenge } from '@smart-signer/lib/verify-login-challenge';
+import { verifyLogin } from '@smart-signer/lib/auth/use-sign-in';
+import { getLoginChallengeFromTransactionForLogin } from '@smart-signer/lib/login-operation'
 
+import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
-const verifyLoginChallenge = async (
-  chainAccount: FullAccount,
-  signatures: Signatures,
-  message: string = ''
-) => {
-  const verify = (
-    keyRole: KeyRole,
-    signature: string,
-    pubkey: string | PublicKey,
-    weight: number,
-    weight_threshold: number,
-    message: string
-  ) => {
-    logger.info('verifyLoginChallenge args: %o', {
-      account: chainAccount.name,
-      keyRole,
-      signature,
-      pubkey,
-      weight,
-      weight_threshold
-    });
-    if (!signature) return;
-    if (weight !== 1 || weight_threshold !== 1) {
-      logger.error(
-        `verifyLoginChallenge unsupported ${keyRole} auth configuration for user ${chainAccount.name}`
-      );
-    } else {
-      const sig = Signature.fromString(signature);
-      let publicKey = PublicKey.from(pubkey);
-      const messageHash = cryptoUtils.sha256(message);
-
-      // Recover public key from signature (you need to know digest);
-      const publicKeyRecoveredFromSignature = sig.recover(messageHash).toString();
-      // We check whether publicKeyRecoveredFromSignature is listed
-      // in account posting key auths.
-
-      const verified = publicKeyRecoveredFromSignature === pubkey && publicKey.verify(messageHash, sig);
-
-      if (!verified) {
-        logger.error('verifyLoginChallenge signature verification failed for user %s %o', chainAccount.name, {
-          message,
-          messageHash: messageHash.toString('hex'),
-          signature
-        });
-      }
-      return verified;
-    }
-  };
-
-  const {
-    posting: { key_auths, weight_threshold }
-  } = chainAccount;
-
-  const posting_pubkey = key_auths[0][0];
-  const weight = key_auths[0][1];
-
-  const result = verify(
-    'posting',
-    signatures.posting || '',
-    posting_pubkey,
-    weight,
-    weight_threshold,
-    message
-  );
-  return result;
-};
 
 export const loginUser: NextApiHandler<User> = async (req, res) => {
   checkCsrfHeader(req);
@@ -102,8 +37,10 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
   //   logger.error(e);
   // }
 
+  const loginChallenge = req.cookies[`${cookieNamePrefix}login_challenge_server`] || '';
+
   const data: PostLoginSchema = await postLoginSchema.parseAsync(req.body);
-  const { username, loginType, signatures } = data;
+  const { username, loginType, signatures, keyType, authenticateOnBackend } = data;
   let hiveUserProfile;
   let chainAccount;
   try {
@@ -121,13 +58,29 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
     throw error;
   }
 
-  const loginChallenge = req.cookies[`${cookieNamePrefix}login_challenge_server`] || '';
+  let result: boolean = false;
 
-  const result = await verifyLoginChallenge(
-    chainAccount,
-    signatures,
-    JSON.stringify({ loginChallenge }, null, 0)
-  );
+  if (JSON.parse(data.txJSON)) {
+    // Check whether loginChallenge is correct.
+    const reguestLoginChallenge =
+      getLoginChallengeFromTransactionForLogin(JSON.parse(data.txJSON), keyType);
+    if (reguestLoginChallenge !== loginChallenge) {
+      throw new createHttpError[401]('Invalid login challenge');
+    }
+
+    // Verify signature in passed transaction.
+    try {
+      result = !!(await verifyLogin(data));
+    } catch (error) {
+      // swallow error
+    }
+  } else {
+    result = verifyLoginChallenge(
+      chainAccount,
+      signatures,
+      JSON.stringify({ loginChallenge })
+    );
+  }
 
   if (!result) {
     if (slug) {
@@ -155,7 +108,9 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
     isLoggedIn: true,
     username,
     avatarUrl: hiveUserProfile?.profile_image || '',
-    loginType
+    loginType,
+    keyType,
+    authenticateOnBackend
   };
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
   session.user = user;

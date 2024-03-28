@@ -9,7 +9,6 @@ import { useTranslation } from 'next-i18next';
 import env from '@beam-australia/react-env';
 import DialogLogin from './dialog-login';
 import { getLogger } from '@ui/lib/logging';
-import DialogHBAuth from '@smart-signer/components/dialog-hb-auth';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import version from '../version.json';
 
@@ -70,19 +69,6 @@ const Sidebar = () => {
                     <Icons.forward className="w-4" />
                   </SheetClose>
                 </Link>
-              </li>
-            )}
-            {!user?.isLoggedIn && (
-              <li className="cursor-pointer border-b-2 border-white text-foreground hover:border-red-600 hover:bg-slate-100 dark:border-slate-950 dark:hover:border-red-600 dark:hover:bg-slate-900 sm:hidden">
-                <DialogHBAuth
-                  onAuthComplete={(username, keyType) => {
-                    logger.info('onAuthComplete %o', { username, keyType });
-                  }}
-                >
-                  <div className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
-                    HBauth
-                  </div>
-                </DialogHBAuth>
               </li>
             )}
             {!user?.isLoggedIn && <Separator className="my-2 sm:hidden" />}

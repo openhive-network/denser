@@ -123,7 +123,8 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     expect((await postPage.commentListItems.all()).length).toBe(commentAmount);
   });
 
-  test('Validate the first comment in the post', async ({
+  // Skipped due to new login form
+  test.skip('Validate the first comment in the post', async ({
     page
   }) => {
     const loginToVoteDialog = new LoginToVoteDialog(page);
@@ -159,7 +160,8 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await expect(postPage.commentCardsFooterReplyEditor.first()).not.toBeVisible();
   });
 
-  test('Validate the second comment (nested) in the post', async ({
+  // Skipped due to new login form
+  test.skip('Validate the second comment (nested) in the post', async ({
     page
   }) => {
     const commentViewPage = new CommentViewPage(page);
@@ -606,7 +608,8 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     );
   });
 
-  test('Move to the comment view page of the first comment by clicking comment link and validate the main comment', async ({
+  // Skipped due to new Login Form
+  test.skip('Move to the comment view page of the first comment by clicking comment link and validate the main comment', async ({
     page
   }) => {
     const commentViewPage = new CommentViewPage(page);

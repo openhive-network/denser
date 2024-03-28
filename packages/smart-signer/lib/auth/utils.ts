@@ -1,6 +1,7 @@
 import * as z from 'zod';
 import { validateHiveAccountName } from '@smart-signer/lib/validators/validate-hive-account-name';
-import { LoginType, StorageType, User } from '@smart-signer/types/common';
+import { LoginType, User, KeyType } from '@smart-signer/types/common';
+import { TTransactionPackType } from '@hive/wax';
 
 export const username = z.string()
     .superRefine((val, ctx) => {
@@ -17,6 +18,10 @@ export const username = z.string()
     });
 
 export const postLoginSchema = z.object({
+    keyType: z.nativeEnum(KeyType, {
+        invalid_type_error: 'Invalid keyType',
+        required_error: 'keyType is required',
+    }),
     loginType: z.nativeEnum(LoginType, {
         invalid_type_error: 'Invalid loginType',
         required_error: 'loginType is required',
@@ -26,12 +31,13 @@ export const postLoginSchema = z.object({
         required_error: "hivesignerToken is required",
     }),
     signatures: z.object({
-        memo: z.string(),
         posting: z.string(),
         active: z.string(),
-        owner: z.string(),
-    })
-    .partial(),
+    }),
+    pack: z.nativeEnum(TTransactionPackType),
+    strict: z.boolean(),
+    txJSON: z.string(),
+    authenticateOnBackend: z.boolean(),
     username,
 });
 
@@ -44,4 +50,6 @@ export const defaultUser: User = {
     username: '',
     avatarUrl: '',
     loginType: LoginType.hbauth,
+    keyType: KeyType.posting,
+    authenticateOnBackend: true,
 };

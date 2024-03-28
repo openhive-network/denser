@@ -1,9 +1,10 @@
 import { cryptoUtils } from '@hiveio/dhive';
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
-import { SignChallenge, SignTransaction, Signer } from '@smart-signer/lib/signer/signer';
-import { DialogPasswordModalPromise } from '@smart-signer/components/dialog-password';
-import { THexString, createWaxFoundation } from '@hive/wax';
-import { AuthStatus } from '@hive/hb-auth';
+import { AuthStatus, KeyAuthorityType } from '@hive/hb-auth';
+import { SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
+import { THexString, createWaxFoundation, TTransactionPackType } from '@hive/wax';
+import { PasswordDialogModalPromise } from '@smart-signer/components/password-dialog';
+import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/password-form';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -17,36 +18,54 @@ const logger = getLogger('app');
  * @extends {Signer}
  */
 export class SignerHbauth extends Signer {
+
+  constructor(
+    signerOptions: SignerOptions,
+    pack: TTransactionPackType = TTransactionPackType.HF_26
+    ) {
+    super(signerOptions, pack);
+  }
+
   async destroy() {
     const authClient = await hbauthService.getOnlineClient();
     await authClient.logout();
   }
 
-  async getPasswordFromUser(dialogProps: { [key: string]: any } = {}): Promise<string> {
-    let password = '';
+  /**
+   * Displays dialog and asks user to enter password for unlocking
+   * wallet.
+   *
+   * @returns {Promise<string>}
+   * @memberof SignerHbauth
+   */
+  async getPasswordFromUser(): Promise<string> {
+    const passwordFormOptions: PasswordFormOptions = {
+      mode: PasswordFormMode.HBAUTH,
+      showInputStorePassword: false,
+      i18nKeysForCaptions: {
+        inputPasswordPlaceholder: 'login_form.password_hbauth_placeholder',
+      },
+    };
+
     try {
-      const result = await DialogPasswordModalPromise({
+      const {
+        password
+      } = await PasswordDialogModalPromise({
         isOpen: true,
-        ...dialogProps
+        passwordFormOptions
       });
-      password = result as string;
-      logger.info('Return from PasswordModalPromise: %s', result);
       return password;
     } catch (error) {
-      logger.error('Return from PasswordModalPromise %s', error);
+      logger.error('Error in getPasswordFromUser: %o', error);
       throw new Error('No password from user');
     }
   }
 
-  // Create digest and return its signature made with signDigest.
-  async signChallenge({ password = '', message }: SignChallenge): Promise<string> {
-    const { username, keyType } = this;
+  async signChallenge(
+    { password = '', message }: SignChallenge
+    ): Promise<string> {
     const digest = cryptoUtils.sha256(message).toString('hex');
-
-    await this.checkAuths(username, keyType);
-
-    const signature = await this.signDigest(digest, password);
-    return signature;
+    return this.signDigest(digest, password);
   }
 
   async signTransaction({ digest, transaction }: SignTransaction) {
@@ -56,48 +75,38 @@ export class SignerHbauth extends Signer {
     // const txBuilder = wax.TransactionBuilder.fromApi(transaction);
 
     const txBuilder = new wax.TransactionBuilder(transaction);
+    if (digest !== txBuilder.sigDigest) {
+      throw new Error('Digests do not match');
+    }
 
-    logger.info('signTransaction digests: %o', { digest, 'tx.sigDigest': txBuilder.sigDigest });
-    if (digest !== txBuilder.sigDigest) throw new Error('Digests do not match');
-
-    // Show transaction to user and get his consent to sign it.
+    // TODO Show transaction in UI and get user's consent to sign it.
 
     return this.signDigest(digest, '');
   }
 
   async signDigest(digest: THexString, password: string) {
     const { username, keyType } = this;
-    logger.info('sign args: %o', { password, digest, username, keyType });
+    logger.info('signDigest args: %o', { password, digest, username, keyType });
 
     if (!['posting', 'active'].includes(keyType)) {
       throw new Error(`Unsupported keyType: ${keyType}`);
     }
 
-    // TODO Pass correct config options here.
     const authClient = await hbauthService.getOnlineClient();
-    // const authClient = await new OnlineClient().initialize();
 
-    const auth = await authClient.getAuthByUser(username);
-    logger.info('auth: %o', auth);
-
-    if (!auth) {
-      throw new Error(`No auth for username ${username}`);
-    }
-
-    if (!auth.authorized) {
+    const checkAuthResult = await this.checkAuth(username, keyType);
+    if (!checkAuthResult) {
       if (!password) {
-        password = await this.getPasswordFromUser({
-          i18nKeyPlaceholder: 'login_form.password_hbauth_placeholder',
-          i18nKeyTitle: 'login_form.title_hbauth_dialog_password'
-        });
+        password = await this.getPasswordFromUser();
       }
+      if (!password) throw new Error('No password to unlock key');
 
       let authStatus: AuthStatus = {ok: false};
       try {
         authStatus = await authClient.authenticate(
           username,
           password,
-          keyType as unknown as 'posting' | 'active'
+          keyType
         );
       } catch (error) {
         logger.error("Error in signDigest, when trying to authenticate user: %o", error);
@@ -121,46 +130,50 @@ export class SignerHbauth extends Signer {
 
       logger.info('authStatus', { authStatus });
       if (!authStatus.ok) {
-        throw new Error(`Unlocking wallet failed`);
+        throw new Error(`Unlocking key failed`);
       }
     }
 
-    const signature = await authClient.sign(username, digest, keyType as unknown as 'posting' | 'active');
-    logger.info('SignerHbauth.signDigest: %o', { digest, signature });
+    const signature = await authClient.sign(
+      username,
+      digest,
+      keyType
+    );
+    logger.info('hbauth: %o', { digest, signature });
     return signature;
   }
 
-  async checkAuths(username: string, keyType: string) {
-    // TODO Pass correct config options here.
+  async checkAuth(username: string, keyType: string): Promise<boolean> {
     const authClient = await hbauthService.getOnlineClient();
-    // const authClient = await new OnlineClient().initialize();
-
     const auths = await authClient.getAuths();
-    logger.info('authClient.getAuths();: %o', auths);
-
-    const auths2 = await authClient.getAuthByUser(username);
-    logger.info('authClient.getAuthByUser(username): %o', auths2);
-
-    // await authClient.logout();
-
-    const auth = auths.find((auth) => auth.username === username);
+    logger.info('auths in safe storage %o', auths);
+    const auth = await authClient.getAuthByUser(username);
     if (auth) {
-      logger.info('Found auth: %o', auth);
+      logger.info('Found auth for user %s: %o', username, auth);
       if (auth.authorized) {
-        if (auth.keyType === keyType) {
-          logger.info('User is authorized and we are ready to proceed');
-          // We're ready to sign loginChallenge and proceed.
+        if (auth.loggedInKeyType === keyType) {
+          logger.info('User %s is authorized and we are ready to proceed', username);
+          // Everything is OK.
+          return true;
         } else {
-          logger.info('User is authorized, but with incorrect keyType: %s', auth.keyType);
-          // This should not disturb. Wallet is unlocked. This needs testing.
+          logger.info(
+            'User %s is authorized, but with incorrect keyType: %s. It is OK anyway.',
+            username, auth.loggedInKeyType
+            );
+          // This should not disturb. Wallet is unlocked.
+          return true;
         }
       } else {
-        logger.info('User is not authorized');
-        // We should tell to unlock wallet (login to wallet).
+        logger.info('User %s exists but is not authorized. Hint: unlock key %s', username, keyType);
+        // We should tell to unlock wallet.
+        return false;
       }
     } else {
-      logger.info('Auth for user not found: %s', username);
-      // We should offer adding account to wallet.
+      const message = `Auth for user ${username} not found. Hint: add ${keyType} key to safe storage.`;
+      logger.error(message);
+      // We should offer adding key to wallet.
+      throw new Error(message);
     }
   }
+
 }
