@@ -374,6 +374,8 @@
     }
   },
   "submit_page": {
+    "my_communities": "Le mie Comunità",
+    "others_communities": "Altre Comunità",
     "disable_side": "Disabilita l'editor affiancato",
     "enable_side": "Abilita l'editor affiancato",
     "string_must_contain": "La stringa deve contenere almeno {{num}} carattere(i)",
@@ -430,7 +432,8 @@
       "delete_template": "Elimina modello"
     },
     "category_selector": {
-      "tag_your_story": "Tag (massimo 5). Il primo tag è la categoria principale. ",
+      "required": "Richiesto quando si pubblica su Il mio blog",
+      "tag_your_story": "Tag fino a 8",
       "select_a_tag": "Seleziona un tag",
       "maximum_tag_length_is_24_characters": "La lunghezza massima di un tag è 24 caratteri",
       "use_limited_amount_of_categories": "Utilizzare solo {{amount}} categorie",

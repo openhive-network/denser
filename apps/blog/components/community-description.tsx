@@ -8,7 +8,7 @@ import { ActivityLogDialog } from './activity-log-dialog';
 import { Badge } from '@ui/components/badge';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { HiveRendererContext } from './hive-renderer-context';
 import SubscribeCommunity from './subscribe-community';
 import NewPost from './new_post_button';
@@ -24,6 +24,7 @@ const CommunityDescription = ({
   notificationData: IAccountNotification[] | null | undefined;
   username: string;
 }) => {
+  const [isSubscribe, setIsSubscribe] = useState(() => data.context.subscribed);
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
   const { hiveRenderer } = useContext(HiveRendererContext);
@@ -32,7 +33,9 @@ const CommunityDescription = ({
   if (data.description && hiveRenderer) {
     post_body_html = hiveRenderer.render(data.description);
   }
-
+  useEffect(() => {
+    setIsSubscribe(data.context.subscribed);
+  }, [data.context.subscribed]);
   return (
     <div className="flex w-auto max-w-[240px] flex-col">
       <Card
@@ -63,8 +66,13 @@ const CommunityDescription = ({
             </div>
           </div>
           <div className="my-4 flex flex-col gap-2">
-            <SubscribeCommunity user={user} username={username} subStatus={data.context.subscribed} />
-            <NewPost name={data.name} />
+            <SubscribeCommunity
+              user={user}
+              username={username}
+              subStatus={isSubscribe}
+              OnIsSubscribe={(e) => setIsSubscribe(e)}
+            />
+            <NewPost name={data.name} disabled={!isSubscribe} />
           </div>
           <div data-testid="community-leadership" className="my-6 flex flex-col">
             <h6 className="my-1.5 font-semibold leading-none tracking-tight">
