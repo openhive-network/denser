@@ -1,7 +1,14 @@
 import { Button } from '@hive/ui/components/button';
 import { Input } from '@hive/ui/components/input';
 import Link from 'next/link';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@hive/ui/components/select';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@hive/ui/components/select';
 import { Label } from '@radix-ui/react-label';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -25,7 +32,7 @@ import { HiveRendererContext } from './hive-renderer-context';
 import { transactionService } from '@transaction/index';
 import { createPermlink } from '@transaction/lib/utils';
 import { useQuery } from '@tanstack/react-query';
-import { getSubscriptions } from '@transaction/lib/bridge';
+import { getCommunity, getSubscriptions } from '@transaction/lib/bridge';
 import { useRouter } from 'next/router';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { TFunction } from 'i18next';
@@ -100,6 +107,7 @@ export default function PostForm({ username }: { username: string }) {
   const { manabarsData } = useManabars(username);
   const [storedPost, storePost] = useLocalStorage<AccountFormValues>('postData', defaultValues);
   const { t } = useTranslation('common_blog');
+
   const {
     data: mySubsData,
     isLoading: mySubsIsLoading,
@@ -107,7 +115,19 @@ export default function PostForm({ username }: { username: string }) {
   } = useQuery([['subscriptions', username]], () => getSubscriptions(username), {
     enabled: Boolean(username)
   });
-
+  const {
+    data: communityData,
+    isLoading: communityDataIsLoading,
+    isFetching: communityDataIsFetching,
+    error: communityDataError
+  } = useQuery(
+    ['community', router.query.category, ''],
+    () =>
+      getCommunity(router.query.category ? router.query.category.toString() : storedPost.category, username),
+    {
+      enabled: Boolean(storedPost.category)
+    }
+  );
   const accountFormSchema = z.object({
     title: z.string().min(2, t('submit_page.string_must_contain', { num: 2 })),
     postArea: z.string().min(1, t('submit_page.string_must_contain', { num: 1 })),
@@ -145,7 +165,6 @@ export default function PostForm({ username }: { username: string }) {
   const tagsCheck = validateTagInput(watchedValues.tags, watchedValues.category === 'blog', t);
   const summaryCheck = validateSummoryInput(watchedValues.postSummary, t);
   const altUsernameCheck = validateAltUsernameInput(watchedValues.author, t);
-
   useEffect(() => {
     storePost(watchedValues);
   }, [JSON.stringify(watchedValues)]);
@@ -179,7 +198,6 @@ export default function PostForm({ username }: { username: string }) {
       console.error(error);
     }
   }
-
   return (
     <div className={clsx({ container: !sideBySide || !preview })}>
       <div
@@ -327,11 +345,18 @@ export default function PostForm({ username }: { username: string }) {
                         </FormControl>
                         <SelectContent>
                           <SelectItem value="blog">{t('submit_page.my_blog')}</SelectItem>
+                          <SelectGroup>{t('submit_page.my_communities')}</SelectGroup>
                           {mySubsData?.map((e) => (
                             <SelectItem key={e[0]} value={e[0]}>
                               {e[1]}
                             </SelectItem>
                           ))}
+                          {!mySubsData?.some((e) => e[0] === storedPost.category) ? (
+                            <>
+                              <SelectGroup>{t('submit_page.others_communities')}</SelectGroup>
+                              <SelectItem value={storedPost.category}>{communityData?.title}</SelectItem>
+                            </>
+                          ) : null}
                         </SelectContent>
                       </Select>
                     </FormControl>

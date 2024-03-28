@@ -374,6 +374,8 @@
     }
   },
   "submit_page": {
+    "my_communities": "我的社群",
+    "others_communities": "其他社群",
     "disable_side": "禁用并排编辑器",
     "enable_side": "启用并排编辑器",
     "string_must_contain": "字符串必须包含至少{{num}}个字符",
@@ -431,7 +433,7 @@
     },
     "category_selector": {
       "required": "在发布到我的博客时需要",
-      "tag_your_story": "标签(最多5个标签)，第一个标签是您文章的主要类别。",
+      "tag_your_story": "最多标记8个",
       "select_a_tag": "选择一个标签",
       "maximum_tag_length_is_24_characters": "最大标签长度为24个字符",
       "use_limited_amount_of_categories": "请只使用{{amount}}个类别",

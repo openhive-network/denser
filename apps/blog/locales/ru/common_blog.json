@@ -380,6 +380,8 @@
     }
   },
   "submit_page": {
+    "my_communities": "Мои сообщества",
+    "others_communities": "Другие сообщества",
     "disable_side": "Отключить редактор рядом",
     "enable_side": "Включить редактор рядом",
     "string_must_contain": "Строка должна содержать не менее {{num}} символов",
@@ -437,7 +439,7 @@
     },
     "category_selector": {
       "required": "Обязательно при публикации на Моем блоге",
-      "tag_your_story": "Добавь теги (до 5 штук), первый тег станет основной категорией.",
+      "tag_your_story": "Теги до 8",
       "select_a_tag": "Выбрать тег",
       "maximum_tag_length_is_24_characters": "Максимальная длина категории 24 знака",
       "use_limited_amount_of_categories": "Пожалуйста, используйте только {{amount}} категории",

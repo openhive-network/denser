@@ -374,6 +374,8 @@
     }
   },
   "submit_page": {
+    "my_communities": "私のコミュニティ",
+    "others_communities": "他のコミュニティ",
     "disable_side": "サイドバイサイドエディターを無効にする",
     "enable_side": "サイドバイサイドエディターを有効にする",
     "string_must_contain": "文字列は少なくとも{{num}}文字含まれている必要があります",
@@ -431,7 +433,7 @@
     },
     "category_selector": {
       "required": "マイブログに投稿する場合に必須です",
-      "tag_your_story": "タグ(最大5つ)。1つ目のタグはメインカテゴリです。日本語の投稿には japanese を含めてください。",
+      "tag_your_story": "最大8つまでタグ",
       "select_a_tag": "タグを選択してください",
       "maximum_tag_length_is_24_characters": "タグの最大長は24文字です。",
       "use_limited_amount_of_categories": "タグは{{amount}}個以下にしてください。",
