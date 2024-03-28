@@ -122,22 +122,22 @@ export class SignerHbauth extends Signer {
   }
 
   async checkAuth(username: string, keyType: string): Promise<boolean> {
-
     const authClient = await hbauthService.getOnlineClient();
     const auths = await authClient.getAuths();
-    logger.info('authClient.getAuths(): %o', auths);
-    const authsByUser = await authClient.getAuthByUser(username);
-    logger.info('authClient.getAuthByUser(username): %o', authsByUser);
-    const auth = auths.find((auth) => auth.username === username);
+    logger.info('auths in safe storage %o', auths);
+    const auth = await authClient.getAuthByUser(username);
     if (auth) {
       logger.info('Found auth for user %s: %o', username, auth);
       if (auth.authorized) {
         if (auth.loggedInKeyType === keyType) {
-          logger.info('User is authorized and we are ready to proceed');
-          // We're ready to sign loginChallenge and proceed.
+          logger.info('User %s is authorized and we are ready to proceed', username);
+          // Everything is OK.
           return true;
         } else {
-          logger.info('User %s is authorized, but with incorrect keyType: %s', username, auth.loggedInKeyType);
+          logger.info(
+            'User %s is authorized, but with incorrect keyType: %s. It is OK anyway.',
+            username, auth.loggedInKeyType
+            );
           // This should not disturb. Wallet is unlocked.
           return true;
         }
@@ -147,10 +147,11 @@ export class SignerHbauth extends Signer {
         return false;
       }
     } else {
-      const message = `Auth for user ${username} not found. Hint: add ${keyType} key to hbauth.`;
-      logger.info(message);
+      const message = `Auth for user ${username} not found. Hint: add ${keyType} key to safe storage.`;
+      logger.error(message);
       // We should offer adding key to wallet.
       throw new Error(message);
     }
   }
+
 }

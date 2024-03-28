@@ -19,6 +19,7 @@ const logger = getLogger('app');
  */
 export async function verifyLogin(data: PostLoginSchema, uid: string = ''): Promise<User> {
   const { username, keyType, pack, strict, loginType } = data;
+  logger.info('verifyLogin arg data', data);
   let authorityLevel: AuthorityLevel;
   if (keyType === KeyType.posting) {
     authorityLevel = AuthorityLevel.POSTING;
