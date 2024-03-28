@@ -25,7 +25,10 @@ export enum Steps {
     OTHER_LOGIN_DETAILS
 }
 
-const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ preferredKeyTypes, onComplete, i18nNamespace = 'smart-signer' }, ref) => {
+const SignInForm = forwardRef<SignInFormRef, SignInFormProps>((
+    { preferredKeyTypes, onComplete, i18nNamespace = 'smart-signer' },
+    ref
+    ) => {
     // component controllers
     const [step, setStep] = useState<Steps>(Steps.SAFE_STORAGE_LOGIN);
     const { t } = useTranslation(i18nNamespace);
@@ -42,9 +45,10 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ preferredKeyTyp
         }
     }));
 
-    // final form handlers
+    // Final form handlers.
+    // TODO Some arguments for useProcessAuth should be read from env variables.
     // TODO: replace with function
-    const { submitAuth, signAuth, isSigned } = useProcessAuth(t);
+    const { submitAuth, signAuth, isSigned } = useProcessAuth(t, false, false);
 
     async function sign(loginType: LoginType, username: string, keyType: KeyType): Promise<void> {
         const schema: LoginFormSchema = {
@@ -81,7 +85,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(({ preferredKeyTyp
         }
 
         {
-            // TODO: Extract this to separate component 
+            // TODO: Extract this to separate component
             (step === Steps.OTHER_LOGIN_OPTIONS &&
                 <Methods onSetStep={setStep} i18nNamespace={i18nNamespace} />
             )

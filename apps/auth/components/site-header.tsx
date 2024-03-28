@@ -52,6 +52,14 @@ const SiteHeader: FC = () => {
                 </Link>
               )}
 
+              {isClient && user?.isLoggedIn === false && (
+                <Link href="/signin">
+                  <Button variant="redHover" size="sm" className="h-10">
+                    Sign In
+                  </Button>
+                </Link>
+              )}
+
               {isClient && user?.isLoggedIn === true && (
                 <Link
                   href=""

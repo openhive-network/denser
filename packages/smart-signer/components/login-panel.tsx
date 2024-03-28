@@ -10,18 +10,32 @@ import { LoginForm, LoginFormSchema } from '@smart-signer/components/login-form'
 import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
-import { KeyType } from '@smart-signer/types/common';
+import { useSigner } from '@smart-signer/lib/use-signer';
+import { TTransactionPackType } from '@hive/wax';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
-export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?: string }) {
+interface LoginPanelOptions {
+  authenticateOnBackend: boolean,
+  strict: boolean; // if true use strict authentication
+  i18nNamespace?: string;
+}
+
+export function LoginPanel(
+  {
+    authenticateOnBackend,
+    strict,
+    i18nNamespace = 'smart-signer'
+  }: LoginPanelOptions
+) {
   const router = useRouter();
   const slug = router.query.slug as string;
-
   const { t } = useTranslation(i18nNamespace);
-
   const [loginChallenge, setLoginChallenge] = useState('');
+  const { signerOptions } = useSigner();
+  const [errorMsg, setErrorMsg] = useState('');
+  const signIn = useSignIn();
 
   useEffect(() => {
     const cookieStore = parseCookie(document.cookie);
@@ -35,35 +49,30 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
     redirectIfFound: true
   });
 
-  const [errorMsg, setErrorMsg] = useState('');
-
-  const signIn = useSignIn();
-
   const onSubmit = async (data: LoginFormSchema) => {
     logger.info('onSubmit form data', data);
     setErrorMsg('');
 
-    const message = JSON.stringify({ loginChallenge }, null, 0);
-
-    const { loginType, username } = data;
-    let password = '';
-    if (data.loginType === LoginType.wif) {
-      password = data.password;
-    }
-    let signatures: Signatures = {};
+    const { loginType, username, keyType } = data;
+    const signatures: Signatures = {posting: '', active: ''};
     let hivesignerToken = '';
 
-    const signerOptions: SignerOptions = {
-      username,
-      loginType,
-      keyType: KeyType.posting,
-      apiEndpoint: 'https://api.hive.blog',
-      storageType: 'localStorage'
+    const loginSignerOptions: SignerOptions = {
+      ...signerOptions,
+      ...{
+        username,
+        loginType,
+        keyType
+      }
     };
-    const signer = getSigner(signerOptions);
 
     try {
-      const keyType = KeyType.posting;
+      let password = '';
+      if (data.loginType === LoginType.wif) {
+        password = data.password;
+      }
+      const message = JSON.stringify({ loginChallenge });
+      const signer = getSigner(loginSignerOptions);
       const signature = await signer.signChallenge({
         message,
         password,
@@ -72,15 +81,20 @@ export function LoginPanel({ i18nNamespace = 'smart-signer' }: { i18nNamespace?:
       signatures[keyType] = signature;
     } catch (error) {
       logger.error('onSubmit error in signLoginChallenge', error);
-      setErrorMsg(t('pageLogin.signingFailed'));
+      setErrorMsg(t('pageLogin.loginFailed'));
       return;
     }
 
     const body: PostLoginSchema = {
-      username: username || '',
-      signatures,
+      username,
       loginType,
-      hivesignerToken
+      hivesignerToken,
+      keyType,
+      txJSON: '""',
+      pack: TTransactionPackType.HF_26,
+      strict,
+      signatures,
+      authenticateOnBackend,
     };
 
     try {
