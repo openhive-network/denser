@@ -19,18 +19,21 @@ const defaultValues = {
   author: '',
   category: ''
 };
-const NewPost = ({ name }: { name: string }) => {
+const NewPost = ({ name, disabled }: { name: string; disabled: boolean }) => {
   const { t } = useTranslation('common_blog');
   const [storedPost, storePost] = useLocalStorage<AccountFormValues>('postData', defaultValues);
 
   return (
     <Button
       size="sm"
-      className="w-full bg-blue-800 text-center hover:bg-blue-900"
-      onClick={() => storePost({ ...storedPost, tags: name, category: name })}
+      className="w-full bg-blue-800 p-0 text-center hover:bg-blue-900"
+      onClick={() => storePost({ ...storedPost, category: name })}
       data-testid="community-new-post-button"
+      disabled={disabled}
     >
-      <Link href={`/submit.html?category=${name}`}>{t('communities.buttons.new_post')}</Link>
+      <Link className="w-full p-2" href={`/submit.html?category=${name}`}>
+        {t('communities.buttons.new_post')}
+      </Link>
     </Button>
   );
 };

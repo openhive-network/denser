@@ -430,6 +430,7 @@
       "delete_template": "Supprimer le modèle"
     },
     "category_selector": {
+      "required": "Requis lorsque vous publiez sur Mon Blog",
       "tag_your_story": "Mots clés (jusqu'à 5 mots clés), le premier d'entre eux étant votre catégorie principale.",
       "select_a_tag": "Sélectionner un mot clé",
       "maximum_tag_length_is_24_characters": "La longueur d'un mot clé est d'au maximum 24 caractères",

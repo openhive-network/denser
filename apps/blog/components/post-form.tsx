@@ -36,15 +36,15 @@ const defaultValues = {
   postSummary: '',
   tags: '',
   author: '',
-  category: '',
+  category: 'blog',
   beneficiaries: [],
   maxAcceptedPayout: null,
   payoutType: '50%'
 };
 
 const MAX_TAGS = 8;
-function validateTagInput(value: string, required = true, t: TFunction<'common_wallet', undefined>) {
-  if (!value || value.trim() === '') return required ? t('g.required') : null;
+function validateTagInput(value: string, required: boolean, t: TFunction<'common_wallet', undefined>) {
+  if (!value || value.trim() === '') return required ? t('submit_page.category_selector.required') : null;
   const tags = value.trim().replace(/#/g, '').split(/ +/);
   return tags.length > MAX_TAGS
     ? t('submit_page.category_selector.use_limited_amount_of_categories', {
@@ -64,7 +64,7 @@ function validateTagInput(value: string, required = true, t: TFunction<'common_w
                 ? t('submit_page.category_selector.must_start_with_a_letter')
                 : tags.find((c) => !/[a-z0-9]$/.test(c))
                   ? t('submit_page.category_selector.must_end_with_a_letter_or_number')
-                  : tags.filter((c) => c.substring(0, 5) === 'hive-').length > 1
+                  : tags.filter((c) => c.substring(0, 5) === 'hive-').length > 0
                     ? t('submit_page.category_selector.must_not_include_hivemind_community_owner')
                     : tags.reduce((acc, tag, index, array) => {
                           const isDuplicate = array.slice(index + 1).some((b) => b === tag);
@@ -142,7 +142,7 @@ export default function PostForm({ username }: { username: string }) {
     values: getValues(storedPost)
   });
   const watchedValues = form.watch();
-  const tagsCheck = validateTagInput(watchedValues.tags, false, t);
+  const tagsCheck = validateTagInput(watchedValues.tags, watchedValues.category === 'blog', t);
   const summaryCheck = validateSummoryInput(watchedValues.postSummary, t);
   const altUsernameCheck = validateAltUsernameInput(watchedValues.author, t);
 
@@ -155,9 +155,9 @@ export default function PostForm({ username }: { username: string }) {
       const plink = await createPermlink(storedPost?.title ?? '', username, storedPost?.title ?? '');
       setPostPermlink(plink);
     };
-
     createPostPermlink();
   }, [username, storedPost?.title]);
+
   async function onSubmit(data: AccountFormValues) {
     const chain = await hiveChainService.getHiveChain();
     const tags = storedPost?.tags.replace(/#/g, '').split(' ') ?? [];
@@ -170,7 +170,8 @@ export default function PostForm({ username }: { username: string }) {
         storedPost.beneficiaries,
         Number(storedPost.payoutType.slice(0, 2)),
         maxAcceptedPayout,
-        tags
+        tags,
+        storedPost.category
       );
       storePost(defaultValues);
       router.push(`/created/${tags[0]}`);
@@ -317,7 +318,7 @@ export default function PostForm({ username }: { username: string }) {
                     <FormControl>
                       <Select
                         defaultValue={storedPost ? storedPost.category : 'blog'}
-                        onValueChange={(e) => storePost({ ...storedPost, tags: e + ' ' + storedPost.tags })}
+                        onValueChange={(e) => storePost({ ...storedPost, category: e })}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -342,11 +343,7 @@ export default function PostForm({ username }: { username: string }) {
               type="submit"
               variant="redHover"
               disabled={
-                !storedPost?.title ||
-                storedPost.tags.length === 0 ||
-                Boolean(tagsCheck) ||
-                Boolean(summaryCheck) ||
-                Boolean(altUsernameCheck)
+                !storedPost?.title || Boolean(tagsCheck) || Boolean(summaryCheck) || Boolean(altUsernameCheck)
               }
             >
               {t('submit_page.submit')}

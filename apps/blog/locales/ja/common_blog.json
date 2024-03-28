@@ -430,6 +430,7 @@
       "delete_template": "テンプレートを削除"
     },
     "category_selector": {
+      "required": "マイブログに投稿する場合に必須です",
       "tag_your_story": "タグ(最大5つ)。1つ目のタグはメインカテゴリです。日本語の投稿には japanese を含めてください。",
       "select_a_tag": "タグを選択してください",
       "maximum_tag_length_is_24_characters": "タグの最大長は24文字です。",

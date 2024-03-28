@@ -7,6 +7,7 @@ import { useTranslation } from 'next-i18next';
 import SubscribeCommunity from './subscribe-community';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import NewPost from './new_post_button';
+import { useEffect, useState } from 'react';
 
 const CommunitySimpleDescription = ({
   data,
@@ -20,7 +21,13 @@ const CommunitySimpleDescription = ({
   username: string;
 }) => {
   const { t } = useTranslation('common_blog');
+  const [isSubscribe, setIsSubscribe] = useState(() => data.context.subscribed);
   const { user } = useUser();
+
+  useEffect(() => {
+    setIsSubscribe(data.context.subscribed);
+  }, [data.context.subscribed]);
+
   return (
     <Card
       className="my-4 grid h-fit w-full grid-cols-3 gap-4 p-2 dark:bg-background/95 dark:text-white"
@@ -50,8 +57,13 @@ const CommunitySimpleDescription = ({
       </CardHeader>
       <CardContent className="col-span-1 flex items-center justify-center p-0">
         <div className="my-4 flex flex-col gap-4">
-          <SubscribeCommunity user={user} username={username} subStatus={data.context.subscribed} />
-          <NewPost name={data.name} />
+          <SubscribeCommunity
+            user={user}
+            username={username}
+            subStatus={isSubscribe}
+            OnIsSubscribe={(e) => setIsSubscribe(e)}
+          />
+          <NewPost disabled={!isSubscribe} name={data.name} />
         </div>
       </CardContent>
     </Card>
