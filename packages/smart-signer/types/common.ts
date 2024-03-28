@@ -1,16 +1,3 @@
-export type User = {
-    isLoggedIn: boolean
-    username: string
-    avatarUrl: string
-    loginType: LoginType;
-}
-
-export enum StorageType {
-    localStorage = 'localStorage',
-    sessionStorage = 'sessionStorage',
-    memoryStorage = 'memoryStorage',
-}
-
 export enum LoginType {
     hbauth = 'hbauth',
     keychain = 'keychain',
@@ -22,6 +9,21 @@ export enum LoginType {
 export enum KeyType {
     posting = 'posting',
     active = 'active'
+}
+
+export enum StorageType {
+    localStorage = 'localStorage',
+    sessionStorage = 'sessionStorage',
+    memoryStorage = 'memoryStorage',
+}
+
+export type User = {
+    isLoggedIn: boolean
+    username: string
+    avatarUrl: string
+    loginType: LoginType;
+    keyType: KeyType;
+    authenticateOnBackend: boolean;
 }
 
 export interface IronSessionData {

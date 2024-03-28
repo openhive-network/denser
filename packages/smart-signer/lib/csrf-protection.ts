@@ -1,4 +1,3 @@
-import env from '@beam-australia/react-env';
 import createHttpError from 'http-errors';
 import { NextApiRequest } from 'next';
 import { getLogger } from '@ui/lib/logging';

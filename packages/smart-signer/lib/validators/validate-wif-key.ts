@@ -1,6 +1,6 @@
 import { cryptoUtils } from '@hiveio/dhive';
 
-export function validateHivePassword(
+export function validateWifKey(
   password: string,
   translateFn: (v: string) => string = (v) => v
 ): string | null {

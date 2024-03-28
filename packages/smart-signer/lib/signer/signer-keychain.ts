@@ -1,7 +1,7 @@
 import { KeychainSDK, KeychainKeyTypes } from 'keychain-sdk';
-import { Operation } from '@hiveio/dhive';
-import { SignChallenge, SignTransaction, Signer } from '@smart-signer/lib/signer/signer';
-import { createWaxFoundation, operation } from '@hive/wax';
+import { Operation, TransferOperation } from '@hiveio/dhive';
+import { SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
+import { createWaxFoundation, operation, TTransactionPackType } from '@hive/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -34,7 +34,22 @@ export function waxToKeychainOperation(operation: operation | operation[]) {
 
   for (const o of operation) {
     for (const [key, value] of Object.entries(o)) {
-      keychainOperations.push([key as Operation[0], value as Operation[1]]);
+      if (key === 'transfer') {
+        // Naive workaroud for transfer, just to make login working.
+        // TODO Should be changed after upcoming update in Wax.
+        const transferOperation: TransferOperation = [
+          'transfer',
+          {
+            from: value['from_account'],
+            to: value['to_account'],
+            amount: '0.001 HIVE',
+            memo: value['memo'],
+          }
+        ];
+        keychainOperations.push(transferOperation);
+      } else {
+        keychainOperations.push([key as Operation[0], value as Operation[1]]);
+      }
     }
   }
 
@@ -50,7 +65,15 @@ export function waxToKeychainOperation(operation: operation | operation[]) {
  * @extends {Signer}
  */
 export class SignerKeychain extends Signer {
-  async destroy() {}
+
+  constructor(
+    signerOptions: SignerOptions,
+    pack: TTransactionPackType = TTransactionPackType.LEGACY
+    ) {
+    super(signerOptions, pack);
+  }
+
+  async destroy(): Promise<void> {}
 
   async signChallenge({ message }: SignChallenge): Promise<string> {
     const { username, keyType } = this;
@@ -80,23 +103,28 @@ export class SignerKeychain extends Signer {
     }
   }
 
-  async signTransaction({ digest, transaction }: SignTransaction) {
-    const { username, keyType } = this;
-    const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
-
-    const wax = await createWaxFoundation();
-    const txBuilder = new wax.TransactionBuilder(transaction);
-    logger.info('signTransaction digests: %o', { digest, 'txBuilder.sigDigest': txBuilder.sigDigest });
-    if (digest !== txBuilder.sigDigest) throw new Error('Digests do not match');
-
-    // Show transaction to user and get his consent to sign it. But as a
-    // matter of fact Keychain extension does it.
-
-    const tx = txBuilder.build();
-    // Rewrite operations to Keychain format.
-    const operations = waxToKeychainOperation(tx.operations);
-
+  async signTransaction({ digest, transaction }: SignTransaction): Promise<string> {
     try {
+      const { username, keyType } = this;
+      const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
+
+      const wax = await createWaxFoundation();
+      const txBuilder = new wax.TransactionBuilder(transaction);
+      logger.info('signTransaction digests: %o', { digest, 'txBuilder.sigDigest': txBuilder.sigDigest });
+      if (digest !== txBuilder.sigDigest) throw new Error('Digests do not match');
+
+      // At this point we normally show transaction to user and get
+      // his consent to sign it, but here we assume that Keychain will
+      // do it.
+
+      const tx = txBuilder.build();
+
+      logger.info('signTransaction tx: %o', {
+        tx,
+        toApi: JSON.parse(txBuilder.toApi()),
+        toLegacyApi: JSON.parse(txBuilder.toLegacyApi() ),
+      });
+
       if (!(await keychain.isKeychainInstalled())) {
         throw new Error('Keychain is not installed');
       }
@@ -104,7 +132,7 @@ export class SignerKeychain extends Signer {
       const signResult = await keychain.signTx({
         username,
         method: KeychainKeyTypes[keyType],
-        tx: { ...tx, ...{ operations } }
+        tx: JSON.parse(txBuilder.toLegacyApi())
       });
       logger.info('SignerKeychain.signTransaction keychain response: %o', signResult);
       if (signResult.error) {

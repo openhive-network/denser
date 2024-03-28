@@ -1,9 +1,8 @@
 import { useSignOut } from '@smart-signer/lib/auth/use-sign-out';
 import { toast } from '@ui/components/hooks/use-toast';
-import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { KeyType } from '@smart-signer/types/common';
+import { useSigner } from '@smart-signer/lib/use-signer';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -11,24 +10,15 @@ const logger = getLogger('app');
 export function useLogout() {
   const signOut = useSignOut();
   const { user } = useUser();
-
-  const { username, loginType } = user;
-  const signerOptions: SignerOptions = {
-    username,
-    loginType,
-    keyType: KeyType.posting,
-    apiEndpoint: 'https://api.hive.blog',
-    storageType: 'localStorage'
-  };
+  const { signerOptions } = useSigner();
 
   const onLogout = async () => {
     try {
-      if (user && user.loginType && user.username) {
-        const { username } = user;
+      if (user && user.isLoggedIn) {
         const signer = getSigner(signerOptions);
-        signer.destroy();
+        await signer.destroy();
       }
-      await signOut.mutateAsync();
+      await signOut.mutateAsync({ user });
     } catch (error) {
       toast({
         title: 'Error!',
@@ -37,7 +27,6 @@ export function useLogout() {
       });
       logger.error('Error in logout', error);
     }
-    await signOut.mutateAsync();
   };
   return onLogout;
 }
