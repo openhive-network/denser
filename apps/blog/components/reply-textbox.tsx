@@ -7,7 +7,6 @@ import { Input } from '@ui/components/input';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { transactionService } from '@transaction/index';
-import { createPermlink } from '@transaction/lib/utils';
 import { HiveRendererContext } from './hive-renderer-context';
 import DialogLogin from './dialog-login';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
@@ -28,7 +27,6 @@ export function ReplyTextbox({
   const { t } = useTranslation('common_blog');
   const [text, setText] = useState(storedPost ? storedPost : '');
   const [cleanedText, setCleanedText] = useState('');
-  const [replyPermlink, setReplyPermlink] = useState('');
   const { hiveRenderer } = useContext(HiveRendererContext);
 
   useEffect(() => {
@@ -40,17 +38,6 @@ export function ReplyTextbox({
       }
     }
   }, [hiveRenderer, text]);
-
-  useEffect(() => {
-    const createReplyPermlink = async () => {
-      if (user && user.isLoggedIn) {
-        const plink = await createPermlink('', user.username, permlink);
-        setReplyPermlink(plink);
-      }
-    };
-
-    createReplyPermlink();
-  }, [user, permlink]);
 
   const handleCancel = () => {
     localStorage.removeItem(storageId);

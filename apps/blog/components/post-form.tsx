@@ -169,7 +169,7 @@ export default function PostForm({ username }: { username: string }) {
     const chain = await hiveChainService.getHiveChain();
     const tags = storedPost?.tags.replace(/#/g, '').split(' ') ?? [];
     const maxAcceptedPayout = await chain.hbd(Number(storedPost.maxAcceptedPayout));
-    const postPermlink = await createPermlink(storedPost?.title ?? '', username, storedPost?.title ?? '');
+    const postPermlink = await createPermlink(storedPost?.title ?? '', username);
     try {
       await transactionService.post(
         postPermlink,
