@@ -5,10 +5,15 @@ import type { Community } from '@transaction/lib/bridge';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import SubscribeCommunity from './subscribe-community';
+import { useEffect, useState } from 'react';
 
 const CommunitiesListItem = ({ community }: { community: Community }) => {
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
+  const [isSubscribe, setIsSubscribe] = useState(() => community.context.subscribed);
+  useEffect(() => {
+    setIsSubscribe(community.context.subscribed);
+  }, [community.context.subscribed]);
   return (
     <Card
       className={cn(
@@ -54,7 +59,12 @@ const CommunitiesListItem = ({ community }: { community: Community }) => {
         </CardFooter>
       </div>
       <div className="mr-4 flex w-24 items-center">
-        <SubscribeCommunity user={user} username={community.name} subStatus={community.context.subscribed} />
+        <SubscribeCommunity
+          user={user}
+          username={community.name}
+          subStatus={isSubscribe}
+          OnIsSubscribe={(e) => setIsSubscribe(e)}
+        />
       </div>
     </Card>
   );
