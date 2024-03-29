@@ -317,7 +317,7 @@ class TransactionService {
         .setCategory(category !== 'blog' ? category : tags[0])
         .setPercentHbd(percentHbd)
         .setMaxAcceptedPayout(maxAcceptedPayout)
-        .pushTags(tags[0], ...tags.slice(1))
+        .pushTags(...tags)
         .pushMetadataProperty({ summary: summary });
 
       beneficiaries.forEach((beneficiarie) => {

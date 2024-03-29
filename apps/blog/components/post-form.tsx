@@ -161,6 +161,7 @@ export default function PostForm({
   });
 
   type AccountFormValues = z.infer<typeof accountFormSchema>;
+  console.log('nnooo post_s?.json_metadata.tags', post_s?.json_metadata.tags);
   const getValues = (storedPost?: AccountFormValues) => ({
     title: post_s ? post_s.title : storedPost?.title ?? '',
     postArea: post_s ? post_s.body : storedPost?.postArea ?? '',
@@ -177,8 +178,6 @@ export default function PostForm({
       : storedPost?.maxAcceptedPayout ?? 0,
     payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType ?? ''
   });
-  console.log('storedPost?.payoutType', storedPost?.payoutType);
-  console.log('getValues(storedPost)', getValues(storedPost));
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
     values: getValues(storedPost)
@@ -189,15 +188,16 @@ export default function PostForm({
   const altUsernameCheck = validateAltUsernameInput(watchedValues.author, t);
 
   async function onSubmit(data: AccountFormValues) {
+    console.log("storedPost?.tagsreplace(/#/g, '').split(' ')", storedPost.tags.replace(/#/g, '').split(' '));
     const chain = await hiveChainService.getHiveChain();
-    const tags = storedPost?.tags.replace(/#/g, '').split(' ') ?? [];
+    const tags = storedPost.tags.replace(/#/g, '').split(' ');
     const maxAcceptedPayout = await chain.hbd(Number(storedPost.maxAcceptedPayout));
     const postPermlink = await createPermlink(storedPost?.title ?? '', username);
-    console.log('postPermlin', postPermlink);
+    const permlinInEditMode = post_s?.permlink;
     try {
       await transactionService.post(
-        postPermlink,
-        storedPost?.title ?? '',
+        editMode && permlinInEditMode ? permlinInEditMode : postPermlink,
+        storedPost.title,
         storedPost.postArea,
         storedPost.beneficiaries,
         Number(storedPost.payoutType.slice(0, 2)),
@@ -272,7 +272,6 @@ export default function PostForm({
                     />
                   </FormControl>
                   <FormDescription className="border-x-2 border-b-2 border-border px-3 pb-1 text-xs text-destructive">
-                    {console.log('field', field)}
                     {t('submit_page.insert_images_by_dragging')}
                     <span>
                       <Label className="cursor-pointer text-red-500" htmlFor="picture">
