@@ -35,7 +35,10 @@ const formSchema = z.object({
         message: "Password length should be more than 6 characters"
     }),
     wif: z.string(),
-    keyType: z.enum(['posting', 'active'])
+    keyType: z.nativeEnum(KeyType, {
+        invalid_type_error: 'Invalid keyType',
+        required_error: 'keyType is required'
+    }),
 });
 
 export type SafeStorageRef = { cancel: () => Promise<void>; };
