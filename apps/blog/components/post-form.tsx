@@ -103,7 +103,6 @@ export default function PostForm({ username }: { username: string }) {
   const router = useRouter();
   const [preview, setPreview] = useState(true);
   const [sideBySide, setSideBySide] = useState(true);
-  const [postPermlink, setPostPermlink] = useState('');
   const { manabarsData } = useManabars(username);
   const [storedPost, storePost] = useLocalStorage<AccountFormValues>('postData', defaultValues);
   const { t } = useTranslation('common_blog');
@@ -165,22 +164,12 @@ export default function PostForm({ username }: { username: string }) {
   const tagsCheck = validateTagInput(watchedValues.tags, watchedValues.category === 'blog', t);
   const summaryCheck = validateSummoryInput(watchedValues.postSummary, t);
   const altUsernameCheck = validateAltUsernameInput(watchedValues.author, t);
-  useEffect(() => {
-    storePost(watchedValues);
-  }, [JSON.stringify(watchedValues)]);
-
-  useEffect(() => {
-    const createPostPermlink = async () => {
-      const plink = await createPermlink(storedPost?.title ?? '', username, storedPost?.title ?? '');
-      setPostPermlink(plink);
-    };
-    createPostPermlink();
-  }, [username, storedPost?.title]);
 
   async function onSubmit(data: AccountFormValues) {
     const chain = await hiveChainService.getHiveChain();
     const tags = storedPost?.tags.replace(/#/g, '').split(' ') ?? [];
     const maxAcceptedPayout = await chain.hbd(Number(storedPost.maxAcceptedPayout));
+    const postPermlink = await createPermlink(storedPost?.title ?? '', username);
     try {
       await transactionService.post(
         postPermlink,
@@ -198,6 +187,11 @@ export default function PostForm({ username }: { username: string }) {
       console.error(error);
     }
   }
+
+  useEffect(() => {
+    storePost(watchedValues);
+  }, [JSON.stringify(watchedValues)]);
+
   return (
     <div className={clsx({ container: !sideBySide || !preview })}>
       <div
