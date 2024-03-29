@@ -1,5 +1,6 @@
 import { cryptoUtils } from '@hiveio/dhive';
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
+import { AuthStatus, KeyAuthorityType } from '@hive/hb-auth';
 import { SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
 import { THexString, createWaxFoundation, TTransactionPackType } from '@hive/wax';
 import { PasswordDialogModalPromise } from '@smart-signer/components/password-dialog';
@@ -18,11 +19,23 @@ const logger = getLogger('app');
  */
 export class SignerHbauth extends Signer {
 
+  /**
+   * Pending promise, returning output from dialog asking user for
+   * password, or null. Intended for awaiting by any requests for
+   * password coming when dialog is already opened. All subscribers will
+   * get the same user's answer.
+   *
+   * @type {(Promise<any> | null)}
+   * @memberof SignerHbauth
+   */
+  passwordPromise: Promise<any> | null;
+
   constructor(
     signerOptions: SignerOptions,
     pack: TTransactionPackType = TTransactionPackType.HF_26
     ) {
     super(signerOptions, pack);
+    this.passwordPromise = null;
   }
 
   async destroy() {
@@ -47,12 +60,15 @@ export class SignerHbauth extends Signer {
     };
 
     try {
+      if (!this.passwordPromise) {
+        this.passwordPromise = PasswordDialogModalPromise({
+          isOpen: true,
+          passwordFormOptions
+        });
+      }
       const {
         password
-      } = await PasswordDialogModalPromise({
-        isOpen: true,
-        passwordFormOptions
-      });
+      } = await this.passwordPromise;
       return password;
     } catch (error) {
       logger.error('Error in getPasswordFromUser: %o', error);
@@ -100,12 +116,33 @@ export class SignerHbauth extends Signer {
       }
       if (!password) throw new Error('No password to unlock key');
 
-      logger.info('authClient.authenticate args: %o', { username, password, keyType });
-      const authStatus = await authClient.authenticate(
-        username,
-        password,
-        keyType as unknown as 'posting' | 'active'
-      );
+      let authStatus: AuthStatus = {ok: false};
+      try {
+        authStatus = await authClient.authenticate(
+          username,
+          password,
+          keyType
+        );
+      } catch (error) {
+        logger.error("Error in signDigest, when trying to authenticate user: %o", error);
+
+        //
+        // TODO AuthorizationError is not exported in hb-auth yet (issue
+        // created). Check this in their newer version and use
+        // `instanceof` if possible.
+        //
+
+        // if (error instanceof AuthorizationError)
+
+        if (error && `${error}` === "AuthorizationError: User is already logged in") {
+          logger.info('Swallowing error: AuthorizationError: User is already logged in');
+          // Swallow this error, it's OK.
+          authStatus.ok = true;
+        } else {
+          throw error;
+        }
+      }
+
       logger.info('authStatus', { authStatus });
       if (!authStatus.ok) {
         throw new Error(`Unlocking key failed`);
@@ -115,7 +152,7 @@ export class SignerHbauth extends Signer {
     const signature = await authClient.sign(
       username,
       digest,
-      keyType as unknown as 'posting' | 'active'
+      keyType
     );
     logger.info('hbauth: %o', { digest, signature });
     return signature;
