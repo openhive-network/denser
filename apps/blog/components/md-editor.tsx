@@ -99,12 +99,6 @@ export const onImageDrop = async (
     if (file) files.push(file);
   }
 
-  // Upload first file. We need to unlock key in Hbauth. This is rather
-  // ugly workaround.
-  // if (files.length > 1) {
-  //   await onImageUpload(files.shift() as File, setMarkdown, username, signer)
-  // }
-  // Upload the rest of files.
   await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer)));
 };
 
