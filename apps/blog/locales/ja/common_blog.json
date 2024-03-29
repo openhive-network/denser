@@ -350,6 +350,7 @@
       "responses": " 返信は%{{responses}}件です。",
       "reblog": "Reblog",
       "reply": "返信",
+      "edit": "編集",
       "share_on": "Share on ",
       "share_form": {
         "copy": "コピー",
@@ -398,6 +399,7 @@
     "preview": "プレビュー",
     "submit": "送信",
     "clean": "クリーン",
+    "cancel": "キャンセル",
     "markdown_styling_guide": "Markdownスタイルガイド",
     "power_up": "100% パワーアップ",
     "maximum_characters": "{{num}} 文字まで",

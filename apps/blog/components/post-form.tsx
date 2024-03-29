@@ -98,13 +98,29 @@ function validateAltUsernameInput(value: string, t: TFunction<'common_wallet', u
     : null;
 }
 
-export default function PostForm({ username }: { username: string }) {
+export default function PostForm({
+  username,
+  editMode = false,
+  sideBySidePreview = true,
+  post_s,
+  setEditMode
+}: {
+  username: string;
+  editMode: boolean;
+  sideBySidePreview: boolean;
+  post_s?: any;
+  setEditMode?: any;
+}) {
+  console.log('after edit post_s', post_s);
   const { hiveRenderer } = useContext(HiveRendererContext);
   const router = useRouter();
   const [preview, setPreview] = useState(true);
-  const [sideBySide, setSideBySide] = useState(true);
+  const [sideBySide, setSideBySide] = useState(sideBySidePreview);
   const { manabarsData } = useManabars(username);
-  const [storedPost, storePost] = useLocalStorage<AccountFormValues>('postData', defaultValues);
+  const [storedPost, storePost] = useLocalStorage<AccountFormValues>(
+    editMode ? `postData-edit-${post_s.permlink}` : 'postData-new',
+    defaultValues
+  );
   const { t } = useTranslation('common_blog');
 
   const {
@@ -146,16 +162,17 @@ export default function PostForm({ username }: { username: string }) {
 
   type AccountFormValues = z.infer<typeof accountFormSchema>;
   const getValues = (storedPost?: AccountFormValues) => ({
-    title: storedPost?.title ?? '',
-    postArea: storedPost?.postArea ?? '',
+    title: post_s ? post_s.title : storedPost?.title ?? '',
+    postArea: post_s ? post_s.body : storedPost?.postArea ?? '',
     postSummary: storedPost?.postSummary ?? '',
-    tags: storedPost?.tags ?? '',
+    tags: post_s ? post_s.json_metadata.tags.join(' ') : storedPost?.tags ?? '',
     author: storedPost?.author ?? '',
     category: storedPost?.category ?? '',
     beneficiaries: storedPost?.beneficiaries ?? [],
     maxAcceptedPayout: storedPost?.maxAcceptedPayout ?? 0,
     payoutType: storedPost?.payoutType ?? ''
   });
+  console.log('getValues(storedPost)', getValues(storedPost));
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
     values: getValues(storedPost)
@@ -174,7 +191,7 @@ export default function PostForm({ username }: { username: string }) {
       await transactionService.post(
         postPermlink,
         storedPost?.title ?? '',
-        watchedValues.postArea,
+        storedPost.postArea,
         storedPost.beneficiaries,
         Number(storedPost.payoutType.slice(0, 2)),
         maxAcceptedPayout,
@@ -232,6 +249,7 @@ export default function PostForm({ username }: { username: string }) {
                 </FormItem>
               )}
             />
+            {console.log('storedPost.postArea!!', storedPost.postArea, 'storedPost', storedPost)}
             <FormField
               control={form.control}
               name="postArea"
@@ -242,10 +260,11 @@ export default function PostForm({ username }: { username: string }) {
                       onChange={(value) => {
                         form.setValue('postArea', value);
                       }}
-                      persistedValue={storedPost.postArea}
+                      persistedValue={field.value}
                     />
                   </FormControl>
                   <FormDescription className="border-x-2 border-b-2 border-border px-3 pb-1 text-xs text-destructive">
+                    {console.log('field', field)}
                     {t('submit_page.insert_images_by_dragging')}
                     <span>
                       <Label className="cursor-pointer text-red-500" htmlFor="picture">
@@ -299,21 +318,24 @@ export default function PostForm({ username }: { username: string }) {
                 </FormItem>
               )}
             />
-            <div className="flex flex-col gap-2">
-              <span>{t('submit_page.post_options')}</span>
-              <span className="text-xs">
-                {t('submit_page.author_rewards')}
-                {storedPost?.payoutType === '100%' ? t('submit_page.power_up') : ' 50% HBD / 50% HP'}
-              </span>
-              <AdvancedSettingsPostForm username={username} onChangeStore={storePost} data={storedPost}>
-                <span
-                  className="cursor-pointer text-xs text-destructive"
-                  title={t('submit_page.advanced_tooltip')}
-                >
-                  {t('submit_page.advanced_settings')}
+            {!editMode ? (
+              <div className="flex flex-col gap-2">
+                <span>{t('submit_page.post_options')}</span>
+                <span className="text-xs">
+                  {t('submit_page.author_rewards')}
+                  {storedPost?.payoutType === '100%' ? t('submit_page.power_up') : ' 50% HBD / 50% HP'}
                 </span>
-              </AdvancedSettingsPostForm>
-            </div>
+                <AdvancedSettingsPostForm username={username} onChangeStore={storePost} data={storedPost}>
+                  <span
+                    className="cursor-pointer text-xs text-destructive"
+                    title={t('submit_page.advanced_tooltip')}
+                  >
+                    {t('submit_page.advanced_settings')}
+                  </span>
+                </AdvancedSettingsPostForm>
+              </div>
+            ) : null}
+
             <div className="flex flex-col gap-2">
               <span>{t('submit_page.account_stats')}</span>
               <span className="text-xs">
@@ -370,11 +392,14 @@ export default function PostForm({ username }: { username: string }) {
             <Button
               onClick={() => {
                 form.reset(defaultValues);
+                if (editMode) {
+                  setEditMode(false);
+                }
               }}
               variant="ghost"
               className="font-thiny text-foreground/60 hover:text-destructive"
             >
-              {t('submit_page.clean')}
+              {editMode ? t('submit_page.cancel') : t('submit_page.clean')}
             </Button>
           </form>
         </Form>

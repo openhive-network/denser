@@ -350,6 +350,7 @@
       "responses": "{{responses}} réponses. ",
       "reblog": "Reblog",
       "reply": "Répondre",
+      "edit": "Modifier",
       "share_on": "Share on ",
       "share_form": {
         "copy": "COPIER",
@@ -398,6 +399,7 @@
     "preview": "Aperçu",
     "submit": "Envoyer",
     "clean": "Nettoyer",
+    "cancel": "Annuler",
     "markdown_styling_guide": "Guide de mise en forme Markdown",
     "power_up": "Mise à niveau à 100%",
     "maximum_characters": "Maximum de {{num}} caractères",
