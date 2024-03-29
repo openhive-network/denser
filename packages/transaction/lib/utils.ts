@@ -14,7 +14,10 @@ export async function createPermlink(title: string, author: string) {
     s = s.toLowerCase().replace(/[^a-z0-9-]+/g, '');
 
     // ensure the permlink is unique
-    let head = await getPostHeader(author, s);
+    let head;
+    try {
+      head = await getPostHeader(author, s);
+    } catch (e) {}
     if (head && !!head.category) {
       const noise = base58.encode(secureRandom.randomBuffer(4)).toLowerCase();
       permlink = noise + '-' + s;

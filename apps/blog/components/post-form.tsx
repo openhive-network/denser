@@ -166,12 +166,13 @@ export default function PostForm({
     postArea: post_s ? post_s.body : storedPost?.postArea ?? '',
     postSummary: storedPost?.postSummary ?? '',
     tags: post_s ? post_s.json_metadata.tags.join(' ') : storedPost?.tags ?? '',
-    author: storedPost?.author ?? '',
-    category: storedPost?.category ?? '',
-    beneficiaries: storedPost?.beneficiaries ?? [],
-    maxAcceptedPayout: storedPost?.maxAcceptedPayout ?? 0,
-    payoutType: storedPost?.payoutType ?? ''
+    author: post_s ? post_s.author : storedPost?.author ?? '',
+    category: post_s ? post_s.category : storedPost?.category ?? '',
+    beneficiaries: post_s ? post_s.beneficiaries : storedPost?.beneficiaries ?? [],
+    maxAcceptedPayout: post_s ? post_s.max_accepted_payout.split(' ')[0] : storedPost?.maxAcceptedPayout ?? 0,
+    payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType ?? ''
   });
+  console.log('storedPost?.payoutType', storedPost?.payoutType);
   console.log('getValues(storedPost)', getValues(storedPost));
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
@@ -187,6 +188,7 @@ export default function PostForm({
     const tags = storedPost?.tags.replace(/#/g, '').split(' ') ?? [];
     const maxAcceptedPayout = await chain.hbd(Number(storedPost.maxAcceptedPayout));
     const postPermlink = await createPermlink(storedPost?.title ?? '', username);
+    console.log('postPermlin', postPermlink);
     try {
       await transactionService.post(
         postPermlink,
@@ -367,7 +369,8 @@ export default function PostForm({
                               {e[1]}
                             </SelectItem>
                           ))}
-                          {!mySubsData?.some((e) => e[0] === storedPost.category) ? (
+                          {!mySubsData?.some((e) => e[0] === storedPost.category) &&
+                          storedPost.category !== 'blog' ? (
                             <>
                               <SelectGroup>{t('submit_page.others_communities')}</SelectGroup>
                               <SelectItem value={storedPost.category}>{communityData?.title}</SelectItem>
