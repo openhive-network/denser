@@ -4,10 +4,11 @@ stages:
   - test-report-aggregate
   - deploy
   - publish
+  - cleanup
 
 variables:
   # Variables required by Common CI jobs
-  CI_COMMON_JOB_VERSION: '7ea99b10bbf0f9b1fbb88f52a78ead4c82f15d75'
+  CI_COMMON_JOB_VERSION: '32073829224f333726bb99e01e4d9787f299b4dd'
   DOCKER_BUILDER_TAG: '$CI_COMMON_JOB_VERSION'
   DOCKER_DIND_TAG: '$CI_COMMON_JOB_VERSION'
   IMAGE_REMOVER_TAG: '$CI_COMMON_JOB_VERSION'
@@ -16,7 +17,7 @@ variables:
 include:
   - template: Workflows/Branch-Pipelines.gitlab-ci.yml
   - project: 'hive/common-ci-configuration'
-    ref: 7ea99b10bbf0f9b1fbb88f52a78ead4c82f15d75 # develop
+    ref: 32073829224f333726bb99e01e4d9787f299b4dd # develop
     file: '/templates/docker_image_jobs.gitlab-ci.yml'
 
 .docker_build_template:
@@ -462,3 +463,10 @@ build_and_publish_wallet_image:
     - scripts/ci-helpers/build_and_publish_instance.sh
   tags:
     - public-runner-docker
+
+buildkit_cache_cleanup:
+  stage: cleanup
+  extends: .buildkit_cleanup_job_template
+  needs: []
+  variables:
+    CACHE_REPOSITORIES: "auth/cache,blog/cache,wallet/cache"
