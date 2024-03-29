@@ -42,7 +42,7 @@ export type SafeStorageRef = { cancel: () => Promise<void>; };
 
 export interface SafeStorageProps {
     onSetStep: (step: Steps) => void;
-    preferredKeyTypes: KeyAuthorityType[];
+    preferredKeyTypes: KeyType[];
     i18nNamespace: string;
     isSigned?: boolean;
     sign: (loginType: LoginType, username: string, keyType: KeyType) => Promise<void>;

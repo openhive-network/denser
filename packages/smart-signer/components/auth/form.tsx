@@ -1,18 +1,14 @@
 /* Component that manages all available sign-in options */
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { useTranslation } from 'next-i18next';
-import { KeyAuthorityType } from '@hive/hb-auth';
 import SafeStorage, { SafeStorageRef } from './methods/safestorage';
-import { Button } from '@hive/ui';
-import { Icons } from '@hive/ui/components/icons';
-import Step from './step';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 import { useProcessAuth, LoginFormSchema } from './process';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import Methods from './methods/methods';
 
 export interface SignInFormProps {
-    preferredKeyTypes: KeyAuthorityType[]; // This option is set only for safe storage (hb-auth)
+    preferredKeyTypes: KeyType[];
     onComplete: () => void;
     i18nNamespace?: string;
 }
@@ -22,7 +18,6 @@ export type SignInFormRef = { cancel: () => Promise<void>; };
 export enum Steps {
     SAFE_STORAGE_LOGIN = 1,
     OTHER_LOGIN_OPTIONS,
-    OTHER_LOGIN_DETAILS
 }
 
 const SignInForm = forwardRef<SignInFormRef, SignInFormProps>((
@@ -85,9 +80,8 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>((
         }
 
         {
-            // TODO: Extract this to separate component
             (step === Steps.OTHER_LOGIN_OPTIONS &&
-                <Methods onSetStep={setStep} i18nNamespace={i18nNamespace} />
+                <Methods onSetStep={setStep} i18nNamespace={i18nNamespace} preferredKeyTypes={preferredKeyTypes}/>
             )
         }
     </div>

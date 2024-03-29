@@ -59,6 +59,7 @@
     "username_placeholder": "Enter your username",
     "working": "Working…",
     "other_signin_options": "Other sign in options",
+    "other_signing_options_description": "Enter your username and select a sign in method",
     "go_back_button": "Go back",
     "signin_safe_storage": {
       "title": "Sign in with safe storage",
