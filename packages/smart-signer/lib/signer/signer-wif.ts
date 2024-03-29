@@ -33,7 +33,9 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
   async destroy() {
     for (const k of Object.keys(KeyType)) {
       const keyType = k as KeyType;
-      this.storage.removeItem(`wif.${this.username}@${KeyType[keyType]}`);
+      this.storage.removeItem(
+        `wif.${this.username}@${KeyType[keyType]}`
+        );
     }
   }
 
@@ -53,7 +55,9 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
       // Resolve WIF key
       let wif = password ?
           password
-          : JSON.parse(this.storage.getItem(`wif.${username}@${keyType}`) || '""');
+          : JSON.parse(
+            this.storage.getItem(`wif.${username}@${keyType}`) || '""'
+            );
       if (!wif) {
         wif = await this.getPasswordFromUser();
       }
@@ -97,18 +101,23 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
     };
 
     try {
-      const {
-        password: wif,
-        storePassword: storeKey
-      } = await PasswordDialogModalPromise({
-        isOpen: true,
-        passwordFormOptions
-      });
-
-      if (storeKey) {
-        this.storePassword(wif);
+      if (!this.passwordPromise) {
+        const resolvePassword = async () => {
+          const {
+            password: wif,
+            storePassword: storeKey
+          } = await PasswordDialogModalPromise({
+            isOpen: true,
+            passwordFormOptions
+          });
+          if (storeKey) {
+            await this.storePassword(wif);
+          }
+          return wif;
+        }
+        this.passwordPromise = resolvePassword();
       }
-
+      const wif: string = await this.passwordPromise;
       return wif;
     } catch (error) {
       logger.error('Error in getPasswordFromUser: %o', error);
@@ -117,24 +126,54 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
   }
 
   /**
-   * Stores password (WIF key) for future use.
+   * Stores password (WIF key) in storage for future use.
    *
    * @param {''} wif
    * @memberof SignerWif
    */
   async storePassword(wif: '') {
     const { username, keyType, apiEndpoint } = this;
-    // Verify key before storing it.
-    if (await verifyPrivateKey(
-      username, wif, keyType, apiEndpoint
-      )) {
-    this.storage.setItem(
-      `wif.${username}@${keyType}`,
-      JSON.stringify(wif)
-      );
+    const storageKey = `wif.${username}@${keyType}`;
+
+    // Check if we have the same key already stored (means also already
+    // verified).
+    const wifInStorage = this.storage.getItem(storageKey);
+    if (wifInStorage) {
+      logger.info('Found key in storage under key: %s', storageKey);
+      if (JSON.parse(wifInStorage) === wif) {
+        logger.info('Wif is already stored under key: %s', storageKey);
+        return;
+      } else {
+        logger.info("Stored wif is different");
+      }
     } else {
+      logger.info("No wif in storage under key: %s", storageKey);
+    }
+
+    // Verify key before storing it.
+    logger.info("Starting to verify wif",);
+    let valid = false;
+    try {
+      valid = await verifyPrivateKey(username, wif, keyType,
+        apiEndpoint);
+    } catch (error) {
+      logger.error("Cannot verify private key: %o", error);
+      throw error;
+    }
+
+    // Throw error if key is invalid.
+    if (!valid) {
       throw new Error('Invalid WIF key');
     }
+
+    // Store key if it is valid.
+    this.storage.setItem(
+      storageKey,
+      JSON.stringify(wif)
+      );
+
+    logger.info('Stored valid wif under key: %s', storageKey);
+
   }
 
 }
