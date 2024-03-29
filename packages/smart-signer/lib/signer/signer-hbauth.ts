@@ -19,11 +19,23 @@ const logger = getLogger('app');
  */
 export class SignerHbauth extends Signer {
 
+  /**
+   * Pending promise, returning output from dialog asking user for
+   * password, or null. Intended for awaiting by any requests for
+   * password coming when dialog is already opened. All subscribers will
+   * get the same user's answer.
+   *
+   * @type {(Promise<any> | null)}
+   * @memberof SignerHbauth
+   */
+  passwordPromise: Promise<any> | null;
+
   constructor(
     signerOptions: SignerOptions,
     pack: TTransactionPackType = TTransactionPackType.HF_26
     ) {
     super(signerOptions, pack);
+    this.passwordPromise = null;
   }
 
   async destroy() {
@@ -48,12 +60,15 @@ export class SignerHbauth extends Signer {
     };
 
     try {
+      if (!this.passwordPromise) {
+        this.passwordPromise = PasswordDialogModalPromise({
+          isOpen: true,
+          passwordFormOptions
+        });
+      }
       const {
         password
-      } = await PasswordDialogModalPromise({
-        isOpen: true,
-        passwordFormOptions
-      });
+      } = await this.passwordPromise;
       return password;
     } catch (error) {
       logger.error('Error in getPasswordFromUser: %o', error);

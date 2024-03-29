@@ -270,7 +270,8 @@ export async function verifyPrivateKey(
   const digestBuf = cryptoUtils.sha256(crypto.randomUUID());
   const signature = privateKey.sign(digestBuf).toString();
   const publicKey = privateKey.createPublic('STM');
-  logger.info('verifyPrivateKey publicKey: %s', publicKey.toString());
+  logger.info('verifyPrivateKey generated public key: %s',
+    publicKey.toString());
 
   // Verify signature.
   const valid: boolean = await verifySignature(
