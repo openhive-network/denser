@@ -125,6 +125,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
     //     await sign(LoginType.hbauth, username, KeyType[keyType]);
     // }
 
+    {/* TODO: Belongs to offline flow */ }
     // async function onSubmitAuth({ username }: SafeStorageForm): Promise<void> {
     //     setLoading(true);
     //     await submit(username);
@@ -193,7 +194,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
         /* eslint-disable react-hooks/exhaustive-deps */
     }, [form.getValues().username, authUsers]);
 
-    if (loading === undefined) return null;
+    if (loading === undefined) return <Step loading={true}></Step>;
 
     return (
         <Step title={t("login_form.signin_safe_storage.title")} description={<div>

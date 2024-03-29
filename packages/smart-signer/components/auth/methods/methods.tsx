@@ -59,7 +59,7 @@ const Methods: FC<MethodsProps> = ({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: lastLoggedInUser || '',
-      keyType: KeyType.posting,
+      keyType: preferredKeyTypes[0],
       loginType: LoginType.hbauth
     }
   });
@@ -72,6 +72,7 @@ const Methods: FC<MethodsProps> = ({
 
   async function onSubmit(_loginType: LoginType) {
     try {
+      setError(null);
       setLoading(true);
       form.setValue('loginType', _loginType);
 
@@ -164,11 +165,11 @@ const Methods: FC<MethodsProps> = ({
               variant="ghost"
               onClick={form.handleSubmit(() => onSubmit(LoginType.keychain))}
             >
-              {/* Add logo for that */}
-              <Icons.keyRound className="mr-4 h-8 w-8" /> Hive Keychain extension
+               <Icons.hivekeychain className="mr-4 h-8 w-8" />{t('login_form.signin_with_keychain')}
             </Button>
 
             <Separator className="my-1 w-full" />
+            
             <Button
               disabled={!form.formState.isValid}
               className="flex w-full py-6"
@@ -176,24 +177,23 @@ const Methods: FC<MethodsProps> = ({
               variant="ghost"
               onClick={form.handleSubmit(() => onSubmit(LoginType.wif))}
             >
-              {/* Add logo for that */}
               <div className="flex flex-1 items-center">
-                <Icons.keyRound className="mr-4 h-8 w-8" /> Sign in with WIF (Legacy)
+                <Icons.keyRound className="mr-4 h-8 w-8" />{t('login_form.signin_with_wif')}
               </div>
             </Button>
 
             <Separator className="my-1 w-full" />
+
             <Button disabled className="flex w-full py-6" type="button" variant="ghost">
-              {/* Add logo for that */}
               <div className="flex flex-1 items-center">
-                <Icons.hiveauth className="mr-4 h-8 w-8" /> HiveAuth
+                <Icons.hiveauth className="mr-4 h-8 w-8" />{t('login_form.signin_with_hiveauth')}
               </div>
             </Button>
 
             <Separator className="my-1 w-full" />
 
             <Button disabled className="flex w-full justify-start py-6" type="button" variant="ghost">
-              <Icons.hivesigner className="mr-4 h-8 w-8" /> HiveSigner
+              <Icons.hivesigner className="mr-4 h-8 w-8" />{t('login_form.signin_with_hivesigner')}
             </Button>
 
             <Button
@@ -201,7 +201,6 @@ const Methods: FC<MethodsProps> = ({
               type="button"
               variant="secondary"
               onClick={() => {
-                // change step here
                 onSetStep(Steps.SAFE_STORAGE_LOGIN);
               }}
             >

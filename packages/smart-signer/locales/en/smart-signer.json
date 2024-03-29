@@ -77,7 +77,11 @@
       "button_cancel": "Cancel",
       "button_sign_auth": "Sign auth tx",
       "button_signin_unlocked": "Sign in with signed tx"
-    }
+    },
+    "signin_with_keychain": "Hive Keychain extension",
+    "signin_with_wif": "Sign in with WIF (Legacy)",
+    "signin_with_hiveauth": "HiveAuth",
+    "signin_with_hivesigner": "HiveSigner"
   },
   "pageLogin": {
     "loginFailed": "Login failed",
