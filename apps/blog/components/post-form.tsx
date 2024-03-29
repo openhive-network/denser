@@ -24,7 +24,7 @@ import { useForm } from 'react-hook-form';
 import useManabars from './hooks/useManabars';
 import { AdvancedSettingsPostForm } from './advanced_settings_post_form';
 import MdEditor from './md-editor';
-import { useContext, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { useTranslation } from 'next-i18next';
@@ -32,7 +32,7 @@ import { HiveRendererContext } from './hive-renderer-context';
 import { transactionService } from '@transaction/index';
 import { createPermlink } from '@transaction/lib/utils';
 import { useQuery } from '@tanstack/react-query';
-import { getCommunity, getSubscriptions } from '@transaction/lib/bridge';
+import { Entry, getCommunity, getSubscriptions } from '@transaction/lib/bridge';
 import { useRouter } from 'next/router';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { TFunction } from 'i18next';
@@ -108,8 +108,8 @@ export default function PostForm({
   username: string;
   editMode: boolean;
   sideBySidePreview: boolean;
-  post_s?: any;
-  setEditMode?: any;
+  post_s?: Entry;
+  setEditMode?: Dispatch<SetStateAction<boolean>>;
 }) {
   console.log('after edit post_s', post_s);
   const { hiveRenderer } = useContext(HiveRendererContext);
@@ -118,7 +118,7 @@ export default function PostForm({
   const [sideBySide, setSideBySide] = useState(sideBySidePreview);
   const { manabarsData } = useManabars(username);
   const [storedPost, storePost] = useLocalStorage<AccountFormValues>(
-    editMode ? `postData-edit-${post_s.permlink}` : 'postData-new',
+    editMode ? `postData-edit-${post_s?.permlink}` : 'postData-new',
     defaultValues
   );
   const { t } = useTranslation('common_blog');
@@ -164,12 +164,17 @@ export default function PostForm({
   const getValues = (storedPost?: AccountFormValues) => ({
     title: post_s ? post_s.title : storedPost?.title ?? '',
     postArea: post_s ? post_s.body : storedPost?.postArea ?? '',
-    postSummary: storedPost?.postSummary ?? '',
-    tags: post_s ? post_s.json_metadata.tags.join(' ') : storedPost?.tags ?? '',
+    postSummary: post_s?.json_metadata.description
+      ? post_s.json_metadata.description
+      : storedPost?.postSummary ?? '',
+    tags: post_s?.json_metadata.tags ? post_s.json_metadata.tags.join(' ') : storedPost?.tags ?? '',
     author: post_s ? post_s.author : storedPost?.author ?? '',
     category: post_s ? post_s.category : storedPost?.category ?? '',
-    beneficiaries: post_s ? post_s.beneficiaries : storedPost?.beneficiaries ?? [],
-    maxAcceptedPayout: post_s ? post_s.max_accepted_payout.split(' ')[0] : storedPost?.maxAcceptedPayout ?? 0,
+    // beneficiaries: post_s ? post_s.beneficiaries : storedPost?.beneficiaries ?? [],
+    beneficiaries: storedPost?.beneficiaries ?? [],
+    maxAcceptedPayout: post_s
+      ? Number(post_s.max_accepted_payout.split(' ')[0])
+      : storedPost?.maxAcceptedPayout ?? 0,
     payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType ?? ''
   });
   console.log('storedPost?.payoutType', storedPost?.payoutType);
@@ -198,7 +203,8 @@ export default function PostForm({
         Number(storedPost.payoutType.slice(0, 2)),
         maxAcceptedPayout,
         tags,
-        storedPost.category
+        storedPost.category,
+        storedPost.postSummary
       );
       storePost(defaultValues);
       router.push(`/created/${tags[0]}`);

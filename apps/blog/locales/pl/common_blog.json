@@ -412,6 +412,7 @@
     "preview": "Podgląd",
     "submit": "Wyślij",
     "clean": "Wyczyść",
+    "cancel": "Anuluj",
     "markdown_styling_guide": "Przewodnik formatowania z użyciem Markdown",
     "power_up": "Wzmocnij o 100%",
     "maximum_characters": "Maksymalnie {{num}} znaków",
