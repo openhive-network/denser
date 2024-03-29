@@ -77,7 +77,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
             keyType: preferredKeyTypes[0]
         }
     });
-    
+
     async function onSave(values: SafeStorageForm) {
         const { username, password, wif, keyType } = values;
 
@@ -216,6 +216,13 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
                                         {authUsers.length ? (
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger className="absolute right-0 top-0">
+
+                                                    {/*
+                                                    TODO
+                                                    Here we get error in console, because of validateDOMNesting:
+                                                    Warning: validateDOMNesting(...): <button> cannot appear as a descendant of <button></button>
+                                                    */}
+
                                                     <Button variant="ghost" type="button">
                                                         <Icons.chevronDown />
                                                     </Button>
