@@ -215,17 +215,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
                                         <Input placeholder={t("login_form.signin_safe_storage.placeholder_username")} type='text' {...field} />
                                         {authUsers.length ? (
                                             <DropdownMenu>
-                                                <DropdownMenuTrigger className="absolute right-0 top-0">
-
-                                                    {/*
-                                                    TODO
-                                                    Here we get error in console, because of validateDOMNesting:
-                                                    Warning: validateDOMNesting(...): <button> cannot appear as a descendant of <button></button>
-                                                    */}
-
-                                                    <Button variant="ghost" type="button">
-                                                        <Icons.chevronDown />
-                                                    </Button>
+                                                <DropdownMenuTrigger className="absolute right-0 top-0 p-4">
+                                                    <Icons.chevronDown />
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent className="w-56 absolute -right-7" side="bottom">
                                                     {
