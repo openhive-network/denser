@@ -153,7 +153,7 @@ export default function PostForm({ username }: { username: string }) {
     author: storedPost?.author ?? '',
     category: storedPost?.category ?? '',
     beneficiaries: storedPost?.beneficiaries ?? [],
-    maxAcceptedPayout: storedPost?.maxAcceptedPayout ?? 0,
+    maxAcceptedPayout: storedPost?.maxAcceptedPayout ?? null,
     payoutType: storedPost?.payoutType ?? ''
   });
   const form = useForm<AccountFormValues>({
@@ -345,7 +345,8 @@ export default function PostForm({ username }: { username: string }) {
                               {e[1]}
                             </SelectItem>
                           ))}
-                          {!mySubsData?.some((e) => e[0] === storedPost.category) ? (
+                          {!mySubsData?.some((e) => e[0] === storedPost.category) &&
+                          storedPost.category !== 'blog' ? (
                             <>
                               <SelectGroup>{t('submit_page.others_communities')}</SelectGroup>
                               <SelectItem value={storedPost.category}>{communityData?.title}</SelectItem>

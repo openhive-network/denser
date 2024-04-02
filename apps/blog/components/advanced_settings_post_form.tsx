@@ -56,7 +56,7 @@ export function AdvancedSettingsPostForm({
   const [rewards, setRewards] = useState(data ? data.payoutType : '50%');
   const [splitRewards, setSplitRewards] = useState(100);
   const [templateTitle, setTemplateTitle] = useState('');
-  const [maxPayout, setMaxPayout] = useState('noLimit');
+  const [maxPayout, setMaxPayout] = useState('no_max');
   const [selectTemplate, setSelectTemplate] = useState('');
   const [beneficiaries, setBeneficiaries] = useState<{ weight: string; account: string }[]>(
     data ? data.beneficiaries : []
@@ -112,7 +112,7 @@ export function AdvancedSettingsPostForm({
   function handleMaxPayout(e: 'no_max' | '0' | 'custom') {
     switch (e) {
       case 'no_max':
-        setRewards('50%');
+        setRewards((prev) => (prev === '0' || '50%' ? '50%' : '100%'));
         setMaxPayout(e);
         break;
       case '0':
@@ -145,6 +145,18 @@ export function AdvancedSettingsPostForm({
     setSelectTemplate('');
     setTemplateTitle(e);
   }
+  function maxAcceptedPayout() {
+    switch (maxPayout) {
+      case 'no_max':
+        return null;
+      case '0':
+        return 0;
+      case 'custom':
+        return customValue === '0' ? null : Number(customValue);
+    }
+    return null;
+  }
+
   function onSave() {
     if (selectTemplate !== '') {
       storeTemplates(
@@ -154,7 +166,7 @@ export function AdvancedSettingsPostForm({
             : {
                 title: selectTemplate,
                 beneficiaries: beneficiaries,
-                maxAcceptedPayout: customValue === '0' ? Number(customValue) : null,
+                maxAcceptedPayout: maxAcceptedPayout(),
                 payoutType: rewards
               }
         )
@@ -168,7 +180,7 @@ export function AdvancedSettingsPostForm({
         {
           title: templateTitle,
           beneficiaries: beneficiaries,
-          maxAcceptedPayout: customValue === '0' ? Number(customValue) : null,
+          maxAcceptedPayout: maxAcceptedPayout(),
           payoutType: rewards
         }
       ]);
@@ -176,7 +188,7 @@ export function AdvancedSettingsPostForm({
     onChangeStore({
       ...data,
       beneficiaries: beneficiaries,
-      maxAcceptedPayout: customValue === '0' ? Number(customValue) : null,
+      maxAcceptedPayout: maxAcceptedPayout(),
       payoutType: rewards
     });
     toast({
@@ -209,10 +221,8 @@ export function AdvancedSettingsPostForm({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="noLimit">
-                    {t('submit_page.advanced_settings_dialog.no_limit')}
-                  </SelectItem>
-                  <SelectItem value="decline">
+                  <SelectItem value="no_max">{t('submit_page.advanced_settings_dialog.no_limit')}</SelectItem>
+                  <SelectItem value="0">
                     {t('submit_page.advanced_settings_dialog.decline_payout')}
                   </SelectItem>
                   <SelectItem value="custom">
@@ -237,7 +247,7 @@ export function AdvancedSettingsPostForm({
               {t('submit_page.advanced_settings_dialog.author_rewards')}
             </span>
             <span>{t('submit_page.advanced_settings_dialog.what_type_of_tokens')}</span>
-            <Select defaultValue={rewards} onValueChange={(e) => setRewards(e)}>
+            <Select defaultValue={rewards} onValueChange={(e) => setRewards(e)} disabled={maxPayout === '0'}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
