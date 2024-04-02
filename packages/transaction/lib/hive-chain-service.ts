@@ -12,7 +12,17 @@ export class HiveChainService {
   storage: Storage;
   storageType: StorageType;
 
+  /**
+   * Pending promise, returning Hbauth OnlineCLient. Intended for
+   * awaiting by any requests arrived when it is pending.
+   *
+   * @type {(Promise<IHiveChainInterface> | null)}
+   * @memberof HiveChainService
+   */
+  hiveChainPromise: Promise<IHiveChainInterface> | null;
+
   constructor({ storageType = 'localStorage' }: StorageBaseOptions) {
+    this.hiveChainPromise = null;
     this.storageType = storageType;
     if (this.storageType === 'localStorage'
         && isStorageAvailable(this.storageType, true)
@@ -30,14 +40,30 @@ export class HiveChainService {
 
   async getHiveChain(): Promise<IHiveChainInterface> {
     if (!HiveChainService.hiveChain) {
-      const storedApiEndpoint = this.storage.getItem('hive-blog-endpoint');
-      let apiEndpoint: string = storedApiEndpoint ? JSON.parse(storedApiEndpoint) : '';
-      if (!apiEndpoint) {
-        apiEndpoint = siteConfig.endpoint;
-      }
-      await this.setHiveChain({ apiEndpoint });
+
+      // If we have pending promise return its result.
+      if (this.hiveChainPromise) return await this.hiveChainPromise;
+
+      // If we haven't pending promise. let's create one.
+      const promise = async () => {
+        const storedApiEndpoint = this.storage.getItem('hive-blog-endpoint');
+        let apiEndpoint: string = storedApiEndpoint ? JSON.parse(storedApiEndpoint) : '';
+        if (!apiEndpoint) {
+          apiEndpoint = siteConfig.endpoint;
+        }
+        // Set promise result in this class' static property and return
+        // it here as well.
+        await this.setHiveChain({ apiEndpoint });
+        return HiveChainService.hiveChain;
+      };
+
+      // Set promise to pending.
+      this.hiveChainPromise = promise();
+      // Return the result of pending promise.
+      return await this.hiveChainPromise;
     }
     // logger.info('Returning existing instance of HiveChainService.HiveChain');
+    // If we have not empty existing static property, just return it.
     return HiveChainService.hiveChain;
   }
 
