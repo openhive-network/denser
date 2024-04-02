@@ -154,7 +154,7 @@ export default function PostForm({ username }: { username: string }) {
     category: storedPost?.category ?? '',
     beneficiaries: storedPost?.beneficiaries ?? [],
     maxAcceptedPayout: storedPost?.maxAcceptedPayout ?? null,
-    payoutType: storedPost?.payoutType ?? ''
+    payoutType: storedPost?.payoutType ?? '50%'
   });
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),

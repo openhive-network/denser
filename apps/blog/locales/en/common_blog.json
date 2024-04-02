@@ -434,6 +434,7 @@
       "your_percent": "Your percent cannot be less than 0",
       "beneficiaries_cannot": "Beneficiaries cannot be repeated",
       "account_name": "Account name should be longer",
+      "beneficiary_cannot_be_self": "Cannot specify self as beneficiary",
       "add_account": "Add Account",
       "post_templates": "Post templates",
       "manage_your_post_templates": "Manage your post templates, other settings here will also be saved/loaded.",

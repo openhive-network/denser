@@ -53,26 +53,32 @@ export function AdvancedSettingsPostForm({
   data: AccountFormValues;
 }) {
   const { t } = useTranslation('common_blog');
-  const [rewards, setRewards] = useState(data ? data.payoutType : '50%');
+  const [rewards, setRewards] = useState(data.payoutType);
   const [splitRewards, setSplitRewards] = useState(100);
   const [templateTitle, setTemplateTitle] = useState('');
-  const [maxPayout, setMaxPayout] = useState('no_max');
+  const [maxPayout, setMaxPayout] = useState(
+    data.maxAcceptedPayout === null ? 'no_max' : data.maxAcceptedPayout === 0 ? '0' : 'custom'
+  );
   const [selectTemplate, setSelectTemplate] = useState('');
   const [beneficiaries, setBeneficiaries] = useState<{ weight: string; account: string }[]>(
-    data ? data.beneficiaries : []
+    data.beneficiaries
   );
   const [customValue, setCustomValue] = useState(
-    data.maxAcceptedPayout !== null ? data.maxAcceptedPayout : ''
+    data.maxAcceptedPayout !== null ? data.maxAcceptedPayout : '100'
   );
   const [storedTemplates, storeTemplates] = useLocalStorage<Template[]>(`hivePostTemplates-${username}`, []);
   const hasDuplicateUsernames = beneficiaries.reduce((acc, beneficiary, index, array) => {
     const isDuplicate = array.slice(index + 1).some((b) => b.account === beneficiary.account);
     return acc || isDuplicate;
   }, false);
-  const isTemplateStored = storedTemplates.some((template) => template.title === templateTitle);
   const beneficiariesNames =
     beneficiaries.length !== 0 ? beneficiaries.some((beneficiary) => beneficiary.account.length < 3) : false;
+  const selfBeneficiary =
+    beneficiaries.length !== 0
+      ? beneficiaries.some((beneficiary) => beneficiary.account === username)
+      : false;
 
+  const isTemplateStored = storedTemplates.some((template) => template.title === templateTitle);
   useEffect(() => {
     const combinedPercentage = beneficiaries.reduce<number>((acc, beneficiary) => {
       return acc + Number(beneficiary.weight);
@@ -107,38 +113,26 @@ export function AdvancedSettingsPostForm({
 
   function deleteTemplate(templateName: string) {
     storeTemplates(storedTemplates.filter((e) => e.title !== templateName));
-  }
-
-  function handleMaxPayout(e: 'no_max' | '0' | 'custom') {
-    switch (e) {
-      case 'no_max':
-        setRewards((prev) => (prev === '0' || '50%' ? '50%' : '100%'));
-        setMaxPayout(e);
-        break;
-      case '0':
-        setRewards('0%');
-        setMaxPayout(e);
-        break;
-      case 'custom':
-        setRewards((prev) => (prev === '0' || '50%' ? '50%' : '100%'));
-        setMaxPayout(e);
-        break;
-    }
+    setSelectTemplate('');
   }
 
   function handleTamplates(e: string) {
     const template = storedTemplates.find((template) => template.title === e);
-    setBeneficiaries(template ? template.beneficiaries : []);
-    if (template?.maxAcceptedPayout === null) {
-      handleMaxPayout('no_max');
+    if (template) {
+      setBeneficiaries(template.beneficiaries);
+      setRewards(template.payoutType);
+      console.log(template.payoutType);
+      if (template.maxAcceptedPayout === null) {
+        setMaxPayout('no_max');
+      }
+      if (template.maxAcceptedPayout === 0) {
+        setMaxPayout('0');
+      }
+      if (Number(template.maxAcceptedPayout)) {
+        setMaxPayout('custom');
+        setCustomValue(Number(template.maxAcceptedPayout));
+      }
     }
-    if (template?.maxAcceptedPayout === 0) {
-      handleMaxPayout('0');
-    } else {
-      handleMaxPayout('custom');
-      setCustomValue(typeof template?.maxAcceptedPayout === 'number' ? template.maxAcceptedPayout : 0);
-    }
-    setRewards(template ? template.payoutType : '50%');
     setSelectTemplate(e);
   }
   function handleTemplateTitle(e: string) {
@@ -213,10 +207,7 @@ export function AdvancedSettingsPostForm({
             </span>
             <span>{t('submit_page.advanced_settings_dialog.value_of_the_maximum')}</span>
             <div className="flex flex-col gap-1">
-              <Select
-                onValueChange={(e: '0' | 'no_max' | 'custom') => handleMaxPayout(e)}
-                defaultValue={maxPayout}
-              >
+              <Select onValueChange={(e: '0' | 'no_max' | 'custom') => setMaxPayout(e)} value={maxPayout}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -247,7 +238,11 @@ export function AdvancedSettingsPostForm({
               {t('submit_page.advanced_settings_dialog.author_rewards')}
             </span>
             <span>{t('submit_page.advanced_settings_dialog.what_type_of_tokens')}</span>
-            <Select defaultValue={rewards} onValueChange={(e) => setRewards(e)} disabled={maxPayout === '0'}>
+            <Select
+              value={rewards}
+              onValueChange={(e: '50%' | '100%') => setRewards(e)}
+              disabled={maxPayout === '0'}
+            >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -289,17 +284,17 @@ export function AdvancedSettingsPostForm({
                 </div>
               ))}
             </ul>
-            {splitRewards < 0 ? (
-              <div className="p-2 text-red-600">{t('submit_page.advanced_settings_dialog.your_percent')}</div>
-            ) : null}
-            {hasDuplicateUsernames ? (
-              <div className="p-2 text-red-600">
-                {t('submit_page.advanced_settings_dialog.beneficiaries_cannot')}
-              </div>
-            ) : null}
-            {beneficiariesNames ? (
-              <div className="p-2 text-red-600">{t('submit_page.advanced_settings_dialog.account_name')}</div>
-            ) : null}
+            <div className="p-2 text-red-600">
+              {splitRewards < 0
+                ? t('submit_page.advanced_settings_dialog.your_percent')
+                : hasDuplicateUsernames
+                  ? t('submit_page.advanced_settings_dialog.beneficiaries_cannot')
+                  : beneficiariesNames
+                    ? t('submit_page.advanced_settings_dialog.account_name')
+                    : selfBeneficiary
+                      ? t('submit_page.advanced_settings_dialog.beneficiary_cannot_be_self')
+                      : null}
+            </div>
             {beneficiaries.length < 8 ? (
               <Button
                 variant="link"
@@ -316,7 +311,7 @@ export function AdvancedSettingsPostForm({
             </span>
             <span>{t('submit_page.advanced_settings_dialog.manage_your_post_templates')}</span>
             <div className="flex flex-col gap-1">
-              <Select defaultValue={selectTemplate} onValueChange={(e) => handleTamplates(e)}>
+              <Select value={selectTemplate} onValueChange={(e) => handleTamplates(e)}>
                 <SelectTrigger>
                   <SelectValue
                     placeholder={t('submit_page.advanced_settings_dialog.choose_a_template_to_load')}
