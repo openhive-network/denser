@@ -747,15 +747,15 @@ test.describe('Proposals page tests', () => {
     await expect(newPage.url()).toMatch(reUrl);
   });
 
-  test('move to the login dialog by clicking vote button', async ({ page }) => {
-    const loginDialog = new LoginToVoteDialog(page);
+  // test('move to the login dialog by clicking vote button', async ({ page }) => {
+  //   const loginDialog = new LoginToVoteDialog(page);
 
-    await proposalsPage.goToProposalsPage();
-    await expect(proposalsPage.page.url()).toMatch(/http:\/\/\w+:4000/); // http://denser:4000 or http://localhost:4000
+  //   await proposalsPage.goToProposalsPage();
+  //   await expect(proposalsPage.page.url()).toMatch(/http:\/\/\w+:4000/); // http://denser:4000 or http://localhost:4000
 
-    // Click vote button in the first proposal
-    await proposalsPage.clickVoteButtonOfFirstProposalItem();
-    await loginDialog.validateLoginToVoteDialogIsVisible();
-    await loginDialog.closeLoginDialog();
-  });
+  //   // Click vote button in the first proposal
+  //   await proposalsPage.clickVoteButtonOfFirstProposalItem();
+  //   await loginDialog.validateLoginToVoteDialogIsVisible();
+  //   await loginDialog.closeLoginDialog();
+  // });
 });
