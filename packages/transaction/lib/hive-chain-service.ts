@@ -1,12 +1,32 @@
 import { createHiveChain, IHiveChainInterface, IWaxOptionsChain } from '@hive/wax';
 import { siteConfig } from '@ui/config/site';
-import { StorageMixin, StorageBase } from '@smart-signer/lib/storage-mixin';
+import { StorageType, StorageBaseOptions } from '@smart-signer/lib/storage-mixin';
+import { isStorageAvailable } from '@smart-signer/lib/utils';
+import { memoryStorage } from '@smart-signer/lib/memory-storage';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
-export class HiveChainService extends StorageMixin(StorageBase) {
+export class HiveChainService {
   static hiveChain: IHiveChainInterface;
+  storage: Storage;
+  storageType: StorageType;
+
+  constructor({ storageType = 'localStorage' }: StorageBaseOptions) {
+    this.storageType = storageType;
+    if (this.storageType === 'localStorage'
+        && isStorageAvailable(this.storageType, true)
+      ) {
+      this.storage = window.localStorage;
+    } else if (this.storageType === 'sessionStorage'
+        && isStorageAvailable(this.storageType, true)
+      ) {
+      this.storage = window.sessionStorage;
+    } else {
+      this.storageType = 'memoryStorage';
+      this.storage = memoryStorage;
+    }
+  }
 
   async getHiveChain(): Promise<IHiveChainInterface> {
     if (!HiveChainService.hiveChain) {

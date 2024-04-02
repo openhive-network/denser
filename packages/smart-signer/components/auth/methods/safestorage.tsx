@@ -35,14 +35,17 @@ const formSchema = z.object({
         message: "Password length should be more than 6 characters"
     }),
     wif: z.string(),
-    keyType: z.enum(['posting', 'active'])
+    keyType: z.nativeEnum(KeyType, {
+        invalid_type_error: 'Invalid keyType',
+        required_error: 'keyType is required'
+    }),
 });
 
 export type SafeStorageRef = { cancel: () => Promise<void>; };
 
 export interface SafeStorageProps {
     onSetStep: (step: Steps) => void;
-    preferredKeyTypes: KeyAuthorityType[];
+    preferredKeyTypes: KeyType[];
     i18nNamespace: string;
     isSigned?: boolean;
     sign: (loginType: LoginType, username: string, keyType: KeyType) => Promise<void>;
@@ -74,7 +77,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
             keyType: preferredKeyTypes[0]
         }
     });
-    
+
     async function onSave(values: SafeStorageForm) {
         const { username, password, wif, keyType } = values;
 
@@ -122,6 +125,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
     //     await sign(LoginType.hbauth, username, KeyType[keyType]);
     // }
 
+    {/* TODO: Belongs to offline flow */ }
     // async function onSubmitAuth({ username }: SafeStorageForm): Promise<void> {
     //     setLoading(true);
     //     await submit(username);
@@ -190,7 +194,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
         /* eslint-disable react-hooks/exhaustive-deps */
     }, [form.getValues().username, authUsers]);
 
-    if (loading === undefined) return null;
+    if (loading === undefined) return <Step loading={true}></Step>;
 
     return (
         <Step title={t("login_form.signin_safe_storage.title")} description={<div>
@@ -211,10 +215,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
                                         <Input placeholder={t("login_form.signin_safe_storage.placeholder_username")} type='text' {...field} />
                                         {authUsers.length ? (
                                             <DropdownMenu>
-                                                <DropdownMenuTrigger className="absolute right-0 top-0">
-                                                    <Button variant="ghost" type="button">
-                                                        <Icons.chevronDown />
-                                                    </Button>
+                                                <DropdownMenuTrigger className="absolute right-0 top-0 p-4">
+                                                    <Icons.chevronDown />
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent className="w-56 absolute -right-7" side="bottom">
                                                     {
