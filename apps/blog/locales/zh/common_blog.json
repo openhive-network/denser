@@ -422,6 +422,7 @@
       "your_percent": "您的百分比不能小于0",
       "beneficiaries_cannot": "受益人不能重复",
       "account_name": "账户名应更长",
+      "beneficiary_cannot_be_self": "不能将自己指定为受益人",
       "add_account": "添加账户",
       "post_templates": "帖子模板",
       "manage_your_post_templates": "管理您的帖子模板，这里的其他设置也将被保存/加载。",

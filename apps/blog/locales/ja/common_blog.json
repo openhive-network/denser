@@ -422,6 +422,7 @@
       "your_percent": "あなたのパーセントは0未満にすることはできません",
       "beneficiaries_cannot": "受益者は繰り返すことはできません",
       "account_name": "アカウント名はもっと長くする必要があります",
+      "beneficiary_cannot_be_self": "自分自身を受益者として指定することはできません",
       "add_account": "アカウントを追加",
       "post_templates": "投稿テンプレート",
       "manage_your_post_templates": "投稿テンプレートを管理します。ここで他の設定も保存/読み込みされます。",

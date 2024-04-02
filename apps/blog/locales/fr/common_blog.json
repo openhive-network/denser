@@ -422,6 +422,7 @@
       "your_percent": "Votre pourcentage ne peut pas être inférieur à 0",
       "beneficiaries_cannot": "Les bénéficiaires ne peuvent pas être répétés",
       "account_name": "Le nom du compte doit être plus long",
+      "beneficiary_cannot_be_self": "Impossible de spécifier soi-même comme bénéficiaire",
       "add_account": "Ajouter un compte",
       "post_templates": "Modèles de publication",
       "manage_your_post_templates": "Gérez vos modèles de publication, d'autres paramètres seront également sauvegardés/chargés ici.",
