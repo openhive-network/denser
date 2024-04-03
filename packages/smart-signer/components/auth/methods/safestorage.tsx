@@ -46,7 +46,6 @@ const formSchema = z.object({
         }),
         userFound: z.boolean(),
     }).superRefine((val, ctx) => {
-        logger.info({val, ctx});
         if (!val.userFound) {
             const result = validateWifKey(val.wif, (v) => v);
             if (result) {
@@ -56,7 +55,6 @@ const formSchema = z.object({
                   path: ['wif'],
                   fatal: true,
                 });
-                logger.info('invalid wif');
                 return z.NEVER;
               }
         }
@@ -214,7 +212,6 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
             setDescription(t("login_form.signin_safe_storage.description_save", { keyType: form.getValues().keyType }));
         }
 
-        logger.info('setting userFound to: %s', found ? true : false)
         form.setValue('userFound', found ? true : false);
         form.trigger();
         form.watch()
