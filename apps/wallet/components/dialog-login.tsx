@@ -1,18 +1,31 @@
+import { ReactNode, useRef } from 'react';
 import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
-import { ReactNode } from 'react';
-import { useTranslation } from 'next-i18next';
-import { LoginPanel } from '@smart-signer/components/login-panel';
+import SignInForm, { SignInFormRef } from '@smart-signer/components/auth/form';
+import { KeyType } from '@smart-signer/types/common';
 
 function DialogLogin({ children }: { children: ReactNode }) {
-  const { t } = useTranslation('common_wallet');
+  const signInFormRef = useRef<SignInFormRef>(null);
+
+  function onComplete() {
+    // do smth when completed here
+  }
+
   return (
-    <Dialog>
+    <Dialog
+      modal={true}
+      onOpenChange={async (open) => {
+        if (!open) {
+          await signInFormRef?.current?.cancel();
+        }
+      }}
+    >
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[600px]" data-testid="login-dialog">
-        <LoginPanel
-          authenticateOnBackend={false}
-          strict={false}
-        />
+      <DialogContent
+        className="mt-32 max-w-[380px] rounded-md p-0 sm:mt-auto sm:max-w-[450px] sm:px-0"
+        data-testid="login-dialog"
+        onInteractOutside={(e) => e.preventDefault()}
+      >
+        <SignInForm ref={signInFormRef} preferredKeyTypes={[KeyType.active]} onComplete={onComplete} />
       </DialogContent>
     </Dialog>
   );

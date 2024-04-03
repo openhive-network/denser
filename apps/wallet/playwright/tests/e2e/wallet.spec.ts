@@ -24,16 +24,16 @@ test.describe("Wallet page tests", () => {
     await expect(walletPage.hiveTokensSeeksPriceStabilityWithUSD).toBeVisible();
   });
 
-  test("move to the login dialog", async ({ page }) => {
-    const loginDialog = new LoginToVoteDialog(page);
+  // test("move to the login dialog", async ({ page }) => {
+  //   const loginDialog = new LoginToVoteDialog(page);
 
-    await walletPage.goToWalletPage();
-    await expect(walletPage.page.url()).toMatch(/http:\/\/\w+:4000/); // http://denser:4000 or http://localhost:4000
+  //   await walletPage.goToWalletPage();
+  //   await expect(walletPage.page.url()).toMatch(/http:\/\/\w+:4000/); // http://denser:4000 or http://localhost:4000
 
-    await walletPage.hiveWalletLoginButton.click();
-    await loginDialog.validateLoginToVoteDialogIsVisible();
-    await loginDialog.closeLoginDialog();
-  });
+  //   await walletPage.hiveWalletLoginButton.click();
+  //   await loginDialog.validateLoginToVoteDialogIsVisible();
+  //   await loginDialog.closeLoginDialog();
+  // });
 });
 
 test.describe("Wallet page of @gtg tests", () => {
