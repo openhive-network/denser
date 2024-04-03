@@ -436,6 +436,7 @@
       "beneficiaries_cannot": "Odbiorcy nie mogą być powtarzani",
       "account_name": "Nazwa konta powinna być dłuższa",
       "beneficiary_cannot_be_self": "Nie można określić siebie jako beneficjenta",
+      "beneficiary_percent_invalid": "Procent beneficjenta musi wynosić od 1 do 100",
       "add_account": "Dodaj konto",
       "post_templates": "Szablony publikacji",
       "manage_your_post_templates": "Zarządzaj swoimi szablonami publikacji, inne ustawienia będą także tutaj zapisane/załadowane.",

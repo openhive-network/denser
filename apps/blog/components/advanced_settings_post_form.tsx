@@ -66,6 +66,7 @@ export function AdvancedSettingsPostForm({
   const [customValue, setCustomValue] = useState(
     data.maxAcceptedPayout !== null ? data.maxAcceptedPayout : '100'
   );
+  const [open, setOpen] = useState(false);
   const [storedTemplates, storeTemplates] = useLocalStorage<Template[]>(`hivePostTemplates-${username}`, []);
   const hasDuplicateUsernames = beneficiaries.reduce((acc, beneficiary, index, array) => {
     const isDuplicate = array.slice(index + 1).some((b) => b.account === beneficiary.account);
@@ -77,8 +78,16 @@ export function AdvancedSettingsPostForm({
     beneficiaries.length !== 0
       ? beneficiaries.some((beneficiary) => beneficiary.account === username)
       : false;
-
+  const smallWeight = beneficiaries.find((e) => Number(e.weight) <= 0);
   const isTemplateStored = storedTemplates.some((template) => template.title === templateTitle);
+
+  useEffect(() => {
+    setRewards(data.payoutType);
+    setMaxPayout(data.maxAcceptedPayout === null ? 'no_max' : data.maxAcceptedPayout === 0 ? '0' : 'custom');
+    setBeneficiaries(data.beneficiaries);
+    setCustomValue(data.maxAcceptedPayout !== null ? data.maxAcceptedPayout : '100');
+  }, [open]);
+
   useEffect(() => {
     const combinedPercentage = beneficiaries.reduce<number>((acc, beneficiary) => {
       return acc + Number(beneficiary.weight);
@@ -121,7 +130,6 @@ export function AdvancedSettingsPostForm({
     if (template) {
       setBeneficiaries(template.beneficiaries);
       setRewards(template.payoutType);
-      console.log(template.payoutType);
       if (template.maxAcceptedPayout === null) {
         setMaxPayout('no_max');
       }
@@ -185,13 +193,14 @@ export function AdvancedSettingsPostForm({
       maxAcceptedPayout: maxAcceptedPayout(),
       payoutType: rewards
     });
+    setOpen(false);
     toast({
       title: t('submit_page.advanced_settings_dialog.changes_saved'),
       variant: 'success'
     });
   }
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={() => setOpen((prev) => !prev)}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="h-full overflow-scroll sm:max-w-[425px]">
         <DialogHeader>
@@ -293,7 +302,9 @@ export function AdvancedSettingsPostForm({
                     ? t('submit_page.advanced_settings_dialog.account_name')
                     : selfBeneficiary
                       ? t('submit_page.advanced_settings_dialog.beneficiary_cannot_be_self')
-                      : null}
+                      : smallWeight
+                        ? t('submit_page.advanced_settings_dialog.beneficiary_percent_invalid')
+                        : null}
             </div>
             {beneficiaries.length < 8 ? (
               <Button
@@ -353,7 +364,9 @@ export function AdvancedSettingsPostForm({
               splitRewards < 0 ||
               hasDuplicateUsernames ||
               isTemplateStored ||
-              beneficiariesNames
+              beneficiariesNames ||
+              selfBeneficiary ||
+              Boolean(smallWeight)
             }
           >
             {t('submit_page.advanced_settings_dialog.save')}

@@ -124,7 +124,7 @@ export default function PostForm({ username }: { username: string }) {
     () =>
       getCommunity(router.query.category ? router.query.category.toString() : storedPost.category, username),
     {
-      enabled: Boolean(storedPost.category)
+      enabled: Boolean(storedPost.category) && storedPost.category !== 'blog'
     }
   );
   const accountFormSchema = z.object({
