@@ -173,6 +173,7 @@
       "one_reply": "reply",
       "replies": "replies",
       "reply": "Reply",
+      "edit": "Edit",
       "will_be_hidden": "Will be hidden due to low rating ",
       "load_more": "Load more"
     }

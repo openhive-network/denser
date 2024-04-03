@@ -161,7 +161,8 @@
       "reveal_comment": "Reveal Comment",
       "one_reply": "reply",
       "replies": "replies",
-      "reply": "Reply",
+      "reply": "댓글 달기",
+      "edit": "편집하다",
       "will_be_hidden": "Will be hidden due to low rating ",
       "load_more": "Load more"
     }
