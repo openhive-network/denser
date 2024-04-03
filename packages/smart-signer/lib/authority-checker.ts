@@ -1,5 +1,4 @@
 import {
-  createHiveChain,
   IHiveChainInterface,
   ApiTransaction,
   ApiAuthority,
@@ -7,6 +6,7 @@ import {
   ApiKeyAuth,
   TTransactionPackType
 } from '@hive/wax';
+import { hiveChainService } from '@transaction/lib/hive-chain-service';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -71,7 +71,7 @@ export const authorityChecker = async (
     logger.info('authorityChecker args: %o',
       { txJSON, expectedSignerAccount, expectedAuthorityLevel, pack });
 
-    const hiveChain: IHiveChainInterface = await createHiveChain();
+    const hiveChain: IHiveChainInterface = await hiveChainService.getHiveChain();
     const txBuilder = hiveChain.TransactionBuilder.fromApi(txJSON);
 
     const authorityVerificationResult = await hiveChain.api.database_api
