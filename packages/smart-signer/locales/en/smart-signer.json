@@ -59,6 +59,7 @@
     "username_placeholder": "Enter your username",
     "working": "Working…",
     "other_signin_options": "Other sign in options",
+    "other_signing_options_description": "Enter your username and select a sign in method",
     "go_back_button": "Go back",
     "signin_safe_storage": {
       "title": "Sign in with safe storage",
@@ -76,7 +77,11 @@
       "button_cancel": "Cancel",
       "button_sign_auth": "Sign auth tx",
       "button_signin_unlocked": "Sign in with signed tx"
-    }
+    },
+    "signin_with_keychain": "Hive Keychain extension",
+    "signin_with_wif": "Sign in with WIF (Legacy)",
+    "signin_with_hiveauth": "HiveAuth",
+    "signin_with_hivesigner": "HiveSigner"
   },
   "pageLogin": {
     "loginFailed": "Login failed",

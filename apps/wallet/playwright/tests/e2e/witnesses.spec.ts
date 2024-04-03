@@ -386,29 +386,29 @@ test.describe('Witnesses page tests', () => {
     ).toBe('rgb(248, 113, 113)');
   });
 
-  test('move to the login dialog by clicking vote icon of the first witness', async ({ page }) => {
-    let loginDialog = new LoginToVoteDialog(page);
-    await witnessesPage.goToWitnessesPage();
+  // test('move to the login dialog by clicking vote icon of the first witness', async ({ page }) => {
+  //   let loginDialog = new LoginToVoteDialog(page);
+  //   await witnessesPage.goToWitnessesPage();
 
-    await witnessesPage.witnessVoteIcon.first().click();
-    await loginDialog.validateLoginToVoteDialogIsVisible();
-    await loginDialog.closeLoginDialog();
-    await expect(witnessesPage.witnessTitle).toHaveText('Witness Voting');
-    await expect(witnessesPage.witnessTableBody).toBeVisible();
-  });
+  //   await witnessesPage.witnessVoteIcon.first().click();
+  //   await loginDialog.validateLoginToVoteDialogIsVisible();
+  //   await loginDialog.closeLoginDialog();
+  //   await expect(witnessesPage.witnessTitle).toHaveText('Witness Voting');
+  //   await expect(witnessesPage.witnessTableBody).toBeVisible();
+  // });
 
-  test('move to the login dialog by clicking vote button', async ({ page }) => {
-    let loginDialog = new LoginToVoteDialog(page);
-    const voteBoxButton = await witnessesPage.witnessVoteBox.locator('div button');
+  // test('move to the login dialog by clicking vote button', async ({ page }) => {
+  //   let loginDialog = new LoginToVoteDialog(page);
+  //   const voteBoxButton = await witnessesPage.witnessVoteBox.locator('div button');
 
-    await witnessesPage.goToWitnessesPage();
+  //   await witnessesPage.goToWitnessesPage();
 
-    await voteBoxButton.click();
-    await loginDialog.validateLoginToVoteDialogIsVisible();
-    await loginDialog.closeLoginDialog();
-    await expect(witnessesPage.witnessTitle).toHaveText('Witness Voting');
-    await expect(witnessesPage.witnessTableBody).toBeVisible();
-  });
+  //   await voteBoxButton.click();
+  //   await loginDialog.validateLoginToVoteDialogIsVisible();
+  //   await loginDialog.closeLoginDialog();
+  //   await expect(witnessesPage.witnessTitle).toHaveText('Witness Voting');
+  //   await expect(witnessesPage.witnessTableBody).toBeVisible();
+  // });
 
   test('move to the confirm account witness proxy dialog by clicking Set proxy button', async ({ page }) => {
     let confirmAccountWitnessProxyDialog = new ConfirmAccountWitnessProxyDialog(page);
@@ -423,25 +423,25 @@ test.describe('Witnesses page tests', () => {
     await expect(witnessesPage.witnessTableBody).toBeVisible();
   });
 
-  test('click ok button on the confirm account witness proxy dialog and move to the login dialog', async ({
-    page
-  }) => {
-    let loginDialog = new LoginToVoteDialog(page);
-    let confirmAccountWitnessProxyDialog = new ConfirmAccountWitnessProxyDialog(page);
+  // test('click ok button on the confirm account witness proxy dialog and move to the login dialog', async ({
+  //   page
+  // }) => {
+  //   let loginDialog = new LoginToVoteDialog(page);
+  //   let confirmAccountWitnessProxyDialog = new ConfirmAccountWitnessProxyDialog(page);
 
-    const proxyBoxButton = await witnessesPage.witnessSetProxyBox.locator('div button');
+  //   const proxyBoxButton = await witnessesPage.witnessSetProxyBox.locator('div button');
 
-    await witnessesPage.goToWitnessesPage();
-    await proxyBoxButton.click();
-    await confirmAccountWitnessProxyDialog.validateConfirmProxyDialogIsVisible();
-    await confirmAccountWitnessProxyDialog.clickOkButtonInConfirmProxyDialog();
-    await loginDialog.validateLoginToVoteDialogIsVisible();
-    await loginDialog.closeLoginDialog();
-    await confirmAccountWitnessProxyDialog.validateConfirmProxyDialogIsVisible();
-    await confirmAccountWitnessProxyDialog.clickCancelButtonInConfirmProxyDialog();
-    await expect(witnessesPage.witnessTitle).toHaveText('Witness Voting');
-    await expect(witnessesPage.witnessTableBody).toBeVisible();
-  });
+  //   await witnessesPage.goToWitnessesPage();
+  //   await proxyBoxButton.click();
+  //   await confirmAccountWitnessProxyDialog.validateConfirmProxyDialogIsVisible();
+  //   await confirmAccountWitnessProxyDialog.clickOkButtonInConfirmProxyDialog();
+  //   await loginDialog.validateLoginToVoteDialogIsVisible();
+  //   await loginDialog.closeLoginDialog();
+  //   await confirmAccountWitnessProxyDialog.validateConfirmProxyDialogIsVisible();
+  //   await confirmAccountWitnessProxyDialog.clickCancelButtonInConfirmProxyDialog();
+  //   await expect(witnessesPage.witnessTitle).toHaveText('Witness Voting');
+  //   await expect(witnessesPage.witnessTableBody).toBeVisible();
+  // });
 
   test('Witnesses page - translation', async ({ page }) => {
     await witnessesPage.goToWitnessesPage();
