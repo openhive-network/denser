@@ -5,10 +5,6 @@ import { StorageMixin, StorageBase, StorageBaseOptions } from '@smart-signer/lib
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
-//
-// TODO Consider to stop handling these default options here, when
-// [#7](https://gitlab.syncad.com/hive/hb-auth/-/issues/7) is resolved.
-//
 const defaultClientOptions: ClientOptions = {
   sessionTimeout: 900,
   chainId: 'beeab0de00000000000000000000000000000000000000000000000000000000',
@@ -16,7 +12,7 @@ const defaultClientOptions: ClientOptions = {
   workerUrl: '/auth/worker.js',
 };
 
-const hbauthUseStrictMode = true;
+export const hbauthUseStrictMode = true;
 
 class HbauthService extends StorageMixin(StorageBase) {
 
