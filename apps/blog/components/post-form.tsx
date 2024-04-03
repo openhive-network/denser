@@ -139,7 +139,7 @@ export default function PostForm({
     () =>
       getCommunity(router.query.category ? router.query.category.toString() : storedPost.category, username),
     {
-      enabled: Boolean(storedPost.category)
+      enabled: Boolean(storedPost.category) && storedPost.category !== 'blog'
     }
   );
   const accountFormSchema = z.object({
@@ -171,8 +171,8 @@ export default function PostForm({
     beneficiaries: storedPost?.beneficiaries ?? [],
     maxAcceptedPayout: post_s
       ? Number(post_s.max_accepted_payout.split(' ')[0])
-      : storedPost?.maxAcceptedPayout ?? 0,
-    payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType ?? ''
+      : storedPost?.maxAcceptedPayout ?? null,
+    payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType ?? '50%'
   });
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
@@ -322,13 +322,34 @@ export default function PostForm({
             {!editMode ? (
               <div className="flex flex-col gap-2">
                 <span>{t('submit_page.post_options')}</span>
+                {storedPost?.maxAcceptedPayout !== null && storedPost.maxAcceptedPayout > 0 ? (
+                  <span className="text-xs">
+                    {t('submit_page.advanced_settings_dialog.maximum_accepted_payout') +
+                      ': ' +
+                      storedPost.maxAcceptedPayout +
+                      ' HBD'}
+                  </span>
+                ) : null}
+                {storedPost.beneficiaries.length > 0 ? (
+                  <span className="text-xs">
+                    {t('submit_page.advanced_settings_dialog.beneficiaries', {
+                      num: storedPost.beneficiaries.length
+                    })}
+                  </span>
+                ) : null}
+
                 <span className="text-xs">
                   {t('submit_page.author_rewards')}
-                  {storedPost?.payoutType === '100%' ? t('submit_page.power_up') : ' 50% HBD / 50% HP'}
+                  {storedPost.maxAcceptedPayout === 0
+                    ? ' ' + t('submit_page.advanced_settings_dialog.decline_payout')
+                    : storedPost?.payoutType === '100%'
+                      ? t('submit_page.power_up')
+                      : ' 50% HBD / 50% HP'}
                 </span>
+
                 <AdvancedSettingsPostForm username={username} onChangeStore={storePost} data={storedPost}>
                   <span
-                    className="cursor-pointer text-xs text-destructive"
+                    className="w-fit cursor-pointer text-xs text-destructive"
                     title={t('submit_page.advanced_tooltip')}
                   >
                     {t('submit_page.advanced_settings')}
