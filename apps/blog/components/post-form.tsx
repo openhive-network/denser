@@ -394,7 +394,7 @@ export default function PostForm({
             <Button
               onClick={() => {
                 form.reset(defaultValues);
-                if (editMode) {
+                if (editMode && setEditMode) {
                   setEditMode(false);
                 }
               }}
