@@ -113,6 +113,7 @@ const Methods: FC<MethodsProps> = ({
                     <Input
                       placeholder={t('login_form.signin_safe_storage.placeholder_username')}
                       type="text"
+                      autoComplete="username"
                       {...field}
                     />
                   </div>
@@ -169,7 +170,7 @@ const Methods: FC<MethodsProps> = ({
             </Button>
 
             <Separator className="my-1 w-full" />
-            
+
             <Button
               disabled={!form.formState.isValid}
               className="flex w-full py-6"
