@@ -68,12 +68,13 @@ export class HiveChainService {
   }
 
   async setHiveChain(options?: Partial<IWaxOptionsChain>) {
-    logger.info('Creating instance of HiveChainService.HiveChain with options: %o', options);
+    logger.info('Creating instance of HiveChainService.hiveChain with options: %o', options);
     HiveChainService.hiveChain = await createHiveChain(options);
   }
 
   async setHiveChainEndpoint(newEndpoint: string) {
     logger.info('Changing HiveChainService.HiveChain.endpointUrl with newEndpoint: %o', newEndpoint);
+    await this.getHiveChain();
     HiveChainService.hiveChain.endpointUrl = newEndpoint;
   }
 }
