@@ -41,10 +41,10 @@ export class HiveChainService {
   async getHiveChain(): Promise<IHiveChainInterface> {
     if (!HiveChainService.hiveChain) {
 
-      // If we have pending promise return its result.
+      // If we have pending promise, return its result.
       if (this.hiveChainPromise) return await this.hiveChainPromise;
 
-      // If we haven't pending promise. let's create one.
+      // If we haven't pending promise, let's create one.
       const promise = async () => {
         const storedApiEndpoint = this.storage.getItem('hive-blog-endpoint');
         let apiEndpoint: string = storedApiEndpoint ? JSON.parse(storedApiEndpoint) : '';
@@ -62,8 +62,8 @@ export class HiveChainService {
       // Return the result of pending promise.
       return await this.hiveChainPromise;
     }
-    // logger.info('Returning existing instance of HiveChainService.HiveChain');
     // If we have not empty existing static property, just return it.
+    // logger.info('Returning existing instance of HiveChainService.HiveChain');
     return HiveChainService.hiveChain;
   }
 

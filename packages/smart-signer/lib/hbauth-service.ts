@@ -39,7 +39,7 @@ class HbauthService extends StorageMixin(StorageBase) {
   async getOnlineClient(): Promise<OnlineClient> {
     if (!HbauthService.onlineClient) {
 
-      // If we have pending promise return its result.
+      // If we have pending promise, return its result.
       if (this.onlineClientPromise) return await this.onlineClientPromise;
 
       // If we haven't pending promise. let's create one.
@@ -60,8 +60,8 @@ class HbauthService extends StorageMixin(StorageBase) {
       // Return the result of pending promise.
       return await this.onlineClientPromise
     }
-    // logger.info('Returning existing instance of HbauthService.onlineClient');
     // If we have not empty existing static property, just return it.
+    // logger.info('Returning existing instance of HbauthService.onlineClient');
     return HbauthService.onlineClient;
   }
 
