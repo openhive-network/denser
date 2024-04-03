@@ -296,7 +296,7 @@ class TransactionService {
 
   async comment(parentAuthor: string, parentPermlink: string, body: string) {
     await this.processHiveAppOperation((builder) => {
-      builder.pushReply(parentAuthor, parentPermlink, this.signerOptions.username, body).build();
+      builder.pushReply(parentAuthor, parentPermlink, this.signerOptions.username, body).store();
     });
   }
 
@@ -322,7 +322,7 @@ class TransactionService {
         op.addBeneficiary(beneficiarie.account, Number(beneficiarie.weight));
       });
 
-      op.build();
+      op.store();
 
       builder.build();
     });
