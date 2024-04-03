@@ -111,7 +111,6 @@ export default function PostForm({
   post_s?: Entry;
   setEditMode?: Dispatch<SetStateAction<boolean>>;
 }) {
-  console.log('after edit post_s', post_s);
   const { hiveRenderer } = useContext(HiveRendererContext);
   const router = useRouter();
   const [preview, setPreview] = useState(true);
@@ -161,13 +160,10 @@ export default function PostForm({
   });
 
   type AccountFormValues = z.infer<typeof accountFormSchema>;
-  console.log('nnooo post_s?.json_metadata.tags', post_s?.json_metadata.tags);
   const getValues = (storedPost?: AccountFormValues) => ({
     title: post_s ? post_s.title : storedPost?.title ?? '',
     postArea: post_s ? post_s.body : storedPost?.postArea ?? '',
-    postSummary: post_s?.json_metadata.description
-      ? post_s.json_metadata.description
-      : storedPost?.postSummary ?? '',
+    postSummary: post_s?.json_metadata.summary ? post_s.json_metadata.summary : storedPost?.postSummary ?? '',
     tags: post_s?.json_metadata.tags ? post_s.json_metadata.tags.join(' ') : storedPost?.tags ?? '',
     author: post_s ? post_s.author : storedPost?.author ?? '',
     category: post_s ? post_s.category : storedPost?.category ?? '',
@@ -188,7 +184,6 @@ export default function PostForm({
   const altUsernameCheck = validateAltUsernameInput(watchedValues.author, t);
 
   async function onSubmit(data: AccountFormValues) {
-    console.log("storedPost?.tagsreplace(/#/g, '').split(' ')", storedPost.tags.replace(/#/g, '').split(' '));
     const chain = await hiveChainService.getHiveChain();
     const tags = storedPost.tags.replace(/#/g, '').split(' ') ?? [];
     const maxAcceptedPayout = await chain.hbd(Number(storedPost.maxAcceptedPayout));
@@ -257,7 +252,6 @@ export default function PostForm({
                 </FormItem>
               )}
             />
-            {console.log('storedPost.postArea!!', storedPost.postArea, 'storedPost', storedPost)}
             <FormField
               control={form.control}
               name="postArea"

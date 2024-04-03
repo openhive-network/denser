@@ -78,6 +78,7 @@ export interface JsonMetadata {
   format?: string;
   original_author?: string;
   original_permlink?: string;
+  summary?: string;
 }
 
 export interface Entry {

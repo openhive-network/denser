@@ -324,7 +324,7 @@ class TransactionService {
         op.addBeneficiary(beneficiarie.account, Number(beneficiarie.weight));
       });
 
-      op.build();
+      op.store();
 
       builder.build();
     });
