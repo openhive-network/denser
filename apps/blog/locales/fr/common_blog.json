@@ -408,6 +408,7 @@
       "changes_saved": "Changements enregistrés",
       "advanced_settings": "Paramètres avancés",
       "maximum_accepted_payout": "Paiement maximum accepté",
+      "beneficiaries": "Bénéficiaires : {{num}} définis",
       "value_of_the_maximum": "Valeur en HBD du paiement maximum que cette publication recevra.",
       "no_limit": "Pas de limite",
       "decline_payout": "Refuser le paiement",

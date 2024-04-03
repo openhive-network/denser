@@ -414,6 +414,7 @@
       "changes_saved": "Изменения сохранены",
       "advanced_settings": "Расширенные настройки",
       "maximum_accepted_payout": "Максимальная принятая выплата",
+      "beneficiaries": "Бенефициары: установлено {{num}}",
       "value_of_the_maximum": "HBD-значение максимальной выплаты, которую получит этот пост.",
       "no_limit": "Без ограничений",
       "decline_payout": "Отклонить выплату",

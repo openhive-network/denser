@@ -421,6 +421,7 @@
       "changes_saved": "Zmiany zostały zapisane",
       "advanced_settings": "Zaawansowane ustawienia",
       "maximum_accepted_payout": "Maksymalna akceptowana wypłata",
+      "beneficiaries": "Odbiorcy: ustawiono {{num}}",
       "value_of_the_maximum": "Wartość HBD maksymalnej wypłaty, jaką ta publikacja otrzyma.",
       "no_limit": "Bez limitu",
       "decline_payout": "Odrzuć wypłatę",

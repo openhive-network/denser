@@ -420,6 +420,7 @@
       "changes_saved": "Changes saved",
       "advanced_settings": "Advanced settings",
       "maximum_accepted_payout": "Maximum Accepted Payout",
+      "beneficiaries": "Beneficiaries: {{num}} set",
       "value_of_the_maximum": "HBD value of the maximum payout this post will receive.",
       "no_limit": "No limit",
       "decline_payout": "Decline Payout",

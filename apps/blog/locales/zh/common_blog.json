@@ -408,6 +408,7 @@
       "changes_saved": "更改已保存",
       "advanced_settings": "高级设置",
       "maximum_accepted_payout": "最大接受的支付额",
+      "beneficiaries": "受益人：{{num}}设定",
       "value_of_the_maximum": "此帖子将获得的最大支付的HBD价值。",
       "no_limit": "无限制",
       "decline_payout": "拒绝支付",

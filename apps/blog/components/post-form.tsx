@@ -301,13 +301,34 @@ export default function PostForm({ username }: { username: string }) {
             />
             <div className="flex flex-col gap-2">
               <span>{t('submit_page.post_options')}</span>
+              {storedPost?.maxAcceptedPayout !== null && storedPost.maxAcceptedPayout > 0 ? (
+                <span className="text-xs">
+                  {t('submit_page.advanced_settings_dialog.maximum_accepted_payout') +
+                    ': ' +
+                    storedPost.maxAcceptedPayout +
+                    ' HBD'}
+                </span>
+              ) : null}
+              {storedPost.beneficiaries.length > 0 ? (
+                <span className="text-xs">
+                  {t('submit_page.advanced_settings_dialog.beneficiaries', {
+                    num: storedPost.beneficiaries.length
+                  })}
+                </span>
+              ) : null}
+
               <span className="text-xs">
                 {t('submit_page.author_rewards')}
-                {storedPost?.payoutType === '100%' ? t('submit_page.power_up') : ' 50% HBD / 50% HP'}
+                {storedPost.maxAcceptedPayout === 0
+                  ? ' ' + t('submit_page.advanced_settings_dialog.decline_payout')
+                  : storedPost?.payoutType === '100%'
+                    ? t('submit_page.power_up')
+                    : ' 50% HBD / 50% HP'}
               </span>
+
               <AdvancedSettingsPostForm username={username} onChangeStore={storePost} data={storedPost}>
                 <span
-                  className="cursor-pointer text-xs text-destructive"
+                  className="w-fit cursor-pointer text-xs text-destructive"
                   title={t('submit_page.advanced_tooltip')}
                 >
                   {t('submit_page.advanced_settings')}

@@ -408,6 +408,7 @@
       "changes_saved": "変更が保存されました",
       "advanced_settings": "高度な設定",
       "maximum_accepted_payout": "最大受け入れ支払い額",
+      "beneficiaries": "受益者：{{num}}件設定済み",
       "value_of_the_maximum": "この投稿が受け取る最大支払いのHBD値。",
       "no_limit": "制限なし",
       "decline_payout": "支払いを辞退",
