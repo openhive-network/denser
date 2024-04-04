@@ -313,6 +313,7 @@
   "post_content": {
     "in": "en",
     "reputation_title": "Reputación",
+    "blacklists": "Listas negras",
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "Estás viendo  los comentarios relacionados de",
       "view_the_full_context": "Ver todo el contexto",

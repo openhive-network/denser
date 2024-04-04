@@ -313,6 +313,7 @@
   "post_content": {
     "in": "in",
     "reputation_title": "評価",
+    "blacklists": "블랙리스트",
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "You are viewing a single comment's thread from",
       "view_the_full_context": "전체 글 보기",

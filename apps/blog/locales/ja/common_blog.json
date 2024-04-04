@@ -313,6 +313,7 @@
   "post_content": {
     "in": "in",
     "reputation_title": "評価",
+    "blacklists": "ブラックリスト",
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "次のスレッドのコメントの1つを表示しています",
       "view_the_full_context": "スレッドをすべて表示する",

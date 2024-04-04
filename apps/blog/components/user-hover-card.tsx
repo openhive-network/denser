@@ -39,7 +39,7 @@ export function UserHoverCard({
         </span>
       ) : null}
       <HoverCardContent className="w-72" data-testid="user-hover-card-content">
-        <HoverCardData author={author} />
+        <HoverCardData author={author} blacklist={blacklist} />
       </HoverCardContent>
     </HoverCard>
   );

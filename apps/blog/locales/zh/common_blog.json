@@ -313,6 +313,7 @@
   "post_content": {
     "in": "在",
     "reputation_title": "声誉",
+    "blacklists": "黑名单",
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "你正在查看单个评论的主题",
       "view_the_full_context": "查看全文",
