@@ -115,13 +115,13 @@ export default function PostForm({
   const { hiveRenderer } = useContext(HiveRendererContext);
   const router = useRouter();
   const [preview, setPreview] = useState(true);
-  const [previewContent, setPreviewContent] = useState<string>('');
   const [sideBySide, setSideBySide] = useState(sideBySidePreview);
   const { manabarsData } = useManabars(username);
   const [storedPost, storePost] = useLocalStorage<AccountFormValues>(
     editMode ? `postData-edit-${post_s?.permlink}` : 'postData-new',
     defaultValues
   );
+  const [previewContent, setPreviewContent] = useState<string | null>(storedPost.postArea);
   const { t } = useTranslation('common_blog');
 
   const {
@@ -187,7 +187,7 @@ export default function PostForm({
 
   // update debounced post preview content
   useEffect(() => {
-    if (watchedValues.postArea !== previewContent) {
+    if (previewContent !== null && watchedValues.postArea !== previewContent) {
       debounce(() => {
         setPreviewContent(watchedValues.postArea);
       }, 300)();
@@ -212,8 +212,10 @@ export default function PostForm({
         storedPost.category,
         storedPost.postSummary
       );
+      form.reset(defaultValues);
+      setPreviewContent(null);
       storePost(defaultValues);
-      router.push(`/created/${tags[0]}`);
+      await router.push(`/created/${tags[0]}`);
     } catch (error) {
       console.error(error);
     }
