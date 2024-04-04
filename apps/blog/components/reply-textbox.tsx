@@ -15,17 +15,21 @@ export function ReplyTextbox({
   onSetReply,
   username,
   permlink,
-  storageId
+  parentPermlink,
+  storageId,
+  comment
 }: {
   onSetReply: (e: boolean) => void;
   username: string;
   permlink: string;
+  parentPermlink?: string;
   storageId: string;
+  comment?: string;
 }) {
   const [storedPost, storePost] = useLocalStorage<string>(`replyTo-/${username}/${permlink}`, '');
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
-  const [text, setText] = useState(storedPost ? storedPost : '');
+  const [text, setText] = useState(comment ? comment : storedPost ? storedPost : '');
   const [cleanedText, setCleanedText] = useState('');
   const { hiveRenderer } = useContext(HiveRendererContext);
 
@@ -80,7 +84,11 @@ export function ReplyTextbox({
             <Button
               disabled={text === ''}
               onClick={() => {
-                transactionService.comment(username, permlink, cleanedText);
+                if (parentPermlink) {
+                  transactionService.updateComment(username, parentPermlink, permlink, cleanedText);
+                } else {
+                  transactionService.comment(username, permlink, cleanedText);
+                }
                 setText('');
                 localStorage.removeItem(`replyTo-/${username}/${permlink}`);
                 localStorage.removeItem(storageId);

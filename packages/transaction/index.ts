@@ -300,6 +300,14 @@ class TransactionService {
     });
   }
 
+  async updateComment(parentAuthor: string, parentPermlink: string, permlink: string, body: string) {
+    await this.processHiveAppOperation((builder) => {
+      builder
+        .pushReply(parentAuthor, parentPermlink, this.signerOptions.username, body, {}, permlink)
+        .store();
+    });
+  }
+
   async post(
     permlink: string,
     title: string,
