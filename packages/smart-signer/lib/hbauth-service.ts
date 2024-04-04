@@ -1,14 +1,10 @@
 import { OnlineClient, ClientOptions } from '@hive/hb-auth';
 import { siteConfig } from '@ui/config/site';
-import { StorageMixin, StorageBase } from '@smart-signer/lib/storage-mixin';
+import { StorageMixin, StorageBase, StorageBaseOptions } from '@smart-signer/lib/storage-mixin';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
-//
-// TODO Consider to stop handling these default options here, when
-// [#7](https://gitlab.syncad.com/hive/hb-auth/-/issues/7) is resolved.
-//
 const defaultClientOptions: ClientOptions = {
   sessionTimeout: 900,
   chainId: 'beeab0de00000000000000000000000000000000000000000000000000000000',
@@ -16,21 +12,51 @@ const defaultClientOptions: ClientOptions = {
   workerUrl: '/auth/worker.js',
 };
 
-const hbauthUseStrictMode = true;
+export const hbauthUseStrictMode = true;
 
 class HbauthService extends StorageMixin(StorageBase) {
 
   static onlineClient: OnlineClient;
 
-  async getOnlineClient() {
+  /**
+   * Pending promise, returning Hbauth OnlineCLient. Intended for
+   * awaiting by any requests arrived when it is pending.
+   *
+   * @type {(Promise<OnlineClient> | null)}
+   * @memberof HbauthService
+   */
+  onlineClientPromise: Promise<OnlineClient> | null;
+
+  constructor(options: StorageBaseOptions) {
+    super(options)
+    this.onlineClientPromise = null;
+  }
+
+  async getOnlineClient(): Promise<OnlineClient> {
     if (!HbauthService.onlineClient) {
-      const storedNode = this.storage.getItem('hive-blog-endpoint');
-      let node: string = storedNode ? JSON.parse(storedNode) : '';
-      if (!node) {
-        node = siteConfig.endpoint;
-      }
-      await this.setOnlineClient(hbauthUseStrictMode, { node });
+
+      // If we have pending promise, return its result.
+      if (this.onlineClientPromise) return await this.onlineClientPromise;
+
+      // If we haven't pending promise. let's create one.
+      const promise = async () => {
+        const storedNode = this.storage.getItem('hive-blog-endpoint');
+        let node: string = storedNode ? JSON.parse(storedNode) : '';
+        if (!node) {
+          node = siteConfig.endpoint;
+        }
+        // Set promise result in this class' static property and return
+        // it here as well.
+        await this.setOnlineClient(hbauthUseStrictMode, { node });
+        return HbauthService.onlineClient;
+      };
+
+      // Set promise to pending.
+      this.onlineClientPromise = promise();
+      // Return the result of pending promise.
+      return await this.onlineClientPromise
     }
+    // If we have not empty existing static property, just return it.
     // logger.info('Returning existing instance of HbauthService.onlineClient');
     return HbauthService.onlineClient;
   }
