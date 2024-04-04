@@ -94,6 +94,7 @@ function PostPage({
   const [isClient, setIsClient] = useState(false);
   const [storedBox, storeBox] = useLocalStorage<Boolean>(storageId, false);
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
+  const firstPost = discussionState?.find((post) => post.depth === 0);
   useEffect(() => {
     if (reply) {
       storeBox(reply);
@@ -173,6 +174,7 @@ function PostPage({
       behavior: 'smooth'
     });
   }, [router, hiveRenderer]);
+
   return (
     <div className="py-8">
       <div className="relative mx-auto my-0 max-w-4xl bg-white px-8 py-4 dark:bg-slate-900">
@@ -219,11 +221,8 @@ function PostPage({
           community={community}
           category={post_s.category}
           created={post_s.created}
-          blacklist={post_s.blacklists}
+          blacklist={firstPost ? firstPost.blacklists : post_s.blacklists}
         />
-        {/* <span className="text-red-600" title={post_s.blacklists[0]}>
-        ({post_s.blacklists.length})
-      </span> */}
         <hr />
         {!hiveRenderer ? (
           <Loading loading={!hiveRenderer} />
@@ -310,7 +309,7 @@ function PostPage({
               <UserHoverCard
                 author={post_s.author}
                 author_reputation={post_s.author_reputation}
-                blacklist={post_s.blacklists}
+                blacklist={firstPost ? firstPost.blacklists : post_s.blacklists}
               />
               {post_s.author_title ? (
                 <Badge variant="outline" className="border-red-600 text-slate-500">
