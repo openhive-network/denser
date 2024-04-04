@@ -1,0 +1,10 @@
+{
+  "name": "@hive/next-config",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "repository": "https://gitlab.syncad.com/hive/denser",
+  "peerDependencies": {
+    "config": "^3.3.11"
+  }
+}

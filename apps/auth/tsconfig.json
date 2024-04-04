@@ -15,7 +15,10 @@
       ],
       "@ui/*": [
         "../../packages/ui/*"
-      ]
+      ],
+      "@next-config/*": [
+        "../../packages/next-config/*"
+      ],
     },
     "strictNullChecks": true,
     "module": "esnext"

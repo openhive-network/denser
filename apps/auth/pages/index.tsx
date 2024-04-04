@@ -1,7 +1,14 @@
 import { GetServerSideProps } from 'next';
 import { getTranslations } from '@/auth/lib/get-translations';
+import config from "config";
+import env from '@beam-australia/react-env';
 
 export default function HomePage() {
+  console.log(
+    'config.get("Customer.credit.initialLimit")',
+    config.get("Customer.credit.initialLimit"),
+  );
+  console.log('BAMBOO', env('BAMBOO'))
   return (
     <div className="pt-16 flex flex-col sm:flex-row gap-24 mx-2
         sm:gap-0 sm:justify-around">
@@ -18,6 +25,7 @@ export default function HomePage() {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  console.log('Customer.credit.initialLimit: %s', config.get("Customer.credit.initialLimit"));
   return {
     props: {
       ...(await getTranslations(ctx)),

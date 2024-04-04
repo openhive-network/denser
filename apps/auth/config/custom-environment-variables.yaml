@@ -1,0 +1,6 @@
+# Customer module configs
+Customer:
+  credit:
+    initialLimit:
+      __name: REACT_APP_BAMBOO
+      __format: number
