@@ -24,6 +24,7 @@ import { useParams } from 'next/navigation';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { cn } from '@ui/lib/utils';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import { hbauthUseStrictMode, hbauthService } from '@smart-signer/lib/hbauth-service';
 
 const DEFAULTS_ENDPOINTS = [
   'https://api.hive.blog',
@@ -213,6 +214,10 @@ export default function UserSettings() {
             onValueChange={async (newEndpoint) => {
               setEndpoint(newEndpoint);
               await hiveChainService.setHiveChainEndpoint(newEndpoint);
+              await hbauthService.setOnlineClient(
+                hbauthUseStrictMode,
+                {node: newEndpoint}
+                );
             }}
             value={endpoint}
           >

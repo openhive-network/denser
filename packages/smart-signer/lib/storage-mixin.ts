@@ -44,6 +44,7 @@ export function StorageMixin<TBase extends WithStorage>(Base: TBase) {
                     && isStorageAvailable(this.storageType, true)) {
                 this.storage = window.sessionStorage;
             } else {
+                this.storageType = 'memoryStorage';
                 this.storage = memoryStorage;
             }
         }
