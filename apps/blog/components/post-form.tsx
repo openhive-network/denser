@@ -36,6 +36,7 @@ import { getCommunity, getSubscriptions } from '@transaction/lib/bridge';
 import { useRouter } from 'next/router';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { TFunction } from 'i18next';
+import { debounce } from '../lib/utils';
 
 const defaultValues = {
   title: '',
@@ -102,6 +103,7 @@ export default function PostForm({ username }: { username: string }) {
   const { hiveRenderer } = useContext(HiveRendererContext);
   const router = useRouter();
   const [preview, setPreview] = useState(true);
+  const [previewContent, setPreviewContent] = useState<string>('');
   const [sideBySide, setSideBySide] = useState(true);
   const { manabarsData } = useManabars(username);
   const [storedPost, storePost] = useLocalStorage<AccountFormValues>('postData', defaultValues);
@@ -165,6 +167,15 @@ export default function PostForm({ username }: { username: string }) {
   const summaryCheck = validateSummoryInput(watchedValues.postSummary, t);
   const altUsernameCheck = validateAltUsernameInput(watchedValues.author, t);
 
+  // update debounced post preview content
+  useEffect(() => {
+    if (watchedValues.postArea !== previewContent) {
+      debounce(() => {
+        setPreviewContent(watchedValues.postArea);
+      }, 300)();
+    }
+  }, [watchedValues.postArea, previewContent]);
+
   async function onSubmit(data: AccountFormValues) {
     const chain = await hiveChainService.getHiveChain();
     const tags = storedPost?.tags.replace(/#/g, '').split(' ') ?? [];
@@ -190,7 +201,7 @@ export default function PostForm({ username }: { username: string }) {
 
   useEffect(() => {
     storePost(watchedValues);
-  }, [JSON.stringify(watchedValues)]);
+  }, [JSON.stringify(watchedValues), storePost]);
 
   return (
     <div className={clsx({ container: !sideBySide || !preview })}>
@@ -416,10 +427,10 @@ export default function PostForm({ username }: { username: string }) {
             </Link>
           </div>
 
-          {watchedValues.postArea && hiveRenderer ? (
+          {previewContent && hiveRenderer ? (
             <div
               dangerouslySetInnerHTML={{
-                __html: hiveRenderer.render(watchedValues.postArea)
+                __html: hiveRenderer.render(previewContent)
               }}
               className="prose h-fit self-center break-words border-2 border-border p-2 dark:prose-invert"
             ></div>
