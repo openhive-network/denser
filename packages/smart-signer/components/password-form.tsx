@@ -28,18 +28,19 @@ export const passwordFormDefaultValuesHbauth = {
 
 // Wif password
 
-const passwordWif = z.string().superRefine((val, ctx) => {
-  const result = validateWifKey(val, (v) => v);
-  if (result) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: result,
-      fatal: true
-    });
-    return z.NEVER;
-  }
-  return true;
-});
+export const passwordWif = z.string()
+  .superRefine((val, ctx) => {
+    const result = validateWifKey(val, (v) => v);
+    if (result) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: result,
+        fatal: true
+      });
+      return z.NEVER;
+    }
+    return true;
+  });
 
 const passwordFormSchemaWif = z.object({
   password: passwordWif,

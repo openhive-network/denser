@@ -5,7 +5,6 @@ import { cookieNamePrefix } from "@smart-signer/lib/session";
 import { parseCookie } from "@smart-signer/lib/utils";
 import { KeyType } from "@smart-signer/types/common";
 import { useSignIn } from "@smart-signer/lib/auth/use-sign-in";
-import { logger } from "@hive/ui/lib/logger";
 import { Signatures, PostLoginSchema } from "@smart-signer/lib/auth/utils";
 import { getSigner } from "@smart-signer/lib/signer/get-signer";
 import { SignerOptions } from "@smart-signer/lib/signer/signer";
@@ -15,6 +14,8 @@ import { getOperationForLogin } from '@smart-signer/lib/login-operation';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { operation } from '@hive/wax';
 
+import { getLogger } from '@hive/ui/lib/logging';
+const logger = getLogger('app');
 export interface LoginFormSchema extends SignInFormSchema {
   keyType: KeyType;
 }
