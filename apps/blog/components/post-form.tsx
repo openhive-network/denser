@@ -20,7 +20,7 @@ import {
   FormItem,
   FormMessage
 } from '@hive/ui/components/form';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import useManabars from './hooks/useManabars';
 import { AdvancedSettingsPostForm } from './advanced_settings_post_form';
 import MdEditor from './md-editor';
@@ -121,7 +121,7 @@ export default function PostForm({
     editMode ? `postData-edit-${post_s?.permlink}` : 'postData-new',
     defaultValues
   );
-  const [previewContent, setPreviewContent] = useState<string | null>(storedPost.postArea);
+  const [previewContent, setPreviewContent] = useState<string | undefined>(storedPost.postArea);
   const { t } = useTranslation('common_blog');
 
   const {
@@ -180,19 +180,30 @@ export default function PostForm({
     resolver: zodResolver(accountFormSchema),
     values: getValues(storedPost)
   });
+
+  const { postArea, ...restFields } = useWatch({
+    control: form.control
+  });
+
   const watchedValues = form.watch();
   const tagsCheck = validateTagInput(watchedValues.tags, watchedValues.category === 'blog', t);
   const summaryCheck = validateSummoryInput(watchedValues.postSummary, t);
   const altUsernameCheck = validateAltUsernameInput(watchedValues.author, t);
 
+  useEffect(() => {
+    debounce(() => {
+      storePost(form.getValues());
+    }, 50)();
+  }, [form, postArea, restFields, storePost]);
+
   // update debounced post preview content
   useEffect(() => {
-    if (previewContent !== null && watchedValues.postArea !== previewContent) {
+    if (typeof previewContent !== 'undefined' && postArea !== previewContent) {
       debounce(() => {
-        setPreviewContent(watchedValues.postArea);
-      }, 300)();
+        setPreviewContent(postArea);
+      }, 50)();
     }
-  }, [watchedValues.postArea, previewContent]);
+  }, [postArea, previewContent]);
 
   async function onSubmit(data: AccountFormValues) {
     const chain = await hiveChainService.getHiveChain();
@@ -213,17 +224,13 @@ export default function PostForm({
         storedPost.postSummary
       );
       form.reset(defaultValues);
-      setPreviewContent(null);
+      setPreviewContent(undefined);
       storePost(defaultValues);
-      await router.push(`/created/${tags[0]}`);
+      await router.push(`/created/${tags[0]}`, undefined, { shallow: true });
     } catch (error) {
       console.error(error);
     }
   }
-
-  useEffect(() => {
-    storePost(watchedValues);
-  }, [JSON.stringify(watchedValues), storePost]);
 
   return (
     <div className={clsx({ container: !sideBySide || !preview })}>
