@@ -206,8 +206,8 @@ export const getPostsRanked = async (
   tag: string = '',
   start_author: string = '',
   start_permlink: string = '',
-  limit: number = DATA_LIMIT,
-  observer: string = ''
+  observer: string,
+  limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
   return chain
     .extend<GetPostsRankedData>()

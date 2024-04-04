@@ -57,7 +57,7 @@ const FeedPage: FC = () => {
       return await getAccountPosts(
         'feed',
         username,
-        user?.username || 'hive.blog',
+        user.username === '' ? 'hive.blog' : user.username,
         pageParam?.author,
         pageParam?.permlink
       );
