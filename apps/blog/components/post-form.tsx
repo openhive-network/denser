@@ -116,7 +116,7 @@ export default function PostForm({
   const router = useRouter();
   const [preview, setPreview] = useState(true);
   const [previewContent, setPreviewContent] = useState<string>('');
-  const [sideBySide, setSideBySide] = useState(true);
+  const [sideBySide, setSideBySide] = useState(sideBySidePreview);
   const { manabarsData } = useManabars(username);
   const [storedPost, storePost] = useLocalStorage<AccountFormValues>(
     editMode ? `postData-edit-${post_s?.permlink}` : 'postData-new',
