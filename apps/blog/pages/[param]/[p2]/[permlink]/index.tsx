@@ -36,6 +36,8 @@ import { AlertDialogFlag } from '@/blog/components/alert-window-flag';
 import VotesComponent from '@/blog/components/votes';
 import { HiveRendererContext } from '@/blog/components/hive-renderer-context';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
+import PostForm from '@/blog/components/post-form';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -54,7 +56,7 @@ function PostPage({
   permlink: string;
 }) {
   const { t } = useTranslation('common_blog');
-  const anchorRef = useRef();
+  const { user } = useUser();
   const {
     isLoading: isLoadingDiscussion,
     error: errorDiscussion,
@@ -85,17 +87,14 @@ function PostPage({
   const query = router.query.sort?.toString();
   const defaultSort = isSortOrder(query) ? query : SortOrder.trending;
   const storageId = `replybox-/${username}/${post_s.permlink}`;
-  const [isClient, setIsClient] = useState(false);
   const [storedBox, storeBox] = useLocalStorage<Boolean>(storageId, false);
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
+  const [edit, setEdit] = useState(false);
   useEffect(() => {
     if (reply) {
       storeBox(reply);
     }
-  }, [reply]);
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  }, [reply, storeBox]);
   useEffect(() => {
     if (discussion) {
       const list = [...Object.keys(discussion).map((key) => discussion[key])];
@@ -222,6 +221,14 @@ function PostPage({
         <hr />
         {!hiveRenderer ? (
           <Loading loading={!hiveRenderer} />
+        ) : edit ? (
+          <PostForm
+            username={username}
+            editMode={edit}
+            setEditMode={setEdit}
+            sideBySidePreview={false}
+            post_s={post_s}
+          />
         ) : mutedPost ? (
           <div id="articleBody" className="flex flex-col gap-8 py-8">
             {findLinks(post_s.body).map((e) =>
@@ -341,6 +348,20 @@ function PostPage({
               >
                 {t('post_content.footer.reply')}
               </button>
+              {user && user.isLoggedIn && post_s.author === user.username ? (
+                <>
+                  <span className="mx-1">|</span>
+                  <button
+                    onClick={() => {
+                      setEdit(!edit);
+                    }}
+                    className="flex items-center text-red-600"
+                    data-testid="post-edit"
+                  >
+                    {t('post_content.footer.edit')}
+                  </button>
+                </>
+              ) : null}
               <span className="mx-1">|</span>
               <TooltipProvider>
                 <Tooltip>
@@ -430,14 +451,6 @@ function PostPage({
     </div>
   );
 }
-
-//[0,1]
-/*{
-  '0':0,
-  "1":1,
-  "length:2,
-  ...
-}*/
 
 export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
   const community = String(query.param);

@@ -161,7 +161,8 @@
       "reveal_comment": "Reveal Comment",
       "one_reply": "reply",
       "replies": "replies",
-      "reply": "Reply",
+      "reply": "Ответить",
+      "edit": "Pедактировать",
       "will_be_hidden": "Will be hidden due to low rating ",
       "load_more": "Load more"
     }
@@ -356,6 +357,7 @@
       "responses": "{{responses}} ответов. ",
       "reblog": "Поделиться",
       "reply": "Ответить",
+      "edit": "Pедактировать",
       "share_on": "Share on ",
       "share_form": {
         "copy": "Копировать",
@@ -404,6 +406,7 @@
     "preview": "Предварительный просмотр",
     "submit": "Отправить",
     "clean": "Очистить",
+    "cancel": "Отмена",
     "markdown_styling_guide": "Руководство по стилю Markdown",
     "power_up": "Увеличить на 100%",
     "maximum_characters": "Максимум {{num}} символов",

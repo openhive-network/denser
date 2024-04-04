@@ -161,7 +161,8 @@
       "reveal_comment": "Reveal Comment",
       "one_reply": "reply",
       "replies": "replies",
-      "reply": "Reply",
+      "reply": "댓글 달기",
+      "edit": "편집하다",
       "will_be_hidden": "Will be hidden due to low rating ",
       "load_more": "Load more"
     }
@@ -350,6 +351,7 @@
       "responses": "{{votes}}개의 댓글이 있습니다. ",
       "reblog": "Reblog",
       "reply": "댓글 달기",
+      "edit": "편집하다",
       "share_on": "Share on ",
       "share_form": {
         "copy": "COPY",
@@ -398,6 +400,7 @@
     "preview": "미리보기",
     "submit": "제출",
     "clean": "정리",
+    "cancel": "취소",
     "markdown_styling_guide": "마크다운 스타일 가이드",
     "power_up": "100% 파워 업",
     "maximum_characters": "{{num}} 자 이내",

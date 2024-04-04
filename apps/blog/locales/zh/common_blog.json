@@ -161,7 +161,8 @@
       "reveal_comment": "Reveal Comment",
       "one_reply": "reply",
       "replies": "replies",
-      "reply": "Reply",
+      "reply": "回复",
+      "edit": "编辑",
       "will_be_hidden": "Will be hidden due to low rating ",
       "load_more": "Load more"
     }
@@ -350,6 +351,7 @@
       "responses": "{{responses}}个回复。",
       "reblog": "转发",
       "reply": "回复",
+      "edit": "编辑",
       "share_on": "Share on ",
       "share_form": {
         "copy": "复制",
@@ -398,6 +400,7 @@
     "preview": "预览",
     "submit": "提交",
     "clean": "清除",
+    "cancel": "取消",
     "markdown_styling_guide": "Markdown样式指南",
     "power_up": "100% 动力增强",
     "maximum_characters": "最多{{num}}个字符",
