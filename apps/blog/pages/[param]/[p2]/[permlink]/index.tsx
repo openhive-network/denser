@@ -36,6 +36,7 @@ import { AlertDialogFlag } from '@/blog/components/alert-window-flag';
 import VotesComponent from '@/blog/components/votes';
 import { HiveRendererContext } from '@/blog/components/hive-renderer-context';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -55,13 +56,18 @@ function PostPage({
 }) {
   const { t } = useTranslation('common_blog');
   const anchorRef = useRef();
+  const { user } = useUser();
   const {
     isLoading: isLoadingDiscussion,
     error: errorDiscussion,
     data: discussion
-  } = useQuery(['discussionData', username, permlink], () => getDiscussion(username, String(permlink)), {
-    enabled: !!username && !!permlink
-  });
+  } = useQuery(
+    ['discussionData', username, permlink],
+    () => getDiscussion(username, user.username, String(permlink)),
+    {
+      enabled: !!username && !!permlink
+    }
+  );
 
   const {
     isLoading: isLoadingCommunity,
@@ -167,7 +173,6 @@ function PostPage({
       behavior: 'smooth'
     });
   }, [router, hiveRenderer]);
-  console.log(post_s);
   return (
     <div className="py-8">
       <div className="relative mx-auto my-0 max-w-4xl bg-white px-8 py-4 dark:bg-slate-900">

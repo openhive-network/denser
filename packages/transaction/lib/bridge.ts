@@ -343,6 +343,7 @@ export const getAccountNotifications = async (
 
 interface IGetDiscussion {
   author: string;
+  observer: string;
   permlink: string;
 }
 
@@ -354,10 +355,12 @@ type GetDiscussionData = {
 
 export const getDiscussion = async (
   author: string,
+  observer: string,
   permlink: string
 ): Promise<Record<string, Entry> | null> => {
   return chain.extend<GetDiscussionData>().api.bridge.get_discussion({
     author,
+    observer,
     permlink
   });
 };
