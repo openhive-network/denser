@@ -270,7 +270,7 @@ export default function ProfileLists({
                         ? t('user_profil.lists.list.reset_followed_muted_list')
                         : null}
               </Button>
-              <Button disabled size="sm" className="text-xs">
+              <Button onClick={() => transactionService.resetAllBlog()} size="sm" className="text-xs">
                 {t('user_profil.lists.list.reset_all_lists')}
               </Button>
             </div>
