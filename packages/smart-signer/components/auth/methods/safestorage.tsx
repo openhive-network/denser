@@ -212,7 +212,6 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
         }
 
         form.setValue('userFound', found ? true : false);
-        form.trigger(['username', 'wif'])
         return found;
         /* eslint-disable react-hooks/exhaustive-deps */
     }, [form.watch('username'), authUsers]);
