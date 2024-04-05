@@ -1,14 +1,15 @@
 import { GetServerSideProps } from 'next';
 import { getTranslations } from '@/auth/lib/get-translations';
 import config from "config";
-import env from '@beam-australia/react-env';
+
+import { getLogger } from '@ui/lib/logging';
+const logger = getLogger('app');
 
 export default function HomePage() {
-  console.log(
+  logger.info(
     'config.get("Customer.credit.initialLimit")',
     config.get("Customer.credit.initialLimit"),
   );
-  console.log('BAMBOO', env('BAMBOO'))
   return (
     <div className="pt-16 flex flex-col sm:flex-row gap-24 mx-2
         sm:gap-0 sm:justify-around">
