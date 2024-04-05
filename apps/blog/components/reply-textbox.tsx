@@ -10,6 +10,7 @@ import { transactionService } from '@transaction/index';
 import { HiveRendererContext } from './hive-renderer-context';
 import DialogLogin from './dialog-login';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
+import MdEditor from './md-editor';
 
 export function ReplyTextbox({
   onSetReply,
@@ -63,19 +64,17 @@ export function ReplyTextbox({
           <h1 className="text-sm text-red-500">{t('post_content.footer.comment.disable_editor')}</h1>
         </Link>
         <div>
-          <Textarea
-            className="border-2 border-slate-200 dark:text-white"
-            onChange={(e) => setText(e.target.value)}
+          <MdEditor
+            onChange={(value) => {
+              setText(value);
+            }}
+            persistedValue={text}
             placeholder={t('post_content.footer.comment.reply')}
-            value={text}
           />
           <p className="border-2 border-t-0 border-slate-200 bg-gray-100 p-1 text-xs font-light text-slate-500 dark:border-black dark:bg-slate-950">
             {t('post_content.footer.comment.insert_images')}{' '}
             <span>
-              <Label className="cursor-pointer text-red-500" htmlFor="picture">
-                {t('post_content.footer.comment.selecting_them')}
-              </Label>
-              <Input id="picture" type="file" className="hidden" />
+              <Label htmlFor="picture">{t('post_content.footer.comment.selecting_them')}</Label>
             </span>
           </p>
         </div>

@@ -77,7 +77,12 @@ const uploadImg = async (file: File, username: string, signer: Signer): Promise<
   return '';
 };
 
-export const onImageUpload = async (file: File, setMarkdown: Dispatch<SetStateAction<string>>, username: string, signer: Signer) => {
+export const onImageUpload = async (
+  file: File,
+  setMarkdown: Dispatch<SetStateAction<string>>,
+  username: string,
+  signer: Signer
+) => {
   const url = await uploadImg(file, username, signer);
   const insertedMarkdown = `**![${file.name}](${url})** `;
 
@@ -105,9 +110,10 @@ export const onImageDrop = async (
 interface MdEditorProps {
   onChange: (value: string) => void;
   persistedValue: string;
+  placeholder?: string;
 }
 
-const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '' }) => {
+const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholder }) => {
   const { user } = useUser();
   const [formValue, setFormValue] = useState<string>(persistedValue);
 
@@ -152,7 +158,11 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '' }) => {
   };
 
   const dropHandler = useCallback(
-    async (event: { preventDefault: () => void; stopPropagation: () => void; dataTransfer: DataTransfer }) => {
+    async (event: {
+      preventDefault: () => void;
+      stopPropagation: () => void;
+      dataTransfer: DataTransfer;
+    }) => {
       event.preventDefault();
       event.stopPropagation();
       setIsDrag(false);
@@ -193,9 +203,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '' }) => {
     }
   });
 
-  const editChoice = (inputRef: MutableRefObject<HTMLInputElement>) => [
-    imgBtn(inputRef)
-  ];
+  const editChoice = (inputRef: MutableRefObject<HTMLInputElement>) => [imgBtn(inputRef)];
 
   return (
     <div>
@@ -215,7 +223,10 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '' }) => {
             ref={editorRef}
             preview="edit"
             value={formValue}
-            onChange={(value) => { setFormValue(value || '') }}
+            aria-placeholder={placeholder ?? ''}
+            onChange={(value) => {
+              setFormValue(value || '');
+            }}
             commands={[...(commands.getCommands() as ICommand[]), imgBtn(inputRef)]}
             extraCommands={[]}
             //@ts-ignore
