@@ -327,6 +327,7 @@
   "post_content": {
     "in": "w",
     "reputation_title": "Reputacja",
+    "blacklists": "Czarna lista",
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "Przeglądasz wątek pojedynczego komentarza",
       "view_the_full_context": "Zobacz pełen kontekst.",

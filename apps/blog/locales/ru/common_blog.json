@@ -320,6 +320,7 @@
   "post_content": {
     "in": "в",
     "reputation_title": "Репутация",
+    "blacklists": "Черные списки",
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "Вы читаете одну нить комментариев от",
       "view_the_full_context": "Показать полный контекст",

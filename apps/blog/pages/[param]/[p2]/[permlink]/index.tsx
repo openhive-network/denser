@@ -61,9 +61,13 @@ function PostPage({
     isLoading: isLoadingDiscussion,
     error: errorDiscussion,
     data: discussion
-  } = useQuery(['discussionData', username, permlink], () => getDiscussion(username, String(permlink)), {
-    enabled: !!username && !!permlink
-  });
+  } = useQuery(
+    ['discussionData', username, permlink],
+    () => getDiscussion(username, user.username, String(permlink)),
+    {
+      enabled: !!username && !!permlink
+    }
+  );
 
   const {
     isLoading: isLoadingCommunity,
@@ -89,6 +93,7 @@ function PostPage({
   const storageId = `replybox-/${username}/${post_s.permlink}`;
   const [storedBox, storeBox] = useLocalStorage<Boolean>(storageId, false);
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
+  const firstPost = discussionState?.find((post) => post.depth === 0);
   const [edit, setEdit] = useState(false);
   useEffect(() => {
     if (reply) {
@@ -166,7 +171,7 @@ function PostPage({
       behavior: 'smooth'
     });
   }, [router, hiveRenderer]);
-  console.log(post_s);
+
   return (
     <div className="py-8">
       <div className="relative mx-auto my-0 max-w-4xl bg-white px-8 py-4 dark:bg-slate-900">
@@ -213,11 +218,8 @@ function PostPage({
           community={community}
           category={post_s.category}
           created={post_s.created}
-          blacklist={post_s.blacklists}
+          blacklist={firstPost ? firstPost.blacklists : post_s.blacklists}
         />
-        {/* <span className="text-red-600" title={post_s.blacklists[0]}>
-        ({post_s.blacklists.length})
-      </span> */}
         <hr />
         {!hiveRenderer ? (
           <Loading loading={!hiveRenderer} />
@@ -312,7 +314,7 @@ function PostPage({
               <UserHoverCard
                 author={post_s.author}
                 author_reputation={post_s.author_reputation}
-                blacklist={post_s.blacklists}
+                blacklist={firstPost ? firstPost.blacklists : post_s.blacklists}
               />
               {post_s.author_title ? (
                 <Badge variant="outline" className="border-red-600 text-slate-500">

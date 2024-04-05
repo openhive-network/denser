@@ -314,6 +314,7 @@
   "post_content": {
     "in": "in",
     "reputation_title": "Reputazione",
+    "blacklists": "Liste nere",
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "Stai visualizzando il commento singolo di un thread di",
       "vview_the_full_context": "Vedi il contesto completo",
