@@ -61,10 +61,13 @@ const Methods: FC<MethodsProps> = ({
       username: lastLoggedInUser || '',
       keyType: preferredKeyTypes[0],
       loginType: LoginType.hbauth
-    }
+    },
+    mode: 'onChange'
   });
 
   useEffect(() => {
+    form.trigger('keyType');
+
     return () => {
       form.reset();
     };
