@@ -1,4 +1,4 @@
-import Router, { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { Icons } from '@ui/components/icons';
 import ProfileLayout from '@/blog/components/common/profile-layout';
 import { Button } from '@ui/components/button';
@@ -10,7 +10,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue
 } from '@ui/components/select';
@@ -24,6 +23,8 @@ import { useParams } from 'next/navigation';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { cn } from '@ui/lib/utils';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
+import { transactionService } from '@transaction/index';
 
 const DEFAULTS_ENDPOINTS = [
   'https://api.hive.blog',
@@ -41,6 +42,7 @@ export default function UserSettings() {
   const params = useParams();
   const router = useRouter();
   const { user } = useUser();
+  const mutedQuery = useFollowListQuery(user.username, 'muted');
 
   useEffect(() => {
     setIsClient(true);
@@ -254,6 +256,24 @@ export default function UserSettings() {
           </div>
 
           <Button className="my-4 w-44">Reset Endpoints</Button>
+        </div>
+        <div>
+          <div>Muted Users</div>
+          <ul>
+            {mutedQuery.data?.map((mutedUser, index) => (
+              <li key={mutedUser.name}>
+                <span>{index + 1}. </span>
+                <span className="text-red-500">{mutedUser.name}</span>
+                <Button
+                  className="text-red-500"
+                  variant="link"
+                  onClick={() => transactionService.unmute(mutedUser.name)}
+                >
+                  [unmute]
+                </Button>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </ProfileLayout>
