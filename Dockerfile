@@ -77,7 +77,7 @@ COPY --from=installer --chown=nextjs:nodejs /app${TURBO_APP_PATH}/.next/standalo
 COPY --from=installer --chown=nextjs:nodejs /app${TURBO_APP_PATH}/.next/static .${TURBO_APP_PATH}/.next/static
 COPY --from=installer --chown=nextjs:nodejs /app${TURBO_APP_PATH}/.env* ./
 COPY --from=installer --chown=nextjs:nodejs /app${TURBO_APP_PATH}/li[b]/markdown[s]/ .${TURBO_APP_PATH}/lib/markdowns/
-COPY --from=installer --chown=nextjs:nodejs /app${TURBO_APP_PATH}/config .${TURBO_APP_PATH}/config
+COPY --from=installer --chown=nextjs:nodejs /app${TURBO_APP_PATH}/confi[g] .${TURBO_APP_PATH}/config
 
 # Expose ports 3000 and 4000 for the sake of GitLab CI healthcheck
 EXPOSE 3000
