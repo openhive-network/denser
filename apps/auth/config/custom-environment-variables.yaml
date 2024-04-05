@@ -2,5 +2,6 @@
 Customer:
   credit:
     initialLimit:
-      __name: REACT_APP_BAMBOO
+      # Prefix REACT_APP_, _ in place of ., __ for pascal case.
+      __name: REACT_APP_CUSTOMER__CREDIT__INITIAL_LIMIT
       __format: number
