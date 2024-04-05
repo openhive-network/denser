@@ -338,6 +338,26 @@ class TransactionService {
     });
   }
 
+  // TODO: ADD type with expected structure from form
+  async updateProfile(data: any) {
+    await this.processHiveAppOperation((builder) => {
+      builder
+        .push({
+          account_update2: {
+            account: this.signerOptions.username,
+            extensions: [],
+            json_metadata: '',
+            posting_json_metadata: JSON.stringify(data),
+            owner: undefined,
+            active: undefined,
+            posting: undefined,
+            memo_key: ''
+          }
+        })
+        .build();
+    });
+  }
+
   async updateProposalVotes(proposal_ids: string[], approve: boolean, extensions: future_extensions[]) {
     await this.processHiveAppOperation((builder) => {
       builder
