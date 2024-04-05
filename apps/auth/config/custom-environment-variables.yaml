@@ -3,5 +3,5 @@ Customer:
   credit:
     initialLimit:
       # Prefix REACT_APP_, _ in place of ., __ for pascal case.
-      __name: REACT_APP_CUSTOMER__CREDIT__INITIAL_LIMIT
+      __name: REACT_APP_CUSTOMER_CREDIT_INITIAL__LIMIT
       __format: number
