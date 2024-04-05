@@ -83,7 +83,6 @@ const Methods: FC<MethodsProps> = ({
 
       await sign(loginType, username, keyType);
       await submit(username);
-
     } catch (error: unknown) {
       setError((error as Error).message);
     } finally {
@@ -169,7 +168,8 @@ const Methods: FC<MethodsProps> = ({
               variant="ghost"
               onClick={form.handleSubmit(() => onSubmit(LoginType.keychain))}
             >
-               <Icons.hivekeychain className="mr-4 h-8 w-8" />{t('login_form.signin_with_keychain')}
+              <Icons.hivekeychain className="mr-4 h-8 w-8" />
+              {t('login_form.signin_with_keychain')}
             </Button>
 
             <Separator className="my-1 w-full" />
@@ -182,22 +182,30 @@ const Methods: FC<MethodsProps> = ({
               onClick={form.handleSubmit(() => onSubmit(LoginType.wif))}
             >
               <div className="flex flex-1 items-center">
-                <Icons.keyRound className="mr-4 h-8 w-8" />{t('login_form.signin_with_wif')}
+                <Icons.keyRound className="mr-4 h-8 w-8" />
+                {t('login_form.signin_with_wif')}
               </div>
+            </Button>
+
+            <Separator className="my-1 w-full" />
+
+            <Button
+              className="flex w-full justify-start py-6"
+              type="button"
+              variant="ghost"
+              onClick={form.handleSubmit(() => onSubmit(LoginType.hivesigner))}
+            >
+              <Icons.hivesigner className="mr-4 h-8 w-8" />
+              {t('login_form.signin_with_hivesigner')}
             </Button>
 
             <Separator className="my-1 w-full" />
 
             <Button disabled className="flex w-full py-6" type="button" variant="ghost">
               <div className="flex flex-1 items-center">
-                <Icons.hiveauth className="mr-4 h-8 w-8" />{t('login_form.signin_with_hiveauth')}
+                <Icons.hiveauth className="mr-4 h-8 w-8" />
+                {t('login_form.signin_with_hiveauth')}
               </div>
-            </Button>
-
-            <Separator className="my-1 w-full" />
-
-            <Button disabled className="flex w-full justify-start py-6" type="button" variant="ghost">
-              <Icons.hivesigner className="mr-4 h-8 w-8" />{t('login_form.signin_with_hivesigner')}
             </Button>
 
             <Button

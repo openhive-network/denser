@@ -1,6 +1,7 @@
 import { SignerHbauth } from '@smart-signer/lib/signer/signer-hbauth';
 import { SignerHiveauth } from '@smart-signer/lib/signer/signer-hiveauth';
 import { SignerKeychain } from '@smart-signer/lib/signer/signer-keychain';
+import { SignerHiveSigner } from '@smart-signer/lib/signer/signer-hivesigner';
 import { SignerWif } from '@smart-signer/lib/signer/signer-wif';
 import { LoginType } from '@smart-signer/types/common';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
@@ -9,12 +10,13 @@ export type SignerTool = SignerHbauth | SignerHiveauth | SignerKeychain | Signer
 
 export type RegisteredSigners = {
   [key in LoginType]?: any;
-}
+};
 
 const registeredSigners: RegisteredSigners = {};
 registeredSigners[LoginType.hbauth] = SignerHbauth;
 registeredSigners[LoginType.hiveauth] = SignerHiveauth;
 registeredSigners[LoginType.keychain] = SignerKeychain;
+registeredSigners[LoginType.hivesigner] = SignerHiveSigner;
 registeredSigners[LoginType.wif] = SignerWif;
 
 export function signerFactory({
@@ -22,14 +24,14 @@ export function signerFactory({
   loginType,
   keyType,
   apiEndpoint,
-  storageType,
+  storageType
 }: SignerOptions): SignerTool {
   return new registeredSigners[loginType]({
     username,
     loginType,
     keyType,
     apiEndpoint,
-    storageType,
+    storageType
   }) as SignerTool;
 }
 

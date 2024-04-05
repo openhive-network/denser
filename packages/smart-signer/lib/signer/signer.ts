@@ -1,3 +1,5 @@
+import { Client as HivesignerClient } from 'hivesigner';
+
 import { LoginType } from '@smart-signer/types/common';
 import { KeyType } from '@smart-signer/types/common';
 import { StorageType } from '@smart-signer/lib/storage-mixin';
@@ -17,12 +19,15 @@ export interface SignChallenge {
   translateFn?: (v: string) => string;
 }
 
+export type HivesignerOptions = ConstructorParameters<typeof HivesignerClient>[0];
+
 export interface SignerOptions {
   username: string;
   loginType: LoginType;
   keyType: KeyType;
   apiEndpoint: string;
   storageType: StorageType;
+  hivesignerOptions?: HivesignerOptions;
 }
 
 /**
@@ -39,10 +44,11 @@ export abstract class Signer {
   keyType: KeyType;
   apiEndpoint: string;
   storageType: StorageType;
+  hivesignerOptions!: HivesignerOptions;
   pack: TTransactionPackType;
 
   constructor(
-    { username, loginType, keyType, apiEndpoint, storageType }: SignerOptions,
+    { username, loginType, keyType, apiEndpoint, storageType, hivesignerOptions }: SignerOptions,
     pack: TTransactionPackType
     ) {
 
@@ -58,6 +64,26 @@ export abstract class Signer {
     }
     if (loginType) {
       this.loginType = loginType;
+
+      if (loginType === LoginType.hivesigner) {
+        if (!hivesignerOptions) {
+          throw new Error('Signer constructor: hivesignerOptions must be defined for hivesigner login type');
+        }
+
+        if (!hivesignerOptions.app) {
+          throw new Error('Signer constructor: hivesignerOptions.app must be defined');
+        }
+
+        if (!hivesignerOptions.callbackURL) {
+          throw new Error('Signer constructor: hivesignerOptions.callbackURL must be defined');
+        }
+
+        if (!hivesignerOptions.scope) {
+          throw new Error('Signer constructor: hivesignerOptions.scope must be defined');
+        }
+
+        this.hivesignerOptions = hivesignerOptions;
+      }
     } else {
       throw new Error('Signer constructor: loginType must be non-empty string');
     }

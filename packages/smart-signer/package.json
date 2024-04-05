@@ -16,6 +16,7 @@
     "change-case": "^5.4.3",
     "cors": "^2.8.5",
     "hive-auth-client": "^0.1.5",
+    "hivesigner": "^3.3.4",
     "http-errors": "^2.0.0",
     "iron-session": "^8.0.1",
     "keychain-sdk": "^0.6.1",
