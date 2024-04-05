@@ -300,6 +300,14 @@ class TransactionService {
     });
   }
 
+  async updateComment(parentAuthor: string, parentPermlink: string, permlink: string, body: string) {
+    await this.processHiveAppOperation((builder) => {
+      builder
+        .pushReply(parentAuthor, parentPermlink, this.signerOptions.username, body, {}, permlink)
+        .store();
+    });
+  }
+
   async post(
     permlink: string,
     title: string,
@@ -308,7 +316,8 @@ class TransactionService {
     percentHbd: number,
     maxAcceptedPayout: NaiAsset,
     tags: string[],
-    category: string
+    category: string,
+    summary: string
   ) {
     await this.processHiveAppOperation((builder) => {
       const op = builder
@@ -316,7 +325,8 @@ class TransactionService {
         .setCategory(category !== 'blog' ? category : tags[0])
         .setPercentHbd(percentHbd)
         .setMaxAcceptedPayout(maxAcceptedPayout)
-        .pushTags(tags[0], ...tags.slice(1));
+        .pushTags(...tags)
+        .pushMetadataProperty({ summary: summary });
 
       beneficiaries.forEach((beneficiarie) => {
         op.addBeneficiary(beneficiarie.account, Number(beneficiarie.weight));

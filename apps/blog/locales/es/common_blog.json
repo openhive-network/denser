@@ -162,6 +162,7 @@
       "one_reply": "reply",
       "replies": "replies",
       "reply": "Reply",
+      "edit": "Editar",
       "will_be_hidden": "Will be hidden due to low rating ",
       "load_more": "Load more"
     }
@@ -348,6 +349,7 @@
       "votes": "{{votes}} votos",
       "reblog": "Rebloguear",
       "reply": "Respuesta",
+      "edit": "Editar",
       "no_responses": "Sin respuestas. ",
       "response": "1 respuesta. ",
       "responses": "{{responses}} respuestas. ",
@@ -399,6 +401,7 @@
     "preview": "Vista previa",
     "submit": "Enviar",
     "clean": "Limpiar",
+    "cancel": "Cancelar",
     "markdown_styling_guide": "Guía de Estilo Markdown",
     "power_up": "Potenciar al 100%",
     "maximum_characters": "Máximo de {{num}} caracteres",

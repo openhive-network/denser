@@ -10,7 +10,7 @@ import { IronSessionData } from '@smart-signer/types/common';
 import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { checkCsrfHeader } from '@smart-signer/lib/csrf-protection';
 import { verifyLoginChallenge } from '@smart-signer/lib/verify-login-challenge';
-import { verifyLogin } from '@smart-signer/lib/auth/use-sign-in';
+import { verifyLogin } from '@smart-signer/lib/verify-login';
 import { getLoginChallengeFromTransactionForLogin } from '@smart-signer/lib/login-operation'
 
 import { getLogger } from '@hive/ui/lib/logging';

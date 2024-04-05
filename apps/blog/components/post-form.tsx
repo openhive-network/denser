@@ -20,11 +20,11 @@ import {
   FormItem,
   FormMessage
 } from '@hive/ui/components/form';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import useManabars from './hooks/useManabars';
 import { AdvancedSettingsPostForm } from './advanced_settings_post_form';
 import MdEditor from './md-editor';
-import { useContext, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { useTranslation } from 'next-i18next';
@@ -32,10 +32,11 @@ import { HiveRendererContext } from './hive-renderer-context';
 import { transactionService } from '@transaction/index';
 import { createPermlink } from '@transaction/lib/utils';
 import { useQuery } from '@tanstack/react-query';
-import { getCommunity, getSubscriptions } from '@transaction/lib/bridge';
+import { Entry, getCommunity, getSubscriptions } from '@transaction/lib/bridge';
 import { useRouter } from 'next/router';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { TFunction } from 'i18next';
+import { debounce } from '../lib/utils';
 
 const defaultValues = {
   title: '',
@@ -98,13 +99,29 @@ function validateAltUsernameInput(value: string, t: TFunction<'common_wallet', u
     : null;
 }
 
-export default function PostForm({ username }: { username: string }) {
+export default function PostForm({
+  username,
+  editMode = false,
+  sideBySidePreview = true,
+  post_s,
+  setEditMode
+}: {
+  username: string;
+  editMode: boolean;
+  sideBySidePreview: boolean;
+  post_s?: Entry;
+  setEditMode?: Dispatch<SetStateAction<boolean>>;
+}) {
   const { hiveRenderer } = useContext(HiveRendererContext);
   const router = useRouter();
   const [preview, setPreview] = useState(true);
-  const [sideBySide, setSideBySide] = useState(true);
+  const [sideBySide, setSideBySide] = useState(sideBySidePreview);
   const { manabarsData } = useManabars(username);
-  const [storedPost, storePost] = useLocalStorage<AccountFormValues>('postData', defaultValues);
+  const [storedPost, storePost] = useLocalStorage<AccountFormValues>(
+    editMode ? `postData-edit-${post_s?.permlink}` : 'postData-new',
+    defaultValues
+  );
+  const [previewContent, setPreviewContent] = useState<string | undefined>(storedPost.postArea);
   const { t } = useTranslation('common_blog');
 
   const {
@@ -146,51 +163,74 @@ export default function PostForm({ username }: { username: string }) {
 
   type AccountFormValues = z.infer<typeof accountFormSchema>;
   const getValues = (storedPost?: AccountFormValues) => ({
-    title: storedPost?.title ?? '',
-    postArea: storedPost?.postArea ?? '',
-    postSummary: storedPost?.postSummary ?? '',
-    tags: storedPost?.tags ?? '',
-    author: storedPost?.author ?? '',
-    category: storedPost?.category ?? '',
+    title: post_s ? post_s.title : storedPost?.title ?? '',
+    postArea: post_s ? post_s.body : storedPost?.postArea ?? '',
+    postSummary: post_s?.json_metadata.summary ? post_s.json_metadata.summary : storedPost?.postSummary ?? '',
+    tags: post_s?.json_metadata.tags ? post_s.json_metadata.tags.join(' ') : storedPost?.tags ?? '',
+    author: post_s ? post_s.author : storedPost?.author ?? '',
+    category: post_s ? post_s.category : storedPost?.category ?? '',
+    // beneficiaries: post_s ? post_s.beneficiaries : storedPost?.beneficiaries ?? [],
     beneficiaries: storedPost?.beneficiaries ?? [],
-    maxAcceptedPayout: storedPost?.maxAcceptedPayout ?? null,
-    payoutType: storedPost?.payoutType ?? '50%'
+    maxAcceptedPayout: post_s
+      ? Number(post_s.max_accepted_payout.split(' ')[0])
+      : storedPost?.maxAcceptedPayout ?? null,
+    payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType ?? '50%'
   });
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
     values: getValues(storedPost)
   });
+
+  const { postArea, ...restFields } = useWatch({
+    control: form.control
+  });
+
   const watchedValues = form.watch();
   const tagsCheck = validateTagInput(watchedValues.tags, watchedValues.category === 'blog', t);
   const summaryCheck = validateSummoryInput(watchedValues.postSummary, t);
   const altUsernameCheck = validateAltUsernameInput(watchedValues.author, t);
 
+  useEffect(() => {
+    debounce(() => {
+      storePost(form.getValues());
+    }, 50)();
+  }, [form, postArea, restFields, storePost]);
+
+  // update debounced post preview content
+  useEffect(() => {
+    if (typeof previewContent !== 'undefined' && postArea !== previewContent) {
+      debounce(() => {
+        setPreviewContent(postArea);
+      }, 50)();
+    }
+  }, [postArea, previewContent]);
+
   async function onSubmit(data: AccountFormValues) {
     const chain = await hiveChainService.getHiveChain();
-    const tags = storedPost?.tags.replace(/#/g, '').split(' ') ?? [];
+    const tags = storedPost.tags.replace(/#/g, '').split(' ') ?? [];
     const maxAcceptedPayout = await chain.hbd(Number(storedPost.maxAcceptedPayout));
     const postPermlink = await createPermlink(storedPost?.title ?? '', username);
+    const permlinInEditMode = post_s?.permlink;
     try {
       await transactionService.post(
-        postPermlink,
-        storedPost?.title ?? '',
-        watchedValues.postArea,
+        editMode && permlinInEditMode ? permlinInEditMode : postPermlink,
+        storedPost.title,
+        storedPost.postArea,
         storedPost.beneficiaries,
         Number(storedPost.payoutType.slice(0, 2)),
         maxAcceptedPayout,
         tags,
-        storedPost.category
+        storedPost.category,
+        storedPost.postSummary
       );
+      form.reset(defaultValues);
+      setPreviewContent(undefined);
       storePost(defaultValues);
-      router.push(`/created/${tags[0]}`);
+      await router.push(`/created/${tags[0]}`, undefined, { shallow: true });
     } catch (error) {
       console.error(error);
     }
   }
-
-  useEffect(() => {
-    storePost(watchedValues);
-  }, [JSON.stringify(watchedValues)]);
 
   return (
     <div className={clsx({ container: !sideBySide || !preview })}>
@@ -242,7 +282,7 @@ export default function PostForm({ username }: { username: string }) {
                       onChange={(value) => {
                         form.setValue('postArea', value);
                       }}
-                      persistedValue={storedPost.postArea}
+                      persistedValue={field.value}
                     />
                   </FormControl>
                   <FormDescription className="border-x-2 border-b-2 border-border px-3 pb-1 text-xs text-destructive">
@@ -299,42 +339,45 @@ export default function PostForm({ username }: { username: string }) {
                 </FormItem>
               )}
             />
-            <div className="flex flex-col gap-2">
-              <span>{t('submit_page.post_options')}</span>
-              {storedPost?.maxAcceptedPayout !== null && storedPost.maxAcceptedPayout > 0 ? (
-                <span className="text-xs">
-                  {t('submit_page.advanced_settings_dialog.maximum_accepted_payout') +
-                    ': ' +
-                    storedPost.maxAcceptedPayout +
-                    ' HBD'}
-                </span>
-              ) : null}
-              {storedPost.beneficiaries.length > 0 ? (
-                <span className="text-xs">
-                  {t('submit_page.advanced_settings_dialog.beneficiaries', {
-                    num: storedPost.beneficiaries.length
-                  })}
-                </span>
-              ) : null}
+            {!editMode ? (
+              <div className="flex flex-col gap-2">
+                <span>{t('submit_page.post_options')}</span>
+                {storedPost?.maxAcceptedPayout !== null && storedPost.maxAcceptedPayout > 0 ? (
+                  <span className="text-xs">
+                    {t('submit_page.advanced_settings_dialog.maximum_accepted_payout') +
+                      ': ' +
+                      storedPost.maxAcceptedPayout +
+                      ' HBD'}
+                  </span>
+                ) : null}
+                {storedPost.beneficiaries.length > 0 ? (
+                  <span className="text-xs">
+                    {t('submit_page.advanced_settings_dialog.beneficiaries', {
+                      num: storedPost.beneficiaries.length
+                    })}
+                  </span>
+                ) : null}
 
-              <span className="text-xs">
-                {t('submit_page.author_rewards')}
-                {storedPost.maxAcceptedPayout === 0
-                  ? ' ' + t('submit_page.advanced_settings_dialog.decline_payout')
-                  : storedPost?.payoutType === '100%'
-                    ? t('submit_page.power_up')
-                    : ' 50% HBD / 50% HP'}
-              </span>
-
-              <AdvancedSettingsPostForm username={username} onChangeStore={storePost} data={storedPost}>
-                <span
-                  className="w-fit cursor-pointer text-xs text-destructive"
-                  title={t('submit_page.advanced_tooltip')}
-                >
-                  {t('submit_page.advanced_settings')}
+                <span className="text-xs">
+                  {t('submit_page.author_rewards')}
+                  {storedPost.maxAcceptedPayout === 0
+                    ? ' ' + t('submit_page.advanced_settings_dialog.decline_payout')
+                    : storedPost?.payoutType === '100%'
+                      ? t('submit_page.power_up')
+                      : ' 50% HBD / 50% HP'}
                 </span>
-              </AdvancedSettingsPostForm>
-            </div>
+
+                <AdvancedSettingsPostForm username={username} onChangeStore={storePost} data={storedPost}>
+                  <span
+                    className="w-fit cursor-pointer text-xs text-destructive"
+                    title={t('submit_page.advanced_tooltip')}
+                  >
+                    {t('submit_page.advanced_settings')}
+                  </span>
+                </AdvancedSettingsPostForm>
+              </div>
+            ) : null}
+
             <div className="flex flex-col gap-2">
               <span>{t('submit_page.account_stats')}</span>
               <span className="text-xs">
@@ -392,11 +435,14 @@ export default function PostForm({ username }: { username: string }) {
             <Button
               onClick={() => {
                 form.reset(defaultValues);
+                if (editMode && setEditMode) {
+                  setEditMode(false);
+                }
               }}
               variant="ghost"
               className="font-thiny text-foreground/60 hover:text-destructive"
             >
-              {t('submit_page.clean')}
+              {editMode ? t('submit_page.cancel') : t('submit_page.clean')}
             </Button>
           </form>
         </Form>
@@ -416,10 +462,10 @@ export default function PostForm({ username }: { username: string }) {
             </Link>
           </div>
 
-          {watchedValues.postArea && hiveRenderer ? (
+          {previewContent && hiveRenderer ? (
             <div
               dangerouslySetInnerHTML={{
-                __html: hiveRenderer.render(watchedValues.postArea)
+                __html: hiveRenderer.render(previewContent)
               }}
               className="prose h-fit self-center break-words border-2 border-border p-2 dark:prose-invert"
             ></div>

@@ -18,6 +18,16 @@ export enum NaiMap {
   '@@000000037' = 'VESTS'
 }
 
+export const debounce = (fn: Function, delay: number) => {
+  let timer: ReturnType<typeof setTimeout>;
+  return function (...args: any[]) {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      fn(...args);
+    }, delay);
+  };
+}
+
 const isHumanReadable = (input: number): boolean => {
   return Math.abs(input) > 0 && Math.abs(input) <= 100;
 };

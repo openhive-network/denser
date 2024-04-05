@@ -173,6 +173,7 @@
       "one_reply": "1 odpowiedź",
       "replies": "odpowiedzi",
       "reply": "Odpowiedz",
+      "edit": "Edytuj",
       "will_be_hidden": "Komentarz jest ukryte ze względu na niską ocenę",
       "load_more": "Pokaż więcej"
     }
@@ -364,6 +365,7 @@
       "responses": "{{responses}} odpowiedzi. ",
       "reblog": "Rebloguj",
       "reply": "Odpowiedz",
+      "edit": "Edytuj",
       "share_on": "Udostępnij na ",
       "share_form": {
         "copy": "KOPIUJ",
@@ -412,6 +414,7 @@
     "preview": "Podgląd",
     "submit": "Wyślij",
     "clean": "Wyczyść",
+    "cancel": "Anuluj",
     "markdown_styling_guide": "Przewodnik formatowania z użyciem Markdown",
     "power_up": "Wzmocnij o 100%",
     "maximum_characters": "Maksymalnie {{num}} znaków",

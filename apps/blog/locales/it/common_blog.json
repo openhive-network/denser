@@ -162,6 +162,7 @@
       "one_reply": "reply",
       "replies": "replies",
       "reply": "Reply",
+      "edit": "Modificare",
       "will_be_hidden": "Will be hidden due to low rating ",
       "load_more": "Load more"
     }
@@ -351,6 +352,7 @@
       "responses": "{{responses}} commenti. ",
       "reblog": "Reblog",
       "reply": "Risposta",
+      "edit": "Modificare",
       "share_on": "Share on ",
       "share_form": {
         "copy": "Copia",
@@ -399,6 +401,7 @@
     "preview": "Anteprima",
     "submit": "Invia",
     "clean": "Pulisci",
+    "cancel": "Annulla",
     "markdown_styling_guide": "Guida alla formattazione Markdown",
     "power_up": "Potenzia al 100%",
     "maximum_characters": "Massimo {{num}} caratteri",

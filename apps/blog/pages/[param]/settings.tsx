@@ -25,6 +25,7 @@ import { cn } from '@ui/lib/utils';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
 import { transactionService } from '@transaction/index';
+import { hbauthUseStrictMode, hbauthService } from '@smart-signer/lib/hbauth-service';
 
 const DEFAULTS_ENDPOINTS = [
   'https://api.hive.blog',
@@ -215,6 +216,7 @@ export default function UserSettings() {
             onValueChange={async (newEndpoint) => {
               setEndpoint(newEndpoint);
               await hiveChainService.setHiveChainEndpoint(newEndpoint);
+              await hbauthService.setOnlineClient(hbauthUseStrictMode, { node: newEndpoint });
             }}
             value={endpoint}
           >

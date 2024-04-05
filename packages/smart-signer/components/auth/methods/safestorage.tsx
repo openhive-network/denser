@@ -2,7 +2,7 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'next-i18next';
-import { AuthUser, AuthorizationError, KeyAuthorityType, OnlineClient } from "@hive/hb-auth";
+import { AuthUser, AuthorizationError, OnlineClient } from "@hive/hb-auth";
 import { z } from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { username } from '@smart-signer/lib/auth/utils';
@@ -28,18 +28,37 @@ import {
 import Step from "../step"
 import { Steps } from "../form";
 import { KeyType, LoginType } from "@smart-signer/types/common";
+import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
+
+import { getLogger } from '@ui/lib/logging';
+const logger = getLogger('app');
 
 const formSchema = z.object({
-    username,
-    password: z.string().min(6, {
-        message: "Password length should be more than 6 characters"
-    }),
-    wif: z.string(),
-    keyType: z.nativeEnum(KeyType, {
-        invalid_type_error: 'Invalid keyType',
-        required_error: 'keyType is required'
-    }),
-});
+        username,
+        password: z.string().min(6, {
+            message: "Password length should be more than 6 characters"
+        }),
+        wif: z.string(),
+        keyType: z.nativeEnum(KeyType, {
+            invalid_type_error: 'Invalid keyType',
+            required_error: 'keyType is required'
+        }),
+        userFound: z.boolean(),
+    }).superRefine((val, ctx) => {
+        if (!val.userFound) {
+            const result = validateWifKey(val.wif, (v) => v);
+            if (result) {
+                ctx.addIssue({
+                  code: z.ZodIssueCode.custom,
+                  message: result,
+                  path: ['wif'],
+                  fatal: true,
+                });
+                return z.NEVER;
+              }
+        }
+        return true;
+    });
 
 export type SafeStorageRef = { cancel: () => Promise<void>; };
 
@@ -69,12 +88,14 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
     const [error, setError] = useState<string | null>(null);
     const [authUsers, setAuthUsers] = useState<AuthUser[]>([]);
     const form = useForm<SafeStorageForm>({
+        mode: 'onChange',
         resolver: zodResolver(formSchema),
         defaultValues: {
             username: "",
             password: "",
             wif: "",
-            keyType: preferredKeyTypes[0]
+            keyType: preferredKeyTypes[0],
+            userFound: true,
         }
     });
 
@@ -190,9 +211,11 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
             setDescription(t("login_form.signin_safe_storage.description_save", { keyType: form.getValues().keyType }));
         }
 
+        form.setValue('userFound', found ? true : false);
+        form.trigger(['username', 'wif'])
         return found;
         /* eslint-disable react-hooks/exhaustive-deps */
-    }, [form.getValues().username, authUsers]);
+    }, [form.watch('username'), authUsers]);
 
     if (loading === undefined) return <Step loading={true}></Step>;
 
@@ -212,10 +235,15 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
                                 <FormControl>
                                     {/* Place holder, enter username if there is no user, otherwise select user from menu or enter new user*/}
                                     <div className="flex relative">
-                                        <Input placeholder={t("login_form.signin_safe_storage.placeholder_username")} type='text' {...field} />
+                                        <Input
+                                            placeholder={t("login_form.signin_safe_storage.placeholder_username")}
+                                            type='text'
+                                            autoComplete="username"
+                                            {...field}
+                                        />
                                         {authUsers.length ? (
                                             <DropdownMenu>
-                                                <DropdownMenuTrigger className="absolute right-0 top-0 p-4">
+                                                <DropdownMenuTrigger className="absolute right-0 top-0 p-2">
                                                     <Icons.chevronDown />
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent className="w-56 absolute -right-7" side="bottom">
@@ -226,7 +254,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
                                                                     className="cursor-pointer p-2"
                                                                     key={username} onSelect={() => {
                                                                         form.setValue('username', username);
-                                                                        form.trigger();
+                                                                        form.trigger(['username', 'wif']);
                                                                     }}
                                                                     disabled={form.getValues().username === username}
                                                                 >
@@ -250,12 +278,17 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
                     <FormField
                         control={form.control}
                         name="password"
-                        render={({ field }) => (
+                        render={({ field, formState: { errors } }) => (
                             <FormItem>
                                 <FormControl>
-                                    <Input placeholder={t("login_form.signin_safe_storage.placeholder_password")} type='password' {...field} />
+                                    <Input placeholder={t("login_form.signin_safe_storage.placeholder_password")}
+                                    type='password'
+                                    autoComplete="current-password"
+                                    {...field}
+                                />
                                 </FormControl>
-                                <FormMessage className="font-normal" />
+                                <FormMessage className="font-normal"></FormMessage>
+                                {/* {errors.password && <FormMessage className="font-normal">{t(errors.password?.message!)}</FormMessage>} */}
                             </FormItem>
                         )}
                     />
@@ -264,12 +297,12 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
                     {!userFound && <FormField
                         control={form.control}
                         name="wif"
-                        render={({ field }) => (
+                        render={({ field, formState: { errors } }) => (
                             <FormItem>
                                 <FormControl>
                                     <Input placeholder={t("login_form.signin_safe_storage.placeholder_wif", { keyType: form.getValues().keyType })} type='password' {...field} />
                                 </FormControl>
-                                <FormMessage className="font-normal" />
+                                {errors.wif && <FormMessage className="font-normal">{t(errors.wif?.message!)}</FormMessage>}
                             </FormItem>
                         )}
                     />}
