@@ -14,10 +14,8 @@ import * as commands from '@uiw/react-md-editor/commands';
 import { useTheme } from 'next-themes';
 import env from '@beam-australia/react-env';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { cryptoUtils } from '@hiveio/dhive';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
-import { KeyType } from '@smart-signer/types/common';
-import { Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
+import { Signer } from '@smart-signer/lib/signer/signer';
 import { ICommand, TextAreaTextApi } from '@uiw/react-md-editor';
 import { useSigner } from '@smart-signer/lib/use-signer';
 
