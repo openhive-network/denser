@@ -7,8 +7,8 @@ const logger = getLogger('app');
 
 export default function HomePage() {
   logger.info(
-    'config.get("Customer.credit.initialLimit")',
-    config.get("Customer.credit.initialLimit"),
+    'config.get("firstName")',
+    config.get("firstName"),
   );
   return (
     <div className="pt-16 flex flex-col sm:flex-row gap-24 mx-2
@@ -26,7 +26,7 @@ export default function HomePage() {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  console.log('Customer.credit.initialLimit: %s', config.get("Customer.credit.initialLimit"));
+  console.log('firstName: %s', config.get("firstName"));
   return {
     props: {
       ...(await getTranslations(ctx)),
