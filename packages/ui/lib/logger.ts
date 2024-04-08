@@ -1,12 +1,12 @@
 export interface LoggerLogLevels {
-    off: number,
-    fatal: number,
-    error: number,
-    warn:  number,
-    info:  number,
-    debug: number,
-    trace: number,
-    all: number,
+    off: number;
+    fatal: number;
+    error: number;
+    warn:  number;
+    info:  number;
+    debug: number;
+    trace: number;
+    all: number;
 };
 
 export type LoggerOutput = 'console' | 'noop';
