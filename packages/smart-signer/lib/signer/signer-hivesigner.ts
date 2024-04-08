@@ -1,7 +1,7 @@
 import { TTransactionPackType } from '@hive/wax';
 import { SignChallenge, Signer, SignerOptions, SignTransaction } from './signer';
 
-export class SignerHiveSigner extends Signer {
+export class SignerHivesigner extends Signer {
   constructor(signerOptions: SignerOptions, pack: TTransactionPackType = TTransactionPackType.LEGACY) {
     super(signerOptions, pack);
   }
