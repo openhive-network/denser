@@ -38,6 +38,7 @@ import { HiveRendererContext } from '@/blog/components/hive-renderer-context';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import PostForm from '@/blog/components/post-form';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import DialogLogin from '@/blog/components/dialog-login';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -341,15 +342,21 @@ function PostPage({
                 </Tooltip>
               </TooltipProvider>
               <span className="mx-1">|</span>
-              <button
-                onClick={() => {
-                  setReply(!reply), localStorage.removeItem(storageId);
-                }}
-                className="flex items-center text-red-600"
-                data-testid="comment-reply"
-              >
-                {t('post_content.footer.reply')}
-              </button>
+              {user && user.isLoggedIn ? (
+                <button
+                  onClick={() => {
+                    setReply(!reply), localStorage.removeItem(storageId);
+                  }}
+                  className="flex items-center text-red-600"
+                  data-testid="comment-reply"
+                >
+                  {t('post_content.footer.reply')}
+                </button>
+              ) : (
+                <DialogLogin>
+                  <button className="flex items-center text-red-600">{t('post_content.footer.reply')}</button>
+                </DialogLogin>
+              )}
               {user && user.isLoggedIn && post_s.author === user.username ? (
                 <>
                   <span className="mx-1">|</span>
@@ -435,7 +442,7 @@ function PostPage({
       </div>
       <div id="comments" className="flex" />
       <div className="mx-auto my-0 max-w-4xl py-4">
-        {reply ? (
+        {reply && user && user.isLoggedIn ? (
           <ReplyTextbox onSetReply={setReply} username={username} permlink={permlink} storageId={storageId} />
         ) : null}
       </div>

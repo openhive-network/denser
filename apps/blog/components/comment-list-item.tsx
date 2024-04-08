@@ -19,6 +19,7 @@ import { useTranslation } from 'next-i18next';
 import VotesComponent from './votes';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import DialogLogin from './dialog-login';
 
 const CommentListItem = ({
   comment,
@@ -246,15 +247,23 @@ const CommentListItem = ({
                             <Separator orientation="vertical" className="h-5" />
                           </>
                         ) : null}
-                        <button
-                          onClick={() => {
-                            setReply(!reply), localStorage.removeItem(storageId);
-                          }}
-                          className="flex items-center hover:cursor-pointer hover:text-red-600"
-                          data-testid="comment-card-footer-reply"
-                        >
-                          {t('cards.comment_card.reply')}
-                        </button>
+                        {user && user.isLoggedIn ? (
+                          <button
+                            onClick={() => {
+                              setReply(!reply), localStorage.removeItem(storageId);
+                            }}
+                            className="flex items-center hover:cursor-pointer hover:text-red-600"
+                            data-testid="comment-card-footer-reply"
+                          >
+                            {t('cards.comment_card.reply')}
+                          </button>
+                        ) : (
+                          <DialogLogin>
+                            <button className="flex items-center hover:cursor-pointer hover:text-red-600">
+                              {t('post_content.footer.reply')}
+                            </button>
+                          </DialogLogin>
+                        )}
                         {user && user.isLoggedIn && comment.author === user.username ? (
                           <>
                             <Separator orientation="vertical" className="h-5" />
@@ -284,7 +293,7 @@ const CommentListItem = ({
           </Link>
         </div>
       ) : null}
-      {reply ? (
+      {reply && user && user.isLoggedIn ? (
         <ReplyTextbox
           onSetReply={setReply}
           username={username}
