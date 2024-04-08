@@ -27,6 +27,40 @@ import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
 import { transactionService } from '@transaction/index';
 import { hbauthUseStrictMode, hbauthService } from '@smart-signer/lib/hbauth-service';
 
+interface Settings {
+  profile_img: string;
+  bg_img: string;
+  name: string;
+  about: string;
+  location: string;
+  website: string;
+  blacklist_description: string;
+  mute_list_description: string;
+}
+interface Preferences {
+  nsfw: 'hide' | 'warn' | 'show';
+  blog_rewards: '0%' | '50%' | '100%';
+  comment_rewards: '0%' | '50%' | '100%';
+  referral_system: 'enabled' | 'disabled';
+}
+
+const DEFAULT_SETTINGS: Settings = {
+  profile_img: '',
+  bg_img: '',
+  name: '',
+  about: '',
+  location: '',
+  website: '',
+  blacklist_description: '',
+  mute_list_description: ''
+};
+const DEFAULT_PREFERENCES: Preferences = {
+  nsfw: 'hide',
+  blog_rewards: '50%',
+  comment_rewards: '50%',
+  referral_system: 'enabled'
+};
+
 const DEFAULTS_ENDPOINTS = [
   'https://api.hive.blog',
   'https://api.openhive.network',
@@ -36,6 +70,8 @@ const DEFAULTS_ENDPOINTS = [
 ];
 
 export default function UserSettings() {
+  const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
+  const [preferences, setPreferences] = useState<Preferences>(DEFAULT_PREFERENCES);
   const [endpoints, setEndpoints] = useLocalStorage('hive-blog-endpoints', DEFAULTS_ENDPOINTS);
   const [endpoint, setEndpoint] = useLocalStorage('hive-blog-endpoint', siteConfig.endpoint);
   const [newEndpoint, setNewEndpoint] = useState('');
@@ -48,7 +84,6 @@ export default function UserSettings() {
   useEffect(() => {
     setIsClient(true);
   }, []);
-
   return (
     <ProfileLayout>
       <div className="flex flex-col" data-testid="public-profile-settings">
@@ -61,7 +96,13 @@ export default function UserSettings() {
               <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
                 <div>
                   <Label htmlFor="profileImage">Profile picture url</Label>
-                  <Input type="text" id="profileImage" name="profileImage" />
+                  <Input
+                    type="text"
+                    id="profileImage"
+                    name="profileImage"
+                    value={settings.profile_img}
+                    onChange={(e) => setSettings((prev) => ({ ...prev, profile_img: e.target.value }))}
+                  />
                   <span className="text-sm font-normal text-red-600 hover:cursor-pointer">
                     Upload an image
                   </span>
@@ -69,7 +110,13 @@ export default function UserSettings() {
 
                 <div>
                   <Label htmlFor="coverImage">Cover image url (Optimal: 2048 x 512 px)</Label>
-                  <Input type="text" id="coverImage" name="coverImage" />
+                  <Input
+                    type="text"
+                    id="coverImage"
+                    name="coverImage"
+                    value={settings.bg_img}
+                    onChange={(e) => setSettings((prev) => ({ ...prev, bg_img: e.target.value }))}
+                  />
                   <span className="text-md font-normal text-red-600 hover:cursor-pointer">
                     Upload an image
                   </span>
@@ -77,32 +124,72 @@ export default function UserSettings() {
 
                 <div>
                   <Label htmlFor="name">Display Name</Label>
-                  <Input type="text" id="name" name="name" />
+                  <Input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={settings.name}
+                    onChange={(e) => setSettings((prev) => ({ ...prev, name: e.target.value }))}
+                  />
                 </div>
 
                 <div>
                   <Label htmlFor="about">About</Label>
-                  <Input type="email" id="about" name="about" />
+                  <Input
+                    type="email"
+                    id="about"
+                    name="about"
+                    value={settings.about}
+                    onChange={(e) => setSettings((prev) => ({ ...prev, about: e.target.value }))}
+                  />
                 </div>
 
                 <div>
                   <Label htmlFor="location">Location</Label>
-                  <Input type="text" id="location" name="location" />
+                  <Input
+                    type="text"
+                    id="location"
+                    name="location"
+                    value={settings.location}
+                    onChange={(e) => setSettings((prev) => ({ ...prev, location: e.target.value }))}
+                  />
                 </div>
 
                 <div>
                   <Label htmlFor="website">Website</Label>
-                  <Input type="text" id="website" name="website" />
+                  <Input
+                    type="text"
+                    id="website"
+                    name="website"
+                    value={settings.website}
+                    onChange={(e) => setSettings((prev) => ({ ...prev, website: e.target.value }))}
+                  />
                 </div>
 
                 <div>
                   <Label htmlFor="blacklistDescription">Blacklist Description</Label>
-                  <Input type="text" id="blacklistDescription" name="blacklistDescription" />
+                  <Input
+                    type="text"
+                    id="blacklistDescription"
+                    name="blacklistDescription"
+                    value={settings.blacklist_description}
+                    onChange={(e) =>
+                      setSettings((prev) => ({ ...prev, blacklist_description: e.target.value }))
+                    }
+                  />
                 </div>
 
                 <div>
                   <Label htmlFor="mutedListDescription">Mute List Description</Label>
-                  <Input type="text" id="mutedListDescription" name="mutedListDescription" />
+                  <Input
+                    type="text"
+                    id="mutedListDescription"
+                    name="mutedListDescription"
+                    value={settings.mute_list_description}
+                    onChange={(e) =>
+                      setSettings((prev) => ({ ...prev, mute_list_description: e.target.value }))
+                    }
+                  />
                 </div>
               </div>
               <Button className="my-4 w-44" data-testid="pps-update-button">
@@ -139,7 +226,13 @@ export default function UserSettings() {
 
                 <div data-testid="not-safe-for-work-content">
                   <Label htmlFor="not-safe-for-work-content">Not safe for work (NSFW) content</Label>
-                  <Select defaultValue="hide" name="not-safe-for-work-content">
+                  <Select
+                    value={preferences.nsfw}
+                    onValueChange={(e: 'hide' | 'warn' | 'show') =>
+                      setPreferences((prev) => ({ ...prev, nsfw: e }))
+                    }
+                    name="not-safe-for-work-content"
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Not safe for work (NSFW) content" />
                     </SelectTrigger>
@@ -155,7 +248,13 @@ export default function UserSettings() {
 
                 <div data-testid="blog-post-rewards">
                   <Label htmlFor="blog-post-rewards">Blog post rewards</Label>
-                  <Select defaultValue="50%" name="blog-post-rewards">
+                  <Select
+                    value={preferences.blog_rewards}
+                    onValueChange={(e: '0%' | '50%' | '100%') =>
+                      setPreferences((prev) => ({ ...prev, blog_rewards: e }))
+                    }
+                    name="blog-post-rewards"
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Blog post rewards" />
                     </SelectTrigger>
@@ -171,7 +270,13 @@ export default function UserSettings() {
 
                 <div data-testid="comment-post-rewards">
                   <Label htmlFor="comment-post-rewards">Comment post rewards</Label>
-                  <Select defaultValue="50%" name="comment-post-rewards">
+                  <Select
+                    name="comment-post-rewards"
+                    value={preferences.comment_rewards}
+                    onValueChange={(e: '0%' | '50%' | '100%') =>
+                      setPreferences((prev) => ({ ...prev, comment_rewards: e }))
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Comment post rewards" />
                     </SelectTrigger>
@@ -187,7 +292,13 @@ export default function UserSettings() {
 
                 <div data-testid="referral-system">
                   <Label htmlFor="referral-system">Referral System</Label>
-                  <Select defaultValue="enabled" name="referral-system">
+                  <Select
+                    name="referral-system"
+                    value={preferences.referral_system}
+                    onValueChange={(e: 'enabled' | 'disabled') =>
+                      setPreferences((prev) => ({ ...prev, referral_system: e }))
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Referral System" />
                     </SelectTrigger>
