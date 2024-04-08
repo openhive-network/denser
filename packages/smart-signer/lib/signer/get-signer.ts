@@ -24,14 +24,16 @@ export function signerFactory({
   loginType,
   keyType,
   apiEndpoint,
-  storageType
+  storageType,
+  hivesignerOptions
 }: SignerOptions): SignerTool {
   return new registeredSigners[loginType]({
     username,
     loginType,
     keyType,
     apiEndpoint,
-    storageType
+    storageType,
+    hivesignerOptions
   }) as SignerTool;
 }
 
