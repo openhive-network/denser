@@ -293,7 +293,7 @@ const CommentListItem = ({
           </Link>
         </div>
       ) : null}
-      {reply ? (
+      {reply && user && user.isLoggedIn ? (
         <ReplyTextbox
           onSetReply={setReply}
           username={username}
