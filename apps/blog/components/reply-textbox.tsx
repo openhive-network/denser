@@ -1,9 +1,7 @@
 import Link from 'next/link';
-import { Textarea } from '@ui/components/textarea';
 import { Button } from '@ui/components/button';
 import { useContext, useEffect, useState } from 'react';
 import { Label } from '@radix-ui/react-label';
-import { Input } from '@ui/components/input';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { transactionService } from '@transaction/index';
@@ -79,28 +77,22 @@ export function ReplyTextbox({
           </p>
         </div>
         <div className="flex flex-col md:flex-row">
-          {user && user.isLoggedIn ? (
-            <Button
-              disabled={text === ''}
-              onClick={() => {
-                if (parentPermlink) {
-                  transactionService.updateComment(username, parentPermlink, permlink, cleanedText);
-                } else {
-                  transactionService.comment(username, permlink, cleanedText);
-                }
-                setText('');
-                localStorage.removeItem(`replyTo-/${username}/${permlink}`);
-                localStorage.removeItem(storageId);
-                onSetReply(false);
-              }}
-            >
-              {t('post_content.footer.comment.post')}
-            </Button>
-          ) : (
-            <DialogLogin>
-              <Button disabled={text === ''}> {t('post_content.footer.comment.post')}</Button>
-            </DialogLogin>
-          )}
+          <Button
+            disabled={text === ''}
+            onClick={() => {
+              if (parentPermlink) {
+                transactionService.updateComment(username, parentPermlink, permlink, cleanedText);
+              } else {
+                transactionService.comment(username, permlink, cleanedText);
+              }
+              setText('');
+              localStorage.removeItem(`replyTo-/${username}/${permlink}`);
+              localStorage.removeItem(storageId);
+              onSetReply(false);
+            }}
+          >
+            {t('post_content.footer.comment.post')}
+          </Button>
           <Button
             variant="ghost"
             onClick={() => handleCancel()}
