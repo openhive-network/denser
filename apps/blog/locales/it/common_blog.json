@@ -314,6 +314,7 @@
   "post_content": {
     "in": "in",
     "reputation_title": "Reputazione",
+    "blacklists": "Liste nere",
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "Stai visualizzando il commento singolo di un thread di",
       "vview_the_full_context": "Vedi il contesto completo",
@@ -385,7 +386,7 @@
     "hide_preview": "Nascondi anteprima",
     "show_preview": "Mostra anteprima",
     "title": "Titolo",
-    "insert_images_by_dragging": "Inserisci immagini trascinandole e rilasciandole, incollandole dagli appunti o ",
+    "insert_images_by_dragging": "Inserisci immagini trascinandole e rilasciandole o ",
     "selecting_them": "selezionandole",
     "post_summary": "Sommario della pubblicazione (per post e SEO, max 140 caratteri)",
     "enter_your_tags": "Inserisci i tuoi tag separati da uno spazio",

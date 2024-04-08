@@ -207,8 +207,8 @@ export const getPostsRanked = async (
   tag: string = '',
   start_author: string = '',
   start_permlink: string = '',
-  limit: number = DATA_LIMIT,
-  observer: string = ''
+  observer: string,
+  limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
   return chain
     .extend<GetPostsRankedData>()
@@ -344,6 +344,7 @@ export const getAccountNotifications = async (
 
 interface IGetDiscussion {
   author: string;
+  observer: string;
   permlink: string;
 }
 
@@ -355,10 +356,12 @@ type GetDiscussionData = {
 
 export const getDiscussion = async (
   author: string,
+  observer: string,
   permlink: string
 ): Promise<Record<string, Entry> | null> => {
   return chain.extend<GetDiscussionData>().api.bridge.get_discussion({
     author,
+    observer,
     permlink
   });
 };

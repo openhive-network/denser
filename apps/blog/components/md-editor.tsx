@@ -14,10 +14,8 @@ import * as commands from '@uiw/react-md-editor/commands';
 import { useTheme } from 'next-themes';
 import env from '@beam-australia/react-env';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { cryptoUtils } from '@hiveio/dhive';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
-import { KeyType } from '@smart-signer/types/common';
-import { Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
+import { Signer } from '@smart-signer/lib/signer/signer';
 import { ICommand, TextAreaTextApi } from '@uiw/react-md-editor';
 import { useSigner } from '@smart-signer/lib/use-signer';
 
@@ -77,7 +75,12 @@ const uploadImg = async (file: File, username: string, signer: Signer): Promise<
   return '';
 };
 
-export const onImageUpload = async (file: File, setMarkdown: Dispatch<SetStateAction<string>>, username: string, signer: Signer) => {
+export const onImageUpload = async (
+  file: File,
+  setMarkdown: Dispatch<SetStateAction<string>>,
+  username: string,
+  signer: Signer
+) => {
   const url = await uploadImg(file, username, signer);
   const insertedMarkdown = `**![${file.name}](${url})** `;
 
@@ -105,9 +108,10 @@ export const onImageDrop = async (
 interface MdEditorProps {
   onChange: (value: string) => void;
   persistedValue: string;
+  placeholder?: string;
 }
 
-const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '' }) => {
+const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholder }) => {
   const { user } = useUser();
   const [formValue, setFormValue] = useState<string>(persistedValue);
 
@@ -152,7 +156,11 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '' }) => {
   };
 
   const dropHandler = useCallback(
-    async (event: { preventDefault: () => void; stopPropagation: () => void; dataTransfer: DataTransfer }) => {
+    async (event: {
+      preventDefault: () => void;
+      stopPropagation: () => void;
+      dataTransfer: DataTransfer;
+    }) => {
       event.preventDefault();
       event.stopPropagation();
       setIsDrag(false);
@@ -193,9 +201,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '' }) => {
     }
   });
 
-  const editChoice = (inputRef: MutableRefObject<HTMLInputElement>) => [
-    imgBtn(inputRef)
-  ];
+  const editChoice = (inputRef: MutableRefObject<HTMLInputElement>) => [imgBtn(inputRef)];
 
   return (
     <div>
@@ -215,7 +221,10 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '' }) => {
             ref={editorRef}
             preview="edit"
             value={formValue}
-            onChange={(value) => { setFormValue(value || '') }}
+            aria-placeholder={placeholder ?? ''}
+            onChange={(value) => {
+              setFormValue(value || '');
+            }}
             commands={[...(commands.getCommands() as ICommand[]), imgBtn(inputRef)]}
             extraCommands={[]}
             //@ts-ignore

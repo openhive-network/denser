@@ -38,6 +38,7 @@ import { HiveRendererContext } from '@/blog/components/hive-renderer-context';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import PostForm from '@/blog/components/post-form';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import DialogLogin from '@/blog/components/dialog-login';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -61,9 +62,13 @@ function PostPage({
     isLoading: isLoadingDiscussion,
     error: errorDiscussion,
     data: discussion
-  } = useQuery(['discussionData', username, permlink], () => getDiscussion(username, String(permlink)), {
-    enabled: !!username && !!permlink
-  });
+  } = useQuery(
+    ['discussionData', username, permlink],
+    () => getDiscussion(username, user.username, String(permlink)),
+    {
+      enabled: !!username && !!permlink
+    }
+  );
 
   const {
     isLoading: isLoadingCommunity,
@@ -89,6 +94,7 @@ function PostPage({
   const storageId = `replybox-/${username}/${post_s.permlink}`;
   const [storedBox, storeBox] = useLocalStorage<Boolean>(storageId, false);
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
+  const firstPost = discussionState?.find((post) => post.depth === 0);
   const [edit, setEdit] = useState(false);
   useEffect(() => {
     if (reply) {
@@ -166,7 +172,7 @@ function PostPage({
       behavior: 'smooth'
     });
   }, [router, hiveRenderer]);
-  console.log(post_s);
+
   return (
     <div className="py-8">
       <div className="relative mx-auto my-0 max-w-4xl bg-white px-8 py-4 dark:bg-slate-900">
@@ -213,11 +219,8 @@ function PostPage({
           community={community}
           category={post_s.category}
           created={post_s.created}
-          blacklist={post_s.blacklists}
+          blacklist={firstPost ? firstPost.blacklists : post_s.blacklists}
         />
-        {/* <span className="text-red-600" title={post_s.blacklists[0]}>
-        ({post_s.blacklists.length})
-      </span> */}
         <hr />
         {!hiveRenderer ? (
           <Loading loading={!hiveRenderer} />
@@ -312,7 +315,7 @@ function PostPage({
               <UserHoverCard
                 author={post_s.author}
                 author_reputation={post_s.author_reputation}
-                blacklist={post_s.blacklists}
+                blacklist={firstPost ? firstPost.blacklists : post_s.blacklists}
               />
               {post_s.author_title ? (
                 <Badge variant="outline" className="border-red-600 text-slate-500">
@@ -339,15 +342,21 @@ function PostPage({
                 </Tooltip>
               </TooltipProvider>
               <span className="mx-1">|</span>
-              <button
-                onClick={() => {
-                  setReply(!reply), localStorage.removeItem(storageId);
-                }}
-                className="flex items-center text-red-600"
-                data-testid="comment-reply"
-              >
-                {t('post_content.footer.reply')}
-              </button>
+              {user && user.isLoggedIn ? (
+                <button
+                  onClick={() => {
+                    setReply(!reply), localStorage.removeItem(storageId);
+                  }}
+                  className="flex items-center text-red-600"
+                  data-testid="comment-reply"
+                >
+                  {t('post_content.footer.reply')}
+                </button>
+              ) : (
+                <DialogLogin>
+                  <button className="flex items-center text-red-600">{t('post_content.footer.reply')}</button>
+                </DialogLogin>
+              )}
               {user && user.isLoggedIn && post_s.author === user.username ? (
                 <>
                   <span className="mx-1">|</span>
@@ -433,7 +442,7 @@ function PostPage({
       </div>
       <div id="comments" className="flex" />
       <div className="mx-auto my-0 max-w-4xl py-4">
-        {reply ? (
+        {reply && user && user.isLoggedIn ? (
           <ReplyTextbox onSetReply={setReply} username={username} permlink={permlink} storageId={storageId} />
         ) : null}
       </div>

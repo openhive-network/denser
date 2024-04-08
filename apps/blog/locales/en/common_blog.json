@@ -326,6 +326,7 @@
   "post_content": {
     "in": "in",
     "reputation_title": "Reputation",
+    "blacklists": "Blacklists",
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "You are viewing a single comment's thread from",
       "view_the_full_context": "View the full context",
@@ -397,7 +398,7 @@
     "hide_preview": "Hide preview",
     "show_preview": "Show preview",
     "title": "Title",
-    "insert_images_by_dragging": "Insert images by dragging & dropping, pasting from the clipboard, or by ",
+    "insert_images_by_dragging": "Insert images by dragging & dropping or by ",
     "selecting_them": "selecting them",
     "post_summary": "Post summary(for posts & SEO, max 140 chars)",
     "enter_your_tags": "Enter your tags separated by a space",

@@ -314,6 +314,7 @@
   "post_content": {
     "in": "in",
     "reputation_title": "評価",
+    "blacklists": "ブラックリスト",
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "次のスレッドのコメントの1つを表示しています",
       "view_the_full_context": "スレッドをすべて表示する",
@@ -385,7 +386,7 @@
     "hide_preview": "プレビューを非表示",
     "show_preview": "プレビューを表示",
     "title": "タイトル",
-    "insert_images_by_dragging": "画像の挿入はドラッグ＆ドロップ、クリップボードからの貼り付け、または ",
+    "insert_images_by_dragging": "画像の挿入はドラッグ＆ドロップ または ",
     "selecting_them": "選択してください",
     "post_summary": "投稿の要約（投稿およびSEO用、最大140文字）",
     "enter_your_tags": "スペースで区切られたタグを入力してください",

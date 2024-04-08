@@ -320,6 +320,7 @@
   "post_content": {
     "in": "в",
     "reputation_title": "Репутация",
+    "blacklists": "Черные списки",
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "Вы читаете одну нить комментариев от",
       "view_the_full_context": "Показать полный контекст",
@@ -391,7 +392,7 @@
     "hide_preview": "Скрыть превью",
     "show_preview": "Показать превью",
     "title": "Заголовок",
-    "insert_images_by_dragging": "Вставить изображения перетаскиванием, вставкой из буфера обмена или",
+    "insert_images_by_dragging": "Вставить изображения перетаскиванием или ",
     "selecting_them": "выбрав их",
     "post_summary": "Краткое содержание (для постов и SEO, максимум 140 символов)",
     "enter_your_tags": "Введите ваши теги, разделенные пробелом",
