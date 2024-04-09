@@ -1,3 +1,14 @@
+export class MyLoggerLogLevels {
+    off!: number;
+    fatal!: number;
+    error!: number;
+    warn!:  number;
+    info!:  number;
+    debug!: number;
+    trace!: number;
+    all!: number;
+};
+
 export interface LoggerLogLevels {
     off: number;
     fatal: number;

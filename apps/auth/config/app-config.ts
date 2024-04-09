@@ -1,5 +1,7 @@
-import { z } from 'zod';
-import { LoggerLogLevels } from '@ui/lib/logger'
+import { ZodTypeAny, z } from 'zod';
+import { MyLoggerLogLevels } from '@ui/lib/logger';
+
+const kwa: string[] = Object.keys(MyLoggerLogLevels);
 
 const appConfigSchema = z.object({
     app_name: z.string().min(1),
@@ -9,3 +11,4 @@ const appConfigSchema = z.object({
 });
 
 type AppConfigSchema = z.infer<typeof appConfigSchema>;
+

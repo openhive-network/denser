@@ -1,0 +1,11 @@
+{
+    "app_name": "",
+    "logging_browser_enabled": false,
+    "logging_log_level": "info",
+    "api_endpoint": "https://api.hive.blog",
+    "images_endpoint": "https://images.hive.blog",
+    "site_domain": "https://auth.openhive.network",
+    "server": {
+      "secret_cookie_password": "2gyZ3GDw3LHZKCMEPmPDL3sjREVRXPr8"
+    }
+  }
