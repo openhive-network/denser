@@ -1,0 +1,4 @@
+# Available both on server and client.
+logging_browser_enabled: true
+logging_log_level: trace
+site_domain: http://local.dry.ovh:5000

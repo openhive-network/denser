@@ -2,8 +2,9 @@ import { Html, Head, Main, NextScript } from "next/document";
 import Script from "next/script";
 import config from "config";
 
+// Read `config` into `__NEXT_CONFIG__`.
 const __NEXT_CONFIG__ = { ...config } as any;
-// exclude server config
+// Exclude server config.
 delete __NEXT_CONFIG__.server;
 
 export default function Document() {

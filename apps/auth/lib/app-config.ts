@@ -13,5 +13,4 @@ const appConfigSchema = z.object({
     })
 });
 
-
 export type AppConfigSchema = z.infer<typeof appConfigSchema>;

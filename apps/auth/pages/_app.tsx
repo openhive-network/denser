@@ -5,7 +5,7 @@ import { appWithTranslation } from 'next-i18next';
 import { i18n } from 'next-i18next.config';
 import { parseCookie } from '@smart-signer/lib/utils';
 import config from "config";
-import { AppConfigSchema } from '@/auth/config/app-config';
+import { AppConfigSchema } from '@/auth/lib/app-config';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -14,11 +14,12 @@ const Providers = lazy(() => import('@/auth/components/common/providers'));
 
 export let appConfig: AppConfigSchema;
 
+// Do next things on client only.
 if (typeof window !== 'undefined' && window) {
   // Log Git revision details in browser's console.
   console.info('GIT VERSION', GIT_VERSION, GIT_COMMITHASH, GIT_BRANCH);
 
-  // Set App Config global object.
+  // Set App Config global object and freeze it.
   appConfig = config.util.toObject();
   Object.freeze(appConfig);
 }

@@ -47,3 +47,5 @@ public/__ENV.js
 
 public/locales
 public/smart-signer
+
+config/local*
