@@ -4,13 +4,10 @@ import { lazy, Suspense, useEffect } from 'react';
 import { appWithTranslation } from 'next-i18next';
 import { i18n } from 'next-i18next.config';
 import { parseCookie } from '@smart-signer/lib/utils';
-import config from "config";
-import { AppConfig } from '@/auth/lib/app-config';
+import { AppConfigService } from '@/auth/lib/app-config';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
-
-export let appConfig: AppConfig;
 
 const Providers = lazy(() => import('@/auth/components/common/providers'));
 
@@ -18,10 +15,7 @@ if (typeof window !== 'undefined' && window) {
   // Log Git revision details in browser's console.
   console.info('GIT VERSION', GIT_VERSION, GIT_COMMITHASH, GIT_BRANCH);
 
-  // Setup appConfig global object and freeze it.
-  appConfig = config.util.toObject();
-  Object.freeze(appConfig);
-  logger.info('appConfig: %o', appConfig);
+  logger.info('appConfig: %o', AppConfigService.config);
 }
 
 function App({ Component, pageProps }: AppProps) {

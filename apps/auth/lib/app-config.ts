@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import config from 'config';
 
 const appConfigSchema = z.object({
     api_endpoint: z.string().url(),
@@ -14,3 +15,15 @@ const appConfigSchema = z.object({
 });
 
 export type AppConfig = z.infer<typeof appConfigSchema>;
+
+export class AppConfigService {
+    static appConfig: AppConfig;
+
+    static get config() {
+        if (!AppConfigService.appConfig) {
+            AppConfigService.appConfig = config.util.toObject();
+            Object.freeze(AppConfigService.appConfig);
+        }
+        return AppConfigService.appConfig;
+    }
+}
