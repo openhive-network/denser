@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import config from 'config';
 
-const appConfigSchema = z.object({
+export const appConfigSchema = z.object({
     api_endpoint: z.string().url(),
     app_name: z.string().min(1),
     images_endpoint: z.string().url(),

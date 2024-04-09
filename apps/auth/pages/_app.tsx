@@ -5,17 +5,37 @@ import { appWithTranslation } from 'next-i18next';
 import { i18n } from 'next-i18next.config';
 import { parseCookie } from '@smart-signer/lib/utils';
 import { AppConfigService } from '@/auth/lib/app-config';
+import { appConfigSchema } from '@/auth/lib/app-config';
+import config from 'config';
 
 import { getLogger } from '@ui/lib/logging';
+import { isBrowser } from '@ui/lib/logger';
 const logger = getLogger('app');
 
 const Providers = lazy(() => import('@/auth/components/common/providers'));
 
-if (typeof window !== 'undefined' && window) {
+if (isBrowser()) {
   // Log Git revision details in browser's console.
   console.info('GIT VERSION', GIT_VERSION, GIT_COMMITHASH, GIT_BRANCH);
 
   logger.info('appConfig: %o', AppConfigService.config);
+} else {
+  // Validate config passed to application via configuration files and
+  // environment variables.
+  try {
+    appConfigSchema.parse(config.util.toObject());
+    logger.info("Application Config is OK");
+  } catch (error) {
+    const parts = [
+      'Application will be stopped now,',
+      'because validation of configuration failed.',
+      'Error is: %o'
+    ];
+    logger.error(parts.join(' '), error);
+    // TODO Is exiting process a good idea here?
+    // Exit application, means shut down server process.
+    process.exit(1)
+  }
 }
 
 function App({ Component, pageProps }: AppProps) {
