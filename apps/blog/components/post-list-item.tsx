@@ -93,7 +93,7 @@ const PostListItem = ({
                 }}
               />
             </Link>
-            <div className="flex items-center">
+            <div className="flex flex-wrap items-center gap-0.5 md:flex-nowrap">
               <Link
                 href={`/@${post.author}`}
                 className="font-medium text-black hover:cursor-pointer hover:text-red-600 dark:text-white dark:hover:text-red-600"
