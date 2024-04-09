@@ -185,14 +185,16 @@
   cursor: pointer;
 }
 
-#articleBody .videoWrapper {
+#articleBody .videoWrapper,
+.prose .videoWrapper {
   position: relative;
   width: 100%;
   height: 0;
   padding-bottom: 56.25%;
 }
 
-#articleBody .videoWrapper iframe {
+#articleBody .videoWrapper iframe,
+.prose .videoWrapper iframe {
   position: absolute;
   left: 0;
   top: 0;

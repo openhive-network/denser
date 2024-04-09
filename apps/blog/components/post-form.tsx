@@ -464,7 +464,7 @@ export default function PostForm({
               dangerouslySetInnerHTML={{
                 __html: hiveRenderer.render(previewContent)
               }}
-              className="prose h-fit self-center break-words border-2 border-border p-2 dark:prose-invert"
+              className="prose h-fit w-full self-center break-words border-2 border-border p-2 dark:prose-invert"
             ></div>
           ) : null}
         </div>
