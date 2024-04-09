@@ -11,6 +11,7 @@ const nextConfig = {
     domains: ['avatars.githubusercontent.com']
   },
   experimental: {
+    instrumentationHook: true,
     outputFileTracingRoot: path.join(__dirname, '../..')
   },
   async rewrites() {

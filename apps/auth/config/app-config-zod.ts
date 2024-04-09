@@ -1,5 +1,7 @@
 import { z } from 'zod';
 import config from 'config';
+import 'reflect-metadata';
+
 
 class Book {
     api_endpoint!: string;
@@ -23,5 +25,5 @@ type AppConfigSchema = z.infer<typeof appConfigSchema>;
 const Be = new Book();
 config.get(Be.api_endpoint);
 
-let Ce: AppConfigSchema;
+let Ce!: AppConfigSchema;
 config.get(Ce.api_endpoint);

@@ -1,9 +1,10 @@
 # Available both on server and client.
-api_url: https://api.hive.blog
+api_endpoint: https://api.hive.blog
 app_name: "Hive Auth"
-images_url: https://images.hive.blog
+images_endpoint: https://images.hive.blog
 logging_browser_enabled: false
 logging_log_level: info
+site_domain: http://local.dry.ovh:5000
 
 # Available on server only.
 server:
