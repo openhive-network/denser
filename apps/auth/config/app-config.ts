@@ -1,67 +1,17 @@
-import 'reflect-metadata';
-import {
-    validate,
-    validateSync,
-    validateOrReject,
-    Contains,
-    IsInt,
-    Length,
-    IsEmail,
-    IsFQDN,
-    IsDate,
-    Min,
-    Max,
-    IsUrl,
-    IsNotEmpty,
-    IsEnum,
-    ValidateNested
-} from 'class-validator';
-import { Type, plainToClass } from 'class-transformer';
-import config from 'config';
+import { z } from 'zod';
 
-enum LogLevel {
-    'off',
-    'fatal',
-    'error',
-    'warn',
-    'info',
-    'debug',
-    'trace',
-    'all'
-}
+const appConfigSchema = z.object({
+    api_endpoint: z.string().url(),
+    app_name: z.string().min(1),
+    images_endpoint: z.string().url(),
+    logging_browser_enabled: z.boolean(),
+    logging_log_level: z.enum(['off', 'fatal', 'error', 'warn', 'info', 'debug', 'trace', 'all']),
+    site_domain: z.string().url(),
 
-class ServerConfig {
-    @IsNotEmpty()
-    secret_cookie_password: string;
-}
-
-export class AppConfig {
-    @IsUrl()
-    @IsNotEmpty()
-    api_endpoint: string;
-
-    @IsNotEmpty()
-    app_name: string;
-
-    @IsUrl()
-    @IsNotEmpty()
-    images_endpoint: string;
-
-    logging_browser_enabled!: boolean
-
-    @IsEnum(LogLevel)
-    logging_log_level: LogLevel;
-
-    @IsUrl()
-    @IsNotEmpty()
-    site_domain: string;
-
-    @ValidateNested()
-    @Type(() => ServerConfig)
-    server: ServerConfig;
-}
+    server: z.object({
+        secret_cookie_password: z.string().min(1),
+    })
+});
 
 
-const appConfig = new AppConfig();
-appConfig.api_endpoint;
-
+export type AppConfigSchema = z.infer<typeof appConfigSchema>;

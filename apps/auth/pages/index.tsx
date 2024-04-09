@@ -1,6 +1,7 @@
 import { GetServerSideProps } from 'next';
 import { getTranslations } from '@/auth/lib/get-translations';
 import config from "config";
+import { appConfig } from '@/auth/pages/_app';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');

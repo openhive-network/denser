@@ -98,5 +98,10 @@ module.exports = Object.assign({}, __NEXT_CONFIG__, {
       return false;
     }
     return getImpl(__NEXT_CONFIG__, property) !== undefined;
+  },
+  util: {
+    toObject() {
+      return __NEXT_CONFIG__;
+    }
   }
 });
