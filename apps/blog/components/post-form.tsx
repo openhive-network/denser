@@ -51,7 +51,7 @@ const defaultValues = {
 };
 
 const MAX_TAGS = 8;
-function validateTagInput(value: string, required: boolean, t: TFunction<'common_wallet', undefined>) {
+function validateTagInput(value: string, required: boolean, t: TFunction<'common_blog', undefined>) {
   if (!value || value.trim() === '') return required ? t('submit_page.category_selector.required') : null;
   const tags = value.trim().replace(/#/g, '').split(/ +/);
   return tags.length > MAX_TAGS

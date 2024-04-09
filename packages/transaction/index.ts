@@ -338,8 +338,19 @@ class TransactionService {
     });
   }
 
-  // TODO: ADD type with expected structure from form
-  async updateProfile(data: any) {
+  async updateProfile(
+    profile_image?: string,
+    cover_image?: string,
+    name?: string,
+    about?: string,
+    location?: string,
+    website?: string,
+    witness_owner?: string,
+    witness_description?: string,
+    blacklist_description?: string,
+    muted_list_description?: string,
+    version: number = 2 // signal upgrade to posting_json_metadata
+  ) {
     await this.processHiveAppOperation((builder) => {
       builder
         .push({
@@ -347,7 +358,21 @@ class TransactionService {
             account: this.signerOptions.username,
             extensions: [],
             json_metadata: '',
-            posting_json_metadata: JSON.stringify(data),
+            posting_json_metadata: JSON.stringify({
+              profile: {
+                profile_image,
+                cover_image,
+                name,
+                about,
+                location,
+                website,
+                witness_owner,
+                witness_description,
+                blacklist_description,
+                muted_list_description,
+                version
+              }
+            }),
             owner: undefined,
             active: undefined,
             posting: undefined,

@@ -26,16 +26,20 @@ import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
 import { transactionService } from '@transaction/index';
 import { hbauthUseStrictMode, hbauthService } from '@smart-signer/lib/hbauth-service';
+import { getAccountFull } from '@transaction/lib/hive';
+import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'next-i18next';
+import { TFunction } from 'i18next';
 
 interface Settings {
-  profile_img: string;
-  bg_img: string;
+  profile_image: string;
+  cover_image: string;
   name: string;
   about: string;
   location: string;
   website: string;
   blacklist_description: string;
-  mute_list_description: string;
+  muted_list_description: string;
 }
 interface Preferences {
   nsfw: 'hide' | 'warn' | 'show';
@@ -44,16 +48,6 @@ interface Preferences {
   referral_system: 'enabled' | 'disabled';
 }
 
-const DEFAULT_SETTINGS: Settings = {
-  profile_img: '',
-  bg_img: '',
-  name: '',
-  about: '',
-  location: '',
-  website: '',
-  blacklist_description: '',
-  mute_list_description: ''
-};
 const DEFAULT_PREFERENCES: Preferences = {
   nsfw: 'hide',
   blog_rewards: '50%',
@@ -68,8 +62,59 @@ const DEFAULTS_ENDPOINTS = [
   'https://anyx.io',
   'https://api.deathwing.me'
 ];
+function validation(values: Settings, t: TFunction<'common_blog'>) {
+  return {
+    profile_image:
+      values.profile_image && !/^https?:\/\//.test(values.profile_image)
+        ? t('settings_page.invalid_url')
+        : null,
+    cover_image:
+      values.cover_image && !/^https?:\/\//.test(values.cover_image) ? t('settings_page.invalid_url') : null,
+    name:
+      values.name && values.name.length > 20
+        ? t('settings_page.name_is_too_long')
+        : values.name && /^\s*@/.test(values.name)
+          ? t('settings_page.name_must_not_begin_with')
+          : null,
+    about: values.about && values.about.length > 160 ? t('settings_page.about_is_too_long') : null,
+    location: values.location && values.location.length > 30 ? t('settings_page.location_is_too_long') : null,
+    website:
+      values.website && values.website.length > 100
+        ? t('settings_page.website_url_is_too_long')
+        : values.website && !/^https?:\/\//.test(values.website)
+          ? t('settings_page.invalid_url')
+          : null,
+    blacklist_description:
+      values.blacklist_description && values.blacklist_description.length > 256
+        ? t('settings_page.description_is_too_long')
+        : null,
+    muted_list_description:
+      values.muted_list_description && values.muted_list_description.length > 256
+        ? t('settings_page.description_is_too_long')
+        : null
+  };
+}
 
 export default function UserSettings() {
+  const { user } = useUser();
+  const { isLoading, error, data } = useQuery(
+    ['profileData', user.username],
+    () => getAccountFull(user.username),
+    {
+      enabled: !!user.username
+    }
+  );
+  const profileData = data?.profile;
+  const DEFAULT_SETTINGS: Settings = {
+    profile_image: profileData?.profile_image ? profileData.profile_image : '',
+    cover_image: profileData?.cover_image ? profileData.cover_image : '',
+    name: profileData?.name ? profileData.name : '',
+    about: profileData?.about ? profileData.about : '',
+    location: profileData?.location ? profileData.location : '',
+    website: profileData?.website ? profileData.website : '',
+    blacklist_description: profileData?.blacklist_description ? profileData.blacklist_description : '',
+    muted_list_description: profileData?.muted_list_description ? profileData.muted_list_description : ''
+  };
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
   const [preferences, setPreferences] = useState<Preferences>(DEFAULT_PREFERENCES);
   const [endpoints, setEndpoints] = useLocalStorage('hive-blog-endpoints', DEFAULTS_ENDPOINTS);
@@ -77,13 +122,38 @@ export default function UserSettings() {
   const [newEndpoint, setNewEndpoint] = useState('');
   const [isClient, setIsClient] = useState(false);
   const params = useParams();
-  const router = useRouter();
-  const { user } = useUser();
   const mutedQuery = useFollowListQuery(user.username, 'muted');
-
+  const { t } = useTranslation('common_blog');
+  const disabledBtn = validation(settings, t);
   useEffect(() => {
     setIsClient(true);
   }, []);
+  const sameData =
+    DEFAULT_SETTINGS.profile_image === settings.profile_image &&
+    DEFAULT_SETTINGS.cover_image === settings.cover_image &&
+    DEFAULT_SETTINGS.name === settings.name &&
+    DEFAULT_SETTINGS.location === settings.location &&
+    DEFAULT_SETTINGS.website === settings.website &&
+    DEFAULT_SETTINGS.about === settings.about &&
+    DEFAULT_SETTINGS.blacklist_description === settings.blacklist_description &&
+    DEFAULT_SETTINGS.muted_list_description === settings.muted_list_description;
+
+  async function onSubmit() {
+    try {
+      await transactionService.updateProfile(
+        settings.profile_image !== '' ? settings.profile_image : undefined,
+        settings.cover_image !== '' ? settings.cover_image : undefined,
+        settings.name !== '' ? settings.name : undefined,
+        settings.about !== '' ? settings.about : undefined,
+        settings.location !== '' ? settings.location : undefined,
+        settings.website !== '' ? settings.website : undefined,
+        settings.blacklist_description !== '' ? settings.blacklist_description : undefined,
+        settings.muted_list_description !== '' ? settings.muted_list_description : undefined
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  }
   return (
     <ProfileLayout>
       <div className="flex flex-col" data-testid="public-profile-settings">
@@ -91,39 +161,41 @@ export default function UserSettings() {
           <>
             <div className="py-8">
               <h2 className="py-4 text-lg font-semibold leading-5 text-slate-900 dark:text-white">
-                Public Profile Settings
+                {t('settings_page.public_profile_settings')}
               </h2>
               <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
                 <div>
-                  <Label htmlFor="profileImage">Profile picture url</Label>
+                  <Label htmlFor="profileImage">{t('settings_page.profile_image_url')}</Label>
                   <Input
                     type="text"
                     id="profileImage"
                     name="profileImage"
-                    value={settings.profile_img}
-                    onChange={(e) => setSettings((prev) => ({ ...prev, profile_img: e.target.value }))}
+                    value={settings.profile_image}
+                    onChange={(e) => setSettings((prev) => ({ ...prev, profile_image: e.target.value }))}
                   />
-                  <span className="text-sm font-normal text-red-600 hover:cursor-pointer">
-                    Upload an image
+                  <span className="text-sm font-normal text-red-500 hover:cursor-pointer">
+                    {t('settings_page.upload_image')}
                   </span>
+                  <span className="pt-2 text-xs text-red-500">{disabledBtn.profile_image}</span>
                 </div>
 
                 <div>
-                  <Label htmlFor="coverImage">Cover image url (Optimal: 2048 x 512 px)</Label>
+                  <Label htmlFor="coverImage">{t('settings_page.cover_image_url')}</Label>
                   <Input
                     type="text"
                     id="coverImage"
                     name="coverImage"
-                    value={settings.bg_img}
-                    onChange={(e) => setSettings((prev) => ({ ...prev, bg_img: e.target.value }))}
+                    value={settings.cover_image}
+                    onChange={(e) => setSettings((prev) => ({ ...prev, cover_image: e.target.value }))}
                   />
-                  <span className="text-md font-normal text-red-600 hover:cursor-pointer">
-                    Upload an image
+                  <span className="text-sm font-normal text-red-500 hover:cursor-pointer">
+                    {t('settings_page.upload_image')}
                   </span>
+                  <span className="pt-2 text-xs text-red-500">{disabledBtn.cover_image}</span>
                 </div>
 
                 <div>
-                  <Label htmlFor="name">Display Name</Label>
+                  <Label htmlFor="name">{t('settings_page.profile_name')}</Label>
                   <Input
                     type="text"
                     id="name"
@@ -131,10 +203,11 @@ export default function UserSettings() {
                     value={settings.name}
                     onChange={(e) => setSettings((prev) => ({ ...prev, name: e.target.value }))}
                   />
+                  <span className="pt-2 text-xs text-red-500">{disabledBtn.name}</span>
                 </div>
 
                 <div>
-                  <Label htmlFor="about">About</Label>
+                  <Label htmlFor="about">{t('settings_page.profile_about')}</Label>
                   <Input
                     type="email"
                     id="about"
@@ -142,10 +215,11 @@ export default function UserSettings() {
                     value={settings.about}
                     onChange={(e) => setSettings((prev) => ({ ...prev, about: e.target.value }))}
                   />
+                  <span className="pt-2 text-xs text-red-500">{disabledBtn.about}</span>
                 </div>
 
                 <div>
-                  <Label htmlFor="location">Location</Label>
+                  <Label htmlFor="location">{t('settings_page.profile_location')}</Label>
                   <Input
                     type="text"
                     id="location"
@@ -153,10 +227,11 @@ export default function UserSettings() {
                     value={settings.location}
                     onChange={(e) => setSettings((prev) => ({ ...prev, location: e.target.value }))}
                   />
+                  <span className="pt-2 text-xs text-red-500">{disabledBtn.location}</span>
                 </div>
 
                 <div>
-                  <Label htmlFor="website">Website</Label>
+                  <Label htmlFor="website">{t('settings_page.profile_website')}</Label>
                   <Input
                     type="text"
                     id="website"
@@ -164,10 +239,11 @@ export default function UserSettings() {
                     value={settings.website}
                     onChange={(e) => setSettings((prev) => ({ ...prev, website: e.target.value }))}
                   />
+                  <span className="pt-2 text-xs text-red-500">{disabledBtn.website}</span>
                 </div>
 
                 <div>
-                  <Label htmlFor="blacklistDescription">Blacklist Description</Label>
+                  <Label htmlFor="blacklistDescription">{t('settings_page.blacklist_description')}</Label>
                   <Input
                     type="text"
                     id="blacklistDescription"
@@ -177,33 +253,40 @@ export default function UserSettings() {
                       setSettings((prev) => ({ ...prev, blacklist_description: e.target.value }))
                     }
                   />
+                  <span className="pt-2 text-xs text-red-500">{disabledBtn.blacklist_description}</span>
                 </div>
 
                 <div>
-                  <Label htmlFor="mutedListDescription">Mute List Description</Label>
+                  <Label htmlFor="mutedListDescription">{t('settings_page.mute_list_description')}</Label>
                   <Input
                     type="text"
                     id="mutedListDescription"
                     name="mutedListDescription"
-                    value={settings.mute_list_description}
+                    value={settings.muted_list_description}
                     onChange={(e) =>
-                      setSettings((prev) => ({ ...prev, mute_list_description: e.target.value }))
+                      setSettings((prev) => ({ ...prev, muted_list_description: e.target.value }))
                     }
                   />
+                  <span className="pt-2 text-xs text-red-500">{disabledBtn.muted_list_description}</span>
                 </div>
               </div>
-              <Button className="my-4 w-44" data-testid="pps-update-button">
-                Update
+              <Button
+                onClick={() => onSubmit()}
+                className="my-4 w-44"
+                data-testid="pps-update-button"
+                disabled={sameData}
+              >
+                {t('settings_page.update')}
               </Button>
             </div>
             <div className="py-8" data-testid="settings-preferences">
               <h2 className="py-4 text-lg font-semibold leading-5 text-slate-900 dark:text-white">
-                Preferences
+                {t('settings_page.preferences')}
               </h2>
 
               <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
                 <div data-testid="choose-language">
-                  <Label htmlFor="choose-language">Choose Language</Label>
+                  <Label htmlFor="choose-language">{t('settings_page.choose_language')}</Label>
                   <Select defaultValue="en" name="choose-language">
                     <SelectTrigger>
                       <SelectValue placeholder="Choose Language" />
@@ -225,7 +308,9 @@ export default function UserSettings() {
                 </div>
 
                 <div data-testid="not-safe-for-work-content">
-                  <Label htmlFor="not-safe-for-work-content">Not safe for work (NSFW) content</Label>
+                  <Label htmlFor="not-safe-for-work-content">
+                    {t('settings_page.not_safe_for_work_nsfw_content')}
+                  </Label>
                   <Select
                     value={preferences.nsfw}
                     onValueChange={(e: 'hide' | 'warn' | 'show') =>
@@ -238,16 +323,16 @@ export default function UserSettings() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectItem value="hide">Always hide</SelectItem>
-                        <SelectItem value="warn">Always warn</SelectItem>
-                        <SelectItem value="show">Always show</SelectItem>
+                        <SelectItem value="hide">{t('settings_page.always_hide')}</SelectItem>
+                        <SelectItem value="warn">{t('settings_page.always_warn')}</SelectItem>
+                        <SelectItem value="show">{t('settings_page.always_show')}</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div data-testid="blog-post-rewards">
-                  <Label htmlFor="blog-post-rewards">Blog post rewards</Label>
+                  <Label htmlFor="blog-post-rewards">{t('settings_page.choose_default_blog_payout')}</Label>
                   <Select
                     value={preferences.blog_rewards}
                     onValueChange={(e: '0%' | '50%' | '100%') =>
@@ -256,20 +341,22 @@ export default function UserSettings() {
                     name="blog-post-rewards"
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Blog post rewards" />
+                      <SelectValue placeholder={t('settings_page.choose_default_blog_payout')} />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectItem value="0%">Decline Payout</SelectItem>
-                        <SelectItem value="50%">50% HBD / 50% HP</SelectItem>
-                        <SelectItem value="100%">Power Up 100%</SelectItem>
+                        <SelectItem value="0%">{t('settings_page.decline_payout')}</SelectItem>
+                        <SelectItem value="50%">{'50% HBD / 50% HP'}</SelectItem>
+                        <SelectItem value="100%">{t('settings_page.power_up')}</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div data-testid="comment-post-rewards">
-                  <Label htmlFor="comment-post-rewards">Comment post rewards</Label>
+                  <Label htmlFor="comment-post-rewards">
+                    {t('settings_page.choose_default_comment_payout')}
+                  </Label>
                   <Select
                     name="comment-post-rewards"
                     value={preferences.comment_rewards}
@@ -278,20 +365,20 @@ export default function UserSettings() {
                     }
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Comment post rewards" />
+                      <SelectValue placeholder={t('settings_page.choose_default_comment_payout')} />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectItem value="0%">Decline Payout</SelectItem>
-                        <SelectItem value="50%">50% HBD / 50% HP</SelectItem>
-                        <SelectItem value="100%">Power Up 100%</SelectItem>
+                        <SelectItem value="0%">{t('settings_page.decline_payout')}</SelectItem>
+                        <SelectItem value="50%">{'50% HBD / 50% HP'}</SelectItem>
+                        <SelectItem value="100%">{t('settings_page.power_up')}</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div data-testid="referral-system">
-                  <Label htmlFor="referral-system">Referral System</Label>
+                  <Label htmlFor="referral-system">{t('settings_page.default_beneficiaries')}</Label>
                   <Select
                     name="referral-system"
                     value={preferences.referral_system}
@@ -304,8 +391,12 @@ export default function UserSettings() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectItem value="enabled">Use Default Beneficiaries</SelectItem>
-                        <SelectItem value="disabled">Opt-Out Referral System</SelectItem>
+                        <SelectItem value="enabled">
+                          {t('settings_page.default_beneficiaries_enabled')}
+                        </SelectItem>
+                        <SelectItem value="disabled">
+                          {t('settings_page.default_beneficiaries_disabled')}
+                        </SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
@@ -316,9 +407,11 @@ export default function UserSettings() {
         ) : null}
 
         <div className="py-8">
-          <h2 className="py-4 text-lg font-semibold leading-5 text-slate-900 dark:text-white">Advanced</h2>
+          <h2 className="py-4 text-lg font-semibold leading-5 text-slate-900 dark:text-white">
+            {t('settings_page.advanced')}
+          </h2>
           <h4 className="text-md py-2 font-semibold leading-5 text-slate-900 dark:text-white">
-            API Endpoint Options
+            {t('settings_page.api_endpoint_options')}
           </h4>
           <RadioGroup
             defaultValue={endpoint}
@@ -332,16 +425,16 @@ export default function UserSettings() {
             value={endpoint}
           >
             <div className="grid grid-cols-3">
-              <span> Endpoint</span>
-              <span>Preferred?</span>
-              <span>Remove</span>
+              <span>{t('settings_page.endpoint')}</span>
+              <span>{t('settings_page.preferred')}</span>
+              <span>{t('settings_page.remove')}</span>
             </div>
             {endpoints?.map((endpoint, index) => (
               <div
                 key={endpoint}
                 className={cn(
                   'grid grid-cols-3 items-center p-2',
-                  index % 2 === 0 ? 'bg-slate-100 dark:bg-slate-500' : '  bg-slate-200 p-2 dark:bg-slate-600'
+                  index % 2 === 0 ? 'bg-slate-100 dark:bg-slate-500' : 'bg-slate-200 p-2 dark:bg-slate-600'
                 )}
               >
                 <Label htmlFor={`e#{index}`}>{endpoint}</Label>
@@ -364,29 +457,30 @@ export default function UserSettings() {
                 setEndpoints(endpoints ? [...endpoints, newEndpoint] : [...DEFAULTS_ENDPOINTS, newEndpoint])
               }
             >
-              Add
+              {t('settings_page.add_api_endpoint')}
             </Button>
           </div>
-
-          <Button className="my-4 w-44">Reset Endpoints</Button>
+          <Button className="my-4 w-44">{t('settings_page.reset_endpoints')}</Button>
         </div>
         <div>
-          <div>Muted Users</div>
-          <ul>
-            {mutedQuery.data?.map((mutedUser, index) => (
-              <li key={mutedUser.name}>
-                <span>{index + 1}. </span>
-                <span className="text-red-500">{mutedUser.name}</span>
-                <Button
-                  className="text-red-500"
-                  variant="link"
-                  onClick={() => transactionService.unmute(mutedUser.name)}
-                >
-                  [unmute]
-                </Button>
-              </li>
-            ))}
-          </ul>
+          {mutedQuery.data?.map((mutedUser, index) => (
+            <>
+              <div>{t('settings_page.muted_users')}</div>
+              <ul>
+                <li key={mutedUser.name}>
+                  <span>{index + 1}. </span>
+                  <span className="text-red-500">{mutedUser.name}</span>
+                  <Button
+                    className="text-red-500"
+                    variant="link"
+                    onClick={() => transactionService.unmute(mutedUser.name)}
+                  >
+                    [{t('settings_page.unmute')}]
+                  </Button>
+                </li>
+              </ul>
+            </>
+          ))}
         </div>
       </div>
     </ProfileLayout>
