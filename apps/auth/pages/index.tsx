@@ -1,13 +1,12 @@
 import { GetServerSideProps } from 'next';
 import { getTranslations } from '@/auth/lib/get-translations';
 import config from "config";
-import { appConfig } from '@/auth/pages/_app';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 export default function HomePage() {
-  logger.info('appConfigL %o', appConfig);
+  logger.info('appConfig: %o', config.util.toObject());
   return (
     <div className="pt-16 flex flex-col sm:flex-row gap-24 mx-2
         sm:gap-0 sm:justify-around">
