@@ -55,7 +55,7 @@ blockchain.
    lower levels during development, for instance:
    ```bash
    REACT_APP_LOGGING_BROWSER_ENABLED="true"
-   REACT_APP_LOGGING_LOG_LEVEL="TRACE"
+   REACT_APP_LOGGING_LOG_LEVEL="trace"
    ```
 9. Copy has-client.d.ts to app [../../apps/auth/has-client.d.ts].
 10. Put component

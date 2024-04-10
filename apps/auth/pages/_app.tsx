@@ -7,12 +7,10 @@ import { parseCookie } from '@smart-signer/lib/utils';
 import { AppConfigService } from '@/auth/lib/app-config/app-config-service';
 import { appConfigSchema } from '@/auth/lib/app-config/app-config-schema';
 import config from 'config';
+import { isBrowser } from '@ui/lib/logger';
 
 import { getLogger } from '@ui/lib/logging';
-import { isBrowser } from '@ui/lib/logger';
 const logger = getLogger('app');
-
-const Providers = lazy(() => import('@/auth/components/common/providers'));
 
 if (isBrowser()) {
   // Log Git revision details in browser's console.
@@ -27,7 +25,7 @@ if (isBrowser()) {
     logger.info("Application Config is OK");
   } catch (error) {
     const parts = [
-      'Application will be stopped now,',
+      'Application has been stopped,',
       'because validation of configuration failed.',
       'Error is: %o'
     ];
@@ -37,6 +35,8 @@ if (isBrowser()) {
     process.exit(1)
   }
 }
+
+const Providers = lazy(() => import('@/auth/components/common/providers'));
 
 function App({ Component, pageProps }: AppProps) {
   useEffect(() => {

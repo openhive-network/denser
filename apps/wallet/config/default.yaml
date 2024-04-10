@@ -1,0 +1,11 @@
+# Available both on server and client.
+api_endpoint: 1
+app_name: "Hive Auth"
+images_endpoint: https://images.hive.blog
+logging_browser_enabled: false
+logging_log_level: info
+site_domain: http://local.dry.ovh:5000
+
+# Available on server only.
+server:
+  secret_cookie_password: 2gyZ3GDw3LHZKCMEPmPDL3sjREVRXPr8
