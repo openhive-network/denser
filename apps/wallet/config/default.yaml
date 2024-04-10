@@ -1,11 +1,11 @@
 # Available both on server and client.
-api_endpoint: 1
-app_name: "Hive Auth"
+api_endpoint: https://api.hive.blog
+app_name: wallet
 images_endpoint: https://images.hive.blog
 logging_browser_enabled: false
 logging_log_level: info
-site_domain: http://local.dry.ovh:5000
+site_domain: https://wallet.openhive.network
 
 # Available on server only.
 server:
-  secret_cookie_password: 2gyZ3GDw3LHZKCMEPmPDL3sjREVRXPr8
+  secret_cookie_password: 2gyZ3GDw3LHZKCMEPmPDL3sjREVRXPr3
