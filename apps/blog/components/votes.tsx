@@ -8,10 +8,10 @@ import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { transactionService } from '@transaction/index';
-import env from '@beam-australia/react-env';
+import { AppConfigService } from '@/blog/lib/app-config/app-config-service';
 
 const VotesComponent = ({ post }: { post: Entry }) => {
-  const walletHost = env('WALLET_ENDPOINT');
+  const walletHost = AppConfigService.config.wallet_endpoint;
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
   const [isClient, setIsClient] = useState(false);

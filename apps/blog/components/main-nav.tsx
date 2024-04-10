@@ -2,12 +2,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@ui/lib/utils';
 import { useTranslation } from 'next-i18next';
-import env from '@beam-australia/react-env';
+import { AppConfigService } from '@/blog/lib/app-config/app-config-service';
 
 export function MainNav() {
   const pathname = usePathname();
   const { t } = useTranslation('common_blog');
-  const walletHost = env('WALLET_ENDPOINT');
+  const walletHost = AppConfigService.config.wallet_endpoint;
 
   return (
     <div className="flex h-full items-center justify-between lg:mr-4">

@@ -20,7 +20,7 @@ import { getTwitterInfo } from '@transaction/lib/bridge';
 import moment from 'moment';
 import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
-import env from '@beam-australia/react-env';
+import { AppConfigService } from '@/blog/lib/app-config/app-config-service';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useFollowingInfiniteQuery } from '../hooks/use-following-infinitequery';
 import FollowButton from '../follow-button';
@@ -53,7 +53,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   const router = useRouter();
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
-  const walletHost = env('WALLET_ENDPOINT');
+  const walletHost = AppConfigService.config.wallet_endpoint;
   const { username } = useSiteParams();
   const {
     isLoading: profileDataIsLoading,

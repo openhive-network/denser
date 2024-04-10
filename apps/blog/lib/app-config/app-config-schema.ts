@@ -7,6 +7,7 @@ export const appConfigSchema = z.object({
     logging_browser_enabled: z.boolean(),
     logging_log_level: z.enum(['off', 'fatal', 'error', 'warn', 'info', 'debug', 'trace', 'all']),
     site_domain: z.string().url(),
+    wallet_endpoint: z.string().url(),
 
     server: z.object({
         secret_cookie_password: z.string().min(1),

@@ -6,7 +6,7 @@ import { Separator } from '@ui/components/separator';
 import clsx from 'clsx';
 import { ReactNode } from 'react';
 import { useTranslation } from 'next-i18next';
-import env from '@beam-australia/react-env';
+import { AppConfigService } from '@/blog/lib/app-config/app-config-service';
 import DialogLogin from './dialog-login';
 import { getLogger } from '@ui/lib/logging';
 import { useUser } from '@smart-signer/lib/auth/use-user';
@@ -36,7 +36,7 @@ const logger = getLogger('app');
 const Sidebar = () => {
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
-  const walletHost = env('WALLET_ENDPOINT');
+  const walletHost = AppConfigService.config.wallet_endpoint;
   return (
     <Sheet>
       <SheetTrigger asChild>

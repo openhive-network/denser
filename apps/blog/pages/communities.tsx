@@ -16,10 +16,10 @@ import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import CommunitiesMybar from '../components/communities-mybar';
 import Link from 'next/link';
-import env from '@beam-australia/react-env';
+import { AppConfigService } from '@/blog/lib/app-config/app-config-service';
 
 export default function CommunitiesPage() {
-  const walletHost = env('WALLET_ENDPOINT');
+  const walletHost = AppConfigService.config.wallet_endpoint;
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
   const [sort, setSort] = useState('rank');

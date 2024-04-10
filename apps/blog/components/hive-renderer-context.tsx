@@ -1,7 +1,8 @@
 import { FC, PropsWithChildren, createContext, useContext, useEffect, useState } from 'react';
 import { DefaultRenderer } from '@hiveio/content-renderer';
 import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
-import env from '@beam-australia/react-env';
+import { AppConfigService } from '@/blog/lib/app-config/app-config-service';
+
 
 type HiveRendererContextType = {
   hiveRenderer: DefaultRenderer | undefined;
@@ -34,12 +35,12 @@ export const HiveContentRendererProvider: FC<PropsWithChildren> = ({ children })
       usertagUrlFn: (account: string) => '/@' + account,
       hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
       isLinkSafeFn: (url: string) =>
-        (!!url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) &&
-          !!url.match(`^(/(?!/)|${env('SITE_DOMAIN')})`)) ||
+        (!!url.match(`^(/(?!/)|${AppConfigService.config.images_endpoint})`) &&
+          !!url.match(`^(/(?!/)|${AppConfigService.config.site_domain})`)) ||
         !!url.match(`^(/(?!/)|#)`),
       addExternalCssClassToMatchingLinksFn: (url: string) =>
-        !url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) &&
-        !url.match(`^(/(?!/)|${env('SITE_DOMAIN')})`) &&
+        !url.match(`^(/(?!/)|${AppConfigService.config.images_endpoint})`) &&
+        !url.match(`^(/(?!/)|${AppConfigService.config.site_domain})`) &&
         !url.match(`^(/(?!/)|#)`)
     });
     setHiveRenderer(renderer);

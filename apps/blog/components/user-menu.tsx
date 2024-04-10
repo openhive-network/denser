@@ -14,7 +14,7 @@ import { Icons } from '@ui/components/icons';
 import { Button } from '@ui/components';
 import LangToggle from './lang-toggle';
 import { useLogout } from '@smart-signer/lib/auth/use-logout';
-import env from '@beam-australia/react-env';
+import { AppConfigService } from '@/blog/lib/app-config/app-config-service';
 import { User } from '@smart-signer/types/common';
 import { useTranslation } from 'next-i18next';
 
@@ -28,7 +28,7 @@ const UserMenu = ({
   notifications?: number;
 }) => {
   const onLogout = useLogout();
-  const walletHost = env('WALLET_ENDPOINT');
+  const walletHost = AppConfigService.config.wallet_endpoint;
   const { t } = useTranslation('common_blog');
 
   return (

@@ -26,12 +26,12 @@ import Link from 'next/link';
 import { useAppStore } from '@/blog/store/app';
 import { useQuery } from '@tanstack/react-query';
 import { getAccountFull } from '@transaction/lib/hive';
-import env from '@beam-australia/react-env';
+import { AppConfigService } from '@/blog/lib/app-config/app-config-service';
 
 const ProfileDropdownMenu = () => {
   const currentProfile = useAppStore((state) => state.currentProfile);
   const setCurrentProfile = useAppStore((state) => state.setCurrentProfile);
-  const walletHost = env('WALLET_ENDPOINT');
+  const walletHost = AppConfigService.config.wallet_endpoint;
 
   const {
     isLoading: currentProfileDataIsLoading,

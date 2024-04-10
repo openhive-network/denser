@@ -1,9 +1,9 @@
 import querystring from 'querystring';
 import multihash from 'multihashes';
-import env from '@beam-australia/react-env';
+import { AppConfigService } from '@/blog/lib/app-config/app-config-service';
 
 // Change this when we have images.hive.blog working
-let proxyBase = `${env('IMAGES_ENDPOINT')}`;
+let proxyBase = `${AppConfigService.config.images_endpoint}`;
 
 export function setProxyBase(p: string): void {
   proxyBase = p;

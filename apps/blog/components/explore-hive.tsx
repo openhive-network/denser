@@ -4,11 +4,11 @@ import { FC } from 'react';
 import Link from 'next/link';
 import { Icons } from '@ui/components/icons';
 import { useTranslation } from 'next-i18next';
-import env from '@beam-australia/react-env';
+import { AppConfigService } from '@/blog/lib/app-config/app-config-service';
 
 const ExploreHive: FC = () => {
   const { t } = useTranslation('common_blog');
-  const walletHost = env('WALLET_ENDPOINT');
+  const walletHost = AppConfigService.config.wallet_endpoint;
   return (
     <Card
       className={cn('my-4 hidden h-fit w-auto flex-col px-8 dark:bg-background/95 dark:text-white md:flex')}

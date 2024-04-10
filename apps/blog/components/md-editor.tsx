@@ -12,7 +12,7 @@ import {
 } from 'react';
 import * as commands from '@uiw/react-md-editor/commands';
 import { useTheme } from 'next-themes';
-import env from '@beam-australia/react-env';
+import { AppConfigService } from '@/blog/lib/app-config/app-config-service';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { Signer } from '@smart-signer/lib/signer/signer';
@@ -64,7 +64,7 @@ const uploadImg = async (file: File, username: string, signer: Signer): Promise<
       password: ''
     });
 
-    const postUrl = `${env('IMAGES_ENDPOINT')}${username}/${sig}`;
+    const postUrl = `${AppConfigService.config.images_endpoint}${username}/${sig}`;
 
     const response = await fetch(postUrl, { method: 'POST', body: formData });
     const resJSON = await response.json();
