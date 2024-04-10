@@ -41,6 +41,10 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
 
 ## Passing environment variables to the application
 
+Node.js Custom Environment Variables Generator for config-Based Projects
+[@northscaler/config-custom-environment-variables-generator](https://www.npmjs.com/package/@northscaler/config-custom-environment-variables-generator).
+
+
 We use npm package
 [@beam-australia/react-env](https://github.com/andrewmclagan/react-env)
 for passing environment variables to application in runtime (when we

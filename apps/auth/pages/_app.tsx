@@ -4,8 +4,8 @@ import { lazy, Suspense, useEffect } from 'react';
 import { appWithTranslation } from 'next-i18next';
 import { i18n } from 'next-i18next.config';
 import { parseCookie } from '@smart-signer/lib/utils';
-import { AppConfigService } from '@/auth/lib/app-config-service';
-import { appConfigSchema } from '@/auth/lib/app-config-schema';
+import { AppConfigService } from '@/auth/lib/app-config/app-config-service';
+import { appConfigSchema } from '@/auth/lib/app-config/app-config-schema';
 import config from 'config';
 
 import { getLogger } from '@ui/lib/logging';

@@ -1,5 +1,5 @@
 import config from 'config';
-import { AppConfig } from '@/auth/lib/app-config-schema';
+import { AppConfig } from '@/auth/lib/app-config/app-config-schema';
 export class AppConfigService {
     static appConfig: AppConfig;
 
