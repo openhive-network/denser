@@ -30,6 +30,8 @@ export function CommunitiesSelect({
     getCommunities(sort, query)
   );
 
+  const filteredCommunity = mySubsData?.map((my) => data?.slice(0, 12).filter((c) => c.name !== my[0]))[0];
+
   if (isLoading) return <p>{t('global.loading')}...</p>;
   return (
     <Select
@@ -40,16 +42,23 @@ export function CommunitiesSelect({
       <SelectTrigger className="bg-white dark:bg-background/95 dark:text-white">
         <SelectValue placeholder={title} />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent
+        ref={(ref) => {
+          if (!ref) return;
+          ref.ontouchstart = (e) => {
+            e.preventDefault();
+          };
+        }}
+      >
         <SelectGroup>
-          <SelectItem value="">{t('navigation.communities_nav.all_posts')}</SelectItem>
+          <SelectItem value="/">{t('navigation.communities_nav.all_posts')}</SelectItem>
         </SelectGroup>
         {username && (
           <SelectGroup>
             <SelectItem value={`../@${username}/feed`}>My friends</SelectItem>
             <SelectItem value={`../trending/my`}>My communities</SelectItem>
             {mySubsData && mySubsData.length > 0 ? (
-              <SelectItem disabled value="none" className="text-slate-400">
+              <SelectItem disabled value="my-communities" className="text-slate-400">
                 My communities
               </SelectItem>
             ) : null}
@@ -63,10 +72,10 @@ export function CommunitiesSelect({
           </SelectGroup>
         )}
         <SelectGroup>
-          <SelectItem disabled value="none" className="text-slate-400">
+          <SelectItem disabled value="trending-communities" className="text-slate-400">
             {t('navigation.communities_nav.trending_communities')}
           </SelectItem>
-          {data?.slice(0, 12).map((community) => (
+          {filteredCommunity?.slice(0, 12).map((community) => (
             <SelectItem key={community.id} value={community.name}>
               {community.title}
             </SelectItem>

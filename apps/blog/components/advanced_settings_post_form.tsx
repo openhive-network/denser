@@ -329,7 +329,7 @@ export function AdvancedSettingsPostForm({
                   />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">
+                  <SelectItem value="/">
                     {t('submit_page.advanced_settings_dialog.choose_a_template_to_load')}
                   </SelectItem>
                   {storedTemplates
