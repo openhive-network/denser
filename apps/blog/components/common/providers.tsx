@@ -4,6 +4,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ThemeProvider } from '../theme-provider';
 import Layout from './layout';
 import { HiveContentRendererProvider } from '../hive-renderer-context';
+import { SignerProvider } from './signer';
 
 const queryClient = new QueryClient();
 
@@ -12,7 +13,9 @@ const Providers = ({ children }: { children: ReactNode }) => {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         <HiveContentRendererProvider>
-          <Layout>{children}</Layout>
+          <SignerProvider>
+            <Layout>{children}</Layout>
+          </SignerProvider>
         </HiveContentRendererProvider>
       </ThemeProvider>
       <ReactQueryDevtools initialIsOpen={false} />

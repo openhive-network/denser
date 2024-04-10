@@ -18,7 +18,7 @@ import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { cn } from '@ui/lib/utils';
@@ -26,6 +26,7 @@ import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
 import { transactionService } from '@transaction/index';
 import { hbauthUseStrictMode, hbauthService } from '@smart-signer/lib/hbauth-service';
+import { useSignerContext } from '@/blog/components/common/signer';
 
 const DEFAULTS_ENDPOINTS = [
   'https://api.hive.blog',
@@ -41,13 +42,14 @@ export default function UserSettings() {
   const [newEndpoint, setNewEndpoint] = useState('');
   const [isClient, setIsClient] = useState(false);
   const params = useParams();
-  const router = useRouter();
   const { user } = useUser();
   const mutedQuery = useFollowListQuery(user.username, 'muted');
 
+  const { signer } = useSignerContext();
+  
   useEffect(() => {
     setIsClient(true);
-  }, []);
+  }, [signer]);
 
   return (
     <ProfileLayout>
