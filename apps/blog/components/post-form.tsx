@@ -288,10 +288,7 @@ export default function PostForm({
                   <FormDescription className="border-x-2 border-b-2 border-border px-3 pb-1 text-xs text-destructive">
                     {t('submit_page.insert_images_by_dragging')}
                     <span>
-                      <Label className="cursor-pointer text-red-500" htmlFor="picture">
-                        {t('submit_page.selecting_them')}
-                      </Label>
-                      <Input id="picture" type="file" className="hidden" />
+                      <Label htmlFor="picture">{t('submit_page.selecting_them')}</Label>
                     </span>
                     .
                   </FormDescription>
@@ -467,7 +464,7 @@ export default function PostForm({
               dangerouslySetInnerHTML={{
                 __html: hiveRenderer.render(previewContent)
               }}
-              className="prose h-fit self-center break-words border-2 border-border p-2 dark:prose-invert"
+              className="prose h-fit w-full self-center break-words border-2 border-border p-2 dark:prose-invert"
             ></div>
           ) : null}
         </div>
