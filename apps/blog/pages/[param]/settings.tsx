@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import { Icons } from '@ui/components/icons';
 import ProfileLayout from '@/blog/components/common/profile-layout';
 import { Button } from '@ui/components/button';
@@ -18,7 +17,6 @@ import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
-import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { cn } from '@ui/lib/utils';
@@ -30,7 +28,14 @@ import { getAccountFull } from '@transaction/lib/hive';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
+import env from '@beam-australia/react-env';
+import { getSigner } from '@smart-signer/lib/signer/get-signer';
+import { Signer } from '@smart-signer/lib/signer/signer';
+import { useSigner } from '@smart-signer/lib/use-signer';
+import { getLogger } from '@ui/lib/logging';
 
+const logger = getLogger('app');
 interface Settings {
   profile_image: string;
   cover_image: string;
@@ -47,14 +52,12 @@ interface Preferences {
   comment_rewards: '0%' | '50%' | '100%';
   referral_system: 'enabled' | 'disabled';
 }
-
 const DEFAULT_PREFERENCES: Preferences = {
   nsfw: 'hide',
   blog_rewards: '50%',
   comment_rewards: '50%',
   referral_system: 'enabled'
 };
-
 const DEFAULTS_ENDPOINTS = [
   'https://api.hive.blog',
   'https://api.openhive.network',
@@ -62,6 +65,48 @@ const DEFAULTS_ENDPOINTS = [
   'https://anyx.io',
   'https://api.deathwing.me'
 ];
+
+const uploadImg = async (file: File, username: string, signer: Signer): Promise<string> => {
+  try {
+    let data;
+
+    if (file) {
+      const reader = new FileReader();
+
+      data = new Promise((resolve) => {
+        reader.addEventListener('load', () => {
+          const result = Buffer.from(reader.result!.toString(), 'binary');
+          resolve(result);
+        });
+        reader.readAsBinaryString(file);
+      });
+    }
+
+    const formData = new FormData();
+    if (file) {
+      formData.append('file', file);
+    }
+
+    data = await data;
+    const prefix = Buffer.from('ImageSigningChallenge');
+    const buf = Buffer.concat([prefix, data as unknown as Uint8Array]);
+
+    const sig = await signer.signChallenge({
+      message: buf,
+      password: ''
+    });
+
+    const postUrl = `${env('IMAGES_ENDPOINT')}${username}/${sig}`;
+
+    const response = await fetch(postUrl, { method: 'POST', body: formData });
+    const resJSON = await response.json();
+    return resJSON.url;
+  } catch (error) {
+    logger.error('Error when uploading file %s: %o', file.name, error);
+  }
+  return '';
+};
+
 function validation(values: Settings, t: TFunction<'common_blog'>) {
   return {
     profile_image:
@@ -121,10 +166,16 @@ export default function UserSettings() {
   const [endpoint, setEndpoint] = useLocalStorage('hive-blog-endpoint', siteConfig.endpoint);
   const [newEndpoint, setNewEndpoint] = useState('');
   const [isClient, setIsClient] = useState(false);
+  const [insertImg, setInsertImg] = useState('');
   const params = useParams();
   const mutedQuery = useFollowListQuery(user.username, 'muted');
   const { t } = useTranslation('common_blog');
+  const inputProfileRef = useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
+  const inputCoverRef = useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
   const disabledBtn = validation(settings, t);
+  const { signerOptions } = useSigner();
+  const signer = getSigner(signerOptions);
+
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -154,6 +205,25 @@ export default function UserSettings() {
       console.error(error);
     }
   }
+  const onImageUpload = async (file: File, username: string, signer: Signer) => {
+    const url = await uploadImg(file, username, signer);
+    return url;
+  };
+
+  const inputProfileHandler = async (event: { target: { files: FileList } }) => {
+    if (event.target.files && event.target.files.length === 1) {
+      setInsertImg('');
+      const url = await onImageUpload(event.target.files[0], user.username, signer);
+      setSettings((prev) => ({ ...prev, profile_image: url }));
+    }
+  };
+  const inputCoverHandler = async (event: { target: { files: FileList } }) => {
+    if (event.target.files && event.target.files.length === 1) {
+      setInsertImg('');
+      const url = await onImageUpload(event.target.files[0], user.username, signer);
+      setSettings((prev) => ({ ...prev, cover_image: url }));
+    }
+  };
   return (
     <ProfileLayout>
       <div className="flex flex-col" data-testid="public-profile-settings">
@@ -173,8 +243,24 @@ export default function UserSettings() {
                     value={settings.profile_image}
                     onChange={(e) => setSettings((prev) => ({ ...prev, profile_image: e.target.value }))}
                   />
-                  <span className="text-sm font-normal text-red-500 hover:cursor-pointer">
-                    {t('settings_page.upload_image')}
+                  <span>
+                    <Label
+                      className="text-sm font-normal text-red-500 hover:cursor-pointer"
+                      htmlFor="profilePicture"
+                    >
+                      {t('settings_page.upload_image')}
+                    </Label>
+                    <Input
+                      id="profilePicture"
+                      type="file"
+                      className="hidden"
+                      ref={inputProfileRef}
+                      accept=".jpg,.png,.jpeg,.jfif,.gif,.webp"
+                      name="avatar"
+                      value={insertImg}
+                      //@ts-ignore
+                      onChange={inputProfileHandler}
+                    />
                   </span>
                   <span className="pt-2 text-xs text-red-500">{disabledBtn.profile_image}</span>
                 </div>
@@ -188,8 +274,24 @@ export default function UserSettings() {
                     value={settings.cover_image}
                     onChange={(e) => setSettings((prev) => ({ ...prev, cover_image: e.target.value }))}
                   />
-                  <span className="text-sm font-normal text-red-500 hover:cursor-pointer">
-                    {t('settings_page.upload_image')}
+                  <span>
+                    <Label
+                      className="text-sm font-normal text-red-500 hover:cursor-pointer"
+                      htmlFor="coverPicture"
+                    >
+                      {t('settings_page.upload_image')}
+                    </Label>
+                    <Input
+                      id="coverPicture"
+                      type="file"
+                      className="hidden"
+                      ref={inputCoverRef}
+                      accept=".jpg,.png,.jpeg,.jfif,.gif,.webp"
+                      name="avatar"
+                      value={insertImg}
+                      //@ts-ignore
+                      onChange={inputCoverHandler}
+                    />
                   </span>
                   <span className="pt-2 text-xs text-red-500">{disabledBtn.cover_image}</span>
                 </div>
