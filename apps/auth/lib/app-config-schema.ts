@@ -11,6 +11,6 @@ export const appConfigSchema = z.object({
     server: z.object({
         secret_cookie_password: z.string().min(1),
     })
-});
+}).readonly();
 
 export type AppConfig = z.infer<typeof appConfigSchema>;
