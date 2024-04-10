@@ -36,6 +36,9 @@ import { AlertDialogFlag } from '@/blog/components/alert-window-flag';
 import VotesComponent from '@/blog/components/votes';
 import { HiveRendererContext } from '@/blog/components/hive-renderer-context';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
+import PostForm from '@/blog/components/post-form';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import DialogLogin from '@/blog/components/dialog-login';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -54,14 +57,18 @@ function PostPage({
   permlink: string;
 }) {
   const { t } = useTranslation('common_blog');
-  const anchorRef = useRef();
+  const { user } = useUser();
   const {
     isLoading: isLoadingDiscussion,
     error: errorDiscussion,
     data: discussion
-  } = useQuery(['discussionData', username, permlink], () => getDiscussion(username, String(permlink)), {
-    enabled: !!username && !!permlink
-  });
+  } = useQuery(
+    ['discussionData', username, permlink],
+    () => getDiscussion(username, user.username, String(permlink)),
+    {
+      enabled: !!username && !!permlink
+    }
+  );
 
   const {
     isLoading: isLoadingCommunity,
@@ -85,17 +92,15 @@ function PostPage({
   const query = router.query.sort?.toString();
   const defaultSort = isSortOrder(query) ? query : SortOrder.trending;
   const storageId = `replybox-/${username}/${post_s.permlink}`;
-  const [isClient, setIsClient] = useState(false);
   const [storedBox, storeBox] = useLocalStorage<Boolean>(storageId, false);
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
+  const firstPost = discussionState?.find((post) => post.depth === 0);
+  const [edit, setEdit] = useState(false);
   useEffect(() => {
     if (reply) {
       storeBox(reply);
     }
-  }, [reply]);
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  }, [reply, storeBox]);
   useEffect(() => {
     if (discussion) {
       const list = [...Object.keys(discussion).map((key) => discussion[key])];
@@ -167,7 +172,7 @@ function PostPage({
       behavior: 'smooth'
     });
   }, [router, hiveRenderer]);
-  console.log(post_s);
+
   return (
     <div className="py-8">
       <div className="relative mx-auto my-0 max-w-4xl bg-white px-8 py-4 dark:bg-slate-900">
@@ -214,14 +219,19 @@ function PostPage({
           community={community}
           category={post_s.category}
           created={post_s.created}
-          blacklist={post_s.blacklists}
+          blacklist={firstPost ? firstPost.blacklists : post_s.blacklists}
         />
-        {/* <span className="text-red-600" title={post_s.blacklists[0]}>
-        ({post_s.blacklists.length})
-      </span> */}
         <hr />
         {!hiveRenderer ? (
           <Loading loading={!hiveRenderer} />
+        ) : edit ? (
+          <PostForm
+            username={username}
+            editMode={edit}
+            setEditMode={setEdit}
+            sideBySidePreview={false}
+            post_s={post_s}
+          />
         ) : mutedPost ? (
           <div id="articleBody" className="flex flex-col gap-8 py-8">
             {findLinks(post_s.body).map((e) =>
@@ -305,7 +315,7 @@ function PostPage({
               <UserHoverCard
                 author={post_s.author}
                 author_reputation={post_s.author_reputation}
-                blacklist={post_s.blacklists}
+                blacklist={firstPost ? firstPost.blacklists : post_s.blacklists}
               />
               {post_s.author_title ? (
                 <Badge variant="outline" className="border-red-600 text-slate-500">
@@ -332,15 +342,35 @@ function PostPage({
                 </Tooltip>
               </TooltipProvider>
               <span className="mx-1">|</span>
-              <button
-                onClick={() => {
-                  setReply(!reply), localStorage.removeItem(storageId);
-                }}
-                className="flex items-center text-red-600"
-                data-testid="comment-reply"
-              >
-                {t('post_content.footer.reply')}
-              </button>
+              {user && user.isLoggedIn ? (
+                <button
+                  onClick={() => {
+                    setReply(!reply), localStorage.removeItem(storageId);
+                  }}
+                  className="flex items-center text-red-600"
+                  data-testid="comment-reply"
+                >
+                  {t('post_content.footer.reply')}
+                </button>
+              ) : (
+                <DialogLogin>
+                  <button className="flex items-center text-red-600">{t('post_content.footer.reply')}</button>
+                </DialogLogin>
+              )}
+              {user && user.isLoggedIn && post_s.author === user.username ? (
+                <>
+                  <span className="mx-1">|</span>
+                  <button
+                    onClick={() => {
+                      setEdit(!edit);
+                    }}
+                    className="flex items-center text-red-600"
+                    data-testid="post-edit"
+                  >
+                    {t('post_content.footer.edit')}
+                  </button>
+                </>
+              ) : null}
               <span className="mx-1">|</span>
               <TooltipProvider>
                 <Tooltip>
@@ -412,7 +442,7 @@ function PostPage({
       </div>
       <div id="comments" className="flex" />
       <div className="mx-auto my-0 max-w-4xl py-4">
-        {reply ? (
+        {reply && user && user.isLoggedIn ? (
           <ReplyTextbox onSetReply={setReply} username={username} permlink={permlink} storageId={storageId} />
         ) : null}
       </div>
@@ -430,14 +460,6 @@ function PostPage({
     </div>
   );
 }
-
-//[0,1]
-/*{
-  '0':0,
-  "1":1,
-  "length:2,
-  ...
-}*/
 
 export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
   const community = String(query.param);

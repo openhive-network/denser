@@ -161,7 +161,8 @@
       "reveal_comment": "Reveal Comment",
       "one_reply": "reply",
       "replies": "replies",
-      "reply": "Reply",
+      "reply": "댓글 달기",
+      "edit": "편집하다",
       "will_be_hidden": "Will be hidden due to low rating ",
       "load_more": "Load more"
     }
@@ -313,6 +314,7 @@
   "post_content": {
     "in": "in",
     "reputation_title": "評価",
+    "blacklists": "블랙리스트",
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "You are viewing a single comment's thread from",
       "view_the_full_context": "전체 글 보기",
@@ -350,6 +352,7 @@
       "responses": "{{votes}}개의 댓글이 있습니다. ",
       "reblog": "Reblog",
       "reply": "댓글 달기",
+      "edit": "편집하다",
       "share_on": "Share on ",
       "share_form": {
         "copy": "COPY",
@@ -383,7 +386,7 @@
     "hide_preview": "미리보기 숨기기",
     "show_preview": "미리보기 표시",
     "title": "제목",
-    "insert_images_by_dragging": "드래그 앤 드롭, 클립 보드에서 붙여넣기 또는 ",
+    "insert_images_by_dragging": "드래그 또는 드롭으로 이미지 삽입 ",
     "selecting_them": "선택하여 이미지 삽입",
     "post_summary": "게시물 요약 (게시물 및 SEO용, 최대 140자)",
     "enter_your_tags": "스페이스로 구분된 태그 입력",
@@ -398,6 +401,7 @@
     "preview": "미리보기",
     "submit": "제출",
     "clean": "정리",
+    "cancel": "취소",
     "markdown_styling_guide": "마크다운 스타일 가이드",
     "power_up": "100% 파워 업",
     "maximum_characters": "{{num}} 자 이내",

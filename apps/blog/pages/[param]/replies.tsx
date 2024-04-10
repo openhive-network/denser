@@ -10,16 +10,23 @@ import { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
 import { useTranslation } from 'next-i18next';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 
 export default function UserReplies() {
   const { t } = useTranslation('common_blog');
   const { username } = useSiteParams();
   const { ref, inView } = useInView();
-
+  const { user } = useUser();
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } = useInfiniteQuery(
     ['accountReplies', username, 'replies'],
     async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
-      return await getAccountPosts('replies', username, 'hive.blog', pageParam?.author, pageParam?.permlink);
+      return await getAccountPosts(
+        'replies',
+        username,
+        user.username === '' ? 'hive.blog' : user.username,
+        pageParam?.author,
+        pageParam?.permlink
+      );
     },
     {
       getNextPageParam: (lastPage) => {

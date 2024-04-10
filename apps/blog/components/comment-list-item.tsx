@@ -18,6 +18,8 @@ import { UserHoverCard } from './user-hover-card';
 import { useTranslation } from 'next-i18next';
 import VotesComponent from './votes';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import DialogLogin from './dialog-login';
 
 const CommentListItem = ({
   comment,
@@ -31,12 +33,14 @@ const CommentListItem = ({
   const { t } = useTranslation('common_blog');
   const username = comment.author;
   const router = useRouter();
+  const { user } = useUser();
   const ref = useRef<HTMLTableRowElement>(null);
   const [hiddenComment, setHiddenComment] = useState(comment.stats?.gray);
   const [openState, setOpenState] = useState<boolean>(comment.stats?.gray && hiddenComment ? false : true);
   const comment_html = renderer.render(comment.body);
   const commentId = `@${username}/${comment.permlink}`;
   const storageId = `replybox-/${username}/${comment.permlink}`;
+  const [edit, setEdit] = useState(false);
   const [storedBox, storeBox] = useLocalStorage<Boolean>(storageId, false);
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   useEffect(() => {
@@ -188,13 +192,24 @@ const CommentListItem = ({
                   <Separator orientation="horizontal" />
                   <AccordionContent className="p-0">
                     <CardContent className="pb-2 ">
-                      <CardDescription
-                        className="prose break-words"
-                        data-testid="comment-card-description"
-                        dangerouslySetInnerHTML={{
-                          __html: comment_html
-                        }}
-                      />
+                      {edit && comment.parent_permlink ? (
+                        <ReplyTextbox
+                          onSetReply={setEdit}
+                          username={username}
+                          permlink={comment.permlink}
+                          parentPermlink={comment.parent_permlink}
+                          storageId={storageId}
+                          comment={comment.body}
+                        />
+                      ) : (
+                        <CardDescription
+                          className="prose break-words"
+                          data-testid="comment-card-description"
+                          dangerouslySetInnerHTML={{
+                            __html: comment_html
+                          }}
+                        />
+                      )}
                     </CardContent>
                     <Separator orientation="horizontal" />{' '}
                     <CardFooter>
@@ -232,15 +247,37 @@ const CommentListItem = ({
                             <Separator orientation="vertical" className="h-5" />
                           </>
                         ) : null}
-                        <button
-                          onClick={() => {
-                            setReply(!reply), localStorage.removeItem(storageId);
-                          }}
-                          className="flex items-center hover:cursor-pointer hover:text-red-600"
-                          data-testid="comment-card-footer-reply"
-                        >
-                          {t('cards.comment_card.reply')}
-                        </button>
+                        {user && user.isLoggedIn ? (
+                          <button
+                            onClick={() => {
+                              setReply(!reply), localStorage.removeItem(storageId);
+                            }}
+                            className="flex items-center hover:cursor-pointer hover:text-red-600"
+                            data-testid="comment-card-footer-reply"
+                          >
+                            {t('cards.comment_card.reply')}
+                          </button>
+                        ) : (
+                          <DialogLogin>
+                            <button className="flex items-center hover:cursor-pointer hover:text-red-600">
+                              {t('post_content.footer.reply')}
+                            </button>
+                          </DialogLogin>
+                        )}
+                        {user && user.isLoggedIn && comment.author === user.username ? (
+                          <>
+                            <Separator orientation="vertical" className="h-5" />
+                            <button
+                              onClick={() => {
+                                setEdit(!edit);
+                              }}
+                              className="flex items-center hover:cursor-pointer hover:text-red-600"
+                              data-testid="comment-card-footer-edit"
+                            >
+                              {t('cards.comment_card.edit')}
+                            </button>
+                          </>
+                        ) : null}
                       </div>
                     </CardFooter>
                   </AccordionContent>
@@ -256,7 +293,7 @@ const CommentListItem = ({
           </Link>
         </div>
       ) : null}
-      {reply ? (
+      {reply && user && user.isLoggedIn ? (
         <ReplyTextbox
           onSetReply={setReply}
           username={username}

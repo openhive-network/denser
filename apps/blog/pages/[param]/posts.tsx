@@ -13,6 +13,7 @@ import { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
 import { useTranslation } from 'next-i18next';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 
 const UserPosts = () => {
   const { t } = useTranslation('common_blog');
@@ -20,7 +21,7 @@ const UserPosts = () => {
   const { username } = useSiteParams();
   const { ref, inView } = useInView();
   const sort = router.pathname.split('/')[router.pathname.split('/').length - 1];
-
+  const { user } = useUser();
   const {
     data,
     isLoading,
@@ -37,7 +38,7 @@ const UserPosts = () => {
       return await getAccountPosts(
         sort || 'trending',
         username,
-        'hive.blog',
+        user.username === '' ? 'hive.blog' : user.username,
         pageParam?.author,
         pageParam?.permlink
       );

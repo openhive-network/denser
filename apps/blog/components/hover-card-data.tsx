@@ -12,7 +12,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useFollowingInfiniteQuery } from './hooks/use-following-infinitequery';
 import MuteButton from './mute-button';
 
-export function HoverCardData({ author }: { author: string }) {
+export function HoverCardData({ author, blacklist }: { author: string; blacklist: string[] }) {
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
   const follows = useFollowsQuery(author);
@@ -90,6 +90,12 @@ export function HoverCardData({ author }: { author: string }) {
             {t('user_profil.active') + ' ' + dateToFullRelative(account.data.last_vote_time, t)}
           </div>
         </>
+      ) : null}
+      {blacklist.length > 0 ? (
+        <div>
+          <div>Blacklists</div>
+          <div className="text-sm">❗️{blacklist[0]}</div>
+        </div>
       ) : null}
     </div>
   );

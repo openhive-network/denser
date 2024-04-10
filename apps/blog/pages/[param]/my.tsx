@@ -74,8 +74,8 @@ const MyPage: FC = () => {
         'my',
         pageParam?.author,
         pageParam?.permlink,
-        DATA_LIMIT,
-        user?.username || ''
+        user?.username,
+        DATA_LIMIT
       );
     },
     {

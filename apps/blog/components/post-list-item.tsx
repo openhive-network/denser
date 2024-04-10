@@ -19,15 +19,24 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/co
 import DetailsCardHover from './details-card-hover';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import type { Entry } from '@transaction/lib/bridge';
+import type { Entry, IFollowList } from '@transaction/lib/bridge';
 import PostImage from './post-img';
 import { useTranslation } from 'next-i18next';
 import VotesComponent from './votes';
 
-const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage: boolean | undefined }) => {
+const PostListItem = ({
+  post,
+  isCommunityPage,
+  blacklist
+}: {
+  post: Entry;
+  isCommunityPage: boolean | undefined;
+  blacklist: IFollowList[] | undefined;
+}) => {
   const { t } = useTranslation('common_blog');
   const [reveal, setReveal] = useState(post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw'));
   const router = useRouter();
+  const blacklistCheck = blacklist ? blacklist.some((e) => e.name === post.author) : false;
 
   function revealPost() {
     setReveal((reveal) => !reveal);
@@ -84,7 +93,7 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
                 }}
               />
             </Link>
-            <div className="flex items-center">
+            <div className="flex flex-wrap items-center gap-0.5 md:flex-nowrap">
               <Link
                 href={`/@${post.author}`}
                 className="font-medium text-black hover:cursor-pointer hover:text-red-600 dark:text-white dark:hover:text-red-600"
@@ -108,6 +117,10 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
                     <TooltipContent>{post.blacklists[0]}</TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
+              ) : blacklistCheck ? (
+                <span className="text-red-600" title="My blacklist">
+                  (1)
+                </span>
               ) : null}
               {(router.query.param ? router.query.param[1]?.startsWith('hive-') : false) &&
               post.author_role &&
@@ -249,8 +262,8 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
                           {post.stats && post.stats.total_votes === 0
                             ? t('cards.post_card.no_votes')
                             : post.stats && post.stats.total_votes > 1
-                            ? t('cards.post_card.votes', { votes: post.stats.total_votes })
-                            : t('cards.post_card.vote')}
+                              ? t('cards.post_card.votes', { votes: post.stats.total_votes })
+                              : t('cards.post_card.vote')}
                         </p>
                       </TooltipContent>
                     </Tooltip>
@@ -287,8 +300,8 @@ const PostListItem = ({ post, isCommunityPage }: { post: Entry; isCommunityPage:
                             post.children === 0
                               ? t('cards.post_card.no_responses')
                               : post.children === 1
-                              ? t('cards.post_card.response')
-                              : t('cards.post_card.responses', { responses: post.children })
+                                ? t('cards.post_card.response')
+                                : t('cards.post_card.responses', { responses: post.children })
                           }`}
                           {t('cards.post_card.click_to_respond')}
                         </p>

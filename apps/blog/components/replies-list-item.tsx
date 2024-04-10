@@ -15,15 +15,22 @@ import { Separator } from '@ui/components/separator';
 import accountReputation from '@/blog/lib/account-reputation';
 import { Badge } from '@hive/ui/components/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
-import type { Entry } from '@transaction/lib/bridge';
+import type { Entry, IFollowList } from '@transaction/lib/bridge';
 import DetailsCardHover from './details-card-hover';
 import clsx from 'clsx';
 import PostImage from './post-img';
 import { useTranslation } from 'next-i18next';
 import VotesComponent from './votes';
 
-const RepliesListItem = ({ comment }: { comment: Entry }) => {
+const RepliesListItem = ({
+  comment,
+  blacklist
+}: {
+  comment: Entry;
+  blacklist: IFollowList[] | undefined;
+}) => {
   const { t } = useTranslation('common_blog');
+  const blacklistCheck = blacklist ? blacklist.some((e) => e.name === comment.author) : false;
   return (
     <>
       <li
@@ -64,6 +71,10 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
                 {comment.blacklists && comment.blacklists[0] ? (
                   <span className="text-red-600" title={comment.blacklists[0]}>
                     ({comment.blacklists.length})
+                  </span>
+                ) : blacklistCheck ? (
+                  <span className="text-red-600" title="My blacklist">
+                    (1)
                   </span>
                 ) : null}
                 {comment.author_title ? (
@@ -151,10 +162,10 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
                         {comment.stats && comment.stats.total_votes === 0
                           ? t('post_content.footer.no_votes')
                           : comment.stats && comment.stats.total_votes === 1
-                          ? t('post_content.footer.vote')
-                          : t('post_content.footer.votes', {
-                              votes: comment.stats && comment.stats.total_votes
-                            })}
+                            ? t('post_content.footer.vote')
+                            : t('post_content.footer.votes', {
+                                votes: comment.stats && comment.stats.total_votes
+                              })}
                       </p>
                     </TooltipContent>
                   </Tooltip>
@@ -190,8 +201,8 @@ const RepliesListItem = ({ comment }: { comment: Entry }) => {
                         {comment.children === 0
                           ? t('post_content.footer.no_responses')
                           : comment.children === 1
-                          ? t('post_content.footer.response')
-                          : t('post_content.footer.responses', { responses: comment.children })}
+                            ? t('post_content.footer.response')
+                            : t('post_content.footer.responses', { responses: comment.children })}
                         {t('cards.post_card.click_to_respond')}
                       </p>
                     </TooltipContent>

@@ -1,7 +1,11 @@
 import RepliesListItem from '@/blog/components/replies-list-item';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 import type { Entry } from '@transaction/lib/bridge';
+import { useFollowListQuery } from './hooks/use-follow-list';
 
 const RepliesList = ({ data, parent }: { data: Entry[] | null | undefined; parent?: Entry }) => {
+  const { user } = useUser();
+  const { data: blacklist } = useFollowListQuery(user.username, 'blacklisted');
   if (data && parent) {
     let filtered = data.filter(
       (x: Entry) => x.parent_author === parent.author && x.parent_permlink === parent.permlink
@@ -34,14 +38,18 @@ const RepliesList = ({ data, parent }: { data: Entry[] | null | undefined; paren
 
     return (
       <ul className="px-2">
-        {tmp?.map((comment: Entry) => <RepliesListItem comment={comment} key={comment.post_id} />)}
+        {tmp?.map((comment: Entry) => (
+          <RepliesListItem blacklist={blacklist} comment={comment} key={comment.post_id} />
+        ))}
       </ul>
     );
   }
 
   return (
     <ul className="px-2">
-      {data?.map((comment: Entry) => <RepliesListItem comment={comment} key={comment.post_id} />)}
+      {data?.map((comment: Entry) => (
+        <RepliesListItem blacklist={blacklist} comment={comment} key={comment.post_id} />
+      ))}
     </ul>
   );
 };

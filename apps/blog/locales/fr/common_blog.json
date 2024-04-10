@@ -162,6 +162,7 @@
       "one_reply": "reply",
       "replies": "replies",
       "reply": "Reply",
+      "edit": "Modifier",
       "will_be_hidden": "Will be hidden due to low rating ",
       "load_more": "Load more"
     }
@@ -313,6 +314,7 @@
   "post_content": {
     "in": "dans",
     "reputation_title": "Réputation",
+    "blacklists": "Listes noires",
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "You are viewing a single comment's thread from",
       "view_the_full_context": "Voir le contexte complet",
@@ -350,6 +352,7 @@
       "responses": "{{responses}} réponses. ",
       "reblog": "Reblog",
       "reply": "Répondre",
+      "edit": "Modifier",
       "share_on": "Share on ",
       "share_form": {
         "copy": "COPIER",
@@ -383,7 +386,7 @@
     "hide_preview": "Masquer l'aperçu",
     "show_preview": "Afficher l'aperçu",
     "title": "Titre",
-    "insert_images_by_dragging": "Insérer des images en les faisant glisser et en les déposant, en les collant depuis le presse-papiers, ou en ",
+    "insert_images_by_dragging": "Insérer des images en les faisant glisser et en les déposant ou en ",
     "selecting_them": "les sélectionnant",
     "post_summary": "Résumé de la publication (pour les articles et le référencement, max 140 caractères)",
     "enter_your_tags": "Saisissez vos balises séparées par un espace",
@@ -398,6 +401,7 @@
     "preview": "Aperçu",
     "submit": "Envoyer",
     "clean": "Nettoyer",
+    "cancel": "Annuler",
     "markdown_styling_guide": "Guide de mise en forme Markdown",
     "power_up": "Mise à niveau à 100%",
     "maximum_characters": "Maximum de {{num}} caractères",

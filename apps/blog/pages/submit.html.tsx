@@ -24,7 +24,7 @@ function Submit() {
   return (
     <div className="px-4 py-8">
       {isClient && user?.username ? (
-        <PostForm username={user.username} />
+        <PostForm username={user.username} editMode={false} sideBySidePreview={true} />
       ) : (
         <div
           className="block bg-green-50 px-4 py-6 text-sm font-light shadow-sm dark:bg-slate-800"

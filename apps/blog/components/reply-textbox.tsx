@@ -1,31 +1,34 @@
 import Link from 'next/link';
-import { Textarea } from '@ui/components/textarea';
 import { Button } from '@ui/components/button';
 import { useContext, useEffect, useState } from 'react';
 import { Label } from '@radix-ui/react-label';
-import { Input } from '@ui/components/input';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { transactionService } from '@transaction/index';
 import { HiveRendererContext } from './hive-renderer-context';
 import DialogLogin from './dialog-login';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
+import MdEditor from './md-editor';
 
 export function ReplyTextbox({
   onSetReply,
   username,
   permlink,
-  storageId
+  parentPermlink,
+  storageId,
+  comment
 }: {
   onSetReply: (e: boolean) => void;
   username: string;
   permlink: string;
+  parentPermlink?: string;
   storageId: string;
+  comment?: string;
 }) {
   const [storedPost, storePost] = useLocalStorage<string>(`replyTo-/${username}/${permlink}`, '');
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
-  const [text, setText] = useState(storedPost ? storedPost : '');
+  const [text, setText] = useState(comment ? comment : storedPost ? storedPost : '');
   const [cleanedText, setCleanedText] = useState('');
   const { hiveRenderer } = useContext(HiveRendererContext);
 
@@ -59,41 +62,37 @@ export function ReplyTextbox({
           <h1 className="text-sm text-red-500">{t('post_content.footer.comment.disable_editor')}</h1>
         </Link>
         <div>
-          <Textarea
-            className="border-2 border-slate-200 dark:text-white"
-            onChange={(e) => setText(e.target.value)}
+          <MdEditor
+            onChange={(value) => {
+              setText(value);
+            }}
+            persistedValue={text}
             placeholder={t('post_content.footer.comment.reply')}
-            value={text}
           />
           <p className="border-2 border-t-0 border-slate-200 bg-gray-100 p-1 text-xs font-light text-slate-500 dark:border-black dark:bg-slate-950">
             {t('post_content.footer.comment.insert_images')}{' '}
             <span>
-              <Label className="cursor-pointer text-red-500" htmlFor="picture">
-                {t('post_content.footer.comment.selecting_them')}
-              </Label>
-              <Input id="picture" type="file" className="hidden" />
+              <Label htmlFor="picture">{t('post_content.footer.comment.selecting_them')}</Label>
             </span>
           </p>
         </div>
         <div className="flex flex-col md:flex-row">
-          {user && user.isLoggedIn ? (
-            <Button
-              disabled={text === ''}
-              onClick={() => {
+          <Button
+            disabled={text === ''}
+            onClick={() => {
+              if (parentPermlink) {
+                transactionService.updateComment(username, parentPermlink, permlink, cleanedText);
+              } else {
                 transactionService.comment(username, permlink, cleanedText);
-                setText('');
-                localStorage.removeItem(`replyTo-/${username}/${permlink}`);
-                localStorage.removeItem(storageId);
-                onSetReply(false);
-              }}
-            >
-              {t('post_content.footer.comment.post')}
-            </Button>
-          ) : (
-            <DialogLogin>
-              <Button disabled={text === ''}> {t('post_content.footer.comment.post')}</Button>
-            </DialogLogin>
-          )}
+              }
+              setText('');
+              localStorage.removeItem(`replyTo-/${username}/${permlink}`);
+              localStorage.removeItem(storageId);
+              onSetReply(false);
+            }}
+          >
+            {t('post_content.footer.comment.post')}
+          </Button>
           <Button
             variant="ghost"
             onClick={() => handleCancel()}

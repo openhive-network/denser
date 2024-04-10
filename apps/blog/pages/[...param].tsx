@@ -63,7 +63,13 @@ const ParamPage: FC = () => {
   } = useInfiniteQuery(
     ['entriesInfinite', sort, tag],
     async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
-      return await getPostsRanked(sort || 'trending', tag, pageParam?.author, pageParam?.permlink);
+      return await getPostsRanked(
+        sort || 'trending',
+        tag,
+        pageParam?.author,
+        pageParam?.permlink,
+        user.username
+      );
     },
     {
       getNextPageParam: (lastPage) => {
@@ -119,7 +125,7 @@ const ParamPage: FC = () => {
   } = useInfiniteQuery(
     ['accountEntriesInfinite', username],
     async ({ pageParam }: { pageParam?: Entry }) => {
-      return await getAccountPosts('blog', username, '', pageParam?.author, pageParam?.permlink);
+      return await getAccountPosts('blog', username, user.username, pageParam?.author, pageParam?.permlink);
     },
     {
       getNextPageParam: (lastPage) => {

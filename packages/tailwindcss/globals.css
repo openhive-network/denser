@@ -138,24 +138,24 @@
   font-weight: inherit;
 }
 
-.prose :where(code):not(:where([class~=not-prose],[class~=not-prose] *)) {
+.prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
   font-weight: 400;
   font-size: 1rem;
-  padding: 0.2rem
+  padding: 0.2rem;
 }
 
-.light .prose :where(code):not(:where([class~=not-prose],[class~=not-prose] *)) {
+.light .prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
   background-color: #f1f5f9;
 }
 
-.dark .prose :where(code):not(:where([class~=not-prose],[class~=not-prose] *)) {
+.dark .prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
   background-color: #334155;
   color: #f1f5f9;
 }
 
-.prose :where(code):not(:where([class~=not-prose],[class~=not-prose] *)):after,
-.prose :where(code):not(:where([class~=not-prose],[class~=not-prose] *)):before {
-  content: none
+.prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)):after,
+.prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)):before {
+  content: none;
 }
 
 .entry-body.prose p {
@@ -183,4 +183,29 @@
 
 .entry-body.prose img {
   cursor: pointer;
+}
+
+#articleBody .videoWrapper,
+.prose .videoWrapper {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%;
+}
+
+#articleBody .videoWrapper iframe,
+.prose .videoWrapper iframe {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 75vw;
+}
+
+.markdown-view {
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: none;
 }

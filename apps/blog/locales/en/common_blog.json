@@ -173,6 +173,7 @@
       "one_reply": "reply",
       "replies": "replies",
       "reply": "Reply",
+      "edit": "Edit",
       "will_be_hidden": "Will be hidden due to low rating ",
       "load_more": "Load more"
     }
@@ -325,6 +326,7 @@
   "post_content": {
     "in": "in",
     "reputation_title": "Reputation",
+    "blacklists": "Blacklists",
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "You are viewing a single comment's thread from",
       "view_the_full_context": "View the full context",
@@ -359,6 +361,7 @@
       "votes": "{{votes}} votes",
       "reblog": "Reblog",
       "reply": "Reply",
+      "edit": "Edit",
       "no_responses": "No responses. ",
       "response": "1 response. ",
       "responses": "{{responses}} responses. ",
@@ -395,7 +398,7 @@
     "hide_preview": "Hide preview",
     "show_preview": "Show preview",
     "title": "Title",
-    "insert_images_by_dragging": "Insert images by dragging & dropping, pasting from the clipboard, or by ",
+    "insert_images_by_dragging": "Insert images by dragging & dropping or by ",
     "selecting_them": "selecting them",
     "post_summary": "Post summary(for posts & SEO, max 140 chars)",
     "enter_your_tags": "Enter your tags separated by a space",
@@ -410,6 +413,7 @@
     "preview": "Preview",
     "submit": "Submit",
     "clean": "Clean",
+    "cancel": "Cancel",
     "markdown_styling_guide": "Markdown Styling Guide",
     "power_up": " Power up 100%",
     "maximum_characters": "Maximum {{num}} characters",

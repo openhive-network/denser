@@ -173,6 +173,7 @@
       "one_reply": "1 odpowiedź",
       "replies": "odpowiedzi",
       "reply": "Odpowiedz",
+      "edit": "Edytuj",
       "will_be_hidden": "Komentarz jest ukryte ze względu na niską ocenę",
       "load_more": "Pokaż więcej"
     }
@@ -326,6 +327,7 @@
   "post_content": {
     "in": "w",
     "reputation_title": "Reputacja",
+    "blacklists": "Czarna lista",
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "Przeglądasz wątek pojedynczego komentarza",
       "view_the_full_context": "Zobacz pełen kontekst.",
@@ -363,6 +365,7 @@
       "responses": "{{responses}} odpowiedzi. ",
       "reblog": "Rebloguj",
       "reply": "Odpowiedz",
+      "edit": "Edytuj",
       "share_on": "Udostępnij na ",
       "share_form": {
         "copy": "KOPIUJ",
@@ -396,7 +399,7 @@
     "hide_preview": "Schowaj podgląd",
     "show_preview": "Pokaż podgląd",
     "title": "Tytuł",
-    "insert_images_by_dragging": "Wstaw obrazki przez przeciągnij i upuść.wklejanie ze schowka,lub przez ",
+    "insert_images_by_dragging": "Wstaw obrazki przez przeciągnij i upuść lub przez ",
     "selecting_them": "wybieranie ich.",
     "post_summary": "Streszczenie posta(w miniaturce posta, maksymalnie 140 znaków)",
     "enter_your_tags": "Wpisz tagi oddzielone spacją",
@@ -411,6 +414,7 @@
     "preview": "Podgląd",
     "submit": "Wyślij",
     "clean": "Wyczyść",
+    "cancel": "Anuluj",
     "markdown_styling_guide": "Przewodnik formatowania z użyciem Markdown",
     "power_up": "Wzmocnij o 100%",
     "maximum_characters": "Maksymalnie {{num}} znaków",
