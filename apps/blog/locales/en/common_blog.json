@@ -523,6 +523,7 @@
     "error_bad_cookie": "Unable to get endpoints from cookie",
     "error_already_exists": "This endpoint is already in the list",
     "error_cant_remove_active": "You can't remove the current preferred endpoint. Please select a new preferred endpoint first",
-    "error_cant_remove_all": "You must have at least one endpoint in the list"
+    "error_cant_remove_all": "You must have at least one endpoint in the list",
+    "changes_saved": "Changes saved"
   }
 }

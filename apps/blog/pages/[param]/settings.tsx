@@ -31,9 +31,10 @@ import { TFunction } from 'i18next';
 import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import env from '@beam-australia/react-env';
 import { Signer } from '@smart-signer/lib/signer/signer';
-import { useSigner } from '@smart-signer/lib/use-signer';
 import { getLogger } from '@ui/lib/logging';
 import { useSignerContext } from '@/blog/components/common/signer';
+import Loading from '@ui/components/loading';
+import { toast } from '@ui/components/hooks/use-toast';
 
 const logger = getLogger('app');
 interface Settings {
@@ -149,6 +150,7 @@ export default function UserSettings() {
       enabled: !!user.username
     }
   );
+
   const profileData = data?.profile;
   const DEFAULT_SETTINGS: Settings = {
     profile_image: profileData?.profile_image ? profileData.profile_image : '',
@@ -160,6 +162,7 @@ export default function UserSettings() {
     blacklist_description: profileData?.blacklist_description ? profileData.blacklist_description : '',
     muted_list_description: profileData?.muted_list_description ? profileData.muted_list_description : ''
   };
+
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
   const [preferences, setPreferences] = useState<Preferences>(DEFAULT_PREFERENCES);
   const [endpoints, setEndpoints] = useLocalStorage('hive-blog-endpoints', DEFAULTS_ENDPOINTS);
@@ -172,14 +175,9 @@ export default function UserSettings() {
   const { t } = useTranslation('common_blog');
   const inputProfileRef = useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
   const inputCoverRef = useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
-  const disabledBtn = validation(settings, t);
-  const { signerOptions } = useSigner();
-
+  const validationCheck = validation(settings, t);
+  const disabledBtn = Object.values(validationCheck).some((value) => typeof value === 'string');
   const { signer } = useSignerContext();
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
   const sameData =
     DEFAULT_SETTINGS.profile_image === settings.profile_image &&
     DEFAULT_SETTINGS.cover_image === settings.cover_image &&
@@ -190,6 +188,9 @@ export default function UserSettings() {
     DEFAULT_SETTINGS.blacklist_description === settings.blacklist_description &&
     DEFAULT_SETTINGS.muted_list_description === settings.muted_list_description;
 
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   async function onSubmit() {
     try {
       await transactionService.updateProfile(
@@ -202,6 +203,10 @@ export default function UserSettings() {
         settings.blacklist_description !== '' ? settings.blacklist_description : undefined,
         settings.muted_list_description !== '' ? settings.muted_list_description : undefined
       );
+      toast({
+        title: t('settings_page.changes_saved'),
+        variant: 'success'
+      });
     } catch (error) {
       console.error(error);
     }
@@ -225,6 +230,10 @@ export default function UserSettings() {
       setSettings((prev) => ({ ...prev, cover_image: url }));
     }
   };
+  if (isLoading) {
+    return <Loading loading />;
+  }
+
   return (
     <ProfileLayout>
       <div className="flex flex-col" data-testid="public-profile-settings">
@@ -259,11 +268,11 @@ export default function UserSettings() {
                       accept=".jpg,.png,.jpeg,.jfif,.gif,.webp"
                       name="avatar"
                       value={insertImg}
-                      //@ts-ignore
+                      //@ts-expect-error
                       onChange={inputProfileHandler}
                     />
                   </span>
-                  <span className="pt-2 text-xs text-red-500">{disabledBtn.profile_image}</span>
+                  <span className="pt-2 text-xs text-red-500">{validationCheck.profile_image}</span>
                 </div>
 
                 <div>
@@ -290,11 +299,11 @@ export default function UserSettings() {
                       accept=".jpg,.png,.jpeg,.jfif,.gif,.webp"
                       name="avatar"
                       value={insertImg}
-                      //@ts-ignore
+                      //@ts-expect-error
                       onChange={inputCoverHandler}
                     />
                   </span>
-                  <span className="pt-2 text-xs text-red-500">{disabledBtn.cover_image}</span>
+                  <span className="pt-2 text-xs text-red-500">{validationCheck.cover_image}</span>
                 </div>
 
                 <div>
@@ -306,7 +315,7 @@ export default function UserSettings() {
                     value={settings.name}
                     onChange={(e) => setSettings((prev) => ({ ...prev, name: e.target.value }))}
                   />
-                  <span className="pt-2 text-xs text-red-500">{disabledBtn.name}</span>
+                  <span className="pt-2 text-xs text-red-500">{validationCheck.name}</span>
                 </div>
 
                 <div>
@@ -318,7 +327,7 @@ export default function UserSettings() {
                     value={settings.about}
                     onChange={(e) => setSettings((prev) => ({ ...prev, about: e.target.value }))}
                   />
-                  <span className="pt-2 text-xs text-red-500">{disabledBtn.about}</span>
+                  <span className="pt-2 text-xs text-red-500">{validationCheck.about}</span>
                 </div>
 
                 <div>
@@ -330,7 +339,7 @@ export default function UserSettings() {
                     value={settings.location}
                     onChange={(e) => setSettings((prev) => ({ ...prev, location: e.target.value }))}
                   />
-                  <span className="pt-2 text-xs text-red-500">{disabledBtn.location}</span>
+                  <span className="pt-2 text-xs text-red-500">{validationCheck.location}</span>
                 </div>
 
                 <div>
@@ -342,7 +351,7 @@ export default function UserSettings() {
                     value={settings.website}
                     onChange={(e) => setSettings((prev) => ({ ...prev, website: e.target.value }))}
                   />
-                  <span className="pt-2 text-xs text-red-500">{disabledBtn.website}</span>
+                  <span className="pt-2 text-xs text-red-500">{validationCheck.website}</span>
                 </div>
 
                 <div>
@@ -356,7 +365,7 @@ export default function UserSettings() {
                       setSettings((prev) => ({ ...prev, blacklist_description: e.target.value }))
                     }
                   />
-                  <span className="pt-2 text-xs text-red-500">{disabledBtn.blacklist_description}</span>
+                  <span className="pt-2 text-xs text-red-500">{validationCheck.blacklist_description}</span>
                 </div>
 
                 <div>
@@ -370,14 +379,14 @@ export default function UserSettings() {
                       setSettings((prev) => ({ ...prev, muted_list_description: e.target.value }))
                     }
                   />
-                  <span className="pt-2 text-xs text-red-500">{disabledBtn.muted_list_description}</span>
+                  <span className="pt-2 text-xs text-red-500">{validationCheck.muted_list_description}</span>
                 </div>
               </div>
               <Button
                 onClick={() => onSubmit()}
                 className="my-4 w-44"
                 data-testid="pps-update-button"
-                disabled={sameData}
+                disabled={sameData || disabledBtn}
               >
                 {t('settings_page.update')}
               </Button>
