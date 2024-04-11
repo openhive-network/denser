@@ -338,6 +338,51 @@ class TransactionService {
     });
   }
 
+  async updateProfile(
+    profile_image?: string,
+    cover_image?: string,
+    name?: string,
+    about?: string,
+    location?: string,
+    website?: string,
+    witness_owner?: string,
+    witness_description?: string,
+    blacklist_description?: string,
+    muted_list_description?: string,
+    version: number = 2 // signal upgrade to posting_json_metadata
+  ) {
+    await this.processHiveAppOperation((builder) => {
+      builder
+        .push({
+          account_update2: {
+            account: this.signerOptions.username,
+            extensions: [],
+            json_metadata: '',
+            posting_json_metadata: JSON.stringify({
+              profile: {
+                profile_image,
+                cover_image,
+                name,
+                about,
+                location,
+                website,
+                witness_owner,
+                witness_description,
+                blacklist_description,
+                muted_list_description,
+                version
+              }
+            }),
+            owner: undefined,
+            active: undefined,
+            posting: undefined,
+            memo_key: ''
+          }
+        })
+        .build();
+    });
+  }
+
   async updateProposalVotes(proposal_ids: string[], approve: boolean, extensions: future_extensions[]) {
     await this.processHiveAppOperation((builder) => {
       builder
