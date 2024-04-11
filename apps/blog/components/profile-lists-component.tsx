@@ -153,9 +153,9 @@ export default function ProfileLists({
           })}
         >
           {t('user_profil.lists.list.list_description')}
-          {variant === 'blacklisted'
+          {variant === 'blacklisted' && profilData?.profile?.blacklist_description
             ? profilData?.profile?.blacklist_description
-            : variant === 'muted'
+            : variant === 'muted' && profilData?.profile?.muted_list_description
               ? profilData?.profile?.muted_list_description
               : t('user_profil.lists.list.description_not_added')}
         </p>
