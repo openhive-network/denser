@@ -104,13 +104,15 @@ export default function PostForm({
   editMode = false,
   sideBySidePreview = true,
   post_s,
-  setEditMode
+  setEditMode,
+  refreshPage
 }: {
   username: string;
   editMode: boolean;
   sideBySidePreview: boolean;
   post_s?: Entry;
   setEditMode?: Dispatch<SetStateAction<boolean>>;
+  refreshPage?: () => void;
 }) {
   const { hiveRenderer } = useContext(HiveRendererContext);
   const router = useRouter();
@@ -226,7 +228,14 @@ export default function PostForm({
       form.reset(defaultValues);
       setPreviewContent(undefined);
       storePost(defaultValues);
-      await router.push(`/created/${tags[0]}`, undefined, { shallow: true });
+      if (editMode) {
+        if (refreshPage && setEditMode) {
+          setEditMode(!editMode);
+          refreshPage();
+        }
+      } else {
+        await router.push(`/created/${tags[0]}`, undefined, { shallow: true });
+      }
     } catch (error) {
       console.error(error);
     }
