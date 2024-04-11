@@ -243,9 +243,6 @@ export default function UserSettings() {
       setSettings((prev) => ({ ...prev, cover_image: url }));
     }
   };
-  if (isLoading) {
-    return <Loading loading />;
-  }
 
   return (
     <ProfileLayout>
