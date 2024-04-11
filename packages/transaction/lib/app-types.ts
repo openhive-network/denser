@@ -7,6 +7,8 @@ export interface AccountProfile {
   about?: string;
   cover_image?: string;
   location?: string;
+  blacklist_description?: string;
+  muted_list_description?: string;
   name?: string;
   profile_image?: string;
   website?: string;

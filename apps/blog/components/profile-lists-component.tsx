@@ -9,6 +9,8 @@ import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { transactionService } from '@transaction/index';
+import { getAccountFull } from '@transaction/lib/hive';
+import { useQuery } from '@tanstack/react-query';
 
 function deleteFromList(
   username: string,
@@ -86,6 +88,11 @@ export default function ProfileLists({
   data: IFollowList[] | undefined;
 }) {
   const { user } = useUser();
+  const {
+    isLoading: isLoadingData,
+    error: errorData,
+    data: profilData
+  } = useQuery(['profileData', user.username], () => getAccountFull(username));
   const { t } = useTranslation('common_blog');
   const [page, setPage] = useState(0);
   const [filter, setFilter] = useState('');
@@ -146,7 +153,11 @@ export default function ProfileLists({
           })}
         >
           {t('user_profil.lists.list.list_description')}
-          {t('user_profil.lists.list.description_not_added')}
+          {variant === 'blacklisted' && profilData?.profile?.blacklist_description
+            ? profilData?.profile?.blacklist_description
+            : variant === 'muted' && profilData?.profile?.muted_list_description
+              ? profilData?.profile?.muted_list_description
+              : t('user_profil.lists.list.description_not_added')}
         </p>
         <ul className="flex flex-col ">
           {data && data.length === 0 ? (
