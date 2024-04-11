@@ -59,6 +59,16 @@ const DEFAULT_PREFERENCES: Preferences = {
   comment_rewards: '50%',
   referral_system: 'enabled'
 };
+const DEFAULT_SETTINGS: Settings = {
+  profile_image: '',
+  cover_image: '',
+  name: '',
+  about: '',
+  location: '',
+  website: '',
+  blacklist_description: '',
+  muted_list_description: ''
+};
 const DEFAULTS_ENDPOINTS = [
   'https://api.hive.blog',
   'https://api.openhive.network',
@@ -152,7 +162,7 @@ export default function UserSettings() {
   );
 
   const profileData = data?.profile;
-  const DEFAULT_SETTINGS: Settings = {
+  const profileSettings: Settings = {
     profile_image: profileData?.profile_image ? profileData.profile_image : '',
     cover_image: profileData?.cover_image ? profileData.cover_image : '',
     name: profileData?.name ? profileData.name : '',
@@ -179,18 +189,21 @@ export default function UserSettings() {
   const disabledBtn = Object.values(validationCheck).some((value) => typeof value === 'string');
   const { signer } = useSignerContext();
   const sameData =
-    DEFAULT_SETTINGS.profile_image === settings.profile_image &&
-    DEFAULT_SETTINGS.cover_image === settings.cover_image &&
-    DEFAULT_SETTINGS.name === settings.name &&
-    DEFAULT_SETTINGS.location === settings.location &&
-    DEFAULT_SETTINGS.website === settings.website &&
-    DEFAULT_SETTINGS.about === settings.about &&
-    DEFAULT_SETTINGS.blacklist_description === settings.blacklist_description &&
-    DEFAULT_SETTINGS.muted_list_description === settings.muted_list_description;
+    profileSettings.profile_image === settings.profile_image &&
+    profileSettings.cover_image === settings.cover_image &&
+    profileSettings.name === settings.name &&
+    profileSettings.location === settings.location &&
+    profileSettings.website === settings.website &&
+    profileSettings.about === settings.about &&
+    profileSettings.blacklist_description === settings.blacklist_description &&
+    profileSettings.muted_list_description === settings.muted_list_description;
 
   useEffect(() => {
     setIsClient(true);
   }, []);
+  useEffect(() => {
+    setSettings(profileSettings);
+  }, [isLoading]);
   async function onSubmit() {
     try {
       await transactionService.updateProfile(
