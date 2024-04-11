@@ -30,10 +30,10 @@ import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
 import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import env from '@beam-australia/react-env';
-import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { Signer } from '@smart-signer/lib/signer/signer';
 import { useSigner } from '@smart-signer/lib/use-signer';
 import { getLogger } from '@ui/lib/logging';
+import { useSignerContext } from '@/blog/components/common/signer';
 
 const logger = getLogger('app');
 interface Settings {
@@ -174,7 +174,8 @@ export default function UserSettings() {
   const inputCoverRef = useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
   const disabledBtn = validation(settings, t);
   const { signerOptions } = useSigner();
-  const signer = getSigner(signerOptions);
+
+  const { signer } = useSignerContext();
 
   useEffect(() => {
     setIsClient(true);

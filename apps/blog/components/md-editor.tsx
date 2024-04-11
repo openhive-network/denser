@@ -17,9 +17,10 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { Signer } from '@smart-signer/lib/signer/signer';
 import { ICommand, TextAreaTextApi } from '@uiw/react-md-editor';
-import { useSigner } from '@smart-signer/lib/use-signer';
+
 
 import { getLogger } from '@ui/lib/logging';
+import { useSignerContext } from './common/signer';
 const logger = getLogger('app');
 
 const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false });
@@ -117,8 +118,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
 
   const { resolvedTheme } = useTheme();
 
-  const { signerOptions } = useSigner();
-  const signer = getSigner(signerOptions);
+  const { signer } = useSignerContext();
 
   const inputRef = useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
   const editorRef = useRef(null);
