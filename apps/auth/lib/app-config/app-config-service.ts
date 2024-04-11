@@ -1,7 +1,7 @@
 import config from 'config';
-import { AppConfig } from './app-config-schema';
+import { IAppConfig } from './app-config-schema';
 export class AppConfigService {
-    static appConfig: AppConfig;
+    static appConfig: IAppConfig;
 
     static get config() {
         if (!AppConfigService.appConfig) {
