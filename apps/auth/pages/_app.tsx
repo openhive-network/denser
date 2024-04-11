@@ -5,8 +5,6 @@ import { appWithTranslation } from 'next-i18next';
 import { i18n } from 'next-i18next.config';
 import { parseCookie } from '@smart-signer/lib/utils';
 import { AppConfigService } from '@/auth/lib/app-config/app-config-service';
-import { appConfigSchema } from '@/auth/lib/app-config/app-config-schema';
-import config from 'config';
 import { isBrowser } from '@ui/lib/logger';
 
 import { getLogger } from '@ui/lib/logging';
@@ -18,22 +16,7 @@ if (isBrowser()) {
 
   logger.info('appConfig: %o', AppConfigService.config);
 } else {
-  // Validate config passed to application via configuration files and
-  // environment variables.
-  try {
-    appConfigSchema.parse(config.util.toObject());
-    logger.info("Application Config is OK");
-  } catch (error) {
-    const parts = [
-      'Application has been stopped,',
-      'because validation of configuration failed.',
-      'Error is: %o'
-    ];
-    logger.error(parts.join(' '), error);
-    // TODO Is exiting process a good idea here?
-    // Exit application, means shut down server process.
-    process.exit(1)
-  }
+  AppConfigService.init();
 }
 
 const Providers = lazy(() => import('@/auth/components/common/providers'));

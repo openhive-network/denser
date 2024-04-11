@@ -1,7 +1,8 @@
 import config from 'config';
-import { AppConfig } from './app-config-schema';
+import { TAppConfig } from './app-config-schema';
+
 export class AppConfigService {
-    static #appConfig: AppConfig;
+    static #appConfig: TAppConfig;
 
     static get config() {
         if (!AppConfigService.#appConfig) {

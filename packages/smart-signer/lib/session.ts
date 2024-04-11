@@ -3,6 +3,12 @@
 import type { SessionOptions } from 'iron-session';
 import env from '@beam-australia/react-env';
 
+// TODO This doesn't work
+// import config from 'config';
+// console.log(config.get('app_name')
+// import { AppConfigService } from '@smart-signer/lib/app-config/app-config-service';
+// console.log(AppConfigService.config.app_name );
+
 export const cookieNamePrefix = `${env('APP_NAME') || `app`}_`;
 
 export const sessionOptions: SessionOptions = {
