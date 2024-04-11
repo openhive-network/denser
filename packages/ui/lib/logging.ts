@@ -1,6 +1,10 @@
 import pino, { Logger } from 'pino';
 import env from '@beam-australia/react-env';
 
+// TODO This doesn't work here.
+// import config from 'config';
+// console.log(config.get('app_name'));
+
 export const logLevelData = {
   '*': env('LOGGING_LOG_LEVEL') ? env('LOGGING_LOG_LEVEL').toLowerCase() : 'info'
 };

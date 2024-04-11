@@ -2,6 +2,9 @@ import config from 'config';
 import { TAppConfig, appConfigSchema } from './app-config-schema';
 import { isBrowser } from '@ui/lib/logger';
 
+import { getLogger } from '@ui/lib/logging';
+const logger = getLogger('app');
+
 export class AppConfigService {
     static #appConfig: TAppConfig;
 
@@ -11,7 +14,7 @@ export class AppConfigService {
         if (isBrowser()) return;
 
         try {
-            appConfigSchema.parse(config.util.toObject());
+            appConfigSchema.parse(configObject);
             logger.info("Application Config is OK");
           } catch (error) {
             const parts = [
@@ -29,7 +32,7 @@ export class AppConfigService {
     static init() {
         if (!AppConfigService.#appConfig) {
             const configObject = config.util.toObject();
-            // AppConfigService.#validate(configObject)
+            AppConfigService.#validate(configObject)
             AppConfigService.#appConfig = configObject;
             Object.freeze(AppConfigService.#appConfig);
         }

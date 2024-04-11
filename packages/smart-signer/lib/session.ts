@@ -3,9 +3,9 @@
 import type { SessionOptions } from 'iron-session';
 import env from '@beam-australia/react-env';
 
-// TODO This doesn't work
+// TODO This doesn't work here.
 // import config from 'config';
-// console.log(config.get('app_name')
+// console.log(config.get('app_name'));
 // import { AppConfigService } from '@smart-signer/lib/app-config/app-config-service';
 // console.log(AppConfigService.config.app_name );
 
