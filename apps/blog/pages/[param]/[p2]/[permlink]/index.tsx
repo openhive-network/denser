@@ -96,6 +96,11 @@ function PostPage({
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const firstPost = discussionState?.find((post) => post.depth === 0);
   const [edit, setEdit] = useState(false);
+
+  const refreshPage = () => {
+    router.replace(router.asPath);
+  };
+
   useEffect(() => {
     if (reply) {
       storeBox(reply);
@@ -231,6 +236,7 @@ function PostPage({
             setEditMode={setEdit}
             sideBySidePreview={false}
             post_s={post_s}
+            refreshPage={refreshPage}
           />
         ) : mutedPost ? (
           <div id="articleBody" className="flex flex-col gap-8 py-8">
