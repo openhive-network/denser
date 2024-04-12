@@ -8,7 +8,7 @@ import {
   getAccount,
   getDynamicGlobalProperties,
   getAccountFull,
-  getAccountReputations,
+  getAccountReputations
 } from '@transaction/lib/hive';
 import { accountReputation } from '@/blog/lib/utils';
 import { delegatedHive, numberWithCommas, vestingHive } from '@hive/ui/lib/utils';
@@ -279,7 +279,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               </li>
             </ul>
 
-            <ul className="my-4 flex h-5 justify-center gap-1 text-xs text-white sm:gap-4 sm:text-sm">
+            <ul className="my-4 flex h-auto flex-wrap justify-center gap-1 text-xs text-white sm:gap-4 sm:text-sm">
               {profileData?.profile?.location ? (
                 <li className="flex items-center">
                   <Icons.mapPin className="m-1" />
