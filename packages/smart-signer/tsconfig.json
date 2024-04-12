@@ -4,15 +4,9 @@
     "moduleResolution": "Bundler",
     "baseUrl": ".",
     "paths": {
-      "@smart-signer/*": [
-        "./*"
-      ],
-      "@transaction/*": [
-        "../../packages/transaction/*"
-      ],
-      "@ui/*": [
-        "../../packages/ui/*"
-      ]
+      "@smart-signer/*": ["./*"],
+      "@transaction/*": ["../../packages/transaction/*"],
+      "@ui/*": ["../../packages/ui/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
