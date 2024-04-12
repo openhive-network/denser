@@ -14,10 +14,8 @@ import * as commands from '@uiw/react-md-editor/commands';
 import { useTheme } from 'next-themes';
 import env from '@beam-australia/react-env';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { Signer } from '@smart-signer/lib/signer/signer';
 import { ICommand, TextAreaTextApi } from '@uiw/react-md-editor';
-
 
 import { getLogger } from '@ui/lib/logging';
 import { useSignerContext } from './common/signer';
@@ -129,6 +127,10 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
   useEffect(() => {
     onChange(formValue);
   }, [formValue]);
+
+  useEffect(() => {
+    setFormValue(persistedValue);
+  }, [persistedValue]);
 
   const inputImageHandler = useCallback(async (event: { target: { files: FileList } }) => {
     if (event.target.files && event.target.files.length === 1) {

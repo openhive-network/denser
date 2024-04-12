@@ -24,7 +24,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import useManabars from './hooks/useManabars';
 import { AdvancedSettingsPostForm } from './advanced_settings_post_form';
 import MdEditor from './md-editor';
-import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { useTranslation } from 'next-i18next';
@@ -194,7 +194,8 @@ export default function PostForm({
     debounce(() => {
       storePost(form.getValues());
     }, 50)();
-  }, [form, postArea, restFields, storePost]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form, postArea, ...Object.values(restFields)]);
 
   // update debounced post preview content
   useEffect(() => {
@@ -278,12 +279,14 @@ export default function PostForm({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <MdEditor
-                      onChange={(value) => {
-                        form.setValue('postArea', value);
-                      }}
-                      persistedValue={field.value}
-                    />
+                    <>
+                      <MdEditor
+                        onChange={(value) => {
+                          form.setValue('postArea', value);
+                        }}
+                        persistedValue={field.value}
+                      />
+                    </>
                   </FormControl>
                   <FormDescription className="border-x-2 border-b-2 border-border px-3 pb-1 text-xs text-destructive">
                     {t('submit_page.insert_images_by_dragging')}
