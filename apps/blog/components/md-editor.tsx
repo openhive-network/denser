@@ -206,7 +206,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
   const editChoice = (inputRef: MutableRefObject<HTMLInputElement>) => [imgBtn(inputRef)];
 
   return (
-    <div>
+    <div className="bg-white dark:bg-slate-950 dark:text-white">
       <input
         ref={inputRef}
         className="hidden"
