@@ -99,12 +99,12 @@ export class PostPage {
     this.articleTitle = page.locator('[data-testid="article-title"]');
     this.articleBody = page.locator('#articleBody');
     this.articleAuthorData = page.locator('[data-testid="author-data"]');
-    this.articleAuthorName = this.articleAuthorData.locator('a div');
+    this.articleAuthorName = this.articleAuthorData.locator('[data-testid="author-name-link"]').locator('span').nth(1);
     this.articleFooter = page.locator('[data-testid="author-data-post-footer"]');
     this.footerAuthorNameLink = this.articleFooter.locator('[data-testid="author-name-link"]');
     this.footerAuthorName = page.locator('[data-testid="author-name-link"]').last();
     this.footerAuthorNameFirst = page.locator('[data-testid="author-name-link"]').first();
-    this.userHoverCard = page.locator('[data-testid="user-hover-card-content"]');
+    this.userHoverCard = page.locator('[data-testid="user-popover-card-content"]');
     this.userHoverCardAvatar = page.locator('[data-testid="hover-card-user-avatar"]');
     this.userHoverCardName = page.locator('[data-testid="hover-card-user-name"]');
     this.userHoverCardNickName = page.locator('[data-testid="hover-card-user-nickname"]');

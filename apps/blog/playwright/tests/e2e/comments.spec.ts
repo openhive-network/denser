@@ -273,7 +273,8 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
       'rgb(220, 38, 38)'
     );
 
-    // Validate the user info dropdown card is visible
+    // Validate the user info popover card is visible
+    await postPage.commentAuthorLink.first().click();
     await expect(postPage.userHoverCard).toBeVisible();
   });
 
@@ -338,8 +339,8 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
       'rgb(220, 38, 38)'
     );
 
-    // Validate the user info dropdown card is visible
-    await postPage.commentAuthorLink.first().hover();
+    // Validate the user info popover card is visible
+    await postPage.commentAuthorLink.first().click();
     await expect(postPage.userHoverCard).toBeVisible();
   });
 
@@ -393,13 +394,13 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await expect(atrTitle).toContain('Fri Jun 18 2021');
   });
 
-  test('Validate the hover card name, nickname and avatar is displayed after hover username in the post', async ({
+  test('Validate the popover card name, nickname and avatar is displayed after hover username in the post', async ({
     page
   }) => {
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
 
-    // Hover comment name to display the author info hover card
-    await postPage.commentAuthorLink.first().hover();
+    // Click comment name to display the author info popover card
+    await postPage.commentAuthorLink.first().click();
     // Validate if the author avatar is displayed in the hover card
     await expect(postPage.userHoverCardAvatar).toHaveAttribute('href', '/@sicarius');
     // Validate if the author name with name displayed on the comment card
@@ -411,15 +412,15 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await expect(firstCommentHoverCardNickName).toBe('@' + firstCommentAuthorName);
   });
 
-  test('Move to the first comment author profile page by clicking the author Name in the hover card', async ({
+  test('Move to the first comment author profile page by clicking the author Name in the popover card', async ({
     page
   }) => {
     const profilePage = new ProfilePage(page);
 
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
 
-    // Hover comment name to display the author info hover card
-    await postPage.commentAuthorLink.first().hover();
+    // Click comment name to display the author info popover card
+    await postPage.commentAuthorLink.first().click();
 
     const firstCommentAuthorName = await postPage.userHoverCardName.first().textContent();
     await postPage.userHoverCardName.click();
@@ -427,15 +428,15 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await profilePage.profileNameIsEqual(firstCommentAuthorName || '');
   });
 
-  test('Move to the first comment author profile page by clicking the author Nickname in the hover card', async ({
+  test('Move to the first comment author profile page by clicking the author Nickname in the popover card', async ({
     page
   }) => {
     const profilePage = new ProfilePage(page);
 
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
 
-    // Hover comment name to display the author info hover card
-    await postPage.commentAuthorLink.first().hover();
+    // Click comment name to display the author info popover card
+    await postPage.commentAuthorLink.first().click();
 
     const firstCommentAuthorName = await postPage.userHoverCardName.first().textContent();
     await postPage.userHoverCardNickName.click();
@@ -443,15 +444,15 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await profilePage.profileNameIsEqual(firstCommentAuthorName || '');
   });
 
-  test('Move to the first comment author profile page by clicking the author Avatar in the hover card', async ({
+  test('Move to the first comment author profile page by clicking the author Avatar in the popover card', async ({
     page
   }) => {
     const profilePage = new ProfilePage(page);
 
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
 
-    // Hover comment name to display the author info hover card
-    await postPage.commentAuthorLink.first().hover();
+    // Click comment name to display the author info popover card
+    await postPage.commentAuthorLink.first().click();
 
     const firstCommentAuthorName = await postPage.userHoverCardName.first().textContent();
     await postPage.userHoverCardAvatar.click();
@@ -459,13 +460,13 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await profilePage.profileNameIsEqual(firstCommentAuthorName || '');
   });
 
-  test('Validate followers and following in the hover card of the first comment author', async ({ page }) => {
+  test('Validate followers and following in the popover card of the first comment author', async ({ page }) => {
     const apiHelper = new ApiHelper(page);
 
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
 
-    // Hover comment name to display the author info hover card
-    await postPage.commentAuthorLink.first().hover();
+    // Click comment name to display the author info popover card
+    await postPage.commentAuthorLink.first().click();
     await postPage.page.waitForTimeout(1000);
 
     // Compare followers of `sicarius` of API and UI
@@ -479,12 +480,12 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     expect(await postPage.userFollowingHoverCard.textContent()).toBe(userFollowingAPIString);
   });
 
-  test('Validate user about in the hover card of the first comment author', async ({ page }) => {
+  test('Validate user about in the popover card of the first comment author', async ({ page }) => {
     const apiHelper = new ApiHelper(page);
 
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
 
-    await postPage.commentAuthorLink.first().hover();
+    await postPage.commentAuthorLink.first().click();
     await postPage.page.waitForTimeout(1000);
 
     const userPostingJsonMetadata = await JSON.parse(
@@ -509,10 +510,10 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     }
   });
 
-  test('Validate Follow button style in the hover card of the first comment author in light theme', async ({ page }) => {
+  test('Validate Follow button style in the popover card of the first comment author in light theme', async ({ page }) => {
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
 
-    await postPage.commentAuthorLink.first().hover();
+    await postPage.commentAuthorLink.first().click();
     await postPage.page.waitForTimeout(1000);
 
     // button styles
@@ -547,15 +548,15 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     );
   });
 
-  test('Validate Follow button style in the hover card of the first comment author in dark theme', async ({ page }) => {
+  test('Validate Follow button style in the popover card of the first comment author in dark theme', async ({ page }) => {
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
 
     // move to the dark mode
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
-    // Hover the first comment author link
-    await postPage.commentAuthorLink.first().hover();
+    // Click the first comment author link
+    await postPage.commentAuthorLink.first().click();
     await postPage.page.waitForTimeout(1000);
 
     // button styles
@@ -590,14 +591,14 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     );
   });
 
-  test('Validate styles of the hover card of the first comment author in dark mode', async ({ page }) => {
+  test('Validate styles of the popover card of the first comment author in dark mode', async ({ page }) => {
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
 
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
-    // Hover the first comment author link
-    await postPage.commentAuthorLink.first().hover();
+    // Popover the first comment author link
+    await postPage.commentAuthorLink.first().click();
     await postPage.page.waitForTimeout(1000);
 
     expect(await postPage.getElementCssPropertyValue(postPage.userHoverCard, 'background-color')).toBe(
