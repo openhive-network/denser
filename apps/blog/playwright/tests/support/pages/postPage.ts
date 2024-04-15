@@ -12,17 +12,17 @@ export class PostPage {
   readonly articleAuthorData: Locator;
   readonly articleAuthorName: Locator;
   readonly articleFooter: Locator;
-  readonly userHoverCard: Locator;
-  readonly userHoverCardAvatar: Locator;
-  readonly userHoverCardName: Locator;
-  readonly userHoverCardNickName: Locator;
-  readonly userHoverCardFollowButton: Locator;
-  readonly userFollowersHoverCard: Locator;
-  readonly userFollowingHoverCard: Locator;
-  readonly userHpHoverCard: Locator;
-  readonly userAboutHoverCard: Locator;
-  readonly buttonFollowHoverCard: Locator;
-  readonly buttonMuteHoverCard: Locator;
+  readonly userPopoverCard: Locator;
+  readonly userPopoverCardAvatar: Locator;
+  readonly userPopoverCardName: Locator;
+  readonly userPopoverCardNickName: Locator;
+  readonly userPopoverCardFollowButton: Locator;
+  readonly userFollowersPopoverCard: Locator;
+  readonly userFollowingPopoverCard: Locator;
+  readonly userHpPopoverCard: Locator;
+  readonly userAboutPopoverCard: Locator;
+  readonly buttonFollowPopoverCard: Locator;
+  readonly buttonMutePopoverCard: Locator;
 
   readonly commentListItems: Locator;
   readonly commentCardsHeaders: Locator;
@@ -54,7 +54,7 @@ export class PostPage {
   readonly postLabel: Locator;
   readonly postLabelFooter: Locator;
   readonly footerCommunityLink: Locator;
-  readonly hoverCardUserAvatar: Locator;
+  readonly popoverCardUserAvatar: Locator;
   readonly footerAuthorNameFirst: Locator;
   readonly upvoteButton: Locator;
   readonly downvoteButton: Locator;
@@ -91,33 +91,39 @@ export class PostPage {
   constructor(page: Page) {
     this.page = page;
     this.postListItemOnHomePage = page.locator('li[data-testid="post-list-item"]');
-    this.firstPostImageOnHomePage = page
-      .locator('li[data-testid="post-list-item"]:nth-of-type(1) img');
+    this.firstPostImageOnHomePage = page.locator('li[data-testid="post-list-item"]:nth-of-type(1) img');
     this.firstPostTitleOnHomePage = page
       .locator('[data-testid="post-list-item"] [data-testid="post-title"] a')
       .first();
     this.articleTitle = page.locator('[data-testid="article-title"]');
     this.articleBody = page.locator('#articleBody');
     this.articleAuthorData = page.locator('[data-testid="author-data"]');
-    this.articleAuthorName = this.articleAuthorData.locator('[data-testid="author-name-link"]').locator('span').nth(1);
+    this.articleAuthorName = this.articleAuthorData
+      .locator('[data-testid="author-name-link"]')
+      .locator('span')
+      .nth(1);
     this.articleFooter = page.locator('[data-testid="author-data-post-footer"]');
     this.footerAuthorNameLink = this.articleFooter.locator('[data-testid="author-name-link"]');
     this.footerAuthorName = page.locator('[data-testid="author-name-link"]').last();
     this.footerAuthorNameFirst = page.locator('[data-testid="author-name-link"]').first();
-    this.userHoverCard = page.locator('[data-testid="user-popover-card-content"]');
-    this.userHoverCardAvatar = page.locator('[data-testid="hover-card-user-avatar"]');
-    this.userHoverCardName = page.locator('[data-testid="hover-card-user-name"]');
-    this.userHoverCardNickName = page.locator('[data-testid="hover-card-user-nickname"]');
-    this.userHoverCardFollowButton = page.locator('[data-testid="hover-card-user-follow-button"]');
-    this.userFollowersHoverCard = page.locator('[data-testid="user-followers"]');
-    this.userFollowingHoverCard = page.locator('[data-testid="user-following"]');
-    this.userHpHoverCard = page.locator('[data-testid="user-hp"]');
-    this.userAboutHoverCard = page.locator('[data-testid="user-about"]');
-    this.buttonFollowHoverCard = page.locator('button').getByText('FOLLOW');
-    this.buttonMuteHoverCard = page.locator('button').getByText('Mute');
+    this.userPopoverCard = page.locator('[data-testid="user-popover-card-content"]');
+    this.userPopoverCardAvatar = page.locator('[data-testid="popover-card-user-avatar"]');
+    this.userPopoverCardName = page.locator('[data-testid="popover-card-user-name"]');
+    this.userPopoverCardNickName = page.locator('[data-testid="popover-card-user-nickname"]');
+    this.userPopoverCardFollowButton = page.locator('[data-testid="popover-card-user-follow-button"]');
+    this.userFollowersPopoverCard = page.locator('[data-testid="user-followers"]');
+    this.userFollowingPopoverCard = page.locator('[data-testid="user-following"]');
+    this.userHpPopoverCard = page.locator('[data-testid="user-hp"]');
+    this.userAboutPopoverCard = page.locator('[data-testid="user-about"]');
+    this.buttonFollowPopoverCard = page.locator('button').getByText('FOLLOW');
+    this.buttonMutePopoverCard = page.locator('button').getByText('Mute');
     this.commentListItems = page.locator('[data-testid="comment-list-item"]');
-    this.commentAuthorLink = page.locator('[data-testid="comment-card-header"] [data-testid="author-name-link"]');
-    this.commentAuthorReputation = page.locator('[data-testid="comment-card-header"] [data-testid="author-reputation"]');
+    this.commentAuthorLink = page.locator(
+      '[data-testid="comment-card-header"] [data-testid="author-name-link"]'
+    );
+    this.commentAuthorReputation = page.locator(
+      '[data-testid="comment-card-header"] [data-testid="author-reputation"]'
+    );
     this.commentCardsHeaders = page.locator('[data-testid="comment-card-header"]');
     this.commentCardsHeadersAutorAndReputation = this.commentAuthorLink.locator('..'); // Parent of commentAuthorLink
     this.commentCardsHeadersTimeStampLink = page.locator('[data-testid="comment-timestamp-link"]');
@@ -130,7 +136,9 @@ export class PostPage {
     this.commentCardsFooterPayoutZero = page.locator('[data-testid="post-payout"]');
     this.commentCardsFooterVotes = this.commentCardsFooters.locator('[data-testid="comment-votes"]');
     this.postVoterList = page.locator('[data-testid="list-of-voters"]');
-    this.commentCardsFooterReply = this.commentCardsFooters.locator('[data-testid="comment-card-footer-reply"]');
+    this.commentCardsFooterReply = this.commentCardsFooters.locator(
+      '[data-testid="comment-card-footer-reply"]'
+    );
     this.commentCardsFooterReplyEditor = page.locator('[data-testid="reply-editor"]');
     this.commentShowButton = page.locator('[data-testid="comment-show-button"]');
     this.reputationValue = page.locator('[data-testid="post-author-reputation"]').first();
@@ -139,38 +147,46 @@ export class PostPage {
     this.getLoadMoreCommentsLink = page.getByText('Load more...');
     this.getCommentFilter = page.locator('[data-testid="posts-filter"]');
     this.getCommentFilterList = page.locator('[data-testid="posts-filter-list"]');
-    this.postImage = page.locator('[data-testid="post-image"]')
-    this.postLabel = page.locator('div.flex.flex-wrap').locator('.inline-flex.items-center.border.rounded-full').first()
-    this.postLabelFooter = page.locator('div.flex.flex-wrap').locator('.inline-flex.items-center.border.rounded-full').last()
-    this.footerCommunityLink = page.locator('[data-testid="footer-comment-community-category-link"]')
-    this.hoverCardUserAvatar = page.locator("[data-testid='hover-card-user-avatar']")
+    this.postImage = page.locator('[data-testid="post-image"]');
+    this.postLabel = page
+      .locator('div.flex.flex-wrap')
+      .locator('.inline-flex.items-center.border.rounded-full')
+      .first();
+    this.postLabelFooter = page
+      .locator('div.flex.flex-wrap')
+      .locator('.inline-flex.items-center.border.rounded-full')
+      .last();
+    this.footerCommunityLink = page.locator('[data-testid="footer-comment-community-category-link"]');
+    this.popoverCardUserAvatar = page.locator("[data-testid='popover-card-user-avatar']");
     this.upvoteButton = this.articleFooter.locator('[data-testid="upvote-button"]');
     this.downvoteButton = this.articleFooter.locator('[data-testid="downvote-button"]');
-    this.footerPayouts = page.locator('[data-testid="comment-payout"]')
-    this.footerPayoutsTooltip = page.locator('[data-testid="payout-post-card-tooltip"]')
-    this.footerReblogBtn = page.locator('svg.h-4.w-4.cursor-pointer')
+    this.footerPayouts = page.locator('[data-testid="comment-payout"]');
+    this.footerPayoutsTooltip = page.locator('[data-testid="payout-post-card-tooltip"]');
+    this.footerReblogBtn = page.locator('svg.h-4.w-4.cursor-pointer');
     this.footerReblogBtnCardList = page.locator('[data-test="post-footer-reblog-tooltip"]');
-    this.reblogDialogHeader = page.locator('[data-testid="reblog-dialog-header"]')
-    this.reblogDialogDescription = page.locator('[data-testid="reblog-dialog-description"]')
-    this.reblogDialogCancelBtn = page.locator('[data-testid="reblog-dialog-cancel"]')
-    this.reblogDialogOkBtn = page.locator('[data-testid="reblog-dialog-ok"]')
-    this.reblogDialogCloseBtn = page.locator('[data-testid="reblog-dialog-close"]')
-    this.commentReplay = page.locator('[data-testid="comment-reply"]')
-    this.commentResponse = page.locator('[data-testid="comment-respons"]')
+    this.reblogDialogHeader = page.locator('[data-testid="reblog-dialog-header"]');
+    this.reblogDialogDescription = page.locator('[data-testid="reblog-dialog-description"]');
+    this.reblogDialogCancelBtn = page.locator('[data-testid="reblog-dialog-cancel"]');
+    this.reblogDialogOkBtn = page.locator('[data-testid="reblog-dialog-ok"]');
+    this.reblogDialogCloseBtn = page.locator('[data-testid="reblog-dialog-close"]');
+    this.commentReplay = page.locator('[data-testid="comment-reply"]');
+    this.commentResponse = page.locator('[data-testid="comment-respons"]');
     this.postResponseTooltip = page.locator('[data-testid="post-footer-response-tooltip"]');
     this.facebookIcon = page.locator('[data-testid="share-on-facebook"]'); // page.locator('[title="Share on Facebook"]')
     this.twitterIcon = page.locator('[data-testid="share-on-twitter"]'); // page.locator('[title="Share on Twitter"]')
     this.linkedinIcon = page.locator('[data-testid="share-on-linkedin"]'); // page.locator('[title="Share on LinkedIn"]')
     this.redditIcon = page.locator('[data-testid="share-on-reddit"]'); // page.locator('[title="Share on Reddit"]')
-    this.sharePostBtn = page.locator('[data-testid="share-post"]')
-    this.sharePostFrame = page.locator('[role="dialog"]')
+    this.sharePostBtn = page.locator('[data-testid="share-post"]');
+    this.sharePostFrame = page.locator('[role="dialog"]');
     this.sharePostCloseBtn = page.locator('[data-testid="close-dialog"]');
-    this.hashtagsPosts = page.locator('[data-testid="hashtags-post"]')
-    this.postFooterVotes = page.locator('[data-testid="author-data-post-footer"] [data-testid="comment-votes"]');
+    this.hashtagsPosts = page.locator('[data-testid="hashtags-post"]');
+    this.postFooterVotes = page.locator(
+      '[data-testid="author-data-post-footer"] [data-testid="comment-votes"]'
+    );
     this.postsCommentsTab = page.getByRole('tab', { name: 'Comments' });
-    this.postsCommentsFirstAvatar = page.locator('[data-testid="comment-author-avatar"]').first()
-    this.mutedPostsBannedImageText = page.locator('#articleBody .text-red-500').first()
-    this.userPostMenu = page.getByTestId('user-post-menu')
+    this.postsCommentsFirstAvatar = page.locator('[data-testid="comment-author-avatar"]').first();
+    this.mutedPostsBannedImageText = page.locator('#articleBody .text-red-500').first();
+    this.userPostMenu = page.getByTestId('user-post-menu');
     this.postFooterUpvoteTooltip = page.locator('[data-testid="upvote-button-tooltip"]');
     this.postFooterDownvoteTooltip = page.locator('[data-testid="downvote-button-tooltip"]');
   }
@@ -229,10 +245,11 @@ export class PostPage {
   }
 
   async findPostWithLabel() {
-
-    const postWithLabel = this.page.locator('li[data-testid="post-list-item"]').locator('div.flex.items-center').locator('.inline-flex.items-center.border.rounded-full').first()
-    await expect(postWithLabel).toBeVisible()
-
+    const postWithLabel = this.page
+      .locator('li[data-testid="post-list-item"]')
+      .locator('div.flex.items-center')
+      .locator('.inline-flex.items-center.border.rounded-full')
+      .first();
+    await expect(postWithLabel).toBeVisible();
   }
-
 }

@@ -1,8 +1,8 @@
 import UserAvatar from '@/blog/components/user-avatar';
 import accountReputation from '@/blog/lib/account-reputation';
-import { HoverCardData } from './hover-card-data';
 import { useTranslation } from 'next-i18next';
 import { Popover, PopoverContent, PopoverTrigger } from '@ui/components/popover';
+import { PopoverCardData } from './popover-card-data';
 
 export interface UserPopoverCardProps {
   author: string;
@@ -39,7 +39,7 @@ export function UserPopoverCard({
         </span>
       ) : null}
       <PopoverContent className="w-72" data-testid="user-popover-card-content">
-        <HoverCardData author={author} blacklist={blacklist} />
+        <PopoverCardData author={author} blacklist={blacklist} />
       </PopoverContent>
     </Popover>
   );
