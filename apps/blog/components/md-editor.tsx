@@ -11,13 +11,10 @@ import {
   useState
 } from 'react';
 import * as commands from '@uiw/react-md-editor/commands';
-import { useTheme } from 'next-themes';
 import env from '@beam-australia/react-env';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { Signer } from '@smart-signer/lib/signer/signer';
 import { ICommand, TextAreaTextApi } from '@uiw/react-md-editor';
-
 
 import { getLogger } from '@ui/lib/logging';
 import { useSignerContext } from './common/signer';
@@ -115,11 +112,7 @@ interface MdEditorProps {
 const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholder }) => {
   const { user } = useUser();
   const [formValue, setFormValue] = useState<string>(persistedValue);
-
-  const { resolvedTheme } = useTheme();
-
   const { signer } = useSignerContext();
-
   const inputRef = useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
   const editorRef = useRef(null);
   const textApiRef = useRef<TextAreaTextApi>(null) as MutableRefObject<TextAreaTextApi>;

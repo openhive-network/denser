@@ -15,6 +15,7 @@ import { Icons } from '@ui/components/icons';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { toast } from '@ui/components/hooks/use-toast';
 import { useTranslation } from 'next-i18next';
+import { UseFormReturn } from 'react-hook-form';
 
 type AccountFormValues = {
   title: string;
@@ -30,21 +31,8 @@ type AccountFormValues = {
   maxAcceptedPayout: number | null;
   payoutType: string;
 };
-
-type Template = {
+type Template = AccountFormValues & {
   templateTitle: string;
-  title: string;
-  postArea: string;
-  postSummary: string;
-  tags: string;
-  author: string;
-  category: string;
-  beneficiaries: {
-    account: string;
-    weight: string;
-  }[];
-  maxAcceptedPayout: number | null;
-  payoutType: string;
 };
 
 export function AdvancedSettingsPostForm({
@@ -86,6 +74,7 @@ export function AdvancedSettingsPostForm({
       : false;
   const smallWeight = beneficiaries.find((e) => Number(e.weight) <= 0);
   const isTemplateStored = storedTemplates.some((template) => template.templateTitle === templateTitle);
+  const currentTemplate = storedTemplates.find((e) => e.templateTitle === selectTemplate);
 
   useEffect(() => {
     setRewards(data.payoutType);
@@ -164,12 +153,26 @@ export function AdvancedSettingsPostForm({
     }
     return null;
   }
-
+  function loadTemplate() {
+    onChangeStore({
+      title: currentTemplate?.title || '',
+      postArea: currentTemplate?.postArea || '',
+      postSummary: currentTemplate?.postSummary || '',
+      tags: currentTemplate?.tags || '',
+      author: currentTemplate?.author || '',
+      category: currentTemplate?.category || '',
+      beneficiaries: currentTemplate?.beneficiaries || [],
+      maxAcceptedPayout: currentTemplate?.maxAcceptedPayout || null,
+      payoutType: currentTemplate?.payoutType || '50%'
+    });
+    setOpen(false);
+    toast({
+      title: 'Template loaded',
+      variant: 'success'
+    });
+  }
   function onSave() {
-    const currentTemplate = storedTemplates.find((e) => e.templateTitle === selectTemplate);
-
     if (selectTemplate !== '/') {
-      console.log('Upload template');
       storeTemplates(
         storedTemplates.map((stored) =>
           stored.templateTitle !== selectTemplate
@@ -191,8 +194,6 @@ export function AdvancedSettingsPostForm({
     }
 
     if (templateTitle !== '') {
-      console.log('New template');
-
       setTemplateTitle('');
       storeTemplates([
         ...storedTemplates,
@@ -210,7 +211,6 @@ export function AdvancedSettingsPostForm({
         }
       ]);
     }
-    console.log('Save settings');
     onChangeStore({
       ...data,
       beneficiaries: beneficiaries,
@@ -396,6 +396,11 @@ export function AdvancedSettingsPostForm({
           >
             {t('submit_page.advanced_settings_dialog.save')}
           </Button>
+          {currentTemplate ? (
+            <Button variant="redHover" onClick={() => loadTemplate()}>
+              Load
+            </Button>
+          ) : null}
           {selectTemplate !== '/' ? (
             <Button variant="redHover" onClick={() => deleteTemplate(selectTemplate)} className="mb-2">
               {t('submit_page.advanced_settings_dialog.delete_template')}

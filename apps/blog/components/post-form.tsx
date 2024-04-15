@@ -390,7 +390,7 @@ export default function PostForm({
                     {t('submit_page.posting_to')}
                     <FormControl>
                       <Select
-                        defaultValue={storedPost ? storedPost.category : 'blog'}
+                        value={storedPost ? storedPost.category : 'blog'}
                         onValueChange={(e) => storePost({ ...storedPost, category: e })}
                       >
                         <FormControl>
