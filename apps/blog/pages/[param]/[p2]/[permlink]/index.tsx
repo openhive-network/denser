@@ -39,6 +39,7 @@ import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import PostForm from '@/blog/components/post-form';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from '@/blog/components/dialog-login';
+import { UserPopoverCard } from '@/blog/components/user-popover-card';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -318,7 +319,7 @@ function PostPage({
                 )}
               </span>
               {t('post_content.footer.by')}
-              <UserHoverCard
+              <UserPopoverCard
                 author={post_s.author}
                 author_reputation={post_s.author_reputation}
                 blacklist={firstPost ? firstPost.blacklists : post_s.blacklists}

@@ -60,32 +60,32 @@ test.describe('Post page tests', () => {
     );
   });
 
-  test('validate the hover card with author info is displayed after hover username in the post', async ({
+  test('validate the popover card with author info is displayed after click username in the post', async ({
     page
   }) => {
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByImage();
-    await postPage.articleAuthorName.hover();
-    await expect(postPage.userHoverCard).toBeVisible();
+    await postPage.articleAuthorName.click();
+    await expect(postPage.userPopoverCard).toBeVisible();
   });
 
-  test('validate followers and following in the hover card', async ({ page }) => {
+  test('validate followers and following in the popover card', async ({ page }) => {
     await postPage.gotoHomePage();
     const firstPostAuthorName = (await homePage.getFirstPostAuthor.innerText()).trim().replace('@', '');
     // console.log("First post's author name without @: ", await firstPostAuthorName);
 
     await postPage.moveToTheFirstPostInHomePageByImage();
-    await postPage.articleAuthorName.hover();
+    await postPage.articleAuthorName.click();
 
     const userFollowersAPI = (await apiHelper.getFollowCountAPI(firstPostAuthorName))['result']
       .follower_count;
     const userFollowersAPIString = `${userFollowersAPI}Followers`;
-    expect(await postPage.userFollowersHoverCard.textContent()).toBe(userFollowersAPIString);
+    expect(await postPage.userFollowersPopoverCard.textContent()).toBe(userFollowersAPIString);
 
     const userFollowingAPI = (await apiHelper.getFollowCountAPI(firstPostAuthorName))['result']
       .following_count;
     const userFollowingAPIString = `${userFollowingAPI}Following`;
-    expect(await postPage.userFollowingHoverCard.textContent()).toBe(userFollowingAPIString);
+    expect(await postPage.userFollowingPopoverCard.textContent()).toBe(userFollowingAPIString);
 
     // console.log('API get_accounts: ', await apiHelper.getAccountInfoAPI(firstPostAuthorName));
     // console.log('API get_follow_count: ', await apiHelper.getFollowCountAPI(firstPostAuthorName));
@@ -93,17 +93,17 @@ test.describe('Post page tests', () => {
     // console.log('API get_list_communities: ', await apiHelper.getListCommunitiesAPI());
   });
 
-  test('validate user about in the hover card', async ({ page }) => {
+  test('validate user about in the popover card', async ({ page }) => {
     await postPage.gotoHomePage();
     const firstPostAuthorName = (await homePage.getFirstPostAuthor.innerText()).trim().replace('@', '');
 
     await postPage.moveToTheFirstPostInHomePageByImage();
-    await postPage.articleAuthorName.hover();
+    await postPage.articleAuthorName.click();
     await postPage.page.waitForTimeout(1000);
 
     try {
       const userPostingJsonMetadata = await JSON.parse(
-        (await apiHelper.getAccountInfoAPI(firstPostAuthorName))['result'][0].posting_json_metadata,
+        (await apiHelper.getAccountInfoAPI(firstPostAuthorName))['result'][0].posting_json_metadata
       );
 
       let userAboutAPI: any;
@@ -113,148 +113,148 @@ test.describe('Post page tests', () => {
           userPostingJsonMetadata.profile.about.slice(0, 157) +
           (157 < userPostingJsonMetadata.profile.about.length ? '...' : '');
         // console.log('userAboutAPI: ', await userAboutAPI);
-        expect(await postPage.userAboutHoverCard.textContent()).toBe(userAboutAPI);
+        expect(await postPage.userAboutPopoverCard.textContent()).toBe(userAboutAPI);
       } else {
         userAboutAPI = '';
         // console.log('userAboutAPI: ', await userAboutAPI);
-        expect(await postPage.userAboutHoverCard.textContent()).toBe(userAboutAPI);
+        expect(await postPage.userAboutPopoverCard.textContent()).toBe(userAboutAPI);
       }
     } catch (error) {
-      console.log('Json error: ', error)
+      console.log('Json error: ', error);
     }
   });
 
-  test('validate Follow button style in the hover card in light theme', async ({ page }) => {
+  test('validate Follow button style in the popover card in light theme', async ({ page }) => {
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByImage();
 
-    await postPage.articleAuthorName.hover();
+    await postPage.articleAuthorName.click();
 
     // button styles
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'color')).toBe(
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
       'rgb(15, 23, 42)'
     );
     expect(
-      await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'background-color')
+      await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'background-color')
     ).toBe('rgb(241, 245, 249)');
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'border-color')).toBe(
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'border-color')).toBe(
       'rgb(226, 232, 240)'
     );
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'border-style')).toBe(
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'border-style')).toBe(
       'solid'
     );
 
     // button styles when hovered over it
-    await postPage.buttonFollowHoverCard.hover();
+    await postPage.buttonFollowPopoverCard.hover();
     await postPage.page.waitForTimeout(1000);
 
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'color')).toBe(
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
       'rgb(239, 68, 68)'
     );
     expect(
-      await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'background-color')
+      await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'background-color')
     ).toBe('rgba(241, 245, 249, 0.8)');
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'border-color')).toBe(
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'border-color')).toBe(
       'rgb(226, 232, 240)'
     );
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'border-style')).toBe(
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'border-style')).toBe(
       'solid'
     );
   });
 
-  test('validate Follow button style in the hover card in dark theme', async ({ page }) => {
+  test('validate Follow button style in the popover card in dark theme', async ({ page }) => {
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByImage();
 
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
-    await postPage.articleAuthorName.hover();
+    await postPage.articleAuthorName.click();
 
     // button styles
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'color')).toBe(
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
       'rgb(248, 250, 252)'
     );
     expect(
-      await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'background-color')
+      await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'background-color')
     ).toBe('rgb(15, 23, 42)');
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'border-color')).toBe(
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'border-color')).toBe(
       'rgb(29, 40, 58)'
     );
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'border-style')).toBe(
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'border-style')).toBe(
       'solid'
     );
 
     // button styles when hovered over it
-    await postPage.buttonFollowHoverCard.hover();
+    await postPage.buttonFollowPopoverCard.hover();
     await postPage.page.waitForTimeout(1000);
 
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'color')).toBe(
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
       'rgb(239, 68, 68)'
     );
     expect(
-      await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'background-color')
+      await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'background-color')
     ).toBe('rgba(15, 23, 42, 0.8)');
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'border-color')).toBe(
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'border-color')).toBe(
       'rgb(29, 40, 58)'
     );
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'border-style')).toBe(
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'border-style')).toBe(
       'solid'
     );
   });
 
-  test('validate styles of the hover card in dark mode', async ({ page }) => {
+  test('validate styles of the popover card in dark mode', async ({ page }) => {
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByImage();
 
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
-    await postPage.articleAuthorName.hover();
+    await postPage.articleAuthorName.click();
 
-    expect(await postPage.getElementCssPropertyValue(postPage.userHoverCard, 'background-color')).toBe(
+    expect(await postPage.getElementCssPropertyValue(postPage.userPopoverCard, 'background-color')).toBe(
       'rgb(3, 7, 17)'
     );
-    expect(await postPage.getElementCssPropertyValue(postPage.userHoverCard, 'color')).toBe(
+    expect(await postPage.getElementCssPropertyValue(postPage.userPopoverCard, 'color')).toBe(
       'rgb(148, 163, 184)'
     );
   });
 
-  // Mute button is no more in the dropdown card after hovering that way test is skipped.
-  test.skip('validate Mute button style in the hover card in light theme', async ({ page }) => {
+  // Mute button is no more in the dropdown card after clicking that way test is skipped.
+  test.skip('validate Mute button style in the popover card in light theme', async ({ page }) => {
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByImage();
 
-    await postPage.articleAuthorName.hover();
+    await postPage.articleAuthorName.click();
 
     // button styles
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonMuteHoverCard, 'color')).toBe(
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonMutePopoverCard, 'color')).toBe(
       'rgb(239, 68, 68)'
     );
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonMuteHoverCard, 'background-color')).toBe(
-      'rgba(0, 0, 0, 0)'
-    );
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonMuteHoverCard, 'border-color')).toBe(
+    expect(
+      await postPage.getElementCssPropertyValue(postPage.buttonMutePopoverCard, 'background-color')
+    ).toBe('rgba(0, 0, 0, 0)');
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonMutePopoverCard, 'border-color')).toBe(
       'rgb(239, 68, 68)'
     );
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonMuteHoverCard, 'border-style')).toBe(
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonMutePopoverCard, 'border-style')).toBe(
       'solid'
     );
 
     // button styles when hovered over it
-    await postPage.buttonMuteHoverCard.hover();
+    await postPage.buttonMutePopoverCard.hover();
     await postPage.page.waitForTimeout(1000);
 
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonMuteHoverCard, 'color')).toBe(
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonMutePopoverCard, 'color')).toBe(
       'rgb(15, 23, 42)'
     );
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonMuteHoverCard, 'background-color')).toBe(
-      'rgb(254, 226, 226)'
-    );
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonMuteHoverCard, 'border-color')).toBe(
+    expect(
+      await postPage.getElementCssPropertyValue(postPage.buttonMutePopoverCard, 'background-color')
+    ).toBe('rgb(254, 226, 226)');
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonMutePopoverCard, 'border-color')).toBe(
       'rgb(239, 68, 68)'
     );
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonMuteHoverCard, 'border-style')).toBe(
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonMutePopoverCard, 'border-style')).toBe(
       'solid'
     );
   });
@@ -348,7 +348,7 @@ test.describe('Post page tests', () => {
       await expect(postPage.footerAuthorName).toBeVisible();
       await expect(postPage.footerAuthorName.getAttribute('href')).toBeTruthy();
       await postPage.footerAuthorNameFirst.click();
-      await expect(postPage.hoverCardUserAvatar).toBeVisible();
+      await expect(postPage.popoverCardUserAvatar).toBeVisible();
     });
 
     await test.step('Post Footer - Upvote and Downvote', async () => {
@@ -411,12 +411,11 @@ test.describe('Post page tests', () => {
     });
 
     await test.step('Post Footer - Hash tags', async () => {
-      if (await postPage.hashtagsPosts.isVisible())
-        await expect(postPage.hashtagsPosts).toBeVisible();
+      if (await postPage.hashtagsPosts.isVisible()) await expect(postPage.hashtagsPosts).toBeVisible();
     });
   });
 
-  test('validate styles of the hover card in dark mode by hovering user link in the footer post', async ({
+  test('validate styles of the popover card in dark mode by clicking user link in the footer post', async ({
     page
   }) => {
     await postPage.gotoHomePage();
@@ -425,17 +424,17 @@ test.describe('Post page tests', () => {
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
-    await postPage.footerAuthorNameLink.hover();
+    await postPage.footerAuthorNameLink.click();
 
-    expect(await postPage.getElementCssPropertyValue(postPage.userHoverCard, 'background-color')).toBe(
+    expect(await postPage.getElementCssPropertyValue(postPage.userPopoverCard, 'background-color')).toBe(
       'rgb(3, 7, 17)'
     );
-    expect(await postPage.getElementCssPropertyValue(postPage.userHoverCard, 'color')).toBe(
+    expect(await postPage.getElementCssPropertyValue(postPage.userPopoverCard, 'color')).toBe(
       'rgb(148, 163, 184)'
     );
   });
 
-  test('validate Follow button style in the hover card in dark theme by hovering the footer post author link', async ({
+  test('validate Follow button style in the popover card in dark theme by clicking the footer post author link', async ({
     page
   }) => {
     await postPage.gotoHomePage();
@@ -444,41 +443,41 @@ test.describe('Post page tests', () => {
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
-    await postPage.footerAuthorNameLink.hover();
+    await postPage.footerAuthorNameLink.click();
 
     // button styles
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'color')).toBe(
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
       'rgb(248, 250, 252)'
     );
     expect(
-      await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'background-color')
+      await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'background-color')
     ).toBe('rgb(15, 23, 42)');
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'border-color')).toBe(
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'border-color')).toBe(
       'rgb(29, 40, 58)'
     );
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'border-style')).toBe(
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'border-style')).toBe(
       'solid'
     );
 
     // button styles when hovered over it
-    await postPage.buttonFollowHoverCard.hover();
+    await postPage.buttonFollowPopoverCard.hover();
     await postPage.page.waitForTimeout(1000);
 
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'color')).toBe(
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
       'rgb(239, 68, 68)'
     );
     expect(
-      await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'background-color')
+      await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'background-color')
     ).toBe('rgba(15, 23, 42, 0.8)');
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'border-color')).toBe(
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'border-color')).toBe(
       'rgb(29, 40, 58)'
     );
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowHoverCard, 'border-style')).toBe(
+    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'border-style')).toBe(
       'solid'
     );
   });
 
-  test('validate followers and following in the hover card by hovering the footer post author link (dark mode)', async ({
+  test('validate followers and following in the popover card by clicking the footer post author link (dark mode)', async ({
     page
   }) => {
     await postPage.gotoHomePage();
@@ -490,17 +489,17 @@ test.describe('Post page tests', () => {
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
-    await postPage.footerAuthorNameLink.hover();
+    await postPage.footerAuthorNameLink.click();
 
     const userFollowersAPI = (await apiHelper.getFollowCountAPI(firstPostAuthorName))['result']
       .follower_count;
     const userFollowersAPIString = `${userFollowersAPI}Followers`;
-    expect(await postPage.userFollowersHoverCard.textContent()).toBe(userFollowersAPIString);
+    expect(await postPage.userFollowersPopoverCard.textContent()).toBe(userFollowersAPIString);
 
     const userFollowingAPI = (await apiHelper.getFollowCountAPI(firstPostAuthorName))['result']
       .following_count;
     const userFollowingAPIString = `${userFollowingAPI}Following`;
-    expect(await postPage.userFollowingHoverCard.textContent()).toBe(userFollowingAPIString);
+    expect(await postPage.userFollowingPopoverCard.textContent()).toBe(userFollowingAPIString);
 
     // console.log('API get_accounts: ', await apiHelper.getAccountInfoAPI(firstPostAuthorName));
     // console.log('API get_follow_count: ', await apiHelper.getFollowCountAPI(firstPostAuthorName));
@@ -508,7 +507,7 @@ test.describe('Post page tests', () => {
     // console.log('API get_list_communities: ', await apiHelper.getListCommunitiesAPI());
   });
 
-  test('validate user about in the hover card by hovering the footer post author link (dark mode)', async ({
+  test('validate user about in the popover card by clicking the footer post author link (dark mode)', async ({
     page
   }) => {
     await postPage.gotoHomePage();
@@ -519,7 +518,7 @@ test.describe('Post page tests', () => {
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
-    await postPage.footerAuthorNameLink.hover();
+    await postPage.footerAuthorNameLink.click();
 
     try {
       const userPostingJsonMetadata = await JSON.parse(
@@ -532,11 +531,11 @@ test.describe('Post page tests', () => {
           userPostingJsonMetadata.profile.about.slice(0, 157) +
           (157 < userPostingJsonMetadata.profile.about.length ? '...' : '');
         // console.log('userAboutAPI: ', await userAboutAPI);
-        expect(await postPage.userAboutHoverCard.textContent()).toBe(userAboutAPI);
+        expect(await postPage.userAboutPopoverCard.textContent()).toBe(userAboutAPI);
       } else {
         userAboutAPI = '';
         // console.log('userAboutAPI: ', await userAboutAPI);
-        expect(await postPage.userAboutHoverCard.textContent()).toBe(userAboutAPI);
+        expect(await postPage.userAboutPopoverCard.textContent()).toBe(userAboutAPI);
       }
     } catch (error) {
       console.log('JSON error: ', error);
