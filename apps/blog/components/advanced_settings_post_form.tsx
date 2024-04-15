@@ -165,8 +165,8 @@ export function AdvancedSettingsPostForm({
       maxAcceptedPayout: maxAcceptedPayout(),
       payoutType: rewards
     });
-    setOpen(false);
     setSelectTemplate('/');
+    setOpen(false);
     toast({
       title: t('submit_page.advanced_settings_dialog.template_loaded'),
       variant: 'success'
@@ -218,6 +218,7 @@ export function AdvancedSettingsPostForm({
       maxAcceptedPayout: maxAcceptedPayout(),
       payoutType: rewards
     });
+    setSelectTemplate('/');
     setOpen(false);
     toast({
       title: t('submit_page.advanced_settings_dialog.changes_saved'),
