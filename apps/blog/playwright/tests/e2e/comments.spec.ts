@@ -431,11 +431,11 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await expect(postPage.userPopoverCardAvatar).toHaveAttribute('href', '/@sicarius');
     // Validate if the author name with name displayed on the comment card
     const firstCommentAuthorName = await postPage.commentAuthorLink.first().textContent();
-    const firstCommentHoverCardAuthorName = await postPage.userPopoverCardName.textContent();
-    expect(firstCommentAuthorName).toBe(firstCommentHoverCardAuthorName?.toLocaleLowerCase());
+    const firstCommentPopoverCardAuthorName = await postPage.userPopoverCardName.textContent();
+    expect(firstCommentAuthorName).toBe(firstCommentPopoverCardAuthorName?.toLocaleLowerCase());
     // Validate if the comment author nickname is correct
-    const firstCommentHoverCardNickName = await postPage.userPopoverCardNickName.textContent();
-    await expect(firstCommentHoverCardNickName).toBe('@' + firstCommentAuthorName);
+    const firstCommentPopoverCardNickName = await postPage.userPopoverCardNickName.textContent();
+    await expect(firstCommentPopoverCardNickName).toBe('@' + firstCommentAuthorName);
   });
 
   test('Move to the first comment author profile page by clicking the author Name in the popover card', async ({
@@ -525,14 +525,14 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     let removeThreeDotsUserAboutUI;
     if (userPostingJsonMetadata.profile.about) {
       userAboutAPI = await userPostingJsonMetadata.profile.about;
-      userAboutUI = await postPage.userAboutHoverCard.textContent();
+      userAboutUI = await postPage.userAboutPopoverCard.textContent();
       removeThreeDotsUserAboutUI = userAboutUI.replace('...', '');
       // console.log('userAboutAPI: ', await userAboutAPI);
       expect(userAboutAPI).toContain(await removeThreeDotsUserAboutUI);
     } else {
       userAboutAPI = '';
       // console.log('userAboutAPI: ', await userAboutAPI);
-      expect(await postPage.userAboutHoverCard.textContent()).toBe(userAboutAPI);
+      expect(await postPage.userAboutPopoverCard.textContent()).toBe(userAboutAPI);
     }
   });
 
@@ -657,10 +657,10 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await expect(commentViewPage.getReArticleTitle).toHaveText(reArticleTitle);
     // validate author of the main comment
     await expect(commentViewPage.getMainCommentAuthorNameLink).toHaveText('sicarius');
-    // hover the comment author of the comment
-    await commentViewPage.getMainCommentAuthorNameLink.first().hover();
-    // validate the user info hover card is visibled
-    await expect(commentViewPage.getHoverCardContent.first()).toBeVisible();
+    // click the comment author of the comment
+    await commentViewPage.getMainCommentAuthorNameLink.first().click();
+    // validate the user info click card is visibled
+    await expect(commentViewPage.getPopoverCardContent.first()).toBeVisible();
     // the content of comment contain specific text
     await expect(commentViewPage.getMainCommentContent.first()).toContainText(
       "Did my 'ol due diligence and threw a star and fork at the openhive repo."
