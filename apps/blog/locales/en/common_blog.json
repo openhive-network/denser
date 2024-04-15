@@ -421,6 +421,8 @@
     "html_not_supported": "HTML is not supported here",
     "advanced_tooltip": "Here you can set post options such as author rewards split, max accepted payout, beneficiaries & post templates",
     "advanced_settings_dialog": {
+      "load": "Load",
+      "template_loaded": "Template loaded",
       "changes_saved": "Changes saved",
       "advanced_settings": "Advanced settings",
       "maximum_accepted_payout": "Maximum Accepted Payout",

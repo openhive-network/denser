@@ -15,6 +15,7 @@ import { Icons } from '@ui/components/icons';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { toast } from '@ui/components/hooks/use-toast';
 import { useTranslation } from 'next-i18next';
+import { UseFormReturn } from 'react-hook-form';
 
 type AccountFormValues = {
   title: string;
@@ -30,15 +31,8 @@ type AccountFormValues = {
   maxAcceptedPayout: number | null;
   payoutType: string;
 };
-
-type Template = {
-  title: string;
-  beneficiaries: {
-    account: string;
-    weight: string;
-  }[];
-  maxAcceptedPayout: number | null;
-  payoutType: string;
+type Template = AccountFormValues & {
+  templateTitle: string;
 };
 
 export function AdvancedSettingsPostForm({
@@ -59,7 +53,7 @@ export function AdvancedSettingsPostForm({
   const [maxPayout, setMaxPayout] = useState(
     data.maxAcceptedPayout === null ? 'no_max' : data.maxAcceptedPayout === 0 ? '0' : 'custom'
   );
-  const [selectTemplate, setSelectTemplate] = useState('');
+  const [selectTemplate, setSelectTemplate] = useState('/');
   const [beneficiaries, setBeneficiaries] = useState<{ weight: string; account: string }[]>(
     data.beneficiaries
   );
@@ -79,7 +73,8 @@ export function AdvancedSettingsPostForm({
       ? beneficiaries.some((beneficiary) => beneficiary.account === username)
       : false;
   const smallWeight = beneficiaries.find((e) => Number(e.weight) <= 0);
-  const isTemplateStored = storedTemplates.some((template) => template.title === templateTitle);
+  const isTemplateStored = storedTemplates.some((template) => template.templateTitle === templateTitle);
+  const currentTemplate = storedTemplates.find((e) => e.templateTitle === selectTemplate);
 
   useEffect(() => {
     setRewards(data.payoutType);
@@ -121,12 +116,12 @@ export function AdvancedSettingsPostForm({
   };
 
   function deleteTemplate(templateName: string) {
-    storeTemplates(storedTemplates.filter((e) => e.title !== templateName));
-    setSelectTemplate('');
+    storeTemplates(storedTemplates.filter((e) => e.templateTitle !== templateName));
+    setSelectTemplate('/');
   }
 
   function handleTamplates(e: string) {
-    const template = storedTemplates.find((template) => template.title === e);
+    const template = storedTemplates.find((template) => template.templateTitle === e);
     if (template) {
       setBeneficiaries(template.beneficiaries);
       setRewards(template.payoutType);
@@ -144,7 +139,7 @@ export function AdvancedSettingsPostForm({
     setSelectTemplate(e);
   }
   function handleTemplateTitle(e: string) {
-    setSelectTemplate('');
+    setSelectTemplate('/');
     setTemplateTitle(e);
   }
   function maxAcceptedPayout() {
@@ -158,15 +153,39 @@ export function AdvancedSettingsPostForm({
     }
     return null;
   }
-
+  function loadTemplate() {
+    onChangeStore({
+      title: currentTemplate?.title || '',
+      postArea: currentTemplate?.postArea || '',
+      postSummary: currentTemplate?.postSummary || '',
+      tags: currentTemplate?.tags || '',
+      author: currentTemplate?.author || '',
+      category: currentTemplate?.category || '',
+      beneficiaries: beneficiaries,
+      maxAcceptedPayout: maxAcceptedPayout(),
+      payoutType: rewards
+    });
+    setSelectTemplate('/');
+    setOpen(false);
+    toast({
+      title: t('submit_page.advanced_settings_dialog.template_loaded'),
+      variant: 'success'
+    });
+  }
   function onSave() {
-    if (selectTemplate !== '') {
+    if (selectTemplate !== '/') {
       storeTemplates(
         storedTemplates.map((stored) =>
-          stored.title !== selectTemplate
+          stored.templateTitle !== selectTemplate
             ? stored
             : {
-                title: selectTemplate,
+                title: data.title,
+                postArea: data.postArea,
+                postSummary: data.postSummary,
+                tags: data.tags,
+                author: data.author,
+                category: data.category,
+                templateTitle: selectTemplate,
                 beneficiaries: beneficiaries,
                 maxAcceptedPayout: maxAcceptedPayout(),
                 payoutType: rewards
@@ -180,7 +199,13 @@ export function AdvancedSettingsPostForm({
       storeTemplates([
         ...storedTemplates,
         {
-          title: templateTitle,
+          title: data.title,
+          postArea: data.postArea,
+          postSummary: data.postSummary,
+          tags: data.tags,
+          author: data.author,
+          category: data.category,
+          templateTitle: templateTitle,
           beneficiaries: beneficiaries,
           maxAcceptedPayout: maxAcceptedPayout(),
           payoutType: rewards
@@ -193,12 +218,14 @@ export function AdvancedSettingsPostForm({
       maxAcceptedPayout: maxAcceptedPayout(),
       payoutType: rewards
     });
+    setSelectTemplate('/');
     setOpen(false);
     toast({
       title: t('submit_page.advanced_settings_dialog.changes_saved'),
       variant: 'success'
     });
   }
+
   return (
     <Dialog open={open} onOpenChange={() => setOpen((prev) => !prev)}>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -334,8 +361,8 @@ export function AdvancedSettingsPostForm({
                   </SelectItem>
                   {storedTemplates
                     ? storedTemplates.map((e) => (
-                        <SelectItem key={e.title} value={e.title}>
-                          {e.title}
+                        <SelectItem key={e.templateTitle} value={e.templateTitle}>
+                          {e.templateTitle}
                         </SelectItem>
                       ))
                     : null}
@@ -371,7 +398,12 @@ export function AdvancedSettingsPostForm({
           >
             {t('submit_page.advanced_settings_dialog.save')}
           </Button>
-          {selectTemplate !== '' ? (
+          {currentTemplate ? (
+            <Button variant="redHover" onClick={() => loadTemplate()}>
+              {t('submit_page.advanced_settings_dialog.load')}
+            </Button>
+          ) : null}
+          {selectTemplate !== '/' ? (
             <Button variant="redHover" onClick={() => deleteTemplate(selectTemplate)} className="mb-2">
               {t('submit_page.advanced_settings_dialog.delete_template')}
             </Button>
