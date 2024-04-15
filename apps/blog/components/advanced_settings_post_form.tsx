@@ -167,7 +167,7 @@ export function AdvancedSettingsPostForm({
     });
     setOpen(false);
     toast({
-      title: 'Template loaded',
+      title: t('submit_page.advanced_settings_dialog.template_loaded'),
       variant: 'success'
     });
   }
@@ -398,7 +398,7 @@ export function AdvancedSettingsPostForm({
           </Button>
           {currentTemplate ? (
             <Button variant="redHover" onClick={() => loadTemplate()}>
-              Load
+              {t('submit_page.advanced_settings_dialog.load')}
             </Button>
           ) : null}
           {selectTemplate !== '/' ? (
