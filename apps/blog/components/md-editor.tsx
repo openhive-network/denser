@@ -123,6 +123,10 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     onChange(formValue);
   }, [formValue]);
 
+  useEffect(() => {
+    setFormValue(persistedValue);
+  }, [persistedValue]);
+
   const inputImageHandler = useCallback(async (event: { target: { files: FileList } }) => {
     if (event.target.files && event.target.files.length === 1) {
       setInsertImg('');
@@ -197,7 +201,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
   const editChoice = (inputRef: MutableRefObject<HTMLInputElement>) => [imgBtn(inputRef)];
 
   return (
-    <div>
+    <div className="bg-white dark:bg-slate-950 dark:text-white">
       <input
         ref={inputRef}
         className="hidden"

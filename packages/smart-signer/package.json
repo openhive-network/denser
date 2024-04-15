@@ -7,7 +7,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@hive/hb-auth": "^0.0.1-stable.240403103126",
+    "@hive/hb-auth": "^0.0.1-stable.240412092723",
     "@hive/ui": "*",
     "@hive/wax": "^0.3.8-240403101225",
     "@hiveio/dhive": "^1.2.8",
@@ -19,7 +19,7 @@
     "http-errors": "^2.0.0",
     "iron-session": "^8.0.1",
     "keychain-sdk": "^0.6.1",
-    "next": "^14.0.4",
+    "next": "^14.2.0",
     "oidc-provider": "^8.4.2",
     "qrcode": "^1.5.3",
     "react": "^18.2.0",

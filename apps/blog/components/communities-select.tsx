@@ -12,6 +12,7 @@ import { useQuery } from '@tanstack/react-query';
 import { type Subscription, getCommunities } from '@transaction/lib/bridge';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 
 export function CommunitiesSelect({
   title,
@@ -22,6 +23,7 @@ export function CommunitiesSelect({
   mySubsData: Subscription[] | null | undefined;
   username?: string;
 }) {
+  const { user } = useUser();
   const router = useRouter();
   const { t } = useTranslation('common_blog');
   const sort = 'rank';
@@ -75,11 +77,17 @@ export function CommunitiesSelect({
           <SelectItem disabled value="trending-communities" className="text-slate-400">
             {t('navigation.communities_nav.trending_communities')}
           </SelectItem>
-          {filteredCommunity?.slice(0, 12).map((community) => (
-            <SelectItem key={community.id} value={community.name}>
-              {community.title}
-            </SelectItem>
-          ))}
+          {user && user.isLoggedIn
+            ? filteredCommunity?.slice(0, 12).map((community) => (
+                <SelectItem key={community.id} value={community.name}>
+                  {community.title}
+                </SelectItem>
+              ))
+            : data?.slice(0, 12).map((community) => (
+                <SelectItem key={community.id} value={community.name}>
+                  {community.title}
+                </SelectItem>
+              ))}
           <SelectItem value="communities">{t('navigation.communities_nav.explore_communities')}</SelectItem>
         </SelectGroup>
       </SelectContent>
