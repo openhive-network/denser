@@ -161,9 +161,9 @@ export function AdvancedSettingsPostForm({
       tags: currentTemplate?.tags || '',
       author: currentTemplate?.author || '',
       category: currentTemplate?.category || '',
-      beneficiaries: currentTemplate?.beneficiaries || [],
-      maxAcceptedPayout: currentTemplate?.maxAcceptedPayout || null,
-      payoutType: currentTemplate?.payoutType || '50%'
+      beneficiaries: beneficiaries,
+      maxAcceptedPayout: maxAcceptedPayout(),
+      payoutType: rewards
     });
     setOpen(false);
     setSelectTemplate('/');
