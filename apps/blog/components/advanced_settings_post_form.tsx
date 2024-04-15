@@ -166,6 +166,7 @@ export function AdvancedSettingsPostForm({
       payoutType: currentTemplate?.payoutType || '50%'
     });
     setOpen(false);
+    setSelectTemplate('/');
     toast({
       title: t('submit_page.advanced_settings_dialog.template_loaded'),
       variant: 'success'
