@@ -24,7 +24,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import useManabars from './hooks/useManabars';
 import { AdvancedSettingsPostForm } from './advanced_settings_post_form';
 import MdEditor from './md-editor';
-import { Dispatch, SetStateAction, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { useTranslation } from 'next-i18next';
@@ -402,7 +402,7 @@ export default function PostForm({
                     {t('submit_page.posting_to')}
                     <FormControl>
                       <Select
-                        defaultValue={storedPost ? storedPost.category : 'blog'}
+                        value={storedPost ? storedPost.category : 'blog'}
                         onValueChange={(e) => storePost({ ...storedPost, category: e })}
                       >
                         <FormControl>
