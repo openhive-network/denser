@@ -420,14 +420,14 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await expect(atrTitle).toContain('Fri Jun 18 2021');
   });
 
-  test('Validate the popover card name, nickname and avatar is displayed after hover username in the post', async ({
+  test('Validate the popover card name, nickname and avatar is displayed after click username in the post', async ({
     page
   }) => {
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
 
     // Click comment name to display the author info popover card
     await postPage.commentAuthorLink.first().click();
-    // Validate if the author avatar is displayed in the hover card
+    // Validate if the author avatar is displayed in the popover card
     await expect(postPage.userPopoverCardAvatar).toHaveAttribute('href', '/@sicarius');
     // Validate if the author name with name displayed on the comment card
     const firstCommentAuthorName = await postPage.commentAuthorLink.first().textContent();
@@ -558,8 +558,8 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
       'solid'
     );
 
-    // button styles when hovered over it
-    await postPage.buttonFollowPopoverCard.hover();
+    // button styles when clicked over it
+    await postPage.buttonFollowPopoverCard.click();
     await postPage.page.waitForTimeout(1000);
 
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
