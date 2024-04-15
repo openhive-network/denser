@@ -144,8 +144,8 @@ test.describe('Post page tests', () => {
       'solid'
     );
 
-    // button styles when clicked over it
-    await postPage.buttonFollowPopoverCard.click();
+    // button styles when hovered over it
+    await postPage.buttonFollowPopoverCard.hover();
     await postPage.page.waitForTimeout(1000);
 
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
@@ -185,8 +185,8 @@ test.describe('Post page tests', () => {
       'solid'
     );
 
-    // button styles when clicked over it
-    await postPage.buttonFollowPopoverCard.click();
+    // button styles when hovered over it
+    await postPage.buttonFollowPopoverCard.hover();
     await postPage.page.waitForTimeout(1000);
 
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
@@ -241,8 +241,8 @@ test.describe('Post page tests', () => {
       'solid'
     );
 
-    // button styles when clicked over it
-    await postPage.buttonMutePopoverCard.click();
+    // button styles when hovered over it
+    await postPage.buttonMutePopoverCard.hover();
     await postPage.page.waitForTimeout(1000);
 
     expect(await postPage.getElementCssPropertyValue(postPage.buttonMutePopoverCard, 'color')).toBe(
@@ -459,8 +459,8 @@ test.describe('Post page tests', () => {
       'solid'
     );
 
-    // button styles when clicked over it
-    await postPage.buttonFollowPopoverCard.click();
+    // button styles when hovered over it
+    await postPage.buttonFollowPopoverCard.hover();
     await postPage.page.waitForTimeout(1000);
 
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
