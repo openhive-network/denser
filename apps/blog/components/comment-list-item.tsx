@@ -14,12 +14,12 @@ import type { Entry } from '@transaction/lib/bridge';
 import clsx from 'clsx';
 import { Badge } from '@ui/components/badge';
 import { DefaultRenderer } from '@hiveio/content-renderer';
-import { UserHoverCard } from './user-hover-card';
 import { useTranslation } from 'next-i18next';
 import VotesComponent from './votes';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';
+import { UserPopoverCard } from './user-popover-card';
 
 const CommentListItem = ({
   comment,
@@ -98,7 +98,7 @@ const CommentListItem = ({
                               alt={`${username} profile picture`}
                               loading="lazy"
                             />
-                            <UserHoverCard
+                            <UserPopoverCard
                               author={username}
                               author_reputation={comment.author_reputation}
                               blacklist={comment.blacklists}
