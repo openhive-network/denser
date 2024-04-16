@@ -187,10 +187,19 @@ export default function PostForm({
     control: form.control
   });
 
+  console.log('router.query.category', router.query.category, !router.query.category);
   const watchedValues = form.watch();
-  const tagsCheck = validateTagInput(watchedValues.tags, watchedValues.category === 'blog', t);
+  const tagsCheck = validateTagInput(
+    watchedValues.tags,
+    !router.query.category ? watchedValues.category === 'blog' : false,
+    t
+  );
   const summaryCheck = validateSummoryInput(watchedValues.postSummary, t);
   const altUsernameCheck = validateAltUsernameInput(watchedValues.author, t);
+  const communityPosting =
+    mySubsData && mySubsData?.filter((e) => e[0] === router.query.category).length > 0
+      ? mySubsData?.filter((e) => e[0] === router.query.category)[0][0]
+      : undefined;
 
   useEffect(() => {
     debounce(() => {
@@ -214,6 +223,7 @@ export default function PostForm({
     const maxAcceptedPayout = await chain.hbd(Number(storedPost.maxAcceptedPayout));
     const postPermlink = await createPermlink(storedPost?.title ?? '', username);
     const permlinInEditMode = post_s?.permlink;
+    console.log('storedPost.category', storedPost.category);
     try {
       await transactionService.post(
         editMode && permlinInEditMode ? permlinInEditMode : postPermlink,
@@ -223,7 +233,7 @@ export default function PostForm({
         Number(storedPost.payoutType.slice(0, 2)),
         maxAcceptedPayout,
         tags,
-        storedPost.category,
+        communityPosting ? communityPosting : storedPost.category,
         storedPost.postSummary
       );
       form.reset(defaultValues);
@@ -235,7 +245,11 @@ export default function PostForm({
           refreshPage();
         }
       } else {
-        await router.push(`/created/${tags[0]}`, undefined, { shallow: true });
+        if (router.query.category) {
+          await router.push(`/created/${router.query.category}`, undefined, { shallow: true });
+        } else {
+          await router.push(`/created/${tags[0]}`, undefined, { shallow: true });
+        }
       }
     } catch (error) {
       console.error(error);
@@ -403,7 +417,9 @@ export default function PostForm({
                       {t('submit_page.posting_to')}
                       <FormControl>
                         <Select
-                          value={storedPost ? storedPost.category : 'blog'}
+                          value={
+                            communityPosting ? communityPosting : storedPost ? storedPost.category : 'blog'
+                          }
                           onValueChange={(e) => storePost({ ...storedPost, category: e })}
                         >
                           <FormControl>
