@@ -129,7 +129,7 @@ To stop and delete the containers use command `docker compose down`.
 
 You can put your `server-key.pem` and `server-cert.pem` into `./ssl`
 directory (it is gitignored). Then you can use commands like `npm run
-dev:blog` to start application on development server in SSL mode. Use
+devssl:blog` to start application on development server in SSL mode. Use
 `mkcert` or any other similar tool to generate server certificates. See
 also
 https://vercel.com/guides/access-nextjs-localhost-https-certificate-self-signed
