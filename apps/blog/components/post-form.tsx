@@ -24,7 +24,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import useManabars from './hooks/useManabars';
 import { AdvancedSettingsPostForm } from './advanced_settings_post_form';
 import MdEditor from './md-editor';
-import { Dispatch, SetStateAction, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { useTranslation } from 'next-i18next';
@@ -36,7 +36,9 @@ import { Entry, getCommunity, getSubscriptions } from '@transaction/lib/bridge';
 import { useRouter } from 'next/router';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { TFunction } from 'i18next';
-import { debounce } from '../lib/utils';
+import { debounce, extractUrlsFromJsonString, extractYouTubeVideoIds } from '../lib/utils';
+import { proxifyImageUrl } from '@ui/lib/old-profixy';
+import { RadioGroup, RadioGroupItem } from '@ui/components';
 
 const defaultValues = {
   title: '',
@@ -98,7 +100,72 @@ function validateAltUsernameInput(value: string, t: TFunction<'common_wallet', u
     ? t('submit_page.must_contain_only')
     : null;
 }
-
+{
+  /* <RadioGroup defaultValue="comfortable">
+<div className="flex items-center space-x-2">
+  <RadioGroupItem value="default" id="r1" />
+  <Label htmlFor="r1">Default</Label>
+</div>
+<div className="flex items-center space-x-2">
+  <RadioGroupItem value="comfortable" id="r2" />
+  <Label htmlFor="r2">Comfortable</Label>
+</div>
+<div className="flex items-center space-x-2">
+  <RadioGroupItem value="compact" id="r3" />
+  <Label htmlFor="r3">Compact</Label>
+</div>
+</RadioGroup> */
+}
+const AllImages = ({
+  content,
+  value,
+  onChange
+}: {
+  content: string;
+  value: string;
+  onChange: (e: string) => void;
+}) => {
+  const images = useMemo(() => extractUrlsFromJsonString(content), [content]);
+  const uniqueImages = Array.from(new Set(images));
+  return (
+    <RadioGroup
+      value={value}
+      // onChange={(e) => onChange(e.currentTarget.value)}
+      className="flex flex-wrap gap-2"
+    >
+      {uniqueImages.map((e) => (
+        <div
+          className="relative flex h-fit w-[60px] items-center overflow-hidden bg-transparent duration-300 ease-in-out hover:h-[80px] hover:w-[130px]"
+          key={e}
+        >
+          <RadioGroupItem value={e} id={e} className="hidden" />
+          <Label htmlFor={e}>
+            <picture className="articles__feature-img w-full">
+              <source
+                srcSet={proxifyImageUrl(
+                  e.includes('youtube')
+                    ? `https://img.youtube.com/vi/${extractYouTubeVideoIds(extractUrlsFromJsonString(e))[0]}/0.jpg`
+                    : e,
+                  '256x512'
+                ).replace(/ /g, '%20')}
+              />
+              <img
+                srcSet={
+                  e.includes('youtube')
+                    ? `https://img.youtube.com/vi/${extractYouTubeVideoIds(extractUrlsFromJsonString(e))[0]}/0.jpg`
+                    : e
+                }
+                alt="Post image"
+                loading="lazy"
+                className="h-[60px] w-[60px] object-cover hover:h-full hover:w-full"
+              />
+            </picture>
+          </Label>
+        </div>
+      ))}
+    </RadioGroup>
+  );
+};
 export default function PostForm({
   username,
   editMode = false,
@@ -117,6 +184,7 @@ export default function PostForm({
   const { hiveRenderer } = useContext(HiveRendererContext);
   const router = useRouter();
   const [preview, setPreview] = useState(true);
+  const [selectedImg, setSelectedImg] = useState('');
   const [sideBySide, setSideBySide] = useState(sideBySidePreview);
   const { manabarsData } = useManabars(username);
   const [storedPost, storePost] = useLocalStorage<AccountFormValues>(
@@ -241,7 +309,6 @@ export default function PostForm({
       console.error(error);
     }
   }
-
   return (
     <div className={clsx({ container: !sideBySide || !preview })}>
       <div
@@ -348,6 +415,8 @@ export default function PostForm({
                 </FormItem>
               )}
             />
+            <AllImages content={watchedValues.postArea} value={selectedImg} onChange={setSelectedImg} />
+
             {!editMode ? (
               <div className="flex flex-col gap-2">
                 <span>{t('submit_page.post_options')}</span>
