@@ -393,45 +393,47 @@ export default function PostForm({
                 {t('submit_page.resource_credits', { value: manabarsData?.rc.percentageValue })}
               </span>
             </div>
-            <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem>
-                  <div className="flex flex-wrap items-center gap-4">
-                    {t('submit_page.posting_to')}
-                    <FormControl>
-                      <Select
-                        value={storedPost ? storedPost.category : 'blog'}
-                        onValueChange={(e) => storePost({ ...storedPost, category: e })}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select category" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="blog">{t('submit_page.my_blog')}</SelectItem>
-                          <SelectGroup>{t('submit_page.my_communities')}</SelectGroup>
-                          {mySubsData?.map((e) => (
-                            <SelectItem key={e[0]} value={e[0]}>
-                              {e[1]}
-                            </SelectItem>
-                          ))}
-                          {!mySubsData?.some((e) => e[0] === storedPost.category) &&
-                          storedPost.category !== 'blog' ? (
-                            <>
-                              <SelectGroup>{t('submit_page.others_communities')}</SelectGroup>
-                              <SelectItem value={storedPost.category}>{communityData?.title}</SelectItem>
-                            </>
-                          ) : null}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                  </div>
-                </FormItem>
-              )}
-            />
+            {!editMode ? (
+              <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex flex-wrap items-center gap-4">
+                      {t('submit_page.posting_to')}
+                      <FormControl>
+                        <Select
+                          value={storedPost ? storedPost.category : 'blog'}
+                          onValueChange={(e) => storePost({ ...storedPost, category: e })}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select category" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="blog">{t('submit_page.my_blog')}</SelectItem>
+                            <SelectGroup>{t('submit_page.my_communities')}</SelectGroup>
+                            {mySubsData?.map((e) => (
+                              <SelectItem key={e[0]} value={e[0]}>
+                                {e[1]}
+                              </SelectItem>
+                            ))}
+                            {!mySubsData?.some((e) => e[0] === storedPost.category) &&
+                            storedPost.category !== 'blog' ? (
+                              <>
+                                <SelectGroup>{t('submit_page.others_communities')}</SelectGroup>
+                                <SelectItem value={storedPost.category}>{communityData?.title}</SelectItem>
+                              </>
+                            ) : null}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                    </div>
+                  </FormItem>
+                )}
+              />
+            ) : null}
             <Button
               type="submit"
               variant="redHover"
