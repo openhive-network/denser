@@ -100,22 +100,7 @@ function validateAltUsernameInput(value: string, t: TFunction<'common_wallet', u
     ? t('submit_page.must_contain_only')
     : null;
 }
-{
-  /* <RadioGroup defaultValue="comfortable">
-<div className="flex items-center space-x-2">
-  <RadioGroupItem value="default" id="r1" />
-  <Label htmlFor="r1">Default</Label>
-</div>
-<div className="flex items-center space-x-2">
-  <RadioGroupItem value="comfortable" id="r2" />
-  <Label htmlFor="r2">Comfortable</Label>
-</div>
-<div className="flex items-center space-x-2">
-  <RadioGroupItem value="compact" id="r3" />
-  <Label htmlFor="r3">Compact</Label>
-</div>
-</RadioGroup> */
-}
+
 const AllImages = ({
   content,
   value,
@@ -127,18 +112,19 @@ const AllImages = ({
 }) => {
   const images = useMemo(() => extractUrlsFromJsonString(content), [content]);
   const uniqueImages = Array.from(new Set(images));
+  const handleChange = (event: { target: { value: string } }) => {
+    onChange(event.target.value);
+  };
+  console.log('Img', value);
   return (
-    <RadioGroup
-      value={value}
-      // onChange={(e) => onChange(e.currentTarget.value)}
-      className="flex flex-wrap gap-2"
-    >
+    //@ts-expect-error
+    <RadioGroup onChange={handleChange} className="flex flex-wrap gap-2">
       {uniqueImages.map((e) => (
         <div
           className="relative flex h-fit w-[60px] items-center overflow-hidden bg-transparent duration-300 ease-in-out hover:h-[80px] hover:w-[130px]"
           key={e}
         >
-          <RadioGroupItem value={e} id={e} className="hidden" />
+          <RadioGroupItem value={e} id={e} className="checked:hidden" />
           <Label htmlFor={e}>
             <picture className="articles__feature-img w-full">
               <source
@@ -416,7 +402,6 @@ export default function PostForm({
               )}
             />
             <AllImages content={watchedValues.postArea} value={selectedImg} onChange={setSelectedImg} />
-
             {!editMode ? (
               <div className="flex flex-col gap-2">
                 <span>{t('submit_page.post_options')}</span>
