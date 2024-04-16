@@ -49,7 +49,7 @@ export default defineConfig({
         ['junit', { outputFile: `junit/${process.env.PROJECT}/${process.env.SHARD_INDEX}/results.xml` }],
         ['list', { printSteps: false }]
       ]
-    : 'html',
+    : 'html', 
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
@@ -67,7 +67,10 @@ export default defineConfig({
     },
 
     /* Set viewport for headless to be full-hd */
-    viewport: { width: 1920, height: 1080 }
+    viewport: { width: 1920, height: 1080 },
+
+    /* Whether to ignore HTTPS errors during navigation. */
+  ignoreHTTPSErrors: true
   },
 
   /* Configure projects for major browsers */
