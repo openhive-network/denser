@@ -245,7 +245,11 @@ export default function PostForm({
           refreshPage();
         }
       } else {
-        await router.push(`/created/${tags[0]}`, undefined, { shallow: true });
+        if (router.query.category) {
+          await router.push(`/created/${router.query.category}`, undefined, { shallow: true });
+        } else {
+          await router.push(`/created/${tags[0]}`, undefined, { shallow: true });
+        }
       }
     } catch (error) {
       console.error(error);
