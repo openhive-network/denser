@@ -191,6 +191,10 @@ export default function PostForm({
   const tagsCheck = validateTagInput(watchedValues.tags, watchedValues.category === 'blog', t);
   const summaryCheck = validateSummoryInput(watchedValues.postSummary, t);
   const altUsernameCheck = validateAltUsernameInput(watchedValues.author, t);
+  const communityPosting =
+    mySubsData && mySubsData?.filter((e) => e[0] === router.query.category).length > 0
+      ? mySubsData?.filter((e) => e[0] === router.query.category)[0][0]
+      : undefined;
 
   useEffect(() => {
     debounce(() => {
@@ -403,7 +407,9 @@ export default function PostForm({
                       {t('submit_page.posting_to')}
                       <FormControl>
                         <Select
-                          value={storedPost ? storedPost.category : 'blog'}
+                          value={
+                            communityPosting ? communityPosting : storedPost ? storedPost.category : 'blog'
+                          }
                           onValueChange={(e) => storePost({ ...storedPost, category: e })}
                         >
                           <FormControl>
