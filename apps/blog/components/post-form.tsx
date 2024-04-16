@@ -187,8 +187,13 @@ export default function PostForm({
     control: form.control
   });
 
+  console.log('router.query.category', router.query.category, !router.query.category);
   const watchedValues = form.watch();
-  const tagsCheck = validateTagInput(watchedValues.tags, watchedValues.category === 'blog', t);
+  const tagsCheck = validateTagInput(
+    watchedValues.tags,
+    !router.query.category ? watchedValues.category === 'blog' : false,
+    t
+  );
   const summaryCheck = validateSummoryInput(watchedValues.postSummary, t);
   const altUsernameCheck = validateAltUsernameInput(watchedValues.author, t);
   const communityPosting =
@@ -218,6 +223,7 @@ export default function PostForm({
     const maxAcceptedPayout = await chain.hbd(Number(storedPost.maxAcceptedPayout));
     const postPermlink = await createPermlink(storedPost?.title ?? '', username);
     const permlinInEditMode = post_s?.permlink;
+    console.log('storedPost.category', storedPost.category);
     try {
       await transactionService.post(
         editMode && permlinInEditMode ? permlinInEditMode : postPermlink,
@@ -227,7 +233,7 @@ export default function PostForm({
         Number(storedPost.payoutType.slice(0, 2)),
         maxAcceptedPayout,
         tags,
-        storedPost.category,
+        communityPosting ? communityPosting : storedPost.category,
         storedPost.postSummary
       );
       form.reset(defaultValues);
