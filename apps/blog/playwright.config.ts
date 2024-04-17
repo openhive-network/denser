@@ -67,7 +67,10 @@ export default defineConfig({
     },
 
     /* Set viewport for headless to be full-hd */
-    viewport: { width: 1920, height: 1080 }
+    viewport: { width: 1920, height: 1080 },
+
+    /* Whether to ignore HTTPS errors during navigation. */
+    ignoreHTTPSErrors: true
   },
 
   /* Configure projects for major browsers */
