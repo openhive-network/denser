@@ -123,13 +123,12 @@ const AllImages = ({
       <span>{t('submit_page.cover_image')}</span>
       <div className="flex flex-wrap">
         {uniqueImages.map((e) => (
-          <div className="group">
+          <div className="group" key={e}>
             <Button
               type="button"
               variant="basic"
               className="relative flex h-fit w-[62px] items-center overflow-hidden rounded-none bg-transparent p-0 group-hover:h-[80px] group-hover:w-[130px]"
               onClick={() => onChange(e)}
-              key={e}
             >
               <img
                 src={imgYoutube(e)}
