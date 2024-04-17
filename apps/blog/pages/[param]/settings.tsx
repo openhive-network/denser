@@ -33,7 +33,6 @@ import env from '@beam-australia/react-env';
 import { Signer } from '@smart-signer/lib/signer/signer';
 import { getLogger } from '@ui/lib/logging';
 import { useSignerContext } from '@/blog/components/common/signer';
-import Loading from '@ui/components/loading';
 import { toast } from '@ui/components/hooks/use-toast';
 
 const logger = getLogger('app');
@@ -213,6 +212,8 @@ export default function UserSettings() {
         settings.about !== '' ? settings.about : undefined,
         settings.location !== '' ? settings.location : undefined,
         settings.website !== '' ? settings.website : undefined,
+        profileData?.witness_owner,
+        profileData?.witness_description,
         settings.blacklist_description !== '' ? settings.blacklist_description : undefined,
         settings.muted_list_description !== '' ? settings.muted_list_description : undefined
       );
