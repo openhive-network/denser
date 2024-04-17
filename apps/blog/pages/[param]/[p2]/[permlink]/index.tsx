@@ -24,7 +24,6 @@ import FacebookShare from '@/blog/components/share-post-facebook';
 import RedditShare from '@/blog/components/share-post-reddit';
 import TwitterShare from '@/blog/components/share-post-twitter';
 import { Badge } from '@ui/components/badge';
-import { UserHoverCard } from '@/blog/components/user-hover-card';
 import { Button } from '@ui/components/button';
 import { Separator } from '@ui/components';
 import { LeavePageDialog } from '@/blog/components/leave-page-dialog';
@@ -59,6 +58,14 @@ function PostPage({
 }) {
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
+  const {
+    isLoading: isLoadingPost,
+    error: errorPost,
+    data: post
+  } = useQuery(['postData', username, permlink], () => getPost(username, String(permlink)), {
+    initialData: post_s
+  });
+
   const {
     isLoading: isLoadingDiscussion,
     error: errorDiscussion,
@@ -185,267 +192,276 @@ function PostPage({
         <AlertDialogFlag community={community} username={username} permlink={permlink}>
           <Icons.flag className="absolute right-0 hover:text-red-500" />
         </AlertDialogFlag>
-
-        {!commentSite ? (
-          <h1 className="text-3xl font-bold" data-testid="article-title">
-            {post_s.title}
-          </h1>
-        ) : (
-          <div className="flex flex-col gap-2 bg-green-50 p-2 dark:bg-slate-950">
-            <h4 className="text-sm">
-              {t('post_content.if_comment.you_are_viewing_a_single_comments_thread_from')}:
-            </h4>
-            <h1 data-testid="article-title" className="text-2xl">
-              {post_s.title}
-            </h1>
-            <Link
-              className="text-sm text-slate-500 hover:text-red-500"
-              href={`${postUrl()}`}
-              data-testid="view-the-full-context"
-            >
-              • {t('post_content.if_comment.view_the_full_context')}
-            </Link>
-            {discussionState && !discussionState.some((e) => e.depth === 1) ? (
-              <Link
-                className="text-sm text-slate-500 hover:text-red-500"
-                href={`../../${parentUrl()}`}
-                data-testid="view-the-direct-parent"
-              >
-                • {t('post_content.if_comment.view_the_direct_parent')}
-              </Link>
-            ) : null}
-          </div>
-        )}
-        <UserInfo
-          author={post_s.author}
-          author_reputation={post_s.author_reputation}
-          author_title={post_s.author_title}
-          authored={post_s.json_metadata?.author}
-          community_title={communityData?.title || ''}
-          community={community}
-          category={post_s.category}
-          created={post_s.created}
-          blacklist={firstPost ? firstPost.blacklists : post_s.blacklists}
-        />
-        <hr />
-        {!hiveRenderer ? (
-          <Loading loading={!hiveRenderer} />
-        ) : edit ? (
-          <PostForm
-            username={username}
-            editMode={edit}
-            setEditMode={setEdit}
-            sideBySidePreview={false}
-            post_s={post_s}
-            refreshPage={refreshPage}
-          />
-        ) : mutedPost ? (
-          <div id="articleBody" className="flex flex-col gap-8 py-8">
-            {findLinks(post_s.body).map((e) =>
-              isImageLink(e) ? (
-                <Link href={e} className="text-red-500" key={e}>
-                  ({t('post_content.body.Image_not_shown')})
-                </Link>
-              ) : (
-                <LeavePageDialog link={e} key={e}>
-                  <Icons.externalLink className="h-4 w-4 text-slate-600" />
-                </LeavePageDialog>
-              )
-            )}
-          </div>
-        ) : (
-          <ImageGallery>
-            <div
-              id="articleBody"
-              className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
-              dangerouslySetInnerHTML={{
-                __html: hiveRenderer.render(post_s.body)
-              }}
-            />
-          </ImageGallery>
-        )}
-        {mutedPost ? (
+        {!isLoadingPost && post ? (
           <>
-            <Separator />
-            <div className="my-8 flex items-center justify-between text-red-500">
-              {t('post_content.body.images_were_hidden')}
-              <Button variant="outlineRed" onClick={() => setMutedPost(false)}>
-                {t('post_content.body.show')}
-              </Button>
+            {!commentSite ? (
+              <h1 className="text-3xl font-bold" data-testid="article-title">
+                {post.title}
+              </h1>
+            ) : (
+              <div className="flex flex-col gap-2 bg-green-50 p-2 dark:bg-slate-950">
+                <h4 className="text-sm">
+                  {t('post_content.if_comment.you_are_viewing_a_single_comments_thread_from')}:
+                </h4>
+                <h1 data-testid="article-title" className="text-2xl">
+                  {post.title}
+                </h1>
+                <Link
+                  className="text-sm text-slate-500 hover:text-red-500"
+                  href={`${postUrl()}`}
+                  data-testid="view-the-full-context"
+                >
+                  • {t('post_content.if_comment.view_the_full_context')}
+                </Link>
+                {discussionState && !discussionState.some((e) => e.depth === 1) ? (
+                  <Link
+                    className="text-sm text-slate-500 hover:text-red-500"
+                    href={`../../${parentUrl()}`}
+                    data-testid="view-the-direct-parent"
+                  >
+                    • {t('post_content.if_comment.view_the_direct_parent')}
+                  </Link>
+                ) : null}
+              </div>
+            )}
+            <UserInfo
+              author={post.author}
+              author_reputation={post.author_reputation}
+              author_title={post.author_title}
+              authored={post.json_metadata?.author}
+              community_title={communityData?.title || ''}
+              community={community}
+              category={post.category}
+              created={post.created}
+              blacklist={firstPost ? firstPost.blacklists : post.blacklists}
+            />
+            <hr />
+            {!hiveRenderer ? (
+              <Loading loading={!hiveRenderer} />
+            ) : edit ? (
+              <PostForm
+                username={username}
+                editMode={edit}
+                setEditMode={setEdit}
+                sideBySidePreview={false}
+                post_s={post}
+                refreshPage={refreshPage}
+              />
+            ) : mutedPost ? (
+              <div id="articleBody" className="flex flex-col gap-8 py-8">
+                {findLinks(post.body).map((e) =>
+                  isImageLink(e) ? (
+                    <Link href={e} className="text-red-500" key={e}>
+                      ({t('post_content.body.Image_not_shown')})
+                    </Link>
+                  ) : (
+                    <LeavePageDialog link={e} key={e}>
+                      <Icons.externalLink className="h-4 w-4 text-slate-600" />
+                    </LeavePageDialog>
+                  )
+                )}
+              </div>
+            ) : (
+              <ImageGallery>
+                <div
+                  id="articleBody"
+                  className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
+                  dangerouslySetInnerHTML={{
+                    __html: hiveRenderer.render(post.body)
+                  }}
+                />
+              </ImageGallery>
+            )}
+            {mutedPost ? (
+              <>
+                <Separator />
+                <div className="my-8 flex items-center justify-between text-red-500">
+                  {t('post_content.body.images_were_hidden')}
+                  <Button variant="outlineRed" onClick={() => setMutedPost(false)}>
+                    {t('post_content.body.show')}
+                  </Button>
+                </div>
+              </>
+            ) : null}
+            <div className="clear-both">
+              {!commentSite ? (
+                <ul className="flex flex-wrap gap-2" data-testid="hashtags-post">
+                  {post.json_metadata?.tags?.slice(1).map((tag: string) => (
+                    <li key={tag}>
+                      <Link
+                        href={`/trending/${tag}`}
+                        className="my-2 rounded-md bg-accent px-2 py-1 text-sm text-accent-foreground hover:border-[1px] hover:border-accent-foreground"
+                      >
+                        #{tag}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
+            <div className="text-sm text-slate-600" data-testid="author-data-post-footer">
+              <div className="my-4 flex justify-between">
+                <div className="flex flex-wrap items-center">
+                  <Clock />
+                  <span className="px-1" title={String(parseDate(post.created))}>
+                    {dateToFullRelative(post.created, t)}
+                  </span>
+                  {t('post_content.footer.in')}
+                  <span className="px-1 text-red-600">
+                    {post.community_title ? (
+                      <Link
+                        href={`/trending/${community}`}
+                        className="hover:cursor-pointer"
+                        data-testid="footer-comment-community-category-link"
+                      >
+                        {post.community_title}
+                      </Link>
+                    ) : (
+                      <Link
+                        href={`/trending/${post.category}`}
+                        className="hover:cursor-pointer"
+                        data-testid="footer-comment-community-category-link"
+                      >
+                        #{post.category}
+                      </Link>
+                    )}
+                  </span>
+                  {t('post_content.footer.by')}
+                  <UserPopoverCard
+                    author={post.author}
+                    author_reputation={post.author_reputation}
+                    blacklist={firstPost ? firstPost.blacklists : post.blacklists}
+                  />
+                  {post.author_title ? (
+                    <Badge variant="outline" className="border-red-600 text-slate-500">
+                      {post.author_title}
+                    </Badge>
+                  ) : null}
+                </div>
+                <div className="flex items-center" data-testid="comment-respons-header">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <AlertDialogReblog username={post.author} permlink={post.permlink}>
+                          <Icons.forward
+                            className="h-4 w-4 cursor-pointer"
+                            data-testid="post-footer-reblog-icon"
+                          />
+                        </AlertDialogReblog>
+                      </TooltipTrigger>
+                      <TooltipContent data-test="post-footer-reblog-tooltip">
+                        <p>
+                          {t('post_content.footer.reblog')} @{post.author}/{post.permlink}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  <span className="mx-1">|</span>
+                  {user && user.isLoggedIn ? (
+                    <button
+                      onClick={() => {
+                        setReply(!reply), localStorage.removeItem(storageId);
+                      }}
+                      className="flex items-center text-red-600"
+                      data-testid="comment-reply"
+                    >
+                      {t('post_content.footer.reply')}
+                    </button>
+                  ) : (
+                    <DialogLogin>
+                      <button className="flex items-center text-red-600">
+                        {t('post_content.footer.reply')}
+                      </button>
+                    </DialogLogin>
+                  )}
+                  {user && user.isLoggedIn && post.author === user.username ? (
+                    <>
+                      <span className="mx-1">|</span>
+                      <button
+                        onClick={() => {
+                          setEdit(!edit);
+                        }}
+                        className="flex items-center text-red-600"
+                        data-testid="post-edit"
+                      >
+                        {t('post_content.footer.edit')}
+                      </button>
+                    </>
+                  ) : null}
+                  <span className="mx-1">|</span>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger className="flex items-center" data-testid="comment-respons">
+                        <Link href={post.url} className="flex cursor-pointer items-center">
+                          {post.children > 1 ? (
+                            <Icons.messagesSquare className="h-4 w-4 sm:mr-1" />
+                          ) : (
+                            <Icons.comment className="h-4 w-4 sm:mr-1" />
+                          )}
+                        </Link>
+                        <Link href={post.url} className="flex cursor-pointer items-center text-red-600">
+                          {post.children}
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent data-testid="post-footer-response-tooltip">
+                        <p>
+                          {post.children === 0
+                            ? t('post_content.footer.no_responses')
+                            : post.children === 1
+                              ? t('post_content.footer.response')
+                              : t('post_content.footer.responses', { responses: post.children })}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+              </div>
+              <div className="my-4 flex justify-between">
+                <div className="flex items-center gap-2 sm:gap-4">
+                  <VotesComponent post={post} />
+                  <DetailsCardHover
+                    post={post}
+                    decline={Number(post.max_accepted_payout.slice(0, 1)) === 0}
+                    post_page
+                  >
+                    <span
+                      data-testid="comment-payout"
+                      className={`text-xs text-red-600 hover:cursor-pointer sm:text-sm ${
+                        Number(post.max_accepted_payout.slice(0, 1)) === 0
+                          ? '!text-gray-600 line-through'
+                          : ''
+                      }`}
+                    >
+                      ${post.payout?.toFixed(2)}
+                    </span>
+                  </DetailsCardHover>
+                  {!isActiveVotesLoading && activeVotesData ? (
+                    <DetailsCardVoters post={post}>
+                      {post.stats?.total_votes && post.stats?.total_votes !== 0 ? (
+                        <span className="text-xs text-red-500 sm:text-sm">
+                          {post.stats?.total_votes > 1
+                            ? t('post_content.footer.votes', { votes: post.stats?.total_votes })
+                            : t('post_content.footer.vote')}
+                        </span>
+                      ) : null}
+                    </DetailsCardVoters>
+                  ) : null}
+                </div>
+                <div className="flex gap-2">
+                  <FacebookShare url={post.url} />
+                  <TwitterShare title={post.title} url={post.url} />
+                  <LinkedInShare title={post.title} url={post.url} />
+                  <RedditShare title={post.title} url={post.url} />
+                  <SharePost path={router.asPath}>
+                    <Link2 className="cursor-pointer hover:text-red-600" data-testid="share-post" />
+                  </SharePost>
+                </div>
+              </div>
             </div>
           </>
-        ) : null}
-        <div className="clear-both">
-          {!commentSite ? (
-            <ul className="flex flex-wrap gap-2" data-testid="hashtags-post">
-              {post_s.json_metadata?.tags?.slice(1).map((tag: string) => (
-                <li key={tag}>
-                  <Link
-                    href={`/trending/${tag}`}
-                    className="my-2 rounded-md bg-accent px-2 py-1 text-sm text-accent-foreground hover:border-[1px] hover:border-accent-foreground"
-                  >
-                    #{tag}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          ) : null}
-        </div>
-        <div className="text-sm text-slate-600" data-testid="author-data-post-footer">
-          <div className="my-4 flex justify-between">
-            <div className="flex flex-wrap items-center">
-              <Clock />
-              <span className="px-1" title={String(parseDate(post_s.created))}>
-                {dateToFullRelative(post_s.created, t)}
-              </span>
-              {t('post_content.footer.in')}
-              <span className="px-1 text-red-600">
-                {post_s.community_title ? (
-                  <Link
-                    href={`/trending/${community}`}
-                    className="hover:cursor-pointer"
-                    data-testid="footer-comment-community-category-link"
-                  >
-                    {post_s.community_title}
-                  </Link>
-                ) : (
-                  <Link
-                    href={`/trending/${post_s.category}`}
-                    className="hover:cursor-pointer"
-                    data-testid="footer-comment-community-category-link"
-                  >
-                    #{post_s.category}
-                  </Link>
-                )}
-              </span>
-              {t('post_content.footer.by')}
-              <UserPopoverCard
-                author={post_s.author}
-                author_reputation={post_s.author_reputation}
-                blacklist={firstPost ? firstPost.blacklists : post_s.blacklists}
-              />
-              {post_s.author_title ? (
-                <Badge variant="outline" className="border-red-600 text-slate-500">
-                  {post_s.author_title}
-                </Badge>
-              ) : null}
-            </div>
-            <div className="flex items-center" data-testid="comment-respons-header">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <AlertDialogReblog username={post_s.author} permlink={post_s.permlink}>
-                      <Icons.forward
-                        className="h-4 w-4 cursor-pointer"
-                        data-testid="post-footer-reblog-icon"
-                      />
-                    </AlertDialogReblog>
-                  </TooltipTrigger>
-                  <TooltipContent data-test="post-footer-reblog-tooltip">
-                    <p>
-                      {t('post_content.footer.reblog')} @{post_s.author}/{post_s.permlink}
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <span className="mx-1">|</span>
-              {user && user.isLoggedIn ? (
-                <button
-                  onClick={() => {
-                    setReply(!reply), localStorage.removeItem(storageId);
-                  }}
-                  className="flex items-center text-red-600"
-                  data-testid="comment-reply"
-                >
-                  {t('post_content.footer.reply')}
-                </button>
-              ) : (
-                <DialogLogin>
-                  <button className="flex items-center text-red-600">{t('post_content.footer.reply')}</button>
-                </DialogLogin>
-              )}
-              {user && user.isLoggedIn && post_s.author === user.username ? (
-                <>
-                  <span className="mx-1">|</span>
-                  <button
-                    onClick={() => {
-                      setEdit(!edit);
-                    }}
-                    className="flex items-center text-red-600"
-                    data-testid="post-edit"
-                  >
-                    {t('post_content.footer.edit')}
-                  </button>
-                </>
-              ) : null}
-              <span className="mx-1">|</span>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger className="flex items-center" data-testid="comment-respons">
-                    <Link href={post_s.url} className="flex cursor-pointer items-center">
-                      {post_s.children > 1 ? (
-                        <Icons.messagesSquare className="h-4 w-4 sm:mr-1" />
-                      ) : (
-                        <Icons.comment className="h-4 w-4 sm:mr-1" />
-                      )}
-                    </Link>
-                    <Link href={post_s.url} className="flex cursor-pointer items-center text-red-600">
-                      {post_s.children}
-                    </Link>
-                  </TooltipTrigger>
-                  <TooltipContent data-testid="post-footer-response-tooltip">
-                    <p>
-                      {post_s.children === 0
-                        ? t('post_content.footer.no_responses')
-                        : post_s.children === 1
-                          ? t('post_content.footer.response')
-                          : t('post_content.footer.responses', { responses: post_s.children })}
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-          </div>
-          <div className="my-4 flex justify-between">
-            <div className="flex items-center gap-2 sm:gap-4">
-              <VotesComponent post={post_s} />
-              <DetailsCardHover
-                post={post_s}
-                decline={Number(post_s.max_accepted_payout.slice(0, 1)) === 0}
-                post_page
-              >
-                <span
-                  data-testid="comment-payout"
-                  className={`text-xs text-red-600 hover:cursor-pointer sm:text-sm ${
-                    Number(post_s.max_accepted_payout.slice(0, 1)) === 0 ? '!text-gray-600 line-through' : ''
-                  }`}
-                >
-                  ${post_s.payout?.toFixed(2)}
-                </span>
-              </DetailsCardHover>
-              {!isActiveVotesLoading && activeVotesData ? (
-                <DetailsCardVoters post={post_s}>
-                  {post_s.stats?.total_votes && post_s.stats?.total_votes !== 0 ? (
-                    <span className="text-xs text-red-500 sm:text-sm">
-                      {post_s.stats?.total_votes > 1
-                        ? t('post_content.footer.votes', { votes: post_s.stats?.total_votes })
-                        : t('post_content.footer.vote')}
-                    </span>
-                  ) : null}
-                </DetailsCardVoters>
-              ) : null}
-            </div>
-            <div className="flex gap-2">
-              <FacebookShare url={post_s.url} />
-              <TwitterShare title={post_s.title} url={post_s.url} />
-              <LinkedInShare title={post_s.title} url={post_s.url} />
-              <RedditShare title={post_s.title} url={post_s.url} />
-              <SharePost path={router.asPath}>
-                <Link2 className="cursor-pointer hover:text-red-600" data-testid="share-post" />
-              </SharePost>
-            </div>
-          </div>
-        </div>
+        ) : (
+          <Loading loading={isLoadingPost} />
+        )}
       </div>
       <div id="comments" className="flex" />
       <div className="mx-auto my-0 max-w-4xl py-4">
@@ -453,13 +469,13 @@ function PostPage({
           <ReplyTextbox onSetReply={setReply} username={username} permlink={permlink} storageId={storageId} />
         ) : null}
       </div>
-      {!isLoadingDiscussion && discussion && discussionState ? (
+      {!isLoadingDiscussion && discussion && discussionState && !isLoadingPost && post ? (
         <div className="mx-auto my-0 max-w-4xl py-4 pr-8">
           <div className="flex items-center justify-end pb-4" translate="no">
             <span>{t('select_sort.sort_comments.sort')}</span>
             <CommentSelectFilter />
           </div>
-          <DynamicComments data={discussionState} parent={post_s} parent_depth={post_s.depth} />
+          <DynamicComments data={discussionState} parent={post} parent_depth={post.depth} />
         </div>
       ) : (
         <Loading loading={isLoadingDiscussion} />
