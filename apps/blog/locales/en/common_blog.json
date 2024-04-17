@@ -389,6 +389,7 @@
     }
   },
   "submit_page": {
+    "cover_image": "Select your cover image:",
     "my_communities": "My Communities",
     "others_communities": "Others Communities",
     "disable_side": "Disable side-by-side editor",

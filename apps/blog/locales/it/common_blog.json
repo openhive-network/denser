@@ -377,6 +377,7 @@
     }
   },
   "submit_page": {
+    "cover_image": "Seleziona la tua immagine di copertina:",
     "my_communities": "Le mie Comunità",
     "others_communities": "Altre Comunità",
     "disable_side": "Disabilita l'editor affiancato",

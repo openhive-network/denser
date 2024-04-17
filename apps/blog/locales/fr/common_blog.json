@@ -377,6 +377,7 @@
     }
   },
   "submit_page": {
+    "cover_image": "Sélectionnez votre image de couverture :",
     "my_communities": "Mes communautés",
     "others_communities": "Autres communautés",
     "disable_side": "Désactiver l'éditeur côte à côte",

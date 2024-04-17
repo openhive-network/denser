@@ -317,7 +317,8 @@ class TransactionService {
     maxAcceptedPayout: NaiAsset,
     tags: string[],
     category: string,
-    summary: string
+    summary: string,
+    image?: string
   ) {
     await this.processHiveAppOperation((builder) => {
       const op = builder
@@ -326,8 +327,8 @@ class TransactionService {
         .setPercentHbd(percentHbd)
         .setMaxAcceptedPayout(maxAcceptedPayout)
         .pushTags(...tags)
-        .pushMetadataProperty({ summary: summary });
-
+        .pushMetadataProperty({ summary: summary })
+        .pushImages(image ? image : '');
       beneficiaries.forEach((beneficiarie) => {
         op.addBeneficiary(beneficiarie.account, Number(beneficiarie.weight));
       });

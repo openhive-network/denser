@@ -383,6 +383,7 @@
     }
   },
   "submit_page": {
+    "cover_image": "Выберите обложку:",
     "my_communities": "Мои сообщества",
     "others_communities": "Другие сообщества",
     "disable_side": "Отключить редактор рядом",

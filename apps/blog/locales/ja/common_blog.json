@@ -377,6 +377,7 @@
     }
   },
   "submit_page": {
+    "cover_image": "カバー画像を選択してください：",
     "my_communities": "私のコミュニティ",
     "others_communities": "他のコミュニティ",
     "disable_side": "サイドバイサイドエディターを無効にする",

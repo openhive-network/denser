@@ -37,8 +37,6 @@ import { useRouter } from 'next/router';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { TFunction } from 'i18next';
 import { debounce, extractUrlsFromJsonString, extractYouTubeVideoIds } from '../lib/utils';
-import { proxifyImageUrl } from '@ui/lib/old-profixy';
-import { RadioGroup, RadioGroupItem } from '@ui/components';
 
 const defaultValues = {
   title: '',
@@ -100,57 +98,58 @@ function validateAltUsernameInput(value: string, t: TFunction<'common_wallet', u
     ? t('submit_page.must_contain_only')
     : null;
 }
+function imgYoutube(img: string) {
+  const checkImg = img.includes('youtube')
+    ? `https://img.youtube.com/vi/${extractYouTubeVideoIds(extractUrlsFromJsonString(img))[0]}/0.jpg`
+    : img;
+  return checkImg;
+}
 
 const AllImages = ({
   content,
   value,
-  onChange
+  onChange,
+  t
 }: {
   content: string;
   value: string;
   onChange: (e: string) => void;
+  t: TFunction<'common_blog', undefined>;
 }) => {
   const images = useMemo(() => extractUrlsFromJsonString(content), [content]);
   const uniqueImages = Array.from(new Set(images));
-  const handleChange = (event: { target: { value: string } }) => {
-    onChange(event.target.value);
-  };
-  console.log('Img', value);
-  return (
-    //@ts-expect-error
-    <RadioGroup onChange={handleChange} className="flex flex-wrap gap-2">
-      {uniqueImages.map((e) => (
-        <div
-          className="relative flex h-fit w-[60px] items-center overflow-hidden bg-transparent duration-300 ease-in-out hover:h-[80px] hover:w-[130px]"
-          key={e}
-        >
-          <RadioGroupItem value={e} id={e} className="checked:hidden" />
-          <Label htmlFor={e}>
-            <picture className="articles__feature-img w-full">
-              <source
-                srcSet={proxifyImageUrl(
-                  e.includes('youtube')
-                    ? `https://img.youtube.com/vi/${extractYouTubeVideoIds(extractUrlsFromJsonString(e))[0]}/0.jpg`
-                    : e,
-                  '256x512'
-                ).replace(/ /g, '%20')}
-              />
+  return uniqueImages.length > 0 ? (
+    <div>
+      <span>{t('submit_page.cover_image')}</span>
+      <div className="flex flex-wrap">
+        {uniqueImages.map((e) => (
+          <div className="group">
+            <Button
+              type="button"
+              variant="basic"
+              className="relative flex h-fit w-[62px] items-center overflow-hidden rounded-none bg-transparent p-0 group-hover:h-[80px] group-hover:w-[130px]"
+              onClick={() => onChange(e)}
+              key={e}
+            >
               <img
-                srcSet={
-                  e.includes('youtube')
-                    ? `https://img.youtube.com/vi/${extractYouTubeVideoIds(extractUrlsFromJsonString(e))[0]}/0.jpg`
-                    : e
-                }
-                alt="Post image"
+                src={imgYoutube(e)}
+                alt="cover img"
+                //@ts-expect-error
+                onError={(e) => (e.target.style.display = 'none')}
                 loading="lazy"
-                className="h-[60px] w-[60px] object-cover hover:h-full hover:w-full"
+                className={clsx(
+                  'h-[60px] w-[60px] object-cover p-1 contrast-50 ease-out group-hover:h-full  group-hover:w-full group-hover:contrast-100 group-hover:duration-700 group-hover:ease-in-out',
+                  {
+                    'bg-red-700 contrast-100': value === e
+                  }
+                )}
               />
-            </picture>
-          </Label>
-        </div>
-      ))}
-    </RadioGroup>
-  );
+            </Button>
+          </div>
+        ))}
+      </div>
+    </div>
+  ) : null;
 };
 export default function PostForm({
   username,
@@ -278,7 +277,8 @@ export default function PostForm({
         maxAcceptedPayout,
         tags,
         storedPost.category,
-        storedPost.postSummary
+        storedPost.postSummary,
+        imgYoutube(selectedImg)
       );
       form.reset(defaultValues);
       setPreviewContent(undefined);
@@ -401,7 +401,7 @@ export default function PostForm({
                 </FormItem>
               )}
             />
-            <AllImages content={watchedValues.postArea} value={selectedImg} onChange={setSelectedImg} />
+            <AllImages content={watchedValues.postArea} value={selectedImg} onChange={setSelectedImg} t={t} />
             {!editMode ? (
               <div className="flex flex-col gap-2">
                 <span>{t('submit_page.post_options')}</span>

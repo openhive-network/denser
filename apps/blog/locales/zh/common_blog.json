@@ -377,6 +377,7 @@
     }
   },
   "submit_page": {
+    "cover_image": "选择您的封面图片：",
     "my_communities": "我的社群",
     "others_communities": "其他社群",
     "disable_side": "禁用并排编辑器",

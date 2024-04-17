@@ -390,6 +390,7 @@
     }
   },
   "submit_page": {
+    "cover_image": "Wybierz obraz okładki:",
     "my_communities": "Moje Społeczności",
     "others_communities": "Inne Społeczności",
     "disable_side": "Przenieś podgląd pod formularz",
