@@ -377,6 +377,7 @@
     }
   },
   "submit_page": {
+    "cover_image": "Selecciona tu imagen de portada:",
     "my_communities": "Mis Comunidades",
     "others_communities": "Otras Comunidades",
     "disable_side": "Deshabilitar el editor en paralelo",

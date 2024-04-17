@@ -377,6 +377,7 @@
     }
   },
   "submit_page": {
+    "cover_image": "표지 이미지를 선택하세요:",
     "my_communities": "내 커뮤니티",
     "others_communities": "다른 커뮤니티",
     "disable_side": "옆에 에디터 비활성화",
