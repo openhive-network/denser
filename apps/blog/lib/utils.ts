@@ -26,7 +26,7 @@ export const debounce = (fn: Function, delay: number) => {
       fn(...args);
     }, delay);
   };
-}
+};
 
 const isHumanReadable = (input: number): boolean => {
   return Math.abs(input) > 0 && Math.abs(input) <= 100;
@@ -108,7 +108,7 @@ export function extractBodySummary(body: string, stripQuotes = false) {
 }
 
 export function getPostSummary(jsonMetadata: JsonMetadata, body: string, stripQuotes = false) {
-  const shortDescription = jsonMetadata?.description;
+  const shortDescription = jsonMetadata?.description ? jsonMetadata?.description : jsonMetadata?.summary;
 
   if (!shortDescription) {
     return extractBodySummary(body, stripQuotes);
@@ -247,13 +247,13 @@ export function hoursAndMinutes(date: Date, t: TFunction<'common_blog', undefine
     (cooldownH === 1
       ? t('global.time.an_hour')
       : cooldownH > 1
-      ? cooldownH + ' ' + t('global.time.hours')
-      : '') +
+        ? cooldownH + ' ' + t('global.time.hours')
+        : '') +
     (cooldownH && cooldownMin ? ' and ' : '') +
     (cooldownMin === 1
       ? t('global.time.a_minute')
       : cooldownMin > 0
-      ? cooldownMin + ' ' + t('global.time.minutes')
-      : '')
+        ? cooldownMin + ' ' + t('global.time.minutes')
+        : '')
   );
 }
