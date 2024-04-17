@@ -30,7 +30,6 @@ import { LeavePageDialog } from '@/blog/components/leave-page-dialog';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
-import { GetServerSideProps } from 'next';
 import { AlertDialogFlag } from '@/blog/components/alert-window-flag';
 import VotesComponent from '@/blog/components/votes';
 import { HiveRendererContext } from '@/blog/components/hive-renderer-context';
@@ -39,6 +38,7 @@ import PostForm from '@/blog/components/post-form';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from '@/blog/components/dialog-login';
 import { UserPopoverCard } from '@/blog/components/user-popover-card';
+import { QueryClient, dehydrate } from '@tanstack/react-query';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -46,12 +46,10 @@ const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), 
 });
 
 function PostPage({
-  post_s,
   community,
   username,
   permlink
 }: {
-  post_s: Entry;
   community: string;
   username: string;
   permlink: string;
@@ -63,7 +61,7 @@ function PostPage({
     error: errorPost,
     data: post
   } = useQuery(['postData', username, permlink], () => getPost(username, String(permlink)), {
-    initialData: post_s
+    enabled: !!username && !!permlink
   });
 
   const {
@@ -99,7 +97,7 @@ function PostPage({
   };
   const query = router.query.sort?.toString();
   const defaultSort = isSortOrder(query) ? query : SortOrder.trending;
-  const storageId = `replybox-/${username}/${post_s.permlink}`;
+  const storageId = `replybox-/${username}/${post?.permlink}`;
   const [storedBox, storeBox] = useLocalStorage<Boolean>(storageId, false);
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const firstPost = discussionState?.find((post) => post.depth === 0);
@@ -141,8 +139,8 @@ function PostPage({
   }, [discussion, router.query.sort]);
 
   const { hiveRenderer } = useContext(HiveRendererContext);
-  const commentSite = post_s.depth !== 0 ? true : false;
-  const [mutedPost, setMutedPost] = useState(post_s.stats?.gray);
+  const commentSite = post?.depth !== 0 ? true : false;
+  const [mutedPost, setMutedPost] = useState(post?.stats?.gray);
   const postUrl = () => {
     if (discussionState) {
       const objectWithSmallestDepth = discussionState.reduce((smallestDepth, e) => {
@@ -484,20 +482,47 @@ function PostPage({
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
-  const community = String(query.param);
-  const username = String(query.p2).slice(1);
-  const permlink = String(query.permlink);
+// export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
+//   const community = String(query.param);
+//   const username = String(query.p2).slice(1);
+//   const permlink = String(query.permlink);
 
-  const post_s = await getPost(username, String(permlink));
+//   const post_s = await getPost(username, String(permlink));
+
+//   return {
+//     props: {
+//       post_s,
+//       community,
+//       username,
+//       permlink,
+//       ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
+//         'common_blog',
+//         'smart-signer'
+//       ]))
+//     }
+//   };
+// };
+
+export const getServerSideProps = async (ctx) => {
+  console.log('getServerSideProps');
+  const community = String(ctx.query.param);
+  const username = String(ctx.query.p2).slice(1);
+  const permlink = String(ctx.query.permlink);
+
+  const queryClient = new QueryClient();
+  if (!queryClient.getQueryData(['postData', username, permlink])) {
+    await queryClient.prefetchQuery(['postData', username, permlink], () =>
+      getPost(username, String(permlink))
+    );
+  }
 
   return {
     props: {
-      post_s,
+      dehydratedState: dehydrate(queryClient),
       community,
       username,
       permlink,
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
+      ...(await serverSideTranslations(ctx.req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
         'common_blog',
         'smart-signer'
       ]))
