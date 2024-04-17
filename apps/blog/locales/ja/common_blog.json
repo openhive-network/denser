@@ -410,6 +410,8 @@
     "html_not_supported": "ここではHTMLはサポートされていません",
     "advanced_tooltip": "ここでは、投稿オプションを設定できます。投稿者の報酬分配、最大受け入れ支払額、受益者、投稿テンプレートなどが含まれます",
     "advanced_settings_dialog": {
+      "load": "ロード",
+      "template_loaded": "テンプレートが読み込まれました",
       "changes_saved": "変更が保存されました",
       "advanced_settings": "高度な設定",
       "maximum_accepted_payout": "最大受け入れ支払い額",

@@ -410,6 +410,8 @@
     "html_not_supported": "HTML non è supportato qui",
     "advanced_tooltip": "Qui puoi impostare le opzioni di pubblicazione come la suddivisione delle ricompense dell'autore, il pagamento massimo accettato, i beneficiari e i modelli di pubblicazione",
     "advanced_settings_dialog": {
+      "load": "Caricare",
+      "template_loaded": "Modello caricato",
       "changes_saved": "Modifiche salvate",
       "advanced_settings": "Impostazioni avanzate",
       "maximum_accepted_payout": "Pagamento massimo accettato",

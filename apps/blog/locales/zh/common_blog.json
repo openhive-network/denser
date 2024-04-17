@@ -410,6 +410,8 @@
     "html_not_supported": "此处不支持HTML",
     "advanced_tooltip": "在这里，您可以设置帖子选项，如作者奖励分配、最大接受的支付、受益人和帖子模板",
     "advanced_settings_dialog": {
+      "load": "加载",
+      "template_loaded": "模板已加载",
       "changes_saved": "更改已保存",
       "advanced_settings": "高级设置",
       "maximum_accepted_payout": "最大接受的支付额",

@@ -410,6 +410,8 @@
     "html_not_supported": "HTML n'est pas pris en charge ici",
     "advanced_tooltip": "Ici, vous pouvez définir des options de publication telles que la répartition des récompenses de l'auteur, le paiement maximum accepté, les bénéficiaires et les modèles de publication",
     "advanced_settings_dialog": {
+      "load": "Charger",
+      "template_loaded": "Modèle chargé",
       "changes_saved": "Changements enregistrés",
       "advanced_settings": "Paramètres avancés",
       "maximum_accepted_payout": "Paiement maximum accepté",

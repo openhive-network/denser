@@ -423,6 +423,8 @@
     "html_not_supported": "HTML nie jest obsługiwany tutaj",
     "advanced_tooltip": "Tutaj możesz ustawić opcje posta, takie jak podział nagród dla autora, maksymalna akceptowana wypłata, beneficjenci i szablony postów",
     "advanced_settings_dialog": {
+      "load": "Załaduj",
+      "template_loaded": "Szablon załadowany",
       "changes_saved": "Zmiany zostały zapisane",
       "advanced_settings": "Zaawansowane ustawienia",
       "maximum_accepted_payout": "Maksymalna akceptowana wypłata",

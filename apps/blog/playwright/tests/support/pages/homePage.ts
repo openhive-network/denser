@@ -337,7 +337,7 @@ export class HomePage {
         postTitleText = await postTitle.textContent();
 
         await postTitle.click();
-        await this.postPage.page.waitForSelector(this.postPage.articleAuthorName['_selector']);
+        await this.postPage.page.waitForSelector(this.postPage.articleAuthorData['_selector']);
         await expect(this.postPage.articleTitle).toBeVisible();
         expect(await this.postPage.articleTitle.textContent()).toBe(postTitleText);
 

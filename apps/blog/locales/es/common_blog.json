@@ -410,6 +410,8 @@
     "html_not_supported": "HTML no es compatible aquí",
     "advanced_tooltip": "Aquí puedes establecer opciones de publicación como la división de recompensas del autor, el pago máximo aceptado, los beneficiarios y las plantillas de publicación",
     "advanced_settings_dialog": {
+      "load": "Cargar",
+      "template_loaded": "Plantilla cargada",
       "changes_saved": "Cambios guardados",
       "advanced_settings": "Configuración avanzada",
       "maximum_accepted_payout": "Pago máximo aceptado",
