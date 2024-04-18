@@ -39,6 +39,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from '@/blog/components/dialog-login';
 import { UserPopoverCard } from '@/blog/components/user-popover-card';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
+import { GetServerSideProps } from 'next';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -482,28 +483,7 @@ function PostPage({
   );
 }
 
-// export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
-//   const community = String(query.param);
-//   const username = String(query.p2).slice(1);
-//   const permlink = String(query.permlink);
-
-//   const post_s = await getPost(username, String(permlink));
-
-//   return {
-//     props: {
-//       post_s,
-//       community,
-//       username,
-//       permlink,
-//       ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
-//         'common_blog',
-//         'smart-signer'
-//       ]))
-//     }
-//   };
-// };
-
-export const getServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
   console.log('getServerSideProps');
   const community = String(ctx.query.param);
   const username = String(ctx.query.p2).slice(1);
