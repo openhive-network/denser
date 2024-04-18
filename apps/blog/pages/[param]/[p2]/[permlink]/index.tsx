@@ -41,6 +41,9 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from '@/blog/components/dialog-login';
 import { UserPopoverCard } from '@/blog/components/user-popover-card';
 
+import { getLogger } from '@ui/lib/logging';
+const logger = getLogger('app');
+
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
   ssr: false

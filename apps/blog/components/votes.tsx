@@ -10,6 +10,9 @@ import { useEffect, useState } from 'react';
 import { transactionService } from '@transaction/index';
 import env from '@beam-australia/react-env';
 
+import { getLogger } from '@ui/lib/logging';
+const logger = getLogger('app');
+
 const VotesComponent = ({ post }: { post: Entry }) => {
   const walletHost = env('WALLET_ENDPOINT');
   const { user } = useUser();
@@ -19,6 +22,8 @@ const VotesComponent = ({ post }: { post: Entry }) => {
     setIsClient(true);
   }, []);
   const checkVote = isClient && post.active_votes.find((e) => e.voter === user?.username);
+
+  logger.info({ post, user, checkVote });
 
   return (
     <div className="flex items-center gap-1">
