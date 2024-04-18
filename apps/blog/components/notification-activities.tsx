@@ -5,6 +5,7 @@ import NotificationList from '@/blog/components/notification-list';
 import { Button } from '@ui/components/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components/tabs';
 import { useTranslation } from 'next-i18next';
+import { transactionService } from '@transaction/index';
 
 const NotificationActivities = ({
   data,
@@ -15,6 +16,7 @@ const NotificationActivities = ({
 }) => {
   const { t } = useTranslation('common_blog');
   const [state, setState] = useState(data);
+  const [lastRead, setLastRead] = useState(new Date(Date.now()).toISOString());
   const [lastStateElementId, setLastStateElementId] = useState(
     state && state.length > 0 ? state[state.length - 1].id : null
   );
@@ -39,6 +41,12 @@ const NotificationActivities = ({
     refetch();
   }, [lastStateElementId, refetch]);
 
+  function handleMarkAllAsRead() {
+    const newDate = new Date(Date.now()).toISOString();
+    transactionService.markAllNotificationAsRead(newDate);
+    setLastRead(newDate);
+  }
+
   function handleLoadMore() {
     if (!isLoading) {
       setState([...(state ?? []), ...(moreData || [])]);
@@ -47,6 +55,12 @@ const NotificationActivities = ({
 
   return (
     <Tabs defaultValue="all" className="w-full">
+      <span
+        className="text-md block w-full text-center font-bold hover:cursor-pointer"
+        onClick={handleMarkAllAsRead}
+      >
+        {t('navigation.profil_notifications_tab_navbar.mark_all')}
+      </span>
       <TabsList className="flex" data-testid="notifications-local-menu">
         <TabsTrigger value="all">{t('navigation.profil_notifications_tab_navbar.all')}</TabsTrigger>
         <TabsTrigger value="replies">{t('navigation.profil_notifications_tab_navbar.replies')}</TabsTrigger>
@@ -56,7 +70,7 @@ const NotificationActivities = ({
         <TabsTrigger value="reblogs">{t('navigation.profil_notifications_tab_navbar.reblogs')}</TabsTrigger>
       </TabsList>
       <TabsContent value="all" data-testid="notifications-content-all">
-        <NotificationList data={state} />
+        <NotificationList data={state} lastRead={lastRead} />
         {showButton && (
           <Button
             variant="outline"
@@ -72,6 +86,7 @@ const NotificationActivities = ({
           data={state?.filter(
             (row: IAccountNotification) => row.type === 'reply_comment' || row.type === 'reply'
           )}
+          lastRead={lastRead}
         />
         {showButton && (
           <Button
@@ -84,7 +99,10 @@ const NotificationActivities = ({
         )}
       </TabsContent>
       <TabsContent value="mentions" data-testid="notifications-content-mentions">
-        <NotificationList data={state?.filter((row: IAccountNotification) => row.type === 'mention')} />
+        <NotificationList
+          data={state?.filter((row: IAccountNotification) => row.type === 'mention')}
+          lastRead={lastRead}
+        />
         {showButton && (
           <Button
             variant="outline"
@@ -96,7 +114,10 @@ const NotificationActivities = ({
         )}
       </TabsContent>
       <TabsContent value="follows" data-testid="notifications-content-follows">
-        <NotificationList data={state?.filter((row: IAccountNotification) => row.type === 'follow')} />
+        <NotificationList
+          data={state?.filter((row: IAccountNotification) => row.type === 'follow')}
+          lastRead={lastRead}
+        />
         {showButton && (
           <Button
             variant="outline"
@@ -108,7 +129,10 @@ const NotificationActivities = ({
         )}
       </TabsContent>
       <TabsContent value="upvotes" data-testid="notifications-content-upvotes">
-        <NotificationList data={state?.filter((row: IAccountNotification) => row.type === 'vote')} />
+        <NotificationList
+          data={state?.filter((row: IAccountNotification) => row.type === 'vote')}
+          lastRead={lastRead}
+        />
         {showButton && (
           <Button
             variant="outline"
@@ -120,7 +144,10 @@ const NotificationActivities = ({
         )}
       </TabsContent>
       <TabsContent value="reblogs" data-testid="notifications-content-reblogs">
-        <NotificationList data={state?.filter((row: IAccountNotification) => row.type === 'reblog')} />
+        <NotificationList
+          data={state?.filter((row: IAccountNotification) => row.type === 'reblog')}
+          lastRead={lastRead}
+        />
         {showButton && (
           <Button
             variant="outline"

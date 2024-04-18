@@ -2,10 +2,10 @@ import Link from 'next/link';
 import { Icons } from '@hive/ui/components/icons';
 import { Progress } from '@hive/ui/components/progress';
 import { dateToFullRelative } from '@hive/ui/lib/parse-date';
-import { IAccountNotification } from '@transaction/lib/bridge';
+import { IAccountNotificationEx } from '@transaction/lib/bridge';
 import { useTranslation } from 'next-i18next';
 
-const NotificationListItem = ({ date, msg, score, type, url }: IAccountNotification) => {
+const NotificationListItem = ({ date, msg, score, type, url, lastRead }: IAccountNotificationEx) => {
   const { t } = useTranslation('common_blog');
   let icon;
   switch (type) {
@@ -27,6 +27,7 @@ const NotificationListItem = ({ date, msg, score, type, url }: IAccountNotificat
 
   const usernamePattern = /\B@[a-z0-9.-]+/gi;
   const mentions = msg.match(usernamePattern);
+  const unRead = Date.parse(`${lastRead}`) >= Date.parse(`${date}Z`);
   const participants = mentions
     ? mentions.map((m: string) => (
         <a key={m} href={'/' + m} data-testid="notification-account-icon-link">
@@ -48,6 +49,7 @@ const NotificationListItem = ({ date, msg, score, type, url }: IAccountNotificat
     >
       <td className="flex justify-between py-4">
         <div className="flex items-center">
+          {unRead ? <span className="mr-2 h-2 w-2 rounded-full bg-red-600" /> : null}
           {participants}
           <div className="flex flex-col">
             <Link href={`/${url}`}>

@@ -105,6 +105,7 @@
       "challenges": "Challenges"
     },
     "profil_notifications_tab_navbar": {
+      "mark_all": "모두 읽음으로 표시",
       "all": "All",
       "replies": "받은 댓글",
       "mentions": "Mentions",

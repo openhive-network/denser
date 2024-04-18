@@ -399,6 +399,21 @@ class TransactionService {
     });
   }
 
+  async markAllNotificationAsRead(date: string) {
+    await this.processHiveAppOperation((builder) => {
+      builder
+        .push({
+          custom_json: {
+            id: 'notify',
+            json: JSON.stringify(['setLastRead', { date: date }]),
+            required_auths: [],
+            required_posting_auths: [this.signerOptions.username]
+          }
+        })
+        .build();
+    });
+  }
+
   handleError(e: any) {
     logger.error('got error', e);
     const isError = (err: unknown): err is Error => err instanceof Error;

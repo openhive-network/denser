@@ -105,6 +105,7 @@
       "challenges": "Challenges"
     },
     "profil_notifications_tab_navbar": {
+      "mark_all": "すべて既読としてマークする",
       "all": "All",
       "replies": "返信",
       "mentions": "Mentions",
