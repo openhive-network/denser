@@ -434,6 +434,7 @@
       "decline_payout": "Decline Payout",
       "custom_value": "Custom value",
       "cannot_be_less_than": "Value cannot be less than 0",
+      "cannot_be_more_than": "Value cannot be more than 999999",
       "author_rewards": "Author rewards",
       "what_type_of_tokens": "What type of tokens do you want as rewards from this post?",
       "power_up": " Power up 100%",

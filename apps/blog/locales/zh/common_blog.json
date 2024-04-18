@@ -422,6 +422,7 @@
       "decline_payout": "拒绝支付",
       "custom_value": "自定义值",
       "cannot_be_less_than": "值不能小于0",
+      "cannot_be_more_than": "值不能超过999999",
       "author_rewards": "作者奖励",
       "what_type_of_tokens": "您希望从此帖子获得哪种类型的代币奖励？",
       "power_up": "100% 动力增强",

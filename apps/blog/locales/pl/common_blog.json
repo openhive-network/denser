@@ -435,6 +435,7 @@
       "decline_payout": "Odrzuć wypłatę",
       "custom_value": "Niestandardowa wartość",
       "cannot_be_less_than": "Wartość nie może być mniejsza niż 0",
+      "cannot_be_more_than": "Wartość nie może być większa niż 999999",
       "author_rewards": "Nagrody dla autora",
       "what_type_of_tokens": "Jakiego typu tokeny chcesz jako nagrody za tę publikację?",
       "power_up": "Wzmocnij o 100%",

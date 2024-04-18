@@ -422,6 +422,7 @@
       "decline_payout": "Rechazar pago",
       "custom_value": "Valor personalizado",
       "cannot_be_less_than": "El valor no puede ser menor que 0",
+      "cannot_be_more_than": "El valor no puede ser mayor que 999999",
       "author_rewards": "Recompensas del autor",
       "what_type_of_tokens": "¿Qué tipo de tokens deseas como recompensas de esta publicación?",
       "power_up": "Potenciar al 100%",
