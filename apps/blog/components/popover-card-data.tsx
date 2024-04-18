@@ -1,5 +1,4 @@
 import { dateToShow, dateToFullRelative } from '@ui/lib/parse-date';
-import UserAvatar from '@/blog/components/user-avatar';
 import Link from 'next/link';
 import { useAccountQuery } from './hooks/use-accout';
 import { useFollowsQuery } from './hooks/use-follows';
@@ -11,6 +10,8 @@ import FollowButton from './follow-button';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useFollowingInfiniteQuery } from './hooks/use-following-infinitequery';
 import MuteButton from './mute-button';
+import { Icons } from '@ui/components/icons';
+import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 
 export function PopoverCardData({ author, blacklist }: { author: string; blacklist: string[] }) {
   const { t } = useTranslation('common_blog');
@@ -36,7 +37,15 @@ export function PopoverCardData({ author, blacklist }: { author: string; blackli
         <>
           <div className="flex">
             <Link href={`/@${author}`} data-testid="popover-card-user-avatar">
-              <UserAvatar username={author} size="large" className="h-[75px] w-[75px]" />
+              <Avatar className="mr-2 block h-[75px] w-[75px] rounded-full bg-transparent bg-cover bg-center bg-no-repeat">
+                <AvatarImage src={account.data.profile?.profile_image} alt="Profile picture" />
+                <AvatarFallback>
+                  <img
+                    src="https://images.hive.blog/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4"
+                    alt="default img"
+                  />
+                </AvatarFallback>
+              </Avatar>
             </Link>
             <div translate="no">
               <Link
