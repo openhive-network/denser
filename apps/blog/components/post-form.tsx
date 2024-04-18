@@ -9,7 +9,6 @@ import {
   SelectTrigger,
   SelectValue
 } from '@hive/ui/components/select';
-import { Label } from '@radix-ui/react-label';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import {
@@ -37,6 +36,8 @@ import { useRouter } from 'next/router';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { TFunction } from 'i18next';
 import { debounce, extractUrlsFromJsonString, extractYouTubeVideoIds } from '../lib/utils';
+import { Icons } from '@ui/components/icons';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 
 const defaultValues = {
   title: '',
@@ -360,12 +361,16 @@ export default function PostForm({
                       />
                     </>
                   </FormControl>
-                  <FormDescription className="border-x-2 border-b-2 border-border px-3 pb-1 text-xs text-destructive">
-                    {t('submit_page.insert_images_by_dragging')}
-                    <span>
-                      <Label htmlFor="picture">{t('submit_page.selecting_them')}</Label>
-                    </span>
-                    .
+                  <FormDescription className="flex items-center border-x-2 border-b-2 border-border px-3 pb-1 text-xs text-destructive">
+                    {t('submit_page.insert_images_by_dragging')} {t('submit_page.selecting_them')}
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Icons.info className="ml-1 w-3" />
+                        </TooltipTrigger>
+                        <TooltipContent>{t('submit_page.insert_images_info')}</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
