@@ -22,6 +22,7 @@ import LangToggle from './lang-toggle';
 import { PieChart, Pie } from 'recharts';
 import useManabars from './hooks/useManabars';
 import { hoursAndMinutes } from '../lib/utils';
+import { getAccountFull } from '@transaction/lib/hive';
 
 const logger = getLogger('app');
 
@@ -41,6 +42,13 @@ const SiteHeader: FC = () => {
       enabled: !!user?.username
     }
   );
+  const {
+    isLoading: profileIsLoading,
+    error: profileError,
+    data: profileData
+  } = useQuery(['profileData', user.username], () => getAccountFull(user.username), {
+    enabled: !!user.username
+  });
   const upvoteAngle = (360 * (manabarsData ? manabarsData?.upvote.percentageValue : 0)) / 100;
   const downvoteAngle = (360 * (manabarsData ? manabarsData?.downvote.percentageValue : 0)) / 100;
   const rcAngle = (360 * (manabarsData ? manabarsData?.rc.percentageValue : 0)) / 100;
@@ -215,12 +223,12 @@ const SiteHeader: FC = () => {
                           </PieChart>
                         </div>
                         <Avatar className="z-30 h-9 w-9">
-                          <AvatarImage
-                            src={`https://images.hive.blog/u/${user?.username}/avatar/small`}
-                            alt="Profile picture"
-                          />
+                          <AvatarImage src={profileData?.profile?.profile_image} alt="Profile picture" />
                           <AvatarFallback>
-                            <Icons.user />
+                            <img
+                              src="https://images.hive.blog/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4"
+                              alt="default img"
+                            />
                           </AvatarFallback>
                         </Avatar>
                       </div>
