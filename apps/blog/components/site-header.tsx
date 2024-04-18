@@ -223,15 +223,12 @@ const SiteHeader: FC = () => {
                           </PieChart>
                         </div>
                         <Avatar className="z-30 h-9 w-9">
-                          <AvatarImage
-                            src={
-                              profileData?.profile?.profile_image ||
-                              `https://images.hive.blog/u/${user?.username}/avatar/small`
-                            }
-                            alt="Profile picture"
-                          />
+                          <AvatarImage src={profileData?.profile?.profile_image} alt="Profile picture" />
                           <AvatarFallback>
-                            <Icons.user />
+                            <img
+                              src="https://images.hive.blog/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4"
+                              alt="default img"
+                            />
                           </AvatarFallback>
                         </Avatar>
                       </div>
