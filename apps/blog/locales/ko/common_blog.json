@@ -421,6 +421,7 @@
       "decline_payout": "지급 거부",
       "custom_value": "사용자 지정 값",
       "cannot_be_less_than": "값은 0보다 작을 수 없습니다",
+      "cannot_be_more_than": "값은 999999을 초과할 수 없습니다",
       "author_rewards": "게시자 보상",
       "what_type_of_tokens": "이 게시물에서 보상으로 받고 싶은 토큰 유형은 무엇입니까?",
       "power_up": "100% 파워 업",

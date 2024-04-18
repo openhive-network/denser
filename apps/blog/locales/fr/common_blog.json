@@ -421,6 +421,7 @@
       "decline_payout": "Refuser le paiement",
       "custom_value": "Valeur personnalisée",
       "cannot_be_less_than": "La valeur ne peut pas être inférieure à 0",
+      "cannot_be_more_than": "La valeur ne peut pas être supérieure à 999999",
       "author_rewards": "Récompenses de l'auteur",
       "what_type_of_tokens": "Quel type de jetons souhaitez-vous comme récompenses pour cette publication ?",
       "power_up": "Mise à niveau à 100%",

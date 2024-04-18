@@ -267,7 +267,6 @@ export default function PostForm({
       }, 50)();
     }
   }, [postArea, previewContent]);
-
   async function onSubmit(data: AccountFormValues) {
     const chain = await hiveChainService.getHiveChain();
     const tags = storedPost.tags.replace(/#/g, '').split(' ') ?? [];
@@ -416,14 +415,14 @@ export default function PostForm({
             {!editMode ? (
               <div className="flex flex-col gap-2">
                 <span>{t('submit_page.post_options')}</span>
-                {storedPost?.maxAcceptedPayout !== 1000000 && storedPost.maxAcceptedPayout > 0 ? (
+
+                {storedPost.maxAcceptedPayout < 1000000 && storedPost.maxAcceptedPayout > 0 ? (
                   <span className="text-xs">
-                    {t('submit_page.advanced_settings_dialog.maximum_accepted_payout') +
-                      ': ' +
-                      storedPost.maxAcceptedPayout +
-                      ' HBD'}
+                    {t('submit_page.advanced_settings_dialog.maximum_accepted_payout')}:{' '}
+                    {storedPost.maxAcceptedPayout} HBD
                   </span>
                 ) : null}
+
                 {storedPost.beneficiaries.length > 0 ? (
                   <span className="text-xs">
                     {t('submit_page.advanced_settings_dialog.beneficiaries', {
@@ -435,7 +434,7 @@ export default function PostForm({
                 <span className="text-xs">
                   {t('submit_page.author_rewards')}
                   {storedPost.maxAcceptedPayout === 0
-                    ? ' ' + t('submit_page.advanced_settings_dialog.decline_payout')
+                    ? ` ${t('submit_page.advanced_settings_dialog.decline_payout')}`
                     : storedPost?.payoutType === '100%'
                       ? t('submit_page.power_up')
                       : ' 50% HBD / 50% HP'}

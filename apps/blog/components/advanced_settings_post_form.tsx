@@ -261,11 +261,13 @@ export function AdvancedSettingsPostForm({
               {maxPayout === 'custom' ? (
                 <>
                   <Input type="number" value={customValue} onChange={(e) => setCustomValue(e.target.value)} />
-                  {Number(customValue) < 0 ? (
-                    <div className="p-2 text-red-600">
-                      {t('submit_page.advanced_settings_dialog.cannot_be_less_than')}
-                    </div>
-                  ) : null}
+                  <div className="p-2 text-red-600">
+                    {Number(customValue) < 0
+                      ? t('submit_page.advanced_settings_dialog.cannot_be_less_than')
+                      : Number(customValue) >= 1000000
+                        ? t('submit_page.advanced_settings_dialog.cannot_be_more_than')
+                        : null}
+                  </div>
                 </>
               ) : null}
             </div>
@@ -389,6 +391,7 @@ export function AdvancedSettingsPostForm({
             onClick={() => onSave()}
             disabled={
               Number(customValue) < 0 ||
+              Number(customValue) >= 1000000 ||
               splitRewards < 0 ||
               hasDuplicateUsernames ||
               isTemplateStored ||
