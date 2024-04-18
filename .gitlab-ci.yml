@@ -102,6 +102,12 @@ docker-build-wallet:
 .e2e_tests_template:
   extends: .node-job
   image: mcr.microsoft.com/playwright:v1.41.1-jammy
+  variables:
+    CI_DEBUG_SERVICES: true
+    FF_NETWORK_PER_BUILD: 1
+    REACT_APP_API_ENDPOINT: https://api.hive.blog
+    REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
+    DENSER_URL: https://caddy
   parallel:
     matrix:
       - PROJECT: ['chromium', 'firefox', 'webkit']
@@ -131,13 +137,17 @@ e2e-tests-blog:
       alias: denser
       variables:
         HEALTHCHECK_TCP_PORT: '3000'
+    - name: caddy:2.7.6
+      command:
+        - caddy
+        - reverse-proxy
+        - --from=https://caddy
+        - --to=denser:3000
+        - --internal-certs
   variables:
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
-    REACT_APP_API_ENDPOINT: https://api.hive.blog
-    REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
     PORT: 3000
-    DENSER_URL: http://denser:$PORT
 
 e2e-tests-wallet:
   extends: .e2e_tests_template
@@ -148,13 +158,17 @@ e2e-tests-wallet:
       alias: denser
       variables:
         HEALTHCHECK_TCP_PORT: '4000'
+    - name: caddy:2.7.6
+      command:
+        - caddy
+        - reverse-proxy
+        - --from=https://caddy
+        - --to=denser:4000
+        - --internal-certs
   variables:
     TURBO_APP_SCOPE: '@hive/wallet'
     TURBO_APP_PATH: '/apps/wallet'
-    REACT_APP_API_ENDPOINT: https://api.hive.blog
-    REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
     PORT: 4000
-    DENSER_URL: http://denser:$PORT
 
 .e2e_report_aggregate_template:
   extends: .node-job

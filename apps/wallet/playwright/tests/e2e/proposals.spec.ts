@@ -751,7 +751,7 @@ test.describe('Proposals page tests', () => {
   //   const loginDialog = new LoginToVoteDialog(page);
 
   //   await proposalsPage.goToProposalsPage();
-  //   await expect(proposalsPage.page.url()).toMatch(/http:\/\/\w+:4000/); // http://denser:4000 or http://localhost:4000
+  //   await expect(proposalsPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/?/); // https://caddy/ or http://localhost:4000
 
   //   // Click vote button in the first proposal
   //   await proposalsPage.clickVoteButtonOfFirstProposalItem();
