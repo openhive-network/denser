@@ -15,7 +15,6 @@ import { Icons } from '@ui/components/icons';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { toast } from '@ui/components/hooks/use-toast';
 import { useTranslation } from 'next-i18next';
-import { UseFormReturn } from 'react-hook-form';
 
 type AccountFormValues = {
   title: string;
@@ -28,7 +27,7 @@ type AccountFormValues = {
     account: string;
     weight: string;
   }[];
-  maxAcceptedPayout: number | null;
+  maxAcceptedPayout: number;
   payoutType: string;
 };
 type Template = AccountFormValues & {
@@ -51,14 +50,14 @@ export function AdvancedSettingsPostForm({
   const [splitRewards, setSplitRewards] = useState(100);
   const [templateTitle, setTemplateTitle] = useState('');
   const [maxPayout, setMaxPayout] = useState(
-    data.maxAcceptedPayout === null ? 'no_max' : data.maxAcceptedPayout === 0 ? '0' : 'custom'
+    data.maxAcceptedPayout === 1000000 ? 'no_max' : data.maxAcceptedPayout === 0 ? '0' : 'custom'
   );
   const [selectTemplate, setSelectTemplate] = useState('/');
   const [beneficiaries, setBeneficiaries] = useState<{ weight: string; account: string }[]>(
     data.beneficiaries
   );
   const [customValue, setCustomValue] = useState(
-    data.maxAcceptedPayout !== null ? data.maxAcceptedPayout : '100'
+    data.maxAcceptedPayout !== 1000000 ? data.maxAcceptedPayout : '100'
   );
   const [open, setOpen] = useState(false);
   const [storedTemplates, storeTemplates] = useLocalStorage<Template[]>(`hivePostTemplates-${username}`, []);
@@ -78,9 +77,11 @@ export function AdvancedSettingsPostForm({
 
   useEffect(() => {
     setRewards(data.payoutType);
-    setMaxPayout(data.maxAcceptedPayout === null ? 'no_max' : data.maxAcceptedPayout === 0 ? '0' : 'custom');
+    setMaxPayout(
+      data.maxAcceptedPayout === 1000000 ? 'no_max' : data.maxAcceptedPayout === 0 ? '0' : 'custom'
+    );
     setBeneficiaries(data.beneficiaries);
-    setCustomValue(data.maxAcceptedPayout !== null ? data.maxAcceptedPayout : '100');
+    setCustomValue(data.maxAcceptedPayout !== 1000000 ? data.maxAcceptedPayout : '100');
   }, [open]);
 
   useEffect(() => {
@@ -125,7 +126,7 @@ export function AdvancedSettingsPostForm({
     if (template) {
       setBeneficiaries(template.beneficiaries);
       setRewards(template.payoutType);
-      if (template.maxAcceptedPayout === null) {
+      if (template.maxAcceptedPayout === 1000000) {
         setMaxPayout('no_max');
       }
       if (template.maxAcceptedPayout === 0) {
@@ -145,13 +146,13 @@ export function AdvancedSettingsPostForm({
   function maxAcceptedPayout() {
     switch (maxPayout) {
       case 'no_max':
-        return null;
+        return 1000000;
       case '0':
         return 0;
       case 'custom':
-        return customValue === '0' ? null : Number(customValue);
+        return customValue === '0' ? 1000000 : Number(customValue);
     }
-    return null;
+    return 1000000;
   }
   function loadTemplate() {
     onChangeStore({

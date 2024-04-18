@@ -46,7 +46,7 @@ const defaultValues = {
   author: '',
   category: 'blog',
   beneficiaries: [],
-  maxAcceptedPayout: null,
+  maxAcceptedPayout: 1000000,
   payoutType: '50%'
 };
 
@@ -211,7 +211,7 @@ export default function PostForm({
         weight: z.string()
       })
     ),
-    maxAcceptedPayout: z.number().nullable(),
+    maxAcceptedPayout: z.number(),
     payoutType: z.string()
   });
 
@@ -227,7 +227,7 @@ export default function PostForm({
     beneficiaries: storedPost?.beneficiaries ?? [],
     maxAcceptedPayout: post_s
       ? Number(post_s.max_accepted_payout.split(' ')[0])
-      : storedPost?.maxAcceptedPayout ?? null,
+      : storedPost?.maxAcceptedPayout ?? 1000000,
     payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType ?? '50%'
   });
   const form = useForm<AccountFormValues>({
@@ -416,7 +416,7 @@ export default function PostForm({
             {!editMode ? (
               <div className="flex flex-col gap-2">
                 <span>{t('submit_page.post_options')}</span>
-                {storedPost?.maxAcceptedPayout !== null && storedPost.maxAcceptedPayout > 0 ? (
+                {storedPost?.maxAcceptedPayout !== 1000000 && storedPost.maxAcceptedPayout > 0 ? (
                   <span className="text-xs">
                     {t('submit_page.advanced_settings_dialog.maximum_accepted_payout') +
                       ': ' +
