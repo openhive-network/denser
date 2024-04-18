@@ -421,6 +421,7 @@
       "decline_payout": "Rifiuta pagamento",
       "custom_value": "Valore personalizzato",
       "cannot_be_less_than": "Il valore non può essere inferiore a 0",
+      "cannot_be_more_than": "Il valore non può essere superiore a 999999",
       "author_rewards": "Ricompense dell'autore",
       "what_type_of_tokens": "Che tipo di token desideri come ricompense per questa pubblicazione?",
       "power_up": "Potenzia al 100%",
