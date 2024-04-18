@@ -1,3 +1,5 @@
+import { setIntervalAsync, clearIntervalAsync } from 'set-interval-async/fixed';
+
 export class PromiseTools {
 
     /**
@@ -65,35 +67,58 @@ export class PromiseTools {
     }
 
     /**
-     *
-     * TODO This function is not tested.
-     *
-     * Runs callback every `ms`, until it succeeds or limit of tries is
-     * reached,
+     * Returns promise that runs given callback `triesLeft` times. When
+     * callback returns anything successful, resolves with its result.
+     * Rejects after `triesLeft` times.
      *
      * @static
      * @param {Function} callback
      * @param {number} [ms=1000]
      * @param {number} [triesLeft=5]
      * @returns
-     * @memberof Tools
+     * @memberof PromiseTools
      */
-    public static async promiseInterval(callback: Function, ms = 1000, triesLeft = 5) {
+    public static async promiseInterval(callback: () => Promise<any>, ms = 1000, triesLeft = 5) {
         return new Promise((resolve, reject) => {
-            const interval = setInterval(async () => {
-                console.log('triesLeft: %s', triesLeft);
-                if (await callback()) {
-                    console.log('resolve success')
-                    resolve('success');
-                    clearInterval(interval);
-                } else if (triesLeft <= 1) {
-                    console.log('resolve failure')
-                    reject('failure');
-                    clearInterval(interval);
+            const interval = setIntervalAsync(async () => {
+                const result = await callback();
+                if (result) {
+                    resolve(result);
+                    clearIntervalAsync(interval);
                 }
+                if (triesLeft <= 1) {
+                    reject('Failure');
+                    clearIntervalAsync(interval)
+                };
                 triesLeft--;
             }, ms);
         });
     }
 
 }
+
+
+// const say = async () => {
+//     console.log('say const');
+//     return true;
+// };
+
+// async function tell() {
+//     await PromiseTools.promiseTimeout(2000);
+//     console.log('tell function');
+//     return false;
+// };
+
+// PromiseTools.promiseInterval(tell, 1000, 3);
+
+// let triesLeft = 3;
+// const intervalAsync = setIntervalAsync(async () => {
+//     console.log('triesLeft: %s', triesLeft);
+//     if (triesLeft <= 1) {
+//         clearIntervalAsync(intervalAsync)
+//     };
+//     console.log('Hello');
+//     await tell();
+//     console.log('Bye');
+//     triesLeft--;
+// }, 1000);
