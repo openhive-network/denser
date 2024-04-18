@@ -144,10 +144,13 @@
   padding: 0.2rem;
 }
 
+.light .prose :where(pre):not(:where([class~='not-prose'], [class~='not-prose'] *)),
 .light .prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
   background-color: #f1f5f9;
+  color: var(--tw-prose-code);
 }
 
+.dark .prose :where(pre):not(:where([class~='not-prose'], [class~='not-prose'] *)),
 .dark .prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
   background-color: #334155;
   color: #f1f5f9;
