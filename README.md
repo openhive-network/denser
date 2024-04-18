@@ -1,6 +1,6 @@
 # Denser
 
-**Decentralized social media app for Hive Blockchain ⛓️**  
+**Decentralized social media app for Hive Blockchain ⛓️**
 Successor to hive/condenser> aka [hive.blog](https://hive.blog/).
 
 ## Introduction
@@ -107,7 +107,7 @@ scripts/run_instance.sh \
     --detach
 ```
 
-They will start the auth app on port 5000, the blog app on port 3000 and the wallet app on port 4000.  
+They will start the auth app on port 5000, the blog app on port 3000 and the wallet app on port 4000.
 The containers will delete themselves once stopped.
 
 All the options available can be displayed by running `scripts/run_instance.sh --help`.
@@ -119,7 +119,18 @@ pushd docker
 docker compose up --detach
 ```
 
-If you wish to change parameters (like API endpoints or ports) when using the [Composefile](docker/docker-compose.yml),  
-edit the accompanying [.env file](docker/.env)
+If you wish to change parameters (like API endpoints or ports) when
+using the [Composefile](docker/docker-compose.yml), edit the
+accompanying [.env file](docker/.env)
 
 To stop and delete the containers use command `docker compose down`.
+
+## SSL on development machine
+
+You can put your `server-key.pem` and `server-cert.pem` into `./ssl`
+directory (it is gitignored). Then you can use commands like `npm run
+devssl:blog` to start application on development server in SSL mode. Use
+`mkcert` or any other similar tool to generate server certificates. See
+also
+https://vercel.com/guides/access-nextjs-localhost-https-certificate-self-signed
+and issue #329.
