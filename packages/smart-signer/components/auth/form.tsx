@@ -27,6 +27,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
     const { t } = useTranslation(i18nNamespace);
     const safeStorageRef = useRef<SafeStorageRef>(null);
     const [lastLoggedInUser, setLastLoggedInUser] = useLocalStorage<string>('lastLoggedInUser', '');
+    const [username, setUsername] = useState<string>(lastLoggedInUser);
 
     // provide methods to outside from here
     useImperativeHandle(ref, () => ({
@@ -70,7 +71,8 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
             submit={submit}
             i18nNamespace={i18nNamespace}
             isSigned={isSigned}
-            lastLoggedInUser={lastLoggedInUser}
+            username={username}
+            onUsernameChange={(username) => setUsername(username)}
           />
         )}
 
@@ -79,7 +81,8 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
             onSetStep={setStep}
             i18nNamespace={i18nNamespace}
             preferredKeyTypes={preferredKeyTypes}
-            lastLoggedInUser={lastLoggedInUser}
+            username={username}
+            onUsernameChange={(username) => setUsername(username)}
             sign={sign}
             submit={submit}
           />
