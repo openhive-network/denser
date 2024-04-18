@@ -8,3 +8,4 @@ test-results
 version.json
 */**/auth/worker.js
 tmp
+ssl

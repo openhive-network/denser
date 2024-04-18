@@ -24,7 +24,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import useManabars from './hooks/useManabars';
 import { AdvancedSettingsPostForm } from './advanced_settings_post_form';
 import MdEditor from './md-editor';
-import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { useTranslation } from 'next-i18next';
@@ -36,7 +36,7 @@ import { Entry, getCommunity, getSubscriptions } from '@transaction/lib/bridge';
 import { useRouter } from 'next/router';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { TFunction } from 'i18next';
-import { debounce } from '../lib/utils';
+import { debounce, extractUrlsFromJsonString, extractYouTubeVideoIds } from '../lib/utils';
 
 const defaultValues = {
   title: '',
@@ -98,7 +98,58 @@ function validateAltUsernameInput(value: string, t: TFunction<'common_wallet', u
     ? t('submit_page.must_contain_only')
     : null;
 }
+function imgYoutube(img: string) {
+  const checkImg = img.includes('youtube')
+    ? `https://img.youtube.com/vi/${extractYouTubeVideoIds(extractUrlsFromJsonString(img))[0]}/0.jpg`
+    : img;
+  return checkImg;
+}
 
+const AllImages = ({
+  content,
+  value,
+  onChange,
+  t
+}: {
+  content: string;
+  value: string;
+  onChange: (e: string) => void;
+  t: TFunction<'common_blog', undefined>;
+}) => {
+  const images = useMemo(() => extractUrlsFromJsonString(content), [content]);
+  const uniqueImages = Array.from(new Set(images));
+  return uniqueImages.length > 0 ? (
+    <div>
+      <span>{t('submit_page.cover_image')}</span>
+      <div className="flex flex-wrap">
+        {uniqueImages.map((e) => (
+          <div className="group" key={e}>
+            <Button
+              type="button"
+              variant="basic"
+              className="relative flex h-fit w-[62px] items-center overflow-hidden rounded-none bg-transparent p-0 group-hover:h-[80px] group-hover:w-[130px]"
+              onClick={() => onChange(e)}
+            >
+              <img
+                src={imgYoutube(e)}
+                alt="cover img"
+                //@ts-expect-error
+                onError={(e) => (e.target.style.display = 'none')}
+                loading="lazy"
+                className={clsx(
+                  'h-[60px] w-[60px] object-cover p-1 contrast-50 ease-out group-hover:h-full  group-hover:w-full group-hover:contrast-100 group-hover:duration-700 group-hover:ease-in-out',
+                  {
+                    'bg-red-700 contrast-100': value === e
+                  }
+                )}
+              />
+            </Button>
+          </div>
+        ))}
+      </div>
+    </div>
+  ) : null;
+};
 export default function PostForm({
   username,
   editMode = false,
@@ -117,6 +168,7 @@ export default function PostForm({
   const { hiveRenderer } = useContext(HiveRendererContext);
   const router = useRouter();
   const [preview, setPreview] = useState(true);
+  const [selectedImg, setSelectedImg] = useState('');
   const [sideBySide, setSideBySide] = useState(sideBySidePreview);
   const { manabarsData } = useManabars(username);
   const [storedPost, storePost] = useLocalStorage<AccountFormValues>(
@@ -187,7 +239,6 @@ export default function PostForm({
     control: form.control
   });
 
-  console.log('router.query.category', router.query.category, !router.query.category);
   const watchedValues = form.watch();
   const tagsCheck = validateTagInput(
     watchedValues.tags,
@@ -223,7 +274,6 @@ export default function PostForm({
     const maxAcceptedPayout = await chain.hbd(Number(storedPost.maxAcceptedPayout));
     const postPermlink = await createPermlink(storedPost?.title ?? '', username);
     const permlinInEditMode = post_s?.permlink;
-    console.log('storedPost.category', storedPost.category);
     try {
       await transactionService.post(
         editMode && permlinInEditMode ? permlinInEditMode : postPermlink,
@@ -234,7 +284,8 @@ export default function PostForm({
         maxAcceptedPayout,
         tags,
         communityPosting ? communityPosting : storedPost.category,
-        storedPost.postSummary
+        storedPost.postSummary,
+        imgYoutube(selectedImg)
       );
       form.reset(defaultValues);
       setPreviewContent(undefined);
@@ -255,7 +306,6 @@ export default function PostForm({
       console.error(error);
     }
   }
-
   return (
     <div className={clsx({ container: !sideBySide || !preview })}>
       <div
@@ -362,6 +412,7 @@ export default function PostForm({
                 </FormItem>
               )}
             />
+            <AllImages content={watchedValues.postArea} value={selectedImg} onChange={setSelectedImg} t={t} />
             {!editMode ? (
               <div className="flex flex-col gap-2">
                 <span>{t('submit_page.post_options')}</span>

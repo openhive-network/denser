@@ -25,6 +25,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useFollowingInfiniteQuery } from '../hooks/use-following-infinitequery';
 import FollowButton from '../follow-button';
 import MuteButton from '../mute-button';
+import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -126,12 +127,15 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             className={`flex h-auto max-h-full min-h-full w-auto min-w-full max-w-full flex-col items-center`}
           >
             <div className="mt-4 flex items-center">
-              <div
-                className="mr-3 h-[48px] w-[48px] rounded-3xl bg-cover bg-no-repeat"
-                style={{
-                  backgroundImage: `url(https://images.hive.blog/u/${profileData?.name}/avatar)`
-                }}
-              />
+              <Avatar className="mr-3 h-[48px] w-[48px] rounded-3xl bg-cover bg-no-repeat">
+                <AvatarImage src={profileData?.profile?.profile_image} alt="Profile picture" />
+                <AvatarFallback>
+                  <img
+                    src="https://images.hive.blog/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4"
+                    alt="default img"
+                  />
+                </AvatarFallback>
+              </Avatar>
               <h4 className="sm:text-2xl" data-testid="profile-name">
                 <span className="font-semibold">
                   {profileData?.profile?.name ? profileData.profile.name : profileData.name}

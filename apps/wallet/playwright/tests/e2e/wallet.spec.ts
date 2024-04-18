@@ -14,7 +14,7 @@ test.describe("Wallet page tests", () => {
 
   test("validate that wallet page is loaded", async ({ page }) => {
     await walletPage.goToWalletPage();
-    await expect(walletPage.page.url()).toMatch(/http:\/\/\w+:4000/); // http://denser:4000 or http://localhost:4000
+    await expect(walletPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/?/); // https://caddy/ or http://localhost:4000
 
     await expect(walletPage.hiveTokenLabel).toHaveText("Hive");
     await expect(walletPage.hiveTokensLiquidPlatformTokenLabel).toBeVisible();
@@ -28,7 +28,7 @@ test.describe("Wallet page tests", () => {
   //   const loginDialog = new LoginToVoteDialog(page);
 
   //   await walletPage.goToWalletPage();
-  //   await expect(walletPage.page.url()).toMatch(/http:\/\/\w+:4000/); // http://denser:4000 or http://localhost:4000
+  //   await expect(walletPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/?/); // https://caddy/ or http://localhost:4000
 
   //   await walletPage.hiveWalletLoginButton.click();
   //   await loginDialog.validateLoginToVoteDialogIsVisible();
@@ -48,7 +48,7 @@ test.describe("Wallet page of @gtg tests", () => {
   test("validate that wallet of @gtg page is loaded", async ({ page }) => {
     await walletPage.goToWalletPageOfUser("@gtg");
     await expect(walletPage.page.url()).toMatch(
-      /http:\/\/\w+:4000\/@gtg\/transfers/
+      /https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/
     );
     await expect(walletPage.balancesTab).toBeVisible();
   });
@@ -58,7 +58,7 @@ test.describe("Wallet page of @gtg tests", () => {
   }) => {
     await walletPage.goToWalletPageOfUser("@gtg");
     await expect(walletPage.page.url()).toMatch(
-      /http:\/\/\w+:4000\/@gtg\/transfers/
+      /https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/
     );
     await walletPage.page.waitForSelector(
       await walletPage.walletSearchInput["_selector"]
@@ -76,7 +76,7 @@ test.describe("Wallet page of @gtg tests", () => {
   }) => {
     await walletPage.goToWalletPageOfUser("@gtg");
     await expect(walletPage.page.url()).toMatch(
-      /http:\/\/\w+:4000\/@gtg\/transfers/
+      /https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/
     );
     await walletPage.page.waitForSelector(
       await walletPage.walletSearchInput["_selector"]
@@ -94,7 +94,7 @@ test.describe("Wallet page of @gtg tests", () => {
   }) => {
     await walletPage.goToWalletPageOfUser("@gtg");
     await expect(walletPage.page.url()).toMatch(
-      /http:\/\/\w+:4000\/@gtg\/transfers/
+      /https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/
     );
     await walletPage.page.waitForSelector(
       await walletPage.walletSearchInput["_selector"]
@@ -112,7 +112,7 @@ test.describe("Wallet page of @gtg tests", () => {
   }) => {
     await walletPage.goToWalletPageOfUser("@gtg");
     await expect(walletPage.page.url()).toMatch(
-      /http:\/\/\w+:4000\/@gtg\/transfers/
+      /https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/
     );
     await walletPage.page.waitForSelector(
       await walletPage.walletSearchInput["_selector"]
@@ -131,7 +131,7 @@ test.describe("Wallet page of @gtg tests", () => {
   }) => {
     await walletPage.goToWalletPageOfUser("@gtg");
     await expect(walletPage.page.url()).toMatch(
-      /http:\/\/\w+:4000\/@gtg\/transfers/
+      /https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/
     );
     await walletPage.page.waitForSelector(
       await walletPage.walletSearchInput["_selector"]
@@ -147,7 +147,7 @@ test.describe("Wallet page of @gtg tests", () => {
   test("validate filters on @gtg wallet page is visible", async ({ page }) => {
     await walletPage.goToWalletPageOfUser("@gtg");
     await expect(walletPage.page.url()).toMatch(
-      /http:\/\/\w+:4000\/@gtg\/transfers/
+      /https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/
     );
     await walletPage.page.waitForSelector(
       await walletPage.walletSearchInput["_selector"]
@@ -163,7 +163,7 @@ test.describe("Wallet page of @gtg tests", () => {
   }) => {
     await walletPage.goToWalletPageOfUser("@gtg");
     await expect(walletPage.page.url()).toMatch(
-      /http:\/\/\w+:4000\/@gtg\/transfers/
+      /https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/
     );
     await walletPage.page.waitForSelector(
       await walletPage.walletSearchInput["_selector"]
@@ -184,7 +184,7 @@ test.describe("Wallet page of @gtg tests", () => {
   }) => {
     await walletPage.goToWalletPageOfUser("@gtg");
     await expect(walletPage.page.url()).toMatch(
-      /http:\/\/\w+:4000\/@gtg\/transfers/
+      /https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/
     );
     await walletPage.page.waitForSelector(
       await walletPage.walletSearchInput["_selector"]
@@ -211,7 +211,7 @@ test.describe("Wallet page of @gtg tests", () => {
     let apiHelper = new ApiHelper(page);
     await walletPage.goToWalletPageOfUser("@gtg");
     await expect(walletPage.page.url()).toMatch(
-      /http:\/\/\w+:4000\/@gtg\/transfers/
+      /https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/
     );
     await walletPage.page.waitForSelector(
       await walletPage.walletSearchInput["_selector"]
@@ -228,7 +228,7 @@ test.describe("Wallet page of @gtg tests", () => {
     const username: string = 'gtg';
     await walletPage.goToWalletPageOfUser("@gtg");
     await expect(walletPage.page.url()).toMatch(
-      /http:\/\/\w+:4000\/@gtg\/transfers/
+      /https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/
     );
     await walletPage.page.waitForSelector(
       await walletPage.walletSearchInput["_selector"]
@@ -282,7 +282,7 @@ test.describe("Wallet page of @gtg tests", () => {
     const username: string = 'blocktrades';
     await walletPage.goToWalletPageOfUser(`@${username}`);
     await expect(walletPage.page.url()).toMatch(
-      /http:\/\/\w+:4000\/@blocktrades\/transfers/
+      /https?:\/\/[\w\.]+(:\d{1,5})?\/@blocktrades\/transfers/
     );
     await walletPage.page.waitForSelector(
       await walletPage.walletSearchInput["_selector"]
