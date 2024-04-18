@@ -421,6 +421,7 @@
       "decline_payout": "支払いを辞退",
       "custom_value": "カスタム値",
       "cannot_be_less_than": "値は0未満にすることはできません",
+      "cannot_be_more_than": "値は999999を超えることはできません",
       "author_rewards": "投稿者報酬",
       "what_type_of_tokens": "この投稿からの報酬としてどのタイプのトークンを希望しますか？",
       "power_up": "100% パワーアップ",
