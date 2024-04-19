@@ -106,6 +106,7 @@
       "challenges": "Challenges"
     },
     "profil_notifications_tab_navbar": {
+      "mark_all": "Mark all as read",
       "all": "All",
       "replies": "Replies",
       "mentions": "Mentions",

@@ -8,13 +8,17 @@ interface AppState {
   setCurrentProfile: (currentProfile: FullAccount | null) => void;
   currentProfileKeyType: KeyType | null;
   setCurrentProfileKeyType: (currentProfileKeyType: KeyType | null) => void;
+  lastReadNotificationDate: number;
+  setLastReadNotificationDate: (lastReadNotificationDate: number) => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
   currentProfile: null,
   setCurrentProfile: (currentProfile) => set(() => ({ currentProfile })),
   currentProfileKeyType: null,
-  setCurrentProfileKeyType: (currentProfileKeyType) => set(() => ({ currentProfileKeyType }))
+  setCurrentProfileKeyType: (currentProfileKeyType) => set(() => ({ currentProfileKeyType })),
+  lastReadNotificationDate: 0,
+  setLastReadNotificationDate: (lastReadNotificationDate) => set(() => ({ lastReadNotificationDate }))
 }));
 
 if (process.env.NODE_ENV === 'development') {
