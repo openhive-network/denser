@@ -259,7 +259,7 @@ const CommentListItem = ({
                           </button>
                         ) : (
                           <DialogLogin>
-                            <button className="flex items-center hover:cursor-pointer hover:text-red-600">
+                            <button className="flex items-center hover:cursor-pointer hover:text-red-600" data-testid="comment-card-footer-reply">
                               {t('post_content.footer.reply')}
                             </button>
                           </DialogLogin>

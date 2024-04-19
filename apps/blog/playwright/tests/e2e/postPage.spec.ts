@@ -3,6 +3,7 @@ import { PostPage } from '../support/pages/postPage';
 import { HomePage } from '../support/pages/homePage';
 import { ApiHelper } from '../support/apiHelper';
 import { CommunitiesPage } from '../support/pages/communitiesPage';
+import { LoginForm } from '../support/pages/loginForm';
 
 test.describe('Post page tests', () => {
   let homePage: HomePage;
@@ -326,6 +327,7 @@ test.describe('Post page tests', () => {
   });
 
   test('Validate Post footer', async ({ page }) => {
+    const loginDialog = new LoginForm(page);
     await postPage.gotoHomePage();
     await postPage.postImage.first().click();
     await expect(postPage.articleBody).toBeVisible();
@@ -384,12 +386,12 @@ test.describe('Post page tests', () => {
       await postPage.reblogDialogCloseBtn.click();
     });
 
-    // Skipped due to new login form
-    // await test.step('Post Footer - Reply', async () => {
-    //   await expect(postPage.commentReplay).toBeVisible();
-    //   await postPage.commentReplay.click();
-    //   await expect(postPage.commentCardsFooterReplyEditor).toBeVisible();
-    // });
+    await test.step('Post Footer - Reply', async () => {
+      await expect(postPage.commentReplay).toBeVisible();
+      await postPage.commentReplay.click();
+      await loginDialog.validateDefaultLoginFormIsLoaded();
+      await loginDialog.closeLoginForm();
+    });
 
     await test.step('Post Footer - Responses', async () => {
       await expect(postPage.commentResponse).toBeVisible();

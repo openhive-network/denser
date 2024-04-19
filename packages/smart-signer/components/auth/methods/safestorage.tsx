@@ -214,7 +214,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
 
     return (
         <Step title={t("login_form.signin_safe_storage.title")} description={<div>
-            <div>{description}</div>
+            <div data-testid="login-form-description">{description}</div>
             {error && <div className="text-destructive text-sm">{error}</div>}
         </div>} loading={loading}>
             <Form {...form}>
@@ -232,6 +232,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                                             placeholder={t("login_form.signin_safe_storage.placeholder_username")}
                                             type='text'
                                             autoComplete="username"
+                                            data-testid="username-input"
                                             {...field}
                                         />
                                         {authUsers.length ? (
@@ -277,6 +278,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                                     <Input placeholder={t("login_form.signin_safe_storage.placeholder_password")}
                                     type='password'
                                     autoComplete="current-password"
+                                    data-testid="password-input"
                                     {...field}
                                 />
                                 </FormControl>
@@ -293,7 +295,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                         render={({ field, formState: { errors } }) => (
                             <FormItem>
                                 <FormControl>
-                                    <Input placeholder={t("login_form.signin_safe_storage.placeholder_wif", { keyType: form.getValues().keyType })} type='password' {...field} />
+                                    <Input placeholder={t("login_form.signin_safe_storage.placeholder_wif", { keyType: form.getValues().keyType })} type='password' data-testid="wif-input" {...field} />
                                 </FormControl>
                                 {errors.wif && <FormMessage className="font-normal">{t(errors.wif?.message!)}</FormMessage>}
                             </FormItem>
@@ -358,6 +360,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                                 <Button
                                     className='w-full flex-1 bg-red-600 hover:bg-red-500 text-white'
                                     type='submit'
+                                    data-testid='save-sign-in-button'
                                     disabled={!form.formState.isValid}
                                     onClick={form.handleSubmit(onSave)}
                                 >
@@ -368,7 +371,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
 
                     <Separator className='my-4' />
 
-                    <Button className='w-full' type='button' variant="secondary" onClick={() => {
+                    <Button className='w-full' data-testid='other-sign-in-options-button' type='button' variant="secondary" onClick={() => {
                         cancelAuth();
                         onSetStep(Steps.OTHER_LOGIN_OPTIONS);
                     }}>

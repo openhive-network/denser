@@ -6,6 +6,7 @@ import { PostPage } from '../support/pages/postPage';
 import { CommentViewPage } from '../support/pages/commentViewPage';
 import { CommunitiesPage } from '../support/pages/communitiesPage';
 import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
+import { LoginForm } from '../support/pages/loginForm';
 
 test.describe('Replies Tab in Profile page of @gtg', () => {
   let homePage: HomePage;
@@ -208,9 +209,8 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     }
   });
 
-  // Skipped due to new login form
-  test.skip('move to the login page after clicking upvote of the first comment card', async ({ page }) => {
-    let loginDialog = new LoginToVoteDialog(page);
+  test('move to the login page after clicking upvote of the first comment card', async ({ page }) => {
+    let loginDialog = new LoginForm(page);
 
     await profilePage.gotoRepliesProfilePage('@gtg');
     await profilePage.profileRepliesTabIsSelected();
@@ -237,12 +237,12 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     ).toBe('rgb(220, 38, 38)');
 
     await profilePage.repliesCommentListItemUpvote.first().click();
-    await loginDialog.validateLoginToVoteDialogIsVisible();
+    await loginDialog.validateDefaultLoginFormIsLoaded();
+    await loginDialog.closeLoginForm();
   });
 
-  // Skipped due to new login form
-  test.skip('move to the login page after clicking downvote of the first comment card', async ({ page }) => {
-    let loginDialog = new LoginToVoteDialog(page);
+  test('move to the login page after clicking downvote of the first comment card', async ({ page }) => {
+    let loginDialog = new LoginForm(page);
 
     await profilePage.gotoRepliesProfilePage('@gtg');
     await profilePage.profileRepliesTabIsSelected();
@@ -269,7 +269,8 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     ).toBe('rgb(75, 85, 99)');
 
     await profilePage.repliesCommentListItemDownvote.first().click();
-    await loginDialog.validateLoginToVoteDialogIsVisible();
+    await loginDialog.validateDefaultLoginFormIsLoaded();
+    await loginDialog.closeLoginForm();
   });
 
   test('validate payout of the first comment card', async ({ page }) => {

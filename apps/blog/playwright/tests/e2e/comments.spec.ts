@@ -4,7 +4,7 @@ import { HomePage } from '../support/pages/homePage';
 import { ProfilePage } from '../support/pages/profilePage';
 import { CommentViewPage } from '../support/pages/commentViewPage';
 import { ApiHelper } from '../support/apiHelper';
-import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
+import { LoginForm } from '../support/pages/loginForm';
 import { ReblogThisPostDialog } from '../support/pages/reblogThisPostDialog';
 
 test.describe('Comments of post', () => {
@@ -124,9 +124,8 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     expect((await postPage.commentListItems.all()).length).toBe(commentAmount);
   });
 
-  // Skipped due to new login form
-  test.skip('Validate the first comment in the post', async ({ page }) => {
-    const loginToVoteDialog = new LoginToVoteDialog(page);
+  test('Validate the first comment in the post', async ({ page }) => {
+    const defaultLoginForm = new LoginForm(page);
 
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
 
@@ -138,13 +137,13 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     );
     // click Upvote and move to the Login to Vote Dialog and back
     await postPage.commentCardsFooterUpvotes.first().click();
-    await loginToVoteDialog.validateLoginToVoteDialogIsVisible();
-    await loginToVoteDialog.closeLoginDialog();
+    await defaultLoginForm.validateDefaultLoginFormIsLoaded();
+    await defaultLoginForm.closeLoginForm();
     await expect(postPage.commentAuthorLink.first()).toHaveText('sicarius');
     // click Downvote and move to the Login to Vote Dialog and back
     await postPage.commentCardsFooterDownvotes.first().click();
-    await loginToVoteDialog.validateLoginToVoteDialogIsVisible();
-    await loginToVoteDialog.closeLoginDialog();
+    await defaultLoginForm.validateDefaultLoginFormIsLoaded();
+    await defaultLoginForm.closeLoginForm();
     await expect(postPage.commentAuthorLink.first()).toHaveText('sicarius');
     // Read value of the first comment payout
     const firstCommentPayoutValue = '$0.29';
@@ -152,17 +151,15 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     // Read value of the first comment votes
     const firstCommentVotes = '4 votes';
     await expect(postPage.commentCardsFooterVotes.first()).toHaveText(firstCommentVotes);
-    // Click Reply of the first comment and open reply editor
+    // Click Reply of the first comment and open login form
     await postPage.commentCardsFooterReply.first().click();
-    await expect(postPage.commentCardsFooterReplyEditor.first()).toBeVisible();
-    await postPage.commentCardsFooterReply.first().click();
-    await expect(postPage.commentCardsFooterReplyEditor.first()).not.toBeVisible();
+    await defaultLoginForm.validateDefaultLoginFormIsLoaded();
+    await defaultLoginForm.closeLoginForm();
   });
 
-  // Skipped due to new login form
-  test.skip('Validate the second comment (nested) in the post', async ({ page }) => {
+  test('Validate the second comment (nested) in the post', async ({ page }) => {
     const commentViewPage = new CommentViewPage(page);
-    const loginToVoteDialog = new LoginToVoteDialog(page);
+    const defaultLoginForm = new LoginForm(page);
 
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
 
@@ -174,24 +171,23 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await expect(postPage.commentCardsDescriptions.nth(1)).toContainText('Great to hear, thank you! :-)');
     // click Upvote and move to the Login to Vote Dialog and back
     await postPage.commentCardsFooterUpvotes.nth(1).click();
-    await loginToVoteDialog.validateLoginToVoteDialogIsVisible();
-    await loginToVoteDialog.closeLoginDialog();
+    await defaultLoginForm.validateDefaultLoginFormIsLoaded();
+    await defaultLoginForm.closeLoginForm();
     await expect(postPage.commentAuthorLink.nth(1)).toHaveText(postAuthorName);
     // click Downvote and move to the Login to Vote Dialog and back
     await postPage.commentCardsFooterDownvotes.nth(1).click();
-    await loginToVoteDialog.validateLoginToVoteDialogIsVisible();
-    await loginToVoteDialog.closeLoginDialog();
+    await defaultLoginForm.validateDefaultLoginFormIsLoaded();
+    await defaultLoginForm.closeLoginForm();
     await expect(postPage.commentAuthorLink.nth(1)).toHaveText(postAuthorName);
     // Read value of the second comment payout
     const secondCommentPayoutValue = '$0.00';
     await expect(postPage.commentCardsFooterPayoutZero.first()).toHaveText(secondCommentPayoutValue);
     // The value of the second comment votes is invisible
     await expect(postPage.commentCardsFooters.nth(1)).not.toHaveAttribute('data-testid', 'comment-votes');
-    // Click Reply of the second comment and open reply editor
+    // Click Reply of the second comment and open login form
     await postPage.commentCardsFooterReply.nth(1).click();
-    await expect(postPage.commentCardsFooterReplyEditor).toBeVisible();
-    await postPage.commentCardsFooterReply.nth(1).click();
-    await expect(postPage.commentCardsFooterReplyEditor).not.toBeVisible();
+    await defaultLoginForm.validateDefaultLoginFormIsLoaded();
+    await defaultLoginForm.closeLoginForm();
   });
 
   test('Validate the timestamp in the second comment (nested) in the post', async ({ page }) => {
@@ -525,7 +521,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     let removeThreeDotsUserAboutUI;
     if (userPostingJsonMetadata.profile.about) {
       userAboutAPI = await userPostingJsonMetadata.profile.about;
-      userAboutUI = await postPage.userAboutPopoverCard.textContent();
+      userAboutUI = await postPage.userAboutPopoverCard.textContent() || '';
       removeThreeDotsUserAboutUI = userAboutUI.replace('...', '');
       // console.log('userAboutAPI: ', await userAboutAPI);
       expect(userAboutAPI).toContain(await removeThreeDotsUserAboutUI);
@@ -639,12 +635,11 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     );
   });
 
-  // Skipped due to new Login Form
-  test.skip('Move to the comment view page of the first comment by clicking comment link and validate the main comment', async ({
+  test('Move to the comment view page of the first comment by clicking comment link and validate the main comment', async ({
     page
   }) => {
     const commentViewPage = new CommentViewPage(page);
-    const loginToVoteDialog = new LoginToVoteDialog(page);
+    const defaultLoginForm = new LoginForm(page);
     const reblogDialog = new ReblogThisPostDialog(page);
 
     // Move to the post with comments
@@ -667,13 +662,13 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     );
     // click Upvote and move to the Login to Vote Dialog and back
     await commentViewPage.getMainCommentUpvoteButton.click();
-    await loginToVoteDialog.validateLoginToVoteDialogIsVisible();
-    await loginToVoteDialog.closeLoginDialog();
+    await defaultLoginForm.validateDefaultLoginFormIsLoaded();
+    await defaultLoginForm.closeLoginForm();
     await expect(commentViewPage.getMainCommentAuthorNameLink.first()).toHaveText('sicarius');
     // click Downvote and move to the Login to Vote Dialog and back
     await commentViewPage.getMainCommentDownvoteButton.click();
-    await loginToVoteDialog.validateLoginToVoteDialogIsVisible();
-    await loginToVoteDialog.closeLoginDialog();
+    await defaultLoginForm.validateDefaultLoginFormIsLoaded();
+    await defaultLoginForm.closeLoginForm();
     await expect(commentViewPage.getMainCommentAuthorNameLink.first()).toHaveText('sicarius');
     // Read value of the first comment payout
     const firstCommentPayoutValue = '$0.29';
@@ -681,11 +676,10 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     // Read value of the first comment votes
     const firstCommentVotes = '4 votes';
     await expect(commentViewPage.getMainCommentVotes).toHaveText(firstCommentVotes);
-    // Click Reply of the first comment and open reply editor
+    // Click Reply of the first comment and open login form
     await commentViewPage.getMainCommentReplyButton.click();
-    await expect(postPage.commentCardsFooterReplyEditor.first()).toBeVisible();
-    await commentViewPage.getMainCommentReplyButton.click();
-    await expect(postPage.commentCardsFooterReplyEditor.first()).not.toBeVisible();
+    await defaultLoginForm.validateDefaultLoginFormIsLoaded();
+    await defaultLoginForm.closeLoginForm();
     // Click Reblog icon and open reblog dialog
     await commentViewPage.getMainCommentReblogButton.click();
     await reblogDialog.validateReblogThisPostHeaderIsVisible();
@@ -700,11 +694,11 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await expect(numberResponses).toBe('1');
   });
 
-  // Skipped due to new login form
-  test.skip('Move to the comment view page of the first comment by clicking comment link and validate the response comment', async ({
+  test('Move to the comment view page of the first comment by clicking comment link and validate the response comment', async ({
     page
   }) => {
     const commentViewPage = new CommentViewPage(page);
+    const defaultLoginForm = new LoginForm(page);
 
     // Move to the post with comments
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
@@ -729,12 +723,8 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     expect(await responseCommentPayout).toBe('$0.00');
     // Click Reply of the response comment
     await commentViewPage.getResponseCommentReply.click();
-    await expect(postPage.commentCardsFooterReplyEditor.first()).toBeVisible();
-    await commentViewPage.getResponseCommentReply.click();
-    await expect(postPage.commentCardsFooterReplyEditor.first()).not.toBeVisible();
-    // Close response comment and validate that the content is not visible
-    await commentViewPage.getResponseCommentCloseOpen.click();
-    await expect(await commentViewPage.getResponseCommentContent).not.toBeVisible();
+    await defaultLoginForm.validateDefaultLoginFormIsLoaded();
+    await defaultLoginForm.closeLoginForm();
   });
 
   test('Move to the comment view page and go back to the "View the full context"', async ({ page }) => {

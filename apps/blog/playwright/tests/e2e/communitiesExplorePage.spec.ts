@@ -2,7 +2,7 @@ import { test, expect, Locator } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
 import { CommunitiesExplorePage } from '../support/pages/communitiesExplorerPage';
 import { ApiHelper } from '../support/apiHelper';
-import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
+import { LoginForm } from '../support/pages/loginForm';
 
 test.describe('Explore communities page tests', () => {
   let homePage: HomePage;
@@ -115,10 +115,9 @@ test.describe('Explore communities page tests', () => {
     expect(await communitiesPage.communityListItemFooter.first().textContent()).toContain(firstAdminsAmountRankCommunitiesAPI.toString());
   });
 
-  // Skipped due to new login form
-  test.skip('move to the login page after clicking subscribe button of the first community', async ({ page }) => {
+  test('move to the login page after clicking subscribe button of the first community', async ({ page }) => {
     const communitiesPage = new CommunitiesExplorePage(page);
-    const loginToVoteDialog = new LoginToVoteDialog(page);
+    const defaultLoginForm = new LoginForm(page);
 
     await homePage.goto();
     await homePage.getExploreCommunities.click();
@@ -126,8 +125,8 @@ test.describe('Explore communities page tests', () => {
 
     const subscribeButton = await communitiesPage.communityListItemSubscribeButton.first();
     await subscribeButton.click();
-    await loginToVoteDialog.validateLoginToVoteDialogIsVisible();
-    await loginToVoteDialog.closeLoginDialog();
+    await defaultLoginForm.validateDefaultLoginFormIsLoaded();
+    await defaultLoginForm.closeLoginForm();
   });
 
   test('validate first community card styles in the light mode', async ({ page }) => {

@@ -368,7 +368,7 @@ function PostPage({
                     </button>
                   ) : (
                     <DialogLogin>
-                      <button className="flex items-center text-red-600">
+                      <button className="flex items-center text-red-600" data-testid="comment-reply">
                         {t('post_content.footer.reply')}
                       </button>
                     </DialogLogin>

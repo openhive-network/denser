@@ -88,7 +88,7 @@ docker-build-wallet:
       npm ci --cache .npm
       echo -e "\e[0Ksection_end:$(date +%s):deps\r\e[0K"
   cache:
-    key: '$TURBO_APP_SCOPE-cache-1'
+    key: '$TURBO_APP_SCOPE-cache-2'
     paths:
       - .npm/
       - .next/
