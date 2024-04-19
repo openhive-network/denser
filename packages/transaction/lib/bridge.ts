@@ -210,6 +210,7 @@ export const getPostsRanked = async (
   observer: string,
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
+  console.log('bamboo running getPostsRanked', start_author, start_permlink);
   return chain
     .extend<GetPostsRankedData>()
     .api.bridge.get_ranked_posts({
