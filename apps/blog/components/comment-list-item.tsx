@@ -192,10 +192,10 @@ const CommentListItem = ({
                   <Separator orientation="horizontal" />
                   <AccordionContent className="p-0">
                     <CardContent className="pb-2 ">
-                      {edit && comment.parent_permlink ? (
+                      {edit && comment.parent_permlink && comment.parent_author ? (
                         <ReplyTextbox
                           onSetReply={setEdit}
-                          username={username}
+                          username={comment.parent_author}
                           permlink={comment.permlink}
                           parentPermlink={comment.parent_permlink}
                           storageId={storageId}
