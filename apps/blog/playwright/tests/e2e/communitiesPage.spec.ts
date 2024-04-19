@@ -4,7 +4,7 @@ import { ProfilePage } from '../support/pages/profilePage';
 import { CommunitiesPage } from '../support/pages/communitiesPage';
 import { ReblogThisPostDialog } from '../support/pages/reblogThisPostDialog';
 import { PostPage } from '../support/pages/postPage';
-import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
+import { LoginForm } from '../support/pages/loginForm';
 import { ApiHelper } from '../support/apiHelper';
 import { MakePostWarningPage } from '../support/pages/makePostWarningPage';
 
@@ -14,7 +14,7 @@ test.describe('Communities page tests', () => {
   let communitiesPage: CommunitiesPage;
   let reblogThisPostDialog: ReblogThisPostDialog;
   let postPage: PostPage;
-  let loginToVoteDialog: LoginToVoteDialog;
+  let defaultLoginForm: LoginForm;
   let apiHelper: ApiHelper;
 
   test.beforeEach(async ({ page }) => {
@@ -23,7 +23,7 @@ test.describe('Communities page tests', () => {
     communitiesPage = new CommunitiesPage(page);
     reblogThisPostDialog = new ReblogThisPostDialog(page);
     postPage = new PostPage(page);
-    loginToVoteDialog = new LoginToVoteDialog(page);
+    defaultLoginForm = new LoginForm(page);
     apiHelper = new ApiHelper(page);
 
     await homePage.goto();
@@ -537,20 +537,18 @@ test.describe('Communities page tests', () => {
     await expect(postAuthorTextSubstring).toContain(articleAuthorTextSubstring);
   });
 
-  // Skipped due to new login form
-  test.skip('check if upvote and downvote button are displayed correctly on communities page', async ({
+  test('check if upvote and downvote button are displayed correctly on communities page', async ({
     page
   }) => {
     await homePage.moveToLeoFinanceCommunities();
     await expect(homePage.getFirstPostUpvoteButton).toBeVisible();
     await homePage.getFirstPostUpvoteButton.click();
-    await expect(loginToVoteDialog.getLoginDialog).toBeVisible();
-    await loginToVoteDialog.closeLoginDialog();
-
+    await defaultLoginForm.validateDefaultLoginFormIsLoaded();
+    await defaultLoginForm.closeLoginForm();
     await expect(homePage.getFirstPostDownvoteButton).toBeVisible();
     await homePage.getFirstPostDownvoteButton.click();
-    await expect(loginToVoteDialog.getLoginDialog).toBeVisible();
-    await loginToVoteDialog.closeLoginDialog();
+    await defaultLoginForm.validateDefaultLoginFormIsLoaded();
+    await defaultLoginForm.closeLoginForm();
   });
 
   test('check if responses are displayed correctly on communities page', async ({ page, browserName }) => {
@@ -960,8 +958,7 @@ test.describe('Communities page tests', () => {
     expect(subscribersUIAfterLoadMoreClick.length).toBe(2 * subscribersUIBeforeLoadMoreClik.length);
   });
 
-  // Skipped due to new login form
-  test.skip('validate Subscribe button styles in the light theme', async ({ page }) => {
+  test('validate Subscribe button styles in the light theme', async ({ page }) => {
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
     let communitySubscribeButton;
@@ -982,8 +979,8 @@ test.describe('Communities page tests', () => {
       'rgb(30, 58, 138)'
     );
     await communitySubscribeButton.click();
-    await loginToVoteDialog.validateLoginToVoteDialogIsVisible();
-    await loginToVoteDialog.closeLoginDialog();
+    await defaultLoginForm.validateDefaultLoginFormIsLoaded();
+    await defaultLoginForm.closeLoginForm();
   });
 
   test('validate visibility of the community sidebar depending of the width of the viewport', async ({

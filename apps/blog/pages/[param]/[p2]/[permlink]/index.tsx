@@ -368,7 +368,7 @@ function PostPage({
                     </button>
                   ) : (
                     <DialogLogin>
-                      <button className="flex items-center text-red-600">
+                      <button className="flex items-center text-red-600" data-testid="comment-reply">
                         {t('post_content.footer.reply')}
                       </button>
                     </DialogLogin>
@@ -464,8 +464,13 @@ function PostPage({
       </div>
       <div id="comments" className="flex" />
       <div className="mx-auto my-0 max-w-4xl py-4">
-        {reply && user && user.isLoggedIn ? (
-          <ReplyTextbox onSetReply={setReply} username={username} permlink={permlink} storageId={storageId} />
+        {reply && post && user.isLoggedIn ? (
+          <ReplyTextbox
+            onSetReply={setReply}
+            username={post.author}
+            permlink={permlink}
+            storageId={storageId}
+          />
         ) : null}
       </div>
       {!isLoadingDiscussion && discussion && discussionState && !isLoadingPost && post ? (

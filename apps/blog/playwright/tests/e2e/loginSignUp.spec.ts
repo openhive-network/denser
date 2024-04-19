@@ -1,10 +1,9 @@
 import { expect, test } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
-import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
+import { LoginForm } from '../support/pages/loginForm';
 
 test.describe('Login and Sign Up tests', () =>{
   let homePage: HomePage;
-  let loginToVoteDialog: LoginToVoteDialog;
 
   test.beforeEach(async ({ page }) => {
     homePage = new HomePage(page);
@@ -48,12 +47,11 @@ test.describe('Login and Sign Up tests', () =>{
     await homePage.changeThemeMode("Light")
   });
 
-  // Skipped due to new login form
-  test.skip('Check if after click login button correct modal is open', async ({page}) =>{
-    loginToVoteDialog = new LoginToVoteDialog(page);
+  test('Check if after click login button correct modal is open', async ({page}) =>{
+    const loginFormDefaut = new LoginForm(page);
 
     await homePage.loginBtn.click()
-    await loginToVoteDialog.validateLoginToVoteDialogIsVisible();
+    await loginFormDefaut.validateDefaultLoginFormIsLoaded();
   })
 
   test('Check if after click sign up button correct modal is open', async ({page}) =>{
