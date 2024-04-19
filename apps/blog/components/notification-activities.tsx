@@ -6,6 +6,7 @@ import { Button } from '@ui/components/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components/tabs';
 import { useTranslation } from 'next-i18next';
 import { transactionService } from '@transaction/index';
+import { useAppStore } from '../store/app';
 
 const NotificationActivities = ({
   data,
@@ -16,7 +17,8 @@ const NotificationActivities = ({
 }) => {
   const { t } = useTranslation('common_blog');
   const [state, setState] = useState(data);
-  const [lastRead, setLastRead] = useState(new Date(Date.now()).toISOString());
+  const lastRead = useAppStore((state) => state.lastReadNotificationDate);
+  const setLastRead = useAppStore((state) => state.setLastReadNotificationDate);
   const [lastStateElementId, setLastStateElementId] = useState(
     state && state.length > 0 ? state[state.length - 1].id : null
   );
@@ -42,9 +44,12 @@ const NotificationActivities = ({
   }, [lastStateElementId, refetch]);
 
   function handleMarkAllAsRead() {
-    const newDate = new Date(Date.now()).toISOString();
-    transactionService.markAllNotificationAsRead(newDate);
-    setLastRead(newDate);
+    const newDate = new Date(Date.now());
+    transactionService.markAllNotificationAsRead(
+      newDate.toISOString().slice(0, newDate.toISOString().length - 5)
+    );
+    console.log('newDate.getTime() markAsReadNewDate', newDate.getTime());
+    setLastRead(newDate.getTime());
   }
 
   function handleLoadMore() {

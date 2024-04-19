@@ -320,7 +320,7 @@ export interface IAccountNotification {
 }
 
 export interface IAccountNotificationEx extends IAccountNotification {
-  lastRead: string;
+  lastRead: number;
 }
 
 type GetAccountNotificationsData = {

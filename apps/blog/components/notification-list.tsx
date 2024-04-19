@@ -7,7 +7,7 @@ const NotificationList = ({
   lastRead
 }: {
   data: IAccountNotification[] | null | undefined;
-  lastRead: string;
+  lastRead: number;
 }) => {
   return (
     <table className="w-full py-8">
