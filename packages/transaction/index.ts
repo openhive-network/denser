@@ -395,6 +395,11 @@ class TransactionService {
     });
   }
 
+  wellKnownErrorDescriptions = [
+    'Your current vote on this comment is identical to this vote',
+    'Account does not have enough mana to downvote',
+  ];
+
   handleError(e: any) {
     logger.error('got error', e);
     const isError = (err: unknown): err is Error => err instanceof Error;
@@ -405,8 +410,20 @@ class TransactionService {
       // this is temporary solution for "wait 5 minut after create another post" error
       if (error?.apiError?.code === -32003) {
         description = error?.apiError?.data?.stack[0]?.format;
+        for (const wked of this.wellKnownErrorDescriptions) {
+          if (description.includes(wked)) {
+            description = wked;
+            break;
+          }
+        }
       } else {
         description = error?.message ?? this.errorDescription;
+        for (const wellKnownErrorDescription of this.wellKnownErrorDescriptions) {
+          if (description.includes(wellKnownErrorDescription)) {
+            description = wellKnownErrorDescription;
+            break;
+          }
+        }
       }
     } else if (isError(e)) {
       description = e.message;
