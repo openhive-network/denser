@@ -52,13 +52,9 @@ class TransactionService {
     const broadcastReq = new BroadcastTransactionRequest(txBuilder);
 
     // do broadcast
-    try {
-      await (
-        await hiveChainService.getHiveChain()
-      ).api.network_broadcast_api.broadcast_transaction(broadcastReq);
-    } catch (error) {
-      this.handleError(error);
-    }
+    await (
+      await hiveChainService.getHiveChain()
+    ).api.network_broadcast_api.broadcast_transaction(broadcastReq);
   }
 
   async upVote(author: string, permlink: string, weight = 10000) {
