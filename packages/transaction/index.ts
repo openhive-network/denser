@@ -17,7 +17,7 @@ import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
 class TransactionService {
-  description = 'Transaction broadcast error';
+  errorDescription = 'Transaction broadcast error';
   signerOptions!: SignerOptions;
 
   setSignerOptions(signerOptions: SignerOptions) {
@@ -406,7 +406,7 @@ class TransactionService {
       if (error?.apiError?.code === -32003) {
         description = error?.apiError?.data?.stack[0]?.format;
       } else {
-        description = error?.message ?? 'Unknown error';
+        description = error?.message ?? this.errorDescription;
       }
     } else if (isError(e)) {
       description = e.message;
