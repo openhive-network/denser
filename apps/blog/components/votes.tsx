@@ -50,6 +50,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
   const { t } = useTranslation('common_blog');
   const [isClient, setIsClient] = useState(false);
   const [clickedVoteButton, setClickedVoteButton] = useState('');
+
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -75,52 +76,61 @@ const VotesComponent = ({ post }: { post: Entry }) => {
 
         <TooltipProvider>
           <Tooltip>
-            <CircleSpinner loading={clickedVoteButton === 'up' && postUpdateVoteMutation.isLoading}
-                          size={18} color="#dc2626" />
-            {!(clickedVoteButton === 'up' && postUpdateVoteMutation.isLoading) && (
-              <TooltipTrigger data-testid="upvote-button">
-                  {user && user.isLoggedIn ? (
-                    <Icons.arrowUpCircle
-                      className={clsx(
-                        'h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1',
-                        { 'bg-red-600 text-white': checkVote && checkVote?.rshares > 0 }
-                      )}
-                      // onClick={(e) => transactionService.upVote(post.author, post.permlink)}
-                      onClick={(e) => {
-                        setClickedVoteButton('up');
-                        submitVote(10000);
-                      }}
-                    />
-                  ) : (
-                    <DialogLogin>
-                      <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1" />
-                    </DialogLogin>
-                  )}
-                </TooltipTrigger>
-            )}
+            <TooltipTrigger data-testid="upvote-button" disabled={postUpdateVoteMutation.isLoading}>
+              {clickedVoteButton === 'up' && postUpdateVoteMutation.isLoading ?
+                <CircleSpinner loading={clickedVoteButton === 'up' && postUpdateVoteMutation.isLoading}
+                              size={18} color="#dc2626" />
+              :
+                user && user.isLoggedIn ?
+                  <Icons.arrowUpCircle
+                    className={clsx(
+                      'h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1',
+                      { 'bg-red-600 text-white': checkVote && checkVote?.rshares > 0 },
+                      // { 'pointer-events-none cursor-wait': postUpdateVoteMutation.isLoading },
+                      // { 'pointer-events-auto cursor-pointer': !postUpdateVoteMutation.isLoading }
+                    )}
+                    onClick={(e) => {
+                      if (postUpdateVoteMutation.isLoading) return;
+                      setClickedVoteButton('up');
+                      submitVote(10000);
+                    }}
+                  />
+                :
+                  <DialogLogin>
+                    <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1" />
+                  </DialogLogin>
+              }
+            </TooltipTrigger>
             <TooltipContent data-testid="upvote-button-tooltip">{t('cards.post_card.upvote')}</TooltipContent>
           </Tooltip>
         </TooltipProvider>
 
       <TooltipProvider>
         <Tooltip>
-          <TooltipTrigger data-testid="downvote-button">
-            {user && user.isLoggedIn ? (
-              <Icons.arrowDownCircle
-                className={clsx(
-                  'h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
-                  { 'bg-gray-600 text-white': checkVote && checkVote?.rshares < 0 }
-                )}
-                onClick={(e) => {
-                  setClickedVoteButton('down');
-                  submitVote(10000);
-                }}
-              />
-            ) : (
-              <DialogLogin>
-                <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
-              </DialogLogin>
-            )}
+          <TooltipTrigger data-testid="downvote-button" disabled={postUpdateVoteMutation.isLoading}>
+            {clickedVoteButton === 'down' && postUpdateVoteMutation.isLoading ?
+                <CircleSpinner loading={clickedVoteButton === 'down' && postUpdateVoteMutation.isLoading}
+                              size={18} color="#dc2626" />
+            :
+              user && user.isLoggedIn ?
+                <Icons.arrowDownCircle
+                  className={clsx(
+                    'h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
+                    { 'bg-gray-600 text-white': checkVote && checkVote?.rshares < 0 },
+                    // { 'pointer-events-none cursor-wait': postUpdateVoteMutation.isLoading },
+                    // { 'pointer-events-auto cursor-pointer': !postUpdateVoteMutation.isLoading }
+                  )}
+                  onClick={(e) => {
+                    if (postUpdateVoteMutation.isLoading) return;
+                    setClickedVoteButton('down');
+                    submitVote(-10000);
+                  }}
+                />
+              :
+                <DialogLogin>
+                  <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
+                </DialogLogin>
+            }
           </TooltipTrigger>
           <TooltipContent data-testid="downvote-button-tooltip">
             {t('cards.post_card.downvote')}
