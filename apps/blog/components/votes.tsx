@@ -11,6 +11,7 @@ import { transactionService } from '@transaction/index';
 import env from '@beam-australia/react-env';
 import { PromiseTools } from '@transaction/lib/promise-tools'
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { CircleSpinner } from 'react-spinners-kit';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -29,7 +30,7 @@ export function usePostUpdateVoteMutation() {
       return vote( voter, author, permlink, weight);
     },
     onSuccess: (data) => {
-      console.log('bamboo usePostUpdateVoteMutation onSuccess data: %o', data);
+      console.log('usePostUpdateVoteMutation onSuccess data: %o', data);
       queryClient.invalidateQueries({ queryKey: ['postData', data.author, data.permlink ] });
       // queryClient.invalidateQueries({ queryKey: ['entriesInfinite', 'trending', null] });
       queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
@@ -48,6 +49,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
   const [isClient, setIsClient] = useState(false);
+  const [clickedVoteButton, setClickedVoteButton] = useState('');
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -58,34 +60,48 @@ const VotesComponent = ({ post }: { post: Entry }) => {
   const submitVote = async (weight: number) => {
     const { author, permlink } = post;
     const voter = user.username;
-    await postUpdateVoteMutation.mutateAsync({ voter, author, permlink, weight });
+    try {
+      await postUpdateVoteMutation.mutateAsync({ voter, author, permlink, weight });
+    } catch (error) {
+      // TODO We'll never get error here – it's handled in TransactionService.
+      // do nothing
+    }
   }
 
   // logger.info({ post, user, checkVote });
 
   return (
     <div className="flex items-center gap-1">
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger data-testid="upvote-button">
-            {user && user.isLoggedIn ? (
-              <Icons.arrowUpCircle
-                className={clsx(
-                  'h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1',
-                  { 'bg-red-600 text-white': checkVote && checkVote?.rshares > 0 }
-                )}
-                // onClick={(e) => transactionService.upVote(post.author, post.permlink)}
-                onClick={(e) => submitVote(10000)}
-                />
-            ) : (
-              <DialogLogin>
-                <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1" />
-              </DialogLogin>
+
+        <TooltipProvider>
+          <Tooltip>
+            <CircleSpinner loading={clickedVoteButton === 'up' && postUpdateVoteMutation.isLoading}
+                          size={18} color="#dc2626" />
+            {!(clickedVoteButton === 'up' && postUpdateVoteMutation.isLoading) && (
+              <TooltipTrigger data-testid="upvote-button">
+                  {user && user.isLoggedIn ? (
+                    <Icons.arrowUpCircle
+                      className={clsx(
+                        'h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1',
+                        { 'bg-red-600 text-white': checkVote && checkVote?.rshares > 0 }
+                      )}
+                      // onClick={(e) => transactionService.upVote(post.author, post.permlink)}
+                      onClick={(e) => {
+                        setClickedVoteButton('up');
+                        submitVote(10000);
+                      }}
+                    />
+                  ) : (
+                    <DialogLogin>
+                      <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1" />
+                    </DialogLogin>
+                  )}
+                </TooltipTrigger>
             )}
-          </TooltipTrigger>
-          <TooltipContent data-testid="upvote-button-tooltip">{t('cards.post_card.upvote')}</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+            <TooltipContent data-testid="upvote-button-tooltip">{t('cards.post_card.upvote')}</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger data-testid="downvote-button">
@@ -95,8 +111,10 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                   'h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
                   { 'bg-gray-600 text-white': checkVote && checkVote?.rshares < 0 }
                 )}
-                // onClick={(e) => transactionService.downVote(post.author, post.permlink)}
-                onClick={(e) => submitVote(-10000)}
+                onClick={(e) => {
+                  setClickedVoteButton('down');
+                  submitVote(10000);
+                }}
               />
             ) : (
               <DialogLogin>
@@ -109,6 +127,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
+
       {checkVote && (
         <TooltipProvider>
           <Tooltip>
