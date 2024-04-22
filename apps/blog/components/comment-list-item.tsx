@@ -20,7 +20,6 @@ import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';
 import { UserPopoverCard } from './user-popover-card';
-import e from 'cors';
 
 const CommentListItem = ({
   comment,
