@@ -45,7 +45,7 @@ export abstract class Signer {
     { username, loginType, keyType, apiEndpoint, storageType }: SignerOptions,
     pack: TTransactionPackType
     ) {
-
+    logger.info('Starting Signer constructor');
     if (pack) {
       this.pack = pack;
     } else {
