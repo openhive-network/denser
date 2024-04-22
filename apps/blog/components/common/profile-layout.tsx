@@ -127,10 +127,15 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             className={`flex h-auto max-h-full min-h-full w-auto min-w-full max-w-full flex-col items-center`}
           >
             <div className="mt-4 flex items-center">
-              <Avatar className="mr-3 h-[48px] w-[48px] rounded-3xl bg-cover bg-no-repeat">
-                <AvatarImage src={profileData?.profile?.profile_image} alt="Profile picture" />
+              <Avatar className="mr-3 flex h-12 w-12 items-center justify-center overflow-hidden rounded-full">
+                <AvatarImage
+                  className="h-full w-full object-cover"
+                  src={profileData?.profile?.profile_image}
+                  alt="Profile picture"
+                />
                 <AvatarFallback>
                   <img
+                    className="h-full w-full object-cover"
                     src="https://images.hive.blog/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4"
                     alt="default img"
                   />
@@ -160,7 +165,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   <img
                     alt="fish image"
                     title={t('user_profil.hive_buzz_badge_title', { username: profileData.name })}
-                    className="mx-2 hidden w-6 duration-500 ease-in-out hover:w-12"
+                    className="mx-2 w-6 duration-500 ease-in-out hover:w-12"
                     src={`https://hivebuzz.me/api/level/${profileData.name}?dead`}
                     data-testid="profile-badge-image"
                   />

@@ -106,6 +106,7 @@
       "challenges": "Wyzwania"
     },
     "profil_notifications_tab_navbar": {
+      "mark_all": "Oznacz wszystkie jako przeczytane",
       "all": "Wszystkie",
       "replies": "Odpowiedzi",
       "mentions": "Wzmianki",
@@ -401,6 +402,7 @@
     "show_preview": "Pokaż podgląd",
     "title": "Tytuł",
     "insert_images_by_dragging": "Wstaw obrazki przez przeciągnij i upuść lub przez ",
+    "insert_images_info": "Wybór zdjęcia odbywa się przez ikone obrazka na pasku narzędzi edytora",
     "selecting_them": "wybieranie ich.",
     "post_summary": "Streszczenie posta(w miniaturce posta, maksymalnie 140 znaków)",
     "enter_your_tags": "Wpisz tagi oddzielone spacją",
@@ -434,6 +436,7 @@
       "decline_payout": "Odrzuć wypłatę",
       "custom_value": "Niestandardowa wartość",
       "cannot_be_less_than": "Wartość nie może być mniejsza niż 0",
+      "cannot_be_more_than": "Wartość nie może być większa niż 999999",
       "author_rewards": "Nagrody dla autora",
       "what_type_of_tokens": "Jakiego typu tokeny chcesz jako nagrody za tę publikację?",
       "power_up": "Wzmocnij o 100%",

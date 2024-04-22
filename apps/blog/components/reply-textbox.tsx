@@ -1,14 +1,13 @@
 import Link from 'next/link';
 import { Button } from '@ui/components/button';
 import { useContext, useEffect, useState } from 'react';
-import { Label } from '@radix-ui/react-label';
 import { useTranslation } from 'next-i18next';
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import { transactionService } from '@transaction/index';
 import { HiveRendererContext } from './hive-renderer-context';
-import DialogLogin from './dialog-login';
 import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
+import { Icons } from '@ui/components/icons';
 import MdEditor from './md-editor';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 
 export function ReplyTextbox({
   onSetReply,
@@ -16,6 +15,7 @@ export function ReplyTextbox({
   permlink,
   parentPermlink,
   storageId,
+  editMode,
   comment
 }: {
   onSetReply: (e: boolean) => void;
@@ -23,10 +23,10 @@ export function ReplyTextbox({
   permlink: string;
   parentPermlink?: string;
   storageId: string;
+  editMode: boolean;
   comment?: string;
 }) {
   const [storedPost, storePost] = useLocalStorage<string>(`replyTo-/${username}/${permlink}`, '');
-  const { user } = useUser();
   const { t } = useTranslation('common_blog');
   const [text, setText] = useState(comment ? comment : storedPost ? storedPost : '');
   const [cleanedText, setCleanedText] = useState('');
@@ -63,17 +63,23 @@ export function ReplyTextbox({
         </Link>
         <div>
           <MdEditor
+            htmlMode={editMode}
             onChange={(value) => {
               setText(value);
             }}
             persistedValue={text}
             placeholder={t('post_content.footer.comment.reply')}
           />
-          <p className="border-2 border-t-0 border-slate-200 bg-gray-100 p-1 text-xs font-light text-slate-500 dark:border-black dark:bg-slate-950">
-            {t('post_content.footer.comment.insert_images')}{' '}
-            <span>
-              <Label htmlFor="picture">{t('post_content.footer.comment.selecting_them')}</Label>
-            </span>
+          <p className="flex items-center border-2 border-t-0 border-slate-200 bg-gray-100 p-1 text-xs font-light text-slate-500 dark:border-black dark:bg-slate-950">
+            {t('post_content.footer.comment.insert_images')} {t('post_content.footer.comment.selecting_them')}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Icons.info className="ml-1 w-3" />
+                </TooltipTrigger>
+                <TooltipContent>{t('submit_page.insert_images_info')}</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </p>
         </div>
         <div className="flex flex-col md:flex-row">

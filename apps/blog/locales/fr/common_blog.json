@@ -105,6 +105,7 @@
       "challenges": "Challenges"
     },
     "profil_notifications_tab_navbar": {
+      "mark_all": "Tout marquer comme lu",
       "all": "All",
       "replies": "Réponses",
       "mentions": "Mentions",
@@ -388,6 +389,7 @@
     "show_preview": "Afficher l'aperçu",
     "title": "Titre",
     "insert_images_by_dragging": "Insérer des images en les faisant glisser et en les déposant ou en ",
+    "insert_images_info": "La sélection de l'image est fournie dans la barre d'outils de l'éditeur via l'icône d'image",
     "selecting_them": "les sélectionnant",
     "post_summary": "Résumé de la publication (pour les articles et le référencement, max 140 caractères)",
     "enter_your_tags": "Saisissez vos balises séparées par un espace",
@@ -421,6 +423,7 @@
       "decline_payout": "Refuser le paiement",
       "custom_value": "Valeur personnalisée",
       "cannot_be_less_than": "La valeur ne peut pas être inférieure à 0",
+      "cannot_be_more_than": "La valeur ne peut pas être supérieure à 999999",
       "author_rewards": "Récompenses de l'auteur",
       "what_type_of_tokens": "Quel type de jetons souhaitez-vous comme récompenses pour cette publication ?",
       "power_up": "Mise à niveau à 100%",

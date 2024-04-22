@@ -222,10 +222,15 @@ const SiteHeader: FC = () => {
                             ></Pie>
                           </PieChart>
                         </div>
-                        <Avatar className="z-30 h-9 w-9">
-                          <AvatarImage src={profileData?.profile?.profile_image} alt="Profile picture" />
+                        <Avatar className="z-30 flex h-9 w-9 items-center justify-center overflow-hidden rounded-full">
+                          <AvatarImage
+                            className="h-full w-full object-cover"
+                            src={profileData?.profile?.profile_image}
+                            alt="Profile picture"
+                          />
                           <AvatarFallback>
                             <img
+                              className="h-full w-full object-cover"
                               src="https://images.hive.blog/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4"
                               alt="default img"
                             />

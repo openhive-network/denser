@@ -9,7 +9,6 @@ import {
   SelectTrigger,
   SelectValue
 } from '@hive/ui/components/select';
-import { Label } from '@radix-ui/react-label';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import {
@@ -37,6 +36,8 @@ import { useRouter } from 'next/router';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { TFunction } from 'i18next';
 import { debounce, extractUrlsFromJsonString, extractYouTubeVideoIds } from '../lib/utils';
+import { Icons } from '@ui/components/icons';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 
 const defaultValues = {
   title: '',
@@ -46,7 +47,7 @@ const defaultValues = {
   author: '',
   category: 'blog',
   beneficiaries: [],
-  maxAcceptedPayout: null,
+  maxAcceptedPayout: 1000000,
   payoutType: '50%'
 };
 
@@ -211,7 +212,7 @@ export default function PostForm({
         weight: z.string()
       })
     ),
-    maxAcceptedPayout: z.number().nullable(),
+    maxAcceptedPayout: z.number(),
     payoutType: z.string()
   });
 
@@ -227,7 +228,7 @@ export default function PostForm({
     beneficiaries: storedPost?.beneficiaries ?? [],
     maxAcceptedPayout: post_s
       ? Number(post_s.max_accepted_payout.split(' ')[0])
-      : storedPost?.maxAcceptedPayout ?? null,
+      : storedPost?.maxAcceptedPayout ?? 1000000,
     payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType ?? '50%'
   });
   const form = useForm<AccountFormValues>({
@@ -267,11 +268,10 @@ export default function PostForm({
       }, 50)();
     }
   }, [postArea, previewContent]);
-
   async function onSubmit(data: AccountFormValues) {
     const chain = await hiveChainService.getHiveChain();
     const tags = storedPost.tags.replace(/#/g, '').split(' ') ?? [];
-    const maxAcceptedPayout = await chain.hbd(Number(storedPost.maxAcceptedPayout));
+    const maxAcceptedPayout = await chain.hbd(Number(storedPost.maxAcceptedPayout * 1000));
     const postPermlink = await createPermlink(storedPost?.title ?? '', username);
     const permlinInEditMode = post_s?.permlink;
     try {
@@ -354,6 +354,7 @@ export default function PostForm({
                   <FormControl>
                     <>
                       <MdEditor
+                        htmlMode={editMode}
                         onChange={(value) => {
                           form.setValue('postArea', value);
                         }}
@@ -361,12 +362,16 @@ export default function PostForm({
                       />
                     </>
                   </FormControl>
-                  <FormDescription className="border-x-2 border-b-2 border-border px-3 pb-1 text-xs text-destructive">
-                    {t('submit_page.insert_images_by_dragging')}
-                    <span>
-                      <Label htmlFor="picture">{t('submit_page.selecting_them')}</Label>
-                    </span>
-                    .
+                  <FormDescription className="flex items-center border-x-2 border-b-2 border-border px-3 pb-1 text-xs text-destructive">
+                    {t('submit_page.insert_images_by_dragging')} {t('submit_page.selecting_them')}
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Icons.info className="ml-1 w-3" />
+                        </TooltipTrigger>
+                        <TooltipContent>{t('submit_page.insert_images_info')}</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -416,14 +421,14 @@ export default function PostForm({
             {!editMode ? (
               <div className="flex flex-col gap-2">
                 <span>{t('submit_page.post_options')}</span>
-                {storedPost?.maxAcceptedPayout !== null && storedPost.maxAcceptedPayout > 0 ? (
+
+                {storedPost.maxAcceptedPayout < 1000000 && storedPost.maxAcceptedPayout > 0 ? (
                   <span className="text-xs">
-                    {t('submit_page.advanced_settings_dialog.maximum_accepted_payout') +
-                      ': ' +
-                      storedPost.maxAcceptedPayout +
-                      ' HBD'}
+                    {t('submit_page.advanced_settings_dialog.maximum_accepted_payout')}:{' '}
+                    {storedPost.maxAcceptedPayout} HBD
                   </span>
                 ) : null}
+
                 {storedPost.beneficiaries.length > 0 ? (
                   <span className="text-xs">
                     {t('submit_page.advanced_settings_dialog.beneficiaries', {
@@ -435,7 +440,7 @@ export default function PostForm({
                 <span className="text-xs">
                   {t('submit_page.author_rewards')}
                   {storedPost.maxAcceptedPayout === 0
-                    ? ' ' + t('submit_page.advanced_settings_dialog.decline_payout')
+                    ? ` ${t('submit_page.advanced_settings_dialog.decline_payout')}`
                     : storedPost?.payoutType === '100%'
                       ? t('submit_page.power_up')
                       : ' 50% HBD / 50% HP'}

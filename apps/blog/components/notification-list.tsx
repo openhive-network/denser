@@ -1,7 +1,14 @@
 import NotificationListItem from '@/blog/components/notification-list-item';
 import { IAccountNotification } from '@transaction/lib/bridge';
+import { useState } from 'react';
 
-const NotificationList = ({ data }: { data: IAccountNotification[] | null | undefined }) => {
+const NotificationList = ({
+  data,
+  lastRead
+}: {
+  data: IAccountNotification[] | null | undefined;
+  lastRead: number;
+}) => {
   return (
     <table className="w-full py-8">
       <tbody>
@@ -13,6 +20,7 @@ const NotificationList = ({ data }: { data: IAccountNotification[] | null | unde
             score={notification.score}
             type={notification.type}
             url={notification.url}
+            lastRead={lastRead}
           />
         ))}
       </tbody>

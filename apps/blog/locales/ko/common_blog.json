@@ -105,6 +105,7 @@
       "challenges": "Challenges"
     },
     "profil_notifications_tab_navbar": {
+      "mark_all": "모두 읽음으로 표시",
       "all": "All",
       "replies": "받은 댓글",
       "mentions": "Mentions",
@@ -388,6 +389,7 @@
     "show_preview": "미리보기 표시",
     "title": "제목",
     "insert_images_by_dragging": "드래그 또는 드롭으로 이미지 삽입 ",
+    "insert_images_info": "이미지 선택은 그림 아이콘을 통해 편집기 도구 모음에 제공됩니다.",
     "selecting_them": "선택하여 이미지 삽입",
     "post_summary": "게시물 요약 (게시물 및 SEO용, 최대 140자)",
     "enter_your_tags": "스페이스로 구분된 태그 입력",
@@ -421,6 +423,7 @@
       "decline_payout": "지급 거부",
       "custom_value": "사용자 지정 값",
       "cannot_be_less_than": "값은 0보다 작을 수 없습니다",
+      "cannot_be_more_than": "값은 999999을 초과할 수 없습니다",
       "author_rewards": "게시자 보상",
       "what_type_of_tokens": "이 게시물에서 보상으로 받고 싶은 토큰 유형은 무엇입니까?",
       "power_up": "100% 파워 업",

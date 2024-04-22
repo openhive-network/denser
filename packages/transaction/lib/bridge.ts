@@ -320,6 +320,10 @@ export interface IAccountNotification {
   url: string;
 }
 
+export interface IAccountNotificationEx extends IAccountNotification {
+  lastRead: number;
+}
+
 type GetAccountNotificationsData = {
   bridge: {
     account_notifications: TWaxApiRequest<IGetAccountNotifications, IAccountNotification[] | null>;

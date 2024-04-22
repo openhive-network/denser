@@ -19,6 +19,10 @@ const logger = getLogger('app');
 class TransactionService {
   errorDescription = 'Transaction broadcast error';
   signerOptions!: SignerOptions;
+  wellKnownErrorDescriptions = [
+    'Your current vote on this comment is identical to this vote',
+    'Account does not have enough mana to downvote',
+  ];
 
   setSignerOptions(signerOptions: SignerOptions) {
     this.signerOptions = signerOptions;
@@ -395,10 +399,20 @@ class TransactionService {
     });
   }
 
-  wellKnownErrorDescriptions = [
-    'Your current vote on this comment is identical to this vote',
-    'Account does not have enough mana to downvote',
-  ];
+  async markAllNotificationAsRead(date: string) {
+    await this.processHiveAppOperation((builder) => {
+      builder
+        .push({
+          custom_json: {
+            id: 'notify',
+            json: JSON.stringify(['setLastRead', { date: date }]),
+            required_auths: [],
+            required_posting_auths: [this.signerOptions.username]
+          }
+        })
+        .build();
+    });
+  }
 
   handleError(e: any) {
     logger.error('got error', e);
@@ -435,6 +449,7 @@ class TransactionService {
       variant: 'destructive'
     });
   }
+
 }
 
 export const transactionService = new TransactionService();

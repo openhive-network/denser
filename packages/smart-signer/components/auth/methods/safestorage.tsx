@@ -30,9 +30,6 @@ import { Steps } from "../form";
 import { KeyType, LoginType } from "@smart-signer/types/common";
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
 
-import { getLogger } from '@ui/lib/logging';
-const logger = getLogger('app');
-
 const formSchema = z.object({
         username,
         password: z.string().min(6, {
@@ -69,12 +66,15 @@ export interface SafeStorageProps {
     isSigned?: boolean;
     sign: (loginType: LoginType, username: string, keyType: KeyType) => Promise<void>;
     submit: (username: string) => Promise<void>;
-    lastLoggedInUser?: string;
+    username: string;
+    onUsernameChange: (username: string) => void;
 }
 
 type SafeStorageForm = z.infer<typeof formSchema>;
 
-const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, sign, submit, preferredKeyTypes, i18nNamespace, isSigned, lastLoggedInUser }, ref) => {
+const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
+    ({ onSetStep, sign, submit, preferredKeyTypes, i18nNamespace, isSigned, username, onUsernameChange }, ref) => {
+
     useImperativeHandle(ref, () => ({
         async cancel() {
             await cancelAuth();
@@ -91,7 +91,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
         mode: 'onChange',
         resolver: zodResolver(formSchema),
         defaultValues: {
-            username: "",
+            username,
             password: "",
             wif: "",
             keyType: preferredKeyTypes[0],
@@ -169,15 +169,9 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
         form.reset();
         await authClient?.current?.logout();
         const users = await authClient.current?.getAuths() || [];
-        setDefaultUser();
         setAuthUsers(users);
         setLoading(false);
     }
-
-    const setDefaultUser = useCallback(() => {
-        if (lastLoggedInUser)
-            form.setValue('username', lastLoggedInUser);
-    }, [lastLoggedInUser, form])
 
     useEffect(() => {
         (async () => {
@@ -187,8 +181,6 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
 
                 const auths = await authClient.current.getAuths();
 
-                setDefaultUser();
-
                 setAuthUsers(auths);
             } catch (error) {
                 setError((error as AuthorizationError).message);
@@ -196,10 +188,12 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
                 setLoading(false);
             }
         })();
-    }, [setDefaultUser]);
+    }, []);
 
     const userFound = useMemo(() => {
-        const found = authUsers.filter((user) => user.username === form.getValues().username)[0];
+        const formUsername = form.getValues().username;
+        onUsernameChange(formUsername);
+        const found = authUsers.filter((user) => user.username === formUsername)[0];
 
         if (found?.username) {
             if (found?.unlocked) {
@@ -220,7 +214,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
 
     return (
         <Step title={t("login_form.signin_safe_storage.title")} description={<div>
-            <div>{description}</div>
+            <div data-testid="login-form-description">{description}</div>
             {error && <div className="text-destructive text-sm">{error}</div>}
         </div>} loading={loading}>
             <Form {...form}>
@@ -238,6 +232,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
                                             placeholder={t("login_form.signin_safe_storage.placeholder_username")}
                                             type='text'
                                             autoComplete="username"
+                                            data-testid="username-input"
                                             {...field}
                                         />
                                         {authUsers.length ? (
@@ -283,6 +278,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
                                     <Input placeholder={t("login_form.signin_safe_storage.placeholder_password")}
                                     type='password'
                                     autoComplete="current-password"
+                                    data-testid="password-input"
                                     {...field}
                                 />
                                 </FormControl>
@@ -299,7 +295,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
                         render={({ field, formState: { errors } }) => (
                             <FormItem>
                                 <FormControl>
-                                    <Input placeholder={t("login_form.signin_safe_storage.placeholder_wif", { keyType: form.getValues().keyType })} type='password' {...field} />
+                                    <Input placeholder={t("login_form.signin_safe_storage.placeholder_wif", { keyType: form.getValues().keyType })} type='password' data-testid="wif-input" {...field} />
                                 </FormControl>
                                 {errors.wif && <FormMessage className="font-normal">{t(errors.wif?.message!)}</FormMessage>}
                             </FormItem>
@@ -364,6 +360,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
                                 <Button
                                     className='w-full flex-1 bg-red-600 hover:bg-red-500 text-white'
                                     type='submit'
+                                    data-testid='save-sign-in-button'
                                     disabled={!form.formState.isValid}
                                     onClick={form.handleSubmit(onSave)}
                                 >
@@ -374,7 +371,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(({ onSetStep, s
 
                     <Separator className='my-4' />
 
-                    <Button className='w-full' type='button' variant="secondary" onClick={() => {
+                    <Button className='w-full' data-testid='other-sign-in-options-button' type='button' variant="secondary" onClick={() => {
                         cancelAuth();
                         onSetStep(Steps.OTHER_LOGIN_OPTIONS);
                     }}>

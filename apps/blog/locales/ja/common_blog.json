@@ -105,6 +105,7 @@
       "challenges": "Challenges"
     },
     "profil_notifications_tab_navbar": {
+      "mark_all": "すべて既読としてマークする",
       "all": "All",
       "replies": "返信",
       "mentions": "Mentions",
@@ -388,6 +389,7 @@
     "show_preview": "プレビューを表示",
     "title": "タイトル",
     "insert_images_by_dragging": "画像の挿入はドラッグ＆ドロップ または ",
+    "insert_images_info": "画像の選択は、画像アイコンを介してエディターのツールバーに表示されます",
     "selecting_them": "選択してください",
     "post_summary": "投稿の要約（投稿およびSEO用、最大140文字）",
     "enter_your_tags": "スペースで区切られたタグを入力してください",
@@ -421,6 +423,7 @@
       "decline_payout": "支払いを辞退",
       "custom_value": "カスタム値",
       "cannot_be_less_than": "値は0未満にすることはできません",
+      "cannot_be_more_than": "値は999999を超えることはできません",
       "author_rewards": "投稿者報酬",
       "what_type_of_tokens": "この投稿からの報酬としてどのタイプのトークンを希望しますか？",
       "power_up": "100% パワーアップ",

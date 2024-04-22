@@ -106,6 +106,7 @@
       "challenges": "Challenges"
     },
     "profil_notifications_tab_navbar": {
+      "mark_all": "Mark all as read",
       "all": "All",
       "replies": "Replies",
       "mentions": "Mentions",
@@ -400,6 +401,7 @@
     "show_preview": "Show preview",
     "title": "Title",
     "insert_images_by_dragging": "Insert images by dragging & dropping or by ",
+    "insert_images_info": "Selecting image is provide in editor toolbar via picture icon",
     "selecting_them": "selecting them",
     "post_summary": "Post summary(for posts & SEO, max 140 chars)",
     "enter_your_tags": "Enter your tags separated by a space",
@@ -433,6 +435,7 @@
       "decline_payout": "Decline Payout",
       "custom_value": "Custom value",
       "cannot_be_less_than": "Value cannot be less than 0",
+      "cannot_be_more_than": "Value cannot be more than 999999",
       "author_rewards": "Author rewards",
       "what_type_of_tokens": "What type of tokens do you want as rewards from this post?",
       "power_up": " Power up 100%",

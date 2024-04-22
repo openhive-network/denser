@@ -105,6 +105,7 @@
       "challenges": "Challenges"
     },
     "profil_notifications_tab_navbar": {
+      "mark_all": "Segna tutti come letti",
       "all": "All",
       "replies": "Risponde",
       "mentions": "Mentions",
@@ -388,6 +389,7 @@
     "show_preview": "Mostra anteprima",
     "title": "Titolo",
     "insert_images_by_dragging": "Inserisci immagini trascinandole e rilasciandole o ",
+    "insert_images_info": "La selezione dell'immagine viene fornita nella barra degli strumenti dell'editor tramite l'icona dell'immagine",
     "selecting_them": "selezionandole",
     "post_summary": "Sommario della pubblicazione (per post e SEO, max 140 caratteri)",
     "enter_your_tags": "Inserisci i tuoi tag separati da uno spazio",
@@ -421,6 +423,7 @@
       "decline_payout": "Rifiuta pagamento",
       "custom_value": "Valore personalizzato",
       "cannot_be_less_than": "Il valore non può essere inferiore a 0",
+      "cannot_be_more_than": "Il valore non può essere superiore a 999999",
       "author_rewards": "Ricompense dell'autore",
       "what_type_of_tokens": "Che tipo di token desideri come ricompense per questa pubblicazione?",
       "power_up": "Potenzia al 100%",
