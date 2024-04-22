@@ -22,9 +22,9 @@ const transactionServiceThrowingError =
     TransactionErrorHandlingMode.OnlyThrow
   );
 
-const vote = async (voter: string, author: string, permlink: string, weight: number) => {
+const vote = async (service: TransactionServiceThrowingError, voter: string, author: string, permlink: string, weight: number) => {
   try {
-    await transactionServiceThrowingError.upVote(author, permlink, weight);
+    await service.upVote(author, permlink, weight);
     await PromiseTools.promiseTimeout(1000 * 15);
   } catch (error) {
     transactionServiceThrowingError.handleError(error);
@@ -39,7 +39,9 @@ export function usePostUpdateVoteMutation() {
     mutationFn: (params: { voter: string, author: string, permlink: string, weight: number }) => {
       const { voter, author, permlink, weight } = params;
       transactionServiceThrowingError.setSignerOptions(signerOptions);
-      return vote( voter, author, permlink, weight);
+      return vote(
+        transactionServiceThrowingError, voter, author, permlink, weight
+      );
     },
     onSuccess: (data) => {
       console.log('usePostUpdateVoteMutation onSuccess data: %o', data);
