@@ -7,9 +7,9 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@hive/hb-auth": "^0.0.1-stable.240412092723",
+    "@hive/hb-auth": "^0.0.1-stable.240422124417",
     "@hive/ui": "*",
-    "@hive/wax": "^0.3.8-240403101225",
+    "@hive/wax": "^0.3.8-240422103846",
     "@hiveio/dhive": "^1.2.8",
     "@hiveio/hive-js": "^2.0.7",
     "@tanstack/react-query": "^4.36.1",
