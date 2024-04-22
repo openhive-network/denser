@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { SyntheticEvent, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { IAccountNotification, getAccountNotifications } from '@transaction/lib/bridge';
 import NotificationList from '@/blog/components/notification-list';
@@ -7,13 +7,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components/tabs';
 import { useTranslation } from 'next-i18next';
 import { transactionService } from '@transaction/index';
 import { useAppStore } from '../store/app';
+import { FullAccount } from '@transaction/lib/app-types';
+import { getRewardsString } from '../lib/utils';
+import { ApiAccount } from '@hive/wax';
 
 const NotificationActivities = ({
   data,
-  username
+  username,
+  profileData,
+  apiAccount
 }: {
   data: IAccountNotification[] | null | undefined;
   username: string;
+  profileData: FullAccount;
+  apiAccount: ApiAccount;
 }) => {
   const { t } = useTranslation('common_blog');
   const [state, setState] = useState(data);
@@ -48,8 +55,12 @@ const NotificationActivities = ({
     transactionService.markAllNotificationAsRead(
       newDate.toISOString().slice(0, newDate.toISOString().length - 5)
     );
-    console.log('newDate.getTime() markAsReadNewDate', newDate.getTime());
     setLastRead(newDate.getTime());
+  }
+
+  function handleClaimRewards(e: SyntheticEvent) {
+    e.preventDefault();
+    transactionService.claimRewards(apiAccount);
   }
 
   function handleLoadMore() {
@@ -60,6 +71,20 @@ const NotificationActivities = ({
 
   return (
     <Tabs defaultValue="all" className="w-full">
+      {parseFloat(profileData.reward_hive_balance.split(' ')[0]) > 0 ||
+      parseFloat(profileData.reward_hbd_balance.split(' ')[0]) > 0 ||
+      parseFloat(profileData.reward_vesting_hive.split(' ')[0]) > 0 ? (
+        <div className="flex flex-col items-center justify-center bg-green-50 px-2 py-4 dark:bg-gray-600 md:flex-row md:justify-between">
+          <span>
+            {t('navigation.profil_notifications_tab_navbar.unclaimed_rewards')}
+            {getRewardsString(profileData, t)}
+          </span>
+          <Button variant="redHover" onClick={handleClaimRewards}>
+            {t('navigation.profil_notifications_tab_navbar.redeem')}
+          </Button>
+        </div>
+      ) : null}
+
       <span
         className="text-md block w-full text-center font-bold hover:cursor-pointer"
         onClick={handleMarkAllAsRead}

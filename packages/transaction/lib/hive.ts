@@ -1,6 +1,13 @@
 import { Moment } from 'moment';
 import { AccountFollowStats, AccountProfile, FullAccount } from './app-types';
-import { TWaxApiRequest, IManabarData, IHiveChainInterface, transaction, NaiAsset } from '@hive/wax';
+import {
+  TWaxApiRequest,
+  IManabarData,
+  IHiveChainInterface,
+  transaction,
+  NaiAsset,
+  ApiAccount
+} from '@hive/wax';
 import { isCommunity, parseAsset } from '@ui/lib/utils';
 import { vestsToRshares } from '@ui/lib/utils';
 import { DATA_LIMIT } from './bridge';
@@ -140,6 +147,15 @@ export const getAccountFull = (username: string): Promise<FullAccount> =>
     return { ...account, follow_stats };
   });
 
+type GetFindsAccountsData = {
+  database_api: {
+    find_accounts: TWaxApiRequest<string, { accounts: ApiAccount[] }>;
+  };
+};
+
+export const getFindAccounts = (username: string): Promise<{ accounts: ApiAccount[] }> => {
+  return chain.extend<GetFindsAccountsData>().api.database_api.find_accounts({ accounts: [username] });
+};
 export interface IFeedHistory {
   current_median_history: {
     base: NaiAsset;

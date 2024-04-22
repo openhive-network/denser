@@ -1,5 +1,6 @@
 {
   "global": {
+    "no_rewards": "사용 대기 중인 보상이 없습니다.",
     "loading": "Loading",
     "something_went_wrong": "Something went wrong",
     "time_ago": {
