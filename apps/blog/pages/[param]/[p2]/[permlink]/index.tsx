@@ -420,7 +420,6 @@ function PostPage({
               </div>
               <div className="my-4 flex justify-between">
                 <div className="flex items-center gap-2 sm:gap-4">
-                  Bamboo
                   <VotesComponent post={post} />
                   <DetailsCardHover
                     post={post}
