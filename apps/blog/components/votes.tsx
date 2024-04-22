@@ -7,26 +7,38 @@ import type { Entry } from '@transaction/lib/bridge';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { transactionService } from '@transaction/index';
+import { transactionService, TransactionServiceThrowingError, TransactionErrorHandlingMode } from '@transaction/index';
 import env from '@beam-australia/react-env';
 import { PromiseTools } from '@transaction/lib/promise-tools'
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { CircleSpinner } from 'react-spinners-kit';
+import { useSigner } from '@smart-signer/lib/use-signer';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
+const transactionServiceThrowingError =
+  new TransactionServiceThrowingError(
+    TransactionErrorHandlingMode.OnlyThrow
+  );
+
 const vote = async (voter: string, author: string, permlink: string, weight: number) => {
-  await transactionService.upVote(author, permlink, weight);
-  await PromiseTools.promiseTimeout(1000 * 15);
+  try {
+    await transactionServiceThrowingError.upVote(author, permlink, weight);
+    await PromiseTools.promiseTimeout(1000 * 15);
+  } catch (error) {
+    transactionServiceThrowingError.handleError(error);
+  }
   return { voter, author, permlink, weight };
 };
 
 export function usePostUpdateVoteMutation() {
   const queryClient = useQueryClient();
+  const { signerOptions } = useSigner();
   const postUpdateVoteMutation = useMutation({
     mutationFn: (params: { voter: string, author: string, permlink: string, weight: number }) => {
       const { voter, author, permlink, weight } = params;
+      transactionServiceThrowingError.setSignerOptions(signerOptions);
       return vote( voter, author, permlink, weight);
     },
     onSuccess: (data) => {
