@@ -37,10 +37,15 @@ export function PopoverCardData({ author, blacklist }: { author: string; blackli
         <>
           <div className="flex">
             <Link href={`/@${author}`} data-testid="popover-card-user-avatar">
-              <Avatar className="mr-2 block h-[75px] w-[75px] rounded-full bg-transparent bg-cover bg-center bg-no-repeat">
-                <AvatarImage src={account.data.profile?.profile_image} alt="Profile picture" />
+              <Avatar className="flex h-[75px] w-[75px] items-center justify-center overflow-hidden rounded-full">
+                <AvatarImage
+                  className="h-full w-full object-cover"
+                  src={account.data.profile?.profile_image}
+                  alt="Profile picture"
+                />
                 <AvatarFallback>
                   <img
+                    className="h-full w-full object-cover"
                     src="https://images.hive.blog/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4"
                     alt="default img"
                   />
