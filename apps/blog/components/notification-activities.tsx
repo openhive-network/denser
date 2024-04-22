@@ -7,20 +7,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components/tabs';
 import { useTranslation } from 'next-i18next';
 import { transactionService } from '@transaction/index';
 import { useAppStore } from '../store/app';
-import { FullAccount } from '@transaction/lib/app-types';
 import { getRewardsString } from '../lib/utils';
-import { ApiAccount } from '@hive/wax';
+import { getAccountFull, getFindAccounts } from '@transaction/lib/hive';
 
 const NotificationActivities = ({
   data,
-  username,
-  profileData,
-  apiAccount
+  username
 }: {
   data: IAccountNotification[] | null | undefined;
   username: string;
-  profileData: FullAccount;
-  apiAccount: ApiAccount;
 }) => {
   const { t } = useTranslation('common_blog');
   const [state, setState] = useState(data);
@@ -39,6 +34,21 @@ const NotificationActivities = ({
     () => getAccountNotifications(username, lastStateElementId, 50),
     { enabled: !!username }
   );
+  const {
+    isLoading: profileDataIsLoading,
+    error: errorProfileData,
+    data: profileData
+  } = useQuery(['profileData', username], () => getAccountFull(username), {
+    enabled: !!username
+  });
+
+  const {
+    isLoading: apiAccountsIsLoading,
+    error: errorApiAccounts,
+    data: apiAccounts
+  } = useQuery(['apiAccount', username], () => getFindAccounts(username), {
+    enabled: !!username
+  });
   const showButton = moreData?.length !== 0;
   useEffect(() => {
     if (state) {
@@ -60,7 +70,9 @@ const NotificationActivities = ({
 
   function handleClaimRewards(e: SyntheticEvent) {
     e.preventDefault();
-    transactionService.claimRewards(apiAccount);
+    if (apiAccounts) {
+      transactionService.claimRewards(apiAccounts.accounts[0]);
+    }
   }
 
   function handleLoadMore() {
@@ -71,9 +83,10 @@ const NotificationActivities = ({
 
   return (
     <Tabs defaultValue="all" className="w-full">
-      {parseFloat(profileData.reward_hive_balance.split(' ')[0]) > 0 ||
-      parseFloat(profileData.reward_hbd_balance.split(' ')[0]) > 0 ||
-      parseFloat(profileData.reward_vesting_hive.split(' ')[0]) > 0 ? (
+      {profileData &&
+      (parseFloat(profileData.reward_hive_balance.split(' ')[0]) > 0 ||
+        parseFloat(profileData.reward_hbd_balance.split(' ')[0]) > 0 ||
+        parseFloat(profileData.reward_vesting_hive.split(' ')[0]) > 0) ? (
         <div className="flex flex-col items-center justify-center bg-green-50 px-2 py-4 dark:bg-gray-600 md:flex-row md:justify-between">
           <span>
             {t('navigation.profil_notifications_tab_navbar.unclaimed_rewards')}

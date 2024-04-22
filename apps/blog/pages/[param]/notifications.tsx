@@ -42,18 +42,8 @@ export default function UserNotifications() {
   return (
     <LayoutProfile>
       <div className="flex w-full flex-col">
-        {data &&
-        data.length > 0 &&
-        profileData &&
-        !profileDataIsLoading &&
-        apiAccounts &&
-        !apiAccountsIsLoading ? (
-          <NotificationActivities
-            data={data}
-            username={username}
-            profileData={profileData}
-            apiAccount={apiAccounts.accounts[0]}
-          />
+        {data && data.length > 0 ? (
+          <NotificationActivities data={data} username={username} />
         ) : (
           <div
             key="empty"
