@@ -1,5 +1,6 @@
 {
   "global": {
+    "no_rewards": "引き換えが保留中の特典はありません。",
     "loading": "Loading",
     "something_went_wrong": "Something went wrong",
     "time_ago": {

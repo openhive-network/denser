@@ -4,6 +4,7 @@ import remarkableStripper from '../lib/remmarkable-stripper';
 import { JsonMetadata } from '@transaction/lib/bridge';
 import moment from 'moment';
 import { TFunction } from 'i18next';
+import { FullAccount } from '@transaction/lib/app-types';
 
 export enum Symbol {
   HIVE = 'HIVE',
@@ -238,6 +239,7 @@ export function parseCookie(cookie: string): Record<string, string> {
 
   return kv;
 }
+
 export function hoursAndMinutes(date: Date, t: TFunction<'common_blog', undefined>) {
   const today = moment();
   const cooldownMin = moment(date).diff(today, 'minutes') % 60;
@@ -256,4 +258,37 @@ export function hoursAndMinutes(date: Date, t: TFunction<'common_blog', undefine
         ? cooldownMin + ' ' + t('global.time.minutes')
         : '')
   );
+}
+
+export function getRewardsString(account: FullAccount, t: TFunction<'common_blog', undefined>): string {
+  const nothingToClaim = t('global.no_rewards');
+  const reward_hive =
+    parseFloat(account.reward_hive_balance.split(' ')[0]) > 0 ? account.reward_hive_balance : null;
+  const reward_hbd =
+    parseFloat(account.reward_hbd_balance.split(' ')[0]) > 0 ? account.reward_hbd_balance : null;
+  const reward_hp =
+    parseFloat(account.reward_vesting_hive.split(' ')[0]) > 0
+      ? account.reward_vesting_hive.replace('HIVE', 'HP')
+      : null;
+
+  const rewards = [];
+  if (reward_hive) rewards.push(reward_hive);
+  if (reward_hbd) rewards.push(reward_hbd);
+  if (reward_hp) rewards.push(reward_hp);
+
+  let rewards_str;
+  switch (rewards.length) {
+    case 3:
+      rewards_str = `${rewards[0]}, ${rewards[1]} and ${rewards[2]}`;
+      break;
+    case 2:
+      rewards_str = `${rewards[0]} and ${rewards[1]}`;
+      break;
+    case 1:
+      rewards_str = `${rewards[0]}`;
+      break;
+    default:
+      rewards_str = nothingToClaim;
+  }
+  return rewards_str;
 }

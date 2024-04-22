@@ -1,5 +1,6 @@
 {
   "global": {
+    "no_rewards": "没有等待兑换的奖励",
     "loading": "Loading",
     "something_went_wrong": "Something went wrong",
     "time_ago": {

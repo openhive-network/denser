@@ -1,4 +1,5 @@
 import {
+  ApiAccount,
   ArticleBuilder,
   BroadcastTransactionRequest,
   CommunityOperationBuilder,
@@ -14,7 +15,7 @@ import { toast } from '@hive/ui/components/hooks/use-toast';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
-import { Beneficiarie } from './lib/app-types';
+import { Beneficiarie, FullAccount } from './lib/app-types';
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
@@ -432,6 +433,19 @@ class TransactionService {
           }
         })
         .build();
+    });
+  }
+
+  async claimRewards(account: ApiAccount) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push({
+        claim_reward_balance: {
+          account: this.signerOptions.username,
+          reward_hive: account.reward_hive_balance,
+          reward_hbd: account.reward_hbd_balance,
+          reward_vests: account.reward_vesting_balance
+        }
+      });
     });
   }
 
