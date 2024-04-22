@@ -1,10 +1,12 @@
 import {
+  ArticleBuilder,
   BroadcastTransactionRequest,
   CommunityOperationBuilder,
   EFollowBlogAction,
   FollowOperationBuilder,
   ITransactionBuilder,
   NaiAsset,
+  ReplyBuilder,
   WaxChainApiError,
   future_extensions
 } from '@hive/wax';
@@ -296,15 +298,26 @@ class TransactionService {
 
   async comment(parentAuthor: string, parentPermlink: string, body: string) {
     await this.processHiveAppOperation((builder) => {
-      builder.pushReply(parentAuthor, parentPermlink, this.signerOptions.username, body).store();
+      builder
+        .useBuilder(ReplyBuilder, () => {}, parentAuthor, parentPermlink, this.signerOptions.username, body)
+        .build();
     });
   }
 
   async updateComment(parentAuthor: string, parentPermlink: string, permlink: string, body: string) {
     await this.processHiveAppOperation((builder) => {
       builder
-        .pushReply(parentAuthor, parentPermlink, this.signerOptions.username, body, {}, permlink)
-        .store();
+        .useBuilder(
+          ReplyBuilder,
+          () => {},
+          parentAuthor,
+          parentPermlink,
+          this.signerOptions.username,
+          body,
+          {},
+          permlink
+        )
+        .build();
     });
   }
 
@@ -321,21 +334,29 @@ class TransactionService {
     image?: string
   ) {
     await this.processHiveAppOperation((builder) => {
-      const op = builder
-        .pushArticle(this.signerOptions.username, permlink, title, body)
-        .setCategory(category !== 'blog' ? category : tags[0])
-        .setPercentHbd(percentHbd)
-        .setMaxAcceptedPayout(maxAcceptedPayout)
-        .pushTags(...tags)
-        .pushMetadataProperty({ summary: summary })
-        .pushImages(image ? image : '');
-      beneficiaries.forEach((beneficiarie) => {
-        op.addBeneficiary(beneficiarie.account, Number(beneficiarie.weight));
-      });
+      builder
+        .useBuilder(
+          ArticleBuilder,
+          (articleBuilder) => {
+            articleBuilder
+              .setCategory(category !== 'blog' ? category : tags[0])
+              .setPercentHbd(percentHbd)
+              .setMaxAcceptedPayout(maxAcceptedPayout)
+              .pushTags(...tags)
+              .pushMetadataProperty({ summary: summary })
+              .pushImages(image ? image : '');
 
-      op.store();
-
-      builder.build();
+            beneficiaries.forEach((beneficiarie) => {
+              articleBuilder.addBeneficiary(beneficiarie.account, Number(beneficiarie.weight));
+            });
+          },
+          this.signerOptions.username,
+          title,
+          body,
+          {},
+          permlink
+        )
+        .build();
     });
   }
 
