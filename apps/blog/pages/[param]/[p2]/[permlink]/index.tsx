@@ -466,6 +466,7 @@ function PostPage({
       <div className="mx-auto my-0 max-w-4xl py-4">
         {reply && post && user.isLoggedIn ? (
           <ReplyTextbox
+            editMode={edit}
             onSetReply={setReply}
             username={post.author}
             permlink={permlink}

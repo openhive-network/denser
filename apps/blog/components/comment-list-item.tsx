@@ -194,6 +194,7 @@ const CommentListItem = ({
                     <CardContent className="pb-2 ">
                       {edit && comment.parent_permlink && comment.parent_author ? (
                         <ReplyTextbox
+                          editMode={edit}
                           onSetReply={setEdit}
                           username={comment.parent_author}
                           permlink={comment.permlink}
@@ -259,7 +260,10 @@ const CommentListItem = ({
                           </button>
                         ) : (
                           <DialogLogin>
-                            <button className="flex items-center hover:cursor-pointer hover:text-red-600" data-testid="comment-card-footer-reply">
+                            <button
+                              className="flex items-center hover:cursor-pointer hover:text-red-600"
+                              data-testid="comment-card-footer-reply"
+                            >
                               {t('post_content.footer.reply')}
                             </button>
                           </DialogLogin>
@@ -295,6 +299,7 @@ const CommentListItem = ({
       ) : null}
       {reply && user && user.isLoggedIn ? (
         <ReplyTextbox
+          editMode={edit}
           onSetReply={setReply}
           username={username}
           permlink={comment.permlink}
