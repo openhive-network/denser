@@ -18,6 +18,7 @@ import { ICommand, TextAreaTextApi } from '@uiw/react-md-editor';
 
 import { getLogger } from '@ui/lib/logging';
 import { useSignerContext } from './common/signer';
+import e from 'cors';
 const logger = getLogger('app');
 
 const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false });
@@ -77,21 +78,28 @@ export const onImageUpload = async (
   file: File,
   setMarkdown: Dispatch<SetStateAction<string>>,
   username: string,
-  signer: Signer
+  signer: Signer,
+  htmlMode: boolean
 ) => {
   const url = await uploadImg(file, username, signer);
   const insertedMarkdown = `**![${file.name}](${url})** `;
+  const insertHTML = `<img src="${url}" alt="${file.name}" />`;
 
-  if (!insertedMarkdown) return;
-
-  setMarkdown((prev: string): string => prev + insertedMarkdown);
+  if (htmlMode) {
+    if (!insertHTML) return;
+    setMarkdown((prev: string): string => prev + insertHTML);
+  } else {
+    if (!insertedMarkdown) return;
+    setMarkdown((prev: string): string => prev + insertedMarkdown);
+  }
 };
 
 export const onImageDrop = async (
   dataTransfer: DataTransfer,
   setMarkdown: Dispatch<SetStateAction<string>>,
   username: string,
-  signer: Signer
+  signer: Signer,
+  htmlMode: boolean
 ) => {
   const files = [];
 
@@ -100,16 +108,17 @@ export const onImageDrop = async (
     if (file) files.push(file);
   }
 
-  await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer)));
+  await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer, htmlMode)));
 };
 
 interface MdEditorProps {
   onChange: (value: string) => void;
   persistedValue: string;
   placeholder?: string;
+  htmlMode: boolean;
 }
 
-const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholder }) => {
+const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholder, htmlMode }) => {
   const { user } = useUser();
   const [formValue, setFormValue] = useState<string>(persistedValue);
   const { signer } = useSignerContext();
@@ -130,7 +139,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
   const inputImageHandler = useCallback(async (event: { target: { files: FileList } }) => {
     if (event.target.files && event.target.files.length === 1) {
       setInsertImg('');
-      await onImageUpload(event.target.files[0], setFormValue, user.username, signer);
+      await onImageUpload(event.target.files[0], setFormValue, user.username, signer, htmlMode);
     }
   }, []);
 
@@ -161,7 +170,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       event.preventDefault();
       event.stopPropagation();
       setIsDrag(false);
-      await onImageDrop(event.dataTransfer, setFormValue, signer.username, signer);
+      await onImageDrop(event.dataTransfer, setFormValue, signer.username, signer, htmlMode);
     },
     []
   );

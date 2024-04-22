@@ -15,6 +15,7 @@ export function ReplyTextbox({
   permlink,
   parentPermlink,
   storageId,
+  editMode,
   comment
 }: {
   onSetReply: (e: boolean) => void;
@@ -22,6 +23,7 @@ export function ReplyTextbox({
   permlink: string;
   parentPermlink?: string;
   storageId: string;
+  editMode: boolean;
   comment?: string;
 }) {
   const [storedPost, storePost] = useLocalStorage<string>(`replyTo-/${username}/${permlink}`, '');
@@ -61,6 +63,7 @@ export function ReplyTextbox({
         </Link>
         <div>
           <MdEditor
+            htmlMode={editMode}
             onChange={(value) => {
               setText(value);
             }}

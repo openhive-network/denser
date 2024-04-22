@@ -354,6 +354,7 @@ export default function PostForm({
                   <FormControl>
                     <>
                       <MdEditor
+                        htmlMode={editMode}
                         onChange={(value) => {
                           form.setValue('postArea', value);
                         }}
