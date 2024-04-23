@@ -263,7 +263,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                                     </div>
                                     {/* Show select menu if there is length of auth users */}
                                 </FormControl>
-                                {errors.username && <FormMessage className="font-normal">{t(errors.username?.message!)}</FormMessage>}
+                                {errors.username && <FormMessage className="font-normal" data-testid="username-error-message">{t(errors.username?.message!)}</FormMessage>}
                             </FormItem>
                         )}
                     />
@@ -282,7 +282,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                                     {...field}
                                 />
                                 </FormControl>
-                                <FormMessage className="font-normal"></FormMessage>
+                                <FormMessage className="font-normal" data-testid="password-error-message"></FormMessage>
                                 {/* {errors.password && <FormMessage className="font-normal">{t(errors.password?.message!)}</FormMessage>} */}
                             </FormItem>
                         )}
@@ -297,7 +297,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                                 <FormControl>
                                     <Input placeholder={t("login_form.signin_safe_storage.placeholder_wif", { keyType: form.getValues().keyType })} type='password' data-testid="wif-input" {...field} />
                                 </FormControl>
-                                {errors.wif && <FormMessage className="font-normal">{t(errors.wif?.message!)}</FormMessage>}
+                                {errors.wif && <FormMessage className="font-normal" data-testid="wif-input-error-message">{t(errors.wif?.message!)}</FormMessage>}
                             </FormItem>
                         )}
                     />}

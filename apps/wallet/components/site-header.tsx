@@ -100,7 +100,7 @@ const SiteHeader: FC = () => {
             {isClient && user?.isLoggedIn ? (
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger data-testid="comment-card-footer-downvote">
+                  <TooltipTrigger data-testid="profile-avatar-button">
                     <UserMenu user={user}>
                       <div className="relative inline-flex w-fit cursor-pointer items-center justify-center">
                         <div className="absolute cursor-pointer">

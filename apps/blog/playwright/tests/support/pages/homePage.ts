@@ -97,6 +97,9 @@ export class HomePage {
   readonly languageMenuPl: Locator;
   readonly themeMode: Locator;
 
+  // for logged in user
+  readonly profileAvatarButton: Locator;
+
   constructor(page: Page) {
     this.page = page;
     this.postPage = new PostPage(page);
@@ -199,6 +202,9 @@ export class HomePage {
     this.languageMenu = page.locator('[role="menuitem"]');
     this.languageMenuPl = page.locator('[data-testid="pl"]').locator('..');
     this.themeMode = page.locator('[data-testid="theme-mode"]');
+
+    // for logged in user
+    this.profileAvatarButton = page.locator('[data-testid="profile-avatar-button"]');
   }
 
   async goto() {
