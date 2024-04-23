@@ -89,7 +89,13 @@ export function ReplyTextbox({
             disabled={text === ''}
             onClick={() => {
               if (parentPermlink) {
-                transactionService.updateComment(username, parentPermlink, permlink, cleanedText);
+                transactionService.updateComment(
+                  username,
+                  parentPermlink,
+                  permlink,
+                  cleanedText,
+                  preferences
+                );
               } else {
                 transactionService.comment(username, permlink, cleanedText, preferences);
               }

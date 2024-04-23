@@ -38,6 +38,7 @@ import { TFunction } from 'i18next';
 import { debounce, extractUrlsFromJsonString, extractYouTubeVideoIds } from '../lib/utils';
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 
 const defaultValues = {
   title: '',
@@ -168,6 +169,7 @@ export default function PostForm({
 }) {
   const { hiveRenderer } = useContext(HiveRendererContext);
   const router = useRouter();
+  const [preferences, setPreferences] = useLocalStorage<Preferences>('user-preferences', DEFAULT_PREFERENCES);
   const [preview, setPreview] = useState(true);
   const [selectedImg, setSelectedImg] = useState('');
   const [sideBySide, setSideBySide] = useState(sideBySidePreview);
@@ -229,7 +231,7 @@ export default function PostForm({
     maxAcceptedPayout: post_s
       ? Number(post_s.max_accepted_payout.split(' ')[0])
       : storedPost?.maxAcceptedPayout ?? 1000000,
-    payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType ?? '50%'
+    payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType ?? preferences.blog_rewards
   });
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
@@ -280,11 +282,11 @@ export default function PostForm({
         storedPost.title,
         storedPost.postArea,
         storedPost.beneficiaries,
-        Number(storedPost.payoutType.slice(0, 2)),
         maxAcceptedPayout,
         tags,
         communityPosting ? communityPosting : storedPost.category,
         storedPost.postSummary,
+        preferences,
         imgYoutube(selectedImg)
       );
       form.reset(defaultValues);
