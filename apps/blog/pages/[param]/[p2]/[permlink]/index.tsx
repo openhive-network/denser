@@ -139,22 +139,18 @@ function PostPage({
   const commentSite = post?.depth !== 0 ? true : false;
   const [mutedPost, setMutedPost] = useState(post?.stats?.gray);
   const postUrl = () => {
-    if (discussionState && discussionState.length > 0) {
-      const objectWithSmallestDepth = discussionState.reduce(
-        (smallestDepth, e) => {
-          if (e.depth < smallestDepth.depth) {
-            return e;
-          }
-          return smallestDepth;
-        },
-        { depth: Infinity }
-      );
-      return objectWithSmallestDepth;
+    if (discussionState) {
+      const objectWithSmallestDepth = discussionState.reduce((smallestDepth, e) => {
+        if (e.depth < smallestDepth.depth) {
+          return e;
+        }
+        return smallestDepth;
+      });
+      return objectWithSmallestDepth.url;
     }
   };
-
   const parentUrl = () => {
-    if (discussionState && discussionState[0]) {
+    if (discussionState) {
       return (
         discussionState[0].category +
         '/@' +
