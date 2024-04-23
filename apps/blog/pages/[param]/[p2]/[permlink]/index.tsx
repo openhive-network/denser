@@ -69,13 +69,9 @@ function PostPage({
     isLoading: isLoadingDiscussion,
     error: errorDiscussion,
     data: discussion
-  } = useQuery(
-    ['discussionData', username, permlink],
-    () => getDiscussion(username, user.username, String(permlink)),
-    {
-      enabled: !!username && !!permlink
-    }
-  );
+  } = useQuery(['discussionData', username, permlink], () => getDiscussion(username, String(permlink)), {
+    enabled: !!username && !!permlink
+  });
 
   const {
     isLoading: isLoadingCommunity,
@@ -143,18 +139,22 @@ function PostPage({
   const commentSite = post?.depth !== 0 ? true : false;
   const [mutedPost, setMutedPost] = useState(post?.stats?.gray);
   const postUrl = () => {
-    if (discussionState) {
-      const objectWithSmallestDepth = discussionState.reduce((smallestDepth, e) => {
-        if (e.depth < smallestDepth.depth) {
-          return e;
-        }
-        return smallestDepth;
-      });
-      return objectWithSmallestDepth.url;
+    if (discussionState && discussionState.length > 0) {
+      const objectWithSmallestDepth = discussionState.reduce(
+        (smallestDepth, e) => {
+          if (e.depth < smallestDepth.depth) {
+            return e;
+          }
+          return smallestDepth;
+        },
+        { depth: Infinity }
+      );
+      return objectWithSmallestDepth;
     }
   };
+
   const parentUrl = () => {
-    if (discussionState) {
+    if (discussionState && discussionState[0]) {
       return (
         discussionState[0].category +
         '/@' +
