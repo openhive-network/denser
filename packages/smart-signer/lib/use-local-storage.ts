@@ -27,10 +27,10 @@ function useLocalStorage<T extends string | object>(key: string, initialValue: T
   // Return a wrapped version of useState's setter function that
   // persists the new value to localStorage.
   const setValue = (value: T) => {
-    logger.info('In useLocalStorage setValue for key %s to: %o', key, value);
     try {
       // Allow value to be a function so we have same API as useState
       const valueToStore = value instanceof Function ? value(storedValue) : value;
+      logger.info('In useLocalStorage setValue for key %s to: %o', key, valueToStore);
       // Save state
       setStoredValue(valueToStore);
       // Save to local storage
