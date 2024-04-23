@@ -25,7 +25,7 @@ interface CommentListProps {
   comment: Entry;
   renderer: DefaultRenderer;
   parent_depth: number;
-  mutedList?: IFollowList[];
+  mutedList: IFollowList[];
 }
 
 const CommentListItem = ({ comment, renderer, parent_depth, mutedList }: CommentListProps) => {
