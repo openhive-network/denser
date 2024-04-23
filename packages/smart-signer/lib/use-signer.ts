@@ -1,7 +1,7 @@
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { KeyType } from '@smart-signer/types/common';
-import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
+import { useLocalStorage } from 'usehooks-ts';
 import { siteConfig } from '@ui/config/site';
 
 export const useSigner = () => {

@@ -1,4 +1,4 @@
-import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
+import { useLocalStorage } from 'usehooks-ts';
 import { Button } from '@ui/components';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';

@@ -13,7 +13,7 @@ import {
   SelectValue
 } from '@ui/components/select';
 import { siteConfig } from '@ui/config/site';
-import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
+import { useLocalStorage } from 'usehooks-ts';
 import { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
