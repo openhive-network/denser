@@ -10,9 +10,10 @@ import { useEffect, useState } from 'react';
 import { transactionService, TransactionServiceThrowingError, TransactionErrorHandlingMode } from '@transaction/index';
 import env from '@beam-australia/react-env';
 import { PromiseTools } from '@transaction/lib/promise-tools'
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { CircleSpinner } from 'react-spinners-kit';
 import { useSigner } from '@smart-signer/lib/use-signer';
+import { IVoteListItem, getListVotesByCommentVoter } from '@transaction/lib/hive';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -69,6 +70,26 @@ const VotesComponent = ({ post }: { post: Entry }) => {
     setIsClient(true);
   }, []);
   const checkVote = isClient && post.active_votes.find((e) => e.voter === user?.username);
+
+  const {
+    isLoading: isLoadingUserVotes,
+    error: errorUserVotes,
+    data: userVotes
+  } = useQuery(
+    ['votes', post.author, post.permlink, user?.username],
+    () => getListVotesByCommentVoter(
+      [post.author, post.permlink, user?.username], 1),
+    {
+      enabled: !!checkVote
+    }
+  );
+
+  let userVote: IVoteListItem;
+  if (userVotes) {
+    userVote = userVotes.votes[0];
+    logger.info('user: %s voted: %s for post.author: %s, post.permlink: %s. Full userVote is: %o',
+      user.username, userVote.vote_percent, post.author, post.permlink, userVote);
+  }
 
   const postUpdateVoteMutation = usePostUpdateVoteMutation();
 

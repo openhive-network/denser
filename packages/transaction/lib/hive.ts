@@ -829,7 +829,7 @@ interface IVoteListItem {
 
 type GetListVotesData = {
   database_api: {
-    list_votes: TWaxApiRequest<{ start: [string, string, string] | null; limit: number; order: 'by_comment_voter' | 'by_voter_comment' }, IVoteListItem[]>;
+    list_votes: TWaxApiRequest<{ start: [string, string, string] | null; limit: number; order: 'by_comment_voter' | 'by_voter_comment' }, { votes: IVoteListItem[] }>;
   };
 };
 
@@ -837,7 +837,7 @@ type GetListVotesData = {
 export const getListVotesByCommentVoter = async (
   start: [string, string, string] | null, // should be [author, permlink, voter]
   limit: number,
-): Promise<IVoteListItem[]> => {
+): Promise<{ votes: IVoteListItem[] }> => {
   return chain
     .extend<GetListVotesData>()
     .api.database_api.list_votes({ start, limit, order: 'by_comment_voter' });
@@ -846,7 +846,7 @@ export const getListVotesByCommentVoter = async (
 export const getListVotesByVoterComment = async (
   start: [string, string, string] | null, // should be [voter, author, permlink]
   limit: number,
-): Promise<IVoteListItem[]> => {
+): Promise<{ votes: IVoteListItem[] }> => {
   return chain
     .extend<GetListVotesData>()
     .api.database_api.list_votes({ start, limit, order: 'by_voter_comment' });
