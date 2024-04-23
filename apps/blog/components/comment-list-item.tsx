@@ -10,7 +10,7 @@ import DetailsCardVoters from '@/blog/components/details-card-voters';
 import { ReplyTextbox } from './reply-textbox';
 import { useRouter } from 'next/router';
 import DetailsCardHover from './details-card-hover';
-import type { Entry } from '@transaction/lib/bridge';
+import type { Entry, IFollowList } from '@transaction/lib/bridge';
 import clsx from 'clsx';
 import { Badge } from '@ui/components/badge';
 import { DefaultRenderer } from '@hiveio/content-renderer';
@@ -21,21 +21,22 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';
 import { UserPopoverCard } from './user-popover-card';
 
-const CommentListItem = ({
-  comment,
-  renderer,
-  parent_depth
-}: {
+interface CommentListProps {
   comment: Entry;
   renderer: DefaultRenderer;
   parent_depth: number;
-}) => {
+  mutedList?: IFollowList[];
+}
+
+const CommentListItem = ({ comment, renderer, parent_depth, mutedList }: CommentListProps) => {
   const { t } = useTranslation('common_blog');
   const username = comment.author;
   const router = useRouter();
   const { user } = useUser();
   const ref = useRef<HTMLTableRowElement>(null);
-  const [hiddenComment, setHiddenComment] = useState(comment.stats?.gray);
+  const [hiddenComment, setHiddenComment] = useState(
+    comment.stats?.gray || mutedList?.some((x) => x.name === comment.author)
+  );
   const [openState, setOpenState] = useState<boolean>(comment.stats?.gray && hiddenComment ? false : true);
   const comment_html = renderer.render(comment.body);
   const commentId = `@${username}/${comment.permlink}`;
@@ -65,8 +66,8 @@ const CommentListItem = ({
           <div className="flex" id={commentId} ref={ref}>
             <img
               className={clsx('mr-3 hidden  rounded-3xl sm:block', {
-                'mx-[15px] h-[25px] w-[25px] opacity-50': comment.stats?.gray,
-                'h-[40px] w-[40px]': !comment.stats?.gray
+                'mx-[15px] h-[25px] w-[25px] opacity-50': hiddenComment,
+                'h-[40px] w-[40px]': !hiddenComment
               })}
               height="40"
               width="40"
@@ -77,7 +78,7 @@ const CommentListItem = ({
             <Card
               className={cn(
                 `mb-4 w-full px-2 hover:bg-accent dark:bg-slate-700 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground depth-${comment.depth}`,
-                { 'opacity-50 hover:opacity-100': comment.stats?.gray }
+                { 'opacity-50 hover:opacity-100': hiddenComment }
               )}
             >
               <Accordion type="single" defaultValue={!hiddenComment ? 'item-1' : undefined} collapsible>
