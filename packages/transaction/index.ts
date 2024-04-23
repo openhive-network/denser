@@ -305,6 +305,7 @@ class TransactionService {
           ReplyBuilder,
           (replyBuilder) => {
             if (preferences.comment_rewards === '0%') {
+              console.log('in if statement 0% comment rewards');
               replyBuilder.setPercentHbd(0);
             }
           },
