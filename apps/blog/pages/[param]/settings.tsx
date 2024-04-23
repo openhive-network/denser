@@ -585,26 +585,26 @@ export default function UserSettings() {
           </div>
           <Button className="my-4 w-44">{t('settings_page.reset_endpoints')}</Button>
         </div>
-        <div>
-          {mutedQuery.data?.map((mutedUser, index) => (
-            <>
-              <div>{t('settings_page.muted_users')}</div>
-              <ul>
+        {mutedQuery.data ? (
+          <div>
+            <div>{t('settings_page.muted_users')}</div>
+            <ul>
+              {mutedQuery.data.map((mutedUser, index) => (
                 <li key={mutedUser.name}>
                   <span>{index + 1}. </span>
                   <span className="text-red-500">{mutedUser.name}</span>
                   <Button
-                    className="text-red-500"
+                    className="h-fit p-1 text-red-500"
                     variant="link"
                     onClick={() => transactionService.unmute(mutedUser.name)}
                   >
                     [{t('settings_page.unmute')}]
                   </Button>
                 </li>
-              </ul>
-            </>
-          ))}
-        </div>
+              ))}
+            </ul>
+          </div>
+        ) : null}
       </div>
     </ProfileLayout>
   );
