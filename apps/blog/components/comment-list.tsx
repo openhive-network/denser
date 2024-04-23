@@ -4,6 +4,8 @@ import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import { useContext } from 'react';
 import { HiveRendererContext } from './hive-renderer-context';
+import { useFollowListQuery } from './hooks/use-follow-list';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 
 const CommentList = ({
   data,
@@ -14,6 +16,8 @@ const CommentList = ({
   parent: Entry;
   parent_depth: number;
 }) => {
+  const { user } = useUser();
+  const { data: mutedList } = useFollowListQuery(user.username, 'muted');
   const { hiveRenderer } = useContext(HiveRendererContext);
   let filtered = data.filter((x: Entry) => {
     return x?.parent_author === parent?.author && x?.parent_permlink === parent?.permlink;
@@ -50,6 +54,7 @@ const CommentList = ({
                 renderer={hiveRenderer}
                 key={`${comment.post_id}-item-${comment.depth}-index-${index}`}
                 parent_depth={parent_depth}
+                mutedList={mutedList}
               />
               {comment.children > 0 ? (
                 <CommentList

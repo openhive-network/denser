@@ -1,5 +1,6 @@
 {
   "global": {
+    "no_rewards": "Никаких наград в ожидании погашения.",
     "loading": "Loading",
     "something_went_wrong": "Something went wrong",
     "time_ago": {

@@ -1,5 +1,6 @@
 {
   "global": {
+    "no_rewards": "No rewards pending redemption.",
     "loading": "Loading",
     "something_went_wrong": "Something went wrong",
     "time_ago": {
