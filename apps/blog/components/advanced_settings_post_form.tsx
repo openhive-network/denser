@@ -12,7 +12,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@hive/ui/components/select';
 import Link from 'next/link';
 import { Icons } from '@ui/components/icons';
-import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
+import { useLocalStorage } from 'usehooks-ts';
 import { toast } from '@ui/components/hooks/use-toast';
 import { useTranslation } from 'next-i18next';
 

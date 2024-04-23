@@ -16,7 +16,7 @@ import { Badge } from '@ui/components/badge';
 import { DefaultRenderer } from '@hiveio/content-renderer';
 import { useTranslation } from 'next-i18next';
 import VotesComponent from './votes';
-import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
+import { useLocalStorage } from 'usehooks-ts';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';
 import { UserPopoverCard } from './user-popover-card';
@@ -42,7 +42,7 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList }: Comment
   const commentId = `@${username}/${comment.permlink}`;
   const storageId = `replybox-/${username}/${comment.permlink}`;
   const [edit, setEdit] = useState(false);
-  const [storedBox, storeBox] = useLocalStorage<Boolean>(storageId, false);
+  const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   useEffect(() => {
     if (reply) {
@@ -252,7 +252,7 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList }: Comment
                         {user && user.isLoggedIn ? (
                           <button
                             onClick={() => {
-                              setReply(!reply), localStorage.removeItem(storageId);
+                              setReply(!reply), removeBox();
                             }}
                             className="flex items-center hover:cursor-pointer hover:text-red-600"
                             data-testid="comment-card-footer-reply"

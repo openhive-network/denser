@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { transactionService } from '@transaction/index';
 import { HiveRendererContext } from './hive-renderer-context';
-import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
+import { useLocalStorage } from 'usehooks-ts';
 import { Icons } from '@ui/components/icons';
 import MdEditor from './md-editor';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
@@ -26,7 +26,7 @@ export function ReplyTextbox({
   editMode: boolean;
   comment?: string;
 }) {
-  const [storedPost, storePost] = useLocalStorage<string>(`replyTo-/${username}/${permlink}`, '');
+  const [storedPost, storePost, removePost] = useLocalStorage<string>(`replyTo-/${username}/${permlink}`, '');
   const { t } = useTranslation('common_blog');
   const [text, setText] = useState(comment ? comment : storedPost ? storedPost : '');
   const [cleanedText, setCleanedText] = useState('');
@@ -48,7 +48,7 @@ export function ReplyTextbox({
     const confirmed = confirm(t('post_content.footer.comment.exit_editor'));
     if (confirmed) {
       onSetReply(false);
-      localStorage.removeItem(`replyTo-/${username}/${permlink}`);
+      removePost();
     }
   };
 
@@ -92,7 +92,7 @@ export function ReplyTextbox({
                 transactionService.comment(username, permlink, cleanedText);
               }
               setText('');
-              localStorage.removeItem(`replyTo-/${username}/${permlink}`);
+              removePost();
               localStorage.removeItem(storageId);
               onSetReply(false);
             }}
