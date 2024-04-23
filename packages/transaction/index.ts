@@ -15,7 +15,7 @@ import { toast } from '@hive/ui/components/hooks/use-toast';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
-import { Beneficiarie, FullAccount } from './lib/app-types';
+import { Beneficiarie, FullAccount, Preferences } from './lib/app-types';
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
@@ -297,10 +297,22 @@ class TransactionService {
     });
   }
 
-  async comment(parentAuthor: string, parentPermlink: string, body: string) {
+  async comment(parentAuthor: string, parentPermlink: string, body: string, preferences: Preferences) {
+    console.log('comment preferences', preferences);
     await this.processHiveAppOperation((builder) => {
       builder
-        .useBuilder(ReplyBuilder, () => {}, parentAuthor, parentPermlink, this.signerOptions.username, body)
+        .useBuilder(
+          ReplyBuilder,
+          (replyBuilder) => {
+            if (preferences.comment_rewards === '0%') {
+              replyBuilder.setPercentHbd(0);
+            }
+          },
+          parentAuthor,
+          parentPermlink,
+          this.signerOptions.username,
+          body
+        )
         .build();
     });
   }

@@ -8,6 +8,7 @@ import { useLocalStorage } from 'usehooks-ts';
 import { Icons } from '@ui/components/icons';
 import MdEditor from './md-editor';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 
 export function ReplyTextbox({
   onSetReply,
@@ -27,6 +28,7 @@ export function ReplyTextbox({
   comment?: string;
 }) {
   const [storedPost, storePost, removePost] = useLocalStorage<string>(`replyTo-/${username}/${permlink}`, '');
+  const [preferences, setPreferences] = useLocalStorage<Preferences>('user-preferences', DEFAULT_PREFERENCES);
   const { t } = useTranslation('common_blog');
   const [text, setText] = useState(comment ? comment : storedPost ? storedPost : '');
   const [cleanedText, setCleanedText] = useState('');
@@ -89,7 +91,7 @@ export function ReplyTextbox({
               if (parentPermlink) {
                 transactionService.updateComment(username, parentPermlink, permlink, cleanedText);
               } else {
-                transactionService.comment(username, permlink, cleanedText);
+                transactionService.comment(username, permlink, cleanedText, preferences);
               }
               setText('');
               removePost();
