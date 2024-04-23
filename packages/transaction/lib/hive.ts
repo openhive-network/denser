@@ -815,7 +815,7 @@ export const getListWitnessVotes = async (
     .api.database_api.list_witness_votes({ start: [username, ''], limit, order });
 };
 
-interface IVoteListItem {
+export interface IVoteListItem {
   id: number,
   voter: string,
   author: string,
