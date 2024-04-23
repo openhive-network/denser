@@ -1,5 +1,6 @@
 {
   "global": {
+    "no_rewards": "Никаких наград в ожидании погашения.",
     "loading": "Loading",
     "something_went_wrong": "Something went wrong",
     "time_ago": {
@@ -105,6 +106,8 @@
       "challenges": "Challenges"
     },
     "profil_notifications_tab_navbar": {
+      "unclaimed_rewards": "Невостребованные награды: ",
+      "redeem": "Выкупать",
       "mark_all": "отметить все как прочитанное",
       "all": "All",
       "replies": "Ответы",

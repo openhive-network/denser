@@ -1,10 +1,13 @@
 import {
+  ApiAccount,
+  ArticleBuilder,
   BroadcastTransactionRequest,
   CommunityOperationBuilder,
   EFollowBlogAction,
   FollowOperationBuilder,
   ITransactionBuilder,
   NaiAsset,
+  ReplyBuilder,
   WaxChainApiError,
   future_extensions
 } from '@hive/wax';
@@ -12,7 +15,7 @@ import { toast } from '@hive/ui/components/hooks/use-toast';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
-import { Beneficiarie } from './lib/app-types';
+import { Beneficiarie, FullAccount } from './lib/app-types';
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
@@ -296,15 +299,26 @@ class TransactionService {
 
   async comment(parentAuthor: string, parentPermlink: string, body: string) {
     await this.processHiveAppOperation((builder) => {
-      builder.pushReply(parentAuthor, parentPermlink, this.signerOptions.username, body).store();
+      builder
+        .useBuilder(ReplyBuilder, () => {}, parentAuthor, parentPermlink, this.signerOptions.username, body)
+        .build();
     });
   }
 
   async updateComment(parentAuthor: string, parentPermlink: string, permlink: string, body: string) {
     await this.processHiveAppOperation((builder) => {
       builder
-        .pushReply(parentAuthor, parentPermlink, this.signerOptions.username, body, {}, permlink)
-        .store();
+        .useBuilder(
+          ReplyBuilder,
+          () => {},
+          parentAuthor,
+          parentPermlink,
+          this.signerOptions.username,
+          body,
+          {},
+          permlink
+        )
+        .build();
     });
   }
 
@@ -321,21 +335,29 @@ class TransactionService {
     image?: string
   ) {
     await this.processHiveAppOperation((builder) => {
-      const op = builder
-        .pushArticle(this.signerOptions.username, permlink, title, body)
-        .setCategory(category !== 'blog' ? category : tags[0])
-        .setPercentHbd(percentHbd)
-        .setMaxAcceptedPayout(maxAcceptedPayout)
-        .pushTags(...tags)
-        .pushMetadataProperty({ summary: summary })
-        .pushImages(image ? image : '');
-      beneficiaries.forEach((beneficiarie) => {
-        op.addBeneficiary(beneficiarie.account, Number(beneficiarie.weight));
-      });
+      builder
+        .useBuilder(
+          ArticleBuilder,
+          (articleBuilder) => {
+            articleBuilder
+              .setCategory(category !== 'blog' ? category : tags[0])
+              .setPercentHbd(percentHbd)
+              .setMaxAcceptedPayout(maxAcceptedPayout)
+              .pushTags(...tags)
+              .pushMetadataProperty({ summary: summary })
+              .pushImages(image ? image : '');
 
-      op.store();
-
-      builder.build();
+            beneficiaries.forEach((beneficiarie) => {
+              articleBuilder.addBeneficiary(beneficiarie.account, Number(beneficiarie.weight));
+            });
+          },
+          this.signerOptions.username,
+          title,
+          body,
+          {},
+          permlink
+        )
+        .build();
     });
   }
 
@@ -411,6 +433,19 @@ class TransactionService {
           }
         })
         .build();
+    });
+  }
+
+  async claimRewards(account: ApiAccount) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push({
+        claim_reward_balance: {
+          account: this.signerOptions.username,
+          reward_hive: account.reward_hive_balance,
+          reward_hbd: account.reward_hbd_balance,
+          reward_vests: account.reward_vesting_balance
+        }
+      });
     });
   }
 

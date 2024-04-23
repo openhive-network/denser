@@ -28,8 +28,7 @@ const NotificationListItem = ({ date, msg, score, type, url, lastRead }: IAccoun
   const usernamePattern = /\B@[a-z0-9.-]+/gi;
   const mentions = msg.match(usernamePattern);
   const unRead = lastRead <= new Date(date).getTime();
-  console.log('lastRead', lastRead);
-  console.log('date', new Date(date).getTime());
+
   const participants = mentions
     ? mentions.map((m: string) => (
         <a key={m} href={'/' + m} data-testid="notification-account-icon-link">

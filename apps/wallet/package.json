@@ -27,7 +27,7 @@
     "@hive/transaction": "*",
     "@hive/tsconfig": "*",
     "@hive/ui": "*",
-    "@hive/wax": "^0.3.8-240403101225",
+    "@hive/wax": "^0.3.8-stable.240418212322",
     "@hiveio/dhive": "^1.2.8",
     "@hookform/resolvers": "^3.3.2",
     "@next/bundle-analyzer": "^14.2.2",
