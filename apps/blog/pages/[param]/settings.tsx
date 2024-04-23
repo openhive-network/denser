@@ -588,8 +588,8 @@ export default function UserSettings() {
         {mutedQuery.data ? (
           <div>
             <div>{t('settings_page.muted_users')}</div>
-            {mutedQuery.data?.map((mutedUser, index) => (
-              <ul>
+            <ul>
+              {mutedQuery.data.map((mutedUser, index) => (
                 <li key={mutedUser.name}>
                   <span>{index + 1}. </span>
                   <span className="text-red-500">{mutedUser.name}</span>
@@ -601,8 +601,8 @@ export default function UserSettings() {
                     [{t('settings_page.unmute')}]
                   </Button>
                 </li>
-              </ul>
-            ))}
+              ))}
+            </ul>
           </div>
         ) : null}
       </div>
