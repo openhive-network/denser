@@ -33,7 +33,7 @@ import { i18n } from '@/blog/next-i18next.config';
 import { AlertDialogFlag } from '@/blog/components/alert-window-flag';
 import VotesComponent from '@/blog/components/votes';
 import { HiveRendererContext } from '@/blog/components/hive-renderer-context';
-import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
+import { useLocalStorage } from 'usehooks-ts';
 import PostForm from '@/blog/components/post-form';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from '@/blog/components/dialog-login';
@@ -72,13 +72,9 @@ function PostPage({
     isLoading: isLoadingDiscussion,
     error: errorDiscussion,
     data: discussion
-  } = useQuery(
-    ['discussionData', username, permlink],
-    () => getDiscussion(username, user.username, String(permlink)),
-    {
-      enabled: !!username && !!permlink
-    }
-  );
+  } = useQuery(['discussionData', username, permlink], () => getDiscussion(username, String(permlink)), {
+    enabled: !!username && !!permlink
+  });
 
   const {
     isLoading: isLoadingCommunity,
@@ -102,7 +98,7 @@ function PostPage({
   const query = router.query.sort?.toString();
   const defaultSort = isSortOrder(query) ? query : SortOrder.trending;
   const storageId = `replybox-/${username}/${post?.permlink}`;
-  const [storedBox, storeBox] = useLocalStorage<Boolean>(storageId, false);
+  const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const firstPost = discussionState?.find((post) => post.depth === 0);
   const [edit, setEdit] = useState(false);
@@ -362,7 +358,7 @@ function PostPage({
                   {user && user.isLoggedIn ? (
                     <button
                       onClick={() => {
-                        setReply(!reply), localStorage.removeItem(storageId);
+                        setReply(!reply), removeBox();
                       }}
                       className="flex items-center text-red-600"
                       data-testid="comment-reply"

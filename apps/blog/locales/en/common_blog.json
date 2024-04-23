@@ -1,5 +1,6 @@
 {
   "global": {
+    "no_rewards": "No rewards pending redemption.",
     "loading": "Loading",
     "something_went_wrong": "Something went wrong",
     "time_ago": {
@@ -106,6 +107,8 @@
       "challenges": "Challenges"
     },
     "profil_notifications_tab_navbar": {
+      "unclaimed_rewards": "Unclaimed rewards: ",
+      "redeem": "Redeem",
       "mark_all": "Mark all as read",
       "all": "All",
       "replies": "Replies",

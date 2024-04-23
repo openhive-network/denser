@@ -9,6 +9,7 @@ import { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
 import { useTranslation } from 'next-i18next';
+import { getAccountFull, getFindAccounts } from '@transaction/lib/hive';
 
 export default function UserNotifications() {
   const { t } = useTranslation('common_blog');
@@ -20,6 +21,21 @@ export default function UserNotifications() {
       enabled: !!username
     }
   );
+  const {
+    isLoading: profileDataIsLoading,
+    error: errorProfileData,
+    data: profileData
+  } = useQuery(['profileData', username], () => getAccountFull(username), {
+    enabled: !!username
+  });
+
+  const {
+    isLoading: apiAccountsIsLoading,
+    error: errorApiAccounts,
+    data: apiAccounts
+  } = useQuery(['apiAccount', username], () => getFindAccounts(username), {
+    enabled: !!username
+  });
 
   if (isLoading) return <Loading loading={isLoading} />;
 

@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 import SafeStorage, { SafeStorageRef } from './methods/safestorage';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 import { useProcessAuth, LoginFormSchema } from './process';
-import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
+import { useLocalStorage } from 'usehooks-ts';
 import Methods from './methods/methods';
 
 export interface SignInFormProps {
