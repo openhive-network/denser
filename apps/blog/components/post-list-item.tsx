@@ -23,6 +23,9 @@ import type { Entry, IFollowList } from '@transaction/lib/bridge';
 import PostImage from './post-img';
 import { useTranslation } from 'next-i18next';
 import VotesComponent from './votes';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useLocalStorage } from 'usehooks-ts';
+import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 
 const PostListItem = ({
   post,
@@ -33,8 +36,23 @@ const PostListItem = ({
   isCommunityPage: boolean | undefined;
   blacklist: IFollowList[] | undefined;
 }) => {
+  const { user } = useUser();
   const { t } = useTranslation('common_blog');
-  const [reveal, setReveal] = useState(post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw'));
+  const [preferences, setPreferences] = useLocalStorage<Preferences>(
+    `user-preferences-${user.username}`,
+    DEFAULT_PREFERENCES
+  );
+  const [reveal, setReveal] = useState(
+    preferences.nsfw === 'show'
+      ? false
+      : preferences.nsfw === 'warn'
+        ? post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw')
+        : preferences.nsfw === 'hide'
+          ? true
+          : post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw')
+  );
+  console.log('preferences.nsfw === show', preferences.nsfw === 'show');
+  console.log('reveal', reveal);
   const router = useRouter();
   const blacklistCheck = blacklist ? blacklist.some((e) => e.name === post.author) : false;
 
@@ -226,10 +244,21 @@ const PostListItem = ({
                       Reveal this post
                     </span>{' '}
                     or{' '}
-                    <Link href="https://signup.hive.io/" className="cursor-pointer text-red-600">
-                      create an account
-                    </Link>{' '}
-                    to save your preferences.
+                    {user.isLoggedIn ? (
+                      <>
+                        adjust your{' '}
+                        <Link href={`/@${user.username}/settings`} className="cursor-pointer text-red-600">
+                          display preferences.
+                        </Link>{' '}
+                      </>
+                    ) : (
+                      <>
+                        <Link href="https://signup.hive.io/" className="cursor-pointer text-red-600">
+                          create an account
+                        </Link>{' '}
+                        to save your preferences.
+                      </>
+                    )}
                   </p>
                 </>
               )}

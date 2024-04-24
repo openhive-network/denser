@@ -53,7 +53,7 @@ export interface Preferences {
   referral_system: 'enabled' | 'disabled';
 }
 export const DEFAULT_PREFERENCES: Preferences = {
-  nsfw: 'hide',
+  nsfw: 'warn',
   blog_rewards: '50%',
   comment_rewards: '50%',
   referral_system: 'enabled'
