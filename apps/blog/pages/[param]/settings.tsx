@@ -173,7 +173,10 @@ export default function UserSettings() {
   };
 
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
-  const [preferences, setPreferences] = useLocalStorage<Preferences>('user-preferences', DEFAULT_PREFERENCES);
+  const [preferences, setPreferences] = useLocalStorage<Preferences>(
+    `user-preferences-${user.username}`,
+    DEFAULT_PREFERENCES
+  );
   const [endpoints, setEndpoints] = useLocalStorage('hive-blog-endpoints', DEFAULTS_ENDPOINTS);
   const [endpoint, setEndpoint] = useLocalStorage('hive-blog-endpoint', siteConfig.endpoint);
   const [newEndpoint, setNewEndpoint] = useState('');

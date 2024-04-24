@@ -28,7 +28,10 @@ export function ReplyTextbox({
   comment?: string;
 }) {
   const [storedPost, storePost, removePost] = useLocalStorage<string>(`replyTo-/${username}/${permlink}`, '');
-  const [preferences, setPreferences] = useLocalStorage<Preferences>('user-preferences', DEFAULT_PREFERENCES);
+  const [preferences, setPreferences] = useLocalStorage<Preferences>(
+    `user-preferences-${username}`,
+    DEFAULT_PREFERENCES
+  );
   const { t } = useTranslation('common_blog');
   const [text, setText] = useState(comment ? comment : storedPost ? storedPost : '');
   const [cleanedText, setCleanedText] = useState('');

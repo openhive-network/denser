@@ -169,7 +169,10 @@ export default function PostForm({
 }) {
   const { hiveRenderer } = useContext(HiveRendererContext);
   const router = useRouter();
-  const [preferences, setPreferences] = useLocalStorage<Preferences>('user-preferences', DEFAULT_PREFERENCES);
+  const [preferences, setPreferences] = useLocalStorage<Preferences>(
+    `user-preferences-${username}`,
+    DEFAULT_PREFERENCES
+  );
   const [preview, setPreview] = useState(true);
   const [selectedImg, setSelectedImg] = useState('');
   const [sideBySide, setSideBySide] = useState(sideBySidePreview);
