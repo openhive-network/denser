@@ -46,13 +46,13 @@ interface Settings {
   blacklist_description: string;
   muted_list_description: string;
 }
-interface Preferences {
+export interface Preferences {
   nsfw: 'hide' | 'warn' | 'show';
   blog_rewards: '0%' | '50%' | '100%';
   comment_rewards: '0%' | '50%' | '100%';
   referral_system: 'enabled' | 'disabled';
 }
-const DEFAULT_PREFERENCES: Preferences = {
+export const DEFAULT_PREFERENCES: Preferences = {
   nsfw: 'hide',
   blog_rewards: '50%',
   comment_rewards: '50%',
@@ -173,7 +173,10 @@ export default function UserSettings() {
   };
 
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
-  const [preferences, setPreferences] = useLocalStorage<Preferences>('user-preferences', DEFAULT_PREFERENCES);
+  const [preferences, setPreferences] = useLocalStorage<Preferences>(
+    `user-preferences-${user.username}`,
+    DEFAULT_PREFERENCES
+  );
   const [endpoints, setEndpoints] = useLocalStorage('hive-blog-endpoints', DEFAULTS_ENDPOINTS);
   const [endpoint, setEndpoint] = useLocalStorage('hive-blog-endpoint', siteConfig.endpoint);
   const [newEndpoint, setNewEndpoint] = useState('');

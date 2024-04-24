@@ -8,6 +8,7 @@ import { useLocalStorage } from 'usehooks-ts';
 import { Icons } from '@ui/components/icons';
 import MdEditor from './md-editor';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -30,6 +31,10 @@ export function ReplyTextbox({
   comment?: string;
 }) {
   const [storedPost, storePost, removePost] = useLocalStorage<string>(`replyTo-/${username}/${permlink}`, '');
+  const [preferences, setPreferences] = useLocalStorage<Preferences>(
+    `user-preferences-${username}`,
+    DEFAULT_PREFERENCES
+  );
   const { t } = useTranslation('common_blog');
   const [text, setText] = useState(comment ? comment : storedPost ? storedPost : '');
   const [cleanedText, setCleanedText] = useState('');
@@ -56,15 +61,15 @@ export function ReplyTextbox({
     }
   };
 
-  const postComment = async() => {
+  const postComment = async () => {
     try {
       if (btnRef.current) {
         btnRef.current.disabled = true;
       }
       if (parentPermlink) {
-        transactionService.updateComment(username, parentPermlink, permlink, cleanedText);
+        transactionService.updateComment(username, parentPermlink, permlink, cleanedText, preferences);
       } else {
-        transactionService.comment(username, permlink, cleanedText);
+        transactionService.comment(username, permlink, cleanedText, preferences);
       }
       setText('');
       removePost();
@@ -79,7 +84,7 @@ export function ReplyTextbox({
       }
       logger.error(error);
     }
-  }
+  };
 
   return (
     <div
@@ -112,11 +117,7 @@ export function ReplyTextbox({
           </p>
         </div>
         <div className="flex flex-col md:flex-row">
-          <Button
-            ref={btnRef}
-            disabled={text === ''}
-            onClick={() => postComment()}
-          >
+          <Button ref={btnRef} disabled={text === ''} onClick={() => postComment()}>
             {t('post_content.footer.comment.post')}
           </Button>
           <Button

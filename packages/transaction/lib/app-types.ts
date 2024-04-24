@@ -75,3 +75,10 @@ export interface Beneficiarie {
   account: string;
   weight: string;
 }
+
+export interface Preferences {
+  nsfw: 'hide' | 'warn' | 'show';
+  blog_rewards: '0%' | '50%' | '100%';
+  comment_rewards: '0%' | '50%' | '100%';
+  referral_system: 'enabled' | 'disabled';
+}
