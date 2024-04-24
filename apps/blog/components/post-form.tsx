@@ -39,6 +39,9 @@ import { debounce, extractUrlsFromJsonString, extractYouTubeVideoIds } from '../
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 
+import { getLogger } from '@ui/lib/logging';
+const logger = getLogger('app');
+
 const defaultValues = {
   title: '',
   postArea: '',
@@ -311,10 +314,10 @@ export default function PostForm({
         btnRef.current.disabled = false;
       }
     } catch (error) {
-      console.error(error);
       if (btnRef.current) {
         btnRef.current.disabled = false;
       }
+      logger.error(error);
     }
   }
   return (
