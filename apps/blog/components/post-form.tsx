@@ -23,7 +23,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import useManabars from './hooks/useManabars';
 import { AdvancedSettingsPostForm } from './advanced_settings_post_form';
 import MdEditor from './md-editor';
-import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { useLocalStorage } from 'usehooks-ts';
 import { useTranslation } from 'next-i18next';
@@ -39,6 +39,9 @@ import { debounce, extractUrlsFromJsonString, extractYouTubeVideoIds } from '../
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
+
+import { getLogger } from '@ui/lib/logging';
+const logger = getLogger('app');
 
 const defaultValues = {
   title: '',
@@ -167,6 +170,7 @@ export default function PostForm({
   setEditMode?: Dispatch<SetStateAction<boolean>>;
   refreshPage?: () => void;
 }) {
+  const btnRef = useRef<HTMLButtonElement>(null);
   const { hiveRenderer } = useContext(HiveRendererContext);
   const router = useRouter();
   const [preferences, setPreferences] = useLocalStorage<Preferences>(
@@ -280,6 +284,10 @@ export default function PostForm({
     const postPermlink = await createPermlink(storedPost?.title ?? '', username);
     const permlinInEditMode = post_s?.permlink;
     try {
+      if (btnRef.current) {
+        btnRef.current.disabled = true;
+      }
+
       await transactionService.post(
         editMode && permlinInEditMode ? permlinInEditMode : postPermlink,
         storedPost.title,
@@ -307,8 +315,14 @@ export default function PostForm({
           await router.push(`/created/${tags[0]}`, undefined, { shallow: true });
         }
       }
+      if (btnRef.current) {
+        btnRef.current.disabled = false;
+      }
     } catch (error) {
-      console.error(error);
+      if (btnRef.current) {
+        btnRef.current.disabled = false;
+      }
+      logger.error(error);
     }
   }
   return (
@@ -512,6 +526,7 @@ export default function PostForm({
               />
             ) : null}
             <Button
+              ref={btnRef}
               type="submit"
               variant="redHover"
               disabled={

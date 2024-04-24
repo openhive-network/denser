@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Button } from '@ui/components/button';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useRef } from 'react';
 import { useTranslation } from 'next-i18next';
 import { transactionService } from '@transaction/index';
 import { HiveRendererContext } from './hive-renderer-context';
@@ -9,6 +9,9 @@ import { Icons } from '@ui/components/icons';
 import MdEditor from './md-editor';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
+
+import { getLogger } from '@ui/lib/logging';
+const logger = getLogger('app');
 
 export function ReplyTextbox({
   onSetReply,
@@ -36,6 +39,7 @@ export function ReplyTextbox({
   const [text, setText] = useState(comment ? comment : storedPost ? storedPost : '');
   const [cleanedText, setCleanedText] = useState('');
   const { hiveRenderer } = useContext(HiveRendererContext);
+  const btnRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (hiveRenderer) {
@@ -54,6 +58,31 @@ export function ReplyTextbox({
     if (confirmed) {
       onSetReply(false);
       removePost();
+    }
+  };
+
+  const postComment = async () => {
+    try {
+      if (btnRef.current) {
+        btnRef.current.disabled = true;
+      }
+      if (parentPermlink) {
+        transactionService.updateComment(username, parentPermlink, permlink, cleanedText, preferences);
+      } else {
+        transactionService.comment(username, permlink, cleanedText, preferences);
+      }
+      setText('');
+      removePost();
+      localStorage.removeItem(storageId);
+      onSetReply(false);
+      if (btnRef.current) {
+        btnRef.current.disabled = true;
+      }
+    } catch (error) {
+      if (btnRef.current) {
+        btnRef.current.disabled = true;
+      }
+      logger.error(error);
     }
   };
 
@@ -88,26 +117,7 @@ export function ReplyTextbox({
           </p>
         </div>
         <div className="flex flex-col md:flex-row">
-          <Button
-            disabled={text === ''}
-            onClick={() => {
-              if (parentPermlink) {
-                transactionService.updateComment(
-                  username,
-                  parentPermlink,
-                  permlink,
-                  cleanedText,
-                  preferences
-                );
-              } else {
-                transactionService.comment(username, permlink, cleanedText, preferences);
-              }
-              setText('');
-              removePost();
-              localStorage.removeItem(storageId);
-              onSetReply(false);
-            }}
-          >
+          <Button ref={btnRef} disabled={text === ''} onClick={() => postComment()}>
             {t('post_content.footer.comment.post')}
           </Button>
           <Button
