@@ -112,7 +112,7 @@ const CommunityDescription = ({
             </h6>
             {post_body_html ? (
               <div
-                className="preview-description prose-sm "
+                className="preview-description prose-sm w-[13em] break-words 2xl:w-fit"
                 data-testid="community-description-content"
                 dangerouslySetInnerHTML={{ __html: post_body_html }}
               />
