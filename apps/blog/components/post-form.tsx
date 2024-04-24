@@ -366,7 +366,7 @@ export default function PostForm({
                     {t('submit_page.insert_images_by_dragging')} {t('submit_page.selecting_them')}
                     <TooltipProvider>
                       <Tooltip>
-                        <TooltipTrigger>
+                        <TooltipTrigger type="button">
                           <Icons.info className="ml-1 w-3" />
                         </TooltipTrigger>
                         <TooltipContent>{t('submit_page.insert_images_info')}</TooltipContent>
