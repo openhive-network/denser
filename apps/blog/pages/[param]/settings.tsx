@@ -408,28 +408,6 @@ export default function UserSettings() {
               </h2>
 
               <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-                <div data-testid="choose-language">
-                  <Label htmlFor="choose-language">{t('settings_page.choose_language')}</Label>
-                  <Select defaultValue="en" name="choose-language">
-                    <SelectTrigger>
-                      <SelectValue placeholder="Choose Language" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem value="en">English</SelectItem>
-                        <SelectItem value="es">Spanish Español</SelectItem>
-                        <SelectItem value="ru">Russian русский</SelectItem>
-                        <SelectItem value="fr">French français</SelectItem>
-                        <SelectItem value="it">Italian italiano</SelectItem>
-                        <SelectItem value="ko">Korean 한국어</SelectItem>
-                        <SelectItem value="ja">Japanese 日本語</SelectItem>
-                        <SelectItem value="pl">Polish Polski</SelectItem>
-                        <SelectItem value="zh">Chinese 简体中文</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-
                 <div data-testid="not-safe-for-work-content">
                   <Label htmlFor="not-safe-for-work-content">
                     {t('settings_page.not_safe_for_work_nsfw_content')}
