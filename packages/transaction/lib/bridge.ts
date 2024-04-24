@@ -1,6 +1,9 @@
 import { TWaxApiRequest } from '@hive/wax';
 import { hiveChainService } from './hive-chain-service';
 
+import { getLogger } from '@ui/lib/logging';
+const logger = getLogger('app');
+
 const chain = await hiveChainService.getHiveChain();
 
 interface IGetPostHeader {
@@ -210,7 +213,7 @@ export const getPostsRanked = async (
   observer: string,
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
-  console.log('Running getPostsRanked', start_author, start_permlink);
+  logger.info('Running getPostsRanked', { start_author, start_permlink, observer });
   return chain
     .extend<GetPostsRankedData>()
     .api.bridge.get_ranked_posts({
@@ -222,6 +225,7 @@ export const getPostsRanked = async (
       observer
     })
     .then((resp) => {
+      logger.info('getPostsRanked result: %o', resp);
       if (resp) {
         return resolvePosts(resp, observer);
       }

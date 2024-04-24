@@ -25,8 +25,12 @@ const transactionServiceThrowingError =
 
 const vote = async (service: TransactionServiceThrowingError, voter: string, author: string, permlink: string, weight: number) => {
   try {
+    const waitingPeriod = 1000 * 10;
     await service.upVote(author, permlink, weight);
-    await PromiseTools.promiseTimeout(1000 * 15);
+    logger.info('Voted: %o, waiting %sms before updating view', { voter, author, permlink, weight }, waitingPeriod);
+    await PromiseTools.promiseTimeout(waitingPeriod);
+    const votesList = await getListVotesByCommentVoter([author, permlink, voter], 1);
+    logger.info('votesList: %o', votesList);
   } catch (error) {
     transactionServiceThrowingError.handleError(error);
   }
@@ -51,6 +55,7 @@ export function usePostUpdateVoteMutation() {
       queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
       // queryClient.invalidateQueries({ queryKey: [data.permlink, data.voter, 'ActiveVotes'] });
       queryClient.invalidateQueries({ queryKey: ['ActiveVotes'] });
+      queryClient.invalidateQueries({ queryKey: ['votes', data.author, data.permlink, data.voter] });
     },
     onError: (error) => {
       throw error;
@@ -87,8 +92,8 @@ const VotesComponent = ({ post }: { post: Entry }) => {
   let userVote: IVoteListItem;
   if (userVotes) {
     userVote = userVotes.votes[0];
-    logger.info('user: %s voted: %s for post.author: %s, post.permlink: %s. Full userVote is: %o',
-      user.username, userVote.vote_percent, post.author, post.permlink, userVote);
+    // logger.info('user: %s voted: %s for post.author: %s, post.permlink: %s. Full userVote is: %o',
+    //   user.username, userVote.vote_percent, post.author, post.permlink, userVote);
   }
 
   const postUpdateVoteMutation = usePostUpdateVoteMutation();
