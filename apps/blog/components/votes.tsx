@@ -61,9 +61,9 @@ const vote = async (service: TransactionServiceThrowingError, voter: string, aut
     const result = await PromiseTools.promiseInterval(checkVoteSaved, 1000, 10);
     logger.info('result of checkVoteSaved in interval: %s', result);
 
-    const waitingPeriod = 1000 * 2;
-    logger.info('Waiting for %sms before updating view', waitingPeriod);
-    await PromiseTools.promiseTimeout(waitingPeriod);
+    // const waitingPeriod = 1000 * 3;
+    // logger.info('Waiting for %sms before updating view', waitingPeriod);
+    // await PromiseTools.promiseTimeout(waitingPeriod);
 
   } catch (error) {
     if (error === 'Failure') {
@@ -88,11 +88,11 @@ export function usePostUpdateVoteMutation() {
     },
     onSuccess: (data) => {
       console.log('usePostUpdateVoteMutation onSuccess data: %o', data);
-      queryClient.invalidateQueries({ queryKey: ['postData', data.author, data.permlink ] });
-      // queryClient.invalidateQueries({ queryKey: ['entriesInfinite', 'trending', null] });
-      queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
-      // queryClient.invalidateQueries({ queryKey: [data.permlink, data.voter, 'ActiveVotes'] });
-      queryClient.invalidateQueries({ queryKey: ['ActiveVotes'] });
+      // queryClient.invalidateQueries({ queryKey: ['postData', data.author, data.permlink ] });
+      // // queryClient.invalidateQueries({ queryKey: ['entriesInfinite', 'trending', null] });
+      // queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
+      // // queryClient.invalidateQueries({ queryKey: [data.permlink, data.voter, 'ActiveVotes'] });
+      // queryClient.invalidateQueries({ queryKey: ['ActiveVotes'] });
       queryClient.invalidateQueries({ queryKey: ['votes', data.author, data.permlink, data.voter] });
     },
     onError: (error) => {
@@ -101,6 +101,7 @@ export function usePostUpdateVoteMutation() {
   });
   return postUpdateVoteMutation;
 };
+
 
 const VotesComponent = ({ post }: { post: Entry }) => {
   const walletHost = env('WALLET_ENDPOINT');
@@ -123,7 +124,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
     () => getListVotesByCommentVoter(
       [post.author, post.permlink, user?.username], 1),
     {
-      enabled: !!checkVote
+      enabled: !!checkVote || !!clickedVoteButton
     }
   );
 
@@ -134,7 +135,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
   //   //   user.username, userVote.vote_percent, post.author, post.permlink, userVote);
   // }
 
-  const userVote = userVotes?.votes[0];
+  const userVote = userVotes?.votes[0] && userVotes?.votes[0].voter === user.username ? userVotes.votes[0] : undefined;
 
   const postUpdateVoteMutation = usePostUpdateVoteMutation();
 
@@ -196,7 +197,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                   className={clsx(
                     'h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
                     // { 'bg-gray-600 text-white': checkVote && checkVote?.rshares < 0 },
-                    { 'bg-red-600 text-white': userVote && userVote.vote_percent < 0 },
+                    { 'bg-gray-600 text-white': userVote && userVote.vote_percent < 0 },
                   )}
                   onClick={(e) => {
                     if (postUpdateVoteMutation.isLoading) return;
@@ -216,7 +217,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
         </Tooltip>
       </TooltipProvider>
 
-      {checkVote && (
+      {/* {checkVote && (
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>{checkVote?.rshares === 0 && 'Voted'}</TooltipTrigger>
@@ -236,10 +237,10 @@ const VotesComponent = ({ post }: { post: Entry }) => {
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-      )}
+      )} */}
 
-    {userVote && userVote.vote_percent > 0 && <span>You upvoted {userVote.vote_percent}%</span>}
-    {userVote && userVote.vote_percent < 0 && <span>You downvoted {userVote.vote_percent}%</span>}
+    {userVote && userVote.vote_percent > 0 && <span>You upvoted {String(userVote.vote_percent / 100)}%</span>}
+    {userVote && userVote.vote_percent < 0 && <span>You downvoted {String(userVote.vote_percent / 100)}%</span>}
 
     </div>
   );
