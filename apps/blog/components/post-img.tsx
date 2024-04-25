@@ -47,6 +47,9 @@ export default function PostImage({ post }: { post: Entry }) {
     if (post.json_metadata.flow?.pictures && post.json_metadata.flow?.pictures[0]) {
       return post.json_metadata.flow?.pictures[0].url;
     }
+    if (post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw')) {
+      return `https://images.hive.blog/u/${post.author}/avatar/large`;
+    }
     if (youtube_id[0]) {
       return `https://img.youtube.com/vi/${youtube_id[0]}/0.jpg`;
     }
@@ -62,7 +65,6 @@ export default function PostImage({ post }: { post: Entry }) {
     if (matchgif && matchgif[1]) {
       return matchgif[1];
     }
-
     if (!post.title.includes('RE: ') && post.depth === 0) {
       return `https://images.hive.blog/u/${post.author}/avatar/large`;
     }
