@@ -99,7 +99,12 @@ export function ReplyTextbox({
           <MdEditor
             htmlMode={editMode}
             onChange={(value) => {
-              setText(value);
+              if (value === '') {
+                setText(value);
+                removePost();
+              } else {
+                setText(value);
+              }
             }}
             persistedValue={text}
             placeholder={t('post_content.footer.comment.reply')}
