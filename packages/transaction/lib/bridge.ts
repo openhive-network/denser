@@ -213,7 +213,7 @@ export const getPostsRanked = async (
   observer: string,
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
-  logger.info('Running getPostsRanked', { start_author, start_permlink, observer });
+  logger.info('Running getPostsRanked', { sort, tag, start_author, start_permlink, observer, limit });
   return chain
     .extend<GetPostsRankedData>()
     .api.bridge.get_ranked_posts({

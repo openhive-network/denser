@@ -25,14 +25,52 @@ const transactionServiceThrowingError =
 
 const vote = async (service: TransactionServiceThrowingError, voter: string, author: string, permlink: string, weight: number) => {
   try {
-    const waitingPeriod = 1000 * 10;
+
+    if (weight > 0) {
+      weight = 1;
+    } else {
+      weight = -1;
+    }
+
+    // Get the newest num_changes for the vote.
+    let numChangesBefore = -1; // -1 means vote does not exist
+    const votesListBefore = await getListVotesByCommentVoter([author, permlink, voter], 1);
+    if (votesListBefore && votesListBefore.votes.length > 0 && votesListBefore.votes[0].voter === voter) {
+      numChangesBefore = votesListBefore.votes[0].num_changes;
+    }
+    // Vote now
     await service.upVote(author, permlink, weight);
-    logger.info('Voted: %o, waiting %sms before updating view', { voter, author, permlink, weight }, waitingPeriod);
+    logger.info('Voted: %o', { voter, author, permlink, weight, numChangesBefore });
+
+    // Check if num_changes is greater than before.
+    let counter = 0;
+    const checkVoteSaved = async () => {
+      const votesList = await getListVotesByCommentVoter([author, permlink, voter], 1);
+      logger.info('try #%s votesList: %o', ++counter, votesList);
+      if (votesList && votesList.votes.length > 0
+          && votesList.votes[0].voter === voter
+          && votesList.votes[0].num_changes > numChangesBefore) {
+        logger.info('num_changes %s is greater than %s', votesList.votes[0].num_changes, numChangesBefore);
+        return true;
+      }
+      logger.info('num_changes is the same');
+      return false;
+    };
+
+    // Poll to check if vote was broadcasted and saved in blockchain.
+    const result = await PromiseTools.promiseInterval(checkVoteSaved, 1000, 10);
+    logger.info('result of checkVoteSaved in interval: %s', result);
+
+    const waitingPeriod = 1000 * 2;
+    logger.info('Waiting for %sms before updating view', waitingPeriod);
     await PromiseTools.promiseTimeout(waitingPeriod);
-    const votesList = await getListVotesByCommentVoter([author, permlink, voter], 1);
-    logger.info('votesList: %o', votesList);
+
   } catch (error) {
-    transactionServiceThrowingError.handleError(error);
+    if (error === 'Failure') {
+      // Error from PromiseTools.promiseInterval
+    } else {
+      transactionServiceThrowingError.handleError(error);
+    }
   }
   return { voter, author, permlink, weight };
 };
@@ -89,12 +127,14 @@ const VotesComponent = ({ post }: { post: Entry }) => {
     }
   );
 
-  let userVote: IVoteListItem;
-  if (userVotes) {
-    userVote = userVotes.votes[0];
-    // logger.info('user: %s voted: %s for post.author: %s, post.permlink: %s. Full userVote is: %o',
-    //   user.username, userVote.vote_percent, post.author, post.permlink, userVote);
-  }
+  // let userVote: IVoteListItem;
+  // if (userVotes) {
+  //   userVote = userVotes.votes[0];
+  //   // logger.info('user: %s voted: %s for post.author: %s, post.permlink: %s. Full userVote is: %o',
+  //   //   user.username, userVote.vote_percent, post.author, post.permlink, userVote);
+  // }
+
+  const userVote = userVotes?.votes[0];
 
   const postUpdateVoteMutation = usePostUpdateVoteMutation();
 
@@ -125,9 +165,8 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                   <Icons.arrowUpCircle
                     className={clsx(
                       'h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1',
-                      { 'bg-red-600 text-white': checkVote && checkVote?.rshares > 0 },
-                      // { 'pointer-events-none cursor-wait': postUpdateVoteMutation.isLoading },
-                      // { 'pointer-events-auto cursor-pointer': !postUpdateVoteMutation.isLoading }
+                      // { 'bg-red-600 text-white': checkVote && checkVote?.rshares > 0 },
+                      { 'bg-red-600 text-white': userVote && userVote.vote_percent > 0 },
                     )}
                     onClick={(e) => {
                       if (postUpdateVoteMutation.isLoading) return;
@@ -156,9 +195,8 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                 <Icons.arrowDownCircle
                   className={clsx(
                     'h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
-                    { 'bg-gray-600 text-white': checkVote && checkVote?.rshares < 0 },
-                    // { 'pointer-events-none cursor-wait': postUpdateVoteMutation.isLoading },
-                    // { 'pointer-events-auto cursor-pointer': !postUpdateVoteMutation.isLoading }
+                    // { 'bg-gray-600 text-white': checkVote && checkVote?.rshares < 0 },
+                    { 'bg-red-600 text-white': userVote && userVote.vote_percent < 0 },
                   )}
                   onClick={(e) => {
                     if (postUpdateVoteMutation.isLoading) return;
@@ -199,6 +237,10 @@ const VotesComponent = ({ post }: { post: Entry }) => {
           </Tooltip>
         </TooltipProvider>
       )}
+
+    {userVote && userVote.vote_percent > 0 && <span>You upvoted {userVote.vote_percent}%</span>}
+    {userVote && userVote.vote_percent < 0 && <span>You downvoted {userVote.vote_percent}%</span>}
+
     </div>
   );
 };
