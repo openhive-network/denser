@@ -51,10 +51,10 @@ const NotificationActivities = ({
     isLoading: profileDataIsLoading,
     error: errorProfileData,
     data: profileData
-  } = useQuery(['profileData', username], () => getAccountFull(username), {
-    enabled: !!username
+  } = useQuery(['profileData', user.username], () => getAccountFull(user.username), {
+    enabled: !!user.username
   });
-
+  const accountOwner = user.username === username;
   const {
     isLoading: apiAccountsIsLoading,
     error: errorApiAccounts,
@@ -95,6 +95,7 @@ const NotificationActivities = ({
   return (
     <Tabs defaultValue="all" className="w-full">
       {profileData &&
+      accountOwner &&
       (parseFloat(profileData.reward_hive_balance.split(' ')[0]) > 0 ||
         parseFloat(profileData.reward_hbd_balance.split(' ')[0]) > 0 ||
         parseFloat(profileData.reward_vesting_hive.split(' ')[0]) > 0) ? (
@@ -109,12 +110,14 @@ const NotificationActivities = ({
         </div>
       ) : null}
 
-      <span
-        className="text-md block w-full text-center font-bold hover:cursor-pointer"
-        onClick={handleMarkAllAsRead}
-      >
-        {t('navigation.profil_notifications_tab_navbar.mark_all')}
-      </span>
+      {accountOwner ? (
+        <span
+          className="text-md mb-4 block w-full text-center font-bold hover:cursor-pointer"
+          onClick={handleMarkAllAsRead}
+        >
+          {t('navigation.profil_notifications_tab_navbar.mark_all')}
+        </span>
+      ) : null}
       <TabsList className="flex" data-testid="notifications-local-menu">
         <TabsTrigger value="all">{t('navigation.profil_notifications_tab_navbar.all')}</TabsTrigger>
         <TabsTrigger value="replies">{t('navigation.profil_notifications_tab_navbar.replies')}</TabsTrigger>
