@@ -110,7 +110,7 @@ const NotificationActivities = ({
         </div>
       ) : null}
 
-      {accountOwner ? (
+      {accountOwner && unreadNotifications && unreadNotifications.unread !== 0 ? (
         <span
           className="text-md mb-4 block w-full text-center font-bold hover:cursor-pointer"
           onClick={handleMarkAllAsRead}
