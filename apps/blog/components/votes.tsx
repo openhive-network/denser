@@ -61,9 +61,9 @@ const vote = async (service: TransactionServiceThrowingError, voter: string, aut
     const result = await PromiseTools.promiseInterval(checkVoteSaved, 1000, 20);
     logger.info('result of checkVoteSaved in interval: %s', result);
 
-    // const waitingPeriod = 1000 * 3;
-    // logger.info('Waiting for %sms before updating view', waitingPeriod);
-    // await PromiseTools.promiseTimeout(waitingPeriod);
+    const waitingPeriod = 1000 * 5;
+    logger.info('Waiting for %sms before updating view', waitingPeriod);
+    await PromiseTools.promiseTimeout(waitingPeriod);
 
   } catch (error) {
     if (error === 'Failure') {
@@ -89,11 +89,10 @@ export function usePostUpdateVoteMutation() {
     onSuccess: (data) => {
       console.log('usePostUpdateVoteMutation onSuccess data: %o', data);
       queryClient.invalidateQueries({ queryKey: ['votes', data.author, data.permlink, data.voter] });
-      // queryClient.invalidateQueries({ queryKey: ['postData', data.author, data.permlink ] });
-      // // queryClient.invalidateQueries({ queryKey: ['entriesInfinite', 'trending', null] });
-      // queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
-      // // queryClient.invalidateQueries({ queryKey: [data.permlink, data.voter, 'ActiveVotes'] });
-      // queryClient.invalidateQueries({ queryKey: ['ActiveVotes'] });
+      queryClient.invalidateQueries({ queryKey: [data.permlink, data.voter, 'ActiveVotes'] });
+      queryClient.invalidateQueries({ queryKey: ['postData', data.author, data.permlink ] });
+      queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
+
     },
     onError: (error) => {
       throw error;
