@@ -58,7 +58,7 @@ const vote = async (service: TransactionServiceThrowingError, voter: string, aut
     };
 
     // Poll to check if vote was broadcasted and saved in blockchain.
-    const result = await PromiseTools.promiseInterval(checkVoteSaved, 1000, 10);
+    const result = await PromiseTools.promiseInterval(checkVoteSaved, 1000, 20);
     logger.info('result of checkVoteSaved in interval: %s', result);
 
     // const waitingPeriod = 1000 * 3;
@@ -88,12 +88,12 @@ export function usePostUpdateVoteMutation() {
     },
     onSuccess: (data) => {
       console.log('usePostUpdateVoteMutation onSuccess data: %o', data);
+      queryClient.invalidateQueries({ queryKey: ['votes', data.author, data.permlink, data.voter] });
       // queryClient.invalidateQueries({ queryKey: ['postData', data.author, data.permlink ] });
       // // queryClient.invalidateQueries({ queryKey: ['entriesInfinite', 'trending', null] });
       // queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
       // // queryClient.invalidateQueries({ queryKey: [data.permlink, data.voter, 'ActiveVotes'] });
       // queryClient.invalidateQueries({ queryKey: ['ActiveVotes'] });
-      queryClient.invalidateQueries({ queryKey: ['votes', data.author, data.permlink, data.voter] });
     },
     onError: (error) => {
       throw error;
@@ -135,7 +135,10 @@ const VotesComponent = ({ post }: { post: Entry }) => {
   //   //   user.username, userVote.vote_percent, post.author, post.permlink, userVote);
   // }
 
-  const userVote = userVotes?.votes[0] && userVotes?.votes[0].voter === user.username ? userVotes.votes[0] : undefined;
+  const userVote = userVotes?.votes[0]
+      && userVotes?.votes[0].voter === user.username
+    ? userVotes.votes[0]
+    : undefined;
 
   const postUpdateVoteMutation = usePostUpdateVoteMutation();
 
