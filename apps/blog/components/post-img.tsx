@@ -48,7 +48,7 @@ export default function PostImage({ post }: { post: Entry }) {
       return post.json_metadata.flow?.pictures[0].url;
     }
     if (post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw')) {
-      return `https://images.hive.blog/u/${post.author}/avatar/large`;
+      return `https://images.hive.blog/u/${post.author}/avatar/`;
     }
     if (youtube_id[0]) {
       return `https://img.youtube.com/vi/${youtube_id[0]}/0.jpg`;
