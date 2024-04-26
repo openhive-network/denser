@@ -23,7 +23,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import useManabars from './hooks/useManabars';
 import { AdvancedSettingsPostForm } from './advanced_settings_post_form';
 import MdEditor from './md-editor';
-import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { useLocalStorage } from 'usehooks-ts';
 import { useTranslation } from 'next-i18next';
@@ -38,6 +38,10 @@ import { TFunction } from 'i18next';
 import { debounce, extractUrlsFromJsonString, extractYouTubeVideoIds } from '../lib/utils';
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
+
+import { getLogger } from '@ui/lib/logging';
+const logger = getLogger('app');
 
 const defaultValues = {
   title: '',
@@ -166,8 +170,13 @@ export default function PostForm({
   setEditMode?: Dispatch<SetStateAction<boolean>>;
   refreshPage?: () => void;
 }) {
+  const btnRef = useRef<HTMLButtonElement>(null);
   const { hiveRenderer } = useContext(HiveRendererContext);
   const router = useRouter();
+  const [preferences, setPreferences] = useLocalStorage<Preferences>(
+    `user-preferences-${username}`,
+    DEFAULT_PREFERENCES
+  );
   const [preview, setPreview] = useState(true);
   const [selectedImg, setSelectedImg] = useState('');
   const [sideBySide, setSideBySide] = useState(sideBySidePreview);
@@ -229,7 +238,7 @@ export default function PostForm({
     maxAcceptedPayout: post_s
       ? Number(post_s.max_accepted_payout.split(' ')[0])
       : storedPost?.maxAcceptedPayout ?? 1000000,
-    payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType ?? '50%'
+    payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType ?? preferences.blog_rewards
   });
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
@@ -275,16 +284,20 @@ export default function PostForm({
     const postPermlink = await createPermlink(storedPost?.title ?? '', username);
     const permlinInEditMode = post_s?.permlink;
     try {
+      if (btnRef.current) {
+        btnRef.current.disabled = true;
+      }
+
       await transactionService.post(
         editMode && permlinInEditMode ? permlinInEditMode : postPermlink,
         storedPost.title,
         storedPost.postArea,
         storedPost.beneficiaries,
-        Number(storedPost.payoutType.slice(0, 2)),
         maxAcceptedPayout,
         tags,
         communityPosting ? communityPosting : storedPost.category,
         storedPost.postSummary,
+        preferences,
         imgYoutube(selectedImg)
       );
       form.reset(defaultValues);
@@ -302,8 +315,14 @@ export default function PostForm({
           await router.push(`/created/${tags[0]}`, undefined, { shallow: true });
         }
       }
+      if (btnRef.current) {
+        btnRef.current.disabled = false;
+      }
     } catch (error) {
-      console.error(error);
+      if (btnRef.current) {
+        btnRef.current.disabled = false;
+      }
+      logger.error(error);
     }
   }
   return (
@@ -366,7 +385,7 @@ export default function PostForm({
                     {t('submit_page.insert_images_by_dragging')} {t('submit_page.selecting_them')}
                     <TooltipProvider>
                       <Tooltip>
-                        <TooltipTrigger>
+                        <TooltipTrigger type="button">
                           <Icons.info className="ml-1 w-3" />
                         </TooltipTrigger>
                         <TooltipContent>{t('submit_page.insert_images_info')}</TooltipContent>
@@ -507,6 +526,7 @@ export default function PostForm({
               />
             ) : null}
             <Button
+              ref={btnRef}
               type="submit"
               variant="redHover"
               disabled={

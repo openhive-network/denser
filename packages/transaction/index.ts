@@ -15,7 +15,7 @@ import { toast } from '@hive/ui/components/hooks/use-toast';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
-import { Beneficiarie, FullAccount } from './lib/app-types';
+import { Beneficiarie, FullAccount, Preferences } from './lib/app-types';
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
@@ -297,20 +297,48 @@ class TransactionService {
     });
   }
 
-  async comment(parentAuthor: string, parentPermlink: string, body: string) {
-    await this.processHiveAppOperation((builder) => {
-      builder
-        .useBuilder(ReplyBuilder, () => {}, parentAuthor, parentPermlink, this.signerOptions.username, body)
-        .build();
-    });
-  }
-
-  async updateComment(parentAuthor: string, parentPermlink: string, permlink: string, body: string) {
+  async comment(parentAuthor: string, parentPermlink: string, body: string, preferences: Preferences) {
+    console.log('comment preferences', preferences);
     await this.processHiveAppOperation((builder) => {
       builder
         .useBuilder(
           ReplyBuilder,
-          () => {},
+          (replyBuilder) => {
+            if (preferences.comment_rewards) {
+              console.log('in if statement 0% comment rewards');
+              replyBuilder.setPercentHbd(
+                Number(preferences.comment_rewards.slice(0, preferences.comment_rewards.length - 1)) * 100
+              );
+            }
+          },
+          parentAuthor,
+          parentPermlink,
+          this.signerOptions.username,
+          body
+        )
+        .build();
+    });
+  }
+
+  async updateComment(
+    parentAuthor: string,
+    parentPermlink: string,
+    permlink: string,
+    body: string,
+    preferences: Preferences
+  ) {
+    await this.processHiveAppOperation((builder) => {
+      builder
+        .useBuilder(
+          ReplyBuilder,
+          (replyBuilder) => {
+            if (preferences.comment_rewards) {
+              console.log('in if statement 0% comment rewards');
+              replyBuilder.setPercentHbd(
+                Number(preferences.comment_rewards.slice(0, preferences.comment_rewards.length - 1)) * 100
+              );
+            }
+          },
           parentAuthor,
           parentPermlink,
           this.signerOptions.username,
@@ -327,11 +355,11 @@ class TransactionService {
     title: string,
     body: string,
     beneficiaries: Beneficiarie[],
-    percentHbd: number,
     maxAcceptedPayout: NaiAsset,
     tags: string[],
     category: string,
     summary: string,
+    preferences: Preferences,
     image?: string
   ) {
     await this.processHiveAppOperation((builder) => {
@@ -341,11 +369,16 @@ class TransactionService {
           (articleBuilder) => {
             articleBuilder
               .setCategory(category !== 'blog' ? category : tags[0])
-              .setPercentHbd(percentHbd)
               .setMaxAcceptedPayout(maxAcceptedPayout)
               .pushTags(...tags)
               .pushMetadataProperty({ summary: summary })
               .pushImages(image ? image : '');
+
+            if (preferences.blog_rewards) {
+              articleBuilder.setPercentHbd(
+                Number(preferences.blog_rewards.slice(0, preferences.blog_rewards.length - 1)) * 100
+              );
+            }
 
             beneficiaries.forEach((beneficiarie) => {
               articleBuilder.addBeneficiary(beneficiarie.account, Number(beneficiarie.weight));

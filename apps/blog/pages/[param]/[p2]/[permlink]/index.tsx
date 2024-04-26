@@ -40,6 +40,7 @@ import DialogLogin from '@/blog/components/dialog-login';
 import { UserPopoverCard } from '@/blog/components/user-popover-card';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
+import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -60,6 +61,7 @@ function PostPage({
 }) {
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
+  const { data: mutedList } = useFollowListQuery(user.username, 'muted');
   const {
     isLoading: isLoadingPost,
     error: errorPost,
@@ -479,7 +481,12 @@ function PostPage({
             <span>{t('select_sort.sort_comments.sort')}</span>
             <CommentSelectFilter />
           </div>
-          <DynamicComments data={discussionState} parent={post} parent_depth={post.depth} />
+          <DynamicComments
+            mutedList={mutedList || []}
+            data={discussionState}
+            parent={post}
+            parent_depth={post.depth}
+          />
         </div>
       ) : (
         <Loading loading={isLoadingDiscussion} />

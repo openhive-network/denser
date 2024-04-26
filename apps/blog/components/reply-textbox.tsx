@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Button } from '@ui/components/button';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useRef } from 'react';
 import { useTranslation } from 'next-i18next';
 import { transactionService } from '@transaction/index';
 import { HiveRendererContext } from './hive-renderer-context';
@@ -8,6 +8,10 @@ import { useLocalStorage } from 'usehooks-ts';
 import { Icons } from '@ui/components/icons';
 import MdEditor from './md-editor';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
+
+import { getLogger } from '@ui/lib/logging';
+const logger = getLogger('app');
 
 export function ReplyTextbox({
   onSetReply,
@@ -27,10 +31,15 @@ export function ReplyTextbox({
   comment?: string;
 }) {
   const [storedPost, storePost, removePost] = useLocalStorage<string>(`replyTo-/${username}/${permlink}`, '');
+  const [preferences, setPreferences] = useLocalStorage<Preferences>(
+    `user-preferences-${username}`,
+    DEFAULT_PREFERENCES
+  );
   const { t } = useTranslation('common_blog');
   const [text, setText] = useState(comment ? comment : storedPost ? storedPost : '');
   const [cleanedText, setCleanedText] = useState('');
   const { hiveRenderer } = useContext(HiveRendererContext);
+  const btnRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (hiveRenderer) {
@@ -52,6 +61,31 @@ export function ReplyTextbox({
     }
   };
 
+  const postComment = async () => {
+    try {
+      if (btnRef.current) {
+        btnRef.current.disabled = true;
+      }
+      if (parentPermlink) {
+        transactionService.updateComment(username, parentPermlink, permlink, cleanedText, preferences);
+      } else {
+        transactionService.comment(username, permlink, cleanedText, preferences);
+      }
+      setText('');
+      removePost();
+      localStorage.removeItem(storageId);
+      onSetReply(false);
+      if (btnRef.current) {
+        btnRef.current.disabled = true;
+      }
+    } catch (error) {
+      if (btnRef.current) {
+        btnRef.current.disabled = true;
+      }
+      logger.error(error);
+    }
+  };
+
   return (
     <div
       className="mx-8 mb-4 flex flex-col gap-6 rounded-md border bg-card p-4 text-card-foreground shadow-sm dark:bg-slate-900"
@@ -65,7 +99,12 @@ export function ReplyTextbox({
           <MdEditor
             htmlMode={editMode}
             onChange={(value) => {
-              setText(value);
+              if (value === '') {
+                setText(value);
+                removePost();
+              } else {
+                setText(value);
+              }
             }}
             persistedValue={text}
             placeholder={t('post_content.footer.comment.reply')}
@@ -83,20 +122,7 @@ export function ReplyTextbox({
           </p>
         </div>
         <div className="flex flex-col md:flex-row">
-          <Button
-            disabled={text === ''}
-            onClick={() => {
-              if (parentPermlink) {
-                transactionService.updateComment(username, parentPermlink, permlink, cleanedText);
-              } else {
-                transactionService.comment(username, permlink, cleanedText);
-              }
-              setText('');
-              removePost();
-              localStorage.removeItem(storageId);
-              onSetReply(false);
-            }}
-          >
+          <Button ref={btnRef} disabled={text === ''} onClick={() => postComment()}>
             {t('post_content.footer.comment.post')}
           </Button>
           <Button

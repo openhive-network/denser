@@ -46,14 +46,14 @@ interface Settings {
   blacklist_description: string;
   muted_list_description: string;
 }
-interface Preferences {
+export interface Preferences {
   nsfw: 'hide' | 'warn' | 'show';
   blog_rewards: '0%' | '50%' | '100%';
   comment_rewards: '0%' | '50%' | '100%';
   referral_system: 'enabled' | 'disabled';
 }
-const DEFAULT_PREFERENCES: Preferences = {
-  nsfw: 'hide',
+export const DEFAULT_PREFERENCES: Preferences = {
+  nsfw: 'warn',
   blog_rewards: '50%',
   comment_rewards: '50%',
   referral_system: 'enabled'
@@ -173,7 +173,10 @@ export default function UserSettings() {
   };
 
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
-  const [preferences, setPreferences] = useLocalStorage<Preferences>('user-preferences', DEFAULT_PREFERENCES);
+  const [preferences, setPreferences] = useLocalStorage<Preferences>(
+    `user-preferences-${user.username}`,
+    DEFAULT_PREFERENCES
+  );
   const [endpoints, setEndpoints] = useLocalStorage('hive-blog-endpoints', DEFAULTS_ENDPOINTS);
   const [endpoint, setEndpoint] = useLocalStorage('hive-blog-endpoint', siteConfig.endpoint);
   const [newEndpoint, setNewEndpoint] = useState('');
@@ -408,28 +411,6 @@ export default function UserSettings() {
               </h2>
 
               <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-                <div data-testid="choose-language">
-                  <Label htmlFor="choose-language">{t('settings_page.choose_language')}</Label>
-                  <Select defaultValue="en" name="choose-language">
-                    <SelectTrigger>
-                      <SelectValue placeholder="Choose Language" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem value="en">English</SelectItem>
-                        <SelectItem value="es">Spanish Español</SelectItem>
-                        <SelectItem value="ru">Russian русский</SelectItem>
-                        <SelectItem value="fr">French français</SelectItem>
-                        <SelectItem value="it">Italian italiano</SelectItem>
-                        <SelectItem value="ko">Korean 한국어</SelectItem>
-                        <SelectItem value="ja">Japanese 日本語</SelectItem>
-                        <SelectItem value="pl">Polish Polski</SelectItem>
-                        <SelectItem value="zh">Chinese 简体中文</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-
                 <div data-testid="not-safe-for-work-content">
                   <Label htmlFor="not-safe-for-work-content">
                     {t('settings_page.not_safe_for_work_nsfw_content')}
@@ -585,26 +566,26 @@ export default function UserSettings() {
           </div>
           <Button className="my-4 w-44">{t('settings_page.reset_endpoints')}</Button>
         </div>
-        <div>
-          {mutedQuery.data?.map((mutedUser, index) => (
-            <>
-              <div>{t('settings_page.muted_users')}</div>
-              <ul>
+        {mutedQuery.data ? (
+          <div>
+            <div>{t('settings_page.muted_users')}</div>
+            <ul>
+              {mutedQuery.data.map((mutedUser, index) => (
                 <li key={mutedUser.name}>
                   <span>{index + 1}. </span>
                   <span className="text-red-500">{mutedUser.name}</span>
                   <Button
-                    className="text-red-500"
+                    className="h-fit p-1 text-red-500"
                     variant="link"
                     onClick={() => transactionService.unmute(mutedUser.name)}
                   >
                     [{t('settings_page.unmute')}]
                   </Button>
                 </li>
-              </ul>
-            </>
-          ))}
-        </div>
+              ))}
+            </ul>
+          </div>
+        ) : null}
       </div>
     </ProfileLayout>
   );
