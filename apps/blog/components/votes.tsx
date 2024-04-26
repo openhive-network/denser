@@ -33,12 +33,12 @@ const vote = async (
     "Failure in checking if user's vote has been included.";
   try {
 
-    // FIXME Delete this!
-    if (weight > 0) {
-      weight = 1;
-    } else if (weight < 0) {
-      weight = -1;
-    }
+    // // Use in manual testing in development only!
+    // if (weight > 0) {
+    //   weight = 1;
+    // } else if (weight < 0) {
+    //   weight = -1;
+    // }
 
     // Get the newest num_changes for the vote. `numChangesBefore = -1`
     // means vote that does not exist yet (current voter hasn't voted
@@ -208,13 +208,19 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                   <Icons.arrowUpCircle
                     className={clsx(
                       'h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1',
-                      // { 'bg-red-600 text-white': checkVote && checkVote?.rshares > 0 },
                       { 'bg-red-600 text-white': userVote && userVote.vote_percent > 0 },
                     )}
                     onClick={(e) => {
                       if (postUpdateVoteMutation.isLoading) return;
                       setClickedVoteButton('up');
-                      submitVote(10000);
+                      {
+                        // We vote either 100% or 0%.
+                        if (userVote && userVote.vote_percent > 0) {
+                          submitVote(0);
+                        } else {
+                          submitVote(10000);
+                        }
+                      }
                     }}
                   />
                 :
@@ -223,7 +229,13 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                   </DialogLogin>
               }
             </TooltipTrigger>
-            <TooltipContent data-testid="upvote-button-tooltip">{t('cards.post_card.upvote')}</TooltipContent>
+            <TooltipContent data-testid="upvote-button-tooltip">
+              {
+                userVote && userVote.vote_percent > 0
+                  ? t('cards.post_card.undo_upvote')
+                  : t('cards.post_card.upvote')
+              }
+            </TooltipContent>
           </Tooltip>
         </TooltipProvider>
 
@@ -238,13 +250,19 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                 <Icons.arrowDownCircle
                   className={clsx(
                     'h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
-                    // { 'bg-gray-600 text-white': checkVote && checkVote?.rshares < 0 },
                     { 'bg-gray-600 text-white': userVote && userVote.vote_percent < 0 },
                   )}
                   onClick={(e) => {
                     if (postUpdateVoteMutation.isLoading) return;
                     setClickedVoteButton('down');
-                    submitVote(-10000);
+                    {
+                      // We vote either -100% or 0%.
+                      if (userVote && userVote.vote_percent < 0) {
+                        submitVote(0);
+                      } else {
+                        submitVote(-10000);
+                      }
+                    }
                   }}
                 />
               :
@@ -254,8 +272,12 @@ const VotesComponent = ({ post }: { post: Entry }) => {
             }
           </TooltipTrigger>
           <TooltipContent data-testid="downvote-button-tooltip">
-            {t('cards.post_card.downvote')}
-          </TooltipContent>
+              {
+                userVote && userVote.vote_percent < 0
+                  ? t('cards.post_card.undo_downvote')
+                  : t('cards.post_card.downvote')
+              }
+            </TooltipContent>
         </Tooltip>
       </TooltipProvider>
 
@@ -263,7 +285,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
         {t('cards.post_card.you_upvoted', { votePercent: (userVote.vote_percent / 100).toFixed(2) })}
       </span>}
       {userVote && userVote.vote_percent < 0 && <span>
-        {t('cards.post_card.you_downvoted', { votePercent: (userVote.vote_percent / 100).toFixed(2) })}
+        {t('cards.post_card.you_downvoted', { votePercent: (- userVote.vote_percent / 100).toFixed(2) })}
       </span>}
       {userVote && userVote.vote_percent === 0 && <span>
         {t('cards.post_card.you_voted', { votePercent: (userVote.vote_percent / 100).toFixed(2) })}
