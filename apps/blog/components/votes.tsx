@@ -136,7 +136,7 @@ export function usePostUpdateVoteMutation() {
       );
     },
     onSuccess: (data) => {
-      console.log('usePostUpdateVoteMutation onSuccess data: %o', data);
+      logger.info('usePostUpdateVoteMutation onSuccess data: %o', data);
       queryClient.invalidateQueries(
         { queryKey: ['votes', data.author, data.permlink, data.voter] });
       queryClient.invalidateQueries(
