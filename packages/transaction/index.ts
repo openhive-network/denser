@@ -366,7 +366,7 @@ class TransactionService {
     tags: string[],
     category: string,
     summary: string,
-    preferences: Preferences,
+    payoutType: string,
     image?: string
   ) {
     const chain = await hiveChainService.getHiveChain();
@@ -382,13 +382,13 @@ class TransactionService {
               .pushMetadataProperty({ summary: summary })
               .pushImages(image ? image : '');
 
-            if (preferences.blog_rewards === '100%') {
+            if (payoutType === '100%') {
               articleBuilder.setPercentHbd(0);
             }
-            if (preferences.blog_rewards === '50%' || preferences.blog_rewards === '0%') {
+            if (payoutType === '50%' || payoutType === '0%') {
               articleBuilder.setPercentHbd(10000);
             }
-            if (preferences.blog_rewards === '0%') {
+            if (payoutType === '0%') {
               articleBuilder.setMaxAcceptedPayout(chain.hbd(0));
             }
 

@@ -43,18 +43,6 @@ import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
-const defaultValues = {
-  title: '',
-  postArea: '',
-  postSummary: '',
-  tags: '',
-  author: '',
-  category: 'blog',
-  beneficiaries: [],
-  maxAcceptedPayout: 1000000,
-  payoutType: '50%'
-};
-
 const MAX_TAGS = 8;
 function validateTagInput(value: string, required: boolean, t: TFunction<'common_blog', undefined>) {
   if (!value || value.trim() === '') return required ? t('submit_page.category_selector.required') : null;
@@ -177,6 +165,17 @@ export default function PostForm({
     `user-preferences-${username}`,
     DEFAULT_PREFERENCES
   );
+  const defaultValues = {
+    title: '',
+    postArea: '',
+    postSummary: '',
+    tags: '',
+    author: '',
+    category: 'blog',
+    beneficiaries: [],
+    maxAcceptedPayout: preferences.blog_rewards === '0%' ? 0 : 1000000,
+    payoutType: ''
+  };
   const [preview, setPreview] = useState(true);
   const [selectedImg, setSelectedImg] = useState('');
   const [sideBySide, setSideBySide] = useState(sideBySidePreview);
@@ -266,6 +265,7 @@ export default function PostForm({
     debounce(() => {
       storePost(form.getValues());
     }, 50)();
+    console.log('form.getValues()', form.getValues());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, postArea, ...Object.values(restFields)]);
 
@@ -297,7 +297,7 @@ export default function PostForm({
         tags,
         communityPosting ? communityPosting : storedPost.category,
         storedPost.postSummary,
-        preferences,
+        storedPost.payoutType ?? preferences.blog_rewards,
         imgYoutube(selectedImg)
       );
       form.reset(defaultValues);
@@ -464,7 +464,6 @@ export default function PostForm({
                       ? t('submit_page.power_up')
                       : ' 50% HBD / 50% HP'}
                 </span>
-
                 <AdvancedSettingsPostForm username={username} onChangeStore={storePost} data={storedPost}>
                   <span
                     className="w-fit cursor-pointer text-xs text-destructive"

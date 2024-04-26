@@ -51,7 +51,7 @@ export function AdvancedSettingsPostForm({
     `user-preferences-${username}`,
     DEFAULT_PREFERENCES
   );
-  const [rewards, setRewards] = useState(data.payoutType);
+  const [rewards, setRewards] = useState(data.payoutType === '' ? '50%' : data.payoutType);
   const [splitRewards, setSplitRewards] = useState(100);
   const [templateTitle, setTemplateTitle] = useState('');
   const [maxPayout, setMaxPayout] = useState(
@@ -81,7 +81,7 @@ export function AdvancedSettingsPostForm({
   const currentTemplate = storedTemplates.find((e) => e.templateTitle === selectTemplate);
 
   useEffect(() => {
-    setRewards(data.payoutType);
+    setRewards(data.payoutType === '' ? '50%' : data.payoutType);
     setMaxPayout(
       data.maxAcceptedPayout === 1000000 ? 'no_max' : data.maxAcceptedPayout === 0 ? '0' : 'custom'
     );
