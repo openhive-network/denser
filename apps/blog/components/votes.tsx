@@ -5,15 +5,14 @@ import DialogLogin from './dialog-login';
 import clsx from 'clsx';
 import type { Entry } from '@transaction/lib/bridge';
 import { useTranslation } from 'next-i18next';
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { transactionService, TransactionServiceThrowingError, TransactionErrorHandlingMode } from '@transaction/index';
+import { TransactionServiceThrowingError, TransactionErrorHandlingMode } from '@transaction/index';
 import env from '@beam-australia/react-env';
 import { PromiseTools } from '@transaction/lib/promise-tools'
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { CircleSpinner } from 'react-spinners-kit';
 import { useSigner } from '@smart-signer/lib/use-signer';
-import { IVoteListItem, getListVotesByCommentVoter } from '@transaction/lib/hive';
+import { getListVotesByCommentVoter } from '@transaction/lib/hive';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -23,51 +22,95 @@ const transactionServiceThrowingError =
     TransactionErrorHandlingMode.OnlyThrow
   );
 
-const vote = async (service: TransactionServiceThrowingError, voter: string, author: string, permlink: string, weight: number) => {
+const vote = async (
+      service: TransactionServiceThrowingError,
+      voter: string,
+      author: string,
+      permlink: string,
+      weight: number,
+      t: any // translate function
+    ) => {
+  const pollingErrorMessage =
+    "Failure in checking if user's vote has been included.";
   try {
 
+    // FIXME Delete this!
     if (weight > 0) {
       weight = 1;
-    } else {
+    } else if (weight < 0) {
       weight = -1;
     }
 
-    // Get the newest num_changes for the vote.
-    let numChangesBefore = -1; // -1 means vote does not exist
-    const votesListBefore = await getListVotesByCommentVoter([author, permlink, voter], 1);
-    if (votesListBefore && votesListBefore.votes.length > 0 && votesListBefore.votes[0].voter === voter) {
+    // Get the newest num_changes for the vote. `numChangesBefore = -1`
+    // means vote that does not exist yet (current voter hasn't voted
+    // yet on this subject).
+    let numChangesBefore = -1;
+    const votesListBefore =
+      await getListVotesByCommentVoter([author, permlink, voter], 1);
+    if (votesListBefore
+        && votesListBefore.votes.length > 0
+        && votesListBefore.votes[0].voter === voter
+      ) {
       numChangesBefore = votesListBefore.votes[0].num_changes;
     }
     // Vote now
     await service.upVote(author, permlink, weight);
-    logger.info('Voted: %o', { voter, author, permlink, weight, numChangesBefore });
+    logger.info('Voted: %o',
+      { voter, author, permlink, weight, numChangesBefore });
 
-    // Check if num_changes is greater than before.
+    // Check if `num_changes` is greater than before.
     let counter = 0;
     const checkVoteSaved = async () => {
-      const votesList = await getListVotesByCommentVoter([author, permlink, voter], 1);
-      logger.info('try #%s votesList: %o', ++counter, votesList);
+      const getVoteListArgs: [string, string, string] =
+        [author, permlink, voter];
+      const votesList =
+        await getListVotesByCommentVoter(getVoteListArgs, 1);
+      ++counter;
+      logger.info('checkVoteSaved try: #%s for: %o ',
+          counter, getVoteListArgs);
       if (votesList && votesList.votes.length > 0
           && votesList.votes[0].voter === voter
           && votesList.votes[0].num_changes > numChangesBefore) {
-        logger.info('num_changes %s is greater than %s', votesList.votes[0].num_changes, numChangesBefore);
+        logger.info('Found change! num_changes %s is greater than %s.',
+            votesList.votes[0].num_changes, numChangesBefore);
         return true;
       }
-      logger.info('num_changes is the same');
+      logger.info('Change not found! num_changes is the same.');
       return false;
     };
 
-    // Poll to check if vote was broadcasted and saved in blockchain.
-    const result = await PromiseTools.promiseInterval(checkVoteSaved, 1000, 20);
-    logger.info('result of checkVoteSaved in interval: %s', result);
+    // Poll to check if vote was broadcasted and saved into blockchain.
+    const result = await PromiseTools.promiseInterval(
+        checkVoteSaved, 1000, 30,
+        pollingErrorMessage
+      );
+    logger.info('Result of checkVoteSaved in interval: %s', result);
 
+    // We need to wait some time, because other API endpoints are slower
+    // in reflecting current vote in their responses. We could do
+    // similar checks as in `checkVoteSaved()`, but this would be
+    // overkill, I think.
     const waitingPeriod = 1000 * 5;
-    logger.info('Waiting for %sms before updating view', waitingPeriod);
+    logger.info(
+      'Waiting %sms before invalidating queries to update view',
+      waitingPeriod
+    );
     await PromiseTools.promiseTimeout(waitingPeriod);
-
   } catch (error) {
-    if (error === 'Failure') {
-      // Error from PromiseTools.promiseInterval
+    if (typeof error === 'string' && error === pollingErrorMessage) {
+      // Error in polling for broadcast result.
+      const title =
+        t('cards.post_card.vote_polling_error_message_title');
+      const description =
+        t('cards.post_card.vote_polling_error_message_description');
+      transactionServiceThrowingError.handleError(
+        error,
+        {
+          title,
+          description,
+          variant: 'default',
+        }
+      );
     } else {
       transactionServiceThrowingError.handleError(error);
     }
@@ -76,23 +119,33 @@ const vote = async (service: TransactionServiceThrowingError, voter: string, aut
 };
 
 export function usePostUpdateVoteMutation() {
+  const { t } = useTranslation('common_blog');
   const queryClient = useQueryClient();
   const { signerOptions } = useSigner();
   const postUpdateVoteMutation = useMutation({
-    mutationFn: (params: { voter: string, author: string, permlink: string, weight: number }) => {
+    mutationFn: (params: {
+          voter: string,
+          author: string,
+          permlink: string,
+          weight: number
+        }) => {
       const { voter, author, permlink, weight } = params;
       transactionServiceThrowingError.setSignerOptions(signerOptions);
       return vote(
-        transactionServiceThrowingError, voter, author, permlink, weight
+        transactionServiceThrowingError, voter, author, permlink,
+        weight, t
       );
     },
     onSuccess: (data) => {
       console.log('usePostUpdateVoteMutation onSuccess data: %o', data);
-      queryClient.invalidateQueries({ queryKey: ['votes', data.author, data.permlink, data.voter] });
-      queryClient.invalidateQueries({ queryKey: [data.permlink, data.voter, 'ActiveVotes'] });
-      queryClient.invalidateQueries({ queryKey: ['postData', data.author, data.permlink ] });
-      queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
-
+      queryClient.invalidateQueries(
+        { queryKey: ['votes', data.author, data.permlink, data.voter] });
+      queryClient.invalidateQueries(
+        { queryKey: [data.permlink, data.voter, 'ActiveVotes'] });
+      queryClient.invalidateQueries(
+        { queryKey: ['postData', data.author, data.permlink ] });
+      queryClient.invalidateQueries(
+        { queryKey: ['entriesInfinite'] });
     },
     onError: (error) => {
       throw error;
@@ -112,7 +165,8 @@ const VotesComponent = ({ post }: { post: Entry }) => {
   useEffect(() => {
     setIsClient(true);
   }, []);
-  const checkVote = isClient && post.active_votes.find((e) => e.voter === user?.username);
+  const checkVote = isClient
+    && post.active_votes.find((e) => e.voter === user?.username);
 
   const {
     isLoading: isLoadingUserVotes,
@@ -127,13 +181,6 @@ const VotesComponent = ({ post }: { post: Entry }) => {
     }
   );
 
-  // let userVote: IVoteListItem;
-  // if (userVotes) {
-  //   userVote = userVotes.votes[0];
-  //   // logger.info('user: %s voted: %s for post.author: %s, post.permlink: %s. Full userVote is: %o',
-  //   //   user.username, userVote.vote_percent, post.author, post.permlink, userVote);
-  // }
-
   const userVote = userVotes?.votes[0]
       && userVotes?.votes[0].voter === user.username
     ? userVotes.votes[0]
@@ -145,14 +192,13 @@ const VotesComponent = ({ post }: { post: Entry }) => {
     const { author, permlink } = post;
     const voter = user.username;
     try {
-      await postUpdateVoteMutation.mutateAsync({ voter, author, permlink, weight });
+      await postUpdateVoteMutation.mutateAsync(
+        { voter, author, permlink, weight }
+      );
     } catch (error) {
-      // TODO We'll never get error here – it's handled in TransactionService.
-      // do nothing
+      // We'll never get error here – it's handled in earlier.
     }
   }
-
-  // logger.info({ post, user, checkVote });
 
   return (
     <div className="flex items-center gap-1">
@@ -219,32 +265,18 @@ const VotesComponent = ({ post }: { post: Entry }) => {
         </Tooltip>
       </TooltipProvider>
 
-      {/* {checkVote && (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>{checkVote?.rshares === 0 && 'Voted'}</TooltipTrigger>
-            <TooltipContent className="flex flex-col">
-              <span>You voted but your Hive Power is too low to check if you upvote or downvote.</span>
-              <span>
-                Boost your Hive Power in
-                <Link
-                  className="font-bold hover:text-red-600"
-                  target="_blank"
-                  href={`${walletHost}/${user?.username}/transfers`}
-                >
-                  {' Wallet '}
-                </Link>
-                to see more
-              </span>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      )} */}
-
-    {userVote && userVote.vote_percent > 0 && <span>You upvoted {String(userVote.vote_percent / 100)}%</span>}
-    {userVote && userVote.vote_percent < 0 && <span>You downvoted {String(userVote.vote_percent / 100)}%</span>}
+      {userVote && userVote.vote_percent > 0 && <span>
+        {t('cards.post_card.you_upvoted', { votePercent: (userVote.vote_percent / 100).toFixed(2) })}
+      </span>}
+      {userVote && userVote.vote_percent < 0 && <span>
+        {t('cards.post_card.you_downvoted', { votePercent: (userVote.vote_percent / 100).toFixed(2) })}
+      </span>}
+      {userVote && userVote.vote_percent === 0 && <span>
+        {t('cards.post_card.you_voted', { votePercent: (userVote.vote_percent / 100).toFixed(2) })}
+      </span>}
 
     </div>
   );
 };
+
 export default VotesComponent;

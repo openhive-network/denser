@@ -78,7 +78,12 @@ export class PromiseTools {
      * @returns
      * @memberof PromiseTools
      */
-    public static async promiseInterval(callback: () => Promise<any>, ms = 1000, triesLeft = 5) {
+    public static async promiseInterval(
+        callback: () => Promise<any>,
+        ms = 1000,
+        triesLeft = 5,
+        rejectValue = 'Failure'
+    ) {
         return new Promise((resolve, reject) => {
             const interval = setIntervalAsync(async () => {
                 const result = await callback();
@@ -87,7 +92,7 @@ export class PromiseTools {
                     clearIntervalAsync(interval);
                 }
                 if (triesLeft <= 1) {
-                    reject('Failure');
+                    reject(rejectValue);
                     clearIntervalAsync(interval)
                 };
                 triesLeft--;
