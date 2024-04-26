@@ -170,7 +170,12 @@
       "response": "1 response. ",
       "responses": "{{responses}} responses. ",
       "click_to_respond": "Click to respond",
-      "reblog": "Reblog"
+      "reblog": "Reblog",
+      "you_upvoted": "You upvoted {{votePercent}}%",
+      "you_downvoted": "You downvoted {{votePercent}}%",
+      "you_voted": "You voted {{votePercent}}%",
+      "vote_polling_error_message_title": "Warning",
+      "vote_polling_error_message_description": "Failure in checking if user's vote has been included."
     },
     "comment_card": {
       "reveal_comment": "Reveal Comment",
