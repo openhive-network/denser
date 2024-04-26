@@ -12,6 +12,7 @@ import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { CircleSpinner } from 'react-spinners-kit';
 import { useSigner } from '@smart-signer/lib/use-signer';
 import { getListVotesByCommentVoter } from '@transaction/lib/hive';
+import env from '@beam-australia/react-env';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -34,10 +35,12 @@ const vote = async (
   try {
 
     // // Use in manual testing in development only!
-    // if (weight > 0) {
-    //   weight = 1;
-    // } else if (weight < 0) {
-    //   weight = -1;
+    // if (env('DEVELOPMENT') === 'true') {
+    //   if (weight > 0) {
+    //     weight = 1;
+    //   } else if (weight < 0) {
+    //     weight = -1;
+    //   }
     // }
 
     // Get the newest num_changes for the vote. `numChangesBefore = -1`
@@ -89,12 +92,13 @@ const vote = async (
     // in reflecting current vote in their responses. We could do
     // similar checks as in `checkVoteSaved()`, but this would be
     // overkill, I think.
-    const waitingPeriod = 1000 * 5;
-    logger.info(
-      'Waiting %sms before invalidating queries to update view',
-      waitingPeriod
-    );
-    await PromiseTools.promiseTimeout(waitingPeriod);
+    // const waitingPeriod = 1000 * 5;
+    // logger.info(
+    //   'Waiting %sms before invalidating queries to update view',
+    //   waitingPeriod
+    // );
+    // await PromiseTools.promiseTimeout(waitingPeriod);
+
   } catch (error) {
     if (typeof error === 'string' && error === pollingErrorMessage) {
       // Error in polling for broadcast result.
