@@ -15,6 +15,7 @@ import { Icons } from '@ui/components/icons';
 import { useLocalStorage } from 'usehooks-ts';
 import { toast } from '@ui/components/hooks/use-toast';
 import { useTranslation } from 'next-i18next';
+import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 
 type AccountFormValues = {
   title: string;
@@ -46,6 +47,10 @@ export function AdvancedSettingsPostForm({
   data: AccountFormValues;
 }) {
   const { t } = useTranslation('common_blog');
+  const [preferences, setPreferences] = useLocalStorage<Preferences>(
+    `user-preferences-${username}`,
+    DEFAULT_PREFERENCES
+  );
   const [rewards, setRewards] = useState(data.payoutType);
   const [splitRewards, setSplitRewards] = useState(100);
   const [templateTitle, setTemplateTitle] = useState('');
@@ -227,6 +232,25 @@ export function AdvancedSettingsPostForm({
     });
   }
 
+  function authorRewardsText(author_rewards: string): string {
+    const def = '50% HBD / 50% HP';
+    let text;
+    switch (author_rewards) {
+      case '0%':
+        text = t('settings_page.decline_payout');
+        break;
+      case '50%':
+        text = def;
+        break;
+      case '100%':
+        text = t('settings_page.power_up');
+        break;
+      default:
+        text = def;
+    }
+    return text;
+  }
+
   return (
     <Dialog open={open} onOpenChange={() => setOpen((prev) => !prev)}>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -290,7 +314,10 @@ export function AdvancedSettingsPostForm({
                 <SelectItem value="100%">{t('submit_page.advanced_settings_dialog.power_up')}</SelectItem>
               </SelectContent>
             </Select>
-            <span>{t('submit_page.advanced_settings_dialog.default')}</span>
+            <span>
+              {t('submit_page.advanced_settings_dialog.default')}
+              {authorRewardsText(preferences.blog_rewards)}
+            </span>
             <Link href={`/@${username}/settings`} className="text-red-500">
               {t('submit_page.advanced_settings_dialog.update')}
             </Link>

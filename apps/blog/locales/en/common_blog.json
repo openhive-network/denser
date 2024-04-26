@@ -449,7 +449,7 @@
       "author_rewards": "Author rewards",
       "what_type_of_tokens": "What type of tokens do you want as rewards from this post?",
       "power_up": " Power up 100%",
-      "default": "Default: 50% HBD / 50% HP",
+      "default": "Default: ",
       "update": "Update",
       "delete": "Delete",
       "your_percent": "Your percent cannot be less than 0",

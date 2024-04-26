@@ -430,7 +430,7 @@
       "author_rewards": "投稿者報酬",
       "what_type_of_tokens": "この投稿からの報酬としてどのタイプのトークンを希望しますか？",
       "power_up": "100% パワーアップ",
-      "default": "デフォルト: 50% HBD / 50% HP",
+      "default": "デフォルト: ",
       "update": "更新",
       "delete": "削除",
       "your_percent": "あなたのパーセントは0未満にすることはできません",
