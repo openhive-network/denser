@@ -7,7 +7,6 @@ import type { Entry } from '@transaction/lib/bridge';
 import { useTranslation } from 'next-i18next';
 import { useEffect, useState } from 'react';
 import { TransactionServiceThrowingError, TransactionErrorHandlingMode } from '@transaction/index';
-import env from '@beam-australia/react-env';
 import { PromiseTools } from '@transaction/lib/promise-tools'
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { CircleSpinner } from 'react-spinners-kit';
@@ -156,7 +155,6 @@ export function usePostUpdateVoteMutation() {
 
 
 const VotesComponent = ({ post }: { post: Entry }) => {
-  const walletHost = env('WALLET_ENDPOINT');
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
   const [isClient, setIsClient] = useState(false);
@@ -168,11 +166,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
   const checkVote = isClient
     && post.active_votes.find((e) => e.voter === user?.username);
 
-  const {
-    isLoading: isLoadingUserVotes,
-    error: errorUserVotes,
-    data: userVotes
-  } = useQuery(
+  const { data: userVotes } = useQuery(
     ['votes', post.author, post.permlink, user?.username],
     () => getListVotesByCommentVoter(
       [post.author, post.permlink, user?.username], 1),
@@ -196,7 +190,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
         { voter, author, permlink, weight }
       );
     } catch (error) {
-      // We'll never get error here – it's handled in earlier.
+      logger.error('Error: %o', error);
     }
   }
 
