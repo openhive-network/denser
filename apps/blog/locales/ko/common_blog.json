@@ -438,6 +438,7 @@
       "account_name": "계정 이름은 더 길어야 합니다",
       "beneficiary_cannot_be_self": "자신을 수혜자로 지정할 수 없습니다",
       "beneficiary_percent_invalid": "수혜자 비율은 1에서 100까지여야 합니다",
+      "bad_actor": "이 계정으로 전송할 때 주의하세요. 가능한 피싱을 위해 철자를 두 번 확인해주세요.",
       "add_account": "계정 추가",
       "post_templates": "게시물 템플릿",
       "manage_your_post_templates": "게시물 템플릿을 관리하고, 여기에 다른 설정도 저장/로드됩니다.",

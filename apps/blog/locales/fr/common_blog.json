@@ -438,6 +438,7 @@
       "account_name": "Le nom du compte doit être plus long",
       "beneficiary_cannot_be_self": "Impossible de spécifier soi-même comme bénéficiaire",
       "beneficiary_percent_invalid": "Le pourcentage du bénéficiaire doit être compris entre 1 et 100",
+      "bad_actor": "Faites attention en envoyant à ce compte. Veuillez vérifier votre orthographe pour éviter le phishing possible.",
       "add_account": "Ajouter un compte",
       "post_templates": "Modèles de publication",
       "manage_your_post_templates": "Gérez vos modèles de publication, d'autres paramètres seront également sauvegardés/chargés ici.",

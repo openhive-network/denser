@@ -15,6 +15,7 @@ import { Icons } from '@ui/components/icons';
 import { useLocalStorage } from 'usehooks-ts';
 import { toast } from '@ui/components/hooks/use-toast';
 import { useTranslation } from 'next-i18next';
+import badActorList from '@smart-signer/lib/validators/bad-actor-list';
 
 type AccountFormValues = {
   title: string;
@@ -71,6 +72,7 @@ export function AdvancedSettingsPostForm({
     beneficiaries.length !== 0
       ? beneficiaries.some((beneficiary) => beneficiary.account === username)
       : false;
+  const badActor = beneficiaries.some((beneficiary) => badActorList.includes(beneficiary.account));
   const smallWeight = beneficiaries.find((e) => Number(e.weight) <= 0);
   const isTemplateStored = storedTemplates.some((template) => template.templateTitle === templateTitle);
   const currentTemplate = storedTemplates.find((e) => e.templateTitle === selectTemplate);
@@ -334,7 +336,9 @@ export function AdvancedSettingsPostForm({
                       ? t('submit_page.advanced_settings_dialog.beneficiary_cannot_be_self')
                       : smallWeight
                         ? t('submit_page.advanced_settings_dialog.beneficiary_percent_invalid')
-                        : null}
+                        : badActor
+                          ? t('submit_page.advanced_settings_dialog.bad_actor')
+                          : null}
             </div>
             {beneficiaries.length < 8 ? (
               <Button
@@ -397,7 +401,8 @@ export function AdvancedSettingsPostForm({
               isTemplateStored ||
               beneficiariesNames ||
               selfBeneficiary ||
-              Boolean(smallWeight)
+              Boolean(smallWeight) ||
+              badActor
             }
           >
             {t('submit_page.advanced_settings_dialog.save')}

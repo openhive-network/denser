@@ -438,6 +438,7 @@
       "account_name": "Il nome dell'account dovrebbe essere più lungo",
       "beneficiary_cannot_be_self": "Impossibile specificare se stessi come beneficiario",
       "beneficiary_percent_invalid": "La percentuale del beneficiario deve essere compresa tra 1 e 100",
+      "bad_actor": "Fate attenzione nell'invio a questo account. Si prega di controllare attentamente l'ortografia per possibili tentativi di phishing.",
       "add_account": "Aggiungi account",
       "post_templates": "Modelli di pubblicazione",
       "manage_your_post_templates": "Gestisci i tuoi modelli di pubblicazione, altri impostazioni saranno salvate/caricate qui.",
