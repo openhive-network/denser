@@ -51,12 +51,12 @@ export default function LangToggle({ logged }: { logged: Boolean }) {
           <DropdownMenuItem
             key={label}
             onClick={() => {
-              document.cookie = ` NEXT_LOCALE=${locale};`;
+              document.cookie = `NEXT_LOCALE=${locale}; SameSite=Lax`;
               router.reload();
             }}
           >
             {label}
-            <span data-testid={locale}>{locale}</span>
+            <span data-testid={locale}>&nbsp;{locale}</span>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
