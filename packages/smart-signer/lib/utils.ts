@@ -11,6 +11,13 @@ const logger = getLogger('app');
 const KEY_TYPES = ['active', 'posting'] as const;
 export type KeyAuthorityType = (typeof KEY_TYPES)[number];
 
+/**
+ * Returns all cookies as object. For use on client only.
+ *
+ * @export
+ * @param {string} cookie
+ * @returns {Record<string, string>}
+ */
 export function parseCookie(cookie: string): Record<string, string> {
   const kv: Record<string, string> = {};
 
@@ -18,13 +25,21 @@ export function parseCookie(cookie: string): Record<string, string> {
 
   cookie.split(';').forEach((part) => {
     const [k, v] = part.trim().split('=');
-    kv[k] = v;
+    kv[k.trim()] = v;
   });
 
   return kv;
 }
 
-export function getCookie(cname: string) {
+/**
+ * Return cookie value for given cookie name. For use on client only.
+ * When cookie doesn't exist returns empty string.
+ *
+ * @export
+ * @param {string} cname
+ * @returns {string}
+ */
+export function getCookie(cname: string): string {
   let name = cname + '=';
   let decodedCookie = decodeURIComponent(document.cookie);
   let ca = decodedCookie.split(';');

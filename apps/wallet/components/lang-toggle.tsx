@@ -8,7 +8,7 @@ import {
 } from '@ui/components/dropdown-menu';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { parseCookie } from '@/wallet/lib/utils';
+import { getCookie } from '@smart-signer/lib/utils';
 import clsx from 'clsx';
 import { useTranslation } from 'next-i18next';
 
@@ -18,7 +18,7 @@ export default function LangToggle({ logged }: { logged: Boolean }) {
   const { t } = useTranslation('common_wallet');
 
   useEffect(() => {
-    setLang(parseCookie(document.cookie)[' NEXT_LOCALE'] || 'en');
+    setLang(getCookie('NEXT_LOCALE') || 'en');
   }, []);
 
   const languages = [
@@ -56,7 +56,7 @@ export default function LangToggle({ logged }: { logged: Boolean }) {
             }}
           >
             {label}
-            <span data-testid={locale}>{locale}</span>
+            <span data-testid={locale}>&nbsp;{locale}</span>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
