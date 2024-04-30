@@ -71,7 +71,7 @@
       "description_save": "Save your {{keyType}} key by filling form below",
       "description_unlocked_detailed": "By clicking button below sign authorization tx in offline mode.",
       "placeholder_username": "Username",
-      "placeholder_password": "Password",
+      "placeholder_password": "Safe storage password",
       "placeholder_wif": "WIF {{keyType}} private key",
       "button_signin": "Sign in",
       "button_unlock": "Unlock offline",
