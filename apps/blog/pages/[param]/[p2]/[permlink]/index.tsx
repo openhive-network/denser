@@ -11,7 +11,7 @@ import Link from 'next/link';
 import DetailsCardHover from '@/blog/components/details-card-hover';
 import DetailsCardVoters from '@/blog/components/details-card-voters';
 import CommentSelectFilter from '@/blog/components/comment-select-filter';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import sorter, { SortOrder } from '@/blog/lib/sorter';
 import { useRouter } from 'next/router';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
@@ -41,10 +41,7 @@ import { UserPopoverCard } from '@/blog/components/user-popover-card';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
-
-import { getLogger } from '@ui/lib/logging';
 import { cn } from '@ui/lib/utils';
-const logger = getLogger('app');
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -184,9 +181,11 @@ function PostPage({
   useEffect(() => {
     const id = router.asPath.split('#')[1];
     document.getElementById(id)?.scrollIntoView({
+      block: 'start',
+      inline: 'nearest',
       behavior: 'smooth'
     });
-  }, [router, hiveRenderer]);
+  }, [router, hiveRenderer, isLoadingDiscussion, discussion, discussionState, isLoadingPost, post]);
 
   return (
     <div className="py-8">
