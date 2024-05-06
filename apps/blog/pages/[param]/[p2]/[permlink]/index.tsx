@@ -11,7 +11,7 @@ import Link from 'next/link';
 import DetailsCardHover from '@/blog/components/details-card-hover';
 import DetailsCardVoters from '@/blog/components/details-card-voters';
 import CommentSelectFilter from '@/blog/components/comment-select-filter';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import sorter, { SortOrder } from '@/blog/lib/sorter';
 import { useRouter } from 'next/router';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
@@ -103,6 +103,7 @@ function PostPage({
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const firstPost = discussionState?.find((post) => post.depth === 0);
   const [edit, setEdit] = useState(false);
+  const commentsRef = useRef<HTMLDivElement>(null);
 
   const refreshPage = () => {
     router.replace(router.asPath);
@@ -180,12 +181,18 @@ function PostPage({
 
   useEffect(() => {
     const id = router.asPath.split('#')[1];
-    document.getElementById(id)?.scrollIntoView({
-      block: 'start',
-      inline: 'nearest',
-      behavior: 'smooth'
-    });
-  }, [router, hiveRenderer, isLoadingDiscussion, discussion, discussionState, isLoadingPost, post]);
+    if (id === 'comments' && commentsRef.current) {
+      commentsRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    } else {
+      document.getElementById(id)?.scrollIntoView({
+        block: 'start',
+        behavior: 'smooth'
+      });
+    }
+  }, [router, hiveRenderer, post]);
 
   return (
     <div className="py-8">
@@ -470,7 +477,7 @@ function PostPage({
           <Loading loading={isLoadingPost} />
         )}
       </div>
-      <div id="comments" className="flex" />
+      <div id="comments" className="flex" ref={commentsRef} />
       <div className="mx-auto my-0 max-w-4xl py-4">
         {reply && post && user.isLoggedIn ? (
           <ReplyTextbox
