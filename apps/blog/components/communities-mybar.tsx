@@ -15,9 +15,7 @@ const CommunitiesMybar = ({
 
   return (
     <Card
-      className={cn(
-        'my-4 hidden h-fit w-full flex-col px-8 py-2 dark:bg-background/95 dark:text-white md:flex'
-      )}
+      className={cn('my-4 hidden h-fit w-full flex-col px-8 py-2 dark:bg-slate-900 dark:text-white md:flex')}
       data-testid="card-trending-comunities"
     >
       <CardTitle>

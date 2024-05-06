@@ -77,7 +77,7 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList }: Comment
             />
             <Card
               className={cn(
-                `mb-4 w-full px-2 hover:bg-accent dark:bg-slate-700 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground depth-${comment.depth}`,
+                `mb-4 w-full px-2 hover:bg-accent dark:bg-slate-900 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground depth-${comment.depth}`,
                 { 'opacity-50 hover:opacity-100': hiddenComment }
               )}
             >
@@ -205,7 +205,7 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList }: Comment
                         />
                       ) : (
                         <CardDescription
-                          className="prose break-words"
+                          className="prose break-words dark:text-white"
                           data-testid="comment-card-description"
                           dangerouslySetInnerHTML={{
                             __html: comment_html
