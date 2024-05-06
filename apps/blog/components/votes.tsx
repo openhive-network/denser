@@ -87,18 +87,6 @@ const vote = async (
         pollingErrorMessage
       );
     logger.info('Result of checkVoteSaved in interval: %s', result);
-
-    // We need to wait some time, because other API endpoints are slower
-    // in reflecting current vote in their responses. We could do
-    // similar checks as in `checkVoteSaved()`, but this would be
-    // overkill, I think.
-    // const waitingPeriod = 1000 * 5;
-    // logger.info(
-    //   'Waiting %sms before invalidating queries to update view',
-    //   waitingPeriod
-    // );
-    // await PromiseTools.promiseTimeout(waitingPeriod);
-
   } catch (error) {
     if (typeof error === 'string' && error === pollingErrorMessage) {
       // Error in polling for broadcast result.
