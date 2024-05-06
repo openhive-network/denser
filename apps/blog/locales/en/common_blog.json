@@ -162,7 +162,9 @@
       "reputation_title": "Reputation",
       "in": "in",
       "upvote": "Upvote",
+      "undo_upvote": "Undo Upvote",
       "downvote": "Downvote",
+      "undo_downvote": "Undo Downvote",
       "no_votes": "no votes",
       "vote": "1 vote",
       "votes": "{{votes}} votes",
@@ -170,7 +172,12 @@
       "response": "1 response. ",
       "responses": "{{responses}} responses. ",
       "click_to_respond": "Click to respond",
-      "reblog": "Reblog"
+      "reblog": "Reblog",
+      "you_upvoted": "You upvoted {{votePercent}}%",
+      "you_downvoted": "You downvoted {{votePercent}}%",
+      "you_voted": "You voted {{votePercent}}%",
+      "vote_polling_error_message_title": "Warning",
+      "vote_polling_error_message_description": "Failure in checking if user's vote has been included."
     },
     "comment_card": {
       "reveal_comment": "Reveal Comment",
@@ -442,7 +449,7 @@
       "author_rewards": "Author rewards",
       "what_type_of_tokens": "What type of tokens do you want as rewards from this post?",
       "power_up": " Power up 100%",
-      "default": "Default: 50% HBD / 50% HP",
+      "default": "Default: ",
       "update": "Update",
       "delete": "Delete",
       "your_percent": "Your percent cannot be less than 0",

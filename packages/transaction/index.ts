@@ -11,17 +11,21 @@ import {
   WaxChainApiError,
   future_extensions
 } from '@hive/wax';
-import { toast } from '@hive/ui/components/hooks/use-toast';
+import { toast, Toast, ToasterToast } from '@hive/ui/components/hooks/use-toast';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
-import { Beneficiarie, FullAccount, Preferences } from './lib/app-types';
+import { Beneficiarie, Preferences } from './lib/app-types';
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
 class TransactionService {
-  description = 'Transaction broadcast error';
+  errorDescription = 'Transaction broadcast error';
   signerOptions!: SignerOptions;
+  wellKnownErrorDescriptions = [
+    'Your current vote on this comment is identical to this vote',
+    'Account does not have enough mana to downvote'
+  ];
 
   setSignerOptions(signerOptions: SignerOptions) {
     this.signerOptions = signerOptions;
@@ -55,13 +59,9 @@ class TransactionService {
     const broadcastReq = new BroadcastTransactionRequest(txBuilder);
 
     // do broadcast
-    try {
-      await (
-        await hiveChainService.getHiveChain()
-      ).api.network_broadcast_api.broadcast_transaction(broadcastReq);
-    } catch (error) {
-      this.handleError(error);
-    }
+    await (
+      await hiveChainService.getHiveChain()
+    ).api.network_broadcast_api.broadcast_transaction(broadcastReq);
   }
 
   async upVote(author: string, permlink: string, weight = 10000) {
@@ -298,17 +298,20 @@ class TransactionService {
   }
 
   async comment(parentAuthor: string, parentPermlink: string, body: string, preferences: Preferences) {
-    console.log('comment preferences', preferences);
+    const chain = await hiveChainService.getHiveChain();
     await this.processHiveAppOperation((builder) => {
       builder
         .useBuilder(
           ReplyBuilder,
           (replyBuilder) => {
-            if (preferences.comment_rewards) {
-              console.log('in if statement 0% comment rewards');
-              replyBuilder.setPercentHbd(
-                Number(preferences.comment_rewards.slice(0, preferences.comment_rewards.length - 1)) * 100
-              );
+            if (preferences.comment_rewards === '100%') {
+              replyBuilder.setPercentHbd(0);
+            }
+            if (preferences.comment_rewards === '50%' || preferences.comment_rewards === '0%') {
+              replyBuilder.setPercentHbd(10000);
+            }
+            if (preferences.comment_rewards === '0%') {
+              replyBuilder.setMaxAcceptedPayout(chain.hbd(0));
             }
           },
           parentAuthor,
@@ -327,16 +330,20 @@ class TransactionService {
     body: string,
     preferences: Preferences
   ) {
+    const chain = await hiveChainService.getHiveChain();
     await this.processHiveAppOperation((builder) => {
       builder
         .useBuilder(
           ReplyBuilder,
           (replyBuilder) => {
-            if (preferences.comment_rewards) {
-              console.log('in if statement 0% comment rewards');
-              replyBuilder.setPercentHbd(
-                Number(preferences.comment_rewards.slice(0, preferences.comment_rewards.length - 1)) * 100
-              );
+            if (preferences.comment_rewards === '100%') {
+              replyBuilder.setPercentHbd(0);
+            }
+            if (preferences.comment_rewards === '50%' || preferences.comment_rewards === '0%') {
+              replyBuilder.setPercentHbd(10000);
+            }
+            if (preferences.comment_rewards === '0%') {
+              replyBuilder.setMaxAcceptedPayout(chain.hbd(0));
             }
           },
           parentAuthor,
@@ -359,9 +366,10 @@ class TransactionService {
     tags: string[],
     category: string,
     summary: string,
-    preferences: Preferences,
+    payoutType: string,
     image?: string
   ) {
+    const chain = await hiveChainService.getHiveChain();
     await this.processHiveAppOperation((builder) => {
       builder
         .useBuilder(
@@ -374,10 +382,14 @@ class TransactionService {
               .pushMetadataProperty({ summary: summary })
               .pushImages(image ? image : '');
 
-            if (preferences.blog_rewards) {
-              articleBuilder.setPercentHbd(
-                Number(preferences.blog_rewards.slice(0, preferences.blog_rewards.length - 1)) * 100
-              );
+            if (payoutType === '100%') {
+              articleBuilder.setPercentHbd(0);
+            }
+            if (payoutType === '50%' || payoutType === '0%') {
+              articleBuilder.setPercentHbd(10000);
+            }
+            if (payoutType === '0%') {
+              articleBuilder.setMaxAcceptedPayout(chain.hbd(0));
             }
 
             beneficiaries.forEach((beneficiarie) => {
@@ -482,7 +494,7 @@ class TransactionService {
     });
   }
 
-  handleError(e: any) {
+  handleError(e: any, toastOptions: Toast = {}) {
     logger.error('got error', e);
     const isError = (err: unknown): err is Error => err instanceof Error;
     const isWaxError = (err: unknown): err is WaxChainApiError => err instanceof WaxChainApiError;
@@ -492,8 +504,20 @@ class TransactionService {
       // this is temporary solution for "wait 5 minut after create another post" error
       if (error?.apiError?.code === -32003) {
         description = error?.apiError?.data?.stack[0]?.format;
+        for (const wked of this.wellKnownErrorDescriptions) {
+          if (description.includes(wked)) {
+            description = wked;
+            break;
+          }
+        }
       } else {
-        description = error?.message ?? 'Unknown error';
+        description = error?.message ?? this.errorDescription;
+        for (const wellKnownErrorDescription of this.wellKnownErrorDescriptions) {
+          if (description.includes(wellKnownErrorDescription)) {
+            description = wellKnownErrorDescription;
+            break;
+          }
+        }
       }
     } else if (isError(e)) {
       description = e.message;
@@ -502,9 +526,47 @@ class TransactionService {
     }
     toast({
       description,
-      variant: 'destructive'
+      variant: 'destructive',
+      ...toastOptions
     });
   }
 }
 
 export const transactionService = new TransactionService();
+
+export enum TransactionErrorHandlingMode {
+  OnlyHandle = 'OnlyHandle',
+  OnlyThrow = 'ThrowOnly',
+  HandleAndThrow = 'HandleAndThrow'
+}
+export class TransactionServiceThrowingError extends TransactionService {
+  transactionErrorHandlingMode: TransactionErrorHandlingMode;
+
+  constructor(transactionErrorHandlingMode: TransactionErrorHandlingMode) {
+    super();
+    this.transactionErrorHandlingMode = transactionErrorHandlingMode;
+  }
+
+  async processHiveAppOperation(cb: (opBuilder: ITransactionBuilder) => void) {
+    try {
+      const txBuilder = await (await hiveChainService.getHiveChain()).getTransactionBuilder();
+      cb(txBuilder);
+      await this.processTransaction(txBuilder);
+    } catch (error) {
+      switch (this.transactionErrorHandlingMode) {
+        case TransactionErrorHandlingMode.HandleAndThrow:
+          this.handleError(error);
+          throw new Error(this.errorDescription);
+        case TransactionErrorHandlingMode.OnlyHandle:
+          // This swallows error after handling it.
+          this.handleError(error);
+          break;
+        case TransactionErrorHandlingMode.OnlyThrow:
+          throw error;
+        default:
+          // Like for TransactionErrorHandlingMode.OnlyThrow
+          throw error;
+      }
+    }
+  }
+}

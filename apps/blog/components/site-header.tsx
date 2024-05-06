@@ -11,7 +11,6 @@ import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { getLogger } from '@ui/lib/logging';
 import DialogLogin from './dialog-login';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import { useQuery } from '@tanstack/react-query';
@@ -24,8 +23,6 @@ import useManabars from './hooks/useManabars';
 import { hoursAndMinutes } from '../lib/utils';
 import { getAccountFull } from '@transaction/lib/hive';
 
-const logger = getLogger('app');
-
 const SiteHeader: FC = () => {
   const router = useRouter();
   const { t } = useTranslation('common_blog');
@@ -34,12 +31,12 @@ const SiteHeader: FC = () => {
     setIsClient(true);
   }, []);
   const { user } = useUser();
-  const { manabarsData } = useManabars(user?.username);
+  const { manabarsData } = useManabars(user.username);
   const { data, isLoading, isError } = useQuery(
-    [['unreadNotifications', user?.username]],
-    () => getUnreadNotifications(user?.username || ''),
+    [['unreadNotifications', user.username]],
+    () => getUnreadNotifications(user.username),
     {
-      enabled: !!user?.username
+      enabled: !!user.username
     }
   );
   const {
@@ -93,7 +90,7 @@ const SiteHeader: FC = () => {
         <MainNav />
         <div className="flex items-center space-x-2 sm:space-x-4">
           <nav className="flex items-center space-x-1">
-            {isClient && user?.isLoggedIn ? null : (
+            {isClient && user.isLoggedIn ? null : (
               <div className="mx-1 hidden gap-1 sm:flex">
                 <DialogLogin>
                   <Button
@@ -136,7 +133,7 @@ const SiteHeader: FC = () => {
                 <Icons.pencil className="h-5 w-5" />
               </Button>
             </Link>
-            {isClient && !user?.isLoggedIn ? (
+            {isClient && !user.isLoggedIn ? (
               <ModeToggle>
                 <Button variant="ghost" size="sm" className="h-10 w-full px-0" data-testid="theme-mode">
                   <Icons.sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
@@ -145,8 +142,8 @@ const SiteHeader: FC = () => {
                 </Button>
               </ModeToggle>
             ) : null}
-            {isClient && !user?.isLoggedIn ? <LangToggle logged={user ? user?.isLoggedIn : false} /> : null}
-            {isClient && user?.isLoggedIn ? (
+            {isClient && !user.isLoggedIn ? <LangToggle logged={user ? user?.isLoggedIn : false} /> : null}
+            {isClient && user.isLoggedIn ? (
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger data-testid="comment-card-footer-downvote" className="cursor-pointer">

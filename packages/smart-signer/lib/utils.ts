@@ -55,11 +55,15 @@ export function isStorageAvailable(
     } else {
       return false;
     }
-    if (strict) {
-      const x = '__storage_test__';
-      storage.setItem(x, x);
-      storage.removeItem(x);
-    }
+
+    // Disabled, because we experience too many writes here.
+    // TODO Check why.
+    // if (strict) {
+    //   const x = '__storage_test__';
+    //   storage.setItem(x, x);
+    //   storage.removeItem(x);
+    // }
+
     return true;
   } catch (e) {
     return false;

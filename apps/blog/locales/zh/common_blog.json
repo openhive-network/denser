@@ -430,7 +430,7 @@
       "author_rewards": "作者奖励",
       "what_type_of_tokens": "您希望从此帖子获得哪种类型的代币奖励？",
       "power_up": "100% 动力增强",
-      "default": "默认: 50% HBD / 50% HP",
+      "default": "默认: ",
       "update": "更新",
       "delete": "删除",
       "your_percent": "您的百分比不能小于0",

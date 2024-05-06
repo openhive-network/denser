@@ -1,14 +1,18 @@
 import { SyntheticEvent, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { IAccountNotification, getAccountNotifications } from '@transaction/lib/bridge';
+import {
+  IAccountNotification,
+  getAccountNotifications,
+  getUnreadNotifications
+} from '@transaction/lib/bridge';
 import NotificationList from '@/blog/components/notification-list';
 import { Button } from '@ui/components/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components/tabs';
 import { useTranslation } from 'next-i18next';
 import { transactionService } from '@transaction/index';
-import { useAppStore } from '../store/app';
 import { getRewardsString } from '../lib/utils';
 import { getAccountFull, getFindAccounts } from '@transaction/lib/hive';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 
 const NotificationActivities = ({
   data,
@@ -19,11 +23,20 @@ const NotificationActivities = ({
 }) => {
   const { t } = useTranslation('common_blog');
   const [state, setState] = useState(data);
-  const lastRead = useAppStore((state) => state.lastReadNotificationDate);
-  const setLastRead = useAppStore((state) => state.setLastReadNotificationDate);
   const [lastStateElementId, setLastStateElementId] = useState(
     state && state.length > 0 ? state[state.length - 1].id : null
   );
+  const { user } = useUser();
+  const { data: unreadNotifications } = useQuery(
+    [['unreadNotifications', user?.username]],
+    () => getUnreadNotifications(user?.username || ''),
+    {
+      enabled: !!user?.username
+    }
+  );
+  const newDate = new Date(Date.now());
+  const lastRead = new Date(unreadNotifications?.lastread || newDate).getTime();
+
   const {
     isLoading,
     error,
@@ -38,10 +51,10 @@ const NotificationActivities = ({
     isLoading: profileDataIsLoading,
     error: errorProfileData,
     data: profileData
-  } = useQuery(['profileData', username], () => getAccountFull(username), {
-    enabled: !!username
+  } = useQuery(['profileData', user.username], () => getAccountFull(user.username), {
+    enabled: !!user.username
   });
-
+  const accountOwner = user.username === username;
   const {
     isLoading: apiAccountsIsLoading,
     error: errorApiAccounts,
@@ -61,11 +74,9 @@ const NotificationActivities = ({
   }, [lastStateElementId, refetch]);
 
   function handleMarkAllAsRead() {
-    const newDate = new Date(Date.now());
     transactionService.markAllNotificationAsRead(
       newDate.toISOString().slice(0, newDate.toISOString().length - 5)
     );
-    setLastRead(newDate.getTime());
   }
 
   function handleClaimRewards(e: SyntheticEvent) {
@@ -84,6 +95,7 @@ const NotificationActivities = ({
   return (
     <Tabs defaultValue="all" className="w-full">
       {profileData &&
+      accountOwner &&
       (parseFloat(profileData.reward_hive_balance.split(' ')[0]) > 0 ||
         parseFloat(profileData.reward_hbd_balance.split(' ')[0]) > 0 ||
         parseFloat(profileData.reward_vesting_hive.split(' ')[0]) > 0) ? (
@@ -98,12 +110,14 @@ const NotificationActivities = ({
         </div>
       ) : null}
 
-      <span
-        className="text-md block w-full text-center font-bold hover:cursor-pointer"
-        onClick={handleMarkAllAsRead}
-      >
-        {t('navigation.profil_notifications_tab_navbar.mark_all')}
-      </span>
+      {accountOwner && unreadNotifications && unreadNotifications.unread !== 0 ? (
+        <span
+          className="text-md mb-4 block w-full text-center font-bold hover:cursor-pointer"
+          onClick={handleMarkAllAsRead}
+        >
+          {t('navigation.profil_notifications_tab_navbar.mark_all')}
+        </span>
+      ) : null}
       <TabsList className="flex" data-testid="notifications-local-menu">
         <TabsTrigger value="all">{t('navigation.profil_notifications_tab_navbar.all')}</TabsTrigger>
         <TabsTrigger value="replies">{t('navigation.profil_notifications_tab_navbar.replies')}</TabsTrigger>

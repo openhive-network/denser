@@ -430,7 +430,7 @@
       "author_rewards": "게시자 보상",
       "what_type_of_tokens": "이 게시물에서 보상으로 받고 싶은 토큰 유형은 무엇입니까?",
       "power_up": "100% 파워 업",
-      "default": "기본값: 50% HBD / 50% HP",
+      "default": "기본값: ",
       "update": "업데이트",
       "delete": "삭제",
       "your_percent": "귀하의 백분율은 0보다 작을 수 없습니다",

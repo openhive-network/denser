@@ -7,7 +7,7 @@ export enum SortOrder {
   new = 'new'
 }
 
-export default (discussion: Entry[], order: SortOrder) => {
+export const sorter = (discussion: Entry[], order: SortOrder) => {
   const allPayout = (c: Entry) =>
     parseAsset(c.pending_payout_value).amount +
     parseAsset(c.author_payout_value).amount +
@@ -41,3 +41,5 @@ export default (discussion: Entry[], order: SortOrder) => {
 
   discussion.sort(sortOrders[order]);
 };
+
+export default sorter;
