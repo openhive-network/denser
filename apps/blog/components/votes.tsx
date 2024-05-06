@@ -87,18 +87,6 @@ const vote = async (
         pollingErrorMessage
       );
     logger.info('Result of checkVoteSaved in interval: %s', result);
-
-    // We need to wait some time, because other API endpoints are slower
-    // in reflecting current vote in their responses. We could do
-    // similar checks as in `checkVoteSaved()`, but this would be
-    // overkill, I think.
-    // const waitingPeriod = 1000 * 5;
-    // logger.info(
-    //   'Waiting %sms before invalidating queries to update view',
-    //   waitingPeriod
-    // );
-    // await PromiseTools.promiseTimeout(waitingPeriod);
-
   } catch (error) {
     if (typeof error === 'string' && error === pollingErrorMessage) {
       // Error in polling for broadcast result.
@@ -204,11 +192,13 @@ const VotesComponent = ({ post }: { post: Entry }) => {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger data-testid="upvote-button" disabled={postUpdateVoteMutation.isLoading}>
-              {clickedVoteButton === 'up' && postUpdateVoteMutation.isLoading ?
+              {clickedVoteButton === 'up' && postUpdateVoteMutation.isLoading
+              ?
                 <CircleSpinner loading={clickedVoteButton === 'up' && postUpdateVoteMutation.isLoading}
                               size={18} color="#dc2626" />
               :
-                user && user.isLoggedIn ?
+                user && user.isLoggedIn
+                ?
                   <Icons.arrowUpCircle
                     className={clsx(
                       'h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1',
@@ -236,7 +226,9 @@ const VotesComponent = ({ post }: { post: Entry }) => {
             <TooltipContent data-testid="upvote-button-tooltip">
               {
                 userVote && userVote.vote_percent > 0
-                  ? t('cards.post_card.undo_upvote')
+                  ? userVote.vote_percent === 10000
+                    ? t('cards.post_card.undo_upvote')
+                    : t('cards.post_card.undo_upvote_percent', { votePercent: (userVote.vote_percent / 100).toFixed(2) })
                   : t('cards.post_card.upvote')
               }
             </TooltipContent>
@@ -246,11 +238,13 @@ const VotesComponent = ({ post }: { post: Entry }) => {
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger data-testid="downvote-button" disabled={postUpdateVoteMutation.isLoading}>
-            {clickedVoteButton === 'down' && postUpdateVoteMutation.isLoading ?
-                <CircleSpinner loading={clickedVoteButton === 'down' && postUpdateVoteMutation.isLoading}
-                              size={18} color="#dc2626" />
+            {clickedVoteButton === 'down' && postUpdateVoteMutation.isLoading
+            ?
+              <CircleSpinner loading={clickedVoteButton === 'down' && postUpdateVoteMutation.isLoading}
+                            size={18} color="#dc2626" />
             :
-              user && user.isLoggedIn ?
+              user && user.isLoggedIn
+              ?
                 <Icons.arrowDownCircle
                   className={clsx(
                     'h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
@@ -278,22 +272,14 @@ const VotesComponent = ({ post }: { post: Entry }) => {
           <TooltipContent data-testid="downvote-button-tooltip">
               {
                 userVote && userVote.vote_percent < 0
-                  ? t('cards.post_card.undo_downvote')
+                  ? userVote.vote_percent === -10000
+                    ? t('cards.post_card.undo_downvote')
+                    : t('cards.post_card.undo_downvote_percent', { votePercent: (- userVote.vote_percent / 100).toFixed(2) })
                   : t('cards.post_card.downvote')
               }
             </TooltipContent>
         </Tooltip>
       </TooltipProvider>
-
-      {userVote && userVote.vote_percent > 0 && <span>
-        {t('cards.post_card.you_upvoted', { votePercent: (userVote.vote_percent / 100).toFixed(2) })}
-      </span>}
-      {userVote && userVote.vote_percent < 0 && <span>
-        {t('cards.post_card.you_downvoted', { votePercent: (- userVote.vote_percent / 100).toFixed(2) })}
-      </span>}
-      {userVote && userVote.vote_percent === 0 && <span>
-        {t('cards.post_card.you_voted', { votePercent: (userVote.vote_percent / 100).toFixed(2) })}
-      </span>}
 
     </div>
   );
