@@ -42,6 +42,7 @@ const PostListItem = ({
     `user-preferences-${user.username}`,
     DEFAULT_PREFERENCES
   );
+  const [storedReblogs, setStoredReblogs] = useLocalStorage<string[]>(`reblogged_${user.username}`, ['']);
   const [reveal, setReveal] = useState(
     preferences.nsfw === 'show'
       ? false
@@ -352,8 +353,16 @@ const PostListItem = ({
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger>
-                            <AlertDialogReblog username={post.author} permlink={post.permlink}>
-                              <Icons.forward className="h-4 w-4 cursor-pointer" />
+                            <AlertDialogReblog
+                              username={post.author}
+                              permlink={post.permlink}
+                              setStoredReblogs={setStoredReblogs}
+                            >
+                              <Icons.forward
+                                className={cn('h-4 w-4 cursor-pointer', {
+                                  'text-red-600': storedReblogs?.includes(post.permlink)
+                                })}
+                              />
                             </AlertDialogReblog>
                           </TooltipTrigger>
                           <TooltipContent data-testid="post-card-reblog-tooltip">
