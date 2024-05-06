@@ -27,6 +27,9 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useLocalStorage } from 'usehooks-ts';
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 
+import { getLogger } from '@ui/lib/logging';
+const logger = getLogger('app');
+
 const PostListItem = ({
   post,
   isCommunityPage,
@@ -56,6 +59,10 @@ const PostListItem = ({
   function revealPost() {
     setReveal((reveal) => !reveal);
   }
+
+  const { author, permlink, reblogged_by } = post;
+  logger.info('post reblogged_by', { author, permlink, reblogged_by });
+
   return (
     <li data-testid="post-list-item" className={post.stats?.gray ? 'opacity-50 hover:opacity-100' : ''}>
       {post.json_metadata?.tags &&
