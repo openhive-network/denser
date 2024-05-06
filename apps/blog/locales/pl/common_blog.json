@@ -155,6 +155,7 @@
   },
   "cards": {
     "reblogged": "zreblogowano",
+    "content_removed": "Treść usunięta z powodu naruszenia praw autorskich i/lub prywatności.",
     "badges": {
       "pinned": "Przypięty"
     },

@@ -26,6 +26,8 @@ import { useFollowingInfiniteQuery } from '../hooks/use-following-infinitequery'
 import FollowButton from '../follow-button';
 import MuteButton from '../mute-button';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
+import gdprUserList from '@/blog/lib/lists/gdprUserList';
+import clsx from 'clsx';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -102,7 +104,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   const delegated_hive = delegatedHive(accountData, dynamicGlobalData);
   const vesting_hive = vestingHive(accountData, dynamicGlobalData);
   const hp = vesting_hive.minus(delegated_hive);
-
+  const blockedUser = gdprUserList.includes(username);
   return username ? (
     <div>
       <div
@@ -127,7 +129,12 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             className={`flex h-auto max-h-full min-h-full w-auto min-w-full max-w-full flex-col items-center`}
           >
             <div className="mt-4 flex items-center">
-              <Avatar className="mr-3 flex h-12 w-12 items-center justify-center overflow-hidden rounded-full">
+              <Avatar
+                className={clsx(
+                  'mr-3 flex h-12 w-12 items-center justify-center overflow-hidden rounded-full',
+                  { 'blur-[2px] grayscale': blockedUser }
+                )}
+              >
                 <AvatarImage
                   className="h-full w-full object-cover"
                   src={profileData?.profile?.profile_image}
@@ -184,7 +191,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             </div>
 
             <p className="my-1 max-w-[420px] text-center text-white sm:my-4" data-testid="profile-about">
-              {profileData?.profile?.about
+              {profileData?.profile?.about && !blockedUser
                 ? profileData?.profile?.about.slice(0, 157) +
                   (157 < profileData?.profile?.about.length ? '...' : '')
                 : null}

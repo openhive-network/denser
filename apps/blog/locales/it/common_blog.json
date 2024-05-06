@@ -144,6 +144,7 @@
   },
   "cards": {
     "reblogged": "condiviso",
+    "content_removed": "Contenuto rimosso per violazioni del copyright e/o della privacy.",
     "badges": {
       "pinned": "Pinned"
     },

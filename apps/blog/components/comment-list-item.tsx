@@ -20,6 +20,7 @@ import { useLocalStorage } from 'usehooks-ts';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';
 import { UserPopoverCard } from './user-popover-card';
+import gdprUserList from '../lib/lists/gdprUserList';
 
 interface CommentListProps {
   comment: Entry;
@@ -44,6 +45,7 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList }: Comment
   const [edit, setEdit] = useState(false);
   const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
+  const userFromGDPR = gdprUserList.some((e) => e === comment.author);
   useEffect(() => {
     if (reply) {
       storeBox(reply);
@@ -193,7 +195,9 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList }: Comment
                   <Separator orientation="horizontal" />
                   <AccordionContent className="p-0">
                     <CardContent className="pb-2 ">
-                      {edit && comment.parent_permlink && comment.parent_author ? (
+                      {userFromGDPR ? (
+                        <div className="px-2 py-6">{t('cards.content_removed')}</div>
+                      ) : edit && comment.parent_permlink && comment.parent_author ? (
                         <ReplyTextbox
                           editMode={edit}
                           onSetReply={setEdit}

@@ -144,6 +144,7 @@
   },
   "cards": {
     "reblogged": "Reblogしました",
+    "content_removed": "著作権および/またはプライバシーの侵害によりコンテンツが削除されました。",
     "badges": {
       "pinned": "Pinned"
     },

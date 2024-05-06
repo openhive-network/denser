@@ -26,6 +26,7 @@ import VotesComponent from './votes';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useLocalStorage } from 'usehooks-ts';
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
+import gdprUserList from '../lib/lists/gdprUserList';
 
 const PostListItem = ({
   post,
@@ -51,7 +52,7 @@ const PostListItem = ({
   );
   const router = useRouter();
   const blacklistCheck = blacklist ? blacklist.some((e) => e.name === post.author) : false;
-
+  const userFromGDPR = gdprUserList.some((e) => e === post.author);
   function revealPost() {
     setReveal((reveal) => !reveal);
   }
@@ -214,7 +215,7 @@ const PostListItem = ({
           </CardHeader>
           <div className="flex flex-col md:flex-row">
             <div>
-              {!reveal && post.blacklists.length < 1 ? (
+              {!reveal && post.blacklists.length < 1 && !userFromGDPR ? (
                 <>
                   <PostImage post={post} />
                 </>
@@ -237,7 +238,9 @@ const PostListItem = ({
                         href={`/${post.category}/@${post.author}/${post.permlink}`}
                         data-testid="post-description"
                       >
-                        {getPostSummary(post.json_metadata, post.body)}
+                        {!userFromGDPR
+                          ? getPostSummary(post.json_metadata, post.body)
+                          : t('cards.content_removed')}
                       </Link>
                     </CardDescription>
                     <Separator orientation="horizontal" className="my-1" />

@@ -144,6 +144,7 @@
   },
   "cards": {
     "reblogged": "reblogged",
+    "content_removed": "Контент удален из-за нарушения авторских прав и/или конфиденциальности.",
     "badges": {
       "pinned": "Pinned"
     },

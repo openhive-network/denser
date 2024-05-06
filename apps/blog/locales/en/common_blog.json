@@ -155,6 +155,7 @@
   },
   "cards": {
     "reblogged": "reblogged",
+    "content_removed": "Content removed for copyright and/or privacy violations.",
     "badges": {
       "pinned": "Pinned"
     },

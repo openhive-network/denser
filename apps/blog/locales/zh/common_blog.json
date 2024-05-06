@@ -144,6 +144,7 @@
   },
   "cards": {
     "reblogged": "已转发的",
+    "content_removed": "由于版权和/或隐私侵犯，内容已被删除。",
     "badges": {
       "pinned": "Pinned"
     },

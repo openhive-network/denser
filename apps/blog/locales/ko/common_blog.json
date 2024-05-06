@@ -144,6 +144,7 @@
   },
   "cards": {
     "reblogged": "Reblogしました",
+    "content_removed": "저작권 및/또는 개인 정보 침해로 인해 콘텐츠가 삭제되었습니다.",
     "badges": {
       "pinned": "Pinned"
     },

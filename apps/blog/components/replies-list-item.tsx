@@ -21,6 +21,7 @@ import clsx from 'clsx';
 import PostImage from './post-img';
 import { useTranslation } from 'next-i18next';
 import VotesComponent from './votes';
+import gdprUserList from '../lib/lists/gdprUserList';
 
 const RepliesListItem = ({
   comment,
@@ -31,6 +32,7 @@ const RepliesListItem = ({
 }) => {
   const { t } = useTranslation('common_blog');
   const blacklistCheck = blacklist ? blacklist.some((e) => e.name === comment.author) : false;
+  const userFromGDPR = gdprUserList.some((e) => e === comment.author);
   return (
     <>
       <li
@@ -128,7 +130,9 @@ const RepliesListItem = ({
               </CardTitle>
               <CardDescription className="w-full" data-testid="comment-card-description">
                 <Link href={`/${comment.category}/@${comment.author}/${comment.permlink}`}>
-                  {getPostSummary(comment.json_metadata, comment.body)}
+                  {!userFromGDPR
+                    ? getPostSummary(comment.json_metadata, comment.body)
+                    : t('cards.content_removed')}
                 </Link>
               </CardDescription>
             </CardContent>

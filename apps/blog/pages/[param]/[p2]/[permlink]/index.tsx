@@ -42,6 +42,7 @@ import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
 import dmcaList from '@/blog/lib/lists/dmcaList';
+import gdprUserList from '@/blog/lib/lists/gdprUserList';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -99,6 +100,7 @@ function PostPage({
   const copyRightCheck = dmcaList.includes(
     `/${router.query.param}/${router.query.p2}/${router.query.permlink}`
   );
+  const userFromGDPR = gdprUserList.some((e) => e === post?.author);
   const defaultSort = isSortOrder(query) ? query : SortOrder.trending;
   const storageId = `replybox-/${username}/${post?.permlink}`;
   const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
@@ -264,6 +266,8 @@ function PostPage({
               </div>
             ) : copyRightCheck ? (
               <div className="px-2 py-6">{t('post_content.body.copyright')}</div>
+            ) : userFromGDPR ? (
+              <div className="px-2 py-6">{t('cards.content_removed')}</div>
             ) : (
               <ImageGallery>
                 <div
