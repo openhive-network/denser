@@ -353,6 +353,7 @@
       "edited": "edited"
     },
     "body": {
+      "copyright": "This post is not available due to a copyright claim.",
       "images_were_hidden": "Images were hidden due to low ratings.",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",

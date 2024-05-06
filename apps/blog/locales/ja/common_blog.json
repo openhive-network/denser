@@ -334,6 +334,7 @@
       "edited": "edited"
     },
     "body": {
+      "copyright": "この投稿は著作権の申し立てにより利用できません。",
       "images_were_hidden": "評価が低いため画像は非表示になりました。",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",

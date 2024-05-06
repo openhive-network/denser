@@ -340,6 +340,7 @@
       "edited": "edited"
     },
     "body": {
+      "copyright": "Этот пост недоступен из-за запроса на авторское право.",
       "images_were_hidden": "Изображения были скрыты из-за низкого рейтинга.",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",

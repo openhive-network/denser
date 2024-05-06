@@ -15,8 +15,8 @@ import { Icons } from '@ui/components/icons';
 import { useLocalStorage } from 'usehooks-ts';
 import { toast } from '@ui/components/hooks/use-toast';
 import { useTranslation } from 'next-i18next';
-import badActorList from '@smart-signer/lib/validators/bad-actor-list';
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
+import badActorList from '@/blog/lib/lists/badActorList';
 
 type AccountFormValues = {
   title: string;

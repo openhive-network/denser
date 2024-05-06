@@ -41,9 +41,7 @@ import { UserPopoverCard } from '@/blog/components/user-popover-card';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
-
-import { getLogger } from '@ui/lib/logging';
-const logger = getLogger('app');
+import dmcaList from '@/blog/lib/lists/dmcaList';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -98,6 +96,9 @@ function PostPage({
     return Object.values(SortOrder).includes(token as SortOrder);
   };
   const query = router.query.sort?.toString();
+  const copyRightCheck = dmcaList.includes(
+    `/${router.query.param}/${router.query.p2}/${router.query.permlink}`
+  );
   const defaultSort = isSortOrder(query) ? query : SortOrder.trending;
   const storageId = `replybox-/${username}/${post?.permlink}`;
   const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
@@ -261,6 +262,8 @@ function PostPage({
                   )
                 )}
               </div>
+            ) : copyRightCheck ? (
+              <div className="px-2 py-6">{t('post_content.body.copyright')}</div>
             ) : (
               <ImageGallery>
                 <div

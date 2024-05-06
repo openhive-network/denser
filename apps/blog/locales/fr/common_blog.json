@@ -334,6 +334,7 @@
       "edited": "edited"
     },
     "body": {
+      "copyright": "Ce post n'est pas disponible en raison d'une réclamation de droits d'auteur.",
       "images_were_hidden": "Les images sont masqués en raison d'une faible évaluation.",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",

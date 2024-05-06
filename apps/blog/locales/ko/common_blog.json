@@ -334,6 +334,7 @@
       "edited": "edited"
     },
     "body": {
+      "copyright": "이 게시물은 저작권 요청으로 인해 사용할 수 없습니다.",
       "images_were_hidden": "Images were hidden due to low ratings.",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
