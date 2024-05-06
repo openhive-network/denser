@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, MutableRefObject, useMemo } from "react";
 import { useRouter } from "next/router";
 import { TFunction } from 'next-i18next';
 import { cookieNamePrefix } from "@smart-signer/lib/session";
-import { parseCookie } from "@smart-signer/lib/utils";
+import { getCookie } from "@smart-signer/lib/utils";
 import { KeyType } from "@smart-signer/types/common";
 import { useSignIn } from "@smart-signer/lib/auth/use-sign-in";
 import { Signatures, PostLoginSchema } from "@smart-signer/lib/auth/utils";
@@ -35,8 +35,7 @@ export const useProcessAuth = (
   const signIn = useSignIn();
 
   useEffect(() => {
-    const cookieStore = parseCookie(document.cookie);
-    setLoginChallenge(cookieStore[`${cookieNamePrefix}login_challenge`] || '');
+    setLoginChallenge(getCookie(`${cookieNamePrefix}login_challenge`));
   }, []);
 
   const signAuth = async (data: LoginFormSchema): Promise<void> => {
