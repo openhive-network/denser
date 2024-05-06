@@ -17,12 +17,12 @@ import { Button } from '@ui/components/button';
 
 export function AlertDialogReblog({
   children,
-  username,
+  author,
   permlink,
   setStoredReblogs
 }: {
   children: ReactNode;
-  username: string;
+  author: string;
   permlink: string;
   setStoredReblogs: Dispatch<SetStateAction<string[]>>;
 }) {
@@ -51,8 +51,10 @@ export function AlertDialogReblog({
             <AlertDialogAction
               className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
               onClick={() => {
-                transactionService.reblog(username, permlink);
-                setStoredReblogs((val) => [...val, permlink]);
+                transactionService.reblog(author, permlink);
+                // TODO First check if promise in preceding line was
+                // successful.
+                setStoredReblogs((val) => [...val, `${author}/${permlink}`]);
               }}
             >
               OK

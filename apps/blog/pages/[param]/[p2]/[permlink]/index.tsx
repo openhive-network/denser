@@ -188,6 +188,8 @@ function PostPage({
     });
   }, [router, hiveRenderer]);
 
+  const isReblogged = storedReblogs?.includes(`${post?.author}/${post?.permlink}`);
+
   return (
     <div className="py-8">
       <div className="relative mx-auto my-0 max-w-4xl bg-white px-8 py-4 dark:bg-slate-900">
@@ -343,24 +345,23 @@ function PostPage({
                 <div className="flex items-center" data-testid="comment-respons-header">
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger>
+                    <TooltipTrigger disabled={isReblogged}>
                         <AlertDialogReblog
-                          username={post.author}
+                          author={post.author}
                           permlink={post.permlink}
                           setStoredReblogs={setStoredReblogs}
                         >
                           <Icons.forward
                             className={cn('h-4 w-4 cursor-pointer', {
-                              'text-red-600': storedReblogs?.includes(post.permlink)
+                              'text-red-600': isReblogged,
+                              'cursor-default': isReblogged
                             })}
                             data-testid="post-footer-reblog-icon"
                           />
                         </AlertDialogReblog>
                       </TooltipTrigger>
                       <TooltipContent data-test="post-footer-reblog-tooltip">
-                        <p>
-                          {t('post_content.footer.reblog')} @{post.author}/{post.permlink}
-                        </p>
+                        {isReblogged ? t('cards.post_card.you_reblogged') : t('cards.post_card.reblog')} @{post.author}/{post.permlink}
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>

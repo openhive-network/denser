@@ -121,11 +121,11 @@ class TransactionService {
     });
   }
 
-  async reblog(username: string, permlink: string) {
+  async reblog(author: string, permlink: string) {
     await this.processHiveAppOperation((builder) => {
       builder.push(
         new FollowOperationBuilder()
-          .reblog(this.signerOptions.username, username, permlink)
+          .reblog(this.signerOptions.username, author, permlink)
           .authorize(this.signerOptions.username)
           .build()
       );

@@ -60,6 +60,8 @@ const PostListItem = ({
     setReveal((reveal) => !reveal);
   }
 
+  const isReblogged = storedReblogs?.includes(`${post.author}/${post.permlink}`);
+
   const { author, permlink, reblogged_by } = post;
   logger.info('post reblogged_by', { author, permlink, reblogged_by });
 
@@ -359,22 +361,23 @@ const PostListItem = ({
                     <div className="flex items-center" data-testid="post-card-reblog">
                       <TooltipProvider>
                         <Tooltip>
-                          <TooltipTrigger>
+                          <TooltipTrigger disabled={isReblogged}>
                             <AlertDialogReblog
-                              username={post.author}
+                              author={post.author}
                               permlink={post.permlink}
                               setStoredReblogs={setStoredReblogs}
                             >
                               <Icons.forward
                                 className={cn('h-4 w-4 cursor-pointer', {
-                                  'text-red-600': storedReblogs?.includes(post.permlink)
+                                  'text-red-600': isReblogged,
+                                  'cursor-default': isReblogged
                                 })}
                               />
                             </AlertDialogReblog>
                           </TooltipTrigger>
                           <TooltipContent data-testid="post-card-reblog-tooltip">
                             <p>
-                              {t('cards.post_card.reblog')} @{post.author}/{post.permlink}
+                              {isReblogged ? t('cards.post_card.you_reblogged') : t('cards.post_card.reblog')} @{post.author}/{post.permlink}
                             </p>
                           </TooltipContent>
                         </Tooltip>
