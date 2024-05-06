@@ -265,7 +265,6 @@ export default function PostForm({
     debounce(() => {
       storePost(form.getValues());
     }, 50)();
-    console.log('form.getValues()', form.getValues());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, postArea, ...Object.values(restFields)]);
 

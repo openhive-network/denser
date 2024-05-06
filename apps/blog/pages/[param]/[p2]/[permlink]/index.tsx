@@ -496,7 +496,6 @@ function PostPage({
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  console.log('getServerSideProps');
   const community = String(ctx.query.param);
   const username = String(ctx.query.p2).slice(1);
   const permlink = String(ctx.query.permlink);
