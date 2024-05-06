@@ -286,7 +286,7 @@ function PostPage({
             <div className="clear-both">
               {!commentSite ? (
                 <ul className="flex flex-wrap gap-2" data-testid="hashtags-post">
-                  {post.json_metadata?.tags?.slice(1).map((tag: string) => (
+                  {post.json_metadata?.tags?.slice(post.community_title ? 0 : 1).map((tag: string) => (
                     <li key={tag}>
                       <Link
                         href={`/trending/${tag}`}
