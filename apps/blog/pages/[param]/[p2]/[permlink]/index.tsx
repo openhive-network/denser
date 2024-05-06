@@ -43,6 +43,7 @@ import { GetServerSideProps } from 'next';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
 
 import { getLogger } from '@ui/lib/logging';
+import { cn } from '@ui/lib/utils';
 const logger = getLogger('app');
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
@@ -101,6 +102,7 @@ function PostPage({
   const defaultSort = isSortOrder(query) ? query : SortOrder.trending;
   const storageId = `replybox-/${username}/${post?.permlink}`;
   const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
+  const [storedReblogs, setStoredReblogs] = useLocalStorage<string[]>(`reblogged_${user.username}`, ['']);
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const firstPost = discussionState?.find((post) => post.depth === 0);
   const [edit, setEdit] = useState(false);
@@ -342,9 +344,15 @@ function PostPage({
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger>
-                        <AlertDialogReblog username={post.author} permlink={post.permlink}>
+                        <AlertDialogReblog
+                          username={post.author}
+                          permlink={post.permlink}
+                          setStoredReblogs={setStoredReblogs}
+                        >
                           <Icons.forward
-                            className="h-4 w-4 cursor-pointer"
+                            className={cn('h-4 w-4 cursor-pointer', {
+                              'text-red-600': storedReblogs?.includes(post.permlink)
+                            })}
                             data-testid="post-footer-reblog-icon"
                           />
                         </AlertDialogReblog>
