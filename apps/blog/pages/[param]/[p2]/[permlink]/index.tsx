@@ -43,6 +43,7 @@ import { GetServerSideProps } from 'next';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
 import dmcaList from '@/blog/lib/lists/dmcaList';
 import gdprUserList from '@/blog/lib/lists/gdprUserList';
+import { cn } from '@ui/lib/utils';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -104,6 +105,7 @@ function PostPage({
   const defaultSort = isSortOrder(query) ? query : SortOrder.trending;
   const storageId = `replybox-/${username}/${post?.permlink}`;
   const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
+  const [storedReblogs, setStoredReblogs] = useLocalStorage<string[]>(`reblogged_${user.username}`, ['']);
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const firstPost = discussionState?.find((post) => post.depth === 0);
   const [edit, setEdit] = useState(false);
@@ -293,7 +295,7 @@ function PostPage({
             <div className="clear-both">
               {!commentSite ? (
                 <ul className="flex flex-wrap gap-2" data-testid="hashtags-post">
-                  {post.json_metadata?.tags?.slice(1).map((tag: string) => (
+                  {post.json_metadata?.tags?.slice(post.community_title ? 0 : 1).map((tag: string) => (
                     <li key={tag}>
                       <Link
                         href={`/trending/${tag}`}
@@ -349,9 +351,15 @@ function PostPage({
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger>
-                        <AlertDialogReblog username={post.author} permlink={post.permlink}>
+                        <AlertDialogReblog
+                          username={post.author}
+                          permlink={post.permlink}
+                          setStoredReblogs={setStoredReblogs}
+                        >
                           <Icons.forward
-                            className="h-4 w-4 cursor-pointer"
+                            className={cn('h-4 w-4 cursor-pointer', {
+                              'text-red-600': storedReblogs?.includes(post.permlink)
+                            })}
                             data-testid="post-footer-reblog-icon"
                           />
                         </AlertDialogReblog>
@@ -503,7 +511,6 @@ function PostPage({
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  console.log('getServerSideProps');
   const community = String(ctx.query.param);
   const username = String(ctx.query.p2).slice(1);
   const permlink = String(ctx.query.permlink);
