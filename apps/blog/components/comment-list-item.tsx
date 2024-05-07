@@ -27,9 +27,10 @@ interface CommentListProps {
   renderer: DefaultRenderer;
   parent_depth: number;
   mutedList: IFollowList[];
+  setAuthor: (e: string) => void;
 }
 
-const CommentListItem = ({ comment, renderer, parent_depth, mutedList }: CommentListProps) => {
+const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor }: CommentListProps) => {
   const { t } = useTranslation('common_blog');
   const username = comment.author;
   const router = useRouter();
@@ -60,6 +61,9 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList }: Comment
     }, 500);
     return () => clearTimeout(timeout);
   }, [router.asPath]);
+  useEffect(() => {
+    setAuthor(comment.author);
+  }, [comment.author]);
   const currentDepth = comment.depth - parent_depth;
   return (
     <>

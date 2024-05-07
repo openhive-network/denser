@@ -27,6 +27,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useLocalStorage } from 'usehooks-ts';
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 import gdprUserList from '../lib/lists/gdprUserList';
+import imageUserBlockList from '../lib/lists/imageUserBlockList';
 
 const PostListItem = ({
   post,
@@ -53,7 +54,8 @@ const PostListItem = ({
   );
   const router = useRouter();
   const blacklistCheck = blacklist ? blacklist.some((e) => e.name === post.author) : false;
-  const userFromGDPR = gdprUserList.some((e) => e === post.author);
+  const userFromGDPR = gdprUserList.includes(post.author);
+  const userFromImageBlockList = imageUserBlockList.includes(post.author);
   function revealPost() {
     setReveal((reveal) => !reveal);
   }
@@ -216,7 +218,7 @@ const PostListItem = ({
           </CardHeader>
           <div className="flex flex-col md:flex-row">
             <div>
-              {!reveal && post.blacklists.length < 1 && !userFromGDPR ? (
+              {!reveal && post.blacklists.length < 1 && !userFromGDPR && !userFromImageBlockList ? (
                 <>
                   <PostImage post={post} />
                 </>

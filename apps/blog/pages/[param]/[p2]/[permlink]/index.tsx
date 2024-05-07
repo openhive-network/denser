@@ -145,7 +145,7 @@ function PostPage({
     }
   }, [discussion, router.query.sort]);
 
-  const { hiveRenderer } = useContext(HiveRendererContext);
+  const { hiveRenderer, setAuthor } = useContext(HiveRendererContext);
   const commentSite = post?.depth !== 0 ? true : false;
   const [mutedPost, setMutedPost] = useState(post?.stats?.gray);
   const postUrl = () => {
@@ -189,8 +189,10 @@ function PostPage({
     document.getElementById(id)?.scrollIntoView({
       behavior: 'smooth'
     });
-  }, [router, hiveRenderer]);
-
+  }, [router, hiveRenderer, post?.author]);
+  useEffect(() => {
+    setAuthor(post?.author || '');
+  }, [post?.author]);
   return (
     <div className="py-8">
       <div className="relative mx-auto my-0 max-w-4xl bg-white px-8 py-4 dark:bg-slate-900">
