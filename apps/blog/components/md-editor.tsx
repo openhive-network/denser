@@ -17,6 +17,8 @@ import { Signer } from '@smart-signer/lib/signer/signer';
 import { ICommand, TextAreaTextApi } from '@uiw/react-md-editor';
 import { getLogger } from '@ui/lib/logging';
 import { useSignerContext } from './common/signer';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+import { useTranslation } from 'next-i18next';
 const logger = getLogger('app');
 
 const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false });
@@ -117,6 +119,7 @@ interface MdEditorProps {
 }
 
 const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholder, htmlMode }) => {
+  const { t } = useTranslation('common_blog');
   const { user } = useUser();
   const [formValue, setFormValue] = useState<string>(persistedValue);
   const { signer } = useSignerContext();
@@ -182,21 +185,35 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       executeCommand: (arg0: commands.ICommand<string>, arg1: string | undefined) => void
     ) => {
       return (
-        <button
-          type="button"
-          aria-label="Insert title3"
-          disabled={disabled}
-          onClick={() => {
-            executeCommand(command, command.groupName);
-          }}
-        >
-          <svg width="12" height="12" viewBox="0 0 20 20">
-            <path
-              fill="currentColor"
-              d="M15 9c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm4-7H1c-.55 0-1 .45-1 1v14c0 .55.45 1 1 1h18c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1zm-1 13l-6-5-2 2-4-5-4 8V4h16v11z"
-            ></path>
-          </svg>
-        </button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger type="button">
+              <button
+                type="button"
+                aria-label="Insert title3"
+                disabled={disabled}
+                onClick={() => {
+                  executeCommand(command, command.groupName);
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+                </svg>
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>{t('submit_page.insert_images_text')}</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       );
     },
     execute: (state: commands.ExecuteState, api: TextAreaTextApi) => {
