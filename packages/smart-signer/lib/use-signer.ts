@@ -17,6 +17,7 @@ export const useSigner = () => {
     keyType: KeyType.posting,
     apiEndpoint,
     storageType: 'localStorage',
+    chainId: siteConfig.chainId,
   };
   return { signerOptions };
 };
