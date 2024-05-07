@@ -44,6 +44,7 @@ import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
 import dmcaList from '@/blog/lib/lists/dmcaList';
 import gdprUserList from '@/blog/lib/lists/gdprUserList';
 import { cn } from '@ui/lib/utils';
+import userIllegalContent from '@/blog/lib/lists/userIllegalContent';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -102,6 +103,8 @@ function PostPage({
     `/${router.query.param}/${router.query.p2}/${router.query.permlink}`
   );
   const userFromGDPR = gdprUserList.some((e) => e === post?.author);
+  const legalBlockedUser = userIllegalContent.some((e) => e === post?.author);
+
   const defaultSort = isSortOrder(query) ? query : SortOrder.trending;
   const storageId = `replybox-/${username}/${post?.permlink}`;
   const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
@@ -268,6 +271,8 @@ function PostPage({
                   )
                 )}
               </div>
+            ) : legalBlockedUser ? (
+              <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
             ) : copyRightCheck ? (
               <div className="px-2 py-6">{t('post_content.body.copyright')}</div>
             ) : userFromGDPR ? (
@@ -433,47 +438,49 @@ function PostPage({
                   </TooltipProvider>
                 </div>
               </div>
-              <div className="my-4 flex justify-between">
-                <div className="flex items-center gap-2 sm:gap-4">
-                  <VotesComponent post={post} />
-                  <DetailsCardHover
-                    post={post}
-                    decline={Number(post.max_accepted_payout.slice(0, 1)) === 0}
-                    post_page
-                  >
-                    <span
-                      data-testid="comment-payout"
-                      className={`text-xs text-red-600 hover:cursor-pointer sm:text-sm ${
-                        Number(post.max_accepted_payout.slice(0, 1)) === 0
-                          ? '!text-gray-600 line-through'
-                          : ''
-                      }`}
+              {legalBlockedUser || copyRightCheck || userFromGDPR ? null : (
+                <div className="my-4 flex justify-between">
+                  <div className="flex items-center gap-2 sm:gap-4">
+                    <VotesComponent post={post} />
+                    <DetailsCardHover
+                      post={post}
+                      decline={Number(post.max_accepted_payout.slice(0, 1)) === 0}
+                      post_page
                     >
-                      ${post.payout?.toFixed(2)}
-                    </span>
-                  </DetailsCardHover>
-                  {!isActiveVotesLoading && activeVotesData ? (
-                    <DetailsCardVoters post={post}>
-                      {post.stats?.total_votes && post.stats?.total_votes !== 0 ? (
-                        <span className="text-xs text-red-500 sm:text-sm">
-                          {post.stats?.total_votes > 1
-                            ? t('post_content.footer.votes', { votes: post.stats?.total_votes })
-                            : t('post_content.footer.vote')}
-                        </span>
-                      ) : null}
-                    </DetailsCardVoters>
-                  ) : null}
+                      <span
+                        data-testid="comment-payout"
+                        className={`text-xs text-red-600 hover:cursor-pointer sm:text-sm ${
+                          Number(post.max_accepted_payout.slice(0, 1)) === 0
+                            ? '!text-gray-600 line-through'
+                            : ''
+                        }`}
+                      >
+                        ${post.payout?.toFixed(2)}
+                      </span>
+                    </DetailsCardHover>
+                    {!isActiveVotesLoading && activeVotesData ? (
+                      <DetailsCardVoters post={post}>
+                        {post.stats?.total_votes && post.stats?.total_votes !== 0 ? (
+                          <span className="text-xs text-red-500 sm:text-sm">
+                            {post.stats?.total_votes > 1
+                              ? t('post_content.footer.votes', { votes: post.stats?.total_votes })
+                              : t('post_content.footer.vote')}
+                          </span>
+                        ) : null}
+                      </DetailsCardVoters>
+                    ) : null}
+                  </div>
+                  <div className="flex gap-2">
+                    <FacebookShare url={post.url} />
+                    <TwitterShare title={post.title} url={post.url} />
+                    <LinkedInShare title={post.title} url={post.url} />
+                    <RedditShare title={post.title} url={post.url} />
+                    <SharePost path={router.asPath}>
+                      <Link2 className="cursor-pointer hover:text-red-600" data-testid="share-post" />
+                    </SharePost>
+                  </div>
                 </div>
-                <div className="flex gap-2">
-                  <FacebookShare url={post.url} />
-                  <TwitterShare title={post.title} url={post.url} />
-                  <LinkedInShare title={post.title} url={post.url} />
-                  <RedditShare title={post.title} url={post.url} />
-                  <SharePost path={router.asPath}>
-                    <Link2 className="cursor-pointer hover:text-red-600" data-testid="share-post" />
-                  </SharePost>
-                </div>
-              </div>
+              )}
             </div>
           </>
         ) : (

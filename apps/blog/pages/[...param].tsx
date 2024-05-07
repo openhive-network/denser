@@ -30,6 +30,7 @@ import { GetServerSideProps } from 'next';
 import { i18n } from '@/blog/next-i18next.config';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import CommunitiesMybar from '../components/communities-mybar';
+import userIllegalContent from '../lib/lists/userIllegalContent';
 
 export const PostSkeleton = () => {
   return (
@@ -50,6 +51,7 @@ const ParamPage: FC = () => {
   const { ref, inView } = useInView();
   const { ref: refAcc, inView: inViewAcc } = useInView();
   const { user } = useUser();
+  const legalBlockedUser = userIllegalContent.includes(username);
   const {
     data: entriesData,
     isLoading: entriesDataIsLoading,
@@ -290,40 +292,47 @@ const ParamPage: FC = () => {
   }
   return (
     <ProfileLayout>
-      {!accountEntriesIsLoading && accountEntriesData ? (
+      {!legalBlockedUser ? (
         <>
-          {accountEntriesData.pages[0]?.length !== 0 ? (
-            accountEntriesData.pages.map((page, index) => {
-              return page ? <PostList data={page} key={`x-${index}`} /> : null;
-            })
-          ) : (
-            <div
-              className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
-              data-testid="user-has-not-started-blogging-yet"
-            >
-              {t('user_profil.no_blogging_yet', { username: username })}
-            </div>
-          )}
-          <div>
-            <button
-              ref={refAcc}
-              onClick={() => accountFetchNextPage()}
-              disabled={!accountHasNextPage || accountIsFetchingNextPage}
-            >
-              {accountIsFetchingNextPage ? (
-                <PostSkeleton />
-              ) : accountHasNextPage ? (
-                t('user_profil.load_newer')
-              ) : accountEntriesData.pages[0] && accountEntriesData.pages[0].length > 0 ? (
-                t('user_profil.nothing_more_to_load')
-              ) : null}
-            </button>
-          </div>
-          <div>
-            {accountEntriesIsFetching && !accountIsFetchingNextPage ? 'Background Updating...' : null}
-          </div>
+          {' '}
+          {!accountEntriesIsLoading && accountEntriesData ? (
+            <>
+              {accountEntriesData.pages[0]?.length !== 0 ? (
+                accountEntriesData.pages.map((page, index) => {
+                  return page ? <PostList data={page} key={`x-${index}`} /> : null;
+                })
+              ) : (
+                <div
+                  className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
+                  data-testid="user-has-not-started-blogging-yet"
+                >
+                  {t('user_profil.no_blogging_yet', { username: username })}
+                </div>
+              )}
+              <div>
+                <button
+                  ref={refAcc}
+                  onClick={() => accountFetchNextPage()}
+                  disabled={!accountHasNextPage || accountIsFetchingNextPage}
+                >
+                  {accountIsFetchingNextPage ? (
+                    <PostSkeleton />
+                  ) : accountHasNextPage ? (
+                    t('user_profil.load_newer')
+                  ) : accountEntriesData.pages[0] && accountEntriesData.pages[0].length > 0 ? (
+                    t('user_profil.nothing_more_to_load')
+                  ) : null}
+                </button>
+              </div>
+              <div>
+                {accountEntriesIsFetching && !accountIsFetchingNextPage ? 'Background Updating...' : null}
+              </div>
+            </>
+          ) : null}
         </>
-      ) : null}
+      ) : (
+        <div className="p-10">{t('global.unavailable_for_legal_reasons')}</div>
+      )}
     </ProfileLayout>
   );
 };
