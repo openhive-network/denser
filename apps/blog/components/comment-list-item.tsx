@@ -227,77 +227,80 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor
                       )}
                     </CardContent>
                     <Separator orientation="horizontal" />{' '}
-                    <CardFooter>
-                      <div
-                        className="flex items-center gap-2 pt-1 text-xs sm:text-sm"
-                        data-testid="comment-card-footer"
-                      >
-                        <VotesComponent post={comment} />
-                        <DetailsCardHover
-                          post={comment}
-                          decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
+                    {userFromGDPR ? null : (
+                      <CardFooter>
+                        <div
+                          className="flex items-center gap-2 pt-1 text-xs sm:text-sm"
+                          data-testid="comment-card-footer"
                         >
-                          <div
-                            data-testid="comment-card-footer-payout"
-                            className={clsx('flex items-center hover:cursor-pointer hover:text-red-600', {
-                              'line-through opacity-50': Number(comment.max_accepted_payout.slice(0, 1)) === 0
-                            })}
+                          <VotesComponent post={comment} />
+                          <DetailsCardHover
+                            post={comment}
+                            decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
                           >
-                            {'$'}
-                            {comment.payout.toFixed(2)}
-                          </div>
-                        </DetailsCardHover>
-                        <Separator orientation="vertical" className="h-5" />
-                        {comment.stats && comment.stats.total_votes > 0 ? (
-                          <>
-                            <div className="flex items-center">
-                              <DetailsCardVoters post={comment}>
-                                <span className="hover:text-red-600">
-                                  {comment.stats && comment.stats.total_votes > 1
-                                    ? t('cards.post_card.votes', { votes: comment.stats.total_votes })
-                                    : t('cards.post_card.vote')}
-                                </span>
-                              </DetailsCardVoters>
+                            <div
+                              data-testid="comment-card-footer-payout"
+                              className={clsx('flex items-center hover:cursor-pointer hover:text-red-600', {
+                                'line-through opacity-50':
+                                  Number(comment.max_accepted_payout.slice(0, 1)) === 0
+                              })}
+                            >
+                              {'$'}
+                              {comment.payout.toFixed(2)}
                             </div>
-                            <Separator orientation="vertical" className="h-5" />
-                          </>
-                        ) : null}
-                        {user && user.isLoggedIn ? (
-                          <button
-                            onClick={() => {
-                              setReply(!reply), removeBox();
-                            }}
-                            className="flex items-center hover:cursor-pointer hover:text-red-600"
-                            data-testid="comment-card-footer-reply"
-                          >
-                            {t('cards.comment_card.reply')}
-                          </button>
-                        ) : (
-                          <DialogLogin>
+                          </DetailsCardHover>
+                          <Separator orientation="vertical" className="h-5" />
+                          {comment.stats && comment.stats.total_votes > 0 ? (
+                            <>
+                              <div className="flex items-center">
+                                <DetailsCardVoters post={comment}>
+                                  <span className="hover:text-red-600">
+                                    {comment.stats && comment.stats.total_votes > 1
+                                      ? t('cards.post_card.votes', { votes: comment.stats.total_votes })
+                                      : t('cards.post_card.vote')}
+                                  </span>
+                                </DetailsCardVoters>
+                              </div>
+                              <Separator orientation="vertical" className="h-5" />
+                            </>
+                          ) : null}
+                          {user && user.isLoggedIn ? (
                             <button
+                              onClick={() => {
+                                setReply(!reply), removeBox();
+                              }}
                               className="flex items-center hover:cursor-pointer hover:text-red-600"
                               data-testid="comment-card-footer-reply"
                             >
-                              {t('post_content.footer.reply')}
+                              {t('cards.comment_card.reply')}
                             </button>
-                          </DialogLogin>
-                        )}
-                        {user && user.isLoggedIn && comment.author === user.username ? (
-                          <>
-                            <Separator orientation="vertical" className="h-5" />
-                            <button
-                              onClick={() => {
-                                setEdit(!edit);
-                              }}
-                              className="flex items-center hover:cursor-pointer hover:text-red-600"
-                              data-testid="comment-card-footer-edit"
-                            >
-                              {t('cards.comment_card.edit')}
-                            </button>
-                          </>
-                        ) : null}
-                      </div>
-                    </CardFooter>
+                          ) : (
+                            <DialogLogin>
+                              <button
+                                className="flex items-center hover:cursor-pointer hover:text-red-600"
+                                data-testid="comment-card-footer-reply"
+                              >
+                                {t('post_content.footer.reply')}
+                              </button>
+                            </DialogLogin>
+                          )}
+                          {user && user.isLoggedIn && comment.author === user.username ? (
+                            <>
+                              <Separator orientation="vertical" className="h-5" />
+                              <button
+                                onClick={() => {
+                                  setEdit(!edit);
+                                }}
+                                className="flex items-center hover:cursor-pointer hover:text-red-600"
+                                data-testid="comment-card-footer-edit"
+                              >
+                                {t('cards.comment_card.edit')}
+                              </button>
+                            </>
+                          ) : null}
+                        </div>
+                      </CardFooter>
+                    )}
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
