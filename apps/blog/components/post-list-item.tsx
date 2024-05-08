@@ -26,9 +26,9 @@ import VotesComponent from './votes';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useLocalStorage } from 'usehooks-ts';
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
-import gdprUserList from '../lib/lists/gdprUserList';
-import imageUserBlockList from '../lib/lists/imageUserBlockList';
-import userIllegalContent from '../lib/lists/userIllegalContent';
+import gdprUserList from '@hive/ui/config/lists/gdpr-user-list';
+import imageUserBlockList from '@hive/ui/config/lists/image-user-blocklist';
+import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 
 const PostListItem = ({
   post,

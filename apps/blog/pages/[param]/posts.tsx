@@ -14,7 +14,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import userIllegalContent from '@/blog/lib/lists/userIllegalContent';
+import userIllegalContent from '@ui/config/lists/user-illegal-content';
 
 const UserPosts = () => {
   const { t } = useTranslation('common_blog');

@@ -20,8 +20,8 @@ import { useLocalStorage } from 'usehooks-ts';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';
 import { UserPopoverCard } from './user-popover-card';
-import gdprUserList from '../lib/lists/gdprUserList';
-import userIllegalContent from '../lib/lists/userIllegalContent';
+import gdprUserList from '@hive/ui/config/lists/gdpr-user-list';
+import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 
 interface CommentListProps {
   comment: Entry;

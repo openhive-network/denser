@@ -1,4 +1,4 @@
-const list = `
+const dmcaUserList = `
 the-gaming-llama
 cmgsteems
 iamgod
@@ -49,4 +49,4 @@ zakiartist85y
   .trim()
   .split('\n');
 
-export default list;
+export default dmcaUserList;

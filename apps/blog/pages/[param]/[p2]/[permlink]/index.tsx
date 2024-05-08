@@ -41,10 +41,10 @@ import { UserPopoverCard } from '@/blog/components/user-popover-card';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
-import dmcaList from '@/blog/lib/lists/dmcaList';
-import gdprUserList from '@/blog/lib/lists/gdprUserList';
 import { cn } from '@ui/lib/utils';
-import userIllegalContent from '@/blog/lib/lists/userIllegalContent';
+import gdprUserList from '@ui/config/lists/gdpr-user-list';
+import userIllegalContent from '@ui/config/lists/user-illegal-content';
+import dmcaList from '@ui/config/lists/dmca-list';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -93,6 +93,7 @@ function PostPage({
   } = useQuery(['activeVotes'], () => getActiveVotes(username, permlink), {
     enabled: !!username && !!permlink
   });
+
   const [discussionState, setDiscussionState] = useState<Entry[]>();
   const router = useRouter();
   const isSortOrder = (token: any): token is SortOrder => {

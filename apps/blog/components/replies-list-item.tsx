@@ -21,8 +21,8 @@ import clsx from 'clsx';
 import PostImage from './post-img';
 import { useTranslation } from 'next-i18next';
 import VotesComponent from './votes';
-import gdprUserList from '../lib/lists/gdprUserList';
-import userIllegalContent from '../lib/lists/userIllegalContent';
+import gdprUserList from '@hive/ui/config/lists/gdpr-user-list';
+import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 
 const RepliesListItem = ({
   comment,

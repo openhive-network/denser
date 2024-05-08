@@ -30,7 +30,7 @@ import { GetServerSideProps } from 'next';
 import { i18n } from '@/blog/next-i18next.config';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import CommunitiesMybar from '../components/communities-mybar';
-import userIllegalContent from '../lib/lists/userIllegalContent';
+import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 
 export const PostSkeleton = () => {
   return (

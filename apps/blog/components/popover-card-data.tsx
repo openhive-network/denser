@@ -11,7 +11,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useFollowingInfiniteQuery } from './hooks/use-following-infinitequery';
 import MuteButton from './mute-button';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
-import userIllegalContent from '../lib/lists/userIllegalContent';
+import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 
 export function PopoverCardData({ author, blacklist }: { author: string; blacklist: string[] }) {
   const { t } = useTranslation('common_blog');

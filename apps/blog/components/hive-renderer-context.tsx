@@ -2,7 +2,7 @@ import { FC, PropsWithChildren, createContext, useContext, useEffect, useState }
 import { DefaultRenderer } from '@hiveio/content-renderer';
 import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
 import env from '@beam-australia/react-env';
-import imageUserBlockList from '../lib/lists/imageUserBlockList';
+import imageUserBlockList from '@hive/ui/config/lists/user-illegal-content';
 
 type HiveRendererContextType = {
   hiveRenderer: DefaultRenderer | undefined;

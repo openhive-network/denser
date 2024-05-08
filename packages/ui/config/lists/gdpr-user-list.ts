@@ -1,4 +1,4 @@
-const list = `
+const gdprUserList = `
 mateja.klaric
 xondra
 tgylhn
@@ -32,4 +32,4 @@ hazesociety
   .trim()
   .split('\n');
 
-export default list;
+export default gdprUserList;

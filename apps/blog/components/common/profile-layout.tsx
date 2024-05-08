@@ -26,7 +26,7 @@ import { useFollowingInfiniteQuery } from '../hooks/use-following-infinitequery'
 import FollowButton from '../follow-button';
 import MuteButton from '../mute-button';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
-import userIllegalContent from '@/blog/lib/lists/userIllegalContent';
+import userIllegalContent from '@ui/config/lists/user-illegal-content';
 
 interface IProfileLayout {
   children: React.ReactNode;
