@@ -227,7 +227,7 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor
                       )}
                     </CardContent>
                     <Separator orientation="horizontal" />{' '}
-                    {userFromGDPR ? null : (
+                    {userFromGDPR || legalBlockedUser ? null : (
                       <CardFooter>
                         <div
                           className="flex items-center gap-2 pt-1 text-xs sm:text-sm"
