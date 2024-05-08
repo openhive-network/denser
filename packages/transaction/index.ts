@@ -536,7 +536,7 @@ export const transactionService = new TransactionService();
 
 export enum TransactionErrorHandlingMode {
   OnlyHandle = 'OnlyHandle',
-  OnlyThrow = 'ThrowOnly',
+  OnlyThrow = 'OnlyThrow',
   HandleAndThrow = 'HandleAndThrow'
 }
 export class TransactionServiceThrowingError extends TransactionService {
@@ -545,15 +545,19 @@ export class TransactionServiceThrowingError extends TransactionService {
   constructor(transactionErrorHandlingMode: TransactionErrorHandlingMode) {
     super();
     this.transactionErrorHandlingMode = transactionErrorHandlingMode;
+    logger.info('TransactionServiceThrowingError constructor');
   }
 
-  async processHiveAppOperation(cb: (opBuilder: ITransactionBuilder) => void) {
+  async processHiveAppOperation(
+    cb: (opBuilder: ITransactionBuilder) => void,
+    transactionErrorHandlingMode: TransactionErrorHandlingMode = this.transactionErrorHandlingMode
+  ) {
     try {
       const txBuilder = await (await hiveChainService.getHiveChain()).getTransactionBuilder();
       cb(txBuilder);
       await this.processTransaction(txBuilder);
     } catch (error) {
-      switch (this.transactionErrorHandlingMode) {
+      switch (transactionErrorHandlingMode) {
         case TransactionErrorHandlingMode.HandleAndThrow:
           this.handleError(error);
           throw new Error(this.errorDescription);

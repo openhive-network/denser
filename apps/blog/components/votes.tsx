@@ -17,13 +17,8 @@ import env from '@beam-australia/react-env';
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
-const transactionServiceThrowingError =
-  new TransactionServiceThrowingError(
-    TransactionErrorHandlingMode.OnlyThrow
-  );
-
 const vote = async (
-      service: TransactionServiceThrowingError,
+      transactionServiceThrowingError: TransactionServiceThrowingError,
       voter: string,
       author: string,
       permlink: string,
@@ -56,7 +51,7 @@ const vote = async (
       numChangesBefore = votesListBefore.votes[0].num_changes;
     }
     // Vote now
-    await service.upVote(author, permlink, weight);
+    await transactionServiceThrowingError.upVote(author, permlink, weight);
     logger.info('Voted: %o',
       { voter, author, permlink, weight, numChangesBefore });
 
@@ -121,6 +116,10 @@ export function usePostUpdateVoteMutation() {
           weight: number
         }) => {
       const { voter, author, permlink, weight } = params;
+      const transactionServiceThrowingError =
+        new TransactionServiceThrowingError(
+          TransactionErrorHandlingMode.OnlyThrow
+        );
       transactionServiceThrowingError.setSignerOptions(signerOptions);
       return vote(
         transactionServiceThrowingError, voter, author, permlink,
