@@ -192,6 +192,12 @@
       "load_more": "Load more"
     }
   },
+  "alert_dialog_reblog": {
+    "action": "OK",
+    "cancel": "Cancel",
+    "description": "This post will be added to your blog and shared with your followers.",
+    "title": "Reblog This Post"
+  },
   "amount_hover_card": {
     "pending_payout_amount": "Pending payout amount: ${{value}}",
     "breakdown": "Breakdown:",

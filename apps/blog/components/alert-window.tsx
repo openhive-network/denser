@@ -14,6 +14,7 @@ import { Dispatch, ReactNode, SetStateAction } from 'react';
 import { transactionService } from '@transaction/index';
 import DialogLogin from './dialog-login';
 import { Button } from '@ui/components/button';
+import { useTranslation } from 'next-i18next';
 
 export function AlertDialogReblog({
   children,
@@ -27,6 +28,7 @@ export function AlertDialogReblog({
   setStoredReblogs: Dispatch<SetStateAction<string[]>>;
 }) {
   const { user } = useUser();
+  const { t } = useTranslation('common_blog');
 
   return (
     <AlertDialog>
@@ -34,18 +36,18 @@ export function AlertDialogReblog({
       <AlertDialogContent className="flex flex-col gap-8 sm:rounded-r-xl ">
         <AlertDialogHeader className="gap-2">
           <div className="flex items-center justify-between">
-            <AlertDialogTitle data-testid="reblog-dialog-header">Reblog This Post</AlertDialogTitle>
+            <AlertDialogTitle data-testid="reblog-dialog-header">{t('alert_dialog_reblog.title')}</AlertDialogTitle>
             <AlertDialogCancel className="border-none hover:text-red-800" data-testid="reblog-dialog-close">
               X
             </AlertDialogCancel>
           </div>
           <AlertDialogDescription data-testid="reblog-dialog-description">
-            This post will be added to your blog and shared with your followers.
+            {t('alert_dialog_reblog.description')}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="gap-2 sm:flex-row-reverse">
           <AlertDialogCancel className="hover:text-red-800" data-testid="reblog-dialog-cancel">
-            Cancel
+            {t('alert_dialog_reblog.cancel')}
           </AlertDialogCancel>
           {user && user.isLoggedIn ? (
             <AlertDialogAction
@@ -57,11 +59,11 @@ export function AlertDialogReblog({
                 setStoredReblogs((val) => [...val, `${author}/${permlink}`]);
               }}
             >
-              OK
+              {t('alert_dialog_reblog.action')}
             </AlertDialogAction>
           ) : (
             <DialogLogin>
-              <Button data-testid="reblog-dialog-ok">OK</Button>
+              <Button data-testid="reblog-dialog-ok">{t('alert_dialog_reblog.action')}</Button>
             </DialogLogin>
           )}
         </AlertDialogFooter>
