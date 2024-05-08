@@ -55,15 +55,11 @@ const PostListItem = ({
   );
   const router = useRouter();
   const blacklistCheck = blacklist ? blacklist.some((e) => e.name === post.author) : false;
+  const isReblogged = storedReblogs?.includes(`${post.author}/${post.permlink}`);
 
   function revealPost() {
     setReveal((reveal) => !reveal);
   }
-
-  const isReblogged = storedReblogs?.includes(`${post.author}/${post.permlink}`);
-
-  const { author, permlink, reblogged_by } = post;
-  logger.info('post reblogged_by', { author, permlink, reblogged_by });
 
   return (
     <li data-testid="post-list-item" className={post.stats?.gray ? 'opacity-50 hover:opacity-100' : ''}>
