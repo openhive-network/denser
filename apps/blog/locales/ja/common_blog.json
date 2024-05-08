@@ -3,6 +3,7 @@
     "no_rewards": "引き換えが保留中の特典はありません。",
     "loading": "Loading",
     "something_went_wrong": "Something went wrong",
+    "unavailable_for_legal_reasons": "法的な理由により利用できません",
     "time_ago": {
       "a_few_seconds": " a few seconds ago",
       "seconds": " seconds ago",

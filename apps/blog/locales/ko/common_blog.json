@@ -3,6 +3,7 @@
     "no_rewards": "사용 대기 중인 보상이 없습니다.",
     "loading": "Loading",
     "something_went_wrong": "Something went wrong",
+    "unavailable_for_legal_reasons": "법적 사유로 인해 이용할 수 없음",
     "time_ago": {
       "a_few_seconds": " a few seconds ago",
       "seconds": " seconds ago",
