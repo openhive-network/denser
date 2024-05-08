@@ -361,7 +361,7 @@ function PostPage({
                         </AlertDialogReblog>
                       </TooltipTrigger>
                       <TooltipContent data-test="post-footer-reblog-tooltip">
-                        {isReblogged ? t('cards.post_card.you_reblogged') : t('cards.post_card.reblog')} @{post.author}/{post.permlink}
+                        {isReblogged ? t('cards.post_card.you_reblogged') : t('cards.post_card.reblog')}
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
