@@ -28,6 +28,7 @@ export function MobileNav() {
         <MobileLink href="/" className="flex items-center" onOpenChange={setOpen}>
           <Icons.hive className="mr-2 h-4 w-4" />
           <span className="font-bold">{siteConfig.name}</span>
+          {!siteConfig.isMainnet && <span className="text-xs text-red-600">TESTNET</span>}
         </MobileLink>
       </SheetContent>
     </Sheet>
