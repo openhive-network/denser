@@ -21,7 +21,7 @@ export function verifyLoginChallenge(
     chainAccount: FullAccount,
     signatures: Signatures,
     message: string = '',
-    keyType: 'posting' | 'active' = 'posting',
+    keyType: 'posting' | 'active' = 'posting'
 ) {
     const authority: Authority = chainAccount[keyType];
     const { key_auths, weight_threshold } = authority;

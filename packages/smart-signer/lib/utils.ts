@@ -4,6 +4,7 @@ import { isBrowser } from '@ui/lib/logger';
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { KeyType } from '@smart-signer/types/common';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import { siteConfig } from '@ui/config/site';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -159,7 +160,7 @@ export async function getTransactionDigest(
   txString: string = '',
   hiveApiUrl = 'https://api.hive.blog'
 ): Promise<{ txString: string; digest: THexString }> {
-  const wax = await createWaxFoundation();
+  const wax = await createWaxFoundation({ chainId: siteConfig.chainId });
 
   let txBuilder: ITransactionBuilder;
   if (txString) {
@@ -239,11 +240,12 @@ export async function verifySignature(
   digest: THexString,
   signature: string,
   keyType: KeyAuthorityType,
-  txString: string = ''
+  txString: string = '',
+  hiveApiUrl = 'https://api.hive.blog'
 ): Promise<boolean> {
   // Create transaction's digest and compare it with argument `digest`.
   if (txString) {
-    const result = await getTransactionDigest(null, txString);
+    const result = await getTransactionDigest(null, txString, hiveApiUrl);
     if (result.digest !== digest) {
       logger.info('Digest do not match');
       return false;
@@ -298,7 +300,8 @@ export async function verifyPrivateKey(
     digestBuf.toString('hex'),
     signature,
     keyType,
-    ''
+    '',
+    apiEndpoint
   );
 
   // Return false when signature is not valid.
