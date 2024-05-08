@@ -16,6 +16,9 @@ import DialogLogin from './dialog-login';
 import { Button } from '@ui/components/button';
 import { useTranslation } from 'next-i18next';
 
+import { getLogger } from '@ui/lib/logging';
+const logger = getLogger('app');
+
 export function AlertDialogReblog({
   children,
   author,
@@ -29,6 +32,13 @@ export function AlertDialogReblog({
 }) {
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
+
+  const reblog = async () => {
+    transactionService.reblog(author, permlink);
+    // TODO First check if promise in preceding line was
+    // successful.
+    setStoredReblogs((val) => [...val, `${author}/${permlink}`]);
+  }
 
   return (
     <AlertDialog>
@@ -52,12 +62,7 @@ export function AlertDialogReblog({
           {user && user.isLoggedIn ? (
             <AlertDialogAction
               className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
-              onClick={() => {
-                transactionService.reblog(author, permlink);
-                // TODO First check if promise in preceding line was
-                // successful.
-                setStoredReblogs((val) => [...val, `${author}/${permlink}`]);
-              }}
+              onClick={() => reblog()}
             >
               {t('alert_dialog_reblog.action')}
             </AlertDialogAction>
