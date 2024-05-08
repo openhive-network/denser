@@ -376,9 +376,11 @@ const PostListItem = ({
                             </AlertDialogReblog>
                           </TooltipTrigger>
                           <TooltipContent data-testid="post-card-reblog-tooltip">
-                            <p>
-                              {isReblogged ? t('cards.post_card.you_reblogged') : t('cards.post_card.reblog')} @{post.author}/{post.permlink}
-                            </p>
+                            <p>{
+                              isReblogged
+                                ? t('cards.post_card.you_reblogged')
+                                : t('cards.post_card.reblog')
+                            }</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
