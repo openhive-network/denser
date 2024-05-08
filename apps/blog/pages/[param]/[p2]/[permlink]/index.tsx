@@ -41,9 +41,9 @@ import { UserPopoverCard } from '@/blog/components/user-popover-card';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
+import { cn } from '@ui/lib/utils';
 
 import { getLogger } from '@ui/lib/logging';
-import { cn } from '@ui/lib/utils';
 const logger = getLogger('app');
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
