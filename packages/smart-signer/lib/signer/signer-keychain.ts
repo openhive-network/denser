@@ -104,6 +104,7 @@ export class SignerKeychain extends Signer {
   }
 
   async signTransaction({ digest, transaction }: SignTransaction): Promise<string> {
+    logger.info('signTransaction args: %o', { digest, transaction });
     try {
       const { username, keyType } = this;
       const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
