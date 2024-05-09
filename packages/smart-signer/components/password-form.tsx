@@ -139,7 +139,7 @@ export function PasswordForm({
               data-testid="posting-private-key-input"
             />
             {errors.password?.message && (
-              <p className="text-sm text-red-500" role="alert">
+              <p className="text-sm text-red-500" role="alert" data-testid="password-form-error-message">
                 {
                   t(errors.password.message)
                 }
