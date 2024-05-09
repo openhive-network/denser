@@ -17,6 +17,7 @@ import { useQuery } from '@tanstack/react-query';
 import { findRcAccounts } from '../lib/hive';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
 import { RcAccount } from '@hive/wax';
+import { siteConfig } from '@ui/config/site';
 
 const logger = getLogger('app');
 
@@ -68,6 +69,7 @@ const SiteHeader: FC = () => {
       <div className="container flex h-14 w-full items-center justify-between">
         <Link href="/" className="keychainify-checked mr-6 flex items-center space-x-2">
           <Icons.walletlogo className="w-32" />
+          {!siteConfig.isMainnet && <span className="text-xs text-red-600">TESTNET</span>}
         </Link>
         <div className="flex items-center space-x-2 sm:space-x-4">
           <nav className="flex items-center space-x-1">

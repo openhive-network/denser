@@ -57,7 +57,7 @@ const CommunityDescription = ({
               </div>
             </SubsListDialog>
             <div className="flex flex-col items-center" data-testid="community-pending-rewards">
-              {data.sum_pending}
+              ${data.sum_pending}
               <span className="text-center text-xs">{t('communities.titles.pending_rewards')}</span>
             </div>
             <div className="flex flex-col items-center" data-testid="community-active-posters">

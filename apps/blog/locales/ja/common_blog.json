@@ -396,6 +396,7 @@
     "title": "タイトル",
     "insert_images_by_dragging": "画像の挿入はドラッグ＆ドロップ または ",
     "insert_images_info": "画像の選択は、画像アイコンを介してエディターのツールバーに表示されます",
+    "insert_images_text": "画像を選択",
     "selecting_them": "選択してください",
     "post_summary": "投稿の要約（投稿およびSEO用、最大140文字）",
     "enter_your_tags": "スペースで区切られたタグを入力してください",
