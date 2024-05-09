@@ -71,7 +71,7 @@ export interface FullAccount {
   proxyVotes?: Array<unknown>;
 }
 
-export interface Beneficiarie {
+export interface Beneficiary {
   account: string;
   weight: string;
 }

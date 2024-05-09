@@ -15,7 +15,7 @@ import { toast, Toast } from '@hive/ui/components/hooks/use-toast';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
-import { Beneficiarie, Preferences } from './lib/app-types';
+import { Beneficiary, Preferences } from './lib/app-types';
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
@@ -361,7 +361,7 @@ class TransactionService {
     permlink: string,
     title: string,
     body: string,
-    beneficiaries: Beneficiarie[],
+    beneficiaries: Beneficiary[],
     maxAcceptedPayout: NaiAsset,
     tags: string[],
     category: string,
@@ -392,8 +392,8 @@ class TransactionService {
               articleBuilder.setMaxAcceptedPayout(chain.hbd(0));
             }
 
-            beneficiaries.forEach((beneficiarie) => {
-              articleBuilder.addBeneficiary(beneficiarie.account, Number(beneficiarie.weight));
+            beneficiaries.forEach((beneficiary) => {
+              articleBuilder.addBeneficiary(beneficiary.account, Number(beneficiary.weight));
             });
           },
           this.signerOptions.username,
