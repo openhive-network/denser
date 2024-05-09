@@ -47,7 +47,7 @@ class HbauthService extends StorageMixin(StorageBase) {
         }
         // Set promise result in this class' static property and return
         // it here as well.
-        await this.setOnlineClient(hbauthUseStrictMode, { node });
+        await this.setOnlineClient(hbauthUseStrictMode, { node, chainId: siteConfig.chainId });
         return HbauthService.onlineClient;
       };
 

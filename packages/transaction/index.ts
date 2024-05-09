@@ -11,7 +11,7 @@ import {
   WaxChainApiError,
   future_extensions
 } from '@hive/wax';
-import { toast, Toast, ToasterToast } from '@hive/ui/components/hooks/use-toast';
+import { toast, Toast } from '@hive/ui/components/hooks/use-toast';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';

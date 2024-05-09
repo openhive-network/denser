@@ -23,6 +23,7 @@ export interface SignerOptions {
   keyType: KeyType;
   apiEndpoint: string;
   storageType: StorageType;
+  chainId: string;
 }
 
 /**
@@ -40,9 +41,10 @@ export abstract class Signer {
   apiEndpoint: string;
   storageType: StorageType;
   pack: TTransactionPackType;
+  chainId: string;
 
   constructor(
-    { username, loginType, keyType, apiEndpoint, storageType }: SignerOptions,
+    { username, loginType, keyType, apiEndpoint, storageType, chainId }: SignerOptions,
     pack: TTransactionPackType
     ) {
     logger.info('Starting Signer constructor');
@@ -75,6 +77,11 @@ export abstract class Signer {
       this.storageType = storageType;
     } else {
       throw new Error('Signer constructor: storageType must be non-empty string');
+    }
+    if (chainId) {
+      this.chainId = chainId;
+    } else {
+      throw new Error('Signer constructor: chainId must be non-empty string');
     }
   }
 
