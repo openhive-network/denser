@@ -147,7 +147,7 @@ const SiteHeader: FC = () => {
             {isClient && user.isLoggedIn ? (
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger data-testid="comment-card-footer-downvote" className="cursor-pointer">
+                  <TooltipTrigger data-testid="profile-avatar-button" className="cursor-pointer">
                     <UserMenu user={user} notifications={data?.unread}>
                       <div className="group relative inline-flex w-fit cursor-pointer items-center justify-center">
                         {data && data.unread !== 0 ? (
