@@ -11,14 +11,7 @@ import {
 } from '@hive/ui/components/select';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormMessage
-} from '@hive/ui/components/form';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@hive/ui/components/form';
 import { useForm, useWatch } from 'react-hook-form';
 import useManabars from './hooks/useManabars';
 import { AdvancedSettingsPostForm } from './advanced_settings_post_form';
@@ -380,7 +373,7 @@ export default function PostForm({
                       />
                     </>
                   </FormControl>
-                  <FormDescription className="flex items-center border-x-2 border-b-2 border-border px-3 pb-1 text-xs text-destructive">
+                  <div className="flex items-center border-x-2 border-b-2 border-border px-3 pb-1 text-xs text-destructive">
                     {t('submit_page.insert_images_by_dragging')} {t('submit_page.selecting_them')}
                     <TooltipProvider>
                       <Tooltip>
@@ -390,7 +383,7 @@ export default function PostForm({
                         <TooltipContent>{t('submit_page.insert_images_info')}</TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
-                  </FormDescription>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
