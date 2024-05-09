@@ -16,7 +16,7 @@ import { useLocalStorage } from 'usehooks-ts';
 import { toast } from '@ui/components/hooks/use-toast';
 import { useTranslation } from 'next-i18next';
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
-import badActorList from '@smart-signer/lib/validators/bad-actor-list';
+import badActorList from '@ui/config/lists/bad-actor-list';
 
 type AccountFormValues = {
   title: string;
