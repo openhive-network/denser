@@ -2,7 +2,7 @@ import { FC, PropsWithChildren, createContext, useContext, useEffect, useState }
 import { DefaultRenderer } from '@hiveio/content-renderer';
 import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
 import env from '@beam-australia/react-env';
-import imageUserBlockList from '@hive/ui/config/lists/user-illegal-content';
+import imageUserBlockList from '@hive/ui/config/lists/image-user-blocklist';
 
 type HiveRendererContextType = {
   hiveRenderer: DefaultRenderer | undefined;
@@ -53,6 +53,7 @@ export const HiveContentRendererProvider: FC<PropsWithChildren> = ({ children })
   useEffect(() => {
     createRenderer(author);
   }, [author]);
+
   return (
     <HiveRendererContext.Provider value={{ hiveRenderer, setHiveRenderer, setAuthor }}>
       {children}
