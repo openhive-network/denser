@@ -16,7 +16,7 @@ export function MainNav() {
       */}
       <Link href="/" className="keychainify-checked mr-6 flex items-center space-x-2">
         <Icons.hivetoken />
-        {!siteConfig.isMainnet && <span className="text-xs text-red-600">TESTNET</span>}
+        {siteConfig.chainEnv !== 'mainnet' && <span className="text-xs text-red-600 uppercase">{siteConfig.chainEnv}</span>}
       </Link>
     </div>
   );

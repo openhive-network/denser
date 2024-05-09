@@ -85,7 +85,7 @@ const SiteHeader: FC = () => {
         <Link href="/trending" className="flex items-center space-x-2">
           <Icons.hive className="h-6 w-6" />
           <span className="font-bold sm:inline-block">{siteConfig.name}</span>
-          {!siteConfig.isMainnet && <span className="text-xs text-red-600">TESTNET</span>}
+          {siteConfig.chainEnv !== 'mainnet' && <span className="text-xs text-red-600 uppercase">{siteConfig.chainEnv}</span>}
         </Link>
 
         <MainNav />
