@@ -27,7 +27,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useLocalStorage } from 'usehooks-ts';
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 import gdprUserList from '@hive/ui/config/lists/gdpr-user-list';
-import imageUserBlockList from '@hive/ui/config/lists/image-user-blocklist';
+import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 
 const PostListItem = ({
@@ -56,7 +56,7 @@ const PostListItem = ({
   const router = useRouter();
   const blacklistCheck = blacklist ? blacklist.some((e) => e.name === post.author) : false;
   const userFromGDPR = gdprUserList.includes(post.author);
-  const userFromImageBlockList = imageUserBlockList.includes(post.author);
+  const userFromImageBlockList = imageUserBlocklist.includes(post.author);
   const legalBlockedUser = userIllegalContent.includes(post.author);
   function revealPost() {
     setReveal((reveal) => !reveal);

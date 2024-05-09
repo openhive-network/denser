@@ -2,7 +2,7 @@ import { FC, PropsWithChildren, createContext, useContext, useEffect, useState }
 import { DefaultRenderer } from '@hiveio/content-renderer';
 import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
 import env from '@beam-australia/react-env';
-import imageUserBlockList from '@hive/ui/config/lists/image-user-blocklist';
+import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
 
 type HiveRendererContextType = {
   hiveRenderer: DefaultRenderer | undefined;
@@ -21,7 +21,7 @@ export const HiveContentRendererProvider: FC<PropsWithChildren> = ({ children })
   const [hiveRenderer, setHiveRenderer] = useState<DefaultRenderer | undefined>(undefined);
   const [author, setAuthor] = useState<string>('');
   const createRenderer = async (author: string) => {
-    const isAuthorBlocked = imageUserBlockList.includes(author);
+    const isAuthorBlocked = imageUserBlocklist.includes(author);
     const renderer = new DefaultRenderer({
       baseUrl: 'https://hive.blog/',
       breaks: true,
