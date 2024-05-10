@@ -210,7 +210,7 @@ test.describe('Explore communities page tests', () => {
     // Validate the background color of the community card item
     expect(
         await communitiesPage.getElementCssPropertyValue(await communitiesPage.communityListItem.first(), 'background-color')
-    ).toBe('rgba(3, 7, 17, 0.95)');
+    ).toBe('rgb(15, 23, 42)');
   });
 
   test('validate no results for your search message', async ({ page }) => {
