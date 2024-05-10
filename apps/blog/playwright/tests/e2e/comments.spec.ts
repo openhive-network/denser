@@ -63,7 +63,7 @@ test.describe('Comments of post', () => {
         postPage.commentListItems.locator('div > div').first(),
         'background-color'
       )
-    ).toBe('rgb(51, 65, 85)');
+    ).toBe('rgb(15, 23, 42)');
 
     // After hover
     await postPage.commentListItems.first().hover();
@@ -348,7 +348,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
         await postPage.commentAuthorLink.first().locator('div span'),
         'color'
       )
-    ).toBe('rgb(148, 163, 184)');
+    ).toBe('rgb(255, 255, 255)');
     // Color of the author of the first comment after hovering
     await postPage.commentAuthorLink.first().hover();
     await homePage.page.waitForTimeout(1000);
@@ -374,13 +374,13 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     // Color of the reputation of the first comment without hovering
     expect(
       await postPage.getElementCssPropertyValue(await postPage.commentAuthorReputation.first(), 'color')
-    ).toBe('rgb(148, 163, 184)');
+    ).toBe('rgb(255, 255, 255)');
     // Color of the reputation of the first comment after hovering
     await postPage.commentAuthorReputation.first().hover();
     await homePage.page.waitForTimeout(500);
     expect(
       await postPage.getElementCssPropertyValue(await postPage.commentAuthorReputation.first(), 'color')
-    ).toBe('rgb(148, 163, 184)');
+    ).toBe('rgb(255, 255, 255)');
 
     // Validate the tooltip of reputation
     const atrTitle = await postPage.commentAuthorReputation.first().getAttribute('title');

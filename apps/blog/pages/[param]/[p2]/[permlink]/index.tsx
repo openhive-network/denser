@@ -301,7 +301,7 @@ function PostPage({
                 </ul>
               ) : null}
             </div>
-            <div className="text-sm text-slate-600" data-testid="author-data-post-footer">
+            <div className="text-sm text-slate-600 dark:text-slate-400" data-testid="author-data-post-footer">
               <div className="my-4 flex justify-between">
                 <div className="flex flex-wrap items-center">
                   <Clock />

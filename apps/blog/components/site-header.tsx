@@ -76,7 +76,7 @@ const SiteHeader: FC = () => {
   return (
     <header
       className={clsx(
-        'supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur transition ease-in-out',
+        'supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur transition ease-in-out dark:bg-slate-900',
         { 'translate-y-[-56px]': isNavHidden }
       )}
       translate="no"

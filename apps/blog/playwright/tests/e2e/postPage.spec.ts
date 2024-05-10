@@ -50,7 +50,7 @@ test.describe('Post page tests', () => {
       'rgba(0, 0, 0, 0)'
     );
     expect(await postPage.getElementCssPropertyValue(postPage.articleAuthorData, 'color')).toBe(
-      'rgb(100, 116, 139)'
+      'rgb(148, 163, 184)'
     );
 
     expect(await postPage.getElementCssPropertyValue(postPage.articleBody, 'background-color')).toBe(
