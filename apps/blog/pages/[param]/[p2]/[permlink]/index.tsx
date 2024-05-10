@@ -45,6 +45,8 @@ import { cn } from '@ui/lib/utils';
 import dmcaUserList from '@ui/config/lists/dmca-user-list';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import dmcaList from '@ui/config/lists/dmca-list';
+import gdprUserList from '@ui/config/lists/gdpr-user-list';
+import CustomError from '@/blog/components/custom-error';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -112,7 +114,7 @@ function PostPage({
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const firstPost = discussionState?.find((post) => post.depth === 0);
   const [edit, setEdit] = useState(false);
-
+  const userFromGDPR = gdprUserList.some((e) => e === post?.author);
   const refreshPage = () => {
     router.replace(router.asPath);
   };
@@ -196,6 +198,9 @@ function PostPage({
   useEffect(() => {
     setAuthor(post?.author || '');
   }, [post?.author]);
+  if (userFromGDPR) {
+    return <CustomError />;
+  }
   return (
     <div className="py-8">
       <div className="relative mx-auto my-0 max-w-4xl bg-white px-8 py-4 dark:bg-slate-900">

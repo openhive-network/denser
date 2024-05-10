@@ -23,6 +23,7 @@ import { useTranslation } from 'next-i18next';
 import VotesComponent from './votes';
 import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
+import gdprUserList from '@ui/config/lists/gdpr-user-list';
 
 const RepliesListItem = ({
   comment,
@@ -35,6 +36,11 @@ const RepliesListItem = ({
   const blacklistCheck = blacklist ? blacklist.some((e) => e.name === comment.author) : false;
   const userFromDMCA = dmcaUserList.includes(comment.author);
   const legalBlockedUser = userIllegalContent.includes(comment.author);
+
+  if (gdprUserList.includes(comment.author)) {
+    return null;
+  }
+
   return (
     <>
       <li

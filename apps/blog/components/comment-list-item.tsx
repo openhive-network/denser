@@ -22,6 +22,7 @@ import DialogLogin from './dialog-login';
 import { UserPopoverCard } from './user-popover-card';
 import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
+import gdprUserList from '@ui/config/lists/gdpr-user-list';
 
 interface CommentListProps {
   comment: Entry;
@@ -49,7 +50,8 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const userFromDMCA = dmcaUserList.some((e) => e === comment.author);
   const legalBlockedUser = userIllegalContent.some((e) => e === comment.author);
-
+  const userFromGDPR = gdprUserList.some((e) => e === comment.author);
+  const parentFromGDPR = gdprUserList.some((e) => e === comment.parent_author);
   useEffect(() => {
     if (reply) {
       storeBox(reply);
@@ -68,6 +70,9 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor
     setAuthor(comment.author);
   }, [comment.author]);
   const currentDepth = comment.depth - parent_depth;
+  if (userFromGDPR || parentFromGDPR) {
+    return null;
+  }
   return (
     <>
       {currentDepth < 8 ? (

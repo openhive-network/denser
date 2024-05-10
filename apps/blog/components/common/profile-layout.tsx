@@ -27,6 +27,8 @@ import FollowButton from '../follow-button';
 import MuteButton from '../mute-button';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
+import gdprUserList from '@ui/config/lists/gdpr-user-list';
+import CustomError from '../custom-error';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -57,6 +59,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   const { t } = useTranslation('common_blog');
   const walletHost = env('WALLET_ENDPOINT');
   const { username } = useSiteParams();
+  const userFromGDPRList = gdprUserList.includes(username);
   const {
     isLoading: profileDataIsLoading,
     error: errorProfileData,
@@ -104,6 +107,9 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   const vesting_hive = vestingHive(accountData, dynamicGlobalData);
   const hp = vesting_hive.minus(delegated_hive);
   const legalBlockedUser = userIllegalContent.includes(username);
+  if (userFromGDPRList) {
+    return <CustomError />;
+  }
   return username ? (
     <div>
       <div

@@ -29,7 +29,7 @@ import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
-
+import gdprUserList from '@ui/config/lists/gdpr-user-list';
 const PostListItem = ({
   post,
   isCommunityPage,
@@ -60,6 +60,9 @@ const PostListItem = ({
   const legalBlockedUser = userIllegalContent.includes(post.author);
   function revealPost() {
     setReveal((reveal) => !reveal);
+  }
+  if (gdprUserList.includes(post.author)) {
+    return null;
   }
   return (
     <li data-testid="post-list-item" className={post.stats?.gray ? 'opacity-50 hover:opacity-100' : ''}>
