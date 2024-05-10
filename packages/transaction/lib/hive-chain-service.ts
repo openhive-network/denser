@@ -53,7 +53,7 @@ export class HiveChainService {
         }
         // Set promise result in this class' static property and return
         // it here as well.
-        await this.setHiveChain({ apiEndpoint });
+        await this.setHiveChain({ apiEndpoint, chainId: siteConfig.chainId});
         return HiveChainService.hiveChain;
       };
 

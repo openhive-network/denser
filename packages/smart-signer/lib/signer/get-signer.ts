@@ -23,6 +23,7 @@ export function signerFactory({
   keyType,
   apiEndpoint,
   storageType,
+  chainId,
 }: SignerOptions): SignerTool {
   return new registeredSigners[loginType]({
     username,
@@ -30,6 +31,7 @@ export function signerFactory({
     keyType,
     apiEndpoint,
     storageType,
+    chainId,
   }) as SignerTool;
 }
 

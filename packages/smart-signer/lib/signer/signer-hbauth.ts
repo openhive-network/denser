@@ -84,7 +84,7 @@ export class SignerHbauth extends Signer {
   }
 
   async signTransaction({ digest, transaction }: SignTransaction) {
-    const wax = await createWaxFoundation();
+    const wax = await createWaxFoundation({ chainId: this.chainId });
 
     // When transaction is string, e.g. got from transaction.toApi().
     // const txBuilder = wax.TransactionBuilder.fromApi(transaction);
