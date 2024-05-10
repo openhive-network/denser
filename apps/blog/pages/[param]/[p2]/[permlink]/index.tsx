@@ -42,7 +42,7 @@ import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
 import { cn } from '@ui/lib/utils';
-import gdprUserList from '@ui/config/lists/gdpr-user-list';
+import dmcaUserList from '@ui/config/lists/dmca-user-list';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import dmcaList from '@ui/config/lists/dmca-list';
 
@@ -103,9 +103,8 @@ function PostPage({
   const copyRightCheck = dmcaList.includes(
     `/${router.query.param}/${router.query.p2}/${router.query.permlink}`
   );
-  const userFromGDPR = gdprUserList.some((e) => e === post?.author);
+  const userFromDMCA = dmcaUserList.some((e) => e === post?.author);
   const legalBlockedUser = userIllegalContent.some((e) => e === post?.author);
-
   const defaultSort = isSortOrder(query) ? query : SortOrder.trending;
   const storageId = `replybox-/${username}/${post?.permlink}`;
   const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
@@ -274,10 +273,8 @@ function PostPage({
               </div>
             ) : legalBlockedUser ? (
               <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
-            ) : copyRightCheck ? (
+            ) : copyRightCheck || userFromDMCA ? (
               <div className="px-2 py-6">{t('post_content.body.copyright')}</div>
-            ) : userFromGDPR ? (
-              <div className="px-2 py-6">{t('cards.content_removed')}</div>
             ) : (
               <ImageGallery>
                 <div
@@ -439,49 +436,47 @@ function PostPage({
                   </TooltipProvider>
                 </div>
               </div>
-              {legalBlockedUser || copyRightCheck || userFromGDPR ? null : (
-                <div className="my-4 flex justify-between">
-                  <div className="flex items-center gap-2 sm:gap-4">
-                    <VotesComponent post={post} />
-                    <DetailsCardHover
-                      post={post}
-                      decline={Number(post.max_accepted_payout.slice(0, 1)) === 0}
-                      post_page
+              <div className="my-4 flex justify-between">
+                <div className="flex items-center gap-2 sm:gap-4">
+                  <VotesComponent post={post} />
+                  <DetailsCardHover
+                    post={post}
+                    decline={Number(post.max_accepted_payout.slice(0, 1)) === 0}
+                    post_page
+                  >
+                    <span
+                      data-testid="comment-payout"
+                      className={`text-xs text-red-600 hover:cursor-pointer sm:text-sm ${
+                        Number(post.max_accepted_payout.slice(0, 1)) === 0
+                          ? '!text-gray-600 line-through'
+                          : ''
+                      }`}
                     >
-                      <span
-                        data-testid="comment-payout"
-                        className={`text-xs text-red-600 hover:cursor-pointer sm:text-sm ${
-                          Number(post.max_accepted_payout.slice(0, 1)) === 0
-                            ? '!text-gray-600 line-through'
-                            : ''
-                        }`}
-                      >
-                        ${post.payout?.toFixed(2)}
-                      </span>
-                    </DetailsCardHover>
-                    {!isActiveVotesLoading && activeVotesData ? (
-                      <DetailsCardVoters post={post}>
-                        {post.stats?.total_votes && post.stats?.total_votes !== 0 ? (
-                          <span className="text-xs text-red-500 sm:text-sm">
-                            {post.stats?.total_votes > 1
-                              ? t('post_content.footer.votes', { votes: post.stats?.total_votes })
-                              : t('post_content.footer.vote')}
-                          </span>
-                        ) : null}
-                      </DetailsCardVoters>
-                    ) : null}
-                  </div>
-                  <div className="flex gap-2">
-                    <FacebookShare url={post.url} />
-                    <TwitterShare title={post.title} url={post.url} />
-                    <LinkedInShare title={post.title} url={post.url} />
-                    <RedditShare title={post.title} url={post.url} />
-                    <SharePost path={router.asPath}>
-                      <Link2 className="cursor-pointer hover:text-red-600" data-testid="share-post" />
-                    </SharePost>
-                  </div>
+                      ${post.payout?.toFixed(2)}
+                    </span>
+                  </DetailsCardHover>
+                  {!isActiveVotesLoading && activeVotesData ? (
+                    <DetailsCardVoters post={post}>
+                      {post.stats?.total_votes && post.stats?.total_votes !== 0 ? (
+                        <span className="text-xs text-red-500 sm:text-sm">
+                          {post.stats?.total_votes > 1
+                            ? t('post_content.footer.votes', { votes: post.stats?.total_votes })
+                            : t('post_content.footer.vote')}
+                        </span>
+                      ) : null}
+                    </DetailsCardVoters>
+                  ) : null}
                 </div>
-              )}
+                <div className="flex gap-2">
+                  <FacebookShare url={post.url} />
+                  <TwitterShare title={post.title} url={post.url} />
+                  <LinkedInShare title={post.title} url={post.url} />
+                  <RedditShare title={post.title} url={post.url} />
+                  <SharePost path={router.asPath}>
+                    <Link2 className="cursor-pointer hover:text-red-600" data-testid="share-post" />
+                  </SharePost>
+                </div>
+              </div>
             </div>
           </>
         ) : (

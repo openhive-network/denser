@@ -21,7 +21,7 @@ import clsx from 'clsx';
 import PostImage from './post-img';
 import { useTranslation } from 'next-i18next';
 import VotesComponent from './votes';
-import gdprUserList from '@hive/ui/config/lists/gdpr-user-list';
+import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 
 const RepliesListItem = ({
@@ -33,7 +33,7 @@ const RepliesListItem = ({
 }) => {
   const { t } = useTranslation('common_blog');
   const blacklistCheck = blacklist ? blacklist.some((e) => e.name === comment.author) : false;
-  const userFromGDPR = gdprUserList.includes(comment.author);
+  const userFromDMCA = dmcaUserList.includes(comment.author);
   const legalBlockedUser = userIllegalContent.includes(comment.author);
   return (
     <>
@@ -132,7 +132,7 @@ const RepliesListItem = ({
               </CardTitle>
               <CardDescription className="w-full" data-testid="comment-card-description">
                 <Link href={`/${comment.category}/@${comment.author}/${comment.permlink}`}>
-                  {userFromGDPR
+                  {userFromDMCA
                     ? t('cards.content_removed')
                     : legalBlockedUser
                       ? t('global.unavailable_for_legal_reasons')
@@ -141,88 +141,84 @@ const RepliesListItem = ({
               </CardDescription>
             </CardContent>
           </div>
-          {legalBlockedUser || userFromGDPR ? null : (
-            <CardFooter>
-              <div className="flex h-5 items-center space-x-4 text-sm" data-testid="comment-card-footer">
-                <VotesComponent post={comment} />
-                <DetailsCardHover
-                  post={comment}
-                  decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
+          <CardFooter>
+            <div className="flex h-5 items-center space-x-4 text-sm" data-testid="comment-card-footer">
+              <VotesComponent post={comment} />
+              <DetailsCardHover
+                post={comment}
+                decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
+              >
+                <div
+                  data-testid="post-payout"
+                  className={`flex items-center hover:cursor-pointer hover:text-red-600 ${
+                    Number(comment.max_accepted_payout.slice(0, 1)) === 0 ? 'text-gray-600 line-through' : ''
+                  }`}
                 >
-                  <div
-                    data-testid="post-payout"
-                    className={`flex items-center hover:cursor-pointer hover:text-red-600 ${
-                      Number(comment.max_accepted_payout.slice(0, 1)) === 0
-                        ? 'text-gray-600 line-through'
-                        : ''
-                    }`}
-                  >
-                    ${comment.payout.toFixed(2)}
-                  </div>
-                </DetailsCardHover>
-                <Separator orientation="vertical" />
-                <div className="flex items-center">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger className="flex items-center" data-testid="comment-vote">
-                        <Icons.chevronUp className="h-4 w-4 sm:mr-1" />
-                        {comment.stats && comment.stats.total_votes}
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p data-testid="comment-vote-tooltip">
-                          {comment.stats && comment.stats.total_votes === 0
-                            ? t('post_content.footer.no_votes')
-                            : comment.stats && comment.stats.total_votes === 1
-                              ? t('post_content.footer.vote')
-                              : t('post_content.footer.votes', {
-                                  votes: comment.stats && comment.stats.total_votes
-                                })}
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  ${comment.payout.toFixed(2)}
                 </div>
-                <Separator orientation="vertical" />
-                <div className="flex items-center">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger className="flex items-center">
-                        <>
-                          <Link
-                            href={`/${comment.category}/@${comment.author}/${comment.permlink}`}
-                            className="flex cursor-pointer items-center"
-                          >
-                            {comment.children > 1 ? (
-                              <Icons.messagesSquare className="h-4 w-4" />
-                            ) : (
-                              <Icons.comment className="h-4 w-4" />
-                            )}
-                          </Link>
-                          <Link
-                            href={`/${comment.category}/@${comment.author}/${comment.permlink}`}
-                            className="flex cursor-pointer items-center pl-1 hover:text-red-600"
-                            data-testid="comment-respond-link"
-                          >
-                            {comment.children}
-                          </Link>
-                        </>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p data-testid="comment-respond-tooltip">
-                          {comment.children === 0
-                            ? t('post_content.footer.no_responses')
-                            : comment.children === 1
-                              ? t('post_content.footer.response')
-                              : t('post_content.footer.responses', { responses: comment.children })}
-                          {t('cards.post_card.click_to_respond')}
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </div>
+              </DetailsCardHover>
+              <Separator orientation="vertical" />
+              <div className="flex items-center">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger className="flex items-center" data-testid="comment-vote">
+                      <Icons.chevronUp className="h-4 w-4 sm:mr-1" />
+                      {comment.stats && comment.stats.total_votes}
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p data-testid="comment-vote-tooltip">
+                        {comment.stats && comment.stats.total_votes === 0
+                          ? t('post_content.footer.no_votes')
+                          : comment.stats && comment.stats.total_votes === 1
+                            ? t('post_content.footer.vote')
+                            : t('post_content.footer.votes', {
+                                votes: comment.stats && comment.stats.total_votes
+                              })}
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
-            </CardFooter>
-          )}
+              <Separator orientation="vertical" />
+              <div className="flex items-center">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger className="flex items-center">
+                      <>
+                        <Link
+                          href={`/${comment.category}/@${comment.author}/${comment.permlink}`}
+                          className="flex cursor-pointer items-center"
+                        >
+                          {comment.children > 1 ? (
+                            <Icons.messagesSquare className="h-4 w-4" />
+                          ) : (
+                            <Icons.comment className="h-4 w-4" />
+                          )}
+                        </Link>
+                        <Link
+                          href={`/${comment.category}/@${comment.author}/${comment.permlink}`}
+                          className="flex cursor-pointer items-center pl-1 hover:text-red-600"
+                          data-testid="comment-respond-link"
+                        >
+                          {comment.children}
+                        </Link>
+                      </>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p data-testid="comment-respond-tooltip">
+                        {comment.children === 0
+                          ? t('post_content.footer.no_responses')
+                          : comment.children === 1
+                            ? t('post_content.footer.response')
+                            : t('post_content.footer.responses', { responses: comment.children })}
+                        {t('cards.post_card.click_to_respond')}
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            </div>
+          </CardFooter>
         </Card>
       </li>
     </>

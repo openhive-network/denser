@@ -20,7 +20,7 @@ import { useLocalStorage } from 'usehooks-ts';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';
 import { UserPopoverCard } from './user-popover-card';
-import gdprUserList from '@hive/ui/config/lists/gdpr-user-list';
+import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 
 interface CommentListProps {
@@ -47,7 +47,7 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor
   const [edit, setEdit] = useState(false);
   const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
-  const userFromGDPR = gdprUserList.some((e) => e === comment.author);
+  const userFromDMCA = dmcaUserList.some((e) => e === comment.author);
   const legalBlockedUser = userIllegalContent.some((e) => e === comment.author);
 
   useEffect(() => {
@@ -204,8 +204,8 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor
                     <CardContent className="pb-2 ">
                       {legalBlockedUser ? (
                         <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
-                      ) : userFromGDPR ? (
-                        <div className="px-2 py-6">{t('cards.content_removed')}</div>
+                      ) : userFromDMCA ? (
+                        <div className="px-2 py-6">{t('post_content.body.copyright')}</div>
                       ) : edit && comment.parent_permlink && comment.parent_author ? (
                         <ReplyTextbox
                           editMode={edit}
@@ -227,80 +227,77 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor
                       )}
                     </CardContent>
                     <Separator orientation="horizontal" />{' '}
-                    {userFromGDPR || legalBlockedUser ? null : (
-                      <CardFooter>
-                        <div
-                          className="flex items-center gap-2 pt-1 text-xs sm:text-sm"
-                          data-testid="comment-card-footer"
+                    <CardFooter>
+                      <div
+                        className="flex items-center gap-2 pt-1 text-xs sm:text-sm"
+                        data-testid="comment-card-footer"
+                      >
+                        <VotesComponent post={comment} />
+                        <DetailsCardHover
+                          post={comment}
+                          decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
                         >
-                          <VotesComponent post={comment} />
-                          <DetailsCardHover
-                            post={comment}
-                            decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
+                          <div
+                            data-testid="comment-card-footer-payout"
+                            className={clsx('flex items-center hover:cursor-pointer hover:text-red-600', {
+                              'line-through opacity-50': Number(comment.max_accepted_payout.slice(0, 1)) === 0
+                            })}
                           >
-                            <div
-                              data-testid="comment-card-footer-payout"
-                              className={clsx('flex items-center hover:cursor-pointer hover:text-red-600', {
-                                'line-through opacity-50':
-                                  Number(comment.max_accepted_payout.slice(0, 1)) === 0
-                              })}
-                            >
-                              {'$'}
-                              {comment.payout.toFixed(2)}
+                            {'$'}
+                            {comment.payout.toFixed(2)}
+                          </div>
+                        </DetailsCardHover>
+                        <Separator orientation="vertical" className="h-5" />
+                        {comment.stats && comment.stats.total_votes > 0 ? (
+                          <>
+                            <div className="flex items-center">
+                              <DetailsCardVoters post={comment}>
+                                <span className="hover:text-red-600">
+                                  {comment.stats && comment.stats.total_votes > 1
+                                    ? t('cards.post_card.votes', { votes: comment.stats.total_votes })
+                                    : t('cards.post_card.vote')}
+                                </span>
+                              </DetailsCardVoters>
                             </div>
-                          </DetailsCardHover>
-                          <Separator orientation="vertical" className="h-5" />
-                          {comment.stats && comment.stats.total_votes > 0 ? (
-                            <>
-                              <div className="flex items-center">
-                                <DetailsCardVoters post={comment}>
-                                  <span className="hover:text-red-600">
-                                    {comment.stats && comment.stats.total_votes > 1
-                                      ? t('cards.post_card.votes', { votes: comment.stats.total_votes })
-                                      : t('cards.post_card.vote')}
-                                  </span>
-                                </DetailsCardVoters>
-                              </div>
-                              <Separator orientation="vertical" className="h-5" />
-                            </>
-                          ) : null}
-                          {user && user.isLoggedIn ? (
+                            <Separator orientation="vertical" className="h-5" />
+                          </>
+                        ) : null}
+                        {user && user.isLoggedIn ? (
+                          <button
+                            onClick={() => {
+                              setReply(!reply), removeBox();
+                            }}
+                            className="flex items-center hover:cursor-pointer hover:text-red-600"
+                            data-testid="comment-card-footer-reply"
+                          >
+                            {t('cards.comment_card.reply')}
+                          </button>
+                        ) : (
+                          <DialogLogin>
                             <button
-                              onClick={() => {
-                                setReply(!reply), removeBox();
-                              }}
                               className="flex items-center hover:cursor-pointer hover:text-red-600"
                               data-testid="comment-card-footer-reply"
                             >
-                              {t('cards.comment_card.reply')}
+                              {t('post_content.footer.reply')}
                             </button>
-                          ) : (
-                            <DialogLogin>
-                              <button
-                                className="flex items-center hover:cursor-pointer hover:text-red-600"
-                                data-testid="comment-card-footer-reply"
-                              >
-                                {t('post_content.footer.reply')}
-                              </button>
-                            </DialogLogin>
-                          )}
-                          {user && user.isLoggedIn && comment.author === user.username ? (
-                            <>
-                              <Separator orientation="vertical" className="h-5" />
-                              <button
-                                onClick={() => {
-                                  setEdit(!edit);
-                                }}
-                                className="flex items-center hover:cursor-pointer hover:text-red-600"
-                                data-testid="comment-card-footer-edit"
-                              >
-                                {t('cards.comment_card.edit')}
-                              </button>
-                            </>
-                          ) : null}
-                        </div>
-                      </CardFooter>
-                    )}
+                          </DialogLogin>
+                        )}
+                        {user && user.isLoggedIn && comment.author === user.username ? (
+                          <>
+                            <Separator orientation="vertical" className="h-5" />
+                            <button
+                              onClick={() => {
+                                setEdit(!edit);
+                              }}
+                              className="flex items-center hover:cursor-pointer hover:text-red-600"
+                              data-testid="comment-card-footer-edit"
+                            >
+                              {t('cards.comment_card.edit')}
+                            </button>
+                          </>
+                        ) : null}
+                      </div>
+                    </CardFooter>
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>

@@ -26,7 +26,7 @@ import VotesComponent from './votes';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useLocalStorage } from 'usehooks-ts';
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
-import gdprUserList from '@hive/ui/config/lists/gdpr-user-list';
+import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 
@@ -55,7 +55,7 @@ const PostListItem = ({
   );
   const router = useRouter();
   const blacklistCheck = blacklist ? blacklist.some((e) => e.name === post.author) : false;
-  const userFromGDPR = gdprUserList.includes(post.author);
+  const userFromDMCA = dmcaUserList.includes(post.author);
   const userFromImageBlockList = imageUserBlocklist.includes(post.author);
   const legalBlockedUser = userIllegalContent.includes(post.author);
   function revealPost() {
@@ -222,7 +222,7 @@ const PostListItem = ({
             <div>
               {!reveal &&
               post.blacklists.length < 1 &&
-              !userFromGDPR &&
+              !userFromDMCA &&
               !userFromImageBlockList &&
               !legalBlockedUser ? (
                 <>
@@ -247,7 +247,7 @@ const PostListItem = ({
                         href={`/${post.category}/@${post.author}/${post.permlink}`}
                         data-testid="post-description"
                       >
-                        {userFromGDPR
+                        {userFromDMCA
                           ? t('cards.content_removed')
                           : legalBlockedUser
                             ? t('global.unavailable_for_legal_reasons')
@@ -285,117 +285,110 @@ const PostListItem = ({
                   </>
                 )}
               </CardContent>
-              {legalBlockedUser || userFromGDPR ? null : (
-                <CardFooter className="pb-2">
-                  <div className="flex h-5 items-center space-x-2 text-sm" data-testid="post-card-footer">
-                    <VotesComponent post={post} />
+              <CardFooter className="pb-2">
+                <div className="flex h-5 items-center space-x-2 text-sm" data-testid="post-card-footer">
+                  <VotesComponent post={post} />
 
-                    <DetailsCardHover
-                      post={post}
-                      decline={Number(post.max_accepted_payout.slice(0, 1)) === 0}
+                  <DetailsCardHover post={post} decline={Number(post.max_accepted_payout.slice(0, 1)) === 0}>
+                    <div
+                      className={`flex items-center hover:cursor-pointer hover:text-red-600 ${
+                        Number(post.max_accepted_payout.slice(0, 1)) === 0 ? 'text-gray-600 line-through' : ''
+                      }`}
+                      data-testid="post-payout"
                     >
-                      <div
-                        className={`flex items-center hover:cursor-pointer hover:text-red-600 ${
-                          Number(post.max_accepted_payout.slice(0, 1)) === 0
-                            ? 'text-gray-600 line-through'
-                            : ''
-                        }`}
-                        data-testid="post-payout"
-                      >
-                        ${post.payout.toFixed(2)}
-                      </div>
-                    </DetailsCardHover>
+                      ${post.payout.toFixed(2)}
+                    </div>
+                  </DetailsCardHover>
 
-                    <Separator orientation="vertical" />
-                    <div className="flex items-center">
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger className="flex items-center" data-testid="post-total-votes">
-                            <Icons.chevronUp className="h-4 w-4 sm:mr-1" />
-                            {post.stats && post.stats.total_votes}
-                          </TooltipTrigger>
-                          <TooltipContent data-testid="post-card-votes-tooltip">
-                            <p>
-                              {post.stats && post.stats.total_votes === 0
-                                ? t('cards.post_card.no_votes')
-                                : post.stats && post.stats.total_votes > 1
-                                  ? t('cards.post_card.votes', { votes: post.stats.total_votes })
-                                  : t('cards.post_card.vote')}
-                            </p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                    <Separator orientation="vertical" />
-                    <div className="flex items-center" data-testid="post-children">
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger className="flex items-center">
-                            <>
-                              <Link
-                                href={`/${post.category}/@${post.author}/${post.permlink}/#comments`}
-                                className="flex cursor-pointer items-center"
-                              >
-                                {post.children > 1 ? (
-                                  <Icons.messagesSquare className="h-4 w-4 sm:mr-1" />
-                                ) : (
-                                  <Icons.comment className="h-4 w-4 sm:mr-1" />
-                                )}
-                              </Link>
-                              <Link
-                                href={`/${post.category}/@${post.author}/${post.permlink}/#comments`}
-                                className="flex cursor-pointer items-center pl-1 hover:text-red-600"
-                                data-testid="post-card-response-link"
-                              >
-                                {post.children}
-                              </Link>
-                            </>
-                          </TooltipTrigger>
-                          <TooltipContent data-testid="post-card-responses">
-                            <p>
-                              {`${
-                                post.children === 0
-                                  ? t('cards.post_card.no_responses')
-                                  : post.children === 1
-                                    ? t('cards.post_card.response')
-                                    : t('cards.post_card.responses', { responses: post.children })
-                              }`}
-                              {t('cards.post_card.click_to_respond')}
-                            </p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                    <Separator orientation="vertical" />
-                    {!post.title.includes('RE: ') ? (
-                      <div className="flex items-center" data-testid="post-card-reblog">
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <AlertDialogReblog
-                                username={post.author}
-                                permlink={post.permlink}
-                                setStoredReblogs={setStoredReblogs}
-                              >
-                                <Icons.forward
-                                  className={cn('h-4 w-4 cursor-pointer', {
-                                    'text-red-600': storedReblogs?.includes(post.permlink)
-                                  })}
-                                />
-                              </AlertDialogReblog>
-                            </TooltipTrigger>
-                            <TooltipContent data-testid="post-card-reblog-tooltip">
-                              <p>
-                                {t('cards.post_card.reblog')} @{post.author}/{post.permlink}
-                              </p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
-                    ) : null}
+                  <Separator orientation="vertical" />
+                  <div className="flex items-center">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger className="flex items-center" data-testid="post-total-votes">
+                          <Icons.chevronUp className="h-4 w-4 sm:mr-1" />
+                          {post.stats && post.stats.total_votes}
+                        </TooltipTrigger>
+                        <TooltipContent data-testid="post-card-votes-tooltip">
+                          <p>
+                            {post.stats && post.stats.total_votes === 0
+                              ? t('cards.post_card.no_votes')
+                              : post.stats && post.stats.total_votes > 1
+                                ? t('cards.post_card.votes', { votes: post.stats.total_votes })
+                                : t('cards.post_card.vote')}
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
-                </CardFooter>
-              )}
+                  <Separator orientation="vertical" />
+                  <div className="flex items-center" data-testid="post-children">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger className="flex items-center">
+                          <>
+                            <Link
+                              href={`/${post.category}/@${post.author}/${post.permlink}/#comments`}
+                              className="flex cursor-pointer items-center"
+                            >
+                              {post.children > 1 ? (
+                                <Icons.messagesSquare className="h-4 w-4 sm:mr-1" />
+                              ) : (
+                                <Icons.comment className="h-4 w-4 sm:mr-1" />
+                              )}
+                            </Link>
+                            <Link
+                              href={`/${post.category}/@${post.author}/${post.permlink}/#comments`}
+                              className="flex cursor-pointer items-center pl-1 hover:text-red-600"
+                              data-testid="post-card-response-link"
+                            >
+                              {post.children}
+                            </Link>
+                          </>
+                        </TooltipTrigger>
+                        <TooltipContent data-testid="post-card-responses">
+                          <p>
+                            {`${
+                              post.children === 0
+                                ? t('cards.post_card.no_responses')
+                                : post.children === 1
+                                  ? t('cards.post_card.response')
+                                  : t('cards.post_card.responses', { responses: post.children })
+                            }`}
+                            {t('cards.post_card.click_to_respond')}
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
+                  <Separator orientation="vertical" />
+                  {!post.title.includes('RE: ') ? (
+                    <div className="flex items-center" data-testid="post-card-reblog">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <AlertDialogReblog
+                              username={post.author}
+                              permlink={post.permlink}
+                              setStoredReblogs={setStoredReblogs}
+                            >
+                              <Icons.forward
+                                className={cn('h-4 w-4 cursor-pointer', {
+                                  'text-red-600': storedReblogs?.includes(post.permlink)
+                                })}
+                              />
+                            </AlertDialogReblog>
+                          </TooltipTrigger>
+                          <TooltipContent data-testid="post-card-reblog-tooltip">
+                            <p>
+                              {t('cards.post_card.reblog')} @{post.author}/{post.permlink}
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                  ) : null}
+                </div>
+              </CardFooter>
             </div>
           </div>
         </Card>
