@@ -27,46 +27,49 @@ export default function PostImage({ post }: { post: Entry }) {
         'jpg'
       ])
     ) {
-      return post.json_metadata.links[0].slice(0, post.json_metadata.links[0].length - 1);
+      return proxifyImageUrl(
+        post.json_metadata.links[0].slice(0, post.json_metadata.links[0].length - 1),
+        true
+      );
     }
     if (post.original_entry && post.original_entry.json_metadata.images) {
-      return post.original_entry.json_metadata.images[0];
+      return proxifyImageUrl(post.original_entry.json_metadata.images[0], true);
     }
     if (post.original_entry && post.original_entry.json_metadata.image) {
-      return post.original_entry.json_metadata.image[0];
+      return proxifyImageUrl(post.original_entry.json_metadata.image[0], true);
     }
     if (post.json_metadata.image && post.json_metadata.image[0]) {
-      return post.json_metadata.image[0];
+      return proxifyImageUrl(post.json_metadata.image[0], true);
     }
     if (match && match[1]) {
-      return match[1];
+      return proxifyImageUrl(match[1], true);
     }
     if (post.json_metadata.images && post.json_metadata.images[0]) {
-      return post.json_metadata.images[0];
+      return proxifyImageUrl(post.json_metadata.images[0], true);
     }
     if (post.json_metadata.flow?.pictures && post.json_metadata.flow?.pictures[0]) {
-      return post.json_metadata.flow?.pictures[0].url;
+      return proxifyImageUrl(post.json_metadata.flow?.pictures[0].url, true);
     }
     if (post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw')) {
-      return `https://images.hive.blog/u/${post.author}/avatar/`;
+      return proxifyImageUrl(`https://images.hive.blog/u/${post.author}/avatar/`, true);
     }
     if (youtube_id[0]) {
-      return `https://img.youtube.com/vi/${youtube_id[0]}/0.jpg`;
+      return proxifyImageUrl(`https://img.youtube.com/vi/${youtube_id[0]}/0.jpg`, true);
     }
     if (pictures_extracted[0]) {
-      return pictures_extracted[0];
+      return proxifyImageUrl(pictures_extracted[0], true);
     }
     if (other_images_from_body[0]) {
-      return other_images_from_body[0];
+      return proxifyImageUrl(other_images_from_body[0], true);
     }
     if (peakd_img !== null) {
-      return peakd_img[0];
+      return proxifyImageUrl(peakd_img[0], true);
     }
     if (matchgif && matchgif[1]) {
-      return matchgif[1];
+      return proxifyImageUrl(matchgif[1], true);
     }
     if (!post.title.includes('RE: ') && post.depth === 0) {
-      return `https://images.hive.blog/u/${post.author}/avatar/large`;
+      return proxifyImageUrl(`https://images.hive.blog/u/${post.author}/avatar/large`, true);
     }
     return '';
   }
