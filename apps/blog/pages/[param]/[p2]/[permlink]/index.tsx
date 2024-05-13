@@ -168,26 +168,6 @@ function PostPage({
     }
   };
 
-  function findLinksWithDomParser(text: string, type: DOMParserSupportedType = 'text/html') {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(text, type);
-
-    const anchors = doc.getElementsByTagName("a");
-    for (let i = 0; i < anchors.length; i++) {
-      logger.info('anchors[%s].href: %s', i, anchors[i].href);
-      anchors[i].href = "http://www.mysite.com/?redirect=" + anchors[i].href;
-    }
-
-    const images = doc.getElementsByTagName("img");
-    for (let i = 0; i < images.length; i++) {
-      logger.info('images[%s].src: %s', i, images[i].src);
-      images[i].src = "http://www.mysite.com/?redirect=" + images[i].src;
-    }
-
-    logger.info('doc: %o', doc);
-    return '';
-  }
-
   function findLinks(text: string) {
     const regex = /https?:\/\/[^\s]+/g;
     const matches = text.replace(/[({\[\])}]/g, ' ').match(regex) || [];
@@ -269,13 +249,8 @@ function PostPage({
                 post_s={post}
                 refreshPage={refreshPage}
               />
-            ) : mutedPost || true ? (
+            ) : mutedPost ? (
               <div id="articleBody" className="flex flex-col gap-8 py-8">
-
-                {post.body}
-
-                {findLinksWithDomParser(post.body)}
-
                 {findLinks(post.body).map((e) =>
                   isImageLink(e) ? (
                     <Link href={e} className="text-red-500" key={e}>
