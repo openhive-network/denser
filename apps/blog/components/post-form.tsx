@@ -34,6 +34,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/co
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 
 import { getLogger } from '@ui/lib/logging';
+import { cn } from '@ui/lib/utils';
 const logger = getLogger('app');
 
 const MAX_TAGS = 8;
@@ -561,7 +562,10 @@ export default function PostForm({
               dangerouslySetInnerHTML={{
                 __html: hiveRenderer.render(previewContent)
               }}
-              className="prose h-fit w-full self-center break-words border-2 border-border p-2 dark:prose-invert"
+              className={cn(
+                'prose h-fit  w-full self-center overflow-scroll break-words border-2 border-border p-2 dark:prose-invert',
+                { 'max-h-[620px]': sideBySide }
+              )}
             ></div>
           ) : null}
         </div>

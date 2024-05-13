@@ -71,7 +71,7 @@ const PostListItem = ({
       preferences.nsfw === 'hide' ? null : (
         <Card
           className={cn(
-            'mb-4 px-2 hover:bg-accent  hover:text-accent-foreground dark:bg-background/95 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground'
+            'mb-4 px-2 hover:bg-accent  hover:text-accent-foreground dark:bg-slate-900 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground'
           )}
         >
           {post.original_entry ? (
