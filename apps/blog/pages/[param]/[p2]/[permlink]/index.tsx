@@ -182,19 +182,6 @@ function PostPage({
     }
   };
 
-  function findLinks(text: string) {
-    const regex = /https?:\/\/[^\s]+/g;
-    const matches = text.replace(/[({\[\])}]/g, ' ').match(regex) || [];
-
-    return matches.map((match) => match);
-  }
-
-  function isImageLink(link: string) {
-    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'image'];
-
-    return imageExtensions.some((ext) => link.includes(ext));
-  }
-
   useEffect(() => {
     const id = router.asPath.split('#')[1];
     document.getElementById(id)?.scrollIntoView({
