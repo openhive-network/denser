@@ -41,6 +41,9 @@ import { UserPopoverCard } from '@/blog/components/user-popover-card';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
+import { DefaultRenderer } from '@hiveio/content-renderer';
+import { RendererOptions } from '@hiveio/content-renderer/dist/renderers/default/DefaultRenderer';
+import { defaultRendererOptions } from '@/blog/components/hive-renderer-context';
 
 import { getLogger } from '@ui/lib/logging';
 import { cn } from '@ui/lib/utils';
@@ -68,7 +71,8 @@ function PostPage({
     error: errorPost,
     data: post
   } = useQuery(['postData', username, permlink], () => getPost(username, String(permlink)), {
-    enabled: !!username && !!permlink
+    enabled: !!username && !!permlink,
+    onSuccess: (post) => setMutedPost(!!post?.stats?.gray)
   });
 
   const {
@@ -106,6 +110,7 @@ function PostPage({
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const firstPost = discussionState?.find((post) => post.depth === 0);
   const [edit, setEdit] = useState(false);
+  const [showAnyway, setShowAnyway] = useState(false);
 
   const refreshPage = () => {
     router.replace(router.asPath);
@@ -143,8 +148,17 @@ function PostPage({
   }, [discussion, router.query.sort]);
 
   const { hiveRenderer } = useContext(HiveRendererContext);
+
+  const rendereOptions: RendererOptions = {
+    ...defaultRendererOptions,
+    ...{
+      doNotShowImages: true,
+    }
+  };
+  const mutedPostRenderer = new DefaultRenderer(rendereOptions);
+
   const commentSite = post?.depth !== 0 ? true : false;
-  const [mutedPost, setMutedPost] = useState(post?.stats?.gray);
+  const [mutedPost, setMutedPost] = useState(false);
   const postUrl = () => {
     if (discussionState) {
       const objectWithSmallestDepth = discussionState.reduce((smallestDepth, e) => {
@@ -167,26 +181,6 @@ function PostPage({
       );
     }
   };
-
-  function findLinksWithDomParser(text: string, type: DOMParserSupportedType = 'text/html') {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(text, type);
-
-    const anchors = doc.getElementsByTagName("a");
-    for (let i = 0; i < anchors.length; i++) {
-      logger.info('anchors[%s].href: %s', i, anchors[i].href);
-      anchors[i].href = "http://www.mysite.com/?redirect=" + anchors[i].href;
-    }
-
-    const images = doc.getElementsByTagName("img");
-    for (let i = 0; i < images.length; i++) {
-      logger.info('images[%s].src: %s', i, images[i].src);
-      images[i].src = "http://www.mysite.com/?redirect=" + images[i].src;
-    }
-
-    logger.info('doc: %o', doc);
-    return '';
-  }
 
   function findLinks(text: string) {
     const regex = /https?:\/\/[^\s]+/g;
@@ -215,7 +209,7 @@ function PostPage({
           <Icons.flag className="absolute right-0 hover:text-red-500" />
         </AlertDialogFlag>
         {!isLoadingPost && post ? (
-          <>
+          <div>
             {!commentSite ? (
               <h1 className="text-3xl font-bold" data-testid="article-title">
                 {post.title}
@@ -269,25 +263,14 @@ function PostPage({
                 post_s={post}
                 refreshPage={refreshPage}
               />
-            ) : mutedPost || true ? (
-              <div id="articleBody" className="flex flex-col gap-8 py-8">
-
-                {post.body}
-
-                {findLinksWithDomParser(post.body)}
-
-                {findLinks(post.body).map((e) =>
-                  isImageLink(e) ? (
-                    <Link href={e} className="text-red-500" key={e}>
-                      ({t('post_content.body.Image_not_shown')})
-                    </Link>
-                  ) : (
-                    <LeavePageDialog link={e} key={e}>
-                      <Icons.externalLink className="h-4 w-4 text-slate-600" />
-                    </LeavePageDialog>
-                  )
-                )}
-              </div>
+            ) : mutedPost && !showAnyway ? (
+                <div
+                  id="articleBody"
+                  className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
+                  dangerouslySetInnerHTML={{
+                    __html: mutedPostRenderer.render(post.body)
+                  }}
+                />
             ) : (
               <ImageGallery>
                 <div
@@ -304,7 +287,7 @@ function PostPage({
                 <Separator />
                 <div className="my-8 flex items-center justify-between text-red-500">
                   {t('post_content.body.images_were_hidden')}
-                  <Button variant="outlineRed" onClick={() => setMutedPost(false)}>
+                  <Button variant="outlineRed" onClick={() => setShowAnyway(true)}>
                     {t('post_content.body.show')}
                   </Button>
                 </div>
@@ -491,7 +474,7 @@ function PostPage({
                 </div>
               </div>
             </div>
-          </>
+          </div>
         ) : (
           <Loading loading={isLoadingPost} />
         )}
