@@ -258,6 +258,7 @@ function PostPage({
                 className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
                 dangerouslySetInnerHTML={{
                   __html: mutedPostRenderer.render(post.body)
+                  // __html: mutedPostRenderer.render(hiveRenderer.render(post.body))
                 }}
               />
             ) : (
