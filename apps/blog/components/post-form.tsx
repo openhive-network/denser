@@ -563,7 +563,7 @@ export default function PostForm({
                 __html: hiveRenderer.render(previewContent)
               }}
               className={cn(
-                'prose h-fit  w-full self-center overflow-scroll break-words border-2 border-border p-2 dark:prose-invert',
+                'prose h-fit w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2 dark:prose-invert',
                 { 'max-h-[620px]': sideBySide }
               )}
             ></div>
