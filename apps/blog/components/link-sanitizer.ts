@@ -1,7 +1,6 @@
 import { looksPhishy } from '@ui/config/lists/phishing';
 import ow from 'ow';
 import { Log } from './log';
-import { useState } from 'react';
 
 interface LinkSanitizerOptions {
   baseUrl: string;
@@ -17,16 +16,16 @@ export function createLinkSanitizer(options: LinkSanitizerOptions) {
   const topLevelsBaseDomain = getTopLevelBaseDomainFromBaseUrl(baseUrl);
 
   function sanitizeLink(url: string, urlTitle: string): SanitizeLinkResult {
-    const [sanitizedUrl, setSanitizedUrl] = useState<string | false>(prependUnknownProtocolLink(url));
+    let sanitizedUrl: string | false = prependUnknownProtocolLink(url);
 
     Log.log().debug('LinkSanitizer#sanitizeLink', { url: sanitizedUrl, urlTitle });
 
-    if (looksPhishy(sanitizedUrl || '')) {
+    if (looksPhishy(sanitizedUrl)) {
       Log.log().debug('LinkSanitizer#sanitizeLink', 'phishing link detected', 'phishing list', sanitizedUrl, {
         url: sanitizedUrl,
         urlTitle
       });
-      setSanitizedUrl(false);
+      sanitizedUrl = false;
     }
 
     if (isPseudoLocalUrl(sanitizedUrl, urlTitle)) {
@@ -40,7 +39,7 @@ export function createLinkSanitizer(options: LinkSanitizerOptions) {
           urlTitle
         }
       );
-      setSanitizedUrl(false);
+      sanitizedUrl = false;
     }
     return { sanitizedUrl, logMessage: `Link sanitized: ${sanitizedUrl}` };
   }
