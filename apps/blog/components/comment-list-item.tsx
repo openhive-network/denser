@@ -20,6 +20,8 @@ import { useLocalStorage } from 'usehooks-ts';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';
 import { UserPopoverCard } from './user-popover-card';
+import { AlertDialogDelete } from './alert-dialog-delete';
+import moment from 'moment';
 
 interface CommentListProps {
   comment: Entry;
@@ -281,6 +283,22 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList }: Comment
                             >
                               {t('cards.comment_card.edit')}
                             </button>
+                          </>
+                        ) : null}
+                        {user &&
+                        user.isLoggedIn &&
+                        comment.author === user.username &&
+                        moment().format('YYYY-MM-DDTHH:mm:ss') < comment.payout_at ? (
+                          <>
+                            <Separator orientation="vertical" className="h-5" />
+                            <AlertDialogDelete permlink={comment.permlink}>
+                              <span
+                                className="flex items-center hover:cursor-pointer hover:text-red-600"
+                                data-testid="comment-card-footer-delete"
+                              >
+                                {t('cards.comment_card.delete')}
+                              </span>
+                            </AlertDialogDelete>
                           </>
                         ) : null}
                       </div>

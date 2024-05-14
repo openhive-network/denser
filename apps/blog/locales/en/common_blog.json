@@ -187,6 +187,7 @@
       "replies": "replies",
       "reply": "Reply",
       "edit": "Edit",
+      "delete": "Delete",
       "will_be_hidden": "Will be hidden due to low rating ",
       "load_more": "Load more"
     }
