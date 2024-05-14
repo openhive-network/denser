@@ -15,7 +15,7 @@ export const HiveRendererContext = createContext<HiveRendererContextType>({
 });
 
 export const defaultRendererOptions: RendererOptions = {
-  baseUrl: 'https://hive.blog/',
+  baseUrl: `${env('SITE_DOMAIN')}/`,
   breaks: true,
   skipSanitization: false,
   allowInsecureScriptTags: false,

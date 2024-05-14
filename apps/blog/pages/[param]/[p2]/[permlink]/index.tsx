@@ -238,7 +238,9 @@ function PostPage({
               created={post.created}
               blacklist={firstPost ? firstPost.blacklists : post.blacklists}
             />
+
             <hr />
+
             {!hiveRenderer ? (
               <Loading loading={!hiveRenderer} />
             ) : edit ? (
@@ -251,13 +253,13 @@ function PostPage({
                 refreshPage={refreshPage}
               />
             ) : mutedPost && !showAnyway ? (
-                <div
-                  id="articleBody"
-                  className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
-                  dangerouslySetInnerHTML={{
-                    __html: mutedPostRenderer.render(post.body)
-                  }}
-                />
+              <div
+                id="articleBody"
+                className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
+                dangerouslySetInnerHTML={{
+                  __html: mutedPostRenderer.render(post.body)
+                }}
+              />
             ) : (
               <ImageGallery>
                 <div
@@ -269,6 +271,7 @@ function PostPage({
                 />
               </ImageGallery>
             )}
+
             {mutedPost ? (
               <>
                 <Separator />
@@ -280,6 +283,7 @@ function PostPage({
                 </div>
               </>
             ) : null}
+
             <div className="clear-both">
               {!commentSite ? (
                 <ul className="flex flex-wrap gap-2" data-testid="hashtags-post">
