@@ -119,6 +119,7 @@ const RepliesListItem = ({
             </div>
           </CardHeader>
           <div className="flex flex-col md:flex-row">
+            <PostImage post={comment} />
             <CardContent>
               <CardTitle data-testid="comment-card-title">
                 <Link href={`/${comment.category}/@${comment.author}/${comment.permlink}`}>
