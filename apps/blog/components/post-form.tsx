@@ -28,7 +28,7 @@ import { Entry, getCommunity, getSubscriptions } from '@transaction/lib/bridge';
 import { useRouter } from 'next/router';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { TFunction } from 'i18next';
-import { debounce, extractImageUrls, extractUrlsFromJsonString, extractYouTubeVideoIds } from '../lib/utils';
+import { debounce, extractLinks, extractUrlsFromJsonString, extractYouTubeVideoIds } from '../lib/utils';
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
@@ -104,7 +104,7 @@ const AllImages = ({
   onChange: (e: string) => void;
   t: TFunction<'common_blog', undefined>;
 }) => {
-  const images = useMemo(() => extractImageUrls(content), [content]);
+  const images = useMemo(() => extractLinks(content), [content]);
   const uniqueImages = Array.from(new Set(images));
   return uniqueImages.length > 0 ? (
     <div>

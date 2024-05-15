@@ -197,14 +197,32 @@ export function extractUrlsFromJsonString(jsonString: string): string[] {
   const matches = jsonString.match(urlRegex);
   return matches || [];
 }
-export function extractImageUrls(text: string): string[] {
-  // Define regex pattern to match image URLs
-  const pattern = /(https?:\/\/[^\s]+?\.(?:png|jpg|jpeg|gif))/g;
-  // Find all matching patterns
-  const imageUrls = text.match(pattern) || [];
 
-  return imageUrls;
+export function extractLinks(text: string): string[] {
+  const urlRegex = /https?:\\?\/\\?\/[^\s]+/g;
+  const markdownImageRegex = /!\[.*?\]\((https?:\\?\/\\?\/[^\s]+)\)/g;
+  const matches: string[] = [];
+  const standaloneMatches = text.match(urlRegex);
+  if (standaloneMatches) {
+    standaloneMatches.forEach((match) => {
+      const cleanedMatch = match.endsWith(')') ? match.slice(0, -1) : match;
+      matches.push(cleanedMatch);
+    });
+  }
+  const markdownImageMatches = text.match(markdownImageRegex);
+  if (markdownImageMatches) {
+    markdownImageMatches.forEach((match) => {
+      const urlMatch = match.match(/https?:\\?\/\\?\/[^\s]+/);
+      if (urlMatch) {
+        const cleanedMatch = urlMatch[0].endsWith(')') ? urlMatch[0].slice(0, -1) : urlMatch[0];
+        matches.push(cleanedMatch);
+      }
+    });
+  }
+
+  return matches;
 }
+
 export function extractYouTubeVideoIds(urls: string[]): string[] {
   const youtubeLinkRegex =
     /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed\/|v\/)?([a-zA-Z0-9_-]+)/i;
