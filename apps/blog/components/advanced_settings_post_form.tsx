@@ -52,11 +52,13 @@ export function AdvancedSettingsPostForm({
     `user-preferences-${username}`,
     DEFAULT_PREFERENCES
   );
-  const [rewards, setRewards] = useState(data.payoutType === '' ? '50%' : data.payoutType);
+  const [rewards, setRewards] = useState(
+    preferences.blog_rewards !== '100%' ? '50%' : preferences.blog_rewards
+  );
   const [splitRewards, setSplitRewards] = useState(100);
   const [templateTitle, setTemplateTitle] = useState('');
   const [maxPayout, setMaxPayout] = useState(
-    data.maxAcceptedPayout === 1000000 ? 'no_max' : data.maxAcceptedPayout === 0 ? '0' : 'custom'
+    preferences.blog_rewards === '100%' ? 'no_max' : preferences.blog_rewards === '0%' ? '0' : 'custom'
   );
   const [selectTemplate, setSelectTemplate] = useState('/');
   const [beneficiaries, setBeneficiaries] = useState<{ weight: string; account: string }[]>(
@@ -83,9 +85,9 @@ export function AdvancedSettingsPostForm({
   const currentTemplate = storedTemplates.find((e) => e.templateTitle === selectTemplate);
 
   useEffect(() => {
-    setRewards(data.payoutType === '' ? '50%' : data.payoutType);
+    setRewards(preferences.blog_rewards !== '100%' ? '50%' : preferences.blog_rewards);
     setMaxPayout(
-      data.maxAcceptedPayout === 1000000 ? 'no_max' : data.maxAcceptedPayout === 0 ? '0' : 'custom'
+      preferences.blog_rewards === '100%' ? 'no_max' : preferences.blog_rewards === '0%' ? '0' : 'custom'
     );
     setBeneficiaries(data.beneficiaries);
     setCustomValue(data.maxAcceptedPayout !== 1000000 ? data.maxAcceptedPayout : '100');
@@ -270,6 +272,7 @@ export function AdvancedSettingsPostForm({
             </span>
             <span>{t('submit_page.advanced_settings_dialog.value_of_the_maximum')}</span>
             <div className="flex flex-col gap-1">
+              {console.log('maxPayout', maxPayout)}
               <Select onValueChange={(e: '0' | 'no_max' | 'custom') => setMaxPayout(e)} value={maxPayout}>
                 <SelectTrigger>
                   <SelectValue />
