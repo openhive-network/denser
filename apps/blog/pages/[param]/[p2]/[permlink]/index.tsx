@@ -41,10 +41,12 @@ import { UserPopoverCard } from '@/blog/components/user-popover-card';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
-
-import { getLogger } from '@ui/lib/logging';
 import { cn } from '@ui/lib/utils';
-const logger = getLogger('app');
+import dmcaUserList from '@ui/config/lists/dmca-user-list';
+import userIllegalContent from '@ui/config/lists/user-illegal-content';
+import dmcaList from '@ui/config/lists/dmca-list';
+import gdprUserList from '@ui/config/lists/gdpr-user-list';
+import CustomError from '@/blog/components/custom-error';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -93,12 +95,18 @@ function PostPage({
   } = useQuery(['activeVotes'], () => getActiveVotes(username, permlink), {
     enabled: !!username && !!permlink
   });
+
   const [discussionState, setDiscussionState] = useState<Entry[]>();
   const router = useRouter();
   const isSortOrder = (token: any): token is SortOrder => {
     return Object.values(SortOrder).includes(token as SortOrder);
   };
   const query = router.query.sort?.toString();
+  const copyRightCheck = dmcaList.includes(
+    `/${router.query.param}/${router.query.p2}/${router.query.permlink}`
+  );
+  const userFromDMCA = dmcaUserList.some((e) => e === post?.author);
+  const legalBlockedUser = userIllegalContent.some((e) => e === post?.author);
   const defaultSort = isSortOrder(query) ? query : SortOrder.trending;
   const storageId = `replybox-/${username}/${post?.permlink}`;
   const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
@@ -106,7 +114,7 @@ function PostPage({
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const firstPost = discussionState?.find((post) => post.depth === 0);
   const [edit, setEdit] = useState(false);
-
+  const userFromGDPR = gdprUserList.some((e) => e === post?.author);
   const refreshPage = () => {
     router.replace(router.asPath);
   };
@@ -142,7 +150,7 @@ function PostPage({
     }
   }, [discussion, router.query.sort]);
 
-  const { hiveRenderer } = useContext(HiveRendererContext);
+  const { hiveRenderer, setAuthor } = useContext(HiveRendererContext);
   const commentSite = post?.depth !== 0 ? true : false;
   const [mutedPost, setMutedPost] = useState(post?.stats?.gray);
   const postUrl = () => {
@@ -186,8 +194,13 @@ function PostPage({
     document.getElementById(id)?.scrollIntoView({
       behavior: 'smooth'
     });
-  }, [router, hiveRenderer]);
-
+  }, [router, hiveRenderer, post?.author]);
+  useEffect(() => {
+    setAuthor(post?.author || '');
+  }, [post?.author]);
+  if (userFromGDPR) {
+    return <CustomError />;
+  }
   return (
     <div className="py-8">
       <div className="relative mx-auto my-0 max-w-4xl bg-white px-8 py-4 dark:bg-slate-900">
@@ -263,6 +276,10 @@ function PostPage({
                   )
                 )}
               </div>
+            ) : legalBlockedUser ? (
+              <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
+            ) : copyRightCheck || userFromDMCA ? (
+              <div className="px-2 py-6">{t('post_content.body.copyright')}</div>
             ) : (
               <ImageGallery>
                 <div

@@ -3,6 +3,7 @@
     "no_rewards": "Nessun premio in attesa di riscatto.",
     "loading": "Loading",
     "something_went_wrong": "Something went wrong",
+    "unavailable_for_legal_reasons": "Non disponibile per motivi legali",
     "time_ago": {
       "a_few_seconds": " a few seconds ago",
       "seconds": " seconds ago",
@@ -144,6 +145,7 @@
   },
   "cards": {
     "reblogged": "condiviso",
+    "content_removed": "Contenuto rimosso per violazioni del copyright e/o della privacy.",
     "badges": {
       "pinned": "Pinned"
     },
@@ -334,6 +336,7 @@
       "edited": "edited"
     },
     "body": {
+      "copyright": "Questo post non è disponibile a causa di una richiesta di copyright.",
       "images_were_hidden": "Le immagini sono state nascoste a causa della bassa reputazione.",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
@@ -439,6 +442,7 @@
       "account_name": "Il nome dell'account dovrebbe essere più lungo",
       "beneficiary_cannot_be_self": "Impossibile specificare se stessi come beneficiario",
       "beneficiary_percent_invalid": "La percentuale del beneficiario deve essere compresa tra 1 e 100",
+      "bad_actor": "Fate attenzione nell'invio a questo account. Si prega di controllare attentamente l'ortografia per possibili tentativi di phishing.",
       "add_account": "Aggiungi account",
       "post_templates": "Modelli di pubblicazione",
       "manage_your_post_templates": "Gestisci i tuoi modelli di pubblicazione, altri impostazioni saranno salvate/caricate qui.",

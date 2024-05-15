@@ -20,15 +20,19 @@ import { useLocalStorage } from 'usehooks-ts';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';
 import { UserPopoverCard } from './user-popover-card';
+import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
+import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
+import gdprUserList from '@ui/config/lists/gdpr-user-list';
 
 interface CommentListProps {
   comment: Entry;
   renderer: DefaultRenderer;
   parent_depth: number;
   mutedList: IFollowList[];
+  setAuthor: (e: string) => void;
 }
 
-const CommentListItem = ({ comment, renderer, parent_depth, mutedList }: CommentListProps) => {
+const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor }: CommentListProps) => {
   const { t } = useTranslation('common_blog');
   const username = comment.author;
   const router = useRouter();
@@ -44,6 +48,10 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList }: Comment
   const [edit, setEdit] = useState(false);
   const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
+  const userFromDMCA = dmcaUserList.some((e) => e === comment.author);
+  const legalBlockedUser = userIllegalContent.some((e) => e === comment.author);
+  const userFromGDPR = gdprUserList.some((e) => e === comment.author);
+  const parentFromGDPR = gdprUserList.some((e) => e === comment.parent_author);
   useEffect(() => {
     if (reply) {
       storeBox(reply);
@@ -58,7 +66,13 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList }: Comment
     }, 500);
     return () => clearTimeout(timeout);
   }, [router.asPath]);
+  useEffect(() => {
+    setAuthor(comment.author);
+  }, [comment.author]);
   const currentDepth = comment.depth - parent_depth;
+  if (userFromGDPR || parentFromGDPR) {
+    return null;
+  }
   return (
     <>
       {currentDepth < 8 ? (
@@ -193,7 +207,11 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList }: Comment
                   <Separator orientation="horizontal" />
                   <AccordionContent className="p-0">
                     <CardContent className="pb-2 ">
-                      {edit && comment.parent_permlink && comment.parent_author ? (
+                      {legalBlockedUser ? (
+                        <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
+                      ) : userFromDMCA ? (
+                        <div className="px-2 py-6">{t('post_content.body.copyright')}</div>
+                      ) : edit && comment.parent_permlink && comment.parent_author ? (
                         <ReplyTextbox
                           editMode={edit}
                           onSetReply={setEdit}
