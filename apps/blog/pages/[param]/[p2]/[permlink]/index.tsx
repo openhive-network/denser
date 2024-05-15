@@ -158,15 +158,7 @@ function PostPage({
     }
   }, [discussion, router.query.sort]);
 
-  const { hiveRenderer, setAuthor } = useContext(HiveRendererContext);
-
-  const rendererOptions: RendererOptions = {
-    ...defaultRendererOptions,
-    ...{
-      doNotShowImages: true,
-    }
-  };
-  const mutedPostRenderer = new DefaultRenderer(rendererOptions);
+  const { hiveRenderer, setAuthor, setDoNotShowImages } = useContext(HiveRendererContext);
 
   const commentSite = post?.depth !== 0 ? true : false;
   const [mutedPost, setMutedPost] = useState(false);
@@ -199,9 +191,12 @@ function PostPage({
       behavior: 'smooth'
     });
   }, [router, hiveRenderer, post?.author]);
+
   useEffect(() => {
+    setDoNotShowImages(mutedPost && !showAnyway);
     setAuthor(post?.author || '');
-  }, [post?.author]);
+  }, [setAuthor, setDoNotShowImages, mutedPost, showAnyway, post?.author]);
+
   if (userFromGDPR) {
     return <CustomError />;
   }
@@ -267,16 +262,6 @@ function PostPage({
                 sideBySidePreview={false}
                 post_s={post}
                 refreshPage={refreshPage}
-              />
-
-            ) : mutedPost && !showAnyway ? (
-              <div
-                id="articleBody"
-                className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
-                dangerouslySetInnerHTML={{
-                  __html: mutedPostRenderer.render(post.body)
-                  // __html: mutedPostRenderer.render(hiveRenderer.render(post.body))
-                }}
               />
             ) : legalBlockedUser ? (
               <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
