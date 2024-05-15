@@ -21,7 +21,7 @@ const logger = getLogger('app');
 
 export type TransactionErrorCallback = undefined | ((error: any) => any)
 
-class TransactionService {
+export class TransactionService {
   errorDescription = 'Transaction broadcast error';
   signerOptions!: SignerOptions;
   wellKnownErrorDescriptions = [
@@ -707,40 +707,3 @@ class TransactionService {
 }
 
 export const transactionService = new TransactionService();
-
-export enum TransactionErrorHandlingMode {
-  OnlyHandle = 'OnlyHandle',
-  OnlyThrow = 'ThrowOnly',
-  HandleAndThrow = 'HandleAndThrow'
-}
-export class TransactionServiceThrowingError extends TransactionService {
-  transactionErrorHandlingMode: TransactionErrorHandlingMode;
-
-  constructor(transactionErrorHandlingMode: TransactionErrorHandlingMode) {
-    super();
-    this.transactionErrorHandlingMode = transactionErrorHandlingMode;
-  }
-
-  async processHiveAppOperation(cb: (opBuilder: ITransactionBuilder) => void) {
-    try {
-      const txBuilder = await (await hiveChainService.getHiveChain()).getTransactionBuilder();
-      cb(txBuilder);
-      await this.processTransaction(txBuilder);
-    } catch (error) {
-      switch (this.transactionErrorHandlingMode) {
-        case TransactionErrorHandlingMode.HandleAndThrow:
-          this.handleError(error);
-          throw new Error(this.errorDescription);
-        case TransactionErrorHandlingMode.OnlyHandle:
-          // This swallows error after handling it.
-          this.handleError(error);
-          break;
-        case TransactionErrorHandlingMode.OnlyThrow:
-          throw error;
-        default:
-          // Like for TransactionErrorHandlingMode.OnlyThrow
-          throw error;
-      }
-    }
-  }
-}
