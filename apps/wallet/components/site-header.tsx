@@ -16,7 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import { useQuery } from '@tanstack/react-query';
 import { findRcAccounts } from '../lib/hive';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
-import { RcAccount } from '@hive/wax';
+import { RcAccount } from '@hiveio/wax';
 import { siteConfig } from '@ui/config/site';
 
 const logger = getLogger('app');

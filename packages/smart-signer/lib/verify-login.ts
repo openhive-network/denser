@@ -1,7 +1,7 @@
 import { PostLoginSchema } from '@smart-signer/lib/auth/utils';
 import { User, KeyType } from '@smart-signer/types/common';
 import { authorityChecker, AuthorityLevel } from '@smart-signer/lib/authority-checker';
-import { ApiTransaction } from '@hive/wax';
+import { ApiTransaction } from '@hiveio/wax';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');

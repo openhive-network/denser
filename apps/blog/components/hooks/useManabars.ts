@@ -1,4 +1,4 @@
-import { IHiveChainInterface } from '@hive/wax';
+import { IHiveChainInterface } from '@hiveio/wax';
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { getManabar } from '@transaction/lib/hive';
 import { hiveChainService } from '@transaction/lib/hive-chain-service'
