@@ -14,7 +14,6 @@ export default function PostImage({ post }: { post: Entry }) {
   const match = post.body.match(regex);
   const regexgif = /<img\s+src="([^"]+)"/;
   const matchgif = post.body.match(regexgif);
-  const other_images_from_body = extractUrlsFromJsonString(post.body);
 
   function find_first_img() {
     if (
@@ -58,9 +57,6 @@ export default function PostImage({ post }: { post: Entry }) {
     }
     if (pictures_extracted[0]) {
       return proxifyImageUrl(pictures_extracted[0], true);
-    }
-    if (other_images_from_body[0]) {
-      return proxifyImageUrl(other_images_from_body[0], true);
     }
     if (peakd_img !== null) {
       return proxifyImageUrl(peakd_img[0], true);

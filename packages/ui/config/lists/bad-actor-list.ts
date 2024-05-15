@@ -1,4 +1,4 @@
-const list = `
+const badActorList = `
 aalpha
 aappreciator
 abits
@@ -906,7 +906,7 @@ youbit
 yunbi
 zenieix
 `
-    .trim()
-    .split('\n');
+  .trim()
+  .split('\n');
 
-export default list;
+export default badActorList;
