@@ -197,7 +197,14 @@ export function extractUrlsFromJsonString(jsonString: string): string[] {
   const matches = jsonString.match(urlRegex);
   return matches || [];
 }
+export function extractImageUrls(text: string): string[] {
+  // Define regex pattern to match image URLs
+  const pattern = /(https?:\/\/[^\s]+?\.(?:png|jpg|jpeg|gif))/g;
+  // Find all matching patterns
+  const imageUrls = text.match(pattern) || [];
 
+  return imageUrls;
+}
 export function extractYouTubeVideoIds(urls: string[]): string[] {
   const youtubeLinkRegex =
     /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed\/|v\/)?([a-zA-Z0-9_-]+)/i;

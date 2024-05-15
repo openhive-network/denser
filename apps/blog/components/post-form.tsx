@@ -28,13 +28,14 @@ import { Entry, getCommunity, getSubscriptions } from '@transaction/lib/bridge';
 import { useRouter } from 'next/router';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { TFunction } from 'i18next';
-import { debounce, extractUrlsFromJsonString, extractYouTubeVideoIds } from '../lib/utils';
+import { debounce, extractImageUrls, extractUrlsFromJsonString, extractYouTubeVideoIds } from '../lib/utils';
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 
 import { getLogger } from '@ui/lib/logging';
 import { cn } from '@ui/lib/utils';
+import { proxifyImageUrl } from '@ui/lib/old-profixy';
 const logger = getLogger('app');
 
 const MAX_TAGS = 8;
@@ -85,7 +86,7 @@ function validateAltUsernameInput(value: string, t: TFunction<'common_wallet', u
     ? t('submit_page.must_contain_only')
     : null;
 }
-function imgYoutube(img: string) {
+function imagePicker(img: string) {
   const checkImg = img.includes('youtube')
     ? `https://img.youtube.com/vi/${extractYouTubeVideoIds(extractUrlsFromJsonString(img))[0]}/0.jpg`
     : img;
@@ -103,7 +104,7 @@ const AllImages = ({
   onChange: (e: string) => void;
   t: TFunction<'common_blog', undefined>;
 }) => {
-  const images = useMemo(() => extractUrlsFromJsonString(content), [content]);
+  const images = useMemo(() => extractImageUrls(content), [content]);
   const uniqueImages = Array.from(new Set(images));
   return uniqueImages.length > 0 ? (
     <div>
@@ -118,7 +119,7 @@ const AllImages = ({
               onClick={() => onChange(e)}
             >
               <img
-                src={imgYoutube(e)}
+                src={proxifyImageUrl(imagePicker(e), true)}
                 alt="cover img"
                 //@ts-expect-error
                 onError={(e) => (e.target.style.display = 'none')}
@@ -291,7 +292,7 @@ export default function PostForm({
         communityPosting ? communityPosting : storedPost.category,
         storedPost.postSummary,
         storedPost.payoutType ?? preferences.blog_rewards,
-        imgYoutube(selectedImg)
+        imagePicker(selectedImg)
       );
       form.reset(defaultValues);
       setPreviewContent(undefined);
