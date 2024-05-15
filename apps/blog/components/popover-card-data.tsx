@@ -10,8 +10,8 @@ import FollowButton from './follow-button';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useFollowingInfiniteQuery } from './hooks/use-following-infinitequery';
 import MuteButton from './mute-button';
-import { Icons } from '@ui/components/icons';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
+import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 
 export function PopoverCardData({ author, blacklist }: { author: string; blacklist: string[] }) {
   const { t } = useTranslation('common_blog');
@@ -30,6 +30,7 @@ export function PopoverCardData({ author, blacklist }: { author: string; blackli
   const vesting_hive =
     dynamicData.data && account.data ? vestingHive(account.data, dynamicData.data) : Big(0);
   const hp = vesting_hive.minus(delegated_hive);
+  const legalBlockedUser = userIllegalContent.some((e) => e === account.data?.name);
 
   return (
     <div className="space-y-2">
@@ -70,7 +71,9 @@ export function PopoverCardData({ author, blacklist }: { author: string; blackli
                 <span className="block">{`@${author}`}</span>
               </Link>
               <div className="grid grid-cols-2 gap-2 py-2">
-                {user.username === author ? null : (
+                {legalBlockedUser ? (
+                  <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
+                ) : user.username === author ? null : (
                   <>
                     <FollowButton username={author} user={user} variant="secondary" list={following} />
                     {user.isLoggedIn ? (
@@ -81,28 +84,32 @@ export function PopoverCardData({ author, blacklist }: { author: string; blackli
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-2" translate="no">
-            <div className="flex flex-col items-center" data-testid="user-followers">
-              {follows.data.follower_count}
-              <span className="text-xs">{t('post_content.header.hover_author.followers')}</span>
-            </div>
-            <div className="flex flex-col items-center" data-testid="user-following">
-              {follows.data.following_count}
-              <span className="text-xs">{t('post_content.header.hover_author.following')}</span>
-            </div>
-            <div className="flex flex-col items-center" data-testid="user-hp">
-              {numberWithCommas(hp.toFixed(0))}
-              <span className="text-xs">HP</span>
-            </div>
-          </div>
-          <p data-testid="user-about" className="text-sm text-gray-500" translate="no">
-            {about ? about.slice(0, 157) + (157 < about.length ? '...' : '') : null}
-          </p>
-          <div className="flex justify-center text-xs">
-            {t('post_content.header.hover_author.joined')} {dateToShow(account.data.created, t)}
-            <span className="mx-1">•</span>
-            {t('user_profil.active') + ' ' + dateToFullRelative(account.data.last_vote_time, t)}
-          </div>
+          {!legalBlockedUser ? (
+            <>
+              <div className="grid grid-cols-3 gap-2" translate="no">
+                <div className="flex flex-col items-center" data-testid="user-followers">
+                  {follows.data.follower_count}
+                  <span className="text-xs">{t('post_content.header.hover_author.followers')}</span>
+                </div>
+                <div className="flex flex-col items-center" data-testid="user-following">
+                  {follows.data.following_count}
+                  <span className="text-xs">{t('post_content.header.hover_author.following')}</span>
+                </div>
+                <div className="flex flex-col items-center" data-testid="user-hp">
+                  {numberWithCommas(hp.toFixed(0))}
+                  <span className="text-xs">HP</span>
+                </div>
+              </div>
+              <p data-testid="user-about" className="text-sm text-gray-500" translate="no">
+                {about ? about.slice(0, 157) + (157 < about.length ? '...' : '') : null}
+              </p>
+              <div className="flex justify-center text-xs">
+                {t('post_content.header.hover_author.joined')} {dateToShow(account.data.created, t)}
+                <span className="mx-1">•</span>
+                {t('user_profil.active') + ' ' + dateToFullRelative(account.data.last_vote_time, t)}
+              </div>
+            </>
+          ) : null}
         </>
       ) : null}
       {blacklist.length > 0 ? (
