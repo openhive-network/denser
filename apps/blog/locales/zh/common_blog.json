@@ -3,6 +3,7 @@
     "no_rewards": "没有等待兑换的奖励",
     "loading": "Loading",
     "something_went_wrong": "Something went wrong",
+    "unavailable_for_legal_reasons": "因法律原因不可用",
     "time_ago": {
       "a_few_seconds": " a few seconds ago",
       "seconds": " seconds ago",
@@ -144,6 +145,7 @@
   },
   "cards": {
     "reblogged": "已转发的",
+    "content_removed": "由于版权和/或隐私侵犯，内容已被删除。",
     "badges": {
       "pinned": "Pinned"
     },
@@ -335,6 +337,7 @@
       "edited": "edited"
     },
     "body": {
+      "copyright": "此帖由于版权请求而不可用。",
       "images_were_hidden": "图片由于评级不足而被隐藏。",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
@@ -440,6 +443,7 @@
       "account_name": "账户名应更长",
       "beneficiary_cannot_be_self": "不能将自己指定为受益人",
       "beneficiary_percent_invalid": "受益人比例必须在1到100之间",
+      "bad_actor": "发送到此帐户时请小心。请仔细检查拼写是否存在钓鱼行为的可能。",
       "add_account": "添加账户",
       "post_templates": "帖子模板",
       "manage_your_post_templates": "管理您的帖子模板，这里的其他设置也将被保存/加载。",

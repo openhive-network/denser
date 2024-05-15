@@ -3,6 +3,7 @@
     "no_rewards": "Brak nagród oczekujących na wykorzystanie.",
     "loading": "Wczytywanie",
     "something_went_wrong": "Coś poszło nie tak",
+    "unavailable_for_legal_reasons": "Niedostępne z przyczyn prawnych",
     "time_ago": {
       "a_few_seconds": " Kilka sekund temu",
       "seconds": " sekund_y temu",
@@ -155,6 +156,7 @@
   },
   "cards": {
     "reblogged": "zreblogowano",
+    "content_removed": "Treść usunięta z powodu naruszenia praw autorskich i/lub prywatności.",
     "badges": {
       "pinned": "Przypięty"
     },
@@ -348,6 +350,7 @@
       "edited": "edytowany"
     },
     "body": {
+      "copyright": "Ten post jest niedostępny z powodu żądania dotyczącego praw autorskich.",
       "images_were_hidden": "Obrazki zostały ukryte z powodu niskich ocen.",
       "show": "Pokaż",
       "Image_not_shown": "Obrazek zostały ukryty z powodu niskich ocen.",
@@ -453,6 +456,7 @@
       "account_name": "Nazwa konta powinna być dłuższa",
       "beneficiary_cannot_be_self": "Nie można określić siebie jako beneficjenta",
       "beneficiary_percent_invalid": "Procent beneficjenta musi wynosić od 1 do 100",
+      "bad_actor": "Bądź ostrożny przy wysyłaniu na to konto. Proszę sprawdzić dwukrotnie swoje pisownia w celu wykrycia możliwego phishingu.",
       "add_account": "Dodaj konto",
       "post_templates": "Szablony publikacji",
       "manage_your_post_templates": "Zarządzaj swoimi szablonami publikacji, inne ustawienia będą także tutaj zapisane/załadowane.",

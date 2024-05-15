@@ -3,6 +3,7 @@
     "no_rewards": "No rewards pending redemption.",
     "loading": "Loading",
     "something_went_wrong": "Something went wrong",
+    "unavailable_for_legal_reasons": "Unavailable For Legal Reasons",
     "time_ago": {
       "a_few_seconds": " a few seconds ago",
       "seconds": " seconds ago",
@@ -155,6 +156,7 @@
   },
   "cards": {
     "reblogged": "reblogged",
+    "content_removed": "Content removed for copyright and/or privacy violations.",
     "badges": {
       "pinned": "Pinned"
     },
@@ -356,6 +358,7 @@
       "edited": "edited"
     },
     "body": {
+      "copyright": "This post is not available due to a copyright claim.",
       "images_were_hidden": "Images were hidden due to low ratings.",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
@@ -461,6 +464,7 @@
       "account_name": "Account name should be longer",
       "beneficiary_cannot_be_self": "Cannot specify self as beneficiary",
       "beneficiary_percent_invalid": "Beneficiary percentage must be from 1-100",
+      "bad_actor": "Use caution sending to this account. Please double check your spelling for possible phishing.",
       "add_account": "Add Account",
       "post_templates": "Post templates",
       "manage_your_post_templates": "Manage your post templates, other settings here will also be saved/loaded.",
