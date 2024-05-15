@@ -87,7 +87,7 @@ function validateAltUsernameInput(value: string, t: TFunction<'common_wallet', u
     : null;
 }
 export function imagePicker(img: string) {
-  const checkImg = img.includes('youtube')
+  const checkImg = img.includes('youtu')
     ? `https://img.youtube.com/vi/${extractYouTubeVideoIds(extractUrlsFromJsonString(img))[0]}/0.jpg`
     : img;
   return checkImg;
