@@ -440,14 +440,21 @@ class TransactionService {
                 muted_list_description,
                 version
               }
-            }),
-            owner: undefined,
-            active: undefined,
-            posting: undefined,
-            memo_key: ''
+            })
           }
         })
         .build();
+    });
+  }
+
+  async deleteComment(permlink: string) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push({
+        delete_comment: {
+          author: this.signerOptions.username,
+          permlink: permlink
+        }
+      });
     });
   }
 
