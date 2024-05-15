@@ -160,13 +160,13 @@ function PostPage({
 
   const { hiveRenderer, setAuthor } = useContext(HiveRendererContext);
 
-  const rendereOptions: RendererOptions = {
+  const rendererOptions: RendererOptions = {
     ...defaultRendererOptions,
     ...{
       doNotShowImages: true,
     }
   };
-  const mutedPostRenderer = new DefaultRenderer(rendereOptions);
+  const mutedPostRenderer = new DefaultRenderer(rendererOptions);
 
   const commentSite = post?.depth !== 0 ? true : false;
   const [mutedPost, setMutedPost] = useState(false);
