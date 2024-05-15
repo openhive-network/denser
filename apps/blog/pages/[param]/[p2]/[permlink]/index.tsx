@@ -11,7 +11,7 @@ import Link from 'next/link';
 import DetailsCardHover from '@/blog/components/details-card-hover';
 import DetailsCardVoters from '@/blog/components/details-card-voters';
 import CommentSelectFilter from '@/blog/components/comment-select-filter';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import sorter, { SortOrder } from '@/blog/lib/sorter';
 import { useRouter } from 'next/router';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
@@ -26,7 +26,6 @@ import TwitterShare from '@/blog/components/share-post-twitter';
 import { Badge } from '@ui/components/badge';
 import { Button } from '@ui/components/button';
 import { Separator } from '@ui/components';
-import { LeavePageDialog } from '@/blog/components/leave-page-dialog';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
@@ -41,9 +40,6 @@ import { UserPopoverCard } from '@/blog/components/user-popover-card';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
-import { DefaultRenderer } from '@hiveio/content-renderer';
-import { RendererOptions } from '@hiveio/content-renderer/dist/renderers/default/DefaultRenderer';
-import { defaultRendererOptions } from '@/blog/components/hive-renderer-context';
 
 import { getLogger } from '@ui/lib/logging';
 import { cn } from '@ui/lib/utils';
@@ -192,7 +188,7 @@ function PostPage({
     });
   }, [router, hiveRenderer, post?.author]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setDoNotShowImages(mutedPost && !showAnyway);
     setAuthor(post?.author || '');
   }, [setAuthor, setDoNotShowImages, mutedPost, showAnyway, post?.author]);
