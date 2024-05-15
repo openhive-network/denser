@@ -1,6 +1,5 @@
-import { FC, PropsWithChildren, createContext, useContext, useEffect, useState } from 'react';
+import { FC, PropsWithChildren, createContext, useContext, useLayoutEffect, useState } from 'react';
 import { DefaultRenderer } from '@hiveio/content-renderer';
-import { RendererOptions } from '@hiveio/content-renderer/dist/renderers/default/DefaultRenderer';
 import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
 import env from '@beam-australia/react-env';
 import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
@@ -16,7 +15,7 @@ export const HiveRendererContext = createContext<HiveRendererContextType>({
   hiveRenderer: undefined,
   setHiveRenderer: () => {},
   setAuthor: () => {},
-  setDoNotShowImages: () => {},
+  setDoNotShowImages: () => {}
 });
 
 export const useHiveRendererContext = () => useContext(HiveRendererContext);
@@ -35,7 +34,7 @@ export const HiveContentRendererProvider: FC<PropsWithChildren> = ({ children })
       addTargetBlankToLinks: true,
       cssClassForInternalLinks: '',
       cssClassForExternalLinks: 'link-external',
-      doNotShowImages: doNotShowImages || isAuthorBlocked,
+      doNotShowImages: doNotShowImages || isAuthorBlocked || false,
       ipfsPrefix: '',
       assetsWidth: 640,
       assetsHeight: 480,
@@ -54,14 +53,19 @@ export const HiveContentRendererProvider: FC<PropsWithChildren> = ({ children })
     setHiveRenderer(renderer);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     createRenderer(author, doNotShowImages);
   }, [author, doNotShowImages]);
 
   return (
-    <HiveRendererContext.Provider value={{
-      hiveRenderer, setHiveRenderer, setAuthor, setDoNotShowImages
-    }}>
+    <HiveRendererContext.Provider
+      value={{
+        hiveRenderer,
+        setHiveRenderer,
+        setAuthor,
+        setDoNotShowImages
+      }}
+    >
       {children}
     </HiveRendererContext.Provider>
   );
