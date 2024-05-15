@@ -542,9 +542,10 @@ export default function PostForm({
           </form>
         </Form>
         <div
-          className={clsx('flex h-fit flex-col gap-4 lg:w-1/2', {
+          className={clsx('flex flex-col gap-4 lg:w-1/2', {
             hidden: !preview,
-            'lg:w-full': !sideBySide
+            'lg:w-full': !sideBySide,
+            'h-[80vh] ': sideBySide
           })}
         >
           <div className="flex flex-col-reverse sm:flex-row sm:justify-between">
@@ -562,10 +563,7 @@ export default function PostForm({
               dangerouslySetInnerHTML={{
                 __html: hiveRenderer.render(previewContent)
               }}
-              className={cn(
-                'prose h-fit w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2 dark:prose-invert',
-                { 'max-h-[620px]': sideBySide }
-              )}
+              className="prose w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2 dark:prose-invert"
             ></div>
           ) : null}
         </div>
