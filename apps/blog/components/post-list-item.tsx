@@ -30,6 +30,13 @@ import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
+import { getRebloggedBy } from '@transaction/lib/hive'
+import { useQuery } from '@tanstack/react-query';
+
+import { getLogger } from '@ui/lib/logging';
+const logger = getLogger('app');
+
+
 const PostListItem = ({
   post,
   isCommunityPage,
@@ -58,13 +65,32 @@ const PostListItem = ({
   const userFromDMCA = dmcaUserList.includes(post.author);
   const userFromImageBlockList = imageUserBlocklist.includes(post.author);
   const legalBlockedUser = userIllegalContent.includes(post.author);
-  const isReblogged = storedReblogs?.includes(`${post.author}/${post.permlink}`);
+
+  // const isReblogged = storedReblogs?.includes(`${post.author}/${post.permlink}`);
+
+  const queryAuthor = post?.author;
+  const queryPermlink = post?.permlink;
+  const {
+    data: rebloggers
+  } = useQuery(
+    ['PostRebloggedBy', queryAuthor, queryPermlink],
+    () => getRebloggedBy(queryAuthor!, queryPermlink!),
+    {
+      enabled: !!(user.username && queryAuthor && queryPermlink)
+    }
+  );
+  const isReblogged = rebloggers?.includes(user.username);
+
+  logger.info('author: %s, permlink: %s, rebloggers: %o', post.author, post.permlink, rebloggers);
+
   function revealPost() {
     setReveal((reveal) => !reveal);
   }
+
   if (gdprUserList.includes(post.author)) {
     return null;
   }
+
   return (
     <li data-testid="post-list-item" className={post.stats?.gray ? 'opacity-50 hover:opacity-100' : ''}>
       {post.json_metadata?.tags &&

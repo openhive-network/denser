@@ -46,6 +46,7 @@ import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import dmcaList from '@ui/config/lists/dmca-list';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import CustomError from '@/blog/components/custom-error';
+import { getRebloggedBy } from '@transaction/lib/hive'
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -186,7 +187,20 @@ function PostPage({
     });
   }, [router, hiveRenderer, post?.author]);
 
-  const isReblogged = storedReblogs?.includes(`${post?.author}/${post?.permlink}`);
+  // const isReblogged = storedReblogs?.includes(`${post?.author}/${post?.permlink}`);
+
+  const queryAuthor = post?.author;
+  const queryPermlink = post?.permlink;
+  const {
+    data: rebloggers
+  } = useQuery(
+    ['PostRebloggedBy', queryAuthor, queryPermlink],
+    () => getRebloggedBy(queryAuthor!, queryPermlink!),
+    {
+      enabled: !!(user.username && queryAuthor && queryPermlink)
+    }
+  );
+  const isReblogged = rebloggers?.includes(user.username);
 
   useLayoutEffect(() => {
     setDoNotShowImages(mutedPost && !showAnyway);

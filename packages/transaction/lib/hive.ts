@@ -676,6 +676,24 @@ export const getBlogEntries = async (username: string, limit: number = DATA_LIMI
   return chain.extend<GetBlogEntriesData>().api.condenser_api.get_blog_entries([username, 0, limit]);
 };
 
+type GetRebloggedByData = {
+  condenser_api: {
+    get_reblogged_by: TWaxApiRequest<[string, string], string[]>;
+  };
+};
+
+/**
+ * Returns list of accounts that reblogged given post, defined by tuple
+ * `[author: string, permlink: string]`.
+ *
+ * @param author
+ * @param permlink
+ * @returns
+ */
+export const getRebloggedBy = async (author: string, permlink: string): Promise<string[]> => {
+  return chain.extend<GetRebloggedByData>().api.condenser_api.get_reblogged_by([author, permlink]);
+};
+
 type BrodcastTransactionData = {
   network_broadcast_api: {
     broadcast_transaction: TWaxApiRequest<transaction[], transaction>;
