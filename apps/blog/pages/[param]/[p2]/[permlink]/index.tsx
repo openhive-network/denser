@@ -48,6 +48,10 @@ import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import CustomError from '@/blog/components/custom-error';
 import { getRebloggedBy } from '@transaction/lib/hive'
 
+import { getLogger } from '@ui/lib/logging';
+const logger = getLogger('app');
+
+
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
   ssr: false
@@ -189,18 +193,37 @@ function PostPage({
 
   // const isReblogged = storedReblogs?.includes(`${post?.author}/${post?.permlink}`);
 
+  // const queryAuthor = post?.author;
+  // const queryPermlink = post?.permlink;
+  // const {
+  //   data: rebloggers
+  // } = useQuery(
+  //   ['PostRebloggedBy', queryAuthor, queryPermlink],
+  //   () => getRebloggedBy(queryAuthor!, queryPermlink!),
+  //   {
+  //     enabled: !!(user.username && queryAuthor && queryPermlink),
+  //     cacheTime: 1000 * 60 * 5, // 5 minutes
+  //   }
+  // );
+  // const isReblogged = rebloggers?.includes(user.username);
+
   const queryAuthor = post?.author;
   const queryPermlink = post?.permlink;
   const {
-    data: rebloggers
+    data: isReblogged
   } = useQuery(
-    ['PostRebloggedBy', queryAuthor, queryPermlink],
-    () => getRebloggedBy(queryAuthor!, queryPermlink!),
+    ['PostRebloggedBy', queryAuthor, queryPermlink, user.username],
+    async () => {
+      const data = await getRebloggedBy(queryAuthor!, queryPermlink!);
+      return data.includes(user.username);
+    },
     {
-      enabled: !!(user.username && queryAuthor && queryPermlink)
+      enabled: !!(user.username && queryAuthor && queryPermlink),
+      cacheTime: 1000 * 60 * 5, // 5 minutes
     }
   );
-  const isReblogged = rebloggers?.includes(user.username);
+
+  logger.info('author: %s, permlink: %s, isReblogged: %o', post?.author, post?.permlink, isReblogged);
 
   useLayoutEffect(() => {
     setDoNotShowImages(mutedPost && !showAnyway);

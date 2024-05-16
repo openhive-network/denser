@@ -68,20 +68,38 @@ const PostListItem = ({
 
   // const isReblogged = storedReblogs?.includes(`${post.author}/${post.permlink}`);
 
+  // const queryAuthor = post?.author;
+  // const queryPermlink = post?.permlink;
+  // const {
+  //   data: rebloggers
+  // } = useQuery(
+  //   ['PostRebloggedBy', queryAuthor, queryPermlink],
+  //   () => getRebloggedBy(queryAuthor!, queryPermlink!),
+  //   {
+  //     enabled: !!(user.username && queryAuthor && queryPermlink),
+  //     cacheTime: 1000 * 60 * 5, // 5 minutes
+  //   }
+  // );
+  // const isReblogged = rebloggers?.includes(user.username);
+
   const queryAuthor = post?.author;
   const queryPermlink = post?.permlink;
   const {
-    data: rebloggers
+    data: isReblogged
   } = useQuery(
-    ['PostRebloggedBy', queryAuthor, queryPermlink],
-    () => getRebloggedBy(queryAuthor!, queryPermlink!),
+    ['PostRebloggedBy', queryAuthor, queryPermlink, user.username],
+    async () => {
+      const data = await getRebloggedBy(queryAuthor!, queryPermlink!);
+      return data.includes(user.username);
+    },
     {
-      enabled: !!(user.username && queryAuthor && queryPermlink)
+      enabled: !!(user.username && queryAuthor && queryPermlink),
+      cacheTime: 1000 * 60 * 5, // 5 minutes
     }
   );
-  const isReblogged = rebloggers?.includes(user.username);
 
-  logger.info('author: %s, permlink: %s, rebloggers: %o', post.author, post.permlink, rebloggers);
+  logger.info('author: %s, permlink: %s, isReblogged: %o', post.author, post.permlink, isReblogged);
+
 
   function revealPost() {
     setReveal((reveal) => !reveal);
