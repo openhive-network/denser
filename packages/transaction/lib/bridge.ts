@@ -1,4 +1,4 @@
-import { TWaxApiRequest } from '@hive/wax';
+import { TWaxApiRequest } from '@hiveio/wax';
 import { hiveChainService } from './hive-chain-service';
 
 import { getLogger } from '@ui/lib/logging';

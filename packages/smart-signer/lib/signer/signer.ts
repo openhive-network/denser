@@ -1,7 +1,7 @@
 import { LoginType } from '@smart-signer/types/common';
 import { KeyType } from '@smart-signer/types/common';
 import { StorageType } from '@smart-signer/lib/storage-mixin';
-import { THexString, transaction, TTransactionPackType } from '@hive/wax';
+import { THexString, transaction, TTransactionPackType } from '@hiveio/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');

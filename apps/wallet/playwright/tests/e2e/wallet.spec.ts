@@ -218,6 +218,7 @@ test.describe("Wallet page of @gtg tests", () => {
     );
     const accountHistoryResult = await apiHelper.getAccountHistoryAPI('gtg', -1, 500);
     const accountHistoryUI = await walletPage.walletAccountHistoryRow.all();
+    await walletPage.page.waitForSelector(await walletPage.walletAccountHistoryRow["_selector"]);
     await expect(accountHistoryUI.length).toBe(accountHistoryResult.result.length);
   });
 

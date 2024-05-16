@@ -3,7 +3,7 @@ import { SignChallenge, SignerOptions } from '@smart-signer/lib/signer/signer';
 import { KeyType } from '@smart-signer/types/common';
 import { SignerHbauth } from '@smart-signer/lib/signer/signer-hbauth';
 import { StorageMixin } from '@smart-signer/lib/storage-mixin';
-import { TTransactionPackType, THexString } from '@hive/wax';
+import { TTransactionPackType, THexString } from '@hiveio/wax';
 import { verifyPrivateKey } from '@smart-signer/lib/utils';
 import { PasswordDialogModalPromise } from '@smart-signer/components/password-dialog';
 import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/password-form';

@@ -1,5 +1,5 @@
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
-import { operation, vote, transfer, ApiOperation, ApiTransaction } from '@hive/wax';
+import { operation, vote, transfer, ApiOperation, ApiTransaction } from '@hiveio/wax';
 import { KeyType } from '@smart-signer/types/common';
 
 /**
