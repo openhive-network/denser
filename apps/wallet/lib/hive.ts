@@ -2,7 +2,7 @@ import Big from 'big.js';
 import { AccountHistory } from '@/wallet/store/app-types';
 import { makeBitMaskFilter, operationOrders } from '@hiveio/dhive/lib/utils';
 import moment from 'moment';
-import { TWaxApiRequest, RcAccount } from '@hive/wax/web';
+import { TWaxApiRequest, RcAccount } from '@hiveio/wax/web';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 
 const chain = await hiveChainService.getHiveChain();

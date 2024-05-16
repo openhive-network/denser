@@ -27,7 +27,7 @@ function UserInfo({
 }: UserInfoProps) {
   const { t } = useTranslation('common_blog');
   return (
-    <div className="flex flex-col py-4 text-slate-500" data-testid="author-data">
+    <div className="flex flex-col py-4 text-slate-500 dark:text-slate-400" data-testid="author-data">
       <div className="flex flex-wrap items-center">
         <UserPopoverCard
           author={author}

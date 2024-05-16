@@ -6,19 +6,18 @@ import clsx from 'clsx';
 import type { Entry } from '@transaction/lib/bridge';
 import { useTranslation } from 'next-i18next';
 import { useEffect, useState } from 'react';
-import { TransactionServiceThrowingError, TransactionErrorHandlingMode } from '@transaction/index';
+import { transactionService, TransactionService, TransactionErrorCallback } from '@transaction/index';
 import { PromiseTools } from '@transaction/lib/promise-tools'
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { CircleSpinner } from 'react-spinners-kit';
-import { useSigner } from '@smart-signer/lib/use-signer';
 import { getListVotesByCommentVoter } from '@transaction/lib/hive';
-import env from '@beam-australia/react-env';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
+
 const vote = async (
-      transactionServiceThrowingError: TransactionServiceThrowingError,
+      service: TransactionService,
       voter: string,
       author: string,
       permlink: string,
@@ -51,7 +50,7 @@ const vote = async (
       numChangesBefore = votesListBefore.votes[0].num_changes;
     }
     // Vote now
-    await transactionServiceThrowingError.upVote(author, permlink, weight);
+    await service.upVote(author, permlink, weight, (error) => { throw error; });
     logger.info('Voted: %o',
       { voter, author, permlink, weight, numChangesBefore });
 
@@ -89,7 +88,7 @@ const vote = async (
         t('cards.post_card.vote_polling_error_message_title');
       const description =
         t('cards.post_card.vote_polling_error_message_description');
-      transactionServiceThrowingError.handleError(
+      service.handleError(
         error,
         {
           title,
@@ -98,7 +97,7 @@ const vote = async (
         }
       );
     } else {
-      transactionServiceThrowingError.handleError(error);
+      service.handleError(error);
     }
   }
   return { voter, author, permlink, weight };
@@ -107,7 +106,6 @@ const vote = async (
 export function usePostUpdateVoteMutation() {
   const { t } = useTranslation('common_blog');
   const queryClient = useQueryClient();
-  const { signerOptions } = useSigner();
   const postUpdateVoteMutation = useMutation({
     mutationFn: (params: {
           voter: string,
@@ -116,15 +114,7 @@ export function usePostUpdateVoteMutation() {
           weight: number
         }) => {
       const { voter, author, permlink, weight } = params;
-      const transactionServiceThrowingError =
-        new TransactionServiceThrowingError(
-          TransactionErrorHandlingMode.OnlyThrow
-        );
-      transactionServiceThrowingError.setSignerOptions(signerOptions);
-      return vote(
-        transactionServiceThrowingError, voter, author, permlink,
-        weight, t
-      );
+      return vote(transactionService, voter, author, permlink, weight, t);
     },
     onSuccess: (data) => {
       logger.info('usePostUpdateVoteMutation onSuccess data: %o', data);

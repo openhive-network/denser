@@ -19,6 +19,7 @@ import { getLogger } from '@ui/lib/logging';
 import { useSignerContext } from './common/signer';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { useTranslation } from 'next-i18next';
+import imageUserBlocklist from '@ui/config/lists/image-user-blocklist';
 const logger = getLogger('app');
 
 const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false });
@@ -187,29 +188,27 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       return (
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger type="button">
-              <button
-                type="button"
-                aria-label="Insert title3"
-                disabled={disabled}
-                onClick={() => {
-                  executeCommand(command, command.groupName);
-                }}
+            <TooltipTrigger
+              type="button"
+              aria-label={t('submit_page.insert_images_text')}
+              disabled={disabled}
+              onClick={() => {
+                executeCommand(command, command.groupName);
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" />
-                </svg>
-              </button>
+                <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+              </svg>
             </TooltipTrigger>
             <TooltipContent>{t('submit_page.insert_images_text')}</TooltipContent>
           </Tooltip>
@@ -224,7 +223,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
 
   const editChoice = (inputRef: MutableRefObject<HTMLInputElement>) => [imgBtn(inputRef)];
 
-  return (
+  return !imageUserBlocklist?.includes(user.username) ? (
     <div className="bg-white dark:bg-slate-950 dark:text-white">
       <input
         ref={inputRef}
@@ -263,6 +262,19 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
         )}
       </div>
     </div>
+  ) : (
+    <MDEditor
+      preview="edit"
+      value={formValue}
+      aria-placeholder={placeholder ?? ''}
+      onChange={(value) => {
+        setFormValue(value || '');
+      }}
+      commands={[...(commands.getCommands() as ICommand[]), imgBtn(inputRef)]}
+      extraCommands={[]}
+      //@ts-ignore
+      style={{ '--color-canvas-default': 'var(--background)' }}
+    />
   );
 };
 

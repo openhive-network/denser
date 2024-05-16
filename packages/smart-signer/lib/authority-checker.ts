@@ -5,7 +5,7 @@ import {
   TAccountName,
   ApiKeyAuth,
   TTransactionPackType
-} from '@hive/wax';
+} from '@hiveio/wax';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 
 import { getLogger } from '@hive/ui/lib/logging';

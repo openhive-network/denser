@@ -11,14 +11,7 @@ import {
 } from '@hive/ui/components/select';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormMessage
-} from '@hive/ui/components/form';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@hive/ui/components/form';
 import { useForm, useWatch } from 'react-hook-form';
 import useManabars from './hooks/useManabars';
 import { AdvancedSettingsPostForm } from './advanced_settings_post_form';
@@ -41,6 +34,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/co
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 
 import { getLogger } from '@ui/lib/logging';
+import { cn } from '@ui/lib/utils';
 const logger = getLogger('app');
 
 const MAX_TAGS = 8;
@@ -380,7 +374,7 @@ export default function PostForm({
                       />
                     </>
                   </FormControl>
-                  <FormDescription className="flex items-center border-x-2 border-b-2 border-border px-3 pb-1 text-xs text-destructive">
+                  <div className="flex items-center border-x-2 border-b-2 border-border px-3 pb-1 text-xs text-destructive">
                     {t('submit_page.insert_images_by_dragging')} {t('submit_page.selecting_them')}
                     <TooltipProvider>
                       <Tooltip>
@@ -390,7 +384,7 @@ export default function PostForm({
                         <TooltipContent>{t('submit_page.insert_images_info')}</TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
-                  </FormDescription>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -548,9 +542,10 @@ export default function PostForm({
           </form>
         </Form>
         <div
-          className={clsx('flex h-fit flex-col gap-4 lg:w-1/2', {
+          className={clsx('flex flex-col gap-4 lg:w-1/2', {
             hidden: !preview,
-            'lg:w-full': !sideBySide
+            'lg:w-full': !sideBySide,
+            'h-[80vh] ': sideBySide
           })}
         >
           <div className="flex flex-col-reverse sm:flex-row sm:justify-between">
@@ -568,7 +563,7 @@ export default function PostForm({
               dangerouslySetInnerHTML={{
                 __html: hiveRenderer.render(previewContent)
               }}
-              className="prose h-fit w-full self-center break-words border-2 border-border p-2 dark:prose-invert"
+              className="prose w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2 dark:prose-invert"
             ></div>
           ) : null}
         </div>

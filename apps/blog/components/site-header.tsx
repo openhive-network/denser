@@ -76,7 +76,7 @@ const SiteHeader: FC = () => {
   return (
     <header
       className={clsx(
-        'supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur transition ease-in-out',
+        'supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur transition ease-in-out dark:bg-slate-900',
         { 'translate-y-[-56px]': isNavHidden }
       )}
       translate="no"
@@ -85,7 +85,7 @@ const SiteHeader: FC = () => {
         <Link href="/trending" className="flex items-center space-x-2">
           <Icons.hive className="h-6 w-6" />
           <span className="font-bold sm:inline-block">{siteConfig.name}</span>
-          {!siteConfig.isMainnet && <span className="text-xs text-red-600">TESTNET</span>}
+          {siteConfig.chainEnv !== 'mainnet' && <span className="text-xs text-red-600 uppercase">{siteConfig.chainEnv}</span>}
         </Link>
 
         <MainNav />
@@ -147,7 +147,7 @@ const SiteHeader: FC = () => {
             {isClient && user.isLoggedIn ? (
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger data-testid="comment-card-footer-downvote" className="cursor-pointer">
+                  <TooltipTrigger data-testid="profile-avatar-button" className="cursor-pointer">
                     <UserMenu user={user} notifications={data?.unread}>
                       <div className="group relative inline-flex w-fit cursor-pointer items-center justify-center">
                         {data && data.unread !== 0 ? (

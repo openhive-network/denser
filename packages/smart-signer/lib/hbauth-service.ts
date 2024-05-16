@@ -1,4 +1,4 @@
-import { OnlineClient, ClientOptions } from '@hive/hb-auth';
+import { OnlineClient, ClientOptions } from '@hiveio/hb-auth';
 import { siteConfig } from '@ui/config/site';
 import { StorageMixin, StorageBase, StorageBaseOptions } from '@smart-signer/lib/storage-mixin';
 

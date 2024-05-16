@@ -20,15 +20,21 @@ import { useLocalStorage } from 'usehooks-ts';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';
 import { UserPopoverCard } from './user-popover-card';
+import { AlertDialogDelete } from './alert-dialog-delete';
+import moment from 'moment';
+import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
+import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
+import gdprUserList from '@ui/config/lists/gdpr-user-list';
 
 interface CommentListProps {
   comment: Entry;
   renderer: DefaultRenderer;
   parent_depth: number;
   mutedList: IFollowList[];
+  setAuthor: (e: string) => void;
 }
 
-const CommentListItem = ({ comment, renderer, parent_depth, mutedList }: CommentListProps) => {
+const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor }: CommentListProps) => {
   const { t } = useTranslation('common_blog');
   const username = comment.author;
   const router = useRouter();
@@ -44,6 +50,10 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList }: Comment
   const [edit, setEdit] = useState(false);
   const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
+  const userFromDMCA = dmcaUserList.some((e) => e === comment.author);
+  const legalBlockedUser = userIllegalContent.some((e) => e === comment.author);
+  const userFromGDPR = gdprUserList.some((e) => e === comment.author);
+  const parentFromGDPR = gdprUserList.some((e) => e === comment.parent_author);
   useEffect(() => {
     if (reply) {
       storeBox(reply);
@@ -58,7 +68,13 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList }: Comment
     }, 500);
     return () => clearTimeout(timeout);
   }, [router.asPath]);
+  useEffect(() => {
+    setAuthor(comment.author);
+  }, [comment.author]);
   const currentDepth = comment.depth - parent_depth;
+  if (userFromGDPR || parentFromGDPR) {
+    return null;
+  }
   return (
     <>
       {currentDepth < 8 ? (
@@ -77,7 +93,7 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList }: Comment
             />
             <Card
               className={cn(
-                `mb-4 w-full px-2 hover:bg-accent dark:bg-slate-700 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground depth-${comment.depth}`,
+                `mb-4 w-full px-2 hover:bg-accent dark:bg-slate-900 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground depth-${comment.depth}`,
                 { 'opacity-50 hover:opacity-100': hiddenComment }
               )}
             >
@@ -193,7 +209,11 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList }: Comment
                   <Separator orientation="horizontal" />
                   <AccordionContent className="p-0">
                     <CardContent className="pb-2 ">
-                      {edit && comment.parent_permlink && comment.parent_author ? (
+                      {legalBlockedUser ? (
+                        <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
+                      ) : userFromDMCA ? (
+                        <div className="px-2 py-6">{t('post_content.body.copyright')}</div>
+                      ) : edit && comment.parent_permlink && comment.parent_author ? (
                         <ReplyTextbox
                           editMode={edit}
                           onSetReply={setEdit}
@@ -205,7 +225,7 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList }: Comment
                         />
                       ) : (
                         <CardDescription
-                          className="prose break-words"
+                          className="prose break-words dark:text-white"
                           data-testid="comment-card-description"
                           dangerouslySetInnerHTML={{
                             __html: comment_html
@@ -281,6 +301,22 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList }: Comment
                             >
                               {t('cards.comment_card.edit')}
                             </button>
+                          </>
+                        ) : null}
+                        {user &&
+                        user.isLoggedIn &&
+                        comment.author === user.username &&
+                        moment().format('YYYY-MM-DDTHH:mm:ss') < comment.payout_at ? (
+                          <>
+                            <Separator orientation="vertical" className="h-5" />
+                            <AlertDialogDelete permlink={comment.permlink}>
+                              <span
+                                className="flex items-center hover:cursor-pointer hover:text-red-600"
+                                data-testid="comment-card-footer-delete"
+                              >
+                                {t('cards.comment_card.delete')}
+                              </span>
+                            </AlertDialogDelete>
                           </>
                         ) : null}
                       </div>

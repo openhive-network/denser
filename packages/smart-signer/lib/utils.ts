@@ -1,4 +1,4 @@
-import { createWaxFoundation, operation, THexString, ITransactionBuilder, TWaxExtended } from '@hive/wax';
+import { createWaxFoundation, operation, THexString, ITransactionBuilder, TWaxExtended } from '@hiveio/wax';
 import { fetchJson } from '@smart-signer/lib/fetch-json';
 import { isBrowser } from '@ui/lib/logger';
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
@@ -224,7 +224,7 @@ type TExtendedHiveChain = TWaxExtended<typeof DatabaseApiExtensions>;
 
 /**
  * Verifies signature of transaction or only signature of digest.
- * Uses "@hive/wax" package to create digest nad Hive API
+ * Uses "@hiveio/wax" package to create digest nad Hive API
  * database_api.verify_signatures endpoint.
  *
  * @param {string} username

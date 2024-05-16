@@ -11,7 +11,7 @@ import Link from 'next/link';
 import DetailsCardHover from '@/blog/components/details-card-hover';
 import DetailsCardVoters from '@/blog/components/details-card-voters';
 import CommentSelectFilter from '@/blog/components/comment-select-filter';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import sorter, { SortOrder } from '@/blog/lib/sorter';
 import { useRouter } from 'next/router';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
@@ -26,7 +26,6 @@ import TwitterShare from '@/blog/components/share-post-twitter';
 import { Badge } from '@ui/components/badge';
 import { Button } from '@ui/components/button';
 import { Separator } from '@ui/components';
-import { LeavePageDialog } from '@/blog/components/leave-page-dialog';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
@@ -42,9 +41,11 @@ import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
 import { cn } from '@ui/lib/utils';
-
-import { getLogger } from '@ui/lib/logging';
-const logger = getLogger('app');
+import dmcaUserList from '@ui/config/lists/dmca-user-list';
+import userIllegalContent from '@ui/config/lists/user-illegal-content';
+import dmcaList from '@ui/config/lists/dmca-list';
+import gdprUserList from '@ui/config/lists/gdpr-user-list';
+import CustomError from '@/blog/components/custom-error';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -68,7 +69,8 @@ function PostPage({
     error: errorPost,
     data: post
   } = useQuery(['postData', username, permlink], () => getPost(username, String(permlink)), {
-    enabled: !!username && !!permlink
+    enabled: !!username && !!permlink,
+    onSuccess: (post) => setMutedPost(!!post?.stats?.gray)
   });
 
   const {
@@ -93,12 +95,18 @@ function PostPage({
   } = useQuery(['activeVotes'], () => getActiveVotes(username, permlink), {
     enabled: !!username && !!permlink
   });
+
   const [discussionState, setDiscussionState] = useState<Entry[]>();
   const router = useRouter();
   const isSortOrder = (token: any): token is SortOrder => {
     return Object.values(SortOrder).includes(token as SortOrder);
   };
   const query = router.query.sort?.toString();
+  const copyRightCheck = dmcaList.includes(
+    `/${router.query.param}/${router.query.p2}/${router.query.permlink}`
+  );
+  const userFromDMCA = dmcaUserList.some((e) => e === post?.author);
+  const legalBlockedUser = userIllegalContent.some((e) => e === post?.author);
   const defaultSort = isSortOrder(query) ? query : SortOrder.trending;
   const storageId = `replybox-/${username}/${post?.permlink}`;
   const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
@@ -106,7 +114,9 @@ function PostPage({
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const firstPost = discussionState?.find((post) => post.depth === 0);
   const [edit, setEdit] = useState(false);
+  const [showAnyway, setShowAnyway] = useState(false);
 
+  const userFromGDPR = gdprUserList.some((e) => e === post?.author);
   const refreshPage = () => {
     router.replace(router.asPath);
   };
@@ -142,9 +152,10 @@ function PostPage({
     }
   }, [discussion, router.query.sort]);
 
-  const { hiveRenderer } = useContext(HiveRendererContext);
+  const { hiveRenderer, setAuthor, setDoNotShowImages } = useContext(HiveRendererContext);
+
   const commentSite = post?.depth !== 0 ? true : false;
-  const [mutedPost, setMutedPost] = useState(post?.stats?.gray);
+  const [mutedPost, setMutedPost] = useState(false);
   const postUrl = () => {
     if (discussionState) {
       const objectWithSmallestDepth = discussionState.reduce((smallestDepth, e) => {
@@ -168,28 +179,23 @@ function PostPage({
     }
   };
 
-  function findLinks(text: string) {
-    const regex = /https?:\/\/[^\s]+/g;
-    const matches = text.replace(/[({\[\])}]/g, ' ').match(regex) || [];
-
-    return matches.map((match) => match);
-  }
-
-  function isImageLink(link: string) {
-    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'image'];
-
-    return imageExtensions.some((ext) => link.includes(ext));
-  }
-
   useEffect(() => {
     const id = router.asPath.split('#')[1];
     document.getElementById(id)?.scrollIntoView({
       behavior: 'smooth'
     });
-  }, [router, hiveRenderer]);
+  }, [router, hiveRenderer, post?.author]);
 
   const isReblogged = storedReblogs?.includes(`${post?.author}/${post?.permlink}`);
 
+  useLayoutEffect(() => {
+    setDoNotShowImages(mutedPost && !showAnyway);
+    setAuthor(post?.author || '');
+  }, [setAuthor, setDoNotShowImages, mutedPost, showAnyway, post?.author]);
+
+  if (userFromGDPR) {
+    return <CustomError />;
+  }
   return (
     <div className="py-8">
       <div className="relative mx-auto my-0 max-w-4xl bg-white px-8 py-4 dark:bg-slate-900">
@@ -197,7 +203,7 @@ function PostPage({
           <Icons.flag className="absolute right-0 hover:text-red-500" />
         </AlertDialogFlag>
         {!isLoadingPost && post ? (
-          <>
+          <div>
             {!commentSite ? (
               <h1 className="text-3xl font-bold" data-testid="article-title">
                 {post.title}
@@ -239,7 +245,9 @@ function PostPage({
               created={post.created}
               blacklist={firstPost ? firstPost.blacklists : post.blacklists}
             />
+
             <hr />
+
             {!hiveRenderer ? (
               <Loading loading={!hiveRenderer} />
             ) : edit ? (
@@ -251,20 +259,10 @@ function PostPage({
                 post_s={post}
                 refreshPage={refreshPage}
               />
-            ) : mutedPost ? (
-              <div id="articleBody" className="flex flex-col gap-8 py-8">
-                {findLinks(post.body).map((e) =>
-                  isImageLink(e) ? (
-                    <Link href={e} className="text-red-500" key={e}>
-                      ({t('post_content.body.Image_not_shown')})
-                    </Link>
-                  ) : (
-                    <LeavePageDialog link={e} key={e}>
-                      <Icons.externalLink className="h-4 w-4 text-slate-600" />
-                    </LeavePageDialog>
-                  )
-                )}
-              </div>
+            ) : legalBlockedUser ? (
+              <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
+            ) : copyRightCheck || userFromDMCA ? (
+              <div className="px-2 py-6">{t('post_content.body.copyright')}</div>
             ) : (
               <ImageGallery>
                 <div
@@ -276,17 +274,19 @@ function PostPage({
                 />
               </ImageGallery>
             )}
+
             {mutedPost ? (
               <>
                 <Separator />
                 <div className="my-8 flex items-center justify-between text-red-500">
                   {t('post_content.body.images_were_hidden')}
-                  <Button variant="outlineRed" onClick={() => setMutedPost(false)}>
+                  <Button variant="outlineRed" onClick={() => setShowAnyway(true)}>
                     {t('post_content.body.show')}
                   </Button>
                 </div>
               </>
             ) : null}
+
             <div className="clear-both">
               {!commentSite ? (
                 <ul className="flex flex-wrap gap-2" data-testid="hashtags-post">
@@ -303,7 +303,7 @@ function PostPage({
                 </ul>
               ) : null}
             </div>
-            <div className="text-sm text-slate-600" data-testid="author-data-post-footer">
+            <div className="text-sm text-slate-600 dark:text-slate-400" data-testid="author-data-post-footer">
               <div className="my-4 flex justify-between">
                 <div className="flex flex-wrap items-center">
                   <Clock />
@@ -467,7 +467,7 @@ function PostPage({
                 </div>
               </div>
             </div>
-          </>
+          </div>
         ) : (
           <Loading loading={isLoadingPost} />
         )}

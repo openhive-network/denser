@@ -1,22 +1,30 @@
-import { FC, PropsWithChildren, createContext, useContext, useEffect, useState } from 'react';
+import { FC, PropsWithChildren, createContext, useContext, useLayoutEffect, useState } from 'react';
 import { DefaultRenderer } from '@hiveio/content-renderer';
 import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
 import env from '@beam-australia/react-env';
+import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
 
 type HiveRendererContextType = {
   hiveRenderer: DefaultRenderer | undefined;
   setHiveRenderer: (hiveRenderer: DefaultRenderer) => void;
+  setAuthor: (author: string) => void;
+  setDoNotShowImages: (doNotShowImages: boolean) => void;
 };
 
 export const HiveRendererContext = createContext<HiveRendererContextType>({
   hiveRenderer: undefined,
-  setHiveRenderer: () => {}
+  setHiveRenderer: () => {},
+  setAuthor: () => {},
+  setDoNotShowImages: () => {}
 });
 
 export const useHiveRendererContext = () => useContext(HiveRendererContext);
 export const HiveContentRendererProvider: FC<PropsWithChildren> = ({ children }) => {
   const [hiveRenderer, setHiveRenderer] = useState<DefaultRenderer | undefined>(undefined);
-  const createRenderer = async () => {
+  const [author, setAuthor] = useState<string>('');
+  const [doNotShowImages, setDoNotShowImages] = useState<boolean>(false);
+  const createRenderer = async (author: string, doNotShowImages: boolean) => {
+    const isAuthorBlocked = imageUserBlocklist.includes(author);
     const renderer = new DefaultRenderer({
       baseUrl: 'https://hive.blog/',
       breaks: true,
@@ -26,7 +34,7 @@ export const HiveContentRendererProvider: FC<PropsWithChildren> = ({ children })
       addTargetBlankToLinks: true,
       cssClassForInternalLinks: '',
       cssClassForExternalLinks: 'link-external',
-      doNotShowImages: false,
+      doNotShowImages: doNotShowImages || isAuthorBlocked || false,
       ipfsPrefix: '',
       assetsWidth: 640,
       assetsHeight: 480,
@@ -45,11 +53,19 @@ export const HiveContentRendererProvider: FC<PropsWithChildren> = ({ children })
     setHiveRenderer(renderer);
   };
 
-  useEffect(() => {
-    createRenderer();
-  }, []);
+  useLayoutEffect(() => {
+    createRenderer(author, doNotShowImages);
+  }, [author, doNotShowImages]);
+
   return (
-    <HiveRendererContext.Provider value={{ hiveRenderer, setHiveRenderer }}>
+    <HiveRendererContext.Provider
+      value={{
+        hiveRenderer,
+        setHiveRenderer,
+        setAuthor,
+        setDoNotShowImages
+      }}
+    >
       {children}
     </HiveRendererContext.Provider>
   );

@@ -105,14 +105,14 @@ test.describe('Profile page of @gtg', () => {
     await profilePage.gotoProfilePage('@gtg');
     await profilePage.profileBlogTabIsSelected();
 
-    const firstPostItem: Locator = await profilePage.postBlogItem.nth(1);
+    const firstPostItem: Locator = await profilePage.postBlogItem.first();
     const postCommunityLink: Locator = await profilePage.postCommunityLink;
     const postCategoryLink: Locator = await profilePage.postCategoryLink;
 
 
     if (await firstPostItem.filter({ has: postCommunityLink }).isVisible()){
         const firstPostCommunityLinkName: any = await firstPostItem.filter({ has: postCommunityLink }).locator(postCommunityLink).textContent();
-        // console.log('Fist Post Community Name ', await firstPostCommunityLinkName);
+        console.log('Fist Post Community Name ', await firstPostCommunityLinkName);
 
         await postCommunityLink.first().click();
         expect(await communityPage.communityNameTitle.textContent()).toBe(firstPostCommunityLinkName);

@@ -3,6 +3,7 @@
     "no_rewards": "Никаких наград в ожидании погашения.",
     "loading": "Loading",
     "something_went_wrong": "Something went wrong",
+    "unavailable_for_legal_reasons": "Недоступно по юридическим причинам",
     "time_ago": {
       "a_few_seconds": " a few seconds ago",
       "seconds": " seconds ago",
@@ -144,6 +145,7 @@
   },
   "cards": {
     "reblogged": "reblogged",
+    "content_removed": "Контент удален из-за нарушения авторских прав и/или конфиденциальности.",
     "badges": {
       "pinned": "Pinned"
     },
@@ -167,6 +169,7 @@
       "replies": "replies",
       "reply": "Ответить",
       "edit": "Pедактировать",
+      "delete": "Удалить",
       "will_be_hidden": "Will be hidden due to low rating ",
       "load_more": "Load more"
     }
@@ -340,6 +343,7 @@
       "edited": "edited"
     },
     "body": {
+      "copyright": "Этот пост недоступен из-за запроса на авторское право.",
       "images_were_hidden": "Изображения были скрыты из-за низкого рейтинга.",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
@@ -445,6 +449,7 @@
       "account_name": "Имя аккаунта должно быть длиннее",
       "beneficiary_cannot_be_self": "Нельзя указывать себя в качестве бенефициара",
       "beneficiary_percent_invalid": "Процент бенефициара должен быть от 1 до 100",
+      "bad_actor": "Будьте осторожны при отправке на этот аккаунт. Пожалуйста, дважды проверьте ваше написание на возможные попытки фишинга.",
       "add_account": "Добавить аккаунт",
       "post_templates": "Шаблоны постов",
       "manage_your_post_templates": "Управляйте вашими шаблонами постов, другие настройки также будут сохранены/загружены здесь.",

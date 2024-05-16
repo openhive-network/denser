@@ -7,7 +7,7 @@ import {
   transaction,
   NaiAsset,
   ApiAccount
-} from '@hive/wax';
+} from '@hiveio/wax';
 import { isCommunity, parseAsset } from '@ui/lib/utils';
 import { vestsToRshares } from '@ui/lib/utils';
 import { DATA_LIMIT } from './bridge';

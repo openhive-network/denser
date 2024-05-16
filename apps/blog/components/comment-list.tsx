@@ -16,7 +16,7 @@ const CommentList = ({
   parent_depth: number;
   mutedList: IFollowList[];
 }) => {
-  const { hiveRenderer } = useContext(HiveRendererContext);
+  const { hiveRenderer, setAuthor } = useContext(HiveRendererContext);
   let filtered = data.filter((x: Entry) => {
     return x?.parent_author === parent?.author && x?.parent_permlink === parent?.permlink;
   });
@@ -53,6 +53,7 @@ const CommentList = ({
                 key={`${comment.post_id}-item-${comment.depth}-index-${index}`}
                 parent_depth={parent_depth}
                 mutedList={mutedList}
+                setAuthor={setAuthor}
               />
               {comment.children > 0 ? (
                 <CommentList
