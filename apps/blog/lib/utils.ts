@@ -226,7 +226,6 @@ export function extractLinks(text: string): string[] {
       }
     });
   }
-  console.log(matches);
   return matches;
 }
 
