@@ -13,6 +13,7 @@ import { Icons } from '@ui/components/icons';
 import { Input } from '@ui/components/input';
 import { ReactNode, useState } from 'react';
 import { Autocompleter } from './autocompleter';
+import badActorList from '@ui/config/lists/bad-actor-list';
 
 type Amount = {
   hive: string;
@@ -42,7 +43,7 @@ export function TransferDialog({
   currency: string;
   username?: string;
 }) {
-  const data = {
+  const defaultValue = {
     title: '',
     description: '',
     amount: '',
@@ -54,6 +55,8 @@ export function TransferDialog({
   const [curr, setCurr] = useState(currency);
   const [value, setValue] = useState('');
   const [advanced, setAdvanced] = useState(false);
+  const [data, setData] = useState(defaultValue);
+  const badActors = badActorList.includes(data.to);
   switch (type) {
     case 'transfers':
       data.title = 'Transfer to Account';
@@ -129,12 +132,20 @@ export function TransferDialog({
             </div>
           </div>
           {(advanced || !data.advancedBtn) && (
-            <div className="grid grid-cols-4 items-center gap-4">
-              To
-              <div className="col-span-3">
-                <Autocompleter />
+            <>
+              <div className="grid grid-cols-4 items-center gap-4">
+                To
+                <div className="col-span-3">
+                  <Autocompleter value={data.to} onChange={(e) => setData({ ...data, to: e })} />
+                </div>
               </div>
-            </div>
+              {badActors ? (
+                <div className="p-2 text-sm text-red-500">
+                  Use caution sending to this account. Please double check your spelling for possible
+                  phishing.
+                </div>
+              ) : null}
+            </>
           )}
           {type === 'powerUp' && advanced ? (
             <div className="grid grid-cols-4 items-center gap-4">
@@ -195,7 +206,7 @@ export function TransferDialog({
           )}
         </div>
         <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
-          <Button variant="redHover" className="w-fit">
+          <Button variant="redHover" className="w-fit" disabled={badActors}>
             {data.buttonTitle}
           </Button>
           {data.advancedBtn && (

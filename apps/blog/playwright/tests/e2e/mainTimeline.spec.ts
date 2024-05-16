@@ -512,7 +512,7 @@ test.describe('Home page tests', () => {
     // background color before hovering
     expect(
       await homePage.getElementCssPropertyValue(await homePage.getFirstPostListItem, 'background-color')
-    ).toBe('rgba(3, 7, 17, 0.95)');
+    ).toBe('rgb(15, 23, 42)');
 
     await homePage.getFirstPostListItem.hover();
     await homePage.page.waitForTimeout(1000);

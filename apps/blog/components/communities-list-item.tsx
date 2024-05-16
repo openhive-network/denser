@@ -17,7 +17,7 @@ const CommunitiesListItem = ({ community }: { community: Community }) => {
   return (
     <Card
       className={cn(
-        'my-4 flex justify-between hover:bg-accent  hover:text-accent-foreground dark:bg-background/95 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground'
+        'my-4 flex justify-between hover:bg-accent  hover:text-accent-foreground dark:bg-slate-900 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground'
       )}
       data-testid="community-list-item"
     >

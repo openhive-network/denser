@@ -16,7 +16,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import useManabars from './hooks/useManabars';
 import { AdvancedSettingsPostForm } from './advanced_settings_post_form';
 import MdEditor from './md-editor';
-import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { useLocalStorage } from 'usehooks-ts';
 import { useTranslation } from 'next-i18next';
@@ -32,9 +32,10 @@ import { debounce, extractUrlsFromJsonString, extractYouTubeVideoIds } from '../
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
-
 import { getLogger } from '@ui/lib/logging';
 import { cn } from '@ui/lib/utils';
+import SelectImageList from './select-image-list';
+
 const logger = getLogger('app');
 
 const MAX_TAGS = 8;
@@ -85,58 +86,13 @@ function validateAltUsernameInput(value: string, t: TFunction<'common_wallet', u
     ? t('submit_page.must_contain_only')
     : null;
 }
-function imgYoutube(img: string) {
-  const checkImg = img.includes('youtube')
+export function imagePicker(img: string) {
+  const checkImg = img.includes('youtu')
     ? `https://img.youtube.com/vi/${extractYouTubeVideoIds(extractUrlsFromJsonString(img))[0]}/0.jpg`
     : img;
   return checkImg;
 }
 
-const AllImages = ({
-  content,
-  value,
-  onChange,
-  t
-}: {
-  content: string;
-  value: string;
-  onChange: (e: string) => void;
-  t: TFunction<'common_blog', undefined>;
-}) => {
-  const images = useMemo(() => extractUrlsFromJsonString(content), [content]);
-  const uniqueImages = Array.from(new Set(images));
-  return uniqueImages.length > 0 ? (
-    <div>
-      <span>{t('submit_page.cover_image')}</span>
-      <div className="flex flex-wrap">
-        {uniqueImages.map((e) => (
-          <div className="group" key={e}>
-            <Button
-              type="button"
-              variant="basic"
-              className="relative flex h-fit w-[62px] items-center overflow-hidden rounded-none bg-transparent p-0 group-hover:h-[80px] group-hover:w-[130px]"
-              onClick={() => onChange(e)}
-            >
-              <img
-                src={imgYoutube(e)}
-                alt="cover img"
-                //@ts-expect-error
-                onError={(e) => (e.target.style.display = 'none')}
-                loading="lazy"
-                className={clsx(
-                  'h-[60px] w-[60px] object-cover p-1 contrast-50 ease-out group-hover:h-full  group-hover:w-full group-hover:contrast-100 group-hover:duration-700 group-hover:ease-in-out',
-                  {
-                    'bg-red-700 contrast-100': value === e
-                  }
-                )}
-              />
-            </Button>
-          </div>
-        ))}
-      </div>
-    </div>
-  ) : null;
-};
 export default function PostForm({
   username,
   editMode = false,
@@ -291,7 +247,7 @@ export default function PostForm({
         communityPosting ? communityPosting : storedPost.category,
         storedPost.postSummary,
         storedPost.payoutType ?? preferences.blog_rewards,
-        imgYoutube(selectedImg)
+        imagePicker(selectedImg)
       );
       form.reset(defaultValues);
       setPreviewContent(undefined);
@@ -429,7 +385,7 @@ export default function PostForm({
                 </FormItem>
               )}
             />
-            <AllImages content={watchedValues.postArea} value={selectedImg} onChange={setSelectedImg} t={t} />
+            <SelectImageList content={watchedValues.postArea} value={selectedImg} onChange={setSelectedImg} />
             {!editMode ? (
               <div className="flex flex-col gap-2">
                 <span>{t('submit_page.post_options')}</span>
@@ -542,9 +498,10 @@ export default function PostForm({
           </form>
         </Form>
         <div
-          className={clsx('flex h-fit flex-col gap-4 lg:w-1/2', {
+          className={clsx('flex flex-col gap-4 lg:w-1/2', {
             hidden: !preview,
-            'lg:w-full': !sideBySide
+            'lg:w-full': !sideBySide,
+            'h-[80vh] ': sideBySide
           })}
         >
           <div className="flex flex-col-reverse sm:flex-row sm:justify-between">
@@ -562,10 +519,7 @@ export default function PostForm({
               dangerouslySetInnerHTML={{
                 __html: hiveRenderer.render(previewContent)
               }}
-              className={cn(
-                'prose h-fit  w-full self-center overflow-scroll break-words border-2 border-border p-2 dark:prose-invert',
-                { 'max-h-[620px]': sideBySide }
-              )}
+              className="prose w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2 dark:prose-invert"
             ></div>
           ) : null}
         </div>

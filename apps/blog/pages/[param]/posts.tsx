@@ -14,6 +14,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import userIllegalContent from '@ui/config/lists/user-illegal-content';
 
 const UserPosts = () => {
   const { t } = useTranslation('common_blog');
@@ -56,6 +57,7 @@ const UserPosts = () => {
       enabled: Boolean(sort) && !!username
     }
   );
+  const legalBlockedUser = userIllegalContent.includes(username);
 
   useEffect(() => {
     if (inView) {
@@ -73,109 +75,127 @@ const UserPosts = () => {
             <TabsTrigger value="payout">{t('navigation.profil_posts_tab_navbar.payouts')}</TabsTrigger>
           </TabsList>
           <TabsContent value="posts">
-            {!isLoading && data ? (
+            {!legalBlockedUser ? (
               <>
-                {data.pages.map((page, index) => {
-                  return page && page.length > 0 ? (
-                    <PostList data={page} key={`posts-${index}`} />
-                  ) : (
-                    <div
-                      key="empty"
-                      className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
-                      data-testid="user-has-not-made-any-post-yet"
-                    >
-                      {t('user_profil.no_posts_yet', { username: username })}
+                {!isLoading && data ? (
+                  <>
+                    {data.pages.map((page, index) => {
+                      return page && page.length > 0 ? (
+                        <PostList data={page} key={`posts-${index}`} />
+                      ) : (
+                        <div
+                          key="empty"
+                          className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
+                          data-testid="user-has-not-made-any-post-yet"
+                        >
+                          {t('user_profil.no_posts_yet', { username: username })}
+                        </div>
+                      );
+                    })}
+                    <div>
+                      <button
+                        ref={ref}
+                        onClick={() => fetchNextPage()}
+                        disabled={!hasNextPage || isFetchingNextPage}
+                      >
+                        {isFetchingNextPage ? (
+                          <PostSkeleton />
+                        ) : hasNextPage ? (
+                          'Load Newer'
+                        ) : data.pages[0] && data.pages[0].length > 0 ? (
+                          'Nothing more to load'
+                        ) : null}
+                      </button>
                     </div>
-                  );
-                })}
-                <div>
-                  <button
-                    ref={ref}
-                    onClick={() => fetchNextPage()}
-                    disabled={!hasNextPage || isFetchingNextPage}
-                  >
-                    {isFetchingNextPage ? (
-                      <PostSkeleton />
-                    ) : hasNextPage ? (
-                      'Load Newer'
-                    ) : data.pages[0] && data.pages[0].length > 0 ? (
-                      'Nothing more to load'
-                    ) : null}
-                  </button>
-                </div>
-                <div>{isFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
+                    <div>{isFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
+                  </>
+                ) : null}
               </>
-            ) : null}
+            ) : (
+              <div className="p-10">{t('global.unavailable_for_legal_reasons')}</div>
+            )}
           </TabsContent>
           <TabsContent value="comments">
-            {!isLoading && data ? (
+            {!legalBlockedUser ? (
               <>
-                {data.pages.map((page, index) => {
-                  return page && page.length > 0 ? (
-                    <RepliesList data={page} key={`replies-${index}`} />
-                  ) : (
-                    <div
-                      key="empty"
-                      className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
-                      data-testid="user-has-not-made-any-post-yet"
-                    >
-                      {t('user_profil.no_posts_yet', { username: username })}
+                {!isLoading && data ? (
+                  <>
+                    {data.pages.map((page, index) => {
+                      return page && page.length > 0 ? (
+                        <RepliesList data={page} key={`replies-${index}`} />
+                      ) : (
+                        <div
+                          key="empty"
+                          className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
+                          data-testid="user-has-not-made-any-post-yet"
+                        >
+                          {t('user_profil.no_posts_yet', { username: username })}
+                        </div>
+                      );
+                    })}
+                    <div>
+                      <button
+                        ref={ref}
+                        onClick={() => fetchNextPage()}
+                        disabled={!hasNextPage || isFetchingNextPage}
+                      >
+                        {isFetchingNextPage ? (
+                          <PostSkeleton />
+                        ) : hasNextPage ? (
+                          'Load Newer'
+                        ) : data.pages[0] && data.pages[0].length > 0 ? (
+                          'Nothing more to load'
+                        ) : null}
+                      </button>
                     </div>
-                  );
-                })}
-                <div>
-                  <button
-                    ref={ref}
-                    onClick={() => fetchNextPage()}
-                    disabled={!hasNextPage || isFetchingNextPage}
-                  >
-                    {isFetchingNextPage ? (
-                      <PostSkeleton />
-                    ) : hasNextPage ? (
-                      'Load Newer'
-                    ) : data.pages[0] && data.pages[0].length > 0 ? (
-                      'Nothing more to load'
-                    ) : null}
-                  </button>
-                </div>
-                <div>{isFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
+                    <div>{isFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
+                  </>
+                ) : null}
               </>
-            ) : null}
+            ) : (
+              <div className="p-10">{t('global.unavailable_for_legal_reasons')}</div>
+            )}
           </TabsContent>
           <TabsContent value="payout">
-            {!isLoading && data ? (
+            {!legalBlockedUser ? (
               <>
-                {data.pages.map((page, index) => {
-                  return page && page.length > 0 ? (
-                    <PostList data={page} key={`payout-${index}`} />
-                  ) : (
-                    <div
-                      key="empty"
-                      className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
-                      data-testid="user-no-pending-payouts"
-                    >
-                      {t('user_profil.no_pending_payouts')}
+                {!isLoading && data ? (
+                  <>
+                    {data.pages.map((page, index) => {
+                      return page && page.length > 0 ? (
+                        <PostList data={page} key={`payout-${index}`} />
+                      ) : (
+                        <div
+                          key="empty"
+                          className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
+                          data-testid="user-no-pending-payouts"
+                        >
+                          {t('user_profil.no_pending_payouts')}
+                        </div>
+                      );
+                    })}
+                    <div>
+                      <button
+                        ref={ref}
+                        onClick={() => fetchNextPage()}
+                        disabled={!hasNextPage || isFetchingNextPage}
+                      >
+                        {isFetchingNextPage ? (
+                          <PostSkeleton />
+                        ) : hasNextPage ? (
+                          t('user_profil.load_newer')
+                        ) : data.pages[0] && data.pages[0].length > 0 ? (
+                          t('user_profil.nothing_more_to_load')
+                        ) : null}
+                      </button>
                     </div>
-                  );
-                })}
-                <div>
-                  <button
-                    ref={ref}
-                    onClick={() => fetchNextPage()}
-                    disabled={!hasNextPage || isFetchingNextPage}
-                  >
-                    {isFetchingNextPage ? (
-                      <PostSkeleton />
-                    ) : hasNextPage ? (
-                      t('user_profil.load_newer')
-                    ) : data.pages[0] && data.pages[0].length > 0 ? (
-                      t('user_profil.nothing_more_to_load')
-                    ) : null}
-                  </button>
-                </div>
-                <div>{isFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
+                    <div>{isFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
+                  </>
+                ) : null}{' '}
               </>
-            ) : null}
+            ) : (
+              <div className="p-10">{t('global.unavailable_for_legal_reasons')}</div>
+            )}
           </TabsContent>
         </Tabs>
       </div>

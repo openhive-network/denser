@@ -14,31 +14,31 @@ const ImageGallery = ({ children }: PropsWithChildren) => {
     const openOnIndex = (index: number) => {
       return () => setIndex(index);
     };
-    if (ref.current) {
+    const images = ref.current ? ref.current.querySelectorAll<HTMLImageElement>(IMAGE_QUERY_SELECTOR) : [];
+    if (images && images.length > 0) {
       setSlides(
-        Array.from(ref.current.querySelectorAll<HTMLImageElement>(IMAGE_QUERY_SELECTOR)).map(
-          (image: HTMLImageElement) => ({
-            src: image.src,
-            srcSet: [
-              {
-                src: image.src,
-                width: image.width,
-                height: image.height
-              }
-            ]
-          })
-        )
+        Array.from(images).map((image: HTMLImageElement) => ({
+          src: image.src,
+          srcSet: [
+            {
+              src: image.src,
+              width: image.width,
+              height: image.height
+            }
+          ]
+        }))
       );
-      ref.current.querySelectorAll(IMAGE_QUERY_SELECTOR).forEach((val, i) => {
+      images.forEach((val, i) => {
         val.addEventListener('click', openOnIndex(i));
       });
     }
     return () => {
-      ref.current?.querySelectorAll(IMAGE_QUERY_SELECTOR).forEach((val, i) => {
+      images.forEach((val, i) => {
         val.addEventListener('click', openOnIndex(i));
       });
     };
-  }, [ref.current]);
+  }, [children]);
+
   return (
     <div>
       <Lightbox

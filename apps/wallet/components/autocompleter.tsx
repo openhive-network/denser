@@ -4,9 +4,17 @@ type Item = {
   username: string;
   about: string;
 };
-export function Autocompleter({ items }: { items?: Item[] }) {
+export function Autocompleter({
+  value,
+  onChange,
+  items
+}: {
+  value: string;
+  onChange: (e: string) => void;
+  items?: Item[];
+}) {
   const [isOpen, setIsOpen] = useState(false);
-  const [value, setValue] = useState('');
+
   const inputRef = useRef<HTMLInputElement | null>(null);
   const autocompleteRef = useRef<HTMLDivElement | null>(null);
   const handleInputFocus = () => {
@@ -31,15 +39,15 @@ export function Autocompleter({ items }: { items?: Item[] }) {
         ref={inputRef}
         onFocus={handleInputFocus}
         value={value}
-        onValueChange={(e) => setValue(e)}
+        onValueChange={(e) => onChange(e)}
       />
       <CommandList>
         {isOpen && (
           <CommandGroup className="absolute max-h-36 overflow-scroll bg-white">
             {items &&
               items.map((item) => (
-                <CommandItem key={item.username} className="p-0" onSelect={() => setValue(item.username)}>
-                  <div onClick={(e) => setValue(item.username)} className="w-56 px-2 py-1 even:bg-black">
+                <CommandItem key={item.username} className="p-0" onSelect={() => onChange(item.username)}>
+                  <div onClick={() => onChange(item.username)} className="w-56 px-2 py-1 even:bg-black">
                     {item.username + `(${item.about})`}
                   </div>
                 </CommandItem>
