@@ -12,7 +12,7 @@ import { useSigner } from '@smart-signer/lib/use-signer';
 import { LoginFormSchema as SignInFormSchema } from "../signin-form";
 import { getOperationForLogin } from '@smart-signer/lib/login-operation';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
-import { operation } from '@hive/wax';
+import { operation } from '@hiveio/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');

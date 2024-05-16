@@ -10,7 +10,7 @@ import {
   ReplyBuilder,
   WaxChainApiError,
   future_extensions
-} from '@hive/wax';
+} from '@hiveio/wax';
 import { toast, Toast } from '@hive/ui/components/hooks/use-toast';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';

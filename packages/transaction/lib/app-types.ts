@@ -1,4 +1,4 @@
-import { ApiAccount } from '@hive/wax';
+import { ApiAccount } from '@hiveio/wax';
 import { Authority } from '@hiveio/dhive/lib/chain/account';
 import { Asset } from '@hiveio/dhive/lib/chain/asset';
 
