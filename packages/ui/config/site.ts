@@ -14,7 +14,7 @@ const chainEnv: Record<string, ChainEnv> = {
 const chainId = env('CHAIN_ID') ? env('CHAIN_ID') : MAINNET_CHAIN_ID;
 export const siteConfig = {
   name: 'Hive Blog',
-  url: 'https://hive.blog',
+  url: env('SITE_DOMAIN') || 'https://hive.blog',
   endpoint: `${env('API_ENDPOINT') ? env('API_ENDPOINT') : 'https://api.hive.blog'}`,
   chainId,
   chainEnv: chainEnv[chainId] || chainEnv['testnet'],
