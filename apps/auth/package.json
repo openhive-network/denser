@@ -6,7 +6,7 @@
   "private": false,
   "scripts": {
     "clean": "rm -rf ./public/auth/* && rm -rf ./public/locales/* && rm -rf ./public/smart-signer/*",
-    "copy:worker": "cp ../../node_modules/@hive/hb-auth/dist/worker.js ./public/auth/",
+    "copy:worker": "cp ../../node_modules/@hiveio/hb-auth/dist/worker.js ./public/auth/",
     "predev": "npm run clean",
     "dev": "react-env -- next dev -p 5000 | npx pino-pretty --colorize",
     "devssl": "react-env -- next dev --port 5000 --experimental-https --experimental-https-key ../../ssl/server-key.pem --experimental-https-cert ../../ssl/server-cert.pem | npx pino-pretty --colorize",
@@ -25,8 +25,8 @@
     "@hive/transaction": "*",
     "@hive/tsconfig": "*",
     "@hive/ui": "*",
-    "@hive/wax": "^0.3.8-240425134437",
     "@hiveio/dhive": "^1.2.8",
+    "@hiveio/wax": "^0.3.8-stable.240514120640",
     "@hookform/resolvers": "^3.3.1",
     "@tanstack/react-query": "^4.36.1",
     "http-errors": "^2.0.0",

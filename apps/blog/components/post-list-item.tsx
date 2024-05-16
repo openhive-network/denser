@@ -26,7 +26,10 @@ import VotesComponent from './votes';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useLocalStorage } from 'usehooks-ts';
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
-
+import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
+import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
+import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
+import gdprUserList from '@ui/config/lists/gdpr-user-list';
 const PostListItem = ({
   post,
   isCommunityPage,
@@ -52,9 +55,14 @@ const PostListItem = ({
   );
   const router = useRouter();
   const blacklistCheck = blacklist ? blacklist.some((e) => e.name === post.author) : false;
-
+  const userFromDMCA = dmcaUserList.includes(post.author);
+  const userFromImageBlockList = imageUserBlocklist.includes(post.author);
+  const legalBlockedUser = userIllegalContent.includes(post.author);
   function revealPost() {
     setReveal((reveal) => !reveal);
+  }
+  if (gdprUserList.includes(post.author)) {
+    return null;
   }
   return (
     <li data-testid="post-list-item" className={post.stats?.gray ? 'opacity-50 hover:opacity-100' : ''}>
@@ -215,7 +223,11 @@ const PostListItem = ({
           </CardHeader>
           <div className="flex flex-col md:flex-row">
             <div>
-              {!reveal && post.blacklists.length < 1 ? (
+              {!reveal &&
+              post.blacklists.length < 1 &&
+              !userFromDMCA &&
+              !userFromImageBlockList &&
+              !legalBlockedUser ? (
                 <>
                   <PostImage post={post} />
                 </>
@@ -238,7 +250,11 @@ const PostListItem = ({
                         href={`/${post.category}/@${post.author}/${post.permlink}`}
                         data-testid="post-description"
                       >
-                        {getPostSummary(post.json_metadata, post.body)}
+                        {userFromDMCA
+                          ? t('cards.content_removed')
+                          : legalBlockedUser
+                            ? t('global.unavailable_for_legal_reasons')
+                            : getPostSummary(post.json_metadata, post.body)}
                       </Link>
                     </CardDescription>
                     <Separator orientation="horizontal" className="my-1" />

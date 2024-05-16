@@ -3,7 +3,7 @@ blockchain.
 
 ## Using in Denser application
 
-1. Copy file `../../node_modules/@hive/hb-auth/dist/worker.js` to
+1. Copy file `../../node_modules/@hiveio/hb-auth/dist/worker.js` to
    `public/auth/` when your applications builds. Use webpack CopyPlugin
    to do this, see
    [../../apps/auth/next.config.js](../../apps/auth/next.config.js).

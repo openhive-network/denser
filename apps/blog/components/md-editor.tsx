@@ -19,6 +19,7 @@ import { getLogger } from '@ui/lib/logging';
 import { useSignerContext } from './common/signer';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { useTranslation } from 'next-i18next';
+import imageUserBlocklist from '@ui/config/lists/image-user-blocklist';
 const logger = getLogger('app');
 
 const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false });
@@ -222,7 +223,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
 
   const editChoice = (inputRef: MutableRefObject<HTMLInputElement>) => [imgBtn(inputRef)];
 
-  return (
+  return !imageUserBlocklist?.includes(user.username) ? (
     <div className="bg-white dark:bg-slate-950 dark:text-white">
       <input
         ref={inputRef}
@@ -261,6 +262,19 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
         )}
       </div>
     </div>
+  ) : (
+    <MDEditor
+      preview="edit"
+      value={formValue}
+      aria-placeholder={placeholder ?? ''}
+      onChange={(value) => {
+        setFormValue(value || '');
+      }}
+      commands={[...(commands.getCommands() as ICommand[]), imgBtn(inputRef)]}
+      extraCommands={[]}
+      //@ts-ignore
+      style={{ '--color-canvas-default': 'var(--background)' }}
+    />
   );
 };
 
