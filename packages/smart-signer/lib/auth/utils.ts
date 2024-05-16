@@ -1,7 +1,7 @@
 import * as z from 'zod';
 import { validateHiveAccountName } from '@smart-signer/lib/validators/validate-hive-account-name';
 import { LoginType, User, KeyType } from '@smart-signer/types/common';
-import { TTransactionPackType } from '@hive/wax';
+import { TTransactionPackType } from '@hiveio/wax';
 
 export const username = z.string()
     .superRefine((val, ctx) => {

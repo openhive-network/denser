@@ -7,11 +7,11 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@hive/hb-auth": "^0.0.1-stable.240425154137",
     "@hive/ui": "*",
-    "@hive/wax": "^0.3.8-240425134437",
     "@hiveio/dhive": "^1.2.8",
+    "@hiveio/hb-auth": "^0.0.1-stable.240515114949",
     "@hiveio/hive-js": "^2.0.7",
+    "@hiveio/wax": "^0.3.8-stable.240514120640",
     "@tanstack/react-query": "^4.36.1",
     "change-case": "^5.4.3",
     "cors": "^2.8.5",
