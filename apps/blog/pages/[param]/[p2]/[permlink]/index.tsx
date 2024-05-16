@@ -157,7 +157,7 @@ function PostPage({
   const { hiveRenderer, setAuthor, setDoNotShowImages } = useContext(HiveRendererContext);
 
   const commentSite = post?.depth !== 0 ? true : false;
-  const [mutedPost, setMutedPost] = useState(false);
+  const [mutedPost, setMutedPost] = useState(true);
   const postUrl = () => {
     if (discussionState) {
       const objectWithSmallestDepth = discussionState.reduce((smallestDepth, e) => {
@@ -182,16 +182,23 @@ function PostPage({
   };
 
   useEffect(() => {
-    const id = router.asPath.split('#')[1];
-    document.getElementById(id)?.scrollIntoView({
-      behavior: 'smooth'
-    });
-  }, [router, hiveRenderer, post?.author]);
-
-  useLayoutEffect(() => {
     setDoNotShowImages(mutedPost && !showAnyway);
     setAuthor(post?.author || '');
   }, [setAuthor, setDoNotShowImages, mutedPost, showAnyway, post?.author]);
+
+  useEffect(() => {
+    const exitingFunction = () => {
+      setDoNotShowImages(true);
+    };
+
+    router.events.on('routeChangeStart', exitingFunction);
+    window.addEventListener('beforeunload', exitingFunction);
+
+    return () => {
+      router.events.off('routeChangeStart', exitingFunction);
+      window.removeEventListener('beforeunload', exitingFunction);
+    };
+  }, []);
 
   if (userFromGDPR) {
     return <CustomError />;
