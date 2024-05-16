@@ -10,7 +10,7 @@ import {
   AlertDialogTrigger
 } from '@ui/components/alert-dialog';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { ReactNode } from 'react';
+import { Dispatch, ReactNode, SetStateAction } from 'react';
 import { transactionService } from '@transaction/index';
 import DialogLogin from './dialog-login';
 import { Button } from '@ui/components/button';
@@ -18,11 +18,13 @@ import { Button } from '@ui/components/button';
 export function AlertDialogReblog({
   children,
   username,
-  permlink
+  permlink,
+  setStoredReblogs
 }: {
   children: ReactNode;
   username: string;
   permlink: string;
+  setStoredReblogs: Dispatch<SetStateAction<string[]>>;
 }) {
   const { user } = useUser();
 
@@ -50,6 +52,7 @@ export function AlertDialogReblog({
               className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
               onClick={() => {
                 transactionService.reblog(username, permlink);
+                setStoredReblogs((val) => [...val, permlink]);
               }}
             >
               OK

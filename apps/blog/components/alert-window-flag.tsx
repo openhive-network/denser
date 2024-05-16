@@ -34,7 +34,7 @@ export function AlertDialogFlag({
       <AlertDialogContent className="flex flex-col gap-8 sm:rounded-r-xl ">
         <AlertDialogHeader className="gap-2">
           <div className="flex items-center justify-between">
-            <AlertDialogTitle data-testid="flag-dialog-header">Oflaguj post</AlertDialogTitle>
+            <AlertDialogTitle data-testid="flag-dialog-header">Flag post</AlertDialogTitle>
             <AlertDialogCancel className="border-none hover:text-red-800" data-testid="flag-dialog-close">
               X
             </AlertDialogCancel>

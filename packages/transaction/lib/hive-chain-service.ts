@@ -1,4 +1,4 @@
-import { createHiveChain, IHiveChainInterface, IWaxOptionsChain } from '@hive/wax';
+import { createHiveChain, IHiveChainInterface, IWaxOptionsChain } from '@hiveio/wax';
 import { siteConfig } from '@ui/config/site';
 import { StorageType, StorageBaseOptions } from '@smart-signer/lib/storage-mixin';
 import { isStorageAvailable } from '@smart-signer/lib/utils';
@@ -53,7 +53,7 @@ export class HiveChainService {
         }
         // Set promise result in this class' static property and return
         // it here as well.
-        await this.setHiveChain({ apiEndpoint });
+        await this.setHiveChain({ apiEndpoint, chainId: siteConfig.chainId});
         return HiveChainService.hiveChain;
       };
 

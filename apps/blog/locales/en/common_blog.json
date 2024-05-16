@@ -1,7 +1,9 @@
 {
   "global": {
+    "no_rewards": "No rewards pending redemption.",
     "loading": "Loading",
     "something_went_wrong": "Something went wrong",
+    "unavailable_for_legal_reasons": "Unavailable For Legal Reasons",
     "time_ago": {
       "a_few_seconds": " a few seconds ago",
       "seconds": " seconds ago",
@@ -106,6 +108,9 @@
       "challenges": "Challenges"
     },
     "profil_notifications_tab_navbar": {
+      "unclaimed_rewards": "Unclaimed rewards: ",
+      "redeem": "Redeem",
+      "mark_all": "Mark all as read",
       "all": "All",
       "replies": "Replies",
       "mentions": "Mentions",
@@ -151,6 +156,7 @@
   },
   "cards": {
     "reblogged": "reblogged",
+    "content_removed": "Content removed for copyright and/or privacy violations.",
     "badges": {
       "pinned": "Pinned"
     },
@@ -158,7 +164,11 @@
       "reputation_title": "Reputation",
       "in": "in",
       "upvote": "Upvote",
+      "undo_upvote": "Undo your upvote",
+      "undo_upvote_percent": "Undo your upvote {{votePercent}}%",
       "downvote": "Downvote",
+      "undo_downvote": "Undo your downvote",
+      "undo_downvote_percent": "Undo your downvote {{votePercent}}%",
       "no_votes": "no votes",
       "vote": "1 vote",
       "votes": "{{votes}} votes",
@@ -166,7 +176,12 @@
       "response": "1 response. ",
       "responses": "{{responses}} responses. ",
       "click_to_respond": "Click to respond",
-      "reblog": "Reblog"
+      "reblog": "Reblog",
+      "you_upvoted": "You upvoted {{votePercent}}%",
+      "you_downvoted": "You downvoted {{votePercent}}%",
+      "you_voted": "You voted {{votePercent}}%",
+      "vote_polling_error_message_title": "Warning",
+      "vote_polling_error_message_description": "Failure in checking if user's vote has been included."
     },
     "comment_card": {
       "reveal_comment": "Reveal Comment",
@@ -174,6 +189,7 @@
       "replies": "replies",
       "reply": "Reply",
       "edit": "Edit",
+      "delete": "Delete",
       "will_be_hidden": "Will be hidden due to low rating ",
       "load_more": "Load more"
     }
@@ -342,6 +358,7 @@
       "edited": "edited"
     },
     "body": {
+      "copyright": "This post is not available due to a copyright claim.",
       "images_were_hidden": "Images were hidden due to low ratings.",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
@@ -389,6 +406,7 @@
     }
   },
   "submit_page": {
+    "cover_image": "Select your cover image:",
     "my_communities": "My Communities",
     "others_communities": "Others Communities",
     "disable_side": "Disable side-by-side editor",
@@ -399,6 +417,8 @@
     "show_preview": "Show preview",
     "title": "Title",
     "insert_images_by_dragging": "Insert images by dragging & dropping or by ",
+    "insert_images_info": "Selecting image is provide in editor toolbar via picture icon",
+    "insert_images_text": "Select image",
     "selecting_them": "selecting them",
     "post_summary": "Post summary(for posts & SEO, max 140 chars)",
     "enter_your_tags": "Enter your tags separated by a space",
@@ -421,6 +441,8 @@
     "html_not_supported": "HTML is not supported here",
     "advanced_tooltip": "Here you can set post options such as author rewards split, max accepted payout, beneficiaries & post templates",
     "advanced_settings_dialog": {
+      "load": "Load",
+      "template_loaded": "Template loaded",
       "changes_saved": "Changes saved",
       "advanced_settings": "Advanced settings",
       "maximum_accepted_payout": "Maximum Accepted Payout",
@@ -430,10 +452,11 @@
       "decline_payout": "Decline Payout",
       "custom_value": "Custom value",
       "cannot_be_less_than": "Value cannot be less than 0",
+      "cannot_be_more_than": "Value cannot be more than 999999",
       "author_rewards": "Author rewards",
       "what_type_of_tokens": "What type of tokens do you want as rewards from this post?",
       "power_up": " Power up 100%",
-      "default": "Default: 50% HBD / 50% HP",
+      "default": "Default: ",
       "update": "Update",
       "delete": "Delete",
       "your_percent": "Your percent cannot be less than 0",
@@ -441,6 +464,7 @@
       "account_name": "Account name should be longer",
       "beneficiary_cannot_be_self": "Cannot specify self as beneficiary",
       "beneficiary_percent_invalid": "Beneficiary percentage must be from 1-100",
+      "bad_actor": "Use caution sending to this account. Please double check your spelling for possible phishing.",
       "add_account": "Add Account",
       "post_templates": "Post templates",
       "manage_your_post_templates": "Manage your post templates, other settings here will also be saved/loaded.",
@@ -470,5 +494,60 @@
     "placeholder": "Search",
     "no_results": "Nothing was found.",
     "error": "There was an error"
+  },
+  "settings_page": {
+    "invalid_url": "Invalid URL",
+    "name_is_too_long": "Name is too long",
+    "name_must_not_begin_with": "Name must not begin with @",
+    "about_is_too_long": "About is too long",
+    "location_is_too_long": "Location is too long",
+    "website_url_is_too_long": "Website URL is too long",
+    "public_profile_settings": "Public Profile Settings",
+    "witness_owner_is_too_long": "Witness owner username is too long",
+    "witness_description_is_too_long": "Witness description is too long",
+    "description_is_too_long": "Description is too long",
+    "preferences": "Preferences",
+    "not_safe_for_work_nsfw_content": "Not safe for work (NSFW) content",
+    "always_hide": "Always hide",
+    "always_warn": "Always warn",
+    "always_show": "Always show",
+    "choose_default_blog_payout": "Blog post rewards",
+    "choose_default_comment_payout": "Comment post rewards",
+    "choose_language": "Choose Language",
+    "muted_users": "Muted Users",
+    "unmute": "unmute",
+    "decline_payout": " Decline Payout",
+    "power_up": "Power Up 100%",
+    "update": "Update",
+    "upload_image": "Upload an image",
+    "uploading_image": "Uploading image",
+    "profile_image_url": "Profile picture url",
+    "cover_image_url": "Cover image url (Optimal: 2048 x 512 px)",
+    "profile_name": "Display Name",
+    "profile_about": "About",
+    "profile_location": "Location",
+    "profile_website": "Website",
+    "blacklist_description": "Blacklist Description",
+    "mute_list_description": "Mute List Description",
+    "profile_witness_owner": "Witness owner",
+    "profile_witness_description": "Witness description",
+    "saved": "Saved!",
+    "choose_preferred_api_endpoint": "Choose Your Preferred API Node",
+    "default_beneficiaries": "Referral System",
+    "default_beneficiaries_enabled": "Use Default Beneficiaries",
+    "default_beneficiaries_disabled": "Opt-Out Referral System",
+    "advanced": "Advanced",
+    "api_endpoint_options": "API Endpoint Options",
+    "endpoint": "Endpoint",
+    "preferred": "Preferred?",
+    "remove": "Remove",
+    "add_api_endpoint": "Add API Endpoint",
+    "reset_endpoints": "Reset Endpoints",
+    "error_bad_url": "This appears to be a bad URL, please check it and try again",
+    "error_bad_cookie": "Unable to get endpoints from cookie",
+    "error_already_exists": "This endpoint is already in the list",
+    "error_cant_remove_active": "You can't remove the current preferred endpoint. Please select a new preferred endpoint first",
+    "error_cant_remove_all": "You must have at least one endpoint in the list",
+    "changes_saved": "Changes saved"
   }
 }

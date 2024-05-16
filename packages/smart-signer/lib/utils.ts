@@ -1,9 +1,10 @@
-import { createWaxFoundation, operation, THexString, ITransactionBuilder, TWaxExtended } from '@hive/wax';
+import { createWaxFoundation, operation, THexString, ITransactionBuilder, TWaxExtended } from '@hiveio/wax';
 import { fetchJson } from '@smart-signer/lib/fetch-json';
 import { isBrowser } from '@ui/lib/logger';
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { KeyType } from '@smart-signer/types/common';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import { siteConfig } from '@ui/config/site';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -11,6 +12,13 @@ const logger = getLogger('app');
 const KEY_TYPES = ['active', 'posting'] as const;
 export type KeyAuthorityType = (typeof KEY_TYPES)[number];
 
+/**
+ * Returns all cookies as object. For use on client only.
+ *
+ * @export
+ * @param {string} cookie
+ * @returns {Record<string, string>}
+ */
 export function parseCookie(cookie: string): Record<string, string> {
   const kv: Record<string, string> = {};
 
@@ -18,13 +26,21 @@ export function parseCookie(cookie: string): Record<string, string> {
 
   cookie.split(';').forEach((part) => {
     const [k, v] = part.trim().split('=');
-    kv[k] = v;
+    kv[k.trim()] = v;
   });
 
   return kv;
 }
 
-export function getCookie(cname: string) {
+/**
+ * Return cookie value for given cookie name. For use on client only.
+ * When cookie doesn't exist returns empty string.
+ *
+ * @export
+ * @param {string} cname
+ * @returns {string}
+ */
+export function getCookie(cname: string): string {
   let name = cname + '=';
   let decodedCookie = decodeURIComponent(document.cookie);
   let ca = decodedCookie.split(';');
@@ -55,11 +71,15 @@ export function isStorageAvailable(
     } else {
       return false;
     }
-    if (strict) {
-      const x = '__storage_test__';
-      storage.setItem(x, x);
-      storage.removeItem(x);
-    }
+
+    // Disabled, because we experience too many writes here.
+    // TODO Check why.
+    // if (strict) {
+    //   const x = '__storage_test__';
+    //   storage.setItem(x, x);
+    //   storage.removeItem(x);
+    // }
+
     return true;
   } catch (e) {
     return false;
@@ -140,7 +160,7 @@ export async function getTransactionDigest(
   txString: string = '',
   hiveApiUrl = 'https://api.hive.blog'
 ): Promise<{ txString: string; digest: THexString }> {
-  const wax = await createWaxFoundation();
+  const wax = await createWaxFoundation({ chainId: siteConfig.chainId });
 
   let txBuilder: ITransactionBuilder;
   if (txString) {
@@ -204,7 +224,7 @@ type TExtendedHiveChain = TWaxExtended<typeof DatabaseApiExtensions>;
 
 /**
  * Verifies signature of transaction or only signature of digest.
- * Uses "@hive/wax" package to create digest nad Hive API
+ * Uses "@hiveio/wax" package to create digest nad Hive API
  * database_api.verify_signatures endpoint.
  *
  * @param {string} username
@@ -220,11 +240,12 @@ export async function verifySignature(
   digest: THexString,
   signature: string,
   keyType: KeyAuthorityType,
-  txString: string = ''
+  txString: string = '',
+  hiveApiUrl = 'https://api.hive.blog'
 ): Promise<boolean> {
   // Create transaction's digest and compare it with argument `digest`.
   if (txString) {
-    const result = await getTransactionDigest(null, txString);
+    const result = await getTransactionDigest(null, txString, hiveApiUrl);
     if (result.digest !== digest) {
       logger.info('Digest do not match');
       return false;
@@ -279,7 +300,8 @@ export async function verifyPrivateKey(
     digestBuf.toString('hex'),
     signature,
     keyType,
-    ''
+    '',
+    apiEndpoint
   );
 
   // Return false when signature is not valid.

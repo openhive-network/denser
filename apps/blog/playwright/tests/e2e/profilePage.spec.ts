@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
 import { ProfilePage } from '../support/pages/profilePage';
 import { PostPage } from '../support/pages/postPage';
-import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
+import { LoginForm } from '../support/pages/loginForm';
 
 test.describe('Profile page of @gtg', () => {
   let homePage: HomePage;
@@ -25,7 +25,7 @@ test.describe('Profile page of @gtg', () => {
     await profilePage.gotoProfilePage('@gtg');
     await profilePage.profileInfoIsVisible(
       '@gtg',
-      'Gandalf the Grey (74)',
+      'Gandalf the Grey (75)',
       'IT Wizard, Hive Witness',
       'Joined June 2016'
     );
@@ -226,40 +226,37 @@ test.describe('Profile page of @gtg', () => {
     await expect(profilePage.advancedSettingsApiResetEndpointsButton).toBeVisible();
   });
 
-  // Skipped due to new login form
-  test.skip('Move to the login modal after clicking the Follow button', async ({ page }) => {
-    const loginDialog = new LoginToVoteDialog(page);
+  test('Move to the login modal after clicking the Follow button', async ({ page }) => {
+    const loginDialog = new LoginForm(page);
     await profilePage.gotoProfilePage('@gtg');
     await profilePage.followButton.click();
 
-    await loginDialog.validateLoginToVoteDialogIsVisible();
-    await loginDialog.closeLoginDialog();
+    await loginDialog.validateDefaultLoginFormIsLoaded();
+    await loginDialog.closeLoginForm();
     await profilePage.profileNavigationIsVisible();
   });
 
-  // Skipped due to new login form
-  test.skip('Move to the login modal after clicking the Follow button in the notifications tab', async ({ page }) => {
-    const loginDialog = new LoginToVoteDialog(page);
+  test('Move to the login modal after clicking the Follow button in the notifications tab', async ({ page }) => {
+    const loginDialog = new LoginForm(page);
     await profilePage.gotoProfilePage('@gtg');
     await profilePage.moveToNotificationsTab();
     await profilePage.profileNotificationsTabIsSelected();
     await profilePage.followButton.click();
 
-    await loginDialog.validateLoginToVoteDialogIsVisible();
-    await loginDialog.closeLoginDialog();
+    await loginDialog.validateDefaultLoginFormIsLoaded();
+    await loginDialog.closeLoginForm();
     await profilePage.profileNavigationIsVisible();
   });
 
-  // Skipped due to new login form
-  test.skip('Move to the login modal after clicking the Follow button in the replies tab', async ({ page }) => {
-    const loginDialog = new LoginToVoteDialog(page);
+  test('Move to the login modal after clicking the Follow button in the replies tab', async ({ page }) => {
+    const loginDialog = new LoginForm(page);
     await profilePage.gotoProfilePage('@gtg');
     await profilePage.moveToRepliesTab();
     await profilePage.profileRepliesTabIsSelected();
     await profilePage.followButton.click();
 
-    await loginDialog.validateLoginToVoteDialogIsVisible();
-    await loginDialog.closeLoginDialog();
+    await loginDialog.validateDefaultLoginFormIsLoaded();
+    await loginDialog.closeLoginForm();
     await profilePage.profileNavigationIsVisible();
   });
 

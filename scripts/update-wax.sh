@@ -2,21 +2,21 @@
 
 set -euo pipefail
 
-WAX_VERSION=${1} # full package name, e.g. @hive/wax@0.3.8-stable.240325165906
-HBAUTH_VERSION=${2} # full package name, e.g. @hive/hb-auth@0.0.1-stable.240327151528
+WAX_VERSION=${1} # full package name, e.g. @hiveio/wax@0.3.8-stable.240325165906
+HBAUTH_VERSION=${2} # full package name, e.g. @hiveio/hb-auth@0.0.1-stable.240327151528
 
 uninstall_packages() {
   echo "Uninstalling packages"
 
-  npm uninstall --save @hive/hb-auth --workspace=packages/smart-signer
+  npm uninstall --save @hiveio/hb-auth --workspace=packages/smart-signer
 
-  npm uninstall --save @hive/wax --workspace=packages/smart-signer
-  npm uninstall --save @hive/wax --workspace=packages/transaction
-  npm uninstall --save @hive/wax --workspace=packages/ui
+  npm uninstall --save @hiveio/wax --workspace=packages/smart-signer
+  npm uninstall --save @hiveio/wax --workspace=packages/transaction
+  npm uninstall --save @hiveio/wax --workspace=packages/ui
 
-  npm uninstall --save @hive/wax --workspace=apps/auth
-  npm uninstall --save @hive/wax --workspace=apps/blog
-  npm uninstall --save @hive/wax --workspace=apps/wallet
+  npm uninstall --save @hiveio/wax --workspace=apps/auth
+  npm uninstall --save @hiveio/wax --workspace=apps/blog
+  npm uninstall --save @hiveio/wax --workspace=apps/wallet
 }
 
 install_packages() {

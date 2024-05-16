@@ -1,7 +1,7 @@
 import { LoginType } from '@smart-signer/types/common';
 import { KeyType } from '@smart-signer/types/common';
 import { StorageType } from '@smart-signer/lib/storage-mixin';
-import { THexString, transaction, TTransactionPackType } from '@hive/wax';
+import { THexString, transaction, TTransactionPackType } from '@hiveio/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -23,6 +23,7 @@ export interface SignerOptions {
   keyType: KeyType;
   apiEndpoint: string;
   storageType: StorageType;
+  chainId: string;
 }
 
 /**
@@ -40,12 +41,13 @@ export abstract class Signer {
   apiEndpoint: string;
   storageType: StorageType;
   pack: TTransactionPackType;
+  chainId: string;
 
   constructor(
-    { username, loginType, keyType, apiEndpoint, storageType }: SignerOptions,
+    { username, loginType, keyType, apiEndpoint, storageType, chainId }: SignerOptions,
     pack: TTransactionPackType
     ) {
-
+    logger.info('Starting Signer constructor');
     if (pack) {
       this.pack = pack;
     } else {
@@ -75,6 +77,11 @@ export abstract class Signer {
       this.storageType = storageType;
     } else {
       throw new Error('Signer constructor: storageType must be non-empty string');
+    }
+    if (chainId) {
+      this.chainId = chainId;
+    } else {
+      throw new Error('Signer constructor: chainId must be non-empty string');
     }
   }
 

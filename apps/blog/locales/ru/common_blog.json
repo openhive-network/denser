@@ -1,7 +1,9 @@
 {
   "global": {
+    "no_rewards": "Никаких наград в ожидании погашения.",
     "loading": "Loading",
     "something_went_wrong": "Something went wrong",
+    "unavailable_for_legal_reasons": "Недоступно по юридическим причинам",
     "time_ago": {
       "a_few_seconds": " a few seconds ago",
       "seconds": " seconds ago",
@@ -105,6 +107,9 @@
       "challenges": "Challenges"
     },
     "profil_notifications_tab_navbar": {
+      "unclaimed_rewards": "Невостребованные награды: ",
+      "redeem": "Выкупать",
+      "mark_all": "отметить все как прочитанное",
       "all": "All",
       "replies": "Ответы",
       "mentions": "Mentions",
@@ -140,6 +145,7 @@
   },
   "cards": {
     "reblogged": "reblogged",
+    "content_removed": "Контент удален из-за нарушения авторских прав и/или конфиденциальности.",
     "badges": {
       "pinned": "Pinned"
     },
@@ -163,6 +169,7 @@
       "replies": "replies",
       "reply": "Ответить",
       "edit": "Pедактировать",
+      "delete": "Удалить",
       "will_be_hidden": "Will be hidden due to low rating ",
       "load_more": "Load more"
     }
@@ -336,6 +343,7 @@
       "edited": "edited"
     },
     "body": {
+      "copyright": "Этот пост недоступен из-за запроса на авторское право.",
       "images_were_hidden": "Изображения были скрыты из-за низкого рейтинга.",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
@@ -383,6 +391,7 @@
     }
   },
   "submit_page": {
+    "cover_image": "Выберите обложку:",
     "my_communities": "Мои сообщества",
     "others_communities": "Другие сообщества",
     "disable_side": "Отключить редактор рядом",
@@ -393,6 +402,8 @@
     "show_preview": "Показать превью",
     "title": "Заголовок",
     "insert_images_by_dragging": "Вставить изображения перетаскиванием или ",
+    "insert_images_info": "Выбор изображения осуществляется на панели инструментов редактора с помощью значка изображения.",
+    "insert_images_text": "Выберите изображение",
     "selecting_them": "выбрав их",
     "post_summary": "Краткое содержание (для постов и SEO, максимум 140 символов)",
     "enter_your_tags": "Введите ваши теги, разделенные пробелом",
@@ -415,6 +426,8 @@
     "html_not_supported": "HTML здесь не поддерживается",
     "advanced_tooltip": "Здесь вы можете установить параметры публикации, такие как разделение вознаграждения автора, максимальная принимаемая выплата, бенефициары и шаблоны сообщений",
     "advanced_settings_dialog": {
+      "load": "Загрузка",
+      "template_loaded": "Шаблон загружен",
       "changes_saved": "Изменения сохранены",
       "advanced_settings": "Расширенные настройки",
       "maximum_accepted_payout": "Максимальная принятая выплата",
@@ -424,10 +437,11 @@
       "decline_payout": "Отклонить выплату",
       "custom_value": "Пользовательское значение",
       "cannot_be_less_than": "Значение не может быть меньше 0",
+      "cannot_be_more_than": "Значение не может быть больше 999999",
       "author_rewards": "Награды для автора",
       "what_type_of_tokens": "Какие типы токенов вы хотите в качестве награды за этот пост?",
       "power_up": "Увеличить на 100%",
-      "default": "По умолчанию: 50% HBD / 50% HP",
+      "default": "По умолчанию: ",
       "update": "Обновить",
       "delete": "Удалить",
       "your_percent": "Ваш процент не может быть меньше 0",
@@ -435,6 +449,7 @@
       "account_name": "Имя аккаунта должно быть длиннее",
       "beneficiary_cannot_be_self": "Нельзя указывать себя в качестве бенефициара",
       "beneficiary_percent_invalid": "Процент бенефициара должен быть от 1 до 100",
+      "bad_actor": "Будьте осторожны при отправке на этот аккаунт. Пожалуйста, дважды проверьте ваше написание на возможные попытки фишинга.",
       "add_account": "Добавить аккаунт",
       "post_templates": "Шаблоны постов",
       "manage_your_post_templates": "Управляйте вашими шаблонами постов, другие настройки также будут сохранены/загружены здесь.",
@@ -464,5 +479,60 @@
     "placeholder": "Поиск",
     "no_results": "Nothing was found.",
     "error": "There was an error"
+  },
+  "settings_page": {
+    "invalid_url": "Неверный URL",
+    "name_is_too_long": "Имя слишком длинное",
+    "name_must_not_begin_with": "Имя не должно начинаться с @",
+    "about_is_too_long": "Описание слишком длинное",
+    "location_is_too_long": "Местоположение слишком длинное",
+    "website_url_is_too_long": "URL веб-сайта слишком длинный",
+    "public_profile_settings": "Настройки общедоступного профиля",
+    "witness_owner_is_too_long": "Имя владельца свидетеля слишком длинное",
+    "witness_description_is_too_long": "Описание свидетеля слишком длинное",
+    "description_is_too_long": "Описание слишком длинное",
+    "preferences": "Настройки",
+    "not_safe_for_work_nsfw_content": "Контент не подходит для работы (NSFW)",
+    "always_hide": "Всегда скрывать",
+    "always_warn": "Всегда предупреждать",
+    "always_show": "Всегда показывать",
+    "choose_default_blog_payout": "Награды за публикации в блоге",
+    "choose_default_comment_payout": "Награды за комментарии",
+    "choose_language": "Выбрать язык",
+    "muted_users": "Приглушенные пользователи",
+    "unmute": "Отменить приглушение",
+    "decline_payout": "Отклонить выплату",
+    "power_up": "Усилить 100%",
+    "update": "Обновить",
+    "upload_image": "Загрузить изображение",
+    "uploading_image": "Загрузка изображения",
+    "profile_image_url": "URL изображения профиля",
+    "cover_image_url": "URL обложки (Оптимальный размер: 2048 x 512 пикселей)",
+    "profile_name": "Отображаемое имя",
+    "profile_about": "О пользователе",
+    "profile_location": "Местоположение",
+    "profile_website": "Веб-сайт",
+    "blacklist_description": "Описание черного списка",
+    "mute_list_description": "Описание списка приглушенных",
+    "profile_witness_owner": "Владелец свидетеля",
+    "profile_witness_description": "Описание свидетеля",
+    "saved": "Сохранено!",
+    "choose_preferred_api_endpoint": "Выберите предпочтительный конечный API",
+    "default_beneficiaries": "Система рефералов",
+    "default_beneficiaries_enabled": "Использовать стандартных рефералов",
+    "default_beneficiaries_disabled": "Отключить систему рефералов",
+    "advanced": "Дополнительно",
+    "api_endpoint_options": "Параметры конечного API",
+    "endpoint": "Конечная точка",
+    "preferred": "Предпочтительная?",
+    "remove": "Удалить",
+    "add_api_endpoint": "Добавить конечную точку API",
+    "reset_endpoints": "Сбросить конечные точки",
+    "error_bad_url": "Этот URL-адрес кажется неправильным, пожалуйста, проверьте его и попробуйте снова",
+    "error_bad_cookie": "Не удалось получить конечные точки из cookie",
+    "error_already_exists": "Эта конечная точка уже есть в списке",
+    "error_cant_remove_active": "Вы не можете удалить текущую предпочтительную конечную точку. Пожалуйста, сначала выберите новую предпочтительную конечную точку",
+    "error_cant_remove_all": "У вас должна быть хотя бы одна конечная точка в списке",
+    "changes_saved": "Изменения сохранены"
   }
 }

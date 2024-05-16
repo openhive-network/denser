@@ -5,6 +5,10 @@
       "cache": false,
       "persistent": true
     },
+    "devssl": {
+      "cache": false,
+      "persistent": true
+    },
     "start": {
       "dependsOn": ["^build"]
     },

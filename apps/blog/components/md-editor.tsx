@@ -14,12 +14,13 @@ import * as commands from '@uiw/react-md-editor/commands';
 import { useTheme } from 'next-themes';
 import { AppConfigService } from '@/blog/lib/app-config/app-config-service';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { Signer } from '@smart-signer/lib/signer/signer';
 import { ICommand, TextAreaTextApi } from '@uiw/react-md-editor';
-import { useSigner } from '@smart-signer/lib/use-signer';
-
 import { getLogger } from '@ui/lib/logging';
+import { useSignerContext } from './common/signer';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+import { useTranslation } from 'next-i18next';
+import imageUserBlocklist from '@ui/config/lists/image-user-blocklist';
 const logger = getLogger('app');
 
 const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false });
@@ -79,21 +80,28 @@ export const onImageUpload = async (
   file: File,
   setMarkdown: Dispatch<SetStateAction<string>>,
   username: string,
-  signer: Signer
+  signer: Signer,
+  htmlMode: boolean
 ) => {
   const url = await uploadImg(file, username, signer);
   const insertedMarkdown = `**![${file.name}](${url})** `;
+  const insertHTML = `<img src="${url}" alt="${file.name}" />`;
 
-  if (!insertedMarkdown) return;
-
-  setMarkdown((prev: string): string => prev + insertedMarkdown);
+  if (htmlMode) {
+    if (!insertHTML) return;
+    setMarkdown((prev: string): string => prev + insertHTML);
+  } else {
+    if (!insertedMarkdown) return;
+    setMarkdown((prev: string): string => prev + insertedMarkdown);
+  }
 };
 
 export const onImageDrop = async (
   dataTransfer: DataTransfer,
   setMarkdown: Dispatch<SetStateAction<string>>,
   username: string,
-  signer: Signer
+  signer: Signer,
+  htmlMode: boolean
 ) => {
   const files = [];
 
@@ -102,24 +110,21 @@ export const onImageDrop = async (
     if (file) files.push(file);
   }
 
-  await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer)));
+  await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer, htmlMode)));
 };
 
 interface MdEditorProps {
   onChange: (value: string) => void;
   persistedValue: string;
   placeholder?: string;
+  htmlMode: boolean;
 }
 
-const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholder }) => {
+const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholder, htmlMode }) => {
+  const { t } = useTranslation('common_blog');
   const { user } = useUser();
   const [formValue, setFormValue] = useState<string>(persistedValue);
-
-  const { resolvedTheme } = useTheme();
-
-  const { signerOptions } = useSigner();
-  const signer = getSigner(signerOptions);
-
+  const { signer } = useSignerContext();
   const inputRef = useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
   const editorRef = useRef(null);
   const textApiRef = useRef<TextAreaTextApi>(null) as MutableRefObject<TextAreaTextApi>;
@@ -130,10 +135,14 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     onChange(formValue);
   }, [formValue]);
 
+  useEffect(() => {
+    setFormValue(persistedValue);
+  }, [persistedValue]);
+
   const inputImageHandler = useCallback(async (event: { target: { files: FileList } }) => {
     if (event.target.files && event.target.files.length === 1) {
       setInsertImg('');
-      await onImageUpload(event.target.files[0], setFormValue, user.username, signer);
+      await onImageUpload(event.target.files[0], setFormValue, user.username, signer, htmlMode);
     }
   }, []);
 
@@ -164,7 +173,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       event.preventDefault();
       event.stopPropagation();
       setIsDrag(false);
-      await onImageDrop(event.dataTransfer, setFormValue, signer.username, signer);
+      await onImageDrop(event.dataTransfer, setFormValue, signer.username, signer, htmlMode);
     },
     []
   );
@@ -178,21 +187,33 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       executeCommand: (arg0: commands.ICommand<string>, arg1: string | undefined) => void
     ) => {
       return (
-        <button
-          type="button"
-          aria-label="Insert title3"
-          disabled={disabled}
-          onClick={() => {
-            executeCommand(command, command.groupName);
-          }}
-        >
-          <svg width="12" height="12" viewBox="0 0 20 20">
-            <path
-              fill="currentColor"
-              d="M15 9c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm4-7H1c-.55 0-1 .45-1 1v14c0 .55.45 1 1 1h18c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1zm-1 13l-6-5-2 2-4-5-4 8V4h16v11z"
-            ></path>
-          </svg>
-        </button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger
+              type="button"
+              aria-label={t('submit_page.insert_images_text')}
+              disabled={disabled}
+              onClick={() => {
+                executeCommand(command, command.groupName);
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+              </svg>
+            </TooltipTrigger>
+            <TooltipContent>{t('submit_page.insert_images_text')}</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       );
     },
     execute: (state: commands.ExecuteState, api: TextAreaTextApi) => {
@@ -203,8 +224,8 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
 
   const editChoice = (inputRef: MutableRefObject<HTMLInputElement>) => [imgBtn(inputRef)];
 
-  return (
-    <div>
+  return !imageUserBlocklist?.includes(user.username) ? (
+    <div className="bg-white dark:bg-slate-950 dark:text-white">
       <input
         ref={inputRef}
         className="hidden"
@@ -242,6 +263,19 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
         )}
       </div>
     </div>
+  ) : (
+    <MDEditor
+      preview="edit"
+      value={formValue}
+      aria-placeholder={placeholder ?? ''}
+      onChange={(value) => {
+        setFormValue(value || '');
+      }}
+      commands={[...(commands.getCommands() as ICommand[]), imgBtn(inputRef)]}
+      extraCommands={[]}
+      //@ts-ignore
+      style={{ '--color-canvas-default': 'var(--background)' }}
+    />
   );
 };
 

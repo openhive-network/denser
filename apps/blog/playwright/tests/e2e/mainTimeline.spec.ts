@@ -1,18 +1,18 @@
 import { expect, test } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
-import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
+import { LoginForm } from '../support/pages/loginForm';
 import { ReblogThisPostDialog } from '../support/pages/reblogThisPostDialog';
 import { ProfilePage } from '../support/pages/profilePage';
 import { ApiHelper } from '../support/apiHelper';
 
 test.describe('Home page tests', () => {
   let homePage: HomePage;
-  let loginDialog: LoginToVoteDialog;
+  let loginDialog: LoginForm;
   let reblogDialog: ReblogThisPostDialog;
 
   test.beforeEach(async ({ page }) => {
     homePage = new HomePage(page);
-    loginDialog = new LoginToVoteDialog(page);
+    loginDialog = new LoginForm(page);
     reblogDialog = new ReblogThisPostDialog(page);
   });
 
@@ -512,7 +512,7 @@ test.describe('Home page tests', () => {
     // background color before hovering
     expect(
       await homePage.getElementCssPropertyValue(await homePage.getFirstPostListItem, 'background-color')
-    ).toBe('rgba(3, 7, 17, 0.95)');
+    ).toBe('rgb(15, 23, 42)');
 
     await homePage.getFirstPostListItem.hover();
     await homePage.page.waitForTimeout(1000);
@@ -649,77 +649,6 @@ test.describe('Home page tests', () => {
     await expect(homePage.getNavSearchInput).toHaveAttribute('placeholder', 'Search...');
     // validate the 'sort by' dropdown list is visible
     await expect(page.locator('[data-testid="search-sort-by-dropdown-list"]')).toBeVisible();
-  });
-
-  // Skipped due to new login form
-  test.skip('navigation Hbauth link is visible', async ({ page }) => {
-    await homePage.goto();
-
-    await expect(homePage.getNavHbauthLink).toBeVisible();
-  });
-
-  // Skipped due to new login page
-  test.skip('validate styles of navigation Hbauth link in the light mode', async ({ page }) => {
-    await homePage.goto();
-
-    await expect(homePage.getNavHbauthButton).toBeVisible();
-    await expect(await homePage.getElementCssPropertyValue(await homePage.getNavHbauthButton, 'color')).toBe(
-      'rgb(255, 255, 255)'
-    );
-    await expect(
-      await homePage.getElementCssPropertyValue(await homePage.getNavHbauthButton, 'background-color')
-    ).toBe('rgb(31, 41, 55)');
-    await expect(
-      await homePage.getElementCssPropertyValue(await homePage.getNavHbauthButton, 'box-shadow')
-    ).toBe(
-      'rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(220, 38, 38) 0px 4px 6px -1px, rgb(220, 38, 38) 0px 2px 4px -2px'
-    );
-    await homePage.getNavHbauthLink.hover();
-    await homePage.page.waitForTimeout(1000);
-    await expect(await homePage.getElementCssPropertyValue(await homePage.getNavHbauthButton, 'color')).toBe(
-      'rgb(255, 255, 255)'
-    );
-    await expect(
-      await homePage.getElementCssPropertyValue(await homePage.getNavHbauthButton, 'background-color')
-    ).toBe('rgb(220, 38, 38)');
-    await expect(
-      await homePage.getElementCssPropertyValue(await homePage.getNavHbauthButton, 'box-shadow')
-    ).toBe(
-      'rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(31, 41, 55) 0px 4px 6px -1px, rgb(31, 41, 55) 0px 2px 4px -2px'
-    );
-  });
-
-  // Skipped due to new login form
-  test.skip('validate styles of navigation Hbauth link in the dark mode', async ({ page }) => {
-    await homePage.goto();
-    await homePage.changeThemeMode('Dark');
-    await homePage.validateThemeModeIsDark();
-    await homePage.page.waitForTimeout(1000);
-    await expect(homePage.getNavHbauthLink).toBeVisible();
-    await expect(await homePage.getElementCssPropertyValue(await homePage.getNavHbauthButton, 'color')).toBe(
-      'rgb(255, 255, 255)'
-    );
-    await expect(
-      await homePage.getElementCssPropertyValue(await homePage.getNavHbauthButton, 'background-color')
-    ).toBe('rgb(31, 41, 55)');
-    await expect(
-      await homePage.getElementCssPropertyValue(await homePage.getNavHbauthButton, 'box-shadow')
-    ).toBe(
-      'rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(220, 38, 38) 0px 4px 6px -1px, rgb(220, 38, 38) 0px 2px 4px -2px'
-    );
-    await homePage.getNavHbauthLink.hover();
-    await homePage.page.waitForTimeout(1000);
-    await expect(await homePage.getElementCssPropertyValue(await homePage.getNavHbauthButton, 'color')).toBe(
-      'rgb(255, 255, 255)'
-    );
-    await expect(
-      await homePage.getElementCssPropertyValue(await homePage.getNavHbauthButton, 'background-color')
-    ).toBe('rgb(220, 38, 38)');
-    await expect(
-      await homePage.getElementCssPropertyValue(await homePage.getNavHbauthButton, 'box-shadow')
-    ).toBe(
-      'rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(31, 41, 55) 0px 4px 6px -1px, rgb(31, 41, 55) 0px 2px 4px -2px'
-    );
   });
 
   test('navigation Login link is visible', async ({ page }) => {
@@ -899,13 +828,12 @@ test.describe('Home page tests', () => {
     ).toBe('rgb(220, 38, 38)');
   });
 
-  // Skipped due to new login form
-  test.skip('click upvote button and move to the dialog "Login to Vote" ', async ({ page }) => {
+  test('click upvote button and move to the dialog "Login to Vote" ', async ({ page }) => {
     await homePage.goto();
 
     await homePage.getFirstPostUpvoteButton.click();
-    await loginDialog.validateLoginToVoteDialogIsVisible();
-    await loginDialog.closeLoginDialog();
+    await loginDialog.validateDefaultLoginFormIsLoaded();
+    await loginDialog.closeLoginForm();
     await homePage.isTrendingCommunitiesVisible();
   });
 
@@ -999,13 +927,12 @@ test.describe('Home page tests', () => {
     ).toBe('rgb(75, 85, 99)');
   });
 
-  // Skipped due to login form
-  test.skip('click downvote button and move to the dialog "Login to Vote" ', async ({ page }) => {
+  test('click downvote button and move to the login dialog', async ({ page }) => {
     await homePage.goto();
 
     await homePage.getFirstPostDownvoteButton.click();
-    await loginDialog.validateLoginToVoteDialogIsVisible();
-    await loginDialog.closeLoginDialog();
+    await loginDialog.validateDefaultLoginFormIsLoaded();
+    await loginDialog.closeLoginForm();
     await homePage.isTrendingCommunitiesVisible();
   });
 

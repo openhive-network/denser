@@ -1,7 +1,9 @@
 {
   "global": {
+    "no_rewards": "Aucune récompense en attente d'échange.",
     "loading": "Loading",
     "something_went_wrong": "Something went wrong",
+    "unavailable_for_legal_reasons": "Indisponible pour des raisons légales",
     "time_ago": {
       "a_few_seconds": " a few seconds ago",
       "seconds": " seconds ago",
@@ -105,6 +107,9 @@
       "challenges": "Challenges"
     },
     "profil_notifications_tab_navbar": {
+      "unclaimed_rewards": "Récompenses non réclamées: ",
+      "redeem": "Racheter",
+      "mark_all": "Tout marquer comme lu",
       "all": "All",
       "replies": "Réponses",
       "mentions": "Mentions",
@@ -140,6 +145,7 @@
   },
   "cards": {
     "reblogged": "reblogé",
+    "content_removed": "Contenu supprimé pour violation des droits d'auteur et/ou de la vie privée.",
     "badges": {
       "pinned": "Pinned"
     },
@@ -163,6 +169,7 @@
       "replies": "replies",
       "reply": "Reply",
       "edit": "Modifier",
+      "delete": "Supprimer",
       "will_be_hidden": "Will be hidden due to low rating ",
       "load_more": "Load more"
     }
@@ -330,6 +337,7 @@
       "edited": "edited"
     },
     "body": {
+      "copyright": "Ce post n'est pas disponible en raison d'une réclamation de droits d'auteur.",
       "images_were_hidden": "Les images sont masqués en raison d'une faible évaluation.",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
@@ -377,6 +385,7 @@
     }
   },
   "submit_page": {
+    "cover_image": "Sélectionnez votre image de couverture :",
     "my_communities": "Mes communautés",
     "others_communities": "Autres communautés",
     "disable_side": "Désactiver l'éditeur côte à côte",
@@ -387,6 +396,8 @@
     "show_preview": "Afficher l'aperçu",
     "title": "Titre",
     "insert_images_by_dragging": "Insérer des images en les faisant glisser et en les déposant ou en ",
+    "insert_images_info": "La sélection de l'image est fournie dans la barre d'outils de l'éditeur via l'icône d'image",
+    "insert_images_text": "Sélectionner une image",
     "selecting_them": "les sélectionnant",
     "post_summary": "Résumé de la publication (pour les articles et le référencement, max 140 caractères)",
     "enter_your_tags": "Saisissez vos balises séparées par un espace",
@@ -409,6 +420,8 @@
     "html_not_supported": "HTML n'est pas pris en charge ici",
     "advanced_tooltip": "Ici, vous pouvez définir des options de publication telles que la répartition des récompenses de l'auteur, le paiement maximum accepté, les bénéficiaires et les modèles de publication",
     "advanced_settings_dialog": {
+      "load": "Charger",
+      "template_loaded": "Modèle chargé",
       "changes_saved": "Changements enregistrés",
       "advanced_settings": "Paramètres avancés",
       "maximum_accepted_payout": "Paiement maximum accepté",
@@ -418,10 +431,11 @@
       "decline_payout": "Refuser le paiement",
       "custom_value": "Valeur personnalisée",
       "cannot_be_less_than": "La valeur ne peut pas être inférieure à 0",
+      "cannot_be_more_than": "La valeur ne peut pas être supérieure à 999999",
       "author_rewards": "Récompenses de l'auteur",
       "what_type_of_tokens": "Quel type de jetons souhaitez-vous comme récompenses pour cette publication ?",
       "power_up": "Mise à niveau à 100%",
-      "default": "Par défaut : 50% HBD / 50% HP",
+      "default": "Par défaut: ",
       "update": "Mettre à jour",
       "delete": "Supprimer",
       "your_percent": "Votre pourcentage ne peut pas être inférieur à 0",
@@ -429,6 +443,7 @@
       "account_name": "Le nom du compte doit être plus long",
       "beneficiary_cannot_be_self": "Impossible de spécifier soi-même comme bénéficiaire",
       "beneficiary_percent_invalid": "Le pourcentage du bénéficiaire doit être compris entre 1 et 100",
+      "bad_actor": "Faites attention en envoyant à ce compte. Veuillez vérifier votre orthographe pour éviter le phishing possible.",
       "add_account": "Ajouter un compte",
       "post_templates": "Modèles de publication",
       "manage_your_post_templates": "Gérez vos modèles de publication, d'autres paramètres seront également sauvegardés/chargés ici.",
@@ -458,5 +473,61 @@
     "placeholder": "Rechercher",
     "no_results": "Nothing was found.",
     "error": "There was an error"
+  },
+
+  "settings_page": {
+    "invalid_url": "URL invalide",
+    "name_is_too_long": "Le nom est trop long",
+    "name_must_not_begin_with": "Le nom ne doit pas commencer par @",
+    "about_is_too_long": "La description est trop longue",
+    "location_is_too_long": "L'emplacement est trop long",
+    "website_url_is_too_long": "L'URL du site Web est trop longue",
+    "public_profile_settings": "Paramètres du profil public",
+    "witness_owner_is_too_long": "Le nom du propriétaire du témoin est trop long",
+    "witness_description_is_too_long": "La description du témoin est trop longue",
+    "description_is_too_long": "La description est trop longue",
+    "preferences": "Préférences",
+    "not_safe_for_work_nsfw_content": "Contenu non approprié pour le travail (NSFW)",
+    "always_hide": "Toujours masquer",
+    "always_warn": "Toujours avertir",
+    "always_show": "Toujours montrer",
+    "choose_default_blog_payout": "Récompenses des articles de blog par défaut",
+    "choose_default_comment_payout": "Récompenses des commentaires par défaut",
+    "choose_language": "Choisir la langue",
+    "muted_users": "Utilisateurs muets",
+    "unmute": "Annuler le mode muet",
+    "decline_payout": "Refuser le paiement",
+    "power_up": "Augmenter la puissance de 100 %",
+    "update": "Mettre à jour",
+    "upload_image": "Télécharger une image",
+    "uploading_image": "Téléchargement de l'image",
+    "profile_image_url": "URL de l'image de profil",
+    "cover_image_url": "URL de l'image de couverture (Optimal : 2048 x 512 px)",
+    "profile_name": "Nom d'affichage",
+    "profile_about": "À propos",
+    "profile_location": "Emplacement",
+    "profile_website": "Site Web",
+    "blacklist_description": "Description de la liste noire",
+    "mute_list_description": "Description de la liste de muets",
+    "profile_witness_owner": "Propriétaire du témoin",
+    "profile_witness_description": "Description du témoin",
+    "saved": "Sauvegardé !",
+    "choose_preferred_api_endpoint": "Choisissez votre point d'accès API préféré",
+    "default_beneficiaries": "Système de parrainage",
+    "default_beneficiaries_enabled": "Utiliser les bénéficiaires par défaut",
+    "default_beneficiaries_disabled": "Désactiver le système de parrainage",
+    "advanced": "Avancé",
+    "api_endpoint_options": "Options de point d'accès API",
+    "endpoint": "Point d'accès",
+    "preferred": "Préféré?",
+    "remove": "Supprimer",
+    "add_api_endpoint": "Ajouter un point d'accès API",
+    "reset_endpoints": "Réinitialiser les points d'accès",
+    "error_bad_url": "Il semble que ce soit une mauvaise URL, veuillez la vérifier et réessayer",
+    "error_bad_cookie": "Impossible d'obtenir les points d'accès à partir du cookie",
+    "error_already_exists": "Ce point d'accès est déjà dans la liste",
+    "error_cant_remove_active": "Vous ne pouvez pas supprimer le point d'accès préféré actuel. Veuillez d'abord sélectionner un nouveau point d'accès préféré",
+    "error_cant_remove_all": "Vous devez avoir au moins un point d'accès dans la liste",
+    "changes_saved": "Modifications enregistrées"
   }
 }

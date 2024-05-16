@@ -4,7 +4,7 @@ import { ProfilePage } from '../support/pages/profilePage';
 import { CommunitiesPage } from '../support/pages/communitiesPage';
 import { ReblogThisPostDialog } from '../support/pages/reblogThisPostDialog';
 import { PostPage } from '../support/pages/postPage';
-import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
+import { LoginForm } from '../support/pages/loginForm';
 import { ApiHelper } from '../support/apiHelper';
 import { MakePostWarningPage } from '../support/pages/makePostWarningPage';
 
@@ -14,7 +14,7 @@ test.describe('Communities page tests', () => {
   let communitiesPage: CommunitiesPage;
   let reblogThisPostDialog: ReblogThisPostDialog;
   let postPage: PostPage;
-  let loginToVoteDialog: LoginToVoteDialog;
+  let defaultLoginForm: LoginForm;
   let apiHelper: ApiHelper;
 
   test.beforeEach(async ({ page }) => {
@@ -23,7 +23,7 @@ test.describe('Communities page tests', () => {
     communitiesPage = new CommunitiesPage(page);
     reblogThisPostDialog = new ReblogThisPostDialog(page);
     postPage = new PostPage(page);
-    loginToVoteDialog = new LoginToVoteDialog(page);
+    defaultLoginForm = new LoginForm(page);
     apiHelper = new ApiHelper(page);
 
     await homePage.goto();
@@ -86,7 +86,7 @@ test.describe('Communities page tests', () => {
       String(subscribers) + 'subscribers'
     );
     expect(await communitiesPage.communityPendingRewards.textContent()).toBe(
-      String(pendingRewards) + 'pending rewards'
+      '$' + String(pendingRewards) + 'pending rewards'
     );
     expect(await communitiesPage.communityActivePosters.textContent()).toBe(
       String(activePosters) + 'active posters'
@@ -165,7 +165,7 @@ test.describe('Communities page tests', () => {
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
 
-    if(await communitiesPage.communityPinnedPost.last().isVisible()){
+    if (await communitiesPage.communityPinnedPost.last().isVisible()) {
       await expect(communitiesPage.communityPinnedPost.last()).toBeVisible();
       // Click the last pinned tag of the community articles
       await communitiesPage.communityPinnedPost.last().click();
@@ -174,7 +174,7 @@ test.describe('Communities page tests', () => {
       await expect(postPage.articleTitle).toHaveText(
         "LIVE LeoFinance's Project Blank Launch Party!! | New Features, Same Web3 Experience"
       );
-    } else await console.log("There are not any pinned posts!!!");
+    } else await console.log('There are not any pinned posts!!!');
   });
 
   test('validate the style of pinned tag in the last post header with the pinned tag in the LeoFinance community', async ({
@@ -183,7 +183,7 @@ test.describe('Communities page tests', () => {
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
 
-    if(await communitiesPage.communityPinnedPost.last().isVisible()){
+    if (await communitiesPage.communityPinnedPost.last().isVisible()) {
       await expect(communitiesPage.communityPinnedPost.last()).toBeVisible();
       expect(
         await homePage.getElementCssPropertyValue(await communitiesPage.communityPinnedPost.last(), 'color')
@@ -194,7 +194,7 @@ test.describe('Communities page tests', () => {
           'background-color'
         )
       ).toBe('rgb(220, 38, 38)');
-    } else await console.log("There are not any pinned posts!!!");
+    } else await console.log('There are not any pinned posts!!!');
   });
 
   test('validate the first post header styles (for Trending filter) in the light theme', async ({ page }) => {
@@ -537,20 +537,18 @@ test.describe('Communities page tests', () => {
     await expect(postAuthorTextSubstring).toContain(articleAuthorTextSubstring);
   });
 
-  // Skipped due to new login form
-  test.skip('check if upvote and downvote button are displayed correctly on communities page', async ({
+  test('check if upvote and downvote button are displayed correctly on communities page', async ({
     page
   }) => {
     await homePage.moveToLeoFinanceCommunities();
     await expect(homePage.getFirstPostUpvoteButton).toBeVisible();
     await homePage.getFirstPostUpvoteButton.click();
-    await expect(loginToVoteDialog.getLoginDialog).toBeVisible();
-    await loginToVoteDialog.closeLoginDialog();
-
+    await defaultLoginForm.validateDefaultLoginFormIsLoaded();
+    await defaultLoginForm.closeLoginForm();
     await expect(homePage.getFirstPostDownvoteButton).toBeVisible();
     await homePage.getFirstPostDownvoteButton.click();
-    await expect(loginToVoteDialog.getLoginDialog).toBeVisible();
-    await loginToVoteDialog.closeLoginDialog();
+    await defaultLoginForm.validateDefaultLoginFormIsLoaded();
+    await defaultLoginForm.closeLoginForm();
   });
 
   test('check if responses are displayed correctly on communities page', async ({ page, browserName }) => {
@@ -566,8 +564,7 @@ test.describe('Communities page tests', () => {
       await expect(responseHoverText).toContain(`${responseNumber} responses. Click to respond`);
     else if (parseInt(responseNumber, 10) == 1)
       await expect(responseHoverText).toContain(`${responseNumber} response. Click to respond`);
-    else
-      await expect(responseHoverText).toContain(`No responses. Click to respond`);
+    else await expect(responseHoverText).toContain(`No responses. Click to respond`);
 
     await communitiesPage.getFirstResponses.click();
     await expect(postPage.articleFooter).toBeVisible();
@@ -960,16 +957,14 @@ test.describe('Communities page tests', () => {
     expect(subscribersUIAfterLoadMoreClick.length).toBe(2 * subscribersUIBeforeLoadMoreClik.length);
   });
 
-  // Skipped due to new login form
-  test.skip('validate Subscribe button styles in the light theme', async ({ page }) => {
+  test('validate Subscribe button styles in the light theme', async ({ page }) => {
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
     let communitySubscribeButton;
 
-    if(!await communitiesPage.communitySubscribeButton.first().isVisible())
+    if (!(await communitiesPage.communitySubscribeButton.first().isVisible()))
       communitySubscribeButton = await communitiesPage.communitySubscribeButton.last();
-    else
-      communitySubscribeButton = await communitiesPage.communitySubscribeButton.first();
+    else communitySubscribeButton = await communitiesPage.communitySubscribeButton.first();
 
     // Color of the Subscribe button before hover
     expect(await homePage.getElementCssPropertyValue(communitySubscribeButton, 'background-color')).toBe(
@@ -982,8 +977,8 @@ test.describe('Communities page tests', () => {
       'rgb(30, 58, 138)'
     );
     await communitySubscribeButton.click();
-    await loginToVoteDialog.validateLoginToVoteDialogIsVisible();
-    await loginToVoteDialog.closeLoginDialog();
+    await defaultLoginForm.validateDefaultLoginFormIsLoaded();
+    await defaultLoginForm.closeLoginForm();
   });
 
   test('validate visibility of the community sidebar depending of the width of the viewport', async ({
@@ -1059,7 +1054,9 @@ test.describe('Communities page tests', () => {
     await homePage.moveToLeoFinanceCommunities();
     await expect(communitiesPage.communityNewPostButton).toBeVisible();
     await communitiesPage.communityNewPostButton.click();
-    await logInToMakePostMessagePage.validateMakePostWarningPageIsLoadedOfSpecificCommunities(leoFinanceCommunity);
+    await logInToMakePostMessagePage.validateMakePostWarningPageIsLoadedOfSpecificCommunities(
+      leoFinanceCommunity
+    );
   });
 
   test('check if clicking new post button in Pinmapple community without login moves to the create post page with specific message', async ({
@@ -1069,11 +1066,12 @@ test.describe('Communities page tests', () => {
     const pinmappleCommunity: string = 'hive-163772';
     const logInToMakePostMessagePage = new MakePostWarningPage(page);
 
-
     await homePage.moveToPinmappleCommunities();
     await expect(communitiesPage.communityNewPostButton).toBeVisible();
     await communitiesPage.communityNewPostButton.click();
-    await logInToMakePostMessagePage.validateMakePostWarningPageIsLoadedOfSpecificCommunities(pinmappleCommunity);
+    await logInToMakePostMessagePage.validateMakePostWarningPageIsLoadedOfSpecificCommunities(
+      pinmappleCommunity
+    );
   });
 
   test('validate style of the create post message page in the light mode', async ({ page }) => {
@@ -1081,11 +1079,12 @@ test.describe('Communities page tests', () => {
     const pinmappleCommunity: string = 'hive-163772';
     const logInToMakePostMessagePage = new MakePostWarningPage(page);
 
-
     await homePage.moveToPinmappleCommunities();
     await expect(communitiesPage.communityNewPostButton).toBeVisible();
     await communitiesPage.communityNewPostButton.click();
-    await logInToMakePostMessagePage.validateMakePostWarningPageIsLoadedOfSpecificCommunities(pinmappleCommunity);
+    await logInToMakePostMessagePage.validateMakePostWarningPageIsLoadedOfSpecificCommunities(
+      pinmappleCommunity
+    );
 
     expect(
       await homePage.getElementCssPropertyValue(
@@ -1095,10 +1094,7 @@ test.describe('Communities page tests', () => {
     ).toBe('rgb(240, 253, 244)');
 
     expect(
-      await homePage.getElementCssPropertyValue(
-        logInToMakePostMessagePage.logInToMakePostMessage,
-        'color'
-      )
+      await homePage.getElementCssPropertyValue(logInToMakePostMessagePage.logInToMakePostMessage, 'color')
     ).toBe('rgb(15, 23, 42)');
   });
 
@@ -1114,7 +1110,9 @@ test.describe('Communities page tests', () => {
     await homePage.moveToLeoFinanceCommunities();
     await expect(communitiesPage.communityNewPostButton).toBeVisible();
     await communitiesPage.communityNewPostButton.click();
-    await logInToMakePostMessagePage.validateMakePostWarningPageIsLoadedOfSpecificCommunities(leoFinanceCommunity);
+    await logInToMakePostMessagePage.validateMakePostWarningPageIsLoadedOfSpecificCommunities(
+      leoFinanceCommunity
+    );
 
     expect(
       await homePage.getElementCssPropertyValue(
@@ -1124,10 +1122,7 @@ test.describe('Communities page tests', () => {
     ).toBe('rgb(30, 41, 59)');
 
     expect(
-      await homePage.getElementCssPropertyValue(
-        logInToMakePostMessagePage.logInToMakePostMessage,
-        'color'
-      )
+      await homePage.getElementCssPropertyValue(logInToMakePostMessagePage.logInToMakePostMessage, 'color')
     ).toBe('rgb(225, 231, 239)');
   });
 });

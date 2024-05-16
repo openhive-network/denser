@@ -8,7 +8,7 @@ stages:
 
 variables:
   # Variables required by Common CI jobs
-  CI_COMMON_JOB_VERSION: '32073829224f333726bb99e01e4d9787f299b4dd'
+  CI_COMMON_JOB_VERSION: 'b2ff9f5a48bc8fb379c66ec4e7907ea1e796ff1b'
   DOCKER_BUILDER_TAG: '$CI_COMMON_JOB_VERSION'
   DOCKER_DIND_TAG: '$CI_COMMON_JOB_VERSION'
   IMAGE_REMOVER_TAG: '$CI_COMMON_JOB_VERSION'
@@ -17,7 +17,7 @@ variables:
 include:
   - template: Workflows/Branch-Pipelines.gitlab-ci.yml
   - project: 'hive/common-ci-configuration'
-    ref: 32073829224f333726bb99e01e4d9787f299b4dd # develop
+    ref: b2ff9f5a48bc8fb379c66ec4e7907ea1e796ff1b # develop
     file: '/templates/docker_image_jobs.gitlab-ci.yml'
 
 .docker_build_template:
@@ -88,7 +88,7 @@ docker-build-wallet:
       npm ci --cache .npm
       echo -e "\e[0Ksection_end:$(date +%s):deps\r\e[0K"
   cache:
-    key: '$TURBO_APP_SCOPE-cache-1'
+    key: '$TURBO_APP_SCOPE-cache-2'
     paths:
       - .npm/
       - .next/
@@ -102,6 +102,12 @@ docker-build-wallet:
 .e2e_tests_template:
   extends: .node-job
   image: mcr.microsoft.com/playwright:v1.41.1-jammy
+  variables:
+    CI_DEBUG_SERVICES: true
+    FF_NETWORK_PER_BUILD: 1
+    REACT_APP_API_ENDPOINT: https://api.hive.blog
+    REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
+    DENSER_URL: https://caddy
   parallel:
     matrix:
       - PROJECT: ['chromium', 'firefox', 'webkit']
@@ -131,13 +137,17 @@ e2e-tests-blog:
       alias: denser
       variables:
         HEALTHCHECK_TCP_PORT: '3000'
+    - name: caddy:2.7.6
+      command:
+        - caddy
+        - reverse-proxy
+        - --from=https://caddy
+        - --to=denser:3000
+        - --internal-certs
   variables:
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
-    REACT_APP_API_ENDPOINT: https://api.hive.blog
-    REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
     PORT: 3000
-    DENSER_URL: http://denser:$PORT
 
 e2e-tests-wallet:
   extends: .e2e_tests_template
@@ -148,13 +158,17 @@ e2e-tests-wallet:
       alias: denser
       variables:
         HEALTHCHECK_TCP_PORT: '4000'
+    - name: caddy:2.7.6
+      command:
+        - caddy
+        - reverse-proxy
+        - --from=https://caddy
+        - --to=denser:4000
+        - --internal-certs
   variables:
     TURBO_APP_SCOPE: '@hive/wallet'
     TURBO_APP_PATH: '/apps/wallet'
-    REACT_APP_API_ENDPOINT: https://api.hive.blog
-    REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
     PORT: 4000
-    DENSER_URL: http://denser:$PORT
 
 .e2e_report_aggregate_template:
   extends: .node-job
@@ -435,10 +449,13 @@ build_and_publish_auth_image:
     TURBO_APP_SCOPE: '@hive/auth'
     TURBO_APP_PATH: '/apps/auth'
     TURBO_APP_NAME: 'auth'
+  before_script:
+    - !reference [.publish_docker_image_template, before_script]
   script:
     - scripts/ci-helpers/build_and_publish_instance.sh
   tags:
     - public-runner-docker
+    - hived-for-tests
 
 build_and_publish_blog_image:
   stage: publish
@@ -447,10 +464,13 @@ build_and_publish_blog_image:
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
     TURBO_APP_NAME: 'blog'
+  before_script:
+    - !reference [.publish_docker_image_template, before_script]
   script:
     - scripts/ci-helpers/build_and_publish_instance.sh
   tags:
     - public-runner-docker
+    - hived-for-tests
 
 build_and_publish_wallet_image:
   stage: publish
@@ -459,10 +479,13 @@ build_and_publish_wallet_image:
     TURBO_APP_SCOPE: '@hive/wallet'
     TURBO_APP_PATH: '/apps/wallet'
     TURBO_APP_NAME: 'wallet'
+  before_script:
+    - !reference [.publish_docker_image_template, before_script]
   script:
     - scripts/ci-helpers/build_and_publish_instance.sh
   tags:
     - public-runner-docker
+    - hived-for-tests
 
 buildkit_cache_cleanup:
   stage: cleanup

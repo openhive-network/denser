@@ -1,10 +1,10 @@
 import Link from 'next/link';
 import parseDate, { dateToFullRelative } from '@ui/lib/parse-date';
 import { Badge } from '@ui/components/badge';
-import { UserHoverCard, UserHoverCardProps } from './user-hover-card';
 import { useTranslation } from 'next-i18next';
+import { UserPopoverCard, UserPopoverCardProps } from './user-popover-card';
 
-interface UserInfoProps extends UserHoverCardProps {
+interface UserInfoProps extends UserPopoverCardProps {
   authored?: string;
   community_title: string;
   community: string;
@@ -27,9 +27,9 @@ function UserInfo({
 }: UserInfoProps) {
   const { t } = useTranslation('common_blog');
   return (
-    <div className="flex flex-col py-4 text-slate-500" data-testid="author-data">
+    <div className="flex flex-col py-4 text-slate-500 dark:text-slate-400" data-testid="author-data">
       <div className="flex flex-wrap items-center">
-        <UserHoverCard
+        <UserPopoverCard
           author={author}
           author_reputation={author_reputation}
           withImage

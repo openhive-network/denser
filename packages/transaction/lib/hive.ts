@@ -1,6 +1,13 @@
 import { Moment } from 'moment';
 import { AccountFollowStats, AccountProfile, FullAccount } from './app-types';
-import { TWaxApiRequest, IManabarData, IHiveChainInterface, transaction, NaiAsset } from '@hive/wax';
+import {
+  TWaxApiRequest,
+  IManabarData,
+  IHiveChainInterface,
+  transaction,
+  NaiAsset,
+  ApiAccount
+} from '@hiveio/wax';
 import { isCommunity, parseAsset } from '@ui/lib/utils';
 import { vestsToRshares } from '@ui/lib/utils';
 import { DATA_LIMIT } from './bridge';
@@ -140,6 +147,15 @@ export const getAccountFull = (username: string): Promise<FullAccount> =>
     return { ...account, follow_stats };
   });
 
+type GetFindsAccountsData = {
+  database_api: {
+    find_accounts: TWaxApiRequest<string, { accounts: ApiAccount[] }>;
+  };
+};
+
+export const getFindAccounts = (username: string): Promise<{ accounts: ApiAccount[] }> => {
+  return chain.extend<GetFindsAccountsData>().api.database_api.find_accounts({ accounts: [username] });
+};
 export interface IFeedHistory {
   current_median_history: {
     base: NaiAsset;
@@ -797,4 +813,41 @@ export const getListWitnessVotes = async (
   return chain
     .extend<GetListWitnessVotesData>()
     .api.database_api.list_witness_votes({ start: [username, ''], limit, order });
+};
+
+export interface IVoteListItem {
+  id: number,
+  voter: string,
+  author: string,
+  permlink: string,
+  weight: string,
+  rshares: number,
+  vote_percent: number,
+  last_update: string,
+  num_changes: number,
+}
+
+type GetListVotesData = {
+  database_api: {
+    list_votes: TWaxApiRequest<{ start: [string, string, string] | null; limit: number; order: 'by_comment_voter' | 'by_voter_comment' }, { votes: IVoteListItem[] }>;
+  };
+};
+
+// See https://developers.hive.io/apidefinitions/#database_api.list_votes
+export const getListVotesByCommentVoter = async (
+  start: [string, string, string] | null, // should be [author, permlink, voter]
+  limit: number,
+): Promise<{ votes: IVoteListItem[] }> => {
+  return chain
+    .extend<GetListVotesData>()
+    .api.database_api.list_votes({ start, limit, order: 'by_comment_voter' });
+};
+
+export const getListVotesByVoterComment = async (
+  start: [string, string, string] | null, // should be [voter, author, permlink]
+  limit: number,
+): Promise<{ votes: IVoteListItem[] }> => {
+  return chain
+    .extend<GetListVotesData>()
+    .api.database_api.list_votes({ start, limit, order: 'by_voter_comment' });
 };

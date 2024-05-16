@@ -1,7 +1,9 @@
 {
   "global": {
+    "no_rewards": "没有等待兑换的奖励",
     "loading": "Loading",
     "something_went_wrong": "Something went wrong",
+    "unavailable_for_legal_reasons": "因法律原因不可用",
     "time_ago": {
       "a_few_seconds": " a few seconds ago",
       "seconds": " seconds ago",
@@ -105,6 +107,9 @@
       "challenges": "Challenges"
     },
     "profil_notifications_tab_navbar": {
+      "unclaimed_rewards": "无人领取的奖励： ",
+      "redeem": "赎回",
+      "mark_all": "标记为已读",
       "all": "All",
       "replies": "留言",
       "mentions": "Mentions",
@@ -140,6 +145,7 @@
   },
   "cards": {
     "reblogged": "已转发的",
+    "content_removed": "由于版权和/或隐私侵犯，内容已被删除。",
     "badges": {
       "pinned": "Pinned"
     },
@@ -163,6 +169,7 @@
       "replies": "replies",
       "reply": "回复",
       "edit": "编辑",
+      "delete": "删除",
       "will_be_hidden": "Will be hidden due to low rating ",
       "load_more": "Load more"
     }
@@ -330,6 +337,7 @@
       "edited": "edited"
     },
     "body": {
+      "copyright": "此帖由于版权请求而不可用。",
       "images_were_hidden": "图片由于评级不足而被隐藏。",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
@@ -377,6 +385,7 @@
     }
   },
   "submit_page": {
+    "cover_image": "选择您的封面图片：",
     "my_communities": "我的社群",
     "others_communities": "其他社群",
     "disable_side": "禁用并排编辑器",
@@ -387,6 +396,8 @@
     "show_preview": "显示预览",
     "title": "标题",
     "insert_images_by_dragging": "通过拖放插入图像 ",
+    "insert_images_info": "通过图片图标在编辑器工具栏中提供选择图像",
+    "insert_images_text": "選擇圖片",
     "selecting_them": "选择它们插入图像",
     "post_summary": "文章摘要（用于文章和SEO，最多140个字符）",
     "enter_your_tags": "输入以空格分隔的标签",
@@ -409,6 +420,8 @@
     "html_not_supported": "此处不支持HTML",
     "advanced_tooltip": "在这里，您可以设置帖子选项，如作者奖励分配、最大接受的支付、受益人和帖子模板",
     "advanced_settings_dialog": {
+      "load": "加载",
+      "template_loaded": "模板已加载",
       "changes_saved": "更改已保存",
       "advanced_settings": "高级设置",
       "maximum_accepted_payout": "最大接受的支付额",
@@ -418,10 +431,11 @@
       "decline_payout": "拒绝支付",
       "custom_value": "自定义值",
       "cannot_be_less_than": "值不能小于0",
+      "cannot_be_more_than": "值不能超过999999",
       "author_rewards": "作者奖励",
       "what_type_of_tokens": "您希望从此帖子获得哪种类型的代币奖励？",
       "power_up": "100% 动力增强",
-      "default": "默认: 50% HBD / 50% HP",
+      "default": "默认: ",
       "update": "更新",
       "delete": "删除",
       "your_percent": "您的百分比不能小于0",
@@ -429,6 +443,7 @@
       "account_name": "账户名应更长",
       "beneficiary_cannot_be_self": "不能将自己指定为受益人",
       "beneficiary_percent_invalid": "受益人比例必须在1到100之间",
+      "bad_actor": "发送到此帐户时请小心。请仔细检查拼写是否存在钓鱼行为的可能。",
       "add_account": "添加账户",
       "post_templates": "帖子模板",
       "manage_your_post_templates": "管理您的帖子模板，这里的其他设置也将被保存/加载。",
@@ -458,5 +473,60 @@
     "placeholder": "搜索",
     "no_results": "Nothing was found.",
     "error": "There was an error"
+  },
+  "settings_page": {
+    "invalid_url": "无效的URL",
+    "name_is_too_long": "名称过长",
+    "name_must_not_begin_with": "名称不能以@开头",
+    "about_is_too_long": "关于内容过长",
+    "location_is_too_long": "位置信息过长",
+    "website_url_is_too_long": "网站URL过长",
+    "public_profile_settings": "公开资料设置",
+    "witness_owner_is_too_long": "见证人所有者用户名过长",
+    "witness_description_is_too_long": "见证人描述过长",
+    "description_is_too_long": "描述过长",
+    "preferences": "偏好设置",
+    "not_safe_for_work_nsfw_content": "不安全内容 (NSFW)",
+    "always_hide": "始终隐藏",
+    "always_warn": "始终警告",
+    "always_show": "始终显示",
+    "choose_default_blog_payout": "博客文章奖励",
+    "choose_default_comment_payout": "评论奖励",
+    "choose_language": "选择语言",
+    "muted_users": "已静音用户",
+    "unmute": "取消静音",
+    "decline_payout": " 不接受奖励",
+    "power_up": "100% 动力增强",
+    "update": "更新",
+    "upload_image": "上传图片",
+    "uploading_image": "正在上传图片",
+    "profile_image_url": "个人资料图片URL",
+    "cover_image_url": "封面图片URL（最佳尺寸：2048 x 512 像素）",
+    "profile_name": "显示名称",
+    "profile_about": "关于",
+    "profile_location": "位置",
+    "profile_website": "网站",
+    "blacklist_description": "黑名单描述",
+    "mute_list_description": "静音列表描述",
+    "profile_witness_owner": "见证人所有者",
+    "profile_witness_description": "见证人描述",
+    "saved": "已保存！",
+    "choose_preferred_api_endpoint": "选择首选API节点",
+    "default_beneficiaries": "推荐系统",
+    "default_beneficiaries_enabled": "启用默认推荐系统",
+    "default_beneficiaries_disabled": "取消推荐系统",
+    "advanced": "高级",
+    "api_endpoint_options": "API节点选项",
+    "endpoint": "节点",
+    "preferred": "首选？",
+    "remove": "移除",
+    "add_api_endpoint": "添加API节点",
+    "reset_endpoints": "重置节点",
+    "error_bad_url": "这似乎是一个错误的URL，请检查并重试",
+    "error_bad_cookie": "无法从cookie获取节点",
+    "error_already_exists": "此节点已在列表中",
+    "error_cant_remove_active": "您无法移除当前首选节点，请先选择新的首选节点",
+    "error_cant_remove_all": "列表中必须至少有一个节点",
+    "changes_saved": "更改已保存"
   }
 }

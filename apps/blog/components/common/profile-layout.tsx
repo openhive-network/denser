@@ -8,7 +8,7 @@ import {
   getAccount,
   getDynamicGlobalProperties,
   getAccountFull,
-  getAccountReputations,
+  getAccountReputations
 } from '@transaction/lib/hive';
 import { accountReputation } from '@/blog/lib/utils';
 import { delegatedHive, numberWithCommas, vestingHive } from '@hive/ui/lib/utils';
@@ -25,6 +25,10 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useFollowingInfiniteQuery } from '../hooks/use-following-infinitequery';
 import FollowButton from '../follow-button';
 import MuteButton from '../mute-button';
+import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
+import userIllegalContent from '@ui/config/lists/user-illegal-content';
+import gdprUserList from '@ui/config/lists/gdpr-user-list';
+import CustomError from '../custom-error';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -55,6 +59,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   const { t } = useTranslation('common_blog');
   const walletHost = AppConfigService.config.wallet_endpoint;
   const { username } = useSiteParams();
+  const userFromGDPRList = gdprUserList.includes(username);
   const {
     isLoading: profileDataIsLoading,
     error: errorProfileData,
@@ -101,7 +106,10 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   const delegated_hive = delegatedHive(accountData, dynamicGlobalData);
   const vesting_hive = vestingHive(accountData, dynamicGlobalData);
   const hp = vesting_hive.minus(delegated_hive);
-
+  const legalBlockedUser = userIllegalContent.includes(username);
+  if (userFromGDPRList) {
+    return <CustomError />;
+  }
   return username ? (
     <div>
       <div
@@ -126,12 +134,20 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             className={`flex h-auto max-h-full min-h-full w-auto min-w-full max-w-full flex-col items-center`}
           >
             <div className="mt-4 flex items-center">
-              <div
-                className="mr-3 h-[48px] w-[48px] rounded-3xl bg-cover bg-no-repeat"
-                style={{
-                  backgroundImage: `url(https://images.hive.blog/u/${profileData?.name}/avatar)`
-                }}
-              />
+              <Avatar className="mr-3 flex h-12 w-12 items-center justify-center overflow-hidden rounded-full">
+                <AvatarImage
+                  className="h-full w-full object-cover"
+                  src={profileData?.profile?.profile_image}
+                  alt="Profile picture"
+                />
+                <AvatarFallback>
+                  <img
+                    className="h-full w-full object-cover"
+                    src="https://images.hive.blog/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4"
+                    alt="default img"
+                  />
+                </AvatarFallback>
+              </Avatar>
               <h4 className="sm:text-2xl" data-testid="profile-name">
                 <span className="font-semibold">
                   {profileData?.profile?.name ? profileData.profile.name : profileData.name}
@@ -156,7 +172,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   <img
                     alt="fish image"
                     title={t('user_profil.hive_buzz_badge_title', { username: profileData.name })}
-                    className="mx-2 hidden w-6 duration-500 ease-in-out hover:w-12"
+                    className="mx-2 w-6 duration-500 ease-in-out hover:w-12"
                     src={`https://hivebuzz.me/api/level/${profileData.name}?dead`}
                     data-testid="profile-badge-image"
                   />
@@ -173,153 +189,162 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 </Link>
               ) : null}
             </div>
+            {!legalBlockedUser ? (
+              <>
+                <p className="my-1 max-w-[420px] text-center text-white sm:my-4" data-testid="profile-about">
+                  {profileData?.profile?.about
+                    ? profileData?.profile?.about.slice(0, 157) +
+                      (157 < profileData?.profile?.about.length ? '...' : '')
+                    : null}
+                </p>
+                <ul className="my-1 flex h-5 gap-1 text-xs sm:text-sm" data-testid="profile-stats">
+                  <li className="flex items-center gap-1">
+                    <Link
+                      href={`/@${profileData.name}/followers`}
+                      className="hover:cursor-pointer hover:text-red-600 hover:underline"
+                    >
+                      {profileData?.follow_stats?.follower_count === 0 || undefined
+                        ? t('user_profil.lists.follower_count.zero')
+                        : profileData?.follow_stats?.follower_count === 1
+                          ? t('user_profil.lists.follower_count.one')
+                          : t('user_profil.lists.follower_count.other', {
+                              value: profileData?.follow_stats?.follower_count
+                            })}
+                    </Link>
+                  </li>
 
-            <p className="my-1 max-w-[420px] text-center text-white sm:my-4" data-testid="profile-about">
-              {profileData?.profile?.about
-                ? profileData?.profile?.about.slice(0, 157) +
-                  (157 < profileData?.profile?.about.length ? '...' : '')
-                : null}
-            </p>
-            <ul className="my-1 flex h-5 gap-1 text-xs sm:text-sm" data-testid="profile-stats">
-              <li className="flex items-center gap-1">
-                <Link
-                  href={`/@${profileData.name}/followers`}
-                  className="hover:cursor-pointer hover:text-red-600 hover:underline"
-                >
-                  {profileData?.follow_stats?.follower_count === 0 || undefined
-                    ? t('user_profil.lists.follower_count.zero')
-                    : profileData?.follow_stats?.follower_count === 1
-                      ? t('user_profil.lists.follower_count.one')
-                      : t('user_profil.lists.follower_count.other', {
-                          value: profileData?.follow_stats?.follower_count
-                        })}
-                </Link>
-              </li>
-
-              <li
-                className="flex items-center
+                  <li
+                    className="flex items-center
               gap-1"
-              >
-                <Separator orientation="vertical" className="bg-white" />
-                <Link
-                  className="hover:cursor-pointer hover:text-red-600 hover:underline"
-                  href={`/@${profileData.name}`}
-                >
-                  {profileData?.post_count === 0
-                    ? t('user_profil.lists.post_count.zero')
-                    : profileData?.post_count === 1
-                      ? t('user_profil.lists.post_count.one')
-                      : t('user_profil.lists.post_count.other', { value: profileData?.post_count })}
-                </Link>
-              </li>
-
-              <li
-                className="flex items-center
-              gap-1"
-              >
-                <Separator orientation="vertical" className="bg-white" />{' '}
-                <Link
-                  href={`/@${profileData.name}/followed`}
-                  className="hover:cursor-pointer hover:text-red-600 hover:underline"
-                >
-                  {profileData?.follow_stats?.following_count === 0 || undefined
-                    ? t('user_profil.lists.followed_count.zero')
-                    : profileData?.follow_stats?.following_count === 1
-                      ? t('user_profil.lists.followed_count.one')
-                      : t('user_profil.lists.followed_count.other', {
-                          value: profileData?.follow_stats?.following_count
-                        })}
-                </Link>
-              </li>
-
-              <li className="flex items-center gap-1">
-                <Separator orientation="vertical" className="bg-white" />
-                {numberWithCommas(hp.toFixed(0)) + ' HP'}
-              </li>
-            </ul>
-
-            <ul className="my-1 flex flex-wrap justify-center gap-2 text-xs sm:text-sm">
-              <li className="flex items-center gap-1">
-                <Link
-                  href={`/@${profileData?.name}/lists/blacklisted`}
-                  className="hover:cursor-pointer hover:text-red-600 hover:underline"
-                >
-                  {t('user_profil.lists.blacklisted_users')}
-                </Link>
-              </li>
-
-              <li className="flex items-center gap-1">
-                <Separator orientation="vertical" className="h-4 bg-white" />
-                <Link
-                  href={`/@${profileData?.name}/lists/muted`}
-                  className="hover:cursor-pointer hover:text-red-600 hover:underline"
-                >
-                  {t('user_profil.lists.muted_users')}
-                </Link>
-              </li>
-
-              <li className="flex items-center gap-1">
-                <Separator orientation="vertical" className="h-4 bg-white" />
-                <Link
-                  href={`/@${profileData?.name}/lists/followed_blacklists`}
-                  className="hover:cursor-pointer hover:text-red-600 hover:underline"
-                >
-                  {t('user_profil.lists.followed_blacklists')}
-                </Link>
-              </li>
-
-              <li className="flex items-center gap-1">
-                <Separator orientation="vertical" className="bg-white" />
-                <Link
-                  href={`/@${profileData?.name}/lists/followed_muted_lists`}
-                  className="hover:cursor-pointer hover:text-red-600 hover:underline"
-                >
-                  {t('user_profil.lists.followed_muted_lists')}
-                </Link>
-              </li>
-            </ul>
-
-            <ul className="my-4 flex h-5 justify-center gap-1 text-xs text-white sm:gap-4 sm:text-sm">
-              {profileData?.profile?.location ? (
-                <li className="flex items-center">
-                  <Icons.mapPin className="m-1" />
-                  <span data-testid="user-location">{profileData?.profile?.location}</span>
-                </li>
-              ) : null}
-              {profileData?.profile?.website ? (
-                <li className="flex items-center">
-                  <Icons.globe2 className="m-1" />
-                  <Link
-                    target="_external"
-                    className="website-link break-words "
-                    href={`https://${profileData?.profile?.website?.replace(/^(https?|ftp):\/\//, '')}`}
                   >
-                    <span>{profileData?.profile?.website}</span>
-                  </Link>
-                </li>
-              ) : null}
-              <li className="flex items-center">
-                <Icons.calendarHeart className="m-1" />
-                <span data-testid="user-joined">
-                  {t('user_profil.joined')} {profileData?.created ? dateToShow(profileData.created, t) : null}
-                </span>
-              </li>
-              <li className="flex items-center">
-                <Icons.calendarActive className="m-1" />
-                <span data-testid="user-last-time-active">
-                  {t('user_profil.active')}{' '}
-                  {compareDates([profileData.created, profileData.last_vote_time, profileData.last_post], t)}
-                </span>
-              </li>
-            </ul>
-            {user.username !== username ? (
-              <div className="m-2 flex gap-2 hover:text-red-500 sm:absolute sm:right-0">
-                <FollowButton username={username} user={user} variant="secondary" list={following} />
-                {user.isLoggedIn ? (
-                  <MuteButton username={username} user={user} variant="secondary" list={mute} />
+                    <Separator orientation="vertical" className="bg-white" />
+                    <Link
+                      className="hover:cursor-pointer hover:text-red-600 hover:underline"
+                      href={`/@${profileData.name}`}
+                    >
+                      {profileData?.post_count === 0
+                        ? t('user_profil.lists.post_count.zero')
+                        : profileData?.post_count === 1
+                          ? t('user_profil.lists.post_count.one')
+                          : t('user_profil.lists.post_count.other', { value: profileData?.post_count })}
+                    </Link>
+                  </li>
+
+                  <li
+                    className="flex items-center
+              gap-1"
+                  >
+                    <Separator orientation="vertical" className="bg-white" />{' '}
+                    <Link
+                      href={`/@${profileData.name}/followed`}
+                      className="hover:cursor-pointer hover:text-red-600 hover:underline"
+                    >
+                      {profileData?.follow_stats?.following_count === 0 || undefined
+                        ? t('user_profil.lists.followed_count.zero')
+                        : profileData?.follow_stats?.following_count === 1
+                          ? t('user_profil.lists.followed_count.one')
+                          : t('user_profil.lists.followed_count.other', {
+                              value: profileData?.follow_stats?.following_count
+                            })}
+                    </Link>
+                  </li>
+
+                  <li className="flex items-center gap-1">
+                    <Separator orientation="vertical" className="bg-white" />
+                    {numberWithCommas(hp.toFixed(0)) + ' HP'}
+                  </li>
+                </ul>
+
+                <ul className="my-1 flex flex-wrap justify-center gap-2 text-xs sm:text-sm">
+                  <li className="flex items-center gap-1">
+                    <Link
+                      href={`/@${profileData?.name}/lists/blacklisted`}
+                      className="hover:cursor-pointer hover:text-red-600 hover:underline"
+                    >
+                      {t('user_profil.lists.blacklisted_users')}
+                    </Link>
+                  </li>
+
+                  <li className="flex items-center gap-1">
+                    <Separator orientation="vertical" className="h-4 bg-white" />
+                    <Link
+                      href={`/@${profileData?.name}/lists/muted`}
+                      className="hover:cursor-pointer hover:text-red-600 hover:underline"
+                    >
+                      {t('user_profil.lists.muted_users')}
+                    </Link>
+                  </li>
+
+                  <li className="flex items-center gap-1">
+                    <Separator orientation="vertical" className="h-4 bg-white" />
+                    <Link
+                      href={`/@${profileData?.name}/lists/followed_blacklists`}
+                      className="hover:cursor-pointer hover:text-red-600 hover:underline"
+                    >
+                      {t('user_profil.lists.followed_blacklists')}
+                    </Link>
+                  </li>
+
+                  <li className="flex items-center gap-1">
+                    <Separator orientation="vertical" className="bg-white" />
+                    <Link
+                      href={`/@${profileData?.name}/lists/followed_muted_lists`}
+                      className="hover:cursor-pointer hover:text-red-600 hover:underline"
+                    >
+                      {t('user_profil.lists.followed_muted_lists')}
+                    </Link>
+                  </li>
+                </ul>
+
+                <ul className="my-4 flex h-auto flex-wrap justify-center gap-1 text-xs text-white sm:gap-4 sm:text-sm">
+                  {profileData?.profile?.location ? (
+                    <li className="flex items-center">
+                      <Icons.mapPin className="m-1" />
+                      <span data-testid="user-location">{profileData?.profile?.location}</span>
+                    </li>
+                  ) : null}
+                  {profileData?.profile?.website ? (
+                    <li className="flex items-center">
+                      <Icons.globe2 className="m-1" />
+                      <Link
+                        target="_external"
+                        className="website-link break-words "
+                        href={`https://${profileData?.profile?.website?.replace(/^(https?|ftp):\/\//, '')}`}
+                      >
+                        <span>{profileData?.profile?.website}</span>
+                      </Link>
+                    </li>
+                  ) : null}
+                  <li className="flex items-center">
+                    <Icons.calendarHeart className="m-1" />
+                    <span data-testid="user-joined">
+                      {t('user_profil.joined')}{' '}
+                      {profileData?.created ? dateToShow(profileData.created, t) : null}
+                    </span>
+                  </li>
+                  <li className="flex items-center">
+                    <Icons.calendarActive className="m-1" />
+                    <span data-testid="user-last-time-active">
+                      {t('user_profil.active')}{' '}
+                      {compareDates(
+                        [profileData.created, profileData.last_vote_time, profileData.last_post],
+                        t
+                      )}
+                    </span>
+                  </li>
+                </ul>
+                {user.username !== username ? (
+                  <div className="m-2 flex gap-2 hover:text-red-500 sm:absolute sm:right-0">
+                    <FollowButton username={username} user={user} variant="secondary" list={following} />
+                    {user.isLoggedIn ? (
+                      <MuteButton username={username} user={user} variant="secondary" list={mute} />
+                    ) : null}
+                  </div>
                 ) : null}
-              </div>
-            ) : null}
+              </>
+            ) : (
+              <div className="p-10">{t('global.unavailable_for_legal_reasons')}</div>
+            )}
           </div>
         ) : (
           <div className={`h-auto max-h-full min-h-full w-auto min-w-full max-w-full bg-gray-600 bg-cover`} />

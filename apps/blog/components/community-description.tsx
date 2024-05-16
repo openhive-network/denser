@@ -57,7 +57,7 @@ const CommunityDescription = ({
               </div>
             </SubsListDialog>
             <div className="flex flex-col items-center" data-testid="community-pending-rewards">
-              {data.sum_pending}
+              ${data.sum_pending}
               <span className="text-center text-xs">{t('communities.titles.pending_rewards')}</span>
             </div>
             <div className="flex flex-col items-center" data-testid="community-active-posters">
@@ -112,7 +112,7 @@ const CommunityDescription = ({
             </h6>
             {post_body_html ? (
               <div
-                className="preview-description prose-sm "
+                className="preview-description prose-sm w-[13em] break-words 2xl:w-fit"
                 data-testid="community-description-content"
                 dangerouslySetInnerHTML={{ __html: post_body_html }}
               />

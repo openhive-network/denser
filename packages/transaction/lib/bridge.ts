@@ -1,5 +1,8 @@
-import { TWaxApiRequest } from '@hive/wax';
+import { TWaxApiRequest } from '@hiveio/wax';
 import { hiveChainService } from './hive-chain-service';
+
+import { getLogger } from '@ui/lib/logging';
+const logger = getLogger('app');
 
 const chain = await hiveChainService.getHiveChain();
 
@@ -210,6 +213,7 @@ export const getPostsRanked = async (
   observer: string,
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
+  // logger.info('Running getPostsRanked', { sort, tag, start_author, start_permlink, observer, limit });
   return chain
     .extend<GetPostsRankedData>()
     .api.bridge.get_ranked_posts({
@@ -221,6 +225,7 @@ export const getPostsRanked = async (
       observer
     })
     .then((resp) => {
+      // logger.info('getPostsRanked result: %o', resp);
       if (resp) {
         return resolvePosts(resp, observer);
       }
@@ -319,6 +324,10 @@ export interface IAccountNotification {
   url: string;
 }
 
+export interface IAccountNotificationEx extends IAccountNotification {
+  lastRead: number;
+}
+
 type GetAccountNotificationsData = {
   bridge: {
     account_notifications: TWaxApiRequest<IGetAccountNotifications, IAccountNotification[] | null>;
@@ -344,8 +353,8 @@ export const getAccountNotifications = async (
 
 interface IGetDiscussion {
   author: string;
-  observer: string;
   permlink: string;
+  observer?: string;
 }
 
 type GetDiscussionData = {
@@ -356,13 +365,13 @@ type GetDiscussionData = {
 
 export const getDiscussion = async (
   author: string,
-  observer: string,
-  permlink: string
+  permlink: string,
+  observer?: string
 ): Promise<Record<string, Entry> | null> => {
   return chain.extend<GetDiscussionData>().api.bridge.get_discussion({
     author,
-    observer,
-    permlink
+    permlink,
+    observer
   });
 };
 

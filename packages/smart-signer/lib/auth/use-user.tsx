@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import Router from 'next/router';
 import { QUERY_KEY } from '@smart-signer/lib/query-keys';
 import * as userLocalStorage from './user-localstore';
-import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
+import { useLocalStorage } from 'usehooks-ts';
 import { fetchJson } from '@smart-signer/lib/fetch-json';
 import { defaultUser } from '@smart-signer/lib/auth/utils';
 import { getLogger } from '@ui/lib/logging';

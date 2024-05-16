@@ -1,7 +1,9 @@
 {
   "global": {
+    "no_rewards": "No hay recompensas pendientes de canjear.",
     "loading": "Loading",
     "something_went_wrong": "Something went wrong",
+    "unavailable_for_legal_reasons": "No disponible por razones legales",
     "time_ago": {
       "a_few_seconds": " a few seconds ago",
       "seconds": " seconds ago",
@@ -105,6 +107,9 @@
       "challenges": "Challenges"
     },
     "profil_notifications_tab_navbar": {
+      "unclaimed_rewards": "Recompensas no reclamadas: ",
+      "redeem": "Canjear",
+      "mark_all": "Marcar todo como leído",
       "all": "All",
       "replies": "Respuestas",
       "mentions": "Mentions",
@@ -140,6 +145,7 @@
   },
   "cards": {
     "reblogged": "reblogueado",
+    "content_removed": "Contenido eliminado por violaciones de derechos de autor y/o privacidad.",
     "badges": {
       "pinned": "Pinned"
     },
@@ -163,6 +169,7 @@
       "replies": "replies",
       "reply": "Reply",
       "edit": "Editar",
+      "delete": "Borrar",
       "will_be_hidden": "Will be hidden due to low rating ",
       "load_more": "Load more"
     }
@@ -330,6 +337,7 @@
       "edited": "editada"
     },
     "body": {
+      "copyright": "Este post no está disponible debido a una reclamación de derechos de autor.",
       "images_were_hidden": "Las imágenes fueron ocultadas por bajas calificaciones.",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
@@ -377,6 +385,7 @@
     }
   },
   "submit_page": {
+    "cover_image": "Selecciona tu imagen de portada:",
     "my_communities": "Mis Comunidades",
     "others_communities": "Otras Comunidades",
     "disable_side": "Deshabilitar el editor en paralelo",
@@ -387,6 +396,8 @@
     "show_preview": "Mostrar vista previa",
     "title": "Título",
     "insert_images_by_dragging": "Insertar imágenes arrastrando y soltando o mediante ",
+    "insert_images_info": "La selección de imagen se proporciona en la barra de herramientas del editor a través del ícono de imagen",
+    "insert_images_text": "Seleccionar imagen",
     "selecting_them": "seleccionándolas",
     "post_summary": "Resumen de la publicación (para publicaciones y SEO, máximo 140 caracteres)",
     "enter_your_tags": "Ingresa tus etiquetas separadas por un espacio",
@@ -409,6 +420,8 @@
     "html_not_supported": "HTML no es compatible aquí",
     "advanced_tooltip": "Aquí puedes establecer opciones de publicación como la división de recompensas del autor, el pago máximo aceptado, los beneficiarios y las plantillas de publicación",
     "advanced_settings_dialog": {
+      "load": "Cargar",
+      "template_loaded": "Plantilla cargada",
       "changes_saved": "Cambios guardados",
       "advanced_settings": "Configuración avanzada",
       "maximum_accepted_payout": "Pago máximo aceptado",
@@ -418,10 +431,11 @@
       "decline_payout": "Rechazar pago",
       "custom_value": "Valor personalizado",
       "cannot_be_less_than": "El valor no puede ser menor que 0",
+      "cannot_be_more_than": "El valor no puede ser mayor que 999999",
       "author_rewards": "Recompensas del autor",
       "what_type_of_tokens": "¿Qué tipo de tokens deseas como recompensas de esta publicación?",
       "power_up": "Potenciar al 100%",
-      "default": "Predeterminado: 50% HBD / 50% HP",
+      "default": "Predeterminado: ",
       "update": "Actualizar",
       "delete": "Eliminar",
       "your_percent": "Tu porcentaje no puede ser menor que 0",
@@ -429,6 +443,7 @@
       "account_name": "El nombre de la cuenta debe ser más largo",
       "beneficiary_cannot_be_self": "No se puede especificar uno mismo como beneficiario",
       "beneficiary_percent_invalid": "El porcentaje del beneficiario debe estar entre 1 y 100",
+      "bad_actor": "Tenga cuidado al enviar a esta cuenta. Por favor, verifique su ortografía para posibles intentos de phishing.",
       "add_account": "Agregar cuenta",
       "post_templates": "Plantillas de publicación",
       "manage_your_post_templates": "Administra tus plantillas de publicación, aquí también se guardarán/cargarán otros ajustes.",
@@ -458,5 +473,60 @@
     "placeholder": "Buscar",
     "no_results": "No se encontró nada.",
     "error": "Hubo un error"
+  },
+  "settings_page": {
+    "invalid_url": "URL inválida",
+    "name_is_too_long": "El nombre es demasiado largo",
+    "name_must_not_begin_with": "El nombre no debe comenzar con @",
+    "about_is_too_long": "La descripción es demasiado larga",
+    "location_is_too_long": "La ubicación es demasiado larga",
+    "website_url_is_too_long": "La URL del sitio web es demasiado larga",
+    "public_profile_settings": "Configuración del perfil público",
+    "witness_owner_is_too_long": "El nombre de usuario del testigo es demasiado largo",
+    "witness_description_is_too_long": "La descripción del testigo es demasiado larga",
+    "description_is_too_long": "La descripción es demasiado larga",
+    "preferences": "Preferencias",
+    "not_safe_for_work_nsfw_content": "Contenido no seguro para el trabajo (NSFW)",
+    "always_hide": "Siempre ocultar",
+    "always_warn": "Siempre advertir",
+    "always_show": "Siempre mostrar",
+    "choose_default_blog_payout": "Recompensas de publicación de blog predeterminadas",
+    "choose_default_comment_payout": "Recompensas de publicación de comentarios predeterminadas",
+    "choose_language": "Elegir idioma",
+    "muted_users": "Usuarios silenciados",
+    "unmute": "Desilenciar",
+    "decline_payout": "Rechazar pago",
+    "power_up": "Aumentar el poder al 100%",
+    "update": "Actualizar",
+    "upload_image": "Subir una imagen",
+    "uploading_image": "Subiendo imagen",
+    "profile_image_url": "URL de la imagen de perfil",
+    "cover_image_url": "URL de la imagen de portada (Óptimo: 2048 x 512 px)",
+    "profile_name": "Nombre de visualización",
+    "profile_about": "Acerca de",
+    "profile_location": "Ubicación",
+    "profile_website": "Sitio web",
+    "blacklist_description": "Descripción de la lista negra",
+    "mute_list_description": "Descripción de la lista de silenciosos",
+    "profile_witness_owner": "Propietario del testigo",
+    "profile_witness_description": "Descripción del testigo",
+    "saved": "¡Guardado!",
+    "choose_preferred_api_endpoint": "Elige tu nodo de API preferido",
+    "default_beneficiaries": "Sistema de referencia",
+    "default_beneficiaries_enabled": "Usar beneficiarios predeterminados",
+    "default_beneficiaries_disabled": "Optar por salir del sistema de referencia",
+    "advanced": "Avanzado",
+    "api_endpoint_options": "Opciones de punto de API",
+    "endpoint": "Punto final",
+    "preferred": "¿Preferido?",
+    "remove": "Eliminar",
+    "add_api_endpoint": "Agregar punto de API",
+    "reset_endpoints": "Restablecer puntos finales",
+    "error_bad_url": "Esta parece ser una URL incorrecta, por favor, verifíquela e inténtelo de nuevo",
+    "error_bad_cookie": "No se pueden obtener puntos finales de la cookie",
+    "error_already_exists": "Este punto final ya está en la lista",
+    "error_cant_remove_active": "No puedes eliminar el punto final preferido actual. Por favor, selecciona primero un nuevo punto final preferido",
+    "error_cant_remove_all": "Debes tener al menos un punto final en la lista",
+    "changes_saved": "Cambios guardados"
   }
 }

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, MutableRefObject, useMemo } from "react";
 import { useRouter } from "next/router";
 import { TFunction } from 'next-i18next';
 import { cookieNamePrefix } from "@smart-signer/lib/session";
-import { parseCookie } from "@smart-signer/lib/utils";
+import { getCookie } from "@smart-signer/lib/utils";
 import { KeyType } from "@smart-signer/types/common";
 import { useSignIn } from "@smart-signer/lib/auth/use-sign-in";
 import { Signatures, PostLoginSchema } from "@smart-signer/lib/auth/utils";
@@ -12,7 +12,7 @@ import { useSigner } from '@smart-signer/lib/use-signer';
 import { LoginFormSchema as SignInFormSchema } from "../signin-form";
 import { getOperationForLogin } from '@smart-signer/lib/login-operation';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
-import { operation } from '@hive/wax';
+import { operation } from '@hiveio/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -35,8 +35,7 @@ export const useProcessAuth = (
   const signIn = useSignIn();
 
   useEffect(() => {
-    const cookieStore = parseCookie(document.cookie);
-    setLoginChallenge(cookieStore[`${cookieNamePrefix}login_challenge`] || '');
+    setLoginChallenge(getCookie(`${cookieNamePrefix}login_challenge`));
   }, []);
 
   const signAuth = async (data: LoginFormSchema): Promise<void> => {

@@ -1,8 +1,8 @@
 import { cryptoUtils } from '@hiveio/dhive';
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
-import { AuthStatus, KeyAuthorityType } from '@hive/hb-auth';
+import { AuthStatus, KeyAuthorityType } from '@hiveio/hb-auth';
 import { SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
-import { THexString, createWaxFoundation, TTransactionPackType } from '@hive/wax';
+import { THexString, createWaxFoundation, TTransactionPackType } from '@hiveio/wax';
 import { PasswordDialogModalPromise } from '@smart-signer/components/password-dialog';
 import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/password-form';
 
@@ -84,7 +84,7 @@ export class SignerHbauth extends Signer {
   }
 
   async signTransaction({ digest, transaction }: SignTransaction) {
-    const wax = await createWaxFoundation();
+    const wax = await createWaxFoundation({ chainId: this.chainId });
 
     // When transaction is string, e.g. got from transaction.toApi().
     // const txBuilder = wax.TransactionBuilder.fromApi(transaction);

@@ -5,8 +5,6 @@ import { useTheme } from 'next-themes';
 import { TailwindIndicator } from '../tailwind-indicator';
 import SiteHeader from '../site-header';
 import { ModalContainer } from '@smart-signer/components/modal-container';
-import { useSigner } from '@smart-signer/lib/use-signer';
-import { transactionService } from '@transaction/index';
 
 interface LayoutProps {
   children: ReactNode;
@@ -14,11 +12,6 @@ interface LayoutProps {
 
 function Layout({ children }: LayoutProps) {
   const { resolvedTheme } = useTheme();
-  const { signerOptions } = useSigner();
-
-  useEffect(() => {
-    transactionService.setSignerOptions(signerOptions);
-  }, [signerOptions]);
 
   return (
     <>

@@ -1,4 +1,4 @@
-import { ApiAccount } from '@hive/wax';
+import { ApiAccount } from '@hiveio/wax';
 import { Authority } from '@hiveio/dhive/lib/chain/account';
 import { Asset } from '@hiveio/dhive/lib/chain/asset';
 
@@ -7,6 +7,8 @@ export interface AccountProfile {
   about?: string;
   cover_image?: string;
   location?: string;
+  blacklist_description?: string;
+  muted_list_description?: string;
   name?: string;
   profile_image?: string;
   website?: string;
@@ -72,4 +74,11 @@ export interface FullAccount {
 export interface Beneficiarie {
   account: string;
   weight: string;
+}
+
+export interface Preferences {
+  nsfw: 'hide' | 'warn' | 'show';
+  blog_rewards: '0%' | '50%' | '100%';
+  comment_rewards: '0%' | '50%' | '100%';
+  referral_system: 'enabled' | 'disabled';
 }

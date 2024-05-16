@@ -34,9 +34,9 @@ const UserMenu = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56 ">
+      <DropdownMenuContent className="w-56 " data-testid="user-profile-menu-content">
         <DropdownMenuLabel className="flex w-full items-center justify-between">
-          <span>{user.username}</span>
+          <span data-testid="user-name-in-profile-menu">{user.username}</span>
           <div className="flex items-center space-x-2" title="Logged in with Hive private key">
             <Icons.hive className="h-4 w-4" />
             <div className="flex flex-col text-sm font-semibold">
@@ -48,13 +48,13 @@ const UserMenu = ({
 
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <Link href={`/@${user.username}`}>
+          <Link href={`/@${user.username}`} data-testid="user-profile-menu-profile-link">
             <DropdownMenuItem className="cursor-pointer">
               <Icons.user className="mr-2" />
               <span className="w-full">{t('navigation.user_menu.profile')}</span>
             </DropdownMenuItem>
           </Link>
-          <Link href={`/@${user.username}/notifications`}>
+          <Link href={`/@${user.username}/notifications`} data-testid="user-profile-menu-notifications-link">
             <DropdownMenuItem className="cursor-pointer">
               <Icons.clock className="mr-2" />
               <span className="w-full">
@@ -63,13 +63,13 @@ const UserMenu = ({
               </span>
             </DropdownMenuItem>
           </Link>
-          <Link href={`/@${user.username}/comments`}>
+          <Link href={`/@${user.username}/comments`} data-testid="user-profile-menu-comments-link">
             <DropdownMenuItem className="cursor-pointer">
               <Icons.comment className="mr-2" />
               <span className="w-full">{t('navigation.user_menu.comments')}</span>
             </DropdownMenuItem>
           </Link>
-          <Link href={`/@${user.username}/replies`}>
+          <Link href={`/@${user.username}/replies`} data-testid="user-profile-menu-replies-link">
             <DropdownMenuItem className="cursor-pointer">
               <Icons.undo className="mr-2" />
               <span className="w-full">{t('navigation.user_menu.replies')}</span>
@@ -99,6 +99,7 @@ const UserMenu = ({
               target="_blank"
               href={`${walletHost}/@${user.username}/transfers`}
               className="flex w-full items-center"
+              data-testid="user-profile-menu-wallet-link"
             >
               <Icons.wallet className="mr-2" />
               <span className="w-full">{t('navigation.user_menu.wallet')}</span>
@@ -112,6 +113,7 @@ const UserMenu = ({
                 await onLogout();
               }}
               className="flex w-full items-center"
+              data-testid="user-profile-menu-logout-link"
             >
               <Icons.doorOpen className="mr-2" />
               <span className="w-full">{t('navigation.user_menu.logout')}</span>

@@ -1,7 +1,9 @@
 {
   "global": {
+    "no_rewards": "사용 대기 중인 보상이 없습니다.",
     "loading": "Loading",
     "something_went_wrong": "Something went wrong",
+    "unavailable_for_legal_reasons": "법적 사유로 인해 이용할 수 없음",
     "time_ago": {
       "a_few_seconds": " a few seconds ago",
       "seconds": " seconds ago",
@@ -105,6 +107,9 @@
       "challenges": "Challenges"
     },
     "profil_notifications_tab_navbar": {
+      "unclaimed_rewards": "청구하지 않은 보상: ",
+      "redeem": "상환하다",
+      "mark_all": "모두 읽음으로 표시",
       "all": "All",
       "replies": "받은 댓글",
       "mentions": "Mentions",
@@ -140,6 +145,7 @@
   },
   "cards": {
     "reblogged": "Reblogしました",
+    "content_removed": "저작권 및/또는 개인 정보 침해로 인해 콘텐츠가 삭제되었습니다.",
     "badges": {
       "pinned": "Pinned"
     },
@@ -163,6 +169,7 @@
       "replies": "replies",
       "reply": "댓글 달기",
       "edit": "편집하다",
+      "delete": "삭제",
       "will_be_hidden": "Will be hidden due to low rating ",
       "load_more": "Load more"
     }
@@ -330,6 +337,7 @@
       "edited": "edited"
     },
     "body": {
+      "copyright": "이 게시물은 저작권 요청으로 인해 사용할 수 없습니다.",
       "images_were_hidden": "Images were hidden due to low ratings.",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
@@ -377,6 +385,7 @@
     }
   },
   "submit_page": {
+    "cover_image": "표지 이미지를 선택하세요:",
     "my_communities": "내 커뮤니티",
     "others_communities": "다른 커뮤니티",
     "disable_side": "옆에 에디터 비활성화",
@@ -387,6 +396,8 @@
     "show_preview": "미리보기 표시",
     "title": "제목",
     "insert_images_by_dragging": "드래그 또는 드롭으로 이미지 삽입 ",
+    "insert_images_info": "이미지 선택은 그림 아이콘을 통해 편집기 도구 모음에 제공됩니다.",
+    "insert_images_text": "이미지 선택",
     "selecting_them": "선택하여 이미지 삽입",
     "post_summary": "게시물 요약 (게시물 및 SEO용, 최대 140자)",
     "enter_your_tags": "스페이스로 구분된 태그 입력",
@@ -409,6 +420,8 @@
     "html_not_supported": "여기에서는 HTML을 지원하지 않습니다",
     "advanced_tooltip": "여기서는 작성자 보상 분할, 최대 허용 지급액, 수혜자 및 게시물 템플릿과 같은 게시 옵션을 설정할 수 있습니다",
     "advanced_settings_dialog": {
+      "load": "로드",
+      "template_loaded": "템플릿이 로드되었습니다",
       "changes_saved": "변경 사항이 저장되었습니다",
       "advanced_settings": "고급 설정",
       "maximum_accepted_payout": "최대 수락 가능한 지급액",
@@ -418,10 +431,11 @@
       "decline_payout": "지급 거부",
       "custom_value": "사용자 지정 값",
       "cannot_be_less_than": "값은 0보다 작을 수 없습니다",
+      "cannot_be_more_than": "값은 999999을 초과할 수 없습니다",
       "author_rewards": "게시자 보상",
       "what_type_of_tokens": "이 게시물에서 보상으로 받고 싶은 토큰 유형은 무엇입니까?",
       "power_up": "100% 파워 업",
-      "default": "기본값: 50% HBD / 50% HP",
+      "default": "기본값: ",
       "update": "업데이트",
       "delete": "삭제",
       "your_percent": "귀하의 백분율은 0보다 작을 수 없습니다",
@@ -429,6 +443,7 @@
       "account_name": "계정 이름은 더 길어야 합니다",
       "beneficiary_cannot_be_self": "자신을 수혜자로 지정할 수 없습니다",
       "beneficiary_percent_invalid": "수혜자 비율은 1에서 100까지여야 합니다",
+      "bad_actor": "이 계정으로 전송할 때 주의하세요. 가능한 피싱을 위해 철자를 두 번 확인해주세요.",
       "add_account": "계정 추가",
       "post_templates": "게시물 템플릿",
       "manage_your_post_templates": "게시물 템플릿을 관리하고, 여기에 다른 설정도 저장/로드됩니다.",
@@ -458,5 +473,60 @@
     "placeholder": "Search",
     "no_results": "Nothing was found.",
     "error": "There was an error"
+  },
+  "settings_page": {
+    "invalid_url": "잘못된 URL",
+    "name_is_too_long": "이름이 너무 깁니다",
+    "name_must_not_begin_with": "이름은 @로 시작할 수 없습니다",
+    "about_is_too_long": "소개가 너무 깁니다",
+    "location_is_too_long": "위치가 너무 깁니다",
+    "website_url_is_too_long": "웹사이트 URL이 너무 깁니다",
+    "public_profile_settings": "공개 프로필 설정",
+    "witness_owner_is_too_long": "증인 소유자 사용자 이름이 너무 깁니다",
+    "witness_description_is_too_long": "증인 설명이 너무 깁니다",
+    "description_is_too_long": "설명이 너무 깁니다",
+    "preferences": "설정",
+    "not_safe_for_work_nsfw_content": "직장 안전을 고려하지 않은 콘텐츠 (NSFW)",
+    "always_hide": "항상 숨기기",
+    "always_warn": "항상 경고",
+    "always_show": "항상 표시",
+    "choose_default_blog_payout": "블로그 글 보상 선택",
+    "choose_default_comment_payout": "댓글 보상 선택",
+    "choose_language": "언어 선택",
+    "muted_users": "음소거된 사용자",
+    "unmute": "음소거 해제",
+    "decline_payout": "보상 거부",
+    "power_up": "100% 파워 업",
+    "update": "업데이트",
+    "upload_image": "이미지 업로드",
+    "uploading_image": "이미지 업로드 중",
+    "profile_image_url": "프로필 사진 URL",
+    "cover_image_url": "커버 이미지 URL (최적: 2048 x 512 픽셀)",
+    "profile_name": "표시 이름",
+    "profile_about": "소개",
+    "profile_location": "위치",
+    "profile_website": "웹사이트",
+    "blacklist_description": "블랙리스트 설명",
+    "mute_list_description": "음소거 목록 설명",
+    "profile_witness_owner": "증인 소유자",
+    "profile_witness_description": "증인 설명",
+    "saved": "저장됨!",
+    "choose_preferred_api_endpoint": "선호하는 API 노드 선택",
+    "default_beneficiaries": "추천 시스템",
+    "default_beneficiaries_enabled": "기본 수혜자 사용",
+    "default_beneficiaries_disabled": "추천 시스템 비활성화",
+    "advanced": "고급",
+    "api_endpoint_options": "API 엔드포인트 옵션",
+    "endpoint": "엔드포인트",
+    "preferred": "선호됨?",
+    "remove": "제거",
+    "add_api_endpoint": "API 엔드포인트 추가",
+    "reset_endpoints": "엔드포인트 재설정",
+    "error_bad_url": "잘못된 URL입니다. 확인 후 다시 시도하십시오",
+    "error_bad_cookie": "쿠키에서 엔드포인트를 가져올 수 없습니다",
+    "error_already_exists": "이 엔드포인트는 이미 목록에 있습니다",
+    "error_cant_remove_active": "현재 선호하는 엔드포인트를 제거할 수 없습니다. 먼저 새로운 선호하는 엔드포인트를 선택하십시오",
+    "error_cant_remove_all": "목록에 적어도 하나의 엔드포인트가 있어야 합니다",
+    "changes_saved": "변경 사항이 저장되었습니다"
   }
 }

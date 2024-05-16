@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-
 import { getAccountNotifications } from '@transaction/lib/bridge';
 import LayoutProfile from '@/blog/components/common/profile-layout';
 import NotificationActivities from '@/blog/components/notification-activities';
@@ -20,7 +19,6 @@ export default function UserNotifications() {
       enabled: !!username
     }
   );
-
   if (isLoading) return <Loading loading={isLoading} />;
 
   return (

@@ -1,7 +1,7 @@
 import { KeychainSDK, KeychainKeyTypes } from 'keychain-sdk';
 import { Operation, TransferOperation } from '@hiveio/dhive';
 import { SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
-import { createWaxFoundation, operation, TTransactionPackType } from '@hive/wax';
+import { createWaxFoundation, operation, TTransactionPackType } from '@hiveio/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -108,7 +108,7 @@ export class SignerKeychain extends Signer {
       const { username, keyType } = this;
       const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
 
-      const wax = await createWaxFoundation();
+      const wax = await createWaxFoundation({ chainId: this.chainId });
       const txBuilder = new wax.TransactionBuilder(transaction);
       logger.info('signTransaction digests: %o', { digest, 'txBuilder.sigDigest': txBuilder.sigDigest });
       if (digest !== txBuilder.sigDigest) throw new Error('Digests do not match');

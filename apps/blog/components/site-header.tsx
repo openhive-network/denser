@@ -11,7 +11,6 @@ import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { getLogger } from '@ui/lib/logging';
 import DialogLogin from './dialog-login';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import { useQuery } from '@tanstack/react-query';
@@ -22,8 +21,7 @@ import LangToggle from './lang-toggle';
 import { PieChart, Pie } from 'recharts';
 import useManabars from './hooks/useManabars';
 import { hoursAndMinutes } from '../lib/utils';
-
-const logger = getLogger('app');
+import { getAccountFull } from '@transaction/lib/hive';
 
 const SiteHeader: FC = () => {
   const router = useRouter();
@@ -33,14 +31,21 @@ const SiteHeader: FC = () => {
     setIsClient(true);
   }, []);
   const { user } = useUser();
-  const { manabarsData } = useManabars(user?.username);
+  const { manabarsData } = useManabars(user.username);
   const { data, isLoading, isError } = useQuery(
-    [['unreadNotifications', user?.username]],
-    () => getUnreadNotifications(user?.username || ''),
+    [['unreadNotifications', user.username]],
+    () => getUnreadNotifications(user.username),
     {
-      enabled: !!user?.username
+      enabled: !!user.username
     }
   );
+  const {
+    isLoading: profileIsLoading,
+    error: profileError,
+    data: profileData
+  } = useQuery(['profileData', user.username], () => getAccountFull(user.username), {
+    enabled: !!user.username
+  });
   const upvoteAngle = (360 * (manabarsData ? manabarsData?.upvote.percentageValue : 0)) / 100;
   const downvoteAngle = (360 * (manabarsData ? manabarsData?.downvote.percentageValue : 0)) / 100;
   const rcAngle = (360 * (manabarsData ? manabarsData?.rc.percentageValue : 0)) / 100;
@@ -71,7 +76,7 @@ const SiteHeader: FC = () => {
   return (
     <header
       className={clsx(
-        'supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur transition ease-in-out',
+        'supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur transition ease-in-out dark:bg-slate-900',
         { 'translate-y-[-56px]': isNavHidden }
       )}
       translate="no"
@@ -80,12 +85,13 @@ const SiteHeader: FC = () => {
         <Link href="/trending" className="flex items-center space-x-2">
           <Icons.hive className="h-6 w-6" />
           <span className="font-bold sm:inline-block">{siteConfig.name}</span>
+          {siteConfig.chainEnv !== 'mainnet' && <span className="text-xs text-red-600 uppercase">{siteConfig.chainEnv}</span>}
         </Link>
 
         <MainNav />
         <div className="flex items-center space-x-2 sm:space-x-4">
           <nav className="flex items-center space-x-1">
-            {isClient && user?.isLoggedIn ? null : (
+            {isClient && user.isLoggedIn ? null : (
               <div className="mx-1 hidden gap-1 sm:flex">
                 <DialogLogin>
                   <Button
@@ -128,7 +134,7 @@ const SiteHeader: FC = () => {
                 <Icons.pencil className="h-5 w-5" />
               </Button>
             </Link>
-            {isClient && !user?.isLoggedIn ? (
+            {isClient && !user.isLoggedIn ? (
               <ModeToggle>
                 <Button variant="ghost" size="sm" className="h-10 w-full px-0" data-testid="theme-mode">
                   <Icons.sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
@@ -137,11 +143,11 @@ const SiteHeader: FC = () => {
                 </Button>
               </ModeToggle>
             ) : null}
-            {isClient && !user?.isLoggedIn ? <LangToggle logged={user ? user?.isLoggedIn : false} /> : null}
-            {isClient && user?.isLoggedIn ? (
+            {isClient && !user.isLoggedIn ? <LangToggle logged={user ? user?.isLoggedIn : false} /> : null}
+            {isClient && user.isLoggedIn ? (
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger data-testid="comment-card-footer-downvote" className="cursor-pointer">
+                  <TooltipTrigger data-testid="profile-avatar-button" className="cursor-pointer">
                     <UserMenu user={user} notifications={data?.unread}>
                       <div className="group relative inline-flex w-fit cursor-pointer items-center justify-center">
                         {data && data.unread !== 0 ? (
@@ -214,13 +220,18 @@ const SiteHeader: FC = () => {
                             ></Pie>
                           </PieChart>
                         </div>
-                        <Avatar className="z-30 h-9 w-9">
+                        <Avatar className="z-30 flex h-9 w-9 items-center justify-center overflow-hidden rounded-full">
                           <AvatarImage
-                            src={`https://images.hive.blog/u/${user?.username}/avatar/small`}
+                            className="h-full w-full object-cover"
+                            src={profileData?.profile?.profile_image}
                             alt="Profile picture"
                           />
                           <AvatarFallback>
-                            <Icons.user />
+                            <img
+                              className="h-full w-full object-cover"
+                              src="https://images.hive.blog/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4"
+                              alt="default img"
+                            />
                           </AvatarFallback>
                         </Avatar>
                       </div>

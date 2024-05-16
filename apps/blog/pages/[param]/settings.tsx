@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import { Icons } from '@ui/components/icons';
 import ProfileLayout from '@/blog/components/common/profile-layout';
 import { Button } from '@ui/components/button';
@@ -14,11 +13,10 @@ import {
   SelectValue
 } from '@ui/components/select';
 import { siteConfig } from '@ui/config/site';
-import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
+import { useLocalStorage } from 'usehooks-ts';
 import { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
-import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { cn } from '@ui/lib/utils';
@@ -26,7 +24,50 @@ import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
 import { transactionService } from '@transaction/index';
 import { hbauthUseStrictMode, hbauthService } from '@smart-signer/lib/hbauth-service';
+import { getAccountFull } from '@transaction/lib/hive';
+import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'next-i18next';
+import { TFunction } from 'i18next';
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
+import env from '@beam-australia/react-env';
+import { Signer } from '@smart-signer/lib/signer/signer';
+import { getLogger } from '@ui/lib/logging';
+import { useSignerContext } from '@/blog/components/common/signer';
+import { toast } from '@ui/components/hooks/use-toast';
 
+const logger = getLogger('app');
+interface Settings {
+  profile_image: string;
+  cover_image: string;
+  name: string;
+  about: string;
+  location: string;
+  website: string;
+  blacklist_description: string;
+  muted_list_description: string;
+}
+export interface Preferences {
+  nsfw: 'hide' | 'warn' | 'show';
+  blog_rewards: '0%' | '50%' | '100%';
+  comment_rewards: '0%' | '50%' | '100%';
+  referral_system: 'enabled' | 'disabled';
+}
+export const DEFAULT_PREFERENCES: Preferences = {
+  nsfw: 'warn',
+  blog_rewards: '50%',
+  comment_rewards: '50%',
+  referral_system: 'enabled'
+};
+const DEFAULT_SETTINGS: Settings = {
+  profile_image: '',
+  cover_image: '',
+  name: '',
+  about: '',
+  location: '',
+  website: '',
+  blacklist_description: '',
+  muted_list_description: ''
+};
 const DEFAULTS_ENDPOINTS = [
   'https://api.hive.blog',
   'https://api.openhive.network',
@@ -35,19 +76,177 @@ const DEFAULTS_ENDPOINTS = [
   'https://api.deathwing.me'
 ];
 
+const uploadImg = async (file: File, username: string, signer: Signer): Promise<string> => {
+  try {
+    let data;
+
+    if (file) {
+      const reader = new FileReader();
+
+      data = new Promise((resolve) => {
+        reader.addEventListener('load', () => {
+          const result = Buffer.from(reader.result!.toString(), 'binary');
+          resolve(result);
+        });
+        reader.readAsBinaryString(file);
+      });
+    }
+
+    const formData = new FormData();
+    if (file) {
+      formData.append('file', file);
+    }
+
+    data = await data;
+    const prefix = Buffer.from('ImageSigningChallenge');
+    const buf = Buffer.concat([prefix, data as unknown as Uint8Array]);
+
+    const sig = await signer.signChallenge({
+      message: buf,
+      password: ''
+    });
+
+    const postUrl = `${env('IMAGES_ENDPOINT')}${username}/${sig}`;
+
+    const response = await fetch(postUrl, { method: 'POST', body: formData });
+    const resJSON = await response.json();
+    return resJSON.url;
+  } catch (error) {
+    logger.error('Error when uploading file %s: %o', file.name, error);
+  }
+  return '';
+};
+
+function validation(values: Settings, t: TFunction<'common_blog'>) {
+  return {
+    profile_image:
+      values.profile_image && !/^https?:\/\//.test(values.profile_image)
+        ? t('settings_page.invalid_url')
+        : null,
+    cover_image:
+      values.cover_image && !/^https?:\/\//.test(values.cover_image) ? t('settings_page.invalid_url') : null,
+    name:
+      values.name && values.name.length > 20
+        ? t('settings_page.name_is_too_long')
+        : values.name && /^\s*@/.test(values.name)
+          ? t('settings_page.name_must_not_begin_with')
+          : null,
+    about: values.about && values.about.length > 160 ? t('settings_page.about_is_too_long') : null,
+    location: values.location && values.location.length > 30 ? t('settings_page.location_is_too_long') : null,
+    website:
+      values.website && values.website.length > 100
+        ? t('settings_page.website_url_is_too_long')
+        : values.website && !/^https?:\/\//.test(values.website)
+          ? t('settings_page.invalid_url')
+          : null,
+    blacklist_description:
+      values.blacklist_description && values.blacklist_description.length > 256
+        ? t('settings_page.description_is_too_long')
+        : null,
+    muted_list_description:
+      values.muted_list_description && values.muted_list_description.length > 256
+        ? t('settings_page.description_is_too_long')
+        : null
+  };
+}
+
 export default function UserSettings() {
+  const { user } = useUser();
+  const { isLoading, error, data } = useQuery(
+    ['profileData', user.username],
+    () => getAccountFull(user.username),
+    {
+      enabled: !!user.username
+    }
+  );
+
+  const profileData = data?.profile;
+  const profileSettings: Settings = {
+    profile_image: profileData?.profile_image ? profileData.profile_image : '',
+    cover_image: profileData?.cover_image ? profileData.cover_image : '',
+    name: profileData?.name ? profileData.name : '',
+    about: profileData?.about ? profileData.about : '',
+    location: profileData?.location ? profileData.location : '',
+    website: profileData?.website ? profileData.website : '',
+    blacklist_description: profileData?.blacklist_description ? profileData.blacklist_description : '',
+    muted_list_description: profileData?.muted_list_description ? profileData.muted_list_description : ''
+  };
+
+  const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
+  const [preferences, setPreferences] = useLocalStorage<Preferences>(
+    `user-preferences-${user.username}`,
+    DEFAULT_PREFERENCES
+  );
   const [endpoints, setEndpoints] = useLocalStorage('hive-blog-endpoints', DEFAULTS_ENDPOINTS);
   const [endpoint, setEndpoint] = useLocalStorage('hive-blog-endpoint', siteConfig.endpoint);
   const [newEndpoint, setNewEndpoint] = useState('');
   const [isClient, setIsClient] = useState(false);
+  const [insertImg, setInsertImg] = useState('');
   const params = useParams();
-  const router = useRouter();
-  const { user } = useUser();
   const mutedQuery = useFollowListQuery(user.username, 'muted');
+  const { t } = useTranslation('common_blog');
+  const inputProfileRef = useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
+  const inputCoverRef = useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
+  const validationCheck = validation(settings, t);
+  const disabledBtn = Object.values(validationCheck).some((value) => typeof value === 'string');
+  const { signer } = useSignerContext();
+  const sameData =
+    profileSettings.profile_image === settings.profile_image &&
+    profileSettings.cover_image === settings.cover_image &&
+    profileSettings.name === settings.name &&
+    profileSettings.location === settings.location &&
+    profileSettings.website === settings.website &&
+    profileSettings.about === settings.about &&
+    profileSettings.blacklist_description === settings.blacklist_description &&
+    profileSettings.muted_list_description === settings.muted_list_description;
 
   useEffect(() => {
     setIsClient(true);
   }, []);
+  useEffect(() => {
+    setSettings(profileSettings);
+  }, [isLoading]);
+  async function onSubmit() {
+    try {
+      await transactionService.updateProfile(
+        settings.profile_image !== '' ? settings.profile_image : undefined,
+        settings.cover_image !== '' ? settings.cover_image : undefined,
+        settings.name !== '' ? settings.name : undefined,
+        settings.about !== '' ? settings.about : undefined,
+        settings.location !== '' ? settings.location : undefined,
+        settings.website !== '' ? settings.website : undefined,
+        profileData?.witness_owner,
+        profileData?.witness_description,
+        settings.blacklist_description !== '' ? settings.blacklist_description : undefined,
+        settings.muted_list_description !== '' ? settings.muted_list_description : undefined
+      );
+      toast({
+        title: t('settings_page.changes_saved'),
+        variant: 'success'
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  const onImageUpload = async (file: File, username: string, signer: Signer) => {
+    const url = await uploadImg(file, username, signer);
+    return url;
+  };
+
+  const inputProfileHandler = async (event: { target: { files: FileList } }) => {
+    if (event.target.files && event.target.files.length === 1) {
+      setInsertImg('');
+      const url = await onImageUpload(event.target.files[0], user.username, signer);
+      setSettings((prev) => ({ ...prev, profile_image: url }));
+    }
+  };
+  const inputCoverHandler = async (event: { target: { files: FileList } }) => {
+    if (event.target.files && event.target.files.length === 1) {
+      setInsertImg('');
+      const url = await onImageUpload(event.target.files[0], user.username, signer);
+      setSettings((prev) => ({ ...prev, cover_image: url }));
+    }
+  };
 
   return (
     <ProfileLayout>
@@ -56,145 +255,252 @@ export default function UserSettings() {
           <>
             <div className="py-8">
               <h2 className="py-4 text-lg font-semibold leading-5 text-slate-900 dark:text-white">
-                Public Profile Settings
+                {t('settings_page.public_profile_settings')}
               </h2>
               <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
                 <div>
-                  <Label htmlFor="profileImage">Profile picture url</Label>
-                  <Input type="text" id="profileImage" name="profileImage" />
-                  <span className="text-sm font-normal text-red-600 hover:cursor-pointer">
-                    Upload an image
+                  <Label htmlFor="profileImage">{t('settings_page.profile_image_url')}</Label>
+                  <Input
+                    type="text"
+                    id="profileImage"
+                    name="profileImage"
+                    value={settings.profile_image}
+                    onChange={(e) => setSettings((prev) => ({ ...prev, profile_image: e.target.value }))}
+                  />
+                  <span>
+                    <Label
+                      className="text-sm font-normal text-red-500 hover:cursor-pointer"
+                      htmlFor="profilePicture"
+                    >
+                      {t('settings_page.upload_image')}
+                    </Label>
+                    <Input
+                      id="profilePicture"
+                      type="file"
+                      className="hidden"
+                      ref={inputProfileRef}
+                      accept=".jpg,.png,.jpeg,.jfif,.gif,.webp"
+                      name="avatar"
+                      value={insertImg}
+                      //@ts-expect-error
+                      onChange={inputProfileHandler}
+                    />
                   </span>
+                  <span className="pt-2 text-xs text-red-500">{validationCheck.profile_image}</span>
                 </div>
 
                 <div>
-                  <Label htmlFor="coverImage">Cover image url (Optimal: 2048 x 512 px)</Label>
-                  <Input type="text" id="coverImage" name="coverImage" />
-                  <span className="text-md font-normal text-red-600 hover:cursor-pointer">
-                    Upload an image
+                  <Label htmlFor="coverImage">{t('settings_page.cover_image_url')}</Label>
+                  <Input
+                    type="text"
+                    id="coverImage"
+                    name="coverImage"
+                    value={settings.cover_image}
+                    onChange={(e) => setSettings((prev) => ({ ...prev, cover_image: e.target.value }))}
+                  />
+                  <span>
+                    <Label
+                      className="text-sm font-normal text-red-500 hover:cursor-pointer"
+                      htmlFor="coverPicture"
+                    >
+                      {t('settings_page.upload_image')}
+                    </Label>
+                    <Input
+                      id="coverPicture"
+                      type="file"
+                      className="hidden"
+                      ref={inputCoverRef}
+                      accept=".jpg,.png,.jpeg,.jfif,.gif,.webp"
+                      name="avatar"
+                      value={insertImg}
+                      //@ts-expect-error
+                      onChange={inputCoverHandler}
+                    />
                   </span>
+                  <span className="pt-2 text-xs text-red-500">{validationCheck.cover_image}</span>
                 </div>
 
                 <div>
-                  <Label htmlFor="name">Display Name</Label>
-                  <Input type="text" id="name" name="name" />
+                  <Label htmlFor="name">{t('settings_page.profile_name')}</Label>
+                  <Input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={settings.name}
+                    onChange={(e) => setSettings((prev) => ({ ...prev, name: e.target.value }))}
+                  />
+                  <span className="pt-2 text-xs text-red-500">{validationCheck.name}</span>
                 </div>
 
                 <div>
-                  <Label htmlFor="about">About</Label>
-                  <Input type="email" id="about" name="about" />
+                  <Label htmlFor="about">{t('settings_page.profile_about')}</Label>
+                  <Input
+                    type="email"
+                    id="about"
+                    name="about"
+                    value={settings.about}
+                    onChange={(e) => setSettings((prev) => ({ ...prev, about: e.target.value }))}
+                  />
+                  <span className="pt-2 text-xs text-red-500">{validationCheck.about}</span>
                 </div>
 
                 <div>
-                  <Label htmlFor="location">Location</Label>
-                  <Input type="text" id="location" name="location" />
+                  <Label htmlFor="location">{t('settings_page.profile_location')}</Label>
+                  <Input
+                    type="text"
+                    id="location"
+                    name="location"
+                    value={settings.location}
+                    onChange={(e) => setSettings((prev) => ({ ...prev, location: e.target.value }))}
+                  />
+                  <span className="pt-2 text-xs text-red-500">{validationCheck.location}</span>
                 </div>
 
                 <div>
-                  <Label htmlFor="website">Website</Label>
-                  <Input type="text" id="website" name="website" />
+                  <Label htmlFor="website">{t('settings_page.profile_website')}</Label>
+                  <Input
+                    type="text"
+                    id="website"
+                    name="website"
+                    value={settings.website}
+                    onChange={(e) => setSettings((prev) => ({ ...prev, website: e.target.value }))}
+                  />
+                  <span className="pt-2 text-xs text-red-500">{validationCheck.website}</span>
                 </div>
 
                 <div>
-                  <Label htmlFor="blacklistDescription">Blacklist Description</Label>
-                  <Input type="text" id="blacklistDescription" name="blacklistDescription" />
+                  <Label htmlFor="blacklistDescription">{t('settings_page.blacklist_description')}</Label>
+                  <Input
+                    type="text"
+                    id="blacklistDescription"
+                    name="blacklistDescription"
+                    value={settings.blacklist_description}
+                    onChange={(e) =>
+                      setSettings((prev) => ({ ...prev, blacklist_description: e.target.value }))
+                    }
+                  />
+                  <span className="pt-2 text-xs text-red-500">{validationCheck.blacklist_description}</span>
                 </div>
 
                 <div>
-                  <Label htmlFor="mutedListDescription">Mute List Description</Label>
-                  <Input type="text" id="mutedListDescription" name="mutedListDescription" />
+                  <Label htmlFor="mutedListDescription">{t('settings_page.mute_list_description')}</Label>
+                  <Input
+                    type="text"
+                    id="mutedListDescription"
+                    name="mutedListDescription"
+                    value={settings.muted_list_description}
+                    onChange={(e) =>
+                      setSettings((prev) => ({ ...prev, muted_list_description: e.target.value }))
+                    }
+                  />
+                  <span className="pt-2 text-xs text-red-500">{validationCheck.muted_list_description}</span>
                 </div>
               </div>
-              <Button className="my-4 w-44" data-testid="pps-update-button">
-                Update
+              <Button
+                onClick={() => onSubmit()}
+                className="my-4 w-44"
+                data-testid="pps-update-button"
+                disabled={sameData || disabledBtn}
+              >
+                {t('settings_page.update')}
               </Button>
             </div>
             <div className="py-8" data-testid="settings-preferences">
               <h2 className="py-4 text-lg font-semibold leading-5 text-slate-900 dark:text-white">
-                Preferences
+                {t('settings_page.preferences')}
               </h2>
 
               <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-                <div data-testid="choose-language">
-                  <Label htmlFor="choose-language">Choose Language</Label>
-                  <Select defaultValue="en" name="choose-language">
-                    <SelectTrigger>
-                      <SelectValue placeholder="Choose Language" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem value="en">English</SelectItem>
-                        <SelectItem value="es">Spanish Español</SelectItem>
-                        <SelectItem value="ru">Russian русский</SelectItem>
-                        <SelectItem value="fr">French français</SelectItem>
-                        <SelectItem value="it">Italian italiano</SelectItem>
-                        <SelectItem value="ko">Korean 한국어</SelectItem>
-                        <SelectItem value="ja">Japanese 日本語</SelectItem>
-                        <SelectItem value="pl">Polish Polski</SelectItem>
-                        <SelectItem value="zh">Chinese 简体中文</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-
                 <div data-testid="not-safe-for-work-content">
-                  <Label htmlFor="not-safe-for-work-content">Not safe for work (NSFW) content</Label>
-                  <Select defaultValue="hide" name="not-safe-for-work-content">
+                  <Label htmlFor="not-safe-for-work-content">
+                    {t('settings_page.not_safe_for_work_nsfw_content')}
+                  </Label>
+                  <Select
+                    value={preferences.nsfw}
+                    onValueChange={(e: 'hide' | 'warn' | 'show') =>
+                      setPreferences((prev) => ({ ...prev, nsfw: e }))
+                    }
+                    name="not-safe-for-work-content"
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Not safe for work (NSFW) content" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectItem value="hide">Always hide</SelectItem>
-                        <SelectItem value="warn">Always warn</SelectItem>
-                        <SelectItem value="show">Always show</SelectItem>
+                        <SelectItem value="hide">{t('settings_page.always_hide')}</SelectItem>
+                        <SelectItem value="warn">{t('settings_page.always_warn')}</SelectItem>
+                        <SelectItem value="show">{t('settings_page.always_show')}</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div data-testid="blog-post-rewards">
-                  <Label htmlFor="blog-post-rewards">Blog post rewards</Label>
-                  <Select defaultValue="50%" name="blog-post-rewards">
+                  <Label htmlFor="blog-post-rewards">{t('settings_page.choose_default_blog_payout')}</Label>
+                  <Select
+                    value={preferences.blog_rewards}
+                    onValueChange={(e: '0%' | '50%' | '100%') =>
+                      setPreferences((prev) => ({ ...prev, blog_rewards: e }))
+                    }
+                    name="blog-post-rewards"
+                  >
                     <SelectTrigger>
-                      <SelectValue placeholder="Blog post rewards" />
+                      <SelectValue placeholder={t('settings_page.choose_default_blog_payout')} />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectItem value="0%">Decline Payout</SelectItem>
-                        <SelectItem value="50%">50% HBD / 50% HP</SelectItem>
-                        <SelectItem value="100%">Power Up 100%</SelectItem>
+                        <SelectItem value="0%">{t('settings_page.decline_payout')}</SelectItem>
+                        <SelectItem value="50%">{'50% HBD / 50% HP'}</SelectItem>
+                        <SelectItem value="100%">{t('settings_page.power_up')}</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div data-testid="comment-post-rewards">
-                  <Label htmlFor="comment-post-rewards">Comment post rewards</Label>
-                  <Select defaultValue="50%" name="comment-post-rewards">
+                  <Label htmlFor="comment-post-rewards">
+                    {t('settings_page.choose_default_comment_payout')}
+                  </Label>
+                  <Select
+                    name="comment-post-rewards"
+                    value={preferences.comment_rewards}
+                    onValueChange={(e: '0%' | '50%' | '100%') =>
+                      setPreferences((prev) => ({ ...prev, comment_rewards: e }))
+                    }
+                  >
                     <SelectTrigger>
-                      <SelectValue placeholder="Comment post rewards" />
+                      <SelectValue placeholder={t('settings_page.choose_default_comment_payout')} />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectItem value="0%">Decline Payout</SelectItem>
-                        <SelectItem value="50%">50% HBD / 50% HP</SelectItem>
-                        <SelectItem value="100%">Power Up 100%</SelectItem>
+                        <SelectItem value="0%">{t('settings_page.decline_payout')}</SelectItem>
+                        <SelectItem value="50%">{'50% HBD / 50% HP'}</SelectItem>
+                        <SelectItem value="100%">{t('settings_page.power_up')}</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div data-testid="referral-system">
-                  <Label htmlFor="referral-system">Referral System</Label>
-                  <Select defaultValue="enabled" name="referral-system">
+                  <Label htmlFor="referral-system">{t('settings_page.default_beneficiaries')}</Label>
+                  <Select
+                    name="referral-system"
+                    value={preferences.referral_system}
+                    onValueChange={(e: 'enabled' | 'disabled') =>
+                      setPreferences((prev) => ({ ...prev, referral_system: e }))
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Referral System" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectItem value="enabled">Use Default Beneficiaries</SelectItem>
-                        <SelectItem value="disabled">Opt-Out Referral System</SelectItem>
+                        <SelectItem value="enabled">
+                          {t('settings_page.default_beneficiaries_enabled')}
+                        </SelectItem>
+                        <SelectItem value="disabled">
+                          {t('settings_page.default_beneficiaries_disabled')}
+                        </SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
@@ -205,9 +511,11 @@ export default function UserSettings() {
         ) : null}
 
         <div className="py-8">
-          <h2 className="py-4 text-lg font-semibold leading-5 text-slate-900 dark:text-white">Advanced</h2>
+          <h2 className="py-4 text-lg font-semibold leading-5 text-slate-900 dark:text-white">
+            {t('settings_page.advanced')}
+          </h2>
           <h4 className="text-md py-2 font-semibold leading-5 text-slate-900 dark:text-white">
-            API Endpoint Options
+            {t('settings_page.api_endpoint_options')}
           </h4>
           <RadioGroup
             defaultValue={endpoint}
@@ -221,16 +529,16 @@ export default function UserSettings() {
             value={endpoint}
           >
             <div className="grid grid-cols-3">
-              <span> Endpoint</span>
-              <span>Preferred?</span>
-              <span>Remove</span>
+              <span>{t('settings_page.endpoint')}</span>
+              <span>{t('settings_page.preferred')}</span>
+              <span>{t('settings_page.remove')}</span>
             </div>
             {endpoints?.map((endpoint, index) => (
               <div
                 key={endpoint}
                 className={cn(
                   'grid grid-cols-3 items-center p-2',
-                  index % 2 === 0 ? 'bg-slate-100 dark:bg-slate-500' : '  bg-slate-200 p-2 dark:bg-slate-600'
+                  index % 2 === 0 ? 'bg-slate-100 dark:bg-slate-500' : 'bg-slate-200 p-2 dark:bg-slate-600'
                 )}
               >
                 <Label htmlFor={`e#{index}`}>{endpoint}</Label>
@@ -253,30 +561,31 @@ export default function UserSettings() {
                 setEndpoints(endpoints ? [...endpoints, newEndpoint] : [...DEFAULTS_ENDPOINTS, newEndpoint])
               }
             >
-              Add
+              {t('settings_page.add_api_endpoint')}
             </Button>
           </div>
-
-          <Button className="my-4 w-44">Reset Endpoints</Button>
+          <Button className="my-4 w-44">{t('settings_page.reset_endpoints')}</Button>
         </div>
-        <div>
-          <div>Muted Users</div>
-          <ul>
-            {mutedQuery.data?.map((mutedUser, index) => (
-              <li key={mutedUser.name}>
-                <span>{index + 1}. </span>
-                <span className="text-red-500">{mutedUser.name}</span>
-                <Button
-                  className="text-red-500"
-                  variant="link"
-                  onClick={() => transactionService.unmute(mutedUser.name)}
-                >
-                  [unmute]
-                </Button>
-              </li>
-            ))}
-          </ul>
-        </div>
+        {mutedQuery.data ? (
+          <div>
+            <div>{t('settings_page.muted_users')}</div>
+            <ul>
+              {mutedQuery.data.map((mutedUser, index) => (
+                <li key={mutedUser.name}>
+                  <span>{index + 1}. </span>
+                  <span className="text-red-500">{mutedUser.name}</span>
+                  <Button
+                    className="h-fit p-1 text-red-500"
+                    variant="link"
+                    onClick={() => transactionService.unmute(mutedUser.name)}
+                  >
+                    [{t('settings_page.unmute')}]
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
       </div>
     </ProfileLayout>
   );

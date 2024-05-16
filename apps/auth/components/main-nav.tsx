@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Icons } from '@ui/components/icons';
+import { siteConfig } from '@ui/config/site';
 
 export function MainNav() {
   const pathname = usePathname();
@@ -15,6 +16,7 @@ export function MainNav() {
       */}
       <Link href="/" className="keychainify-checked mr-6 flex items-center space-x-2">
         <Icons.hivetoken />
+        {siteConfig.chainEnv !== 'mainnet' && <span className="text-xs text-red-600 uppercase">{siteConfig.chainEnv}</span>}
       </Link>
     </div>
   );

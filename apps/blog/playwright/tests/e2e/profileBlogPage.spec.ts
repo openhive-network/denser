@@ -3,8 +3,8 @@ import { HomePage } from '../support/pages/homePage';
 import { ProfilePage } from '../support/pages/profilePage';
 import { PostPage } from '../support/pages/postPage';
 import { CommunitiesPage } from '../support/pages/communitiesPage';
-import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
 import { ReblogThisPostDialog } from '../support/pages/reblogThisPostDialog';
+import { LoginForm } from '../support/pages/loginForm';
 
 
 test.describe('Profile page of @gtg', () => {
@@ -105,14 +105,14 @@ test.describe('Profile page of @gtg', () => {
     await profilePage.gotoProfilePage('@gtg');
     await profilePage.profileBlogTabIsSelected();
 
-    const firstPostItem: Locator = await profilePage.postBlogItem.nth(1);
+    const firstPostItem: Locator = await profilePage.postBlogItem.first();
     const postCommunityLink: Locator = await profilePage.postCommunityLink;
     const postCategoryLink: Locator = await profilePage.postCategoryLink;
 
 
     if (await firstPostItem.filter({ has: postCommunityLink }).isVisible()){
         const firstPostCommunityLinkName: any = await firstPostItem.filter({ has: postCommunityLink }).locator(postCommunityLink).textContent();
-        // console.log('Fist Post Community Name ', await firstPostCommunityLinkName);
+        console.log('Fist Post Community Name ', await firstPostCommunityLinkName);
 
         await postCommunityLink.first().click();
         expect(await communityPage.communityNameTitle.textContent()).toBe(firstPostCommunityLinkName);
@@ -343,9 +343,8 @@ test.describe('Profile page of @gtg', () => {
     await expect(postPage.articleBody).toBeVisible();
   });
 
-  // Skipped due to new login form
-  test.skip('move to the login page after clicking upvote of the first post card', async ({ page }) => {
-    let loginDialog = new LoginToVoteDialog(page);
+  test('move to the login page after clicking upvote of the first post card', async ({ page }) => {
+    let loginDialog = new LoginForm(page);
 
     await profilePage.gotoProfilePage('@gtg');
 
@@ -371,12 +370,12 @@ test.describe('Profile page of @gtg', () => {
     ).toBe('rgb(220, 38, 38)');
 
     await profilePage.postUpvoteButton.first().click();
-    await loginDialog.validateLoginToVoteDialogIsVisible();
+    await loginDialog.validateDefaultLoginFormIsLoaded();
+    await loginDialog.closeLoginForm();
   });
 
-  // Skipped due to new login form
-  test.skip('move to the login page after clicking downvote of the first post card', async ({ page }) => {
-    let loginDialog = new LoginToVoteDialog(page);
+  test('move to the login page after clicking downvote of the first post card', async ({ page }) => {
+    let loginDialog = new LoginForm(page);
 
     await profilePage.gotoProfilePage('@gtg');
 
@@ -402,7 +401,8 @@ test.describe('Profile page of @gtg', () => {
     ).toBe('rgb(75, 85, 99)');
 
     await profilePage.postDownvoteButton.first().click();
-    await loginDialog.validateLoginToVoteDialogIsVisible();
+    await loginDialog.validateDefaultLoginFormIsLoaded();
+    await loginDialog.closeLoginForm();
   });
 
   test('validate payout of the first post card', async ({ page }) => {

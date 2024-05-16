@@ -82,7 +82,9 @@ test.describe('Proposals page tests', () => {
     expect(amountProposalsItemUI).toBe(amountResListOfProposalsStatusAllAPI);
   });
 
-  test('change status to Inactive and order by the same (total votes)', async ({ page }) => {
+  // Test skipped due to Issue  https://gitlab.syncad.com/hive/denser/-/issues/402
+  // Validate after fix it.
+  test.skip('change status to Inactive and order by the same (total votes)', async ({ page }) => {
     let apiHelper: ApiHelper = new ApiHelper(page);
 
     await proposalsPage.goToProposalsPage();
@@ -751,7 +753,7 @@ test.describe('Proposals page tests', () => {
   //   const loginDialog = new LoginToVoteDialog(page);
 
   //   await proposalsPage.goToProposalsPage();
-  //   await expect(proposalsPage.page.url()).toMatch(/http:\/\/\w+:4000/); // http://denser:4000 or http://localhost:4000
+  //   await expect(proposalsPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/?/); // https://caddy/ or http://localhost:4000
 
   //   // Click vote button in the first proposal
   //   await proposalsPage.clickVoteButtonOfFirstProposalItem();

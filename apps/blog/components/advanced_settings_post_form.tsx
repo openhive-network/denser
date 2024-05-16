@@ -12,9 +12,11 @@ import { ReactNode, useEffect, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@hive/ui/components/select';
 import Link from 'next/link';
 import { Icons } from '@ui/components/icons';
-import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
+import { useLocalStorage } from 'usehooks-ts';
 import { toast } from '@ui/components/hooks/use-toast';
 import { useTranslation } from 'next-i18next';
+import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
+import badActorList from '@ui/config/lists/bad-actor-list';
 
 type AccountFormValues = {
   title: string;
@@ -27,18 +29,11 @@ type AccountFormValues = {
     account: string;
     weight: string;
   }[];
-  maxAcceptedPayout: number | null;
+  maxAcceptedPayout: number;
   payoutType: string;
 };
-
-type Template = {
-  title: string;
-  beneficiaries: {
-    account: string;
-    weight: string;
-  }[];
-  maxAcceptedPayout: number | null;
-  payoutType: string;
+type Template = AccountFormValues & {
+  templateTitle: string;
 };
 
 export function AdvancedSettingsPostForm({
@@ -53,18 +48,22 @@ export function AdvancedSettingsPostForm({
   data: AccountFormValues;
 }) {
   const { t } = useTranslation('common_blog');
-  const [rewards, setRewards] = useState(data.payoutType);
+  const [preferences, setPreferences] = useLocalStorage<Preferences>(
+    `user-preferences-${username}`,
+    DEFAULT_PREFERENCES
+  );
+  const [rewards, setRewards] = useState(data.payoutType === '' ? '50%' : data.payoutType);
   const [splitRewards, setSplitRewards] = useState(100);
   const [templateTitle, setTemplateTitle] = useState('');
   const [maxPayout, setMaxPayout] = useState(
-    data.maxAcceptedPayout === null ? 'no_max' : data.maxAcceptedPayout === 0 ? '0' : 'custom'
+    data.maxAcceptedPayout === 1000000 ? 'no_max' : data.maxAcceptedPayout === 0 ? '0' : 'custom'
   );
-  const [selectTemplate, setSelectTemplate] = useState('');
+  const [selectTemplate, setSelectTemplate] = useState('/');
   const [beneficiaries, setBeneficiaries] = useState<{ weight: string; account: string }[]>(
     data.beneficiaries
   );
   const [customValue, setCustomValue] = useState(
-    data.maxAcceptedPayout !== null ? data.maxAcceptedPayout : '100'
+    data.maxAcceptedPayout !== 1000000 ? data.maxAcceptedPayout : '100'
   );
   const [open, setOpen] = useState(false);
   const [storedTemplates, storeTemplates] = useLocalStorage<Template[]>(`hivePostTemplates-${username}`, []);
@@ -78,14 +77,18 @@ export function AdvancedSettingsPostForm({
     beneficiaries.length !== 0
       ? beneficiaries.some((beneficiary) => beneficiary.account === username)
       : false;
+  const badActor = beneficiaries.some((beneficiary) => badActorList.includes(beneficiary.account));
   const smallWeight = beneficiaries.find((e) => Number(e.weight) <= 0);
-  const isTemplateStored = storedTemplates.some((template) => template.title === templateTitle);
+  const isTemplateStored = storedTemplates.some((template) => template.templateTitle === templateTitle);
+  const currentTemplate = storedTemplates.find((e) => e.templateTitle === selectTemplate);
 
   useEffect(() => {
-    setRewards(data.payoutType);
-    setMaxPayout(data.maxAcceptedPayout === null ? 'no_max' : data.maxAcceptedPayout === 0 ? '0' : 'custom');
+    setRewards(data.payoutType === '' ? '50%' : data.payoutType);
+    setMaxPayout(
+      data.maxAcceptedPayout === 1000000 ? 'no_max' : data.maxAcceptedPayout === 0 ? '0' : 'custom'
+    );
     setBeneficiaries(data.beneficiaries);
-    setCustomValue(data.maxAcceptedPayout !== null ? data.maxAcceptedPayout : '100');
+    setCustomValue(data.maxAcceptedPayout !== 1000000 ? data.maxAcceptedPayout : '100');
   }, [open]);
 
   useEffect(() => {
@@ -121,16 +124,16 @@ export function AdvancedSettingsPostForm({
   };
 
   function deleteTemplate(templateName: string) {
-    storeTemplates(storedTemplates.filter((e) => e.title !== templateName));
-    setSelectTemplate('');
+    storeTemplates(storedTemplates.filter((e) => e.templateTitle !== templateName));
+    setSelectTemplate('/');
   }
 
   function handleTamplates(e: string) {
-    const template = storedTemplates.find((template) => template.title === e);
+    const template = storedTemplates.find((template) => template.templateTitle === e);
     if (template) {
       setBeneficiaries(template.beneficiaries);
       setRewards(template.payoutType);
-      if (template.maxAcceptedPayout === null) {
+      if (template.maxAcceptedPayout === 1000000) {
         setMaxPayout('no_max');
       }
       if (template.maxAcceptedPayout === 0) {
@@ -144,29 +147,53 @@ export function AdvancedSettingsPostForm({
     setSelectTemplate(e);
   }
   function handleTemplateTitle(e: string) {
-    setSelectTemplate('');
+    setSelectTemplate('/');
     setTemplateTitle(e);
   }
   function maxAcceptedPayout() {
     switch (maxPayout) {
       case 'no_max':
-        return null;
+        return 1000000;
       case '0':
         return 0;
       case 'custom':
-        return customValue === '0' ? null : Number(customValue);
+        return customValue === '0' ? 1000000 : Number(customValue);
     }
-    return null;
+    return 1000000;
   }
-
+  function loadTemplate() {
+    onChangeStore({
+      title: currentTemplate?.title || '',
+      postArea: currentTemplate?.postArea || '',
+      postSummary: currentTemplate?.postSummary || '',
+      tags: currentTemplate?.tags || '',
+      author: currentTemplate?.author || '',
+      category: currentTemplate?.category || '',
+      beneficiaries: beneficiaries,
+      maxAcceptedPayout: maxAcceptedPayout(),
+      payoutType: rewards
+    });
+    setSelectTemplate('/');
+    setOpen(false);
+    toast({
+      title: t('submit_page.advanced_settings_dialog.template_loaded'),
+      variant: 'success'
+    });
+  }
   function onSave() {
-    if (selectTemplate !== '') {
+    if (selectTemplate !== '/') {
       storeTemplates(
         storedTemplates.map((stored) =>
-          stored.title !== selectTemplate
+          stored.templateTitle !== selectTemplate
             ? stored
             : {
-                title: selectTemplate,
+                title: data.title,
+                postArea: data.postArea,
+                postSummary: data.postSummary,
+                tags: data.tags,
+                author: data.author,
+                category: data.category,
+                templateTitle: selectTemplate,
                 beneficiaries: beneficiaries,
                 maxAcceptedPayout: maxAcceptedPayout(),
                 payoutType: rewards
@@ -180,7 +207,13 @@ export function AdvancedSettingsPostForm({
       storeTemplates([
         ...storedTemplates,
         {
-          title: templateTitle,
+          title: data.title,
+          postArea: data.postArea,
+          postSummary: data.postSummary,
+          tags: data.tags,
+          author: data.author,
+          category: data.category,
+          templateTitle: templateTitle,
           beneficiaries: beneficiaries,
           maxAcceptedPayout: maxAcceptedPayout(),
           payoutType: rewards
@@ -193,12 +226,33 @@ export function AdvancedSettingsPostForm({
       maxAcceptedPayout: maxAcceptedPayout(),
       payoutType: rewards
     });
+    setSelectTemplate('/');
     setOpen(false);
     toast({
       title: t('submit_page.advanced_settings_dialog.changes_saved'),
       variant: 'success'
     });
   }
+
+  function authorRewardsText(author_rewards: string): string {
+    const def = '50% HBD / 50% HP';
+    let text;
+    switch (author_rewards) {
+      case '0%':
+        text = t('settings_page.decline_payout');
+        break;
+      case '50%':
+        text = def;
+        break;
+      case '100%':
+        text = t('settings_page.power_up');
+        break;
+      default:
+        text = def;
+    }
+    return text;
+  }
+
   return (
     <Dialog open={open} onOpenChange={() => setOpen((prev) => !prev)}>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -233,11 +287,13 @@ export function AdvancedSettingsPostForm({
               {maxPayout === 'custom' ? (
                 <>
                   <Input type="number" value={customValue} onChange={(e) => setCustomValue(e.target.value)} />
-                  {Number(customValue) < 0 ? (
-                    <div className="p-2 text-red-600">
-                      {t('submit_page.advanced_settings_dialog.cannot_be_less_than')}
-                    </div>
-                  ) : null}
+                  <div className="p-2 text-red-600">
+                    {Number(customValue) < 0
+                      ? t('submit_page.advanced_settings_dialog.cannot_be_less_than')
+                      : Number(customValue) >= 1000000
+                        ? t('submit_page.advanced_settings_dialog.cannot_be_more_than')
+                        : null}
+                  </div>
                 </>
               ) : null}
             </div>
@@ -260,7 +316,10 @@ export function AdvancedSettingsPostForm({
                 <SelectItem value="100%">{t('submit_page.advanced_settings_dialog.power_up')}</SelectItem>
               </SelectContent>
             </Select>
-            <span>{t('submit_page.advanced_settings_dialog.default')}</span>
+            <span>
+              {t('submit_page.advanced_settings_dialog.default')}
+              {authorRewardsText(preferences.blog_rewards)}
+            </span>
             <Link href={`/@${username}/settings`} className="text-red-500">
               {t('submit_page.advanced_settings_dialog.update')}
             </Link>
@@ -304,7 +363,9 @@ export function AdvancedSettingsPostForm({
                       ? t('submit_page.advanced_settings_dialog.beneficiary_cannot_be_self')
                       : smallWeight
                         ? t('submit_page.advanced_settings_dialog.beneficiary_percent_invalid')
-                        : null}
+                        : badActor
+                          ? t('submit_page.advanced_settings_dialog.bad_actor')
+                          : null}
             </div>
             {beneficiaries.length < 8 ? (
               <Button
@@ -329,13 +390,13 @@ export function AdvancedSettingsPostForm({
                   />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">
+                  <SelectItem value="/">
                     {t('submit_page.advanced_settings_dialog.choose_a_template_to_load')}
                   </SelectItem>
                   {storedTemplates
                     ? storedTemplates.map((e) => (
-                        <SelectItem key={e.title} value={e.title}>
-                          {e.title}
+                        <SelectItem key={e.templateTitle} value={e.templateTitle}>
+                          {e.templateTitle}
                         </SelectItem>
                       ))
                     : null}
@@ -361,17 +422,24 @@ export function AdvancedSettingsPostForm({
             onClick={() => onSave()}
             disabled={
               Number(customValue) < 0 ||
+              Number(customValue) >= 1000000 ||
               splitRewards < 0 ||
               hasDuplicateUsernames ||
               isTemplateStored ||
               beneficiariesNames ||
               selfBeneficiary ||
-              Boolean(smallWeight)
+              Boolean(smallWeight) ||
+              badActor
             }
           >
             {t('submit_page.advanced_settings_dialog.save')}
           </Button>
-          {selectTemplate !== '' ? (
+          {currentTemplate ? (
+            <Button variant="redHover" onClick={() => loadTemplate()}>
+              {t('submit_page.advanced_settings_dialog.load')}
+            </Button>
+          ) : null}
+          {selectTemplate !== '/' ? (
             <Button variant="redHover" onClick={() => deleteTemplate(selectTemplate)} className="mb-2">
               {t('submit_page.advanced_settings_dialog.delete_template')}
             </Button>

@@ -21,6 +21,9 @@ import clsx from 'clsx';
 import PostImage from './post-img';
 import { useTranslation } from 'next-i18next';
 import VotesComponent from './votes';
+import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
+import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
+import gdprUserList from '@ui/config/lists/gdpr-user-list';
 
 const RepliesListItem = ({
   comment,
@@ -31,6 +34,13 @@ const RepliesListItem = ({
 }) => {
   const { t } = useTranslation('common_blog');
   const blacklistCheck = blacklist ? blacklist.some((e) => e.name === comment.author) : false;
+  const userFromDMCA = dmcaUserList.includes(comment.author);
+  const legalBlockedUser = userIllegalContent.includes(comment.author);
+
+  if (gdprUserList.includes(comment.author)) {
+    return null;
+  }
+
   return (
     <>
       <li
@@ -128,7 +138,11 @@ const RepliesListItem = ({
               </CardTitle>
               <CardDescription className="w-full" data-testid="comment-card-description">
                 <Link href={`/${comment.category}/@${comment.author}/${comment.permlink}`}>
-                  {getPostSummary(comment.json_metadata, comment.body)}
+                  {userFromDMCA
+                    ? t('cards.content_removed')
+                    : legalBlockedUser
+                      ? t('global.unavailable_for_legal_reasons')
+                      : getPostSummary(comment.json_metadata, comment.body)}
                 </Link>
               </CardDescription>
             </CardContent>

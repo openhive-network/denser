@@ -27,7 +27,8 @@ export interface MethodsProps {
   onSetStep: (step: Steps) => void;
   i18nNamespace: string;
   preferredKeyTypes: KeyType[];
-  lastLoggedInUser?: string;
+  username: string;
+  onUsernameChange: (username: string) => void;
   sign: (loginType: LoginType, username: string, keyType: KeyType) => Promise<void>;
   submit: (username: string) => Promise<void>;
 }
@@ -48,7 +49,8 @@ const Methods: FC<MethodsProps> = ({
   onSetStep,
   i18nNamespace = 'smart-signer',
   preferredKeyTypes,
-  lastLoggedInUser,
+  username,
+  onUsernameChange,
   sign,
   submit
 }) => {
@@ -58,7 +60,7 @@ const Methods: FC<MethodsProps> = ({
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: lastLoggedInUser || '',
+      username: username,
       keyType: preferredKeyTypes[0],
       loginType: LoginType.hbauth
     },
@@ -73,6 +75,14 @@ const Methods: FC<MethodsProps> = ({
     };
   }, [form]);
 
+  useEffect(() => {
+    const formUsername = form.getValues('username');
+    if (formUsername !== username) {
+      onUsernameChange(formUsername);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.getValues('username'), onUsernameChange]);
+
   async function onSubmit(_loginType: LoginType) {
     try {
       setError(null);
@@ -83,7 +93,6 @@ const Methods: FC<MethodsProps> = ({
 
       await sign(loginType, username, keyType);
       await submit(username);
-
     } catch (error: unknown) {
       setError((error as Error).message);
     } finally {
@@ -97,8 +106,8 @@ const Methods: FC<MethodsProps> = ({
       title={t('login_form.other_signin_options')}
       description={
         <div>
-          <div>{t('login_form.other_signing_options_description')}</div>
-          {error && <div className="text-sm text-destructive">{error}</div>}
+          <div data-testid="other-signin-options-description">{t('login_form.other_signing_options_description')}</div>
+          {error && <div className="text-sm text-destructive" data-testid="other-signin-options-error-msg">{error}</div>}
         </div>
       }
     >
@@ -118,12 +127,13 @@ const Methods: FC<MethodsProps> = ({
                       type="text"
                       autoComplete="username"
                       {...field}
+                      data-testid="other-signin-options-username-input"
                     />
                   </div>
                   {/* Show select menu if there is length of auth users */}
                 </FormControl>
                 {errors.username && (
-                  <FormMessage className="font-normal">{t(errors.username?.message!)}</FormMessage>
+                  <FormMessage className="font-normal" data-testid="other-signin-username-error-msg">{t(errors.username?.message!)}</FormMessage>
                 )}
               </FormItem>
             )}
@@ -168,8 +178,10 @@ const Methods: FC<MethodsProps> = ({
               type="button"
               variant="ghost"
               onClick={form.handleSubmit(() => onSubmit(LoginType.keychain))}
+              data-testid="hive-keychain-extension-button"
             >
-               <Icons.hivekeychain className="mr-4 h-8 w-8" />{t('login_form.signin_with_keychain')}
+              <Icons.hivekeychain className="mr-4 h-8 w-8" />
+              {t('login_form.signin_with_keychain')}
             </Button>
 
             <Separator className="my-1 w-full" />
@@ -180,24 +192,28 @@ const Methods: FC<MethodsProps> = ({
               type="button"
               variant="ghost"
               onClick={form.handleSubmit(() => onSubmit(LoginType.wif))}
+              data-testid="sign-in-with-wif-button"
             >
               <div className="flex flex-1 items-center">
-                <Icons.keyRound className="mr-4 h-8 w-8" />{t('login_form.signin_with_wif')}
+                <Icons.keyRound className="mr-4 h-8 w-8" />
+                {t('login_form.signin_with_wif')}
               </div>
             </Button>
 
             <Separator className="my-1 w-full" />
 
-            <Button disabled className="flex w-full py-6" type="button" variant="ghost">
+            <Button disabled className="flex w-full py-6" type="button" variant="ghost" data-testid="hive-auth-button">
               <div className="flex flex-1 items-center">
-                <Icons.hiveauth className="mr-4 h-8 w-8" />{t('login_form.signin_with_hiveauth')}
+                <Icons.hiveauth className="mr-4 h-8 w-8" />
+                {t('login_form.signin_with_hiveauth')}
               </div>
             </Button>
 
             <Separator className="my-1 w-full" />
 
-            <Button disabled className="flex w-full justify-start py-6" type="button" variant="ghost">
-              <Icons.hivesigner className="mr-4 h-8 w-8" />{t('login_form.signin_with_hivesigner')}
+            <Button disabled className="flex w-full justify-start py-6" type="button" variant="ghost" data-testid="hive-signer-button">
+              <Icons.hivesigner className="mr-4 h-8 w-8" />
+              {t('login_form.signin_with_hivesigner')}
             </Button>
 
             <Button
@@ -207,6 +223,7 @@ const Methods: FC<MethodsProps> = ({
               onClick={() => {
                 onSetStep(Steps.SAFE_STORAGE_LOGIN);
               }}
+              data-testid="go-back-button"
             >
               <Icons.chevronLeft className="mr-2 h-4 w-4" /> {t('login_form.go_back_button')}
             </Button>

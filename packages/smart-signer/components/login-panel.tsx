@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { LoginType } from '@smart-signer/types/common';
-import { parseCookie } from '@smart-signer/lib/utils';
+import { getCookie } from '@smart-signer/lib/utils';
 import { Signatures, PostLoginSchema } from '@smart-signer/lib/auth/utils';
 import { useSignIn } from '@smart-signer/lib/auth/use-sign-in';
 import { useUser } from '@smart-signer/lib/auth/use-user';
@@ -11,7 +11,7 @@ import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { useSigner } from '@smart-signer/lib/use-signer';
-import { TTransactionPackType } from '@hive/wax';
+import { TTransactionPackType } from '@hiveio/wax';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -38,8 +38,7 @@ export function LoginPanel(
   const signIn = useSignIn();
 
   useEffect(() => {
-    const cookieStore = parseCookie(document.cookie);
-    setLoginChallenge(cookieStore[`${cookieNamePrefix}login_challenge`] || '');
+    setLoginChallenge(getCookie(`${cookieNamePrefix}login_challenge`));
   }, []);
 
   // Here we just check if user is already logged in and we redirect him

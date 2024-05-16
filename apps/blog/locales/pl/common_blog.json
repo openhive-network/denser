@@ -1,7 +1,9 @@
 {
   "global": {
+    "no_rewards": "Brak nagród oczekujących na wykorzystanie.",
     "loading": "Wczytywanie",
     "something_went_wrong": "Coś poszło nie tak",
+    "unavailable_for_legal_reasons": "Niedostępne z przyczyn prawnych",
     "time_ago": {
       "a_few_seconds": " Kilka sekund temu",
       "seconds": " sekund_y temu",
@@ -106,6 +108,9 @@
       "challenges": "Wyzwania"
     },
     "profil_notifications_tab_navbar": {
+      "unclaimed_rewards": "Nieodebrane nagrody: ",
+      "redeem": "Obierz",
+      "mark_all": "Oznacz wszystkie jako przeczytane",
       "all": "Wszystkie",
       "replies": "Odpowiedzi",
       "mentions": "Wzmianki",
@@ -151,6 +156,7 @@
   },
   "cards": {
     "reblogged": "zreblogowano",
+    "content_removed": "Treść usunięta z powodu naruszenia praw autorskich i/lub prywatności.",
     "badges": {
       "pinned": "Przypięty"
     },
@@ -174,6 +180,7 @@
       "replies": "odpowiedzi",
       "reply": "Odpowiedz",
       "edit": "Edytuj",
+      "delete": "Usuń",
       "will_be_hidden": "Komentarz jest ukryte ze względu na niską ocenę",
       "load_more": "Pokaż więcej"
     }
@@ -343,6 +350,7 @@
       "edited": "edytowany"
     },
     "body": {
+      "copyright": "Ten post jest niedostępny z powodu żądania dotyczącego praw autorskich.",
       "images_were_hidden": "Obrazki zostały ukryte z powodu niskich ocen.",
       "show": "Pokaż",
       "Image_not_shown": "Obrazek zostały ukryty z powodu niskich ocen.",
@@ -390,6 +398,7 @@
     }
   },
   "submit_page": {
+    "cover_image": "Wybierz obraz okładki:",
     "my_communities": "Moje Społeczności",
     "others_communities": "Inne Społeczności",
     "disable_side": "Przenieś podgląd pod formularz",
@@ -400,6 +409,8 @@
     "show_preview": "Pokaż podgląd",
     "title": "Tytuł",
     "insert_images_by_dragging": "Wstaw obrazki przez przeciągnij i upuść lub przez ",
+    "insert_images_info": "Wybór zdjęcia odbywa się przez ikone obrazka na pasku narzędzi edytora",
+    "insert_images_text": "Wybierz zdjęcie",
     "selecting_them": "wybieranie ich.",
     "post_summary": "Streszczenie posta(w miniaturce posta, maksymalnie 140 znaków)",
     "enter_your_tags": "Wpisz tagi oddzielone spacją",
@@ -422,6 +433,8 @@
     "html_not_supported": "HTML nie jest obsługiwany tutaj",
     "advanced_tooltip": "Tutaj możesz ustawić opcje posta, takie jak podział nagród dla autora, maksymalna akceptowana wypłata, beneficjenci i szablony postów",
     "advanced_settings_dialog": {
+      "load": "Załaduj",
+      "template_loaded": "Szablon załadowany",
       "changes_saved": "Zmiany zostały zapisane",
       "advanced_settings": "Zaawansowane ustawienia",
       "maximum_accepted_payout": "Maksymalna akceptowana wypłata",
@@ -431,10 +444,11 @@
       "decline_payout": "Odrzuć wypłatę",
       "custom_value": "Niestandardowa wartość",
       "cannot_be_less_than": "Wartość nie może być mniejsza niż 0",
+      "cannot_be_more_than": "Wartość nie może być większa niż 999999",
       "author_rewards": "Nagrody dla autora",
       "what_type_of_tokens": "Jakiego typu tokeny chcesz jako nagrody za tę publikację?",
       "power_up": "Wzmocnij o 100%",
-      "default": "Domyślne: 50% HBD / 50% HP",
+      "default": "Domyślne: ",
       "update": "Aktualizuj",
       "delete": "Usuń",
       "your_percent": "Twój procent nie może być mniejszy niż 0",
@@ -442,6 +456,7 @@
       "account_name": "Nazwa konta powinna być dłuższa",
       "beneficiary_cannot_be_self": "Nie można określić siebie jako beneficjenta",
       "beneficiary_percent_invalid": "Procent beneficjenta musi wynosić od 1 do 100",
+      "bad_actor": "Bądź ostrożny przy wysyłaniu na to konto. Proszę sprawdzić dwukrotnie swoje pisownia w celu wykrycia możliwego phishingu.",
       "add_account": "Dodaj konto",
       "post_templates": "Szablony publikacji",
       "manage_your_post_templates": "Zarządzaj swoimi szablonami publikacji, inne ustawienia będą także tutaj zapisane/załadowane.",
@@ -471,5 +486,60 @@
     "placeholder": "Szukaj",
     "no_results": "Nic nie znaleziono.",
     "error": "Wystąpił błąd"
+  },
+  "settings_page": {
+    "invalid_url": "Nieprawidłowy adres URL",
+    "name_is_too_long": "Nazwa jest za długa",
+    "name_must_not_begin_with": "Nazwa nie może zaczynać się od @",
+    "about_is_too_long": "Opis jest za długi",
+    "location_is_too_long": "Lokalizacja jest za długa",
+    "website_url_is_too_long": "Adres URL strony internetowej jest za długi",
+    "public_profile_settings": "Ustawienia profilu publicznego",
+    "witness_owner_is_too_long": "Nazwa właściciela jest za długa",
+    "witness_description_is_too_long": "Opis jest za długi",
+    "description_is_too_long": "Opis jest za długi",
+    "preferences": "Preferencje",
+    "not_safe_for_work_nsfw_content": "Treść niebezpieczna dla pracy (NSFW)",
+    "always_hide": "Zawsze ukrywaj",
+    "always_warn": "Zawsze ostrzegaj",
+    "always_show": "Zawsze pokazuj",
+    "choose_default_blog_payout": "Nagrody za posty na blogu",
+    "choose_default_comment_payout": "Nagrody za komentarze",
+    "choose_language": "Wybierz język",
+    "muted_users": "Wyciszeni użytkownicy",
+    "unmute": "Wyłącz wyciszenie",
+    "decline_payout": "Odrzuć wypłatę",
+    "power_up": "Zasilanie 100%",
+    "update": "Aktualizuj",
+    "upload_image": "Prześlij obraz",
+    "uploading_image": "Przesyłanie obrazu",
+    "profile_image_url": "Adres URL obrazu profilowego",
+    "cover_image_url": "Adres URL obrazu na okładce (optymalny: 2048 x 512 px)",
+    "profile_name": "Nazwa wyświetlana",
+    "profile_about": "O mnie",
+    "profile_location": "Lokalizacja",
+    "profile_website": "Strona internetowa",
+    "blacklist_description": "Opis czarnej listy",
+    "mute_list_description": "Opis listy wyciszenia",
+    "profile_witness_owner": "Właściciel",
+    "profile_witness_description": "Opis",
+    "saved": "Zapisano!",
+    "choose_preferred_api_endpoint": "Wybierz preferowany endpoint interfejsu API",
+    "default_beneficiaries": "System poleceń",
+    "default_beneficiaries_enabled": "Użyj domyślnych beneficjentów",
+    "default_beneficiaries_disabled": "Wyłącz system poleceń",
+    "advanced": "Zaawansowane",
+    "api_endpoint_options": "Opcje endpoint interfejsu API",
+    "endpoint": "Endpoint",
+    "preferred": "Preferowany?",
+    "remove": "Usuń",
+    "add_api_endpoint": "Dodaj endpoint interfejsu API",
+    "reset_endpoints": "Resetuj endpointy",
+    "error_bad_url": "Wygląda na to, że to jest zły adres URL, proszę sprawdź i spróbuj ponownie",
+    "error_bad_cookie": "Nie można uzyskać endpointa z pliku cookie",
+    "error_already_exists": "Ten endpoint jest już na liście",
+    "error_cant_remove_active": "Nie można usunąć aktualnie preferowanego endpointa. Proszę najpierw wybrać nowy preferowany endpoint",
+    "error_cant_remove_all": "Musisz mieć co najmniej jeden endpoint na liście",
+    "changes_saved": "Zmiany zostały zapisane"
   }
 }

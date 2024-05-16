@@ -10,39 +10,50 @@ import DetailsCardVoters from '@/blog/components/details-card-voters';
 import { ReplyTextbox } from './reply-textbox';
 import { useRouter } from 'next/router';
 import DetailsCardHover from './details-card-hover';
-import type { Entry } from '@transaction/lib/bridge';
+import type { Entry, IFollowList } from '@transaction/lib/bridge';
 import clsx from 'clsx';
 import { Badge } from '@ui/components/badge';
 import { DefaultRenderer } from '@hiveio/content-renderer';
-import { UserHoverCard } from './user-hover-card';
 import { useTranslation } from 'next-i18next';
 import VotesComponent from './votes';
-import { useLocalStorage } from '@smart-signer/lib/use-local-storage';
+import { useLocalStorage } from 'usehooks-ts';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';
+import { UserPopoverCard } from './user-popover-card';
+import { AlertDialogDelete } from './alert-dialog-delete';
+import moment from 'moment';
+import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
+import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
+import gdprUserList from '@ui/config/lists/gdpr-user-list';
 
-const CommentListItem = ({
-  comment,
-  renderer,
-  parent_depth
-}: {
+interface CommentListProps {
   comment: Entry;
   renderer: DefaultRenderer;
   parent_depth: number;
-}) => {
+  mutedList: IFollowList[];
+  setAuthor: (e: string) => void;
+}
+
+const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor }: CommentListProps) => {
   const { t } = useTranslation('common_blog');
   const username = comment.author;
   const router = useRouter();
   const { user } = useUser();
   const ref = useRef<HTMLTableRowElement>(null);
-  const [hiddenComment, setHiddenComment] = useState(comment.stats?.gray);
+  const [hiddenComment, setHiddenComment] = useState(
+    comment.stats?.gray || mutedList?.some((x) => x.name === comment.author)
+  );
   const [openState, setOpenState] = useState<boolean>(comment.stats?.gray && hiddenComment ? false : true);
   const comment_html = renderer.render(comment.body);
   const commentId = `@${username}/${comment.permlink}`;
   const storageId = `replybox-/${username}/${comment.permlink}`;
   const [edit, setEdit] = useState(false);
-  const [storedBox, storeBox] = useLocalStorage<Boolean>(storageId, false);
+  const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
+  const userFromDMCA = dmcaUserList.some((e) => e === comment.author);
+  const legalBlockedUser = userIllegalContent.some((e) => e === comment.author);
+  const userFromGDPR = gdprUserList.some((e) => e === comment.author);
+  const parentFromGDPR = gdprUserList.some((e) => e === comment.parent_author);
   useEffect(() => {
     if (reply) {
       storeBox(reply);
@@ -57,7 +68,13 @@ const CommentListItem = ({
     }, 500);
     return () => clearTimeout(timeout);
   }, [router.asPath]);
+  useEffect(() => {
+    setAuthor(comment.author);
+  }, [comment.author]);
   const currentDepth = comment.depth - parent_depth;
+  if (userFromGDPR || parentFromGDPR) {
+    return null;
+  }
   return (
     <>
       {currentDepth < 8 ? (
@@ -65,8 +82,8 @@ const CommentListItem = ({
           <div className="flex" id={commentId} ref={ref}>
             <img
               className={clsx('mr-3 hidden  rounded-3xl sm:block', {
-                'mx-[15px] h-[25px] w-[25px] opacity-50': comment.stats?.gray,
-                'h-[40px] w-[40px]': !comment.stats?.gray
+                'mx-[15px] h-[25px] w-[25px] opacity-50': hiddenComment,
+                'h-[40px] w-[40px]': !hiddenComment
               })}
               height="40"
               width="40"
@@ -76,8 +93,8 @@ const CommentListItem = ({
             />
             <Card
               className={cn(
-                `mb-4 w-full px-2 hover:bg-accent dark:bg-slate-700 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground depth-${comment.depth}`,
-                { 'opacity-50 hover:opacity-100': comment.stats?.gray }
+                `mb-4 w-full px-2 hover:bg-accent dark:bg-slate-900 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground depth-${comment.depth}`,
+                { 'opacity-50 hover:opacity-100': hiddenComment }
               )}
             >
               <Accordion type="single" defaultValue={!hiddenComment ? 'item-1' : undefined} collapsible>
@@ -98,7 +115,7 @@ const CommentListItem = ({
                               alt={`${username} profile picture`}
                               loading="lazy"
                             />
-                            <UserHoverCard
+                            <UserPopoverCard
                               author={username}
                               author_reputation={comment.author_reputation}
                               blacklist={comment.blacklists}
@@ -192,10 +209,15 @@ const CommentListItem = ({
                   <Separator orientation="horizontal" />
                   <AccordionContent className="p-0">
                     <CardContent className="pb-2 ">
-                      {edit && comment.parent_permlink ? (
+                      {legalBlockedUser ? (
+                        <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
+                      ) : userFromDMCA ? (
+                        <div className="px-2 py-6">{t('post_content.body.copyright')}</div>
+                      ) : edit && comment.parent_permlink && comment.parent_author ? (
                         <ReplyTextbox
+                          editMode={edit}
                           onSetReply={setEdit}
-                          username={username}
+                          username={comment.parent_author}
                           permlink={comment.permlink}
                           parentPermlink={comment.parent_permlink}
                           storageId={storageId}
@@ -203,7 +225,7 @@ const CommentListItem = ({
                         />
                       ) : (
                         <CardDescription
-                          className="prose break-words"
+                          className="prose break-words dark:text-white"
                           data-testid="comment-card-description"
                           dangerouslySetInnerHTML={{
                             __html: comment_html
@@ -250,7 +272,7 @@ const CommentListItem = ({
                         {user && user.isLoggedIn ? (
                           <button
                             onClick={() => {
-                              setReply(!reply), localStorage.removeItem(storageId);
+                              setReply(!reply), removeBox();
                             }}
                             className="flex items-center hover:cursor-pointer hover:text-red-600"
                             data-testid="comment-card-footer-reply"
@@ -259,7 +281,10 @@ const CommentListItem = ({
                           </button>
                         ) : (
                           <DialogLogin>
-                            <button className="flex items-center hover:cursor-pointer hover:text-red-600">
+                            <button
+                              className="flex items-center hover:cursor-pointer hover:text-red-600"
+                              data-testid="comment-card-footer-reply"
+                            >
                               {t('post_content.footer.reply')}
                             </button>
                           </DialogLogin>
@@ -276,6 +301,22 @@ const CommentListItem = ({
                             >
                               {t('cards.comment_card.edit')}
                             </button>
+                          </>
+                        ) : null}
+                        {user &&
+                        user.isLoggedIn &&
+                        comment.author === user.username &&
+                        moment().format('YYYY-MM-DDTHH:mm:ss') < comment.payout_at ? (
+                          <>
+                            <Separator orientation="vertical" className="h-5" />
+                            <AlertDialogDelete permlink={comment.permlink}>
+                              <span
+                                className="flex items-center hover:cursor-pointer hover:text-red-600"
+                                data-testid="comment-card-footer-delete"
+                              >
+                                {t('cards.comment_card.delete')}
+                              </span>
+                            </AlertDialogDelete>
                           </>
                         ) : null}
                       </div>
@@ -295,6 +336,7 @@ const CommentListItem = ({
       ) : null}
       {reply && user && user.isLoggedIn ? (
         <ReplyTextbox
+          editMode={edit}
           onSetReply={setReply}
           username={username}
           permlink={comment.permlink}

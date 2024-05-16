@@ -1,4 +1,4 @@
-import { OnlineClient, ClientOptions } from '@hive/hb-auth';
+import { OnlineClient, ClientOptions } from '@hiveio/hb-auth';
 import { siteConfig } from '@ui/config/site';
 import { StorageMixin, StorageBase, StorageBaseOptions } from '@smart-signer/lib/storage-mixin';
 
@@ -47,7 +47,7 @@ class HbauthService extends StorageMixin(StorageBase) {
         }
         // Set promise result in this class' static property and return
         // it here as well.
-        await this.setOnlineClient(hbauthUseStrictMode, { node });
+        await this.setOnlineClient(hbauthUseStrictMode, { node, chainId: siteConfig.chainId });
         return HbauthService.onlineClient;
       };
 
