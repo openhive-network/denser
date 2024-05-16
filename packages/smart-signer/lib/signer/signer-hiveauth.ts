@@ -3,7 +3,7 @@ import HiveAuthUtils from '@smart-signer/lib/hive-auth-utils';
 import { SignTransaction, SignerOptions } from '@smart-signer/lib/signer/signer';
 import { StorageMixin } from '@smart-signer/lib/storage-mixin';
 import { SignerKeychain } from '@smart-signer/lib/signer/signer-keychain';
-import { TTransactionPackType } from '@hive/wax';
+import { TTransactionPackType } from '@hiveio/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');

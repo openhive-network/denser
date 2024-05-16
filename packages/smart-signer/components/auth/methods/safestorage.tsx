@@ -2,7 +2,7 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'next-i18next';
-import { AuthUser, AuthorizationError, OnlineClient } from "@hive/hb-auth";
+import { AuthUser, AuthorizationError, OnlineClient } from '@hiveio/hb-auth';
 import { z } from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { username } from '@smart-signer/lib/auth/utils';

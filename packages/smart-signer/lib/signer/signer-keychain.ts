@@ -1,7 +1,7 @@
 import { KeychainSDK, KeychainKeyTypes } from 'keychain-sdk';
 import { Operation, TransferOperation } from '@hiveio/dhive';
 import { SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
-import { createWaxFoundation, operation, TTransactionPackType } from '@hive/wax';
+import { createWaxFoundation, operation, TTransactionPackType } from '@hiveio/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');

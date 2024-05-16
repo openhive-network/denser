@@ -12,7 +12,7 @@ import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { useSigner } from '@smart-signer/lib/use-signer';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
-import { operation } from '@hive/wax';
+import { operation } from '@hiveio/wax';
 import dynamic from 'next/dynamic';
 import { getOperationForLogin } from '@smart-signer/lib/login-operation';
 
