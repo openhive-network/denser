@@ -82,7 +82,9 @@ test.describe('Proposals page tests', () => {
     expect(amountProposalsItemUI).toBe(amountResListOfProposalsStatusAllAPI);
   });
 
-  test('change status to Inactive and order by the same (total votes)', async ({ page }) => {
+  // Test skipped due to Issue  https://gitlab.syncad.com/hive/denser/-/issues/402
+  // Validate after fix it.
+  test.skip('change status to Inactive and order by the same (total votes)', async ({ page }) => {
     let apiHelper: ApiHelper = new ApiHelper(page);
 
     await proposalsPage.goToProposalsPage();
