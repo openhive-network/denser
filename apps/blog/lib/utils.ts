@@ -201,7 +201,14 @@ export function extractUrlsFromJsonString(jsonString: string): string[] {
 export function extractLinks(text: string): string[] {
   const urlRegex = /https?:\\?\/\\?\/[^\s]+/g;
   const markdownImageRegex = /!\[.*?\]\((https?:\\?\/\\?\/[^\s]+)\)/g;
+  const otherUrlRegex = /https?:\/\/[^\s\)]*\/[^\s\)]*/g;
   const matches: string[] = [];
+  const otherMatches = text.match(otherUrlRegex);
+  if (otherMatches) {
+    otherMatches.forEach((match) => {
+      matches.push(match);
+    });
+  }
   const standaloneMatches = text.match(urlRegex);
   if (standaloneMatches) {
     standaloneMatches.forEach((match) => {
@@ -219,7 +226,7 @@ export function extractLinks(text: string): string[] {
       }
     });
   }
-
+  console.log(matches);
   return matches;
 }
 
