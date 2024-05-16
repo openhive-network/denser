@@ -114,8 +114,8 @@ function PostPage({
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const firstPost = discussionState?.find((post) => post.depth === 0);
   const [edit, setEdit] = useState(false);
-  const commentsRef = useRef<HTMLDivElement>(null);
   const [showAnyway, setShowAnyway] = useState(false);
+  const commentsRef = useRef<HTMLDivElement>(null);
 
   const userFromGDPR = gdprUserList.some((e) => e === post?.author);
   const refreshPage = () => {
@@ -198,6 +198,23 @@ function PostPage({
       window.removeEventListener('beforeunload', exitingFunction);
     };
   }, []);
+
+  useEffect(() => {
+    const id = router.asPath.split('#')[1];
+    setTimeout(() => {
+      if (id === 'comments' && commentsRef.current) {
+        commentsRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      } else {
+        document.getElementById(id)?.scrollIntoView({
+          block: 'start',
+          behavior: 'smooth'
+        });
+      }
+    }, 100);
+  }, [router, hiveRenderer, post?.author]);
 
   if (userFromGDPR) {
     return <CustomError />;
