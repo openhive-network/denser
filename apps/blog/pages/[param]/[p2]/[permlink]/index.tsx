@@ -187,6 +187,7 @@ function PostPage({
   }, [setAuthor, setDoNotShowImages, mutedPost, showAnyway, post?.author]);
 
   useEffect(() => {
+<<<<<<< Updated upstream
     const exitingFunction = () => {
       setDoNotShowImages(true);
     };
@@ -199,6 +200,23 @@ function PostPage({
       window.removeEventListener('beforeunload', exitingFunction);
     };
   }, []);
+=======
+    const id = router.asPath.split('#')[1];
+    setTimeout(() => {
+      if (id === 'comments' && commentsRef.current) {
+        commentsRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      } else {
+        document.getElementById(id)?.scrollIntoView({
+          block: 'start',
+          behavior: 'smooth'
+        });
+      }
+    }, 100);
+  }, [router, hiveRenderer, post?.author]);
+>>>>>>> Stashed changes
 
   if (userFromGDPR) {
     return <CustomError />;
