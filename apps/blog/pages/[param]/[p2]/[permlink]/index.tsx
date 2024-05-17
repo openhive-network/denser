@@ -186,6 +186,21 @@ function PostPage({
     setAuthor(post?.author || '');
   }, [setAuthor, setDoNotShowImages, mutedPost, showAnyway, post?.author]);
 
+<<<<<<< Updated upstream
+=======
+  useEffect(() => {
+    const exitingFunction = () => {
+      setDoNotShowImages(true);
+    };
+
+    router.events.on('routeChangeStart', exitingFunction);
+
+    return () => {
+      router.events.off('routeChangeStart', exitingFunction);
+    };
+  }, [router.events, setDoNotShowImages]);
+
+>>>>>>> Stashed changes
   if (userFromGDPR) {
     return <CustomError />;
   }
