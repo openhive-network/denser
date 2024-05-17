@@ -100,7 +100,7 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalsFilterStatus.click();
     await proposalsPage.proposalsFilterStatusConntent.getByText(/^Inactive$/).click();
     await expect(proposalsPage.proposalsFilterStatus.locator('span')).toHaveText(/^Inactive$/);
-    await expect(proposalsPage.proposalsBody.locator('main').locator('p')).toHaveText(
+    await expect(proposalsPage.proposalsBody.locator('main').locator('p').first()).toHaveText(
       "Sorry, I can't show you any proposals right now."
     );
     await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
