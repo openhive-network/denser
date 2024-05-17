@@ -325,6 +325,7 @@
     }
   },
   "post_content": {
+    "close_post_editor": "Вы уверены, что хотите закрыть редактор постов?",
     "in": "в",
     "reputation_title": "Репутация",
     "blacklists": "Черные списки",
@@ -391,6 +392,7 @@
     }
   },
   "submit_page": {
+    "clean_post_editor": "Вы уверены, что хотите очистить редактор постов?",
     "cover_image": "Выберите обложку:",
     "my_communities": "Мои сообщества",
     "others_communities": "Другие сообщества",

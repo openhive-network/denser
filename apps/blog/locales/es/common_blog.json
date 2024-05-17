@@ -319,6 +319,7 @@
     }
   },
   "post_content": {
+    "close_post_editor": "¿Estás seguro de que quieres cerrar el editor de publicaciones?",
     "in": "en",
     "reputation_title": "Reputación",
     "blacklists": "Listas negras",
@@ -385,6 +386,7 @@
     }
   },
   "submit_page": {
+    "clean_post_editor": "¿Estás seguro de que quieres borrar el editor de publicaciones?",
     "cover_image": "Selecciona tu imagen de portada:",
     "my_communities": "Mis Comunidades",
     "others_communities": "Otras Comunidades",

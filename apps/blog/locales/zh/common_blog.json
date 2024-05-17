@@ -319,6 +319,7 @@
     }
   },
   "post_content": {
+    "close_post_editor": "您确定要关闭帖子编辑器吗？",
     "in": "在",
     "reputation_title": "声誉",
     "blacklists": "黑名单",
@@ -385,6 +386,7 @@
     }
   },
   "submit_page": {
+    "clean_post_editor": "您确定要清除帖子编辑器吗？",
     "cover_image": "选择您的封面图片：",
     "my_communities": "我的社群",
     "others_communities": "其他社群",

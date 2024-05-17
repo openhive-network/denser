@@ -340,6 +340,7 @@
     }
   },
   "post_content": {
+    "close_post_editor": "Are you sure you want to close the post editor?",
     "in": "in",
     "reputation_title": "Reputation",
     "blacklists": "Blacklists",
@@ -406,6 +407,7 @@
     }
   },
   "submit_page": {
+    "clean_post_editor": "Are you sure you want to clear the post editor?",
     "cover_image": "Select your cover image:",
     "my_communities": "My Communities",
     "others_communities": "Others Communities",
