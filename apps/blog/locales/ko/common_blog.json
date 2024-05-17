@@ -319,6 +319,7 @@
     }
   },
   "post_content": {
+    "close_post_editor": "게시물 편집기를 닫으시겠습니까?",
     "in": "in",
     "reputation_title": "評価",
     "blacklists": "블랙리스트",
@@ -385,6 +386,7 @@
     }
   },
   "submit_page": {
+    "clean_post_editor": "게시물 편집기를 지우시겠습니까?",
     "cover_image": "표지 이미지를 선택하세요:",
     "my_communities": "내 커뮤니티",
     "others_communities": "다른 커뮤니티",

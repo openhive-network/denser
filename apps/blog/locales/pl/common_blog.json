@@ -332,6 +332,7 @@
     }
   },
   "post_content": {
+    "close_post_editor": "Czy na pewno chcesz zamknąć edytor postów?",
     "in": "w",
     "reputation_title": "Reputacja",
     "blacklists": "Czarna lista",
@@ -398,6 +399,7 @@
     }
   },
   "submit_page": {
+    "clean_post_editor": "Czy na pewno chcesz wyczyścić edytor postów?",
     "cover_image": "Wybierz obraz okładki:",
     "my_communities": "Moje Społeczności",
     "others_communities": "Inne Społeczności",

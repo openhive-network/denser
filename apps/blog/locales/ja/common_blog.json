@@ -319,6 +319,7 @@
     }
   },
   "post_content": {
+    "close_post_editor": "投稿エディタを閉じてもよろしいですか？",
     "in": "in",
     "reputation_title": "評価",
     "blacklists": "ブラックリスト",
@@ -385,6 +386,7 @@
     }
   },
   "submit_page": {
+    "clean_post_editor": "投稿エディタをクリアしてもよろしいですか？",
     "cover_image": "カバー画像を選択してください：",
     "my_communities": "私のコミュニティ",
     "others_communities": "他のコミュニティ",
