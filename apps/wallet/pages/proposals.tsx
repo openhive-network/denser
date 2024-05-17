@@ -127,10 +127,10 @@ function ProposalsPage() {
           <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
         </div>
       ) : proposalsData.data?.pages[0].length === 0 || !dynamicData ? (
-        <>
+        <main>
           <p className="mt-32 text-center text-3xl">{t('global.sorry_cant_show')}</p>
           <p className="text-center text-xl text-gray-400">{t('global.its_probably')}</p>
-        </>
+        <main/>
       ) : (
         proposalsData.data?.pages.map((page) =>
           page.map((proposal) => (
