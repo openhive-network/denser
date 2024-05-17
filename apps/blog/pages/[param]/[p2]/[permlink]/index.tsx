@@ -182,8 +182,6 @@ function PostPage({
   };
 
   useEffect(() => {
-    console.log('layout effect');
-    console.log('!showAnyway', !showAnyway);
     setDoNotShowImages(mutedPost && !showAnyway);
     setAuthor(post?.author || '');
   }, [setAuthor, setDoNotShowImages, mutedPost, showAnyway, post?.author]);
