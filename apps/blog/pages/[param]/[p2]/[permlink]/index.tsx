@@ -192,13 +192,11 @@ function PostPage({
     };
 
     router.events.on('routeChangeStart', exitingFunction);
-    window.addEventListener('beforeunload', exitingFunction);
 
     return () => {
       router.events.off('routeChangeStart', exitingFunction);
-      window.removeEventListener('beforeunload', exitingFunction);
     };
-  }, []);
+  }, [router.events, setDoNotShowImages]);
 
   if (userFromGDPR) {
     return <CustomError />;

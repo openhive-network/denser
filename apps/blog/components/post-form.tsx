@@ -109,7 +109,7 @@ export default function PostForm({
   refreshPage?: () => void;
 }) {
   const btnRef = useRef<HTMLButtonElement>(null);
-  const { hiveRenderer } = useContext(HiveRendererContext);
+  const { hiveRenderer, setDoNotShowImages } = useContext(HiveRendererContext);
   const router = useRouter();
   const [preferences, setPreferences] = useLocalStorage<Preferences>(
     `user-preferences-${username}`,
@@ -217,6 +217,10 @@ export default function PostForm({
     }, 50)();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, postArea, ...Object.values(restFields)]);
+
+  useEffect(() => {
+    setDoNotShowImages(false);
+  }, [setDoNotShowImages]);
 
   // update debounced post preview content
   useEffect(() => {
