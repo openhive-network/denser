@@ -65,22 +65,6 @@ export const HiveContentRendererProvider: FC<PropsWithChildren> = ({ children })
     return createRenderer(author, doNotShowImages);
   }, [author, doNotShowImages]);
 
-  useLayoutEffect(() => {
-    const exitingFunction = () => {
-      if (doNotShowImages) {
-        setDoNotShowImages(false);
-      }
-    };
-
-    window.addEventListener('beforeunload', exitingFunction);
-    router.events.on('routeChangeComplete', exitingFunction);
-
-    return () => {
-      window.removeEventListener('beforeunload', exitingFunction);
-      router.events.off('routeChangeComplete', exitingFunction);
-    };
-  }, [doNotShowImages, router.events]);
-
   return (
     <HiveRendererContext.Provider
       value={{
