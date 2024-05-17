@@ -100,13 +100,17 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalsFilterStatus.click();
     await proposalsPage.proposalsFilterStatusConntent.getByText(/^Inactive$/).click();
     await expect(proposalsPage.proposalsFilterStatus.locator('span')).toHaveText(/^Inactive$/);
-    await expect(proposalsPage.proposalsBody.locator('main').locator('p').first()).toHaveText(
-      "Sorry, I can't show you any proposals right now."
-    );
-    await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
-    const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
-    // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
-    expect(amountProposalsItemUI).toBe(amountResListOfProposalsStatusAllAPI);
+    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+      await expect(proposalsPage.proposalStatusBadge.first()).toHaveText('not started');
+      await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
+      const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
+      // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
+      expect(amountProposalsItemUI).toBe(amountResListOfProposalsStatusAllAPI);
+    } else {
+      await expect(proposalsPage.proposalsBody.locator('main').locator('p').first()).toHaveText(
+        "Sorry, I can't show you any proposals right now."
+      );
+    }
   });
 
   test('change status to Expired and order by the same (total votes)', async ({ page }) => {
