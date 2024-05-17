@@ -274,6 +274,17 @@ export default function PostForm({
       logger.error(error);
     }
   }
+  const handleCancel = () => {
+    const confirmed = confirm(
+      editMode ? t('post_content.close_post_editor') : t('submit_page.clean_post_editor')
+    );
+    if (confirmed) {
+      form.reset(defaultValues);
+      if (editMode && setEditMode) {
+        setEditMode(false);
+      }
+    }
+  };
   return (
     <div className={clsx({ container: !sideBySide || !preview })}>
       <div
@@ -484,12 +495,8 @@ export default function PostForm({
               {t('submit_page.submit')}
             </Button>
             <Button
-              onClick={() => {
-                form.reset(defaultValues);
-                if (editMode && setEditMode) {
-                  setEditMode(false);
-                }
-              }}
+              onClick={() => handleCancel()}
+              type="reset"
               variant="ghost"
               className="font-thiny text-foreground/60 hover:text-destructive"
             >
