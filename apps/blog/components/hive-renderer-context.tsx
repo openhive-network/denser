@@ -53,7 +53,6 @@ export const HiveContentRendererProvider: FC<PropsWithChildren> = ({ children })
   };
 
   const hiveRenderer = useMemo(() => {
-    console.log('hiveRenderer');
     return createRenderer(author, doNotShowImages);
   }, [author, doNotShowImages]);
 
