@@ -3,6 +3,8 @@
     "no_rewards": "No hay recompensas pendientes de canjear.",
     "loading": "Loading",
     "something_went_wrong": "Something went wrong",
+    "sorry_cant_show": "Lo siento, no puedo mostrarte ninguna propuesta en este momento.",
+    "its_probably": "Probablemente sea porque no hay ninguno que coincida con tus criterios.",
     "time_ago": {
       "a_few_seconds": " a few seconds ago",
       "seconds": " seconds ago",

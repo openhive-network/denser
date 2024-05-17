@@ -3,6 +3,8 @@
     "no_rewards": "Brak nagród oczekujących na wykorzystanie.",
     "loading": "Wczytywanie",
     "something_went_wrong": "Coś poszło nie tak",
+    "sorry_cant_show": "Przepraszam, Nie mogę teraz pokazać żadnych propozycji.",
+    "its_probably": "Prawdopodobnie dzieje się tak dlatego, że nie ma żadnych propozycji spełniających Twoje kryteria.",
     "time_ago": {
       "a_few_seconds": " Kilka sekund temu",
       "seconds": " sekund_y temu",

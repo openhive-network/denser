@@ -3,6 +3,8 @@
     "no_rewards": "Никаких наград в ожидании погашения.",
     "loading": "Loading",
     "something_went_wrong": "Something went wrong",
+    "sorry_cant_show": "Извините, сейчас я не могу показать вам никаких рекламных материалов.",
+    "its_probably": "Вероятно, это потому, что нет ничего, соответствующего вашим критериям.",
     "time_ago": {
       "a_few_seconds": " a few seconds ago",
       "seconds": " seconds ago",
