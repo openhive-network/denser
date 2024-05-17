@@ -17,6 +17,8 @@ import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
 import { Beneficiarie, Preferences } from './lib/app-types';
 import { getLogger } from '@hive/ui/lib/logging';
+import { observer } from './lib/observer';
+
 const logger = getLogger('app');
 
 export type TransactionErrorCallback = undefined | ((error: any) => any)
@@ -35,7 +37,8 @@ export class TransactionService {
 
   async processHiveAppOperation(
     cb: (opBuilder: ITransactionBuilder) => void,
-    onError: TransactionErrorCallback = (error) => this.handleError(error)
+    onError: TransactionErrorCallback = (error) => this.handleError(error),
+    onTransactionSettled = () => {}
   ) {
     try {
       const txBuilder = await (await hiveChainService.getHiveChain()).getTransactionBuilder();
@@ -59,7 +62,7 @@ export class TransactionService {
       transaction: txBuilder.build() // builded transaction
     });
 
-    txBuilder.build(signature);
+    const tx = txBuilder.build(signature);
     // create broadcast request
     const broadcastReq = new BroadcastTransactionRequest(txBuilder);
 
@@ -67,6 +70,12 @@ export class TransactionService {
     await (
       await hiveChainService.getHiveChain()
     ).api.network_broadcast_api.broadcast_transaction(broadcastReq);
+    await observer.start(signer.username);
+
+    // Wait until resolved on blockchain
+    await observer.observe(txBuilder);
+
+    console.log('result got from observer');
   }
 
   async upVote(author: string, permlink: string, weight = 10000,
