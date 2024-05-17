@@ -1,4 +1,13 @@
-import { FC, PropsWithChildren, createContext, useContext, useEffect, useMemo, useState } from 'react';
+import {
+  FC,
+  PropsWithChildren,
+  createContext,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState
+} from 'react';
 import { DefaultRenderer } from '@hiveio/content-renderer';
 import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
 import env from '@beam-australia/react-env';
@@ -56,21 +65,21 @@ export const HiveContentRendererProvider: FC<PropsWithChildren> = ({ children })
     return createRenderer(author, doNotShowImages);
   }, [author, doNotShowImages]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const exitingFunction = () => {
       if (doNotShowImages) {
         setDoNotShowImages(false);
       }
     };
 
-    router.events.on('routeChangeStart', exitingFunction);
     window.addEventListener('beforeunload', exitingFunction);
+    router.events.on('routeChangeComplete', exitingFunction);
 
     return () => {
-      router.events.off('routeChangeStart', exitingFunction);
       window.removeEventListener('beforeunload', exitingFunction);
+      router.events.off('routeChangeComplete', exitingFunction);
     };
-  }, [router.events]);
+  }, [doNotShowImages, router.events]);
 
   return (
     <HiveRendererContext.Provider
