@@ -181,7 +181,7 @@ function PostPage({
     }
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setDoNotShowImages(mutedPost && !showAnyway);
     setAuthor(post?.author || '');
   }, [setAuthor, setDoNotShowImages, mutedPost, showAnyway, post?.author]);

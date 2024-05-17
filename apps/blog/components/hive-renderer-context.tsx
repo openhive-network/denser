@@ -58,7 +58,9 @@ export const HiveContentRendererProvider: FC<PropsWithChildren> = ({ children })
 
   useEffect(() => {
     const exitingFunction = () => {
-      setDoNotShowImages(false);
+      if (doNotShowImages) {
+        setDoNotShowImages(false);
+      }
     };
 
     router.events.on('routeChangeStart', exitingFunction);
