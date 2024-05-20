@@ -3,6 +3,8 @@
     "no_rewards": "No rewards pending redemption.",
     "loading": "Loading",
     "something_went_wrong": "Something went wrong",
+    "sorry_cant_show": "Sorry, I can't show you any proposals right now.",
+    "its_probably": "It's probably because there are not any matching your criteria.",
     "time_ago": {
       "a_few_seconds": " a few seconds ago",
       "seconds": " seconds ago",

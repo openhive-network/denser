@@ -26,6 +26,7 @@ export class ProposalsPage {
   readonly closeVoteProposalDialogList: Locator;
   readonly proposalVoterLinkInDialogList: Locator;
   readonly voterValuesDialog: Locator;
+  readonly cannotShowYouAnyProposals: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -63,6 +64,7 @@ export class ProposalsPage {
     this.closeVoteProposalDialogList = page.locator('[data-testid="close-dialog"]');
     this.proposalVoterLinkInDialogList = page.locator('[data-testid="proposal-voter-link-dialog"]');
     this.voterValuesDialog = page.locator('[data-testid="voter-values-dialog"]');
+    this.cannotShowYouAnyProposals = page.locator('data-testid="cannot-show-you-any-proposals"');
   }
 
   async goToProposalsPage() {
@@ -70,6 +72,7 @@ export class ProposalsPage {
     await this.page.waitForLoadState("networkidle");
     await expect(this.proposalsHeaderName).toHaveText("Proposals");
     await expect(this.proposalsBody).toBeVisible();
+    await this.page.waitForTimeout(3000);
   }
 
   async clickVoteButtonOfFirstProposalItem() {

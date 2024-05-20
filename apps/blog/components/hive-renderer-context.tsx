@@ -1,18 +1,8 @@
-import {
-  FC,
-  PropsWithChildren,
-  createContext,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useState
-} from 'react';
+import { FC, PropsWithChildren, createContext, useContext, useMemo, useState } from 'react';
 import { DefaultRenderer } from '@hiveio/content-renderer';
 import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
 import env from '@beam-australia/react-env';
 import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
-import { useRouter } from 'next/router';
 
 type HiveRendererContextType = {
   hiveRenderer: DefaultRenderer | undefined;
@@ -28,7 +18,6 @@ export const HiveRendererContext = createContext<HiveRendererContextType>({
 
 export const useHiveRendererContext = () => useContext(HiveRendererContext);
 export const HiveContentRendererProvider: FC<PropsWithChildren> = ({ children }) => {
-  const router = useRouter();
   const [author, setAuthor] = useState<string>('');
   const [doNotShowImages, setDoNotShowImages] = useState<boolean>(false);
   const createRenderer = (author: string, doNotShowImages: boolean) => {
