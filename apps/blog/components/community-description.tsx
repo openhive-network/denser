@@ -43,7 +43,10 @@ const CommunityDescription = ({
         data-testid="community-info-sidebar"
       >
         <CardHeader className="px-0 font-light">
-          <CardTitle>{data.title}</CardTitle>
+          <CardTitle className="flex items-center gap-1">
+            <span>{data.title}</span>
+            {data.is_nsfw ? <Badge variant="red">NSFW</Badge> : null}
+          </CardTitle>
           <span className="text-sm" data-testid="short-community-description">
             {data.about}
           </span>
