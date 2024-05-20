@@ -459,7 +459,7 @@ export const getFollowers = async (params?: Partial<IGetFollowParams>): Promise<
         params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit
       ]);
   } catch (error) {
-    console.error('Error:', error);
+    logger.error('Error:', error);
     throw error;
   }
 };
@@ -480,7 +480,7 @@ export const getFollowing = async (params?: Partial<IGetFollowParams>): Promise<
         params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit
       ]);
   } catch (error) {
-    console.error('Error:', error);
+    logger.error('Error:', error);
     throw error;
   }
 };
@@ -755,7 +755,7 @@ export const getManabars = async (
       rcCooldown: manabars[5]
     };
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     return null;
   }
 };

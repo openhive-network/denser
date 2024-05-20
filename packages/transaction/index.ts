@@ -16,9 +16,9 @@ import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
 import { Beneficiarie, Preferences } from './lib/app-types';
-import { getLogger } from '@hive/ui/lib/logging';
 import { observer } from './lib/observer';
 
+import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
 export type TransactionErrorCallback = undefined | ((error: any) => any)
@@ -73,9 +73,9 @@ export class TransactionService {
     await observer.start(signer.username);
 
     // Wait until resolved on blockchain
-    await observer.observe(txBuilder);
+    const result = await observer.observe(txBuilder);
 
-    console.log('result got from observer');
+    logger.info('Result got from observer: %o', result);
   }
 
   async upVote(author: string, permlink: string, weight = 10000,

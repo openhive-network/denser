@@ -101,29 +101,3 @@ export class PromiseTools {
     }
 
 }
-
-
-// const say = async () => {
-//     console.log('say const');
-//     return true;
-// };
-
-// async function tell() {
-//     await PromiseTools.promiseTimeout(2000);
-//     console.log('tell function');
-//     return false;
-// };
-
-// PromiseTools.promiseInterval(tell, 1000, 3);
-
-// let triesLeft = 3;
-// const intervalAsync = setIntervalAsync(async () => {
-//     console.log('triesLeft: %s', triesLeft);
-//     if (triesLeft <= 1) {
-//         clearIntervalAsync(intervalAsync)
-//     };
-//     console.log('Hello');
-//     await tell();
-//     console.log('Bye');
-//     triesLeft--;
-// }, 1000);

@@ -1,5 +1,8 @@
 import { ITransactionBuilder, transaction } from '@hiveio/wax';
 
+import { getLogger } from '@hive/ui/lib/logging';
+const logger = getLogger('app');
+
 export type Task = (...args: any[]) => Promise<void>;
 
 export class TransactionQueue {
@@ -22,7 +25,7 @@ export class TransactionQueue {
           // TODO: Resolve value binding
           resolve(response);
         } catch (error) {
-          console.log(error);
+          logger.error('Error in enqueue: %o', error);
           reject(error);
         }
       }
@@ -42,7 +45,7 @@ export class TransactionQueue {
 
     while (this.queue.length > 0) {
       const task = this.queue.shift();
-      console.log('queue', this.queue);
+      logger.info('queue: %o', this.queue);
       await task!();
     }
 
