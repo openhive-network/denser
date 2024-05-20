@@ -3,6 +3,8 @@
     "no_rewards": "没有等待兑换的奖励",
     "loading": "Loading",
     "something_went_wrong": "Something went wrong",
+    "sorry_cant_show": "抱歉，我现在无法向您展示任何提案",
+    "its_probably": "这可能是因为没有任何符合您的条件",
     "time_ago": {
       "a_few_seconds": " a few seconds ago",
       "seconds": " seconds ago",
