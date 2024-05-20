@@ -381,7 +381,14 @@
         "cancel": "Cancel",
         "preview": "Preview",
         "markdown_styling_guide": "Markdown Styling Guide",
-        "exit_editor": "Are you sure you want to exit the comment editor?"
+        "exit_editor": "Are you sure you want to exit the comment editor?",
+        "power_up": "전원 100% 증가",
+        "decline_payout": "지급 거부",
+        "rewards": "보상: ",
+        "account_stats": "계정 통계:",
+        "resource_credits": "리소스 크레딧 (RC) 레벨: {{value}} %",
+        "update_settings": "설정 업데이트",
+        "full_in": "충전 완료까지: "
       }
     }
   },
