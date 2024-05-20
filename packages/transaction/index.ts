@@ -17,6 +17,7 @@ import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
 import { Beneficiarie, Preferences } from './lib/app-types';
 import WorkerBee from "@hiveio/workerbee";
+import { PromiseTools } from './lib/promise-tools'
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -50,8 +51,10 @@ export class TransactionService {
     try {
       const txBuilder = await (await hiveChainService.getHiveChain()).getTransactionBuilder();
       cb(txBuilder);
+
       // await this.processTransaction(txBuilder);
       await this.processTransactionAndObserve(txBuilder);
+
     } catch (error) {
       onError(error);
     }
@@ -97,18 +100,29 @@ export class TransactionService {
       });
 
       const tx = txBuilder.build(signature);
-
       logger.info('tx: %o', txBuilder.toApi());
-      const observer = await bot.broadcast(tx);
-      observer.subscribe({
-        next(tx) {
-          logger.info(tx, "applied in blockchain");
-        },
-        error(error) {
-          logger.error("Transaction observation time expired: %o", error);
-        }
+
+      const observer = await bot.broadcast(tx, { throwAfter: 60 * 1000 });
+
+      await new Promise((resolve, reject) => {
+        // This is synchronous call!
+        observer.subscribe({
+          next: ({ block: { number: appliedBlockNumber } }) => {
+            logger.info(`Applied on block #${appliedBlockNumber}`);
+            resolve(appliedBlockNumber);
+          },
+          error(error) {
+            logger.error("Transaction observation time expired: %o", error);
+            reject(error);
+          }
+        });
       });
+
+      // Additional wait time
+      // await PromiseTools.promiseTimeout(2 * 1000);
+
     } catch (error) {
+      logger.error("Error: %o", error);
       throw error;
     } finally {
       await bot.stop();
