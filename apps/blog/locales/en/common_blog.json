@@ -402,7 +402,14 @@
         "cancel": "Cancel",
         "preview": "Preview",
         "markdown_styling_guide": "Markdown Styling Guide",
-        "exit_editor": "Are you sure you want to exit the comment editor?"
+        "exit_editor": "Are you sure you want to exit the comment editor?",
+        "power_up": "Power up 100%",
+        "decline_payout": "Decline Payout",
+        "rewards": "Rewards: ",
+        "account_stats": "Account stats:",
+        "resource_credits": "Resource Credits (RC) level: {{value}}%",
+        "update_settings": "Update settings",
+        "full_in": "Full in: "
       }
     }
   },
@@ -429,7 +436,7 @@
     "author_rewards": "Author rewards:",
     "advanced_settings": "Advanced settings",
     "account_stats": "Account stats:",
-    "resource_credits": "Resource Credits (RC) level: {{value}} %",
+    "resource_credits": "Resource Credits (RC) level: {{value}}%",
     "posting_to": "Posting to:",
     "my_blog": "My blog",
     "preview": "Preview",
