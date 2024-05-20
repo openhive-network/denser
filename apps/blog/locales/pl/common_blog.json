@@ -332,6 +332,7 @@
     }
   },
   "post_content": {
+    "close_post_editor": "Czy na pewno chcesz zamknąć edytor postów?",
     "in": "w",
     "reputation_title": "Reputacja",
     "blacklists": "Czarna lista",
@@ -393,11 +394,19 @@
         "cancel": "Anuluj",
         "preview": "Podgląd",
         "markdown_styling_guide": "Przewodnik po stylach posta",
-        "exit_editor": "Jesteś pewien że chcesz opuścić tę stronę i anulować pisanie komentarza?"
+        "exit_editor": "Jesteś pewien że chcesz opuścić tę stronę i anulować pisanie komentarza?",
+        "power_up": "Wzmocnij 100%",
+        "decline_payout": "Odrzuć Wypłatę",
+        "rewards": "Wynagrodzenie: ",
+        "account_stats": "Statystyki konta:",
+        "resource_credits": "Resource Credits (RC) level: {{value}} %",
+        "update_settings": "Zaktualizuj ustawienia",
+        "full_in": "Pełny za: "
       }
     }
   },
   "submit_page": {
+    "clean_post_editor": "Czy na pewno chcesz wyczyścić edytor postów?",
     "cover_image": "Wybierz obraz okładki:",
     "my_communities": "Moje Społeczności",
     "others_communities": "Inne Społeczności",

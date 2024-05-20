@@ -3,6 +3,8 @@
     "no_rewards": "Nessun premio in attesa di riscatto.",
     "loading": "Loading",
     "something_went_wrong": "Something went wrong",
+    "sorry_cant_show": "Mi spiace, al momento non posso mostrarti alcuna proposta.",
+    "its_probably": "Probabilmente è perché non ce ne sono che corrispondono ai tuoi criteri.",
     "time_ago": {
       "a_few_seconds": " a few seconds ago",
       "seconds": " seconds ago",

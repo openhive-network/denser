@@ -325,6 +325,7 @@
     }
   },
   "post_content": {
+    "close_post_editor": "Вы уверены, что хотите закрыть редактор постов?",
     "in": "в",
     "reputation_title": "Репутация",
     "blacklists": "Черные списки",
@@ -386,11 +387,19 @@
         "cancel": "Cancel",
         "preview": "Preview",
         "markdown_styling_guide": "Markdown Styling Guide",
-        "exit_editor": "Are you sure you want to exit the comment editor?"
+        "exit_editor": "Are you sure you want to exit the comment editor?",
+        "power_up": "Усилить на 100%",
+        "decline_payout": "Отклонить выплату",
+        "rewards": "Награды: ",
+        "account_stats": "Статистика аккаунта:",
+        "resource_credits": "Уровень ресурсных кредитов (RC): {{value}} %",
+        "update_settings": "Обновить настройки",
+        "full_in": "Полностью через: "
       }
     }
   },
   "submit_page": {
+    "clean_post_editor": "Вы уверены, что хотите очистить редактор постов?",
     "cover_image": "Выберите обложку:",
     "my_communities": "Мои сообщества",
     "others_communities": "Другие сообщества",

@@ -82,9 +82,7 @@ test.describe('Proposals page tests', () => {
     expect(amountProposalsItemUI).toBe(amountResListOfProposalsStatusAllAPI);
   });
 
-  // Test skipped due to Issue  https://gitlab.syncad.com/hive/denser/-/issues/402
-  // Validate after fix it.
-  test.skip('change status to Inactive and order by the same (total votes)', async ({ page }) => {
+  test('change status to Inactive and order by the same (total votes)', async ({ page }) => {
     let apiHelper: ApiHelper = new ApiHelper(page);
 
     await proposalsPage.goToProposalsPage();
@@ -101,12 +99,20 @@ test.describe('Proposals page tests', () => {
 
     await proposalsPage.proposalsFilterStatus.click();
     await proposalsPage.proposalsFilterStatusConntent.getByText(/^Inactive$/).click();
+    await proposalsPage.page.waitForSelector(proposalsPage.proposalsFilterStatus.getByText(/^Inactive$/)['_selector']);
     await expect(proposalsPage.proposalsFilterStatus.locator('span')).toHaveText(/^Inactive$/);
-    await expect(proposalsPage.proposalStatusBadge.first()).toHaveText('not started');
-    await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
-    const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
-    // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
-    expect(amountProposalsItemUI).toBe(amountResListOfProposalsStatusAllAPI);
+    await proposalsPage.page.waitForTimeout(3000);
+    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+      await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
+      await expect(proposalsPage.proposalStatusBadge.first()).toHaveText('not started');
+      const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
+      // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
+      expect(amountProposalsItemUI).toBe(amountResListOfProposalsStatusAllAPI);
+    } else {
+      await expect(proposalsPage.proposalsBody.locator('main').locator('p').first()).toHaveText(
+        "Sorry, I can't show you any proposals right now."
+      );
+    }
   });
 
   test('change status to Expired and order by the same (total votes)', async ({ page }) => {

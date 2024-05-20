@@ -319,6 +319,7 @@
     }
   },
   "post_content": {
+    "close_post_editor": "投稿エディタを閉じてもよろしいですか？",
     "in": "in",
     "reputation_title": "評価",
     "blacklists": "ブラックリスト",
@@ -380,11 +381,19 @@
         "cancel": "Cancel",
         "preview": "Preview",
         "markdown_styling_guide": "Markdown Styling Guide",
-        "exit_editor": "Are you sure you want to exit the comment editor?"
+        "exit_editor": "Are you sure you want to exit the comment editor?",
+        "power_up": "パワーアップ 100%",
+        "decline_payout": "支払いを拒否",
+        "rewards": "報酬: ",
+        "account_stats": "アカウント統計:",
+        "resource_credits": "リソースクレジット（RC）レベル: {{value}} %",
+        "update_settings": "設定を更新する",
+        "full_in": "満了まで: "
       }
     }
   },
   "submit_page": {
+    "clean_post_editor": "投稿エディタをクリアしてもよろしいですか？",
     "cover_image": "カバー画像を選択してください：",
     "my_communities": "私のコミュニティ",
     "others_communities": "他のコミュニティ",
