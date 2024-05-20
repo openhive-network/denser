@@ -13,6 +13,7 @@ import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 import { getLogger } from '@ui/lib/logging';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import useManabars from './hooks/useManabars';
+import { hoursAndMinutes } from '../lib/utils';
 const logger = getLogger('app');
 
 export function ReplyTextbox({
@@ -128,7 +129,10 @@ export function ReplyTextbox({
         <div className="flex flex-col gap-2">
           <span>{t('post_content.footer.comment.account_stats')}</span>
           <span className="text-xs">
-            {t('post_content.footer.comment.resource_credits', { value: manabarsData?.rc.percentageValue })}
+            {t('post_content.footer.comment.resource_credits', { value: manabarsData?.rc.percentageValue })}{' '}
+            {manabarsData?.rc.percentageValue !== 100 && manabarsData?.rc.cooldown ? (
+              <span>Full in: {hoursAndMinutes(manabarsData.rc.cooldown, t)}</span>
+            ) : null}
           </span>
         </div>
         <div className="flex flex-col md:flex-row">

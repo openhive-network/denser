@@ -387,7 +387,8 @@
         "rewards": "Recompensas: ",
         "update_settings": "Actualizar configuración",
         "resource_credits": "Nivel de Créditos de Recursos (RC): {{value}} %",
-        "account_stats": "Estadísticas de la cuenta:"
+        "account_stats": "Estadísticas de la cuenta:",
+        "full_in": "Completo en: "
       }
     }
   },

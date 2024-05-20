@@ -393,7 +393,8 @@
         "rewards": "Награды: ",
         "account_stats": "Статистика аккаунта:",
         "resource_credits": "Уровень ресурсных кредитов (RC): {{value}} %",
-        "update_settings": "Обновить настройки"
+        "update_settings": "Обновить настройки",
+        "full_in": "Полностью через: "
       }
     }
   },

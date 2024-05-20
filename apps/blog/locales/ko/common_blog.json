@@ -387,7 +387,8 @@
         "rewards": "보상: ",
         "account_stats": "계정 통계:",
         "resource_credits": "리소스 크레딧 (RC) 레벨: {{value}} %",
-        "update_settings": "설정 업데이트"
+        "update_settings": "설정 업데이트",
+        "full_in": "충전 완료까지: "
       }
     }
   },

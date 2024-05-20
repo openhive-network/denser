@@ -400,7 +400,8 @@
         "rewards": "Wynagrodzenie: ",
         "account_stats": "Statystyki konta:",
         "resource_credits": "Resource Credits (RC) level: {{value}} %",
-        "update_settings": "Zaktualizuj ustawienia"
+        "update_settings": "Zaktualizuj ustawienia",
+        "full_in": "Pełny za: "
       }
     }
   },

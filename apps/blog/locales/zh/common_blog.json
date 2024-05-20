@@ -387,7 +387,8 @@
         "rewards": "奖励: ",
         "account_stats": "帐户统计：",
         "resource_credits": "资源积分（RC）水平：{{value}}%",
-        "update_settings": "更新设置"
+        "update_settings": "更新设置",
+        "full_in": "完全充满: "
       }
     }
   },

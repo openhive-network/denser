@@ -387,7 +387,8 @@
         "rewards": "報酬: ",
         "account_stats": "アカウント統計:",
         "resource_credits": "リソースクレジット（RC）レベル: {{value}} %",
-        "update_settings": "設定を更新する"
+        "update_settings": "設定を更新する",
+        "full_in": "満了まで: "
       }
     }
   },
