@@ -326,10 +326,7 @@
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "你正在查看单个评论的主题",
       "view_the_full_context": "查看全文",
-      "view_the_direct_parent": "查看上一级",
-      "power_up": "电力提升 100%",
-      "decline_payout": "拒绝付款",
-      "rewards": "奖励: "
+      "view_the_direct_parent": "查看上一级"
     },
     "header": {
       "hover_author": {
@@ -384,7 +381,13 @@
         "cancel": "Cancel",
         "preview": "Preview",
         "markdown_styling_guide": "Markdown Styling Guide",
-        "exit_editor": "Are you sure you want to exit the comment editor?"
+        "exit_editor": "Are you sure you want to exit the comment editor?",
+        "power_up": "电力提升 100%",
+        "decline_payout": "拒绝付款",
+        "rewards": "奖励: ",
+        "account_stats": "帐户统计：",
+        "resource_credits": "资源积分（RC）水平：{{value}}%",
+        "update_settings": "更新设置"
       }
     }
   },

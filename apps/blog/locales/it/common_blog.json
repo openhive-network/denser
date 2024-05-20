@@ -326,10 +326,7 @@
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "Stai visualizzando il commento singolo di un thread di",
       "vview_the_full_context": "Vedi il contesto completo",
-      "view_the_direct_parent": "Visualizza il collegamento diretto",
-      "power_up": "Attiva al 100%",
-      "decline_payout": "Rifiuta il Pagamento",
-      "rewards": "Ricompense: "
+      "view_the_direct_parent": "Visualizza il collegamento diretto"
     },
     "header": {
       "hover_author": {
@@ -384,7 +381,13 @@
         "cancel": "Cancel",
         "preview": "Preview",
         "markdown_styling_guide": "Markdown Styling Guide",
-        "exit_editor": "Are you sure you want to exit the comment editor?"
+        "exit_editor": "Are you sure you want to exit the comment editor?",
+        "power_up": "Attiva al 100%",
+        "decline_payout": "Rifiuta il Pagamento",
+        "rewards": "Ricompense: ",
+        "account_stats": "Statistiche dell'account:",
+        "resource_credits": "Livello Crediti Risorse (RC): {{value}} %",
+        "update_settings": "Aggiorna impostazioni"
       }
     }
   },

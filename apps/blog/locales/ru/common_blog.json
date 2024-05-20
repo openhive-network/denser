@@ -332,10 +332,7 @@
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "Вы читаете одну нить комментариев от",
       "view_the_full_context": "Показать полный контекст",
-      "view_the_direct_parent": "Просмотр прямого родителя",
-      "power_up": "Усилить на 100%",
-      "decline_payout": "Отклонить выплату",
-      "rewards": "Награды: "
+      "view_the_direct_parent": "Просмотр прямого родителя"
     },
     "header": {
       "hover_author": {
@@ -390,7 +387,13 @@
         "cancel": "Cancel",
         "preview": "Preview",
         "markdown_styling_guide": "Markdown Styling Guide",
-        "exit_editor": "Are you sure you want to exit the comment editor?"
+        "exit_editor": "Are you sure you want to exit the comment editor?",
+        "power_up": "Усилить на 100%",
+        "decline_payout": "Отклонить выплату",
+        "rewards": "Награды: ",
+        "account_stats": "Статистика аккаунта:",
+        "resource_credits": "Уровень ресурсных кредитов (RC): {{value}} %",
+        "update_settings": "Обновить настройки"
       }
     }
   },

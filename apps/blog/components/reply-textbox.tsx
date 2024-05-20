@@ -12,6 +12,7 @@ import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 
 import { getLogger } from '@ui/lib/logging';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import useManabars from './hooks/useManabars';
 const logger = getLogger('app');
 
 export function ReplyTextbox({
@@ -33,6 +34,7 @@ export function ReplyTextbox({
 }) {
   const [storedPost, storePost, removePost] = useLocalStorage<string>(`replyTo-/${username}/${permlink}`, '');
   const { user } = useUser();
+  const { manabarsData } = useManabars(user.username);
   const [preferences, setPreferences] = useLocalStorage<Preferences>(
     `user-preferences-${user.username}`,
     DEFAULT_PREFERENCES
@@ -123,6 +125,12 @@ export function ReplyTextbox({
             </TooltipProvider>
           </p>
         </div>
+        <div className="flex flex-col gap-2">
+          <span>{t('post_content.footer.comment.account_stats')}</span>
+          <span className="text-xs">
+            {t('post_content.footer.comment.resource_credits', { value: manabarsData?.rc.percentageValue })}
+          </span>
+        </div>
         <div className="flex flex-col md:flex-row">
           <Button ref={btnRef} disabled={text === ''} onClick={() => postComment()}>
             {t('post_content.footer.comment.post')}
@@ -142,14 +150,14 @@ export function ReplyTextbox({
           <span className="text-slate-500">{t('post_content.footer.comment.preview')}</span>
           <div className="flex flex-col gap-1 text-end">
             <div>
-              {t('post_content.if_comment.rewards')}
+              {t('post_content.footer.comment.rewards')}
               {preferences.comment_rewards === '0%'
-                ? t('post_content.if_comment.decline_payout')
+                ? t('post_content.footer.comment.decline_payout')
                 : preferences.comment_rewards === '100%'
-                  ? t('post_content.if_comment.power_up')
+                  ? t('post_content.footer.comment.power_up')
                   : '50% HBD/50% HP'}{' '}
               <Link className="text-red-500" href={`/@${user.username}/settings`}>
-                Update settings
+                {t('post_content.footer.comment.update_settings')}
               </Link>
             </div>
             <Link href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax">

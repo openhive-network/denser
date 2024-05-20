@@ -326,10 +326,7 @@
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "次のスレッドのコメントの1つを表示しています",
       "view_the_full_context": "スレッドをすべて表示する",
-      "view_the_direct_parent": "親コメントを表示する",
-      "power_up": "パワーアップ 100%",
-      "decline_payout": "支払いを拒否",
-      "rewards": "報酬: "
+      "view_the_direct_parent": "親コメントを表示する"
     },
     "header": {
       "hover_author": {
@@ -384,7 +381,13 @@
         "cancel": "Cancel",
         "preview": "Preview",
         "markdown_styling_guide": "Markdown Styling Guide",
-        "exit_editor": "Are you sure you want to exit the comment editor?"
+        "exit_editor": "Are you sure you want to exit the comment editor?",
+        "power_up": "パワーアップ 100%",
+        "decline_payout": "支払いを拒否",
+        "rewards": "報酬: ",
+        "account_stats": "アカウント統計:",
+        "resource_credits": "リソースクレジット（RC）レベル: {{value}} %",
+        "update_settings": "設定を更新する"
       }
     }
   },

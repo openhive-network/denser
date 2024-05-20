@@ -347,10 +347,7 @@
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "You are viewing a single comment's thread from",
       "view_the_full_context": "View the full context",
-      "view_the_direct_parent": "View the direct parent",
-      "power_up": " Power up 100%",
-      "decline_payout": " Decline Payout",
-      "rewards": "Rewards: "
+      "view_the_direct_parent": "View the direct parent"
     },
     "header": {
       "hover_author": {
@@ -405,7 +402,13 @@
         "cancel": "Cancel",
         "preview": "Preview",
         "markdown_styling_guide": "Markdown Styling Guide",
-        "exit_editor": "Are you sure you want to exit the comment editor?"
+        "exit_editor": "Are you sure you want to exit the comment editor?",
+        "power_up": "Power up 100%",
+        "decline_payout": "Decline Payout",
+        "rewards": "Rewards: ",
+        "account_stats": "Account stats:",
+        "resource_credits": "Resource Credits (RC) level: {{value}} %",
+        "update_settings": "Update settings"
       }
     }
   },
