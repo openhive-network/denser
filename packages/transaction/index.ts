@@ -23,7 +23,12 @@ const logger = getLogger('app');
 
 export type TransactionErrorCallback = undefined | ((error: any) => any)
 
-const bot = new WorkerBee();
+const bot = new WorkerBee({
+  chainOptions: {
+    chainId: '42',
+    apiEndpoint: 'https://hive-5.pl.syncad.com',
+  }
+});
 bot.on("error", logger.error);
 
 export class TransactionService {
@@ -62,7 +67,7 @@ export class TransactionService {
 
     const signature = await signer.signTransaction({
       digest: txBuilder.sigDigest,
-      transaction: txBuilder.build() // builded transaction
+      transaction: txBuilder.build() // built transaction
     });
 
     txBuilder.build(signature);
@@ -76,33 +81,39 @@ export class TransactionService {
   }
 
   async processTransactionAndObserve(txBuilder: ITransactionBuilder): Promise<void> {
-    // validate
-    txBuilder.validate();
+    try {
+      await bot.start();
 
-    // Sign using smart-signer
-    // pass to smart-signer txBuilder.sigDigest
-    const signer = getSigner(this.signerOptions);
+      // validate
+      txBuilder.validate();
 
-    const signature = await signer.signTransaction({
-      digest: txBuilder.sigDigest,
-      transaction: txBuilder.build() // builded transaction
-    });
+      // Sign using smart-signer
+      // pass to smart-signer txBuilder.sigDigest
+      const signer = getSigner(this.signerOptions);
 
-    txBuilder.build(signature);
+      const signature = await signer.signTransaction({
+        digest: txBuilder.sigDigest,
+        transaction: txBuilder.build() // built transaction
+      });
 
-    await bot.start();
+      const tx = txBuilder.build(signature);
 
-    const observer = await bot.broadcast(txBuilder.build())
-    observer.subscribe({
-      next(tx) {
-        logger.info(tx, "applied in blockchain");
-      },
-      error() {
-        logger.error("Transaction observation time expired");
-      }
-    });
+      logger.info('tx: %o', txBuilder.toApi());
+      const observer = await bot.broadcast(tx);
+      observer.subscribe({
+        next(tx) {
+          logger.info(tx, "applied in blockchain");
+        },
+        error(error) {
+          logger.error("Transaction observation time expired: %o", error);
+        }
+      });
+    } catch (error) {
+      throw error;
+    } finally {
+      await bot.stop();
+    }
 
-    await bot.stop();
 
   }
 

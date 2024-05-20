@@ -16,7 +16,7 @@ import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 
-const vote = async (
+const voteOld = async (
       service: TransactionService,
       voter: string,
       author: string,
@@ -99,6 +99,25 @@ const vote = async (
     } else {
       service.handleError(error);
     }
+  }
+  return { voter, author, permlink, weight };
+};
+
+const vote = async (
+  service: TransactionService,
+  voter: string,
+  author: string,
+  permlink: string,
+  weight: number,
+  t: any // translate function
+) => {
+  try {
+    await service.upVote(author, permlink, weight, (error) => { throw error; });
+    logger.info('Voted: %o',
+      { voter, author, permlink, weight });
+  } catch (error) {
+    service.handleError(error);
+    throw error;
   }
   return { voter, author, permlink, weight };
 };
