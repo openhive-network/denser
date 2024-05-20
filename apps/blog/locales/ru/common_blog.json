@@ -332,7 +332,10 @@
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "Вы читаете одну нить комментариев от",
       "view_the_full_context": "Показать полный контекст",
-      "view_the_direct_parent": "Просмотр прямого родителя"
+      "view_the_direct_parent": "Просмотр прямого родителя",
+      "power_up": "Усилить на 100%",
+      "decline_payout": "Отклонить выплату",
+      "rewards": "Награды: "
     },
     "header": {
       "hover_author": {

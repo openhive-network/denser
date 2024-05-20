@@ -326,7 +326,10 @@
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "次のスレッドのコメントの1つを表示しています",
       "view_the_full_context": "スレッドをすべて表示する",
-      "view_the_direct_parent": "親コメントを表示する"
+      "view_the_direct_parent": "親コメントを表示する",
+      "power_up": "パワーアップ 100%",
+      "decline_payout": "支払いを拒否",
+      "rewards": "報酬: "
     },
     "header": {
       "hover_author": {

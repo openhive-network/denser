@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Button } from '@ui/components/button';
-import { useContext, useEffect, useState, useRef } from 'react';
+import { useContext, useEffect, useState, useRef, use } from 'react';
 import { useTranslation } from 'next-i18next';
 import { transactionService } from '@transaction/index';
 import { HiveRendererContext } from './hive-renderer-context';
@@ -11,6 +11,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/co
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 
 import { getLogger } from '@ui/lib/logging';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 const logger = getLogger('app');
 
 export function ReplyTextbox({
@@ -31,8 +32,9 @@ export function ReplyTextbox({
   comment?: string;
 }) {
   const [storedPost, storePost, removePost] = useLocalStorage<string>(`replyTo-/${username}/${permlink}`, '');
+  const { user } = useUser();
   const [preferences, setPreferences] = useLocalStorage<Preferences>(
-    `user-preferences-${username}`,
+    `user-preferences-${user.username}`,
     DEFAULT_PREFERENCES
   );
   const { t } = useTranslation('common_blog');
@@ -138,9 +140,22 @@ export function ReplyTextbox({
       <div className="flex flex-col gap-4">
         <div className="flex justify-between text-xs">
           <span className="text-slate-500">{t('post_content.footer.comment.preview')}</span>
-          <Link href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax">
-            <span className="text-red-500">{t('post_content.footer.comment.markdown_styling_guide')}</span>
-          </Link>
+          <div className="flex flex-col gap-1 text-end">
+            <div>
+              {t('post_content.if_comment.rewards')}
+              {preferences.comment_rewards === '0%'
+                ? t('post_content.if_comment.decline_payout')
+                : preferences.comment_rewards === '100%'
+                  ? t('post_content.if_comment.power_up')
+                  : '50% HBD/50% HP'}{' '}
+              <Link className="text-red-500" href={`/@${user.username}/settings`}>
+                Update settings
+              </Link>
+            </div>
+            <Link href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax">
+              <span className="text-red-500">{t('post_content.footer.comment.markdown_styling_guide')}</span>
+            </Link>
+          </div>
         </div>
         {cleanedText ? (
           <div

@@ -326,7 +326,10 @@
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "Estás viendo  los comentarios relacionados de",
       "view_the_full_context": "Ver todo el contexto",
-      "view_the_direct_parent": "Ver el comentario relacionado"
+      "view_the_direct_parent": "Ver el comentario relacionado",
+      "power_up": "Activar al 100%",
+      "decline_payout": "Rechazar Pago",
+      "rewards": "Recompensas: "
     },
     "header": {
       "hover_author": {

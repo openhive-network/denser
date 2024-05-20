@@ -326,7 +326,10 @@
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "You are viewing a single comment's thread from",
       "view_the_full_context": "전체 글 보기",
-      "view_the_direct_parent": "상위 댓글 보기"
+      "view_the_direct_parent": "상위 댓글 보기",
+      "power_up": "전원 100% 증가",
+      "decline_payout": "지급 거부",
+      "rewards": "보상: "
     },
     "header": {
       "hover_author": {

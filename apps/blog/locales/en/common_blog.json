@@ -347,7 +347,10 @@
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "You are viewing a single comment's thread from",
       "view_the_full_context": "View the full context",
-      "view_the_direct_parent": "View the direct parent"
+      "view_the_direct_parent": "View the direct parent",
+      "power_up": " Power up 100%",
+      "decline_payout": " Decline Payout",
+      "rewards": "Rewards: "
     },
     "header": {
       "hover_author": {

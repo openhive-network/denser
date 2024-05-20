@@ -339,7 +339,10 @@
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "Przeglądasz wątek pojedynczego komentarza",
       "view_the_full_context": "Zobacz pełen kontekst.",
-      "view_the_direct_parent": "Zobacz wpis nadrzędny"
+      "view_the_direct_parent": "Zobacz wpis nadrzędny",
+      "power_up": "Wzmocnij 100%",
+      "decline_payout": "Odrzuć Wypłatę",
+      "rewards": "Wynagrodzenie: "
     },
     "header": {
       "hover_author": {

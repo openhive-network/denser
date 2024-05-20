@@ -326,7 +326,10 @@
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "You are viewing a single comment's thread from",
       "view_the_full_context": "Voir le contexte complet",
-      "view_the_direct_parent": "Voir le message précédent"
+      "view_the_direct_parent": "Voir le message précédent",
+      "power_up": "Activer à 100%",
+      "decline_payout": "Refuser le Paiement",
+      "rewards": "Récompenses: "
     },
     "header": {
       "hover_author": {

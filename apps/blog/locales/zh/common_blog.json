@@ -326,7 +326,10 @@
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "你正在查看单个评论的主题",
       "view_the_full_context": "查看全文",
-      "view_the_direct_parent": "查看上一级"
+      "view_the_direct_parent": "查看上一级",
+      "power_up": "电力提升 100%",
+      "decline_payout": "拒绝付款",
+      "rewards": "奖励: "
     },
     "header": {
       "hover_author": {
