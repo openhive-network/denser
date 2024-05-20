@@ -33,7 +33,6 @@ import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 import { getLogger } from '@ui/lib/logging';
-import { cn } from '@ui/lib/utils';
 import SelectImageList from './select-image-list';
 
 const logger = getLogger('app');
@@ -124,7 +123,7 @@ export default function PostForm({
     category: 'blog',
     beneficiaries: [],
     maxAcceptedPayout: preferences.blog_rewards === '0%' ? 0 : 1000000,
-    payoutType: ''
+    payoutType: preferences.blog_rewards
   };
   const [preview, setPreview] = useState(true);
   const [selectedImg, setSelectedImg] = useState('');

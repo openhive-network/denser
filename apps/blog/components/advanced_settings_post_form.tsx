@@ -58,7 +58,7 @@ export function AdvancedSettingsPostForm({
   const [splitRewards, setSplitRewards] = useState(100);
   const [templateTitle, setTemplateTitle] = useState('');
   const [maxPayout, setMaxPayout] = useState(
-    preferences.blog_rewards === '100%' ? 'no_max' : preferences.blog_rewards === '0%' ? '0' : 'custom'
+    preferences.blog_rewards === '100%' || preferences.blog_rewards === '50%' ? 'no_max' : '0'
   );
   const [selectTemplate, setSelectTemplate] = useState('/');
   const [beneficiaries, setBeneficiaries] = useState<{ weight: string; account: string }[]>(
@@ -86,9 +86,7 @@ export function AdvancedSettingsPostForm({
 
   useEffect(() => {
     setRewards(preferences.blog_rewards !== '100%' ? '50%' : preferences.blog_rewards);
-    setMaxPayout(
-      preferences.blog_rewards === '100%' ? 'no_max' : preferences.blog_rewards === '0%' ? '0' : 'custom'
-    );
+    setMaxPayout(preferences.blog_rewards === '100%' || preferences.blog_rewards === '50%' ? 'no_max' : '0');
     setBeneficiaries(data.beneficiaries);
     setCustomValue(data.maxAcceptedPayout !== 1000000 ? data.maxAcceptedPayout : '100');
   }, [open]);
