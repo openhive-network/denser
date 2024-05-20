@@ -99,10 +99,12 @@ test.describe('Proposals page tests', () => {
 
     await proposalsPage.proposalsFilterStatus.click();
     await proposalsPage.proposalsFilterStatusConntent.getByText(/^Inactive$/).click();
+    await proposalsPage.page.waitForSelector(proposalsPage.proposalsFilterStatus.getByText(/^Inactive$/)['_selector']);
     await expect(proposalsPage.proposalsFilterStatus.locator('span')).toHaveText(/^Inactive$/);
+    await proposalsPage.page.waitForTimeout(3000);
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
-      await expect(proposalsPage.proposalStatusBadge.first()).toHaveText('not started');
       await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
+      await expect(proposalsPage.proposalStatusBadge.first()).toHaveText('not started');
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
       // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
       expect(amountProposalsItemUI).toBe(amountResListOfProposalsStatusAllAPI);
