@@ -16,10 +16,15 @@ import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
 import { Beneficiarie, Preferences } from './lib/app-types';
+import WorkerBee from "@hiveio/workerbee";
+
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
 export type TransactionErrorCallback = undefined | ((error: any) => any)
+
+const bot = new WorkerBee();
+bot.on("error", logger.error);
 
 export class TransactionService {
   errorDescription = 'Transaction broadcast error';
@@ -40,7 +45,8 @@ export class TransactionService {
     try {
       const txBuilder = await (await hiveChainService.getHiveChain()).getTransactionBuilder();
       cb(txBuilder);
-      await this.processTransaction(txBuilder);
+      // await this.processTransaction(txBuilder);
+      await this.processTransactionAndObserve(txBuilder);
     } catch (error) {
       onError(error);
     }
@@ -67,6 +73,37 @@ export class TransactionService {
     await (
       await hiveChainService.getHiveChain()
     ).api.network_broadcast_api.broadcast_transaction(broadcastReq);
+  }
+
+  async processTransactionAndObserve(txBuilder: ITransactionBuilder): Promise<void> {
+    // validate
+    txBuilder.validate();
+
+    // Sign using smart-signer
+    // pass to smart-signer txBuilder.sigDigest
+    const signer = getSigner(this.signerOptions);
+
+    const signature = await signer.signTransaction({
+      digest: txBuilder.sigDigest,
+      transaction: txBuilder.build() // builded transaction
+    });
+
+    txBuilder.build(signature);
+
+    await bot.start();
+
+    const observer = await bot.broadcast(txBuilder.build())
+    observer.subscribe({
+      next(tx) {
+        logger.info(tx, "applied in blockchain");
+      },
+      error() {
+        logger.error("Transaction observation time expired");
+      }
+    });
+
+    await bot.stop();
+
   }
 
   async upVote(author: string, permlink: string, weight = 10000,
