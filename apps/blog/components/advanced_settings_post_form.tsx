@@ -85,8 +85,8 @@ export function AdvancedSettingsPostForm({
   const currentTemplate = storedTemplates.find((e) => e.templateTitle === selectTemplate);
 
   useEffect(() => {
-    setRewards(preferences.blog_rewards !== '100%' ? '50%' : preferences.blog_rewards);
-    setMaxPayout(preferences.blog_rewards === '100%' || preferences.blog_rewards === '50%' ? 'no_max' : '0');
+    setRewards(rewards);
+    setMaxPayout(maxPayout);
     setBeneficiaries(data.beneficiaries);
     setCustomValue(data.maxAcceptedPayout !== 1000000 ? data.maxAcceptedPayout : '100');
   }, [open]);
