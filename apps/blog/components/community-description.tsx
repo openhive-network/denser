@@ -11,7 +11,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useContext, useEffect, useState } from 'react';
 import { HiveRendererContext } from './hive-renderer-context';
 import SubscribeCommunity from './subscribe-community';
-import NewPost from './new_post_button';
+import NewPost from './new-post-button';
 
 const CommunityDescription = ({
   data,

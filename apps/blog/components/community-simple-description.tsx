@@ -6,7 +6,7 @@ import { ActivityLogDialog } from './activity-log-dialog';
 import { useTranslation } from 'next-i18next';
 import SubscribeCommunity from './subscribe-community';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import NewPost from './new_post_button';
+import NewPost from './new-post-button';
 import { useEffect, useState } from 'react';
 import { Badge } from '@ui/components';
 
