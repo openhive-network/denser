@@ -422,9 +422,9 @@ export default function PostForm({
 
                 <span className="text-xs">
                   {t('submit_page.author_rewards')}
-                  {preferences.blog_rewards === '0%'
+                  {preferences.blog_rewards === '0%' || storedPost.maxAcceptedPayout === 0
                     ? ` ${t('submit_page.advanced_settings_dialog.decline_payout')}`
-                    : preferences.blog_rewards === '100%'
+                    : preferences.blog_rewards === '100%' || storedPost.payoutType === '100%'
                       ? t('submit_page.power_up')
                       : ' 50% HBD / 50% HP'}
                 </span>
