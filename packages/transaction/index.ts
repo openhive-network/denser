@@ -19,7 +19,7 @@ import { Beneficiarie, Preferences } from './lib/app-types';
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
-export type TransactionErrorCallback = undefined | ((error: any) => any)
+export type TransactionErrorCallback = undefined | ((error: any) => any);
 
 export class TransactionService {
   errorDescription = 'Transaction broadcast error';
@@ -69,78 +69,60 @@ export class TransactionService {
     ).api.network_broadcast_api.broadcast_transaction(broadcastReq);
   }
 
-  async upVote(author: string, permlink: string, weight = 10000,
+  async upVote(
+    author: string,
+    permlink: string,
+    weight = 10000,
     onError: TransactionErrorCallback = undefined
   ) {
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder
-          .push({
-            vote: {
-              voter: this.signerOptions.username,
-              author,
-              permlink,
-              weight
-            }
-          })
-          .build();
-      },
-      onError
-    );
+    await this.processHiveAppOperation((builder) => {
+      builder
+        .push({
+          vote: {
+            voter: this.signerOptions.username,
+            author,
+            permlink,
+            weight
+          }
+        })
+        .build();
+    }, onError);
   }
 
-  async downVote(author: string, permlink: string, weight = -10000,
+  async downVote(
+    author: string,
+    permlink: string,
+    weight = -10000,
     onError: TransactionErrorCallback = undefined
   ) {
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder
-          .push({
-            vote: {
-              voter: this.signerOptions.username,
-              author,
-              permlink,
-              weight
-            }
-          })
-          .build();
-      },
-      onError
-    );
+    await this.processHiveAppOperation((builder) => {
+      builder
+        .push({
+          vote: {
+            voter: this.signerOptions.username,
+            author,
+            permlink,
+            weight
+          }
+        })
+        .build();
+    }, onError);
   }
 
-  async subscribe(
-    username: string,
-    onError: TransactionErrorCallback = undefined
-  ) {
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder.push(
-          new CommunityOperationBuilder()
-            .subscribe(username)
-            .authorize(this.signerOptions.username)
-            .build()
-        );
-      },
-      onError
-    );
+  async subscribe(username: string, onError: TransactionErrorCallback = undefined) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new CommunityOperationBuilder().subscribe(username).authorize(this.signerOptions.username).build()
+      );
+    }, onError);
   }
 
-  async unsubscribe(
-    username: string,
-    onError: TransactionErrorCallback = undefined
-  ) {
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder.push(
-          new CommunityOperationBuilder()
-            .unsubscribe(username)
-            .authorize(this.signerOptions.username)
-            .build()
-        );
-      },
-      onError
-    );
+  async unsubscribe(username: string, onError: TransactionErrorCallback = undefined) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new CommunityOperationBuilder().unsubscribe(username).authorize(this.signerOptions.username).build()
+      );
+    }, onError);
   }
 
   async flag(
@@ -150,272 +132,190 @@ export class TransactionService {
     notes: string,
     onError: TransactionErrorCallback = undefined
   ) {
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder.push(
-          new CommunityOperationBuilder()
-            .flagPost(community, username, permlink, notes)
-            .authorize(this.signerOptions.username)
-            .build()
-        );
-      }, onError
-    );
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new CommunityOperationBuilder()
+          .flagPost(community, username, permlink, notes)
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    }, onError);
   }
 
-  async reblog(username: string, permlink: string,
-    onError: TransactionErrorCallback = undefined
-  ) {
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder.push(
-          new FollowOperationBuilder()
-            .reblog(this.signerOptions.username, username, permlink)
-            .authorize(this.signerOptions.username)
-            .build()
-        );
-      },
-      onError
-    );
+  async reblog(username: string, permlink: string, onError: TransactionErrorCallback = undefined) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .reblog(this.signerOptions.username, username, permlink)
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    }, onError);
   }
 
-  async follow(username: string,
-    onError: TransactionErrorCallback = undefined
-  ) {
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder.push(
-          new FollowOperationBuilder()
-            .followBlog(this.signerOptions.username, username)
-            .authorize(this.signerOptions.username)
-            .build()
-        );
-      },
-      onError
-    );
+  async follow(username: string, onError: TransactionErrorCallback = undefined) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .followBlog(this.signerOptions.username, username)
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    }, onError);
   }
 
-  async unfollow(username: string,
-    onError: TransactionErrorCallback = undefined
-  ) {
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder.push(
-          new FollowOperationBuilder()
-            .unfollowBlog(this.signerOptions.username, username)
-            .authorize(this.signerOptions.username)
-            .build()
-        );
-      },
-      onError
-    );
+  async unfollow(username: string, onError: TransactionErrorCallback = undefined) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .unfollowBlog(this.signerOptions.username, username)
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    }, onError);
   }
 
-  async mute(otherBlogs: string, blog = '',
-    onError: TransactionErrorCallback = undefined
-  ) {
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder.push(
-          new FollowOperationBuilder()
-            .muteBlog(this.signerOptions.username, blog, ...otherBlogs.split(', '))
-            .authorize(this.signerOptions.username)
-            .build()
-        );
-      },
-      onError
-    );
+  async mute(otherBlogs: string, blog = '', onError: TransactionErrorCallback = undefined) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .muteBlog(this.signerOptions.username, blog, ...otherBlogs.split(', '))
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    }, onError);
   }
 
-  async unmute(blog: string,
-    onError: TransactionErrorCallback = undefined
-  ) {
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder.push(
-          new FollowOperationBuilder()
-            .unmuteBlog(this.signerOptions.username, blog)
-            .authorize(this.signerOptions.username)
-            .build()
-        );
-      },
-      onError
-    );
+  async unmute(blog: string, onError: TransactionErrorCallback = undefined) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .unmuteBlog(this.signerOptions.username, blog)
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    }, onError);
   }
 
-  async resetBlogList(
-    onError: TransactionErrorCallback = undefined
-  ) {
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder.push(
-          new FollowOperationBuilder()
-            .resetBlogList(EFollowBlogAction.MUTE_BLOG, this.signerOptions.username, 'all')
-            .authorize(this.signerOptions.username)
-            .build()
-        );
-      },
-      onError
-    );
+  async resetBlogList(onError: TransactionErrorCallback = undefined) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .resetBlogList(EFollowBlogAction.MUTE_BLOG, this.signerOptions.username, 'all')
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    }, onError);
   }
 
-  async blacklistBlog(otherBlogs: string, blog = '',
-    onError: TransactionErrorCallback = undefined
-  ) {
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder.push(
-          new FollowOperationBuilder()
-            .blacklistBlog(this.signerOptions.username, blog, ...otherBlogs.split(', '))
-            .authorize(this.signerOptions.username)
-            .build()
-        );
-      },
-      onError
-    );
+  async blacklistBlog(otherBlogs: string, blog = '', onError: TransactionErrorCallback = undefined) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .blacklistBlog(this.signerOptions.username, blog, ...otherBlogs.split(', '))
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    }, onError);
   }
 
-  async unblacklistBlog(blog: string,
-    onError: TransactionErrorCallback = undefined
-  ) {
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder.push(
-          new FollowOperationBuilder()
-            .unblacklistBlog(this.signerOptions.username, blog)
-            .authorize(this.signerOptions.username)
-            .build()
-        );
-      },
-      onError
-    );
+  async unblacklistBlog(blog: string, onError: TransactionErrorCallback = undefined) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .unblacklistBlog(this.signerOptions.username, blog)
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    }, onError);
   }
 
-  async followBlacklistBlog(otherBlogs: string, blog = '',
-    onError: TransactionErrorCallback = undefined
-  ) {
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder.push(
-          new FollowOperationBuilder()
-            .followBlacklistBlog(this.signerOptions.username, blog, ...otherBlogs.split(', '))
-            .authorize(this.signerOptions.username)
-            .build()
-        );
-      },
-      onError
-    );
+  async followBlacklistBlog(otherBlogs: string, blog = '', onError: TransactionErrorCallback = undefined) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .followBlacklistBlog(this.signerOptions.username, blog, ...otherBlogs.split(', '))
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    }, onError);
   }
 
-  async unfollowBlacklistBlog(blog: string,
-    onError: TransactionErrorCallback = undefined
-  ) {
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder.push(
-          new FollowOperationBuilder()
-            .unfollowBlacklistBlog(this.signerOptions.username, blog)
-            .authorize(this.signerOptions.username)
-            .build()
-        );
-      },
-      onError
-    );
+  async unfollowBlacklistBlog(blog: string, onError: TransactionErrorCallback = undefined) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .unfollowBlacklistBlog(this.signerOptions.username, blog)
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    }, onError);
   }
 
-  async followMutedBlog(otherBlogs: string, blog = '',
-    onError: TransactionErrorCallback = undefined
-  ) {
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder.push(
-          new FollowOperationBuilder()
-            .followMutedBlog(this.signerOptions.username, blog, ...otherBlogs.split(', '))
-            .authorize(this.signerOptions.username)
-            .build()
-        );
-      },
-      onError
-    );
+  async followMutedBlog(otherBlogs: string, blog = '', onError: TransactionErrorCallback = undefined) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .followMutedBlog(this.signerOptions.username, blog, ...otherBlogs.split(', '))
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    }, onError);
   }
 
-  async resetAllBlog(
-    onError: TransactionErrorCallback = undefined
-  ) {
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder.push(
-          new FollowOperationBuilder()
-            .resetAllBlog(this.signerOptions.username, 'all')
-            .authorize(this.signerOptions.username)
-            .build()
-        );
-      },
-      onError
-    );
+  async resetAllBlog(onError: TransactionErrorCallback = undefined) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .resetAllBlog(this.signerOptions.username, 'all')
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    }, onError);
   }
 
-  async resetBlacklistBlog(
-    onError: TransactionErrorCallback = undefined
-  ) {
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder.push(
-          new FollowOperationBuilder()
-            .resetBlacklistBlog(this.signerOptions.username, 'all')
-            .authorize(this.signerOptions.username)
-            .build()
-        );
-      },
-      onError
-    );
+  async resetBlacklistBlog(onError: TransactionErrorCallback = undefined) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .resetBlacklistBlog(this.signerOptions.username, 'all')
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    }, onError);
   }
 
-  async resetFollowBlacklistBlog(
-    onError: TransactionErrorCallback = undefined
-  ) {
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder.push(
-          new FollowOperationBuilder()
-            .resetFollowBlacklistBlog(this.signerOptions.username, 'all')
-            .authorize(this.signerOptions.username)
-            .build()
-        );
-      },
-      onError
-    );
+  async resetFollowBlacklistBlog(onError: TransactionErrorCallback = undefined) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .resetFollowBlacklistBlog(this.signerOptions.username, 'all')
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    }, onError);
   }
 
-  async resetFollowMutedBlog(
-    onError: TransactionErrorCallback = undefined
-  ) {
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder.push(
-          new FollowOperationBuilder()
-            .resetFollowMutedBlog(this.signerOptions.username, 'all')
-            .authorize(this.signerOptions.username)
-            .build()
-        );
-      },
-      onError
-    );
+  async resetFollowMutedBlog(onError: TransactionErrorCallback = undefined) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .resetFollowMutedBlog(this.signerOptions.username, 'all')
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    }, onError);
   }
 
-  async unfollowMutedBlog(blog: string,
-    onError: TransactionErrorCallback = undefined
-  ) {
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder.push(
-          new FollowOperationBuilder()
-            .unfollowMutedBlog(this.signerOptions.username, blog)
-            .authorize(this.signerOptions.username)
-            .build()
-        );
-      },
-      onError
-    );
+  async unfollowMutedBlog(blog: string, onError: TransactionErrorCallback = undefined) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new FollowOperationBuilder()
+          .unfollowMutedBlog(this.signerOptions.username, blog)
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    }, onError);
   }
 
   async comment(
@@ -426,31 +326,28 @@ export class TransactionService {
     onError: TransactionErrorCallback = undefined
   ) {
     const chain = await hiveChainService.getHiveChain();
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder
-          .useBuilder(
-            ReplyBuilder,
-            (replyBuilder) => {
-              if (preferences.comment_rewards === '100%') {
-                replyBuilder.setPercentHbd(0);
-              }
-              if (preferences.comment_rewards === '50%' || preferences.comment_rewards === '0%') {
-                replyBuilder.setPercentHbd(10000);
-              }
-              if (preferences.comment_rewards === '0%') {
-                replyBuilder.setMaxAcceptedPayout(chain.hbd(0));
-              }
-            },
-            parentAuthor,
-            parentPermlink,
-            this.signerOptions.username,
-            body
-          )
-          .build();
-      },
-      onError
-    );
+    await this.processHiveAppOperation((builder) => {
+      builder
+        .useBuilder(
+          ReplyBuilder,
+          (replyBuilder) => {
+            if (preferences.comment_rewards === '100%') {
+              replyBuilder.setPercentHbd(0);
+            }
+            if (preferences.comment_rewards === '50%' || preferences.comment_rewards === '0%') {
+              replyBuilder.setPercentHbd(10000);
+            }
+            if (preferences.comment_rewards === '0%') {
+              replyBuilder.setMaxAcceptedPayout(chain.hbd(0));
+            }
+          },
+          parentAuthor,
+          parentPermlink,
+          this.signerOptions.username,
+          body
+        )
+        .build();
+    }, onError);
   }
 
   async updateComment(
@@ -462,33 +359,30 @@ export class TransactionService {
     onError: TransactionErrorCallback = undefined
   ) {
     const chain = await hiveChainService.getHiveChain();
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder
-          .useBuilder(
-            ReplyBuilder,
-            (replyBuilder) => {
-              if (preferences.comment_rewards === '100%') {
-                replyBuilder.setPercentHbd(0);
-              }
-              if (preferences.comment_rewards === '50%' || preferences.comment_rewards === '0%') {
-                replyBuilder.setPercentHbd(10000);
-              }
-              if (preferences.comment_rewards === '0%') {
-                replyBuilder.setMaxAcceptedPayout(chain.hbd(0));
-              }
-            },
-            parentAuthor,
-            parentPermlink,
-            this.signerOptions.username,
-            body,
-            {},
-            permlink
-          )
-          .build();
-      },
-      onError
-    );
+    await this.processHiveAppOperation((builder) => {
+      builder
+        .useBuilder(
+          ReplyBuilder,
+          (replyBuilder) => {
+            if (preferences.comment_rewards === '100%') {
+              replyBuilder.setPercentHbd(0);
+            }
+            if (preferences.comment_rewards === '50%' || preferences.comment_rewards === '0%') {
+              replyBuilder.setPercentHbd(10000);
+            }
+            if (preferences.comment_rewards === '0%') {
+              replyBuilder.setMaxAcceptedPayout(chain.hbd(0));
+            }
+          },
+          parentAuthor,
+          parentPermlink,
+          this.signerOptions.username,
+          body,
+          {},
+          permlink
+        )
+        .build();
+    }, onError);
   }
 
   async post(
@@ -500,48 +394,47 @@ export class TransactionService {
     tags: string[],
     category: string,
     summary: string,
+    altAuthor: string,
     payoutType: string,
     image?: string,
     onError: TransactionErrorCallback = undefined
   ) {
     const chain = await hiveChainService.getHiveChain();
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder
-          .useBuilder(
-            ArticleBuilder,
-            (articleBuilder) => {
-              articleBuilder
-                .setCategory(category !== 'blog' ? category : tags[0])
-                .setMaxAcceptedPayout(maxAcceptedPayout)
-                .pushTags(...tags)
-                .pushMetadataProperty({ summary: summary })
-                .pushImages(image ? image : '');
+    await this.processHiveAppOperation((builder) => {
+      builder
+        .useBuilder(
+          ArticleBuilder,
+          (articleBuilder) => {
+            articleBuilder
+              .setCategory(category !== 'blog' ? category : tags[0])
+              .setMaxAcceptedPayout(maxAcceptedPayout)
+              .pushTags(...tags)
+              .pushMetadataProperty({ summary: summary })
+              .setAlternativeAuthor(altAuthor)
+              .pushImages(image ? image : '');
 
-              if (payoutType === '100%') {
-                articleBuilder.setPercentHbd(0);
-              }
-              if (payoutType === '50%' || payoutType === '0%') {
-                articleBuilder.setPercentHbd(10000);
-              }
-              if (payoutType === '0%') {
-                articleBuilder.setMaxAcceptedPayout(chain.hbd(0));
-              }
+            if (payoutType === '100%') {
+              articleBuilder.setPercentHbd(0);
+            }
+            if (payoutType === '50%' || payoutType === '0%') {
+              articleBuilder.setPercentHbd(10000);
+            }
+            if (payoutType === '0%') {
+              articleBuilder.setMaxAcceptedPayout(chain.hbd(0));
+            }
 
-              beneficiaries.forEach((beneficiarie) => {
-                articleBuilder.addBeneficiary(beneficiarie.account, Number(beneficiarie.weight));
-              });
-            },
-            this.signerOptions.username,
-            title,
-            body,
-            {},
-            permlink
-          )
-          .build();
-      },
-      onError
-    );
+            beneficiaries.forEach((beneficiarie) => {
+              articleBuilder.addBeneficiary(beneficiarie.account, Number(beneficiarie.weight));
+            });
+          },
+          this.signerOptions.username,
+          title,
+          body,
+          {},
+          permlink
+        )
+        .build();
+    }, onError);
   }
 
   async updateProfile(
@@ -558,51 +451,43 @@ export class TransactionService {
     version: number = 2, // signal upgrade to posting_json_metadata
     onError: TransactionErrorCallback = undefined
   ) {
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder
-          .push({
-            account_update2: {
-              account: this.signerOptions.username,
-              extensions: [],
-              json_metadata: '',
-              posting_json_metadata: JSON.stringify({
-                profile: {
-                  profile_image,
-                  cover_image,
-                  name,
-                  about,
-                  location,
-                  website,
-                  witness_owner,
-                  witness_description,
-                  blacklist_description,
-                  muted_list_description,
-                  version
-                }
-              })
-            }
-          })
-          .build();
-      },
-      onError
-    );
+    await this.processHiveAppOperation((builder) => {
+      builder
+        .push({
+          account_update2: {
+            account: this.signerOptions.username,
+            extensions: [],
+            json_metadata: '',
+            posting_json_metadata: JSON.stringify({
+              profile: {
+                profile_image,
+                cover_image,
+                name,
+                about,
+                location,
+                website,
+                witness_owner,
+                witness_description,
+                blacklist_description,
+                muted_list_description,
+                version
+              }
+            })
+          }
+        })
+        .build();
+    }, onError);
   }
 
-  async deleteComment(permlink: string,
-    onError: TransactionErrorCallback = undefined
-  ) {
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder.push({
-          delete_comment: {
-            author: this.signerOptions.username,
-            permlink: permlink
-          }
-        });
-      },
-      onError
-    );
+  async deleteComment(permlink: string, onError: TransactionErrorCallback = undefined) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push({
+        delete_comment: {
+          author: this.signerOptions.username,
+          permlink: permlink
+        }
+      });
+    }, onError);
   }
 
   async updateProposalVotes(
@@ -611,61 +496,46 @@ export class TransactionService {
     extensions: future_extensions[],
     onError: TransactionErrorCallback = undefined
   ) {
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder
-          .push({
-            update_proposal_votes: {
-              voter: this.signerOptions.username,
-              proposal_ids,
-              approve,
-              extensions
-            }
-          })
-          .build();
-      },
-      onError
-    );
-  }
-
-  async markAllNotificationAsRead(
-    date: string,
-    onError: TransactionErrorCallback = undefined
-  ) {
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder
-          .push({
-            custom_json: {
-              id: 'notify',
-              json: JSON.stringify(['setLastRead', { date: date }]),
-              required_auths: [],
-              required_posting_auths: [this.signerOptions.username]
-            }
-          })
-          .build();
-      },
-      onError
-    );
-  }
-
-  async claimRewards(
-    account: ApiAccount,
-    onError: TransactionErrorCallback = undefined
-  ) {
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder.push({
-          claim_reward_balance: {
-            account: this.signerOptions.username,
-            reward_hive: account.reward_hive_balance,
-            reward_hbd: account.reward_hbd_balance,
-            reward_vests: account.reward_vesting_balance
+    await this.processHiveAppOperation((builder) => {
+      builder
+        .push({
+          update_proposal_votes: {
+            voter: this.signerOptions.username,
+            proposal_ids,
+            approve,
+            extensions
           }
-        });
-      },
-      onError
-    );
+        })
+        .build();
+    }, onError);
+  }
+
+  async markAllNotificationAsRead(date: string, onError: TransactionErrorCallback = undefined) {
+    await this.processHiveAppOperation((builder) => {
+      builder
+        .push({
+          custom_json: {
+            id: 'notify',
+            json: JSON.stringify(['setLastRead', { date: date }]),
+            required_auths: [],
+            required_posting_auths: [this.signerOptions.username]
+          }
+        })
+        .build();
+    }, onError);
+  }
+
+  async claimRewards(account: ApiAccount, onError: TransactionErrorCallback = undefined) {
+    await this.processHiveAppOperation((builder) => {
+      builder.push({
+        claim_reward_balance: {
+          account: this.signerOptions.username,
+          reward_hive: account.reward_hive_balance,
+          reward_hbd: account.reward_hbd_balance,
+          reward_vests: account.reward_vesting_balance
+        }
+      });
+    }, onError);
   }
 
   handleError(e: any, toastOptions: Toast = {}) {

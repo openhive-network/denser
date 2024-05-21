@@ -6,10 +6,6 @@ import type { Entry } from '@transaction/lib/bridge';
 import clsx from 'clsx';
 
 function find_first_img(post: Entry) {
-  const regex_any_img = /!\[.*?\]\((.*?)\)/;
-  const regex_for_peakd = /https:\/\/files\.peakd\.com\/[^\s]+\.jpg/;
-  const regexgif = /<img\s+src="([^"]+)"/;
-
   if (
     post.json_metadata.links &&
     post.json_metadata.links[0] &&
@@ -34,6 +30,7 @@ function find_first_img(post: Entry) {
   if (post.json_metadata.image && post.json_metadata.image[0]) {
     return proxifyImageUrl(post.json_metadata.image[0], true);
   }
+  const regex_any_img = /!\[.*?\]\((.*?)\)/;
   const match = post.body.match(regex_any_img);
   if (match && match[1]) {
     return proxifyImageUrl(match[1], true);
@@ -55,10 +52,12 @@ function find_first_img(post: Entry) {
   if (pictures_extracted[0]) {
     return proxifyImageUrl(pictures_extracted[0], true);
   }
+  const regex_for_peakd = /https:\/\/files\.peakd\.com\/[^\s]+\.jpg/;
   const peakd_img = post.body.match(regex_for_peakd);
   if (peakd_img !== null) {
     return proxifyImageUrl(peakd_img[0], true);
   }
+  const regexgif = /<img\s+src="([^"]+)"/;
   const matchgif = post.body.match(regexgif);
   if (matchgif && matchgif[1]) {
     return proxifyImageUrl(matchgif[1], true);
