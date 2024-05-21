@@ -413,10 +413,7 @@ export class TransactionService {
               .setAlternativeAuthor(altAuthor)
               .pushImages(image ? image : '');
 
-            if (payoutType === '100%') {
-              articleBuilder.setPercentHbd(0);
-            }
-            if (payoutType === '50%' || payoutType === '0%') {
+            if (payoutType === '100%' || payoutType === '50%') {
               articleBuilder.setPercentHbd(10000);
             }
             if (payoutType === '0%') {
