@@ -390,6 +390,13 @@
         "update_settings": "更新设置",
         "full_in": "完全充满: "
       }
+    },
+    "flag": {
+      "flag_post": "举报帖子",
+      "flag_description": "请说明您举报此帖子的原因，社区版主将进行审核。",
+      "community_rules": "社区规则",
+      "cancel": "取消",
+      "ok": "确定"
     }
   },
   "submit_page": {

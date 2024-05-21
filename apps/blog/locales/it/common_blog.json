@@ -390,6 +390,13 @@
         "update_settings": "Aggiorna impostazioni",
         "full_in": "Completo in: "
       }
+    },
+    "flag": {
+      "flag_post": "Segnala post",
+      "flag_description": "Si prega di fornire una nota riguardo alla tua decisione di segnalare questo post, sarà esaminato dai moderatori della comunità.",
+      "community_rules": "Regole della comunità",
+      "cancel": "Annulla",
+      "ok": "OK"
     }
   },
   "submit_page": {
