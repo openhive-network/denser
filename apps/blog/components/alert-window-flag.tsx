@@ -13,6 +13,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Input, Separator } from '@ui/components';
 import { ReactNode, useState } from 'react';
 import { transactionService } from '@transaction/index';
+import ln2list from '../lib/ln2list';
 
 export function AlertDialogFlag({
   children,
@@ -29,7 +30,6 @@ export function AlertDialogFlag({
 }) {
   const { user } = useUser();
   const [notes, setNotes] = useState('');
-
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
@@ -41,17 +41,19 @@ export function AlertDialogFlag({
               X
             </AlertDialogCancel>
           </div>
-          <AlertDialogDescription data-testid="flag-dialog-description">
+          <AlertDialogDescription className="flex flex-col gap-2" data-testid="flag-dialog-description">
             <div>
               Please provide a note regarding your decision to flag this post, it will be reviewed by
               community moderators.
             </div>
-            {
-              <>
-                <Separator />
-                <div>{flagText}</div>
-              </>
-            }
+
+            <Separator />
+            <h1 className="text-lg font-bold">Community Rules</h1>
+            {ln2list(flagText).map((x, i) => (
+              <p key={i + 1}>{`${i + 1}. ${x}`}</p>
+            ))}
+            <Separator />
+
             <Input className="mt-2" value={notes} onChange={(e) => setNotes(e.target.value)} />
           </AlertDialogDescription>
         </AlertDialogHeader>
