@@ -364,7 +364,7 @@ export class TransactionService {
     parentPermlink: string,
     permlink: string,
     body: string,
-    preferences: Preferences,
+    comment_rewards: '0%' | '50%' | '100%',
     onError: TransactionErrorCallback = undefined
   ) {
     const chain = await hiveChainService.getHiveChain();
@@ -373,13 +373,13 @@ export class TransactionService {
         .useBuilder(
           ReplyBuilder,
           (replyBuilder) => {
-            if (preferences.comment_rewards === '100%') {
+            if (comment_rewards === '100%') {
               replyBuilder.setPercentHbd(0);
             }
-            if (preferences.comment_rewards === '50%' || preferences.comment_rewards === '0%') {
+            if (comment_rewards === '50%' || comment_rewards === '0%') {
               replyBuilder.setPercentHbd(10000);
             }
-            if (preferences.comment_rewards === '0%') {
+            if (comment_rewards === '0%') {
               replyBuilder.setMaxAcceptedPayout(chain.hbd(0));
             }
           },
