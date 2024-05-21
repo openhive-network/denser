@@ -411,6 +411,13 @@
         "update_settings": "Update settings",
         "full_in": "Full in: "
       }
+    },
+    "flag": {
+      "flag_post": "Flag post",
+      "flag_description": "Please provide a note regarding your decision to flag this post, it will be reviewed by community moderators.",
+      "community_rules": "Community rules",
+      "cancel": "Cancel",
+      "ok": "OK"
     }
   },
   "submit_page": {

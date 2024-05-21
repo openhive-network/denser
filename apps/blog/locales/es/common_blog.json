@@ -390,6 +390,13 @@
         "account_stats": "Estadísticas de la cuenta:",
         "full_in": "Completo en: "
       }
+    },
+    "flag": {
+      "flag_post": "Marcar publicación",
+      "flag_description": "Por favor, proporcione una nota sobre su decisión de marcar esta publicación, será revisada por los moderadores de la comunidad.",
+      "community_rules": "Reglas de la comunidad",
+      "cancel": "Cancelar",
+      "ok": "Aceptar"
     }
   },
   "submit_page": {
