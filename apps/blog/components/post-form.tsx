@@ -212,7 +212,7 @@ export default function PostForm({
 
   useEffect(() => {
     debounce(() => {
-      storePost(form.getValues());
+      storePost(storedPost ? storedPost : form.getValues());
     }, 50)();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, postArea, ...Object.values(restFields)]);
