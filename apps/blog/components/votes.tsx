@@ -11,6 +11,7 @@ import { PromiseTools } from '@transaction/lib/promise-tools'
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { CircleSpinner } from 'react-spinners-kit';
 import { getListVotesByCommentVoter } from '@transaction/lib/hive';
+import env from '@beam-australia/react-env';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -111,6 +112,16 @@ const vote = async (
   weight: number,
   t: any // translate function
 ) => {
+
+  // Use in manual testing in development only!
+  if (env('DEVELOPMENT') === 'true') {
+    if (weight > 0) {
+      weight = 1;
+    } else if (weight < 0) {
+      weight = -1;
+    }
+  }
+
   try {
     await service.upVote(author, permlink, weight, (error) => { throw error; });
     logger.info('Voted: %o',

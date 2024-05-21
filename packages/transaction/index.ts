@@ -40,6 +40,9 @@ export class TransactionService {
     'Account does not have enough mana to downvote'
   ];
 
+  // The number of transactions observed actually.
+  observedTransactionsCounter = 0;
+
   setSignerOptions(signerOptions: SignerOptions) {
     this.signerOptions = signerOptions;
   }
@@ -70,7 +73,7 @@ export class TransactionService {
 
     const signature = await signer.signTransaction({
       digest: txBuilder.sigDigest,
-      transaction: txBuilder.build() // built transaction
+      transaction: txBuilder.build()
     });
 
     txBuilder.build(signature);
@@ -85,7 +88,7 @@ export class TransactionService {
 
   async processTransactionAndObserve(txBuilder: ITransactionBuilder): Promise<void> {
     try {
-      await bot.start();
+      if (this.observedTransactionsCounter++ === 0) await bot.start();
 
       // validate
       txBuilder.validate();
@@ -96,19 +99,19 @@ export class TransactionService {
 
       const signature = await signer.signTransaction({
         digest: txBuilder.sigDigest,
-        transaction: txBuilder.build() // built transaction
+        transaction: txBuilder.build()
       });
 
       const tx = txBuilder.build(signature);
       logger.info('tx: %o', txBuilder.toApi());
 
+      const startedAt = Date.now();
       const observer = await bot.broadcast(tx, { throwAfter: 60 * 1000 });
 
       await new Promise((resolve, reject) => {
-        // This is synchronous call!
         observer.subscribe({
           next: ({ block: { number: appliedBlockNumber } }) => {
-            logger.info(`Applied on block #${appliedBlockNumber}`);
+            logger.info(`Applied on block #${appliedBlockNumber}, found after ${Date.now() - startedAt}ms`);
             resolve(appliedBlockNumber);
           },
           error(error) {
@@ -125,7 +128,7 @@ export class TransactionService {
       logger.error("Error: %o", error);
       throw error;
     } finally {
-      await bot.stop();
+      if (--this.observedTransactionsCounter === 0) await bot.stop();
     }
 
 
