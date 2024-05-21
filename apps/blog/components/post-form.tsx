@@ -33,7 +33,6 @@ import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 import { getLogger } from '@ui/lib/logging';
-import { cn } from '@ui/lib/utils';
 import SelectImageList from './select-image-list';
 
 const logger = getLogger('app');
@@ -176,18 +175,18 @@ export default function PostForm({
 
   type AccountFormValues = z.infer<typeof accountFormSchema>;
   const getValues = (storedPost?: AccountFormValues) => ({
-    title: post_s ? post_s.title : storedPost?.title ?? '',
-    postArea: post_s ? post_s.body : storedPost?.postArea ?? '',
-    postSummary: post_s?.json_metadata.summary ? post_s.json_metadata.summary : storedPost?.postSummary ?? '',
-    tags: post_s?.json_metadata.tags ? post_s.json_metadata.tags.join(' ') : storedPost?.tags ?? '',
-    author: post_s ? post_s.author : storedPost?.author ?? '',
-    category: post_s ? post_s.category : storedPost?.category ?? '',
+    title: post_s?.title || storedPost?.title || '',
+    postArea: post_s?.body || storedPost?.postArea || '',
+    postSummary: post_s?.json_metadata?.summary || storedPost?.postSummary || '',
+    tags: post_s?.json_metadata?.tags?.join(' ') || storedPost?.tags || '',
+    author: post_s?.json_metadata?.author || storedPost?.author || '',
+    category: post_s?.category || storedPost?.category || '',
     // beneficiaries: post_s ? post_s.beneficiaries : storedPost?.beneficiaries ?? [],
-    beneficiaries: storedPost?.beneficiaries ?? [],
+    beneficiaries: storedPost?.beneficiaries || [],
     maxAcceptedPayout: post_s
       ? Number(post_s.max_accepted_payout.split(' ')[0])
-      : storedPost?.maxAcceptedPayout ?? 1000000,
-    payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType ?? preferences.blog_rewards
+      : storedPost?.maxAcceptedPayout || 1000000,
+    payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType || preferences.blog_rewards
   });
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
@@ -250,6 +249,7 @@ export default function PostForm({
         tags,
         communityPosting ? communityPosting : storedPost.category,
         storedPost.postSummary,
+        storedPost.author,
         storedPost.payoutType ?? preferences.blog_rewards,
         imagePicker(selectedImg)
       );
