@@ -14,6 +14,7 @@ import { Input, Separator } from '@ui/components';
 import { ReactNode, useState } from 'react';
 import { transactionService } from '@transaction/index';
 import ln2list from '../lib/ln2list';
+import { useTranslation } from 'next-i18next';
 
 export function AlertDialogFlag({
   children,
@@ -30,25 +31,25 @@ export function AlertDialogFlag({
 }) {
   const { user } = useUser();
   const [notes, setNotes] = useState('');
+  const { t } = useTranslation();
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
-      <AlertDialogContent className="flex flex-col gap-8 sm:rounded-r-xl ">
+      <AlertDialogContent className="flex flex-col gap-8 sm:rounded-r-xl">
         <AlertDialogHeader className="gap-2">
           <div className="flex items-center justify-between">
-            <AlertDialogTitle data-testid="flag-dialog-header">Flag post</AlertDialogTitle>
+            <AlertDialogTitle data-testid="flag-dialog-header">
+              {t('post_content.flag.flag_post')}
+            </AlertDialogTitle>
             <AlertDialogCancel className="border-none hover:text-red-800" data-testid="flag-dialog-close">
               X
             </AlertDialogCancel>
           </div>
           <AlertDialogDescription className="flex flex-col gap-2" data-testid="flag-dialog-description">
-            <div>
-              Please provide a note regarding your decision to flag this post, it will be reviewed by
-              community moderators.
-            </div>
+            <div>{t('post_content.flag.flag_description')}</div>
 
             <Separator />
-            <h1 className="text-lg font-bold">Community Rules</h1>
+            <h1 className="text-lg font-bold">{t('post_content.flag.community_rules')}</h1>
             {ln2list(flagText).map((x, i) => (
               <p key={i + 1}>{`${i + 1}. ${x}`}</p>
             ))}
@@ -59,7 +60,7 @@ export function AlertDialogFlag({
         </AlertDialogHeader>
         <AlertDialogFooter className="gap-2 sm:flex-row-reverse">
           <AlertDialogCancel className="hover:text-red-800" data-testid="flag-dialog-cancel">
-            Cancel
+            {t('post_content.flag.cancel')}
           </AlertDialogCancel>
           {user && user.isLoggedIn ? (
             <AlertDialogAction
@@ -69,7 +70,7 @@ export function AlertDialogFlag({
                 transactionService.flag(community, username, permlink, notes);
               }}
             >
-              OK
+              {t('post_content.flag.ok')}
             </AlertDialogAction>
           ) : null}
         </AlertDialogFooter>
