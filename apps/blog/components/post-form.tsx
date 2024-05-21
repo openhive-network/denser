@@ -174,20 +174,24 @@ export default function PostForm({
   });
 
   type AccountFormValues = z.infer<typeof accountFormSchema>;
-  const getValues = (storedPost?: AccountFormValues) => ({
-    title: post_s?.title || storedPost?.title || '',
-    postArea: post_s?.body || storedPost?.postArea || '',
-    postSummary: post_s?.json_metadata?.summary || storedPost?.postSummary || '',
-    tags: post_s?.json_metadata?.tags?.join(' ') || storedPost?.tags || '',
-    author: post_s?.json_metadata?.author || storedPost?.author || '',
-    category: post_s?.category || storedPost?.category || '',
-    // beneficiaries: post_s ? post_s.beneficiaries : storedPost?.beneficiaries ?? [],
-    beneficiaries: storedPost?.beneficiaries || [],
-    maxAcceptedPayout: post_s
-      ? Number(post_s.max_accepted_payout.split(' ')[0])
-      : storedPost?.maxAcceptedPayout || 1000000,
-    payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType || preferences.blog_rewards
-  });
+  const getValues = (storedPost?: AccountFormValues) => {
+    return {
+      title: post_s?.title || storedPost?.title || '',
+      postArea: post_s?.body || storedPost?.postArea || '',
+      postSummary: post_s?.json_metadata?.summary || storedPost?.postSummary || '',
+      tags: post_s?.json_metadata?.tags?.join(' ') || storedPost?.tags || '',
+      author: post_s?.json_metadata?.author || storedPost?.author || '',
+      category: post_s?.category || storedPost?.category || '',
+      // beneficiaries: post_s ? post_s.beneficiaries : storedPost?.beneficiaries ?? [],
+      beneficiaries: storedPost?.beneficiaries || [],
+      maxAcceptedPayout: post_s
+        ? Number(post_s.max_accepted_payout.split(' ')[0])
+        : storedPost?.maxAcceptedPayout === undefined
+          ? 1000000
+          : storedPost.maxAcceptedPayout,
+      payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType || preferences.blog_rewards
+    };
+  };
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
     values: getValues(storedPost)
@@ -216,10 +220,6 @@ export default function PostForm({
     }, 50)();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, postArea, ...Object.values(restFields)]);
-
-  useEffect(() => {
-    storePost((storePost) => storePost);
-  }, [storePost]);
 
   useEffect(() => {
     setDoNotShowImages(false);
