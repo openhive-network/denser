@@ -87,8 +87,8 @@ export function AdvancedSettingsPostForm({
   useEffect(() => {
     setRewards(rewards);
     setMaxPayout(maxPayout);
-    setBeneficiaries(data.beneficiaries);
-    setCustomValue(data.maxAcceptedPayout !== 1000000 ? data.maxAcceptedPayout : '100');
+    setBeneficiaries(beneficiaries);
+    setCustomValue(customValue);
   }, [open]);
 
   useEffect(() => {
