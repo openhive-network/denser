@@ -16,21 +16,12 @@ import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
 import { Beneficiarie, Preferences } from './lib/app-types';
-import WorkerBee from "@hiveio/workerbee";
-import { PromiseTools } from './lib/promise-tools'
+import WorkerBee, { IWorkerBee } from "@hiveio/workerbee";
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
 export type TransactionErrorCallback = undefined | ((error: any) => any)
-
-const bot = new WorkerBee({
-  chainOptions: {
-    chainId: '42',
-    apiEndpoint: 'https://hive-5.pl.syncad.com',
-  }
-});
-bot.on("error", logger.error);
 
 export class TransactionService {
   errorDescription = 'Transaction broadcast error';
@@ -42,6 +33,9 @@ export class TransactionService {
 
   // The number of transactions observed actually.
   observedTransactionsCounter = 0;
+
+  // WorkerBee instance for "scanning" Hive chain blocks.
+  bot!: IWorkerBee | undefined;
 
   setSignerOptions(signerOptions: SignerOptions) {
     this.signerOptions = signerOptions;
@@ -88,47 +82,66 @@ export class TransactionService {
 
   async processTransactionAndObserve(txBuilder: ITransactionBuilder): Promise<void> {
     try {
-      if (this.observedTransactionsCounter++ === 0) await bot.start();
+      const signer = getSigner(this.signerOptions);
+
+      if (!this.bot) {
+        logger.info('Creating bot');
+        this.bot = new WorkerBee({
+          chainOptions: {
+            chainId: signer.chainId,
+            apiEndpoint: signer.apiEndpoint,
+          }
+        });
+        this.bot.on("error", logger.error);
+      }
+      if (this.observedTransactionsCounter++ === 0) {
+        logger.info('Starting bot');
+        await this.bot.start();
+      }
 
       // validate
       txBuilder.validate();
 
       // Sign using smart-signer
       // pass to smart-signer txBuilder.sigDigest
-      const signer = getSigner(this.signerOptions);
-
       const signature = await signer.signTransaction({
         digest: txBuilder.sigDigest,
         transaction: txBuilder.build()
       });
 
       const tx = txBuilder.build(signature);
-      logger.info('tx: %o', txBuilder.toApi());
 
+      logger.info('Broadcasting transaction %o', txBuilder.toApi());
       const startedAt = Date.now();
-      const observer = await bot.broadcast(tx, { throwAfter: 60 * 1000 });
+      const observer = await this.bot.broadcast(tx, { throwAfter: 60 * 1000 });
 
       await new Promise((resolve, reject) => {
         observer.subscribe({
           next: ({ block: { number: appliedBlockNumber } }) => {
-            logger.info(`Applied on block #${appliedBlockNumber}, found after ${Date.now() - startedAt}ms`);
+            logger.info('Transaction %o applied on block #%s, found after %sms',
+                txBuilder.toApi(), appliedBlockNumber, Date.now() - startedAt);
             resolve(appliedBlockNumber);
           },
           error(error) {
-            logger.error("Transaction observation time expired: %o", error);
+            logger.error("Transaction %o observation time expired: %o",
+                txBuilder.toApi(), error);
             reject(error);
           }
         });
       });
 
-      // Additional wait time
-      // await PromiseTools.promiseTimeout(2 * 1000);
-
     } catch (error) {
       logger.error("Error: %o", error);
       throw error;
     } finally {
-      if (--this.observedTransactionsCounter === 0) await bot.stop();
+      if (--this.observedTransactionsCounter === 0) {
+        if (this.bot) {
+          logger.info('Stopping bot');
+          await this.bot.stop();
+        }
+        logger.info('Destroying bot');
+        this.bot = undefined;
+      }
     }
 
 
