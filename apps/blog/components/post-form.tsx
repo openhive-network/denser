@@ -212,10 +212,14 @@ export default function PostForm({
 
   useEffect(() => {
     debounce(() => {
-      storePost(storedPost ? storedPost : form.getValues());
+      storePost(form.getValues());
     }, 50)();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, postArea, ...Object.values(restFields)]);
+
+  useEffect(() => {
+    storePost((storePost) => storePost);
+  }, [storePost]);
 
   useEffect(() => {
     setDoNotShowImages(false);
