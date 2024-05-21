@@ -410,10 +410,7 @@ export class TransactionService {
               .setMaxAcceptedPayout(maxAcceptedPayout)
               .pushTags(...tags)
               .pushMetadataProperty({ summary: summary })
-<<<<<<< HEAD
-=======
               .setAlternativeAuthor(altAuthor)
->>>>>>> main
               .pushImages(image ? image : '');
 
             if (payoutType === '100%') {
