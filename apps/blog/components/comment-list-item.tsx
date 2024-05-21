@@ -221,7 +221,7 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor
                           permlink={comment.permlink}
                           parentPermlink={comment.parent_permlink}
                           storageId={storageId}
-                          comment={comment.body}
+                          comment={comment}
                         />
                       ) : (
                         <CardDescription
@@ -341,6 +341,7 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor
           username={username}
           permlink={comment.permlink}
           storageId={storageId}
+          comment={comment}
         />
       ) : null}
     </>
