@@ -487,6 +487,7 @@ function PostPage({
             username={post.author}
             permlink={permlink}
             storageId={storageId}
+            comment={post}
           />
         ) : null}
       </div>

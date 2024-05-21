@@ -14,6 +14,7 @@ import { getLogger } from '@ui/lib/logging';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import useManabars from './hooks/useManabars';
 import { hoursAndMinutes } from '../lib/utils';
+import { Entry } from '@transaction/lib/bridge';
 const logger = getLogger('app');
 
 export function ReplyTextbox({
@@ -31,7 +32,7 @@ export function ReplyTextbox({
   parentPermlink?: string;
   storageId: string;
   editMode: boolean;
-  comment?: string;
+  comment: Entry;
 }) {
   const [storedPost, storePost, removePost] = useLocalStorage<string>(`replyTo-/${username}/${permlink}`, '');
   const { user } = useUser();
@@ -41,11 +42,10 @@ export function ReplyTextbox({
     DEFAULT_PREFERENCES
   );
   const { t } = useTranslation('common_blog');
-  const [text, setText] = useState(comment ? comment : storedPost ? storedPost : '');
+  const [text, setText] = useState(comment ? comment.body : storedPost ? storedPost : '');
   const [cleanedText, setCleanedText] = useState('');
   const { hiveRenderer } = useContext(HiveRendererContext);
   const btnRef = useRef<HTMLButtonElement>(null);
-
   useEffect(() => {
     if (hiveRenderer) {
       const nextCleanedText = text ? hiveRenderer.render(text) : '';
@@ -72,7 +72,9 @@ export function ReplyTextbox({
         btnRef.current.disabled = true;
       }
       if (parentPermlink) {
-        transactionService.updateComment(username, parentPermlink, permlink, cleanedText, preferences);
+        const payout =
+          comment.max_accepted_payout === '0.000 HBD' ? '0%' : comment.percent_hbd === 0 ? '100%' : '50%';
+        transactionService.updateComment(username, parentPermlink, permlink, cleanedText, payout);
       } else {
         transactionService.comment(username, permlink, cleanedText, preferences);
       }
@@ -131,7 +133,10 @@ export function ReplyTextbox({
           <span className="text-xs">
             {t('post_content.footer.comment.resource_credits', { value: manabarsData?.rc.percentageValue })}{' '}
             {manabarsData?.rc.percentageValue !== 100 && manabarsData?.rc.cooldown ? (
-              <span>Full in: {hoursAndMinutes(manabarsData.rc.cooldown, t)}</span>
+              <span>
+                {t('post_content.footer.comment.full_in')}
+                {hoursAndMinutes(manabarsData.rc.cooldown, t)}
+              </span>
             ) : null}
           </span>
         </div>
@@ -153,17 +158,19 @@ export function ReplyTextbox({
         <div className="flex justify-between text-xs">
           <span className="text-slate-500">{t('post_content.footer.comment.preview')}</span>
           <div className="flex flex-col gap-1 text-end">
-            <div>
-              {t('post_content.footer.comment.rewards')}
-              {preferences.comment_rewards === '0%'
-                ? t('post_content.footer.comment.decline_payout')
-                : preferences.comment_rewards === '100%'
-                  ? t('post_content.footer.comment.power_up')
-                  : '50% HBD/50% HP'}{' '}
-              <Link className="text-red-500" href={`/@${user.username}/settings`}>
-                {t('post_content.footer.comment.update_settings')}
-              </Link>
-            </div>
+            {editMode ? null : (
+              <div>
+                {t('post_content.footer.comment.rewards')}
+                {preferences.comment_rewards === '0%'
+                  ? t('post_content.footer.comment.decline_payout')
+                  : preferences.comment_rewards === '100%'
+                    ? t('post_content.footer.comment.power_up')
+                    : '50% HBD/50% HP'}{' '}
+                <Link className="text-red-500" href={`/@${user.username}/settings`}>
+                  {t('post_content.footer.comment.update_settings')}
+                </Link>
+              </div>
+            )}
             <Link href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax">
               <span className="text-red-500">{t('post_content.footer.comment.markdown_styling_guide')}</span>
             </Link>
