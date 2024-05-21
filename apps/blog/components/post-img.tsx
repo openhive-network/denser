@@ -6,14 +6,10 @@ import type { Entry } from '@transaction/lib/bridge';
 import clsx from 'clsx';
 
 function find_first_img(post: Entry) {
-  const pictures_extracted = extractPictureFromPostBody(extractUrlsFromJsonString(post.body));
-  const youtube_id = extractYouTubeVideoIds(extractUrlsFromJsonString(post.body));
+  const regex_any_img = /!\[.*?\]\((.*?)\)/;
   const regex_for_peakd = /https:\/\/files\.peakd\.com\/[^\s]+\.jpg/;
-  const peakd_img = post.body.match(regex_for_peakd);
-  const regex = /!\[.*?\]\((.*?)\)/;
-  const match = post.body.match(regex);
   const regexgif = /<img\s+src="([^"]+)"/;
-  const matchgif = post.body.match(regexgif);
+
   if (
     post.json_metadata.links &&
     post.json_metadata.links[0] &&
@@ -38,6 +34,7 @@ function find_first_img(post: Entry) {
   if (post.json_metadata.image && post.json_metadata.image[0]) {
     return proxifyImageUrl(post.json_metadata.image[0], true);
   }
+  const match = post.body.match(regex_any_img);
   if (match && match[1]) {
     return proxifyImageUrl(match[1], true);
   }
@@ -50,15 +47,19 @@ function find_first_img(post: Entry) {
   if (post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw')) {
     return proxifyImageUrl(`https://images.hive.blog/u/${post.author}/avatar/`, true);
   }
+  const youtube_id = extractYouTubeVideoIds(extractUrlsFromJsonString(post.body));
   if (youtube_id[0]) {
     return proxifyImageUrl(`https://img.youtube.com/vi/${youtube_id[0]}/0.jpg`, true);
   }
+  const pictures_extracted = extractPictureFromPostBody(extractUrlsFromJsonString(post.body));
   if (pictures_extracted[0]) {
     return proxifyImageUrl(pictures_extracted[0], true);
   }
+  const peakd_img = post.body.match(regex_for_peakd);
   if (peakd_img !== null) {
     return proxifyImageUrl(peakd_img[0], true);
   }
+  const matchgif = post.body.match(regexgif);
   if (matchgif && matchgif[1]) {
     return proxifyImageUrl(matchgif[1], true);
   }
