@@ -394,6 +394,7 @@ export class TransactionService {
     tags: string[],
     category: string,
     summary: string,
+    altAuthor: string,
     payoutType: string,
     image?: string,
     onError: TransactionErrorCallback = undefined
@@ -409,6 +410,10 @@ export class TransactionService {
               .setMaxAcceptedPayout(maxAcceptedPayout)
               .pushTags(...tags)
               .pushMetadataProperty({ summary: summary })
+<<<<<<< HEAD
+=======
+              .setAlternativeAuthor(altAuthor)
+>>>>>>> main
               .pushImages(image ? image : '');
 
             if (payoutType === '100%') {
