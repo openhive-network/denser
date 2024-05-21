@@ -205,7 +205,12 @@ function PostPage({
     <div className="py-8">
       <div className="relative mx-auto my-0 max-w-4xl bg-white px-8 py-4 dark:bg-slate-900">
         {communityData ? (
-          <AlertDialogFlag community={community} username={username} permlink={permlink}>
+          <AlertDialogFlag
+            community={community}
+            username={username}
+            permlink={permlink}
+            flagText={communityData.flag_text}
+          >
             <Icons.flag className="absolute right-0 m-2 hover:text-red-500" />
           </AlertDialogFlag>
         ) : null}

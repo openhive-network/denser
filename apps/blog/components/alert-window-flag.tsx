@@ -10,7 +10,7 @@ import {
   AlertDialogTrigger
 } from '@ui/components/alert-dialog';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { Input } from '@ui/components';
+import { Input, Separator } from '@ui/components';
 import { ReactNode, useState } from 'react';
 import { transactionService } from '@transaction/index';
 
@@ -18,11 +18,13 @@ export function AlertDialogFlag({
   children,
   community,
   username,
-  permlink
+  permlink,
+  flagText
 }: {
   children: ReactNode;
   community: string;
   username: string;
+  flagText: string;
   permlink: string;
 }) {
   const { user } = useUser();
@@ -40,8 +42,16 @@ export function AlertDialogFlag({
             </AlertDialogCancel>
           </div>
           <AlertDialogDescription data-testid="flag-dialog-description">
-            Please provide a note regarding your decision to flag this post, it will be reviewed by community
-            moderators.
+            <div>
+              Please provide a note regarding your decision to flag this post, it will be reviewed by
+              community moderators.
+            </div>
+            {
+              <>
+                <Separator />
+                <div>{flagText}</div>
+              </>
+            }
             <Input className="mt-2" value={notes} onChange={(e) => setNotes(e.target.value)} />
           </AlertDialogDescription>
         </AlertDialogHeader>
