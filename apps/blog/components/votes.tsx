@@ -16,47 +16,36 @@ import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 
-const vote = async (
-  service: TransactionService,
-  voter: string,
-  author: string,
-  permlink: string,
-  weight: number,
-  t: any // translate function
-) => {
-
-  // Use in manual testing in development only!
-  if (env('DEVELOPMENT') === 'true') {
-    if (weight > 0) {
-      weight = 1;
-    } else if (weight < 0) {
-      weight = -1;
-    }
-  }
-
-  try {
-    await service.upVote(author, permlink, weight, (error) => { throw error; });
-    logger.info('Voted: %o',
-      { voter, author, permlink, weight });
-  } catch (error) {
-    service.handleError(error);
-    throw error;
-  }
-  return { voter, author, permlink, weight };
-};
-
 export function usePostUpdateVoteMutation() {
-  const { t } = useTranslation('common_blog');
   const queryClient = useQueryClient();
   const postUpdateVoteMutation = useMutation({
-    mutationFn: (params: {
+    mutationFn: async (params: {
           voter: string,
           author: string,
           permlink: string,
           weight: number
         }) => {
-      const { voter, author, permlink, weight } = params;
-      return vote(transactionService, voter, author, permlink, weight, t);
+      let { voter, author, permlink, weight } = params;
+
+      // Use in manual testing in development only!
+      if (env('DEVELOPMENT') === 'true') {
+        if (weight > 0) {
+          weight = 1;
+        } else if (weight < 0) {
+          weight = -1;
+        }
+      }
+
+      try {
+        await transactionService.upVote(author, permlink, weight,
+          (error) => { throw error; }, true);
+        logger.info('Voted: %o',
+          { voter, author, permlink, weight });
+      } catch (error) {
+        transactionService.handleError(error);
+        throw error;
+      }
+      return { voter, author, permlink, weight };
     },
     onSuccess: (data) => {
       logger.info('usePostUpdateVoteMutation onSuccess data: %o', data);
