@@ -92,6 +92,12 @@ export function AdvancedSettingsPostForm({
   }, [open]);
 
   useEffect(() => {
+    if (maxPayout === '0') {
+      setRewards('50%');
+    }
+  }, [maxPayout]);
+
+  useEffect(() => {
     const combinedPercentage = beneficiaries.reduce<number>((acc, beneficiary) => {
       return acc + Number(beneficiary.weight);
     }, 0);

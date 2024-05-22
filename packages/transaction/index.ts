@@ -416,7 +416,7 @@ export class TransactionService {
             if (payoutType === '100%') {
               articleBuilder.setPercentHbd(0);
             }
-            if (payoutType === '50%' || payoutType === '00%') {
+            if (payoutType === '50%' || payoutType === '0%') {
               articleBuilder.setPercentHbd(10000);
             }
             if (payoutType === '0%') {
