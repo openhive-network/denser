@@ -128,7 +128,7 @@ function ProposalsPage() {
         </div>
       ) : proposalsData.data?.pages[0].length === 0 || !dynamicData ? (
         <main>
-          <p className="mt-32 text-center text-3xl">{t('global.sorry_cant_show')}</p>
+          <p className="mt-32 text-center text-3xl" data-testid="cannot-show-you-any-proposals">{t('global.sorry_cant_show')}</p>
           <p className="text-center text-xl text-gray-400">{t('global.its_probably')}</p>
         </main>
       ) : (

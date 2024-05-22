@@ -114,7 +114,7 @@ test.describe('Muted posts tests', () => {
     const articleAuthor = postPage.articleAuthorName;
     const articleAuthorText = await postPage.articleAuthorName.innerText();
     await expect(articleAuthor).toBeVisible();
-    // await expect(articleAuthorText).toContain(postAuthor);
+    await expect(articleAuthorText).toContain(postAuthor);
     await expect(postPage.articleBody).toBeVisible();
     await expect(postPage.articleFooter).toBeVisible();
   });
