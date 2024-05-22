@@ -16,7 +16,7 @@ import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
 import { Beneficiarie, Preferences } from './lib/app-types';
-import WorkerBee, { IWorkerBee } from "@hiveio/workerbee";
+import WorkerBee, { ITransactionData, IWorkerBee } from "@hiveio/workerbee";
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -117,7 +117,9 @@ export class TransactionService {
 
       await new Promise((resolve, reject) => {
         observer.subscribe({
-          next: ({ block: { number: appliedBlockNumber } }) => {
+          next: (data: ITransactionData) => {
+            // logger.info('data: %o', data);
+            const { block: { number: appliedBlockNumber } } = data;
             logger.info('Transaction %o applied on block #%s, found after %sms',
                 txBuilder.toApi(), appliedBlockNumber, Date.now() - startedAt);
             resolve(appliedBlockNumber);
@@ -143,8 +145,6 @@ export class TransactionService {
         this.bot = undefined;
       }
     }
-
-
   }
 
   async upVote(author: string, permlink: string, weight = 10000,
