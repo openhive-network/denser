@@ -6,8 +6,7 @@ import clsx from 'clsx';
 import type { Entry } from '@transaction/lib/bridge';
 import { useTranslation } from 'next-i18next';
 import { useEffect, useState } from 'react';
-import { transactionService, TransactionService, TransactionErrorCallback } from '@transaction/index';
-import { PromiseTools } from '@transaction/lib/promise-tools'
+import { transactionService, TransactionService } from '@transaction/index';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { CircleSpinner } from 'react-spinners-kit';
 import { getListVotesByCommentVoter } from '@transaction/lib/hive';
@@ -16,93 +15,6 @@ import env from '@beam-australia/react-env';
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
-
-const voteOld = async (
-      service: TransactionService,
-      voter: string,
-      author: string,
-      permlink: string,
-      weight: number,
-      t: any // translate function
-    ) => {
-  const pollingErrorMessage =
-    "Failure in checking if user's vote has been included.";
-  try {
-
-    // // Use in manual testing in development only!
-    // if (env('DEVELOPMENT') === 'true') {
-    //   if (weight > 0) {
-    //     weight = 1;
-    //   } else if (weight < 0) {
-    //     weight = -1;
-    //   }
-    // }
-
-    // Get the newest num_changes for the vote. `numChangesBefore = -1`
-    // means vote that does not exist yet (current voter hasn't voted
-    // yet on this subject).
-    let numChangesBefore = -1;
-    const votesListBefore =
-      await getListVotesByCommentVoter([author, permlink, voter], 1);
-    if (votesListBefore
-        && votesListBefore.votes.length > 0
-        && votesListBefore.votes[0].voter === voter
-      ) {
-      numChangesBefore = votesListBefore.votes[0].num_changes;
-    }
-    // Vote now
-    await service.upVote(author, permlink, weight, (error) => { throw error; });
-    logger.info('Voted: %o',
-      { voter, author, permlink, weight, numChangesBefore });
-
-    // Check if `num_changes` is greater than before.
-    let counter = 0;
-    const checkVoteSaved = async () => {
-      const getVoteListArgs: [string, string, string] =
-        [author, permlink, voter];
-      const votesList =
-        await getListVotesByCommentVoter(getVoteListArgs, 1);
-      ++counter;
-      logger.info('checkVoteSaved try: #%s for: %o ',
-          counter, getVoteListArgs);
-      if (votesList && votesList.votes.length > 0
-          && votesList.votes[0].voter === voter
-          && votesList.votes[0].num_changes > numChangesBefore) {
-        logger.info('Found change! num_changes %s is greater than %s.',
-            votesList.votes[0].num_changes, numChangesBefore);
-        return true;
-      }
-      logger.info('Change not found! num_changes is the same.');
-      return false;
-    };
-
-    // Poll to check if vote was broadcasted and saved into blockchain.
-    const result = await PromiseTools.promiseInterval(
-        checkVoteSaved, 1000, 30,
-        pollingErrorMessage
-      );
-    logger.info('Result of checkVoteSaved in interval: %s', result);
-  } catch (error) {
-    if (typeof error === 'string' && error === pollingErrorMessage) {
-      // Error in polling for broadcast result.
-      const title =
-        t('cards.post_card.vote_polling_error_message_title');
-      const description =
-        t('cards.post_card.vote_polling_error_message_description');
-      service.handleError(
-        error,
-        {
-          title,
-          description,
-          variant: 'default',
-        }
-      );
-    } else {
-      service.handleError(error);
-    }
-  }
-  return { voter, author, permlink, weight };
-};
 
 const vote = async (
   service: TransactionService,
