@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import type { Entry } from '@transaction/lib/bridge';
 import { useTranslation } from 'next-i18next';
 import { useEffect, useState } from 'react';
-import { transactionService, TransactionService } from '@transaction/index';
+import { transactionService } from '@transaction/index';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { CircleSpinner } from 'react-spinners-kit';
 import { getListVotesByCommentVoter } from '@transaction/lib/hive';
