@@ -28,7 +28,7 @@ export class TransactionService {
   signerOptions!: SignerOptions;
   wellKnownErrorDescriptions = [
     'Your current vote on this comment is identical to this vote',
-    'Account does not have enough mana to downvote'
+    'Account does not have enough mana to downvote',
   ];
 
   // The number of transactions observed now.
@@ -875,36 +875,50 @@ export class TransactionService {
     );
   }
 
+  /**
+   * Handle error by trying to find a message for user in error, display
+   * found message in toast, then swallow error.
+   *
+   * @param {*} e
+   * @param {Toast} [toastOptions={}]
+   * @memberof TransactionService
+   */
   handleError(e: any, toastOptions: Toast = {}) {
-    logger.error('got error', e);
+    logger.error('Got error: %o', e);
     const isError = (err: unknown): err is Error => err instanceof Error;
     const isWaxError = (err: unknown): err is WaxChainApiError => err instanceof WaxChainApiError;
-    let description = 'Unknown error';
-    if (isWaxError(e)) {
-      const error = e as any;
-      // this is temporary solution for "wait 5 minut after create another post" error
-      if (error?.apiError?.code === -32003) {
-        description = error?.apiError?.data?.stack[0]?.format;
-        for (const wked of this.wellKnownErrorDescriptions) {
-          if (description.includes(wked)) {
-            description = wked;
-            break;
-          }
+
+    let description = 'Operation failed';
+
+    if (!toastOptions?.description) {
+      let errorDescription;
+      if (isWaxError(e)) {
+        const error = e as any;
+        // this is temporary solution for "wait 5 minut after create another post" error
+        if (error?.apiError?.code === -32003) {
+          errorDescription = error?.apiError?.data?.stack[0]?.format;
+        } else {
+          errorDescription = error?.message ?? this.errorDescription;
         }
-      } else {
-        description = error?.message ?? this.errorDescription;
-        for (const wellKnownErrorDescription of this.wellKnownErrorDescriptions) {
-          if (description.includes(wellKnownErrorDescription)) {
-            description = wellKnownErrorDescription;
-            break;
-          }
+      } else if (isError(e)) {
+        errorDescription = e.message;
+      } else if (typeof e === 'string') {
+        errorDescription = e;
+      }
+
+      let wellKnownErrorDescription;
+      for (const wked of this.wellKnownErrorDescriptions) {
+        if (errorDescription.includes(wked)) {
+          wellKnownErrorDescription = wked;
+          break;
         }
       }
-    } else if (isError(e)) {
-      description = e.message;
-    } else if (typeof e === 'string') {
-      description = e;
+
+      if (wellKnownErrorDescription) {
+        description = wellKnownErrorDescription;
+      }
     }
+
     toast({
       description,
       variant: 'destructive',
