@@ -101,6 +101,27 @@ function PostPage({
     enabled: !!username && !!permlink
   });
 
+  const queryAuthor = post?.author;
+  const queryPermlink = post?.permlink;
+  const {
+    data: isReblogged
+  } = useQuery(
+    ['PostRebloggedBy', queryAuthor, queryPermlink, user.username],
+    async () => {
+      const data = await getRebloggedBy(queryAuthor!, queryPermlink!);
+      return data.includes(user.username);
+    },
+    {
+      enabled: !!(user.username && queryAuthor && queryPermlink),
+
+      // TODO Enable line below for very long caching, when you make
+      // proper mutation in apps/blog/components/alert-window.tsx
+
+      // cacheTime: 1000 * 60 * 60 * 24 * 365, // 1 year
+    }
+  );
+  logger.info('author: %s, permlink: %s, isReblogged: %o', post?.author, post?.permlink, isReblogged);
+
   const [discussionState, setDiscussionState] = useState<Entry[]>();
   const router = useRouter();
   const isSortOrder = (token: any): token is SortOrder => {
@@ -115,7 +136,6 @@ function PostPage({
   const defaultSort = isSortOrder(query) ? query : SortOrder.trending;
   const storageId = `replybox-/${username}/${post?.permlink}`;
   const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
-  const [storedReblogs, setStoredReblogs] = useLocalStorage<string[]>(`reblogged_${user.username}`, ['']);
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const firstPost = discussionState?.find((post) => post.depth === 0);
   const [edit, setEdit] = useState(false);
@@ -200,39 +220,6 @@ function PostPage({
       router.events.off('routeChangeStart', exitingFunction);
     };
   }, [router.events, setDoNotShowImages]);
-
-  // const isReblogged = storedReblogs?.includes(`${post?.author}/${post?.permlink}`);
-
-  // const queryAuthor = post?.author;
-  // const queryPermlink = post?.permlink;
-  // const {
-  //   data: rebloggers
-  // } = useQuery(
-  //   ['PostRebloggedBy', queryAuthor, queryPermlink],
-  //   () => getRebloggedBy(queryAuthor!, queryPermlink!),
-  //   {
-  //     enabled: !!(user.username && queryAuthor && queryPermlink),
-  //     cacheTime: 1000 * 60 * 5, // 5 minutes
-  //   }
-  // );
-  // const isReblogged = rebloggers?.includes(user.username);
-
-  const queryAuthor = post?.author;
-  const queryPermlink = post?.permlink;
-  const {
-    data: isReblogged
-  } = useQuery(
-    ['PostRebloggedBy', queryAuthor, queryPermlink, user.username],
-    async () => {
-      const data = await getRebloggedBy(queryAuthor!, queryPermlink!);
-      return data.includes(user.username);
-    },
-    {
-      enabled: !!(user.username && queryAuthor && queryPermlink),
-      cacheTime: 1000 * 60 * 5, // 5 minutes
-    }
-  );
-  logger.info('author: %s, permlink: %s, isReblogged: %o', post?.author, post?.permlink, isReblogged);
 
   if (userFromGDPR) {
     return <CustomError />;
@@ -397,7 +384,6 @@ function PostPage({
                         <AlertDialogReblog
                           author={post.author}
                           permlink={post.permlink}
-                          setStoredReblogs={setStoredReblogs}
                         >
                           <Icons.forward
                             className={cn('h-4 w-4 cursor-pointer', {

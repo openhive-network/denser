@@ -22,22 +22,17 @@ const logger = getLogger('app');
 export function AlertDialogReblog({
   children,
   author,
-  permlink,
-  setStoredReblogs
+  permlink
 }: {
   children: ReactNode;
   author: string;
   permlink: string;
-  setStoredReblogs: Dispatch<SetStateAction<string[]>>;
 }) {
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
 
   const reblog = async () => {
     transactionService.reblog(author, permlink);
-    // TODO First check if promise in preceding line was
-    // successful.
-    setStoredReblogs((val) => [...val, `${author}/${permlink}`]);
   }
 
   return (
