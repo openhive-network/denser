@@ -191,6 +191,11 @@ function PostPage({
     });
   }, [router, hiveRenderer, post?.author]);
 
+  useLayoutEffect(() => {
+    setDoNotShowImages(mutedPost && !showAnyway);
+    setAuthor(post?.author || '');
+  }, [setAuthor, setDoNotShowImages, mutedPost, showAnyway, post?.author]);
+
   // const isReblogged = storedReblogs?.includes(`${post?.author}/${post?.permlink}`);
 
   // const queryAuthor = post?.author;
@@ -224,11 +229,6 @@ function PostPage({
   );
 
   logger.info('author: %s, permlink: %s, isReblogged: %o', post?.author, post?.permlink, isReblogged);
-
-  useLayoutEffect(() => {
-    setDoNotShowImages(mutedPost && !showAnyway);
-    setAuthor(post?.author || '');
-  }, [setAuthor, setDoNotShowImages, mutedPost, showAnyway, post?.author]);
 
   if (userFromGDPR) {
     return <CustomError />;
