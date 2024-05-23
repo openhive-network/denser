@@ -32,7 +32,7 @@ export function ReplyTextbox({
   parentPermlink?: string;
   storageId: string;
   editMode: boolean;
-  comment: Entry;
+  comment: Entry | string;
 }) {
   const [storedPost, storePost, removePost] = useLocalStorage<string>(`replyTo-/${username}/${permlink}`, '');
   const { user } = useUser();
@@ -42,11 +42,14 @@ export function ReplyTextbox({
     DEFAULT_PREFERENCES
   );
   const { t } = useTranslation('common_blog');
-  const [text, setText] = useState(comment ? comment.body : storedPost ? storedPost : '');
+  const [text, setText] = useState(
+    typeof comment === 'string' ? comment : comment.body ? comment.body : storedPost ? storedPost : ''
+  );
   const [cleanedText, setCleanedText] = useState('');
   const { hiveRenderer } = useContext(HiveRendererContext);
   const btnRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
+    console.log('replay', text);
     if (hiveRenderer) {
       const nextCleanedText = text ? hiveRenderer.render(text) : '';
       setCleanedText(nextCleanedText);
