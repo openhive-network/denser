@@ -66,22 +66,6 @@ const PostListItem = ({
   const userFromImageBlockList = imageUserBlocklist.includes(post.author);
   const legalBlockedUser = userIllegalContent.includes(post.author);
 
-  // const isReblogged = storedReblogs?.includes(`${post.author}/${post.permlink}`);
-
-  // const queryAuthor = post?.author;
-  // const queryPermlink = post?.permlink;
-  // const {
-  //   data: rebloggers
-  // } = useQuery(
-  //   ['PostRebloggedBy', queryAuthor, queryPermlink],
-  //   () => getRebloggedBy(queryAuthor!, queryPermlink!),
-  //   {
-  //     enabled: !!(user.username && queryAuthor && queryPermlink),
-  //     cacheTime: 1000 * 60 * 5, // 5 minutes
-  //   }
-  // );
-  // const isReblogged = rebloggers?.includes(user.username);
-
   const queryAuthor = post?.author;
   const queryPermlink = post?.permlink;
   const {
@@ -94,11 +78,14 @@ const PostListItem = ({
     },
     {
       enabled: !!(user.username && queryAuthor && queryPermlink),
-      cacheTime: 1000 * 60 * 5, // 5 minutes
+
+      // TODO Enable line below for very long caching, when you make
+      // proper mutation in apps/blog/components/alert-window.tsx
+
+      // cacheTime: 1000 * 60 * 60 * 24 * 365, // 1 year
     }
   );
-
-  logger.info('author: %s, permlink: %s, isReblogged: %o', post.author, post.permlink, isReblogged);
+  logger.info('Reblog data author: %s, permlink: %s, isReblogged: %o', post.author, post.permlink, isReblogged);
 
 
   function revealPost() {
