@@ -390,6 +390,13 @@
         "update_settings": "設定を更新する",
         "full_in": "満了まで: "
       }
+    },
+    "flag": {
+      "flag_post": "投稿を報告",
+      "flag_description": "この投稿を報告する理由を記載してください。コミュニティのモデレーターによって確認されます。",
+      "community_rules": "コミュニティ規則",
+      "cancel": "キャンセル",
+      "ok": "OK"
     }
   },
   "submit_page": {

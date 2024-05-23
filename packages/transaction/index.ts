@@ -21,7 +21,7 @@ import WorkerBee, { ITransactionData, IWorkerBee } from "@hiveio/workerbee";
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
-export type TransactionErrorCallback = undefined | ((error: any) => any)
+export type TransactionErrorCallback = undefined | ((error: any) => any);
 
 export class TransactionService {
   errorDescription = 'Transaction broadcast error';
@@ -193,7 +193,10 @@ export class TransactionService {
 
   }
 
-  async upVote(author: string, permlink: string, weight = 10000,
+  async upVote(
+    author: string,
+    permlink: string,
+    weight = 10000,
     onError: TransactionErrorCallback = undefined,
     observe = false
   ) {
@@ -215,7 +218,10 @@ export class TransactionService {
     );
   }
 
-  async downVote(author: string, permlink: string, weight = -10000,
+  async downVote(
+    author: string,
+    permlink: string,
+    weight = -10000,
     onError: TransactionErrorCallback = undefined,
     observe = false
   ) {
@@ -297,7 +303,9 @@ export class TransactionService {
     );
   }
 
-  async reblog(username: string, permlink: string,
+  async reblog(
+    username: string,
+    permlink: string,
     onError: TransactionErrorCallback = undefined,
     observe = false
   ) {
@@ -315,7 +323,8 @@ export class TransactionService {
     );
   }
 
-  async follow(username: string,
+  async follow(
+    username: string,
     onError: TransactionErrorCallback = undefined,
     observe = false
   ) {
@@ -333,7 +342,8 @@ export class TransactionService {
     );
   }
 
-  async unfollow(username: string,
+  async unfollow(
+    username: string,
     onError: TransactionErrorCallback = undefined,
     observe = false
   ) {
@@ -351,7 +361,9 @@ export class TransactionService {
     );
   }
 
-  async mute(otherBlogs: string, blog = '',
+  async mute(
+    otherBlogs: string,
+    blog = '',
     onError: TransactionErrorCallback = undefined,
     observe = false
   ) {
@@ -369,7 +381,8 @@ export class TransactionService {
     );
   }
 
-  async unmute(blog: string,
+  async unmute(
+    blog: string,
     onError: TransactionErrorCallback = undefined,
     observe = false
   ) {
@@ -405,7 +418,9 @@ export class TransactionService {
     );
   }
 
-  async blacklistBlog(otherBlogs: string, blog = '',
+  async blacklistBlog(
+    otherBlogs: string,
+    blog = '',
     onError: TransactionErrorCallback = undefined,
     observe = false
   ) {
@@ -423,7 +438,8 @@ export class TransactionService {
     );
   }
 
-  async unblacklistBlog(blog: string,
+  async unblacklistBlog(
+    blog: string,
     onError: TransactionErrorCallback = undefined,
     observe = false
   ) {
@@ -441,7 +457,9 @@ export class TransactionService {
     );
   }
 
-  async followBlacklistBlog(otherBlogs: string, blog = '',
+  async followBlacklistBlog(
+    otherBlogs: string,
+    blog = '',
     onError: TransactionErrorCallback = undefined,
     observe = false
   ) {
@@ -459,7 +477,8 @@ export class TransactionService {
     );
   }
 
-  async unfollowBlacklistBlog(blog: string,
+  async unfollowBlacklistBlog(
+    blog: string,
     onError: TransactionErrorCallback = undefined,
     observe = false
   ) {
@@ -477,7 +496,9 @@ export class TransactionService {
     );
   }
 
-  async followMutedBlog(otherBlogs: string, blog = '',
+  async followMutedBlog(
+    otherBlogs: string,
+    blog = '',
     onError: TransactionErrorCallback = undefined,
     observe = false
   ) {
@@ -567,7 +588,8 @@ export class TransactionService {
     );
   }
 
-  async unfollowMutedBlog(blog: string,
+  async unfollowMutedBlog(
+    blog: string,
     onError: TransactionErrorCallback = undefined,
     observe = false
   ) {
@@ -627,39 +649,38 @@ export class TransactionService {
     parentPermlink: string,
     permlink: string,
     body: string,
-    preferences: Preferences,
+    comment_rewards: '0%' | '50%' | '100%',
     onError: TransactionErrorCallback = undefined,
     observe = false
   ) {
     const chain = await hiveChainService.getHiveChain();
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder
-          .useBuilder(
-            ReplyBuilder,
-            (replyBuilder) => {
-              if (preferences.comment_rewards === '100%') {
-                replyBuilder.setPercentHbd(0);
-              }
-              if (preferences.comment_rewards === '50%' || preferences.comment_rewards === '0%') {
-                replyBuilder.setPercentHbd(10000);
-              }
-              if (preferences.comment_rewards === '0%') {
-                replyBuilder.setMaxAcceptedPayout(chain.hbd(0));
-              }
-            },
-            parentAuthor,
-            parentPermlink,
-            this.signerOptions.username,
-            body,
-            {},
-            permlink
-          )
-          .build();
-      },
-      onError,
-      observe
-    );
+    await this.processHiveAppOperation((builder) => {
+      builder
+        .useBuilder(
+          ReplyBuilder,
+          (replyBuilder) => {
+            if (comment_rewards === '100%') {
+              replyBuilder.setPercentHbd(0);
+            }
+            if (comment_rewards === '50%' || comment_rewards === '0%') {
+              replyBuilder.setPercentHbd(10000);
+            }
+            if (comment_rewards === '0%') {
+              replyBuilder.setMaxAcceptedPayout(chain.hbd(0));
+            }
+          },
+          parentAuthor,
+          parentPermlink,
+          this.signerOptions.username,
+          body,
+          {},
+          permlink
+        )
+        .build();
+    },
+    onError,
+    observe
+  );
   }
 
   async post(
@@ -671,34 +692,35 @@ export class TransactionService {
     tags: string[],
     category: string,
     summary: string,
+    altAuthor: string,
     payoutType: string,
     image?: string,
     onError: TransactionErrorCallback = undefined,
     observe = false
   ) {
     const chain = await hiveChainService.getHiveChain();
-    await this.processHiveAppOperation(
-      (builder) => {
-        builder
-          .useBuilder(
-            ArticleBuilder,
-            (articleBuilder) => {
-              articleBuilder
-                .setCategory(category !== 'blog' ? category : tags[0])
-                .setMaxAcceptedPayout(maxAcceptedPayout)
-                .pushTags(...tags)
-                .pushMetadataProperty({ summary: summary })
-                .pushImages(image ? image : '');
+    await this.processHiveAppOperation((builder) => {
+      builder
+        .useBuilder(
+          ArticleBuilder,
+          (articleBuilder) => {
+            articleBuilder
+              .setCategory(category !== 'blog' ? category : tags[0])
+              .setMaxAcceptedPayout(maxAcceptedPayout)
+              .pushTags(...tags)
+              .pushMetadataProperty({ summary: summary })
+              .setAlternativeAuthor(altAuthor)
+              .pushImages(image ? image : '');
 
-              if (payoutType === '100%') {
-                articleBuilder.setPercentHbd(0);
-              }
-              if (payoutType === '50%' || payoutType === '0%') {
-                articleBuilder.setPercentHbd(10000);
-              }
-              if (payoutType === '0%') {
-                articleBuilder.setMaxAcceptedPayout(chain.hbd(0));
-              }
+            if (payoutType === '100%') {
+              articleBuilder.setPercentHbd(0);
+            }
+            if (payoutType === '50%' || payoutType === '0%') {
+              articleBuilder.setPercentHbd(10000);
+            }
+            if (payoutType === '0%') {
+              articleBuilder.setMaxAcceptedPayout(chain.hbd(0));
+            }
 
               beneficiaries.forEach((beneficiarie) => {
                 articleBuilder.addBeneficiary(beneficiarie.account, Number(beneficiarie.weight));
@@ -764,7 +786,8 @@ export class TransactionService {
     );
   }
 
-  async deleteComment(permlink: string,
+  async deleteComment(
+    permlink: string,
     onError: TransactionErrorCallback = undefined,
     observe = false
   ) {

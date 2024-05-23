@@ -390,6 +390,13 @@
         "update_settings": "설정 업데이트",
         "full_in": "충전 완료까지: "
       }
+    },
+    "flag": {
+      "flag_post": "게시물 신고",
+      "flag_description": "이 게시물을 신고하는 이유를 적어주세요. 커뮤니티 관리자들이 검토할 것입니다.",
+      "community_rules": "커뮤니티 규칙",
+      "cancel": "취소",
+      "ok": "확인"
     }
   },
   "submit_page": {

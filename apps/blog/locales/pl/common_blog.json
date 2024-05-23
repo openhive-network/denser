@@ -403,6 +403,13 @@
         "update_settings": "Zaktualizuj ustawienia",
         "full_in": "Pełny za: "
       }
+    },
+    "flag": {
+      "flag_post": "Zgłoś post",
+      "flag_description": "Proszę podać powód zgłoszenia tego postu, zostanie on sprawdzony przez moderatorów społeczności.",
+      "community_rules": "Zasady społeczności",
+      "cancel": "Anuluj",
+      "ok": "OK"
     }
   },
   "submit_page": {
