@@ -55,7 +55,7 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="api">https://api.hive.blog</SelectItem>
+                    <SelectItem value="api">https://api.openhive.network</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>

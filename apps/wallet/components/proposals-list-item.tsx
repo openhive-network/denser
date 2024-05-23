@@ -6,14 +6,13 @@ import { Icons } from '@hive/ui/components/icons';
 import moment from 'moment';
 import { dateToFullRelative } from '@ui/lib/parse-date';
 import { Badge } from '@ui/components/badge';
-import { useEffect, useState } from 'react';
-import { getPostHeader } from '@transaction/lib/bridge';
 import VoteProposals from './votes-proposals-dialog';
 import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';
 import { transactionService } from '@transaction/index';
+import env from '@beam-australia/react-env';
 
 function titleSetter(
   daysStart: string,
@@ -52,19 +51,12 @@ function translateShorDate(data: string, t: TFunction<'common_wallet', undefined
 export function ProposalListItem({ proposalData, totalShares, totalVestingFund }: IListItemProps) {
   const { t } = useTranslation('common_wallet');
   const { user } = useUser();
-  const [link, setLink] = useState<string>(`/${proposalData.creator}/${proposalData.permlink}`);
   const totalHBD = proposalData.daily_pay?.amount.times(
     moment(proposalData?.end_date).diff(moment(proposalData.start_date), 'd')
   );
   const totalDays = moment(proposalData.end_date).diff(proposalData.start_date, `d`);
 
   const totalVotes = totalVestingFund.times(proposalData.total_votes).div(totalShares).times(0.000001);
-
-  useEffect(() => {
-    getPostHeader(proposalData.creator, String(proposalData.permlink)).then((res) => {
-      setLink(`/${res.category}/@${res.author}/${res.permlink}`);
-    });
-  }, [proposalData.creator, proposalData.permlink]);
 
   function getFundingType() {
     if (REFUND_ACCOUNTS.includes(proposalData.receiver))
@@ -83,7 +75,7 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
     >
       <div className="w-3/4">
         <Link
-          href={link}
+          href={`${env('BLOG_DOMAIN')}/@${proposalData.creator}/${proposalData.permlink}`}
           target="_blank"
           title={titleSetter(proposalData.start_date, proposalData.end_date, proposalData.status, t)}
         >

@@ -347,6 +347,7 @@
     }
   },
   "post_content": {
+    "close_post_editor": "Are you sure you want to close the post editor?",
     "in": "in",
     "reputation_title": "Reputation",
     "blacklists": "Blacklists",
@@ -409,11 +410,26 @@
         "cancel": "Cancel",
         "preview": "Preview",
         "markdown_styling_guide": "Markdown Styling Guide",
-        "exit_editor": "Are you sure you want to exit the comment editor?"
+        "exit_editor": "Are you sure you want to exit the comment editor?",
+        "power_up": "Power up 100%",
+        "decline_payout": "Decline Payout",
+        "rewards": "Rewards: ",
+        "account_stats": "Account stats:",
+        "resource_credits": "Resource Credits (RC) level: {{value}}%",
+        "update_settings": "Update settings",
+        "full_in": "Full in: "
       }
+    },
+    "flag": {
+      "flag_post": "Flag post",
+      "flag_description": "Please provide a note regarding your decision to flag this post, it will be reviewed by community moderators.",
+      "community_rules": "Community rules",
+      "cancel": "Cancel",
+      "ok": "OK"
     }
   },
   "submit_page": {
+    "clean_post_editor": "Are you sure you want to clear the post editor?",
     "cover_image": "Select your cover image:",
     "my_communities": "My Communities",
     "others_communities": "Others Communities",
@@ -435,7 +451,7 @@
     "author_rewards": "Author rewards:",
     "advanced_settings": "Advanced settings",
     "account_stats": "Account stats:",
-    "resource_credits": "Resource Credits (RC) level: {{value}} %",
+    "resource_credits": "Resource Credits (RC) level: {{value}}%",
     "posting_to": "Posting to:",
     "my_blog": "My blog",
     "preview": "Preview",

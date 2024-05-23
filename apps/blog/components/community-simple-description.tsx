@@ -6,8 +6,9 @@ import { ActivityLogDialog } from './activity-log-dialog';
 import { useTranslation } from 'next-i18next';
 import SubscribeCommunity from './subscribe-community';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import NewPost from './new_post_button';
+import NewPost from './new-post-button';
 import { useEffect, useState } from 'react';
+import { Badge } from '@ui/components';
 
 const CommunitySimpleDescription = ({
   data,
@@ -34,7 +35,10 @@ const CommunitySimpleDescription = ({
       data-testid="community-simple-description-sidebar"
     >
       <CardHeader className="col-span-2 p-0">
-        <CardTitle>{data.title}</CardTitle>
+        <CardTitle className="flex items-center gap-1">
+          <span>{data.title}</span>
+          {data.is_nsfw ? <Badge variant="red">NSFW</Badge> : null}
+        </CardTitle>
         <div className="flex">
           <div className="flex w-full text-sm text-gray-500">
             <SubsListDialog title={data.title} subs={subs}>

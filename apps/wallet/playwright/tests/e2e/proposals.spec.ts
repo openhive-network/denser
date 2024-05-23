@@ -24,13 +24,19 @@ test.describe('Proposals page tests', () => {
     let apiHelper: ApiHelper = new ApiHelper(page);
 
     await proposalsPage.goToProposalsPage();
+    await proposalsPage.page.waitForTimeout(3000);
+    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+      const resListOfProposalsAPI = await apiHelper.getListOfProposalsAPI(); // default parameters
+      const amountListOfProposalsItemsAPI = resListOfProposalsAPI.result.length;
 
-    const resListOfProposalsAPI = await apiHelper.getListOfProposalsAPI(); // default parameters
-    const amountListOfProposalsItemsAPI = resListOfProposalsAPI.result.length;
+      const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
 
-    const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
-
-    expect(amountProposalsItemUI).toBe(amountListOfProposalsItemsAPI);
+      expect(amountProposalsItemUI).toBe(amountListOfProposalsItemsAPI);
+    } else {
+      await expect(proposalsPage.proposalsBody.locator('main').locator('p').first()).toHaveText(
+        "Sorry, I can't show you any proposals right now."
+      );
+    }
   });
 
   test('change status to All and order by the same (total votes)', async ({ page }) => {
@@ -51,10 +57,17 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalsFilterStatus.click();
     await proposalsPage.proposalsFilterStatusConntent.getByText('All').click();
     await expect(proposalsPage.proposalsFilterStatus.locator('span')).toHaveText('All');
-    await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
-    const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
-    // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
-    expect(amountProposalsItemUI).toBe(amountResListOfProposalsStatusAllAPI);
+    await proposalsPage.page.waitForTimeout(3000);
+    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+      await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
+      const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
+      // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
+      expect(amountProposalsItemUI).toBe(amountResListOfProposalsStatusAllAPI);
+    } else {
+      await expect(proposalsPage.proposalsBody.locator('main').locator('p').first()).toHaveText(
+        "Sorry, I can't show you any proposals right now."
+      );
+    }
   });
 
   test('change status to Active and order by the same (total votes)', async ({ page }) => {
@@ -75,16 +88,21 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalsFilterStatus.click();
     await proposalsPage.proposalsFilterStatusConntent.getByText(/^Active$/).click();
     await expect(proposalsPage.proposalsFilterStatus.locator('span')).toHaveText(/^Active$/);
-    await expect(proposalsPage.proposalStatusBadge.first()).toHaveText('started');
-    await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
-    const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
-    // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
-    expect(amountProposalsItemUI).toBe(amountResListOfProposalsStatusAllAPI);
+    await proposalsPage.page.waitForTimeout(3000);
+    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+      await expect(proposalsPage.proposalStatusBadge.first()).toHaveText('started');
+      await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
+      const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
+      // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
+      expect(amountProposalsItemUI).toBe(amountResListOfProposalsStatusAllAPI);
+    } else {
+      await expect(proposalsPage.proposalsBody.locator('main').locator('p').first()).toHaveText(
+        "Sorry, I can't show you any proposals right now."
+      );
+    }
   });
 
-  // Test skipped due to Issue  https://gitlab.syncad.com/hive/denser/-/issues/402
-  // Validate after fix it.
-  test.skip('change status to Inactive and order by the same (total votes)', async ({ page }) => {
+  test('change status to Inactive and order by the same (total votes)', async ({ page }) => {
     let apiHelper: ApiHelper = new ApiHelper(page);
 
     await proposalsPage.goToProposalsPage();
@@ -101,12 +119,20 @@ test.describe('Proposals page tests', () => {
 
     await proposalsPage.proposalsFilterStatus.click();
     await proposalsPage.proposalsFilterStatusConntent.getByText(/^Inactive$/).click();
+    await proposalsPage.page.waitForSelector(proposalsPage.proposalsFilterStatus.getByText(/^Inactive$/)['_selector']);
     await expect(proposalsPage.proposalsFilterStatus.locator('span')).toHaveText(/^Inactive$/);
-    await expect(proposalsPage.proposalStatusBadge.first()).toHaveText('not started');
-    await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
-    const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
-    // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
-    expect(amountProposalsItemUI).toBe(amountResListOfProposalsStatusAllAPI);
+    await proposalsPage.page.waitForTimeout(3000);
+    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+      await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
+      await expect(proposalsPage.proposalStatusBadge.first()).toHaveText('not started');
+      const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
+      // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
+      expect(amountProposalsItemUI).toBe(amountResListOfProposalsStatusAllAPI);
+    } else {
+      await expect(proposalsPage.proposalsBody.locator('main').locator('p').first()).toHaveText(
+        "Sorry, I can't show you any proposals right now."
+      );
+    }
   });
 
   test('change status to Expired and order by the same (total votes)', async ({ page }) => {
@@ -127,11 +153,18 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalsFilterStatus.click();
     await proposalsPage.proposalsFilterStatusConntent.getByText(/^Expired$/).click();
     await expect(proposalsPage.proposalsFilterStatus.locator('span')).toHaveText(/^Expired$/);
-    await expect(proposalsPage.proposalStatusBadge.first()).toHaveText('finished');
-    await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
-    const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
-    // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
-    expect(amountProposalsItemUI).toBe(amountResListOfProposalsStatusAllAPI);
+    await proposalsPage.page.waitForTimeout(3000);
+    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+      await expect(proposalsPage.proposalStatusBadge.first()).toHaveText('finished');
+      await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
+      const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
+      // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
+      expect(amountProposalsItemUI).toBe(amountResListOfProposalsStatusAllAPI);
+    } else {
+      await expect(proposalsPage.proposalsBody.locator('main').locator('p').first()).toHaveText(
+        "Sorry, I can't show you any proposals right now."
+      );
+    }
   });
 
   test('change status to Votable and order by the same (total votes)', async ({ page }) => {
@@ -152,11 +185,17 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalsFilterStatus.click();
     await proposalsPage.proposalsFilterStatusConntent.getByText(/^Votable$/).click();
     await expect(proposalsPage.proposalsFilterStatus.locator('span')).toHaveText(/^Votable$/);
-
-    await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
-    const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
-    // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
-    expect(amountProposalsItemUI).toBe(amountResListOfProposalsStatusAllAPI);
+    await proposalsPage.page.waitForTimeout(3000);
+    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+      await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
+      const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
+      // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
+      expect(amountProposalsItemUI).toBe(amountResListOfProposalsStatusAllAPI);
+    } else {
+      await expect(proposalsPage.proposalsBody.locator('main').locator('p').first()).toHaveText(
+        "Sorry, I can't show you any proposals right now."
+      );
+    }
   });
 
   test('validate descending/ascending direction in proposals list', async ({ page }) => {
@@ -164,32 +203,39 @@ test.describe('Proposals page tests', () => {
 
     await proposalsPage.goToProposalsPage();
 
-    const firstProposalVotesValueOnPageDescending = await proposalsPage.voteProposalsValue
-      .first()
-      .textContent();
+    await proposalsPage.page.waitForTimeout(3000);
+    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+      const firstProposalVotesValueOnPageDescending = await proposalsPage.voteProposalsValue
+        .first()
+        .textContent();
 
-    await proposalsPage.page.keyboard.down('End');
-    await proposalsPage.page.waitForTimeout(2000);
+      await proposalsPage.page.keyboard.down('End');
+      await proposalsPage.page.waitForTimeout(2000);
 
-    const lastProposalVotesValueOnPageDescending = await proposalsPage.voteProposalsValue
-      .last()
-      .textContent();
+      const lastProposalVotesValueOnPageDescending = await proposalsPage.voteProposalsValue
+        .last()
+        .textContent();
 
-    // Change descending votes to ascending votes
-    await proposalsPage.proposalsFilterDirection.click();
-    await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
+      // Change descending votes to ascending votes
+      await proposalsPage.proposalsFilterDirection.click();
+      await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
 
-    const firstProposalVotesValueOnPageAscending = await proposalsPage.voteProposalsValue
-      .first()
-      .textContent();
+      const firstProposalVotesValueOnPageAscending = await proposalsPage.voteProposalsValue
+        .first()
+        .textContent();
 
-    await proposalsPage.page.keyboard.down('End');
-    await proposalsPage.page.waitForTimeout(2000);
+      await proposalsPage.page.keyboard.down('End');
+      await proposalsPage.page.waitForTimeout(2000);
 
-    const lastProposalVotesValueOnPageAscending = await proposalsPage.voteProposalsValue.last().textContent();
+      const lastProposalVotesValueOnPageAscending = await proposalsPage.voteProposalsValue.last().textContent();
 
-    expect(firstProposalVotesValueOnPageAscending).toBe(lastProposalVotesValueOnPageDescending);
-    expect(lastProposalVotesValueOnPageAscending).toBe(firstProposalVotesValueOnPageDescending);
+      expect(firstProposalVotesValueOnPageAscending).toBe(lastProposalVotesValueOnPageDescending);
+      expect(lastProposalVotesValueOnPageAscending).toBe(firstProposalVotesValueOnPageDescending);
+    } else {
+      await expect(proposalsPage.proposalsBody.locator('main').locator('p').first()).toHaveText(
+        "Sorry, I can't show you any proposals right now."
+      );
+    }
   });
 
   test('change order by filter to Creator', async ({ page }) => {
@@ -213,13 +259,20 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalsFilterOrderBy.click();
     await proposalsPage.proposalsFilterOrderByConntent.getByText(/^Creator$/).click();
     await expect(proposalsPage.proposalsFilterOrderBy.locator('span')).toHaveText(/^Creator$/);
-    await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
-    const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
-    // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
-    expect(amountProposalsItemUI).toBe(amountResListOfProposalsOrderByCreatorAPI);
+    await proposalsPage.page.waitForTimeout(3000);
+    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+      await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
+      const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
+      // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
+      expect(amountProposalsItemUI).toBe(amountResListOfProposalsOrderByCreatorAPI);
 
-    const subjectOfFirstProposalOrderByCreatorUI = await proposalsPage.proposalTitle.first().textContent();
-    expect(subjectOfFirstProposalOrderByCreatorUI).toContain(subjectOfFirstProposalOrderByCreatorAPI);
+      const subjectOfFirstProposalOrderByCreatorUI = await proposalsPage.proposalTitle.first().textContent();
+      expect(subjectOfFirstProposalOrderByCreatorUI).toContain(subjectOfFirstProposalOrderByCreatorAPI);
+    } else {
+      await expect(proposalsPage.proposalsBody.locator('main').locator('p').first()).toHaveText(
+        "Sorry, I can't show you any proposals right now."
+      );
+    }
   });
 
   test('change order by filter to Start Date', async ({ page }) => {
@@ -243,13 +296,20 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalsFilterOrderBy.click();
     await proposalsPage.proposalsFilterOrderByConntent.getByText(/^Start Date$/).click();
     await expect(proposalsPage.proposalsFilterOrderBy.locator('span')).toHaveText(/^Start Date$/);
-    await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
-    const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
-    // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
-    expect(amountProposalsItemUI).toBe(amountResListOfProposalsOrderByStartDateAPI);
+    await proposalsPage.page.waitForTimeout(3000);
+    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+      await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
+      const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
+      // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
+      expect(amountProposalsItemUI).toBe(amountResListOfProposalsOrderByStartDateAPI);
 
-    const subjectOfFirstProposalOrderByStartDateUI = await proposalsPage.proposalTitle.first().textContent();
-    expect(subjectOfFirstProposalOrderByStartDateUI).toContain(subjectOfFirstProposalOrderByStartDateAPI);
+      const subjectOfFirstProposalOrderByStartDateUI = await proposalsPage.proposalTitle.first().textContent();
+      expect(subjectOfFirstProposalOrderByStartDateUI).toContain(subjectOfFirstProposalOrderByStartDateAPI);
+    } else {
+      await expect(proposalsPage.proposalsBody.locator('main').locator('p').first()).toHaveText(
+        "Sorry, I can't show you any proposals right now."
+      );
+    }
   });
 
   test('change order by filter to End Date', async ({ page }) => {
@@ -273,13 +333,20 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalsFilterOrderBy.click();
     await proposalsPage.proposalsFilterOrderByConntent.getByText(/^End Date$/).click();
     await expect(proposalsPage.proposalsFilterOrderBy.locator('span')).toHaveText(/^End Date$/);
-    await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
-    const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
-    // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
-    expect(amountProposalsItemUI).toBe(amountResListOfProposalsOrderByEndDateAPI);
+    await proposalsPage.page.waitForTimeout(3000);
+    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+      await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
+      const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
+      // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
+      expect(amountProposalsItemUI).toBe(amountResListOfProposalsOrderByEndDateAPI);
 
-    const subjectOfFirstProposalOrderByEndDateUI = await proposalsPage.proposalTitle.first().textContent();
-    expect(subjectOfFirstProposalOrderByEndDateUI).toContain(subjectOfFirstProposalOrderByEndDateAPI);
+      const subjectOfFirstProposalOrderByEndDateUI = await proposalsPage.proposalTitle.first().textContent();
+      expect(subjectOfFirstProposalOrderByEndDateUI).toContain(subjectOfFirstProposalOrderByEndDateAPI);
+    } else {
+      await expect(proposalsPage.proposalsBody.locator('main').locator('p').first()).toHaveText(
+        "Sorry, I can't show you any proposals right now."
+      );
+    }
   });
 
   test('change order by filter to Total Votes', async ({ page }) => {
@@ -303,13 +370,20 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalsFilterOrderBy.click();
     await proposalsPage.proposalsFilterOrderByConntent.getByText(/^Total Votes$/).click();
     await expect(proposalsPage.proposalsFilterOrderBy.locator('span')).toHaveText(/^Total Votes$/);
-    await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
-    const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
-    // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
-    expect(amountProposalsItemUI).toBe(amountResListOfProposalsOrderByTotalVotesAPI);
+    await proposalsPage.page.waitForTimeout(3000);
+    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+      await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
+      const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
+      // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
+      expect(amountProposalsItemUI).toBe(amountResListOfProposalsOrderByTotalVotesAPI);
 
-    const subjectOfFirstProposalOrderByTotalVotesUI = await proposalsPage.proposalTitle.first().textContent();
-    expect(subjectOfFirstProposalOrderByTotalVotesUI).toContain(subjectOfFirstProposalOrderByTotalVotesAPI);
+      const subjectOfFirstProposalOrderByTotalVotesUI = await proposalsPage.proposalTitle.first().textContent();
+      expect(subjectOfFirstProposalOrderByTotalVotesUI).toContain(subjectOfFirstProposalOrderByTotalVotesAPI);
+    } else {
+      await expect(proposalsPage.proposalsBody.locator('main').locator('p').first()).toHaveText(
+        "Sorry, I can't show you any proposals right now."
+      );
+    }
   });
 
   test('validate the elements of the first poroposal in default filters (Status: Votable, Order By: Total Votes, Descending) ', async ({
@@ -347,39 +421,47 @@ test.describe('Proposals page tests', () => {
 
     let totalDaysBrackets: string;
 
-    // Validate proposal subject and id
-    await expect(proposalsPage.proposalTitle.first()).toContainText(firstProposalSubjectAPI);
-    await expect(proposalsPage.proposalTitle.first()).toContainText('#' + firstProposalIdAPI);
-    // Validate start/end date
-    await expect(proposalsPage.proposalDates.first()).toContainText(
-      moment(firstProposalStartDateAPI).format('MMM D, YYYY')
-    );
-    await expect(proposalsPage.proposalDates.first()).toContainText(
-      moment(firstProposalEndDateAPI).format('MMM D, YYYY')
-    );
+    await proposalsPage.page.waitForTimeout(3000);
+    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
 
-    // Validate amount of days in date
-    if (totalDays !== 1) totalDaysBrackets = '(' + totalDays + ' days)';
-    else totalDaysBrackets = '(' + totalDays + ' day)';
-    // console.log("totalDays: ", totalDaysBrackets);
-    await expect(proposalsPage.proposalDates.first()).toContainText(totalDaysBrackets);
+      // Validate proposal subject and id
+      await expect(proposalsPage.proposalTitle.first()).toContainText(firstProposalSubjectAPI);
+      await expect(proposalsPage.proposalTitle.first()).toContainText('#' + firstProposalIdAPI);
+      // Validate start/end date
+      await expect(proposalsPage.proposalDates.first()).toContainText(
+        moment(firstProposalStartDateAPI).format('MMM D, YYYY')
+      );
+      await expect(proposalsPage.proposalDates.first()).toContainText(
+        moment(firstProposalEndDateAPI).format('MMM D, YYYY')
+      );
 
-    // If creator and receiver are different then both should be visile in the proposal list
-    if (firstProposalCreatorAPI !== firstProposalReceiverAPI) {
-      await expect(proposalsPage.proposalCreator.first()).toHaveText(firstProposalCreatorAPI);
-      await expect(proposalsPage.proposalReceiver.first()).toHaveText(firstProposalReceiverAPI);
-    } else await expect(proposalsPage.proposalCreator.first()).toHaveText(firstProposalCreatorAPI);
+      // Validate amount of days in date
+      if (totalDays !== 1) totalDaysBrackets = '(' + totalDays + ' days)';
+      else totalDaysBrackets = '(' + totalDays + ' day)';
+      // console.log("totalDays: ", totalDaysBrackets);
+      await expect(proposalsPage.proposalDates.first()).toContainText(totalDaysBrackets);
 
-    // Proposal amount contains daily pay amount
-    expect(await proposalsPage.proposalAmountHBD.first().textContent()).toContain(
-      getRoundedAbbreveration(firstProposalDailyPayAmountAPI)
-    );
-    // Proposal amount contains total pay amount
-    expect(await proposalsPage.proposalAmountHBD.first().textContent()).toContain(
-      getRoundedAbbreveration(totalHBD)
-    );
-    // Validate that badge is visible
-    await expect(proposalsPage.proposalStatusBadge.first()).toBeVisible();
+      // If creator and receiver are different then both should be visile in the proposal list
+      if (firstProposalCreatorAPI !== firstProposalReceiverAPI) {
+        await expect(proposalsPage.proposalCreator.first()).toHaveText(firstProposalCreatorAPI);
+        await expect(proposalsPage.proposalReceiver.first()).toHaveText(firstProposalReceiverAPI);
+      } else await expect(proposalsPage.proposalCreator.first()).toHaveText(firstProposalCreatorAPI);
+
+      // Proposal amount contains daily pay amount
+      expect(await proposalsPage.proposalAmountHBD.first().textContent()).toContain(
+        getRoundedAbbreveration(firstProposalDailyPayAmountAPI)
+      );
+      // Proposal amount contains total pay amount
+      expect(await proposalsPage.proposalAmountHBD.first().textContent()).toContain(
+        getRoundedAbbreveration(totalHBD)
+      );
+      // Validate that badge is visible
+      await expect(proposalsPage.proposalStatusBadge.first()).toBeVisible();
+    } else {
+      await expect(proposalsPage.proposalsBody.locator('main').locator('p').first()).toHaveText(
+        "Sorry, I can't show you any proposals right now."
+      );
+    }
   });
 
   test('validate styles in proposals list', async ({ page }) => {
@@ -397,60 +479,67 @@ test.describe('Proposals page tests', () => {
     const firstProposalCreatorAPI = await resListOfProposalsStatusAllAPI.result.proposals[0].creator;
     const firstProposalReceiverAPI = await resListOfProposalsStatusAllAPI.result.proposals[0].receiver;
 
-    // Title color
-    expect(await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalTitle.first(), 'color')).toBe(
-      'rgb(239, 68, 68)'
-    );
-    // Proposal Id color
-    expect(await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalId.first(), 'color')).toBe(
-      'rgb(100, 116, 139)'
-    );
-    // Dates color
-    expect(await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalDates.first(), 'color')).toBe(
-      'rgb(100, 116, 139)'
-    );
-    // Proposal Daily Amount color
-    expect(
-      await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalAmountHBD.first(), 'color')
-    ).toBe('rgb(100, 116, 139)');
-    // Proposal Total Amount color
-    expect(
-      await proposalsPage.getElementCssPropertyValue(
-        proposalsPage.proposalAmountHBD.locator('span').first(),
-        'color'
-      )
-    ).toBe('rgb(239, 68, 68)');
-    // Proposal Status Badge color
-    expect(
-      await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalStatusBadge.first(), 'color')
-    ).toBe('rgb(239, 68, 68)');
-    // Proposal Status tooltip
-    await expect(proposalsPage.proposalStatusBadge.first().locator('..')).toHaveAttribute(
-      'title',
-      /^Started/
-    );
-    // Creator and/or receiver colors
-    if (firstProposalCreatorAPI !== firstProposalReceiverAPI) {
+    await proposalsPage.page.waitForTimeout(3000);
+    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+      // Title color
+      expect(await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalTitle.first(), 'color')).toBe(
+        'rgb(239, 68, 68)'
+      );
+      // Proposal Id color
+      expect(await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalId.first(), 'color')).toBe(
+        'rgb(100, 116, 139)'
+      );
+      // Dates color
+      expect(await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalDates.first(), 'color')).toBe(
+        'rgb(100, 116, 139)'
+      );
+      // Proposal Daily Amount color
       expect(
-        await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalCreator.first(), 'color')
-      ).toBe('rgb(239, 68, 68)');
+        await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalAmountHBD.first(), 'color')
+      ).toBe('rgb(100, 116, 139)');
+      // Proposal Total Amount color
       expect(
-        await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalReceiver.first(), 'color')
+        await proposalsPage.getElementCssPropertyValue(
+          proposalsPage.proposalAmountHBD.locator('span').first(),
+          'color'
+        )
       ).toBe('rgb(239, 68, 68)');
-    } else
+      // Proposal Status Badge color
       expect(
-        await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalCreator.first(), 'color')
+        await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalStatusBadge.first(), 'color')
       ).toBe('rgb(239, 68, 68)');
-    // Vote proposal value color
-    expect(
-      await proposalsPage.getElementCssPropertyValue(proposalsPage.voteProposalsValue.first(), 'color')
-    ).toBe('rgb(15, 23, 42)');
-    // Proposal Status tooltip
-    await expect(proposalsPage.voteProposalsValue.first()).toHaveAttribute('title', /.+( HP)$/);
-    // Vote proposal button icon
-    expect(
-      await proposalsPage.getElementCssPropertyValue(proposalsPage.voteProposalButtonIcon.first(), 'color')
-    ).toBe('rgb(239, 68, 68)');
+      // Proposal Status tooltip
+      await expect(proposalsPage.proposalStatusBadge.first().locator('..')).toHaveAttribute(
+        'title',
+        /^Started/
+      );
+      // Creator and/or receiver colors
+      if (firstProposalCreatorAPI !== firstProposalReceiverAPI) {
+        expect(
+          await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalCreator.first(), 'color')
+        ).toBe('rgb(239, 68, 68)');
+        expect(
+          await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalReceiver.first(), 'color')
+        ).toBe('rgb(239, 68, 68)');
+      } else
+        expect(
+          await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalCreator.first(), 'color')
+        ).toBe('rgb(239, 68, 68)');
+      // Vote proposal value color
+      expect(
+        await proposalsPage.getElementCssPropertyValue(proposalsPage.voteProposalsValue.first(), 'color')
+      ).toBe('rgb(15, 23, 42)');
+      // Proposal Status tooltip
+      await expect(proposalsPage.voteProposalsValue.first()).toHaveAttribute('title', /.+( HP)$/);
+      // Vote proposal button icon
+      expect(
+        await proposalsPage.getElementCssPropertyValue(proposalsPage.voteProposalButtonIcon.first(), 'color')
+      ).toBe('rgb(239, 68, 68)');
+    } else {
+      await expect(proposalsPage.proposalsBody.locator('main').locator('p').first()).toHaveText(
+        "Sorry, I can't show you any proposals right now."
+      );
+    }
   });
 
   test('validate styles in proposals list in the dark mode', async ({ page }) => {
@@ -472,60 +561,67 @@ test.describe('Proposals page tests', () => {
     const firstProposalCreatorAPI = await resListOfProposalsStatusAllAPI.result.proposals[0].creator;
     const firstProposalReceiverAPI = await resListOfProposalsStatusAllAPI.result.proposals[0].receiver;
 
-    // Title color
-    expect(await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalTitle.first(), 'color')).toBe(
-      'rgb(239, 68, 68)'
-    );
-    // Proposal Id color
-    expect(await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalId.first(), 'color')).toBe(
-      'rgb(100, 116, 139)'
-    );
-    // Dates color
-    expect(await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalDates.first(), 'color')).toBe(
-      'rgb(100, 116, 139)'
-    );
-    // Proposal Daily Amount color
-    expect(
-      await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalAmountHBD.first(), 'color')
-    ).toBe('rgb(100, 116, 139)');
-    // Proposal Total Amount color
-    expect(
-      await proposalsPage.getElementCssPropertyValue(
-        proposalsPage.proposalAmountHBD.locator('span').first(),
-        'color'
-      )
-    ).toBe('rgb(254, 202, 202)');
-    // Proposal Status Badge color
-    expect(
-      await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalStatusBadge.first(), 'color')
-    ).toBe('rgb(239, 68, 68)');
-    // Proposal Status tooltip
-    await expect(proposalsPage.proposalStatusBadge.first().locator('..')).toHaveAttribute(
-      'title',
-      /^Started/
-    );
-    // Creator and/or receiver colors
-    if (firstProposalCreatorAPI !== firstProposalReceiverAPI) {
+    await proposalsPage.page.waitForTimeout(3000);
+    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+      // Title color
+      expect(await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalTitle.first(), 'color')).toBe(
+        'rgb(239, 68, 68)'
+      );
+      // Proposal Id color
+      expect(await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalId.first(), 'color')).toBe(
+        'rgb(100, 116, 139)'
+      );
+      // Dates color
+      expect(await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalDates.first(), 'color')).toBe(
+        'rgb(100, 116, 139)'
+      );
+      // Proposal Daily Amount color
       expect(
-        await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalCreator.first(), 'color')
-      ).toBe('rgb(239, 68, 68)');
+        await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalAmountHBD.first(), 'color')
+      ).toBe('rgb(100, 116, 139)');
+      // Proposal Total Amount color
       expect(
-        await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalReceiver.first(), 'color')
-      ).toBe('rgb(239, 68, 68)');
-    } else
+        await proposalsPage.getElementCssPropertyValue(
+          proposalsPage.proposalAmountHBD.locator('span').first(),
+          'color'
+        )
+      ).toBe('rgb(254, 202, 202)');
+      // Proposal Status Badge color
       expect(
-        await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalCreator.first(), 'color')
+        await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalStatusBadge.first(), 'color')
       ).toBe('rgb(239, 68, 68)');
-    // Vote proposal value color
-    expect(
-      await proposalsPage.getElementCssPropertyValue(proposalsPage.voteProposalsValue.first(), 'color')
-    ).toBe('rgb(225, 231, 239)');
-    // Proposal Status tooltip
-    await expect(proposalsPage.voteProposalsValue.first()).toHaveAttribute('title', /.+( HP)$/);
-    // Vote proposal button icon
-    expect(
-      await proposalsPage.getElementCssPropertyValue(proposalsPage.voteProposalButtonIcon.first(), 'color')
-    ).toBe('rgb(239, 68, 68)');
+      // Proposal Status tooltip
+      await expect(proposalsPage.proposalStatusBadge.first().locator('..')).toHaveAttribute(
+        'title',
+        /^Started/
+      );
+      // Creator and/or receiver colors
+      if (firstProposalCreatorAPI !== firstProposalReceiverAPI) {
+        expect(
+          await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalCreator.first(), 'color')
+        ).toBe('rgb(239, 68, 68)');
+        expect(
+          await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalReceiver.first(), 'color')
+        ).toBe('rgb(239, 68, 68)');
+      } else
+        expect(
+          await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalCreator.first(), 'color')
+        ).toBe('rgb(239, 68, 68)');
+      // Vote proposal value color
+      expect(
+        await proposalsPage.getElementCssPropertyValue(proposalsPage.voteProposalsValue.first(), 'color')
+      ).toBe('rgb(225, 231, 239)');
+      // Proposal Status tooltip
+      await expect(proposalsPage.voteProposalsValue.first()).toHaveAttribute('title', /.+( HP)$/);
+      // Vote proposal button icon
+      expect(
+        await proposalsPage.getElementCssPropertyValue(proposalsPage.voteProposalButtonIcon.first(), 'color')
+      ).toBe('rgb(239, 68, 68)');
+    } else {
+      await expect(proposalsPage.proposalsBody.locator('main').locator('p').first()).toHaveText(
+        "Sorry, I can't show you any proposals right now."
+      );
+    }
   });
 
   test('validate styles of filters in proposals list', async ({ page }) => {

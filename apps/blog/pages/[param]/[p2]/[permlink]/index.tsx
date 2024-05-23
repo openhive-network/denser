@@ -160,7 +160,7 @@ function PostPage({
   const { hiveRenderer, setAuthor, setDoNotShowImages } = useContext(HiveRendererContext);
 
   const commentSite = post?.depth !== 0 ? true : false;
-  const [mutedPost, setMutedPost] = useState(false);
+  const [mutedPost, setMutedPost] = useState(true);
   const postUrl = () => {
     if (discussionState) {
       const objectWithSmallestDepth = discussionState.reduce((smallestDepth, e) => {
@@ -185,16 +185,21 @@ function PostPage({
   };
 
   useEffect(() => {
-    const id = router.asPath.split('#')[1];
-    document.getElementById(id)?.scrollIntoView({
-      behavior: 'smooth'
-    });
-  }, [router, hiveRenderer, post?.author]);
-
-  useLayoutEffect(() => {
     setDoNotShowImages(mutedPost && !showAnyway);
     setAuthor(post?.author || '');
   }, [setAuthor, setDoNotShowImages, mutedPost, showAnyway, post?.author]);
+
+  useEffect(() => {
+    const exitingFunction = () => {
+      setDoNotShowImages(true);
+    };
+
+    router.events.on('routeChangeStart', exitingFunction);
+
+    return () => {
+      router.events.off('routeChangeStart', exitingFunction);
+    };
+  }, [router.events, setDoNotShowImages]);
 
   // const isReblogged = storedReblogs?.includes(`${post?.author}/${post?.permlink}`);
 
@@ -227,7 +232,6 @@ function PostPage({
       cacheTime: 1000 * 60 * 5, // 5 minutes
     }
   );
-
   logger.info('author: %s, permlink: %s, isReblogged: %o', post?.author, post?.permlink, isReblogged);
 
   if (userFromGDPR) {
@@ -236,9 +240,16 @@ function PostPage({
   return (
     <div className="py-8">
       <div className="relative mx-auto my-0 max-w-4xl bg-white px-8 py-4 dark:bg-slate-900">
-        <AlertDialogFlag community={community} username={username} permlink={permlink}>
-          <Icons.flag className="absolute right-0 hover:text-red-500" />
-        </AlertDialogFlag>
+        {communityData ? (
+          <AlertDialogFlag
+            community={community}
+            username={username}
+            permlink={permlink}
+            flagText={communityData.flag_text}
+          >
+            <Icons.flag className="absolute right-0 m-2 hover:text-red-500" />
+          </AlertDialogFlag>
+        ) : null}
         {!isLoadingPost && post ? (
           <div>
             {!commentSite ? (
@@ -518,6 +529,7 @@ function PostPage({
             username={post.author}
             permlink={permlink}
             storageId={storageId}
+            comment={post}
           />
         ) : null}
       </div>
