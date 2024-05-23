@@ -74,7 +74,7 @@ export function ReplyTextbox({
       if (btnRef.current) {
         btnRef.current.disabled = true;
       }
-      if (parentPermlink) {
+      if (parentPermlink && typeof comment !== 'string') {
         const payout =
           comment.max_accepted_payout === '0.000 HBD' ? '0%' : comment.percent_hbd === 0 ? '100%' : '50%';
         transactionService.updateComment(username, parentPermlink, permlink, cleanedText, payout);
