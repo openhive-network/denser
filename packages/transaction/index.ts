@@ -654,33 +654,34 @@ export class TransactionService {
     observe = false
   ) {
     const chain = await hiveChainService.getHiveChain();
-    await this.processHiveAppOperation((builder) => {
-      builder
-        .useBuilder(
-          ReplyBuilder,
-          (replyBuilder) => {
-            if (comment_rewards === '100%') {
-              replyBuilder.setPercentHbd(0);
-            }
-            if (comment_rewards === '50%' || comment_rewards === '0%') {
-              replyBuilder.setPercentHbd(10000);
-            }
-            if (comment_rewards === '0%') {
-              replyBuilder.setMaxAcceptedPayout(chain.hbd(0));
-            }
-          },
-          parentAuthor,
-          parentPermlink,
-          this.signerOptions.username,
-          body,
-          {},
-          permlink
-        )
-        .build();
-    },
-    onError,
-    observe
-  );
+    await this.processHiveAppOperation(
+      (builder) => {
+        builder
+          .useBuilder(
+            ReplyBuilder,
+            (replyBuilder) => {
+              if (comment_rewards === '100%') {
+                replyBuilder.setPercentHbd(0);
+              }
+              if (comment_rewards === '50%' || comment_rewards === '0%') {
+                replyBuilder.setPercentHbd(10000);
+              }
+              if (comment_rewards === '0%') {
+                replyBuilder.setMaxAcceptedPayout(chain.hbd(0));
+              }
+            },
+            parentAuthor,
+            parentPermlink,
+            this.signerOptions.username,
+            body,
+            {},
+            permlink
+          )
+          .build();
+      },
+      onError,
+      observe
+    );
   }
 
   async post(
@@ -722,8 +723,8 @@ export class TransactionService {
               articleBuilder.setMaxAcceptedPayout(chain.hbd(0));
             }
 
-              beneficiaries.forEach((beneficiarie) => {
-                articleBuilder.addBeneficiary(beneficiarie.account, Number(beneficiarie.weight));
+              beneficiaries.forEach((beneficiary) => {
+                articleBuilder.addBeneficiary(beneficiary.account, Number(beneficiary.weight));
               });
             },
             this.signerOptions.username,
