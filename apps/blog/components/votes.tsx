@@ -27,14 +27,14 @@ export function usePostUpdateVoteMutation() {
         }) => {
       let { voter, author, permlink, weight } = params;
 
-      // Use in manual testing in development only!
-      if (env('DEVELOPMENT') === 'true') {
-        if (weight > 0) {
-          weight = 1;
-        } else if (weight < 0) {
-          weight = -1;
-        }
-      }
+      // // Use in manual testing in development only!
+      // if (env('DEVELOPMENT') === 'true') {
+      //   if (weight > 0) {
+      //     weight = 1;
+      //   } else if (weight < 0) {
+      //     weight = -1;
+      //   }
+      // }
 
       try {
         await transactionService.upVote(author, permlink, weight,
