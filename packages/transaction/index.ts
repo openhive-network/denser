@@ -31,10 +31,10 @@ export class TransactionService {
     'Account does not have enough mana to downvote'
   ];
 
-  // The number of transactions observed actually.
+  // The number of transactions observed now.
   observedTransactionsCounter = 0;
 
-  // WorkerBee instance for "scanning" Hive blockchain blocks.
+  // WorkerBee instance for scanning Hive blockchain blocks.
   bot!: IWorkerBee | undefined;
 
   setSignerOptions(signerOptions: SignerOptions) {
