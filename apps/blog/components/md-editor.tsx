@@ -80,7 +80,8 @@ export const onImageUpload = async (
   setMarkdown: Dispatch<SetStateAction<string>>,
   username: string,
   signer: Signer,
-  htmlMode: boolean
+  htmlMode: boolean,
+  api: TextAreaTextApi | null // Dodajemy ten parametr
 ) => {
   const url = await uploadImg(file, username, signer);
   const insertedMarkdown = `**![${file.name}](${url})** `;
@@ -88,10 +89,18 @@ export const onImageUpload = async (
 
   if (htmlMode) {
     if (!insertHTML) return;
-    setMarkdown((prev: string): string => prev + insertHTML);
+    if (api) {
+      api.replaceSelection(insertHTML);
+    } else {
+      setMarkdown((prev: string): string => prev + insertHTML);
+    }
   } else {
     if (!insertedMarkdown) return;
-    setMarkdown((prev: string): string => prev + insertedMarkdown);
+    if (api) {
+      api.replaceSelection(insertedMarkdown);
+    } else {
+      setMarkdown((prev: string): string => prev + insertedMarkdown);
+    }
   }
 };
 
@@ -100,7 +109,8 @@ export const onImageDrop = async (
   setMarkdown: Dispatch<SetStateAction<string>>,
   username: string,
   signer: Signer,
-  htmlMode: boolean
+  htmlMode: boolean,
+  api: TextAreaTextApi | null // Dodajemy ten parametr
 ) => {
   const files = [];
 
@@ -109,7 +119,9 @@ export const onImageDrop = async (
     if (file) files.push(file);
   }
 
-  await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer, htmlMode)));
+  await Promise.all(
+    files.map(async (file) => onImageUpload(file, setMarkdown, username, signer, htmlMode, api))
+  );
 };
 
 interface MdEditorProps {
@@ -138,12 +150,22 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     setFormValue(persistedValue);
   }, [persistedValue]);
 
-  const inputImageHandler = useCallback(async (event: { target: { files: FileList } }) => {
-    if (event.target.files && event.target.files.length === 1) {
-      setInsertImg('');
-      await onImageUpload(event.target.files[0], setFormValue, user.username, signer, htmlMode);
-    }
-  }, []);
+  const inputImageHandler = useCallback(
+    async (event: { target: { files: FileList } }) => {
+      if (event.target.files && event.target.files.length === 1) {
+        setInsertImg('');
+        await onImageUpload(
+          event.target.files[0],
+          setFormValue,
+          user.username,
+          signer,
+          htmlMode,
+          textApiRef.current
+        );
+      }
+    },
+    [htmlMode, setFormValue, signer, user.username]
+  );
 
   const startDragHandler = (event: {
     preventDefault: () => void;
@@ -172,9 +194,16 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       event.preventDefault();
       event.stopPropagation();
       setIsDrag(false);
-      await onImageDrop(event.dataTransfer, setFormValue, signer.username, signer, htmlMode);
+      await onImageDrop(
+        event.dataTransfer,
+        setFormValue,
+        signer.username,
+        signer,
+        htmlMode,
+        textApiRef.current
+      );
     },
-    []
+    [htmlMode, setFormValue, signer, signer.username]
   );
 
   const imgBtn = (inputRef: MutableRefObject<HTMLInputElement>): commands.ICommand => ({
