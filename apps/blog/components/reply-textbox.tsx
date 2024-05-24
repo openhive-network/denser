@@ -49,7 +49,6 @@ export function ReplyTextbox({
   const { hiveRenderer } = useContext(HiveRendererContext);
   const btnRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
-    console.log('replay', text);
     if (hiveRenderer) {
       const nextCleanedText = text ? hiveRenderer.render(text) : '';
       setCleanedText(nextCleanedText);
@@ -161,14 +160,12 @@ export function ReplyTextbox({
         <div className="flex justify-between text-xs">
           <span className="text-slate-500">{t('post_content.footer.comment.preview')}</span>
           <div className="flex flex-col gap-1 text-end">
-            {editMode ? null : (
+            {editMode || preferences.comment_rewards === '50%' ? null : (
               <div>
                 {t('post_content.footer.comment.rewards')}
                 {preferences.comment_rewards === '0%'
                   ? t('post_content.footer.comment.decline_payout')
-                  : preferences.comment_rewards === '100%'
-                    ? t('post_content.footer.comment.power_up')
-                    : '50% HBD/50% HP'}{' '}
+                  : t('post_content.footer.comment.power_up')}{' '}
                 <Link className="text-red-500" href={`/@${user.username}/settings`}>
                   {t('post_content.footer.comment.update_settings')}
                 </Link>
