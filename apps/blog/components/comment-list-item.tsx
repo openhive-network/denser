@@ -341,7 +341,7 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor
           username={username}
           permlink={comment.permlink}
           storageId={storageId}
-          comment={comment}
+          comment=""
         />
       ) : null}
     </>

@@ -113,6 +113,10 @@ function PostPage({
   const storageId = `replybox-/${username}/${post?.permlink}`;
   const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
   const [storedReblogs, setStoredReblogs] = useLocalStorage<string[]>(`reblogged_${user.username}`, ['']);
+  const [storedComment, storeCommment, removeCommment] = useLocalStorage<string>(
+    `replyTo-/${username}/${permlink}`,
+    ''
+  );
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const firstPost = discussionState?.find((post) => post.depth === 0);
   const [edit, setEdit] = useState(false);
@@ -494,7 +498,7 @@ function PostPage({
             username={post.author}
             permlink={permlink}
             storageId={storageId}
-            comment={post}
+            comment={storedComment}
           />
         ) : null}
       </div>
