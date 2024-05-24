@@ -41,7 +41,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
     ? userVotes.votes[0]
     : undefined;
 
-  const { voteMutation } = useVoteMutation();
+  const voteMutation = useVoteMutation();
 
   const submitVote = async (weight: number) => {
     const { author, permlink } = post;
@@ -51,7 +51,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
         { voter, author, permlink, weight }
       );
     } catch (error) {
-      logger.error('Error: %o', error);
+      // logger.error('Got Error: %o', error);
     }
   }
 
