@@ -20,6 +20,7 @@ import { useSignerContext } from './common/signer';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { useTranslation } from 'next-i18next';
 import imageUserBlocklist from '@ui/config/lists/image-user-blocklist';
+import { cn } from '@ui/lib/utils';
 const logger = getLogger('app');
 
 const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false });
@@ -80,27 +81,18 @@ export const onImageUpload = async (
   setMarkdown: Dispatch<SetStateAction<string>>,
   username: string,
   signer: Signer,
-  htmlMode: boolean,
-  api: TextAreaTextApi | null // Dodajemy ten parametr
+  htmlMode: boolean
 ) => {
   const url = await uploadImg(file, username, signer);
-  const insertedMarkdown = `**![${file.name}](${url})** `;
-  const insertHTML = `<img src="${url}" alt="${file.name}" />`;
+  const insertedMarkdown = insertToTextArea(`**![${file.name}](${url})** `);
+  const insertHTML = insertToTextArea(`<img src="${url}" alt="${file.name}" />`);
 
   if (htmlMode) {
     if (!insertHTML) return;
-    if (api) {
-      api.replaceSelection(insertHTML);
-    } else {
-      setMarkdown((prev: string): string => prev + insertHTML);
-    }
+    setMarkdown(insertHTML);
   } else {
     if (!insertedMarkdown) return;
-    if (api) {
-      api.replaceSelection(insertedMarkdown);
-    } else {
-      setMarkdown((prev: string): string => prev + insertedMarkdown);
-    }
+    setMarkdown(insertedMarkdown);
   }
 };
 
@@ -109,8 +101,7 @@ export const onImageDrop = async (
   setMarkdown: Dispatch<SetStateAction<string>>,
   username: string,
   signer: Signer,
-  htmlMode: boolean,
-  api: TextAreaTextApi | null // Dodajemy ten parametr
+  htmlMode: boolean
 ) => {
   const files = [];
 
@@ -119,9 +110,29 @@ export const onImageDrop = async (
     if (file) files.push(file);
   }
 
-  await Promise.all(
-    files.map(async (file) => onImageUpload(file, setMarkdown, username, signer, htmlMode, api))
-  );
+  await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer, htmlMode)));
+};
+
+const insertToTextArea = (intsertString: string) => {
+  const textarea = document.querySelector('textarea');
+  if (!textarea) {
+    return null;
+  }
+
+  let sentence = textarea.value;
+  const len = sentence.length;
+  const pos = textarea.selectionStart;
+  const end = textarea.selectionEnd;
+
+  const front = sentence.slice(0, pos);
+  const back = sentence.slice(pos, len);
+
+  sentence = front + intsertString + back;
+
+  textarea.value = sentence;
+  textarea.selectionEnd = end + intsertString.length;
+
+  return sentence;
 };
 
 interface MdEditorProps {
@@ -154,28 +165,11 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     async (event: { target: { files: FileList } }) => {
       if (event.target.files && event.target.files.length === 1) {
         setInsertImg('');
-        await onImageUpload(
-          event.target.files[0],
-          setFormValue,
-          user.username,
-          signer,
-          htmlMode,
-          textApiRef.current
-        );
+        await onImageUpload(event.target.files[0], setFormValue, user.username, signer, htmlMode);
       }
     },
     [htmlMode, setFormValue, signer, user.username]
   );
-
-  const startDragHandler = (event: {
-    preventDefault: () => void;
-    stopPropagation: () => void;
-    type: string;
-  }) => {
-    event.preventDefault();
-    event.stopPropagation();
-    if (event.type === 'dragenter') setIsDrag(true);
-  };
 
   const dragHandler = (event: { preventDefault: () => void; stopPropagation: () => void; type: string }) => {
     event.preventDefault();
@@ -194,14 +188,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       event.preventDefault();
       event.stopPropagation();
       setIsDrag(false);
-      await onImageDrop(
-        event.dataTransfer,
-        setFormValue,
-        signer.username,
-        signer,
-        htmlMode,
-        textApiRef.current
-      );
+      await onImageDrop(event.dataTransfer, setFormValue, signer.username, signer, htmlMode);
     },
     [htmlMode, setFormValue, signer, signer.username]
   );
@@ -264,7 +251,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
         //@ts-ignore
         onChange={inputImageHandler}
       />
-      <div onDragEnter={startDragHandler} className="relative">
+      <div className="relative">
         <div>
           <MDEditor
             ref={editorRef}
@@ -276,19 +263,15 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
             }}
             commands={[...(commands.getCommands() as ICommand[]), imgBtn(inputRef)]}
             extraCommands={[]}
-            //@ts-ignore
-            style={{ '--color-canvas-default': 'var(--background)' }}
-          />
-        </div>
-        {isDrag && (
-          <div
-            className="absolute bottom-0 left-0 right-0 top-0 h-full w-full bg-red-400 bg-opacity-20 "
+            className={cn({ '!bg-red-400 !bg-opacity-20': isDrag })}
             onDrop={dropHandler}
             onDragEnter={dragHandler}
             onDragOver={dragHandler}
             onDragLeave={dragHandler}
-          ></div>
-        )}
+            //@ts-ignore
+            style={{ '--color-canvas-default': 'var(--background)' }}
+          />
+        </div>
       </div>
     </div>
   ) : (
