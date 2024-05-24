@@ -43,7 +43,7 @@ export function useVoteMutation() {
             return { voter, author, permlink, weight };
         },
         onSuccess: (data) => {
-            logger.info('usevoteMutation onSuccess data: %o', data);
+            logger.info('useVoteMutation onSuccess data: %o', data);
             const { voter, author, permlink } = data;
             queryClient.invalidateQueries(
                 { queryKey: ['votes', author, permlink, voter] });
