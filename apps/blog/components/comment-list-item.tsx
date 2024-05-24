@@ -54,6 +54,7 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor
   const legalBlockedUser = userIllegalContent.some((e) => e === comment.author);
   const userFromGDPR = gdprUserList.some((e) => e === comment.author);
   const parentFromGDPR = gdprUserList.some((e) => e === comment.parent_author);
+
   useEffect(() => {
     if (reply) {
       storeBox(reply);
@@ -303,7 +304,7 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor
                             </button>
                           </>
                         ) : null}
-                        {user &&
+                        {comment.replies.length === 0 &&
                         user.isLoggedIn &&
                         comment.author === user.username &&
                         moment().format('YYYY-MM-DDTHH:mm:ss') < comment.payout_at ? (
