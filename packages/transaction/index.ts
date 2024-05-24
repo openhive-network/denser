@@ -24,17 +24,49 @@ const logger = getLogger('app');
 export type TransactionErrorCallback = undefined | ((error: any) => any);
 
 export class TransactionService {
+  /**
+   * Default error description, used when trying to get smarter
+   * description fails
+   *
+   * @memberof TransactionService
+   */
   errorDescription = 'Transaction broadcast error';
-  signerOptions!: SignerOptions;
+
+  /**
+   * Strings to look for in error's stuff. When found, we can assume
+   * that we caught well known error and we can use these strings in
+   * message for user safely.
+   *
+   * @memberof TransactionService
+   */
   wellKnownErrorDescriptions = [
     'Your current vote on this comment is identical to this vote',
     'Account does not have enough mana to downvote',
   ];
 
-  // The number of transactions observed now.
+  /**
+   * Options for Signer.
+   *
+   * @type {SignerOptions}
+   * @memberof TransactionService
+   */
+  signerOptions!: SignerOptions;
+
+  /**
+   * The number of transactions observed.
+   *
+   * @memberof TransactionService
+   */
   observedTransactionsCounter = 0;
 
   // WorkerBee instance for scanning Hive blockchain blocks.
+
+  /**
+   * Instance of WorkerBee Block Scanner.
+   *
+   * @type {(IWorkerBee | undefined)}
+   * @memberof TransactionService
+   */
   bot!: IWorkerBee | undefined;
 
   setSignerOptions(signerOptions: SignerOptions) {
@@ -876,8 +908,8 @@ export class TransactionService {
   }
 
   /**
-   * Handle error by trying to find a message for user in error, display
-   * found message in toast, then swallow error.
+   * Handle error by trying to find a message for user in error stuff,
+   * display found message in toast, then swallow error.
    *
    * @param {*} e
    * @param {Toast} [toastOptions={}]
