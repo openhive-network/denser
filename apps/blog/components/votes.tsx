@@ -6,64 +6,13 @@ import clsx from 'clsx';
 import type { Entry } from '@transaction/lib/bridge';
 import { useTranslation } from 'next-i18next';
 import { useEffect, useState } from 'react';
-import { transactionService } from '@transaction/index';
-import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
+import { useVoteMutation } from '../components/hooks/use-vote-mutation';
+import { useQuery } from '@tanstack/react-query';
 import { CircleSpinner } from 'react-spinners-kit';
 import { getListVotesByCommentVoter } from '@transaction/lib/hive';
-import env from '@beam-australia/react-env';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
-
-
-export function usePostUpdateVoteMutation() {
-  const queryClient = useQueryClient();
-  const postUpdateVoteMutation = useMutation({
-    mutationFn: async (params: {
-          voter: string,
-          author: string,
-          permlink: string,
-          weight: number
-        }) => {
-      let { voter, author, permlink, weight } = params;
-
-      // // Use in manual testing in development only!
-      // if (env('DEVELOPMENT') === 'true') {
-      //   if (weight > 0) {
-      //     weight = 1;
-      //   } else if (weight < 0) {
-      //     weight = -1;
-      //   }
-      // }
-
-      try {
-        await transactionService.upVote(author, permlink, weight,
-          (error) => { throw error; }, true);
-        logger.info('Voted: %o',
-          { voter, author, permlink, weight });
-      } catch (error) {
-        transactionService.handleError(error);
-        throw error;
-      }
-      return { voter, author, permlink, weight };
-    },
-    onSuccess: (data) => {
-      logger.info('usePostUpdateVoteMutation onSuccess data: %o', data);
-      queryClient.invalidateQueries(
-        { queryKey: ['votes', data.author, data.permlink, data.voter] });
-      queryClient.invalidateQueries(
-        { queryKey: [data.permlink, data.voter, 'ActiveVotes'] });
-      queryClient.invalidateQueries(
-        { queryKey: ['postData', data.author, data.permlink ] });
-      queryClient.invalidateQueries(
-        { queryKey: ['entriesInfinite'] });
-    },
-    onError: (error) => {
-      throw error;
-    }
-  });
-  return postUpdateVoteMutation;
-};
 
 
 const VotesComponent = ({ post }: { post: Entry }) => {
@@ -92,13 +41,13 @@ const VotesComponent = ({ post }: { post: Entry }) => {
     ? userVotes.votes[0]
     : undefined;
 
-  const postUpdateVoteMutation = usePostUpdateVoteMutation();
+  const { voteMutation } = useVoteMutation();
 
   const submitVote = async (weight: number) => {
     const { author, permlink } = post;
     const voter = user.username;
     try {
-      await postUpdateVoteMutation.mutateAsync(
+      await voteMutation.mutateAsync(
         { voter, author, permlink, weight }
       );
     } catch (error) {
@@ -111,10 +60,10 @@ const VotesComponent = ({ post }: { post: Entry }) => {
 
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger data-testid="upvote-button" disabled={postUpdateVoteMutation.isLoading}>
-              {clickedVoteButton === 'up' && postUpdateVoteMutation.isLoading
+            <TooltipTrigger data-testid="upvote-button" disabled={voteMutation.isLoading}>
+              {clickedVoteButton === 'up' && voteMutation.isLoading
               ?
-                <CircleSpinner loading={clickedVoteButton === 'up' && postUpdateVoteMutation.isLoading}
+                <CircleSpinner loading={clickedVoteButton === 'up' && voteMutation.isLoading}
                               size={18} color="#dc2626" />
               :
                 user && user.isLoggedIn
@@ -125,7 +74,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                       { 'bg-red-600 text-white': userVote && userVote.vote_percent > 0 },
                     )}
                     onClick={(e) => {
-                      if (postUpdateVoteMutation.isLoading) return;
+                      if (voteMutation.isLoading) return;
                       setClickedVoteButton('up');
                       {
                         // We vote either 100% or 0%.
@@ -157,10 +106,10 @@ const VotesComponent = ({ post }: { post: Entry }) => {
 
       <TooltipProvider>
         <Tooltip>
-          <TooltipTrigger data-testid="downvote-button" disabled={postUpdateVoteMutation.isLoading}>
-            {clickedVoteButton === 'down' && postUpdateVoteMutation.isLoading
+          <TooltipTrigger data-testid="downvote-button" disabled={voteMutation.isLoading}>
+            {clickedVoteButton === 'down' && voteMutation.isLoading
             ?
-              <CircleSpinner loading={clickedVoteButton === 'down' && postUpdateVoteMutation.isLoading}
+              <CircleSpinner loading={clickedVoteButton === 'down' && voteMutation.isLoading}
                             size={18} color="#dc2626" />
             :
               user && user.isLoggedIn
@@ -171,7 +120,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                     { 'bg-gray-600 text-white': userVote && userVote.vote_percent < 0 },
                   )}
                   onClick={(e) => {
-                    if (postUpdateVoteMutation.isLoading) return;
+                    if (voteMutation.isLoading) return;
                     setClickedVoteButton('down');
                     {
                       // We vote either -100% or 0%.
