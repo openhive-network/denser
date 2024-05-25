@@ -113,7 +113,7 @@ export const onImageDrop = async (
   await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer, htmlMode)));
 };
 
-const insertToTextArea = (intsertString: string) => {
+const insertToTextArea = (insertString: string) => {
   const textarea = document.querySelector('textarea');
   if (!textarea) {
     return null;
@@ -127,10 +127,10 @@ const insertToTextArea = (intsertString: string) => {
   const front = sentence.slice(0, pos);
   const back = sentence.slice(pos, len);
 
-  sentence = front + intsertString + back;
+  sentence = front + insertString + back;
 
   textarea.value = sentence;
-  textarea.selectionEnd = end + intsertString.length;
+  textarea.selectionEnd = end + insertString.length;
 
   return sentence;
 };
@@ -190,7 +190,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       setIsDrag(false);
       await onImageDrop(event.dataTransfer, setFormValue, signer.username, signer, htmlMode);
     },
-    [htmlMode, setFormValue, signer, signer.username]
+    [htmlMode, setFormValue, signer]
   );
 
   const imgBtn = (inputRef: MutableRefObject<HTMLInputElement>): commands.ICommand => ({
