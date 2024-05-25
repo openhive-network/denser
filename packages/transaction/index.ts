@@ -191,19 +191,23 @@ export class TransactionService {
       // Observe if transaction has been applied into blockchain (scan
       // blocks).
       await new Promise((resolve, reject) => {
-        observer.subscribe({
+        const subscription = observer.subscribe({
           next: (data: ITransactionData) => {
-            // logger.info('data: %o', data);
             const { block: { number: appliedBlockNumber } } = data;
             logger.info('Transaction %o applied on block #%s, found after %sms',
                 txBuilder.toApi(), appliedBlockNumber, Date.now() - startedAt);
+            subscription.unsubscribe();
             resolve(appliedBlockNumber);
           },
           error(error) {
             logger.error("Transaction %o observation time expired: %o",
                 txBuilder.toApi(), error);
+            subscription.unsubscribe();
             reject(error);
-          }
+          },
+          complete() {
+            logger.info('In complete callback');
+          },
         });
       });
 
