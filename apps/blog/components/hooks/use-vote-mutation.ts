@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { transactionService } from '@transaction/index';
+import { BroadcastTransactionResult, transactionService } from '@transaction/index';
 import env from '@beam-australia/react-env';
 
 import { getLogger } from '@ui/lib/logging';
@@ -34,6 +34,7 @@ export function useVoteMutation() {
             //   }
             // }
 
+            let broadcastResult: BroadcastTransactionResult | undefined;
             await transactionService.upVote(
                 author,
                 permlink,
@@ -50,10 +51,12 @@ export function useVoteMutation() {
                     // mutation finished with error.
                     throw error;
                 },
-                true
+                async (txBuilder) => {
+                    broadcastResult = await transactionService.broadcastAndObserveTransaction(txBuilder);
+                }
             );
-            logger.info('Voted: %o', { voter, author, permlink, weight });
-            return { voter, author, permlink, weight };
+            logger.info('Voted: %o', { voter, author, permlink, weight, broadcastResult });
+            return { voter, author, permlink, weight, broadcastResult };
         },
         onSuccess: (data) => {
             logger.info('useVoteMutation onSuccess data: %o', data);

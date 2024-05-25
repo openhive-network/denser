@@ -17,12 +17,18 @@ import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
 import { Beneficiarie, Preferences } from './lib/app-types';
 import WorkerBee, { ITransactionData, IWorkerBee } from "@hiveio/workerbee";
+import type { Subscribable, Unsubscribable } from 'rxjs';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
 export type TransactionErrorCallback = undefined | ((error: any) => any);
+export type TransactionBroadcastCallback = undefined | ((txBuilder: ITransactionBuilder) => any);
 
+export interface BroadcastTransactionResult {
+  blockNumber?: number;
+  transactionId: string;
+}
 export class TransactionService {
   /**
    * Default error description, used when trying to get smarter
@@ -95,7 +101,9 @@ export class TransactionService {
   async processHiveAppOperation(
     cb: (opBuilder: ITransactionBuilder) => void,
     onError: TransactionErrorCallback = (error) => this.handleError(error),
-    observe = false
+    // observe: boolean = false,
+    broadcastCallback: TransactionBroadcastCallback =
+      async (txBuilder: ITransactionBuilder): Promise<BroadcastTransactionResult> => await this.broadcastTransaction(txBuilder)
   ) {
     try {
       const txBuilder = await (await hiveChainService.getHiveChain()).getTransactionBuilder();
@@ -111,12 +119,14 @@ export class TransactionService {
       // Add signature to transaction
       txBuilder.build(signature);
 
-      // Broadcast transaction
-      if (observe) {
-        await this.broadcastAndObserveTransaction(txBuilder);
-      } else {
-        await this.broadcastTransaction(txBuilder);
-      }
+      // // Broadcast transaction
+      // if (observe) {
+      //   await this.broadcastAndObserveTransaction(txBuilder);
+      // } else {
+      //   await this.broadcastTransaction(txBuilder);
+      // }
+
+      await broadcastCallback(txBuilder);
     } catch (error) {
       onError(error);
     }
@@ -145,13 +155,14 @@ export class TransactionService {
    * @return {*}  {Promise<void>}
    * @memberof TransactionService
    */
-  async broadcastTransaction(txBuilder: ITransactionBuilder): Promise<void> {
+  async broadcastTransaction(txBuilder: ITransactionBuilder): Promise<BroadcastTransactionResult> {
     // Create broadcast request
     const broadcastReq = new BroadcastTransactionRequest(txBuilder);
     // Do broadcast
     await (
       await hiveChainService.getHiveChain()
     ).api.network_broadcast_api.broadcast_transaction(broadcastReq);
+    return { transactionId: txBuilder.id };
   }
 
   /**
@@ -163,7 +174,7 @@ export class TransactionService {
    * @return {*}  {Promise<void>}
    * @memberof TransactionService
    */
-  async broadcastAndObserveTransaction(txBuilder: ITransactionBuilder): Promise<void> {
+  async broadcastAndObserveTransaction(txBuilder: ITransactionBuilder): Promise<BroadcastTransactionResult> {
     try {
       // Create bot
       if (!this.bot) {
@@ -184,33 +195,32 @@ export class TransactionService {
       }
 
       // Do broadcast
-      logger.info('Broadcasting transaction %o', txBuilder.toApi());
+      const transactionId = txBuilder.id;
+      logger.info('Broadcasting transaction id: %o, body: %o', transactionId, txBuilder.toApi());
       const startedAt = Date.now();
       const observer = await this.bot.broadcast(txBuilder.build(), { throwAfter: 60 * 1000 });
 
       // Observe if transaction has been applied into blockchain (scan
       // blocks).
-      await new Promise((resolve, reject) => {
+      const result: BroadcastTransactionResult = await new Promise((resolve, reject) => {
         const subscription = observer.subscribe({
           next: (data: ITransactionData) => {
-            const { block: { number: appliedBlockNumber } } = data;
-            logger.info('Transaction %o applied on block #%s, found after %sms',
-                txBuilder.toApi(), appliedBlockNumber, Date.now() - startedAt);
+            const { block: { number: blockNumber } } = data;
+            logger.info('Transaction id: %o applied on block: #%s, found after %sms',
+              transactionId, blockNumber, Date.now() - startedAt);
             subscription.unsubscribe();
-            resolve(appliedBlockNumber);
+            resolve({ transactionId, blockNumber });
           },
           error(error) {
-            logger.error("Transaction %o observation time expired: %o",
-                txBuilder.toApi(), error);
+            logger.error("Transaction id: %o observation time expired: %o",
+              transactionId, txBuilder.toApi(), error);
             subscription.unsubscribe();
             reject(error);
-          },
-          complete() {
-            logger.info('In complete callback');
           },
         });
       });
 
+      return result;
     } catch (error) {
       logger.error("Error: %o", error);
       throw error;
@@ -234,7 +244,7 @@ export class TransactionService {
     permlink: string,
     weight = 10000,
     onError: TransactionErrorCallback = undefined,
-    observe = false
+    observe: TransactionBroadcastCallback = undefined
   ) {
     await this.processHiveAppOperation(
       (builder) => {
