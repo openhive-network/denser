@@ -47,7 +47,6 @@ export function AdvancedSettingsPostForm({
   onChangeStore: (data: AccountFormValues) => void;
   data: AccountFormValues;
 }) {
-  console.log('data', data);
   const { t } = useTranslation('common_blog');
   const [preferences, setPreferences] = useLocalStorage<Preferences>(
     `user-preferences-${username}`,
@@ -87,6 +86,7 @@ export function AdvancedSettingsPostForm({
 
   useEffect(() => {
     setMaxPayout(preferences.blog_rewards === '100%' || preferences.blog_rewards === '50%' ? 'no_max' : '0');
+    setRewards(preferences.blog_rewards !== '100%' ? '50%' : preferences.blog_rewards);
   }, [preferences.blog_rewards]);
 
   useEffect(() => {
