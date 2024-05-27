@@ -23,7 +23,8 @@ const logger = getLogger('app');
 
 export type TransactionErrorCallback = (error: any) => any;
 
-export type TransactionBroadcastCallback = (txBuilder: ITransactionBuilder) => Promise<TransactionBroadcastResult>;
+export type TransactionBroadcastCallback =
+  (txBuilder: ITransactionBuilder) => Promise<TransactionBroadcastResult>;
 
 export interface TransactionOptions {
   onError?: TransactionErrorCallback;
@@ -127,7 +128,9 @@ export class TransactionService {
     };
 
     try {
-      const txBuilder = await (await hiveChainService.getHiveChain()).getTransactionBuilder();
+      const txBuilder = await (
+        await hiveChainService.getHiveChain()
+      ).getTransactionBuilder();
 
       // Create transaction from operation
       cb(txBuilder);
@@ -213,9 +216,12 @@ export class TransactionService {
 
       // Do broadcast
       const transactionId = txBuilder.id;
-      logger.info('Broadcasting transaction id: %o, body: %o', transactionId, txBuilder.toApi());
+      logger.info('Broadcasting transaction id: %o, body: %o',
+          transactionId, txBuilder.toApi());
       const startedAt = Date.now();
-      const observer = await this.bot.broadcast(txBuilder.build(), { throwAfter: 60 * 1000 });
+      const observer = await this.bot.broadcast(
+        txBuilder.build(), { throwAfter: 60 * 1000 }
+      );
 
       // Observe if transaction has been applied into blockchain (scan
       // blocks and look for transactionId).
