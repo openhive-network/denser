@@ -125,14 +125,17 @@ export default function PostForm({
     maxAcceptedPayout: preferences.blog_rewards === '0%' ? 0 : 1000000,
     payoutType: preferences.blog_rewards
   };
-  const [preview, setPreview] = useState(true);
-  const [selectedImg, setSelectedImg] = useState('');
-  const [sideBySide, setSideBySide] = useState(sideBySidePreview);
-  const { manabarsData } = useManabars(username);
   const [storedPost, storePost] = useLocalStorage<AccountFormValues>(
     editMode ? `postData-edit-${post_s?.permlink}` : 'postData-new',
     defaultValues
   );
+  useEffect(() => {
+    storePost({ ...storedPost, payoutType: preferences.blog_rewards });
+  }, [preferences.blog_rewards]);
+  const [preview, setPreview] = useState(true);
+  const [selectedImg, setSelectedImg] = useState('');
+  const [sideBySide, setSideBySide] = useState(sideBySidePreview);
+  const { manabarsData } = useManabars(username);
   const [previewContent, setPreviewContent] = useState<string | undefined>(storedPost.postArea);
   const { t } = useTranslation('common_blog');
 
