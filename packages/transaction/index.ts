@@ -17,7 +17,6 @@ import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
 import { Beneficiarie, Preferences } from './lib/app-types';
 import WorkerBee, { ITransactionData, IWorkerBee } from "@hiveio/workerbee";
-import type { Subscribable, Unsubscribable } from 'rxjs';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
