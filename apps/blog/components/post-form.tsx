@@ -130,7 +130,11 @@ export default function PostForm({
     defaultValues
   );
   useEffect(() => {
-    storePost({ ...storedPost, payoutType: preferences.blog_rewards });
+    storePost({
+      ...storedPost,
+      payoutType: preferences.blog_rewards,
+      maxAcceptedPayout: preferences.blog_rewards === '0%' ? 0 : 1000000
+    });
   }, [preferences.blog_rewards]);
   const [preview, setPreview] = useState(true);
   const [selectedImg, setSelectedImg] = useState('');
