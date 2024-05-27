@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@ui/components/dialog';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, use, useEffect, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@hive/ui/components/select';
 import Link from 'next/link';
 import { Icons } from '@ui/components/icons';
@@ -52,11 +52,13 @@ export function AdvancedSettingsPostForm({
     `user-preferences-${username}`,
     DEFAULT_PREFERENCES
   );
-  const [rewards, setRewards] = useState(data.payoutType === '' ? '50%' : data.payoutType);
+  const [rewards, setRewards] = useState(
+    preferences.blog_rewards !== '100%' ? '50%' : preferences.blog_rewards
+  );
   const [splitRewards, setSplitRewards] = useState(100);
   const [templateTitle, setTemplateTitle] = useState('');
   const [maxPayout, setMaxPayout] = useState(
-    data.maxAcceptedPayout === 1000000 ? 'no_max' : data.maxAcceptedPayout === 0 ? '0' : 'custom'
+    preferences.blog_rewards === '100%' || preferences.blog_rewards === '50%' ? 'no_max' : '0'
   );
   const [selectTemplate, setSelectTemplate] = useState('/');
   const [beneficiaries, setBeneficiaries] = useState<{ weight: string; account: string }[]>(
@@ -83,13 +85,22 @@ export function AdvancedSettingsPostForm({
   const currentTemplate = storedTemplates.find((e) => e.templateTitle === selectTemplate);
 
   useEffect(() => {
-    setRewards(data.payoutType === '' ? '50%' : data.payoutType);
-    setMaxPayout(
-      data.maxAcceptedPayout === 1000000 ? 'no_max' : data.maxAcceptedPayout === 0 ? '0' : 'custom'
-    );
-    setBeneficiaries(data.beneficiaries);
-    setCustomValue(data.maxAcceptedPayout !== 1000000 ? data.maxAcceptedPayout : '100');
+    setMaxPayout(preferences.blog_rewards === '100%' || preferences.blog_rewards === '50%' ? 'no_max' : '0');
+    setRewards(preferences.blog_rewards !== '100%' ? '50%' : preferences.blog_rewards);
+  }, [preferences.blog_rewards]);
+
+  useEffect(() => {
+    setRewards(rewards);
+    setMaxPayout(maxPayout);
+    setBeneficiaries(beneficiaries);
+    setCustomValue(customValue);
   }, [open]);
+
+  useEffect(() => {
+    if (maxPayout === '0') {
+      setRewards('50%');
+    }
+  }, [maxPayout]);
 
   useEffect(() => {
     const combinedPercentage = beneficiaries.reduce<number>((acc, beneficiary) => {

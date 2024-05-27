@@ -32,7 +32,7 @@ export function ReplyTextbox({
   parentPermlink?: string;
   storageId: string;
   editMode: boolean;
-  comment: Entry;
+  comment: Entry | string;
 }) {
   const [storedPost, storePost, removePost] = useLocalStorage<string>(`replyTo-/${username}/${permlink}`, '');
   const { user } = useUser();
@@ -42,7 +42,9 @@ export function ReplyTextbox({
     DEFAULT_PREFERENCES
   );
   const { t } = useTranslation('common_blog');
-  const [text, setText] = useState(comment ? comment.body : storedPost ? storedPost : '');
+  const [text, setText] = useState(
+    typeof comment === 'string' ? comment : comment.body ? comment.body : storedPost ? storedPost : ''
+  );
   const [cleanedText, setCleanedText] = useState('');
   const { hiveRenderer } = useContext(HiveRendererContext);
   const btnRef = useRef<HTMLButtonElement>(null);
@@ -71,7 +73,7 @@ export function ReplyTextbox({
       if (btnRef.current) {
         btnRef.current.disabled = true;
       }
-      if (parentPermlink) {
+      if (parentPermlink && typeof comment !== 'string') {
         const payout =
           comment.max_accepted_payout === '0.000 HBD' ? '0%' : comment.percent_hbd === 0 ? '100%' : '50%';
         transactionService.updateComment(username, parentPermlink, permlink, cleanedText, payout);
@@ -158,14 +160,12 @@ export function ReplyTextbox({
         <div className="flex justify-between text-xs">
           <span className="text-slate-500">{t('post_content.footer.comment.preview')}</span>
           <div className="flex flex-col gap-1 text-end">
-            {editMode ? null : (
+            {editMode || preferences.comment_rewards === '50%' ? null : (
               <div>
                 {t('post_content.footer.comment.rewards')}
                 {preferences.comment_rewards === '0%'
                   ? t('post_content.footer.comment.decline_payout')
-                  : preferences.comment_rewards === '100%'
-                    ? t('post_content.footer.comment.power_up')
-                    : '50% HBD/50% HP'}{' '}
+                  : t('post_content.footer.comment.power_up')}{' '}
                 <Link className="text-red-500" href={`/@${user.username}/settings`}>
                   {t('post_content.footer.comment.update_settings')}
                 </Link>
