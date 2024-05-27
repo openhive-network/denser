@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { BroadcastTransactionResult, transactionService } from '@transaction/index';
+import { TransactionBroadcastResult, transactionService } from '@transaction/index';
 import env from '@beam-australia/react-env';
 
 import { getLogger } from '@ui/lib/logging';
@@ -34,25 +34,28 @@ export function useVoteMutation() {
             //   }
             // }
 
-            let broadcastResult: BroadcastTransactionResult | undefined;
+            let broadcastResult: TransactionBroadcastResult | undefined;
             await transactionService.upVote(
                 author,
                 permlink,
                 weight,
-                (error) => {
-                    // The method `transactionService.handleError` will
-                    // throw toast message to inform user in UI about
-                    // error. If you haven't better idea how to inform
-                    // user, just pass your error there. Note, that
-                    // error will be swallowed there.
-                    transactionService.handleError(error);
-                    // Throwing the error now is a crucial thing for
-                    // @tanstack/react-query, which should know that
-                    // mutation finished with error.
-                    throw error;
-                },
-                async (txBuilder) => {
-                    broadcastResult = await transactionService.broadcastAndObserveTransaction(txBuilder);
+                {
+                    onError: (error) => {
+                        // The method `transactionService.handleError` will
+                        // throw toast message to inform user in UI about
+                        // error. If you haven't better idea how to inform
+                        // user, just pass your error there. Note, that
+                        // error will be swallowed there.
+                        transactionService.handleError(error);
+                        // Throwing the error now is a crucial thing for
+                        // @tanstack/react-query, which should know that
+                        // mutation finished with error.
+                        throw error;
+                    },
+                    broadcastCallback: async (txBuilder) => {
+                        broadcastResult = await transactionService.broadcastAndObserveTransaction(txBuilder);
+                        return broadcastResult;
+                    }
                 }
             );
             logger.info('Voted: %o', { voter, author, permlink, weight, broadcastResult });
