@@ -55,7 +55,7 @@ export function useVoteMutation() {
                 }
             );
             const response = { voter, author, permlink, weight, broadcastResult };
-            logger.info('Voted: %o', response);
+            logger.info('Done vote transaction: %o', response);
             return response;
         },
         onSuccess: async (data) => {

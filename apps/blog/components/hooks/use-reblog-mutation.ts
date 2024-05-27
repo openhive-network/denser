@@ -1,6 +1,5 @@
-import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import { transactionService } from '@transaction/index';
-import { PromiseTools } from '@transaction/lib/promise-tools';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { TransactionBroadcastResult, transactionService } from '@transaction/index';
 
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -15,21 +14,21 @@ export function useReblogMutation() {
             username: string
           }) => {
         const { author, permlink, username } = params;
-        try {
-          // await transactionService.reblog(author, permlink,
-          //   (error) => { throw error; }, true);
-          logger.info('Reblogged: %o',
-            { author, permlink, username });
 
-          // TODO Remove line below, when observe works in
-          // TranscationService.
-          await PromiseTools.promiseTimeout(7000);
-
-        } catch (error) {
-          transactionService.handleError(error);
-          throw error;
-        }
-        return { author, permlink, username };
+        const broadcastResult: TransactionBroadcastResult = await transactionService.reblog(
+            author,
+            permlink,
+            {
+                onError: (error) => {
+                    transactionService.handleError(error);
+                    throw error;
+                },
+                observe: true
+            }
+        );
+        const response = { author, permlink, username, broadcastResult };
+        logger.info('Done reblog transaction: %o', response);
+        return response;
       },
       onSuccess: (data) => {
         logger.info('useReblogMutation onSuccess data: %o', data);
