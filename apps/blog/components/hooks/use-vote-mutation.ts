@@ -51,10 +51,7 @@ export function useVoteMutation() {
                         // mutation finished with error.
                         throw error;
                     },
-                    broadcastCallback: async (txBuilder) => {
-                        return await transactionService
-                            .broadcastAndObserveTransaction(txBuilder);
-                    }
+                    observe: true
                 }
             );
             const response = { voter, author, permlink, weight, broadcastResult };
@@ -62,7 +59,7 @@ export function useVoteMutation() {
             return response;
         },
         onSuccess: async (data) => {
-            logger.info('Running useVoteMutation onSuccess: %o', data);
+            logger.info('Running useVoteMutation onSuccess, data: %o', data);
             const { voter, author, permlink } = data;
             // We need to invalidate queries, that can be affected by
             // mutation. This tells @tanstack/react-query, that it

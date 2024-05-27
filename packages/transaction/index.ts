@@ -28,7 +28,7 @@ export type TransactionBroadcastCallback =
 
 export interface TransactionOptions {
   onError?: TransactionErrorCallback;
-  broadcastCallback?: TransactionBroadcastCallback;
+  observe?: boolean;
 }
 
 export interface TransactionBroadcastResult {
@@ -100,9 +100,9 @@ export class TransactionService {
    *    does not observe if transaction has been applied in blockchain –
    *    resolves just after sending transaction to API server. When you
    *    want to observe transaction and resolve after applying it in
-   *    blockchain, call method
-   *    `TransactionService.broadcastAndObserveTransaction` in callback
-   *    `broadcastCallback`.
+   *    blockchain, pass `options.observe` set to true. Then method
+   *    `TransactionService.broadcastAndObserveTransaction` will be run
+   *    and this resolves after applying transaction in blockchain.
    *
    * @param {(opBuilder: ITransactionBuilder) => void} cb
    * @param {TransactionErrorCallback} [onError=(error) =>
@@ -117,13 +117,10 @@ export class TransactionService {
 
     const defaultTransactionOptions = {
       onError: (error: any): void => this.handleError(error),
-      broadcastCallback:
-        (txBuilder: ITransactionBuilder): Promise<TransactionBroadcastResult> => {
-          return this.broadcastTransaction(txBuilder);
-        }
+      observe: false,
     }
 
-    const { onError, broadcastCallback } = {
+    const { onError, observe } = {
       ...defaultTransactionOptions,
       ...transactionOptions
     };
@@ -144,7 +141,11 @@ export class TransactionService {
       // Add signature to transaction
       txBuilder.build(signature);
 
-      return await broadcastCallback(txBuilder);
+      if (observe) {
+        return await this.broadcastAndObserveTransaction(txBuilder);
+      } else {
+        return await this.broadcastTransaction(txBuilder);
+      }
 
     } catch (error) {
       onError(error);
@@ -180,10 +181,13 @@ export class TransactionService {
     // Create broadcast request
     const broadcastReq = new BroadcastTransactionRequest(txBuilder);
     // Do broadcast
+    const transactionId = txBuilder.id;
+    logger.info('Broadcasting transaction id: %o, body: %o',
+        transactionId, txBuilder.toApi());
     await (
       await hiveChainService.getHiveChain()
     ).api.network_broadcast_api.broadcast_transaction(broadcastReq);
-    return { transactionId: txBuilder.id };
+    return { transactionId };
   }
 
   /**
@@ -195,7 +199,10 @@ export class TransactionService {
    * @return {*}  {Promise<void>}
    * @memberof TransactionService
    */
-  async broadcastAndObserveTransaction(txBuilder: ITransactionBuilder): Promise<TransactionBroadcastResult> {
+  async broadcastAndObserveTransaction(
+    txBuilder: ITransactionBuilder,
+    throwAfter = 60 * 1000
+  ): Promise<TransactionBroadcastResult> {
     try {
       // Create bot
       if (!this.bot) {
@@ -221,16 +228,18 @@ export class TransactionService {
           transactionId, txBuilder.toApi());
       const startedAt = Date.now();
       const observer = await this.bot.broadcast(
-        txBuilder.build(), { throwAfter: 60 * 1000 }
+        txBuilder.build(),
+        { throwAfter }
       );
 
       // Observe if transaction has been applied into blockchain (scan
       // blocks and look for transactionId).
+      logger.info('Starting observing transaction id: %o', transactionId);
       const result: TransactionBroadcastResult = await new Promise((resolve, reject) => {
         const subscription = observer.subscribe({
           next: (data: ITransactionData) => {
             const { block: { number: blockNumber } } = data;
-            logger.info('Transaction id: %o applied on block: #%s, found after %sms',
+            logger.info('Transaction id: %o applied on block: %o, found after %sms',
               transactionId, blockNumber, Date.now() - startedAt);
             subscription.unsubscribe();
             resolve({ transactionId, blockNumber });
