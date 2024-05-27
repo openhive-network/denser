@@ -85,7 +85,7 @@ const PostListItem = ({
       // cacheTime: 1000 * 60 * 60 * 24 * 365, // 1 year
     }
   );
-  logger.info('Reblog data author: %s, permlink: %s, isReblogged: %o', post.author, post.permlink, isReblogged);
+  // logger.info('Reblog data author: %s, permlink: %s, isReblogged: %o', post.author, post.permlink, isReblogged);
 
 
   function revealPost() {
