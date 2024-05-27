@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@ui/components/dialog';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, use, useEffect, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@hive/ui/components/select';
 import Link from 'next/link';
 import { Icons } from '@ui/components/icons';
@@ -83,6 +83,11 @@ export function AdvancedSettingsPostForm({
   const smallWeight = beneficiaries.find((e) => Number(e.weight) <= 0);
   const isTemplateStored = storedTemplates.some((template) => template.templateTitle === templateTitle);
   const currentTemplate = storedTemplates.find((e) => e.templateTitle === selectTemplate);
+
+  useEffect(() => {
+    setMaxPayout(preferences.blog_rewards === '100%' || preferences.blog_rewards === '50%' ? 'no_max' : '0');
+    setRewards(preferences.blog_rewards !== '100%' ? '50%' : preferences.blog_rewards);
+  }, [preferences.blog_rewards]);
 
   useEffect(() => {
     setRewards(rewards);
