@@ -112,7 +112,7 @@ export class TransactionService {
   async processHiveAppOperation(
     cb: (opBuilder: ITransactionBuilder) => void,
     transactionOptions: TransactionOptions = {}
-  ): Promise<TransactionBroadcastResult | undefined> {
+  ): Promise<TransactionBroadcastResult> {
 
     const defaultTransactionOptions = {
       onError: (error: any): void => this.handleError(error),
@@ -141,10 +141,11 @@ export class TransactionService {
       // Add signature to transaction
       txBuilder.build(signature);
 
-      const result = await broadcastCallback(txBuilder);
-      return result;
+      return await broadcastCallback(txBuilder);
+
     } catch (error) {
       onError(error);
+      return { transactionId: '' };
     }
 
   }
@@ -218,7 +219,7 @@ export class TransactionService {
       const observer = await this.bot.broadcast(txBuilder.build(), { throwAfter: 60 * 1000 });
 
       // Observe if transaction has been applied into blockchain (scan
-      // blocks).
+      // blocks and look for transactionId).
       const result: TransactionBroadcastResult = await new Promise((resolve, reject) => {
         const subscription = observer.subscribe({
           next: (data: ITransactionData) => {
@@ -236,7 +237,6 @@ export class TransactionService {
           },
         });
       });
-
       return result;
     } catch (error) {
       logger.error("Error: %o", error);
@@ -262,7 +262,7 @@ export class TransactionService {
     weight = 10000,
     transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder
           .push({
@@ -285,7 +285,7 @@ export class TransactionService {
     weight = -10000,
     transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder
           .push({
@@ -306,7 +306,7 @@ export class TransactionService {
     username: string,
     transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new CommunityOperationBuilder()
@@ -323,7 +323,7 @@ export class TransactionService {
     username: string,
     transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new CommunityOperationBuilder()
@@ -343,7 +343,7 @@ export class TransactionService {
     notes: string,
     transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new CommunityOperationBuilder()
@@ -361,7 +361,7 @@ export class TransactionService {
     permlink: string,
     transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -378,7 +378,7 @@ export class TransactionService {
     username: string,
     transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -395,7 +395,7 @@ export class TransactionService {
     username: string,
     transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -413,7 +413,7 @@ export class TransactionService {
     blog = '',
     transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -430,7 +430,7 @@ export class TransactionService {
     blog: string,
     transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -446,7 +446,7 @@ export class TransactionService {
   async resetBlogList(
     transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -464,7 +464,7 @@ export class TransactionService {
     blog = '',
     transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -481,7 +481,7 @@ export class TransactionService {
     blog: string,
     transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -499,7 +499,7 @@ export class TransactionService {
     blog = '',
     transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -516,7 +516,7 @@ export class TransactionService {
     blog: string,
     transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -534,7 +534,7 @@ export class TransactionService {
     blog = '',
     transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -550,7 +550,7 @@ export class TransactionService {
   async resetAllBlog(
     transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -566,7 +566,7 @@ export class TransactionService {
   async resetBlacklistBlog(
     transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -582,7 +582,7 @@ export class TransactionService {
   async resetFollowBlacklistBlog(
     transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -598,7 +598,7 @@ export class TransactionService {
   async resetFollowMutedBlog(
     transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -615,7 +615,7 @@ export class TransactionService {
     blog: string,
     transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -636,7 +636,7 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     const chain = await hiveChainService.getHiveChain();
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder
           .useBuilder(
@@ -672,7 +672,7 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     const chain = await hiveChainService.getHiveChain();
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder
           .useBuilder(
@@ -716,7 +716,7 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     const chain = await hiveChainService.getHiveChain();
-    await this.processHiveAppOperation((builder) => {
+    return await this.processHiveAppOperation((builder) => {
       builder
         .useBuilder(
           ArticleBuilder,
@@ -769,7 +769,7 @@ export class TransactionService {
     version: number = 2, // signal upgrade to posting_json_metadata
     transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder
           .push({
@@ -804,7 +804,7 @@ export class TransactionService {
     permlink: string,
     transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push({
           delete_comment: {
@@ -823,7 +823,7 @@ export class TransactionService {
     extensions: future_extensions[],
     transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder
           .push({
@@ -844,7 +844,7 @@ export class TransactionService {
     date: string,
     transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder
           .push({
@@ -865,7 +865,7 @@ export class TransactionService {
     account: ApiAccount,
     transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push({
           claim_reward_balance: {
@@ -888,7 +888,7 @@ export class TransactionService {
    * @param {Toast} [toastOptions={}]
    * @memberof TransactionService
    */
-  handleError(e: any, toastOptions: Toast = {}): void {
+  handleError(e: any, toastOptions: Toast = {}) {
     logger.error('Got error: %o', e);
     const isError = (err: unknown): err is Error => err instanceof Error;
     const isWaxError = (err: unknown): err is WaxChainApiError => err instanceof WaxChainApiError;
