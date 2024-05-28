@@ -90,7 +90,7 @@ export function AlertDialogReblog({
               ?
                 <CircleSpinner loading={reblogMutation.isLoading}
                   size={18} color="#dc2626" />
-                :
+              :
                 t('alert_dialog_reblog.action')
               }
             </AlertDialogAction>

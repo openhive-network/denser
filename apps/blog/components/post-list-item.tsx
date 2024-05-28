@@ -52,7 +52,6 @@ const PostListItem = ({
     `user-preferences-${user.username}`,
     DEFAULT_PREFERENCES
   );
-  const [storedReblogs, setStoredReblogs] = useLocalStorage<string[]>(`reblogged_${user.username}`, ['']);
   const [reveal, setReveal] = useState(
     preferences.nsfw === 'show'
       ? false
@@ -403,7 +402,6 @@ const PostListItem = ({
                             <AlertDialogReblog
                               author={post.author}
                               permlink={post.permlink}
-                              setStoredReblogs={setStoredReblogs}
                             >
                               <Icons.forward
                                 className={cn('h-4 w-4 cursor-pointer', {
