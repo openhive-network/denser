@@ -30,10 +30,10 @@ import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
-import { getRebloggedBy } from '@transaction/lib/hive'
 import { useQuery } from '@tanstack/react-query';
 
 import { getLogger } from '@ui/lib/logging';
+import { useRebloggedByQuery } from './hooks/use-reblogged-by-query';
 const logger = getLogger('app');
 
 
@@ -65,26 +65,9 @@ const PostListItem = ({
   const userFromImageBlockList = imageUserBlocklist.includes(post.author);
   const legalBlockedUser = userIllegalContent.includes(post.author);
 
-  const queryAuthor = post?.author;
-  const queryPermlink = post?.permlink;
   const {
     data: isReblogged
-  } = useQuery(
-    ['PostRebloggedBy', queryAuthor, queryPermlink, user.username],
-    async () => {
-      const data = await getRebloggedBy(queryAuthor!, queryPermlink!);
-      return data.includes(user.username);
-    },
-    {
-      enabled: !!(user.username && queryAuthor && queryPermlink),
-
-      // See https://www.codemzy.com/blog/react-query-cachetime-staletime
-      cacheTime: 1000 * 60 * 60 + 5000, // 1 hour 5 seconds
-      staleTime: 1000 * 60 * 60, // 1 hour
-    }
-  );
-  // logger.info('Reblog data author: %s, permlink: %s, isReblogged: %o', post.author, post.permlink, isReblogged);
-
+  } = useRebloggedByQuery(post?.author, post?.permlink, user.username);
 
   function revealPost() {
     setReveal((reveal) => !reveal);

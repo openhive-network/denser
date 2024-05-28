@@ -49,6 +49,7 @@ import CustomError from '@/blog/components/custom-error';
 import { getRebloggedBy } from '@transaction/lib/hive'
 
 import { getLogger } from '@ui/lib/logging';
+import { useRebloggedByQuery } from '@/blog/components/hooks/use-reblogged-by-query';
 const logger = getLogger('app');
 
 
@@ -101,25 +102,9 @@ function PostPage({
     enabled: !!username && !!permlink
   });
 
-  const queryAuthor = post?.author;
-  const queryPermlink = post?.permlink;
   const {
     data: isReblogged
-  } = useQuery(
-    ['PostRebloggedBy', queryAuthor, queryPermlink, user.username],
-    async () => {
-      const data = await getRebloggedBy(queryAuthor!, queryPermlink!);
-      return data.includes(user.username);
-    },
-    {
-      enabled: !!(user.username && queryAuthor && queryPermlink),
-
-      // See https://www.codemzy.com/blog/react-query-cachetime-staletime
-      cacheTime: 1000 * 60 * 60 + 5000, // 1 hour 5 seconds
-      staleTime: 1000 * 60 * 60, // 1 hour
-    }
-  );
-  // logger.info('Reblog data author: %s, permlink: %s, isReblogged: %o', post?.author, post?.permlink, isReblogged);
+  } = useRebloggedByQuery(post?.author, post?.permlink, user.username);
 
   const [discussionState, setDiscussionState] = useState<Entry[]>();
   const router = useRouter();
