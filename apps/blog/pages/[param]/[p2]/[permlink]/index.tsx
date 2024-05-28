@@ -176,7 +176,7 @@ function PostPage({
   const { hiveRenderer, setAuthor, setDoNotShowImages } = useContext(HiveRendererContext);
 
   const commentSite = post?.depth !== 0 ? true : false;
-  const [mutedPost, setMutedPost] = useState(undefined);
+  const [mutedPost, setMutedPost] = useState<boolean | undefined>(undefined);
   const postUrl = () => {
     if (discussionState) {
       const objectWithSmallestDepth = discussionState.reduce((smallestDepth, e) => {
@@ -201,7 +201,7 @@ function PostPage({
   };
 
   useEffect(() => {
-    setDoNotShowImages(mutedPost && !showAnyway);
+    setDoNotShowImages(!!mutedPost && !showAnyway);
     setAuthor(post?.author || '');
   }, [setAuthor, setDoNotShowImages, mutedPost, showAnyway, post?.author]);
 
@@ -279,8 +279,9 @@ function PostPage({
 
             <hr />
 
-            {mutedPost === undefined || isLoadingFollowList || isLoadingPost || isLoadingDiscussion || isLoadingCommunity || isActiveVotesLoading ? (
-              <Loading loading={mutedPost === undefined || isLoadingFollowList || isLoadingPost || isLoadingDiscussion || isLoadingCommunity || isActiveVotesLoading} />
+            {/* {mutedPost === undefined || isLoadingPost || isLoadingFollowList || isLoadingDiscussion || isLoadingCommunity || isActiveVotesLoading ? ( */}
+            {mutedPost === undefined || isLoadingPost ? (
+              <Loading loading={mutedPost === undefined || isLoadingPost} />
             ) : edit ? (
               <PostForm
                 username={username}
