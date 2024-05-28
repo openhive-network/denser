@@ -35,12 +35,6 @@ export function useReblogMutation() {
         const { author, permlink, username } = data;
         queryClient.invalidateQueries(
           { queryKey: ['PostRebloggedBy', author, permlink, username] });
-        // queryClient.invalidateQueries(
-        //   { queryKey: [data.permlink, data.voter, 'ActiveVotes'] });
-        // queryClient.invalidateQueries(
-        //   { queryKey: ['postData', data.author, data.permlink ] });
-        // queryClient.invalidateQueries(
-        //   { queryKey: ['entriesInfinite'] });
       },
       onError: (error) => {
         throw error;
