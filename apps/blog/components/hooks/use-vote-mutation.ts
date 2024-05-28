@@ -72,7 +72,7 @@ export function useVoteMutation() {
                 { queryKey: ['postData', author, permlink] });
             queryClient.invalidateQueries(
                 { queryKey: ['entriesInfinite'] });
-        }
+        },
     });
     return voteMutation;
 };

@@ -36,9 +36,6 @@ export function useReblogMutation() {
         queryClient.invalidateQueries(
           { queryKey: ['PostRebloggedBy', author, permlink, username] });
       },
-      onError: (error) => {
-        throw error;
-      }
     });
     return reblogMutation;
   };
