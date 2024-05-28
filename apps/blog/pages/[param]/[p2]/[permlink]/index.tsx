@@ -31,7 +31,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
 import { AlertDialogFlag } from '@/blog/components/alert-window-flag';
 import VotesComponent from '@/blog/components/votes';
-import { HiveRendererContext } from '@/blog/components/hive-renderer-context';
 import { useLocalStorage } from 'usehooks-ts';
 import PostForm from '@/blog/components/post-form';
 import { useUser } from '@smart-signer/lib/auth/use-user';
@@ -46,7 +45,6 @@ import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import dmcaList from '@ui/config/lists/dmca-list';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import CustomError from '@/blog/components/custom-error';
-import { getRebloggedBy } from '@transaction/lib/hive'
 import { getRenderer } from '@/blog/lib/renderer';
 
 import { getLogger } from '@ui/lib/logging';
@@ -173,8 +171,6 @@ function PostPage({
     }
   }, [discussion, router.query.sort]);
 
-  const { hiveRenderer, setAuthor, setDoNotShowImages } = useContext(HiveRendererContext);
-
   const commentSite = post?.depth !== 0 ? true : false;
   const [mutedPost, setMutedPost] = useState<boolean | undefined>(undefined);
   const postUrl = () => {
@@ -199,23 +195,6 @@ function PostPage({
       );
     }
   };
-
-  useEffect(() => {
-    setDoNotShowImages(!!mutedPost && !showAnyway);
-    setAuthor(post?.author || '');
-  }, [setAuthor, setDoNotShowImages, mutedPost, showAnyway, post?.author]);
-
-  useEffect(() => {
-    const exitingFunction = () => {
-      setDoNotShowImages(true);
-    };
-
-    router.events.on('routeChangeStart', exitingFunction);
-
-    return () => {
-      router.events.off('routeChangeStart', exitingFunction);
-    };
-  }, [router.events, setDoNotShowImages]);
 
   if (userFromGDPR) {
     return <CustomError />;
