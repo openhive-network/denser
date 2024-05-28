@@ -11,10 +11,13 @@ import {
 } from '@ui/components/alert-dialog';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { ReactNode } from 'react';
-import { transactionService } from '@transaction/index';
+import { useDeleteCommentMutation } from './hooks/use-delete-comment-mutation';
+import { transformError } from '@transaction/lib/utils';
+import { toast } from '@ui/components/hooks/use-toast';
 
 export function AlertDialogDelete({ children, permlink }: { children: ReactNode; permlink: string }) {
   const { user } = useUser();
+  const deleteCommentMutation = useDeleteCommentMutation();
 
   return (
     <AlertDialog>
@@ -38,7 +41,16 @@ export function AlertDialogDelete({ children, permlink }: { children: ReactNode;
               className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
               data-testid="flag-dialog-ok"
               onClick={() => {
-                transactionService.deleteComment(permlink);
+                try {
+                  deleteCommentMutation.mutateAsync({ permlink });
+                } catch (error) {
+                  const description = transformError(error, { method: 'deleteComment', permlink });
+
+                  toast({
+                    description,
+                    variant: 'destructive'
+                  });
+                }
               }}
             >
               OK

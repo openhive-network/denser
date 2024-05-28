@@ -31,26 +31,8 @@ export function useVoteMutation() {
       //   }
       // }
 
-      await transactionService.upVote(
-        author,
-        permlink,
-        weight,
-        (error) => {
-          // Get error description based on given error param
-          const description = transformError(error, { method: 'upVote', ...params });
+      await transactionService.upVote(author, permlink, weight, true);
 
-          toast({
-            description,
-            variant: 'destructive'
-          });
-
-          // Throwing the error now is a crucial thing for
-          // @tanstack/react-query, which should know that
-          // mutation finished with error.
-          throw error;
-        },
-        true
-      );
       logger.info('Voted: %o', { voter, author, permlink, weight });
       return { voter, author, permlink, weight };
     },
