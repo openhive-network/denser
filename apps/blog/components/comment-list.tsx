@@ -2,8 +2,6 @@ import CommentListItem from '@/blog/components/comment-list-item';
 import { Entry, IFollowList } from '@transaction/lib/bridge';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
-import { useContext } from 'react';
-import { HiveRendererContext } from './hive-renderer-context';
 
 const CommentList = ({
   data,
@@ -16,7 +14,6 @@ const CommentList = ({
   parent_depth: number;
   mutedList: IFollowList[];
 }) => {
-  const { hiveRenderer, setAuthor } = useContext(HiveRendererContext);
   let filtered = data.filter((x: Entry) => {
     return x?.parent_author === parent?.author && x?.parent_permlink === parent?.permlink;
   });
@@ -32,7 +29,7 @@ const CommentList = ({
   const arr = [...mutedContent, ...unmutedContent];
   return (
     <ul>
-      {hiveRenderer ? (
+      {data ? (
         <>
           {arr?.map((comment: Entry, index: number) => (
             <div
@@ -49,11 +46,9 @@ const CommentList = ({
             >
               <CommentListItem
                 comment={comment}
-                renderer={hiveRenderer}
                 key={`${comment.post_id}-item-${comment.depth}-index-${index}`}
                 parent_depth={parent_depth}
                 mutedList={mutedList}
-                setAuthor={setAuthor}
               />
               {comment.children > 0 ? (
                 <CommentList
