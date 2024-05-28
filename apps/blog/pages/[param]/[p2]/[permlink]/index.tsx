@@ -47,6 +47,7 @@ import dmcaList from '@ui/config/lists/dmca-list';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import CustomError from '@/blog/components/custom-error';
 import { getRebloggedBy } from '@transaction/lib/hive'
+import { getRenderer } from '@/blog/lib/renderer';
 
 import { getLogger } from '@ui/lib/logging';
 import { useRebloggedByQuery } from '@/blog/components/hooks/use-reblogged-by-query';
@@ -69,7 +70,13 @@ function PostPage({
 }) {
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
-  const { data: mutedList } = useFollowListQuery(user.username, 'muted');
+
+  const {
+    isLoading: isLoadingFollowList,
+    error: errorFollowList,
+    data: mutedList
+  } = useFollowListQuery(user.username, 'muted');
+
   const {
     isLoading: isLoadingPost,
     error: errorPost,
@@ -94,6 +101,7 @@ function PostPage({
   } = useQuery(['communityData', community], () => getCommunity(community), {
     enabled: !!username && !!community && community.startsWith('hive-')
   });
+
   const {
     data: activeVotesData,
     isLoading: isActiveVotesLoading,
@@ -168,7 +176,7 @@ function PostPage({
   const { hiveRenderer, setAuthor, setDoNotShowImages } = useContext(HiveRendererContext);
 
   const commentSite = post?.depth !== 0 ? true : false;
-  const [mutedPost, setMutedPost] = useState(true);
+  const [mutedPost, setMutedPost] = useState(undefined);
   const postUrl = () => {
     if (discussionState) {
       const objectWithSmallestDepth = discussionState.reduce((smallestDepth, e) => {
@@ -271,8 +279,8 @@ function PostPage({
 
             <hr />
 
-            {!hiveRenderer ? (
-              <Loading loading={!hiveRenderer} />
+            {mutedPost === undefined || isLoadingFollowList || isLoadingPost || isLoadingDiscussion || isLoadingCommunity || isActiveVotesLoading ? (
+              <Loading loading={mutedPost === undefined || isLoadingFollowList || isLoadingPost || isLoadingDiscussion || isLoadingCommunity || isActiveVotesLoading} />
             ) : edit ? (
               <PostForm
                 username={username}
@@ -292,7 +300,7 @@ function PostPage({
                   id="articleBody"
                   className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
                   dangerouslySetInnerHTML={{
-                    __html: hiveRenderer.render(post.body)
+                    __html: getRenderer(post.author, mutedPost && !showAnyway).render(post.body)
                   }}
                 />
               </ImageGallery>
