@@ -40,14 +40,18 @@ import { UserPopoverCard } from '@/blog/components/user-popover-card';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
-
-import { getLogger } from '@ui/lib/logging';
 import { cn } from '@ui/lib/utils';
 import dmcaUserList from '@ui/config/lists/dmca-user-list';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import dmcaList from '@ui/config/lists/dmca-list';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import CustomError from '@/blog/components/custom-error';
+import { getRebloggedBy } from '@transaction/lib/hive'
+
+import { getLogger } from '@ui/lib/logging';
+import { useRebloggedByQuery } from '@/blog/components/hooks/use-reblogged-by-query';
+const logger = getLogger('app');
+
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -98,6 +102,10 @@ function PostPage({
     enabled: !!username && !!permlink
   });
 
+  const {
+    data: isReblogged
+  } = useRebloggedByQuery(post?.author, post?.permlink, user.username);
+
   const [discussionState, setDiscussionState] = useState<Entry[]>();
   const router = useRouter();
   const isSortOrder = (token: any): token is SortOrder => {
@@ -112,7 +120,6 @@ function PostPage({
   const defaultSort = isSortOrder(query) ? query : SortOrder.trending;
   const storageId = `replybox-/${username}/${post?.permlink}`;
   const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
-  const [storedReblogs, setStoredReblogs] = useLocalStorage<string[]>(`reblogged_${user.username}`, ['']);
   const [storedComment, storeCommment, removeCommment] = useLocalStorage<string>(
     `replyTo-/${username}/${permlink}`,
     ''
@@ -361,24 +368,22 @@ function PostPage({
                 <div className="flex items-center" data-testid="comment-respons-header">
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger>
+                    <TooltipTrigger disabled={isReblogged}>
                         <AlertDialogReblog
-                          username={post.author}
+                          author={post.author}
                           permlink={post.permlink}
-                          setStoredReblogs={setStoredReblogs}
                         >
                           <Icons.forward
                             className={cn('h-4 w-4 cursor-pointer', {
-                              'text-red-600': storedReblogs?.includes(post.permlink)
+                              'text-red-600': isReblogged,
+                              'cursor-default': isReblogged
                             })}
                             data-testid="post-footer-reblog-icon"
                           />
                         </AlertDialogReblog>
                       </TooltipTrigger>
                       <TooltipContent data-test="post-footer-reblog-tooltip">
-                        <p>
-                          {t('post_content.footer.reblog')} @{post.author}/{post.permlink}
-                        </p>
+                        {isReblogged ? t('cards.post_card.you_reblogged') : t('cards.post_card.reblog')}
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
