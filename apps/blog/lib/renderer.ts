@@ -56,10 +56,10 @@ const rendererNoImages = new DefaultRenderer({
 });
 
 export function getRenderer(
-    author: string,
-    doNotShowImages: boolean
+    author: string = '',
+    doNotShowImages: boolean = false
 ): DefaultRenderer {
-    if (doNotShowImages || imageUserBlocklist.includes(author)) {
+    if (doNotShowImages || (!!author && imageUserBlocklist.includes(author))) {
         console.log('Returning rendererNoImages')
         return rendererNoImages;
     } else {
