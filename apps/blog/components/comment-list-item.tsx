@@ -25,6 +25,7 @@ import moment from 'moment';
 import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
+import { getRenderer } from '@/blog/lib/renderer';
 
 interface CommentListProps {
   comment: Entry;
@@ -44,7 +45,7 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor
     comment.stats?.gray || mutedList?.some((x) => x.name === comment.author)
   );
   const [openState, setOpenState] = useState<boolean>(comment.stats?.gray && hiddenComment ? false : true);
-  const comment_html = renderer.render(comment.body);
+  const comment_html = getRenderer(comment.author, false).render(comment.body);
   const commentId = `@${username}/${comment.permlink}`;
   const storageId = `replybox-/${username}/${comment.permlink}`;
   const [edit, setEdit] = useState(false);
