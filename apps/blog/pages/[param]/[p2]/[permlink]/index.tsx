@@ -114,10 +114,9 @@ function PostPage({
     {
       enabled: !!(user.username && queryAuthor && queryPermlink),
 
-      // TODO Enable line below for very long caching, when you make
-      // proper mutation in apps/blog/components/alert-window.tsx
-
-      // cacheTime: 1000 * 60 * 60 * 24 * 365, // 1 year
+      // See https://www.codemzy.com/blog/react-query-cachetime-staletime
+      cacheTime: 1000 * 60 * 60 + 5000, // 1 hour 5 seconds
+      staleTime: 1000 * 60 * 60, // 1 hour
     }
   );
   // logger.info('Reblog data author: %s, permlink: %s, isReblogged: %o', post?.author, post?.permlink, isReblogged);
