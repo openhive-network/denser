@@ -1,12 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
-import { transformError } from '@transaction/lib/utils';
-import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 /**
- * Makes delete comment transaction
+ * Makes delete comment transaction.
  *
  * @export
  * @return {*}

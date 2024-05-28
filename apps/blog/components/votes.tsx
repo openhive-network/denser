@@ -10,11 +10,7 @@ import { useVoteMutation } from '../components/hooks/use-vote-mutation';
 import { useQuery } from '@tanstack/react-query';
 import { CircleSpinner } from 'react-spinners-kit';
 import { getListVotesByCommentVoter } from '@transaction/lib/hive';
-
-import { getLogger } from '@ui/lib/logging';
-import { transformError } from '@transaction/lib/utils';
-import { toast } from '@ui/components/hooks/use-toast';
-const logger = getLogger('app');
+import { handleError } from '@ui/lib/utils';
 
 const VotesComponent = ({ post }: { post: Entry }) => {
   const { user } = useUser();
@@ -46,12 +42,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
     try {
       await voteMutation.mutateAsync({ voter, author, permlink, weight });
     } catch (error) {
-      const description = transformError(error, { method: 'upVote', voter, author, permlink, weight });
-
-      toast({
-        description,
-        variant: 'destructive'
-      });
+      handleError(error, { method: 'upVote', voter, author, permlink, weight });
     }
   };
 

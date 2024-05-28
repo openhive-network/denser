@@ -12,8 +12,7 @@ import {
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { ReactNode } from 'react';
 import { useDeleteCommentMutation } from './hooks/use-delete-comment-mutation';
-import { transformError } from '@transaction/lib/utils';
-import { toast } from '@ui/components/hooks/use-toast';
+import { handleError } from '@ui/lib/utils';
 
 export function AlertDialogDelete({ children, permlink }: { children: ReactNode; permlink: string }) {
   const { user } = useUser();
@@ -44,12 +43,7 @@ export function AlertDialogDelete({ children, permlink }: { children: ReactNode;
                 try {
                   deleteCommentMutation.mutateAsync({ permlink });
                 } catch (error) {
-                  const description = transformError(error, { method: 'deleteComment', permlink });
-
-                  toast({
-                    description,
-                    variant: 'destructive'
-                  });
+                  handleError(error, { method: 'deleteComment' });
                 }
               }}
             >
