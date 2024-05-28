@@ -84,13 +84,12 @@ export const onImageUpload = async (
   htmlMode: boolean
 ) => {
   const url = await uploadImg(file, username, signer);
-  const insertedMarkdown = insertToTextArea(`**![${file.name}](${url})** `);
-  const insertHTML = insertToTextArea(`<img src="${url}" alt="${file.name}" />`);
-
   if (htmlMode) {
+    const insertHTML = insertToTextArea(`<img src="${url}" alt="${file.name}" />`);
     if (!insertHTML) return;
     setMarkdown(insertHTML);
   } else {
+    const insertedMarkdown = insertToTextArea(`**![${file.name}](${url})** `);
     if (!insertedMarkdown) return;
     setMarkdown(insertedMarkdown);
   }
