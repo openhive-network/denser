@@ -105,9 +105,8 @@ export class TransactionService {
    *    and this resolves after applying transaction in blockchain.
    *
    * @param {(opBuilder: ITransactionBuilder) => void} cb
-   * @param {TransactionErrorCallback} [onError=(error) =>
-   * this.handleError(error)]
-   * @param {boolean} [observe=false]
+   * @param {TransactionOptions} [transactionOptions={}]
+   * @return {*}  {Promise<TransactionBroadcastResult>}
    * @memberof TransactionService
    */
   async processHiveAppOperation(
@@ -193,10 +192,13 @@ export class TransactionService {
   /**
    * Create and start bot (block scanner) if needed, broadcast
    * transaction, wait until bot reports applying transaction into Hive
-   * blockchain, stop and destroy bot if needed, then resolve.
+   * blockchain, stop and destroy bot if needed, then resolve. When bot
+   * doesn't find the transaction, it will throw after transaction
+   * expiration time plus `throwAfter`.
    *
    * @param {ITransactionBuilder} txBuilder
-   * @return {*}  {Promise<void>}
+   * @param {number} [throwAfter=60 * 1000]
+   * @return {*}  {Promise<TransactionBroadcastResult>}
    * @memberof TransactionService
    */
   async broadcastAndObserveTransaction(
@@ -290,7 +292,7 @@ export class TransactionService {
           })
           .build();
       },
-      transactionOptions
+        transactionOptions
     );
   }
 
@@ -313,7 +315,7 @@ export class TransactionService {
           })
           .build();
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -330,7 +332,7 @@ export class TransactionService {
             .build()
         );
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -347,7 +349,7 @@ export class TransactionService {
             .build()
         );
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -367,7 +369,7 @@ export class TransactionService {
             .build()
         );
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -385,7 +387,7 @@ export class TransactionService {
             .build()
         );
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -402,7 +404,7 @@ export class TransactionService {
             .build()
         );
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -419,7 +421,7 @@ export class TransactionService {
             .build()
         );
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -437,7 +439,7 @@ export class TransactionService {
             .build()
         );
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -454,7 +456,7 @@ export class TransactionService {
             .build()
         );
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -470,7 +472,7 @@ export class TransactionService {
             .build()
         );
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -488,7 +490,7 @@ export class TransactionService {
             .build()
         );
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -505,7 +507,7 @@ export class TransactionService {
             .build()
         );
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -523,7 +525,7 @@ export class TransactionService {
             .build()
         );
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -540,7 +542,7 @@ export class TransactionService {
             .build()
         );
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -558,7 +560,7 @@ export class TransactionService {
             .build()
         );
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -574,7 +576,7 @@ export class TransactionService {
             .build()
         );
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -590,7 +592,7 @@ export class TransactionService {
             .build()
         );
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -606,7 +608,7 @@ export class TransactionService {
             .build()
         );
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -622,7 +624,7 @@ export class TransactionService {
             .build()
         );
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -639,7 +641,7 @@ export class TransactionService {
             .build()
         );
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -674,7 +676,7 @@ export class TransactionService {
           )
           .build();
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -712,7 +714,7 @@ export class TransactionService {
           )
           .build();
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -766,7 +768,7 @@ export class TransactionService {
           )
           .build();
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -811,7 +813,7 @@ export class TransactionService {
           })
           .build();
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -828,7 +830,7 @@ export class TransactionService {
           }
         });
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -851,7 +853,7 @@ export class TransactionService {
           })
           .build();
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -872,7 +874,7 @@ export class TransactionService {
           })
           .build();
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
@@ -891,7 +893,7 @@ export class TransactionService {
           }
         });
       },
-    transactionOptions
+      transactionOptions
     );
   }
 
