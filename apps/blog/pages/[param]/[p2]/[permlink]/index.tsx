@@ -11,7 +11,7 @@ import Link from 'next/link';
 import DetailsCardHover from '@/blog/components/details-card-hover';
 import DetailsCardVoters from '@/blog/components/details-card-voters';
 import CommentSelectFilter from '@/blog/components/comment-select-filter';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import sorter, { SortOrder } from '@/blog/lib/sorter';
 import { useRouter } from 'next/router';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
@@ -48,6 +48,7 @@ import CustomError from '@/blog/components/custom-error';
 import RendererContainer from '@/blog/components/rendererContainer';
 import { getLogger } from '@ui/lib/logging';
 import { useRebloggedByQuery } from '@/blog/components/hooks/use-reblogged-by-query';
+import ScrollToElement from '@/blog/components/scroll-to-element';
 
 const logger = getLogger('app');
 
@@ -131,7 +132,6 @@ function PostPage({
   const firstPost = discussionState?.find((post) => post.depth === 0);
   const [edit, setEdit] = useState(false);
   const [showAnyway, setShowAnyway] = useState(false);
-  const commentsRef = useRef<HTMLDivElement>(null);
 
   const userFromGDPR = gdprUserList.some((e) => e === post?.author);
   const refreshPage = () => {
@@ -193,23 +193,6 @@ function PostPage({
       );
     }
   };
-
-  useEffect(() => {
-    const id = router.asPath.split('#')[1];
-    setTimeout(() => {
-      if (id === 'comments' && commentsRef.current) {
-        commentsRef.current.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      } else {
-        document.getElementById(id)?.scrollIntoView({
-          block: 'start',
-          behavior: 'smooth'
-        });
-      }
-    }, 100);
-  }, [router, post]);
 
   if (userFromGDPR) {
     return <CustomError />;
@@ -492,7 +475,8 @@ function PostPage({
           <Loading loading={isLoadingPost} />
         )}
       </div>
-      <div id="comments" className="flex" ref={commentsRef} />
+      <ScrollToElement />
+      <div id="comments" className="flex" />
       <div className="mx-auto my-0 max-w-4xl py-4">
         {reply && post && user.isLoggedIn ? (
           <ReplyTextbox
