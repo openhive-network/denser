@@ -5,8 +5,8 @@ import { SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-si
 import { THexString, createWaxFoundation, TTransactionPackType } from '@hiveio/wax';
 import { PasswordDialogModalPromise } from '@smart-signer/components/password-dialog';
 import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/password-form';
-
 import { getLogger } from '@ui/lib/logging';
+
 const logger = getLogger('app');
 
 /**

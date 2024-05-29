@@ -11,7 +11,7 @@ import Link from 'next/link';
 import DetailsCardHover from '@/blog/components/details-card-hover';
 import DetailsCardVoters from '@/blog/components/details-card-voters';
 import CommentSelectFilter from '@/blog/components/comment-select-filter';
-import { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import sorter, { SortOrder } from '@/blog/lib/sorter';
 import { useRouter } from 'next/router';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
@@ -31,7 +31,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
 import { AlertDialogFlag } from '@/blog/components/alert-window-flag';
 import VotesComponent from '@/blog/components/votes';
-import { HiveRendererContext } from '@/blog/components/hive-renderer-context';
 import { useLocalStorage } from 'usehooks-ts';
 import PostForm from '@/blog/components/post-form';
 import { useUser } from '@smart-signer/lib/auth/use-user';
@@ -46,10 +45,10 @@ import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import dmcaList from '@ui/config/lists/dmca-list';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import CustomError from '@/blog/components/custom-error';
-import { getRebloggedBy } from '@transaction/lib/hive'
-
+import { getRenderer } from '@/blog/lib/renderer';
 import { getLogger } from '@ui/lib/logging';
 import { useRebloggedByQuery } from '@/blog/components/hooks/use-reblogged-by-query';
+
 const logger = getLogger('app');
 
 
@@ -69,7 +68,13 @@ function PostPage({
 }) {
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
-  const { data: mutedList } = useFollowListQuery(user.username, 'muted');
+
+  const {
+    isLoading: isLoadingFollowList,
+    error: errorFollowList,
+    data: mutedList
+  } = useFollowListQuery(user.username, 'muted');
+
   const {
     isLoading: isLoadingPost,
     error: errorPost,
@@ -94,6 +99,7 @@ function PostPage({
   } = useQuery(['communityData', community], () => getCommunity(community), {
     enabled: !!username && !!community && community.startsWith('hive-')
   });
+
   const {
     data: activeVotesData,
     isLoading: isActiveVotesLoading,
@@ -165,10 +171,8 @@ function PostPage({
     }
   }, [discussion, router.query.sort]);
 
-  const { hiveRenderer, setAuthor, setDoNotShowImages } = useContext(HiveRendererContext);
-
   const commentSite = post?.depth !== 0 ? true : false;
-  const [mutedPost, setMutedPost] = useState(true);
+  const [mutedPost, setMutedPost] = useState<boolean | undefined>(undefined);
   const postUrl = () => {
     if (discussionState) {
       const objectWithSmallestDepth = discussionState.reduce((smallestDepth, e) => {
@@ -191,23 +195,6 @@ function PostPage({
       );
     }
   };
-
-  useEffect(() => {
-    setDoNotShowImages(mutedPost && !showAnyway);
-    setAuthor(post?.author || '');
-  }, [setAuthor, setDoNotShowImages, mutedPost, showAnyway, post?.author]);
-
-  useEffect(() => {
-    const exitingFunction = () => {
-      setDoNotShowImages(true);
-    };
-
-    router.events.on('routeChangeStart', exitingFunction);
-
-    return () => {
-      router.events.off('routeChangeStart', exitingFunction);
-    };
-  }, [router.events, setDoNotShowImages]);
 
   if (userFromGDPR) {
     return <CustomError />;
@@ -271,8 +258,9 @@ function PostPage({
 
             <hr />
 
-            {!hiveRenderer ? (
-              <Loading loading={!hiveRenderer} />
+            {/* {mutedPost === undefined || isLoadingPost || isLoadingFollowList || isLoadingDiscussion || isLoadingCommunity || isActiveVotesLoading ? ( */}
+            {mutedPost === undefined || isLoadingPost ? (
+              <Loading loading={mutedPost === undefined || isLoadingPost} />
             ) : edit ? (
               <PostForm
                 username={username}
@@ -292,7 +280,7 @@ function PostPage({
                   id="articleBody"
                   className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
                   dangerouslySetInnerHTML={{
-                    __html: hiveRenderer.render(post.body)
+                    __html: getRenderer(post.author, mutedPost && !showAnyway).render(post.body)
                   }}
                 />
               </ImageGallery>

@@ -1,7 +1,7 @@
 import { TWaxApiRequest } from '@hiveio/wax';
 import { hiveChainService } from './hive-chain-service';
-
 import { getLogger } from '@ui/lib/logging';
+
 const logger = getLogger('app');
 
 const chain = await hiveChainService.getHiveChain();

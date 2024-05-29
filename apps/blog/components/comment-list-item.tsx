@@ -13,7 +13,6 @@ import DetailsCardHover from './details-card-hover';
 import type { Entry, IFollowList } from '@transaction/lib/bridge';
 import clsx from 'clsx';
 import { Badge } from '@ui/components/badge';
-import { DefaultRenderer } from '@hiveio/content-renderer';
 import { useTranslation } from 'next-i18next';
 import VotesComponent from './votes';
 import { useLocalStorage } from 'usehooks-ts';
@@ -25,16 +24,15 @@ import moment from 'moment';
 import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
+import { getRenderer } from '@/blog/lib/renderer';
 
 interface CommentListProps {
   comment: Entry;
-  renderer: DefaultRenderer;
   parent_depth: number;
   mutedList: IFollowList[];
-  setAuthor: (e: string) => void;
 }
 
-const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor }: CommentListProps) => {
+const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps) => {
   const { t } = useTranslation('common_blog');
   const username = comment.author;
   const router = useRouter();
@@ -44,7 +42,7 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor
     comment.stats?.gray || mutedList?.some((x) => x.name === comment.author)
   );
   const [openState, setOpenState] = useState<boolean>(comment.stats?.gray && hiddenComment ? false : true);
-  const comment_html = renderer.render(comment.body);
+  const comment_html = getRenderer(comment.author, false).render(comment.body);
   const commentId = `@${username}/${comment.permlink}`;
   const storageId = `replybox-/${username}/${comment.permlink}`;
   const [edit, setEdit] = useState(false);
@@ -69,9 +67,6 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor
     }, 500);
     return () => clearTimeout(timeout);
   }, [router.asPath]);
-  useEffect(() => {
-    setAuthor(comment.author);
-  }, [comment.author]);
   const currentDepth = comment.depth - parent_depth;
   if (userFromGDPR || parentFromGDPR) {
     return null;

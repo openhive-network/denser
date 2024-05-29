@@ -8,10 +8,10 @@ import { ActivityLogDialog } from './activity-log-dialog';
 import { Badge } from '@ui/components/badge';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { useContext, useEffect, useState } from 'react';
-import { HiveRendererContext } from './hive-renderer-context';
+import { useEffect, useState } from 'react';
 import SubscribeCommunity from './subscribe-community';
 import NewPost from './new-post-button';
+import { getRenderer } from '../lib/renderer';
 
 const CommunityDescription = ({
   data,
@@ -27,11 +27,10 @@ const CommunityDescription = ({
   const [isSubscribe, setIsSubscribe] = useState(() => data.context.subscribed);
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
-  const { hiveRenderer } = useContext(HiveRendererContext);
 
   let post_body_html = null;
-  if (data.description && hiveRenderer) {
-    post_body_html = hiveRenderer.render(data.description);
+  if (data.description) {
+    post_body_html = getRenderer('', false).render(data.description);
   }
   useEffect(() => {
     setIsSubscribe(data.context.subscribed);

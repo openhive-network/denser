@@ -1,20 +1,20 @@
 import Link from 'next/link';
 import { Button } from '@ui/components/button';
-import { useContext, useEffect, useState, useRef, use } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useTranslation } from 'next-i18next';
 import { transactionService } from '@transaction/index';
-import { HiveRendererContext } from './hive-renderer-context';
 import { useLocalStorage } from 'usehooks-ts';
 import { Icons } from '@ui/components/icons';
 import MdEditor from './md-editor';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
-
-import { getLogger } from '@ui/lib/logging';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import useManabars from './hooks/useManabars';
 import { hoursAndMinutes } from '../lib/utils';
 import { Entry } from '@transaction/lib/bridge';
+import { getRenderer } from '../lib/renderer';
+import { getLogger } from '@ui/lib/logging';
+
 const logger = getLogger('app');
 
 export function ReplyTextbox({
@@ -46,17 +46,16 @@ export function ReplyTextbox({
     typeof comment === 'string' ? comment : comment.body ? comment.body : storedPost ? storedPost : ''
   );
   const [cleanedText, setCleanedText] = useState('');
-  const { hiveRenderer } = useContext(HiveRendererContext);
+  const hiveRenderer = getRenderer('', false);
   const btnRef = useRef<HTMLButtonElement>(null);
+
   useEffect(() => {
-    if (hiveRenderer) {
-      const nextCleanedText = text ? hiveRenderer.render(text) : '';
-      setCleanedText(nextCleanedText);
-      if (text) {
-        storePost(text);
-      }
+    const nextCleanedText = text ? hiveRenderer.render(text) : '';
+    setCleanedText(nextCleanedText);
+    if (text) {
+      storePost(text);
     }
-  }, [hiveRenderer, text]);
+  }, [hiveRenderer, text, storePost]);
 
   const handleCancel = () => {
     localStorage.removeItem(storageId);
@@ -75,10 +74,18 @@ export function ReplyTextbox({
       }
       if (parentPermlink && typeof comment !== 'string') {
         const payout =
-          comment.max_accepted_payout === '0.000 HBD' ? '0%' : comment.percent_hbd === 0 ? '100%' : '50%';
-        transactionService.updateComment(username, parentPermlink, permlink, cleanedText, payout);
+          comment.max_accepted_payout === '0.000 HBD'
+            ? '0%'
+            : comment.percent_hbd === 0
+              ? '100%'
+              : '50%';
+        transactionService.updateComment(
+          username, parentPermlink, permlink, cleanedText, payout
+        );
       } else {
-        transactionService.comment(username, permlink, cleanedText, preferences);
+        transactionService.comment(
+          username, permlink, cleanedText, preferences
+        );
       }
       setText('');
       removePost();
@@ -104,7 +111,7 @@ export function ReplyTextbox({
         <Link href={`#`}>
           <h1 className="text-sm text-red-500">{t('post_content.footer.comment.disable_editor')}</h1>
         </Link>
-        <div>
+        <div>Ala
           <MdEditor
             htmlMode={editMode}
             onChange={(value) => {

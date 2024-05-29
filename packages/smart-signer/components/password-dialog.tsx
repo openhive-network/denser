@@ -6,8 +6,8 @@ import {
   PasswordForm, PasswordFormSchemaHbauth, PasswordFormSchemaWif,
   PasswordFormOptions, passwordFormDefaultValuesWif
 } from '@smart-signer/components/password-form';
-
 import { getLogger } from '@ui/lib/logging';
+
 const logger = getLogger('app');
 
 interface PasswordDialogProps {
