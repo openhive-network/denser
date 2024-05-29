@@ -48,6 +48,7 @@ import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import dmcaList from '@ui/config/lists/dmca-list';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import CustomError from '@/blog/components/custom-error';
+import RendererContainer from '@/blog/components/rendererContainer';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -158,7 +159,7 @@ function PostPage({
     }
   }, [discussion, router.query.sort]);
 
-  const { hiveRenderer, setAuthor, setDoNotShowImages } = useContext(HiveRendererContext);
+  const { setAuthor, setDoNotShowImages } = useContext(HiveRendererContext);
 
   const commentSite = post?.depth !== 0 ? true : false;
   const [mutedPost, setMutedPost] = useState(true);
@@ -201,7 +202,6 @@ function PostPage({
       router.events.off('routeChangeStart', exitingFunction);
     };
   }, [router.events, setDoNotShowImages]);
-
   if (userFromGDPR) {
     return <CustomError />;
   }
@@ -264,9 +264,7 @@ function PostPage({
 
             <hr />
 
-            {!hiveRenderer ? (
-              <Loading loading={!hiveRenderer} />
-            ) : edit ? (
+            {edit ? (
               <PostForm
                 username={username}
                 editMode={edit}
@@ -281,12 +279,9 @@ function PostPage({
               <div className="px-2 py-6">{t('post_content.body.copyright')}</div>
             ) : (
               <ImageGallery>
-                <div
-                  id="articleBody"
-                  className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
-                  dangerouslySetInnerHTML={{
-                    __html: hiveRenderer.render(post.body)
-                  }}
+                <RendererContainer
+                  body={post.body}
+                  className='"entry-body markdown-view user-selectable dark:prose-invert" prose max-w-full'
                 />
               </ImageGallery>
             )}

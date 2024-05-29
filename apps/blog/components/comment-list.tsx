@@ -16,7 +16,7 @@ const CommentList = ({
   parent_depth: number;
   mutedList: IFollowList[];
 }) => {
-  const { hiveRenderer, setAuthor } = useContext(HiveRendererContext);
+  const { setAuthor } = useContext(HiveRendererContext);
   let filtered = data.filter((x: Entry) => {
     return x?.parent_author === parent?.author && x?.parent_permlink === parent?.permlink;
   });
@@ -32,42 +32,39 @@ const CommentList = ({
   const arr = [...mutedContent, ...unmutedContent];
   return (
     <ul>
-      {hiveRenderer ? (
-        <>
-          {arr?.map((comment: Entry, index: number) => (
-            <div
-              key={`parent-${comment.post_id}-index-${index}`}
-              className={clsx(
-                'pl-2 ',
-                {
-                  'm-2 border-2 border-red-600 bg-green-50 p-2 dark:bg-slate-950':
-                    router.asPath.includes(`@${comment.author}/${comment.permlink}`) && comment.depth < 8
-                },
-                { 'pl-3 sm:pl-12': comment.depth > 1 }
-              )}
-              id={`@${data[index].author}/${data[index].permlink}`}
-            >
-              <CommentListItem
-                comment={comment}
-                renderer={hiveRenderer}
-                key={`${comment.post_id}-item-${comment.depth}-index-${index}`}
-                parent_depth={parent_depth}
+      <>
+        {arr?.map((comment: Entry, index: number) => (
+          <div
+            key={`parent-${comment.post_id}-index-${index}`}
+            className={clsx(
+              'pl-2 ',
+              {
+                'm-2 border-2 border-red-600 bg-green-50 p-2 dark:bg-slate-950':
+                  router.asPath.includes(`@${comment.author}/${comment.permlink}`) && comment.depth < 8
+              },
+              { 'pl-3 sm:pl-12': comment.depth > 1 }
+            )}
+            id={`@${data[index].author}/${data[index].permlink}`}
+          >
+            <CommentListItem
+              comment={comment}
+              key={`${comment.post_id}-item-${comment.depth}-index-${index}`}
+              parent_depth={parent_depth}
+              mutedList={mutedList}
+              setAuthor={setAuthor}
+            />
+            {comment.children > 0 ? (
+              <CommentList
                 mutedList={mutedList}
-                setAuthor={setAuthor}
+                data={data}
+                parent={comment}
+                key={`${comment.post_id}-list-${comment.depth}-index-${index}`}
+                parent_depth={parent_depth}
               />
-              {comment.children > 0 ? (
-                <CommentList
-                  mutedList={mutedList}
-                  data={data}
-                  parent={comment}
-                  key={`${comment.post_id}-list-${comment.depth}-index-${index}`}
-                  parent_depth={parent_depth}
-                />
-              ) : null}
-            </div>
-          ))}
-        </>
-      ) : null}
+            ) : null}
+          </div>
+        ))}
+      </>
     </ul>
   );
 };

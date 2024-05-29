@@ -12,6 +12,7 @@ import { useContext, useEffect, useState } from 'react';
 import { HiveRendererContext } from './hive-renderer-context';
 import SubscribeCommunity from './subscribe-community';
 import NewPost from './new-post-button';
+import RendererContainer from './rendererContainer';
 
 const CommunityDescription = ({
   data,
@@ -27,12 +28,7 @@ const CommunityDescription = ({
   const [isSubscribe, setIsSubscribe] = useState(() => data.context.subscribed);
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
-  const { hiveRenderer } = useContext(HiveRendererContext);
 
-  let post_body_html = null;
-  if (data.description && hiveRenderer) {
-    post_body_html = hiveRenderer.render(data.description);
-  }
   useEffect(() => {
     setIsSubscribe(data.context.subscribed);
   }, [data.context.subscribed]);
@@ -113,13 +109,11 @@ const CommunityDescription = ({
             <h6 className="my-1.5 font-semibold leading-none tracking-tight">
               {t('communities.titles.description')}
             </h6>
-            {post_body_html ? (
-              <div
-                className="preview-description prose-sm w-[13em] break-words 2xl:w-fit"
-                data-testid="community-description-content"
-                dangerouslySetInnerHTML={{ __html: post_body_html }}
-              />
-            ) : null}
+
+            <RendererContainer
+              body={data.description}
+              className="preview-description prose-sm w-[13em] break-words 2xl:w-fit"
+            />
           </div>
 
           {data.flag_text.trim() !== '' ? (

@@ -34,6 +34,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/co
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 import { getLogger } from '@ui/lib/logging';
 import SelectImageList from './select-image-list';
+import RendererContainer from './rendererContainer';
 
 const logger = getLogger('app');
 
@@ -108,7 +109,7 @@ export default function PostForm({
   refreshPage?: () => void;
 }) {
   const btnRef = useRef<HTMLButtonElement>(null);
-  const { hiveRenderer, setDoNotShowImages } = useContext(HiveRendererContext);
+  const { setDoNotShowImages } = useContext(HiveRendererContext);
   const router = useRouter();
   const [preferences, setPreferences] = useLocalStorage<Preferences>(
     `user-preferences-${username}`,
@@ -536,13 +537,13 @@ export default function PostForm({
             </Link>
           </div>
 
-          {previewContent && hiveRenderer ? (
-            <div
-              dangerouslySetInnerHTML={{
-                __html: hiveRenderer.render(previewContent)
-              }}
-              className="prose w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2 dark:prose-invert"
-            ></div>
+          {previewContent ? (
+            <RendererContainer
+              body={previewContent}
+              className={
+                'prose w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2 dark:prose-invert'
+              }
+            />
           ) : null}
         </div>
       </div>

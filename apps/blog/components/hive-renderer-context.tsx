@@ -3,7 +3,7 @@ import { DefaultRenderer } from '@hiveio/content-renderer';
 import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
 import env from '@beam-australia/react-env';
 import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
-
+import { isUrlWhitelisted } from '@hive/ui/config/lists/phishing';
 type HiveRendererContextType = {
   hiveRenderer: DefaultRenderer | undefined;
   setAuthor: (author: string) => void;
@@ -41,11 +41,12 @@ export const HiveContentRendererProvider: FC<PropsWithChildren> = ({ children })
       isLinkSafeFn: (url: string) =>
         (!!url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) &&
           !!url.match(`^(/(?!/)|${env('SITE_DOMAIN')})`)) ||
-        !!url.match(`^(/(?!/)|#)`),
+        (!!url.match(`^(/(?!/)|#)`) && isUrlWhitelisted(url)),
       addExternalCssClassToMatchingLinksFn: (url: string) =>
         !url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) &&
         !url.match(`^(/(?!/)|${env('SITE_DOMAIN')})`) &&
-        !url.match(`^(/(?!/)|#)`)
+        !url.match(`^(/(?!/)|#)`) &&
+        !isUrlWhitelisted(url)
     });
     return renderer;
   };

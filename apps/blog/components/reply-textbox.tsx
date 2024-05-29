@@ -15,6 +15,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import useManabars from './hooks/useManabars';
 import { hoursAndMinutes } from '../lib/utils';
 import { Entry } from '@transaction/lib/bridge';
+import RendererContainer from './rendererContainer';
 const logger = getLogger('app');
 
 export function ReplyTextbox({
@@ -46,17 +47,17 @@ export function ReplyTextbox({
     typeof comment === 'string' ? comment : comment.body ? comment.body : storedPost ? storedPost : ''
   );
   const [cleanedText, setCleanedText] = useState('');
-  const { hiveRenderer } = useContext(HiveRendererContext);
+
   const btnRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
-    if (hiveRenderer) {
-      const nextCleanedText = text ? hiveRenderer.render(text) : '';
+    if (text) {
+      const nextCleanedText = text && '';
       setCleanedText(nextCleanedText);
       if (text) {
         storePost(text);
       }
     }
-  }, [hiveRenderer, text]);
+  }, [text]);
 
   const handleCancel = () => {
     localStorage.removeItem(storageId);
@@ -177,12 +178,10 @@ export function ReplyTextbox({
           </div>
         </div>
         {cleanedText ? (
-          <div
-            dangerouslySetInnerHTML={{
-              __html: cleanedText
-            }}
+          <RendererContainer
+            body={cleanedText}
             className="prose max-w-full border-2 border-slate-200 p-2 dark:prose-invert"
-          ></div>
+          />
         ) : null}
       </div>
     </div>

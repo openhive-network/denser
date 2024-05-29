@@ -1,17 +1,20 @@
-import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
-import { ReactNode } from 'react';
+import { Dialog, DialogContent } from '@ui/components/dialog';
 import { Button, Separator } from '@ui/components';
 import Link from 'next/link';
 import { useTranslation } from 'next-i18next';
 
-export function LeavePageDialog({ children, link }: { children: ReactNode; link: string }) {
+export function LeavePageDialog({
+  link,
+  open,
+  setOpen
+}: {
+  link: string;
+  open: boolean;
+  setOpen: (e: boolean) => void;
+}) {
   const { t } = useTranslation('common_blog');
   return (
-    <Dialog>
-      <DialogTrigger className="cursor-pointer" asChild>
-        {children}
-      </DialogTrigger>
-
+    <Dialog open={open} onOpenChange={() => setOpen(!open)}>
       <DialogContent className="overflow-auto">
         <div className="text-2xl">{t('post_content.body.leave_this_app')}</div>
         <Separator />
@@ -21,7 +24,7 @@ export function LeavePageDialog({ children, link }: { children: ReactNode; link:
           </span>
           <span>{t('post_content.body.we_are_just_verifying')}</span>
           <Link target="_blank" href={link}>
-            <Button className="w-fit" variant="outlineRed">
+            <Button className="w-fit" variant="outlineRed" onClick={() => setOpen(false)}>
               {t('post_content.body.open_link')}
             </Button>
           </Link>
