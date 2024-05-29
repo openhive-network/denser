@@ -25,7 +25,6 @@ const RendererContainer = ({
       const anchor = e.target as HTMLAnchorElement;
       setLink(anchor.href);
       setOpen(true);
-      console.log(anchor.href);
     };
     const nodes = ref.current?.querySelectorAll('a.link-external');
     nodes?.forEach((n) => n.addEventListener('click', handleClick));
