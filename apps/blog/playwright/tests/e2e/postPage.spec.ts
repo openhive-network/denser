@@ -57,7 +57,7 @@ test.describe('Post page tests', () => {
       'rgba(0, 0, 0, 0)'
     );
     expect(await postPage.getElementCssPropertyValue(postPage.articleBody, 'color')).toBe(
-      'rgb(55, 65, 81)'
+      'rgb(209, 213, 219)'
     );
   });
 
