@@ -2,8 +2,8 @@ import { type getSigner } from '@smart-signer/lib/signer/get-signer';
 import { useSigner } from '@smart-signer/lib/use-signer';
 import { transactionService } from '@transaction/index';
 import { createContext, useContext, ReactNode, useMemo, useState, useEffect } from 'react';
-
 import { getLogger } from '@hive/ui/lib/logging';
+
 const logger = getLogger('app');
 
 type SignerContextType = {

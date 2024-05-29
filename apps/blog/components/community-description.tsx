@@ -8,8 +8,7 @@ import { ActivityLogDialog } from './activity-log-dialog';
 import { Badge } from '@ui/components/badge';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { useContext, useEffect, useState } from 'react';
-import { HiveRendererContext } from './hive-renderer-context';
+import { useEffect, useState } from 'react';
 import SubscribeCommunity from './subscribe-community';
 import NewPost from './new-post-button';
 import RendererContainer from './rendererContainer';
@@ -113,6 +112,8 @@ const CommunityDescription = ({
             <RendererContainer
               body={data.description}
               className="preview-description prose-sm w-[13em] break-words 2xl:w-fit"
+              author=""
+              check={false}
             />
           </div>
 

@@ -20,7 +20,6 @@ import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } fro
 import clsx from 'clsx';
 import { useLocalStorage } from 'usehooks-ts';
 import { useTranslation } from 'next-i18next';
-import { HiveRendererContext } from './hive-renderer-context';
 import { transactionService } from '@transaction/index';
 import { createPermlink } from '@transaction/lib/utils';
 import { useQuery } from '@tanstack/react-query';
@@ -109,7 +108,6 @@ export default function PostForm({
   refreshPage?: () => void;
 }) {
   const btnRef = useRef<HTMLButtonElement>(null);
-  const { setDoNotShowImages } = useContext(HiveRendererContext);
   const router = useRouter();
   const [preferences, setPreferences] = useLocalStorage<Preferences>(
     `user-preferences-${username}`,
@@ -228,10 +226,6 @@ export default function PostForm({
     }, 50)();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, postArea, ...Object.values(restFields)]);
-
-  useEffect(() => {
-    setDoNotShowImages(false);
-  }, [setDoNotShowImages]);
 
   // update debounced post preview content
   useEffect(() => {
@@ -540,9 +534,9 @@ export default function PostForm({
           {previewContent ? (
             <RendererContainer
               body={previewContent}
-              className={
-                'prose w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2 dark:prose-invert'
-              }
+              className="prose w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2 dark:prose-invert"
+              author=""
+              check={false}
             />
           ) : null}
         </div>

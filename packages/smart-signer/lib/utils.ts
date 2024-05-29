@@ -5,8 +5,8 @@ import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { KeyType } from '@smart-signer/types/common';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { siteConfig } from '@ui/config/site';
-
 import { getLogger } from '@ui/lib/logging';
+
 const logger = getLogger('app');
 
 const KEY_TYPES = ['active', 'posting'] as const;

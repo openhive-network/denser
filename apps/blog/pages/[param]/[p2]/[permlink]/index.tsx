@@ -11,7 +11,7 @@ import Link from 'next/link';
 import DetailsCardHover from '@/blog/components/details-card-hover';
 import DetailsCardVoters from '@/blog/components/details-card-voters';
 import CommentSelectFilter from '@/blog/components/comment-select-filter';
-import { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import sorter, { SortOrder } from '@/blog/lib/sorter';
 import { useRouter } from 'next/router';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
@@ -31,7 +31,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
 import { AlertDialogFlag } from '@/blog/components/alert-window-flag';
 import VotesComponent from '@/blog/components/votes';
-import { HiveRendererContext } from '@/blog/components/hive-renderer-context';
 import { useLocalStorage } from 'usehooks-ts';
 import PostForm from '@/blog/components/post-form';
 import { useUser } from '@smart-signer/lib/auth/use-user';
@@ -40,8 +39,6 @@ import { UserPopoverCard } from '@/blog/components/user-popover-card';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
-
-import { getLogger } from '@ui/lib/logging';
 import { cn } from '@ui/lib/utils';
 import dmcaUserList from '@ui/config/lists/dmca-user-list';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
@@ -49,6 +46,10 @@ import dmcaList from '@ui/config/lists/dmca-list';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import CustomError from '@/blog/components/custom-error';
 import RendererContainer from '@/blog/components/rendererContainer';
+import { getLogger } from '@ui/lib/logging';
+import { useRebloggedByQuery } from '@/blog/components/hooks/use-reblogged-by-query';
+
+const logger = getLogger('app');
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -66,7 +67,13 @@ function PostPage({
 }) {
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
-  const { data: mutedList } = useFollowListQuery(user.username, 'muted');
+
+  const {
+    isLoading: isLoadingFollowList,
+    error: errorFollowList,
+    data: mutedList
+  } = useFollowListQuery(user.username, 'muted');
+
   const {
     isLoading: isLoadingPost,
     error: errorPost,
@@ -91,6 +98,7 @@ function PostPage({
   } = useQuery(['communityData', community], () => getCommunity(community), {
     enabled: !!username && !!community && community.startsWith('hive-')
   });
+
   const {
     data: activeVotesData,
     isLoading: isActiveVotesLoading,
@@ -98,6 +106,8 @@ function PostPage({
   } = useQuery(['activeVotes'], () => getActiveVotes(username, permlink), {
     enabled: !!username && !!permlink
   });
+
+  const { data: isReblogged } = useRebloggedByQuery(post?.author, post?.permlink, user.username);
 
   const [discussionState, setDiscussionState] = useState<Entry[]>();
   const router = useRouter();
@@ -113,7 +123,6 @@ function PostPage({
   const defaultSort = isSortOrder(query) ? query : SortOrder.trending;
   const storageId = `replybox-/${username}/${post?.permlink}`;
   const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
-  const [storedReblogs, setStoredReblogs] = useLocalStorage<string[]>(`reblogged_${user.username}`, ['']);
   const [storedComment, storeCommment, removeCommment] = useLocalStorage<string>(
     `replyTo-/${username}/${permlink}`,
     ''
@@ -159,10 +168,8 @@ function PostPage({
     }
   }, [discussion, router.query.sort]);
 
-  const { setAuthor, setDoNotShowImages } = useContext(HiveRendererContext);
-
   const commentSite = post?.depth !== 0 ? true : false;
-  const [mutedPost, setMutedPost] = useState(true);
+  const [mutedPost, setMutedPost] = useState<boolean | undefined>(undefined);
   const postUrl = () => {
     if (discussionState) {
       const objectWithSmallestDepth = discussionState.reduce((smallestDepth, e) => {
@@ -186,22 +193,6 @@ function PostPage({
     }
   };
 
-  useEffect(() => {
-    setDoNotShowImages(mutedPost && !showAnyway);
-    setAuthor(post?.author || '');
-  }, [setAuthor, setDoNotShowImages, mutedPost, showAnyway, post?.author]);
-
-  useEffect(() => {
-    const exitingFunction = () => {
-      setDoNotShowImages(true);
-    };
-
-    router.events.on('routeChangeStart', exitingFunction);
-
-    return () => {
-      router.events.off('routeChangeStart', exitingFunction);
-    };
-  }, [router.events, setDoNotShowImages]);
   if (userFromGDPR) {
     return <CustomError />;
   }
@@ -356,24 +347,19 @@ function PostPage({
                 <div className="flex items-center" data-testid="comment-respons-header">
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger>
-                        <AlertDialogReblog
-                          username={post.author}
-                          permlink={post.permlink}
-                          setStoredReblogs={setStoredReblogs}
-                        >
+                      <TooltipTrigger disabled={isReblogged}>
+                        <AlertDialogReblog author={post.author} permlink={post.permlink}>
                           <Icons.forward
                             className={cn('h-4 w-4 cursor-pointer', {
-                              'text-red-600': storedReblogs?.includes(post.permlink)
+                              'text-red-600': isReblogged,
+                              'cursor-default': isReblogged
                             })}
                             data-testid="post-footer-reblog-icon"
                           />
                         </AlertDialogReblog>
                       </TooltipTrigger>
                       <TooltipContent data-test="post-footer-reblog-tooltip">
-                        <p>
-                          {t('post_content.footer.reblog')} @{post.author}/{post.permlink}
-                        </p>
+                        {isReblogged ? t('cards.post_card.you_reblogged') : t('cards.post_card.reblog')}
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>

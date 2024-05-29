@@ -177,6 +177,7 @@
       "responses": "{{responses}} responses. ",
       "click_to_respond": "Click to respond",
       "reblog": "Reblog",
+      "you_reblogged": "You reblogged",
       "you_upvoted": "You upvoted {{votePercent}}%",
       "you_downvoted": "You downvoted {{votePercent}}%",
       "you_voted": "You voted {{votePercent}}%",
@@ -193,6 +194,12 @@
       "will_be_hidden": "Will be hidden due to low rating ",
       "load_more": "Load more"
     }
+  },
+  "alert_dialog_reblog": {
+    "action": "OK",
+    "cancel": "Cancel",
+    "description": "This post will be added to your blog and shared with your followers.",
+    "title": "Reblog This Post"
   },
   "amount_hover_card": {
     "pending_payout_amount": "Pending payout amount: ${{value}}",
@@ -378,6 +385,7 @@
       "vote": "1 vote",
       "votes": "{{votes}} votes",
       "reblog": "Reblog",
+      "you_reblogged": "You reblogged",
       "reply": "Reply",
       "edit": "Edit",
       "no_responses": "No responses. ",

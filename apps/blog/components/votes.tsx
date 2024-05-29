@@ -10,8 +10,8 @@ import { useVoteMutation } from '../components/hooks/use-vote-mutation';
 import { useQuery } from '@tanstack/react-query';
 import { CircleSpinner } from 'react-spinners-kit';
 import { getListVotesByCommentVoter } from '@transaction/lib/hive';
-
 import { getLogger } from '@ui/lib/logging';
+
 const logger = getLogger('app');
 
 

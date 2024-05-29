@@ -21,6 +21,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/co
 import { useTranslation } from 'next-i18next';
 import imageUserBlocklist from '@ui/config/lists/image-user-blocklist';
 import { cn } from '@ui/lib/utils';
+
 const logger = getLogger('app');
 
 const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false });
@@ -84,13 +85,12 @@ export const onImageUpload = async (
   htmlMode: boolean
 ) => {
   const url = await uploadImg(file, username, signer);
-  const insertedMarkdown = insertToTextArea(`**![${file.name}](${url})** `);
-  const insertHTML = insertToTextArea(`<img src="${url}" alt="${file.name}" />`);
-
   if (htmlMode) {
+    const insertHTML = insertToTextArea(`<img src="${url}" alt="${file.name}" />`);
     if (!insertHTML) return;
     setMarkdown(insertHTML);
   } else {
+    const insertedMarkdown = insertToTextArea(`**![${file.name}](${url})** `);
     if (!insertedMarkdown) return;
     setMarkdown(insertedMarkdown);
   }

@@ -13,7 +13,6 @@ import DetailsCardHover from './details-card-hover';
 import type { Entry, IFollowList } from '@transaction/lib/bridge';
 import clsx from 'clsx';
 import { Badge } from '@ui/components/badge';
-import { DefaultRenderer } from '@hiveio/content-renderer';
 import { useTranslation } from 'next-i18next';
 import VotesComponent from './votes';
 import { useLocalStorage } from 'usehooks-ts';
@@ -31,10 +30,9 @@ interface CommentListProps {
   comment: Entry;
   parent_depth: number;
   mutedList: IFollowList[];
-  setAuthor: (e: string) => void;
 }
 
-const CommentListItem = ({ comment, parent_depth, mutedList, setAuthor }: CommentListProps) => {
+const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps) => {
   const { t } = useTranslation('common_blog');
   const username = comment.author;
   const router = useRouter();
@@ -68,9 +66,6 @@ const CommentListItem = ({ comment, parent_depth, mutedList, setAuthor }: Commen
     }, 500);
     return () => clearTimeout(timeout);
   }, [router.asPath]);
-  useEffect(() => {
-    setAuthor(comment.author);
-  }, [comment.author]);
   const currentDepth = comment.depth - parent_depth;
   if (userFromGDPR || parentFromGDPR) {
     return null;
@@ -227,6 +222,8 @@ const CommentListItem = ({ comment, parent_depth, mutedList, setAuthor }: Commen
                         <RendererContainer
                           body={comment.body}
                           className="prose break-words dark:text-white"
+                          author={comment.author}
+                          check={false}
                         />
                       )}
                     </CardContent>

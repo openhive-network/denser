@@ -21,7 +21,20 @@ import WorkerBee, { ITransactionData, IWorkerBee } from "@hiveio/workerbee";
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
-export type TransactionErrorCallback = undefined | ((error: any) => any);
+export type TransactionErrorCallback = (error: any) => any;
+
+export type TransactionBroadcastCallback =
+  (txBuilder: ITransactionBuilder) => Promise<TransactionBroadcastResult>;
+
+export interface TransactionOptions {
+  onError?: TransactionErrorCallback;
+  observe?: boolean;
+}
+
+export interface TransactionBroadcastResult {
+  blockNumber?: number;
+  transactionId: string;
+}
 
 export class TransactionService {
   /**
@@ -42,6 +55,7 @@ export class TransactionService {
   wellKnownErrorDescriptions = [
     'Your current vote on this comment is identical to this vote',
     'Account does not have enough mana to downvote',
+    'You may only post once every 5 minutes',
   ];
 
   /**
@@ -80,25 +94,40 @@ export class TransactionService {
    * The method does this by default:
    *
    * 1. Swallows all errors and informs user about them via toast
-   *    service. When you want something else pass `onError` callback.
-   * 2. Does not observe if transaction has been applied in blockchain –
+   *    service. When you want to do something else with error pass
+   *    `options.onError` callback.
+   * 2. Runs `TransactionService.broadcastTransaction` and this method
+   *    does not observe if transaction has been applied in blockchain –
    *    resolves just after sending transaction to API server. When you
    *    want to observe transaction and resolve after applying it in
-   *    blockchain, pass parameter `observe` set to true.
+   *    blockchain, pass `options.observe` set to true. Then method
+   *    `TransactionService.broadcastAndObserveTransaction` will be run
+   *    and this resolves after applying transaction in blockchain.
    *
    * @param {(opBuilder: ITransactionBuilder) => void} cb
-   * @param {TransactionErrorCallback} [onError=(error) =>
-   * this.handleError(error)]
-   * @param {boolean} [observe=false]
+   * @param {TransactionOptions} [transactionOptions={}]
+   * @return {*}  {Promise<TransactionBroadcastResult>}
    * @memberof TransactionService
    */
   async processHiveAppOperation(
     cb: (opBuilder: ITransactionBuilder) => void,
-    onError: TransactionErrorCallback = (error) => this.handleError(error),
-    observe = false
-  ) {
+    transactionOptions: TransactionOptions = {}
+  ): Promise<TransactionBroadcastResult> {
+
+    const defaultTransactionOptions = {
+      onError: (error: any): void => this.handleError(error),
+      observe: false,
+    }
+
+    const { onError, observe } = {
+      ...defaultTransactionOptions,
+      ...transactionOptions
+    };
+
     try {
-      const txBuilder = await (await hiveChainService.getHiveChain()).getTransactionBuilder();
+      const txBuilder = await (
+        await hiveChainService.getHiveChain()
+      ).getTransactionBuilder();
 
       // Create transaction from operation
       cb(txBuilder);
@@ -111,15 +140,17 @@ export class TransactionService {
       // Add signature to transaction
       txBuilder.build(signature);
 
-      // Broadcast transaction
       if (observe) {
-        await this.broadcastAndObserveTransaction(txBuilder);
+        return await this.broadcastAndObserveTransaction(txBuilder);
       } else {
-        await this.broadcastTransaction(txBuilder);
+        return await this.broadcastTransaction(txBuilder);
       }
+
     } catch (error) {
       onError(error);
+      return { transactionId: '' };
     }
+
   }
 
   /**
@@ -145,25 +176,35 @@ export class TransactionService {
    * @return {*}  {Promise<void>}
    * @memberof TransactionService
    */
-  async broadcastTransaction(txBuilder: ITransactionBuilder): Promise<void> {
+  async broadcastTransaction(txBuilder: ITransactionBuilder): Promise<TransactionBroadcastResult> {
     // Create broadcast request
     const broadcastReq = new BroadcastTransactionRequest(txBuilder);
     // Do broadcast
+    const transactionId = txBuilder.id;
+    logger.info('Broadcasting transaction id: %o, body: %o',
+        transactionId, txBuilder.toApi());
     await (
       await hiveChainService.getHiveChain()
     ).api.network_broadcast_api.broadcast_transaction(broadcastReq);
+    return { transactionId };
   }
 
   /**
    * Create and start bot (block scanner) if needed, broadcast
    * transaction, wait until bot reports applying transaction into Hive
-   * blockchain, stop and destroy bot if needed, then resolve.
+   * blockchain, stop and destroy bot if needed, then resolve. When bot
+   * doesn't find the transaction, it will throw after transaction
+   * expiration time plus `throwAfter`.
    *
    * @param {ITransactionBuilder} txBuilder
-   * @return {*}  {Promise<void>}
+   * @param {number} [throwAfter=60 * 1000]
+   * @return {*}  {Promise<TransactionBroadcastResult>}
    * @memberof TransactionService
    */
-  async broadcastAndObserveTransaction(txBuilder: ITransactionBuilder): Promise<void> {
+  async broadcastAndObserveTransaction(
+    txBuilder: ITransactionBuilder,
+    throwAfter = 60 * 1000
+  ): Promise<TransactionBroadcastResult> {
     try {
       // Create bot
       if (!this.bot) {
@@ -184,29 +225,36 @@ export class TransactionService {
       }
 
       // Do broadcast
-      logger.info('Broadcasting transaction %o', txBuilder.toApi());
+      const transactionId = txBuilder.id;
+      logger.info('Broadcasting transaction id: %o, body: %o',
+          transactionId, txBuilder.toApi());
       const startedAt = Date.now();
-      const observer = await this.bot.broadcast(txBuilder.build(), { throwAfter: 60 * 1000 });
+      const observer = await this.bot.broadcast(
+        txBuilder.build(),
+        { throwAfter }
+      );
 
       // Observe if transaction has been applied into blockchain (scan
-      // blocks).
-      await new Promise((resolve, reject) => {
-        observer.subscribe({
+      // blocks and look for transactionId).
+      logger.info('Starting observing transaction id: %o', transactionId);
+      const result: TransactionBroadcastResult = await new Promise((resolve, reject) => {
+        const subscription = observer.subscribe({
           next: (data: ITransactionData) => {
-            // logger.info('data: %o', data);
-            const { block: { number: appliedBlockNumber } } = data;
-            logger.info('Transaction %o applied on block #%s, found after %sms',
-                txBuilder.toApi(), appliedBlockNumber, Date.now() - startedAt);
-            resolve(appliedBlockNumber);
+            const { block: { number: blockNumber } } = data;
+            logger.info('Transaction id: %o applied on block: %o, found after %sms',
+              transactionId, blockNumber, Date.now() - startedAt);
+            subscription.unsubscribe();
+            resolve({ transactionId, blockNumber });
           },
           error(error) {
-            logger.error("Transaction %o observation time expired: %o",
-                txBuilder.toApi(), error);
+            logger.error("Transaction id: %o observation time expired: %o",
+              transactionId, txBuilder.toApi(), error);
+            subscription.unsubscribe();
             reject(error);
-          }
+          },
         });
       });
-
+      return result;
     } catch (error) {
       logger.error("Error: %o", error);
       throw error;
@@ -229,10 +277,9 @@ export class TransactionService {
     author: string,
     permlink: string,
     weight = 10000,
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder
           .push({
@@ -245,8 +292,7 @@ export class TransactionService {
           })
           .build();
       },
-      onError,
-      observe
+        transactionOptions
     );
   }
 
@@ -254,10 +300,9 @@ export class TransactionService {
     author: string,
     permlink: string,
     weight = -10000,
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder
           .push({
@@ -270,17 +315,15 @@ export class TransactionService {
           })
           .build();
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
   async subscribe(
     username: string,
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new CommunityOperationBuilder()
@@ -289,17 +332,15 @@ export class TransactionService {
             .build()
         );
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
   async unsubscribe(
     username: string,
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new CommunityOperationBuilder()
@@ -308,8 +349,7 @@ export class TransactionService {
             .build()
         );
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
@@ -318,10 +358,9 @@ export class TransactionService {
     username: string,
     permlink: string,
     notes: string,
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new CommunityOperationBuilder()
@@ -330,18 +369,16 @@ export class TransactionService {
             .build()
         );
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
   async reblog(
     username: string,
     permlink: string,
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -350,17 +387,15 @@ export class TransactionService {
             .build()
         );
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
   async follow(
     username: string,
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -369,17 +404,15 @@ export class TransactionService {
             .build()
         );
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
   async unfollow(
     username: string,
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -388,18 +421,16 @@ export class TransactionService {
             .build()
         );
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
   async mute(
     otherBlogs: string,
     blog = '',
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -408,17 +439,15 @@ export class TransactionService {
             .build()
         );
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
   async unmute(
     blog: string,
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -427,16 +456,14 @@ export class TransactionService {
             .build()
         );
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
   async resetBlogList(
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -445,18 +472,16 @@ export class TransactionService {
             .build()
         );
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
   async blacklistBlog(
     otherBlogs: string,
     blog = '',
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -465,17 +490,15 @@ export class TransactionService {
             .build()
         );
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
   async unblacklistBlog(
     blog: string,
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -484,18 +507,16 @@ export class TransactionService {
             .build()
         );
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
   async followBlacklistBlog(
     otherBlogs: string,
     blog = '',
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -504,17 +525,15 @@ export class TransactionService {
             .build()
         );
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
   async unfollowBlacklistBlog(
     blog: string,
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -523,18 +542,16 @@ export class TransactionService {
             .build()
         );
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
   async followMutedBlog(
     otherBlogs: string,
     blog = '',
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -543,16 +560,14 @@ export class TransactionService {
             .build()
         );
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
   async resetAllBlog(
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -561,16 +576,14 @@ export class TransactionService {
             .build()
         );
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
   async resetBlacklistBlog(
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -579,16 +592,14 @@ export class TransactionService {
             .build()
         );
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
   async resetFollowBlacklistBlog(
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -597,16 +608,14 @@ export class TransactionService {
             .build()
         );
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
   async resetFollowMutedBlog(
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -615,17 +624,15 @@ export class TransactionService {
             .build()
         );
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
   async unfollowMutedBlog(
     blog: string,
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push(
           new FollowOperationBuilder()
@@ -634,8 +641,7 @@ export class TransactionService {
             .build()
         );
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
@@ -644,11 +650,10 @@ export class TransactionService {
     parentPermlink: string,
     body: string,
     preferences: Preferences,
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
     const chain = await hiveChainService.getHiveChain();
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder
           .useBuilder(
@@ -671,8 +676,7 @@ export class TransactionService {
           )
           .build();
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
@@ -682,11 +686,10 @@ export class TransactionService {
     permlink: string,
     body: string,
     comment_rewards: '0%' | '50%' | '100%',
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
     const chain = await hiveChainService.getHiveChain();
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder
           .useBuilder(
@@ -711,8 +714,7 @@ export class TransactionService {
           )
           .build();
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
@@ -728,11 +730,10 @@ export class TransactionService {
     altAuthor: string,
     payoutType: string,
     image?: string,
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
     const chain = await hiveChainService.getHiveChain();
-    await this.processHiveAppOperation((builder) => {
+    return await this.processHiveAppOperation((builder) => {
       builder
         .useBuilder(
           ArticleBuilder,
@@ -767,8 +768,7 @@ export class TransactionService {
           )
           .build();
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
@@ -784,10 +784,9 @@ export class TransactionService {
     blacklist_description?: string,
     muted_list_description?: string,
     version: number = 2, // signal upgrade to posting_json_metadata
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder
           .push({
@@ -814,17 +813,15 @@ export class TransactionService {
           })
           .build();
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
   async deleteComment(
     permlink: string,
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push({
           delete_comment: {
@@ -833,8 +830,7 @@ export class TransactionService {
           }
         });
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
@@ -842,10 +838,9 @@ export class TransactionService {
     proposal_ids: string[],
     approve: boolean,
     extensions: future_extensions[],
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder
           .push({
@@ -858,17 +853,15 @@ export class TransactionService {
           })
           .build();
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
   async markAllNotificationAsRead(
     date: string,
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder
           .push({
@@ -881,17 +874,15 @@ export class TransactionService {
           })
           .build();
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 
   async claimRewards(
     account: ApiAccount,
-    onError: TransactionErrorCallback = undefined,
-    observe = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    await this.processHiveAppOperation(
+    return await this.processHiveAppOperation(
       (builder) => {
         builder.push({
           claim_reward_balance: {
@@ -902,8 +893,7 @@ export class TransactionService {
           }
         });
       },
-      onError,
-      observe
+      transactionOptions
     );
   }
 

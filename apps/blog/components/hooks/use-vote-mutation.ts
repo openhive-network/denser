@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { transactionService } from '@transaction/index';
+import { TransactionBroadcastResult, transactionService } from '@transaction/index';
 import env from '@beam-australia/react-env';
-
 import { getLogger } from '@ui/lib/logging';
+
 const logger = getLogger('app');
 
 /**
@@ -34,29 +34,32 @@ export function useVoteMutation() {
             //   }
             // }
 
-            await transactionService.upVote(
+            const broadcastResult: TransactionBroadcastResult = await transactionService.upVote(
                 author,
                 permlink,
                 weight,
-                (error) => {
-                    // The method `transactionService.handleError` will
-                    // throw toast message to inform user in UI about
-                    // error. If you haven't better idea how to inform
-                    // user, just pass your error there. Note, that
-                    // error will be swallowed there.
-                    transactionService.handleError(error);
-                    // Throwing the error now is a crucial thing for
-                    // @tanstack/react-query, which should know that
-                    // mutation finished with error.
-                    throw error;
-                },
-                true
+                {
+                    onError: (error) => {
+                        // The method `transactionService.handleError` will
+                        // throw toast message to inform user in UI about
+                        // error. If you haven't better idea how to inform
+                        // user, just pass your error there. Note, that
+                        // error will be swallowed there.
+                        transactionService.handleError(error);
+                        // Throwing the error now is a crucial thing for
+                        // @tanstack/react-query, which should know that
+                        // mutation finished with error.
+                        throw error;
+                    },
+                    observe: true
+                }
             );
-            logger.info('Voted: %o', { voter, author, permlink, weight });
-            return { voter, author, permlink, weight };
+            const response = { voter, author, permlink, weight, broadcastResult };
+            logger.info('Done vote transaction: %o', response);
+            return response;
         },
-        onSuccess: (data) => {
-            logger.info('useVoteMutation onSuccess data: %o', data);
+        onSuccess: async (data) => {
+            logger.info('Running useVoteMutation onSuccess, data: %o', data);
             const { voter, author, permlink } = data;
             // We need to invalidate queries, that can be affected by
             // mutation. This tells @tanstack/react-query, that it
@@ -69,7 +72,7 @@ export function useVoteMutation() {
                 { queryKey: ['postData', author, permlink] });
             queryClient.invalidateQueries(
                 { queryKey: ['entriesInfinite'] });
-        }
+        },
     });
     return voteMutation;
 };

@@ -1,13 +1,23 @@
 import { useRef, useEffect, useContext, useState } from 'react';
-import { HiveRendererContext } from './hive-renderer-context';
 import Loading from '@ui/components/loading';
 import { LeavePageDialog } from './leave-page-dialog';
+import { getRenderer } from '../lib/renderer';
 
-const RendererContainer = ({ body, className }: { body: string; className: string }) => {
+const RendererContainer = ({
+  body,
+  className,
+  author,
+  check
+}: {
+  body: string;
+  className: string;
+  author: string;
+  check: boolean;
+}) => {
   const ref = useRef<HTMLDivElement>(null);
-  const { hiveRenderer } = useContext(HiveRendererContext);
   const [open, setOpen] = useState(false);
   const [link, setLink] = useState('');
+  const hiveRenderer = getRenderer(author, check);
 
   useEffect(() => {
     const handleClick = (e: Event) => {

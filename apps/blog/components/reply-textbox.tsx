@@ -1,21 +1,19 @@
 import Link from 'next/link';
 import { Button } from '@ui/components/button';
-import { useContext, useEffect, useState, useRef, use } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useTranslation } from 'next-i18next';
 import { transactionService } from '@transaction/index';
-import { HiveRendererContext } from './hive-renderer-context';
 import { useLocalStorage } from 'usehooks-ts';
 import { Icons } from '@ui/components/icons';
 import MdEditor from './md-editor';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
-
-import { getLogger } from '@ui/lib/logging';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import useManabars from './hooks/useManabars';
 import { hoursAndMinutes } from '../lib/utils';
 import { Entry } from '@transaction/lib/bridge';
 import RendererContainer from './rendererContainer';
+import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 export function ReplyTextbox({
@@ -99,6 +97,7 @@ export function ReplyTextbox({
           <h1 className="text-sm text-red-500">{t('post_content.footer.comment.disable_editor')}</h1>
         </Link>
         <div>
+          Ala
           <MdEditor
             htmlMode={editMode}
             onChange={(value) => {
@@ -174,6 +173,8 @@ export function ReplyTextbox({
         <RendererContainer
           body={text}
           className="prose max-w-full border-2 border-slate-200 p-2 dark:prose-invert"
+          author=""
+          check={false}
         />
       </div>
     </div>

@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getTranslations } from '@/auth/lib/get-translations';
 import { pascalCase } from 'change-case';
-
 import { getLogger } from '@ui/lib/logging';
+
 const logger = getLogger('app');
 
 export default function Profile() {
