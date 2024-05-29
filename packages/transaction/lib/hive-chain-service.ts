@@ -3,8 +3,8 @@ import { siteConfig } from '@ui/config/site';
 import { StorageType, StorageBaseOptions } from '@smart-signer/lib/storage-mixin';
 import { isStorageAvailable } from '@smart-signer/lib/utils';
 import { memoryStorage } from '@smart-signer/lib/memory-storage';
-
 import { getLogger } from '@ui/lib/logging';
+
 const logger = getLogger('app');
 
 export class HiveChainService {

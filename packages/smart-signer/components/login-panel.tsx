@@ -12,8 +12,8 @@ import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { useSigner } from '@smart-signer/lib/use-signer';
 import { TTransactionPackType } from '@hiveio/wax';
-
 import { getLogger } from '@ui/lib/logging';
+
 const logger = getLogger('app');
 
 interface LoginPanelOptions {

@@ -5,8 +5,8 @@ import { PostLoginSchema } from '@smart-signer/lib/auth/utils';
 import { User } from '@smart-signer/types/common';
 import { csrfHeaderName } from '@smart-signer/lib/csrf-protection';
 import { verifyLogin } from '@smart-signer/lib/verify-login';
-
 import { getLogger } from '@ui/lib/logging';
+
 const logger = getLogger('app');
 
 /**

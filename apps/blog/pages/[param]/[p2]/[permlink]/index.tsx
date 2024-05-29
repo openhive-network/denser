@@ -11,7 +11,7 @@ import Link from 'next/link';
 import DetailsCardHover from '@/blog/components/details-card-hover';
 import DetailsCardVoters from '@/blog/components/details-card-voters';
 import CommentSelectFilter from '@/blog/components/comment-select-filter';
-import { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import sorter, { SortOrder } from '@/blog/lib/sorter';
 import { useRouter } from 'next/router';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
@@ -46,9 +46,9 @@ import dmcaList from '@ui/config/lists/dmca-list';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import CustomError from '@/blog/components/custom-error';
 import { getRenderer } from '@/blog/lib/renderer';
-
 import { getLogger } from '@ui/lib/logging';
 import { useRebloggedByQuery } from '@/blog/components/hooks/use-reblogged-by-query';
+
 const logger = getLogger('app');
 
 

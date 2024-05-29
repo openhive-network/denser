@@ -12,8 +12,8 @@ import { isCommunity, parseAsset } from '@ui/lib/utils';
 import { vestsToRshares } from '@ui/lib/utils';
 import { DATA_LIMIT } from './bridge';
 import { hiveChainService } from './hive-chain-service';
-
 import { getLogger } from '@ui/lib/logging';
+
 const logger = getLogger('app');
 
 const chain = await hiveChainService.getHiveChain();

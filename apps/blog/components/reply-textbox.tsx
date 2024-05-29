@@ -13,8 +13,8 @@ import useManabars from './hooks/useManabars';
 import { hoursAndMinutes } from '../lib/utils';
 import { Entry } from '@transaction/lib/bridge';
 import { getRenderer } from '../lib/renderer';
-
 import { getLogger } from '@ui/lib/logging';
+
 const logger = getLogger('app');
 
 export function ReplyTextbox({
