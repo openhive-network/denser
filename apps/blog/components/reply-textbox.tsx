@@ -44,9 +44,12 @@ export function ReplyTextbox({
   );
   const { t } = useTranslation('common_blog');
   const [text, setText] = useState(
-    typeof comment === 'string' ? comment : comment.body ? comment.body : storedPost ? storedPost : ''
+    storedPost ? storedPost : typeof comment === 'string' ? comment : comment.body ? comment.body : ''
   );
 
+  useEffect(() => {
+    storePost(text);
+  }, [text]);
   const btnRef = useRef<HTMLButtonElement>(null);
 
   const handleCancel = () => {
