@@ -8,6 +8,8 @@ import type { IDynamicGlobalProperties, IVote } from '@hive/transaction/lib/hive
 import { NaiAsset } from '@hiveio/wax';
 import { Entry } from '@hive/transaction/lib/bridge';
 import { parseDate2 } from './parse-date';
+import { Toast, toast } from '@ui/components/hooks/use-toast';
+import { transformError } from '@hive/transaction/lib/transform-error';
 
 export const isCommunity = (s: string): boolean => s.match(/^hive-\d+/) !== null;
 
@@ -137,4 +139,12 @@ export function powerdownHive(accountData: FullAccount, dynamicData: IDynamicGlo
   const total_vest_hive = convertStringToBig(dynamicData.total_vesting_fund_hive);
   const powerdown_hivef = total_vest_hive.times(Big(vests).div(total_vests));
   return powerdown_hivef;
+}
+
+export function handleError<T>(error: any, ctx?: { method: string } & T, toastOptions?: Toast) {
+  toast({
+    description: transformError<T>(error, ctx),
+    variant: 'destructive',
+    ...toastOptions
+  });
 }
