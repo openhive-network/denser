@@ -35,7 +35,7 @@ const RendererContainer = ({
     return () => {
       nodes?.forEach((n) => n.removeEventListener('click', handleClick));
     };
-  }, [ref.current, body]);
+  }, [ref.current, body, hiveRenderer]);
 
   return !hiveRenderer || !body ? (
     <Loading loading={false} />
