@@ -112,6 +112,7 @@ const CommunityDescription = ({
             <RendererContainer
               body={data.description}
               className="preview-description prose-sm w-[13em] break-words 2xl:w-fit"
+              data-testid="community-description-content"
               author=""
               check={false}
             />

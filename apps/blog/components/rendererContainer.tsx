@@ -7,12 +7,14 @@ const RendererContainer = ({
   body,
   className,
   author,
-  check
+  check,
+  dataTestid
 }: {
   body: string;
   className: string;
   author: string;
   check: boolean;
+  dataTestid?: string;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
@@ -42,6 +44,7 @@ const RendererContainer = ({
         id="articleBody"
         ref={ref}
         className={className}
+        data-testid={dataTestid}
         dangerouslySetInnerHTML={{
           __html: hiveRenderer.render(body)
         }}
