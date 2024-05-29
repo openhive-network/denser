@@ -255,7 +255,9 @@ function PostPage({
 
             <hr />
 
-            {edit ? (
+            {mutedPost === undefined || isLoadingPost ? (
+              <Loading loading={mutedPost === undefined || isLoadingPost} />
+            ) : edit ? (
               <PostForm
                 username={username}
                 editMode={edit}
