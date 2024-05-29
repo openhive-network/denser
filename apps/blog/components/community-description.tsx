@@ -114,7 +114,7 @@ const CommunityDescription = ({
               className="preview-description prose-sm w-[13em] break-words 2xl:w-fit"
               dataTestid="community-description-content"
               author=""
-              check={false}
+              doNotShowImages={false}
             />
           </div>
 

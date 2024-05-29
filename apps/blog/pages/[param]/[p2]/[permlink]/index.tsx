@@ -276,7 +276,7 @@ function PostPage({
                   body={post.body}
                   className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
                   author={post.author}
-                  check={!!mutedPost && !showAnyway}
+                  doNotShowImages={!!mutedPost && !showAnyway}
                 />
               </ImageGallery>
             )}

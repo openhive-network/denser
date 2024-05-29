@@ -227,7 +227,7 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                             body={comment.body}
                             author={comment.author}
                             className=""
-                            check={false}
+                            doNotShowImages={false}
                           />
                         </CardDescription>
                       )}

@@ -2,24 +2,27 @@ import { useRef, useEffect, useState } from 'react';
 import Loading from '@ui/components/loading';
 import { LeavePageDialog } from './leave-page-dialog';
 import { getRenderer } from '../lib/renderer';
+import { getLogger } from '@ui/lib/logging';
+
+const logger = getLogger('app');
 
 const RendererContainer = ({
   body,
   className,
   author,
-  check,
+  doNotShowImages,
   dataTestid
 }: {
   body: string;
   className: string;
   author: string;
-  check: boolean;
+  doNotShowImages: boolean;
   dataTestid?: string;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [link, setLink] = useState('');
-  const hiveRenderer = getRenderer(author, check);
+  const hiveRenderer = getRenderer(author, doNotShowImages);
 
   const handleClick = (e: Event) => {
     e.preventDefault();
@@ -35,7 +38,7 @@ const RendererContainer = ({
     return () => {
       nodes?.forEach((n) => n.removeEventListener('click', handleClick));
     };
-  }, [ref.current, body, hiveRenderer]);
+  }, [body, hiveRenderer]);
 
   return !hiveRenderer || !body ? (
     <Loading loading={false} />
