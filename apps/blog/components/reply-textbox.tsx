@@ -173,7 +173,7 @@ export function ReplyTextbox({
           body={text}
           className="prose max-w-full border-2 border-slate-200 p-2 dark:prose-invert"
           author=""
-          check={false}
+          doNotShowImages={false}
         />
       </div>
     </div>
