@@ -219,13 +219,15 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                           comment={comment}
                         />
                       ) : (
-                        <RendererContainer
-                          body={comment.body}
-                          dataTestid="comment-card-description"
-                          className="prose break-words dark:text-white"
-                          author={comment.author}
-                          check={false}
-                        />
+                        <CardDescription>
+                          <RendererContainer
+                            body={comment.body}
+                            dataTestid="comment-card-description"
+                            className="prose break-words dark:text-white"
+                            author={comment.author}
+                            check={false}
+                          />
+                        </CardDescription>
                       )}
                     </CardContent>
                     <Separator orientation="horizontal" />{' '}
