@@ -25,7 +25,7 @@ const RendererContainer = ({ body, className }: { body: string; className: strin
     };
   }, [ref.current, body, hiveRenderer]);
 
-  return !hiveRenderer ? (
+  return !hiveRenderer || !body ? (
     <Loading loading={false} />
   ) : (
     <>

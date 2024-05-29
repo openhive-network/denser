@@ -46,18 +46,8 @@ export function ReplyTextbox({
   const [text, setText] = useState(
     typeof comment === 'string' ? comment : comment.body ? comment.body : storedPost ? storedPost : ''
   );
-  const [cleanedText, setCleanedText] = useState('');
 
   const btnRef = useRef<HTMLButtonElement>(null);
-  useEffect(() => {
-    if (text) {
-      const nextCleanedText = text && '';
-      setCleanedText(nextCleanedText);
-      if (text) {
-        storePost(text);
-      }
-    }
-  }, [text]);
 
   const handleCancel = () => {
     localStorage.removeItem(storageId);
@@ -77,9 +67,9 @@ export function ReplyTextbox({
       if (parentPermlink && typeof comment !== 'string') {
         const payout =
           comment.max_accepted_payout === '0.000 HBD' ? '0%' : comment.percent_hbd === 0 ? '100%' : '50%';
-        transactionService.updateComment(username, parentPermlink, permlink, cleanedText, payout);
+        transactionService.updateComment(username, parentPermlink, permlink, text, payout);
       } else {
-        transactionService.comment(username, permlink, cleanedText, preferences);
+        transactionService.comment(username, permlink, text, preferences);
       }
       setText('');
       removePost();
@@ -177,12 +167,11 @@ export function ReplyTextbox({
             </Link>
           </div>
         </div>
-        {cleanedText ? (
-          <RendererContainer
-            body={cleanedText}
-            className="prose max-w-full border-2 border-slate-200 p-2 dark:prose-invert"
-          />
-        ) : null}
+
+        <RendererContainer
+          body={text}
+          className="prose max-w-full border-2 border-slate-200 p-2 dark:prose-invert"
+        />
       </div>
     </div>
   );
