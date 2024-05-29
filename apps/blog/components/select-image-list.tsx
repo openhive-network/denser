@@ -1,5 +1,5 @@
 import { FC, useMemo } from 'react';
-import { extractLinks } from '../lib/utils';
+import { extractImagesSrc } from '../lib/utils';
 import SelectImageItem from './select-image-item';
 import { useTranslation } from 'next-i18next';
 
@@ -11,8 +11,9 @@ interface SelectImageListTypes {
 
 const SelectImageList: FC<SelectImageListTypes> = ({ content, value, onChange }) => {
   const { t } = useTranslation('common_blog');
-  const images = useMemo(() => extractLinks(content), [content]);
+  const images = useMemo(() => extractImagesSrc(content), [content]);
   const uniqueImages = Array.from(new Set(images));
+
   return uniqueImages.length > 0 ? (
     <div>
       <span>{t('submit_page.cover_image')}</span>

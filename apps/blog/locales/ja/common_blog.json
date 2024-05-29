@@ -381,8 +381,22 @@
         "cancel": "Cancel",
         "preview": "Preview",
         "markdown_styling_guide": "Markdown Styling Guide",
-        "exit_editor": "Are you sure you want to exit the comment editor?"
+        "exit_editor": "Are you sure you want to exit the comment editor?",
+        "power_up": "パワーアップ 100%",
+        "decline_payout": "支払いを拒否",
+        "rewards": "報酬: ",
+        "account_stats": "アカウント統計:",
+        "resource_credits": "リソースクレジット（RC）レベル: {{value}} %",
+        "update_settings": "設定を更新する",
+        "full_in": "満了まで: "
       }
+    },
+    "flag": {
+      "flag_post": "投稿を報告",
+      "flag_description": "この投稿を報告する理由を記載してください。コミュニティのモデレーターによって確認されます。",
+      "community_rules": "コミュニティ規則",
+      "cancel": "キャンセル",
+      "ok": "OK"
     }
   },
   "submit_page": {

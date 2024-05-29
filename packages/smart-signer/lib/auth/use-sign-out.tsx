@@ -4,8 +4,8 @@ import { QUERY_KEY } from '@smart-signer/lib/query-keys';
 import { User } from '@smart-signer/types/common';
 import { csrfHeaderName } from '@smart-signer/lib/csrf-protection';
 import { defaultUser } from '@smart-signer/lib/auth/utils';
-
 import { getLogger } from '@ui/lib/logging';
+
 const logger = getLogger('app');
 
 async function signOutBackend(): Promise<User> {

@@ -12,8 +12,8 @@ import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
 import { Icons } from '@ui/components/icons';
 import { toast } from '@ui/components/hooks/use-toast';
 import { pascalCase } from 'change-case';
-
 import { getLogger } from '@ui/lib/logging';
+
 const logger = getLogger('app');
 
 const ZodStorageTypeEnum = z.nativeEnum(StorageType);

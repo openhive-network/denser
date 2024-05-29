@@ -30,6 +30,13 @@ import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
+import { useQuery } from '@tanstack/react-query';
+
+import { getLogger } from '@ui/lib/logging';
+import { useRebloggedByQuery } from './hooks/use-reblogged-by-query';
+const logger = getLogger('app');
+
+
 const PostListItem = ({
   post,
   isCommunityPage,
@@ -45,7 +52,6 @@ const PostListItem = ({
     `user-preferences-${user.username}`,
     DEFAULT_PREFERENCES
   );
-  const [storedReblogs, setStoredReblogs] = useLocalStorage<string[]>(`reblogged_${user.username}`, ['']);
   const [reveal, setReveal] = useState(
     preferences.nsfw === 'show'
       ? false
@@ -58,12 +64,19 @@ const PostListItem = ({
   const userFromDMCA = dmcaUserList.includes(post.author);
   const userFromImageBlockList = imageUserBlocklist.includes(post.author);
   const legalBlockedUser = userIllegalContent.includes(post.author);
+
+  const {
+    data: isReblogged
+  } = useRebloggedByQuery(post?.author, post?.permlink, user.username);
+
   function revealPost() {
     setReveal((reveal) => !reveal);
   }
+
   if (gdprUserList.includes(post.author)) {
     return null;
   }
+
   return (
     <li data-testid="post-list-item" className={post.stats?.gray ? 'opacity-50 hover:opacity-100' : ''}>
       {post.json_metadata?.tags &&
@@ -368,23 +381,25 @@ const PostListItem = ({
                     <div className="flex items-center" data-testid="post-card-reblog">
                       <TooltipProvider>
                         <Tooltip>
-                          <TooltipTrigger>
+                          <TooltipTrigger disabled={isReblogged}>
                             <AlertDialogReblog
-                              username={post.author}
+                              author={post.author}
                               permlink={post.permlink}
-                              setStoredReblogs={setStoredReblogs}
                             >
                               <Icons.forward
                                 className={cn('h-4 w-4 cursor-pointer', {
-                                  'text-red-600': storedReblogs?.includes(post.permlink)
+                                  'text-red-600': isReblogged,
+                                  'cursor-default': isReblogged
                                 })}
                               />
                             </AlertDialogReblog>
                           </TooltipTrigger>
                           <TooltipContent data-testid="post-card-reblog-tooltip">
-                            <p>
-                              {t('cards.post_card.reblog')} @{post.author}/{post.permlink}
-                            </p>
+                            <p>{
+                              isReblogged
+                                ? t('cards.post_card.you_reblogged')
+                                : t('cards.post_card.reblog')
+                            }</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>

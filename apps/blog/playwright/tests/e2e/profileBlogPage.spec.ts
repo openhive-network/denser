@@ -514,7 +514,7 @@ test.describe('Profile page of @gtg', () => {
 
     // The tooltip message and colors
     await profilePage.postReblog.first().hover();
-    expect(await profilePage.postReblogTooltip.first().textContent()).toContain('Reblog @');
+    expect(await profilePage.postReblogTooltip.first().textContent()).toContain('Reblog');
     expect(await profilePage.getElementCssPropertyValue(await profilePage.postReblogTooltip, 'color')).toBe(
       'rgb(15, 23, 42)'
     );
@@ -535,7 +535,7 @@ test.describe('Profile page of @gtg', () => {
 
     // The tooltip message and colors
     await profilePage.postReblog.first().hover();
-    expect(await profilePage.postReblogTooltip.textContent()).toContain('Reblog @');
+    expect(await profilePage.postReblogTooltip.textContent()).toContain('Reblog');
     expect(await profilePage.getElementCssPropertyValue(await profilePage.postReblogTooltip, 'color')).toBe(
       'rgb(148, 163, 184)'
     );

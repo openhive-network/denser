@@ -20,7 +20,6 @@ import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } fro
 import clsx from 'clsx';
 import { useLocalStorage } from 'usehooks-ts';
 import { useTranslation } from 'next-i18next';
-import { HiveRendererContext } from './hive-renderer-context';
 import { transactionService } from '@transaction/index';
 import { createPermlink } from '@transaction/lib/utils';
 import { useQuery } from '@tanstack/react-query';
@@ -33,8 +32,8 @@ import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 import { getLogger } from '@ui/lib/logging';
-import { cn } from '@ui/lib/utils';
 import SelectImageList from './select-image-list';
+import RendererContainer from './rendererContainer';
 
 const logger = getLogger('app');
 
@@ -109,7 +108,6 @@ export default function PostForm({
   refreshPage?: () => void;
 }) {
   const btnRef = useRef<HTMLButtonElement>(null);
-  const { hiveRenderer } = useContext(HiveRendererContext);
   const router = useRouter();
   const [preferences, setPreferences] = useLocalStorage<Preferences>(
     `user-preferences-${username}`,
@@ -124,16 +122,23 @@ export default function PostForm({
     category: 'blog',
     beneficiaries: [],
     maxAcceptedPayout: preferences.blog_rewards === '0%' ? 0 : 1000000,
-    payoutType: ''
+    payoutType: preferences.blog_rewards
   };
-  const [preview, setPreview] = useState(true);
-  const [selectedImg, setSelectedImg] = useState('');
-  const [sideBySide, setSideBySide] = useState(sideBySidePreview);
-  const { manabarsData } = useManabars(username);
   const [storedPost, storePost] = useLocalStorage<AccountFormValues>(
     editMode ? `postData-edit-${post_s?.permlink}` : 'postData-new',
     defaultValues
   );
+  useEffect(() => {
+    storePost({
+      ...storedPost,
+      payoutType: preferences.blog_rewards,
+      maxAcceptedPayout: preferences.blog_rewards === '0%' ? 0 : 1000000
+    });
+  }, [preferences.blog_rewards]);
+  const [preview, setPreview] = useState(true);
+  const [selectedImg, setSelectedImg] = useState('');
+  const [sideBySide, setSideBySide] = useState(sideBySidePreview);
+  const { manabarsData } = useManabars(username);
   const [previewContent, setPreviewContent] = useState<string | undefined>(storedPost.postArea);
   const { t } = useTranslation('common_blog');
 
@@ -175,20 +180,24 @@ export default function PostForm({
   });
 
   type AccountFormValues = z.infer<typeof accountFormSchema>;
-  const getValues = (storedPost?: AccountFormValues) => ({
-    title: post_s ? post_s.title : storedPost?.title ?? '',
-    postArea: post_s ? post_s.body : storedPost?.postArea ?? '',
-    postSummary: post_s?.json_metadata.summary ? post_s.json_metadata.summary : storedPost?.postSummary ?? '',
-    tags: post_s?.json_metadata.tags ? post_s.json_metadata.tags.join(' ') : storedPost?.tags ?? '',
-    author: post_s ? post_s.author : storedPost?.author ?? '',
-    category: post_s ? post_s.category : storedPost?.category ?? '',
-    // beneficiaries: post_s ? post_s.beneficiaries : storedPost?.beneficiaries ?? [],
-    beneficiaries: storedPost?.beneficiaries ?? [],
-    maxAcceptedPayout: post_s
-      ? Number(post_s.max_accepted_payout.split(' ')[0])
-      : storedPost?.maxAcceptedPayout ?? 1000000,
-    payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType ?? preferences.blog_rewards
-  });
+  const getValues = (storedPost?: AccountFormValues) => {
+    return {
+      title: post_s?.title || storedPost?.title || '',
+      postArea: post_s?.body || storedPost?.postArea || '',
+      postSummary: post_s?.json_metadata?.summary || storedPost?.postSummary || '',
+      tags: post_s?.json_metadata?.tags?.join(' ') || storedPost?.tags || '',
+      author: post_s?.json_metadata?.author || storedPost?.author || '',
+      category: post_s?.category || storedPost?.category || '',
+      // beneficiaries: post_s ? post_s.beneficiaries : storedPost?.beneficiaries ?? [],
+      beneficiaries: storedPost?.beneficiaries || [],
+      maxAcceptedPayout: post_s
+        ? Number(post_s.max_accepted_payout.split(' ')[0])
+        : storedPost?.maxAcceptedPayout === undefined
+          ? 1000000
+          : storedPost.maxAcceptedPayout,
+      payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType || preferences.blog_rewards
+    };
+  };
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
     values: getValues(storedPost)
@@ -246,6 +255,7 @@ export default function PostForm({
         tags,
         communityPosting ? communityPosting : storedPost.category,
         storedPost.postSummary,
+        storedPost.author,
         storedPost.payoutType ?? preferences.blog_rewards,
         imagePicker(selectedImg)
       );
@@ -418,9 +428,9 @@ export default function PostForm({
 
                 <span className="text-xs">
                   {t('submit_page.author_rewards')}
-                  {storedPost.maxAcceptedPayout === 0
+                  {preferences.blog_rewards === '0%' || storedPost.maxAcceptedPayout === 0
                     ? ` ${t('submit_page.advanced_settings_dialog.decline_payout')}`
-                    : storedPost?.payoutType === '100%'
+                    : preferences.blog_rewards === '100%' || storedPost.payoutType === '100%'
                       ? t('submit_page.power_up')
                       : ' 50% HBD / 50% HP'}
                 </span>
@@ -521,13 +531,13 @@ export default function PostForm({
             </Link>
           </div>
 
-          {previewContent && hiveRenderer ? (
-            <div
-              dangerouslySetInnerHTML={{
-                __html: hiveRenderer.render(previewContent)
-              }}
+          {previewContent ? (
+            <RendererContainer
+              body={previewContent}
               className="prose w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2 dark:prose-invert"
-            ></div>
+              author=""
+              doNotShowImages={false}
+            />
           ) : null}
         </div>
       </div>

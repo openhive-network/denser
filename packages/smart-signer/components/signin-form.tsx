@@ -13,8 +13,8 @@ import { toast } from '@ui/components/hooks/use-toast';
 import { RadioGroup, RadioGroupItem } from '@ui/components/radio-group';
 import { radioGroupItems, IRadioGroupItem } from '@smart-signer/components/radio-group-item';
 import { pascalCase } from 'change-case';
-
 import { getLogger } from '@ui/lib/logging';
+
 const logger = getLogger('app');
 
 const loginFormSchema = z.object({

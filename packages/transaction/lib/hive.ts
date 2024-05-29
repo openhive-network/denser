@@ -12,8 +12,8 @@ import { isCommunity, parseAsset } from '@ui/lib/utils';
 import { vestsToRshares } from '@ui/lib/utils';
 import { DATA_LIMIT } from './bridge';
 import { hiveChainService } from './hive-chain-service';
-
 import { getLogger } from '@ui/lib/logging';
+
 const logger = getLogger('app');
 
 const chain = await hiveChainService.getHiveChain();
@@ -674,6 +674,24 @@ type GetBlogEntriesData = {
 };
 export const getBlogEntries = async (username: string, limit: number = DATA_LIMIT): Promise<BlogEntry[]> => {
   return chain.extend<GetBlogEntriesData>().api.condenser_api.get_blog_entries([username, 0, limit]);
+};
+
+type GetRebloggedByData = {
+  condenser_api: {
+    get_reblogged_by: TWaxApiRequest<[string, string], string[]>;
+  };
+};
+
+/**
+ * Returns list of accounts that reblogged given post, defined by tuple
+ * `[author: string, permlink: string]`.
+ *
+ * @param author
+ * @param permlink
+ * @returns
+ */
+export const getRebloggedBy = async (author: string, permlink: string): Promise<string[]> => {
+  return chain.extend<GetRebloggedByData>().api.condenser_api.get_reblogged_by([author, permlink]);
 };
 
 type BrodcastTransactionData = {

@@ -15,8 +15,8 @@ import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { operation } from '@hiveio/wax';
 import dynamic from 'next/dynamic';
 import { getOperationForLogin } from '@smart-signer/lib/login-operation';
-
 import { getLogger } from '@ui/lib/logging';
+
 const logger = getLogger('app');
 
 const DynamicLoginForm = dynamic(

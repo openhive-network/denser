@@ -10,16 +10,26 @@ import { GetServerSideProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
+import { validateHiveAccountName } from '@smart-signer/lib/validators/validate-hive-account-name';
+import { getLogger } from '@ui/lib/logging';
+import Error from 'next/error';
 
-const UserCommunities = ({ hivebuzz, peakd }: { hivebuzz: Badge[]; peakd: Badge[] }) => {
+const logger = getLogger('app');
+
+const UserCommunities = ({ hivebuzz, peakd, errorCode = 0 }: { hivebuzz: Badge[]; peakd: Badge[]; errorCode: number }) => {
+
   const { username } = useSiteParams();
   const { t } = useTranslation('common_blog');
   const { isLoading, error, data } = useQuery(
     ['listAllSubscription', username],
     () => getSubscriptions(username),
-    { enabled: !!username }
+    { enabled: errorCode === 0 && !!username }
   );
+
+  if (errorCode) return <Error statusCode={errorCode} />;
+
   if (isLoading) return <Loading loading={isLoading} />;
+
   return (
     <ProfileLayout>
       <div className="flex flex-col py-8">
@@ -72,16 +82,24 @@ export default UserCommunities;
 export const getServerSideProps: GetServerSideProps = async (context) => {
   let hivebuzzJsonStateOn = [];
   let peakdJsonMapedWithURL = [];
+  let errorCode = 0;
 
   try {
     const username = String(context.params?.param).slice(1);
 
-    const hivebuzzRes = await fetch(`https://hivebuzz.me/api/badges/${username}`);
+    const validationResult = validateHiveAccountName(username);
+    logger.info('validationResult: %s', validationResult);
+    if (validationResult !== null) {
+      errorCode = 404;
+      throw new Error({ statusCode: 404 });
+    }
 
+    const hivebuzzRes = await fetch(`https://hivebuzz.me/api/badges/${username}`);
     if (hivebuzzRes.ok) {
       const hivebuzzJson = await hivebuzzRes.json();
       hivebuzzJsonStateOn = hivebuzzJson.filter((badge: Badge) => badge.state === 'on');
     }
+
     const peakdRes = await fetch(`https://peakd.com/api/public/badge/${username}`);
     if (peakdRes.ok) {
       const peakdJson = await peakdRes.json();
@@ -92,11 +110,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       }));
     }
   } catch (error) {
-    console.error('Error in getServerSideProps');
+    logger.error('Error in getServerSideProps: %o', error);
   }
 
   return {
     props: {
+      errorCode,
       hivebuzz: hivebuzzJsonStateOn,
       peakd: peakdJsonMapedWithURL,
       ...(await serverSideTranslations(context.req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [

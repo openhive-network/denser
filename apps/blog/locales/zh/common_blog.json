@@ -381,8 +381,22 @@
         "cancel": "Cancel",
         "preview": "Preview",
         "markdown_styling_guide": "Markdown Styling Guide",
-        "exit_editor": "Are you sure you want to exit the comment editor?"
+        "exit_editor": "Are you sure you want to exit the comment editor?",
+        "power_up": "电力提升 100%",
+        "decline_payout": "拒绝付款",
+        "rewards": "奖励: ",
+        "account_stats": "帐户统计：",
+        "resource_credits": "资源积分（RC）水平：{{value}}%",
+        "update_settings": "更新设置",
+        "full_in": "完全充满: "
       }
+    },
+    "flag": {
+      "flag_post": "举报帖子",
+      "flag_description": "请说明您举报此帖子的原因，社区版主将进行审核。",
+      "community_rules": "社区规则",
+      "cancel": "取消",
+      "ok": "确定"
     }
   },
   "submit_page": {

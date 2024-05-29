@@ -3,8 +3,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useTranslation } from 'next-i18next';
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
-
 import { getLogger } from '@ui/lib/logging';
+
 const logger = getLogger('app');
 
 export enum PasswordFormMode {

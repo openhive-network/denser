@@ -13,7 +13,6 @@ import DetailsCardHover from './details-card-hover';
 import type { Entry, IFollowList } from '@transaction/lib/bridge';
 import clsx from 'clsx';
 import { Badge } from '@ui/components/badge';
-import { DefaultRenderer } from '@hiveio/content-renderer';
 import { useTranslation } from 'next-i18next';
 import VotesComponent from './votes';
 import { useLocalStorage } from 'usehooks-ts';
@@ -25,16 +24,15 @@ import moment from 'moment';
 import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
+import RendererContainer from './rendererContainer';
 
 interface CommentListProps {
   comment: Entry;
-  renderer: DefaultRenderer;
   parent_depth: number;
   mutedList: IFollowList[];
-  setAuthor: (e: string) => void;
 }
 
-const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor }: CommentListProps) => {
+const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps) => {
   const { t } = useTranslation('common_blog');
   const username = comment.author;
   const router = useRouter();
@@ -44,7 +42,6 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor
     comment.stats?.gray || mutedList?.some((x) => x.name === comment.author)
   );
   const [openState, setOpenState] = useState<boolean>(comment.stats?.gray && hiddenComment ? false : true);
-  const comment_html = renderer.render(comment.body);
   const commentId = `@${username}/${comment.permlink}`;
   const storageId = `replybox-/${username}/${comment.permlink}`;
   const [edit, setEdit] = useState(false);
@@ -54,6 +51,7 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor
   const legalBlockedUser = userIllegalContent.some((e) => e === comment.author);
   const userFromGDPR = gdprUserList.some((e) => e === comment.author);
   const parentFromGDPR = gdprUserList.some((e) => e === comment.parent_author);
+
   useEffect(() => {
     if (reply) {
       storeBox(reply);
@@ -68,9 +66,6 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor
     }, 500);
     return () => clearTimeout(timeout);
   }, [router.asPath]);
-  useEffect(() => {
-    setAuthor(comment.author);
-  }, [comment.author]);
   const currentDepth = comment.depth - parent_depth;
   if (userFromGDPR || parentFromGDPR) {
     return null;
@@ -221,16 +216,20 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor
                           permlink={comment.permlink}
                           parentPermlink={comment.parent_permlink}
                           storageId={storageId}
-                          comment={comment.body}
+                          comment={comment}
                         />
                       ) : (
                         <CardDescription
                           className="prose break-words dark:text-white"
                           data-testid="comment-card-description"
-                          dangerouslySetInnerHTML={{
-                            __html: comment_html
-                          }}
-                        />
+                        >
+                          <RendererContainer
+                            body={comment.body}
+                            author={comment.author}
+                            className=""
+                            doNotShowImages={false}
+                          />
+                        </CardDescription>
                       )}
                     </CardContent>
                     <Separator orientation="horizontal" />{' '}
@@ -303,7 +302,7 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor
                             </button>
                           </>
                         ) : null}
-                        {user &&
+                        {comment.replies.length === 0 &&
                         user.isLoggedIn &&
                         comment.author === user.username &&
                         moment().format('YYYY-MM-DDTHH:mm:ss') < comment.payout_at ? (
@@ -341,6 +340,7 @@ const CommentListItem = ({ comment, renderer, parent_depth, mutedList, setAuthor
           username={username}
           permlink={comment.permlink}
           storageId={storageId}
+          comment=""
         />
       ) : null}
     </>

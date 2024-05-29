@@ -25,17 +25,17 @@ export default function SocialActivities({
     first_array === peakd
       ? 'badges'
       : first_array === activity
-      ? 'activity'
-      : first_array === perso
-      ? 'personal'
-      : first_array === meetup
-      ? 'meetups'
-      : first_array === challenge
-      ? 'challenges'
-      : '';
+        ? 'activity'
+        : first_array === perso
+          ? 'personal'
+          : first_array === meetup
+            ? 'meetups'
+            : first_array === challenge
+              ? 'challenges'
+              : '';
   return (
     <Tabs defaultValue={defaultValue} className="mt-8 w-full">
-      <TabsList className="flex justify-start" data-testid="badges-activity-menu">
+      <TabsList className="flex h-auto flex-wrap justify-start" data-testid="badges-activity-menu">
         {peakd.length !== 0 ? (
           <TabsTrigger value="badges">{t('navigation.profil_social_tab_navbar.badges')}</TabsTrigger>
         ) : null}

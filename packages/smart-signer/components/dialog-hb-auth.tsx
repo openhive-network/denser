@@ -10,8 +10,8 @@ import { PasswordDialogModalPromise } from '@smart-signer/components/password-di
 import { RadioGroup } from '@ui/components/radio-group';
 import { radioGroupItems, IRadioGroupItem } from '@smart-signer/components/radio-group-item';
 import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/password-form';
-
 import { getLogger } from '@ui/lib/logging';
+
 const logger = getLogger('app');
 
 interface DialogHBAuthProps {

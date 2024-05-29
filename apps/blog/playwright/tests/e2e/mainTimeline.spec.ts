@@ -946,7 +946,7 @@ test.describe('Home page tests', () => {
 
     // The tooltip message and colors
     await homePage.getFirstPostReblogButton.hover();
-    expect(await homePage.getFirstPostReblogTooltip.textContent()).toContain('Reblog @');
+    expect(await homePage.getFirstPostReblogTooltip.textContent()).toContain('Reblog');
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogTooltip, 'color')).toBe(
       'rgb(15, 23, 42)'
     );
@@ -967,7 +967,7 @@ test.describe('Home page tests', () => {
 
     // The tooltip message and colors
     await homePage.getFirstPostReblogButton.hover();
-    expect(await homePage.getFirstPostReblogTooltip.textContent()).toContain('Reblog @');
+    expect(await homePage.getFirstPostReblogTooltip.textContent()).toContain('Reblog');
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogTooltip, 'color')).toBe(
       'rgb(148, 163, 184)'
     );

@@ -381,8 +381,22 @@
         "cancel": "Cancel",
         "preview": "Preview",
         "markdown_styling_guide": "Markdown Styling Guide",
-        "exit_editor": "Are you sure you want to exit the comment editor?"
+        "exit_editor": "Are you sure you want to exit the comment editor?",
+        "power_up": "Activer à 100%",
+        "decline_payout": "Refuser le Paiement",
+        "rewards": "Récompenses: ",
+        "account_stats": "Statistiques du compte :",
+        "resource_credits": "Niveau de crédits de ressources (RC) : {{value}} %",
+        "update_settings": "Mettre à jour les paramètres",
+        "full_in": "Complet en: "
       }
+    },
+    "flag": {
+      "flag_post": "Signaler le post",
+      "flag_description": "Veuillez fournir une note concernant votre décision de signaler ce post, elle sera examinée par les modérateurs de la communauté.",
+      "community_rules": "Règles de la communauté",
+      "cancel": "Annuler",
+      "ok": "OK"
     }
   },
   "submit_page": {

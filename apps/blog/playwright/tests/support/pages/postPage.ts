@@ -87,6 +87,7 @@ export class PostPage {
   readonly postFooterUpvoteTooltip: Locator;
   readonly postFooterDownvoteButton: Locator;
   readonly postFooterDownvoteTooltip: Locator;
+  readonly firstPostAffiliationTag: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -96,7 +97,7 @@ export class PostPage {
       .locator('[data-testid="post-list-item"] [data-testid="post-title"] a')
       .first();
     this.articleTitle = page.locator('[data-testid="article-title"]');
-    this.articleBody = page.locator('#articleBody');
+    this.articleBody = page.locator('#articleBody').first();
     this.articleAuthorData = page.locator('[data-testid="author-data"]');
     this.articleAuthorName = this.articleAuthorData
       .locator('[data-testid="author-name-link"]')
@@ -189,6 +190,7 @@ export class PostPage {
     this.userPostMenu = page.getByTestId('user-post-menu');
     this.postFooterUpvoteTooltip = page.locator('[data-testid="upvote-button-tooltip"]');
     this.postFooterDownvoteTooltip = page.locator('[data-testid="downvote-button-tooltip"]');
+    this.firstPostAffiliationTag = page.locator('[data-testid="affiliation-tag-badge"]').first();
   }
 
   async gotoHomePage() {
@@ -227,6 +229,9 @@ export class PostPage {
       .replace('\n', '');
     const firstPostTitleHomePage = await homePage.getFirstPostTitle.textContent();
 
+    if (await this.firstPostAffiliationTag.innerText.toString() == "nsfw") {
+      await this.page.getByText('Reveal this post').first().click();
+    }
     await this.firstPostTitleOnHomePage.click();
     await this.page.waitForSelector(this.articleBody['_selector']);
 

@@ -41,6 +41,7 @@ services:
       REACT_APP_API_ENDPOINT:
       REACT_APP_IMAGES_ENDPOINT:
       REACT_APP_SITE_DOMAIN:
+      REACT_APP_BLOG_DOMAIN:
       TURBO_APP_SCOPE: '@hive/wallet'
       TURBO_APP_PATH: '/apps/wallet'
     ports:
