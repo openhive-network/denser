@@ -118,7 +118,7 @@ const NotificationActivities = ({
           {t('navigation.profil_notifications_tab_navbar.mark_all')}
         </span>
       ) : null}
-      <TabsList className="flex" data-testid="notifications-local-menu">
+      <TabsList className="flex h-auto flex-wrap" data-testid="notifications-local-menu">
         <TabsTrigger value="all">{t('navigation.profil_notifications_tab_navbar.all')}</TabsTrigger>
         <TabsTrigger value="replies">{t('navigation.profil_notifications_tab_navbar.replies')}</TabsTrigger>
         <TabsTrigger value="mentions">{t('navigation.profil_notifications_tab_navbar.mentions')}</TabsTrigger>
