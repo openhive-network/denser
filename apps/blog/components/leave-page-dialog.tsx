@@ -23,7 +23,7 @@ export function LeavePageDialog({
             {t('post_content.body.the_link_youve_clicked')} <span className="font-bold">{link}</span>
           </span>
           <span>{t('post_content.body.we_are_just_verifying')}</span>
-          <Link target="_blank" href={link}>
+          <Link target="_blank" rel="noopener noreferrer nofollow external" href={link}>
             <Button className="w-fit" variant="outlineRed" onClick={() => setOpen(false)}>
               {t('post_content.body.open_link')}
             </Button>
