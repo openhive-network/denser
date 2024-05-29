@@ -21,13 +21,14 @@ const RendererContainer = ({
   const [link, setLink] = useState('');
   const hiveRenderer = getRenderer(author, check);
 
+  const handleClick = (e: Event) => {
+    e.preventDefault();
+    const anchor = e.target as HTMLAnchorElement;
+    setLink(anchor.href);
+    setOpen(true);
+  };
+
   useEffect(() => {
-    const handleClick = (e: Event) => {
-      e.preventDefault();
-      const anchor = e.target as HTMLAnchorElement;
-      setLink(anchor.href);
-      setOpen(true);
-    };
     const nodes = ref.current?.querySelectorAll('a.link-external');
     nodes?.forEach((n) => n.addEventListener('click', handleClick));
 
