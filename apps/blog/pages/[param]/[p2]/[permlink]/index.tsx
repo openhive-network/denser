@@ -209,7 +209,7 @@ function PostPage({
         });
       }
     }, 100);
-  }, [router, post.author]);
+  }, [router, post]);
 
   if (userFromGDPR) {
     return <CustomError />;
