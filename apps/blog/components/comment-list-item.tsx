@@ -24,7 +24,7 @@ import moment from 'moment';
 import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
-import { getRenderer } from '@/blog/lib/renderer';
+import RendererContainer from './rendererContainer';
 
 interface CommentListProps {
   comment: Entry;
@@ -42,7 +42,6 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
     comment.stats?.gray || mutedList?.some((x) => x.name === comment.author)
   );
   const [openState, setOpenState] = useState<boolean>(comment.stats?.gray && hiddenComment ? false : true);
-  const comment_html = getRenderer(comment.author, false).render(comment.body);
   const commentId = `@${username}/${comment.permlink}`;
   const storageId = `replybox-/${username}/${comment.permlink}`;
   const [edit, setEdit] = useState(false);
@@ -223,10 +222,14 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                         <CardDescription
                           className="prose break-words dark:text-white"
                           data-testid="comment-card-description"
-                          dangerouslySetInnerHTML={{
-                            __html: comment_html
-                          }}
-                        />
+                        >
+                          <RendererContainer
+                            body={comment.body}
+                            author={comment.author}
+                            className=""
+                            doNotShowImages={false}
+                          />
+                        </CardDescription>
                       )}
                     </CardContent>
                     <Separator orientation="horizontal" />{' '}

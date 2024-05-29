@@ -12,9 +12,8 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import useManabars from './hooks/useManabars';
 import { hoursAndMinutes } from '../lib/utils';
 import { Entry } from '@transaction/lib/bridge';
-import { getRenderer } from '../lib/renderer';
+import RendererContainer from './rendererContainer';
 import { getLogger } from '@ui/lib/logging';
-
 const logger = getLogger('app');
 
 export function ReplyTextbox({
@@ -43,19 +42,13 @@ export function ReplyTextbox({
   );
   const { t } = useTranslation('common_blog');
   const [text, setText] = useState(
-    typeof comment === 'string' ? comment : comment.body ? comment.body : storedPost ? storedPost : ''
+    storedPost ? storedPost : typeof comment === 'string' ? comment : comment.body ? comment.body : ''
   );
-  const [cleanedText, setCleanedText] = useState('');
-  const hiveRenderer = getRenderer('', false);
-  const btnRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    const nextCleanedText = text ? hiveRenderer.render(text) : '';
-    setCleanedText(nextCleanedText);
-    if (text) {
-      storePost(text);
-    }
-  }, [hiveRenderer, text, storePost]);
+    storePost(text);
+  }, [text]);
+  const btnRef = useRef<HTMLButtonElement>(null);
 
   const handleCancel = () => {
     localStorage.removeItem(storageId);
@@ -74,18 +67,10 @@ export function ReplyTextbox({
       }
       if (parentPermlink && typeof comment !== 'string') {
         const payout =
-          comment.max_accepted_payout === '0.000 HBD'
-            ? '0%'
-            : comment.percent_hbd === 0
-              ? '100%'
-              : '50%';
-        transactionService.updateComment(
-          username, parentPermlink, permlink, cleanedText, payout
-        );
+          comment.max_accepted_payout === '0.000 HBD' ? '0%' : comment.percent_hbd === 0 ? '100%' : '50%';
+        transactionService.updateComment(username, parentPermlink, permlink, text, payout);
       } else {
-        transactionService.comment(
-          username, permlink, cleanedText, preferences
-        );
+        transactionService.comment(username, permlink, text, preferences);
       }
       setText('');
       removePost();
@@ -183,14 +168,13 @@ export function ReplyTextbox({
             </Link>
           </div>
         </div>
-        {cleanedText ? (
-          <div
-            dangerouslySetInnerHTML={{
-              __html: cleanedText
-            }}
-            className="prose max-w-full border-2 border-slate-200 p-2 dark:prose-invert"
-          ></div>
-        ) : null}
+
+        <RendererContainer
+          body={text}
+          className="prose max-w-full border-2 border-slate-200 p-2 dark:prose-invert"
+          author=""
+          doNotShowImages={false}
+        />
       </div>
     </div>
   );

@@ -97,7 +97,7 @@ export class PostPage {
       .locator('[data-testid="post-list-item"] [data-testid="post-title"] a')
       .first();
     this.articleTitle = page.locator('[data-testid="article-title"]');
-    this.articleBody = page.locator('#articleBody');
+    this.articleBody = page.locator('#articleBody').first();
     this.articleAuthorData = page.locator('[data-testid="author-data"]');
     this.articleAuthorName = this.articleAuthorData
       .locator('[data-testid="author-name-link"]')

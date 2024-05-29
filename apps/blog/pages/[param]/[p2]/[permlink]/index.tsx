@@ -45,12 +45,11 @@ import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import dmcaList from '@ui/config/lists/dmca-list';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import CustomError from '@/blog/components/custom-error';
-import { getRenderer } from '@/blog/lib/renderer';
+import RendererContainer from '@/blog/components/rendererContainer';
 import { getLogger } from '@ui/lib/logging';
 import { useRebloggedByQuery } from '@/blog/components/hooks/use-reblogged-by-query';
 
 const logger = getLogger('app');
-
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -108,9 +107,7 @@ function PostPage({
     enabled: !!username && !!permlink
   });
 
-  const {
-    data: isReblogged
-  } = useRebloggedByQuery(post?.author, post?.permlink, user.username);
+  const { data: isReblogged } = useRebloggedByQuery(post?.author, post?.permlink, user.username);
 
   const [discussionState, setDiscussionState] = useState<Entry[]>();
   const router = useRouter();
@@ -258,7 +255,6 @@ function PostPage({
 
             <hr />
 
-            {/* {mutedPost === undefined || isLoadingPost || isLoadingFollowList || isLoadingDiscussion || isLoadingCommunity || isActiveVotesLoading ? ( */}
             {mutedPost === undefined || isLoadingPost ? (
               <Loading loading={mutedPost === undefined || isLoadingPost} />
             ) : edit ? (
@@ -276,12 +272,11 @@ function PostPage({
               <div className="px-2 py-6">{t('post_content.body.copyright')}</div>
             ) : (
               <ImageGallery>
-                <div
-                  id="articleBody"
+                <RendererContainer
+                  body={post.body}
                   className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
-                  dangerouslySetInnerHTML={{
-                    __html: getRenderer(post.author, mutedPost && !showAnyway).render(post.body)
-                  }}
+                  author={post.author}
+                  doNotShowImages={!!mutedPost && !showAnyway}
                 />
               </ImageGallery>
             )}
@@ -356,11 +351,8 @@ function PostPage({
                 <div className="flex items-center" data-testid="comment-respons-header">
                   <TooltipProvider>
                     <Tooltip>
-                    <TooltipTrigger disabled={isReblogged}>
-                        <AlertDialogReblog
-                          author={post.author}
-                          permlink={post.permlink}
-                        >
+                      <TooltipTrigger disabled={isReblogged}>
+                        <AlertDialogReblog author={post.author} permlink={post.permlink}>
                           <Icons.forward
                             className={cn('h-4 w-4 cursor-pointer', {
                               'text-red-600': isReblogged,

@@ -33,7 +33,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/co
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 import { getLogger } from '@ui/lib/logging';
 import SelectImageList from './select-image-list';
-import { getRenderer } from '../lib/renderer';
+import RendererContainer from './rendererContainer';
 
 const logger = getLogger('app');
 
@@ -532,12 +532,12 @@ export default function PostForm({
           </div>
 
           {previewContent ? (
-            <div
-              dangerouslySetInnerHTML={{
-                __html: getRenderer('', false).render(previewContent)
-              }}
+            <RendererContainer
+              body={previewContent}
               className="prose w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2 dark:prose-invert"
-            ></div>
+              author=""
+              doNotShowImages={false}
+            />
           ) : null}
         </div>
       </div>

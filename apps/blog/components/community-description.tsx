@@ -11,7 +11,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useEffect, useState } from 'react';
 import SubscribeCommunity from './subscribe-community';
 import NewPost from './new-post-button';
-import { getRenderer } from '../lib/renderer';
+import RendererContainer from './rendererContainer';
 
 const CommunityDescription = ({
   data,
@@ -28,10 +28,6 @@ const CommunityDescription = ({
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
 
-  let post_body_html = null;
-  if (data.description) {
-    post_body_html = getRenderer('', false).render(data.description);
-  }
   useEffect(() => {
     setIsSubscribe(data.context.subscribed);
   }, [data.context.subscribed]);
@@ -112,13 +108,14 @@ const CommunityDescription = ({
             <h6 className="my-1.5 font-semibold leading-none tracking-tight">
               {t('communities.titles.description')}
             </h6>
-            {post_body_html ? (
-              <div
-                className="preview-description prose-sm w-[13em] break-words 2xl:w-fit"
-                data-testid="community-description-content"
-                dangerouslySetInnerHTML={{ __html: post_body_html }}
-              />
-            ) : null}
+
+            <RendererContainer
+              body={data.description}
+              className="preview-description prose-sm w-[13em] break-words 2xl:w-fit"
+              dataTestid="community-description-content"
+              author=""
+              doNotShowImages={false}
+            />
           </div>
 
           {data.flag_text.trim() !== '' ? (
