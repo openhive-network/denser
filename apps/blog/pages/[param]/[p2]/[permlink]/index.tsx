@@ -48,6 +48,7 @@ import CustomError from '@/blog/components/custom-error';
 import RendererContainer from '@/blog/components/rendererContainer';
 import { getLogger } from '@ui/lib/logging';
 import { useRebloggedByQuery } from '@/blog/components/hooks/use-reblogged-by-query';
+import ScrollToElement from '@/blog/components/scroll-to-element';
 
 const logger = getLogger('app');
 
@@ -474,6 +475,7 @@ function PostPage({
           <Loading loading={isLoadingPost} />
         )}
       </div>
+      <ScrollToElement />
       <div id="comments" className="flex" />
       <div className="mx-auto my-0 max-w-4xl py-4">
         {reply && post && user.isLoggedIn ? (
