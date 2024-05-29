@@ -97,7 +97,6 @@ export function ReplyTextbox({
           <h1 className="text-sm text-red-500">{t('post_content.footer.comment.disable_editor')}</h1>
         </Link>
         <div>
-          Ala
           <MdEditor
             htmlMode={editMode}
             onChange={(value) => {
