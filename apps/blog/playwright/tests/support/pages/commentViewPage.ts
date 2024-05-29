@@ -53,7 +53,7 @@ export class CommentViewPage {
     this.getMainCommentAuthorNameLink = page.locator('[data-testid="author-name-link"]').first();
     this.getMainCommentCommunityLink = page.locator('[data-testid="comment-community-title"]');
     this.getMainCommentCategoryLink = page.locator('[data-testid="comment-category-title"]');
-    this.getMainCommentContent = page.locator('#articleBody');
+    this.getMainCommentContent = page.locator('#articleBody').first();
     this.getMainCommentFooterAuthorData = page.locator('[data-testid="author-data-post-footer"]');
     this.getMainCommentFooterCommunityLink = page.locator(
       '[data-testid="footer-comment-community-category-link"]'
