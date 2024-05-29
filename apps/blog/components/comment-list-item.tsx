@@ -221,6 +221,7 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                       ) : (
                         <RendererContainer
                           body={comment.body}
+                          dataTestid="comment-card-description"
                           className="prose break-words dark:text-white"
                           author={comment.author}
                           check={false}

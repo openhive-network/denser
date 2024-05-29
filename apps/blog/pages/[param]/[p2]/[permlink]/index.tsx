@@ -255,7 +255,10 @@ function PostPage({
 
             <hr />
 
-            {edit ? (
+            {/* {mutedPost === undefined || isLoadingPost || isLoadingFollowList || isLoadingDiscussion || isLoadingCommunity || isActiveVotesLoading ? ( */}
+            {mutedPost === undefined || isLoadingPost ? (
+              <Loading loading={mutedPost === undefined || isLoadingPost} />
+            ) : edit ? (
               <PostForm
                 username={username}
                 editMode={edit}
@@ -272,7 +275,7 @@ function PostPage({
               <ImageGallery>
                 <RendererContainer
                   body={post.body}
-                  className='"entry-body markdown-view user-selectable dark:prose-invert" prose max-w-full'
+                  className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
                   author={post.author}
                   check={!!mutedPost && !showAnyway}
                 />
