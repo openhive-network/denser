@@ -20,7 +20,6 @@ import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } fro
 import clsx from 'clsx';
 import { useLocalStorage } from 'usehooks-ts';
 import { useTranslation } from 'next-i18next';
-import { transactionService } from '@transaction/index';
 import { createPermlink } from '@transaction/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { Entry, getCommunity, getSubscriptions } from '@transaction/lib/bridge';
@@ -34,6 +33,7 @@ import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 import { getLogger } from '@ui/lib/logging';
 import SelectImageList from './select-image-list';
 import RendererContainer from './rendererContainer';
+import { usePostMutation } from './hooks/use-post-mutation';
 
 const logger = getLogger('app');
 
@@ -140,6 +140,7 @@ export default function PostForm({
   const { manabarsData } = useManabars(username);
   const [previewContent, setPreviewContent] = useState<string | undefined>(storedPost.postArea);
   const { t } = useTranslation('common_blog');
+  const { post } = usePostMutation();
 
   const {
     data: mySubsData,
@@ -250,11 +251,11 @@ export default function PostForm({
         btnRef.current.disabled = true;
       }
 
-      await transactionService.post(
-        editMode && permlinInEditMode ? permlinInEditMode : postPermlink,
-        storedPost.title,
-        storedPost.postArea,
-        storedPost.beneficiaries,
+      await post({
+        permlink: editMode && permlinInEditMode ? permlinInEditMode : postPermlink,
+        title: storedPost.title,
+        body: storedPost.postArea,
+        beneficiaries: storedPost.beneficiaries,
         maxAcceptedPayout,
         tags,
         communityPosting ? communityPosting : storedPost.category,
