@@ -15,7 +15,7 @@ const ScrollToElement = () => {
         return true;
       };
 
-      const scrollToComments = () => {
+      const scrollToElement = () => {
         const hash = window.location.hash.slice(1);
         if (hash && checkImagesLoaded()) {
           document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
@@ -23,7 +23,7 @@ const ScrollToElement = () => {
       };
 
       // Initial check
-      scrollToComments();
+      scrollToElement();
 
       let timeoutId: NodeJS.Timeout | null = null;
       const debouncedScrollToComments = () => {
@@ -31,7 +31,7 @@ const ScrollToElement = () => {
           clearTimeout(timeoutId);
         }
         timeoutId = setTimeout(() => {
-          scrollToComments();
+          scrollToElement();
         }, 500);
       };
 
