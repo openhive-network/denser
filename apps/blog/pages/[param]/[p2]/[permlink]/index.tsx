@@ -273,6 +273,8 @@ function PostPage({
                 <RendererContainer
                   body={post.body}
                   className='"entry-body markdown-view user-selectable dark:prose-invert" prose max-w-full'
+                  author={post.author}
+                  check={!!mutedPost && !showAnyway}
                 />
               </ImageGallery>
             )}
