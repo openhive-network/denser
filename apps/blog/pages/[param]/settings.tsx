@@ -19,7 +19,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
 import { useParams } from 'next/navigation';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { cn } from '@ui/lib/utils';
+import { cn, handleError } from '@ui/lib/utils';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
 import { transactionService } from '@transaction/index';
@@ -34,6 +34,8 @@ import { Signer } from '@smart-signer/lib/signer/signer';
 import { getLogger } from '@ui/lib/logging';
 import { useSignerContext } from '@/blog/components/common/signer';
 import { toast } from '@ui/components/hooks/use-toast';
+import { useUnmuteMutation } from '@/blog/components/hooks/use-mute-mutations';
+import { useUpdateProfileMutation } from '@/blog/components/hooks/use-update-profile-mutation';
 
 const logger = getLogger('app');
 interface Settings {
@@ -199,6 +201,8 @@ export default function UserSettings() {
     profileSettings.about === settings.about &&
     profileSettings.blacklist_description === settings.blacklist_description &&
     profileSettings.muted_list_description === settings.muted_list_description;
+  const { unmute } = useUnmuteMutation();
+  const { updateProfile } = useUpdateProfileMutation();
 
   useEffect(() => {
     setIsClient(true);
@@ -208,18 +212,21 @@ export default function UserSettings() {
   }, [isLoading]);
   async function onSubmit() {
     try {
-      await transactionService.updateProfile(
-        settings.profile_image !== '' ? settings.profile_image : undefined,
-        settings.cover_image !== '' ? settings.cover_image : undefined,
-        settings.name !== '' ? settings.name : undefined,
-        settings.about !== '' ? settings.about : undefined,
-        settings.location !== '' ? settings.location : undefined,
-        settings.website !== '' ? settings.website : undefined,
-        profileData?.witness_owner,
-        profileData?.witness_description,
-        settings.blacklist_description !== '' ? settings.blacklist_description : undefined,
-        settings.muted_list_description !== '' ? settings.muted_list_description : undefined
-      );
+      await updateProfile({
+        profile_image: settings.profile_image !== '' ? settings.profile_image : undefined,
+        cover_image: settings.cover_image !== '' ? settings.cover_image : undefined,
+        name: settings.name !== '' ? settings.name : undefined,
+        about: settings.about !== '' ? settings.about : undefined,
+        location: settings.location !== '' ? settings.location : undefined,
+        website: settings.website !== '' ? settings.website : undefined,
+        witness_owner: profileData?.witness_owner,
+        witness_description: profileData?.witness_description,
+        blacklist_description:
+          settings.blacklist_description !== '' ? settings.blacklist_description : undefined,
+        muted_list_description:
+          settings.muted_list_description !== '' ? settings.muted_list_description : undefined
+      });
+
       toast({
         title: t('settings_page.changes_saved'),
         variant: 'success'
@@ -577,7 +584,7 @@ export default function UserSettings() {
                   <Button
                     className="h-fit p-1 text-red-500"
                     variant="link"
-                    onClick={() => transactionService.unmute(mutedUser.name)}
+                    onClick={async () => await unmute({ username: mutedUser.name })}
                   >
                     [{t('settings_page.unmute')}]
                   </Button>

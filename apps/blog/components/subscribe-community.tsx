@@ -3,6 +3,8 @@ import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
 import { transactionService } from '@transaction/index';
 import { User } from '@smart-signer/types/common';
+import { useSubscribeMutation, useUnsubscribeMutation } from './hooks/use-subscribe-mutations';
+import { handleError } from '@ui/lib/utils';
 
 const SubscribeCommunity = ({
   user,
@@ -16,6 +18,8 @@ const SubscribeCommunity = ({
   OnIsSubscribe: (e: boolean) => void;
 }) => {
   const { t } = useTranslation('common_blog');
+  const { subscribe } = useSubscribeMutation();
+  const { unsubscribe } = useUnsubscribeMutation();
 
   return (
     <>
@@ -26,13 +30,13 @@ const SubscribeCommunity = ({
               size="sm"
               className="w-full bg-blue-800 text-center hover:bg-blue-900"
               data-testid="community-subscribe-button"
-              onClick={() => {
+              onClick={async () => {
                 const nextIsSubscribe = !subStatus;
                 OnIsSubscribe(nextIsSubscribe);
                 if (nextIsSubscribe) {
-                  transactionService.subscribe(username);
+                  await subscribe({ username });
                 } else {
-                  transactionService.unsubscribe(username);
+                  await unsubscribe({ username });
                 }
               }}
             >
@@ -46,7 +50,7 @@ const SubscribeCommunity = ({
               onClick={() => {
                 const nextIsSubscribe = !subStatus;
                 OnIsSubscribe(nextIsSubscribe);
-                transactionService.unsubscribe(username);
+                unsubscribe({ username });
               }}
             >
               <span className="group-hover:hidden">{t('communities.buttons.joined')}</span>

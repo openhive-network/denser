@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Button } from '@hive/ui';
 import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
-import { transactionService } from '@transaction/index';
 import { User } from '@smart-signer/types/common';
 import { IFollow } from '@transaction/lib/hive';
 import { UseInfiniteQueryResult } from '@tanstack/react-query';
+import { useFollowMutation, useUnfollowMutation } from './hooks/use-follow-mutations';
 
 const FollowButton = ({
   username,
@@ -31,6 +31,8 @@ const FollowButton = ({
 }) => {
   const { t } = useTranslation('common_blog');
   const [isFollow, setIsFollow] = useState(false);
+  const { follow } = useFollowMutation();
+  const { unfollow } = useUnfollowMutation();
 
   useEffect(() => {
     const isFollow = Boolean(
@@ -41,6 +43,7 @@ const FollowButton = ({
     );
     setIsFollow(isFollow);
   }, [list.data?.pages, user?.username, username]);
+
   return (
     <>
       {user.isLoggedIn ? (
@@ -49,13 +52,13 @@ const FollowButton = ({
           variant={variant}
           size="sm"
           data-testid="profile-follow-button"
-          onClick={() => {
+          onClick={async () => {
             const nextFollow = !isFollow;
             setIsFollow(nextFollow);
             if (nextFollow) {
-              transactionService.follow(username);
+              await follow({ username });
             } else {
-              transactionService.unfollow(username);
+              await unfollow({ username });
             }
           }}
           disabled={list.isLoading || list.isFetching}
