@@ -32,7 +32,9 @@ export function CommunitiesSelect({
     getCommunities(sort, query)
   );
 
-  const filteredCommunity = mySubsData?.map((my) => data?.slice(0, 12).filter((c) => c.name !== my[0]))[0];
+  const filteredCommunity = data
+    ?.slice(0, 12)
+    .filter((c) => !mySubsData?.map((my) => my[0]).includes(c.name));
 
   if (isLoading) return <p>{t('global.loading')}...</p>;
   return (
