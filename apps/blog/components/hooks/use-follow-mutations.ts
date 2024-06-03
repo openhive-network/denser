@@ -19,7 +19,7 @@ export function useFollowMutation() {
     mutationFn: async (params: FollowParams) => {
       const { username } = params;
 
-      await transactionService.follow(username);
+      await transactionService.follow(username, { observe: true });
 
       logger.info('Followed: %o', params);
       return params;
@@ -55,7 +55,7 @@ export function useUnfollowMutation() {
     mutationFn: async (params: UnfollowParams) => {
       const { username } = params;
 
-      await transactionService.unfollow(username);
+      await transactionService.unfollow(username, { observe: true });
 
       logger.info('Unfollow: %o', params);
       return params;
@@ -92,7 +92,7 @@ export function useFollowBlacklistBlogMutation() {
     mutationFn: async (params: FollowBlackListBlogParams) => {
       const { otherBlogs, blog } = params;
 
-      await transactionService.followBlacklistBlog(otherBlogs, blog);
+      await transactionService.followBlacklistBlog(otherBlogs, blog, { observe: true });
 
       logger.info('Followed blacklist blog: %o', params);
       return params;
@@ -128,7 +128,7 @@ export function useUnfollowBlacklistBlogMutation() {
     mutationFn: async (params: UnfollowBlacklistBlogParams) => {
       const { blog } = params;
 
-      await transactionService.unfollowBlacklistBlog(blog);
+      await transactionService.unfollowBlacklistBlog(blog, { observe: true });
 
       logger.info('Unollowed blacklist blog: %o', params);
       return params;
@@ -160,7 +160,7 @@ export function useFollowMutedBlogMutation() {
     mutationFn: async (params: FollowBlackListBlogParams) => {
       const { otherBlogs, blog } = params;
 
-      await transactionService.followMutedBlog(otherBlogs, blog);
+      await transactionService.followMutedBlog(otherBlogs, blog, { observe: true });
 
       logger.info('Followed muted blog: %o', params);
       return params;
@@ -192,7 +192,7 @@ export function useUnfollowMutedBlogMutation() {
     mutationFn: async (params: UnfollowBlacklistBlogParams) => {
       const { blog } = params;
 
-      await transactionService.unfollowMutedBlog(blog);
+      await transactionService.unfollowMutedBlog(blog, { observe: true });
 
       logger.info('Unollowed muted blog: %o', params);
       return params;

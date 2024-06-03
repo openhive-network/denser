@@ -54,7 +54,8 @@ export function usePostMutation() {
         summary,
         altAuthor,
         payoutType,
-        image
+        image,
+        { observe: true }
       );
 
       logger.info('Post: %o', params);

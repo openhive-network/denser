@@ -22,7 +22,7 @@ export function useFlagMutation() {
     mutationFn: async (params: FlagParams) => {
       const { community, username, permlink, notes } = params;
 
-      await transactionService.flag(community, username, permlink, notes);
+      await transactionService.flag(community, username, permlink, notes, { observe: true });
 
       logger.info('Flagged: %o', params);
       return params;

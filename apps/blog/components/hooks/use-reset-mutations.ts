@@ -13,7 +13,7 @@ const logger = getLogger('app');
 export function useResetBlogListMutation() {
   const resetBlogListMutation = useMutation({
     mutationFn: async () => {
-      await transactionService.resetBlogList();
+      await transactionService.resetBlogList({ observe: true });
 
       logger.info('Reset blog list');
     },
@@ -42,7 +42,7 @@ export function useResetBlogListMutation() {
 export function useResetBlacklistBlogMutation() {
   const resetBlacklistBlogMutation = useMutation({
     mutationFn: async () => {
-      await transactionService.resetBlacklistBlog();
+      await transactionService.resetBlacklistBlog({ observe: true });
 
       logger.info('Reset blacklist blog');
     },
@@ -71,7 +71,7 @@ export function useResetBlacklistBlogMutation() {
 export function useResetFollowBlacklistBlogMutation() {
   const resetFollowBlacklistBlogMutation = useMutation({
     mutationFn: async () => {
-      await transactionService.resetFollowBlacklistBlog();
+      await transactionService.resetFollowBlacklistBlog({ observe: true });
 
       logger.info('Reset follow blacklist blog');
     },
@@ -100,7 +100,7 @@ export function useResetFollowBlacklistBlogMutation() {
 export function useResetFollowMutedBlogMutation() {
   const resetFollowMutedBlogMutation = useMutation({
     mutationFn: async () => {
-      await transactionService.resetFollowMutedBlog();
+      await transactionService.resetFollowMutedBlog({ observe: true });
 
       logger.info('Reset follow muted blog');
     },

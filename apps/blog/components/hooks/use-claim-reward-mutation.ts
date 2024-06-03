@@ -20,7 +20,7 @@ export function useClaimRewardMutation() {
     mutationFn: async (params: ClaimRewardParams) => {
       const { account } = params;
 
-      await transactionService.claimRewards(account);
+      await transactionService.claimRewards(account, { observe: true });
 
       logger.info('Claimed reward: %o', params);
       return params;
