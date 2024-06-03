@@ -77,6 +77,7 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
         <Link
           href={`${env('BLOG_DOMAIN')}/@${proposalData.creator}/${proposalData.permlink}`}
           target="_blank"
+          rel="noopener noreferrer"
           title={titleSetter(proposalData.start_date, proposalData.end_date, proposalData.status, t)}
         >
           <span
@@ -119,7 +120,11 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
           </div>
         </div>
         <div className="flex items-center gap-1 text-xs md:text-sm">
-          <Link href={`/@${proposalData.creator}`} target="_blank">
+          <Link
+            href={`${env('BLOG_DOMAIN')}/@${proposalData.creator}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <img
               className="h-[30px] w-[30px] rounded-3xl"
               height="40"
@@ -129,7 +134,11 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
             />
           </Link>
           {t('proposals_page.by')}
-          <Link href={`/@${proposalData.creator}`} target="_blank">
+          <Link
+            href={`${env('BLOG_DOMAIN')}/@${proposalData.creator}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <span className="text-red-500 dark:hover:text-red-400" data-testid="proposal-creator">
               {proposalData.creator}
             </span>
@@ -137,7 +146,11 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
           {proposalData.receiver !== proposalData.creator && (
             <span>
               {t('proposals_page.for')}
-              <Link href={`/</span>@${proposalData.receiver}`} target="_blank">
+              <Link
+                href={`${env('BLOG_DOMAIN')}/@${proposalData.receiver}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <span className="text-red-500 dark:hover:text-red-400" data-testid="proposal-receiver">
                   {proposalData.receiver}
                 </span>
