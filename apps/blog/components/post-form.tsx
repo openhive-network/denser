@@ -138,6 +138,7 @@ export default function PostForm({
   const [preview, setPreview] = useState(true);
   const [selectedImg, setSelectedImg] = useState('');
   const [sideBySide, setSideBySide] = useState(sideBySidePreview);
+  const [imagePickerState, setImagePickerState] = useState('');
   const { manabarsData } = useManabars(username);
   const [previewContent, setPreviewContent] = useState<string | undefined>(storedPost.postArea);
   const { t } = useTranslation('common_blog');
@@ -235,6 +236,11 @@ export default function PostForm({
       }, 50)();
     }
   }, [postArea, previewContent]);
+
+  useEffect(() => {
+    setImagePickerState(imagePicker(selectedImg));
+  }, [selectedImg]);
+
   async function onSubmit(data: AccountFormValues) {
     const chain = await hiveChainService.getHiveChain();
     const tags = storedPost.tags.replace(/#/g, '').split(' ') ?? [];
@@ -257,7 +263,7 @@ export default function PostForm({
         storedPost.postSummary,
         storedPost.author,
         storedPost.payoutType ?? preferences.blog_rewards,
-        imagePicker(selectedImg)
+        imagePickerState
       );
       form.reset(defaultValues);
       setPreviewContent(undefined);
