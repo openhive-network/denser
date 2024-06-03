@@ -19,7 +19,7 @@ export function useMarkAllNotificationsAsReadMutation() {
     mutationFn: async (params: MarkAllNotificationsAsReadParams) => {
       const { date } = params;
 
-      await transactionService.markAllNotificationAsRead(date);
+      await transactionService.markAllNotificationAsRead(date, { observe: true });
 
       logger.info('Marked all notifications as read: %o', params);
       return params;

@@ -1,9 +1,7 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
-import { Preferences } from '@transaction/lib/app-types';
 import { getLogger } from '@ui/lib/logging';
 import { handleError } from '@ui/lib/utils';
-import { subscribe } from 'diagnostics_channel';
 const logger = getLogger('app');
 
 interface SubscribeParams {
@@ -21,7 +19,7 @@ export function useSubscribeMutation() {
     mutationFn: async (params: SubscribeParams) => {
       const { username } = params;
 
-      await transactionService.subscribe(username);
+      await transactionService.subscribe(username, { observe: true });
 
       logger.info('Subscribe: %o', params);
       return params;
@@ -53,7 +51,7 @@ export function useUnsubscribeMutation() {
     mutationFn: async (params: SubscribeParams) => {
       const { username } = params;
 
-      await transactionService.unsubscribe(username);
+      await transactionService.unsubscribe(username, { observe: true });
 
       logger.info('Unsubscribe: %o', params);
       return params;

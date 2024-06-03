@@ -20,7 +20,7 @@ export function useBlacklistBlogMutation() {
     mutationFn: async (params: BlackListBlogParams) => {
       const { otherBlogs, blog } = params;
 
-      await transactionService.blacklistBlog(otherBlogs, blog);
+      await transactionService.blacklistBlog(otherBlogs, blog, { observe: true });
 
       logger.info('Blacklist blog: %o', params);
       return params;
@@ -56,7 +56,7 @@ export function useUnblacklistBlogMutation() {
     mutationFn: async (params: UnblacklistBlogParams) => {
       const { blog } = params;
 
-      await transactionService.unblacklistBlog(blog);
+      await transactionService.unblacklistBlog(blog, { observe: true });
 
       logger.info('Unblacklist blog: %o', params);
       return params;

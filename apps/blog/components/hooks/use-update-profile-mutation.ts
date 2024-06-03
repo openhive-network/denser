@@ -52,7 +52,8 @@ export function useUpdateProfileMutation() {
         witness_description,
         blacklist_description,
         muted_list_description,
-        version
+        version,
+        { observe: true }
       );
 
       logger.info('Update profile: %o', params);
