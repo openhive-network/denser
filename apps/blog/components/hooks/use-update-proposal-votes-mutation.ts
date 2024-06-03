@@ -22,7 +22,7 @@ export function useUpdateProposalVotesMutation() {
     mutationFn: async (params: UpdateProposalVotesParams) => {
       const { proposal_ids, approve, extensions } = params;
 
-      await transactionService.updateProposalVotes(proposal_ids, approve, extensions);
+      await transactionService.updateProposalVotes(proposal_ids, approve, extensions, { observe: true });
 
       logger.info('Update proposal votes: %o', params);
       return params;

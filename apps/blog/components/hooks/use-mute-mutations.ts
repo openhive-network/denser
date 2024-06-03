@@ -19,7 +19,7 @@ export function useMuteMutation() {
     mutationFn: async (params: MuteParams) => {
       const { username } = params;
 
-      await transactionService.mute(username);
+      await transactionService.mute(username, '', { observe: true });
 
       logger.info('Muted: %o', params);
       return params;
@@ -55,7 +55,7 @@ export function useUnmuteMutation() {
     mutationFn: async (params: UnmuteParams) => {
       const { username } = params;
 
-      await transactionService.unmute(username);
+      await transactionService.unmute(username, { observe: true });
 
       logger.info('Unmuted: %o', params);
       return params;

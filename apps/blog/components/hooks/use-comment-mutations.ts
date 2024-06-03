@@ -23,7 +23,7 @@ export function useCommentMutation() {
     mutationFn: async (params: CommentParams) => {
       const { parentAuthor, parentPermlink, body, preferences } = params;
 
-      await transactionService.comment(parentAuthor, parentPermlink, body, preferences);
+      await transactionService.comment(parentAuthor, parentPermlink, body, preferences, { observe: true });
 
       logger.info('Comment: %o', params);
       return params;
@@ -63,7 +63,9 @@ export function useUpdateCommentMutation() {
     mutationFn: async (params: UpdateCommentParams) => {
       const { parentAuthor, parentPermlink, permlink, body, comment_rewards } = params;
 
-      await transactionService.updateComment(parentAuthor, parentPermlink, permlink, body, comment_rewards);
+      await transactionService.updateComment(parentAuthor, parentPermlink, permlink, body, comment_rewards, {
+        observe: true
+      });
 
       logger.info('Update comment: %o', params);
       return params;
@@ -99,7 +101,7 @@ export function useDeleteCommentMutation() {
     mutationFn: async (params: DeleteCommentParams) => {
       const { permlink } = params;
 
-      await transactionService.deleteComment(permlink);
+      await transactionService.deleteComment(permlink, { observe: true });
 
       logger.info('Deleted comment %o', params);
       return params;
