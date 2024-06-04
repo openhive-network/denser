@@ -86,9 +86,7 @@ function validateAltUsernameInput(value: string, t: TFunction<'common_wallet', u
     : null;
 }
 export function imagePicker(img: string) {
-  const checkImg = img.includes('youtu')
-    ? `https://img.youtube.com/vi/${extractYouTubeVideoIds(extractUrlsFromJsonString(img))[0]}/0.jpg`
-    : img;
+  const checkImg = img.startsWith('youtu-') ? `https://img.youtube.com/vi/${img.split('-')[1]}/0.jpg` : img;
   return checkImg;
 }
 
@@ -239,7 +237,7 @@ export default function PostForm({
 
   useEffect(() => {
     setImagePickerState(imagePicker(selectedImg));
-  }, [selectedImg]);
+  }, [selectedImg, watchedValues.postArea]);
 
   async function onSubmit(data: AccountFormValues) {
     const chain = await hiveChainService.getHiveChain();
