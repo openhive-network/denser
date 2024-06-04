@@ -11,22 +11,21 @@ interface SelectImageListTypes {
 
 const SelectImageList: FC<SelectImageListTypes> = ({ content, value, onChange }) => {
   const { t } = useTranslation('common_blog');
-  const images = useMemo(
-    () => [
-      ...extractImagesSrc(content),
-      `youtu-${extractYouTubeVideoIds(extractUrlsFromJsonString(content))[0]}`
-    ],
-    [content]
+  const ytImages = extractYouTubeVideoIds(extractUrlsFromJsonString(content)).map((img) => `youtu-${img}`);
+  const images = useMemo(() => [...extractImagesSrc(content), ...ytImages], [content, ytImages]);
+  console.log(
+    'extractYouTubeVideoIds(extractUrlsFromJsonString(content))',
+    extractYouTubeVideoIds(extractUrlsFromJsonString(content))
   );
   const uniqueImages = Array.from(new Set(images));
 
   useEffect(() => {
-    if (uniqueImages.length === 0) {
+    if (uniqueImages.length === 0 || !uniqueImages.includes(value)) {
       (function () {
         onChange('');
       })();
     }
-  }, [onChange, uniqueImages]);
+  }, [onChange, uniqueImages, value]);
 
   return uniqueImages.length > 0 ? (
     <div>

@@ -237,7 +237,7 @@ export default function PostForm({
 
   useEffect(() => {
     setImagePickerState(imagePicker(selectedImg));
-  }, [selectedImg]);
+  }, [selectedImg, watchedValues.postArea]);
 
   async function onSubmit(data: AccountFormValues) {
     const chain = await hiveChainService.getHiveChain();
