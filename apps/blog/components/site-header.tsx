@@ -53,7 +53,7 @@ const SiteHeader: FC = () => {
   const [input, setInput] = useState('');
   const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      router.push(`/search?q=${input}&s=newest`);
+      router.push(`/search?q=${encodeURIComponent(input)}&s=newest`);
     }
   };
   const [isNavHidden, setIsNavHidden] = useState(false);

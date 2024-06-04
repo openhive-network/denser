@@ -41,23 +41,28 @@ function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemPro
           {blockGap(headBlock, data.last_confirmed_block_num, t)}
         </span>
       );
-    if (!data.url.includes('http')) return <>({t('witnesses_page.no_url_provided')})</>;
 
-    if (data.url.includes('hive.blog') || data.url.includes('localhost'))
+    if (!data.url.startsWith('http')) return <>({t('witnesses_page.no_url_provided')})</>;
+
+    const urlToWitnessPage = new URL(data.url);
+    if (['hive.blog', 'localhost'].includes(urlToWitnessPage.hostname))
       return (
         <Link
-          href={data.url}
+          href={encodeURI(data.url)}
           target="_blank"
+          rel="noreferrer noopener"
           className="flex items-center gap-2 font-semibold hover:text-red-400 dark:hover:text-red-400"
         >
           <span>{t('witnesses_page.open_witness_annoucement')}</span>
           <Icons.forward className="text-red-600 dark:text-red-500" />
         </Link>
       );
+
     return (
       <Link
-        href={data.url}
+        href={encodeURI(data.url)}
         target="_blank"
+        rel="noreferrer noopener"
         className="flex items-center gap-2 font-semibold hover:text-red-400 dark:hover:text-red-400"
       >
         <span>{t('witnesses_page.open_external_site')}</span>

@@ -23,12 +23,12 @@ export default function SearchPage() {
   const [input, setInput] = useState('');
   const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      router.push(`/search?q=${input}&s=${sort}`);
+      router.push(`/search?q=${encodeURIComponent(input)}&s=${encodeURIComponent(sort)}`);
     }
   };
   const handleSelect = (e: string) => {
     setSort(e);
-    router.push(`/search?q=${input}&s=${e}`);
+    router.push(`/search?q=${encodeURIComponent(input)}&s=${encodeURIComponent(e)}`);
   };
   return (
     <div className="flex flex-col gap-12 px-4 py-8">
