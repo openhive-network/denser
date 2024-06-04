@@ -1,6 +1,6 @@
 import { dateToShow, dateToFullRelative } from '@ui/lib/parse-date';
 import Link from 'next/link';
-import { useAccountQuery } from './hooks/use-accout';
+import { useAccountQuery } from './hooks/use-account';
 import { useFollowsQuery } from './hooks/use-follows';
 import { delegatedHive, numberWithCommas, vestingHive } from '@ui/lib/utils';
 import Big from 'big.js';
