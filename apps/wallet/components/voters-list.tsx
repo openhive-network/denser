@@ -1,6 +1,6 @@
 import Big from 'big.js';
 import { useProposalsVotersQuery } from './hooks/use-proposals-voters';
-import { useAccountQuery } from './hooks/use-accouts-voters';
+import { useAccountQuery } from './hooks/use-accounts-voters';
 import VotersItem from './voters-item';
 import Loading from '@ui/components/loading';
 
