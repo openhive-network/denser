@@ -17,7 +17,8 @@ const errorDescription = 'Transaction broadcast error';
 const wellKnownErrorDescriptions = [
   'Your current vote on this comment is identical to this vote',
   'Account does not have enough mana to downvote',
-  'You may only post once every 5 minutes'
+  'You may only post once every 5 minutes',
+  'Vote weight cannot be 0',
 ];
 
 /**
