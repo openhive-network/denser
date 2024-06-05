@@ -63,7 +63,7 @@ const ReblogTrigger = ({
                     >
                         {reblogMutation.isLoading || isLoadingReblogData
                             ?
-                                <CircleSpinner loading={reblogMutation.isLoading}
+                                <CircleSpinner loading={reblogMutation.isLoading || isLoadingReblogData}
                                     size={18} color="#dc2626" />
                             :
                                 <Icons.forward
