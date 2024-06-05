@@ -369,40 +369,38 @@ review:deploy-auth:
   extends: staging:deploy-auth
   variables:
     PORT: 7001
+    API_ENDPOINT: https://api.fake.openhive.network/
+    IMAGES_ENDPOINT: https://images.hive.blog/
     CONTAINER_NAME: denser-review-auth
   environment:
     name: review-auth
     action: start
     on_stop: review:stop-auth
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^rc_.*/
-      when: on_success
 
 review:deploy-blog:
   extends: staging:deploy-blog
   variables:
     PORT: 3001
+    API_ENDPOINT: https://api.fake.openhive.network/
+    IMAGES_ENDPOINT: https://images.hive.blog/
+    WALLET_ENDPOINT: https://wallet.openhive.network
     CONTAINER_NAME: denser-review-blog
   environment:
     name: review-blog
     action: start
     on_stop: review:stop-blog
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^rc_.*/
-      when: on_success
 
 review:deploy-wallet:
   extends: staging:deploy-wallet
   variables:
     PORT: 4001
+    API_ENDPOINT: https://api.fake.openhive.network/
+    IMAGES_ENDPOINT: https://images.hive.blog/
     CONTAINER_NAME: denser-review-wallet
   environment:
     name: review-wallet
     action: start
     on_stop: review:stop-wallet
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^rc_.*/
-      when: on_success
 
 review:stop-auth:
   extends: staging:stop-auth
@@ -413,10 +411,6 @@ review:stop-auth:
   environment:
     name: review-auth
     action: stop
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^rc_.*/
-      when: manual
-      allow_failure: true
 
 review:stop-blog:
   extends: staging:stop-blog
@@ -427,10 +421,6 @@ review:stop-blog:
   environment:
     name: review-blog
     action: stop
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^rc_.*/
-      when: manual
-      allow_failure: true
 
 review:stop-wallet:
   extends: staging:stop-wallet
@@ -441,11 +431,6 @@ review:stop-wallet:
   environment:
     name: review-wallet
     action: stop
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^rc_.*/
-      when: manual
-      allow_failure: true
-
 
 build_and_publish_auth_image:
   stage: publish
