@@ -14,25 +14,19 @@ import { FullAccount } from '@transaction/lib/app-types';
 import { Entry } from '@transaction/lib/bridge';
 import { DropdownMenuContent, DropdownMenuTrigger, DropdownMenu } from '@ui/components';
 import { Slider } from '@ui/components/slider';
+import { useLoggedUserContext } from './common/logged-user';
 
 const logger = getLogger('app');
 
 const VOTE_WEIGHT_DROPDOWN_THRESHOLD = 1.0 * 1000.0 * 1000.0;
-
-function netVests(account: FullAccount) {
-  const vests = parseFloat(account.vesting_shares);
-  const delegated = parseFloat(account.delegated_vesting_shares);
-  const received = parseFloat(account.received_vesting_shares);
-  return vests - delegated + received;
-}
 
 const VotesComponent = ({ post }: { post: Entry }) => {
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
   const [isClient, setIsClient] = useState(false);
   const [clickedVoteButton, setClickedVoteButton] = useState('');
-  const [sliderUpVote, setSliderUpVote] = useState([100]);
-  const [sliderDownVote, setSliderDownVote] = useState([100]);
+  const [sliderUpvote, setSliderUpvote] = useState([100]);
+  const [sliderDownvote, setSliderDownvote] = useState([100]);
 
   const voter = user.username;
   useEffect(() => {
@@ -47,20 +41,15 @@ const VotesComponent = ({ post }: { post: Entry }) => {
       enabled: !!checkVote || !!clickedVoteButton
     }
   );
-  const {
-    isLoading: accoutIsLoading,
-    error: accountError,
-    data: accountData
-  } = useQuery(['accountData', voter], () => getAccount(voter), {
-    enabled: !!voter
-  });
-  const net_vests = accountData ? netVests(accountData) : 0;
+  const { net_vests } = useLoggedUserContext();
   // const enable_slider = net_vests > VOTE_WEIGHT_DROPDOWN_THRESHOLD;
   const enable_slider = true;
 
   const userVote =
     userVotes?.votes[0] && userVotes?.votes[0].voter === user.username ? userVotes.votes[0] : undefined;
 
+  const userUpvoted = userVote ? userVote.vote_percent > 0 : false;
+  const userDownvoted = userVote ? userVote.vote_percent < 0 : false;
   const voteMutation = useVoteMutation();
 
   const submitVote = async (weight: number) => {
@@ -83,7 +72,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                 size={18}
                 color="#dc2626"
               />
-            ) : user.isLoggedIn && enable_slider ? (
+            ) : (user.isLoggedIn && enable_slider && !userUpvoted) || clickedVoteButton === 'up' ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Icons.arrowUpCircle
@@ -111,12 +100,12 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                       }}
                     />
                     <Slider
-                      defaultValue={sliderUpVote}
-                      value={sliderUpVote}
+                      defaultValue={sliderUpvote}
+                      value={sliderUpvote}
                       className="w-36"
-                      onValueChange={(e) => setSliderUpVote(e)}
+                      onValueChange={(e) => setSliderUpvote(e)}
                     />
-                    <div className="w-fit">{sliderUpVote}%</div>
+                    <div className="w-fit">{sliderUpvote}%</div>
                   </div>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -166,7 +155,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                 size={18}
                 color="#dc2626"
               />
-            ) : user.isLoggedIn && enable_slider ? (
+            ) : (user.isLoggedIn && enable_slider && !userDownvoted) || clickedVoteButton === 'down' ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Icons.arrowDownCircle
@@ -194,12 +183,12 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                       }}
                     />
                     <Slider
-                      defaultValue={sliderDownVote}
-                      value={sliderDownVote}
+                      defaultValue={sliderDownvote}
+                      value={sliderDownvote}
                       className="w-36"
-                      onValueChange={(e) => setSliderDownVote(e)}
+                      onValueChange={(e) => setSliderDownvote(e)}
                     />
-                    <div className="w-fit">{sliderDownVote}%</div>
+                    <div className="w-fit">{sliderDownvote}%</div>
                   </div>
                 </DropdownMenuContent>
               </DropdownMenu>
