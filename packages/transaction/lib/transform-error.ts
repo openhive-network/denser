@@ -1,5 +1,5 @@
 import { getLogger } from '@hive/ui/lib/logging';
-import { WaxChainApiError } from '@hiveio/wax';
+// import { WaxChainApiError } from '@hiveio/wax';
 
 const logger = getLogger('app');
 
@@ -32,7 +32,9 @@ const wellKnownErrorDescriptions = [
 export function transformError<T>(e: any, ctx?: { method: string; params: T }, defaultDescription?: string) {
   logger.error('Got error: %o on %o', e, ctx);
   const isError = (err: unknown): err is Error => err instanceof Error;
-  const isWaxError = (err: unknown): err is WaxChainApiError => err instanceof WaxChainApiError;
+
+  // const isWaxError = (err: unknown): err is WaxChainApiError => err instanceof WaxChainApiError;
+  const isWaxError = (err: any) => false;
 
   let description = 'Operation failed';
 
