@@ -8,9 +8,8 @@ import { useEffect, useState } from 'react';
 import { useVoteMutation } from '../components/hooks/use-vote-mutation';
 import { useQuery } from '@tanstack/react-query';
 import { CircleSpinner } from 'react-spinners-kit';
-import { getAccount, getListVotesByCommentVoter } from '@transaction/lib/hive';
+import { getListVotesByCommentVoter } from '@transaction/lib/hive';
 import { getLogger } from '@ui/lib/logging';
-import { FullAccount } from '@transaction/lib/app-types';
 import { Entry } from '@transaction/lib/bridge';
 import { DropdownMenuContent, DropdownMenuTrigger, DropdownMenu } from '@ui/components';
 import { Slider } from '@ui/components/slider';
@@ -42,8 +41,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
     }
   );
   const { net_vests } = useLoggedUserContext();
-  // const enable_slider = net_vests > VOTE_WEIGHT_DROPDOWN_THRESHOLD;
-  const enable_slider = true;
+  const enable_slider = net_vests > VOTE_WEIGHT_DROPDOWN_THRESHOLD;
 
   const userVote =
     userVotes?.votes[0] && userVotes?.votes[0].voter === user.username ? userVotes.votes[0] : undefined;
@@ -89,14 +87,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                       onClick={(e) => {
                         if (voteMutation.isLoading) return;
                         setClickedVoteButton('up');
-                        {
-                          // We vote either 100% or 0%.
-                          if (userVote && userVote.vote_percent > 0) {
-                            submitVote(0);
-                          } else {
-                            submitVote(10000);
-                          }
-                        }
+                        submitVote(sliderUpvote[0] * 100);
                       }}
                     />
                     <Slider
@@ -177,7 +168,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                           if (userVote && userVote.vote_percent < 0) {
                             submitVote(0);
                           } else {
-                            submitVote(-10000);
+                            submitVote(-sliderDownvote[0] * 100);
                           }
                         }
                       }}
@@ -201,14 +192,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                 onClick={(e) => {
                   if (voteMutation.isLoading) return;
                   setClickedVoteButton('down');
-                  {
-                    // We vote either -100% or 0%.
-                    if (userVote && userVote.vote_percent < 0) {
-                      submitVote(0);
-                    } else {
-                      submitVote(-10000);
-                    }
-                  }
+                  submitVote(-10000);
                 }}
               />
             ) : (
