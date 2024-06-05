@@ -263,7 +263,7 @@ export default function PostForm({
         summary: storedPost.postSummary,
         altAuthor: storedPost.author,
         payoutType: storedPost.payoutType ?? preferences.blog_rewards,
-        image: imagePicker(selectedImg)
+        image: imagePickerState
       };
 
       try {
