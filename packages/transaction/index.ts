@@ -5,14 +5,11 @@ import {
   CommunityOperationBuilder,
   EFollowBlogAction,
   FollowOperationBuilder,
-  IHiveChainInterface,
   ITransactionBuilder,
   NaiAsset,
   ReplyBuilder,
-  WaxChainApiError,
   future_extensions
 } from '@hiveio/wax';
-import { toast, Toast } from '@hive/ui/components/hooks/use-toast';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
@@ -171,7 +168,6 @@ export class TransactionService {
     try {
       // Create bot
       if (!this.bot) {
-        const signer = getSigner(this.signerOptions);
         logger.info('Creating bot');
         const hiveChain = await hiveChainService.getHiveChain();
         this.bot = new WorkerBee({

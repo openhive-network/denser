@@ -1,6 +1,6 @@
 import { getLogger } from '@hive/ui/lib/logging';
 import { WaxChainApiError } from '@hiveio/wax';
-import { transactionService } from '@hive/transaction';
+
 const logger = getLogger('app');
 
 /**
