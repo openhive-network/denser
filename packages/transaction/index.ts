@@ -5,6 +5,7 @@ import {
   CommunityOperationBuilder,
   EFollowBlogAction,
   FollowOperationBuilder,
+  IHiveChainInterface,
   ITransactionBuilder,
   NaiAsset,
   ReplyBuilder,
@@ -210,11 +211,9 @@ export class TransactionService {
       if (!this.bot) {
         const signer = getSigner(this.signerOptions);
         logger.info('Creating bot');
+        const hiveChain = await hiveChainService.getHiveChain();
         this.bot = new WorkerBee({
-          chainOptions: {
-            chainId: signer.chainId,
-            apiEndpoint: signer.apiEndpoint,
-          }
+          explicitChain: hiveChain,
         });
         this.bot.on("error", logger.error);
       }

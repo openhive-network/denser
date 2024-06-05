@@ -39,6 +39,7 @@ export const defaultWidth = () => {
  * @returns string
  */
 export const proxifyImageUrl = (url: string, dimensions: string | boolean) => {
+  if (!url) return '';
   const proxyList = url.match(rProxyDomainsDimensions);
   let respUrl = url;
   if (proxyList) {

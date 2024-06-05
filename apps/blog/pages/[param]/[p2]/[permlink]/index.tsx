@@ -179,7 +179,9 @@ function PostPage({
         }
         return smallestDepth;
       });
-      return objectWithSmallestDepth.url;
+      const url = objectWithSmallestDepth.url;
+      // Ensure url is relative.
+      return url.startsWith('/') ? url : '/' + url;
     }
   };
   const parentUrl = () => {
