@@ -76,6 +76,7 @@ function PostPage({
   } = useFollowListQuery(user.username, 'muted');
 
   const {
+    isRefetching: isRefetchingPost,
     isLoading: isLoadingPost,
     error: errorPost,
     data: post
@@ -83,6 +84,8 @@ function PostPage({
     enabled: !!username && !!permlink,
     onSuccess: (post) => setMutedPost(!!post?.stats?.gray)
   });
+
+  // logger.info('isLoadingPost: %s, isRefetchingPost: %s, post.author: %s', isLoadingPost, isRefetchingPost, post?.author);
 
   const {
     isLoading: isLoadingDiscussion,
@@ -212,7 +215,7 @@ function PostPage({
             <Icons.flag className="absolute right-0 m-2 hover:text-red-500" />
           </AlertDialogFlag>
         ) : null}
-        {!isLoadingPost && post ? (
+        {!isLoadingPost && !isRefetchingPost && post ? (
           <div>
             {!commentSite ? (
               <h1 className="text-3xl font-bold" data-testid="article-title">
@@ -258,8 +261,8 @@ function PostPage({
 
             <hr />
 
-            {mutedPost === undefined || isLoadingPost ? (
-              <Loading loading={mutedPost === undefined || isLoadingPost} />
+            {mutedPost === undefined || isLoadingPost || isRefetchingPost ? (
+              <Loading loading={mutedPost === undefined || isLoadingPost || isRefetchingPost } />
             ) : edit ? (
               <PostForm
                 username={username}
