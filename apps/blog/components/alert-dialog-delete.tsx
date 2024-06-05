@@ -12,10 +12,19 @@ import {
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { ReactNode } from 'react';
 import { useDeleteCommentMutation } from './hooks/use-comment-mutations';
+import { handleError } from '@ui/lib/utils';
 
 export function AlertDialogDelete({ children, permlink }: { children: ReactNode; permlink: string }) {
   const { user } = useUser();
-  const { deleteComment } = useDeleteCommentMutation();
+  const deleteCommentMutation = useDeleteCommentMutation();
+
+  const deleteComment = async () => {
+    try {
+      await deleteCommentMutation.mutateAsync({ permlink });
+    } catch (error) {
+      handleError(error, { method: 'deleteComment', params: { permlink } });
+    }
+  };
 
   return (
     <AlertDialog>
@@ -38,7 +47,7 @@ export function AlertDialogDelete({ children, permlink }: { children: ReactNode;
             <AlertDialogAction
               className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
               data-testid="flag-dialog-ok"
-              onClick={async () => await deleteComment({ permlink })}
+              onClick={deleteComment}
             >
               OK
             </AlertDialogAction>

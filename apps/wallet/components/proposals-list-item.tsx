@@ -52,7 +52,7 @@ function translateShorDate(data: string, t: TFunction<'common_wallet', undefined
 export function ProposalListItem({ proposalData, totalShares, totalVestingFund }: IListItemProps) {
   const { t } = useTranslation('common_wallet');
   const { user } = useUser();
-  const { updateProposalVotes } = useUpdateProposalVotesMutation();
+  const updateProposalVotesMutation = useUpdateProposalVotesMutation();
 
   const totalHBD = proposalData.daily_pay?.amount.times(
     moment(proposalData?.end_date).diff(moment(proposalData.start_date), 'd')
@@ -69,6 +69,27 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
       return <Badge variant="orange">{t('proposals_page.burn')}</Badge>;
 
     return null;
+  }
+
+  async function updateProposalVotes(e: React.MouseEvent<HTMLOrSVGElement>) {
+    try {
+      await updateProposalVotesMutation.mutateAsync({
+        proposal_ids: [String(proposalData.proposal_id)],
+        approve: true,
+        extensions: []
+      });
+      (e.target as HTMLElement).classList.add('text-white');
+      (e.target as HTMLElement).classList.add('bg-red-600');
+    } catch (error) {
+      handleError(error, {
+        method: 'updateProposalVotes',
+        params: {
+          proposal_ids: [String(proposalData.proposal_id)],
+          approve: true,
+          extensions: []
+        }
+      });
+    }
   }
 
   return (
@@ -167,15 +188,7 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
               viewBox="1.7 1.7 20.7 20.7"
               className="relative inline-flex h-6 w-6 cursor-pointer rounded-full bg-white stroke-1 text-red-500 dark:bg-slate-800"
               data-testid="voting-button-icon"
-              onClick={async (e: React.MouseEvent<HTMLOrSVGElement>) => {
-                await updateProposalVotes({
-                  proposal_ids: [String(proposalData.proposal_id)],
-                  approve: true,
-                  extensions: []
-                });
-                (e.target as HTMLElement).classList.add('text-white');
-                (e.target as HTMLElement).classList.add('bg-red-600');
-              }}
+              onClick={updateProposalVotes}
             />
           </div>
         ) : (

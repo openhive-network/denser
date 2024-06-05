@@ -202,7 +202,7 @@ export default function UserSettings() {
     profileSettings.blacklist_description === settings.blacklist_description &&
     profileSettings.muted_list_description === settings.muted_list_description;
   const { unmute } = useUnmuteMutation();
-  const { updateProfile } = useUpdateProfileMutation();
+  const updateProfileMutation = useUpdateProfileMutation();
 
   useEffect(() => {
     setIsClient(true);
@@ -211,28 +211,30 @@ export default function UserSettings() {
     setSettings(profileSettings);
   }, [isLoading]);
   async function onSubmit() {
+    const updateProfileParams = {
+      profile_image: settings.profile_image !== '' ? settings.profile_image : undefined,
+      cover_image: settings.cover_image !== '' ? settings.cover_image : undefined,
+      name: settings.name !== '' ? settings.name : undefined,
+      about: settings.about !== '' ? settings.about : undefined,
+      location: settings.location !== '' ? settings.location : undefined,
+      website: settings.website !== '' ? settings.website : undefined,
+      witness_owner: profileData?.witness_owner,
+      witness_description: profileData?.witness_description,
+      blacklist_description:
+        settings.blacklist_description !== '' ? settings.blacklist_description : undefined,
+      muted_list_description:
+        settings.muted_list_description !== '' ? settings.muted_list_description : undefined
+    };
+
     try {
-      await updateProfile({
-        profile_image: settings.profile_image !== '' ? settings.profile_image : undefined,
-        cover_image: settings.cover_image !== '' ? settings.cover_image : undefined,
-        name: settings.name !== '' ? settings.name : undefined,
-        about: settings.about !== '' ? settings.about : undefined,
-        location: settings.location !== '' ? settings.location : undefined,
-        website: settings.website !== '' ? settings.website : undefined,
-        witness_owner: profileData?.witness_owner,
-        witness_description: profileData?.witness_description,
-        blacklist_description:
-          settings.blacklist_description !== '' ? settings.blacklist_description : undefined,
-        muted_list_description:
-          settings.muted_list_description !== '' ? settings.muted_list_description : undefined
-      });
+      await updateProfileMutation.mutateAsync(updateProfileParams);
 
       toast({
         title: t('settings_page.changes_saved'),
         variant: 'success'
       });
     } catch (error) {
-      console.error(error);
+      handleError(error, { method: 'updateProfile', params: updateProfileParams });
     }
   }
   const onImageUpload = async (file: File, username: string, signer: Signer) => {

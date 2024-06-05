@@ -1,22 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { getLogger } from '@ui/lib/logging';
-import { handleError } from '@ui/lib/utils';
 const logger = getLogger('app');
-
-interface UpdateProfileParams {
-  profile_image?: string;
-  cover_image?: string;
-  name?: string;
-  about?: string;
-  location?: string;
-  website?: string;
-  witness_owner?: string;
-  witness_description?: string;
-  blacklist_description?: string;
-  muted_list_description?: string;
-  version?: number;
-}
 
 /**
  * Makes update profile transaction.
@@ -26,7 +11,19 @@ interface UpdateProfileParams {
  */
 export function useUpdateProfileMutation() {
   const updateProfileMutation = useMutation({
-    mutationFn: async (params: UpdateProfileParams) => {
+    mutationFn: async (params: {
+      profile_image?: string;
+      cover_image?: string;
+      name?: string;
+      about?: string;
+      location?: string;
+      website?: string;
+      witness_owner?: string;
+      witness_description?: string;
+      blacklist_description?: string;
+      muted_list_description?: string;
+      version?: number;
+    }) => {
       const {
         profile_image,
         cover_image,
@@ -40,8 +37,7 @@ export function useUpdateProfileMutation() {
         muted_list_description,
         version
       } = params;
-
-      await transactionService.updateProfile(
+      const broadcastResult = await transactionService.updateProfile(
         profile_image,
         cover_image,
         name,
@@ -55,22 +51,14 @@ export function useUpdateProfileMutation() {
         version,
         { observe: true }
       );
-
-      logger.info('Update profile: %o', params);
-      return params;
+      const response = { ...params, broadcastResult };
+      logger.info('Done update profile transaction: %o', response);
+      return response;
     },
     onSuccess: (data) => {
       logger.info('useUpdateProfileMutation onSuccess data: %o', data);
     }
   });
 
-  const updateProfile = async (params: UpdateProfileParams) => {
-    try {
-      await updateProfileMutation.mutateAsync(params);
-    } catch (error) {
-      handleError(error, { method: 'updateProfile', ...params });
-    }
-  };
-
-  return { updateProfile, updateProfileMutation };
+  return updateProfileMutation;
 }

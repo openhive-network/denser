@@ -1,12 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { getLogger } from '@ui/lib/logging';
-import { handleError } from '@ui/lib/utils';
 const logger = getLogger('app');
-
-interface SubscribeParams {
-  username: string;
-}
 
 /**
  * Makes subscribe transaction.
@@ -16,28 +11,19 @@ interface SubscribeParams {
  */
 export function useSubscribeMutation() {
   const subscribeMutation = useMutation({
-    mutationFn: async (params: SubscribeParams) => {
+    mutationFn: async (params: { username: string }) => {
       const { username } = params;
-
-      await transactionService.subscribe(username, { observe: true });
-
-      logger.info('Subscribe: %o', params);
-      return params;
+      const broadcastResult = await transactionService.subscribe(username, { observe: true });
+      const response = { ...params, broadcastResult };
+      logger.info('Done subscribe transaction: %o', response);
+      return response;
     },
     onSuccess: (data) => {
       logger.info('useSubscribeMutation onSuccess data: %o', data);
     }
   });
 
-  const subscribe = async (params: SubscribeParams) => {
-    try {
-      await subscribeMutation.mutateAsync(params);
-    } catch (error) {
-      handleError(error, { method: 'subscribe', ...params });
-    }
-  };
-
-  return { subscribe, subscribeMutation };
+  return subscribeMutation;
 }
 
 /**
@@ -48,26 +34,17 @@ export function useSubscribeMutation() {
  */
 export function useUnsubscribeMutation() {
   const unsubscribeMutation = useMutation({
-    mutationFn: async (params: SubscribeParams) => {
+    mutationFn: async (params: { username: string }) => {
       const { username } = params;
-
-      await transactionService.unsubscribe(username, { observe: true });
-
-      logger.info('Unsubscribe: %o', params);
-      return params;
+      const broadcastResult = await transactionService.unsubscribe(username, { observe: true });
+      const response = { ...params, broadcastResult };
+      logger.info('Done unsubscribe transaction: %o', response);
+      return response;
     },
     onSuccess: (data) => {
       logger.info('useUnsubscribeMutation onSuccess data: %o', data);
     }
   });
 
-  const unsubscribe = async (params: SubscribeParams) => {
-    try {
-      await unsubscribeMutation.mutateAsync(params);
-    } catch (error) {
-      handleError(error, { method: 'unsubscribe', ...params });
-    }
-  };
-
-  return { unsubscribe, unsubscribeMutation };
+  return unsubscribeMutation;
 }
