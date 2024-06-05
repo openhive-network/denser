@@ -201,7 +201,7 @@ export default function UserSettings() {
     profileSettings.about === settings.about &&
     profileSettings.blacklist_description === settings.blacklist_description &&
     profileSettings.muted_list_description === settings.muted_list_description;
-  const { unmute } = useUnmuteMutation();
+  const unmuteMutation = useUnmuteMutation();
   const updateProfileMutation = useUpdateProfileMutation();
 
   useEffect(() => {
@@ -586,7 +586,16 @@ export default function UserSettings() {
                   <Button
                     className="h-fit p-1 text-red-500"
                     variant="link"
-                    onClick={async () => await unmute({ username: mutedUser.name })}
+                    onClick={
+                      async () => {
+                        const params = { username: mutedUser.name };
+                        try {
+                          await unmuteMutation.mutateAsync(params)
+                        } catch (error) {
+                          handleError(error, { method: 'unmute', params });
+                        }
+                      }
+                    }
                   >
                     [{t('settings_page.unmute')}]
                   </Button>

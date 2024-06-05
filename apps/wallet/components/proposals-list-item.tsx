@@ -11,8 +11,7 @@ import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';
-import { transactionService } from '@transaction/index';
-import { useUpdateProposalVotesMutation } from '@hive/blog/components/hooks/use-update-proposal-votes-mutation';
+import { useUpdateProposalVotesMutation } from '@hive/wallet/components/hooks/use-update-proposal-votes-mutation';
 import env from '@beam-australia/react-env';
 
 function titleSetter(
