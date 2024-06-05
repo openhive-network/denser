@@ -25,6 +25,7 @@ import {
   useResetFollowBlacklistBlogMutation,
   useResetFollowMutedBlogMutation
 } from './hooks/use-reset-mutations';
+import { handleError } from '@ui/lib/utils';
 
 export default function ProfileLists({
   username,
@@ -70,89 +71,142 @@ export default function ProfileLists({
     }
   }
 
-  const { blacklistBlog } = useBlacklistBlogMutation();
-  const { unblacklistBlog } = useUnblacklistBlogMutation();
-  const { mute } = useMuteMutation();
-  const { unmute } = useUnmuteMutation();
-  const { followBlacklistBlog } = useFollowBlacklistBlogMutation();
-  const { unfollowBlacklistBlog } = useUnfollowBlacklistBlogMutation();
-  const { unfollowMutedBlog } = useUnfollowMutedBlogMutation();
-  const { followMutedBlog } = useFollowMutedBlogMutation();
-  const { resetBlogList } = useResetBlogListMutation();
-  const { resetBlacklistBlog } = useResetBlacklistBlogMutation();
-  const { resetFollowBlacklistBlog } = useResetFollowBlacklistBlogMutation();
-  const { resetFollowMutedBlog } = useResetFollowMutedBlogMutation();
+  const blacklistBlogMutation = useBlacklistBlogMutation();
+  const unblacklistBlogMutation = useUnblacklistBlogMutation();
+  const muteMutation = useMuteMutation();
+  const unmuteMutation = useUnmuteMutation();
+  const followBlacklistBlogMutation = useFollowBlacklistBlogMutation();
+  const unfollowBlacklistBlogMutation = useUnfollowBlacklistBlogMutation();
+  const unfollowMutedBlogMutation = useUnfollowMutedBlogMutation();
+  const followMutedBlogMutation = useFollowMutedBlogMutation();
+  const resetBlogListMutation = useResetBlogListMutation();
+  const resetBlacklistBlogMutation = useResetBlacklistBlogMutation();
+  const resetFollowBlacklistBlogMutation = useResetFollowBlacklistBlogMutation();
+  const resetFollowMutedBlogMutation = useResetFollowMutedBlogMutation();
 
   const deleteFromList = useCallback(
-    (username: string, variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute') => {
+    async (username: string, variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute') => {
       switch (variant) {
         case 'blacklisted': {
-          unblacklistBlog({ blog: username });
+          try {
+            await unblacklistBlogMutation.mutateAsync({ blog: username });
+          } catch (error) {
+            handleError(error, { method: 'unblacklistBlog', params: { blog: username } });
+          }
           break;
         }
         case 'muted': {
-          unmute({ username });
+          try {
+            await unmuteMutation.mutateAsync({ username });
+          } catch (error) {
+            handleError(error, { method: 'unmute', params: { username } });
+          }
           break;
         }
         case 'followedBlacklist': {
-          unfollowBlacklistBlog({ blog: username });
+          try {
+            await unfollowBlacklistBlogMutation.mutateAsync({ blog: username });
+          } catch (error) {
+            handleError(error, { method: 'unfollowBlacklistBlog', params: { blog: username } });
+          }
           break;
         }
         case 'followedMute': {
-          unfollowMutedBlog({ blog: username });
+          try {
+            await unfollowMutedBlogMutation.mutateAsync({ blog: username });
+          } catch (error) {
+            handleError(error, { method: 'unfollowMutedBlog', params: { blog: username } });
+          }
           break;
         }
       }
     },
-    [unblacklistBlog, unfollowBlacklistBlog, unfollowMutedBlog, unmute]
+    [unblacklistBlogMutation, unfollowBlacklistBlogMutation, unfollowMutedBlogMutation, unmuteMutation]
   );
 
   const addToList = useCallback(
-    (usernames: string, variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute') => {
+    async (usernames: string, variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute') => {
       switch (variant) {
         case 'blacklisted': {
-          blacklistBlog({ otherBlogs: usernames });
+          try {
+            await blacklistBlogMutation.mutateAsync({ otherBlogs: usernames });
+          } catch (error) {
+            handleError(error, { method: 'blacklistBlog', params: { otherBlogs: usernames } });
+          }
           break;
         }
         case 'muted': {
-          mute({ username: usernames });
+          try {
+            await muteMutation.mutateAsync({ username: usernames });
+          } catch (error) {
+            handleError(error, { method: 'mute', params: { username: usernames } });
+          }
           break;
         }
         case 'followedBlacklist': {
-          followBlacklistBlog({ otherBlogs: usernames });
+          try {
+            await followBlacklistBlogMutation.mutateAsync({ otherBlogs: usernames });
+          } catch (error) {
+            handleError(error, { method: 'followBlacklistBlog', params: { otherBlogs: usernames } });
+          }
           break;
         }
         case 'followedMute': {
-          followMutedBlog({ otherBlogs: usernames });
+          try {
+            await followMutedBlogMutation.mutateAsync({ otherBlogs: usernames });
+          } catch (error) {
+            handleError(error, { method: 'followMutedBlog', params: { otherBlogs: usernames } });
+          }
           break;
         }
       }
     },
-    [blacklistBlog, followBlacklistBlog, followMutedBlog, mute]
+    [blacklistBlogMutation, followBlacklistBlogMutation, followMutedBlogMutation, muteMutation]
   );
 
   const resetList = useCallback(
-    (variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute') => {
+    async (variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute') => {
       switch (variant) {
         case 'blacklisted': {
-          resetBlacklistBlog();
+          try {
+            await resetBlacklistBlogMutation.mutateAsync();
+          } catch (error) {
+            handleError(error, { method: 'resetBlacklistBlog', params: {} });
+          }
           break;
         }
         case 'muted': {
-          resetBlogList();
+          try {
+            await resetBlogListMutation.mutateAsync();
+          } catch (error) {
+            handleError(error, { method: 'resetBlogList', params: {} });
+          }
           break;
         }
         case 'followedBlacklist': {
-          resetFollowBlacklistBlog();
+          try {
+            await resetFollowBlacklistBlogMutation.mutateAsync();
+          } catch (error) {
+            handleError(error, { method: 'resetFollowBlacklistBlog', params: {} });
+          }
           break;
         }
         case 'followedMute': {
-          resetFollowMutedBlog();
+          try {
+            await resetFollowMutedBlogMutation.mutateAsync();
+          } catch (error) {
+            handleError(error, { method: 'resetFollowmutedBlog', params: {} });
+          }
           break;
         }
       }
     },
-    [resetBlacklistBlog, resetBlogList, resetFollowBlacklistBlog, resetFollowMutedBlog]
+    [
+      resetBlacklistBlogMutation,
+      resetBlogListMutation,
+      resetFollowBlacklistBlogMutation,
+      resetFollowMutedBlogMutation
+    ]
   );
 
   return (

@@ -16,6 +16,7 @@ import { Button } from '@ui/components/button';
 import { useTranslation } from 'next-i18next';
 import { useReblogMutation } from './hooks/use-reblog-mutation';
 import { CircleSpinner } from 'react-spinners-kit';
+import { handleError } from '@ui/lib/utils';
 
 export function AlertDialogReblog({
   children,
@@ -30,12 +31,16 @@ export function AlertDialogReblog({
   const { t } = useTranslation('common_blog');
   const [open, setOpen] = useState(false);
 
-  const { reblog: reblogFn, reblogMutation } = useReblogMutation();
+  const reblogMutation = useReblogMutation();
 
   const reblog = async () => {
     // TODO Alternatively return answer yes/no and do action in parent
     // (user can do other things when waiting for reblog result)
-    await reblogFn({ author, permlink, username: user.username });
+    try {
+      await reblogMutation.mutateAsync({ author, permlink, username: user.username });
+    } catch (error) {
+      handleError(error, { method: 'reblog', params: { author, permlink, username: user.username } });
+    }
     // close dialog
     setOpen(false);
   };

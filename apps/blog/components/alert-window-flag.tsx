@@ -33,7 +33,15 @@ export function AlertDialogFlag({
   const { user } = useUser();
   const [notes, setNotes] = useState('');
   const { t } = useTranslation();
-  const { flag } = useFlagMutation();
+  const flagMutation = useFlagMutation();
+
+  const flag = async () => {
+    try {
+      await flagMutation.mutateAsync({ community, username, permlink, notes });
+    } catch (error) {
+      handleError(error, { method: 'flag', params: { community, username, permlink, notes } });
+    }
+  };
 
   return (
     <AlertDialog>
@@ -69,7 +77,7 @@ export function AlertDialogFlag({
             <AlertDialogAction
               className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
               data-testid="flag-dialog-ok"
-              onClick={async () => await flag({ community, username, permlink, notes })}
+              onClick={flag}
             >
               {t('post_content.flag.ok')}
             </AlertDialogAction>

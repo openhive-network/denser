@@ -1,14 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { TransactionBroadcastResult, transactionService } from '@transaction/index';
 import { getLogger } from '@ui/lib/logging';
-import { handleError } from '@ui/lib/utils';
 const logger = getLogger('app');
-
-interface ReblogParams {
-  author: string;
-  permlink: string;
-  username: string;
-}
 
 /**
  * Makes reblog transaction.
@@ -19,7 +12,7 @@ interface ReblogParams {
 export function useReblogMutation() {
   const queryClient = useQueryClient();
   const reblogMutation = useMutation({
-    mutationFn: async (params: ReblogParams) => {
+    mutationFn: async (params: { author: string; permlink: string; username: string }) => {
       const { author, permlink, username } = params;
 
       const broadcastResult: TransactionBroadcastResult = await transactionService.reblog(author, permlink, {
@@ -36,13 +29,5 @@ export function useReblogMutation() {
     }
   });
 
-  const reblog = async (params: ReblogParams) => {
-    try {
-      await reblogMutation.mutateAsync(params);
-    } catch (error) {
-      handleError(error, { method: 'reblog', ...params });
-    }
-  };
-
-  return { reblog, reblogMutation };
+  return reblogMutation;
 }

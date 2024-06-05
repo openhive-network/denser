@@ -6,6 +6,7 @@ import { User } from '@smart-signer/types/common';
 import { IFollow } from '@transaction/lib/hive';
 import { UseInfiniteQueryResult } from '@tanstack/react-query';
 import { useFollowMutation, useUnfollowMutation } from './hooks/use-follow-mutations';
+import { handleError } from '@ui/lib/utils';
 
 const FollowButton = ({
   username,
@@ -31,8 +32,8 @@ const FollowButton = ({
 }) => {
   const { t } = useTranslation('common_blog');
   const [isFollow, setIsFollow] = useState(false);
-  const { follow } = useFollowMutation();
-  const { unfollow } = useUnfollowMutation();
+  const followMutation = useFollowMutation();
+  const unfollowMutation = useUnfollowMutation();
 
   useEffect(() => {
     const isFollow = Boolean(
@@ -56,9 +57,17 @@ const FollowButton = ({
             const nextFollow = !isFollow;
             setIsFollow(nextFollow);
             if (nextFollow) {
-              await follow({ username });
+              try {
+                await followMutation.mutateAsync({ username });
+              } catch (error) {
+                handleError(error, { method: 'follow', params: { username } });
+              }
             } else {
-              await unfollow({ username });
+              try {
+                await unfollowMutation.mutateAsync({ username });
+              } catch (error) {
+                handleError(error, { method: 'unfollow', params: { username } });
+              }
             }
           }}
           disabled={list.isLoading || list.isFetching}

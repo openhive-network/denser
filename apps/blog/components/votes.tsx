@@ -44,7 +44,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
     try {
       await voteMutation.mutateAsync({ voter, author, permlink, weight });
     } catch (error) {
-      handleError(error, { method: 'vote', voter, author, permlink, weight });
+      handleError(error, { method: 'vote', params: { voter, author, permlink, weight } });
     }
   };
 

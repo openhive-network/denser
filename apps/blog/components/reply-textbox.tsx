@@ -14,6 +14,7 @@ import { Entry } from '@transaction/lib/bridge';
 import RendererContainer from './rendererContainer';
 import { getLogger } from '@ui/lib/logging';
 import { useCommentMutation, useUpdateCommentMutation } from './hooks/use-comment-mutations';
+import { handleError } from '@ui/lib/utils';
 const logger = getLogger('app');
 
 export function ReplyTextbox({
@@ -45,8 +46,8 @@ export function ReplyTextbox({
     storedPost ? storedPost : typeof comment === 'string' ? comment : comment.body ? comment.body : ''
   );
   const [cleanedText, setCleanedText] = useState('');
-  const { comment: commentFn } = useCommentMutation();
-  const { updateComment } = useUpdateCommentMutation();
+  const commentMutation = useCommentMutation();
+  const updateCommentMutation = useUpdateCommentMutation();
 
   useEffect(() => {
     storePost(text);
@@ -71,20 +72,30 @@ export function ReplyTextbox({
       if (parentPermlink && typeof comment !== 'string') {
         const payout =
           comment.max_accepted_payout === '0.000 HBD' ? '0%' : comment.percent_hbd === 0 ? '100%' : '50%';
-        await updateComment({
+        const updateCommentParams = {
           parentAuthor: username,
           parentPermlink,
           permlink,
           body: cleanedText,
           comment_rewards: payout as '0%' | '50%' | '100%'
-        });
+        };
+        try {
+          await updateCommentMutation.mutateAsync(updateCommentParams);
+        } catch (error) {
+          handleError(error, { method: 'updateComment', params: updateCommentParams });
+        }
       } else {
-        await commentFn({
+        const commentParams = {
           parentAuthor: username,
           parentPermlink: permlink,
           body: cleanedText,
           preferences
-        });
+        };
+        try {
+          await commentMutation.mutateAsync(commentParams);
+        } catch (error) {
+          handleError(error, { method: 'comment', params: commentParams });
+        }
       }
       setText('');
       removePost();

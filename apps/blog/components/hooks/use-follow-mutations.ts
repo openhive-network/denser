@@ -1,12 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { getLogger } from '@ui/lib/logging';
-import { handleError } from '@ui/lib/utils';
 const logger = getLogger('app');
-
-interface FollowParams {
-  username: string;
-}
 
 /**
  * Makes follow transaction.
@@ -16,32 +11,19 @@ interface FollowParams {
  */
 export function useFollowMutation() {
   const followMutation = useMutation({
-    mutationFn: async (params: FollowParams) => {
+    mutationFn: async (params: { username: string }) => {
       const { username } = params;
-
-      await transactionService.follow(username, { observe: true });
-
-      logger.info('Followed: %o', params);
-      return params;
+      const broadcastResult = await transactionService.follow(username, { observe: true });
+      const response = { ...params, broadcastResult };
+      logger.info('Done follow transaction: %o', response);
+      return response;
     },
     onSuccess: (data) => {
       logger.info('useFollowMutation onSuccess data: %o', data);
     }
   });
 
-  const follow = async (params: FollowParams) => {
-    try {
-      await followMutation.mutateAsync(params);
-    } catch (error) {
-      handleError(error, { method: 'follow', ...params });
-    }
-  };
-
-  return { follow, followMutation };
-}
-
-interface UnfollowParams {
-  username: string;
+  return followMutation;
 }
 
 /**
@@ -52,33 +34,19 @@ interface UnfollowParams {
  */
 export function useUnfollowMutation() {
   const unfollowMutation = useMutation({
-    mutationFn: async (params: UnfollowParams) => {
+    mutationFn: async (params: { username: string }) => {
       const { username } = params;
-
-      await transactionService.unfollow(username, { observe: true });
-
-      logger.info('Unfollow: %o', params);
-      return params;
+      const broadcastResult = await transactionService.unfollow(username, { observe: true });
+      const response = { ...params, broadcastResult };
+      logger.info('Done unfollow transaction: %o', response);
+      return response;
     },
     onSuccess: (data) => {
       logger.info('useUnfollowMutation onSuccess data: %o', data);
     }
   });
 
-  const unfollow = async (params: UnfollowParams) => {
-    try {
-      await unfollowMutation.mutateAsync(params);
-    } catch (error) {
-      handleError(error, { method: 'unfollow', ...params });
-    }
-  };
-
-  return { unfollow, unfollowMutation };
-}
-
-interface FollowBlackListBlogParams {
-  otherBlogs: string;
-  blog?: string;
+  return unfollowMutation;
 }
 
 /**
@@ -89,32 +57,21 @@ interface FollowBlackListBlogParams {
  */
 export function useFollowBlacklistBlogMutation() {
   const followBlacklistBlogMutation = useMutation({
-    mutationFn: async (params: FollowBlackListBlogParams) => {
+    mutationFn: async (params: { otherBlogs: string; blog?: string }) => {
       const { otherBlogs, blog } = params;
-
-      await transactionService.followBlacklistBlog(otherBlogs, blog, { observe: true });
-
-      logger.info('Followed blacklist blog: %o', params);
-      return params;
+      const broadcastResult = await transactionService.followBlacklistBlog(otherBlogs, blog, {
+        observe: true
+      });
+      const response = { ...params, broadcastResult };
+      logger.info('Done follow blacklist blog transaction: %o', response);
+      return response;
     },
     onSuccess: (data) => {
       logger.info('useFollowBlacklistBlogMutation onSuccess data: %o', data);
     }
   });
 
-  const followBlacklistBlog = async (params: FollowBlackListBlogParams) => {
-    try {
-      await followBlacklistBlogMutation.mutateAsync(params);
-    } catch (error) {
-      handleError(error, { method: 'followBlacklistBlog', ...params });
-    }
-  };
-
-  return { followBlacklistBlog, followBlacklistBlogMutation };
-}
-
-interface UnfollowBlacklistBlogParams {
-  blog: string;
+  return followBlacklistBlogMutation;
 }
 
 /**
@@ -125,28 +82,19 @@ interface UnfollowBlacklistBlogParams {
  */
 export function useUnfollowBlacklistBlogMutation() {
   const unfollowBlacklistBlogMutation = useMutation({
-    mutationFn: async (params: UnfollowBlacklistBlogParams) => {
+    mutationFn: async (params: { blog: string }) => {
       const { blog } = params;
-
-      await transactionService.unfollowBlacklistBlog(blog, { observe: true });
-
-      logger.info('Unollowed blacklist blog: %o', params);
-      return params;
+      const broadcastResult = await transactionService.unfollowBlacklistBlog(blog, { observe: true });
+      const response = { ...params, broadcastResult };
+      logger.info('Done unfollow blacklist blog transaction: %o', response);
+      return response;
     },
     onSuccess: (data) => {
       logger.info('useUnfollowBlacklistBlogMutation onSuccess data: %o', data);
     }
   });
 
-  const unfollowBlacklistBlog = async (params: UnfollowBlacklistBlogParams) => {
-    try {
-      await unfollowBlacklistBlogMutation.mutateAsync(params);
-    } catch (error) {
-      handleError(error, { method: 'unfollowBlacklistBlog', ...params });
-    }
-  };
-
-  return { unfollowBlacklistBlog, unfollowBlacklistBlogMutation };
+  return unfollowBlacklistBlogMutation;
 }
 
 /**
@@ -157,28 +105,19 @@ export function useUnfollowBlacklistBlogMutation() {
  */
 export function useFollowMutedBlogMutation() {
   const followMutedBlogMutation = useMutation({
-    mutationFn: async (params: FollowBlackListBlogParams) => {
+    mutationFn: async (params: { otherBlogs: string; blog?: string }) => {
       const { otherBlogs, blog } = params;
-
-      await transactionService.followMutedBlog(otherBlogs, blog, { observe: true });
-
-      logger.info('Followed muted blog: %o', params);
-      return params;
+      const broadcastResult = await transactionService.followMutedBlog(otherBlogs, blog, { observe: true });
+      const response = { ...params, broadcastResult };
+      logger.info('Done follow muted blog transaction: %o', response);
+      return response;
     },
     onSuccess: (data) => {
       logger.info('useFollowMutedBlogMutation onSuccess data: %o', data);
     }
   });
 
-  const followMutedBlog = async (params: FollowBlackListBlogParams) => {
-    try {
-      await followMutedBlogMutation.mutateAsync(params);
-    } catch (error) {
-      handleError(error, { method: 'followMutedBlog', ...params });
-    }
-  };
-
-  return { followMutedBlog, followMutedBlogMutation };
+  return followMutedBlogMutation;
 }
 
 /**
@@ -189,26 +128,17 @@ export function useFollowMutedBlogMutation() {
  */
 export function useUnfollowMutedBlogMutation() {
   const unfollowMutedBlogMutation = useMutation({
-    mutationFn: async (params: UnfollowBlacklistBlogParams) => {
+    mutationFn: async (params: { blog: string }) => {
       const { blog } = params;
-
-      await transactionService.unfollowMutedBlog(blog, { observe: true });
-
-      logger.info('Unollowed muted blog: %o', params);
-      return params;
+      const broadcastResult = await transactionService.unfollowMutedBlog(blog, { observe: true });
+      const response = { ...params, broadcastResult };
+      logger.info('Done unfollow muted blog transaction: %o', response);
+      return response;
     },
     onSuccess: (data) => {
       logger.info('useUnfollowMutedBlogMutation onSuccess data: %o', data);
     }
   });
 
-  const unfollowMutedBlog = async (params: UnfollowBlacklistBlogParams) => {
-    try {
-      await unfollowMutedBlogMutation.mutateAsync(params);
-    } catch (error) {
-      handleError(error, { method: 'unfollowMutedBlog', ...params });
-    }
-  };
-
-  return { unfollowMutedBlog, unfollowMutedBlogMutation };
+  return unfollowMutedBlogMutation;
 }

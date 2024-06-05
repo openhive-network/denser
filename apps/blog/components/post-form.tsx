@@ -34,6 +34,7 @@ import { getLogger } from '@ui/lib/logging';
 import SelectImageList from './select-image-list';
 import RendererContainer from './rendererContainer';
 import { usePostMutation } from './hooks/use-post-mutation';
+import { handleError } from '@ui/lib/utils';
 
 const logger = getLogger('app');
 
@@ -140,7 +141,7 @@ export default function PostForm({
   const { manabarsData } = useManabars(username);
   const [previewContent, setPreviewContent] = useState<string | undefined>(storedPost.postArea);
   const { t } = useTranslation('common_blog');
-  const { post } = usePostMutation();
+  const postMutation = usePostMutation();
 
   const {
     data: mySubsData,
@@ -251,7 +252,7 @@ export default function PostForm({
         btnRef.current.disabled = true;
       }
 
-      await post({
+      const postParams = {
         permlink: editMode && permlinInEditMode ? permlinInEditMode : postPermlink,
         title: storedPost.title,
         body: storedPost.postArea,

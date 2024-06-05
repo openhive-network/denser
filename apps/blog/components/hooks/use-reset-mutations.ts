@@ -1,7 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { getLogger } from '@ui/lib/logging';
-import { handleError } from '@ui/lib/utils';
 const logger = getLogger('app');
 
 /**
@@ -13,24 +12,17 @@ const logger = getLogger('app');
 export function useResetBlogListMutation() {
   const resetBlogListMutation = useMutation({
     mutationFn: async () => {
-      await transactionService.resetBlogList({ observe: true });
-
-      logger.info('Reset blog list');
+      const broadcastResult = await transactionService.resetBlogList({ observe: true });
+      const response = { broadcastResult };
+      logger.info('Done reset blog list transaction: %o', response);
+      return response;
     },
-    onSuccess: () => {
-      logger.info('useResetBlogListMutation onSuccess');
+    onSuccess: (data) => {
+      logger.info('useResetBlogListMutation onSuccess: %o', data);
     }
   });
 
-  const resetBlogList = async () => {
-    try {
-      await resetBlogListMutation.mutateAsync();
-    } catch (error) {
-      handleError(error, { method: 'resetBlogList' });
-    }
-  };
-
-  return { resetBlogList, resetBlogListMutation };
+  return resetBlogListMutation;
 }
 
 /**
@@ -42,24 +34,17 @@ export function useResetBlogListMutation() {
 export function useResetBlacklistBlogMutation() {
   const resetBlacklistBlogMutation = useMutation({
     mutationFn: async () => {
-      await transactionService.resetBlacklistBlog({ observe: true });
-
-      logger.info('Reset blacklist blog');
+      const broadcastResult = await transactionService.resetBlacklistBlog({ observe: true });
+      const response = { broadcastResult };
+      logger.info('Done reset blacklist blog transaction: %o', response);
+      return response;
     },
-    onSuccess: () => {
-      logger.info('useResetBlacklistBlogMutation onSuccess');
+    onSuccess: (data) => {
+      logger.info('useResetBlacklistBlogMutation onSuccess: %o', data);
     }
   });
 
-  const resetBlacklistBlog = async () => {
-    try {
-      await resetBlacklistBlogMutation.mutateAsync();
-    } catch (error) {
-      handleError(error, { method: 'resetBlacklistBlog' });
-    }
-  };
-
-  return { resetBlacklistBlog, resetBlacklistBlogMutation };
+  return resetBlacklistBlogMutation;
 }
 
 /**
@@ -71,24 +56,17 @@ export function useResetBlacklistBlogMutation() {
 export function useResetFollowBlacklistBlogMutation() {
   const resetFollowBlacklistBlogMutation = useMutation({
     mutationFn: async () => {
-      await transactionService.resetFollowBlacklistBlog({ observe: true });
-
-      logger.info('Reset follow blacklist blog');
+      const broadcastResult = await transactionService.resetFollowBlacklistBlog({ observe: true });
+      const response = { broadcastResult };
+      logger.info('Done reset follow blacklist blog transactio: %o', response);
+      return response;
     },
-    onSuccess: () => {
-      logger.info('useResetFollowBlacklistBlogMutation onSuccess');
+    onSuccess: (data) => {
+      logger.info('useResetFollowBlacklistBlogMutation onSuccess: %o', data);
     }
   });
 
-  const resetFollowBlacklistBlog = async () => {
-    try {
-      await resetFollowBlacklistBlogMutation.mutateAsync();
-    } catch (error) {
-      handleError(error, { method: 'resetFollowBlacklistBlog' });
-    }
-  };
-
-  return { resetFollowBlacklistBlog, resetFollowBlacklistBlogMutation };
+  return resetFollowBlacklistBlogMutation;
 }
 
 /**
@@ -100,22 +78,15 @@ export function useResetFollowBlacklistBlogMutation() {
 export function useResetFollowMutedBlogMutation() {
   const resetFollowMutedBlogMutation = useMutation({
     mutationFn: async () => {
-      await transactionService.resetFollowMutedBlog({ observe: true });
-
-      logger.info('Reset follow muted blog');
+      const broadcastResult = await transactionService.resetFollowMutedBlog({ observe: true });
+      const response = { broadcastResult };
+      logger.info('Done reset follow muted blog transaction: %o', response);
+      return response;
     },
-    onSuccess: () => {
-      logger.info('useResetFollowMutedBlogMutation onSuccess');
+    onSuccess: (data) => {
+      logger.info('useResetFollowMutedBlogMutation onSuccess: %o', data);
     }
   });
 
-  const resetFollowMutedBlog = async () => {
-    try {
-      await resetFollowMutedBlogMutation.mutateAsync();
-    } catch (error) {
-      handleError(error, { method: 'resetFollowMutedBlog' });
-    }
-  };
-
-  return { resetFollowMutedBlog, resetFollowMutedBlogMutation };
+  return resetFollowMutedBlogMutation;
 }

@@ -141,7 +141,7 @@ export function powerdownHive(accountData: FullAccount, dynamicData: IDynamicGlo
   return powerdown_hivef;
 }
 
-export function handleError<T>(error: any, ctx?: { method: string } & T, toastOptions?: Toast) {
+export function handleError<T>(error: any, ctx?: { method: string; params: T }, toastOptions?: Toast) {
   toast({
     description: transformError<T>(error, ctx),
     variant: 'destructive',

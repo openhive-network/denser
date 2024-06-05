@@ -14,6 +14,7 @@ import { getAccountFull, getFindAccounts } from '@transaction/lib/hive';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useMarkAllNotificationsAsReadMutation } from './hooks/use-notifications-read-mutation';
 import { useClaimRewardMutation } from './hooks/use-claim-reward-mutation';
+import { handleError } from '@ui/lib/utils';
 
 const NotificationActivities = ({
   data,
@@ -28,8 +29,8 @@ const NotificationActivities = ({
     state && state.length > 0 ? state[state.length - 1].id : null
   );
   const { user } = useUser();
-  const { markAllNotificationsAsRead } = useMarkAllNotificationsAsReadMutation();
-  const { claimReward } = useClaimRewardMutation();
+  const markAllNotificationsAsReadMutation = useMarkAllNotificationsAsReadMutation();
+  const claimRewardMutation = useClaimRewardMutation();
 
   const { data: unreadNotifications } = useQuery(
     [['unreadNotifications', user?.username]],
@@ -78,15 +79,28 @@ const NotificationActivities = ({
   }, [lastStateElementId, refetch]);
 
   async function handleMarkAllAsRead() {
-    await markAllNotificationsAsRead({
-      date: newDate.toISOString().slice(0, newDate.toISOString().length - 5)
-    });
+    try {
+      await markAllNotificationsAsReadMutation.mutateAsync({
+        date: newDate.toISOString().slice(0, newDate.toISOString().length - 5)
+      });
+    } catch (error) {
+      handleError(error, {
+        method: 'markAllNotificationsAsRead',
+        params: {
+          date: newDate.toISOString().slice(0, newDate.toISOString().length - 5)
+        }
+      });
+    }
   }
 
   async function handleClaimRewards(e: SyntheticEvent) {
     e.preventDefault();
     if (apiAccounts) {
-      await claimReward({ account: apiAccounts.accounts[0] });
+      try {
+        await claimRewardMutation.mutateAsync({ account: apiAccounts.accounts[0] });
+      } catch (error) {
+        handleError(error, { method: 'claimReward', params: { account: apiAccounts.accounts[0] } });
+      }
     }
   }
 

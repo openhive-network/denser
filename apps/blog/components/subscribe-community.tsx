@@ -18,8 +18,8 @@ const SubscribeCommunity = ({
   OnIsSubscribe: (e: boolean) => void;
 }) => {
   const { t } = useTranslation('common_blog');
-  const { subscribe } = useSubscribeMutation();
-  const { unsubscribe } = useUnsubscribeMutation();
+  const subscribeMutation = useSubscribeMutation();
+  const unsubscribeMutation = useUnsubscribeMutation();
 
   return (
     <>
@@ -34,9 +34,17 @@ const SubscribeCommunity = ({
                 const nextIsSubscribe = !subStatus;
                 OnIsSubscribe(nextIsSubscribe);
                 if (nextIsSubscribe) {
-                  await subscribe({ username });
+                  try {
+                    await subscribeMutation.mutateAsync({ username });
+                  } catch (error) {
+                    handleError(error, { method: 'subscribe', params: { username } });
+                  }
                 } else {
-                  await unsubscribe({ username });
+                  try {
+                    await unsubscribeMutation.mutateAsync({ username });
+                  } catch (error) {
+                    handleError(error, { method: 'unsubscribe', params: { username } });
+                  }
                 }
               }}
             >
@@ -47,10 +55,14 @@ const SubscribeCommunity = ({
               size="sm"
               variant="outline"
               className="group relative w-full text-center text-blue-800 hover:border-red-500 hover:text-red-500"
-              onClick={() => {
+              onClick={async () => {
                 const nextIsSubscribe = !subStatus;
                 OnIsSubscribe(nextIsSubscribe);
-                unsubscribe({ username });
+                try {
+                  await unsubscribeMutation.mutateAsync({ username });
+                } catch (error) {
+                  handleError(error, { method: 'unsubscribe', params: { username } });
+                }
               }}
             >
               <span className="group-hover:hidden">{t('communities.buttons.joined')}</span>

@@ -25,10 +25,10 @@ const wellKnownErrorDescriptions = [
  * then swallow error
  *
  * @param {*} e
- * @param {{ method: string } & T} ctx
+ * @param {{ method: string, params: T }} ctx
  * @returns error description
  */
-export function transformError<T>(e: any, ctx?: { method: string } & T, defaultDescription?: string) {
+export function transformError<T>(e: any, ctx?: { method: string; params: T }, defaultDescription?: string) {
   logger.error('Got error: %o on %o', e, ctx);
   const isError = (err: unknown): err is Error => err instanceof Error;
   const isWaxError = (err: unknown): err is WaxChainApiError => err instanceof WaxChainApiError;

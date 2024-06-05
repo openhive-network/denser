@@ -1,15 +1,7 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { getLogger } from '@ui/lib/logging';
-import { handleError } from '@ui/lib/utils';
 const logger = getLogger('app');
-
-interface FlagParams {
-  community: string;
-  username: string;
-  permlink: string;
-  notes: string;
-}
 
 /**
  * Makes flag transaction.
@@ -19,26 +11,19 @@ interface FlagParams {
  */
 export function useFlagMutation() {
   const flagMutation = useMutation({
-    mutationFn: async (params: FlagParams) => {
+    mutationFn: async (params: { community: string; username: string; permlink: string; notes: string }) => {
       const { community, username, permlink, notes } = params;
-
-      await transactionService.flag(community, username, permlink, notes, { observe: true });
-
-      logger.info('Flagged: %o', params);
-      return params;
+      const broadcastResult = await transactionService.flag(community, username, permlink, notes, {
+        observe: true
+      });
+      const response = { ...params, broadcastResult };
+      logger.info('Done flag transaction: %o', response);
+      return response;
     },
     onSuccess: (data) => {
       logger.info('useFlagMutation onSuccess data: %o', data);
     }
   });
 
-  const flag = async (params: FlagParams) => {
-    try {
-      await flagMutation.mutateAsync(params);
-    } catch (error) {
-      handleError(error, { method: 'flag' });
-    }
-  };
-
-  return { flag, flagMutation };
+  return flagMutation;
 }

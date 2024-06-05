@@ -2,12 +2,7 @@ import { ApiAccount } from '@hiveio/wax';
 import { useMutation } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { getLogger } from '@ui/lib/logging';
-import { handleError } from '@ui/lib/utils';
 const logger = getLogger('app');
-
-interface ClaimRewardParams {
-  account: ApiAccount;
-}
 
 /**
  * Makes claim reward transaction.
@@ -17,26 +12,17 @@ interface ClaimRewardParams {
  */
 export function useClaimRewardMutation() {
   const claimRewardMutation = useMutation({
-    mutationFn: async (params: ClaimRewardParams) => {
+    mutationFn: async (params: { account: ApiAccount }) => {
       const { account } = params;
-
-      await transactionService.claimRewards(account, { observe: true });
-
-      logger.info('Claimed reward: %o', params);
-      return params;
+      const broadcstResult = await transactionService.claimRewards(account, { observe: true });
+      const response = { ...params, broadcstResult };
+      logger.info('Done claime reward tranasaction: %o', response);
+      return response;
     },
     onSuccess: (data) => {
       logger.info('useClaimRewardMutation onSuccess data: %o', data);
     }
   });
 
-  const claimReward = async (params: ClaimRewardParams) => {
-    try {
-      await claimRewardMutation.mutateAsync(params);
-    } catch (error) {
-      handleError(error, { method: 'claimReward', ...params });
-    }
-  };
-
-  return { claimReward, claimRewardMutation };
+  return claimRewardMutation;
 }
