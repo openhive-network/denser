@@ -39,27 +39,6 @@ export interface TransactionBroadcastResult {
 
 export class TransactionService {
   /**
-   * Default error description, used when trying to get smarter
-   * description fails
-   *
-   * @memberof TransactionService
-   */
-  errorDescription = 'Transaction broadcast error';
-
-  /**
-   * Strings to look for in error's stuff. When found, we can assume
-   * that we caught well known error and we can use these strings in
-   * message for user safely.
-   *
-   * @memberof TransactionService
-   */
-  wellKnownErrorDescriptions = [
-    'Your current vote on this comment is identical to this vote',
-    'Account does not have enough mana to downvote',
-    'You may only post once every 5 minutes'
-  ];
-
-  /**
    * Options for Signer.
    *
    * @type {SignerOptions}
@@ -732,57 +711,6 @@ export class TransactionService {
         }
       });
     }, transactionOptions);
-  }
-
-  /**
-   * Handle error by trying to find a message for user in error stuff,
-   * display found message in toast, then swallow error.
-   *
-   * @param {*} e
-   * @param {Toast} [toastOptions={}]
-   * @memberof TransactionService
-   */
-  handleError(e: any, toastOptions: Toast = {}) {
-    logger.error('Got error: %o', e);
-    const isError = (err: unknown): err is Error => err instanceof Error;
-    const isWaxError = (err: unknown): err is WaxChainApiError => err instanceof WaxChainApiError;
-
-    let description = 'Operation failed';
-
-    if (!toastOptions?.description) {
-      let errorDescription;
-      if (isWaxError(e)) {
-        const error = e as any;
-        // this is temporary solution for "wait 5 minut after create another post" error
-        if (error?.apiError?.code === -32003) {
-          errorDescription = error?.apiError?.data?.stack[0]?.format;
-        } else {
-          errorDescription = error?.message ?? this.errorDescription;
-        }
-      } else if (isError(e)) {
-        errorDescription = e.message;
-      } else if (typeof e === 'string') {
-        errorDescription = e;
-      }
-
-      let wellKnownErrorDescription;
-      for (const wked of this.wellKnownErrorDescriptions) {
-        if (errorDescription.includes(wked)) {
-          wellKnownErrorDescription = wked;
-          break;
-        }
-      }
-
-      if (wellKnownErrorDescription) {
-        description = wellKnownErrorDescription;
-      }
-    }
-
-    toast({
-      description,
-      variant: 'destructive',
-      ...toastOptions
-    });
   }
 }
 
