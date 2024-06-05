@@ -259,12 +259,19 @@ export default function PostForm({
         beneficiaries: storedPost.beneficiaries,
         maxAcceptedPayout,
         tags,
-        communityPosting ? communityPosting : storedPost.category,
-        storedPost.postSummary,
-        storedPost.author,
-        storedPost.payoutType ?? preferences.blog_rewards,
-        imagePickerState
-      );
+        category: communityPosting ? communityPosting : storedPost.category,
+        summary: storedPost.postSummary,
+        altAuthor: storedPost.author,
+        payoutType: storedPost.payoutType ?? preferences.blog_rewards,
+        image: imagePicker(selectedImg)
+      };
+
+      try {
+        await postMutation.mutateAsync(postParams);
+      } catch (error) {
+        handleError(error, { method: 'post', params: postParams });
+      }
+
       form.reset(defaultValues);
       setPreviewContent(undefined);
       storePost(defaultValues);
