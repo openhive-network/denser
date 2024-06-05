@@ -14,7 +14,6 @@ import { Separator } from '@hive/ui/components/separator';
 import { Badge } from '@hive/ui/components/badge';
 import parseDate, { dateToFullRelative } from '@hive/ui/lib/parse-date';
 import accountReputation from '@/blog/lib/account-reputation';
-import { AlertDialogReblog } from './alert-window';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import DetailsCardHover from './details-card-hover';
 import { useRouter } from 'next/router';
@@ -30,12 +29,10 @@ import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
-import { useQuery } from '@tanstack/react-query';
-
 import { getLogger } from '@ui/lib/logging';
-import { useRebloggedByQuery } from './hooks/use-reblogged-by-query';
-const logger = getLogger('app');
+import ReblogTrigger from './reblog-trigger';
 
+const logger = getLogger('app');
 
 const PostListItem = ({
   post,
@@ -64,10 +61,6 @@ const PostListItem = ({
   const userFromDMCA = dmcaUserList.includes(post.author);
   const userFromImageBlockList = imageUserBlocklist.includes(post.author);
   const legalBlockedUser = userIllegalContent.includes(post.author);
-
-  const {
-    data: isReblogged
-  } = useRebloggedByQuery(post?.author, post?.permlink, user.username);
 
   function revealPost() {
     setReveal((reveal) => !reveal);
@@ -379,30 +372,12 @@ const PostListItem = ({
                   <Separator orientation="vertical" />
                   {!post.title.includes('RE: ') ? (
                     <div className="flex items-center" data-testid="post-card-reblog">
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger disabled={isReblogged}>
-                            <AlertDialogReblog
-                              author={post.author}
-                              permlink={post.permlink}
-                            >
-                              <Icons.forward
-                                className={cn('h-4 w-4 cursor-pointer', {
-                                  'text-red-600': isReblogged,
-                                  'cursor-default': isReblogged
-                                })}
-                              />
-                            </AlertDialogReblog>
-                          </TooltipTrigger>
-                          <TooltipContent data-testid="post-card-reblog-tooltip">
-                            <p>{
-                              isReblogged
-                                ? t('cards.post_card.you_reblogged')
-                                : t('cards.post_card.reblog')
-                            }</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
+                      <ReblogTrigger
+                        author={post.author}
+                        permlink={post.permlink}
+                        dataTestidTooltipContent="post-card-reblog-tooltip"
+                        dataTestidTooltipIcon="post-card-reblog-icon"
+                      />
                     </div>
                   ) : null}
                 </div>
