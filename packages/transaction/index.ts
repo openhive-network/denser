@@ -69,19 +69,14 @@ export class TransactionService {
   /**
    * Create transaction and add operation to it (by running callback
    * `cb`), sign transaction, broadcast transaction and observe if
-   * transaction has been applied in blockchain (if one wanted this).
-   * The method does this by default:
-   *
-   * 1. Swallows all errors and informs user about them via toast
-   *    service. When you want to do something else with error pass
-   *    `options.onError` callback.
-   * 2. Runs `TransactionService.broadcastTransaction` and this method
-   *    does not observe if transaction has been applied in blockchain –
-   *    resolves just after sending transaction to API server. When you
-   *    want to observe transaction and resolve after applying it in
-   *    blockchain, pass `options.observe` set to true. Then method
-   *    `TransactionService.broadcastAndObserveTransaction` will be run
-   *    and this resolves after applying transaction in blockchain.
+   * transaction has been applied in blockchain (if caller wants this).
+   * The method runs `TransactionService.broadcastTransaction` and this
+   * method does not observe if transaction has been applied in
+   * blockchain – resolves just after sending transaction to API server.
+   * When you want to observe transaction and resolve after applying it
+   * in blockchain, pass `options.observe` set to true. Then method
+   * `TransactionService.broadcastAndObserveTransaction` will be run and
+   * this resolves after applying transaction in blockchain.
    *
    * @param {(opBuilder: ITransactionBuilder) => void} cb
    * @param {TransactionOptions} [transactionOptions={}]
@@ -137,11 +132,11 @@ export class TransactionService {
   }
 
   /**
-   * Broadcast transaction. Resolves after sending request to API
+   * Broadcasts transaction. Resolves after sending request to API
    * server. Does not wait for applying transaction in blockchain.
    *
    * @param {ITransactionBuilder} txBuilder
-   * @return {*}  {Promise<void>}
+   * @return {*}  {Promise<TransactionBroadcastResult>}
    * @memberof TransactionService
    */
   async broadcastTransaction(txBuilder: ITransactionBuilder): Promise<TransactionBroadcastResult> {
