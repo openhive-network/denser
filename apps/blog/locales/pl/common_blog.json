@@ -161,10 +161,14 @@
       "pinned": "Przypięty"
     },
     "post_card": {
+      "upvote": "Głos na tak",
+      "undo_upvote": "Cofnij swój głos na tak",
+      "change_upvote_percent": "Zmień swój głos na tak {{votePercent}}%",
+      "downvote": "Głos na nie",
+      "undo_downvote": "Cofnij swój głos na nie",
+      "change_downvote_percent": "Zmień swój głos na nie {{votePercent}}%",
       "reputation_title": "Reputacja",
       "in": "w",
-      "upvote": "Głos za",
-      "downvote": "Głos przeciw",
       "no_votes": "Brak głosów",
       "vote": "Liczba głosów: 1",
       "votes": "Liczba głosów: {{votes}}",

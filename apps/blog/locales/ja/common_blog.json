@@ -150,10 +150,14 @@
       "pinned": "Pinned"
     },
     "post_card": {
+      "upvote": "賛成票",
+      "undo_upvote": "賛成票を取り消す",
+      "change_upvote_percent": "賛成票を変更する {{votePercent}}%",
+      "downvote": "反対票",
+      "undo_downvote": "反対票を取り消す",
+      "change_downvote_percent": "反対票を変更する {{votePercent}}%",
       "reputation_title": "評価",
       "in": "in",
-      "upvote": "Upvote",
-      "downvote": "Downvote",
       "no_votes": "投票がありません",
       "vote": "1件の投票",
       "votes": "{{votes}}件の投票",

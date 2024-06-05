@@ -150,10 +150,14 @@
       "pinned": "Pinned"
     },
     "post_card": {
+      "upvote": "찬성표",
+      "undo_upvote": "찬성표 취소",
+      "change_upvote_percent": "찬성표를 {{votePercent}}%로 변경",
+      "downvote": "반대표",
+      "undo_downvote": "반대표 취소",
+      "change_downvote_percent": "반대표를 {{votePercent}}%로 변경",
       "reputation_title": "평판",
       "in": "in",
-      "upvote": "Upvote",
-      "downvote": "Downvote",
       "no_votes": "추천 없음.",
       "vote": "1개의 추천",
       "votes": "{{votes}}개의 추천",

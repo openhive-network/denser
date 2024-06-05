@@ -150,10 +150,14 @@
       "pinned": "Pinned"
     },
     "post_card": {
+      "upvote": "赞成票",
+      "undo_upvote": "撤销你的赞成票",
+      "change_upvote_percent": "将您的赞成票更改为 {{votePercent}}%",
+      "downvote": "反对票",
+      "undo_downvote": "撤销你的反对票",
+      "change_downvote_percent": "将您的反对票更改为 {{votePercent}}%",
       "reputation_title": "声誉",
       "in": "在",
-      "upvote": "点赞",
-      "downvote": "Downvote",
       "no_votes": "暂无投票",
       "vote": "1个投票",
       "votes": "{{votes}}个投票",

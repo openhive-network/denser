@@ -150,10 +150,14 @@
       "pinned": "Pinned"
     },
     "post_card": {
+      "upvote": "Voto positivo",
+      "undo_upvote": "Annulla il tuo voto positivo",
+      "change_upvote_percent": "Cambia il tuo voto positivo {{votePercent}}%",
+      "downvote": "Voto negativo",
+      "undo_downvote": "Annulla il tuo voto negativo",
+      "change_downvote_percent": "Cambia il tuo voto negativo {{votePercent}}%",
       "reputation_title": "Reputazione",
       "in": "in",
-      "upvote": "Upvote",
-      "downvote": "Downvote",
       "no_votes": "no votes",
       "vote": "vote",
       "votes": "{{votes}} votes",

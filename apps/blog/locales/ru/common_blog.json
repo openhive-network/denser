@@ -150,10 +150,14 @@
       "pinned": "Pinned"
     },
     "post_card": {
+      "upvote": "Положительный голос",
+      "undo_upvote": "Отменить ваш положительный голос",
+      "change_upvote_percent": "Измените ваш положительный голос {{votePercent}}%",
+      "downvote": "Отрицательный голос",
+      "undo_downvote": "Отменить ваш отрицательный голос",
+      "change_downvote_percent": "Измените ваш отрицательный голос {{votePercent}}%",
       "reputation_title": "Репутация",
       "in": "в",
-      "upvote": "Голосовать за",
-      "downvote": "Downvote",
       "no_votes": "нет голосов",
       "vote": "1 голос",
       "votes": "{{votes}} голосов",

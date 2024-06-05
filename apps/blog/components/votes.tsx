@@ -24,8 +24,8 @@ const VotesComponent = ({ post }: { post: Entry }) => {
   const { t } = useTranslation('common_blog');
   const [isClient, setIsClient] = useState(false);
   const [clickedVoteButton, setClickedVoteButton] = useState('');
-  const [sliderUpvote, setSliderUpvote] = useState([100]);
-  const [sliderDownvote, setSliderDownvote] = useState([100]);
+  const [sliderUpvote, setSliderUpvote] = useState([10]);
+  const [sliderDownvote, setSliderDownvote] = useState([10]);
 
   const voter = user.username;
   useEffect(() => {
@@ -45,11 +45,16 @@ const VotesComponent = ({ post }: { post: Entry }) => {
 
   const userVote =
     userVotes?.votes[0] && userVotes?.votes[0].voter === user.username ? userVotes.votes[0] : undefined;
-
-  const userUpvoted = userVote ? userVote.vote_percent > 0 : false;
-  const userDownvoted = userVote ? userVote.vote_percent < 0 : false;
   const voteMutation = useVoteMutation();
 
+  useEffect(() => {
+    if (userVote && userVote.vote_percent > 0) {
+      setSliderUpvote([userVote.vote_percent / 100]);
+    }
+    if (userVote && userVote.vote_percent < 0) {
+      setSliderDownvote([-userVote.vote_percent / 100]);
+    }
+  }, [userVotes]);
   const submitVote = async (weight: number) => {
     const { author, permlink } = post;
     try {
@@ -70,7 +75,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                 size={18}
                 color="#dc2626"
               />
-            ) : (user.isLoggedIn && enable_slider && !userUpvoted) || clickedVoteButton === 'up' ? (
+            ) : user.isLoggedIn && enable_slider ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Icons.arrowUpCircle
@@ -129,7 +134,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
             {userVote && userVote.vote_percent > 0
               ? userVote.vote_percent === 10000
                 ? t('cards.post_card.undo_upvote')
-                : t('cards.post_card.undo_upvote_percent', {
+                : t('cards.post_card.change_upvote_percent', {
                     votePercent: (userVote.vote_percent / 100).toFixed(2)
                   })
               : t('cards.post_card.upvote')}
@@ -146,7 +151,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                 size={18}
                 color="#dc2626"
               />
-            ) : (user.isLoggedIn && enable_slider && !userDownvoted) || clickedVoteButton === 'down' ? (
+            ) : user.isLoggedIn && enable_slider ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Icons.arrowDownCircle
@@ -163,14 +168,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                       onClick={(e) => {
                         if (voteMutation.isLoading) return;
                         setClickedVoteButton('down');
-                        {
-                          // We vote either -100% or 0%.
-                          if (userVote && userVote.vote_percent < 0) {
-                            submitVote(0);
-                          } else {
-                            submitVote(-sliderDownvote[0] * 100);
-                          }
-                        }
+                        submitVote(-sliderDownvote[0] * 100);
                       }}
                     />
                     <Slider
@@ -192,7 +190,14 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                 onClick={(e) => {
                   if (voteMutation.isLoading) return;
                   setClickedVoteButton('down');
-                  submitVote(-10000);
+                  {
+                    // We vote either -100% or 0%.
+                    if (userVote && userVote.vote_percent < 0) {
+                      submitVote(0);
+                    } else {
+                      submitVote(-10000);
+                    }
+                  }
                 }}
               />
             ) : (
@@ -205,7 +210,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
             {userVote && userVote.vote_percent < 0
               ? userVote.vote_percent === -10000
                 ? t('cards.post_card.undo_downvote')
-                : t('cards.post_card.undo_downvote_percent', {
+                : t('cards.post_card.change_downvote_percent', {
                     votePercent: (-userVote.vote_percent / 100).toFixed(2)
                   })
               : t('cards.post_card.downvote')}

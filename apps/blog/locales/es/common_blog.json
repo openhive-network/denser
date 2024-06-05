@@ -152,8 +152,12 @@
     "post_card": {
       "reputation_title": "Reputación",
       "in": "en",
-      "upvote": "Votar",
+      "upvote": "Voto positivo",
+      "undo_upvote": "Deshacer tu voto positivo",
+      "change_upvote_percent": "Cambiar tu voto positivo {{votePercent}}%",
       "downvote": "Voto negativo",
+      "undo_downvote": "Deshacer tu voto negativo",
+      "change_downvote_percent": "Cambiar tu voto negativo {{votePercent}}%",
       "no_votes": "sin votos",
       "vote": "1 voto",
       "votes": "{{votes}} votos",
