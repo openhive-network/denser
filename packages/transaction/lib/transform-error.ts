@@ -4,6 +4,23 @@ import { transactionService } from '@hive/transaction';
 const logger = getLogger('app');
 
 /**
+ * Default error description, used when trying to get smarter
+ * description fails
+ */
+const errorDescription = 'Transaction broadcast error';
+
+/**
+ * Strings to look for in error's stuff. When found, we can assume
+ * that we caught well known error and we can use these strings in
+ * message for user safely.
+ */
+const wellKnownErrorDescriptions = [
+  'Your current vote on this comment is identical to this vote',
+  'Account does not have enough mana to downvote',
+  'You may only post once every 5 minutes'
+];
+
+/**
  * Return error description by trying to find a message for user in error stuff,
  * then swallow error
  *
@@ -26,7 +43,7 @@ export function transformError<T>(e: any, ctx?: { method: string } & T, defaultD
       if (error?.apiError?.code === -32003) {
         errorDescription = error?.apiError?.data?.stack[0]?.format;
       } else {
-        errorDescription = error?.message ?? transactionService.errorDescription;
+        errorDescription = error?.message ?? errorDescription;
       }
     } else if (isError(e)) {
       errorDescription = e.message;
@@ -35,7 +52,7 @@ export function transformError<T>(e: any, ctx?: { method: string } & T, defaultD
     }
 
     let wellKnownErrorDescription;
-    for (const wked of transactionService.wellKnownErrorDescriptions) {
+    for (const wked of wellKnownErrorDescriptions) {
       if (errorDescription.includes(wked)) {
         wellKnownErrorDescription = wked;
         break;
