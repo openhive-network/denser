@@ -47,9 +47,7 @@ export function proxifyImageSrc(url?: string, width = 0, height = 0, format = 'm
   }
 
   const realUrl = getLatestUrl(url);
-  console.log('realUrl');
   const pHash = extractPHash(realUrl);
-  console.log('pHash');
 
   const options: Record<string, string | number> = {
     format,
