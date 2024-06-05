@@ -13,10 +13,6 @@ const SelectImageList: FC<SelectImageListTypes> = ({ content, value, onChange })
   const { t } = useTranslation('common_blog');
   const ytImages = extractYouTubeVideoIds(extractUrlsFromJsonString(content)).map((img) => `youtu-${img}`);
   const images = useMemo(() => [...extractImagesSrc(content), ...ytImages], [content, ytImages]);
-  console.log(
-    'extractYouTubeVideoIds(extractUrlsFromJsonString(content))',
-    extractYouTubeVideoIds(extractUrlsFromJsonString(content))
-  );
   const uniqueImages = Array.from(new Set(images));
 
   useEffect(() => {
