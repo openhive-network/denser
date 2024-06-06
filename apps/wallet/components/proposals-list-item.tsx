@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { BURN_ACCOUNTS, REFUND_ACCOUNTS } from '@/wallet/lib/constants';
 import { IListItemProps } from '@/wallet/lib/hive';
-import { getRoundedAbbreveration, numberWithCommas } from '@hive/ui/lib/utils';
+import { getRoundedAbbreveration, handleError, numberWithCommas } from '@hive/ui/lib/utils';
 import { Icons } from '@hive/ui/components/icons';
 import moment from 'moment';
 import { dateToFullRelative } from '@ui/lib/parse-date';
@@ -11,7 +11,7 @@ import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';
-import { transactionService } from '@transaction/index';
+import { useUpdateProposalVotesMutation } from '@hive/wallet/components/hooks/use-update-proposal-votes-mutation';
 import env from '@beam-australia/react-env';
 
 function titleSetter(
@@ -51,6 +51,8 @@ function translateShorDate(data: string, t: TFunction<'common_wallet', undefined
 export function ProposalListItem({ proposalData, totalShares, totalVestingFund }: IListItemProps) {
   const { t } = useTranslation('common_wallet');
   const { user } = useUser();
+  const updateProposalVotesMutation = useUpdateProposalVotesMutation();
+
   const totalHBD = proposalData.daily_pay?.amount.times(
     moment(proposalData?.end_date).diff(moment(proposalData.start_date), 'd')
   );
@@ -66,6 +68,27 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
       return <Badge variant="orange">{t('proposals_page.burn')}</Badge>;
 
     return null;
+  }
+
+  async function updateProposalVotes(e: React.MouseEvent<HTMLOrSVGElement>) {
+    try {
+      await updateProposalVotesMutation.mutateAsync({
+        proposal_ids: [String(proposalData.proposal_id)],
+        approve: true,
+        extensions: []
+      });
+      (e.target as HTMLElement).classList.add('text-white');
+      (e.target as HTMLElement).classList.add('bg-red-600');
+    } catch (error) {
+      handleError(error, {
+        method: 'updateProposalVotes',
+        params: {
+          proposal_ids: [String(proposalData.proposal_id)],
+          approve: true,
+          extensions: []
+        }
+      });
+    }
   }
 
   return (
@@ -177,11 +200,7 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
               viewBox="1.7 1.7 20.7 20.7"
               className="relative inline-flex h-6 w-6 cursor-pointer rounded-full bg-white stroke-1 text-red-500 dark:bg-slate-800"
               data-testid="voting-button-icon"
-              onClick={(e: React.MouseEvent<HTMLOrSVGElement>) => {
-                transactionService.updateProposalVotes([String(proposalData.proposal_id)], true, []);
-                (e.target as HTMLElement).classList.add('text-white');
-                (e.target as HTMLElement).classList.add('bg-red-600');
-              }}
+              onClick={updateProposalVotes}
             />
           </div>
         ) : (

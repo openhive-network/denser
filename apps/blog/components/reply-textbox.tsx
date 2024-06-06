@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { Button } from '@ui/components/button';
 import { useEffect, useState, useRef } from 'react';
 import { useTranslation } from 'next-i18next';
-import { transactionService } from '@transaction/index';
 import { useLocalStorage } from 'usehooks-ts';
 import { Icons } from '@ui/components/icons';
 import MdEditor from './md-editor';
@@ -14,6 +13,8 @@ import { hoursAndMinutes } from '../lib/utils';
 import { Entry } from '@transaction/lib/bridge';
 import RendererContainer from './rendererContainer';
 import { getLogger } from '@ui/lib/logging';
+import { useCommentMutation, useUpdateCommentMutation } from './hooks/use-comment-mutations';
+import { handleError } from '@ui/lib/utils';
 const logger = getLogger('app');
 
 export function ReplyTextbox({
@@ -44,6 +45,9 @@ export function ReplyTextbox({
   const [text, setText] = useState(
     storedPost ? storedPost : typeof comment === 'string' ? comment : comment.body ? comment.body : ''
   );
+  const [cleanedText, setCleanedText] = useState('');
+  const commentMutation = useCommentMutation();
+  const updateCommentMutation = useUpdateCommentMutation();
 
   useEffect(() => {
     storePost(text);
@@ -68,9 +72,30 @@ export function ReplyTextbox({
       if (parentPermlink && typeof comment !== 'string') {
         const payout =
           comment.max_accepted_payout === '0.000 HBD' ? '0%' : comment.percent_hbd === 0 ? '100%' : '50%';
-        transactionService.updateComment(username, parentPermlink, permlink, text, payout);
+        const updateCommentParams = {
+          parentAuthor: username,
+          parentPermlink,
+          permlink,
+          body: cleanedText,
+          comment_rewards: payout as '0%' | '50%' | '100%'
+        };
+        try {
+          await updateCommentMutation.mutateAsync(updateCommentParams);
+        } catch (error) {
+          handleError(error, { method: 'updateComment', params: updateCommentParams });
+        }
       } else {
-        transactionService.comment(username, permlink, text, preferences);
+        const commentParams = {
+          parentAuthor: username,
+          parentPermlink: permlink,
+          body: cleanedText,
+          preferences
+        };
+        try {
+          await commentMutation.mutateAsync(commentParams);
+        } catch (error) {
+          handleError(error, { method: 'comment', params: commentParams });
+        }
       }
       setText('');
       removePost();
