@@ -9,10 +9,12 @@ import NotificationList from '@/blog/components/notification-list';
 import { Button } from '@ui/components/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components/tabs';
 import { useTranslation } from 'next-i18next';
-import { transactionService } from '@transaction/index';
 import { getRewardsString } from '../lib/utils';
 import { getAccountFull, getFindAccounts } from '@transaction/lib/hive';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useMarkAllNotificationsAsReadMutation } from './hooks/use-notifications-read-mutation';
+import { useClaimRewardMutation } from './hooks/use-claim-reward-mutation';
+import { handleError } from '@ui/lib/utils';
 
 const NotificationActivities = ({
   data,
@@ -27,6 +29,9 @@ const NotificationActivities = ({
     state && state.length > 0 ? state[state.length - 1].id : null
   );
   const { user } = useUser();
+  const markAllNotificationsAsReadMutation = useMarkAllNotificationsAsReadMutation();
+  const claimRewardMutation = useClaimRewardMutation();
+
   const { data: unreadNotifications } = useQuery(
     [['unreadNotifications', user?.username]],
     () => getUnreadNotifications(user?.username || ''),
@@ -73,16 +78,29 @@ const NotificationActivities = ({
     refetch();
   }, [lastStateElementId, refetch]);
 
-  function handleMarkAllAsRead() {
-    transactionService.markAllNotificationAsRead(
-      newDate.toISOString().slice(0, newDate.toISOString().length - 5)
-    );
+  async function handleMarkAllAsRead() {
+    try {
+      await markAllNotificationsAsReadMutation.mutateAsync({
+        date: newDate.toISOString().slice(0, newDate.toISOString().length - 5)
+      });
+    } catch (error) {
+      handleError(error, {
+        method: 'markAllNotificationsAsRead',
+        params: {
+          date: newDate.toISOString().slice(0, newDate.toISOString().length - 5)
+        }
+      });
+    }
   }
 
-  function handleClaimRewards(e: SyntheticEvent) {
+  async function handleClaimRewards(e: SyntheticEvent) {
     e.preventDefault();
     if (apiAccounts) {
-      transactionService.claimRewards(apiAccounts.accounts[0]);
+      try {
+        await claimRewardMutation.mutateAsync({ account: apiAccounts.accounts[0] });
+      } catch (error) {
+        handleError(error, { method: 'claimReward', params: { account: apiAccounts.accounts[0] } });
+      }
     }
   }
 
