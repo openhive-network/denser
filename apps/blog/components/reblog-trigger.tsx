@@ -8,20 +8,21 @@ import { useReblogMutation } from './hooks/use-reblog-mutation';
 import { CircleSpinner } from 'react-spinners-kit';
 import { getLogger } from '@ui/lib/logging';
 import { ReblogDialog } from './reblog-dialog';
+import { handleError } from '@ui/lib/utils';
 
 const logger = getLogger('app');
 
 const ReblogTrigger = ({
-    author,
-    permlink,
-    dataTestidTooltipContent,
-    dataTestidTooltipIcon,
-}: {
-    author: string;
-    permlink: string;
-    dataTestidTooltipContent: string;
-    dataTestidTooltipIcon: string;
-}
+        author,
+        permlink,
+        dataTestidTooltipContent,
+        dataTestidTooltipIcon,
+    }: {
+        author: string;
+        permlink: string;
+        dataTestidTooltipContent: string;
+        dataTestidTooltipIcon: string;
+    }
 ) => {
     const { t } = useTranslation('common_blog');
     const { user } = useUser();
@@ -34,11 +35,9 @@ const ReblogTrigger = ({
 
     const reblog = async () => {
         try {
-            await reblogMutation.mutateAsync(
-                { author, permlink, username: user.username }
-            );
+            await reblogMutation.mutateAsync({ author, permlink, username: user.username });
         } catch (error) {
-            logger.error('reblogMutation error: %o', error);
+            handleError(error, { method: 'reblog', params: { author, permlink, username: user.username } });
         }
     }
 
@@ -54,25 +53,25 @@ const ReblogTrigger = ({
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger
-                    disabled={isReblogged || reblogMutation.isLoading || isLoadingReblogData}
+                    disabled={isReblogged || reblogMutation.isLoading}
                 >
                     <ReblogDialog
                         author={author}
                         permlink={permlink}
                         action={dialogAction}
                     >
-                        {reblogMutation.isLoading || isLoadingReblogData
+                        {reblogMutation.isLoading
                             ?
-                                <CircleSpinner loading={reblogMutation.isLoading || isLoadingReblogData}
-                                    size={18} color="#dc2626" />
+                            <CircleSpinner loading={reblogMutation.isLoading}
+                                size={18} color="#dc2626" />
                             :
-                                <Icons.forward
-                                    className={cn('h-4 w-4 cursor-pointer', {
-                                        'text-red-600': isReblogged,
-                                        'cursor-default': isReblogged
-                                    })}
-                                    data-testid={dataTestidTooltipIcon}
-                                />
+                            <Icons.forward
+                                className={cn('h-4 w-4 cursor-pointer', {
+                                    'text-red-600': isReblogged,
+                                    'cursor-default': isReblogged
+                                })}
+                                data-testid={dataTestidTooltipIcon}
+                            />
                         }
                     </ReblogDialog>
                 </TooltipTrigger>
