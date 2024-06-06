@@ -10,40 +10,27 @@ import {
   AlertDialogTrigger
 } from '@ui/components/alert-dialog';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useState, KeyboardEvent } from 'react';
 import DialogLogin from './dialog-login';
 import { Button } from '@ui/components/button';
 import { useTranslation } from 'next-i18next';
-import { useReblogMutation } from './hooks/use-reblog-mutation';
-import { CircleSpinner } from 'react-spinners-kit';
-import { handleError } from '@ui/lib/utils';
+import { getLogger } from '@ui/lib/logging';
 
-export function AlertDialogReblog({
+const logger = getLogger('app');
+
+
+export function ReblogDialog({
   children,
-  author,
-  permlink
+  action
 }: {
   children: ReactNode;
   author: string;
   permlink: string;
+  action: (dialogResponse: boolean) => void;
 }) {
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
   const [open, setOpen] = useState(false);
-
-  const reblogMutation = useReblogMutation();
-
-  const reblog = async () => {
-    // TODO Alternatively return answer yes/no and do action in parent
-    // (user can do other things when waiting for reblog result)
-    try {
-      await reblogMutation.mutateAsync({ author, permlink, username: user.username });
-    } catch (error) {
-      handleError(error, { method: 'reblog', params: { author, permlink, username: user.username } });
-    }
-    // close dialog
-    setOpen(false);
-  };
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -51,14 +38,11 @@ export function AlertDialogReblog({
       <AlertDialogContent className="flex flex-col gap-8 sm:rounded-r-xl ">
         <AlertDialogHeader className="gap-2">
           <div className="flex items-center justify-between">
-            <AlertDialogTitle data-testid="reblog-dialog-header">
-              {t('alert_dialog_reblog.title')}
-            </AlertDialogTitle>
+            <AlertDialogTitle data-testid="reblog-dialog-header">{t('alert_dialog_reblog.title')}</AlertDialogTitle>
             <AlertDialogCancel
               className="border-none hover:text-red-800"
               data-testid="reblog-dialog-close"
-              disabled={reblogMutation.isLoading}
-            >
+              >
               X
             </AlertDialogCancel>
           </div>
@@ -70,24 +54,20 @@ export function AlertDialogReblog({
           <AlertDialogCancel
             className="hover:text-red-800"
             data-testid="reblog-dialog-cancel"
-            disabled={reblogMutation.isLoading}
-          >
+            >
             {t('alert_dialog_reblog.cancel')}
           </AlertDialogCancel>
           {user && user.isLoggedIn ? (
             <AlertDialogAction
-              disabled={reblogMutation.isLoading}
+              autoFocus
               className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
               onClick={(e) => {
                 e.preventDefault();
-                reblog();
+                action(true);
+                setOpen(false);
               }}
             >
-              {reblogMutation.isLoading ? (
-                <CircleSpinner loading={reblogMutation.isLoading} size={18} color="#dc2626" />
-              ) : (
-                t('alert_dialog_reblog.action')
-              )}
+              {t('alert_dialog_reblog.action')}
             </AlertDialogAction>
           ) : (
             <DialogLogin>
