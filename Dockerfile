@@ -8,7 +8,7 @@ RUN apk update
 
 ## Set working directory for an App
 WORKDIR /app
-RUN npm i -g turbo
+RUN npm i -g turbo@1.13.2
 COPY . .
 ## prepare files only for docker and optimise
 RUN turbo prune --scope=${TURBO_APP_SCOPE} --docker
@@ -21,7 +21,7 @@ RUN apk update
 WORKDIR /app
 
 # First install the dependencies (as they change less often)
-RUN npm i -g turbo
+RUN npm i -g turbo@1.13.2
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/package-lock.json ./package-lock.json
 RUN npm ci
