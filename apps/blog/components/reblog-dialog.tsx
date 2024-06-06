@@ -10,7 +10,7 @@ import {
   AlertDialogTrigger
 } from '@ui/components/alert-dialog';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useState, KeyboardEvent } from 'react';
 import DialogLogin from './dialog-login';
 import { Button } from '@ui/components/button';
 import { useTranslation } from 'next-i18next';
@@ -21,7 +21,7 @@ const logger = getLogger('app');
 
 export function ReblogDialog({
   children,
-  action,
+  action
 }: {
   children: ReactNode;
   author: string;
@@ -59,6 +59,7 @@ export function ReblogDialog({
           </AlertDialogCancel>
           {user && user.isLoggedIn ? (
             <AlertDialogAction
+              autoFocus
               className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
               onClick={(e) => {
                 e.preventDefault();
