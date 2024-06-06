@@ -1,4 +1,15 @@
 import { getLogger } from '@hive/ui/lib/logging';
+
+// TODO
+// Debug why the import
+// ```
+// import { WaxChainApiError } from '@hiveio/wax';
+// ```
+// causes following error in e2e playwright tests in Wallet application:
+// ```
+// Error: No "exports" main defined in /home/syncad/src/denser/node_modules/@hiveio/wax/package.json
+// ```
+
 // import { WaxChainApiError } from '@hiveio/wax';
 
 const logger = getLogger('app');
@@ -30,25 +41,23 @@ const wellKnownErrorDescriptions = [
  * @returns error description
  */
 export function transformError<T>(e: any, ctx?: { method: string; params: T }, defaultDescription?: string) {
-  logger.error('Got error: %o on %o', e, ctx);
-  const isError = (err: unknown): err is Error => err instanceof Error;
-
-  // const isWaxError = (err: unknown): err is WaxChainApiError => err instanceof WaxChainApiError;
-  const isWaxError = (err: any) => false;
-
+  logger.error('in transformError: got error (will be swallowed): %o on %o', e, ctx);
   let description = 'Operation failed';
-
   if (!defaultDescription) {
-    let errorDescription;
-    if (isWaxError(e)) {
+    let errorDescription = '';
+
+    // TODO Look at the top of this file. We have issue with failing
+    // import of WaxChainApiError.
+
+    // if (e instanceof WaxChainApiError) {
+    if (false) {
       const error = e as any;
-      // this is temporary solution for "wait 5 minut after create another post" error
       if (error?.apiError?.code === -32003) {
         errorDescription = error?.apiError?.data?.stack[0]?.format;
       } else {
         errorDescription = error?.message ?? errorDescription;
       }
-    } else if (isError(e)) {
+    } else if (e instanceof Error) {
       errorDescription = e.message;
     } else if (typeof e === 'string') {
       errorDescription = e;
