@@ -101,6 +101,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                     <Slider
                       defaultValue={sliderUpvote}
                       value={sliderUpvote}
+                      min={1}
                       className="w-36"
                       onValueChange={(e: number[]) => setSliderUpvote(e)}
                     />
@@ -177,6 +178,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                     <Slider
                       defaultValue={sliderDownvote}
                       value={sliderDownvote}
+                      min={1}
                       className="w-36"
                       onValueChange={(e: number[]) => setSliderDownvote(e)}
                     />
