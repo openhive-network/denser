@@ -17,6 +17,9 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import CommunitiesMybar from '../components/communities-mybar';
 import Link from 'next/link';
 import env from '@beam-australia/react-env';
+import { getLogger } from '@ui/lib/logging';
+
+const logger = getLogger('app');
 
 export default function CommunitiesPage() {
   const walletHost = env('WALLET_ENDPOINT');
@@ -25,14 +28,17 @@ export default function CommunitiesPage() {
   const [sort, setSort] = useState('rank');
   const [inputQuery, setInputQuery] = useState<string>('');
   const [query, setQuery] = useState<string | null>();
+
   const {
     isLoading: communitiesDataIsLoading,
     error: communitiesDataError,
     data: communitiesData
   } = useQuery(
     ['communitiesList', sort, query, user.username],
-    async () => await getCommunities(sort, query, user.username)
+    async () => await getCommunities(sort, query, user.username),
+    { enabled: !!user }
   );
+
   const {
     data: mySubsData,
     isLoading: mySubsIsLoading,
@@ -40,6 +46,7 @@ export default function CommunitiesPage() {
   } = useQuery([['subscriptions', user.username]], () => getSubscriptions(user.username), {
     enabled: Boolean(user.username)
   });
+
   function handleSearchCommunity(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') {
       inputQuery !== '' ? setQuery(inputQuery) : setQuery(null);
@@ -50,7 +57,11 @@ export default function CommunitiesPage() {
     setSort(e);
   }
 
-  if (communitiesDataIsLoading) return <Loading loading={communitiesDataIsLoading} />;
+  logger.info('communitiesData: %o', communitiesData);
+  logger.info('mySubsData: %o', mySubsData);
+
+  if (communitiesDataIsLoading || mySubsIsLoading) return <Loading loading={communitiesDataIsLoading || mySubsIsLoading} />;
+
   return (
     <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2 pt-8">
       <div className="grid grid-cols-12 md:gap-4">
