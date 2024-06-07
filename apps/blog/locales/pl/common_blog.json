@@ -169,7 +169,7 @@
       "upvote": "Głos za",
       "undo_upvote": "Cofnij swój głos na tak",
       "undo_upvote_percent": "Cofnij głos pozytywny {{votePercent}}%",
-      "downvote": "Głos na nie",
+      "downvote": "Głos przeciw",
       "undo_downvote": "Cofnij swój głos na nie",
       "undo_downvote_percent": "Cofnij głos negatywny {{votePercent}}%",
       "reputation_title": "Reputacja",
