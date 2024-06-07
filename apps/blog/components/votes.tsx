@@ -136,7 +136,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
             {userVote && userVote.vote_percent > 0
               ? userVote.vote_percent === 10000
                 ? t('cards.post_card.undo_upvote')
-                : t('cards.post_card.change_upvote_percent', {
+                : t('cards.post_card.undo_upvote_percent', {
                     votePercent: (userVote.vote_percent / 100).toFixed(2)
                   })
               : t('cards.post_card.upvote')}
@@ -221,7 +221,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
             {userVote && userVote.vote_percent < 0
               ? userVote.vote_percent === -10000
                 ? t('cards.post_card.undo_downvote')
-                : t('cards.post_card.change_downvote_percent', {
+                : t('cards.post_card.undo_downvote_percent', {
                     votePercent: (-userVote.vote_percent / 100).toFixed(2)
                   })
               : t('cards.post_card.downvote')}
