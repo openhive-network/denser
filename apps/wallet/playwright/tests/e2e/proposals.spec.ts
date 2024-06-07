@@ -3,7 +3,7 @@ import { ProposalsPage } from '../support/pages/proposalsPage';
 import { ApiHelper } from '../support/apiHelper';
 import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
 import { HomePage } from '../../../../blog/playwright/tests/support/pages/homePage';
-import { getRoundedAbbreveration } from '@ui/lib/utils';
+import { getRoundedAbbreveration } from '../../../../../packages/ui/lib/utils';
 import moment from 'moment';
 import Big from 'big.js';
 

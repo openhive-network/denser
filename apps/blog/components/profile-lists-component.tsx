@@ -5,79 +5,28 @@ import Link from 'next/link';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@ui/components/accordion';
 import clsx from 'clsx';
 import { IFollowList } from '@transaction/lib/bridge';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { transactionService } from '@transaction/index';
 import { getAccountFull } from '@transaction/lib/hive';
 import { useQuery } from '@tanstack/react-query';
+import { useBlacklistBlogMutation, useUnblacklistBlogMutation } from './hooks/use-blacklist-mutations';
+import { useMuteMutation, useUnmuteMutation } from './hooks/use-mute-mutations';
+import {
+  useFollowBlacklistBlogMutation,
+  useFollowMutedBlogMutation,
+  useUnfollowBlacklistBlogMutation,
+  useUnfollowMutedBlogMutation
+} from './hooks/use-follow-mutations';
+import {
+  useResetBlacklistBlogMutation,
+  useResetBlogListMutation,
+  useResetFollowBlacklistBlogMutation,
+  useResetFollowMutedBlogMutation
+} from './hooks/use-reset-mutations';
+import { handleError } from '@ui/lib/utils';
 
-function deleteFromList(
-  username: string,
-  variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute'
-) {
-  switch (variant) {
-    case 'blacklisted': {
-      transactionService.unblacklistBlog(username);
-      break;
-    }
-    case 'muted': {
-      transactionService.unmute(username);
-      break;
-    }
-    case 'followedBlacklist': {
-      transactionService.unfollowBlacklistBlog(username);
-      break;
-    }
-    case 'followedMute': {
-      transactionService.unfollowMutedBlog(username);
-      break;
-    }
-  }
-}
-function addToList(
-  usernames: string,
-  variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute'
-) {
-  switch (variant) {
-    case 'blacklisted': {
-      transactionService.blacklistBlog(usernames);
-      break;
-    }
-    case 'muted': {
-      transactionService.mute(usernames);
-      break;
-    }
-    case 'followedBlacklist': {
-      transactionService.followBlacklistBlog(usernames);
-      break;
-    }
-    case 'followedMute': {
-      transactionService.followMutedBlog(usernames);
-      break;
-    }
-  }
-}
-function resetList(variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute') {
-  switch (variant) {
-    case 'blacklisted': {
-      transactionService.resetBlacklistBlog();
-      break;
-    }
-    case 'muted': {
-      transactionService.resetBlogList();
-      break;
-    }
-    case 'followedBlacklist': {
-      transactionService.resetFollowBlacklistBlog();
-      break;
-    }
-    case 'followedMute': {
-      transactionService.resetFollowMutedBlog();
-      break;
-    }
-  }
-}
 export default function ProfileLists({
   username,
   variant,
@@ -110,15 +59,156 @@ export default function ProfileLists({
       }
       return false;
     });
+
   const onSearchChange = (e: string) => {
     setFilter(e);
   };
+
   if (data && filteredNames && data.length > 0) {
     for (let i = 0; i < filteredNames.length; i += chunkSize) {
       const chunk = filteredNames.slice(i, i + chunkSize);
       splitArrays.push(chunk);
     }
   }
+
+  const blacklistBlogMutation = useBlacklistBlogMutation();
+  const unblacklistBlogMutation = useUnblacklistBlogMutation();
+  const muteMutation = useMuteMutation();
+  const unmuteMutation = useUnmuteMutation();
+  const followBlacklistBlogMutation = useFollowBlacklistBlogMutation();
+  const unfollowBlacklistBlogMutation = useUnfollowBlacklistBlogMutation();
+  const unfollowMutedBlogMutation = useUnfollowMutedBlogMutation();
+  const followMutedBlogMutation = useFollowMutedBlogMutation();
+  const resetBlogListMutation = useResetBlogListMutation();
+  const resetBlacklistBlogMutation = useResetBlacklistBlogMutation();
+  const resetFollowBlacklistBlogMutation = useResetFollowBlacklistBlogMutation();
+  const resetFollowMutedBlogMutation = useResetFollowMutedBlogMutation();
+
+  const deleteFromList = useCallback(
+    async (username: string, variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute') => {
+      switch (variant) {
+        case 'blacklisted': {
+          try {
+            await unblacklistBlogMutation.mutateAsync({ blog: username });
+          } catch (error) {
+            handleError(error, { method: 'unblacklistBlog', params: { blog: username } });
+          }
+          break;
+        }
+        case 'muted': {
+          try {
+            await unmuteMutation.mutateAsync({ username });
+          } catch (error) {
+            handleError(error, { method: 'unmute', params: { username } });
+          }
+          break;
+        }
+        case 'followedBlacklist': {
+          try {
+            await unfollowBlacklistBlogMutation.mutateAsync({ blog: username });
+          } catch (error) {
+            handleError(error, { method: 'unfollowBlacklistBlog', params: { blog: username } });
+          }
+          break;
+        }
+        case 'followedMute': {
+          try {
+            await unfollowMutedBlogMutation.mutateAsync({ blog: username });
+          } catch (error) {
+            handleError(error, { method: 'unfollowMutedBlog', params: { blog: username } });
+          }
+          break;
+        }
+      }
+    },
+    [unblacklistBlogMutation, unfollowBlacklistBlogMutation, unfollowMutedBlogMutation, unmuteMutation]
+  );
+
+  const addToList = useCallback(
+    async (usernames: string, variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute') => {
+      switch (variant) {
+        case 'blacklisted': {
+          try {
+            await blacklistBlogMutation.mutateAsync({ otherBlogs: usernames });
+          } catch (error) {
+            handleError(error, { method: 'blacklistBlog', params: { otherBlogs: usernames } });
+          }
+          break;
+        }
+        case 'muted': {
+          try {
+            await muteMutation.mutateAsync({ username: usernames });
+          } catch (error) {
+            handleError(error, { method: 'mute', params: { username: usernames } });
+          }
+          break;
+        }
+        case 'followedBlacklist': {
+          try {
+            await followBlacklistBlogMutation.mutateAsync({ otherBlogs: usernames });
+          } catch (error) {
+            handleError(error, { method: 'followBlacklistBlog', params: { otherBlogs: usernames } });
+          }
+          break;
+        }
+        case 'followedMute': {
+          try {
+            await followMutedBlogMutation.mutateAsync({ otherBlogs: usernames });
+          } catch (error) {
+            handleError(error, { method: 'followMutedBlog', params: { otherBlogs: usernames } });
+          }
+          break;
+        }
+      }
+    },
+    [blacklistBlogMutation, followBlacklistBlogMutation, followMutedBlogMutation, muteMutation]
+  );
+
+  const resetList = useCallback(
+    async (variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute') => {
+      switch (variant) {
+        case 'blacklisted': {
+          try {
+            await resetBlacklistBlogMutation.mutateAsync();
+          } catch (error) {
+            handleError(error, { method: 'resetBlacklistBlog', params: {} });
+          }
+          break;
+        }
+        case 'muted': {
+          try {
+            await resetBlogListMutation.mutateAsync();
+          } catch (error) {
+            handleError(error, { method: 'resetBlogList', params: {} });
+          }
+          break;
+        }
+        case 'followedBlacklist': {
+          try {
+            await resetFollowBlacklistBlogMutation.mutateAsync();
+          } catch (error) {
+            handleError(error, { method: 'resetFollowBlacklistBlog', params: {} });
+          }
+          break;
+        }
+        case 'followedMute': {
+          try {
+            await resetFollowMutedBlogMutation.mutateAsync();
+          } catch (error) {
+            handleError(error, { method: 'resetFollowmutedBlog', params: {} });
+          }
+          break;
+        }
+      }
+    },
+    [
+      resetBlacklistBlogMutation,
+      resetBlogListMutation,
+      resetFollowBlacklistBlogMutation,
+      resetFollowMutedBlogMutation
+    ]
+  );
+
   return (
     <ProfileLayout>
       <div className="flex  flex-col items-center gap-4 p-4">

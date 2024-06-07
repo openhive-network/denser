@@ -164,7 +164,7 @@ export class PostPage {
     this.footerPayouts = page.locator('[data-testid="comment-payout"]');
     this.footerPayoutsTooltip = page.locator('[data-testid="payout-post-card-tooltip"]');
     this.footerReblogBtn = page.locator('svg.h-4.w-4.cursor-pointer');
-    this.footerReblogBtnCardList = page.locator('[data-test="post-footer-reblog-tooltip"]');
+    this.footerReblogBtnCardList = page.locator('[data-testid="post-footer-reblog-tooltip"]');
     this.reblogDialogHeader = page.locator('[data-testid="reblog-dialog-header"]');
     this.reblogDialogDescription = page.locator('[data-testid="reblog-dialog-description"]');
     this.reblogDialogCancelBtn = page.locator('[data-testid="reblog-dialog-cancel"]');

@@ -225,17 +225,17 @@
       "follower_count": {
         "zero": "Sin seguidores",
         "one": "1 seguidor",
-        "other": "{{valie}} seguidores"
+        "other": "{{value}} seguidores"
       },
       "followed_count": {
         "zero": "No sigue a nadie",
         "one": "1 siguiendo",
-        "other": "{{valie}} siguiendo"
+        "other": "{{value}} siguiendo"
       },
       "post_count": {
         "zero": "Sin publicaciones",
         "one": "1 publicación",
-        "other": "{{valie}} posts"
+        "other": "{{value}} posts"
       },
       "blacklisted_users": "Blacklisted Users",
       "muted_users": "Usuarios silenciados",

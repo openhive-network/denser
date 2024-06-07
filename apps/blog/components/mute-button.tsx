@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Button } from '@hive/ui';
 import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
-import { transactionService } from '@transaction/index';
 import { User } from '@smart-signer/types/common';
 import { IFollow } from '@transaction/lib/hive';
 import { UseInfiniteQueryResult } from '@tanstack/react-query';
+import { useMuteMutation, useUnmuteMutation } from './hooks/use-mute-mutations';
+import { handleError } from '@ui/lib/utils';
 
 const MuteButton = ({
   username,
@@ -31,6 +32,8 @@ const MuteButton = ({
 }) => {
   const { t } = useTranslation('common_blog');
   const [isMute, setIsMute] = useState(false);
+  const muteMutation = useMuteMutation();
+  const unmuteMutation = useUnmuteMutation();
 
   useEffect(() => {
     const isMute = Boolean(
@@ -46,13 +49,21 @@ const MuteButton = ({
           variant={variant}
           size="sm"
           data-testid="profile-mute-button"
-          onClick={() => {
+          onClick={async () => {
             const nextMute = !isMute;
             setIsMute(nextMute);
             if (nextMute) {
-              transactionService.mute(username);
+              try {
+                await muteMutation.mutateAsync({ username });
+              } catch (error) {
+                handleError(error, { method: 'mute', params: { username } });
+              }
             } else {
-              transactionService.unmute(username);
+              try {
+                await unmuteMutation.mutateAsync({ username });
+              } catch (error) {
+                handleError(error, { method: 'unmute', params: { username } });
+              }
             }
           }}
           disabled={list.isLoading || list.isFetching}

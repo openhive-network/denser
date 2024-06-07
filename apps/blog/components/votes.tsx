@@ -14,6 +14,7 @@ import { Entry } from '@transaction/lib/bridge';
 import { DropdownMenuContent, DropdownMenuTrigger, DropdownMenu } from '@ui/components';
 import { Slider } from '@ui/components/slider';
 import { useLoggedUserContext } from './common/logged-user';
+import { handleError } from '@ui/lib/utils';
 
 const logger = getLogger('app');
 
@@ -60,7 +61,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
     try {
       await voteMutation.mutateAsync({ voter, author, permlink, weight });
     } catch (error) {
-      // logger.error('Got Error: %o', error);
+      handleError(error, { method: 'vote', params: { voter, author, permlink, weight } });
     }
   };
 
@@ -99,7 +100,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                       defaultValue={sliderUpvote}
                       value={sliderUpvote}
                       className="w-36"
-                      onValueChange={(e) => setSliderUpvote(e)}
+                      onValueChange={(e: number[]) => setSliderUpvote(e)}
                     />
                     <div className="w-fit">{sliderUpvote}%</div>
                   </div>
@@ -175,7 +176,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                       defaultValue={sliderDownvote}
                       value={sliderDownvote}
                       className="w-36"
-                      onValueChange={(e) => setSliderDownvote(e)}
+                      onValueChange={(e: number[]) => setSliderDownvote(e)}
                     />
                     <div className="w-fit">{sliderDownvote}%</div>
                   </div>
