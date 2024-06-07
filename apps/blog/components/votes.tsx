@@ -25,8 +25,8 @@ const VotesComponent = ({ post }: { post: Entry }) => {
   const { t } = useTranslation('common_blog');
   const [isClient, setIsClient] = useState(false);
   const [clickedVoteButton, setClickedVoteButton] = useState('');
-  const [sliderUpvote, setSliderUpvote] = useState([10]);
-  const [sliderDownvote, setSliderDownvote] = useState([10]);
+  const [sliderUpvote, setSliderUpvote] = useState([100]);
+  const [sliderDownvote, setSliderDownvote] = useState([100]);
 
   const voter = user.username;
   useEffect(() => {
@@ -47,6 +47,8 @@ const VotesComponent = ({ post }: { post: Entry }) => {
   const userVote =
     userVotes?.votes[0] && userVotes?.votes[0].voter === user.username ? userVotes.votes[0] : undefined;
   const voteMutation = useVoteMutation();
+  const vote_upvoted = userVote ? userVote.vote_percent > 0 : false;
+  const vote_downvoted = userVote ? userVote.vote_percent < 0 : false;
 
   useEffect(() => {
     if (userVote && userVote.vote_percent > 0) {
@@ -64,7 +66,6 @@ const VotesComponent = ({ post }: { post: Entry }) => {
       handleError(error, { method: 'vote', params: { voter, author, permlink, weight } });
     }
   };
-
   return (
     <div className="flex items-center gap-1">
       <TooltipProvider>
@@ -76,7 +77,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                 size={18}
                 color="#dc2626"
               />
-            ) : user.isLoggedIn && enable_slider ? (
+            ) : user.isLoggedIn && enable_slider && !vote_upvoted ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Icons.arrowUpCircle
@@ -90,7 +91,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                   <div className="flex h-full items-center gap-2">
                     <Icons.arrowUpCircle
                       className="h-[24px] w-[24px] cursor-pointer rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1"
-                      onClick={(e) => {
+                      onClick={() => {
                         if (voteMutation.isLoading) return;
                         setClickedVoteButton('up');
                         submitVote(sliderUpvote[0] * 100);
@@ -112,7 +113,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                   'h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1',
                   { 'bg-red-600 text-white': userVote && userVote.vote_percent > 0 }
                 )}
-                onClick={(e) => {
+                onClick={() => {
                   if (voteMutation.isLoading) return;
                   setClickedVoteButton('up');
                   {
@@ -152,7 +153,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                 size={18}
                 color="#dc2626"
               />
-            ) : user.isLoggedIn && enable_slider ? (
+            ) : user.isLoggedIn && enable_slider && !vote_downvoted ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Icons.arrowDownCircle
@@ -162,11 +163,11 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                     )}
                   />
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="h-16 w-64 p-2">
+                <DropdownMenuContent className=" w-64 p-2">
                   <div className="flex h-full items-center gap-2">
                     <Icons.arrowDownCircle
                       className="h-[24px] w-[24px] cursor-pointer rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1"
-                      onClick={(e) => {
+                      onClick={() => {
                         if (voteMutation.isLoading) return;
                         setClickedVoteButton('down');
                         submitVote(-sliderDownvote[0] * 100);
@@ -178,7 +179,16 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                       className="w-36"
                       onValueChange={(e: number[]) => setSliderDownvote(e)}
                     />
-                    <div className="w-fit">{sliderDownvote}%</div>
+                    <div className="w-fit text-red-600">-{sliderDownvote}%</div>
+                  </div>
+                  <div className="flex flex-col gap-1 pt-2 text-sm">
+                    <p>{t('cards.post_card.downvote_warning')}</p>
+                    <ul>
+                      <li>{t('cards.post_card.reason_1')}</li>
+                      <li>{t('cards.post_card.reason_2')}</li>
+                      <li>{t('cards.post_card.reason_3')}</li>
+                      <li>{t('cards.post_card.reason_4')}</li>
+                    </ul>
                   </div>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -188,7 +198,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                   'h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
                   { 'bg-gray-600 text-white': userVote && userVote.vote_percent < 0 }
                 )}
-                onClick={(e) => {
+                onClick={() => {
                   if (voteMutation.isLoading) return;
                   setClickedVoteButton('down');
                   {
