@@ -66,6 +66,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
       handleError(error, { method: 'vote', params: { voter, author, permlink, weight } });
     }
   };
+
   return (
     <div className="flex items-center gap-1">
       <TooltipProvider>
@@ -134,7 +135,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
           </TooltipTrigger>
           <TooltipContent data-testid="upvote-button-tooltip">
             {userVote && userVote.vote_percent > 0
-              ? userVote.vote_percent === 10000
+              ? userVote.vote_percent === 10000 && !enable_slider
                 ? t('cards.post_card.undo_upvote')
                 : t('cards.post_card.undo_upvote_percent', {
                     votePercent: (userVote.vote_percent / 100).toFixed(2)
@@ -219,7 +220,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
           </TooltipTrigger>
           <TooltipContent data-testid="downvote-button-tooltip">
             {userVote && userVote.vote_percent < 0
-              ? userVote.vote_percent === -10000
+              ? userVote.vote_percent === -10000 && !enable_slider
                 ? t('cards.post_card.undo_downvote')
                 : t('cards.post_card.undo_downvote_percent', {
                     votePercent: (-userVote.vote_percent / 100).toFixed(2)
