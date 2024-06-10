@@ -36,6 +36,7 @@ import { useSignerContext } from '@/blog/components/common/signer';
 import { toast } from '@ui/components/hooks/use-toast';
 import { useUnmuteMutation } from '@/blog/components/hooks/use-mute-mutations';
 import { useUpdateProfileMutation } from '@/blog/components/hooks/use-update-profile-mutation';
+import { z } from 'zod';
 
 const logger = getLogger('app');
 interface Settings {
@@ -77,6 +78,13 @@ const DEFAULTS_ENDPOINTS = [
   'https://anyx.io',
   'https://api.deathwing.me'
 ];
+
+const urlSchema = z
+  .string()
+  .url()
+  .refine((url) => url.startsWith('https://') || url.startsWith('http://'), {
+    message: 'This Appears To Be A Bad URL, Please Check It And Try Again'
+  });
 
 const uploadImg = async (file: File, username: string, signer: Signer): Promise<string> => {
   try {
@@ -182,6 +190,7 @@ export default function UserSettings() {
   const [endpoints, setEndpoints] = useLocalStorage('hive-blog-endpoints', DEFAULTS_ENDPOINTS);
   const [endpoint, setEndpoint] = useLocalStorage('hive-blog-endpoint', siteConfig.endpoint);
   const [newEndpoint, setNewEndpoint] = useState('');
+  const [errorEndpoint, setErrorEndpoint] = useState('');
   const [isClient, setIsClient] = useState(false);
   const [insertImg, setInsertImg] = useState('');
   const params = useParams();
@@ -542,38 +551,81 @@ export default function UserSettings() {
               <span>{t('settings_page.preferred')}</span>
               <span>{t('settings_page.remove')}</span>
             </div>
-            {endpoints?.map((endpoint, index) => (
+            {endpoints?.map((endp, index) => (
               <div
-                key={endpoint}
+                key={endp}
                 className={cn(
                   'grid grid-cols-3 items-center p-2',
                   index % 2 === 0 ? 'bg-slate-100 dark:bg-slate-500' : 'bg-slate-200 p-2 dark:bg-slate-600'
                 )}
               >
-                <Label htmlFor={`e#{index}`}>{endpoint}</Label>
-                <RadioGroupItem value={endpoint} id={`e#{index}`} className="border-red-600" />
-                <Icons.trash />
+                <Label htmlFor={`e#{index}`}>{endp}</Label>
+                <RadioGroupItem value={endp} id={`e#{index}`} className="border-red-600" />
+                <Icons.trash
+                  id={`t#{index}`}
+                  onClick={() => {
+                    if (endpoint === endp) {
+                      setErrorEndpoint(
+                        "You Can't Remove The Current Preferred Endpoint. Please Select A New Preferred Endpoint First"
+                      );
+                    } else {
+                      setEndpoints((endpoints) => endpoints.filter((e) => e !== endp));
+                      setErrorEndpoint('');
+                    }
+                  }}
+                />
               </div>
             ))}
           </RadioGroup>
 
-          <div className="my-4 flex w-full max-w-sm items-center space-x-2" data-testid="add-api-endpoint">
+          <div
+            className={cn('my-4 flex w-full max-w-sm items-center space-x-2', errorEndpoint && 'max-w-xl')}
+            data-testid="add-api-endpoint"
+          >
             <Input
+              id="newEndpoint"
+              name="newEndpoint"
               type="text"
               placeholder="Add API Endpoint"
               value={newEndpoint}
               onChange={(e) => setNewEndpoint(e.target.value)}
+              required
             />
             <Button
               type="submit"
-              onClick={() =>
-                setEndpoints(endpoints ? [...endpoints, newEndpoint] : [...DEFAULTS_ENDPOINTS, newEndpoint])
-              }
+              onClick={() => {
+                try {
+                  const urlOnTheList = endpoints.filter((e) => e === newEndpoint);
+                  if (urlOnTheList && urlOnTheList.length > 0) {
+                    setErrorEndpoint('This Endpoint Is Already In The List');
+                  } else {
+                    urlSchema.parse(newEndpoint);
+                    setEndpoints(
+                      endpoints ? [...endpoints, newEndpoint] : [...DEFAULTS_ENDPOINTS, newEndpoint]
+                    );
+                    setNewEndpoint('');
+                    setErrorEndpoint('');
+                  }
+                } catch (e: any) {
+                  if (e.errors[1]) {
+                    setErrorEndpoint(e.errors[1].message);
+                  } else {
+                    setErrorEndpoint(e.errors[0].message);
+                  }
+                }
+              }}
             >
               {t('settings_page.add_api_endpoint')}
             </Button>
+            {errorEndpoint && (
+              <span className="error" style={{ color: 'red' }}>
+                {errorEndpoint}
+              </span>
+            )}
           </div>
-          <Button className="my-4 w-44">{t('settings_page.reset_endpoints')}</Button>
+          <Button className="my-4 w-44" onClick={() => setEndpoints([...DEFAULTS_ENDPOINTS])}>
+            {t('settings_page.reset_endpoints')}
+          </Button>
         </div>
         {mutedQuery.data ? (
           <div>
@@ -586,16 +638,14 @@ export default function UserSettings() {
                   <Button
                     className="h-fit p-1 text-red-500"
                     variant="link"
-                    onClick={
-                      async () => {
-                        const params = { username: mutedUser.name };
-                        try {
-                          await unmuteMutation.mutateAsync(params)
-                        } catch (error) {
-                          handleError(error, { method: 'unmute', params });
-                        }
+                    onClick={async () => {
+                      const params = { username: mutedUser.name };
+                      try {
+                        await unmuteMutation.mutateAsync(params);
+                      } catch (error) {
+                        handleError(error, { method: 'unmute', params });
                       }
-                    }
+                    }}
                   >
                     [{t('settings_page.unmute')}]
                   </Button>
