@@ -43,9 +43,12 @@ export default function CommunitiesPage() {
     data: mySubsData,
     isLoading: mySubsIsLoading,
     isError: mySubsIsError
-  } = useQuery(['subscriptions', user.username], () => getSubscriptions(user.username), {
-    enabled: Boolean(user.username)
-  });
+  } = useQuery(['subscriptions', user.username],
+    () => getSubscriptions(user.username),
+    {
+      enabled: Boolean(user?.username)
+    }
+  );
 
   function handleSearchCommunity(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') {
@@ -57,7 +60,8 @@ export default function CommunitiesPage() {
     setSort(e);
   }
 
-  if (communitiesDataIsLoading || mySubsIsLoading) return <Loading loading={communitiesDataIsLoading || mySubsIsLoading} />;
+  const showLoading = communitiesDataIsLoading || (Boolean(user?.username) && mySubsIsLoading);
+  if (showLoading) return <Loading loading={showLoading} />;
 
   return (
     <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2 pt-8">
