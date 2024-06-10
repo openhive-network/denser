@@ -569,7 +569,8 @@ export default function UserSettings() {
                         "You Can't Remove The Current Preferred Endpoint. Please Select A New Preferred Endpoint First"
                       );
                     } else {
-                      setEndpoints((endpoints) => endpoints.filter((e) => e !== endpoint));
+                      setEndpoints((endpoints) => endpoints.filter((e) => e !== endp));
+                      setErrorEndpoint('');
                     }
                   }}
                 />
