@@ -22,11 +22,11 @@ const CommunitySimpleDescription = ({
   username: string;
 }) => {
   const { t } = useTranslation('common_blog');
-  const [isSubscribe, setIsSubscribe] = useState(() => data.context.subscribed);
+  const [isSubscribed, setIsSubscribed] = useState(() => data.context.subscribed);
   const { user } = useUser();
 
   useEffect(() => {
-    setIsSubscribe(data.context.subscribed);
+    setIsSubscribed(data.context.subscribed);
   }, [data.context.subscribed]);
 
   return (
@@ -64,10 +64,10 @@ const CommunitySimpleDescription = ({
           <SubscribeCommunity
             user={user}
             username={username}
-            subStatus={isSubscribe}
-            OnIsSubscribe={(e) => setIsSubscribe(e)}
+            isSubscribed={isSubscribed}
+            onIsSubscribed={(e) => setIsSubscribed(e)}
           />
-          <NewPost disabled={!isSubscribe} name={data.name} />
+          <NewPost disabled={!isSubscribed} name={data.name} />
         </div>
       </CardContent>
     </Card>

@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -10,6 +10,7 @@ const logger = getLogger('app');
  * @return {*}
  */
 export function useSubscribeMutation() {
+  const queryClient = useQueryClient();
   const subscribeMutation = useMutation({
     mutationFn: async (params: { username: string }) => {
       const { username } = params;
@@ -20,6 +21,10 @@ export function useSubscribeMutation() {
     },
     onSuccess: (data) => {
       logger.info('useSubscribeMutation onSuccess data: %o', data);
+      const { username } = data;
+      // ['communitiesList', sort, query, user.username]
+      queryClient.invalidateQueries({ queryKey: ['communitiesList'] });
+      queryClient.invalidateQueries({ queryKey: ['subscriptions', username] });
     }
   });
 
@@ -33,6 +38,7 @@ export function useSubscribeMutation() {
  * @return {*}
  */
 export function useUnsubscribeMutation() {
+  const queryClient = useQueryClient();
   const unsubscribeMutation = useMutation({
     mutationFn: async (params: { username: string }) => {
       const { username } = params;
@@ -43,6 +49,10 @@ export function useUnsubscribeMutation() {
     },
     onSuccess: (data) => {
       logger.info('useUnsubscribeMutation onSuccess data: %o', data);
+      const { username } = data;
+      // ['communitiesList', sort, query, user.username]
+      queryClient.invalidateQueries({ queryKey: ['communitiesList'] });
+      queryClient.invalidateQueries({ queryKey: ['subscriptions', username] });
     }
   });
 

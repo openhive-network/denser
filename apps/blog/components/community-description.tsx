@@ -24,12 +24,12 @@ const CommunityDescription = ({
   notificationData: IAccountNotification[] | null | undefined;
   username: string;
 }) => {
-  const [isSubscribe, setIsSubscribe] = useState(() => data.context.subscribed);
+  const [isSubscribed, setIsSubscribed] = useState(() => data.context.subscribed);
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
 
   useEffect(() => {
-    setIsSubscribe(data.context.subscribed);
+    setIsSubscribed(data.context.subscribed);
   }, [data.context.subscribed]);
   return (
     <div className="flex w-auto max-w-[240px] flex-col">
@@ -67,10 +67,10 @@ const CommunityDescription = ({
             <SubscribeCommunity
               user={user}
               username={username}
-              subStatus={isSubscribe}
-              OnIsSubscribe={(e) => setIsSubscribe(e)}
+              isSubscribed={isSubscribed}
+              onIsSubscribed={(e) => setIsSubscribed(e)}
             />
-            <NewPost name={data.name} disabled={!isSubscribe} />
+            <NewPost name={data.name} disabled={!isSubscribed} />
           </div>
           <div data-testid="community-leadership" className="my-6 flex flex-col">
             <h6 className="my-1.5 font-semibold leading-none tracking-tight">

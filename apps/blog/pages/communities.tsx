@@ -57,9 +57,6 @@ export default function CommunitiesPage() {
     setSort(e);
   }
 
-  logger.info('communitiesData: %o', communitiesData);
-  logger.info('mySubsData: %o', mySubsData);
-
   if (communitiesDataIsLoading || mySubsIsLoading) return <Loading loading={communitiesDataIsLoading || mySubsIsLoading} />;
 
   return (

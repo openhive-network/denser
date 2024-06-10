@@ -10,9 +10,9 @@ import { useEffect, useState } from 'react';
 const CommunitiesListItem = ({ community }: { community: Community }) => {
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
-  const [isSubscribe, setIsSubscribe] = useState(() => community.context.subscribed);
+  const [isSubscribed, setIsSubscribed] = useState(() => community.context.subscribed);
   useEffect(() => {
-    setIsSubscribe(community.context.subscribed);
+    setIsSubscribed(community.context.subscribed);
   }, [community.context.subscribed]);
   return (
     <Card
@@ -62,8 +62,8 @@ const CommunitiesListItem = ({ community }: { community: Community }) => {
         <SubscribeCommunity
           user={user}
           username={community.name}
-          subStatus={isSubscribe}
-          OnIsSubscribe={(e) => setIsSubscribe(e)}
+          isSubscribed={isSubscribed}
+          onIsSubscribed={(e) => setIsSubscribed(e)}
         />
       </div>
     </Card>
