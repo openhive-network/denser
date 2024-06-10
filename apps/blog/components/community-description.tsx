@@ -12,6 +12,9 @@ import { useEffect, useState } from 'react';
 import SubscribeCommunity from './subscribe-community';
 import NewPost from './new-post-button';
 import RendererContainer from './rendererContainer';
+import { getLogger } from '@ui/lib/logging';
+
+const logger = getLogger('app');
 
 const CommunityDescription = ({
   data,
@@ -24,6 +27,7 @@ const CommunityDescription = ({
   notificationData: IAccountNotification[] | null | undefined;
   username: string;
 }) => {
+  logger.info('Running CommunityDescription data: %o', data);
   const [isSubscribed, setIsSubscribed] = useState(() => data.context.subscribed);
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
