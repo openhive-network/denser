@@ -554,5 +554,14 @@
     "error_cant_remove_active": "Vous ne pouvez pas supprimer le point d'accès préféré actuel. Veuillez d'abord sélectionner un nouveau point d'accès préféré",
     "error_cant_remove_all": "Vous devez avoir au moins un point d'accès dans la liste",
     "changes_saved": "Modifications enregistrées"
+  },
+  "four_oh_four": {
+    "this_page_does_not_exist": "Désolé ! Cette page n'existe pas.",
+    "not_to_worry": "Pas de soucis. Vous pouvez revenir à",
+    "our_homepage": "notre page d'accueil",
+    "new_posts": "nouveaux posts",
+    "hot_posts": "posts populaires",
+    "trending_posts": "posts tendances",
+    "muted_posts": "posts muets"
   }
 }

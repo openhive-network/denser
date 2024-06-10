@@ -553,5 +553,14 @@
     "error_cant_remove_active": "No puedes eliminar el punto final preferido actual. Por favor, selecciona primero un nuevo punto final preferido",
     "error_cant_remove_all": "Debes tener al menos un punto final en la lista",
     "changes_saved": "Cambios guardados"
+  },
+  "four_oh_four": {
+    "this_page_does_not_exist": "¡Lo siento! Esta página no existe.",
+    "not_to_worry": "No te preocupes. Puedes volver a",
+    "our_homepage": "nuestra página de inicio",
+    "new_posts": "nuevas publicaciones",
+    "hot_posts": "publicaciones populares",
+    "trending_posts": "publicaciones de tendencia",
+    "muted_posts": "publicaciones silenciadas"
   }
 }

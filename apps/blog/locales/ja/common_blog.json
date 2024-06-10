@@ -553,5 +553,14 @@
     "error_cant_remove_active": "現在の優先エンドポイントを削除することはできません。まず新しい優先エンドポイントを選択してください",
     "error_cant_remove_all": "リストには少なくとも1つのエンドポイントが必要です",
     "changes_saved": "変更が保存されました"
+  },
+  "four_oh_four": {
+    "this_page_does_not_exist": "申し訳ありません！ このページは存在しません。",
+    "not_to_worry": "心配しないでください。 戻るには",
+    "our_homepage": "ホームページ",
+    "new_posts": "新しい投稿",
+    "hot_posts": "人気の投稿",
+    "trending_posts": "トレンド投稿",
+    "muted_posts": "ミュートされた投稿"
   }
 }
