@@ -27,7 +27,6 @@ const CommunityDescription = ({
   notificationData: IAccountNotification[] | null | undefined;
   username: string;
 }) => {
-  logger.info('Running CommunityDescription data: %o', data);
   const [isSubscribed, setIsSubscribed] = useState(() => data.context.subscribed);
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
