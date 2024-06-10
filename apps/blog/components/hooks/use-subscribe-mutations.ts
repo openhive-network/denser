@@ -22,7 +22,7 @@ export function useSubscribeMutation() {
     onSuccess: (data) => {
       logger.info('useSubscribeMutation onSuccess data: %o', data);
       const { community, username } = data;
-      queryClient.invalidateQueries({ queryKey: [, username] });
+      queryClient.invalidateQueries({ queryKey: ['communitiesList'] });
       queryClient.invalidateQueries({ queryKey: ['subscriptions', username] });
       queryClient.invalidateQueries({ queryKey: ['community', community] });
       queryClient.invalidateQueries({ queryKey: ['subscribers', community] });
@@ -51,7 +51,7 @@ export function useUnsubscribeMutation() {
     onSuccess: (data) => {
       logger.info('useUnsubscribeMutation onSuccess data: %o', data);
       const { community, username } = data;
-      queryClient.invalidateQueries({ queryKey: ['communitiesList', username] });
+      queryClient.invalidateQueries({ queryKey: ['communitiesList'] });
       queryClient.invalidateQueries({ queryKey: ['subscriptions', username] });
       queryClient.invalidateQueries({ queryKey: ['community', community] });
       queryClient.invalidateQueries({ queryKey: ['subscribers', community] });
