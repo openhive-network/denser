@@ -607,7 +607,11 @@ export default function UserSettings() {
                     setErrorEndpoint('');
                   }
                 } catch (e: any) {
-                  setErrorEndpoint(e.errors[1].message);
+                  if (e.errors[1]) {
+                    setErrorEndpoint(e.errors[1].message);
+                  } else {
+                    setErrorEndpoint(e.errors[0].message);
+                  }
                 }
               }}
             >
