@@ -147,7 +147,7 @@ export default function PostForm({
     data: mySubsData,
     isLoading: mySubsIsLoading,
     isError: mySubsIsError
-  } = useQuery([['subscriptions', username]], () => getSubscriptions(username), {
+  } = useQuery(['subscriptions', username], () => getSubscriptions(username), {
     enabled: Boolean(username)
   });
   const {
@@ -308,6 +308,7 @@ export default function PostForm({
       }
     }
   };
+
   return (
     <div className={clsx({ container: !sideBySide || !preview })}>
       <div
@@ -475,7 +476,7 @@ export default function PostForm({
                       <FormControl>
                         <Select
                           value={
-                            communityPosting ? communityPosting : storedPost ? storedPost.category : 'blog'
+                            communityPosting ? communityPosting : storedPost?.category ? storedPost.category : 'blog'
                           }
                           onValueChange={(e) => storePost({ ...storedPost, category: e })}
                         >

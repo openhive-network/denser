@@ -1,72 +1,88 @@
 import { Button } from '@ui/components/button';
 import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
-import { transactionService } from '@transaction/index';
 import { User } from '@smart-signer/types/common';
 import { useSubscribeMutation, useUnsubscribeMutation } from './hooks/use-subscribe-mutations';
 import { handleError } from '@ui/lib/utils';
+import { CircleSpinner } from 'react-spinners-kit';
+import { getLogger } from '@ui/lib/logging';
+
+const logger = getLogger('app');
 
 const SubscribeCommunity = ({
   user,
-  username,
-  subStatus,
-  OnIsSubscribe
+  community,
+  isSubscribed,
+  onIsSubscribed
 }: {
   user: User;
-  username: string;
-  subStatus: Boolean;
-  OnIsSubscribe: (e: boolean) => void;
+  community: string;
+  isSubscribed: Boolean;
+  onIsSubscribed: (e: boolean) => void;
 }) => {
   const { t } = useTranslation('common_blog');
   const subscribeMutation = useSubscribeMutation();
   const unsubscribeMutation = useUnsubscribeMutation();
+  const { username } = user;
 
   return (
     <>
       {user && user.isLoggedIn ? (
         <>
-          {!subStatus ? (
+          {!isSubscribed ? (
             <Button
               size="sm"
               className="w-full bg-blue-800 text-center hover:bg-blue-900"
               data-testid="community-subscribe-button"
+              disabled={subscribeMutation.isLoading}
               onClick={async () => {
-                const nextIsSubscribe = !subStatus;
-                OnIsSubscribe(nextIsSubscribe);
-                if (nextIsSubscribe) {
-                  try {
-                    await subscribeMutation.mutateAsync({ username });
-                  } catch (error) {
-                    handleError(error, { method: 'subscribe', params: { username } });
-                  }
-                } else {
-                  try {
-                    await unsubscribeMutation.mutateAsync({ username });
-                  } catch (error) {
-                    handleError(error, { method: 'unsubscribe', params: { username } });
-                  }
+                try {
+                  await subscribeMutation.mutateAsync({ community, username });
+                  onIsSubscribed(true);
+                } catch (error) {
+                  handleError(error, { method: 'subscribe', params: { community, username } });
                 }
               }}
             >
-              {t('communities.buttons.subscribe')}
+              {subscribeMutation.isLoading
+              ?
+                <CircleSpinner
+                  loading={subscribeMutation.isLoading}
+                  size={18}
+                  color="#dc2626"
+                />
+              :
+                t('communities.buttons.subscribe')
+              }
             </Button>
           ) : (
             <Button
               size="sm"
               variant="outline"
               className="group relative w-full text-center text-blue-800 hover:border-red-500 hover:text-red-500"
+              disabled={unsubscribeMutation.isLoading}
               onClick={async () => {
-                const nextIsSubscribe = !subStatus;
-                OnIsSubscribe(nextIsSubscribe);
                 try {
-                  await unsubscribeMutation.mutateAsync({ username });
+                  await unsubscribeMutation.mutateAsync({ community, username });
+                  onIsSubscribed(false);
                 } catch (error) {
-                  handleError(error, { method: 'unsubscribe', params: { username } });
+                  handleError(error, { method: 'unsubscribe', params: { community, username } });
                 }
               }}
             >
-              <span className="group-hover:hidden">{t('communities.buttons.joined')}</span>
-              <span className="hidden group-hover:inline">{t('communities.buttons.leave')}</span>
+              {unsubscribeMutation.isLoading
+              ?
+                <CircleSpinner
+                  loading={unsubscribeMutation.isLoading}
+                  size={18}
+                  color="#dc2626"
+                />
+              :
+                <span>
+                  <span className="group-hover:hidden">{t('communities.buttons.joined')}</span>
+                  <span className="hidden group-hover:inline">{t('communities.buttons.leave')}</span>
+                </span>
+              }
             </Button>
           )}
         </>

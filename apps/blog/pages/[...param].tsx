@@ -89,7 +89,7 @@ const ParamPage: FC = () => {
     data: mySubsData,
     isLoading: mySubsIsLoading,
     isError: mySubsIsError
-  } = useQuery([['subscriptions', user?.username]], () => getSubscriptions(user.username), {
+  } = useQuery(['subscriptions', user?.username], () => getSubscriptions(user.username), {
     enabled: Boolean(user?.username)
   });
   const {
@@ -112,7 +112,7 @@ const ParamPage: FC = () => {
     data: subsData,
     isLoading: subsIsLoading,
     isError: subsIsError
-  } = useQuery([['subscribers', tag]], () => getSubscribers(tag || ''), {
+  } = useQuery(['subscribers', tag], () => getSubscribers(tag || ''), {
     enabled: !!tag
   });
   const {
