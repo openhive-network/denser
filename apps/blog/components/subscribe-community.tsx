@@ -33,33 +33,22 @@ const SubscribeCommunity = ({
               size="sm"
               className="w-full bg-blue-800 text-center hover:bg-blue-900"
               data-testid="community-subscribe-button"
-              disabled={subscribeMutation.isLoading || unsubscribeMutation.isLoading}
+              disabled={subscribeMutation.isLoading}
               onClick={async () => {
-                logger.info('onClick subscribe / unsubscribe')
-                const nextIsSubscribed = !isSubscribed;
-                if (nextIsSubscribed) {
-                  try {
-                    logger.info('doing subscribe');
-                    await subscribeMutation.mutateAsync({ username });
-                    onIsSubscribed(nextIsSubscribed);
-                  } catch (error) {
-                    handleError(error, { method: 'subscribe', params: { username } });
-                  }
-                } else {
-                  try {
-                    logger.info('doing unsubscribe 1');
-                    await unsubscribeMutation.mutateAsync({ username });
-                    onIsSubscribed(nextIsSubscribed);
-                  } catch (error) {
-                    handleError(error, { method: 'unsubscribe', params: { username } });
-                  }
+                logger.info('doing subscribe');
+                try {
+                  logger.info('doing subscribe');
+                  await subscribeMutation.mutateAsync({ username });
+                  onIsSubscribed(true);
+                } catch (error) {
+                  handleError(error, { method: 'subscribe', params: { username } });
                 }
               }}
             >
-              {subscribeMutation.isLoading || unsubscribeMutation.isLoading
+              {subscribeMutation.isLoading
               ?
                 <CircleSpinner
-                  loading={subscribeMutation.isLoading || unsubscribeMutation.isLoading}
+                  loading={subscribeMutation.isLoading}
                   size={18}
                   color="#dc2626"
                 />
@@ -72,22 +61,21 @@ const SubscribeCommunity = ({
               size="sm"
               variant="outline"
               className="group relative w-full text-center text-blue-800 hover:border-red-500 hover:text-red-500"
-              disabled={subscribeMutation.isLoading || unsubscribeMutation.isLoading}
+              disabled={unsubscribeMutation.isLoading}
               onClick={async () => {
-                logger.info('doing unsubscribe 2');
-                const nextIsSubscribed = !isSubscribed;
+                logger.info('doing unsubscribe');
                 try {
                   await unsubscribeMutation.mutateAsync({ username });
-                  onIsSubscribed(nextIsSubscribed);
+                  onIsSubscribed(false);
                 } catch (error) {
                   handleError(error, { method: 'unsubscribe', params: { username } });
                 }
               }}
             >
-              {subscribeMutation.isLoading || unsubscribeMutation.isLoading
+              {unsubscribeMutation.isLoading
               ?
                 <CircleSpinner
-                  loading={subscribeMutation.isLoading || unsubscribeMutation.isLoading}
+                  loading={unsubscribeMutation.isLoading}
                   size={18}
                   color="#dc2626"
                 />
