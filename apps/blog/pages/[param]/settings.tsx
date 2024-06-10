@@ -551,18 +551,27 @@ export default function UserSettings() {
               <span>{t('settings_page.preferred')}</span>
               <span>{t('settings_page.remove')}</span>
             </div>
-            {endpoints?.map((endpoint, index) => (
+            {endpoints?.map((endp, index) => (
               <div
-                key={endpoint}
+                key={endp}
                 className={cn(
                   'grid grid-cols-3 items-center p-2',
                   index % 2 === 0 ? 'bg-slate-100 dark:bg-slate-500' : 'bg-slate-200 p-2 dark:bg-slate-600'
                 )}
               >
-                <Label htmlFor={`e#{index}`}>{endpoint}</Label>
-                <RadioGroupItem value={endpoint} id={`e#{index}`} className="border-red-600" />
+                <Label htmlFor={`e#{index}`}>{endp}</Label>
+                <RadioGroupItem value={endp} id={`e#{index}`} className="border-red-600" />
                 <Icons.trash
-                  onClick={() => setEndpoints((endpoints) => endpoints.filter((e) => e !== endpoint))}
+                  id={`t#{index}`}
+                  onClick={() => {
+                    if (endpoint === endp) {
+                      setErrorEndpoint(
+                        "You Can't Remove The Current Preferred Endpoint. Please Select A New Preferred Endpoint First"
+                      );
+                    } else {
+                      setEndpoints((endpoints) => endpoints.filter((e) => e !== endpoint));
+                    }
+                  }}
                 />
               </div>
             ))}
