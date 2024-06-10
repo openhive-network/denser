@@ -61,7 +61,7 @@ const CommunitiesListItem = ({ community }: { community: Community }) => {
       <div className="mr-4 flex w-24 items-center">
         <SubscribeCommunity
           user={user}
-          username={community.name}
+          community={community.name}
           isSubscribed={isSubscribed}
           onIsSubscribed={(e) => setIsSubscribed(e)}
         />

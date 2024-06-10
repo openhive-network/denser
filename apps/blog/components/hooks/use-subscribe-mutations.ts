@@ -12,19 +12,20 @@ const logger = getLogger('app');
 export function useSubscribeMutation() {
   const queryClient = useQueryClient();
   const subscribeMutation = useMutation({
-    mutationFn: async (params: { username: string }) => {
-      const { username } = params;
-      const broadcastResult = await transactionService.subscribe(username, { observe: true });
+    mutationFn: async (params: { community: string, username: string }) => {
+      const { community } = params;
+      const broadcastResult = await transactionService.subscribe(community, { observe: true });
       const response = { ...params, broadcastResult };
       logger.info('Done subscribe transaction: %o', response);
       return response;
     },
     onSuccess: (data) => {
       logger.info('useSubscribeMutation onSuccess data: %o', data);
-      const { username } = data;
-      queryClient.invalidateQueries({ queryKey: ['communitiesList'] });
+      const { community, username } = data;
+      queryClient.invalidateQueries({ queryKey: [, username] });
       queryClient.invalidateQueries({ queryKey: ['subscriptions', username] });
-      queryClient.invalidateQueries({ queryKey: ['community', username] });
+      queryClient.invalidateQueries({ queryKey: ['community', community] });
+      queryClient.invalidateQueries({ queryKey: ['subscribers', community] });
     }
   });
 
@@ -40,19 +41,20 @@ export function useSubscribeMutation() {
 export function useUnsubscribeMutation() {
   const queryClient = useQueryClient();
   const unsubscribeMutation = useMutation({
-    mutationFn: async (params: { username: string }) => {
-      const { username } = params;
-      const broadcastResult = await transactionService.unsubscribe(username, { observe: true });
+    mutationFn: async (params: { community: string, username: string }) => {
+      const { community } = params;
+      const broadcastResult = await transactionService.unsubscribe(community, { observe: true });
       const response = { ...params, broadcastResult };
       logger.info('Done unsubscribe transaction: %o', response);
       return response;
     },
     onSuccess: (data) => {
       logger.info('useUnsubscribeMutation onSuccess data: %o', data);
-      const { username } = data;
-      queryClient.invalidateQueries({ queryKey: ['communitiesList'] });
+      const { community, username } = data;
+      queryClient.invalidateQueries({ queryKey: ['communitiesList', username] });
       queryClient.invalidateQueries({ queryKey: ['subscriptions', username] });
-      queryClient.invalidateQueries({ queryKey: ['community', username] });
+      queryClient.invalidateQueries({ queryKey: ['community', community] });
+      queryClient.invalidateQueries({ queryKey: ['subscribers', community] });
     }
   });
 

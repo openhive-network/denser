@@ -147,7 +147,7 @@ export default function PostForm({
     data: mySubsData,
     isLoading: mySubsIsLoading,
     isError: mySubsIsError
-  } = useQuery([['subscriptions', username]], () => getSubscriptions(username), {
+  } = useQuery(['subscriptions', username], () => getSubscriptions(username), {
     enabled: Boolean(username)
   });
   const {

@@ -43,7 +43,7 @@ export default function CommunitiesPage() {
     data: mySubsData,
     isLoading: mySubsIsLoading,
     isError: mySubsIsError
-  } = useQuery([['subscriptions', user.username]], () => getSubscriptions(user.username), {
+  } = useQuery(['subscriptions', user.username], () => getSubscriptions(user.username), {
     enabled: Boolean(user.username)
   });
 

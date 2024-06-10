@@ -46,7 +46,7 @@ const MyPage: FC = () => {
     data: mySubsData,
     isLoading: mySubsIsLoading,
     isError: mySubsIsError
-  } = useQuery([['subscriptions', user?.username]], () => getSubscriptions(user ? user?.username : ''), {
+  } = useQuery(['subscriptions', user?.username], () => getSubscriptions(user ? user?.username : ''), {
     enabled: Boolean(user?.username)
   });
 

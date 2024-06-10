@@ -11,18 +11,19 @@ const logger = getLogger('app');
 
 const SubscribeCommunity = ({
   user,
-  username,
+  community,
   isSubscribed,
   onIsSubscribed
 }: {
   user: User;
-  username: string;
+  community: string;
   isSubscribed: Boolean;
   onIsSubscribed: (e: boolean) => void;
 }) => {
   const { t } = useTranslation('common_blog');
   const subscribeMutation = useSubscribeMutation();
   const unsubscribeMutation = useUnsubscribeMutation();
+  const { username } = user;
 
   return (
     <>
@@ -35,13 +36,11 @@ const SubscribeCommunity = ({
               data-testid="community-subscribe-button"
               disabled={subscribeMutation.isLoading}
               onClick={async () => {
-                logger.info('doing subscribe');
                 try {
-                  logger.info('doing subscribe');
-                  await subscribeMutation.mutateAsync({ username });
+                  await subscribeMutation.mutateAsync({ community, username });
                   onIsSubscribed(true);
                 } catch (error) {
-                  handleError(error, { method: 'subscribe', params: { username } });
+                  handleError(error, { method: 'subscribe', params: { community, username } });
                 }
               }}
             >
@@ -63,12 +62,11 @@ const SubscribeCommunity = ({
               className="group relative w-full text-center text-blue-800 hover:border-red-500 hover:text-red-500"
               disabled={unsubscribeMutation.isLoading}
               onClick={async () => {
-                logger.info('doing unsubscribe');
                 try {
-                  await unsubscribeMutation.mutateAsync({ username });
+                  await unsubscribeMutation.mutateAsync({ community, username });
                   onIsSubscribed(false);
                 } catch (error) {
-                  handleError(error, { method: 'unsubscribe', params: { username } });
+                  handleError(error, { method: 'unsubscribe', params: { community, username } });
                 }
               }}
             >

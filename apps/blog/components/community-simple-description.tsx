@@ -63,7 +63,7 @@ const CommunitySimpleDescription = ({
         <div className="my-4 flex flex-col gap-4">
           <SubscribeCommunity
             user={user}
-            username={username}
+            community={data.name}
             isSubscribed={isSubscribed}
             onIsSubscribed={(e) => setIsSubscribed(e)}
           />
