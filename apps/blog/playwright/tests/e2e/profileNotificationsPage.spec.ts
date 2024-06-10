@@ -43,7 +43,9 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     await expect(profilePage.page.url()).toContain(firstNotificationAuthorName);
   });
 
-  test('Click the first three notifications and move to specific page', async ({ page }) => {
+  // Skip this test due to move to the non existing page
+  // Issue: https://gitlab.syncad.com/hive/denser/-/issues/449
+  test.skip('Click the first three notifications and move to specific page', async ({ page }) => {
     let postPage = new PostPage(page);
     let commentPage = new CommentViewPage(page);
 
