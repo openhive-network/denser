@@ -53,6 +53,7 @@ export function useUnsubscribeMutation() {
       // ['communitiesList', sort, query, user.username]
       queryClient.invalidateQueries({ queryKey: ['communitiesList'] });
       queryClient.invalidateQueries({ queryKey: ['subscriptions', username] });
+      queryClient.invalidateQueries({ queryKey: ['community', username] });
     }
   });
 
