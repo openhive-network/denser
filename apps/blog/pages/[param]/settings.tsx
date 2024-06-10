@@ -82,7 +82,7 @@ const DEFAULTS_ENDPOINTS = [
 const urlSchema = z
   .string()
   .url()
-  .refine((url) => url.startsWith('https://'), {
+  .refine((url) => url.startsWith('https://') || url.startsWith('http://'), {
     message: 'This Appears To Be A Bad URL, Please Check It And Try Again'
   });
 
