@@ -163,6 +163,11 @@
     "post_card": {
       "reputation_title": "Reputation",
       "in": "in",
+      "downvote_warning": "Downvoting a post can decrease pending rewards and make it less visible. Common reasons:",
+      "reason_1": "• Disagreement on rewards",
+      "reason_2": "• Fraud or plagiarism",
+      "reason_3": "• Hate speech or trolling",
+      "reason_4": "• Miscategorized content or spam",
       "upvote": "Upvote",
       "undo_upvote": "Undo your upvote",
       "undo_upvote_percent": "Undo your upvote {{votePercent}}%",
