@@ -30,6 +30,7 @@ const wellKnownErrorDescriptions = [
   'Account does not have enough mana to downvote',
   'You may only post once every 5 minutes',
   'Vote weight cannot be 0',
+  'You may only comment once every 3 seconds',
 ];
 
 /**
