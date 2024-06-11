@@ -553,5 +553,14 @@
     "error_cant_remove_active": "您无法移除当前首选节点，请先选择新的首选节点",
     "error_cant_remove_all": "列表中必须至少有一个节点",
     "changes_saved": "更改已保存"
+  },
+  "four_oh_four": {
+    "this_page_does_not_exist": "抱歉！ 此页面不存在。",
+    "not_to_worry": "别担心。你可以回到",
+    "our_homepage": "我们的主页",
+    "new_posts": "最新帖子",
+    "hot_posts": "热门帖子",
+    "trending_posts": "趋势帖子",
+    "muted_posts": "静音帖子"
   }
 }

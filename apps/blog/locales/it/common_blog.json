@@ -553,5 +553,14 @@
     "error_cant_remove_active": "Non puoi rimuovere l'endpoint preferito attuale. Seleziona prima un nuovo endpoint preferito",
     "error_cant_remove_all": "Devi avere almeno un endpoint nella lista",
     "changes_saved": "Modifiche salvate"
+  },
+  "four_oh_four": {
+    "this_page_does_not_exist": "Spiacente! Questa pagina non esiste.",
+    "not_to_worry": "Non preoccuparti. Puoi tornare a",
+    "our_homepage": "la nostra homepage",
+    "new_posts": "nuovi post",
+    "hot_posts": "post popolari",
+    "trending_posts": "post di tendenza",
+    "muted_posts": "post silenziati"
   }
 }

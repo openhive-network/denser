@@ -185,6 +185,9 @@ const ParamPage: FC = () => {
     );
   }
 
+  if (username && router.query.param ? router.query.param.length > 1 : false) {
+    return <CustomError />;
+  }
   if (!entriesDataIsLoading && entriesData) {
     return (
       <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
@@ -290,6 +293,7 @@ const ParamPage: FC = () => {
       </div>
     );
   }
+
   return (
     <ProfileLayout>
       {!legalBlockedUser ? (
