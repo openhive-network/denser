@@ -45,7 +45,6 @@ export function ReplyTextbox({
   const [text, setText] = useState(
     storedPost ? storedPost : typeof comment === 'string' ? comment : comment.body ? comment.body : ''
   );
-  const [cleanedText, setCleanedText] = useState('');
   const commentMutation = useCommentMutation();
   const updateCommentMutation = useUpdateCommentMutation();
 
@@ -76,7 +75,7 @@ export function ReplyTextbox({
           parentAuthor: username,
           parentPermlink,
           permlink,
-          body: cleanedText,
+          body: text,
           comment_rewards: payout as '0%' | '50%' | '100%'
         };
         try {
@@ -88,7 +87,7 @@ export function ReplyTextbox({
         const commentParams = {
           parentAuthor: username,
           parentPermlink: permlink,
-          body: cleanedText,
+          body: text,
           preferences
         };
         try {
