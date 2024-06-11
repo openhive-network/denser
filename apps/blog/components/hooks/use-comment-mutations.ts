@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { Preferences } from '@transaction/lib/app-types';
 import { getLogger } from '@ui/lib/logging';
@@ -11,6 +11,7 @@ const logger = getLogger('app');
  * @return {*}
  */
 export function useCommentMutation() {
+  const queryClient = useQueryClient();
   const commentMutation = useMutation({
     mutationFn: async (params: {
       parentAuthor: string;
@@ -32,6 +33,7 @@ export function useCommentMutation() {
     },
     onSuccess: (data) => {
       logger.info('useCommentMutation onSuccess data: %o', data);
+      queryClient.invalidateQueries({ queryKey: ['discussionData'] });
     }
   });
 
@@ -45,6 +47,7 @@ export function useCommentMutation() {
  * @return {*}
  */
 export function useUpdateCommentMutation() {
+  const queryClient = useQueryClient();
   const updateCommentMutation = useMutation({
     mutationFn: async (params: {
       parentAuthor: string;
@@ -70,6 +73,7 @@ export function useUpdateCommentMutation() {
     },
     onSuccess: (data) => {
       logger.info('useUpdateCommentMutation onSuccess data: %o', data);
+      queryClient.invalidateQueries({ queryKey: ['discussionData'] });
     }
   });
 
@@ -83,6 +87,7 @@ export function useUpdateCommentMutation() {
  * @return {*}
  */
 export function useDeleteCommentMutation() {
+  const queryClient = useQueryClient();
   const deleteCommentMutation = useMutation({
     mutationFn: async (params: { permlink: string }) => {
       const { permlink } = params;
@@ -93,6 +98,7 @@ export function useDeleteCommentMutation() {
     },
     onSuccess: (data) => {
       logger.info('useDeleteCommentMutation onSuccess data: %o', data);
+      queryClient.invalidateQueries({ queryKey: ['discussionData'] });
     }
   });
 

@@ -15,6 +15,8 @@ import RendererContainer from './rendererContainer';
 import { getLogger } from '@ui/lib/logging';
 import { useCommentMutation, useUpdateCommentMutation } from './hooks/use-comment-mutations';
 import { handleError } from '@ui/lib/utils';
+import { CircleSpinner } from 'react-spinners-kit';
+
 const logger = getLogger('app');
 
 export function ReplyTextbox({
@@ -76,7 +78,7 @@ export function ReplyTextbox({
           parentPermlink,
           permlink,
           body: text,
-          comment_rewards: payout as '0%' | '50%' | '100%'
+          comment_rewards: payout as '0%' | '50%' | '100%',
         };
         try {
           await updateCommentMutation.mutateAsync(updateCommentParams);
@@ -88,7 +90,7 @@ export function ReplyTextbox({
           parentAuthor: username,
           parentPermlink: permlink,
           body: text,
-          preferences
+          preferences,
         };
         try {
           await commentMutation.mutateAsync(commentParams);
@@ -159,11 +161,22 @@ export function ReplyTextbox({
           </span>
         </div>
         <div className="flex flex-col md:flex-row">
-          <Button ref={btnRef} disabled={text === ''} onClick={() => postComment()}>
-            {t('post_content.footer.comment.post')}
+          <Button
+            ref={btnRef}
+            disabled={text === '' || commentMutation.isLoading || updateCommentMutation.isLoading}
+            onClick={() => postComment()}
+          >
+            {commentMutation.isLoading || updateCommentMutation.isLoading
+            ?
+              <CircleSpinner loading={commentMutation.isLoading || updateCommentMutation.isLoading}
+                              size={18} color="#dc2626" />
+            :
+              t('post_content.footer.comment.post')
+            }
           </Button>
           <Button
             variant="ghost"
+            disabled={commentMutation.isLoading || updateCommentMutation.isLoading}
             onClick={() => handleCancel()}
             className="font-thiny text-slate-500 hover:text-red-500"
           >
