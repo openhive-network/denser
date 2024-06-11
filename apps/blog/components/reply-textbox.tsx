@@ -84,6 +84,7 @@ export function ReplyTextbox({
           await updateCommentMutation.mutateAsync(updateCommentParams);
         } catch (error) {
           handleError(error, { method: 'updateComment', params: updateCommentParams });
+          throw error;
         }
       } else {
         const commentParams = {
@@ -96,6 +97,7 @@ export function ReplyTextbox({
           await commentMutation.mutateAsync(commentParams);
         } catch (error) {
           handleError(error, { method: 'comment', params: commentParams });
+          throw error;
         }
       }
       setText('');

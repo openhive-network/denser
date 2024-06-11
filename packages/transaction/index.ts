@@ -173,7 +173,11 @@ export class TransactionService {
         this.bot = new WorkerBee({
           explicitChain: hiveChain
         });
-        this.bot.on('error', logger.error);
+        this.bot.on('error', (error) => logger.error(error));
+        this.bot.on(
+          'block',
+          (data) => logger.info('Bot is scanning block no. %o', data.number)
+        );
       }
       // Start bot
       if (this.observedTransactionsCounter++ === 0) {
