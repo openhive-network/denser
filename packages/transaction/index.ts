@@ -275,18 +275,18 @@ export class TransactionService {
     }, transactionOptions);
   }
 
-  async subscribe(username: string, transactionOptions: TransactionOptions = {}) {
+  async subscribe(community: string, transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
       builder.push(
-        new CommunityOperationBuilder().subscribe(username).authorize(this.signerOptions.username).build()
+        new CommunityOperationBuilder().subscribe(community).authorize(this.signerOptions.username).build()
       );
     }, transactionOptions);
   }
 
-  async unsubscribe(username: string, transactionOptions: TransactionOptions = {}) {
+  async unsubscribe(community: string, transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
       builder.push(
-        new CommunityOperationBuilder().unsubscribe(username).authorize(this.signerOptions.username).build()
+        new CommunityOperationBuilder().unsubscribe(community).authorize(this.signerOptions.username).build()
       );
     }, transactionOptions);
   }
