@@ -164,10 +164,6 @@ const ParamPage: FC = () => {
     }
   }, [accountFetchNextPage, accountHasNextPage, inViewAcc]);
 
-  if (true) {
-    <div>error</div>;
-  }
-
   if (accountEntriesIsError || entriesDataIsError) return <CustomError />;
 
   if (
