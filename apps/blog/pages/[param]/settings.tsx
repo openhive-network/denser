@@ -546,16 +546,16 @@ export default function UserSettings() {
             }}
             value={endpoint}
           >
-            <div className="grid grid-cols-[160px_80px_80px] md:grid-cols-3">
+            <div className="grid grid-cols-[160px_80px_80px] lg:grid-cols-3">
               <span>{t('settings_page.endpoint')}</span>
-              <span className="text-right md:text-left">{t('settings_page.preferred')}</span>
-              <span className="text-right md:text-left">{t('settings_page.remove')}</span>
+              <span className="text-right lg:text-left">{t('settings_page.preferred')}</span>
+              <span className="text-right lg:text-left">{t('settings_page.remove')}</span>
             </div>
             {endpoints?.map((endp, index) => (
               <div
                 key={endp}
                 className={cn(
-                  'grid grid-cols-[220px_50px_50px] items-center p-2 md:grid-cols-3 ',
+                  'grid grid-cols-[220px_50px_50px] items-center p-2 lg:grid-cols-3 ',
                   index % 2 === 0 ? 'bg-slate-100 dark:bg-slate-500' : 'bg-slate-200 p-2 dark:bg-slate-600'
                 )}
               >
