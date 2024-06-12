@@ -1,5 +1,5 @@
 import { NaiAsset } from '@hiveio/wax';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { Beneficiarie } from '@transaction/lib/app-types';
 import { getLogger } from '@ui/lib/logging';
@@ -13,6 +13,7 @@ const logger = getLogger('app');
  * @return {*}
  */
 export function usePostMutation() {
+  const queryClient = useQueryClient();
   const postMutation = useMutation({
     mutationFn: async (params: {
       permlink: string;
@@ -60,6 +61,7 @@ export function usePostMutation() {
     },
     onSuccess: (data) => {
       logger.info('usePostMutation onSuccess data: %o', data);
+      queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
     }
   });
 
