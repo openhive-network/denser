@@ -35,6 +35,7 @@ import SelectImageList from './select-image-list';
 import RendererContainer from './rendererContainer';
 import { usePostMutation } from './hooks/use-post-mutation';
 import { handleError } from '@ui/lib/utils';
+import { CircleSpinner } from 'react-spinners-kit';
 
 const logger = getLogger('app');
 
@@ -270,6 +271,7 @@ export default function PostForm({
         await postMutation.mutateAsync(postParams);
       } catch (error) {
         handleError(error, { method: 'post', params: postParams });
+        throw error;
       }
 
       form.reset(defaultValues);
@@ -297,6 +299,7 @@ export default function PostForm({
       logger.error(error);
     }
   }
+
   const handleCancel = () => {
     const confirmed = confirm(
       editMode ? t('post_content.close_post_editor') : t('submit_page.clean_post_editor')
@@ -512,13 +515,23 @@ export default function PostForm({
               ref={btnRef}
               type="submit"
               variant="redHover"
+              className="w-24"
               disabled={
-                !storedPost?.title || Boolean(tagsCheck) || Boolean(summaryCheck) || Boolean(altUsernameCheck)
+                !storedPost?.title || Boolean(tagsCheck)
+                  || Boolean(summaryCheck) || Boolean(altUsernameCheck)
+                  || postMutation.isLoading
               }
             >
-              {t('submit_page.submit')}
+              {postMutation.isLoading
+              ?
+                <CircleSpinner loading={postMutation.isLoading}
+                                size={18} color="#dc2626" />
+              :
+                t('submit_page.submit')
+              }
             </Button>
             <Button
+              disabled={postMutation.isLoading}
               onClick={() => handleCancel()}
               type="reset"
               variant="ghost"
