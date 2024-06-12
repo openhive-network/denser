@@ -78,7 +78,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
       ) : user.isLoggedIn && enable_slider && !vote_upvoted ? (
         <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center">
-            <TooltipContainer loading={voteMutation.isLoading} text={t('cards.post_card.upvote')}>
+            <TooltipContainer loading={voteMutation.isLoading} text={t('cards.post_card.upvote')} dataTestId="upvote-button">
               <Icons.arrowUpCircle
                 className={clsx(
                   'h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1',
@@ -89,7 +89,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="h-16 w-64 p-2">
             <div className="flex h-full items-center gap-2">
-              <TooltipContainer loading={voteMutation.isLoading} text={t('cards.post_card.upvote')}>
+              <TooltipContainer loading={voteMutation.isLoading} text={t('cards.post_card.upvote')} dataTestId="upvote-button">
                 <Icons.arrowUpCircle
                   className="h-[24px] w-[24px] cursor-pointer rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1"
                   onClick={() => {
@@ -122,6 +122,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                   })
               : t('cards.post_card.upvote')
           }
+          dataTestId="upvote-button"
         >
           <Icons.arrowUpCircle
             className={clsx(
@@ -145,7 +146,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
       ) : (
         <DialogLogin>
           <div className="flex items-center">
-            <TooltipContainer text={t('cards.post_card.upvote')} loading={voteMutation.isLoading}>
+            <TooltipContainer text={t('cards.post_card.upvote')} loading={voteMutation.isLoading} dataTestId="upvote-button">
               <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1" />
             </TooltipContainer>
           </div>
@@ -160,7 +161,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
       ) : user.isLoggedIn && enable_slider && !vote_downvoted ? (
         <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center">
-            <TooltipContainer loading={voteMutation.isLoading} text={t('cards.post_card.downvote')}>
+            <TooltipContainer loading={voteMutation.isLoading} text={t('cards.post_card.downvote')} dataTestId="downvote-button">
               <Icons.arrowDownCircle
                 className={clsx(
                   'h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
@@ -171,7 +172,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent className=" w-64 p-2">
             <div className="flex h-full items-center gap-2">
-              <TooltipContainer loading={voteMutation.isLoading} text={t('cards.post_card.downvote')}>
+              <TooltipContainer loading={voteMutation.isLoading} text={t('cards.post_card.downvote')} dataTestId="downvote-button">
                 <Icons.arrowDownCircle
                   className="h-[24px] w-[24px] cursor-pointer rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1"
                   onClick={() => {
@@ -213,6 +214,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                   })
               : t('cards.post_card.downvote')
           }
+          dataTestId="downvote-button"
         >
           <Icons.arrowDownCircle
             className={clsx(
@@ -236,7 +238,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
       ) : (
         <DialogLogin>
           <div className="flex items-center">
-            <TooltipContainer text={t('cards.post_card.downvote')} loading={voteMutation.isLoading}>
+            <TooltipContainer text={t('cards.post_card.downvote')} loading={voteMutation.isLoading} dataTestId="downvote-button">
               <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
             </TooltipContainer>
           </div>
@@ -251,19 +253,21 @@ export default VotesComponent;
 const TooltipContainer = ({
   children,
   loading,
-  text
+  text,
+  dataTestId
 }: {
   children: ReactNode;
   loading: boolean;
   text: string;
+  dataTestId: string;
 }) => {
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger data-testid="upvote-button" disabled={loading}>
+        <TooltipTrigger data-testid={dataTestId} disabled={loading}>
           {children}
         </TooltipTrigger>
-        <TooltipContent data-testid="upvote-button-tooltip">{text}</TooltipContent>
+        <TooltipContent data-testid={dataTestId+"-tooltip"}>{text}</TooltipContent>
       </Tooltip>
     </TooltipProvider>
   );
