@@ -70,7 +70,7 @@ function validateTagInput(value: string, required: boolean, t: TFunction<'common
                       : null;
 }
 
-function validateSummoryInput(value: string, t: TFunction<'common_wallet', undefined>) {
+function validateSummaryInput(value: string, t: TFunction<'common_wallet', undefined>) {
   const markdownRegex = /(?:\*[\w\s]*\*|#[\w\s]*#|_[\w\s]*_|~[\w\s]*~|\]\s*\(|\]\s*\[)/;
   const htmlTagRegex = /<\/?[\w\s="/.':;#-/?]+>/gi;
   return markdownRegex.test(value)
@@ -214,7 +214,7 @@ export default function PostForm({
     !router.query.category ? watchedValues.category === 'blog' : false,
     t
   );
-  const summaryCheck = validateSummoryInput(watchedValues.postSummary, t);
+  const summaryCheck = validateSummaryInput(watchedValues.postSummary, t);
   const altUsernameCheck = validateAltUsernameInput(watchedValues.author, t);
   const communityPosting =
     mySubsData && mySubsData?.filter((e) => e[0] === router.query.category).length > 0
