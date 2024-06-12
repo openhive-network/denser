@@ -1,6 +1,7 @@
 import { ApiAccount } from '@hiveio/wax';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
@@ -11,6 +12,8 @@ const logger = getLogger('app');
  * @return {*}
  */
 export function useClaimRewardMutation() {
+  const queryClient = useQueryClient();
+  const { user } = useUser();
   const claimRewardMutation = useMutation({
     mutationFn: async (params: { account: ApiAccount }) => {
       const { account } = params;
@@ -21,6 +24,8 @@ export function useClaimRewardMutation() {
     },
     onSuccess: (data) => {
       logger.info('useClaimRewardMutation onSuccess data: %o', data);
+      const { username } = user;
+      queryClient.invalidateQueries({ queryKey: ['profileData', username] });
     }
   });
 

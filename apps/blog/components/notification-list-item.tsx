@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Link from 'next/link';
 import { Icons } from '@hive/ui/components/icons';
 import { Progress } from '@hive/ui/components/progress';
@@ -6,13 +7,16 @@ import { IAccountNotificationEx } from '@transaction/lib/bridge';
 import { useTranslation } from 'next-i18next';
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import { getLogger } from '@ui/lib/logging';
+
+const logger = getLogger('app');
+const usernamePattern = /\B@[a-z0-9.-]+/gi;
 
 const NotificationListItem = ({ date, msg, score, type, url, lastRead }: IAccountNotificationEx) => {
   const { t } = useTranslation('common_blog');
   const { username } = useSiteParams();
   const { user } = useUser();
   const isOwner = user.username === username;
-  const usernamePattern = /\B@[a-z0-9.-]+/gi;
   const mentions = msg.match(usernamePattern);
   const unRead = lastRead <= new Date(date).getTime();
   let icon;

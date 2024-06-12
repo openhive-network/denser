@@ -1,6 +1,8 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getLogger } from '@ui/lib/logging';
+
 const logger = getLogger('app');
 
 /**
@@ -10,6 +12,8 @@ const logger = getLogger('app');
  * @return {*}
  */
 export function useMarkAllNotificationsAsReadMutation() {
+  const queryClient = useQueryClient();
+  const { user } = useUser();
   const markAllNotificationsAsReadMutation = useMutation({
     mutationFn: async (params: { date: string }) => {
       const { date } = params;
@@ -20,6 +24,10 @@ export function useMarkAllNotificationsAsReadMutation() {
     },
     onSuccess: (data) => {
       logger.info('useMarkAllNotificationsAsReadMutation onSuccess data: %o', data);
+      const { username } = user;
+      queryClient.invalidateQueries({ queryKey: ['AccountNotification', username] });
+      queryClient.invalidateQueries({ queryKey: ['AccountNotificationMoreData', username] });
+      queryClient.invalidateQueries({ queryKey: ['unreadNotifications', username] });
     }
   });
 

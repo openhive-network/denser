@@ -86,7 +86,7 @@
       "vote_for_witnesses": "投票给见证人",
       "hive_proposals": "Hive Proposals"
     },
-    "profil_navbar": {
+    "profile_navbar": {
       "blog": "博客",
       "posts": "文章",
       "replies": "留言",
@@ -94,19 +94,19 @@
       "notifications": "Notifications",
       "wallet": "钱包"
     },
-    "profil_posts_tab_navbar": {
+    "profile_posts_tab_navbar": {
       "posts": "文章",
       "comments": "评论",
       "payouts": "赏金"
     },
-    "profil_social_tab_navbar": {
+    "profile_social_tab_navbar": {
       "badges": "Badges",
       "activity": "Activity",
       "personal": "Personal",
       "meetups": "Meetups",
       "challenges": "Challenges"
     },
-    "profil_notifications_tab_navbar": {
+    "profile_notifications_tab_navbar": {
       "unclaimed_rewards": "无人领取的奖励： ",
       "redeem": "赎回",
       "mark_all": "标记为已读",

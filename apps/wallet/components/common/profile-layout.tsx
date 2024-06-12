@@ -117,7 +117,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   <Link
                     href={`/@${username}`}
                     target="_blank"
-                    className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800 
+                    className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800
                     ${
                       router.asPath === `/@${username}`
                         ? 'bg-white text-slate-800 dark:bg-slate-950 dark:hover:text-slate-200'
@@ -125,25 +125,25 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     }
                     `}
                   >
-                    {t('navigation.profil_navbar.blog')}
+                    {t('navigation.profile_navbar.blog')}
                   </Link>
                 </li>
                 <li>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <div className="flex h-full cursor-pointer items-center px-2 hover:bg-white hover:text-slate-800">
-                        {t('navigation.profil_navbar.rewards')} <span className="m-1 rotate-180">^</span>
+                        {t('navigation.profile_navbar.rewards')} <span className="m-1 rotate-180">^</span>
                       </div>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56">
                       <Link href={`/@${username}/curation-rewards`}>
                         <DropdownMenuItem className="cursor-pointer">
-                          {t('navigation.profil_navbar.curation_rewards')}
+                          {t('navigation.profile_navbar.curation_rewards')}
                         </DropdownMenuItem>{' '}
                       </Link>
                       <Link href={`/@${username}/author-rewards`}>
                         <DropdownMenuItem className="cursor-pointer">
-                          {t('navigation.profil_navbar.author_rewards')}
+                          {t('navigation.profile_navbar.author_rewards')}
                         </DropdownMenuItem>
                       </Link>
                     </DropdownMenuContent>
@@ -163,7 +163,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                         : ''
                     )}
                   >
-                    {t('navigation.profil_navbar.wallet')}
+                    {t('navigation.profile_navbar.wallet')}
                   </Link>
                 </li>
               </ul>

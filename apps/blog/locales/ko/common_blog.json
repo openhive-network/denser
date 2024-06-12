@@ -86,7 +86,7 @@
       "vote_for_witnesses": "증인 투표",
       "hive_proposals": "Hive Proposals"
     },
-    "profil_navbar": {
+    "profile_navbar": {
       "blog": "블로그",
       "posts": "Posts",
       "replies": "받은 댓글",
@@ -94,19 +94,19 @@
       "notifications": "Notifications",
       "wallet": "지갑"
     },
-    "profil_posts_tab_navbar": {
+    "profile_posts_tab_navbar": {
       "posts": "Posts",
       "comments": "작성한 댓글",
       "payouts": "글보상"
     },
-    "profil_social_tab_navbar": {
+    "profile_social_tab_navbar": {
       "badges": "Badges",
       "activity": "Activity",
       "personal": "Personal",
       "meetups": "Meetups",
       "challenges": "Challenges"
     },
-    "profil_notifications_tab_navbar": {
+    "profile_notifications_tab_navbar": {
       "unclaimed_rewards": "청구하지 않은 보상: ",
       "redeem": "상환하다",
       "mark_all": "모두 읽음으로 표시",

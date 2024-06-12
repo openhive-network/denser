@@ -366,7 +366,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     }
                     `}
                   >
-                    {t('navigation.profil_navbar.blog')}
+                    {t('navigation.profile_navbar.blog')}
                   </Link>
                 </li>
                 <li>
@@ -380,7 +380,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                         : ''
                     }`}
                   >
-                    {t('navigation.profil_navbar.posts')}
+                    {t('navigation.profile_navbar.posts')}
                   </Link>
                 </li>
                 <li>
@@ -392,7 +392,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                         : ''
                     }`}
                   >
-                    {t('navigation.profil_navbar.replies')}
+                    {t('navigation.profile_navbar.replies')}
                   </Link>
                 </li>
                 <li>
@@ -404,7 +404,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                         : ''
                     }`}
                   >
-                    {t('navigation.profil_navbar.social')}
+                    {t('navigation.profile_navbar.social')}
                   </Link>
                 </li>
                 <li>
@@ -416,7 +416,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                         : ''
                     }`}
                   >
-                    {t('navigation.profil_navbar.notifications')}
+                    {t('navigation.profile_navbar.notifications')}
                   </Link>
                 </li>
               </ul>
@@ -428,7 +428,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     rel="noopener noreferrer"
                     className="mr-4 flex h-full items-center px-2 hover:bg-white hover:text-slate-800"
                   >
-                    {t('navigation.profil_navbar.wallet')}
+                    {t('navigation.profile_navbar.wallet')}
                   </Link>
                 </li>
                 {user.isLoggedIn && username === user.username ? (
@@ -442,7 +442,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                           : ''
                       }`}
                     >
-                      {t('navigation.profil_navbar.settings')}
+                      {t('navigation.profile_navbar.settings')}
                     </Link>
                   </li>
                 ) : null}

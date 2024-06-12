@@ -86,7 +86,7 @@
       "vote_for_witnesses": "Vota a los testigos",
       "hive_proposals": "Hive Proposals"
     },
-    "profil_navbar": {
+    "profile_navbar": {
       "blog": "Blog",
       "posts": "Publicaciones",
       "replies": "Respuestas",
@@ -94,19 +94,19 @@
       "notifications": "Notifications",
       "wallet": "Monedero"
     },
-    "profil_posts_tab_navbar": {
+    "profile_posts_tab_navbar": {
       "posts": "Publicaciones",
       "comments": "Comentarios",
       "payouts": "Pagos"
     },
-    "profil_social_tab_navbar": {
+    "profile_social_tab_navbar": {
       "badges": "Badges",
       "activity": "Activity",
       "personal": "Personal",
       "meetups": "Meetups",
       "challenges": "Challenges"
     },
-    "profil_notifications_tab_navbar": {
+    "profile_notifications_tab_navbar": {
       "unclaimed_rewards": "Recompensas no reclamadas: ",
       "redeem": "Canjear",
       "mark_all": "Marcar todo como leído",
