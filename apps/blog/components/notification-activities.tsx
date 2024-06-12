@@ -15,6 +15,10 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useMarkAllNotificationsAsReadMutation } from './hooks/use-notifications-read-mutation';
 import { useClaimRewardMutation } from './hooks/use-claim-reward-mutation';
 import { handleError } from '@ui/lib/utils';
+import { CircleSpinner } from 'react-spinners-kit';
+import { getLogger } from '@ui/lib/logging';
+
+const logger = getLogger('app');
 
 const NotificationActivities = ({
   data,
@@ -79,16 +83,15 @@ const NotificationActivities = ({
   }, [lastStateElementId, refetch]);
 
   async function handleMarkAllAsRead() {
+    if (markAllNotificationsAsReadMutation.isLoading) return;
+    const myDate = new Date().toISOString();
+    const date = myDate.slice(0, myDate.length - 5);
     try {
-      await markAllNotificationsAsReadMutation.mutateAsync({
-        date: newDate.toISOString().slice(0, newDate.toISOString().length - 5)
-      });
+      await markAllNotificationsAsReadMutation.mutateAsync({ date });
     } catch (error) {
       handleError(error, {
         method: 'markAllNotificationsAsRead',
-        params: {
-          date: newDate.toISOString().slice(0, newDate.toISOString().length - 5)
-        }
+        params: { date }
       });
     }
   }
@@ -129,12 +132,21 @@ const NotificationActivities = ({
       ) : null}
 
       {accountOwner && unreadNotifications && unreadNotifications.unread !== 0 ? (
-        <span
-          className="text-md mb-4 block w-full text-center font-bold hover:cursor-pointer"
-          onClick={handleMarkAllAsRead}
-        >
-          {t('navigation.profil_notifications_tab_navbar.mark_all')}
-        </span>
+        <div className="flex flex-col items-center">
+          <button
+            disabled={markAllNotificationsAsReadMutation.isLoading}
+            className="w-100 mb-4 font-bold"
+            onClick={handleMarkAllAsRead}
+          >
+            {markAllNotificationsAsReadMutation.isLoading
+            ?
+              <CircleSpinner loading={markAllNotificationsAsReadMutation.isLoading}
+                              size={18} color="#dc2626" />
+            :
+              t('navigation.profil_notifications_tab_navbar.mark_all')
+            }
+          </button>
+        </div>
       ) : null}
       <TabsList className="flex h-auto flex-wrap" data-testid="notifications-local-menu">
         <TabsTrigger value="all">{t('navigation.profil_notifications_tab_navbar.all')}</TabsTrigger>
