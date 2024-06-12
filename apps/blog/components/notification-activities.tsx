@@ -125,8 +125,19 @@ const NotificationActivities = ({
             {t('navigation.profile_notifications_tab_navbar.unclaimed_rewards')}
             {getRewardsString(profileData, t)}
           </span>
-          <Button variant="redHover" onClick={handleClaimRewards}>
-            {t('navigation.profile_notifications_tab_navbar.redeem')}
+          <Button
+            variant="redHover"
+            onClick={handleClaimRewards}
+            disabled={claimRewardMutation.isLoading}
+            className="w-36"
+          >
+            {claimRewardMutation.isLoading
+            ?
+              <CircleSpinner loading={claimRewardMutation.isLoading}
+                              size={18} color="#dc2626" />
+            :
+              t('navigation.profile_notifications_tab_navbar.redeem')
+            }
           </Button>
         </div>
       ) : null}
