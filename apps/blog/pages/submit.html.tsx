@@ -15,6 +15,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     }
   };
 };
+
 function Submit() {
   const [isClient, setIsClient] = useState(false);
   useEffect(() => {
