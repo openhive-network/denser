@@ -86,7 +86,7 @@
       "vote_for_witnesses": "Проголосовать за делегатов",
       "hive_proposals": "Hive Proposals"
     },
-    "profil_navbar": {
+    "profile_navbar": {
       "blog": "Блог",
       "posts": "Посты",
       "replies": "Ответы",
@@ -94,12 +94,12 @@
       "notifications": "Notifications",
       "wallet": "Кошелек"
     },
-    "profil_posts_tab_navbar": {
+    "profile_posts_tab_navbar": {
       "posts": "Посты",
       "comments": "Комментарии",
       "payouts": "Выплаты"
     },
-    "profil_social_tab_navbar": {
+    "profile_social_tab_navbar": {
       "badges": "Badges",
       "activity": "Activity",
       "personal": "Personal",

@@ -86,7 +86,7 @@
       "vote_for_witnesses": "証人に投票する",
       "hive_proposals": "Hive Proposals"
     },
-    "profil_navbar": {
+    "profile_navbar": {
       "blog": "ブログ",
       "posts": "投稿数",
       "replies": "返信",
@@ -94,12 +94,12 @@
       "notifications": "Notifications",
       "wallet": "ウォレット"
     },
-    "profil_posts_tab_navbar": {
+    "profile_posts_tab_navbar": {
       "posts": "投稿数",
       "comments": "コメント",
       "payouts": "支払額"
     },
-    "profil_social_tab_navbar": {
+    "profile_social_tab_navbar": {
       "badges": "Badges",
       "activity": "Activity",
       "personal": "Personal",

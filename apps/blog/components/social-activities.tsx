@@ -37,19 +37,19 @@ export default function SocialActivities({
     <Tabs defaultValue={defaultValue} className="mt-8 w-full">
       <TabsList className="flex h-auto flex-wrap justify-start" data-testid="badges-activity-menu">
         {peakd.length !== 0 ? (
-          <TabsTrigger value="badges">{t('navigation.profil_social_tab_navbar.badges')}</TabsTrigger>
+          <TabsTrigger value="badges">{t('navigation.profile_social_tab_navbar.badges')}</TabsTrigger>
         ) : null}
         {activity.length !== 0 ? (
-          <TabsTrigger value="activity">{t('navigation.profil_social_tab_navbar.activity')}</TabsTrigger>
+          <TabsTrigger value="activity">{t('navigation.profile_social_tab_navbar.activity')}</TabsTrigger>
         ) : null}
         {perso.length !== 0 ? (
-          <TabsTrigger value="personal">{t('navigation.profil_social_tab_navbar.personal')}</TabsTrigger>
+          <TabsTrigger value="personal">{t('navigation.profile_social_tab_navbar.personal')}</TabsTrigger>
         ) : null}
         {meetup.length !== 0 ? (
-          <TabsTrigger value="meetups">{t('navigation.profil_social_tab_navbar.meetups')}</TabsTrigger>
+          <TabsTrigger value="meetups">{t('navigation.profile_social_tab_navbar.meetups')}</TabsTrigger>
         ) : null}
         {challenge.length !== 0 ? (
-          <TabsTrigger value="challenges">{t('navigation.profil_social_tab_navbar.challenges')}</TabsTrigger>
+          <TabsTrigger value="challenges">{t('navigation.profile_social_tab_navbar.challenges')}</TabsTrigger>
         ) : null}
       </TabsList>
       <TabsContent value="badges">
