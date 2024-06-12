@@ -28,7 +28,7 @@
     "@hive/transaction": "*",
     "@hive/tsconfig": "*",
     "@hive/ui": "*",
-    "@hiveio/content-renderer": "^2.1.1",
+    "@hiveio/content-renderer": "^2.2.0",
     "@hiveio/dhive": "^1.2.8",
     "@hiveio/wax": "^0.3.8-stable.240604171105",
     "@hookform/resolvers": "^3.1.1",
