@@ -33,7 +33,7 @@ const SiteHeader: FC = () => {
   const { user } = useUser();
   const { manabarsData } = useManabars(user.username);
   const { data, isLoading, isError } = useQuery(
-    [['unreadNotifications', user.username]],
+    ['unreadNotifications', user.username],
     () => getUnreadNotifications(user.username),
     {
       enabled: !!user.username

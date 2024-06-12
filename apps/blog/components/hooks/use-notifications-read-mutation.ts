@@ -24,6 +24,10 @@ export function useMarkAllNotificationsAsReadMutation() {
     },
     onSuccess: (data) => {
       logger.info('useMarkAllNotificationsAsReadMutation onSuccess data: %o', data);
+      const { username } = user;
+      queryClient.invalidateQueries({ queryKey: ['AccountNotification', username] });
+      queryClient.invalidateQueries({ queryKey: ['AccountNotificationMoreData', username] });
+      queryClient.invalidateQueries({ queryKey: ['unreadNotifications', username] });
     }
   });
 

@@ -37,7 +37,7 @@ const NotificationActivities = ({
   const claimRewardMutation = useClaimRewardMutation();
 
   const { data: unreadNotifications } = useQuery(
-    [['unreadNotifications', user?.username]],
+    ['unreadNotifications', user?.username],
     () => getUnreadNotifications(user?.username || ''),
     {
       enabled: !!user?.username
