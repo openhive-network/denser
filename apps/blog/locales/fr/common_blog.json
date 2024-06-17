@@ -209,7 +209,7 @@
     "cancel_button": "Annuler",
     "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password."
   },
-  "user_profil": {
+  "user_profile": {
     "reputation": "Réputation",
     "follow_button": "Suivre",
     "mute_button": "Muet",

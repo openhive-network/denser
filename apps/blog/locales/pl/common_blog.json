@@ -222,7 +222,7 @@
     "cancel_button": "Anuluj",
     "this_operation_requires_your_key_or_master_password": "Ta operacja wymaga twojego klucza {{authType}} lub hasła głównego."
   },
-  "user_profil": {
+  "user_profile": {
     "reputation": "Reputacja",
     "follow_button": "Obserwuj",
     "mute_button": "Blokuj",

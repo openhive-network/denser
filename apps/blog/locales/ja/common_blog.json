@@ -209,7 +209,7 @@
     "cancel_button": "キャンセル",
     "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password."
   },
-  "user_profil": {
+  "user_profile": {
     "reputation": "評価",
     "follow_button": "フォロー",
     "mute_button": "ミュート",
