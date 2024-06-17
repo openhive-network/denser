@@ -37,10 +37,10 @@ const UserCommunities = ({ hivebuzz, peakd, errorCode = 0 }: { hivebuzz: Badge[]
           className="text-xl font-semibold text-slate-900 dark:text-white"
           data-testid="community-subscriptions-label"
         >
-          {t('user_profil.social_tab.community_subscriptions_title')}
+          {t('user_profile.social_tab.community_subscriptions_title')}
         </h2>
         <p data-testid="community-subscriptions-description">
-          {t('user_profil.social_tab.the_author_has_subscribed_to_the_following')}
+          {t('user_profile.social_tab.the_author_has_subscribed_to_the_following')}
         </p>
         {data && data.length > 0 ? (
           <SubscriptionList data={data} />
@@ -50,17 +50,17 @@ const UserCommunities = ({ hivebuzz, peakd, errorCode = 0 }: { hivebuzz: Badge[]
             className="my-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
             data-testid="user-does-not-have-any-subscriptions-yet"
           >
-            {t('user_profil.social_tab.you_dont_have_any_subscriptions')}
+            {t('user_profile.social_tab.you_dont_have_any_subscriptions')}
           </div>
         )}
         <h2
           className="text-xl font-semibold text-slate-900 dark:text-white"
           data-testid="badges-achievements-label"
         >
-          {t('user_profil.social_tab.badges_and_achievements_title')}
+          {t('user_profile.social_tab.badges_and_achievements_title')}
         </h2>
         <p data-testid="badges-achievements-description">
-          {t('user_profil.social_tab.these_are_badges_received_by_the_author')}
+          {t('user_profile.social_tab.these_are_badges_received_by_the_author')}
           <Link href="https://peakd.com/" className="text-red-600 hover:underline" target="_blank">
             Peakd
           </Link>

@@ -72,7 +72,7 @@ const FollowButton = ({
           }}
           disabled={list.isLoading || list.isFetching}
         >
-          {isFollow ? t('user_profil.unfollow_button') : t('user_profil.follow_button')}
+          {isFollow ? t('user_profile.unfollow_button') : t('user_profile.follow_button')}
         </Button>
       ) : (
         <DialogLogin>
@@ -82,7 +82,7 @@ const FollowButton = ({
             size="sm"
             data-testid="profile-follow-button"
           >
-            {t('user_profil.follow_button')}
+            {t('user_profile.follow_button')}
           </Button>
         </DialogLogin>
       )}

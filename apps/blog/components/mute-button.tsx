@@ -68,7 +68,7 @@ const MuteButton = ({
           }}
           disabled={list.isLoading || list.isFetching}
         >
-          {isMute ? t('user_profil.unmute_button') : t('user_profil.mute_button')}
+          {isMute ? t('user_profile.unmute_button') : t('user_profile.mute_button')}
         </Button>
       ) : (
         <DialogLogin>
@@ -78,7 +78,7 @@ const MuteButton = ({
             size="sm"
             data-testid="profile-mute-button"
           >
-            {t('user_profil.mute_button')}
+            {t('user_profile.mute_button')}
           </Button>
         </DialogLogin>
       )}

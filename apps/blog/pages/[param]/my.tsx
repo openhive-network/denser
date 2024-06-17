@@ -153,9 +153,9 @@ const MyPage: FC = () => {
                     {isFetchingNextPage ? (
                       <PostSkeleton />
                     ) : hasNextPage ? (
-                      t('user_profil.load_newer')
+                      t('user_profile.load_newer')
                     ) : (
-                      t('user_profil.nothing_more_to_load')
+                      t('user_profile.nothing_more_to_load')
                     )}
                   </button>
                 </div>

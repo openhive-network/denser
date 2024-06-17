@@ -106,7 +106,7 @@ export function PopoverCardData({ author, blacklist }: { author: string; blackli
               <div className="flex justify-center text-xs">
                 {t('post_content.header.hover_author.joined')} {dateToShow(account.data.created, t)}
                 <span className="mx-1">•</span>
-                {t('user_profil.active') + ' ' + dateToFullRelative(account.data.last_vote_time, t)}
+                {t('user_profile.active') + ' ' + dateToFullRelative(account.data.last_vote_time, t)}
               </div>
             </>
           ) : null}

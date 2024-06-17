@@ -265,9 +265,9 @@ const ParamPage: FC = () => {
                     {isFetchingNextPage ? (
                       <PostSkeleton />
                     ) : hasNextPage ? (
-                      t('user_profil.load_newer')
+                      t('user_profile.load_newer')
                     ) : (
-                      t('user_profil.nothing_more_to_load')
+                      t('user_profile.nothing_more_to_load')
                     )}
                   </button>
                 </div>
@@ -310,7 +310,7 @@ const ParamPage: FC = () => {
                   className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
                   data-testid="user-has-not-started-blogging-yet"
                 >
-                  {t('user_profil.no_blogging_yet', { username: username })}
+                  {t('user_profile.no_blogging_yet', { username: username })}
                 </div>
               )}
               <div>
@@ -322,9 +322,9 @@ const ParamPage: FC = () => {
                   {accountIsFetchingNextPage ? (
                     <PostSkeleton />
                   ) : accountHasNextPage ? (
-                    t('user_profil.load_newer')
+                    t('user_profile.load_newer')
                   ) : accountEntriesData.pages[0] && accountEntriesData.pages[0].length > 0 ? (
-                    t('user_profil.nothing_more_to_load')
+                    t('user_profile.nothing_more_to_load')
                   ) : null}
                 </button>
               </div>

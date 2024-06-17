@@ -163,9 +163,9 @@ const FeedPage: FC = () => {
                       {accountIsFetchingNextPage ? (
                         <PostSkeleton />
                       ) : accountHasNextPage ? (
-                        t('user_profil.load_newer')
+                        t('user_profile.load_newer')
                       ) : accountEntriesData.pages[0] && accountEntriesData.pages[0].length > 0 ? (
-                        t('user_profil.nothing_more_to_load')
+                        t('user_profile.nothing_more_to_load')
                       ) : null}
                     </button>
                   ) : null}

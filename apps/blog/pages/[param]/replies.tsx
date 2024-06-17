@@ -61,7 +61,7 @@ export default function UserReplies() {
                 className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
                 data-testid="user-has-not-had-any-replies-yet"
               >
-                {t('user_profil.no_replies_yet', { username: username })}
+                {t('user_profile.no_replies_yet', { username: username })}
               </div>
             );
           })}
@@ -70,9 +70,9 @@ export default function UserReplies() {
               {isFetchingNextPage ? (
                 <PostSkeleton />
               ) : hasNextPage ? (
-                t('user_profil.load_newer')
+                t('user_profile.load_newer')
               ) : data.pages[0] && data.pages[0].length > 0 ? (
-                t('user_profil.nothing_more_to_load')
+                t('user_profile.nothing_more_to_load')
               ) : null}
             </button>
           </div>

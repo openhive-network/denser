@@ -32,7 +32,7 @@ export default function UserNotifications() {
             className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
             data-testid="user-has-not-had-any-notifications-yet"
           >
-            {t('user_profil.no_notifications_yet', { username: username })}
+            {t('user_profile.no_notifications_yet', { username: username })}
           </div>
         )}
       </div>

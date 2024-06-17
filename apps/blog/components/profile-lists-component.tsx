@@ -215,26 +215,26 @@ export default function ProfileLists({
         <Accordion type="single" collapsible className="w-1/3 text-center">
           <AccordionItem value="item-1">
             <AccordionTrigger className="justify-center text-center text-xl ">
-              {t('user_profil.lists.list.what_is_this')}
+              {t('user_profile.lists.list.what_is_this')}
             </AccordionTrigger>
             <AccordionContent>
-              {t('user_profil.lists.list.show_or_hide_descripton_one')}
+              {t('user_profile.lists.list.show_or_hide_descripton_one')}
               <Link href={`/@/settings`} className="text-red-600">
-                {t('user_profil.lists.list.settings')}
+                {t('user_profile.lists.list.settings')}
               </Link>
-              {t('user_profil.lists.list.show_or_hide_descripton_two')}
+              {t('user_profile.lists.list.show_or_hide_descripton_two')}
             </AccordionContent>
           </AccordionItem>
         </Accordion>
         <h1 className="text-xl font-bold">
           {variant === 'blacklisted'
-            ? t('user_profil.lists.list.accounts_blacklisted_by', { username: username })
+            ? t('user_profile.lists.list.accounts_blacklisted_by', { username: username })
             : variant === 'muted'
-              ? t('user_profil.lists.list.accounts_muted_by', { username: username })
+              ? t('user_profile.lists.list.accounts_muted_by', { username: username })
               : variant === 'followedBlacklist'
-                ? t('user_profil.lists.followed_blacklists')
+                ? t('user_profile.lists.followed_blacklists')
                 : variant === 'followedMute'
-                  ? t('user_profil.lists.followed_muted_lists')
+                  ? t('user_profile.lists.followed_muted_lists')
                   : null}
         </h1>
         <p
@@ -242,17 +242,17 @@ export default function ProfileLists({
             hidden: variant === 'followedBlacklist' || variant === 'followedMute'
           })}
         >
-          {t('user_profil.lists.list.list_description')}
+          {t('user_profile.lists.list.list_description')}
           {variant === 'blacklisted' && profilData?.profile?.blacklist_description
             ? profilData?.profile?.blacklist_description
             : variant === 'muted' && profilData?.profile?.muted_list_description
               ? profilData?.profile?.muted_list_description
-              : t('user_profil.lists.list.description_not_added')}
+              : t('user_profile.lists.list.description_not_added')}
         </p>
         <ul className="flex flex-col ">
           {data && data.length === 0 ? (
             <li className="bg-slate-200 p-4 text-center text-sm font-bold dark:bg-slate-900 ">
-              {t('user_profil.lists.list.empty_list')}
+              {t('user_profile.lists.list.empty_list')}
             </li>
           ) : splitArrays.length > 0 ? (
             splitArrays[page].map((e: IFollowList) => (
@@ -276,13 +276,13 @@ export default function ProfileLists({
                     }}
                   >
                     {variant === 'blacklisted'
-                      ? t('user_profil.lists.list.unblacklist')
+                      ? t('user_profile.lists.list.unblacklist')
                       : variant === 'muted'
-                        ? t('user_profil.lists.list.unmute')
+                        ? t('user_profile.lists.list.unmute')
                         : variant === 'followedBlacklist'
-                          ? t('user_profil.lists.list.unfollow_blacklist')
+                          ? t('user_profile.lists.list.unfollow_blacklist')
                           : variant === 'followedMute'
-                            ? t('user_profil.lists.list.unfollow_muted_list')
+                            ? t('user_profile.lists.list.unfollow_muted_list')
                             : null}
                   </Button>
                 ) : null}
@@ -293,10 +293,10 @@ export default function ProfileLists({
         {splitArrays.length > 1 ? (
           <div className="flex gap-2">
             <Button variant="outlineRed" disabled={page === 0} size="sm" onClick={() => setPage(0)}>
-              {t('user_profil.lists.list.first_button')}
+              {t('user_profile.lists.list.first_button')}
             </Button>{' '}
             <Button variant="outlineRed" disabled={page === 0} size="sm" onClick={() => setPage(page - 1)}>
-              {t('user_profil.lists.list.previous_button')}
+              {t('user_profile.lists.list.previous_button')}
             </Button>
             <Button
               variant="outlineRed"
@@ -304,7 +304,7 @@ export default function ProfileLists({
               size="sm"
               onClick={() => setPage(page + 1)}
             >
-              {t('user_profil.lists.list.next_button')}
+              {t('user_profile.lists.list.next_button')}
             </Button>
             <Button
               variant="outlineRed"
@@ -312,20 +312,20 @@ export default function ProfileLists({
               size="sm"
               onClick={() => setPage(splitArrays.length - 1)}
             >
-              {t('user_profil.lists.list.last_button')}
+              {t('user_profile.lists.list.last_button')}
             </Button>
           </div>
         ) : null}
         {splitArrays.length > 1 ? (
           <div className="text-sm">
-            {t('user_profil.lists.list.viewing_page', { current: page + 1, total: splitArrays.length })}
+            {t('user_profile.lists.list.viewing_page', { current: page + 1, total: splitArrays.length })}
           </div>
         ) : null}
         {data && data.length > 0 ? <div className="text-sm"></div> : null}
         {userOwner ? (
           <div className="flex flex-col items-center">
-            <h1 className="text-xl font-bold">{t('user_profil.lists.list.add_account_to_list')}</h1>
-            <span className="text-sm">{t('user_profil.lists.list.single_account')}</span>
+            <h1 className="text-xl font-bold">{t('user_profile.lists.list.add_account_to_list')}</h1>
+            <span className="text-sm">{t('user_profile.lists.list.single_account')}</span>
             <div className="flex w-full justify-center bg-slate-200 p-2 dark:bg-slate-900">
               <Input
                 className="bg-white sm:w-3/4"
@@ -340,18 +340,18 @@ export default function ProfileLists({
                   addToList(addValue, variant), setAddValue('');
                 }}
               >
-                {t('user_profil.lists.list.add_to_list')}
+                {t('user_profile.lists.list.add_to_list')}
               </Button>
             ) : null}
           </div>
         ) : null}
-        <h1 className="text-xl font-bold">{t('user_profil.lists.list.search_this_list')}</h1>
+        <h1 className="text-xl font-bold">{t('user_profile.lists.list.search_this_list')}</h1>
         <div className="flex  justify-center bg-slate-200 p-2 dark:bg-slate-900 sm:w-1/3">
           <Input onChange={(e) => onSearchChange(e.target.value)} className="bg-white sm:w-3/4" />
         </div>
         {userOwner ? (
           <div className="flex flex-col items-center gap-2">
-            <h1 className="text-xl font-bold">{t('user_profil.lists.list.reset_options')}</h1>
+            <h1 className="text-xl font-bold">{t('user_profile.lists.list.reset_options')}</h1>
             <div className="flex gap-2">
               <Button
                 onClick={() => {
@@ -362,17 +362,17 @@ export default function ProfileLists({
                 className="text-xs"
               >
                 {variant === 'blacklisted'
-                  ? t('user_profil.lists.list.reset_blacklist')
+                  ? t('user_profile.lists.list.reset_blacklist')
                   : variant === 'muted'
-                    ? t('user_profil.lists.list.reset_muted_list')
+                    ? t('user_profile.lists.list.reset_muted_list')
                     : variant === 'followedBlacklist'
-                      ? t('user_profil.lists.list.reset_followed_blacklists')
+                      ? t('user_profile.lists.list.reset_followed_blacklists')
                       : variant === 'followedMute'
-                        ? t('user_profil.lists.list.reset_followed_muted_list')
+                        ? t('user_profile.lists.list.reset_followed_muted_list')
                         : null}
               </Button>
               <Button onClick={() => transactionService.resetAllBlog()} size="sm" className="text-xs">
-                {t('user_profil.lists.list.reset_all_lists')}
+                {t('user_profile.lists.list.reset_all_lists')}
               </Button>
             </div>
           </div>

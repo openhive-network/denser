@@ -42,7 +42,7 @@ export default function Followers() {
     <ProfileLayout>
       <div className="flex flex-col gap-2 p-2">
         <h1 className="self-center p-2">
-          {t('user_profil.lists.followers_pages', {
+          {t('user_profile.lists.followers_pages', {
             current: page + 1,
             total: profileData?.follow_stats?.follower_count
               ? Math.ceil(profileData?.follow_stats?.follower_count / LIMIT)
@@ -80,7 +80,7 @@ export default function Followers() {
           isLoading={followersData.isFetchingNextPage}
         />
         <h1 className="self-center p-2">
-          {t('user_profil.lists.followers_pages', {
+          {t('user_profile.lists.followers_pages', {
             current: page + 1,
             total: profileData?.follow_stats?.follower_count
               ? Math.ceil(profileData?.follow_stats?.follower_count / LIMIT)
