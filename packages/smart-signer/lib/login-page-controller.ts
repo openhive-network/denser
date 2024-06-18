@@ -9,8 +9,9 @@ export const loginPageController = async (ctx: GetServerSidePropsContext) => {
     const { req, res } = ctx;
     const slug = ctx.query.slug as string;
     if (slug) {
-      const { uid, prompt, params, session, returnTo } = await oidc.interactionDetails(req, res);
-      logger.info('Login page: %o', {
+      const { uid, prompt, params, session, returnTo } =
+          await oidc.interactionDetails(req, res);
+      logger.info('loginPageController details: %o', {
         slug,
         uid,
         prompt,
@@ -19,7 +20,7 @@ export const loginPageController = async (ctx: GetServerSidePropsContext) => {
         returnTo
       });
     } else {
-      logger.info('Login page: no slug');
+      logger.info('loginPageController: no slug');
     }
   } catch (e) {
     throw e;

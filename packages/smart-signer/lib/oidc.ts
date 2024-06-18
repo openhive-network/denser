@@ -1,4 +1,8 @@
 import Provider, { Configuration } from 'oidc-provider';
+import { siteConfig } from '@ui/config/site';
+import { getLogger } from '@hive/ui/lib/logging';
+
+const logger = getLogger('app');
 
 //
 // For example configuration see
@@ -11,7 +15,7 @@ const configuration: Configuration = {
     clients: [{
         client_id: 'foo',
         client_secret: 'bar',
-        redirect_uris: ['http://localhost:5000/cb', 'https://oidcdebugger.com/debug'],
+        redirect_uris: ['https://oidcdebugger.com/debug'],
     }],
     cookies: {
         keys: ['secret-devel-key'],
@@ -21,7 +25,7 @@ const configuration: Configuration = {
     },
     interactions: {
         async url(ctx, interaction) {
-            console.log({interaction});
+            logger.info('interaction: %o', interaction);
             if (interaction.prompt.name === 'login') {
                 return `/interaction/${interaction.uid}/login`;
             }
@@ -62,4 +66,4 @@ const configuration: Configuration = {
     }
 };
 
-export const oidc = new Provider('http://localhost:5000/oidc', configuration);
+export const oidc = new Provider(`${siteConfig.url}/oidc`, configuration);
