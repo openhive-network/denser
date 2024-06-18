@@ -10,6 +10,8 @@ import Methods from './methods/methods';
 export interface SignInFormProps {
   preferredKeyTypes: KeyType[];
   onComplete: () => void;
+  authenticateOnBackend?: boolean,
+  strict?: boolean; // if true use strict authentication
   i18nNamespace?: string;
 }
 
@@ -21,7 +23,7 @@ export enum Steps {
 }
 
 const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
-  ({ preferredKeyTypes, onComplete, i18nNamespace = 'smart-signer' }, ref) => {
+  ({ preferredKeyTypes, onComplete, authenticateOnBackend = false, strict = false, i18nNamespace = 'smart-signer' }: SignInFormProps, ref) => {
     // component controllers
     const [step, setStep] = useState<Steps>(Steps.SAFE_STORAGE_LOGIN);
     const { t } = useTranslation(i18nNamespace);
@@ -42,7 +44,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
     // Final form handlers.
     // TODO Some arguments for useProcessAuth should be read from env variables.
     // TODO: replace with function
-    const { submitAuth, signAuth, isSigned } = useProcessAuth(t, false, false);
+    const { submitAuth, signAuth, isSigned } = useProcessAuth(t, authenticateOnBackend, strict);
 
     async function sign(loginType: LoginType, username: string, keyType: KeyType): Promise<void> {
       const schema: LoginFormSchema = {

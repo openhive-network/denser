@@ -29,8 +29,8 @@ export default function LoginPage() {
           ref={signInFormRef}
           preferredKeyTypes={[KeyType.posting]}
           onComplete={onComplete}
-          // authenticateOnBackend={true}
-          // strict={true}
+          authenticateOnBackend={true}
+          strict={true}
         />
       </div>
     </div>
