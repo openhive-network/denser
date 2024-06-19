@@ -40,11 +40,15 @@ const RendererContainer = ({
     });
     const nodes = ref.current?.querySelectorAll('a.link-external');
     nodes?.forEach((n) => n.addEventListener('click', handleClick));
-    const links = ref.current?.querySelectorAll('a');
-    links?.forEach((l) => {
-      l.addEventListener('click', handleClick), (l.className = 'break-all');
-    });
+
     if (communityDescription) {
+      const code_block = ref.current?.querySelectorAll('code');
+      console.log(code_block);
+      code_block?.forEach((c) => (c.className = 'whitespace-normal'));
+      const links = ref.current?.querySelectorAll('a');
+      links?.forEach((l) => {
+        l.addEventListener('click', handleClick), (l.className = 'break-all');
+      });
       const iframes = ref.current?.querySelectorAll('iframe');
       iframes?.forEach((n) => {
         const srcText = document.createTextNode(n.src);
