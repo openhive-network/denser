@@ -35,7 +35,7 @@ const CommunityDescription = ({
     setIsSubscribed(data.context.subscribed);
   }, [data.context.subscribed]);
   return (
-    <div className="flex w-auto max-w-[240px] flex-col">
+    <div className="flex w-full max-w-[240px] flex-col">
       <Card
         className={cn('my-4 hidden h-fit w-auto flex-col px-4 dark:bg-background/95 dark:text-white md:flex')}
         data-testid="community-info-sidebar"
@@ -114,7 +114,7 @@ const CommunityDescription = ({
 
             <RendererContainer
               body={data.description}
-              className="preview-description prose-sm w-[13em] break-words"
+              className="preview-description prose-sm"
               dataTestid="community-description-content"
               author=""
               doNotShowImages={false}
@@ -132,7 +132,7 @@ const CommunityDescription = ({
                 data-testid="community-rules-content"
               >
                 {ln2list(data.flag_text).map((x, i) => (
-                  <p key={i + 1} className="w-[13em]">{`${i + 1}. ${x}`}</p>
+                  <p key={i + 1}>{`${i + 1}. ${x}`}</p>
                 ))}
               </div>
             </div>
