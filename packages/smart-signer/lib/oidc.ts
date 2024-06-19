@@ -1,4 +1,4 @@
-import Provider, { Configuration } from 'oidc-provider';
+import Provider, { Configuration, errors } from 'oidc-provider';
 import { siteConfig } from '@ui/config/site';
 import { getLogger } from '@hive/ui/lib/logging';
 
@@ -11,6 +11,20 @@ const logger = getLogger('app');
 // 2. https://github.com/ebrahimmfadae/openid-connect-app
 //
 
+const corsOrigins = 'urn:custom:client:allowed-cors-origins';
+const isOrigin = (value: string) => {
+    if (typeof value !== 'string') {
+        return false;
+    }
+    try {
+        const { origin } = new URL(value);
+        // Origin: <scheme> "://" <hostname> [ ":" <port> ]
+        return value === origin;
+    } catch (err) {
+        return false;
+    }
+}
+
 const configuration: Configuration = {
     clients: [{
         client_id: 'foo',
@@ -18,6 +32,7 @@ const configuration: Configuration = {
         redirect_uris: ['https://oidcdebugger.com/debug'],
         grant_types: ["authorization_code"],
         scope: "openid",
+        "urn:custom:client:allowed-cors-origins": ['https://oidcdebugger.com'],
     }],
     cookies: {
         keys: ['secret-devel-key'],
@@ -67,6 +82,31 @@ const configuration: Configuration = {
         revocation: '/oidc/token/revocation',
         token: '/oidc/token',
         userinfo: '/oidc/me'
+    },
+    extraClientMetadata: {
+        properties: [corsOrigins],
+        validator(ctx, key, value, metadata) {
+            if (key === corsOrigins) {
+                // set default (no CORS)
+                if (value === undefined) {
+                    metadata[corsOrigins] = [];
+                    return;
+                }
+                // validate an array of Origin strings
+                if (!Array.isArray(value) || !value.every(isOrigin)) {
+                    throw new errors.InvalidClientMetadata(`${corsOrigins} must be an array of origins`);
+                }
+            }
+        },
+    },
+    clientBasedCORS: function (ctx, origin, client) {
+        logger.info('clientBasedCORS: %o', { ctx, origin, client });
+
+        // ctx.oidc.route can be used to exclude endpoints from this
+        // behaviour, in that case just return true to always allow CORS
+        // on them, false to deny you may also allow some known internal
+        // origins if you want to
+        return (client[corsOrigins] as string[]).includes(origin);
     }
 };
 

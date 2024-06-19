@@ -17,9 +17,12 @@ export default function ConsentPage() {
   });
 
   return (
-    <div className="flex justify-center">
-      <div className="mt-32 max-w-[380px] rounded-md p-0 sm:mt-auto sm:max-w-[450px] sm:px-0">
-        Consent
+    <div
+      className="mx-2 flex flex-col gap-24 pt-16 sm:flex-row
+        sm:justify-around sm:gap-0"
+    >
+      <div className="flex flex-col gap-3 sm:mr-4 sm:gap-8">
+        <div className="text-lg font-bold sm:text-3xl">Interaction</div>
       </div>
     </div>
   );

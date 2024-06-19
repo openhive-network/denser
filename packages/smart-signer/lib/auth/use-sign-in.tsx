@@ -46,10 +46,6 @@ export function useSignIn() {
     },
     onSuccess: (data) => {
       queryClient.setQueryData([QUERY_KEY.user], data);
-
-      // FIXME Delete this, when you're done.
-      // Login as other user. Only for developers.
-      // queryClient.setQueryData([QUERY_KEY.user], { ...data, ...{ username: 'gtg' } });
     },
     onError: (error) => {
       throw error;

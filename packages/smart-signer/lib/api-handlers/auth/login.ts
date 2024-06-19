@@ -96,10 +96,6 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
     throw new createHttpError.Unauthorized('Invalid username or password');
   }
 
-  // const auth = { posting: result };
-  // if (ctx.session.a === account) loginType = 'resume';
-  // if (auth.posting) ctx.session.a = account;
-
   const user: User = {
     isLoggedIn: true,
     username,

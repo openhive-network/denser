@@ -14,9 +14,9 @@ export default function InteractionPage({
   const router = useRouter();
   const uid = router.query.slug;
 
-  // if (redirectTo) {
-  //   router.push(redirectTo);
-  // }
+  if (redirectTo) {
+    router.push(redirectTo);
+  }
 
   return (
     <div
@@ -33,53 +33,6 @@ export default function InteractionPage({
 // export async function getServerSideProps<GetServerSideProps>({ req, res }) {
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   let redirectTo = '';
-  try {
-    // const {
-    //   uid, prompt, params, session,
-    // } = await oidc.interactionDetails(req, res);
-    // logger.info({
-    //   uid, prompt, params, session,
-    // });
-    //   if (prompt.name === 'login') {
-    //     // return ctx.render('login', {
-    //     //   uid,
-    //     //   details: prompt.details,
-    //     //   params,
-    //     //   session: session ? debug(session) : undefined,
-    //     //   title: 'Sign-In',
-    //     //   dbg: {
-    //     //     params: debug(params),
-    //     //     prompt: debug(prompt),
-    //     //   },
-    //     // })
-    //     redirectTo = '/login';
-    //     // redirect('/login');
-    //     return {
-    //       redirect: {
-    //         destination: '/login',
-    //         permanent: false,
-    //       },
-    //     };
-    //   } else if (prompt.name === 'consent') {
-    //     // return ctx.render('consent', {
-    //     //   uid,
-    //     //   title: 'Authorize',
-    //     //   clientId: params.client_id,
-    //     //   scope: params.scope.replace(/ /g, ', '),
-    //     //   session: session ? debug(session) : undefined,
-    //     //   dbg: {
-    //     //     params: debug(params),
-    //     //     prompt: debug(prompt),
-    //     //   },
-    //     // })
-    //     throw new createHttpError.NotImplemented();
-    //   } else {
-    //     throw new createHttpError.NotImplemented();
-    //   }
-  } catch (err) {
-    throw err;
-  }
-
   return {
     props: {
       redirectTo,
