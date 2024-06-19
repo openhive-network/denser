@@ -30,10 +30,21 @@ const RendererContainer = ({
     setLink(anchor.href);
     setOpen(true);
   };
-
+  const community = true;
   useEffect(() => {
+    const elementsWithVideoWrapper = document.querySelectorAll('.videoWrapper');
+    elementsWithVideoWrapper.forEach((element) => {
+      element.classList.remove('videoWrapper');
+    });
     const nodes = ref.current?.querySelectorAll('a.link-external');
     nodes?.forEach((n) => n.addEventListener('click', handleClick));
+    if (community) {
+      const iframes = ref.current?.querySelectorAll('iframe');
+      iframes?.forEach((n) => {
+        const srcText = document.createTextNode(n.src);
+        n.replaceWith(srcText);
+      });
+    }
 
     return () => {
       nodes?.forEach((n) => n.removeEventListener('click', handleClick));
