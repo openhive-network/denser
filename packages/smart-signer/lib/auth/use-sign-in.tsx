@@ -17,7 +17,7 @@ const logger = getLogger('app');
  * @returns {Promise<User>}
  */
 async function signInBackend(data: PostLoginSchema, uid: string = ''): Promise<User> {
-  const url = uid ? `/api/auth/login/${uid}` : '/api/auth/login';
+  const url = uid ? `/interaction/${uid}/login` : '/api/auth/login';
   return await fetchJson(url, {
     method: 'POST',
     headers: [

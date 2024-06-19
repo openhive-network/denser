@@ -12,30 +12,27 @@ import { checkCsrfHeader } from '@smart-signer/lib/csrf-protection';
 import { verifyLoginChallenge } from '@smart-signer/lib/verify-login-challenge';
 import { verifyLogin } from '@smart-signer/lib/verify-login';
 import { getLoginChallengeFromTransactionForLogin } from '@smart-signer/lib/login-operation'
-
+import assert from 'node:assert';
 import { getLogger } from '@hive/ui/lib/logging';
+
 const logger = getLogger('app');
 
 
 export const loginUser: NextApiHandler<User> = async (req, res) => {
   checkCsrfHeader(req);
 
+  // Validate if there's oidc session for given slug and if prompt.name
+  // is correct. Throw error if not.
   const { slug } = req.query;
-  // try {
-  //   if (slug) {
-  //     const {
-  //       uid, prompt, params, session, returnTo,
-  //     } = await oidc.interactionDetails(req, res);
-  //     logger.info('api loginUser: %o', {
-  //       slug, uid, prompt, params, session, returnTo,
-  //     });
-  //   } else {
-  //     logger.info('api loginUser: no slug');
-  //   }
-  // } catch(e) {
-  //   // throw e;
-  //   logger.error(e);
-  // }
+  if (slug) {
+    try {
+      const { prompt: { name } } = await oidc.interactionDetails(req, res);
+      assert.strictEqual(name, 'login');
+    } catch (error) {
+      logger.error(error);
+      throw new createHttpError.BadRequest();
+    }
+  }
 
   const loginChallenge = req.cookies[`${cookieNamePrefix}login_challenge_server`] || '';
 
@@ -88,7 +85,6 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
         error: 'access_denied',
         error_description: 'Username or password is incorrect.'
       };
-      // redirect('oidc/auth/' + slug[0]);
       try {
         return await oidc.interactionFinished(req, res, oidcResult, {
           mergeWithLastSubmission: false
@@ -100,7 +96,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
     throw new createHttpError.Unauthorized('Invalid username or password');
   }
 
-  const auth = { posting: result };
+  // const auth = { posting: result };
   // if (ctx.session.a === account) loginType = 'resume';
   // if (auth.posting) ctx.session.a = account;
 
@@ -115,5 +111,17 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
   session.user = user;
   await session.save();
-  res.json(user);
+
+  if (slug) {
+    return await oidc.interactionFinished(req, res,
+      {
+        login: {
+          accountId: user.username,
+        },
+      },
+      { mergeWithLastSubmission: false }
+    );
+  } else {
+    res.json(user);
+  }
 };

@@ -16,6 +16,8 @@ const configuration: Configuration = {
         client_id: 'foo',
         client_secret: 'bar',
         redirect_uris: ['https://oidcdebugger.com/debug'],
+        grant_types: ["authorization_code"],
+        scope: "openid",
     }],
     cookies: {
         keys: ['secret-devel-key'],
@@ -28,6 +30,8 @@ const configuration: Configuration = {
             logger.info('interaction: %o', interaction);
             if (interaction.prompt.name === 'login') {
                 return `/interaction/${interaction.uid}/login`;
+            } else if (interaction.prompt.name === 'consent') {
+                return `/interaction/${interaction.uid}/consent`;
             }
             return `/interaction/${interaction.uid}`;
         },
@@ -66,4 +70,6 @@ const configuration: Configuration = {
     }
 };
 
-export const oidc = new Provider(`${siteConfig.url}/oidc`, configuration);
+const oidcInstance = new Provider(`${siteConfig.url}/oidc`, configuration);
+oidcInstance.proxy = true;
+export const oidc = oidcInstance;

@@ -2,10 +2,13 @@ import { useRef } from 'react';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { getTranslations } from '@/auth/lib/get-translations';
 import { loginPageController } from '@smart-signer/lib/login-page-controller';
 import SignInForm, { SignInFormRef } from '@smart-signer/components/auth/form';
 import { KeyType } from '@smart-signer/types/common';
+import login from './api/auth/login';
+import { getLogger } from '@ui/lib/logging';
+
+const logger = getLogger('app');
 
 export default function LoginPage() {
   const router = useRouter();
@@ -38,10 +41,6 @@ export default function LoginPage() {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  return {
-    props: {
-      ...(await loginPageController(ctx)),
-      ...(await getTranslations(ctx))
-    }
-  };
+  logger.info('login page getServerSideProps');
+  return await loginPageController(ctx);
 };
