@@ -118,6 +118,7 @@ const CommunityDescription = ({
               dataTestid="community-description-content"
               author=""
               doNotShowImages={false}
+              communityDescription={true}
             />
           </div>
 

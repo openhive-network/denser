@@ -11,13 +11,15 @@ const RendererContainer = ({
   className,
   author,
   doNotShowImages,
-  dataTestid
+  dataTestid,
+  communityDescription
 }: {
   body: string;
   className: string;
   author: string;
   doNotShowImages: boolean;
   dataTestid?: string;
+  communityDescription?: boolean;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
@@ -30,7 +32,7 @@ const RendererContainer = ({
     setLink(anchor.href);
     setOpen(true);
   };
-  const community = true;
+
   useEffect(() => {
     const elementsWithVideoWrapper = document.querySelectorAll('.videoWrapper');
     elementsWithVideoWrapper.forEach((element) => {
@@ -38,7 +40,11 @@ const RendererContainer = ({
     });
     const nodes = ref.current?.querySelectorAll('a.link-external');
     nodes?.forEach((n) => n.addEventListener('click', handleClick));
-    if (community) {
+    const links = ref.current?.querySelectorAll('a');
+    links?.forEach((l) => {
+      l.addEventListener('click', handleClick), (l.className = 'break-all');
+    });
+    if (communityDescription) {
       const iframes = ref.current?.querySelectorAll('iframe');
       iframes?.forEach((n) => {
         const srcText = document.createTextNode(n.src);
