@@ -150,7 +150,7 @@ export function AdvancedSettingsPostForm({
       if (template.maxAcceptedPayout === 0) {
         setMaxPayout('0');
       }
-      if (Number(template.maxAcceptedPayout)) {
+      if (Number(template.maxAcceptedPayout) > 0 && Number(template.maxAcceptedPayout) < 1000000 ) {
         setMaxPayout('custom');
         setCustomValue(Number(template.maxAcceptedPayout));
       }
