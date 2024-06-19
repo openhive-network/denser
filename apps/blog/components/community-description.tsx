@@ -114,7 +114,7 @@ const CommunityDescription = ({
 
             <RendererContainer
               body={data.description}
-              className="preview-description prose-sm w-[13em] break-words 2xl:w-fit"
+              className="preview-description prose-sm w-[13em] break-words"
               dataTestid="community-description-content"
               author=""
               doNotShowImages={false}
@@ -127,9 +127,12 @@ const CommunityDescription = ({
               <h6 className="my-1.5 font-semibold leading-none tracking-tight">
                 {t('communities.titles.rules')}
               </h6>
-              <div className="preview-rules prose-sm" data-testid="community-rules-content">
+              <div
+                className="preview-rules prose-sm whitespace-normal break-words"
+                data-testid="community-rules-content"
+              >
                 {ln2list(data.flag_text).map((x, i) => (
-                  <p key={i + 1}>{`${i + 1}. ${x}`}</p>
+                  <p key={i + 1} className="w-[13em]">{`${i + 1}. ${x}`}</p>
                 ))}
               </div>
             </div>
