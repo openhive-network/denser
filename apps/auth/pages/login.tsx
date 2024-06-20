@@ -5,7 +5,6 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { loginPageController } from '@smart-signer/lib/login-page-controller';
 import SignInForm, { SignInFormRef } from '@smart-signer/components/auth/form';
 import { KeyType } from '@smart-signer/types/common';
-import login from './api/auth/login';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
@@ -24,12 +23,16 @@ export default function LoginPage() {
 
   const onComplete = async (username: string) => {
     if (slug) {
+
+      //
+      // TODO Value for `redirectTo` should be delivered via
+      // getServerSideProps (read from oidc server oauth flow).
+      //
+
       const redirectTo = `/oidc/auth/${slug}`;
       logger.info('onComplete redirecting to: %s', redirectTo);
       router.push(redirectTo);
-      return;
     }
-    router.push('/');
   }
 
   return (

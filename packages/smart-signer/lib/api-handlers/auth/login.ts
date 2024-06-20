@@ -1,7 +1,6 @@
 import createHttpError from 'http-errors';
 import { NextApiHandler } from 'next';
 import { getIronSession } from 'iron-session';
-import { oidc } from '@smart-signer/lib/oidc';
 import { sessionOptions } from '@smart-signer/lib/session';
 import { getAccount } from '@transaction/lib/hive';
 import { postLoginSchema, PostLoginSchema } from '@smart-signer/lib/auth/utils';
