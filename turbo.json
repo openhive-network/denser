@@ -26,6 +26,12 @@
     "pw:test:local:firefox": {},
     "pw:test:local:webkit": {},
     "pw:test:local:experimental:ui": {},
+    "pw:test:testnet:local": {},
+    "pw:test:testnet:local:chromium": {},
+    "pw:test:testnet:local:firefox": {},
+    "pw:test:testnet:local:webkit": {},
+    "pw:test:testnet:local:experimental:ui": {},
+
     "lint": {}
   }
 }

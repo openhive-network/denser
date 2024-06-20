@@ -17,7 +17,12 @@
     "pw:test:local:chromium": "playwright test --project=chromium --config=playwright.local3000.config.ts --headed  --update-snapshots",
     "pw:test:local:firefox": "playwright test --project=firefox --config=playwright.local3000.config.ts --headed  --update-snapshots",
     "pw:test:local:webkit": "playwright test --project=webkit --config=playwright.local3000.config.ts --headed  --update-snapshots",
-    "pw:test:local:experimental:ui": "playwright test --config=playwright.local3000.config.ts --ui"
+    "pw:test:local:experimental:ui": "playwright test --config=playwright.local3000.config.ts --ui",
+    "pw:test:testnet:local": "playwright test --config=playwright.local3000.testnet.config.ts  --update-snapshots",
+    "pw:test:testnet:local:chromium": "playwright test --project=chromium --config=playwright.local3000.testnet.config.ts --headed  --update-snapshots",
+    "pw:test:testnet:local:firefox": "playwright test --project=firefox --config=playwright.local3000.testnet.config.ts --headed  --update-snapshots",
+    "pw:test:testnet:local:webkit": "playwright test --project=webkit --config=playwright.local3000.testnet.config.ts --headed  --update-snapshots",
+    "pw:test:testnet:local:experimental:ui": "playwright test --config=playwright.local3000.testnet.config.ts --ui"
   },
   "dependencies": {
     "@beam-australia/react-env": "^3.1.1",
