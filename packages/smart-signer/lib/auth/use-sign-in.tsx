@@ -17,7 +17,7 @@ const logger = getLogger('app');
  * @returns {Promise<User>}
  */
 async function signInBackend(data: PostLoginSchema, uid: string = ''): Promise<User> {
-  const url = uid ? `/interaction/${uid}/login` : '/api/auth/login';
+  const url = '/api/auth/login';
   return await fetchJson(url, {
     method: 'POST',
     headers: [
@@ -40,12 +40,14 @@ async function signIn(data: PostLoginSchema, uid: string = ''): Promise<User> {
 export function useSignIn() {
   const queryClient = useQueryClient();
   const signInMutation = useMutation({
-    mutationFn: (params: { data: PostLoginSchema; uid: string }) => {
+    mutationFn: async (params: { data: PostLoginSchema; uid: string }) => {
       const { data, uid } = params;
-      return signIn(data, uid);
+      const user = await signIn(data, uid);
+      return ({ user, uid });
     },
     onSuccess: (data) => {
-      queryClient.setQueryData([QUERY_KEY.user], data);
+      const { user, uid } = data;
+      queryClient.setQueryData([QUERY_KEY.user], user);
     },
     onError: (error) => {
       throw error;

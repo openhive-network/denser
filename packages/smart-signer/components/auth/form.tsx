@@ -9,7 +9,7 @@ import Methods from './methods/methods';
 
 export interface SignInFormProps {
   preferredKeyTypes: KeyType[];
-  onComplete: () => void;
+  onComplete: (arg0: any) => Promise<any>;
   authenticateOnBackend?: boolean,
   strict?: boolean; // if true use strict authentication
   i18nNamespace?: string;
@@ -59,7 +59,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
     async function submit(username: string): Promise<void> {
       await submitAuth();
       setLastLoggedInUser(username);
-      onComplete();
+      await onComplete(username);
     }
 
     return (

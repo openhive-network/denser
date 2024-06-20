@@ -12,27 +12,13 @@ import { checkCsrfHeader } from '@smart-signer/lib/csrf-protection';
 import { verifyLoginChallenge } from '@smart-signer/lib/verify-login-challenge';
 import { verifyLogin } from '@smart-signer/lib/verify-login';
 import { getLoginChallengeFromTransactionForLogin } from '@smart-signer/lib/login-operation'
-import assert from 'node:assert';
-import { getLogger } from '@hive/ui/lib/logging';
 
+import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
 
 export const loginUser: NextApiHandler<User> = async (req, res) => {
   checkCsrfHeader(req);
-
-  // Validate if there's oidc session for given slug and if prompt.name
-  // is correct. Throw error if not.
-  const { slug } = req.query;
-  if (slug) {
-    try {
-      const { prompt: { name } } = await oidc.interactionDetails(req, res);
-      assert.strictEqual(name, 'login');
-    } catch (error) {
-      logger.error(error);
-      throw new createHttpError.BadRequest();
-    }
-  }
 
   const loginChallenge = req.cookies[`${cookieNamePrefix}login_challenge_server`] || '';
 
@@ -80,21 +66,10 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
   }
 
   if (!result) {
-    if (slug) {
-      const oidcResult = {
-        error: 'access_denied',
-        error_description: 'Username or password is incorrect.'
-      };
-      try {
-        return await oidc.interactionFinished(req, res, oidcResult, {
-          mergeWithLastSubmission: false
-        });
-      } catch (e) {
-        logger.error(e);
-      }
-    }
     throw new createHttpError.Unauthorized('Invalid username or password');
   }
+
+  const auth = { posting: result };
 
   const user: User = {
     isLoggedIn: true,
@@ -107,17 +82,5 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
   session.user = user;
   await session.save();
-
-  if (slug) {
-    return await oidc.interactionFinished(req, res,
-      {
-        login: {
-          accountId: user.username,
-        },
-      },
-      { mergeWithLastSubmission: false }
-    );
-  } else {
-    res.json(user);
-  }
+  res.json(user);
 };

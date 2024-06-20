@@ -11,8 +11,9 @@ import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 export default function LoginPage() {
-  const router = useRouter();
   const signInFormRef = useRef<SignInFormRef>(null);
+  const router = useRouter();
+  const slug = router.query.slug as string;
 
   // Here we just check if user is already logged in and we redirect him
   // to profile page, if he is.
@@ -21,7 +22,13 @@ export default function LoginPage() {
     redirectIfFound: true
   });
 
-  function onComplete() {
+  const onComplete = async (username: string) => {
+    if (slug) {
+      const redirectTo = `/oidc/auth/${slug}`;
+      logger.info('onComplete redirecting to: %s', redirectTo);
+      router.push(redirectTo);
+      return;
+    }
     router.push('/');
   }
 
@@ -41,6 +48,5 @@ export default function LoginPage() {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  logger.info('login page getServerSideProps');
   return await loginPageController(ctx);
 };

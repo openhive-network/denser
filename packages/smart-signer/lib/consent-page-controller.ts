@@ -3,8 +3,6 @@ import { oidc } from '@smart-signer/lib/oidc';
 import { GetServerSideProps } from 'next';
 import { getTranslations } from '@/auth/lib/get-translations';
 import { getLogger } from '@ui/lib/logging';
-import { loginUser } from './api-handlers/auth/login';
-import { parseBody } from "next/dist/server/api-utils/node/parse-body.js"
 
 const logger = getLogger('app');
 
@@ -20,25 +18,6 @@ export const consentPageController: GetServerSideProps = async (ctx) => {
 
   if (req.method === 'POST') {
     // process submission
-    // return redirect(303, '/interaction/' + slug + '/login');
-
-    const myRequest = req;
-    myRequest.query = ctx.query;
-
-    const body = await parseBody(req, "1mb");
-    myRequest.body = body;
-
-
-    return await oidc.interactionFinished(req, res, {accountId: user.username}, {
-      mergeWithLastSubmission: false
-    });
-
-    // return {
-    //   redirect: {
-    //     destination: '/',
-    //     permanent: false,
-    //   },
-    // }
   }
 
   try {
@@ -80,9 +59,12 @@ export const consentPageController: GetServerSideProps = async (ctx) => {
         const grantId = await grant.save();
 
         const result = { consent: { grantId } };
-        await oidc.interactionFinished(ctx.req, ctx.res, result, {
-          mergeWithLastSubmission: true,
-        });
+        await oidc.interactionFinished(
+          ctx.req,
+          ctx.res,
+          result,
+          { mergeWithLastSubmission: true }
+        );
       }
 
 

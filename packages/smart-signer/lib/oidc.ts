@@ -36,6 +36,11 @@ const configuration: Configuration = {
     }],
     cookies: {
         keys: ['secret-devel-key'],
+        names: {
+            session: 'oidc_session',
+            interaction: 'oidc_interaction',
+            resume: 'oidc_resume',
+        },
     },
     features: {
         devInteractions: { enabled: false },
