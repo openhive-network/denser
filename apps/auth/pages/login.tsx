@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, GetServerSidePropsResult, Redirect } from 'next';
 import { useRouter } from 'next/router';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { loginPageController } from '@smart-signer/lib/login-page-controller';
@@ -45,12 +45,13 @@ export default function LoginPage({ redirectTo }: { redirectTo?: string }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const result = await loginPageController(ctx);
+  const result: GetServerSidePropsResult<{ [key: string]: any }> & { redirect?: Redirect, props?: { [key: string]: any } } = await loginPageController(ctx);
   if (Object.hasOwnProperty.call(result, 'props')) {
-    const output = {};
-    output.props = {
-      ...result.props,
-      ...(await getTranslations(ctx)),
+    const output: GetServerSidePropsResult<{ [key: string]: any }> = {
+      props: {
+        ...result.props,
+        ...(await getTranslations(ctx)),
+      },
     };
     return output;
   }

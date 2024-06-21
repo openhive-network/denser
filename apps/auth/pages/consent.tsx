@@ -1,4 +1,4 @@
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, GetServerSidePropsResult, Redirect } from 'next';
 import { consentPageController } from '@smart-signer/lib/consent-page-controller';
 import { getTranslations } from '@/auth/lib/get-translations';
 
@@ -16,12 +16,13 @@ export default function ConsentPage() {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const result = await consentPageController(ctx);
+  const result: GetServerSidePropsResult<{ [key: string]: any }> & { redirect?: Redirect, props?: { [key: string]: any } } = await consentPageController(ctx);
   if (Object.hasOwnProperty.call(result, 'props')) {
-    const output = {};
-    output.props = {
-      ...result.props,
-      ...(await getTranslations(ctx)),
+    const output: GetServerSidePropsResult<{ [key: string]: any }> = {
+      props: {
+        ...result.props,
+        ...(await getTranslations(ctx)),
+      },
     };
     return output;
   }
