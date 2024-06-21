@@ -11,8 +11,8 @@ import { checkCsrfHeader } from '@smart-signer/lib/csrf-protection';
 import { verifyLoginChallenge } from '@smart-signer/lib/verify-login-challenge';
 import { verifyLogin } from '@smart-signer/lib/verify-login';
 import { getLoginChallengeFromTransactionForLogin } from '@smart-signer/lib/login-operation'
-
 import { getLogger } from '@hive/ui/lib/logging';
+
 const logger = getLogger('app');
 
 
@@ -50,8 +50,8 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
       throw new createHttpError[401]('Invalid login challenge');
     }
 
-    // Verify signature in passed transaction.
-    try {
+  // Verify signature in passed transaction.
+  try {
       result = !!(await verifyLogin(data));
     } catch (error) {
       // swallow error
@@ -67,8 +67,6 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
   if (!result) {
     throw new createHttpError.Unauthorized('Invalid username or password');
   }
-
-  const auth = { posting: result };
 
   const user: User = {
     isLoggedIn: true,

@@ -2,14 +2,20 @@ import { GetServerSideProps } from 'next';
 import { getTranslations } from '@/auth/lib/get-translations';
 import LoginPage from '@/auth/pages/login';
 import { loginPageController } from '@smart-signer/lib/login-page-controller';
+import { siteConfig } from '@ui/config/site';
 
 export default LoginPage;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-    return {
-      props: {
-        ...(await loginPageController(ctx)),
-        ...(await getTranslations(ctx)),
-      }
+  if (!siteConfig.oidcEnabled) return { notFound: true };
+  const result = await loginPageController(ctx);
+  if (Object.hasOwnProperty.call(result, 'props')) {
+    const output = {};
+    output.props = {
+      ...result.props,
+      ...(await getTranslations(ctx)),
     };
+    return output;
+  }
+  return result;
 };

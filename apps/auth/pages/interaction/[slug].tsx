@@ -1,10 +1,8 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
-import createHttpError from 'http-errors';
 import { getTranslations } from '@/auth/lib/get-translations';
-import { oidc } from '@smart-signer/lib/oidc';
-import { redirect } from 'next/navigation';
 import { getLogger } from '@ui/lib/logging';
+import { siteConfig } from '@ui/config/site';
 
 const logger = getLogger('app');
 
@@ -12,7 +10,6 @@ export default function InteractionPage({
   redirectTo
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
-  const uid = router.query.slug;
 
   if (redirectTo) {
     router.push(redirectTo);
@@ -30,12 +27,10 @@ export default function InteractionPage({
   );
 }
 
-// export async function getServerSideProps<GetServerSideProps>({ req, res }) {
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  let redirectTo = '';
+  if (!siteConfig.oidcEnabled) return { notFound: true };
   return {
     props: {
-      redirectTo,
       ...(await getTranslations(ctx))
     }
   };

@@ -1,4 +1,4 @@
-import { NextApiHandler, NextApiRequest } from 'next';
+import { NextApiHandler } from 'next';
 import { getIronSession } from 'iron-session';
 import { sessionOptions } from '@smart-signer/lib/session';
 import { defaultUser } from '@smart-signer/lib/auth/utils';
@@ -13,19 +13,19 @@ const logger = getLogger('app');
 export const logoutUser: NextApiHandler<User> = async (req, res) => {
   checkCsrfHeader(req);
 
-  try {
-    // Destroy oidc session
-    // TODO This should be done only if oidc server is enabled.
-    const ctx = oidc.app.createContext(req, res);
-    const oidcSession = await oidc.Session.get(ctx);
-    logger.info('oidcSession: %o', oidcSession);
-    if (oidcSession?.accountId) {
-      logger.info('Destroying oidc session for user: %s',
-          oidcSession?.accountId);
-      await oidcSession.destroy();
+  if (oidc) {
+    try {
+      // Destroy oidc session
+      const ctx = oidc.app.createContext(req, res);
+      const oidcSession = await oidc.Session.get(ctx);
+      if (oidcSession?.accountId) {
+        logger.info('Logout: destroying oidc session for user: %s',
+            oidcSession?.accountId);
+        await oidcSession.destroy();
+      }
+    } catch (error) {
+      logger.error('Logout: error when destroying oidc session: %o', error);
     }
-  } catch (error) {
-    logger.error('Error when destroying oidc session: %o', error);
   }
 
   try {
@@ -34,12 +34,12 @@ export const logoutUser: NextApiHandler<User> = async (req, res) => {
       req, res, sessionOptions
     );
     if (session) {
-      logger.info('Destroying app session for user: %s',
+      logger.info('Logout: destroying app session for user: %s',
           session.user?.username);
       session.destroy();
     }
   } catch (error) {
-    logger.error('Error when destroying app session: %o', error);
+    logger.error('Logout: error when destroying app session: %o', error);
   }
 
   res.json(defaultUser);

@@ -1,23 +1,23 @@
-import { GetServerSidePropsContext } from 'next';
 import { oidc } from '@smart-signer/lib/oidc';
 import { GetServerSideProps } from 'next';
-import { getTranslations } from '@/auth/lib/get-translations';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
 
-
-
 export const consentPageController: GetServerSideProps = async (ctx) => {
-  // logger.info('loginPageController ctx: %o', ctx);
-  const { req, res } = ctx;
-  const slug = ctx.query.slug || '' as string;
+  if (!oidc) {
+    return { props: {} };
+  }
 
-  // only accept GET and POST requests
+  const { req, res } = ctx;
+
+  // Only accept GET and POST requests.
   if (!['GET', 'POST'].includes(req.method || '')) return { notFound: true };
 
+  const slug = ctx.query.slug || '' as string;
+
   if (req.method === 'POST') {
-    // process submission
+    // TODO Process submission
   }
 
   try {
@@ -58,6 +58,7 @@ export const consentPageController: GetServerSideProps = async (ctx) => {
 
         const grantId = await grant.save();
 
+        // Next code redirects to the interaction page.
         const result = { consent: { grantId } };
         await oidc.interactionFinished(
           ctx.req,
@@ -66,8 +67,6 @@ export const consentPageController: GetServerSideProps = async (ctx) => {
           { mergeWithLastSubmission: true }
         );
       }
-
-
     } else {
       logger.info('consentPageController: no slug');
     }
@@ -75,10 +74,5 @@ export const consentPageController: GetServerSideProps = async (ctx) => {
     throw e;
   }
 
-  return {
-    props: {
-      ...(await getTranslations(ctx))
-    }
-  };
-
+  return { props: {} };
 };

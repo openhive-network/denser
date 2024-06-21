@@ -1,21 +1,8 @@
 import { GetServerSideProps } from 'next';
-import { useRouter } from 'next/router';
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import { consentPageController } from '@smart-signer/lib/consent-page-controller';
-import { getLogger } from '@ui/lib/logging';
-
-const logger = getLogger('app');
+import { getTranslations } from '@/auth/lib/get-translations';
 
 export default function ConsentPage() {
-  const router = useRouter();
-
-  // Here we just check if user is already logged in and we redirect him
-  // to profile page, if he is.
-  const { user } = useUser({
-    redirectTo: '/',
-    redirectIfFound: true
-  });
-
   return (
     <div
       className="mx-2 flex flex-col gap-24 pt-16 sm:flex-row
@@ -29,6 +16,14 @@ export default function ConsentPage() {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  logger.info('consent page getServerSideProps');
-  return await consentPageController(ctx);
+  const result = await consentPageController(ctx);
+  if (Object.hasOwnProperty.call(result, 'props')) {
+    const output = {};
+    output.props = {
+      ...result.props,
+      ...(await getTranslations(ctx)),
+    };
+    return output;
+  }
+  return result;
 };

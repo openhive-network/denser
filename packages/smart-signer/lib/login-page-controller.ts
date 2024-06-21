@@ -1,9 +1,6 @@
-import { GetServerSidePropsContext } from 'next';
 import { oidc } from '@smart-signer/lib/oidc';
 import { GetServerSideProps } from 'next';
-import { getTranslations } from '@/auth/lib/get-translations';
 import { getLogger } from '@ui/lib/logging';
-import { loginUser } from './api-handlers/auth/login';
 import { parseBody } from "next/dist/server/api-utils/node/parse-body.js"
 import { getIronSession } from 'iron-session';
 import { IronSessionData } from '@smart-signer/types/common';
@@ -11,11 +8,17 @@ import { sessionOptions } from './session';
 
 const logger = getLogger('app');
 
-
+export interface LoginPageProps {
+  redirectTo?: string
+}
 
 export const loginPageController: GetServerSideProps = async (ctx) => {
-  // logger.info('loginPageController ctx: %o', ctx);
+  if (!oidc) {
+    return { props: {} };
+  }
+
   const { req, res } = ctx;
+
   // only accept GET and POST requests
   if (!['GET', 'POST'].includes(req.method || '')) return { notFound: true };
 
@@ -24,17 +27,7 @@ export const loginPageController: GetServerSideProps = async (ctx) => {
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
   const user = session.user;
 
-
   if (req.method === 'POST') {
-    logger.info('loginPageController POST');
-
-    // const myRequest = req;
-    // myRequest.query = ctx.query;
-
-    // myRequest.body = body;
-    // const user = await loginUser(myRequest, res);
-    // logger.info('loginPageController user: %o', user);
-
     let body;
     try {
       body = JSON.parse(await parseBody(req, "1mb"));
@@ -76,6 +69,7 @@ export const loginPageController: GetServerSideProps = async (ctx) => {
           { mergeWithLastSubmission: false }
         );
       }
+      return { props: { redirectTo: returnTo } };
     } else {
       logger.info('loginPageController: no slug, so we are not in oauth flow');
     }
@@ -83,10 +77,5 @@ export const loginPageController: GetServerSideProps = async (ctx) => {
     throw e;
   }
 
-  return {
-    props: {
-      ...(await getTranslations(ctx))
-    }
-  };
-
+  return { props: {} };
 };

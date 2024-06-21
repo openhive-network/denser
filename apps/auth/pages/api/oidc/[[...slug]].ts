@@ -2,8 +2,10 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { oidc } from '@smart-signer/lib/oidc';
 
 async function oidcRoute(req: NextApiRequest, res: NextApiResponse) {
-  // req.url = req.url ? req.url.replace('/api/oidc', '') : req.url;
-  const result = await oidc.callback()(req, res);
+  if (oidc) {
+    await oidc.callback()(req, res);
+  }
+  res.status(404).end();
 }
 
 export default oidcRoute;

@@ -6,10 +6,11 @@ import { loginPageController } from '@smart-signer/lib/login-page-controller';
 import SignInForm, { SignInFormRef } from '@smart-signer/components/auth/form';
 import { KeyType } from '@smart-signer/types/common';
 import { getLogger } from '@ui/lib/logging';
+import { getTranslations } from '@/auth/lib/get-translations';
 
 const logger = getLogger('app');
 
-export default function LoginPage() {
+export default function LoginPage({ redirectTo }: { redirectTo?: string }) {
   const signInFormRef = useRef<SignInFormRef>(null);
   const router = useRouter();
   const slug = router.query.slug as string;
@@ -22,16 +23,9 @@ export default function LoginPage() {
   });
 
   const onComplete = async (username: string) => {
-    if (slug) {
-
-      //
-      // TODO Value for `redirectTo` should be delivered via
-      // getServerSideProps (read from oidc server oauth flow).
-      //
-
-      const redirectTo = `/oidc/auth/${slug}`;
-      logger.info('onComplete redirecting to: %s', redirectTo);
-      router.push(redirectTo);
+    if (redirectTo) {
+      logger.info('LoginPage onComplete redirecting to: %s', redirectTo);
+      location.replace(redirectTo);
     }
   }
 
@@ -51,5 +45,14 @@ export default function LoginPage() {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  return await loginPageController(ctx);
+  const result = await loginPageController(ctx);
+  if (Object.hasOwnProperty.call(result, 'props')) {
+    const output = {};
+    output.props = {
+      ...result.props,
+      ...(await getTranslations(ctx)),
+    };
+    return output;
+  }
+  return result;
 };
