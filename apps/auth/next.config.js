@@ -19,10 +19,6 @@ const nextConfig = {
         source: '/.well-known/openid-configuration',
         destination: '/api/oidc/.well-known/openid-configuration'
       },
-      // {
-      //   source: '/interaction/:path*',
-      //   destination: '/api/oidc/interaction/:path*',
-      // },
       {
         source: '/oidc/:path*',
         destination: '/api/oidc/:path*'
