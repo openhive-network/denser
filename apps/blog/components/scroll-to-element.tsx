@@ -1,59 +1,37 @@
-import { useEffect } from 'react';
+import { FC, RefObject, useLayoutEffect, useRef } from 'react';
 
-const ScrollToElement = () => {
-  useEffect(() => {
-    const handleLoad = () => {
-      const checkImagesLoaded = () => {
-        const images = document.querySelectorAll('img');
+const ScrollToElement: FC<{ hashid: string; rendererRef: RefObject<HTMLDivElement> }> = ({
+  hashid,
+  rendererRef
+}) => {
+  useLayoutEffect(() => {
+    const hash = window.location.hash.slice(1);
+    if (hashid !== hash) return;
+    const handleScroll = async () => {
+      if (!rendererRef.current) return;
 
-        for (const img of images) {
-          if (!img.complete) {
-            return false;
-          }
-        }
+      try {
+        const selectors = Array.from(rendererRef.current.querySelectorAll<HTMLImageElement>('img'));
 
-        return true;
-      };
-
-      const scrollToElement = () => {
-        const hash = window.location.hash.slice(1);
-        if (hash && checkImagesLoaded()) {
-          document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
-        }
-      };
-
-      // Initial check
-      scrollToElement();
-
-      let timeoutId: NodeJS.Timeout | null = null;
-      const debouncedScrollToComments = () => {
-        if (timeoutId) {
-          clearTimeout(timeoutId);
-        }
-        timeoutId = setTimeout(() => {
-          scrollToElement();
-        }, 500);
-      };
-
-      const observer = new MutationObserver(debouncedScrollToComments);
-      observer.observe(document.body, { childList: true, subtree: true });
-
-      return () => {
-        observer.disconnect();
-        if (timeoutId) {
-          clearTimeout(timeoutId);
-        }
-      };
+        await Promise.all(
+          selectors.map((img) => {
+            console.log(img.src);
+            if (img.complete) return;
+            return new Promise((resolve, reject) => {
+              img.addEventListener('load', resolve);
+              img.addEventListener('error', reject);
+            });
+          })
+        );
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      } catch (e) {
+        console.error(e);
+      } finally {
+        document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
+      }
     };
-
-    if (document.readyState === 'complete') {
-      handleLoad();
-    } else {
-      window.addEventListener('load', handleLoad);
-      return () => window.removeEventListener('load', handleLoad);
-    }
-  }, []);
-
+    handleScroll();
+  }, [hashid]);
   return null;
 };
 

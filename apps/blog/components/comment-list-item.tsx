@@ -60,19 +60,11 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
       storeBox(reply);
     }
   }, [reply]);
-  useEffect(() => {
-    //without delay moving to right scroll position but after that imgs loading and we are in wrong scroll position
-    const timeout = setTimeout(() => {
-      if (router.asPath.includes(commentId) && ref.current) {
-        ref.current.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
-      }
-    }, 500);
-    return () => clearTimeout(timeout);
-  }, [router.asPath]);
+
   const currentDepth = comment.depth - parent_depth;
 
   const deleteCommentMutation = useDeleteCommentMutation();
-  const deleteComment = async (permlink: string)=> {
+  const deleteComment = async (permlink: string) => {
     try {
       await deleteCommentMutation.mutateAsync({ permlink });
     } catch (error) {
@@ -86,7 +78,7 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
     if (permlink) {
       deleteComment(permlink);
     }
-  }
+  };
 
   if (userFromGDPR || parentFromGDPR) {
     return null;
@@ -250,6 +242,7 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                             author={comment.author}
                             className=""
                             doNotShowImages={false}
+                            hashid={commentId}
                           />
                         </CardDescription>
                       )}
@@ -332,22 +325,21 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                         moment().format('YYYY-MM-DDTHH:mm:ss') < comment.payout_at ? (
                           <>
                             <Separator orientation="vertical" className="h-5" />
-                            <CommentDeleteDialog
-                              permlink={comment.permlink}
-                              action={dialogAction}
-                            >
+                            <CommentDeleteDialog permlink={comment.permlink} action={dialogAction}>
                               <button
                                 disabled={edit || deleteCommentMutation.isLoading}
                                 className="flex items-center hover:cursor-pointer hover:text-red-600"
                                 data-testid="comment-card-footer-delete"
                               >
-                                {deleteCommentMutation.isLoading
-                                ?
-                                <CircleSpinner loading={deleteCommentMutation.isLoading}
-                                    size={18} color="#dc2626" />
-                                :
+                                {deleteCommentMutation.isLoading ? (
+                                  <CircleSpinner
+                                    loading={deleteCommentMutation.isLoading}
+                                    size={18}
+                                    color="#dc2626"
+                                  />
+                                ) : (
                                   t('cards.comment_card.delete')
-                                }
+                                )}
                               </button>
                             </CommentDeleteDialog>
                           </>

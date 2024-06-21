@@ -275,6 +275,7 @@ function PostPage({
             ) : (
               <ImageGallery>
                 <RendererContainer
+                  hashid={post.depth === 0 ? 'comments' : undefined}
                   body={post.body}
                   className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
                   author={post.author}
@@ -464,7 +465,6 @@ function PostPage({
           <Loading loading={isLoadingPost} />
         )}
       </div>
-      <ScrollToElement />
       <div id="comments" className="flex" />
       <div className="mx-auto my-0 max-w-4xl py-4">
         {reply && post && user.isLoggedIn ? (

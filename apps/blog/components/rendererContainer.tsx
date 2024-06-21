@@ -1,8 +1,9 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useMemo } from 'react';
 import Loading from '@ui/components/loading';
 import { LeavePageDialog } from './leave-page-dialog';
 import { getRenderer } from '../lib/renderer';
 import { getLogger } from '@ui/lib/logging';
+import ScrollToElement from './scroll-to-element';
 
 const logger = getLogger('app');
 
@@ -12,7 +13,8 @@ const RendererContainer = ({
   author,
   doNotShowImages,
   dataTestid,
-  communityDescription
+  communityDescription,
+  hashid
 }: {
   body: string;
   className: string;
@@ -20,6 +22,7 @@ const RendererContainer = ({
   doNotShowImages: boolean;
   dataTestid?: string;
   communityDescription?: boolean;
+  hashid?: string;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
@@ -58,7 +61,11 @@ const RendererContainer = ({
     };
   }, [body, hiveRenderer]);
 
-  return !hiveRenderer || !body ? (
+  const htmlBody = useMemo(() => {
+    if (body) return hiveRenderer.render(body);
+  }, [hiveRenderer, body]);
+
+  return !htmlBody ? (
     <Loading loading={false} />
   ) : (
     <>
@@ -68,10 +75,11 @@ const RendererContainer = ({
         className={className}
         data-testid={dataTestid}
         dangerouslySetInnerHTML={{
-          __html: hiveRenderer.render(body)
+          __html: htmlBody
         }}
       />
       <LeavePageDialog link={link} open={open} setOpen={setOpen} />
+      {hashid ? <ScrollToElement hashid={hashid} rendererRef={ref} /> : null}
     </>
   );
 };
