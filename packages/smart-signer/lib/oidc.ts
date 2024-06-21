@@ -5,14 +5,25 @@ import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
 
 //
-// For example configuration see
-//
-// 1. https://github.com/panva/node-oidc-provider/tree/main/docs
-// 2. https://github.com/ebrahimmfadae/openid-connect-app
+// TODO Add environment variables for OIDC configuration.
 //
 
+/**
+ * Configuration and initialization for
+ * [node-oidc-provider](https://github.com/panva/node-oidc-provider)
+ * module. This is OAuth 2.0 (RFC 6749) Authorization Server with
+ * support for OpenID Connect (OIDC). For documentation and example
+ * configuration see:
+ * 1. https://github.com/panva/node-oidc-provider/tree/main/docs
+ * 2. https://github.com/ebrahimmfadae/openid-connect-app
+ */
+
+
+const oidcUrlPrefix = '/oidc';
+
+
 const corsOrigins = 'urn:custom:client:allowed-cors-origins';
-const isOrigin = (value: string) => {
+const isOrigin = (value: string): boolean => {
     if (typeof value !== 'string') {
         return false;
     }
@@ -75,18 +86,18 @@ const configuration: Configuration = {
         ]
     },
     routes: {
-        authorization: '/oidc/auth',
-        backchannel_authentication: '/oidc/backchannel',
-        code_verification: '/oidc/device',
-        device_authorization: '/oidc/device/auth',
-        end_session: '/oidc/session/end',
-        introspection: '/oidc/token/introspection',
-        jwks: '/oidc/jwks',
-        pushed_authorization_request: '/oidc/request',
-        registration: '/oidc/reg',
-        revocation: '/oidc/token/revocation',
-        token: '/oidc/token',
-        userinfo: '/oidc/me'
+        authorization: `${oidcUrlPrefix}/auth`,
+        backchannel_authentication: `${oidcUrlPrefix}/backchannel`,
+        code_verification: `${oidcUrlPrefix}/device`,
+        device_authorization: `${oidcUrlPrefix}/device/auth`,
+        end_session: `${oidcUrlPrefix}/session/end`,
+        introspection: `${oidcUrlPrefix}/token/introspection`,
+        jwks: `${oidcUrlPrefix}/jwks`,
+        pushed_authorization_request: `${oidcUrlPrefix}/request`,
+        registration: `${oidcUrlPrefix}/reg`,
+        revocation: `${oidcUrlPrefix}/token/revocation`,
+        token: `${oidcUrlPrefix}/token`,
+        userinfo: `${oidcUrlPrefix}/me`
     },
     extraClientMetadata: {
         properties: [corsOrigins],
@@ -106,7 +117,6 @@ const configuration: Configuration = {
     },
     clientBasedCORS: function (ctx, origin, client) {
         logger.info('clientBasedCORS: %o', { ctx, origin, client });
-
         // ctx.oidc.route can be used to exclude endpoints from this
         // behaviour, in that case just return true to always allow CORS
         // on them, false to deny you may also allow some known internal
@@ -115,6 +125,10 @@ const configuration: Configuration = {
     }
 };
 
-const oidcInstance = new Provider(`${siteConfig.url}/oidc`, configuration);
-oidcInstance.proxy = true;
+const oidcInstance = new Provider(
+    `${siteConfig.url}${oidcUrlPrefix}`,
+    configuration
+);
+oidcInstance.proxy = true; // trust X-Forwarded-*
+
 export const oidc = oidcInstance;
