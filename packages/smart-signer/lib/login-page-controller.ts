@@ -12,12 +12,13 @@ export interface LoginPageProps {
 }
 
 export const loginPageController: GetServerSideProps = async (ctx) => {
-  if (!oidc) {
-    return { props: {} };
-  }
-
   const { req, res } = ctx;
   const uid = ctx.query.uid || '' as string;
+
+  if (!oidc) {
+    if (uid) return { notFound: true };
+    return { props: {} };
+  }
 
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
   const user = session.user;
@@ -43,7 +44,10 @@ export const loginPageController: GetServerSideProps = async (ctx) => {
       logger.info('loginPageController: no uid, so we are not in oauth flow');
     }
   } catch (e) {
-    throw e;
+    // throw e;
+    // Do something wiser here.
+    res.statusCode = 404;
+    res.end();
   }
 
   return { props: {} };

@@ -5,16 +5,16 @@ import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 export const consentPageController: GetServerSideProps = async (ctx) => {
+  const { req, res } = ctx;
+  const uid = ctx.query.uid || '' as string;
+
   if (!oidc) {
+    if (uid) return { notFound: true };
     return { props: {} };
   }
 
-  const { req, res } = ctx;
-
   // Only accept GET and POST requests.
   if (!['GET', 'POST'].includes(req.method || '')) return { notFound: true };
-
-  const uid = ctx.query.uid || '' as string;
 
   if (req.method === 'POST') {
     // TODO Process submission
@@ -71,7 +71,10 @@ export const consentPageController: GetServerSideProps = async (ctx) => {
       logger.info('consentPageController: no uid');
     }
   } catch (e) {
-    throw e;
+    // throw e;
+    // Do something wiser here.
+    res.statusCode = 404;
+    res.end();
   }
 
   return { props: {} };

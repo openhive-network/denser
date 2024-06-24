@@ -1,6 +1,6 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
-import { getTranslations } from '@/auth/lib/get-translations';
+import { getTranslations } from '../../lib/get-translations';
 import { getLogger } from '@ui/lib/logging';
 import { siteConfig } from '@ui/config/site';
 
