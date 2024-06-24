@@ -11,13 +11,15 @@ const RendererContainer = ({
   className,
   author,
   doNotShowImages,
-  dataTestid
+  dataTestid,
+  communityDescription
 }: {
   body: string;
   className: string;
   author: string;
   doNotShowImages: boolean;
   dataTestid?: string;
+  communityDescription?: boolean;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
@@ -32,8 +34,24 @@ const RendererContainer = ({
   };
 
   useEffect(() => {
+    const elementsWithVideoWrapper = document.querySelectorAll('.videoWrapper');
+    elementsWithVideoWrapper.forEach((element) => {
+      element.classList.remove('videoWrapper');
+    });
     const nodes = ref.current?.querySelectorAll('a.link-external');
     nodes?.forEach((n) => n.addEventListener('click', handleClick));
+
+    if (communityDescription) {
+      const code_block = ref.current?.querySelectorAll('code');
+      code_block?.forEach((c) => (c.className = 'whitespace-normal'));
+      const links = ref.current?.querySelectorAll('a');
+      links?.forEach((l) => (l.className = ' text-destructive break-words'));
+      const iframes = ref.current?.querySelectorAll('iframe');
+      iframes?.forEach((n) => {
+        const srcText = document.createTextNode(n.src);
+        n.replaceWith(srcText);
+      });
+    }
 
     return () => {
       nodes?.forEach((n) => n.removeEventListener('click', handleClick));
