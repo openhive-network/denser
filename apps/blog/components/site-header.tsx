@@ -22,6 +22,7 @@ import { PieChart, Pie } from 'recharts';
 import useManabars from './hooks/useManabars';
 import { hoursAndMinutes } from '../lib/utils';
 import { getAccountFull } from '@transaction/lib/hive';
+import RocketChatWidget from './rocket-chat-widget';
 
 const SiteHeader: FC = () => {
   const router = useRouter();
@@ -264,6 +265,7 @@ const SiteHeader: FC = () => {
               </TooltipProvider>
             ) : null}
             <Sidebar />
+            <RocketChatWidget />
           </nav>
         </div>
       </div>
