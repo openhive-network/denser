@@ -87,10 +87,13 @@ application](../../apps/auth) to learn how it could be done. Generally:
    to the same paths in your application. Set `authenticateOnBackend`
    option to `true` in your login logic. Set `strict` option to `true`,
    too.
-2. Create API endpoint for OAUTH server module like
-   [../../apps/auth/pages/api/oidc](../../apps/auth/pages/api/oidc).
+2. Create API endpoint for OAUTH server module – just copy directory
+   [../../apps/auth/pages/api/oidc](../../apps/auth/pages/api/oidc) to
+   the same path in your application.
 3. Create pages for Oauth interactions – see
    [../../apps/auth/pages/interaction](../../apps/auth/pages/interaction).
+   Copying mentioned directory to the same path in your application
+   should be enough.
 4. Add rewrites for OAUTH server, see
    [../../apps/auth/next.config.js](../../apps/auth/next.config.js).
 4. Set environment variables for Oauth flow, see [OIDC
