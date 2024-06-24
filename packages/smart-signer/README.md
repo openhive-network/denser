@@ -78,20 +78,30 @@ There is an OAUTH server module in smart-signer, implemented using
 library. You can use it in your application. Inspect [Auth
 application](../../apps/auth) to learn how it could be done. Generally:
 
-1. You need authentication and session on back-end side, so add API
+1. You need authentication and session on server side, so add API
    endpoints for login, logout and user info — just copy files
    [../../apps/auth/pages/api/auth/login.ts](../../apps/auth/pages/api/auth/login.ts),
    [../../apps/auth/pages/api/auth/logout.ts](../../apps/auth/pages/api/auth/logout.ts),
    and
    [../../apps/auth/pages/api/users/me.ts](../../apps/auth/pages/api/users/me.ts)
    to the same paths in your application. Set `authenticateOnBackend`
-   option to `true` in your login logic.
-2. Create pages for Oauth interactions – see
+   option to `true` in your login logic. Set `strict` option to `true`,
+   too.
+2. Create API endpoint for OAUTH server module like
+   [../../apps/auth/pages/api/oidc](../../apps/auth/pages/api/oidc).
+3. Create pages for Oauth interactions – see
    [../../apps/auth/pages/interaction](../../apps/auth/pages/interaction).
-3. Set environment variables for Oauth flow, see [OIDC
+4. Add rewrites for OAUTH server, see
+   [../../apps/auth/next.config.js](../../apps/auth/next.config.js).
+4. Set environment variables for Oauth flow, see [OIDC
    configuration](../../packages/smart-signer/lib/oidc.ts),
    [siteConfig](../../packages/ui/config/site.ts), and [env file for
-   development](../../apps/auth/.env).
+   development](../../apps/auth/.env). Move files created in two
+   preceding points, when you decide to use url paths other then
+   default.
+5. Use back-end side logic
+   [loginPageController](../../packages/smart-signer/lib/login-page-controller.ts)
+   in your login logic.
 
 The session on OAUTH server is synced with session in your app. Any
 incoming OAUTH request for login implicates logging in user in your

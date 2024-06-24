@@ -10,6 +10,18 @@ const nextConfig = {
   experimental: {
     outputFileTracingRoot: path.join(__dirname, '../..')
   },
+  async rewrites() {
+    return [
+      {
+        source: '/.well-known/openid-configuration',
+        destination: '/api/oidc/.well-known/openid-configuration'
+      },
+      {
+        source: '/oidc/:path*',
+        destination: '/api/oidc/:path*'
+      }
+    ];
+  },
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = { fs: false };
