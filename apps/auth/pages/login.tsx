@@ -13,7 +13,6 @@ const logger = getLogger('app');
 export default function LoginPage({ redirectTo }: { redirectTo?: string }) {
   const signInFormRef = useRef<SignInFormRef>(null);
   const router = useRouter();
-  const slug = router.query.slug as string;
 
   // Here we just check if user is already logged in and we redirect him
   // to profile page, if he is.

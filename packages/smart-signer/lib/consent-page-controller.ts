@@ -14,14 +14,14 @@ export const consentPageController: GetServerSideProps = async (ctx) => {
   // Only accept GET and POST requests.
   if (!['GET', 'POST'].includes(req.method || '')) return { notFound: true };
 
-  const slug = ctx.query.slug || '' as string;
+  const uid = ctx.query.uid || '' as string;
 
   if (req.method === 'POST') {
     // TODO Process submission
   }
 
   try {
-    if (slug) {
+    if (uid) {
       const interactionDetails = await oidc.interactionDetails(req, res);
       logger.info('consentPageController interactionDetails: %o', interactionDetails);
       const {
@@ -68,7 +68,7 @@ export const consentPageController: GetServerSideProps = async (ctx) => {
         );
       }
     } else {
-      logger.info('consentPageController: no slug');
+      logger.info('consentPageController: no uid');
     }
   } catch (e) {
     throw e;

@@ -22,7 +22,7 @@ export const loginPageController: GetServerSideProps = async (ctx) => {
   // only accept GET and POST requests
   if (!['GET', 'POST'].includes(req.method || '')) return { notFound: true };
 
-  const slug = ctx.query.slug || '' as string;
+  const uid = ctx.query.uid || '' as string;
 
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
   const user = session.user;
@@ -48,19 +48,13 @@ export const loginPageController: GetServerSideProps = async (ctx) => {
   }
 
   try {
-    if (slug) {
-      const { uid, prompt, params, session, returnTo } =
+    if (uid) {
+      const interactionDetails =
           await oidc.interactionDetails(req, res);
-      logger.info('loginPageController oauth interaction details: %o', {
-        slug,
-        uid,
-        prompt,
-        params,
-        session,
-        returnTo
-      });
-      if (slug !== uid) return { notFound: true };
-      if (user?.username && prompt?.name === 'login') {
+      logger.info('loginPageController oauth interaction details: %o',
+          interactionDetails);
+      if (interactionDetails.uid !== uid) return { notFound: true };
+      if (user?.username && interactionDetails.prompt?.name === 'login') {
         logger.info('loginPageController: user already logged in and this is oauth flow');
         await oidc.interactionFinished(
           req,
@@ -69,9 +63,9 @@ export const loginPageController: GetServerSideProps = async (ctx) => {
           { mergeWithLastSubmission: false }
         );
       }
-      return { props: { redirectTo: returnTo } };
+      return { props: { redirectTo: interactionDetails.returnTo } };
     } else {
-      logger.info('loginPageController: no slug, so we are not in oauth flow');
+      logger.info('loginPageController: no uid, so we are not in oauth flow');
     }
   } catch (e) {
     throw e;

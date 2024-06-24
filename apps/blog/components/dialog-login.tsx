@@ -29,6 +29,7 @@ function DialogLogin({ children }: { children: ReactNode }) {
           ref={signInFormRef}
           preferredKeyTypes={[KeyType.posting]}
           onComplete={onComplete}
+          authenticateOnBackend={true}
         />
       </DialogContent>
     </Dialog>
