@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import { useState, useEffect } from 'react';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { getTranslations } from '@/auth/lib/get-translations';
+import { getTranslations } from '../lib/get-translations';
 import { pascalCase } from 'change-case';
 import { getLogger } from '@ui/lib/logging';
 

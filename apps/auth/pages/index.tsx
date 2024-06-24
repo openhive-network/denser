@@ -1,5 +1,5 @@
 import { GetServerSideProps } from 'next';
-import { getTranslations } from '@/auth/lib/get-translations';
+import { getTranslations } from '../lib/get-translations';
 
 export default function HomePage() {
   return (
