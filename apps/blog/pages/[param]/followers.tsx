@@ -8,12 +8,13 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from '@/blog/next-i18next.config';
 import { useFollowingInfiniteQuery } from '@/blog/components/hooks/use-following-infinitequery';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import FollowButton from '@/blog/components/follow-button';
 import MuteButton from '@/blog/components/mute-button';
+import { getServerSidePropsDefault } from '../../lib/get-translations';
+
+export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
 const LIMIT = 50;
 export default function Followers() {
@@ -91,14 +92,3 @@ export default function Followers() {
     </ProfileLayout>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  return {
-    props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
-        'common_blog',
-        'smart-signer'
-      ]))
-    }
-  };
-};

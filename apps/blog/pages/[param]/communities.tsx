@@ -8,11 +8,10 @@ import Loading from '@ui/components/loading';
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import { GetServerSideProps } from 'next';
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from '@/blog/next-i18next.config';
 import { validateHiveAccountName } from '@smart-signer/lib/validators/validate-hive-account-name';
 import { getLogger } from '@ui/lib/logging';
 import Error from 'next/error';
+import { getTranslations } from '../../lib/get-translations';
 
 const logger = getLogger('app');
 
@@ -118,9 +117,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       errorCode,
       hivebuzz: hivebuzzJsonStateOn,
       peakd: peakdJsonMapedWithURL,
-      ...(await serverSideTranslations(context.req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
-        'common_blog'
-      ]))
+      ...(await getTranslations(context))
     }
   };
 };

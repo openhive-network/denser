@@ -1,5 +1,7 @@
 import { GetServerSideProps } from 'next';
-import { getTranslations } from '../lib/get-translations';
+import { getServerSidePropsDefault } from '../lib/get-translations';
+
+export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
 export default function HomePage() {
   return (
@@ -16,11 +18,3 @@ export default function HomePage() {
     </div>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  return {
-    props: {
-      ...(await getTranslations(ctx)),
-    }
-  };
-};

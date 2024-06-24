@@ -7,10 +7,11 @@ import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { PostSkeleton } from '../[...param]';
 import { GetServerSideProps } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from '@/blog/next-i18next.config';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import { getServerSidePropsDefault } from '../../lib/get-translations';
+
+export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
 export default function UserReplies() {
   const { t } = useTranslation('common_blog');
@@ -81,14 +82,3 @@ export default function UserReplies() {
     </ProfileLayout>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  return {
-    props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
-        'common_blog',
-        'smart-signer'
-      ]))
-    }
-  };
-};
