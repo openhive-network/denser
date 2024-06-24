@@ -18,34 +18,10 @@ export const loginPageController: GetServerSideProps = async (ctx) => {
   }
 
   const { req, res } = ctx;
-
-  // only accept GET and POST requests
-  if (!['GET', 'POST'].includes(req.method || '')) return { notFound: true };
-
   const uid = ctx.query.uid || '' as string;
 
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
   const user = session.user;
-
-  if (req.method === 'POST') {
-    let body;
-    try {
-      body = JSON.parse(await parseBody(req, "1mb"));
-      logger.info('loginPageController body: %o', body);
-    } catch (error) {
-      // do nothing
-    }
-
-    if (body.user.username === user?.username) {
-      logger.info('loginPageController redirecting to interaction page');
-      await oidc.interactionFinished(
-        req,
-        res,
-        { login: { accountId: user?.username || '' } },
-        { mergeWithLastSubmission: false }
-      );
-    }
-  }
 
   try {
     if (uid) {
