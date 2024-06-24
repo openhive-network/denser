@@ -1,7 +1,6 @@
 import { oidc } from '@smart-signer/lib/oidc';
 import { GetServerSideProps } from 'next';
 import { getLogger } from '@ui/lib/logging';
-import { parseBody } from "next/dist/server/api-utils/node/parse-body.js"
 import { getIronSession } from 'iron-session';
 import { IronSessionData } from '@smart-signer/types/common';
 import { sessionOptions } from './session';
