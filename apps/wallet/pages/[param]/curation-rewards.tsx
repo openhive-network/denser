@@ -3,9 +3,8 @@ import { getAccount } from '@transaction/lib/hive';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
 import { Button } from '@hive/ui';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from '@/wallet/next-i18next.config';
 import { useTranslation } from 'next-i18next';
+import { getTranslations } from '../../lib/get-translations';
 
 function CurationRewardsPage({ username }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const {
@@ -56,10 +55,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
       username: username.replace('@', ''),
-      ...(await serverSideTranslations(ctx.req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
-        'common_wallet',
-        'smart-signer'
-      ]))
+      ...(await getTranslations(ctx))
     }
   };
 };

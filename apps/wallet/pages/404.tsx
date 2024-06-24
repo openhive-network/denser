@@ -22,7 +22,8 @@ export default function FourOhFour() {
     </div>
     </>
   }
-  export const getStaticProps = async () => {
+
+  export const getStaticProps: GetStaticProps = async () => {
     return {
       props: {
         ...(await serverSideTranslations( i18n.defaultLocale, ['common_wallet', 'smart-signer']))
