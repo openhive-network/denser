@@ -15,7 +15,6 @@ const ScrollToElement: FC<{ hashid: string; rendererRef: RefObject<HTMLDivElemen
 
         await Promise.all(
           selectors.map((img) => {
-            console.log(img.src);
             if (img.complete) return;
             return new Promise((resolve, reject) => {
               img.addEventListener('load', resolve);
