@@ -13,8 +13,9 @@ import { useRouter } from 'next/router';
 import { useState, KeyboardEvent } from 'react';
 import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from '@/blog/next-i18next.config';
+import { getServerSidePropsDefault } from '../lib/get-translations';
+
+export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
 export default function SearchPage() {
   const router = useRouter();
@@ -65,14 +66,3 @@ export default function SearchPage() {
     </div>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  return {
-    props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
-        'common_blog',
-        'smart-signer'
-      ]))
-    }
-  };
-};

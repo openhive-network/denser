@@ -25,12 +25,11 @@ import CustomError from '@/blog/components/custom-error';
 import CommunitySimpleDescription from '@/blog/components/community-simple-description';
 import { CommunitiesSelect } from '@/blog/components/communities-select';
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetServerSideProps } from 'next';
-import { i18n } from '@/blog/next-i18next.config';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import CommunitiesMybar from '../components/communities-mybar';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
+import { getServerSidePropsDefault } from '../lib/get-translations';
 
 export const PostSkeleton = () => {
   return (
@@ -343,13 +342,4 @@ const ParamPage: FC = () => {
 
 export default ParamPage;
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  return {
-    props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
-        'common_blog',
-        'smart-signer'
-      ]))
-    }
-  };
-};
+export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;

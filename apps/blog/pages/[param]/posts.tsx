@@ -10,11 +10,12 @@ import { PostSkeleton } from '@/blog/pages/[...param]';
 import { useInView } from 'react-intersection-observer';
 import { useEffect } from 'react';
 import { GetServerSideProps } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from '@/blog/next-i18next.config';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
+import { getServerSidePropsDefault } from '../../lib/get-translations';
+
+export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
 const UserPosts = () => {
   const { t } = useTranslation('common_blog');
@@ -204,14 +205,3 @@ const UserPosts = () => {
 };
 
 export default UserPosts;
-
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  return {
-    props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
-        'common_blog',
-        'smart-signer'
-      ]))
-    }
-  };
-};

@@ -6,7 +6,7 @@ import { KeyType } from '@smart-signer/types/common';
 function DialogLogin({ children }: { children: ReactNode }) {
   const signInFormRef = useRef<SignInFormRef>(null);
 
-  function onComplete() {
+  async function onComplete(username: string) {
     // do smth when completed here
   }
 
@@ -25,7 +25,11 @@ function DialogLogin({ children }: { children: ReactNode }) {
         data-testid="login-dialog"
         onInteractOutside={(e) => e.preventDefault()}
       >
-        <SignInForm ref={signInFormRef} preferredKeyTypes={[KeyType.active]} onComplete={onComplete} />
+        <SignInForm
+          ref={signInFormRef}
+          preferredKeyTypes={[KeyType.active]}
+          onComplete={onComplete}
+        />
       </DialogContent>
     </Dialog>
   );

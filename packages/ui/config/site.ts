@@ -1,5 +1,7 @@
 import env from '@beam-australia/react-env';
 
+const SERVER_VAR_PREFIX = 'DENSER_SERVER_';
+
 const MAINNET_CHAIN_ID = 'beeab0de00000000000000000000000000000000000000000000000000000000';
 const MIRRORNET_CHAIN_ID = '42';
 
@@ -23,7 +25,16 @@ export const siteConfig = {
   links: {
     twitter: '/',
     github: '/'
-  }
+  },
+
+  oidcEnabled: process.env[`${SERVER_VAR_PREFIX}OIDC_ENABLED`] === 'true',
+  oidcUrlPrefix: process.env[`${SERVER_VAR_PREFIX}OIDC_URL_PREFIX`] || '/oidc',
+  oidcInteractionUrlPrefix: process.env[`${SERVER_VAR_PREFIX}OIDC_INTERACTION_URL_PREFIX`] || '/interaction',
+  oidcCookiesKeys: process.env[`${SERVER_VAR_PREFIX}OIDC_COOKIES_KEYS`]
+    ? (process.env[`${SERVER_VAR_PREFIX}OIDC_COOKIES_KEYS`] as string).split(' ')
+    : [],
+  oidcClients: process.env[`${SERVER_VAR_PREFIX}OIDC_CLIENTS`] || '[]',
+  oidcJwksKeys: process.env[`${SERVER_VAR_PREFIX}OIDC_JWKS_KEYS`] || '[]',
 };
 
 export type SiteConfig = typeof siteConfig;

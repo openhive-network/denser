@@ -18,10 +18,11 @@ import WitnessListItem from '@/wallet/components/witnesses-list-item';
 import DialogLogin from '../components/dialog-login';
 import { AlertDialogProxy } from '../components/alert-dialog-proxy';
 import { GetServerSideProps } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from '@/wallet/next-i18next.config';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import { getServerSidePropsDefault } from '../lib/get-translations';
+
+export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
 const LAST_BLOCK_AGE_THRESHOLD_IN_SEC = 2592000;
 
@@ -241,14 +242,3 @@ function WitnessesPage() {
 }
 
 export default WitnessesPage;
-
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  return {
-    props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
-        'common_wallet',
-        'smart-signer'
-      ]))
-    }
-  };
-};

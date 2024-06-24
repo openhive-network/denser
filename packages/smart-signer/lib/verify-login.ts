@@ -10,10 +10,9 @@ const logger = getLogger('app');
  * Authenticate user by checking signature in fake transaction.
  *
  * @param {PostLoginSchema} data
- * @param {string} [uid='']
  * @returns {Promise<User>}
  */
-export async function verifyLogin(data: PostLoginSchema, uid: string = ''): Promise<User> {
+export async function verifyLogin(data: PostLoginSchema): Promise<User> {
     const { username, keyType, pack, strict, loginType } = data;
     logger.info('verifyLogin argument data: %o', data);
     let authorityLevel: AuthorityLevel;

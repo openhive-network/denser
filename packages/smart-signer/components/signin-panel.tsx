@@ -42,7 +42,6 @@ export function LoginPanel(
   }: LoginPanelOptions
 ) {
   const router = useRouter();
-  const slug = router.query.slug as string;
   const { t } = useTranslation(i18nNamespace);
   const [loginChallenge, setLoginChallenge] = useState('');
   const { signerOptions } = useSigner();
@@ -113,7 +112,7 @@ export function LoginPanel(
         signatures,
         authenticateOnBackend,
       };
-      await signIn.mutateAsync({ data: signInData, uid: slug });
+      await signIn.mutateAsync({ data: signInData });
     } catch (error) {
       logger.error('onSubmit error in signLoginChallenge', error);
       setErrorMsg(t('pageLogin.loginFailed'));

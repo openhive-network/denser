@@ -1,11 +1,10 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from '@/wallet/next-i18next.config';
 import WalletMenu from '@/wallet/components/wallet-menu';
 import { Button, Card, Input, Label, Separator } from '@ui/components';
 import Link from 'next/link';
 import { cn } from '@ui/lib/utils';
+import { getTranslations } from '../../lib/get-translations';
 
 function Permissions({ username }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
@@ -251,7 +250,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
       username: username.replace('@', ''),
-      ...(await serverSideTranslations(ctx.req.cookies.NEXT_LOCALE! || i18n.defaultLocale, ['common_wallet', 'smart-signer']))
+      ...(await getTranslations(ctx))
     }
   };
 };

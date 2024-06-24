@@ -1,7 +1,5 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from '@/wallet/next-i18next.config';
 import { useTranslation } from 'next-i18next';
 import WalletMenu from '@/wallet/components/wallet-menu';
 import {
@@ -13,6 +11,7 @@ import {
   SelectValue
 } from '@ui/components/select';
 import { Label } from '@ui/components/label';
+import { getTranslations } from '../../lib/get-translations';
 
 function Communities({ username }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { t } = useTranslation('common_wallet');
@@ -81,10 +80,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
       username: username.replace('@', ''),
-      ...(await serverSideTranslations(ctx.req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
-        'common_wallet',
-        'smart-signer'
-      ]))
+      ...(await getTranslations(ctx))
     }
   };
 };

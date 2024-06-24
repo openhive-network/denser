@@ -8,12 +8,13 @@ import { Checkbox, Separator } from '@hive/ui';
 import Link from 'next/link';
 import { useState } from 'react';
 import { GetServerSideProps } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from '@/wallet/next-i18next.config';
 import { useTranslation } from 'next-i18next';
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
 import WalletMenu from '@/wallet/components/wallet-menu';
+import { getServerSidePropsDefault } from '../../lib/get-translations';
+
+export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
 let key = '';
 const accountFormSchema = z.object({
@@ -183,14 +184,3 @@ export default function PostForm() {
     </ProfileLayout>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  return {
-    props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
-        'common_wallet',
-        'smart-signer'
-      ]))
-    }
-  };
-};

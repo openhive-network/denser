@@ -1,7 +1,6 @@
 import createHttpError from 'http-errors';
 import { NextApiHandler } from 'next';
 import { getIronSession } from 'iron-session';
-import { oidc } from '@smart-signer/lib/oidc';
 import { sessionOptions } from '@smart-signer/lib/session';
 import { getAccount } from '@transaction/lib/hive';
 import { postLoginSchema, PostLoginSchema } from '@smart-signer/lib/auth/utils';
@@ -12,30 +11,13 @@ import { checkCsrfHeader } from '@smart-signer/lib/csrf-protection';
 import { verifyLoginChallenge } from '@smart-signer/lib/verify-login-challenge';
 import { verifyLogin } from '@smart-signer/lib/verify-login';
 import { getLoginChallengeFromTransactionForLogin } from '@smart-signer/lib/login-operation'
-
 import { getLogger } from '@hive/ui/lib/logging';
+
 const logger = getLogger('app');
 
 
 export const loginUser: NextApiHandler<User> = async (req, res) => {
   checkCsrfHeader(req);
-
-  const { slug } = req.query;
-  // try {
-  //   if (slug) {
-  //     const {
-  //       uid, prompt, params, session, returnTo,
-  //     } = await oidc.interactionDetails(req, res);
-  //     logger.info('api loginUser: %o', {
-  //       slug, uid, prompt, params, session, returnTo,
-  //     });
-  //   } else {
-  //     logger.info('api loginUser: no slug');
-  //   }
-  // } catch(e) {
-  //   // throw e;
-  //   logger.error(e);
-  // }
 
   const loginChallenge = req.cookies[`${cookieNamePrefix}login_challenge_server`] || '';
 
@@ -68,8 +50,8 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
       throw new createHttpError[401]('Invalid login challenge');
     }
 
-    // Verify signature in passed transaction.
-    try {
+  // Verify signature in passed transaction.
+  try {
       result = !!(await verifyLogin(data));
     } catch (error) {
       // swallow error
@@ -83,26 +65,8 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
   }
 
   if (!result) {
-    if (slug) {
-      const oidcResult = {
-        error: 'access_denied',
-        error_description: 'Username or password is incorrect.'
-      };
-      // redirect('oidc/auth/' + slug[0]);
-      try {
-        return await oidc.interactionFinished(req, res, oidcResult, {
-          mergeWithLastSubmission: false
-        });
-      } catch (e) {
-        logger.error(e);
-      }
-    }
     throw new createHttpError.Unauthorized('Invalid username or password');
   }
-
-  const auth = { posting: result };
-  // if (ctx.session.a === account) loginType = 'resume';
-  // if (auth.posting) ctx.session.a = account;
 
   const user: User = {
     isLoggedIn: true,

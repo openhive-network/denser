@@ -7,9 +7,10 @@ import clsx from 'clsx';
 import { useMarket } from '@/wallet/components/hooks/use-market';
 import TradeHive from '@/wallet/components/trade-hive';
 import { GetServerSideProps } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from '@/wallet/next-i18next.config';
 import { useTranslation } from 'next-i18next';
+import { getServerSidePropsDefault } from '../lib/get-translations';
+
+export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
 const Box = ({
   label,
@@ -91,14 +92,3 @@ function Market() {
 }
 
 export default Market;
-
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  return {
-    props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
-        'common_wallet',
-        'smart-signer'
-      ]))
-    }
-  };
-};
