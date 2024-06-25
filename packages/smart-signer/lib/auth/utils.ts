@@ -52,4 +52,5 @@ export const defaultUser: User = {
     loginType: LoginType.hbauth,
     keyType: KeyType.posting,
     authenticateOnBackend: true,
+    chatAuthToken: '',
 };

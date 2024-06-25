@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import Head from 'next/head';
 import { Toaster } from '@ui/components/toaster';
 import { useTheme } from 'next-themes';
@@ -6,6 +6,7 @@ import { TailwindIndicator } from '../tailwind-indicator';
 import SiteHeader from '../site-header';
 import { ModalContainer } from '@smart-signer/components/modal-container';
 import RocketChatWidget from '../rocket-chat-widget';
+import { siteConfig } from '@ui/config/site';
 
 interface LayoutProps {
   children: ReactNode;
@@ -13,6 +14,11 @@ interface LayoutProps {
 
 function Layout({ children }: LayoutProps) {
   const { resolvedTheme } = useTheme();
+
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
     <>
@@ -23,7 +29,7 @@ function Layout({ children }: LayoutProps) {
         <SiteHeader />
         <div className="flex-1 bg-slate-50 dark:bg-background/95">{children}</div>
       </div>
-      <RocketChatWidget />
+      {isClient && siteConfig.openhiveChatIframeIntegrationEnable === 'yes' && <RocketChatWidget />}
       <ModalContainer />
       <Toaster />
       <TailwindIndicator />

@@ -2,11 +2,166 @@ import { getLogger } from '@ui/lib/logging';
 import { Sheet, SheetContent, SheetTrigger } from '@ui/components/sheet';
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
-import clsx from 'clsx';
+import { useState, useRef, useEffect } from 'react';
+import { siteConfig } from '@ui/config/site';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { LoginType } from '@smart-signer/types/common';
 
 const logger = getLogger('app');
 
+/**
+ * Login to Rocket Chat via iframe.
+ *
+ * @param {{ chatAuthToken: string, loginType: LoginType }} data
+ * @param {React.RefObject<HTMLIFrameElement>} iframeRef
+ */
+const chatLogin = (
+    data: { chatAuthToken: string, loginType: LoginType },
+    iframeRef: React.RefObject<HTMLIFrameElement>
+): void => {
+    logger.info('chatLogin start');
+    if (siteConfig.openhiveChatIframeIntegrationEnable) {
+        logger.info('chatLogin siteConfig.openhiveChatIframeIntegrationEnable is true');
+        try {
+            if (data && data.chatAuthToken) {
+                const message = {
+                    event: 'login-with-token',
+                    loginToken: data.chatAuthToken,
+                    loginType: data.loginType || 'login',
+                };
+                logger.info('chatLogin posting message', message, data);
+                iframeRef.current?.contentWindow?.postMessage(
+                    { ...message },
+                    `${siteConfig.openhiveChatUri}`,
+                );
+            } else {
+                logger.warn('chatLogin not posting message, data is wrong', data);
+            }
+        } catch (error) {
+            logger.error('chatLogin not posting message', data);
+        }
+    } else {
+        logger.info('chatLogin siteConfig.openhiveChatIframeIntegrationEnable is false');
+    }
+}
+
+/**
+ * Logout from Rocket Chat via iframe.
+ *
+ * @export
+ * @param {React.RefObject<HTMLIFrameElement>} iframeRef
+ */
+export const chatLogout = (iframeRef: React.RefObject<HTMLIFrameElement>): void => {
+    if (siteConfig.openhiveChatIframeIntegrationEnable) {
+        try {
+            logger.info('chatLogout posting message');
+            iframeRef.current?.contentWindow?.postMessage(
+                {
+                    externalCommand: 'logout',
+                },
+                `${siteConfig.openhiveChatUri}`
+            );
+        } catch (error) {
+            logger.error('chatLogout error', error);
+        }
+    }
+}
+
 const RocketChatWidget = () => {
+    const iframeSrc = `${siteConfig.openhiveChatUri}/channel/general`;
+    const iframeTitle = 'Chat';
+    const tooltip = 'Chat';
+    const { user } = useUser();
+    const { username, loginType, chatAuthToken } = user;
+    const [init, setInit] = useState(true);
+    const [badgeContent, setBadgeContent] = useState(0);
+    const [disabled, setDisabled] = useState(true);
+    const [loggedIn, setLoggedIn] = useState(false);
+    const [isIframeLoaded, setIsIframeLoaded] = useState(false);
+    const iframeRef = useRef(null);
+
+    const onMessageReceivedFromIframe = (event: MessageEvent) => {
+
+        //
+        // See https://developer.rocket.chat/rocket.chat/iframe-integration/iframe-events
+        // Warning: above documentation looks to be outdated. I noticed
+        // events not mentioned there.
+        //
+
+        if (event.origin !== siteConfig.openhiveChatUri) {
+            return;
+        }
+
+        logger.info("chat onMessageReceivedFromIframe event", event.origin,
+            event.data, event);
+
+        // Fires when iframe window's title changes. This way we replay
+        // the behavior of native Rocket Chat's badge in our badge.
+        if (event.data.eventName === 'unread-changed') {
+            setBadgeContent(event.data.data || 0);
+        }
+
+        if (event.data.eventName === 'ready') {
+            logger.info('Chat application is ready');
+            setIsIframeLoaded(true);
+        }
+
+        // User has logged in.
+        if (event.data.eventName === 'Custom_Script_Logged_In') {
+            // // Should not be needed, but without this chat is not in
+            // // `embedded` mode sometimes. Also sometimes user is not
+            // // redirected to default channel.
+            // iframeRef.current.contentWindow.postMessage(
+            //     {
+            //         externalCommand: "go",
+            //         path: "/channel/general"
+            //     },
+            //     `${siteConfig.openhiveChatUri}`,
+            // );
+            setDisabled(false);
+        }
+
+        // User has logged out.
+        if (event.data.eventName === 'Custom_Script_Logged_Out') {
+            setDisabled(true);
+        }
+
+    };
+
+    const addIframeListener = () => {
+        window.addEventListener("message", onMessageReceivedFromIframe);
+    };
+
+    const removeIframeListener = () => {
+        window.removeEventListener("message", onMessageReceivedFromIframe);
+    };
+
+    useEffect(() => {
+        // `init` is true when component operates on initial, default
+        // values.
+        if (!init) {
+            if (chatAuthToken) {
+                setLoggedIn(true);
+                if (isIframeLoaded) {
+                    chatLogin({ chatAuthToken, loginType }, iframeRef);
+                }
+            } else if (!chatAuthToken) {
+                if (isIframeLoaded) {
+                    chatLogout(iframeRef);
+                }
+            }
+        } else {
+            addIframeListener();
+            setInit(false);
+        }
+    }, [chatAuthToken, isIframeLoaded]);
+
+    const onIframeLoad = () => {
+        logger.info('Chat iframe has been loaded');
+        return () => {
+            removeIframeListener();
+        };
+    };
 
     return (
         <Sheet>
@@ -24,7 +179,7 @@ const RocketChatWidget = () => {
                                     </div>
                                 ) : null}
                             </div>
-                            <TooltipContent>Chat</TooltipContent>
+                            <TooltipContent>{tooltip}</TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
                 </div>
@@ -34,9 +189,24 @@ const RocketChatWidget = () => {
                 size="sm"
                 className="w-5/6 overflow-auto px-0 pt-12 md:w-2/6"
             >
-                <div className="flex flex-col">
-                    <p className="m-2">Content</p>
-                </div>
+                <iframe
+                    id="chat-iframe"
+                    src={iframeSrc}
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        border: 'none',
+                        display: 'block'
+                    }}
+                    title={iframeTitle}
+                    ref={iframeRef}
+                    onLoad={onIframeLoad}
+                />
+
+                {/* Button to close widget */}
+
+                {/* Link to Chat app */}
+
             </SheetContent>
         </Sheet>
     );

@@ -27,6 +27,7 @@ export const siteConfig = {
     github: '/'
   },
 
+  // OAUTH server
   oidcEnabled: process.env[`${SERVER_VAR_PREFIX}OIDC_ENABLED`] === 'true',
   oidcUrlPrefix: process.env[`${SERVER_VAR_PREFIX}OIDC_URL_PREFIX`] || '/oidc',
   oidcInteractionUrlPrefix: process.env[`${SERVER_VAR_PREFIX}OIDC_INTERACTION_URL_PREFIX`] || '/interaction',
@@ -35,6 +36,15 @@ export const siteConfig = {
     : [],
   oidcClients: process.env[`${SERVER_VAR_PREFIX}OIDC_CLIENTS`] || '[]',
   oidcJwksKeys: process.env[`${SERVER_VAR_PREFIX}OIDC_JWKS_KEYS`] || '[]',
+
+  // Rocket Chat Widget
+  openhiveChatApiUri: env('OPENHIVE_CHAT_API_URI') || 'https://openhive.chat',
+  openhiveChatUri: env('OPENHIVE_CHAT_URI') || 'https://openhive.chat',
+  openhiveChatIframeIntegrationEnable: env('OPENHIVE_CHAT_IFRAME_INTEGRATION_ENABLE') || 'no',
+  openhiveChatIframeVisible: env('OPENHIVE_CHAT_IFRAME_VISIBLE') || 'yes',
+  openhiveChatIframeCreateUsers: process.env[`${SERVER_VAR_PREFIX}OPENHIVE_CHAT_IFRAME_CREATE_USERS`] || 'no',
+  openhiveChatAdminUserId: process.env[`${SERVER_VAR_PREFIX}OPENHIVE_CHAT_ADMIN_USER_ID`] || 'DaMHvraiQbNBxi7W5',
+  openhiveChatAdminUserToken: process.env[`${SERVER_VAR_PREFIX}OPENHIVE_CHAT_ADMIN_USER_TOKEN`] || 'VZhTOE20q3Xe9xTgA9QqjbQAYxYEhAfkUZpAm7xrQgd',
 };
 
 export type SiteConfig = typeof siteConfig;
