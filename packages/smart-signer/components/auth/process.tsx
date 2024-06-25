@@ -26,7 +26,6 @@ export const useProcessAuth = (
   strict: boolean
   ) => {
   const router = useRouter();
-  const slug = router.query.slug as string;
   const authDataRef = useRef<PostLoginSchema | null>(null) as MutableRefObject<PostLoginSchema | null>
   const [loginChallenge, setLoginChallenge] = useState('');
   const [isSigned, setIsSigned] = useState(false);
@@ -108,7 +107,7 @@ export const useProcessAuth = (
   const submitAuth = async () => {
     try {
       if (authDataRef.current) {
-        await signIn.mutateAsync({ data: authDataRef.current, uid: slug });
+        await signIn.mutateAsync({ data: authDataRef.current });
       } else {
         throw new Error('Unexpected error while processing authorization');
       }

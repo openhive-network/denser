@@ -15,15 +15,17 @@ import { useRouter } from 'next/router';
 import { useInView } from 'react-intersection-observer';
 import { CommunitiesSelect } from '@/blog/components/communities-select';
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetServerSideProps } from 'next';
-import { i18n } from '@/blog/next-i18next.config';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 const CommunitiesSidebar = dynamic(() => import('@/blog/components/communities-sidebar'), { ssr: false });
 const CommunitiesMybar = dynamic(() => import('@/blog/components/communities-mybar'), { ssr: false });
 const ExploreHive = dynamic(() => import('@/blog/components/explore-hive'), { ssr: false });
+import { getServerSidePropsDefault } from '../../lib/get-translations';
+
+export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
+
 export const PostSkeleton = () => {
   return (
     <div className="flex items-center space-x-4">
@@ -173,13 +175,3 @@ const MyPage: FC = () => {
 };
 
 export default MyPage;
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  return {
-    props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
-        'common_blog',
-        'smart-signer'
-      ]))
-    }
-  };
-};

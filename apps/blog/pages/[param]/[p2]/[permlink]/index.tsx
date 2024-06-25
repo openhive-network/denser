@@ -48,6 +48,7 @@ import { getLogger } from '@ui/lib/logging';
 import { useRebloggedByQuery } from '@/blog/components/hooks/use-reblogged-by-query';
 import ScrollToElement from '@/blog/components/scroll-to-element';
 import ReblogTrigger from '@/blog/components/reblog-trigger';
+import { getTranslations } from '../../../../lib/get-translations';
 
 const logger = getLogger('app');
 
@@ -516,10 +517,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       community,
       username,
       permlink,
-      ...(await serverSideTranslations(ctx.req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
-        'common_blog',
-        'smart-signer'
-      ]))
+      ...(await getTranslations(ctx))
     }
   };
 };

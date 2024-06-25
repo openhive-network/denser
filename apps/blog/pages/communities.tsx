@@ -10,14 +10,13 @@ import ExploreHive from '@/blog/components/explore-hive';
 import { Icons } from '@ui/components/icons';
 import { Separator } from '@ui/components';
 import { GetServerSideProps } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from '@/blog/next-i18next.config';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import CommunitiesMybar from '../components/communities-mybar';
 import Link from 'next/link';
 import env from '@beam-australia/react-env';
 import { getLogger } from '@ui/lib/logging';
+import { getServerSidePropsDefault } from '../lib/get-translations';
 
 const logger = getLogger('app');
 
@@ -122,13 +121,4 @@ export default function CommunitiesPage() {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  return {
-    props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
-        'common_blog',
-        'smart-signer'
-      ]))
-    }
-  };
-};
+export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
