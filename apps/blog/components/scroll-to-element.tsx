@@ -1,12 +1,8 @@
 import { FC, RefObject, useLayoutEffect, useRef } from 'react';
 
-const ScrollToElement: FC<{ hashid: string; rendererRef: RefObject<HTMLDivElement> }> = ({
-  hashid,
-  rendererRef
-}) => {
+const ScrollToElement: FC<{ rendererRef: RefObject<HTMLDivElement> }> = ({ rendererRef }) => {
   useLayoutEffect(() => {
     const hash = window.location.hash.slice(1);
-    if (hashid !== hash) return;
     const handleScroll = async () => {
       if (!rendererRef.current) return;
 
@@ -30,7 +26,7 @@ const ScrollToElement: FC<{ hashid: string; rendererRef: RefObject<HTMLDivElemen
       }
     };
     handleScroll();
-  }, [hashid]);
+  }, []);
   return null;
 };
 

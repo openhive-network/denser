@@ -14,7 +14,7 @@ const RendererContainer = ({
   doNotShowImages,
   dataTestid,
   communityDescription,
-  hashid
+  mainPost
 }: {
   body: string;
   className: string;
@@ -22,7 +22,7 @@ const RendererContainer = ({
   doNotShowImages: boolean;
   dataTestid?: string;
   communityDescription?: boolean;
-  hashid?: string;
+  mainPost?: Boolean;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
@@ -79,7 +79,7 @@ const RendererContainer = ({
         }}
       />
       <LeavePageDialog link={link} open={open} setOpen={setOpen} />
-      {hashid ? <ScrollToElement hashid={hashid} rendererRef={ref} /> : null}
+      {mainPost ? <ScrollToElement rendererRef={ref} /> : null}
     </>
   );
 };

@@ -275,7 +275,7 @@ function PostPage({
             ) : (
               <ImageGallery>
                 <RendererContainer
-                  hashid={post.depth === 0 ? 'comments' : undefined}
+                  mainPost={post.depth === 0}
                   body={post.body}
                   className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
                   author={post.author}
