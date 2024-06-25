@@ -22,7 +22,7 @@ const ScrollToElement: FC<{ rendererRef: RefObject<HTMLDivElement> }> = ({ rende
       } catch (e) {
         console.error(e);
       } finally {
-        document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
+        rendererRef.current.querySelector(`#${hash}`)?.scrollIntoView({ behavior: 'smooth' });
       }
     };
     handleScroll();
