@@ -5,6 +5,7 @@ import { useTheme } from 'next-themes';
 import { TailwindIndicator } from '../tailwind-indicator';
 import SiteHeader from '../site-header';
 import { ModalContainer } from '@smart-signer/components/modal-container';
+import RocketChatWidget from '../rocket-chat-widget';
 
 interface LayoutProps {
   children: ReactNode;
@@ -22,6 +23,7 @@ function Layout({ children }: LayoutProps) {
         <SiteHeader />
         <div className="flex-1 bg-slate-50 dark:bg-background/95">{children}</div>
       </div>
+      <RocketChatWidget />
       <ModalContainer />
       <Toaster />
       <TailwindIndicator />
