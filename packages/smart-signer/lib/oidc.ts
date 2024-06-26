@@ -38,7 +38,16 @@ const configuration: Configuration = {
             resume: 'oidc_resume',
         },
     },
+    claims: {
+        openid: ['sub', 'profile'],
+        address: ['address'],
+        email: ['email', 'email_verified'],
+        phone: ['phone_number', 'phone_number_verified'],
+        profile: ['birthdate', 'family_name', 'gender', 'given_name', 'locale', 'middle_name', 'name',
+          'nickname', 'picture', 'preferred_username', 'profile', 'updated_at', 'website', 'zoneinfo'],
+    },
     findAccount: async (ctx, sub, token) => {
+        console.log('findAccount', sub, token);
         // @param ctx - koa request context
         // @param sub {string} - account identifier (subject)
         // @param token - is a reference to the token used for which a given account is being loaded,
@@ -55,38 +64,14 @@ const configuration: Configuration = {
           //   "id_token" or "userinfo" (depends on the "use" param)
           // @param rejected {Array[String]} - claim names that were rejected by the end-user, you might
           //   want to skip loading some claims from external resources or through db projection
-          async claims(use, scope, claims, rejected) {
-            return { sub };
+          claims: async (use, scope, claims, rejected) => {
+            console.log('claims', use, scope, claims, rejected);
+            return { sub, profile: { name: 'John Doe' }};
           },
         };
     },
     features: {
         devInteractions: { enabled: false },
-        // jwtResponseModes: { enabled: true },
-        // resourceIndicators: {
-        //     enabled: true,
-        //     defaultResource: (ctx, client, oneOf) => {
-        //         if (oneOf) return oneOf;
-        //         return client['access_token_type'] === 'opaque' ? undefined : `https://yogi.com`;
-        //     },
-        //     getResourceServerInfo: (ctx, resourceIndicator, client) => {
-        //         return {
-        //             scope: 'openid',
-        //             audience: 'resource-server-audience-value',
-        //             accessTokenTTL: 60, // q minute
-        //             accessTokenFormat: 'jwt',
-        //             jwt: {
-        //               sign: { alg: 'ES256' },
-        //             },
-        //           }
-        //     },
-        //     useGrantedResource: (ctx, model) => {
-        //         // @param ctx - koa request context
-        //         // @param model - depending on the request's grant_type this can be either an AuthorizationCode, BackchannelAuthenticationRequest,
-        //         //                RefreshToken, or DeviceCode model instance.
-        //         return false;
-        //     }
-        // },
     },
     interactions: {
         async url(ctx, interaction) {
