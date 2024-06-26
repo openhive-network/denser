@@ -536,7 +536,7 @@ export class TransactionService {
           this.signerOptions.username,
           body,
           {},
-          `re-${parentAuthor.replaceAll('.', '-')}-${Date.now()}`
+          permlink
         )
         .build();
     }, transactionOptions);
