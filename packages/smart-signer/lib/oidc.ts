@@ -51,6 +51,14 @@ const configuration: Configuration = {
             return `${siteConfig.oidcInteractionUrlPrefix}/${interaction.uid}`;
         },
     },
+    pkce: {
+        required: (ctx, client) => {
+            if (client.clientId === 'openhive_chat') {
+                return false;
+            }
+            return true;
+        },
+    },
     jwks: {
         "keys": JSON.parse(siteConfig.oidcJwksKeys),
     },
