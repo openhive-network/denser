@@ -511,7 +511,9 @@ export class TransactionService {
           parentAuthor,
           parentPermlink,
           this.signerOptions.username,
-          body
+          body,
+          undefined,
+          `re-${parentAuthor.replaceAll('.', '-')}-${Date.now()}`
         )
         .build();
     }, transactionOptions);
@@ -525,7 +527,7 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     return await this.processHiveAppOperation((builder) => {
-      const tx = builder
+      builder
         .useBuilder(
           ReplyBuilder,
           (replyBuilder) => {},
@@ -534,7 +536,7 @@ export class TransactionService {
           this.signerOptions.username,
           body,
           {},
-          permlink
+          `re-${parentAuthor.replaceAll('.', '-')}-${Date.now()}`
         )
         .build();
     }, transactionOptions);
