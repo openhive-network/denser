@@ -23,7 +23,8 @@ import {
   useResetBlacklistBlogMutation,
   useResetBlogListMutation,
   useResetFollowBlacklistBlogMutation,
-  useResetFollowMutedBlogMutation
+  useResetFollowMutedBlogMutation,
+  useResetAllListsMutation
 } from './hooks/use-reset-mutations';
 import { handleError } from '@ui/lib/utils';
 import { Skeleton } from '@ui/components';
@@ -83,10 +84,12 @@ export default function ProfileLists({
   const unfollowMutedBlogMutation = useUnfollowMutedBlogMutation();
   const unmuteMutation = useUnmuteMutation();
 
-  const resetBlogListMutation = useResetBlogListMutation();
   const resetBlacklistBlogMutation = useResetBlacklistBlogMutation();
+  const resetBlogListMutation = useResetBlogListMutation();
   const resetFollowBlacklistBlogMutation = useResetFollowBlacklistBlogMutation();
   const resetFollowMutedBlogMutation = useResetFollowMutedBlogMutation();
+
+  const resetAllListsMutation = useResetAllListsMutation();
 
   const deleteFromList = useCallback(
     async (username: string, variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute') => {
@@ -212,11 +215,24 @@ export default function ProfileLists({
       resetFollowMutedBlogMutation
     ]
   );
+  const resetAll = useCallback(async () => {
+    try {
+      await resetAllListsMutation.mutateAsync();
+    } catch (error) {
+      handleError(error, { method: 'resetAll', params: {} });
+    }
+  }, [resetAllListsMutation]);
   const item_is_loading =
     blacklistBlogMutation.isLoading ||
     muteMutation.isLoading ||
     followBlacklistBlogMutation.isLoading ||
     followMutedBlogMutation.isLoading;
+
+  const reset_list_is_loading =
+    resetBlacklistBlogMutation.isLoading ||
+    resetBlogListMutation.isLoading ||
+    resetFollowBlacklistBlogMutation.isLoading ||
+    resetFollowMutedBlogMutation.isLoading;
 
   return (
     <ProfileLayout>
@@ -291,10 +307,12 @@ export default function ProfileLists({
                       onClick={() => {
                         deleteFromList(e.name, variant);
                       }}
-                      disabled={delete_is_loading}
+                      disabled={delete_is_loading || reset_list_is_loading}
                     >
-                      {delete_is_loading ? (
-                        <ImpulseSpinner size={70} frontColor="#dc2626" />
+                      {delete_is_loading || reset_list_is_loading ? (
+                        <span className="flex h-5 w-20 items-center justify-center">
+                          <ImpulseSpinner frontColor="#dc2626" />
+                        </span>
                       ) : variant === 'blacklisted' ? (
                         t('user_profile.lists.list.unblacklist')
                       ) : variant === 'muted' ? (
@@ -311,7 +329,7 @@ export default function ProfileLists({
             })
           ) : null}
           {item_is_loading ? (
-            <li className="flex h-9 w-full items-center justify-between bg-slate-200 pl-2 pr-1 dark:bg-slate-900">
+            <li className="flex h-9 w-72 items-center justify-between bg-slate-200 pl-2 pr-1 dark:bg-slate-900">
               <Skeleton className="h-5 w-24 bg-slate-50 dark:bg-slate-700" />
               <Skeleton className="h-6 w-20 bg-slate-50 dark:bg-slate-700" />
             </li>
@@ -388,18 +406,23 @@ export default function ProfileLists({
                 size="sm"
                 variant="outlineRed"
                 className="text-xs"
+                disabled={reset_list_is_loading}
               >
-                {variant === 'blacklisted'
-                  ? t('user_profile.lists.list.reset_blacklist')
-                  : variant === 'muted'
-                    ? t('user_profile.lists.list.reset_muted_list')
-                    : variant === 'followedBlacklist'
-                      ? t('user_profile.lists.list.reset_followed_blacklists')
-                      : variant === 'followedMute'
-                        ? t('user_profile.lists.list.reset_followed_muted_list')
-                        : null}
+                {reset_list_is_loading ? (
+                  <span className="flex h-5 w-20 items-center justify-center">
+                    <ImpulseSpinner frontColor="#dc2626" />
+                  </span>
+                ) : variant === 'blacklisted' ? (
+                  t('user_profile.lists.list.reset_blacklist')
+                ) : variant === 'muted' ? (
+                  t('user_profile.lists.list.reset_muted_list')
+                ) : variant === 'followedBlacklist' ? (
+                  t('user_profile.lists.list.reset_followed_blacklists')
+                ) : variant === 'followedMute' ? (
+                  t('user_profile.lists.list.reset_followed_muted_list')
+                ) : null}
               </Button>
-              <Button onClick={() => transactionService.resetAllBlog()} size="sm" className="text-xs">
+              <Button onClick={() => resetAll()} size="sm" className="text-xs">
                 {t('user_profile.lists.list.reset_all_lists')}
               </Button>
             </div>
