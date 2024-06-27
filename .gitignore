@@ -2,6 +2,7 @@ node_modules
 .turbo
 .idea
 .next
+.vscode
 out
 playwright-report
 test-results
@@ -13,3 +14,5 @@ version.json
 tmp
 ssl
 .DS_Store
+stack/*.env
+stack/haf-datadir
