@@ -12,3 +12,6 @@
 node_modules
 **/public/auth/worker.js
 ssl
+
+**/playwright-report
+**/test-results

@@ -12,7 +12,7 @@
     "build": "react-env -- next build",
     "postbuild": "npm run copy:worker",
     "start": "react-env -- next start -p 4000",
-    "lint": "eslint .",
+    "lint": "eslint . --ignore-pattern \"playwright-report/*\"",
     "pw:test:local": "playwright test --config=playwright.local4000.config.ts",
     "pw:test:local:chromium": "playwright test --project=chromium --config=playwright.local4000.config.ts --headed",
     "pw:test:local:firefox": "playwright test --project=firefox --config=playwright.local4000.config.ts --headed",

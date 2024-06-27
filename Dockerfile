@@ -59,6 +59,7 @@ WORKDIR /app
 
 RUN npm i -g @beam-australia/react-env@3.1.1
 RUN apk add --no-cache tini
+COPY --from=trajano/alpine-libfaketime:latest /faketime.so /lib/faketime.so
 
 # Don't run production as root
 RUN addgroup --system --gid 1001 nodejs
@@ -79,8 +80,7 @@ COPY --from=installer --chown=nextjs:nodejs /app${TURBO_APP_PATH}/.env* ./
 COPY --from=installer --chown=nextjs:nodejs /app${TURBO_APP_PATH}/li[b]/markdown[s]/ .${TURBO_APP_PATH}/lib/markdowns/
 
 # Expose ports 3000 and 4000 for the sake of GitLab CI healthcheck
-EXPOSE 3000
-EXPOSE 4000
+EXPOSE 3000 4000
 
 ENTRYPOINT ["/sbin/tini", "--", "/app/docker-entrypoint.sh"]
 CMD node .${TURBO_APP_PATH}/server.js
