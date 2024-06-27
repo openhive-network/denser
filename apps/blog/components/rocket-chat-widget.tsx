@@ -1,11 +1,13 @@
 import { getLogger } from '@ui/lib/logging';
-import { Sheet, SheetContent, SheetTrigger } from '@ui/components/sheet';
+import { Sheet, SheetContent, SheetFooter, SheetTrigger } from '@ui/components/sheet';
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { useState, useRef, useEffect } from 'react';
 import { siteConfig } from '@ui/config/site';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { LoginType } from '@smart-signer/types/common';
+import Link from 'next/link';
+import { Button } from '@ui/components/button';
 
 const logger = getLogger('app');
 
@@ -75,6 +77,7 @@ const RocketChatWidget = () => {
   const [disabled, setDisabled] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
   const [isIframeLoaded, setIsIframeLoaded] = useState(false);
+  const [open, setOpen] = useState(false);
   const iframeRef = useRef(null);
 
   const onMessageReceivedFromIframe = (event: MessageEvent) => {
@@ -158,18 +161,22 @@ const RocketChatWidget = () => {
   };
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <div className="group relative inline-flex w-fit cursor-pointer items-center justify-center">
           <TooltipProvider>
             <Tooltip>
               <div className="fixed bottom-10 right-10 block">
-                <TooltipTrigger type="button" aria-label="Open Chat Widget">
+                <TooltipTrigger
+                  type="button"
+                  aria-label="Open Chat Widget"
+                  // disabled={disabled}
+                >
                   <Icons.messageSquareText className="h-12 w-12" />
                 </TooltipTrigger>
-                {true ? (
+                {loggedIn ? (
                   <div className="absolute bottom-auto left-auto right-0 top-0.5 z-50 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-red-600 px-1.5 py-1 text-center align-baseline text-xs font-bold leading-none text-white">
-                    {1}
+                    {badgeContent}
                   </div>
                 ) : null}
               </div>
@@ -178,7 +185,13 @@ const RocketChatWidget = () => {
           </TooltipProvider>
         </div>
       </SheetTrigger>
-      <SheetContent position="right" size="sm" className="w-full overflow-auto px-0 pt-12 md:w-6/12">
+
+      <SheetContent
+        position="right"
+        size="sm"
+        className="w-full overflow-auto px-0 pt-12 md:w-6/12"
+      >
+        {/* Rocket Chat iframe */}
         <iframe
           id="chat-iframe"
           src={iframeSrc}
@@ -193,9 +206,29 @@ const RocketChatWidget = () => {
           onLoad={onIframeLoad}
         />
 
-        {/* Button to close widget */}
+        <SheetFooter>
+          <Button
+            className="hover:text-red-600"
+            variant="outline"
+            size="sm"
+            title="Close Chat Widget"
+            aria-label="Close Chat Widget"
+            onClick={() => setOpen(false)}
+          >
+            <Icons.close />
+          </Button>
+          <Link
+            href={iframeSrc}
+            className="hover:cursor-pointer hover:text-red-600"
+            aria-label="Open Chat App"
+            title="Open Chat App"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Icons.externalLink />
+          </Link>
+        </SheetFooter>
 
-        {/* Link to Chat app */}
       </SheetContent>
     </Sheet>
   );
