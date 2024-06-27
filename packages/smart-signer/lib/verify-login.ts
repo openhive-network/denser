@@ -53,6 +53,7 @@ export async function verifyLogin(data: PostLoginSchema): Promise<User> {
         loginType,
         keyType,
         authenticateOnBackend: false,
+        chatAuthToken: '',
       };
       return user;
 

@@ -74,7 +74,8 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
     avatarUrl: hiveUserProfile?.profile_image || '',
     loginType,
     keyType,
-    authenticateOnBackend
+    authenticateOnBackend,
+    chatAuthToken: '',
   };
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
   session.user = user;
