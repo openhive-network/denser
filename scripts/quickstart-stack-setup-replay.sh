@@ -27,7 +27,7 @@ curl --location --output "${BLOCK_LOG_UTIL_PATH}" "https://gitlab.syncad.com/api
 chmod +x "${BLOCK_LOG_UTIL_PATH}"
 
 echo "Downloading and extracting block_log and accompanying files..."
-./haf/hive/scripts/ci-helpers/export-data-from-docker-image.sh registry.gitlab.syncad.com/hive/hive/extended-block-log:42bf3ac5 "${HOME}/mirrornet-blockchain" --image-path=/blockchain/
+./haf/hive/scripts/ci-helpers/export-data-from-docker-image.sh registry.gitlab.syncad.com/hive/hive/extended-block-log:f8a89045 "${HOME}/mirrornet-blockchain" --image-path=/blockchain/
 
 echo "Building Denser..."
 ./scripts/build_instance.sh --app-name="auth" --tag="local"

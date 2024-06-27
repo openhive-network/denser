@@ -25,6 +25,8 @@
     "blog:pw:test:local:webkit": "turbo run pw:test:local:webkit --filter=@hive/blog",
     "blog:pw:test:local:experimental:ui": "turbo run pw:test:local:experimental:ui --filter=@hive/blog",
     "blog:mir:pw:test:local:chromium": "turbo run pw:blog:test:mir:chromium --filter=@hive/blog",
+    "blog:mir:pw:test:local:chromium:trace": "turbo run pw:blog:test:mir:chromium:trace --filter=@hive/blog",
+    "blog:mir:pw:test:local:chromium:ui": "turbo run pw:blog:test:mir:chromium:ui --filter=@hive/blog",
     "wallet:pw:test:local": "turbo run pw:test:local --filter=@hive/wallet",
     "wallet:pw:test:local:chromium": "turbo run pw:test:local:chromium --filter=@hive/wallet",
     "wallet:pw:test:local:firefox": "turbo run pw:test:local:firefox --filter=@hive/wallet",

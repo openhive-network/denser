@@ -36,18 +36,21 @@ services:
     image: registry.gitlab.syncad.com/hive/haf_api_node/compose:${COMPOSE_TAG:-latest}
     environment:
       CADDY_SITES: "http://"
+      ADMIN_ENDPOINT_PROTOCOL: http
       DOCKER_TLS_CERTDIR: /certs
       ARGUMENTS:
+      HIVEMIND_SYNC_ARGS:
       TOP_LEVEL_DATASET_MOUNTPOINT: /cache/haf-datadir
       PUBLIC_HOSTNAME:
       USE_ALTERNATE_HAPROXY_CONFIG:
       HIVE_API_NODE_REGISTRY: registry.gitlab.syncad.com/hive
-      HAF_REGISTRY:
-      HIVEMIND_INSTANCE_IMAGE:
-      HAFAH_REGISTRY:
-      REPUTATION_TRACKER_REGISTRY:
+      HAF_IMAGE:
+      HIVEMIND_IMAGE:
+      HAFAH_IMAGE:
+      REPUTATION_TRACKER_IMAGE:
+      HIVE_API_NODE_VERSION:
       HAF_VERSION:
-      HIVEMIND_INSTANCE_VERSION:
+      HIVEMIND_VERSION:
       HAFAH_VERSION:
       REPUTATION_TRACKER_VERSION:
       FAKETIME:

@@ -135,12 +135,12 @@ To stop and delete the containers use command `docker compose down`.
 
 #### Quickstart
 
-There are two qucikstart scripts available for quickly setting up a local mirrornet HAF API stack:
+There are two quickstart scripts available for quickly setting up a local mirrornet HAF API stack:
 
 - [scripts/quickstart-stack-setup-replay.sh](scripts/quickstart-stack-setup-replay.sh),
 - [scripts/quickstart-stack-restart-from-backup.sh](scripts/quickstart-stack-restart-from-backup.sh).
 
-Those scripts use the command described int the next section exactly as shown in the examples.
+Those scripts use commands described in the next section exactly as shown in the examples.
 
 Script `quickstart-stack-setup-replay.sh` performs the following actions:
 
@@ -166,7 +166,10 @@ Setting up the stack is, therefore, as simple as running:
 ./scripts/quickstart-stack-setup-replay.sh
 ```
 
-This command will take a very long time. Once it finishes Denser should be available at [https://your-hostname.local:3000] and the stack's API endpoint at [https://your-hostname.local:8443].
+This command will take a very long time. Once it finishes Denser should be available at [https://your-hostname.local:3000] and the stack's API endpoint at [https://your-hostname.local:8443]. If you have a proper domain and certificates, they should be configured at this point - details are in the next section. Once you set up the certificates, the stack needs to be stopped and restarted as described below. The endpoints will change to [https://your.domain.name:3000] and [https://your.domain.name:8443].
+
+There's a possibility the command will fail with `block_log_util: line 1: {message:404 Not found}: command not found` - this means that block_log_util is no longer available for download.  
+You need to either manually rerun job `haf_image_build_mirrornet` in the latest CI pipeline for HAF's develop branch or procure it from somwehere else (eg. HAF's most recent pipeline), install it manually and comment out the `Downloading and installing block_log_util...` section of [scripts/quickstart-stack-setup-replay.sh](scripts/quickstart-stack-setup-replay.sh). In either case rerun the command.
 
 The stack can be shut down with command:
 
@@ -181,6 +184,14 @@ when it's no longer needed and then started up again with:
 ```
 
 Both `quickstart-stack-setup-replay.sh` and `quickstart-stack-restart-from-backup.sh` may show errors when deleting the old stack if it's not present. It's completely normal.
+
+If you're running the stack with self-signed certificates, you need to disable certificate errors in the browser, eg:
+
+```bash
+/opt/google/chrome/chrome --ignore-certificate-errors
+```
+
+Otherwise you can run the browser as normal.
 
 #### Detailed explanation
 
@@ -200,7 +211,7 @@ Initialize and update the submodules:
 git submodule update --init --recursive
 ```
 
-Obtain the block_log and the block_log_util files.
+Obtain the block log and the block_log_util.
 
 Block_log_util can be downloaded and installed using the following command:
 
@@ -209,12 +220,14 @@ curl --location --output "${HOME}/hive-utils/block_log_util" "https://gitlab.syn
 chmod +x "${HOME}/hive-utils/block_log_util"
 ```
 
+You need to either manually rerun job `haf_image_build_mirrornet` in the latest CI pipeline for HAF's develop branch or procure it from somwehere else (eg. HAF's most recent pipeline) and install it manually.
+
 After running the command, block_log_util from the latest HAF develop will be installed in `${HOME}/hive-utils/block_log_util`
 
 Block log, alongside its accompanying alternative chain spec and artifacts files, can be obtained from a special Docker image using the following command (in this example it will be extracted to `~/mirrornet-blockchain`):
 
 ```bash
-./haf/hive/scripts/ci-helpers/export-data-from-docker-image.sh registry.gitlab.syncad.com/hive/hive/extended-block-log:42bf3ac5 "${HOME}/mirrornet-blockchain" --image-path=/blockchain/
+./haf/hive/scripts/ci-helpers/export-data-from-docker-image.sh registry.gitlab.syncad.com/hive/hive/extended-block-log:f8a89045 "${HOME}/mirrornet-blockchain" --image-path=/blockchain/
 ```
 
 The path given here as a second argument is the same path provided later as `--block-log-source=`.
@@ -235,12 +248,14 @@ Configure the stack using the command (assuming block_log_util is in directory `
 --block-log-util-path="${HOME}/hive-utils/block_log_util"
 ```
 
-The are many parameters than can be used to customize the stack. Yuo can see the full list by running `./scripts/setup-stack.sh --help`. Stack's configuration can also be altered after the script is finished running by edition the resulting dotenv file - `${SRC_DIR}/stack/mirrornet-stack.env`.
+The are many parameters than can be used to customize the stack. You can see the full list by running `./scripts/setup-stack.sh --help`. Stack's configuration can also be altered after the script is finished running by edition the resulting dotenv file - `${SRC_DIR}/stack/mirrornet-stack.env`.
 
 If your computer has a proper domain name, you can pass it to the stack by adding `--public-hostname` parameter to the command above, ie. `--public-hostname=your.domain.name` or editing `PUBLIC_HOSTNAME` in the generated env file.  
 Otherwise the stack will use *your-hostname.local* as its domain name.
 
-This will create stack's data directory at `/srv/haf-pool/haf-datadir`, generate block_log.artifacts file, copy the block log, the artifacts file and the HAF ini file to the data directory and store stack's configuration in `${SRC_DIR}/stack/mirrornet-stack.env`, where `${SRC_DIR}` is Denser's source directory. The process will take a while. Once it's finished, note the value printed after `Head block number is:` in the scripts output, then use it to replace the value after `--stop-at-block` in `ARGUMENTS` in the `${SRC_DIR}/stack/mirrornet-stack.env` file. **It is importatnt that the block log size is accurate**
+This will create stack's data directory at `/srv/haf-pool/haf-datadir`, generate block_log.artifacts file, copy the block log, the artifacts file and the HAF ini file to the data directory and store stack's configuration in `${SRC_DIR}/stack/mirrornet-stack.env`, where `${SRC_DIR}` is Denser's source directory. The process will take a while. Once it's finished, note the value printed after `Head block number is:` in the script's output, then use it to replace the value after `--stop-at-block` in `ARGUMENTS` in the `${SRC_DIR}/stack/mirrornet-stack.env` file. **It is importatnt that the block log size is accurate.**
+
+If your computer has a proper domain name and you have trusted certificates for that domain, you should configure them now. Place the certificate and key files in `stack/certs` directory, rename them to `cert.pem` and `key.pem` respectively and then comment out all `tls internal` lines in [stack/Caddyfile](stack/Caddyfile) and uncomment the lines below (`tls /etc/caddy/certs/cert.pem /etc/caddy/certs/key.pem`).
 
 If you didn't change the default location of `mirrornet-stack.env` and wish to run commands below as they are written, run `export SRC_DIR="$(pwd)"` in Denser's source directory.
 
@@ -262,7 +277,7 @@ This will likely take a long time to complete.
 > Do not run `start-stack.sh` multiple times in a row - even if starting the stack failed. Always run `stop-stack.sh` to clean up old containers
 > before running `start-stack.sh` again.
 
-Once the replay and sync are done, backup the stack's data directory to avoid having to perform replay and sync every time you restart the stack.
+Once the replay and sync are done, backup the stack's data directory to avoid having to perform replay and sync and/or adjusting the faketime every time you restart the stack.
 
 ```bash
 # Stop the stack first
@@ -298,11 +313,13 @@ docker volume rm mirrornet-api-stack_haf-datadir
 
 Now that the stack is running, you can access you Denser instance on [https://your-hostname.local:3000] or [https://your.domain.name:3000] - note the HTTPS in the URL.
 
-Since the stack runs with self-signed certificates, you need to disable certificate errors in the browser:
+If you're running the stack with self-signed certificates, you need to disable certificate errors in the browser, eg:
 
 ```bash
 /opt/google/chrome/chrome --ignore-certificate-errors
 ```
+
+Otherwise you can run the browser as normal.
 
 You can stop the stack with command:
 
@@ -340,25 +357,17 @@ In order to update Denser version (to include new local changes, for example) yo
 - optionally edit the stack's dotenv file if you changed Denser's image tag,
 - restart the stack.
 
-This is to keep Denser and HAF containers' time in sync.
-
-Important URLs
-
-- [https://your-hostname.local:8080/admin/] or [https://your.domain.name:8443/admin/] - the stack's admin panel
-- [https://your-hostname.local:8080/admin/haproxy/] or [https://your.domain.name:8443/admin/haproxy] - HAproxy's statistics report
-
-Do not worry if your browser complains about SSL certificates (NET::ERR_CERT_AUTHORITY_INVALID) and wants you to confirm accessing those URLs - the stack is using self-signed certificates.
+If you're using self-signed certificates, do not worry if your browser complains about SSL certificates (NET::ERR_CERT_AUTHORITY_INVALID) and wants you to confirm accessing those URLs.
 
 Quick cURL queries to check if the API is working properly:
 
 ```bash
 curl -vk -X POST --data '{"jsonrpc":"2.0", "method":"condenser_api.get_block", "params":[1], "id":1}' https://your.domain.name:8443/ # Hive
-curl -vk -X POST --data '{"jsonrpc":"2.0", "method":"block_api.get_block", "params":{"block_num":1}, "id":1}' https://your.domain.name:8443/hafah/get_version # HAfAH
-curl -vk -X POST --data '{"jsonrpc":"2.0", "method":"condenser_api.get_trending_tags", "id":1}' https://your.domain.name:8443/ # Hivemind
+curl -vk -X POST --data '{"jsonrpc":"2.0", "method":"block_api.get_block", "params":{"block_num":1}, "id":1}' https://your.domain.name:8443/ # HAfAH
+curl -vk -X POST --data '{"jsonrpc":"2.0", "method":"condenser_api.get_blog", "params":["steem", 0, 1], "id":1}' https://your.domain.name:8443/ # Hivemind
 ```
 
-API stack's individual containers are wrapped in the docker container, so they cannot be accessed directly, eg `docker inspect haf-world-haf-1`. If you need to access them, you need to do so from within
-the dind container, eg.
+API stack's individual containers are wrapped in the docker container, so they cannot be accessed directly, eg `docker inspect haf-world-haf-1`. If you need to access them, you need to do so from within the dind container, eg.
 
 ```bash
 # Access the container's shell
