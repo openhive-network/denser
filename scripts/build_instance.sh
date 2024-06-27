@@ -71,6 +71,11 @@ while [ $# -gt 0 ]; do
     shift
 done
 
+# Throw exceptions or provide sane defaults if turbo variables are not set.
+TURBO_APP_NAME=${TURBO_APP_NAME:?"App name must be set"}
+TURBO_APP_PATH=${TURBO_APP_PATH:-"/apps/${TURBO_APP_NAME}"}
+TURBO_APP_SCOPE=${TURBO_APP_SCOPE:-"@hive/${TURBO_APP_NAME}"}
+
 TARGET="local-build"
 if [ -n "${CI:-}" ];
 then

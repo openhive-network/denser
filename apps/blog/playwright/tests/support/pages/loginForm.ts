@@ -34,6 +34,12 @@ export class LoginForm {
   readonly wifInputErrorMessage: Locator;
   readonly passwordErrorMessageEnterYourWifKey: Locator;
 
+  readonly enterYourPasswordForm: Locator;
+  readonly headerEnterYourPassword: Locator;
+  readonly passwordToUnlockKeyInput: Locator;
+  readonly passwordToUnlockKeySubmitButton: Locator;
+  readonly passwordToUnlockKeyResetButton: Locator;
+
   constructor(page: Page) {
     this.page = page;
     this.loginDialog = page.getByTestId('login-dialog');
@@ -68,6 +74,12 @@ export class LoginForm {
     this.passwordErrorMessage = page.getByTestId('password-error-message');
     this.wifInputErrorMessage = page.getByTestId('wif-input-error-message');
     this.passwordErrorMessageEnterYourWifKey = page.getByTestId('password-form-error-message');
+
+    this.enterYourPasswordForm = page.getByTestId('enter-password-to-unlock-key');
+    this.headerEnterYourPassword = page.getByText('Enter your password');
+    this.passwordToUnlockKeyInput = page.getByTestId('posting-private-key-input');
+    this.passwordToUnlockKeySubmitButton = page.getByTestId('password-submit-button');
+    this.passwordToUnlockKeyResetButton = page.getByTestId('password-reset-button');
   }
 
   async validateDefaultLoginFormIsLoaded() {
@@ -91,7 +103,9 @@ export class LoginForm {
 
   async validateDefaultOtherSignInOptionsFormIsLoaded() {
     await this.page.waitForSelector(this.otherSignInOptionsDescription['_selector']);
-    await expect(this.otherSignInOptionsDescription).toHaveText('Enter your username and select a sign in method');
+    await expect(this.otherSignInOptionsDescription).toHaveText(
+      'Enter your username and select a sign in method'
+    );
     await expect(this.otherSignInOptionsUsernameInput).toHaveAttribute('placeholder', 'Username');
     await expect(this.hiveKeychainExtensionButton).toBeDisabled();
     await expect(this.signInWithWifButton).toBeDisabled();
@@ -103,7 +117,9 @@ export class LoginForm {
   // user when username is typed in Sign in form
   async validateOtherSignInOptionsFormWithUsernameIsLoaded(username: string) {
     await this.page.waitForSelector(this.otherSignInOptionsDescription['_selector']);
-    await expect(this.otherSignInOptionsDescription).toHaveText('Enter your username and select a sign in method');
+    await expect(this.otherSignInOptionsDescription).toHaveText(
+      'Enter your username and select a sign in method'
+    );
     await expect(this.otherSignInOptionsUsernameInput).toHaveAttribute('value', username);
     await expect(this.hiveKeychainExtensionButton).toBeEnabled();
     await expect(this.signInWithWifButton).toBeEnabled();
@@ -119,6 +135,30 @@ export class LoginForm {
     await expect(this.storeKeyCheckbox).not.toBeChecked();
     await expect(this.postingPrivateKeySubmitButton).toBeVisible();
     await expect(this.postingPrivateKeyResetButton).toBeVisible();
+  }
+
+  async validateEnterYourPasswordToUnlockKeyIsLoaded() {
+    await this.page.waitForSelector(this.enterYourPasswordForm['_selector']);
+    await expect(this.headerEnterYourPassword).toHaveText('Enter your password');
+    await expect(this.passwordToUnlockKeyInput).toHaveAttribute('placeholder', 'Password to unlock key');
+    await expect(this.passwordToUnlockKeySubmitButton).toBeVisible();
+    await expect(this.passwordToUnlockKeyResetButton).toBeVisible();
+  }
+
+  async putEnterYourPasswordToUnlockKey(safeStoragePassword: string) {
+    await this.page.waitForSelector(this.enterYourPasswordForm['_selector']);
+    await expect(this.headerEnterYourPassword).toHaveText('Enter your password');
+    await expect(this.passwordToUnlockKeyInput).toHaveAttribute('placeholder', 'Password to unlock key');
+    await expect(this.passwordToUnlockKeySubmitButton).toBeVisible();
+    await expect(this.passwordToUnlockKeyResetButton).toBeVisible();
+    await this.passwordToUnlockKeyInput.fill(safeStoragePassword);
+    await this.passwordToUnlockKeySubmitButton.click();
+  }
+
+  async putEnterYourPasswordToUnlockKeyIfNeeded(safeStoragePassword: string) {
+    if (await this.enterYourPasswordForm.isVisible()) {
+      await this.putEnterYourPasswordToUnlockKey(safeStoragePassword);
+    }
   }
 
   async closeLoginForm() {

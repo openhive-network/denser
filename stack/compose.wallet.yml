@@ -1,0 +1,28 @@
+services:
+  denser-wallet:
+    profiles:
+      - denser
+    image: registry.gitlab.syncad.com/hive/denser/wallet:${WALLET_IMAGE_TAG:-latest}
+    environment:
+      PORT: ${WALLET_PORT:-4000}
+      REACT_APP_API_ENDPOINT: "https://${PUBLIC_HOSTNAME}:${API_HTTPS_PORT}"
+      REACT_APP_IMAGES_ENDPOINT:
+      REACT_APP_SITE_DOMAIN: "https://${PUBLIC_HOSTNAME}:${WALLET_PORT}"
+      REACT_APP_BLOG_DOMAIN: "https://${PUBLIC_HOSTNAME}:${BLOG_PORT}"
+      REACT_APP_CHAIN_ID:
+      REACT_APP_LOGGING_BROWSER_ENABLED: "true"
+      TURBO_APP_SCOPE: '@hive/wallet'
+      TURBO_APP_PATH: '/apps/wallet'
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
+    networks:
+      - docker
+    extra_hosts:
+      - ${PUBLIC_HOSTNAME}:host-gateway
+    healthcheck:
+      test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://$${HOSTNAME}:$${PORT}/ || exit 1']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    # depends_on:
+    #   caddy-blog:
+    #     condition: service_healthy

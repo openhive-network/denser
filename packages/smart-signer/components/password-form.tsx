@@ -121,7 +121,7 @@ export function PasswordForm({
   });
 
   return (
-    <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
+    <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0" data-testid="enter-password-to-unlock-key">
       <div className="mx-auto flex w-full max-w-md flex-col items-center">
 
         <h2 className="w-full text-xl">{t2(captionKey.title)}</h2>

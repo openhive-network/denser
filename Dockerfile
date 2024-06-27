@@ -61,6 +61,7 @@ LABEL io.hive.image.commit.date="$GIT_LAST_COMMIT_DATE"
 WORKDIR /app
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm add -g @beam-australia/react-env@3.1.1
 RUN apk add --no-cache tini
+# COPY --from=trajano/alpine-libfaketime:latest /faketime.so /lib/faketime.so
 
 # Don't run production as root
 RUN addgroup --system --gid 1001 nodejs
