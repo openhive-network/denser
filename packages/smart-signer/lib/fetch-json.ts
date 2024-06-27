@@ -38,9 +38,15 @@ export class FetchError extends Error {
 
 export async function fetchJson<JSON = any>(
   input: RequestInfo,
-  init?: RequestInit
+  init?: RequestInit,
+  timeout = 1000 * 30
 ): Promise<JSON> {
-  const response = await fetch(input, init);
+  // See https://developer.chrome.com/blog/abortable-fetch
+  const controller = new AbortController();
+  const signal = controller.signal;
+  setTimeout(() => controller.abort(), timeout);
+  const myInit = { ...init, signal };
+  const response = await fetch(input, myInit);
 
   // If the server replies, there's always some data in json.
   // If there's a network error, it will throw at the previous line.
