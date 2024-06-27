@@ -44,15 +44,20 @@ const configuration: Configuration = {
         address: ['address'],
         email: ['email', 'email_verified'],
         phone: ['phone_number', 'phone_number_verified'],
-        profile: ['birthdate', 'family_name', 'gender', 'given_name', 'locale', 'middle_name', 'name',
-          'nickname', 'picture', 'preferred_username', 'profile', 'updated_at', 'website', 'zoneinfo'],
+        profile: [
+          'birthdate', 'family_name', 'gender', 'given_name',
+          'locale', 'middle_name', 'name', 'nickname', 'picture',
+          'preferred_username', 'profile', 'updated_at', 'website',
+          'zoneinfo'
+        ],
     },
     findAccount: async (ctx, sub, token) => {
         logger.info('findAccount sub: %s, token: %o', sub, token);
         // @param ctx - koa request context
         // @param sub {string} - account identifier (subject)
-        // @param token - is a reference to the token used for which a given account is being loaded,
-        //   is undefined in scenarios where claims are returned from authorization endpoint
+        // @param token - is a reference to the token used for which
+        //    a given account is being loaded, is undefined in scenarios
+        //    where claims are returned from authorization endpoint
         return {
           accountId: sub,
           // @param use {string} - can either be "id_token" or "userinfo", depending on

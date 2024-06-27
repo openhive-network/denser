@@ -37,7 +37,7 @@ export class FetchError extends Error {
 }
 
 export async function fetchJson<JSON = any>(
-  input: RequestInfo,
+  input: string | Request | URL,
   init?: RequestInit,
   timeout = 1000 * 30
 ): Promise<JSON> {

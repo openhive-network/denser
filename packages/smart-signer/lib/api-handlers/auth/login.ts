@@ -12,6 +12,8 @@ import { verifyLoginChallenge } from '@smart-signer/lib/verify-login-challenge';
 import { verifyLogin } from '@smart-signer/lib/verify-login';
 import { getLoginChallengeFromTransactionForLogin } from '@smart-signer/lib/login-operation'
 import { getLogger } from '@hive/ui/lib/logging';
+import { siteConfig } from '@hive/ui/config/site';
+import { getChatAuthToken } from '@smart-signer/lib/rocket-chat';
 
 const logger = getLogger('app');
 
@@ -22,6 +24,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
   const loginChallenge = req.cookies[`${cookieNamePrefix}login_challenge_server`] || '';
 
   const data: PostLoginSchema = await postLoginSchema.parseAsync(req.body);
+
   const { username, loginType, signatures, keyType, authenticateOnBackend } = data;
   let hiveUserProfile;
   let chainAccount;
@@ -68,6 +71,14 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
     throw new createHttpError.Unauthorized('Invalid username or password');
   }
 
+  let chatAuthToken = '';
+  if (siteConfig.openhiveChatIframeIntegrationEnable) {
+    const result = await getChatAuthToken(username);
+    if (result.success) {
+      chatAuthToken = result.data.authToken;
+    }
+  }
+
   const user: User = {
     isLoggedIn: true,
     username,
@@ -75,7 +86,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
     loginType,
     keyType,
     authenticateOnBackend,
-    chatAuthToken: '',
+    chatAuthToken,
   };
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
   session.user = user;
