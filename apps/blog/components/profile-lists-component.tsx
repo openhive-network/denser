@@ -222,6 +222,7 @@ export default function ProfileLists({
       handleError(error, { method: 'resetAll', params: {} });
     }
   }, [resetAllListsMutation]);
+
   const item_is_loading =
     blacklistBlogMutation.isLoading ||
     muteMutation.isLoading ||
@@ -307,9 +308,9 @@ export default function ProfileLists({
                       onClick={() => {
                         deleteFromList(e.name, variant);
                       }}
-                      disabled={delete_is_loading || reset_list_is_loading}
+                      disabled={delete_is_loading || reset_list_is_loading || resetAllListsMutation.isLoading}
                     >
-                      {delete_is_loading || reset_list_is_loading ? (
+                      {delete_is_loading || reset_list_is_loading || resetAllListsMutation.isLoading ? (
                         <span className="flex h-5 w-20 items-center justify-center">
                           <ImpulseSpinner frontColor="#dc2626" />
                         </span>
@@ -406,9 +407,9 @@ export default function ProfileLists({
                 size="sm"
                 variant="outlineRed"
                 className="text-xs"
-                disabled={reset_list_is_loading}
+                disabled={reset_list_is_loading || resetAllListsMutation.isLoading}
               >
-                {reset_list_is_loading ? (
+                {reset_list_is_loading || resetAllListsMutation.isLoading ? (
                   <span className="flex h-5 w-20 items-center justify-center">
                     <ImpulseSpinner frontColor="#dc2626" />
                   </span>
@@ -422,8 +423,19 @@ export default function ProfileLists({
                   t('user_profile.lists.list.reset_followed_muted_list')
                 ) : null}
               </Button>
-              <Button onClick={() => resetAll()} size="sm" className="text-xs">
-                {t('user_profile.lists.list.reset_all_lists')}
+              <Button
+                disabled={resetAllListsMutation.isLoading}
+                onClick={() => resetAll()}
+                size="sm"
+                className="text-xs"
+              >
+                {resetAllListsMutation.isLoading ? (
+                  <span className="flex h-5 w-20 items-center justify-center">
+                    <ImpulseSpinner frontColor="#dc2626" />
+                  </span>
+                ) : (
+                  t('user_profile.lists.list.reset_all_lists')
+                )}
               </Button>
             </div>
           </div>
