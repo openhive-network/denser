@@ -15,12 +15,10 @@ export const getUser: NextApiHandler<User> = async (req, res) => {
     res.json({
       ...session.user,
       isLoggedIn: true,
-      sub: session.user.username,
     });
   } else {
     res.json(defaultUser);
   }
   logger.info('getUser: req headers auth: %o', req.headers);
   logger.info('getUser: session: %o', session);
-
 };

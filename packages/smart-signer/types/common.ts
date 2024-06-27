@@ -25,7 +25,6 @@ export type User = {
     keyType: KeyType;
     authenticateOnBackend: boolean;
     chatAuthToken: string;
-    sub: string;
 }
 
 export interface IronSessionData {

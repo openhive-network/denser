@@ -53,5 +53,4 @@ export const defaultUser: User = {
     keyType: KeyType.posting,
     authenticateOnBackend: true,
     chatAuthToken: '',
-    sub: '',
 };

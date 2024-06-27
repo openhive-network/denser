@@ -1,6 +1,7 @@
-import Provider, { Configuration, errors } from 'oidc-provider';
+import Provider, { Configuration, errors, AccountClaims, ClaimsParameterMember } from 'oidc-provider';
 import { siteConfig } from '@ui/config/site';
 import { getLogger } from '@hive/ui/lib/logging';
+import { getHiveUserProfile } from './get-hive-user-profile';
 
 const logger = getLogger('app');
 
@@ -26,7 +27,7 @@ const isOrigin = (value: string): boolean => {
     } catch (err) {
         return false;
     }
-}
+};
 
 const configuration: Configuration = {
     clients: JSON.parse(siteConfig.oidcClients),
@@ -39,7 +40,7 @@ const configuration: Configuration = {
         },
     },
     claims: {
-        openid: ['sub', 'profile'],
+        openid: ['sub'],
         address: ['address'],
         email: ['email', 'email_verified'],
         phone: ['phone_number', 'phone_number_verified'],
@@ -47,7 +48,7 @@ const configuration: Configuration = {
           'nickname', 'picture', 'preferred_username', 'profile', 'updated_at', 'website', 'zoneinfo'],
     },
     findAccount: async (ctx, sub, token) => {
-        console.log('findAccount', sub, token);
+        logger.info('findAccount sub: %s, token: %o', sub, token);
         // @param ctx - koa request context
         // @param sub {string} - account identifier (subject)
         // @param token - is a reference to the token used for which a given account is being loaded,
@@ -64,9 +65,18 @@ const configuration: Configuration = {
           //   "id_token" or "userinfo" (depends on the "use" param)
           // @param rejected {Array[String]} - claim names that were rejected by the end-user, you might
           //   want to skip loading some claims from external resources or through db projection
-          claims: async (use, scope, claims, rejected) => {
-            console.log('claims', use, scope, claims, rejected);
-            return { sub, profile: { name: 'John Doe' }};
+          claims: async (
+            use: string,
+            scope: string,
+            claims: { [key: string]: ClaimsParameterMember | null; },
+            rejected: string[]
+          ) => {
+            logger.info('claims args: %o', { use, scope, claims, rejected });
+            if (scope.split(' ').includes('profile')) {
+              const profile = await getHiveUserProfile(sub);
+              return { sub, profile } as AccountClaims;
+            }
+            return { sub } as AccountClaims;
           },
         };
     },
