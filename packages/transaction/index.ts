@@ -174,10 +174,7 @@ export class TransactionService {
           explicitChain: hiveChain
         });
         this.bot.on('error', (error) => logger.error(error));
-        this.bot.on(
-          'block',
-          (data) => logger.info('Bot is scanning block no. %o', data.number)
-        );
+        this.bot.on('block', (data) => logger.info('Bot is scanning block no. %o', data.number));
       }
       // Start bot
       if (this.observedTransactionsCounter++ === 0) {
@@ -514,7 +511,9 @@ export class TransactionService {
           parentAuthor,
           parentPermlink,
           this.signerOptions.username,
-          body
+          body,
+          undefined,
+          `re-${parentAuthor.replaceAll('.', '-')}-${Date.now()}`
         )
         .build();
     }, transactionOptions);
@@ -525,25 +524,13 @@ export class TransactionService {
     parentPermlink: string,
     permlink: string,
     body: string,
-    comment_rewards: '0%' | '50%' | '100%',
     transactionOptions: TransactionOptions = {}
   ) {
-    const chain = await hiveChainService.getHiveChain();
     return await this.processHiveAppOperation((builder) => {
       builder
         .useBuilder(
           ReplyBuilder,
-          (replyBuilder) => {
-            if (comment_rewards === '100%') {
-              replyBuilder.setPercentHbd(0);
-            }
-            if (comment_rewards === '50%' || comment_rewards === '0%') {
-              replyBuilder.setPercentHbd(10000);
-            }
-            if (comment_rewards === '0%') {
-              replyBuilder.setMaxAcceptedPayout(chain.hbd(0));
-            }
-          },
+          (replyBuilder) => {},
           parentAuthor,
           parentPermlink,
           this.signerOptions.username,
@@ -567,7 +554,8 @@ export class TransactionService {
     altAuthor: string,
     payoutType: string,
     image?: string,
-    transactionOptions: TransactionOptions = {}
+    transactionOptions: TransactionOptions = {},
+    editMode = false
   ) {
     const chain = await hiveChainService.getHiveChain();
     return await this.processHiveAppOperation((builder) => {
@@ -577,25 +565,28 @@ export class TransactionService {
           (articleBuilder) => {
             articleBuilder
               .setCategory(category !== 'blog' ? category : tags[0])
-              .setMaxAcceptedPayout(maxAcceptedPayout)
               .pushTags(...tags)
               .pushMetadataProperty({ summary: summary })
               .setAlternativeAuthor(altAuthor)
               .pushImages(image ? image : '');
 
-            if (payoutType === '100%') {
-              articleBuilder.setPercentHbd(0);
-            }
-            if (payoutType === '50%' || payoutType === '0%') {
-              articleBuilder.setPercentHbd(10000);
-            }
-            if (payoutType === '0%') {
-              articleBuilder.setMaxAcceptedPayout(chain.hbd(0));
-            }
+            if (!editMode) {
+              articleBuilder.setMaxAcceptedPayout(maxAcceptedPayout);
 
-            beneficiaries.forEach((beneficiary) => {
-              articleBuilder.addBeneficiary(beneficiary.account, Number(beneficiary.weight));
-            });
+              if (payoutType === '100%') {
+                articleBuilder.setPercentHbd(0);
+              }
+              if (payoutType === '50%' || payoutType === '0%') {
+                articleBuilder.setPercentHbd(10000);
+              }
+              if (payoutType === '0%') {
+                articleBuilder.setMaxAcceptedPayout(chain.hbd(0));
+              }
+
+              beneficiaries.forEach((beneficiary) => {
+                articleBuilder.addBeneficiary(beneficiary.account, Number(beneficiary.weight));
+              });
+            }
           },
           this.signerOptions.username,
           title,

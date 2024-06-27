@@ -77,8 +77,7 @@ export function ReplyTextbox({
           parentAuthor: username,
           parentPermlink,
           permlink,
-          body: text,
-          comment_rewards: payout as '0%' | '50%' | '100%',
+          body: text
         };
         try {
           await updateCommentMutation.mutateAsync(updateCommentParams);

@@ -1,4 +1,5 @@
 import { getLogger } from '@hive/ui/lib/logging';
+import { WaxChainApiError } from '@hiveio/wax';
 
 // TODO
 // Debug why the import
@@ -30,7 +31,7 @@ const wellKnownErrorDescriptions = [
   'Account does not have enough mana to downvote',
   'You may only post once every 5 minutes',
   'Vote weight cannot be 0',
-  'You may only comment once every 3 seconds',
+  'You may only comment once every 3 seconds'
 ];
 
 /**
@@ -43,7 +44,9 @@ const wellKnownErrorDescriptions = [
  */
 export function transformError<T>(e: any, ctx?: { method: string; params: T }, defaultDescription?: string) {
   logger.error('in transformError: got error (will be swallowed): %o on %o', e, ctx);
-  let description = 'Operation failed';
+  const apiMessage = e.apiError?.data.message.charAt(0).toUpperCase() + e.apiError?.data.message.slice(1);
+  let description = apiMessage && apiMessage.toLowerCase() !== 'assert exception' ? apiMessage : 'Operation failed';
+  
   if (!defaultDescription) {
     let errorDescription = '';
 
