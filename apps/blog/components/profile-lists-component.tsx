@@ -26,6 +26,7 @@ import {
   useResetFollowMutedBlogMutation
 } from './hooks/use-reset-mutations';
 import { handleError } from '@ui/lib/utils';
+import { Skeleton } from '@ui/components';
 
 export default function ProfileLists({
   username,
@@ -75,10 +76,12 @@ export default function ProfileLists({
   const unblacklistBlogMutation = useUnblacklistBlogMutation();
   const muteMutation = useMuteMutation();
   const unmuteMutation = useUnmuteMutation();
+
   const followBlacklistBlogMutation = useFollowBlacklistBlogMutation();
   const unfollowBlacklistBlogMutation = useUnfollowBlacklistBlogMutation();
   const unfollowMutedBlogMutation = useUnfollowMutedBlogMutation();
   const followMutedBlogMutation = useFollowMutedBlogMutation();
+
   const resetBlogListMutation = useResetBlogListMutation();
   const resetBlacklistBlogMutation = useResetBlacklistBlogMutation();
   const resetFollowBlacklistBlogMutation = useResetFollowBlacklistBlogMutation();
@@ -208,7 +211,11 @@ export default function ProfileLists({
       resetFollowMutedBlogMutation
     ]
   );
-
+  const item_is_loading =
+    blacklistBlogMutation.isLoading ||
+    muteMutation.isLoading ||
+    followBlacklistBlogMutation.isLoading ||
+    followMutedBlogMutation.isLoading;
   return (
     <ProfileLayout>
       <div className="flex  flex-col items-center gap-4 p-4">
@@ -250,7 +257,7 @@ export default function ProfileLists({
               : t('user_profile.lists.list.description_not_added')}
         </p>
         <ul className="flex flex-col ">
-          {data && data.length === 0 ? (
+          {data && data.length === 0 && !item_is_loading ? (
             <li className="bg-slate-200 p-4 text-center text-sm font-bold dark:bg-slate-900 ">
               {t('user_profile.lists.list.empty_list')}
             </li>
@@ -288,6 +295,12 @@ export default function ProfileLists({
                 ) : null}
               </li>
             ))
+          ) : null}
+          {item_is_loading ? (
+            <li className="flex h-9 w-full items-center justify-between bg-slate-200 pl-2 pr-1 dark:bg-slate-900">
+              <Skeleton className="h-5 w-24 bg-slate-50 dark:bg-slate-700" />
+              <Skeleton className="h-6 w-20 bg-slate-50 dark:bg-slate-700" />
+            </li>
           ) : null}
         </ul>
         {splitArrays.length > 1 ? (
@@ -336,6 +349,7 @@ export default function ProfileLists({
             {addValue ? (
               <Button
                 className="mt-2"
+                disabled={item_is_loading}
                 onClick={() => {
                   addToList(addValue, variant), setAddValue('');
                 }}
