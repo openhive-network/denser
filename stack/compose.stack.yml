@@ -1,0 +1,72 @@
+services:
+  docker:
+    image: registry.gitlab.syncad.com/hive/haf_api_node/dind:${DIND_TAG:-latest}
+    privileged: true
+    environment:
+      DOCKER_TLS_CERTDIR: /certs
+      DOCKER_TLS_PORT:
+      API_HTTP_PORT:
+      API_HTTPS_PORT:
+      TOP_LEVEL_DATASET_MOUNTPOINT: /cache/haf-datadir
+    volumes:
+      - type: volume
+        source: docker-certs-ca
+        target: /certs/ca
+      - type: volume
+        source: docker-certs-client
+        target: /certs/client
+      - type: volume
+        source: docker-certs-server
+        target: /certs/server
+      - type: volume
+        source: docker-lib
+        target: /var/lib/docker
+      - type: volume
+        source: haf-datadir
+        target: /cache/haf-datadir
+    networks:
+      - docker
+    ports:
+      - name: docker-tls
+        target: 2376
+        published: ${DOCKER_TLS_PORT:-2376}
+      - name: http
+        target: 80
+        published: ${API_HTTP_PORT:-80}
+      - name: https
+        target: 443
+        published: ${API_HTTPS_PORT:-443}
+    healthcheck:
+      test: [ "CMD", "docker", "version"]
+      interval: 5s
+      timeout: 5s
+  compose:
+    image: registry.gitlab.syncad.com/hive/haf_api_node/compose:${COMPOSE_TAG:-latest}
+    environment:
+      DOCKER_TLS_CERTDIR: /certs
+      ARGUMENTS:
+      TOP_LEVEL_DATASET_MOUNTPOINT: /cache/haf-datadir
+      PUBLIC_HOSTNAME:
+      FAKETIME:
+      USE_ALTERNATE_HAPROXY_CONFIG:
+      HIVE_API_NODE_VERSION:
+      HIVE_API_NODE_REGISTRY: registry.gitlab.syncad.com/hive
+      HAF_REGISTRY:
+      HIVEMIND_INSTANCE_IMAGE:
+      HAFAH_REGISTRY:
+      HAF_VERSION:
+      HIVEMIND_INSTANCE_VERSION:
+      HAFAH_VERSION:
+    volumes:
+      - type: volume
+        source: docker-certs-client
+        target: /certs/client
+    networks:
+      - docker
+    healthcheck:
+      test: [ "CMD-SHELL", "wget --timeout=2 -nv -t1 --spider http://127.0.0.1 || exit 1" ] 
+      interval: 5s
+      timeout: 5s
+    depends_on:
+      docker:
+        condition: service_healthy

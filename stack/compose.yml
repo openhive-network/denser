@@ -1,0 +1,19 @@
+name: 'api-stack'
+include:
+  - path: compose.stack.yml
+  - path: compose.auth.yml 
+  - path: compose.blog.yml
+  - path: compose.wallet.yml
+volumes:
+  docker-certs-ca:
+  docker-certs-client:
+  docker-certs-server:
+  docker-lib:
+  haf-datadir:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${HAF_DATA_DIRECTORY}/
+networks:
+  docker:

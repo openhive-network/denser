@@ -125,6 +125,176 @@ accompanying [.env file](docker/.env)
 
 To stop and delete the containers use command `docker compose down`.
 
+### HAF API stack
+
+The following scripts are provided for configuring and managin a local HAF API stack:
+
+- [scripts/get-stack-logs.sh](scripts/get-stack-logs.sh)
+- [scripts/setup-stack.sh](scripts/setup-stack.sh)
+- [scripts/start-stack.sh](scripts/start-stack.sh)
+- [scripts/stop-stack.sh](scripts/stop-stack.sh)
+- [scripts/wait-for-stack.sh](scripts/wait-for-stack.sh)
+
+The procedure of starting a local mirrornet stack with faketime for Denser tests is as follows:
+
+Obtain the block_log and the block_log_util files.
+
+Configure the stack using the command:
+
+```bash
+./scripts/setup-stack.sh \
+  --api-http-port=80 \
+  --api-https-port=443 \
+  --block-log-source="/full/path/to/directory/containing/the/block_log/file" \
+  --block-log-util-path="/full/path/to/block_log_util" \
+  --use-faketime=true \
+  --chain-id=44 \
+  --dind-tag=9394dae0 \
+  --compose-tag=9394dae0 \
+  --haf-config-path="/full/path/to/the/denser/working/directory/stack/mirrornet_haf_config.ini" \
+  --haf-arguments="--replay --stop-at-block 5004421" \
+  --use-alternate-haproxy-config=true \
+  --haf-data-directory=/full/path/to/stacks/data/directory \
+  --haf-registry=registry.gitlab.syncad.com/hive/haf/mirrornet-faketime-instance \
+  --haf-version=68ab1958 \
+  --hivemind-registry=registry.gitlab.syncad.com/hive/hivemind/instance \
+  --hivemind-version=4b4dea84 \
+  --hafah-registry=registry.gitlab.syncad.com/hive/hafah/instance \
+  --hafah-version=1ae8512a \
+  --env-path="/full/path/to/mirronet-stack.env"
+```
+
+Please provide full, absolute paths for `--block-log-source`, `--block-log-util-path`, `--haf-config-path`, `--haf-data-directory` and `--env-path` parameters. `--env-path=` is the file where the configuration
+of the new stack will be saved. `--haf-data-directory` will be created if it does not exist. `--block-log-source` must point to the folder where the block_log file exists, not to the file itself.
+
+If your computer has a proper domain name, you can pass it to the stack by adding `--public-hostname` parameter to the command above, ie. `--public-hostname=your.domain.name`.
+Otherwise the stack will use *your-hostname.local* as its domain name.
+
+`--dind-tag` and `--compose-tag` should be set to the same version. Available versions can be checked in [dind](https://gitlab.syncad.com/hive/haf_api_node/container_registry/641)
+and [compose](https://gitlab.syncad.com/hive/haf_api_node/container_registry/640) registries on GitLab.
+
+This will create stack's data directory, generate block_log.artifacts file, copy the block log, the artifacts file and the HAF ini file to the data directory
+and store stack's configuration in `/path/to/mirronet-stack.env`. The process will take a while. If you don't know the block log's size (for the `--stop-at-block` parameter), you can
+use a placeholder value and then replace it in the `/path/to/mirronet-stack.env` with the correct value (displayed by the setup script) afterwards.
+You can change the API ports to something other than 80 and 443, but there is no guarantee that HTTP-to-HTTPS redirect will work corectly - since Denser
+connects to the HTTPS port directly, this is not that important.
+
+Now start the stack using the command:
+
+```bash
+./scripts/start-stack.sh --env-files=/full/path/to/mirronet-stack.env --project-name=mirrornet-api-stack
+```
+
+and wait for HAF replay and Hivemind sync to finish:
+
+```bash
+./scripts/wait-for-stack.sh --env-files=/full/path/to/mirronet-stack.env --project-name=mirrornet-api-stack
+```
+
+This will likely take a long time to complete.
+
+Once the replay and sync are done, you might want to back up the stack's data directory to avoid having to replay the data again when you want a clean stack.
+
+```bash
+# Stop the stack first
+./scripts/stop-stack.sh --env-files=/full/path/to/mirronet-stack.env --project-name=mirrornet-api-stack
+
+# `sudo` is necessary due to PostgreSQL's data belonging to PostgreSQL user.
+sudo cp --recursive --preserve /full/path/to/stacks/data/directory{,.bak}
+```
+
+Restart the stack after completing the backup.
+
+```bash
+./scripts/start-stack.sh --env-files=/full/path/to/mirronet-stack.env --project-name=mirrornet-api-stack
+./scripts/wait-for-stack.sh --env-files=/full/path/to/mirronet-stack.env --project-name=mirrornet-api-stack
+```
+
+You can easily restore the backup with the following steps:
+
+```bash
+./scripts/stop-stack.sh --env-files=/full/path/to/mirronet-stack.env --project-name=mirrornet-api-stack
+sudo rm -rf /full/path/to/stacks/data/directory
+sudo cp --recursive --preserve /full/path/to/stacks/data/directory{.bak,}
+./scripts/start-stack.sh --env-files=/full/path/to/mirronet-stack.env --project-name=mirrornet-api-stack
+./scripts/wait-for-stack.sh --env-files=/full/path/to/mirronet-stack.env --project-name=mirrornet-api-stack
+
+```
+
+Now that the stack ius running, you can set up your Denser instance to connect to [https://your-hostname.local/]
+or [https://your.domain.name/], depending on how you configured your stack.
+
+You can stop the stack with command:
+
+```bash
+./scripts/stop-stack.sh --env-files=/full/path/to/mirronet-stack.env --project-name=mirrornet-api-stack
+```
+
+as mentioned above.
+
+You can obtain the stack's logs using one of the commands:
+
+```bash
+# Get logs for all services
+./scripts/get-stack-logs.sh --env-files=/full/path/to/mirronet-stack.env --project-name=mirrornet-api-stack
+
+# Get the last 10 lines logs per service for all services
+./scripts/get-stack-logs.sh --env-files=/full/path/to/mirronet-stack.env --project-name=mirrornet-api-stack --tail=10
+
+# If you want to know the service names, the easiest way is to run
+./scripts/get-stack-logs.sh --env-files=/full/path/to/mirronet-stack.env --project-name=mirrornet-api-stack --tail=1
+# This will display one line of logs per service for all services. Each line will start with `service-name-1  |` 
+
+# Get logs for specific service (in this case haf).
+./scripts/get-stack-logs.sh --env-files=/full/path/to/mirronet-stack.env --project-name=mirrornet-api-stack --service=haf
+
+# Save the logs to file
+./scripts/get-stack-logs.sh --env-files=/full/path/to/mirronet-stack.env --project-name=mirrornet-api-stack --no-color 2>&1 > mirrornet-api-stack.log
+```
+
+Important URLs
+
+- [https://your-hostname.local/admin/] or [https://your.domain.name/admin/] - the stack's admin panel
+- [https://your-hostname.local/admin/haproxy/] or [https://your.domain.name/admin/haproxy] - HAproxy's statistics report
+
+Do not worry if your browser complains about SSL certificates (NET::ERR_CERT_AUTHORITY_INVALID) and wants you to confirm accessing those URLs - the stack is using self-signed certificates.
+
+Quick cURL queries to check ifthe API is working properly:
+
+```bash
+curl -vk -X POST --data '{"jsonrpc":"2.0", "method":"condenser_api.get_block", "params":[1], "id":1}' https://your.domain.name/ # Hive
+curl -vk -X POST https://your.domain.name/hafah/get_version # HAfAH
+curl -vk -X POST --data '{"jsonrpc":"2.0", "method":"condenser_api.get_trending_tags", "id":1}' https://your.domain.name/ # Hivemind
+```
+
+API stack's individual containers are wrapped in dind container, so the cannot be accessed directly, eg `docker inspect haf-world-haf-1`. If you need to access them, you need to do so from within
+the dind container, eg.
+
+```bash
+# Access the container's shell
+docker exec -it mirrornet-api-stack-docker-1 sh
+
+# Run docker command
+docker inspect haf-world-haf-1
+
+# Exit the container's shell
+exit
+```
+
+#### Troubleshooting
+
+If, while starting the stack, you get an error like:
+
+> Error response from daemon: error while mounting volume '/var/lib/docker/volumes/mirrornet-api-stack_haf-datadir/_data': failed to mount local volume: mount /some/path:/var/lib/docker/volumes/mirrornet-api-stack_haf-datadir/_data, flags: 0x1000: no such file or directory
+
+you need to stop the stack, remove the volume and restart the stack:
+
+```bash
+./scripts/stop-stack.sh --env-files=/full/path/to/mirronet-stack.env --project-name=mirrornet-api-stack
+docker volume rm mirrornet-api-stack_haf-datadir
+./scripts/start-stack.sh --env-files=/full/path/to/mirronet-stack.env --project-name=mirrornet-api-stack
+```
+
 ## SSL on development machine
 
 You can put your `server-key.pem` and `server-cert.pem` into `./ssl`
@@ -132,5 +302,5 @@ directory (it is gitignored). Then you can use commands like `npm run
 devssl:blog` to start application on development server in SSL mode. Use
 `mkcert` or any other similar tool to generate server certificates. See
 also
-https://vercel.com/guides/access-nextjs-localhost-https-certificate-self-signed
+[https://vercel.com/guides/access-nextjs-localhost-https-certificate-self-signed]
 and issue #329.
