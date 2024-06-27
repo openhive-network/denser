@@ -1,4 +1,4 @@
-version: '3.9'
+name: 'denser'
 services:
   denser-auth:
     image: registry.gitlab.syncad.com/hive/denser/auth:${AUTH_IMAGE_TAG:-latest}

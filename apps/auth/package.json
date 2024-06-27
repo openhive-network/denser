@@ -14,7 +14,7 @@
     "build": "react-env -- next build",
     "postbuild": "pnpm run copy:worker",
     "start": "react-env -- next start -p 5000",
-    "lint": "eslint .",
+    "lint": "eslint . --ignore-pattern \"playwright-report/*\"",
     "test:jest": "jest --watch"
   },
   "dependencies": {
