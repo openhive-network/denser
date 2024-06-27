@@ -27,6 +27,7 @@ import {
 } from './hooks/use-reset-mutations';
 import { handleError } from '@ui/lib/utils';
 import { Skeleton } from '@ui/components';
+import { ImpulseSpinner } from 'react-spinners-kit';
 
 export default function ProfileLists({
   username,
@@ -72,15 +73,15 @@ export default function ProfileLists({
     }
   }
 
-  const blacklistBlogMutation = useBlacklistBlogMutation();
-  const unblacklistBlogMutation = useUnblacklistBlogMutation();
   const muteMutation = useMuteMutation();
-  const unmuteMutation = useUnmuteMutation();
-
-  const followBlacklistBlogMutation = useFollowBlacklistBlogMutation();
-  const unfollowBlacklistBlogMutation = useUnfollowBlacklistBlogMutation();
-  const unfollowMutedBlogMutation = useUnfollowMutedBlogMutation();
   const followMutedBlogMutation = useFollowMutedBlogMutation();
+  const followBlacklistBlogMutation = useFollowBlacklistBlogMutation();
+  const blacklistBlogMutation = useBlacklistBlogMutation();
+
+  const unfollowBlacklistBlogMutation = useUnfollowBlacklistBlogMutation();
+  const unblacklistBlogMutation = useUnblacklistBlogMutation();
+  const unfollowMutedBlogMutation = useUnfollowMutedBlogMutation();
+  const unmuteMutation = useUnmuteMutation();
 
   const resetBlogListMutation = useResetBlogListMutation();
   const resetBlacklistBlogMutation = useResetBlacklistBlogMutation();
@@ -216,6 +217,7 @@ export default function ProfileLists({
     muteMutation.isLoading ||
     followBlacklistBlogMutation.isLoading ||
     followMutedBlogMutation.isLoading;
+
   return (
     <ProfileLayout>
       <div className="flex  flex-col items-center gap-4 p-4">
@@ -262,39 +264,51 @@ export default function ProfileLists({
               {t('user_profile.lists.list.empty_list')}
             </li>
           ) : splitArrays.length > 0 ? (
-            splitArrays[page].map((e: IFollowList) => (
-              <li
-                key={e.name}
-                className="flex w-full items-center justify-between p-1 font-semibold odd:bg-slate-200 even:bg-slate-100 dark:odd:bg-slate-800 dark:even:bg-slate-900"
-              >
-                <span className="px-2">
-                  <Link className="text-red-600 " href={`/@${e.name}`}>
-                    {e.name}
-                  </Link>
-                  {' ' + e.blacklist_description}
-                </span>
-                {userOwner ? (
-                  <Button
-                    variant="outlineRed"
-                    className="whitespace-nowrap p-1"
-                    size="xs"
-                    onClick={() => {
-                      deleteFromList(e.name, variant);
-                    }}
-                  >
-                    {variant === 'blacklisted'
-                      ? t('user_profile.lists.list.unblacklist')
-                      : variant === 'muted'
-                        ? t('user_profile.lists.list.unmute')
-                        : variant === 'followedBlacklist'
-                          ? t('user_profile.lists.list.unfollow_blacklist')
-                          : variant === 'followedMute'
-                            ? t('user_profile.lists.list.unfollow_muted_list')
-                            : null}
-                  </Button>
-                ) : null}
-              </li>
-            ))
+            splitArrays[page].map((e: IFollowList) => {
+              const delete_is_loading =
+                (unfollowBlacklistBlogMutation.isLoading &&
+                  unfollowBlacklistBlogMutation.variables?.blog === e.name) ||
+                (unfollowMutedBlogMutation.isLoading &&
+                  unfollowMutedBlogMutation.variables?.blog === e.name) ||
+                (unmuteMutation.isLoading && unmuteMutation.variables?.username === e.name) ||
+                (unblacklistBlogMutation.isLoading && unblacklistBlogMutation.variables?.blog === e.name);
+              return (
+                <li
+                  key={e.name}
+                  className="flex w-72 items-center justify-between p-1 font-semibold odd:bg-slate-200 even:bg-slate-100 dark:odd:bg-slate-800 dark:even:bg-slate-900"
+                >
+                  <span className="px-2">
+                    <Link className="text-red-600" href={`/@${e.name}`}>
+                      {e.name}
+                    </Link>
+                    {' ' + e.blacklist_description}
+                  </span>
+                  {userOwner ? (
+                    <Button
+                      variant="outlineRed"
+                      className="whitespace-nowrap p-1"
+                      size="xs"
+                      onClick={() => {
+                        deleteFromList(e.name, variant);
+                      }}
+                      disabled={delete_is_loading}
+                    >
+                      {delete_is_loading ? (
+                        <ImpulseSpinner size={70} frontColor="#dc2626" />
+                      ) : variant === 'blacklisted' ? (
+                        t('user_profile.lists.list.unblacklist')
+                      ) : variant === 'muted' ? (
+                        t('user_profile.lists.list.unmute')
+                      ) : variant === 'followedBlacklist' ? (
+                        t('user_profile.lists.list.unfollow_blacklist')
+                      ) : variant === 'followedMute' ? (
+                        t('user_profile.lists.list.unfollow_muted_list')
+                      ) : null}
+                    </Button>
+                  ) : null}
+                </li>
+              );
+            })
           ) : null}
           {item_is_loading ? (
             <li className="flex h-9 w-full items-center justify-between bg-slate-200 pl-2 pr-1 dark:bg-slate-900">

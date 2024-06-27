@@ -39,6 +39,8 @@ export function useBlacklistBlogMutation() {
  * @return {*}
  */
 export function useUnblacklistBlogMutation() {
+  const { user } = useUser();
+  const queryClient = useQueryClient();
   const unblacklistBlogMutation = useMutation({
     mutationFn: async (params: { blog: string }) => {
       const { blog } = params;
@@ -49,6 +51,8 @@ export function useUnblacklistBlogMutation() {
     },
     onSuccess: (data) => {
       logger.info('useUnblacklistBlogMutation onSuccess data: %o', data);
+      const { username } = user;
+      queryClient.invalidateQueries({ queryKey: ['blacklisted', username] });
     }
   });
 

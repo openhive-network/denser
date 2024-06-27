@@ -86,6 +86,8 @@ export function useFollowBlacklistBlogMutation() {
  * @return {*}
  */
 export function useUnfollowBlacklistBlogMutation() {
+  const { user } = useUser();
+  const queryClient = useQueryClient();
   const unfollowBlacklistBlogMutation = useMutation({
     mutationFn: async (params: { blog: string }) => {
       const { blog } = params;
@@ -95,6 +97,8 @@ export function useUnfollowBlacklistBlogMutation() {
       return response;
     },
     onSuccess: (data) => {
+      const { username } = user;
+      queryClient.invalidateQueries({ queryKey: ['follow_blacklist', username] });
       logger.info('useUnfollowBlacklistBlogMutation onSuccess data: %o', data);
     }
   });
@@ -136,6 +140,8 @@ export function useFollowMutedBlogMutation() {
  * @return {*}
  */
 export function useUnfollowMutedBlogMutation() {
+  const { user } = useUser();
+  const queryClient = useQueryClient();
   const unfollowMutedBlogMutation = useMutation({
     mutationFn: async (params: { blog: string }) => {
       const { blog } = params;
@@ -145,6 +151,8 @@ export function useUnfollowMutedBlogMutation() {
       return response;
     },
     onSuccess: (data) => {
+      const { username } = user;
+      queryClient.invalidateQueries({ queryKey: ['follow_muted', username] });
       logger.info('useUnfollowMutedBlogMutation onSuccess data: %o', data);
     }
   });
