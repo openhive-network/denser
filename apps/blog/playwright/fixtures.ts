@@ -70,7 +70,7 @@ type UsersPageFixtures = {
 
 export * from '@playwright/test';
 export const test = base.extend<UsersPageFixtures>({
-    denserAutoTest0Page: async ({ browser }, done) => {
+    denserAutoTest0Page: async ({ browser }, use) => {
         const context = await browser.newContext();
         const denserAutoTest0Page = new Denserautotest0Page(await context.newPage());
 
@@ -87,10 +87,10 @@ export const test = base.extend<UsersPageFixtures>({
             users.denserautotest0.keys.private_posting
         );
         // End of authentication steps
-        await done(denserAutoTest0Page);
+        await use(denserAutoTest0Page);
         await context.close();
     },
-    denserAutoTest1Page: async ({ browser }, done) => {
+    denserAutoTest1Page: async ({ browser }, use) => {
         const context = await browser.newContext();
         const denserAutoTest1Page = new Denserautotest1Page(await context.newPage());
 
@@ -107,10 +107,10 @@ export const test = base.extend<UsersPageFixtures>({
             users.denserautotest1.keys.private_posting
         );
         // End of authentication steps
-        await done(denserAutoTest1Page);
+        await use(denserAutoTest1Page);
         await context.close();
     },
-    denserAutoTest2Page: async ({ browser }, done) => {
+    denserAutoTest2Page: async ({ browser }, use) => {
         const context = await browser.newContext();
         const denserAutoTest2Page = new Denserautotest2Page(await context.newPage());
 
@@ -127,10 +127,10 @@ export const test = base.extend<UsersPageFixtures>({
             users.denserautotest2.keys.private_posting
         );
         // End of authentication steps
-        await done(denserAutoTest2Page);
+        await use(denserAutoTest2Page);
         await context.close();
     },
-    denserAutoTest3Page: async ({ browser }, done) => {
+    denserAutoTest3Page: async ({ browser }, use) => {
         const context = await browser.newContext();
         const denserAutoTest3Page = new Denserautotest3Page(await context.newPage());
 
@@ -147,10 +147,10 @@ export const test = base.extend<UsersPageFixtures>({
             users.denserautotest3.keys.private_posting
         );
         // End of authentication steps
-        await done(denserAutoTest3Page);
+        await use(denserAutoTest3Page);
         await context.close();
     },
-    denserAutoTest4Page: async ({ browser }, done) => {
+    denserAutoTest4Page: async ({ browser }, use) => {
         // Create new context
         const context = await browser.newContext();
         const denserAutoTest4Page = new Denserautotest4Page(await context.newPage());
@@ -168,7 +168,7 @@ export const test = base.extend<UsersPageFixtures>({
             users.denserautotest4.keys.private_posting
         );
         // End of authentication steps
-        await done(denserAutoTest4Page);
+        await use(denserAutoTest4Page);
         await context.close();
     },
 });

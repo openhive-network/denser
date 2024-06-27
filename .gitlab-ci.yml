@@ -1,5 +1,6 @@
 stages:
   - build
+  - replay-and-sync
   - test
   - test-report-aggregate
   - deploy
@@ -8,17 +9,50 @@ stages:
 
 variables:
   # Variables required by Common CI jobs
-  CI_COMMON_JOB_VERSION: 'd4e29410ea168096e1a822f77c7ce741d9cfb57a'
+  CI_COMMON_JOB_VERSION: '682ba2e16cfc4ef192478d2d21c4b5a52bbd4678'
   DOCKER_BUILDER_TAG: '$CI_COMMON_JOB_VERSION'
   DOCKER_DIND_TAG: '$CI_COMMON_JOB_VERSION'
   IMAGE_REMOVER_TAG: '$CI_COMMON_JOB_VERSION'
-  BLOG_APP_SRC_DIR: 'apps/blog/'
+
+  # Git settings
+  GIT_DEPTH: 20
+  GIT_SUBMODULE_STRATEGY: none
+  GIT_STRATEGY: clone
+
+  # Runner feature flags
+  FF_ENABLE_JOB_CLEANUP: 1
+
+  # HAF API node configuration
+  API_NODE_VERSION: "1.27.6rc9"
+  API_NODE_TAG: "denser-5"
+  HAF_IMAGE_REGISTRY: "registry.gitlab.syncad.com/hive/haf/mirrornet-instance"
+  HAF_IMAGE_NAME: "${HAF_IMAGE_REGISTRY}:${API_NODE_VERSION}"
+  BLOCK_LOG_VERSION: "42bf3ac5"
+  # BLOCK_LOG_SOURCE_DIR: "/blockchain/block_log_mirror_44"
+  REPLAY_DIRECTORY_PREFIX: "/cache/replay_data_denser_haf_api_node"
+  REPLAY_DIRECTORY: "${REPLAY_DIRECTORY_PREFIX}_${API_NODE_TAG}_${API_NODE_VERSION}_${BLOCK_LOG_VERSION}"
+  REPLAY_PIPELINE_DIRECTORY: "${REPLAY_DIRECTORY_PREFIX}_${CI_PIPELINE_ID}"
+  DOCKER_TLS_CERTDIR: "${REPLAY_PIPELINE_DIRECTORY}_certs"
+  BLOCK_LOG_SOURCE: "${REPLAY_PIPELINE_DIRECTORY}_block_log"
+  BLOCK_LOG_SOURCE_DIR: "${BLOCK_LOG_SOURCE}"
+
+  # Other settings
+  CADDY_TAG: "2.7.6"
+  PLAYWRIGHT_TAG: "v1.49.1-jammy"
 
 include:
   - template: Workflows/Branch-Pipelines.gitlab-ci.yml
   - project: 'hive/common-ci-configuration'
-    ref: d4e29410ea168096e1a822f77c7ce741d9cfb57a # develop
-    file: '/templates/docker_image_jobs.gitlab-ci.yml'
+    ref: 682ba2e16cfc4ef192478d2d21c4b5a52bbd4678 # develop
+    file: 
+      - '/templates/docker_image_jobs.gitlab-ci.yml'
+      - '/templates/cache_cleanup.gitlab-ci.yml'
+  - project: 'hive/haf'
+    ref: aacbfdbf6ee406bce77c5b3f826c7cd8b8501867 #develop
+    file: '/scripts/ci-helpers/prepare_data_image_job.yml'    
+  - project: 'hive/haf_api_node'
+    ref: denser-5
+    file: 'ci/node-replay.gitlab-ci.yml'  
 
 .docker_build_template:
   extends: .docker_image_builder_job_template
@@ -43,17 +77,36 @@ include:
       echo -e "\e[0Ksection_start:$(date +%s):build[collapsed=true]\r\e[0KBaking image "$CI_REGISTRY_IMAGE/${TURBO_APP_NAME}:${TAG}"..."
       git config --global --add safe.directory "$CI_PROJECT_DIR"
       scripts/build_instance.sh --progress=plain "$CI_PROJECT_DIR"
-      echo "IMAGE_NAME=${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:${CI_COMMIT_SHORT_SHA}" > docker-build.env
+      echo "${TURBO_APP_NAME^^}_IMAGE_NAME=${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:${CI_COMMIT_SHORT_SHA}" > "${TURBO_APP_NAME}-docker-build.env"
       echo "Unique image tag:"
-      cat docker-build.env
+      cat "${TURBO_APP_NAME}-docker-build.env"
       echo -e "\e[0Ksection_end:$(date +%s):build\r\e[0K"
   artifacts:
     paths:
-      - docker-build.env
+      - ${TURBO_APP_NAME}-docker-build.env
     reports:
-      dotenv: docker-build.env
+      dotenv: ${TURBO_APP_NAME}-docker-build.env
   tags:
     - public-runner-docker
+    - hived-for-tests
+
+mirrornet-haf-binaries-extraction:
+  extends: .job-defaults
+  stage: build
+  image:
+    name: $HAF_IMAGE_NAME
+    entrypoint: [ "" ]
+  variables:
+    BINARY_CACHE_PATH: "${CI_PROJECT_DIR}/hived-mirrornet-binaries"
+    GIT_SUBMODULE_STRATEGY: recursive
+  script: "cp --recursive /home/hived/bin ${BINARY_CACHE_PATH}"
+  artifacts:
+    when: on_success
+    paths:
+      - "${BINARY_CACHE_PATH}"
+  tags:
+    - public-runner-docker
+    - hived-for-tests
 
 docker-build-auth:
   extends: .docker_build_template
@@ -75,6 +128,141 @@ docker-build-wallet:
     TURBO_APP_SCOPE: '@hive/wallet'
     TURBO_APP_PATH: '/apps/wallet'
     TURBO_APP_NAME: 'wallet'
+
+# Hived binary built as a part of HAF requires an additional
+# library to function. This library has to be extracted from
+# the image and passed to job extended_block_log_creation.
+library_extraction:
+  extends: .job-defaults
+  stage: build
+  image:
+    name: $HAF_IMAGE_NAME
+    entrypoint: [ "" ]
+  needs:
+    - job: "mirrornet-haf-binaries-extraction"
+      artifacts: true
+  variables:
+    BINARY_CACHE_PATH: "${CI_PROJECT_DIR}/hived-mirrornet-binaries"
+  script:
+    - |
+      set -e
+      LIBPQ="$(sudo find / -name libpq.so.5* -type f 2>/dev/null)"
+      echo "LIBPQ=${LIBPQ}"
+      cp "${LIBPQ}" "${BINARY_CACHE_PATH}/libpq.so.5"
+  artifacts:
+    when: on_success
+    paths:
+      - "${BINARY_CACHE_PATH}"
+  tags:
+    - public-runner-docker
+
+extended_block_log_creation:
+  extends: .extended_block_log_creation
+  stage: build
+  needs:
+    - job: "mirrornet-haf-binaries-extraction"
+      artifacts: true
+    - job: "library_extraction"
+      artifacts: true 
+  variables:
+    GIT_SUBMODULE_STRATEGY: "recursive"
+    REGISTRY: "registry.gitlab.syncad.com/hive/hive"
+    REGISTRY_USER: "${HIVED_CI_IMGBUILDER_USER}"
+    REGISTRY_PASS: "${HIVED_CI_IMGBUILDER_PASSWORD}"
+    IMAGE_TAG: "${BLOCK_LOG_VERSION}"
+    HIVE_SRC: "${CI_PROJECT_DIR}/haf/hive"
+    BLOCK_LOG_SOURCE_DIR: "/blockchain/block_log_5m"
+    BINARY_PATH: "${CI_PROJECT_DIR}/hived-mirrornet-binaries"
+    LD_LIBRARY_PATH: "${BINARY_PATH}"
+  tags:
+    - public-runner-docker
+    - hived-for-tests
+
+block-log-extraction:
+  extends: .docker_image_builder_job_template
+  stage: replay-and-sync
+  needs:
+    - extended_block_log_creation
+  variables:
+    GIT_SUBMODULE_STRATEGY: "recursive"
+    BLOCK_LOG_DIRECTORY: "${REPLAY_PIPELINE_DIRECTORY}_block_log"
+  script:
+    - |
+      set -e
+      
+      haf/scripts/ci-helpers/export-data-from-docker-image.sh \
+        "${EXTENDED_BLOCK_LOG_IMAGE}" \
+        "${BLOCK_LOG_DIRECTORY}" \
+        --image-path=/blockchain/
+      sudo chown -R hived:users "${BLOCK_LOG_DIRECTORY}"
+      sudo chmod 777 "${BLOCK_LOG_DIRECTORY}"
+      sudo chmod -R g+w "${BLOCK_LOG_DIRECTORY}"
+      ls -lah "${BLOCK_LOG_DIRECTORY}"
+  tags:
+    - data-cache-storage
+
+block_log_processing:
+  extends: .job-defaults
+  image: "registry.gitlab.syncad.com/hive/hive/ci-base-image${TEST_IMAGE_TAG}"
+  stage: replay-and-sync
+  needs:
+    - mirrornet-haf-binaries-extraction
+    - block-log-extraction
+  variables:
+    BLOCK_LOG_UTIL_PATH: "${CI_PROJECT_DIR}/hived-mirrornet-binaries/block_log_util"
+  script:
+    - |
+      set -e
+
+      if [ ! -e "${BLOCK_LOG_SOURCE}/block_log.artifacts" ]
+      then
+          echo "Generating blog_log.artifacts file..."
+          "${BLOCK_LOG_UTIL_PATH}" --generate-artifacts --block-log "${BLOCK_LOG_SOURCE}/block_log"
+      fi
+
+      echo "Getting the head block's number..."
+      HEAD_BLOCK_NUMBER=$("${BLOCK_LOG_UTIL_PATH}" --get-head-block-number --block-log "${BLOCK_LOG_SOURCE}/block_log")
+      echo "Head block number is: ${HEAD_BLOCK_NUMBER}"
+
+      echo "Obtaining timestamp of the latest block..."
+      HEAD_BLOCK_TIMESTAMP=$("${BLOCK_LOG_UTIL_PATH}" --get-block -n "${HEAD_BLOCK_NUMBER}" --block-log "${BLOCK_LOG_SOURCE}/block_log" |  grep -o '"timestamp":"[^"]*"' | awk -F'"' '{print $4}' | sed 's/\(.*\)-\(.*\)-\(.*\)T\(.*\)/@\1-\2-\3 \4/')
+
+      echo "Faketime will be set to ${HEAD_BLOCK_TIMESTAMP}"
+
+      {
+        echo "LAST_BLOCK_NUMBER=${HEAD_BLOCK_NUMBER}"
+        echo "HEAD_BLOCK_TIMESTAMP=${HEAD_BLOCK_TIMESTAMP}"
+      } > block_log_data.env
+  artifacts:
+    reports:
+      dotenv:
+        - "block_log_data.env" 
+    paths:
+      - "*.log"
+      - "block_log_data.env"
+  tags:
+    - data-cache-storage
+
+mirrornet-haf-node-replay:
+  extends: .haf-node-replay
+  stage: replay-and-sync
+  timeout: 3 hours
+  needs:
+    - mirrornet-haf-binaries-extraction
+    - block_log_processing
+  variables:
+    GIT_STRATEGY: "clone"
+    CI_DEBUG_SERVICES: "false" # Change to true to debug services in this job
+    # LAST_BLOCK_NUMBER: "5004741"
+    ARGUMENTS: "--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n --replay-blockchain --stop-at-block ${LAST_BLOCK_NUMBER} --alternate-chain-spec=/home/hived/datadir/blockchain/alternate-chain-spec.json"
+    # FAKETIME: "@2016-09-16 01:39:06"
+    FAKETIME: ${HEAD_BLOCK_TIMESTAMP}
+    ADDITIONAL_CONFIGURATION_SCRIPT: "scripts/ci-helpers/copy-mirrornet-haf-config.sh"
+    REPLAY_TIMEOUT: 9000
+    HAF_IMAGE: ${HAF_IMAGE_REGISTRY}
+    HIVE_API_NODE_VERSION: ${API_NODE_VERSION}
+  tags:
+    - data-cache-storage
 
 .node-job:
   extends: .job-defaults
@@ -106,7 +294,7 @@ docker-build-wallet:
 
 .e2e_tests_template:
   extends: .node-job
-  image: mcr.microsoft.com/playwright:v1.49.1-jammy
+  image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
   variables:
     CI_DEBUG_SERVICES: true
     FF_NETWORK_PER_BUILD: 1
@@ -133,16 +321,129 @@ docker-build-wallet:
     reports:
       junit: .${TURBO_APP_PATH}/junit/**/**/results.xml
 
+mirrornet-replay-data-copy:
+  extends: .haf_api_node_replay_data_copy
+  stage: test
+  needs:
+    - mirrornet-haf-node-replay 
+  tags:
+    - data-cache-storage
+
+mirrornet-based-tests:
+  extends: 
+    - .haf_api_node_test
+    - .node-job
+  needs:
+    - mirrornet-haf-binaries-extraction
+    - docker-build-auth
+    - docker-build-blog
+    - docker-build-wallet
+    - mirrornet-replay-data-copy
+    - block_log_processing
+  image: "mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}"
+  services:
+    - !reference [.haf_api_node_test, services]
+    - name: $BLOG_IMAGE_NAME
+      alias: denser-blog
+      variables:
+        HEALTHCHECK_TCP_PORT: '3000'
+        PORT: "3000"
+        REACT_APP_SITE_DOMAIN: "https://caddy-blog.local"
+        REACT_APP_WALLET_ENDPOINT: "https://caddy-wallet"
+        TURBO_APP_SCOPE: '@hive/blog'
+        TURBO_APP_PATH: '/apps/blog'
+    - name: caddy:${CADDY_TAG}
+      alias: caddy-blog
+      command:
+        - caddy
+        - reverse-proxy
+        - --from=https://caddy-blog
+        - --to=denser-blog:3000
+        - --internal-certs
+        # - --debug
+        # - --access-log
+    - name: $WALLET_IMAGE_NAME
+      alias: denser-wallet
+      variables:
+        HEALTHCHECK_TCP_PORT: '4000'
+        PORT: "4000"
+        REACT_APP_SITE_DOMAIN: "https://caddy-wallet.local"
+        REACT_APP_BLOG_DOMAIN: "https://caddy-blog"
+        TURBO_APP_SCOPE: '@hive/wallet'
+        TURBO_APP_PATH: '/apps/wallet'
+    - name: caddy:${CADDY_TAG}
+      alias: caddy-wallet
+      command:
+        - caddy
+        - reverse-proxy
+        - --from=https://caddy-wallet
+        - --to=denser-wallet:4000
+        - --internal-certs
+        # - --debug
+        # - --access-log
+    - name: $AUTH_IMAGE_NAME
+      alias: denser-auth
+      variables:
+        HEALTHCHECK_TCP_PORT: '5000'
+        PORT: '5000'
+        REACT_APP_SITE_DOMAIN: "https://caddy-auth.local"
+        TURBO_APP_SCOPE: '@hive/auth'
+        TURBO_APP_PATH: '/apps/auth'
+    - name: caddy:${CADDY_TAG}
+      alias: caddy-auth
+      command:
+        - caddy
+        - reverse-proxy
+        - --from=https://caddy-auth
+        - --to=denser-auth:5000
+        - --internal-certs
+        # - --debug
+        # - --access-log
+  variables:
+    GIT_STRATEGY: "clone"
+    CI_DEBUG_SERVICES: "false"
+    ARGUMENTS: "--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n --alternate-chain-spec=/home/hived/datadir/blockchain/alternate-chain-spec.json"
+    FAKETIME: ${HEAD_BLOCK_TIMESTAMP}
+    HAF_IMAGE: ${HAF_IMAGE_REGISTRY}
+    HIVE_API_NODE_VERSION: ${API_NODE_VERSION}
+    REACT_APP_API_ENDPOINT: "https://dind/"
+    REACT_APP_IMAGES_ENDPOINT: "https://images.hive.blog/"
+    REACT_APP_CHAIN_ID: "44"
+    REACT_APP_LOGGING_BROWSER_ENABLED: "true"
+    NODE_TLS_REJECT_UNAUTHORIZED: 0
+  timeout: 3 hours
+  script:
+    - |
+      set -e
+      export
+      "${CI_PROJECT_DIR}/scripts/ci-helpers/run-mirrornet-tests.sh"
+  after_script:
+    - |
+      cp "${REPLAY_PIPELINE_DIRECTORY}/docker_entrypoint.log" "${CI_PROJECT_DIR}/haf.log"
+      cp --recursive "${REPLAY_PIPELINE_DIRECTORY}/logs" "${CI_PROJECT_DIR}/logs"
+  cache:
+    key: "mirrornet-tests-1"    
+  artifacts:
+    paths:
+      - "*.log"
+      - "logs/"
+      - "*.env"
+      - "apps/blog/playwright-report/"
+      - "apps/blog/test-results/"
+      - "apps/blog/junit/"
+  tags:
+    - data-cache-storage
+
 e2e-tests-blog:
   extends: .e2e_tests_template
   needs:
     - docker-build-blog
   services:
-    - name: $IMAGE_NAME
+    - name: $BLOG_IMAGE_NAME
       alias: denser
       variables:
         HEALTHCHECK_TCP_PORT: '3000'
-    - name: caddy:2.7.6
+    - name: caddy:${CADDY_TAG}
       command:
         - caddy
         - reverse-proxy
@@ -159,11 +460,11 @@ e2e-tests-wallet:
   needs:
     - docker-build-wallet
   services:
-    - name: $IMAGE_NAME
+    - name: $WALLET_IMAGE_NAME
       alias: denser
       variables:
         HEALTHCHECK_TCP_PORT: '4000'
-    - name: caddy:2.7.6
+    - name: caddy:${CADDY_TAG}
       command:
         - caddy
         - reverse-proxy
@@ -179,7 +480,7 @@ e2e-tests-wallet:
   extends: .node-job
   stage: test-report-aggregate
   when: always
-  image: mcr.microsoft.com/playwright:v1.49.1-jammy
+  image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
   script:
     - cd .$TURBO_APP_PATH
     - pnpm install -D playwright-merge-html-reports
@@ -212,7 +513,7 @@ e2e-report-aggregate-wallet:
 publish:
   image:
     name: node:20.11.1-alpine3.18
-    entrypoint: []
+    entrypoint: [ "" ]
   extends: .job-defaults
   stage: deploy
   script:
@@ -499,4 +800,40 @@ buildkit_cache_cleanup:
   extends: .buildkit_cleanup_job_template
   needs: []
   variables:
-    CACHE_REPOSITORIES: 'auth/cache,blog/cache,wallet/cache'
+    CACHE_REPOSITORIES: "auth/cache,blog/cache,wallet/cache"
+
+# Deletes replay data used by the tests and created by mirrornet-replay-data-copy
+cleanup_haf_api_node_pipeline_cache:
+  needs:
+    - mirrornet-replay-data-copy
+    - mirrornet-based-tests
+  extends: 
+    - .cleanup_cache_manual_template
+  stage: cleanup
+  variables:
+    CLEANUP_PATH_PATTERN: "${REPLAY_PIPELINE_DIRECTORY}*"
+  when: always
+  tags:
+    - data-cache-storage
+
+# Deletes all HAF API node replay data
+cleanup_haf_api_node_cache_manual:
+  extends: 
+    - .cleanup_cache_manual_template
+  needs: []
+  stage: cleanup
+  variables:
+    CLEANUP_PATH_PATTERN: "${REPLAY_DIRECTORY_PREFIX}*"
+  tags:
+    - data-cache-storage
+
+# Deletes HAF API node replay data older than 7 days
+cleanup_old_haf_api_node_cache:
+  extends:
+    - .cleanup_old_cache_template
+  needs: []
+  stage: cleanup
+  variables:
+    CLEANUP_PATH_PATTERN: "${REPLAY_DIRECTORY_PREFIX}*"
+  tags:
+    - data-cache-storage

@@ -1,35 +1,47 @@
 {
 	# debug
-	# http_port {$API_HTTP_PORT}
+	http_port {$API_HTTP_PORT}
 	https_port {$API_HTTPS_PORT}
 }
 
 {$PUBLIC_HOSTNAME}:{$AUTH_PORT} {
 	reverse_proxy denser-auth:{$AUTH_PORT}
 	tls internal
-	# tls /ets/caddy/certs/cert.pem /ets/caddy/certs/key.pem
+	# tls /etc/caddy/certs/cert.pem /etc/caddy/certs/key.pem
 }
 
 {$PUBLIC_HOSTNAME}:{$BLOG_PORT} {
 	reverse_proxy denser-blog:{$BLOG_PORT}
 	tls internal
-	# tls /ets/caddy/certs/cert.pem /ets/caddy/certs/key.pem
+	# tls /etc/caddy/certs/cert.pem /etc/caddy/certs/key.pem
 }
 
 {$PUBLIC_HOSTNAME}:{$WALLET_PORT} {
 	reverse_proxy denser-wallet:{$WALLET_PORT}
 	tls internal
-	# tls /ets/caddy/certs/cert.pem /ets/caddy/certs/key.pem
+	# tls /etc/caddy/certs/cert.pem /etc/caddy/certs/key.pem
+}
+
+{$PUBLIC_HOSTNAME}:{$API_HTTP_PORT} {
+	redir https://{$PUBLIC_HOSTNAME}:{$API_HTTPS_PORT}{uri} permanent
 }
 
 {$PUBLIC_HOSTNAME}:{$API_HTTPS_PORT} {
+	# Add CORS headers
+	header {
+		Access-Control-Allow-Origin "*"
+		Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+		Access-Control-Allow-Headers "DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range"
+		Access-Control-Max-Age "3600"
+	}
 	reverse_proxy docker:80 {
 		header_up host {$PUBLIC_HOSTNAME}
+		# remove any CORS headers sent by stack's inner Caddy
+		header_down -Access-Control-Allow-Origin
+		header_down -Access-Control-Allow-Methods
+		header_down -Access-Control-Allow-Headers
+		header_down -Access-Control-Max-Age
 	}
 	tls internal
-	# tls /ets/caddy/certs/cert.pem /ets/caddy/certs/key.pem
-	# transport http {
-	#   tls
-	#   tls_insecure_skip_verify
-	# }
+	# tls /etc/caddy/certs/cert.pem /etc/caddy/certs/key.pem
 }
