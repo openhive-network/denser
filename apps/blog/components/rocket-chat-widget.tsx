@@ -2,6 +2,8 @@ import { getLogger } from '@ui/lib/logging';
 import { Sheet, SheetContent, SheetFooter, SheetTrigger } from '@ui/components/sheet';
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@ui/components/collapsible';
+import { Drawer } from '@ui/components/drawer';
 import { useState, useRef, useEffect } from 'react';
 import { siteConfig } from '@ui/config/site';
 import { useUser } from '@smart-signer/lib/auth/use-user';
@@ -9,6 +11,7 @@ import { LoginType } from '@smart-signer/types/common';
 import Link from 'next/link';
 import { Button } from '@ui/components/button';
 import { inIframe } from '@smart-signer/lib/utils';
+import clsx from 'clsx';
 
 const logger = getLogger('app');
 
@@ -72,13 +75,14 @@ const RocketChatWidget = () => {
   const iframeTitle = 'Chat';
   const tooltip = 'Chat';
   const { user } = useUser();
-  const { username, loginType, chatAuthToken } = user;
+  const { loginType, chatAuthToken } = user;
   const [init, setInit] = useState(true);
   const [badgeContent, setBadgeContent] = useState(0);
   const [disabled, setDisabled] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
   const [isIframeLoaded, setIsIframeLoaded] = useState(false);
   const [open, setOpen] = useState(false);
+  const [visible, setVisible] = useState(false);
   const iframeRef = useRef(null);
 
   const onMessageReceivedFromIframe = (event: MessageEvent) => {
@@ -163,7 +167,7 @@ const RocketChatWidget = () => {
 
   return (
     <>
-      {!inIframe() && loggedIn && (
+      {/* {!inIframe() && loggedIn && (
         <div
           style={{
               ...{
@@ -172,81 +176,81 @@ const RocketChatWidget = () => {
                   : 'none'
               },
           }}
-        >
+        > */}
 
-          <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild>
-              <div className="group relative inline-flex w-fit cursor-pointer items-center justify-center">
-                <TooltipProvider>
-                  <Tooltip>
-                    <div className="fixed bottom-10 right-10 block">
-                      <TooltipTrigger
-                        type="button"
-                        aria-label="Open Chat Widget"
-                        disabled={disabled}
-                      >
-                        <Icons.messageSquareText className="h-12 w-12" />
-                      </TooltipTrigger>
-                      {loggedIn ? (
-                        <div className="absolute bottom-auto left-auto right-0 top-0.5 z-50 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-red-600 px-1.5 py-1 text-center align-baseline text-xs font-bold leading-none text-white">
-                          {badgeContent}
-                        </div>
-                      ) : null}
+          <Drawer open={open} side="right" setOpen={setOpen}>
+            {/* Rocket Chat iframe */}
+            <iframe
+              id="chat-iframe"
+              src={iframeSrc}
+              style={{
+                width: '100%',
+                height: '100%',
+                border: 'none',
+                display: 'block'
+              }}
+              title={iframeTitle}
+              ref={iframeRef}
+              onLoad={onIframeLoad}
+            />
+
+            <div className="flex">
+              {/* Button closing drawer */}
+              <Button
+                className="hover:text-red-600 flex-1"
+                variant="outline"
+                size="sm"
+                title="Close Chat Widget"
+                aria-label="Close Chat Widget"
+                onClick={() => setOpen(false)}
+              >
+                <Icons.close />
+              </Button>
+
+              {/* Link to open chat app in new tab */}
+              <Link
+                href={iframeSrc}
+                className="hover:cursor-pointer hover:text-red-600 px-4"
+                aria-label="Open Chat App"
+                title="Open Chat App"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Icons.externalLink />
+              </Link>
+            </div>
+
+          </Drawer>
+
+          {/* Drawer toggler */}
+          <div className="z-40 group relative inline-flex w-fit cursor-pointer items-center justify-center">
+            <TooltipProvider>
+              <Tooltip>
+                <div className="fixed bottom-10 right-10 block">
+                  <TooltipTrigger
+                    type="button"
+                    aria-label="Open Chat Widget"
+                    onClick={() => setOpen(!open)}
+                    disabled={disabled}
+                  >
+                    <Icons.messageSquareText className="h-12 w-12" />
+                  </TooltipTrigger>
+
+                  {/* Badge showing unread messages */}
+                  {loggedIn && badgeContent !== 0 ? (
+                    <div className="absolute bottom-auto left-auto right-0 top-0.5 z-50 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-red-600 px-1.5 py-1 text-center align-baseline text-xs font-bold leading-none text-white">
+                      {badgeContent}
                     </div>
-                    <TooltipContent>{tooltip}</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-            </SheetTrigger>
+                  ) : null}
 
-            <SheetContent
-              position="right"
-              size="sm"
-              className="w-full overflow-auto px-0 pt-12 md:w-6/12"
-            >
-              {/* Rocket Chat iframe */}
-              <iframe
-                id="chat-iframe"
-                src={iframeSrc}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  border: 'none',
-                  display: 'block'
-                }}
-                title={iframeTitle}
-                ref={iframeRef}
-                onLoad={onIframeLoad}
-              />
+                </div>
+                <TooltipContent>{tooltip}</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
 
-              <SheetFooter>
-                <Button
-                  className="hover:text-red-600"
-                  variant="outline"
-                  size="sm"
-                  title="Close Chat Widget"
-                  aria-label="Close Chat Widget"
-                  onClick={() => setOpen(false)}
-                >
-                  <Icons.close />
-                </Button>
-                <Link
-                  href={iframeSrc}
-                  className="hover:cursor-pointer hover:text-red-600"
-                  aria-label="Open Chat App"
-                  title="Open Chat App"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Icons.externalLink />
-                </Link>
-              </SheetFooter>
-
-            </SheetContent>
-          </Sheet>
-
-        </div>
-      )}
+        {/* </div>
+      )} */}
     </>
   );
 };
