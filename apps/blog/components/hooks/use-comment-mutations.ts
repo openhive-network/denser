@@ -54,15 +54,13 @@ export function useUpdateCommentMutation() {
       parentPermlink: string;
       permlink: string;
       body: string;
-      comment_rewards: '0%' | '50%' | '100%';
     }) => {
-      const { parentAuthor, parentPermlink, permlink, body, comment_rewards } = params;
+      const { parentAuthor, parentPermlink, permlink, body } = params;
       const broadcastResult = await transactionService.updateComment(
         parentAuthor,
         parentPermlink,
         permlink,
         body,
-        comment_rewards,
         {
           observe: true
         }
