@@ -36,7 +36,7 @@ import { useUnmuteMutation } from '@/blog/components/hooks/use-mute-mutations';
 import { useUpdateProfileMutation } from '@/blog/components/hooks/use-update-profile-mutation';
 import { z } from 'zod';
 import { getServerSidePropsDefault } from '../../lib/get-translations';
-import { ImpulseSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from 'react-spinners-kit';
 
 export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
@@ -424,7 +424,7 @@ export default function UserSettings() {
               >
                 {updateProfileMutation.isLoading ? (
                   <span className="flex items-center justify-center">
-                    <ImpulseSpinner frontColor="#dc2626" />
+                    <CircleSpinner loading={updateProfileMutation.isLoading} size={18} color="#dc2626" />
                   </span>
                 ) : (
                   t('settings_page.update')
