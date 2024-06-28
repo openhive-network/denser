@@ -1,4 +1,5 @@
-import { useMutation } from '@tanstack/react-query';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -10,6 +11,8 @@ const logger = getLogger('app');
  * @return {*}
  */
 export function useUpdateProfileMutation() {
+  const { user } = useUser();
+  const queryClient = useQueryClient();
   const updateProfileMutation = useMutation({
     mutationFn: async (params: {
       profile_image?: string;
@@ -56,6 +59,8 @@ export function useUpdateProfileMutation() {
       return response;
     },
     onSuccess: (data) => {
+      const { username } = user;
+      queryClient.invalidateQueries({ queryKey: ['profileData', username] });
       logger.info('useUpdateProfileMutation onSuccess data: %o', data);
     }
   });
