@@ -312,7 +312,9 @@ export default function ProfileLists({
                       {delete_is_loading || reset_list_is_loading || resetAllListsMutation.isLoading ? (
                         <span className="flex h-5 w-20 items-center justify-center">
                           <CircleSpinner
-                            loading={resetAllListsMutation.isLoading}
+                            loading={
+                              delete_is_loading || reset_list_is_loading || resetAllListsMutation.isLoading
+                            }
                             size={18}
                             color="#dc2626"
                           />
