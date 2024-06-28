@@ -1,4 +1,5 @@
-import { useMutation } from '@tanstack/react-query';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -33,6 +34,8 @@ export function useMuteMutation() {
  * @return {*}
  */
 export function useUnmuteMutation() {
+  const { user } = useUser();
+  const queryClient = useQueryClient();
   const unmuteMutation = useMutation({
     mutationFn: async (params: { username: string }) => {
       const { username } = params;
@@ -42,6 +45,8 @@ export function useUnmuteMutation() {
       return response;
     },
     onSuccess: (data) => {
+      const { username } = user;
+      queryClient.invalidateQueries({ queryKey: ['muted', username] });
       logger.info('useUnmuteMutation onSuccess data: %o', data);
     }
   });
