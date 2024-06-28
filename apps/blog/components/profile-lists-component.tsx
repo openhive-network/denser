@@ -8,7 +8,6 @@ import { IFollowList } from '@transaction/lib/bridge';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { transactionService } from '@transaction/index';
 import { getAccountFull } from '@transaction/lib/hive';
 import { useQuery } from '@tanstack/react-query';
 import { useBlacklistBlogMutation, useUnblacklistBlogMutation } from './hooks/use-blacklist-mutations';
@@ -27,8 +26,8 @@ import {
   useResetAllListsMutation
 } from './hooks/use-reset-mutations';
 import { handleError } from '@ui/lib/utils';
-import { Skeleton } from '@ui/components';
-import { ImpulseSpinner } from 'react-spinners-kit';
+
+import { CircleSpinner } from 'react-spinners-kit';
 
 export default function ProfileLists({
   username,
@@ -312,7 +311,11 @@ export default function ProfileLists({
                     >
                       {delete_is_loading || reset_list_is_loading || resetAllListsMutation.isLoading ? (
                         <span className="flex h-5 w-20 items-center justify-center">
-                          <ImpulseSpinner frontColor="#dc2626" />
+                          <CircleSpinner
+                            loading={resetAllListsMutation.isLoading}
+                            size={18}
+                            color="#dc2626"
+                          />
                         </span>
                       ) : variant === 'blacklisted' ? (
                         t('user_profile.lists.list.unblacklist')
@@ -330,9 +333,8 @@ export default function ProfileLists({
             })
           ) : null}
           {item_is_loading ? (
-            <li className="flex h-9 w-72 items-center justify-between bg-slate-200 pl-2 pr-1 dark:bg-slate-900">
-              <Skeleton className="h-5 w-24 bg-slate-50 dark:bg-slate-700" />
-              <Skeleton className="h-6 w-20 bg-slate-50 dark:bg-slate-700" />
+            <li className="flex h-9 w-72 items-center justify-center bg-slate-200 pl-2 pr-1 dark:bg-slate-900">
+              <CircleSpinner loading={item_is_loading} size={18} color="#dc2626" />
             </li>
           ) : null}
         </ul>
@@ -374,7 +376,7 @@ export default function ProfileLists({
             <span className="text-sm">{t('user_profile.lists.list.single_account')}</span>
             <div className="flex w-full justify-center bg-slate-200 p-2 dark:bg-slate-900">
               <Input
-                className="bg-white sm:w-3/4"
+                className="bg-white dark:bg-slate-950 sm:w-3/4"
                 value={addValue}
                 onChange={(e) => setAddValue(e.target.value)}
               />
@@ -394,7 +396,10 @@ export default function ProfileLists({
         ) : null}
         <h1 className="text-xl font-bold">{t('user_profile.lists.list.search_this_list')}</h1>
         <div className="flex  justify-center bg-slate-200 p-2 dark:bg-slate-900 sm:w-1/3">
-          <Input onChange={(e) => onSearchChange(e.target.value)} className="bg-white sm:w-3/4" />
+          <Input
+            onChange={(e) => onSearchChange(e.target.value)}
+            className="bg-white dark:bg-slate-950 sm:w-3/4"
+          />
         </div>
         {userOwner ? (
           <div className="flex flex-col items-center gap-2">
@@ -411,7 +416,11 @@ export default function ProfileLists({
               >
                 {reset_list_is_loading || resetAllListsMutation.isLoading ? (
                   <span className="flex h-5 w-20 items-center justify-center">
-                    <ImpulseSpinner frontColor="#dc2626" />
+                    <CircleSpinner
+                      loading={reset_list_is_loading || resetAllListsMutation.isLoading}
+                      size={18}
+                      color="#dc2626"
+                    />
                   </span>
                 ) : variant === 'blacklisted' ? (
                   t('user_profile.lists.list.reset_blacklist')
@@ -431,7 +440,7 @@ export default function ProfileLists({
               >
                 {resetAllListsMutation.isLoading ? (
                   <span className="flex h-5 w-20 items-center justify-center">
-                    <ImpulseSpinner frontColor="#dc2626" />
+                    <CircleSpinner loading={resetAllListsMutation.isLoading} size={18} color="#dc2626" />
                   </span>
                 ) : (
                   t('user_profile.lists.list.reset_all_lists')
