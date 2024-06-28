@@ -1,8 +1,6 @@
 import { getLogger } from '@ui/lib/logging';
-import { Sheet, SheetContent, SheetFooter, SheetTrigger } from '@ui/components/sheet';
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@ui/components/collapsible';
 import { Drawer } from '@ui/components/drawer';
 import { useState, useRef, useEffect } from 'react';
 import { siteConfig } from '@ui/config/site';
@@ -82,7 +80,6 @@ const RocketChatWidget = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [isIframeLoaded, setIsIframeLoaded] = useState(false);
   const [open, setOpen] = useState(false);
-  const [visible, setVisible] = useState(false);
   const iframeRef = useRef(null);
 
   const onMessageReceivedFromIframe = (event: MessageEvent) => {
@@ -130,15 +127,16 @@ const RocketChatWidget = () => {
     }
   };
 
-  const addIframeListener = () => {
-    window.addEventListener('message', onMessageReceivedFromIframe);
-  };
 
   const removeIframeListener = () => {
     window.removeEventListener('message', onMessageReceivedFromIframe);
   };
 
   useEffect(() => {
+    const addIframeListener = () => {
+      window.addEventListener('message', onMessageReceivedFromIframe);
+    };
+
     // `init` is true when component operates on initial, default
     // values.
     if (!init) {
@@ -156,7 +154,7 @@ const RocketChatWidget = () => {
       addIframeListener();
       setInit(false);
     }
-  }, [chatAuthToken, isIframeLoaded]);
+  }, [chatAuthToken, init, isIframeLoaded, loginType]);
 
   const onIframeLoad = () => {
     logger.info('Chat iframe has been loaded');
