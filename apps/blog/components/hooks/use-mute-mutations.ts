@@ -11,6 +11,8 @@ const logger = getLogger('app');
  * @return {*}
  */
 export function useMuteMutation() {
+  const { user } = useUser();
+  const queryClient = useQueryClient();
   const muteMutation = useMutation({
     mutationFn: async (params: { username: string }) => {
       const { username } = params;
@@ -20,6 +22,8 @@ export function useMuteMutation() {
       return response;
     },
     onSuccess: (data) => {
+      const { username } = user;
+      queryClient.invalidateQueries({ queryKey: ['muted', username] });
       logger.info('useMuteMutation onSuccess data: %o', data);
     }
   });
