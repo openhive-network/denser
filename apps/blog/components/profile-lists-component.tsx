@@ -8,7 +8,6 @@ import { IFollowList } from '@transaction/lib/bridge';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { transactionService } from '@transaction/index';
 import { getAccountFull } from '@transaction/lib/hive';
 import { useQuery } from '@tanstack/react-query';
 import { useBlacklistBlogMutation, useUnblacklistBlogMutation } from './hooks/use-blacklist-mutations';
@@ -23,9 +22,12 @@ import {
   useResetBlacklistBlogMutation,
   useResetBlogListMutation,
   useResetFollowBlacklistBlogMutation,
-  useResetFollowMutedBlogMutation
+  useResetFollowMutedBlogMutation,
+  useResetAllListsMutation
 } from './hooks/use-reset-mutations';
 import { handleError } from '@ui/lib/utils';
+
+import { CircleSpinner } from 'react-spinners-kit';
 
 export default function ProfileLists({
   username,
@@ -71,18 +73,22 @@ export default function ProfileLists({
     }
   }
 
-  const blacklistBlogMutation = useBlacklistBlogMutation();
-  const unblacklistBlogMutation = useUnblacklistBlogMutation();
   const muteMutation = useMuteMutation();
-  const unmuteMutation = useUnmuteMutation();
-  const followBlacklistBlogMutation = useFollowBlacklistBlogMutation();
-  const unfollowBlacklistBlogMutation = useUnfollowBlacklistBlogMutation();
-  const unfollowMutedBlogMutation = useUnfollowMutedBlogMutation();
   const followMutedBlogMutation = useFollowMutedBlogMutation();
-  const resetBlogListMutation = useResetBlogListMutation();
+  const followBlacklistBlogMutation = useFollowBlacklistBlogMutation();
+  const blacklistBlogMutation = useBlacklistBlogMutation();
+
+  const unfollowBlacklistBlogMutation = useUnfollowBlacklistBlogMutation();
+  const unblacklistBlogMutation = useUnblacklistBlogMutation();
+  const unfollowMutedBlogMutation = useUnfollowMutedBlogMutation();
+  const unmuteMutation = useUnmuteMutation();
+
   const resetBlacklistBlogMutation = useResetBlacklistBlogMutation();
+  const resetBlogListMutation = useResetBlogListMutation();
   const resetFollowBlacklistBlogMutation = useResetFollowBlacklistBlogMutation();
   const resetFollowMutedBlogMutation = useResetFollowMutedBlogMutation();
+
+  const resetAllListsMutation = useResetAllListsMutation();
 
   const deleteFromList = useCallback(
     async (username: string, variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute') => {
@@ -208,6 +214,25 @@ export default function ProfileLists({
       resetFollowMutedBlogMutation
     ]
   );
+  const resetAll = useCallback(async () => {
+    try {
+      await resetAllListsMutation.mutateAsync();
+    } catch (error) {
+      handleError(error, { method: 'resetAll', params: {} });
+    }
+  }, [resetAllListsMutation]);
+
+  const item_is_loading =
+    blacklistBlogMutation.isLoading ||
+    muteMutation.isLoading ||
+    followBlacklistBlogMutation.isLoading ||
+    followMutedBlogMutation.isLoading;
+
+  const reset_list_is_loading =
+    resetBlacklistBlogMutation.isLoading ||
+    resetBlogListMutation.isLoading ||
+    resetFollowBlacklistBlogMutation.isLoading ||
+    resetFollowMutedBlogMutation.isLoading;
 
   return (
     <ProfileLayout>
@@ -250,44 +275,69 @@ export default function ProfileLists({
               : t('user_profile.lists.list.description_not_added')}
         </p>
         <ul className="flex flex-col ">
-          {data && data.length === 0 ? (
+          {data && data.length === 0 && !item_is_loading ? (
             <li className="bg-slate-200 p-4 text-center text-sm font-bold dark:bg-slate-900 ">
               {t('user_profile.lists.list.empty_list')}
             </li>
           ) : splitArrays.length > 0 ? (
-            splitArrays[page].map((e: IFollowList) => (
-              <li
-                key={e.name}
-                className="flex w-full items-center justify-between p-1 font-semibold odd:bg-slate-200 even:bg-slate-100 dark:odd:bg-slate-800 dark:even:bg-slate-900"
-              >
-                <span className="px-2">
-                  <Link className="text-red-600 " href={`/@${e.name}`}>
-                    {e.name}
-                  </Link>
-                  {' ' + e.blacklist_description}
-                </span>
-                {userOwner ? (
-                  <Button
-                    variant="outlineRed"
-                    className="whitespace-nowrap p-1"
-                    size="xs"
-                    onClick={() => {
-                      deleteFromList(e.name, variant);
-                    }}
-                  >
-                    {variant === 'blacklisted'
-                      ? t('user_profile.lists.list.unblacklist')
-                      : variant === 'muted'
-                        ? t('user_profile.lists.list.unmute')
-                        : variant === 'followedBlacklist'
-                          ? t('user_profile.lists.list.unfollow_blacklist')
-                          : variant === 'followedMute'
-                            ? t('user_profile.lists.list.unfollow_muted_list')
-                            : null}
-                  </Button>
-                ) : null}
-              </li>
-            ))
+            splitArrays[page].map((e: IFollowList) => {
+              const delete_is_loading =
+                (unfollowBlacklistBlogMutation.isLoading &&
+                  unfollowBlacklistBlogMutation.variables?.blog === e.name) ||
+                (unfollowMutedBlogMutation.isLoading &&
+                  unfollowMutedBlogMutation.variables?.blog === e.name) ||
+                (unmuteMutation.isLoading && unmuteMutation.variables?.username === e.name) ||
+                (unblacklistBlogMutation.isLoading && unblacklistBlogMutation.variables?.blog === e.name);
+              return (
+                <li
+                  key={e.name}
+                  className="flex w-72 items-center justify-between p-1 font-semibold odd:bg-slate-200 even:bg-slate-100 dark:odd:bg-slate-800 dark:even:bg-slate-900"
+                >
+                  <span className="px-2">
+                    <Link className="text-red-600" href={`/@${e.name}`}>
+                      {e.name}
+                    </Link>
+                    {' ' + e.blacklist_description}
+                  </span>
+                  {userOwner ? (
+                    <Button
+                      variant="outlineRed"
+                      className="whitespace-nowrap p-1"
+                      size="xs"
+                      onClick={() => {
+                        deleteFromList(e.name, variant);
+                      }}
+                      disabled={delete_is_loading || reset_list_is_loading || resetAllListsMutation.isLoading}
+                    >
+                      {delete_is_loading || reset_list_is_loading || resetAllListsMutation.isLoading ? (
+                        <span className="flex h-5 w-20 items-center justify-center">
+                          <CircleSpinner
+                            loading={
+                              delete_is_loading || reset_list_is_loading || resetAllListsMutation.isLoading
+                            }
+                            size={18}
+                            color="#dc2626"
+                          />
+                        </span>
+                      ) : variant === 'blacklisted' ? (
+                        t('user_profile.lists.list.unblacklist')
+                      ) : variant === 'muted' ? (
+                        t('user_profile.lists.list.unmute')
+                      ) : variant === 'followedBlacklist' ? (
+                        t('user_profile.lists.list.unfollow_blacklist')
+                      ) : variant === 'followedMute' ? (
+                        t('user_profile.lists.list.unfollow_muted_list')
+                      ) : null}
+                    </Button>
+                  ) : null}
+                </li>
+              );
+            })
+          ) : null}
+          {item_is_loading ? (
+            <li className="flex h-9 w-72 items-center justify-center bg-slate-200 pl-2 pr-1 dark:bg-slate-900">
+              <CircleSpinner loading={item_is_loading} size={18} color="#dc2626" />
+            </li>
           ) : null}
         </ul>
         {splitArrays.length > 1 ? (
@@ -328,7 +378,7 @@ export default function ProfileLists({
             <span className="text-sm">{t('user_profile.lists.list.single_account')}</span>
             <div className="flex w-full justify-center bg-slate-200 p-2 dark:bg-slate-900">
               <Input
-                className="bg-white sm:w-3/4"
+                className="bg-white dark:bg-slate-950 sm:w-3/4"
                 value={addValue}
                 onChange={(e) => setAddValue(e.target.value)}
               />
@@ -336,6 +386,7 @@ export default function ProfileLists({
             {addValue ? (
               <Button
                 className="mt-2"
+                disabled={item_is_loading}
                 onClick={() => {
                   addToList(addValue, variant), setAddValue('');
                 }}
@@ -347,7 +398,10 @@ export default function ProfileLists({
         ) : null}
         <h1 className="text-xl font-bold">{t('user_profile.lists.list.search_this_list')}</h1>
         <div className="flex  justify-center bg-slate-200 p-2 dark:bg-slate-900 sm:w-1/3">
-          <Input onChange={(e) => onSearchChange(e.target.value)} className="bg-white sm:w-3/4" />
+          <Input
+            onChange={(e) => onSearchChange(e.target.value)}
+            className="bg-white dark:bg-slate-950 sm:w-3/4"
+          />
         </div>
         {userOwner ? (
           <div className="flex flex-col items-center gap-2">
@@ -360,19 +414,39 @@ export default function ProfileLists({
                 size="sm"
                 variant="outlineRed"
                 className="text-xs"
+                disabled={reset_list_is_loading || resetAllListsMutation.isLoading}
               >
-                {variant === 'blacklisted'
-                  ? t('user_profile.lists.list.reset_blacklist')
-                  : variant === 'muted'
-                    ? t('user_profile.lists.list.reset_muted_list')
-                    : variant === 'followedBlacklist'
-                      ? t('user_profile.lists.list.reset_followed_blacklists')
-                      : variant === 'followedMute'
-                        ? t('user_profile.lists.list.reset_followed_muted_list')
-                        : null}
+                {reset_list_is_loading || resetAllListsMutation.isLoading ? (
+                  <span className="flex h-5 w-20 items-center justify-center">
+                    <CircleSpinner
+                      loading={reset_list_is_loading || resetAllListsMutation.isLoading}
+                      size={18}
+                      color="#dc2626"
+                    />
+                  </span>
+                ) : variant === 'blacklisted' ? (
+                  t('user_profile.lists.list.reset_blacklist')
+                ) : variant === 'muted' ? (
+                  t('user_profile.lists.list.reset_muted_list')
+                ) : variant === 'followedBlacklist' ? (
+                  t('user_profile.lists.list.reset_followed_blacklists')
+                ) : variant === 'followedMute' ? (
+                  t('user_profile.lists.list.reset_followed_muted_list')
+                ) : null}
               </Button>
-              <Button onClick={() => transactionService.resetAllBlog()} size="sm" className="text-xs">
-                {t('user_profile.lists.list.reset_all_lists')}
+              <Button
+                disabled={resetAllListsMutation.isLoading}
+                onClick={() => resetAll()}
+                size="sm"
+                className="text-xs"
+              >
+                {resetAllListsMutation.isLoading ? (
+                  <span className="flex h-5 w-20 items-center justify-center">
+                    <CircleSpinner loading={resetAllListsMutation.isLoading} size={18} color="#dc2626" />
+                  </span>
+                ) : (
+                  t('user_profile.lists.list.reset_all_lists')
+                )}
               </Button>
             </div>
           </div>

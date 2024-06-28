@@ -1,4 +1,5 @@
-import { useMutation } from '@tanstack/react-query';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -10,6 +11,9 @@ const logger = getLogger('app');
  * @return {*}
  */
 export function useBlacklistBlogMutation() {
+  const { user } = useUser();
+
+  const queryClient = useQueryClient();
   const blacklistBlogMutation = useMutation({
     mutationFn: async (params: { otherBlogs: string; blog?: string }) => {
       const { otherBlogs, blog } = params;
@@ -20,6 +24,8 @@ export function useBlacklistBlogMutation() {
     },
     onSuccess: (data) => {
       logger.info('useBlacklistBlogMutation onSuccess data: %o', data);
+      const { username } = user;
+      queryClient.invalidateQueries({ queryKey: ['blacklisted', username] });
     }
   });
 
@@ -33,6 +39,8 @@ export function useBlacklistBlogMutation() {
  * @return {*}
  */
 export function useUnblacklistBlogMutation() {
+  const { user } = useUser();
+  const queryClient = useQueryClient();
   const unblacklistBlogMutation = useMutation({
     mutationFn: async (params: { blog: string }) => {
       const { blog } = params;
@@ -43,6 +51,8 @@ export function useUnblacklistBlogMutation() {
     },
     onSuccess: (data) => {
       logger.info('useUnblacklistBlogMutation onSuccess data: %o', data);
+      const { username } = user;
+      queryClient.invalidateQueries({ queryKey: ['blacklisted', username] });
     }
   });
 

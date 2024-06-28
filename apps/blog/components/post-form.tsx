@@ -480,7 +480,11 @@ export default function PostForm({
                       <FormControl>
                         <Select
                           value={
-                            communityPosting ? communityPosting : storedPost?.category ? storedPost.category : 'blog'
+                            communityPosting
+                              ? communityPosting
+                              : storedPost?.category
+                                ? storedPost.category
+                                : 'blog'
                           }
                           onValueChange={(e) => storePost({ ...storedPost, category: e })}
                         >
@@ -518,18 +522,18 @@ export default function PostForm({
               variant="redHover"
               className="w-24"
               disabled={
-                !storedPost?.title || Boolean(tagsCheck)
-                  || Boolean(summaryCheck) || Boolean(altUsernameCheck)
-                  || postMutation.isLoading
+                !storedPost?.title ||
+                Boolean(tagsCheck) ||
+                Boolean(summaryCheck) ||
+                Boolean(altUsernameCheck) ||
+                postMutation.isLoading
               }
             >
-              {postMutation.isLoading
-              ?
-                <CircleSpinner loading={postMutation.isLoading}
-                                size={18} color="#dc2626" />
-              :
+              {postMutation.isLoading ? (
+                <CircleSpinner loading={postMutation.isLoading} size={18} color="#dc2626" />
+              ) : (
                 t('submit_page.submit')
-              }
+              )}
             </Button>
             <Button
               disabled={postMutation.isLoading}

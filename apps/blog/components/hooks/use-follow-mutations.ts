@@ -1,4 +1,5 @@
-import { useMutation } from '@tanstack/react-query';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -56,6 +57,8 @@ export function useUnfollowMutation() {
  * @return {*}
  */
 export function useFollowBlacklistBlogMutation() {
+  const { user } = useUser();
+  const queryClient = useQueryClient();
   const followBlacklistBlogMutation = useMutation({
     mutationFn: async (params: { otherBlogs: string; blog?: string }) => {
       const { otherBlogs, blog } = params;
@@ -67,6 +70,8 @@ export function useFollowBlacklistBlogMutation() {
       return response;
     },
     onSuccess: (data) => {
+      const { username } = user;
+      queryClient.invalidateQueries({ queryKey: ['follow_blacklist', username] });
       logger.info('useFollowBlacklistBlogMutation onSuccess data: %o', data);
     }
   });
@@ -81,6 +86,8 @@ export function useFollowBlacklistBlogMutation() {
  * @return {*}
  */
 export function useUnfollowBlacklistBlogMutation() {
+  const { user } = useUser();
+  const queryClient = useQueryClient();
   const unfollowBlacklistBlogMutation = useMutation({
     mutationFn: async (params: { blog: string }) => {
       const { blog } = params;
@@ -90,6 +97,8 @@ export function useUnfollowBlacklistBlogMutation() {
       return response;
     },
     onSuccess: (data) => {
+      const { username } = user;
+      queryClient.invalidateQueries({ queryKey: ['follow_blacklist', username] });
       logger.info('useUnfollowBlacklistBlogMutation onSuccess data: %o', data);
     }
   });
@@ -104,6 +113,8 @@ export function useUnfollowBlacklistBlogMutation() {
  * @return {*}
  */
 export function useFollowMutedBlogMutation() {
+  const { user } = useUser();
+  const queryClient = useQueryClient();
   const followMutedBlogMutation = useMutation({
     mutationFn: async (params: { otherBlogs: string; blog?: string }) => {
       const { otherBlogs, blog } = params;
@@ -113,6 +124,8 @@ export function useFollowMutedBlogMutation() {
       return response;
     },
     onSuccess: (data) => {
+      const { username } = user;
+      queryClient.invalidateQueries({ queryKey: ['follow_muted', username] });
       logger.info('useFollowMutedBlogMutation onSuccess data: %o', data);
     }
   });
@@ -127,6 +140,8 @@ export function useFollowMutedBlogMutation() {
  * @return {*}
  */
 export function useUnfollowMutedBlogMutation() {
+  const { user } = useUser();
+  const queryClient = useQueryClient();
   const unfollowMutedBlogMutation = useMutation({
     mutationFn: async (params: { blog: string }) => {
       const { blog } = params;
@@ -136,6 +151,8 @@ export function useUnfollowMutedBlogMutation() {
       return response;
     },
     onSuccess: (data) => {
+      const { username } = user;
+      queryClient.invalidateQueries({ queryKey: ['follow_muted', username] });
       logger.info('useUnfollowMutedBlogMutation onSuccess data: %o', data);
     }
   });
