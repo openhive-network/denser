@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { Button } from '@hive/ui';
 import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
@@ -7,6 +7,7 @@ import { IFollow } from '@transaction/lib/hive';
 import { UseInfiniteQueryResult } from '@tanstack/react-query';
 import { useMuteMutation, useUnmuteMutation } from './hooks/use-mute-mutations';
 import { handleError } from '@ui/lib/utils';
+import { CircleSpinner } from 'react-spinners-kit';
 
 const MuteButton = ({
   username,
@@ -34,6 +35,11 @@ const MuteButton = ({
   const [isMute, setIsMute] = useState(false);
   const muteMutation = useMuteMutation();
   const unmuteMutation = useUnmuteMutation();
+  useEffect(() => {
+    if (muteMutation.isSuccess || unmuteMutation.isSuccess) {
+      setIsMute((prev) => !prev);
+    }
+  }, [muteMutation.isSuccess, unmuteMutation.isSuccess]);
 
   useEffect(() => {
     const isMute = Boolean(
@@ -51,7 +57,6 @@ const MuteButton = ({
           data-testid="profile-mute-button"
           onClick={async () => {
             const nextMute = !isMute;
-            setIsMute(nextMute);
             if (nextMute) {
               try {
                 await muteMutation.mutateAsync({ username });
@@ -66,9 +71,21 @@ const MuteButton = ({
               }
             }
           }}
-          disabled={list.isLoading || list.isFetching}
+          disabled={list.isLoading || list.isFetching || muteMutation.isLoading || unmuteMutation.isLoading}
         >
-          {isMute ? t('user_profile.unmute_button') : t('user_profile.mute_button')}
+          {muteMutation.isLoading || unmuteMutation.isLoading ? (
+            <span className="flex h-5 w-12 items-center justify-center">
+              <CircleSpinner
+                loading={muteMutation.isLoading || unmuteMutation.isLoading}
+                size={18}
+                color="#dc2626"
+              />
+            </span>
+          ) : isMute ? (
+            t('user_profile.unmute_button')
+          ) : (
+            t('user_profile.mute_button')
+          )}
         </Button>
       ) : (
         <DialogLogin>
