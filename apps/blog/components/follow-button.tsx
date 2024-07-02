@@ -7,6 +7,7 @@ import { IFollow } from '@transaction/lib/hive';
 import { UseInfiniteQueryResult } from '@tanstack/react-query';
 import { useFollowMutation, useUnfollowMutation } from './hooks/use-follow-mutations';
 import { handleError } from '@ui/lib/utils';
+import { CircleSpinner } from 'react-spinners-kit';
 
 const FollowButton = ({
   username,
@@ -34,6 +35,11 @@ const FollowButton = ({
   const [isFollow, setIsFollow] = useState(false);
   const followMutation = useFollowMutation();
   const unfollowMutation = useUnfollowMutation();
+  useEffect(() => {
+    if (followMutation.isSuccess || unfollowMutation.isSuccess) {
+      setIsFollow((prev) => !prev);
+    }
+  }, [followMutation.isSuccess, unfollowMutation.isSuccess]);
 
   useEffect(() => {
     const isFollow = Boolean(
@@ -55,7 +61,6 @@ const FollowButton = ({
           data-testid="profile-follow-button"
           onClick={async () => {
             const nextFollow = !isFollow;
-            setIsFollow(nextFollow);
             if (nextFollow) {
               try {
                 await followMutation.mutateAsync({ username });
@@ -70,9 +75,23 @@ const FollowButton = ({
               }
             }
           }}
-          disabled={list.isLoading || list.isFetching}
+          disabled={
+            list.isLoading || list.isFetching || followMutation.isLoading || unfollowMutation.isLoading
+          }
         >
-          {isFollow ? t('user_profile.unfollow_button') : t('user_profile.follow_button')}
+          {followMutation.isLoading || unfollowMutation.isLoading ? (
+            <span className="flex h-5 w-12 items-center justify-center">
+              <CircleSpinner
+                loading={followMutation.isLoading || unfollowMutation.isLoading}
+                size={18}
+                color="#dc2626"
+              />
+            </span>
+          ) : isFollow ? (
+            t('user_profile.unfollow_button')
+          ) : (
+            t('user_profile.follow_button')
+          )}
         </Button>
       ) : (
         <DialogLogin>
