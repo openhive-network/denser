@@ -6,7 +6,7 @@
   "private": false,
   "scripts": {
     "clean": "rm -rf ./public/auth/* && rm -rf ./public/locales/* && rm -rf ./public/smart-signer/*",
-    "copy:worker": "cp ../../node_modules/@hiveio/hb-auth/dist/worker.js ./public/auth/",
+    "copy:worker": "cp ../../packages/smart-signer/node_modules/@hiveio/hb-auth/dist/worker.js ./public/auth/",
     "predev": "npm run clean",
     "dev": "react-env -- next dev -p 5000 | npx pino-pretty --colorize",
     "devssl": "react-env -- next dev --port 5000 --experimental-https --experimental-https-key ../../ssl/server-key.pem --experimental-https-cert ../../ssl/server-cert.pem | npx pino-pretty --colorize",
