@@ -53,5 +53,9 @@
   },
   "dependencies": {
     "@radix-ui/react-slider": "^1.1.2"
+  },
+  "overrides": {
+    "@hiveio/beekeeper": "1.27.6-rc2-stable.240627074427",
+    "@hiveio/wax": "1.27.6-rc1-240701124026"
   }
 }

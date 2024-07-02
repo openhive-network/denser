@@ -26,7 +26,7 @@
     "@hive/tsconfig": "*",
     "@hive/ui": "*",
     "@hiveio/dhive": "^1.2.8",
-    "@hiveio/wax": "^0.3.8-stable.240604171105",
+    "@hiveio/wax": "1.27.6-rc1-240701124026",
     "@hookform/resolvers": "^3.3.1",
     "@tanstack/react-query": "^4.36.1",
     "http-errors": "^2.0.0",
