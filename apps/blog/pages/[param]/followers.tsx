@@ -10,9 +10,8 @@ import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
 import { useFollowingInfiniteQuery } from '@/blog/components/hooks/use-following-infinitequery';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import FollowButton from '@/blog/components/follow-button';
-import MuteButton from '@/blog/components/mute-button';
 import { getServerSidePropsDefault } from '../../lib/get-translations';
+import ButtonsContainer from '@/blog/components/buttons-container';
 
 export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
@@ -66,8 +65,13 @@ export default function Followers() {
               <Link href={`/@${e.follower}`}>{e.follower}</Link>
               {!user.isLoggedIn || user.username === e.follower ? null : (
                 <div>
-                  <FollowButton username={e.follower} user={user} variant="basic" list={following} />
-                  <MuteButton username={e.follower} user={user} variant="basic" list={mute} />
+                  <ButtonsContainer
+                    username={e.follower}
+                    user={user}
+                    variant="basic"
+                    follow={following}
+                    mute={mute}
+                  />
                 </div>
               )}
             </li>
