@@ -99,12 +99,12 @@ const ButtonsContainer = ({
       ) : (
         <DialogLogin>
           <Button
-            className=" hover:text-red-500"
+            className=" hover:text-red-500 "
             variant={variant}
             size="sm"
-            data-testid="profile-mute-button"
+            data-testid="profile-follow-button"
           >
-            {t('user_profile.mute_button')}
+            {t('user_profile.follow_button')}
           </Button>
         </DialogLogin>
       )}
