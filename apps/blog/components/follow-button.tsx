@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import { Button } from '@hive/ui';
 import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
@@ -32,24 +31,14 @@ const FollowButton = ({
   list: UseInfiniteQueryResult<IFollow[], unknown>;
 }) => {
   const { t } = useTranslation('common_blog');
-  const [isFollow, setIsFollow] = useState(false);
   const followMutation = useFollowMutation();
   const unfollowMutation = useUnfollowMutation();
-  useEffect(() => {
-    if (followMutation.isSuccess || unfollowMutation.isSuccess) {
-      setIsFollow((prev) => !prev);
-    }
-  }, [followMutation.isSuccess, unfollowMutation.isSuccess]);
 
-  useEffect(() => {
-    const isFollow = Boolean(
-      list.data?.pages[0].some(
-        (f: { follower: string; following: string }) =>
-          f.follower === user.username && f.following === username
-      )
-    );
-    setIsFollow(isFollow);
-  }, [list.data?.pages, user?.username, username]);
+  const isFollow = Boolean(
+    list.data?.pages[0].some(
+      (f: { follower: string; following: string }) => f.follower === user.username && f.following === username
+    )
+  );
 
   return (
     <>
@@ -60,8 +49,7 @@ const FollowButton = ({
           size="sm"
           data-testid="profile-follow-button"
           onClick={async () => {
-            const nextFollow = !isFollow;
-            if (nextFollow) {
+            if (!isFollow) {
               try {
                 await followMutation.mutateAsync({ username });
               } catch (error) {

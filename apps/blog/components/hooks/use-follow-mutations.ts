@@ -23,7 +23,9 @@ export function useFollowMutation() {
     },
     onSuccess: (data) => {
       const { username } = user;
-      queryClient.invalidateQueries({ queryKey: ['followingData', username, ['blog']] });
+      queryClient.invalidateQueries({ queryKey: ['followingData', username, 'blog'] });
+      queryClient.invalidateQueries({ queryKey: ['followingData', username, 'ignore'] });
+
       logger.info('useFollowMutation onSuccess data: %o', data);
     }
   });
@@ -50,7 +52,8 @@ export function useUnfollowMutation() {
     },
     onSuccess: (data) => {
       const { username } = user;
-      queryClient.invalidateQueries({ queryKey: ['followingData', username, ['blog']] });
+      queryClient.invalidateQueries({ queryKey: ['followingData', username, 'blog'] });
+      queryClient.invalidateQueries({ queryKey: ['followingData', username, 'ignore'] });
 
       logger.info('useUnfollowMutation onSuccess data: %o', data);
     }

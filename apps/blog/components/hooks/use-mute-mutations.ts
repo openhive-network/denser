@@ -24,7 +24,8 @@ export function useMuteMutation() {
     onSuccess: (data) => {
       const { username } = user;
       queryClient.invalidateQueries({ queryKey: ['muted', username] });
-      queryClient.invalidateQueries({ queryKey: ['followingData', username, ['ignore']] });
+      queryClient.invalidateQueries({ queryKey: ['followingData', username, 'blog'] });
+      queryClient.invalidateQueries({ queryKey: ['followingData', username, 'ignore'] });
 
       logger.info('useMuteMutation onSuccess data: %o', data);
     }
@@ -53,7 +54,8 @@ export function useUnmuteMutation() {
     onSuccess: (data) => {
       const { username } = user;
       queryClient.invalidateQueries({ queryKey: ['muted', username] });
-      queryClient.invalidateQueries({ queryKey: ['followingData', username, ['ignore']] });
+      queryClient.invalidateQueries({ queryKey: ['followingData', username, 'blog'] });
+      queryClient.invalidateQueries({ queryKey: ['followingData', username, 'ignore'] });
 
       logger.info('useUnmuteMutation onSuccess data: %o', data);
     }

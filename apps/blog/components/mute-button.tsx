@@ -1,4 +1,3 @@
-import React, { use, useEffect, useState } from 'react';
 import { Button } from '@hive/ui';
 import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
@@ -32,21 +31,12 @@ const MuteButton = ({
   list: UseInfiniteQueryResult<IFollow[], unknown>;
 }) => {
   const { t } = useTranslation('common_blog');
-  const [isMute, setIsMute] = useState(false);
   const muteMutation = useMuteMutation();
   const unmuteMutation = useUnmuteMutation();
-  useEffect(() => {
-    if (muteMutation.isSuccess || unmuteMutation.isSuccess) {
-      setIsMute((prev) => !prev);
-    }
-  }, [muteMutation.isSuccess, unmuteMutation.isSuccess]);
 
-  useEffect(() => {
-    const isMute = Boolean(
-      list.data?.pages[0].some((f) => f.follower === user.username && f.following === username)
-    );
-    setIsMute(isMute);
-  }, [list.data?.pages, user.username, username]);
+  const isMute = Boolean(
+    list.data?.pages[0].some((f) => f.follower === user.username && f.following === username)
+  );
   return (
     <>
       {user.isLoggedIn ? (
@@ -56,8 +46,7 @@ const MuteButton = ({
           size="sm"
           data-testid="profile-mute-button"
           onClick={async () => {
-            const nextMute = !isMute;
-            if (nextMute) {
+            if (!isMute) {
               try {
                 await muteMutation.mutateAsync({ username });
               } catch (error) {
