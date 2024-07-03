@@ -23,12 +23,11 @@ import { TFunction } from 'i18next';
 import env from '@beam-australia/react-env';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useFollowingInfiniteQuery } from '../hooks/use-following-infinitequery';
-import FollowButton from '../follow-button';
-import MuteButton from '../mute-button';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import CustomError from '../custom-error';
+import ButtonsContainer from '../buttons-container';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -336,10 +335,13 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 </ul>
                 {user.username !== username ? (
                   <div className="m-2 flex gap-2 hover:text-red-500 sm:absolute sm:right-0">
-                    <FollowButton username={username} user={user} variant="secondary" list={following} />
-                    {user.isLoggedIn ? (
-                      <MuteButton username={username} user={user} variant="secondary" list={mute} />
-                    ) : null}
+                    <ButtonsContainer
+                      username={username}
+                      user={user}
+                      variant="secondary"
+                      follow={following}
+                      mute={mute}
+                    />
                   </div>
                 ) : null}
               </>
