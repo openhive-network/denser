@@ -36,6 +36,7 @@ import { useUnmuteMutation } from '@/blog/components/hooks/use-mute-mutations';
 import { useUpdateProfileMutation } from '@/blog/components/hooks/use-update-profile-mutation';
 import { z } from 'zod';
 import { getServerSidePropsDefault } from '../../lib/get-translations';
+import { CircleSpinner } from 'react-spinners-kit';
 
 export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
@@ -419,9 +420,15 @@ export default function UserSettings() {
                 onClick={() => onSubmit()}
                 className="my-4 w-44"
                 data-testid="pps-update-button"
-                disabled={sameData || disabledBtn}
+                disabled={sameData || disabledBtn || updateProfileMutation.isLoading}
               >
-                {t('settings_page.update')}
+                {updateProfileMutation.isLoading ? (
+                  <span className="flex items-center justify-center">
+                    <CircleSpinner loading={updateProfileMutation.isLoading} size={18} color="#dc2626" />
+                  </span>
+                ) : (
+                  t('settings_page.update')
+                )}
               </Button>
             </div>
             <div className="py-8" data-testid="settings-preferences">
@@ -632,26 +639,39 @@ export default function UserSettings() {
           <div>
             <div>{t('settings_page.muted_users')}</div>
             <ul>
-              {mutedQuery.data.map((mutedUser, index) => (
-                <li key={mutedUser.name}>
-                  <span>{index + 1}. </span>
-                  <span className="text-red-500">{mutedUser.name}</span>
-                  <Button
-                    className="h-fit p-1 text-red-500"
-                    variant="link"
-                    onClick={async () => {
-                      const params = { username: mutedUser.name };
-                      try {
-                        await unmuteMutation.mutateAsync(params);
-                      } catch (error) {
-                        handleError(error, { method: 'unmute', params });
-                      }
-                    }}
-                  >
-                    [{t('settings_page.unmute')}]
-                  </Button>
-                </li>
-              ))}
+              {mutedQuery.data.map((mutedUser, index) => {
+                const mute_item =
+                  unmuteMutation.isLoading && unmuteMutation.variables?.username === mutedUser.name;
+                return (
+                  <li key={mutedUser.name}>
+                    <span>{index + 1}. </span>
+                    <span className="text-red-500">{mutedUser.name}</span>
+                    <Button
+                      className="h-fit p-1 text-red-500"
+                      variant="link"
+                      onClick={async () => {
+                        const params = { username: mutedUser.name };
+                        try {
+                          await unmuteMutation.mutateAsync(params);
+                        } catch (error) {
+                          handleError(error, { method: 'unmute', params });
+                        }
+                      }}
+                      disabled={mute_item}
+                    >
+                      [
+                      {mute_item ? (
+                        <span className="flex items-center justify-center">
+                          <CircleSpinner loading={unmuteMutation.isLoading} size={18} color="#dc2626" />
+                        </span>
+                      ) : (
+                        t('settings_page.unmute')
+                      )}
+                      ]
+                    </Button>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         ) : null}
