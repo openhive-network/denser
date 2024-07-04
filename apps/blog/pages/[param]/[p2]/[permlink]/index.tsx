@@ -131,7 +131,6 @@ function PostPage({
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const firstPost = discussionState?.find((post) => post.depth === 0);
   const [edit, setEdit] = useState(false);
-  const [showAnyway, setShowAnyway] = useState(false);
 
   const userFromGDPR = gdprUserList.some((e) => e === post?.author);
   const refreshPage = () => {
@@ -273,6 +272,16 @@ function PostPage({
               <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
             ) : copyRightCheck || userFromDMCA ? (
               <div className="px-2 py-6">{t('post_content.body.copyright')}</div>
+            ) : mutedPost ? (
+              <>
+                <Separator />
+                <div className="my-8 flex items-center justify-between text-red-500">
+                  {t('post_content.body.images_were_hidden')}
+                  <Button variant="outlineRed" onClick={() => setMutedPost(false)}>
+                    {t('post_content.body.show')}
+                  </Button>
+                </div>
+              </>
             ) : (
               <ImageGallery>
                 <RendererContainer
@@ -280,22 +289,9 @@ function PostPage({
                   body={post.body}
                   className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
                   author={post.author}
-                  doNotShowImages={!!mutedPost && !showAnyway}
                 />
               </ImageGallery>
             )}
-
-            {mutedPost ? (
-              <>
-                <Separator />
-                <div className="my-8 flex items-center justify-between text-red-500">
-                  {t('post_content.body.images_were_hidden')}
-                  <Button variant="outlineRed" onClick={() => setShowAnyway(true)}>
-                    {t('post_content.body.show')}
-                  </Button>
-                </div>
-              </>
-            ) : null}
 
             <div className="clear-both">
               {!commentSite ? (

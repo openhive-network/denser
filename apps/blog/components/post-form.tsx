@@ -568,7 +568,6 @@ export default function PostForm({
               body={previewContent}
               className="prose w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2 dark:prose-invert"
               author=""
-              doNotShowImages={false}
             />
           ) : null}
         </div>
