@@ -409,6 +409,7 @@
     }
   },
   "submit_page": {
+    "log_in_to_post": "게시물을 작성하려면 로그인하세요.",
     "clean_post_editor": "게시물 편집기를 지우시겠습니까?",
     "cover_image": "표지 이미지를 선택하세요:",
     "my_communities": "내 커뮤니티",

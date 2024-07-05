@@ -434,6 +434,7 @@
     }
   },
   "submit_page": {
+    "log_in_to_post": "Log in to make a post.",
     "clean_post_editor": "Are you sure you want to clear the post editor?",
     "cover_image": "Select your cover image:",
     "my_communities": "My Communities",

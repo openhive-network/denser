@@ -422,6 +422,7 @@
     }
   },
   "submit_page": {
+    "log_in_to_post": "Zaloguj się, aby opublikować post.",
     "clean_post_editor": "Czy na pewno chcesz wyczyścić edytor postów?",
     "cover_image": "Wybierz obraz okładki:",
     "my_communities": "Moje Społeczności",
