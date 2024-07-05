@@ -1,21 +1,14 @@
-import React, { useEffect, useState } from 'react';
 import { Button } from '@hive/ui';
-import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
-import { User } from '@smart-signer/types/common';
-import { IFollow } from '@transaction/lib/hive';
-import { UseInfiniteQueryResult } from '@tanstack/react-query';
-import { useFollowMutation, useUnfollowMutation } from './hooks/use-follow-mutations';
 import { handleError } from '@ui/lib/utils';
+import { CircleSpinner } from 'react-spinners-kit';
 
 const FollowButton = ({
-  username,
-  user,
   variant,
-  list
+  loading,
+  isFollow,
+  onClick
 }: {
-  username: string;
-  user: User;
   variant:
     | 'default'
     | 'destructive'
@@ -28,65 +21,31 @@ const FollowButton = ({
     | 'basic'
     | null
     | undefined;
-  list: UseInfiniteQueryResult<IFollow[], unknown>;
+  loading: boolean;
+  isFollow: boolean;
+  onClick: () => void;
 }) => {
   const { t } = useTranslation('common_blog');
-  const [isFollow, setIsFollow] = useState(false);
-  const followMutation = useFollowMutation();
-  const unfollowMutation = useUnfollowMutation();
-
-  useEffect(() => {
-    const isFollow = Boolean(
-      list.data?.pages[0].some(
-        (f: { follower: string; following: string }) =>
-          f.follower === user.username && f.following === username
-      )
-    );
-    setIsFollow(isFollow);
-  }, [list.data?.pages, user?.username, username]);
 
   return (
-    <>
-      {user.isLoggedIn ? (
-        <Button
-          className=" hover:text-red-500 "
-          variant={variant}
-          size="sm"
-          data-testid="profile-follow-button"
-          onClick={async () => {
-            const nextFollow = !isFollow;
-            setIsFollow(nextFollow);
-            if (nextFollow) {
-              try {
-                await followMutation.mutateAsync({ username });
-              } catch (error) {
-                handleError(error, { method: 'follow', params: { username } });
-              }
-            } else {
-              try {
-                await unfollowMutation.mutateAsync({ username });
-              } catch (error) {
-                handleError(error, { method: 'unfollow', params: { username } });
-              }
-            }
-          }}
-          disabled={list.isLoading || list.isFetching}
-        >
-          {isFollow ? t('user_profile.unfollow_button') : t('user_profile.follow_button')}
-        </Button>
+    <Button
+      className="hover:text-red-500 "
+      variant={variant}
+      size="sm"
+      data-testid="profile-follow-button"
+      onClick={() => onClick()}
+      disabled={loading}
+    >
+      {loading ? (
+        <span className="flex h-5 w-12 items-center justify-center">
+          <CircleSpinner loading={loading} size={18} color="#dc2626" />
+        </span>
+      ) : isFollow ? (
+        t('user_profile.unfollow_button')
       ) : (
-        <DialogLogin>
-          <Button
-            className=" hover:text-red-500 "
-            variant={variant}
-            size="sm"
-            data-testid="profile-follow-button"
-          >
-            {t('user_profile.follow_button')}
-          </Button>
-        </DialogLogin>
+        t('user_profile.follow_button')
       )}
-    </>
+    </Button>
   );
 };
 export default FollowButton;
