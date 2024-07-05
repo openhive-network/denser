@@ -5,7 +5,7 @@ import { ApiHelper } from '../support/apiHelper';
 import { HomePage } from '../../../../blog/playwright/tests/support/pages/homePage';
 import { WitnessPage } from '../../../../blog/playwright/tests/support/pages/witnessesPage';
 import { ConfirmAccountWitnessProxyDialog } from '../support/pages/confirmAccountWitnessProxyDialog';
-import { getRoundedAbbreveration } from '@ui/lib/utils';
+import { getRoundedAbbreveration } from '../../../../../packages/ui/lib/utils';
 import moment from 'moment';
 import Big from 'big.js';
 

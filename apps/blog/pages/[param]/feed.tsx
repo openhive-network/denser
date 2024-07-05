@@ -14,16 +14,17 @@ import { Skeleton } from '@ui/components/skeleton';
 import { useInView } from 'react-intersection-observer';
 import CustomError from '@/blog/components/custom-error';
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetServerSideProps } from 'next';
-import { i18n } from '@/blog/next-i18next.config';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { CommunitiesSelect } from '@/blog/components/communities-select';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import { getServerSidePropsDefault } from '../../lib/get-translations';
 const CommunitiesSidebar = dynamic(() => import('@/blog/components/communities-sidebar'), { ssr: false });
 const CommunitiesMybar = dynamic(() => import('@/blog/components/communities-mybar'), { ssr: false });
 const ExploreHive = dynamic(() => import('@/blog/components/explore-hive'), { ssr: false });
+
+export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
 export const PostSkeleton = () => {
   return (
@@ -78,7 +79,7 @@ const FeedPage: FC = () => {
     data: mySubsData,
     isLoading: mySubsIsLoading,
     isError: mySubsIsError
-  } = useQuery([['subscriptions', user?.username]], () => getSubscriptions(user?.username || ''), {
+  } = useQuery(['subscriptions', user?.username], () => getSubscriptions(user?.username || ''), {
     enabled: Boolean(user?.username)
   });
   const {
@@ -163,9 +164,9 @@ const FeedPage: FC = () => {
                       {accountIsFetchingNextPage ? (
                         <PostSkeleton />
                       ) : accountHasNextPage ? (
-                        t('user_profil.load_newer')
+                        t('user_profile.load_newer')
                       ) : accountEntriesData.pages[0] && accountEntriesData.pages[0].length > 0 ? (
-                        t('user_profil.nothing_more_to_load')
+                        t('user_profile.nothing_more_to_load')
                       ) : null}
                     </button>
                   ) : null}
@@ -186,14 +187,3 @@ const FeedPage: FC = () => {
 };
 
 export default FeedPage;
-
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  return {
-    props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
-        'common_blog',
-        'smart-signer'
-      ]))
-    }
-  };
-};

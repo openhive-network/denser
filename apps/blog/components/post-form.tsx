@@ -16,24 +16,26 @@ import { useForm, useWatch } from 'react-hook-form';
 import useManabars from './hooks/useManabars';
 import { AdvancedSettingsPostForm } from './advanced_settings_post_form';
 import MdEditor from './md-editor';
-import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { useLocalStorage } from 'usehooks-ts';
 import { useTranslation } from 'next-i18next';
-import { transactionService } from '@transaction/index';
 import { createPermlink } from '@transaction/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { Entry, getCommunity, getSubscriptions } from '@transaction/lib/bridge';
 import { useRouter } from 'next/router';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { TFunction } from 'i18next';
-import { debounce, extractUrlsFromJsonString, extractYouTubeVideoIds } from '../lib/utils';
+import { debounce } from '../lib/utils';
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 import { getLogger } from '@ui/lib/logging';
 import SelectImageList from './select-image-list';
 import RendererContainer from './rendererContainer';
+import { usePostMutation } from './hooks/use-post-mutation';
+import { handleError } from '@ui/lib/utils';
+import { CircleSpinner } from 'react-spinners-kit';
 
 const logger = getLogger('app');
 
@@ -69,7 +71,7 @@ function validateTagInput(value: string, required: boolean, t: TFunction<'common
                       : null;
 }
 
-function validateSummoryInput(value: string, t: TFunction<'common_wallet', undefined>) {
+function validateSummaryInput(value: string, t: TFunction<'common_wallet', undefined>) {
   const markdownRegex = /(?:\*[\w\s]*\*|#[\w\s]*#|_[\w\s]*_|~[\w\s]*~|\]\s*\(|\]\s*\[)/;
   const htmlTagRegex = /<\/?[\w\s="/.':;#-/?]+>/gi;
   return markdownRegex.test(value)
@@ -140,12 +142,13 @@ export default function PostForm({
   const { manabarsData } = useManabars(username);
   const [previewContent, setPreviewContent] = useState<string | undefined>(storedPost.postArea);
   const { t } = useTranslation('common_blog');
+  const postMutation = usePostMutation();
 
   const {
     data: mySubsData,
     isLoading: mySubsIsLoading,
     isError: mySubsIsError
-  } = useQuery([['subscriptions', username]], () => getSubscriptions(username), {
+  } = useQuery(['subscriptions', username], () => getSubscriptions(username), {
     enabled: Boolean(username)
   });
   const {
@@ -212,7 +215,7 @@ export default function PostForm({
     !router.query.category ? watchedValues.category === 'blog' : false,
     t
   );
-  const summaryCheck = validateSummoryInput(watchedValues.postSummary, t);
+  const summaryCheck = validateSummaryInput(watchedValues.postSummary, t);
   const altUsernameCheck = validateAltUsernameInput(watchedValues.author, t);
   const communityPosting =
     mySubsData && mySubsData?.filter((e) => e[0] === router.query.category).length > 0
@@ -250,19 +253,28 @@ export default function PostForm({
         btnRef.current.disabled = true;
       }
 
-      await transactionService.post(
-        editMode && permlinInEditMode ? permlinInEditMode : postPermlink,
-        storedPost.title,
-        storedPost.postArea,
-        storedPost.beneficiaries,
+      const postParams = {
+        permlink: editMode && permlinInEditMode ? permlinInEditMode : postPermlink,
+        title: storedPost.title,
+        body: storedPost.postArea,
+        beneficiaries: storedPost.beneficiaries,
         maxAcceptedPayout,
         tags,
-        communityPosting ? communityPosting : storedPost.category,
-        storedPost.postSummary,
-        storedPost.author,
-        storedPost.payoutType ?? preferences.blog_rewards,
-        imagePickerState
-      );
+        category: communityPosting ? communityPosting : storedPost.category,
+        summary: storedPost.postSummary,
+        altAuthor: storedPost.author,
+        payoutType: storedPost.payoutType ?? preferences.blog_rewards,
+        image: imagePickerState,
+        editMode
+      };
+
+      try {
+        await postMutation.mutateAsync(postParams);
+      } catch (error) {
+        handleError(error, { method: 'post', params: postParams });
+        throw error;
+      }
+
       form.reset(defaultValues);
       setPreviewContent(undefined);
       storePost(defaultValues);
@@ -288,6 +300,7 @@ export default function PostForm({
       logger.error(error);
     }
   }
+
   const handleCancel = () => {
     const confirmed = confirm(
       editMode ? t('post_content.close_post_editor') : t('submit_page.clean_post_editor')
@@ -299,6 +312,7 @@ export default function PostForm({
       }
     }
   };
+
   return (
     <div className={clsx({ container: !sideBySide || !preview })}>
       <div
@@ -466,7 +480,11 @@ export default function PostForm({
                       <FormControl>
                         <Select
                           value={
-                            communityPosting ? communityPosting : storedPost ? storedPost.category : 'blog'
+                            communityPosting
+                              ? communityPosting
+                              : storedPost?.category
+                                ? storedPost.category
+                                : 'blog'
                           }
                           onValueChange={(e) => storePost({ ...storedPost, category: e })}
                         >
@@ -502,13 +520,23 @@ export default function PostForm({
               ref={btnRef}
               type="submit"
               variant="redHover"
+              className="w-24"
               disabled={
-                !storedPost?.title || Boolean(tagsCheck) || Boolean(summaryCheck) || Boolean(altUsernameCheck)
+                !storedPost?.title ||
+                Boolean(tagsCheck) ||
+                Boolean(summaryCheck) ||
+                Boolean(altUsernameCheck) ||
+                postMutation.isLoading
               }
             >
-              {t('submit_page.submit')}
+              {postMutation.isLoading ? (
+                <CircleSpinner loading={postMutation.isLoading} size={18} color="#dc2626" />
+              ) : (
+                t('submit_page.submit')
+              )}
             </Button>
             <Button
+              disabled={postMutation.isLoading}
               onClick={() => handleCancel()}
               type="reset"
               variant="ghost"
@@ -540,7 +568,6 @@ export default function PostForm({
               body={previewContent}
               className="prose w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2 dark:prose-invert"
               author=""
-              doNotShowImages={false}
             />
           ) : null}
         </div>

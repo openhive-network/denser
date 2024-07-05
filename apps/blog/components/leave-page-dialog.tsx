@@ -20,7 +20,8 @@ export function LeavePageDialog({
         <Separator />
         <div className="flex flex-col gap-8">
           <span>
-            {t('post_content.body.the_link_youve_clicked')} <span className="font-bold">{link}</span>
+            {t('post_content.body.the_link_youve_clicked')}{' '}
+            <span className="break-all font-bold">{link}</span>
           </span>
           <span>{t('post_content.body.we_are_just_verifying')}</span>
           <Link target="_blank" rel="noopener noreferrer nofollow external" href={link}>

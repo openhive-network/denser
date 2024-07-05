@@ -45,11 +45,11 @@ test.describe('Communities page tests', () => {
     await homePage.mainPostsTimelineVisible(40);
   });
 
-  test('load next the community post cards in the Pinmapple Community', async ({ page, browserName }) => {
+  test('load next the community post cards in the Worldmappin Community', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
 
-    await homePage.moveToPinmappleCommunities();
-    await communitiesPage.validataCommunitiesPageIsLoaded('Pinmapple');
+    await homePage.moveToWorldmappinCommunities();
+    await communitiesPage.validataCommunitiesPageIsLoaded('Worldmappin');
 
     await homePage.mainPostsTimelineVisible(20);
     await homePage.page.keyboard.down('End');
@@ -388,9 +388,9 @@ test.describe('Communities page tests', () => {
     ).toBe('rgb(3, 7, 17)');
   });
 
-  test('validate the community leadership of Pinmapple Community', async ({ page, request }) => {
-    await homePage.moveToPinmappleCommunities();
-    await communitiesPage.validataCommunitiesPageIsLoaded('Pinmapple');
+  test('validate the community leadership of Worldmappin Community', async ({ page, request }) => {
+    await homePage.moveToWorldmappinCommunities();
+    await communitiesPage.validataCommunitiesPageIsLoaded('Worldmappin');
 
     const url = process.env.REACT_APP_API_ENDPOINT;
 
@@ -425,9 +425,9 @@ test.describe('Communities page tests', () => {
     });
   });
 
-  test('move to the first-three leadership profile pages of Pinmapple community ', async ({ page }) => {
-    await homePage.moveToPinmappleCommunities();
-    await communitiesPage.validataCommunitiesPageIsLoaded('Pinmapple');
+  test('move to the first-three leadership profile pages of Worldmappin community ', async ({ page }) => {
+    await homePage.moveToWorldmappinCommunities();
+    await communitiesPage.validataCommunitiesPageIsLoaded('Worldmappin');
 
     const leadershipLinkLists = await communitiesPage.communityLeadershipList.locator('a').all();
 
@@ -452,7 +452,7 @@ test.describe('Communities page tests', () => {
 
         await page.goBack();
         await page.goBack();
-        await communitiesPage.quickValidataCommunitiesPageIsLoaded('Pinmapple');
+        await communitiesPage.quickValidataCommunitiesPageIsLoaded('Worldmappin');
       }
     }
   });
@@ -1059,31 +1059,31 @@ test.describe('Communities page tests', () => {
     );
   });
 
-  test('check if clicking new post button in Pinmapple community without login moves to the create post page with specific message', async ({
+  test('check if clicking new post button in Worldmappin community without login moves to the create post page with specific message', async ({
     page
   }) => {
     // expected specific message is "Log in to make a post."
-    const pinmappleCommunity: string = 'hive-163772';
+    const worldmappinCommunity: string = 'hive-163772';
     const logInToMakePostMessagePage = new MakePostWarningPage(page);
 
-    await homePage.moveToPinmappleCommunities();
+    await homePage.moveToWorldmappinCommunities();
     await expect(communitiesPage.communityNewPostButton).toBeVisible();
     await communitiesPage.communityNewPostButton.click();
     await logInToMakePostMessagePage.validateMakePostWarningPageIsLoadedOfSpecificCommunities(
-      pinmappleCommunity
+      worldmappinCommunity
     );
   });
 
   test('validate style of the create post message page in the light mode', async ({ page }) => {
     // expected specific message is "Log in to make a post."
-    const pinmappleCommunity: string = 'hive-163772';
+    const worldmappinCommunity: string = 'hive-163772';
     const logInToMakePostMessagePage = new MakePostWarningPage(page);
 
-    await homePage.moveToPinmappleCommunities();
+    await homePage.moveToWorldmappinCommunities();
     await expect(communitiesPage.communityNewPostButton).toBeVisible();
     await communitiesPage.communityNewPostButton.click();
     await logInToMakePostMessagePage.validateMakePostWarningPageIsLoadedOfSpecificCommunities(
-      pinmappleCommunity
+      worldmappinCommunity
     );
 
     expect(

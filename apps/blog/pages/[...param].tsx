@@ -25,12 +25,11 @@ import CustomError from '@/blog/components/custom-error';
 import CommunitySimpleDescription from '@/blog/components/community-simple-description';
 import { CommunitiesSelect } from '@/blog/components/communities-select';
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetServerSideProps } from 'next';
-import { i18n } from '@/blog/next-i18next.config';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import CommunitiesMybar from '../components/communities-mybar';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
+import { getServerSidePropsDefault } from '../lib/get-translations';
 
 export const PostSkeleton = () => {
   return (
@@ -89,7 +88,7 @@ const ParamPage: FC = () => {
     data: mySubsData,
     isLoading: mySubsIsLoading,
     isError: mySubsIsError
-  } = useQuery([['subscriptions', user?.username]], () => getSubscriptions(user.username), {
+  } = useQuery(['subscriptions', user?.username], () => getSubscriptions(user.username), {
     enabled: Boolean(user?.username)
   });
   const {
@@ -112,7 +111,7 @@ const ParamPage: FC = () => {
     data: subsData,
     isLoading: subsIsLoading,
     isError: subsIsError
-  } = useQuery([['subscribers', tag]], () => getSubscribers(tag || ''), {
+  } = useQuery(['subscribers', tag], () => getSubscribers(tag || ''), {
     enabled: !!tag
   });
   const {
@@ -185,6 +184,9 @@ const ParamPage: FC = () => {
     );
   }
 
+  if (username && router.query.param ? router.query.param.length > 1 : false) {
+    return <CustomError />;
+  }
   if (!entriesDataIsLoading && entriesData) {
     return (
       <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
@@ -262,9 +264,9 @@ const ParamPage: FC = () => {
                     {isFetchingNextPage ? (
                       <PostSkeleton />
                     ) : hasNextPage ? (
-                      t('user_profil.load_newer')
+                      t('user_profile.load_newer')
                     ) : (
-                      t('user_profil.nothing_more_to_load')
+                      t('user_profile.nothing_more_to_load')
                     )}
                   </button>
                 </div>
@@ -290,6 +292,7 @@ const ParamPage: FC = () => {
       </div>
     );
   }
+
   return (
     <ProfileLayout>
       {!legalBlockedUser ? (
@@ -306,7 +309,7 @@ const ParamPage: FC = () => {
                   className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
                   data-testid="user-has-not-started-blogging-yet"
                 >
-                  {t('user_profil.no_blogging_yet', { username: username })}
+                  {t('user_profile.no_blogging_yet', { username: username })}
                 </div>
               )}
               <div>
@@ -318,9 +321,9 @@ const ParamPage: FC = () => {
                   {accountIsFetchingNextPage ? (
                     <PostSkeleton />
                   ) : accountHasNextPage ? (
-                    t('user_profil.load_newer')
+                    t('user_profile.load_newer')
                   ) : accountEntriesData.pages[0] && accountEntriesData.pages[0].length > 0 ? (
-                    t('user_profil.nothing_more_to_load')
+                    t('user_profile.nothing_more_to_load')
                   ) : null}
                 </button>
               </div>
@@ -339,13 +342,4 @@ const ParamPage: FC = () => {
 
 export default ParamPage;
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  return {
-    props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
-        'common_blog',
-        'smart-signer'
-      ]))
-    }
-  };
-};
+export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;

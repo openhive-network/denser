@@ -8,11 +8,11 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from '@/blog/next-i18next.config';
-import FollowButton from '@/blog/components/follow-button';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import MuteButton from '@/blog/components/mute-button';
+import { getServerSidePropsDefault } from '../../lib/get-translations';
+import ButtonsContainer from '@/blog/components/buttons-container';
+
+export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
 const LIMIT = 50;
 export default function Followed() {
@@ -41,7 +41,7 @@ export default function Followed() {
     <ProfileLayout>
       <div className="flex flex-col gap-2 p-2">
         <h1 className="self-center p-2">
-          {t('user_profil.lists.followed_pages', {
+          {t('user_profile.lists.followed_pages', {
             current: page + 1,
             total: profileData?.follow_stats?.follower_count
               ? Math.ceil(profileData?.follow_stats?.follower_count / LIMIT)
@@ -64,8 +64,13 @@ export default function Followed() {
               <Link href={`/@${e.following}`}>{e.following}</Link>
               {!user.isLoggedIn || user.username === e.following ? null : (
                 <div className="flex gap-2">
-                  <FollowButton username={e.following} user={user} variant="basic" list={following} />
-                  <MuteButton username={e.following} user={user} variant="basic" list={mute} />
+                  <ButtonsContainer
+                    username={e.following}
+                    user={user}
+                    variant="basic"
+                    follow={following}
+                    mute={mute}
+                  />
                 </div>
               )}
             </li>
@@ -79,7 +84,7 @@ export default function Followed() {
           isLoading={followingData.isFetchingNextPage}
         />
         <h1 className="self-center p-2">
-          {t('user_profil.lists.followed_pages', {
+          {t('user_profile.lists.followed_pages', {
             current: page + 1,
             total: profileData?.follow_stats?.follower_count
               ? Math.ceil(profileData?.follow_stats?.follower_count / LIMIT)
@@ -90,14 +95,3 @@ export default function Followed() {
     </ProfileLayout>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  return {
-    props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
-        'common_blog',
-        'smart-signer'
-      ]))
-    }
-  };
-};

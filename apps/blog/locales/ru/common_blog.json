@@ -86,7 +86,7 @@
       "vote_for_witnesses": "Проголосовать за делегатов",
       "hive_proposals": "Hive Proposals"
     },
-    "profil_navbar": {
+    "profile_navbar": {
       "blog": "Блог",
       "posts": "Посты",
       "replies": "Ответы",
@@ -94,19 +94,19 @@
       "notifications": "Notifications",
       "wallet": "Кошелек"
     },
-    "profil_posts_tab_navbar": {
+    "profile_posts_tab_navbar": {
       "posts": "Посты",
       "comments": "Комментарии",
       "payouts": "Выплаты"
     },
-    "profil_social_tab_navbar": {
+    "profile_social_tab_navbar": {
       "badges": "Badges",
       "activity": "Activity",
       "personal": "Personal",
       "meetups": "Meetups",
       "challenges": "Challenges"
     },
-    "profil_notifications_tab_navbar": {
+    "profile_notifications_tab_navbar": {
       "unclaimed_rewards": "Невостребованные награды: ",
       "redeem": "Выкупать",
       "mark_all": "отметить все как прочитанное",
@@ -150,10 +150,19 @@
       "pinned": "Pinned"
     },
     "post_card": {
+      "downvote_warning": "Голосование против поста может уменьшить ожидаемые награды и сделать его менее видимым. Общие причины:",
+      "reason_1": "• Несогласие с наградами",
+      "reason_2": "• Мошенничество или плагиат",
+      "reason_3": "• Речи ненависти или троллинг",
+      "reason_4": "• Неправильно классифицированный контент или спам",
+      "upvote": "Положительный голос",
+      "undo_upvote": "Отменить ваш положительный голос",
+      "undo_upvote_percent": "Отменить ваш голос за {{votePercent}}%",
+      "downvote": "Отрицательный голос",
+      "undo_downvote": "Отменить ваш отрицательный голос",
+      "undo_downvote_percent": "Отменить ваш голос против {{votePercent}}%",
       "reputation_title": "Репутация",
       "in": "в",
-      "upvote": "Голосовать за",
-      "downvote": "Downvote",
       "no_votes": "нет голосов",
       "vote": "1 голос",
       "votes": "{{votes}} голосов",
@@ -200,7 +209,7 @@
     "cancel_button": "Отмена",
     "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password."
   },
-  "user_profil": {
+  "user_profile": {
     "reputation": "Репутация",
     "follow_button": "Подписаться",
     "mute_button": "немой",
@@ -345,7 +354,7 @@
     },
     "body": {
       "copyright": "Этот пост недоступен из-за запроса на авторское право.",
-      "images_were_hidden": "Изображения были скрыты из-за низкого рейтинга.",
+      "content_were_hidden": "Контент был скрыт из-за низких оценок.",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
       "leave_this_app": "You are about to leave this app.",
@@ -406,6 +415,7 @@
     }
   },
   "submit_page": {
+    "log_in_to_post": "Войдите, чтобы опубликовать сообщение.",
     "clean_post_editor": "Вы уверены, что хотите очистить редактор постов?",
     "cover_image": "Выберите обложку:",
     "my_communities": "Мои сообщества",
@@ -550,5 +560,14 @@
     "error_cant_remove_active": "Вы не можете удалить текущую предпочтительную конечную точку. Пожалуйста, сначала выберите новую предпочтительную конечную точку",
     "error_cant_remove_all": "У вас должна быть хотя бы одна конечная точка в списке",
     "changes_saved": "Изменения сохранены"
+  },
+  "four_oh_four": {
+    "this_page_does_not_exist": "Извините! Эта страница не существует.",
+    "not_to_worry": "Не волнуйтесь. Вы можете вернуться на",
+    "our_homepage": "нашу главную страницу",
+    "new_posts": "новые посты",
+    "hot_posts": "популярные посты",
+    "trending_posts": "трендовые посты",
+    "muted_posts": "приглушенные посты"
   }
 }

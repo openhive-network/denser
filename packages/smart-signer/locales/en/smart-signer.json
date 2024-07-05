@@ -81,6 +81,14 @@
       "button_sign_auth": "Sign auth tx",
       "button_signin_unlocked": "Sign in with signed tx"
     },
+    "zod_error": {
+      "password_length": "Password length should be more than 6 characters",
+      "invalid_keytype": "Invalid keyType",
+      "keytype_required": "keyType is required",
+      "invalid_wif": "Invalid WIF key",
+      "no_wif": "No WIF key from user",
+      "no_wif_key": "No WIF key"
+    },
     "signin_with_keychain": "Hive Keychain extension",
     "signin_with_wif": "Sign in with WIF (Legacy)",
     "signin_with_hiveauth": "HiveAuth",

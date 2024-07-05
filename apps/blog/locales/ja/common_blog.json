@@ -86,7 +86,7 @@
       "vote_for_witnesses": "証人に投票する",
       "hive_proposals": "Hive Proposals"
     },
-    "profil_navbar": {
+    "profile_navbar": {
       "blog": "ブログ",
       "posts": "投稿数",
       "replies": "返信",
@@ -94,19 +94,19 @@
       "notifications": "Notifications",
       "wallet": "ウォレット"
     },
-    "profil_posts_tab_navbar": {
+    "profile_posts_tab_navbar": {
       "posts": "投稿数",
       "comments": "コメント",
       "payouts": "支払額"
     },
-    "profil_social_tab_navbar": {
+    "profile_social_tab_navbar": {
       "badges": "Badges",
       "activity": "Activity",
       "personal": "Personal",
       "meetups": "Meetups",
       "challenges": "Challenges"
     },
-    "profil_notifications_tab_navbar": {
+    "profile_notifications_tab_navbar": {
       "unclaimed_rewards": "未請求の報酬: ",
       "redeem": "償還",
       "mark_all": "すべて既読としてマークする",
@@ -150,10 +150,19 @@
       "pinned": "Pinned"
     },
     "post_card": {
+      "downvote_warning": "投稿を反対票すると、保留中の報酬が減少し、目立たなくなる可能性があります。一般的な理由:",
+      "reason_1": "• 報酬に関する意見の相違",
+      "reason_2": "• 詐欺や盗作",
+      "reason_3": "• ヘイトスピーチや荒らし",
+      "reason_4": "• カテゴリ間違いやスパム",
+      "upvote": "賛成票",
+      "undo_upvote": "賛成票を取り消す",
+      "undo_upvote_percent": "アップボートを取り消す {{votePercent}}%",
+      "downvote": "反対票",
+      "undo_downvote": "反対票を取り消す",
+      "undo_downvote_percent": "ダウンボートを取り消す {{votePercent}}%",
       "reputation_title": "評価",
       "in": "in",
-      "upvote": "Upvote",
-      "downvote": "Downvote",
       "no_votes": "投票がありません",
       "vote": "1件の投票",
       "votes": "{{votes}}件の投票",
@@ -200,7 +209,7 @@
     "cancel_button": "キャンセル",
     "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password."
   },
-  "user_profil": {
+  "user_profile": {
     "reputation": "評価",
     "follow_button": "フォロー",
     "mute_button": "ミュート",
@@ -339,7 +348,7 @@
     },
     "body": {
       "copyright": "この投稿は著作権の申し立てにより利用できません。",
-      "images_were_hidden": "評価が低いため画像は非表示になりました。",
+      "content_were_hidden": "コンテンツは低評価のため非表示にされました。",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
       "leave_this_app": "You are about to leave this app.",
@@ -400,6 +409,7 @@
     }
   },
   "submit_page": {
+    "log_in_to_post": "投稿するにはログインしてください。",
     "clean_post_editor": "投稿エディタをクリアしてもよろしいですか？",
     "cover_image": "カバー画像を選択してください：",
     "my_communities": "私のコミュニティ",
@@ -544,5 +554,14 @@
     "error_cant_remove_active": "現在の優先エンドポイントを削除することはできません。まず新しい優先エンドポイントを選択してください",
     "error_cant_remove_all": "リストには少なくとも1つのエンドポイントが必要です",
     "changes_saved": "変更が保存されました"
+  },
+  "four_oh_four": {
+    "this_page_does_not_exist": "申し訳ありません！ このページは存在しません。",
+    "not_to_worry": "心配しないでください。 戻るには",
+    "our_homepage": "ホームページ",
+    "new_posts": "新しい投稿",
+    "hot_posts": "人気の投稿",
+    "trending_posts": "トレンド投稿",
+    "muted_posts": "ミュートされた投稿"
   }
 }

@@ -86,7 +86,7 @@
       "vote_for_witnesses": "投票给见证人",
       "hive_proposals": "Hive Proposals"
     },
-    "profil_navbar": {
+    "profile_navbar": {
       "blog": "博客",
       "posts": "文章",
       "replies": "留言",
@@ -94,19 +94,19 @@
       "notifications": "Notifications",
       "wallet": "钱包"
     },
-    "profil_posts_tab_navbar": {
+    "profile_posts_tab_navbar": {
       "posts": "文章",
       "comments": "评论",
       "payouts": "赏金"
     },
-    "profil_social_tab_navbar": {
+    "profile_social_tab_navbar": {
       "badges": "Badges",
       "activity": "Activity",
       "personal": "Personal",
       "meetups": "Meetups",
       "challenges": "Challenges"
     },
-    "profil_notifications_tab_navbar": {
+    "profile_notifications_tab_navbar": {
       "unclaimed_rewards": "无人领取的奖励： ",
       "redeem": "赎回",
       "mark_all": "标记为已读",
@@ -150,10 +150,19 @@
       "pinned": "Pinned"
     },
     "post_card": {
+      "downvote_warning": "对帖子投反对票会减少待定奖励并降低其可见性。常见原因：",
+      "reason_1": "• 奖励分配的分歧",
+      "reason_2": "• 欺诈或剽窃",
+      "reason_3": "• 仇恨言论或恶意行为",
+      "reason_4": "• 内容分类错误或垃圾信息",
+      "upvote": "赞成票",
+      "undo_upvote": "撤销你的赞成票",
+      "undo_upvote_percent": "撤销你的支持票 {{votePercent}}%",
+      "downvote": "反对票",
+      "undo_downvote": "撤销你的反对票",
+      "undo_downvote_percent": "撤销你的反对票 {{votePercent}}%",
       "reputation_title": "声誉",
       "in": "在",
-      "upvote": "点赞",
-      "downvote": "Downvote",
       "no_votes": "暂无投票",
       "vote": "1个投票",
       "votes": "{{votes}}个投票",
@@ -200,7 +209,7 @@
     "cancel_button": "取消",
     "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password."
   },
-  "user_profil": {
+  "user_profile": {
     "reputation": "声誉",
     "follow_button": "跟随",
     "mute_button": "沉默的",
@@ -339,7 +348,7 @@
     },
     "body": {
       "copyright": "此帖由于版权请求而不可用。",
-      "images_were_hidden": "图片由于评级不足而被隐藏。",
+      "content_were_hidden": "由于评分较低，内容已被隐藏。",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
       "leave_this_app": "You are about to leave this app.",
@@ -400,6 +409,7 @@
     }
   },
   "submit_page": {
+    "log_in_to_post": "登录后才能发布帖子。",
     "clean_post_editor": "您确定要清除帖子编辑器吗？",
     "cover_image": "选择您的封面图片：",
     "my_communities": "我的社群",
@@ -544,5 +554,14 @@
     "error_cant_remove_active": "您无法移除当前首选节点，请先选择新的首选节点",
     "error_cant_remove_all": "列表中必须至少有一个节点",
     "changes_saved": "更改已保存"
+  },
+  "four_oh_four": {
+    "this_page_does_not_exist": "抱歉！ 此页面不存在。",
+    "not_to_worry": "别担心。你可以回到",
+    "our_homepage": "我们的主页",
+    "new_posts": "最新帖子",
+    "hot_posts": "热门帖子",
+    "trending_posts": "趋势帖子",
+    "muted_posts": "静音帖子"
   }
 }

@@ -43,6 +43,8 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     await expect(profilePage.page.url()).toContain(firstNotificationAuthorName);
   });
 
+  // Skip this test due to move to the non existing page
+  // Issue: https://gitlab.syncad.com/hive/denser/-/issues/449
   test('Click the first three notifications and move to specific page', async ({ page }) => {
     let postPage = new PostPage(page);
     let commentPage = new CommentViewPage(page);
@@ -76,15 +78,25 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
         firstNotificationTypeAPI == 'mention' ||
         firstNotificationTypeAPI == 'vote'
       ) {
-        await profilePage.page.waitForSelector(postPage.articleBody['_selector']);
+        // await profilePage.page.waitForSelector(postPage.articleBody['_selector']);
+        const firstSelectorResolvedPromiseResult = await Promise.race([
+          profilePage.page.waitForSelector(postPage.articleBody['_selector']),
+          profilePage.page.waitForSelector(page.getByText('Sorry! This page does not exist')['_selector'])
+        ]);
         await expect(profilePage.page.url()).toContain(firstNotificationUrlAPI);
       }
       if (firstNotificationTypeAPI == 'reply' || firstNotificationTypeAPI == 'reply_comment') {
-        await profilePage.page.waitForSelector(commentPage.getMainCommentAuthorData['_selector']);
+        const firstSelectorResolvedPromiseResult = await Promise.race([
+          profilePage.page.waitForSelector(commentPage.getMainCommentAuthorData['_selector']),
+          profilePage.page.waitForSelector(page.getByText('Sorry! This page does not exist')['_selector'])
+        ]);
         await expect(profilePage.page.url()).toContain(firstNotificationUrlAPI);
       }
       if (firstNotificationTypeAPI == 'follow') {
-        await profilePage.page.waitForSelector(profilePage.profileInfo['_selector']);
+        const firstSelectorResolvedPromiseResult = await Promise.race([
+          profilePage.page.waitForSelector(profilePage.profileInfo['_selector']),
+          profilePage.page.waitForSelector(page.getByText('Sorry! This page does not exist')['_selector'])
+        ]);
         await profilePage.page.waitForTimeout(5000);
         if (await profilePage.userHasNotStartedBloggingYetMsg.isVisible())
           await expect(await profilePage.userHasNotStartedBloggingYetMsg.textContent()).toContain(

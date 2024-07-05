@@ -94,12 +94,12 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
       </p>
       <p className="my-4 flex text-slate-900 dark:text-white" data-testid="user-last-time-active">
         <Icons.calendarActive className="mr-2" />
-        {t('cards.user_profil.joined')}{' '}
+        {t('cards.user_profile.joined')}{' '}
         {profileData.last_post ? dateToFullRelative(profileData.last_post, t) : null}
       </p>
       <p className="my-4 flex text-slate-900 dark:text-white" data-testid="user-joined">
         <Icons.calendarHeart className="mr-2" />
-        {t('cards.user_profil.active')} {profileData.created ? dateToShow(profileData.created, t) : null}
+        {t('cards.user_profile.active')} {profileData.created ? dateToShow(profileData.created, t) : null}
       </p>
       <p className="my-4 flex text-slate-900 dark:text-white" data-testid="user-location">
         <Icons.mapPin className="mr-2" />

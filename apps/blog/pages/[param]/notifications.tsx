@@ -5,9 +5,10 @@ import NotificationActivities from '@/blog/components/notification-activities';
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import Loading from '@ui/components/loading';
 import { GetServerSideProps } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from '@/blog/next-i18next.config';
 import { useTranslation } from 'next-i18next';
+import { getServerSidePropsDefault } from '../../lib/get-translations';
+
+export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
 export default function UserNotifications() {
   const { t } = useTranslation('common_blog');
@@ -32,21 +33,10 @@ export default function UserNotifications() {
             className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
             data-testid="user-has-not-had-any-notifications-yet"
           >
-            {t('user_profil.no_notifications_yet', { username: username })}
+            {t('user_profile.no_notifications_yet', { username: username })}
           </div>
         )}
       </div>
     </LayoutProfile>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  return {
-    props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
-        'common_blog',
-        'smart-signer'
-      ]))
-    }
-  };
-};

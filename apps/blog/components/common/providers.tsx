@@ -4,6 +4,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ThemeProvider } from '../theme-provider';
 import Layout from './layout';
 import { SignerProvider } from './signer';
+import { LoggedUserProvider } from './logged-user';
 
 const queryClient = new QueryClient();
 
@@ -12,7 +13,9 @@ const Providers = ({ children }: { children: ReactNode }) => {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         <SignerProvider>
-          <Layout>{children}</Layout>
+          <LoggedUserProvider>
+            <Layout>{children}</Layout>
+          </LoggedUserProvider>
         </SignerProvider>
       </ThemeProvider>
       <ReactQueryDevtools initialIsOpen={false} />

@@ -12,8 +12,8 @@ export class HomePage {
   readonly getExploreCommunities: Locator;
   readonly getLeoFinanceCommunitiesLink: Locator;
   readonly getHeaderLeoCommunities: Locator;
-  readonly getPinmappleCommunitiesLink: Locator;
-  readonly getHeaderPinmappleCommunities: Locator;
+  readonly getWorldmappinCommunitiesLink: Locator;
+  readonly getHeaderWorldmappinCommunities: Locator;
   readonly getHomeNavLink: Locator;
   readonly getNavPostsLink: Locator;
   readonly getNavProposalsLink: Locator;
@@ -113,10 +113,10 @@ export class HomePage {
       .locator('a')
       .getByText('LeoFinance');
     this.getHeaderLeoCommunities = page.locator('[data-testid="community-name"]').getByText('LeoFinance');
-    this.getPinmappleCommunitiesLink = this.getTrendingCommunitiesSideBar.locator('a:text("Pinmapple")');
-    this.getHeaderPinmappleCommunities = page
+    this.getWorldmappinCommunitiesLink = this.getTrendingCommunitiesSideBar.locator('a:text("Worldmappin")');
+    this.getHeaderWorldmappinCommunities = page
       .locator('[data-testid="community-name"]')
-      .getByText('Pinmapple');
+      .getByText('Worldmappin');
     this.getHomeNavLink = page.locator('header a span:text("Hive Blog")');
     this.getNavPostsLink = page.locator('[data-testid="nav-posts-link"]');
     this.getNavProposalsLink = page.locator('[data-testid="nav-proposals-link"]');
@@ -224,9 +224,9 @@ export class HomePage {
     await expect(this.getHeaderLeoCommunities).toBeVisible();
   }
 
-  async moveToPinmappleCommunities() {
-    await this.getPinmappleCommunitiesLink.click();
-    await expect(this.getHeaderPinmappleCommunities).toBeVisible();
+  async moveToWorldmappinCommunities() {
+    await this.getWorldmappinCommunitiesLink.click();
+    await expect(this.getHeaderWorldmappinCommunities).toBeVisible();
   }
 
   async moveToExploreCommunities() {

@@ -86,7 +86,7 @@
       "vote_for_witnesses": "Vota a los testigos",
       "hive_proposals": "Hive Proposals"
     },
-    "profil_navbar": {
+    "profile_navbar": {
       "blog": "Blog",
       "posts": "Publicaciones",
       "replies": "Respuestas",
@@ -94,19 +94,19 @@
       "notifications": "Notifications",
       "wallet": "Monedero"
     },
-    "profil_posts_tab_navbar": {
+    "profile_posts_tab_navbar": {
       "posts": "Publicaciones",
       "comments": "Comentarios",
       "payouts": "Pagos"
     },
-    "profil_social_tab_navbar": {
+    "profile_social_tab_navbar": {
       "badges": "Badges",
       "activity": "Activity",
       "personal": "Personal",
       "meetups": "Meetups",
       "challenges": "Challenges"
     },
-    "profil_notifications_tab_navbar": {
+    "profile_notifications_tab_navbar": {
       "unclaimed_rewards": "Recompensas no reclamadas: ",
       "redeem": "Canjear",
       "mark_all": "Marcar todo como leído",
@@ -150,10 +150,19 @@
       "pinned": "Pinned"
     },
     "post_card": {
+      "downvote_warning": "Votar negativamente una publicación puede disminuir las recompensas pendientes y hacerla menos visible. Razones comunes:",
+      "reason_1": "• Desacuerdo con las recompensas",
+      "reason_2": "• Fraude o plagio",
+      "reason_3": "• Discurso de odio o trolling",
+      "reason_4": "• Contenido mal categorizado o spam",
       "reputation_title": "Reputación",
       "in": "en",
-      "upvote": "Votar",
+      "upvote": "Voto positivo",
+      "undo_upvote": "Deshacer tu voto positivo",
+      "undo_upvote_percent": "Deshacer tu voto positivo {{votePercent}}%",
       "downvote": "Voto negativo",
+      "undo_downvote": "Deshacer tu voto negativo",
+      "undo_downvote_percent": "Deshacer tu voto negativo {{votePercent}}%",
       "no_votes": "sin votos",
       "vote": "1 voto",
       "votes": "{{votes}} votos",
@@ -200,7 +209,7 @@
     "cancel_button": "Cancelar",
     "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password."
   },
-  "user_profil": {
+  "user_profile": {
     "reputation": "Reputación",
     "follow_button": "Seguir",
     "mute_button": "Mudo",
@@ -221,17 +230,17 @@
       "follower_count": {
         "zero": "Sin seguidores",
         "one": "1 seguidor",
-        "other": "{{valie}} seguidores"
+        "other": "{{value}} seguidores"
       },
       "followed_count": {
         "zero": "No sigue a nadie",
         "one": "1 siguiendo",
-        "other": "{{valie}} siguiendo"
+        "other": "{{value}} siguiendo"
       },
       "post_count": {
         "zero": "Sin publicaciones",
         "one": "1 publicación",
-        "other": "{{valie}} posts"
+        "other": "{{value}} posts"
       },
       "blacklisted_users": "Blacklisted Users",
       "muted_users": "Usuarios silenciados",
@@ -339,7 +348,7 @@
     },
     "body": {
       "copyright": "Este post no está disponible debido a una reclamación de derechos de autor.",
-      "images_were_hidden": "Las imágenes fueron ocultadas por bajas calificaciones.",
+      "content_were_hidden": "El contenido fue ocultado debido a bajas calificaciones.",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
       "leave_this_app": "You are about to leave this app.",
@@ -400,6 +409,7 @@
     }
   },
   "submit_page": {
+    "log_in_to_post": "Inicia sesión para publicar.",
     "clean_post_editor": "¿Estás seguro de que quieres borrar el editor de publicaciones?",
     "cover_image": "Selecciona tu imagen de portada:",
     "my_communities": "Mis Comunidades",
@@ -544,5 +554,14 @@
     "error_cant_remove_active": "No puedes eliminar el punto final preferido actual. Por favor, selecciona primero un nuevo punto final preferido",
     "error_cant_remove_all": "Debes tener al menos un punto final en la lista",
     "changes_saved": "Cambios guardados"
+  },
+  "four_oh_four": {
+    "this_page_does_not_exist": "¡Lo siento! Esta página no existe.",
+    "not_to_worry": "No te preocupes. Puedes volver a",
+    "our_homepage": "nuestra página de inicio",
+    "new_posts": "nuevas publicaciones",
+    "hot_posts": "publicaciones populares",
+    "trending_posts": "publicaciones de tendencia",
+    "muted_posts": "publicaciones silenciadas"
   }
 }

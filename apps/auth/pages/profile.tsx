@@ -1,11 +1,13 @@
 import { GetServerSideProps } from 'next';
 import { useState, useEffect } from 'react';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { getTranslations } from '@/auth/lib/get-translations';
+import { getServerSidePropsDefault } from '../lib/get-translations';
 import { pascalCase } from 'change-case';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
+
+export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
 export default function Profile() {
   const [isClient, setIsClient] = useState(false);
@@ -36,10 +38,3 @@ export default function Profile() {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  return {
-    props: {
-      ...(await getTranslations(ctx))
-    }
-  };
-};

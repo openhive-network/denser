@@ -86,7 +86,7 @@
       "vote_for_witnesses": "Głosuj na delegatów",
       "hive_proposals": "Hive, Propozycje"
     },
-    "profil_navbar": {
+    "profile_navbar": {
       "blog": "Blog",
       "posts": "Posty",
       "replies": "Odpowiedzi",
@@ -95,19 +95,19 @@
       "wallet": "Portfel",
       "settings": "Ustawienia"
     },
-    "profil_posts_tab_navbar": {
+    "profile_posts_tab_navbar": {
       "posts": "Posty",
       "comments": "Komentarze",
       "payouts": "Wynagrodzenia"
     },
-    "profil_social_tab_navbar": {
+    "profile_social_tab_navbar": {
       "badges": "Odznaki",
       "activity": "Aktywności",
       "personal": "Osobiste",
       "meetups": "Okolicznościowe",
       "challenges": "Wyzwania"
     },
-    "profil_notifications_tab_navbar": {
+    "profile_notifications_tab_navbar": {
       "unclaimed_rewards": "Nieodebrane nagrody: ",
       "redeem": "Obierz",
       "mark_all": "Oznacz wszystkie jako przeczytane",
@@ -161,10 +161,19 @@
       "pinned": "Przypięty"
     },
     "post_card": {
+      "downvote_warning": "Głosowanie przeciwko postowi może zmniejszyć oczekujące nagrody i sprawić, że będzie mniej widoczny. Najczęstsze powody:",
+      "reason_1": "• Niezgoda co do nagród",
+      "reason_2": "• Oszustwo lub plagiat",
+      "reason_3": "• Mowa nienawiści lub trolling",
+      "reason_4": "• Nieprawidłowo skategoryzowana treść lub spam",
+      "upvote": "Głos za",
+      "undo_upvote": "Cofnij swój głos na tak",
+      "undo_upvote_percent": "Cofnij głos pozytywny {{votePercent}}%",
+      "downvote": "Głos przeciw",
+      "undo_downvote": "Cofnij swój głos na nie",
+      "undo_downvote_percent": "Cofnij głos negatywny {{votePercent}}%",
       "reputation_title": "Reputacja",
       "in": "w",
-      "upvote": "Głos za",
-      "downvote": "Głos przeciw",
       "no_votes": "Brak głosów",
       "vote": "Liczba głosów: 1",
       "votes": "Liczba głosów: {{votes}}",
@@ -213,7 +222,7 @@
     "cancel_button": "Anuluj",
     "this_operation_requires_your_key_or_master_password": "Ta operacja wymaga twojego klucza {{authType}} lub hasła głównego."
   },
-  "user_profil": {
+  "user_profile": {
     "reputation": "Reputacja",
     "follow_button": "Obserwuj",
     "mute_button": "Blokuj",
@@ -352,7 +361,7 @@
     },
     "body": {
       "copyright": "Ten post jest niedostępny z powodu żądania dotyczącego praw autorskich.",
-      "images_were_hidden": "Obrazki zostały ukryte z powodu niskich ocen.",
+      "content_were_hidden": "Treść została ukryta z powodu niskich ocen.",
       "show": "Pokaż",
       "Image_not_shown": "Obrazek zostały ukryty z powodu niskich ocen.",
       "leave_this_app": "Przechodzenia na stronę zewnętrznych.",
@@ -413,6 +422,7 @@
     }
   },
   "submit_page": {
+    "log_in_to_post": "Zaloguj się, aby opublikować post.",
     "clean_post_editor": "Czy na pewno chcesz wyczyścić edytor postów?",
     "cover_image": "Wybierz obraz okładki:",
     "my_communities": "Moje Społeczności",
@@ -557,5 +567,14 @@
     "error_cant_remove_active": "Nie można usunąć aktualnie preferowanego endpointa. Proszę najpierw wybrać nowy preferowany endpoint",
     "error_cant_remove_all": "Musisz mieć co najmniej jeden endpoint na liście",
     "changes_saved": "Zmiany zostały zapisane"
+  },
+  "four_oh_four": {
+    "this_page_does_not_exist": "Przepraszamy! Ta strona nie istnieje.",
+    "not_to_worry": "Nie martw się. Możesz wrócić do",
+    "our_homepage": "naszej strony głównej",
+    "new_posts": "nowe posty",
+    "hot_posts": "gorące posty",
+    "trending_posts": "trendingowe posty",
+    "muted_posts": "wyciszone posty"
   }
 }

@@ -12,9 +12,10 @@ import {
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Input, Separator } from '@ui/components';
 import { ReactNode, useState } from 'react';
-import { transactionService } from '@transaction/index';
 import ln2list from '../lib/ln2list';
 import { useTranslation } from 'next-i18next';
+import { useFlagMutation } from './hooks/use-flag-mutation';
+import { handleError } from '@ui/lib/utils';
 
 export function AlertDialogFlag({
   children,
@@ -32,6 +33,16 @@ export function AlertDialogFlag({
   const { user } = useUser();
   const [notes, setNotes] = useState('');
   const { t } = useTranslation();
+  const flagMutation = useFlagMutation();
+
+  const flag = async () => {
+    try {
+      await flagMutation.mutateAsync({ community, username, permlink, notes });
+    } catch (error) {
+      handleError(error, { method: 'flag', params: { community, username, permlink, notes } });
+    }
+  };
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
@@ -66,9 +77,7 @@ export function AlertDialogFlag({
             <AlertDialogAction
               className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
               data-testid="flag-dialog-ok"
-              onClick={() => {
-                transactionService.flag(community, username, permlink, notes);
-              }}
+              onClick={flag}
             >
               {t('post_content.flag.ok')}
             </AlertDialogAction>

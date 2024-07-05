@@ -10,11 +10,12 @@ import { PostSkeleton } from '@/blog/pages/[...param]';
 import { useInView } from 'react-intersection-observer';
 import { useEffect } from 'react';
 import { GetServerSideProps } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from '@/blog/next-i18next.config';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
+import { getServerSidePropsDefault } from '../../lib/get-translations';
+
+export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
 const UserPosts = () => {
   const { t } = useTranslation('common_blog');
@@ -70,9 +71,9 @@ const UserPosts = () => {
       <div className="flex flex-col">
         <Tabs defaultValue={sort} className="w-full" onValueChange={(s) => router.push(`/@${username}/${s}`)}>
           <TabsList className="flex justify-start" data-testid="user-post-menu">
-            <TabsTrigger value="posts">{t('navigation.profil_posts_tab_navbar.posts')}</TabsTrigger>
-            <TabsTrigger value="comments">{t('navigation.profil_posts_tab_navbar.comments')}</TabsTrigger>
-            <TabsTrigger value="payout">{t('navigation.profil_posts_tab_navbar.payouts')}</TabsTrigger>
+            <TabsTrigger value="posts">{t('navigation.profile_posts_tab_navbar.posts')}</TabsTrigger>
+            <TabsTrigger value="comments">{t('navigation.profile_posts_tab_navbar.comments')}</TabsTrigger>
+            <TabsTrigger value="payout">{t('navigation.profile_posts_tab_navbar.payouts')}</TabsTrigger>
           </TabsList>
           <TabsContent value="posts">
             {!legalBlockedUser ? (
@@ -88,7 +89,7 @@ const UserPosts = () => {
                           className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
                           data-testid="user-has-not-made-any-post-yet"
                         >
-                          {t('user_profil.no_posts_yet', { username: username })}
+                          {t('user_profile.no_posts_yet', { username: username })}
                         </div>
                       );
                     })}
@@ -129,7 +130,7 @@ const UserPosts = () => {
                           className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
                           data-testid="user-has-not-made-any-post-yet"
                         >
-                          {t('user_profil.no_posts_yet', { username: username })}
+                          {t('user_profile.no_posts_yet', { username: username })}
                         </div>
                       );
                     })}
@@ -170,7 +171,7 @@ const UserPosts = () => {
                           className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
                           data-testid="user-no-pending-payouts"
                         >
-                          {t('user_profil.no_pending_payouts')}
+                          {t('user_profile.no_pending_payouts')}
                         </div>
                       );
                     })}
@@ -183,9 +184,9 @@ const UserPosts = () => {
                         {isFetchingNextPage ? (
                           <PostSkeleton />
                         ) : hasNextPage ? (
-                          t('user_profil.load_newer')
+                          t('user_profile.load_newer')
                         ) : data.pages[0] && data.pages[0].length > 0 ? (
-                          t('user_profil.nothing_more_to_load')
+                          t('user_profile.nothing_more_to_load')
                         ) : null}
                       </button>
                     </div>
@@ -204,14 +205,3 @@ const UserPosts = () => {
 };
 
 export default UserPosts;
-
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  return {
-    props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
-        'common_blog',
-        'smart-signer'
-      ]))
-    }
-  };
-};

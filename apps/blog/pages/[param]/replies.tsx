@@ -7,10 +7,11 @@ import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { PostSkeleton } from '../[...param]';
 import { GetServerSideProps } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from '@/blog/next-i18next.config';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import { getServerSidePropsDefault } from '../../lib/get-translations';
+
+export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
 export default function UserReplies() {
   const { t } = useTranslation('common_blog');
@@ -61,7 +62,7 @@ export default function UserReplies() {
                 className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
                 data-testid="user-has-not-had-any-replies-yet"
               >
-                {t('user_profil.no_replies_yet', { username: username })}
+                {t('user_profile.no_replies_yet', { username: username })}
               </div>
             );
           })}
@@ -70,9 +71,9 @@ export default function UserReplies() {
               {isFetchingNextPage ? (
                 <PostSkeleton />
               ) : hasNextPage ? (
-                t('user_profil.load_newer')
+                t('user_profile.load_newer')
               ) : data.pages[0] && data.pages[0].length > 0 ? (
-                t('user_profil.nothing_more_to_load')
+                t('user_profile.nothing_more_to_load')
               ) : null}
             </button>
           </div>
@@ -81,14 +82,3 @@ export default function UserReplies() {
     </ProfileLayout>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  return {
-    props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
-        'common_blog',
-        'smart-signer'
-      ]))
-    }
-  };
-};

@@ -86,7 +86,7 @@
       "vote_for_witnesses": "Vota per i Witness",
       "hive_proposals": "Hive Proposals"
     },
-    "profil_navbar": {
+    "profile_navbar": {
       "blog": "Blog",
       "posts": "Posts",
       "replies": "Risponde",
@@ -94,19 +94,19 @@
       "notifications": "Notifications",
       "wallet": "Wallet"
     },
-    "profil_posts_tab_navbar": {
+    "profile_posts_tab_navbar": {
       "posts": "Posts",
       "comments": "Commenti",
       "payouts": "Pagamenti"
     },
-    "profil_social_tab_navbar": {
+    "profile_social_tab_navbar": {
       "badges": "Badges",
       "activity": "Activity",
       "personal": "Personal",
       "meetups": "Meetups",
       "challenges": "Challenges"
     },
-    "profil_notifications_tab_navbar": {
+    "profile_notifications_tab_navbar": {
       "unclaimed_rewards": "Premi non riscossi: ",
       "redeem": "Riscattare",
       "mark_all": "Segna tutti come letti",
@@ -150,10 +150,19 @@
       "pinned": "Pinned"
     },
     "post_card": {
+      "downvote_warning": "Votare negativamente un post può ridurre le ricompense in sospeso e renderlo meno visibile. Motivi comuni:",
+      "reason_1": "• Disaccordo sulle ricompense",
+      "reason_2": "• Frode o plagio",
+      "reason_3": "• Discorso di odio o trolling",
+      "reason_4": "• Contenuto mal classificato o spam",
+      "upvote": "Voto positivo",
+      "undo_upvote": "Annulla il tuo voto positivo",
+      "undo_upvote_percent": "Annulla il tuo voto positivo {{votePercent}}%",
+      "downvote": "Voto negativo",
+      "undo_downvote": "Annulla il tuo voto negativo",
+      "undo_downvote_percent": "Annulla il tuo voto negativo {{votePercent}}%",
       "reputation_title": "Reputazione",
       "in": "in",
-      "upvote": "Upvote",
-      "downvote": "Downvote",
       "no_votes": "no votes",
       "vote": "vote",
       "votes": "{{votes}} votes",
@@ -200,7 +209,7 @@
     "cancel_button": "Cancella",
     "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password."
   },
-  "user_profil": {
+  "user_profile": {
     "reputation": "Reputazione",
     "follow_button": "Seguire",
     "mute_button": "Muto",
@@ -339,7 +348,7 @@
     },
     "body": {
       "copyright": "Questo post non è disponibile a causa di una richiesta di copyright.",
-      "images_were_hidden": "Le immagini sono state nascoste a causa della bassa reputazione.",
+      "content_were_hidden": "Il contenuto è stato nascosto a causa di basse valutazioni",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
       "leave_this_app": "You are about to leave this app.",
@@ -400,6 +409,7 @@
     }
   },
   "submit_page": {
+    "log_in_to_post": "Accedi per pubblicare.",
     "clean_post_editor": "Sei sicuro di voler cancellare l'editor di post?",
     "cover_image": "Seleziona la tua immagine di copertina:",
     "my_communities": "Le mie Comunità",
@@ -544,5 +554,14 @@
     "error_cant_remove_active": "Non puoi rimuovere l'endpoint preferito attuale. Seleziona prima un nuovo endpoint preferito",
     "error_cant_remove_all": "Devi avere almeno un endpoint nella lista",
     "changes_saved": "Modifiche salvate"
+  },
+  "four_oh_four": {
+    "this_page_does_not_exist": "Spiacente! Questa pagina non esiste.",
+    "not_to_worry": "Non preoccuparti. Puoi tornare a",
+    "our_homepage": "la nostra homepage",
+    "new_posts": "nuovi post",
+    "hot_posts": "post popolari",
+    "trending_posts": "post di tendenza",
+    "muted_posts": "post silenziati"
   }
 }

@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { Button } from '@ui/components/button';
 import { useEffect, useState, useRef } from 'react';
 import { useTranslation } from 'next-i18next';
-import { transactionService } from '@transaction/index';
 import { useLocalStorage } from 'usehooks-ts';
 import { Icons } from '@ui/components/icons';
 import MdEditor from './md-editor';
@@ -14,6 +13,10 @@ import { hoursAndMinutes } from '../lib/utils';
 import { Entry } from '@transaction/lib/bridge';
 import RendererContainer from './rendererContainer';
 import { getLogger } from '@ui/lib/logging';
+import { useCommentMutation, useUpdateCommentMutation } from './hooks/use-comment-mutations';
+import { handleError } from '@ui/lib/utils';
+import { CircleSpinner } from 'react-spinners-kit';
+
 const logger = getLogger('app');
 
 export function ReplyTextbox({
@@ -44,6 +47,8 @@ export function ReplyTextbox({
   const [text, setText] = useState(
     storedPost ? storedPost : typeof comment === 'string' ? comment : comment.body ? comment.body : ''
   );
+  const commentMutation = useCommentMutation();
+  const updateCommentMutation = useUpdateCommentMutation();
 
   useEffect(() => {
     storePost(text);
@@ -68,9 +73,31 @@ export function ReplyTextbox({
       if (parentPermlink && typeof comment !== 'string') {
         const payout =
           comment.max_accepted_payout === '0.000 HBD' ? '0%' : comment.percent_hbd === 0 ? '100%' : '50%';
-        transactionService.updateComment(username, parentPermlink, permlink, text, payout);
+        const updateCommentParams = {
+          parentAuthor: username,
+          parentPermlink,
+          permlink,
+          body: text
+        };
+        try {
+          await updateCommentMutation.mutateAsync(updateCommentParams);
+        } catch (error) {
+          handleError(error, { method: 'updateComment', params: updateCommentParams });
+          throw error;
+        }
       } else {
-        transactionService.comment(username, permlink, text, preferences);
+        const commentParams = {
+          parentAuthor: username,
+          parentPermlink: permlink,
+          body: text,
+          preferences
+        };
+        try {
+          await commentMutation.mutateAsync(commentParams);
+        } catch (error) {
+          handleError(error, { method: 'comment', params: commentParams });
+          throw error;
+        }
       }
       setText('');
       removePost();
@@ -135,11 +162,24 @@ export function ReplyTextbox({
           </span>
         </div>
         <div className="flex flex-col md:flex-row">
-          <Button ref={btnRef} disabled={text === ''} onClick={() => postComment()}>
-            {t('post_content.footer.comment.post')}
+          <Button
+            ref={btnRef}
+            disabled={text === '' || commentMutation.isLoading || updateCommentMutation.isLoading}
+            onClick={() => postComment()}
+          >
+            {commentMutation.isLoading || updateCommentMutation.isLoading ? (
+              <CircleSpinner
+                loading={commentMutation.isLoading || updateCommentMutation.isLoading}
+                size={18}
+                color="#dc2626"
+              />
+            ) : (
+              t('post_content.footer.comment.post')
+            )}
           </Button>
           <Button
             variant="ghost"
+            disabled={commentMutation.isLoading || updateCommentMutation.isLoading}
             onClick={() => handleCancel()}
             className="font-thiny text-slate-500 hover:text-red-500"
           >
@@ -173,7 +213,6 @@ export function ReplyTextbox({
           body={text}
           className="prose max-w-full border-2 border-slate-200 p-2 dark:prose-invert"
           author=""
-          doNotShowImages={false}
         />
       </div>
     </div>

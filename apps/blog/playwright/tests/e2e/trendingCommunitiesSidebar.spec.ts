@@ -18,7 +18,7 @@ test.describe('Home page tests - All posts', () => {
     // move from HomePage to LeoFinance community
     await homePage.moveToLeoFinanceCommunities();
     // move from LeoFinance community to Pinmapple community
-    await homePage.moveToPinmappleCommunities();
+    await homePage.moveToWorldmappinCommunities();
     // move from Pinmapple to Home page
     await page.goBack();
     await page.waitForLoadState("networkidle");

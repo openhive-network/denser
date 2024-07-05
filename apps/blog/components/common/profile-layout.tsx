@@ -23,12 +23,11 @@ import { TFunction } from 'i18next';
 import env from '@beam-australia/react-env';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useFollowingInfiniteQuery } from '../hooks/use-following-infinitequery';
-import FollowButton from '../follow-button';
-import MuteButton from '../mute-button';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import CustomError from '../custom-error';
+import ButtonsContainer from '../buttons-container';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -120,15 +119,16 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
         {profileData ? (
           <div
             style={{
-              background:
+              backgroundImage:
                 profileData?.posting_json_metadata &&
                 JSON.parse(profileData?.posting_json_metadata).profile?.cover_image
                   ? `url('${proxifyImageUrl(
                       JSON.parse(profileData?.posting_json_metadata).profile?.cover_image,
                       '2048x512'
-                    ).replace(/ /g, '%20')}') center center no-repeat`
+                    ).replace(/ /g, '%20')}')`
                   : '',
-
+              backgroundPosition: 'center center',
+              backgroundRepeat: 'no-repeat',
               backgroundSize: 'cover'
             }}
             className={`flex h-auto max-h-full min-h-full w-auto min-w-full max-w-full flex-col items-center`}
@@ -171,7 +171,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     alt="fish image"
-                    title={t('user_profil.hive_buzz_badge_title', { username: profileData.name })}
+                    title={t('user_profile.hive_buzz_badge_title', { username: profileData.name })}
                     className="mx-2 w-6 duration-500 ease-in-out hover:w-12"
                     src={`https://hivebuzz.me/api/level/${profileData.name}?dead`}
                     data-testid="profile-badge-image"
@@ -181,7 +181,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               {twitterData ? (
                 <Link
                   href={twitterData.twitter_profile}
-                  title={t('user_profil.twitter_badge_title')}
+                  title={t('user_profile.twitter_badge_title')}
                   target="_blank"
                   data-testid="profile-twitter-badge"
                 >
@@ -204,10 +204,10 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                       className="hover:cursor-pointer hover:text-red-600 hover:underline"
                     >
                       {profileData?.follow_stats?.follower_count === 0 || undefined
-                        ? t('user_profil.lists.follower_count.zero')
+                        ? t('user_profile.lists.follower_count.zero')
                         : profileData?.follow_stats?.follower_count === 1
-                          ? t('user_profil.lists.follower_count.one')
-                          : t('user_profil.lists.follower_count.other', {
+                          ? t('user_profile.lists.follower_count.one')
+                          : t('user_profile.lists.follower_count.other', {
                               value: profileData?.follow_stats?.follower_count
                             })}
                     </Link>
@@ -223,10 +223,10 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                       href={`/@${profileData.name}`}
                     >
                       {profileData?.post_count === 0
-                        ? t('user_profil.lists.post_count.zero')
+                        ? t('user_profile.lists.post_count.zero')
                         : profileData?.post_count === 1
-                          ? t('user_profil.lists.post_count.one')
-                          : t('user_profil.lists.post_count.other', { value: profileData?.post_count })}
+                          ? t('user_profile.lists.post_count.one')
+                          : t('user_profile.lists.post_count.other', { value: profileData?.post_count })}
                     </Link>
                   </li>
 
@@ -240,10 +240,10 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                       className="hover:cursor-pointer hover:text-red-600 hover:underline"
                     >
                       {profileData?.follow_stats?.following_count === 0 || undefined
-                        ? t('user_profil.lists.followed_count.zero')
+                        ? t('user_profile.lists.followed_count.zero')
                         : profileData?.follow_stats?.following_count === 1
-                          ? t('user_profil.lists.followed_count.one')
-                          : t('user_profil.lists.followed_count.other', {
+                          ? t('user_profile.lists.followed_count.one')
+                          : t('user_profile.lists.followed_count.other', {
                               value: profileData?.follow_stats?.following_count
                             })}
                     </Link>
@@ -261,7 +261,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                       href={`/@${profileData?.name}/lists/blacklisted`}
                       className="hover:cursor-pointer hover:text-red-600 hover:underline"
                     >
-                      {t('user_profil.lists.blacklisted_users')}
+                      {t('user_profile.lists.blacklisted_users')}
                     </Link>
                   </li>
 
@@ -271,7 +271,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                       href={`/@${profileData?.name}/lists/muted`}
                       className="hover:cursor-pointer hover:text-red-600 hover:underline"
                     >
-                      {t('user_profil.lists.muted_users')}
+                      {t('user_profile.lists.muted_users')}
                     </Link>
                   </li>
 
@@ -281,7 +281,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                       href={`/@${profileData?.name}/lists/followed_blacklists`}
                       className="hover:cursor-pointer hover:text-red-600 hover:underline"
                     >
-                      {t('user_profil.lists.followed_blacklists')}
+                      {t('user_profile.lists.followed_blacklists')}
                     </Link>
                   </li>
 
@@ -291,7 +291,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                       href={`/@${profileData?.name}/lists/followed_muted_lists`}
                       className="hover:cursor-pointer hover:text-red-600 hover:underline"
                     >
-                      {t('user_profil.lists.followed_muted_lists')}
+                      {t('user_profile.lists.followed_muted_lists')}
                     </Link>
                   </li>
                 </ul>
@@ -318,14 +318,14 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   <li className="flex items-center">
                     <Icons.calendarHeart className="m-1" />
                     <span data-testid="user-joined">
-                      {t('user_profil.joined')}{' '}
+                      {t('user_profile.joined')}{' '}
                       {profileData?.created ? dateToShow(profileData.created, t) : null}
                     </span>
                   </li>
                   <li className="flex items-center">
                     <Icons.calendarActive className="m-1" />
                     <span data-testid="user-last-time-active">
-                      {t('user_profil.active')}{' '}
+                      {t('user_profile.active')}{' '}
                       {compareDates(
                         [profileData.created, profileData.last_vote_time, profileData.last_post],
                         t
@@ -335,10 +335,13 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 </ul>
                 {user.username !== username ? (
                   <div className="m-2 flex gap-2 hover:text-red-500 sm:absolute sm:right-0">
-                    <FollowButton username={username} user={user} variant="secondary" list={following} />
-                    {user.isLoggedIn ? (
-                      <MuteButton username={username} user={user} variant="secondary" list={mute} />
-                    ) : null}
+                    <ButtonsContainer
+                      username={username}
+                      user={user}
+                      variant="secondary"
+                      follow={following}
+                      mute={mute}
+                    />
                   </div>
                 ) : null}
               </>
@@ -366,7 +369,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     }
                     `}
                   >
-                    {t('navigation.profil_navbar.blog')}
+                    {t('navigation.profile_navbar.blog')}
                   </Link>
                 </li>
                 <li>
@@ -380,7 +383,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                         : ''
                     }`}
                   >
-                    {t('navigation.profil_navbar.posts')}
+                    {t('navigation.profile_navbar.posts')}
                   </Link>
                 </li>
                 <li>
@@ -392,7 +395,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                         : ''
                     }`}
                   >
-                    {t('navigation.profil_navbar.replies')}
+                    {t('navigation.profile_navbar.replies')}
                   </Link>
                 </li>
                 <li>
@@ -404,7 +407,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                         : ''
                     }`}
                   >
-                    {t('navigation.profil_navbar.social')}
+                    {t('navigation.profile_navbar.social')}
                   </Link>
                 </li>
                 <li>
@@ -416,7 +419,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                         : ''
                     }`}
                   >
-                    {t('navigation.profil_navbar.notifications')}
+                    {t('navigation.profile_navbar.notifications')}
                   </Link>
                 </li>
               </ul>
@@ -428,7 +431,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     rel="noopener noreferrer"
                     className="mr-4 flex h-full items-center px-2 hover:bg-white hover:text-slate-800"
                   >
-                    {t('navigation.profil_navbar.wallet')}
+                    {t('navigation.profile_navbar.wallet')}
                   </Link>
                 </li>
                 {user.isLoggedIn && username === user.username ? (
@@ -442,7 +445,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                           : ''
                       }`}
                     >
-                      {t('navigation.profil_navbar.settings')}
+                      {t('navigation.profile_navbar.settings')}
                     </Link>
                   </li>
                 ) : null}

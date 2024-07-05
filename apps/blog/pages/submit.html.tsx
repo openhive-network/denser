@@ -1,21 +1,14 @@
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetServerSideProps } from 'next';
-import { i18n } from '@/blog/next-i18next.config';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import PostForm from '../components/post-form';
 import { useState, useEffect } from 'react';
+import { getServerSidePropsDefault } from '../lib/get-translations';
+import { useTranslation } from 'next-i18next';
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  return {
-    props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
-        'common_blog',
-        'smart-signer'
-      ]))
-    }
-  };
-};
+export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
+
 function Submit() {
+  const { t } = useTranslation('common_blog');
   const [isClient, setIsClient] = useState(false);
   useEffect(() => {
     setIsClient(true);
@@ -30,7 +23,7 @@ function Submit() {
           className="block bg-green-50 px-4 py-6 text-sm font-light shadow-sm dark:bg-slate-800"
           data-testid="log-in-to-make-post-message"
         >
-          Log in to make a post.
+          {t('submit_page.log_in_to_post')}
         </div>
       )}
     </div>

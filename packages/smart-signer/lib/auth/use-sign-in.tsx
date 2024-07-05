@@ -13,11 +13,10 @@ const logger = getLogger('app');
  * Authenticate user via request to backend.
  *
  * @param {PostLoginSchema} data
- * @param {string} [uid='']
  * @returns {Promise<User>}
  */
-async function signInBackend(data: PostLoginSchema, uid: string = ''): Promise<User> {
-  const url = uid ? `/api/auth/login/${uid}` : '/api/auth/login';
+async function signInBackend(data: PostLoginSchema): Promise<User> {
+  const url = '/api/auth/login';
   return await fetchJson(url, {
     method: 'POST',
     headers: [
@@ -28,28 +27,26 @@ async function signInBackend(data: PostLoginSchema, uid: string = ''): Promise<U
   });
 }
 
-async function signIn(data: PostLoginSchema, uid: string = ''): Promise<User> {
+async function signIn(data: PostLoginSchema): Promise<User> {
   const { authenticateOnBackend } = data;
   if (authenticateOnBackend) {
-    return signInBackend(data, uid);
+    return signInBackend(data);
   } else {
-    return verifyLogin(data, uid);
+    return verifyLogin(data);
   }
 }
 
 export function useSignIn() {
   const queryClient = useQueryClient();
   const signInMutation = useMutation({
-    mutationFn: (params: { data: PostLoginSchema; uid: string }) => {
-      const { data, uid } = params;
-      return signIn(data, uid);
+    mutationFn: async (params: { data: PostLoginSchema; }) => {
+      const { data } = params;
+      const user = await signIn(data);
+      return ({ user });
     },
     onSuccess: (data) => {
-      queryClient.setQueryData([QUERY_KEY.user], data);
-
-      // FIXME Delete this, when you're done.
-      // Login as other user. Only for developers.
-      // queryClient.setQueryData([QUERY_KEY.user], { ...data, ...{ username: 'gtg' } });
+      const { user } = data;
+      queryClient.setQueryData([QUERY_KEY.user], user);
     },
     onError: (error) => {
       throw error;

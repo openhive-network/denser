@@ -238,13 +238,10 @@ export function extractLinks(text: string): string[] {
  * @param {string} markdownContent
  * @return {*}  {string[]}
  */
-export function extractImagesSrc (markdownContent: string): string[] {
+export function extractImagesSrc(markdownContent: string): string[] {
   if (markdownContent === '') return [];
   const parser = new DOMParser();
-  const doc = parser.parseFromString(
-    getRenderer('', false).render(markdownContent),
-    "text/html"
-  );
+  const doc = parser.parseFromString(getRenderer('').render(markdownContent), 'text/html');
   const images = doc.getElementsByTagName('img');
   const result = [];
   for (let i = 0; i < images.length; i++) {
@@ -334,4 +331,11 @@ export function getRewardsString(account: FullAccount, t: TFunction<'common_blog
       rewards_str = nothingToClaim;
   }
   return rewards_str;
+}
+
+export function netVests(account: FullAccount) {
+  const vests = parseFloat(account.vesting_shares);
+  const delegated = parseFloat(account.delegated_vesting_shares);
+  const received = parseFloat(account.received_vesting_shares);
+  return vests - delegated + received;
 }

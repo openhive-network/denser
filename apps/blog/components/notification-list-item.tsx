@@ -1,13 +1,26 @@
+/* eslint-disable @next/next/no-img-element */
 import Link from 'next/link';
 import { Icons } from '@hive/ui/components/icons';
 import { Progress } from '@hive/ui/components/progress';
 import { dateToFullRelative } from '@hive/ui/lib/parse-date';
 import { IAccountNotificationEx } from '@transaction/lib/bridge';
 import { useTranslation } from 'next-i18next';
+import { useSiteParams } from '@ui/components/hooks/use-site-params';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { getLogger } from '@ui/lib/logging';
+
+const logger = getLogger('app');
+const usernamePattern = /\B@[a-z0-9.-]+/gi;
 
 const NotificationListItem = ({ date, msg, score, type, url, lastRead }: IAccountNotificationEx) => {
   const { t } = useTranslation('common_blog');
+  const { username } = useSiteParams();
+  const { user } = useUser();
+  const isOwner = user.username === username;
+  const mentions = msg.match(usernamePattern);
+  const unRead = lastRead <= new Date(date).getTime();
   let icon;
+
   switch (type) {
     case 'vote':
       icon = <Icons.arrowUpCircle className="h-4 w-4" />;
@@ -24,10 +37,6 @@ const NotificationListItem = ({ date, msg, score, type, url, lastRead }: IAccoun
     default:
       icon = <Icons.arrowUpCircle className="h-4 w-4" />;
   }
-
-  const usernamePattern = /\B@[a-z0-9.-]+/gi;
-  const mentions = msg.match(usernamePattern);
-  const unRead = lastRead <= new Date(date).getTime();
 
   const participants = mentions
     ? mentions.map((m: string) => (
@@ -50,7 +59,7 @@ const NotificationListItem = ({ date, msg, score, type, url, lastRead }: IAccoun
     >
       <td className="flex justify-between py-4">
         <div className="flex items-center">
-          {unRead ? <span className="mr-2 h-2 w-2 rounded-full bg-red-600" /> : null}
+          {unRead && isOwner ? <span className="mr-2 h-2 w-2 rounded-full bg-red-600" /> : null}
           {participants}
           <div className="flex flex-col">
             <Link href={`/${url}`}>

@@ -19,12 +19,15 @@ import { useLocalStorage } from 'usehooks-ts';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';
 import { UserPopoverCard } from './user-popover-card';
-import { AlertDialogDelete } from './alert-dialog-delete';
+import { CommentDeleteDialog } from './comment-delete-dialog';
 import moment from 'moment';
 import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import RendererContainer from './rendererContainer';
+import { useDeleteCommentMutation } from './hooks/use-comment-mutations';
+import { handleError } from '@ui/lib/utils';
+import { CircleSpinner } from 'react-spinners-kit';
 
 interface CommentListProps {
   comment: Entry;
@@ -57,19 +60,30 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
       storeBox(reply);
     }
   }, [reply]);
-  useEffect(() => {
-    //without delay moving to right scroll position but after that imgs loading and we are in wrong scroll position
-    const timeout = setTimeout(() => {
-      if (router.asPath.includes(commentId) && ref.current) {
-        ref.current.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
-      }
-    }, 500);
-    return () => clearTimeout(timeout);
-  }, [router.asPath]);
+
   const currentDepth = comment.depth - parent_depth;
+
+  const deleteCommentMutation = useDeleteCommentMutation();
+  const deleteComment = async (permlink: string) => {
+    try {
+      await deleteCommentMutation.mutateAsync({ permlink });
+    } catch (error) {
+      handleError(error, { method: 'deleteComment', params: { permlink } });
+    }
+  };
+
+  // Receive output from dialog and do action according to user's
+  // response.
+  const dialogAction = (permlink: string): void => {
+    if (permlink) {
+      deleteComment(permlink);
+    }
+  };
+
   if (userFromGDPR || parentFromGDPR) {
     return null;
   }
+
   return (
     <>
       {currentDepth < 8 ? (
@@ -223,12 +237,7 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                           className="prose break-words dark:text-white"
                           data-testid="comment-card-description"
                         >
-                          <RendererContainer
-                            body={comment.body}
-                            author={comment.author}
-                            className=""
-                            doNotShowImages={false}
-                          />
+                          <RendererContainer body={comment.body} author={comment.author} className="" />
                         </CardDescription>
                       )}
                     </CardContent>
@@ -270,6 +279,7 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                         ) : null}
                         {user && user.isLoggedIn ? (
                           <button
+                            disabled={deleteCommentMutation.isLoading}
                             onClick={() => {
                               setReply(!reply), removeBox();
                             }}
@@ -292,6 +302,7 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                           <>
                             <Separator orientation="vertical" className="h-5" />
                             <button
+                              disabled={deleteCommentMutation.isLoading}
                               onClick={() => {
                                 setEdit(!edit);
                               }}
@@ -308,14 +319,23 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                         moment().format('YYYY-MM-DDTHH:mm:ss') < comment.payout_at ? (
                           <>
                             <Separator orientation="vertical" className="h-5" />
-                            <AlertDialogDelete permlink={comment.permlink}>
-                              <span
+                            <CommentDeleteDialog permlink={comment.permlink} action={dialogAction}>
+                              <button
+                                disabled={edit || deleteCommentMutation.isLoading}
                                 className="flex items-center hover:cursor-pointer hover:text-red-600"
                                 data-testid="comment-card-footer-delete"
                               >
-                                {t('cards.comment_card.delete')}
-                              </span>
-                            </AlertDialogDelete>
+                                {deleteCommentMutation.isLoading ? (
+                                  <CircleSpinner
+                                    loading={deleteCommentMutation.isLoading}
+                                    size={18}
+                                    color="#dc2626"
+                                  />
+                                ) : (
+                                  t('cards.comment_card.delete')
+                                )}
+                              </button>
+                            </CommentDeleteDialog>
                           </>
                         ) : null}
                       </div>

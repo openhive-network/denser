@@ -16,7 +16,6 @@ import sorter, { SortOrder } from '@/blog/lib/sorter';
 import { useRouter } from 'next/router';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { Icons } from '@ui/components/icons';
-import { AlertDialogReblog } from '@/blog/components/alert-window';
 import { ReplyTextbox } from '@/blog/components/reply-textbox';
 import { SharePost } from '@/blog/components/share-post-dialog';
 import LinkedInShare from '@/blog/components/share-post-linkedin';
@@ -27,8 +26,6 @@ import { Badge } from '@ui/components/badge';
 import { Button } from '@ui/components/button';
 import { Separator } from '@ui/components';
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from '@/blog/next-i18next.config';
 import { AlertDialogFlag } from '@/blog/components/alert-window-flag';
 import VotesComponent from '@/blog/components/votes';
 import { useLocalStorage } from 'usehooks-ts';
@@ -39,7 +36,6 @@ import { UserPopoverCard } from '@/blog/components/user-popover-card';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
-import { cn } from '@ui/lib/utils';
 import dmcaUserList from '@ui/config/lists/dmca-user-list';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import dmcaList from '@ui/config/lists/dmca-list';
@@ -47,8 +43,8 @@ import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import CustomError from '@/blog/components/custom-error';
 import RendererContainer from '@/blog/components/rendererContainer';
 import { getLogger } from '@ui/lib/logging';
-import { useRebloggedByQuery } from '@/blog/components/hooks/use-reblogged-by-query';
-import ScrollToElement from '@/blog/components/scroll-to-element';
+import ReblogTrigger from '@/blog/components/reblog-trigger';
+import { getTranslations } from '@/blog/lib/get-translations';
 
 const logger = getLogger('app');
 
@@ -111,8 +107,6 @@ function PostPage({
     enabled: !!username && !!permlink
   });
 
-  const { data: isReblogged } = useRebloggedByQuery(post?.author, post?.permlink, user.username);
-
   const [discussionState, setDiscussionState] = useState<Entry[]>();
   const router = useRouter();
   const isSortOrder = (token: any): token is SortOrder => {
@@ -134,7 +128,6 @@ function PostPage({
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const firstPost = discussionState?.find((post) => post.depth === 0);
   const [edit, setEdit] = useState(false);
-  const [showAnyway, setShowAnyway] = useState(false);
 
   const userFromGDPR = gdprUserList.some((e) => e === post?.author);
   const refreshPage = () => {
@@ -276,28 +269,26 @@ function PostPage({
               <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
             ) : copyRightCheck || userFromDMCA ? (
               <div className="px-2 py-6">{t('post_content.body.copyright')}</div>
-            ) : (
-              <ImageGallery>
-                <RendererContainer
-                  body={post.body}
-                  className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
-                  author={post.author}
-                  doNotShowImages={!!mutedPost && !showAnyway}
-                />
-              </ImageGallery>
-            )}
-
-            {mutedPost ? (
+            ) : mutedPost ? (
               <>
                 <Separator />
                 <div className="my-8 flex items-center justify-between text-red-500">
-                  {t('post_content.body.images_were_hidden')}
-                  <Button variant="outlineRed" onClick={() => setShowAnyway(true)}>
+                  {t('post_content.body.content_were_hidden')}
+                  <Button variant="outlineRed" onClick={() => setMutedPost(false)}>
                     {t('post_content.body.show')}
                   </Button>
                 </div>
               </>
-            ) : null}
+            ) : (
+              <ImageGallery>
+                <RendererContainer
+                  mainPost={post.depth === 0}
+                  body={post.body}
+                  className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
+                  author={post.author}
+                />
+              </ImageGallery>
+            )}
 
             <div className="clear-both">
               {!commentSite ? (
@@ -355,24 +346,12 @@ function PostPage({
                   ) : null}
                 </div>
                 <div className="flex items-center" data-testid="comment-respons-header">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger disabled={isReblogged}>
-                        <AlertDialogReblog author={post.author} permlink={post.permlink}>
-                          <Icons.forward
-                            className={cn('h-4 w-4 cursor-pointer', {
-                              'text-red-600': isReblogged,
-                              'cursor-default': isReblogged
-                            })}
-                            data-testid="post-footer-reblog-icon"
-                          />
-                        </AlertDialogReblog>
-                      </TooltipTrigger>
-                      <TooltipContent data-test="post-footer-reblog-tooltip">
-                        {isReblogged ? t('cards.post_card.you_reblogged') : t('cards.post_card.reblog')}
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <ReblogTrigger
+                    author={post.author}
+                    permlink={post.permlink}
+                    dataTestidTooltipContent="post-footer-reblog-tooltip"
+                    dataTestidTooltipIcon="post-footer-reblog-icon"
+                  />
                   <span className="mx-1">|</span>
                   {user && user.isLoggedIn ? (
                     <button
@@ -480,7 +459,6 @@ function PostPage({
           <Loading loading={isLoadingPost} />
         )}
       </div>
-      <ScrollToElement />
       <div id="comments" className="flex" />
       <div className="mx-auto my-0 max-w-4xl py-4">
         {reply && post && user.isLoggedIn ? (
@@ -532,10 +510,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       community,
       username,
       permlink,
-      ...(await serverSideTranslations(ctx.req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
-        'common_blog',
-        'smart-signer'
-      ]))
+      ...(await getTranslations(ctx))
     }
   };
 };

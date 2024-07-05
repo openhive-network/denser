@@ -3,8 +3,9 @@ import { Icons } from '@ui/components/icons';
 import DialogLogin from '@/wallet/components/dialog-login';
 import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from 'next-i18next.config';
+import { getServerSidePropsDefault } from '../lib/get-translations';
+
+export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
 export default function HomePage() {
   const { t } = useTranslation('common_wallet');
@@ -64,14 +65,3 @@ export default function HomePage() {
     </div>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  return {
-    props: {
-      ...(await serverSideTranslations(req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
-        'common_wallet',
-        'smart-signer'
-      ]))
-    }
-  };
-};

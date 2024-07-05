@@ -86,7 +86,7 @@
       "vote_for_witnesses": "Vote for Witnesses",
       "hive_proposals": "Hive Proposals"
     },
-    "profil_navbar": {
+    "profile_navbar": {
       "blog": "Blog",
       "posts": "Posts",
       "replies": "Replies",
@@ -95,19 +95,19 @@
       "wallet": "Wallet",
       "settings": "Settings"
     },
-    "profil_posts_tab_navbar": {
+    "profile_posts_tab_navbar": {
       "posts": "Posts",
       "comments": "Comments",
       "payouts": "Payouts"
     },
-    "profil_social_tab_navbar": {
+    "profile_social_tab_navbar": {
       "badges": "Badges",
       "activity": "Activity",
       "personal": "Personal",
       "meetups": "Meetups",
       "challenges": "Challenges"
     },
-    "profil_notifications_tab_navbar": {
+    "profile_notifications_tab_navbar": {
       "unclaimed_rewards": "Unclaimed rewards: ",
       "redeem": "Redeem",
       "mark_all": "Mark all as read",
@@ -163,6 +163,11 @@
     "post_card": {
       "reputation_title": "Reputation",
       "in": "in",
+      "downvote_warning": "Downvoting a post can decrease pending rewards and make it less visible. Common reasons:",
+      "reason_1": "• Disagreement on rewards",
+      "reason_2": "• Fraud or plagiarism",
+      "reason_3": "• Hate speech or trolling",
+      "reason_4": "• Miscategorized content or spam",
       "upvote": "Upvote",
       "undo_upvote": "Undo your upvote",
       "undo_upvote_percent": "Undo your upvote {{votePercent}}%",
@@ -228,7 +233,7 @@
     "use_keychain": "Use Keychain",
     "username_placeholder": "Enter your username"
   },
-  "user_profil": {
+  "user_profile": {
     "reputation": "Reputation",
     "mute_button": "Mute",
     "unmute_button": "Unmute",
@@ -367,7 +372,7 @@
     },
     "body": {
       "copyright": "This post is not available due to a copyright claim.",
-      "images_were_hidden": "Images were hidden due to low ratings.",
+      "content_were_hidden": "Content were hidden due to low ratings.",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
       "leave_this_app": "You are about to leave this app.",
@@ -429,6 +434,7 @@
     }
   },
   "submit_page": {
+    "log_in_to_post": "Log in to make a post.",
     "clean_post_editor": "Are you sure you want to clear the post editor?",
     "cover_image": "Select your cover image:",
     "my_communities": "My Communities",
@@ -573,5 +579,14 @@
     "error_cant_remove_active": "You can't remove the current preferred endpoint. Please select a new preferred endpoint first",
     "error_cant_remove_all": "You must have at least one endpoint in the list",
     "changes_saved": "Changes saved"
+  },
+  "four_oh_four": {
+    "this_page_does_not_exist": "Sorry! This page does not exist.",
+    "not_to_worry": "Not to worry. You can head back to",
+    "our_homepage": "our homepage",
+    "new_posts": "new posts",
+    "hot_posts": "hot posts",
+    "trending_posts": "trending posts",
+    "muted_posts": "muted posts"
   }
 }

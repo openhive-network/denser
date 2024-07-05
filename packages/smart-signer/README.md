@@ -1,7 +1,7 @@
 SDK for authenticating Hive users and making operations on Hive
 blockchain.
 
-## Using in Denser application
+## Using in your application
 
 1. Copy file `../../node_modules/@hiveio/hb-auth/dist/worker.js` to
    `public/auth/` when your applications builds. Use webpack CopyPlugin
@@ -11,23 +11,27 @@ blockchain.
    [../../apps/auth/components/common/providers.tsx](../../apps/auth/components/common/providers.tsx).
 3. Add function `setLoginChallengeCookies` to your `middleware.ts`, see
    [../../apps/auth/middleware.ts](../../apps/auth/middleware.ts).
-4. Add api endpoints for login, logout and user info — just copy files
+4. When you need authentication and session on back-end side, add API
+   endpoints for login, logout and user info — just copy files
    [../../apps/auth/pages/api/auth/login.ts](../../apps/auth/pages/api/auth/login.ts),
    [../../apps/auth/pages/api/auth/logout.ts](../../apps/auth/pages/api/auth/logout.ts),
    and
    [../../apps/auth/pages/api/users/me.ts](../../apps/auth/pages/api/users/me.ts)
-   to the same paths in your application.
-5. Use component
-   [../../packages/smart-signer/components/login-panel.tsx](../../packages/smart-signer/components/login-panel.tsx)
-   to login user, on your login page on in your login dialog, see
-   [../../apps/auth/pages/login.tsx](../../apps/auth/pages/login.tsx).
+   to the same paths in your application. Then set
+   `authenticateOnBackend` option to `true` in your login logic.
+5. Create your own login page or login dialog based on
+   [SignInForm](../../packages/smart-signer/components/auth/form.tsx),
+   for instance. Other possibilities could be
+   [LoginPanel](../../packages/smart-signer/components/login-panel.tsx)
+   or
+   [SigninPanel](../../packages/smart-signer/components/signin-panel.tsx)
 6. Use react hook function
    [../../packages/smart-signer/lib/auth/use-logout.ts](../../packages/smart-signer/lib/auth/use-logout.ts)
    to logout user, see
    [../../apps/auth/components/site-header.tsx](../../apps/auth/components/site-header.tsx).
 7. To use locale stuff from
    [../../packages/smart-signer/locales](../../packages/smart-signer/locales),
-   you need to import translations's files to a location known to i18n
+   you need to import translation files to a location known to i18n
    engine used in your application:
 
     a) set `localePath: path.resolve('./public/locales')` in your
@@ -50,7 +54,7 @@ blockchain.
     your `serverSideTranslations` handler, see
     [../../apps/auth/lib/get-translations.ts](../../apps/auth/lib/get-translations.ts).
 
-8. Optionally create environment variables for logger in your
+8. Create environment variables for logger in your
    `.env.local` file, when you need to see logger messages emitted on
    lower levels during development, for instance:
    ```bash
@@ -65,3 +69,44 @@ blockchain.
     If you're already using npm package
     [react-modal-promise](https://github.com/cudr/react-modal-promise#readme)
     just ensure you have ModalContainer in your DOM.
+
+
+## OAUTH server module
+
+There is an OAUTH server module in smart-signer, implemented using
+[node-oidc-provider](https://github.com/panva/node-oidc-provider)
+library. You can use it in your application. Inspect [Auth
+application](../../apps/auth) to learn how it could be done. Generally:
+
+1. You need authentication and session on server side, so add API
+   endpoints for login, logout and user info — just copy files
+   [../../apps/auth/pages/api/auth/login.ts](../../apps/auth/pages/api/auth/login.ts),
+   [../../apps/auth/pages/api/auth/logout.ts](../../apps/auth/pages/api/auth/logout.ts),
+   and
+   [../../apps/auth/pages/api/users/me.ts](../../apps/auth/pages/api/users/me.ts)
+   to the same paths in your application. Set `authenticateOnBackend`
+   option to `true` in your login logic. Set `strict` option to `true`,
+   too.
+2. Create API endpoint for OAUTH server module like
+   [../../apps/auth/pages/api/oidc](../../apps/auth/pages/api/oidc).
+3. Create pages for Oauth interactions – see
+   [../../apps/auth/pages/interaction](../../apps/auth/pages/interaction).
+4. Add rewrites for OAUTH server, see
+   [../../apps/auth/next.config.js](../../apps/auth/next.config.js).
+4. Set environment variables for Oauth flow, see [OIDC
+   configuration](../../packages/smart-signer/lib/oidc.ts),
+   [siteConfig](../../packages/ui/config/site.ts), and [env file for
+   development](../../apps/auth/.env). Move files created in two
+   preceding points, when you decide to use url paths other then
+   default.
+5. Use back-end side logic
+   [loginPageController](../../packages/smart-signer/lib/login-page-controller.ts)
+   in your login logic.
+
+The session on OAUTH server is synced with session in your app. Any
+incoming OAUTH request for login implicates logging in user in your
+application as well. When user is already logged in in your application,
+any incoming OAUTH login request will be handled using existing back-end
+session in your application, possibly invisibly on client side. Logout
+in your application implicates destroying session on OAUTH server.
+Logout on OAUTH server does nothing in your application.

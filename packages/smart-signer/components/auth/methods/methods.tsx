@@ -80,7 +80,7 @@ const Methods: FC<MethodsProps> = ({
     if (formUsername !== username) {
       onUsernameChange(formUsername);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.getValues('username'), onUsernameChange]);
 
   async function onSubmit(_loginType: LoginType) {
@@ -106,8 +106,14 @@ const Methods: FC<MethodsProps> = ({
       title={t('login_form.other_signin_options')}
       description={
         <div>
-          <div data-testid="other-signin-options-description">{t('login_form.other_signing_options_description')}</div>
-          {error && <div className="text-sm text-destructive" data-testid="other-signin-options-error-msg">{error}</div>}
+          <div data-testid="other-signin-options-description">
+            {t('login_form.other_signing_options_description')}
+          </div>
+          {error && (
+            <div className="text-sm text-destructive" data-testid="other-signin-options-error-msg">
+              {t(error)}
+            </div>
+          )}
         </div>
       }
     >
@@ -133,7 +139,9 @@ const Methods: FC<MethodsProps> = ({
                   {/* Show select menu if there is length of auth users */}
                 </FormControl>
                 {errors.username && (
-                  <FormMessage className="font-normal" data-testid="other-signin-username-error-msg">{t(errors.username?.message!)}</FormMessage>
+                  <FormMessage className="font-normal" data-testid="other-signin-username-error-msg">
+                    {t(errors.username?.message!)}
+                  </FormMessage>
                 )}
               </FormItem>
             )}
@@ -202,7 +210,13 @@ const Methods: FC<MethodsProps> = ({
 
             <Separator className="my-1 w-full" />
 
-            <Button disabled className="flex w-full py-6" type="button" variant="ghost" data-testid="hive-auth-button">
+            <Button
+              disabled
+              className="flex w-full py-6"
+              type="button"
+              variant="ghost"
+              data-testid="hive-auth-button"
+            >
               <div className="flex flex-1 items-center">
                 <Icons.hiveauth className="mr-4 h-8 w-8" />
                 {t('login_form.signin_with_hiveauth')}
@@ -211,7 +225,13 @@ const Methods: FC<MethodsProps> = ({
 
             <Separator className="my-1 w-full" />
 
-            <Button disabled className="flex w-full justify-start py-6" type="button" variant="ghost" data-testid="hive-signer-button">
+            <Button
+              disabled
+              className="flex w-full justify-start py-6"
+              type="button"
+              variant="ghost"
+              data-testid="hive-signer-button"
+            >
               <Icons.hivesigner className="mr-4 h-8 w-8" />
               {t('login_form.signin_with_hivesigner')}
             </Button>

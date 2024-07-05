@@ -14,8 +14,6 @@ import Link from 'next/link';
 import Loading from '@ui/components/loading';
 import TransfersHistoryFilter, { TransferFilters } from '@/wallet/components/transfers-history-filter';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from '@/wallet/next-i18next.config';
 import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
 import WalletMenu from '@/wallet/components/wallet-menu';
@@ -30,6 +28,7 @@ import {
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { TransferDialog } from '@/wallet/components/transfer-dialog';
 import useFilters from '@/wallet/components/hooks/use-filters';
+import { getTranslations } from '../../lib/get-translations';
 
 const initialFilters: TransferFilters = {
   search: '',
@@ -771,10 +770,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
       username: username.replace('@', ''),
-      ...(await serverSideTranslations(ctx.req.cookies.NEXT_LOCALE! || i18n.defaultLocale, [
-        'common_wallet',
-        'smart-signer'
-      ]))
+      ...(await getTranslations(ctx))
     }
   };
 };
