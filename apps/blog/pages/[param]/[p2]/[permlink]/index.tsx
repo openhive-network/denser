@@ -26,8 +26,6 @@ import { Badge } from '@ui/components/badge';
 import { Button } from '@ui/components/button';
 import { Separator } from '@ui/components';
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from '@/blog/next-i18next.config';
 import { AlertDialogFlag } from '@/blog/components/alert-window-flag';
 import VotesComponent from '@/blog/components/votes';
 import { useLocalStorage } from 'usehooks-ts';
@@ -45,10 +43,8 @@ import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import CustomError from '@/blog/components/custom-error';
 import RendererContainer from '@/blog/components/rendererContainer';
 import { getLogger } from '@ui/lib/logging';
-import { useRebloggedByQuery } from '@/blog/components/hooks/use-reblogged-by-query';
-import ScrollToElement from '@/blog/components/scroll-to-element';
 import ReblogTrigger from '@/blog/components/reblog-trigger';
-import { getTranslations } from '../../../../lib/get-translations';
+import { getTranslations } from '@/blog/lib/get-translations';
 
 const logger = getLogger('app');
 
@@ -108,8 +104,6 @@ function PostPage({
     enabled: !!username && !!permlink
   });
 
-  const { data: isReblogged } = useRebloggedByQuery(post?.author, post?.permlink, user.username);
-
   const [discussionState, setDiscussionState] = useState<Entry[]>();
   const router = useRouter();
   const isSortOrder = (token: any): token is SortOrder => {
@@ -131,7 +125,6 @@ function PostPage({
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const firstPost = discussionState?.find((post) => post.depth === 0);
   const [edit, setEdit] = useState(false);
-  const [showAnyway, setShowAnyway] = useState(false);
 
   const userFromGDPR = gdprUserList.some((e) => e === post?.author);
   const refreshPage = () => {
@@ -273,6 +266,16 @@ function PostPage({
               <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
             ) : copyRightCheck || userFromDMCA ? (
               <div className="px-2 py-6">{t('post_content.body.copyright')}</div>
+            ) : mutedPost ? (
+              <>
+                <Separator />
+                <div className="my-8 flex items-center justify-between text-red-500">
+                  {t('post_content.body.content_were_hidden')}
+                  <Button variant="outlineRed" onClick={() => setMutedPost(false)}>
+                    {t('post_content.body.show')}
+                  </Button>
+                </div>
+              </>
             ) : (
               <ImageGallery>
                 <RendererContainer
@@ -280,22 +283,9 @@ function PostPage({
                   body={post.body}
                   className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
                   author={post.author}
-                  doNotShowImages={!!mutedPost && !showAnyway}
                 />
               </ImageGallery>
             )}
-
-            {mutedPost ? (
-              <>
-                <Separator />
-                <div className="my-8 flex items-center justify-between text-red-500">
-                  {t('post_content.body.images_were_hidden')}
-                  <Button variant="outlineRed" onClick={() => setShowAnyway(true)}>
-                    {t('post_content.body.show')}
-                  </Button>
-                </div>
-              </>
-            ) : null}
 
             <div className="clear-both">
               {!commentSite ? (

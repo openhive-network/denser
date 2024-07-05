@@ -354,7 +354,7 @@
     },
     "body": {
       "copyright": "Этот пост недоступен из-за запроса на авторское право.",
-      "images_were_hidden": "Изображения были скрыты из-за низкого рейтинга.",
+      "content_were_hidden": "Контент был скрыт из-за низких оценок.",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
       "leave_this_app": "You are about to leave this app.",

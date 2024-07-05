@@ -237,12 +237,7 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                           className="prose break-words dark:text-white"
                           data-testid="comment-card-description"
                         >
-                          <RendererContainer
-                            body={comment.body}
-                            author={comment.author}
-                            className=""
-                            doNotShowImages={false}
-                          />
+                          <RendererContainer body={comment.body} author={comment.author} className="" />
                         </CardDescription>
                       )}
                     </CardContent>

@@ -90,7 +90,7 @@ export function ReplyTextbox({
           parentAuthor: username,
           parentPermlink: permlink,
           body: text,
-          preferences,
+          preferences
         };
         try {
           await commentMutation.mutateAsync(commentParams);
@@ -167,13 +167,15 @@ export function ReplyTextbox({
             disabled={text === '' || commentMutation.isLoading || updateCommentMutation.isLoading}
             onClick={() => postComment()}
           >
-            {commentMutation.isLoading || updateCommentMutation.isLoading
-            ?
-              <CircleSpinner loading={commentMutation.isLoading || updateCommentMutation.isLoading}
-                              size={18} color="#dc2626" />
-            :
+            {commentMutation.isLoading || updateCommentMutation.isLoading ? (
+              <CircleSpinner
+                loading={commentMutation.isLoading || updateCommentMutation.isLoading}
+                size={18}
+                color="#dc2626"
+              />
+            ) : (
               t('post_content.footer.comment.post')
-            }
+            )}
           </Button>
           <Button
             variant="ghost"
@@ -211,7 +213,6 @@ export function ReplyTextbox({
           body={text}
           className="prose max-w-full border-2 border-slate-200 p-2 dark:prose-invert"
           author=""
-          doNotShowImages={false}
         />
       </div>
     </div>

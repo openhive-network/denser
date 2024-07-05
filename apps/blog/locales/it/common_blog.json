@@ -348,7 +348,7 @@
     },
     "body": {
       "copyright": "Questo post non è disponibile a causa di una richiesta di copyright.",
-      "images_were_hidden": "Le immagini sono state nascoste a causa della bassa reputazione.",
+      "content_were_hidden": "Il contenuto è stato nascosto a causa di basse valutazioni",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
       "leave_this_app": "You are about to leave this app.",

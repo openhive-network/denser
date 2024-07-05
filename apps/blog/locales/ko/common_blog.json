@@ -348,7 +348,7 @@
     },
     "body": {
       "copyright": "이 게시물은 저작권 요청으로 인해 사용할 수 없습니다.",
-      "images_were_hidden": "Images were hidden due to low ratings.",
+      "content_were_hidden": "콘텐츠가 낮은 평가로 인해 숨겨졌습니다.",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
       "leave_this_app": "You are about to leave this app.",

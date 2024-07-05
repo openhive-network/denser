@@ -37,8 +37,8 @@ const rendererNoImages = new DefaultRenderer({
   doNotShowImages: true
 });
 
-export function getRenderer(author: string = '', doNotShowImages: boolean = false): DefaultRenderer {
-  if (doNotShowImages || (!!author && imageUserBlocklist.includes(author))) {
+export function getRenderer(author: string = ''): DefaultRenderer {
+  if (!!author && imageUserBlocklist.includes(author)) {
     return rendererNoImages;
   } else {
     return rendererRegular;
