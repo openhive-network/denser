@@ -26,8 +26,6 @@ import { Badge } from '@ui/components/badge';
 import { Button } from '@ui/components/button';
 import { Separator } from '@ui/components';
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { i18n } from '@/blog/next-i18next.config';
 import { AlertDialogFlag } from '@/blog/components/alert-window-flag';
 import VotesComponent from '@/blog/components/votes';
 import { useLocalStorage } from 'usehooks-ts';
@@ -45,10 +43,8 @@ import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import CustomError from '@/blog/components/custom-error';
 import RendererContainer from '@/blog/components/rendererContainer';
 import { getLogger } from '@ui/lib/logging';
-import { useRebloggedByQuery } from '@/blog/components/hooks/use-reblogged-by-query';
-import ScrollToElement from '@/blog/components/scroll-to-element';
 import ReblogTrigger from '@/blog/components/reblog-trigger';
-import { getTranslations } from '../../../../lib/get-translations';
+import { getTranslations } from '@/blog/lib/get-translations';
 
 const logger = getLogger('app');
 
@@ -107,8 +103,6 @@ function PostPage({
   } = useQuery(['activeVotes'], () => getActiveVotes(username, permlink), {
     enabled: !!username && !!permlink
   });
-
-  const { data: isReblogged } = useRebloggedByQuery(post?.author, post?.permlink, user.username);
 
   const [discussionState, setDiscussionState] = useState<Entry[]>();
   const router = useRouter();
