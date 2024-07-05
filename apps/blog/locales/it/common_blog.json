@@ -409,6 +409,7 @@
     }
   },
   "submit_page": {
+    "log_in_to_post": "Accedi per pubblicare.",
     "clean_post_editor": "Sei sicuro di voler cancellare l'editor di post?",
     "cover_image": "Seleziona la tua immagine di copertina:",
     "my_communities": "Le mie Comunità",

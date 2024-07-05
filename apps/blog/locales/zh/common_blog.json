@@ -409,6 +409,7 @@
     }
   },
   "submit_page": {
+    "log_in_to_post": "登录后才能发布帖子。",
     "clean_post_editor": "您确定要清除帖子编辑器吗？",
     "cover_image": "选择您的封面图片：",
     "my_communities": "我的社群",

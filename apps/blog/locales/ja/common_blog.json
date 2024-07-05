@@ -409,6 +409,7 @@
     }
   },
   "submit_page": {
+    "log_in_to_post": "投稿するにはログインしてください。",
     "clean_post_editor": "投稿エディタをクリアしてもよろしいですか？",
     "cover_image": "カバー画像を選択してください：",
     "my_communities": "私のコミュニティ",
