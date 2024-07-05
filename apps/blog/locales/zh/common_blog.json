@@ -348,7 +348,7 @@
     },
     "body": {
       "copyright": "此帖由于版权请求而不可用。",
-      "images_were_hidden": "图片由于评级不足而被隐藏。",
+      "content_were_hidden": "由于评分较低，内容已被隐藏。",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
       "leave_this_app": "You are about to leave this app.",

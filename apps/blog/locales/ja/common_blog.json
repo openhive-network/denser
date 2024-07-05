@@ -348,7 +348,7 @@
     },
     "body": {
       "copyright": "この投稿は著作権の申し立てにより利用できません。",
-      "images_were_hidden": "評価が低いため画像は非表示になりました。",
+      "content_were_hidden": "コンテンツは低評価のため非表示にされました。",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
       "leave_this_app": "You are about to leave this app.",

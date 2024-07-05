@@ -372,7 +372,7 @@
     },
     "body": {
       "copyright": "This post is not available due to a copyright claim.",
-      "images_were_hidden": "Images were hidden due to low ratings.",
+      "content_were_hidden": "Content were hidden due to low ratings.",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
       "leave_this_app": "You are about to leave this app.",

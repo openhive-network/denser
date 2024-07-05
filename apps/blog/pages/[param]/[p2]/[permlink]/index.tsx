@@ -270,7 +270,7 @@ function PostPage({
               <>
                 <Separator />
                 <div className="my-8 flex items-center justify-between text-red-500">
-                  {t('post_content.body.images_were_hidden')}
+                  {t('post_content.body.content_were_hidden')}
                   <Button variant="outlineRed" onClick={() => setMutedPost(false)}>
                     {t('post_content.body.show')}
                   </Button>
