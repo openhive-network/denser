@@ -81,6 +81,14 @@
       "button_sign_auth": "Подписать авторизационную транзакцию",
       "button_signin_unlocked": "Войти с подписанной транзакцией"
     },
+    "zod_error": {
+      "password_length": "Длина пароля должна быть больше 6 символов",
+      "invalid_keytype": "Недопустимый тип ключа",
+      "keytype_required": "Требуется указать тип ключа",
+      "invalid_wif": "Неверный ключ WIF",
+      "no_wif": "Пользователь не предоставил ключ WIF",
+      "no_wif_key": "Отсутствует ключ WIF"
+    },
     "signin_with_keychain": "Расширение Hive Keychain",
     "signin_with_wif": "Войти с WIF (устаревший)",
     "signin_with_hiveauth": "HiveAuth",

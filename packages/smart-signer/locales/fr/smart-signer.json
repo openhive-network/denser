@@ -81,6 +81,14 @@
       "button_sign_auth": "Signer l'autorisation tx",
       "button_signin_unlocked": "Se connecter avec tx signé"
     },
+    "zod_error": {
+      "password_length": "La longueur du mot de passe doit être supérieure à 6 caractères",
+      "invalid_keytype": "Type de clé invalide",
+      "keytype_required": "Le type de clé est requis",
+      "invalid_wif": "Clé WIF invalide",
+      "no_wif": "Aucune clé WIF fournie",
+      "no_wif_key": "Aucune clé WIF"
+    },
     "signin_with_keychain": "Extension Hive Keychain",
     "signin_with_wif": "Se connecter avec WIF (Legacy)",
     "signin_with_hiveauth": "HiveAuth",

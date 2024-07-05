@@ -81,6 +81,14 @@
       "button_sign_auth": "Podpisz transakcję autoryzacji",
       "button_signin_unlocked": "Zaloguj się z podpisaną transakcją"
     },
+    "zod_error": {
+      "password_length": "Długość hasła powinna być większa niż 6 znaków",
+      "invalid_keytype": "Nieprawidłowy typ klucza",
+      "keytype_required": "Wymagany jest typ klucza",
+      "invalid_wif": "Nieprawidłowy klucz WIF",
+      "no_wif": "Brak klucza WIF od użytkownika",
+      "no_wif_key": "Brak klucza WIF"
+    },
     "signin_with_keychain": "Rozszerzenie Hive Keychain",
     "signin_with_wif": "Zaloguj się za pomocą WIF (Legacy)",
     "signin_with_hiveauth": "HiveAuth",

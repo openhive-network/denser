@@ -81,6 +81,14 @@
       "button_sign_auth": "签署授权交易",
       "button_signin_unlocked": "使用已签署交易登录"
     },
+    "zod_error": {
+      "password_length": "密码长度应大于6个字符",
+      "invalid_keytype": "无效的密钥类型",
+      "keytype_required": "需要密钥类型",
+      "invalid_wif": "无效的WIF密钥",
+      "no_wif": "用户没有提供WIF密钥",
+      "no_wif_key": "没有WIF密钥"
+    },
     "signin_with_keychain": "Hive密钥链扩展",
     "signin_with_wif": "使用WIF登录（传统）",
     "signin_with_hiveauth": "HiveAuth登录",

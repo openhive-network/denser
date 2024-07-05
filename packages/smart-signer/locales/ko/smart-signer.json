@@ -81,6 +81,14 @@
       "button_sign_auth": "승인 거래 서명",
       "button_signin_unlocked": "서명된 거래로 로그인"
     },
+    "zod_error": {
+      "password_length": "비밀번호 길이는 6자 이상이어야 합니다",
+      "invalid_keytype": "유효하지 않은 키 유형",
+      "keytype_required": "키 유형이 필요합니다",
+      "invalid_wif": "유효하지 않은 WIF 키",
+      "no_wif": "사용자가 WIF 키를 제공하지 않았습니다",
+      "no_wif_key": "WIF 키가 없습니다"
+    },
     "signin_with_keychain": "Hive Keychain 확장",
     "signin_with_wif": "WIF로 로그인 (구버전)",
     "signin_with_hiveauth": "HiveAuth",

@@ -81,6 +81,14 @@
       "button_sign_auth": "Firmar transacción de autorización",
       "button_signin_unlocked": "Iniciar sesión con transacción firmada"
     },
+    "zod_error": {
+      "password_length": "La longitud de la contraseña debe ser superior a 6 caracteres",
+      "invalid_keytype": "Tipo de clave no válido",
+      "keytype_required": "Se requiere especificar el tipo de clave",
+      "invalid_wif": "Clave WIF no válida",
+      "no_wif": "No se proporcionó clave WIF",
+      "no_wif_key": "No hay clave WIF"
+    },
     "signin_with_keychain": "Extensión Hive Keychain",
     "signin_with_wif": "Iniciar sesión con WIF (Legacy)",
     "signin_with_hiveauth": "HiveAuth",

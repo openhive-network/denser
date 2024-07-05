@@ -81,6 +81,14 @@
       "button_sign_auth": "署名されたtxを送信",
       "button_signin_unlocked": "署名されたtxでサインイン"
     },
+    "zod_error": {
+      "password_length": "パスワードの長さは6文字以上である必要があります",
+      "invalid_keytype": "無効なキータイプ",
+      "keytype_required": "キータイプが必要です",
+      "invalid_wif": "無効なWIFキー",
+      "no_wif": "ユーザーからWIFキーが指定されていません",
+      "no_wif_key": "WIFキーがありません"
+    },
     "signin_with_keychain": "Hive Keychain拡張機能",
     "signin_with_wif": "WIFでサインイン（レガシー）",
     "signin_with_hiveauth": "HiveAuth",
