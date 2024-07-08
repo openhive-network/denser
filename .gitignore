@@ -7,5 +7,7 @@ playwright-report
 test-results
 version.json
 */**/auth/worker.js
+*/**/sw.js
+*/**/workbox-*
 tmp
 ssl
