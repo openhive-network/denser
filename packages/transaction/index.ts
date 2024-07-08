@@ -494,26 +494,18 @@ export class TransactionService {
   ) {
     const chain = await hiveChainService.getHiveChain();
     return await this.processHiveAppOperation((builder) => {
-      const reply = new ReplyBuilder(
-        parentAuthor,
-        parentPermlink,
-        this.signerOptions.username,
-        body,
-        undefined,
-        `re-${parentAuthor.replaceAll('.', '-')}-${Date.now()}`
-      );
-
-      if (preferences.comment_rewards === '100%') {
-        reply.setPercentHbd(0);
-      }
-      if (preferences.comment_rewards === '50%' || preferences.comment_rewards === '0%') {
-        reply.setPercentHbd(10000);
-      }
-      if (preferences.comment_rewards === '0%') {
-        reply.setMaxAcceptedPayout(chain.hbd(0));
-      }
-
-      builder.pushRawOperation(reply.build());
+      builder.pushOperations(ReplyBuilder, (replyBuilder) => {
+        if (preferences.comment_rewards === '100%') {
+          replyBuilder.setPercentHbd(0);
+        }
+        if (preferences.comment_rewards === '50%' || preferences.comment_rewards === '0%') {
+          replyBuilder.setPercentHbd(10000);
+        }
+        if (preferences.comment_rewards === '0%') {
+          replyBuilder.setMaxAcceptedPayout(chain.hbd(0));
+        }
+      }, parentAuthor, parentPermlink, this.signerOptions.username, body, undefined, `re-${parentAuthor.replaceAll('.', '-')}-${Date.now()}`)
+      
     }, transactionOptions);
   }
 
@@ -525,15 +517,7 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     return await this.processHiveAppOperation((builder) => {
-      const reply = new ReplyBuilder(
-        parentAuthor,
-        parentPermlink,
-        this.signerOptions.username,
-        body,
-        {},
-        permlink
-      );
-      builder.pushRawOperation(reply.build());
+      builder.pushOperations(ReplyBuilder, () => {}, parentAuthor, parentPermlink, this.signerOptions.username, body, {}, permlink);
     }, transactionOptions);
   }
 
@@ -554,8 +538,8 @@ export class TransactionService {
   ) {
     const chain = await hiveChainService.getHiveChain();
     return await this.processHiveAppOperation((builder) => {
-      const article = new ArticleBuilder(this.signerOptions.username, title, body, {}, permlink);
-      article
+    builder.pushOperations(ArticleBuilder, (articleBuilder) => {
+        articleBuilder
         .setCategory(category !== 'blog' ? category : tags[0])
         .pushTags(...tags)
         .pushMetadataProperty({ summary: summary })
@@ -563,24 +547,23 @@ export class TransactionService {
         .pushImages(image ? image : '');
 
       if (!editMode) {
-        article.setMaxAcceptedPayout(maxAcceptedPayout);
+        articleBuilder.setMaxAcceptedPayout(maxAcceptedPayout);
 
         if (payoutType === '100%') {
-          article.setPercentHbd(0);
+          articleBuilder.setPercentHbd(0);
         }
         if (payoutType === '50%' || payoutType === '0%') {
-          article.setPercentHbd(10000);
+          articleBuilder.setPercentHbd(10000);
         }
         if (payoutType === '0%') {
-          article.setMaxAcceptedPayout(chain.hbd(0));
+          articleBuilder.setMaxAcceptedPayout(chain.hbd(0));
         }
 
         beneficiaries.forEach((beneficiary) => {
-          article.addBeneficiary(beneficiary.account, Number(beneficiary.weight));
+          articleBuilder.addBeneficiary(beneficiary.account, Number(beneficiary.weight));
         });
       }
-
-      builder.pushRawOperation(article.build());
+      }, this.signerOptions.username, title, body, {}, permlink)
     }, transactionOptions);
   }
 
