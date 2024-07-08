@@ -187,7 +187,7 @@ export async function getTransactionDigest(
 
   // Pass operation to transaction, if it exists.
   if (operation) {
-    txBuilder.push(operation);
+    txBuilder.pushRawOperation(operation);
   }
 
   logger.info('tx.toString(): %s', txBuilder.toString());

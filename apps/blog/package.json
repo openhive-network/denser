@@ -29,7 +29,7 @@
     "@hive/tsconfig": "*",
     "@hive/ui": "*",
     "@hiveio/content-renderer": "^2.2.0",
-    "@hiveio/wax": "^0.3.8-stable.240604171105",
+    "@hiveio/wax": "^1.27.6-rc1-240708114550",
     "@hookform/resolvers": "^3.1.1",
     "@next/bundle-analyzer": "^14.2.2",
     "@types/big.js": "^6.2.2",

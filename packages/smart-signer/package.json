@@ -8,8 +8,9 @@
   },
   "dependencies": {
     "@hive/ui": "*",
-    "@hiveio/hb-auth": "^0.0.1-stable.240605130732",
-    "@hiveio/wax": "^0.3.8-stable.240604171105",
+    "@hiveio/dhive": "^1.3.0",
+    "@hiveio/hb-auth": "^0.0.1-stable.240708120707",
+    "@hiveio/wax": "^1.27.6-rc1-240708114550",
     "@tanstack/react-query": "^4.36.1",
     "change-case": "^5.4.3",
     "cors": "^2.8.5",
