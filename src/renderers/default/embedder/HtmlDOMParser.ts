@@ -135,7 +135,11 @@ export class HtmlDOMParser {
                     phishyDiv.textContent = `${child.textContent} / ${url}`;
                     phishyDiv.setAttribute('title', this.localization.phishingWarning);
                     phishyDiv.setAttribute('class', 'phishy');
-                    (child as any).parentNode.replaceChild(phishyDiv, child);
+                    const parent = child.parentNode;
+                    if (parent) {
+                        parent.appendChild(phishyDiv);
+                        parent.removeChild(child);
+                    }
                 } else {
                     child.setAttribute('href', sanitizedLink);
                 }
@@ -157,7 +161,12 @@ export class HtmlDOMParser {
             return;
         }
         const html = this.xmlSerializer.serializeToString(child);
-        (child as any).parentNode.replaceChild(this.domParser.parseFromString(`<div class="videoWrapper">${html}</div>`), child);
+        const wrapper = this.domParser.parseFromString(`<div class="videoWrapper">${html}</div>`);
+        const parent = child.parentNode;
+        if (parent) {
+            parent.appendChild(wrapper);
+            parent.removeChild(child);
+        }
     }
 
     // TODO this is youtube specific but should be executed for all iframes and embedders
@@ -209,7 +218,11 @@ export class HtmlDOMParser {
             const content = this.linkify(data);
             if (this.mutate && content !== data) {
                 const newChild = this.domParser.parseFromString(`<span>${content}</span>`);
-                (child.parentNode as any).replaceChild(newChild, child);
+                const parent = child.parentNode;
+                if (parent) {
+                    parent.appendChild(newChild);
+                    parent.removeChild(child);
+                }
                 return newChild;
             }
         } catch (error) {
@@ -290,8 +303,10 @@ export class HtmlDOMParser {
                 const pre = doc.createElement('pre');
                 pre.setAttribute('class', 'image-url-only');
                 pre.appendChild(doc.createTextNode(image.getAttribute('src') || ''));
-                if (image.parentNode) {
-                    image.parentNode.replaceChild(pre, image);
+                const parent = image.parentNode;
+                if (parent) {
+                    parent.appendChild(pre);
+                    parent.removeChild(image);
                 }
             }
         }
