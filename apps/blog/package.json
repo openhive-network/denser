@@ -9,7 +9,7 @@
     "dev": "react-env -- next dev -p 3000 | npx pino-pretty --colorize",
     "devssl": "react-env -- next dev --port 3000 --experimental-https --experimental-https-key ../../ssl/server-key.pem --experimental-https-cert ../../ssl/server-cert.pem | npx pino-pretty --colorize",
     "prebuild": "npm run clean",
-    "build": "ANALYZE=true react-env -- next build",
+    "build": "react-env -- next build",
     "postbuild": "npm run copy:worker",
     "start": "react-env -- next start -p 3000",
     "lint": "eslint .",
