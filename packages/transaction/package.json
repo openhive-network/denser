@@ -8,7 +8,6 @@
   },
   "dependencies": {
     "@hive/smart-signer": "*",
-    "@hiveio/dhive": "^1.2.8",
     "@hiveio/wax": "^0.3.8-stable.240604171105",
     "@hiveio/workerbee": "^0.4.1-240607082855",
     "secure-random": "^1.1.2",

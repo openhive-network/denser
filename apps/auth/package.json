@@ -25,7 +25,6 @@
     "@hive/transaction": "*",
     "@hive/tsconfig": "*",
     "@hive/ui": "*",
-    "@hiveio/dhive": "^1.2.8",
     "@hiveio/wax": "^0.3.8-stable.240604171105",
     "@hookform/resolvers": "^3.3.1",
     "@tanstack/react-query": "^4.36.1",
