@@ -10,7 +10,7 @@
     "@hive/smart-signer": "*",
     "@hiveio/dhive": "^1.2.8",
     "@hiveio/hive-js": "^2.0.7",
-    "@hiveio/wax": "^0.3.8-stable.240604171105",
+    "@hiveio/wax": "^1.27.6-rc1-240709083241",
     "@hiveio/workerbee": "^0.4.1-240607082855",
     "secure-random": "^1.1.2",
     "set-interval-async": "^3.0.3",
