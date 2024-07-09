@@ -217,7 +217,7 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                   </CardHeader>{' '}
                   <Separator orientation="horizontal" />
                   <AccordionContent className="p-0">
-                    <CardContent className="pb-2 ">
+                    <CardContent className="pb-2">
                       {legalBlockedUser ? (
                         <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
                       ) : userFromDMCA ? (
@@ -234,7 +234,7 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                         />
                       ) : (
                         <CardDescription
-                          className="prose break-words dark:text-white"
+                          className="prose flex max-w-full break-words dark:text-white"
                           data-testid="comment-card-description"
                         >
                           <RendererContainer body={comment.body} author={comment.author} className="" />
