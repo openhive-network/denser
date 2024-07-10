@@ -438,6 +438,7 @@ export class HomePage {
   async moveToMutedPosts() {
     await this.getFilterPosts.click();
     await this.page.getByText('Muted').click();
+    await expect(this.getFirstPostTitle).toBeVisible()
   }
 
   async moveToFirstPost() {

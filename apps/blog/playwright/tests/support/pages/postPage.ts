@@ -88,9 +88,11 @@ export class PostPage {
   readonly postFooterDownvoteButton: Locator;
   readonly postFooterDownvoteTooltip: Locator;
   readonly firstPostAffiliationTag: Locator;
+  readonly showPostBodyBtn: Locator;
 
   constructor(page: Page) {
     this.page = page;
+    this.showPostBodyBtn = page.getByRole('button', { name: 'Show' });
     this.postListItemOnHomePage = page.locator('li[data-testid="post-list-item"]');
     this.firstPostImageOnHomePage = page.locator('li[data-testid="post-list-item"]:nth-of-type(1) img');
     this.firstPostTitleOnHomePage = page
