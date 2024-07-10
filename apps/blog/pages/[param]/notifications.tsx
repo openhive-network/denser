@@ -30,7 +30,7 @@ export default function UserNotifications() {
         ) : (
           <div
             key="empty"
-            className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
+            className="bg-card-noContent border-card-empty-border mt-12 border-2 border-solid px-4 py-6 text-sm"
             data-testid="user-has-not-had-any-notifications-yet"
           >
             {t('user_profile.no_notifications_yet', { username: username })}

@@ -140,7 +140,7 @@ const FeedPage: FC = () => {
                   })
                 ) : (
                   <div
-                    className="flex flex-col gap-6 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
+                    className="bg-card-noContent border-card-empty-border flex flex-col gap-6 border-2 border-solid px-4 py-6 text-sm"
                     data-testid="user-has-not-started-blogging-yet"
                   >
                     <span>You haven&apos;t followed anyone yet!</span>

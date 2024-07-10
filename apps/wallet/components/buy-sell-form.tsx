@@ -177,7 +177,7 @@ export default function BuyOrSellForm({
           className={clsx({
             'border-red-500 bg-black text-red-500 hover:bg-red-950 hover:text-red-400':
               transaction === 'sell',
-            'border-green-500 bg-green-100 text-green-500 hover:bg-green-50 hover:text-green-600':
+            'bg-card-noContent border-card-empty-border border-2 border-solid text-green-500 hover:bg-green-50 hover:text-green-600':
               transaction === 'buy'
           })}
         >

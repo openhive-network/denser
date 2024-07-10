@@ -15,8 +15,15 @@ import { getTranslations } from '../../lib/get-translations';
 
 const logger = getLogger('app');
 
-const UserCommunities = ({ hivebuzz, peakd, errorCode = 0 }: { hivebuzz: Badge[]; peakd: Badge[]; errorCode: number }) => {
-
+const UserCommunities = ({
+  hivebuzz,
+  peakd,
+  errorCode = 0
+}: {
+  hivebuzz: Badge[];
+  peakd: Badge[];
+  errorCode: number;
+}) => {
   const { username } = useSiteParams();
   const { t } = useTranslation('common_blog');
   const { isLoading, error, data } = useQuery(
@@ -46,7 +53,7 @@ const UserCommunities = ({ hivebuzz, peakd, errorCode = 0 }: { hivebuzz: Badge[]
         ) : (
           <div
             key="empty"
-            className="my-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
+            className="bg-card-noContent border-card-empty-border my-12 border-2 border-solid  px-4 py-6 text-sm"
             data-testid="user-does-not-have-any-subscriptions-yet"
           >
             {t('user_profile.social_tab.you_dont_have_any_subscriptions')}
