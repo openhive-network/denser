@@ -1,7 +1,7 @@
 import { getLogger } from '@hive/ui/lib/logging';
 import { WaxChainApiError } from '@hiveio/wax';
 
-// TODO
+// TODO: check if still occurs
 // Debug why the import
 // ```
 // import { WaxChainApiError } from '@hiveio/wax';
@@ -11,15 +11,13 @@ import { WaxChainApiError } from '@hiveio/wax';
 // Error: No "exports" main defined in /home/syncad/src/denser/node_modules/@hiveio/wax/package.json
 // ```
 
-// import { WaxChainApiError } from '@hiveio/wax';
-
 const logger = getLogger('app');
 
 /**
  * Default error description, used when trying to get smarter
  * description fails
  */
-const errorDescription = 'Transaction broadcast error';
+const defaultErrorDescription = 'Transaction broadcast error';
 
 /**
  * Strings to look for in error's stuff. When found, we can assume
@@ -45,16 +43,14 @@ const wellKnownErrorDescriptions = [
 export function transformError<T>(e: any, ctx?: { method: string; params: T }, defaultDescription?: string) {
   logger.error('in transformError: got error (will be swallowed): %o on %o', e, ctx);
   const apiMessage = e.apiError?.data.message.charAt(0).toUpperCase() + e.apiError?.data.message.slice(1);
-  let description = apiMessage && apiMessage.toLowerCase() !== 'assert exception' ? apiMessage : 'Operation failed';
-  
+  let description =
+    apiMessage && apiMessage.toLowerCase() !== 'assert exception' ? apiMessage : 'Operation failed';
+
   if (!defaultDescription) {
-    let errorDescription = '';
+    let errorDescription = defaultErrorDescription;
 
-    // TODO Look at the top of this file. We have issue with failing
-    // import of WaxChainApiError.
-
-    // if (e instanceof WaxChainApiError) {
-    if (false) {
+    // TODO: check if error at the top of the file still occurs
+    if (e instanceof WaxChainApiError) {
       const error = e as any;
       if (error?.apiError?.code === -32003) {
         errorDescription = error?.apiError?.data?.stack[0]?.format;
