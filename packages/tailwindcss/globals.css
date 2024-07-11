@@ -7,6 +7,7 @@
     --background: 0 0% 100%; /* white */
     --foreground: 0, 0%, 20%; /* Black */
     --background-secondary: 0 0% 97%; /* white */
+    --background-tertiary: 214, 32%, 91%; /* gray */
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
@@ -42,6 +43,8 @@
   .dark {
     --background: 224 71% 4%;
     --foreground: 213 31% 91%;
+    --background-secondary: 210, 11%, 15%; /* gray */
+    --background-tertiary: 217, 19%, 27%; /* gray */
 
     --muted: 223 47% 11%;
     --muted-foreground: 215.4 16.3% 56.9%;
