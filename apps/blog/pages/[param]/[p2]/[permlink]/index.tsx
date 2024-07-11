@@ -194,7 +194,7 @@ function PostPage({
   }
   return (
     <div className="py-8">
-      <div className="relative mx-auto my-0 max-w-4xl bg-white px-8 py-4 dark:bg-slate-900">
+      <div className="relative mx-auto my-0 max-w-4xl bg-background px-8 py-4">
         {communityData ? (
           <AlertDialogFlag
             community={community}
@@ -212,7 +212,7 @@ function PostPage({
                 {post.title}
               </h1>
             ) : (
-              <div className="flex flex-col gap-2 bg-green-50 p-2 dark:bg-slate-950">
+              <div className="bg-card-noContent border-card-emptyBorder flex flex-col gap-2 border-2 border-solid p-2">
                 <h4 className="text-sm">
                   {t('post_content.if_comment.you_are_viewing_a_single_comments_thread_from')}:
                 </h4>
@@ -220,7 +220,7 @@ function PostPage({
                   {post.title}
                 </h1>
                 <Link
-                  className="text-sm text-slate-500 hover:text-red-500"
+                  className="text-sm hover:text-destructive"
                   href={`${postUrl()}`}
                   data-testid="view-the-full-context"
                 >
@@ -228,7 +228,7 @@ function PostPage({
                 </Link>
                 {discussionState && !discussionState.some((e) => e.depth === 1) ? (
                   <Link
-                    className="text-sm text-slate-500 hover:text-red-500"
+                    className="text-sm hover:text-destructive"
                     href={`../../${parentUrl()}`}
                     data-testid="view-the-direct-parent"
                   >
@@ -269,7 +269,7 @@ function PostPage({
             ) : mutedPost ? (
               <>
                 <Separator />
-                <div className="my-8 flex items-center justify-between text-red-500">
+                <div className="my-8 flex items-center justify-between text-destructive">
                   {t('post_content.body.content_were_hidden')}
                   <Button variant="outlineRed" onClick={() => setMutedPost(false)}>
                     {t('post_content.body.show')}
@@ -294,7 +294,7 @@ function PostPage({
                     <li key={tag}>
                       <Link
                         href={`/trending/${tag}`}
-                        className="my-2 rounded-md bg-accent px-2 py-1 text-sm text-accent-foreground hover:border-[1px] hover:border-accent-foreground"
+                        className="bg-background-secondary my-2 rounded-md border-[1px] border-border px-2 py-1 text-[14px] hover:border-[#788187]"
                       >
                         #{tag}
                       </Link>
@@ -311,7 +311,7 @@ function PostPage({
                     {dateToFullRelative(post.created, t)}
                   </span>
                   {t('post_content.footer.in')}
-                  <span className="px-1 text-red-600">
+                  <span className="px-1 text-destructive">
                     {post.community_title ? (
                       <Link
                         href={`/trending/${community}`}
@@ -337,7 +337,7 @@ function PostPage({
                     blacklist={firstPost ? firstPost.blacklists : post.blacklists}
                   />
                   {post.author_title ? (
-                    <Badge variant="outline" className="border-red-600 text-slate-500">
+                    <Badge variant="outline" className="border-destructive">
                       {post.author_title}
                     </Badge>
                   ) : null}
@@ -355,14 +355,14 @@ function PostPage({
                       onClick={() => {
                         setReply(!reply), removeBox();
                       }}
-                      className="flex items-center text-red-600"
+                      className="flex items-center text-destructive"
                       data-testid="comment-reply"
                     >
                       {t('post_content.footer.reply')}
                     </button>
                   ) : (
                     <DialogLogin>
-                      <button className="flex items-center text-red-600" data-testid="comment-reply">
+                      <button className="flex items-center text-destructive" data-testid="comment-reply">
                         {t('post_content.footer.reply')}
                       </button>
                     </DialogLogin>
@@ -374,7 +374,7 @@ function PostPage({
                         onClick={() => {
                           setEdit(!edit);
                         }}
-                        className="flex items-center text-red-600"
+                        className="flex items-center text-destructive"
                         data-testid="post-edit"
                       >
                         {t('post_content.footer.edit')}
@@ -392,7 +392,7 @@ function PostPage({
                             <Icons.comment className="h-4 w-4 sm:mr-1" />
                           )}
                         </Link>
-                        <Link href={post.url} className="flex cursor-pointer items-center text-red-600">
+                        <Link href={post.url} className="text- flex cursor-pointer items-center">
                           {post.children}
                         </Link>
                       </TooltipTrigger>
@@ -419,9 +419,9 @@ function PostPage({
                   >
                     <span
                       data-testid="comment-payout"
-                      className={`text-xs text-red-600 hover:cursor-pointer sm:text-sm ${
+                      className={`text-xs text-destructive hover:cursor-pointer sm:text-sm ${
                         Number(post.max_accepted_payout.slice(0, 1)) === 0
-                          ? '!text-gray-600 line-through'
+                          ? 'text-foreground line-through'
                           : ''
                       }`}
                     >
@@ -431,7 +431,7 @@ function PostPage({
                   {!isActiveVotesLoading && activeVotesData ? (
                     <DetailsCardVoters post={post}>
                       {post.stats?.total_votes && post.stats?.total_votes !== 0 ? (
-                        <span className="text-xs text-red-500 sm:text-sm">
+                        <span className="text-xs text-destructive sm:text-sm">
                           {post.stats?.total_votes > 1
                             ? t('post_content.footer.votes', { votes: post.stats?.total_votes })
                             : t('post_content.footer.vote')}
@@ -446,7 +446,7 @@ function PostPage({
                   <LinkedInShare title={post.title} url={post.url} />
                   <RedditShare title={post.title} url={post.url} />
                   <SharePost path={router.asPath}>
-                    <Link2 className="cursor-pointer hover:text-red-600" data-testid="share-post" />
+                    <Link2 className="cursor-pointer hover:text-destructive" data-testid="share-post" />
                   </SharePost>
                 </div>
               </div>
