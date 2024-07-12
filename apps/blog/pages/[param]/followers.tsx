@@ -60,7 +60,7 @@ export default function Followers() {
           {followersData.data?.pages[page].map((e) => (
             <li
               key={e.follower}
-              className="flex items-center justify-between px-3 font-semibold text-red-600 odd:bg-slate-200 even:bg-slate-100 dark:odd:bg-slate-800 dark:even:bg-slate-900"
+              className="odd:bg-background-tertiary flex items-center justify-between px-3 font-semibold text-destructive even:bg-slate-100 dark:even:bg-slate-900"
             >
               <Link href={`/@${e.follower}`}>{e.follower}</Link>
               {!user.isLoggedIn || user.username === e.follower ? null : (

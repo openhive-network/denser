@@ -145,11 +145,11 @@ const FeedPage: FC = () => {
                   >
                     <span>You haven&apos;t followed anyone yet!</span>
                     <span style={{ fontSize: '1.1rem' }}>
-                      <Link href="/" className="w-fit text-red-500">
+                      <Link href="/" className="w-fit text-destructive">
                         Explore Trending
                       </Link>
                     </span>
-                    <Link href="/welcome" className="w-fit text-red-500">
+                    <Link href="/welcome" className="w-fit text-destructive">
                       New users guide
                     </Link>
                   </div>

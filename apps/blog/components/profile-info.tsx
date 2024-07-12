@@ -5,7 +5,7 @@ import {
   getAccountFull,
   getAccount,
   getDynamicGlobalProperties,
-  getAccountReputations,
+  getAccountReputations
 } from '@transaction/lib/hive';
 import { accountReputation } from '@/blog/lib/utils';
 import { numberWithCommas } from '@ui/lib/utils';
@@ -68,9 +68,9 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
   if (profileDataIsLoading || accountDataIsLoading || dynamicGlobalDataIsLoading)
     return <Loading loading={profileDataIsLoading || accountDataIsLoading || dynamicGlobalDataIsLoading} />;
 
-    if (!accountData || !dynamicGlobalData || !profileData) {
-      return <p className="my-32 text-center text-3xl">Something went wrong</p>;
-    }
+  if (!accountData || !dynamicGlobalData || !profileData) {
+    return <p className="my-32 text-center text-3xl">Something went wrong</p>;
+  }
 
   return (
     <div className="mt-[-6rem] px-8 md:w-80" data-testid="profile-info">
@@ -80,7 +80,11 @@ const ProfileInfo = ({ handleCoverImage }: { handleCoverImage: any }) => {
       <h4 className="mb-4 mt-8 text-xl text-slate-900 dark:text-white" data-testid="profile-name">
         {profileData.profile?.name}{' '}
         <span className="text-slate-600">
-          ({accountReputationData && accountReputationData[0].reputation ? accountReputation(accountReputationData[0].reputation) : accountReputation(profileData.reputation)})
+          (
+          {accountReputationData && accountReputationData[0].reputation
+            ? accountReputation(accountReputationData[0].reputation)
+            : accountReputation(profileData.reputation)}
+          )
         </span>
       </h4>
       <h6
