@@ -20,21 +20,21 @@ export function UserPopoverCard({
   const { t } = useTranslation('common_blog');
   return (
     <Popover>
-      <PopoverTrigger data-testid="author-name-link" className="dark:text-white">
-        <div className="flex items-center pl-1 font-bold hover:cursor-pointer hover:text-red-500">
+      <PopoverTrigger data-testid="author-name-link">
+        <div className="flex items-center pl-1 font-bold hover:cursor-pointer hover:text-destructive">
           {withImage && <UserAvatar username={author} size="normal" />}
-          <span className="hover:cursor-pointer hover:text-red-600">{author}</span>
+          <span className="hover:cursor-pointer hover:text-destructive">{author}</span>
         </div>
       </PopoverTrigger>
       <span
         title={t('post_content.reputation_title')}
-        className="mr-1 block font-normal dark:text-white"
+        className="mr-1 block font-normal"
         data-testid="author-reputation"
       >
         ({accountReputation(author_reputation)})
       </span>
       {blacklist && blacklist[0] ? (
-        <span className="mr-1 text-red-600" title={blacklist[0]}>
+        <span className="mr-1 text-destructive" title={blacklist[0]}>
           ({blacklist.length})
         </span>
       ) : null}

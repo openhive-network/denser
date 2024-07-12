@@ -12,8 +12,12 @@ export default function FacebookShare({ url }: { url: string }) {
     );
   };
   return (
-    <div className='cursor-pointer hover:text-red-600' onClick={openWindow}
-         title={t('post_content.footer.share_on') + `Facebook`} data-testid='share-on-facebook'>
+    <div
+      className="cursor-pointer hover:text-destructive"
+      onClick={openWindow}
+      title={t('post_content.footer.share_on') + `Facebook`}
+      data-testid="share-on-facebook"
+    >
       <Facebook />
     </div>
   );
