@@ -10,6 +10,7 @@ import DialogLogin from './dialog-login';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getLogger } from '@ui/lib/logging';
 import version from '../version.json';
+import { siteConfig } from '@ui/config/site';
 
 const Item = ({
   href,
@@ -88,7 +89,7 @@ const Sidebar = () => {
               <Icons.forward className="w-4" />
             </Item>
             <Separator className="my-2" />
-            <Item href="https://openhive.chat" target>
+            <Item href={siteConfig.openhiveChatUri} target>
               {t('navigation.sidebar.openhive_chat')} <Icons.forward className="w-4" />
             </Item>
             <Item href="https://hiveprojects.io/" target>
