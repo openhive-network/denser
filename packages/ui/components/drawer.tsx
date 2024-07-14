@@ -71,10 +71,6 @@ export const Drawer = ({
                 { [closeClassNames[side]]: !open },
                 { [openClassNames[side]]: open }
               )}
-              onClick={(event) => {
-                event.preventDefault();
-                event.stopPropagation();
-              }}
             >
               <div
                 className={clsx(
