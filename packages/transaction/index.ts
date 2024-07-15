@@ -8,6 +8,8 @@ import {
   ITransactionBuilder,
   NaiAsset,
   ReplyBuilder,
+  asset,
+  authority,
   future_extensions
 } from '@hiveio/wax';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
@@ -697,6 +699,206 @@ export class TransactionService {
         }
       });
     }, transactionOptions);
+  }
+
+  async witnessVote(
+    account: string,
+    witness: string,
+    approve: boolean,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.push({
+        account_witness_vote: {
+          account,
+          witness,
+          approve
+        }
+      });
+    }, transactionOptions);
+  }
+
+  async transferToSavings(
+    amount: asset,
+    fromAccount: string,
+    memo: string,
+    toAccount: string,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.push({
+        transfer_to_savings: {
+          amount,
+          from_account: fromAccount,
+          memo,
+          to_account: toAccount
+        }
+      });
+    }, transactionOptions);
+  }
+
+  async transfer(
+    amount: asset,
+    fromAccount: string,
+    memo: string,
+    toAccount: string,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.push({
+        transfer: {
+          amount,
+          from_account: fromAccount,
+          memo,
+          to_account: toAccount
+        }
+      });
+    }, transactionOptions);
+  }
+
+  async transferToVesting(
+    amount: asset,
+    fromAccount: string,
+    toAccount: string,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.push({
+        transfer_to_vesting: {
+          amount,
+          from_account: fromAccount,
+          to_account: toAccount
+        }
+      });
+    }, transactionOptions);
+  }
+
+  async withdrawFromVesting(
+    account: string,
+    vestingShares: asset,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.push({
+        withdraw_vesting: {
+          account,
+          vesting_shares: vestingShares
+        }
+      });
+    }, transactionOptions);
+  }
+
+  async delegateVestingShares(
+    delegator: string,
+    delegatee: string,
+    vestingShares: asset,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.push({
+        delegate_vesting_shares: {
+          delegator,
+          delegatee,
+          vesting_shares: vestingShares
+        }
+      });
+    }, transactionOptions);
+  }
+
+  async changeMasterPassword(
+    account: string,
+    newOwner: string,
+    newActive: string,
+    newPosting: string,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.push({
+        account_update2: {
+          account,
+          owner: {
+            weight_threshold: 1,
+            key_auths: {
+              [newOwner]: 1
+            },
+            account_auths: {}
+          },
+          active: {
+            weight_threshold: 1,
+            key_auths: {
+              [newActive]: 1
+            },
+            account_auths: {}
+          },
+          posting: {
+            weight_threshold: 1,
+            key_auths: {
+              [newPosting]: 1
+            },
+            account_auths: {}
+          },
+          json_metadata: '', // ignore change
+          posting_json_metadata: '', // ignore change
+          extensions: []
+        }
+      });
+    }, transactionOptions);
+  }
+
+  async createClaimedAccount(
+    creator: string,
+    memoKey: string,
+    newAccountName: string,
+    jsonMetadata: string,
+    active?: authority,
+    owner?: authority,
+    posting?: authority,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.push({
+        create_claimed_account: {
+          creator,
+          active,
+          owner,
+          posting,
+          memo_key: memoKey,
+          new_account_name: newAccountName,
+          json_metadata: jsonMetadata,
+          extensions: []
+        }
+      });
+    }, transactionOptions);
+  }
+
+  async accountCreate(
+    fee: asset,
+    memoKey: string,
+    newAccountName: string,
+    jsonMetadata: string,
+    creator: string,
+    active?: authority,
+    owner?: authority,
+    posting?: authority,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return (
+      await this.processHiveAppOperation((builder) => {
+        builder.push({
+          account_create: {
+            fee,
+            active,
+            owner,
+            posting,
+            creator,
+            memo_key: memoKey,
+            new_account_name: newAccountName,
+            json_metadata: jsonMetadata
+          }
+        });
+      }),
+      transactionOptions
+    );
   }
 }
 

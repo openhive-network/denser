@@ -216,7 +216,7 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                   </CardHeader>{' '}
                   <Separator orientation="horizontal" />
                   <AccordionContent className="p-0">
-                    <CardContent className="pb-2 ">
+                    <CardContent className="pb-2">
                       {legalBlockedUser ? (
                         <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
                       ) : userFromDMCA ? (

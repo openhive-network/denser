@@ -281,7 +281,7 @@ function PostPage({
                 <RendererContainer
                   mainPost={post.depth === 0}
                   body={post.body}
-                  className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
+                  className="entry-body markdown-view user-selectable prose py-4 dark:prose-invert"
                   author={post.author}
                 />
               </ImageGallery>
@@ -304,9 +304,9 @@ function PostPage({
               ) : null}
             </div>
             <div className="text-sm text-slate-600 dark:text-slate-400" data-testid="author-data-post-footer">
-              <div className="my-4 flex justify-between">
+              <div className="my-4 flex flex-col gap-4 sm:flex-row">
                 <div className="flex flex-wrap items-center">
-                  <Clock />
+                  <Clock className="h-4 w-4" />
                   <span className="px-1" title={String(parseDate(post.created))}>
                     {dateToFullRelative(post.created, t)}
                   </span>
@@ -331,17 +331,51 @@ function PostPage({
                     )}
                   </span>
                   {t('post_content.footer.by')}
-                  <UserPopoverCard
-                    author={post.author}
-                    author_reputation={post.author_reputation}
-                    blacklist={firstPost ? firstPost.blacklists : post.blacklists}
-                  />
-                  {post.author_title ? (
-                    <Badge variant="outline" className="border-destructive">
-                      {post.author_title}
-                    </Badge>
+                  <div className="flex">
+                    <UserPopoverCard
+                      author={post.author}
+                      author_reputation={post.author_reputation}
+                      blacklist={firstPost ? firstPost.blacklists : post.blacklists}
+                    />
+                    {post.author_title ? (
+                      <Badge variant="outline" className="border-red-600 text-slate-500">
+                        {post.author_title}
+                      </Badge>
+                    ) : null}
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 sm:gap-4">
+                  <VotesComponent post={post} />
+                  <DetailsCardHover
+                    post={post}
+                    decline={Number(post.max_accepted_payout.slice(0, 1)) === 0}
+                    post_page
+                  >
+                    <span
+                      data-testid="comment-payout"
+                      className={`text-xs text-red-600 hover:cursor-pointer sm:text-sm ${
+                        Number(post.max_accepted_payout.slice(0, 1)) === 0
+                          ? '!text-gray-600 line-through'
+                          : ''
+                      }`}
+                    >
+                      ${post.payout?.toFixed(2)}
+                    </span>
+                  </DetailsCardHover>
+                  {!isActiveVotesLoading && activeVotesData ? (
+                    <DetailsCardVoters post={post}>
+                      {post.stats?.total_votes && post.stats?.total_votes !== 0 ? (
+                        <span className="text-xs text-red-500 sm:text-sm">
+                          {post.stats?.total_votes > 1
+                            ? t('post_content.footer.votes', { votes: post.stats?.total_votes })
+                            : t('post_content.footer.vote')}
+                        </span>
+                      ) : null}
+                    </DetailsCardVoters>
                   ) : null}
                 </div>
+              </div>
+              <div className="my-4 flex gap-4">
                 <div className="flex items-center" data-testid="comment-respons-header">
                   <ReblogTrigger
                     author={post.author}
@@ -387,9 +421,9 @@ function PostPage({
                       <TooltipTrigger className="flex items-center" data-testid="comment-respons">
                         <Link href={post.url} className="flex cursor-pointer items-center">
                           {post.children > 1 ? (
-                            <Icons.messagesSquare className="h-4 w-4 sm:mr-1" />
+                            <Icons.messagesSquare className="mr-1 h-4 w-4" />
                           ) : (
-                            <Icons.comment className="h-4 w-4 sm:mr-1" />
+                            <Icons.comment className="mr-1 h-4 w-4" />
                           )}
                         </Link>
                         <Link href={post.url} className="text- flex cursor-pointer items-center">
@@ -408,38 +442,6 @@ function PostPage({
                     </Tooltip>
                   </TooltipProvider>
                 </div>
-              </div>
-              <div className="my-4 flex justify-between">
-                <div className="flex items-center gap-2 sm:gap-4">
-                  <VotesComponent post={post} />
-                  <DetailsCardHover
-                    post={post}
-                    decline={Number(post.max_accepted_payout.slice(0, 1)) === 0}
-                    post_page
-                  >
-                    <span
-                      data-testid="comment-payout"
-                      className={`text-xs text-destructive hover:cursor-pointer sm:text-sm ${
-                        Number(post.max_accepted_payout.slice(0, 1)) === 0
-                          ? 'text-foreground line-through'
-                          : ''
-                      }`}
-                    >
-                      ${post.payout?.toFixed(2)}
-                    </span>
-                  </DetailsCardHover>
-                  {!isActiveVotesLoading && activeVotesData ? (
-                    <DetailsCardVoters post={post}>
-                      {post.stats?.total_votes && post.stats?.total_votes !== 0 ? (
-                        <span className="text-xs text-destructive sm:text-sm">
-                          {post.stats?.total_votes > 1
-                            ? t('post_content.footer.votes', { votes: post.stats?.total_votes })
-                            : t('post_content.footer.vote')}
-                        </span>
-                      ) : null}
-                    </DetailsCardVoters>
-                  ) : null}
-                </div>
                 <div className="flex gap-2">
                   <FacebookShare url={post.url} />
                   <TwitterShare title={post.title} url={post.url} />
@@ -457,7 +459,7 @@ function PostPage({
         )}
       </div>
       <div id="comments" className="flex" />
-      <div className="mx-auto my-0 max-w-4xl py-4">
+      <div className="mx-auto max-w-4xl">
         {reply && post && user.isLoggedIn ? (
           <ReplyTextbox
             editMode={edit}
@@ -470,9 +472,9 @@ function PostPage({
         ) : null}
       </div>
       {!isLoadingDiscussion && discussion && discussionState && !isLoadingPost && post ? (
-        <div className="mx-auto my-0 max-w-4xl py-4 pr-8">
-          <div className="flex items-center justify-end pb-4" translate="no">
-            <span>{t('select_sort.sort_comments.sort')}</span>
+        <div className="mx-auto max-w-4xl pr-2">
+          <div className="my-1 flex items-center justify-end" translate="no">
+            <span className="pr-1">{t('select_sort.sort_comments.sort')}</span>
             <CommentSelectFilter />
           </div>
           <DynamicComments

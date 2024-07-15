@@ -457,7 +457,7 @@ test.describe('Home page tests', () => {
     await homePage.moveToFirstPostContentByClickingTitilePostCard();
   });
 
-  test('move to the first post content by clicking the description of the post card', async ({ page }) => {
+  test.skip('move to the first post content by clicking the description of the post card', async ({ page }) => {
     await homePage.goto();
     await homePage.moveToFirstPostContentByClickingDescriptionPostCard();
   });

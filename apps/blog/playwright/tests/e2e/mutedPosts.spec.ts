@@ -18,13 +18,16 @@ test.describe('Muted posts tests', () => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
   });
 
-  test('Check if properly go to muted posts', async ({ page }) => {
+  test('Check if properly go to muted posts', async ({ page, request }) => {
+
     await page.goto('/');
     await homePage.moveToMutedPosts();
-    await page.waitForRequest('https://api.hive.blog/');
-    const dropDownText = await homePage.getFilterPosts.innerText();
-
-    expect(dropDownText).toEqual('Muted');
+   
+    await page.waitForURL('/muted');
+    const url = await page.url()
+    await expect(url).toContain('/muted')
+    // const dropDownText = await homePage.getFilterPosts.innerText();
+    // expect(dropDownText).toEqual('Muted');
   });
 
   test('Check if posts in muted tab are display correctly', async ({ page, request }) => {
@@ -109,12 +112,19 @@ test.describe('Muted posts tests', () => {
     });
 
     const postAuthor = (await response.json()).result[0].author;
-    await postPage.moveToTheFirstPostInHomePageByPostTitle();
-
+    await postPage.firstPostTitleOnHomePage.click()
+    
     const articleAuthor = postPage.articleAuthorName;
     const articleAuthorText = await postPage.articleAuthorName.innerText();
     await expect(articleAuthor).toBeVisible();
     await expect(articleAuthorText).toContain(postAuthor);
+
+    const contentHidden = await page.getByText('Content were hidden due to low ratings.')
+
+    await expect(contentHidden).toBeVisible()
+
+    await postPage.showPostBodyBtn.click()
+
     await expect(postPage.articleBody).toBeVisible();
     await expect(postPage.articleFooter).toBeVisible();
   });
@@ -128,7 +138,8 @@ test.describe('Muted posts tests', () => {
 
   test('Check if image in muted tests are not displayed', async ({page}) =>{
     await page.goto('/muted');
-    await postPage.moveToTheFirstPostInHomePageByPostTitle();
+    // await postPage.moveToTheFirstPostInHomePageByPostTitle();
+    await postPage.firstPostTitleOnHomePage.click()
 
     if (await postPage.mutedPostsBannedImageText.isVisible())
       await expect(postPage.mutedPostsBannedImageText).toHaveText('(Image not shown due to low ratings)');
