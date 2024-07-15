@@ -223,7 +223,7 @@ const SiteHeader: FC = () => {
                     </UserMenu>
                   </TooltipTrigger>
                   {manabarsData && (
-                    <TooltipContent className="flex flex-col">
+                    <TooltipContent className="flex flex-col bg-background-tertiary">
                       <span>Resource Credits</span>
                       <div className="flex flex-col text-blue-600">
                         <span>(RC) level: {manabarsData.rc.percentageValue}%</span>
