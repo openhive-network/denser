@@ -15,21 +15,21 @@ const CommunitiesMybar = ({
 
   return (
     <Card
-      className={cn('my-4 hidden h-fit w-full flex-col px-8 py-2 dark:bg-slate-900 dark:text-white md:flex')}
+      className={cn('my-4 hidden h-fit w-full flex-col bg-background px-8 py-2 text-primary md:flex')}
       data-testid="card-trending-comunities"
     >
       <CardTitle>
-        <Link href="/trending" className="text-base hover:cursor-pointer hover:text-red-600">
+        <Link href="/trending" className="text-base hover:text-destructive">
           {t('navigation.communities_nav.all_posts')}
         </Link>
       </CardTitle>
       <CardTitle>
-        <Link href={`/@${username}/feed`} className="text-base hover:cursor-pointer hover:text-red-600">
+        <Link href={`/@${username}/feed`} className="text-base hover:text-destructive">
           My friends
         </Link>
       </CardTitle>
       <CardTitle>
-        <Link href="../trending/my" className="text-base hover:cursor-pointer hover:text-red-600">
+        <Link href="../trending/my" className="text-base hover:text-destructive">
           My communities
         </Link>
       </CardTitle>
@@ -40,10 +40,7 @@ const CommunitiesMybar = ({
           <ul>
             {data.map((e) => (
               <li key={e[0]}>
-                <Link
-                  href={`/trending/${e[0]}`}
-                  className="w-full text-sm font-light hover:cursor-pointer hover:text-red-600"
-                >
+                <Link href={`/trending/${e[0]}`} className="w-full text-sm font-light hover:text-destructive">
                   {e[1]}
                 </Link>
               </li>
@@ -52,7 +49,7 @@ const CommunitiesMybar = ({
         </CardContent>
       ) : null}
       <CardTitle>
-        <Link href="/communities" className="text-base hover:cursor-pointer hover:text-red-600">
+        <Link href="/communities" className="text-base hover:text-destructive">
           {t('navigation.communities_nav.explore_communities')}
         </Link>
       </CardTitle>
