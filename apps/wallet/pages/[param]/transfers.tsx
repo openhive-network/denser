@@ -291,10 +291,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
         return (
           <span>
             {t('profil.transfer_from_savings_to', { value: operation.amount?.toString() })}
-            <Link
-              href={`/@${operation.to}`}
-              className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400"
-            >
+            <Link href={`/@${operation.to}`} className="font-semibold text-primary hover:text-destructive">
               {operation.to}
             </Link>
             {t('profil.request_id', { value: operation.request_id })}
@@ -307,7 +304,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
               {t('profil.received_from_user', { value: operation.amount?.toString() })}
               <Link
                 href={`/@${operation.from}`}
-                className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400"
+                className="font-semibold text-primary hover:text-destructive"
               >
                 {operation.from}
               </Link>
@@ -317,10 +314,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
           return (
             <span>
               {t('profil.transfer_to_user', { value: operation.amount?.toString() })}
-              <Link
-                href={`/@${operation.to}`}
-                className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400"
-              >
+              <Link href={`/@${operation.to}`} className="font-semibold text-primary hover:text-destructive">
                 {operation.to}
               </Link>
             </span>
@@ -329,10 +323,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
         return (
           <span>
             {t('profil.transfer_to_savings_to', { value: operation.amount?.toString() })}
-            <Link
-              href={`/@${operation.to}`}
-              className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400"
-            >
+            <Link href={`/@${operation.to}`} className="font-semibold text-primary hover:text-destructive">
               {operation.to}
             </Link>
           </span>
@@ -341,10 +332,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
         return (
           <span>
             {t('profil.transfer_to', { value: operation.amount?.toString() })}
-            <Link
-              href={`/@${operation.to}`}
-              className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400"
-            >
+            <Link href={`/@${operation.to}`} className="font-semibold text-primary hover:text-destructive">
               {operation.to}
             </Link>
           </span>
@@ -369,7 +357,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
         <div>
           {user?.username === username && (
             <Link href="https://blocktrades.us" target="_blank">
-              <Button variant="outlineRed" className="mx-2 my-8 border-red-500 text-red-500">
+              <Button variant="outlineRed" className="mx-2 my-8 border-destructive text-destructive">
                 Buy Hive or Hive Power
               </Button>
             </Link>
@@ -379,7 +367,10 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
               <tr className="flex flex-col py-2 sm:table-row">
                 <td className="px-2 sm:px-4 sm:py-4">
                   <div className="font-semibold">HIVE</div>
-                  <p className="text-xs leading-relaxed text-zinc-600" data-testid="wallet-hive-description">
+                  <p
+                    className="text-xs leading-relaxed text-primary/70"
+                    data-testid="wallet-hive-description"
+                  >
                     {t('profil.hive_description')}
                   </p>
                 </td>
@@ -389,7 +380,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost">
                           <div>
-                            <span className="text-red-500">{amount.hive}</span>
+                            <span className="text-destructive">{amount.hive}</span>
                             <span className="m-1 text-xl">▾</span>
                           </div>
                         </Button>
@@ -451,18 +442,18 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                   )}
                 </td>
               </tr>
-              <tr className="flex flex-col bg-slate-100 py-2 dark:bg-slate-900 sm:table-row">
+              <tr className="flex flex-col bg-background-secondary py-2 sm:table-row">
                 <td className="px-2 sm:px-4 sm:py-4">
                   <div className="font-semibold">HIVE POWER</div>
                   <p
-                    className="text-xs leading-relaxed text-zinc-600"
+                    className="text-xs leading-relaxed text-primary/70"
                     data-testid="wallet-hive-power-description"
                   >
                     {t('profil.hp_description', {
                       username: accountData.name,
                       value: getCurrentHpApr(dynamicData).toFixed(2)
                     })}
-                    <span className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400">
+                    <span className="font-semibold text-primary hover:text-destructive">
                       <Link href="https://hive.blog/faq.html#How_many_new_tokens_are_generated_by_the_blockchain">
                         {t('profil.see_faq_for_details')}
                       </Link>
@@ -470,7 +461,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                   </p>
                 </td>
                 <td
-                  className="whitespace-nowrap bg-slate-100 font-semibold dark:bg-slate-900"
+                  className="whitespace-nowrap bg-background-secondary font-semibold"
                   data-testid="wallet-hive-power"
                 >
                   {user?.username === username ? (
@@ -478,7 +469,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost">
                           <div>
-                            <span className="text-red-500">{amount.hp}</span>
+                            <span className="text-destructive">{amount.hp}</span>
                             <span className="m-1 text-xl">▾</span>
                           </div>
                         </Button>
@@ -516,7 +507,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                 <td className="px-2 sm:px-4 sm:py-4">
                   <div className="font-semibold">HIVE DOLLARS</div>
                   <p
-                    className="text-xs leading-relaxed text-zinc-600"
+                    className="text-xs leading-relaxed text-primary/70"
                     data-testid="wallet-hive-dollars-description"
                   >
                     {t('profil.hive_dolar_description')}
@@ -528,7 +519,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost">
                           <div>
-                            <span className="text-red-500">{amount.hbd}</span>
+                            <span className="text-destructive">{amount.hbd}</span>
                             <span className="m-1 text-xl">▾</span>
                           </div>
                         </Button>
@@ -583,28 +574,28 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                   )}
                 </td>
               </tr>
-              <tr className=" flex flex-col bg-slate-100 py-2 dark:bg-slate-900 sm:table-row">
+              <tr className=" flex flex-col bg-background-secondary sm:table-row">
                 <td className="px-2 sm:px-4 sm:py-4">
                   <div className="font-semibold">{t('profil.savings_title')}</div>
                   <p
-                    className="text-xs leading-relaxed text-zinc-600"
+                    className="text-xs leading-relaxed text-primary/70"
                     data-testid="wallet-savings-description"
                   >
                     {t('profil.savings_description')}
-                    <span className="font-semibold text-zinc-900 hover:text-red-600 dark:text-zinc-100 dark:hover:text-red-400">
+                    <span className="font-semibold text-primary hover:text-destructive">
                       {<Link href={`/~witnesses`}>{t('profil.witnesses')}</Link>}
                     </span>
                     {')'}
                   </p>
                 </td>
-                <td className="whitespace-nowrap bg-slate-100 font-semibold dark:bg-slate-900">
+                <td className="whitespace-nowrap bg-background-secondary font-semibold">
                   {user?.username === username ? (
                     <div className="flex w-fit flex-col items-start">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost">
                             <div>
-                              <span className="text-red-500">{amount.savingsHive}</span>
+                              <span className="text-destructive">{amount.savingsHive}</span>
                               <span className="m-1 text-xl">▾</span>
                             </div>
                           </Button>
@@ -626,7 +617,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost">
                             <div>
-                              <span className="text-red-500">{amount.savingsHbd}</span>
+                              <span className="text-destructive">{amount.savingsHbd}</span>
                               <span className="m-1 text-xl">▾</span>
                             </div>
                           </Button>
@@ -657,7 +648,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                 <td className="px-2 sm:px-4 sm:py-4">
                   <div className="font-semibold">{t('profil.estimated_account_value_title')}</div>
                   <p
-                    className="text-xs leading-relaxed text-zinc-600"
+                    className="text-xs leading-relaxed text-primary/70"
                     data-testid="wallet-estimated-account-value-description"
                   >
                     {t('profil.estimated_account_value_description')}
@@ -693,7 +684,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
           <div className="p-2 sm:p-4">
             <div className="font-semibold">{t('profil.account_history_title')}</div>
             <p
-              className="text-xs leading-relaxed text-zinc-600"
+              className="text-xs leading-relaxed text-primary/70"
               data-testid="wallet-account-history-description"
             >
               {t('profil.account_history_description')}
@@ -738,7 +729,7 @@ const HistoryTable = ({ t, isLoading, historyList = [], historyItemDescription }
             element.operation && (
               <tr
                 key={element.id}
-                className="m-0 w-full p-0 text-xs even:bg-slate-100 dark:even:bg-slate-700 sm:text-sm"
+                className="m-0 w-full p-0 text-xs even:bg-background-tertiary sm:text-sm"
                 data-testid="wallet-account-history-row"
               >
                 <td className="px-4 py-2 sm:min-w-[150px]">{dateToFullRelative(element.timestamp, t)}</td>
