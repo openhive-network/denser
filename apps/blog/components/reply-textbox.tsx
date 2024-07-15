@@ -116,7 +116,7 @@ export function ReplyTextbox({
 
   return (
     <div
-      className="mx-8 mb-4 flex flex-col gap-6 rounded-md border bg-card p-4 text-card-foreground shadow-sm dark:bg-slate-900"
+      className="mx-8 mb-4 flex flex-col gap-6 rounded-md border bg-background p-4 text-primary shadow-sm"
       data-testid="reply-editor"
     >
       <div className="flex flex-col gap-4">
@@ -137,7 +137,7 @@ export function ReplyTextbox({
             persistedValue={text}
             placeholder={t('post_content.footer.comment.reply')}
           />
-          <p className="bg-background-secondary flex items-center border-2 border-t-0 border-border p-1 text-xs font-light">
+          <p className="flex items-center border-2 border-t-0 border-background-tertiary bg-background-secondary/70 p-1 text-xs font-light">
             {t('post_content.footer.comment.insert_images')} {t('post_content.footer.comment.selecting_them')}
             <TooltipProvider>
               <Tooltip>
@@ -181,7 +181,7 @@ export function ReplyTextbox({
             variant="ghost"
             disabled={commentMutation.isLoading || updateCommentMutation.isLoading}
             onClick={() => handleCancel()}
-            className="font-thiny text-slate-500 hover:text-destructive"
+            className="font-thiny hover:text-destructive"
           >
             {t('post_content.footer.comment.cancel')}
           </Button>
@@ -213,7 +213,7 @@ export function ReplyTextbox({
 
         <RendererContainer
           body={text}
-          className="prose max-w-full border-2 border-border p-2 dark:prose-invert"
+          className="prose max-w-full border-2 border-background-tertiary p-2 dark:prose-invert"
           author=""
         />
       </div>
