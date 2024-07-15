@@ -49,13 +49,9 @@ const RepliesListItem = ({
         })}
         data-testid="comment-list-item"
       >
-        <Card
-          className={cn(
-            'mt-4 px-2 hover:bg-accent hover:text-accent-foreground  dark:bg-background/95 dark:hover:bg-accent dark:hover:text-accent-foreground'
-          )}
-        >
+        <Card className="mb-4 bg-background px-2 text-primary">
           <CardHeader className="px-0 py-1">
-            <div className="md:text-md flex items-center text-xs text-slate-500 dark:text-slate-400">
+            <div className="md:text-md flex items-center text-xs">
               <Link href={`/@${comment.author}`} data-testid="comment-author-avatar-link">
                 <img
                   className="mr-3 h-[24px] w-[24px] rounded-3xl"
@@ -88,7 +84,7 @@ const RepliesListItem = ({
                   </span>
                 ) : null}
                 {comment.author_title ? (
-                  <Badge variant="outline" className="ml-1 border-destructive text-slate-500">
+                  <Badge variant="outline" className="mr-1 border-destructive px-1 py-0 font-thin">
                     {comment.author_title}
                   </Badge>
                 ) : null}

@@ -559,10 +559,7 @@ export default function UserSettings() {
             {endpoints?.map((endp, index) => (
               <div
                 key={endp}
-                className={cn(
-                  'grid grid-cols-[220px_50px_50px] items-center p-2 lg:grid-cols-3 ',
-                  index % 2 === 0 ? 'bg-slate-100 dark:bg-slate-500' : 'bg-slate-200 p-2 dark:bg-slate-600'
-                )}
+                className="even:bg-background-tertiary grid grid-cols-[220px_50px_50px] items-center p-2 odd:bg-background lg:grid-cols-3"
               >
                 <Label htmlFor={`e#{index}`}>{endp}</Label>
                 <RadioGroupItem value={endp} id={`e#{index}`} className="border-destructive" />

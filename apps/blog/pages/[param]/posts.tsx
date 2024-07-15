@@ -70,7 +70,7 @@ const UserPosts = () => {
     <ProfileLayout>
       <div className="flex flex-col">
         <Tabs defaultValue={sort} className="w-full" onValueChange={(s) => router.push(`/@${username}/${s}`)}>
-          <TabsList className="flex justify-start" data-testid="user-post-menu">
+          <TabsList className="bg-background-tertiary flex justify-start" data-testid="user-post-menu">
             <TabsTrigger value="posts">{t('navigation.profile_posts_tab_navbar.posts')}</TabsTrigger>
             <TabsTrigger value="comments">{t('navigation.profile_posts_tab_navbar.comments')}</TabsTrigger>
             <TabsTrigger value="payout">{t('navigation.profile_posts_tab_navbar.payouts')}</TabsTrigger>

@@ -75,11 +75,7 @@ const PostListItem = ({
       {post.json_metadata?.tags &&
       post.json_metadata?.tags.includes('nsfw') &&
       preferences.nsfw === 'hide' ? null : (
-        <Card
-          className={cn(
-            'mb-4 px-2 hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent dark:hover:text-accent-foreground'
-          )}
-        >
+        <Card className="mb-4 bg-background px-2 text-primary">
           {post.original_entry ? (
             <div className="bg-background-secondary mt-2 rounded-sm px-2 py-1 text-sm">
               <p className="flex items-center gap-1 text-xs md:text-sm">
@@ -113,7 +109,7 @@ const PostListItem = ({
             </div>
           ) : null}
           <CardHeader className="px-0 py-1">
-            <div className="md:text-md flex items-center text-xs text-slate-500 dark:text-slate-400">
+            <div className="md:text-md flex items-center text-sm">
               {!reveal && post.blacklists.length < 1 ? (
                 <Link href={`/@${post.author}`} data-testid="post-card-avatar">
                   <div

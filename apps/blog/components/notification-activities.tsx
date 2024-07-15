@@ -120,7 +120,7 @@ const NotificationActivities = ({
       (parseFloat(profileData.reward_hive_balance.split(' ')[0]) > 0 ||
         parseFloat(profileData.reward_hbd_balance.split(' ')[0]) > 0 ||
         parseFloat(profileData.reward_vesting_hive.split(' ')[0]) > 0) ? (
-        <div className="flex flex-col items-center justify-center bg-green-50 px-2 py-4 dark:bg-gray-600 md:flex-row md:justify-between">
+        <div className="flex flex-col items-center justify-center px-2 py-4 md:flex-row md:justify-between">
           <span>
             {t('navigation.profile_notifications_tab_navbar.unclaimed_rewards')}
             {getRewardsString(profileData, t)}
@@ -159,7 +159,10 @@ const NotificationActivities = ({
           </button>
         </div>
       ) : null}
-      <TabsList className="flex h-auto flex-wrap" data-testid="notifications-local-menu">
+      <TabsList
+        className="bg-background-tertiary flex h-auto flex-wrap "
+        data-testid="notifications-local-menu"
+      >
         <TabsTrigger value="all">{t('navigation.profile_notifications_tab_navbar.all')}</TabsTrigger>
         <TabsTrigger value="replies">{t('navigation.profile_notifications_tab_navbar.replies')}</TabsTrigger>
         <TabsTrigger value="mentions">

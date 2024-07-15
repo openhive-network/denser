@@ -35,7 +35,10 @@ export default function SocialActivities({
               : '';
   return (
     <Tabs defaultValue={defaultValue} className="mt-8 w-full">
-      <TabsList className="flex h-auto flex-wrap justify-start" data-testid="badges-activity-menu">
+      <TabsList
+        className="bg-background-tertiary flex h-auto flex-wrap justify-start"
+        data-testid="badges-activity-menu"
+      >
         {peakd.length !== 0 ? (
           <TabsTrigger value="badges">{t('navigation.profile_social_tab_navbar.badges')}</TabsTrigger>
         ) : null}

@@ -54,7 +54,7 @@ const NotificationListItem = ({ date, msg, score, type, url, lastRead }: IAccoun
 
   return (
     <tr
-      className="block w-full px-4 odd:bg-slate-200 odd:dark:bg-slate-900"
+      className="even:bg-background-tertiary block w-full px-4 odd:bg-background "
       data-testid="notification-list-item"
     >
       <td className="flex justify-between py-4">

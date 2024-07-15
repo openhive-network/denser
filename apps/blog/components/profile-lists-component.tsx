@@ -291,7 +291,7 @@ export default function ProfileLists({
               return (
                 <li
                   key={e.name}
-                  className="odd:bg-background-tertiary flex w-72 items-center justify-between p-1 font-semibold even:bg-slate-100 dark:even:bg-slate-900"
+                  className="odd:bg-background-tertiary flex w-72 items-center justify-between bg-background p-1 font-semibold"
                 >
                   <span className="px-2">
                     <Link className="text-destructive" href={`/@${e.name}`}>
