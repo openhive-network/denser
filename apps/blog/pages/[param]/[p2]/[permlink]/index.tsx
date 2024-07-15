@@ -303,8 +303,11 @@ function PostPage({
                 </ul>
               ) : null}
             </div>
-            <div className="text-sm text-slate-600 dark:text-slate-400" data-testid="author-data-post-footer">
-              <div className="my-4 flex flex-col gap-4 sm:flex-row">
+            <div
+              className="flex flex-col items-start text-sm text-primary sm:flex-row sm:justify-between"
+              data-testid="author-data-post-footer"
+            >
+              <div className="my-4 flex flex-wrap gap-4">
                 <div className="flex flex-wrap items-center">
                   <Clock className="h-4 w-4" />
                   <span className="px-1" title={String(parseDate(post.created))}>
@@ -375,7 +378,7 @@ function PostPage({
                   ) : null}
                 </div>
               </div>
-              <div className="my-4 flex gap-4">
+              <div className="my-4 flex items-end gap-4 sm:flex-col">
                 <div className="flex items-center" data-testid="comment-respons-header">
                   <ReblogTrigger
                     author={post.author}
