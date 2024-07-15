@@ -121,6 +121,15 @@ const RocketChatWidget = () => {
       setDisabled(false);
     }
 
+    if (event.data.event === 'login-error') {
+      if (event.data.response === "You've been logged out by the server. Please log in again. [403]") {
+        // TODO This is RC response for login attempt with invalid
+        // token. Probably user logged out in our iframe. We should
+        // obtain another, valid token from RC and try to login again.
+        logger.info('We should obtain valid token and try to login with it');
+      }
+    }
+
     // User has logged out.
     if (event.data.eventName === 'Custom_Script_Logged_Out') {
       setDisabled(true);
@@ -165,7 +174,7 @@ const RocketChatWidget = () => {
 
   return (
     <>
-      {/* {!inIframe() && loggedIn && (
+      {!inIframe() && loggedIn && (
         <div
           style={{
               ...{
@@ -174,7 +183,7 @@ const RocketChatWidget = () => {
                   : 'none'
               },
           }}
-        > */}
+        >
 
           <Drawer open={open} side="right" setOpen={setOpen}>
             {/* Rocket Chat iframe */}
@@ -252,8 +261,8 @@ const RocketChatWidget = () => {
             </TooltipProvider>
           </div>
 
-        {/* </div>
-      )} */}
+        </div>
+      )}
     </>
   );
 };
