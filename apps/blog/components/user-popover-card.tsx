@@ -38,7 +38,7 @@ export function UserPopoverCard({
           ({blacklist.length})
         </span>
       ) : null}
-      <PopoverContent className="w-72" data-testid="user-popover-card-content">
+      <PopoverContent className="w-72 bg-background" data-testid="user-popover-card-content">
         <PopoverCardData author={author} blacklist={blacklist} />
       </PopoverContent>
     </Popover>

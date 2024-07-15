@@ -101,10 +101,9 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
               loading="lazy"
             />
             <Card
-              className={cn(
-                `mb-4 w-full px-2 hover:bg-accent dark:bg-slate-900 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground depth-${comment.depth}`,
-                { 'opacity-50 hover:opacity-100': hiddenComment }
-              )}
+              className={cn(`mb-4 w-full bg-background px-2 text-primary depth-${comment.depth}`, {
+                'opacity-50 hover:opacity-100': hiddenComment
+              })}
             >
               <Accordion type="single" defaultValue={!hiddenComment ? 'item-1' : undefined} collapsible>
                 <AccordionItem value="item-1">
@@ -114,7 +113,7 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                         className="flex w-full flex-col sm:flex-row sm:items-center"
                         data-testid="comment-card-header"
                       >
-                        <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 sm:text-sm">
+                        <div className="flex items-center justify-between text-xs sm:text-sm">
                           <div className="my-1 flex items-center">
                             <img
                               className=" h-[20px] w-[20px] rounded-3xl sm:hidden"
@@ -132,7 +131,7 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                             {comment.author_title ? (
                               <Badge
                                 variant="outline"
-                                className="mr-1 border-red-600 text-slate-500"
+                                className="mr-1 border-destructive"
                                 data-testid="comment-user-affiliation-tag"
                               >
                                 {comment.author_title}
@@ -140,7 +139,7 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                             ) : null}
                             <Link
                               href={`/${router.query.param}/${router.query.p2}/${router.query.permlink}#@${username}/${comment.permlink}`}
-                              className="text- hover:text-red-500 md:text-sm"
+                              className="hover:text-destructive md:text-sm"
                               title={String(parseDate(comment.created))}
                               data-testid="comment-timestamp-link"
                             >
@@ -188,7 +187,7 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                               post={comment}
                               decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
                             >
-                              <div className="flex items-center hover:cursor-pointer hover:text-red-600 ">
+                              <div className="flex items-center hover:cursor-pointer hover:text-destructive ">
                                 {'$'}
                                 {comment.payout.toFixed(2)}
                               </div>
@@ -233,10 +232,7 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                           comment={comment}
                         />
                       ) : (
-                        <CardDescription
-                          className="prose break-words dark:text-white"
-                          data-testid="comment-card-description"
-                        >
+                        <CardDescription className="prose break-words" data-testid="comment-card-description">
                           <RendererContainer body={comment.body} author={comment.author} className="" />
                         </CardDescription>
                       )}
@@ -254,7 +250,7 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                         >
                           <div
                             data-testid="comment-card-footer-payout"
-                            className={clsx('flex items-center hover:cursor-pointer hover:text-red-600', {
+                            className={clsx('flex items-center hover:cursor-pointer hover:text-destructive', {
                               'line-through opacity-50': Number(comment.max_accepted_payout.slice(0, 1)) === 0
                             })}
                           >
@@ -267,7 +263,7 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                           <>
                             <div className="flex items-center">
                               <DetailsCardVoters post={comment}>
-                                <span className="hover:text-red-600">
+                                <span className="hover:text-destructive">
                                   {comment.stats && comment.stats.total_votes > 1
                                     ? t('cards.post_card.votes', { votes: comment.stats.total_votes })
                                     : t('cards.post_card.vote')}
@@ -283,7 +279,7 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                             onClick={() => {
                               setReply(!reply), removeBox();
                             }}
-                            className="flex items-center hover:cursor-pointer hover:text-red-600"
+                            className="flex items-center hover:cursor-pointer hover:text-destructive"
                             data-testid="comment-card-footer-reply"
                           >
                             {t('cards.comment_card.reply')}
@@ -291,7 +287,7 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                         ) : (
                           <DialogLogin>
                             <button
-                              className="flex items-center hover:cursor-pointer hover:text-red-600"
+                              className="flex items-center hover:cursor-pointer hover:text-destructive"
                               data-testid="comment-card-footer-reply"
                             >
                               {t('post_content.footer.reply')}
@@ -306,7 +302,7 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                               onClick={() => {
                                 setEdit(!edit);
                               }}
-                              className="flex items-center hover:cursor-pointer hover:text-red-600"
+                              className="flex items-center hover:cursor-pointer hover:text-destructive"
                               data-testid="comment-card-footer-edit"
                             >
                               {t('cards.comment_card.edit')}
@@ -322,7 +318,7 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                             <CommentDeleteDialog permlink={comment.permlink} action={dialogAction}>
                               <button
                                 disabled={edit || deleteCommentMutation.isLoading}
-                                className="flex items-center hover:cursor-pointer hover:text-red-600"
+                                className="flex items-center hover:cursor-pointer hover:text-destructive"
                                 data-testid="comment-card-footer-delete"
                               >
                                 {deleteCommentMutation.isLoading ? (
@@ -348,7 +344,7 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
         </li>
       ) : currentDepth === 8 ? (
         <div className="h-8">
-          <Link href={`/${comment.category}/@${username}/${comment.permlink}`} className="text-red-500">
+          <Link href={`/${comment.category}/@${username}/${comment.permlink}`} className="text-destructive">
             {t('cards.comment_card.load_more')}...
           </Link>
         </div>

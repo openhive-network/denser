@@ -77,7 +77,7 @@ export function PopoverCardData({ author, blacklist }: { author: string; blackli
                     <ButtonsContainer
                       username={author}
                       user={user}
-                      variant="secondary"
+                      variant="default"
                       follow={following}
                       mute={mute}
                     />
