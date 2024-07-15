@@ -47,7 +47,7 @@ export function MarketTable({
         <div className="text-2xl ">{label}</div>
         <table className="table-auto text-end text-xs">
           <thead>
-            <tr className="bg-slate-200 dark:bg-slate-900">
+            <tr className="bg-background-secondary">
               {params.map((e: string) => (
                 <th key={e}>{e}</th>
               ))}
@@ -57,7 +57,7 @@ export function MarketTable({
             {data.slice(sliceFrom, sliceTo).map((e: OrdersItem) => (
               <tr
                 className="relative cursor-pointer after:absolute after:inset-0
-                  after:animate-pulse after:bg-slate-500 after:opacity-0 after:repeat-1 even:bg-slate-100 even:dark:bg-slate-800"
+                  after:animate-pulse after:bg-slate-500 after:opacity-0 after:repeat-1 even:bg-background-tertiary"
                 key={e.real_price}
                 onClick={() => handleSetterPrices(Big(e.real_price).toFixed(6))}
               >
@@ -138,7 +138,7 @@ export function HistoryTable({ data, params, label }: { data: any[]; params: str
 
         <table className="table-auto text-end text-xs">
           <thead>
-            <tr className="bg-slate-200 dark:bg-slate-900">
+            <tr className="bg-background-secondary">
               {params.map((e: string) => (
                 <th key={e}>{e}</th>
               ))}
@@ -146,11 +146,11 @@ export function HistoryTable({ data, params, label }: { data: any[]; params: str
           </thead>
           <tbody>
             {data.slice(sliceFrom, sliceTo).map((e: TradeHistory) => (
-              <tr className="even:bg-slate-100 even:dark:bg-slate-800" key={Math.random()}>
+              <tr className="even:bg-background-tertiary" key={Math.random()}>
                 <td title={e.date.replace('T', ' ')}>{dateToRelative(e.date, t)}</td>
                 <td
                   className={clsx({
-                    'text-red-500': e.current_pays.includes('HIVE'),
+                    'text-destructive': e.current_pays.includes('HIVE'),
                     'text-green-500': e.current_pays.includes('HBD')
                   })}
                 >

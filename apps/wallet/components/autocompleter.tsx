@@ -43,11 +43,14 @@ export function Autocompleter({
       />
       <CommandList>
         {isOpen && (
-          <CommandGroup className="absolute max-h-36 overflow-scroll bg-white">
+          <CommandGroup className="absolute max-h-36 overflow-scroll bg-background-secondary">
             {items &&
               items.map((item) => (
                 <CommandItem key={item.username} className="p-0" onSelect={() => onChange(item.username)}>
-                  <div onClick={() => onChange(item.username)} className="w-56 px-2 py-1 even:bg-black">
+                  <div
+                    onClick={() => onChange(item.username)}
+                    className="w-56 px-2 py-1 even:bg-background-tertiary"
+                  >
                     {item.username + `(${item.about})`}
                   </div>
                 </CommandItem>
