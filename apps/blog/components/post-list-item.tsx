@@ -249,7 +249,12 @@ const PostListItem = ({
                           nsfw
                         </Badge>
                       ) : null}
-                      <Link href={`/${post.category}/@${post.author}/${post.permlink}`}>{post.title}</Link>
+                      <Link
+                        href={`/${post.category}/@${post.author}/${post.permlink}`}
+                        className="visited:text-gray-500 dark:visited:text-gray-400"
+                      >
+                        {post.title}
+                      </Link>
                     </CardTitle>
                     <CardDescription className="block w-auto md:overflow-hidden md:overflow-ellipsis md:whitespace-nowrap">
                       <Link

@@ -132,7 +132,10 @@ const RepliesListItem = ({
             <PostImage post={comment} />
             <CardContent>
               <CardTitle data-testid="comment-card-title">
-                <Link href={`/${comment.category}/@${comment.author}/${comment.permlink}`}>
+                <Link
+                  href={`/${comment.category}/@${comment.author}/${comment.permlink}`}
+                  className="visited:text-gray-500 dark:visited:text-gray-400"
+                >
                   {comment.title}
                 </Link>
               </CardTitle>
