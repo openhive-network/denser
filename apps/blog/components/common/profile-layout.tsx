@@ -112,7 +112,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   return username ? (
     <div>
       <div
-        className=" w-full bg-gray-600 text-sm leading-6 text-zinc-50 sm:h-fit"
+        className=" w-full bg-gray-600 text-sm leading-6 sm:h-fit"
         style={{ textShadow: 'rgb(0, 0, 0) 1px 1px 2px' }}
         data-testid="profile-info"
       >
@@ -131,7 +131,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               backgroundRepeat: 'no-repeat',
               backgroundSize: 'cover'
             }}
-            className={`flex h-auto max-h-full min-h-full w-auto min-w-full max-w-full flex-col items-center`}
+            className="flex h-auto max-h-full min-h-full w-auto min-w-full max-w-full flex-col items-center text-white"
           >
             <div className="mt-4 flex items-center">
               <Avatar className="mr-3 flex h-12 w-12 items-center justify-center overflow-hidden rounded-full">
@@ -191,7 +191,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             </div>
             {!legalBlockedUser ? (
               <>
-                <p className="my-1 max-w-[420px] text-center text-white sm:my-4" data-testid="profile-about">
+                <p className="my-1 max-w-[420px] text-center sm:my-4" data-testid="profile-about">
                   {profileData?.profile?.about
                     ? profileData?.profile?.about.slice(0, 157) +
                       (157 < profileData?.profile?.about.length ? '...' : '')
@@ -296,7 +296,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   </li>
                 </ul>
 
-                <ul className="my-4 flex h-auto flex-wrap justify-center gap-1 text-xs text-secondary sm:gap-4 sm:text-sm">
+                <ul className="my-4 flex h-auto flex-wrap justify-center gap-1 text-xs sm:gap-4 sm:text-sm">
                   {profileData?.profile?.location ? (
                     <li className="flex items-center">
                       <Icons.mapPin className="m-1" />
@@ -338,7 +338,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     <ButtonsContainer
                       username={username}
                       user={user}
-                      variant="secondary"
+                      variant="default"
                       follow={following}
                       mute={mute}
                     />
@@ -356,8 +356,8 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
       <div className="flex flex-col pb-8 md:pb-4 ">
         <div className="w-full">
           <div className="flex h-12 bg-gray-700" data-testid="profile-navigation">
-            <div className="container mx-auto flex max-w-screen-xl justify-between p-0 sm:pl-8 ">
-              <ul className="flex h-full gap-2 text-xs text-secondary sm:text-base lg:flex lg:gap-8">
+            <div className="container mx-auto flex max-w-screen-xl justify-between p-0 text-white sm:pl-8">
+              <ul className="flex h-full gap-2 text-xs sm:text-base lg:flex lg:gap-8">
                 <li>
                   <Link
                     href={`/@${username}`}
@@ -423,7 +423,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   </Link>
                 </li>
               </ul>
-              <ul className="flex h-full flex-wrap text-xs text-secondary sm:text-base lg:flex lg:gap-4">
+              <ul className="flex h-full flex-wrap text-xs sm:text-base lg:flex lg:gap-4">
                 <li>
                   <Link
                     href={`${walletHost}/@${username}/transfers`}
