@@ -212,7 +212,7 @@ function PostPage({
                 {post.title}
               </h1>
             ) : (
-              <div className="bg-card-noContent border-card-emptyBorder flex flex-col gap-2 border-2 border-solid p-2">
+              <div className="flex flex-col gap-2 border-2 border-solid border-card-emptyBorder bg-card-noContent p-2">
                 <h4 className="text-sm">
                   {t('post_content.if_comment.you_are_viewing_a_single_comments_thread_from')}:
                 </h4>
@@ -281,7 +281,7 @@ function PostPage({
                 <RendererContainer
                   mainPost={post.depth === 0}
                   body={post.body}
-                  className="entry-body markdown-view user-selectable prose py-4 dark:prose-invert"
+                  className="entry-body markdown-view user-selectable prose max-w-full py-4 dark:prose-invert"
                   author={post.author}
                 />
               </ImageGallery>
@@ -294,7 +294,7 @@ function PostPage({
                     <li key={tag}>
                       <Link
                         href={`/trending/${tag}`}
-                        className="bg-background-secondary my-2 rounded-md border-[1px] border-border px-2 py-1 text-[14px] hover:border-[#788187]"
+                        className="my-2 rounded-md border-[1px] border-border bg-background-secondary px-2 py-1 text-[14px] hover:border-[#788187]"
                       >
                         #{tag}
                       </Link>
