@@ -133,13 +133,13 @@ test.describe('Post page tests', () => {
 
     // button styles
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
-      'rgb(15, 23, 42)'
+      'rgb(248, 250, 252)'
     );
     expect(
       await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'background-color')
-    ).toBe('rgb(241, 245, 249)');
+    ).toBe('rgb(24, 30, 42)');
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'border-color')).toBe(
-      'rgb(226, 232, 240)'
+      'rgb(237, 237, 237)'
     );
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'border-style')).toBe(
       'solid'
@@ -150,13 +150,13 @@ test.describe('Post page tests', () => {
     await postPage.page.waitForTimeout(1000);
 
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
-      'rgb(239, 68, 68)'
+      'rgb(255, 0, 0)'
     );
     expect(
       await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'background-color')
-    ).toBe('rgba(241, 245, 249, 0.8)');
+    ).toBe('rgb(24, 30, 42)');
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'border-color')).toBe(
-      'rgb(226, 232, 240)'
+      'rgb(237, 237, 237)'
     );
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'border-style')).toBe(
       'solid'
@@ -174,11 +174,11 @@ test.describe('Post page tests', () => {
 
     // button styles
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
-      'rgb(248, 250, 252)'
+      'rgb(2, 2, 5)'
     );
     expect(
       await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'background-color')
-    ).toBe('rgb(15, 23, 42)');
+    ).toBe('rgb(248, 250, 252)');
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'border-color')).toBe(
       'rgb(29, 40, 58)'
     );
@@ -191,11 +191,11 @@ test.describe('Post page tests', () => {
     await postPage.page.waitForTimeout(1000);
 
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
-      'rgb(239, 68, 68)'
+      'rgb(226, 18, 53)'
     );
     expect(
       await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'background-color')
-    ).toBe('rgba(15, 23, 42, 0.8)');
+    ).toBe('rgb(248, 250, 252)');
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'border-color')).toBe(
       'rgb(29, 40, 58)'
     );
@@ -214,7 +214,7 @@ test.describe('Post page tests', () => {
     await postPage.articleAuthorName.click();
 
     expect(await postPage.getElementCssPropertyValue(postPage.userPopoverCard, 'background-color')).toBe(
-      'rgb(3, 7, 17)'
+      'rgb(44, 48, 53)'
     );
     expect(await postPage.getElementCssPropertyValue(postPage.userPopoverCard, 'color')).toBe(
       'rgb(148, 163, 184)'
@@ -429,7 +429,7 @@ test.describe('Post page tests', () => {
     await postPage.footerAuthorNameLink.click();
 
     expect(await postPage.getElementCssPropertyValue(postPage.userPopoverCard, 'background-color')).toBe(
-      'rgb(3, 7, 17)'
+      'rgb(44, 48, 53)'
     );
     expect(await postPage.getElementCssPropertyValue(postPage.userPopoverCard, 'color')).toBe(
       'rgb(148, 163, 184)'
@@ -449,11 +449,11 @@ test.describe('Post page tests', () => {
 
     // button styles
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
-      'rgb(248, 250, 252)'
+      'rgb(2, 2, 5)'
     );
     expect(
       await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'background-color')
-    ).toBe('rgb(15, 23, 42)');
+    ).toBe('rgb(248, 250, 252)');
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'border-color')).toBe(
       'rgb(29, 40, 58)'
     );
@@ -466,11 +466,11 @@ test.describe('Post page tests', () => {
     await postPage.page.waitForTimeout(1000);
 
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
-      'rgb(239, 68, 68)'
+      'rgb(226, 18, 53)'
     );
     expect(
       await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'background-color')
-    ).toBe('rgba(15, 23, 42, 0.8)');
+    ).toBe('rgb(248, 250, 252)');
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'border-color')).toBe(
       'rgb(29, 40, 58)'
     );

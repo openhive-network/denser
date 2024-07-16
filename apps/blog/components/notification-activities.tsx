@@ -174,7 +174,7 @@ const NotificationActivities = ({
       </TabsList>
       <TabsContent value="all" data-testid="notifications-content-all">
         <NotificationList data={state} lastRead={lastRead} />
-        {!showButton && (
+        {showButton && (
           <Button
             variant="outline"
             className="mb-8 mt-4 border-destructive text-base text-destructive hover:bg-destructive hover:text-secondary dark:border-destructive"

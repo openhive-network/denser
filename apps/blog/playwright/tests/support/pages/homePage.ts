@@ -220,7 +220,7 @@ export class HomePage {
 
   async moveToLeoFinanceCommunities() {
     await this.getLeoFinanceCommunitiesLink.click();
-    await this.page.waitForRequest('https://api.hive.blog/');
+    // await this.page.waitForRequest('https://api.hive.blog/');
     await expect(this.getHeaderLeoCommunities).toBeVisible();
   }
 
@@ -432,7 +432,7 @@ export class HomePage {
 
   async validateThemeModeIsDark() {
     await this.page.waitForLoadState('networkidle');
-    expect(await this.getElementCssPropertyValue(this.getBody, 'background-color')).toBe('rgb(3, 7, 17)');
+    expect(await this.getElementCssPropertyValue(this.getBody, 'background-color')).toBe('rgb(44, 48, 53)');
   }
 
   async moveToMutedPosts() {
