@@ -101,13 +101,13 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
               loading="lazy"
             />
             <Card
-              className={cn(`mb-4 w-full bg-background px-2 text-primary depth-${comment.depth}`, {
+              className={cn(`mb-4 w-full bg-background text-primary depth-${comment.depth}`, {
                 'opacity-50 hover:opacity-100': hiddenComment
               })}
             >
               <Accordion type="single" defaultValue={!hiddenComment ? 'item-1' : undefined} collapsible>
-                <AccordionItem value="item-1">
-                  <CardHeader className="px-0 py-1 ">
+                <AccordionItem className="p-0" value="item-1">
+                  <CardHeader className="px-1 py-0">
                     <div className="flex w-full justify-between">
                       <div
                         className="flex w-full flex-col sm:flex-row sm:items-center"
@@ -213,10 +213,10 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                         />
                       ) : null}
                     </div>
-                  </CardHeader>{' '}
-                  <Separator orientation="horizontal" />
-                  <AccordionContent className="p-0">
-                    <CardContent className="pb-2">
+                  </CardHeader>
+                  <AccordionContent className="py-0">
+                    <Separator orientation="horizontal" />
+                    <CardContent className="px-2 py-1 hover:bg-background-tertiary">
                       {legalBlockedUser ? (
                         <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
                       ) : userFromDMCA ? (
@@ -232,13 +232,20 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                           comment={comment}
                         />
                       ) : (
-                        <CardDescription className="prose break-words" data-testid="comment-card-description">
-                          <RendererContainer body={comment.body} author={comment.author} className="" />
+                        <CardDescription
+                          className="prose flex max-w-full break-words"
+                          data-testid="comment-card-description"
+                        >
+                          <RendererContainer
+                            body={comment.body}
+                            author={comment.author}
+                            className="text-primary"
+                          />
                         </CardDescription>
                       )}
                     </CardContent>
                     <Separator orientation="horizontal" />{' '}
-                    <CardFooter>
+                    <CardFooter className="px-2 py-1">
                       <div
                         className="flex items-center gap-2 pt-1 text-xs sm:text-sm"
                         data-testid="comment-card-footer"
