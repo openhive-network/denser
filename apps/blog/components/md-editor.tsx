@@ -240,7 +240,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
   const editChoice = (inputRef: MutableRefObject<HTMLInputElement>) => [imgBtn(inputRef)];
 
   return !imageUserBlocklist?.includes(user.username) ? (
-    <div className="bg-white dark:bg-slate-950 dark:text-white">
+    <div>
       <input
         ref={inputRef}
         className="hidden"

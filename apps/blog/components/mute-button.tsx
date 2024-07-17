@@ -28,7 +28,7 @@ const MuteButton = ({
 
   return (
     <Button
-      className=" hover:text-red-500"
+      className=" hover:text-destructive"
       variant={variant}
       size="sm"
       data-testid="profile-mute-button"

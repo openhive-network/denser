@@ -21,9 +21,9 @@ export default function HomePage() {
         </DialogLogin>
       </div>
       <div className="mr-6 sm:mt-6 sm:w-full sm:max-w-lg">
-        <div className="h-[260px] w-full border-[1px] border-solid border-slate-200 bg-white drop-shadow dark:bg-slate-900">
-          <div className="relative right-[-10px] top-[-12px] h-[260px] w-full border-[1px] border-solid border-slate-200 bg-white drop-shadow dark:bg-slate-900">
-            <div className="relative right-[-10px] top-[-12px] flex h-[260px] w-full flex-col justify-center gap-4 border-[1px] border-solid border-slate-200 bg-white pl-4 drop-shadow  dark:bg-slate-900 sm:pr-4">
+        <div className="h-[260px] w-full border-[1px] border-solid border-border bg-background-tertiary drop-shadow">
+          <div className="relative right-[-10px] top-[-12px] h-[260px] w-full border-[1px] border-solid border-border bg-background-tertiary drop-shadow">
+            <div className="relative right-[-10px] top-[-12px] flex h-[260px] w-full flex-col justify-center gap-4 border-[1px] border-solid border-border bg-background-tertiary pl-4 drop-shadow sm:pr-4">
               <div className="text-lg font-bold sm:text-2xl">{t('wallet_index.card.title')}</div>
               <div className="flex gap-3">
                 <Icons.hivetoken />
@@ -31,7 +31,7 @@ export default function HomePage() {
                   <span className="font-semibold" data-testid="hive-token-label">
                     Hive
                   </span>
-                  <p className="text-xs font-light text-slate-500">
+                  <p className="text-xs font-light text-primary/60">
                     {t('wallet_index.card.liquid_platform_token')}
                   </p>
                 </span>
@@ -42,7 +42,7 @@ export default function HomePage() {
                   <span className="font-semibold" data-testid="hive-power-token-label">
                     Hive power
                   </span>
-                  <p className="text-xs font-light text-slate-500">
+                  <p className="text-xs font-light text-primary/60">
                     {t('wallet_index.card.vesting_influence_token')}
                   </p>
                 </span>
@@ -53,7 +53,7 @@ export default function HomePage() {
                   <span className="font-semibold" data-testid="hive-hbd-label">
                     HBD
                   </span>
-                  <p className="text-xs font-light text-slate-500">
+                  <p className="text-xs font-light text-primary/60">
                     {t('wallet_index.card.seeks_price_stability')}
                   </p>
                 </span>

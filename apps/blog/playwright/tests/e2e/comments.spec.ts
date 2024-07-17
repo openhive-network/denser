@@ -44,7 +44,7 @@ test.describe('Comments of post', () => {
         postPage.commentListItems.locator('div > div').first(),
         'background-color'
       )
-    ).toBe('rgb(241, 245, 249)');
+    ).toBe('rgb(255, 255, 255)');
   });
 
   test('Validate a hovered comment changes backgroundcolor style in the dark mode', async ({
@@ -63,7 +63,7 @@ test.describe('Comments of post', () => {
         postPage.commentListItems.locator('div > div').first(),
         'background-color'
       )
-    ).toBe('rgb(15, 23, 42)');
+    ).toBe('rgb(44, 48, 53)');
 
     // After hover
     await postPage.commentListItems.first().hover();
@@ -73,7 +73,7 @@ test.describe('Comments of post', () => {
         postPage.commentListItems.locator('div > div').first(),
         'background-color'
       )
-    ).toBe('rgb(29, 40, 58)');
+    ).toBe('rgb(44, 48, 53)');
   });
 
   test('move to the comment view page of the first comment of the first post', async ({ page }) => {
@@ -205,7 +205,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
         await postPage.commentListItems.nth(0).locator('..'),
         'border-color'
       )
-    ).toBe('rgb(226, 232, 240)');
+    ).toBe('rgb(237, 237, 237)');
     // background-color of the first comment
     expect(
       await postPage.getElementCssPropertyValue(
@@ -270,14 +270,16 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
 
   test('Validate the first comment author link styles in the post in the light mode', async ({ page }) => {
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
-
     // Color of the author of the first comment without hovering
-    expect(
-      await postPage.getElementCssPropertyValue(
-        await postPage.commentAuthorLink.first().locator('div span'),
-        'color'
-      )
-    ).toBe('rgb(100, 116, 139)');
+    expect(await postPage.getElementCssPropertyValue(postPage.commentAuthorLink.first(), 'color')).toBe(
+      'rgb(24, 30, 42)'
+    );
+    // expect(
+    //   await postPage.getElementCssPropertyValue(
+    //     await postPage.commentAuthorLink.first(),
+    //     'color'
+    //   )
+    // ).toBe('rgb(24, 30, 42)');
     // Color of the author of the first comment after hovering
     await postPage.commentAuthorLink.first().hover();
     await postPage.page.waitForTimeout(1000);
@@ -286,7 +288,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
         await postPage.commentAuthorLink.first().locator('div span'),
         'color'
       )
-    ).toBe('rgb(220, 38, 38)');
+    ).toBe('rgb(255, 0, 0)');
 
     // Validate the user info popover card is visible
     await postPage.commentAuthorLink.first().click();
@@ -299,13 +301,13 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     // Color of the reputation of the first comment without hovering
     expect(
       await postPage.getElementCssPropertyValue(await postPage.commentAuthorReputation.first(), 'color')
-    ).toBe('rgb(100, 116, 139)');
+    ).toBe('rgb(24, 30, 42)');
     // Color of the reputation of the first comment after hovering
     await postPage.commentAuthorReputation.first().hover();
     await postPage.page.waitForTimeout(1000);
     expect(
       await postPage.getElementCssPropertyValue(await postPage.commentAuthorReputation.first(), 'color')
-    ).toBe('rgb(100, 116, 139)');
+    ).toBe('rgb(24, 30, 42)');
     // Validate the tooltip of reputation
     const atrTitle = await postPage.commentAuthorReputation.first().getAttribute('title');
     await expect(atrTitle).toBe('Reputation');
@@ -320,7 +322,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
         await postPage.commentCardsHeadersTimeStampLink.first(),
         'color'
       )
-    ).toBe('rgb(100, 116, 139)');
+    ).toBe('rgb(24, 30, 42)');
     // Color of the timestamp of the first comment after hovering
     await postPage.commentCardsHeadersTimeStampLink.first().hover();
     expect(
@@ -328,7 +330,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
         await postPage.commentCardsHeadersTimeStampLink.first(),
         'color'
       )
-    ).toBe('rgb(239, 68, 68)');
+    ).toBe('rgb(255, 0, 0)');
 
     // Validate the timestamp tooltip
     const atrTitle = await postPage.commentCardsHeadersTimeStampLink.first().getAttribute('title');
@@ -348,7 +350,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
         await postPage.commentAuthorLink.first().locator('div span'),
         'color'
       )
-    ).toBe('rgb(255, 255, 255)');
+    ).toBe('rgb(248, 250, 252)');
     // Color of the author of the first comment after hovering
     await postPage.commentAuthorLink.first().hover();
     await homePage.page.waitForTimeout(1000);
@@ -357,7 +359,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
         await postPage.commentAuthorLink.first().locator('div span'),
         'color'
       )
-    ).toBe('rgb(220, 38, 38)');
+    ).toBe('rgb(226, 18, 53)');
 
     // Validate the user info popover card is visible
     await postPage.commentAuthorLink.first().click();
@@ -374,13 +376,13 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     // Color of the reputation of the first comment without hovering
     expect(
       await postPage.getElementCssPropertyValue(await postPage.commentAuthorReputation.first(), 'color')
-    ).toBe('rgb(255, 255, 255)');
+    ).toBe('rgb(248, 250, 252)');
     // Color of the reputation of the first comment after hovering
     await postPage.commentAuthorReputation.first().hover();
     await homePage.page.waitForTimeout(500);
     expect(
       await postPage.getElementCssPropertyValue(await postPage.commentAuthorReputation.first(), 'color')
-    ).toBe('rgb(255, 255, 255)');
+    ).toBe('rgb(248, 250, 252)');
 
     // Validate the tooltip of reputation
     const atrTitle = await postPage.commentAuthorReputation.first().getAttribute('title');
@@ -400,7 +402,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
         await postPage.commentCardsHeadersTimeStampLink.first(),
         'color'
       )
-    ).toBe('rgb(148, 163, 184)');
+    ).toBe('rgb(248, 250, 252)');
     // Color of the timestamp of the first comment after hovering
     await postPage.commentCardsHeadersTimeStampLink.first().hover();
     await homePage.page.waitForTimeout(1000);
@@ -409,7 +411,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
         await postPage.commentCardsHeadersTimeStampLink.first(),
         'color'
       )
-    ).toBe('rgb(239, 68, 68)');
+    ).toBe('rgb(226, 18, 53)');
 
     // Validate the timestamp tooltip
     const atrTitle = await postPage.commentCardsHeadersTimeStampLink.first().getAttribute('title');
@@ -542,13 +544,13 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
 
     // button styles
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
-      'rgb(15, 23, 42)'
+      'rgb(248, 250, 252)'
     );
     expect(
       await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'background-color')
-    ).toBe('rgb(241, 245, 249)');
+    ).toBe('rgb(24, 30, 42)');
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'border-color')).toBe(
-      'rgb(226, 232, 240)'
+      'rgb(237, 237, 237)'
     );
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'border-style')).toBe(
       'solid'
@@ -559,13 +561,13 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await postPage.page.waitForTimeout(1000);
 
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
-      'rgb(239, 68, 68)'
+      'rgb(255, 0, 0)'
     );
     expect(
       await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'background-color')
-    ).toBe('rgba(241, 245, 249, 0.8)');
+    ).toBe('rgb(24, 30, 42)');
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'border-color')).toBe(
-      'rgb(226, 232, 240)'
+      'rgb(237, 237, 237)'
     );
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'border-style')).toBe(
       'solid'
@@ -587,11 +589,11 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
 
     // button styles
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
-      'rgb(248, 250, 252)'
+      'rgb(2, 2, 5)'
     );
     expect(
       await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'background-color')
-    ).toBe('rgb(15, 23, 42)');
+    ).toBe('rgb(248, 250, 252)');
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'border-color')).toBe(
       'rgb(29, 40, 58)'
     );
@@ -604,11 +606,11 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await postPage.page.waitForTimeout(1000);
 
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
-      'rgb(239, 68, 68)'
+      'rgb(226, 18, 53)'
     );
     expect(
       await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'background-color')
-    ).toBe('rgba(15, 23, 42, 0.8)');
+    ).toBe('rgb(248, 250, 252)');
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'border-color')).toBe(
       'rgb(29, 40, 58)'
     );
@@ -628,7 +630,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await postPage.page.waitForTimeout(1000);
 
     expect(await postPage.getElementCssPropertyValue(postPage.userPopoverCard, 'background-color')).toBe(
-      'rgb(3, 7, 17)'
+      'rgb(44, 48, 53)'
     );
     expect(await postPage.getElementCssPropertyValue(postPage.userPopoverCard, 'color')).toBe(
       'rgb(148, 163, 184)'
@@ -759,7 +761,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
         await postPage.commentListItems.nth(0).locator('..'),
         'border-color'
       )
-    ).toBe('rgb(226, 232, 240)');
+    ).toBe('rgb(237, 237, 237)');
   });
 
   test('Move to the comment view page and go back to the "View the direct parent"', async ({ page }) => {

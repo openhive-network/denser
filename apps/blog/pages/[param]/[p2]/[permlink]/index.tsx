@@ -183,7 +183,7 @@ function PostPage({
   }
   return (
     <div className="py-8">
-      <div className="relative mx-auto my-0 max-w-4xl bg-white px-8 py-4 dark:bg-slate-900">
+      <div className="relative mx-auto my-0 max-w-4xl bg-background px-8 py-4">
         {communityData ? (
           <AlertDialogFlag
             community={community}
@@ -201,7 +201,7 @@ function PostPage({
                 {post.title}
               </h1>
             ) : (
-              <div className="flex flex-col gap-2 bg-green-50 p-2 dark:bg-slate-950">
+              <div className="border-card-emptyBorder bg-card-noContent flex flex-col gap-2 border-2 border-solid p-2">
                 <h4 className="text-sm">
                   {t('post_content.if_comment.you_are_viewing_a_single_comments_thread_from')}:
                 </h4>
@@ -209,7 +209,7 @@ function PostPage({
                   {post.title}
                 </h1>
                 <Link
-                  className="text-sm text-slate-500 hover:text-red-500"
+                  className="text-sm hover:text-destructive"
                   href={`${postUrl}`}
                   data-testid="view-the-full-context"
                 >
@@ -217,7 +217,7 @@ function PostPage({
                 </Link>
                 {discussionState && !discussionState.some((e) => e.depth === 1) ? (
                   <Link
-                    className="text-sm text-slate-500 hover:text-red-500"
+                    className="text-sm hover:text-destructive"
                     href={`../../${parentUrl}`}
                     data-testid="view-the-direct-parent"
                   >
@@ -258,7 +258,7 @@ function PostPage({
             ) : mutedPost ? (
               <>
                 <Separator />
-                <div className="my-8 flex items-center justify-between text-red-500">
+                <div className="my-8 flex items-center justify-between text-destructive">
                   {t('post_content.body.content_were_hidden')}
                   <Button variant="outlineRed" onClick={() => setMutedPost(false)}>
                     {t('post_content.body.show')}
@@ -270,7 +270,7 @@ function PostPage({
                 <RendererContainer
                   mainPost={post.depth === 0}
                   body={post.body}
-                  className="entry-body markdown-view user-selectable prose py-4 dark:prose-invert"
+                  className="entry-body markdown-view user-selectable prose max-w-full py-4 dark:prose-invert"
                   author={post.author}
                 />
               </ImageGallery>
@@ -283,7 +283,7 @@ function PostPage({
                     <li key={tag}>
                       <Link
                         href={`/trending/${tag}`}
-                        className="my-2 rounded-md bg-accent px-2 py-1 text-sm text-accent-foreground hover:border-[1px] hover:border-accent-foreground"
+                        className="bg-background-secondary my-2 rounded-md border-[1px] border-border px-2 py-1 text-[14px] hover:border-[#788187]"
                       >
                         #{tag}
                       </Link>
@@ -292,15 +292,18 @@ function PostPage({
                 </ul>
               ) : null}
             </div>
-            <div className="text-sm text-slate-600 dark:text-slate-400" data-testid="author-data-post-footer">
-              <div className="my-4 flex flex-col gap-4 sm:flex-row">
+            <div
+              className="flex flex-col items-start text-sm text-primary sm:flex-row sm:justify-between"
+              data-testid="author-data-post-footer"
+            >
+              <div className="my-4 flex flex-wrap gap-4">
                 <div className="flex flex-wrap items-center">
                   <Clock className="h-4 w-4" />
                   <span className="px-1" title={String(parseDate(post.created))}>
                     {dateToFullRelative(post.created, t)}
                   </span>
                   {t('post_content.footer.in')}
-                  <span className="px-1 text-red-600">
+                  <span className="px-1 text-destructive">
                     {post.community_title ? (
                       <Link
                         href={`/trending/${community}`}
@@ -364,7 +367,7 @@ function PostPage({
                   ) : null}
                 </div>
               </div>
-              <div className="my-4 flex gap-4">
+              <div className="my-4 flex items-end gap-4 sm:flex-col">
                 <div className="flex items-center" data-testid="comment-respons-header">
                   <ReblogTrigger
                     author={post.author}
@@ -378,14 +381,14 @@ function PostPage({
                       onClick={() => {
                         setReply(!reply), removeBox();
                       }}
-                      className="flex items-center text-red-600"
+                      className="flex items-center text-destructive"
                       data-testid="comment-reply"
                     >
                       {t('post_content.footer.reply')}
                     </button>
                   ) : (
                     <DialogLogin>
-                      <button className="flex items-center text-red-600" data-testid="comment-reply">
+                      <button className="flex items-center text-destructive" data-testid="comment-reply">
                         {t('post_content.footer.reply')}
                       </button>
                     </DialogLogin>
@@ -397,7 +400,7 @@ function PostPage({
                         onClick={() => {
                           setEdit(!edit);
                         }}
-                        className="flex items-center text-red-600"
+                        className="flex items-center text-destructive"
                         data-testid="post-edit"
                       >
                         {t('post_content.footer.edit')}
@@ -415,7 +418,7 @@ function PostPage({
                             <Icons.comment className="mr-1 h-4 w-4" />
                           )}
                         </Link>
-                        <Link href={post.url} className="flex cursor-pointer items-center text-red-600">
+                        <Link href={post.url} className="text- flex cursor-pointer items-center">
                           {post.children}
                         </Link>
                       </TooltipTrigger>
@@ -431,14 +434,13 @@ function PostPage({
                     </Tooltip>
                   </TooltipProvider>
                 </div>
-
                 <div className="flex gap-2">
                   <FacebookShare url={post.url} />
                   <TwitterShare title={post.title} url={post.url} />
                   <LinkedInShare title={post.title} url={post.url} />
                   <RedditShare title={post.title} url={post.url} />
                   <SharePost path={router.asPath}>
-                    <Link2 className="cursor-pointer hover:text-red-600" data-testid="share-post" />
+                    <Link2 className="cursor-pointer hover:text-destructive" data-testid="share-post" />
                   </SharePost>
                 </div>
               </div>

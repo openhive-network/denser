@@ -88,7 +88,7 @@ const CustomTooltip = ({
 
   if (active && payload && payload.length) {
     return (
-      <div className="bg-slate-300 p-2 text-sm dark:bg-slate-900">
+      <div className="bg-background-tertiary p-2 text-sm">
         <p>{t('market_page.price') + `: ${label} $/HIVE`}</p>
         <p>
           {payload[0].value !== 0

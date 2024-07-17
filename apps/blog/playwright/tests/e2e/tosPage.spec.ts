@@ -45,7 +45,7 @@ test.describe('Terms of Service page tests', () => {
       tosPage.mainElement,
       'background-color'
     );
-    expect(backgroundColorPage).toBe('rgb(248, 250, 252)');
+    expect(backgroundColorPage).toBe('rgba(0, 0, 0, 0)');
 
     const paragrafColor = await tosPage.getElementCssPropertyValue(
       tosPage.paragrafText,
@@ -84,7 +84,7 @@ test.describe('Terms of Service page tests', () => {
       tosPage.mainElement,
       'background-color'
     );
-    expect(backgroundColorPage).toBe('rgba(3, 7, 17, 0.95)');
+    expect(backgroundColorPage).toBe('rgba(0, 0, 0, 0)');
 
     const paragrafColor = await tosPage.getElementCssPropertyValue(
       tosPage.paragrafText,

@@ -1,5 +1,3 @@
-import { useQuery } from '@tanstack/react-query';
-import { getAccount } from '@transaction/lib/hive';
 import { convertStringToBig } from '@hive/ui/lib/helpers';
 import Loading from '@hive/ui/components/loading';
 import Big from 'big.js';
@@ -26,8 +24,8 @@ const Box = ({
   dollar?: boolean;
 }) => {
   return (
-    <div className="flex bg-slate-100 px-2 text-xs drop-shadow-md dark:bg-slate-800">
-      <span className="border-r-[1px] border-black py-1 pr-2 font-semibold">{label}</span>
+    <div className="flex bg-background-secondary px-2 text-xs drop-shadow-md">
+      <span className="border-r-[1px] border-border py-1 pr-2 font-semibold">{label}</span>
       <span className="py-1 pl-2">
         {dollar ? '$' : null}
         {value}
@@ -50,12 +48,6 @@ const Box = ({
 
 function Market() {
   const { t } = useTranslation('common_wallet');
-  const {
-    data: accountData,
-    isLoading: accountLoading,
-    isError: accountError
-  } = useQuery(['accountData', 'market'], () => getAccount('market'));
-
   const { data: tickerData, isLoading: tickerLoading } = useMarket();
 
   if (!tickerData || tickerLoading) {

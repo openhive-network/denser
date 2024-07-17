@@ -15,7 +15,7 @@ export class PrivacyPolicyPage {
     this.page = page;
     this.subtitles = this.page.locator('h3[class="mb-4 text-3xl"]');
     this.firstSubtitle = this.subtitles.first();
-    this.mainElement = this.page.locator('div[class="flex-1 bg-slate-50 dark:bg-background/95"]');
+    this.mainElement = this.page.locator('.mb-4.max-w-2xl.text-sm.font-light');
     this.firstParagraf = this.page.getByText('This Privacy Policy describes');
     this.navPostLink = this.page.locator('[data-testid="nav-posts-link"]');
     this.navProposalsLink = this.page.locator('[data-testid="nav-proposals-link"]');

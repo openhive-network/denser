@@ -35,16 +35,16 @@ export function SharePost({ children, path }: { children: ReactNode; path: strin
             </DialogTitle>
             <Link target="_blank" className="flex gap-2" href={`https://peakd.com${path}`}>
               {'•'}
-              <span className="text-red-600">https://peakd.com</span>
+              <span className="text-destructive">https://peakd.com</span>
               <Icons.forward />
             </Link>
             <Link target="_blank" href={`https://ecency.com${path}`} className="flex gap-2">
               {'•'}
-              <span className="text-red-600">https://ecency.com</span>
+              <span className="text-destructive">https://ecency.com</span>
               <Icons.forward />
             </Link>
             <Link target="_blank" href={`https://waivio.com${path}`} className="flex gap-2">
-              {'•'} <span className="text-red-600">https://waivio.com </span>
+              {'•'} <span className="text-destructive">https://waivio.com </span>
               <Icons.forward />
             </Link>
           </div>
@@ -53,15 +53,15 @@ export function SharePost({ children, path }: { children: ReactNode; path: strin
           <div className="flex flex-col gap-1 text-sm">
             <DialogTitle className="my-2">{t('post_content.footer.share_form.open_in')}</DialogTitle>
             <Link target="_blank" className="flex gap-2" href={`https://hiveblocks.com${path}`}>
-              {'•'} <span className="text-red-600">https://hiveblocks.com </span>
+              {'•'} <span className="text-destructive">https://hiveblocks.com </span>
               <Icons.forward />
             </Link>
             <Link target="_blank" href={`https://hive.ausbit.dev${path}`} className="flex gap-2">
-              {'•'} <span className="text-red-600">https://hive.ausbit.dev </span>
+              {'•'} <span className="text-destructive">https://hive.ausbit.dev </span>
               <Icons.forward />
             </Link>
             <Link target="_blank" href={`https://hiveblockexplorer.com${path}`} className="flex gap-2">
-              {'•'} <span className="text-red-600">https://hiveblockexplorer.com </span>
+              {'•'} <span className="text-destructive">https://hiveblockexplorer.com </span>
               <Icons.forward />
             </Link>
           </div>

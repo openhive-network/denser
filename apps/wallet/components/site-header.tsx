@@ -65,18 +65,20 @@ const SiteHeader: FC = () => {
   const chartAngle = (360 * stats.resourceCreditsPercent) / 100;
   const chart = [{ name: '', value: 1 }];
   return (
-    <header className="supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur">
+    <header className="sticky top-0 z-40 w-full border-b bg-background shadow-sm">
       <div className="container flex h-14 w-full items-center justify-between">
         <Link href="/" className="keychainify-checked mr-6 flex items-center space-x-2">
           <Icons.walletlogo className="w-32" />
-          {siteConfig.chainEnv !== 'mainnet' && <span className="text-xs text-red-600 uppercase">{siteConfig.chainEnv}</span>}
+          {siteConfig.chainEnv !== 'mainnet' && (
+            <span className="text-xs uppercase text-background">{siteConfig.chainEnv}</span>
+          )}
         </Link>
         <div className="flex items-center space-x-2 sm:space-x-4">
           <nav className="flex items-center space-x-1">
             {isClient && user && !user?.isLoggedIn ? (
               <div className="mx-1 hidden gap-1 sm:flex">
                 <DialogLogin>
-                  <Button variant="ghost" className="whitespace-nowrap text-base hover:text-red-500">
+                  <Button variant="ghost" className="whitespace-nowrap text-base hover:text-destructive">
                     {t('navigation.main_nav_bar.login')}
                   </Button>
                 </DialogLogin>

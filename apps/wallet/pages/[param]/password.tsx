@@ -61,10 +61,10 @@ export default function PostForm() {
   return (
     <ProfileLayout>
       <WalletMenu username={username} />
-      <div className="m-auto flex max-w-2xl flex-col gap-4 bg-gray-50 p-2 pb-8 dark:bg-slate-950">
+      <div className="m-auto flex max-w-2xl flex-col gap-4 bg-background p-2 pb-8">
         <div className="text-2xl font-bold">{t('change_password_page.change_password')}</div>
         <Separator />
-        <p className="text-sm leading-relaxed text-slate-500">
+        <p className="text-sm leading-relaxed text-primary/60">
           {t('change_password_page.the_rules.one')}
           <br />
           {t('change_password_page.the_rules.second')}
@@ -102,7 +102,7 @@ export default function PostForm() {
                 <FormItem>
                   <FormLabel className="flex justify-between">
                     <span>{t('change_password_page.current_password')}</span>{' '}
-                    <Link className="text-red-500" href="/recover_account_step_1">
+                    <Link className="text-destructive" href="/recover_account_step_1">
                       {t('change_password_page.recover_password')}
                     </Link>
                   </FormLabel>
@@ -120,7 +120,9 @@ export default function PostForm() {
               </div>
               {generatedKey ? (
                 <div>
-                  <code className="my-1 block bg-white px-1 py-2 text-center text-red-500">{key}</code>
+                  <code className="my-1 block bg-background px-1 py-2 text-center text-destructive">
+                    {key}
+                  </code>
                   <div className="text-center text-xs font-bold">
                     {t('change_password_page.backup_password_by_storing_it')}
                   </div>

@@ -120,7 +120,7 @@ const NotificationActivities = ({
       (parseFloat(profileData.reward_hive_balance.split(' ')[0]) > 0 ||
         parseFloat(profileData.reward_hbd_balance.split(' ')[0]) > 0 ||
         parseFloat(profileData.reward_vesting_hive.split(' ')[0]) > 0) ? (
-        <div className="flex flex-col items-center justify-center bg-green-50 px-2 py-4 dark:bg-gray-600 md:flex-row md:justify-between">
+        <div className="flex flex-col items-center justify-center px-2 py-4 md:flex-row md:justify-between">
           <span>
             {t('navigation.profile_notifications_tab_navbar.unclaimed_rewards')}
             {getRewardsString(profileData, t)}
@@ -131,13 +131,11 @@ const NotificationActivities = ({
             disabled={claimRewardMutation.isLoading}
             className="w-36"
           >
-            {claimRewardMutation.isLoading
-            ?
-              <CircleSpinner loading={claimRewardMutation.isLoading}
-                              size={18} color="#dc2626" />
-            :
+            {claimRewardMutation.isLoading ? (
+              <CircleSpinner loading={claimRewardMutation.isLoading} size={18} color="#dc2626" />
+            ) : (
               t('navigation.profile_notifications_tab_navbar.redeem')
-            }
+            )}
           </Button>
         </div>
       ) : null}
@@ -149,20 +147,27 @@ const NotificationActivities = ({
             className="w-100 mb-4 font-bold"
             onClick={handleMarkAllAsRead}
           >
-            {markAllNotificationsAsReadMutation.isLoading
-            ?
-              <CircleSpinner loading={markAllNotificationsAsReadMutation.isLoading}
-                              size={18} color="#dc2626" />
-            :
+            {markAllNotificationsAsReadMutation.isLoading ? (
+              <CircleSpinner
+                loading={markAllNotificationsAsReadMutation.isLoading}
+                size={18}
+                color="#dc2626"
+              />
+            ) : (
               t('navigation.profile_notifications_tab_navbar.mark_all')
-            }
+            )}
           </button>
         </div>
       ) : null}
-      <TabsList className="flex h-auto flex-wrap" data-testid="notifications-local-menu">
+      <TabsList
+        className="bg-background-tertiary flex h-auto flex-wrap "
+        data-testid="notifications-local-menu"
+      >
         <TabsTrigger value="all">{t('navigation.profile_notifications_tab_navbar.all')}</TabsTrigger>
         <TabsTrigger value="replies">{t('navigation.profile_notifications_tab_navbar.replies')}</TabsTrigger>
-        <TabsTrigger value="mentions">{t('navigation.profile_notifications_tab_navbar.mentions')}</TabsTrigger>
+        <TabsTrigger value="mentions">
+          {t('navigation.profile_notifications_tab_navbar.mentions')}
+        </TabsTrigger>
         <TabsTrigger value="follows">{t('navigation.profile_notifications_tab_navbar.follows')}</TabsTrigger>
         <TabsTrigger value="upvotes">{t('navigation.profile_notifications_tab_navbar.upvotes')}</TabsTrigger>
         <TabsTrigger value="reblogs">{t('navigation.profile_notifications_tab_navbar.reblogs')}</TabsTrigger>
@@ -172,7 +177,7 @@ const NotificationActivities = ({
         {showButton && (
           <Button
             variant="outline"
-            className="mb-8 mt-4 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
+            className="mb-8 mt-4 border-destructive text-base text-destructive hover:bg-destructive hover:text-secondary dark:border-destructive"
             onClick={handleLoadMore}
           >
             Load more
@@ -189,7 +194,7 @@ const NotificationActivities = ({
         {showButton && (
           <Button
             variant="outline"
-            className="mb-8 mt-4 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
+            className="hover:secondarydark:border-destructive mb-8 mt-4 border-destructive text-base text-destructive hover:bg-destructive"
             onClick={handleLoadMore}
           >
             Load more
@@ -204,7 +209,7 @@ const NotificationActivities = ({
         {showButton && (
           <Button
             variant="outline"
-            className="mb-8 mt-4 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
+            className="hover:secondarydark:border-destructive mb-8 mt-4 border-destructive text-base text-destructive hover:bg-destructive"
             onClick={handleLoadMore}
           >
             Load more
@@ -219,7 +224,7 @@ const NotificationActivities = ({
         {showButton && (
           <Button
             variant="outline"
-            className="mb-8 mt-4 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
+            className="hover:secondarydark:border-destructive mb-8 mt-4 border-destructive text-base text-destructive hover:bg-destructive"
             onClick={handleLoadMore}
           >
             Load more
@@ -234,7 +239,7 @@ const NotificationActivities = ({
         {showButton && (
           <Button
             variant="outline"
-            className="mb-8 mt-4 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
+            className="hover:secondarydark:border-destructive mb-8 mt-4 border-destructive text-base text-destructive hover:bg-destructive"
             onClick={handleLoadMore}
           >
             Load more
@@ -249,7 +254,7 @@ const NotificationActivities = ({
         {showButton && (
           <Button
             variant="outline"
-            className="mb-8 mt-4 border-red-600 text-base text-red-600 hover:bg-red-500 hover:text-white dark:border-red-600 dark:text-red-600"
+            className="hover:secondarydark:border-destructive mb-8 mt-4 border-destructive text-base text-destructive hover:bg-destructive"
             onClick={handleLoadMore}
           >
             Load more

@@ -49,13 +49,9 @@ const RepliesListItem = ({
         })}
         data-testid="comment-list-item"
       >
-        <Card
-          className={cn(
-            'mt-4 px-2 hover:bg-accent hover:text-accent-foreground  dark:bg-background/95 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground'
-          )}
-        >
+        <Card className="mb-4 bg-background px-2 text-primary">
           <CardHeader className="px-0 py-1">
-            <div className="md:text-md flex items-center text-xs text-slate-500 dark:text-slate-400">
+            <div className="md:text-md flex items-center text-xs">
               <Link href={`/@${comment.author}`} data-testid="comment-author-avatar-link">
                 <img
                   className="mr-3 h-[24px] w-[24px] rounded-3xl"
@@ -70,7 +66,7 @@ const RepliesListItem = ({
               <div className="flex items-center">
                 <Link
                   href={`/@${comment.author}`}
-                  className="font-medium text-black hover:cursor-pointer hover:text-red-600 dark:text-white dark:hover:text-red-600"
+                  className="font-medium hover:cursor-pointer hover:text-destructive dark:hover:text-destructive"
                   data-testid="post-author"
                 >
                   {comment.author}
@@ -79,16 +75,16 @@ const RepliesListItem = ({
                   ({accountReputation(comment.author_reputation)})
                 </span>
                 {comment.blacklists && comment.blacklists[0] ? (
-                  <span className="text-red-600" title={comment.blacklists[0]}>
+                  <span className="text-destructive" title={comment.blacklists[0]}>
                     ({comment.blacklists.length})
                   </span>
                 ) : blacklistCheck ? (
-                  <span className="text-red-600" title="My blacklist">
+                  <span className="text-destructive" title="My blacklist">
                     (1)
                   </span>
                 ) : null}
                 {comment.author_title ? (
-                  <Badge variant="outline" className="ml-1 border-red-600 text-slate-500">
+                  <Badge variant="outline" className="mr-1 border-destructive px-1 py-0 font-thin">
                     {comment.author_title}
                   </Badge>
                 ) : null}
@@ -101,7 +97,7 @@ const RepliesListItem = ({
                   {comment.community ? (
                     <Link
                       href={`/trending/${comment.community}`}
-                      className="hover:cursor-pointer hover:text-red-600"
+                      className="hover:cursor-pointer hover:text-destructive"
                       data-testid="comment-community-category-link"
                     >
                       {comment.community_title}
@@ -109,7 +105,7 @@ const RepliesListItem = ({
                   ) : (
                     <Link
                       href={`/trending/${comment.category}`}
-                      className="hover:cursor-pointer hover:text-red-600"
+                      className="hover:cursor-pointer hover:text-destructive"
                       data-testid="comment-community-category-link"
                     >
                       #{comment.category}
@@ -118,7 +114,7 @@ const RepliesListItem = ({
                   <span className="mx-1">•</span>
                   <Link
                     href={`/${comment.category}/@${comment.author}/${comment.permlink}`}
-                    className="hover:cursor-pointer hover:text-red-600"
+                    className="hover:cursor-pointer hover:text-destructive"
                     data-testid="comment-timestamp"
                     title={String(parseDate(comment.created))}
                   >
@@ -156,7 +152,7 @@ const RepliesListItem = ({
               >
                 <div
                   data-testid="post-payout"
-                  className={`flex items-center hover:cursor-pointer hover:text-red-600 ${
+                  className={`flex items-center hover:cursor-pointer hover:text-destructive ${
                     Number(comment.max_accepted_payout.slice(0, 1)) === 0 ? 'text-gray-600 line-through' : ''
                   }`}
                 >
@@ -203,7 +199,7 @@ const RepliesListItem = ({
                         </Link>
                         <Link
                           href={`/${comment.category}/@${comment.author}/${comment.permlink}`}
-                          className="flex cursor-pointer items-center pl-1 hover:text-red-600"
+                          className="flex cursor-pointer items-center pl-1 hover:text-destructive"
                           data-testid="comment-respond-link"
                         >
                           {comment.children}

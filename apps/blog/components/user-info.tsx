@@ -36,7 +36,7 @@ function UserInfo({
           blacklist={blacklist}
         />
         {author_title ? (
-          <Badge variant="outline" className="mr-1 border-red-600 text-slate-500" translate="no">
+          <Badge variant="outline" className="mr-1 border-destructive text-slate-500" translate="no">
             {author_title}
           </Badge>
         ) : null}
@@ -45,7 +45,7 @@ function UserInfo({
           {community_title ? (
             <Link
               href={`/trending/${community}`}
-              className="hover:cursor-pointer hover:text-red-600"
+              className="hover:cursor-pointer hover:text-destructive"
               data-testid="comment-community-title"
             >
               {community_title}
@@ -53,7 +53,7 @@ function UserInfo({
           ) : (
             <Link
               href={`/trending/${category}`}
-              className="hover:cursor-pointer hover:text-red-600"
+              className="hover:cursor-pointer hover:text-destructive"
               data-testid="comment-category-title"
             >
               #{category}
@@ -68,7 +68,7 @@ function UserInfo({
       {authored ? (
         <span className="ml-1 text-xs">
           Authored by{' '}
-          <Link className="hover:cursor-pointer hover:text-red-500" href={`/@${authored}`}>
+          <Link className="hover:cursor-pointer hover:text-destructive" href={`/@${authored}`}>
             @{authored}
           </Link>
         </span>

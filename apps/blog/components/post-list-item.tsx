@@ -75,25 +75,18 @@ const PostListItem = ({
       {post.json_metadata?.tags &&
       post.json_metadata?.tags.includes('nsfw') &&
       preferences.nsfw === 'hide' ? null : (
-        <Card
-          className={cn(
-            'mb-4 px-2 hover:bg-accent  hover:text-accent-foreground dark:bg-slate-900 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground'
-          )}
-        >
+        <Card className="mb-4 bg-background px-2 text-primary">
           {post.original_entry ? (
-            <div className="mt-2 rounded-sm bg-slate-100 px-2 py-1 text-sm dark:bg-slate-900">
+            <div className="bg-background-secondary mt-2 rounded-sm px-2 py-1 text-sm">
               <p className="flex items-center gap-1 text-xs md:text-sm">
                 <Icons.crossPost className="h-4 w-4 text-slate-500 dark:text-slate-400" />{' '}
-                <Link
-                  className="text-slate-500 hover:cursor-pointer hover:text-red-600 dark:text-slate-400"
-                  href={`/@${post.author}`}
-                >
+                <Link className="hover:cursor-pointer hover:text-destructive" href={`/@${post.author}`}>
                   {post.author}
                 </Link>{' '}
                 cross-posted{' '}
                 <Link
                   href={`/${post.original_entry.community}/@${post.original_entry.author}/${post.original_entry.permlink}`}
-                  className="text-red-600 hover:cursor-pointer"
+                  className="text-destructive hover:cursor-pointer"
                 >
                   @{post.original_entry.author}/{post.original_entry.permlink}
                 </Link>
@@ -101,12 +94,12 @@ const PostListItem = ({
             </div>
           ) : null}
           {post.reblogged_by ? (
-            <div className="flex items-center gap-2 py-1 text-sm text-gray-400">
+            <div className="flex items-center gap-2 py-1 text-sm">
               <Icons.forward className="h-4 w-4" />
               <span data-testid="reblogged-label">
                 <Link
                   href={`/@${post.reblogged_by[0]}`}
-                  className="cursor-pointer hover:text-red-600"
+                  className="cursor-pointer hover:text-destructive"
                   data-testid="reblogged-author-link"
                 >
                   {post.reblogged_by[0]}
@@ -116,7 +109,7 @@ const PostListItem = ({
             </div>
           ) : null}
           <CardHeader className="px-0 py-1">
-            <div className="md:text-md flex items-center text-xs text-slate-500 dark:text-slate-400">
+            <div className="md:text-md flex items-center text-sm">
               {!reveal && post.blacklists.length < 1 ? (
                 <Link href={`/@${post.author}`} data-testid="post-card-avatar">
                   <div
@@ -130,7 +123,7 @@ const PostListItem = ({
               <div className="flex flex-wrap items-center gap-0.5 md:flex-nowrap">
                 <Link
                   href={`/@${post.author}`}
-                  className="font-medium text-black hover:cursor-pointer hover:text-red-600 dark:text-white dark:hover:text-red-600"
+                  className="font-medium text-primary hover:cursor-pointer hover:text-destructive"
                   data-testid="post-author"
                 >
                   {post.author}
@@ -146,13 +139,13 @@ const PostListItem = ({
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger>
-                        <span className="text-red-600">({post.blacklists.length})</span>
+                        <span className="text-destructive">({post.blacklists.length})</span>
                       </TooltipTrigger>
                       <TooltipContent>{post.blacklists[0]}</TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 ) : blacklistCheck ? (
-                  <span className="text-red-600" title="My blacklist">
+                  <span className="text-destructive" title="My blacklist">
                     (1)
                   </span>
                 ) : null}
@@ -162,7 +155,7 @@ const PostListItem = ({
                   <span className="text-xs md:text-sm">&nbsp;{post.author_role.toUpperCase()}&nbsp;</span>
                 ) : null}
                 {post.author_title ? (
-                  <Badge variant="outline" className="mr-1 border-red-600 text-slate-500">
+                  <Badge variant="outline" className="mr-1 border-destructive px-1 py-0 font-thin">
                     {post.author_title}
                   </Badge>
                 ) : null}
@@ -173,7 +166,7 @@ const PostListItem = ({
                       {post.community ? (
                         <Link
                           href={`/trending/${post.community}`}
-                          className="hover:cursor-pointer hover:text-red-600"
+                          className="hover:cursor-pointer hover:text-destructive"
                           data-testid="post-card-community"
                         >
                           {post.community_title}
@@ -181,7 +174,7 @@ const PostListItem = ({
                       ) : (
                         <Link
                           href={`/trending/${post.category}`}
-                          className="hover:cursor-pointer hover:text-red-600"
+                          className="hover:cursor-pointer hover:text-destructive"
                           data-testid="post-card-category"
                         >
                           #{post.category}
@@ -192,7 +185,7 @@ const PostListItem = ({
                   ) : null}
                   <Link
                     href={`/${post.category}/@${post.author}/${post.permlink}`}
-                    className="hover:cursor-pointer hover:text-red-600"
+                    className="hover:cursor-pointer hover:text-destructive"
                     data-testid="post-card-timestamp"
                   >
                     <span title={String(parseDate(post.created))}>{dateToFullRelative(post.created, t)}</span>
@@ -214,7 +207,7 @@ const PostListItem = ({
                     </span>
                   ) : null}
                   {post.stats && post.stats.is_pinned && isCommunityPage ? (
-                    <Badge className="ml-1 bg-red-600 text-white hover:bg-red-600">
+                    <Badge className="ml-1 bg-destructive text-white hover:bg-destructive">
                       <Link
                         href={`/${post.category}/@${post.author}/${post.permlink}`}
                         data-testid="post-pinned-tag"
@@ -245,7 +238,7 @@ const PostListItem = ({
                   <>
                     <CardTitle data-testid="post-title" className="text-md">
                       {post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw') ? (
-                        <Badge variant="outline" className="mx-1 border-red-600 text-red-600">
+                        <Badge variant="outline" className="mx-1 border-destructive text-destructive">
                           nsfw
                         </Badge>
                       ) : null}
@@ -268,23 +261,26 @@ const PostListItem = ({
                 ) : (
                   <>
                     <p>
-                      <Badge variant="outline" className="mx-1 border-red-600 text-red-600">
+                      <Badge variant="outline" className="mx-1 border-destructive text-destructive">
                         nsfw
                       </Badge>
-                      <span className="cursor-pointer text-red-600" onClick={revealPost}>
+                      <span className="cursor-pointer text-destructive" onClick={revealPost}>
                         Reveal this post
                       </span>{' '}
                       or{' '}
                       {user.isLoggedIn ? (
                         <>
                           adjust your{' '}
-                          <Link href={`/@${user.username}/settings`} className="cursor-pointer text-red-600">
+                          <Link
+                            href={`/@${user.username}/settings`}
+                            className="cursor-pointer text-destructive"
+                          >
                             display preferences.
                           </Link>{' '}
                         </>
                       ) : (
                         <>
-                          <Link href="https://signup.hive.io/" className="cursor-pointer text-red-600">
+                          <Link href="https://signup.hive.io/" className="cursor-pointer text-destructive">
                             create an account
                           </Link>{' '}
                           to save your preferences.
@@ -300,7 +296,7 @@ const PostListItem = ({
 
                   <DetailsCardHover post={post} decline={Number(post.max_accepted_payout.slice(0, 1)) === 0}>
                     <div
-                      className={`flex items-center hover:cursor-pointer hover:text-red-600 ${
+                      className={`flex items-center hover:cursor-pointer hover:text-destructive ${
                         Number(post.max_accepted_payout.slice(0, 1)) === 0 ? 'text-gray-600 line-through' : ''
                       }`}
                       data-testid="post-payout"
@@ -347,7 +343,7 @@ const PostListItem = ({
                             </Link>
                             <Link
                               href={`/${post.category}/@${post.author}/${post.permlink}/#comments`}
-                              className="flex cursor-pointer items-center pl-1 hover:text-red-600"
+                              className="flex cursor-pointer items-center pl-1 hover:text-destructive"
                               data-testid="post-card-response-link"
                             >
                               {post.children}

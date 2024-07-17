@@ -137,10 +137,10 @@ const MyPage: FC = () => {
               ) : (
                 <div
                   key="empty"
-                  className="flex flex-col gap-6 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
+                  className="bg-card-noContent border-card-empty-border flex flex-col gap-6 border-2 border-solid px-4 py-6 text-sm"
                 >
                   <span>You haven&apos;t joined any active communities yet!</span>
-                  <Link className="text-xl text-red-500" href="../communities">
+                  <Link className="text-xl text-destructive" href="../communities">
                     Explore Communities
                   </Link>
                 </div>
