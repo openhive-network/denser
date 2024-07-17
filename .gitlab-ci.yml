@@ -19,6 +19,9 @@ include:
   - project: 'hive/common-ci-configuration'
     ref: d4e29410ea168096e1a822f77c7ce741d9cfb57a # develop
     file: '/templates/docker_image_jobs.gitlab-ci.yml'
+  - project: 'hive/haf'
+    ref: 8e7f4ff92a223f8ca725ba73c799ae1427419514 #develop
+    file: '/scripts/ci-helpers/prepare_data_image_job.yml'
 
 .docker_build_template:
   extends: .docker_image_builder_job_template
@@ -54,6 +57,20 @@ include:
       dotenv: docker-build.env
   tags:
     - public-runner-docker
+    - hived-for-tests
+
+mirrornet-haf-image-docker-build:
+  stage: build
+  extends: .prepare_haf_image
+  variables:
+    SUBMODULE_DIR: "${CI_PROJECT_DIR}/haf"
+    REGISTRY_USER: "${HAF_REGISTRY_USER}"
+    REGISTRY_PASS: "${HAF_REGISTRY_PASSWORD}"
+    BINARY_CACHE_PATH: "${CI_PROJECT_DIR}/hived-mirrornet-binaries"
+    HIVE_NETWORK_TYPE: mirrornet
+  tags:
+    - public-runner-docker
+    - hived-for-tests
 
 docker-build-auth:
   extends: .docker_build_template
