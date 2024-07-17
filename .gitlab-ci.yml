@@ -95,8 +95,6 @@ mirrornet-haf-image-docker-build:
     BINARY_CACHE_PATH: "${CI_PROJECT_DIR}/hived-mirrornet-binaries"
     HIVE_NETWORK_TYPE: mirrornet
     GIT_SUBMODULE_STRATEGY: recursive
-  before_script:
-    - mkdir -p /cache/blockchain/block_log_mirror_44/
   tags:
     - public-runner-docker
     - hived-for-tests
@@ -132,6 +130,10 @@ mirrornet-haf-node-replay:
     HAF_REGISTRY: "${HAF_REGISTRY_PATH}"
     GIT_STRATEGY: "clone"
     ADDITIONAL_CONFIGURATION_SCRIPT: "scripts/ci-helpers/copy-mirrornet-haf-config.sh"
+  before_script:
+    - |
+      mkdir -p /cache/blockchain/block_log_mirror_44/
+      chown 1000:1000 /cache/blockchain/block_log_mirror_44/  
   tags:
     - data-cache-storage
 
