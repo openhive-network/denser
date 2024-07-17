@@ -1,5 +1,6 @@
 stages:
   - build
+  - replay-and-sync
   - test
   - test-report-aggregate
   - deploy
@@ -21,14 +22,32 @@ variables:
   # Runner feature flags
   FF_ENABLE_JOB_CLEANUP: 1
 
+  # HAF API node configuration
+  API_NODE_VERSION: "4a4649f0"
+  HAF_COMMIT: "8e7f4ff92a223f8ca725ba73c799ae1427419514"
+  HIVEMIND_INSTANCE_VERSION: "4b4dea84"
+  HAFAH_VERSION: "1ae8512a"
+  HIVEMIND_INSTANCE_IMAGE: registry.gitlab.syncad.com/hive/hivemind/instance
+  HAFAH_REGISTRY: registry.gitlab.syncad.com/hive/hafah/instance
+  BLOCK_LOG_SOURCE_DIR: "/blockchain/block_log_mirror_44"
+  REPLAY_DIRECTORY_PREFIX: "/cache/replay_data_haf_api_node_denser"
+  REPLAY_DIRECTORY: "${REPLAY_DIRECTORY_PREFIX}_${API_NODE_VERSION}_${HAF_COMMIT}_${HIVEMIND_INSTANCE_VERSION}_${HAFAH_VERSION}"
+  REPLAY_PIPELINE_DIRECTORY: "${REPLAY_DIRECTORY_PREFIX}_${CI_PIPELINE_ID}"
+  DOCKER_TLS_CERTDIR: "${REPLAY_PIPELINE_DIRECTORY}_certs"
+
 include:
   - template: Workflows/Branch-Pipelines.gitlab-ci.yml
   - project: 'hive/common-ci-configuration'
     ref: d4e29410ea168096e1a822f77c7ce741d9cfb57a # develop
-    file: '/templates/docker_image_jobs.gitlab-ci.yml'
+    file: 
+      - '/templates/docker_image_jobs.gitlab-ci.yml'
+      - '/templates/cache_cleanup.gitlab-ci.yml'
   - project: 'hive/haf'
     ref: 8e7f4ff92a223f8ca725ba73c799ae1427419514 #develop
     file: '/scripts/ci-helpers/prepare_data_image_job.yml'
+  - project: 'hive/haf_api_node'
+    ref: 4a4649f004e40fb4922546bd4b34ba0fd8ae2448
+    file: 'ci/node-replay.gitlab-ci.yml'  
 
 .docker_build_template:
   extends: .docker_image_builder_job_template
@@ -100,6 +119,19 @@ docker-build-wallet:
     TURBO_APP_SCOPE: '@hive/wallet'
     TURBO_APP_PATH: '/apps/wallet'
     TURBO_APP_NAME: 'wallet'
+
+mirrornet-haf-node-replay:
+  extends: .haf-node-replay
+  stage: replay-and-sync
+  needs:
+    - mirrornet-haf-image-docker-build
+  variables:
+    HAF_VERSION: "${HAF_REGISTRY_TAG}"
+    HAF_REGISTRY: "${HAF_REGISTRY_PATH}"
+    GIT_STRATEGY: "clone"
+    ADDITIONAL_CONFIGURATION_SCRIPT: "scripts/ci-helpers/copy-mirrornet-haf-config.sh"
+  tags:
+    - data-cache-storage
 
 .node-job:
   extends: .job-defaults
@@ -518,3 +550,22 @@ buildkit_cache_cleanup:
   needs: []
   variables:
     CACHE_REPOSITORIES: "auth/cache,blog/cache,wallet/cache"
+
+# Deletes all HAF API node replay data
+cleanup_haf_api_node_cache_manual:
+  extends: 
+    - .cleanup_cache_manual_template
+  stage: cleanup
+  variables:
+    CLEANUP_PATH_PATTERN: "${REPLAY_DIRECTORY_PREFIX}*"
+  tags:
+    - data-cache-storage
+
+# Deletes HAF API node replay data older than 7 days
+cleanup_old_haf_api_node_cache:
+  extends:
+    - .cleanup_old_cache_template
+  stage: cleanup
+  variables:
+    CLEANUP_PATH_PATTERN: "${REPLAY_DIRECTORY_PREFIX}*"
+  tags:
