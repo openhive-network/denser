@@ -164,31 +164,20 @@ function PostPage({
 
   const commentSite = post?.depth !== 0 ? true : false;
   const [mutedPost, setMutedPost] = useState<boolean | undefined>(undefined);
-  const postUrl = () => {
-    if (discussionState) {
-      const objectWithSmallestDepth = discussionState.reduce((smallestDepth, e) => {
-        if (e.depth < smallestDepth.depth) {
-          return e;
-        }
-        return smallestDepth;
-      });
-      const url = objectWithSmallestDepth.url;
-      // Ensure url is relative.
-      return url.startsWith('/') ? url : '/' + url;
-    }
-  };
-  const parentUrl = () => {
-    if (discussionState) {
-      return (
-        discussionState[0].category +
-        '/@' +
-        discussionState[0].parent_author +
-        '/' +
-        discussionState[0].parent_permlink
-      );
-    }
-  };
+  const generateUrls = () => {
+    if (!discussionState || discussionState.length === 0) return null;
 
+    const highest_item = discussionState.reduce(
+      (smallest, current) => (current.depth < smallest.depth ? current : smallest),
+      discussionState[0]
+    );
+
+    const postUrl = highest_item.url.startsWith('/') ? highest_item.url : `/${highest_item.url}`;
+    const parentUrl = `${highest_item.category}/@${highest_item.parent_author}/${highest_item.parent_permlink}`;
+
+    return { postUrl, parentUrl };
+  };
+  const { postUrl, parentUrl } = generateUrls() || {};
   if (userFromGDPR) {
     return <CustomError />;
   }
@@ -212,7 +201,7 @@ function PostPage({
                 {post.title}
               </h1>
             ) : (
-              <div className="flex flex-col gap-2 border-2 border-solid border-card-emptyBorder bg-card-noContent p-2">
+              <div className="border-card-emptyBorder bg-card-noContent flex flex-col gap-2 border-2 border-solid p-2">
                 <h4 className="text-sm">
                   {t('post_content.if_comment.you_are_viewing_a_single_comments_thread_from')}:
                 </h4>
@@ -221,7 +210,7 @@ function PostPage({
                 </h1>
                 <Link
                   className="text-sm hover:text-destructive"
-                  href={`${postUrl()}`}
+                  href={`${postUrl}`}
                   data-testid="view-the-full-context"
                 >
                   • {t('post_content.if_comment.view_the_full_context')}
@@ -229,7 +218,7 @@ function PostPage({
                 {discussionState && !discussionState.some((e) => e.depth === 1) ? (
                   <Link
                     className="text-sm hover:text-destructive"
-                    href={`../../${parentUrl()}`}
+                    href={`../../${parentUrl}`}
                     data-testid="view-the-direct-parent"
                   >
                     • {t('post_content.if_comment.view_the_direct_parent')}
@@ -294,7 +283,7 @@ function PostPage({
                     <li key={tag}>
                       <Link
                         href={`/trending/${tag}`}
-                        className="my-2 rounded-md border-[1px] border-border bg-background-secondary px-2 py-1 text-[14px] hover:border-[#788187]"
+                        className="bg-background-secondary my-2 rounded-md border-[1px] border-border px-2 py-1 text-[14px] hover:border-[#788187]"
                       >
                         #{tag}
                       </Link>
