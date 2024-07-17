@@ -14,6 +14,14 @@ variables:
   IMAGE_REMOVER_TAG: '$CI_COMMON_JOB_VERSION'
   BLOG_APP_SRC_DIR: 'apps/blog/'
 
+  # Git settings
+  GIT_DEPTH: 20
+  GIT_SUBMODULE_STRATEGY: none
+  GIT_STRATEGY: clone
+
+  # Runner feature flags
+  FF_ENABLE_JOB_CLEANUP: 1
+
 include:
   - template: Workflows/Branch-Pipelines.gitlab-ci.yml
   - project: 'hive/common-ci-configuration'
@@ -68,6 +76,7 @@ mirrornet-haf-image-docker-build:
     REGISTRY_PASS: "${HAF_REGISTRY_PASSWORD}"
     BINARY_CACHE_PATH: "${CI_PROJECT_DIR}/hived-mirrornet-binaries"
     HIVE_NETWORK_TYPE: mirrornet
+    GIT_SUBMODULE_STRATEGY: recursive
   tags:
     - public-runner-docker
     - hived-for-tests
