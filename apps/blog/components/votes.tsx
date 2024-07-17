@@ -25,7 +25,10 @@ const VotesComponent = ({ post }: { post: Entry }) => {
   const { t } = useTranslation('common_blog');
   const [isClient, setIsClient] = useState(false);
   const [clickedVoteButton, setClickedVoteButton] = useState('');
-  const { upvote, downvote, changeUpvote, changeDownvote } = useStore();
+  const changeUpvote = useStore((state) => state.changeUpvote);
+  const changeDownvote = useStore((state) => state.changeDownvote);
+  const upvote = useStore((state) => state.upvote);
+  const downvote = useStore((state) => state.downvote);
   const [sliderUpvote, setSliderUpvote] = useState(upvote);
   const [sliderDownvote, setSliderDownvote] = useState(downvote);
   const voter = user.username;
