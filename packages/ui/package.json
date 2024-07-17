@@ -7,10 +7,10 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@hive/eslint-config-custom": "*",
-    "@hive/prettier-config-custom": "*",
-    "@hive/tailwindcss-config": "*",
-    "@hive/tsconfig": "*",
+    "@hive/eslint-config-custom": "workspace:*",
+    "@hive/prettier-config-custom": "workspace:*",
+    "@hive/tailwindcss-config": "workspace:*",
+    "@hive/tsconfig": "workspace:*",
     "@hiveio/hivescript": "^1.3.1",
     "@hiveio/wax": "^1.27.6-rc1-240708114550",
     "@radix-ui/react-accordion": "^1.1.2",

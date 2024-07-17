@@ -3,7 +3,7 @@
   "main": "index.js",
   "version": "1.0.0",
   "dependencies": {
-    "@hive/prettier-config-custom": "*",
+    "@hive/prettier-config-custom": "workspace:*",
     "eslint": "latest",
     "eslint-config-next": "latest",
     "eslint-config-prettier": "latest",
