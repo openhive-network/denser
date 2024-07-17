@@ -310,7 +310,7 @@ test.describe('Home page tests', () => {
       await homePage.page.waitForTimeout(1000);
       expect(
         await homePage.getElementCssPropertyValue(await homePage.getFirstPostCardCategoryLink, 'color')
-      ).toBe('rgb(24, 30, 42)');
+      ).toBe('rgb(255, 0, 0)');
     }
 
     // Timestamp link color without hovering
