@@ -234,7 +234,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
         await profilePage.repliesCommentListItemUpvote.locator('svg').first(),
         'background-color'
       )
-    ).toBe('rgb(220, 38, 38)');
+    ).toBe('rgb(255, 0, 0)');
 
     await profilePage.repliesCommentListItemUpvote.first().click();
     await loginDialog.validateDefaultLoginFormIsLoaded();
@@ -289,7 +289,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
           await profilePage.repliesCommentListItemPayout.first(),
           'color'
         )
-      ).toBe('rgb(15, 23, 42)');
+      ).toBe('rgb(24, 30, 42)');
     } else {
       await firstCommentCardPayout.hover();
       await profilePage.page.waitForTimeout(1000);

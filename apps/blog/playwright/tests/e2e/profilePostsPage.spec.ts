@@ -196,7 +196,7 @@ test.describe('Profile page of @gtg', () => {
       } else {
       await commentViewPage.getResponseCommentPayout.first().hover();
       await commentViewPage.page.waitForTimeout(1000);
-      await expect(commentViewPage.getResponseCommentPayout.first()).toHaveCSS('color', 'rgb(15, 23, 42)');
+      await expect(commentViewPage.getResponseCommentPayout.first()).toHaveCSS('color', 'rgb(24, 30, 42)');
       }
     } else {
       await commentViewPage.getResponseCommentPayout.first().hover();
