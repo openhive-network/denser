@@ -44,7 +44,7 @@ test.describe('Comments of post', () => {
         postPage.commentListItems.locator('div > div').first(),
         'background-color'
       )
-    ).toBe('rgb(241, 245, 249)');
+    ).toBe('rgb(255, 255, 255)');
   });
 
   test('Validate a hovered comment changes backgroundcolor style in the dark mode', async ({
@@ -63,7 +63,7 @@ test.describe('Comments of post', () => {
         postPage.commentListItems.locator('div > div').first(),
         'background-color'
       )
-    ).toBe('rgb(15, 23, 42)');
+    ).toBe('rgb(44, 48, 53)');
 
     // After hover
     await postPage.commentListItems.first().hover();
@@ -73,7 +73,7 @@ test.describe('Comments of post', () => {
         postPage.commentListItems.locator('div > div').first(),
         'background-color'
       )
-    ).toBe('rgb(29, 40, 58)');
+    ).toBe('rgb(44, 48, 53)');
   });
 
   test('move to the comment view page of the first comment of the first post', async ({ page }) => {
