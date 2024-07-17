@@ -85,7 +85,7 @@ test.describe('Home page tests', () => {
 
     // Color of the first post payouts without hovering
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostPayout, 'color')).toBe(
-      'rgb(24, 30, 42)'
+      'rgb(255, 0, 0)'
     );
     await homePage.getFirstPostPayout.hover();
     await homePage.page.waitForTimeout(1000);
