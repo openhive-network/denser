@@ -1,0 +1,13 @@
+{
+  "name": "@hive/logger",
+  "version": "0.1.0",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@beam-australia/react-env": "^3.1.1",
+    "pino": "^8.17.1"
+  }
+}
