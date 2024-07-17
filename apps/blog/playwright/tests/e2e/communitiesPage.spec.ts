@@ -203,35 +203,35 @@ test.describe('Communities page tests', () => {
 
     // Post author link color without hovering
     expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthor, 'color')).toBe(
-      'rgb(0, 0, 0)'
+      'rgb(24, 30, 42)'
     );
     // Post author link color after hovering
     await communitiesPage.getFirstPostAuthor.hover();
     await communitiesPage.page.waitForTimeout(1000);
     expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthor, 'color')).toBe(
-      'rgb(220, 38, 38)'
+      'rgb(255, 0, 0)'
     );
 
     // Timestamp link color without hovering
     expect(
       await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostCardTimestampLink, 'color')
-    ).toBe('rgb(100, 116, 139)');
+    ).toBe('rgb(24, 30, 42)');
     // Timestamp link color after hovering
     await communitiesPage.getFirstPostCardTimestampLink.hover();
     await communitiesPage.page.waitForTimeout(1000);
     expect(
       await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostCardTimestampLink, 'color')
-    ).toBe('rgb(220, 38, 38)');
+    ).toBe('rgb(255, 0, 0)');
     // Author reputation color without hovering
     expect(
       await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthorReputation, 'color')
-    ).toBe('rgb(100, 116, 139)');
+    ).toBe('rgb(24, 30, 42)');
     // Author reputation color after hovering
     await communitiesPage.getFirstPostAuthorReputation.hover();
     await communitiesPage.page.waitForTimeout(1000);
     expect(
       await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthorReputation, 'color')
-    ).toBe('rgb(100, 116, 139)');
+    ).toBe('rgb(24, 30, 42)');
   });
 
   test('validate the first post header styles (for Trending filter) in the dark theme', async ({ page }) => {
@@ -244,35 +244,35 @@ test.describe('Communities page tests', () => {
 
     // Post author link color without hovering
     expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthor, 'color')).toBe(
-      'rgb(255, 255, 255)'
+      'rgb(248, 250, 252)'
     );
     // Post author link color after hovering
     await communitiesPage.getFirstPostAuthor.hover();
     await communitiesPage.page.waitForTimeout(1000);
     expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthor, 'color')).toBe(
-      'rgb(220, 38, 38)'
+      'rgb(226, 18, 53)'
     );
 
     // Timestamp link color without hovering
     expect(
       await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostCardTimestampLink, 'color')
-    ).toBe('rgb(148, 163, 184)');
+    ).toBe('rgb(248, 250, 252)');
     // Timestamp link color after hovering
     await communitiesPage.getFirstPostCardTimestampLink.hover();
     await communitiesPage.page.waitForTimeout(1000);
     expect(
       await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostCardTimestampLink, 'color')
-    ).toBe('rgb(220, 38, 38)');
+    ).toBe('rgb(226, 18, 53)');
     // Author reputation color without hovering
     expect(
       await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthorReputation, 'color')
-    ).toBe('rgb(148, 163, 184)');
+    ).toBe('rgb(248, 250, 252)');
     // Author reputation color after hovering
     await communitiesPage.getFirstPostAuthorReputation.hover();
     await communitiesPage.page.waitForTimeout(1000);
     expect(
       await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthorReputation, 'color')
-    ).toBe('rgb(148, 163, 184)');
+    ).toBe('rgb(248, 250, 252)');
   });
 
   test('validate the first post footer payouts styles (for Trending filter) in the light theme in the LeoFinance', async ({
@@ -283,13 +283,13 @@ test.describe('Communities page tests', () => {
 
     // Color of the first post payouts without hovering
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostPayout, 'color')).toBe(
-      'rgb(15, 23, 42)'
+      'rgb(24, 30, 42)'
     );
     await homePage.getFirstPostPayout.hover();
     await homePage.page.waitForTimeout(1000);
     // Color of the first post payouts with hovering
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostPayout, 'color')).toBe(
-      'rgb(220, 38, 38)'
+      'rgb(255, 0, 0)'
     );
     // The tooltip is visible by hovering
     expect(await homePage.getFirstPostPayoutTooltip).toBeVisible();
@@ -310,13 +310,13 @@ test.describe('Communities page tests', () => {
 
     // Color of the first post payouts without hovering
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostPayout, 'color')).toBe(
-      'rgb(255, 255, 255)'
+      'rgb(248, 250, 252)'
     );
     await homePage.getFirstPostPayout.hover();
     await homePage.page.waitForTimeout(1000);
     // Color of the first post payouts with hovering
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostPayout, 'color')).toBe(
-      'rgb(220, 38, 38)'
+      'rgb(226, 18, 53)'
     );
     // The tooltip is visible by hovering
     expect(await homePage.getFirstPostPayoutTooltip).toBeVisible();
@@ -336,7 +336,7 @@ test.describe('Communities page tests', () => {
 
     // Color of the first post votes without hovering
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostVotes, 'color')).toBe(
-      'rgb(15, 23, 42)'
+      'rgb(24, 30, 42)'
     );
     await homePage.getFirstPostVotes.hover();
     await homePage.page.waitForTimeout(1000);
@@ -345,7 +345,7 @@ test.describe('Communities page tests', () => {
 
     // Color of the first post votes with hovering
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostVotes, 'color')).toBe(
-      'rgb(15, 23, 42)'
+      'rgb(24, 30, 42)'
     );
 
     // The tooltip is visible by hovering
@@ -367,7 +367,7 @@ test.describe('Communities page tests', () => {
 
     // Color of the first post votes without hovering
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostVotes, 'color')).toBe(
-      'rgb(255, 255, 255)'
+      'rgb(248, 250, 252)'
     );
     await homePage.getFirstPostVotes.hover();
     await homePage.page.waitForTimeout(1000);
@@ -385,7 +385,7 @@ test.describe('Communities page tests', () => {
     );
     expect(
       await homePage.getElementCssPropertyValue(await homePage.getFirstPostVotesTooltip, 'background-color')
-    ).toBe('rgb(3, 7, 17)');
+    ).toBe('rgb(34, 38, 42)');
   });
 
   test('validate the community leadership of Worldmappin Community', async ({ page, request }) => {
@@ -463,7 +463,7 @@ test.describe('Communities page tests', () => {
 
     // Color of reblog button
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogButton, 'color')).toBe(
-      'rgb(15, 23, 42)'
+      'rgb(24, 30, 42)'
     );
 
     // The tooltip message and colors
@@ -474,7 +474,7 @@ test.describe('Communities page tests', () => {
     );
     expect(
       await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogTooltip, 'background-color')
-    ).toBe('rgb(255, 255, 255)');
+    ).toBe('rgb(247, 247, 247)');
   });
 
   test('validate reblog button styles in the dark theme', async ({ page }) => {
@@ -485,7 +485,7 @@ test.describe('Communities page tests', () => {
 
     // Color of reblog button
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogButton, 'color')).toBe(
-      'rgb(255, 255, 255)'
+      'rgb(248, 250, 252)'
     );
 
     // The tooltip message and colors
@@ -496,7 +496,7 @@ test.describe('Communities page tests', () => {
     );
     expect(
       await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogTooltip, 'background-color')
-    ).toBe('rgb(3, 7, 17)');
+    ).toBe('rgb(34, 38, 42)');
   });
 
   test('move to the reblog this post dialog ', async ({ page }) => {
@@ -653,10 +653,10 @@ test.describe('Communities page tests', () => {
     // First row of the notifications content table
     const firstRowOfSubscribers = (await communitiesPage.subscribersRowsOdd.all()).at(0);
     await expect(await homePage.getElementCssPropertyValue(firstRowOfSubscribers, 'background-color')).toBe(
-      'rgb(226, 232, 240)'
+      'rgb(255, 255, 255)'
     );
     await expect(await homePage.getElementCssPropertyValue(firstRowOfSubscribers, 'color')).toBe(
-      'rgb(15, 23, 42)'
+      'rgb(51, 51, 51)'
     );
     // console.log('First subscriber progress bar - transform css value: ', await homePage.getElementCssPropertyValue(firstRowOfSubscribers?.locator('div[role="progressbar"] div'),"transform"));
     await expect(
@@ -674,10 +674,10 @@ test.describe('Communities page tests', () => {
 
     const secondRowOfSubscribers = (await communitiesPage.subscribersRowsEven.all()).at(0);
     await expect(await homePage.getElementCssPropertyValue(secondRowOfSubscribers, 'background-color')).toBe(
-      'rgba(0, 0, 0, 0)'
+      'rgb(225, 231, 239)'
     );
     await expect(await homePage.getElementCssPropertyValue(secondRowOfSubscribers, 'color')).toBe(
-      'rgb(15, 23, 42)'
+      'rgb(51, 51, 51)'
     );
     await expect(
       await homePage.getElementCssPropertyValue(
@@ -710,7 +710,7 @@ test.describe('Communities page tests', () => {
     // First row of the notifications content table
     const firstRowOfSubscribers = (await communitiesPage.subscribersRowsOdd.all()).at(0);
     await expect(await homePage.getElementCssPropertyValue(firstRowOfSubscribers, 'background-color')).toBe(
-      'rgb(15, 23, 42)'
+      'rgb(44, 48, 53)'
     );
     await expect(await homePage.getElementCssPropertyValue(firstRowOfSubscribers, 'color')).toBe(
       'rgb(225, 231, 239)'
@@ -731,7 +731,7 @@ test.describe('Communities page tests', () => {
 
     const secondRowOfSubscribers = (await communitiesPage.subscribersRowsEven.all()).at(0);
     await expect(await homePage.getElementCssPropertyValue(secondRowOfSubscribers, 'background-color')).toBe(
-      'rgba(0, 0, 0, 0)'
+      'rgb(56, 66, 82)'
     );
     await expect(await homePage.getElementCssPropertyValue(secondRowOfSubscribers, 'color')).toBe(
       'rgb(225, 231, 239)'
@@ -758,7 +758,7 @@ test.describe('Communities page tests', () => {
         communitiesPage.subscribersNotificationLocalMenu.getByText('All'),
         'color'
       )
-    ).toBe('rgb(15, 23, 42)');
+    ).toBe('rgb(51, 51, 51)');
     await expect(
       await homePage.getElementCssPropertyValue(
         communitiesPage.subscribersNotificationLocalMenu.getByText('All'),
@@ -861,7 +861,7 @@ test.describe('Communities page tests', () => {
         communitiesPage.subscribersNotificationLocalMenu.getByText('All'),
         'background-color'
       )
-    ).toBe('rgb(3, 7, 17)');
+    ).toBe('rgb(44, 48, 53)');
     // Replies button
     await expect(communitiesPage.subscribersNotificationLocalMenu.getByText('Replies')).toBeVisible();
     await expect(
@@ -1095,7 +1095,7 @@ test.describe('Communities page tests', () => {
 
     expect(
       await homePage.getElementCssPropertyValue(logInToMakePostMessagePage.logInToMakePostMessage, 'color')
-    ).toBe('rgb(15, 23, 42)');
+    ).toBe('rgb(51, 51, 51)');
   });
 
   test('validate style of the create post message page in the dark mode', async ({ page }) => {

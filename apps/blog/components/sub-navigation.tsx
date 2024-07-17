@@ -10,8 +10,8 @@ export default function SubNavigation({ username }: { username: string }) {
       <Separator />
       <Link
         href={`/${username}/posts`}
-        className={`cursor-pointer hover:text-red-600 hover:underline ${
-          pathname === `/${username}/posts` ? 'text-red-600' : ''
+        className={`cursor-pointer hover:text-destructive hover:underline ${
+          pathname === `/${username}/posts` ? 'text-destructive' : ''
         }`}
       >
         Posts
@@ -19,8 +19,8 @@ export default function SubNavigation({ username }: { username: string }) {
       <Separator orientation="vertical" />
       <Link
         href={`/${username}/comments`}
-        className={`cursor-pointer hover:text-red-600 hover:underline ${
-          pathname === `/${username}/comments` ? 'text-red-600' : ''
+        className={`cursor-pointer hover:text-destructive hover:underline ${
+          pathname === `/${username}/comments` ? 'text-destructive' : ''
         }`}
       >
         Comments
@@ -28,8 +28,8 @@ export default function SubNavigation({ username }: { username: string }) {
       <Separator orientation="vertical" />
       <Link
         href={`/${username}/payouts`}
-        className={`cursor-pointer hover:text-red-600 hover:underline ${
-          pathname === `/${username}/payouts` ? 'text-red-600' : ''
+        className={`cursor-pointer hover:text-destructive hover:underline ${
+          pathname === `/${username}/payouts` ? 'text-destructive' : ''
         }`}
       >
         Payouts

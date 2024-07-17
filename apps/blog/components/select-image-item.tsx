@@ -32,7 +32,7 @@ const SelectImageItem: React.FC<SelectImageItemTypes> = ({ data, onChange, value
           className={clsx(
             'h-[60px] w-[60px] object-cover p-1 contrast-50 ease-out group-hover:h-full  group-hover:w-full group-hover:contrast-100 group-hover:duration-700 group-hover:ease-in-out',
             {
-              'bg-red-700 contrast-100': value === data,
+              'bg-destructive contrast-100': value === data,
               hidden: invalidImages
             }
           )}

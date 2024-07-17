@@ -15,7 +15,7 @@ export function ActivityLogDialog({
   return (
     <Dialog>
       <DialogTrigger>
-        <div className="cursor-pointer text-red-500">{children}</div>
+        <div className="cursor-pointer text-destructive">{children}</div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-2/3 h-5/6 overflow-auto px-1 pt-1">
         <NotificationActivities data={data} username={username} />

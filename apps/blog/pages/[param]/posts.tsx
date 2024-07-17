@@ -70,7 +70,7 @@ const UserPosts = () => {
     <ProfileLayout>
       <div className="flex flex-col">
         <Tabs defaultValue={sort} className="w-full" onValueChange={(s) => router.push(`/@${username}/${s}`)}>
-          <TabsList className="flex justify-start" data-testid="user-post-menu">
+          <TabsList className="bg-background-tertiary flex justify-start" data-testid="user-post-menu">
             <TabsTrigger value="posts">{t('navigation.profile_posts_tab_navbar.posts')}</TabsTrigger>
             <TabsTrigger value="comments">{t('navigation.profile_posts_tab_navbar.comments')}</TabsTrigger>
             <TabsTrigger value="payout">{t('navigation.profile_posts_tab_navbar.payouts')}</TabsTrigger>
@@ -86,7 +86,7 @@ const UserPosts = () => {
                       ) : (
                         <div
                           key="empty"
-                          className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
+                          className="bg-card-noContent border-card-empty-border mt-12 border-2 border-solid px-4 py-6 text-sm"
                           data-testid="user-has-not-made-any-post-yet"
                         >
                           {t('user_profile.no_posts_yet', { username: username })}
@@ -127,7 +127,7 @@ const UserPosts = () => {
                       ) : (
                         <div
                           key="empty"
-                          className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
+                          className="bg-card-noContent border-card-empty-border mt-12 border-2 border-solid px-4 py-6 text-sm"
                           data-testid="user-has-not-made-any-post-yet"
                         >
                           {t('user_profile.no_posts_yet', { username: username })}
@@ -168,7 +168,7 @@ const UserPosts = () => {
                       ) : (
                         <div
                           key="empty"
-                          className="mt-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
+                          className="bg-card-noContent border-card-empty-border mt-12 border-2 border-solid px-4 py-6 text-sm"
                           data-testid="user-no-pending-payouts"
                         >
                           {t('user_profile.no_pending_payouts')}

@@ -141,7 +141,7 @@ test.describe('Profile page of @gtg', () => {
       await firstPostNickName,
       'color'
       )
-    ).toBe('rgb(0, 0, 0)');
+    ).toBe('rgb(24, 30, 42)');
 
     // Validate color of nickname after hovering
     await firstPostNickName.hover();
@@ -151,7 +151,7 @@ test.describe('Profile page of @gtg', () => {
       await firstPostNickName,
       'color'
       )
-    ).toBe('rgb(220, 38, 38)');
+    ).toBe('rgb(255, 0, 0)');
 
     // Validate reputation color and tooltip
     const firstPostReputation = await profilePage.postReputation.first();
@@ -160,7 +160,7 @@ test.describe('Profile page of @gtg', () => {
       await firstPostReputation,
       'color'
       )
-    ).toBe('rgb(100, 116, 139)');
+    ).toBe('rgb(24, 30, 42)');
 
     await expect(homePage.getFirstPostAuthorReputation).toHaveAttribute('title', 'Reputation');
 
@@ -176,7 +176,7 @@ test.describe('Profile page of @gtg', () => {
         await postCommunityLink.first(),
         'color'
         )
-      ).toBe('rgb(100, 116, 139)');
+      ).toBe('rgb(24, 30, 42)');
 
       // Validate color of community after hovering
       await postCommunityLink.first().hover();
@@ -186,7 +186,7 @@ test.describe('Profile page of @gtg', () => {
         await postCommunityLink.first(),
         'color'
         )
-      ).toBe('rgb(220, 38, 38)');
+      ).toBe('rgb(255, 0, 0)');
     }
 
     if (await firstPostItem.filter({ has: postCategoryLink }).isVisible()){
@@ -196,7 +196,7 @@ test.describe('Profile page of @gtg', () => {
         await postCategoryLink.first(),
         'color'
         )
-      ).toBe('rgb(100, 116, 139)');
+      ).toBe('rgb(24, 30, 42)');
 
       // Validate color of category after hovering
       await postCategoryLink.first().hover();
@@ -216,7 +216,7 @@ test.describe('Profile page of @gtg', () => {
       await firstPostTimestamp,
       'color'
       )
-    ).toBe('rgb(100, 116, 139)');
+    ).toBe('rgb(24, 30, 42)');
 
     // Validate color of the timestamp after hovering
     await firstPostTimestamp.first().hover();
@@ -226,7 +226,7 @@ test.describe('Profile page of @gtg', () => {
       await firstPostTimestamp,
       'color'
       )
-    ).toBe('rgb(220, 38, 38)');
+    ).toBe('rgb(255, 0, 0)');
   });
 
   test('validate styles of the post header in the dark mode', async ({ page }) => {
@@ -242,7 +242,7 @@ test.describe('Profile page of @gtg', () => {
       await firstPostNickName,
       'color'
       )
-    ).toBe('rgb(255, 255, 255)');
+    ).toBe('rgb(248, 250, 252)');
 
     // Validate color of nickname after hovering
     await firstPostNickName.hover();
@@ -252,7 +252,7 @@ test.describe('Profile page of @gtg', () => {
       await firstPostNickName,
       'color'
       )
-    ).toBe('rgb(220, 38, 38)');
+    ).toBe('rgb(226, 18, 53)');
 
     // Validate reputation color and tooltip
     const firstPostReputation = await profilePage.postReputation.first();
@@ -261,7 +261,7 @@ test.describe('Profile page of @gtg', () => {
       await firstPostReputation,
       'color'
       )
-    ).toBe('rgb(148, 163, 184)');
+    ).toBe('rgb(248, 250, 252)');
 
     await expect(homePage.getFirstPostAuthorReputation).toHaveAttribute('title', 'Reputation');
 
@@ -277,7 +277,7 @@ test.describe('Profile page of @gtg', () => {
         await postCommunityLink.first(),
         'color'
         )
-      ).toBe('rgb(148, 163, 184)');
+      ).toBe('rgb(248, 250, 252)');
 
       // Validate color of community after hovering
       await postCommunityLink.first().hover();
@@ -287,7 +287,7 @@ test.describe('Profile page of @gtg', () => {
         await postCommunityLink.first(),
         'color'
         )
-      ).toBe('rgb(220, 38, 38)');
+      ).toBe('rgb(226, 18, 53)');
     }
 
     if (await firstPostItem.filter({ has: postCategoryLink }).isVisible()){
@@ -297,7 +297,7 @@ test.describe('Profile page of @gtg', () => {
         await postCategoryLink.first(),
         'color'
         )
-      ).toBe('rgb(148, 163, 184)');
+      ).toBe('rgb(226, 18, 53)');
 
       // Validate color of category after hovering
       await postCategoryLink.first().hover();
@@ -317,7 +317,7 @@ test.describe('Profile page of @gtg', () => {
       await firstPostTimestamp,
       'color'
       )
-    ).toBe('rgb(148, 163, 184)');
+    ).toBe('rgb(248, 250, 252)');
 
     // Validate color of the timestamp after hovering
     await firstPostTimestamp.first().hover();
@@ -327,7 +327,7 @@ test.describe('Profile page of @gtg', () => {
       await firstPostTimestamp,
       'color'
       )
-    ).toBe('rgb(220, 38, 38)');
+    ).toBe('rgb(226, 18, 53)');
   });
 
   test('move to the post page after clicking the timestamp', async ({ page }) => {
@@ -367,7 +367,7 @@ test.describe('Profile page of @gtg', () => {
         await profilePage.postUpvoteButton.locator('svg').first(),
         'background-color'
         )
-    ).toBe('rgb(220, 38, 38)');
+    ).toBe('rgb(255, 0, 0)');
 
     await profilePage.postUpvoteButton.first().click();
     await loginDialog.validateDefaultLoginFormIsLoaded();
@@ -431,7 +431,7 @@ test.describe('Profile page of @gtg', () => {
         await profilePage.postPayout.first(),
         'color'
         )
-      ).toBe('rgb(220, 38, 38)');
+      ).toBe('rgb(255, 0, 0)');
     }
   });
 
@@ -509,7 +509,7 @@ test.describe('Profile page of @gtg', () => {
 
     // Color of reblog button
     expect(await profilePage.getElementCssPropertyValue(await profilePage.postReblog.first(), 'color')).toBe(
-      'rgb(15, 23, 42)'
+      'rgb(24, 30, 42)'
     );
 
     // The tooltip message and colors
@@ -520,7 +520,7 @@ test.describe('Profile page of @gtg', () => {
     );
     expect(
       await profilePage.getElementCssPropertyValue(await profilePage.postReblogTooltip, 'background-color')
-    ).toBe('rgb(255, 255, 255)');
+    ).toBe('rgb(247, 247, 247)');
   });
 
   test('validate reblog button styles in the dark theme', async ({ page }) => {
@@ -530,7 +530,7 @@ test.describe('Profile page of @gtg', () => {
 
     // Color of reblog button
     expect(await profilePage.getElementCssPropertyValue(await profilePage.postReblog.first(), 'color')).toBe(
-      'rgb(255, 255, 255)'
+      'rgb(248, 250, 252)'
     );
 
     // The tooltip message and colors
@@ -541,7 +541,7 @@ test.describe('Profile page of @gtg', () => {
     );
     expect(
       await profilePage.getElementCssPropertyValue(await profilePage.postReblogTooltip, 'background-color')
-    ).toBe('rgb(3, 7, 17)');
+    ).toBe('rgb(34, 38, 42)');
   });
 
   test('move to the reblog dialog of the first post ', async ({ page }) => {

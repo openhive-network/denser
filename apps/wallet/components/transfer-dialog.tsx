@@ -110,7 +110,9 @@ export function TransferDialog({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <span className="w-full cursor-pointer px-2 py-1.5 text-sm hover:bg-slate-100">{children}</span>
+        <span className="w-full cursor-pointer px-2 py-1.5 text-sm hover:bg-background-tertiary hover:text-primary">
+          {children}
+        </span>
       </DialogTrigger>
       <DialogContent className="text-left sm:max-w-[425px]">
         <DialogHeader>
