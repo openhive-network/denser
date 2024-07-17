@@ -41,7 +41,6 @@ const CommentList = ({
               },
               { 'pl-3 sm:pl-12': comment.depth > 1 }
             )}
-            id={`@${data[index].author}/${data[index].permlink}`}
           >
             <CommentListItem
               comment={comment}
