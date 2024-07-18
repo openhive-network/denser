@@ -192,6 +192,30 @@ mirrornet-haf-node-replay:
     reports:
       junit: .${TURBO_APP_PATH}/junit/**/**/results.xml
 
+haf_api_node_replay_data_copy:
+  extends: .haf_api_node_replay_data_copy
+  stage: test
+  needs:
+    - mirrornet-haf-node-replay 
+  tags:
+    - data-cache-storage
+
+haf_api_node_test:
+  extends: .haf_api_node_test
+  stage: test
+  needs:
+    - mirrornet-haf-image-docker-build
+    - haf_api_node_replay_data_copy
+  variables:
+    GIT_STRATEGY: "clone"
+    CI_DEBUG_SERVICES: "false" # Change to true to debug services in this job
+    HAF_VERSION: "${HAF_REGISTRY_TAG}"
+    HAF_REGISTRY: "${HAF_REGISTRY_PATH}"
+    ARGUMENTS: "--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n"
+    FAKETIME: "@2016-09-16 01:39:06"
+  tags:
+    - data-cache-storage
+
 e2e-tests-blog:
   extends: .e2e_tests_template
   needs:
@@ -505,7 +529,6 @@ review:stop-wallet:
       when: manual
       allow_failure: true
 
-
 build_and_publish_auth_image:
   stage: publish
   extends: .publish_docker_image_template
@@ -557,6 +580,20 @@ buildkit_cache_cleanup:
   needs: []
   variables:
     CACHE_REPOSITORIES: "auth/cache,blog/cache,wallet/cache"
+
+# Deletes replay data used by the tests and created by haf_api_node_replay_data_copy
+cleanup_haf_api_node_pipeline_cache:
+  needs:
+    - haf_api_node_replay_data_copy
+    - haf_api_node_test
+  extends: 
+    - .cleanup_cache_manual_template
+  stage: cleanup
+  variables:
+    CLEANUP_PATH_PATTERN: "${REPLAY_PIPELINE_DIRECTORY}*"
+  when: always
+  tags:
+    - data-cache-storage
 
 # Deletes all HAF API node replay data
 cleanup_haf_api_node_cache_manual:
