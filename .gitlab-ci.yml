@@ -23,7 +23,8 @@ variables:
   FF_ENABLE_JOB_CLEANUP: 1
 
   # HAF API node configuration
-  API_NODE_VERSION: "4a4649f0"
+  HIVE_API_NODE_VERSION: 1.27.5
+  API_NODE_VERSION: "20e02709"
   HAF_COMMIT: "8e7f4ff92a223f8ca725ba73c799ae1427419514"
   HIVEMIND_INSTANCE_VERSION: "4b4dea84"
   HAFAH_VERSION: "1ae8512a"
@@ -46,7 +47,7 @@ include:
     ref: 8e7f4ff92a223f8ca725ba73c799ae1427419514 #develop
     file: '/scripts/ci-helpers/prepare_data_image_job.yml'
   - project: 'hive/haf_api_node'
-    ref: 4a4649f004e40fb4922546bd4b34ba0fd8ae2448
+    ref: 953ce26b29720982439432fe2aee2f03c833f349
     file: 'ci/node-replay.gitlab-ci.yml'  
 
 .docker_build_template:
@@ -123,17 +124,19 @@ docker-build-wallet:
 mirrornet-haf-node-replay:
   extends: .haf-node-replay
   stage: replay-and-sync
+  timeout: 3 hours
   needs:
     - mirrornet-haf-image-docker-build
   variables:
+    GIT_STRATEGY: "clone"
+    CI_DEBUG_SERVICES: "false" # Change to true to debug services in this job
     HAF_VERSION: "${HAF_REGISTRY_TAG}"
     HAF_REGISTRY: "${HAF_REGISTRY_PATH}"
-    GIT_STRATEGY: "clone"
+    LAST_BLOCK_NUMBER: "5004741"
+    ARGUMENTS: "--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n --replay-blockchain --stop-at-block ${LAST_BLOCK_NUMBER}"
+    FAKETIME: "@2016-09-16 01:39:06"
     ADDITIONAL_CONFIGURATION_SCRIPT: "scripts/ci-helpers/copy-mirrornet-haf-config.sh"
-  before_script:
-    - |
-      mkdir -p /cache/blockchain/block_log_mirror_44/
-      chown 1000:1000 /cache/blockchain/block_log_mirror_44/  
+    REPLAY_TIMEOUT: 9000
   tags:
     - data-cache-storage
 
