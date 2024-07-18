@@ -562,6 +562,7 @@ buildkit_cache_cleanup:
 cleanup_haf_api_node_cache_manual:
   extends: 
     - .cleanup_cache_manual_template
+  needs: []
   stage: cleanup
   variables:
     CLEANUP_PATH_PATTERN: "${REPLAY_DIRECTORY_PREFIX}*"
@@ -572,7 +573,9 @@ cleanup_haf_api_node_cache_manual:
 cleanup_old_haf_api_node_cache:
   extends:
     - .cleanup_old_cache_template
+  needs: []
   stage: cleanup
   variables:
     CLEANUP_PATH_PATTERN: "${REPLAY_DIRECTORY_PREFIX}*"
   tags:
+    - data-cache-storage
