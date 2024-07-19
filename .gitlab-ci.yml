@@ -299,7 +299,9 @@ mirrornet-based-tests:
     REACT_APP_CHAIN_ID: "44"
     REACT_APP_LOGGING_BROWSER_ENABLED: "true"
   script:
-    - !reference [.node-job, script]
+    - |
+      set -e
+      faketime -f "${FAKETIME}" bash "${CI_PROJECT_DIR}/scripts/ci-helpers/run-mmirrornet-tests.sh"
   tags:
     - data-cache-storage
 
