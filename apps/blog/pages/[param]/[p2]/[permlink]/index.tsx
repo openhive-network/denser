@@ -46,6 +46,7 @@ import { getLogger } from '@ui/lib/logging';
 import ReblogTrigger from '@/blog/components/reblog-trigger';
 import { getTranslations } from '@/blog/lib/get-translations';
 import Head from 'next/head';
+import env from '@beam-australia/react-env';
 
 const logger = getLogger('app');
 
@@ -182,12 +183,12 @@ function PostPage({
   if (userFromGDPR) {
     return <CustomError />;
   }
-  const canonical_url = post ? `https://blog.openhive.network${post.url}` : '';
+
+  const canonical_url = post ? new URL(post.url, env('SITE_DOMAIN')).href : undefined;
+
   return (
     <>
-      <Head>
-        <link rel="canonical" href={canonical_url} key="canonical" />
-      </Head>
+      <Head>{canonical_url ? <link rel="canonical" href={canonical_url} key="canonical" /> : null}</Head>
       <div className="py-8">
         <div className="relative mx-auto my-0 max-w-4xl bg-background px-8 py-4">
           {communityData ? (
