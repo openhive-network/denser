@@ -6,6 +6,9 @@ variable "CI_COMMIT_TAG" {}
 variable "TAG" {
   default = "latest"
 }
+variable "PLAYWRIGHT_TAG" {
+  default = "v1.41.1-jammy"
+}
 variable "TURBO_APP_SCOPE" {}
 variable "TURBO_APP_PATH" {}
 variable "TURBO_APP_NAME" {}
@@ -52,6 +55,27 @@ target "ci-build" {
   cache-to = [
     "type=registry,mode=max,image-manifest=true,ref=${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}/cache:${TAG}"
   ]
+  output = [
+    "type=registry"
+  ]
+}
+
+target "playwright" {
+  dockerfile = "Dockerfile"
+  context = "ci"
+  tags = [
+    "${CI_REGISTRY_IMAGE}/playwright-faketime:${PLAYWRIGHT_TAG}",
+  ]
+  args = {
+    PLAYWRIGHT_TAG = "${PLAYWRIGHT_TAG}",
+  }
+  output = [
+    "type=docker"
+  ]
+}
+
+target "playwright-ci" {
+  inherits = ["playwright"]
   output = [
     "type=registry"
   ]

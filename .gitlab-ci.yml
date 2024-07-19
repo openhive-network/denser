@@ -36,6 +36,10 @@ variables:
   REPLAY_PIPELINE_DIRECTORY: "${REPLAY_DIRECTORY_PREFIX}_${CI_PIPELINE_ID}"
   DOCKER_TLS_CERTDIR: "${REPLAY_PIPELINE_DIRECTORY}_certs"
 
+  # Other settings
+  CADDY_TAG: "2.7.6"
+  PLAYWRIGHT_TAG: "v1.41.1-jammy"
+
 include:
   - template: Workflows/Branch-Pipelines.gitlab-ci.yml
   - project: 'hive/common-ci-configuration'
@@ -73,15 +77,15 @@ include:
       echo -e "\e[0Ksection_start:$(date +%s):build[collapsed=true]\r\e[0KBaking image "$CI_REGISTRY_IMAGE/${TURBO_APP_NAME}:${TAG}"..."
       git config --global --add safe.directory "$CI_PROJECT_DIR"
       scripts/build_instance.sh --progress=plain "$CI_PROJECT_DIR"
-      echo "IMAGE_NAME=${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:${CI_COMMIT_SHORT_SHA}" > docker-build.env
+      echo "${TURBO_APP_NAME^^}_IMAGE_NAME=${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:${CI_COMMIT_SHORT_SHA}" > ${TURBO_APP_NAME}-docker-build.env
       echo "Unique image tag:"
       cat docker-build.env
       echo -e "\e[0Ksection_end:$(date +%s):build\r\e[0K"
   artifacts:
     paths:
-      - docker-build.env
+      - ${TURBO_APP_NAME}-docker-build.env
     reports:
-      dotenv: docker-build.env
+      dotenv: ${TURBO_APP_NAME}-docker-build.env
   tags:
     - public-runner-docker
     - hived-for-tests
@@ -99,6 +103,25 @@ mirrornet-haf-image-docker-build:
   tags:
     - public-runner-docker
     - hived-for-tests
+
+playwright-faketime-docker-build:
+  extends: .docker_build_template
+  script:
+    - |
+      echo -e "\e[0Ksection_start:$(date +%s):build[collapsed=true]\r\e[0KBaking ${CI_REGISTRY_IMAGE}/playwright-faketime:${PLAYWRIGHT_TAG} image..."
+      function image-exists() {
+        local image=$1
+        docker manifest inspect "$image" > /dev/null
+        return $?
+      }
+      if image-exists "${CI_REGISTRY_IMAGE}/playwright-faketime:${PLAYWRIGHT_TAG}"; then
+        echo "Image ${CI_REGISTRY_IMAGE}/playwright-faketime:${PLAYWRIGHT_TAG} already exists. Skipping build..."
+      else
+        echo "Baking ${CI_REGISTRY_IMAGE}/playwright-faketime:${PLAYWRIGHT_TAG} base image..."
+        git config --global --add safe.directory $(pwd)
+        docker buildx bake --provenance=false --progress=plain playwright-ci 
+      fi
+      echo -e "\e[0Ksection_end:$(date +%s):build\r\e[0K"
 
 docker-build-auth:
   extends: .docker_build_template
@@ -165,7 +188,7 @@ mirrornet-haf-node-replay:
 
 .e2e_tests_template:
   extends: .node-job
-  image: mcr.microsoft.com/playwright:v1.41.1-jammy
+  image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
   variables:
     CI_DEBUG_SERVICES: true
     FF_NETWORK_PER_BUILD: 1
@@ -192,7 +215,7 @@ mirrornet-haf-node-replay:
     reports:
       junit: .${TURBO_APP_PATH}/junit/**/**/results.xml
 
-haf_api_node_replay_data_copy:
+haf-api-node-replay-data-copy:
   extends: .haf_api_node_replay_data_copy
   stage: test
   needs:
@@ -201,11 +224,54 @@ haf_api_node_replay_data_copy:
     - data-cache-storage
 
 haf_api_node_test:
-  extends: .haf_api_node_test
-  stage: test
+  extends: 
+    - .haf_api_node_test
+    - .node-job
   needs:
     - mirrornet-haf-image-docker-build
-    - haf_api_node_replay_data_copy
+    - docker-build-auth
+    - docker-build-blog
+    - docker-build-wallet
+    - haf-api-node-replay-data-copy
+  image: "${CI_REGISTRY_IMAGE}/playwright-faketime:${PLAYWRIGHT_TAG}"
+  services:
+    - !reference [.haf_api_node_test, services]
+    - name: $BLOG_IMAGE_NAME
+      alias: denser-blog
+      variables:
+        HEALTHCHECK_TCP_PORT: '3000'
+    - name: caddy:${CADDY_TAG}
+      alias: caddy-blog
+      command:
+        - caddy
+        - reverse-proxy
+        - --from=https://caddy-blog
+        - --to=denser-blog:3000
+        - --internal-certs
+    - name: $WALLET_IMAGE_NAME
+      alias: denser-wallet
+      variables:
+        HEALTHCHECK_TCP_PORT: '4000'
+    - name: caddy:${CADDY_TAG}
+      alias: caddy-wallet
+      command:
+        - caddy
+        - reverse-proxy
+        - --from=https://caddy-wallet
+        - --to=denser-wallet:4000
+        - --internal-certs
+    - name: $AUTH_IMAGE_NAME
+      alias: denser-auth
+      variables:
+        HEALTHCHECK_TCP_PORT: '5000'
+    - name: caddy:${CADDY_TAG}
+      alias: caddy-auth
+      command:
+        - caddy
+        - reverse-proxy
+        - --from=https://caddy-auth
+        - --to=denser-auth:5000
+        - --internal-certs
   variables:
     GIT_STRATEGY: "clone"
     CI_DEBUG_SERVICES: "false" # Change to true to debug services in this job
@@ -213,6 +279,8 @@ haf_api_node_test:
     HAF_REGISTRY: "${HAF_REGISTRY_PATH}"
     ARGUMENTS: "--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n"
     FAKETIME: "@2016-09-16 01:39:06"
+  script:
+    - !reference [.node-job, script]
   tags:
     - data-cache-storage
 
@@ -225,7 +293,7 @@ e2e-tests-blog:
       alias: denser
       variables:
         HEALTHCHECK_TCP_PORT: '3000'
-    - name: caddy:2.7.6
+    - name: caddy:${CADDY_TAG}
       command:
         - caddy
         - reverse-proxy
@@ -246,7 +314,7 @@ e2e-tests-wallet:
       alias: denser
       variables:
         HEALTHCHECK_TCP_PORT: '4000'
-    - name: caddy:2.7.6
+    - name: caddy:${CADDY_TAG}
       command:
         - caddy
         - reverse-proxy
@@ -262,7 +330,7 @@ e2e-tests-wallet:
   extends: .node-job
   stage: test-report-aggregate
   when: always
-  image: mcr.microsoft.com/playwright:v1.41.1-jammy
+  image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
   script:
     - cd .$TURBO_APP_PATH
     - npm install playwright-merge-html-reports --dev
@@ -295,7 +363,7 @@ e2e-report-aggregate-wallet:
 publish:
   image:
     name: node:20.11.1-alpine3.18
-    entrypoint: []
+    entrypoint: [ "" ]
   extends: .job-defaults
   stage: deploy
   script:
