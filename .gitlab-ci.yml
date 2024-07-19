@@ -240,6 +240,11 @@ mirrornet-based-tests:
       alias: denser-blog
       variables:
         HEALTHCHECK_TCP_PORT: '3000'
+        PORT: "3000"
+        REACT_APP_SITE_DOMAIN: "https://caddy-blog.local"
+        REACT_APP_WALLET_ENDPOINT: "https://caddy-wallet"
+        TURBO_APP_SCOPE: '@hive/blog'
+        TURBO_APP_PATH: '/apps/blog'
     - name: caddy:${CADDY_TAG}
       alias: caddy-blog
       command:
@@ -252,6 +257,11 @@ mirrornet-based-tests:
       alias: denser-wallet
       variables:
         HEALTHCHECK_TCP_PORT: '4000'
+        PORT: "4000"
+        REACT_APP_SITE_DOMAIN: "https://caddy-wallet.local"
+        REACT_APP_BLOG_DOMAIN: "https://caddy-blog"
+        TURBO_APP_SCOPE: '@hive/wallet'
+        TURBO_APP_PATH: '/apps/wallet'
     - name: caddy:${CADDY_TAG}
       alias: caddy-wallet
       command:
@@ -264,6 +274,11 @@ mirrornet-based-tests:
       alias: denser-auth
       variables:
         HEALTHCHECK_TCP_PORT: '5000'
+        PORT: '5000'
+        REACT_APP_SITE_DOMAIN: "https://caddy-auth.local"
+        TURBO_APP_SCOPE: '@hive/auth'
+        TURBO_APP_PATH: '/apps/auth'
+        NODE_TLS_REJECT_UNAUTHORIZED: 0
     - name: caddy:${CADDY_TAG}
       alias: caddy-auth
       command:
@@ -279,6 +294,10 @@ mirrornet-based-tests:
     HAF_REGISTRY: "${HAF_REGISTRY_PATH}"
     ARGUMENTS: "--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n"
     FAKETIME: "@2016-09-16 01:39:06"
+    REACT_APP_API_ENDPOINT: "https://dind"
+    REACT_APP_IMAGES_ENDPOINT: "https://images.hive.blog/"
+    REACT_APP_CHAIN_ID: "44"
+    REACT_APP_LOGGING_BROWSER_ENABLED: "true"
   script:
     - !reference [.node-job, script]
   tags:
@@ -289,7 +308,7 @@ e2e-tests-blog:
   needs:
     - docker-build-blog
   services:
-    - name: $IMAGE_NAME
+    - name: $BLOG_IMAGE_NAME
       alias: denser
       variables:
         HEALTHCHECK_TCP_PORT: '3000'
@@ -310,7 +329,7 @@ e2e-tests-wallet:
   needs:
     - docker-build-wallet
   services:
-    - name: $IMAGE_NAME
+    - name: $WALLET_IMAGE_NAME
       alias: denser
       variables:
         HEALTHCHECK_TCP_PORT: '4000'
