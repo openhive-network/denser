@@ -223,7 +223,7 @@ haf-api-node-replay-data-copy:
   tags:
     - data-cache-storage
 
-haf_api_node_test:
+mirrornet-based-tests:
   extends: 
     - .haf_api_node_test
     - .node-job
@@ -649,11 +649,11 @@ buildkit_cache_cleanup:
   variables:
     CACHE_REPOSITORIES: "auth/cache,blog/cache,wallet/cache"
 
-# Deletes replay data used by the tests and created by haf_api_node_replay_data_copy
+# Deletes replay data used by the tests and created by haf-api-node-replay-data-copy
 cleanup_haf_api_node_pipeline_cache:
   needs:
-    - haf_api_node_replay_data_copy
-    - haf_api_node_test
+    - haf-api-node-replay-data-copy
+    - mirrornet-based-tests
   extends: 
     - .cleanup_cache_manual_template
   stage: cleanup
