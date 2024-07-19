@@ -305,9 +305,14 @@ mirrornet-based-tests:
   after_script:
     - |
       cp "${REPLAY_PIPELINE_DIRECTORY}/docker_entrypoint.log" "${CI_PROJECT_DIR}/haf.log"
+      cp --recursive "${REPLAY_PIPELINE_DIRECTORY}/logs" "${CI_PROJECT_DIR}/logs"
+  cache:
+    key: "mirrornet-tests-1"    
   artifacts:
     paths:
-      - haf.log
+      - "haf.log"
+      - "logs/"
+      - "*.env"
   tags:
     - data-cache-storage
 
