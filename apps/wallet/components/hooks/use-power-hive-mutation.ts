@@ -31,7 +31,7 @@ export function usePowerUpMutation() {
 /**
  * Makes withdraw from vesting transaction
  *
- * @exports
+ * @export
  * @returns {*}
  */
 export function usePowerDownMutation() {

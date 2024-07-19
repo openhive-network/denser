@@ -9,7 +9,7 @@ import { logger } from '@ui/lib/logger';
  * @export
  * @returns
  */
-export function useTransferHive() {
+export function useTransferHiveMutation() {
   const transferMutation = useMutation({
     mutationFn: async (params: { fromAccount: string; toAccount: string; memo: string; amount: asset }) => {
       const { amount, fromAccount, memo, toAccount } = params;
@@ -34,7 +34,7 @@ export function useTransferHive() {
  * @export
  * @returns
  */
-export function useTransferToSavings() {
+export function useTransferToSavingsMutation() {
   const transferToSavingsMutation = useMutation({
     mutationFn: async (params: { fromAccount: string; toAccount: string; memo: string; amount: asset }) => {
       const { amount, fromAccount, memo, toAccount } = params;
