@@ -14,6 +14,11 @@ import { Input } from '@ui/components/input';
 import { ReactNode, useState } from 'react';
 import { Autocompleter } from './autocompleter';
 import badActorList from '@ui/config/lists/bad-actor-list';
+import { useTransferHiveMutation, useTransferToSavingsMutation } from './hooks/use-transfer-hive-mutation';
+import { usePowerDownMutation, usePowerUpMutation } from './hooks/use-power-hive-mutation';
+import { useDelegateMutation } from './hooks/use-delegate-mutation';
+import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import { handleError } from '@ui/lib/utils';
 
 type Amount = {
   hive: string;
@@ -41,7 +46,7 @@ export function TransferDialog({
     | 'powerDown';
   amount: Amount;
   currency: string;
-  username?: string;
+  username: string;
 }) {
   const defaultValue = {
     title: '',
@@ -50,18 +55,35 @@ export function TransferDialog({
     advancedBtn: false,
     selectCurr: true,
     buttonTitle: 'Next',
-    to: ''
+    to: '',
+    onSubmit: new Function()
   };
   const [curr, setCurr] = useState(currency);
   const [value, setValue] = useState('');
   const [advanced, setAdvanced] = useState(false);
   const [data, setData] = useState(defaultValue);
   const badActors = badActorList.includes(data.to);
+  const transferMutation = useTransferHiveMutation();
+  const transferToSavingsMutaion = useTransferToSavingsMutation();
+  const powerUpMutation = usePowerUpMutation();
+  const powerDownMutation = usePowerDownMutation();
+  const delegateMutation = useDelegateMutation();
+
   switch (type) {
     case 'transfers':
       data.title = 'Transfer to Account';
       data.description = 'Move funds to another Hive account.';
       data.amount = curr === 'hive' ? amount.hive : amount.hbd;
+      data.onSubmit = async () => {
+        const chain = await hiveChainService.getHiveChain();
+        const asset = chain.hbd(Number(value));
+        const params = {fromAccount: username, toAccount: data.to, memo: '', amount: asset};
+        try {
+          transferMutation.mutateAsync(params);
+        } catch (error) {
+          handleError(error, {method: "transfer", params})
+        }
+      }
       break;
     case 'transferTo':
       data.title = 'Transfer to Savings';
@@ -69,6 +91,16 @@ export function TransferDialog({
       data.amount = curr === 'hive' ? amount.hive : amount.hbd;
       data.advancedBtn = true;
       data.to = username || '';
+      data.onSubmit = async () => {
+        const chain = await hiveChainService.getHiveChain();
+        const asset = chain.hbd(Number(value));
+        const params = {amount: asset, fromAccount: data.to, toAccount: data.to, memo: ''};
+        try {
+          transferToSavingsMutaion.mutateAsync(params);
+        } catch (error) {
+          handleError(error, {method: 'transferToSavings', params});
+        }
+      }
       break;
     case 'powerUp':
       data.title = 'Convert to HIVE POWER';
@@ -79,16 +111,46 @@ export function TransferDialog({
       data.to = username || '';
       data.selectCurr = false;
       data.buttonTitle = 'Power Up';
+      data.onSubmit = async () => {
+        const chain = await hiveChainService.getHiveChain();
+        const asset = chain.hbd(Number(value));
+        const params = {account: username, amount: asset};
+        try {
+          powerUpMutation.mutateAsync(params);
+        } catch (error) {
+          handleError(error, {method: "powerUp", params});
+        }
+      }
       break;
     case 'powerDown':
       data.title = 'Power Down';
       data.description = '';
       data.buttonTitle = 'Power Down';
+      data.onSubmit = async () => {
+        const chain = await hiveChainService.getHiveChain();
+        const asset = chain.hbd(Number(value));
+        const params = {account: username, vestingShares: asset};
+        try {
+          powerDownMutation.mutateAsync(params);
+        } catch (error) {
+          handleError(error, {method: "powerDown", params})
+        }
+      }
       break;
     case 'delegate':
       data.title = 'Delegate to Account';
       data.description = '';
       data.amount = amount.hp;
+      data.onSubmit = async () => {
+        const chain = await hiveChainService.getHiveChain();
+        const asset = chain.hbd(Number(value));
+        const params = {delegator: username, delegatee: data.to, vestingShares: asset};
+        try {
+          delegateMutation.mutateAsync(params);
+        } catch (error) {
+          handleError(error, {method: "delegate", params})
+        }
+      }
       break;
     case 'withdrawHive':
       data.title = 'Savings Withdraw';
@@ -208,7 +270,7 @@ export function TransferDialog({
           )}
         </div>
         <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
-          <Button variant="redHover" className="w-fit" disabled={badActors}>
+          <Button variant="redHover" className="w-fit" disabled={badActors} onClick={() => data.onSubmit()}>
             {data.buttonTitle}
           </Button>
           {data.advancedBtn && (
