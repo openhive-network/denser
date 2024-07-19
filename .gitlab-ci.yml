@@ -278,7 +278,6 @@ mirrornet-based-tests:
         REACT_APP_SITE_DOMAIN: "https://caddy-auth.local"
         TURBO_APP_SCOPE: '@hive/auth'
         TURBO_APP_PATH: '/apps/auth'
-        NODE_TLS_REJECT_UNAUTHORIZED: 0
     - name: caddy:${CADDY_TAG}
       alias: caddy-auth
       command:
@@ -289,7 +288,7 @@ mirrornet-based-tests:
         - --internal-certs
   variables:
     GIT_STRATEGY: "clone"
-    CI_DEBUG_SERVICES: "false" # Change to true to debug services in this job
+    CI_DEBUG_SERVICES: "true"
     HAF_VERSION: "${HAF_REGISTRY_TAG}"
     HAF_REGISTRY: "${HAF_REGISTRY_PATH}"
     ARGUMENTS: "--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n"
@@ -298,10 +297,14 @@ mirrornet-based-tests:
     REACT_APP_IMAGES_ENDPOINT: "https://images.hive.blog/"
     REACT_APP_CHAIN_ID: "44"
     REACT_APP_LOGGING_BROWSER_ENABLED: "true"
+    NODE_TLS_REJECT_UNAUTHORIZED: 0
   script:
     - |
       set -e
       faketime -f "${FAKETIME}" bash "${CI_PROJECT_DIR}/scripts/ci-helpers/run-mmirrornet-tests.sh"
+  after_script:
+    - |
+      echo "Dummy after script"
   tags:
     - data-cache-storage
 
