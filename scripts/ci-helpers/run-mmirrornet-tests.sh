@@ -3,6 +3,8 @@
 set -e
 
 echo -e "\e[0Ksection_start:$(date +%s):deps[collapsed=true]\r\e[0KInstalling dependencies..."
+npm config set strict-ssl false
+npm config set unsafe-perm true
 npm ci --cache .npm
 echo -e "\e[0Ksection_end:$(date +%s):deps\r\e[0K"
 
