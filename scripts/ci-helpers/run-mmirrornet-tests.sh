@@ -19,17 +19,17 @@ echo -e "\nHivemind..."
 curl -k --data '{"jsonrpc":"2.0", "method":"condenser_api.get_trending_tags", "id":1}' "https://${PUBLIC_HOSTNAME:?}/"
 
 echo "Running auth tests..."
-pushd /apps/auth
+pushd apps/auth
 # npx playwright test --update-snapshots
 popd
 
 echo "Running blog tests..."
-pushd /apps/blog
+pushd apps/blog
 # npx playwright test --update-snapshots
 popd
 
 echo "Running wallet tests..."
-pushd /apps/wallet
+pushd apps/wallet
 # npx playwright test --update-snapshots
 popd
 
