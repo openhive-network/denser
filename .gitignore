@@ -8,6 +8,7 @@ test-results
 version.json
 */**/auth/worker.js
 */**/sw.js
+*/**/sw.js.map
 */**/workbox-*
 tmp
 ssl
