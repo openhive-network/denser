@@ -15,7 +15,7 @@ import { DropdownMenuContent, DropdownMenuTrigger, DropdownMenu } from '@ui/comp
 import { Slider } from '@ui/components/slider';
 import { useLoggedUserContext } from './common/logged-user';
 import { handleError } from '@ui/lib/utils';
-
+import { useStore } from './hooks/use-store';
 const logger = getLogger('app');
 
 const VOTE_WEIGHT_DROPDOWN_THRESHOLD = 1.0 * 1000.0 * 1000.0;
@@ -25,10 +25,19 @@ const VotesComponent = ({ post }: { post: Entry }) => {
   const { t } = useTranslation('common_blog');
   const [isClient, setIsClient] = useState(false);
   const [clickedVoteButton, setClickedVoteButton] = useState('');
-  const [sliderUpvote, setSliderUpvote] = useState([100]);
-  const [sliderDownvote, setSliderDownvote] = useState([100]);
-
+  const changeUpvote = useStore((state) => state.changeUpvote);
+  const changeDownvote = useStore((state) => state.changeDownvote);
+  const upvote = useStore((state) => state.upvote);
+  const downvote = useStore((state) => state.downvote);
+  const [sliderUpvote, setSliderUpvote] = useState(upvote);
+  const [sliderDownvote, setSliderDownvote] = useState(downvote);
   const voter = user.username;
+  useEffect(() => {
+    setSliderUpvote(upvote);
+  }, [upvote]);
+  useEffect(() => {
+    setSliderDownvote(downvote);
+  }, [downvote]);
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -104,6 +113,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                     if (voteMutation.isLoading) return;
                     setClickedVoteButton('up');
                     submitVote(sliderUpvote[0] * 100);
+                    changeUpvote(sliderUpvote);
                   }}
                 />
               </TooltipContainer>
@@ -199,6 +209,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                     if (voteMutation.isLoading) return;
                     setClickedVoteButton('down');
                     submitVote(-sliderDownvote[0] * 100);
+                    changeDownvote(sliderDownvote);
                   }}
                 />
               </TooltipContainer>
