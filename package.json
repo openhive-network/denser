@@ -42,7 +42,7 @@
   ],
   "devDependencies": {
     "@turbo/gen": "^1.13.2",
-    "turbo": "^2.0.6"
+    "turbo": "^2.0.9"
   },
   "engines": {
     "pnpm": ">=9.5.0",
