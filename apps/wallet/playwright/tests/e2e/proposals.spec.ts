@@ -528,7 +528,7 @@ test.describe('Proposals page tests', () => {
       // Vote proposal value color
       expect(
         await proposalsPage.getElementCssPropertyValue(proposalsPage.voteProposalsValue.first(), 'color')
-      ).toBe('rgb(15, 23, 42)');
+      ).toBe('rgb(51, 51, 51)');
       // Proposal Status tooltip
       await expect(proposalsPage.voteProposalsValue.first()).toHaveAttribute('title', /.+( HP)$/);
       // Vote proposal button icon
@@ -632,14 +632,14 @@ test.describe('Proposals page tests', () => {
     // Filter Status:  color and border
     expect(
       await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalsFilterStatus.first(), 'color')
-    ).toBe('rgb(15, 23, 42)');
+    ).toBe('rgb(51, 51, 51)');
     expect(
       await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalsFilterStatus.first(), 'border')
     ).toBe('1px solid rgb(226, 232, 240)');
     // Filter Order by:  color and border
     expect(
       await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalsFilterOrderBy.first(), 'color')
-    ).toBe('rgb(15, 23, 42)');
+    ).toBe('rgb(51, 51, 51)');
     expect(
       await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalsFilterOrderBy.first(), 'border')
     ).toBe('1px solid rgb(226, 232, 240)');

@@ -91,7 +91,7 @@ test.describe('Witnesses page tests', () => {
     // Validate styles of column names
     for await (let tableHeaderThElementLocator of rankTableHeaderThElements) {
       expect(await witnessesPage.getElementCssPropertyValue(tableHeaderThElementLocator, 'color')).toBe(
-        'rgb(15, 23, 42)'
+        'rgb(51, 51, 51)'
       );
     }
     // Validate table's head background-color
@@ -288,7 +288,7 @@ test.describe('Witnesses page tests', () => {
     );
     await expect(proxyBoxInput).toBeVisible();
     expect(await witnessesPage.getElementCssPropertyValue(proxyBoxButton, 'border-color')).toBe(
-      'rgb(226, 232, 240)'
+      'rgb(237, 237, 237)'
     );
     await expect(proxyBoxButton).toHaveText('Set proxy');
     expect(await witnessesPage.getElementCssPropertyValue(proxyBoxButton, 'color')).toBe(

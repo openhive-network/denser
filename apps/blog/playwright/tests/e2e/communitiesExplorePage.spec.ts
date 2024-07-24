@@ -139,23 +139,23 @@ test.describe('Explore communities page tests', () => {
     // Validate style of the community name
     expect(
       await communitiesPage.getElementCssPropertyValue(await communitiesPage.communityListItemTitle.first(), 'color')
-    ).toBe('rgb(220, 38, 38)');
+    ).toBe('rgb(255, 0, 0)');
     // Validate style of the community description
     expect(
         await communitiesPage.getElementCssPropertyValue(await communitiesPage.communityListItemAbout.first(), 'color')
-    ).toBe('rgb(15, 23, 42)');
+    ).toBe('rgb(24, 30, 42)');
     // Validate style of the community footer ( subscribers, authors, posts)
     expect(
         await communitiesPage.getElementCssPropertyValue(await communitiesPage.communityListItemFooter.locator('p').first(), 'color')
-    ).toBe('rgb(100, 116, 139)');
+    ).toBe('rgb(24, 30, 42)');
     // Validate style of the community footer ( admin: label)
     expect(
         await communitiesPage.getElementCssPropertyValue(await communitiesPage.communityListItemFooter.locator('p span').first(), 'color')
-    ).toBe('rgb(100, 116, 139)');
+    ).toBe('rgb(24, 30, 42)');
     // Validate style of the community footer ( admin: name)
     expect(
         await communitiesPage.getElementCssPropertyValue(await communitiesPage.communityListItemFooter.locator('p span > a').first(), 'color')
-    ).toBe('rgb(220, 38, 38)');
+    ).toBe('rgb(255, 0, 0)');
     // Validate style of the community subscribe button
     expect(
         await communitiesPage.getElementCssPropertyValue(await communitiesPage.communityListItemSubscribeButton.first(), 'color')
@@ -183,23 +183,23 @@ test.describe('Explore communities page tests', () => {
     // Validate style of the community name
     expect(
       await communitiesPage.getElementCssPropertyValue(await communitiesPage.communityListItemTitle.first(), 'color')
-    ).toBe('rgb(220, 38, 38)');
+    ).toBe('rgb(226, 18, 53)');
     // Validate style of the community description
     expect(
         await communitiesPage.getElementCssPropertyValue(await communitiesPage.communityListItemAbout.first(), 'color')
-    ).toBe('rgb(255, 255, 255)');
+    ).toBe('rgb(248, 250, 252)');
     // Validate style of the community footer ( subscribers, authors, posts)
     expect(
         await communitiesPage.getElementCssPropertyValue(await communitiesPage.communityListItemFooter.locator('p').first(), 'color')
-    ).toBe('rgb(148, 163, 184)');
+    ).toBe('rgba(248, 250, 252, 0.8)');
     // Validate style of the community footer ( admin: label)
     expect(
         await communitiesPage.getElementCssPropertyValue(await communitiesPage.communityListItemFooter.locator('p span').first(), 'color')
-    ).toBe('rgb(148, 163, 184)');
+    ).toBe('rgba(248, 250, 252, 0.8)');
     // Validate style of the community footer ( admin: name)
     expect(
         await communitiesPage.getElementCssPropertyValue(await communitiesPage.communityListItemFooter.locator('p span > a').first(), 'color')
-    ).toBe('rgb(220, 38, 38)');
+    ).toBe('rgb(226, 18, 53)');
     // Validate style of the community subscribe button
     expect(
         await communitiesPage.getElementCssPropertyValue(await communitiesPage.communityListItemSubscribeButton.first(), 'color')
@@ -210,7 +210,7 @@ test.describe('Explore communities page tests', () => {
     // Validate the background color of the community card item
     expect(
         await communitiesPage.getElementCssPropertyValue(await communitiesPage.communityListItem.first(), 'background-color')
-    ).toBe('rgb(15, 23, 42)');
+    ).toBe('rgb(44, 48, 53)');
   });
 
   test('validate no results for your search message', async ({ page }) => {

@@ -56,7 +56,7 @@ export default function PayoutHoverContent({ post }: { post: Entry }) {
         {post.beneficiaries.map((beneficiary: IBeneficiary, index: number) => (
           <Link
             href={`/@${beneficiary.account}`}
-            className="hover:cursor-pointer hover:text-red-600"
+            className="hover:cursor-pointer hover:text-destructive"
             key={index}
           >
             {beneficiary.account}: {fmt(parseFloat(String(beneficiary.weight)) / 100)}%

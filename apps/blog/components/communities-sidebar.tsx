@@ -18,13 +18,13 @@ const CommunitiesSidebar: FC = () => {
 
   return (
     <Card
-      className={cn('my-4 hidden h-fit w-full flex-col px-8 dark:bg-slate-900 dark:text-white md:flex')}
+      className={cn('my-4 hidden h-fit w-full flex-col bg-background px-8 text-primary md:flex')}
       data-testid="card-trending-comunities"
       translate="no"
     >
       <CardHeader className="px-0 py-4">
         <CardTitle>
-          <Link href="/trending" className="hover:cursor-pointer hover:text-red-600">
+          <Link href="/trending" className="hover:text-destructive">
             {t('navigation.communities_nav.all_posts')}
           </Link>
         </CardTitle>
@@ -36,7 +36,7 @@ const CommunitiesSidebar: FC = () => {
             <li key={community.id}>
               <Link
                 href={`/trending/${community.name}`}
-                className="w-full text-sm font-light hover:cursor-pointer hover:text-red-600"
+                className="w-full text-sm font-light hover:text-destructive"
               >
                 {community.title}
               </Link>
@@ -45,7 +45,7 @@ const CommunitiesSidebar: FC = () => {
           <li className="py-4">
             <Link
               href={`/communities`}
-              className="w-full text-sm font-medium hover:cursor-pointer hover:text-red-600"
+              className="w-full text-sm font-medium hover:text-destructive"
               data-testid="explore-communities-link"
             >
               {t('navigation.communities_nav.explore_communities')}

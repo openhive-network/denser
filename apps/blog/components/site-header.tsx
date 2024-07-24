@@ -1,6 +1,5 @@
 import { Button } from '@ui/components/button';
 import { Icons } from '@ui/components/icons';
-import { Input } from '@ui/components/input';
 import Sidebar from './sidebar';
 import { MainNav } from './main-nav';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
@@ -75,17 +74,18 @@ const SiteHeader: FC = () => {
   }, []);
   return (
     <header
-      className={clsx(
-        'supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur transition ease-in-out dark:bg-slate-900',
-        { 'translate-y-[-56px]': isNavHidden }
-      )}
+      className={clsx('sticky top-0 z-40 w-full bg-background shadow-sm transition ease-in-out', {
+        'translate-y-[-56px]': isNavHidden
+      })}
       translate="no"
     >
       <div className="container flex h-16 w-full items-center justify-between">
         <Link href="/trending" className="flex items-center space-x-2">
           <Icons.hive className="h-6 w-6" />
           <span className="font-bold sm:inline-block">{siteConfig.name}</span>
-          {siteConfig.chainEnv !== 'mainnet' && <span className="text-xs text-red-600 uppercase">{siteConfig.chainEnv}</span>}
+          {siteConfig.chainEnv !== 'mainnet' && (
+            <span className="text-xs uppercase text-destructive">{siteConfig.chainEnv}</span>
+          )}
         </Link>
 
         <MainNav />
@@ -96,7 +96,7 @@ const SiteHeader: FC = () => {
                 <DialogLogin>
                   <Button
                     variant="ghost"
-                    className="whitespace-nowrap text-base hover:text-red-500"
+                    className="whitespace-nowrap text-base hover:text-destructive"
                     data-testid="login-btn"
                   >
                     {t('navigation.main_nav_bar.login')}
@@ -109,21 +109,6 @@ const SiteHeader: FC = () => {
                 </Link>
               </div>
             )}
-            {/* <div>
-              <div className="relative hidden lg:block">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <Icons.search className="h-5 w-5 rotate-90" />
-                </div>
-                <Input
-                  type="search"
-                  className="block w-[200px] rounded-full p-4 pl-10 text-sm"
-                  placeholder={t('navigation.main_nav_bar.search')}
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => handleEnter(e)}
-                />
-              </div>
-            </div> */}
             <Link href="/search" data-testid="navbar-search-link">
               <Button variant="ghost" size="sm" className="h-10 w-10 px-0 ">
                 <Icons.search className="h-5 w-5 rotate-90" />
@@ -151,7 +136,7 @@ const SiteHeader: FC = () => {
                     <UserMenu user={user} notifications={data?.unread}>
                       <div className="group relative inline-flex w-fit cursor-pointer items-center justify-center">
                         {data && data.unread !== 0 ? (
-                          <div className="absolute bottom-auto left-auto right-0 top-0.5 z-50 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-red-600 px-1.5 py-1 text-center align-baseline text-xs font-bold leading-none text-white">
+                          <div className="absolute bottom-auto left-auto right-0 top-0.5 z-50 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-destructive px-1.5 py-1 text-center align-baseline text-xs font-bold leading-none text-white">
                             {data.unread}
                           </div>
                         ) : null}
@@ -238,7 +223,7 @@ const SiteHeader: FC = () => {
                     </UserMenu>
                   </TooltipTrigger>
                   {manabarsData && (
-                    <TooltipContent className="flex flex-col">
+                    <TooltipContent className="flex flex-col bg-background-tertiary">
                       <span>Resource Credits</span>
                       <div className="flex flex-col text-blue-600">
                         <span>(RC) level: {manabarsData.rc.percentageValue}%</span>
@@ -252,7 +237,7 @@ const SiteHeader: FC = () => {
                           <span>Full in: {hoursAndMinutes(manabarsData.upvote.cooldown, t)}</span>
                         ) : null}
                       </div>
-                      <div className="flex flex-col text-red-600">
+                      <div className="flex flex-col text-destructive">
                         <span> Downvote power: {manabarsData.downvote.percentageValue}%</span>
                         {manabarsData.downvote.percentageValue !== 100 ? (
                           <span>Full in: {hoursAndMinutes(manabarsData.downvote.cooldown, t)}</span>

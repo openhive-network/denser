@@ -52,7 +52,7 @@ export function AlertDialogFlag({
             <AlertDialogTitle data-testid="flag-dialog-header">
               {t('post_content.flag.flag_post')}
             </AlertDialogTitle>
-            <AlertDialogCancel className="border-none hover:text-red-800" data-testid="flag-dialog-close">
+            <AlertDialogCancel className="border-none hover:text-destructive" data-testid="flag-dialog-close">
               X
             </AlertDialogCancel>
           </div>
@@ -70,12 +70,12 @@ export function AlertDialogFlag({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="gap-2 sm:flex-row-reverse">
-          <AlertDialogCancel className="hover:text-red-800" data-testid="flag-dialog-cancel">
+          <AlertDialogCancel className="hover:text-destructive" data-testid="flag-dialog-cancel">
             {t('post_content.flag.cancel')}
           </AlertDialogCancel>
           {user && user.isLoggedIn ? (
             <AlertDialogAction
-              className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
+              className="rounded-none bg-foreground text-secondary shadow-lg shadow-destructive hover:bg-destructive hover:shadow-foreground disabled:bg-gray-400 disabled:shadow-none"
               data-testid="flag-dialog-ok"
               onClick={flag}
             >
