@@ -299,7 +299,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
           await profilePage.repliesCommentListItemPayout.first(),
           'color'
         )
-      ).toBe('rgb(220, 38, 38)');
+      ).toBe('rgb(255, 0, 0)');
     }
   });
 
