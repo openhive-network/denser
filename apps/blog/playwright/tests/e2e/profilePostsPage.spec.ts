@@ -382,7 +382,7 @@ test.describe('Profile page of @gtg', () => {
 
   test('Tab Payouts - ReComment Card Header - Timestamp', async ({ page }) => {
     await page.goto('/@gtg/payout');
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(4000);
 
     if (await profilePage.postBlogItem.first().isVisible()) {
       await expect(profilePage.postBlogItem.first()).toBeVisible();
