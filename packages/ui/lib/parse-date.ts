@@ -3,7 +3,7 @@ import { TFunction } from 'i18next';
 
 moment.relativeTimeThreshold('s', 60);
 moment.relativeTimeThreshold('m', 60);
-moment.relativeTimeThreshold('h', 25);
+moment.relativeTimeThreshold('h', 24);
 moment.relativeTimeThreshold('d', 30);
 moment.relativeTimeThreshold('M', 12);
 
