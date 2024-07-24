@@ -12,3 +12,4 @@ version.json
 */**/workbox-*
 tmp
 ssl
+.DS_Store
