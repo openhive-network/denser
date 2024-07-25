@@ -9,6 +9,7 @@ RUN apk update
 ## Set working directory for an App
 WORKDIR /app
 RUN npm i -g turbo@^2
+RUN npm i -g pnpm@^9.5
 COPY . .
 ## prepare files only for docker and optimise
 RUN turbo prune --scope=${TURBO_APP_SCOPE} --docker
@@ -21,14 +22,13 @@ RUN apk update
 WORKDIR /app
 
 # First install the dependencies (as they change less often)
-RUN npm i -g turbo@^2
 COPY --from=builder /app/out/json/ .
-COPY --from=builder /app/out/package-lock.json ./package-lock.json
-RUN npm ci
+COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+RUN pnpm install --frozen-lockfile
 
 # Build the project
 COPY --from=builder /app/out/full/ .
-RUN npm run lint
+RUN pnpm run lint
 RUN turbo run build --filter=${TURBO_APP_SCOPE}
 
 FROM base AS runner
@@ -57,7 +57,7 @@ LABEL io.hive.image.commit.date="$GIT_LAST_COMMIT_DATE"
 
 WORKDIR /app
 
-RUN npm i -g @beam-australia/react-env@3.1.1
+RUN pnpm add -g @beam-australia/react-env@3.1.1
 RUN apk add --no-cache tini
 
 # Don't run production as root
