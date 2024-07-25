@@ -421,7 +421,13 @@ importers:
         version: 5.3.3
 
   packages/eslint-config-custom:
-    dependencies:
+    devDependencies:
+      '@eslint/eslintrc':
+        specifier: latest
+        version: 3.1.0
+      '@eslint/js':
+        specifier: latest
+        version: 9.7.0
       '@hive/prettier-config-custom':
         specifier: workspace:*
         version: link:../prettier-config-custom
@@ -446,6 +452,9 @@ importers:
       '@beam-australia/react-env':
         specifier: ^3.1.1
         version: 3.1.1
+      '@hive/eslint-config-custom':
+        specifier: workspace:*
+        version: link:../eslint-config-custom
       pino:
         specifier: ^8.17.1
         version: 8.21.0
