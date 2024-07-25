@@ -1,5 +1,8 @@
 # syntax=docker/dockerfile:1.5
 FROM node:20-alpine AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 
 FROM base AS builder
 ARG TURBO_APP_SCOPE
@@ -8,8 +11,7 @@ RUN apk update
 
 ## Set working directory for an App
 WORKDIR /app
-RUN npm i -g turbo@^2
-RUN npm i -g pnpm@^9.5
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm add -g turbo@^2
 COPY . .
 ## prepare files only for docker and optimise
 RUN turbo prune --scope=${TURBO_APP_SCOPE} --docker
@@ -24,7 +26,7 @@ WORKDIR /app
 # First install the dependencies (as they change less often)
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-RUN pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Build the project
 COPY --from=builder /app/out/full/ .
@@ -56,8 +58,7 @@ LABEL io.hive.image.commit.author="$GIT_LAST_COMMITTER"
 LABEL io.hive.image.commit.date="$GIT_LAST_COMMIT_DATE"
 
 WORKDIR /app
-
-RUN pnpm add -g @beam-australia/react-env@3.1.1
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm add -g @beam-australia/react-env@3.1.1
 RUN apk add --no-cache tini
 
 # Don't run production as root
