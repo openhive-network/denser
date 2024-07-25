@@ -3,9 +3,9 @@ module.exports = {
   darkMode: ['class'],
   content: [
     // apps content
-    `**/*.{js,ts,jsx,tsx}`,
+    `**/*.{jsx,tsx}`,
     // include packages if not transpiling
-    '../../packages/**/*.{js,ts,jsx,tsx}'
+    '../../packages/**/*.{jsx,tsx}'
   ],
   theme: {
     container: {
