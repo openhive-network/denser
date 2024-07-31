@@ -288,7 +288,7 @@ mirrornet-based-tests:
         - --internal-certs
   variables:
     GIT_STRATEGY: "clone"
-    CI_DEBUG_SERVICES: "false"
+    CI_DEBUG_SERVICES: "true"
     HAF_VERSION: "${HAF_REGISTRY_TAG}"
     HAF_REGISTRY: "${HAF_REGISTRY_PATH}"
     ARGUMENTS: "--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n"
