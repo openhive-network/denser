@@ -173,7 +173,7 @@ Configure the stack using the command:
   --haf-registry=registry.gitlab.syncad.com/hive/haf/mirrornet-instance \
   --haf-version=87ab368c \
   --hivemind-registry=registry.gitlab.syncad.com/hive/hivemind/instance \
-  --hivemind-version=22ee1397 \
+  --hivemind-version=40f8a4bb \
   --hafah-registry=registry.gitlab.syncad.com/hive/hafah/instance \
   --hafah-version=1ae8512a \
   --env-path="/full/path/to/mirronet-stack.env"
