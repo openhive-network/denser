@@ -301,7 +301,7 @@ mirrornet-based-tests:
   script:
     - |
       set -e
-      faketime -f "${FAKETIME}" bash "${CI_PROJECT_DIR}/scripts/ci-helpers/run-mmirrornet-tests.sh"
+      faketime -f "${FAKETIME}" bash "${CI_PROJECT_DIR}/scripts/ci-helpers/run-mirrornet-tests.sh"
   after_script:
     - |
       cp "${REPLAY_PIPELINE_DIRECTORY}/docker_entrypoint.log" "${CI_PROJECT_DIR}/haf.log"

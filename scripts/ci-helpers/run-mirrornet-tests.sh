@@ -7,8 +7,11 @@ npm config set strict-ssl false
 npm ci --cache .npm
 echo -e "\e[0Ksection_end:$(date +%s):deps\r\e[0K"
 
-echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=true]\r\e[0KRunning tests..."
+echo -e "\e[0Ksection_start:$(date +%s):wait[collapsed=true]\r\e[0KWaiting for API to be ready..."
+sleep 10m
+echo -e "\e[0Ksection_end:$(date +%s):wait\r\e[0K"
 
+echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=true]\r\e[0KRunning tests..."
 echo -e "\nTesting endpoints...\nHive..."
 curl -k --data '{"jsonrpc":"2.0", "method":"condenser_api.get_block", "params":[1], "id":1}' "https://${PUBLIC_HOSTNAME:?}/"
 
