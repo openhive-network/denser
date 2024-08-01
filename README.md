@@ -171,9 +171,9 @@ Configure the stack using the command:
   --use-alternate-haproxy-config=true \
   --haf-data-directory=/full/path/to/stacks/data/directory \
   --haf-registry=registry.gitlab.syncad.com/hive/haf/mirrornet-instance \
-  --haf-version=68ab1958 \
+  --haf-version=87ab368c \
   --hivemind-registry=registry.gitlab.syncad.com/hive/hivemind/instance \
-  --hivemind-version=4b4dea84 \
+  --hivemind-version=2abda883 \
   --hafah-registry=registry.gitlab.syncad.com/hive/hafah/instance \
   --hafah-version=1ae8512a \
   --env-path="/full/path/to/mirronet-stack.env"
