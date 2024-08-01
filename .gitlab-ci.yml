@@ -26,7 +26,7 @@ variables:
   HIVE_API_NODE_VERSION: 1.27.5
   API_NODE_VERSION: "3cdc5e77"
   HAF_COMMIT: "87ab368cf81412d84e96ec22302515c88a4f9743"
-  HIVEMIND_INSTANCE_VERSION: "2abda883"
+  HIVEMIND_INSTANCE_VERSION: "cf2daabb"
   HAFAH_VERSION: "1ae8512a"
   HIVEMIND_INSTANCE_IMAGE: registry.gitlab.syncad.com/hive/hivemind/instance
   HAFAH_REGISTRY: registry.gitlab.syncad.com/hive/hafah/instance
