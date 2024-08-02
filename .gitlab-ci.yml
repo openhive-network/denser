@@ -144,6 +144,24 @@ docker-build-wallet:
     TURBO_APP_PATH: '/apps/wallet'
     TURBO_APP_NAME: 'wallet'
 
+extended_block_log_creation:
+  extends: .extended_block_log_creation
+  stage: build
+  needs:
+    - job: "mirrornet-haf-image-docker-build"
+      artifacts: true
+  variables:
+    REGISTRY: "registry.gitlab.syncad.com/hive/hive"
+    REGISTRY_USER: "${HIVED_CI_IMGBUILDER_USER}"
+    REGISTRY_PASS: "${HIVED_CI_IMGBUILDER_PASSWORD}"
+    IMAGE_TAG: "312f1d0a"
+    HIVE_SRC: "${CI_PROJECT_DIR}/hive"
+    BLOCK_LOG_SOURCE_DIR: "/blockchain/block_log_5m"
+    BINARY_PATH: "${CI_PROJECT_DIR}/hived-mirrornet-binaries"
+  tags:
+    - public-runner-docker
+    - hived-for-tests
+
 mirrornet-haf-node-replay:
   extends: .haf-node-replay
   stage: replay-and-sync
