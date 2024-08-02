@@ -155,7 +155,7 @@ extended_block_log_creation:
     REGISTRY_USER: "${HIVED_CI_IMGBUILDER_USER}"
     REGISTRY_PASS: "${HIVED_CI_IMGBUILDER_PASSWORD}"
     IMAGE_TAG: "312f1d0a"
-    HIVE_SRC: "${CI_PROJECT_DIR}/hive"
+    HIVE_SRC: "${CI_PROJECT_DIR}/haf/hive"
     BLOCK_LOG_SOURCE_DIR: "/blockchain/block_log_5m"
     BINARY_PATH: "${CI_PROJECT_DIR}/hived-mirrornet-binaries"
   tags:
