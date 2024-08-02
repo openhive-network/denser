@@ -27,7 +27,7 @@ variables:
   API_NODE_VERSION: "3cdc5e77"
   HAF_COMMIT: "87ab368cf81412d84e96ec22302515c88a4f9743"
   HIVEMIND_INSTANCE_VERSION: "1f13a7b0"
-  HAFAH_VERSION: "1ae8512a"
+  HAFAH_VERSION: "30dfe816"
   HIVEMIND_INSTANCE_IMAGE: registry.gitlab.syncad.com/hive/hivemind/instance
   HAFAH_REGISTRY: registry.gitlab.syncad.com/hive/hafah/instance
   BLOCK_LOG_SOURCE_DIR: "/blockchain/block_log_mirror_44"
@@ -310,7 +310,7 @@ mirrornet-based-tests:
     key: "mirrornet-tests-1"    
   artifacts:
     paths:
-      - "haf.log"
+      - "*.log"
       - "logs/"
       - "*.env"
   tags:
