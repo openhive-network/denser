@@ -32,7 +32,7 @@ export const SignerProvider = ({ children }: { children: ReactNode }) => {
         transactionService.setSignerOptions(signerOptions);
       }
     })().catch(logger.error);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signerOptions.username]);
 
   // TODO: Wait for signer to be initialized

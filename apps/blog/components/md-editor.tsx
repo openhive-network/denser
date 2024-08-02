@@ -16,7 +16,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Signer } from '@smart-signer/lib/signer/signer';
 import { ICommand, TextAreaTextApi } from '@uiw/react-md-editor';
 import { getLogger } from '@ui/lib/logging';
-import { useSignerContext } from './common/signer';
+import { useSignerContext } from '../../../packages/smart-signer/components/signer-provider';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { useTranslation } from 'next-i18next';
 import imageUserBlocklist from '@ui/config/lists/image-user-blocklist';
