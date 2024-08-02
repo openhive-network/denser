@@ -151,6 +151,7 @@ extended_block_log_creation:
     - job: "mirrornet-haf-image-docker-build"
       artifacts: true
   variables:
+    GIT_SUBMODULE_STRATEGY: "recursive"
     REGISTRY: "registry.gitlab.syncad.com/hive/hive"
     REGISTRY_USER: "${HIVED_CI_IMGBUILDER_USER}"
     REGISTRY_PASS: "${HIVED_CI_IMGBUILDER_PASSWORD}"
