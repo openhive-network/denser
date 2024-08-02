@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ThemeProvider } from '../theme-provider';
 import Layout from './layout';
-import { SignerProvider } from './signer';
+import { SignerProvider } from '../../../../packages/smart-signer/components/signer-provider';
 import { LoggedUserProvider } from './logged-user';
 
 const queryClient = new QueryClient();
