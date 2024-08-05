@@ -100,6 +100,11 @@ mirrornet-haf-image-docker-build:
     BINARY_CACHE_PATH: "${CI_PROJECT_DIR}/hived-mirrornet-binaries"
     HIVE_NETWORK_TYPE: mirrornet
     GIT_SUBMODULE_STRATEGY: recursive
+  after_script:
+    - |
+      set -e
+      LIBPQ="$(sudo find / -name libpq.so.5* -type f 2>/dev/null)"
+      cp "${LIBPQ}" "${BINARY_CACHE_PATH}/libpq.so.5"
   tags:
     - public-runner-docker
     - hived-for-tests
@@ -153,9 +158,10 @@ extended_block_log_creation:
   before_script:
     - !reference [.extended_block_log_creation, before_script]
     - ls -lah "${BINARY_PATH}"
-    - |
-      sudo apt update
-      sudo apt install -y libpq5
+    - export LD_LIBRARY_PATH="${BINARY_CACHE_PATH}:${LD_LIBRARY_PATH}"
+    # - |
+    #   sudo apt update
+    #   sudo apt install -y libpq5
   variables:
     GIT_SUBMODULE_STRATEGY: "recursive"
     REGISTRY: "registry.gitlab.syncad.com/hive/hive"
