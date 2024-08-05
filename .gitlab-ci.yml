@@ -152,7 +152,7 @@ extended_block_log_creation:
       artifacts: true
   before_script:
     - !reference [.extended_block_log_creation, before_script]
-    - ls -lah "${BINARY_PATH"}"
+    - ls -lah "${BINARY_PATH}"
   variables:
     GIT_SUBMODULE_STRATEGY: "recursive"
     REGISTRY: "registry.gitlab.syncad.com/hive/hive"
