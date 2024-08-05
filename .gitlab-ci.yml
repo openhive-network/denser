@@ -150,6 +150,9 @@ extended_block_log_creation:
   needs:
     - job: "mirrornet-haf-image-docker-build"
       artifacts: true
+  before_script:
+    - !reference [.extended_block_log_creation, before_script]
+    - ls -lah "${BINARY_PATH"}"
   variables:
     GIT_SUBMODULE_STRATEGY: "recursive"
     REGISTRY: "registry.gitlab.syncad.com/hive/hive"
