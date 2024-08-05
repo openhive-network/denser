@@ -25,7 +25,7 @@ variables:
   # HAF API node configuration
   HIVE_API_NODE_VERSION: 1.27.5
   API_NODE_VERSION: "3cdc5e77"
-  HAF_COMMIT: "87ab368cf81412d84e96ec22302515c88a4f9743"
+  HAF_COMMIT: "efb29f94"
   HIVEMIND_INSTANCE_VERSION: "2abda883"
   HAFAH_VERSION: "30dfe816"
   HIVEMIND_INSTANCE_IMAGE: registry.gitlab.syncad.com/hive/hivemind/instance
@@ -48,7 +48,7 @@ include:
       - '/templates/docker_image_jobs.gitlab-ci.yml'
       - '/templates/cache_cleanup.gitlab-ci.yml'
   - project: 'hive/haf'
-    ref: 87ab368cf81412d84e96ec22302515c88a4f9743 #develop
+    ref: efb29f94 #develop
     file: '/scripts/ci-helpers/prepare_data_image_job.yml'
   - project: 'hive/haf_api_node'
     ref: 3cdc5e770683ecdc4754fb686dbe11009d9266d8
