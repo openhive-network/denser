@@ -166,6 +166,8 @@ library_extraction:
     when: on_success
     paths:
       - "${BINARY_CACHE_PATH}"
+  tags:
+    - public-runner-docker
 
 extended_block_log_creation:
   extends: .extended_block_log_creation
