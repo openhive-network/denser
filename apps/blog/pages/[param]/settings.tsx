@@ -20,7 +20,6 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { cn, handleError } from '@ui/lib/utils';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
-import { transactionService } from '@transaction/index';
 import { hbauthUseStrictMode, hbauthService } from '@smart-signer/lib/hbauth-service';
 import { getAccountFull } from '@transaction/lib/hive';
 import { useQuery } from '@tanstack/react-query';
@@ -274,7 +273,7 @@ export default function UserSettings() {
         {isClient && user?.isLoggedIn && user?.username === params.param.slice(1) ? (
           <>
             <div className="py-8">
-              <h2 className="py-4 text-lg font-semibold leading-5 text-slate-900 dark:text-white">
+              <h2 className="py-4 text-lg font-semibold leading-5">
                 {t('settings_page.public_profile_settings')}
               </h2>
               <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
@@ -289,7 +288,7 @@ export default function UserSettings() {
                   />
                   <span>
                     <Label
-                      className="text-sm font-normal text-red-500 hover:cursor-pointer"
+                      className="text-sm font-normal text-destructive hover:cursor-pointer"
                       htmlFor="profilePicture"
                     >
                       {t('settings_page.upload_image')}
@@ -306,7 +305,7 @@ export default function UserSettings() {
                       onChange={inputProfileHandler}
                     />
                   </span>
-                  <span className="pt-2 text-xs text-red-500">{validationCheck.profile_image}</span>
+                  <span className="pt-2 text-xs text-destructive">{validationCheck.profile_image}</span>
                 </div>
 
                 <div>
@@ -320,7 +319,7 @@ export default function UserSettings() {
                   />
                   <span>
                     <Label
-                      className="text-sm font-normal text-red-500 hover:cursor-pointer"
+                      className="text-sm font-normal text-destructive hover:cursor-pointer"
                       htmlFor="coverPicture"
                     >
                       {t('settings_page.upload_image')}
@@ -337,7 +336,7 @@ export default function UserSettings() {
                       onChange={inputCoverHandler}
                     />
                   </span>
-                  <span className="pt-2 text-xs text-red-500">{validationCheck.cover_image}</span>
+                  <span className="pt-2 text-xs text-destructive">{validationCheck.cover_image}</span>
                 </div>
 
                 <div>
@@ -349,7 +348,7 @@ export default function UserSettings() {
                     value={settings.name}
                     onChange={(e) => setSettings((prev) => ({ ...prev, name: e.target.value }))}
                   />
-                  <span className="pt-2 text-xs text-red-500">{validationCheck.name}</span>
+                  <span className="pt-2 text-xs text-destructive">{validationCheck.name}</span>
                 </div>
 
                 <div>
@@ -361,7 +360,7 @@ export default function UserSettings() {
                     value={settings.about}
                     onChange={(e) => setSettings((prev) => ({ ...prev, about: e.target.value }))}
                   />
-                  <span className="pt-2 text-xs text-red-500">{validationCheck.about}</span>
+                  <span className="pt-2 text-xs text-destructive">{validationCheck.about}</span>
                 </div>
 
                 <div>
@@ -373,7 +372,7 @@ export default function UserSettings() {
                     value={settings.location}
                     onChange={(e) => setSettings((prev) => ({ ...prev, location: e.target.value }))}
                   />
-                  <span className="pt-2 text-xs text-red-500">{validationCheck.location}</span>
+                  <span className="pt-2 text-xs text-destructive">{validationCheck.location}</span>
                 </div>
 
                 <div>
@@ -385,7 +384,7 @@ export default function UserSettings() {
                     value={settings.website}
                     onChange={(e) => setSettings((prev) => ({ ...prev, website: e.target.value }))}
                   />
-                  <span className="pt-2 text-xs text-red-500">{validationCheck.website}</span>
+                  <span className="pt-2 text-xs text-destructive">{validationCheck.website}</span>
                 </div>
 
                 <div>
@@ -399,7 +398,9 @@ export default function UserSettings() {
                       setSettings((prev) => ({ ...prev, blacklist_description: e.target.value }))
                     }
                   />
-                  <span className="pt-2 text-xs text-red-500">{validationCheck.blacklist_description}</span>
+                  <span className="pt-2 text-xs text-destructive">
+                    {validationCheck.blacklist_description}
+                  </span>
                 </div>
 
                 <div>
@@ -413,7 +414,9 @@ export default function UserSettings() {
                       setSettings((prev) => ({ ...prev, muted_list_description: e.target.value }))
                     }
                   />
-                  <span className="pt-2 text-xs text-red-500">{validationCheck.muted_list_description}</span>
+                  <span className="pt-2 text-xs text-destructive">
+                    {validationCheck.muted_list_description}
+                  </span>
                 </div>
               </div>
               <Button
@@ -432,9 +435,7 @@ export default function UserSettings() {
               </Button>
             </div>
             <div className="py-8" data-testid="settings-preferences">
-              <h2 className="py-4 text-lg font-semibold leading-5 text-slate-900 dark:text-white">
-                {t('settings_page.preferences')}
-              </h2>
+              <h2 className="py-4 text-lg font-semibold leading-5">{t('settings_page.preferences')}</h2>
 
               <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
                 <div data-testid="not-safe-for-work-content">
@@ -537,12 +538,8 @@ export default function UserSettings() {
         ) : null}
 
         <div className="py-8">
-          <h2 className="py-4 text-lg font-semibold leading-5 text-slate-900 dark:text-white">
-            {t('settings_page.advanced')}
-          </h2>
-          <h4 className="text-md py-2 font-semibold leading-5 text-slate-900 dark:text-white">
-            {t('settings_page.api_endpoint_options')}
-          </h4>
+          <h2 className="py-4 text-lg font-semibold leading-5">{t('settings_page.advanced')}</h2>
+          <h4 className="text-md py-2 font-semibold leading-5">{t('settings_page.api_endpoint_options')}</h4>
           <RadioGroup
             defaultValue={endpoint}
             className="w-full gap-0 md:w-8/12"
@@ -562,13 +559,10 @@ export default function UserSettings() {
             {endpoints?.map((endp, index) => (
               <div
                 key={endp}
-                className={cn(
-                  'grid grid-cols-[220px_50px_50px] items-center p-2 lg:grid-cols-3 ',
-                  index % 2 === 0 ? 'bg-slate-100 dark:bg-slate-500' : 'bg-slate-200 p-2 dark:bg-slate-600'
-                )}
+                className="even:bg-background-tertiary grid grid-cols-[220px_50px_50px] items-center p-2 odd:bg-background lg:grid-cols-3"
               >
                 <Label htmlFor={`e#{index}`}>{endp}</Label>
-                <RadioGroupItem value={endp} id={`e#{index}`} className="border-red-600" />
+                <RadioGroupItem value={endp} id={`e#{index}`} className="border-destructive" />
                 <Icons.trash
                   id={`t#{index}`}
                   onClick={() => {
@@ -645,9 +639,9 @@ export default function UserSettings() {
                 return (
                   <li key={mutedUser.name}>
                     <span>{index + 1}. </span>
-                    <span className="text-red-500">{mutedUser.name}</span>
+                    <span className="text-destructive">{mutedUser.name}</span>
                     <Button
-                      className="h-fit p-1 text-red-500"
+                      className="h-fit p-1 text-destructive"
                       variant="link"
                       onClick={async () => {
                         const params = { username: mutedUser.name };

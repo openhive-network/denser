@@ -2,7 +2,6 @@ import PostListItem from '@/blog/components/post-list-item';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import type { Entry } from '@transaction/lib/bridge';
 import { useFollowListQuery } from './hooks/use-follow-list';
-import { useLocalStorage } from 'usehooks-ts';
 
 const PostList = ({ data, isCommunityPage }: { data: Entry[]; isCommunityPage?: boolean }) => {
   const { user } = useUser();

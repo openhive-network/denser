@@ -22,7 +22,7 @@ export function SubsListDialog({
         <div>Latest {title} Subscribers</div>
         <ul>
           {subs.map((e: Subscription) => (
-            <li key={e[0]} className="p-[1.5px] text-sm text-red-500">
+            <li key={e[0]} className="p-[1.5px] text-sm text-destructive">
               <Link href={`@${e[0]}`}>@{e[0]}</Link>
             </li>
           ))}

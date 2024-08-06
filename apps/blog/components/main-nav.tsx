@@ -15,8 +15,8 @@ export function MainNav() {
         <Link
           href={`/trending`}
           className={cn(
-            'ml-6 flex h-full items-center border-b-2 border-white transition-colors hover:border-red-600 hover:text-red-600 dark:border-slate-950 hover:dark:border-red-600',
-            pathname === '/trending' ? 'text-red-600' : 'text-foreground/60'
+            'ml-6 flex h-full items-center border-b-2 border-background transition-colors hover:border-destructive hover:text-destructive',
+            pathname === '/trending' ? 'text-destructive' : 'text-primary'
           )}
           data-testid="nav-posts-link"
         >
@@ -27,8 +27,8 @@ export function MainNav() {
           target="_blank"
           rel="noopener noreferrer"
           className={cn(
-            'flex h-full items-center border-b-2 border-white transition-colors hover:border-red-600 hover:text-red-600 dark:border-slate-950 hover:dark:border-red-600',
-            pathname === '/proposals"' ? 'text-red-600' : 'text-foreground/60'
+            'flex h-full items-center border-b-2 border-background transition-colors hover:border-destructive hover:text-destructive',
+            pathname === '/proposals"' ? 'text-destructive' : 'text-primary'
           )}
           data-testid="nav-proposals-link"
         >
@@ -39,8 +39,8 @@ export function MainNav() {
           target="_blank"
           rel="noopener noreferrer"
           className={cn(
-            'flex h-full items-center border-b-2 border-white transition-colors hover:border-red-600 hover:text-red-600 dark:border-slate-950 hover:dark:border-red-600',
-            pathname === '/~witnesses' ? 'text-red-600' : 'text-foreground/60'
+            'flex h-full items-center border-b-2 border-background transition-colors hover:border-destructive hover:text-destructive',
+            pathname === '/~witnesses' ? 'text-destructive' : 'text-primary'
           )}
           data-testid="nav-witnesses-link"
         >
@@ -52,8 +52,8 @@ export function MainNav() {
           target="_blank"
           rel="noopener noreferrer"
           className={cn(
-            'flex h-full items-center whitespace-nowrap border-b-2 border-white transition-colors hover:border-red-600 hover:text-red-600 dark:border-slate-950 hover:dark:border-red-600',
-            pathname === 'https://hive.io/eco/' ? 'text-red-600' : 'text-foreground/60'
+            'flex h-full items-center border-b-2 border-background transition-colors hover:border-destructive hover:text-destructive',
+            pathname === 'https://hive.io/eco/' ? 'text-destructive' : 'text-primary'
           )}
           data-testid="nav-our-dapps-link"
         >

@@ -196,7 +196,7 @@ test.describe('Profile page of @gtg', () => {
       } else {
       await commentViewPage.getResponseCommentPayout.first().hover();
       await commentViewPage.page.waitForTimeout(1000);
-      await expect(commentViewPage.getResponseCommentPayout.first()).toHaveCSS('color', 'rgb(15, 23, 42)');
+      await expect(commentViewPage.getResponseCommentPayout.first()).toHaveCSS('color', 'rgb(24, 30, 42)');
       }
     } else {
       await commentViewPage.getResponseCommentPayout.first().hover();
@@ -311,7 +311,7 @@ test.describe('Profile page of @gtg', () => {
     if (await profilePage.postBlogItem.first().isVisible()) {
       await expect(profilePage.postBlogItem.first()).toBeVisible();
       await profilePage.communityTimeStamp.hover();
-      await expect(profilePage.communityTimeStamp).toHaveCSS('color', 'rgb(220, 38, 38)');
+      await expect(profilePage.communityTimeStamp).toHaveCSS('color', 'rgb(255, 0, 0)');
 
       const tittleText = await homePage.postTitle.first().textContent();
 
@@ -382,7 +382,7 @@ test.describe('Profile page of @gtg', () => {
 
   test('Tab Payouts - ReComment Card Header - Timestamp', async ({ page }) => {
     await page.goto('/@gtg/payout');
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(4000);
 
     if (await profilePage.postBlogItem.first().isVisible()) {
       await expect(profilePage.postBlogItem.first()).toBeVisible();

@@ -15,8 +15,15 @@ import { getTranslations } from '../../lib/get-translations';
 
 const logger = getLogger('app');
 
-const UserCommunities = ({ hivebuzz, peakd, errorCode = 0 }: { hivebuzz: Badge[]; peakd: Badge[]; errorCode: number }) => {
-
+const UserCommunities = ({
+  hivebuzz,
+  peakd,
+  errorCode = 0
+}: {
+  hivebuzz: Badge[];
+  peakd: Badge[];
+  errorCode: number;
+}) => {
   const { username } = useSiteParams();
   const { t } = useTranslation('common_blog');
   const { isLoading, error, data } = useQuery(
@@ -32,10 +39,7 @@ const UserCommunities = ({ hivebuzz, peakd, errorCode = 0 }: { hivebuzz: Badge[]
   return (
     <ProfileLayout>
       <div className="flex flex-col py-8">
-        <h2
-          className="text-xl font-semibold text-slate-900 dark:text-white"
-          data-testid="community-subscriptions-label"
-        >
+        <h2 className="text-xl font-semibold" data-testid="community-subscriptions-label">
           {t('user_profile.social_tab.community_subscriptions_title')}
         </h2>
         <p data-testid="community-subscriptions-description">
@@ -46,25 +50,22 @@ const UserCommunities = ({ hivebuzz, peakd, errorCode = 0 }: { hivebuzz: Badge[]
         ) : (
           <div
             key="empty"
-            className="my-12 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
+            className="bg-card-noContent border-card-empty-border my-12 border-2 border-solid  px-4 py-6 text-sm"
             data-testid="user-does-not-have-any-subscriptions-yet"
           >
             {t('user_profile.social_tab.you_dont_have_any_subscriptions')}
           </div>
         )}
-        <h2
-          className="text-xl font-semibold text-slate-900 dark:text-white"
-          data-testid="badges-achievements-label"
-        >
+        <h2 className="text-xl font-semibold" data-testid="badges-achievements-label">
           {t('user_profile.social_tab.badges_and_achievements_title')}
         </h2>
         <p data-testid="badges-achievements-description">
           {t('user_profile.social_tab.these_are_badges_received_by_the_author')}
-          <Link href="https://peakd.com/" className="text-red-600 hover:underline" target="_blank">
+          <Link href="https://peakd.com/" className="text-destructive hover:underline" target="_blank">
             Peakd
           </Link>
           {` & `}
-          <Link href="https://hivebuzz.me/" className="text-red-600 hover:underline" target="_blank">
+          <Link href="https://hivebuzz.me/" className="text-destructive hover:underline" target="_blank">
             Hivebuzz
           </Link>
           .
