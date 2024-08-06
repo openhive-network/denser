@@ -1,13 +1,13 @@
 import {
   ApiAccount,
-  ArticleBuilder,
+  BlogPostOperation,
   BroadcastTransactionRequest,
-  CommunityOperationBuilder,
+  CommunityOperation,
   EFollowBlogAction,
-  FollowOperationBuilder,
-  ITransactionBuilder,
+  FollowOperation,
+  ITransaction,
   NaiAsset,
-  ReplyBuilder,
+  ReplyOperation,
   asset,
   authority,
   future_extensions
@@ -24,7 +24,7 @@ const logger = getLogger('app');
 export type TransactionErrorCallback = (error: any) => any;
 
 export type TransactionBroadcastCallback = (
-  txBuilder: ITransactionBuilder
+  txBuilder: ITransaction
 ) => Promise<TransactionBroadcastResult>;
 
 export interface TransactionOptions {
@@ -78,13 +78,13 @@ export class TransactionService {
    * `TransactionService.broadcastAndObserveTransaction` will be run and
    * this resolves after applying transaction in blockchain.
    *
-   * @param {(opBuilder: ITransactionBuilder) => void} cb
+   * @param {(opBuilder: ITransaction) => void} cb
    * @param {TransactionOptions} [transactionOptions={}]
    * @return {*}  {Promise<TransactionBroadcastResult>}
    * @memberof TransactionService
    */
   async processHiveAppOperation(
-    cb: (opBuilder: ITransactionBuilder) => void,
+    cb: (opBuilder: ITransaction) => void,
     transactionOptions: TransactionOptions = {}
   ): Promise<TransactionBroadcastResult> {
     const defaultTransactionOptions = {
@@ -96,7 +96,7 @@ export class TransactionService {
       ...transactionOptions
     };
 
-    const txBuilder = await (await hiveChainService.getHiveChain()).getTransactionBuilder();
+    const txBuilder = await (await hiveChainService.getHiveChain()).createTransaction();
 
     // Create transaction from operation
     cb(txBuilder);
@@ -107,7 +107,7 @@ export class TransactionService {
     // Get signature of transaction
     const signature = await this.signTransaction(txBuilder);
     // Add signature to transaction
-    txBuilder.build(signature);
+    txBuilder.sign(signature);
 
     if (observe) {
       return await this.broadcastAndObserveTransaction(txBuilder);
@@ -119,15 +119,15 @@ export class TransactionService {
   /**
    * Sign transaction using smart-signer.
    *
-   * @param {ITransactionBuilder} txBuilder
+   * @param {ITransaction} txBuilder
    * @return {*}  {Promise<string>}
    * @memberof TransactionService
    */
-  signTransaction(txBuilder: ITransactionBuilder): Promise<string> {
+  signTransaction(txBuilder: ITransaction): Promise<string> {
     const signer = getSigner(this.signerOptions);
     return signer.signTransaction({
       digest: txBuilder.sigDigest,
-      transaction: txBuilder.build()
+      transaction: txBuilder.transaction
     });
   }
 
@@ -135,11 +135,11 @@ export class TransactionService {
    * Broadcasts transaction. Resolves after sending request to API
    * server. Does not wait for applying transaction in blockchain.
    *
-   * @param {ITransactionBuilder} txBuilder
+   * @param {ITransaction} txBuilder
    * @return {*}  {Promise<TransactionBroadcastResult>}
    * @memberof TransactionService
    */
-  async broadcastTransaction(txBuilder: ITransactionBuilder): Promise<TransactionBroadcastResult> {
+  async broadcastTransaction(txBuilder: ITransaction): Promise<TransactionBroadcastResult> {
     // Create broadcast request
     const broadcastReq = new BroadcastTransactionRequest(txBuilder);
     // Do broadcast
@@ -158,13 +158,13 @@ export class TransactionService {
    * doesn't find the transaction, it will throw after transaction
    * expiration time plus `throwAfter`.
    *
-   * @param {ITransactionBuilder} txBuilder
+   * @param {ITransaction} txBuilder
    * @param {number} [throwAfter=60 * 1000]
    * @return {*}  {Promise<TransactionBroadcastResult>}
    * @memberof TransactionService
    */
   async broadcastAndObserveTransaction(
-    txBuilder: ITransactionBuilder,
+    txBuilder: ITransaction,
     throwAfter = 60 * 1000
   ): Promise<TransactionBroadcastResult> {
     try {
@@ -188,7 +188,7 @@ export class TransactionService {
       const transactionId = txBuilder.id;
       logger.info('Broadcasting transaction id: %o, body: %o', transactionId, txBuilder.toApi());
       const startedAt = Date.now();
-      const observer = await this.bot.broadcast(txBuilder.build(), { throwAfter });
+      const observer = await this.bot.broadcast(txBuilder.transaction, { throwAfter });
 
       // Observe if transaction has been applied into blockchain (scan
       // blocks and look for transactionId).
@@ -246,7 +246,7 @@ export class TransactionService {
   ) {
     return await this.processHiveAppOperation((builder) => {
       builder
-        .pushRawOperation({
+        .pushOperation({
           vote: {
             voter: this.signerOptions.username,
             author,
@@ -254,7 +254,7 @@ export class TransactionService {
             weight
           }
         })
-        .build();
+        .transaction;
     }, transactionOptions);
   }
 
@@ -266,7 +266,7 @@ export class TransactionService {
   ) {
     return await this.processHiveAppOperation((builder) => {
       builder
-        .pushRawOperation({
+        .pushOperation({
           vote: {
             voter: this.signerOptions.username,
             author,
@@ -274,22 +274,22 @@ export class TransactionService {
             weight
           }
         })
-        .build();
+        .transaction;
     }, transactionOptions);
   }
 
   async subscribe(community: string, transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
-      builder.pushRawOperation(
-        new CommunityOperationBuilder().subscribe(community).authorize(this.signerOptions.username).build()
+      builder.pushOperation(
+        new CommunityOperation().subscribe(community).authorize(this.signerOptions.username)
       );
     }, transactionOptions);
   }
 
   async unsubscribe(community: string, transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
-      builder.pushRawOperation(
-        new CommunityOperationBuilder().unsubscribe(community).authorize(this.signerOptions.username).build()
+      builder.pushOperation(
+        new CommunityOperation().unsubscribe(community).authorize(this.signerOptions.username)
       );
     }, transactionOptions);
   }
@@ -302,187 +302,170 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     return await this.processHiveAppOperation((builder) => {
-      builder.pushRawOperation(
-        new CommunityOperationBuilder()
+      builder.pushOperation(
+        new CommunityOperation()
           .flagPost(community, username, permlink, notes)
           .authorize(this.signerOptions.username)
-          .build()
       );
     }, transactionOptions);
   }
 
   async reblog(username: string, permlink: string, transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
-      builder.pushRawOperation(
-        new FollowOperationBuilder()
+      builder.pushOperation(
+        new FollowOperation()
           .reblog(this.signerOptions.username, username, permlink)
           .authorize(this.signerOptions.username)
-          .build()
       );
     }, transactionOptions);
   }
 
   async follow(username: string, transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
-      builder.pushRawOperation(
-        new FollowOperationBuilder()
+      builder.pushOperation(
+        new FollowOperation()
           .followBlog(this.signerOptions.username, username)
           .authorize(this.signerOptions.username)
-          .build()
       );
     }, transactionOptions);
   }
 
   async unfollow(username: string, transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
-      builder.pushRawOperation(
-        new FollowOperationBuilder()
+      builder.pushOperation(
+        new FollowOperation()
           .unfollowBlog(this.signerOptions.username, username)
           .authorize(this.signerOptions.username)
-          .build()
       );
     }, transactionOptions);
   }
 
   async mute(otherBlogs: string, blog = '', transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
-      builder.pushRawOperation(
-        new FollowOperationBuilder()
+      builder.pushOperation(
+        new FollowOperation()
           .muteBlog(this.signerOptions.username, blog, ...otherBlogs.split(', '))
           .authorize(this.signerOptions.username)
-          .build()
       );
     }, transactionOptions);
   }
 
   async unmute(blog: string, transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
-      builder.pushRawOperation(
-        new FollowOperationBuilder()
+      builder.pushOperation(
+        new FollowOperation()
           .unmuteBlog(this.signerOptions.username, blog)
           .authorize(this.signerOptions.username)
-          .build()
       );
     }, transactionOptions);
   }
 
   async resetBlogList(transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
-      builder.pushRawOperation(
-        new FollowOperationBuilder()
+      builder.pushOperation(
+        new FollowOperation()
           .resetBlogList(EFollowBlogAction.MUTE_BLOG, this.signerOptions.username, 'all')
           .authorize(this.signerOptions.username)
-          .build()
       );
     }, transactionOptions);
   }
 
   async blacklistBlog(otherBlogs: string, blog = '', transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
-      builder.pushRawOperation(
-        new FollowOperationBuilder()
+      builder.pushOperation(
+        new FollowOperation()
           .blacklistBlog(this.signerOptions.username, blog, ...otherBlogs.split(', '))
           .authorize(this.signerOptions.username)
-          .build()
       );
     }, transactionOptions);
   }
 
   async unblacklistBlog(blog: string, transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
-      builder.pushRawOperation(
-        new FollowOperationBuilder()
+      builder.pushOperation(
+        new FollowOperation()
           .unblacklistBlog(this.signerOptions.username, blog)
           .authorize(this.signerOptions.username)
-          .build()
       );
     }, transactionOptions);
   }
 
   async followBlacklistBlog(otherBlogs: string, blog = '', transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
-      builder.pushRawOperation(
-        new FollowOperationBuilder()
+      builder.pushOperation(
+        new FollowOperation()
           .followBlacklistBlog(this.signerOptions.username, blog, ...otherBlogs.split(', '))
           .authorize(this.signerOptions.username)
-          .build()
       );
     }, transactionOptions);
   }
 
   async unfollowBlacklistBlog(blog: string, transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
-      builder.pushRawOperation(
-        new FollowOperationBuilder()
+      builder.pushOperation(
+        new FollowOperation()
           .unfollowBlacklistBlog(this.signerOptions.username, blog)
           .authorize(this.signerOptions.username)
-          .build()
       );
     }, transactionOptions);
   }
 
   async followMutedBlog(otherBlogs: string, blog = '', transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
-      builder.pushRawOperation(
-        new FollowOperationBuilder()
+      builder.pushOperation(
+        new FollowOperation()
           .followMutedBlog(this.signerOptions.username, blog, ...otherBlogs.split(', '))
           .authorize(this.signerOptions.username)
-          .build()
       );
     }, transactionOptions);
   }
 
   async resetAllBlog(transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
-      builder.pushRawOperation(
-        new FollowOperationBuilder()
+      builder.pushOperation(
+        new FollowOperation()
           .resetAllBlog(this.signerOptions.username, 'all')
           .authorize(this.signerOptions.username)
-          .build()
       );
     }, transactionOptions);
   }
 
   async resetBlacklistBlog(transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
-      builder.pushRawOperation(
-        new FollowOperationBuilder()
+      builder.pushOperation(
+        new FollowOperation()
           .resetBlacklistBlog(this.signerOptions.username, 'all')
           .authorize(this.signerOptions.username)
-          .build()
       );
     }, transactionOptions);
   }
 
   async resetFollowBlacklistBlog(transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
-      builder.pushRawOperation(
-        new FollowOperationBuilder()
+      builder.pushOperation(
+        new FollowOperation()
           .resetFollowBlacklistBlog(this.signerOptions.username, 'all')
           .authorize(this.signerOptions.username)
-          .build()
       );
     }, transactionOptions);
   }
 
   async resetFollowMutedBlog(transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
-      builder.pushRawOperation(
-        new FollowOperationBuilder()
+      builder.pushOperation(
+        new FollowOperation()
           .resetFollowMutedBlog(this.signerOptions.username, 'all')
           .authorize(this.signerOptions.username)
-          .build()
       );
     }, transactionOptions);
   }
 
   async unfollowMutedBlog(blog: string, transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
-      builder.pushRawOperation(
-        new FollowOperationBuilder()
+      builder.pushOperation(
+        new FollowOperation()
           .unfollowMutedBlog(this.signerOptions.username, blog)
           .authorize(this.signerOptions.username)
-          .build()
       );
     }, transactionOptions);
   }
@@ -495,19 +478,32 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     const chain = await hiveChainService.getHiveChain();
+
+    let percentHbd: undefined | number;
+    let maxAcceptedPayout: undefined | NaiAsset;
+
+    if (preferences.comment_rewards === '100%') {
+      percentHbd = 0;
+    }
+    if (preferences.comment_rewards === '50%' || preferences.comment_rewards === '0%') {
+      percentHbd = 10000;
+    }
+    if (preferences.comment_rewards === '0%') {
+      maxAcceptedPayout = chain.hbd(0);
+    }
+
+    const replyBuilder = new ReplyOperation({
+      parentAuthor,
+      parentPermlink,
+      author: this.signerOptions.username,
+      body,
+      permlink: `re-${parentAuthor.replaceAll('.', '-')}-${Date.now()}`,
+      percentHbd,
+      maxAcceptedPayout
+    });
+
     return await this.processHiveAppOperation((builder) => {
-      builder.pushOperations(ReplyBuilder, (replyBuilder) => {
-        if (preferences.comment_rewards === '100%') {
-          replyBuilder.setPercentHbd(0);
-        }
-        if (preferences.comment_rewards === '50%' || preferences.comment_rewards === '0%') {
-          replyBuilder.setPercentHbd(10000);
-        }
-        if (preferences.comment_rewards === '0%') {
-          replyBuilder.setMaxAcceptedPayout(chain.hbd(0));
-        }
-      }, parentAuthor, parentPermlink, this.signerOptions.username, body, undefined, `re-${parentAuthor.replaceAll('.', '-')}-${Date.now()}`)
-      
+      builder.pushOperation(replyBuilder);
     }, transactionOptions);
   }
 
@@ -518,8 +514,17 @@ export class TransactionService {
     body: string,
     transactionOptions: TransactionOptions = {}
   ) {
+    const reply = new ReplyOperation({
+      parentAuthor,
+      parentPermlink,
+      author: this.signerOptions.username,
+      body,
+      jsonMetadata: {},
+      permlink
+    });
+
     return await this.processHiveAppOperation((builder) => {
-      builder.pushOperations(ReplyBuilder, () => {}, parentAuthor, parentPermlink, this.signerOptions.username, body, {}, permlink);
+      builder.pushOperation(reply);
     }, transactionOptions);
   }
 
@@ -539,33 +544,49 @@ export class TransactionService {
     editMode = false
   ) {
     const chain = await hiveChainService.getHiveChain();
-    return await this.processHiveAppOperation((builder) => {
-    builder.pushOperations(ArticleBuilder, (articleBuilder) => {
-        articleBuilder
-        .setCategory(category !== 'blog' ? category : tags[0])
-        .pushTags(...tags)
-        .pushMetadataProperty({ summary: summary })
-        .setAlternativeAuthor(altAuthor)
-        .pushImages(image ? image : '');
 
-      if (!editMode) {
-        articleBuilder.setMaxAcceptedPayout(maxAcceptedPayout);
+    let percentHbd: undefined | number;
+    let maxAcceptedPayoutToSet: undefined | NaiAsset;
+    let beneficiariesToSet: undefined | Array<{ account: string; weight: number }>;
 
-        if (payoutType === '100%') {
-          articleBuilder.setPercentHbd(0);
-        }
-        if (payoutType === '50%' || payoutType === '0%') {
-          articleBuilder.setPercentHbd(10000);
-        }
-        if (payoutType === '0%') {
-          articleBuilder.setMaxAcceptedPayout(chain.hbd(0));
-        }
+    if (!editMode) {
+      maxAcceptedPayoutToSet = maxAcceptedPayout;
 
-        beneficiaries.forEach((beneficiary) => {
-          articleBuilder.addBeneficiary(beneficiary.account, Number(beneficiary.weight));
-        });
+      if (payoutType === '100%') {
+        percentHbd = 0;
       }
-      }, this.signerOptions.username, title, body, {}, permlink)
+      if (payoutType === '50%' || payoutType === '0%') {
+        percentHbd = 10000;
+      }
+      if (payoutType === '0%') {
+        maxAcceptedPayoutToSet = chain.hbd(0);
+      }
+
+      beneficiariesToSet = beneficiaries.map(({ account, weight }) => ({
+        account,
+        weight: Number(weight)
+      }))
+    }
+
+    const blogPost = new BlogPostOperation({
+      category: category !== 'blog' ? category : tags[0],
+      tags,
+      author: this.signerOptions.username,
+      title,
+      body,
+      permlink,
+      alternativeAuthor: altAuthor,
+      images: [image ? image : ''],
+      jsonMetadata: {
+        summary
+      },
+      beneficiaries: beneficiariesToSet,
+      percentHbd,
+      maxAcceptedPayout: maxAcceptedPayoutToSet
+    });
+
+    return await this.processHiveAppOperation((builder) => {
+    builder.pushOperation(blogPost);
     }, transactionOptions);
   }
 
@@ -585,7 +606,7 @@ export class TransactionService {
   ) {
     return await this.processHiveAppOperation((builder) => {
       builder
-        .pushRawOperation({
+        .pushOperation({
           account_update2: {
             account: this.signerOptions.username,
             extensions: [],
@@ -607,13 +628,13 @@ export class TransactionService {
             })
           }
         })
-        .build();
+        .transaction;
     }, transactionOptions);
   }
 
   async deleteComment(permlink: string, transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
-      builder.pushRawOperation({
+      builder.pushOperation({
         delete_comment: {
           author: this.signerOptions.username,
           permlink: permlink
@@ -630,7 +651,7 @@ export class TransactionService {
   ) {
     return await this.processHiveAppOperation((builder) => {
       builder
-        .pushRawOperation({
+        .pushOperation({
           update_proposal_votes: {
             voter: this.signerOptions.username,
             proposal_ids,
@@ -638,14 +659,14 @@ export class TransactionService {
             extensions
           }
         })
-        .build();
+        .transaction;
     }, transactionOptions);
   }
 
   async markAllNotificationAsRead(date: string, transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
       builder
-        .pushRawOperation({
+        .pushOperation({
           custom_json: {
             id: 'notify',
             json: JSON.stringify(['setLastRead', { date: date }]),
@@ -653,13 +674,13 @@ export class TransactionService {
             required_posting_auths: [this.signerOptions.username]
           }
         })
-        .build();
+        .transaction;
     }, transactionOptions);
   }
 
   async claimRewards(account: ApiAccount, transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
-      builder.pushRawOperation({
+      builder.pushOperation({
         claim_reward_balance: {
           account: this.signerOptions.username,
           reward_hive: account.reward_hive_balance,
@@ -677,7 +698,7 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     return await this.processHiveAppOperation((builder) => {
-      builder.pushOperations({
+      builder.pushOperation({
         account_witness_vote: {
           account,
           witness,
@@ -695,7 +716,7 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     return await this.processHiveAppOperation((builder) => {
-      builder.push({
+      builder.pushOperation({
         transfer_to_savings: {
           amount,
           from_account: fromAccount,
@@ -714,7 +735,7 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     return await this.processHiveAppOperation((builder) => {
-      builder.push({
+      builder.pushOperation({
         transfer: {
           amount,
           from_account: fromAccount,
@@ -732,7 +753,7 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     return await this.processHiveAppOperation((builder) => {
-      builder.push({
+      builder.pushOperation({
         transfer_to_vesting: {
           amount,
           from_account: fromAccount,
@@ -748,7 +769,7 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     return await this.processHiveAppOperation((builder) => {
-      builder.push({
+      builder.pushOperation({
         withdraw_vesting: {
           account,
           vesting_shares: vestingShares
@@ -764,7 +785,7 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     return await this.processHiveAppOperation((builder) => {
-      builder.push({
+      builder.pushOperation({
         delegate_vesting_shares: {
           delegator,
           delegatee,
@@ -782,7 +803,7 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     return await this.processHiveAppOperation((builder) => {
-      builder.push({
+      builder.pushOperation({
         account_update2: {
           account,
           owner: {
@@ -825,7 +846,7 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     return await this.processHiveAppOperation((builder) => {
-      builder.push({
+      builder.pushOperation({
         create_claimed_account: {
           creator,
           active,
@@ -853,7 +874,7 @@ export class TransactionService {
   ) {
     return (
       await this.processHiveAppOperation((builder) => {
-        builder.push({
+        builder.pushOperation({
           account_create: {
             fee,
             active,
