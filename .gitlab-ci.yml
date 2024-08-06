@@ -215,6 +215,7 @@ block-log-extraction:
 
 block_log_processing:
   extends: .job-defaults
+  image: "registry.gitlab.syncad.com/hive/hive/ci-base-image$TEST_IMAGE_TAG"
   stage: replay-and-sync
   needs:
     - mirrornet-haf-image-docker-build
