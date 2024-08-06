@@ -677,7 +677,7 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     return await this.processHiveAppOperation((builder) => {
-      builder.push({
+      builder.pushOperations({
         account_witness_vote: {
           account,
           witness,

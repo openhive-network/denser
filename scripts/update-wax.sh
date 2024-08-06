@@ -4,24 +4,16 @@ set -euo pipefail
 
 WAX_VERSION=${1} # full package name, e.g. @hiveio/wax@0.3.8-stable.240325165906
 HBAUTH_VERSION=${2} # full package name, e.g. @hiveio/hb-auth@0.0.1-stable.240327151528
+WORKERBEE=${3} # full package name, e.g. @hiveio/workerbee@0.4.1-240802101730
 
-uninstall_packages() {
-  echo "Uninstalling packages"
+update_packages() {
+  echo "Updating packages"
 
-  pnpm remove --save @hiveio/hb-auth --workspace=packages/smart-signer
-
-  pnpm remove --save @hiveio/wax --workspace=packages/smart-signer
+  pnpm update -r "${WAX_VERSION}"
+  pnpm update -r "${HBAUTH_VERSION}"
+  pnpm update -r "${WORKERBEE}"
 }
 
-install_packages() {
-  echo "Installing packages"
-
-  pnpm update --save "${WAX_VERSION}" --workspace=apps/auth
-
-  pnpm update --save "${HBAUTH_VERSION}" --workspace=packages/smart-signer
-}
-
-uninstall_packages
-install_packages
+update_packages
 
 echo "Done"
