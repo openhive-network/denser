@@ -155,13 +155,6 @@ extended_block_log_creation:
   needs:
     - job: "mirrornet-haf-image-docker-build"
       artifacts: true
-  before_script:
-    - !reference [.extended_block_log_creation, before_script]
-    - ls -lah "${BINARY_PATH}"
-    - export LD_LIBRARY_PATH="${BINARY_PATH}:${LD_LIBRARY_PATH}"
-    # - |
-    #   sudo apt update
-    #   sudo apt install -y libpq5
   variables:
     GIT_SUBMODULE_STRATEGY: "recursive"
     REGISTRY: "registry.gitlab.syncad.com/hive/hive"
@@ -171,6 +164,14 @@ extended_block_log_creation:
     HIVE_SRC: "${CI_PROJECT_DIR}/haf/hive"
     BLOCK_LOG_SOURCE_DIR: "/blockchain/block_log_5m"
     BINARY_PATH: "${CI_PROJECT_DIR}/hived-mirrornet-binaries"
+    LD_LIBRARY_PATH: "${BINARY_PATH}"
+  before_script:
+    - !reference [.extended_block_log_creation, before_script]
+    - ls -lah "${BINARY_PATH}"
+    # - export LD_LIBRARY_PATH="${BINARY_PATH}:${LD_LIBRARY_PATH}"
+    # - |
+    #   sudo apt update
+    #   sudo apt install -y libpq5
   tags:
     - public-runner-docker
     - hived-for-tests
