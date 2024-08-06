@@ -194,16 +194,24 @@ extended_block_log_creation:
     - hived-for-tests
 
 block-log-extraction:
-  extends: .docker_image_builder_job_template
+  extends: .extended_block_log_creation
   stage: replay-and-sync
   needs:
     - extended_block_log_creation
   variables:
     GIT_SUBMODULE_STRATEGY: "recursive"
     BLOCK_LOG_DIRECTORY: "${REPLAY_PIPELINE_DIRECTORY}_block_log"
+  before_script:
+    - |
+      set -e
+
+      echo -e "\e[0Ksection_start:$(date +%s):login[collapsed=true]\r\e[0KLogging to Docker registry..."
+      docker login -u "${REGISTRY_USER}" -p "${REGISTRY_PASS}" ${CI_REGISTRY}
+      echo -e "\e[0Ksection_end:$(date +%s):login\r\e[0K"
   script:
     - |
-      set -e 
+      set -e
+      
       haf/scripts/ci-helpers/export-data-from-docker-image.sh \
         "${EXTENDED_BLOCK_LOG_IMAGE}" \
         "${BLOCK_LOG_DIRECTORY}" \
