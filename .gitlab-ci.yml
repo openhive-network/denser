@@ -158,7 +158,7 @@ extended_block_log_creation:
   before_script:
     - !reference [.extended_block_log_creation, before_script]
     - ls -lah "${BINARY_PATH}"
-    - export LD_LIBRARY_PATH="${BINARY_CACHE_PATH}:${LD_LIBRARY_PATH}"
+    - export LD_LIBRARY_PATH="${BINARY_PATH}:${LD_LIBRARY_PATH}"
     # - |
     #   sudo apt update
     #   sudo apt install -y libpq5
