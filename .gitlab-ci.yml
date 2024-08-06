@@ -194,20 +194,13 @@ extended_block_log_creation:
     - hived-for-tests
 
 block-log-extraction:
-  extends: .extended_block_log_creation
+  extends: .docker_image_builder_job_template
   stage: replay-and-sync
   needs:
     - extended_block_log_creation
   variables:
     GIT_SUBMODULE_STRATEGY: "recursive"
     BLOCK_LOG_DIRECTORY: "${REPLAY_PIPELINE_DIRECTORY}_block_log"
-  before_script:
-    - |
-      set -e
-
-      echo -e "\e[0Ksection_start:$(date +%s):login[collapsed=true]\r\e[0KLogging to Docker registry..."
-      docker login -u "${REGISTRY_USER}" -p "${REGISTRY_PASS}" ${CI_REGISTRY}
-      echo -e "\e[0Ksection_end:$(date +%s):login\r\e[0K"
   script:
     - |
       set -e
@@ -217,6 +210,48 @@ block-log-extraction:
         "${BLOCK_LOG_DIRECTORY}" \
         --image-path=/blockchain/
       ls -lah "${BLOCK_LOG_DIRECTORY}"
+  tags:
+    - data-cache-storage
+
+block_log_processing:
+  extends: .job-defaults
+  stage: replay-and-sync
+  needs:
+    - mirrornet-haf-image-docker-build
+    - block-log-extraction
+  variables:
+    BLOCK_LOG_SOURCE: "${REPLAY_PIPELINE_DIRECTORY}_block_log"
+    BLOCK_LOG_UTIL_PATH: "${CI_PROJECT_DIR}/hived-mirrornet-binaries/block_log_util"
+  script:
+    - |
+      set -e
+
+      if [ ! -e "${BLOCK_LOG_SOURCE}/block_log.artifacts" ]
+      then
+          echo "Generating blog_log.artifacts file..."
+          "${BLOCK_LOG_UTIL_PATH}" --generate-artifacts --block-log "${BLOCK_LOG_SOURCE}/block_log"
+      fi
+
+      echo "Getting the head block's number..."
+      HEAD_BLOCK_NUMBER=$("${BLOCK_LOG_UTIL_PATH}" --get-head-block-number --block-log "${BLOCK_LOG_SOURCE}/block_log")
+      echo "Head block number is: ${HEAD_BLOCK_NUMBER}"
+
+      echo "Obtaining timestamp of the latest block..."
+      FAKETIME=$("${BLOCK_LOG_UTIL_PATH}" --get-block -n "${HEAD_BLOCK_NUMBER}" --block-log "${BLOCK_LOG_SOURCE}/block_log" |  grep -o '"timestamp":"[^"]*"' | awk -F'"' '{print $4}' | sed 's/\(.*\)-\(.*\)-\(.*\)T\(.*\)/@\1-\2-\3 \4/')
+
+      echo "Faketime will be set to ${FAKETIME}"
+
+      {
+        echo "LAST_BLOCK_NUMBER=${HEAD_BLOCK_NUMBER}"
+        echo "FAKETIME=${FAKETIME}"
+      } > block_log_data.env
+  artifacts:
+    reports:
+      dotenv:
+        - "block_log.env" 
+    paths:
+      - "*.log"
+      - "block_log.env"
   tags:
     - data-cache-storage
 
