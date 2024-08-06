@@ -4,7 +4,7 @@
   "main": "./index.ts",
   "types": "./index.ts",
   "scripts": {
-    "lint": "eslint -c eslint.config.mjs ."
+    "lint": "eslint ."
   },
   "dependencies": {
     "@hive/smart-signer": "workspace:*",

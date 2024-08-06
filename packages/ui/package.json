@@ -4,7 +4,7 @@
   "main": "./components/index.tsx",
   "types": "./components/index.tsx",
   "scripts": {
-    "lint": "eslint -c eslint.config.mjs ."
+    "lint": "eslint ."
   },
   "dependencies": {
     "@hive/eslint-config-custom": "workspace:*",

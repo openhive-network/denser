@@ -1,15 +1,13 @@
 {
   "name": "@hive/eslint-config-custom",
-  "main": "index.mjs",
+  "main": "index.js",
   "version": "1.0.0",
-  "devDependencies": {
+  "dependencies": {
     "@hive/prettier-config-custom": "workspace:*",
-    "eslint": "latest",
+    "eslint": "^8.56.0",
     "eslint-config-next": "latest",
     "eslint-config-prettier": "latest",
-    "eslint-plugin-react": "latest",
     "eslint-config-turbo": "latest",
-    "@eslint/js": "latest",
-    "@eslint/eslintrc": "latest"
+    "eslint-plugin-react": "latest"
   }
 }
