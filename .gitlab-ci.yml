@@ -103,7 +103,9 @@ mirrornet-haf-image-docker-build:
   after_script:
     - |
       set -e
+      sudo find / -name libpq.so.5* -type f 2>/dev/null
       LIBPQ="$(sudo find / -name libpq.so.5* -type f 2>/dev/null)"
+      echo "LIBPQ=${LIBPQ}"
       cp "${LIBPQ}" "${BINARY_CACHE_PATH}/libpq.so.5"
   tags:
     - public-runner-docker
