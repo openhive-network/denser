@@ -144,6 +144,9 @@ docker-build-wallet:
     TURBO_APP_PATH: '/apps/wallet'
     TURBO_APP_NAME: 'wallet'
 
+# Hived binary built as a part of HAF requires an additional
+# library to function. This library has to be extracted from
+# the image and passed to job extended_block_log_creation.
 library_extraction:
   extends: .job-defaults
   stage: build
@@ -158,7 +161,6 @@ library_extraction:
   script:
     - |
       set -e
-      sudo find / -name libpq.so.5* -type f 2>/dev/null
       LIBPQ="$(sudo find / -name libpq.so.5* -type f 2>/dev/null)"
       echo "LIBPQ=${LIBPQ}"
       cp "${LIBPQ}" "${BINARY_CACHE_PATH}/libpq.so.5"
@@ -187,13 +189,6 @@ extended_block_log_creation:
     BLOCK_LOG_SOURCE_DIR: "/blockchain/block_log_5m"
     BINARY_PATH: "${CI_PROJECT_DIR}/hived-mirrornet-binaries"
     LD_LIBRARY_PATH: "${BINARY_PATH}"
-  before_script:
-    - !reference [.extended_block_log_creation, before_script]
-    - ls -lah "${BINARY_PATH}"
-    # - export LD_LIBRARY_PATH="${BINARY_PATH}:${LD_LIBRARY_PATH}"
-    # - |
-    #   sudo apt update
-    #   sudo apt install -y libpq5
   tags:
     - public-runner-docker
     - hived-for-tests
