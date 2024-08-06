@@ -100,13 +100,6 @@ mirrornet-haf-image-docker-build:
     BINARY_CACHE_PATH: "${CI_PROJECT_DIR}/hived-mirrornet-binaries"
     HIVE_NETWORK_TYPE: mirrornet
     GIT_SUBMODULE_STRATEGY: recursive
-  after_script:
-    - |
-      set -e
-      sudo find / -name libpq.so.5* -type f 2>/dev/null
-      LIBPQ="$(sudo find / -name libpq.so.5* -type f 2>/dev/null)"
-      echo "LIBPQ=${LIBPQ}"
-      cp "${LIBPQ}" "${BINARY_CACHE_PATH}/libpq.so.5"
   tags:
     - public-runner-docker
     - hived-for-tests
@@ -151,12 +144,37 @@ docker-build-wallet:
     TURBO_APP_PATH: '/apps/wallet'
     TURBO_APP_NAME: 'wallet'
 
+library_extraction:
+  extends: .job-defaults
+  stage: build
+  image:
+    name: $HAF_IMAGE_NAME
+    entrypoint: [ "" ]
+  needs:
+    - job: "mirrornet-haf-image-docker-build"
+      artifacts: true
+  variables:
+    BINARY_CACHE_PATH: "${CI_PROJECT_DIR}/hived-mirrornet-binaries"
+  script:
+    - |
+      set -e
+      sudo find / -name libpq.so.5* -type f 2>/dev/null
+      LIBPQ="$(sudo find / -name libpq.so.5* -type f 2>/dev/null)"
+      echo "LIBPQ=${LIBPQ}"
+      cp "${LIBPQ}" "${BINARY_CACHE_PATH}/libpq.so.5"
+  artifacts:
+    when: on_success
+    paths:
+      - "${BINARY_CACHE_PATH}"
+
 extended_block_log_creation:
   extends: .extended_block_log_creation
   stage: build
   needs:
     - job: "mirrornet-haf-image-docker-build"
       artifacts: true
+    - job: "library_extraction"
+      artifacts: true 
   variables:
     GIT_SUBMODULE_STRATEGY: "recursive"
     REGISTRY: "registry.gitlab.syncad.com/hive/hive"
