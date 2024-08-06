@@ -193,6 +193,25 @@ extended_block_log_creation:
     - public-runner-docker
     - hived-for-tests
 
+block-log-extraction:
+  extends: .docker_image_builder_job_template
+  stage: replay-and-sync
+  needs:
+    - extended_block_log_creation
+  variables:
+    GIT_SUBMODULE_STRATEGY: "recursive"
+    BLOCK_LOG_DIRECTORY: "${REPLAY_PIPELINE_DIRECTORY}_block_log"
+  script:
+    - |
+      set -e 
+      haf/scripts/ci-helpers/export-data-from-docker-image.sh \
+        "${EXTENDED_BLOCK_LOG_IMAGE}" \
+        "${BLOCK_LOG_DIRECTORY}" \
+        --image-path=/blockchain/
+      ls -lah "${BLOCK_LOG_DIRECTORY}"
+  tags:
+    - data-cache-storage
+
 mirrornet-haf-node-replay:
   extends: .haf-node-replay
   stage: replay-and-sync
