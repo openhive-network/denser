@@ -8,6 +8,21 @@ export class StaticConfig {
         iframeWhitelist: [
             {
                 // eslint-disable-next-line security/detect-unsafe-regex
+                re: /^(?:@?(?:https?:)?\/\/)?(?:www\.)?(twitter|x)\.com\/(?:\w+\/status|status)\/(\d{1,20})/i,
+                fn: (src: string) => {
+                    if (!src) {
+                        return null;
+                    }
+                    const cleanSrc = src.replace(/^(@|https?:\/\/)/, '');
+                    const match = cleanSrc.match(/(?:twitter|x)\.com\/(?:\w+\/status|status)\/(\d{1,20})/i);
+                    if (!match || match.length !== 2) {
+                        return null;
+                    }
+                    return `https://platform.twitter.com/embed/Tweet.html?id=${match[1]}`;
+                }
+            },
+            {
+                // eslint-disable-next-line security/detect-unsafe-regex
                 re: /^(https?:)?\/\/player.vimeo.com\/video\/.*/i,
                 fn: (src: string) => {
                     // <iframe src="https://player.vimeo.com/video/179213493" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
@@ -74,6 +89,19 @@ export class StaticConfig {
                     const match = src.match(/3speak\.(?:tv|online|co)\/watch\?v=([^&\s]+)/i);
                     if (!match || match.length !== 2) return null;
                     return `https://3speak.tv/embed?v=${match[1]}`;
+                }
+            },
+            {
+                re: /^(?:https:)\/\/(?:www\.)?(twitter|x)\.com\/(?:\w+\/status|status)\/(\d{1,20})/i,
+                fn: (src: string) => {
+                    if (!src) {
+                        return null;
+                    }
+                    const match = src.match(/(?:twitter|x)\.com\/(?:\w+\/status|status)\/(\d{1,20})/i);
+                    if (!match || match.length !== 2) {
+                        return null;
+                    }
+                    return `https://platform.twitter.com/embed/Tweet.html?id=${match[1]}`;
                 }
             }
         ],

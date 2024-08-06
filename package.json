@@ -30,6 +30,7 @@
   "dependencies": {
     "@xmldom/xmldom": "0.8.10",
     "ow": "0.28.2",
+    "react-twitter-embed": "^4.0.4",
     "remarkable": "2.0.1",
     "sanitize-html": "2.13.0",
     "typescript-chained-error": "1.6.0",

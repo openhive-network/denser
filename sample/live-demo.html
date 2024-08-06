@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
     <head>
         <meta charset="UTF-8" />
@@ -11,7 +11,7 @@
                 padding: 0 3rem;
                 background: #f2f2f2;
                 color: #444444;
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
                 font-size: 16px;
                 line-height: 1.8;
                 text-shadow: 0 1px 0 #ffffff;
@@ -73,19 +73,14 @@
         <header>
             <h1>@hiveio/content-renderer <small>example</small></h1>
             <aside>
-                @hiveio/content-renderer is aimed at unifying post rendering across all Hive interfaces. The rendering
-                code was extracted from
-                <a href="https://gitlab.syncad.com/hive/condenser">condenser</a>, refactored, tested and bundled into a
-                standalone library. This approach allows independent development and continous improvement of post
-                rendering in Hive blockchain. As for now it is fully compatible with the Hive.blog way of rendering
-                posts. See the <a href="https://gitlab.syncad.com/hive/hive-renderer">repository</a>, integrate into
-                your project, star, make pull requests and create issues. Let's make the project alive!
+                @hiveio/content-renderer is aimed at unifying post rendering across all Hive interfaces. The rendering code was extracted from
+                <a href="https://gitlab.syncad.com/hive/condenser">condenser</a>, refactored, tested and bundled into a standalone library. This approach allows
+                independent development and continous improvement of post rendering in Hive blockchain. As for now it is fully compatible with the Hive.blog way of
+                rendering posts. See the <a href="https://gitlab.syncad.com/hive/hive-renderer">repository</a>, integrate into your project, star, make pull requests and
+                create issues. Let's make the project alive!
                 <hr />
                 This example uses some markdown and transforms it to html. The library is loaded from the unpkg CDN:
-                <em
-                    ><a href="https://unpkg.com/@hiveio/content-renderer"
-                        >https://unpkg.com/@hiveio/content-renderer</a
-                    ></em
+                <em><a href="https://unpkg.com/@hiveio/content-renderer">https://unpkg.com/@hiveio/content-renderer</a></em
                 >.
             </aside>
         </header>
@@ -133,7 +128,7 @@ https://youtu.be/B7C83L6iWJQ
                 cssClassForExternalLinks: "external",
                 doNotShowImages: false,
                 assetsWidth: 640,
-                assetsHeight: 480,
+                assetsHeight: 640,
                 imageProxyFn: (url) => url,
                 usertagUrlFn: (account) => "https://hive.blog/@" + account,
                 hashtagUrlFn: (hashtag) => "https://hive.blog/trending/" + hashtag,
