@@ -209,7 +209,7 @@ block-log-extraction:
         "${EXTENDED_BLOCK_LOG_IMAGE}" \
         "${BLOCK_LOG_DIRECTORY}" \
         --image-path=/blockchain/
-      sudo chown hived:hived "${BLOCK_LOG_DIRECTORY}"
+      sudo chown -R hived:users "${BLOCK_LOG_DIRECTORY}"
       ls -lah "${BLOCK_LOG_DIRECTORY}"
   tags:
     - data-cache-storage
@@ -227,8 +227,6 @@ block_log_processing:
   script:
     - |
       set -e
-
-      id
 
       if [ ! -e "${BLOCK_LOG_SOURCE}/block_log.artifacts" ]
       then
