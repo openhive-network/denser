@@ -1,5 +1,5 @@
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { createContext, useContext } from 'react';
+import { createContext, FC, useContext } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getAccount } from '@transaction/lib/hive';
 import { netVests } from '@/blog/lib/utils';
@@ -20,7 +20,7 @@ export const useLoggedUserContext = () => {
   return context;
 };
 
-export const LoggedUserProvider = ({ children }: { children: React.ReactNode }) => {
+export const LoggedUserProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useUser();
   const { data: accountData } = useQuery(['accountData', user.username], () => getAccount(user.username), {
     enabled: !!user.username
@@ -29,7 +29,7 @@ export const LoggedUserProvider = ({ children }: { children: React.ReactNode }) 
 
   return (
     <loggedUserContext.Provider value={{ loggedUser: accountData, net_vests: net_vests }}>
-      {children}
+      <>{children}</>
     </loggedUserContext.Provider>
   );
 };
