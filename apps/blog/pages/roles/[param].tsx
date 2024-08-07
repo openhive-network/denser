@@ -18,6 +18,8 @@ import { getServerSidePropsDefault } from '@/blog/lib/get-translations';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/components/table';
 import Link from 'next/link';
 import CommunitySimpleDescription from '@/blog/components/community-simple-description';
+import { Button } from '@ui/components';
+import AddRole from '@/blog/components/add-role';
 
 const RolesPage: FC = () => {
   const { user } = useUser();
@@ -75,45 +77,6 @@ const RolesPage: FC = () => {
   if (isError) return <CustomError />;
 
   return client ? (
-    // <div className="flex flex-col px-4 sm:grid sm:grid-cols-12 sm:flex-row md:gap-4">
-
-    //   <div className="xl:col-span-8">
-    //     <div>
-    //       <div className="mx-2 my-4 text-lg">
-    //         <Link className="text-destructive" href={`/trending/${communityData?.name}`}>
-    //           {communityData?.title}
-    //         </Link>
-    //       </div>
-    //       <div className="m-2 w-full bg-background px-8 py-6">
-    //         <h2 className="mb-1 text-2xl">User roles</h2>
-    //         <Table className="w-full border-[1px] border-solid border-secondary">
-    //           <TableHeader className="text-">
-    //             <TableRow className="bg-secondary">
-    //               <TableHead className="px-2">Account</TableHead>
-    //               <TableHead className="px-2">Role</TableHead>
-    //               <TableHead className="px-2">Title</TableHead>
-    //             </TableRow>
-    //           </TableHeader>
-    //           <TableBody>
-    //             {rolesData?.map((e) => (
-    //               <TableRow key={e[0]}>
-    //                 <TableCell className="p-2">
-    //                   <Link href={`/@${e[0]}`} className="text-destructive">
-    //                     @{e[0]}
-    //                   </Link>
-    //                 </TableCell>
-    //                 <TableCell className="border-x-[1px] border-solid border-secondary p-2">{e[1]}</TableCell>
-    //                 <TableCell className="p-2">{e[2]}</TableCell>
-    //               </TableRow>
-    //             ))}
-    //           </TableBody>
-    //         </Table>
-    //       </div>
-    //     </div>
-    //   </div>
-    //     </div>
-    //   ) : null}
-    // </div>
     <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
       <div className="grid grid-cols-12 md:gap-4">
         <div className="hidden md:col-span-3 md:flex xl:col-span-2">
@@ -135,7 +98,7 @@ const RolesPage: FC = () => {
             ) : null}
           </div>
           <div>
-            <div className="mx-2 my-4 text-lg">
+            <div className="mx-2 text-lg">
               <Link className="text-destructive" href={`/trending/${communityData?.name}`}>
                 {communityData?.title}
               </Link>
@@ -168,6 +131,11 @@ const RolesPage: FC = () => {
                       ))}
                     </TableBody>
                   </Table>
+                  <AddRole>
+                    <Button variant="outlineRed" className="m-10 mx-0 mt-4 font-normal" size="xs">
+                      Add user
+                    </Button>
+                  </AddRole>
                 </div>
               </div>
             </div>
