@@ -209,6 +209,7 @@ block-log-extraction:
         "${EXTENDED_BLOCK_LOG_IMAGE}" \
         "${BLOCK_LOG_DIRECTORY}" \
         --image-path=/blockchain/
+      sudo chown hived:hived "${BLOCK_LOG_DIRECTORY}"
       ls -lah "${BLOCK_LOG_DIRECTORY}"
   tags:
     - data-cache-storage
