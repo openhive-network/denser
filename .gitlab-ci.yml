@@ -210,6 +210,8 @@ block-log-extraction:
         "${BLOCK_LOG_DIRECTORY}" \
         --image-path=/blockchain/
       sudo chown -R hived:users "${BLOCK_LOG_DIRECTORY}"
+      sudo chmod 777 "${BLOCK_LOG_DIRECTORY}"
+      sudo chmod -R g+w "${BLOCK_LOG_DIRECTORY}"
       ls -lah "${BLOCK_LOG_DIRECTORY}"
   tags:
     - data-cache-storage
