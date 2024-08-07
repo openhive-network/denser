@@ -17,9 +17,11 @@ COPY . .
 RUN turbo prune --scope=${TURBO_APP_SCOPE} --docker
 
 # Add lockfile and package.json's of isolated subworkspace
+# TODO: Remove python3 installation after getting rid of dhive
 FROM base AS installer
 ARG TURBO_APP_SCOPE
 RUN apk add --no-cache libc6-compat
+RUN apk add python3 
 RUN apk update
 WORKDIR /app
 
