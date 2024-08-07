@@ -2,6 +2,7 @@ import ow from 'ow';
 import {LocalizationOptions} from '../Localization';
 import {AbstractEmbedder} from './embedders/AbstractEmbedder';
 import {SpotifyEmbedder} from './embedders/SpotifyEmbedder';
+import {ThreeSpeakEmbedder} from './embedders/ThreeSpeakEmbedder';
 import {TwitchEmbedder} from './embedders/TwitchEmbedder';
 import {VimeoEmbedder} from './embedders/VimeoEmbedder';
 import {YoutubeEmbedder} from './embedders/YoutubeEmbedder';
@@ -20,7 +21,8 @@ export class AssetEmbedder {
             new YoutubeEmbedder(),
             new VimeoEmbedder(),
             new TwitchEmbedder(options),
-            new SpotifyEmbedder()
+            new SpotifyEmbedder(),
+            new ThreeSpeakEmbedder()
         ];
     }
 
