@@ -21,7 +21,6 @@ RUN turbo prune --scope=${TURBO_APP_SCOPE} --docker
 FROM base AS installer
 ARG TURBO_APP_SCOPE
 RUN apk add --no-cache libc6-compat
-RUN apk add python3 make g++
 RUN apk update
 WORKDIR /app
 
