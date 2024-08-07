@@ -228,6 +228,8 @@ block_log_processing:
     - |
       set -e
 
+      id
+
       if [ ! -e "${BLOCK_LOG_SOURCE}/block_log.artifacts" ]
       then
           echo "Generating blog_log.artifacts file..."
