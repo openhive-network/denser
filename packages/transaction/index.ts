@@ -5,6 +5,8 @@ import {
   CommunityOperation,
   EFollowBlogAction,
   FollowOperation,
+  type IArticle,
+  type IReplyData,
   ITransaction,
   NaiAsset,
   ReplyOperation,
@@ -253,8 +255,7 @@ export class TransactionService {
             permlink,
             weight
           }
-        })
-        .transaction;
+        });
     }, transactionOptions);
   }
 
@@ -273,8 +274,7 @@ export class TransactionService {
             permlink,
             weight
           }
-        })
-        .transaction;
+        });
     }, transactionOptions);
   }
 
@@ -479,31 +479,28 @@ export class TransactionService {
   ) {
     const chain = await hiveChainService.getHiveChain();
 
-    let percentHbd: undefined | number;
-    let maxAcceptedPayout: undefined | NaiAsset;
-
-    if (preferences.comment_rewards === '100%') {
-      percentHbd = 0;
-    }
-    if (preferences.comment_rewards === '50%' || preferences.comment_rewards === '0%') {
-      percentHbd = 10000;
-    }
-    if (preferences.comment_rewards === '0%') {
-      maxAcceptedPayout = chain.hbd(0);
-    }
-
-    const replyBuilder = new ReplyOperation({
+    const replyOperationData: IReplyData = {
       parentAuthor,
       parentPermlink,
       author: this.signerOptions.username,
       body,
       permlink: `re-${parentAuthor.replaceAll('.', '-')}-${Date.now()}`,
-      percentHbd,
-      maxAcceptedPayout
-    });
+    };
+
+    if (preferences.comment_rewards === '100%') {
+      replyOperationData.percentHbd = 0;
+    }
+    if (preferences.comment_rewards === '50%' || preferences.comment_rewards === '0%') {
+      replyOperationData.percentHbd = 10000;
+    }
+    if (preferences.comment_rewards === '0%') {
+      replyOperationData.maxAcceptedPayout = chain.hbd(0);
+    }
+
+    const reply = new ReplyOperation(replyOperationData);
 
     return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(replyBuilder);
+      builder.pushOperation(reply);
     }, transactionOptions);
   }
 
@@ -545,30 +542,7 @@ export class TransactionService {
   ) {
     const chain = await hiveChainService.getHiveChain();
 
-    let percentHbd: undefined | number;
-    let maxAcceptedPayoutToSet: undefined | NaiAsset;
-    let beneficiariesToSet: undefined | Array<{ account: string; weight: number }>;
-
-    if (!editMode) {
-      maxAcceptedPayoutToSet = maxAcceptedPayout;
-
-      if (payoutType === '100%') {
-        percentHbd = 0;
-      }
-      if (payoutType === '50%' || payoutType === '0%') {
-        percentHbd = 10000;
-      }
-      if (payoutType === '0%') {
-        maxAcceptedPayoutToSet = chain.hbd(0);
-      }
-
-      beneficiariesToSet = beneficiaries.map(({ account, weight }) => ({
-        account,
-        weight: Number(weight)
-      }))
-    }
-
-    const blogPost = new BlogPostOperation({
+    const postData: IArticle = {
       category: category !== 'blog' ? category : tags[0],
       tags,
       author: this.signerOptions.username,
@@ -579,11 +553,29 @@ export class TransactionService {
       images: [image ? image : ''],
       jsonMetadata: {
         summary
-      },
-      beneficiaries: beneficiariesToSet,
-      percentHbd,
-      maxAcceptedPayout: maxAcceptedPayoutToSet
-    });
+      }
+    };
+
+    if (!editMode) {
+      postData.maxAcceptedPayout = maxAcceptedPayout;
+
+      if (payoutType === '100%') {
+        postData.percentHbd = 0;
+      }
+      if (payoutType === '50%' || payoutType === '0%') {
+        postData.percentHbd = 10000;
+      }
+      if (payoutType === '0%') {
+        postData.maxAcceptedPayout = chain.hbd(0);
+      }
+
+      postData.beneficiaries = beneficiaries.map(({ account, weight }) => ({
+        account,
+        weight: Number(weight)
+      }))
+    }
+
+    const blogPost = new BlogPostOperation(postData);
 
     return await this.processHiveAppOperation((builder) => {
     builder.pushOperation(blogPost);
@@ -627,8 +619,7 @@ export class TransactionService {
               }
             })
           }
-        })
-        .transaction;
+        });
     }, transactionOptions);
   }
 
@@ -658,8 +649,7 @@ export class TransactionService {
             approve,
             extensions
           }
-        })
-        .transaction;
+        });
     }, transactionOptions);
   }
 
@@ -673,8 +663,7 @@ export class TransactionService {
             required_auths: [],
             required_posting_auths: [this.signerOptions.username]
           }
-        })
-        .transaction;
+        });
     }, transactionOptions);
   }
 
