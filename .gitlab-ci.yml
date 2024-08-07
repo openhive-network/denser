@@ -30,11 +30,13 @@ variables:
   HAFAH_VERSION: "30dfe816"
   HIVEMIND_INSTANCE_IMAGE: registry.gitlab.syncad.com/hive/hivemind/instance
   HAFAH_REGISTRY: registry.gitlab.syncad.com/hive/hafah/instance
-  BLOCK_LOG_SOURCE_DIR: "/blockchain/block_log_mirror_44"
+  # BLOCK_LOG_SOURCE_DIR: "/blockchain/block_log_mirror_44"
   REPLAY_DIRECTORY_PREFIX: "/cache/replay_data_haf_api_node_denser"
   REPLAY_DIRECTORY: "${REPLAY_DIRECTORY_PREFIX}_${API_NODE_VERSION}_${HAF_COMMIT}_${HIVEMIND_INSTANCE_VERSION}_${HAFAH_VERSION}"
   REPLAY_PIPELINE_DIRECTORY: "${REPLAY_DIRECTORY_PREFIX}_${CI_PIPELINE_ID}"
   DOCKER_TLS_CERTDIR: "${REPLAY_PIPELINE_DIRECTORY}_certs"
+  BLOCK_LOG_SOURCE: "${REPLAY_PIPELINE_DIRECTORY}_block_log"
+  BLOCK_LOG_SOURCE_DIR: "${BLOCK_LOG_SOURCE}"
 
   # Other settings
   CADDY_TAG: "2.7.6"
@@ -224,7 +226,6 @@ block_log_processing:
     - mirrornet-haf-image-docker-build
     - block-log-extraction
   variables:
-    BLOCK_LOG_SOURCE: "${REPLAY_PIPELINE_DIRECTORY}_block_log"
     BLOCK_LOG_UTIL_PATH: "${CI_PROJECT_DIR}/hived-mirrornet-binaries/block_log_util"
   script:
     - |
@@ -252,10 +253,10 @@ block_log_processing:
   artifacts:
     reports:
       dotenv:
-        - "block_log.env" 
+        - "block_log_data.env" 
     paths:
       - "*.log"
-      - "block_log.env"
+      - "block_log_data.env"
   tags:
     - data-cache-storage
 
@@ -265,14 +266,15 @@ mirrornet-haf-node-replay:
   timeout: 3 hours
   needs:
     - mirrornet-haf-image-docker-build
+    - block_log_processing
   variables:
     GIT_STRATEGY: "clone"
     CI_DEBUG_SERVICES: "false" # Change to true to debug services in this job
     HAF_VERSION: "${HAF_REGISTRY_TAG}"
     HAF_REGISTRY: "${HAF_REGISTRY_PATH}"
-    LAST_BLOCK_NUMBER: "5004741"
+    # LAST_BLOCK_NUMBER: "5004741"
     ARGUMENTS: "--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n --replay-blockchain --stop-at-block ${LAST_BLOCK_NUMBER}"
-    FAKETIME: "@2016-09-16 01:39:06"
+    # FAKETIME: "@2016-09-16 01:39:06"
     ADDITIONAL_CONFIGURATION_SCRIPT: "scripts/ci-helpers/copy-mirrornet-haf-config.sh"
     REPLAY_TIMEOUT: 9000
   tags:
