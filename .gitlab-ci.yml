@@ -350,7 +350,7 @@ mirrornet-based-tests:
     - docker-build-blog
     - docker-build-wallet
     - haf-api-node-replay-data-copy
-    - 0aef1bf01fd6ee0d23f12a21038881c30672146a
+    - block_log_processing
   image: "${CI_REGISTRY_IMAGE}/playwright-faketime:${PLAYWRIGHT_TAG}"
   services:
     - !reference [.haf_api_node_test, services]
