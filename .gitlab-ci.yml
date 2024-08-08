@@ -273,7 +273,7 @@ mirrornet-haf-node-replay:
     HAF_VERSION: "${HAF_REGISTRY_TAG}"
     HAF_REGISTRY: "${HAF_REGISTRY_PATH}"
     # LAST_BLOCK_NUMBER: "5004741"
-    ARGUMENTS: "--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n --replay-blockchain --stop-at-block ${LAST_BLOCK_NUMBER} --alternate-chain-spec=${REPLAY_DIRECTORY}/blockchain/alternate-chain-spec.json"
+    ARGUMENTS: "--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n --replay-blockchain --stop-at-block ${LAST_BLOCK_NUMBER} --alternate-chain-spec=/home/hived/datadir/blockchain/alternate-chain-spec.json"
     # FAKETIME: "@2016-09-16 01:39:06"
     ADDITIONAL_CONFIGURATION_SCRIPT: "scripts/ci-helpers/copy-mirrornet-haf-config.sh"
     REPLAY_TIMEOUT: 9000
@@ -409,7 +409,7 @@ mirrornet-based-tests:
     CI_DEBUG_SERVICES: "true"
     HAF_VERSION: "${HAF_REGISTRY_TAG}"
     HAF_REGISTRY: "${HAF_REGISTRY_PATH}"
-    ARGUMENTS: "--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n --alternate-chain-spec=${REPLAY_DIRECTORY}/blockchain/alternate-chain-spec.json"
+    ARGUMENTS: "--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n --alternate-chain-spec=/home/hived/datadir/blockchain/alternate-chain-spec.json"
     # FAKETIME: "@2016-09-16 01:39:06"
     REACT_APP_API_ENDPOINT: "https://dind"
     REACT_APP_IMAGES_ENDPOINT: "https://images.hive.blog/"
