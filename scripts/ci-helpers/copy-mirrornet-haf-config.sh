@@ -12,3 +12,8 @@ then
     echo "Copying alternate-chain-spec.json file..." 
     cp "${BLOCK_LOG_SOURCE_DIR:?}/alternate-chain-spec.json" "${REPLAY_DIRECTORY:?}/blockchain/alternate-chain-spec.json"
 fi
+
+echo "Inspecting replay directory..."
+ls -lah "${REPLAY_DIRECTORY:?}"
+ls -lah "${REPLAY_DIRECTORY:?}/blockchain"
+cat "${REPLAY_DIRECTORY:?}/blockchain/alternate-chain-spec.json"
