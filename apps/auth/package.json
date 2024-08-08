@@ -58,10 +58,5 @@
     "next-transpile-modules": "^10.0.1",
     "pino-pretty": "^10.2.0",
     "typescript": "5.3.3"
-  },
-  "pnpm": {
-    "neverBuiltDependencies": [
-      "@hiveio/dhive"
-    ]
   }
 }

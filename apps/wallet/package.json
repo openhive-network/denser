@@ -50,10 +50,5 @@
   "devDependencies": {
     "@playwright/test": "^1.41.1",
     "typescript": "5.3.3"
-  },
-  "pnpm": {
-    "neverBuiltDependencies": [
-      "@hiveio/dhive"
-    ]
   }
 }

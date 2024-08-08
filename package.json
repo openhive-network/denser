@@ -51,5 +51,11 @@
   "volta": {
     "node": "20.11.1"
   },
-  "packageManager": "pnpm@9.6.0"
+  "packageManager": "pnpm@9.6.0",
+  "pnpm": {
+    "neverBuiltDependencies": [
+      "secp256k1",
+      "core-js"
+    ]
+  }
 }
