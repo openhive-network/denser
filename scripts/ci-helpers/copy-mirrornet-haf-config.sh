@@ -12,7 +12,7 @@ then
     echo "Copying alternate-chain-spec.json file..." 
     cp "${BLOCK_LOG_SOURCE_DIR:?}/alternate-chain-spec.json" "${REPLAY_DIRECTORY:?}/blockchain/alternate-chain-spec.json"
     chown 1000:100 "${REPLAY_DIRECTORY:?}/blockchain/alternate-chain-spec.json"
-    eho "" >> "${REPLAY_DIRECTORY:?}/blockchain/alternate-chain-spec.json"
+    echo "" >> "${REPLAY_DIRECTORY:?}/blockchain/alternate-chain-spec.json"
 fi
 
 echo "Inspecting replay directory..."
