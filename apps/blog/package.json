@@ -87,5 +87,10 @@
     "@types/yazl": "^2.4.5",
     "copy-webpack-plugin": "^11.0.0",
     "typescript": "5.3.3"
+  },
+  "pnpm": {
+    "neverBuiltDependencies": [
+      "@hiveio/dhive"
+    ]
   }
 }
