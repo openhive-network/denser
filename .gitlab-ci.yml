@@ -25,7 +25,7 @@ variables:
   # HAF API node configuration
   HIVE_API_NODE_VERSION: 1.27.5
   API_NODE_VERSION: "3cdc5e77"
-  HAF_COMMIT: "efb29f9465c9ff319a131e62c33cd76e0b498eaa"
+  HAF_COMMIT: "0aef1bf01fd6ee0d23f12a21038881c30672146a"
   HIVEMIND_INSTANCE_VERSION: "2abda883"
   HAFAH_VERSION: "30dfe816"
   HIVEMIND_INSTANCE_IMAGE: registry.gitlab.syncad.com/hive/hivemind/instance
@@ -50,7 +50,7 @@ include:
       - '/templates/docker_image_jobs.gitlab-ci.yml'
       - '/templates/cache_cleanup.gitlab-ci.yml'
   - project: 'hive/haf'
-    ref: efb29f9465c9ff319a131e62c33cd76e0b498eaa #develop
+    ref: 0aef1bf01fd6ee0d23f12a21038881c30672146a #develop
     file: '/scripts/ci-helpers/prepare_data_image_job.yml'
   - project: 'hive/haf_api_node'
     ref: 3cdc5e770683ecdc4754fb686dbe11009d9266d8
@@ -186,7 +186,7 @@ extended_block_log_creation:
     REGISTRY: "registry.gitlab.syncad.com/hive/hive"
     REGISTRY_USER: "${HIVED_CI_IMGBUILDER_USER}"
     REGISTRY_PASS: "${HIVED_CI_IMGBUILDER_PASSWORD}"
-    IMAGE_TAG: "312f1d0a"
+    IMAGE_TAG: "42bf3ac5"
     HIVE_SRC: "${CI_PROJECT_DIR}/haf/hive"
     BLOCK_LOG_SOURCE_DIR: "/blockchain/block_log_5m"
     BINARY_PATH: "${CI_PROJECT_DIR}/hived-mirrornet-binaries"
@@ -273,7 +273,7 @@ mirrornet-haf-node-replay:
     HAF_VERSION: "${HAF_REGISTRY_TAG}"
     HAF_REGISTRY: "${HAF_REGISTRY_PATH}"
     # LAST_BLOCK_NUMBER: "5004741"
-    ARGUMENTS: "--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n --replay-blockchain --stop-at-block ${LAST_BLOCK_NUMBER}"
+    ARGUMENTS: "--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n --replay-blockchain --stop-at-block ${LAST_BLOCK_NUMBER} --alternate-chain-spec ${REPLAY_DIRECTORY}/blockchain/alternate-chain-spec.json"
     # FAKETIME: "@2016-09-16 01:39:06"
     ADDITIONAL_CONFIGURATION_SCRIPT: "scripts/ci-helpers/copy-mirrornet-haf-config.sh"
     REPLAY_TIMEOUT: 9000
@@ -350,6 +350,7 @@ mirrornet-based-tests:
     - docker-build-blog
     - docker-build-wallet
     - haf-api-node-replay-data-copy
+    - 0aef1bf01fd6ee0d23f12a21038881c30672146a
   image: "${CI_REGISTRY_IMAGE}/playwright-faketime:${PLAYWRIGHT_TAG}"
   services:
     - !reference [.haf_api_node_test, services]
@@ -408,8 +409,8 @@ mirrornet-based-tests:
     CI_DEBUG_SERVICES: "true"
     HAF_VERSION: "${HAF_REGISTRY_TAG}"
     HAF_REGISTRY: "${HAF_REGISTRY_PATH}"
-    ARGUMENTS: "--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n"
-    FAKETIME: "@2016-09-16 01:39:06"
+    ARGUMENTS: "--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n --alternate-chain-spec ${REPLAY_DIRECTORY}/blockchain/alternate-chain-spec.json"
+    # FAKETIME: "@2016-09-16 01:39:06"
     REACT_APP_API_ENDPOINT: "https://dind"
     REACT_APP_IMAGES_ENDPOINT: "https://images.hive.blog/"
     REACT_APP_CHAIN_ID: "44"
