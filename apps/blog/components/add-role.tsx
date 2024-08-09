@@ -36,6 +36,7 @@ const AddRole = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState<string>(targetedUser ? targetedUser.role : 'member');
+  const [userFromList, setUserFromList] = useState(targetedUser?.name ?? '');
   const { t } = useTranslation('common_blog');
 
   const onSave = () => {
@@ -91,7 +92,11 @@ const AddRole = ({
 
         <div>
           <span>{t('communities.username')}</span>
-          <Input />
+          <Input
+            disabled={!!targetedUser}
+            value={userFromList}
+            onChange={(e) => setUserFromList(e.target.value)}
+          />
         </div>
         <div>
           <span>{t('communities.role')}</span>
