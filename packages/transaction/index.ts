@@ -716,6 +716,27 @@ export class TransactionService {
     }, transactionOptions);
   }
 
+  async transferFromSavings(
+    amount: asset,
+    fromAccount: string,
+    memo: string,
+    toAccount: string,
+    requestId: number,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.push({
+        transfer_from_savings: {
+          amount,
+          from_account: fromAccount,
+          memo,
+          to_account: toAccount,
+          request_id: requestId
+        }
+      });
+    }, transactionOptions);
+  }
+
   async transfer(
     amount: asset,
     fromAccount: string,
