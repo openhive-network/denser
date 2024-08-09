@@ -14,7 +14,7 @@ import { Input } from '@ui/components/input';
 import { ReactNode, useCallback, useState } from 'react';
 import { Autocompleter } from './autocompleter';
 import badActorList from '@ui/config/lists/bad-actor-list';
-import { useTransferHiveMutation, useTransferToSavingsMutation } from './hooks/use-transfer-hive-mutation';
+import { useTransferHiveMutation, useTransferToSavingsMutation, useWithdrawFromSavingsMutation } from './hooks/use-transfer-hive-mutation';
 import { usePowerDownMutation, usePowerUpMutation } from './hooks/use-power-hive-mutation';
 import { useDelegateMutation } from './hooks/use-delegate-mutation';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
@@ -56,7 +56,8 @@ export function TransferDialog({
     selectCurr: true,
     buttonTitle: 'Next',
     to: '',
-    onSubmit: new Function()
+    onSubmit: new Function(),
+    memo: ''
   };
   const [curr, setCurr] = useState(currency);
   const [value, setValue] = useState('');
@@ -68,6 +69,7 @@ export function TransferDialog({
   const powerUpMutation = usePowerUpMutation();
   const powerDownMutation = usePowerDownMutation();
   const delegateMutation = useDelegateMutation();
+  const withdrawFromSavings = useWithdrawFromSavingsMutation();
 
   const getAsset = useCallback(
     async (value: string) => {
@@ -84,7 +86,12 @@ export function TransferDialog({
       data.description = 'Move funds to another Hive account.';
       data.amount = curr === 'hive' ? amount.hive : amount.hbd;
       data.onSubmit = async () => {
-        const params = { fromAccount: username, toAccount: data.to, memo: '', amount: await getAsset(value) };
+        const params = {
+          fromAccount: username,
+          toAccount: data.to,
+          memo: data.memo,
+          amount: await getAsset(value)
+        };
         try {
           transferMutation.mutateAsync(params);
         } catch (error) {
@@ -100,7 +107,12 @@ export function TransferDialog({
       data.advancedBtn = true;
       data.to = username || '';
       data.onSubmit = async () => {
-        const params = { amount: await getAsset(value), fromAccount: data.to, toAccount: data.to, memo: '' };
+        const params = {
+          amount: await getAsset(value),
+          fromAccount: data.to,
+          toAccount: data.to,
+          memo: data.memo
+        };
         try {
           transferToSavingsMutation.mutateAsync(params);
         } catch (error) {
@@ -266,7 +278,12 @@ export function TransferDialog({
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 Memo
-                <Input placeholder="Memo" className="col-span-3" />
+                <Input
+                  placeholder="Memo"
+                  className="col-span-3"
+                  value={data.memo}
+                  onChange={(e) => setData({ ...data, memo: e.target.value })}
+                />
               </div>
             </div>
           )}

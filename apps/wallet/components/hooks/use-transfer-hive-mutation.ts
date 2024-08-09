@@ -56,3 +56,39 @@ export function useTransferToSavingsMutation() {
 
   return transferToSavingsMutation;
 }
+
+/**
+ * Makes transfer from savings transaction
+ * 
+ * @export
+ * @returns  
+ */
+export function useWithdrawFromSavingsMutation() {
+  const withdrawFromSavingsMutation = useMutation({
+    mutationFn: async (params: {
+      fromAccount: string;
+      toAccount: string;
+      memo: string;
+      amount: asset;
+      requestId: number;
+    }) => {
+      const { amount, fromAccount, memo, toAccount, requestId } = params;
+      const broadcastResult = await transactionService.transferFromSavings(
+        amount,
+        fromAccount,
+        memo,
+        toAccount,
+        requestId,
+        { observe: true }
+      );
+      const response = {...params, broadcastResult};
+      logger.info('Done transfer from savings transaction: %o', response);
+      return response;
+    },
+    onSuccess: data => {
+      logger.info('useWithdrawFromSavingsMutation onSuccess data: %o', data);
+    }
+  });
+
+  return withdrawFromSavingsMutation;
+}
