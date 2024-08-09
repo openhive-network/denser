@@ -9,6 +9,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import NewPost from './new-post-button';
 import { useEffect, useState } from 'react';
 import { Badge } from '@ui/components';
+import Link from 'next/link';
 
 const CommunitySimpleDescription = ({
   data,
@@ -28,6 +29,8 @@ const CommunitySimpleDescription = ({
   useEffect(() => {
     setIsSubscribed(data.context.subscribed);
   }, [data.context.subscribed]);
+
+  const userRole = data.team.find((e) => e[0] === user.username);
 
   return (
     <Card
@@ -51,10 +54,18 @@ const CommunitySimpleDescription = ({
               {data.num_authors} {t('communities.titles.active_posters')}
             </div>
           </div>
-          <div className="justify-self-end whitespace-nowrap text-sm">
+          <div className="flex flex-col justify-self-end whitespace-nowrap text-sm">
             <ActivityLogDialog username={username} data={notificationData}>
               {t('communities.buttons.activity_log')}
             </ActivityLogDialog>
+            {userRole ? (
+              <div>
+                <span>{userRole[1].charAt(0).toUpperCase() + userRole[1].slice(1)}:</span>{' '}
+                <Link href={`/roles/${username}`} className="text-destructive">
+                  {t('communities.roles')}
+                </Link>
+              </div>
+            ) : null}
           </div>
         </div>
         <span className="text-sm">{data.about}</span>

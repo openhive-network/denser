@@ -1,8 +1,20 @@
-import CommunitiesMybar from '@/blog/components/communities-mybar';
-import CommunitiesSidebar from '@/blog/components/communities-sidebar';
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import { FC, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import { GetServerSideProps } from 'next';
+
+import CommunitiesMybar from '@/blog/components/communities-mybar';
+import CommunitiesSidebar from '@/blog/components/communities-sidebar';
+import Loading from '@ui/components/loading';
+import CustomError from '@/blog/components/custom-error';
+import CommunityDescription from '@/blog/components/community-description';
+import CommunitySimpleDescription from '@/blog/components/community-simple-description';
+import AddRole from '@/blog/components/add-role';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/components/table';
+import { Button } from '@ui/components';
+import { useTranslation } from 'next-i18next';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 import {
   getAccountNotifications,
   getCommunity,
@@ -10,17 +22,7 @@ import {
   getSubscribers,
   getSubscriptions
 } from '@transaction/lib/bridge';
-import Loading from '@ui/components/loading';
-import CustomError from '@/blog/components/custom-error';
-import CommunityDescription from '@/blog/components/community-description';
-import { GetServerSideProps } from 'next';
 import { getServerSidePropsDefault } from '@/blog/lib/get-translations';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/components/table';
-import Link from 'next/link';
-import CommunitySimpleDescription from '@/blog/components/community-simple-description';
-import { Button } from '@ui/components';
-import AddRole from '@/blog/components/add-role';
-import { useRouter } from 'next/router';
 
 const roles = [
   { name: 'owner', value: 6 },
@@ -35,17 +37,19 @@ const RolesPage: FC = () => {
   const router = useRouter();
   const { user } = useUser();
   const [client, setClient] = useState(false);
+  const { t } = useTranslation('common_blog');
+
   useEffect(() => {
     setClient(true);
   }, []);
+
   const tag = router.query.param as string;
+
   const {
     data: rolesData,
     isLoading: rolesIsLoading,
     isError: rolesIsError
-  } = useQuery(['rolesList', tag], () => getListCommunityRoles(tag), {
-    enabled: Boolean(tag)
-  });
+  } = useQuery(['rolesList', tag], () => getListCommunityRoles(tag), { enabled: Boolean(tag) });
 
   const {
     data: mySubsData,
@@ -54,30 +58,28 @@ const RolesPage: FC = () => {
   } = useQuery(['subscriptions', user?.username], () => getSubscriptions(user.username), {
     enabled: Boolean(user?.username)
   });
+
   const {
     data: communityData,
     isLoading: communityDataIsLoading,
     isError: communityIsError
-  } = useQuery(['community', tag, ''], () => getCommunity(tag, user.username), {
-    enabled: !!tag
-  });
+  } = useQuery(['community', tag, ''], () => getCommunity(tag, user.username), { enabled: !!tag });
+
   const {
     data: subsData,
     isLoading: subsIsLoading,
     isError: subsIsError
-  } = useQuery(['subscribers', tag], () => getSubscribers(tag), {
-    enabled: !!tag
-  });
+  } = useQuery(['subscribers', tag], () => getSubscribers(tag), { enabled: !!tag });
+
   const {
     isLoading: notificationIsLoading,
     isError: notificationIsError,
     data: notificationData
-  } = useQuery(['AccountNotification', tag], () => getAccountNotifications(tag), {
-    enabled: !!tag
-  });
+  } = useQuery(['AccountNotification', tag], () => getAccountNotifications(tag), { enabled: !!tag });
 
   const isLoading =
     mySubsIsLoading || communityDataIsLoading || subsIsLoading || notificationIsLoading || rolesIsLoading;
+  const isError = mySubsIsError || communityIsError || subsIsError || notificationIsError || rolesIsError;
 
   const userRole = rolesData?.find((e) => e[0] === user.username);
   const roleValue = userRole
@@ -90,7 +92,7 @@ const RolesPage: FC = () => {
     const role = roles.find((r) => r.name === e[1]);
     return role ? { value: role.value, role: role.name, name: e[0], title: e[2] } : null;
   });
-  const isError = mySubsIsError || communityIsError || subsIsError || notificationIsError || rolesIsError;
+
   if (isLoading) return <Loading loading={isLoading} />;
   if (isError) return <CustomError />;
 
@@ -106,14 +108,14 @@ const RolesPage: FC = () => {
         </div>
         <div className="col-span-12 md:col-span-9 xl:col-span-8">
           <div data-testid="card-explore-hive-mobile" className=" md:col-span-10 md:flex xl:hidden">
-            {communityData && subsData ? (
+            {communityData && subsData && (
               <CommunitySimpleDescription
                 data={communityData}
                 subs={subsData}
-                username={tag ? tag : ' '}
+                username={tag || ' '}
                 notificationData={notificationData}
               />
-            ) : null}
+            )}
           </div>
           <div>
             <div className="mx-2 text-lg">
@@ -124,13 +126,13 @@ const RolesPage: FC = () => {
             <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">
               <div className="my-4 flex w-full items-center justify-between" translate="no">
                 <div className="m-2 w-full bg-background px-8 py-6">
-                  <h2 className="mb-1 text-2xl">User roles</h2>
+                  <h2 className="mb-1 text-2xl">{t('communities.user_roles')}</h2>
                   <Table className="w-full border-[1px] border-solid border-secondary">
                     <TableHeader className="text-">
                       <TableRow className="bg-secondary">
-                        <TableHead className="px-2">Account</TableHead>
-                        <TableHead className="px-2">Role</TableHead>
-                        <TableHead className="px-2">Title</TableHead>
+                        <TableHead className="px-2">{t('communities.account')}</TableHead>
+                        <TableHead className="px-2">{t('communities.role')}</TableHead>
+                        <TableHead className="px-2">{t('communities.title')}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -161,27 +163,27 @@ const RolesPage: FC = () => {
                       )}
                     </TableBody>
                   </Table>
-                  {roleValue && roleValue?.value >= 3 ? (
+                  {roleValue && roleValue.value >= 3 && (
                     <AddRole user={roleValue}>
                       <Button variant="outlineRed" className="m-10 mx-0 mt-4 font-normal" size="xs">
-                        Add user
+                        {t('communities.add_user')}
                       </Button>
                     </AddRole>
-                  ) : null}
+                  )}
                 </div>
               </div>
             </div>
           </div>
         </div>
         <div data-testid="card-explore-hive-desktop" className="hidden xl:col-span-2 xl:flex">
-          {communityData && subsData ? (
+          {communityData && subsData && (
             <CommunityDescription
               data={communityData}
               subs={subsData}
               notificationData={notificationData}
               username={tag}
             />
-          ) : null}
+          )}
         </div>
       </div>
     </div>
@@ -189,6 +191,7 @@ const RolesPage: FC = () => {
     <Loading loading />
   );
 };
+
 export default RolesPage;
 
 export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;

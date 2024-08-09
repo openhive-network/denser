@@ -30,6 +30,7 @@ const CommunityDescription = ({
   const [isSubscribed, setIsSubscribed] = useState(() => data.context.subscribed);
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
+  const userRole = data.team.find((e) => e[0] === user.username);
 
   useEffect(() => {
     setIsSubscribed(data.context.subscribed);
@@ -79,6 +80,13 @@ const CommunityDescription = ({
             <h6 className="my-1.5 font-semibold leading-none tracking-tight">
               {t('communities.titles.leadership')}
             </h6>
+            {userRole ? (
+              <div className="self-end text-sm">
+                <Link href={`/roles/${username}`} className="text-destructive">
+                  {t('communities.edit_roles')}
+                </Link>
+              </div>
+            ) : null}
             <ul className="mt-1.5 text-xs">
               {data.team.slice(1).map((member: string[]) => (
                 <li key={member[0]} className="pt-0.5">
