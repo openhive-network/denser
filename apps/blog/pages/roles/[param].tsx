@@ -20,14 +20,25 @@ import Link from 'next/link';
 import CommunitySimpleDescription from '@/blog/components/community-simple-description';
 import { Button } from '@ui/components';
 import AddRole from '@/blog/components/add-role';
+import { useRouter } from 'next/router';
+
+const roles = [
+  { name: 'owner', value: 6 },
+  { name: 'admin', value: 5 },
+  { name: 'mod', value: 4 },
+  { name: 'member', value: 3 },
+  { name: 'guest', value: 2 },
+  { name: 'muted', value: 1 }
+];
 
 const RolesPage: FC = () => {
+  const router = useRouter();
   const { user } = useUser();
   const [client, setClient] = useState(false);
   useEffect(() => {
     setClient(true);
   }, []);
-  const tag = 'hive-160391';
+  const tag = router.query.param as string;
   const {
     data: rolesData,
     isLoading: rolesIsLoading,
@@ -66,12 +77,19 @@ const RolesPage: FC = () => {
   });
 
   const isLoading =
-    (mySubsData && mySubsIsLoading) ||
-    (communityDataIsLoading && communityData) ||
-    (subsIsLoading && !!subsData) ||
-    (notificationIsLoading && notificationData) ||
-    (rolesIsLoading && rolesData);
+    mySubsIsLoading || communityDataIsLoading || subsIsLoading || notificationIsLoading || rolesIsLoading;
 
+  const userRole = rolesData?.find((e) => e[0] === user.username);
+  const roleValue = userRole
+    ? (() => {
+        const role = roles.find((e) => e.name === userRole[1]);
+        return role ? { value: role.value, role: role.name, name: userRole[0], title: userRole[2] } : null;
+      })()
+    : null;
+  const rolesValue = rolesData?.map((e) => {
+    const role = roles.find((r) => r.name === e[1]);
+    return role ? { value: role.value, role: role.name, name: e[0], title: e[2] } : null;
+  });
   const isError = mySubsIsError || communityIsError || subsIsError || notificationIsError || rolesIsError;
   if (isLoading) return <Loading loading={isLoading} />;
   if (isError) return <CustomError />;
@@ -84,7 +102,7 @@ const RolesPage: FC = () => {
             <CommunitiesMybar data={mySubsData} username={user.username} />
           ) : (
             <CommunitiesSidebar />
-          )}{' '}
+          )}
         </div>
         <div className="col-span-12 md:col-span-9 xl:col-span-8">
           <div data-testid="card-explore-hive-mobile" className=" md:col-span-10 md:flex xl:hidden">
@@ -116,26 +134,40 @@ const RolesPage: FC = () => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {rolesData?.map((e) => (
-                        <TableRow key={e[0]}>
-                          <TableCell className="p-2">
-                            <Link href={`/@${e[0]}`} className="text-destructive">
-                              @{e[0]}
-                            </Link>
-                          </TableCell>
-                          <TableCell className="border-x-[1px] border-solid border-secondary p-2">
-                            {e[1]}
-                          </TableCell>
-                          <TableCell className="p-2">{e[2]}</TableCell>
-                        </TableRow>
-                      ))}
+                      {rolesValue?.map((e) =>
+                        e ? (
+                          <TableRow key={e.name}>
+                            <TableCell className="p-2">
+                              <Link href={`/@${e.name}`} className="text-destructive">
+                                @{e.name}
+                              </Link>
+                            </TableCell>
+                            {roleValue ? (
+                              <TableCell className="border-x-[1px] border-solid border-secondary p-2">
+                                {e.value <= 3 && e.value < roleValue.value ? (
+                                  <AddRole user={roleValue} targetedUser={e}>
+                                    <span className="text-destructive">{e.role}</span>
+                                  </AddRole>
+                                ) : (
+                                  <span>{e.role}</span>
+                                )}
+                              </TableCell>
+                            ) : (
+                              <TableCell>{e.role}</TableCell>
+                            )}
+                            <TableCell className="p-2">{e.title}</TableCell>
+                          </TableRow>
+                        ) : null
+                      )}
                     </TableBody>
                   </Table>
-                  <AddRole>
-                    <Button variant="outlineRed" className="m-10 mx-0 mt-4 font-normal" size="xs">
-                      Add user
-                    </Button>
-                  </AddRole>
+                  {roleValue && roleValue?.value >= 3 ? (
+                    <AddRole user={roleValue}>
+                      <Button variant="outlineRed" className="m-10 mx-0 mt-4 font-normal" size="xs">
+                        Add user
+                      </Button>
+                    </AddRole>
+                  ) : null}
                 </div>
               </div>
             </div>

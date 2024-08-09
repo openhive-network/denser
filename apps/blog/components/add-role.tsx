@@ -17,39 +17,60 @@ import { ReactNode, useState } from 'react';
 
 const roles = [
   {
-    name: 'Owner',
-    description: 'assign admins'
+    name: 'owner',
+    label: 'Owner',
+    description: 'assign admins',
+    value: 6
   },
   {
-    name: 'Admin',
-    description: 'edit settings, assign mods'
+    name: 'admin',
+    label: 'Admin',
+    description: 'edit settings, assign mods',
+    value: 5
   },
   {
-    name: 'Moderator',
-    description: 'mute, pinm set user titles'
+    name: 'mod',
+    label: 'Moderator',
+    description: 'mute, pinm set user titles',
+    value: 4
   },
   {
-    name: 'Member',
-    description: 'listed on leadership team'
+    name: 'member',
+    label: 'Member',
+    description: 'listed on leadership team',
+    value: 3
   },
   {
-    name: 'Guest',
-    description: 'default; can post and comment'
+    name: 'guest',
+    label: 'Guest',
+    description: 'default; can post and comment',
+    value: 2
   },
   {
-    name: 'Muted',
-    description: 'new posts automaticly muted'
+    name: 'muted',
+    label: 'Muted',
+    description: 'new posts automaticly muted',
+    value: 1
   }
 ];
-
-const AddRole = ({ children }: { children: ReactNode }) => {
+type User = { value: number; role: string; name: string; title: string };
+const AddRole = ({
+  children,
+  user,
+  targetedUser
+}: {
+  children: ReactNode;
+  user: User;
+  targetedUser?: User;
+}) => {
   const [open, setOpen] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<string>(targetedUser ? targetedUser.role : 'member');
   function onSave() {
     setOpen(false);
   }
   return (
     <Dialog open={open} onOpenChange={() => setOpen((prev) => !prev)}>
-      <DialogTrigger>{children}</DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add User Role</DialogTitle>
@@ -62,14 +83,18 @@ const AddRole = ({ children }: { children: ReactNode }) => {
         </div>
         <div>
           <span>Role</span>
-          <Select>
+          <Select value={selectedRole} onValueChange={(e) => setSelectedRole(e)}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="light">Light</SelectItem>
-              <SelectItem value="dark">Dark</SelectItem>
-              <SelectItem value="system">System</SelectItem>
+              {roles.map((e) =>
+                e.value < user.value ? (
+                  <SelectItem key={e.name} value={e.name}>
+                    {e.label}
+                  </SelectItem>
+                ) : null
+              )}
             </SelectContent>
           </Select>
         </div>
@@ -79,7 +104,7 @@ const AddRole = ({ children }: { children: ReactNode }) => {
         <h1>Role Permissions</h1>
         <div>
           {roles.map((e) => (
-            <div>
+            <div key={e.name}>
               <span className="font-bold">{e.name}</span>
               {` - ${e.description}`}
             </div>
