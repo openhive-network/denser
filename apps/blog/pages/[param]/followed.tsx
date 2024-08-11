@@ -8,10 +8,9 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
-import FollowButton from '@/blog/components/follow-button';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import MuteButton from '@/blog/components/mute-button';
 import { getServerSidePropsDefault } from '../../lib/get-translations';
+import ButtonsContainer from '@/blog/components/buttons-container';
 
 export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
@@ -60,13 +59,18 @@ export default function Followed() {
           {followingData.data?.pages[page].map((e) => (
             <li
               key={e.following}
-              className="flex items-center justify-between px-3 font-semibold text-red-600 odd:bg-slate-200 even:bg-slate-100 dark:odd:bg-slate-800 dark:even:bg-slate-900"
+              className="bg-background-tertiary flex items-center justify-between px-3 font-semibold text-destructive odd:bg-background"
             >
               <Link href={`/@${e.following}`}>{e.following}</Link>
               {!user.isLoggedIn || user.username === e.following ? null : (
                 <div className="flex gap-2">
-                  <FollowButton username={e.following} user={user} variant="basic" list={following} />
-                  <MuteButton username={e.following} user={user} variant="basic" list={mute} />
+                  <ButtonsContainer
+                    username={e.following}
+                    user={user}
+                    variant="basic"
+                    follow={following}
+                    mute={mute}
+                  />
                 </div>
               )}
             </li>

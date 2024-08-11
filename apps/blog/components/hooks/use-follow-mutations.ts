@@ -11,6 +11,8 @@ const logger = getLogger('app');
  * @return {*}
  */
 export function useFollowMutation() {
+  const { user } = useUser();
+  const queryClient = useQueryClient();
   const followMutation = useMutation({
     mutationFn: async (params: { username: string }) => {
       const { username } = params;
@@ -20,6 +22,14 @@ export function useFollowMutation() {
       return response;
     },
     onSuccess: (data) => {
+      const { username } = user;
+      const { username: otherUsername } = data;
+      queryClient.invalidateQueries({ queryKey: ['muted', username] });
+      queryClient.invalidateQueries({ queryKey: ['followingData', otherUsername] });
+      queryClient.invalidateQueries({ queryKey: ['followingData', username] });
+      queryClient.invalidateQueries({ queryKey: ['followersData', otherUsername] });
+      queryClient.invalidateQueries({ queryKey: ['profileData', username] });
+      queryClient.invalidateQueries({ queryKey: ['profileData', otherUsername] });
       logger.info('useFollowMutation onSuccess data: %o', data);
     }
   });
@@ -34,6 +44,8 @@ export function useFollowMutation() {
  * @return {*}
  */
 export function useUnfollowMutation() {
+  const { user } = useUser();
+  const queryClient = useQueryClient();
   const unfollowMutation = useMutation({
     mutationFn: async (params: { username: string }) => {
       const { username } = params;
@@ -43,6 +55,15 @@ export function useUnfollowMutation() {
       return response;
     },
     onSuccess: (data) => {
+      const { username } = user;
+      const { username: otherUsername } = data;
+      queryClient.invalidateQueries({ queryKey: ['muted', username] });
+      queryClient.invalidateQueries({ queryKey: ['followingData', otherUsername] });
+      queryClient.invalidateQueries({ queryKey: ['followingData', username] });
+      queryClient.invalidateQueries({ queryKey: ['followersData', otherUsername] });
+      queryClient.invalidateQueries({ queryKey: ['profileData', username] });
+      queryClient.invalidateQueries({ queryKey: ['profileData', otherUsername] });
+
       logger.info('useUnfollowMutation onSuccess data: %o', data);
     }
   });

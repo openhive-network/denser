@@ -348,7 +348,7 @@
     },
     "body": {
       "copyright": "Ce post n'est pas disponible en raison d'une réclamation de droits d'auteur.",
-      "images_were_hidden": "Les images sont masqués en raison d'une faible évaluation.",
+      "content_were_hidden": "Le contenu a été caché en raison de mauvaises notes.",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
       "leave_this_app": "You are about to leave this app.",
@@ -409,6 +409,7 @@
     }
   },
   "submit_page": {
+    "log_in_to_post": "Connectez-vous pour publier.",
     "clean_post_editor": "Êtes-vous sûr de vouloir effacer l'éditeur de publication ?",
     "cover_image": "Sélectionnez votre image de couverture :",
     "my_communities": "Mes communautés",

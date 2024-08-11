@@ -90,7 +90,7 @@ export function ReplyTextbox({
           parentAuthor: username,
           parentPermlink: permlink,
           body: text,
-          preferences,
+          preferences
         };
         try {
           await commentMutation.mutateAsync(commentParams);
@@ -116,12 +116,12 @@ export function ReplyTextbox({
 
   return (
     <div
-      className="mx-8 mb-4 flex flex-col gap-6 rounded-md border bg-card p-4 text-card-foreground shadow-sm dark:bg-slate-900"
+      className="mx-8 mb-4 flex flex-col gap-6 rounded-md border bg-background p-4 text-primary shadow-sm"
       data-testid="reply-editor"
     >
       <div className="flex flex-col gap-4">
         <Link href={`#`}>
-          <h1 className="text-sm text-red-500">{t('post_content.footer.comment.disable_editor')}</h1>
+          <h1 className="text-sm text-destructive">{t('post_content.footer.comment.disable_editor')}</h1>
         </Link>
         <div>
           <MdEditor
@@ -137,7 +137,7 @@ export function ReplyTextbox({
             persistedValue={text}
             placeholder={t('post_content.footer.comment.reply')}
           />
-          <p className="flex items-center border-2 border-t-0 border-slate-200 bg-gray-100 p-1 text-xs font-light text-slate-500 dark:border-black dark:bg-slate-950">
+          <p className="flex items-center border-2 border-t-0 border-background-tertiary bg-background-secondary/70 p-1 text-xs font-light">
             {t('post_content.footer.comment.insert_images')} {t('post_content.footer.comment.selecting_them')}
             <TooltipProvider>
               <Tooltip>
@@ -167,19 +167,21 @@ export function ReplyTextbox({
             disabled={text === '' || commentMutation.isLoading || updateCommentMutation.isLoading}
             onClick={() => postComment()}
           >
-            {commentMutation.isLoading || updateCommentMutation.isLoading
-            ?
-              <CircleSpinner loading={commentMutation.isLoading || updateCommentMutation.isLoading}
-                              size={18} color="#dc2626" />
-            :
+            {commentMutation.isLoading || updateCommentMutation.isLoading ? (
+              <CircleSpinner
+                loading={commentMutation.isLoading || updateCommentMutation.isLoading}
+                size={18}
+                color="#dc2626"
+              />
+            ) : (
               t('post_content.footer.comment.post')
-            }
+            )}
           </Button>
           <Button
             variant="ghost"
             disabled={commentMutation.isLoading || updateCommentMutation.isLoading}
             onClick={() => handleCancel()}
-            className="font-thiny text-slate-500 hover:text-red-500"
+            className="font-thiny hover:text-destructive"
           >
             {t('post_content.footer.comment.cancel')}
           </Button>
@@ -196,22 +198,23 @@ export function ReplyTextbox({
                 {preferences.comment_rewards === '0%'
                   ? t('post_content.footer.comment.decline_payout')
                   : t('post_content.footer.comment.power_up')}{' '}
-                <Link className="text-red-500" href={`/@${user.username}/settings`}>
+                <Link className="text-destructive" href={`/@${user.username}/settings`}>
                   {t('post_content.footer.comment.update_settings')}
                 </Link>
               </div>
             )}
             <Link href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax">
-              <span className="text-red-500">{t('post_content.footer.comment.markdown_styling_guide')}</span>
+              <span className="text-destructive">
+                {t('post_content.footer.comment.markdown_styling_guide')}
+              </span>
             </Link>
           </div>
         </div>
 
         <RendererContainer
           body={text}
-          className="prose max-w-full border-2 border-slate-200 p-2 dark:prose-invert"
+          className="prose max-w-full border-2 border-background-tertiary p-2 dark:prose-invert"
           author=""
-          doNotShowImages={false}
         />
       </div>
     </div>

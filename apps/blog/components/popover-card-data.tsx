@@ -6,12 +6,11 @@ import { delegatedHive, numberWithCommas, vestingHive } from '@ui/lib/utils';
 import Big from 'big.js';
 import { useDynamicGlobalData } from './hooks/use-dynamic-global-data';
 import { useTranslation } from 'next-i18next';
-import FollowButton from './follow-button';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useFollowingInfiniteQuery } from './hooks/use-following-infinitequery';
-import MuteButton from './mute-button';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
+import ButtonsContainer from './buttons-container';
 
 export function PopoverCardData({ author, blacklist }: { author: string; blacklist: string[] }) {
   const { t } = useTranslation('common_blog');
@@ -65,20 +64,23 @@ export function PopoverCardData({ author, blacklist }: { author: string; blackli
               </Link>
               <Link
                 href={`/@${author}`}
-                className="flex text-sm text-gray-500 hover:cursor-pointer"
+                className="flex px-2 text-sm text-gray-500 hover:cursor-pointer"
                 data-testid="popover-card-user-nickname"
               >
                 <span className="block">{`@${author}`}</span>
               </Link>
-              <div className="grid grid-cols-2 gap-2 py-2">
+              <div className="grid grid-cols-2 gap-2 p-2">
                 {legalBlockedUser ? (
                   <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
                 ) : user.username === author ? null : (
                   <>
-                    <FollowButton username={author} user={user} variant="secondary" list={following} />
-                    {user.isLoggedIn ? (
-                      <MuteButton username={author} user={user} variant="secondary" list={mute} />
-                    ) : null}
+                    <ButtonsContainer
+                      username={author}
+                      user={user}
+                      variant="default"
+                      follow={following}
+                      mute={mute}
+                    />
                   </>
                 )}
               </div>

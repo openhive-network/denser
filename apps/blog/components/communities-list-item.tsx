@@ -16,16 +16,14 @@ const CommunitiesListItem = ({ community }: { community: Community }) => {
   }, [community.context.subscribed]);
   return (
     <Card
-      className={cn(
-        'my-4 flex justify-between hover:bg-accent  hover:text-accent-foreground dark:bg-slate-900 dark:text-white dark:hover:bg-accent dark:hover:text-accent-foreground'
-      )}
+      className={cn('hover my-4 flex justify-between bg-background text-primary')}
       data-testid="community-list-item"
     >
       <div className="w-4/6">
         <CardHeader>
           <Link
             href={`trending/${community.name}`}
-            className="text-red-600"
+            className="text-destructive"
             data-testid="community-list-item-title"
           >
             <CardTitle>{community.title}</CardTitle>
@@ -38,16 +36,16 @@ const CommunitiesListItem = ({ community }: { community: Community }) => {
           className="flex flex-col items-start px-6 text-sm"
           data-testid="community-list-item-footer"
         >
-          <p className="text-sm font-medium leading-5 text-slate-500 dark:text-slate-400">
+          <p className="text-sm font-medium leading-5 text-primary/80">
             {community.subscribers} {t('communities.subscribers')} <span className="mx-1">•</span>{' '}
             {community.num_authors} {t('communities.authors')} <span className="mx-1">•</span>
             {community.num_pending} {t('communities.posts')}
           </p>
           {community.admins && community.admins?.length > 0 ? (
-            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+            <p className="text-sm font-medium text-primary/80">
               <span>{community.admins?.length > 1 ? t('communities.admins') : t('communities.admin')}: </span>
               {community.admins.map((admin: string, index: number) => (
-                <span key={index} className="text-red-600">
+                <span key={index} className="text-destructive">
                   <Link href={`@${admin}`}>{admin}</Link>{' '}
                   {community.admins && index !== community.admins.length - 1 ? (
                     <span className="mx-1">•</span>

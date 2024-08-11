@@ -18,8 +18,12 @@ export default function TwitterShare({ title, url }: { title: string; url: strin
     );
   };
   return (
-    <div className='cursor-pointer hover:text-red-600' onClick={openWindow}
-         title={t('post_content.footer.share_on') + `Twitter`} data-testid='share-on-twitter'>
+    <div
+      className="cursor-pointer hover:text-destructive"
+      onClick={openWindow}
+      title={t('post_content.footer.share_on') + `Twitter`}
+      data-testid="share-on-twitter"
+    >
       <Twitter />
     </div>
   );

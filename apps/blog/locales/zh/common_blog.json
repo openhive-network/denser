@@ -348,7 +348,7 @@
     },
     "body": {
       "copyright": "此帖由于版权请求而不可用。",
-      "images_were_hidden": "图片由于评级不足而被隐藏。",
+      "content_were_hidden": "由于评分较低，内容已被隐藏。",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
       "leave_this_app": "You are about to leave this app.",
@@ -409,6 +409,7 @@
     }
   },
   "submit_page": {
+    "log_in_to_post": "登录后才能发布帖子。",
     "clean_post_editor": "您确定要清除帖子编辑器吗？",
     "cover_image": "选择您的封面图片：",
     "my_communities": "我的社群",

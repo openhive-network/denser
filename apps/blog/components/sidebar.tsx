@@ -23,7 +23,7 @@ const Item = ({
   target?: boolean;
 }) => {
   return (
-    <li className="cursor-pointer border-b-2 border-white text-foreground hover:border-red-600 hover:bg-slate-100 dark:border-slate-950 dark:hover:border-red-600 dark:hover:bg-slate-900">
+    <li className="hover:bg-background-secondary cursor-pointer border-b-2 border-border text-foreground hover:border-destructive dark:hover:border-destructive">
       <Link href={href} target={clsx(target ? '_blank' : '')}>
         <SheetClose className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
           {children}
@@ -54,7 +54,7 @@ const Sidebar = () => {
         <div className="flex flex-col">
           <ul className="flex flex-col">
             {!user?.isLoggedIn && (
-              <li className="cursor-pointer border-b-2 border-white text-foreground hover:border-red-600 hover:bg-slate-100 dark:border-slate-950 dark:hover:border-red-600 dark:hover:bg-slate-900 sm:hidden">
+              <li className="hover:bg-background-secondary cursor-pointer border-b-2 border-border text-foreground hover:border-destructive dark:hover:border-destructive">
                 <DialogLogin>
                   <div className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
                     {t('navigation.main_nav_bar.login')}
@@ -63,7 +63,7 @@ const Sidebar = () => {
               </li>
             )}
             {!user?.isLoggedIn && (
-              <li className="cursor-pointer border-b-2 border-white text-foreground hover:border-red-600 hover:bg-slate-100 dark:border-slate-950 dark:hover:border-red-600 dark:hover:bg-slate-900 sm:hidden">
+              <li className="hover:bg-background-secondary cursor-pointer border-b-2 border-border text-foreground hover:border-destructive dark:hover:border-destructive">
                 <Link href="https://signup.hive.io/" target="_blank">
                   <SheetClose className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
                     {t('navigation.main_nav_bar.sign_up')}

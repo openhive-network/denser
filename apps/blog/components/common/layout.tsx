@@ -27,7 +27,7 @@ function Layout({ children }: LayoutProps) {
       </Head>
       <div className="relative flex min-h-screen flex-col">
         <SiteHeader />
-        <div className="flex-1 bg-slate-50 dark:bg-background/95">{children}</div>
+        <div className="bg-background-secondary flex-1">{children}</div>
       </div>
       {isClient && siteConfig.openhiveChatIframeIntegrationEnable === 'yes' && <RocketChatWidget />}
       <ModalContainer />

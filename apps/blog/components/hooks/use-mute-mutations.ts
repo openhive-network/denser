@@ -23,7 +23,13 @@ export function useMuteMutation() {
     },
     onSuccess: (data) => {
       const { username } = user;
+      const { username: otherUsername } = data;
       queryClient.invalidateQueries({ queryKey: ['muted', username] });
+      queryClient.invalidateQueries({ queryKey: ['followingData', otherUsername] });
+      queryClient.invalidateQueries({ queryKey: ['followingData', username] });
+      queryClient.invalidateQueries({ queryKey: ['followersData', otherUsername] });
+      queryClient.invalidateQueries({ queryKey: ['profileData', username] });
+      queryClient.invalidateQueries({ queryKey: ['profileData', otherUsername] });
       logger.info('useMuteMutation onSuccess data: %o', data);
     }
   });
@@ -50,7 +56,14 @@ export function useUnmuteMutation() {
     },
     onSuccess: (data) => {
       const { username } = user;
+      const { username: otherUsername } = data;
       queryClient.invalidateQueries({ queryKey: ['muted', username] });
+      queryClient.invalidateQueries({ queryKey: ['followingData', otherUsername] });
+      queryClient.invalidateQueries({ queryKey: ['followingData', username] });
+      queryClient.invalidateQueries({ queryKey: ['followersData', otherUsername] });
+      queryClient.invalidateQueries({ queryKey: ['profileData', username] });
+      queryClient.invalidateQueries({ queryKey: ['profileData', otherUsername] });
+
       logger.info('useUnmuteMutation onSuccess data: %o', data);
     }
   });

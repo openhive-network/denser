@@ -348,7 +348,7 @@
     },
     "body": {
       "copyright": "이 게시물은 저작권 요청으로 인해 사용할 수 없습니다.",
-      "images_were_hidden": "Images were hidden due to low ratings.",
+      "content_were_hidden": "콘텐츠가 낮은 평가로 인해 숨겨졌습니다.",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
       "leave_this_app": "You are about to leave this app.",
@@ -409,6 +409,7 @@
     }
   },
   "submit_page": {
+    "log_in_to_post": "게시물을 작성하려면 로그인하세요.",
     "clean_post_editor": "게시물 편집기를 지우시겠습니까?",
     "cover_image": "표지 이미지를 선택하세요:",
     "my_communities": "내 커뮤니티",

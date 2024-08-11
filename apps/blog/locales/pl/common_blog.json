@@ -361,7 +361,7 @@
     },
     "body": {
       "copyright": "Ten post jest niedostępny z powodu żądania dotyczącego praw autorskich.",
-      "images_were_hidden": "Obrazki zostały ukryte z powodu niskich ocen.",
+      "content_were_hidden": "Treść została ukryta z powodu niskich ocen.",
       "show": "Pokaż",
       "Image_not_shown": "Obrazek zostały ukryty z powodu niskich ocen.",
       "leave_this_app": "Przechodzenia na stronę zewnętrznych.",
@@ -422,6 +422,7 @@
     }
   },
   "submit_page": {
+    "log_in_to_post": "Zaloguj się, aby opublikować post.",
     "clean_post_editor": "Czy na pewno chcesz wyczyścić edytor postów?",
     "cover_image": "Wybierz obraz okładki:",
     "my_communities": "Moje Społeczności",

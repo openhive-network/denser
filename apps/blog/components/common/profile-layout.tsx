@@ -23,12 +23,11 @@ import { TFunction } from 'i18next';
 import env from '@beam-australia/react-env';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useFollowingInfiniteQuery } from '../hooks/use-following-infinitequery';
-import FollowButton from '../follow-button';
-import MuteButton from '../mute-button';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import CustomError from '../custom-error';
+import ButtonsContainer from '../buttons-container';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -113,25 +112,26 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   return username ? (
     <div>
       <div
-        className=" w-full bg-gray-600 text-sm leading-6 text-zinc-50 sm:h-fit"
+        className=" w-full bg-gray-600 text-sm leading-6 sm:h-fit"
         style={{ textShadow: 'rgb(0, 0, 0) 1px 1px 2px' }}
         data-testid="profile-info"
       >
         {profileData ? (
           <div
             style={{
-              background:
+              backgroundImage:
                 profileData?.posting_json_metadata &&
                 JSON.parse(profileData?.posting_json_metadata).profile?.cover_image
                   ? `url('${proxifyImageUrl(
                       JSON.parse(profileData?.posting_json_metadata).profile?.cover_image,
                       '2048x512'
-                    ).replace(/ /g, '%20')}') center center no-repeat`
+                    ).replace(/ /g, '%20')}')`
                   : '',
-
+              backgroundPosition: 'center center',
+              backgroundRepeat: 'no-repeat',
               backgroundSize: 'cover'
             }}
-            className={`flex h-auto max-h-full min-h-full w-auto min-w-full max-w-full flex-col items-center`}
+            className="flex h-auto max-h-full min-h-full w-auto min-w-full max-w-full flex-col items-center text-white"
           >
             <div className="mt-4 flex items-center">
               <Avatar className="mr-3 flex h-12 w-12 items-center justify-center overflow-hidden rounded-full">
@@ -191,7 +191,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             </div>
             {!legalBlockedUser ? (
               <>
-                <p className="my-1 max-w-[420px] text-center text-white sm:my-4" data-testid="profile-about">
+                <p className="my-1 max-w-[420px] text-center sm:my-4" data-testid="profile-about">
                   {profileData?.profile?.about
                     ? profileData?.profile?.about.slice(0, 157) +
                       (157 < profileData?.profile?.about.length ? '...' : '')
@@ -201,7 +201,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   <li className="flex items-center gap-1">
                     <Link
                       href={`/@${profileData.name}/followers`}
-                      className="hover:cursor-pointer hover:text-red-600 hover:underline"
+                      className="hover:cursor-pointer hover:text-destructive hover:underline"
                     >
                       {profileData?.follow_stats?.follower_count === 0 || undefined
                         ? t('user_profile.lists.follower_count.zero')
@@ -217,9 +217,9 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     className="flex items-center
               gap-1"
                   >
-                    <Separator orientation="vertical" className="bg-white" />
+                    <Separator orientation="vertical" className="bg-background" />
                     <Link
-                      className="hover:cursor-pointer hover:text-red-600 hover:underline"
+                      className="hover:cursor-pointer hover:text-destructive hover:underline"
                       href={`/@${profileData.name}`}
                     >
                       {profileData?.post_count === 0
@@ -234,10 +234,10 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     className="flex items-center
               gap-1"
                   >
-                    <Separator orientation="vertical" className="bg-white" />{' '}
+                    <Separator orientation="vertical" className="bg-background" />{' '}
                     <Link
                       href={`/@${profileData.name}/followed`}
-                      className="hover:cursor-pointer hover:text-red-600 hover:underline"
+                      className="hover:cursor-pointer hover:text-destructive hover:underline"
                     >
                       {profileData?.follow_stats?.following_count === 0 || undefined
                         ? t('user_profile.lists.followed_count.zero')
@@ -250,7 +250,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   </li>
 
                   <li className="flex items-center gap-1">
-                    <Separator orientation="vertical" className="bg-white" />
+                    <Separator orientation="vertical" className="bg-background" />
                     {numberWithCommas(hp.toFixed(0)) + ' HP'}
                   </li>
                 </ul>
@@ -259,44 +259,44 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   <li className="flex items-center gap-1">
                     <Link
                       href={`/@${profileData?.name}/lists/blacklisted`}
-                      className="hover:cursor-pointer hover:text-red-600 hover:underline"
+                      className="hover:cursor-pointer hover:text-destructive hover:underline"
                     >
                       {t('user_profile.lists.blacklisted_users')}
                     </Link>
                   </li>
 
                   <li className="flex items-center gap-1">
-                    <Separator orientation="vertical" className="h-4 bg-white" />
+                    <Separator orientation="vertical" className="h-4 bg-background" />
                     <Link
                       href={`/@${profileData?.name}/lists/muted`}
-                      className="hover:cursor-pointer hover:text-red-600 hover:underline"
+                      className="hover:cursor-pointer hover:text-destructive hover:underline"
                     >
                       {t('user_profile.lists.muted_users')}
                     </Link>
                   </li>
 
                   <li className="flex items-center gap-1">
-                    <Separator orientation="vertical" className="h-4 bg-white" />
+                    <Separator orientation="vertical" className="h-4 bg-background" />
                     <Link
                       href={`/@${profileData?.name}/lists/followed_blacklists`}
-                      className="hover:cursor-pointer hover:text-red-600 hover:underline"
+                      className="hover:cursor-pointer hover:text-destructive hover:underline"
                     >
                       {t('user_profile.lists.followed_blacklists')}
                     </Link>
                   </li>
 
                   <li className="flex items-center gap-1">
-                    <Separator orientation="vertical" className="bg-white" />
+                    <Separator orientation="vertical" className="bg-background" />
                     <Link
                       href={`/@${profileData?.name}/lists/followed_muted_lists`}
-                      className="hover:cursor-pointer hover:text-red-600 hover:underline"
+                      className="hover:cursor-pointer hover:text-destructive hover:underline"
                     >
                       {t('user_profile.lists.followed_muted_lists')}
                     </Link>
                   </li>
                 </ul>
 
-                <ul className="my-4 flex h-auto flex-wrap justify-center gap-1 text-xs text-white sm:gap-4 sm:text-sm">
+                <ul className="my-4 flex h-auto flex-wrap justify-center gap-1 text-xs sm:gap-4 sm:text-sm">
                   {profileData?.profile?.location ? (
                     <li className="flex items-center">
                       <Icons.mapPin className="m-1" />
@@ -334,11 +334,14 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   </li>
                 </ul>
                 {user.username !== username ? (
-                  <div className="m-2 flex gap-2 hover:text-red-500 sm:absolute sm:right-0">
-                    <FollowButton username={username} user={user} variant="secondary" list={following} />
-                    {user.isLoggedIn ? (
-                      <MuteButton username={username} user={user} variant="secondary" list={mute} />
-                    ) : null}
+                  <div className="m-2 flex gap-2 hover:text-destructive sm:absolute sm:right-0">
+                    <ButtonsContainer
+                      username={username}
+                      user={user}
+                      variant="default"
+                      follow={following}
+                      mute={mute}
+                    />
                   </div>
                 ) : null}
               </>
@@ -352,16 +355,16 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
       </div>
       <div className="flex flex-col pb-8 md:pb-4 ">
         <div className="w-full">
-          <div className="flex h-12 bg-slate-800" data-testid="profile-navigation">
-            <div className="container mx-auto flex max-w-screen-xl justify-between p-0 sm:pl-8">
-              <ul className="flex h-full gap-2 text-xs text-white sm:text-base lg:flex lg:gap-8">
+          <div className="flex h-12 bg-gray-700" data-testid="profile-navigation">
+            <div className="container mx-auto flex max-w-screen-xl justify-between p-0 text-white sm:pl-8">
+              <ul className="flex h-full gap-2 text-xs sm:text-base lg:flex lg:gap-8">
                 <li>
                   <Link
                     href={`/@${username}`}
-                    className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800
+                    className={`flex h-full items-center px-2 hover:bg-background hover:text-primary
                     ${
                       router.asPath === `/@${username}`
-                        ? 'bg-white text-slate-800 dark:bg-slate-950  dark:text-slate-200  dark:hover:text-slate-200'
+                        ? 'bg-background text-primary dark:hover:text-slate-200'
                         : ''
                     }
                     `}
@@ -372,11 +375,11 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <li>
                   <Link
                     href={`/@${username}/posts`}
-                    className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800 ${
+                    className={`flex h-full items-center px-2 hover:bg-background hover:text-primary ${
                       router.asPath === `/@${username}/posts` ||
                       router.asPath === `/@${username}/comments` ||
                       router.asPath === `/@${username}/payout`
-                        ? 'bg-white text-slate-800 dark:bg-slate-950 dark:text-slate-200  dark:hover:text-slate-200 '
+                        ? 'bg-background text-primary dark:hover:text-slate-200'
                         : ''
                     }`}
                   >
@@ -386,9 +389,9 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <li>
                   <Link
                     href={`/@${username}/replies`}
-                    className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800 ${
+                    className={`flex h-full items-center px-2 hover:bg-background hover:text-primary ${
                       router.asPath === `/@${username}/replies`
-                        ? 'bg-white text-slate-800 dark:bg-slate-950 dark:text-slate-200  dark:hover:text-slate-200 '
+                        ? 'bg-background text-primary dark:hover:text-slate-200'
                         : ''
                     }`}
                   >
@@ -398,9 +401,9 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <li>
                   <Link
                     href={`/@${username}/communities`}
-                    className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800 ${
+                    className={`flex h-full items-center px-2 hover:bg-background hover:text-primary ${
                       router.asPath === `/@${username}/communities`
-                        ? 'bg-white text-slate-800 dark:bg-slate-950 dark:text-slate-200  dark:hover:text-slate-200 '
+                        ? 'bg-background text-primary dark:hover:text-slate-200'
                         : ''
                     }`}
                   >
@@ -410,9 +413,9 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <li>
                   <Link
                     href={`/@${username}/notifications`}
-                    className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800 ${
+                    className={`flex h-full items-center px-2 hover:bg-background hover:text-primary ${
                       router.asPath === `/@${username}/notifications`
-                        ? 'bg-white text-slate-800 dark:bg-slate-950 dark:text-slate-200 dark:hover:text-slate-200 '
+                        ? 'bg-background text-primary dark:hover:text-slate-200'
                         : ''
                     }`}
                   >
@@ -420,13 +423,13 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   </Link>
                 </li>
               </ul>
-              <ul className="flex h-full flex-wrap text-xs text-white sm:text-base lg:flex lg:gap-4">
+              <ul className="flex h-full flex-wrap text-xs sm:text-base lg:flex lg:gap-4">
                 <li>
                   <Link
                     href={`${walletHost}/@${username}/transfers`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mr-4 flex h-full items-center px-2 hover:bg-white hover:text-slate-800"
+                    className="mr-4 flex h-full items-center px-2 hover:bg-background hover:text-primary"
                   >
                     {t('navigation.profile_navbar.wallet')}
                   </Link>
@@ -436,9 +439,9 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     <Link
                       href={`/@${username}/settings`}
                       rel="noopener noreferrer"
-                      className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800 ${
+                      className={`flex h-full items-center px-2 hover:bg-background hover:text-primary ${
                         router.asPath === `/@${username}/settings`
-                          ? 'bg-white text-slate-800 dark:bg-slate-950 dark:text-slate-200 dark:hover:text-slate-200 '
+                          ? 'bg-background text-primary dark:hover:text-slate-200'
                           : ''
                       }`}
                     >

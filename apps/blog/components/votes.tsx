@@ -15,7 +15,7 @@ import { DropdownMenuContent, DropdownMenuTrigger, DropdownMenu } from '@ui/comp
 import { Slider } from '@ui/components/slider';
 import { useLoggedUserContext } from './common/logged-user';
 import { handleError } from '@ui/lib/utils';
-
+import { useStore } from './hooks/use-store';
 const logger = getLogger('app');
 
 const VOTE_WEIGHT_DROPDOWN_THRESHOLD = 1.0 * 1000.0 * 1000.0;
@@ -25,10 +25,19 @@ const VotesComponent = ({ post }: { post: Entry }) => {
   const { t } = useTranslation('common_blog');
   const [isClient, setIsClient] = useState(false);
   const [clickedVoteButton, setClickedVoteButton] = useState('');
-  const [sliderUpvote, setSliderUpvote] = useState([100]);
-  const [sliderDownvote, setSliderDownvote] = useState([100]);
-
+  const changeUpvote = useStore((state) => state.changeUpvote);
+  const changeDownvote = useStore((state) => state.changeDownvote);
+  const upvote = useStore((state) => state.upvote);
+  const downvote = useStore((state) => state.downvote);
+  const [sliderUpvote, setSliderUpvote] = useState(upvote);
+  const [sliderDownvote, setSliderDownvote] = useState(downvote);
   const voter = user.username;
+  useEffect(() => {
+    setSliderUpvote(upvote);
+  }, [upvote]);
+  useEffect(() => {
+    setSliderDownvote(downvote);
+  }, [downvote]);
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -85,8 +94,8 @@ const VotesComponent = ({ post }: { post: Entry }) => {
             >
               <Icons.arrowUpCircle
                 className={clsx(
-                  'h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1',
-                  { 'bg-red-600 text-white': userVote && userVote.vote_percent > 0 }
+                  'h-[18px] w-[18px] rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1',
+                  { 'bg-destructive text-white': userVote && userVote.vote_percent > 0 }
                 )}
               />
             </TooltipContainer>
@@ -99,11 +108,12 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                 dataTestId="upvote-button"
               >
                 <Icons.arrowUpCircle
-                  className="h-[24px] w-[24px] cursor-pointer rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1"
+                  className="h-[24px] w-[24px] cursor-pointer rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1"
                   onClick={() => {
                     if (voteMutation.isLoading) return;
                     setClickedVoteButton('up');
                     submitVote(sliderUpvote[0] * 100);
+                    changeUpvote(sliderUpvote);
                   }}
                 />
               </TooltipContainer>
@@ -134,8 +144,8 @@ const VotesComponent = ({ post }: { post: Entry }) => {
         >
           <Icons.arrowUpCircle
             className={clsx(
-              'h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1',
-              { 'bg-red-600 text-white': userVote && userVote.vote_percent > 0 }
+              'h-[18px] w-[18px] rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1',
+              { 'bg-destructive text-white': userVote && userVote.vote_percent > 0 }
             )}
             onClick={() => {
               if (voteMutation.isLoading) return;
@@ -159,7 +169,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
               loading={voteMutation.isLoading}
               dataTestId="upvote-button"
             >
-              <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-red-600 hover:bg-red-600 hover:text-white sm:mr-1" />
+              <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1" />
             </TooltipContainer>
           </div>
         </DialogLogin>
@@ -199,6 +209,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                     if (voteMutation.isLoading) return;
                     setClickedVoteButton('down');
                     submitVote(-sliderDownvote[0] * 100);
+                    changeDownvote(sliderDownvote);
                   }}
                 />
               </TooltipContainer>
@@ -209,7 +220,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                 className="w-36"
                 onValueChange={(e: number[]) => setSliderDownvote(e)}
               />
-              <div className="w-fit text-red-600">-{sliderDownvote}%</div>
+              <div className="w-fit text-destructive">-{sliderDownvote}%</div>
             </div>
             <div className="flex flex-col gap-1 pt-2 text-sm">
               <p>{t('cards.post_card.downvote_warning')}</p>
@@ -239,7 +250,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
           <Icons.arrowDownCircle
             className={clsx(
               'h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
-              { 'bg-gray-600 text-white': userVote && userVote.vote_percent < 0 }
+              { 'bg-destructive text-white opacity-80': userVote && userVote.vote_percent < 0 }
             )}
             onClick={() => {
               if (voteMutation.isLoading) return;

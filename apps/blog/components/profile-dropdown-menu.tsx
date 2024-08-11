@@ -11,7 +11,6 @@ import {
   User,
   Wallet
 } from 'lucide-react';
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,24 +23,12 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components/avatar';
 import Link from 'next/link';
 import { useAppStore } from '@/blog/store/app';
-import { useQuery } from '@tanstack/react-query';
-import { getAccountFull } from '@transaction/lib/hive';
 import env from '@beam-australia/react-env';
 
 const ProfileDropdownMenu = () => {
   const currentProfile = useAppStore((state) => state.currentProfile);
   const setCurrentProfile = useAppStore((state) => state.setCurrentProfile);
   const walletHost = env('WALLET_ENDPOINT');
-
-  const {
-    isLoading: currentProfileDataIsLoading,
-    error: currenProfileDataError,
-    data: currentProfileData
-  } = useQuery(['currentProfile'], () => getAccountFull('gtg'), {
-    onSuccess: (data) => {
-      setCurrentProfile(data);
-    }
-  });
 
   return (
     <DropdownMenu>

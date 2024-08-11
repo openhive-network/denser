@@ -11,7 +11,7 @@ const ExploreHive: FC = () => {
   const walletHost = env('WALLET_ENDPOINT');
   return (
     <Card
-      className={cn('my-4 hidden h-fit w-auto flex-col px-8 dark:bg-background/95 dark:text-white md:flex')}
+      className={cn('my-4 hidden h-fit w-auto flex-col bg-background px-8 text-primary md:flex')}
       translate="no"
     >
       <CardHeader className="px-0 py-4">
@@ -24,10 +24,10 @@ const ExploreHive: FC = () => {
               href="https://hive.io"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center text-red-600 hover:cursor-pointer"
+              className="flex items-center hover:text-destructive"
             >
               {t('navigation.explore_nav.what_is_hive')}
-              <Icons.externalLink className="ml-1 h-4 w-4 text-black" />
+              <Icons.externalLink className="ml-1 h-4 w-4" />
             </Link>
           </li>
           <li>
@@ -35,10 +35,10 @@ const ExploreHive: FC = () => {
               href="https://hivedapps.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center text-red-600 hover:cursor-pointer"
+              className="flex items-center hover:text-destructive"
             >
               {t('navigation.explore_nav.hive_dapps')}
-              <Icons.externalLink className="ml-1 h-4 w-4 text-black" />
+              <Icons.externalLink className="ml-1 h-4 w-4" />
             </Link>
           </li>
           <li>
@@ -46,10 +46,10 @@ const ExploreHive: FC = () => {
               href="https://hiveblocks.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center text-red-600 hover:cursor-pointer"
+              className="flex items-center hover:text-destructive"
             >
               {t('navigation.explore_nav.blockexplorer')}
-              <Icons.externalLink className="ml-1 h-4 w-4 text-black" />
+              <Icons.externalLink className="ml-1 h-4 w-4" />
             </Link>
           </li>
           <li>
@@ -57,10 +57,10 @@ const ExploreHive: FC = () => {
               href={`${walletHost}/~witnesses`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center text-red-600 hover:cursor-pointer"
+              className="flex items-center hover:text-destructive"
             >
               {t('navigation.explore_nav.vote_for_witnesses')}
-              <Icons.externalLink className="ml-1 h-4 w-4 text-black" />
+              <Icons.externalLink className="ml-1 h-4 w-4" />
             </Link>
           </li>
           <li>
@@ -68,10 +68,10 @@ const ExploreHive: FC = () => {
               href={`${walletHost}/proposals`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center text-red-600 hover:cursor-pointer"
+              className="flex items-center hover:text-destructive"
             >
               {t('navigation.explore_nav.hive_proposals')}
-              <Icons.externalLink className="ml-1 h-4 w-4 text-black" />
+              <Icons.externalLink className="ml-1 h-4 w-4" />
             </Link>
           </li>
         </ul>

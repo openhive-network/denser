@@ -372,7 +372,7 @@
     },
     "body": {
       "copyright": "This post is not available due to a copyright claim.",
-      "images_were_hidden": "Images were hidden due to low ratings.",
+      "content_were_hidden": "Content were hidden due to low ratings.",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
       "leave_this_app": "You are about to leave this app.",
@@ -434,6 +434,7 @@
     }
   },
   "submit_page": {
+    "log_in_to_post": "Log in to make a post.",
     "clean_post_editor": "Are you sure you want to clear the post editor?",
     "cover_image": "Select your cover image:",
     "my_communities": "My Communities",

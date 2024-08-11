@@ -241,7 +241,7 @@ export function extractLinks(text: string): string[] {
 export function extractImagesSrc(markdownContent: string): string[] {
   if (markdownContent === '') return [];
   const parser = new DOMParser();
-  const doc = parser.parseFromString(getRenderer('', false).render(markdownContent), 'text/html');
+  const doc = parser.parseFromString(getRenderer('').render(markdownContent), 'text/html');
   const images = doc.getElementsByTagName('img');
   const result = [];
   for (let i = 0; i < images.length; i++) {

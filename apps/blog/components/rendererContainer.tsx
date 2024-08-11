@@ -11,7 +11,6 @@ const RendererContainer = ({
   body,
   className,
   author,
-  doNotShowImages,
   dataTestid,
   communityDescription,
   mainPost
@@ -19,7 +18,6 @@ const RendererContainer = ({
   body: string;
   className: string;
   author: string;
-  doNotShowImages: boolean;
   dataTestid?: string;
   communityDescription?: boolean;
   mainPost?: Boolean;
@@ -27,7 +25,7 @@ const RendererContainer = ({
   const ref = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [link, setLink] = useState('');
-  const hiveRenderer = getRenderer(author, doNotShowImages);
+  const hiveRenderer = getRenderer(author);
 
   const handleClick = (e: Event) => {
     e.preventDefault();
@@ -43,7 +41,8 @@ const RendererContainer = ({
     });
     const nodes = ref.current?.querySelectorAll('a.link-external');
     nodes?.forEach((n) => n.addEventListener('click', handleClick));
-
+    const paragraphs = ref.current?.querySelectorAll('p');
+    if (!mainPost) paragraphs?.forEach((p) => (p.className = 'my-0'));
     if (communityDescription) {
       const code_block = ref.current?.querySelectorAll('code');
       code_block?.forEach((c) => (c.className = 'whitespace-normal'));
