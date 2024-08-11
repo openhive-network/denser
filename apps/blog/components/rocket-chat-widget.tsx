@@ -82,7 +82,7 @@ const RocketChatWidget = () => {
   const [open, setOpen] = useState(false);
   const iframeRef = useRef(null);
 
-  const onMessageReceivedFromIframe = (event: MessageEvent) => {
+  const onMessageReceivedFromIframe = async (event: MessageEvent) => {
     //
     // See https://developer.rocket.chat/rocket.chat/iframe-integration/iframe-events
     // Warning: above documentation looks to be outdated. I noticed
@@ -127,6 +127,9 @@ const RocketChatWidget = () => {
         // token. Probably user logged out in our iframe. We should
         // obtain another, valid token from RC and try to login again.
         logger.info('We should obtain valid token and try to login with it');
+
+
+
       }
     }
 
