@@ -19,26 +19,8 @@ export const rocketChatAdminUserAuthHeaders = {
  */
 export async function getRCAuthToken(username = '') {
 
-  //
-  // TODO We request a new login token on each call to this function,
-  // so this happens on each page reload as well. It's likely
-  // unnecessary and causes storing a lot of tokens for users in
-  // database on Rocket Chat's side. We should save token in session
-  // on the first call and output token existing in session on
-  // subsequent calls. But how to know when token in session has
-  // expired? Possible solutions:
-  //
-  // 1. We should request a new token, when login via iframe fails.
-  // 2. Output expiry time from Rocket Chat.
-  //
-
   try {
-      const requestConfig = {
-          headers: rocketChatAdminUserAuthHeaders,
-          timeout: 1000 * 30
-      };
       const url = `${siteConfig.openhiveChatApiUri}/users.createToken`;
-
       const responseData = await fetchJson(url, {
           method: 'POST',
           headers: {
@@ -47,10 +29,6 @@ export async function getRCAuthToken(username = '') {
           },
           body: JSON.stringify({username}),
       });
-
-      // const responseData = (
-      //         await axios.post(url, {username}, requestConfig)
-      //         ).data;
 
       // Succesful response looks like this:
       //
@@ -145,9 +123,6 @@ export async function getChatAuthToken(username = '') {
               sendWelcomeEmail: false
           };
           try {
-              // const responseData2 = (
-              //     await axios.post(url2, data2, requestConfig)
-              //     ).data;
               const responseData2 = await fetchJson(url2, {
                   method: 'POST',
                   headers: {

@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { Button } from '@ui/components/button';
 import { inIframe } from '@smart-signer/lib/utils';
 import clsx from 'clsx';
+import { useGetChatAuthToken } from "@smart-signer/lib/auth/use-chat-token";
 
 const logger = getLogger('app');
 
@@ -81,8 +82,9 @@ const RocketChatWidget = () => {
   const [isIframeLoaded, setIsIframeLoaded] = useState(false);
   const [open, setOpen] = useState(false);
   const iframeRef = useRef(null);
+  const getChatAuthToken = useGetChatAuthToken();
 
-  const onMessageReceivedFromIframe = async (event: MessageEvent) => {
+  const onMessageReceivedFromIframe = (event: MessageEvent) => {
     //
     // See https://developer.rocket.chat/rocket.chat/iframe-integration/iframe-events
     // Warning: above documentation looks to be outdated. I noticed
@@ -127,9 +129,7 @@ const RocketChatWidget = () => {
         // token. Probably user logged out in our iframe. We should
         // obtain another, valid token from RC and try to login again.
         logger.info('We should obtain valid token and try to login with it');
-
-
-
+        getChatAuthToken.mutateAsync();
       }
     }
 

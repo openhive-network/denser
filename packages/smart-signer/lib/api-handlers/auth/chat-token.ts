@@ -18,7 +18,7 @@ import { getChatAuthToken } from '@smart-signer/lib/rocket-chat';
 const logger = getLogger('app');
 
 
-export const getToken: NextApiHandler<{ chatAuthToken: string; }> = async (req, res) => {
+export const getChatToken: NextApiHandler<User> = async (req, res) => {
   checkCsrfHeader(req);
 
   let user: User | undefined;
@@ -39,7 +39,6 @@ export const getToken: NextApiHandler<{ chatAuthToken: string; }> = async (req, 
   let chatAuthToken = '';
   if (siteConfig.openhiveChatIframeIntegrationEnable) {
     const result = await getChatAuthToken(user.username);
-    logger.info('bamboo result: %o', result);
     if (result.success) {
       chatAuthToken = result.data.authToken;
     }
@@ -52,5 +51,5 @@ export const getToken: NextApiHandler<{ chatAuthToken: string; }> = async (req, 
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
   session.user = user;
   await session.save();
-  res.json({ chatAuthToken });
+  res.json(user);
 };
