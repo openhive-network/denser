@@ -123,10 +123,10 @@ create_temporary_tags:
 hafah-build:
   stage: build
   needs:
-    - create_tags
+    - create_temporary_tags
   trigger:
     project: 'hive/hafah'
-    branch: ${CI_PIPELINE_ID
+    branch: ${CI_PIPELINE_ID}
     strategy: depend
     forward:
       yaml_variables: false
