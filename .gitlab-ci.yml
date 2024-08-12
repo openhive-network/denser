@@ -41,6 +41,7 @@ variables:
   # Other settings
   CADDY_TAG: "2.7.6"
   PLAYWRIGHT_TAG: "v1.41.1-jammy"
+  PIPELINE_TRIGGER_TAG: "2.9.0"
 
 include:
   - template: Workflows/Branch-Pipelines.gitlab-ci.yml
@@ -91,6 +92,14 @@ include:
   tags:
     - public-runner-docker
     - hived-for-tests
+
+hafah-build:
+  stage: build
+  image: registry.gitlab.com/finestructure/pipeline-trigger:${PIPELINE_TRIGGER_TAG}
+  variables:
+    PROJECT_ID: 308
+  script: 
+    - trigger -a "${API_TOKEN}" -p "${HAFAH_PIPELINE_TOKEN}" -t ${HAFAH_VERSION} ${PROJECT_ID}
 
 mirrornet-haf-image-docker-build:
   stage: build
@@ -266,6 +275,7 @@ mirrornet-haf-node-replay:
   timeout: 3 hours
   needs:
     - mirrornet-haf-image-docker-build
+    - hafah-build
     - block_log_processing
   variables:
     GIT_STRATEGY: "clone"
