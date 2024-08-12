@@ -102,7 +102,7 @@ hafah-build:
     PROJECT_VERSION: ${HAFAH_VERSION}
     PROJECT_ID: 308
   script: 
-    - trigger -a "${API_TOKEN}" -p "${PIPELINE_TOKEN}" -t ${PROJECT_VERSION} ${PROJECT_ID}
+    - trigger --verbose --api-token "${API_TOKEN}" --pipeline-token "${PIPELINE_TOKEN}" --target-ref ${PROJECT_VERSION} ${PROJECT_ID}
   tags:
     - public-runner-docker
 
