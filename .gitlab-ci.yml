@@ -39,9 +39,10 @@ variables:
   BLOCK_LOG_SOURCE_DIR: "${BLOCK_LOG_SOURCE}"
 
   # Other settings
+  HAFAH_PROJECT_ID: 308
   CADDY_TAG: "2.7.6"
   PLAYWRIGHT_TAG: "v1.41.1-jammy"
-  PIPELINE_TRIGGER_TAG: "2.9.0"
+  # PIPELINE_TRIGGER_TAG: "2.9.0"
 
 include:
   - template: Workflows/Branch-Pipelines.gitlab-ci.yml
@@ -93,16 +94,52 @@ include:
     - public-runner-docker
     - hived-for-tests
 
-hafah-build:
+.hafah-build:
   stage: build
   extends: .job-defaults
   image: registry.gitlab.com/finestructure/pipeline-trigger:${PIPELINE_TRIGGER_TAG}
   variables:
     PIPELINE_TOKEN: ${HAFAH_PIPELINE_TOKEN}
     PROJECT_VERSION: ${HAFAH_VERSION}
-    PROJECT_ID: 308
+    PROJECT_ID: ${HAFAH_PROJECT_ID}
   script: 
-    - trigger --verbose --api-token "${API_TOKEN}" --pipeline-token "${PIPELINE_TOKEN}" --target-ref ${PROJECT_VERSION} ${PROJECT_ID}
+    - trigger --verbose --api-token "${API_TOKEN}" --pipeline-token "${PIPELINE_TOKEN}" --target-ref ${PROJECT_VERSION} --host "${CI_SERVER_HOST}" ${PROJECT_ID}
+  tags:
+    - public-runner-docker
+
+create_temporary_tags:
+  stage: build
+  image: "registry.gitlab.syncad.com/hive/hive/ci-base-image${TEST_IMAGE_TAG}"
+  script:
+    - |
+      set -e
+
+      curl --request POST --header "PRIVATE-TOKEN: ${API_TOKEN}" --url "${CI_API_V4_URL}/projects/${HAFAH_PROJECT_ID}/repository/tags?tag_name=${CI_PIPELINE_ID}&ref=${HAFAH_VERSION}"
+
+      curl --header "PRIVATE-TOKEN: <your_access_token>" --url "https://gitlab.example.com/api/v4/projects/${HAFAH_PROJECT_ID}/repository/tags/${CI_PIPELINE_ID}"
+  tags:
+    - public-runner-docker
+
+hafah-build:
+  stage: build
+  needs:
+    - create_tags
+  trigger:
+    project: 'hive/hafah'
+    branch: ${CI_PIPELINE_ID
+    strategy: depend
+    forward:
+      yaml_variables: false
+      pipeline_variables: false
+
+remove_temporary_tags:
+  stage: build
+  needs:
+    - hafah-build
+  image: "registry.gitlab.syncad.com/hive/hive/ci-base-image${TEST_IMAGE_TAG}"
+  script:
+    - |
+      curl --request DELETE --header "PRIVATE-TOKEN: ${API_TOKEN}" --url "${CI_API_V4_URL}/projects/${HAFAH_PROJECT_ID}/repository/tags/tag_name=${CI_PIPELINE_ID}"
   tags:
     - public-runner-docker
 
@@ -234,7 +271,7 @@ block-log-extraction:
 
 block_log_processing:
   extends: .job-defaults
-  image: "registry.gitlab.syncad.com/hive/hive/ci-base-image$TEST_IMAGE_TAG"
+  image: "registry.gitlab.syncad.com/hive/hive/ci-base-image${TEST_IMAGE_TAG}"
   stage: replay-and-sync
   needs:
     - mirrornet-haf-image-docker-build
