@@ -95,11 +95,16 @@ include:
 
 hafah-build:
   stage: build
+  extends: .job-defaults
   image: registry.gitlab.com/finestructure/pipeline-trigger:${PIPELINE_TRIGGER_TAG}
   variables:
+    PIPELINE_TOKEN: ${HAFAH_PIPELINE_TOKEN}
+    PROJECT_VERSION: ${HAFAH_VERSION}
     PROJECT_ID: 308
   script: 
-    - trigger -a "${API_TOKEN}" -p "${HAFAH_PIPELINE_TOKEN}" -t ${HAFAH_VERSION} ${PROJECT_ID}
+    - trigger -a "${API_TOKEN}" -p "${PIPELINE_TOKEN}" -t ${PROJECT_VERSION} ${PROJECT_ID}
+  tags:
+    - public-runner-docker
 
 mirrornet-haf-image-docker-build:
   stage: build
