@@ -3,6 +3,7 @@ import {JSDOM} from 'jsdom';
 import 'mocha';
 import {Log} from '../../Log';
 import {DefaultRenderer, RendererOptions} from './DefaultRenderer';
+import {SpoilerPlugin} from './plugins/SpoilerPlugin';
 
 describe('DefaultRender', () => {
     const defaultOptions: RendererOptions = {
@@ -21,7 +22,8 @@ describe('DefaultRender', () => {
         usertagUrlFn: (account: string) => `https://hive.blog/@${account}`,
         hashtagUrlFn: (hashtag: string) => `/trending/${hashtag}`,
         isLinkSafeFn: (_url: string) => true, // !!url.match(/^(\/(?!\/)|https:\/\/hive.blog)/),
-        addExternalCssClassToMatchingLinksFn: (url: string) => !url.match(/^(\/(?!\/)|https:\/\/hive.blog)/)
+        addExternalCssClassToMatchingLinksFn: (url: string) => !url.match(/^(\/(?!\/)|https:\/\/hive.blog)/),
+        plugins: [new SpoilerPlugin()]
     };
 
     const tests = [
@@ -194,6 +196,11 @@ describe('DefaultRender', () => {
             raw: 'https://vimeo.com/174544848',
             expected:
                 '<p><div class="videoWrapper"><iframe src="https://player.vimeo.com/video/174544848" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div></p>'
+        },
+        {
+            name: 'Renders spoiler tags correctly',
+            raw: '>! [Click to reveal] Hidden content\n> More hidden text',
+            expected: '<details class="spoiler"><summary>Click to reveal</summary><p>Hidden content\nMore hidden text</p></details>'
         }
     ];
 

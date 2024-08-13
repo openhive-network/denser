@@ -3,6 +3,7 @@ import {Remarkable} from 'remarkable';
 import {SecurityChecker} from '../../security/SecurityChecker';
 import {HtmlDOMParser} from './embedder/HtmlDOMParser';
 import {Localization, LocalizationOptions} from './Localization';
+import type {RendererPlugin} from './plugins/RendererPlugin';
 import {PreliminarySanitizer} from './sanitization/PreliminarySanitizer';
 import {TagTransformingSanitizer} from './sanitization/TagTransformingSanitizer';
 
@@ -10,6 +11,7 @@ export class DefaultRenderer {
     private options: RendererOptions;
     private tagTransformingSanitizer: TagTransformingSanitizer;
     private domParser: HtmlDOMParser;
+    private plugins: RendererPlugin[] = [];
 
     public constructor(options: RendererOptions, localization: LocalizationOptions = Localization.DEFAULT) {
         this.validate(options);
@@ -45,6 +47,8 @@ export class DefaultRenderer {
             },
             localization
         );
+
+        this.plugins = options.plugins || [];
     }
 
     public render(input: string): string {
@@ -53,8 +57,10 @@ export class DefaultRenderer {
     }
 
     private doRender(text: string): string {
-        text = PreliminarySanitizer.preliminarySanitize(text);
+        // Pre-process with plugins
+        text = this.runPluginPhase('preProcess', text);
 
+        text = PreliminarySanitizer.preliminarySanitize(text);
         const isHtml = this.isHtml(text);
         text = isHtml ? text : this.renderMarkdown(text);
 
@@ -64,7 +70,17 @@ export class DefaultRenderer {
         SecurityChecker.checkSecurity(text, {allowScriptTag: this.options.allowInsecureScriptTags});
         text = this.domParser.embedder.insertAssets(text);
 
+        // Post-process with plugins
+        text = this.runPluginPhase('postProcess', text);
+
         return text;
+    }
+
+    private runPluginPhase(phase: 'preProcess' | 'postProcess', text: string): string {
+        return this.plugins.reduce((processedText, plugin) => {
+            const processor = plugin[phase];
+            return processor ? processor(processedText) : processedText;
+        }, text);
     }
 
     private renderMarkdown(text: string): string {
@@ -145,4 +161,5 @@ export interface RendererOptions {
     usertagUrlFn: (account: string) => string;
     isLinkSafeFn: (url: string) => boolean;
     addExternalCssClassToMatchingLinksFn: (url: string) => boolean;
+    plugins?: RendererPlugin[];
 }

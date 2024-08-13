@@ -135,6 +135,9 @@ https://youtu.be/B7C83L6iWJQ
                 isLinkSafeFn: (url) => true,
                 addExternalCssClassToMatchingLinksFn: (url) => true,
                 ipfsPrefix: "https://ipfs.io/ipfs/",
+                plugins: [
+                    new HiveContentRenderer.SpoilerPlugin()
+                ]
             });
 
             $(document).ready(() => {

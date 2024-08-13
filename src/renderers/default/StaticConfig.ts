@@ -110,7 +110,7 @@ export class StaticConfig {
     div, iframe, del,
     a, p, b, i, q, br, ul, li, ol, img, h1, h2, h3, h4, h5, h6, hr,
     blockquote, pre, code, em, strong, center, table, thead, tbody, tr, th, td,
-    strike, sup, sub
+    strike, sup, sub, details, summary
 `
             .trim()
             .split(/,\s*/)
