@@ -94,6 +94,9 @@ include:
     - public-runner-docker
     - hived-for-tests
 
+# We need to creat temporary tags to be used with Trigger API since it doesn't work with commit SHAs.
+# We also need to skip CI when pushing tags, since we want to run just the Docker build job and not the
+# entire pipeline.
 create_temporary_tags:
   stage: build
   image: "registry.gitlab.syncad.com/hive/hive/ci-base-image${TEST_IMAGE_TAG}"
@@ -111,35 +114,28 @@ create_temporary_tags:
       git tag ${CI_PIPELINE_ID} ${HAFAH_VERSION}
       git push origin ${CI_PIPELINE_ID} -o ci.skip
       popd
-      # curl --request POST --header "PRIVATE-TOKEN: ${API_TOKEN}" --url "${CI_API_V4_URL}/projects/${HAFAH_PROJECT_ID}/repository/tags?tag_name=${CI_PIPELINE_ID}&ref=${HAFAH_VERSION}"
-      # curl --header "PRIVATE-TOKEN: <your_access_token>" --url "{CI_API_V4_URL}/projects/${HAFAH_PROJECT_ID}/repository/tags/${CI_PIPELINE_ID}"
   tags:
     - public-runner-docker
 
-hafah-build:
+# For some reason a regular trigger job fails to recognize temporary tags, so we have to use a workaround
+.external-build:
   stage: build
   extends: .job-defaults
   image: registry.gitlab.com/finestructure/pipeline-trigger:${PIPELINE_TRIGGER_TAG}
   variables:
-    PIPELINE_TOKEN: ${HAFAH_PIPELINE_TOKEN}
-    PROJECT_VERSION: ${HAFAH_VERSION}
-    PROJECT_ID: ${HAFAH_PROJECT_ID}
+    PIPELINE_TOKEN: 
+    PROJECT_VERSION: 
+    PROJECT_ID: 
   script: 
     - trigger --verbose --api-token "${API_TOKEN}" --pipeline-token "${PIPELINE_TOKEN}" --target-ref ${CI_PIPELINE_ID} --host "${CI_SERVER_HOST}" ${PROJECT_ID}
   tags:
     - public-runner-docker
 
-.hafah-build:
-  stage: build
-  needs:
-    - create_temporary_tags
-  trigger:
-    project: 'hive/hafah'
-    branch: ${CI_PIPELINE_ID}
-    strategy: depend
-    forward:
-      yaml_variables: false
-      pipeline_variables: false
+hafah-build:
+  variables:
+    PIPELINE_TOKEN: ${HAFAH_PIPELINE_TOKEN}
+    PROJECT_VERSION: ${HAFAH_VERSION}
+    PROJECT_ID: ${HAFAH_PROJECT_ID}
 
 remove_temporary_tags:
   stage: build
@@ -151,8 +147,6 @@ remove_temporary_tags:
   script:
     - |
       set -e
-      
-      # curl --request DELETE --header "PRIVATE-TOKEN: ${API_TOKEN}" --url "${CI_API_V4_URL}/projects/${HAFAH_PROJECT_ID}/repository/tags/tag_name=${CI_PIPELINE_ID}"
       
       pushd hafah
       git push origin :refs/tags/${CI_PIPELINE_ID}
