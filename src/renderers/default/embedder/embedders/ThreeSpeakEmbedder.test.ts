@@ -29,6 +29,15 @@ describe('ThreeSpeakEmbedder', () => {
             const metadata = embedder.getEmbedMetadata(url);
             expect(metadata).to.deep.equal({
                 id: 'username/video-id',
+                url: 'https://3speak.tv/embed?v=username/video-id'
+            });
+        });
+
+        it('should handle watch URLs', () => {
+            const url = 'https://3speak.tv/watch?v=username/video-id';
+            const metadata = embedder.getEmbedMetadata(url);
+            expect(metadata).to.deep.equal({
+                id: 'username/video-id',
                 url: 'https://3speak.tv/watch?v=username/video-id'
             });
         });
