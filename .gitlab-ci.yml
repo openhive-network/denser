@@ -132,6 +132,7 @@ create_temporary_tags:
     - public-runner-docker
 
 hafah-build:
+  extends: .external-build
   variables:
     PIPELINE_TOKEN: ${HAFAH_PIPELINE_TOKEN}
     PROJECT_VERSION: ${HAFAH_VERSION}
