@@ -15,6 +15,7 @@ import {
 } from '@ui/components';
 import { ReactNode, useState } from 'react';
 import { useTranslation } from 'next-i18next';
+import { transactionService } from '@transaction/index';
 
 type Role = {
   name: string;
@@ -38,7 +39,7 @@ const AddRole = ({
   const [selectedRole, setSelectedRole] = useState<string>(targetedUser ? targetedUser.role : 'member');
   const [userFromList, setUserFromList] = useState(targetedUser?.name ?? '');
   const { t } = useTranslation('common_blog');
-
+  // const broadcastResult = await transactionService
   const onSave = () => {
     setOpen(false);
   };
@@ -122,7 +123,7 @@ const AddRole = ({
         <div>
           {roles.map((role) => (
             <div key={role.name}>
-              <span className="font-bold">{role.name}</span>
+              <span className="font-bold">{role.label}</span>
               {` - ${role.description}`}
             </div>
           ))}

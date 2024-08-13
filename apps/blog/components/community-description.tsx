@@ -31,7 +31,7 @@ const CommunityDescription = ({
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
   const userRole = data.team.find((e) => e[0] === user.username);
-
+  const userCanModerate = data.team.find((e) => e[0] === user.username);
   useEffect(() => {
     setIsSubscribed(data.context.subscribed);
   }, [data.context.subscribed]);
@@ -52,7 +52,7 @@ const CommunityDescription = ({
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap justify-center gap-2 text-sm">
-            <SubsListDialog title={data.title} subs={subs}>
+            <SubsListDialog title={data.title} subs={subs} moderateEnabled={Boolean(userCanModerate)}>
               <div className="flex flex-col items-center" data-testid="community-subscribers">
                 {data.subscribers}
                 <span className="text-center text-xs">{t('communities.buttons.subscribers')}</span>

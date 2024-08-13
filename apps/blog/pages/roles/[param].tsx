@@ -118,7 +118,7 @@ const RolesPage: FC = () => {
             )}
           </div>
           <div>
-            <div className="mx-2 text-lg">
+            <div className="mx-2 text-lg xl:mt-4">
               <Link className="text-destructive" href={`/trending/${communityData?.name}`}>
                 {communityData?.title}
               </Link>

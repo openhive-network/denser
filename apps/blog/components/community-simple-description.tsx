@@ -31,6 +31,7 @@ const CommunitySimpleDescription = ({
   }, [data.context.subscribed]);
 
   const userRole = data.team.find((e) => e[0] === user.username);
+  const userCanModerate = data.team.find((e) => e[0] === user.username);
 
   return (
     <Card
@@ -44,7 +45,7 @@ const CommunitySimpleDescription = ({
         </CardTitle>
         <div className="flex">
           <div className="flex w-full text-sm">
-            <SubsListDialog title={data.title} subs={subs}>
+            <SubsListDialog title={data.title} subs={subs} moderateEnabled={Boolean(userCanModerate)}>
               <div className="flex flex-col items-center" data-testid="community-simple-subscribers">
                 {data.subscribers} {t('communities.buttons.subscribers')}
               </div>
