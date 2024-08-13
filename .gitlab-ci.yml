@@ -42,7 +42,7 @@ variables:
   HAFAH_PROJECT_ID: 308
   CADDY_TAG: "2.7.6"
   PLAYWRIGHT_TAG: "v1.41.1-jammy"
-  # PIPELINE_TRIGGER_TAG: "2.9.0"
+  PIPELINE_TRIGGER_TAG: "2.9.0"
 
 include:
   - template: Workflows/Branch-Pipelines.gitlab-ci.yml
@@ -94,19 +94,6 @@ include:
     - public-runner-docker
     - hived-for-tests
 
-.hafah-build:
-  stage: build
-  extends: .job-defaults
-  image: registry.gitlab.com/finestructure/pipeline-trigger:${PIPELINE_TRIGGER_TAG}
-  variables:
-    PIPELINE_TOKEN: ${HAFAH_PIPELINE_TOKEN}
-    PROJECT_VERSION: ${HAFAH_VERSION}
-    PROJECT_ID: ${HAFAH_PROJECT_ID}
-  script: 
-    - trigger --verbose --api-token "${API_TOKEN}" --pipeline-token "${PIPELINE_TOKEN}" --target-ref ${PROJECT_VERSION} --host "${CI_SERVER_HOST}" ${PROJECT_ID}
-  tags:
-    - public-runner-docker
-
 create_temporary_tags:
   stage: build
   image: "registry.gitlab.syncad.com/hive/hive/ci-base-image${TEST_IMAGE_TAG}"
@@ -130,6 +117,19 @@ create_temporary_tags:
     - public-runner-docker
 
 hafah-build:
+  stage: build
+  extends: .job-defaults
+  image: registry.gitlab.com/finestructure/pipeline-trigger:${PIPELINE_TRIGGER_TAG}
+  variables:
+    PIPELINE_TOKEN: ${HAFAH_PIPELINE_TOKEN}
+    PROJECT_VERSION: ${HAFAH_VERSION}
+    PROJECT_ID: ${HAFAH_PROJECT_ID}
+  script: 
+    - trigger --verbose --api-token "${API_TOKEN}" --pipeline-token "${PIPELINE_TOKEN}" --target-ref ${CI_PIPELINE_ID} --host "${CI_SERVER_HOST}" ${PROJECT_ID}
+  tags:
+    - public-runner-docker
+
+.hafah-build:
   stage: build
   needs:
     - create_temporary_tags
