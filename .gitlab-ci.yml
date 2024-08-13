@@ -27,7 +27,7 @@ variables:
   API_NODE_VERSION: "3cdc5e77"
   HAF_COMMIT: "0aef1bf01fd6ee0d23f12a21038881c30672146a"
   HIVEMIND_INSTANCE_VERSION: "2abda883"
-  HAFAH_VERSION: "4760eebf"
+  HAFAH_VERSION: "2e75e097"
   HIVEMIND_INSTANCE_IMAGE: registry.gitlab.syncad.com/hive/hivemind/instance
   HAFAH_REGISTRY: registry.gitlab.syncad.com/hive/hafah/instance
   # BLOCK_LOG_SOURCE_DIR: "/blockchain/block_log_mirror_44"
@@ -110,13 +110,22 @@ include:
 create_temporary_tags:
   stage: build
   image: "registry.gitlab.syncad.com/hive/hive/ci-base-image${TEST_IMAGE_TAG}"
+  before_script:
+    - |
+      set -e
+      git config --global user.email "${GITLAB_USER_EMAIL}"
+      git config --global user.name "${GITLAB_USER_NAME}"
+      git clone https://gitlab-ci-token:${HAFAH_ACCESS_TOKEN}@gitlab.syncad.com/hive/HAfAH.git hafah
   script:
     - |
       set -e
-
-      curl --request POST --header "PRIVATE-TOKEN: ${API_TOKEN}" --url "${CI_API_V4_URL}/projects/${HAFAH_PROJECT_ID}/repository/tags?tag_name=${CI_PIPELINE_ID}&ref=${HAFAH_VERSION}"
-
-      curl --header "PRIVATE-TOKEN: <your_access_token>" --url "https://gitlab.example.com/api/v4/projects/${HAFAH_PROJECT_ID}/repository/tags/${CI_PIPELINE_ID}"
+      
+      pushd hafah
+      git tag ${CI_PIPELINE_ID} ${HAFAH_VERSION}
+      git push origin ${CI_PIPELINE_ID} -o ci.skip
+      popd
+      # curl --request POST --header "PRIVATE-TOKEN: ${API_TOKEN}" --url "${CI_API_V4_URL}/projects/${HAFAH_PROJECT_ID}/repository/tags?tag_name=${CI_PIPELINE_ID}&ref=${HAFAH_VERSION}"
+      # curl --header "PRIVATE-TOKEN: <your_access_token>" --url "{CI_API_V4_URL}/projects/${HAFAH_PROJECT_ID}/repository/tags/${CI_PIPELINE_ID}"
   tags:
     - public-runner-docker
 
@@ -137,9 +146,17 @@ remove_temporary_tags:
   needs:
     - hafah-build
   image: "registry.gitlab.syncad.com/hive/hive/ci-base-image${TEST_IMAGE_TAG}"
+  before_script:
+    - !reference [create_temporary_tags, before_script]
   script:
     - |
-      curl --request DELETE --header "PRIVATE-TOKEN: ${API_TOKEN}" --url "${CI_API_V4_URL}/projects/${HAFAH_PROJECT_ID}/repository/tags/tag_name=${CI_PIPELINE_ID}"
+      set -e
+      
+      # curl --request DELETE --header "PRIVATE-TOKEN: ${API_TOKEN}" --url "${CI_API_V4_URL}/projects/${HAFAH_PROJECT_ID}/repository/tags/tag_name=${CI_PIPELINE_ID}"
+      
+      pushd hafah
+      git push origin :refs/tags/${CI_PIPELINE_ID}
+      popd
   tags:
     - public-runner-docker
 

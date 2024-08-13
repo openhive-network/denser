@@ -175,7 +175,7 @@ Configure the stack using the command:
   --hivemind-registry=registry.gitlab.syncad.com/hive/hivemind/instance \
   --hivemind-version=2abda883 \
   --hafah-registry=registry.gitlab.syncad.com/hive/hafah/instance \
-  --hafah-version=4760eebf \
+  --hafah-version=2e75e097 \
   --env-path="/full/path/to/mirronet-stack.env"
 ```
 
