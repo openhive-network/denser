@@ -40,6 +40,7 @@ variables:
 
   # Other settings
   HAFAH_PROJECT_ID: 308
+  HIVEMIND_PROJECT_ID: 213
   CADDY_TAG: "2.7.6"
   PLAYWRIGHT_TAG: "v1.41.1-jammy"
   PIPELINE_TRIGGER_TAG: "2.9.0"
