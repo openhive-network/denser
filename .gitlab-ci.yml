@@ -26,7 +26,7 @@ variables:
   HIVE_API_NODE_VERSION: 1.27.5
   API_NODE_VERSION: "3cdc5e77"
   HAF_COMMIT: "0aef1bf01fd6ee0d23f12a21038881c30672146a"
-  HIVEMIND_INSTANCE_VERSION: "2abda883"
+  HIVEMIND_INSTANCE_VERSION: "819a059a"
   HAFAH_VERSION: "2e75e097"
   HIVEMIND_INSTANCE_IMAGE: registry.gitlab.syncad.com/hive/hivemind/instance
   HAFAH_REGISTRY: registry.gitlab.syncad.com/hive/hafah/instance
@@ -106,12 +106,18 @@ create_temporary_tags:
       git config --global user.email "${GITLAB_USER_EMAIL}"
       git config --global user.name "${GITLAB_USER_NAME}"
       git clone https://gitlab-ci-token:${HAFAH_ACCESS_TOKEN}@gitlab.syncad.com/hive/HAfAH.git hafah
+      git clone https://gitlab-ci-token:${HAFAH_ACCESS_TOKEN}@gitlab.syncad.com/hive/hivemind.git hivemind
   script:
     - |
       set -e
       
       pushd hafah
       git tag ${CI_PIPELINE_ID} ${HAFAH_VERSION}
+      git push origin ${CI_PIPELINE_ID} -o ci.skip
+      popd
+
+      pushd hivemind
+      git tag ${CI_PIPELINE_ID} ${HIVEMIND_INSTANCE_VERSION}
       git push origin ${CI_PIPELINE_ID} -o ci.skip
       popd
   tags:
@@ -150,6 +156,10 @@ remove_temporary_tags:
       set -e
       
       pushd hafah
+      git push origin :refs/tags/${CI_PIPELINE_ID}
+      popd
+
+      pushd hivemind
       git push origin :refs/tags/${CI_PIPELINE_ID}
       popd
   tags:
