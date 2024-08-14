@@ -128,6 +128,8 @@ create_temporary_tags:
   stage: build
   extends: .job-defaults
   image: registry.gitlab.com/finestructure/pipeline-trigger:${PIPELINE_TRIGGER_TAG}
+  needs:
+    - create_temporary_tags
   variables:
     PIPELINE_TOKEN: 
     PROJECT_VERSION: 
@@ -144,10 +146,18 @@ hafah-build:
     PROJECT_VERSION: ${HAFAH_VERSION}
     PROJECT_ID: ${HAFAH_PROJECT_ID}
 
+hivemind-build:
+  extends: .external-build
+  variables:
+    PIPELINE_TOKEN: ${HIVEMIND_PIPELINE_TOKEN}
+    PROJECT_VERSION: ${HIVEMIND_INSTANCE_VERSION}
+    PROJECT_ID: ${HIVEMIND_PROJECT_ID}
+
 remove_temporary_tags:
   stage: build
   needs:
     - hafah-build
+    - hivemind-build
   image: "registry.gitlab.syncad.com/hive/hive/ci-base-image${TEST_IMAGE_TAG}"
   before_script:
     - !reference [create_temporary_tags, before_script]
@@ -340,6 +350,7 @@ mirrornet-haf-node-replay:
   needs:
     - mirrornet-haf-image-docker-build
     - hafah-build
+    - hivemind-build
     - block_log_processing
   variables:
     GIT_STRATEGY: "clone"
