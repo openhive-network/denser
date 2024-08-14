@@ -106,7 +106,7 @@ create_temporary_tags:
       git config --global user.email "${GITLAB_USER_EMAIL}"
       git config --global user.name "${GITLAB_USER_NAME}"
       git clone https://gitlab-ci-token:${HAFAH_ACCESS_TOKEN}@gitlab.syncad.com/hive/HAfAH.git hafah
-      git clone https://gitlab-ci-token:${HAFAH_ACCESS_TOKEN}@gitlab.syncad.com/hive/hivemind.git hivemind
+      git clone https://gitlab-ci-token:${HIVEMIND_ACCESS_TOKEN}@gitlab.syncad.com/hive/hivemind.git hivemind
   script:
     - |
       set -e
