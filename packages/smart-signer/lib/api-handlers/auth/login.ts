@@ -72,10 +72,12 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
   }
 
   let chatAuthToken = '';
+  const oauthConsent: { [key: string]: boolean } = {};
   if (siteConfig.openhiveChatIframeIntegrationEnable) {
     const result = await getChatAuthToken(username);
     if (result.success) {
       chatAuthToken = result.data.authToken;
+      oauthConsent[siteConfig.openhiveChatClientId] = true;
     }
   }
 
@@ -87,7 +89,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
     keyType,
     authenticateOnBackend,
     chatAuthToken,
-    oauthConsent: {},
+    oauthConsent,
   };
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
   session.user = user;

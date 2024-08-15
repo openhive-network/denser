@@ -40,8 +40,13 @@ export const postLoginSchema = z.object({
     authenticateOnBackend: z.boolean(),
     username,
 });
-
 export type PostLoginSchema = z.infer<typeof postLoginSchema>;
+
+export const postConsentSchema = z.object({
+  oauthClientId: z.string(),
+  consent: z.boolean(),
+});
+export type PostConsentSchema = z.infer<typeof postConsentSchema>;
 
 export type Signatures = PostLoginSchema["signatures"];
 

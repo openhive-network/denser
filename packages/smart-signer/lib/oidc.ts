@@ -6,6 +6,7 @@ import { getHiveUserProfile } from './get-hive-user-profile';
 const logger = getLogger('app');
 
 export interface OidcClientDetails {
+  clientId: string;
   clientName: string;
   clientUri: string;
   logoUri: string;

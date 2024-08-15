@@ -2,22 +2,30 @@ import createHttpError from 'http-errors';
 import { NextApiHandler } from 'next';
 import { getIronSession } from 'iron-session';
 import { sessionOptions } from '@smart-signer/lib/session';
+import { getAccount } from '@transaction/lib/hive';
+import { postLoginSchema, PostLoginSchema } from '@smart-signer/lib/auth/utils';
 import { User } from '@smart-signer/types/common';
 import { IronSessionData } from '@smart-signer/types/common';
+import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { checkCsrfHeader } from '@smart-signer/lib/csrf-protection';
+import { verifyLoginChallenge } from '@smart-signer/lib/verify-login-challenge';
+import { verifyLogin } from '@smart-signer/lib/verify-login';
+import { getLoginChallengeFromTransactionForLogin } from '@smart-signer/lib/login-operation'
 import { getLogger } from '@hive/ui/lib/logging';
 import { siteConfig } from '@hive/ui/config/site';
 import { getChatAuthToken } from '@smart-signer/lib/rocket-chat';
+import { postConsentSchema, PostConsentSchema } from '@smart-signer/lib/auth/utils';
 
 const logger = getLogger('app');
 
+
 /**
- * Create a new auth token in Rocket Chat and return it in User object.
+ * Register in session user consent in Oauth flow.
  *
  * @param {*} req
  * @param {*} res
  */
-export const getChatToken: NextApiHandler<User> = async (req, res) => {
+export const registerConsent: NextApiHandler<User> = async (req, res) => {
   checkCsrfHeader(req);
 
   let user: User | undefined;
@@ -30,23 +38,13 @@ export const getChatToken: NextApiHandler<User> = async (req, res) => {
     logger.error('getToken error:', error);
   }
 
-  if (!(user?.isLoggedIn && user.username && user.oauthConsent[siteConfig.openhiveChatClientId])) {
+  if (!(user?.isLoggedIn && user.username)) {
     throw new createHttpError.Unauthorized();
   }
 
+  const data: PostConsentSchema = await postConsentSchema.parseAsync(req.body);
+  user.oauthConsent[data.oauthClientId] = data.consent;
 
-  let chatAuthToken = '';
-  if (siteConfig.openhiveChatIframeIntegrationEnable) {
-    const result = await getChatAuthToken(user.username);
-    if (result.success) {
-      chatAuthToken = result.data.authToken;
-    }
-  }
-
-  user = {
-    ...user,
-    chatAuthToken,
-  };
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
   session.user = user;
   await session.save();

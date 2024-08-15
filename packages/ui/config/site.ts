@@ -38,6 +38,7 @@ export const siteConfig = {
   oidcJwksKeys: process.env[`${SERVER_VAR_PREFIX}OIDC_JWKS_KEYS`] || '[]',
 
   // Rocket Chat Widget
+  openhiveChatClientId: env('OPENHIVE_CHAT_CLIENT_ID') || 'openhive_chat',
   openhiveChatApiUri: env('OPENHIVE_CHAT_API_URI') || 'https://openhive.chat',
   openhiveChatUri: env('OPENHIVE_CHAT_URI') || 'https://openhive.chat',
   openhiveChatIframeIntegrationEnable: env('OPENHIVE_CHAT_IFRAME_INTEGRATION_ENABLE') || 'no',

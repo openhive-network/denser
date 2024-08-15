@@ -4,6 +4,7 @@ import { getLogger } from '@ui/lib/logging';
 import { getIronSession } from 'iron-session';
 import { IronSessionData } from '@smart-signer/types/common';
 import { sessionOptions } from './session';
+import { postConsentSchema, PostConsentSchema } from '@smart-signer/lib/auth/utils';
 
 const logger = getLogger('app');
 
@@ -14,13 +15,6 @@ export const consentPageController: GetServerSideProps = async (ctx) => {
   if (!oidc) {
     if (uid) return { notFound: true };
     return { props: {} };
-  }
-
-  // Only accept GET and POST requests.
-  if (!['GET', 'POST'].includes(req.method || '')) return { notFound: true };
-
-  if (req.method === 'POST') {
-    // TODO Process submission
   }
 
   try {
@@ -54,13 +48,13 @@ export const consentPageController: GetServerSideProps = async (ctx) => {
 
       const clientDetails = await oidc.Client.find(params.client_id as string);
       const oidcClientDetails: OidcClientDetails = {
+        clientId: params.client_id,
         clientName: clientDetails?.clientName || '',
         clientUri: clientDetails?.clientUri || '',
         logoUri: clientDetails?.logoUri || '',
         policyUri: clientDetails?.policyUri || '',
         tosUri: clientDetails?.tosUri || '',
       };
-      // logger.info('consentPageController oidcClientDetails: %o', oidcClientDetails);
 
       if (Object.hasOwnProperty.call(user.oauthConsent, params.client_id)) {
         if (user?.oauthConsent[params.client_id]) {
