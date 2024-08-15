@@ -1,8 +1,19 @@
 import { GetServerSideProps, GetServerSidePropsResult, Redirect } from 'next';
 import { consentPageController } from '@smart-signer/lib/consent-page-controller';
 import { getTranslations } from '../../../lib/get-translations';
+import { getLogger } from '@ui/lib/logging';
+import { oidc, OidcClientDetails } from '@smart-signer/lib/oidc';
 
-export default function ConsentPage() {
+const logger = getLogger('app');
+
+export default function ConsentPage({
+  oidcClientDetails,
+  redirectTo
+}: {
+  oidcClientDetails: OidcClientDetails;
+  redirectTo: string;
+}) {
+  logger.info('oidcClientDetails: %o', oidcClientDetails)
   return (
     <div
       className="mx-2 flex flex-col gap-24 pt-16 sm:flex-row

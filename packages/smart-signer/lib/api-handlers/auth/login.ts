@@ -87,6 +87,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
     keyType,
     authenticateOnBackend,
     chatAuthToken,
+    oauthConsent: {},
   };
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
   session.user = user;

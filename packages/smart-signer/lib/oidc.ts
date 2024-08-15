@@ -5,6 +5,14 @@ import { getHiveUserProfile } from './get-hive-user-profile';
 
 const logger = getLogger('app');
 
+export interface OidcClientDetails {
+  clientName: string;
+  clientUri: string;
+  logoUri: string;
+  policyUri: string;
+  tosUri: string;
+}
+
 /**
  * Configuration and initialization for
  * [node-oidc-provider](https://github.com/panva/node-oidc-provider)

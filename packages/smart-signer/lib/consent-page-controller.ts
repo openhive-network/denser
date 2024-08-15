@@ -1,6 +1,9 @@
-import { oidc } from '@smart-signer/lib/oidc';
+import { oidc, OidcClientDetails } from '@smart-signer/lib/oidc';
 import { GetServerSideProps } from 'next';
 import { getLogger } from '@ui/lib/logging';
+import { getIronSession } from 'iron-session';
+import { IronSessionData } from '@smart-signer/types/common';
+import { sessionOptions } from './session';
 
 const logger = getLogger('app');
 
@@ -31,8 +34,59 @@ export const consentPageController: GetServerSideProps = async (ctx) => {
       } = interactionDetails as any;
 
       if (name !== "consent") {
+        logger.info(`Invalid prompt name: ${name}, throwing error`);
         throw new Error(`Invalid prompt name: ${name}`);
       }
+
+      const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
+      const user = session.user;
+      logger.info('User: %o', user);
+
+      if (!user) {
+        logger.info('No user, throwing error');
+        throw new Error('No user in session');
+      }
+
+      //
+      // The stuff below can be used to display consent page for user,
+      // instead of blind consent, which we do later.
+      //
+
+      const clientDetails = await oidc.Client.find(params.client_id as string);
+      const oidcClientDetails: OidcClientDetails = {
+        clientName: clientDetails?.clientName || '',
+        clientUri: clientDetails?.clientUri || '',
+        logoUri: clientDetails?.logoUri || '',
+        policyUri: clientDetails?.policyUri || '',
+        tosUri: clientDetails?.tosUri || '',
+      };
+      // logger.info('consentPageController oidcClientDetails: %o', oidcClientDetails);
+
+      if (Object.hasOwnProperty.call(user.oauthConsent, params.client_id)) {
+        if (user?.oauthConsent[params.client_id]) {
+          // User already consented to this client_id. We don't need to
+          // display consent page.
+          logger.info('No need to display consent page');
+        } else {
+          // User already not consented to given client_id. We
+          // need to complete oauth flow, because of negative consent.
+          logger.info('User did not consent');
+          throw new Error('User did not consent');
+        }
+      } else {
+        // User never consented nor not consented to given client_id. We
+        // need to display consent page.
+        logger.info('We need to display consent page');
+        return {
+          props: {
+            oidcClientDetails,
+            redirectTo: interactionDetails.returnTo
+          }
+        };
+      }
+
+      // From here we build a successful grant object without asking
+      // user about consent. We'll not display any consent page then.
 
       const grant = interactionDetails.grantId
       ? await oidc.Grant.find(interactionDetails.grantId)
@@ -71,6 +125,7 @@ export const consentPageController: GetServerSideProps = async (ctx) => {
       logger.info('consentPageController: no uid');
     }
   } catch (e) {
+    logger.error('Error in ConsentController: %o', e);
     // throw e;
     // Do something wiser here.
     res.statusCode = 404;
