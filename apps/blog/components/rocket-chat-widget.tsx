@@ -74,7 +74,7 @@ const RocketChatWidget = () => {
   const iframeTitle = 'Chat';
   const tooltip = 'Chat';
   const { user } = useUser();
-  const { loginType, chatAuthToken } = user;
+  const { loginType, chatAuthToken, oauthConsent } = user;
   const [init, setInit] = useState(true);
   const [badgeContent, setBadgeContent] = useState(0);
   const [disabled, setDisabled] = useState(true);
@@ -129,12 +129,13 @@ const RocketChatWidget = () => {
         // token. Probably user logged out in our iframe. We should
         // obtain another, valid token from RC and try to login again.
         logger.info('We should obtain valid token and try to login with it');
-        getChatAuthToken.mutateAsync();
+        getChatAuthToken.mutateAsync().catch(logger.error);
       }
     }
 
     // User has logged out.
     if (event.data.eventName === 'Custom_Script_Logged_Out') {
+      setOpen(false);
       setDisabled(true);
     }
   };
@@ -157,9 +158,10 @@ const RocketChatWidget = () => {
         if (isIframeLoaded) {
           chatLogin({ chatAuthToken, loginType }, iframeRef);
         }
-      } else if (!chatAuthToken) {
-        if (isIframeLoaded) {
-          chatLogout(iframeRef);
+      } else {
+        if (isIframeLoaded && user.isLoggedIn) {
+          getChatAuthToken.mutateAsync().catch(logger.error);
+          // chatLogout(iframeRef);
         }
       }
     } else {
@@ -177,7 +179,7 @@ const RocketChatWidget = () => {
 
   return (
     <>
-      {!inIframe() && loggedIn && (
+      {!inIframe() && user.isLoggedIn && (loggedIn || oauthConsent[siteConfig.openhiveChatClientId]) && (
         <div
           style={{
               ...{
