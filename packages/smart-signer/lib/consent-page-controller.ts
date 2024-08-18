@@ -62,9 +62,16 @@ export const consentPageController: GetServerSideProps = async (ctx) => {
           // display consent page.
           logger.info('No need to display consent page');
         } else {
-          // User already not consented to given client_id. We
-          // need to complete oauth flow, because of negative consent.
+          // User already not consented to given client_id. We need to
+          // complete oauth flow, because of negative consent.
           logger.info('User did not consent');
+          const result = {
+            error: 'access_denied',
+            error_description: 'End-User aborted interaction',
+          };
+          await oidc.interactionFinished(ctx.req, ctx.res, result, {
+            mergeWithLastSubmission: false,
+          });
           throw new Error('User did not consent');
         }
       } else {
