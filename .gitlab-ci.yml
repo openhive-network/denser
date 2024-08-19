@@ -492,7 +492,7 @@ mirrornet-based-tests:
         - --internal-certs
   variables:
     GIT_STRATEGY: "clone"
-    CI_DEBUG_SERVICES: "true"
+    CI_DEBUG_SERVICES: "false"
     HAF_VERSION: "${HAF_REGISTRY_TAG}"
     HAF_REGISTRY: "${HAF_REGISTRY_PATH}"
     ARGUMENTS: "--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n --alternate-chain-spec=/home/hived/datadir/blockchain/alternate-chain-spec.json"
@@ -505,6 +505,7 @@ mirrornet-based-tests:
   script:
     - |
       set -e
+      export
       faketime -f "${FAKETIME}" bash "${CI_PROJECT_DIR}/scripts/ci-helpers/run-mirrornet-tests.sh"
   after_script:
     - |
