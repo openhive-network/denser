@@ -2,6 +2,8 @@
 
 set -e
 
+echo "Current time: $(date)"
+
 echo -e "\e[0Ksection_start:$(date +%s):deps[collapsed=true]\r\e[0KInstalling dependencies..."
 npm config set strict-ssl false
 npm ci --cache .npm
