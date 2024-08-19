@@ -26,8 +26,8 @@ variables:
   HIVE_API_NODE_VERSION: 1.27.5
   API_NODE_VERSION: "3cdc5e77"
   HAF_COMMIT: "0aef1bf01fd6ee0d23f12a21038881c30672146a"
-  HIVEMIND_INSTANCE_VERSION: "819a059a"
-  HAFAH_VERSION: "2e75e097"
+  HIVEMIND_INSTANCE_VERSION: "9fd75477"
+  HAFAH_VERSION: "e97307ba"
   HIVEMIND_INSTANCE_IMAGE: registry.gitlab.syncad.com/hive/hivemind/instance
   HAFAH_REGISTRY: registry.gitlab.syncad.com/hive/hafah/instance
   # BLOCK_LOG_SOURCE_DIR: "/blockchain/block_log_mirror_44"
