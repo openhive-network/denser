@@ -11,11 +11,12 @@ import { CircleSpinner } from 'react-spinners-kit';
 import { getListVotesByCommentVoter } from '@transaction/lib/hive';
 import { getLogger } from '@ui/lib/logging';
 import { Entry } from '@transaction/lib/bridge';
-import { DropdownMenuContent, DropdownMenuTrigger, DropdownMenu } from '@ui/components';
 import { Slider } from '@ui/components/slider';
 import { useLoggedUserContext } from './common/logged-user';
 import { handleError } from '@ui/lib/utils';
 import { useStore } from './hooks/use-store';
+import * as Popover from '@radix-ui/react-popover';
+
 const logger = getLogger('app');
 
 const VOTE_WEIGHT_DROPDOWN_THRESHOLD = 1.0 * 1000.0 * 1000.0;
@@ -67,6 +68,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
       setSliderDownvote([-userVote.vote_percent / 100]);
     }
   }, [userVotes]);
+
   const submitVote = async (weight: number) => {
     const { author, permlink } = post;
     try {
@@ -85,49 +87,58 @@ const VotesComponent = ({ post }: { post: Entry }) => {
           color="#dc2626"
         />
       ) : user.isLoggedIn && enable_slider && !vote_upvoted ? (
-        <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center">
-            <TooltipContainer
-              loading={voteMutation.isLoading}
-              text={t('cards.post_card.upvote')}
-              dataTestId="upvote-button"
-            >
-              <Icons.arrowUpCircle
-                className={clsx(
-                  'h-[18px] w-[18px] rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1',
-                  { 'bg-destructive text-white': userVote && userVote.vote_percent > 0 }
-                )}
-              />
-            </TooltipContainer>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="h-16 w-64 p-2">
-            <div className="flex h-full items-center gap-2">
+        <Popover.Root>
+          <Popover.Anchor asChild>
+            <Popover.Trigger>
               <TooltipContainer
                 loading={voteMutation.isLoading}
                 text={t('cards.post_card.upvote')}
                 dataTestId="upvote-button"
               >
                 <Icons.arrowUpCircle
-                  className="h-[24px] w-[24px] cursor-pointer rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1"
-                  onClick={() => {
-                    if (voteMutation.isLoading) return;
-                    setClickedVoteButton('up');
-                    submitVote(sliderUpvote[0] * 100);
-                    changeUpvote(sliderUpvote);
-                  }}
+                  className={clsx(
+                    'h-[18px] w-[18px] rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1',
+                    { 'bg-destructive text-white': userVote && userVote.vote_percent > 0 }
+                  )}
                 />
               </TooltipContainer>
-              <Slider
-                defaultValue={sliderUpvote}
-                value={sliderUpvote}
-                min={1}
-                className="w-36"
-                onValueChange={(e: number[]) => setSliderUpvote(e)}
-              />
-              <div className="w-fit">{sliderUpvote}%</div>
-            </div>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            </Popover.Trigger>
+          </Popover.Anchor>
+          <Popover.Portal>
+            <Popover.Content
+              className="z-50 max-w-xs rounded-lg bg-background-secondary p-4 shadow-lg"
+              sideOffset={-37}
+              align="start"
+              alignOffset={-19}
+            >
+              <div className="flex h-full items-center gap-2">
+                <TooltipContainer
+                  loading={voteMutation.isLoading}
+                  text={t('cards.post_card.upvote')}
+                  dataTestId="upvote-button"
+                >
+                  <Icons.arrowUpCircle
+                    className="h-[24px] w-[24px] cursor-pointer rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1"
+                    onClick={() => {
+                      if (voteMutation.isLoading) return;
+                      setClickedVoteButton('up');
+                      submitVote(sliderUpvote[0] * 100);
+                      changeUpvote(sliderUpvote);
+                    }}
+                  />
+                </TooltipContainer>
+                <Slider
+                  defaultValue={sliderUpvote}
+                  value={sliderUpvote}
+                  min={1}
+                  className="w-36"
+                  onValueChange={(e: number[]) => setSliderUpvote(e)}
+                />
+                <div className="w-fit">{sliderUpvote}%</div>
+              </div>
+            </Popover.Content>
+          </Popover.Portal>
+        </Popover.Root>
       ) : user.isLoggedIn ? (
         <TooltipContainer
           loading={voteMutation.isLoading}
@@ -181,58 +192,67 @@ const VotesComponent = ({ post }: { post: Entry }) => {
           color="#dc2626"
         />
       ) : user.isLoggedIn && enable_slider && !vote_downvoted ? (
-        <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center">
-            <TooltipContainer
-              loading={voteMutation.isLoading}
-              text={t('cards.post_card.downvote')}
-              dataTestId="downvote-button"
-            >
-              <Icons.arrowDownCircle
-                className={clsx(
-                  'h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
-                  { 'bg-gray-600 text-white': userVote && userVote.vote_percent < 0 }
-                )}
-              />
-            </TooltipContainer>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className=" w-64 p-2">
-            <div className="flex h-full items-center gap-2">
+        <Popover.Root>
+          <Popover.Anchor asChild>
+            <Popover.Trigger>
               <TooltipContainer
                 loading={voteMutation.isLoading}
                 text={t('cards.post_card.downvote')}
                 dataTestId="downvote-button"
               >
                 <Icons.arrowDownCircle
-                  className="h-[24px] w-[24px] cursor-pointer rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1"
-                  onClick={() => {
-                    if (voteMutation.isLoading) return;
-                    setClickedVoteButton('down');
-                    submitVote(-sliderDownvote[0] * 100);
-                    changeDownvote(sliderDownvote);
-                  }}
+                  className={clsx(
+                    'h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
+                    { 'bg-gray-600 text-white': userVote && userVote.vote_percent < 0 }
+                  )}
                 />
               </TooltipContainer>
-              <Slider
-                defaultValue={sliderDownvote}
-                value={sliderDownvote}
-                min={1}
-                className="w-36"
-                onValueChange={(e: number[]) => setSliderDownvote(e)}
-              />
-              <div className="w-fit text-destructive">-{sliderDownvote}%</div>
-            </div>
-            <div className="flex flex-col gap-1 pt-2 text-sm">
-              <p>{t('cards.post_card.downvote_warning')}</p>
-              <ul>
-                <li>{t('cards.post_card.reason_1')}</li>
-                <li>{t('cards.post_card.reason_2')}</li>
-                <li>{t('cards.post_card.reason_3')}</li>
-                <li>{t('cards.post_card.reason_4')}</li>
-              </ul>
-            </div>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            </Popover.Trigger>
+          </Popover.Anchor>
+          <Popover.Portal>
+            <Popover.Content
+              className="z-50 max-w-xs rounded-lg bg-background-secondary p-4 shadow-lg"
+              sideOffset={-37}
+              align="start"
+              alignOffset={-19}
+            >
+              <div className="flex h-full items-center gap-2">
+                <TooltipContainer
+                  loading={voteMutation.isLoading}
+                  text={t('cards.post_card.downvote')}
+                  dataTestId="downvote-button"
+                >
+                  <Icons.arrowDownCircle
+                    className="h-[24px] w-[24px] cursor-pointer rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1"
+                    onClick={() => {
+                      if (voteMutation.isLoading) return;
+                      setClickedVoteButton('down');
+                      submitVote(-sliderDownvote[0] * 100);
+                      changeDownvote(sliderDownvote);
+                    }}
+                  />
+                </TooltipContainer>
+                <Slider
+                  defaultValue={sliderDownvote}
+                  value={sliderDownvote}
+                  min={1}
+                  className="w-36"
+                  onValueChange={(e: number[]) => setSliderDownvote(e)}
+                />
+                <div className="w-fit text-destructive">-{sliderDownvote}%</div>
+              </div>
+              <div className="flex flex-col gap-1 pt-2 text-sm">
+                <p>{t('cards.post_card.downvote_warning')}</p>
+                <ul>
+                  <li>{t('cards.post_card.reason_1')}</li>
+                  <li>{t('cards.post_card.reason_2')}</li>
+                  <li>{t('cards.post_card.reason_3')}</li>
+                  <li>{t('cards.post_card.reason_4')}</li>
+                </ul>
+              </div>
+            </Popover.Content>
+          </Popover.Portal>
+        </Popover.Root>
       ) : user.isLoggedIn ? (
         <TooltipContainer
           loading={voteMutation.isLoading}
