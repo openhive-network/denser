@@ -28,14 +28,17 @@ import RendererContainer from './rendererContainer';
 import { useDeleteCommentMutation } from './hooks/use-comment-mutations';
 import { handleError } from '@ui/lib/utils';
 import { CircleSpinner } from 'react-spinners-kit';
+import MutePostDialog from './mute-post-dialog';
+import ChangeTitleDialog from './change-title-dialog';
 
 interface CommentListProps {
+  permissionToMute: Boolean;
   comment: Entry;
   parent_depth: number;
   mutedList: IFollowList[];
 }
 
-const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps) => {
+const CommentListItem = ({ permissionToMute, comment, parent_depth, mutedList }: CommentListProps) => {
   const { t } = useTranslation('common_blog');
   const username = comment.author;
   const router = useRouter();
@@ -83,7 +86,6 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
   if (userFromGDPR || parentFromGDPR) {
     return null;
   }
-
   return (
     <>
       {currentDepth < 8 ? (
@@ -134,9 +136,22 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                                 className="mr-1 border-destructive"
                                 data-testid="comment-user-affiliation-tag"
                               >
-                                {comment.author_title}
+                                <span className="mr-1">{comment.author_title}</span>
+                                <ChangeTitleDialog
+                                  moderateEnabled={permissionToMute}
+                                  userOnList={comment.author}
+                                  title={comment.author_title ?? ''}
+                                  community={comment.community ?? ''}
+                                />
                               </Badge>
-                            ) : null}
+                            ) : (
+                              <ChangeTitleDialog
+                                moderateEnabled={permissionToMute}
+                                userOnList={comment.author}
+                                title={comment.author_title ?? ''}
+                                community={comment.community ?? ''}
+                              />
+                            )}
                             <Link
                               href={`/${router.query.param}/${router.query.p2}/${router.query.permlink}#@${username}/${comment.permlink}`}
                               className="hover:text-destructive md:text-sm"
@@ -315,6 +330,14 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                               {t('cards.comment_card.edit')}
                             </button>
                           </>
+                        ) : null}
+                        {permissionToMute ? (
+                          <MutePostDialog
+                            community={comment.community ?? ''}
+                            username={comment.author}
+                            permlink={comment.permlink}
+                            contentMuted={comment.stats?.gray ?? false}
+                          />
                         ) : null}
                         {comment.replies.length === 0 &&
                         user.isLoggedIn &&

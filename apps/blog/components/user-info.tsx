@@ -3,8 +3,10 @@ import parseDate, { dateToFullRelative } from '@ui/lib/parse-date';
 import { Badge } from '@ui/components/badge';
 import { useTranslation } from 'next-i18next';
 import { UserPopoverCard, UserPopoverCardProps } from './user-popover-card';
+import ChangeTitleDialog from './change-title-dialog';
 
 interface UserInfoProps extends UserPopoverCardProps {
+  moderateEnabled: boolean;
   authored?: string;
   community_title: string;
   community: string;
@@ -15,6 +17,7 @@ interface UserInfoProps extends UserPopoverCardProps {
 }
 
 function UserInfo({
+  moderateEnabled,
   authored,
   community,
   community_title,
@@ -37,9 +40,22 @@ function UserInfo({
         />
         {author_title ? (
           <Badge variant="outline" className="mr-1 border-destructive text-slate-500" translate="no">
-            {author_title}
+            <span className="mr-1">{author_title}</span>
+            <ChangeTitleDialog
+              community={community}
+              moderateEnabled={moderateEnabled}
+              userOnList={author}
+              title={author_title ?? ''}
+            />
           </Badge>
-        ) : null}
+        ) : (
+          <ChangeTitleDialog
+            community={community}
+            moderateEnabled={moderateEnabled}
+            userOnList={author}
+            title={author_title ?? ''}
+          />
+        )}
         {t('post_content.in')}
         <span className="ml-1" translate="no">
           {community_title ? (

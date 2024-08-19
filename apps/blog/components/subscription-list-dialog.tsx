@@ -7,11 +7,13 @@ import { Badge } from '@ui/components';
 import ChangeTitleDialog from './change-title-dialog';
 
 export function SubsListDialog({
+  community,
   moderateEnabled,
   children,
   subs,
   title
 }: {
+  community: string;
   moderateEnabled: boolean;
   children: ReactNode;
   subs: Subscription[];
@@ -33,11 +35,21 @@ export function SubsListDialog({
               <span className="text-xs font-thin">{e[1] !== 'guest' ? e[1].toLocaleUpperCase() : null}</span>
               {e[2] ? (
                 <Badge className="font-light" variant="red">
-                  {e[2]}
-                  <ChangeTitleDialog moderateEnabled={moderateEnabled} userOnList={e[0]} />
+                  <span className="mr-1">{e[2]}</span>
+                  <ChangeTitleDialog
+                    moderateEnabled={moderateEnabled}
+                    userOnList={e[0]}
+                    title={e[2]}
+                    community={community}
+                  />
                 </Badge>
               ) : (
-                <ChangeTitleDialog moderateEnabled={moderateEnabled} userOnList={e[0]} />
+                <ChangeTitleDialog
+                  moderateEnabled={moderateEnabled}
+                  userOnList={e[0]}
+                  title=""
+                  community={community}
+                />
               )}
             </li>
           ))}

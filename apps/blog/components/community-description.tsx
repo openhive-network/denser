@@ -52,7 +52,12 @@ const CommunityDescription = ({
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap justify-center gap-2 text-sm">
-            <SubsListDialog title={data.title} subs={subs} moderateEnabled={Boolean(userCanModerate)}>
+            <SubsListDialog
+              community={username}
+              title={data.title}
+              subs={subs}
+              moderateEnabled={Boolean(userCanModerate)}
+            >
               <div className="flex flex-col items-center" data-testid="community-subscribers">
                 {data.subscribers}
                 <span className="text-center text-xs">{t('communities.buttons.subscribers')}</span>

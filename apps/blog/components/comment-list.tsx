@@ -4,11 +4,13 @@ import { useRouter } from 'next/router';
 import clsx from 'clsx';
 
 const CommentList = ({
+  permissionToMute,
   data,
   parent,
   parent_depth,
   mutedList
 }: {
+  permissionToMute: Boolean;
   data: Entry[];
   parent: Entry;
   parent_depth: number;
@@ -43,6 +45,7 @@ const CommentList = ({
             )}
           >
             <CommentListItem
+              permissionToMute={permissionToMute}
               comment={comment}
               key={`${comment.post_id}-item-${comment.depth}-index-${index}`}
               parent_depth={parent_depth}
@@ -50,6 +53,7 @@ const CommentList = ({
             />
             {comment.children > 0 ? (
               <CommentList
+                permissionToMute={permissionToMute}
                 mutedList={mutedList}
                 data={data}
                 parent={comment}

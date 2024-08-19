@@ -310,6 +310,86 @@ export class TransactionService {
       );
     }, transactionOptions);
   }
+  async pin(
+    community: string,
+    username: string,
+    permlink: string,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new CommunityOperationBuilder()
+          .pinPost(community, username, permlink)
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    }, transactionOptions);
+  }
+  async unpin(
+    community: string,
+    username: string,
+    permlink: string,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new CommunityOperationBuilder()
+          .unpinPost(community, username, permlink)
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    }, transactionOptions);
+  }
+
+  async mutePost(
+    community: string,
+    username: string,
+    permlink: string,
+    notes: string,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new CommunityOperationBuilder()
+          .mutePost(community, username, permlink, notes)
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    }, transactionOptions);
+  }
+
+  async unmutePost(
+    community: string,
+    username: string,
+    permlink: string,
+    notes: string,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new CommunityOperationBuilder()
+          .unmutePost(community, username, permlink, notes)
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    }, transactionOptions);
+  }
+
+  async setUserTitle(
+    community: string,
+    username: string,
+    title: string,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.push(
+        new CommunityOperationBuilder()
+          .setUserTitle(community, username, title)
+          .authorize(this.signerOptions.username)
+          .build()
+      );
+    }, transactionOptions);
+  }
 
   async reblog(username: string, permlink: string, transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
