@@ -326,13 +326,13 @@ block_log_processing:
       echo "Head block number is: ${HEAD_BLOCK_NUMBER}"
 
       echo "Obtaining timestamp of the latest block..."
-      FAKETIME=$("${BLOCK_LOG_UTIL_PATH}" --get-block -n "${HEAD_BLOCK_NUMBER}" --block-log "${BLOCK_LOG_SOURCE}/block_log" |  grep -o '"timestamp":"[^"]*"' | awk -F'"' '{print $4}' | sed 's/\(.*\)-\(.*\)-\(.*\)T\(.*\)/@\1-\2-\3 \4/')
+      HEAD_BLOCK_TIMESTAMP=$("${BLOCK_LOG_UTIL_PATH}" --get-block -n "${HEAD_BLOCK_NUMBER}" --block-log "${BLOCK_LOG_SOURCE}/block_log" |  grep -o '"timestamp":"[^"]*"' | awk -F'"' '{print $4}' | sed 's/\(.*\)-\(.*\)-\(.*\)T\(.*\)/@\1-\2-\3 \4/')
 
-      echo "Faketime will be set to ${FAKETIME}"
+      echo "Faketime will be set to ${HEAD_BLOCK_TIMESTAMP}"
 
       {
         echo "LAST_BLOCK_NUMBER=${HEAD_BLOCK_NUMBER}"
-        echo "FAKETIME=${FAKETIME}"
+        echo "HEAD_BLOCK_TIMESTAMP=${HEAD_BLOCK_TIMESTAMP}"
       } > block_log_data.env
   artifacts:
     reports:
@@ -361,6 +361,7 @@ mirrornet-haf-node-replay:
     # LAST_BLOCK_NUMBER: "5004741"
     ARGUMENTS: "--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n --replay-blockchain --stop-at-block ${LAST_BLOCK_NUMBER} --alternate-chain-spec=/home/hived/datadir/blockchain/alternate-chain-spec.json"
     # FAKETIME: "@2016-09-16 01:39:06"
+    FAKETIME: ${HEAD_BLOCK_TIMESTAMP}
     ADDITIONAL_CONFIGURATION_SCRIPT: "scripts/ci-helpers/copy-mirrornet-haf-config.sh"
     REPLAY_TIMEOUT: 9000
   tags:
@@ -497,6 +498,7 @@ mirrornet-based-tests:
     HAF_REGISTRY: "${HAF_REGISTRY_PATH}"
     ARGUMENTS: "--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n --alternate-chain-spec=/home/hived/datadir/blockchain/alternate-chain-spec.json"
     # FAKETIME: "@2016-09-16 01:39:06"
+    FAKETIME: ${HEAD_BLOCK_TIMESTAMP}
     REACT_APP_API_ENDPOINT: "https://dind"
     REACT_APP_IMAGES_ENDPOINT: "https://images.hive.blog/"
     REACT_APP_CHAIN_ID: "44"
