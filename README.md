@@ -161,8 +161,8 @@ Configure the stack using the command:
   --block-log-util-path="/full/path/to/block_log_util" \
   --use-faketime=true \
   --chain-id=44 \
-  --dind-tag=3cdc5e77 \
-  --compose-tag=3cdc5e77 \
+  --dind-tag=1e27d04b \
+  --compose-tag=1e27d04b \
   --auth-tag=local \
   --blog-tag=local \
   --wallet-tag=local \
