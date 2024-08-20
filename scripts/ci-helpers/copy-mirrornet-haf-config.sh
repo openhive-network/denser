@@ -4,6 +4,16 @@ set -e
 
 echo "Performing additional configuration..."
 
+if [[ "${USE_ALTERNATE_HAPROXY_CONFIG:-}" == "true" ]]; then
+  echo "Using alternate HAproxy configuration"
+  sed -i.bak -e 's#source: ./haproxy/haproxy.cfg#source: ./haproxy/haproxy-alternate.cfg#' /haf-api-node/haproxy.yaml
+fi
+
+if [[ -n "${FAKETIME:-}" ]]; then
+  echo "Enabling faketime for HAF"
+  mv /haf-api-node/faketime.yaml /haf-api-node/compose.override.yml
+fi
+
 echo "Copying config.ini file..."
 cp "${CI_PROJECT_DIR:?}/stack/mirrornet_haf_config.ini" "${REPLAY_DIRECTORY:?}/config.ini"
 
