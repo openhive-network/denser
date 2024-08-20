@@ -14,11 +14,16 @@ import { Input } from '@ui/components/input';
 import { ReactNode, useCallback, useState } from 'react';
 import { Autocompleter } from './autocompleter';
 import badActorList from '@ui/config/lists/bad-actor-list';
-import { useTransferHiveMutation, useTransferToSavingsMutation, useWithdrawFromSavingsMutation } from './hooks/use-transfer-hive-mutation';
+import {
+  useTransferHiveMutation,
+  useTransferToSavingsMutation,
+  useWithdrawFromSavingsMutation
+} from './hooks/use-transfer-hive-mutation';
 import { usePowerDownMutation, usePowerUpMutation } from './hooks/use-power-hive-mutation';
 import { useDelegateMutation } from './hooks/use-delegate-mutation';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { handleError } from '@ui/lib/utils';
+import { getSavingsWithdrawals } from '../lib/hive';
 
 type Amount = {
   hive: string;
@@ -69,7 +74,7 @@ export function TransferDialog({
   const powerUpMutation = usePowerUpMutation();
   const powerDownMutation = usePowerDownMutation();
   const delegateMutation = useDelegateMutation();
-  const withdrawFromSavings = useWithdrawFromSavingsMutation();
+  const withdrawFromSavingsMutation = useWithdrawFromSavingsMutation();
 
   const getAsset = useCallback(
     async (value: string) => {
@@ -174,6 +179,25 @@ export function TransferDialog({
       data.amount = amount.savingsHive;
       data.to = username || '';
       data.advancedBtn = true;
+      data.onSubmit = async () => {
+        const pendingWithdrawals = (await getSavingsWithdrawals(username)).withdrawals;
+        let requestId = 0;
+        if (!!pendingWithdrawals.length) {
+          requestId = Math.max(...pendingWithdrawals.map((withdrawal) => withdrawal.request_id)) + 1;
+        }
+        const params = {
+          fromAccount: username,
+          toAccount: advanced ? data.to : username,
+          memo: data.memo,
+          amount: await getAsset(value),
+          requestId
+        };
+        try {
+          withdrawFromSavingsMutation.mutateAsync(params);
+        } catch (error) {
+          handleError(error, { method: 'withdrawHive', params });
+        }
+      };
       break;
 
     case 'withdrawHiveDollars':
