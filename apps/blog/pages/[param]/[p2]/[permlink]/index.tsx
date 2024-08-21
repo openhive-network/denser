@@ -458,12 +458,12 @@ function PostPage({
                             className="ml-2 flex items-center text-destructive"
                             onClick={post_is_pinned ? unpin : pin}
                           >
-                            {post_is_pinned ? 'Unpin' : 'Pin'}
+                            {post_is_pinned ? t('communities.unpin') : t('communities.pin')}
                           </button>
                         ) : null}
                         {userCanModerate ? (
                           <MutePostDialog
-                          comment={false}
+                            comment={false}
                             community={community}
                             username={post.author}
                             permlink={post.permlink}

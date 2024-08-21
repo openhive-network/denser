@@ -299,6 +299,15 @@
     }
   },
   "communities": {
+    "set_title_for_user": "Définir le titre pour @{{username}}",
+    "mute": "Muet",
+    "unmute": "Réactiver le son",
+    "post_comment": " publier/commenter",
+    "please_provide_a_note": "Veuillez fournir une note concernant votre décision de masquer ce contenu.",
+    "notes": "Notes",
+    "pin": "Épingler",
+    "unpin": "Désépingler",
+    "edit_title": "Modifier le titre",
     "admin": "admin",
     "admins": "admins",
     "subscribers": "subscribers",

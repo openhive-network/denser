@@ -323,6 +323,16 @@
     }
   },
   "communities": {
+    "set_title_for_user": "Set Title for @{{username}}",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "post_comment": " post/comment",
+    "please_provide_a_note": "Please provide a note regarding your decision to mute this content.",
+    "notes": "Notes",
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "edit_title": "Edit Title",
+
     "edit_roles": "Edit Roles",
     "roles": "Roles",
     "user_roles": "User roles",
@@ -347,7 +357,6 @@
     "default_can_post_and_comment": "default; can post and comment",
     "new_posts_automaticly_muted": "new posts automaticly muted",
     "admin": "Admin",
-
     "admins": "admins",
     "subscribers": "subscribers",
     "authors": "authors",

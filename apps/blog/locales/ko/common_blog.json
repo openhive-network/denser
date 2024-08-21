@@ -299,6 +299,15 @@
     }
   },
   "communities": {
+    "set_title_for_user": "@{{username}}의 제목 설정",
+    "mute": "음소거",
+    "unmute": "음소거 해제",
+    "post_comment": " 게시/댓글",
+    "please_provide_a_note": "이 콘텐츠를 음소거하려는 이유를 적어주세요.",
+    "notes": "메모",
+    "pin": "고정",
+    "unpin": "고정 해제",
+    "edit_title": "제목 편집",
     "admin": "admin",
     "admins": "admins",
     "subscribers": "subscribers",

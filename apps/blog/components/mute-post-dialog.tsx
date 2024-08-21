@@ -14,6 +14,7 @@ import { handleError } from '@ui/lib/utils';
 import { useMutePostMutation, useUnmutePostMutation } from '@/blog/components/hooks/use-mute-post-mutations';
 import { CircleSpinner } from 'react-spinners-kit';
 import clsx from 'clsx';
+import { useTranslation } from 'next-i18next';
 
 const MutePostDialog = ({
   comment,
@@ -28,6 +29,7 @@ const MutePostDialog = ({
   permlink: string;
   contentMuted: Boolean;
 }) => {
+  const { t } = useTranslation('common_blog');
   const [text, setText] = useState<string>('');
   const [open, setOpen] = useState(false);
   const mutePost = useMutePostMutation();
@@ -38,7 +40,7 @@ const MutePostDialog = ({
     try {
       await mutePost.mutateAsync({ community, username, permlink, notes: text });
     } catch (error) {
-      handleError(error, { method: 'mute', params: { community, username, permlink, text } });
+      handleError(error, { method: 'mutePost', params: { community, username, permlink, text } });
     }
   };
   const unmute = async () => {
@@ -46,7 +48,7 @@ const MutePostDialog = ({
     try {
       await unmutePost.mutateAsync({ community, username, permlink, notes: text });
     } catch (error) {
-      handleError(error, { method: 'unmute', params: { community, username, permlink, text } });
+      handleError(error, { method: 'unmutePost', params: { community, username, permlink, text } });
     }
   };
   return (
@@ -55,22 +57,24 @@ const MutePostDialog = ({
         {mutePost.isLoading || unmutePost.isLoading ? (
           <CircleSpinner loading={mutePost.isLoading || unmutePost.isLoading} size={18} color="#dc2626" />
         ) : (
-          <button className={clsx("ml-2 flex items-center",{
-            ' text-destructive':!comment
-          })}>
-            {contentMuted ? 'Unmute' : 'Mute'}
+          <button
+            className={clsx('ml-2 flex items-center', {
+              ' text-destructive': !comment
+            })}
+          >
+            {contentMuted ? t('communities.unmute') : t('communities.mute')}
           </button>
         )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{contentMuted ? 'Unmute' : 'Mute'} post/comment</DialogTitle>
-          <DialogDescription>
-            Please provide a note regarding your decision to mute this content.
-          </DialogDescription>
+          <DialogTitle>
+            {(contentMuted ? t('communities.unmute') : t('communities.mute')) + t('communities.post_comment')}
+          </DialogTitle>
+          <DialogDescription>{t('communities.please_provide_a_note')}</DialogDescription>
           <Separator />
           <div>
-            Notes
+            {t('communities.notes')}
             <Input value={text} onChange={(e) => setText(e.target.value)} />
           </div>
           <Button
@@ -78,7 +82,7 @@ const MutePostDialog = ({
             className="w-fit justify-self-end"
             onClick={contentMuted ? unmute : mute}
           >
-            {contentMuted ? 'Unmute' : 'Mute'}
+            {contentMuted ? t('communities.unmute') : t('communities.mute')}
           </Button>
         </DialogHeader>
       </DialogContent>

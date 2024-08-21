@@ -8,11 +8,12 @@ import {
   Input,
   Separator
 } from '@ui/components';
-import { Pencil } from 'lucide-react';
+import { PenTool } from 'lucide-react';
 import { useState } from 'react';
 import { useUserTitleMutation } from './hooks/use-user-title';
 import { handleError } from '@ui/lib/utils';
 import { CircleSpinner } from 'react-spinners-kit';
+import { useTranslation } from 'next-i18next';
 
 const ChangeTitleDialog = ({
   moderateEnabled,
@@ -27,6 +28,7 @@ const ChangeTitleDialog = ({
   community: string;
   permlink: string;
 }) => {
+  const { t } = useTranslation('common_blog');
   const [open, setOpen] = useState(false);
   const [text, setText] = useState(title);
   const titleMutation = useUserTitleMutation();
@@ -54,19 +56,21 @@ const ChangeTitleDialog = ({
             <CircleSpinner loading={titleMutation.isLoading} size={18} color="#dc2626" />
           </div>
         ) : (
-          <Pencil className="h-3 w-3" />
+          <span title={t('communities.edit_title')}>
+            <PenTool className="h-3 w-3 -rotate-90" />
+          </span>
         )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Set Title for @{userOnList}</DialogTitle>
+          <DialogTitle>{t('communities.set_title_for_user', { username: userOnList })}</DialogTitle>
           <Separator />
           <div className="text-start">
-            Title
+            {t('communities.title')}
             <Input value={text} onChange={(e) => setText(e.target.value)} />
           </div>
           <Button variant="redHover" className="w-fit justify-self-end" onClick={onSave}>
-            Save
+            {t('communities.save')}
           </Button>
         </DialogHeader>
       </DialogContent>
