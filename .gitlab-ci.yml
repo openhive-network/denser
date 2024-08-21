@@ -441,10 +441,7 @@ mirrornet-based-tests:
     - block_log_processing
   image: "${CI_REGISTRY_IMAGE}/playwright-faketime:${PLAYWRIGHT_TAG}"
   services:
-    - !reference [.api-node-job, services]
-    - name: registry.gitlab.syncad.com/hive/haf_api_node/compose:${API_NODE_VERSION}
-      alias: compose
-      entrypoint: [ "/sbin/tini", "-g", "--", "/haf-api-node/entrypoint.sh", "up", "--quiet-pull",  "|", "tee", "" ]
+    - !reference [.haf_api_node_test, services]
     - name: $BLOG_IMAGE_NAME
       alias: denser-blog
       variables:
