@@ -437,7 +437,7 @@ mirrornet-based-tests:
     - docker-build-auth
     - docker-build-blog
     - docker-build-wallet
-    - haf-api-node-replay-data-copy
+    - mirrornet-replay-data-copy
     - block_log_processing
   image: "${CI_REGISTRY_IMAGE}/playwright-faketime:${PLAYWRIGHT_TAG}"
   services:
@@ -892,10 +892,10 @@ buildkit_cache_cleanup:
   variables:
     CACHE_REPOSITORIES: "auth/cache,blog/cache,wallet/cache"
 
-# Deletes replay data used by the tests and created by haf-api-node-replay-data-copy
+# Deletes replay data used by the tests and created by mirrornet-replay-data-copy
 cleanup_haf_api_node_pipeline_cache:
   needs:
-    - haf-api-node-replay-data-copy
+    - mirrornet-replay-data-copy
     - mirrornet-based-tests
   extends: 
     - .cleanup_cache_manual_template
