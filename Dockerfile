@@ -2,19 +2,19 @@
 FROM node:20-alpine AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+ENV TURBO_VERSION=2.0.14
 RUN corepack enable
 
 FROM base AS builder
 ARG TURBO_APP_SCOPE
 RUN apk add --no-cache libc6-compat
 RUN apk update
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm add -g turbo@^2
 
 ## Set working directory for an App
 WORKDIR /app
 COPY . .
 ## prepare files only for docker and optimise
-RUN turbo prune --scope=${TURBO_APP_SCOPE} --docker
+RUN pnpm dlx turbo prune --scope=${TURBO_APP_SCOPE} --docker
 
 # Add lockfile and package.json's of isolated subworkspace
 # TODO: Remove python3 installation after getting rid of dhive
@@ -32,7 +32,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 # Build the project
 COPY --from=builder /app/out/full/ .
 RUN pnpm run lint
-RUN turbo run build --filter=${TURBO_APP_SCOPE}
+RUN pnpm dlx turbo run build --filter=${TURBO_APP_SCOPE}
 
 FROM base AS runner
 ARG TURBO_APP_PATH
