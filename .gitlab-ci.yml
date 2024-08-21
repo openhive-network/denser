@@ -85,12 +85,12 @@ docker-build-wallet:
   script:
     - |
       echo -e "\e[0Ksection_start:$(date +%s):deps[collapsed=true]\r\e[0KInstalling dependencies..."
-      npm ci --cache .npm
+      ppnpm install --frozen-lockfile --virtual-store-dir .pnpm
       echo -e "\e[0Ksection_end:$(date +%s):deps\r\e[0K"
   cache:
     key: '$TURBO_APP_SCOPE-cache-2'
     paths:
-      - .npm/
+      - .pnpm/
       - .next/
   artifacts:
     name: '$CI_JOB_NAME-$CI_COMMIT_REF_NAME'
@@ -118,7 +118,7 @@ docker-build-wallet:
     - |
       echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=false]\r\e[0KRunning tests..."
       cd .$TURBO_APP_PATH
-      npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --update-snapshots
+      pnpm dlx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --update-snapshots
       echo -e "\e[0Ksection_end:$(date +%s):tests\r\e[0K"
   artifacts:
     paths:
@@ -177,8 +177,8 @@ e2e-tests-wallet:
   image: mcr.microsoft.com/playwright:v1.41.1-jammy
   script:
     - cd .$TURBO_APP_PATH
-    - npm install playwright-merge-html-reports --dev
-    - npx playwright test tests/merge-reports --config playwright.merge.config.ts
+    - pnpm install -D playwright-merge-html-reports 
+    - pnpm dlx playwright test tests/merge-reports --config playwright.merge.config.ts
   artifacts:
     paths:
       - .${TURBO_APP_PATH}/merged-html-report/
