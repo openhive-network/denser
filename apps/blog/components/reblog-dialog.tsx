@@ -18,7 +18,6 @@ import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
 
-
 export function ReblogDialog({
   children,
   action
@@ -38,11 +37,10 @@ export function ReblogDialog({
       <AlertDialogContent className="flex flex-col gap-8 sm:rounded-r-xl ">
         <AlertDialogHeader className="gap-2">
           <div className="flex items-center justify-between">
-            <AlertDialogTitle data-testid="reblog-dialog-header">{t('alert_dialog_reblog.title')}</AlertDialogTitle>
-            <AlertDialogCancel
-              className="border-none hover:text-red-800"
-              data-testid="reblog-dialog-close"
-              >
+            <AlertDialogTitle data-testid="reblog-dialog-header">
+              {t('alert_dialog_reblog.title')}
+            </AlertDialogTitle>
+            <AlertDialogCancel className="border-none hover:text-red-800" data-testid="reblog-dialog-close">
               X
             </AlertDialogCancel>
           </div>
@@ -51,16 +49,13 @@ export function ReblogDialog({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="gap-2 sm:flex-row-reverse">
-          <AlertDialogCancel
-            className="hover:text-red-800"
-            data-testid="reblog-dialog-cancel"
-            >
+          <AlertDialogCancel className="hover:text-red-800" data-testid="reblog-dialog-cancel">
             {t('alert_dialog_reblog.cancel')}
           </AlertDialogCancel>
           {user && user.isLoggedIn ? (
             <AlertDialogAction
               autoFocus
-              className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-red-600 hover:bg-red-600 hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
+              className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-destructive hover:bg-destructive hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
               onClick={(e) => {
                 e.preventDefault();
                 action(true);

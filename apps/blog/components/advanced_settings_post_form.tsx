@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@ui/components/dialog';
-import { ReactNode, use, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@hive/ui/components/select';
 import Link from 'next/link';
 import { Icons } from '@ui/components/icons';
@@ -150,7 +150,7 @@ export function AdvancedSettingsPostForm({
       if (template.maxAcceptedPayout === 0) {
         setMaxPayout('0');
       }
-      if (Number(template.maxAcceptedPayout) > 0 && Number(template.maxAcceptedPayout) < 1000000 ) {
+      if (Number(template.maxAcceptedPayout) > 0 && Number(template.maxAcceptedPayout) < 1000000) {
         setMaxPayout('custom');
         setCustomValue(Number(template.maxAcceptedPayout));
       }
@@ -331,7 +331,7 @@ export function AdvancedSettingsPostForm({
               {t('submit_page.advanced_settings_dialog.default')}
               {authorRewardsText(preferences.blog_rewards)}
             </span>
-            <Link href={`/@${username}/settings`} className="text-red-500">
+            <Link href={`/@${username}/settings`} className="text-destructive">
               {t('submit_page.advanced_settings_dialog.update')}
             </Link>
           </div>
@@ -355,7 +355,7 @@ export function AdvancedSettingsPostForm({
                   <Button
                     variant="link"
                     size="xs"
-                    className="text-red-500"
+                    className="text-destructive"
                     onClick={() => handleDeleteItem(index)}
                   >
                     {t('submit_page.advanced_settings_dialog.delete')}
@@ -363,7 +363,7 @@ export function AdvancedSettingsPostForm({
                 </div>
               ))}
             </ul>
-            <div className="p-2 text-red-600">
+            <div className="p-2 text-destructive">
               {splitRewards < 0
                 ? t('submit_page.advanced_settings_dialog.your_percent')
                 : hasDuplicateUsernames
@@ -381,7 +381,7 @@ export function AdvancedSettingsPostForm({
             {beneficiaries.length < 8 ? (
               <Button
                 variant="link"
-                className="h-fit w-fit px-0 py-1 text-xs text-red-500"
+                className="h-fit w-fit px-0 py-1 text-xs text-destructive"
                 onClick={handleAddAccount}
               >
                 {t('submit_page.advanced_settings_dialog.add_account')}
@@ -419,7 +419,7 @@ export function AdvancedSettingsPostForm({
                 onChange={(e) => handleTemplateTitle(e.target.value)}
               />
               {isTemplateStored ? (
-                <div className="p-2 text-red-600">
+                <div className="p-2 text-destructive">
                   {t('submit_page.advanced_settings_dialog.template_name_is_taken')}
                 </div>
               ) : null}

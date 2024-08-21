@@ -44,22 +44,17 @@ const SubscribeCommunity = ({
                 }
               }}
             >
-              {subscribeMutation.isLoading
-              ?
-                <CircleSpinner
-                  loading={subscribeMutation.isLoading}
-                  size={18}
-                  color="#dc2626"
-                />
-              :
+              {subscribeMutation.isLoading ? (
+                <CircleSpinner loading={subscribeMutation.isLoading} size={18} color="#dc2626" />
+              ) : (
                 t('communities.buttons.subscribe')
-              }
+              )}
             </Button>
           ) : (
             <Button
               size="sm"
               variant="outline"
-              className="group relative w-full text-center text-blue-800 hover:border-red-500 hover:text-red-500"
+              className="group relative w-full text-center text-blue-800 hover:border-destructive hover:text-destructive"
               disabled={unsubscribeMutation.isLoading}
               onClick={async () => {
                 try {
@@ -70,19 +65,14 @@ const SubscribeCommunity = ({
                 }
               }}
             >
-              {unsubscribeMutation.isLoading
-              ?
-                <CircleSpinner
-                  loading={unsubscribeMutation.isLoading}
-                  size={18}
-                  color="#dc2626"
-                />
-              :
+              {unsubscribeMutation.isLoading ? (
+                <CircleSpinner loading={unsubscribeMutation.isLoading} size={18} color="#dc2626" />
+              ) : (
                 <span>
                   <span className="group-hover:hidden">{t('communities.buttons.joined')}</span>
                   <span className="hidden group-hover:inline">{t('communities.buttons.leave')}</span>
                 </span>
-              }
+              )}
             </Button>
           )}
         </>

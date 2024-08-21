@@ -316,7 +316,7 @@ export default function PostForm({
   return (
     <div className={clsx({ container: !sideBySide || !preview })}>
       <div
-        className={clsx('flex flex-col gap-4 bg-white p-8 dark:bg-slate-950', {
+        className={clsx('flex flex-col gap-4 bg-background p-8', {
           'lg:flex-row': sideBySide
         })}
       >
@@ -392,7 +392,7 @@ export default function PostForm({
                   <FormControl>
                     <Input placeholder={t('submit_page.post_summary')} {...field} />
                   </FormControl>
-                  <div className="text-xs text-red-500">{summaryCheck}</div>
+                  <div className="text-xs text-destructive">{summaryCheck}</div>
 
                   <FormMessage />
                 </FormItem>
@@ -406,7 +406,7 @@ export default function PostForm({
                   <FormControl>
                     <Input placeholder={t('submit_page.enter_your_tags')} {...field} />
                   </FormControl>
-                  <div className="text-xs text-red-500">{tagsCheck}</div>
+                  <div className="text-xs text-destructive">{tagsCheck}</div>
                   <FormMessage />
                 </FormItem>
               )}

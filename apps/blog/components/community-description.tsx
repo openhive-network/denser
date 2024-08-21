@@ -37,7 +37,7 @@ const CommunityDescription = ({
   return (
     <div className="flex w-full max-w-[240px] flex-col">
       <Card
-        className={cn('my-4 hidden h-fit w-auto flex-col px-4 dark:bg-background/95 dark:text-white md:flex')}
+        className={cn('my-4 hidden h-fit w-auto flex-col px-4 text-primary dark:bg-background md:flex')}
         data-testid="community-info-sidebar"
       >
         <CardHeader className="px-0 font-light">
@@ -82,12 +82,12 @@ const CommunityDescription = ({
             <ul className="mt-1.5 text-xs">
               {data.team.slice(1).map((member: string[]) => (
                 <li key={member[0]} className="pt-0.5">
-                  <Link href={`/@${member[0]}`} className="text-red-600 hover:cursor-pointer">
+                  <Link href={`/@${member[0]}`} className="text-destructive hover:cursor-pointer">
                     @{member[0]}
                   </Link>{' '}
                   <span className="text-[10px] text-slate-500">{member[1].toUpperCase()}</span>{' '}
                   {member[2] && member[2] !== '' ? (
-                    <Badge variant="outline" className="ml-0.5 border-red-600 py-0 text-slate-500">
+                    <Badge variant="outline" className="ml-0.5 border-destructive py-0">
                       {member[2]}
                     </Badge>
                   ) : null}
@@ -103,7 +103,7 @@ const CommunityDescription = ({
         </CardContent>
       </Card>
       <Card
-        className={cn('my-4 hidden h-fit w-auto flex-col px-4 dark:bg-background/95 dark:text-white md:flex')}
+        className={cn('my-4 hidden h-fit w-auto flex-col px-4 text-primary dark:bg-background md:flex')}
         data-testid="community-description-rules-sidebar"
       >
         <CardContent className="py-4">

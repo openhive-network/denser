@@ -57,7 +57,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
 
               backgroundSize: 'cover'
             }}
-            className={`flex h-auto max-h-full min-h-full w-auto min-w-full max-w-full flex-col items-center`}
+            className="flex h-auto max-h-full min-h-full w-auto min-w-full max-w-full flex-col items-center"
           >
             <div className="mt-4 flex items-center">
               <div
@@ -73,11 +73,11 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               </h4>
             </div>
 
-            <p className="my-1 max-w-[420px] text-center text-white sm:my-4" data-testid="profile-about">
+            <p className="my-1 max-w-[420px] text-center sm:my-4" data-testid="profile-about">
               {profileData?.profile?.about}
             </p>
 
-            <ul className="my-4 flex h-auto flex-wrap justify-center gap-1 text-xs text-white sm:gap-4 sm:text-sm">
+            <ul className="my-4 flex h-auto flex-wrap justify-center gap-1 text-xs sm:gap-4 sm:text-sm">
               {profileData?.profile?.location ? (
                 <li className="flex items-center">
                   <Icons.mapPin className="m-1" />
@@ -89,7 +89,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   <Icons.globe2 className="m-1" />
                   <Link
                     target="_external"
-                    className="website-link break-words "
+                    className="website-link break-words"
                     href={`https://${profileData?.profile?.website?.replace(/^(https?|ftp):\/\//, '')}`}
                   >
                     <span>{profileData?.profile?.website}</span>
@@ -105,24 +105,20 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             </ul>
           </div>
         ) : (
-          <div className={`h-auto max-h-full min-h-full w-auto min-w-full max-w-full bg-gray-600 bg-cover`} />
+          <div className="h-auto max-h-full min-h-full w-auto min-w-full max-w-full bg-background bg-cover" />
         )}
       </div>
       <div className="flex flex-col pb-8 md:pb-4 ">
         <div className="w-full">
-          <div className="flex h-12 bg-slate-800" data-testid="profile-navigation">
+          <div className="flex h-12 bg-background-tertiary" data-testid="profile-navigation">
             <div className="container mx-auto flex max-w-screen-xl justify-between p-0 sm:pl-8">
-              <ul className="flex h-full gap-2 text-xs text-white sm:text-base lg:flex lg:gap-8">
+              <ul className="flex h-full gap-2 text-xs text-primary sm:text-base lg:flex lg:gap-8">
                 <li>
                   <Link
                     href={`/@${username}`}
                     target="_blank"
-                    className={`flex h-full items-center px-2 hover:bg-white hover:text-slate-800
-                    ${
-                      router.asPath === `/@${username}`
-                        ? 'bg-white text-slate-800 dark:bg-slate-950 dark:hover:text-slate-200'
-                        : ''
-                    }
+                    className={`flex h-full items-center px-2 hover:bg-background hover:text-primary
+                    ${router.asPath === `/@${username}` ? 'bg-background text-primary' : ''}
                     `}
                   >
                     {t('navigation.profile_navbar.blog')}
@@ -131,7 +127,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <li>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <div className="flex h-full cursor-pointer items-center px-2 hover:bg-white hover:text-slate-800">
+                      <div className="flex h-full cursor-pointer items-center px-2 hover:bg-background hover:text-primary">
                         {t('navigation.profile_navbar.rewards')} <span className="m-1 rotate-180">^</span>
                       </div>
                     </DropdownMenuTrigger>
@@ -150,16 +146,16 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   </DropdownMenu>
                 </li>
               </ul>
-              <ul className="flex h-full text-xs text-white sm:text-base lg:flex lg:gap-4">
+              <ul className="flex h-full text-xs text-primary sm:text-base lg:flex lg:gap-4">
                 <li>
                   <Link
                     href={`/@${username}/transfers`}
                     rel="noopener noreferrer"
                     className={clsx(
-                      'mr-4 flex h-full items-center px-2 hover:bg-white hover:text-slate-800',
+                      'mr-4 flex h-full items-center px-2 hover:bg-background hover:text-primary',
                       router.asPath === `/@${username}/transfers` ||
                         router.asPath === `/@${username}/delegations`
-                        ? 'bg-white text-slate-800 dark:bg-slate-950 dark:text-slate-200 dark:hover:text-slate-200'
+                        ? 'bg-background text-primary'
                         : ''
                     )}
                   >

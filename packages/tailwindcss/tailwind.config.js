@@ -3,9 +3,9 @@ module.exports = {
   darkMode: ['class'],
   content: [
     // apps content
-    `**/*.{js,ts,jsx,tsx}`,
+    `**/*.{jsx,tsx}`,
     // include packages if not transpiling
-    '../../packages/**/*.{js,ts,jsx,tsx}'
+    '../../packages/**/*.{jsx,tsx}'
   ],
   theme: {
     container: {
@@ -20,7 +20,11 @@ module.exports = {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
-        background: 'hsl(var(--background))',
+        background: {
+          DEFAULT: 'hsl(var(--background))',
+          secondary: 'hsl(var(--background-secondary))',
+          tertiary: 'hsl(var(--background-tertiary))'
+        },
         foreground: 'hsl(var(--foreground))',
         primary: {
           DEFAULT: 'hsl(var(--primary))',
@@ -48,7 +52,9 @@ module.exports = {
         },
         card: {
           DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))'
+          foreground: 'hsl(var(--card-foreground))',
+          noContent: 'hsl(var(--card-no-content))',
+          emptyBorder: 'hsl(var(--card-empty-border))'
         }
       },
       borderRadius: {

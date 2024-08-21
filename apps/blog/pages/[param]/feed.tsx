@@ -140,16 +140,16 @@ const FeedPage: FC = () => {
                   })
                 ) : (
                   <div
-                    className="flex flex-col gap-6 bg-green-100 px-4 py-6 text-sm dark:bg-slate-700"
+                    className="bg-card-noContent border-card-empty-border flex flex-col gap-6 border-2 border-solid px-4 py-6 text-sm"
                     data-testid="user-has-not-started-blogging-yet"
                   >
                     <span>You haven&apos;t followed anyone yet!</span>
                     <span style={{ fontSize: '1.1rem' }}>
-                      <Link href="/" className="w-fit text-red-500">
+                      <Link href="/" className="w-fit text-destructive">
                         Explore Trending
                       </Link>
                     </span>
-                    <Link href="/welcome" className="w-fit text-red-500">
+                    <Link href="/welcome" className="w-fit text-destructive">
                       New users guide
                     </Link>
                   </div>

@@ -108,7 +108,7 @@ export class CommentViewPage {
     this.payoutPostCardTooltip = page.getByTestId('payout-post-card-tooltip');
     this.commentVote = page.locator('[data-testid="comment-vote"]');
     this.commentVoteTooltip = page.getByTestId('comment-vote-tooltip');
-    this.commentGreenSection = page.locator('.bg-green-50');
+    this.commentGreenSection = page.locator('.bg-card-noContent');
   }
 
   async validataCommentViewPageIsLoaded(postTitle: string) {

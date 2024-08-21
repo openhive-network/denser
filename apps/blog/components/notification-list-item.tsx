@@ -54,12 +54,12 @@ const NotificationListItem = ({ date, msg, score, type, url, lastRead }: IAccoun
 
   return (
     <tr
-      className="block w-full px-4 odd:bg-slate-200 odd:dark:bg-slate-900"
+      className="even:bg-background-tertiary block w-full px-4 odd:bg-background "
       data-testid="notification-list-item"
     >
       <td className="flex justify-between py-4">
         <div className="flex items-center">
-          {unRead && isOwner ? <span className="mr-2 h-2 w-2 rounded-full bg-red-600" /> : null}
+          {unRead && isOwner ? <span className="mr-2 h-2 w-2 rounded-full bg-destructive" /> : null}
           {participants}
           <div className="flex flex-col">
             <Link href={`/${url}`}>
@@ -79,7 +79,7 @@ const NotificationListItem = ({ date, msg, score, type, url, lastRead }: IAccoun
         </div>
         <Progress
           value={score}
-          className="h-[10px] w-[60px] rounded text-red-600"
+          className="h-[10px] w-[60px] rounded text-destructive"
           data-testid="notification-progress-bar"
         />
       </td>

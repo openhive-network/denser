@@ -7,9 +7,9 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@hive/smart-signer": "*",
-    "@hiveio/wax": "^1.27.6-rc1-240708114550",
-    "@hiveio/workerbee": "^0.4.1-240607082855",
+    "@hive/smart-signer": "workspace:*",
+    "@hiveio/wax": "1.27.6-rc1-stable.240803100048",
+    "@hiveio/workerbee": "0.4.1-240807095437",
     "secure-random": "^1.1.2",
     "set-interval-async": "^3.0.3",
     "speakingurl": "^14.0.1"

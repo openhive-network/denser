@@ -20,7 +20,7 @@ const CommentSelectFilter = () => {
         router.replace(`${router.asPath.split('#')[0].split('?')[0]}?sort=${e}#comments`);
       }}
     >
-      <SelectTrigger className="w-fit border-none bg-transparent text-red-600" data-testid="posts-filter">
+      <SelectTrigger className="h-5 w-fit border-none bg-transparent text-red-600" data-testid="posts-filter">
         <SelectValue placeholder="Sort:" />
       </SelectTrigger>
       <SelectContent data-testid="posts-filter-list">

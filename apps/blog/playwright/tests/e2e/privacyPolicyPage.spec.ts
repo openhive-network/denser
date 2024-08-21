@@ -33,7 +33,7 @@ test.describe('Privacy Policy page tests', () => {
       privacyPolicyPage.firstSubtitle,
       'color'
     );
-    expect(subtitleColor).toBe('rgb(15, 23, 42)');
+    expect(subtitleColor).toBe('rgb(51, 51, 51)');
     const subtitleFontSize = await privacyPolicyPage.getElementCssPropertyValue(
       privacyPolicyPage.firstSubtitle,
       'font-size'
@@ -43,12 +43,12 @@ test.describe('Privacy Policy page tests', () => {
       privacyPolicyPage.mainElement,
       'background-color'
     );
-    expect(backgroundColorPage).toBe('rgb(248, 250, 252)');
+    expect(backgroundColorPage).toBe('rgba(0, 0, 0, 0)');
     const paragrafColor = await privacyPolicyPage.getElementCssPropertyValue(
       privacyPolicyPage.firstParagraf,
       'color'
     );
-    expect(paragrafColor).toBe('rgb(15, 23, 42)');
+    expect(paragrafColor).toBe('rgb(51, 51, 51)');
     const paragrafFontSize = await privacyPolicyPage.getElementCssPropertyValue(
       privacyPolicyPage.firstParagraf,
       'font-size'
@@ -78,7 +78,7 @@ test.describe('Privacy Policy page tests', () => {
       privacyPolicyPage.mainElement,
       'background-color'
     );
-    expect(backgroundColorPage).toBe('rgba(3, 7, 17, 0.95)');
+    expect(backgroundColorPage).toBe('rgba(0, 0, 0, 0)');
     const paragrafColor = await privacyPolicyPage.getElementCssPropertyValue(
       privacyPolicyPage.firstParagraf,
       'color'

@@ -31,7 +31,7 @@ const CommunitySimpleDescription = ({
 
   return (
     <Card
-      className="my-4 grid h-fit w-full grid-cols-3 gap-4 p-2 dark:bg-background/95 dark:text-white"
+      className="my-4 grid h-fit w-full grid-cols-3 gap-4 p-2 text-primary dark:bg-background"
       data-testid="community-simple-description-sidebar"
     >
       <CardHeader className="col-span-2 p-0">
@@ -40,7 +40,7 @@ const CommunitySimpleDescription = ({
           {data.is_nsfw ? <Badge variant="red">NSFW</Badge> : null}
         </CardTitle>
         <div className="flex">
-          <div className="flex w-full text-sm text-gray-500">
+          <div className="flex w-full text-sm">
             <SubsListDialog title={data.title} subs={subs}>
               <div className="flex flex-col items-center" data-testid="community-simple-subscribers">
                 {data.subscribers} {t('communities.buttons.subscribers')}

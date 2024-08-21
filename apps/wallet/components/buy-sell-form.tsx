@@ -89,7 +89,7 @@ export default function BuyOrSellForm({
     <div className="flex w-full flex-col gap-8">
       <div
         className={clsx('sm:text-xl', {
-          'text-red-500': transaction === 'sell',
+          'text-destructive': transaction === 'sell',
           'text-green-600': transaction === 'buy'
         })}
       >
@@ -111,9 +111,7 @@ export default function BuyOrSellForm({
                 })
               }
             />
-            <div className="flex w-28 items-center justify-center bg-slate-300 dark:bg-slate-900">
-              HBD/HIVE
-            </div>
+            <div className="flex w-28 items-center justify-center bg-background-secondary">HBD/HIVE</div>
           </div>
         </div>{' '}
         <div className="flex w-full justify-between text-sm">
@@ -131,7 +129,7 @@ export default function BuyOrSellForm({
                 })
               }
             />
-            <div className="flex w-28 items-center justify-center bg-slate-300 dark:bg-slate-900">HIVE</div>
+            <div className="flex w-28 items-center justify-center bg-background-secondary">HIVE</div>
           </div>
         </div>{' '}
         <div className="flex w-full justify-between text-sm">
@@ -149,16 +147,14 @@ export default function BuyOrSellForm({
                 })
               }
             />
-            <div className="flex w-28 items-center justify-center bg-slate-300 dark:bg-slate-900">
-              HBD ($)
-            </div>
+            <div className="flex w-28 items-center justify-center bg-background-secondary">HBD ($)</div>
           </div>
         </div>
       </div>{' '}
       <div className="flex justify-between">
         <div className="text-xs">
           <span
-            className="cursor-pointer text-red-500"
+            className="cursor-pointer text-destructive"
             onClick={(e) =>
               dispatch({
                 type: ActionType.ChangeCostValue,
@@ -175,9 +171,9 @@ export default function BuyOrSellForm({
           disabled={!disabled}
           variant="outline"
           className={clsx({
-            'border-red-500 bg-black text-red-500 hover:bg-red-950 hover:text-red-400':
+            'border-destructive bg-background-secondary text-destructive hover:bg-red-950 hover:text-red-400':
               transaction === 'sell',
-            'border-green-500 bg-green-100 text-green-500 hover:bg-green-50 hover:text-green-600':
+            'border-card-empty-border border-2 border-solid bg-card-noContent text-green-500 hover:bg-green-50 hover:text-green-600':
               transaction === 'buy'
           })}
         >

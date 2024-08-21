@@ -34,14 +34,13 @@ const CommentList = ({
           <div
             key={`parent-${comment.post_id}-index-${index}`}
             className={clsx(
-              'pl-2 ',
+              'pl-2',
               {
                 'm-2 border-2 border-red-600 bg-green-50 p-2 dark:bg-slate-950':
                   router.asPath.includes(`@${comment.author}/${comment.permlink}`) && comment.depth < 8
               },
               { 'pl-3 sm:pl-12': comment.depth > 1 }
             )}
-            id={`@${data[index].author}/${data[index].permlink}`}
           >
             <CommentListItem
               comment={comment}
