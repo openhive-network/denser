@@ -37,6 +37,7 @@ export function SubsListDialog({
                 <Badge className="font-light" variant="red">
                   <span className="mr-1">{e[2]}</span>
                   <ChangeTitleDialog
+                    permlink=""
                     moderateEnabled={moderateEnabled}
                     userOnList={e[0]}
                     title={e[2]}
@@ -45,6 +46,7 @@ export function SubsListDialog({
                 </Badge>
               ) : (
                 <ChangeTitleDialog
+                  permlink=""
                   moderateEnabled={moderateEnabled}
                   userOnList={e[0]}
                   title=""

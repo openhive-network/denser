@@ -36,9 +36,16 @@ interface CommentListProps {
   comment: Entry;
   parent_depth: number;
   mutedList: IFollowList[];
+  parentPermlink: string;
 }
 
-const CommentListItem = ({ permissionToMute, comment, parent_depth, mutedList }: CommentListProps) => {
+const CommentListItem = ({
+  permissionToMute,
+  comment,
+  parent_depth,
+  mutedList,
+  parentPermlink
+}: CommentListProps) => {
   const { t } = useTranslation('common_blog');
   const username = comment.author;
   const router = useRouter();
@@ -138,6 +145,7 @@ const CommentListItem = ({ permissionToMute, comment, parent_depth, mutedList }:
                               >
                                 <span className="mr-1">{comment.author_title}</span>
                                 <ChangeTitleDialog
+                                  permlink={parentPermlink}
                                   moderateEnabled={permissionToMute}
                                   userOnList={comment.author}
                                   title={comment.author_title ?? ''}
@@ -146,6 +154,7 @@ const CommentListItem = ({ permissionToMute, comment, parent_depth, mutedList }:
                               </Badge>
                             ) : (
                               <ChangeTitleDialog
+                                permlink={parentPermlink}
                                 moderateEnabled={permissionToMute}
                                 userOnList={comment.author}
                                 title={comment.author_title ?? ''}

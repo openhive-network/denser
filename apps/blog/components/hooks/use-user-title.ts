@@ -13,7 +13,7 @@ const logger = getLogger('app');
 export function useUserTitleMutation() {
   const queryClient = useQueryClient();
   const userTitleMutation = useMutation({
-    mutationFn: async (params: { community: string; username: string; title: string }) => {
+    mutationFn: async (params: { community: string; username: string; title: string; permlink: string }) => {
       const { community, username, title } = params;
       const broadcastResult = await transactionService.setUserTitle(community, username, title, {
         observe: true
@@ -24,6 +24,10 @@ export function useUserTitleMutation() {
     },
     onSuccess: (data) => {
       logger.info('useUserTitleMutation onSuccess data: %o', data);
+      const { community, username, permlink } = data;
+      queryClient.invalidateQueries({ queryKey: ['subscribers', community] });
+      queryClient.invalidateQueries({ queryKey: ['postData', username, permlink] });
+      queryClient.invalidateQueries({ queryKey: ['discussionData', username, permlink] });
     }
   });
 

@@ -6,6 +6,7 @@ import { UserPopoverCard, UserPopoverCardProps } from './user-popover-card';
 import ChangeTitleDialog from './change-title-dialog';
 
 interface UserInfoProps extends UserPopoverCardProps {
+  permlink: string;
   moderateEnabled: boolean;
   authored?: string;
   community_title: string;
@@ -17,6 +18,7 @@ interface UserInfoProps extends UserPopoverCardProps {
 }
 
 function UserInfo({
+  permlink,
   moderateEnabled,
   authored,
   community,
@@ -42,6 +44,7 @@ function UserInfo({
           <Badge variant="outline" className="mr-1 border-destructive text-slate-500" translate="no">
             <span className="mr-1">{author_title}</span>
             <ChangeTitleDialog
+              permlink={permlink}
               community={community}
               moderateEnabled={moderateEnabled}
               userOnList={author}
@@ -50,6 +53,7 @@ function UserInfo({
           </Badge>
         ) : (
           <ChangeTitleDialog
+            permlink={permlink}
             community={community}
             moderateEnabled={moderateEnabled}
             userOnList={author}

@@ -268,6 +268,7 @@ function PostPage({
                 </div>
               )}
               <UserInfo
+                permlink={permlink}
                 moderateEnabled={userCanModerate}
                 author={post.author}
                 author_reputation={post.author_reputation}
@@ -379,6 +380,7 @@ function PostPage({
                             moderateEnabled={userCanModerate}
                             userOnList={post.author}
                             title={post.author_title ?? ''}
+                            permlink={permlink}
                           />
                         </Badge>
                       ) : (
@@ -387,6 +389,7 @@ function PostPage({
                           moderateEnabled={userCanModerate}
                           userOnList={post.author}
                           title={post.author_title ?? ''}
+                          permlink={permlink}
                         />
                       )}
                     </div>
@@ -551,6 +554,7 @@ function PostPage({
               <CommentSelectFilter />
             </div>
             <DynamicComments
+              highestPermlink={post.permlink}
               permissionToMute={userCanModerate}
               mutedList={mutedList || []}
               data={discussionState}
