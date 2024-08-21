@@ -180,17 +180,11 @@ export function TransferDialog({
       data.to = username || '';
       data.advancedBtn = true;
       data.onSubmit = async () => {
-        const pendingWithdrawals = (await getSavingsWithdrawals(username)).withdrawals;
-        let requestId = 0;
-        if (!!pendingWithdrawals.length) {
-          requestId = Math.max(...pendingWithdrawals.map((withdrawal) => withdrawal.request_id)) + 1;
-        }
         const params = {
           fromAccount: username,
           toAccount: advanced ? data.to : username,
           memo: data.memo,
-          amount: await getAsset(value),
-          requestId
+          amount: await getAsset(value)
         };
         try {
           withdrawFromSavingsMutation.mutateAsync(params);
@@ -206,6 +200,19 @@ export function TransferDialog({
       data.amount = amount.savingsHbd;
       data.to = username || '';
       data.advancedBtn = true;
+      data.onSubmit = async () => {
+        const params = {
+          fromAccount: username,
+          toAccount: advanced ? data.to : username,
+          memo: data.memo,
+          amount: await getAsset(value)
+        };
+        try {
+          withdrawFromSavingsMutation.mutateAsync(params);
+        } catch (error) {
+          handleError(error, { method: 'withdrawHiveDollars', params });
+        }
+      };
       break;
   }
 
@@ -313,9 +320,17 @@ export function TransferDialog({
           )}
         </div>
         <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
-          <Button variant="redHover" className="w-fit" disabled={badActors} onClick={() => data.onSubmit()}>
-            {data.buttonTitle}
-          </Button>
+          <DialogTrigger asChild>
+            <Button
+              type="submit"
+              variant="redHover"
+              className="w-fit"
+              disabled={badActors}
+              onClick={() => data.onSubmit()}
+            >
+              {data.buttonTitle}
+            </Button>
+          </DialogTrigger>
           {data.advancedBtn && (
             <Button className="w-fit" variant="ghost" onClick={() => setAdvanced(!advanced)}>
               {advanced ? <span>Basic</span> : <span>Advanced</span>}
