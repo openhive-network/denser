@@ -8,10 +8,10 @@ FROM base AS builder
 ARG TURBO_APP_SCOPE
 RUN apk add --no-cache libc6-compat
 RUN apk update
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm add -g turbo@^2
 
 ## Set working directory for an App
 WORKDIR /app
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm add -g turbo@^2
 COPY . .
 ## prepare files only for docker and optimise
 RUN turbo prune --scope=${TURBO_APP_SCOPE} --docker
