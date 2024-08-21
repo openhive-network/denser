@@ -454,12 +454,23 @@ function PostPage({
                             />
                           </div>
                         ) : userCanModerate && post.depth === 0 ? (
-                          <button
+                          <div className="flex flex-col items-center">
+                            {/* <button
                             className="ml-2 flex items-center text-destructive"
                             onClick={post_is_pinned ? unpin : pin}
-                          >
+                            >
                             {post_is_pinned ? t('communities.unpin') : t('communities.pin')}
-                          </button>
+                          </button> */}
+                            {/* TODO swap two button to one when api return stats.is_pinned, 
+                            temprary use two button to unpin and pin
+                            */}
+                            <button className="ml-2 flex items-center text-destructive" onClick={unpin}>
+                              {t('communities.pin')}
+                            </button>
+                            <button className="ml-2 flex items-center text-destructive" onClick={unpin}>
+                              {t('communities.unpin')}
+                            </button>
+                          </div>
                         ) : null}
                         {userCanModerate ? (
                           <MutePostDialog
