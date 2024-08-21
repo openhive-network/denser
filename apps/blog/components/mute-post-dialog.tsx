@@ -13,13 +13,16 @@ import { useState } from 'react';
 import { handleError } from '@ui/lib/utils';
 import { useMutePostMutation, useUnmutePostMutation } from '@/blog/components/hooks/use-mute-post-mutations';
 import { CircleSpinner } from 'react-spinners-kit';
+import clsx from 'clsx';
 
 const MutePostDialog = ({
+  comment,
   community,
   username,
   permlink,
   contentMuted
 }: {
+  comment: Boolean;
   community: string;
   username: string;
   permlink: string;
@@ -52,7 +55,9 @@ const MutePostDialog = ({
         {mutePost.isLoading || unmutePost.isLoading ? (
           <CircleSpinner loading={mutePost.isLoading || unmutePost.isLoading} size={18} color="#dc2626" />
         ) : (
-          <button className="ml-2 flex items-center text-destructive">
+          <button className={clsx("ml-2 flex items-center",{
+            ' text-destructive':!comment
+          })}>
             {contentMuted ? 'Unmute' : 'Mute'}
           </button>
         )}

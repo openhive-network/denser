@@ -463,6 +463,7 @@ function PostPage({
                         ) : null}
                         {userCanModerate ? (
                           <MutePostDialog
+                          comment={false}
                             community={community}
                             username={post.author}
                             permlink={post.permlink}

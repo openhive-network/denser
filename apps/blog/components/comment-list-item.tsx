@@ -342,6 +342,7 @@ const CommentListItem = ({
                         ) : null}
                         {permissionToMute ? (
                           <MutePostDialog
+                            comment={true}
                             community={comment.community ?? ''}
                             username={comment.author}
                             permlink={comment.permlink}
