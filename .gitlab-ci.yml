@@ -28,11 +28,12 @@ variables:
   HAF_COMMIT: "0aef1bf01fd6ee0d23f12a21038881c30672146a"
   HIVEMIND_INSTANCE_VERSION: "9fd75477"
   HAFAH_VERSION: "e97307ba"
+  BLOCK_LOG_VERSION: "42bf3ac5"
   HIVEMIND_INSTANCE_IMAGE: registry.gitlab.syncad.com/hive/hivemind/instance
   HAFAH_REGISTRY: registry.gitlab.syncad.com/hive/hafah/instance
   # BLOCK_LOG_SOURCE_DIR: "/blockchain/block_log_mirror_44"
   REPLAY_DIRECTORY_PREFIX: "/cache/replay_data_haf_api_node_denser"
-  REPLAY_DIRECTORY: "${REPLAY_DIRECTORY_PREFIX}_${API_NODE_VERSION}_${HAF_COMMIT}_${HIVEMIND_INSTANCE_VERSION}_${HAFAH_VERSION}"
+  REPLAY_DIRECTORY: "${REPLAY_DIRECTORY_PREFIX}_${API_NODE_VERSION}_${HAF_COMMIT}_${HIVEMIND_INSTANCE_VERSION}_${HAFAH_VERSION}_${BLOCK_LOG_VERSION}"
   REPLAY_PIPELINE_DIRECTORY: "${REPLAY_DIRECTORY_PREFIX}_${CI_PIPELINE_ID}"
   DOCKER_TLS_CERTDIR: "${REPLAY_PIPELINE_DIRECTORY}_certs"
   BLOCK_LOG_SOURCE: "${REPLAY_PIPELINE_DIRECTORY}_block_log"
@@ -270,7 +271,7 @@ extended_block_log_creation:
     REGISTRY: "registry.gitlab.syncad.com/hive/hive"
     REGISTRY_USER: "${HIVED_CI_IMGBUILDER_USER}"
     REGISTRY_PASS: "${HIVED_CI_IMGBUILDER_PASSWORD}"
-    IMAGE_TAG: "42bf3ac5"
+    IMAGE_TAG: "${BLOCK_LOG_VERSION}"
     HIVE_SRC: "${CI_PROJECT_DIR}/haf/hive"
     BLOCK_LOG_SOURCE_DIR: "/blockchain/block_log_5m"
     BINARY_PATH: "${CI_PROJECT_DIR}/hived-mirrornet-binaries"
@@ -419,7 +420,7 @@ mirrornet-haf-node-replay:
     reports:
       junit: .${TURBO_APP_PATH}/junit/**/**/results.xml
 
-haf-api-node-replay-data-copy:
+mirrornet-replay-data-copy:
   extends: .haf_api_node_replay_data_copy
   stage: test
   needs:
@@ -440,7 +441,10 @@ mirrornet-based-tests:
     - block_log_processing
   image: "${CI_REGISTRY_IMAGE}/playwright-faketime:${PLAYWRIGHT_TAG}"
   services:
-    - !reference [.haf_api_node_test, services]
+    - !reference [.api-node-job, services]
+    - name: registry.gitlab.syncad.com/hive/haf_api_node/compose:${API_NODE_VERSION}
+      alias: compose
+      entrypoint: [ "/sbin/tini", "-g", "--", "/haf-api-node/entrypoint.sh", "up", "--quiet-pull",  "|", "tee", "" ]
     - name: $BLOG_IMAGE_NAME
       alias: denser-blog
       variables:
