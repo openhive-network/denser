@@ -85,7 +85,7 @@ docker-build-wallet:
   script:
     - |
       echo -e "\e[0Ksection_start:$(date +%s):deps[collapsed=true]\r\e[0KInstalling dependencies..."
-      ppnpm install --frozen-lockfile --virtual-store-dir .pnpm
+      pnpm install --frozen-lockfile --virtual-store-dir .pnpm
       echo -e "\e[0Ksection_end:$(date +%s):deps\r\e[0K"
   cache:
     key: '$TURBO_APP_SCOPE-cache-2'
