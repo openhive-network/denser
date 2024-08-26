@@ -42,6 +42,7 @@ variables:
   # Other settings
   HAFAH_PROJECT_ID: 308
   HIVEMIND_PROJECT_ID: 213
+  HAF_API_NODE_PROJECT_ID: 444
   CADDY_TAG: "2.7.6"
   PLAYWRIGHT_TAG: "v1.41.1-jammy"
   PIPELINE_TRIGGER_TAG: "2.9.0"
@@ -109,6 +110,7 @@ create_temporary_tags:
       git config --global user.name "${GITLAB_USER_NAME}"
       git clone https://gitlab-ci-token:${HAFAH_ACCESS_TOKEN}@gitlab.syncad.com/hive/HAfAH.git hafah
       git clone https://gitlab-ci-token:${HIVEMIND_ACCESS_TOKEN}@gitlab.syncad.com/hive/hivemind.git hivemind
+      git clone https://gitlab-ci-token:${HAF_API_NODE_ACCESS_TOKEN}@gitlab.syncad.com/hive/haf_api_node.git haf_api_node
   script:
     - |
       set -e
@@ -122,6 +124,11 @@ create_temporary_tags:
       git tag ${CI_PIPELINE_ID} ${HIVEMIND_INSTANCE_VERSION}
       git push origin ${CI_PIPELINE_ID} -o ci.skip
       popd
+
+      pushd haf_api_node
+      git tag ${CI_PIPELINE_ID} ${API_NODE_VERSION}
+      git push origin ${CI_PIPELINE_ID} -o ci.skip
+      popd
   tags:
     - public-runner-docker
 
@@ -133,9 +140,8 @@ create_temporary_tags:
   needs:
     - create_temporary_tags
   variables:
-    PIPELINE_TOKEN: 
-    PROJECT_VERSION: 
-    PROJECT_ID: 
+    PIPELINE_TOKEN:
+    PROJECT_ID:
   script: 
     - trigger --verbose --api-token "${API_TOKEN}" --pipeline-token "${PIPELINE_TOKEN}" --target-ref ${CI_PIPELINE_ID} --host "${CI_SERVER_HOST}" ${PROJECT_ID}
   tags:
@@ -145,21 +151,26 @@ hafah-build:
   extends: .external-build
   variables:
     PIPELINE_TOKEN: ${HAFAH_PIPELINE_TOKEN}
-    PROJECT_VERSION: ${HAFAH_VERSION}
     PROJECT_ID: ${HAFAH_PROJECT_ID}
 
 hivemind-build:
   extends: .external-build
   variables:
     PIPELINE_TOKEN: ${HIVEMIND_PIPELINE_TOKEN}
-    PROJECT_VERSION: ${HIVEMIND_INSTANCE_VERSION}
     PROJECT_ID: ${HIVEMIND_PROJECT_ID}
+
+haf-api-node-build:
+  extends: .external-build
+  variables:
+    PIPELINE_TOKEN: ${HAF_API_NODE_PIPELINE_TOKEN}
+    PROJECT_ID: ${HAF_API_NODE_PROJECT_ID}
 
 remove_temporary_tags:
   stage: build
   needs:
     - hafah-build
     - hivemind-build
+    - haf-api-node-build
   image: "registry.gitlab.syncad.com/hive/hive/ci-base-image${TEST_IMAGE_TAG}"
   before_script:
     - !reference [create_temporary_tags, before_script]
@@ -172,6 +183,10 @@ remove_temporary_tags:
       popd
 
       pushd hivemind
+      git push origin :refs/tags/${CI_PIPELINE_ID}
+      popd
+
+      pushd haf_api_node
       git push origin :refs/tags/${CI_PIPELINE_ID}
       popd
   tags:
@@ -353,6 +368,7 @@ mirrornet-haf-node-replay:
     - mirrornet-haf-image-docker-build
     - hafah-build
     - hivemind-build
+    - haf-api-node-build
     - block_log_processing
   variables:
     GIT_STRATEGY: "clone"
