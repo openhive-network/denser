@@ -21,6 +21,11 @@ const logger = getLogger('app');
 
 const VOTE_WEIGHT_DROPDOWN_THRESHOLD = 1.0 * 1000.0 * 1000.0;
 
+const offsetSlider = {
+  popoverSideOffset: -37,
+  popoverAlignOfset: -19
+};
+
 const VotesComponent = ({ post }: { post: Entry }) => {
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
@@ -53,11 +58,6 @@ const VotesComponent = ({ post }: { post: Entry }) => {
   );
   const { net_vests } = useLoggedUserContext();
   const enable_slider = net_vests > VOTE_WEIGHT_DROPDOWN_THRESHOLD;
-
-  const offsetSlider = {
-    popoverSideOffset: -37,
-    popoverAlignOfset: -19
-  };
 
   const userVote =
     userVotes?.votes[0] && userVotes?.votes[0].voter === user.username ? userVotes.votes[0] : undefined;
