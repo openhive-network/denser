@@ -189,7 +189,7 @@ function PostPage({
   return (
     <>
       <Head>{canonical_url ? <link rel="canonical" href={canonical_url} key="canonical" /> : null}</Head>
-      <div className="py-8">
+      <div className="py-8 pb-48">
         <div className="relative mx-auto my-0 max-w-4xl bg-background px-8 py-4">
           {communityData ? (
             <AlertDialogFlag
