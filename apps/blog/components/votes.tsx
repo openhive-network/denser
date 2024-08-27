@@ -54,6 +54,11 @@ const VotesComponent = ({ post }: { post: Entry }) => {
   const { net_vests } = useLoggedUserContext();
   const enable_slider = net_vests > VOTE_WEIGHT_DROPDOWN_THRESHOLD;
 
+  const offsetSlider = {
+    popoverSideOffset: -37,
+    popoverAlignOfset: -19
+  };
+
   const userVote =
     userVotes?.votes[0] && userVotes?.votes[0].voter === user.username ? userVotes.votes[0] : undefined;
   const voteMutation = useVoteMutation();
@@ -107,9 +112,9 @@ const VotesComponent = ({ post }: { post: Entry }) => {
           <Popover.Portal>
             <Popover.Content
               className="z-50 max-w-xs rounded-lg bg-background-secondary p-4 shadow-lg"
-              sideOffset={-37}
+              sideOffset={offsetSlider.popoverSideOffset}
               align="start"
-              alignOffset={-19}
+              alignOffset={offsetSlider.popoverAlignOfset}
             >
               <div className="flex h-full items-center gap-2">
                 <TooltipContainer
@@ -212,9 +217,9 @@ const VotesComponent = ({ post }: { post: Entry }) => {
           <Popover.Portal>
             <Popover.Content
               className="z-50 max-w-xs rounded-lg bg-background-secondary p-4 shadow-lg"
-              sideOffset={-37}
+              sideOffset={offsetSlider.popoverSideOffset}
               align="start"
-              alignOffset={-19}
+              alignOffset={offsetSlider.popoverAlignOfset}
             >
               <div className="flex h-full items-center gap-2">
                 <TooltipContainer
