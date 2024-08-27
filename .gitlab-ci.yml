@@ -102,7 +102,7 @@ docker-build-wallet:
 
 .e2e_tests_template:
   extends: .node-job
-  image: mcr.microsoft.com/playwright:v1.41.1-jammy
+  image: mcr.microsoft.com/playwright:v1.46.0-jammy
   variables:
     CI_DEBUG_SERVICES: true
     FF_NETWORK_PER_BUILD: 1
@@ -175,7 +175,7 @@ e2e-tests-wallet:
   extends: .node-job
   stage: test-report-aggregate
   when: always
-  image: mcr.microsoft.com/playwright:v1.41.1-jammy
+  image: mcr.microsoft.com/playwright:v1.46.0-jammy
   script:
     - cd .$TURBO_APP_PATH
     - pnpm install -D playwright-merge-html-reports 
