@@ -11,14 +11,20 @@ import { CircleSpinner } from 'react-spinners-kit';
 import { getListVotesByCommentVoter } from '@transaction/lib/hive';
 import { getLogger } from '@ui/lib/logging';
 import { Entry } from '@transaction/lib/bridge';
-import { DropdownMenuContent, DropdownMenuTrigger, DropdownMenu } from '@ui/components';
 import { Slider } from '@ui/components/slider';
+import { Popover, PopoverTrigger, PopoverContent } from '@ui/components/popover';
 import { useLoggedUserContext } from './common/logged-user';
 import { handleError } from '@ui/lib/utils';
 import { useStore } from './hooks/use-store';
+
 const logger = getLogger('app');
 
 const VOTE_WEIGHT_DROPDOWN_THRESHOLD = 1.0 * 1000.0 * 1000.0;
+
+const offsetSlider = {
+  popoverSideOffset: -37,
+  popoverAlignOfset: -19
+};
 
 const VotesComponent = ({ post }: { post: Entry }) => {
   const { user } = useUser();
@@ -67,6 +73,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
       setSliderDownvote([-userVote.vote_percent / 100]);
     }
   }, [userVotes]);
+
   const submitVote = async (weight: number) => {
     const { author, permlink } = post;
     try {
@@ -85,8 +92,8 @@ const VotesComponent = ({ post }: { post: Entry }) => {
           color="#dc2626"
         />
       ) : user.isLoggedIn && enable_slider && !vote_upvoted ? (
-        <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center">
+        <Popover>
+          <PopoverTrigger>
             <TooltipContainer
               loading={voteMutation.isLoading}
               text={t('cards.post_card.upvote')}
@@ -99,8 +106,13 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                 )}
               />
             </TooltipContainer>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="h-16 w-64 p-2">
+          </PopoverTrigger>
+          <PopoverContent
+            className="z-50 max-w-xs rounded-lg bg-background-secondary p-4 shadow-lg"
+            sideOffset={offsetSlider.popoverSideOffset}
+            align="start"
+            alignOffset={offsetSlider.popoverAlignOfset}
+          >
             <div className="flex h-full items-center gap-2">
               <TooltipContainer
                 loading={voteMutation.isLoading}
@@ -126,8 +138,8 @@ const VotesComponent = ({ post }: { post: Entry }) => {
               />
               <div className="w-fit">{sliderUpvote}%</div>
             </div>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          </PopoverContent>
+        </Popover>
       ) : user.isLoggedIn ? (
         <TooltipContainer
           loading={voteMutation.isLoading}
@@ -181,8 +193,8 @@ const VotesComponent = ({ post }: { post: Entry }) => {
           color="#dc2626"
         />
       ) : user.isLoggedIn && enable_slider && !vote_downvoted ? (
-        <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center">
+        <Popover>
+          <PopoverTrigger>
             <TooltipContainer
               loading={voteMutation.isLoading}
               text={t('cards.post_card.downvote')}
@@ -195,8 +207,13 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                 )}
               />
             </TooltipContainer>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className=" w-64 p-2">
+          </PopoverTrigger>
+          <PopoverContent
+            className="z-50 max-w-xs rounded-lg bg-background-secondary p-4 shadow-lg"
+            sideOffset={offsetSlider.popoverSideOffset}
+            align="start"
+            alignOffset={offsetSlider.popoverAlignOfset}
+          >
             <div className="flex h-full items-center gap-2">
               <TooltipContainer
                 loading={voteMutation.isLoading}
@@ -231,8 +248,8 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                 <li>{t('cards.post_card.reason_4')}</li>
               </ul>
             </div>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          </PopoverContent>
+        </Popover>
       ) : user.isLoggedIn ? (
         <TooltipContainer
           loading={voteMutation.isLoading}
