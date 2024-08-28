@@ -6,19 +6,22 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useForm } from 'react-hook-form';
 import { Checkbox, Separator } from '@hive/ui';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
 import WalletMenu from '@/wallet/components/wallet-menu';
 import { getServerSidePropsDefault } from '../../lib/get-translations';
+import { createWaxFoundation } from '@hiveio/wax';
+import { useChangePasswordMutation } from '@/wallet/components/hooks/use-change-password-mutation';
+import { handleError } from '@ui/lib/utils';
 
 export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
 let key = '';
 const accountFormSchema = z.object({
-  name: z.string().min(2, { message: 'Account name should be longer' }),
+  name: z.string().min(2, 'Account name should be longer'),
   curr_password: z.string().min(2, { message: 'Required' }),
   genereted_password: z.string().refine((value) => value === key, {
     message: 'Passwords do not match'
@@ -35,8 +38,15 @@ type AccountFormValues = z.infer<typeof accountFormSchema>;
 
 export default function PostForm() {
   const { t } = useTranslation('common_wallet');
-  const [generatedKey, setGeneratedKey] = useState(false);
+  const [isKeyGenerated, setIsKeyGenerated] = useState(false);
+  const [publicKeys, setPublicKeys] = useState<{
+    active: string;
+    owner: string;
+    posting: string;
+  }>();
   const { username } = useSiteParams();
+  const changePasswordMutation = useChangePasswordMutation();
+
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
     defaultValues: {
@@ -47,15 +57,46 @@ export default function PostForm() {
       saved_password: false
     }
   });
-  const newKey = 'afbsdfgayhi4yh4uqhti4hqiuhu';
+
+  useEffect(() => {
+    form.setValue('name', username);
+  }, [username]);
 
   function onSubmit(data: AccountFormValues) {
-    console.log(JSON.stringify(data, null, 2));
+    if (publicKeys) {
+      const params = {
+        account: username,
+        newOwner: publicKeys.owner,
+        newActive: publicKeys.active,
+        newPosting: publicKeys.posting
+      };
+      try {
+        changePasswordMutation.mutateAsync(params);
+      } catch (error) {
+        handleError(error, { method: 'changePassword', params });
+      }
+    }
   }
 
-  function handleKey() {
-    key = newKey;
-    setGeneratedKey(true);
+  async function handleKey() {
+    const wax = await createWaxFoundation();
+    // generate password
+    const brainKeyData = wax.suggestBrainKey();
+    const passwordToBeSavedByUser = brainKeyData.wifPrivateKey;
+
+    // private keys for account authorities
+    const newOwner = wax.getPrivateKeyFromPassword(username, 'owner', passwordToBeSavedByUser);
+    const newActive = wax.getPrivateKeyFromPassword(username, 'active', passwordToBeSavedByUser);
+    const newPosting = wax.getPrivateKeyFromPassword(username, 'posting', passwordToBeSavedByUser);
+
+    setPublicKeys({
+      active: newActive.associatedPublicKey,
+      owner: newOwner.associatedPublicKey,
+      posting: newPosting.associatedPublicKey
+    });
+
+    key = passwordToBeSavedByUser;
+    setIsKeyGenerated(true);
   }
 
   return (
@@ -118,7 +159,7 @@ export default function PostForm() {
                 {t('change_password_page.generated_password')}
                 <span className="font-light">({t('change_password_page.new')})</span>
               </div>
-              {generatedKey ? (
+              {isKeyGenerated ? (
                 <div>
                   <code className="my-1 block bg-white px-1 py-2 text-center text-red-500">{key}</code>
                   <div className="text-center text-xs font-bold">
