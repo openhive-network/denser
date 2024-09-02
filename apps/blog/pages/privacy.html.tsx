@@ -1,7 +1,21 @@
-import { GetServerSideProps } from 'next';
-import { getServerSidePropsDefault } from '../lib/get-translations';
+import { GetStaticProps } from 'next';
+import path from 'path';
+import fs from 'fs';
+import { getTranslations } from '../lib/get-translations';
 
-export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
+export const getStaticProps: GetStaticProps<{
+  data: string;
+}> = async (ctx) => {
+  const file_path = path.join('lib', 'markdowns', 'faq.md');
+  const data = fs.readFileSync(file_path, { encoding: 'utf8', flag: 'r' });
+
+  return {
+    props: {
+      data,
+      ...(await getTranslations(ctx))
+    }
+  };
+};
 
 function Privacy() {
   return (

@@ -1,10 +1,11 @@
 import { Remarkable } from 'remarkable';
 import fs from 'fs';
 import path from 'path';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { GetStaticProps, InferGetServerSidePropsType } from 'next';
 import { getTranslations } from '../lib/get-translations';
+import { useTranslation } from 'next-i18next';
 
-export const getServerSideProps: GetServerSideProps<{
+export const getStaticProps: GetStaticProps<{
   data: string;
 }> = async (ctx) => {
   const file_path = path.join('lib', 'markdowns', 'welcome.md');
@@ -17,7 +18,8 @@ export const getServerSideProps: GetServerSideProps<{
     }
   };
 };
-function Welcome({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+function Welcome({ data }: InferGetServerSidePropsType<typeof getStaticProps>) {
+  useTranslation('common_blog');
   const renderer = new Remarkable({
     html: true,
     xhtmlOut: true,
