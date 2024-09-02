@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:1.5
-FROM node:20-alpine AS base
+FROM node:20.17-alpine AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-ENV TURBO_VERSION=2.0.14
+ENV TURBO_VERSION=2.1.1
 RUN corepack enable
 
 FROM base AS builder
