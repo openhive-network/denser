@@ -586,7 +586,7 @@ export class TransactionService {
               }
 
               beneficiaries.forEach((beneficiary) => {
-                articleBuilder.addBeneficiary(beneficiary.account, Number(beneficiary.weight));
+                articleBuilder.addBeneficiary(beneficiary.account, Number(beneficiary.weight) * 100);
               });
             }
           },
