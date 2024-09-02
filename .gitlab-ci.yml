@@ -183,7 +183,7 @@ e2e-tests-wallet:
   script:
     - cd .$TURBO_APP_PATH
     - pnpm install -D playwright-merge-html-reports 
-    - pnpm dlx playwright@1.46.0 test tests/merge-reports --config playwright.merge.config.ts
+    - ./node_modules/.bin/playwright test tests/merge-reports --config playwright.merge.config.ts
   artifacts:
     paths:
       - .${TURBO_APP_PATH}/merged-html-report/
