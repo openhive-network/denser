@@ -82,12 +82,14 @@ docker-build-wallet:
     name: node:20.11.1-alpine3.18
     entrypoint: []
   stage: test
+  before_script:
+    - corepack enable
+    - corepack prepare pnpm@latest-9 --activate
+    - pnpm config set store-dir .pnpm-store
   script:
     - |
       echo -e "\e[0Ksection_start:$(date +%s):deps[collapsed=true]\r\e[0KInstalling dependencies..."
-      npm i -g pnpm --cache .npm
-      pnpm config set store-dir .pnpm-store
-      pnpm install --frozen-lockfile --virtual-store-dir .pnpm
+      pnpm install --frozen-lockfile
       echo -e "\e[0Ksection_end:$(date +%s):deps\r\e[0K"
   cache:
     key: '$TURBO_APP_SCOPE-cache-2'
