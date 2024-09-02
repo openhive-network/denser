@@ -11,12 +11,12 @@ export const getTranslations = async (
   let locale = i18n.defaultLocale; // Fallback to default locale
 
   // Check if context has the `locale` field (from getStaticProps)
-  if ('locale' in ctx) {
-    locale = ctx.locale || i18n.defaultLocale;
-  }
+  
   // Check if context has the `req` object (from getServerSideProps)
-  else if ('req' in ctx) {
+  if ('req' in ctx) {
     locale = ctx.req.cookies.NEXT_LOCALE || i18n.defaultLocale;
+  } else if ('locale' in ctx) {
+    locale = ctx.locale || i18n.defaultLocale;
   }
 
   // Fetch translations using the determined locale
