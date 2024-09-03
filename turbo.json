@@ -1,6 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "pipeline": {
+  "tasks": {
     "dev": {
       "cache": false,
       "persistent": true
@@ -10,15 +10,29 @@
       "persistent": true
     },
     "start": {
-      "dependsOn": ["^build"]
+      "dependsOn": [
+        "^build"
+      ]
     },
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**"
+      ]
     },
     "test": {
-      "dependsOn": ["build"],
-      "inputs": ["src/**/*.tsx", "src/**/*.ts", "test/**/*.ts", "test/**/*.tsx"]
+      "dependsOn": [
+        "build"
+      ],
+      "inputs": [
+        "src/**/*.tsx",
+        "src/**/*.ts",
+        "test/**/*.ts",
+        "test/**/*.tsx"
+      ]
     },
     "test:jest": {},
     "pw:test:local": {},

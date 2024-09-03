@@ -14,7 +14,7 @@ RUN mkdir ~/.npm-global
 ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
 ENV PATH=$PATH:/home/node/.npm-global/bin
 RUN npm install -g @beam-australia/react-env@3.1.1
-COPY --chown=node package.json package-lock.json* ./
+COPY --chown=node package.json pnpm-lock.yaml* ./
 RUN npm ci
 
 

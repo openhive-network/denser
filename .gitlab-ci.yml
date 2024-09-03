@@ -82,15 +82,20 @@ docker-build-wallet:
     name: node:20.11.1-alpine3.18
     entrypoint: []
   stage: test
+  before_script:
+    - corepack enable
+    - corepack prepare pnpm@latest-9 --activate
+    - pnpm config set store-dir .pnpm-store
   script:
     - |
       echo -e "\e[0Ksection_start:$(date +%s):deps[collapsed=true]\r\e[0KInstalling dependencies..."
-      npm ci --cache .npm
+      pnpm install --frozen-lockfile
       echo -e "\e[0Ksection_end:$(date +%s):deps\r\e[0K"
   cache:
     key: '$TURBO_APP_SCOPE-cache-2'
     paths:
       - .npm/
+      - .pnpm-store/
       - .next/
   artifacts:
     name: '$CI_JOB_NAME-$CI_COMMIT_REF_NAME'
@@ -101,7 +106,7 @@ docker-build-wallet:
 
 .e2e_tests_template:
   extends: .node-job
-  image: mcr.microsoft.com/playwright:v1.41.1-jammy
+  image: mcr.microsoft.com/playwright:v1.46.0-jammy
   variables:
     CI_DEBUG_SERVICES: true
     FF_NETWORK_PER_BUILD: 1
@@ -174,11 +179,11 @@ e2e-tests-wallet:
   extends: .node-job
   stage: test-report-aggregate
   when: always
-  image: mcr.microsoft.com/playwright:v1.41.1-jammy
+  image: mcr.microsoft.com/playwright:v1.46.0-jammy
   script:
     - cd .$TURBO_APP_PATH
-    - npm install playwright-merge-html-reports --dev
-    - npx playwright test tests/merge-reports --config playwright.merge.config.ts
+    - pnpm install -D playwright-merge-html-reports 
+    - ./node_modules/.bin/playwright test tests/merge-reports --config playwright.merge.config.ts
   artifacts:
     paths:
       - .${TURBO_APP_PATH}/merged-html-report/

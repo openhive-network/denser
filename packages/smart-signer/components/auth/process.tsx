@@ -61,10 +61,10 @@ export const useProcessAuth = (
       const hiveChain = await hiveChainService.getHiveChain();
       const operation: operation =
         await getOperationForLogin(username, keyType, loginChallenge);
-      const txBuilder = await hiveChain.getTransactionBuilder();
-      txBuilder.push(operation);
+      const txBuilder = await hiveChain.createTransaction();
+      txBuilder.pushOperation(operation);
       txBuilder.validate();
-      const tx = txBuilder.build();
+      const tx = txBuilder.transaction;
 
       const signer = getSigner(loginSignerOptions);
       const pack = signer.pack;
@@ -73,7 +73,7 @@ export const useProcessAuth = (
         transaction: tx
       });
       logger.info('signature: %s', signature);
-      txBuilder.build(signature);
+      txBuilder.sign(signature);
       signatures[keyType] = signature;
 
       logger.info('transaction: %o', {

@@ -1,10 +1,10 @@
 import { Remarkable } from 'remarkable';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import path from 'path';
 import fs from 'fs';
 import { getTranslations } from '../lib/get-translations';
 
-export const getServerSideProps: GetServerSideProps<{
+export const getStaticProps: GetStaticProps<{
   data: string;
 }> = async (ctx) => {
   const file_path = path.join('lib', 'markdowns', 'faq.md');
@@ -17,7 +17,7 @@ export const getServerSideProps: GetServerSideProps<{
     }
   };
 };
-function Faq({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+function Faq({ data }: InferGetStaticPropsType<typeof getStaticProps>) {
   const renderer = new Remarkable({
     html: true,
     xhtmlOut: true,
