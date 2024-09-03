@@ -26,7 +26,9 @@ export default function PayoutHoverContent({ post }: { post: Entry }) {
   const _hbd = post.payout * percent_hbd;
   const pending_payout = amt(post.pending_payout_value);
   const pending_hp = price_per_hive ? (pending_payout - _hbd) / (price_per_hive.toNumber() / 1000) : null;
-  const pastPayout = moment(post.payout_at).diff(moment()) < 0;
+  const d = post.payout_at;
+  const isTimeZoned = d.indexOf('.') !== -1 || d.indexOf('+') !== -1 ? d : `${d}.000Z`;
+  const pastPayout = moment(isTimeZoned).diff(moment()) < 0;
   if (pastPayout) {
     return (
       <>
