@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -219,4 +220,4 @@
   word-wrap: break-word;
   word-break: break-word;
   hyphens: none;
-}
+} 

@@ -1,4 +1,4 @@
-import { ReactNode, FC, PropsWithChildren } from "react";
+import { ReactNode, FC } from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@hive/ui";
 import { Icons } from "@hive/ui/components/icons";
 
@@ -7,9 +7,10 @@ export interface StepProps {
     description?: ReactNode;
     footer?: ReactNode;
     loading?: boolean;
+    children?: ReactNode;
 }
 
-const Step: FC<PropsWithChildren<StepProps>> = ({ children, description, title, footer, loading = false }) => {
+const Step: FC<StepProps> = ({ children, description, title, footer, loading = false }) => {
     return (
         <Card className='border-none shadow-none w-full bg-transparent dark:bg-background/95 dark:text-white'>
             {loading &&

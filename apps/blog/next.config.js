@@ -2,6 +2,10 @@ const path = require('path');
 const withTM = require('next-transpile-modules')(['@hive/smart-signer', '@hive/ui', '@hive/transaction']);
 const CopyPlugin = require('copy-webpack-plugin');
 const removeImports = require('next-remove-imports')();
+const withPWA = require('next-pwa')({
+  dest: 'public',
+  disable: process.env.NODE_ENV === 'development'
+});
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -57,4 +61,4 @@ const nextConfig = {
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true'
 });
-module.exports = withTM(withBundleAnalyzer(removeImports(nextConfig)));
+module.exports = withPWA(withTM(withBundleAnalyzer(removeImports(nextConfig))));

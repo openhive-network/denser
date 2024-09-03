@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@ui/components/dialog';
-import { ReactNode, use, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@hive/ui/components/select';
 import Link from 'next/link';
 import { Icons } from '@ui/components/icons';

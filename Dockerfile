@@ -1,5 +1,9 @@
 # syntax=docker/dockerfile:1.5
-FROM node:20-alpine AS base
+FROM node:20.17-alpine AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+ENV TURBO_VERSION=2.1.1
+RUN corepack enable
 
 FROM base AS builder
 ARG TURBO_APP_SCOPE
@@ -8,12 +12,12 @@ RUN apk update
 
 ## Set working directory for an App
 WORKDIR /app
-RUN npm i -g turbo@1.13.2
 COPY . .
 ## prepare files only for docker and optimise
-RUN turbo prune --scope=${TURBO_APP_SCOPE} --docker
+RUN pnpm dlx turbo prune --scope=${TURBO_APP_SCOPE} --docker
 
 # Add lockfile and package.json's of isolated subworkspace
+# TODO: Remove python3 installation after getting rid of dhive
 FROM base AS installer
 ARG TURBO_APP_SCOPE
 RUN apk add --no-cache libc6-compat
@@ -21,15 +25,14 @@ RUN apk update
 WORKDIR /app
 
 # First install the dependencies (as they change less often)
-RUN npm i -g turbo@1.13.2
 COPY --from=builder /app/out/json/ .
-COPY --from=builder /app/out/package-lock.json ./package-lock.json
-RUN npm ci
+COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Build the project
 COPY --from=builder /app/out/full/ .
-RUN npm run lint
-RUN turbo run build --filter=${TURBO_APP_SCOPE}
+RUN pnpm run lint
+RUN pnpm dlx turbo run build --filter=${TURBO_APP_SCOPE}
 
 FROM base AS runner
 ARG TURBO_APP_PATH
@@ -56,8 +59,7 @@ LABEL io.hive.image.commit.author="$GIT_LAST_COMMITTER"
 LABEL io.hive.image.commit.date="$GIT_LAST_COMMIT_DATE"
 
 WORKDIR /app
-
-RUN npm i -g @beam-australia/react-env@3.1.1
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm add -g @beam-australia/react-env@3.1.1
 RUN apk add --no-cache tini
 
 # Don't run production as root

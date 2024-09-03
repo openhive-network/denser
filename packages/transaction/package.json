@@ -7,11 +7,9 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@hive/smart-signer": "*",
-    "@hiveio/dhive": "^1.2.8",
-    "@hiveio/hive-js": "^2.0.7",
-    "@hiveio/wax": "^0.3.8-stable.240604171105",
-    "@hiveio/workerbee": "^0.4.1-240607082855",
+    "@hive/smart-signer": "workspace:*",
+    "@hiveio/wax": "1.27.6-rc1-stable.240803100048",
+    "@hiveio/workerbee": "0.4.1-240807095437",
     "secure-random": "^1.1.2",
     "set-interval-async": "^3.0.3",
     "speakingurl": "^14.0.1"
