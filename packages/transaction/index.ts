@@ -655,7 +655,7 @@ export class TransactionService {
 
       postData.beneficiaries = beneficiaries.map(({ account, weight }) => ({
         account,
-        weight: Number(weight)
+        weight: Number(weight) * 100
       }));
     }
 
