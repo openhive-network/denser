@@ -40,6 +40,7 @@ const isOrigin = (value: string): boolean => {
 
 const configuration: Configuration = {
     clients: JSON.parse(siteConfig.oidcClients),
+    // clientAuthMethods: ['none'],
     cookies: {
         keys: siteConfig.oidcCookiesKeys,
         names: {
@@ -60,8 +61,9 @@ const configuration: Configuration = {
           'zoneinfo'
         ],
     },
+    // This function works on userinfo endpoint (/oidc/me).
     findAccount: async (ctx, sub, token) => {
-        logger.info('findAccount sub: %s, token: %o', sub, token);
+        // logger.info('findAccount sub: %s, token: %o', sub, token);
         // @param ctx - koa request context
         // @param sub {string} - account identifier (subject)
         // @param token - is a reference to the token used for which

@@ -59,7 +59,7 @@ export default function ConsentPage({
       <div className="flex flex-col gap-3 sm:mr-4 sm:gap-8">
         <div className="text-lg font-bold sm:text-3xl">Consent</div>
           <p>
-            We need your consent in Oauth Flow for application
+            We need your consent in Oauth flow for application
             {oidcClientDetails.clientName}.
             This application wants to:
             <ol>
