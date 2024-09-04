@@ -22,8 +22,6 @@ export default function ConsentPage({
     setIsClient(true);
   }, []);
 
-  logger.info('oidcClientDetails: %o', oidcClientDetails)
-
   const registerConsentMutation = useConsent();
   const [runningAction, setRunningAction] = useState('');
 
@@ -41,7 +39,6 @@ export default function ConsentPage({
     try {
       await registerConsentMutation.mutateAsync({ data });
       if (redirectTo) {
-        logger.info('ConsentPage redirecting to: %s', redirectTo);
         location.replace(redirectTo);
       }
     } catch (error) {

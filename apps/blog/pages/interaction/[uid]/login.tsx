@@ -10,7 +10,6 @@ import { getTranslations } from '../../../lib/get-translations';
 const logger = getLogger('app');
 
 export default function LoginPage({ redirectTo }: { redirectTo?: string }) {
-  logger.info('redirectTo', redirectTo);
   const signInFormRef = useRef<SignInFormRef>(null);
 
   // Here we just check if user is already logged in and we redirect him

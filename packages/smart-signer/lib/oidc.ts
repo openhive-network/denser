@@ -87,7 +87,7 @@ const configuration: Configuration = {
             claims: { [key: string]: ClaimsParameterMember | null; },
             rejected: string[]
           ) => {
-            logger.info('claims args: %o', { use, scope, claims, rejected });
+            // logger.info('claims args: %o', { use, scope, claims, rejected });
             if (scope.split(' ').includes('profile')) {
               const profile = await getHiveUserProfile(sub);
               return { sub, profile } as AccountClaims;
