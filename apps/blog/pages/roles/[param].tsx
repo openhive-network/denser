@@ -23,6 +23,7 @@ import {
   getSubscriptions
 } from '@transaction/lib/bridge';
 import { getServerSidePropsDefault } from '@/blog/lib/get-translations';
+import { useSetRoleMutation } from '@/blog/components/hooks/use-set-role-mutations';
 
 const roles = [
   { name: 'owner', value: 6 },
@@ -80,6 +81,7 @@ const RolesPage: FC = () => {
   const isLoading =
     mySubsIsLoading || communityDataIsLoading || subsIsLoading || notificationIsLoading || rolesIsLoading;
   const isError = mySubsIsError || communityIsError || subsIsError || notificationIsError || rolesIsError;
+  const setRoleMutation = useSetRoleMutation();
 
   const userRole = rolesData?.find((e) => e[0] === user.username);
   const roleValue = userRole
@@ -147,7 +149,7 @@ const RolesPage: FC = () => {
                             {roleValue ? (
                               <TableCell className="border-x-[1px] border-solid border-secondary p-2">
                                 {e.value <= 3 && e.value < roleValue.value ? (
-                                  <AddRole user={roleValue} targetedUser={e}>
+                                  <AddRole user={roleValue} community={tag} targetedUser={e}>
                                     <span className="cursor-pointer text-destructive">{e.role}</span>
                                   </AddRole>
                                 ) : (
@@ -164,7 +166,7 @@ const RolesPage: FC = () => {
                     </TableBody>
                   </Table>
                   {roleValue && roleValue.value >= 3 && (
-                    <AddRole user={roleValue}>
+                    <AddRole user={roleValue} community={tag}>
                       <Button variant="outlineRed" className="m-10 mx-0 mt-4 font-normal" size="xs">
                         {t('communities.add_user')}
                       </Button>

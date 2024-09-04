@@ -15,7 +15,7 @@ import { Slider } from '@ui/components/slider';
 import { Popover, PopoverTrigger, PopoverContent } from '@ui/components/popover';
 import { useLoggedUserContext } from './common/logged-user';
 import { handleError } from '@ui/lib/utils';
-import { useStore } from './hooks/use-store';
+import { useUpVoteStore, useDownVoteStore } from './hooks/use-vote-store';
 
 const logger = getLogger('app');
 

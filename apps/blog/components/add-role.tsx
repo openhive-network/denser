@@ -1,11 +1,14 @@
 import {
   Button,
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
   Input,
   Select,
   SelectContent,
@@ -15,7 +18,10 @@ import {
 } from '@ui/components';
 import { ReactNode, useState } from 'react';
 import { useTranslation } from 'next-i18next';
-import { transactionService } from '@transaction/index';
+import { useSetRoleMutation } from './hooks/use-set-role-mutations';
+import { handleError } from '@ui/lib/utils';
+import { EAvailableCommunityRoles } from '@hiveio/wax';
+import { CircleSpinner } from 'react-spinners-kit';
 
 type Role = {
   name: string;
@@ -29,20 +35,37 @@ type User = { value: number; role: string; name: string; title: string };
 const AddRole = ({
   children,
   user,
+  community,
   targetedUser
 }: {
   children: ReactNode;
   user: User;
+  community: string;
   targetedUser?: User;
 }) => {
   const [open, setOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState<string>(targetedUser ? targetedUser.role : 'member');
   const [userFromList, setUserFromList] = useState(targetedUser?.name ?? '');
   const { t } = useTranslation('common_blog');
-  // const broadcastResult = await transactionService
-  const onSave = () => {
-    setOpen(false);
+  const setRoleMutation = useSetRoleMutation();
+
+  const setRole = async () => {
+    try {
+      await setRoleMutation.mutateAsync({
+        community,
+        username: userFromList,
+        role: selectedRole as EAvailableCommunityRoles
+      });
+    } catch (error) {
+      handleError(error, {
+        method: 'setRole',
+        params: { community, username: userFromList, role: selectedRole as EAvailableCommunityRoles }
+      });
+    } finally {
+      setOpen(false);
+    }
   };
+
   const roles: Role[] = [
     {
       name: 'owner',
@@ -83,13 +106,19 @@ const AddRole = ({
   ];
 
   return (
-    <Dialog open={open} onOpenChange={() => setOpen((prev) => !prev)}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{t('communities.add_user_role')}</DialogTitle>
-          <DialogDescription>{t('communities.set_the_role_of_a_user_in_this_community')}</DialogDescription>
-        </DialogHeader>
+    <AlertDialog open={open} onOpenChange={() => setOpen((prev) => !prev)}>
+      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <div className="flex w-full items-center justify-between">
+            <AlertDialogTitle>{t('communities.add_user_role')}</AlertDialogTitle>
+
+            <AlertDialogCancel disabled={setRoleMutation.isLoading}>X</AlertDialogCancel>
+          </div>
+          <AlertDialogDescription>
+            {t('communities.set_the_role_of_a_user_in_this_community')}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
 
         <div>
           <span>{t('communities.username')}</span>
@@ -116,8 +145,17 @@ const AddRole = ({
             </SelectContent>
           </Select>
         </div>
-        <Button onClick={onSave} variant="redHover" className="w-fit justify-self-end">
-          {t('communities.save')}
+        <Button
+          onClick={setRole}
+          variant="redHover"
+          className="w-fit justify-self-end"
+          disabled={setRoleMutation.isLoading}
+        >
+          {setRoleMutation.isLoading ? (
+            <CircleSpinner loading={setRoleMutation.isLoading} size={18} color="#dc2626" />
+          ) : (
+            t('communities.save')
+          )}
         </Button>
         <h1>{t('communities.role_permissions')}</h1>
         <div>
@@ -128,8 +166,8 @@ const AddRole = ({
             </div>
           ))}
         </div>
-      </DialogContent>
-    </Dialog>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
 

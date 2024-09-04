@@ -12,7 +12,8 @@ import {
   ReplyOperation,
   asset,
   authority,
-  future_extensions
+  future_extensions,
+  EAvailableCommunityRoles
 } from '@hiveio/wax';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
@@ -25,9 +26,7 @@ const logger = getLogger('app');
 
 export type TransactionErrorCallback = (error: any) => any;
 
-export type TransactionBroadcastCallback = (
-  txBuilder: ITransaction
-) => Promise<TransactionBroadcastResult>;
+export type TransactionBroadcastCallback = (txBuilder: ITransaction) => Promise<TransactionBroadcastResult>;
 
 export interface TransactionOptions {
   observe?: boolean;
@@ -247,15 +246,14 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     return await this.processHiveAppOperation((builder) => {
-      builder
-        .pushOperation({
-          vote: {
-            voter: this.signerOptions.username,
-            author,
-            permlink,
-            weight
-          }
-        });
+      builder.pushOperation({
+        vote: {
+          voter: this.signerOptions.username,
+          author,
+          permlink,
+          weight
+        }
+      });
     }, transactionOptions);
   }
 
@@ -266,15 +264,14 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     return await this.processHiveAppOperation((builder) => {
-      builder
-        .pushOperation({
-          vote: {
-            voter: this.signerOptions.username,
-            author,
-            permlink,
-            weight
-          }
-        });
+      builder.pushOperation({
+        vote: {
+          voter: this.signerOptions.username,
+          author,
+          permlink,
+          weight
+        }
+      });
     }, transactionOptions);
   }
 
@@ -309,6 +306,20 @@ export class TransactionService {
       );
     }, transactionOptions);
   }
+
+  async setRole(
+    community: string,
+    username: string,
+    role: EAvailableCommunityRoles,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.pushOperation(
+        new CommunityOperation().setRole(community, username, role).authorize(this.signerOptions.username)
+      );
+    }, transactionOptions);
+  }
+
   async pin(
     community: string,
     username: string,
@@ -316,11 +327,8 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     return await this.processHiveAppOperation((builder) => {
-      builder.push(
-        new CommunityOperationBuilder()
-          .pinPost(community, username, permlink)
-          .authorize(this.signerOptions.username)
-          .build()
+      builder.pushOperation(
+        new CommunityOperation().pinPost(community, username, permlink).authorize(this.signerOptions.username)
       );
     }, transactionOptions);
   }
@@ -331,11 +339,10 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     return await this.processHiveAppOperation((builder) => {
-      builder.push(
-        new CommunityOperationBuilder()
+      builder.pushOperation(
+        new CommunityOperation()
           .unpinPost(community, username, permlink)
           .authorize(this.signerOptions.username)
-          .build()
       );
     }, transactionOptions);
   }
@@ -348,11 +355,10 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     return await this.processHiveAppOperation((builder) => {
-      builder.push(
-        new CommunityOperationBuilder()
+      builder.pushOperation(
+        new CommunityOperation()
           .mutePost(community, username, permlink, notes)
           .authorize(this.signerOptions.username)
-          .build()
       );
     }, transactionOptions);
   }
@@ -365,11 +371,10 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     return await this.processHiveAppOperation((builder) => {
-      builder.push(
-        new CommunityOperationBuilder()
+      builder.pushOperation(
+        new CommunityOperation()
           .unmutePost(community, username, permlink, notes)
           .authorize(this.signerOptions.username)
-          .build()
       );
     }, transactionOptions);
   }
@@ -381,11 +386,10 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     return await this.processHiveAppOperation((builder) => {
-      builder.push(
-        new CommunityOperationBuilder()
+      builder.pushOperation(
+        new CommunityOperation()
           .setUserTitle(community, username, title)
           .authorize(this.signerOptions.username)
-          .build()
       );
     }, transactionOptions);
   }
@@ -564,7 +568,7 @@ export class TransactionService {
       parentPermlink,
       author: this.signerOptions.username,
       body,
-      permlink: `re-${parentAuthor.replaceAll('.', '-')}-${Date.now()}`,
+      permlink: `re-${parentAuthor.replaceAll('.', '-')}-${Date.now()}`
     };
 
     if (preferences.comment_rewards === '100%') {
@@ -652,13 +656,13 @@ export class TransactionService {
       postData.beneficiaries = beneficiaries.map(({ account, weight }) => ({
         account,
         weight: Number(weight)
-      }))
+      }));
     }
 
     const blogPost = new BlogPostOperation(postData);
 
     return await this.processHiveAppOperation((builder) => {
-    builder.pushOperation(blogPost);
+      builder.pushOperation(blogPost);
     }, transactionOptions);
   }
 
@@ -677,29 +681,28 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     return await this.processHiveAppOperation((builder) => {
-      builder
-        .pushOperation({
-          account_update2: {
-            account: this.signerOptions.username,
-            extensions: [],
-            json_metadata: '',
-            posting_json_metadata: JSON.stringify({
-              profile: {
-                profile_image,
-                cover_image,
-                name,
-                about,
-                location,
-                website,
-                witness_owner,
-                witness_description,
-                blacklist_description,
-                muted_list_description,
-                version
-              }
-            })
-          }
-        });
+      builder.pushOperation({
+        account_update2: {
+          account: this.signerOptions.username,
+          extensions: [],
+          json_metadata: '',
+          posting_json_metadata: JSON.stringify({
+            profile: {
+              profile_image,
+              cover_image,
+              name,
+              about,
+              location,
+              website,
+              witness_owner,
+              witness_description,
+              blacklist_description,
+              muted_list_description,
+              version
+            }
+          })
+        }
+      });
     }, transactionOptions);
   }
 
@@ -721,29 +724,27 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     return await this.processHiveAppOperation((builder) => {
-      builder
-        .pushOperation({
-          update_proposal_votes: {
-            voter: this.signerOptions.username,
-            proposal_ids,
-            approve,
-            extensions
-          }
-        });
+      builder.pushOperation({
+        update_proposal_votes: {
+          voter: this.signerOptions.username,
+          proposal_ids,
+          approve,
+          extensions
+        }
+      });
     }, transactionOptions);
   }
 
   async markAllNotificationAsRead(date: string, transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
-      builder
-        .pushOperation({
-          custom_json: {
-            id: 'notify',
-            json: JSON.stringify(['setLastRead', { date: date }]),
-            required_auths: [],
-            required_posting_auths: [this.signerOptions.username]
-          }
-        });
+      builder.pushOperation({
+        custom_json: {
+          id: 'notify',
+          json: JSON.stringify(['setLastRead', { date: date }]),
+          required_auths: [],
+          required_posting_auths: [this.signerOptions.username]
+        }
+      });
     }, transactionOptions);
   }
 

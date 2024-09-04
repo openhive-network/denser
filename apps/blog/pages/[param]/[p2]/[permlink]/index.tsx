@@ -464,7 +464,7 @@ function PostPage({
                             {/* TODO swap two button to one when api return stats.is_pinned, 
                             temprary use two button to unpin and pin
                             */}
-                            <button className="ml-2 flex items-center text-destructive" onClick={unpin}>
+                            <button className="ml-2 flex items-center text-destructive" onClick={pin}>
                               {t('communities.pin')}
                             </button>
                             <button className="ml-2 flex items-center text-destructive" onClick={unpin}>
