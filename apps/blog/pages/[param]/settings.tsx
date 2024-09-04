@@ -29,13 +29,13 @@ import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import env from '@beam-australia/react-env';
 import { Signer } from '@smart-signer/lib/signer/signer';
 import { getLogger } from '@ui/lib/logging';
-import { useSignerContext } from '@/blog/components/common/signer';
 import { toast } from '@ui/components/hooks/use-toast';
 import { useUnmuteMutation } from '@/blog/components/hooks/use-mute-mutations';
 import { useUpdateProfileMutation } from '@/blog/components/hooks/use-update-profile-mutation';
 import { z } from 'zod';
 import { getServerSidePropsDefault } from '../../lib/get-translations';
 import { CircleSpinner } from 'react-spinners-kit';
+import { useSignerContext } from '@smart-signer/components/signer-provider';
 
 export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
@@ -559,7 +559,7 @@ export default function UserSettings() {
             {endpoints?.map((endp, index) => (
               <div
                 key={endp}
-                className="even:bg-background-tertiary grid grid-cols-[220px_50px_50px] items-center p-2 odd:bg-background lg:grid-cols-3"
+                className="grid grid-cols-[220px_50px_50px] items-center p-2 odd:bg-background even:bg-background-tertiary lg:grid-cols-3"
               >
                 <Label htmlFor={`e#{index}`}>{endp}</Label>
                 <RadioGroupItem value={endp} id={`e#{index}`} className="border-destructive" />

@@ -16,11 +16,11 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Signer } from '@smart-signer/lib/signer/signer';
 import { ICommand, TextAreaTextApi } from '@uiw/react-md-editor';
 import { getLogger } from '@ui/lib/logging';
-import { useSignerContext } from './common/signer';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { useTranslation } from 'next-i18next';
 import imageUserBlocklist from '@ui/config/lists/image-user-blocklist';
 import { cn } from '@ui/lib/utils';
+import { useSignerContext } from '@smart-signer/components/signer-provider';
 
 const logger = getLogger('app');
 

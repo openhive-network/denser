@@ -3,8 +3,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ThemeProvider } from '../theme-provider';
 import Layout from './layout';
-import { SignerProvider } from './signer';
 import { LoggedUserProvider } from './logged-user';
+import { SignerProvider } from '../../../../packages/smart-signer/components/signer-provider';
 
 const queryClient = new QueryClient();
 
