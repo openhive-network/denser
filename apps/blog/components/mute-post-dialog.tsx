@@ -81,6 +81,7 @@ const MutePostDialog = ({
             variant="redHover"
             className="w-fit justify-self-end"
             onClick={contentMuted ? unmute : mute}
+            disabled={text.length === 0}
           >
             {contentMuted ? t('communities.unmute') : t('communities.mute')}
           </Button>
