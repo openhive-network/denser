@@ -25,7 +25,7 @@ const NewPost = ({ name, disabled }: { name: string; disabled: boolean }) => {
   return (
     <Button
       size="sm"
-      className="w-full bg-blue-800 p-0 text-center hover:bg-blue-900"
+      className="w-full bg-blue-600 p-0 text-center text-slate-50 hover:bg-blue-700"
       onClick={() => storePost({ ...storedPost, category: name })}
       data-testid="community-new-post-button"
       disabled={(disabled && !name.includes('hive-1')) || name.includes('hive-2') || name.includes('hive-3')}

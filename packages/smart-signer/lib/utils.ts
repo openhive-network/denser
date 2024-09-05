@@ -1,4 +1,4 @@
-import { createWaxFoundation, operation, THexString, ITransactionBuilder, TWaxExtended } from '@hiveio/wax';
+import { createWaxFoundation, operation, THexString, ITransaction, TWaxExtended } from '@hiveio/wax';
 import { fetchJson } from '@smart-signer/lib/fetch-json';
 import { isBrowser } from '@ui/lib/logger';
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
@@ -162,9 +162,9 @@ export async function getTransactionDigest(
 ): Promise<{ txString: string; digest: THexString }> {
   const wax = await createWaxFoundation({ chainId: siteConfig.chainId });
 
-  let txBuilder: ITransactionBuilder;
+  let txBuilder: ITransaction;
   if (txString) {
-    txBuilder = new wax.TransactionBuilder(JSON.parse(txString));
+    txBuilder = new wax.Transaction(JSON.parse(txString));
   } else {
     // Create transaction, if it does not exist.
     let dynamicGlobalProps: any;
@@ -182,12 +182,12 @@ export async function getTransactionDigest(
       throw error;
     }
     const { result: globalProps } = dynamicGlobalProps;
-    txBuilder = new wax.TransactionBuilder(globalProps.head_block_id, '+1m');
+    txBuilder = new wax.Transaction(globalProps.head_block_id, '+1m');
   }
 
   // Pass operation to transaction, if it exists.
   if (operation) {
-    txBuilder.push(operation);
+    txBuilder.pushOperation(operation);
   }
 
   logger.info('tx.toString(): %s', txBuilder.toString());

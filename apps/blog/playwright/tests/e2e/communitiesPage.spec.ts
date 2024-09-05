@@ -968,13 +968,13 @@ test.describe('Communities page tests', () => {
 
     // Color of the Subscribe button before hover
     expect(await homePage.getElementCssPropertyValue(communitySubscribeButton, 'background-color')).toBe(
-      'rgb(30, 64, 175)'
+      'rgb(37, 99, 235)'
     );
     await communitySubscribeButton.hover();
     await page.waitForTimeout(1000);
     // Color of the Subscribe button after hover
     expect(await homePage.getElementCssPropertyValue(communitySubscribeButton, 'background-color')).toBe(
-      'rgb(30, 58, 138)'
+      'rgb(29, 78, 216)'
     );
     await communitySubscribeButton.click();
     await defaultLoginForm.validateDefaultLoginFormIsLoaded();

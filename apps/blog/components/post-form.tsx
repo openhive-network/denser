@@ -14,7 +14,7 @@ import * as z from 'zod';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@hive/ui/components/form';
 import { useForm, useWatch } from 'react-hook-form';
 import useManabars from './hooks/useManabars';
-import { AdvancedSettingsPostForm } from './advanced_settings_post_form';
+import { AdvancedSettingsPostForm } from './advanced-settings-post-form';
 import MdEditor from './md-editor';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';

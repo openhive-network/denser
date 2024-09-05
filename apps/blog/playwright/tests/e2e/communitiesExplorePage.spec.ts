@@ -162,7 +162,7 @@ test.describe('Explore communities page tests', () => {
     ).toBe('rgb(248, 250, 252)');
     expect(
         await communitiesPage.getElementCssPropertyValue(await communitiesPage.communityListItemSubscribeButton.first(), 'background-color')
-    ).toBe('rgb(30, 64, 175)');
+    ).toBe('rgb(37, 99, 235)');
     // Validate the background color of the community card item
     expect(
         await communitiesPage.getElementCssPropertyValue(await communitiesPage.communityListItem.first(), 'background-color')
@@ -203,10 +203,10 @@ test.describe('Explore communities page tests', () => {
     // Validate style of the community subscribe button
     expect(
         await communitiesPage.getElementCssPropertyValue(await communitiesPage.communityListItemSubscribeButton.first(), 'color')
-    ).toBe('rgb(2, 2, 5)');
+    ).toBe('rgb(248, 250, 252)');
     expect(
         await communitiesPage.getElementCssPropertyValue(await communitiesPage.communityListItemSubscribeButton.first(), 'background-color')
-    ).toBe('rgb(30, 64, 175)');
+    ).toBe('rgb(37, 99, 235)');
     // Validate the background color of the community card item
     expect(
         await communitiesPage.getElementCssPropertyValue(await communitiesPage.communityListItem.first(), 'background-color')

@@ -109,7 +109,7 @@ export class SignerKeychain extends Signer {
       const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
 
       const wax = await createWaxFoundation({ chainId: this.chainId });
-      const txBuilder = new wax.TransactionBuilder(transaction);
+      const txBuilder = new wax.Transaction(transaction);
       logger.info('signTransaction digests: %o', { digest, 'txBuilder.sigDigest': txBuilder.sigDigest });
       if (digest !== txBuilder.sigDigest) throw new Error('Digests do not match');
 

@@ -52,6 +52,18 @@ export const dateToFullRelative = (d: string, t: TFunction<'common_wallet', unde
   const isTimeZoned = d.indexOf('.') !== -1 || d.indexOf('+') !== -1 ? d : `${d}.000Z`;
   const dm = moment(new Date(isTimeZoned));
 
+  // Check if the date is more than 24 hours ago
+  if (moment().diff(dm, 'days') >= 1) {
+    const today = moment().format('L');
+    return dm
+      .from(today)
+      .replace('days ago', t('global.time_ago.days'))
+      .replace('a day ago', t('global.time_ago.a_day'))
+      .replace('months ago', t('global.time_ago.months'))
+      .replace('a month ago', t('global.time_ago.a_month'))
+      .replace('years ago', t('global.time_ago.years'))
+      .replace('a year ago', t('global.time_ago.a_year'));
+  }
   const dd = dm
     .fromNow()
     .replace('a few seconds ago', t('global.time_ago.a_few_seconds'))
@@ -59,13 +71,8 @@ export const dateToFullRelative = (d: string, t: TFunction<'common_wallet', unde
     .replace('minutes ago', t('global.time_ago.minutes'))
     .replace('a minute ago', t('global.time_ago.a_minute'))
     .replace('hours ago', t('global.time_ago.hours'))
-    .replace('an hour ago', t('global.time_ago.an_hour'))
-    .replace('days ago', t('global.time_ago.days'))
-    .replace('a day ago', t('global.time_ago.a_day'))
-    .replace('months ago', t('global.time_ago.months'))
-    .replace('a month ago', t('global.time_ago.a_month'))
-    .replace('years ago', t('global.time_ago.years'))
-    .replace('a year ago', t('global.time_ago.a_year'));
+    .replace('an hour ago', t('global.time_ago.an_hour'));
+
   return dd;
 };
 

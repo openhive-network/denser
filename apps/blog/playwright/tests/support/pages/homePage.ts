@@ -449,6 +449,7 @@ export class HomePage {
   async moveToWelcomePage() {
     await this.getNavSidebarMenu.click();
     await this.getNavSidebarMenuContent.getByRole('button', { name: 'Welcome' }).click();
+    await this.page.waitForTimeout(5000);
     await expect(this.page.getByText('Welcome to Hive!')).toBeVisible();
     await expect(this.page).toHaveURL('welcome');
   }
@@ -456,6 +457,7 @@ export class HomePage {
   async moveToFaqPage() {
     await this.getNavSidebarMenu.click();
     await this.getNavSidebarMenuContent.getByRole('button', { name: 'FAQ' }).click();
+    await this.page.waitForTimeout(5000);
     await expect(this.page.getByRole('heading', { name: 'Hive.blog FAQ' })).toBeVisible();
     await expect(this.page).toHaveURL('faq.html');
   }
@@ -463,6 +465,7 @@ export class HomePage {
   async moveToPrivacyPolicyPage() {
     await this.getNavSidebarMenu.click();
     await this.getNavSidebarMenuContent.getByRole('button', { name: 'Private Policy' }).click();
+    await this.page.waitForTimeout(5000);
     await expect(this.page.locator('h1').getByText('Privacy Policy')).toBeVisible();
     await expect(this.page).toHaveURL('privacy.html');
   }
@@ -470,6 +473,7 @@ export class HomePage {
   async moveToTermsOfServicePage() {
     await this.getNavSidebarMenu.click();
     await this.getNavSidebarMenuContent.getByRole('button', { name: 'Terms of Service' }).click();
+    await this.page.waitForTimeout(5000);
     await expect(this.page.locator('div').getByText('Terms of Service')).toBeVisible();
     await expect(this.page).toHaveURL('tos.html');
   }
