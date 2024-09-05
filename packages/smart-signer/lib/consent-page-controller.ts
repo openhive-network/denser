@@ -4,7 +4,6 @@ import { getLogger } from '@ui/lib/logging';
 import { getIronSession } from 'iron-session';
 import { IronSessionData } from '@smart-signer/types/common';
 import { sessionOptions } from './session';
-import { postConsentSchema, PostConsentSchema } from '@smart-signer/lib/auth/utils';
 
 const logger = getLogger('app');
 
@@ -20,7 +19,7 @@ export const consentPageController: GetServerSideProps = async (ctx) => {
   try {
     if (uid) {
       const interactionDetails = await oidc.interactionDetails(req, res);
-      logger.info('consentPageController interactionDetails: %o', interactionDetails);
+      // logger.info('consentPageController interactionDetails: %o', interactionDetails);
       const {
         prompt: { name, details },
         params,
@@ -28,16 +27,16 @@ export const consentPageController: GetServerSideProps = async (ctx) => {
       } = interactionDetails as any;
 
       if (name !== "consent") {
-        logger.info(`Invalid prompt name: ${name}, throwing error`);
+        // logger.info(`Invalid prompt name: ${name}, throwing error`);
         throw new Error(`Invalid prompt name: ${name}`);
       }
 
       const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
       const user = session.user;
-      logger.info('User: %o', user);
+      // logger.info('User: %o', user);
 
       if (!user) {
-        logger.info('No user, throwing error');
+        // logger.info('No user, throwing error');
         throw new Error('No user in session');
       }
 
@@ -60,11 +59,11 @@ export const consentPageController: GetServerSideProps = async (ctx) => {
         if (user?.oauthConsent[params.client_id]) {
           // User already consented to this client_id. We don't need to
           // display consent page.
-          logger.info('No need to display consent page');
+          // logger.info('No need to display consent page');
         } else {
           // User already not consented to given client_id. We need to
           // complete oauth flow, because of negative consent.
-          logger.info('User did not consent');
+          // logger.info('User did not consent');
           const result = {
             error: 'access_denied',
             error_description: 'End-User aborted interaction',
@@ -77,7 +76,7 @@ export const consentPageController: GetServerSideProps = async (ctx) => {
       } else {
         // User never consented nor not consented to given client_id. We
         // need to display consent page.
-        logger.info('We need to display consent page');
+        // logger.info('We need to display consent page');
         return {
           props: {
             oidcClientDetails,

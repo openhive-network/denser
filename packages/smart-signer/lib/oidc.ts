@@ -156,7 +156,44 @@ const configuration: Configuration = {
         // on them, false to deny you may also allow some known internal
         // origins if you want to
         return (client[corsOrigins] as string[]).includes(origin);
-    }
+    },
+    ttl: {
+      AccessToken: function AccessTokenTTL(ctx, token, client) {
+        // return token.resourceServer?.accessTokenTTL || 60 * 60; // 1 hour in seconds
+        return token.resourceServer?.accessTokenTTL || 60 * 2 ;
+      },
+      AuthorizationCode: 60 /* 1 minute in seconds */,
+      BackchannelAuthenticationRequest: function BackchannelAuthenticationRequestTTL(ctx, request, client) {
+        if (ctx?.oidc && ctx.oidc.params?.requested_expiry) {
+          return Math.min(10 * 60, +ctx.oidc.params.requested_expiry); // 10 minutes in seconds or requested_expiry, whichever is shorter
+        }
+
+        return 10 * 60; // 10 minutes in seconds
+      },
+      ClientCredentials: function ClientCredentialsTTL(ctx, token, client) {
+        return token.resourceServer?.accessTokenTTL || 10 * 60; // 10 minutes in seconds
+      },
+      DeviceCode: 600 /* 10 minutes in seconds */,
+      Grant: 1209600 /* 14 days in seconds */,
+      // IdToken: 3600 /* 1 hour in seconds */,
+      IdToken: 60 * 2,
+      Interaction: 3600 /* 1 hour in seconds */,
+      RefreshToken: function RefreshTokenTTL(ctx, token, client) {
+        if (
+          ctx && ctx.oidc.entities.RotatedRefreshToken
+          && client.applicationType === 'web'
+          && client.clientAuthMethod === 'none'
+          && !token.isSenderConstrained()
+        ) {
+          // Non-Sender Constrained SPA RefreshTokens do not have infinite expiration through rotation
+          return ctx.oidc.entities.RotatedRefreshToken.remainingTTL;
+        }
+
+        return 14 * 24 * 60 * 60; // 14 days in seconds
+      },
+      // Session: 1209600 /* 14 days in seconds */
+      Session: 1209600 /* 14 days in seconds */
+    },
 };
 
 let oidcInstance: Provider | null;

@@ -27,8 +27,7 @@ export const loginPageController: GetServerSideProps = async (ctx) => {
     if (uid) {
       const interactionDetails =
           await oidc.interactionDetails(req, res);
-      logger.info('loginPageController oauth interaction details: %o',
-          interactionDetails);
+      // logger.info('loginPageController oauth interaction details: %o', interactionDetails);
       if (interactionDetails.uid !== uid) return { notFound: true };
       if (user?.username && interactionDetails.prompt?.name === 'login') {
         logger.info('loginPageController: user already logged in and this is oauth flow');
@@ -41,7 +40,7 @@ export const loginPageController: GetServerSideProps = async (ctx) => {
       }
       return { props: { redirectTo: interactionDetails.returnTo } };
     } else {
-      logger.info('loginPageController: no uid, so we are not in oauth flow');
+      // logger.info('loginPageController: no uid, so we are not in oauth flow');
     }
   } catch (e) {
     // throw e;
