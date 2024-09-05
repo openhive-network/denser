@@ -6,6 +6,7 @@ import SignInForm, { SignInFormRef } from '@smart-signer/components/auth/form';
 import { KeyType } from '@smart-signer/types/common';
 import { getLogger } from '@ui/lib/logging';
 import { getTranslations } from '../../../lib/get-translations';
+import { siteConfig } from '@ui/config/site';
 
 const logger = getLogger('app');
 
@@ -33,8 +34,8 @@ export default function LoginPage({ redirectTo }: { redirectTo?: string }) {
           ref={signInFormRef}
           preferredKeyTypes={[KeyType.posting]}
           onComplete={onComplete}
-          authenticateOnBackend={true}
-          strict={true}
+          authenticateOnBackend={siteConfig.loginAuthenticateOnBackend}
+          strict={siteConfig.loginStrictMode}
         />
       </div>
     </div>

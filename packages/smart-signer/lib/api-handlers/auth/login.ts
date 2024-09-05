@@ -25,7 +25,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
 
   const data: PostLoginSchema = await postLoginSchema.parseAsync(req.body);
 
-  const { username, loginType, signatures, keyType, authenticateOnBackend } = data;
+  const { username, loginType, signatures, keyType, authenticateOnBackend, strict } = data;
   let hiveUserProfile;
   let chainAccount;
   try {
@@ -73,7 +73,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
 
   let chatAuthToken = '';
   const oauthConsent: { [key: string]: boolean } = {};
-  if (siteConfig.openhiveChatIframeIntegrationEnable) {
+  if (siteConfig.openhiveChatIframeIntegrationEnable && strict) {
     const result = await getChatAuthToken(username);
     if (result.success) {
       chatAuthToken = result.data.authToken;
@@ -90,6 +90,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
     authenticateOnBackend,
     chatAuthToken,
     oauthConsent,
+    strict
   };
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
   session.user = user;

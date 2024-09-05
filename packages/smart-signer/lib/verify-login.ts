@@ -55,6 +55,7 @@ export async function verifyLogin(data: PostLoginSchema): Promise<User> {
         authenticateOnBackend: false,
         chatAuthToken: '',
         oauthConsent: {},
+        strict,
       };
       return user;
 

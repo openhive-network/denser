@@ -59,4 +59,5 @@ export const defaultUser: User = {
     authenticateOnBackend: true,
     chatAuthToken: '',
     oauthConsent: {},
+    strict: false,
 };

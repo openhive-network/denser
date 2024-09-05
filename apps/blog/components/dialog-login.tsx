@@ -2,6 +2,7 @@ import { ReactNode, useRef } from 'react';
 import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
 import SignInForm, { SignInFormRef } from '@smart-signer/components/auth/form';
 import { KeyType } from '@smart-signer/types/common';
+import { siteConfig } from '@ui/config/site';
 
 function DialogLogin({ children }: { children: ReactNode }) {
   const signInFormRef = useRef<SignInFormRef>(null);
@@ -29,7 +30,8 @@ function DialogLogin({ children }: { children: ReactNode }) {
           ref={signInFormRef}
           preferredKeyTypes={[KeyType.posting]}
           onComplete={onComplete}
-          authenticateOnBackend={true}
+          authenticateOnBackend={siteConfig.loginAuthenticateOnBackend}
+          strict={siteConfig.loginStrictMode}
         />
       </DialogContent>
     </Dialog>

@@ -75,41 +75,41 @@ blockchain.
 
 There is an OAUTH server module in smart-signer, implemented using
 [node-oidc-provider](https://github.com/panva/node-oidc-provider)
-library. You can use it in your application. Inspect [Auth
-application](../../apps/auth) to learn how it could be done. Generally:
+library. You can use it in your application. Inspect [Blog
+application](../../apps/blog) to learn how it could be done. Generally:
 
 1. You need authentication and session on server side, so add API
    endpoints for login, logout and user info — just copy files
-   [../../apps/auth/pages/api/auth/login.ts](../../apps/auth/pages/api/auth/login.ts),
-   [../../apps/auth/pages/api/auth/logout.ts](../../apps/auth/pages/api/auth/logout.ts),
+   [../../apps/blog/pages/api/auth/login.ts](../../apps/blog/pages/api/auth/login.ts),
+   [../../apps/blog/pages/api/auth/logout.ts](../../apps/blog/pages/api/auth/logout.ts),
    and
-   [../../apps/auth/pages/api/users/me.ts](../../apps/auth/pages/api/users/me.ts)
+   [../../apps/blog/pages/api/users/me.ts](../../apps/blog/pages/api/users/me.ts)
    to the same paths in your application. Set `authenticateOnBackend`
    option to `true` in your login logic. Set `strict` option to `true`,
    too.
 2. Create API endpoint for OAUTH server module – just copy directory
-   [../../apps/auth/pages/api/oidc](../../apps/auth/pages/api/oidc) to
+   [../../apps/blog/pages/api/oidc](../../apps/blog/pages/api/oidc) to
    the same path in your application.
 3. Create pages for Oauth interactions – see
-   [../../apps/auth/pages/interaction](../../apps/auth/pages/interaction).
+   [../../apps/blog/pages/interaction](../../apps/blog/pages/interaction).
    Copying mentioned directory to the same path in your application
    should be enough.
 4. Add rewrites for OAUTH server, see
-   [../../apps/auth/next.config.js](../../apps/auth/next.config.js).
+   [../../apps/blog/next.config.js](../../apps/blog/next.config.js).
 4. Set environment variables for Oauth flow, see [OIDC
    configuration](../../packages/smart-signer/lib/oidc.ts),
    [siteConfig](../../packages/ui/config/site.ts), and [env file for
-   development](../../apps/auth/.env). Move files created in two
+   development](../../apps/blog/.env). Move files created in two
    preceding points, when you decide to use url paths other then
    default.
 5. Use back-end side logic
-   [loginPageController](../../packages/smart-signer/lib/login-page-controller.ts)
-   in your login logic.
+   [loginPageController](../../packages/smart-signer/lib/login-page-controller.ts),
+   [consentPageController](../../packages/smart-signer/lib/consent-page-controller.ts),
+   in your oauth login logic.
 
 The session on OAUTH server is synced with session in your app. Any
 incoming OAUTH request for login implicates logging in user in your
 application as well. When user is already logged in in your application,
 any incoming OAUTH login request will be handled using existing back-end
-session in your application, possibly invisibly on client side. Logout
-in your application implicates destroying session on OAUTH server.
-Logout on OAUTH server does nothing in your application.
+session in your application, possibly invisibly on client side.
+

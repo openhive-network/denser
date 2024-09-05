@@ -30,6 +30,18 @@ export const loginPageController: GetServerSideProps = async (ctx) => {
       // logger.info('loginPageController oauth interaction details: %o', interactionDetails);
       if (interactionDetails.uid !== uid) return { notFound: true };
       if (user?.username && interactionDetails.prompt?.name === 'login') {
+
+        if (!user.strict) {
+          const result = {
+            error: 'access_denied',
+            error_description: 'End-User logged in non-strict mode',
+          };
+          await oidc.interactionFinished(ctx.req, ctx.res, result, {
+            mergeWithLastSubmission: false,
+          });
+          throw new Error('User logged in non-strict mode');
+        }
+
         logger.info('loginPageController: user already logged in and this is oauth flow');
         await oidc.interactionFinished(
           req,

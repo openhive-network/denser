@@ -30,7 +30,12 @@ export const getChatToken: NextApiHandler<User> = async (req, res) => {
     logger.error('getChatToken error:', error);
   }
 
-  if (!(user?.isLoggedIn && user.username && user.oauthConsent?.[siteConfig.openhiveChatClientId])) {
+  if (!(
+    user?.isLoggedIn
+    && user.username
+    && user.strict
+    && user.oauthConsent?.[siteConfig.openhiveChatClientId]
+  )) {
     throw new createHttpError.Unauthorized();
   }
 

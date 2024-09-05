@@ -33,17 +33,11 @@ export const consentPageController: GetServerSideProps = async (ctx) => {
 
       const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
       const user = session.user;
-      // logger.info('User: %o', user);
 
       if (!user) {
         // logger.info('No user, throwing error');
         throw new Error('No user in session');
       }
-
-      //
-      // The stuff below can be used to display consent page for user,
-      // instead of blind consent, which we do later.
-      //
 
       const clientDetails = await oidc.Client.find(params.client_id as string);
       const oidcClientDetails: OidcClientDetails = {

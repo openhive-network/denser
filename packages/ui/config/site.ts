@@ -26,6 +26,8 @@ export const siteConfig = {
     twitter: '/',
     github: '/'
   },
+  loginStrictMode: env('SIGNER_STRICT_MODE') === 'true' ? true : false,
+  loginAuthenticateOnBackend: env('LOGIN_AUTHENTICATE_ON_BACKEND') === 'true' ? true : false,
 
   // OAUTH server
   oidcEnabled: process.env[`${SERVER_VAR_PREFIX}OIDC_ENABLED`] === 'true',
