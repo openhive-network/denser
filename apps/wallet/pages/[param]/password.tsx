@@ -63,7 +63,7 @@ export default function PostForm() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username]);
 
-  function onSubmit(data: AccountFormValues) {
+  async function onSubmit(_data: AccountFormValues) {
     if (publicKeys) {
       const params = {
         account: username,
@@ -72,7 +72,7 @@ export default function PostForm() {
         newPosting: publicKeys.posting
       };
       try {
-        changePasswordMutation.mutateAsync(params);
+        await changePasswordMutation.mutateAsync(params);
       } catch (error) {
         handleError(error, { method: 'changePassword', params });
       }

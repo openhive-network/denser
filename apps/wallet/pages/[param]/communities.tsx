@@ -2,10 +2,36 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
 import { useTranslation } from 'next-i18next';
 import WalletMenu from '@/wallet/components/wallet-menu';
-import { Button, Checkbox, Input, Label } from '@ui/components';
+import {
+  Button,
+  Checkbox,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Input,
+  Label
+} from '@ui/components';
 import { useState } from 'react';
 import { getTranslations } from '../../lib/get-translations';
-import { createWaxFoundation } from '@hiveio/wax';
+import { createHiveChain, createWaxFoundation } from '@hiveio/wax';
+import { useCreateCommunityMutation } from '@/wallet/components/hooks/use-create-community-mutation';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { handleError } from '@ui/lib/utils';
+
+const createCommunitySchema = z.object({
+  title: z.string().min(1, 'Required'),
+  about: z.string().min(1, 'Required'),
+  saved_password: z.boolean().refine((value) => value === true, {
+    message: 'Required'
+  })
+});
+
+type CreateCommunityFormValues = z.infer<typeof createCommunitySchema>;
 
 function Communities({ username }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { t } = useTranslation('common_wallet');
@@ -16,7 +42,17 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
     active: string;
     owner: string;
     posting: string;
+    memoKey: string;
   }>();
+  const createCommunityMutation = useCreateCommunityMutation(false);
+
+  const form = useForm<CreateCommunityFormValues>({
+    resolver: zodResolver(createCommunitySchema),
+    defaultValues: {
+      title: '',
+      about: ''
+    }
+  });
 
   const handleNext = async () => {
     setGeneratedName(`hive-${Math.floor(Math.random() * 100000) + 100000}`);
@@ -31,15 +67,35 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
     const owner = wax.getPrivateKeyFromPassword(username, 'owner', passwordToBeSavedByUser);
     const active = wax.getPrivateKeyFromPassword(username, 'active', passwordToBeSavedByUser);
     const posting = wax.getPrivateKeyFromPassword(username, 'posting', passwordToBeSavedByUser);
+    const memoKey = wax.getPrivateKeyFromPassword(username, 'memo', passwordToBeSavedByUser);
 
     setPublicKeys({
       active: active.associatedPublicKey,
       owner: owner.associatedPublicKey,
-      posting: posting.associatedPublicKey
+      posting: posting.associatedPublicKey,
+      memoKey: memoKey.associatedPublicKey
     });
 
     setNextStep(true);
   };
+
+  async function onSubmit(_data: CreateCommunityFormValues) {
+    if (publicKeys) {
+      const params = {
+        memoKey: publicKeys?.memoKey,
+        owner: publicKeys?.owner,
+        active: publicKeys?.active,
+        posting: publicKeys?.posting,
+        newAccountName: generatedName!,
+        creator: username
+      };
+      try {
+        await createCommunityMutation.mutateAsync(params);
+      } catch (error) {
+        handleError(error, { method: 'create_community', params });
+      }
+    }
+  }
 
   return (
     <ProfileLayout>
@@ -49,32 +105,67 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
         </div>
         <div className="flex flex-col gap-4 p-4">
           <h4>Create a community</h4>
-          <div>
-            Title
-            <Input />
-          </div>
-          <div>
-            About
-            <Input />
-          </div>
-          {!nextStep ? (
-            <Button onClick={() => handleNext()} className="w-fit">
-              Next
-            </Button>
-          ) : (
-            <div className="flex flex-col gap-2">
-              <div className="flex flex-col border-2 bg-white p-2 text-red-700">
-                <span>{generatedName}</span> <span>{generatedPassword}</span>
-              </div>
-              <div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="terms" />
-                  <Label htmlFor="terms">I have securely saved my owner name and password.</Label>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Title</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="about"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>About</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {!nextStep ? (
+                <Button onClick={() => handleNext()} className="mt-2 w-fit">
+                  Next
+                </Button>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  <div className="flex flex-col border-2 bg-white p-2 text-red-700">
+                    <span>{generatedName}</span> <span>{generatedPassword}</span>
+                  </div>
+                  <FormField
+                    control={form.control}
+                    name="saved_password"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                        <FormControl>
+                          <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel className="text-xs">
+                            I have securely saved my owner name and password.
+                          </FormLabel>{' '}
+                          <FormMessage />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                  <Button className="w-fit" type="submit">
+                    Create community
+                  </Button>
                 </div>
-              </div>
-              <Button className="w-fit">Create community</Button>
-            </div>
-          )}
+              )}
+            </form>
+          </Form>
         </div>
       </div>
     </ProfileLayout>

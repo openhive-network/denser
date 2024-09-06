@@ -118,7 +118,7 @@ export function TransferDialog({
           memo: data.memo
         };
         try {
-          transferToSavingsMutation.mutateAsync(params);
+          await transferToSavingsMutation.mutateAsync(params);
         } catch (error) {
           handleError(error, { method: 'transferToSavings', params });
         }
@@ -137,7 +137,7 @@ export function TransferDialog({
       data.onSubmit = async () => {
         const params = { account: username, amount: await getAsset(value) };
         try {
-          powerUpMutation.mutateAsync(params);
+          await powerUpMutation.mutateAsync(params);
         } catch (error) {
           handleError(error, { method: 'powerUp', params });
         }
@@ -151,7 +151,7 @@ export function TransferDialog({
       data.onSubmit = async () => {
         const params = { account: username, vestingShares: await getAsset(value) };
         try {
-          powerDownMutation.mutateAsync(params);
+          await powerDownMutation.mutateAsync(params);
         } catch (error) {
           handleError(error, { method: 'powerDown', params });
         }
@@ -165,7 +165,7 @@ export function TransferDialog({
       data.onSubmit = async () => {
         const params = { delegator: username, delegatee: data.to, vestingShares: await getAsset(value) };
         try {
-          delegateMutation.mutateAsync(params);
+          await delegateMutation.mutateAsync(params);
         } catch (error) {
           handleError(error, { method: 'delegate', params });
         }
@@ -186,7 +186,7 @@ export function TransferDialog({
           amount: await getAsset(value)
         };
         try {
-          withdrawFromSavingsMutation.mutateAsync(params);
+          await withdrawFromSavingsMutation.mutateAsync(params);
         } catch (error) {
           handleError(error, { method: 'withdrawHive', params });
         }
@@ -207,7 +207,7 @@ export function TransferDialog({
           amount: await getAsset(value)
         };
         try {
-          withdrawFromSavingsMutation.mutateAsync(params);
+          await withdrawFromSavingsMutation.mutateAsync(params);
         } catch (error) {
           handleError(error, { method: 'withdrawHiveDollars', params });
         }
