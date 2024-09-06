@@ -473,7 +473,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     await profilePage.profileNotificationsTabIsSelected();
 
     const resAccountNotificationsAPI = await apiHelper.getAccountNotificationsAPI('gtg');
-    const lastNotificationId = await resAccountNotificationsAPI.result[49].id;
+    const lastNotificationId = await resAccountNotificationsAPI.result[47].id;
     const notificationListItemInAllArray = await profilePage.notificationListItemInAll.all();
     expect(await notificationListItemInAllArray.length).toBe(resAccountNotificationsAPI.result.length);
 
@@ -525,7 +525,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
 
     const resAccountNotificationsAPI = await apiHelper.getAccountNotificationsAPI('gtg');
     const amountNotificationsAPI: number = await resAccountNotificationsAPI.result.length; // expected up to 50 (set request limit)
-    const lastNotificationId = await resAccountNotificationsAPI.result[49].id;
+    const lastNotificationId = await resAccountNotificationsAPI.result[47].id;
 
     // Count how many notifications of the Reblog type is after first request
     let amountNotificationsReblogType: number = 0;
