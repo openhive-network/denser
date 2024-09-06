@@ -21,13 +21,17 @@ const MutePostDialog = ({
   community,
   username,
   permlink,
-  contentMuted
+  contentMuted,
+  discussionAuthor,
+  discussionPermlink
 }: {
   comment: Boolean;
   community: string;
   username: string;
   permlink: string;
   contentMuted: Boolean;
+  discussionPermlink: string;
+  discussionAuthor: string;
 }) => {
   const { t } = useTranslation('common_blog');
   const [text, setText] = useState<string>('');
@@ -38,17 +42,35 @@ const MutePostDialog = ({
   const mute = async () => {
     setOpen(false);
     try {
-      await mutePost.mutateAsync({ community, username, permlink, notes: text });
+      await mutePost.mutateAsync({
+        community,
+        username,
+        permlink,
+        notes: text,
+        discussionAuthor,
+        discussionPermlink
+      });
     } catch (error) {
       handleError(error, { method: 'mutePost', params: { community, username, permlink, text } });
+    } finally {
+      setText('');
     }
   };
   const unmute = async () => {
     setOpen(false);
     try {
-      await unmutePost.mutateAsync({ community, username, permlink, notes: text });
+      await unmutePost.mutateAsync({
+        community,
+        username,
+        permlink,
+        notes: text,
+        discussionPermlink,
+        discussionAuthor
+      });
     } catch (error) {
       handleError(error, { method: 'unmutePost', params: { community, username, permlink, text } });
+    } finally {
+      setText('');
     }
   };
   return (

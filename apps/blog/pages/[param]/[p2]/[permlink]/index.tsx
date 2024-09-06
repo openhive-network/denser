@@ -479,6 +479,8 @@ function PostPage({
                             username={post.author}
                             permlink={post.permlink}
                             contentMuted={post.stats?.gray ?? false}
+                            discussionPermlink={post.permlink}
+                            discussionAuthor={post.author}
                           />
                         ) : null}
                       </>
@@ -566,6 +568,7 @@ function PostPage({
               <CommentSelectFilter />
             </div>
             <DynamicComments
+              highestAuthor={post.author}
               highestPermlink={post.permlink}
               permissionToMute={userCanModerate}
               mutedList={mutedList || []}
