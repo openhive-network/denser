@@ -148,7 +148,7 @@ const RolesPage: FC = () => {
                             </TableCell>
                             {roleValue ? (
                               <TableCell className="border-x-[1px] border-solid border-secondary p-2">
-                                {e.value <= 3 && e.value < roleValue.value ? (
+                                {roleValue.value >= 4 && e.value < roleValue.value ? (
                                   <AddRole user={roleValue} community={tag} targetedUser={e}>
                                     <span className="cursor-pointer text-destructive">{e.role}</span>
                                   </AddRole>
