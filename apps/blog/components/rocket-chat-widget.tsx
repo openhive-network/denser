@@ -179,7 +179,12 @@ const RocketChatWidget = () => {
 
   return (
     <>
-      {!inIframe() && user.isLoggedIn && user.strict && (loggedIn || oauthConsent[siteConfig.openhiveChatClientId]) && (
+      {!inIframe()
+        && user.isLoggedIn
+        && (user.strict || siteConfig.openhiveChatAllowNonStrictLogin)
+        && (loggedIn || oauthConsent[siteConfig.openhiveChatClientId])
+        && (
+
         <div
           style={{
               ...{

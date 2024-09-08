@@ -113,3 +113,16 @@ application as well. When user is already logged in in your application,
 any incoming OAUTH login request will be handled using existing back-end
 session in your application, possibly invisibly on client side.
 
+Both Oauth server and Rocket Chat integration need
+`REACT_APP_LOGIN_AUTHENTICATE_ON_BACKEND` variable set to `"yes"`.
+
+By default Outh server doesn't allow non-strict login (when user
+authenticates with third party key). You can allow non-strict login by
+setting property `urn:custom:client:allow-non-strict-login` to `true` in
+Oauth client options.
+
+Rocket Chat integration also doesn't allow non-strict login, by default.
+To allow this you need to turn on non-strict login for Oauth client
+`openhive_chat` (see above), and set value of environment variable
+`REACT_APP_OPENHIVE_CHAT_ALLOW_NON_STRICT_LOGIN` to `"yes"`.
+

@@ -86,6 +86,8 @@ export const authorityChecker = async (
     }
 
     logger.info('Transaction is signed correctly');
+    // When strict is false there's no reason to  do other checks, so we
+    // return now.
     if (!strict) return true;
 
     logger.info([

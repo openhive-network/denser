@@ -53,8 +53,8 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
       throw new createHttpError[401]('Invalid login challenge');
     }
 
-  // Verify signature in passed transaction.
-  try {
+    // Verify signature in passed transaction.
+    try {
       result = !!(await verifyLogin(data));
     } catch (error) {
       // swallow error
@@ -73,7 +73,8 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
 
   let chatAuthToken = '';
   const oauthConsent: { [key: string]: boolean } = {};
-  if (siteConfig.openhiveChatIframeIntegrationEnable && strict) {
+  if (siteConfig.openhiveChatIframeIntegrationEnable
+      && (strict || siteConfig.openhiveChatAllowNonStrictLogin)) {
     const result = await getChatAuthToken(username);
     if (result.success) {
       chatAuthToken = result.data.authToken;

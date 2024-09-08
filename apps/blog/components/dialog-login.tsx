@@ -31,7 +31,7 @@ function DialogLogin({ children }: { children: ReactNode }) {
           preferredKeyTypes={[KeyType.posting]}
           onComplete={onComplete}
           authenticateOnBackend={siteConfig.loginAuthenticateOnBackend}
-          strict={siteConfig.loginStrictMode}
+          strict={!siteConfig.allowNonStrictLogin}
         />
       </DialogContent>
     </Dialog>

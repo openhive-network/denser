@@ -24,6 +24,7 @@ export interface OidcClientDetails {
  * 2. https://github.com/ebrahimmfadae/openid-connect-app
  */
 
+const allowNonStrictLogin = 'urn:custom:client:allow-non-strict-login';
 const corsOrigins = 'urn:custom:client:allowed-cors-origins';
 const isOrigin = (value: string): boolean => {
     if (typeof value !== 'string') {
@@ -135,7 +136,7 @@ const configuration: Configuration = {
         userinfo: `${siteConfig.oidcUrlPrefix}/me`
     },
     extraClientMetadata: {
-        properties: [corsOrigins],
+        properties: [corsOrigins, allowNonStrictLogin],
         validator(ctx, key, value, metadata) {
             if (key === corsOrigins) {
                 // set default (no CORS)
@@ -147,6 +148,11 @@ const configuration: Configuration = {
                 if (!Array.isArray(value) || !value.every(isOrigin)) {
                     throw new errors.InvalidClientMetadata(`${corsOrigins} must be an array of origins`);
                 }
+            } else if (key === allowNonStrictLogin) {
+              if (value === undefined) {
+                metadata[allowNonStrictLogin] = false;
+                return;
+              }
             }
         },
     },
