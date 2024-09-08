@@ -71,7 +71,7 @@ blockchain.
     just ensure you have ModalContainer in your DOM.
 
 
-## OAUTH server module
+## OAUTH server module and Rocket Chat integration
 
 There is an OAUTH server module in smart-signer, implemented using
 [node-oidc-provider](https://github.com/panva/node-oidc-provider)

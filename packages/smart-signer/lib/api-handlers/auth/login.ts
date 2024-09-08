@@ -44,6 +44,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
   }
 
   let result: boolean = false;
+  let verifiedUser: User | undefined;
 
   if (JSON.parse(data.txJSON)) {
     // Check whether loginChallenge is correct.
@@ -55,7 +56,8 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
 
     // Verify signature in passed transaction.
     try {
-      result = !!(await verifyLogin(data));
+      verifiedUser = await verifyLogin(data);
+      result = verifiedUser.isLoggedIn;
     } catch (error) {
       // swallow error
     }
@@ -74,7 +76,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
   let chatAuthToken = '';
   const oauthConsent: { [key: string]: boolean } = {};
   if (siteConfig.openhiveChatIframeIntegrationEnable
-      && (strict || siteConfig.openhiveChatAllowNonStrictLogin)) {
+      && (verifiedUser?.strict || siteConfig.openhiveChatAllowNonStrictLogin)) {
     const result = await getChatAuthToken(username);
     if (result.success) {
       chatAuthToken = result.data.authToken;
@@ -91,7 +93,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
     authenticateOnBackend,
     chatAuthToken,
     oauthConsent,
-    strict
+    strict: verifiedUser?.strict ? true : false,
   };
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
   session.user = user;

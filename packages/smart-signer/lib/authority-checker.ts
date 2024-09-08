@@ -28,7 +28,7 @@ const authorityStrictChecker = async (
     const findAccountsResponse = await hiveChain.api.database_api
         .find_accounts({ accounts: [signer] });
     const foundAccountInfo = findAccountsResponse.accounts;
-    logger.info(`Found # ${foundAccountInfo.length} account info(s): %o`, foundAccountInfo);
+    // logger.info(`Found # ${foundAccountInfo.length} account info(s): %o`, foundAccountInfo);
 
     for (const accountInfo of findAccountsResponse.accounts) {
       let authorityToVerify: ApiAuthority;
@@ -74,7 +74,7 @@ export const authorityChecker = async (
 ): Promise<AuthorityCheckerResult> =>  {
   try {
     logger.info('authorityChecker args: %o',
-      { txJSON, expectedSignerAccount, expectedAuthorityLevel, pack });
+      { txJSON, expectedSignerAccount, expectedAuthorityLevel, pack, strict });
 
     const hiveChain: IHiveChainInterface = await hiveChainService.getHiveChain();
     const txBuilder = hiveChain.Transaction.fromApi(txJSON);
@@ -111,21 +111,24 @@ export const authorityChecker = async (
 
     // Below is some additional code just to make a reverse check for
     // public keys used to generate given signature
+
     for (const signatureKey of signatureKeys) {
-      const key = "STM" + signatureKey;
-      const referencedAccounts = (
-        await hiveChain.api.account_by_key_api
-        .get_key_references({ keys: [key] })
-        ).accounts;
+      const key = signatureKey;
 
-      const accounts: Array<Array<string>> =
-        new Array<Array<string>>(...referencedAccounts);
-      const accountList = accounts.join(",");
+      // TODO Disabled, not working now.
+      // const referencedAccounts = (
+      //   await hiveChain.api.account_by_key_api
+      //   .get_key_references({ keys: [key] })
+      //   ).accounts;
 
-      logger.info([
-        `Public key used to sign transaction: ${key}`,
-        `is referenced by account(s): ${accountList}`,
-      ].join(' '));
+      // const accounts: Array<Array<string>> =
+      //   new Array<Array<string>>(...referencedAccounts);
+      // const accountList = accounts.join(",");
+
+      // logger.info([
+      //   `Public key used to sign transaction: ${key}`,
+      //   `is referenced by account(s): ${accountList}`,
+      // ].join(' '));
 
       const directSigner = await authorityStrictChecker(
         key, expectedSignerAccount, expectedAuthorityLevel, hiveChain
@@ -138,10 +141,11 @@ export const authorityChecker = async (
         ].join(' '));
         return { nonStrict: true, strict: true};
       } else {
-        logger.info([
-          `WARNING: some other account(s): ${accountList}`,
-          `than: ${expectedSignerAccount} authorized the transaction`
-        ].join(' '));
+        // logger.info([
+        //   `WARNING: some other account(s): ${accountList}`,
+        //   `than: ${expectedSignerAccount} authorized the transaction`
+        // ].join(' '));
+        logger.info('No direct signer');
       }
 
     }

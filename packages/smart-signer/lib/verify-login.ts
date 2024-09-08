@@ -33,6 +33,8 @@ export async function verifyLogin(data: PostLoginSchema): Promise<User> {
         true // always check "strictness"
       );
 
+      logger.info('result: %o', result);
+
       const user: User = {
         isLoggedIn: strict ? !!result.strict : result.nonStrict,
         username,
