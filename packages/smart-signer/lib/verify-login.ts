@@ -25,29 +25,16 @@ export async function verifyLogin(data: PostLoginSchema): Promise<User> {
     }
 
     try {
-      const isAuthenticated = await authorityChecker(
+      const result = await authorityChecker(
         JSON.parse(data.txJSON) as ApiTransaction,
         username,
         authorityLevel,
         pack,
-        strict
+        true // always check "strictness"
       );
 
-      const mode = strict ? 'strict' : 'non-strict';
-      if (isAuthenticated) {
-        logger.info(
-          'User %s passed authentication in %s mode with key type %s',
-          username, mode, keyType
-          );
-      } else {
-        logger.info(
-          'User %s failed authentication in %s mode with key type %s',
-          username, mode, keyType
-          );
-      }
-
       const user: User = {
-        isLoggedIn: isAuthenticated,
+        isLoggedIn: strict ? !!result.strict : result.nonStrict,
         username,
         avatarUrl: '',
         loginType,
@@ -55,7 +42,7 @@ export async function verifyLogin(data: PostLoginSchema): Promise<User> {
         authenticateOnBackend: false,
         chatAuthToken: '',
         oauthConsent: {},
-        strict,
+        strict: !!result.strict,
       };
       return user;
 

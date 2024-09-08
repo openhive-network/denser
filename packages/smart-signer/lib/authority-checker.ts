@@ -60,13 +60,18 @@ const authorityStrictChecker = async (
 
 }
 
+export interface AuthorityCheckerResult {
+  nonStrict: boolean;
+  strict: boolean | undefined;
+}
+
 export const authorityChecker = async (
   txJSON: ApiTransaction,
   expectedSignerAccount: string,
   expectedAuthorityLevel: AuthorityLevel,
   pack: TTransactionPackType,
   strict: boolean     // check if signer key is directly in key authority
-): Promise<boolean> =>  {
+): Promise<AuthorityCheckerResult> =>  {
   try {
     logger.info('authorityChecker args: %o',
       { txJSON, expectedSignerAccount, expectedAuthorityLevel, pack });
@@ -82,13 +87,14 @@ export const authorityChecker = async (
 
     if (!authorityVerificationResult.valid) {
         logger.info("Transaction has specified invalid authority");
-        return false;
+        return { nonStrict: false, strict: false }
     }
 
     logger.info('Transaction is signed correctly');
     // When strict is false there's no reason to  do other checks, so we
     // return now.
-    if (!strict) return true;
+    if (!strict) return { nonStrict: true, strict: undefined }
+
 
     logger.info([
       "Going to validate, that key used to generate signature is",
@@ -130,7 +136,7 @@ export const authorityChecker = async (
           `The account: ${expectedSignerAccount}`,
           `directly authorized the transaction`
         ].join(' '));
-        return true;
+        return { nonStrict: true, strict: true};
       } else {
         logger.info([
           `WARNING: some other account(s): ${accountList}`,
@@ -140,7 +146,7 @@ export const authorityChecker = async (
 
     }
 
-    return false;
+    return { nonStrict: true, strict: false};
 
   } catch (error) {
     logger.error('Error in authorityChecker: %o', error);
