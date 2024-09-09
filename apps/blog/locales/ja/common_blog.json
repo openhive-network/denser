@@ -299,6 +299,15 @@
     }
   },
   "communities": {
+    "set_title_for_user": "@{{username}}のタイトルを設定",
+    "mute": "ミュート",
+    "unmute": "ミュート解除",
+    "post_comment": " 投稿/コメント",
+    "please_provide_a_note": "このコンテンツをミュートする理由を記入してください。",
+    "notes": "メモ",
+    "pin": "ピン留め",
+    "unpin": "ピン留め解除",
+    "edit_title": "タイトルを編集",
     "admin": "admin",
     "admins": "admins",
     "subscribers": "subscribers",

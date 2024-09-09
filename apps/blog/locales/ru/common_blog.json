@@ -305,6 +305,15 @@
     }
   },
   "communities": {
+    "set_title_for_user": "Установить заголовок для @{{username}}",
+    "mute": "Отключить звук",
+    "unmute": "Включить звук",
+    "post_comment": " опубликовать/прокомментировать",
+    "please_provide_a_note": "Пожалуйста, укажите причину отключения звука для этого контента.",
+    "notes": "Заметки",
+    "pin": "Закрепить",
+    "unpin": "Открепить",
+    "edit_title": "Редактировать заголовок",
     "admin": "admin",
     "admins": "admins",
     "subscribers": "subscribers",

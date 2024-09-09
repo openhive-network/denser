@@ -299,6 +299,15 @@
     }
   },
   "communities": {
+    "set_title_for_user": "为 @{{username}} 设置标题",
+    "mute": "静音",
+    "unmute": "取消静音",
+    "post_comment": " 发布/评论",
+    "please_provide_a_note": "请提供关于您将此内容静音的决定的备注。",
+    "notes": "备注",
+    "pin": "固定",
+    "unpin": "取消固定",
+    "edit_title": "编辑标题",
     "admin": "admin",
     "admins": "admins",
     "subscribers": "subscribers",
