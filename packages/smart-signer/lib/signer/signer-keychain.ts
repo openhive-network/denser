@@ -109,7 +109,7 @@ export class SignerKeychain extends Signer {
       const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
 
       const wax = await createWaxFoundation({ chainId: this.chainId });
-      const txBuilder = new wax.Transaction(transaction);
+      const txBuilder = wax.createTransactionFromProto(transaction);
       logger.info('signTransaction digests: %o', { digest, 'txBuilder.sigDigest': txBuilder.sigDigest });
       if (digest !== txBuilder.sigDigest) throw new Error('Digests do not match');
 
@@ -117,7 +117,7 @@ export class SignerKeychain extends Signer {
       // his consent to sign it, but here we assume that Keychain will
       // do it.
 
-      const tx = txBuilder.build();
+      const tx = txBuilder.transaction;
 
       logger.info('signTransaction tx: %o', {
         tx,
