@@ -49,6 +49,8 @@ import Head from 'next/head';
 import env from '@beam-australia/react-env';
 
 const logger = getLogger('app');
+export const postClassName =
+  'prose-p:font-source prose-headings:font-sanspro prose-li:font-sanspro max-w-full py-4 prose-headings:font-semibold prose-headings:text-primary prose-h1:text-[26px] prose-p:mb-6 prose-p:mt-0 prose-p:text-[16.5px] prose-p:leading-6 prose-a:break-words prose-a:text-destructive prose-a:no-underline prose-strong:text-primary prose-code:break-words prose-code:leading-[19px] prose-pre:m-0 prose-pre:bg-secondary prose-pre:-indent-[3px] prose-li:my-0 prose-li:pl-0 prose-li:text-[16.5px] prose-img:mb-[10px] prose-img:mt-0 prose-hr:my-5 sm:prose-h1:text-[28px] sm::text-[17.6px] lg:px-8 lg:text-[19.2px]';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -190,7 +192,7 @@ function PostPage({
     <>
       <Head>{canonical_url ? <link rel="canonical" href={canonical_url} key="canonical" /> : null}</Head>
       <div className="py-8">
-        <div className="relative mx-auto my-0 max-w-4xl bg-background px-8 py-4">
+        <div className="relative mx-auto my-0 max-w-4xl bg-background p-4">
           {communityData ? (
             <AlertDialogFlag
               community={community}
@@ -277,8 +279,8 @@ function PostPage({
                   <RendererContainer
                     mainPost={post.depth === 0}
                     body={post.body}
-                    className="entry-body markdown-view user-selectable prose max-w-full py-4 dark:prose-invert"
                     author={post.author}
+                    className={postClassName}
                   />
                 </ImageGallery>
               )}

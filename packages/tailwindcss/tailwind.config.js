@@ -16,6 +16,11 @@ module.exports = {
       }
     },
     extend: {
+      fontFamily: {
+        source: ['"Source Serif Pro"', 'serif'],
+        sanspro: ['"Source Sans Pro"', '"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
+        consolas: ['Consolas', '"Liberation Mono"', 'Courier', 'monospace']
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',

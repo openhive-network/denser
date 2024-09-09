@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -110,10 +109,10 @@
   max-width: 50%;
 }
 
-.prose table thead th {
+/* .prose table thead th {
   font-weight: bold;
   text-align: left;
-}
+} */
 
 .preview-description,
 .preview-rules {
@@ -140,19 +139,14 @@
 .preview-rules ul > li {
   @apply py-1;
 }
-
+/* 
 .prose :where(a):not(:where([class~='not-prose'] *)) {
   color: #dc2626;
   text-decoration: none;
   font-weight: inherit;
-}
+} */
 
-.prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-  font-weight: 400;
-  font-size: 1rem;
-  padding: 0.2rem;
-}
-
+/* 
 .light .prose :where(pre):not(:where([class~='not-prose'], [class~='not-prose'] *)),
 .light .prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
   background-color: #f1f5f9;
@@ -165,19 +159,14 @@
   color: #f1f5f9;
 }
 
+*/
 .prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)):after,
 .prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)):before {
   content: none;
 }
 
-.entry-body.prose p {
-  font-size: 1.2rem;
-  font-weight: 400;
-}
+/* 
 
-.prose a.link {
-  color: #dc2626;
-}
 
 .prose a.link-external:after {
   content: '';
@@ -191,12 +180,13 @@
   left: 0.1em;
   margin-right: 0.1em;
   opacity: 0.5;
-}
-
+} */
+/* 
 .entry-body.prose img {
   cursor: pointer;
 }
 
+*/
 #articleBody .videoWrapper,
 .prose .videoWrapper {
   position: relative;
@@ -220,4 +210,4 @@
   word-wrap: break-word;
   word-break: break-word;
   hyphens: none;
-} 
+}

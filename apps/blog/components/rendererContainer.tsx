@@ -4,22 +4,25 @@ import { LeavePageDialog } from './leave-page-dialog';
 import { getRenderer } from '../lib/renderer';
 import { getLogger } from '@ui/lib/logging';
 import ScrollToElement from './scroll-to-element';
+import { cn } from '@ui/lib/utils';
 
 const logger = getLogger('app');
+const generalClassName =
+  'prose text-primary prose-headings:mb-1 prose-headings:mt-10 prose-code:bg-secondary prose-code:p-[3px] prose-code:font-consolas prose-code:font-normal ';
 
 const RendererContainer = ({
   body,
-  className,
   author,
   dataTestid,
   communityDescription,
-  mainPost
+  mainPost,
+  className
 }: {
   body: string;
-  className: string;
   author: string;
   dataTestid?: string;
   communityDescription?: boolean;
+  className: string;
   mainPost?: Boolean;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -71,7 +74,7 @@ const RendererContainer = ({
       <div
         id="articleBody"
         ref={ref}
-        className={className}
+        className={cn(generalClassName, className)}
         data-testid={dataTestid}
         dangerouslySetInnerHTML={{
           __html: htmlBody

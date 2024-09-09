@@ -16,6 +16,7 @@ import { getLogger } from '@ui/lib/logging';
 import { useCommentMutation, useUpdateCommentMutation } from './hooks/use-comment-mutations';
 import { handleError } from '@ui/lib/utils';
 import { CircleSpinner } from 'react-spinners-kit';
+import { commentClassName } from './comment-list-item';
 
 const logger = getLogger('app');
 
@@ -211,11 +212,7 @@ export function ReplyTextbox({
           </div>
         </div>
 
-        <RendererContainer
-          body={text}
-          className="prose max-w-full border-2 border-background-tertiary p-2 dark:prose-invert"
-          author=""
-        />
+        <RendererContainer body={text} author="" className={commentClassName} />
       </div>
     </div>
   );

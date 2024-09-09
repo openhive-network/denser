@@ -31,7 +31,7 @@ function Welcome({ data }: InferGetServerSidePropsType<typeof getStaticProps>) {
     <div className="mx-auto my-12 max-w-3xl px-4">
       <div
         id="articleBody"
-        className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
+        className="prose"
         dangerouslySetInnerHTML={{
           __html: welcome_page
         }}

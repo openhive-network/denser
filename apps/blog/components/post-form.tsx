@@ -36,6 +36,7 @@ import RendererContainer from './rendererContainer';
 import { usePostMutation } from './hooks/use-post-mutation';
 import { handleError } from '@ui/lib/utils';
 import { CircleSpinner } from 'react-spinners-kit';
+import { postClassName } from '../pages/[param]/[p2]/[permlink]';
 
 const logger = getLogger('app');
 
@@ -564,11 +565,7 @@ export default function PostForm({
           </div>
 
           {previewContent ? (
-            <RendererContainer
-              body={previewContent}
-              className="prose w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2 dark:prose-invert"
-              author=""
-            />
+            <RendererContainer body={previewContent} author="" className={postClassName} />
           ) : null}
         </div>
       </div>

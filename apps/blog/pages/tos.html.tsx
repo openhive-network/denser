@@ -26,11 +26,11 @@ function TOS({ data }: InferGetStaticPropsType<typeof getStaticProps>) {
   });
   const tos_page = renderer.render(data);
   return (
-    <div className="mx-auto max-w-3xl my-12 px-4">
+    <div className="mx-auto my-12 max-w-3xl px-4">
       <div className="text-2xl sm:text-5xl">Terms of Service</div>
       <div
         id="articleBody"
-        className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
+        className="prose"
         dangerouslySetInnerHTML={{
           __html: tos_page
         }}
