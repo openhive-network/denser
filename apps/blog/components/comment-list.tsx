@@ -4,11 +4,17 @@ import { useRouter } from 'next/router';
 import clsx from 'clsx';
 
 const CommentList = ({
+  highestAuthor,
+  highestPermlink,
+  permissionToMute,
   data,
   parent,
   parent_depth,
   mutedList
 }: {
+  highestAuthor: string;
+  highestPermlink: string;
+  permissionToMute: Boolean;
   data: Entry[];
   parent: Entry;
   parent_depth: number;
@@ -43,6 +49,9 @@ const CommentList = ({
             )}
           >
             <CommentListItem
+              parentPermlink={highestPermlink}
+              parentAuthor={highestAuthor}
+              permissionToMute={permissionToMute}
               comment={comment}
               key={`${comment.post_id}-item-${comment.depth}-index-${index}`}
               parent_depth={parent_depth}
@@ -50,6 +59,9 @@ const CommentList = ({
             />
             {comment.children > 0 ? (
               <CommentList
+                highestAuthor={highestAuthor}
+                highestPermlink={highestPermlink}
+                permissionToMute={permissionToMute}
                 mutedList={mutedList}
                 data={data}
                 parent={comment}

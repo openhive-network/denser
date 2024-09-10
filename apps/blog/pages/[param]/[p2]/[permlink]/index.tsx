@@ -3,7 +3,7 @@ import { Clock, Link2 } from 'lucide-react';
 import UserInfo from '@/blog/components/user-info';
 import { getActiveVotes } from '@transaction/lib/hive';
 import { useQuery } from '@tanstack/react-query';
-import { Entry, getCommunity, getDiscussion, getPost } from '@transaction/lib/bridge';
+import { Entry, getCommunity, getDiscussion, getListCommunityRoles, getPost } from '@transaction/lib/bridge';
 import Loading from '@hive/ui/components/loading';
 import dynamic from 'next/dynamic';
 import ImageGallery from '@/blog/components/image-gallery';
@@ -47,6 +47,11 @@ import ReblogTrigger from '@/blog/components/reblog-trigger';
 import { getTranslations } from '@/blog/lib/get-translations';
 import Head from 'next/head';
 import env from '@beam-australia/react-env';
+import { usePinMutation, useUnpinMutation } from '@/blog/components/hooks/use-pin-mutations';
+import { handleError } from '@ui/lib/utils';
+import MutePostDialog from '@/blog/components/mute-post-dialog';
+import { CircleSpinner } from 'react-spinners-kit';
+import ChangeTitleDialog from '@/blog/components/change-title-dialog';
 
 const logger = getLogger('app');
 export const postClassName =
@@ -107,6 +112,35 @@ function PostPage({
   } = useQuery(['activeVotes'], () => getActiveVotes(username, permlink), {
     enabled: !!username && !!permlink
   });
+  const {
+    data: rolesData,
+    isLoading: rolesIsLoading,
+    isError: rolesIsError
+  } = useQuery(['rolesList', community], () => getListCommunityRoles(community), {
+    enabled: Boolean(community)
+  });
+
+  const userRole = rolesData?.find((e) => e[0] === user.username);
+  const userCanModerate = userRole
+    ? userRole[1] === 'mod' || userRole[1] === 'admin' || userRole[1] === 'owner'
+    : false;
+  const pinMutations = usePinMutation();
+  const unpinMutation = useUnpinMutation();
+
+  const pin = async () => {
+    try {
+      await pinMutations.mutateAsync({ community, username, permlink });
+    } catch (error) {
+      handleError(error, { method: 'pin', params: { community, username, permlink } });
+    }
+  };
+  const unpin = async () => {
+    try {
+      await unpinMutation.mutateAsync({ community, username, permlink });
+    } catch (error) {
+      handleError(error, { method: 'unpin', params: { community, username, permlink } });
+    }
+  };
 
   const [discussionState, setDiscussionState] = useState<Entry[]>();
   const router = useRouter();
@@ -187,7 +221,7 @@ function PostPage({
   }
 
   const canonical_url = post ? new URL(post.url, env('SITE_DOMAIN')).href : undefined;
-
+  const post_is_pinned = firstPost?.stats?.is_pinned ?? false;
   return (
     <>
       <Head>{canonical_url ? <link rel="canonical" href={canonical_url} key="canonical" /> : null}</Head>
@@ -236,6 +270,8 @@ function PostPage({
                 </div>
               )}
               <UserInfo
+                permlink={permlink}
+                moderateEnabled={userCanModerate}
                 author={post.author}
                 author_reputation={post.author_reputation}
                 author_title={post.author_title}
@@ -340,9 +376,24 @@ function PostPage({
                       />
                       {post.author_title ? (
                         <Badge variant="outline" className="border-destructive text-slate-500">
-                          {post.author_title}
+                          <span className="mr-1">{post.author_title}</span>
+                          <ChangeTitleDialog
+                            community={community}
+                            moderateEnabled={userCanModerate}
+                            userOnList={post.author}
+                            title={post.author_title ?? ''}
+                            permlink={permlink}
+                          />
                         </Badge>
-                      ) : null}
+                      ) : (
+                        <ChangeTitleDialog
+                          community={community}
+                          moderateEnabled={userCanModerate}
+                          userOnList={post.author}
+                          title={post.author_title ?? ''}
+                          permlink={permlink}
+                        />
+                      )}
                     </div>
                   </div>
                   <div className="flex items-center gap-2 sm:gap-4">
@@ -386,15 +437,55 @@ function PostPage({
                     />
                     <span className="mx-1">|</span>
                     {user && user.isLoggedIn ? (
-                      <button
-                        onClick={() => {
-                          setReply(!reply), removeBox();
-                        }}
-                        className="flex items-center text-destructive"
-                        data-testid="comment-reply"
-                      >
-                        {t('post_content.footer.reply')}
-                      </button>
+                      <>
+                        <button
+                          onClick={() => {
+                            setReply(!reply), removeBox();
+                          }}
+                          className="flex items-center text-destructive"
+                          data-testid="comment-reply"
+                        >
+                          {t('post_content.footer.reply')}
+                        </button>
+                        {pinMutations.isLoading || unpinMutation.isLoading ? (
+                          <div className="ml-2">
+                            <CircleSpinner
+                              loading={pinMutations.isLoading || unpinMutation.isLoading}
+                              size={18}
+                              color="#dc2626"
+                            />
+                          </div>
+                        ) : userCanModerate && post.depth === 0 ? (
+                          <div className="flex flex-col items-center">
+                            {/* <button
+                            className="ml-2 flex items-center text-destructive"
+                            onClick={post_is_pinned ? unpin : pin}
+                            >
+                            {post_is_pinned ? t('communities.unpin') : t('communities.pin')}
+                          </button> */}
+                            {/* TODO swap two button to one when api return stats.is_pinned, 
+                            temprary use two button to unpin and pin
+                            */}
+                            <button className="ml-2 flex items-center text-destructive" onClick={pin}>
+                              {t('communities.pin')}
+                            </button>
+                            <button className="ml-2 flex items-center text-destructive" onClick={unpin}>
+                              {t('communities.unpin')}
+                            </button>
+                          </div>
+                        ) : null}
+                        {userCanModerate ? (
+                          <MutePostDialog
+                            comment={false}
+                            community={community}
+                            username={post.author}
+                            permlink={post.permlink}
+                            contentMuted={post.stats?.gray ?? false}
+                            discussionPermlink={post.permlink}
+                            discussionAuthor={post.author}
+                          />
+                        ) : null}
+                      </>
                     ) : (
                       <DialogLogin>
                         <button className="flex items-center text-destructive" data-testid="comment-reply">
@@ -479,6 +570,9 @@ function PostPage({
               <CommentSelectFilter />
             </div>
             <DynamicComments
+              highestAuthor={post.author}
+              highestPermlink={post.permlink}
+              permissionToMute={userCanModerate}
               mutedList={mutedList || []}
               data={discussionState}
               parent={post}

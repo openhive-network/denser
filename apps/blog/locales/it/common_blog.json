@@ -299,6 +299,15 @@
     }
   },
   "communities": {
+    "set_title_for_user": "Imposta il titolo per @{{username}}",
+    "mute": "Disattiva audio",
+    "unmute": "Riattiva audio",
+    "post_comment": " pubblica/commenta",
+    "please_provide_a_note": "Si prega di fornire una nota riguardo la decisione di disattivare l'audio di questo contenuto.",
+    "notes": "Note",
+    "pin": "Fissa",
+    "unpin": "Rimuovi",
+    "edit_title": "Modifica titolo",
     "admin": "admin",
     "admins": "admins",
     "subscribers": "subscribers",

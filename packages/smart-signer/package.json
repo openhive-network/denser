@@ -9,8 +9,8 @@
   "dependencies": {
     "@hive/ui": "workspace:*",
     "@hiveio/dhive": "^1.3.0",
-    "@hiveio/hb-auth": "0.0.1-stable.240807090812",
-    "@hiveio/wax": "1.27.6-rc1-stable.240803100048",
+    "@hiveio/hb-auth": "0.0.1-stable.240909134234",
+    "@hiveio/wax": "1.27.6-rc4",
     "@tanstack/react-query": "^4.36.1",
     "change-case": "^5.4.3",
     "cors": "^2.8.5",

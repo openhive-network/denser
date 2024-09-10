@@ -28,16 +28,27 @@ import RendererContainer from './rendererContainer';
 import { useDeleteCommentMutation } from './hooks/use-comment-mutations';
 import { handleError } from '@ui/lib/utils';
 import { CircleSpinner } from 'react-spinners-kit';
-
+import MutePostDialog from './mute-post-dialog';
+import ChangeTitleDialog from './change-title-dialog';
 interface CommentListProps {
+  permissionToMute: Boolean;
   comment: Entry;
   parent_depth: number;
   mutedList: IFollowList[];
+  parentPermlink: string;
+  parentAuthor: string;
 }
 export const commentClassName =
   'prose-code:font-consolas font-sanspro text-[12.5px] prose-table:verflow-x-auto text-[12.5px] prose-h1:text-[20px] prose-h2:text-[17.5px] prose-h3:text-[15px] prose-p:mb-[9.6px] prose-p:mt-[1.6px] last:prose-p:mb-[3.2px] prose-a:whitespace-pre-wrap prose-a:break-words prose-a:font-normal prose-a:text-destructive prose-blockquote:m-0 prose-blockquote:mb-4 prose-blockquote:px-5 prose-blockquote:pt-2 prose-blockquote:font-normal prose-strong:font-semibold prose-code:text-[14.4px] prose-ol:mb-4 prose-ol:ml-3 prose-ol:mt-0 prose-ul:mb-4 prose-ul:ml-3 prose-ul:mt-0 prose-li:m-0 prose-li:p-0 prose-table:mb-[16px] prose-table:table-auto prose-table:border-collapse prose-table:border prose-table:border-secondary prose-tr:bg-background-secondary even:prose-tr:bg-background prose-td:w-fit prose-td:border prose-td:border-secondary prose-td:px-[6.4px] prose-td:py-1 prose-td:text-[16.3px] prose-img:mb-[10px] sm:text-[13.4px] sm:prose-h1:text-[21.5px] sm:prose-h2:text-[17.7px] sm:prose-h3:text-[16px] lg:text-[14.6px] lg:prose-h1:text-[23.3px] lg:prose-h2:text-[20.4px] lg:prose-h3:text-[17.5px]';
 
-const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps) => {
+const CommentListItem = ({
+  permissionToMute,
+  comment,
+  parent_depth,
+  mutedList,
+  parentPermlink,
+  parentAuthor
+}: CommentListProps) => {
   const { t } = useTranslation('common_blog');
   const username = comment.author;
   const router = useRouter();
@@ -46,7 +57,8 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
   const [hiddenComment, setHiddenComment] = useState(
     comment.stats?.gray || mutedList?.some((x) => x.name === comment.author)
   );
-  const [openState, setOpenState] = useState<boolean>(comment.stats?.gray && hiddenComment ? false : true);
+  const [openState, setOpenState] = useState<string>(comment.stats?.gray && hiddenComment ? '' : 'item-1');
+  const [tempraryHidden, setTemporaryHidden] = useState(false);
   const commentId = `@${username}/${comment.permlink}`;
   const storageId = `replybox-/${username}/${comment.permlink}`;
   const [edit, setEdit] = useState(false);
@@ -63,6 +75,10 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
     }
   }, [reply]);
 
+  useEffect(() => {
+    setOpenState(comment.stats?.gray && hiddenComment ? '' : 'item-1');
+    setTemporaryHidden(comment.stats?.gray ? true : false);
+  }, [comment.stats?.gray]);
   const currentDepth = comment.depth - parent_depth;
 
   const deleteCommentMutation = useDeleteCommentMutation();
@@ -85,7 +101,6 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
   if (userFromGDPR || parentFromGDPR) {
     return null;
   }
-
   return (
     <>
       {currentDepth < 8 ? (
@@ -94,7 +109,8 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
             <img
               className={clsx('mr-3 hidden  rounded-3xl sm:block', {
                 'mx-[15px] h-[25px] w-[25px] opacity-50': hiddenComment,
-                'h-[40px] w-[40px]': !hiddenComment
+                'h-[40px] w-[40px]': !hiddenComment,
+                'opacity-50': tempraryHidden
               })}
               height="40"
               width="40"
@@ -104,10 +120,10 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
             />
             <Card
               className={cn(`mb-4 w-full bg-background text-primary depth-${comment.depth}`, {
-                'opacity-50 hover:opacity-100': hiddenComment
+                'opacity-50 hover:opacity-100': hiddenComment || tempraryHidden
               })}
             >
-              <Accordion type="single" defaultValue={!hiddenComment ? 'item-1' : undefined} collapsible>
+              <Accordion type="single" collapsible value={openState}>
                 <AccordionItem className="p-0" value="item-1">
                   <CardHeader className="px-1 py-0">
                     <div className="flex w-full justify-between">
@@ -136,9 +152,24 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                                 className="mr-1 border-destructive"
                                 data-testid="comment-user-affiliation-tag"
                               >
-                                {comment.author_title}
+                                <span className="mr-1">{comment.author_title}</span>
+                                <ChangeTitleDialog
+                                  permlink={parentPermlink}
+                                  moderateEnabled={permissionToMute}
+                                  userOnList={comment.author}
+                                  title={comment.author_title ?? ''}
+                                  community={comment.community ?? ''}
+                                />
                               </Badge>
-                            ) : null}
+                            ) : (
+                              <ChangeTitleDialog
+                                permlink={parentPermlink}
+                                moderateEnabled={permissionToMute}
+                                userOnList={comment.author}
+                                title={comment.author_title ?? ''}
+                                community={comment.community ?? ''}
+                              />
+                            )}
                             <Link
                               href={`/${router.query.param}/${router.query.p2}/${router.query.permlink}#@${username}/${comment.permlink}`}
                               className="hover:text-destructive md:text-sm"
@@ -158,7 +189,7 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                           {!hiddenComment ? (
                             <AccordionTrigger
                               className="pb-0 pt-1 !no-underline sm:hidden"
-                              onClick={() => setOpenState((val) => !val)}
+                              onClick={() => setOpenState((prev) => (prev === 'item-1' ? '' : 'item-1'))}
                             />
                           ) : null}
                         </div>
@@ -168,7 +199,7 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                         {hiddenComment ? (
                           <AccordionTrigger
                             className="pb-0 pt-1 !no-underline "
-                            onClick={() => setOpenState((val) => !val)}
+                            onClick={() => setOpenState((prev) => (prev === 'item-1' ? '' : 'item-1'))}
                           >
                             <span
                               className="ml-4 cursor-pointer text-xs sm:text-sm"
@@ -211,7 +242,7 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                       {!hiddenComment ? (
                         <AccordionTrigger
                           className="mr-2 hidden pb-0 pt-1 !no-underline sm:block"
-                          onClick={() => setOpenState((val) => !val)}
+                          onClick={() => setOpenState((prev) => (prev === 'item-1' ? '' : 'item-1'))}
                         />
                       ) : null}
                     </div>
@@ -315,6 +346,57 @@ const CommentListItem = ({ comment, parent_depth, mutedList }: CommentListProps)
                             {t('cards.comment_card.edit')}
                           </button>
                         </>
+                      ) : null}
+                      {comment.replies.length === 0 &&
+                      user.isLoggedIn &&
+                      comment.author === user.username &&
+                      moment().format('YYYY-MM-DDTHH:mm:ss') < comment.payout_at ? (
+                        <>
+                          <Separator orientation="vertical" className="h-5" />
+                          <CommentDeleteDialog permlink={comment.permlink} action={dialogAction}>
+                            <button
+                              disabled={edit || deleteCommentMutation.isLoading}
+                              className="flex items-center hover:cursor-pointer hover:text-destructive"
+                              data-testid="comment-card-footer-delete"
+                            >
+                              {deleteCommentMutation.isLoading ? (
+                                <CircleSpinner
+                                  loading={deleteCommentMutation.isLoading}
+                                  size={18}
+                                  color="#dc2626"
+                                />
+                              ) : (
+                                t('cards.comment_card.delete')
+                              )}
+                            </button>
+                          </CommentDeleteDialog>
+                        </>
+                      ) : null}
+                      {user && user.isLoggedIn && comment.author === user.username ? (
+                        <>
+                          <Separator orientation="vertical" className="h-5" />
+                          <button
+                            disabled={deleteCommentMutation.isLoading}
+                            onClick={() => {
+                              setEdit(!edit);
+                            }}
+                            className="flex items-center hover:cursor-pointer hover:text-destructive"
+                            data-testid="comment-card-footer-edit"
+                          >
+                            {t('cards.comment_card.edit')}
+                          </button>
+                        </>
+                      ) : null}
+                      {permissionToMute ? (
+                        <MutePostDialog
+                          comment={true}
+                          community={comment.community ?? ''}
+                          username={comment.author}
+                          permlink={comment.permlink}
+                          contentMuted={comment.stats?.gray ?? false}
+                          discussionPermlink={parentPermlink}
+                          discussionAuthor={parentAuthor}
+                        />
                       ) : null}
                       {comment.replies.length === 0 &&
                       user.isLoggedIn &&

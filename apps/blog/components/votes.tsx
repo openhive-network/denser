@@ -15,7 +15,7 @@ import { Slider } from '@ui/components/slider';
 import { Popover, PopoverTrigger, PopoverContent } from '@ui/components/popover';
 import { useLoggedUserContext } from './common/logged-user';
 import { handleError } from '@ui/lib/utils';
-import { useStore } from './hooks/use-store';
+import { useUpVoteStore, useDownVoteStore } from './hooks/use-vote-store';
 
 const logger = getLogger('app');
 
@@ -31,10 +31,10 @@ const VotesComponent = ({ post }: { post: Entry }) => {
   const { t } = useTranslation('common_blog');
   const [isClient, setIsClient] = useState(false);
   const [clickedVoteButton, setClickedVoteButton] = useState('');
-  const changeUpvote = useStore((state) => state.changeUpvote);
-  const changeDownvote = useStore((state) => state.changeDownvote);
-  const upvote = useStore((state) => state.upvote);
-  const downvote = useStore((state) => state.downvote);
+  const changeUpvote = useUpVoteStore((state) => state.changeVote);
+  const upvote = useUpVoteStore((state) => state.vote);
+  const changeDownvote = useDownVoteStore((state) => state.changeVote);
+  const downvote = useDownVoteStore((state) => state.vote);
   const [sliderUpvote, setSliderUpvote] = useState(upvote);
   const [sliderDownvote, setSliderDownvote] = useState(downvote);
   const voter = user.username;
