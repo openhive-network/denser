@@ -240,7 +240,10 @@ function PostPage({
           {!isLoadingPost && post ? (
             <div>
               {!commentSite ? (
-                <h1 className="text-3xl font-bold" data-testid="article-title">
+                <h1
+                  className="font-sanspro text-[21px] font-extrabold sm:text-[25.6px]"
+                  data-testid="article-title"
+                >
                   {post.title}
                 </h1>
               ) : (
