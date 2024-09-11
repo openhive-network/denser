@@ -139,34 +139,6 @@
 .preview-rules ul > li {
   @apply py-1;
 }
-/* 
-.prose :where(a):not(:where([class~='not-prose'] *)) {
-  color: #dc2626;
-  text-decoration: none;
-  font-weight: inherit;
-} */
-
-/* 
-.light .prose :where(pre):not(:where([class~='not-prose'], [class~='not-prose'] *)),
-.light .prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-  background-color: #f1f5f9;
-  color: var(--tw-prose-code);
-}
-
-.dark .prose :where(pre):not(:where([class~='not-prose'], [class~='not-prose'] *)),
-.dark .prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-  background-color: #334155;
-  color: #f1f5f9;
-}
-
-*/
-.prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)):after,
-.prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)):before {
-  content: none;
-}
-
-/* 
-
 
 .prose a.link-external:after {
   content: '';
@@ -180,13 +152,8 @@
   left: 0.1em;
   margin-right: 0.1em;
   opacity: 0.5;
-} */
-/* 
-.entry-body.prose img {
-  cursor: pointer;
 }
 
-*/
 #articleBody .videoWrapper,
 .prose .videoWrapper {
   position: relative;

@@ -41,7 +41,7 @@ interface CommentListProps {
   flagText: string | undefined;
 }
 export const commentClassName =
-  'prose-code:font-consolas font-sanspro text-[12.5px] prose-table:verflow-x-auto text-[12.5px] prose-h1:text-[20px] prose-h2:text-[17.5px] prose-h3:text-[15px] prose-p:mb-[9.6px] prose-p:mt-[1.6px] last:prose-p:mb-[3.2px] prose-a:whitespace-pre-wrap prose-a:break-words prose-a:font-normal prose-a:text-destructive prose-blockquote:m-0 prose-blockquote:mb-4 prose-blockquote:px-5 prose-blockquote:pt-2 prose-blockquote:font-normal prose-strong:font-semibold prose-code:text-[14.4px] prose-ol:mb-4 prose-ol:ml-3 prose-ol:mt-0 prose-ul:mb-4 prose-ul:ml-3 prose-ul:mt-0 prose-li:m-0 prose-li:p-0 prose-table:mb-[16px] prose-table:table-auto prose-table:border-collapse prose-table:border prose-table:border-secondary prose-tr:bg-background-secondary even:prose-tr:bg-background prose-td:w-fit prose-td:border prose-td:border-secondary prose-td:px-[6.4px] prose-td:py-1 prose-td:text-[16.3px] prose-img:mb-[10px] sm:text-[13.4px] sm:prose-h1:text-[21.5px] sm:prose-h2:text-[17.7px] sm:prose-h3:text-[16px] lg:text-[14.6px] lg:prose-h1:text-[23.3px] lg:prose-h2:text-[20.4px] lg:prose-h3:text-[17.5px]';
+  'text-[12.5px] prose-h1:text-[20px] prose-h2:text-[17.5px] prose-h4:text-[13.7px] sm:text-[13.4px] sm:prose-h1:text-[21.5px] sm:prose-h2:text-[18.7px] sm:prose-h3:text-[16px]  sm:prose-h4:text-[14.7px] lg:text-[14.6px] lg:prose-h1:text-[23.3px] lg:prose-h2:text-[20.4px] lg:prose-h3:text-[17.5px] lg:prose-h4:text-[16px] prose-h3:text-[15px] prose-p:mb-[9.6px] prose-p:mt-[1.6px] last:prose-p:mb-[3.2px]';
 
 const CommentListItem = ({
   permissionToMute,
@@ -198,7 +198,7 @@ const CommentListItem = ({
                                   permlink={comment.permlink}
                                   flagText={flagText}
                                 >
-                                  <Icons.flag className="m-2 h-4 w-4 hover:text-destructive" />
+                                  <Icons.flag className="m-2 h-4 w-4 cursor-pointer hover:text-destructive" />
                                 </AlertDialogFlag>
                               ) : null}
                               <AccordionTrigger
@@ -221,7 +221,7 @@ const CommentListItem = ({
                                 permlink={comment.permlink}
                                 flagText={flagText}
                               >
-                                <Icons.flag className="m-2 h-4 w-4 hover:text-destructive" />
+                                <Icons.flag className="m-2 h-4 w-4 cursor-pointer hover:text-destructive" />
                               </AlertDialogFlag>
                             ) : null}
                             <AccordionTrigger

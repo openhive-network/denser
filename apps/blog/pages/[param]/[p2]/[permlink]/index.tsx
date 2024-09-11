@@ -55,7 +55,7 @@ import ChangeTitleDialog from '@/blog/components/change-title-dialog';
 
 const logger = getLogger('app');
 export const postClassName =
-  'prose-p:font-source prose-headings:font-sanspro prose-li:font-sanspro max-w-full py-4 prose-headings:font-semibold prose-headings:text-primary prose-h1:text-[26px] prose-p:mb-6 prose-p:mt-0 prose-p:text-[16.5px] prose-p:leading-6 prose-a:break-words prose-a:text-destructive prose-a:no-underline prose-strong:text-primary prose-code:break-words prose-code:leading-[19px] prose-pre:m-0 prose-pre:bg-secondary prose-pre:-indent-[3px] prose-li:my-0 prose-li:pl-0 prose-li:text-[16.5px] prose-img:mb-[10px] prose-img:mt-0 prose-hr:my-5 sm:prose-h1:text-[28px] sm::text-[17.6px] lg:px-8 lg:text-[19.2px]';
+  'text-[16.5px] prose-h1:text-[26.4px] prose-h2:text-[23.1px] prose-h3:text-[19.8px] prose-h4:text-[18.1px] sm:text-[17.6px] sm:prose-h1:text-[28px] sm:prose-h2:text-[24.7px] sm:prose-h3:text-[22.1px] sm:prose-h4:text-[19.4px] lg:text-[19.2px] lg:prose-h1:text-[30.7px] lg:prose-h2:text-[28.9px] lg:prose-h3:text-[23px] lg:prose-h4:text-[21.1px] prose-p:mb-6 prose-p:mt-0'; //Post spacing
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -234,7 +234,7 @@ function PostPage({
               permlink={permlink}
               flagText={communityData.flag_text}
             >
-              <Icons.flag className="absolute right-0 m-2 hover:text-destructive" />
+              <Icons.flag className="absolute right-0 m-2 cursor-pointer hover:text-destructive" />
             </AlertDialogFlag>
           ) : null}
           {!isLoadingPost && post ? (
@@ -285,9 +285,6 @@ function PostPage({
                 created={post.created}
                 blacklist={firstPost ? firstPost.blacklists : post.blacklists}
               />
-
-              <hr />
-
               {mutedPost === undefined || isLoadingPost ? (
                 <Loading loading={mutedPost === undefined || isLoadingPost} />
               ) : edit ? (
