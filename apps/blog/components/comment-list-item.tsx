@@ -41,7 +41,7 @@ interface CommentListProps {
   flagText: string | undefined;
 }
 export const commentClassName =
-  'text-[12.5px] prose-h1:text-[20px] prose-h2:text-[17.5px] prose-h4:text-[13.7px] sm:text-[13.4px] sm:prose-h1:text-[21.5px] sm:prose-h2:text-[18.7px] sm:prose-h3:text-[16px]  sm:prose-h4:text-[14.7px] lg:text-[14.6px] lg:prose-h1:text-[23.3px] lg:prose-h2:text-[20.4px] lg:prose-h3:text-[17.5px] lg:prose-h4:text-[16px] prose-h3:text-[15px] prose-p:mb-[9.6px] prose-p:mt-[1.6px] last:prose-p:mb-[3.2px]';
+  'text-[12.5px] prose-h1:text-[20px] prose-h2:text-[17.5px] prose-h4:text-[13.7px] sm:text-[13.4px] sm:prose-h1:text-[21.5px] sm:prose-h2:text-[18.7px] sm:prose-h3:text-[16px]  sm:prose-h4:text-[14.7px] lg:text-[14.6px] lg:prose-h1:text-[23.3px] lg:prose-h2:text-[20.4px] lg:prose-h3:text-[17.5px] lg:prose-h4:text-[16px] prose-h3:text-[15px] prose-p:mb-[9.6px] prose-p:mt-[1.6px] last:prose-p:mb-[3.2px] prose-img:cursor-pointer';
 
 const CommentListItem = ({
   permissionToMute,
@@ -127,8 +127,8 @@ const CommentListItem = ({
               })}
             >
               <Accordion type="single" collapsible value={openState}>
-                <AccordionItem className="p-0" value="item-1">
-                  <CardHeader className="px-1 py-0">
+                <AccordionItem className="flex w-full flex-col p-0" value="item-1">
+                  <CardHeader className="px-0 py-0">
                     <div className="flex w-full justify-between">
                       <div
                         className="flex w-full flex-col justify-start sm:flex-row sm:items-center"
@@ -276,9 +276,9 @@ const CommentListItem = ({
                       ) : null}
                     </div>
                   </CardHeader>
-                  <AccordionContent className="h-fit px-[5px] py-0 hover:bg-background-tertiary">
+                  <AccordionContent className="h-fit p-0">
                     <Separator orientation="horizontal" />
-                    <CardContent className="h-fit p-0 hover:bg-background-tertiary">
+                    <CardContent className="h-fit p-[5px] hover:bg-background-tertiary">
                       {legalBlockedUser ? (
                         <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
                       ) : userFromDMCA ? (
