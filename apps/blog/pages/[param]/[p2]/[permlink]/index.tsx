@@ -578,6 +578,7 @@ function PostPage({
               permissionToMute={userCanModerate}
               mutedList={mutedList || []}
               data={discussionState}
+              flagText={communityData?.flag_text}
               parent={post}
               parent_depth={post.depth}
             />

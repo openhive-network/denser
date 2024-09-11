@@ -30,6 +30,7 @@ import { handleError } from '@ui/lib/utils';
 import { CircleSpinner } from 'react-spinners-kit';
 import MutePostDialog from './mute-post-dialog';
 import ChangeTitleDialog from './change-title-dialog';
+import { AlertDialogFlag } from './alert-window-flag';
 interface CommentListProps {
   permissionToMute: Boolean;
   comment: Entry;
@@ -37,6 +38,7 @@ interface CommentListProps {
   mutedList: IFollowList[];
   parentPermlink: string;
   parentAuthor: string;
+  flagText: string | undefined;
 }
 export const commentClassName =
   'prose-code:font-consolas font-sanspro text-[12.5px] prose-table:verflow-x-auto text-[12.5px] prose-h1:text-[20px] prose-h2:text-[17.5px] prose-h3:text-[15px] prose-p:mb-[9.6px] prose-p:mt-[1.6px] last:prose-p:mb-[3.2px] prose-a:whitespace-pre-wrap prose-a:break-words prose-a:font-normal prose-a:text-destructive prose-blockquote:m-0 prose-blockquote:mb-4 prose-blockquote:px-5 prose-blockquote:pt-2 prose-blockquote:font-normal prose-strong:font-semibold prose-code:text-[14.4px] prose-ol:mb-4 prose-ol:ml-3 prose-ol:mt-0 prose-ul:mb-4 prose-ul:ml-3 prose-ul:mt-0 prose-li:m-0 prose-li:p-0 prose-table:mb-[16px] prose-table:table-auto prose-table:border-collapse prose-table:border prose-table:border-secondary prose-tr:bg-background-secondary even:prose-tr:bg-background prose-td:w-fit prose-td:border prose-td:border-secondary prose-td:px-[6.4px] prose-td:py-1 prose-td:text-[16.3px] prose-img:mb-[10px] sm:text-[13.4px] sm:prose-h1:text-[21.5px] sm:prose-h2:text-[17.7px] sm:prose-h3:text-[16px] lg:text-[14.6px] lg:prose-h1:text-[23.3px] lg:prose-h2:text-[20.4px] lg:prose-h3:text-[17.5px]';
@@ -47,7 +49,8 @@ const CommentListItem = ({
   parent_depth,
   mutedList,
   parentPermlink,
-  parentAuthor
+  parentAuthor,
+  flagText
 }: CommentListProps) => {
   const { t } = useTranslation('common_blog');
   const username = comment.author;
@@ -128,10 +131,10 @@ const CommentListItem = ({
                   <CardHeader className="px-1 py-0">
                     <div className="flex w-full justify-between">
                       <div
-                        className="flex w-full flex-col sm:flex-row sm:items-center"
+                        className="flex w-full flex-col justify-start sm:flex-row sm:items-center"
                         data-testid="comment-card-header"
                       >
-                        <div className="flex items-center justify-between text-xs sm:text-sm">
+                        <div className="flex w-full items-center justify-between text-xs sm:text-sm">
                           <div className="my-1 flex items-center">
                             <img
                               className=" h-[20px] w-[20px] rounded-3xl sm:hidden"
@@ -187,28 +190,54 @@ const CommentListItem = ({
                             </Link>
                           </div>
                           {!hiddenComment ? (
-                            <AccordionTrigger
-                              className="pb-0 pt-1 !no-underline sm:hidden"
-                              onClick={() => setOpenState((prev) => (prev === 'item-1' ? '' : 'item-1'))}
-                            />
+                            <div className="flex items-center">
+                              {flagText && comment.community ? (
+                                <AlertDialogFlag
+                                  community={comment.community}
+                                  username={username}
+                                  permlink={comment.permlink}
+                                  flagText={flagText}
+                                >
+                                  <Icons.flag className="m-2 h-4 w-4 hover:text-destructive" />
+                                </AlertDialogFlag>
+                              ) : null}
+                              <AccordionTrigger
+                                className="pb-0 pt-1 !no-underline sm:hidden"
+                                onClick={() => setOpenState((prev) => (prev === 'item-1' ? '' : 'item-1'))}
+                              />
+                            </div>
                           ) : null}
                         </div>
                         {!hiddenComment && comment.stats?.gray && openState ? (
                           <span className="ml-4 text-xs">{t('cards.comment_card.will_be_hidden')}</span>
                         ) : null}
+
                         {hiddenComment ? (
-                          <AccordionTrigger
-                            className="pb-0 pt-1 !no-underline "
-                            onClick={() => setOpenState((prev) => (prev === 'item-1' ? '' : 'item-1'))}
-                          >
-                            <span
-                              className="ml-4 cursor-pointer text-xs sm:text-sm"
-                              onClick={() => setHiddenComment(false)}
+                          <div>
+                            {flagText && comment.community ? (
+                              <AlertDialogFlag
+                                community={comment.community}
+                                username={username}
+                                permlink={comment.permlink}
+                                flagText={flagText}
+                              >
+                                <Icons.flag className="m-2 h-4 w-4 hover:text-destructive" />
+                              </AlertDialogFlag>
+                            ) : null}
+                            <AccordionTrigger
+                              className="pb-0 pt-1 !no-underline "
+                              onClick={() => setOpenState((prev) => (prev === 'item-1' ? '' : 'item-1'))}
                             >
-                              {t('cards.comment_card.reveal_comment')}{' '}
-                            </span>
-                          </AccordionTrigger>
+                              <span
+                                className="ml-4 cursor-pointer text-xs sm:text-sm"
+                                onClick={() => setHiddenComment(false)}
+                              >
+                                {t('cards.comment_card.reveal_comment')}{' '}
+                              </span>
+                            </AccordionTrigger>
+                          </div>
                         ) : null}
+
                         {!openState ? (
                           <div
                             className="ml-4 flex h-5 items-center gap-2 text-xs sm:text-sm"
@@ -275,116 +304,116 @@ const CommentListItem = ({
                       )}
                     </CardContent>
                     <Separator orientation="horizontal" />{' '}
-                  </AccordionContent>
-                  <CardFooter className="px-2 py-1">
-                    <div
-                      className="flex items-center gap-2 pt-1 text-xs sm:text-sm"
-                      data-testid="comment-card-footer"
-                    >
-                      <VotesComponent post={comment} />
-                      <DetailsCardHover
-                        post={comment}
-                        decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
+                    <CardFooter className="px-2 py-1">
+                      <div
+                        className="flex items-center gap-2 pt-1 text-xs sm:text-sm"
+                        data-testid="comment-card-footer"
                       >
-                        <div
-                          data-testid="comment-card-footer-payout"
-                          className={clsx('flex items-center hover:cursor-pointer hover:text-destructive', {
-                            'line-through opacity-50': Number(comment.max_accepted_payout.slice(0, 1)) === 0
-                          })}
+                        <VotesComponent post={comment} />
+                        <DetailsCardHover
+                          post={comment}
+                          decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
                         >
-                          {'$'}
-                          {comment.payout.toFixed(2)}
-                        </div>
-                      </DetailsCardHover>
-                      <Separator orientation="vertical" className="h-5" />
-                      {comment.stats && comment.stats.total_votes > 0 ? (
-                        <>
-                          <div className="flex items-center">
-                            <DetailsCardVoters post={comment}>
-                              <span className="hover:text-destructive">
-                                {comment.stats && comment.stats.total_votes > 1
-                                  ? t('cards.post_card.votes', { votes: comment.stats.total_votes })
-                                  : t('cards.post_card.vote')}
-                              </span>
-                            </DetailsCardVoters>
-                          </div>
-                          <Separator orientation="vertical" className="h-5" />
-                        </>
-                      ) : null}
-                      {user && user.isLoggedIn ? (
-                        <button
-                          disabled={deleteCommentMutation.isLoading}
-                          onClick={() => {
-                            setReply(!reply), removeBox();
-                          }}
-                          className="flex items-center hover:cursor-pointer hover:text-destructive"
-                          data-testid="comment-card-footer-reply"
-                        >
-                          {t('cards.comment_card.reply')}
-                        </button>
-                      ) : (
-                        <DialogLogin>
-                          <button
-                            className="flex items-center hover:cursor-pointer hover:text-destructive"
-                            data-testid="comment-card-footer-reply"
+                          <div
+                            data-testid="comment-card-footer-payout"
+                            className={clsx('flex items-center hover:cursor-pointer hover:text-destructive', {
+                              'line-through opacity-50': Number(comment.max_accepted_payout.slice(0, 1)) === 0
+                            })}
                           >
-                            {t('post_content.footer.reply')}
-                          </button>
-                        </DialogLogin>
-                      )}
-                      {user && user.isLoggedIn && comment.author === user.username ? (
-                        <>
-                          <Separator orientation="vertical" className="h-5" />
+                            {'$'}
+                            {comment.payout.toFixed(2)}
+                          </div>
+                        </DetailsCardHover>
+                        <Separator orientation="vertical" className="h-5" />
+                        {comment.stats && comment.stats.total_votes > 0 ? (
+                          <>
+                            <div className="flex items-center">
+                              <DetailsCardVoters post={comment}>
+                                <span className="hover:text-destructive">
+                                  {comment.stats && comment.stats.total_votes > 1
+                                    ? t('cards.post_card.votes', { votes: comment.stats.total_votes })
+                                    : t('cards.post_card.vote')}
+                                </span>
+                              </DetailsCardVoters>
+                            </div>
+                            <Separator orientation="vertical" className="h-5" />
+                          </>
+                        ) : null}
+                        {user && user.isLoggedIn ? (
                           <button
                             disabled={deleteCommentMutation.isLoading}
                             onClick={() => {
-                              setEdit(!edit);
+                              setReply(!reply), removeBox();
                             }}
                             className="flex items-center hover:cursor-pointer hover:text-destructive"
-                            data-testid="comment-card-footer-edit"
+                            data-testid="comment-card-footer-reply"
                           >
-                            {t('cards.comment_card.edit')}
+                            {t('cards.comment_card.reply')}
                           </button>
-                        </>
-                      ) : null}
-                      {comment.replies.length === 0 &&
-                      user.isLoggedIn &&
-                      comment.author === user.username &&
-                      moment().format('YYYY-MM-DDTHH:mm:ss') < comment.payout_at ? (
-                        <>
-                          <Separator orientation="vertical" className="h-5" />
-                          <CommentDeleteDialog permlink={comment.permlink} action={dialogAction}>
+                        ) : (
+                          <DialogLogin>
                             <button
-                              disabled={edit || deleteCommentMutation.isLoading}
                               className="flex items-center hover:cursor-pointer hover:text-destructive"
-                              data-testid="comment-card-footer-delete"
+                              data-testid="comment-card-footer-reply"
                             >
-                              {deleteCommentMutation.isLoading ? (
-                                <CircleSpinner
-                                  loading={deleteCommentMutation.isLoading}
-                                  size={18}
-                                  color="#dc2626"
-                                />
-                              ) : (
-                                t('cards.comment_card.delete')
-                              )}
+                              {t('post_content.footer.reply')}
                             </button>
-                          </CommentDeleteDialog>
-                        </>
-                      ) : null}
-                      {permissionToMute ? (
-                        <MutePostDialog
-                          comment={true}
-                          community={comment.community ?? ''}
-                          username={comment.author}
-                          permlink={comment.permlink}
-                          contentMuted={comment.stats?.gray ?? false}
-                          discussionPermlink={parentPermlink}
-                          discussionAuthor={parentAuthor}
-                        />
-                      ) : null}
-                    </div>
-                  </CardFooter>
+                          </DialogLogin>
+                        )}
+                        {user && user.isLoggedIn && comment.author === user.username ? (
+                          <>
+                            <Separator orientation="vertical" className="h-5" />
+                            <button
+                              disabled={deleteCommentMutation.isLoading}
+                              onClick={() => {
+                                setEdit(!edit);
+                              }}
+                              className="flex items-center hover:cursor-pointer hover:text-destructive"
+                              data-testid="comment-card-footer-edit"
+                            >
+                              {t('cards.comment_card.edit')}
+                            </button>
+                          </>
+                        ) : null}
+                        {comment.replies.length === 0 &&
+                        user.isLoggedIn &&
+                        comment.author === user.username &&
+                        moment().format('YYYY-MM-DDTHH:mm:ss') < comment.payout_at ? (
+                          <>
+                            <Separator orientation="vertical" className="h-5" />
+                            <CommentDeleteDialog permlink={comment.permlink} action={dialogAction}>
+                              <button
+                                disabled={edit || deleteCommentMutation.isLoading}
+                                className="flex items-center hover:cursor-pointer hover:text-destructive"
+                                data-testid="comment-card-footer-delete"
+                              >
+                                {deleteCommentMutation.isLoading ? (
+                                  <CircleSpinner
+                                    loading={deleteCommentMutation.isLoading}
+                                    size={18}
+                                    color="#dc2626"
+                                  />
+                                ) : (
+                                  t('cards.comment_card.delete')
+                                )}
+                              </button>
+                            </CommentDeleteDialog>
+                          </>
+                        ) : null}
+                        {permissionToMute ? (
+                          <MutePostDialog
+                            comment={true}
+                            community={comment.community ?? ''}
+                            username={comment.author}
+                            permlink={comment.permlink}
+                            contentMuted={comment.stats?.gray ?? false}
+                            discussionPermlink={parentPermlink}
+                            discussionAuthor={parentAuthor}
+                          />
+                        ) : null}
+                      </div>
+                    </CardFooter>
+                  </AccordionContent>
                 </AccordionItem>
               </Accordion>
             </Card>
