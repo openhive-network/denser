@@ -372,21 +372,6 @@ const CommentListItem = ({
                           </CommentDeleteDialog>
                         </>
                       ) : null}
-                      {user && user.isLoggedIn && comment.author === user.username ? (
-                        <>
-                          <Separator orientation="vertical" className="h-5" />
-                          <button
-                            disabled={deleteCommentMutation.isLoading}
-                            onClick={() => {
-                              setEdit(!edit);
-                            }}
-                            className="flex items-center hover:cursor-pointer hover:text-destructive"
-                            data-testid="comment-card-footer-edit"
-                          >
-                            {t('cards.comment_card.edit')}
-                          </button>
-                        </>
-                      ) : null}
                       {permissionToMute ? (
                         <MutePostDialog
                           comment={true}
@@ -397,31 +382,6 @@ const CommentListItem = ({
                           discussionPermlink={parentPermlink}
                           discussionAuthor={parentAuthor}
                         />
-                      ) : null}
-                      {comment.replies.length === 0 &&
-                      user.isLoggedIn &&
-                      comment.author === user.username &&
-                      moment().format('YYYY-MM-DDTHH:mm:ss') < comment.payout_at ? (
-                        <>
-                          <Separator orientation="vertical" className="h-5" />
-                          <CommentDeleteDialog permlink={comment.permlink} action={dialogAction}>
-                            <button
-                              disabled={edit || deleteCommentMutation.isLoading}
-                              className="flex items-center hover:cursor-pointer hover:text-destructive"
-                              data-testid="comment-card-footer-delete"
-                            >
-                              {deleteCommentMutation.isLoading ? (
-                                <CircleSpinner
-                                  loading={deleteCommentMutation.isLoading}
-                                  size={18}
-                                  color="#dc2626"
-                                />
-                              ) : (
-                                t('cards.comment_card.delete')
-                              )}
-                            </button>
-                          </CommentDeleteDialog>
-                        </>
                       ) : null}
                     </div>
                   </CardFooter>
