@@ -3,6 +3,7 @@ import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import path from 'path';
 import fs from 'fs';
 import { getTranslations } from '../lib/get-translations';
+import { classNamesGeneral } from '../components/rendererContainer';
 
 export const getStaticProps: GetStaticProps<{
   data: string;
@@ -30,7 +31,7 @@ function TOS({ data }: InferGetStaticPropsType<typeof getStaticProps>) {
       <div className="text-2xl sm:text-5xl">Terms of Service</div>
       <div
         id="articleBody"
-        className="prose"
+        className={classNamesGeneral}
         dangerouslySetInnerHTML={{
           __html: tos_page
         }}

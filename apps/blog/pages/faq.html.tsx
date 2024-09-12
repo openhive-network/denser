@@ -3,6 +3,7 @@ import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import path from 'path';
 import fs from 'fs';
 import { getTranslations } from '../lib/get-translations';
+import { classNamesGeneral } from '../components/rendererContainer';
 
 export const getStaticProps: GetStaticProps<{
   data: string;
@@ -29,7 +30,7 @@ function Faq({ data }: InferGetStaticPropsType<typeof getStaticProps>) {
     <div className="mx-auto my-12 max-w-3xl px-4 ">
       <div
         id="articleBody"
-        className="prose"
+        className={classNamesGeneral}
         dangerouslySetInnerHTML={{
           __html: faq_page
         }}

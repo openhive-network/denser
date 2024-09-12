@@ -4,6 +4,7 @@ import path from 'path';
 import { GetStaticProps, InferGetServerSidePropsType } from 'next';
 import { getTranslations } from '../lib/get-translations';
 import { useTranslation } from 'next-i18next';
+import { classNamesGeneral } from '../components/rendererContainer';
 
 export const getStaticProps: GetStaticProps<{
   data: string;
@@ -31,7 +32,7 @@ function Welcome({ data }: InferGetServerSidePropsType<typeof getStaticProps>) {
     <div className="mx-auto my-12 max-w-3xl px-4">
       <div
         id="articleBody"
-        className="prose"
+        className={classNamesGeneral}
         dangerouslySetInnerHTML={{
           __html: welcome_page
         }}
