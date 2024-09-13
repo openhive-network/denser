@@ -9,14 +9,14 @@ import Loading from '@ui/components/loading';
 import ExploreHive from '@/blog/components/explore-hive';
 import { Icons } from '@ui/components/icons';
 import { Separator } from '@ui/components';
-import { GetServerSideProps } from 'next';
+import { GetStaticProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import CommunitiesMybar from '../components/communities-mybar';
 import Link from 'next/link';
 import env from '@beam-australia/react-env';
 import { getLogger } from '@ui/lib/logging';
-import { getServerSidePropsDefault } from '../lib/get-translations';
+import { getDefaultProps } from '../lib/get-translations';
 
 const logger = getLogger('app');
 
@@ -42,12 +42,9 @@ export default function CommunitiesPage() {
     data: mySubsData,
     isLoading: mySubsIsLoading,
     isError: mySubsIsError
-  } = useQuery(['subscriptions', user.username],
-    () => getSubscriptions(user.username),
-    {
-      enabled: Boolean(user?.username)
-    }
-  );
+  } = useQuery(['subscriptions', user.username], () => getSubscriptions(user.username), {
+    enabled: Boolean(user?.username)
+  });
 
   function handleSearchCommunity(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') {
@@ -121,4 +118,4 @@ export default function CommunitiesPage() {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
+export const getStaticProps: GetStaticProps = getDefaultProps;

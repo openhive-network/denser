@@ -23,7 +23,7 @@ export const getTranslations = async (
   return await serverSideTranslations(locale, localeFiles);
 };
 
-export const getPropsDefault = async (ctx: GetStaticPropsContext | GetServerSidePropsContext) => {
+export const getDefaultProps = async (ctx: GetStaticPropsContext | GetServerSidePropsContext) => {
   return {
     props: {
       ...(await getTranslations(ctx))

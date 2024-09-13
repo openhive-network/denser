@@ -13,9 +13,9 @@ import { GetServerSideProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
-import { getServerSidePropsDefault } from '../../lib/get-translations';
+import { getDefaultProps } from '../../lib/get-translations';
 
-export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
+export const getServerSideProps: GetServerSideProps = getDefaultProps;
 
 const UserPosts = () => {
   const { t } = useTranslation('common_blog');
@@ -70,7 +70,7 @@ const UserPosts = () => {
     <ProfileLayout>
       <div className="flex flex-col">
         <Tabs defaultValue={sort} className="w-full" onValueChange={(s) => router.push(`/@${username}/${s}`)}>
-          <TabsList className="bg-background-tertiary flex justify-start" data-testid="user-post-menu">
+          <TabsList className="flex justify-start bg-background-tertiary" data-testid="user-post-menu">
             <TabsTrigger value="posts">{t('navigation.profile_posts_tab_navbar.posts')}</TabsTrigger>
             <TabsTrigger value="comments">{t('navigation.profile_posts_tab_navbar.comments')}</TabsTrigger>
             <TabsTrigger value="payout">{t('navigation.profile_posts_tab_navbar.payouts')}</TabsTrigger>
@@ -86,7 +86,7 @@ const UserPosts = () => {
                       ) : (
                         <div
                           key="empty"
-                          className="bg-card-noContent border-card-empty-border mt-12 border-2 border-solid px-4 py-6 text-sm"
+                          className="border-card-empty-border mt-12 border-2 border-solid bg-card-noContent px-4 py-6 text-sm"
                           data-testid="user-has-not-made-any-post-yet"
                         >
                           {t('user_profile.no_posts_yet', { username: username })}
@@ -127,7 +127,7 @@ const UserPosts = () => {
                       ) : (
                         <div
                           key="empty"
-                          className="bg-card-noContent border-card-empty-border mt-12 border-2 border-solid px-4 py-6 text-sm"
+                          className="border-card-empty-border mt-12 border-2 border-solid bg-card-noContent px-4 py-6 text-sm"
                           data-testid="user-has-not-made-any-post-yet"
                         >
                           {t('user_profile.no_posts_yet', { username: username })}
@@ -168,7 +168,7 @@ const UserPosts = () => {
                       ) : (
                         <div
                           key="empty"
-                          className="bg-card-noContent border-card-empty-border mt-12 border-2 border-solid px-4 py-6 text-sm"
+                          className="border-card-empty-border mt-12 border-2 border-solid bg-card-noContent px-4 py-6 text-sm"
                           data-testid="user-no-pending-payouts"
                         >
                           {t('user_profile.no_pending_payouts')}

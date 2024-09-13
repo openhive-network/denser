@@ -2,10 +2,10 @@ import { GetStaticProps } from 'next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import PostForm from '../components/post-form';
 import { useState, useEffect } from 'react';
-import { getPropsDefault } from '../lib/get-translations';
+import { getDefaultProps } from '../lib/get-translations';
 import { useTranslation } from 'next-i18next';
 
-export const getStaticProps: GetStaticProps = getPropsDefault;
+export const getStaticProps: GetStaticProps = getDefaultProps;
 
 function Submit() {
   const { t } = useTranslation('common_blog');
