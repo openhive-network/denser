@@ -41,7 +41,7 @@ interface CommentListProps {
   flagText: string | undefined;
 }
 export const commentClassName =
-  'text-[12.5px] prose-h1:text-[20px] prose-h2:text-[17.5px] prose-h4:text-[13.7px] sm:text-[13.4px] sm:prose-h1:text-[21.5px] sm:prose-h2:text-[18.7px] sm:prose-h3:text-[16px]  sm:prose-h4:text-[14.7px] lg:text-[14.6px] lg:prose-h1:text-[23.3px] lg:prose-h2:text-[20.4px] lg:prose-h3:text-[17.5px] lg:prose-h4:text-[16px] prose-h3:text-[15px] prose-p:mb-[9.6px] prose-p:mt-[1.6px] last:prose-p:mb-[3.2px]';
+  'font-sanspro text-[12.5px] prose-h1:text-[20px] prose-h2:text-[17.5px] prose-h4:text-[13.7px] sm:text-[13.4px] sm:prose-h1:text-[21.5px] sm:prose-h2:text-[18.7px] sm:prose-h3:text-[16px]  sm:prose-h4:text-[14.7px] lg:text-[14.6px] lg:prose-h1:text-[23.3px] lg:prose-h2:text-[20.4px] lg:prose-h3:text-[17.5px] lg:prose-h4:text-[16px] prose-h3:text-[15px] prose-p:mb-[9.6px] prose-p:mt-[1.6px] last:prose-p:mb-[3.2px]';
 
 const CommentListItem = ({
   permissionToMute,
@@ -213,17 +213,7 @@ const CommentListItem = ({
                         ) : null}
 
                         {hiddenComment ? (
-                          <div>
-                            {flagText && comment.community ? (
-                              <AlertDialogFlag
-                                community={comment.community}
-                                username={username}
-                                permlink={comment.permlink}
-                                flagText={flagText}
-                              >
-                                <Icons.flag className="m-2 h-4 w-4 cursor-pointer hover:text-destructive" />
-                              </AlertDialogFlag>
-                            ) : null}
+                          <div className="flex w-full justify-between">
                             <AccordionTrigger
                               className="pb-0 pt-1 !no-underline "
                               onClick={() => setOpenState((prev) => (prev === 'item-1' ? '' : 'item-1'))}
@@ -235,6 +225,16 @@ const CommentListItem = ({
                                 {t('cards.comment_card.reveal_comment')}{' '}
                               </span>
                             </AccordionTrigger>
+                            {flagText && comment.community ? (
+                              <AlertDialogFlag
+                                community={comment.community}
+                                username={username}
+                                permlink={comment.permlink}
+                                flagText={flagText}
+                              >
+                                <Icons.flag className="m-2 h-4 w-4 cursor-pointer hover:text-destructive" />
+                              </AlertDialogFlag>
+                            ) : null}
                           </div>
                         ) : null}
 

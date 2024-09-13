@@ -84,79 +84,70 @@ module.exports = {
       typography: {
         DEFAULT: {
           css: {
-            color: 'var(--primary)',
+            maxWidth: '100%',
+            color: 'hsl(var(--primary))',
             'h1, h2, h3, h4, h5, h6': {
-              color: 'var(--primary)',
+              color: 'hsl(var(--primary))',
+              fontWeight: '600',
               marginBottom: '0.25rem',
-              marginTop: '2.5rem',
-              fontWeight: '600'
+              marginTop: '2.5rem'
             },
             a: {
-              color: 'var(--destructive)',
+              color: 'hsl(var(--destructive))',
               textDecoration: 'none',
               whiteSpace: 'pre-wrap',
               wordBreak: 'break-word'
             },
             blockquote: {
-              color: 'var(--primary-70)',
+              color: 'hsl(var(--primary), 0.7)',
+              fontWeight: '400',
               margin: '0',
               marginBottom: '1rem',
               paddingLeft: '1.25rem',
               paddingTop: '0.5rem',
-              fontWeight: '400',
-              textIndent: '-0.1875rem'
+              textIndent: '-3px'
             },
             strong: {
-              color: 'var(--primary)'
+              color: 'hsl(var(--primary))'
             },
             code: {
-              backgroundColor: 'var(--background-secondary)',
-              color: 'var(--primary-70)',
+              backgroundColor: 'hsl(var(--background-secondary))',
+              color: 'hsl(var(--primary), 0.7)',
               fontFamily: 'Consolas, monospace',
-              fontSize: '14.4px',
-              padding: '0.1875rem',
+              fontWeight: '400',
+              padding: '5px',
+              textIndent: '-3px',
               wordBreak: 'break-word',
-              textIndent: '-0.1875rem',
+              fontSize: '14.4px',
               lineHeight: '19px'
             },
             pre: {
-              backgroundColor: 'var(--background-secondary)',
+              color: 'hsl(var(--primary), 0.7)',
+              backgroundColor: 'hsl(var(--background-secondary))',
               margin: '0',
-              padding: '0',
-              textIndent: '-0.1875rem'
+              padding: '7px'
             },
             table: {
-              borderColor: 'var(--secondary)',
+              marginBottom: '16px',
               borderCollapse: 'collapse',
-              marginBottom: '1rem',
+              width: '100%',
               overflowX: 'auto',
-              maxWidth: '100%'
-            },
-            tr: {
-              backgroundColor: 'var(--background-secondary)',
-              '&:nth-child(even)': {
-                backgroundColor: 'var(--background)'
-              }
+              border: '1px solid hsl(var(--secondary))'
             },
             th: {
-              color: 'var(--primary)'
+              color: 'hsl(var(--primary))'
+            },
+            tr: {
+              backgroundColor: 'hsl(var(--background-secondary))',
+              '&:nth-child(even)': {
+                backgroundColor: 'hsl(var(--background))'
+              }
             },
             td: {
-              borderColor: 'var(--secondary)',
-              paddingLeft: '0.4rem',
-              paddingRight: '0.4rem',
-              paddingTop: '0.25rem',
-              paddingBottom: '0.25rem',
-              textAlign: 'middle',
+              border: '1px solid hsl(var(--secondary))',
+              verticalAlign: 'middle',
+              padding: '4px 6.4px',
               fontSize: '16.3px'
-            },
-            img: {
-              marginBottom: '0.625rem',
-              marginTop: '0'
-            },
-            hr: {
-              marginTop: '1.25rem',
-              marginBottom: '1.25rem'
             },
             ol: {
               marginBottom: '1rem',
@@ -171,6 +162,13 @@ module.exports = {
             li: {
               margin: '0',
               padding: '0'
+            },
+            img: {
+              marginBottom: '10px',
+              marginTop: '0'
+            },
+            hr: {
+              margin: '20px 0'
             }
           }
         }

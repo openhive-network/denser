@@ -130,7 +130,6 @@ const CommunityDescription = ({
               dataTestid="community-description-content"
               author=""
               communityDescription={true}
-              className=""
             />
           </div>
 
