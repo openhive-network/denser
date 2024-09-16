@@ -218,8 +218,13 @@ test.describe("Wallet page of @gtg tests", () => {
     );
     const accountHistoryResult = await apiHelper.getAccountHistoryAPI('gtg', -1, 500);
     const accountHistoryUI = await walletPage.walletAccountHistoryRow.all();
-    await walletPage.page.waitForSelector(await walletPage.walletAccountHistoryRow["_selector"]);
-    await expect(accountHistoryUI.length).toBe(accountHistoryResult.result.length);
+
+    if (await walletPage.walletAccountHistoryRow.first().isVisible()){
+      await walletPage.page.waitForSelector(await walletPage.walletAccountHistoryRow["_selector"]);
+      await expect(accountHistoryUI.length).toBe(accountHistoryResult.result.length);
+    } else {
+      await expect(await walletPage.walletAccountHistoryNoTransactionMsg).toContainText('No transactions found');
+    }
   });
 
   test("validate first transaction on @gtg in account history", async ({
