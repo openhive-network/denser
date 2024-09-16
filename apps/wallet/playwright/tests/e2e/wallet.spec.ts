@@ -241,7 +241,10 @@ test.describe("Wallet page of @gtg tests", () => {
     );
 
     const accountHistoryResultAPI = await apiHelper.getAccountHistoryAPI(username, -1, 500);
-    const accountHistoryResult = await accountHistoryResultAPI.result.reverse();
+    let accountHistoryResult = null;
+
+    if (await accountHistoryResultAPI.result != null)
+      accountHistoryResult = await accountHistoryResultAPI.result.reverse();
 
     // console.log('Account history result:\n', await accountHistoryResult);
 
