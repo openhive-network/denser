@@ -33,7 +33,7 @@ test.describe('Terms of Service page tests', () => {
       tosPage.firstSubtitle,
       'color'
     );
-    expect(subtitleColor).toBe('rgb(17, 24, 39)');
+    expect(subtitleColor).toBe('rgb(24, 30, 42)');
 
     const subtitleFontSize = await tosPage.getElementCssPropertyValue(
       tosPage.firstSubtitle,
@@ -51,13 +51,13 @@ test.describe('Terms of Service page tests', () => {
       tosPage.paragrafText,
       'color'
     );
-    expect(paragrafColor).toBe('rgb(55, 65, 81)');
+    expect(paragrafColor).toBe('rgb(24, 30, 42)');
 
     const paragrafFontSize = await tosPage.getElementCssPropertyValue(
       tosPage.paragrafText,
       'font-size'
     );
-    expect(paragrafFontSize).toContain('19.2');
+    expect(paragrafFontSize).toContain('16px');
   });
 
   test('validate styles in the Terms of Service in the dark mode', async ({ page }) => {
@@ -72,7 +72,7 @@ test.describe('Terms of Service page tests', () => {
       tosPage.firstSubtitle,
       'color'
     );
-    expect(subtitleColor).toBe('rgb(255, 255, 255)');
+    expect(subtitleColor).toBe('rgb(248, 250, 252)');
 
     const subtitleFontSize = await tosPage.getElementCssPropertyValue(
       tosPage.firstSubtitle,
@@ -90,13 +90,13 @@ test.describe('Terms of Service page tests', () => {
       tosPage.paragrafText,
       'color'
     );
-    expect(paragrafColor).toBe('rgb(209, 213, 219)');
+    expect(paragrafColor).toBe('rgb(248, 250, 252)');
 
     const paragrafFontSize = await tosPage.getElementCssPropertyValue(
       tosPage.paragrafText,
       'font-size'
     );
-    expect(paragrafFontSize).toContain('19.2');
+    expect(paragrafFontSize).toContain('16px');
   });
 
   test('validate text of header menu on the Terms of Service page', async ({ page }) => {
