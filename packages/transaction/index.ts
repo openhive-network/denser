@@ -189,7 +189,7 @@ export class TransactionService {
       const transactionId = txBuilder.id;
       logger.info('Broadcasting transaction id: %o, body: %o', transactionId, txBuilder.toApi());
       const startedAt = Date.now();
-      const observer = await this.bot.broadcast(txBuilder.transaction, { throwAfter });
+      const observer = await this.bot.broadcast(txBuilder, { throwAfter });
 
       // Observe if transaction has been applied into blockchain (scan
       // blocks and look for transactionId).
