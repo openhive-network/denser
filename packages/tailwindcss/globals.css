@@ -154,6 +154,11 @@
   opacity: 0.5;
 }
 
+.prose .phishy {
+  display: inline;
+  color: red;
+}
+
 #articleBody .videoWrapper,
 .prose .videoWrapper {
   position: relative;
