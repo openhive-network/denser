@@ -9,7 +9,7 @@ import Loading from '@ui/components/loading';
 import ExploreHive from '@/blog/components/explore-hive';
 import { Icons } from '@ui/components/icons';
 import { Separator } from '@ui/components';
-import { GetStaticProps } from 'next';
+import { GetServerSideProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import CommunitiesMybar from '../components/communities-mybar';
@@ -20,7 +20,7 @@ import { getDefaultProps } from '../lib/get-translations';
 
 const logger = getLogger('app');
 
-export default function CommunitiesPage() {
+const CommunitiesPage = () => {
   const walletHost = env('WALLET_ENDPOINT');
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
@@ -116,6 +116,7 @@ export default function CommunitiesPage() {
       </div>
     </div>
   );
-}
+};
+export default CommunitiesPage;
 
-export const getStaticProps: GetStaticProps = getDefaultProps;
+export const getServerSideProps: GetServerSideProps = getDefaultProps;

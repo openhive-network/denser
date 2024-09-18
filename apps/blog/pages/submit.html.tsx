@@ -1,11 +1,11 @@
-import { GetStaticProps } from 'next';
+import { GetServerSideProps } from 'next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import PostForm from '../components/post-form';
 import { useState, useEffect } from 'react';
 import { getDefaultProps } from '../lib/get-translations';
 import { useTranslation } from 'next-i18next';
 
-export const getStaticProps: GetStaticProps = getDefaultProps;
+export const getServerSideProps: GetServerSideProps = getDefaultProps;
 
 function Submit() {
   const { t } = useTranslation('common_blog');
