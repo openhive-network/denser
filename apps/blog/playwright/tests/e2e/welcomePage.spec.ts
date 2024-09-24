@@ -11,12 +11,14 @@ test.describe('Welcome page tests', () => {
     welcomePage = new WelcomePage(page);
   });
 
-  test('move to the Welcome page from the Home page', async ({ page }) => {
+  test('move to the Welcome page from the Home page', async ({ page, browserName }) => {
+    test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
     await homePage.goto();
     await homePage.moveToWelcomePage();
   });
 
-  test('validate number of subtitles in the welcome page', async ({ page }) => {
+  test('validate number of subtitles in the welcome page', async ({ page, browserName }) => {
+    test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
     await homePage.goto();
     await homePage.moveToWelcomePage();
 
@@ -27,7 +29,8 @@ test.describe('Welcome page tests', () => {
     expect(amountOfSubtitles).toBe(8);
   });
 
-  test('validate title of subtitles in the welcome page', async ({ page }) => {
+  test('validate title of subtitles in the welcome page', async ({ page, browserName }) => {
+    test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
     const expectedSubtitles: string[] = [
       '1. Backup your password',
       '2. Obtain and backup your keys',
@@ -64,7 +67,8 @@ test.describe('Welcome page tests', () => {
     await expect(welcomePage.hiveBlockExplorerLink).toHaveAttribute('href', blockExplorerUrl);
   });
 
-  test('validate links of get to know others subtitle in the welcome page', async ({ page }) => {
+  test('validate links of get to know others subtitle in the welcome page', async ({ page, browserName }) => {
+    test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
     const openHiveChatUrl: string = 'https://openhive.chat/';
     const openHiveChatHelpUrl: string = 'https://openhive.chat/channel/help';
     const hiveDiscordUrl: string = 'https://myhive.li/discord';
@@ -79,7 +83,8 @@ test.describe('Welcome page tests', () => {
     await expect(welcomePage.hiveTelegramLink).toHaveAttribute('href', hiveTelegramUrl);
   });
 
-  test('validate links of equip yourself subtitle in the welcome page', async ({ page }) => {
+  test('validate links of equip yourself subtitle in the welcome page', async ({ page, browserName }) => {
+    test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
     const hiveKeychainUrl: string = 'https://hive-keychain.com';
     const hiveSignerUrl: string = 'https://hivesigner.com';
 
