@@ -211,8 +211,7 @@ export function ReplyTextbox({
             </Link>
           </div>
         </div>
-
-        <RendererContainer body={text} author="" className={commentClassName} />
+        <RendererContainer body={text} author="" className={commentClassName + ' max-w-full border-2 border-background-tertiary p-2'} />
       </div>
     </div>
   );

@@ -563,9 +563,8 @@ export default function PostForm({
               <span className="text-sm text-destructive">{t('submit_page.markdown_styling_guide')}</span>
             </Link>
           </div>
-
           {previewContent ? (
-            <RendererContainer body={previewContent} author="" className={postClassName} />
+            <RendererContainer body={previewContent} author="" className={postClassName + ' border-2 border-border p-2 break-words w-full min-w-full self-center overflow-y-scroll'} />
           ) : null}
         </div>
       </div>
