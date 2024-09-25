@@ -97,6 +97,11 @@
   }
 }
 
+.prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)):after,
+.prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)):before {
+  content: none;
+}
+
 .pull-left {
   float: left;
   padding-right: 1rem;
@@ -108,11 +113,6 @@
   padding-left: 1rem;
   max-width: 50%;
 }
-
-/* .prose table thead th {
-  font-weight: bold;
-  text-align: left;
-} */
 
 .preview-description,
 .preview-rules {

@@ -140,9 +140,10 @@ interface MdEditorProps {
   persistedValue: string;
   placeholder?: string;
   htmlMode: boolean;
+  windowheight: number;
 }
 
-const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholder, htmlMode }) => {
+const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholder, htmlMode, windowheight }) => {
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
   const [formValue, setFormValue] = useState<string>(persistedValue);
@@ -268,6 +269,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
             onDragEnter={dragHandler}
             onDragOver={dragHandler}
             onDragLeave={dragHandler}
+            height={windowheight}
             //@ts-ignore
             style={{ '--color-canvas-default': 'var(--background)' }}
           />
@@ -276,6 +278,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     </div>
   ) : (
     <MDEditor
+      height={windowheight}
       preview="edit"
       value={formValue}
       aria-placeholder={placeholder ?? ''}
