@@ -82,6 +82,7 @@ function PostPage({
 
   const {
     isLoading: isLoadingPost,
+    isRefetching: isRefetchingPost,
     error: errorPost,
     data: post
   } = useQuery(['postData', username, permlink], () => getPost(username, String(permlink)), {
@@ -237,7 +238,7 @@ function PostPage({
               <Icons.flag className="absolute right-0 m-2 cursor-pointer hover:text-destructive" />
             </AlertDialogFlag>
           ) : null}
-          {!isLoadingPost && post ? (
+          {!isLoadingPost && isRefetchingPost && post ? (
             <div>
               {!commentSite ? (
                 <h1
@@ -285,8 +286,8 @@ function PostPage({
                 created={post.created}
                 blacklist={firstPost ? firstPost.blacklists : post.blacklists}
               />
-              {mutedPost === undefined || isLoadingPost ? (
-                <Loading loading={mutedPost === undefined || isLoadingPost} />
+              {mutedPost === undefined || isLoadingPost  || isRefetchingPost ? (
+                <Loading loading={mutedPost === undefined || isLoadingPost || isRefetchingPost} />
               ) : edit ? (
                 <PostForm
                   username={username}
