@@ -238,7 +238,7 @@ function PostPage({
               <Icons.flag className="absolute right-0 m-2 cursor-pointer hover:text-destructive" />
             </AlertDialogFlag>
           ) : null}
-          {!isLoadingPost && isRefetchingPost && post ? (
+          {!isLoadingPost && !isRefetchingPost && post ? (
             <div>
               {!commentSite ? (
                 <h1
