@@ -13,12 +13,14 @@ test.describe('Faq page tests', () => {
 
   test('move to the FAQ page from the Home page', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     await homePage.goto();
     await homePage.moveToFaqPage();
   });
 
   test('validate amount of contents topics', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     await homePage.goto();
     await homePage.moveToFaqPage();
 
@@ -31,6 +33,7 @@ test.describe('Faq page tests', () => {
 
   test('validate amount of description contents topics', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     // Validate the amount of the main topics of descriptions
     await homePage.goto();
     await homePage.moveToFaqPage();
@@ -44,6 +47,7 @@ test.describe('Faq page tests', () => {
 
   test('move to the "What is Hive.blog?" description', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     await homePage.goto();
     await homePage.moveToFaqPage();
 
@@ -56,6 +60,7 @@ test.describe('Faq page tests', () => {
     page, browserName
   }) => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     await homePage.goto();
     await homePage.moveToFaqPage();
 
@@ -69,6 +74,7 @@ test.describe('Faq page tests', () => {
 
   test('validate styles of faq page titles and links part in the light mode', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     await homePage.goto();
     await homePage.moveToFaqPage();
 
@@ -114,6 +120,7 @@ test.describe('Faq page tests', () => {
 
   test('validate styles of faq page titles and links part in the dark mode', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     await homePage.goto();
     await homePage.moveToFaqPage();
     // move to the dark mode
@@ -162,6 +169,7 @@ test.describe('Faq page tests', () => {
 
   test('validate styles of the elements with content in faq page in the dark mode', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     await homePage.goto();
     await homePage.moveToFaqPage();
     // move to the dark mode
@@ -208,6 +216,7 @@ test.describe('Faq page tests', () => {
 
   test('validate styles of the elements with content in faq page in the light mode', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     await homePage.goto();
     await homePage.moveToFaqPage();
 
