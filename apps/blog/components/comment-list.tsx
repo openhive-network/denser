@@ -10,7 +10,8 @@ const CommentList = ({
   data,
   parent,
   parent_depth,
-  mutedList
+  mutedList,
+  flagText
 }: {
   highestAuthor: string;
   highestPermlink: string;
@@ -19,6 +20,7 @@ const CommentList = ({
   parent: Entry;
   parent_depth: number;
   mutedList: IFollowList[];
+  flagText: string | undefined;
 }) => {
   let filtered = data.filter((x: Entry) => {
     return x?.parent_author === parent?.author && x?.parent_permlink === parent?.permlink;
@@ -56,9 +58,11 @@ const CommentList = ({
               key={`${comment.post_id}-item-${comment.depth}-index-${index}`}
               parent_depth={parent_depth}
               mutedList={mutedList}
+              flagText={flagText}
             />
             {comment.children > 0 ? (
               <CommentList
+                flagText={flagText}
                 highestAuthor={highestAuthor}
                 highestPermlink={highestPermlink}
                 permissionToMute={permissionToMute}

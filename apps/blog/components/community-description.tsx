@@ -127,7 +127,6 @@ const CommunityDescription = ({
 
             <RendererContainer
               body={data.description}
-              className="preview-description prose-sm break-words"
               dataTestid="community-description-content"
               author=""
               communityDescription={true}

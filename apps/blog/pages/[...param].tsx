@@ -29,7 +29,7 @@ import { GetServerSideProps } from 'next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import CommunitiesMybar from '../components/communities-mybar';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
-import { getServerSidePropsDefault } from '../lib/get-translations';
+import { getDefaultProps } from '../lib/get-translations';
 
 export const PostSkeleton = () => {
   return (
@@ -306,7 +306,7 @@ const ParamPage: FC = () => {
                 })
               ) : (
                 <div
-                  className="bg-card-noContent border-card-empty-border mt-12 border-2 border-solid px-4 py-6 text-sm"
+                  className="border-card-empty-border mt-12 border-2 border-solid bg-card-noContent px-4 py-6 text-sm"
                   data-testid="user-has-not-started-blogging-yet"
                 >
                   {t('user_profile.no_blogging_yet', { username: username })}
@@ -342,4 +342,4 @@ const ParamPage: FC = () => {
 
 export default ParamPage;
 
-export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
+export const getServerSideProps: GetServerSideProps = getDefaultProps;

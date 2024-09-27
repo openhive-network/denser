@@ -30,6 +30,7 @@ import { handleError } from '@ui/lib/utils';
 import { CircleSpinner } from 'react-spinners-kit';
 import MutePostDialog from './mute-post-dialog';
 import ChangeTitleDialog from './change-title-dialog';
+import { AlertDialogFlag } from './alert-window-flag';
 interface CommentListProps {
   permissionToMute: Boolean;
   comment: Entry;
@@ -37,7 +38,10 @@ interface CommentListProps {
   mutedList: IFollowList[];
   parentPermlink: string;
   parentAuthor: string;
+  flagText: string | undefined;
 }
+export const commentClassName =
+  'font-sanspro text-[12.5px] prose-h1:text-[20px] prose-h2:text-[17.5px] prose-h4:text-[13.7px] sm:text-[13.4px] sm:prose-h1:text-[21.5px] sm:prose-h2:text-[18.7px] sm:prose-h3:text-[16px]  sm:prose-h4:text-[14.7px] lg:text-[14.6px] lg:prose-h1:text-[23.3px] lg:prose-h2:text-[20.4px] lg:prose-h3:text-[17.5px] lg:prose-h4:text-[16px] prose-h3:text-[15px] prose-p:mb-[9.6px] prose-p:mt-[1.6px] last:prose-p:mb-[3.2px] prose-img:max-w-[400px] prose-img:max-h-[400px]';
 
 const CommentListItem = ({
   permissionToMute,
@@ -45,7 +49,8 @@ const CommentListItem = ({
   parent_depth,
   mutedList,
   parentPermlink,
-  parentAuthor
+  parentAuthor,
+  flagText
 }: CommentListProps) => {
   const { t } = useTranslation('common_blog');
   const username = comment.author;
@@ -122,14 +127,14 @@ const CommentListItem = ({
               })}
             >
               <Accordion type="single" collapsible value={openState}>
-                <AccordionItem className="p-0" value="item-1">
-                  <CardHeader className="px-1 py-0">
+                <AccordionItem className="flex w-full flex-col p-0" value="item-1">
+                  <CardHeader className="px-0 py-0">
                     <div className="flex w-full justify-between">
                       <div
-                        className="flex w-full flex-col sm:flex-row sm:items-center"
+                        className="flex w-full flex-col justify-start sm:flex-row sm:items-center"
                         data-testid="comment-card-header"
                       >
-                        <div className="flex items-center justify-between text-xs sm:text-sm">
+                        <div className="flex w-full items-center justify-between text-xs sm:text-sm">
                           <div className="my-1 flex items-center">
                             <img
                               className=" h-[20px] w-[20px] rounded-3xl sm:hidden"
@@ -185,28 +190,54 @@ const CommentListItem = ({
                             </Link>
                           </div>
                           {!hiddenComment ? (
-                            <AccordionTrigger
-                              className="pb-0 pt-1 !no-underline sm:hidden"
-                              onClick={() => setOpenState((prev) => (prev === 'item-1' ? '' : 'item-1'))}
-                            />
+                            <div className="flex items-center">
+                              {flagText && comment.community ? (
+                                <AlertDialogFlag
+                                  community={comment.community}
+                                  username={username}
+                                  permlink={comment.permlink}
+                                  flagText={flagText}
+                                >
+                                  <Icons.flag className="m-2 h-4 w-4 cursor-pointer hover:text-destructive" />
+                                </AlertDialogFlag>
+                              ) : null}
+                              <AccordionTrigger
+                                className="pb-0 pt-1 !no-underline sm:hidden"
+                                onClick={() => setOpenState((prev) => (prev === 'item-1' ? '' : 'item-1'))}
+                              />
+                            </div>
                           ) : null}
                         </div>
                         {!hiddenComment && comment.stats?.gray && openState ? (
                           <span className="ml-4 text-xs">{t('cards.comment_card.will_be_hidden')}</span>
                         ) : null}
+
                         {hiddenComment ? (
-                          <AccordionTrigger
-                            className="pb-0 pt-1 !no-underline "
-                            onClick={() => setOpenState((prev) => (prev === 'item-1' ? '' : 'item-1'))}
-                          >
-                            <span
-                              className="ml-4 cursor-pointer text-xs sm:text-sm"
-                              onClick={() => setHiddenComment(false)}
+                          <div className="flex w-full justify-between">
+                            <AccordionTrigger
+                              className="pb-0 pt-1 !no-underline "
+                              onClick={() => setOpenState((prev) => (prev === 'item-1' ? '' : 'item-1'))}
                             >
-                              {t('cards.comment_card.reveal_comment')}{' '}
-                            </span>
-                          </AccordionTrigger>
+                              <span
+                                className="ml-4 cursor-pointer text-xs sm:text-sm"
+                                onClick={() => setHiddenComment(false)}
+                              >
+                                {t('cards.comment_card.reveal_comment')}{' '}
+                              </span>
+                            </AccordionTrigger>
+                            {flagText && comment.community ? (
+                              <AlertDialogFlag
+                                community={comment.community}
+                                username={username}
+                                permlink={comment.permlink}
+                                flagText={flagText}
+                              >
+                                <Icons.flag className="m-2 h-4 w-4 cursor-pointer hover:text-destructive" />
+                              </AlertDialogFlag>
+                            ) : null}
+                          </div>
                         ) : null}
+
                         {!openState ? (
                           <div
                             className="ml-4 flex h-5 items-center gap-2 text-xs sm:text-sm"
@@ -245,9 +276,9 @@ const CommentListItem = ({
                       ) : null}
                     </div>
                   </CardHeader>
-                  <AccordionContent className="py-0">
+                  <AccordionContent className="h-fit p-0">
                     <Separator orientation="horizontal" />
-                    <CardContent className="px-2 py-1 hover:bg-background-tertiary">
+                    <CardContent className="h-fit px-[5px] py-[1px] hover:bg-background-tertiary">
                       {legalBlockedUser ? (
                         <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
                       ) : userFromDMCA ? (
@@ -263,14 +294,11 @@ const CommentListItem = ({
                           comment={comment}
                         />
                       ) : (
-                        <CardDescription
-                          className="prose flex max-w-full break-words"
-                          data-testid="comment-card-description"
-                        >
+                        <CardDescription data-testid="comment-card-description">
                           <RendererContainer
                             body={comment.body}
                             author={comment.author}
-                            className="text-primary"
+                            className={commentClassName}
                           />
                         </CardDescription>
                       )}
@@ -347,17 +375,6 @@ const CommentListItem = ({
                             </button>
                           </>
                         ) : null}
-                        {permissionToMute ? (
-                          <MutePostDialog
-                            comment={true}
-                            community={comment.community ?? ''}
-                            username={comment.author}
-                            permlink={comment.permlink}
-                            contentMuted={comment.stats?.gray ?? false}
-                            discussionPermlink={parentPermlink}
-                            discussionAuthor={parentAuthor}
-                          />
-                        ) : null}
                         {comment.replies.length === 0 &&
                         user.isLoggedIn &&
                         comment.author === user.username &&
@@ -382,6 +399,17 @@ const CommentListItem = ({
                               </button>
                             </CommentDeleteDialog>
                           </>
+                        ) : null}
+                        {permissionToMute ? (
+                          <MutePostDialog
+                            comment={true}
+                            community={comment.community ?? ''}
+                            username={comment.author}
+                            permlink={comment.permlink}
+                            contentMuted={comment.stats?.gray ?? false}
+                            discussionPermlink={parentPermlink}
+                            discussionAuthor={parentAuthor}
+                          />
                         ) : null}
                       </div>
                     </CardFooter>

@@ -36,6 +36,7 @@ import RendererContainer from './rendererContainer';
 import { usePostMutation } from './hooks/use-post-mutation';
 import { handleError } from '@ui/lib/utils';
 import { CircleSpinner } from 'react-spinners-kit';
+import { postClassName } from '../pages/[param]/[p2]/[permlink]';
 
 const logger = getLogger('app');
 
@@ -361,6 +362,7 @@ export default function PostForm({
                   <FormControl>
                     <>
                       <MdEditor
+                        windowheight={500}
                         htmlMode={editMode}
                         onChange={(value) => {
                           form.setValue('postArea', value);
@@ -562,13 +564,8 @@ export default function PostForm({
               <span className="text-sm text-destructive">{t('submit_page.markdown_styling_guide')}</span>
             </Link>
           </div>
-
           {previewContent ? (
-            <RendererContainer
-              body={previewContent}
-              className="prose w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2 dark:prose-invert"
-              author=""
-            />
+            <RendererContainer body={previewContent} author="" className={postClassName + ' border-2 border-border p-2 break-words w-full min-w-full self-center overflow-y-scroll'} />
           ) : null}
         </div>
       </div>

@@ -13,9 +13,9 @@ import { useRouter } from 'next/router';
 import { useState, KeyboardEvent } from 'react';
 import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
-import { getServerSidePropsDefault } from '../lib/get-translations';
+import { getDefaultProps } from '../lib/get-translations';
 
-export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
+export const getServerSideProps: GetServerSideProps = getDefaultProps;
 
 export default function SearchPage() {
   const router = useRouter();

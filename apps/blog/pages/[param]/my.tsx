@@ -22,9 +22,9 @@ import Link from 'next/link';
 const CommunitiesSidebar = dynamic(() => import('@/blog/components/communities-sidebar'), { ssr: false });
 const CommunitiesMybar = dynamic(() => import('@/blog/components/communities-mybar'), { ssr: false });
 const ExploreHive = dynamic(() => import('@/blog/components/explore-hive'), { ssr: false });
-import { getServerSidePropsDefault } from '../../lib/get-translations';
+import { getDefaultProps } from '../../lib/get-translations';
 
-export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
+export const getServerSideProps: GetServerSideProps = getDefaultProps;
 
 export const PostSkeleton = () => {
   return (
@@ -137,7 +137,7 @@ const MyPage: FC = () => {
               ) : (
                 <div
                   key="empty"
-                  className="bg-card-noContent border-card-empty-border flex flex-col gap-6 border-2 border-solid px-4 py-6 text-sm"
+                  className="border-card-empty-border flex flex-col gap-6 border-2 border-solid bg-card-noContent px-4 py-6 text-sm"
                 >
                   <span>You haven&apos;t joined any active communities yet!</span>
                   <Link className="text-xl text-destructive" href="../communities">
