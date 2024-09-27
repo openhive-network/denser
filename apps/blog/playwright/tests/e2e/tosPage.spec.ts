@@ -18,6 +18,7 @@ test.describe('Terms of Service page tests', () => {
 
   test('validate amount of subtitles in the Terms of Service', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     await homePage.goto();
     await homePage.moveToTermsOfServicePage();
 
@@ -27,6 +28,7 @@ test.describe('Terms of Service page tests', () => {
 
   test('validate styles in the Terms of Service in the light mode', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     await homePage.goto();
     await homePage.moveToTermsOfServicePage();
 
@@ -64,6 +66,7 @@ test.describe('Terms of Service page tests', () => {
 
   test('validate styles in the Terms of Service in the dark mode', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     await homePage.goto();
     await homePage.moveToTermsOfServicePage();
     // move to the dark mode

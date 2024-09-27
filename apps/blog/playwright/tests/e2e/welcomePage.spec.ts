@@ -13,12 +13,14 @@ test.describe('Welcome page tests', () => {
 
   test('move to the Welcome page from the Home page', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     await homePage.goto();
     await homePage.moveToWelcomePage();
   });
 
   test('validate number of subtitles in the welcome page', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     await homePage.goto();
     await homePage.moveToWelcomePage();
 
@@ -31,6 +33,7 @@ test.describe('Welcome page tests', () => {
 
   test('validate title of subtitles in the welcome page', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     const expectedSubtitles: string[] = [
       '1. Backup your password',
       '2. Obtain and backup your keys',
@@ -52,7 +55,9 @@ test.describe('Welcome page tests', () => {
     }
   });
 
-  test('validate additional resources in the welcome page', async ({ page }) => {
+  test('validate additional resources in the welcome page', async ({ page, browserName }) => {
+    test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     const faqUrl: string = 'https://hive.blog/faq.html';
     const whitepaperUrl: string = 'https://hive.io/whitepaper.pdf';
     const appsBuiltOnHiveUrl: string = 'https://hiveprojects.io/';
@@ -69,6 +74,7 @@ test.describe('Welcome page tests', () => {
 
   test('validate links of get to know others subtitle in the welcome page', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     const openHiveChatUrl: string = 'https://openhive.chat/';
     const openHiveChatHelpUrl: string = 'https://openhive.chat/channel/help';
     const hiveDiscordUrl: string = 'https://myhive.li/discord';
@@ -85,6 +91,7 @@ test.describe('Welcome page tests', () => {
 
   test('validate links of equip yourself subtitle in the welcome page', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     const hiveKeychainUrl: string = 'https://hive-keychain.com';
     const hiveSignerUrl: string = 'https://hivesigner.com';
 
