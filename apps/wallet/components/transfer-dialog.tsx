@@ -32,6 +32,9 @@ type Amount = {
   savingsHbd: string;
 };
 
+const ASSET_PRECISION = 3;
+const VEST_PRECISION = 6;
+
 export function TransferDialog({
   children,
   type,
@@ -78,11 +81,17 @@ export function TransferDialog({
   const getAsset = useCallback(
     async (value: string) => {
       const chain = await hiveChainService.getHiveChain();
-      const amount = Number(value) * 1000;
+      const amount = (Number(value) * 10) ^ ASSET_PRECISION;
       return curr === 'hive' ? chain.hive(amount) : chain.hbd(amount);
     },
     [curr]
   );
+
+  const getVests = useCallback(async (value: string) => {
+    const chain = await hiveChainService.getHiveChain();
+    const amount = (Number(value) * 10) ^ VEST_PRECISION;
+    return chain.vests(amount);
+  }, []);
 
   switch (type) {
     case 'transfers':
@@ -149,7 +158,7 @@ export function TransferDialog({
       data.description = '';
       data.buttonTitle = 'Power Down';
       data.onSubmit = async () => {
-        const params = { account: username, vestingShares: await getAsset(value) };
+        const params = { account: username, vestingShares: await getVests(value) };
         try {
           await powerDownMutation.mutateAsync(params);
         } catch (error) {
@@ -163,7 +172,8 @@ export function TransferDialog({
       data.description = '';
       data.amount = amount.hp;
       data.onSubmit = async () => {
-        const params = { delegator: username, delegatee: data.to, vestingShares: await getAsset(value) };
+        const params = { delegator: username, delegatee: data.to, vestingShares: await getVests(value) };
+        console.log(params);
         try {
           await delegateMutation.mutateAsync(params);
         } catch (error) {
