@@ -90,7 +90,7 @@ export const onImageUpload = async (
     if (!insertHTML) return;
     setMarkdown(insertHTML);
   } else {
-    const insertedMarkdown = insertToTextArea(`**![${file.name}](${url})** `);
+    const insertedMarkdown = insertToTextArea(` ![${file.name}](${url}) `);
     if (!insertedMarkdown) return;
     setMarkdown(insertedMarkdown);
   }
