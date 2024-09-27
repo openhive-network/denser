@@ -65,11 +65,13 @@ const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), 
 function PostPage({
   community,
   username,
-  permlink
+  permlink,
+  mutedStatus
 }: {
   community: string;
   username: string;
   permlink: string;
+  mutedStatus: boolean;
 }) {
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
@@ -82,12 +84,10 @@ function PostPage({
 
   const {
     isLoading: isLoadingPost,
-    isRefetching: isRefetchingPost,
     error: errorPost,
     data: post
   } = useQuery(['postData', username, permlink], () => getPost(username, String(permlink)), {
     enabled: !!username && !!permlink,
-    onSuccess: (post) => setMutedPost(!!post?.stats?.gray)
   });
 
   const {
@@ -202,7 +202,7 @@ function PostPage({
   }, [discussion, router.query.sort]);
 
   const commentSite = post?.depth !== 0 ? true : false;
-  const [mutedPost, setMutedPost] = useState<boolean | undefined>(undefined);
+  const [mutedPost, setMutedPost] = useState<boolean>(mutedStatus);
   const generateUrls = () => {
     if (!discussionState || discussionState.length === 0) return null;
 
@@ -238,7 +238,7 @@ function PostPage({
               <Icons.flag className="absolute right-0 m-2 cursor-pointer hover:text-destructive" />
             </AlertDialogFlag>
           ) : null}
-          {!isLoadingPost && !isRefetchingPost && post ? (
+          {!isLoadingPost && post ? (
             <div>
               {!commentSite ? (
                 <h1
@@ -286,8 +286,8 @@ function PostPage({
                 created={post.created}
                 blacklist={firstPost ? firstPost.blacklists : post.blacklists}
               />
-              {mutedPost === undefined || isLoadingPost  || isRefetchingPost ? (
-                <Loading loading={mutedPost === undefined || isLoadingPost || isRefetchingPost} />
+              {isLoadingPost ? (
+                <Loading loading={isLoadingPost} />
               ) : edit ? (
                 <PostForm
                   username={username}
@@ -600,10 +600,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       getPost(username, String(permlink))
     );
   }
-
+const mutedStatus = await getPost(username, String(permlink)).then((res) => res?.stats?.gray ?? false);
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
+      mutedStatus,
       community,
       username,
       permlink,
