@@ -55,14 +55,14 @@ pnpm run start:auth
 To run tests use the following commands:
 
 ```bash
-npm run all:pw:test:local
+pnpm run all:pw:test:local
 ```
 
 You can run the test for only the blog or only the wallet apps using one of the following commands:
 
 ```bash
-npm run blog:pw:test:local
-npm run wallet:pw:test:local
+pnpm run blog:pw:test:local
+pnpm run wallet:pw:test:local
 ```
 
 ## Dockerisation
