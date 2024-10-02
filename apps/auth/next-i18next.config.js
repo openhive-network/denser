@@ -5,6 +5,7 @@ const i18nConfig = {
     defaultNS: 'common',
     defaultLocale: 'en',
     locales: [
+      'ar',
       'en',
       'es',
       'fr',

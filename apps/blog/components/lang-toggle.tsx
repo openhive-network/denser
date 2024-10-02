@@ -22,6 +22,7 @@ export default function LangToggle({ logged }: { logged: Boolean }) {
   }, []);
 
   const languages = [
+    { locale: 'ar', label: 'عر' },
     { locale: 'en', label: '🇬🇧' },
     { locale: 'es', label: '🇪🇸' },
     { locale: 'fr', label: '🇫🇷' },
