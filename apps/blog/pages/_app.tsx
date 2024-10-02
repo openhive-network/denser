@@ -32,13 +32,4 @@ function App({ Component, pageProps }: AppProps) {
   );
 }
 
-App.getInitiaProps = async () => {
- 
-  return {
-    pageProps: {
-      lang: getCookie('NEXT_LOCALE'),
-    },
-  };
-};
-
 export default appWithTranslation(App, i18nConfig);
