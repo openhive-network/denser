@@ -34,6 +34,11 @@ export class LoginForm {
   readonly wifInputErrorMessage: Locator;
   readonly passwordErrorMessageEnterYourWifKey: Locator;
 
+  readonly headerEnterYourPassword: Locator;
+  readonly passwordToUnlockKeyInput: Locator;
+  readonly passwordToUnlockKeySubmitButton: Locator;
+  readonly passwordToUnlockKeyResetButton: Locator;
+
   constructor(page: Page) {
     this.page = page;
     this.loginDialog = page.getByTestId('login-dialog');
@@ -68,6 +73,11 @@ export class LoginForm {
     this.passwordErrorMessage = page.getByTestId('password-error-message');
     this.wifInputErrorMessage = page.getByTestId('wif-input-error-message');
     this.passwordErrorMessageEnterYourWifKey = page.getByTestId('password-form-error-message');
+
+    this.headerEnterYourPassword = page.getByText('Enter your password');
+    this.passwordToUnlockKeyInput = page.getByTestId('posting-private-key-input');
+    this.passwordToUnlockKeySubmitButton = page.getByTestId('password-submit-button');
+    this.passwordToUnlockKeyResetButton = page.getByTestId('password-reset-button');
   }
 
   async validateDefaultLoginFormIsLoaded() {
@@ -119,6 +129,14 @@ export class LoginForm {
     await expect(this.storeKeyCheckbox).not.toBeChecked();
     await expect(this.postingPrivateKeySubmitButton).toBeVisible();
     await expect(this.postingPrivateKeyResetButton).toBeVisible();
+  }
+
+  async validateEnterYourPasswordToUnlockKeyIsLoaded() {
+    await this.page.waitForSelector(this.loginFormDescription['_selector']);
+    await expect(this.headerEnterYourPassword).toHaveText('Enter your password');
+    await expect(this.passwordToUnlockKeyInput).toHaveAttribute('placeholder', 'Password to unlock key');
+    await expect(this.passwordToUnlockKeySubmitButton).toBeVisible();
+    await expect(this.passwordToUnlockKeyResetButton).toBeVisible();
   }
 
   async closeLoginForm() {

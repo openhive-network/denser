@@ -1,5 +1,3 @@
-require('dotenv').config({ path: '../../../.env.local' });
-
 export const users = {
   denserautotest0: {
     username: 'denserautotest0',
@@ -56,4 +54,3 @@ export const users = {
     }
   }
 }
-
