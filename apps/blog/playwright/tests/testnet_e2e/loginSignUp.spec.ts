@@ -24,8 +24,6 @@ test.describe('Login and Sign Up tests', () =>{
     // Sign In
     await loginFormDefaut.usernameInput.fill(users.denserautotest1.username);
     await loginFormDefaut.passwordInput.fill(users.denserautotest1.safeStoragePassword);
-    await console.log('111 ', users.denserautotest1.keys.private_posting);
-
     await loginFormDefaut.wifInput.fill(users.denserautotest1.keys.private_posting); // Posting Key
     await loginFormDefaut.saveSignInButton.click();
     await homePage.profileAvatarButton.click();
@@ -35,7 +33,7 @@ test.describe('Login and Sign Up tests', () =>{
     await profileMenu.validateUserNameInProfileMenu(users.denserautotest2.username);
   });
 
-  test('Sign In to the Denser App 2', async ({page}) =>{
+  test('Sign In to the Denser App by another user', async ({page}) =>{
     const loginFormDefaut = new LoginForm(page);
     const profileMenu = new ProfileUserMenu(page);
 
@@ -44,8 +42,6 @@ test.describe('Login and Sign Up tests', () =>{
     // Sign In
     await loginFormDefaut.usernameInput.fill(users.denserautotest2.username);
     await loginFormDefaut.passwordInput.fill(users.denserautotest2.safeStoragePassword);
-    await console.log('222 ', users.denserautotest2.keys.private_posting);
-
     await loginFormDefaut.wifInput.fill(users.denserautotest2.keys.private_posting); // Posting Key
     await loginFormDefaut.saveSignInButton.click();
     await homePage.profileAvatarButton.click();
@@ -55,29 +51,90 @@ test.describe('Login and Sign Up tests', () =>{
     await profileMenu.validateUserNameInProfileMenu(users.denserautotest3.username);
   });
 
-  test('Sign In to the Denser App  and upvote first post', async ({page}) =>{
-    const loginFormDefaut = new LoginForm(page);
-    const profileMenu = new ProfileUserMenu(page);
+  test.describe.serial('Upvote group', () => {
 
-    await homePage.loginBtn.click()
-    await loginFormDefaut.validateDefaultLoginFormIsLoaded();
-    // Sign In
-    await loginFormDefaut.usernameInput.fill(users.denserautotest2.username);
-    await loginFormDefaut.passwordInput.fill(users.denserautotest2.safeStoragePassword);
-    await console.log('222 ', users.denserautotest2.keys.private_posting);
+    test('Upvote the first post of the tranding list', async ({page}) =>{
+      const loginFormDefaut = new LoginForm(page);
+      const profileMenu = new ProfileUserMenu(page);
 
-    await loginFormDefaut.wifInput.fill(users.denserautotest2.keys.private_posting); // Posting Key
-    await loginFormDefaut.saveSignInButton.click();
-    await homePage.profileAvatarButton.click();
-    // Validate User is logged in
-    await page.waitForSelector(profileMenu.profileMenuContent['_selector']);
-    await profileMenu.validateUserProfileManuIsOpen();
-    await profileMenu.validateUserNameInProfileMenu(users.denserautotest2.username);
+      await homePage.loginBtn.click()
+      await loginFormDefaut.validateDefaultLoginFormIsLoaded();
+      // Sign In
+      await loginFormDefaut.usernameInput.fill(users.denserautotest4.username);
+      await loginFormDefaut.passwordInput.fill(users.denserautotest4.safeStoragePassword);
+      await loginFormDefaut.wifInput.fill(users.denserautotest4.keys.private_posting); // Posting Key
+      await loginFormDefaut.saveSignInButton.click();
+      await homePage.profileAvatarButton.click();
+      // Validate User is logged in
+      await page.waitForSelector(profileMenu.profileMenuContent['_selector']);
+      await profileMenu.validateUserProfileManuIsOpen();
+      await profileMenu.validateUserNameInProfileMenu(users.denserautotest4.username);
+      // Click to close the profile menu
+      await page.getByTestId('community-name').locator('..').locator('..').click({force: true});
+      // Validate that Upvote button of the first color red
+      const firstPostUpvoteButtonLocator = page.getByTestId('post-list-item').first().getByTestId('upvote-button').locator('svg');
+      const firstPostUpvoteButtonLocatorToClick = page.getByTestId('post-list-item').first().getByTestId('upvote-button');
+      // console.log('1 first upvote color: ', await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color'));
+      // console.log('1 first upvote bg: ', await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'background-color'));
+      expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color')).toBe('rgb(255, 0, 0)');
+      expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'background-color')).toBe('rgba(0, 0, 0, 0)');
+      // Click Upvote button of the first post on the trending list
+      await firstPostUpvoteButtonLocatorToClick.click();
+      // If a password to unlock key is needed
+      if (await loginFormDefaut.enterYourPasswordForm.isVisible()) {
+        await loginFormDefaut.passwordToUnlockKeyInput.fill(users.denserautotest4.safeStoragePassword);
+        await loginFormDefaut.passwordToUnlockKeySubmitButton.click();
+        console.log('denserautotest4 ', users.denserautotest4.safeStoragePassword)
+      }
+      // Wait until optimistic ui is finished and validate the color of the upvote button
+      await firstPostUpvoteButtonLocator.waitFor({state: 'visible'});
+      // console.log('2 first upvote color: ', await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color'));
+      // console.log('2 first upvote bg: ', await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'background-color'));
+      expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color')).toBe('rgb(255, 255, 255)');
+      expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'background-color')).toBe('rgb(255, 0, 0)');
+    });
 
-    //
-    await homePage.getUpvoteButton.first().click();
-    await loginFormDefaut.validateDefaultLoginFormIsLoaded();
-    await loginFormDefaut.passwordToUnlockKeyInput.fill(users.denserautotest2.safeStoragePassword);
-    await loginFormDefaut.passwordToUnlockKeySubmitButton.click();
+    test('Upvote the first post of the tranding list again', async ({page}) =>{
+      const loginFormDefaut = new LoginForm(page);
+      const profileMenu = new ProfileUserMenu(page);
+
+      await homePage.loginBtn.click()
+      await loginFormDefaut.validateDefaultLoginFormIsLoaded();
+      // Sign In
+      await loginFormDefaut.usernameInput.fill(users.denserautotest4.username);
+      await loginFormDefaut.passwordInput.fill(users.denserautotest4.safeStoragePassword);
+      await loginFormDefaut.wifInput.fill(users.denserautotest4.keys.private_posting); // Posting Key
+      await loginFormDefaut.saveSignInButton.click();
+      await homePage.profileAvatarButton.click();
+      // Validate User is logged in
+      await page.waitForSelector(profileMenu.profileMenuContent['_selector']);
+      await profileMenu.validateUserProfileManuIsOpen();
+      await profileMenu.validateUserNameInProfileMenu(users.denserautotest4.username);
+      // Click to close the profile menu
+      await page.getByTestId('community-name').locator('..').locator('..').click({force: true});
+      // Validate that Upvote button of the first color red
+      const firstPostUpvoteButtonLocator = page.getByTestId('post-list-item').first().getByTestId('upvote-button').locator('svg');
+      const firstPostUpvoteButtonLocatorToClick = page.getByTestId('post-list-item').first().getByTestId('upvote-button');
+      // console.log('1 first upvote color: ', await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color'));
+      // console.log('1 first upvote bg: ', await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'background-color'));
+      expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color')).toBe('rgb(255, 255, 255)');
+      expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'background-color')).toBe('rgb(255, 0, 0)');
+      // Click Upvote button of the first post on the trending list
+      await firstPostUpvoteButtonLocatorToClick.click({force: true});
+      // If a password to unlock key is needed
+      if (await loginFormDefaut.enterYourPasswordForm.isVisible()) {
+        await loginFormDefaut.passwordToUnlockKeyInput.fill(users.denserautotest4.safeStoragePassword);
+        await loginFormDefaut.passwordToUnlockKeySubmitButton.click();
+        console.log('denserautotest4 ', users.denserautotest4.safeStoragePassword)
+      }
+      // Wait until optimistic ui is finished and validate the color of the upvote button
+      await firstPostUpvoteButtonLocator.waitFor({state: 'visible'});
+      // Move pointer from the upvote icon
+      await page.getByTestId('community-name').locator('..').locator('..').click({force: true});
+      // console.log('2 first upvote color: ', await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color'));
+      // console.log('2 first upvote bg: ', await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'background-color'));
+      expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color')).toBe('rgb(255, 0, 0)');
+      expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'background-color')).toBe('rgba(0, 0, 0, 0)');
+    });
   });
 });

@@ -34,6 +34,7 @@ export class LoginForm {
   readonly wifInputErrorMessage: Locator;
   readonly passwordErrorMessageEnterYourWifKey: Locator;
 
+  readonly enterYourPasswordForm: Locator;
   readonly headerEnterYourPassword: Locator;
   readonly passwordToUnlockKeyInput: Locator;
   readonly passwordToUnlockKeySubmitButton: Locator;
@@ -74,6 +75,7 @@ export class LoginForm {
     this.wifInputErrorMessage = page.getByTestId('wif-input-error-message');
     this.passwordErrorMessageEnterYourWifKey = page.getByTestId('password-form-error-message');
 
+    this.enterYourPasswordForm = page.getByTestId('enter-password-to-unlock-key');
     this.headerEnterYourPassword = page.getByText('Enter your password');
     this.passwordToUnlockKeyInput = page.getByTestId('posting-private-key-input');
     this.passwordToUnlockKeySubmitButton = page.getByTestId('password-submit-button');
