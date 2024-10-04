@@ -32,8 +32,8 @@ type Amount = {
   savingsHbd: string;
 };
 
-const ASSET_PRECISION = 3;
-const VEST_PRECISION = 6;
+const ASSET_PRECISION = 1000;
+const VEST_PRECISION = 1000000;
 
 export function TransferDialog({
   children,
@@ -81,7 +81,7 @@ export function TransferDialog({
   const getAsset = useCallback(
     async (value: string) => {
       const chain = await hiveChainService.getHiveChain();
-      const amount = (Number(value) * 10) ^ ASSET_PRECISION;
+      const amount = Number(value) * ASSET_PRECISION;
       return curr === 'hive' ? chain.hive(amount) : chain.hbd(amount);
     },
     [curr]
@@ -89,7 +89,7 @@ export function TransferDialog({
 
   const getVests = useCallback(async (value: string) => {
     const chain = await hiveChainService.getHiveChain();
-    const amount = (Number(value) * 10) ^ VEST_PRECISION;
+    const amount = Number(value) * VEST_PRECISION;
     return chain.vests(amount);
   }, []);
 
@@ -228,9 +228,9 @@ export function TransferDialog({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <span className="w-full cursor-pointer px-2 py-1.5 text-sm hover:bg-background-tertiary hover:text-primary">
+        <div className="w-full cursor-pointer px-2 py-1.5 text-sm hover:bg-background-tertiary hover:text-primary">
           {children}
-        </span>
+        </div>
       </DialogTrigger>
       <DialogContent className="text-left sm:max-w-[425px]">
         <DialogHeader>
