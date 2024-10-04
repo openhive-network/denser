@@ -23,6 +23,8 @@ import { usePowerDownMutation, usePowerUpMutation } from './hooks/use-power-hive
 import { useDelegateMutation } from './hooks/use-delegate-mutation';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { handleError } from '@ui/lib/utils';
+import { useQueryClient } from '@tanstack/react-query';
+import { TransactionBroadcastResult } from '@transaction/index';
 
 type Amount = {
   hive: string;
@@ -78,6 +80,29 @@ export function TransferDialog({
   const delegateMutation = useDelegateMutation();
   const withdrawFromSavingsMutation = useWithdrawFromSavingsMutation();
 
+  const queryClient = useQueryClient();
+
+  const invalidateData = useCallback(() => {
+    // invalidate queries after transaction success
+    queryClient.invalidateQueries({ queryKey: ['accountData'] });
+  }, [queryClient]);
+
+  const transfersTransaction = useCallback(
+    async <T,>(
+      method: string,
+      params: T,
+      transaction: (params: T) => Promise<T & { broadcastResult: TransactionBroadcastResult }>
+    ) => {
+      try {
+        await transaction(params);
+        invalidateData();
+      } catch (error) {
+        handleError(error, { method, params });
+      }
+    },
+    [invalidateData]
+  );
+
   const getAsset = useCallback(
     async (value: string) => {
       const chain = await hiveChainService.getHiveChain();
@@ -105,11 +130,7 @@ export function TransferDialog({
           memo: data.memo,
           amount: await getAsset(value)
         };
-        try {
-          transferMutation.mutateAsync(params);
-        } catch (error) {
-          handleError(error, { method: 'transfer', params });
-        }
+        transfersTransaction('transfer', params, transferMutation.mutateAsync);
       };
       break;
 
@@ -126,11 +147,7 @@ export function TransferDialog({
           toAccount: data.to,
           memo: data.memo
         };
-        try {
-          await transferToSavingsMutation.mutateAsync(params);
-        } catch (error) {
-          handleError(error, { method: 'transferToSavings', params });
-        }
+        transfersTransaction('transferToSavings', params, transferToSavingsMutation.mutateAsync);
       };
       break;
 
@@ -145,11 +162,7 @@ export function TransferDialog({
       data.buttonTitle = 'Power Up';
       data.onSubmit = async () => {
         const params = { account: username, amount: await getAsset(value) };
-        try {
-          await powerUpMutation.mutateAsync(params);
-        } catch (error) {
-          handleError(error, { method: 'powerUp', params });
-        }
+        transfersTransaction('powerUp', params, powerUpMutation.mutateAsync);
       };
       break;
 
@@ -159,11 +172,7 @@ export function TransferDialog({
       data.buttonTitle = 'Power Down';
       data.onSubmit = async () => {
         const params = { account: username, vestingShares: await getVests(value) };
-        try {
-          await powerDownMutation.mutateAsync(params);
-        } catch (error) {
-          handleError(error, { method: 'powerDown', params });
-        }
+        transfersTransaction('powerDown', params, powerDownMutation.mutateAsync);
       };
       break;
 
@@ -173,12 +182,7 @@ export function TransferDialog({
       data.amount = amount.hp;
       data.onSubmit = async () => {
         const params = { delegator: username, delegatee: data.to, vestingShares: await getVests(value) };
-        console.log(params);
-        try {
-          await delegateMutation.mutateAsync(params);
-        } catch (error) {
-          handleError(error, { method: 'delegate', params });
-        }
+        transfersTransaction('delegate', params, delegateMutation.mutateAsync);
       };
       break;
 
@@ -195,11 +199,7 @@ export function TransferDialog({
           memo: data.memo,
           amount: await getAsset(value)
         };
-        try {
-          await withdrawFromSavingsMutation.mutateAsync(params);
-        } catch (error) {
-          handleError(error, { method: 'withdrawHive', params });
-        }
+        transfersTransaction('withdrawHive', params, withdrawFromSavingsMutation.mutateAsync);
       };
       break;
 
@@ -216,11 +216,7 @@ export function TransferDialog({
           memo: data.memo,
           amount: await getAsset(value)
         };
-        try {
-          await withdrawFromSavingsMutation.mutateAsync(params);
-        } catch (error) {
-          handleError(error, { method: 'withdrawHiveDollars', params });
-        }
+        transfersTransaction('withdrawHiveDollars', params, withdrawFromSavingsMutation.mutateAsync);
       };
       break;
   }
