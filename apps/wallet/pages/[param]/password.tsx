@@ -48,6 +48,8 @@ export default function PostForm() {
   const changePasswordMutation = useChangePasswordMutation();
 
   const form = useForm<AccountFormValues>({
+    mode: 'onSubmit',
+    reValidateMode: 'onSubmit',
     resolver: zodResolver(accountFormSchema),
     defaultValues: {
       name: username,
@@ -83,7 +85,7 @@ export default function PostForm() {
     const wax = await createWaxFoundation();
     // generate password
     const brainKeyData = wax.suggestBrainKey();
-    const passwordToBeSavedByUser = brainKeyData.wifPrivateKey;
+    const passwordToBeSavedByUser = 'P' + brainKeyData.wifPrivateKey;
 
     // private keys for account authorities
     const newOwner = wax.getPrivateKeyFromPassword(username, 'owner', passwordToBeSavedByUser);
@@ -170,7 +172,14 @@ export default function PostForm() {
                   </div>
                 </div>
               ) : (
-                <Button className="my-1" variant="outlineRed" onClick={() => handleKey()}>
+                <Button
+                  className="my-1"
+                  variant="outlineRed"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleKey();
+                  }}
+                >
                   {t('change_password_page.click_to_generate_password')}
                 </Button>
               )}
