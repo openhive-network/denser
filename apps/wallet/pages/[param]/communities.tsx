@@ -60,7 +60,7 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
     const wax = await createWaxFoundation();
     // generate password
     const brainKeyData = wax.suggestBrainKey();
-    const passwordToBeSavedByUser = brainKeyData.wifPrivateKey;
+    const passwordToBeSavedByUser = 'P' + brainKeyData.wifPrivateKey;
     setGeneratedPassword(passwordToBeSavedByUser);
 
     // private keys for account authorities
