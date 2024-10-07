@@ -274,6 +274,7 @@ test.describe('Translation tests', () => {
     await homePage.toggleLanguage.click();
     await expect(homePage.languageMenu.first()).toBeVisible();
     await homePage.languageMenuPl.click();
+    await postPage.page.waitForTimeout(2000);
     await expect(postPage.articleTitle).toBeVisible();
     // Validate post footer upvote and downvote buttons tooltips
     await postPage.page.waitForTimeout(3000);
