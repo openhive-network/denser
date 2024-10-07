@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-require('dotenv').config({ path: '../../stack/mirronet-stack.env' });
+require('dotenv').config({ path: '../../stack/mirrornet-stack.env' });
 require('dotenv').config({ path: '../.env.local' });
 
 /**
