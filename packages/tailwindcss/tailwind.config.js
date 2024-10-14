@@ -93,6 +93,7 @@ module.exports = {
               marginTop: '2.5rem'
             },
             a: {
+              display: 'inline',
               color: 'hsl(var(--destructive))',
               textDecoration: 'none',
               whiteSpace: 'pre-wrap',
