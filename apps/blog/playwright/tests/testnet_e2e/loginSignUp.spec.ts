@@ -3,7 +3,7 @@ import { HomePage } from '../support/pages/homePage';
 import { LoginHelper, users } from '../support/loginHelper';
 import { ProfileUserMenu } from '../support/pages/profileUserMenu';
 
-test.describe('Login and Sign Up tests', () =>{
+test.describe('Login and Sign Up tests', () => {
   let homePage: HomePage;
   let loginHelper: LoginHelper;
 
@@ -17,12 +17,8 @@ test.describe('Login and Sign Up tests', () =>{
   test.use({ storageState: 'playwright/.auth/denserautotest0.json' });
 
   test('Sign In to the Denser App by denserautotest0 from storage', async ({page}) =>{
-    let profileMenu = new ProfileUserMenu(page);
     // Validate User is logged in
-    await homePage.profileAvatarButton.click();
-    await page.waitForSelector(profileMenu.profileMenuContent['_selector']);
-    await profileMenu.validateUserProfileManuIsOpen();
-    await profileMenu.validateUserNameInProfileMenu(users.denserautotest0.username);
+    await loginHelper.validateLoggedInUser(users.denserautotest0.username);
   });
 
   test.describe('Specific login after reset storage', () => {
@@ -49,24 +45,16 @@ test.describe('Login and Sign Up tests', () =>{
   });
 
   test('Sign In to the Denser App by denserautotest0 from storage again', async ({page}) =>{
-    let profileMenu = new ProfileUserMenu(page);
     // Validate User is logged in
-    await homePage.profileAvatarButton.click();
-    await page.waitForSelector(profileMenu.profileMenuContent['_selector']);
-    await profileMenu.validateUserProfileManuIsOpen();
-    await profileMenu.validateUserNameInProfileMenu(users.denserautotest0.username);
+    await loginHelper.validateLoggedInUser(users.denserautotest0.username);
   });
 
   test.describe('Tests for denserautotest3 from storage', () => {
     // set denserautotest3 from storage
     test.use({ storageState: 'playwright/.auth/denserautotest3.json' });
     test('Sign In to the Denser App by denserautotest3 from storage', async ({page}) =>{
-      let profileMenu = new ProfileUserMenu(page);
       // Validate User is logged in
-      await homePage.profileAvatarButton.click();
-      await page.waitForSelector(profileMenu.profileMenuContent['_selector']);
-      await profileMenu.validateUserProfileManuIsOpen();
-      await profileMenu.validateUserNameInProfileMenu(users.denserautotest3.username);
+      await loginHelper.validateLoggedInUser(users.denserautotest3.username);
     });
   });
 
@@ -74,21 +62,13 @@ test.describe('Login and Sign Up tests', () =>{
     // set denserautotest4 from storage
     test.use({ storageState: 'playwright/.auth/denserautotest4.json' });
     test('Sign In to the Denser App by denserautotest4 from storage', async ({page}) =>{
-      let profileMenu = new ProfileUserMenu(page);
       // Validate User is logged in
-      await homePage.profileAvatarButton.click();
-      await page.waitForSelector(profileMenu.profileMenuContent['_selector']);
-      await profileMenu.validateUserProfileManuIsOpen();
-      await profileMenu.validateUserNameInProfileMenu(users.denserautotest4.username);
+      await loginHelper.validateLoggedInUser(users.denserautotest4.username);
     });
   });
 
   test('Sign In to the Denser App by denserautotest0 from storage again again', async ({page}) =>{
-    let profileMenu = new ProfileUserMenu(page);
     // Validate User is logged in
-    await homePage.profileAvatarButton.click();
-    await page.waitForSelector(profileMenu.profileMenuContent['_selector']);
-    await profileMenu.validateUserProfileManuIsOpen();
-    await profileMenu.validateUserNameInProfileMenu(users.denserautotest0.username);
+    await loginHelper.validateLoggedInUser(users.denserautotest0.username);
   });
 });

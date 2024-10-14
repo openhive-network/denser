@@ -90,4 +90,13 @@ export class LoginHelper {
     await this.profileMenu.validateUserProfileManuIsOpen();
     await this.profileMenu.validateUserNameInProfileMenu(username);
   }
+
+  async validateLoggedInUser(username: string){
+    // Click avatar of the user
+    await this.homePage.profileAvatarButton.click();
+    // Validate User is logged in
+    await this.page.waitForSelector(this.profileMenu.profileMenuContent['_selector']);
+    await this.profileMenu.validateUserProfileManuIsOpen();
+    await this.profileMenu.validateUserNameInProfileMenu(username);
+  }
 }
