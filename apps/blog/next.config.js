@@ -1,5 +1,5 @@
 const path = require('path');
-const withTM = require('next-transpile-modules')(['@hive/smart-signer', '@hive/ui', '@hive/transaction']);
+// const withTM = require('next-transpile-modules')(['@hive/smart-signer', '@hive/ui', '@hive/transaction']);
 const CopyPlugin = require('copy-webpack-plugin');
 const removeImports = require('next-remove-imports')();
 const withPWA = require('next-pwa')({
@@ -14,6 +14,7 @@ const nextConfig = {
   experimental: {
     outputFileTracingRoot: path.join(__dirname, '../..')
   },
+  transpilePackages: ['@hive/smart-signer', '@hive/ui', '@hive/transaction'],
   async rewrites() {
     return [
       {
@@ -61,4 +62,4 @@ const nextConfig = {
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true'
 });
-module.exports = withPWA(withTM(withBundleAnalyzer(removeImports(nextConfig))));
+module.exports = withPWA(withBundleAnalyzer(removeImports(nextConfig)));
