@@ -19,7 +19,6 @@ const remarkSpoiler: Plugin = () => {
       if (!firstChild) return;
 
       firstChild.forEach((child) => {
-        console.log('child:', child);
         const value = child.value;
         if (!value.startsWith('! ')) return;
 
@@ -29,7 +28,7 @@ const remarkSpoiler: Plugin = () => {
         const summaryText = summaryMatch?.[1] || 'Reveal spoiler';
         const cleanValue = isSpoilerWithSummary ? spoilerContent.replace(spoilerRegex, '') : spoilerContent;
         const finalValue = cleanValue.replace(/\n\s*/g, '<br/>');
-        console.log('finalValue:', finalValue);
+
         node.type = 'html';
         node.value = `<details><summary>${summaryText}</summary>${finalValue}</details>`;
       });

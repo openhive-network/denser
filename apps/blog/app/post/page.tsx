@@ -15,7 +15,8 @@ import rehypeRemoveExternalScriptContent from 'rehype-remove-external-script-con
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import remarkSpoiler from '@/blog/components/renderer/remark-spoiler';
-
+import remarkInsert from 'remark-ins';
+import remarkFlexibleContainers, { type FlexibleContainerOptions } from 'remark-flexible-containers';
 import rehypeStringify from 'rehype-stringify';
 import rehypeFormat from 'rehype-format';
 import rehypeParse from 'rehype-parse';
@@ -26,27 +27,75 @@ import rehypeRemark from 'rehype-remark';
 import remarkMdx from 'remark-mdx';
 import remarkEmailsToLinks from '@/blog/components/renderer/emails-to-links';
 import recmaMdxEscapeMissingComponents from 'recma-mdx-escape-missing-components';
+import remarkFlexibleCodeTitles from 'remark-flexible-code-titles';
+import rehypeHighlightLines, { type HighlightLinesOptions } from 'rehype-highlight-code-lines';
+import rehypePreLanguage from 'rehype-pre-language';
+import recmaMdxChangeProps from 'recma-mdx-change-props';
 
+function toTitleCase(str: string | undefined) {
+  if (!str) return;
+
+  return str.replace(/\b\w+('\w{1})?/g, function (txt) {
+    return txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase();
+  });
+}
 const options: SerializeOptions = {
   mdxOptions: {
     remarkPlugins: [
+      remarkGfm,
+      remarkInsert,
       remarkSpoiler,
       remarkEmailsToLinks,
-      remarkGfm,
       remarkFlexibleMarkers,
       remarkEmoji,
       remarkFlexibleParagraphs,
+      [
+        remarkFlexibleContainers,
+        {
+          title: () => null,
+          containerTagName: 'admonition',
+          containerProperties: (type, title) => {
+            return {
+              ['data-type']: type?.toLowerCase(),
+              ['data-title']: title ?? toTitleCase(type)
+            };
+          }
+        } as FlexibleContainerOptions
+      ],
       remarkFlexibleToc,
       remarkBreaks,
       remarkImages,
-      remarkRehype
+      remarkRehype,
+      remarkFlexibleCodeTitles
     ],
     rehypePlugins: [
-      [rehypeRaw, { passThrough: ['mdxJsxFlowElement', 'mdxJsxTextElement'] }],
+      [
+        rehypeRaw,
+        {
+          passThrough: [
+            'mdxFlowExpression',
+            'mdxJsxFlowElement',
+            'mdxJsxTextElement',
+            'mdxTextExpression',
+            'mdxjsEsm'
+          ]
+        }
+      ],
+      [
+        rehypeHighlightLines,
+        {
+          showLineNumbers: true,
+          lineContainerTagName: 'div'
+        } as HighlightLinesOptions
+      ],
       rehypeRemoveExternalScriptContent,
-      rehypeStringify
+      rehypeStringify,
+      rehypePreLanguage
     ],
-    recmaPlugins: [recmaMdxEscapeMissingComponents]
+    recmaPlugins: [
+      [recmaMdxEscapeMissingComponents, ['Bar', 'Toc', 'ContextConsumer', 'ComponentFromOuterProvider']],
+      recmaMdxChangeProps
+    ]
   }
 };
 
