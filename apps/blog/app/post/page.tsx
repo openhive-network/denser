@@ -25,6 +25,7 @@ import remarkRehype from 'remark-rehype';
 import rehypeRemark from 'rehype-remark';
 import remarkMdx from 'remark-mdx';
 import remarkEmailsToLinks from '@/blog/components/renderer/emails-to-links';
+import recmaMdxEscapeMissingComponents from 'recma-mdx-escape-missing-components';
 
 const options: SerializeOptions = {
   mdxOptions: {
@@ -44,15 +45,31 @@ const options: SerializeOptions = {
       [rehypeRaw, { passThrough: ['mdxJsxFlowElement', 'mdxJsxTextElement'] }],
       rehypeRemoveExternalScriptContent,
       rehypeStringify
-    ]
+    ],
+    recmaPlugins: [recmaMdxEscapeMissingComponents]
   }
 };
 
 const Page = () => {
   const [mdSource, setMdSource] = useState(
-    `
-<https://www.markdownguide.org>
-<fake@example.com>
+    `>! This is a spoiler content.
+> This is a second line
+    
+test 111111
+
+>asdasd
+>asdas
+    
+test 22222
+
+>! [123]This is a spoiler content.
+> This is a second linesda
+test 33333
+    
+>sadasda
+>asdasd
+test 444444
+test 555555
 `
   );
   const [md, setMd] = useState<SerializeResult>();
@@ -65,7 +82,6 @@ const Page = () => {
       });
       setMd(mdxSource);
     }
-    console.log(md);
     //not sure what wrap with it but it should help with holding render dom when changing state
     startTransition(() => serializeMd());
   }, [mdSource]);

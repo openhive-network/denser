@@ -1,7 +1,6 @@
 'use client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MDXComponents, MDXProvider } from 'next-mdx-remote-client';
-import { YouTubeEmbed } from '../components/renderer/embeds';
 import { SignerProvider } from '../components/common/signer';
 import { ExternalLink } from 'lucide-react';
 

@@ -70,6 +70,7 @@
     "react-intersection-observer": "^9.5.2",
     "react-spinners-kit": "^1.9.1",
     "recharts": "^2.10.4",
+    "recma-mdx-escape-missing-components": "^1.1.0",
     "rehype-format": "^5.0.1",
     "rehype-parse": "^9.0.1",
     "rehype-raw": "^7.0.0",

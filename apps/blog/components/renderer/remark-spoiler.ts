@@ -2,43 +2,37 @@ import { Plugin } from 'unified';
 import { Node } from 'unist';
 import { visit } from 'unist-util-visit';
 
-// Define the shape of a blockquote node
+type Children = { type: 'text' | 'break'; value: string };
+type BlockquoteChild = { type: string; children?: Children[] };
 interface Blockquote extends Node {
   type: 'blockquote' | 'html';
-  children: Array<{ type: string; value?: string; children?: Array<{ value: string }> }>;
+  children: BlockquoteChild[];
   value?: string;
 }
 
-// Create a plugin using the Plugin interface from Unified
+const spoilerRegex = /\[([^\]]+)\]/;
+
 const remarkSpoiler: Plugin = () => {
   return (tree) => {
     visit(tree, 'blockquote', (node: Blockquote) => {
-      // Check if the first child exists and contains text
-      const firstChild = node.children[0];
-      const firstLine = firstChild?.children?.[0]?.value;
+      const firstChild = node.children[0]?.children;
+      if (!firstChild) return;
 
-      if (firstLine && firstLine.startsWith('! [')) {
-        // Extract the summary text inside [ ] brackets
-        const summaryMatch = firstLine.match(/\[([^\]]+)\]/);
-        if (!summaryMatch) return;
+      firstChild.forEach((child) => {
+        console.log('child:', child);
+        const value = child.value;
+        if (!value.startsWith('! ')) return;
 
-        const summaryText = summaryMatch[1];
-        const contentText = firstLine.replace(/^! \[.*\]\s*/, ''); // Remove the summary part from the first line
-
-        // Replace the blockquote node with a custom HTML <details> element
+        const isSpoilerWithSummary = value.startsWith('! [');
+        const spoilerContent = value.substring(2);
+        const summaryMatch = isSpoilerWithSummary ? value.match(spoilerRegex) : null;
+        const summaryText = summaryMatch?.[1] || 'Reveal spoiler';
+        const cleanValue = isSpoilerWithSummary ? spoilerContent.replace(spoilerRegex, '') : spoilerContent;
+        const finalValue = cleanValue.replace(/\n\s*/g, '<br/>');
+        console.log('finalValue:', finalValue);
         node.type = 'html';
-        node.value = `<details><summary>${summaryText}</summary>${contentText}`;
-
-        // Append the remaining lines from the blockquote
-        const remainingLines = node.children
-          .slice(1)
-          .map((child) => child.children?.[0]?.value || '')
-          .join('\n');
-        node.value += `${remainingLines}</details>`;
-
-        // Clear the children because we replaced the entire blockquote with raw HTML
-        node.children = [];
-      }
+        node.value = `<details><summary>${summaryText}</summary>${finalValue}</details>`;
+      });
     });
   };
 };

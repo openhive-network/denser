@@ -10,12 +10,10 @@ interface TextNode extends Node {
   value: string;
 }
 
-const remarkRenderLinks: Plugin = () => {
+const remarkEmailsToLinks: Plugin = () => {
   return (tree) => {
     visit(tree, 'text', (node: TextNode) => {
       if (node.value) {
-        console.log('node.value:', node.value);
-        // Replace URLs in angle brackets with <a> tags
         const transformedValue = node.value
           .replace(
             urlRegex,
@@ -34,4 +32,4 @@ const remarkRenderLinks: Plugin = () => {
   };
 };
 
-export default remarkRenderLinks;
+export default remarkEmailsToLinks;
