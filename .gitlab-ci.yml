@@ -24,7 +24,7 @@ variables:
 
   # HAF API node configuration
   HIVE_API_NODE_VERSION: 1.27.5
-  API_NODE_VERSION: "790f7ab5"
+  API_NODE_VERSION: "b9252b6d"
   HAF_COMMIT: "173c1698edaa683779cf317c38cd0a63a5970980"
   HIVEMIND_INSTANCE_VERSION: "c7067988"
   HAFAH_VERSION: "2a232f66"
@@ -59,7 +59,7 @@ include:
     ref: 173c1698edaa683779cf317c38cd0a63a5970980 #develop
     file: '/scripts/ci-helpers/prepare_data_image_job.yml'
   - project: 'hive/haf_api_node'
-    ref: 790f7ab5dd4f115fbdfa905622278f86c1367e53
+    ref: b9252b6dc53a712ed54fc5df31255ff9698a0555
     file: 'ci/node-replay.gitlab-ci.yml'  
 
 .docker_build_template:
