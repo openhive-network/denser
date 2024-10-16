@@ -9,7 +9,7 @@ stages:
 
 variables:
   # Variables required by Common CI jobs
-  CI_COMMON_JOB_VERSION: 'd4e29410ea168096e1a822f77c7ce741d9cfb57a'
+  CI_COMMON_JOB_VERSION: '682ba2e16cfc4ef192478d2d21c4b5a52bbd4678'
   DOCKER_BUILDER_TAG: '$CI_COMMON_JOB_VERSION'
   DOCKER_DIND_TAG: '$CI_COMMON_JOB_VERSION'
   IMAGE_REMOVER_TAG: '$CI_COMMON_JOB_VERSION'
@@ -24,11 +24,12 @@ variables:
 
   # HAF API node configuration
   HIVE_API_NODE_VERSION: 1.27.5
-  API_NODE_VERSION: "a3b04493"
-  HAF_COMMIT: "395241ac773f4eb1517e4c2fcc5f23fd0c5a4609"
-  HIVEMIND_INSTANCE_VERSION: "5aa95785"
-  HAFAH_VERSION: "e5ce9d97"
+  API_NODE_VERSION: "790f7ab5"
+  HAF_COMMIT: "173c1698edaa683779cf317c38cd0a63a5970980"
+  HIVEMIND_INSTANCE_VERSION: "c7067988"
+  HAFAH_VERSION: "2a232f66"
   BLOCK_LOG_VERSION: "42bf3ac5"
+  REPUTATION_TRACKER_VERSION: "2367d5bf"
   HIVEMIND_INSTANCE_IMAGE: registry.gitlab.syncad.com/hive/hivemind/instance
   HAFAH_REGISTRY: registry.gitlab.syncad.com/hive/hafah/instance
   # BLOCK_LOG_SOURCE_DIR: "/blockchain/block_log_mirror_44"
@@ -50,15 +51,15 @@ variables:
 include:
   - template: Workflows/Branch-Pipelines.gitlab-ci.yml
   - project: 'hive/common-ci-configuration'
-    ref: d4e29410ea168096e1a822f77c7ce741d9cfb57a # develop
+    ref: 682ba2e16cfc4ef192478d2d21c4b5a52bbd4678 # develop
     file: 
       - '/templates/docker_image_jobs.gitlab-ci.yml'
       - '/templates/cache_cleanup.gitlab-ci.yml'
   - project: 'hive/haf'
-    ref: 395241ac773f4eb1517e4c2fcc5f23fd0c5a4609 #develop
+    ref: 173c1698edaa683779cf317c38cd0a63a5970980 #develop
     file: '/scripts/ci-helpers/prepare_data_image_job.yml'
   - project: 'hive/haf_api_node'
-    ref: a3b04493d30ebe29efb51eb04a3cab0f14dfbfe1
+    ref: 790f7ab5dd4f115fbdfa905622278f86c1367e53
     file: 'ci/node-replay.gitlab-ci.yml'  
 
 .docker_build_template:

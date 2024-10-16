@@ -169,8 +169,8 @@ Configure the stack using the command:
   --block-log-util-path="/full/path/to/block_log_util" \
   --use-faketime=true \
   --chain-id=44 \
-  --dind-tag=a3b04493 \
-  --compose-tag=a3b04493 \
+  --dind-tag=790f7ab5 \
+  --compose-tag=790f7ab5 \
   --auth-tag=local \
   --blog-tag=local \
   --wallet-tag=local \
@@ -180,11 +180,11 @@ Configure the stack using the command:
   --use-alternate-haproxy-config=true \
   --haf-data-directory=/full/path/to/stacks/data/directory \
   --haf-registry=registry.gitlab.syncad.com/hive/haf/mirrornet-instance \
-  --haf-version=395241ac \
+  --haf-version=173c1698 \
   --hivemind-registry=registry.gitlab.syncad.com/hive/hivemind/instance \
-  --hivemind-version=5aa95785 \
+  --hivemind-version=c7067988 \
   --hafah-registry=registry.gitlab.syncad.com/hive/hafah/instance \
-  --hafah-version=e5ce9d97 \
+  --hafah-version=2a232f66 \
   --env-path="/full/path/to/mirronet-stack.env"
 ```
 
