@@ -14,7 +14,7 @@ import remarkImages from 'remark-images';
 import rehypeRemoveExternalScriptContent from 'rehype-remove-external-script-content';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
-import remarkSpoiler from '@/blog/components/renderer/remark-spoiler';
+import remarkSpoiler from '@/blog/components/renderer/lib/remark-spoiler-plugin';
 import remarkInsert from 'remark-ins';
 import remarkFlexibleContainers, { type FlexibleContainerOptions } from 'remark-flexible-containers';
 import rehypeStringify from 'rehype-stringify';
@@ -32,7 +32,7 @@ import rehypePreLanguage from 'rehype-pre-language';
 import recmaMdxChangeProps from 'recma-mdx-change-props';
 import rehypeExternalLinks from 'rehype-external-links';
 import rehypeReact from 'rehype-react';
-import remarkMdxHandler from '@/blog/components/renderer/mdx-elements-handler';
+import remarkMdxHandler from '@/blog/components/renderer/lib/mdx-elements-handler-plugin';
 
 const options: SerializeOptions = {
   mdxOptions: {
