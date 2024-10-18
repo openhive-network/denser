@@ -4,9 +4,10 @@ import { MDXComponents, MDXProvider } from 'next-mdx-remote-client';
 import { SignerProvider } from '../components/common/signer';
 import { ExternalLink } from 'lucide-react';
 import { ReactNode } from 'react';
-import { checkLinks, getYoutubeaFromLink } from '../components/renderer/lib/links-checker';
-import YoutubeEmbed from '../components/renderer/components/embed-youtube';
+import { checkLinks } from '../components/renderer/lib/links-checker';
+import { YoutubeEmbed, getYoutubeaFromLink } from '../components/renderer/components/embed-youtube';
 import { LeavePageDialog } from '../components/renderer/components/leave-page-dialog';
+import { getXMetadataFromLink, TwitterEmbedder } from '../components/renderer/components/embed-x';
 
 const ExternalSaftyLink = ({ href, children }: { href: string; children: ReactNode }) => {
   return (
@@ -19,6 +20,10 @@ const ExternalSaftyLink = ({ href, children }: { href: string; children: ReactNo
 const components: MDXComponents = {
   a: ({ href, children, ...props }) => {
     const url = href ?? '';
+
+    const x = getXMetadataFromLink(url);
+    if (x) return <TwitterEmbedder id={x.id} username={x.username} />;
+
     const youtube = getYoutubeaFromLink(url);
     if (youtube) return <YoutubeEmbed url={youtube.url} id={youtube.id} isShorts={youtube.isShorts} />;
 

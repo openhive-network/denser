@@ -83,12 +83,7 @@ const options: SerializeOptions = {
 };
 
 const Page = () => {
-  const [mdSource, setMdSource] = useState(
-    `https://www.youtube.com/shorts/J70iOZTX0wA
-https://www.youtube.com/embed/PeCs2hepb5c
-https://www.youtube.com/@SejmRP_PL
-https://www.youtube.com/watch?v=DrNzG-S9Di0&list=FLcRhdnpSLcZN3NXHspgxhdA`
-  );
+  const [mdSource, setMdSource] = useState(`https://x.com/usamametime/status/1846150527916339434`);
   const [md, setMd] = useState<SerializeResult>();
 
   useEffect(() => {
