@@ -3,7 +3,7 @@ import { FC } from 'react';
 const main =
   /(?:https?:\/\/(?:(?:3speak\.(?:online|co|tv)\/watch\?v=)|(?:3speak\.(?:online|co|tv)\/embed\?v=)))([A-Za-z0-9_\-\/.]+)(&.*)?/i;
 
-export function extractMetadata(data: string) {
+export function getThreespeakMetadataFromLink(data: string) {
   if (!data) return null;
 
   const match = data.match(main);

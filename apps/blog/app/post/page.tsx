@@ -83,7 +83,7 @@ const options: SerializeOptions = {
 };
 
 const Page = () => {
-  const [mdSource, setMdSource] = useState(`https://3speak.tv/watch?v=jongolson/vhtttbyf`);
+  const [mdSource, setMdSource] = useState('');
   const [md, setMd] = useState<SerializeResult>();
 
   useEffect(() => {

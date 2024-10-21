@@ -12,21 +12,21 @@ import {
   getInstagramMetadataFromLink,
   InstagramEmbedder
 } from '../components/renderer/components/embed-instagram';
-import { extractMetadata, ThreeSpeakEmbed } from '../components/renderer/components/embed-threespeak';
+import {
+  getThreespeakMetadataFromLink,
+  ThreeSpeakEmbed
+} from '../components/renderer/components/embed-threespeak';
+import { getTwitchMetadataFromLink, TwitchEmbed } from '../components/renderer/components/embed-twitch';
 
-const ExternalSaftyLink = ({ href, children }: { href: string; children: ReactNode }) => {
-  return (
-    <a href={href}>
-      <span className="cursor-pointer text-destructive">{children}</span>
-      <ExternalLink className="inline h-4 w-4 cursor-pointer pl-1 text-destructive" />
-    </a>
-  );
-};
 const components: MDXComponents = {
-  a: ({ href, children, ...props }) => {
+  a: ({ href, children, download, type, ...props }) => {
+    console.log(JSON.stringify({ href, children, download, type, props }));
     const url = href ?? '';
 
-    const threeSpeak = extractMetadata(url);
+    const twitch = getTwitchMetadataFromLink(url);
+    if (twitch) return <TwitchEmbed url={twitch} />;
+
+    const threeSpeak = getThreespeakMetadataFromLink(url);
     if (threeSpeak) return <ThreeSpeakEmbed id={threeSpeak} />;
 
     const instagram = getInstagramMetadataFromLink(url);
@@ -61,5 +61,14 @@ export const Providers = ({ children }: { children: ReactNode }) => {
         <MDXProvider components={components}>{children}</MDXProvider>
       </SignerProvider>
     </QueryClientProvider>
+  );
+};
+
+const ExternalSaftyLink = ({ href, children }: { href: string; children: ReactNode }) => {
+  return (
+    <a href={href}>
+      <span className="cursor-pointer text-destructive">{children}</span>
+      <ExternalLink className="inline h-4 w-4 cursor-pointer pl-1 text-destructive" />
+    </a>
   );
 };
