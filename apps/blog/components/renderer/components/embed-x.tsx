@@ -9,17 +9,13 @@ interface Metadata {
 }
 
 export const getXMetadataFromLink = (data: string): Metadata | undefined => {
-  if (!data) {
-    return undefined;
-  }
+  if (!data) return undefined;
 
-  // Remove any leading '@' or 'https://' from the data
   const cleanData = data.replace(/^(@|https:\/\/)/, '');
 
   const match = cleanData.match(twitterRegex);
-  if (!match) {
-    return undefined;
-  }
+  if (!match) return undefined;
+
   const username = match[2]; // The username is in the 2nd capture group
   const id = match[4]; // The ID is in the 4th capture group
   const url = `https://${cleanData}`; // Ensure the URL always starts with https://

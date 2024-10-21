@@ -12,6 +12,7 @@ import {
   getInstagramMetadataFromLink,
   InstagramEmbedder
 } from '../components/renderer/components/embed-instagram';
+import { extractMetadata, ThreeSpeakEmbed } from '../components/renderer/components/embed-threespeak';
 
 const ExternalSaftyLink = ({ href, children }: { href: string; children: ReactNode }) => {
   return (
@@ -24,6 +25,9 @@ const ExternalSaftyLink = ({ href, children }: { href: string; children: ReactNo
 const components: MDXComponents = {
   a: ({ href, children, ...props }) => {
     const url = href ?? '';
+
+    const threeSpeak = extractMetadata(url);
+    if (threeSpeak) return <ThreeSpeakEmbed id={threeSpeak} />;
 
     const instagram = getInstagramMetadataFromLink(url);
     if (instagram) return <InstagramEmbedder href={instagram} />;

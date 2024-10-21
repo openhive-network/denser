@@ -8,9 +8,7 @@ const youtubeIdRegex =
 export function getYoutubeaFromLink(
   data: string
 ): { id: string; url: string; thumbnail: string; isShorts: boolean } | undefined {
-  if (!data) {
-    return undefined;
-  }
+  if (!data) return undefined;
 
   const m1 = data.match(youtubeEmbedRegex);
   const url = m1 ? m1[0] : undefined;
