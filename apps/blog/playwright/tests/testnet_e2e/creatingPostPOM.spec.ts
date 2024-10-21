@@ -3,7 +3,7 @@ import { HomePage } from '../support/pages/homePage';
 import { users, LoginHelper } from '../support/loginHelper';
 import { PostEditorPage } from '../support/pages/postEditorPage';
 
-test.describe.skip('Creating post tests with POM and fixture users', () => {
+test.describe('Creating post tests with POM and fixture users', () => {
 //   let homePage0: HomePage;
 
 //   test.beforeEach(async ({ denserAutoTest4Page }) => {
@@ -12,6 +12,7 @@ test.describe.skip('Creating post tests with POM and fixture users', () => {
 //     await homePage0.goto();
 //   });
 
+  // User is logged in but there is the problem with creating a post
   test('Validate creating the new post by clicking the nav pencil icon', async ({
     denserAutoTest4Page
   }) => {
@@ -45,10 +46,11 @@ test.describe.skip('Creating post tests with POM and fixture users', () => {
     await postEditorPage.getSubmitPostButton.click();
 
     await console.log('111 ', await denserAutoTest4Page.page.context().storageState());
-
+    await console.log('111 a', await postEditorPage.page.context().storageState());
     // Wait for optimistic ui will finished and validate that you are moved to the unmoderated tag page
     await denserAutoTest4Page.page.waitForTimeout(10000);
     await console.log('222 ', await denserAutoTest4Page.page.context().storageState());
+    await console.log('222 a', await postEditorPage.page.context().storageState());
     // await denserAutoTest4Page.page.waitForSelector('[data-testid="community-name-unmoderated"]');
     // expect(await denserAutoTest4Page.page.locator('[data-testid="community-name-unmoderated"]').textContent()).toBe(
     //   'Unmoderated tag'
