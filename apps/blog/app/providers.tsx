@@ -8,6 +8,10 @@ import { checkLinks } from '../components/renderer/lib/links-checker';
 import { YoutubeEmbed, getYoutubeaFromLink } from '../components/renderer/components/embed-youtube';
 import { LeavePageDialog } from '../components/renderer/components/leave-page-dialog';
 import { getXMetadataFromLink, TwitterEmbedder } from '../components/renderer/components/embed-x';
+import {
+  getInstagramMetadataFromLink,
+  InstagramEmbedder
+} from '../components/renderer/components/embed-instagram';
 
 const ExternalSaftyLink = ({ href, children }: { href: string; children: ReactNode }) => {
   return (
@@ -20,6 +24,9 @@ const ExternalSaftyLink = ({ href, children }: { href: string; children: ReactNo
 const components: MDXComponents = {
   a: ({ href, children, ...props }) => {
     const url = href ?? '';
+
+    const instagram = getInstagramMetadataFromLink(url);
+    if (instagram) return <InstagramEmbedder href={instagram} />;
 
     const x = getXMetadataFromLink(url);
     if (x) return <TwitterEmbedder id={x.id} username={x.username} />;
