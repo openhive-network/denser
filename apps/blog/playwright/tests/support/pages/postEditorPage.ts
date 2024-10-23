@@ -90,4 +90,24 @@ export class PostEditorPage {
         expect(this.getPostingToListTrigger).toBeVisible();
         expect(this.getSubmitPostButton).toBeVisible();
     }
+
+    async createSimplePost(
+        postTitle: string,
+        postContentText: string,
+        postSummary: string,
+        postTag: string
+    ) {
+        // Validate the post editor is loaded
+        await this.validateDefaultPostEditorIsLoaded();
+        // Type the title of the post
+        await this.getPostTitleInput.fill(postTitle);
+        // Type the conntent of the post
+        await this.getEditorContentTextarea.fill(postContentText);
+        // Type the post summary
+        await this.getPostSummaryInput.fill(postSummary);
+        // Type the tag
+        await this.getEnterYourTagsInput.fill(postTag);
+        // Click the submit button
+        await this.getSubmitPostButton.click();
+    }
 }
