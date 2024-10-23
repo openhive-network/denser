@@ -1,3 +1,13 @@
+export type OpType =
+  | 'claim_reward_balance'
+  | 'transfer'
+  | 'transfer_from_savings'
+  | 'transfer_to_savings'
+  | 'interest'
+  | 'cancel_transfer_from_savings'
+  | 'fill_order'
+  | 'transfer_to_vesting';
+
 export type AccountHistory = [
   number,
   {
@@ -7,17 +17,8 @@ export type AccountHistory = [
     op_in_trx: number;
     virtual_op: boolean;
     timestamp: string;
-    op?: [
-      (
-        | "claim_reward_balance"
-        | "transfer"
-        | "transfer_from_savings"
-        | "transfer_to_savings"
-        | "interest"
-        | "cancel_transfer_from_savings"
-        | "fill_order"
-        | "transfer_to_vesting"
-      ),
+    op: [
+      OpType,
       {
         open_pays?: string;
         current_pays?: string;
@@ -33,7 +34,7 @@ export type AccountHistory = [
         reward_hbd?: string;
         reward_hive?: string;
         reward_vests?: string;
-      },
+      }
     ];
-  },
+  }
 ];

@@ -29,6 +29,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { TransferDialog } from '@/wallet/components/transfer-dialog';
 import useFilters from '@/wallet/components/hooks/use-filters';
 import { getTranslations } from '../../lib/get-translations';
+import FinancialReport from '@/wallet/components/financial-report';
 
 const initialFilters: TransferFilters = {
   search: '',
@@ -672,6 +673,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
           </div>
         ) : null}
         <div className="w-full max-w-6xl">
+          <FinancialReport username={user.username} />
           <TransfersHistoryFilter
             onFiltersChange={(value) => {
               setFilter((prevFilters) => ({
