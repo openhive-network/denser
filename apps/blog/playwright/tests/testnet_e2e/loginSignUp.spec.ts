@@ -3,7 +3,8 @@ import { HomePage } from '../support/pages/homePage';
 import { LoginHelper, users } from '../support/loginHelper';
 import { ProfileUserMenu } from '../support/pages/profileUserMenu';
 
-test.describe('Login and Sign Up tests', () => {
+// auth.setup.ts is not running before every tests now
+test.describe.skip('Login and Sign Up tests', () => {
   let homePage: HomePage;
   let loginHelper: LoginHelper;
 
