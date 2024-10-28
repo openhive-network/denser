@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { BURN_ACCOUNTS, REFUND_ACCOUNTS } from '@/wallet/lib/constants';
 import { IListItemProps } from '@/wallet/lib/hive';
-import { getRoundedAbbreveration, handleError, numberWithCommas } from '@hive/ui/lib/utils';
+import { cn, getRoundedAbbreveration, handleError, numberWithCommas } from '@hive/ui/lib/utils';
 import { Icons } from '@hive/ui/components/icons';
 import moment from 'moment';
 import { dateToFullRelative } from '@ui/lib/parse-date';
@@ -13,6 +13,8 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';
 import { useUpdateProposalVotesMutation } from '@hive/wallet/components/hooks/use-update-proposal-votes-mutation';
 import env from '@beam-australia/react-env';
+import Loading from '@ui/components/loading';
+import { useState } from 'react';
 
 function titleSetter(
   daysStart: string,
@@ -52,6 +54,8 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
   const { t } = useTranslation('common_wallet');
   const { user } = useUser();
   const updateProposalVotesMutation = useUpdateProposalVotesMutation();
+  const [loading, setLoading] = useState(false);
+  const [voteSuccess, setVotesSuccess] = useState(false);
 
   const totalHBD = proposalData.daily_pay?.amount.times(
     moment(proposalData?.end_date).diff(moment(proposalData.start_date), 'd')
@@ -71,23 +75,23 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
   }
 
   async function updateProposalVotes(e: React.MouseEvent<HTMLOrSVGElement>) {
+    const params = {
+      proposal_ids: [String(proposalData.proposal_id)],
+      approve: true,
+      extensions: []
+    };
+
     try {
-      await updateProposalVotesMutation.mutateAsync({
-        proposal_ids: [String(proposalData.proposal_id)],
-        approve: true,
-        extensions: []
-      });
-      (e.target as HTMLElement).classList.add('text-white');
-      (e.target as HTMLElement).classList.add('bg-red-600');
+      setLoading(true);
+      await updateProposalVotesMutation.mutateAsync(params);
+      setVotesSuccess(true);
     } catch (error) {
       handleError(error, {
         method: 'updateProposalVotes',
-        params: {
-          proposal_ids: [String(proposalData.proposal_id)],
-          approve: true,
-          extensions: []
-        }
+        params
       });
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -192,13 +196,19 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
             {getRoundedAbbreveration(totalVotes)}
           </div>
         </VoteProposals>
-
-        {user && user.isLoggedIn ? (
+        {loading ? (
+          <Icons.spinner className="animate-spin text-red-500" />
+        ) : user && user.isLoggedIn ? (
           <div className="group relative flex">
             <span className="opocity-75 absolute inline-flex h-6 w-6 rounded-full bg-red-500 p-0 group-hover:animate-ping dark:bg-red-400"></span>
             <Icons.arrowUpCircle
               viewBox="1.7 1.7 20.7 20.7"
-              className="relative inline-flex h-6 w-6 cursor-pointer rounded-full bg-white stroke-1 text-red-500 dark:bg-slate-800"
+              className={cn(
+                'relative inline-flex h-6 w-6 cursor-pointer rounded-full bg-white stroke-1 text-red-500 dark:bg-slate-800',
+                {
+                  '!bg-red-500 text-white': voteSuccess
+                }
+              )}
               data-testid="voting-button-icon"
               onClick={updateProposalVotes}
             />
