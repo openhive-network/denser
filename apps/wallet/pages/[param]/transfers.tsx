@@ -673,7 +673,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
           </div>
         ) : null}
         <div className="w-full max-w-6xl">
-          <FinancialReport username={user.username} />
+          {user.username === username && <FinancialReport username={user.username} />}
           <TransfersHistoryFilter
             onFiltersChange={(value) => {
               setFilter((prevFilters) => ({

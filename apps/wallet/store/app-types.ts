@@ -6,7 +6,16 @@ export type OpType =
   | 'interest'
   | 'cancel_transfer_from_savings'
   | 'fill_order'
-  | 'transfer_to_vesting';
+  | 'transfer_to_vesting'
+  | 'curation_reward'
+  | 'author_reward'
+  | 'producer_reward'
+  | 'comment_reward'
+  | 'comment_benefactor_reward'
+  | 'interest'
+  | 'proposal_pay'
+  | 'sps_fund'
+  | 'transfer';
 
 export type AccountHistory = [
   number,
