@@ -1,9 +1,13 @@
-import { useEffect, useReducer } from 'react';
+import { useCallback, useEffect, useReducer } from 'react';
 import { Input } from '@ui/components/input';
 import { Button } from '@ui/components/button';
 import clsx from 'clsx';
 import { convertStringToBig } from '@ui/lib/helpers';
 import { useTranslation } from 'next-i18next';
+import { useCreateMarketOrder } from './hooks/use-market-mutation';
+import { handleError } from '@ui/lib/utils';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { getAsset } from '../lib/utils';
 enum ActionType {
   ChangeCostValue = 'changeCostValue',
   ChangeAmountValue = 'changeAmountValue',
@@ -78,10 +82,34 @@ export default function BuyOrSellForm({
     amount: '',
     total: ''
   });
+  const { user } = useUser();
+  const createBuyOrderMutation = useCreateMarketOrder();
 
   useEffect(() => {
     dispatch({ type: ActionType.ChangeCostValue, cost: price });
   }, [price]);
+
+  const submitOrder = useCallback(async () => {
+    const DEFAULT_EXPIRE = new Date(Math.floor(Date.now() / 1000 + 60 * 60 * 24 * 27) * 1000)
+      .toISOString()
+      .split('.')[0];
+    const hbd = await getAsset(state.total, 'hbd');
+    const hive = await getAsset(state.amount, 'hive');
+    const params = {
+      owner: user.username,
+      amountToSell: transaction === 'buy' ? hbd : hive,
+      minToReceive: transaction === 'buy' ? hive : hbd,
+      orderId: Math.floor(Date.now() / 1000),
+      fillOrKill: false,
+      expiration: DEFAULT_EXPIRE
+    };
+
+    try {
+      await createBuyOrderMutation.mutateAsync(params);
+    } catch (error) {
+      handleError(error, { method: 'limit_order_create', params });
+    }
+  }, [createBuyOrderMutation, state.amount, state.total, transaction, user.username]);
 
   const disabled = Boolean(state.amount || state.total);
   const label = transaction === 'sell' ? t('market_page.sell_hive') : t('market_page.buy_hive');
@@ -176,6 +204,7 @@ export default function BuyOrSellForm({
             'border-card-empty-border border-2 border-solid bg-card-noContent text-green-500 hover:bg-green-50 hover:text-green-600':
               transaction === 'buy'
           })}
+          onClick={submitOrder}
         >
           {label}
         </Button>

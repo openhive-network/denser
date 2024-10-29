@@ -25,6 +25,7 @@ import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { handleError } from '@ui/lib/utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { TransactionBroadcastResult } from '@transaction/index';
+import { getVests, getAsset } from '../lib/utils';
 
 type Amount = {
   hive: string;
@@ -33,9 +34,6 @@ type Amount = {
   savingsHive: string;
   savingsHbd: string;
 };
-
-const ASSET_PRECISION = 1000;
-const VEST_PRECISION = 1000000;
 
 export function TransferDialog({
   children,
@@ -54,7 +52,7 @@ export function TransferDialog({
     | 'withdrawHiveDollars'
     | 'powerDown';
   amount: Amount;
-  currency: string;
+  currency: 'hive' | 'hbd';
   username: string;
 }) {
   const defaultValue = {
@@ -68,7 +66,7 @@ export function TransferDialog({
     onSubmit: new Function(),
     memo: ''
   };
-  const [curr, setCurr] = useState(currency);
+  const [curr, setCurr] = useState<'hive' | 'hbd'>(currency);
   const [value, setValue] = useState('');
   const [advanced, setAdvanced] = useState(false);
   const [data, setData] = useState(defaultValue);
@@ -103,21 +101,6 @@ export function TransferDialog({
     [invalidateData]
   );
 
-  const getAsset = useCallback(
-    async (value: string) => {
-      const chain = await hiveChainService.getHiveChain();
-      const amount = Number(value) * ASSET_PRECISION;
-      return curr === 'hive' ? chain.hive(amount) : chain.hbd(amount);
-    },
-    [curr]
-  );
-
-  const getVests = useCallback(async (value: string) => {
-    const chain = await hiveChainService.getHiveChain();
-    const amount = Number(value) * VEST_PRECISION;
-    return chain.vests(amount);
-  }, []);
-
   switch (type) {
     case 'transfers':
       data.title = 'Transfer to Account';
@@ -128,7 +111,7 @@ export function TransferDialog({
           fromAccount: username,
           toAccount: data.to,
           memo: data.memo,
-          amount: await getAsset(value)
+          amount: await getAsset(value, curr)
         };
         transfersTransaction('transfer', params, transferMutation.mutateAsync);
       };
@@ -142,7 +125,7 @@ export function TransferDialog({
       data.to = username || '';
       data.onSubmit = async () => {
         const params = {
-          amount: await getAsset(value),
+          amount: await getAsset(value, curr),
           fromAccount: data.to,
           toAccount: data.to,
           memo: data.memo
@@ -161,7 +144,7 @@ export function TransferDialog({
       data.selectCurr = false;
       data.buttonTitle = 'Power Up';
       data.onSubmit = async () => {
-        const params = { account: username, amount: await getAsset(value) };
+        const params = { account: username, amount: await getAsset(value, curr) };
         transfersTransaction('powerUp', params, powerUpMutation.mutateAsync);
       };
       break;
@@ -197,7 +180,7 @@ export function TransferDialog({
           fromAccount: username,
           toAccount: advanced ? data.to : username,
           memo: data.memo,
-          amount: await getAsset(value)
+          amount: await getAsset(value, curr)
         };
         transfersTransaction('withdrawHive', params, withdrawFromSavingsMutation.mutateAsync);
       };
@@ -214,7 +197,7 @@ export function TransferDialog({
           fromAccount: username,
           toAccount: advanced ? data.to : username,
           memo: data.memo,
-          amount: await getAsset(value)
+          amount: await getAsset(value, curr)
         };
         transfersTransaction('withdrawHiveDollars', params, withdrawFromSavingsMutation.mutateAsync);
       };
@@ -277,7 +260,7 @@ export function TransferDialog({
             <div className="relative col-span-3">
               {data.selectCurr && (
                 <div className="absolute right-0">
-                  <Select name="amout right-0" value={curr} onValueChange={(e) => setCurr(e)}>
+                  <Select name="amout right-0" value={curr} onValueChange={(e: 'hive' | 'hbd') => setCurr(e)}>
                     <SelectTrigger className="w-fit" onSelect={() => setCurr('hive')}>
                       <SelectValue placeholder={curr} />
                     </SelectTrigger>

@@ -1,4 +1,4 @@
-import { asset, authority, createHiveChain } from '@hiveio/wax';
+import { createHiveChain } from '@hiveio/wax';
 import { useMutation } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { logger } from '@ui/lib/logger';
@@ -64,7 +64,7 @@ export function useCreateCommunityMutation(claimed: boolean) {
             { observe: true }
           ));
       const response = { ...params, broadcastResult };
-      logger.info('Done create comuunity transaction: %o', response);
+      logger.info('Done create community transaction: %o', response);
     },
     onSuccess: (data) => {
       logger.info('useCreateCommunityMutation onSuccess data: %o', data);

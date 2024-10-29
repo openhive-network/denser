@@ -981,6 +981,28 @@ export class TransactionService {
       transactionOptions
     );
   }
+
+  async limitOrderCreate(
+    amountToSell: asset,
+    owner: string,
+    minToReceive: asset,
+    orderId: number,
+    fillOrKill: boolean,
+    expiration: string
+  ) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.pushOperation({
+        limit_order_create: {
+          amount_to_sell: amountToSell,
+          owner,
+          min_to_receive: minToReceive,
+          fill_or_kill: fillOrKill,
+          orderid: orderId,
+          expiration
+        }
+      });
+    });
+  }
 }
 
 export const transactionService = new TransactionService();
