@@ -7,7 +7,7 @@ const youtubeIdRegex =
 
 export function getYoutubeaFromLink(
   data: string
-): { id: string; url: string; thumbnail: string; isShorts: boolean } | undefined {
+): { id: string; url: string; thumbnail: string } | undefined {
   if (!data) return undefined;
 
   const m1 = data.match(youtubeEmbedRegex);
@@ -21,34 +21,30 @@ export function getYoutubeaFromLink(
   if (!id) {
     return undefined;
   }
-  const isShorts = url.includes('shorts');
 
   return {
     id,
     url,
-    thumbnail: 'https://img.youtube.com/vi/' + id + '/0.jpg',
-    isShorts
+    thumbnail: 'https://img.youtube.com/vi/' + id + '/0.jpg'
   };
 }
 
 type YoutubeEmbedProps = {
   url: string;
   id: string;
-  isShorts: boolean;
 };
 
-export const YoutubeEmbed: FC<YoutubeEmbedProps> = ({ url, id, isShorts }) => {
+export const YoutubeEmbed: FC<YoutubeEmbedProps> = ({ url, id }) => {
   return (
-    <iframe
-      width={isShorts ? '315' : '560'}
-      height={isShorts ? '560' : '315'}
-      src={`https://www.youtube.com/embed/${id}`}
-      title=""
-      frameBorder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      allowFullScreen
-    >
-      <a href={url}>{url}</a>
-    </iframe>
+    <div key={`youtube-${id}`} className="videoWrapper">
+      <iframe
+        src={`https://www.youtube.com/embed/${id}`}
+        title=""
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowFullScreen
+      >
+        <a href={url}>{url}</a>
+      </iframe>
+    </div>
   );
 };

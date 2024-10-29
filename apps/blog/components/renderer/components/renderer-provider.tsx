@@ -26,7 +26,7 @@ const components: MDXComponents = {
     if (x) return <TwitterEmbedder id={x.id} username={x.username} />;
 
     const youtube = getYoutubeaFromLink(url);
-    if (youtube) return <YoutubeEmbed url={youtube.url} id={youtube.id} isShorts={youtube.isShorts} />;
+    if (youtube) return <YoutubeEmbed url={youtube.url} id={youtube.id} />;
 
     const linkProtection = checkLinks(url);
     switch (linkProtection) {
