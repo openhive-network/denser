@@ -39,8 +39,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui
       '@hiveio/wax':
-        specifier: 1.27.6-rc4-240917114249
-        version: 1.27.6-rc4-240917114249
+        specifier: 1.27.6-rc5-stable.241029104701
+        version: 1.27.6-rc5-stable.241029104701
       '@hookform/resolvers':
         specifier: ^3.3.1
         version: 3.9.0(react-hook-form@7.52.2(react@18.3.0))
@@ -163,8 +163,8 @@ importers:
         specifier: ^2.2.0
         version: 2.2.1
       '@hiveio/wax':
-        specifier: 1.27.6-rc4-240917114249
-        version: 1.27.6-rc4-240917114249
+        specifier: 1.27.6-rc5-stable.241029104701
+        version: 1.27.6-rc5-stable.241029104701
       '@hookform/resolvers':
         specifier: ^3.1.1
         version: 3.9.0(react-hook-form@7.52.2(react@18.3.0))
@@ -356,8 +356,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui
       '@hiveio/wax':
-        specifier: 1.27.6-rc4-240917114249
-        version: 1.27.6-rc4-240917114249
+        specifier: 1.27.6-rc5-stable.241029104701
+        version: 1.27.6-rc5-stable.241029104701
       '@hookform/resolvers':
         specifier: ^3.3.2
         version: 3.9.0(react-hook-form@7.52.2(react@18.3.0))
@@ -471,11 +471,11 @@ importers:
         specifier: ^1.3.0
         version: 1.3.0
       '@hiveio/hb-auth':
-        specifier: 0.0.1-stable.240918090041
-        version: 0.0.1-stable.240918090041
+        specifier: 0.0.1-stable.241029124305
+        version: 0.0.1-stable.241029124305
       '@hiveio/wax':
-        specifier: 1.27.6-rc4-240917114249
-        version: 1.27.6-rc4-240917114249
+        specifier: 1.27.6-rc5-stable.241029104701
+        version: 1.27.6-rc5-stable.241029104701
       '@tanstack/react-query':
         specifier: ^4.36.1
         version: 4.36.1(react-dom@18.3.0(react@18.3.0))(react@18.3.0)
@@ -574,11 +574,11 @@ importers:
         specifier: workspace:*
         version: link:../smart-signer
       '@hiveio/wax':
-        specifier: 1.27.6-rc4-240917114249
-        version: 1.27.6-rc4-240917114249
+        specifier: 1.27.6-rc5-stable.241029104701
+        version: 1.27.6-rc5-stable.241029104701
       '@hiveio/workerbee':
-        specifier: 1.27.6-rc5-stable.240917115618
-        version: 1.27.6-rc5-stable.240917115618
+        specifier: 1.27.6-rc9-stable.240920064516
+        version: 1.27.6-rc9-stable.240920064516
       secure-random:
         specifier: ^1.1.2
         version: 1.1.2
@@ -625,8 +625,8 @@ importers:
         specifier: ^1.3.1
         version: 1.3.1
       '@hiveio/wax':
-        specifier: 1.27.6-rc4-240917114249
-        version: 1.27.6-rc4-240917114249
+        specifier: 1.27.6-rc5-stable.241029104701
+        version: 1.27.6-rc5-stable.241029104701
       '@radix-ui/react-accordion':
         specifier: ^1.1.2
         version: 1.2.0(@types/react-dom@18.3.0)(@types/react@18.3.0)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)
@@ -1352,8 +1352,8 @@ packages:
     resolution: {integrity: sha512-7dRy4DwXwtzBrPbZflqxnvfxLF8kdZXPkhymtDeFoFqE6ldzjQFgYTtYIFARcLEYDrqfBfYcZt1WqFxRoyC9Rw==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/runtime@7.25.6':
-    resolution: {integrity: sha512-VBj9MYyDb9tuLq7yzqjgzt6Q+IBQLrGZfdjOekyEirZPHxXWoTSGUTMrpsfi58Up73d13NfYLv8HT9vmznjzhQ==}
+  '@babel/runtime@7.26.0':
+    resolution: {integrity: sha512-FDSOghenHTiToteC/QRlv2q3DhPZ/oOXTBoirfWNx1Cx3TMVcGWQtMMmQcSvb/JjpNeGzx8Pq/b4fKEJuWm1sw==}
     engines: {node: '>=6.9.0'}
 
   '@babel/template@7.25.0':
@@ -1432,8 +1432,16 @@ packages:
   '@floating-ui/utils@0.2.6':
     resolution: {integrity: sha512-0KI3zGxIUs1KDR/pjQPdJH4Z8nGBm0yJ5WRoRfdw1Kzeh45jkIfA0rmD0kBF6fKHH+xaH7g8y4jIXyAV5MGK3g==}
 
+  '@hiveio/beekeeper@1.27.6-rc3':
+    resolution: {integrity: sha1-+tV/0zANMNTgBA7WJAT5DKO9Bk0=, tarball: https://gitlab.syncad.com/api/v4/projects/198/packages/npm/@hiveio/beekeeper/-/@hiveio/beekeeper-1.27.6-rc3.tgz}
+    engines: {node: '>= 18'}
+
   '@hiveio/beekeeper@1.27.6-rc3-stable.240916231926':
     resolution: {integrity: sha1-GhsyYwb56QgPSawZNrgz+24gzRA=, tarball: https://gitlab.syncad.com/api/v4/projects/198/packages/npm/@hiveio/beekeeper/-/@hiveio/beekeeper-1.27.6-rc3-stable.240916231926.tgz}
+    engines: {node: '>= 18'}
+
+  '@hiveio/beekeeper@1.27.6-rc4':
+    resolution: {integrity: sha1-mj3k3qAgTdIrc6IxzC5VOprhWZs=, tarball: https://gitlab.syncad.com/api/v4/projects/198/packages/npm/@hiveio/beekeeper/-/@hiveio/beekeeper-1.27.6-rc4.tgz}
     engines: {node: '>= 18'}
 
   '@hiveio/content-renderer@2.2.1':
@@ -1443,18 +1451,22 @@ packages:
   '@hiveio/dhive@1.3.0':
     resolution: {integrity: sha512-5MflC3/dMPSN5ZJ/6970PAubRTzwyHDxxb62Z6fs1NXA7Ut79yoNpFGXO9BlsdEmdcFeVsfb9vJx1e0enDQ5bQ==, tarball: https://registry.npmjs.org/@hiveio/dhive/-/dhive-1.3.0.tgz}
 
-  '@hiveio/hb-auth@0.0.1-stable.240918090041':
-    resolution: {integrity: sha1-p/k4Z7BSbf+FZR5mLYjLrmIx0WY=, tarball: https://gitlab.syncad.com/api/v4/projects/429/packages/npm/@hiveio/hb-auth/-/@hiveio/hb-auth-0.0.1-stable.240918090041.tgz}
+  '@hiveio/hb-auth@0.0.1-stable.241029124305':
+    resolution: {integrity: sha1-RWgw8xubxRizIKIP6235Etg9afk=, tarball: https://gitlab.syncad.com/api/v4/projects/429/packages/npm/@hiveio/hb-auth/-/@hiveio/hb-auth-0.0.1-stable.241029124305.tgz}
 
   '@hiveio/hivescript@1.3.1':
     resolution: {integrity: sha512-v70BMOco+pNr/LE6ttAAMTdPZcL/DbSD9s652LufM5osDQrlY8dwGLPUak9hTDdDOmwZY2cVQ5vFYxjMqLfykw==, tarball: https://registry.npmjs.org/@hiveio/hivescript/-/hivescript-1.3.1.tgz}
 
-  '@hiveio/wax@1.27.6-rc4-240917114249':
-    resolution: {integrity: sha1-j18QGKOBnErxkQurOlWQ5IgHqkI=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.27.6-rc4-240917114249.tgz}
+  '@hiveio/wax@1.27.6-rc4':
+    resolution: {integrity: sha1-NZnSU6P8zkdBvnkHsWG1uswa6Es=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.27.6-rc4.tgz}
     engines: {node: '>= 18'}
 
-  '@hiveio/workerbee@1.27.6-rc5-stable.240917115618':
-    resolution: {integrity: sha1-cPfwIvYwMQ0r1GVriJ8WpewBhgw=, tarball: https://gitlab.syncad.com/api/v4/projects/452/packages/npm/@hiveio/workerbee/-/@hiveio/workerbee-1.27.6-rc5-stable.240917115618.tgz}
+  '@hiveio/wax@1.27.6-rc5-stable.241029104701':
+    resolution: {integrity: sha1-Jz6tVQXhyZxf8Gu665dyDTw2wH0=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.27.6-rc5-stable.241029104701.tgz}
+    engines: {node: '>= 18'}
+
+  '@hiveio/workerbee@1.27.6-rc9-stable.240920064516':
+    resolution: {integrity: sha1-tBpWnO1FDCdINDBoXneC2RGfGwM=, tarball: https://gitlab.syncad.com/api/v4/projects/452/packages/npm/@hiveio/workerbee/-/@hiveio/workerbee-1.27.6-rc9-stable.240920064516.tgz}
     engines: {node: '>= 18'}
 
   '@hookform/resolvers@3.9.0':
@@ -2760,8 +2772,8 @@ packages:
   '@types/estree@0.0.39':
     resolution: {integrity: sha512-EYNwp3bU+98cpU4lAWYYL7Zz+2gryWH1qbdDTidVd6hkiR6weksdbMadyXKXNPEkQFhXM+hVO9ZygomHXp+AIw==}
 
-  '@types/estree@1.0.5':
-    resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
+  '@types/estree@1.0.6':
+    resolution: {integrity: sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==}
 
   '@types/express-serve-static-core@4.19.5':
     resolution: {integrity: sha512-y6W03tvrACO72aijJ5uF02FRq5cgDR9lUxddQ8vyF+GvmjJQqbzDcJngEjURc+ZsG31VI3hODNZJ2URj86pzmg==}
@@ -3060,6 +3072,11 @@ packages:
 
   acorn@8.12.1:
     resolution: {integrity: sha512-tcpGyI9zbizT9JbV6oYE477V6mTlXvvi0T0G3SNIYE2apm/G5huBa1+K89VGeovbg+jycCrfhl3ADxErOuO6Jg==}
+    engines: {node: '>=0.4.0'}
+    hasBin: true
+
+  acorn@8.14.0:
+    resolution: {integrity: sha512-cl669nCJTZBsL97OF4kUQm5g5hC2uihk0NxY3WENAC0TYdILVkAyHymAntgxGkl7K+t0cXIrH5siy5S4XkFycA==}
     engines: {node: '>=0.4.0'}
     hasBin: true
 
@@ -5406,8 +5423,8 @@ packages:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
 
-  libphonenumber-js@1.11.8:
-    resolution: {integrity: sha512-0fv/YKpJBAgXKy0kaS3fnqoUVN8901vUYAKIGD/MWZaDfhJt1nZjPL3ZzdZBt/G8G8Hw2J1xOIrXWdNHFHPAvg==}
+  libphonenumber-js@1.11.12:
+    resolution: {integrity: sha512-QkJn9/D7zZ1ucvT++TQSvZuSA2xAWeUytU+DiEQwbPKLyrDpvbul2AFs1CGbRAPpSCCk47aRAb5DX5mmcayp4g==}
 
   lie@3.3.0:
     resolution: {integrity: sha512-UaiMJzeWRlEujzAuw5LokY1L5ecNQYZKfmyZ9L7wDHb/p5etKaxXhohBcrw0EYby+G/NA52vRSN4N39dxHAIwQ==}
@@ -6134,8 +6151,8 @@ packages:
   picocolors@1.0.1:
     resolution: {integrity: sha512-anP1Z8qwhkbmu7MFP5iTt+wQKXgwzf7zTyGlcdzabySa9vd0Xt392U0rVmz9poOaBj0uHJKyyo9/upk0HrEQew==}
 
-  picocolors@1.1.0:
-    resolution: {integrity: sha512-TQ92mBOW0l3LeMeyLV6mzy/kWr8lkd/hp3mTg7wYK7zJhuBStmGMBG0BdeDZS/dZx1IukaX6Bk11zcln25o1Aw==}
+  picocolors@1.1.1:
+    resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
 
   picomatch@2.3.1:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
@@ -8754,7 +8771,7 @@ snapshots:
     dependencies:
       regenerator-runtime: 0.14.1
 
-  '@babel/runtime@7.25.6':
+  '@babel/runtime@7.26.0':
     dependencies:
       regenerator-runtime: 0.14.1
 
@@ -8853,7 +8870,11 @@ snapshots:
 
   '@floating-ui/utils@0.2.6': {}
 
+  '@hiveio/beekeeper@1.27.6-rc3': {}
+
   '@hiveio/beekeeper@1.27.6-rc3-stable.240916231926': {}
+
+  '@hiveio/beekeeper@1.27.6-rc4': {}
 
   '@hiveio/content-renderer@2.2.1':
     dependencies:
@@ -8882,28 +8903,37 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@hiveio/hb-auth@0.0.1-stable.240918090041':
+  '@hiveio/hb-auth@0.0.1-stable.241029124305':
     dependencies:
       '@hiveio/beekeeper': 1.27.6-rc3-stable.240916231926
-      '@hiveio/wax': 1.27.6-rc4-240917114249
+      '@hiveio/wax': 1.27.6-rc5-stable.241029104701
       comlink: 4.4.1
       idb: 7.1.1
 
   '@hiveio/hivescript@1.3.1': {}
 
-  '@hiveio/wax@1.27.6-rc4-240917114249':
+  '@hiveio/wax@1.27.6-rc4':
     dependencies:
-      '@hiveio/beekeeper': 1.27.6-rc3-stable.240916231926
+      '@hiveio/beekeeper': 1.27.6-rc3
       class-transformer: 0.5.1
       class-validator: 0.14.1
       events: 3.3.0
       long: 5.2.3
       reflect-metadata: 0.1.14
 
-  '@hiveio/workerbee@1.27.6-rc5-stable.240917115618':
+  '@hiveio/wax@1.27.6-rc5-stable.241029104701':
     dependencies:
-      '@hiveio/beekeeper': 1.27.6-rc3-stable.240916231926
-      '@hiveio/wax': 1.27.6-rc4-240917114249
+      '@hiveio/beekeeper': 1.27.6-rc4
+      class-transformer: 0.5.1
+      class-validator: 0.14.1
+      events: 3.3.0
+      long: 5.2.3
+      reflect-metadata: 0.1.14
+
+  '@hiveio/workerbee@1.27.6-rc9-stable.240920064516':
+    dependencies:
+      '@hiveio/beekeeper': 1.27.6-rc3
+      '@hiveio/wax': 1.27.6-rc4
       events: 3.3.0
       rxjs: 7.8.1
 
@@ -10399,16 +10429,16 @@ snapshots:
   '@types/eslint-scope@3.7.7':
     dependencies:
       '@types/eslint': 9.6.1
-      '@types/estree': 1.0.5
+      '@types/estree': 1.0.6
 
   '@types/eslint@9.6.1':
     dependencies:
-      '@types/estree': 1.0.5
+      '@types/estree': 1.0.6
       '@types/json-schema': 7.0.15
 
   '@types/estree@0.0.39': {}
 
-  '@types/estree@1.0.5': {}
+  '@types/estree@1.0.6': {}
 
   '@types/express-serve-static-core@4.19.5':
     dependencies:
@@ -10771,9 +10801,9 @@ snapshots:
       acorn: 8.12.1
       acorn-walk: 8.3.3
 
-  acorn-import-attributes@1.9.5(acorn@8.12.1):
+  acorn-import-attributes@1.9.5(acorn@8.14.0):
     dependencies:
-      acorn: 8.12.1
+      acorn: 8.14.0
 
   acorn-jsx@5.3.2(acorn@8.12.1):
     dependencies:
@@ -10784,6 +10814,8 @@ snapshots:
       acorn: 8.12.1
 
   acorn@8.12.1: {}
+
+  acorn@8.14.0: {}
 
   agent-base@6.0.2:
     dependencies:
@@ -11325,7 +11357,7 @@ snapshots:
   class-validator@0.14.1:
     dependencies:
       '@types/validator': 13.12.2
-      libphonenumber-js: 1.11.8
+      libphonenumber-js: 1.11.12
       validator: 13.12.0
 
   class-variance-authority@0.6.1:
@@ -13712,7 +13744,7 @@ snapshots:
       prelude-ls: 1.2.1
       type-check: 0.4.0
 
-  libphonenumber-js@1.11.8: {}
+  libphonenumber-js@1.11.12: {}
 
   lie@3.3.0:
     dependencies:
@@ -14617,7 +14649,7 @@ snapshots:
 
   picocolors@1.0.1: {}
 
-  picocolors@1.1.0: {}
+  picocolors@1.1.1: {}
 
   picomatch@2.3.1: {}
 
@@ -14745,7 +14777,7 @@ snapshots:
   postcss@8.4.38:
     dependencies:
       nanoid: 3.3.7
-      picocolors: 1.1.0
+      picocolors: 1.1.1
       source-map-js: 1.2.1
 
   postcss@8.4.39:
@@ -14879,7 +14911,7 @@ snapshots:
 
   react-i18next@15.0.0(i18next@23.12.2)(react-dom@18.3.0(react@18.3.0))(react@18.3.0):
     dependencies:
-      '@babel/runtime': 7.25.6
+      '@babel/runtime': 7.26.0
       html-parse-stringify: 3.0.1
       i18next: 23.12.2
       react: 18.3.0
@@ -16287,12 +16319,12 @@ snapshots:
   webpack@5.93.0:
     dependencies:
       '@types/eslint-scope': 3.7.7
-      '@types/estree': 1.0.5
+      '@types/estree': 1.0.6
       '@webassemblyjs/ast': 1.12.1
       '@webassemblyjs/wasm-edit': 1.12.1
       '@webassemblyjs/wasm-parser': 1.12.1
-      acorn: 8.12.1
-      acorn-import-attributes: 1.9.5(acorn@8.12.1)
+      acorn: 8.14.0
+      acorn-import-attributes: 1.9.5(acorn@8.14.0)
       browserslist: 4.23.3
       chrome-trace-event: 1.0.4
       enhanced-resolve: 5.17.1
