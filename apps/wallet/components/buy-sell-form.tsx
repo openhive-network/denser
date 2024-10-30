@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer } from 'react';
+import { useCallback, useEffect, useReducer, useState } from 'react';
 import { Input } from '@ui/components/input';
 import { Button } from '@ui/components/button';
 import clsx from 'clsx';
@@ -8,6 +8,7 @@ import { useCreateMarketOrder } from './hooks/use-market-mutation';
 import { handleError } from '@ui/lib/utils';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getAsset } from '../lib/utils';
+import { Dialog, DialogContent, DialogFooter, DialogTrigger } from '@ui/components';
 enum ActionType {
   ChangeCostValue = 'changeCostValue',
   ChangeAmountValue = 'changeAmountValue',
@@ -82,6 +83,7 @@ export default function BuyOrSellForm({
     amount: '',
     total: ''
   });
+  const [dialogOpen, setDialogOpen] = useState(false);
   const { user } = useUser();
   const createBuyOrderMutation = useCreateMarketOrder();
 
@@ -108,6 +110,8 @@ export default function BuyOrSellForm({
       await createBuyOrderMutation.mutateAsync(params);
     } catch (error) {
       handleError(error, { method: 'limit_order_create', params });
+    } finally {
+      setDialogOpen(false);
     }
   }, [createBuyOrderMutation, state.amount, state.total, transaction, user.username]);
 
@@ -194,20 +198,36 @@ export default function BuyOrSellForm({
           </span>
           <span>{defaultPrice}</span>
         </div>
-
-        <Button
-          disabled={!disabled}
-          variant="outline"
-          className={clsx({
-            'border-destructive bg-background-secondary text-destructive hover:bg-red-950 hover:text-red-400':
-              transaction === 'sell',
-            'border-card-empty-border border-2 border-solid bg-card-noContent text-green-500 hover:bg-green-50 hover:text-green-600':
-              transaction === 'buy'
-          })}
-          onClick={submitOrder}
-        >
-          {label}
-        </Button>
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogTrigger asChild>
+            <Button
+              disabled={!disabled}
+              variant="outline"
+              className={clsx({
+                'border-destructive bg-background-secondary text-destructive hover:bg-red-950 hover:text-red-400':
+                  transaction === 'sell',
+                'border-card-empty-border border-2 border-solid bg-card-noContent text-green-500 hover:bg-green-50 hover:text-green-600':
+                  transaction === 'buy'
+              })}
+            >
+              {label}
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            {t('market_page.buy_sell_prompt', {
+              operation: transaction === 'buy' ? t('market_page.buy') : t('market_page.sell'),
+              hive: state.amount,
+              hbd: state.total,
+              rate: `${price}/HIVE`
+            })}
+            <DialogFooter className="flex w-full items-center !justify-between">
+              <Button onClick={submitOrder}>{t('market_page.ok')}</Button>
+              <Button variant="secondary" onClick={() => setDialogOpen(false)}>
+                {t('market_page.close')}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

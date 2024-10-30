@@ -194,7 +194,12 @@
     "trade_history": "Trade History",
     "newer": "Newer",
     "older": "Older",
-    "date": "Date"
+    "date": "Date",
+    "buy": "Buy",
+    "sell": "Sell",
+    "close": "Close",
+    "ok": "Ok",
+    "buy_sell_prompt": "{{operation}} at least {{hive}} HIVE for {{hbd}} HBD ({{rate}})?"
   },
   "witnesses_page": {
     "title": "Witness Voting",
