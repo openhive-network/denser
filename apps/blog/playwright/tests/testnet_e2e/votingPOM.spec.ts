@@ -3,6 +3,7 @@ import { HomePage } from '../support/pages/homePage';
 import { LoginForm } from '../support/pages/loginForm';
 import { ProfileUserMenu } from '../support/pages/profileUserMenu';
 import { LoginHelper, users } from '../support/loginHelper';
+import { ApiHelper } from '../support/apiHelper';
 
 test.describe('Voting tests with fixture and POM', () =>{
   let homePage: HomePage;
@@ -96,6 +97,49 @@ test.describe('Voting tests with fixture and POM', () =>{
         expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'background-color')).toBe('rgb(255, 0, 0)');
       }
     });
+
+    test('Validate request body after clicking upvote button of the first post of the tranding list', async ({denserAutoTest4Page}) =>{
+      const loginForm = new LoginForm(denserAutoTest4Page.page);
+      const loginHelper = new LoginHelper(denserAutoTest4Page.page);
+      const apiHelper = new ApiHelper(denserAutoTest4Page.page);
+
+      // wait for the broadcast transaction
+      const broadcastTransaction = apiHelper.waitForRequestToIntercept("https://zk28.local:8083/", "POST", "network_broadcast_api.broadcast_transaction");
+
+      // Validate User is logged in as denserautotest4
+      await loginHelper.validateLoggedInUser(users.denserautotest4.username);
+      // Click to close the profile menu
+      await denserAutoTest4Page.page.getByTestId('community-name').locator('..').locator('..').click({force: true});
+      // Set first post upvote button locators
+      const firstPostUpvoteButtonLocator = denserAutoTest4Page.page.getByTestId('post-list-item').first().getByTestId('upvote-button').locator('svg');
+      const firstPostUpvoteButtonLocatorToClick = denserAutoTest4Page.page.getByTestId('post-list-item').first().getByTestId('upvote-button');
+      // Click Upvote button of the first post on the trending list
+      await firstPostUpvoteButtonLocatorToClick.click();
+      // If a password to unlock key is needed
+      await loginForm.page.waitForTimeout(2000);
+      await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
+      await firstPostUpvoteButtonLocator.waitFor({state: 'visible'});
+
+      // wait for promise to resolve intercepted request
+      const broadcastTransactionReq = await broadcastTransaction;
+      const broadcastTransactionReqJson = await broadcastTransactionReq.postDataJSON();
+      // console.log('operations >>>: ', await broadcastTransactionReqJson.params.trx.operations);
+      await loginForm.page.waitForTimeout(2000);
+      // If now color of the upvote button is read
+      if (await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color') == 'rgb(255, 0, 0)') {
+        // it means that request was for 'Undo your upvote'
+        expect(await broadcastTransactionReqJson.params.trx.operations[0].type).toBe('vote_operation');
+        expect(await broadcastTransactionReqJson.params.trx.operations[0].value.voter).toBe('denserautotest4');
+        expect(await broadcastTransactionReqJson.params.trx.operations[0].value.author).toBe('dollarvigilante');
+        expect(await broadcastTransactionReqJson.params.trx.operations[0].value.weight).toBe(0);
+      } else {
+        // it meand that request was for 'Upvote'
+        expect(await broadcastTransactionReqJson.params.trx.operations[0].type).toBe('vote_operation');
+        expect(await broadcastTransactionReqJson.params.trx.operations[0].value.voter).toBe('denserautotest4');
+        expect(await broadcastTransactionReqJson.params.trx.operations[0].value.author).toBe('dollarvigilante');
+        expect(await broadcastTransactionReqJson.params.trx.operations[0].value.weight).toBe(10000);
+      }
+    });
   });
 
   test.describe('Downvote group', () => {
@@ -179,6 +223,49 @@ test.describe('Voting tests with fixture and POM', () =>{
         await secondPostDownvoteButtonLocator.waitFor({state: 'visible'});
         expect(await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'color')).toBe('rgb(255, 255, 255)');
         expect(await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'background-color')).toBe('rgb(255, 0, 0)');
+      }
+    });
+
+    test('Validate request body after clicking downvote button of the second post of the tranding list', async ({denserAutoTest4Page}) =>{
+      const loginForm = new LoginForm(denserAutoTest4Page.page);
+      const loginHelper = new LoginHelper(denserAutoTest4Page.page);
+      const apiHelper = new ApiHelper(denserAutoTest4Page.page);
+
+      // wait for the broadcast transaction
+      const broadcastTransaction = apiHelper.waitForRequestToIntercept("https://zk28.local:8083/", "POST", "network_broadcast_api.broadcast_transaction");
+
+      // Validate User is logged in as denserautotest4
+      await loginHelper.validateLoggedInUser(users.denserautotest4.username);
+      // Click to close the profile menu
+      await denserAutoTest4Page.page.getByTestId('community-name').locator('..').locator('..').click({force: true});
+      // Set second post downvote button locators
+      const secondPostDownvoteButtonLocator = denserAutoTest4Page.page.getByTestId('post-list-item').nth(1).getByTestId('downvote-button').locator('svg');
+      const secondPostDownvoteButtonLocatorToClick = denserAutoTest4Page.page.getByTestId('post-list-item').nth(1).getByTestId('downvote-button');
+      // Click Downvote button of the second post on the trending list
+      await secondPostDownvoteButtonLocatorToClick.click();
+      // If a password to unlock key is needed
+      await loginForm.page.waitForTimeout(2000);
+      await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
+      await secondPostDownvoteButtonLocator.waitFor({state: 'visible'});
+      await loginForm.page.waitForTimeout(2000);
+      // wait for promise to resolve intercepted request
+      const broadcastTransactionReq = await broadcastTransaction;
+      const broadcastTransactionReqJson = await broadcastTransactionReq.postDataJSON();
+      // console.log('operations >>>: ', await broadcastTransactionReqJson.params.trx.operations);
+      await loginForm.page.waitForTimeout(2000);
+      // If now color of the downvote button is grey
+      if (await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'color') == 'rgb(75, 85, 99)') {
+        // it means that request was for 'Undo your downvote'
+        expect(await broadcastTransactionReqJson.params.trx.operations[0].type).toBe('vote_operation');
+        expect(await broadcastTransactionReqJson.params.trx.operations[0].value.voter).toBe('denserautotest4');
+        expect(await broadcastTransactionReqJson.params.trx.operations[0].value.author).toBe('curie');
+        expect(await broadcastTransactionReqJson.params.trx.operations[0].value.weight).toBe(0);
+      } else {
+        // it meand that request was for 'Upvote'
+        expect(await broadcastTransactionReqJson.params.trx.operations[0].type).toBe('vote_operation');
+        expect(await broadcastTransactionReqJson.params.trx.operations[0].value.voter).toBe('denserautotest4');
+        expect(await broadcastTransactionReqJson.params.trx.operations[0].value.author).toBe('curie');
+        expect(await broadcastTransactionReqJson.params.trx.operations[0].value.weight).toBe(-10000);
       }
     });
   });

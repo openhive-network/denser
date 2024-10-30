@@ -222,4 +222,11 @@ export class ApiHelper {
 
     return responseGetCommunitySubscribers.json();
   }
+
+  waitForRequestToIntercept(requestUrl: string, requestMethod: string, jsonRpcMethod: string) {
+    const broadcastTransaction = this.page.waitForRequest((request) => {
+      return request.url()===requestUrl && request.method()===requestMethod && request.postDataJSON().method === jsonRpcMethod;
+    });
+    return broadcastTransaction;
+  }
 }
