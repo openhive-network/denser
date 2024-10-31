@@ -21,6 +21,7 @@ import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useTranslation } from '@/blog/i18n/client';
 import Sidebar from './sidebar';
 import ModeToggle from './mode-toggle';
+import LangToggle from './lang-toggle';
 
 const SiteHeader: FC = () => {
   const { t } = useTranslation('common_blog');
@@ -76,15 +77,19 @@ const SiteHeader: FC = () => {
                 <Icons.pencil className="h-5 w-5" />
               </Button>
             </Link>
-            {!user.isLoggedIn ? (
-              <ModeToggle>
-                <Button variant="ghost" size="sm" className="h-10 w-full px-0" data-testid="theme-mode">
-                  <Icons.sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                  <Icons.moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                  <span className="hidden">Toggle theme</span>
-                </Button>
-              </ModeToggle>
-            ) : null}
+            {user.isLoggedIn ? null : (
+              <>
+                <ModeToggle>
+                  <Button variant="ghost" size="sm" className="h-10 w-full px-0" data-testid="theme-mode">
+                    <Icons.sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                    <Icons.moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                    <span className="hidden">Toggle theme</span>
+                  </Button>
+                </ModeToggle>
+                <LangToggle logged={user.isLoggedIn} />
+              </>
+            )}
+
             <Sidebar />
           </nav>
         </div>
