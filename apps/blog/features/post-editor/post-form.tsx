@@ -27,7 +27,6 @@ import { useQuery } from '@tanstack/react-query';
 import * as z from 'zod';
 import clsx from 'clsx';
 import { useLocalStorage } from 'usehooks-ts';
-import { useTranslation } from 'next-i18next';
 import { createPermlink } from '@transaction/lib/utils';
 import { Entry, getCommunity, getSubscriptions } from '@transaction/lib/bridge';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
@@ -44,6 +43,7 @@ import SelectImageList from '@/blog/components/select-image-list';
 import { AdvancedSettingsPostForm } from '@/blog/features/post-editor/advanced-settings-post-form';
 import Renderer from '@/blog/components/renderer/components/rendererClient';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useTranslation } from '@/blog/i18n/client';
 
 const logger = getLogger('app');
 export interface Preferences {

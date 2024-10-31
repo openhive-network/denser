@@ -6,7 +6,6 @@ import PostForm from '@/blog/features/post-editor/post-form';
 
 const Page = () => {
   const { user } = useUserClient();
-
   return <PostForm username={user.username} editMode={false} sideBySidePreview={true} />;
 };
 
