@@ -1,3 +1,4 @@
+'use client';
 import { Input, Separator } from '@ui/components';
 import { Button } from '@ui/components/button';
 import {
@@ -15,8 +16,9 @@ import { Icons } from '@ui/components/icons';
 import { useLocalStorage } from 'usehooks-ts';
 import { toast } from '@ui/components/hooks/use-toast';
 import { useTranslation } from 'next-i18next';
-import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
+
 import badActorList from '@ui/config/lists/bad-actor-list';
+import { DEFAULT_PREFERENCES, Preferences } from './post-form';
 
 type AccountFormValues = {
   title: string;

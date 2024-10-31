@@ -20,6 +20,7 @@ import remarkMdxHandler from '@/blog/components/renderer/lib/mdx-elements-handle
 import { FC } from 'react';
 import rehypeSanitize from 'rehype-sanitize';
 import { remarkDebug, rehypeDebug } from '../lib/re-debug';
+import clsx from 'clsx';
 
 const options: SerializeOptions = {
   mdxOptions: {
@@ -50,7 +51,11 @@ const options: SerializeOptions = {
   }
 };
 
-const Renderer: FC<{ mdSource: string; author: string }> = ({ mdSource, author }) => {
+const Renderer: FC<{ mdSource: string; author: string; type: 'post' | 'comment' }> = ({
+  mdSource,
+  author,
+  type
+}) => {
   const [md, setMd] = useState<SerializeResult>();
 
   useEffect(() => {
@@ -65,7 +70,12 @@ const Renderer: FC<{ mdSource: string; author: string }> = ({ mdSource, author }
     startTransition(() => serializeMd());
   }, [mdSource]);
   return (
-    <div className="prose font-source text-[16.5px] prose-h1:text-[26.4px] prose-h2:text-[23.1px] prose-h3:text-[19.8px] prose-h4:text-[18.1px] prose-p:mb-6 prose-p:mt-0 prose-img:cursor-pointer sm:text-[17.6px] sm:prose-h1:text-[28px] sm:prose-h2:text-[24.7px] sm:prose-h3:text-[22.1px] sm:prose-h4:text-[19.4px] lg:text-[19.2px] lg:prose-h1:text-[30.7px] lg:prose-h2:text-[28.9px] lg:prose-h3:text-[23px] lg:prose-h4:text-[21.1px]">
+    <div
+      className={clsx('prose', {
+        'font-source text-[16.5px] prose-h1:text-[26.4px] prose-h2:text-[23.1px] prose-h3:text-[19.8px] prose-h4:text-[18.1px] prose-p:mb-6 prose-p:mt-0 prose-img:cursor-pointer sm:text-[17.6px] sm:prose-h1:text-[28px] sm:prose-h2:text-[24.7px] sm:prose-h3:text-[22.1px] sm:prose-h4:text-[19.4px] lg:text-[19.2px] lg:prose-h1:text-[30.7px] lg:prose-h2:text-[28.9px] lg:prose-h3:text-[23px] lg:prose-h4:text-[21.1px]':
+          type === 'post'
+      })}
+    >
       {md && 'compiledSource' in md ? <MDXClient {...md} /> : null}
     </div>
   );

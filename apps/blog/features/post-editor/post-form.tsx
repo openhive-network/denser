@@ -1,5 +1,5 @@
-import { Button } from '@hive/ui/components/button';
-import { Input } from '@hive/ui/components/input';
+'use client';
+
 import Link from 'next/link';
 import {
   Select,
@@ -7,39 +7,57 @@ import {
   SelectGroup,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from '@hive/ui/components/select';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@hive/ui/components/form';
-import { useForm, useWatch } from 'react-hook-form';
-import useManabars from './hooks/useManabars';
-import { AdvancedSettingsPostForm } from '../features/post-editor/advanced-settings-post-form';
-import MdEditor from './md-editor';
+  SelectValue,
+  Input,
+  Button,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage
+} from '@hive/ui/components';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useQuery } from '@tanstack/react-query';
+import * as z from 'zod';
 import clsx from 'clsx';
 import { useLocalStorage } from 'usehooks-ts';
 import { useTranslation } from 'next-i18next';
 import { createPermlink } from '@transaction/lib/utils';
-import { useQuery } from '@tanstack/react-query';
 import { Entry, getCommunity, getSubscriptions } from '@transaction/lib/bridge';
-import { useRouter } from 'next/router';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { TFunction } from 'i18next';
-import { debounce } from '../lib/utils';
 import { Icons } from '@ui/components/icons';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
-import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 import { getLogger } from '@ui/lib/logging';
-import SelectImageList from './select-image-list';
-import RendererContainer from './rendererContainer';
-import { usePostMutation } from './hooks/use-post-mutation';
 import { handleError } from '@ui/lib/utils';
 import { CircleSpinner } from 'react-spinners-kit';
-import { postClassName } from '../pages/[param]/[p2]/[permlink]';
+import useManabars from '@/blog/components/hooks/useManabars';
+import { usePostMutation } from '@/blog/components/hooks/use-post-mutation';
+
+import MdEditor from '@/blog/components/md-editor';
+import SelectImageList from '@/blog/components/select-image-list';
+import { AdvancedSettingsPostForm } from '@/blog/features/post-editor/advanced-settings-post-form';
+import Renderer from '@/blog/components/renderer/components/rendererClient';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const logger = getLogger('app');
-
+export interface Preferences {
+  nsfw: 'hide' | 'warn' | 'show';
+  blog_rewards: '0%' | '50%' | '100%';
+  comment_rewards: '0%' | '50%' | '100%';
+  referral_system: 'enabled' | 'disabled';
+}
+export const DEFAULT_PREFERENCES: Preferences = {
+  nsfw: 'warn',
+  blog_rewards: '50%',
+  comment_rewards: '50%',
+  referral_system: 'enabled'
+};
 const MAX_TAGS = 8;
 function validateTagInput(value: string, required: boolean, t: TFunction<'common_blog', undefined>) {
   if (!value || value.trim() === '') return required ? t('submit_page.category_selector.required') : null;
@@ -71,7 +89,15 @@ function validateTagInput(value: string, required: boolean, t: TFunction<'common
                       ? t('submit_page.category_selector.tags_cannot_be_repeated')
                       : null;
 }
-
+const debounce = (fn: Function, delay: number) => {
+  let timer: ReturnType<typeof setTimeout>;
+  return function (...args: any[]) {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      fn(...args);
+    }, delay);
+  };
+};
 function validateSummaryInput(value: string, t: TFunction<'common_wallet', undefined>) {
   const markdownRegex = /(?:\*[\w\s]*\*|#[\w\s]*#|_[\w\s]*_|~[\w\s]*~|\]\s*\(|\]\s*\[)/;
   const htmlTagRegex = /<\/?[\w\s="/.':;#-/?]+>/gi;
@@ -109,6 +135,7 @@ export default function PostForm({
   refreshPage?: () => void;
 }) {
   const btnRef = useRef<HTMLButtonElement>(null);
+  const category = useSearchParams()?.get('category');
   const router = useRouter();
   const [preferences, setPreferences] = useLocalStorage<Preferences>(
     `user-preferences-${username}`,
@@ -158,9 +185,8 @@ export default function PostForm({
     isFetching: communityDataIsFetching,
     error: communityDataError
   } = useQuery(
-    ['community', router.query.category, ''],
-    () =>
-      getCommunity(router.query.category ? router.query.category.toString() : storedPost.category, username),
+    ['community', category, ''],
+    () => getCommunity(category ? category : storedPost.category, username),
     {
       enabled: Boolean(storedPost.category) && storedPost.category !== 'blog'
     }
@@ -191,7 +217,6 @@ export default function PostForm({
       tags: post_s?.json_metadata?.tags?.join(' ') || storedPost?.tags || '',
       author: post_s?.json_metadata?.author || storedPost?.author || '',
       category: post_s?.category || storedPost?.category || '',
-      // beneficiaries: post_s ? post_s.beneficiaries : storedPost?.beneficiaries ?? [],
       beneficiaries: storedPost?.beneficiaries || [],
       maxAcceptedPayout: post_s
         ? Number(post_s.max_accepted_payout.split(' ')[0])
@@ -213,14 +238,14 @@ export default function PostForm({
   const watchedValues = form.watch();
   const tagsCheck = validateTagInput(
     watchedValues.tags,
-    !router.query.category ? watchedValues.category === 'blog' : false,
+    !category ? watchedValues.category === 'blog' : false,
     t
   );
   const summaryCheck = validateSummaryInput(watchedValues.postSummary, t);
   const altUsernameCheck = validateAltUsernameInput(watchedValues.author, t);
   const communityPosting =
-    mySubsData && mySubsData?.filter((e) => e[0] === router.query.category).length > 0
-      ? mySubsData?.filter((e) => e[0] === router.query.category)[0][0]
+    mySubsData && mySubsData?.filter((e) => e[0] === category).length > 0
+      ? mySubsData?.filter((e) => e[0] === category)[0][0]
       : undefined;
 
   useEffect(() => {
@@ -285,10 +310,10 @@ export default function PostForm({
           refreshPage();
         }
       } else {
-        if (router.query.category) {
-          await router.push(`/created/${router.query.category}`, undefined, { shallow: true });
+        if (category) {
+          await router.push(`/created/${category}`, undefined);
         } else {
-          await router.push(`/created/${tags[0]}`, undefined, { shallow: true });
+          await router.push(`/created/${tags[0]}`, undefined);
         }
       }
       if (btnRef.current) {
@@ -426,7 +451,7 @@ export default function PostForm({
                 </FormItem>
               )}
             />
-            <SelectImageList content={watchedValues.postArea} value={selectedImg} onChange={setSelectedImg} />
+            {/* <SelectImageList content={watchedValues.postArea} value={selectedImg} onChange={setSelectedImg} />*/}
             {!editMode ? (
               <div className="flex flex-col gap-2">
                 <span>{t('submit_page.post_options')}</span>
@@ -564,16 +589,7 @@ export default function PostForm({
               <span className="text-sm text-destructive">{t('submit_page.markdown_styling_guide')}</span>
             </Link>
           </div>
-          {previewContent ? (
-            <RendererContainer
-              body={previewContent}
-              author=""
-              className={
-                postClassName +
-                ' w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2'
-              }
-            />
-          ) : null}
+          {previewContent ? <Renderer mdSource={previewContent} author="" type="post" /> : null}
         </div>
       </div>
     </div>

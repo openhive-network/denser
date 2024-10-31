@@ -7,9 +7,6 @@ import clsx from 'clsx';
 import { ReactNode } from 'react';
 import { useTranslation } from 'next-i18next';
 import env from '@beam-australia/react-env';
-// import DialogLogin from './dialog-login';
-import { useUser } from '@smart-signer/lib/auth/use-user';
-import DialogLogin from '../dialog-login';
 import version from '../../version.json';
 
 const Item = ({

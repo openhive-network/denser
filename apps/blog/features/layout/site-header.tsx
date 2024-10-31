@@ -1,3 +1,4 @@
+'use client';
 import { hoursAndMinutes } from '@/blog/lib/utils';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useQuery } from '@tanstack/react-query';
@@ -21,15 +22,11 @@ import { useTranslation } from 'next-i18next';
 
 import React, { useState, KeyboardEvent, FC, useEffect } from 'react';
 import { Pie } from 'recharts';
-import DialogLogin from '../dialog-login';
-import useManabars from '../hooks/useManabars';
-import LangToggle from '../lang-toggle';
-import { MainNav } from '../main-nav';
-import ModeToggle from '../mode-toggle';
-import UserMenu from '../user-menu';
 import Link from 'next/link';
-import Sidebar from '../sidebar';
 import { useRouter } from 'next/navigation';
+import useManabars from '@/blog/components/hooks/useManabars';
+import { MainNav } from '@/blog/components/main-nav';
+import Sidebar from './sidebar';
 
 const SiteHeader: FC = () => {
   const router = useRouter();
