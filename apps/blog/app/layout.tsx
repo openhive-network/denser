@@ -1,14 +1,14 @@
-'use client';
 import { Providers } from './providers';
 import '@hive/tailwindcss-config/globals.css';
 import { Toaster } from '@ui/components/toaster';
 import { ModalContainer } from '@smart-signer/components/modal-container';
-
 import { TailwindIndicator } from '../components/tailwind-indicator';
 import { ReactNode } from 'react';
+import { useTranslation } from '../i18n/server';
 import SiteHeader from '../features/layout/site-header';
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const { t } = await useTranslation('common_blog');
   return (
     <html lang="en">
       <body>
@@ -20,7 +20,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                 {children}
                 <ModalContainer />
                 <Toaster />
-                <TailwindIndicator />
               </>
             </Providers>
           </div>

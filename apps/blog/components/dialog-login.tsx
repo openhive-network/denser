@@ -1,3 +1,4 @@
+'use client';
 import { ReactNode, useRef } from 'react';
 import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
 import SignInForm, { SignInFormRef } from '@smart-signer/components/auth/form';

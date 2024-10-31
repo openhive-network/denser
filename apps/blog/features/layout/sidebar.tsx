@@ -1,3 +1,4 @@
+'use client';
 import { Button } from '@ui/components/button';
 import { Icons } from '@ui/components/icons';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@ui/components/sheet';
@@ -8,6 +9,8 @@ import { ReactNode } from 'react';
 import { useTranslation } from 'next-i18next';
 import env from '@beam-australia/react-env';
 import version from '../../version.json';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import DialogLogin from '@/blog/components/dialog-login';
 
 const Item = ({
   href,
@@ -30,8 +33,8 @@ const Item = ({
 };
 
 const Sidebar = () => {
-  // const { user } = useUser();
   const { t } = useTranslation('common_blog');
+  const { user } = useUserClient();
   const walletHost = env('WALLET_ENDPOINT');
   return (
     <Sheet>
@@ -48,7 +51,7 @@ const Sidebar = () => {
       >
         <div className="flex flex-col">
           <ul className="flex flex-col">
-            {/* {!user?.isLoggedIn && (
+            {!user?.isLoggedIn && (
               <li className="cursor-pointer border-b-2 border-border text-foreground hover:border-destructive hover:bg-background-secondary dark:hover:border-destructive">
                 <DialogLogin>
                   <div className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
@@ -67,7 +70,7 @@ const Sidebar = () => {
                 </Link>
               </li>
             )}
-            {!user?.isLoggedIn && <Separator className="my-2 sm:hidden" />} */}
+            {!user?.isLoggedIn && <Separator className="my-2 sm:hidden" />}
             <Item href="/welcome">{t('navigation.sidebar.welcome')}</Item>
             <Item href="/faq.html">{t('navigation.sidebar.faq')}</Item>
             <Item href="https://hiveblocks.com" target>
