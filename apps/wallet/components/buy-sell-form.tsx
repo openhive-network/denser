@@ -9,6 +9,9 @@ import { handleError } from '@ui/lib/utils';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getAsset } from '../lib/utils';
 import { Dialog, DialogContent, DialogFooter, DialogTrigger } from '@ui/components';
+import { useQuery } from '@tanstack/react-query';
+import { getAccount } from '@transaction/lib/hive';
+
 enum ActionType {
   ChangeCostValue = 'changeCostValue',
   ChangeAmountValue = 'changeAmountValue',
@@ -86,6 +89,9 @@ export default function BuyOrSellForm({
   const [dialogOpen, setDialogOpen] = useState(false);
   const { user } = useUser();
   const createBuyOrderMutation = useCreateMarketOrder();
+  const { data: accountData } = useQuery(['accountData', user.username], () => getAccount(user.username), {
+    enabled: !!user.username
+  });
 
   useEffect(() => {
     dispatch({ type: ActionType.ChangeCostValue, cost: price });
@@ -185,18 +191,34 @@ export default function BuyOrSellForm({
       </div>{' '}
       <div className="flex justify-between">
         <div className="text-xs">
-          <span
-            className="cursor-pointer text-destructive"
-            onClick={(e) =>
-              dispatch({
-                type: ActionType.ChangeCostValue,
-                cost: defaultPrice
-              })
-            }
-          >
-            {transaction === 'sell' ? t('market_page.highest_bid') : t('market_page.lowest_ask')}:{' '}
-          </span>
-          <span>{defaultPrice}</span>
+          <div>
+            <span
+              className="cursor-pointer text-destructive"
+              onClick={() =>
+                dispatch({
+                  type: ActionType.ChangeCostValue,
+                  cost: defaultPrice
+                })
+              }
+            >
+              {t('market_page.available')}:{' '}
+            </span>
+            <span>{transaction === 'buy' ? `${accountData?.hbd_balance}` : `${accountData?.balance}`}</span>
+          </div>
+          <div>
+            <span
+              className="cursor-pointer text-destructive"
+              onClick={() =>
+                dispatch({
+                  type: ActionType.ChangeCostValue,
+                  cost: defaultPrice
+                })
+              }
+            >
+              {transaction === 'sell' ? t('market_page.highest_bid') : t('market_page.lowest_ask')}:{' '}
+            </span>
+            <span>{defaultPrice}</span>
+          </div>
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>

@@ -199,6 +199,7 @@
     "sell": "Sell",
     "close": "Close",
     "ok": "Ok",
+    "available": "Available",
     "buy_sell_prompt": "{{operation}} at least {{hive}} HIVE for {{hbd}} HBD ({{rate}})?"
   },
   "witnesses_page": {
