@@ -26,7 +26,7 @@ import { useRouter } from 'next/navigation';
 import useManabars from '@/blog/components/hooks/useManabars';
 import { useQuery } from '@tanstack/react-query';
 import { getUnreadNotifications } from '@transaction/lib/bridge';
-import UserMenu from '@/blog/components/user-menu';
+import UserMenu from '@/blog/features/layout/user-menu';
 import { PieChart, Pie } from 'recharts';
 import { hoursAndMinutes } from '@/blog/lib/utils-app';
 
