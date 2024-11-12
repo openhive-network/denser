@@ -16,9 +16,8 @@ import { Icons } from '@ui/components/icons';
 import { useLocalStorage } from 'usehooks-ts';
 import { toast } from '@ui/components/hooks/use-toast';
 import { useTranslation } from 'next-i18next';
-
 import badActorList from '@ui/config/lists/bad-actor-list';
-import { DEFAULT_PREFERENCES, Preferences } from './post-form';
+import { DEFAULT_PREFERENCES, Preferences } from '@/blog/app/submit/content';
 
 type AccountFormValues = {
   title: string;

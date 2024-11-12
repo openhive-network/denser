@@ -119,7 +119,7 @@ export function imagePicker(img: string) {
   return checkImg;
 }
 
-export default function PostForm({
+export default function Content({
   username,
   editMode = false,
   sideBySidePreview = true,
@@ -340,7 +340,7 @@ export default function PostForm({
   };
 
   return (
-    <div className={clsx({ container: !sideBySide || !preview })}>
+    <div className={clsx('px-4 py-8', { container: !sideBySide || !preview })}>
       <div
         className={clsx('flex flex-col gap-4 bg-background p-8', {
           'lg:flex-row': sideBySide
