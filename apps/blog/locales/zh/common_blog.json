@@ -58,7 +58,12 @@
       "search": "搜索...",
       "light": "Light",
       "dark": "Dark",
-      "system": "System"
+      "system": "System",
+      "rc": "资源积分",
+      "rc_level": "RC等级：${{value}}%",
+      "vp": "投票权：${{value}}%",
+      "dvp": "反对票权：${{value}}%",
+      "full_in": "完全恢复：${{value}}"
     },
     "sidebar": {
       "welcome": "欢迎",

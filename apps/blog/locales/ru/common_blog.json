@@ -58,7 +58,12 @@
       "search": "Search...",
       "light": "Light",
       "dark": "Dark",
-      "system": "System"
+      "system": "System",
+      "rc": "Кредиты Ресурсов",
+      "rc_level": "Уровень RC: ${{value}}%",
+      "vp": "Мощность Голоса: ${{value}}%",
+      "dvp": "Мощность Против Голоса: ${{value}}%",
+      "full_in": "Полное через: ${{value}}"
     },
     "sidebar": {
       "welcome": "Welcome",

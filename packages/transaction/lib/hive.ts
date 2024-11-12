@@ -16,7 +16,12 @@ import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
 
-const chain = await hiveChainService.getHiveChain();
+// const chain = await hiveChainService.getHiveChain();
+let globalChain: IHiveChainInterface | undefined = undefined;
+const getChain = async () => {
+  if (!globalChain) globalChain = await hiveChainService.getHiveChain();
+  return globalChain;
+};
 
 export interface IDynamicGlobalProperties {
   hbd_print_rate: number;
@@ -36,7 +41,7 @@ type GetDynamicGlobalProperties = {
 };
 
 export const getDynamicGlobalProperties = async (): Promise<IDynamicGlobalProperties> => {
-  return chain
+  return (await getChain())
     .extend<GetDynamicGlobalProperties>()
     .api.condenser_api.get_dynamic_global_properties([])
     .then((r: any) => {
@@ -60,7 +65,7 @@ type GetAccountsnData = {
 };
 
 export const getAccounts = async (usernames: string[]): Promise<FullAccount[]> => {
-  return chain
+  return (await getChain())
     .extend<GetAccountsnData>()
     .api.condenser_api.get_accounts([usernames])
     .then((resp: any[]): FullAccount[] =>
@@ -153,8 +158,10 @@ type GetFindsAccountsData = {
   };
 };
 
-export const getFindAccounts = (username: string): Promise<{ accounts: ApiAccount[] }> => {
-  return chain.extend<GetFindsAccountsData>().api.database_api.find_accounts({ accounts: [username] });
+export const getFindAccounts = async (username: string): Promise<{ accounts: ApiAccount[] }> => {
+  return (await getChain())
+    .extend<GetFindsAccountsData>()
+    .api.database_api.find_accounts({ accounts: [username] });
 };
 export interface IFeedHistory {
   current_median_history: {
@@ -176,7 +183,7 @@ type GetFeedHistoryData = {
 };
 
 export const getFeedHistory = async (): Promise<IFeedHistory> => {
-  return chain.extend<GetFeedHistoryData>().api.database_api.get_feed_history();
+  return (await getChain()).extend<GetFeedHistoryData>().api.database_api.get_feed_history();
 };
 
 type GetFollowCountData = {
@@ -186,7 +193,7 @@ type GetFollowCountData = {
 };
 
 export const getFollowCount = async (username: string): Promise<AccountFollowStats> => {
-  return chain.extend<GetFollowCountData>().api.condenser_api.get_follow_count([username]);
+  return (await getChain()).extend<GetFollowCountData>().api.condenser_api.get_follow_count([username]);
 };
 
 export interface ITrendingTag {
@@ -310,7 +317,7 @@ type GetPostData = {
 };
 
 export const getPost = async (username: string, permlink: string): Promise<IPost> => {
-  return chain.extend<GetPostData>().api.condenser_api.get_content([username, permlink]);
+  return (await getChain()).extend<GetPostData>().api.condenser_api.get_content([username, permlink]);
 };
 
 interface IAccountReputationParams {
@@ -338,7 +345,7 @@ export const getAccountReputations = async (
   account_lower_bound: string,
   limit: number
 ): Promise<IAccountReputations[]> => {
-  return chain
+  return (await getChain())
     .extend<GetAccountReputationData>()
     .api.condenser_api.get_account_reputations({ account_lower_bound, limit });
 };
@@ -350,7 +357,9 @@ type GetMarketBucketSizesData = {
 };
 
 export const getMarketBucketSizes = async (): Promise<number[]> => {
-  return chain.extend<GetMarketBucketSizesData>().api.condenser_api.get_market_history_buckets([]);
+  return (await getChain())
+    .extend<GetMarketBucketSizesData>()
+    .api.condenser_api.get_market_history_buckets([]);
 };
 
 type GetMarketHistoryData = {
@@ -366,7 +375,7 @@ export const getMarketHistory = async (
 ): Promise<IMarketCandlestickDataItem[]> => {
   let todayEarlier: string = startDate.format().split('+')[0];
   let todayNow: string = endDate.format().split('+')[0];
-  return chain
+  return (await getChain())
     .extend<GetMarketHistoryData>()
     .api.condenser_api.get_market_history([seconds, todayEarlier, todayNow]);
 };
@@ -378,7 +387,9 @@ type GetActiveVotesData = {
 };
 
 export const getActiveVotes = async (author: string, permlink: string): Promise<IVote[]> => {
-  return chain.extend<GetActiveVotesData>().api.condenser_api.get_active_votes([author, permlink]);
+  return (await getChain())
+    .extend<GetActiveVotesData>()
+    .api.condenser_api.get_active_votes([author, permlink]);
 };
 
 type GetTrendingTagsData = {
@@ -388,7 +399,7 @@ type GetTrendingTagsData = {
 };
 
 export const getTrendingTags = async (afterTag: string = '', limit: number = 250): Promise<string[]> => {
-  return chain
+  return (await getChain())
     .extend<GetTrendingTagsData>()
     .api.database_api.get_trending_tags([afterTag, limit])
     .then((tags: ITrendingTag[]) => {
@@ -403,7 +414,7 @@ export const getAllTrendingTags = async (
   afterTag: string = '',
   limit: number = 250
 ): Promise<ITrendingTag[] | void> => {
-  return chain
+  return (await getChain())
     .extend<GetTrendingTagsData>()
     .api.database_api.get_trending_tags([afterTag, limit])
     .then((tags: ITrendingTag[]) => {
@@ -421,7 +432,7 @@ type LookupAccountsData = {
 };
 
 export const lookupAccounts = async (q: string, limit = 50): Promise<string[]> => {
-  return chain.extend<LookupAccountsData>().api.database_api.lookup_accounts([q, limit]);
+  return (await getChain()).extend<LookupAccountsData>().api.database_api.lookup_accounts([q, limit]);
 };
 
 export interface IFollow {
@@ -450,7 +461,7 @@ type GetFollowersData = {
 };
 export const getFollowers = async (params?: Partial<IGetFollowParams>): Promise<IFollow[]> => {
   try {
-    return chain
+    return (await getChain())
       .extend<GetFollowersData>()
       .api.condenser_api.get_followers([
         params?.account || DEFAULT_PARAMS_FOR_FOLLOW.account,
@@ -471,7 +482,7 @@ type GetFollowingData = {
 };
 export const getFollowing = async (params?: Partial<IGetFollowParams>): Promise<IFollow[]> => {
   try {
-    return chain
+    return (await getChain())
       .extend<GetFollowingData>()
       .api.condenser_api.get_following([
         params?.account || DEFAULT_PARAMS_FOR_FOLLOW.account,
@@ -491,7 +502,7 @@ type GetRewardFundData = {
   };
 };
 export const getRewardFund = async (): Promise<IRewardFund> => {
-  return chain.extend<GetRewardFundData>().api.database_api.get_reward_fund(['post']);
+  return (await getChain()).extend<GetRewardFundData>().api.database_api.get_reward_fund(['post']);
 };
 
 export const getDynamicProps = async (): Promise<IDynamicProps> => {
@@ -545,7 +556,9 @@ type GetWithdrawRoutesData = {
   };
 };
 export const getWithdrawRoutes = async (account: string): Promise<WithdrawRoute[]> => {
-  return chain.extend<GetWithdrawRoutesData>().api.database_api.get_withdraw_routes([account, 'outgoing']);
+  return (await getChain())
+    .extend<GetWithdrawRoutesData>()
+    .api.database_api.get_withdraw_routes([account, 'outgoing']);
 };
 
 export const powerRechargeTime = (power: number) => {
@@ -624,7 +637,9 @@ type GetConversionRequestsData = {
   };
 };
 export const getConversionRequests = async (account: string): Promise<IConversionRequest[]> => {
-  return chain.extend<GetConversionRequestsData>().api.database_api.get_conversion_requests([account]);
+  return (await getChain())
+    .extend<GetConversionRequestsData>()
+    .api.database_api.get_conversion_requests([account]);
 };
 
 type GetCollateralizedConversionRequestsData = {
@@ -635,7 +650,7 @@ type GetCollateralizedConversionRequestsData = {
 export const getCollateralizedConversionRequests = async (
   account: string
 ): Promise<ICollateralizedConversionRequest[]> => {
-  return chain
+  return (await getChain())
     .extend<GetCollateralizedConversionRequestsData>()
     .api.database_api.get_collateralized_conversion_requests([account]);
 };
@@ -656,7 +671,9 @@ type GetSavingsWithdrawFromData = {
   };
 };
 export const getSavingsWithdrawFrom = async (account: string): Promise<SavingsWithdrawRequest[]> => {
-  return chain.extend<GetSavingsWithdrawFromData>().api.database_api.get_savings_withdraw_from([account]);
+  return (await getChain())
+    .extend<GetSavingsWithdrawFromData>()
+    .api.database_api.get_savings_withdraw_from([account]);
 };
 
 export interface BlogEntry {
@@ -673,7 +690,9 @@ type GetBlogEntriesData = {
   };
 };
 export const getBlogEntries = async (username: string, limit: number = DATA_LIMIT): Promise<BlogEntry[]> => {
-  return chain.extend<GetBlogEntriesData>().api.condenser_api.get_blog_entries([username, 0, limit]);
+  return (await getChain())
+    .extend<GetBlogEntriesData>()
+    .api.condenser_api.get_blog_entries([username, 0, limit]);
 };
 
 type GetRebloggedByData = {
@@ -691,7 +710,9 @@ type GetRebloggedByData = {
  * @returns
  */
 export const getRebloggedBy = async (author: string, permlink: string): Promise<string[]> => {
-  return chain.extend<GetRebloggedByData>().api.condenser_api.get_reblogged_by([author, permlink]);
+  return (await getChain())
+    .extend<GetRebloggedByData>()
+    .api.condenser_api.get_reblogged_by([author, permlink]);
 };
 
 type BrodcastTransactionData = {
@@ -700,7 +721,7 @@ type BrodcastTransactionData = {
   };
 };
 export const brodcastTransaction = async (transaction: any): Promise<any> => {
-  return chain
+  return (await getChain())
     .extend<BrodcastTransactionData>()
     .api.network_broadcast_api.broadcast_transaction([transaction]);
 };
@@ -740,22 +761,20 @@ interface ISingleManabar {
   cooldown: Date;
 }
 
-interface Manabar {
+export interface Manabar {
   upvote: ISingleManabar;
   downvote: ISingleManabar;
   rc: ISingleManabar;
 }
-export const getManabars = async (
-  accountName: string,
-  hiveChain: IHiveChainInterface
-): Promise<IManabars | null> => {
+export const getManabars = async (accountName: string): Promise<IManabars | null> => {
+  const chain = await getChain();
   try {
-    const upvoteCooldownPromise = hiveChain.calculateManabarFullRegenerationTimeForAccount(accountName, 0);
-    const downvoteCooldownPromise = hiveChain.calculateManabarFullRegenerationTimeForAccount(accountName, 1);
-    const rcCooldownPromise = hiveChain.calculateManabarFullRegenerationTimeForAccount(accountName, 2);
-    const upvotePromise = hiveChain.calculateCurrentManabarValueForAccount(accountName, 0);
-    const downvotePromise = hiveChain.calculateCurrentManabarValueForAccount(accountName, 1);
-    const rcPromise = hiveChain.calculateCurrentManabarValueForAccount(accountName, 2);
+    const upvoteCooldownPromise = chain.calculateManabarFullRegenerationTimeForAccount(accountName, 0);
+    const downvoteCooldownPromise = chain.calculateManabarFullRegenerationTimeForAccount(accountName, 1);
+    const rcCooldownPromise = chain.calculateManabarFullRegenerationTimeForAccount(accountName, 2);
+    const upvotePromise = chain.calculateCurrentManabarValueForAccount(accountName, 0);
+    const downvotePromise = chain.calculateCurrentManabarValueForAccount(accountName, 1);
+    const rcPromise = chain.calculateCurrentManabarValueForAccount(accountName, 2);
     const manabars = await Promise.all([
       upvotePromise,
       upvoteCooldownPromise,
@@ -777,11 +796,8 @@ export const getManabars = async (
     return null;
   }
 };
-export const getManabar = async (
-  accountName: string,
-  hiveChain: IHiveChainInterface
-): Promise<Manabar | null> => {
-  const manabars = await getManabars(accountName, hiveChain!);
+export const getManabar = async (accountName: string): Promise<Manabar | null> => {
+  const manabars = await getManabars(accountName);
   if (!manabars) return null;
   const { upvote, upvoteCooldown, downvote, downvoteCooldown, rc, rcCooldown } = manabars;
 
@@ -828,44 +844,51 @@ export const getListWitnessVotes = async (
   limit: number,
   order: string
 ): Promise<IListWitnessVotes> => {
-  return chain
+  return (await getChain())
     .extend<GetListWitnessVotesData>()
     .api.database_api.list_witness_votes({ start: [username, ''], limit, order });
 };
 
 export interface IVoteListItem {
-  id: number,
-  voter: string,
-  author: string,
-  permlink: string,
-  weight: string,
-  rshares: number,
-  vote_percent: number,
-  last_update: string,
-  num_changes: number,
+  id: number;
+  voter: string;
+  author: string;
+  permlink: string;
+  weight: string;
+  rshares: number;
+  vote_percent: number;
+  last_update: string;
+  num_changes: number;
 }
 
 type GetListVotesData = {
   database_api: {
-    list_votes: TWaxApiRequest<{ start: [string, string, string] | null; limit: number; order: 'by_comment_voter' | 'by_voter_comment' }, { votes: IVoteListItem[] }>;
+    list_votes: TWaxApiRequest<
+      {
+        start: [string, string, string] | null;
+        limit: number;
+        order: 'by_comment_voter' | 'by_voter_comment';
+      },
+      { votes: IVoteListItem[] }
+    >;
   };
 };
 
 // See https://developers.hive.io/apidefinitions/#database_api.list_votes
 export const getListVotesByCommentVoter = async (
   start: [string, string, string] | null, // should be [author, permlink, voter]
-  limit: number,
+  limit: number
 ): Promise<{ votes: IVoteListItem[] }> => {
-  return chain
+  return (await getChain())
     .extend<GetListVotesData>()
     .api.database_api.list_votes({ start, limit, order: 'by_comment_voter' });
 };
 
 export const getListVotesByVoterComment = async (
   start: [string, string, string] | null, // should be [voter, author, permlink]
-  limit: number,
+  limit: number
 ): Promise<{ votes: IVoteListItem[] }> => {
-  return chain
+  return (await getChain())
     .extend<GetListVotesData>()
     .api.database_api.list_votes({ start, limit, order: 'by_voter_comment' });
 };

@@ -58,7 +58,12 @@
       "search": "Szukaj...",
       "light": "Tryb jasny",
       "dark": "Tryb ciemny",
-      "system": "Domyślny z systemu"
+      "system": "Domyślny z systemu",
+      "rc": "Kredyty Zasobów",
+      "rc_level": "Poziom RC: ${{value}}%",
+      "vp": "Moc Głosowania: ${{value}}%",
+      "dvp": "Moc Negatywnego Głosu: ${{value}}%",
+      "full_in": "Odnowione za: ${{value}}"
     },
     "sidebar": {
       "welcome": "Witaj",

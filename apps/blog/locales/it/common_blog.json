@@ -58,7 +58,12 @@
       "search": "Cerca...",
       "light": "Light",
       "dark": "Dark",
-      "system": "System"
+      "system": "System",
+      "rc": "Crediti di Risorsa",
+      "rc_level": "Livello (RC): ${{value}}%",
+      "vp": "Potere di Voto: ${{value}}%",
+      "dvp": "Potere di Non Voto: ${{value}}%",
+      "full_in": "Completo in: ${{value}}"
     },
     "sidebar": {
       "welcome": "Benvenuto",

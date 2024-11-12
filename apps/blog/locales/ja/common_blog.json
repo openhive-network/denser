@@ -58,7 +58,12 @@
       "search": "検索...",
       "light": "Light",
       "dark": "Dark",
-      "system": "System"
+      "system": "System",
+      "rc": "リソースクレジット",
+      "rc_level": "RCレベル: ${{value}}%",
+      "vp": "投票力: ${{value}}%",
+      "dvp": "ダウンボート力: ${{value}}%",
+      "full_in": "完全まで: ${{value}}"
     },
     "sidebar": {
       "welcome": "ようこそ",

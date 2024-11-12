@@ -58,7 +58,12 @@
       "search": "Search...",
       "light": "Light",
       "dark": "Dark",
-      "system": "System"
+      "system": "System",
+      "rc": "Resource Credits",
+      "rc_level": "(RC) level: ${{value}}%",
+      "vp": "Voting Power: ${{value}}%",
+      "dvp": "Downvote power: ${{value}}%",
+      "full_in": "Full in: ${{value}}"
     },
     "sidebar": {
       "welcome": "Welcome",

@@ -58,7 +58,12 @@
       "search": "Search...",
       "light": "Light",
       "dark": "Dark",
-      "system": "System"
+      "system": "System",
+      "rc": "자원 크레딧",
+      "rc_level": "RC 레벨: ${{value}}%",
+      "vp": "투표 권한: ${{value}}%",
+      "dvp": "다운투표 권한: ${{value}}%",
+      "full_in": "완전 충전까지: ${{value}}"
     },
     "sidebar": {
       "welcome": "환영합니다",
