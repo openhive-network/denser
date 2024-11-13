@@ -1,3 +1,5 @@
+'use client';
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,14 +11,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@ui/components/alert-dialog';
-import { useUser } from '@smart-signer/lib/auth/use-user';
-import { ReactNode, useState, KeyboardEvent } from 'react';
+import { ReactNode, useState } from 'react';
 import DialogLogin from './dialog-login';
 import { Button } from '@ui/components/button';
-import { useTranslation } from 'next-i18next';
-import { getLogger } from '@ui/lib/logging';
-
-const logger = getLogger('app');
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { useTranslation } from '../i18n/client';
 
 export function ReblogDialog({
   children,
@@ -27,7 +26,7 @@ export function ReblogDialog({
   permlink: string;
   action: (dialogResponse: boolean) => void;
 }) {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const { t } = useTranslation('common_blog');
   const [open, setOpen] = useState(false);
 

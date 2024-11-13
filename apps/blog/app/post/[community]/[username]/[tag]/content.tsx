@@ -30,6 +30,7 @@ import TwitterShare from '@/blog/components/share-post-twitter';
 import LinkedInShare from '@/blog/components/share-post-linkedin';
 import RedditShare from '@/blog/components/share-post-reddit';
 import { SharePost } from '@/blog/components/share-post-dialog';
+import ReblogTrigger from '@/blog/components/reblog-trigger';
 
 const Content = ({
   entryData,
@@ -290,12 +291,12 @@ const Content = ({
               </div>
               <div className="my-4 flex items-end gap-4 sm:flex-col">
                 <div className="flex items-center" data-testid="comment-respons-header">
-                  {/* <ReblogTrigger
+                  <ReblogTrigger
                     author={entryData.author}
                     permlink={entryData.permlink}
                     dataTestidTooltipContent="post-footer-reblog-tooltip"
                     dataTestidTooltipIcon="post-footer-reblog-icon"
-                  /> */}
+                  />
                   <span className="mx-1">|</span>
                   {user && user.isLoggedIn ? (
                     <>
