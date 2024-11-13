@@ -182,8 +182,14 @@
   word-wrap: break-word;
   word-break: break-word;
   hyphens: none;
+  user-select: auto !important;
 }
 
 .dark .w-md-editor-text .token.title {
   color: #fff !important;
+}
+.w-md-editor-text {
+  height: 100% !important;
+  width: 100% !important;
+  user-select: auto !important;
 }

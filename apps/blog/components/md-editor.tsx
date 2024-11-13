@@ -272,6 +272,11 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
             height={windowheight}
             //@ts-ignore
             style={{ '--color-canvas-default': 'var(--background)' }}
+            components={{
+              textarea: (props: any) => {
+                return <textarea {...props} className={`${props.className} h-[${windowheight}px] w-full`} />
+              }
+            }}
           />
         </div>
       </div>
