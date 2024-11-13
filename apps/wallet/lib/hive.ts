@@ -310,8 +310,30 @@ type GetSavingsWithdrawalsData = {
     find_savings_withdrawals: TWaxApiRequest<{ account: string }, SavingsWithdrawals>;
   };
 };
+
 export const getSavingsWithdrawals = async (account: string): Promise<SavingsWithdrawals> => {
   return chain
     .extend<GetSavingsWithdrawalsData>()
     .api.database_api.find_savings_withdrawals({ account: account });
+};
+
+type OwnerHistory = {
+  account: string;
+  id: number;
+  last_valid_time: string;
+  previous_owner_authority: {
+    account_auths: unknown[];
+    key_auths: [string, number][];
+    weight_threshold: number;
+  };
+}[];
+
+type GetOwnerHistoryData = {
+  condenser_api: {
+    get_owner_history: TWaxApiRequest<string[], OwnerHistory>;
+  };
+};
+
+export const getOwnerHistory = async (account: string): Promise<OwnerHistory> => {
+  return chain.extend<GetOwnerHistoryData>().api.condenser_api.get_owner_history([account]);
 };
