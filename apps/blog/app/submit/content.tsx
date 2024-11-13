@@ -589,7 +589,7 @@ export default function Content({
               <span className="text-sm text-destructive">{t('submit_page.markdown_styling_guide')}</span>
             </Link>
           </div>
-          {previewContent ? <Renderer mdSource={previewContent} author="" type="editor" /> : null}
+          {previewContent ? <Renderer mdSource={previewContent} author="" type="post-editor" /> : null}
         </div>
       </div>
     </div>

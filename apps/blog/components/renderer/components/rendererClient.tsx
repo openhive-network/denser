@@ -51,11 +51,11 @@ const options: SerializeOptions = {
   }
 };
 
-const Renderer: FC<{ mdSource: string; author: string; type: 'post' | 'comment' | 'editor' }> = ({
-  mdSource,
-  author,
-  type
-}) => {
+const Renderer: FC<{
+  mdSource: string;
+  author: string;
+  type: 'post' | 'comment' | 'post-editor' | 'comment-editor';
+}> = ({ mdSource, author, type }) => {
   const [md, setMd] = useState<SerializeResult>();
 
   useEffect(() => {
@@ -74,8 +74,12 @@ const Renderer: FC<{ mdSource: string; author: string; type: 'post' | 'comment' 
       className={clsx('prose', {
         'font-source text-[16.5px] prose-h1:text-[26.4px] prose-h2:text-[23.1px] prose-h3:text-[19.8px] prose-h4:text-[18.1px] prose-p:mb-6 prose-p:mt-0 prose-img:cursor-pointer sm:text-[17.6px] sm:prose-h1:text-[28px] sm:prose-h2:text-[24.7px] sm:prose-h3:text-[22.1px] sm:prose-h4:text-[19.4px] lg:text-[19.2px] lg:prose-h1:text-[30.7px] lg:prose-h2:text-[28.9px] lg:prose-h3:text-[23px] lg:prose-h4:text-[21.1px]':
           type === 'post',
+        'font-sanspro text-[12.5px] prose-h1:text-[20px] prose-h2:text-[17.5px] prose-h3:text-[15px] prose-h4:text-[13.7px] prose-p:mb-[9.6px] prose-p:mt-[1.6px] last:prose-p:mb-[3.2px]  prose-img:max-h-[400px] prose-img:max-w-[400px] sm:text-[13.4px] sm:prose-h1:text-[21.5px] sm:prose-h2:text-[18.7px] sm:prose-h3:text-[16px] sm:prose-h4:text-[14.7px] lg:text-[14.6px] lg:prose-h1:text-[23.3px] lg:prose-h2:text-[20.4px] lg:prose-h3:text-[17.5px] lg:prose-h4:text-[16px]':
+          type === 'comment',
         'w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2 font-source text-[16.5px] prose-h1:text-[26.4px] prose-h2:text-[23.1px] prose-h3:text-[19.8px] prose-h4:text-[18.1px] prose-p:mb-6 prose-p:mt-0 prose-img:cursor-pointer sm:text-[17.6px] sm:prose-h1:text-[28px] sm:prose-h2:text-[24.7px] sm:prose-h3:text-[22.1px] sm:prose-h4:text-[19.4px] lg:text-[19.2px] lg:prose-h1:text-[30.7px] lg:prose-h2:text-[28.9px] lg:prose-h3:text-[23px] lg:prose-h4:text-[21.1px]':
-          type === 'editor'
+          type === 'post-editor',
+        'max-w-full border-2 border-background-tertiary p-2 font-sanspro text-[12.5px] prose-h1:text-[20px] prose-h2:text-[17.5px] prose-h3:text-[15px]  prose-h4:text-[13.7px] prose-p:mb-[9.6px] prose-p:mt-[1.6px] last:prose-p:mb-[3.2px] prose-img:max-h-[400px] prose-img:max-w-[400px] sm:text-[13.4px] sm:prose-h1:text-[21.5px] sm:prose-h2:text-[18.7px] sm:prose-h3:text-[16px] sm:prose-h4:text-[14.7px] lg:text-[14.6px] lg:prose-h1:text-[23.3px] lg:prose-h2:text-[20.4px] lg:prose-h3:text-[17.5px] lg:prose-h4:text-[16px]':
+          type === 'comment-editor'
       })}
     >
       {md && 'compiledSource' in md ? <MDXClient {...md} /> : null}
