@@ -1,9 +1,10 @@
+'use client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@ui/components/dialog';
 import { ReactNode } from 'react';
 import Link from 'next/link';
 import ClipboardCopy from './copy-from-input';
 import { Icons } from '@ui/components/icons';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '../i18n/client';
 
 export function SharePost({ children, path }: { children: ReactNode; path: string }) {
   const { t } = useTranslation('common_blog');

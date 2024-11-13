@@ -1,4 +1,6 @@
-import { useTranslation } from 'next-i18next';
+'use client';
+
+import { useTranslation } from '../i18n/client';
 
 export default function RedditShare({ title, url }: { title: string; url: string }) {
   const { t } = useTranslation('common_blog');

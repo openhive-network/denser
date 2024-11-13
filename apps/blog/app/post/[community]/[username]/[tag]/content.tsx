@@ -25,6 +25,11 @@ import { CircleSpinner } from 'react-spinners-kit';
 import { handleError } from '@ui/lib/utils';
 import Renderer from '@/blog/components/renderer/components/rendererClient';
 import UserInfo from '@/blog/features/post-view/user-info';
+import FacebookShare from '@/blog/components/share-post-facebook';
+import TwitterShare from '@/blog/components/share-post-twitter';
+import LinkedInShare from '@/blog/components/share-post-linkedin';
+import RedditShare from '@/blog/components/share-post-reddit';
+import { SharePost } from '@/blog/components/share-post-dialog';
 
 const Content = ({
   entryData,
@@ -388,16 +393,17 @@ const Content = ({
                         </p>
                       </TooltipContent>
                     </Tooltip>
+                    s
                   </TooltipProvider>
                 </div>
                 <div className="flex gap-2">
-                  {/* <FacebookShare url={entryData.url} />
+                  <FacebookShare url={entryData.url} />
                   <TwitterShare title={entryData.title} url={entryData.url} />
                   <LinkedInShare title={entryData.title} url={entryData.url} />
                   <RedditShare title={entryData.title} url={entryData.url} />
-                  <SharePost path={router.asPath}>
+                  <SharePost path={entryData.url}>
                     <Link2 className="cursor-pointer hover:text-destructive" data-testid="share-post" />
-                  </SharePost> */}
+                  </SharePost>
                 </div>
               </div>
             </div>

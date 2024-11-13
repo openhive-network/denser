@@ -1,5 +1,5 @@
 import { Twitter } from 'lucide-react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '../i18n/client';
 
 export default function TwitterShare({ title, url }: { title: string; url: string }) {
   const { t } = useTranslation('common_blog');

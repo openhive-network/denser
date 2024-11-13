@@ -32,8 +32,10 @@ const PostPage = () => {
   const { isLoading: discussionIsLoading, data: discussionData } = useQuery(
     ['discussionData', username, tag],
     () => getDiscussion(username, String(tag)),
+
     {
-      enabled: !!username && !!tag
+      enabled: !!username && !!tag,
+      refetchOnWindowFocus: false
     }
   );
   const { data: rolesData } = useQuery(['rolesList', community], () => getListCommunityRoles(community), {
