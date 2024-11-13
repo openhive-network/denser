@@ -274,7 +274,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
             style={{ '--color-canvas-default': 'var(--background)' }}
             components={{
               textarea: (props: any) => {
-                return <textarea {...props} className={`${props.className} h-[${windowheight}px] w-full`} />
+                return <div contentEditable {...props} className={`${props.className} h-[${windowheight}px] w-full`}></div>
               }
             }}
           />
