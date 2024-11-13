@@ -1,10 +1,12 @@
+'use client';
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Separator } from '@ui/components';
 import { PenTool } from 'lucide-react';
 import { useState } from 'react';
 import { useUserTitleMutation } from './hooks/use-user-title';
 import { CircleSpinner } from 'react-spinners-kit';
-import { useTranslation } from 'next-i18next';
 import ChangeTitleData from './change-title-data';
+import { useTranslation } from '../i18n/client';
 
 const ChangeTitleDialog = ({
   moderateEnabled,

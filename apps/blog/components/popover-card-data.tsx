@@ -1,3 +1,5 @@
+'use client';
+
 import { dateToShow, dateToFullRelative } from '@ui/lib/parse-date';
 import Link from 'next/link';
 import { useAccountQuery } from './hooks/use-account';
@@ -5,16 +7,16 @@ import { useFollowsQuery } from './hooks/use-follows';
 import { delegatedHive, numberWithCommas, vestingHive } from '@ui/lib/utils';
 import Big from 'big.js';
 import { useDynamicGlobalData } from './hooks/use-dynamic-global-data';
-import { useTranslation } from 'next-i18next';
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useFollowingInfiniteQuery } from './hooks/use-following-infinitequery';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import ButtonsContainer from './buttons-container';
+import { useTranslation } from '../i18n/client';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 export function PopoverCardData({ author, blacklist }: { author: string; blacklist: string[] }) {
   const { t } = useTranslation('common_blog');
-  const { user } = useUser();
+  const { user } = useUserClient();
   const follows = useFollowsQuery(author);
   const account = useAccountQuery(author);
   const following = useFollowingInfiniteQuery(user.username || '', 50, 'blog', ['blog']);

@@ -1,17 +1,10 @@
-import {
-  Button,
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  Input,
-  Separator
-} from '@ui/components';
+'use client';
+
+import { Button, Input } from '@ui/components';
 import { handleError } from '@ui/lib/utils';
-import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
 import { useUserTitleMutation } from './hooks/use-user-title';
+import { useTranslation } from '../i18n/client';
 
 const ChangeTitleData = ({
   title,

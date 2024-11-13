@@ -1,3 +1,5 @@
+'use client';
+
 import { IFollow } from '@transaction/lib/hive';
 import FollowButton from './follow-button';
 import MuteButton from './mute-button';
@@ -7,8 +9,8 @@ import { useMuteMutation, useUnmuteMutation } from './hooks/use-mute-mutations';
 import { useFollowMutation, useUnfollowMutation } from './hooks/use-follow-mutations';
 import { Button } from '@hive/ui';
 import DialogLogin from './dialog-login';
-import { useTranslation } from 'next-i18next';
 import { handleError } from '@ui/lib/utils';
+import { useTranslation } from '../i18n/client';
 
 const ButtonsContainer = ({
   username,

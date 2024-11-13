@@ -31,6 +31,8 @@ import LinkedInShare from '@/blog/components/share-post-linkedin';
 import RedditShare from '@/blog/components/share-post-reddit';
 import { SharePost } from '@/blog/components/share-post-dialog';
 import ReblogTrigger from '@/blog/components/reblog-trigger';
+import { UserPopoverCard } from '@/blog/components/user-popover-card';
+import ChangeTitleDialog from '@/blog/components/change-title-dialog';
 
 const Content = ({
   entryData,
@@ -230,7 +232,7 @@ const Content = ({
                     )}
                   </span>
                   {t('post_content.footer.by')}
-                  {/* <div className="flex">
+                  <div className="flex">
                     <UserPopoverCard
                       author={entryData.author}
                       author_reputation={entryData.author_reputation}
@@ -256,7 +258,7 @@ const Content = ({
                         permlink={tag}
                       />
                     )}
-                  </div> */}
+                  </div>
                 </div>
                 <div className="flex items-center gap-2 sm:gap-4">
                   {/* <VotesComponent post={entryData} /> */}

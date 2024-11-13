@@ -1,7 +1,9 @@
+'use client';
+
 import UserAvatar from '@/blog/components/user-avatar';
 import accountReputation from '@/blog/lib/account-reputation';
-import { useTranslation } from 'next-i18next';
 import { Popover, PopoverContent, PopoverTrigger } from '@ui/components/popover';
+import { useTranslation } from '../i18n/client';
 import { PopoverCardData } from './popover-card-data';
 
 export interface UserPopoverCardProps {

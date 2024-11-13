@@ -1,6 +1,8 @@
+'use client';
+
 import { Button } from '@hive/ui';
-import { useTranslation } from 'next-i18next';
 import { CircleSpinner } from 'react-spinners-kit';
+import { useTranslation } from '../i18n/client';
 
 const MuteButton = ({
   variant,
