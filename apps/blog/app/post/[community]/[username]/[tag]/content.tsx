@@ -38,6 +38,7 @@ import DetailsCardHover from '@/blog/components/details-card-hover';
 import DetailsCardVoters from '@/blog/components/details-card-voters';
 import { IVote } from '@transaction/lib/hive';
 import MutePostDialog from '@/blog/components/mute-post-dialog';
+import CommentList from '@/blog/components/comment-list';
 
 const Content = ({
   activeVotesData,
@@ -441,7 +442,7 @@ const Content = ({
               <span className="pr-1">{t('select_sort.sort_comments.sort')}</span>
               <CommentSelectFilter />
             </div>
-            {/* <DynamicComments
+            <CommentList
               highestAuthor={entryData.author}
               highestPermlink={entryData.permlink}
               permissionToMute={userCanModerate}
@@ -450,7 +451,7 @@ const Content = ({
               flagText={communityData?.flag_text}
               parent={entryData}
               parent_depth={entryData.depth}
-            /> */}
+            />
           </div>
         ) : null}
       </div>

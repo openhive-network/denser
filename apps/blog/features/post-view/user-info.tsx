@@ -2,8 +2,9 @@
 import Link from 'next/link';
 import parseDate, { dateToFullRelative } from '@ui/lib/parse-date';
 import { Badge } from '@ui/components/badge';
-import { UserPopoverCardProps } from '@/blog/components/user-popover-card';
+import { UserPopoverCard, UserPopoverCardProps } from '@/blog/components/user-popover-card';
 import { useTranslation } from '@/blog/i18n/client';
+import ChangeTitleDialog from '@/blog/components/change-title-dialog';
 
 interface UserInfoProps extends UserPopoverCardProps {
   permlink: string;
@@ -34,7 +35,7 @@ function UserInfo({
   return (
     <div className="flex flex-col py-4 text-slate-500 dark:text-slate-400" data-testid="author-data">
       <div className="flex flex-wrap items-center">
-        {/* <UserPopoverCard
+        <UserPopoverCard
           author={author}
           author_reputation={author_reputation}
           withImage
@@ -59,7 +60,7 @@ function UserInfo({
             userOnList={author}
             title={author_title ?? ''}
           />
-        )} */}
+        )}
         {t('post_content.in')}
         <span className="ml-1" translate="no">
           {community_title ? (
