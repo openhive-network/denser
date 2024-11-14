@@ -3,12 +3,13 @@ import { useParams } from 'next/navigation';
 import Content from './content';
 import { Entry, getCommunity, getDiscussion, getListCommunityRoles, getPost } from '@transaction/lib/bridge';
 import { useQuery } from '@tanstack/react-query';
-import LoadingClient from '@ui/components/loading';
+import Loading from '@ui/components/loading';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { sorter, SortOrder } from '@/blog/lib/utils-app';
+import { getActiveVotes } from '@transaction/lib/hive';
 
 const PostPage = () => {
   const { user } = useUserClient();
@@ -38,6 +39,9 @@ const PostPage = () => {
       refetchOnWindowFocus: false
     }
   );
+  const { data: activeVotesData } = useQuery(['activeVotes'], () => getActiveVotes(username, tag), {
+    enabled: !!username && !!tag
+  });
   const { data: rolesData } = useQuery(['rolesList', community], () => getListCommunityRoles(community), {
     enabled: Boolean(community)
   });
@@ -82,7 +86,7 @@ const PostPage = () => {
   };
   const { postUrl, parentUrl } = generateUrls() || {};
 
-  if (entryIsLoading) return <LoadingClient loading={entryIsLoading} />;
+  if (entryIsLoading) return <Loading loading={entryIsLoading} />;
   if (!entryData) return <div>Post not found</div>;
 
   return (
@@ -95,6 +99,7 @@ const PostPage = () => {
       discussion={{ discussionIsLoading, discussionState }}
       userCanModerate={userCanModerate}
       params={{ community, tag, username }}
+      activeVotesData={activeVotesData}
     />
   );
 };

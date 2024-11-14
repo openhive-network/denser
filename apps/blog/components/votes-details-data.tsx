@@ -3,7 +3,7 @@ import { prepareVotes } from '@ui/lib/utils';
 import type { Entry } from '@transaction/lib/bridge';
 import Link from 'next/link';
 import { useActiveVotesQuery } from './hooks/use-active-votes';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '../i18n/client';
 
 export default function VotersDetailsData({ post }: { post: Entry }) {
   const { t } = useTranslation('common_blog');

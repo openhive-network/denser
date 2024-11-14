@@ -34,8 +34,13 @@ import { UserPopoverCard } from '@/blog/components/user-popover-card';
 import ChangeTitleDialog from '@/blog/components/change-title-dialog';
 import { envData } from '@/blog/lib/env';
 import VotesComponent from '@/blog/components/votes';
+import DetailsCardHover from '@/blog/components/details-card-hover';
+import DetailsCardVoters from '@/blog/components/details-card-voters';
+import { IVote } from '@transaction/lib/hive';
+import MutePostDialog from '@/blog/components/mute-post-dialog';
 
 const Content = ({
+  activeVotesData,
   entryData,
   communityData,
   params,
@@ -45,6 +50,7 @@ const Content = ({
   postUrl,
   parentUrl
 }: {
+  activeVotesData: IVote[] | undefined;
   mutedListData: IFollowList[];
   entryData: Entry;
   communityData: Community | undefined | null;
@@ -265,7 +271,7 @@ const Content = ({
                 </div>
                 <div className="flex items-center gap-2 sm:gap-4">
                   <VotesComponent post={entryData} />
-                  {/* <DetailsCardHover
+                  <DetailsCardHover
                     post={entryData}
                     decline={Number(entryData.max_accepted_payout.slice(0, 1)) === 0}
                     post_page
@@ -280,18 +286,18 @@ const Content = ({
                     >
                       ${entryData.payout?.toFixed(2)}
                     </span>
-                  </DetailsCardHover> */}
-                  {/* {!isActiveVotesLoading && activeVotesData ? (
+                  </DetailsCardHover>
+                  {activeVotesData ? (
                     <DetailsCardVoters post={entryData}>
-                      {post.stats?.total_votes && entryData.stats?.total_votes !== 0 ? (
+                      {entryData.stats?.total_votes && entryData.stats?.total_votes !== 0 ? (
                         <span className="text-xs text-destructive sm:text-sm">
-                          {post.stats?.total_votes > 1
+                          {entryData.stats?.total_votes > 1
                             ? t('post_content.footer.votes', { votes: entryData.stats?.total_votes })
                             : t('post_content.footer.vote')}
                         </span>
                       ) : null}
                     </DetailsCardVoters>
-                  ) : null} */}
+                  ) : null}
                 </div>
               </div>
               <div className="my-4 flex items-end gap-4 sm:flex-col">
@@ -341,7 +347,7 @@ const Content = ({
                           </button>
                         </div>
                       ) : null}
-                      {/* {userCanModerate ? (
+                      {userCanModerate ? (
                         <MutePostDialog
                           comment={false}
                           community={community}
@@ -351,7 +357,7 @@ const Content = ({
                           discussionPermlink={entryData.permlink}
                           discussionAuthor={entryData.author}
                         />
-                      ) : null} */}
+                      ) : null}
                     </>
                   ) : (
                     <DialogLogin>
@@ -399,7 +405,6 @@ const Content = ({
                         </p>
                       </TooltipContent>
                     </Tooltip>
-                    s
                   </TooltipProvider>
                 </div>
                 <div className="flex gap-2">

@@ -1,13 +1,15 @@
+'use client';
+
 import { dateToRelative } from '@ui/lib/parse-date';
 import Link from 'next/link';
-import { amt, fmt } from '../lib/utils';
+import { amt, fmt } from '../lib/utils-app';
 import { useQuery } from '@tanstack/react-query';
 import Loading from '@hive/ui/components/loading';
 import { convertStringToBig } from '@hive/ui/lib/helpers';
 import { getFeedHistory } from '@transaction/lib/hive';
 import type { Entry } from '@transaction/lib/bridge';
 import moment from 'moment';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '../i18n/client';
 
 interface IBeneficiary {
   account: string;

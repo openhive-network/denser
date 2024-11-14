@@ -1,3 +1,4 @@
+'use client';
 import { TraceSpinner } from 'react-spinners-kit';
 
 const Loading = ({ loading }: { loading: boolean }) => {

@@ -71,3 +71,53 @@ export function netVests(account: FullAccount) {
   const received = parseFloat(account.received_vesting_shares);
   return vests - delegated + received;
 }
+
+export function amt(string_amount: string) {
+  return parsePayoutAmount(string_amount);
+}
+
+export function parsePayoutAmount(amount: string) {
+  return parseFloat(String(amount).replace(/\s[A-Z]*$/, ''));
+}
+
+function fractional_part_len(value: number) {
+  const parts = (Number(value) + '').split('.');
+  return parts.length < 2 ? 0 : parts[1].length;
+}
+export function formatDecimal(value: number, decPlaces = 2, truncate0s = true) {
+  let fl, j;
+  // eslint-disable-next-line no-void,no-restricted-globals
+  if (value === null || value === void 0 || isNaN(value)) {
+    return ['N', 'a', 'N'];
+  }
+  if (truncate0s) {
+    fl = fractional_part_len(value);
+    if (fl < 2) fl = 2;
+    if (fl < decPlaces) decPlaces = fl;
+  }
+  const decSeparator = '.';
+  const thouSeparator = ',';
+  const sign = value < 0 ? '-' : '';
+  const abs_value = Math.abs(value);
+  const i = parseInt(abs_value.toFixed(decPlaces), 10) + '';
+  j = i.length;
+  j = i.length > 3 ? j % 3 : 0;
+  // @ts-ignore
+  const decPart = decPlaces
+    ? decSeparator +
+      // @ts-ignore
+      Math.abs(abs_value - i)
+        .toFixed(decPlaces)
+        .slice(2)
+    : '';
+  return [
+    sign +
+      (j ? i.substr(0, j) + thouSeparator : '') +
+      i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + thouSeparator),
+    decPart
+  ];
+}
+
+export function fmt(decimal_amount: number | string, asset = null) {
+  return formatDecimal(Number(decimal_amount)).join('') + (asset ? ' ' + asset : '');
+}

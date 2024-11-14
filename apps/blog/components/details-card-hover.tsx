@@ -1,3 +1,5 @@
+'use client';
+
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@hive/ui/components/hover-card';
 import { cn } from '@ui/lib/utils';
 import { ReactNode } from 'react';
