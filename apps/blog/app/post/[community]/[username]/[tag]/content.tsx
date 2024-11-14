@@ -4,7 +4,6 @@ import { useTranslation } from '@/blog/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { Community, CommunityTeam, Entry, IFollowList } from '@transaction/lib/bridge';
 import Head from 'next/head';
-import env from '@beam-australia/react-env';
 import { Icons } from '@ui/components/icons';
 import { AlertDialogFlag } from '@/blog/features/post-view/alert-window-flag';
 import { useState } from 'react';
@@ -33,6 +32,7 @@ import { SharePost } from '@/blog/components/share-post-dialog';
 import ReblogTrigger from '@/blog/components/reblog-trigger';
 import { UserPopoverCard } from '@/blog/components/user-popover-card';
 import ChangeTitleDialog from '@/blog/components/change-title-dialog';
+import { envData } from '@/blog/lib/env';
 
 const Content = ({
   entryData,
@@ -83,11 +83,13 @@ const Content = ({
       handleError(error, { method: 'unpin', params: { community, username, tag } });
     }
   };
-  //   const canonical_url =   new URL(entryData.url, env('SITE_DOMAIN')).href ;
+  const canonical_url = new URL(entryData.url, envData.NEXT_PUBLIC_SITE_DOMAIN).href;
 
   return (
     <>
-      {/* <Head> <link rel="canonical" href={canonical_url} key="canonical" /> </Head> */}
+      <Head>
+        <link rel="canonical" href={canonical_url} key="canonical" />{' '}
+      </Head>
       <div className="py-8">
         <div className="relative mx-auto my-0 max-w-4xl bg-background p-4">
           {communityData ? (

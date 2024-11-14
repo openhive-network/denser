@@ -11,7 +11,6 @@ import {
   useState
 } from 'react';
 import * as commands from '@uiw/react-md-editor/commands';
-import env from '@beam-australia/react-env';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Signer } from '@smart-signer/lib/signer/signer';
 import { ICommand, TextAreaTextApi } from '@uiw/react-md-editor';
@@ -21,6 +20,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/co
 import { useTranslation } from 'next-i18next';
 import imageUserBlocklist from '@ui/config/lists/image-user-blocklist';
 import { cn } from '@ui/lib/utils';
+import { envData } from '@/blog/lib/env';
 
 const logger = getLogger('app');
 
@@ -65,9 +65,7 @@ const uploadImg = async (file: File, username: string, signer: Signer): Promise<
       message: buf,
       password: ''
     });
-
-    const postUrl = `${env('IMAGES_ENDPOINT')}${username}/${sig}`;
-
+    const postUrl = `${envData.NEXT_PUBLIC_IMAGES_ENDPOINT}${username}/${sig}`;
     const response = await fetch(postUrl, { method: 'POST', body: formData });
     const resJSON = await response.json();
     return resJSON.url;
@@ -143,7 +141,13 @@ interface MdEditorProps {
   windowheight: number;
 }
 
-const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholder, htmlMode, windowheight }) => {
+const MdEditor: FC<MdEditorProps> = ({
+  onChange,
+  persistedValue = '',
+  placeholder,
+  htmlMode,
+  windowheight
+}) => {
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
   const [formValue, setFormValue] = useState<string>(persistedValue);
