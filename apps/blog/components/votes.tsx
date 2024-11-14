@@ -1,9 +1,9 @@
+'use client';
+
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Icons } from '@ui/components/icons';
 import DialogLogin from './dialog-login';
 import clsx from 'clsx';
-import { useTranslation } from 'next-i18next';
 import { ReactNode, useEffect, useState } from 'react';
 import { useVoteMutation } from '../components/hooks/use-vote-mutation';
 import { useQuery } from '@tanstack/react-query';
@@ -13,9 +13,11 @@ import { getLogger } from '@ui/lib/logging';
 import { Entry } from '@transaction/lib/bridge';
 import { Slider } from '@ui/components/slider';
 import { Popover, PopoverTrigger, PopoverContent } from '@ui/components/popover';
-import { useLoggedUserContext } from './common/logged-user';
+// import { useLoggedUserContext } from './common/logged-user';
 import { handleError } from '@ui/lib/utils';
 import { useUpVoteStore, useDownVoteStore } from './hooks/use-vote-store';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { useTranslation } from '../i18n/client';
 
 const logger = getLogger('app');
 
@@ -27,7 +29,7 @@ const offsetSlider = {
 };
 
 const VotesComponent = ({ post }: { post: Entry }) => {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const { t } = useTranslation('common_blog');
   const [isClient, setIsClient] = useState(false);
   const [clickedVoteButton, setClickedVoteButton] = useState('');
@@ -56,8 +58,9 @@ const VotesComponent = ({ post }: { post: Entry }) => {
       enabled: !!checkVote || !!clickedVoteButton
     }
   );
-  const { net_vests } = useLoggedUserContext();
-  const enable_slider = net_vests > VOTE_WEIGHT_DROPDOWN_THRESHOLD;
+  // const { net_vests } = useLoggedUserContext(); // TODO - uncomment this line
+  // const enable_slider = net_vests > VOTE_WEIGHT_DROPDOWN_THRESHOLD;
+  const enable_slider = true;
 
   const userVote =
     userVotes?.votes[0] && userVotes?.votes[0].voter === user.username ? userVotes.votes[0] : undefined;

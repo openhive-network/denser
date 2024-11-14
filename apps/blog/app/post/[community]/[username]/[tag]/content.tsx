@@ -33,6 +33,7 @@ import ReblogTrigger from '@/blog/components/reblog-trigger';
 import { UserPopoverCard } from '@/blog/components/user-popover-card';
 import ChangeTitleDialog from '@/blog/components/change-title-dialog';
 import { envData } from '@/blog/lib/env';
+import VotesComponent from '@/blog/components/votes';
 
 const Content = ({
   entryData,
@@ -263,7 +264,7 @@ const Content = ({
                   </div>
                 </div>
                 <div className="flex items-center gap-2 sm:gap-4">
-                  {/* <VotesComponent post={entryData} /> */}
+                  <VotesComponent post={entryData} />
                   {/* <DetailsCardHover
                     post={entryData}
                     decline={Number(entryData.max_accepted_payout.slice(0, 1)) === 0}
