@@ -26,31 +26,3 @@ services:
     # depends_on:
     #   caddy-blog:
     #     condition: service_healthy
-  caddy-wallet:
-    profiles:
-      - denser
-    image: caddy:2.7.6
-    environment:
-      PUBLIC_HOSTNAME:
-      WALLET_PORT:
-    command:
-      - caddy
-      - reverse-proxy
-      - --from=https://${PUBLIC_HOSTNAME}:${WALLET_PORT}
-      - --to=http://denser-wallet:${WALLET_PORT}
-      - --internal-certs
-      - --disable-redirects
-    networks:
-      - docker
-    ports:
-      - '${WALLET_PORT}:${WALLET_PORT}'
-    extra_hosts:
-      - "${PUBLIC_HOSTNAME}:127.0.0.1"
-    healthcheck:
-      test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider https://$${PUBLIC_HOSTNAME}:$${WALLET_PORT}/ || exit 1']
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    depends_on:
-      denser-wallet:
-        condition: service_healthy

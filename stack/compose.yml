@@ -4,6 +4,7 @@ include:
   - path: compose.auth.yml 
   - path: compose.blog.yml
   - path: compose.wallet.yml
+  - path: compose.caddy.yml
 volumes:
   docker-certs-ca:
   docker-certs-client:
