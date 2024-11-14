@@ -1,15 +1,14 @@
-import { useState, useEffect, useRef, MutableRefObject, useMemo } from "react";
-import { useRouter } from "next/router";
+import { useState, useEffect, useRef, MutableRefObject, useMemo } from 'react';
 import { TFunction } from 'next-i18next';
-import { cookieNamePrefix } from "@smart-signer/lib/session";
-import { getCookie } from "@smart-signer/lib/utils";
-import { KeyType } from "@smart-signer/types/common";
-import { useSignIn } from "@smart-signer/lib/auth/use-sign-in";
-import { Signatures, PostLoginSchema } from "@smart-signer/lib/auth/utils";
-import { getSigner } from "@smart-signer/lib/signer/get-signer";
-import { SignerOptions } from "@smart-signer/lib/signer/signer";
+import { cookieNamePrefix } from '@smart-signer/lib/session';
+import { getCookie } from '@smart-signer/lib/utils';
+import { KeyType } from '@smart-signer/types/common';
+import { useSignIn } from '@smart-signer/lib/auth/use-sign-in';
+import { Signatures, PostLoginSchema } from '@smart-signer/lib/auth/utils';
+import { getSigner } from '@smart-signer/lib/signer/get-signer';
+import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { useSigner } from '@smart-signer/lib/use-signer';
-import { LoginFormSchema as SignInFormSchema } from "../signin-form";
+import { LoginFormSchema as SignInFormSchema } from '../signin-form';
 import { getOperationForLogin } from '@smart-signer/lib/login-operation';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { operation } from '@hiveio/wax';
@@ -20,13 +19,8 @@ export interface LoginFormSchema extends SignInFormSchema {
   keyType: KeyType;
 }
 
-export const useProcessAuth = (
-  t: TFunction,
-  authenticateOnBackend: boolean,
-  strict: boolean
-  ) => {
-  const router = useRouter();
-  const authDataRef = useRef<PostLoginSchema | null>(null) as MutableRefObject<PostLoginSchema | null>
+export const useProcessAuth = (t: TFunction, authenticateOnBackend: boolean, strict: boolean) => {
+  const authDataRef = useRef<PostLoginSchema | null>(null) as MutableRefObject<PostLoginSchema | null>;
   const [loginChallenge, setLoginChallenge] = useState('');
   const [isSigned, setIsSigned] = useState(false);
   const { signerOptions } = useSigner();
@@ -59,8 +53,7 @@ export const useProcessAuth = (
 
     try {
       const hiveChain = await hiveChainService.getHiveChain();
-      const operation: operation =
-        await getOperationForLogin(username, keyType, loginChallenge);
+      const operation: operation = await getOperationForLogin(username, keyType, loginChallenge);
       const txBuilder = await hiveChain.createTransaction();
       txBuilder.pushOperation(operation);
       txBuilder.validate();
@@ -79,7 +72,7 @@ export const useProcessAuth = (
       logger.info('transaction: %o', {
         pack,
         toApi: txBuilder.toApi(),
-        toApiParsed: JSON.parse(txBuilder.toApi()),
+        toApiParsed: JSON.parse(txBuilder.toApi())
       });
 
       signInData = {
@@ -91,7 +84,7 @@ export const useProcessAuth = (
         pack,
         strict,
         signatures,
-        authenticateOnBackend,
+        authenticateOnBackend
       };
     } catch (error) {
       logger.error('onSubmit error in signLoginChallenge', error);
@@ -102,7 +95,7 @@ export const useProcessAuth = (
     authDataRef.current = signInData;
     setIsSigned(true);
     return Promise.resolve();
-  }
+  };
 
   const submitAuth = async () => {
     try {
@@ -126,5 +119,5 @@ export const useProcessAuth = (
     submitAuth,
     isSigned,
     errorMsg
-  }
-}
+  };
+};
