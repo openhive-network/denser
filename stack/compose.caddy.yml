@@ -8,6 +8,7 @@ services:
       AUTH_PORT:
       BLOG_PORT:
       WALLET_PORT:
+      API_HTTP_PORT:
       API_HTTPS_PORT:
     volumes:
        - ./Caddyfile:/etc/caddy/Caddyfile
@@ -18,6 +19,7 @@ services:
       - '${AUTH_PORT}:${AUTH_PORT}'
       - '${BLOG_PORT}:${BLOG_PORT}'
       - '${WALLET_PORT}:${WALLET_PORT}'
+      - '${API_HTTP_PORT}:${API_HTTP_PORT}'
       - '${API_HTTPS_PORT}:${API_HTTPS_PORT}'
     extra_hosts:
       - "${PUBLIC_HOSTNAME}:127.0.0.1"

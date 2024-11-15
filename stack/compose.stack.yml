@@ -36,6 +36,7 @@ services:
     image: registry.gitlab.syncad.com/hive/haf_api_node/compose:${COMPOSE_TAG:-latest}
     environment:
       CADDY_SITES: "http://"
+      ADMIN_ENDPOINT_PROTOCOL: http
       DOCKER_TLS_CERTDIR: /certs
       ARGUMENTS:
       TOP_LEVEL_DATASET_MOUNTPOINT: /cache/haf-datadir

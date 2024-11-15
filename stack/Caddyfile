@@ -1,6 +1,6 @@
 {
 	# debug
-	# http_port {$API_HTTP_PORT}
+	http_port {$API_HTTP_PORT}
 	https_port {$API_HTTPS_PORT}
 }
 
@@ -22,6 +22,10 @@
 	# tls /etc/caddy/certs/cert.pem /etc/caddy/certs/key.pem
 }
 
+{$PUBLIC_HOSTNAME}:{$API_HTTP_PORT} {
+	redir https://{$PUBLIC_HOSTNAME}:{$API_HTTPS_PORT}{uri} permanent
+}
+
 {$PUBLIC_HOSTNAME}:{$API_HTTPS_PORT} {
 	# Add CORS headers
 	header {
@@ -37,10 +41,6 @@
 		header_down -Access-Control-Allow-Methods
 		header_down -Access-Control-Allow-Headers
 		header_down -Access-Control-Max-Age
-		# transport http {
-		# 	tls
-		# 	tls_insecure_skip_verify
-		# }
 	}
 	tls internal
 	# tls /etc/caddy/certs/cert.pem /etc/caddy/certs/key.pem
