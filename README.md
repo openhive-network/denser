@@ -166,7 +166,10 @@ Setting up the stack is, therefore, as simple as running:
 ./scripts/quickstart-stack-setup-replay.sh
 ```
 
-This command will take a very long time. Once it finishes Denser should be available at [https://your-hostname.local:3000] and the stack's API endpoint at [https://your-hostname.local:8443].
+This command will take a very long time. Once it finishes Denser should be available at [https://your-hostname.local:3000] and the stack's API endpoint at [https://your-hostname.local:8443]. If you have a proper domain and certificates, they should be configured at this point - details are in the next section.
+
+There's a possibility the command will fail with `block_log_util: line 1: {message:404 Not found}: command not found` - this means that block_log_util is no longer available for download.  
+You need to either manually rerun job `haf_image_build_mirrornet` in the latest CI pipeline for HAF's develop branch or procure it from somwehere else (eg. HAF's most recent pipeline), install it manually and comment out the `Downloading and installing block_log_util...` section of [scripts/quickstart-stack-setup-replay.sh](scripts/quickstart-stack-setup-replay.sh).
 
 The stack can be shut down with command:
 
@@ -181,6 +184,14 @@ when it's no longer needed and then started up again with:
 ```
 
 Both `quickstart-stack-setup-replay.sh` and `quickstart-stack-restart-from-backup.sh` may show errors when deleting the old stack if it's not present. It's completely normal.
+
+If you're running the stack with self-signed certificates, you need to disable certificate errors in the browser:
+
+```bash
+/opt/google/chrome/chrome --ignore-certificate-errors
+```
+
+Otherwise you can run the browser as normal.
 
 #### Detailed explanation
 
@@ -200,7 +211,7 @@ Initialize and update the submodules:
 git submodule update --init --recursive
 ```
 
-Obtain the block_log and the block_log_util files.
+Obtain the block log and the block_log_util.
 
 Block_log_util can be downloaded and installed using the following command:
 
@@ -208,6 +219,8 @@ Block_log_util can be downloaded and installed using the following command:
 curl --location --output "${HOME}/hive-utils/block_log_util" "https://gitlab.syncad.com/api/v4/projects/323/jobs/artifacts/develop/raw/haf-mirrornet-binaries/block_log_util/?job=haf_image_build_mirrornet"
 chmod +x "${HOME}/hive-utils/block_log_util"
 ```
+
+You need to either manually rerun job `haf_image_build_mirrornet` in the latest CI pipeline for HAF's develop branch or procure it from somwehere else (eg. HAF's most recent pipeline) and install it manually.
 
 After running the command, block_log_util from the latest HAF develop will be installed in `${HOME}/hive-utils/block_log_util`
 
@@ -241,6 +254,8 @@ If your computer has a proper domain name, you can pass it to the stack by addin
 Otherwise the stack will use *your-hostname.local* as its domain name.
 
 This will create stack's data directory at `/srv/haf-pool/haf-datadir`, generate block_log.artifacts file, copy the block log, the artifacts file and the HAF ini file to the data directory and store stack's configuration in `${SRC_DIR}/stack/mirrornet-stack.env`, where `${SRC_DIR}` is Denser's source directory. The process will take a while. Once it's finished, note the value printed after `Head block number is:` in the scripts output, then use it to replace the value after `--stop-at-block` in `ARGUMENTS` in the `${SRC_DIR}/stack/mirrornet-stack.env` file. **It is importatnt that the block log size is accurate**
+
+If your computer has a proper domain name and have trusted certificates for that domain, you should configure them now. Place the certificate and key file in `stack/certs` directory and then comment out all `tls internal` lines in [stack/Caddyfile](stack/Caddyfile) and uncomment the lines below (`tls /etc/caddy/certs/cert.pem /etc/caddy/certs/key.pem`).
 
 If you didn't change the default location of `mirrornet-stack.env` and wish to run commands below as they are written, run `export SRC_DIR="$(pwd)"` in Denser's source directory.
 
@@ -298,11 +313,13 @@ docker volume rm mirrornet-api-stack_haf-datadir
 
 Now that the stack is running, you can access you Denser instance on [https://your-hostname.local:3000] or [https://your.domain.name:3000] - note the HTTPS in the URL.
 
-Since the stack runs with self-signed certificates, you need to disable certificate errors in the browser:
+If you're running the stack with self-signed certificates, you need to disable certificate errors in the browser:
 
 ```bash
 /opt/google/chrome/chrome --ignore-certificate-errors
 ```
+
+Otherwise you can run the browser as normal.
 
 You can stop the stack with command:
 
