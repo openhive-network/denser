@@ -166,7 +166,7 @@ Setting up the stack is, therefore, as simple as running:
 ./scripts/quickstart-stack-setup-replay.sh
 ```
 
-This command will take a very long time. Once it finishes Denser should be available at [https://your-hostname.local:3000] and the stack's API endpoint at [https://your-hostname.local:8443]. If you have a proper domain and certificates, they should be configured at this point - details are in the next section.
+This command will take a very long time. Once it finishes Denser should be available at [https://your-hostname.local:3000] and the stack's API endpoint at [https://your-hostname.local:8443]. If you have a proper domain and certificates, they should be configured at this point - details are in the next section. Once you set up the certificates, the stack needs to be stopped and restarted as described below. The endpoints will change to [https://your.domain.name:3000] and [https://your.domain.name:8443].
 
 There's a possibility the command will fail with `block_log_util: line 1: {message:404 Not found}: command not found` - this means that block_log_util is no longer available for download.  
 You need to either manually rerun job `haf_image_build_mirrornet` in the latest CI pipeline for HAF's develop branch or procure it from somwehere else (eg. HAF's most recent pipeline), install it manually and comment out the `Downloading and installing block_log_util...` section of [scripts/quickstart-stack-setup-replay.sh](scripts/quickstart-stack-setup-replay.sh).
