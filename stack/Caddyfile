@@ -1,3 +1,9 @@
+{
+	# debug
+	# http_port {$API_HTTP_PORT}
+	https_port {$API_HTTPS_PORT}
+}
+
 {$PUBLIC_HOSTNAME}:{$AUTH_PORT} {
 	reverse_proxy denser-auth:{$AUTH_PORT}
 	tls internal
