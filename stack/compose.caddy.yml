@@ -11,7 +11,7 @@ services:
       API_HTTPS_PORT:
     volumes:
        - ./Caddyfile:/etc/caddy/Caddyfile
-       - ./certs:/ets/caddy/certs:ro
+       - ./certs:/etc/caddy/certs:ro
     networks:
       - docker
     ports:
