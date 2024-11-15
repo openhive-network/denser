@@ -255,7 +255,7 @@ Otherwise the stack will use *your-hostname.local* as its domain name.
 
 This will create stack's data directory at `/srv/haf-pool/haf-datadir`, generate block_log.artifacts file, copy the block log, the artifacts file and the HAF ini file to the data directory and store stack's configuration in `${SRC_DIR}/stack/mirrornet-stack.env`, where `${SRC_DIR}` is Denser's source directory. The process will take a while. Once it's finished, note the value printed after `Head block number is:` in the scripts output, then use it to replace the value after `--stop-at-block` in `ARGUMENTS` in the `${SRC_DIR}/stack/mirrornet-stack.env` file. **It is importatnt that the block log size is accurate**
 
-If your computer has a proper domain name and have trusted certificates for that domain, you should configure them now. Place the certificate and key file in `stack/certs` directory and then comment out all `tls internal` lines in [stack/Caddyfile](stack/Caddyfile) and uncomment the lines below (`tls /etc/caddy/certs/cert.pem /etc/caddy/certs/key.pem`).
+If your computer has a proper domain name and have trusted certificates for that domain, you should configure them now. Place the certificate and key file in `stack/certs` directory, rename them to `cert.pem` and `key.pem` respectively and then comment out all `tls internal` lines in [stack/Caddyfile](stack/Caddyfile) and uncomment the lines below (`tls /etc/caddy/certs/cert.pem /etc/caddy/certs/key.pem`).
 
 If you didn't change the default location of `mirrornet-stack.env` and wish to run commands below as they are written, run `export SRC_DIR="$(pwd)"` in Denser's source directory.
 
