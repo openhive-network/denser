@@ -37,6 +37,12 @@ export interface TransactionBroadcastResult {
   transactionId: string;
 }
 
+export interface Authorizes {
+  weight_threshold: number;
+  account_auths: { [key: string]: number };
+  key_auths: { [key: string]: number };
+}
+
 export class TransactionService {
   /**
    * Options for Signer.
@@ -663,6 +669,27 @@ export class TransactionService {
 
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation(blogPost);
+    }, transactionOptions);
+  }
+  async updateWalletProfile(
+    memo_key: string,
+    json_metadata: string,
+    owner: Authorizes,
+    active: Authorizes,
+    posting: Authorizes,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.pushOperation({
+        account_update: {
+          account: this.signerOptions.username,
+          memo_key: memo_key,
+          json_metadata: json_metadata,
+          owner: owner,
+          active: active,
+          posting: posting
+        }
+      });
     }, transactionOptions);
   }
 
