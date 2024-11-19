@@ -11,7 +11,7 @@ export const getTranslations = async (
   let locale = i18n.defaultLocale; // Fallback to default locale
 
   // Check if context has the `locale` field (from getStaticProps)
-  
+
   // Check if context has the `req` object (from getServerSideProps)
   if ('req' in ctx) {
     locale = ctx.req.cookies.NEXT_LOCALE || i18n.defaultLocale;
@@ -23,7 +23,7 @@ export const getTranslations = async (
   return await serverSideTranslations(locale, localeFiles);
 };
 
-export const getServerSidePropsDefault: GetServerSideProps = async (ctx) => {
+export const getDefaultProps = async (ctx: GetStaticPropsContext | GetServerSidePropsContext) => {
   return {
     props: {
       ...(await getTranslations(ctx))

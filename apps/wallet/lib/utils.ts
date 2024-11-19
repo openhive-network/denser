@@ -108,3 +108,19 @@ export const getVests = async (value: string) => {
   const amount = Number(value) * VEST_PRECISION;
   return chain.vests(amount);
 };
+
+// The default is the blog domain
+export const getExternalLink = (path: string, baseUrl?: string) => {
+  if (!baseUrl) {
+    const envBlogUrl = (window as any).__ENV?.REACT_APP_BLOG_DOMAIN;
+
+    if (!envBlogUrl) {
+      throw new Error('No default blog domain found');
+    }
+    baseUrl = envBlogUrl;
+  }
+
+  const url = new URL(path, baseUrl);
+
+  return url.toString();
+};

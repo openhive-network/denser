@@ -19,12 +19,12 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { CommunitiesSelect } from '@/blog/components/communities-select';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { getServerSidePropsDefault } from '../../lib/get-translations';
+import { getDefaultProps } from '../../lib/get-translations';
 const CommunitiesSidebar = dynamic(() => import('@/blog/components/communities-sidebar'), { ssr: false });
 const CommunitiesMybar = dynamic(() => import('@/blog/components/communities-mybar'), { ssr: false });
 const ExploreHive = dynamic(() => import('@/blog/components/explore-hive'), { ssr: false });
 
-export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
+export const getServerSideProps: GetServerSideProps = getDefaultProps;
 
 export const PostSkeleton = () => {
   return (
@@ -140,7 +140,7 @@ const FeedPage: FC = () => {
                   })
                 ) : (
                   <div
-                    className="bg-card-noContent border-card-empty-border flex flex-col gap-6 border-2 border-solid px-4 py-6 text-sm"
+                    className="border-card-empty-border flex flex-col gap-6 border-2 border-solid bg-card-noContent px-4 py-6 text-sm"
                     data-testid="user-has-not-started-blogging-yet"
                   >
                     <span>You haven&apos;t followed anyone yet!</span>

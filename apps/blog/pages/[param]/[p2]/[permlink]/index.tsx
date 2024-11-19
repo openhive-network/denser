@@ -54,6 +54,8 @@ import { CircleSpinner } from 'react-spinners-kit';
 import ChangeTitleDialog from '@/blog/components/change-title-dialog';
 
 const logger = getLogger('app');
+export const postClassName =
+  'font-source text-[16.5px] prose-h1:text-[26.4px] prose-h2:text-[23.1px] prose-h3:text-[19.8px] prose-h4:text-[18.1px] sm:text-[17.6px] sm:prose-h1:text-[28px] sm:prose-h2:text-[24.7px] sm:prose-h3:text-[22.1px] sm:prose-h4:text-[19.4px] lg:text-[19.2px] lg:prose-h1:text-[30.7px] lg:prose-h2:text-[28.9px] lg:prose-h3:text-[23px] lg:prose-h4:text-[21.1px] prose-p:mb-6 prose-p:mt-0 prose-img:cursor-pointer';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -63,11 +65,13 @@ const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), 
 function PostPage({
   community,
   username,
-  permlink
+  permlink,
+  mutedStatus
 }: {
   community: string;
   username: string;
   permlink: string;
+  mutedStatus: boolean;
 }) {
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
@@ -84,7 +88,6 @@ function PostPage({
     data: post
   } = useQuery(['postData', username, permlink], () => getPost(username, String(permlink)), {
     enabled: !!username && !!permlink,
-    onSuccess: (post) => setMutedPost(!!post?.stats?.gray)
   });
 
   const {
@@ -199,7 +202,7 @@ function PostPage({
   }, [discussion, router.query.sort]);
 
   const commentSite = post?.depth !== 0 ? true : false;
-  const [mutedPost, setMutedPost] = useState<boolean | undefined>(undefined);
+  const [mutedPost, setMutedPost] = useState<boolean>(mutedStatus);
   const generateUrls = () => {
     if (!discussionState || discussionState.length === 0) return null;
 
@@ -224,7 +227,7 @@ function PostPage({
     <>
       <Head>{canonical_url ? <link rel="canonical" href={canonical_url} key="canonical" /> : null}</Head>
       <div className="py-8">
-        <div className="relative mx-auto my-0 max-w-4xl bg-background px-8 py-4">
+        <div className="relative mx-auto my-0 max-w-4xl bg-background p-4">
           {communityData ? (
             <AlertDialogFlag
               community={community}
@@ -232,13 +235,16 @@ function PostPage({
               permlink={permlink}
               flagText={communityData.flag_text}
             >
-              <Icons.flag className="absolute right-0 m-2 hover:text-destructive" />
+              <Icons.flag className="absolute right-0 m-2 cursor-pointer hover:text-destructive" />
             </AlertDialogFlag>
           ) : null}
           {!isLoadingPost && post ? (
             <div>
               {!commentSite ? (
-                <h1 className="text-3xl font-bold" data-testid="article-title">
+                <h1
+                  className="font-sanspro text-[21px] font-extrabold sm:text-[25.6px]"
+                  data-testid="article-title"
+                >
                   {post.title}
                 </h1>
               ) : (
@@ -280,11 +286,8 @@ function PostPage({
                 created={post.created}
                 blacklist={firstPost ? firstPost.blacklists : post.blacklists}
               />
-
-              <hr />
-
-              {mutedPost === undefined || isLoadingPost ? (
-                <Loading loading={mutedPost === undefined || isLoadingPost} />
+              {isLoadingPost ? (
+                <Loading loading={isLoadingPost} />
               ) : edit ? (
                 <PostForm
                   username={username}
@@ -313,8 +316,8 @@ function PostPage({
                   <RendererContainer
                     mainPost={post.depth === 0}
                     body={post.body}
-                    className="entry-body markdown-view user-selectable prose max-w-full py-4 dark:prose-invert"
                     author={post.author}
+                    className={postClassName}
                   />
                 </ImageGallery>
               )}
@@ -573,6 +576,7 @@ function PostPage({
               permissionToMute={userCanModerate}
               mutedList={mutedList || []}
               data={discussionState}
+              flagText={communityData?.flag_text}
               parent={post}
               parent_depth={post.depth}
             />
@@ -596,10 +600,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       getPost(username, String(permlink))
     );
   }
-
+const mutedStatus = await getPost(username, String(permlink)).then((res) => res?.stats?.gray ?? false);
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
+      mutedStatus,
       community,
       username,
       permlink,

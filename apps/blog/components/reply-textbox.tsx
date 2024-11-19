@@ -16,6 +16,7 @@ import { getLogger } from '@ui/lib/logging';
 import { useCommentMutation, useUpdateCommentMutation } from './hooks/use-comment-mutations';
 import { handleError } from '@ui/lib/utils';
 import { CircleSpinner } from 'react-spinners-kit';
+import { commentClassName } from './comment-list-item';
 
 const logger = getLogger('app');
 
@@ -125,6 +126,7 @@ export function ReplyTextbox({
         </Link>
         <div>
           <MdEditor
+            windowheight={200}
             htmlMode={editMode}
             onChange={(value) => {
               if (value === '') {
@@ -210,12 +212,7 @@ export function ReplyTextbox({
             </Link>
           </div>
         </div>
-
-        <RendererContainer
-          body={text}
-          className="prose max-w-full border-2 border-background-tertiary p-2 dark:prose-invert"
-          author=""
-        />
+        <RendererContainer body={text} author="" className={commentClassName + ' max-w-full border-2 border-background-tertiary p-2'} />
       </div>
     </div>
   );

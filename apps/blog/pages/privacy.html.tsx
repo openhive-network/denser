@@ -1,9 +1,9 @@
-import { GetStaticProps } from 'next';
+import { GetServerSideProps } from 'next';
 import path from 'path';
 import fs from 'fs';
 import { getTranslations } from '../lib/get-translations';
 
-export const getStaticProps: GetStaticProps<{
+export const getServerSideProps: GetServerSideProps<{
   data: string;
 }> = async (ctx) => {
   const file_path = path.join('lib', 'markdowns', 'faq.md');

@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger
 } from '@ui/components/dropdown-menu';
 import { useTranslation } from 'next-i18next';
+import { getExternalLink } from '@/wallet/lib/utils';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -115,7 +116,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               <ul className="flex h-full gap-2 text-xs text-primary sm:text-base lg:flex lg:gap-8">
                 <li>
                   <Link
-                    href={`/@${username}`}
+                    href={getExternalLink(`/@${username}`)}
                     target="_blank"
                     className={`flex h-full items-center px-2 hover:bg-background hover:text-primary
                     ${router.asPath === `/@${username}` ? 'bg-background text-primary' : ''}

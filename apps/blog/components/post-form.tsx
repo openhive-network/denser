@@ -36,6 +36,7 @@ import RendererContainer from './rendererContainer';
 import { usePostMutation } from './hooks/use-post-mutation';
 import { handleError } from '@ui/lib/utils';
 import { CircleSpinner } from 'react-spinners-kit';
+import { postClassName } from '../pages/[param]/[p2]/[permlink]';
 
 const logger = getLogger('app');
 
@@ -319,16 +320,19 @@ export default function PostForm({
         className={clsx('flex flex-col gap-4 bg-background p-8', {
           'lg:flex-row': sideBySide
         })}
+        data-testid="form-and-preview-container"
       >
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
             className={clsx('space-y-8 lg:w-1/2', { 'lg:w-full': !preview || !sideBySide })}
+            data-testid="form-container"
           >
             <div className="flex items-center justify-between">
               <h1
                 className="cursor-pointer text-sm text-destructive"
                 onClick={() => setSideBySide((prev) => !prev)}
+                data-testid="enable-disable-side-by-side-editor"
               >
                 {sideBySide ? t('submit_page.disable_side') : t('submit_page.enable_side')}
               </h1>
@@ -337,6 +341,7 @@ export default function PostForm({
                 onClick={() => setPreview((prev) => !prev)}
                 variant="link"
                 className="hover:text-destructive"
+                data-testid="hide-show-preview"
               >
                 {preview ? t('submit_page.hide_preview') : t('submit_page.show_preview')}
               </Button>
@@ -347,7 +352,7 @@ export default function PostForm({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder={t('submit_page.title')} {...field} />
+                    <Input placeholder={t('submit_page.title')} {...field} data-testid="post-title-input"/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -361,6 +366,7 @@ export default function PostForm({
                   <FormControl>
                     <>
                       <MdEditor
+                        windowheight={500}
                         htmlMode={editMode}
                         onChange={(value) => {
                           form.setValue('postArea', value);
@@ -444,7 +450,7 @@ export default function PostForm({
                   </span>
                 ) : null}
 
-                <span className="text-xs">
+                <span className="text-xs" data-testid="author-rewards-description">
                   {t('submit_page.author_rewards')}
                   {preferences.blog_rewards === '0%' || storedPost.maxAcceptedPayout === 0
                     ? ` ${t('submit_page.advanced_settings_dialog.decline_payout')}`
@@ -456,6 +462,7 @@ export default function PostForm({
                   <span
                     className="w-fit cursor-pointer text-xs text-destructive"
                     title={t('submit_page.advanced_tooltip')}
+                    data-testid="advanced-settings-button"
                   >
                     {t('submit_page.advanced_settings')}
                   </span>
@@ -465,7 +472,7 @@ export default function PostForm({
 
             <div className="flex flex-col gap-2">
               <span>{t('submit_page.account_stats')}</span>
-              <span className="text-xs">
+              <span className="text-xs" data-testid="resource-credits-description">
                 {t('submit_page.resource_credits', { value: manabarsData?.rc.percentageValue })}
               </span>
             </div>
@@ -489,7 +496,7 @@ export default function PostForm({
                           onValueChange={(e) => storePost({ ...storedPost, category: e })}
                         >
                           <FormControl>
-                            <SelectTrigger>
+                            <SelectTrigger data-testid="posting-to-list-trigger">
                               <SelectValue placeholder="Select category" />
                             </SelectTrigger>
                           </FormControl>
@@ -528,6 +535,7 @@ export default function PostForm({
                 Boolean(altUsernameCheck) ||
                 postMutation.isLoading
               }
+              data-testid="submit-post-button"
             >
               {postMutation.isLoading ? (
                 <CircleSpinner loading={postMutation.isLoading} size={18} color="#dc2626" />
@@ -541,6 +549,7 @@ export default function PostForm({
               type="reset"
               variant="ghost"
               className="font-thiny text-foreground/60 hover:text-destructive"
+              data-testid="clean-post-button"
             >
               {editMode ? t('submit_page.cancel') : t('submit_page.clean')}
             </Button>
@@ -552,6 +561,7 @@ export default function PostForm({
             'lg:w-full': !sideBySide,
             'h-[80vh] ': sideBySide
           })}
+          data-testid="preview-container"
         >
           <div className="flex flex-col-reverse sm:flex-row sm:justify-between">
             <span className="text-slate-500">{t('submit_page.preview')}</span>
@@ -562,13 +572,8 @@ export default function PostForm({
               <span className="text-sm text-destructive">{t('submit_page.markdown_styling_guide')}</span>
             </Link>
           </div>
-
           {previewContent ? (
-            <RendererContainer
-              body={previewContent}
-              className="prose w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2 dark:prose-invert"
-              author=""
-            />
+            <RendererContainer body={previewContent} author="" className={postClassName + ' border-2 border-border p-2 break-words w-full min-w-full self-center overflow-y-scroll'} />
           ) : null}
         </div>
       </div>

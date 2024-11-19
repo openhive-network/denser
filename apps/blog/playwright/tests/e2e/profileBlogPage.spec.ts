@@ -45,7 +45,7 @@ test.describe('Profile page of @gtg', () => {
     expect(await postListItemsBeforeLoadMore.length).toBe(20);
 
     await profilePage.page.keyboard.down('End');
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2000);
     const postListItemsAfterScrollDown = await profilePage.postBlogItem.all();
     expect(await postListItemsAfterScrollDown.length).toBe(40);
   });

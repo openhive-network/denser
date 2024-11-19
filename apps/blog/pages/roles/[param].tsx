@@ -22,7 +22,7 @@ import {
   getSubscribers,
   getSubscriptions
 } from '@transaction/lib/bridge';
-import { getServerSidePropsDefault } from '@/blog/lib/get-translations';
+import { getDefaultProps } from '@/blog/lib/get-translations';
 import { useSetRoleMutation } from '@/blog/components/hooks/use-set-role-mutations';
 
 const roles = [
@@ -196,4 +196,4 @@ const RolesPage: FC = () => {
 
 export default RolesPage;
 
-export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
+export const getServerSideProps: GetServerSideProps = getDefaultProps;

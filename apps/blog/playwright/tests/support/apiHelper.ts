@@ -222,4 +222,19 @@ export class ApiHelper {
 
     return responseGetCommunitySubscribers.json();
   }
+
+  waitForRequestToIntercept(requestUrl: string, requestMethod: string, jsonRpcMethod: string) {
+    const broadcastTransaction = this.page.waitForRequest((request) => {
+      // console.log(
+      //   request.url(),
+      //   request.method(),
+      //   request.postDataJSON(),
+      //   request.postDataJSON().method
+      // );
+      return request.url()===requestUrl && 
+        request.method()===requestMethod && 
+        request.postDataJSON().method === jsonRpcMethod;
+    }, {timeout: 120000});
+    return broadcastTransaction;
+  }
 }

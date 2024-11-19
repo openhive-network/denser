@@ -33,11 +33,11 @@ import { toast } from '@ui/components/hooks/use-toast';
 import { useUnmuteMutation } from '@/blog/components/hooks/use-mute-mutations';
 import { useUpdateProfileMutation } from '@/blog/components/hooks/use-update-profile-mutation';
 import { z } from 'zod';
-import { getServerSidePropsDefault } from '../../lib/get-translations';
+import { getDefaultProps } from '../../lib/get-translations';
 import { CircleSpinner } from 'react-spinners-kit';
 import { useSignerContext } from '@smart-signer/components/signer-provider';
 
-export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
+export const getServerSideProps: GetServerSideProps = getDefaultProps;
 
 const logger = getLogger('app');
 interface Settings {
