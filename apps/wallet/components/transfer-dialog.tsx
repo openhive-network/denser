@@ -153,6 +153,7 @@ export function TransferDialog({
       data.title = 'Power Down';
       data.description = '';
       data.buttonTitle = 'Power Down';
+      data.amount = amount.hp;
       data.onSubmit = async () => {
         const params = { account: username, vestingShares: await getVests(value) };
         transfersTransaction('powerDown', params, powerDownMutation.mutateAsync);

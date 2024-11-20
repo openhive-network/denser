@@ -209,6 +209,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
   const { data: historyFeedData, isLoading: historyFeedLoading } = useQuery(['feedHistory'], () =>
     getFeedHistory()
   );
+
   if (
     accountLoading ||
     dynamicLoading ||
@@ -264,6 +265,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
   const filteredHistoryList = accountHistoryData?.filter(
     getFilter({ filter, totalFund, username, totalShares })
   );
+
   const amount = {
     hive: numberWithCommas(balance_hive.toFixed(3)) + ' Hive',
     hbd: '$' + numberWithCommas(hbd_balance.toFixed(3)),
@@ -271,6 +273,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
     savingsHive: saving_balance_hive.toFixed(3) + ' Hive',
     savingsHbd: '$' + numberWithCommas(hbd_balance_savings.toFixed(3))
   };
+
   function historyItemDescription(operation: Operation) {
     switch (operation.type) {
       case 'claim_reward_balance':
