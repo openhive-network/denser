@@ -3,6 +3,7 @@ services:
     profiles:
       - denser
     image: caddy:2.7.6
+    init: true
     environment:
       PUBLIC_HOSTNAME:
       AUTH_PORT:
