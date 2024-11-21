@@ -14,24 +14,36 @@ type GroupProps = {
   users: Item[];
   keys: Item[];
   handlerUpdateData: Dispatch<SetStateAction<AuthoritiesProps>>;
+  editable: boolean;
 };
 
-const AuthoritesGroup: FC<GroupProps> = ({ id, threshold, label, users, keys, handlerUpdateData }) => {
+const AuthoritesGroup: FC<GroupProps> = ({
+  id,
+  threshold,
+  label,
+  users,
+  keys,
+  handlerUpdateData,
+  editable
+}) => {
   const [open, setOpen] = useState(false);
   return (
     <div className="container">
       <div className="flex w-full items-center justify-between">
         <h2 className="font-bold">{label}</h2>
-        <AddAuthorityDialog onAdd={handlerUpdateData} id={id} open={open} onOpen={(e) => setOpen(e)}>
-          <Button variant="ghost" size="sm">
-            <PlusCircle className="h-5 w-5 cursor-pointer" />
-          </Button>
-        </AddAuthorityDialog>
+        {editable ? (
+          <AddAuthorityDialog onAdd={handlerUpdateData} id={id} open={open} onOpen={(e) => setOpen(e)}>
+            <Button variant="ghost" size="sm">
+              <PlusCircle className="h-5 w-5 cursor-pointer" />
+            </Button>
+          </AddAuthorityDialog>
+        ) : null}
       </div>
       <div className="grid w-full grid-cols-[max-content_1fr_1fr_max-content] gap-1">
         {keys.map((key) => (
           <Fragment key={key.label}>
             <AuthoritiesGroupItem
+              editable={editable}
               deleteDisabled={keys.length === 1}
               key={key.id}
               {...key}
@@ -92,6 +104,7 @@ const AuthoritesGroup: FC<GroupProps> = ({ id, threshold, label, users, keys, ha
         {users.map((user) => (
           <Fragment key={user.label}>
             <AuthoritiesGroupItem
+              editable={editable}
               key={user.id}
               {...user}
               onUpdate={(e) =>
@@ -151,35 +164,39 @@ const AuthoritesGroup: FC<GroupProps> = ({ id, threshold, label, users, keys, ha
         <div className="col-span-4 grid grid-cols-subgrid pl-2 text-xs hover:bg-foreground/20 sm:text-base">
           <div className="h-5 w-5" />
           <span className="font-medium">Threshold:</span>
-          <NumberInput
-            className="h-6 w-1/2"
-            value={threshold}
-            onChange={(e) =>
-              id === 'posting'
-                ? handlerUpdateData((prev) => ({
-                    ...prev,
-                    posting: {
-                      ...prev.posting,
-                      weight_threshold: Number(e)
-                    }
-                  }))
-                : id === 'active'
+          {editable ? (
+            <NumberInput
+              className="h-6 w-1/2"
+              value={threshold}
+              onChange={(e) =>
+                id === 'posting'
                   ? handlerUpdateData((prev) => ({
                       ...prev,
-                      active: {
-                        ...prev.active,
+                      posting: {
+                        ...prev.posting,
                         weight_threshold: Number(e)
                       }
                     }))
-                  : handlerUpdateData((prev) => ({
-                      ...prev,
-                      owner: {
-                        ...prev.owner,
-                        weight_threshold: Number(e)
-                      }
-                    }))
-            }
-          />
+                  : id === 'active'
+                    ? handlerUpdateData((prev) => ({
+                        ...prev,
+                        active: {
+                          ...prev.active,
+                          weight_threshold: Number(e)
+                        }
+                      }))
+                    : handlerUpdateData((prev) => ({
+                        ...prev,
+                        owner: {
+                          ...prev.owner,
+                          weight_threshold: Number(e)
+                        }
+                      }))
+              }
+            />
+          ) : (
+            <span>{threshold}</span>
+          )}
           <div className="h-5 w-5" />
         </div>
       </div>

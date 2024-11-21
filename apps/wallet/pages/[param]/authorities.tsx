@@ -11,6 +11,7 @@ import Loading from '@ui/components/loading';
 import { useUpdateProfileMutation } from '@/wallet/components/hooks/use-update-wallet-profile-mutation';
 import { Authority } from '@hiveio/dhive/lib/chain/account';
 import AuthoritesGroup from '@/wallet/components/authorities-group';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 
 export interface AuthoritiesProps {
   memo_key: string;
@@ -21,6 +22,8 @@ export interface AuthoritiesProps {
 }
 
 export default function EditableTable({ username }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const { user } = useUser();
+  const accountOwner = user?.username === username;
   const { t } = useTranslation('common_wallet');
   const { data: accountData, isLoading: accountLoading } = useQuery(
     ['accountData', username],
@@ -79,6 +82,7 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
       {accountData ? (
         <div className="flex flex-col gap-8 p-6">
           <AuthoritesGroup
+            editable={accountOwner}
             id="posting"
             threshold={data.posting.weight_threshold}
             label="Posting Authorities"
@@ -99,6 +103,7 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
             handlerUpdateData={setData}
           />
           <AuthoritesGroup
+            editable={accountOwner}
             id="active"
             threshold={data.active.weight_threshold}
             label="Active Authorities"
@@ -121,6 +126,7 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
             handlerUpdateData={setData}
           />
           <AuthoritesGroup
+            editable={accountOwner}
             id="owner"
             threshold={accountData.owner.weight_threshold}
             label="Owner Authorities"
@@ -142,13 +148,15 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
             }
             handlerUpdateData={setData}
           />
-          <Button disabled={updateProfileMutation.isLoading} onClick={onSubmit} className="w-fit self-end">
-            {updateProfileMutation.isLoading ? (
-              <Loading loading={updateProfileMutation.isLoading} />
-            ) : (
-              'Save Changes'
-            )}
-          </Button>
+          {accountOwner ? (
+            <Button disabled={updateProfileMutation.isLoading} onClick={onSubmit} className="w-fit self-end">
+              {updateProfileMutation.isLoading ? (
+                <Loading loading={updateProfileMutation.isLoading} />
+              ) : (
+                'Save Changes'
+              )}
+            </Button>
+          ) : null}
         </div>
       ) : null}
     </ProfileLayout>

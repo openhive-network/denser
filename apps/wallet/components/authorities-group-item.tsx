@@ -18,8 +18,9 @@ const AuthoritiesGroupItem: FC<
     onUpdate: (value: number) => void;
     onDelete: (id: string) => void;
     deleteDisabled?: boolean;
+    editable: boolean;
   }
-> = ({ id, label, type, threshold, onUpdate, onDelete, deleteDisabled }) => {
+> = ({ id, label, type, threshold, onUpdate, onDelete, deleteDisabled, editable }) => {
   const Icon = type === 'USER' ? UserSquare : FileKey;
   return (
     <div className="col-span-4 grid grid-cols-subgrid pl-2 text-xs hover:bg-foreground/20 sm:text-base">
@@ -34,25 +35,31 @@ const AuthoritiesGroupItem: FC<
         <CopyToKeyboard value={label} displayValue={cutPublicKey(label)} />
       )}
 
-      <NumberInput
-        className="h-6 w-1/2"
-        value={threshold}
-        onChange={(value) => {
-          onUpdate(value);
-        }}
-      />
-      <div className="flex items-center">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => {
-            onDelete(id);
+      {editable ? (
+        <NumberInput
+          className="h-6 w-1/2"
+          value={threshold}
+          onChange={(value) => {
+            onUpdate(value);
           }}
-          disabled={deleteDisabled}
-        >
-          <Trash className="h-5 w-5" />
-        </Button>
-      </div>
+        />
+      ) : (
+        <span>{threshold}</span>
+      )}
+      {editable ? (
+        <div className="flex items-center">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              onDelete(id);
+            }}
+            disabled={deleteDisabled}
+          >
+            <Trash className="h-5 w-5" />
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 };
