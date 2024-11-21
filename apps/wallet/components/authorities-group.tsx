@@ -53,7 +53,9 @@ const AuthoritesGroup: FC<GroupProps> = ({
                       ...prev,
                       posting: {
                         ...prev.posting,
-                        key_auths: { ...prev.posting.key_auths, [key.label]: e }
+                        key_auths: prev.posting.key_auths.map((auth) =>
+                          auth[0] === key.label ? [auth[0], e] : auth
+                        )
                       }
                     }))
                   : id === 'active'
@@ -61,14 +63,18 @@ const AuthoritesGroup: FC<GroupProps> = ({
                         ...prev,
                         active: {
                           ...prev.active,
-                          key_auths: { ...prev.active.key_auths, [key.label]: e }
+                          key_auths: prev.active.key_auths.map((auth) =>
+                            auth[0] === key.label ? [auth[0], e] : auth
+                          )
                         }
                       }))
                     : handlerUpdateData((prev) => ({
                         ...prev,
                         owner: {
                           ...prev.owner,
-                          key_auths: { ...prev.owner.key_auths, [key.label]: e }
+                          key_auths: prev.owner.key_auths.map((auth) =>
+                            auth[0] === key.label ? [auth[0], e] : auth
+                          )
                         }
                       }))
               }
@@ -113,7 +119,9 @@ const AuthoritesGroup: FC<GroupProps> = ({
                       ...prev,
                       posting: {
                         ...prev.posting,
-                        account_auths: { ...prev.posting.account_auths, [user.label]: e }
+                        account_auths: prev.posting.account_auths.map((auth) =>
+                          auth[0] === user.label ? [auth[0], e] : auth
+                        )
                       }
                     }))
                   : id === 'active'
@@ -121,14 +129,18 @@ const AuthoritesGroup: FC<GroupProps> = ({
                         ...prev,
                         active: {
                           ...prev.active,
-                          account_auths: { ...prev.active.account_auths, [user.label]: e }
+                          account_auths: prev.active.account_auths.map((auth) =>
+                            auth[0] === user.label ? [auth[0], e] : auth
+                          )
                         }
                       }))
                     : handlerUpdateData((prev) => ({
                         ...prev,
                         owner: {
                           ...prev.owner,
-                          account_auths: { ...prev.owner.account_auths, [user.label]: e }
+                          account_auths: prev.owner.account_auths.map((auth) =>
+                            auth[0] === user.label ? [auth[0], e] : auth
+                          )
                         }
                       }))
               }
