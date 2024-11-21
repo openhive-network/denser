@@ -674,9 +674,9 @@ export class TransactionService {
   async updateWalletProfile(
     memo_key: string,
     json_metadata: string,
-    owner: Authorizes,
-    active: Authorizes,
-    posting: Authorizes,
+    owner: Authorizes | undefined,
+    active: Authorizes | undefined,
+    posting: Authorizes | undefined,
     transactionOptions: TransactionOptions = {}
   ) {
     return await this.processHiveAppOperation((builder) => {
