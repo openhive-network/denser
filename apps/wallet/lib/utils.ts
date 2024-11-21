@@ -108,3 +108,7 @@ export const getExternalLink = (path: string, baseUrl?: string) => {
 
   return url.toString();
 };
+export const cutPublicKey = (publicKey?: string): string => {
+  if (!publicKey) return '';
+  return `${publicKey.slice(0, 8)}...${publicKey.slice(publicKey.length - 5)}`;
+};
