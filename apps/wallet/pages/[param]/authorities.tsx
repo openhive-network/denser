@@ -84,7 +84,7 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
           editable={accountOwner}
           id="posting"
           threshold={data.posting.weight_threshold}
-          label="Posting Authorities"
+          label="Posting authority"
           users={data.posting.account_auths.map(([label, threshold]) => ({
             id: label,
             type: 'USER',
@@ -103,7 +103,7 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
           editable={accountOwner}
           id="active"
           threshold={data.active.weight_threshold}
-          label="Active Authorities"
+          label="Active authority"
           users={
             data.active.account_auths.map(([label, threshold]) => ({
               id: label,
@@ -126,7 +126,7 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
           editable={accountOwner}
           id="owner"
           threshold={data.owner.weight_threshold}
-          label="Owner Authorities"
+          label="Owner authority"
           users={
             data.owner.account_auths.map(([label, threshold]) => ({
               id: label,
