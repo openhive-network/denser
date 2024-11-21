@@ -79,86 +79,82 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
   return (
     <ProfileLayout>
       <WalletMenu username={username} />
-      {accountData ? (
-        <div className="flex flex-col gap-8 p-6">
-          <AuthoritesGroup
-            editable={accountOwner}
-            id="posting"
-            threshold={data.posting.weight_threshold}
-            label="Posting Authorities"
-            users={data.posting.account_auths.map(([label, threshold]) => ({
+      <div className="flex flex-col gap-8 p-6">
+        <AuthoritesGroup
+          editable={accountOwner}
+          id="posting"
+          threshold={data.posting.weight_threshold}
+          label="Posting Authorities"
+          users={data.posting.account_auths.map(([label, threshold]) => ({
+            id: label,
+            type: 'USER',
+            label,
+            threshold
+          }))}
+          keys={data.posting.key_auths.map(([label, threshold]) => ({
+            id: label.toString(),
+            type: 'KEY',
+            label: label.toString(),
+            threshold
+          }))}
+          handlerUpdateData={setData}
+        />
+        <AuthoritesGroup
+          editable={accountOwner}
+          id="active"
+          threshold={data.active.weight_threshold}
+          label="Active Authorities"
+          users={
+            data.active.account_auths.map(([label, threshold]) => ({
               id: label,
               type: 'USER',
               label,
               threshold
-            }))}
-            keys={
-              data.posting.key_auths.map(([label, threshold]) => ({
-                id: label.toString(),
-                type: 'KEY',
-                label: label.toString(),
-                threshold
-              })) || []
-            }
-            handlerUpdateData={setData}
-          />
-          <AuthoritesGroup
-            editable={accountOwner}
-            id="active"
-            threshold={data.active.weight_threshold}
-            label="Active Authorities"
-            users={
-              accountData?.active?.account_auths.map(([label, threshold]) => ({
-                id: label,
-                type: 'USER',
-                label,
-                threshold
-              })) || []
-            }
-            keys={
-              accountData?.active?.key_auths.map(([label, threshold]) => ({
-                id: label.toString(),
-                type: 'KEY',
-                label: label.toString(),
-                threshold
-              })) || []
-            }
-            handlerUpdateData={setData}
-          />
-          <AuthoritesGroup
-            editable={accountOwner}
-            id="owner"
-            threshold={accountData.owner.weight_threshold}
-            label="Owner Authorities"
-            users={
-              accountData?.owner?.account_auths.map(([label, threshold]) => ({
-                id: label,
-                type: 'USER',
-                label,
-                threshold
-              })) || []
-            }
-            keys={
-              accountData?.owner?.key_auths.map(([label, threshold]) => ({
-                id: label.toString(),
-                type: 'KEY',
-                label: label.toString(),
-                threshold
-              })) || []
-            }
-            handlerUpdateData={setData}
-          />
-          {accountOwner ? (
-            <Button disabled={updateProfileMutation.isLoading} onClick={onSubmit} className="w-fit self-end">
-              {updateProfileMutation.isLoading ? (
-                <Loading loading={updateProfileMutation.isLoading} />
-              ) : (
-                'Save Changes'
-              )}
-            </Button>
-          ) : null}
-        </div>
-      ) : null}
+            })) || []
+          }
+          keys={
+            data.active.key_auths.map(([label, threshold]) => ({
+              id: label.toString(),
+              type: 'KEY',
+              label: label.toString(),
+              threshold
+            })) || []
+          }
+          handlerUpdateData={setData}
+        />
+        <AuthoritesGroup
+          editable={accountOwner}
+          id="owner"
+          threshold={data.owner.weight_threshold}
+          label="Owner Authorities"
+          users={
+            data.owner.account_auths.map(([label, threshold]) => ({
+              id: label,
+              type: 'USER',
+              label,
+              threshold
+            })) || []
+          }
+          keys={
+            data.owner.key_auths.map(([label, threshold]) => ({
+              id: label.toString(),
+              type: 'KEY',
+              label: label.toString(),
+              threshold
+            })) || []
+          }
+          handlerUpdateData={setData}
+        />
+        {accountOwner ? (
+          <Button disabled={updateProfileMutation.isLoading} onClick={onSubmit} className="w-fit self-end">
+            {updateProfileMutation.isLoading ? (
+              <Loading loading={updateProfileMutation.isLoading} />
+            ) : (
+              'Save Changes'
+            )}
+          </Button>
+        ) : null}
+      </div>
     </ProfileLayout>
   );
 }
