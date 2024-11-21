@@ -20,18 +20,20 @@ const CopyToKeyboard: React.FC<CopyToKeyboardProps> = ({ value, displayValue, cl
   };
 
   return (
-    <div
-      className={cn(className, 'hover:bg-rowHover flex cursor-pointer items-center rounded')}
-      onClick={() => copyToClipboard(value)}
-    >
-      {displayValue}
+    <>
+      <div
+        className={cn(className, 'relative flex cursor-pointer items-center rounded')}
+        onClick={() => copyToClipboard(value)}
+      >
+        {displayValue}
+      </div>
       {copied ? (
-        <div className="flex items-center text-xs">
+        <div className="absolute flex items-center rounded-xl bg-background-tertiary p-2">
           <Check className="text-explorer-light-green h-5 w-5" />
-          Coppied!
+          <span className="ml-1">Copied!</span>
         </div>
       ) : null}
-    </div>
+    </>
   );
 };
 

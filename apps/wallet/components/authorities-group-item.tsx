@@ -19,8 +19,9 @@ const AuthoritiesGroupItem: FC<
     onDelete: (id: string) => void;
     deleteDisabled?: boolean;
     editable: boolean;
+    width?: number;
   }
-> = ({ id, label, type, threshold, onUpdate, onDelete, deleteDisabled, editable }) => {
+> = ({ id, label, type, threshold, onUpdate, onDelete, deleteDisabled, editable, width }) => {
   const Icon = type === 'USER' ? UserSquare : FileKey;
   return (
     <div className="col-span-4 grid grid-cols-subgrid pl-2 text-xs hover:bg-foreground/20 sm:text-base">
@@ -32,7 +33,7 @@ const AuthoritiesGroupItem: FC<
           {label}
         </Link>
       ) : (
-        <CopyToKeyboard value={label} displayValue={cutPublicKey(label)} />
+        <CopyToKeyboard value={label} displayValue={cutPublicKey(label, width)} />
       )}
 
       {editable ? (
