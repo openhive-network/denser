@@ -12,6 +12,7 @@ import { useUpdateProfileMutation } from '@/wallet/components/hooks/use-update-w
 import { Authority } from '@hiveio/dhive/lib/chain/account';
 import AuthoritesGroup from '@/wallet/components/authorities-group';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import { Accordion } from '@ui/components/accordion';
 
 export interface AuthoritiesProps {
   memo_key: string;
@@ -80,71 +81,73 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
     <ProfileLayout>
       <WalletMenu username={username} />
       <div className="flex flex-col gap-8 p-6">
-        <AuthoritesGroup
-          editable={accountOwner}
-          id="posting"
-          threshold={data.posting.weight_threshold}
-          label="Posting authority"
-          users={data.posting.account_auths.map(([label, threshold]) => ({
-            id: label,
-            type: 'USER',
-            label,
-            threshold
-          }))}
-          keys={data.posting.key_auths.map(([label, threshold]) => ({
-            id: label.toString(),
-            type: 'KEY',
-            label: label.toString(),
-            threshold
-          }))}
-          handlerUpdateData={setData}
-        />
-        <AuthoritesGroup
-          editable={accountOwner}
-          id="active"
-          threshold={data.active.weight_threshold}
-          label="Active authority"
-          users={
-            data.active.account_auths.map(([label, threshold]) => ({
+        <Accordion type="multiple">
+          <AuthoritesGroup
+            editable={accountOwner}
+            id="posting"
+            threshold={data.posting.weight_threshold}
+            label="Posting authority"
+            users={data.posting.account_auths.map(([label, threshold]) => ({
               id: label,
               type: 'USER',
               label,
               threshold
-            })) || []
-          }
-          keys={
-            data.active.key_auths.map(([label, threshold]) => ({
+            }))}
+            keys={data.posting.key_auths.map(([label, threshold]) => ({
               id: label.toString(),
               type: 'KEY',
               label: label.toString(),
               threshold
-            })) || []
-          }
-          handlerUpdateData={setData}
-        />
-        <AuthoritesGroup
-          editable={accountOwner}
-          id="owner"
-          threshold={data.owner.weight_threshold}
-          label="Owner authority"
-          users={
-            data.owner.account_auths.map(([label, threshold]) => ({
-              id: label,
-              type: 'USER',
-              label,
-              threshold
-            })) || []
-          }
-          keys={
-            data.owner.key_auths.map(([label, threshold]) => ({
-              id: label.toString(),
-              type: 'KEY',
-              label: label.toString(),
-              threshold
-            })) || []
-          }
-          handlerUpdateData={setData}
-        />
+            }))}
+            handlerUpdateData={setData}
+          />
+          <AuthoritesGroup
+            editable={accountOwner}
+            id="active"
+            threshold={data.active.weight_threshold}
+            label="Active authority"
+            users={
+              data.active.account_auths.map(([label, threshold]) => ({
+                id: label,
+                type: 'USER',
+                label,
+                threshold
+              })) || []
+            }
+            keys={
+              data.active.key_auths.map(([label, threshold]) => ({
+                id: label.toString(),
+                type: 'KEY',
+                label: label.toString(),
+                threshold
+              })) || []
+            }
+            handlerUpdateData={setData}
+          />
+          <AuthoritesGroup
+            editable={accountOwner}
+            id="owner"
+            threshold={data.owner.weight_threshold}
+            label="Owner authority"
+            users={
+              data.owner.account_auths.map(([label, threshold]) => ({
+                id: label,
+                type: 'USER',
+                label,
+                threshold
+              })) || []
+            }
+            keys={
+              data.owner.key_auths.map(([label, threshold]) => ({
+                id: label.toString(),
+                type: 'KEY',
+                label: label.toString(),
+                threshold
+              })) || []
+            }
+            handlerUpdateData={setData}
+          />
+        </Accordion>
         {accountOwner ? (
           <Button disabled={updateProfileMutation.isLoading} onClick={onSubmit} className="w-fit self-end">
             {updateProfileMutation.isLoading ? (
