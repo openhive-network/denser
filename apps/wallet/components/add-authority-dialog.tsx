@@ -26,59 +26,40 @@ const AddAuthorityDialog: FC<{
   onOpen: (e: boolean) => void;
   children: ReactNode;
   onAdd: Dispatch<SetStateAction<AuthoritiesProps>>;
-  id: string;
-}> = ({ open, onOpen, children, onAdd, id }) => {
+  id: 'posting' | 'active' | 'owner';
+  keys: string[];
+  acconts: string[];
+}> = ({ open, onOpen, children, onAdd, id, keys, acconts }) => {
   const [newItem, setNewItem] = useState<Item>({ id: id, label: '', threshold: 1, type: 'USER' });
+
+  const validate = () => {
+    return acconts.includes(newItem.label)
+      ? 'This account already exists in the list'
+      : keys.includes(newItem.label)
+        ? 'This key already exists in the list'
+        : newItem.label === ''
+          ? 'This field is required'
+          : false;
+  };
+  const validator = validate();
   const onSubmit = () => {
     if (newItem.type === 'USER') {
-      id === 'posting'
-        ? onAdd((prev) => ({
-            ...prev,
-            posting: {
-              ...prev.posting,
-              account_auths: [...prev.posting.account_auths, [newItem.label, newItem.threshold]]
-            }
-          }))
-        : id === 'active'
-          ? onAdd((prev) => ({
-              ...prev,
-              active: {
-                ...prev.active,
-                account_auths: [...prev.active.account_auths, [newItem.label, newItem.threshold]]
-              }
-            }))
-          : onAdd((prev) => ({
-              ...prev,
-              owner: {
-                ...prev.owner,
-                account_auths: [...prev.owner.account_auths, [newItem.label, newItem.threshold]]
-              }
-            }));
+      onAdd((prev) => ({
+        ...prev,
+        [id]: {
+          ...prev[id],
+          account_auths: [...prev[id].account_auths, [newItem.label, newItem.threshold]]
+        }
+      }));
     }
     if (newItem.type === 'KEY') {
-      id === 'posting'
-        ? onAdd((prev) => ({
-            ...prev,
-            posting: {
-              ...prev.posting,
-              key_auths: [...prev.posting.key_auths, [newItem.label, newItem.threshold]]
-            }
-          }))
-        : id === 'active'
-          ? onAdd((prev) => ({
-              ...prev,
-              active: {
-                ...prev.active,
-                key_auths: [...prev.active.key_auths, [newItem.label, newItem.threshold]]
-              }
-            }))
-          : onAdd((prev) => ({
-              ...prev,
-              owner: {
-                ...prev.owner,
-                key_auths: [...prev.owner.key_auths, [newItem.label, newItem.threshold]]
-              }
-            }));
+      onAdd((prev) => ({
+        ...prev,
+        [id]: {
+          ...prev[id],
+          key_auths: [...prev[id].key_auths, [newItem.label, newItem.threshold]]
+        }
+      }));
     }
     onOpen(false);
   };
@@ -88,13 +69,12 @@ const AddAuthorityDialog: FC<{
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Add New Authority</DialogTitle>
-          <DialogDescription>New {id} authority will be added to the list.</DialogDescription>
+          <DialogTitle>Add new {id} entry</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
+          <div className="grid grid-cols-4 items-center gap-x-4 gap-y-2">
             <Label htmlFor="name" className="text-right">
-              {newItem.type === 'USER' ? 'Username' : 'Key'}
+              {newItem.type === 'USER' ? 'Account' : 'Key'}
             </Label>
             <Input
               id="name"
@@ -102,6 +82,9 @@ const AddAuthorityDialog: FC<{
               value={newItem.label}
               onChange={(e) => setNewItem((prev) => ({ ...prev, label: e.target.value }))}
             />
+            {validator && (
+              <span className="col-span-3 col-start-2 text-xs text-destructive">{validator}</span>
+            )}
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="threshold" className="text-right">
@@ -129,7 +112,7 @@ const AddAuthorityDialog: FC<{
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="USER">User</SelectItem>
+                  <SelectItem value="USER">Account</SelectItem>
                   <SelectItem value="KEY">Key</SelectItem>
                 </SelectGroup>
               </SelectContent>
@@ -137,7 +120,7 @@ const AddAuthorityDialog: FC<{
           </div>
         </div>
         <DialogFooter>
-          <Button disabled={newItem.label === ''} type="submit" onClick={onSubmit}>
+          <Button disabled={!!validator} type="submit" onClick={onSubmit}>
             Add
           </Button>
         </DialogFooter>
