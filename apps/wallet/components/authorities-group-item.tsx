@@ -17,11 +17,10 @@ const AuthoritiesGroupItem: FC<
   Item & {
     onUpdate: (value: number) => void;
     onDelete: (id: string) => void;
-    deleteDisabled?: boolean;
     editable: boolean;
     width?: number;
   }
-> = ({ id, label, type, threshold, onUpdate, onDelete, deleteDisabled, editable, width }) => {
+> = ({ id, label, type, threshold, onUpdate, onDelete, editable, width }) => {
   const Icon = type === 'USER' ? UserSquare : FileKey;
   return (
     <div className="col-span-4 grid grid-cols-subgrid pl-2 text-xs hover:bg-foreground/20 sm:text-base">
@@ -53,7 +52,6 @@ const AuthoritiesGroupItem: FC<
             onClick={() => {
               onDelete(id);
             }}
-            disabled={deleteDisabled}
           >
             <Trash className="h-5 w-5" />
           </Button>

@@ -69,7 +69,6 @@ const AuthoritesGroup: FC<GroupProps> = ({ id, threshold, users, keys, handlerUp
                 <AuthoritiesGroupItem
                   width={width}
                   editable={editable}
-                  deleteDisabled={keys.length === 1}
                   key={key.id}
                   {...key}
                   onUpdate={(e) =>
