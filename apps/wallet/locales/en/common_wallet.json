@@ -1,5 +1,6 @@
 {
   "global": {
+    "and": "and",
     "no_rewards": "No rewards pending redemption.",
     "loading": "Loading",
     "something_went_wrong": "Something went wrong",
@@ -320,6 +321,8 @@
       "last14days": "Last 14 days",
       "last30days": "Last 30 days",
       "last60days": "Last 60 days"
-    }
+    },
+    "current_rewards": "Your current rewards: ",
+    "redeem_rewards": "Redeem Rewards (Transfer To Balance)"
   }
 }

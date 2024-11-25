@@ -274,6 +274,15 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
     savingsHbd: '$' + numberWithCommas(hbd_balance_savings.toFixed(3))
   };
 
+  const rewards = [
+    accountData.reward_hive_balance,
+    accountData.reward_hbd_balance,
+    accountData.reward_vesting_hive
+  ]
+    .filter((reward) => Number(reward.split(' ')[0]) > 0)
+    .join(` ${t('global.and')} `)
+    .replace('HIVE', 'HP');
+
   function historyItemDescription(operation: Operation) {
     switch (operation.type) {
       case 'claim_reward_balance':
@@ -358,6 +367,17 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
     <ProfileLayout>
       <div className="flex w-full flex-col items-center ">
         <WalletMenu username={username} />
+        {!!rewards.length && (
+          <div className="mx-auto mt-4 flex w-full max-w-6xl items-center justify-between rounded-md bg-slate-600 px-4 py-4">
+            <div className="w-full">
+              {t('transfers_page.current_rewards')}
+              {rewards}
+            </div>
+            <Button className="flex-shrink-0" variant="redHover" onClick={() => null}>
+              {t('transfers_page.redeem_rewards')}
+            </Button>
+          </div>
+        )}
         <div>
           {user?.username === username && (
             <Link href="https://blocktrades.us" target="_blank">
@@ -668,7 +688,6 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
             </tbody>
           </table>
         </div>
-
         {powerdown_hive.gt(0) ? (
           <div className="p-2 text-sm sm:p-4">
             {t('profil.the_next_power_down')} {totalDays} {totalDays !== 1 ? ' days' : 'day'}(~
