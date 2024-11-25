@@ -3,8 +3,8 @@ import { Button } from '@ui/components/button';
 import { FileKey, Trash, UserSquare } from 'lucide-react';
 import { cutPublicKey } from '@/wallet/lib/utils';
 import CopyToKeyboard from '@/wallet/components/copy-to-keyboard';
-import Link from 'next/link';
 import NumberInput from './number-input';
+import UserInfoPopover from './user-info-popover';
 
 export type Item = {
   id: string;
@@ -29,9 +29,7 @@ const AuthoritiesGroupItem: FC<
         <Icon className="size-5" />
       </div>
       {type === 'USER' ? (
-        <Link target="_blank" href={`/@${label}/transfers`} className="flex items-center">
-          {label}
-        </Link>
+        <UserInfoPopover username={label} />
       ) : (
         <CopyToKeyboard value={label} displayValue={cutPublicKey(label, width)} />
       )}

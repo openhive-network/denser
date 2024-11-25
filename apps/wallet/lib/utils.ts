@@ -109,7 +109,8 @@ export const getExternalLink = (path: string, baseUrl?: string) => {
   return url.toString();
 };
 export const cutPublicKey = (publicKey?: string, width?: number): string => {
-  if (!publicKey || !width) return '';
+  if (!publicKey) return '';
+  if (!width) return `${publicKey.slice(0, 8)}...${publicKey.slice(publicKey.length - 5)}`;
   if (width > 800) return publicKey;
   if (width > 500) {
     return `${publicKey.slice(0, 15)}...${publicKey.slice(publicKey.length - 15)}`;

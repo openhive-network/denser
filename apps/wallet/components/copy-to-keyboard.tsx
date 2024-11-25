@@ -1,5 +1,5 @@
 import { cn } from '@ui/lib/utils';
-import { Check, ClipboardCopy } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { useState } from 'react';
 
 interface CopyToKeyboardProps {
