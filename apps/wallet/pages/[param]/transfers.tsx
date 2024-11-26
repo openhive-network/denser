@@ -1,10 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 import Big from 'big.js';
-import { getAccount, getDynamicGlobalProperties, getFeedHistory } from '@transaction/lib/hive';
+import {
+  getAccount,
+  getDynamicGlobalProperties,
+  getFeedHistory,
+  getFindAccounts
+} from '@transaction/lib/hive';
 import moment from 'moment';
 import { getAccountHistory, getOpenOrder } from '@/wallet/lib/hive';
 import { getCurrentHpApr, getFilter } from '@/wallet/lib/utils';
-import { delegatedHive, vestingHive, powerdownHive } from '@ui/lib/utils';
+import { delegatedHive, vestingHive, powerdownHive, handleError } from '@ui/lib/utils';
 import { numberWithCommas } from '@ui/lib/utils';
 import { dateToFullRelative } from '@ui/lib/parse-date';
 import { convertStringToBig } from '@ui/lib/helpers';
@@ -30,6 +35,8 @@ import { TransferDialog } from '@/wallet/components/transfer-dialog';
 import useFilters from '@/wallet/components/hooks/use-filters';
 import { getTranslations } from '../../lib/get-translations';
 import FinancialReport from '@/wallet/components/financial-report';
+import { useClaimRewardsMutation } from '@/wallet/components/hooks/use-claim-rewards-mutation';
+import { useMemo } from 'react';
 
 const initialFilters: TransferFilters = {
   search: '',
@@ -210,6 +217,25 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
     getFeedHistory()
   );
 
+  const claimRewardsMutation = useClaimRewardsMutation();
+
+  const rewardsStr = useMemo(() => {
+    const allRewards = [
+      accountData?.reward_hive_balance,
+      accountData?.reward_hbd_balance,
+      accountData?.reward_vesting_hive.replace('HIVE', 'HP')
+    ].filter((reward) => Number(reward?.split(' ')[0]) > 0);
+
+    return allRewards.length > 2
+      ? `${allRewards[0]}, ${allRewards[1]} ${t('global.and')} ${allRewards[2]}`
+      : allRewards.join(` ${t('global.and')} `);
+  }, [
+    accountData?.reward_hbd_balance,
+    accountData?.reward_hive_balance,
+    accountData?.reward_vesting_hive,
+    t
+  ]);
+
   if (
     accountLoading ||
     dynamicLoading ||
@@ -274,14 +300,15 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
     savingsHbd: '$' + numberWithCommas(hbd_balance_savings.toFixed(3))
   };
 
-  const rewards = [
-    accountData.reward_hive_balance,
-    accountData.reward_hbd_balance,
-    accountData.reward_vesting_hive
-  ]
-    .filter((reward) => Number(reward.split(' ')[0]) > 0)
-    .join(` ${t('global.and')} `)
-    .replace('HIVE', 'HP');
+  const claimRewards = async () => {
+    const accounts = await getFindAccounts(username);
+    const params = { account: accounts.accounts[0] };
+    try {
+      await claimRewardsMutation.mutateAsync(params);
+    } catch (error) {
+      handleError(error, { method: 'claim_reward_balance', params });
+    }
+  };
 
   function historyItemDescription(operation: Operation) {
     switch (operation.type) {
@@ -367,13 +394,13 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
     <ProfileLayout>
       <div className="flex w-full flex-col items-center ">
         <WalletMenu username={username} />
-        {!!rewards.length && (
+        {!!rewardsStr.length && (
           <div className="mx-auto mt-4 flex w-full max-w-6xl items-center justify-between rounded-md bg-slate-600 px-4 py-4">
             <div className="w-full">
               {t('transfers_page.current_rewards')}
-              {rewards}
+              {rewardsStr}
             </div>
-            <Button className="flex-shrink-0" variant="redHover" onClick={() => null}>
+            <Button className="flex-shrink-0" variant="redHover" onClick={() => claimRewards()}>
               {t('transfers_page.redeem_rewards')}
             </Button>
           </div>

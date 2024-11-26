@@ -28,6 +28,7 @@ export function useClaimRewardsMutation() {
       logger.info('useClaimRewardMutation onSuccess data: %o', data);
       const { username } = user;
       queryClient.invalidateQueries({ queryKey: ['profileData', username] });
+      queryClient.invalidateQueries({ queryKey: ['accountData', username] });
     }
   });
 
