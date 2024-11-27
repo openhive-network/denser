@@ -9,14 +9,14 @@ const defaultClientOptions: ClientOptions = {
   sessionTimeout: 900,
   chainId: 'beeab0de00000000000000000000000000000000000000000000000000000000',
   node: 'https://api.hive.blog',
-  workerUrl: '/auth/worker.js',
+  workerUrl: '/auth/worker.js'
 };
 
 export const hbauthUseStrictMode = true;
 
 class HbauthService extends StorageMixin(StorageBase) {
-
   static onlineClient: OnlineClient;
+  private strictMode: boolean = hbauthUseStrictMode;
 
   /**
    * Pending promise, returning Hbauth OnlineCLient. Intended for
@@ -28,15 +28,14 @@ class HbauthService extends StorageMixin(StorageBase) {
   onlineClientPromise: Promise<OnlineClient> | null;
 
   constructor(options: StorageBaseOptions) {
-    super(options)
+    super(options);
     this.onlineClientPromise = null;
   }
 
-  async getOnlineClient(): Promise<OnlineClient> {
-    if (!HbauthService.onlineClient) {
-
+  async getOnlineClient(strict: boolean = this.strictMode): Promise<OnlineClient> {
+    if (!HbauthService.onlineClient || strict !== this.strictMode) {
       // If we have pending promise, return its result.
-      if (this.onlineClientPromise) return await this.onlineClientPromise;
+      if (this.onlineClientPromise && strict === this.strictMode) return await this.onlineClientPromise;
 
       // If we haven't pending promise. let's create one.
       const promise = async () => {
@@ -47,14 +46,16 @@ class HbauthService extends StorageMixin(StorageBase) {
         }
         // Set promise result in this class' static property and return
         // it here as well.
-        await this.setOnlineClient(hbauthUseStrictMode, { node, chainId: siteConfig.chainId });
+        await this.setOnlineClient(strict, { node, chainId: siteConfig.chainId });
         return HbauthService.onlineClient;
       };
+
+      this.strictMode = strict;
 
       // Set promise to pending.
       this.onlineClientPromise = promise();
       // Return the result of pending promise.
-      return await this.onlineClientPromise
+      return await this.onlineClientPromise;
     }
     // If we have not empty existing static property, just return it.
     // logger.info('Returning existing instance of HbauthService.onlineClient');
@@ -69,7 +70,6 @@ class HbauthService extends StorageMixin(StorageBase) {
     logger.info('Creating instance of HbauthService.onlineClient with options: %o', clientOptions);
     HbauthService.onlineClient = await new OnlineClient(strict, clientOptions).initialize();
   }
-
 }
 
 export const hbauthService = new HbauthService({ storageType: 'localStorage' });

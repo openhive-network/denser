@@ -79,7 +79,8 @@
       "button_other": "Otras opciones de inicio de sesión",
       "button_cancel": "Cancelar",
       "button_sign_auth": "Firmar transacción de autorización",
-      "button_signin_unlocked": "Iniciar sesión con transacción firmada"
+      "button_signin_unlocked": "Iniciar sesión con transacción firmada",
+      "strict_mode": "Modo de autoridad restringida"
     },
     "zod_error": {
       "password_length": "La longitud de la contraseña debe ser superior a 6 caracteres",
