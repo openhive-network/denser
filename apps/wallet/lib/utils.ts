@@ -2,6 +2,7 @@ import { convertStringToBig } from '@hive/ui/lib/helpers';
 import { IDynamicGlobalProperties } from '@transaction/lib/hive';
 import { AccountHistoryData } from '../pages/[param]/transfers';
 import { TransferFilters } from '@/wallet/components/transfers-history-filter';
+import { Authority } from '@hiveio/dhive/lib/chain/account';
 
 export function getCurrentHpApr(data: IDynamicGlobalProperties) {
   // The inflation was set to 9.5% at block 7m
@@ -116,4 +117,12 @@ export const cutPublicKey = (publicKey?: string, width?: number): string => {
     return `${publicKey.slice(0, 15)}...${publicKey.slice(publicKey.length - 15)}`;
   }
   return `${publicKey.slice(0, 8)}...${publicKey.slice(publicKey.length - 5)}`;
+};
+
+export const validation = (list: Authority, id: string) => {
+  return [...list.account_auths, ...list.key_auths]
+    .map((item) => item[1])
+    .reduce((acc, weight) => acc + weight, 0) >= list.weight_threshold
+    ? false
+    : `Make sure the sum of all ${id} weights is greater than or equal to the threshold`;
 };

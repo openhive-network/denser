@@ -13,7 +13,7 @@ import { Authority } from '@hiveio/dhive/lib/chain/account';
 import AuthoritesGroup from '@/wallet/components/authorities-group';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Accordion } from '@ui/components/accordion';
-
+import { validation } from '@/wallet/lib/utils';
 export interface AuthoritiesProps {
   memo_key: string;
   json_metadata: string;
@@ -25,6 +25,7 @@ export interface AuthoritiesProps {
 export default function EditableTable({ username }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { user } = useUser();
   const accountOwner = user?.username === username;
+  const [editMode, setEditMode] = useState(false);
   const { t } = useTranslation('common_wallet');
   const { data: accountData, isLoading: accountLoading } = useQuery(
     ['accountData', username],
@@ -54,6 +55,10 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
   };
 
   const [data, setData] = useState<AuthoritiesProps>(profileAuthorities);
+  const validatorThresholdPosting = validation(data.posting, 'posting');
+  const validatorThresholdActive = validation(data.active, 'active');
+  const validatorThresholdOwner = validation(data.owner, 'owner');
+
   useEffect(() => {
     setData(profileAuthorities);
   }, [accountLoading]);
@@ -83,7 +88,7 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
       <div className="flex flex-col gap-8 p-6">
         <Accordion type="multiple">
           <AuthoritesGroup
-            editable={accountOwner}
+            editMode={editMode}
             id="posting"
             threshold={data.posting.weight_threshold}
             users={data.posting.account_auths.map(([label, threshold]) => ({
@@ -101,7 +106,7 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
             handlerUpdateData={setData}
           />
           <AuthoritesGroup
-            editable={accountOwner}
+            editMode={editMode}
             id="active"
             threshold={data.active.weight_threshold}
             users={
@@ -123,7 +128,7 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
             handlerUpdateData={setData}
           />
           <AuthoritesGroup
-            editable={accountOwner}
+            editMode={editMode}
             id="owner"
             threshold={data.owner.weight_threshold}
             users={
@@ -145,15 +150,46 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
             handlerUpdateData={setData}
           />
         </Accordion>
-        {accountOwner ? (
-          <Button disabled={updateProfileMutation.isLoading} onClick={onSubmit} className="w-fit self-end">
-            {updateProfileMutation.isLoading ? (
-              <Loading loading={updateProfileMutation.isLoading} />
-            ) : (
-              'Save Changes'
-            )}
-          </Button>
-        ) : null}
+        <div className="flex flex-col gap-4 self-end">
+          {accountOwner && !editMode ? (
+            <Button onClick={() => setEditMode((prev) => !prev)} variant="redHover">
+              Edit
+            </Button>
+          ) : editMode ? (
+            <div className="flex gap-4 self-end">
+              <Button
+                variant="outlineRed"
+                onClick={() => {
+                  setData(profileAuthorities);
+                  setEditMode(() => false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="redHover"
+                disabled={
+                  updateProfileMutation.isLoading ||
+                  !!validatorThresholdPosting ||
+                  !!validatorThresholdActive ||
+                  !!validatorThresholdOwner
+                }
+                onClick={onSubmit}
+              >
+                {updateProfileMutation.isLoading ? (
+                  <Loading loading={updateProfileMutation.isLoading} />
+                ) : (
+                  'Save Changes'
+                )}
+              </Button>
+            </div>
+          ) : null}
+          {(validatorThresholdPosting || validatorThresholdActive || validatorThresholdOwner) && (
+            <div className="text-sm text-destructive">
+              {validatorThresholdPosting || validatorThresholdActive || validatorThresholdOwner}
+            </div>
+          )}
+        </div>
       </div>
     </ProfileLayout>
   );

@@ -5,6 +5,7 @@ import { cutPublicKey } from '@/wallet/lib/utils';
 import CopyToKeyboard from '@/wallet/components/copy-to-keyboard';
 import NumberInput from './number-input';
 import UserInfoPopover from './user-info-popover';
+import { Input } from '@ui/components';
 
 export type Item = {
   id: string;
@@ -15,36 +16,44 @@ export type Item = {
 
 const AuthoritiesGroupItem: FC<
   Item & {
-    onUpdate: (value: number) => void;
+    onUpdateThreshold: (value: number) => void;
+    onUpdateEntry: (id: string) => void;
     onDelete: (id: string) => void;
-    editable: boolean;
+    editMode: boolean;
     width?: number;
   }
-> = ({ id, label, type, threshold, onUpdate, onDelete, editable, width }) => {
+> = ({ id, label, type, threshold, onUpdateThreshold, onUpdateEntry, onDelete, width, editMode }) => {
   const Icon = type === 'USER' ? UserSquare : FileKey;
   return (
     <div className="col-span-4 grid grid-cols-subgrid pl-2 text-xs hover:bg-foreground/20 sm:text-base">
       <div className="flex items-center">
         <Icon className="size-5" />
       </div>
-      {type === 'USER' ? (
+      {editMode ? (
+        <Input
+          value={label}
+          onChange={(value) => {
+            onUpdateEntry(value.target.value);
+          }}
+        />
+      ) : type === 'USER' ? (
         <UserInfoPopover username={label} />
       ) : (
         <CopyToKeyboard value={label} displayValue={cutPublicKey(label, width)} />
       )}
 
-      {editable ? (
+      {editMode ? (
         <NumberInput
           className="h-6 w-1/2"
           value={threshold}
           onChange={(value) => {
-            onUpdate(value);
+            onUpdateThreshold(value);
           }}
         />
       ) : (
-        <span>{threshold}</span>
+        <span className="justify-self-center">{threshold}</span>
       )}
-      {editable ? (
+      {editMode ? (
         <div className="flex items-center">
           <Button
             variant="ghost"

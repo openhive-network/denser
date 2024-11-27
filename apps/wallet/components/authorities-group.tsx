@@ -15,10 +15,10 @@ type GroupProps = {
   users: Item[];
   keys: Item[];
   handlerUpdateData: Dispatch<SetStateAction<AuthoritiesProps>>;
-  editable: boolean;
+  editMode: boolean;
 };
 
-const AuthoritesGroup: FC<GroupProps> = ({ id, threshold, users, keys, handlerUpdateData, editable }) => {
+const AuthoritesGroup: FC<GroupProps> = ({ id, threshold, users, keys, handlerUpdateData, editMode }) => {
   const [open, setOpen] = useState(false);
   const { width } = useWindowSize();
   return (
@@ -32,7 +32,7 @@ const AuthoritesGroup: FC<GroupProps> = ({ id, threshold, users, keys, handlerUp
             <div className="col-span-4 grid grid-cols-subgrid items-center pl-2 text-xs hover:bg-foreground/20 sm:text-base">
               <div className="size-5" />
               <span className="justify-self-end font-medium">Threshold:</span>
-              {editable ? (
+              {editMode ? (
                 <NumberInput
                   className="h-6 w-1/2"
                   value={threshold}
@@ -47,9 +47,9 @@ const AuthoritesGroup: FC<GroupProps> = ({ id, threshold, users, keys, handlerUp
                   }
                 />
               ) : (
-                <span>{threshold}</span>
+                <span className="justify-self-center">{threshold}</span>
               )}
-              {editable ? (
+              {editMode ? (
                 <AddAuthorityDialog
                   onAdd={handlerUpdateData}
                   id={id}
@@ -64,14 +64,14 @@ const AuthoritesGroup: FC<GroupProps> = ({ id, threshold, users, keys, handlerUp
                 </AddAuthorityDialog>
               ) : null}
             </div>
-            {keys.map((key) => (
+            {keys.map((key, index) => (
               <Fragment key={key.label}>
                 <AuthoritiesGroupItem
                   width={width}
-                  editable={editable}
+                  editMode={editMode}
                   key={key.id}
                   {...key}
-                  onUpdate={(e) =>
+                  onUpdateThreshold={(e) =>
                     handlerUpdateData((prev) => ({
                       ...prev,
                       [id]: {
@@ -79,6 +79,15 @@ const AuthoritesGroup: FC<GroupProps> = ({ id, threshold, users, keys, handlerUp
                         key_auths: prev[id].key_auths.map((auth) =>
                           auth[0] === key.label ? [auth[0], e] : auth
                         )
+                      }
+                    }))
+                  }
+                  onUpdateEntry={(e) =>
+                    handlerUpdateData((prev) => ({
+                      ...prev,
+                      [id]: {
+                        ...prev[id],
+                        key_auths: prev[id].key_auths.map((auth, i) => (i === index ? [e, auth[1]] : auth))
                       }
                     }))
                   }
@@ -95,19 +104,30 @@ const AuthoritesGroup: FC<GroupProps> = ({ id, threshold, users, keys, handlerUp
                 <Separator className="col-span-4 bg-foreground" />
               </Fragment>
             ))}
-            {users.map((user) => (
+            {users.map((user, index) => (
               <Fragment key={user.label}>
                 <AuthoritiesGroupItem
-                  editable={editable}
+                  editMode={editMode}
                   key={user.id}
                   {...user}
-                  onUpdate={(e) =>
+                  onUpdateThreshold={(e) =>
                     handlerUpdateData((prev) => ({
                       ...prev,
                       [id]: {
                         ...prev[id],
                         account_auths: prev[id].account_auths.map((auth) =>
                           auth[0] === user.label ? [auth[0], e] : auth
+                        )
+                      }
+                    }))
+                  }
+                  onUpdateEntry={(e) =>
+                    handlerUpdateData((prev) => ({
+                      ...prev,
+                      [id]: {
+                        ...prev[id],
+                        account_auths: prev[id].account_auths.map((auth, i) =>
+                          i === index ? [e, auth[1]] : auth
                         )
                       }
                     }))
