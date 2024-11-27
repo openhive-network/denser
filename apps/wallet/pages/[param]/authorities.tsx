@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useTranslation } from 'next-i18next';
@@ -9,24 +9,57 @@ import { getAccount } from '@transaction/lib/hive';
 import { Button } from '@ui/components/button';
 import Loading from '@ui/components/loading';
 import { useUpdateProfileMutation } from '@/wallet/components/hooks/use-update-wallet-profile-mutation';
-import { Authority } from '@hiveio/dhive/lib/chain/account';
 import AuthoritesGroup from '@/wallet/components/authorities-group';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Accordion } from '@ui/components/accordion';
 import { validation } from '@/wallet/lib/utils';
+import { useForm } from 'react-hook-form';
+import { Form } from '@ui/components/form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+export type AuthorityProps = {
+  weight_threshold: number;
+  account_auths: { account: string; threshold: number }[];
+  key_auths: { key: string; threshold: number }[];
+};
+
 export interface AuthoritiesProps {
   memo_key: string;
   json_metadata: string;
-  owner: Authority;
-  active: Authority;
-  posting: Authority;
+  owner: AuthorityProps;
+  active: AuthorityProps;
+  posting: AuthorityProps;
 }
 
+const accountSchema = z.object({ account: z.string(), threshold: z.number() });
+const keySchema = z.object({ key: z.string(), threshold: z.number() });
+const formSchema = z.object({
+  memo_key: z.string(),
+  json_metadata: z.string(),
+  owner: z.object({
+    weight_threshold: z.number(),
+    account_auths: z.array(accountSchema),
+    key_auths: z.array(keySchema)
+  }),
+  active: z.object({
+    weight_threshold: z.number(),
+    account_auths: z.array(accountSchema),
+    key_auths: z.array(keySchema)
+  }),
+  posting: z.object({
+    weight_threshold: z.number(),
+    account_auths: z.array(accountSchema),
+    key_auths: z.array(keySchema)
+  })
+});
 export default function EditableTable({ username }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { user } = useUser();
   const accountOwner = user?.username === username;
   const [editMode, setEditMode] = useState(false);
   const { t } = useTranslation('common_wallet');
+  type AuthorityFormValues = z.infer<typeof formSchema>;
+
   const { data: accountData, isLoading: accountLoading } = useQuery(
     ['accountData', username],
     () => getAccount(username),
@@ -34,34 +67,43 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
       enabled: Boolean(username)
     }
   );
-  const profileAuthorities: AuthoritiesProps = {
+  const profileAuthorities: AuthorityFormValues = {
     memo_key: accountData?.memo_key || '',
     json_metadata: accountData?.json_metadata || '',
     owner: {
       weight_threshold: accountData?.owner?.weight_threshold || 1,
-      account_auths: accountData?.owner?.account_auths || [],
-      key_auths: accountData?.owner?.key_auths || []
+      account_auths:
+        accountData?.owner?.account_auths.map(([account, threshold]) => ({ account, threshold })) || [],
+      key_auths:
+        accountData?.owner?.key_auths.map(([key, threshold]) => ({ key: key.toString(), threshold })) || []
     },
     active: {
       weight_threshold: accountData?.active?.weight_threshold || 1,
-      account_auths: accountData?.active?.account_auths || [],
-      key_auths: accountData?.active?.key_auths || []
+      account_auths:
+        accountData?.active?.account_auths.map(([account, threshold]: [string, number]) => ({
+          account,
+          threshold
+        })) || [],
+      key_auths:
+        accountData?.active?.key_auths.map(([key, threshold]) => ({ key: key.toString(), threshold })) || []
     },
     posting: {
       weight_threshold: accountData?.posting.weight_threshold || 1,
-      account_auths: accountData?.posting?.account_auths || [],
-      key_auths: accountData?.posting?.key_auths || []
+      account_auths:
+        accountData?.posting?.account_auths.map(([account, threshold]: [string, number]) => ({
+          account,
+          threshold
+        })) || [],
+      key_auths:
+        accountData?.posting?.key_auths.map(([key, threshold]) => ({ key: key.toString(), threshold })) || []
     }
   };
 
-  const [data, setData] = useState<AuthoritiesProps>(profileAuthorities);
-  const validatorThresholdPosting = validation(data.posting, 'posting');
-  const validatorThresholdActive = validation(data.active, 'active');
-  const validatorThresholdOwner = validation(data.owner, 'owner');
-
-  useEffect(() => {
-    setData(profileAuthorities);
-  }, [accountLoading]);
+  const form = useForm<AuthorityFormValues>({
+    resolver: zodResolver(formSchema),
+    values: profileAuthorities
+  });
+  console.log(form.watch());
 
   const updateProfileMutation = useUpdateProfileMutation();
   if (accountLoading) {
@@ -71,14 +113,15 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
       </ProfileLayout>
     );
   }
-  if (!data || !setData) return null;
-  const onSubmit = () => {
+  if (!profileAuthorities) return null;
+
+  const onSubmit = (values: AuthorityFormValues) => {
     updateProfileMutation.mutate({
-      memo_key: data.memo_key,
-      json_metadata: data.json_metadata,
-      owner: data.owner,
-      active: data.active,
-      posting: data.posting
+      memo_key: values.memo_key,
+      json_metadata: values.json_metadata,
+      owner: values.owner,
+      active: values.active,
+      posting: values.posting
     });
   };
 
@@ -87,68 +130,13 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
       <WalletMenu username={username} />
       <div className="flex flex-col gap-8 p-6">
         <Accordion type="multiple">
-          <AuthoritesGroup
-            editMode={editMode}
-            id="posting"
-            threshold={data.posting.weight_threshold}
-            users={data.posting.account_auths.map(([label, threshold]) => ({
-              id: label,
-              type: 'USER',
-              label,
-              threshold
-            }))}
-            keys={data.posting.key_auths.map(([label, threshold]) => ({
-              id: label.toString(),
-              type: 'KEY',
-              label: label.toString(),
-              threshold
-            }))}
-            handlerUpdateData={setData}
-          />
-          <AuthoritesGroup
-            editMode={editMode}
-            id="active"
-            threshold={data.active.weight_threshold}
-            users={
-              data.active.account_auths.map(([label, threshold]) => ({
-                id: label,
-                type: 'USER',
-                label,
-                threshold
-              })) || []
-            }
-            keys={
-              data.active.key_auths.map(([label, threshold]) => ({
-                id: label.toString(),
-                type: 'KEY',
-                label: label.toString(),
-                threshold
-              })) || []
-            }
-            handlerUpdateData={setData}
-          />
-          <AuthoritesGroup
-            editMode={editMode}
-            id="owner"
-            threshold={data.owner.weight_threshold}
-            users={
-              data.owner.account_auths.map(([label, threshold]) => ({
-                id: label,
-                type: 'USER',
-                label,
-                threshold
-              })) || []
-            }
-            keys={
-              data.owner.key_auths.map(([label, threshold]) => ({
-                id: label.toString(),
-                type: 'KEY',
-                label: label.toString(),
-                threshold
-              })) || []
-            }
-            handlerUpdateData={setData}
-          />
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <AuthoritesGroup editMode={editMode} id="posting" controller={form.control} />
+              <AuthoritesGroup editMode={editMode} id="active" controller={form.control} />
+              <AuthoritesGroup editMode={editMode} id="owner" controller={form.control} />
+            </form>
+          </Form>
         </Accordion>
         <div className="flex flex-col gap-4 self-end">
           {accountOwner && !editMode ? (
@@ -160,22 +148,13 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
               <Button
                 variant="outlineRed"
                 onClick={() => {
-                  setData(profileAuthorities);
+                  form.reset();
                   setEditMode(() => false);
                 }}
               >
                 Cancel
               </Button>
-              <Button
-                variant="redHover"
-                disabled={
-                  updateProfileMutation.isLoading ||
-                  !!validatorThresholdPosting ||
-                  !!validatorThresholdActive ||
-                  !!validatorThresholdOwner
-                }
-                onClick={onSubmit}
-              >
+              <Button variant="redHover" type="submit">
                 {updateProfileMutation.isLoading ? (
                   <Loading loading={updateProfileMutation.isLoading} />
                 ) : (
@@ -184,11 +163,6 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
               </Button>
             </div>
           ) : null}
-          {(validatorThresholdPosting || validatorThresholdActive || validatorThresholdOwner) && (
-            <div className="text-sm text-destructive">
-              {validatorThresholdPosting || validatorThresholdActive || validatorThresholdOwner}
-            </div>
-          )}
         </div>
       </div>
     </ProfileLayout>

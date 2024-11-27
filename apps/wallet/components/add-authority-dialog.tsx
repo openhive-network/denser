@@ -5,7 +5,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   Input,
   DialogFooter,
   Label,
@@ -16,22 +15,20 @@ import {
   SelectTrigger,
   SelectValue
 } from '@ui/components';
-import { Dispatch, FC, ReactNode, SetStateAction, useState } from 'react';
-import { AuthoritiesProps } from '../pages/[param]/authorities';
-import { Item } from './authorities-group-item';
-import NumberInput from './number-input';
+import { FC, ReactNode, useState } from 'react';
 
+type Item = { label: string; threshold: number; type: 'USER' | 'KEY' };
 const AddAuthorityDialog: FC<{
   open: boolean;
   onOpen: (e: boolean) => void;
   children: ReactNode;
-  onAdd: Dispatch<SetStateAction<AuthoritiesProps>>;
+  onAddKey: (item: { account: string; threshold: number }) => void;
+  onAddAccount: (item: { account: string; threshold: number }) => void;
   id: 'posting' | 'active' | 'owner';
   keys: string[];
   acconts: string[];
-}> = ({ open, onOpen, children, onAdd, id, keys, acconts }) => {
-  const [newItem, setNewItem] = useState<Item>({ id: id, label: '', threshold: 1, type: 'USER' });
-
+}> = ({ open, onOpen, children, onAddKey, onAddAccount, id, keys, acconts }) => {
+  const [newItem, setNewItem] = useState<Item>({ label: '', threshold: 1, type: 'USER' });
   const validate = () => {
     return acconts.includes(newItem.label)
       ? 'This account already exists in the list'
@@ -44,22 +41,10 @@ const AddAuthorityDialog: FC<{
   const validator = validate();
   const onSubmit = () => {
     if (newItem.type === 'USER') {
-      onAdd((prev) => ({
-        ...prev,
-        [id]: {
-          ...prev[id],
-          account_auths: [...prev[id].account_auths, [newItem.label, newItem.threshold]]
-        }
-      }));
+      onAddAccount({ account: newItem.label, threshold: newItem.threshold });
     }
     if (newItem.type === 'KEY') {
-      onAdd((prev) => ({
-        ...prev,
-        [id]: {
-          ...prev[id],
-          key_auths: [...prev[id].key_auths, [newItem.label, newItem.threshold]]
-        }
-      }));
+      onAddKey({ account: newItem.label, threshold: newItem.threshold });
     }
     onOpen(false);
   };
@@ -90,13 +75,13 @@ const AddAuthorityDialog: FC<{
             <Label htmlFor="threshold" className="text-right">
               Threshold
             </Label>
-            <NumberInput
-              id="threshold"
-              className="col-span-3 w-full"
+            <Input
               value={newItem.threshold}
+              type="number"
               onChange={(value) => {
-                setNewItem({ ...newItem, threshold: value });
+                setNewItem({ ...newItem, threshold: Number(value.target.value) });
               }}
+              className="col-span-3 w-full self-center justify-self-center bg-white/10 p-0 px-3"
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">

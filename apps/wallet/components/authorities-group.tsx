@@ -1,26 +1,24 @@
-import React, { Dispatch, FC, Fragment, SetStateAction, useLayoutEffect, useState } from 'react';
+import React, { FC, Fragment, useState } from 'react';
 import { Button } from '@ui/components/button';
 import { PlusCircle } from 'lucide-react';
-import { Separator } from '@ui/components';
-import AuthoritiesGroupItem, { Item } from './authorities-group-item';
-import NumberInput from './number-input';
+import { FormField, Input, Separator } from '@ui/components';
+import AuthoritiesGroupItem from './authorities-group-item';
 import { AuthoritiesProps } from '../pages/[param]/authorities';
 import AddAuthorityDialog from './add-authority-dialog';
 import useWindowSize from './hooks/use-window-size';
 import { AccordionContent, AccordionItem, AccordionTrigger } from '@ui/components/accordion';
-
+import { Control, useFormContext } from 'react-hook-form';
 type GroupProps = {
   id: 'posting' | 'active' | 'owner';
-  threshold: number;
-  users: Item[];
-  keys: Item[];
-  handlerUpdateData: Dispatch<SetStateAction<AuthoritiesProps>>;
   editMode: boolean;
+  controller: Control<AuthoritiesProps, any>;
 };
 
-const AuthoritesGroup: FC<GroupProps> = ({ id, threshold, users, keys, handlerUpdateData, editMode }) => {
+const AuthoritesGroup: FC<GroupProps> = ({ id, editMode, controller }) => {
   const [open, setOpen] = useState(false);
   const { width } = useWindowSize();
+  const { setValue } = useFormContext();
+
   return (
     <div className="container">
       <AccordionItem value={id}>
@@ -32,119 +30,105 @@ const AuthoritesGroup: FC<GroupProps> = ({ id, threshold, users, keys, handlerUp
             <div className="col-span-4 grid grid-cols-subgrid items-center pl-2 text-xs hover:bg-foreground/20 sm:text-base">
               <div className="size-5" />
               <span className="justify-self-end font-medium">Threshold:</span>
+              <FormField
+                control={controller}
+                name={`${id}.weight_threshold`}
+                render={({ field }) => (
+                  <>
+                    {editMode ? (
+                      <Input
+                        value={field.value}
+                        type="number"
+                        onChange={(e) => field.onChange(e)}
+                        className="h-6 w-1/2 self-center justify-self-center bg-white/10 p-0 px-3"
+                      />
+                    ) : (
+                      <span className="justify-self-center">{field.value}</span>
+                    )}
+                  </>
+                )}
+              />
               {editMode ? (
-                <NumberInput
-                  className="h-6 w-1/2"
-                  value={threshold}
-                  onChange={(e) =>
-                    handlerUpdateData((prev) => ({
-                      ...prev,
-                      [id]: {
-                        ...prev[id],
-                        weight_threshold: Number(e)
+                <FormField
+                  control={controller}
+                  name={id}
+                  render={({ field }) => (
+                    <AddAuthorityDialog
+                      onAddAccount={(item) =>
+                        setValue(`${id}.account_auths`, [...field.value.account_auths, item])
                       }
-                    }))
-                  }
+                      onAddKey={(item) => setValue(`${id}.key_auths`, [...field.value.key_auths, item])}
+                      id={id}
+                      open={open}
+                      onOpen={(e) => setOpen(e)}
+                      acconts={field.value.account_auths.map((e) => e.account)}
+                      keys={field.value.key_auths.map((e) => e.key)}
+                    >
+                      <Button variant="ghost" size="sm">
+                        <PlusCircle className="h-5 w-5 cursor-pointer" />
+                      </Button>
+                    </AddAuthorityDialog>
+                  )}
                 />
-              ) : (
-                <span className="justify-self-center">{threshold}</span>
-              )}
-              {editMode ? (
-                <AddAuthorityDialog
-                  onAdd={handlerUpdateData}
-                  id={id}
-                  open={open}
-                  onOpen={(e) => setOpen(e)}
-                  acconts={users.map((e) => e.label)}
-                  keys={keys.map((e) => e.label)}
-                >
-                  <Button variant="ghost" size="sm">
-                    <PlusCircle className="h-5 w-5 cursor-pointer" />
-                  </Button>
-                </AddAuthorityDialog>
               ) : null}
             </div>
-            {keys.map((key, index) => (
-              <Fragment key={key.label}>
-                <AuthoritiesGroupItem
-                  width={width}
-                  editMode={editMode}
-                  key={key.id}
-                  {...key}
-                  onUpdateThreshold={(e) =>
-                    handlerUpdateData((prev) => ({
-                      ...prev,
-                      [id]: {
-                        ...prev[id],
-                        key_auths: prev[id].key_auths.map((auth) =>
-                          auth[0] === key.label ? [auth[0], e] : auth
-                        )
-                      }
-                    }))
-                  }
-                  onUpdateEntry={(e) =>
-                    handlerUpdateData((prev) => ({
-                      ...prev,
-                      [id]: {
-                        ...prev[id],
-                        key_auths: prev[id].key_auths.map((auth, i) => (i === index ? [e, auth[1]] : auth))
-                      }
-                    }))
-                  }
-                  onDelete={() =>
-                    handlerUpdateData((prev) => ({
-                      ...prev,
-                      [id]: {
-                        ...prev[id],
-                        key_auths: prev[id].key_auths.filter(([label]) => label !== key.label)
-                      }
-                    }))
-                  }
-                />
-                <Separator className="col-span-4 bg-foreground" />
-              </Fragment>
-            ))}
-            {users.map((user, index) => (
-              <Fragment key={user.label}>
-                <AuthoritiesGroupItem
-                  editMode={editMode}
-                  key={user.id}
-                  {...user}
-                  onUpdateThreshold={(e) =>
-                    handlerUpdateData((prev) => ({
-                      ...prev,
-                      [id]: {
-                        ...prev[id],
-                        account_auths: prev[id].account_auths.map((auth) =>
-                          auth[0] === user.label ? [auth[0], e] : auth
-                        )
-                      }
-                    }))
-                  }
-                  onUpdateEntry={(e) =>
-                    handlerUpdateData((prev) => ({
-                      ...prev,
-                      [id]: {
-                        ...prev[id],
-                        account_auths: prev[id].account_auths.map((auth, i) =>
-                          i === index ? [e, auth[1]] : auth
-                        )
-                      }
-                    }))
-                  }
-                  onDelete={() =>
-                    handlerUpdateData((prev) => ({
-                      ...prev,
-                      [id]: {
-                        ...prev[id],
-                        account_auths: prev[id].account_auths.filter(([label]) => label !== user.label)
-                      }
-                    }))
-                  }
-                />
-                <Separator className="col-span-4 bg-foreground" />
-              </Fragment>
-            ))}
+            <FormField
+              control={controller}
+              name={`${id}.key_auths`}
+              render={({ field }) => (
+                <>
+                  {field.value.map((key, index) => (
+                    <Fragment key={key.key}>
+                      <AuthoritiesGroupItem
+                        width={width}
+                        threshold={field.value[index].threshold}
+                        label={field.value[index].key}
+                        type="KEY"
+                        editMode={editMode}
+                        onUpdateThreshold={(e) => setValue(`${id}.key_auths[${index}].threshold`, e)}
+                        onUpdateEntry={(e) => setValue(`${id}.key_auths[${index}].key`, e.toString())}
+                        onDelete={() => {
+                          setValue(
+                            `${id}.key_auths`,
+                            field.value.filter((e) => e.key !== field.value[index].key)
+                          );
+                        }}
+                      />
+
+                      <Separator className="col-span-4 bg-foreground" />
+                    </Fragment>
+                  ))}
+                </>
+              )}
+            />
+            <FormField
+              control={controller}
+              name={`${id}.account_auths`}
+              render={({ field }) => (
+                <>
+                  {field.value.map((user, index) => (
+                    <Fragment key={user.account}>
+                      <AuthoritiesGroupItem
+                        width={width}
+                        threshold={field.value[index].threshold}
+                        label={field.value[index].account}
+                        type="USER"
+                        editMode={editMode}
+                        onUpdateThreshold={(e) => setValue(`${id}.account_auths[${index}].threshold`, e)}
+                        onUpdateEntry={(e) => setValue(`${id}.account_auths[${index}].account`, e)}
+                        onDelete={() => {
+                          setValue(
+                            `${id}.account_auths`,
+                            field.value.filter((e) => e.account !== field.value[index].account)
+                          );
+                        }}
+                      />
+                      <Separator className="col-span-4 bg-foreground" />
+                    </Fragment>
+                  ))}
+                </>
+              )}
+            />
           </div>
         </AccordionContent>
       </AccordionItem>

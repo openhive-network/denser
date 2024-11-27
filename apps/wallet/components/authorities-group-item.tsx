@@ -3,26 +3,19 @@ import { Button } from '@ui/components/button';
 import { FileKey, Trash, UserSquare } from 'lucide-react';
 import { cutPublicKey } from '@/wallet/lib/utils';
 import CopyToKeyboard from '@/wallet/components/copy-to-keyboard';
-import NumberInput from './number-input';
 import UserInfoPopover from './user-info-popover';
 import { Input } from '@ui/components';
 
-export type Item = {
-  id: string;
-  type: 'USER' | 'KEY';
+const AuthoritiesGroupItem: FC<{
+  onUpdateThreshold: (value: number) => void;
+  onUpdateEntry: (value: string) => void;
+  onDelete: () => void;
+  editMode: boolean;
+  width?: number;
+  type: string;
   label: string;
   threshold: number;
-};
-
-const AuthoritiesGroupItem: FC<
-  Item & {
-    onUpdateThreshold: (value: number) => void;
-    onUpdateEntry: (id: string) => void;
-    onDelete: (id: string) => void;
-    editMode: boolean;
-    width?: number;
-  }
-> = ({ id, label, type, threshold, onUpdateThreshold, onUpdateEntry, onDelete, width, editMode }) => {
+}> = ({ type, label, threshold, onUpdateThreshold, onUpdateEntry, onDelete, width, editMode }) => {
   const Icon = type === 'USER' ? UserSquare : FileKey;
   return (
     <div className="col-span-4 grid grid-cols-subgrid pl-2 text-xs hover:bg-foreground/20 sm:text-base">
@@ -30,12 +23,7 @@ const AuthoritiesGroupItem: FC<
         <Icon className="size-5" />
       </div>
       {editMode ? (
-        <Input
-          value={label}
-          onChange={(value) => {
-            onUpdateEntry(value.target.value);
-          }}
-        />
+        <Input value={label} onChange={(e) => onUpdateEntry(e.target.value)} />
       ) : type === 'USER' ? (
         <UserInfoPopover username={label} />
       ) : (
@@ -43,12 +31,11 @@ const AuthoritiesGroupItem: FC<
       )}
 
       {editMode ? (
-        <NumberInput
-          className="h-6 w-1/2"
+        <Input
           value={threshold}
-          onChange={(value) => {
-            onUpdateThreshold(value);
-          }}
+          type="number"
+          onChange={(e) => onUpdateThreshold(Number(e.target.value))}
+          className="h-6 w-1/2 self-center justify-self-center bg-white/10 p-0 px-3"
         />
       ) : (
         <span className="justify-self-center">{threshold}</span>
@@ -59,7 +46,7 @@ const AuthoritiesGroupItem: FC<
             variant="ghost"
             size="sm"
             onClick={() => {
-              onDelete(id);
+              onDelete();
             }}
           >
             <Trash className="h-5 w-5" />
