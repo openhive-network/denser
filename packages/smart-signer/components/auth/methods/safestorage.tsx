@@ -24,7 +24,11 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-  Checkbox
+  Checkbox,
+  TooltipProvider,
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent
 } from '@hive/ui';
 import Step from '../step';
 import { Steps } from '../form';
@@ -393,12 +397,23 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                       checked={field.value}
                       value={field.value as unknown as string}
                     />
+
                     <label
                       htmlFor="strict"
                       className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                     >
                       {t('login_form.signin_safe_storage.strict_mode')}
                     </label>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Icons.info className="w-5 h-5" />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-xs">
+                          {t('login_form.signin_safe_storage.strict_mode_tooltip')}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                 )}
               />
