@@ -79,7 +79,8 @@
       "button_other": "Other sign in options",
       "button_cancel": "Cancel",
       "button_sign_auth": "Sign auth tx",
-      "button_signin_unlocked": "Sign in with signed tx"
+      "button_signin_unlocked": "Sign in with signed tx",
+      "strict_mode": "Restricted Authority Mode"
     },
     "zod_error": {
       "password_length": "Password length should be more than 6 characters",
