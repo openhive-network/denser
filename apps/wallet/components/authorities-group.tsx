@@ -77,8 +77,8 @@ const AuthoritesGroup: FC<GroupProps> = ({ id, editMode, controller }) => {
               name={`${id}.key_auths`}
               render={({ field }) => (
                 <>
-                  {field.value.map((key, index) => (
-                    <Fragment key={key.key}>
+                  {field.value.map((_, index) => (
+                    <Fragment key={index}>
                       <AuthoritiesGroupItem
                         width={width}
                         threshold={field.value[index].threshold}
@@ -106,8 +106,8 @@ const AuthoritesGroup: FC<GroupProps> = ({ id, editMode, controller }) => {
               name={`${id}.account_auths`}
               render={({ field }) => (
                 <>
-                  {field.value.map((user, index) => (
-                    <Fragment key={user.account}>
+                  {field.value.map((_, index) => (
+                    <Fragment key={index}>
                       <AuthoritiesGroupItem
                         width={width}
                         threshold={field.value[index].threshold}
