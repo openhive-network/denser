@@ -79,7 +79,8 @@
       "button_other": "Другие способы входа",
       "button_cancel": "Отмена",
       "button_sign_auth": "Подписать авторизационную транзакцию",
-      "button_signin_unlocked": "Войти с подписанной транзакцией"
+      "button_signin_unlocked": "Войти с подписанной транзакцией",
+      "strict_mode": "Ограниченный режим авторизации"
     },
     "zod_error": {
       "password_length": "Длина пароля должна быть больше 6 символов",
