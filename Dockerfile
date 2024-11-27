@@ -81,8 +81,15 @@ COPY --from=installer --chown=nextjs:nodejs /app${TURBO_APP_PATH}/.next/static .
 COPY --from=installer --chown=nextjs:nodejs /app${TURBO_APP_PATH}/.env* ./
 COPY --from=installer --chown=nextjs:nodejs /app${TURBO_APP_PATH}/li[b]/markdown[s]/ .${TURBO_APP_PATH}/lib/markdowns/
 
+ENV BLOG_PORT=3000
+ENV WALLET_PORT=4000
+ENV AUTH_PORT=5000
+
 # Expose ports 3000 and 4000 for the sake of GitLab CI healthcheck
 EXPOSE 3000 4000
+EXPOSE $BLOG_PORT
+EXPOSE $WALLET_PORT
+EXPOSE $AUTH_PORT
 
 ENTRYPOINT ["/sbin/tini", "--", "/app/docker-entrypoint.sh"]
 CMD node .${TURBO_APP_PATH}/server.js
