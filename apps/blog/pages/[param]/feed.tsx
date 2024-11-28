@@ -116,7 +116,9 @@ const FeedPage: FC = () => {
           )}
         </div>
         <div className="col-span-12 pt-4 md:col-span-9 xl:col-span-8 xl:pt-0">
-          <span className="text-md mt-4 hidden text-xl font-medium xl:block">My friends</span>
+          <span className="text-md mt-4 hidden text-xl font-medium xl:block">
+            {t('navigation.communities_nav.my_friends')}
+          </span>
           <span className="xl:hidden" translate="no">
             <CommunitiesSelect
               username={user?.username || undefined}
@@ -126,7 +128,7 @@ const FeedPage: FC = () => {
                   ? communityData
                     ? `${communityData?.title}`
                     : `#${tag}`
-                  : t('navigation.communities_nav.all_posts')
+                  : t('navigation.communities_nav.my_friends')
               }
             />
           </span>
