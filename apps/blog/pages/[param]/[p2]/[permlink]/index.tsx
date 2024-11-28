@@ -87,7 +87,7 @@ function PostPage({
     error: errorPost,
     data: post
   } = useQuery(['postData', username, permlink], () => getPost(username, String(permlink)), {
-    enabled: !!username && !!permlink,
+    enabled: !!username && !!permlink
   });
 
   const {
@@ -535,7 +535,7 @@ function PostPage({
                       </Tooltip>
                     </TooltipProvider>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex items-center gap-2">
                     <FacebookShare url={post.url} />
                     <TwitterShare title={post.title} url={post.url} />
                     <LinkedInShare title={post.title} url={post.url} />
@@ -600,7 +600,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       getPost(username, String(permlink))
     );
   }
-const mutedStatus = await getPost(username, String(permlink)).then((res) => res?.stats?.gray ?? false);
+  const mutedStatus = await getPost(username, String(permlink)).then((res) => res?.stats?.gray ?? false);
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
