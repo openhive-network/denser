@@ -253,7 +253,7 @@ export function extractImagesSrc(markdownContent: string): string[] {
 
 export function extractYouTubeVideoIds(urls: string[]): string[] {
   const youtubeLinkRegex =
-    /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed\/|v\/)?([a-zA-Z0-9_-]+)/i;
+    /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed|shorts\/|v\/)?([a-zA-Z0-9_-]+)/i;
 
   const youtubeVideoIds: string[] = [];
   for (const url of urls) {
