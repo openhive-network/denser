@@ -683,6 +683,7 @@ publish:
         --app-scope="$TURBO_APP_SCOPE" \
         --app-path="$TURBO_APP_PATH" \
         --api-endpoint="$API_ENDPOINT" \
+        --chain-id="$CHAIN_ID" \
         --images-endpoint="$IMAGES_ENDPOINT" \
         --name="$CONTAINER_NAME" \
         --port=$PORT \
@@ -794,13 +795,12 @@ review:deploy-auth:
     CONTAINER_NAME: denser-review-auth
     PORT: 7001
     AUTH_PORT: 7001
-    REACT_APP_NAME: auth
-    REACT_APP_API_ENDPOINT: https://api.fake.openhive.network/
-    REACT_APP_CHAIN_ID: '42'
-    REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
-    REACT_APP_SITE_DOMAIN: https://auth.openhive.network
-    REACT_APP_LOGGING_BROWSER_ENABLED: false
-    REACT_APP_LOGGING_LOG_LEVEL: info
+    API_ENDPOINT: https://api.fake.openhive.network/
+    CHAIN_ID: '42'
+    IMAGES_ENDPOINT: https://images.hive.blog/
+    SITE_DOMAIN: https://auth.openhive.network
+    LOGGING_BROWSER_ENABLED: false
+    LOGGING_LOG_LEVEL: info
   environment:
     name: review-auth
     action: start
@@ -812,14 +812,13 @@ review:deploy-blog:
     CONTAINER_NAME: denser-review-blog
     PORT: 3001
     BLOG_PORT: 3001
-    REACT_APP_NAME: blog
-    REACT_APP_API_ENDPOINT: https://api.fake.openhive.network/
-    REACT_APP_CHAIN_ID: '42'
-    REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
-    REACT_APP_WALLET_ENDPOINT: https://wallet.openhive.network
-    REACT_APP_SITE_DOMAIN: https://blog.openhive.network
-    REACT_APP_LOGGING_BROWSER_ENABLED: false
-    REACT_APP_LOGGING_LOG_LEVEL: info
+    API_ENDPOINT: https://api.fake.openhive.network/
+    CHAIN_ID: '42'
+    IMAGES_ENDPOINT: https://images.hive.blog/
+    WALLET_ENDPOINT: https://wallet.openhive.network
+    SITE_DOMAIN: https://blog.openhive.network
+    LOGGING_BROWSER_ENABLED: false
+    LOGGING_LOG_LEVEL: info
   environment:
     name: review-blog
     action: start
@@ -831,14 +830,13 @@ review:deploy-wallet:
     CONTAINER_NAME: denser-review-wallet
     PORT: 4001
     WALLET_PORT: 4001
-    REACT_APP_NAME: wallet
-    REACT_APP_API_ENDPOINT: https://api.fake.openhive.network/
-    REACT_APP_CHAIN_ID: '42'
-    REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
-    REACT_APP_SITE_DOMAIN: https://wallet.openhive.network
-    REACT_APP_BLOG_DOMAIN: https://blog.openhive.network
-    REACT_APP_LOGGING_BROWSER_ENABLED: false
-    REACT_APP_LOGGING_LOG_LEVEL: info
+    API_ENDPOINT: https://api.fake.openhive.network/
+    CHAIN_ID: '42'
+    IMAGES_ENDPOINT: https://images.hive.blog/
+    SITE_DOMAIN: https://wallet.openhive.network
+    BLOG_DOMAIN: https://blog.openhive.network
+    LOGGING_BROWSER_ENABLED: false
+    LOGGING_LOG_LEVEL: info
   environment:
     name: review-wallet
     action: start
