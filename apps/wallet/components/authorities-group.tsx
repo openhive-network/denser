@@ -39,7 +39,7 @@ const AuthoritesGroup: FC<GroupProps> = ({ id, editMode, controller }) => {
                       <Input
                         value={field.value}
                         type="number"
-                        onChange={(e) => field.onChange(e)}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
                         className="h-6 w-1/2 self-center justify-self-center bg-white/10 p-0 px-3"
                       />
                     ) : (
