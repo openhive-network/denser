@@ -10,6 +10,7 @@ import DialogLogin from './dialog-login';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getLogger } from '@ui/lib/logging';
 import version from '../version.json';
+import env from '@beam-australia/react-env';
 
 const Item = ({
   href,
@@ -35,6 +36,7 @@ const logger = getLogger('app');
 const Sidebar = () => {
   const { t } = useTranslation('common_wallet');
   const { user } = useUser();
+  const envURL = env('BLOG_DOMAIN');
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -70,8 +72,12 @@ const Sidebar = () => {
               </li>
             )}
             {!user?.isLoggedIn && <Separator className="my-2 sm:hidden" />}
-            <Item href="/welcome">{t('navigation.sidebar.welcome')}</Item>
-            <Item href="/faq.html">{t('navigation.sidebar.faq')}</Item>
+            <Item href={`${envURL}/welcome`} target>
+              {t('navigation.sidebar.welcome')}
+            </Item>
+            <Item href={`${envURL}/faq.html`} target>
+              {t('navigation.sidebar.faq')}
+            </Item>
             <Item href="/market">{t('navigation.sidebar.currency_market')}</Item>
             <Separator className="my-2" />
             <Item href="/~witnesses">{t('navigation.sidebar.vote_for_witnesses')}</Item>
@@ -103,8 +109,8 @@ const Sidebar = () => {
               {t('navigation.sidebar.hive_whitepaper')} <Icons.forward className="w-4" />
             </Item>
             <Separator className="my-2" />
-            <Item href="/privacy.html">{t('navigation.sidebar.privacy_policy')}</Item>
-            <Item href="/tos.html">{t('navigation.sidebar.terms_of_service')}</Item>
+            <Item href={`${envURL}/privacy.html`}>{t('navigation.sidebar.privacy_policy')}</Item>
+            <Item href={`${envURL}/tos.html`}>{t('navigation.sidebar.terms_of_service')}</Item>
             <span className="text-center text-xs font-light">Version: {version.commithash.slice(0, 8)}</span>
           </ul>
         </div>
