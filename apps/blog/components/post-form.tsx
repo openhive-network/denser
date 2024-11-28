@@ -166,7 +166,10 @@ export default function PostForm({
     }
   );
   const accountFormSchema = z.object({
-    title: z.string().min(2, t('submit_page.string_must_contain', { num: 2 })),
+    title: z
+      .string()
+      .min(2, t('submit_page.string_must_contain', { num: 2 }))
+      .max(10, t('submit_page.maximum_characters', { num: 255 })),
     postArea: z.string().min(1, t('submit_page.string_must_contain', { num: 1 })),
     postSummary: z.string().max(140, t('submit_page.maximum_characters', { num: 140 })),
     tags: z.string(),
@@ -565,7 +568,14 @@ export default function PostForm({
             </Link>
           </div>
           {previewContent ? (
-            <RendererContainer body={previewContent} author="" className={postClassName + ' border-2 border-border p-2 break-words w-full min-w-full self-center overflow-y-scroll'} />
+            <RendererContainer
+              body={previewContent}
+              author=""
+              className={
+                postClassName +
+                ' w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2'
+              }
+            />
           ) : null}
         </div>
       </div>
