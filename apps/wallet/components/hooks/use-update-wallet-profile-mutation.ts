@@ -1,8 +1,7 @@
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Authorizes, transactionService } from '@transaction/index';
+import { transactionService } from '@transaction/index';
 import { getLogger } from '@ui/lib/logging';
-import { Authority } from '@hiveio/dhive/lib/chain/account';
 import { AuthoritiesProps } from '@/wallet/pages/[param]/authorities';
 
 const logger = getLogger('app');
@@ -63,6 +62,7 @@ export function useUpdateProfileMutation() {
         : undefined;
 
       const broadcastResult = await transactionService.updateWalletProfile(
+        user.username,
         memo_key,
         json_metadata,
         transformedOwner,

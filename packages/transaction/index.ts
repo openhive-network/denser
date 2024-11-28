@@ -672,6 +672,7 @@ export class TransactionService {
     }, transactionOptions);
   }
   async updateWalletProfile(
+    username: string,
     memo_key: string,
     json_metadata: string,
     owner: Authorizes | undefined,
@@ -682,7 +683,7 @@ export class TransactionService {
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
         account_update: {
-          account: this.signerOptions.username,
+          account: username,
           memo_key: memo_key,
           json_metadata: json_metadata,
           owner: owner,

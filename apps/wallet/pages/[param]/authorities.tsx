@@ -59,9 +59,8 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
   const [editMode, setEditMode] = useState(false);
   const { t } = useTranslation('common_wallet');
   type AuthorityFormValues = z.infer<typeof formSchema>;
-
   const { data: accountData, isLoading: accountLoading } = useQuery(
-    ['accountData', username],
+    ['walletProfileData', username],
     () => getAccount(username),
     {
       enabled: Boolean(username)
@@ -103,7 +102,12 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
     resolver: zodResolver(formSchema),
     values: profileAuthorities
   });
-  console.log(form.watch());
+  form.watch();
+
+  const values = form.getValues();
+  const validatorThresholdPosting = validation('posting', values.posting);
+  const validatorThresholdActive = validation('active', values.active);
+  const validatorThresholdOwner = validation('owner', values.owner);
 
   const updateProfileMutation = useUpdateProfileMutation();
   if (accountLoading) {
@@ -128,43 +132,57 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
   return (
     <ProfileLayout>
       <WalletMenu username={username} />
-      <div className="flex flex-col gap-8 p-6">
-        <Accordion type="multiple">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-8 p-6">
+          <>
+            <Accordion type="multiple">
               <AuthoritesGroup editMode={editMode} id="posting" controller={form.control} />
               <AuthoritesGroup editMode={editMode} id="active" controller={form.control} />
               <AuthoritesGroup editMode={editMode} id="owner" controller={form.control} />
-            </form>
-          </Form>
-        </Accordion>
-        <div className="flex flex-col gap-4 self-end">
-          {accountOwner && !editMode ? (
-            <Button onClick={() => setEditMode((prev) => !prev)} variant="redHover">
-              Edit
-            </Button>
-          ) : editMode ? (
-            <div className="flex gap-4 self-end">
-              <Button
-                variant="outlineRed"
-                onClick={() => {
-                  form.reset();
-                  setEditMode(() => false);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button variant="redHover" type="submit">
-                {updateProfileMutation.isLoading ? (
-                  <Loading loading={updateProfileMutation.isLoading} />
-                ) : (
-                  'Save Changes'
-                )}
-              </Button>
+            </Accordion>
+            <div className="flex flex-col gap-4 self-end">
+              {accountOwner && !editMode ? (
+                <Button onClick={() => setEditMode((prev) => !prev)} variant="redHover">
+                  Edit
+                </Button>
+              ) : editMode ? (
+                <div className="flex gap-4 self-end">
+                  <Button
+                    variant="outlineRed"
+                    onClick={() => {
+                      form.reset();
+                      setEditMode(() => false);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="redHover"
+                    type="submit"
+                    disabled={
+                      updateProfileMutation.isLoading ||
+                      !!validatorThresholdPosting ||
+                      !!validatorThresholdActive ||
+                      !!validatorThresholdOwner
+                    }
+                  >
+                    {updateProfileMutation.isLoading ? (
+                      <Loading loading={updateProfileMutation.isLoading} />
+                    ) : (
+                      'Save Changes'
+                    )}
+                  </Button>
+                </div>
+              ) : null}
+              {(validatorThresholdPosting || validatorThresholdActive || validatorThresholdOwner) && (
+                <div className="text-sm text-destructive">
+                  {validatorThresholdPosting || validatorThresholdActive || validatorThresholdOwner}
+                </div>
+              )}
             </div>
-          ) : null}
-        </div>
-      </div>
+          </>
+        </form>
+      </Form>
     </ProfileLayout>
   );
 }

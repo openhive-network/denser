@@ -3,8 +3,8 @@ import { Button } from '@ui/components/button';
 import { FileKey, Trash, UserSquare } from 'lucide-react';
 import { cutPublicKey } from '@/wallet/lib/utils';
 import CopyToKeyboard from '@/wallet/components/copy-to-keyboard';
-import UserInfoPopover from './user-info-popover';
 import { Input } from '@ui/components';
+import Link from 'next/link';
 
 const AuthoritiesGroupItem: FC<{
   onUpdateThreshold: (value: number) => void;
@@ -25,7 +25,13 @@ const AuthoritiesGroupItem: FC<{
       {editMode ? (
         <Input value={label} onChange={(e) => onUpdateEntry(e.target.value)} />
       ) : type === 'USER' ? (
-        <UserInfoPopover username={label} />
+        <Link
+          target="_blank"
+          href={`/@${label}/authorities`}
+          className="flex w-fit cursor-pointer items-center"
+        >
+          {label}
+        </Link>
       ) : (
         <CopyToKeyboard value={label} displayValue={cutPublicKey(label, width)} />
       )}
