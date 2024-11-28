@@ -79,7 +79,8 @@
       "button_other": "Autres options de connexion",
       "button_cancel": "Annuler",
       "button_sign_auth": "Signer l'autorisation tx",
-      "button_signin_unlocked": "Se connecter avec tx signé"
+      "button_signin_unlocked": "Se connecter avec tx signé",
+      "strict_mode": "Mode d'autorité restreinte"
     },
     "zod_error": {
       "password_length": "La longueur du mot de passe doit être supérieure à 6 caractères",

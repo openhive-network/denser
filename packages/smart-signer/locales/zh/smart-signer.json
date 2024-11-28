@@ -79,7 +79,8 @@
       "button_other": "其他登录选项",
       "button_cancel": "取消",
       "button_sign_auth": "签署授权交易",
-      "button_signin_unlocked": "使用已签署交易登录"
+      "button_signin_unlocked": "使用已签署交易登录",
+      "strict_mode": "受限授权模式"
     },
     "zod_error": {
       "password_length": "密码长度应大于6个字符",
