@@ -28,6 +28,7 @@ import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import CustomError from '../custom-error';
 import ButtonsContainer from '../buttons-container';
+import clsx from 'clsx';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -355,81 +356,46 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
       </div>
       <div className="flex flex-col pb-8 md:pb-4 ">
         <div className="w-full">
-          <div className="flex h-12 bg-gray-700" data-testid="profile-navigation">
+          <div className="flex bg-gray-700" data-testid="profile-navigation">
             <div className="container mx-auto flex max-w-screen-xl justify-between p-0 text-white sm:pl-8">
-              <ul className="flex h-full gap-2 text-xs sm:text-base lg:flex lg:gap-8">
-                <li>
-                  <Link
-                    href={`/@${username}`}
-                    className={`flex h-full items-center px-2 hover:bg-background hover:text-primary
-                    ${
-                      router.asPath === `/@${username}`
-                        ? 'bg-background text-primary dark:hover:text-slate-200'
-                        : ''
-                    }
-                    `}
-                  >
-                    {t('navigation.profile_navbar.blog')}
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href={`/@${username}/posts`}
-                    className={`flex h-full items-center px-2 hover:bg-background hover:text-primary ${
-                      router.asPath === `/@${username}/posts` ||
-                      router.asPath === `/@${username}/comments` ||
-                      router.asPath === `/@${username}/payout`
-                        ? 'bg-background text-primary dark:hover:text-slate-200'
-                        : ''
-                    }`}
-                  >
-                    {t('navigation.profile_navbar.posts')}
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href={`/@${username}/replies`}
-                    className={`flex h-full items-center px-2 hover:bg-background hover:text-primary ${
-                      router.asPath === `/@${username}/replies`
-                        ? 'bg-background text-primary dark:hover:text-slate-200'
-                        : ''
-                    }`}
-                  >
-                    {t('navigation.profile_navbar.replies')}
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href={`/@${username}/communities`}
-                    className={`flex h-full items-center px-2 hover:bg-background hover:text-primary ${
-                      router.asPath === `/@${username}/communities`
-                        ? 'bg-background text-primary dark:hover:text-slate-200'
-                        : ''
-                    }`}
-                  >
-                    {t('navigation.profile_navbar.social')}
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href={`/@${username}/notifications`}
-                    className={`flex h-full items-center px-2 hover:bg-background hover:text-primary ${
-                      router.asPath === `/@${username}/notifications`
-                        ? 'bg-background text-primary dark:hover:text-slate-200'
-                        : ''
-                    }`}
-                  >
-                    {t('navigation.profile_navbar.notifications')}
-                  </Link>
-                </li>
+              <ul className="flex h-full flex-wrap gap-x-2 text-xs sm:text-base lg:flex lg:gap-8">
+                <ListItem
+                  href={`/@${username}`}
+                  currentTab={router.asPath === `/@${username}`}
+                  label={t('navigation.profile_navbar.blog')}
+                />
+                <ListItem
+                  href={`/@${username}/posts`}
+                  currentTab={
+                    router.asPath === `/@${username}/posts` ||
+                    router.asPath === `/@${username}/comments` ||
+                    router.asPath === `/@${username}/payout`
+                  }
+                  label={t('navigation.profile_navbar.posts')}
+                />
+                <ListItem
+                  href={`/@${username}/replies`}
+                  currentTab={router.asPath === `/@${username}/replies`}
+                  label={t('navigation.profile_navbar.replies')}
+                />
+                <ListItem
+                  href={`/@${username}/communities`}
+                  currentTab={router.asPath === `/@${username}/communities`}
+                  label={t('navigation.profile_navbar.social')}
+                />
+                <ListItem
+                  href={`/@${username}/notifications`}
+                  currentTab={router.asPath === `/@${username}/notifications`}
+                  label={t('navigation.profile_navbar.notifications')}
+                />
               </ul>
-              <ul className="flex h-full flex-wrap text-xs sm:text-base lg:flex lg:gap-4">
+              <ul className="flex h-full flex-nowrap text-xs sm:text-base lg:flex lg:gap-4">
                 <li>
                   <Link
                     href={`${walletHost}/@${username}/transfers`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mr-4 flex h-full items-center px-2 hover:bg-background hover:text-primary"
+                    className="mr-4 flex h-12 items-center px-2 hover:bg-background hover:text-primary"
                   >
                     {t('navigation.profile_navbar.wallet')}
                   </Link>
@@ -439,7 +405,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     <Link
                       href={`/@${username}/settings`}
                       rel="noopener noreferrer"
-                      className={`flex h-full items-center px-2 hover:bg-background hover:text-primary ${
+                      className={`flex h-12 items-center px-2 hover:bg-background hover:text-primary ${
                         router.asPath === `/@${username}/settings`
                           ? 'bg-background text-primary dark:hover:text-slate-200'
                           : ''
@@ -462,3 +428,18 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
 };
 
 export default ProfileLayout;
+
+const ListItem = ({ href, currentTab, label }: { href: string; currentTab: boolean; label: string }) => {
+  return (
+    <li>
+      <Link
+        href={href}
+        className={clsx('flex h-12 items-center px-2 hover:bg-background hover:text-primary', {
+          'bg-background text-primary dark:hover:text-slate-200': currentTab
+        })}
+      >
+        {label}
+      </Link>
+    </li>
+  );
+};
