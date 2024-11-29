@@ -495,7 +495,7 @@ function PostPage({
                         </button>
                       </DialogLogin>
                     )}
-                    {user && user.isLoggedIn && post.author === user.username ? (
+                    {user && user.isLoggedIn && post.author === user.username && !edit ? (
                       <>
                         <span className="mx-1">|</span>
                         <button
