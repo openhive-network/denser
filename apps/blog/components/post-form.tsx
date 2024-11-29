@@ -169,7 +169,7 @@ export default function PostForm({
     title: z
       .string()
       .min(2, t('submit_page.string_must_contain', { num: 2 }))
-      .max(10, t('submit_page.maximum_characters', { num: 255 })),
+      .max(255, t('submit_page.maximum_characters', { num: 255 })),
     postArea: z.string().min(1, t('submit_page.string_must_contain', { num: 1 })),
     postSummary: z.string().max(140, t('submit_page.maximum_characters', { num: 140 })),
     tags: z.string(),

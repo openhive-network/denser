@@ -321,20 +321,21 @@ function PostPage({
                   />
                 </ImageGallery>
               )}
-
               <div className="clear-both">
                 {!commentSite ? (
                   <ul className="flex flex-wrap gap-2" data-testid="hashtags-post">
-                    {post.json_metadata?.tags?.slice(post.community_title ? 0 : 1).map((tag: string) => (
-                      <li key={tag}>
-                        <Link
-                          href={`/trending/${tag}`}
-                          className="my-2 rounded-md border-[1px] border-border bg-background-secondary px-2 py-1 text-[14px] hover:border-[#788187]"
-                        >
-                          #{tag}
-                        </Link>
-                      </li>
-                    ))}
+                    {post.json_metadata?.tags
+                      ?.slice(post.json_metadata.tags.includes(post.community_title ?? post.category) ? 1 : 0)
+                      .map((tag: string) => (
+                        <li key={tag}>
+                          <Link
+                            href={`/trending/${tag}`}
+                            className="my-2 rounded-md border-[1px] border-border bg-background-secondary px-2 py-1 text-[14px] hover:border-[#788187]"
+                          >
+                            #{tag}
+                          </Link>
+                        </li>
+                      ))}
                   </ul>
                 ) : null}
               </div>
