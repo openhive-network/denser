@@ -76,50 +76,44 @@ function PostPage({
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
 
-  const {
-    isLoading: isLoadingFollowList,
-    error: errorFollowList,
-    data: mutedList
-  } = useFollowListQuery(user.username, 'muted');
+  const { isLoading: isLoadingFollowList, data: mutedList } = useFollowListQuery(user.username, 'muted');
 
-  const {
-    isLoading: isLoadingPost,
-    error: errorPost,
-    data: post
-  } = useQuery(['postData', username, permlink], () => getPost(username, String(permlink)), {
-    enabled: !!username && !!permlink
-  });
+  const { isLoading: isLoadingPost, data: post } = useQuery(
+    ['postData', username, permlink],
+    () => getPost(username, String(permlink)),
+    {
+      enabled: !!username && !!permlink
+    }
+  );
+  const { isLoading: isLoadingDiscussion, data: discussion } = useQuery(
+    ['discussionData', username, permlink, user.username],
+    () => getDiscussion(username, String(permlink), user.username),
+    {
+      enabled: !!username && !!permlink
+    }
+  );
+  const { isLoading: isLoadingCommunity, data: communityData } = useQuery(
+    ['communityData', community],
+    () => getCommunity(community),
+    {
+      enabled: !!username && !!community && community.startsWith('hive-')
+    }
+  );
 
-  const {
-    isLoading: isLoadingDiscussion,
-    error: errorDiscussion,
-    data: discussion
-  } = useQuery(['discussionData', username, permlink], () => getDiscussion(username, String(permlink)), {
-    enabled: !!username && !!permlink
-  });
-
-  const {
-    isLoading: isLoadingCommunity,
-    error: errorCommunity,
-    data: communityData
-  } = useQuery(['communityData', community], () => getCommunity(community), {
-    enabled: !!username && !!community && community.startsWith('hive-')
-  });
-
-  const {
-    data: activeVotesData,
-    isLoading: isActiveVotesLoading,
-    isError: activeVotesError
-  } = useQuery(['activeVotes'], () => getActiveVotes(username, permlink), {
-    enabled: !!username && !!permlink
-  });
-  const {
-    data: rolesData,
-    isLoading: rolesIsLoading,
-    isError: rolesIsError
-  } = useQuery(['rolesList', community], () => getListCommunityRoles(community), {
-    enabled: Boolean(community)
-  });
+  const { data: activeVotesData, isLoading: isActiveVotesLoading } = useQuery(
+    ['activeVotes'],
+    () => getActiveVotes(username, permlink),
+    {
+      enabled: !!username && !!permlink
+    }
+  );
+  const { data: rolesData, isLoading: rolesIsLoading } = useQuery(
+    ['rolesList', community],
+    () => getListCommunityRoles(community),
+    {
+      enabled: Boolean(community)
+    }
+  );
 
   const userRole = rolesData?.find((e) => e[0] === user.username);
   const userCanModerate = userRole
