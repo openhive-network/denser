@@ -109,8 +109,12 @@ const Sidebar = () => {
               {t('navigation.sidebar.hive_whitepaper')} <Icons.forward className="w-4" />
             </Item>
             <Separator className="my-2" />
-            <Item href={`${envURL}/privacy.html`}>{t('navigation.sidebar.privacy_policy')}</Item>
-            <Item href={`${envURL}/tos.html`}>{t('navigation.sidebar.terms_of_service')}</Item>
+            <Item href={`${envURL}/privacy.html`} target>
+              {t('navigation.sidebar.privacy_policy')}
+            </Item>
+            <Item href={`${envURL}/tos.html`} target>
+              {t('navigation.sidebar.terms_of_service')}
+            </Item>
             <span className="text-center text-xs font-light">Version: {version.commithash.slice(0, 8)}</span>
           </ul>
         </div>
