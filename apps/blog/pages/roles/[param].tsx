@@ -23,7 +23,6 @@ import {
   getSubscriptions
 } from '@transaction/lib/bridge';
 import { getDefaultProps } from '@/blog/lib/get-translations';
-import { useSetRoleMutation } from '@/blog/components/hooks/use-set-role-mutations';
 
 const roles = [
   { name: 'owner', value: 6 },
@@ -52,13 +51,13 @@ const RolesPage: FC = () => {
     isError: rolesIsError
   } = useQuery(['rolesList', tag], () => getListCommunityRoles(tag), { enabled: Boolean(tag) });
 
-  const {
-    data: mySubsData,
-    isLoading: mySubsIsLoading,
-    isError: mySubsIsError
-  } = useQuery(['subscriptions', user?.username], () => getSubscriptions(user.username), {
-    enabled: Boolean(user?.username)
-  });
+  const { data: mySubsData, isError: mySubsIsError } = useQuery(
+    ['subscriptions', user?.username],
+    () => getSubscriptions(user.username),
+    {
+      enabled: Boolean(user?.username)
+    }
+  );
 
   const {
     data: communityData,
@@ -78,10 +77,8 @@ const RolesPage: FC = () => {
     data: notificationData
   } = useQuery(['AccountNotification', tag], () => getAccountNotifications(tag), { enabled: !!tag });
 
-  const isLoading =
-    mySubsIsLoading || communityDataIsLoading || subsIsLoading || notificationIsLoading || rolesIsLoading;
+  const isLoading = communityDataIsLoading || subsIsLoading || notificationIsLoading || rolesIsLoading;
   const isError = mySubsIsError || communityIsError || subsIsError || notificationIsError || rolesIsError;
-  const setRoleMutation = useSetRoleMutation();
 
   const userRole = rolesData?.find((e) => e[0] === user.username);
   const roleValue = userRole

@@ -89,7 +89,7 @@ function validateAltUsernameInput(value: string, t: TFunction<'common_wallet', u
     : null;
 }
 export function imagePicker(img: string) {
-  const checkImg = img.startsWith('youtu-') ? `https://img.youtube.com/vi/${img.split('-')[1]}/0.jpg` : img;
+  const checkImg = img.startsWith('youtu-') ? `https://img.youtube.com/vi/${img.slice(6)}/0.jpg` : img;
   return checkImg;
 }
 
@@ -110,10 +110,7 @@ export default function PostForm({
 }) {
   const btnRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
-  const [preferences, setPreferences] = useLocalStorage<Preferences>(
-    `user-preferences-${username}`,
-    DEFAULT_PREFERENCES
-  );
+  const [preferences] = useLocalStorage<Preferences>(`user-preferences-${username}`, DEFAULT_PREFERENCES);
   const defaultValues = {
     title: '',
     postArea: '',
@@ -125,7 +122,7 @@ export default function PostForm({
     maxAcceptedPayout: preferences.blog_rewards === '0%' ? 0 : 1000000,
     payoutType: preferences.blog_rewards
   };
-  const [storedPost, storePost] = useLocalStorage<AccountFormValues>(
+  const [storedPost, storePost, removePost] = useLocalStorage<AccountFormValues>(
     editMode ? `postData-edit-${post_s?.permlink}` : 'postData-new',
     defaultValues
   );
@@ -145,19 +142,10 @@ export default function PostForm({
   const { t } = useTranslation('common_blog');
   const postMutation = usePostMutation();
 
-  const {
-    data: mySubsData,
-    isLoading: mySubsIsLoading,
-    isError: mySubsIsError
-  } = useQuery(['subscriptions', username], () => getSubscriptions(username), {
+  const { data: mySubsData } = useQuery(['subscriptions', username], () => getSubscriptions(username), {
     enabled: Boolean(username)
   });
-  const {
-    data: communityData,
-    isLoading: communityDataIsLoading,
-    isFetching: communityDataIsFetching,
-    error: communityDataError
-  } = useQuery(
+  const { data: communityData } = useQuery(
     ['community', router.query.category, ''],
     () =>
       getCommunity(router.query.category ? router.query.category.toString() : storedPost.category, username),
@@ -166,7 +154,10 @@ export default function PostForm({
     }
   );
   const accountFormSchema = z.object({
-    title: z.string().min(2, t('submit_page.string_must_contain', { num: 2 })),
+    title: z
+      .string()
+      .min(2, t('submit_page.string_must_contain', { num: 2 }))
+      .max(255, t('submit_page.maximum_characters', { num: 255 })),
     postArea: z.string().min(1, t('submit_page.string_must_contain', { num: 1 })),
     postSummary: z.string().max(140, t('submit_page.maximum_characters', { num: 140 })),
     tags: z.string(),
@@ -183,34 +174,31 @@ export default function PostForm({
   });
 
   type AccountFormValues = z.infer<typeof accountFormSchema>;
-  const getValues = (storedPost?: AccountFormValues) => {
-    return {
-      title: post_s?.title || storedPost?.title || '',
-      postArea: post_s?.body || storedPost?.postArea || '',
-      postSummary: post_s?.json_metadata?.summary || storedPost?.postSummary || '',
-      tags: post_s?.json_metadata?.tags?.join(' ') || storedPost?.tags || '',
-      author: post_s?.json_metadata?.author || storedPost?.author || '',
-      category: post_s?.category || storedPost?.category || '',
-      // beneficiaries: post_s ? post_s.beneficiaries : storedPost?.beneficiaries ?? [],
-      beneficiaries: storedPost?.beneficiaries || [],
-      maxAcceptedPayout: post_s
-        ? Number(post_s.max_accepted_payout.split(' ')[0])
-        : storedPost?.maxAcceptedPayout === undefined
-          ? 1000000
-          : storedPost.maxAcceptedPayout,
-      payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType || preferences.blog_rewards
-    };
+  const entryValues = {
+    title: post_s?.title || storedPost?.title || '',
+    postArea: post_s?.body || storedPost?.postArea || '',
+    postSummary: post_s?.json_metadata?.summary || storedPost?.postSummary || '',
+    tags: post_s?.json_metadata?.tags?.join(' ') || storedPost?.tags || '',
+    author: post_s?.json_metadata?.author || storedPost?.author || '',
+    category: post_s?.category || storedPost?.category || '',
+    beneficiaries: storedPost?.beneficiaries || [],
+    maxAcceptedPayout: post_s
+      ? Number(post_s.max_accepted_payout.split(' ')[0])
+      : storedPost?.maxAcceptedPayout === undefined
+        ? 1000000
+        : storedPost.maxAcceptedPayout,
+    payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType || preferences.blog_rewards
   };
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
-    values: getValues(storedPost)
+    defaultValues: entryValues
   });
 
   const { postArea, ...restFields } = useWatch({
     control: form.control
   });
 
-  const watchedValues = form.watch();
+  const watchedValues = form.getValues();
   const tagsCheck = validateTagInput(
     watchedValues.tags,
     !router.query.category ? watchedValues.category === 'blog' : false,
@@ -225,10 +213,10 @@ export default function PostForm({
 
   useEffect(() => {
     debounce(() => {
-      storePost(form.getValues());
+      storePost(watchedValues);
     }, 50)();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form, postArea, ...Object.values(restFields)]);
+  }, [...Object.values(watchedValues)]);
 
   // update debounced post preview content
   useEffect(() => {
@@ -237,7 +225,7 @@ export default function PostForm({
         setPreviewContent(postArea);
       }, 50)();
     }
-  }, [postArea, previewContent]);
+  }, [previewContent, watchedValues.postArea]);
 
   useEffect(() => {
     setImagePickerState(imagePicker(selectedImg));
@@ -278,7 +266,7 @@ export default function PostForm({
 
       form.reset(defaultValues);
       setPreviewContent(undefined);
-      storePost(defaultValues);
+      removePost();
       if (editMode) {
         if (refreshPage && setEditMode) {
           setEditMode(!editMode);
@@ -310,6 +298,7 @@ export default function PostForm({
       form.reset(defaultValues);
       if (editMode && setEditMode) {
         setEditMode(false);
+        removePost();
       }
     }
   };
@@ -565,7 +554,14 @@ export default function PostForm({
             </Link>
           </div>
           {previewContent ? (
-            <RendererContainer body={previewContent} author="" className={postClassName + ' border-2 border-border p-2 break-words w-full min-w-full self-center overflow-y-scroll'} />
+            <RendererContainer
+              body={previewContent}
+              author=""
+              className={
+                postClassName +
+                ' w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2'
+              }
+            />
           ) : null}
         </div>
       </div>
