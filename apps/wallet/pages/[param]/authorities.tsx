@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useTranslation } from 'next-i18next';
@@ -17,6 +17,8 @@ import { useForm } from 'react-hook-form';
 import { Form } from '@ui/components/form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { CircleSpinner } from 'react-spinners-kit';
+import { handleError } from '@ui/lib/utils';
 
 export type AuthorityProps = {
   weight_threshold: number;
@@ -32,7 +34,11 @@ export interface AuthoritiesProps {
   posting: AuthorityProps;
 }
 
-const accountSchema = z.object({ account: z.string(), threshold: z.number() });
+const accountSchema = z.object({
+  account: z.string(),
+  // account: z.string().min(2, 'Account cannot be empty').max(15, 'Max length of username is 15 characters'),
+  threshold: z.number()
+});
 const keySchema = z.object({ key: z.string(), threshold: z.number() });
 const formSchema = z.object({
   memo_key: z.string(),
@@ -66,6 +72,18 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
       enabled: Boolean(username)
     }
   );
+  const updateProfileMutation = useUpdateProfileMutation();
+  const [error, setError] = useState<string>('');
+  useEffect(() => {
+    if (updateProfileMutation.isSuccess && !updateProfileMutation.isError) setEditMode(false);
+    if (updateProfileMutation.isError) {
+      const errorData = JSON.stringify(updateProfileMutation.error);
+      const errorObject = JSON.parse(errorData);
+      setError(errorObject.apiError);
+      handleError(updateProfileMutation.error);
+    }
+  }, [updateProfileMutation.isLoading]);
+
   const profileAuthorities: AuthorityFormValues = {
     memo_key: accountData?.memo_key || '',
     json_metadata: accountData?.json_metadata || '',
@@ -109,7 +127,6 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
   const validatorThresholdActive = validation('active', values.active, t);
   const validatorThresholdOwner = validation('owner', values.owner, t);
 
-  const updateProfileMutation = useUpdateProfileMutation();
   if (accountLoading) {
     return (
       <ProfileLayout>
@@ -136,13 +153,32 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-8 p-6">
           <>
             <Accordion type="multiple">
-              <AuthoritesGroup editMode={editMode} id="posting" controller={form.control} />
-              <AuthoritesGroup editMode={editMode} id="active" controller={form.control} />
-              <AuthoritesGroup editMode={editMode} id="owner" controller={form.control} />
+              <AuthoritesGroup
+                editMode={editMode}
+                id="posting"
+                controller={form.control}
+                inputDisabled={updateProfileMutation.isLoading}
+              />
+              <AuthoritesGroup
+                editMode={editMode}
+                id="active"
+                controller={form.control}
+                inputDisabled={updateProfileMutation.isLoading}
+              />
+              <AuthoritesGroup
+                editMode={editMode}
+                id="owner"
+                controller={form.control}
+                inputDisabled={updateProfileMutation.isLoading}
+              />
             </Accordion>
             <div className="flex flex-col gap-4 self-end">
               {user.isLoggedIn && accountOwner && !editMode ? (
-                <Button onClick={() => setEditMode((prev) => !prev)} variant="redHover">
+                <Button
+                  onClick={() => setEditMode((prev) => !prev)}
+                  variant="redHover"
+                  className="flex gap-4 self-end"
+                >
                   {t('authorities_page.edit')}
                 </Button>
               ) : editMode ? (
@@ -167,16 +203,22 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
                     }
                   >
                     {updateProfileMutation.isLoading ? (
-                      <Loading loading={updateProfileMutation.isLoading} />
+                      <CircleSpinner loading={updateProfileMutation.isLoading} size={18} color="#dc2626" />
                     ) : (
                       t('authorities_page.save_changes')
                     )}
                   </Button>
                 </div>
               ) : null}
-              {(validatorThresholdPosting || validatorThresholdActive || validatorThresholdOwner) && (
+              {(validatorThresholdPosting ||
+                validatorThresholdActive ||
+                validatorThresholdOwner ||
+                !!error) && (
                 <div className="text-sm text-destructive">
-                  {validatorThresholdPosting || validatorThresholdActive || validatorThresholdOwner}
+                  {validatorThresholdPosting ||
+                    validatorThresholdActive ||
+                    validatorThresholdOwner ||
+                    (error as any).message}
                 </div>
               )}
             </div>

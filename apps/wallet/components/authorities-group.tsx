@@ -9,13 +9,15 @@ import useWindowSize from './hooks/use-window-size';
 import { AccordionContent, AccordionItem, AccordionTrigger } from '@ui/components/accordion';
 import { Control, useFormContext } from 'react-hook-form';
 import { useTranslation } from 'next-i18next';
+
 type GroupProps = {
   id: 'posting' | 'active' | 'owner';
   editMode: boolean;
   controller: Control<AuthoritiesProps, any>;
+  inputDisabled: boolean;
 };
 
-const AuthoritesGroup: FC<GroupProps> = ({ id, editMode, controller }) => {
+const AuthoritesGroup: FC<GroupProps> = ({ id, editMode, controller, inputDisabled }) => {
   const [open, setOpen] = useState(false);
   const { width } = useWindowSize();
   const { setValue } = useFormContext();
@@ -43,6 +45,7 @@ const AuthoritesGroup: FC<GroupProps> = ({ id, editMode, controller }) => {
                         type="number"
                         onChange={(e) => field.onChange(Number(e.target.value))}
                         className="h-6 w-1/2 self-center justify-self-center bg-white/10 p-0 px-3"
+                        disabled={inputDisabled}
                       />
                     ) : (
                       <span className="justify-self-center">{field.value}</span>
@@ -83,6 +86,7 @@ const AuthoritesGroup: FC<GroupProps> = ({ id, editMode, controller }) => {
                   {field.value.map((_, index) => (
                     <Fragment key={index}>
                       <AuthoritiesGroupItem
+                        inputDisabled={inputDisabled}
                         width={width}
                         threshold={field.value[index].threshold}
                         label={field.value[index].key}
@@ -112,6 +116,7 @@ const AuthoritesGroup: FC<GroupProps> = ({ id, editMode, controller }) => {
                   {field.value.map((_, index) => (
                     <Fragment key={index}>
                       <AuthoritiesGroupItem
+                        inputDisabled={inputDisabled}
                         width={width}
                         threshold={field.value[index].threshold}
                         label={field.value[index].account}
