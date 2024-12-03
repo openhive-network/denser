@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@ui/components';
+import { TFunction } from 'next-i18next';
 import { FC, ReactNode, useState } from 'react';
 
 type Item = { label: string; threshold: number; type: 'USER' | 'KEY' };
@@ -27,15 +28,16 @@ const AddAuthorityDialog: FC<{
   id: 'posting' | 'active' | 'owner';
   keys: string[];
   acconts: string[];
-}> = ({ open, onOpen, children, onAddKey, onAddAccount, id, keys, acconts }) => {
+  t: TFunction;
+}> = ({ open, onOpen, children, onAddKey, onAddAccount, id, keys, acconts, t }) => {
   const [newItem, setNewItem] = useState<Item>({ label: '', threshold: 1, type: 'USER' });
   const validate = () => {
     return acconts.includes(newItem.label)
-      ? 'This account already exists in the list'
+      ? t('authorities_page.account_exists_error')
       : keys.includes(newItem.label)
-        ? 'This key already exists in the list'
+        ? t('authorities_page.key_exists_error')
         : newItem.label === ''
-          ? 'This field is required'
+          ? t('authorities_page.field_required')
           : false;
   };
   const validator = validate();
@@ -54,7 +56,7 @@ const AddAuthorityDialog: FC<{
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Add new {id} entry</DialogTitle>
+          <DialogTitle>{t('authorities_page.add_item_title', { id: id })}</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-x-4 gap-y-2">
@@ -73,7 +75,7 @@ const AddAuthorityDialog: FC<{
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="threshold" className="text-right">
-              Threshold
+              {t('authorities_page.threshold')}
             </Label>
             <Input
               value={newItem.threshold}
@@ -86,7 +88,7 @@ const AddAuthorityDialog: FC<{
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="type" className="text-right">
-              Type
+              {t('authorities_page.type')}
             </Label>
             <Select
               value={newItem.type}
@@ -97,8 +99,8 @@ const AddAuthorityDialog: FC<{
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="USER">Account</SelectItem>
-                  <SelectItem value="KEY">Key</SelectItem>
+                  <SelectItem value="USER">{t('authorities_page.account')}</SelectItem>
+                  <SelectItem value="KEY">{t('authorities_page.key')}</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -106,7 +108,7 @@ const AddAuthorityDialog: FC<{
         </div>
         <DialogFooter>
           <Button disabled={!!validator} type="submit" onClick={onSubmit}>
-            Add
+            {t('authorities_page.add')}
           </Button>
         </DialogFooter>
       </DialogContent>

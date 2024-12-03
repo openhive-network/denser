@@ -303,5 +303,20 @@
     "this_page_does_not_exist": "Sorry! This page does not exist.",
     "not_to_worry": "Not to worry. You can head back to",
     "our_homepage": "our homepage"
+  },
+  "authorities_page": {
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "save_changes": "Save changes",
+    "threshold_validator": "Make sure the sum of all {{id}} weights is greater than or equal to the threshold",
+    "threshold": "Threshold",
+    "account_exists_error": "This account already exists in the list",
+    "key_exists_error": "This key already exists in the list",
+    "field_required": "This field is required",
+    "add_item_title": "Add new {{id}} entry",
+    "type": "Type",
+    "account": "Account",
+    "key": "Key",
+    "add": "Add"
   }
 }

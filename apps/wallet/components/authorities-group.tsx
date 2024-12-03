@@ -8,6 +8,7 @@ import AddAuthorityDialog from './add-authority-dialog';
 import useWindowSize from './hooks/use-window-size';
 import { AccordionContent, AccordionItem, AccordionTrigger } from '@ui/components/accordion';
 import { Control, useFormContext } from 'react-hook-form';
+import { useTranslation } from 'next-i18next';
 type GroupProps = {
   id: 'posting' | 'active' | 'owner';
   editMode: boolean;
@@ -18,6 +19,7 @@ const AuthoritesGroup: FC<GroupProps> = ({ id, editMode, controller }) => {
   const [open, setOpen] = useState(false);
   const { width } = useWindowSize();
   const { setValue } = useFormContext();
+  const { t } = useTranslation('common_wallet');
 
   return (
     <div className="container">
@@ -29,7 +31,7 @@ const AuthoritesGroup: FC<GroupProps> = ({ id, editMode, controller }) => {
           <div className="grid w-full grid-cols-[max-content_1fr_1fr_max-content] gap-1">
             <div className="col-span-4 grid grid-cols-subgrid items-center pl-2 text-xs hover:bg-foreground/20 sm:text-base">
               <div className="size-5" />
-              <span className="justify-self-end font-medium">Threshold:</span>
+              <span className="justify-self-end font-medium">{t('authorities_page.threshold')}:</span>
               <FormField
                 control={controller}
                 name={`${id}.weight_threshold`}
@@ -63,6 +65,7 @@ const AuthoritesGroup: FC<GroupProps> = ({ id, editMode, controller }) => {
                       onOpen={(e) => setOpen(e)}
                       acconts={field.value.account_auths.map((e) => e.account)}
                       keys={field.value.key_auths.map((e) => e.key)}
+                      t={t}
                     >
                       <Button variant="ghost" size="sm">
                         <PlusCircle className="h-5 w-5 cursor-pointer" />

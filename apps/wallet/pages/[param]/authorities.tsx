@@ -105,9 +105,9 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
   form.watch();
 
   const values = form.getValues();
-  const validatorThresholdPosting = validation('posting', values.posting);
-  const validatorThresholdActive = validation('active', values.active);
-  const validatorThresholdOwner = validation('owner', values.owner);
+  const validatorThresholdPosting = validation('posting', values.posting, t);
+  const validatorThresholdActive = validation('active', values.active, t);
+  const validatorThresholdOwner = validation('owner', values.owner, t);
 
   const updateProfileMutation = useUpdateProfileMutation();
   if (accountLoading) {
@@ -141,9 +141,9 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
               <AuthoritesGroup editMode={editMode} id="owner" controller={form.control} />
             </Accordion>
             <div className="flex flex-col gap-4 self-end">
-              {accountOwner && !editMode ? (
+              {user.isLoggedIn && accountOwner && !editMode ? (
                 <Button onClick={() => setEditMode((prev) => !prev)} variant="redHover">
-                  Edit
+                  {t('authorities_page.edit')}
                 </Button>
               ) : editMode ? (
                 <div className="flex gap-4 self-end">
@@ -154,7 +154,7 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
                       setEditMode(() => false);
                     }}
                   >
-                    Cancel
+                    {t('authorities_page.cancel')}
                   </Button>
                   <Button
                     variant="redHover"
@@ -169,7 +169,7 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
                     {updateProfileMutation.isLoading ? (
                       <Loading loading={updateProfileMutation.isLoading} />
                     ) : (
-                      'Save Changes'
+                      t('authorities_page.save_changes')
                     )}
                   </Button>
                 </div>
