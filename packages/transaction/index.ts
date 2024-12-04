@@ -30,6 +30,7 @@ export type TransactionBroadcastCallback = (txBuilder: ITransaction) => Promise<
 
 export interface TransactionOptions {
   observe?: boolean;
+  singleSign?: boolean;
 }
 
 export interface TransactionBroadcastResult {
@@ -891,8 +892,15 @@ export class TransactionService {
     newOwner: string,
     newActive: string,
     newPosting: string,
+    wif: string,
     transactionOptions: TransactionOptions = {}
   ) {
+    if(!wif) {
+      return Promise.reject(new Error('wif is required'));
+    }
+
+    console.log('wif', wif);
+    
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
         account_update2: {

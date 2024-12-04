@@ -15,14 +15,16 @@ export function useChangePasswordMutation() {
       newOwner: string;
       newActive: string;
       newPosting: string;
+      wif: string;
     }) => {
-      const { account, newOwner, newActive, newPosting } = params;
+      const { account, newOwner, newActive, newPosting, wif } = params;
       const broadcastResult = await transactionService.changeMasterPassword(
         account,
-        newOwner,
+        newOwner, 
         newActive,
         newPosting,
-        { observe: true }
+        wif,
+        { observe: true, singleSign: true }
       );
       const response = { ...params, broadcastResult };
       logger.info('Done change master password transaction: %o', response);

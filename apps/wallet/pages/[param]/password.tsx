@@ -16,13 +16,14 @@ import { getServerSidePropsDefault } from '../../lib/get-translations';
 import { createWaxFoundation } from '@hiveio/wax';
 import { useChangePasswordMutation } from '@/wallet/components/hooks/use-change-password-mutation';
 import { handleError } from '@ui/lib/utils';
+import { Icons } from '@ui/components/icons';
 
 export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
 let key = '';
 const accountFormSchema = z.object({
   name: z.string().min(2, 'Account name should be longer'),
-  curr_password: z.string().min(2, { message: 'Required' }),
+  curr_password: z.string().min(2, { message: 'Required owner key or current password' }),
   genereted_password: z.string().refine((value) => value === key, {
     message: 'Passwords do not match'
   }),
@@ -39,6 +40,8 @@ type AccountFormValues = z.infer<typeof accountFormSchema>;
 export default function PostForm() {
   const { t } = useTranslation('common_wallet');
   const [isKeyGenerated, setIsKeyGenerated] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [publicKeys, setPublicKeys] = useState<{
     active: string;
     owner: string;
@@ -49,7 +52,7 @@ export default function PostForm() {
 
   const form = useForm<AccountFormValues>({
     mode: 'onSubmit',
-    reValidateMode: 'onSubmit',
+    reValidateMode: 'onChange',
     resolver: zodResolver(accountFormSchema),
     defaultValues: {
       name: username,
@@ -66,19 +69,56 @@ export default function PostForm() {
   }, [username]);
 
   async function onSubmit(_data: AccountFormValues) {
-    if (publicKeys) {
-      const params = {
-        account: username,
-        newOwner: publicKeys.owner,
-        newActive: publicKeys.active,
-        newPosting: publicKeys.posting
-      };
-      try {
-        await changePasswordMutation.mutateAsync(params);
-      } catch (error) {
-        handleError(error, { method: 'changePassword', params });
+    setLoading(true);
+    try {
+      const components = await resolveChangePasswordComponents(_data.curr_password);
+      await changePasswordMutation.mutateAsync({ ...components });
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError('An error occurred while processing your request');
       }
+      handleError(error, { method: 'changePassword', params: { ..._data } });
+    } finally {
+      setLoading(false);
     }
+  }
+
+  async function resolveChangePasswordComponents(password: string): Promise<{
+    account: string;
+    newOwner: string;
+    newActive: string;
+    newPosting: string;
+    wif: string;
+  }> {
+    const isWif = password.startsWith('5') && password.length === 51;
+    const wax = await createWaxFoundation();
+    let wif = '';
+
+    if (isWif) {
+      wif = password;
+    } else {
+      const privateKey = wax.getPrivateKeyFromPassword(username, 'owner', password);
+      wif = privateKey.wifPrivateKey;
+    }
+
+    // generate password
+    const brainKeyData = wax.suggestBrainKey();
+    const passwordToBeSavedByUser = 'P' + brainKeyData.wifPrivateKey;
+
+    // private keys for account authorities
+    const newOwner = wax.getPrivateKeyFromPassword(username, 'owner', passwordToBeSavedByUser);
+    const newActive = wax.getPrivateKeyFromPassword(username, 'active', passwordToBeSavedByUser);
+    const newPosting = wax.getPrivateKeyFromPassword(username, 'posting', passwordToBeSavedByUser);
+
+    return {
+      account: username,
+      newOwner: newOwner.associatedPublicKey,
+      newActive: newActive.associatedPublicKey,
+      newPosting: newPosting.associatedPublicKey,
+      wif
+    };
   }
 
   async function handleKey() {
@@ -146,7 +186,10 @@ export default function PostForm() {
                 <FormItem>
                   <FormLabel className="flex justify-between">
                     <span>{t('change_password_page.current_password')}</span>{' '}
-                    <Link className="text-destructive" href="/recover_account_step_1">
+                    <Link
+                      className="pointer-events-none text-destructive opacity-70"
+                      href="/recover_account_step_1"
+                    >
                       {t('change_password_page.recover_password')}
                     </Link>
                   </FormLabel>
@@ -228,8 +271,8 @@ export default function PostForm() {
                 </FormItem>
               )}
             />
-            <Button type="submit" variant="redHover">
-              {t('change_password_page.update_password')}
+            <Button type="submit" variant="redHover" disabled={loading || !form.formState.isValid} className='w-[164px] flex justify-center'>
+              {loading ? <Icons.spinner className="h-4 w-4 animate-spin" /> : t('change_password_page.update_password')}
             </Button>
           </form>
         </Form>
