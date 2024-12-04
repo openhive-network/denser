@@ -20,45 +20,32 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { CircleSpinner } from 'react-spinners-kit';
 import { handleError } from '@ui/lib/utils';
 
-export type AuthorityProps = {
-  weight_threshold: number;
-  account_auths: { account: string; threshold: number }[];
-  key_auths: { key: string; threshold: number }[];
-};
-
-export interface AuthoritiesProps {
-  memo_key: string;
-  json_metadata: string;
-  owner: AuthorityProps;
-  active: AuthorityProps;
-  posting: AuthorityProps;
-}
-
-const accountSchema = z.object({
-  account: z.string(),
-  // account: z.string().min(2, 'Account cannot be empty').max(15, 'Max length of username is 15 characters'),
-  threshold: z.number()
+const authoritiesSchema = z.object({
+  weight_threshold: z.number(),
+  account_auths: z
+    .object({
+      account: z.string(),
+      threshold: z.number()
+    })
+    .array(),
+  key_auths: z.object({ key: z.string(), threshold: z.number() }).array()
 });
-const keySchema = z.object({ key: z.string(), threshold: z.number() });
+export type AuthorityProps = z.infer<typeof authoritiesSchema>;
+
+const authorities = ['owner', 'active', 'posting'] as const;
 const formSchema = z.object({
   memo_key: z.string(),
   json_metadata: z.string(),
-  owner: z.object({
-    weight_threshold: z.number(),
-    account_auths: z.array(accountSchema),
-    key_auths: z.array(keySchema)
-  }),
-  active: z.object({
-    weight_threshold: z.number(),
-    account_auths: z.array(accountSchema),
-    key_auths: z.array(keySchema)
-  }),
-  posting: z.object({
-    weight_threshold: z.number(),
-    account_auths: z.array(accountSchema),
-    key_auths: z.array(keySchema)
-  })
+  ...authorities.reduce(
+    (acc, cur) => {
+      acc[cur] = authoritiesSchema;
+      return acc;
+    },
+    {} as Record<(typeof authorities)[number], typeof authoritiesSchema>
+  )
 });
+export type AuthoritiesProps = z.infer<typeof formSchema>;
+
 export default function EditableTable({ username }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { user } = useUser();
   const accountOwner = user?.username === username;

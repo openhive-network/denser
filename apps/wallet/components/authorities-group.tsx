@@ -7,7 +7,7 @@ import { AuthoritiesProps } from '../pages/[param]/authorities';
 import AddAuthorityDialog from './add-authority-dialog';
 import useWindowSize from './hooks/use-window-size';
 import { AccordionContent, AccordionItem, AccordionTrigger } from '@ui/components/accordion';
-import { Control, useFormContext } from 'react-hook-form';
+import { Control, useFieldArray, useFormContext } from 'react-hook-form';
 import { useTranslation } from 'next-i18next';
 
 type GroupProps = {
@@ -22,6 +22,8 @@ const AuthoritesGroup: FC<GroupProps> = ({ id, editMode, controller, inputDisabl
   const { width } = useWindowSize();
   const { setValue } = useFormContext();
   const { t } = useTranslation('common_wallet');
+  const acounts = useFieldArray({ control: controller, name: `${id}.account_auths` });
+  const keys = useFieldArray({ control: controller, name: `${id}.key_auths` });
 
   return (
     <div className="container">
@@ -78,65 +80,44 @@ const AuthoritesGroup: FC<GroupProps> = ({ id, editMode, controller, inputDisabl
                 />
               ) : null}
             </div>
-            <FormField
-              control={controller}
-              name={`${id}.key_auths`}
-              render={({ field }) => (
-                <>
-                  {field.value.map((_, index) => (
-                    <Fragment key={index}>
-                      <AuthoritiesGroupItem
-                        inputDisabled={inputDisabled}
-                        width={width}
-                        threshold={field.value[index].threshold}
-                        label={field.value[index].key}
-                        type="KEY"
-                        editMode={editMode}
-                        onUpdateThreshold={(e) => setValue(`${id}.key_auths[${index}].threshold`, e)}
-                        onUpdateEntry={(e) => setValue(`${id}.key_auths[${index}].key`, e.toString())}
-                        onDelete={() => {
-                          setValue(
-                            `${id}.key_auths`,
-                            field.value.filter((e) => e.key !== field.value[index].key)
-                          );
-                        }}
-                      />
 
-                      <Separator className="col-span-4 bg-foreground" />
-                    </Fragment>
-                  ))}
-                </>
-              )}
-            />
-            <FormField
-              control={controller}
-              name={`${id}.account_auths`}
-              render={({ field }) => (
-                <>
-                  {field.value.map((_, index) => (
-                    <Fragment key={index}>
-                      <AuthoritiesGroupItem
-                        inputDisabled={inputDisabled}
-                        width={width}
-                        threshold={field.value[index].threshold}
-                        label={field.value[index].account}
-                        type="USER"
-                        editMode={editMode}
-                        onUpdateThreshold={(e) => setValue(`${id}.account_auths[${index}].threshold`, e)}
-                        onUpdateEntry={(e) => setValue(`${id}.account_auths[${index}].account`, e)}
-                        onDelete={() => {
-                          setValue(
-                            `${id}.account_auths`,
-                            field.value.filter((e) => e.account !== field.value[index].account)
-                          );
-                        }}
-                      />
-                      <Separator className="col-span-4 bg-foreground" />
-                    </Fragment>
-                  ))}
-                </>
-              )}
-            />
+            {keys.fields.map((field, index) => (
+              <Fragment key={index}>
+                <AuthoritiesGroupItem
+                  inputDisabled={inputDisabled}
+                  width={width}
+                  threshold={field.threshold}
+                  label={field.key}
+                  type="KEY"
+                  editMode={editMode}
+                  onUpdateThreshold={(e) => keys.update(index, { ...field, threshold: e })}
+                  onUpdateEntry={(e) => keys.update(index, { ...field, key: e.toString() })}
+                  onDelete={() => {
+                    keys.remove(index);
+                  }}
+                />
+                <Separator className="col-span-4 bg-foreground" />
+              </Fragment>
+            ))}
+
+            {acounts.fields.map((field, index) => (
+              <Fragment key={index}>
+                <AuthoritiesGroupItem
+                  inputDisabled={inputDisabled}
+                  width={width}
+                  threshold={field.threshold}
+                  label={field.account}
+                  type="USER"
+                  editMode={editMode}
+                  onUpdateThreshold={(e) => acounts.update(index, { ...field, threshold: e })}
+                  onUpdateEntry={(e) => acounts.update(index, { ...field, account: e })}
+                  onDelete={() => {
+                    acounts.remove(index);
+                  }}
+                />
+                <Separator className="col-span-4 bg-foreground" />
+              </Fragment>
+            ))}
           </div>
         </AccordionContent>
       </AccordionItem>
