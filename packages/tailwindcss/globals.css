@@ -187,3 +187,7 @@
 .dark .w-md-editor-text .token.title {
   color: #fff !important;
 }
+
+.w-md-editor-text {
+  height: 100% !important;
+}
