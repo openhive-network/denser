@@ -66,7 +66,8 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
     if (updateProfileMutation.isError) {
       const errorData = JSON.stringify(updateProfileMutation.error);
       const errorObject = JSON.parse(errorData);
-      setError(errorObject.apiError);
+
+      setError(errorObject.apiError ?? updateProfileMutation.error);
       handleError(updateProfileMutation.error);
     }
   }, [updateProfileMutation.isLoading]);
@@ -102,7 +103,6 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
         accountData?.posting?.key_auths.map(([key, threshold]) => ({ key: key.toString(), threshold })) || []
     }
   };
-
   const form = useForm<AuthorityFormValues>({
     resolver: zodResolver(formSchema),
     values: profileAuthorities
