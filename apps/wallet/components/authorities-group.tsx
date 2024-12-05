@@ -7,7 +7,7 @@ import { AuthoritiesProps } from '../pages/[param]/authorities';
 import AddAuthorityDialog from './add-authority-dialog';
 import useWindowSize from './hooks/use-window-size';
 import { AccordionContent, AccordionItem, AccordionTrigger } from '@ui/components/accordion';
-import { Control, useFieldArray, useFormContext } from 'react-hook-form';
+import { Control, useFieldArray } from 'react-hook-form';
 import { useTranslation } from 'next-i18next';
 
 type GroupProps = {
@@ -20,7 +20,6 @@ type GroupProps = {
 const AuthoritesGroup: FC<GroupProps> = ({ id, editMode, controller, inputDisabled }) => {
   const [open, setOpen] = useState(false);
   const { width } = useWindowSize();
-  const { setValue } = useFormContext();
   const { t } = useTranslation('common_wallet');
   const acounts = useFieldArray({ control: controller, name: `${id}.account_auths` });
   const keys = useFieldArray({ control: controller, name: `${id}.key_auths` });
@@ -61,10 +60,8 @@ const AuthoritesGroup: FC<GroupProps> = ({ id, editMode, controller, inputDisabl
                   name={id}
                   render={({ field }) => (
                     <AddAuthorityDialog
-                      onAddAccount={(item) =>
-                        setValue(`${id}.account_auths`, [...field.value.account_auths, item])
-                      }
-                      onAddKey={(item) => setValue(`${id}.key_auths`, [...field.value.key_auths, item])}
+                      onAddAccount={(item) => acounts.append(item)}
+                      onAddKey={(item) => keys.append(item)}
                       id={id}
                       open={open}
                       onOpen={(e) => setOpen(e)}

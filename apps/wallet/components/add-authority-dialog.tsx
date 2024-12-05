@@ -23,7 +23,7 @@ const AddAuthorityDialog: FC<{
   open: boolean;
   onOpen: (e: boolean) => void;
   children: ReactNode;
-  onAddKey: (item: { account: string; threshold: number }) => void;
+  onAddKey: (item: { key: string; threshold: number }) => void;
   onAddAccount: (item: { account: string; threshold: number }) => void;
   id: 'posting' | 'active' | 'owner';
   keys: string[];
@@ -46,7 +46,7 @@ const AddAuthorityDialog: FC<{
       onAddAccount({ account: newItem.label, threshold: newItem.threshold });
     }
     if (newItem.type === 'KEY') {
-      onAddKey({ account: newItem.label, threshold: newItem.threshold });
+      onAddKey({ key: newItem.label, threshold: newItem.threshold });
     }
     onOpen(false);
   };
