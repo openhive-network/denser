@@ -124,6 +124,7 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
   if (!profileAuthorities) return null;
 
   const onSubmit = (values: AuthorityFormValues) => {
+    setError('');
     updateProfileMutation.mutate({
       memo_key: values.memo_key,
       json_metadata: values.json_metadata,
@@ -171,11 +172,19 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
               ) : editMode ? (
                 <div className="flex gap-4 self-end">
                   <Button
+                    type="button"
                     variant="outlineRed"
                     onClick={() => {
+                      setError('');
                       form.reset();
                       setEditMode(() => false);
                     }}
+                    disabled={
+                      updateProfileMutation.isLoading ||
+                      !!validatorThresholdPosting ||
+                      !!validatorThresholdActive ||
+                      !!validatorThresholdOwner
+                    }
                   >
                     {t('authorities_page.cancel')}
                   </Button>
