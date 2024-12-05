@@ -64,6 +64,7 @@ const SiteHeader: FC = () => {
       };
   const chartAngle = (360 * stats.resourceCreditsPercent) / 100;
   const chart = [{ name: '', value: 1 }];
+
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background shadow-sm">
       <div className="container flex h-14 w-full items-center justify-between">
@@ -89,6 +90,12 @@ const SiteHeader: FC = () => {
                 </Link>
               </div>
             ) : null}
+            {isClient && user?.isLoggedIn && (
+              <div className="mr-4 flex items-center gap-x-3">
+                <Link href="/proposals">{t('global.proposals')}</Link>
+                <Link href="/~witnesses">{t('global.witnesses')}</Link>
+              </div>
+            )}
             {isClient && !user?.isLoggedIn ? (
               <ModeToggle>
                 <Button variant="ghost" size="sm" className="h-10 w-full px-0" data-testid="theme-mode">

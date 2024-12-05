@@ -5,6 +5,8 @@ import accountReputation from '@/blog/lib/account-reputation';
 import { Popover, PopoverContent, PopoverTrigger } from '@ui/components/popover';
 import { useTranslation } from '../i18n/client';
 import { PopoverCardData } from './popover-card-data';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useFollowListQuery } from './hooks/use-follow-list';
 
 export interface UserPopoverCardProps {
   author: string;
@@ -20,6 +22,10 @@ export function UserPopoverCard({
   withImage = false
 }: UserPopoverCardProps) {
   const { t } = useTranslation('common_blog');
+  const { user } = useUser();
+  const { data: userBlacklist } = useFollowListQuery(user.username, 'blacklisted');
+  const userBlacklisted = userBlacklist?.map((e) => e.name).includes(author);
+
   return (
     <Popover>
       <PopoverTrigger data-testid="author-name-link">
@@ -38,6 +44,11 @@ export function UserPopoverCard({
       {blacklist && blacklist[0] ? (
         <span className="mr-1 text-destructive" title={blacklist[0]}>
           ({blacklist.length})
+        </span>
+      ) : null}
+      {userBlacklisted ? (
+        <span className="text-destructive" title="My blacklist">
+          (1)
         </span>
       ) : null}
       <PopoverContent className="w-72 bg-background" data-testid="user-popover-card-content">

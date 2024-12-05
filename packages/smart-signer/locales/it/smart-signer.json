@@ -79,7 +79,8 @@
       "button_other": "Altre opzioni di accesso",
       "button_cancel": "Annulla",
       "button_sign_auth": "Firma tx di autorizzazione",
-      "button_signin_unlocked": "Accedi con tx firmato"
+      "button_signin_unlocked": "Accedi con tx firmato",
+      "strict_mode": "Modo di autorità ristretta"
     },
     "zod_error": {
       "password_length": "La lunghezza della password deve essere superiore a 6 caratteri",

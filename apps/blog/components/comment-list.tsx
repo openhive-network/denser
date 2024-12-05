@@ -51,7 +51,6 @@ const CommentList = ({
               { 'pl-3 sm:pl-12': comment.depth > 1 }
             )}
           >
-            qwe
             {/* <CommentListItem
               parentPermlink={highestPermlink}
               parentAuthor={highestAuthor}

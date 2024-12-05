@@ -13,25 +13,31 @@ The project consists of three apps:
 
 ## Prerequisites
 
-- Node.js >= 18.17.0
+- Node.js >= 20.0.0 & <21.0.0
 
-If you have Volta installed, the 18.17.0 version of Node.js in pinned in the main [package.json](package.json) file.
+If you have Volta installed, the 20.11.1 version of Node.js in pinned in the main [package.json](package.json) file.
 
 ## Building
 
-The following commands install the dependencies and build the apps
+We are using pnpm for building the project. If you do not have pnpm, you can install it via
 
 ```bash
-npm install
-npm run build
+npm install -g pnpm
+```
+
+Next, you can run following commands install the dependencies and build the apps
+
+```bash
+pnpm install
+pnpm run build
 ```
 
 You can build the apps separately using commands:
 
 ```bash
-npm run build:blog
-npm run build:wallet
-npm run build:auth
+pnpm run build:blog
+pnpm run build:wallet
+pnpm run build:auth
 ```
 
 ## Running
@@ -39,9 +45,9 @@ npm run build:auth
 The following commands start the blog app on port 3000, the wallet app on port 4000 and the auth app on port 5000:
 
 ```bash
-npm run start:blog
-npm run start:wallet
-npm run start:auth
+pnpm run start:blog
+pnpm run start:wallet
+pnpm run start:auth
 ```
 
 ## Testing
@@ -49,14 +55,14 @@ npm run start:auth
 To run tests use the following commands:
 
 ```bash
-npm run all:pw:test:local
+pnpm run all:pw:test:local
 ```
 
 You can run the test for only the blog or only the wallet apps using one of the following commands:
 
 ```bash
-npm run blog:pw:test:local
-npm run wallet:pw:test:local
+pnpm run blog:pw:test:local
+pnpm run wallet:pw:test:local
 ```
 
 ## Dockerisation

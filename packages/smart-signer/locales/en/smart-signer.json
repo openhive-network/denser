@@ -79,7 +79,9 @@
       "button_other": "Other sign in options",
       "button_cancel": "Cancel",
       "button_sign_auth": "Sign auth tx",
-      "button_signin_unlocked": "Sign in with signed tx"
+      "button_signin_unlocked": "Sign in with signed tx",
+      "strict_mode": "Direct Authority Mode",
+      "strict_mode_tooltip": "When enabled, the app will only allow adding keys with account's own authority. If you want to add keys with other authority, please disable this mode."
     },
     "zod_error": {
       "password_length": "Password length should be more than 6 characters",

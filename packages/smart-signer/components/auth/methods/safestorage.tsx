@@ -23,7 +23,12 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
-  DropdownMenuItem
+  DropdownMenuItem,
+  Checkbox,
+  TooltipProvider,
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent
 } from '@hive/ui';
 import Step from '../step';
 import { Steps } from '../form';
@@ -43,7 +48,8 @@ function getFormSchema(t: TFunction<'smart-signer', undefined>) {
         invalid_type_error: t('login_form.zod_error.invalid_keytype'),
         required_error: t('login_form.zod_error.keytype_required')
       }),
-      userFound: z.boolean()
+      userFound: z.boolean(),
+      strict: z.boolean()
     })
     .superRefine((val, ctx) => {
       if (!val.userFound) {
@@ -102,7 +108,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         password: '',
         wif: '',
         keyType: preferredKeyTypes[0],
-        userFound: true
+        userFound: true,
+        strict: true
       }
     });
 
@@ -190,7 +197,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       (async () => {
         try {
           // populate authUsers with existing user list
-          authClient.current = await hbauthService.getOnlineClient();
+          authClient.current = await hbauthService.getOnlineClient(form.getValues().strict);
 
           const auths = await authClient.current.getAuths();
 
@@ -201,7 +208,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
           setLoading(false);
         }
       })();
-    }, []);
+      /* eslint-disable react-hooks/exhaustive-deps */
+    }, [form.watch('strict')]);
 
     const userFound = useMemo(() => {
       const formUsername = form.getValues().username;
@@ -374,6 +382,42 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
               />
             )}
 
+            {!userFound && (
+              <FormField
+                control={form.control}
+                name="strict"
+                render={({ field }) => (
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="strict"
+                      onCheckedChange={async (isStrict) => {
+                        field.onChange(isStrict);
+                      }}
+                      {...field}
+                      checked={field.value}
+                      value={field.value as unknown as string}
+                    />
+
+                    <label
+                      htmlFor="strict"
+                      className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      {t('login_form.signin_safe_storage.strict_mode')}
+                    </label>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Icons.info className="w-5 h-5" />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-xs">
+                          {t('login_form.signin_safe_storage.strict_mode_tooltip')}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
+                )}
+              />
+            )}
             {/* Show this for new user, otherwise show unlock then authorize */}
             <div className="flex">
               {userFound ? (

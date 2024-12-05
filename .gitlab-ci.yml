@@ -182,7 +182,7 @@ e2e-tests-wallet:
   image: mcr.microsoft.com/playwright:v1.46.0-jammy
   script:
     - cd .$TURBO_APP_PATH
-    - pnpm install -D playwright-merge-html-reports 
+    - pnpm install -D playwright-merge-html-reports
     - ./node_modules/.bin/playwright test tests/merge-reports --config playwright.merge.config.ts
   artifacts:
     paths:
@@ -260,6 +260,7 @@ publish:
         --app-scope="$TURBO_APP_SCOPE" \
         --app-path="$TURBO_APP_PATH" \
         --api-endpoint="$API_ENDPOINT" \
+        --chain-id="$CHAIN_ID" \
         --images-endpoint="$IMAGES_ENDPOINT" \
         --name="$CONTAINER_NAME" \
         --port=$PORT \
@@ -368,41 +369,55 @@ staging:stop-wallet:
 review:deploy-auth:
   extends: staging:deploy-auth
   variables:
-    PORT: 7001
     CONTAINER_NAME: denser-review-auth
+    PORT: 7001
+    AUTH_PORT: 7001
+    API_ENDPOINT: https://api.fake.openhive.network/
+    CHAIN_ID: '42'
+    IMAGES_ENDPOINT: https://images.hive.blog/
+    SITE_DOMAIN: https://auth.openhive.network
+    LOGGING_BROWSER_ENABLED: false
+    LOGGING_LOG_LEVEL: info
   environment:
     name: review-auth
     action: start
     on_stop: review:stop-auth
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^rc_.*/
-      when: on_success
 
 review:deploy-blog:
   extends: staging:deploy-blog
   variables:
-    PORT: 3001
     CONTAINER_NAME: denser-review-blog
+    PORT: 3001
+    BLOG_PORT: 3001
+    API_ENDPOINT: https://api.fake.openhive.network/
+    CHAIN_ID: '42'
+    IMAGES_ENDPOINT: https://images.hive.blog/
+    WALLET_ENDPOINT: https://wallet.openhive.network
+    SITE_DOMAIN: https://blog.openhive.network
+    LOGGING_BROWSER_ENABLED: false
+    LOGGING_LOG_LEVEL: info
   environment:
     name: review-blog
     action: start
     on_stop: review:stop-blog
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^rc_.*/
-      when: on_success
 
 review:deploy-wallet:
   extends: staging:deploy-wallet
   variables:
-    PORT: 4001
     CONTAINER_NAME: denser-review-wallet
+    PORT: 4001
+    WALLET_PORT: 4001
+    API_ENDPOINT: https://api.fake.openhive.network/
+    CHAIN_ID: '42'
+    IMAGES_ENDPOINT: https://images.hive.blog/
+    SITE_DOMAIN: https://wallet.openhive.network
+    BLOG_DOMAIN: https://blog.openhive.network
+    LOGGING_BROWSER_ENABLED: false
+    LOGGING_LOG_LEVEL: info
   environment:
     name: review-wallet
     action: start
     on_stop: review:stop-wallet
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^rc_.*/
-      when: on_success
 
 review:stop-auth:
   extends: staging:stop-auth
@@ -413,10 +428,6 @@ review:stop-auth:
   environment:
     name: review-auth
     action: stop
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^rc_.*/
-      when: manual
-      allow_failure: true
 
 review:stop-blog:
   extends: staging:stop-blog
@@ -427,10 +438,6 @@ review:stop-blog:
   environment:
     name: review-blog
     action: stop
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^rc_.*/
-      when: manual
-      allow_failure: true
 
 review:stop-wallet:
   extends: staging:stop-wallet
@@ -441,11 +448,6 @@ review:stop-wallet:
   environment:
     name: review-wallet
     action: stop
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^rc_.*/
-      when: manual
-      allow_failure: true
-
 
 build_and_publish_auth_image:
   stage: publish
@@ -497,4 +499,4 @@ buildkit_cache_cleanup:
   extends: .buildkit_cleanup_job_template
   needs: []
   variables:
-    CACHE_REPOSITORIES: "auth/cache,blog/cache,wallet/cache"
+    CACHE_REPOSITORIES: 'auth/cache,blog/cache,wallet/cache'

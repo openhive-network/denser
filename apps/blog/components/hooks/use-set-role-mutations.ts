@@ -27,6 +27,7 @@ export function useSetRoleMutation() {
       logger.info('useSetRoleMutation onSuccess data: %o', data);
       const { community } = data;
       queryClient.invalidateQueries({ queryKey: ['rolesList', community] });
+      queryClient.invalidateQueries({ queryKey: ['community', community, ''] });
     }
   });
 

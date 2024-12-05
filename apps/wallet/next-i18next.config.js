@@ -5,6 +5,7 @@ const i18nConfig = {
     defaultNS: 'common_wallet',
     defaultLocale: 'en',
     locales: [
+      'ar',
       'en',
       'es',
       'fr',
