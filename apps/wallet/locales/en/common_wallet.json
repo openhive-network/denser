@@ -323,6 +323,10 @@
       "last60days": "Last 60 days"
     },
     "current_rewards": "Your current rewards: ",
-    "redeem_rewards": "Redeem Rewards (Transfer To Balance)"
+    "redeem_rewards": "Redeem Rewards (Transfer To Balance)",
+    "error": {
+      "amount_not_positive": "Amount must be positive.",
+      "empty": "Amount can't be empty."
+    }
   }
 }
