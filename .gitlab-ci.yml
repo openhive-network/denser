@@ -25,7 +25,7 @@ variables:
   # HAF API node configuration
   HIVE_API_NODE_VERSION: "1.27.6rc9"
   API_NODE_VERSION: "denser-3"
-  HAF_IMAGE: "registry.gitlab.syncad.com/hive/haf/mirrornet-instance"
+  HAF_IMAGE_REGISTRY: "registry.gitlab.syncad.com/hive/haf/mirrornet-instance"
   HAF_IMAGE_NAME: "${HAF_IMAGE}:${HIVE_API_NODE_VERSION}"
   BLOCK_LOG_VERSION: "42bf3ac5"
   # BLOCK_LOG_SOURCE_DIR: "/blockchain/block_log_mirror_44"
@@ -259,7 +259,7 @@ mirrornet-haf-node-replay:
     FAKETIME: ${HEAD_BLOCK_TIMESTAMP}
     ADDITIONAL_CONFIGURATION_SCRIPT: "scripts/ci-helpers/copy-mirrornet-haf-config.sh"
     REPLAY_TIMEOUT: 9000
-    HAF_IMAGE: ${HAF_IMAGE}
+    HAF_IMAGE: ${HAF_IMAGE_REGISTRY}
   tags:
     - data-cache-storage
 
@@ -403,7 +403,7 @@ mirrornet-based-tests:
     CI_DEBUG_SERVICES: "false"
     ARGUMENTS: "--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n --alternate-chain-spec=/home/hived/datadir/blockchain/alternate-chain-spec.json"
     FAKETIME: ${HEAD_BLOCK_TIMESTAMP}
-    HAF_IMAGE: ${HAF_IMAGE}
+    HAF_IMAGE: ${HAF_IMAGE_REGISTRY}
     REACT_APP_API_ENDPOINT: "https://dind/"
     REACT_APP_IMAGES_ENDPOINT: "https://images.hive.blog/"
     REACT_APP_CHAIN_ID: "44"
