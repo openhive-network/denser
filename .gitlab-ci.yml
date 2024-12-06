@@ -23,31 +23,22 @@ variables:
   FF_ENABLE_JOB_CLEANUP: 1
 
   # HAF API node configuration
-  API_NODE_VERSION: "90486532"
-  HAF_COMMIT_SHA: "6fa48e73dcf06140424d8c70e610fa421313ac0d"
-  HIVEMIND_INSTANCE_VERSION: "daede252"
-  HAFAH_VERSION: "a7cf1e38"
+  HIVE_API_NODE_VERSION: "1.27.6rc9"
+  API_NODE_VERSION: "denser-3"
+  HAF_IMAGE: "registry.gitlab.syncad.com/hive/haf/mirrornet-instance"
+  HAF_IMAGE_NAME: "${HAF_IMAGE}:${HIVE_API_NODE_VERSION}"
   BLOCK_LOG_VERSION: "42bf3ac5"
-  REPUTATION_TRACKER_VERSION: "762663b3"
-  HIVEMIND_INSTANCE_IMAGE: registry.gitlab.syncad.com/hive/hivemind/instance
-  HAFAH_REGISTRY: registry.gitlab.syncad.com/hive/hafah/instance
-  REPUTATION_TRACKER_REGISTRY: registry.gitlab.syncad.com/hive/reputation_tracker
   # BLOCK_LOG_SOURCE_DIR: "/blockchain/block_log_mirror_44"
   REPLAY_DIRECTORY_PREFIX: "/cache/replay_data_denser_haf_api_node"
-  REPLAY_DIRECTORY: "${REPLAY_DIRECTORY_PREFIX}_${API_NODE_VERSION}_${HAF_COMMIT_SHA}_${HIVEMIND_INSTANCE_VERSION}_${HAFAH_VERSION}_${HIVE_API_NODE_VERSION}_${BLOCK_LOG_VERSION}"
+  REPLAY_DIRECTORY: "${REPLAY_DIRECTORY_PREFIX}_${API_NODE_VERSION}_${HIVE_API_NODE_VERSION}_${BLOCK_LOG_VERSION}"
   REPLAY_PIPELINE_DIRECTORY: "${REPLAY_DIRECTORY_PREFIX}_${CI_PIPELINE_ID}"
   DOCKER_TLS_CERTDIR: "${REPLAY_PIPELINE_DIRECTORY}_certs"
   BLOCK_LOG_SOURCE: "${REPLAY_PIPELINE_DIRECTORY}_block_log"
   BLOCK_LOG_SOURCE_DIR: "${BLOCK_LOG_SOURCE}"
 
   # Other settings
-  HAFAH_PROJECT_ID: 308
-  HIVEMIND_PROJECT_ID: 213
-  HAF_API_NODE_PROJECT_ID: 444
-  REPUTATION_TRACKER_PROJECT_ID: 418
   CADDY_TAG: "2.7.6"
   PLAYWRIGHT_TAG: "v1.46.0-jammy"
-  PIPELINE_TRIGGER_TAG: "2.9.0"
 
 include:
   - template: Workflows/Branch-Pipelines.gitlab-ci.yml
@@ -56,11 +47,8 @@ include:
     file: 
       - '/templates/docker_image_jobs.gitlab-ci.yml'
       - '/templates/cache_cleanup.gitlab-ci.yml'
-  - project: 'hive/haf'
-    ref: 6fa48e73dcf06140424d8c70e610fa421313ac0d #develop
-    file: '/scripts/ci-helpers/prepare_data_image_job.yml'
   - project: 'hive/haf_api_node'
-    ref: 90486532d2ade984e25952d9d13219097e5dc3b5
+    ref: denser-3
     file: 'ci/node-replay.gitlab-ci.yml'  
 
 .docker_build_template:
@@ -99,129 +87,20 @@ include:
     - public-runner-docker
     - hived-for-tests
 
-# We need to creat temporary tags to be used with Trigger API since it doesn't work with commit SHAs.
-# We also need to skip CI when pushing tags, since we want to run just the Docker build job and not the
-# entire pipeline.
-create_temporary_tags:
+mirrornet-haf-binaries-extraction:
   extends: .job-defaults
   stage: build
-  image: "registry.gitlab.syncad.com/hive/hive/ci-base-image${TEST_IMAGE_TAG}"
-  before_script:
-    - |
-      set -e
-      git config --global user.email "${GITLAB_USER_EMAIL}"
-      git config --global user.name "${GITLAB_USER_NAME}"
-      git clone https://gitlab-ci-token:${HAFAH_ACCESS_TOKEN}@gitlab.syncad.com/hive/HAfAH.git hafah
-      git clone https://gitlab-ci-token:${HIVEMIND_ACCESS_TOKEN}@gitlab.syncad.com/hive/hivemind.git hivemind
-      git clone https://gitlab-ci-token:${HAF_API_NODE_ACCESS_TOKEN}@gitlab.syncad.com/hive/haf_api_node.git haf_api_node
-      git clone https://gitlab-ci-token:${REPUTATION_TRACKER_ACCESS_TOKEN}@gitlab.syncad.com/hive/reputation_tracker.git reptracker
-  script:
-    - |
-      set -e
-      
-      pushd hafah
-      git tag ${CI_PIPELINE_ID} ${HAFAH_VERSION}
-      git push origin ${CI_PIPELINE_ID} -o ci.skip
-      popd
-
-      pushd hivemind
-      git tag ${CI_PIPELINE_ID} ${HIVEMIND_INSTANCE_VERSION}
-      git push origin ${CI_PIPELINE_ID} -o ci.skip
-      popd
-
-      pushd haf_api_node
-      git tag ${CI_PIPELINE_ID} ${API_NODE_VERSION}
-      git push origin ${CI_PIPELINE_ID} -o ci.skip
-      popd
-
-      pushd reptracker
-      git tag ${CI_PIPELINE_ID} ${REPUTATION_TRACKER_VERSION}
-      git push origin ${CI_PIPELINE_ID} -o ci.skip
-      popd
-  tags:
-    - public-runner-docker
-
-# For some reason a regular trigger job fails to recognize temporary tags, so we have to use a workaround
-.external-build:
-  extends: .job-defaults
-  stage: build
-  image: registry.gitlab.com/finestructure/pipeline-trigger:${PIPELINE_TRIGGER_TAG}
-  needs:
-    - create_temporary_tags
+  image:
+    name: $HAF_IMAGE_NAME
+    entrypoint: [ "" ]
   variables:
-    PIPELINE_TOKEN:
-    PROJECT_ID:
-  script: 
-    - trigger --verbose --api-token "${API_TOKEN}" --pipeline-token "${PIPELINE_TOKEN}" --target-ref ${CI_PIPELINE_ID} --host "${CI_SERVER_HOST}" ${PROJECT_ID}
-  tags:
-    - public-runner-docker
-
-hafah-build:
-  extends: .external-build
-  variables:
-    PIPELINE_TOKEN: ${HAFAH_PIPELINE_TOKEN}
-    PROJECT_ID: ${HAFAH_PROJECT_ID}
-
-hivemind-build:
-  extends: .external-build
-  variables:
-    PIPELINE_TOKEN: ${HIVEMIND_PIPELINE_TOKEN}
-    PROJECT_ID: ${HIVEMIND_PROJECT_ID}
-
-haf-api-node-build:
-  extends: .external-build
-  variables:
-    PIPELINE_TOKEN: ${HAF_API_NODE_PIPELINE_TOKEN}
-    PROJECT_ID: ${HAF_API_NODE_PROJECT_ID}
-
-reputation-tracker-build:
-  extends: .external-build
-  variables:
-    PIPELINE_TOKEN: ${REPUTATION_TRACKER_PIPELINE_TOKEN}
-    PROJECT_ID: ${REPUTATION_TRACKER_PROJECT_ID}
-
-remove_temporary_tags:
-  extends: .job-defaults
-  stage: build
-  needs:
-    - hafah-build
-    - hivemind-build
-    - haf-api-node-build
-  image: "registry.gitlab.syncad.com/hive/hive/ci-base-image${TEST_IMAGE_TAG}"
-  before_script:
-    - !reference [create_temporary_tags, before_script]
-  script:
-    - |
-      set -e
-      
-      pushd hafah
-      git push origin :refs/tags/${CI_PIPELINE_ID}
-      popd
-
-      pushd hivemind
-      git push origin :refs/tags/${CI_PIPELINE_ID}
-      popd
-
-      pushd haf_api_node
-      git push origin :refs/tags/${CI_PIPELINE_ID}
-      popd
-
-      pushd reptracker
-      git push origin :refs/tags/${CI_PIPELINE_ID}
-      popd
-  tags:
-    - public-runner-docker
-
-mirrornet-haf-image-docker-build:
-  stage: build
-  extends: .prepare_haf_image
-  variables:
-    SUBMODULE_DIR: "${CI_PROJECT_DIR}/haf"
-    REGISTRY_USER: "${HAF_REGISTRY_USER}"
-    REGISTRY_PASS: "${HAF_REGISTRY_PASSWORD}"
     BINARY_CACHE_PATH: "${CI_PROJECT_DIR}/hived-mirrornet-binaries"
-    HIVE_NETWORK_TYPE: mirrornet
     GIT_SUBMODULE_STRATEGY: recursive
+  script: "cp --recursive /home/hived/bin ${BINARY_CACHE_PATH}"
+  artifacts:
+    when: on_success
+    paths:
+      - "${BINARY_CACHE_PATH}"
   tags:
     - public-runner-docker
     - hived-for-tests
@@ -257,7 +136,7 @@ library_extraction:
     name: $HAF_IMAGE_NAME
     entrypoint: [ "" ]
   needs:
-    - job: "mirrornet-haf-image-docker-build"
+    - job: "mirrornet-haf-binaries-extraction"
       artifacts: true
   variables:
     BINARY_CACHE_PATH: "${CI_PROJECT_DIR}/hived-mirrornet-binaries"
@@ -278,7 +157,7 @@ extended_block_log_creation:
   extends: .extended_block_log_creation
   stage: build
   needs:
-    - job: "mirrornet-haf-image-docker-build"
+    - job: "mirrornet-haf-binaries-extraction"
       artifacts: true
     - job: "library_extraction"
       artifacts: true 
@@ -324,7 +203,7 @@ block_log_processing:
   image: "registry.gitlab.syncad.com/hive/hive/ci-base-image${TEST_IMAGE_TAG}"
   stage: replay-and-sync
   needs:
-    - mirrornet-haf-image-docker-build
+    - mirrornet-haf-binaries-extraction
     - block-log-extraction
   variables:
     BLOCK_LOG_UTIL_PATH: "${CI_PROJECT_DIR}/hived-mirrornet-binaries/block_log_util"
@@ -366,16 +245,11 @@ mirrornet-haf-node-replay:
   stage: replay-and-sync
   timeout: 3 hours
   needs:
-    - mirrornet-haf-image-docker-build
-    - hafah-build
-    - hivemind-build
-    - haf-api-node-build
+    - mirrornet-haf-binaries-extraction
     - block_log_processing
   variables:
     GIT_STRATEGY: "clone"
     CI_DEBUG_SERVICES: "false" # Change to true to debug services in this job
-    HAF_VERSION: "${HAF_REGISTRY_TAG}"
-    HAF_REGISTRY: "${HAF_REGISTRY_PATH}"
     # LAST_BLOCK_NUMBER: "5004741"
     ARGUMENTS: "--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n --replay-blockchain --stop-at-block ${LAST_BLOCK_NUMBER} --alternate-chain-spec=/home/hived/datadir/blockchain/alternate-chain-spec.json"
     # FAKETIME: "@2016-09-16 01:39:06"
@@ -455,7 +329,7 @@ mirrornet-based-tests:
     - .haf_api_node_test
     - .node-job
   needs:
-    - mirrornet-haf-image-docker-build
+    - mirrornet-haf-binaries-extraction
     - docker-build-auth
     - docker-build-blog
     - docker-build-wallet
@@ -523,10 +397,7 @@ mirrornet-based-tests:
   variables:
     GIT_STRATEGY: "clone"
     CI_DEBUG_SERVICES: "false"
-    HAF_VERSION: "${HAF_REGISTRY_TAG}"
-    HAF_REGISTRY: "${HAF_REGISTRY_PATH}"
     ARGUMENTS: "--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n --alternate-chain-spec=/home/hived/datadir/blockchain/alternate-chain-spec.json"
-    # FAKETIME: "@2016-09-16 01:39:06"
     FAKETIME: ${HEAD_BLOCK_TIMESTAMP}
     REACT_APP_API_ENDPOINT: "https://dind/"
     REACT_APP_IMAGES_ENDPOINT: "https://images.hive.blog/"
