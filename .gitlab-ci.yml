@@ -259,6 +259,7 @@ mirrornet-haf-node-replay:
     FAKETIME: ${HEAD_BLOCK_TIMESTAMP}
     ADDITIONAL_CONFIGURATION_SCRIPT: "scripts/ci-helpers/copy-mirrornet-haf-config.sh"
     REPLAY_TIMEOUT: 9000
+    HAF_IMAGE: ${HAF_IMAGE}
   tags:
     - data-cache-storage
 
@@ -402,6 +403,7 @@ mirrornet-based-tests:
     CI_DEBUG_SERVICES: "false"
     ARGUMENTS: "--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n --alternate-chain-spec=/home/hived/datadir/blockchain/alternate-chain-spec.json"
     FAKETIME: ${HEAD_BLOCK_TIMESTAMP}
+    HAF_IMAGE: ${HAF_IMAGE}
     REACT_APP_API_ENDPOINT: "https://dind/"
     REACT_APP_IMAGES_ENDPOINT: "https://images.hive.blog/"
     REACT_APP_CHAIN_ID: "44"
