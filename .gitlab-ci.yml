@@ -26,7 +26,7 @@ variables:
   HIVE_API_NODE_VERSION: "1.27.6rc9"
   API_NODE_VERSION: "denser-3"
   HAF_IMAGE_REGISTRY: "registry.gitlab.syncad.com/hive/haf/mirrornet-instance"
-  HAF_IMAGE_NAME: "${HAF_IMAGE}:${HIVE_API_NODE_VERSION}"
+  HAF_IMAGE_NAME: "${HAF_IMAGE_REGISTRY}:${HIVE_API_NODE_VERSION}"
   BLOCK_LOG_VERSION: "42bf3ac5"
   # BLOCK_LOG_SOURCE_DIR: "/blockchain/block_log_mirror_44"
   REPLAY_DIRECTORY_PREFIX: "/cache/replay_data_denser_haf_api_node"
