@@ -1,3 +1,6 @@
+'use client';
+
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,7 +12,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@ui/components/alert-dialog';
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import { ReactNode, useState } from 'react';
 
 export function CommentDeleteDialog({
@@ -18,10 +20,10 @@ export function CommentDeleteDialog({
   action
 }: {
   children: ReactNode;
-  permlink: string,
+  permlink: string;
   action: (permlink: string) => void;
 }) {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const [open, setOpen] = useState(false);
 
   return (
@@ -31,20 +33,14 @@ export function CommentDeleteDialog({
         <AlertDialogHeader className="gap-2">
           <div className="flex items-center justify-between">
             <AlertDialogTitle data-testid="flag-dialog-header">Confirm Delete Comment</AlertDialogTitle>
-            <AlertDialogCancel
-              className="border-none hover:text-red-800"
-              data-testid="flag-dialog-close"
-            >
+            <AlertDialogCancel className="border-none hover:text-red-800" data-testid="flag-dialog-close">
               X
             </AlertDialogCancel>
           </div>
           <AlertDialogDescription data-testid="flag-dialog-description">Are you sure?</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="gap-2 sm:flex-row-reverse">
-          <AlertDialogCancel
-            className="hover:text-red-800"
-            data-testid="flag-dialog-cancel"
-          >
+          <AlertDialogCancel className="hover:text-red-800" data-testid="flag-dialog-cancel">
             Cancel
           </AlertDialogCancel>
           {user && user.isLoggedIn ? (

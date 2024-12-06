@@ -18,7 +18,7 @@ const PostPage = () => {
     tag: string;
     username: string;
   };
-  const sort = useSearchParams()?.get('sort');
+  const sort = useSearchParams()?.get('sort') ?? 'trending';
   const cleaned_username = username.replace('%40', '');
   const { isLoading: entryIsLoading, data: entryData } = useQuery(
     ['postData', cleaned_username, tag],
@@ -31,16 +31,16 @@ const PostPage = () => {
     enabled: !!cleaned_username && !!community && community.startsWith('hive-')
   });
   const { isLoading: discussionIsLoading, data: discussionData } = useQuery(
-    ['discussionData', username, tag],
-    () => getDiscussion(username, String(tag)),
+    ['discussionData', cleaned_username, tag],
+    () => getDiscussion(cleaned_username, String(tag)),
 
     {
-      enabled: !!username && !!tag,
+      enabled: !!cleaned_username && !!tag,
       refetchOnWindowFocus: false
     }
   );
-  const { data: activeVotesData } = useQuery(['activeVotes'], () => getActiveVotes(username, tag), {
-    enabled: !!username && !!tag
+  const { data: activeVotesData } = useQuery(['activeVotes'], () => getActiveVotes(cleaned_username, tag), {
+    enabled: !!cleaned_username && !!tag
   });
   const { data: rolesData } = useQuery(['rolesList', community], () => getListCommunityRoles(community), {
     enabled: Boolean(community)
@@ -69,7 +69,7 @@ const PostPage = () => {
       sorter(list, SortOrder[sort]);
       setDiscussionState(list);
     }
-  }, [discussionData, sort]);
+  }, [JSON.stringify(discussionData), sort]);
 
   const generateUrls = () => {
     if (!discussionState || discussionState.length === 0) return null;
@@ -88,7 +88,6 @@ const PostPage = () => {
 
   if (entryIsLoading) return <Loading loading={entryIsLoading} />;
   if (!entryData) return <div>Post not found</div>;
-
   return (
     <Content
       postUrl={postUrl}
@@ -98,7 +97,7 @@ const PostPage = () => {
       communityData={communityData}
       discussion={{ discussionIsLoading, discussionState }}
       userCanModerate={userCanModerate}
-      params={{ community, tag, username }}
+      params={{ community, tag, username: cleaned_username }}
       activeVotesData={activeVotesData}
     />
   );

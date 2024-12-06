@@ -1,3 +1,5 @@
+'use client';
+
 import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 import Lightbox, { Slide } from 'yet-another-react-lightbox';
 import { Fullscreen, Thumbnails, Zoom } from 'yet-another-react-lightbox/plugins';

@@ -2,11 +2,11 @@
 
 import React from 'react';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import Content from './content';
+import PostForm from '@/blog/features/post-editor/post-form';
 
 const Page = () => {
   const { user } = useUserClient();
-  return <Content username={user.username} editMode={false} sideBySidePreview={true} />;
+  return <PostForm username={user.username} editMode={false} sideBySidePreview={true} />;
 };
 
 export default Page;

@@ -39,6 +39,12 @@ import DetailsCardVoters from '@/blog/components/details-card-voters';
 import { IVote } from '@transaction/lib/hive';
 import MutePostDialog from '@/blog/components/mute-post-dialog';
 import CommentList from '@/blog/components/comment-list';
+import PostForm from '@/blog/features/post-editor/post-form';
+import { useRouter } from 'next/navigation';
+import userIllegalContent from '@ui/config/lists/user-illegal-content';
+import dmcaList from '@ui/config/lists/dmca-list';
+import dmcaUserList from '@ui/config/lists/dmca-user-list';
+import ImageGallery from '@/blog/components/image-gallery';
 
 const Content = ({
   activeVotesData,
@@ -72,11 +78,19 @@ const Content = ({
   );
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const [edit, setEdit] = useState(false);
+  const [mutedPost, setMutedPost] = useState<boolean>(entryData.stats?.gray ?? false);
+  const legalBlockedUser = userIllegalContent.some((e) => e === entryData?.author);
+  const copyRightCheck = dmcaList.includes(`/${community}/${username}/${tag}`);
+  const userFromDMCA = dmcaUserList.some((e) => e === entryData?.author);
   const { discussionIsLoading, discussionState } = discussion;
   const commentSite = entryData.depth !== 0 ? true : false;
   const firstPost = discussionState?.find((post) => post.depth === 0);
   const pinMutations = usePinMutation();
   const unpinMutation = useUnpinMutation();
+  const router = useRouter();
+  const refreshPage = () => {
+    router.replace(entryData.url);
+  };
   const pin = async () => {
     try {
       await pinMutations.mutateAsync({ community, username, permlink: tag });
@@ -92,7 +106,6 @@ const Content = ({
     }
   };
   const canonical_url = new URL(entryData.url, envData.NEXT_PUBLIC_SITE_DOMAIN).href;
-
   return (
     <>
       <Head>
@@ -158,13 +171,13 @@ const Content = ({
               created={entryData.created}
               blacklist={firstPost ? firstPost.blacklists : entryData.blacklists}
             />
-            {/* {edit ? (
+            {edit ? (
               <PostForm
                 username={username}
                 editMode={edit}
                 setEditMode={setEdit}
                 sideBySidePreview={false}
-                post_s={post}
+                post_s={entryData}
                 refreshPage={refreshPage}
               />
             ) : legalBlockedUser ? (
@@ -183,15 +196,9 @@ const Content = ({
               </>
             ) : (
               <ImageGallery>
-                <RendererContainer
-                  mainPost={post.depth === 0}
-                  body={post.body}
-                  author={post.author}
-                  className={postClassName}
-                />
+                <Renderer mdSource={entryData.body} author={entryData.author} type="post" />
               </ImageGallery>
-            )} */}
-            <Renderer mdSource={entryData.body} author={entryData.author} type="post" />
+            )}
 
             <div className="clear-both">
               {!commentSite ? (

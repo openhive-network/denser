@@ -1,8 +1,7 @@
 'use client';
 
-// import CommentListItem from '@/blog/components/comment-list-item';
+import CommentListItem from '@/blog/components/comment-list-item';
 import { Entry, IFollowList } from '@transaction/lib/bridge';
-
 import clsx from 'clsx';
 
 const CommentList = ({
@@ -51,7 +50,7 @@ const CommentList = ({
               { 'pl-3 sm:pl-12': comment.depth > 1 }
             )}
           >
-            {/* <CommentListItem
+            <CommentListItem
               parentPermlink={highestPermlink}
               parentAuthor={highestAuthor}
               permissionToMute={permissionToMute}
@@ -60,7 +59,7 @@ const CommentList = ({
               parent_depth={parent_depth}
               mutedList={mutedList}
               flagText={flagText}
-            /> */}
+            />
             {comment.children > 0 ? (
               <CommentList
                 flagText={flagText}

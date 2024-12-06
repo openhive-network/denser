@@ -16,7 +16,6 @@ import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
 
-// const chain = await hiveChainService.getHiveChain();
 let globalChain: IHiveChainInterface | undefined = undefined;
 const getChain = async () => {
   if (!globalChain) globalChain = await hiveChainService.getHiveChain();

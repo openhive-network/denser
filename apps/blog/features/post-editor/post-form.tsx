@@ -119,7 +119,7 @@ export function imagePicker(img: string) {
   return checkImg;
 }
 
-export default function Content({
+export default function PostForm({
   username,
   editMode = false,
   sideBySidePreview = true,
