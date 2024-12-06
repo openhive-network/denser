@@ -4,7 +4,7 @@ set -e
 
 echo "Performing additional configuration..."
 
-export
+echo "HAF_IMAGE=${HAF_IMAGE}"
 
 echo "Copying config.ini file..."
 cp "${CI_PROJECT_DIR:?}/stack/mirrornet_haf_config.ini" "${REPLAY_DIRECTORY:?}/config.ini"
