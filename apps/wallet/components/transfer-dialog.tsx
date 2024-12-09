@@ -31,7 +31,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'next-i18next';
 
 const transferSchema = z.object({
-  amount: z.number({ message: 'empty' }).positive({ message: 'amount_not_positive' })
+  to: z.string().min(3, { message: 'account_length' }),
+  amount: z.number({ message: 'amount_empty' }).positive({ message: 'amount_not_positive' })
 });
 
 type TransferType = z.infer<typeof transferSchema>;
@@ -217,8 +218,8 @@ export function TransferDialog({
   }
 
   const form = useForm<TransferType>({
-    mode: 'onSubmit',
-    resolver: zodResolver(transferSchema)
+    resolver: zodResolver(transferSchema),
+    mode: 'onSubmit'
   });
 
   const onSubmit: SubmitHandler<TransferType> = () => {
@@ -259,7 +260,13 @@ export function TransferDialog({
                 <div className="grid grid-cols-4 items-center gap-4">
                   To
                   <div className="col-span-3">
-                    <Autocompleter value={data.to} onChange={(e) => setData({ ...data, to: e })} />
+                    <Autocompleter
+                      value={data.to}
+                      onChange={(e) => {
+                        setData({ ...data, to: e });
+                        form.setValue('to', e);
+                      }}
+                    />
                   </div>
                 </div>
                 {badActors ? (
@@ -315,6 +322,11 @@ export function TransferDialog({
             {form.formState.errors.amount && (
               <div className="text-sm text-destructive">
                 {t(`transfers_page.error.${form.formState.errors.amount.message}`)}
+              </div>
+            )}
+            {form.formState.errors.to && (
+              <div className="text-sm text-destructive">
+                {t(`transfers_page.error.${form.formState.errors.to.message}`)}
               </div>
             )}
             <div className="grid grid-cols-4 items-center gap-4">

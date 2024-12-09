@@ -326,7 +326,8 @@
     "redeem_rewards": "Redeem Rewards (Transfer To Balance)",
     "error": {
       "amount_not_positive": "Amount must be positive.",
-      "empty": "Amount can't be empty."
+      "amount_empty": "Amount can't be empty.",
+      "account_length": "Account name is too short. Use at least 3 characters."
     }
   }
 }
