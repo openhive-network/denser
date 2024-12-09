@@ -327,8 +327,10 @@
     "error": {
       "amount_not_positive": "Amount must be positive.",
       "amount_empty": "Amount can't be empty.",
-      "account_length": "Account name is too short. Use at least 3 characters.",
-      "required": "Account name is required."
+      "account_length_min": "Account name is too short. Use at least 3 characters.",
+      "account_length_max": "Account name is too long. Use max 16 characters.",
+      "required": "Account name is required.",
+      "insufficient_funds": "Insufficient funds."
     }
   }
 }

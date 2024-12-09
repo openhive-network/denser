@@ -11,7 +11,7 @@ import {
 } from '@ui/components/dialog';
 import { Icons } from '@ui/components/icons';
 import { Input } from '@ui/components/input';
-import { ReactNode, useCallback, useRef, useState } from 'react';
+import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 import { Autocompleter } from './autocompleter';
 import badActorList from '@ui/config/lists/bad-actor-list';
 import {
@@ -29,13 +29,6 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'next-i18next';
-
-const transferSchema = z.object({
-  to: z.string({ message: 'required' }).min(3, { message: 'account_length' }),
-  amount: z.number({ message: 'amount_empty' }).positive({ message: 'amount_not_positive' })
-});
-
-type TransferType = z.infer<typeof transferSchema>;
 
 type Amount = {
   hive: string;
@@ -217,12 +210,29 @@ export function TransferDialog({
       break;
   }
 
-  const form = useForm<TransferType>({
+  const transferSchema = useMemo(
+    () =>
+      z.object({
+        to: z
+          .string({ message: 'required' })
+          .min(3, { message: 'account_length_min' })
+          .max(16, { message: 'account_length_max' }),
+        amount: z
+          .number({ message: 'amount_empty' })
+          .positive({ message: 'amount_not_positive' })
+          .refine((amount) => amount <= Number(data.amount.split(' ')[0].replaceAll(',', '')), {
+            message: 'insufficient_funds'
+          })
+      }),
+    [data.amount]
+  );
+
+  const form = useForm<z.infer<typeof transferSchema>>({
     resolver: zodResolver(transferSchema),
     mode: 'onSubmit'
   });
 
-  const onSubmit: SubmitHandler<TransferType> = () => {
+  const onSubmit: SubmitHandler<z.infer<typeof transferSchema>> = () => {
     data.onSubmit();
     // @ts-expect-error
     triggerRef.current.click();
@@ -361,13 +371,7 @@ export function TransferDialog({
           </div>
           <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
             <DialogTrigger ref={triggerRef}></DialogTrigger>
-            <Button
-              type="submit"
-              variant="redHover"
-              className="w-fit"
-              disabled={badActors}
-              onClick={() => console.log(form.formState.errors)}
-            >
+            <Button type="submit" variant="redHover" className="w-fit" disabled={badActors}>
               {data.buttonTitle}
             </Button>
             {data.advancedBtn && (
