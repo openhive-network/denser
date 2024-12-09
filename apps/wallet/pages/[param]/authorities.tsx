@@ -133,6 +133,7 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
             <Accordion type="multiple">
               {authorities.map((e) => (
                 <AuthoritesGroup
+                  key={e}
                   editMode={editMode}
                   id={e}
                   controller={form.control}
