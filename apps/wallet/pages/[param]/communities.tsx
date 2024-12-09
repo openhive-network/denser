@@ -16,12 +16,13 @@ import {
 } from '@ui/components';
 import { useState } from 'react';
 import { getTranslations } from '../../lib/get-translations';
-import { createHiveChain, createWaxFoundation } from '@hiveio/wax';
+import { createWaxFoundation } from '@hiveio/wax';
 import { useCreateCommunityMutation } from '@/wallet/components/hooks/use-create-community-mutation';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { handleError } from '@ui/lib/utils';
+import { getAccount, getAccounts } from '@transaction/lib/hive';
 
 const createCommunitySchema = z.object({
   title: z.string().min(1, 'Required'),
@@ -32,6 +33,10 @@ const createCommunitySchema = z.object({
 });
 
 type CreateCommunityFormValues = z.infer<typeof createCommunitySchema>;
+
+const getCommmunityName = () => {
+  return `hive-${Math.floor(Math.random() * 100000) + 100000}`;
+};
 
 function Communities({ username }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { t } = useTranslation('common_wallet');
@@ -48,6 +53,7 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
 
   const form = useForm<CreateCommunityFormValues>({
     resolver: zodResolver(createCommunitySchema),
+    mode: 'onSubmit',
     defaultValues: {
       title: '',
       about: ''
@@ -55,7 +61,17 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
   });
 
   const handleNext = async () => {
-    setGeneratedName(`hive-${Math.floor(Math.random() * 100000) + 100000}`);
+    let generatedName = getCommmunityName();
+
+    await (async function generateName() {
+      const existentAccount = await getAccount(generatedName);
+
+      if (!!existentAccount) {
+        generateName();
+      }
+    })();
+
+    setGeneratedName(generatedName);
 
     const wax = await createWaxFoundation();
     // generate password
