@@ -24,13 +24,14 @@ HIVEMIND_IMAGE=${HIVEMIND_IMAGE:-"registry.gitlab.syncad.com/hive/hivemind"}
 HAFAH_IMAGE=${HAFAH_IMAGE:-"registry.gitlab.syncad.com/hive/hafah"}
 REPUTATION_TRACKER_IMAGE=${REPUTATION_TRACKER_IMAGE:-"registry.gitlab.syncad.com/hive/reputation_tracker"}
 HIVE_API_NODE_VERSION=${HIVE_API_NODE_VERSION:-"1.27.6rc9"}
-DIND_TAG=${DIND_TAG:-"denser-3"}
-COMPOSE_TAG=${COMPOSE_TAG:-"denser-3"}
+DIND_TAG=${DIND_TAG:-"denser-4"}
+COMPOSE_TAG=${COMPOSE_TAG:-"denser-4"}
 AUTH_IMAGE_TAG=${AUTH_IMAGE_TAG:-"local"}
 BLOG_IMAGE_TAG=${BLOG_IMAGE_TAG:-"local"}
 WALLET_IMAGE_TAG=${WALLET_IMAGE_TAG:-"local"}
 REACT_APP_CHAIN_ID=${REACT_APP_CHAIN_ID:-"44"}
 ARGUMENTS=${ARGUMENTS:-"--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n --replay-blockchain --stop-at-block 5000785"}
+HIVEMIND_SYNC_ARGS=${HIVEMIND_SYNC_ARGS:-"--community-start-block=4998000"}
 PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME:-"$(echo "$(hostname).local" | tr '[:upper:]' '[:lower:]')"}
 USE_FAKETIME=${USE_FAKETIME:-"true"}
 USE_ALTERNATE_HAPROXY_CONFIG=${USE_ALTERNATE_HAPROXY_CONFIG:-"true"}
@@ -59,8 +60,8 @@ OPTIONS:
   --hivemind-registry=REGISTRY              Hivemind registry (default: registry.gitlab.syncad.com/hive/hivemind)
   --hafah-registry=REGISTRY                 HAfAH registry (default: registry.gitlab.syncad.com/hive/hafah)
   --reptracker-registry=REGISTRY            Reputation Tracker registry (default: registry.gitlab.syncad.com/hive/reputation_tracker)
-  --dind-tag=TAG                            Tag of registry.gitlab.syncad.com/hive/haf_api_node/dind to use (default: denser-3)
-  --compose-tag=TAG                         Tag of registry.gitlab.syncad.com/hive/haf_api_node/compose to use (default: denser-3)
+  --dind-tag=TAG                            Tag of registry.gitlab.syncad.com/hive/haf_api_node/dind to use (default: denser-4)
+  --compose-tag=TAG                         Tag of registry.gitlab.syncad.com/hive/haf_api_node/compose to use (default: denser-4)
   --auth-tag=TAG                            Tag of registry.gitlab.syncad.com/hive/denser/auth to use (default: local)
   --blog-tag=TAG                            Tag of registry.gitlab.syncad.com/hive/denser/blog to use (default: local)
   --wallet-tag=TAG                          Tag of registry.gitlab.syncad.com/hive/denser/wallet to use (default: local)
@@ -71,6 +72,7 @@ OPTIONS:
   --reptracker-version=TAG                  Reputation tracker tag to use (default: 1.27.6rc9)
   --chain-id=STRING                         Chain ID tu use (default: 44)
   --haf-arguments=STRING                    Arguments to be passed to the HAF instance in the stack (default: --chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n --replay-blockchain --stop-at-block 5000785)
+  --hivemind-sync-arguments=STRING          Additional arguments to be passed to the Hivemind sync process (default: --community-start-block=4998000)
   --public-hostname=HOSTNAME                Public hostname or domain name of the stack (default: $(echo "$(hostname).local" | tr '[:upper:]' '[:lower:]'))
   --use-faketime=true/false                 Set up faketime in HAF instance based on the last block of provided block log, requires --block-log-source and --block-log-util-path (default: true)
   --use-alternate-haproxy-config=true/false Use alternate HAProxy configuration - enable if stack is not going to be live syncing (default: true)
@@ -176,6 +178,10 @@ while [ $# -gt 0 ]; do
     --haf-arguments=*)
         arg="${1#*=}"
         ARGUMENTS="$arg"
+        ;;
+    --hivemind-sync-arguments=*)
+        arg="${1#*=}"
+        HIVEMIND_SYNC_ARGS="$arg"
         ;;
     --public-hostname=*)
         arg="${1#*=}"
@@ -340,6 +346,7 @@ HAFAH_VERSION=${HAFAH_VERSION}
 REPUTATION_TRACKER_VERSION=${REPUTATION_TRACKER_VERSION}
 REACT_APP_CHAIN_ID=${REACT_APP_CHAIN_ID}
 ARGUMENTS=${ARGUMENTS}
+HIVEMIND_SYNC_ARGS=${HIVEMIND_SYNC_ARGS}
 PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME}
 FAKETIME=${FAKETIME}
 USE_ALTERNATE_HAPROXY_CONFIG=${USE_ALTERNATE_HAPROXY_CONFIG}

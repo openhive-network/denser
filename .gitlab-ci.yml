@@ -23,14 +23,14 @@ variables:
   FF_ENABLE_JOB_CLEANUP: 1
 
   # HAF API node configuration
-  HIVE_API_NODE_VERSION: "1.27.6rc9"
-  API_NODE_VERSION: "denser-3"
+  API_NODE_VERSION: "1.27.6rc9"
+  API_NODE_TAG: "denser-4"
   HAF_IMAGE_REGISTRY: "registry.gitlab.syncad.com/hive/haf/mirrornet-instance"
-  HAF_IMAGE_NAME: "${HAF_IMAGE_REGISTRY}:${HIVE_API_NODE_VERSION}"
+  HAF_IMAGE_NAME: "${HAF_IMAGE_REGISTRY}:${API_NODE_VERSION}"
   BLOCK_LOG_VERSION: "42bf3ac5"
   # BLOCK_LOG_SOURCE_DIR: "/blockchain/block_log_mirror_44"
   REPLAY_DIRECTORY_PREFIX: "/cache/replay_data_denser_haf_api_node"
-  REPLAY_DIRECTORY: "${REPLAY_DIRECTORY_PREFIX}_${API_NODE_VERSION}_${HIVE_API_NODE_VERSION}_${BLOCK_LOG_VERSION}"
+  REPLAY_DIRECTORY: "${REPLAY_DIRECTORY_PREFIX}_${API_NODE_TAG}_${API_NODE_VERSION}_${BLOCK_LOG_VERSION}"
   REPLAY_PIPELINE_DIRECTORY: "${REPLAY_DIRECTORY_PREFIX}_${CI_PIPELINE_ID}"
   DOCKER_TLS_CERTDIR: "${REPLAY_PIPELINE_DIRECTORY}_certs"
   BLOCK_LOG_SOURCE: "${REPLAY_PIPELINE_DIRECTORY}_block_log"
@@ -51,7 +51,7 @@ include:
     ref: 6fa48e73dcf06140424d8c70e610fa421313ac0d #develop
     file: '/scripts/ci-helpers/prepare_data_image_job.yml'    
   - project: 'hive/haf_api_node'
-    ref: denser-3
+    ref: denser-4
     file: 'ci/node-replay.gitlab-ci.yml'  
 
 .docker_build_template:
@@ -260,6 +260,7 @@ mirrornet-haf-node-replay:
     ADDITIONAL_CONFIGURATION_SCRIPT: "scripts/ci-helpers/copy-mirrornet-haf-config.sh"
     REPLAY_TIMEOUT: 9000
     HAF_IMAGE: ${HAF_IMAGE_REGISTRY}
+    HIVE_API_NODE_VERSION: ${API_NODE_VERSION}
   tags:
     - data-cache-storage
 
@@ -404,6 +405,7 @@ mirrornet-based-tests:
     ARGUMENTS: "--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n --alternate-chain-spec=/home/hived/datadir/blockchain/alternate-chain-spec.json"
     FAKETIME: ${HEAD_BLOCK_TIMESTAMP}
     HAF_IMAGE: ${HAF_IMAGE_REGISTRY}
+    HIVE_API_NODE_VERSION: ${API_NODE_VERSION}
     REACT_APP_API_ENDPOINT: "https://dind/"
     REACT_APP_IMAGES_ENDPOINT: "https://images.hive.blog/"
     REACT_APP_CHAIN_ID: "44"
