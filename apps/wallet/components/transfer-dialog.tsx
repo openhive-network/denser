@@ -31,7 +31,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'next-i18next';
 
 const transferSchema = z.object({
-  to: z.string().min(3, { message: 'account_length' }),
+  to: z.string({ message: 'required' }).min(3, { message: 'account_length' }),
   amount: z.number({ message: 'amount_empty' }).positive({ message: 'amount_not_positive' })
 });
 
@@ -319,16 +319,18 @@ export function TransferDialog({
                 />
               </div>
             </div>
-            {form.formState.errors.amount && (
-              <div className="text-sm text-destructive">
-                {t(`transfers_page.error.${form.formState.errors.amount.message}`)}
-              </div>
-            )}
-            {form.formState.errors.to && (
-              <div className="text-sm text-destructive">
-                {t(`transfers_page.error.${form.formState.errors.to.message}`)}
-              </div>
-            )}
+            <div>
+              {form.formState.errors.amount && (
+                <div className="text-sm text-destructive">
+                  {t(`transfers_page.error.${form.formState.errors.amount.message}`)}
+                </div>
+              )}
+              {form.formState.errors.to && (
+                <div className="text-sm text-destructive">
+                  {t(`transfers_page.error.${form.formState.errors.to.message}`)}
+                </div>
+              )}
+            </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <div className=" col-span-1"></div>
               <Button
