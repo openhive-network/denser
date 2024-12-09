@@ -24,7 +24,7 @@ variables:
 
   # HAF API node configuration
   API_NODE_VERSION: "1.27.6rc9"
-  API_NODE_TAG: "denser-4"
+  API_NODE_TAG: "denser-5"
   HAF_IMAGE_REGISTRY: "registry.gitlab.syncad.com/hive/haf/mirrornet-instance"
   HAF_IMAGE_NAME: "${HAF_IMAGE_REGISTRY}:${API_NODE_VERSION}"
   BLOCK_LOG_VERSION: "42bf3ac5"
@@ -51,7 +51,7 @@ include:
     ref: 6fa48e73dcf06140424d8c70e610fa421313ac0d #develop
     file: '/scripts/ci-helpers/prepare_data_image_job.yml'    
   - project: 'hive/haf_api_node'
-    ref: denser-4
+    ref: denser-5
     file: 'ci/node-replay.gitlab-ci.yml'  
 
 .docker_build_template:
