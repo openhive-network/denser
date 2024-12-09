@@ -21,7 +21,7 @@ import { useTranslation } from 'next-i18next';
 const logger = getLogger('app');
 
 const UserMenu = ({ children, user }: { children: ReactNode; user: User }) => {
-  const onLogout = useLogout();
+  const onLogout = useLogout('/');
   const { t } = useTranslation('common_wallet');
 
   return (

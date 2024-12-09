@@ -7,7 +7,6 @@ import Link from 'next/link';
 import DialogLogin from './dialog-login';
 import LangToggle from '@/wallet/components/lang-toggle';
 import { useTranslation } from 'next-i18next';
-import { useLogout } from '@smart-signer/lib/auth/use-logout';
 import { getLogger } from '@ui/lib/logging';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import UserMenu from './user-menu';
