@@ -32,7 +32,7 @@ const authoritiesSchema = z.object({
 });
 export type AuthorityProps = z.infer<typeof authoritiesSchema>;
 
-const authorities = ['owner', 'active', 'posting'] as const;
+const authorities = ['posting', 'active', 'owner'] as const;
 const formSchema = z.object({
   memo_key: z.string(),
   json_metadata: z.string(),
@@ -72,36 +72,20 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
     }
   }, [updateProfileMutation.isLoading]);
 
+  const mapAuths = (auths: any) => ({
+    weight_threshold: auths?.weight_threshold || 1,
+    account_auths:
+      auths?.account_auths.map(([account, threshold]: [string, number]) => ({ account, threshold })) || [],
+    key_auths:
+      auths?.key_auths.map(([key, threshold]: [string, number]) => ({ key: key.toString(), threshold })) || []
+  });
+
   const profileAuthorities: AuthorityFormValues = {
     memo_key: accountData?.memo_key || '',
     json_metadata: accountData?.json_metadata || '',
-    owner: {
-      weight_threshold: accountData?.owner?.weight_threshold || 1,
-      account_auths:
-        accountData?.owner?.account_auths.map(([account, threshold]) => ({ account, threshold })) || [],
-      key_auths:
-        accountData?.owner?.key_auths.map(([key, threshold]) => ({ key: key.toString(), threshold })) || []
-    },
-    active: {
-      weight_threshold: accountData?.active?.weight_threshold || 1,
-      account_auths:
-        accountData?.active?.account_auths.map(([account, threshold]: [string, number]) => ({
-          account,
-          threshold
-        })) || [],
-      key_auths:
-        accountData?.active?.key_auths.map(([key, threshold]) => ({ key: key.toString(), threshold })) || []
-    },
-    posting: {
-      weight_threshold: accountData?.posting.weight_threshold || 1,
-      account_auths:
-        accountData?.posting?.account_auths.map(([account, threshold]: [string, number]) => ({
-          account,
-          threshold
-        })) || [],
-      key_auths:
-        accountData?.posting?.key_auths.map(([key, threshold]) => ({ key: key.toString(), threshold })) || []
-    }
+    owner: mapAuths(accountData?.owner),
+    active: mapAuths(accountData?.active),
+    posting: mapAuths(accountData?.posting)
   };
   const form = useForm<AuthorityFormValues>({
     resolver: zodResolver(formSchema),
@@ -110,9 +94,15 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
   form.watch();
 
   const values = form.getValues();
-  const validatorThresholdPosting = validation('posting', values.posting, t);
-  const validatorThresholdActive = validation('active', values.active, t);
-  const validatorThresholdOwner = validation('owner', values.owner, t);
+
+  const validators = authorities.reduce(
+    (acc, authority) => {
+      const validationResult = validation(authority, values[authority], t);
+      acc[authority] = validationResult === false ? undefined : validationResult;
+      return acc;
+    },
+    {} as Record<(typeof authorities)[number], string | undefined>
+  );
 
   if (accountLoading) {
     return (
@@ -141,24 +131,14 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-8 p-6">
           <>
             <Accordion type="multiple">
-              <AuthoritesGroup
-                editMode={editMode}
-                id="posting"
-                controller={form.control}
-                inputDisabled={updateProfileMutation.isLoading}
-              />
-              <AuthoritesGroup
-                editMode={editMode}
-                id="active"
-                controller={form.control}
-                inputDisabled={updateProfileMutation.isLoading}
-              />
-              <AuthoritesGroup
-                editMode={editMode}
-                id="owner"
-                controller={form.control}
-                inputDisabled={updateProfileMutation.isLoading}
-              />
+              {authorities.map((e) => (
+                <AuthoritesGroup
+                  editMode={editMode}
+                  id={e}
+                  controller={form.control}
+                  inputDisabled={updateProfileMutation.isLoading}
+                />
+              ))}
             </Accordion>
             <div className="flex flex-col gap-4 self-end">
               {user.isLoggedIn && accountOwner && !editMode ? (
@@ -181,9 +161,7 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
                     }}
                     disabled={
                       updateProfileMutation.isLoading ||
-                      !!validatorThresholdPosting ||
-                      !!validatorThresholdActive ||
-                      !!validatorThresholdOwner
+                      !!validators[authorities.find((e) => !!validators[e]) as (typeof authorities)[number]]
                     }
                   >
                     {t('authorities_page.cancel')}
@@ -193,9 +171,7 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
                     type="submit"
                     disabled={
                       updateProfileMutation.isLoading ||
-                      !!validatorThresholdPosting ||
-                      !!validatorThresholdActive ||
-                      !!validatorThresholdOwner
+                      !!validators[authorities.find((e) => !!validators[e]) as (typeof authorities)[number]]
                     }
                   >
                     {updateProfileMutation.isLoading ? (
@@ -206,14 +182,9 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
                   </Button>
                 </div>
               ) : null}
-              {(validatorThresholdPosting ||
-                validatorThresholdActive ||
-                validatorThresholdOwner ||
-                !!error) && (
+              {(authorities.some((e) => !!validators[e]) || !!error) && (
                 <div className="text-sm text-destructive">
-                  {validatorThresholdPosting ||
-                    validatorThresholdActive ||
-                    validatorThresholdOwner ||
+                  {validators[authorities.find((e) => !!validators[e]) as (typeof authorities)[number]] ||
                     (error as any).message}
                 </div>
               )}
