@@ -29,6 +29,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'next-i18next';
+import { getAccount } from '@transaction/lib/hive';
 
 type Amount = {
   hive: string;
@@ -216,7 +217,8 @@ export function TransferDialog({
         to: z
           .string({ message: 'required' })
           .min(3, { message: 'account_length_min' })
-          .max(16, { message: 'account_length_max' }),
+          .max(16, { message: 'account_length_max' })
+          .refine(async (to) => !!(await getAccount(to)), { message: 'not_found' }),
         amount: z
           .number({ message: 'amount_empty' })
           .positive({ message: 'amount_not_positive' })
