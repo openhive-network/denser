@@ -1,7 +1,7 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import Loading from '@ui/components/loading';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -10,18 +10,14 @@ import {
   getAccountFull,
   getAccountReputations
 } from '@transaction/lib/hive';
-import { accountReputation } from '@/blog/lib/utils';
 import { delegatedHive, numberWithCommas, vestingHive } from '@hive/ui/lib/utils';
 import { Separator } from '@hive/ui/components/separator';
 import { Icons } from '@hive/ui/components/icons';
 import { dateToFullRelative, dateToShow } from '@hive/ui/lib/parse-date';
-import { proxifyImageUrl } from '@hive/ui/lib/old-profixy';
+
 import { getTwitterInfo } from '@transaction/lib/bridge';
 import moment from 'moment';
-import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
-import env from '@beam-australia/react-env';
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useFollowingInfiniteQuery } from '../hooks/use-following-infinitequery';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
@@ -29,6 +25,12 @@ import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import CustomError from '../custom-error';
 import ButtonsContainer from '../buttons-container';
 import clsx from 'clsx';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { useTranslation } from '@/blog/i18n/client';
+import { accountReputation } from '@/blog/lib/utils-app';
+import { useParams } from 'next/navigation';
+import { envData } from '@/blog/lib/env';
+import { proxifyImageUrl } from '@ui/lib/old-profixy';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -54,47 +56,50 @@ function compareDates(dateStrings: string[], t: TFunction<'common_wallet', undef
 }
 
 const ProfileLayout = ({ children }: IProfileLayout) => {
-  const router = useRouter();
-  const { user } = useUser();
+  const { user } = useUserClient();
   const { t } = useTranslation('common_blog');
-  const walletHost = env('WALLET_ENDPOINT');
-  const { username } = useSiteParams();
-  const userFromGDPRList = gdprUserList.includes(username);
-  const {
-    isLoading: profileDataIsLoading,
-    error: errorProfileData,
-    data: profileData
-  } = useQuery(['profileData', username], () => getAccountFull(username), {
-    enabled: !!username
-  });
-  const {
-    isLoading: accountDataIsLoading,
-    error: accountDataError,
-    data: accountData
-  } = useQuery(['accountData', username], () => getAccount(username), {
-    enabled: !!username
-  });
+  const { param: usernamet, param2 } = useParams() as { param: string; param2: string };
+  const clean_username = usernamet.replace('%40', '');
+  const path = `/@${clean_username}/${param2}`;
+  const userFromGDPRList = gdprUserList.includes(clean_username);
+  const { isLoading: profileDataIsLoading, data: profileData } = useQuery(
+    ['profileData', clean_username],
+    () => getAccountFull(clean_username),
+    {
+      enabled: !!clean_username
+    }
+  );
+  const { isLoading: accountDataIsLoading, data: accountData } = useQuery(
+    ['accountData', clean_username],
+    () => getAccount(clean_username),
+    {
+      enabled: !!clean_username
+    }
+  );
   const mute = useFollowingInfiniteQuery(user.username, 50, 'ignore', ['ignore']);
 
-  const {
-    isLoading: dynamicGlobalDataIsLoading,
-    error: dynamicGlobalDataError,
-    data: dynamicGlobalData
-  } = useQuery(['dynamicGlobalData'], () => getDynamicGlobalProperties());
+  const { isLoading: dynamicGlobalDataIsLoading, data: dynamicGlobalData } = useQuery(
+    ['dynamicGlobalData'],
+    () => getDynamicGlobalProperties()
+  );
 
-  const {
-    isLoading: accountReputationIsLoading,
-    error: accountReputationError,
-    data: accountReputationData
-  } = useQuery(['accountReputationData', username], () => getAccountReputations(username, 1), {
-    enabled: !!username
-  });
+  const { data: accountReputationData } = useQuery(
+    ['accountReputationData', clean_username],
+    () => getAccountReputations(clean_username, 1),
+    {
+      enabled: !!clean_username
+    }
+  );
 
-  const { data: twitterData } = useQuery(['twitterData', username], () => getTwitterInfo(username), {
-    enabled: !!username,
-    retry: false,
-    refetchOnWindowFocus: false
-  });
+  const { data: twitterData } = useQuery(
+    ['twitterData', clean_username],
+    () => getTwitterInfo(clean_username),
+    {
+      enabled: !!clean_username,
+      retry: false,
+      refetchOnWindowFocus: false
+    }
+  );
   const following = useFollowingInfiniteQuery(user.username, 1000, 'blog', ['blog']);
 
   if (accountDataIsLoading || dynamicGlobalDataIsLoading || profileDataIsLoading) {
@@ -106,11 +111,11 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   const delegated_hive = delegatedHive(accountData, dynamicGlobalData);
   const vesting_hive = vestingHive(accountData, dynamicGlobalData);
   const hp = vesting_hive.minus(delegated_hive);
-  const legalBlockedUser = userIllegalContent.includes(username);
+  const legalBlockedUser = userIllegalContent.includes(clean_username);
   if (userFromGDPRList) {
     return <CustomError />;
   }
-  return username ? (
+  return (
     <div>
       <div
         className=" w-full bg-gray-600 text-sm leading-6 sm:h-fit"
@@ -154,7 +159,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   {profileData?.profile?.name ? profileData.profile.name : profileData.name}
                 </span>{' '}
                 <span
-                  title={`This is ${username}s's reputation score.\n\nThe reputation score is based on the history of votes received by the account, and is used to hide low quality content.`}
+                  title={`This is ${clean_username}s's reputation score.\n\nThe reputation score is based on the history of votes received by the account, and is used to hide low quality content.`}
                 >
                   (
                   {accountReputationData && accountReputationData[0].reputation
@@ -334,10 +339,10 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     </span>
                   </li>
                 </ul>
-                {user.username !== username ? (
+                {user.username !== clean_username ? (
                   <div className="m-2 flex gap-2 hover:text-destructive sm:absolute sm:right-0">
                     <ButtonsContainer
-                      username={username}
+                      username={clean_username}
                       user={user}
                       variant="default"
                       follow={following}
@@ -360,39 +365,39 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             <div className="container mx-auto flex max-w-screen-xl justify-between p-0 text-white sm:pl-8">
               <ul className="flex h-full flex-wrap gap-x-2 text-xs sm:text-base lg:flex lg:gap-8">
                 <ListItem
-                  href={`/@${username}`}
-                  currentTab={router.asPath === `/@${username}`}
+                  href={`/@${clean_username}`}
+                  currentTab={path === `/@${clean_username}`}
                   label={t('navigation.profile_navbar.blog')}
                 />
                 <ListItem
-                  href={`/@${username}/posts`}
+                  href={`/@${clean_username}/posts`}
                   currentTab={
-                    router.asPath === `/@${username}/posts` ||
-                    router.asPath === `/@${username}/comments` ||
-                    router.asPath === `/@${username}/payout`
+                    path === `/@${clean_username}/posts` ||
+                    path === `/@${clean_username}/comments` ||
+                    path === `/@${clean_username}/payout`
                   }
                   label={t('navigation.profile_navbar.posts')}
                 />
                 <ListItem
-                  href={`/@${username}/replies`}
-                  currentTab={router.asPath === `/@${username}/replies`}
+                  href={`/@${clean_username}/replies`}
+                  currentTab={path === `/@${clean_username}/replies`}
                   label={t('navigation.profile_navbar.replies')}
                 />
                 <ListItem
-                  href={`/@${username}/communities`}
-                  currentTab={router.asPath === `/@${username}/communities`}
+                  href={`/@${clean_username}/communities`}
+                  currentTab={path === `/@${clean_username}/communities`}
                   label={t('navigation.profile_navbar.social')}
                 />
                 <ListItem
-                  href={`/@${username}/notifications`}
-                  currentTab={router.asPath === `/@${username}/notifications`}
+                  href={`/@${clean_username}/notifications`}
+                  currentTab={path === `/@${clean_username}/notifications`}
                   label={t('navigation.profile_navbar.notifications')}
                 />
               </ul>
               <ul className="flex h-full flex-nowrap text-xs sm:text-base lg:flex lg:gap-4">
                 <li>
                   <Link
-                    href={`${walletHost}/@${username}/transfers`}
+                    href={`${envData.NEXT_PUBLIC_WALLET_DOMAIN}/@${clean_username}/transfers`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="mr-4 flex h-12 items-center px-2 hover:bg-background hover:text-primary"
@@ -400,13 +405,13 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     {t('navigation.profile_navbar.wallet')}
                   </Link>
                 </li>
-                {user.isLoggedIn && username === user.username ? (
+                {user.isLoggedIn && clean_username === user.username ? (
                   <li>
                     <Link
-                      href={`/@${username}/settings`}
+                      href={`/@${clean_username}/settings`}
                       rel="noopener noreferrer"
                       className={`flex h-12 items-center px-2 hover:bg-background hover:text-primary ${
-                        router.asPath === `/@${username}/settings`
+                        path === `/@${clean_username}/settings`
                           ? 'bg-background text-primary dark:hover:text-slate-200'
                           : ''
                       }`}
@@ -422,8 +427,6 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
         <main className="container mx-auto max-w-screen-xl pt-4">{children}</main>
       </div>
     </div>
-  ) : (
-    <Loading loading={true} />
   );
 };
 

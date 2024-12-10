@@ -2,7 +2,7 @@
 
 import { useTranslation } from '@/blog/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { Community, CommunityTeam, Entry, IFollowList } from '@transaction/lib/bridge';
+import { Community, Entry, IFollowList } from '@transaction/lib/bridge';
 import Head from 'next/head';
 import { Icons } from '@ui/components/icons';
 import { AlertDialogFlag } from '@/blog/features/post-view/alert-window-flag';

@@ -1,7 +1,9 @@
+'use client';
+
 import { FC } from 'react';
 import Link from 'next/link';
 import { Icons } from '@ui/components/icons';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '../i18n/client';
 
 const CustomError: FC = () => {
   const { t } = useTranslation('common_blog');

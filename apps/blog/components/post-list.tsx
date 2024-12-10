@@ -1,10 +1,12 @@
+'use client';
+
 import PostListItem from '@/blog/components/post-list-item';
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import type { Entry } from '@transaction/lib/bridge';
 import { useFollowListQuery } from './hooks/use-follow-list';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 const PostList = ({ data, isCommunityPage }: { data: Entry[]; isCommunityPage?: boolean }) => {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const { data: blacklist } = useFollowListQuery(user.username, 'blacklisted');
 
   return (

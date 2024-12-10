@@ -1,6 +1,7 @@
+'use client';
+
 import Link from 'next/link';
-import { getPostSummary } from '@/blog/lib/utils';
-import { cn } from '@ui/lib/utils';
+import { getPostSummary } from '@/blog/lib/utils-app';
 import { Icons } from '@hive/ui/components/icons';
 import {
   Card,
@@ -16,22 +17,32 @@ import parseDate, { dateToFullRelative } from '@hive/ui/lib/parse-date';
 import accountReputation from '@/blog/lib/account-reputation';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import DetailsCardHover from './details-card-hover';
-import { useRouter } from 'next/router';
 import { useState } from 'react';
 import type { Entry, IFollowList } from '@transaction/lib/bridge';
 import PostImage from './post-img';
-import { useTranslation } from 'next-i18next';
 import VotesComponent from './votes';
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useLocalStorage } from 'usehooks-ts';
-import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import { getLogger } from '@ui/lib/logging';
 import ReblogTrigger from './reblog-trigger';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { useTranslation } from '../i18n/client';
 
+interface Preferences {
+  nsfw: 'hide' | 'warn' | 'show';
+  blog_rewards: '0%' | '50%' | '100%';
+  comment_rewards: '0%' | '50%' | '100%';
+  referral_system: 'enabled' | 'disabled';
+}
+const DEFAULT_PREFERENCES: Preferences = {
+  nsfw: 'warn',
+  blog_rewards: '50%',
+  comment_rewards: '50%',
+  referral_system: 'enabled'
+};
 const logger = getLogger('app');
 
 const PostListItem = ({
@@ -43,9 +54,9 @@ const PostListItem = ({
   isCommunityPage: boolean | undefined;
   blacklist: IFollowList[] | undefined;
 }) => {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const { t } = useTranslation('common_blog');
-  const [preferences, setPreferences] = useLocalStorage<Preferences>(
+  const [preferences] = useLocalStorage<Preferences>(
     `user-preferences-${user.username}`,
     DEFAULT_PREFERENCES
   );
@@ -56,7 +67,7 @@ const PostListItem = ({
         ? post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw')
         : false
   );
-  const router = useRouter();
+
   const blacklistCheck = blacklist ? blacklist.some((e) => e.name === post.author) : false;
   const userFromDMCA = dmcaUserList.includes(post.author);
   const userFromImageBlockList = imageUserBlocklist.includes(post.author);
@@ -77,7 +88,7 @@ const PostListItem = ({
       preferences.nsfw === 'hide' ? null : (
         <Card className="mb-4 bg-background px-2 text-primary">
           {post.original_entry ? (
-            <div className="bg-background-secondary mt-2 rounded-sm px-2 py-1 text-sm">
+            <div className="mt-2 rounded-sm bg-background-secondary px-2 py-1 text-sm">
               <p className="flex items-center gap-1 text-xs md:text-sm">
                 <Icons.crossPost className="h-4 w-4 text-slate-500 dark:text-slate-400" />{' '}
                 <Link className="hover:cursor-pointer hover:text-destructive" href={`/@${post.author}`}>
@@ -149,11 +160,11 @@ const PostListItem = ({
                     (1)
                   </span>
                 ) : null}
-                {(router.query.param ? router.query.param[1]?.startsWith('hive-') : false) &&
+                {/* {(router.query.param ? router.query.param[1]?.startsWith('hive-') : false) &&
                 post.author_role &&
                 post.author_role !== 'guest' ? (
                   <span className="text-xs md:text-sm">&nbsp;{post.author_role.toUpperCase()}&nbsp;</span>
-                ) : null}
+                ) : null} */}
                 {post.author_title ? (
                   <Badge variant="outline" className="mr-1 border-destructive px-1 py-0 font-thin">
                     {post.author_title}
@@ -227,9 +238,7 @@ const PostListItem = ({
               !userFromDMCA &&
               !userFromImageBlockList &&
               !legalBlockedUser ? (
-                <>
-                  <PostImage post={post} />
-                </>
+                <PostImage post={post} />
               ) : null}
             </div>
             <div className="md:overflow-hidden">

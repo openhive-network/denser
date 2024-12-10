@@ -13,10 +13,14 @@ import { getActiveVotes } from '@transaction/lib/hive';
 
 const PostPage = () => {
   const { user } = useUserClient();
-  const { community, tag, username } = useParams() as {
-    community: string;
+  const {
+    param: community,
+    param2: username,
+    tag
+  } = useParams() as {
+    param: string;
+    param2: string;
     tag: string;
-    username: string;
   };
   const sort = useSearchParams()?.get('sort') ?? 'trending';
   const cleaned_username = username.replace('%40', '');

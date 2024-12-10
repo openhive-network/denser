@@ -1,9 +1,16 @@
+'use client';
+
 import Link from 'next/link';
 import { customEndsWith } from '../lib/ends-with';
-import { proxifyImageUrl } from '@ui/lib/old-profixy';
-import { extractPictureFromPostBody, extractUrlsFromJsonString, extractYouTubeVideoIds } from '../lib/utils';
+
 import type { Entry } from '@transaction/lib/bridge';
 import clsx from 'clsx';
+import {
+  extractPictureFromPostBody,
+  extractUrlsFromJsonString,
+  extractYouTubeVideoIds
+} from '../lib/utils-app';
+import { proxifyImageUrl } from '@/blog/lib/old-profixy';
 
 function find_first_img(post: Entry) {
   if (
