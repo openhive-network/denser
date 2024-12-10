@@ -6,7 +6,6 @@ import { useLocalStorage } from 'usehooks-ts';
 import { Icons } from '@ui/components/icons';
 import MdEditor from './md-editor';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
-import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import useManabars from './hooks/useManabars';
 import { hoursAndMinutes } from '../lib/utils';
@@ -17,6 +16,8 @@ import { useCommentMutation, useUpdateCommentMutation } from './hooks/use-commen
 import { handleError } from '@ui/lib/utils';
 import { CircleSpinner } from 'react-spinners-kit';
 import { commentClassName } from './comment-list-item';
+import { Preferences } from '@transaction/lib/app-types';
+import { DEFAULT_PREFERENCES } from '../features/post-editor/post-form';
 
 const logger = getLogger('app');
 
@@ -212,7 +213,11 @@ export function ReplyTextbox({
             </Link>
           </div>
         </div>
-        <RendererContainer body={text} author="" className={commentClassName + ' max-w-full border-2 border-background-tertiary p-2'} />
+        <RendererContainer
+          body={text}
+          author=""
+          className={commentClassName + ' max-w-full border-2 border-background-tertiary p-2'}
+        />
       </div>
     </div>
   );

@@ -11,7 +11,7 @@ import { ReactNode } from 'react';
 const Layout = ({ children }: { children: ReactNode }) => {
   const { param, param2 } = useParams() as { param: string; param2: string };
   const profilePage = param.includes('%40');
-  const postPages = param2 ? param2.includes('hive-') : true;
+  const postPages = !param2;
   const { user } = useUserClient();
   return profilePage ? (
     <ProfileLayout>{children}</ProfileLayout>

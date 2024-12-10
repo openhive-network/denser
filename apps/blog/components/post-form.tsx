@@ -29,14 +29,14 @@ import { TFunction } from 'i18next';
 import { debounce } from '../lib/utils';
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
-import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 import { getLogger } from '@ui/lib/logging';
 import SelectImageList from './select-image-list';
 import RendererContainer from './rendererContainer';
 import { usePostMutation } from './hooks/use-post-mutation';
 import { handleError } from '@ui/lib/utils';
 import { CircleSpinner } from 'react-spinners-kit';
-import { postClassName } from '../pages/[param]/[p2]/[permlink]';
+import { Preferences } from '@transaction/lib/app-types';
+import { DEFAULT_PREFERENCES } from '../features/post-editor/post-form';
 
 const logger = getLogger('app');
 
@@ -557,10 +557,7 @@ export default function PostForm({
             <RendererContainer
               body={previewContent}
               author=""
-              className={
-                postClassName +
-                ' w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2'
-              }
+              className=" w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2"
             />
           ) : null}
         </div>
