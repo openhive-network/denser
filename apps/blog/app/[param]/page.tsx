@@ -7,9 +7,9 @@ import { useParams } from 'next/navigation';
 import { DATA_LIMIT as PER_PAGE, Entry, getAccountPosts } from '@transaction/lib/bridge';
 import PostList from '@/blog/components/post-list';
 import { useInView } from 'react-intersection-observer';
-import { Skeleton } from '@ui/components';
 import { useTranslation } from '@/blog/i18n/client';
 import { useEffect } from 'react';
+import PostSkeleton from '@/blog/components/postSkeleton';
 
 const Page = () => {
   const { user } = useUserClient();
@@ -101,15 +101,3 @@ const Page = () => {
 };
 
 export default Page;
-
-const PostSkeleton = () => {
-  return (
-    <div className="flex items-center space-x-4">
-      <Skeleton className="h-12 w-12 rounded-full" />
-      <div className="space-y-2">
-        <Skeleton className="h-4 w-[250px]" />
-        <Skeleton className="h-4 w-[200px]" />
-      </div>
-    </div>
-  );
-};

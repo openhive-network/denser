@@ -1,3 +1,5 @@
+'use client';
+
 import { Icons } from '@hive/ui/components/icons';
 import parseDate, { dateToFullRelative } from '@hive/ui/lib/parse-date';
 import {
@@ -8,8 +10,6 @@ import {
   CardHeader,
   CardTitle
 } from '@hive/ui/components/card';
-import { getPostSummary } from '@/blog/lib/utils';
-import { cn } from '@ui/lib/utils';
 import Link from 'next/link';
 import { Separator } from '@ui/components/separator';
 import accountReputation from '@/blog/lib/account-reputation';
@@ -19,11 +19,12 @@ import type { Entry, IFollowList } from '@transaction/lib/bridge';
 import DetailsCardHover from './details-card-hover';
 import clsx from 'clsx';
 import PostImage from './post-img';
-import { useTranslation } from 'next-i18next';
 import VotesComponent from './votes';
 import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
+import { useTranslation } from '../i18n/client';
+import { getPostSummary } from '../lib/utils-app';
 
 const RepliesListItem = ({
   comment,

@@ -12,6 +12,7 @@ import PostList from '@/blog/components/post-list';
 import { Skeleton } from '@ui/components';
 import { useInView } from 'react-intersection-observer';
 import Loading from '@ui/components/loading';
+import PostSkeleton from '@/blog/components/postSkeleton';
 
 const Content = ({
   communityTag,
@@ -121,15 +122,3 @@ const Content = ({
   );
 };
 export default Content;
-
-const PostSkeleton = () => {
-  return (
-    <div className="flex items-center space-x-4">
-      <Skeleton className="h-12 w-12 rounded-full" />
-      <div className="space-y-2">
-        <Skeleton className="h-4 w-[250px]" />
-        <Skeleton className="h-4 w-[200px]" />
-      </div>
-    </div>
-  );
-};
