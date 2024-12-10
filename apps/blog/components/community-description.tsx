@@ -1,3 +1,5 @@
+'use client';
+
 import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
 import Link from 'next/link';
@@ -6,13 +8,13 @@ import { type Community, type Subscription, IAccountNotification } from '@transa
 import { SubsListDialog } from './subscription-list-dialog';
 import { ActivityLogDialog } from './activity-log-dialog';
 import { Badge } from '@ui/components/badge';
-import { useTranslation } from 'next-i18next';
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useEffect, useState } from 'react';
 import SubscribeCommunity from './subscribe-community';
 import NewPost from './new-post-button';
-import RendererContainer from './rendererContainer';
 import { getLogger } from '@ui/lib/logging';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { useTranslation } from '../i18n/client';
+import { Remarkable } from 'remarkable';
 
 const logger = getLogger('app');
 
@@ -28,7 +30,7 @@ const CommunityDescription = ({
   username: string;
 }) => {
   const [isSubscribed, setIsSubscribed] = useState(() => data.context.subscribed);
-  const { user } = useUser();
+  const { user } = useUserClient();
   const { t } = useTranslation('common_blog');
   const userRole = data.team.find((e) => e[0] === user.username);
   const userCanModerate = data.team.find((e) => e[0] === user.username);
@@ -125,11 +127,9 @@ const CommunityDescription = ({
               {t('communities.titles.description')}
             </h6>
 
-            <RendererContainer
-              body={data.description}
-              dataTestid="community-description-content"
-              author=""
-              communityDescription={true}
+            <div
+              data-testid="community-description-content"
+              dangerouslySetInnerHTML={{ __html: new Remarkable().render(data.description) }}
             />
           </div>
 

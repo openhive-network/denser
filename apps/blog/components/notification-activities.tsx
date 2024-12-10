@@ -1,3 +1,5 @@
+'use client';
+
 import { SyntheticEvent, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -8,15 +10,15 @@ import {
 import NotificationList from '@/blog/components/notification-list';
 import { Button } from '@ui/components/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components/tabs';
-import { useTranslation } from 'next-i18next';
-import { getRewardsString } from '../lib/utils';
 import { getAccountFull, getFindAccounts } from '@transaction/lib/hive';
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useMarkAllNotificationsAsReadMutation } from './hooks/use-notifications-read-mutation';
 import { useClaimRewardMutation } from './hooks/use-claim-reward-mutation';
 import { handleError } from '@ui/lib/utils';
 import { CircleSpinner } from 'react-spinners-kit';
 import { getLogger } from '@ui/lib/logging';
+import { useTranslation } from '../i18n/client';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { getRewardsString } from '../lib/utils-app';
 
 const logger = getLogger('app');
 
@@ -32,7 +34,7 @@ const NotificationActivities = ({
   const [lastStateElementId, setLastStateElementId] = useState(
     state && state.length > 0 ? state[state.length - 1].id : null
   );
-  const { user } = useUser();
+  const { user } = useUserClient();
   const markAllNotificationsAsReadMutation = useMarkAllNotificationsAsReadMutation();
   const claimRewardMutation = useClaimRewardMutation();
 
@@ -160,7 +162,7 @@ const NotificationActivities = ({
         </div>
       ) : null}
       <TabsList
-        className="bg-background-tertiary flex h-auto flex-wrap "
+        className="flex h-auto flex-wrap bg-background-tertiary "
         data-testid="notifications-local-menu"
       >
         <TabsTrigger value="all">{t('navigation.profile_notifications_tab_navbar.all')}</TabsTrigger>

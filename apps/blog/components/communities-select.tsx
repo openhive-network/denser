@@ -1,5 +1,6 @@
-import * as React from 'react';
+'use client';
 
+import * as React from 'react';
 import {
   Select,
   SelectContent,
@@ -9,21 +10,13 @@ import {
   SelectValue
 } from '@ui/components/select';
 import { useQuery } from '@tanstack/react-query';
-import { type Subscription, getCommunities } from '@transaction/lib/bridge';
-import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { getCommunities, getSubscriptions } from '@transaction/lib/bridge';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { useTranslation } from '../i18n/client';
+import { useRouter } from 'next/navigation';
 
-export function CommunitiesSelect({
-  title,
-  mySubsData,
-  username
-}: {
-  title: string;
-  mySubsData: Subscription[] | null | undefined;
-  username?: string;
-}) {
-  const { user } = useUser();
+export function CommunitiesSelect({ title, username }: { title: string; username?: string }) {
+  const { user } = useUserClient();
   const router = useRouter();
   const { t } = useTranslation('common_blog');
   const sort = 'rank';
@@ -31,7 +24,9 @@ export function CommunitiesSelect({
   const { isLoading, error, data } = useQuery(['communitiesList', sort, query], () =>
     getCommunities(sort, query)
   );
-
+  const { data: mySubsData } = useQuery(['subscriptions', username], () => getSubscriptions(user.username), {
+    enabled: Boolean(username)
+  });
   const filteredCommunity = data
     ?.slice(0, 12)
     .filter((c) => !mySubsData?.map((my) => my[0]).includes(c.name));

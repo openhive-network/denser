@@ -1,3 +1,5 @@
+'use client';
+
 import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
 import NotificationActivities from './notification-activities';
 import type { ReactNode } from 'react';

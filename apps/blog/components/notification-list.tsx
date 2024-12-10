@@ -1,3 +1,5 @@
+'use client';
+
 import NotificationListItem from '@/blog/components/notification-list-item';
 import { IAccountNotification } from '@transaction/lib/bridge';
 

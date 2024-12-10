@@ -1,10 +1,12 @@
+'use client';
+
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { getCommunities } from '@transaction/lib/bridge';
 import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
 import { FC } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '../i18n/client';
 
 const CommunitiesSidebar: FC = () => {
   const { t } = useTranslation('common_blog');

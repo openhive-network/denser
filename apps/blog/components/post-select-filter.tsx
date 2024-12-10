@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Select,
   SelectContent,
@@ -6,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@ui/components/select';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '../i18n/client';
 
 const PostSelectFilter = ({
   filter,

@@ -1,18 +1,18 @@
+'use client';
+
 import Link from 'next/link';
 import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardTitle } from '@hive/ui/components/card';
-import { useTranslation } from 'next-i18next';
-import type { Subscription } from '@transaction/lib/bridge';
 
-const CommunitiesMybar = ({
-  data,
-  username
-}: {
-  data: Subscription[] | null | undefined;
-  username: string;
-}) => {
+import { getSubscriptions } from '@transaction/lib/bridge';
+import { useTranslation } from '../i18n/client';
+import { useQuery } from '@tanstack/react-query';
+
+const CommunitiesMybar = ({ username }: { username: string }) => {
   const { t } = useTranslation('common_blog');
-
+  const { data } = useQuery(['subscriptions', username], () => getSubscriptions(username), {
+    enabled: Boolean(username)
+  });
   return (
     <Card
       className={cn('my-4 hidden h-fit w-full flex-col bg-background px-8 py-2 text-primary md:flex')}

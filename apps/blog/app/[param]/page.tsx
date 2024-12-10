@@ -9,6 +9,7 @@ import PostList from '@/blog/components/post-list';
 import { useInView } from 'react-intersection-observer';
 import { Skeleton } from '@ui/components';
 import { useTranslation } from '@/blog/i18n/client';
+import { useEffect } from 'react';
 
 const Page = () => {
   const { user } = useUserClient();
@@ -49,6 +50,11 @@ const Page = () => {
       enabled: Boolean(clean_username)
     }
   );
+  useEffect(() => {
+    if (inViewAcc && accountHasNextPage) {
+      accountFetchNextPage();
+    }
+  }, [accountFetchNextPage, accountHasNextPage, inViewAcc]);
 
   const legalBlockedUser = userIllegalContent.includes(clean_username);
 

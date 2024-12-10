@@ -1,11 +1,13 @@
+'use client';
+
 import { Button } from '@ui/components/button';
 import DialogLogin from './dialog-login';
-import { useTranslation } from 'next-i18next';
 import { User } from '@smart-signer/types/common';
 import { useSubscribeMutation, useUnsubscribeMutation } from './hooks/use-subscribe-mutations';
 import { handleError } from '@ui/lib/utils';
 import { CircleSpinner } from 'react-spinners-kit';
 import { getLogger } from '@ui/lib/logging';
+import { useTranslation } from '../i18n/client';
 
 const logger = getLogger('app');
 
@@ -54,7 +56,7 @@ const SubscribeCommunity = ({
             <Button
               size="sm"
               variant="outline"
-              className="group relative w-full border-blue-600 text-center text-blue-600 hover:border-destructive hover:text-destructive hover:bg-transparent"
+              className="group relative w-full border-blue-600 text-center text-blue-600 hover:border-destructive hover:bg-transparent hover:text-destructive"
               disabled={unsubscribeMutation.isLoading}
               onClick={async () => {
                 try {

@@ -1,3 +1,5 @@
+'use client';
+
 import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
 
 import type { Subscription } from '@transaction/lib/bridge';

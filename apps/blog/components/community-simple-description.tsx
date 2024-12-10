@@ -1,15 +1,17 @@
+'use client';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@ui/components/card';
 import type { Community, Subscription } from '@transaction/lib/bridge';
 import { IAccountNotification } from '@transaction/lib/bridge';
 import { SubsListDialog } from './subscription-list-dialog';
 import { ActivityLogDialog } from './activity-log-dialog';
-import { useTranslation } from 'next-i18next';
 import SubscribeCommunity from './subscribe-community';
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import NewPost from './new-post-button';
 import { useEffect, useState } from 'react';
 import { Badge } from '@ui/components';
 import Link from 'next/link';
+import { useTranslation } from '../i18n/client';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 const CommunitySimpleDescription = ({
   data,
@@ -24,7 +26,7 @@ const CommunitySimpleDescription = ({
 }) => {
   const { t } = useTranslation('common_blog');
   const [isSubscribed, setIsSubscribed] = useState(() => data.context.subscribed);
-  const { user } = useUser();
+  const { user } = useUserClient();
 
   useEffect(() => {
     setIsSubscribed(data.context.subscribed);

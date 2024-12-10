@@ -1,13 +1,15 @@
+'use client';
+
 /* eslint-disable @next/next/no-img-element */
 import Link from 'next/link';
 import { Icons } from '@hive/ui/components/icons';
 import { Progress } from '@hive/ui/components/progress';
 import { dateToFullRelative } from '@hive/ui/lib/parse-date';
 import { IAccountNotificationEx } from '@transaction/lib/bridge';
-import { useTranslation } from 'next-i18next';
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getLogger } from '@ui/lib/logging';
+import { useTranslation } from '../i18n/client';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 const logger = getLogger('app');
 const usernamePattern = /\B@[a-z0-9.-]+/gi;
@@ -15,7 +17,7 @@ const usernamePattern = /\B@[a-z0-9.-]+/gi;
 const NotificationListItem = ({ date, msg, score, type, url, lastRead }: IAccountNotificationEx) => {
   const { t } = useTranslation('common_blog');
   const { username } = useSiteParams();
-  const { user } = useUser();
+  const { user } = useUserClient();
   const isOwner = user.username === username;
   const mentions = msg.match(usernamePattern);
   const unRead = lastRead <= new Date(date).getTime();
@@ -54,7 +56,7 @@ const NotificationListItem = ({ date, msg, score, type, url, lastRead }: IAccoun
 
   return (
     <tr
-      className="even:bg-background-tertiary block w-full px-4 odd:bg-background "
+      className="block w-full px-4 odd:bg-background even:bg-background-tertiary "
       data-testid="notification-list-item"
     >
       <td className="flex justify-between py-4">

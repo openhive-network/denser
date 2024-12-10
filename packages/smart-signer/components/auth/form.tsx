@@ -10,7 +10,7 @@ import Methods from './methods/methods';
 export interface SignInFormProps {
   preferredKeyTypes: KeyType[];
   onComplete: (arg0: any) => Promise<any>;
-  authenticateOnBackend?: boolean,
+  authenticateOnBackend?: boolean;
   strict?: boolean; // if true use strict authentication
   i18nNamespace?: string;
 }
@@ -23,7 +23,16 @@ export enum Steps {
 }
 
 const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
-  ({ preferredKeyTypes, onComplete, authenticateOnBackend = false, strict = false, i18nNamespace = 'smart-signer' }: SignInFormProps, ref) => {
+  (
+    {
+      preferredKeyTypes,
+      onComplete,
+      authenticateOnBackend = false,
+      strict = false,
+      i18nNamespace = 'smart-signer'
+    }: SignInFormProps,
+    ref
+  ) => {
     // component controllers
     const [step, setStep] = useState<Steps>(Steps.SAFE_STORAGE_LOGIN);
     const { t } = useTranslation(i18nNamespace);
