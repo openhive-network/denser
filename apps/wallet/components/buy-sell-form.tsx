@@ -145,7 +145,7 @@ export default function BuyOrSellForm({
               onChange={(e) =>
                 dispatch({
                   type: ActionType.ChangeCostValue,
-                  cost: e.target.value
+                  cost: e.target.value.replaceAll('-', '')
                 })
               }
             />
@@ -163,7 +163,7 @@ export default function BuyOrSellForm({
               onChange={(e) =>
                 dispatch({
                   type: ActionType.ChangeAmountValue,
-                  amount: e.target.value
+                  amount: e.target.value.replaceAll('-', '')
                 })
               }
             />
@@ -181,7 +181,7 @@ export default function BuyOrSellForm({
               onChange={(e) =>
                 dispatch({
                   type: ActionType.ChangeTotalValue,
-                  total: e.target.value
+                  total: e.target.value.replaceAll('-', '')
                 })
               }
             />
