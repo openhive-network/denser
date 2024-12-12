@@ -218,7 +218,7 @@ export function TransferDialog({
         amount: z
           .number({ message: t('transfers_page.error.amount_empty') })
           .positive({ message: t('transfers_page.error.amount_not_positive') })
-          .refine((amount) => amount <= Number(data.amount.split(' ')[0].replaceAll(',', '')), {
+          .refine((amount) => amount <= Number(data.amount.replaceAll(',', '').match(/[-+]?\d*\.?\d+/)), {
             message: t('transfers_page.error.insufficient_funds')
           })
       }),
