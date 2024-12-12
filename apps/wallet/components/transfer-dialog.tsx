@@ -66,7 +66,7 @@ export function TransferDialog({
     advancedBtn: false,
     selectCurr: true,
     buttonTitle: 'Next',
-    to: '',
+    to: ['transferTo', 'powerUp', 'withdrawHive', 'withdrawHiveDollars'].includes(type) ? username : '',
     onSubmit: new Function(),
     memo: ''
   };
@@ -128,7 +128,6 @@ export function TransferDialog({
       data.description = 'Protect funds by requiring a 3 day withdraw waiting period.';
       data.amount = curr === 'hive' ? amount.hive : amount.hbd;
       data.advancedBtn = true;
-      data.to = username || '';
       data.onSubmit = async () => {
         const params = {
           amount: await getAsset(value, curr),
@@ -146,7 +145,6 @@ export function TransferDialog({
         'Influence tokens which give you more control over post payouts and allow you to earn on curation rewards. HIVE POWER is non-transferable and requires 3 months (13 payments) to convert back to HIVE.';
       data.amount = curr === 'hive' ? amount.hive : amount.hbd;
       data.advancedBtn = true;
-      data.to = username || '';
       data.selectCurr = false;
       data.buttonTitle = 'Power Up';
       data.onSubmit = async () => {
@@ -180,7 +178,6 @@ export function TransferDialog({
       data.title = 'Savings Withdraw';
       data.description = 'Withdraw funds after the required 3 day waiting period.';
       data.amount = amount.savingsHive;
-      data.to = username || '';
       data.advancedBtn = true;
       data.onSubmit = async () => {
         const params = {
@@ -197,7 +194,6 @@ export function TransferDialog({
       data.title = 'Savings Withdraw';
       data.description = 'Withdraw funds after the required 3 day waiting period.';
       data.amount = amount.savingsHbd;
-      data.to = username || '';
       data.advancedBtn = true;
       data.onSubmit = async () => {
         const params = {
@@ -215,23 +211,26 @@ export function TransferDialog({
     () =>
       z.object({
         to: z
-          .string({ message: 'required' })
-          .min(3, { message: 'account_length_min' })
-          .max(16, { message: 'account_length_max' })
-          .refine(async (to) => !!(await getAccount(to)), { message: 'not_found' }),
+          .string({ message: t('transfers_page.error.required') })
+          .min(3, { message: t('transfers_page.error.account_length_min') })
+          .max(16, { message: t('transfers_page.error.account_length_max') })
+          .refine(async (to) => !!(await getAccount(to)), { message: t('transfers_page.error.not_found') }),
         amount: z
-          .number({ message: 'amount_empty' })
-          .positive({ message: 'amount_not_positive' })
+          .number({ message: t('transfers_page.error.amount_empty') })
+          .positive({ message: t('transfers_page.error.amount_not_positive') })
           .refine((amount) => amount <= Number(data.amount.split(' ')[0].replaceAll(',', '')), {
-            message: 'insufficient_funds'
+            message: t('transfers_page.error.insufficient_funds')
           })
       }),
-    [data.amount]
+    [data.amount, t]
   );
 
   const form = useForm<z.infer<typeof transferSchema>>({
     resolver: zodResolver(transferSchema),
-    mode: 'onSubmit'
+    mode: 'onSubmit',
+    defaultValues: {
+      to: data.to
+    }
   });
 
   const onSubmit: SubmitHandler<z.infer<typeof transferSchema>> = () => {
@@ -333,14 +332,10 @@ export function TransferDialog({
             </div>
             <div>
               {form.formState.errors.amount && (
-                <div className="text-sm text-destructive">
-                  {t(`transfers_page.error.${form.formState.errors.amount.message}`)}
-                </div>
+                <div className="text-sm text-destructive">{form.formState.errors.amount.message}</div>
               )}
               {form.formState.errors.to && (
-                <div className="text-sm text-destructive">
-                  {t(`transfers_page.error.${form.formState.errors.to.message}`)}
-                </div>
+                <div className="text-sm text-destructive">{form.formState.errors.to.message}</div>
               )}
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
