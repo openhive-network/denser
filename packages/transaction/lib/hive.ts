@@ -6,13 +6,15 @@ import {
   IHiveChainInterface,
   transaction,
   NaiAsset,
-  ApiAccount
+  ApiAccount,
+  AccountAuthorityUpdateOperation
 } from '@hiveio/wax';
 import { isCommunity, parseAsset } from '@ui/lib/utils';
 import { vestsToRshares } from '@ui/lib/utils';
 import { DATA_LIMIT } from './bridge';
 import { hiveChainService } from './hive-chain-service';
 import { getLogger } from '@ui/lib/logging';
+import { LevelAuthority } from 'index';
 
 const logger = getLogger('app');
 
@@ -834,27 +836,34 @@ export const getListWitnessVotes = async (
 };
 
 export interface IVoteListItem {
-  id: number,
-  voter: string,
-  author: string,
-  permlink: string,
-  weight: string,
-  rshares: number,
-  vote_percent: number,
-  last_update: string,
-  num_changes: number,
+  id: number;
+  voter: string;
+  author: string;
+  permlink: string;
+  weight: string;
+  rshares: number;
+  vote_percent: number;
+  last_update: string;
+  num_changes: number;
 }
 
 type GetListVotesData = {
   database_api: {
-    list_votes: TWaxApiRequest<{ start: [string, string, string] | null; limit: number; order: 'by_comment_voter' | 'by_voter_comment' }, { votes: IVoteListItem[] }>;
+    list_votes: TWaxApiRequest<
+      {
+        start: [string, string, string] | null;
+        limit: number;
+        order: 'by_comment_voter' | 'by_voter_comment';
+      },
+      { votes: IVoteListItem[] }
+    >;
   };
 };
 
 // See https://developers.hive.io/apidefinitions/#database_api.list_votes
 export const getListVotesByCommentVoter = async (
   start: [string, string, string] | null, // should be [author, permlink, voter]
-  limit: number,
+  limit: number
 ): Promise<{ votes: IVoteListItem[] }> => {
   return chain
     .extend<GetListVotesData>()
@@ -863,9 +872,51 @@ export const getListVotesByCommentVoter = async (
 
 export const getListVotesByVoterComment = async (
   start: [string, string, string] | null, // should be [voter, author, permlink]
-  limit: number,
+  limit: number
 ): Promise<{ votes: IVoteListItem[] }> => {
   return chain
     .extend<GetListVotesData>()
     .api.database_api.list_votes({ start, limit, order: 'by_voter_comment' });
+};
+
+type KeyAuth = {
+  keyOrAccount: string;
+  thresholdWeight: number;
+};
+export type AuthorityLevel = {
+  level: LevelAuthority;
+  account_auths: KeyAuth[];
+  key_auths: KeyAuth[];
+  weight_threshold: number;
+};
+
+interface Authority {
+  memo: string;
+  authorityLevels: AuthorityLevel[];
+}
+
+function transformKeyAuths(authority: { [keyOrAccount: string]: number }): KeyAuth[] {
+  return Object.entries(authority).map(([keyOrAccount, thresholdWeight]) => ({
+    keyOrAccount,
+    thresholdWeight
+  }));
+}
+
+export const getAthority = async (username: string): Promise<Authority> => {
+  const chain = await hiveChainService.getHiveChain();
+  const operation = await AccountAuthorityUpdateOperation.createFor(chain, username);
+  const memo = operation.role('memo').value;
+
+  let otherAuthority = [];
+  for (const role of operation.roles('hive')) {
+    if (role.level !== 'memo') {
+      const level = role.level;
+      const account_auths = transformKeyAuths(role.value.account_auths);
+      const key_auths = transformKeyAuths(role.value.key_auths);
+      const weight_threshold = role.value.weight_threshold;
+      otherAuthority.push({ level, account_auths, key_auths, weight_threshold });
+    }
+  }
+
+  return { memo: memo, authorityLevels: otherAuthority };
 };
