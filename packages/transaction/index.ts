@@ -13,7 +13,8 @@ import {
   asset,
   authority,
   future_extensions,
-  EAvailableCommunityRoles
+  EAvailableCommunityRoles,
+  AccountAuthorityUpdateOperation
 } from '@hiveio/wax';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
@@ -694,6 +695,54 @@ export class TransactionService {
     }, transactionOptions);
   }
 
+  async updateAuthority(
+    username: string,
+    level: LevelAuthority,
+    action: UpdateAuthorityAction,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    const chain = await hiveChainService.getHiveChain();
+    const updateOperation = await AccountAuthorityUpdateOperation.createFor(chain, username);
+    if (level === 'memo' && action.type !== 'setMemoKey') {
+      throw Error('Memo level should be used without setmemoKey action');
+    }
+    // We assert type here because of the error guard in previous line
+    const options = updateOperation.role(level as Exclude<LevelAuthority, 'memo'>);
+
+    switch (action.type) {
+      case 'add': {
+        const { keyOrAccount, thresholdWeight } = action.payload;
+        options.add(keyOrAccount, thresholdWeight);
+        break;
+      }
+      case 'clear':
+        options.clear();
+        break;
+      case 'remove': {
+        const { keyOrAccount } = action.payload;
+        options.remove(keyOrAccount);
+        break;
+      }
+      case 'replace': {
+        const { keyOrAccount, thresholdWeight } = action.payload;
+
+        options.replace(keyOrAccount, thresholdWeight);
+        break;
+      }
+      case 'setThreshold': {
+        options.setTreshold(action.payload.threshold);
+        break;
+      }
+      case 'setMemoKey': {
+        updateOperation.role('memo').set(action.payload.key);
+        break;
+      }
+    }
+    return await this.processHiveAppOperation((builder) => {
+      builder.pushOperation(updateOperation);
+    }, transactionOptions);
+  }
+
   async updateProfile(
     profile_image?: string,
     cover_image?: string,
@@ -991,3 +1040,28 @@ export class TransactionService {
 }
 
 export const transactionService = new TransactionService();
+
+export type LevelAuthority = Parameters<
+  Awaited<ReturnType<(typeof AccountAuthorityUpdateOperation)['createFor']>>['role']
+>[0];
+
+export type UpdateAuthorityAction =
+  | {
+      type: 'add' | 'remove' | 'replace';
+      payload: {
+        keyOrAccount: string;
+        thresholdWeight: number;
+      };
+    }
+  | {
+      type: 'setMemoKey';
+      payload: { key: string };
+    }
+  | {
+      type: 'clear';
+      payload?: never;
+    }
+  | {
+      type: 'setThreshold';
+      payload: { threshold: number };
+    };
