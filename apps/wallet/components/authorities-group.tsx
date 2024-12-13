@@ -1,117 +1,110 @@
 import React, { FC, Fragment, useState } from 'react';
-import { Button } from '@ui/components/button';
-import { PlusCircle } from 'lucide-react';
-import { FormField, Input, Separator } from '@ui/components';
+import { Button, Input, Separator } from '@ui/components';
 import AuthoritiesGroupItem from './authorities-group-item';
-import { AuthoritiesProps } from '../pages/[param]/authorities';
 import AddAuthorityDialog from './add-authority-dialog';
-import useWindowSize from './hooks/use-window-size';
 import { AccordionContent, AccordionItem, AccordionTrigger } from '@ui/components/accordion';
-import { Control, useFieldArray } from 'react-hook-form';
 import { useTranslation } from 'next-i18next';
+import { AuthorityLevel } from '@transaction/lib/hive';
+import { FileX2, Pencil, Save, Trash } from 'lucide-react';
+import { useUpdateAuthorityMutation } from './hooks/use-update-authority-mutation';
 
 type GroupProps = {
-  id: 'posting' | 'active' | 'owner';
-  editMode: boolean;
-  controller: Control<AuthoritiesProps, any>;
-  inputDisabled: boolean;
+  data: AuthorityLevel;
+  width: number;
 };
 
-const AuthoritesGroup: FC<GroupProps> = ({ id, editMode, controller, inputDisabled }) => {
-  const [open, setOpen] = useState(false);
-  const { width } = useWindowSize();
+const AuthoritesGroup: FC<GroupProps> = ({ data, width }) => {
   const { t } = useTranslation('common_wallet');
-  const acounts = useFieldArray({ control: controller, name: `${id}.account_auths` });
-  const keys = useFieldArray({ control: controller, name: `${id}.key_auths` });
+  const [editThreshold, setEditThreshold] = useState(false);
+  const [value, setValue] = useState(data.weight_threshold);
+  const level = data.level;
+  const updateThresholdAuthorityMutation = useUpdateAuthorityMutation();
 
+  const onUpdate = () => {
+    updateThresholdAuthorityMutation.mutate(
+      {
+        level: level,
+        action: { type: 'setThreshold', payload: { threshold: value } }
+      },
+      {
+        onSuccess: () => {
+          setEditThreshold(false);
+        }
+      }
+    );
+  };
   return (
     <div className="container">
-      <AccordionItem value={id}>
+      <AccordionItem value={level} className="mt-6">
         <AccordionTrigger>
-          <h2>{`${id.charAt(0).toUpperCase() + id.slice(1)} Authority`}</h2>
+          <h2>{`${level.charAt(0).toUpperCase() + level.slice(1)} Authority`}</h2>
         </AccordionTrigger>
         <AccordionContent>
           <div className="grid w-full grid-cols-[max-content_1fr_1fr_max-content] gap-1">
-            <div className="col-span-4 grid grid-cols-subgrid items-center pl-2 text-xs hover:bg-foreground/20 sm:text-base">
-              <div className="size-5" />
+            <div className="col-span-4 grid grid-cols-subgrid items-center text-xs hover:bg-foreground/20 sm:text-base">
+              <div className="flex items-center">
+                <AddAuthorityDialog level={data.level} />
+                <div className="w-0 text-nowrap">Add Key or Account</div>
+              </div>
               <span className="justify-self-end font-medium">{t('authorities_page.threshold')}:</span>
-              <FormField
-                control={controller}
-                name={`${id}.weight_threshold`}
-                render={({ field }) => (
-                  <>
-                    {editMode ? (
-                      <Input
-                        value={field.value}
-                        type="number"
-                        onChange={(e) => field.onChange(Number(e.target.value))}
-                        className="h-6 w-1/2 self-center justify-self-center bg-white/10 p-0 px-3"
-                        disabled={inputDisabled}
-                      />
-                    ) : (
-                      <span className="justify-self-center">{field.value}</span>
-                    )}
-                  </>
-                )}
-              />
-              {editMode ? (
-                <FormField
-                  control={controller}
-                  name={id}
-                  render={({ field }) => (
-                    <AddAuthorityDialog
-                      onAddAccount={(item) => acounts.append(item)}
-                      onAddKey={(item) => keys.append(item)}
-                      id={id}
-                      open={open}
-                      onOpen={(e) => setOpen(e)}
-                      acconts={field.value.account_auths.map((e) => e.account)}
-                      keys={field.value.key_auths.map((e) => e.key)}
-                      t={t}
-                    >
-                      <Button variant="ghost" size="sm">
-                        <PlusCircle className="h-5 w-5 cursor-pointer" />
-                      </Button>
-                    </AddAuthorityDialog>
-                  )}
+              {editThreshold ? (
+                <Input
+                  value={value}
+                  onChange={(e) => {
+                    setValue(Number(e.target.value));
+                  }}
+                  className="h-6 w-1/2 self-center justify-self-center bg-white/10 p-0 px-3"
                 />
-              ) : null}
+              ) : (
+                <span className="justify-self-center">{data.weight_threshold}</span>
+              )}
+              {editThreshold ? (
+                <div className="flex items-center">
+                  <Button variant="ghost" type="button" size="sm" title="Delete" onClick={onUpdate}>
+                    <Save className="h-5 w-5" />
+                  </Button>
+                  <div className="h-5 w-5 px-[22px]" />
+                  <Button
+                    variant="ghost"
+                    type="button"
+                    size="sm"
+                    onClick={() => {
+                      setEditThreshold(false);
+                      setValue(data.weight_threshold);
+                    }}
+                  >
+                    <FileX2 className="h-5 w-5" />
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex items-center">
+                  <div className="h-5 w-5 px-[22px]" />
+                  <div className="h-5 w-5 px-[22px]" />
+                  <Button
+                    variant="ghost"
+                    type="button"
+                    size="sm"
+                    onClick={() => {
+                      setEditThreshold(true);
+                    }}
+                    title="Edit"
+                  >
+                    <Pencil className="h-5 w-5" />
+                  </Button>
+                </div>
+              )}
             </div>
 
-            {keys.fields.map((field, index) => (
+            {data.key_auths.map((e, index) => (
               <Fragment key={index}>
-                <AuthoritiesGroupItem
-                  inputDisabled={inputDisabled}
-                  width={width}
-                  threshold={field.threshold}
-                  label={field.key}
-                  type="KEY"
-                  editMode={editMode}
-                  onUpdateThreshold={(e) => keys.update(index, { ...field, threshold: e })}
-                  onUpdateEntry={(e) => keys.update(index, { ...field, key: e.toString() })}
-                  onDelete={() => {
-                    keys.remove(index);
-                  }}
-                />
+                <AuthoritiesGroupItem width={width} item={e} level={data.level} />
                 <Separator className="col-span-4 bg-foreground" />
               </Fragment>
             ))}
 
-            {acounts.fields.map((field, index) => (
+            {data.account_auths.map((e, index) => (
               <Fragment key={index}>
-                <AuthoritiesGroupItem
-                  inputDisabled={inputDisabled}
-                  width={width}
-                  threshold={field.threshold}
-                  label={field.account}
-                  type="USER"
-                  editMode={editMode}
-                  onUpdateThreshold={(e) => acounts.update(index, { ...field, threshold: e })}
-                  onUpdateEntry={(e) => acounts.update(index, { ...field, account: e })}
-                  onDelete={() => {
-                    acounts.remove(index);
-                  }}
-                />
+                <AuthoritiesGroupItem width={width} item={e} level={data.level} />
                 <Separator className="col-span-4 bg-foreground" />
               </Fragment>
             ))}
