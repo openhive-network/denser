@@ -2,7 +2,6 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { getLogger } from '@ui/lib/logging';
-import { AuthoritiesProps } from '@/wallet/pages/[param]/authorities';
 
 const logger = getLogger('app');
 
@@ -16,7 +15,13 @@ export function useUpdateProfileMutation() {
   const { user } = useUser();
   const queryClient = useQueryClient();
   const updateProfileWalletMutation = useMutation({
-    mutationFn: async (params: AuthoritiesProps) => {
+    mutationFn: async (params: {
+      memo_key: string;
+      json_metadata: string;
+      owner: any;
+      active: any;
+      posting: any;
+    }) => {
       const { memo_key, json_metadata, owner, active, posting } = params;
 
       const transformAuths = (auths: { account: string; threshold: number }[]) => {
