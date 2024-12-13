@@ -22,7 +22,7 @@ import ProfileLayout from '@/wallet/components/common/profile-layout';
 import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
 import WalletMenu from '@/wallet/components/wallet-menu';
-import { Button } from '@ui/components';
+import { Button, Dialog, DialogContent, DialogFooter, DialogTrigger } from '@ui/components';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,6 +37,7 @@ import { getTranslations } from '../../lib/get-translations';
 import FinancialReport from '@/wallet/components/financial-report';
 import { useClaimRewardsMutation } from '@/wallet/components/hooks/use-claim-rewards-mutation';
 import { useMemo } from 'react';
+import { useCancelPowerDownMutation } from '@/wallet/components/hooks/use-power-hive-mutation';
 
 const initialFilters: TransferFilters = {
   search: '',
@@ -218,6 +219,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
   );
 
   const claimRewardsMutation = useClaimRewardsMutation();
+  const cancelPowerDownMutation = useCancelPowerDownMutation();
 
   const rewardsStr = useMemo(() => {
     const allRewards = [
@@ -307,6 +309,15 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
       await claimRewardsMutation.mutateAsync(params);
     } catch (error) {
       handleError(error, { method: 'claim_reward_balance', params });
+    }
+  };
+
+  const cancelPowerDown = async () => {
+    const params = { account: username };
+    try {
+      await cancelPowerDownMutation.mutateAsync(params);
+    } catch (error) {
+      handleError(error, { method: 'withdraw_vesting', params });
     }
   };
 
@@ -543,6 +554,23 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                           >
                             <span>Delegate</span>
                           </TransferDialog>
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <div className="w-full cursor-pointer px-2 py-1.5 text-sm hover:bg-background-tertiary hover:text-primary">
+                                <span>Cancel Power Down</span>
+                              </div>
+                            </DialogTrigger>
+                            <DialogContent className="text-left sm:max-w-[425px]">
+                              Are you sure you want to cancel Power Down?
+                              <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
+                                <DialogTrigger asChild>
+                                  <Button variant="redHover" onClick={cancelPowerDown}>
+                                    Cancel Power Down
+                                  </Button>
+                                </DialogTrigger>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
                         </DropdownMenuGroup>
                       </DropdownMenuContent>
                     </DropdownMenu>
