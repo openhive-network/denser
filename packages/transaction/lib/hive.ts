@@ -14,7 +14,7 @@ import { vestsToRshares } from '@ui/lib/utils';
 import { DATA_LIMIT } from './bridge';
 import { hiveChainService } from './hive-chain-service';
 import { getLogger } from '@ui/lib/logging';
-import { LevelAuthority } from 'index';
+import { LevelAuthority } from '..';
 
 const logger = getLogger('app');
 

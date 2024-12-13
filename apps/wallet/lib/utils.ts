@@ -2,7 +2,6 @@ import { convertStringToBig } from '@hive/ui/lib/helpers';
 import { IDynamicGlobalProperties } from '@transaction/lib/hive';
 import { AccountHistoryData } from '../pages/[param]/transfers';
 import { TransferFilters } from '@/wallet/components/transfers-history-filter';
-import { AuthorityProps } from '../pages/[param]/authorities';
 import { TFunction } from 'next-i18next';
 
 export function getCurrentHpApr(data: IDynamicGlobalProperties) {
@@ -118,12 +117,4 @@ export const cutPublicKey = (publicKey?: string, width?: number): string => {
     return `${publicKey.slice(0, 15)}...${publicKey.slice(publicKey.length - 15)}`;
   }
   return `${publicKey.slice(0, 8)}...${publicKey.slice(publicKey.length - 5)}`;
-};
-
-export const validation = (id: string, list: AuthorityProps, t: TFunction) => {
-  return [...list.account_auths, ...list.key_auths]
-    .map((item) => item.threshold)
-    .reduce((acc, weight) => acc + weight, 0) >= list.weight_threshold
-    ? false
-    : t('authorities_page.threshold_validator', { id: id });
 };

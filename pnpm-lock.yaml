@@ -39,8 +39,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui
       '@hiveio/wax':
-        specifier: 1.27.6-rc5-stable.241029104701
-        version: 1.27.6-rc5-stable.241029104701
+        specifier: 1.27.6-rc6-stable.241212140722
+        version: 1.27.6-rc6-stable.241212140722
       '@hookform/resolvers':
         specifier: ^3.3.1
         version: 3.9.0(react-hook-form@7.52.2(react@18.3.0))
@@ -163,8 +163,8 @@ importers:
         specifier: ^2.2.0
         version: 2.2.1
       '@hiveio/wax':
-        specifier: 1.27.6-rc5-stable.241029104701
-        version: 1.27.6-rc5-stable.241029104701
+        specifier: 1.27.6-rc6-stable.241212140722
+        version: 1.27.6-rc6-stable.241212140722
       '@hookform/resolvers':
         specifier: ^3.1.1
         version: 3.9.0(react-hook-form@7.52.2(react@18.3.0))
@@ -356,8 +356,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui
       '@hiveio/wax':
-        specifier: 1.27.6-rc5-stable.241029104701
-        version: 1.27.6-rc5-stable.241029104701
+        specifier: '1.27.6-rc6-stable.241212140722 '
+        version: 1.27.6-rc6-stable.241212140722
       '@hookform/resolvers':
         specifier: ^3.3.2
         version: 3.9.0(react-hook-form@7.52.2(react@18.3.0))
@@ -474,8 +474,8 @@ importers:
         specifier: 0.0.1-stable.241127084706
         version: 0.0.1-stable.241127084706
       '@hiveio/wax':
-        specifier: 1.27.6-rc5-stable.241029104701
-        version: 1.27.6-rc5-stable.241029104701
+        specifier: 1.27.6-rc6-stable.241212140722
+        version: 1.27.6-rc6-stable.241212140722
       '@tanstack/react-query':
         specifier: ^4.36.1
         version: 4.36.1(react-dom@18.3.0(react@18.3.0))(react@18.3.0)
@@ -574,8 +574,8 @@ importers:
         specifier: workspace:*
         version: link:../smart-signer
       '@hiveio/wax':
-        specifier: 1.27.6-rc5-stable.241029104701
-        version: 1.27.6-rc5-stable.241029104701
+        specifier: 1.27.6-rc6-stable.241212140722
+        version: 1.27.6-rc6-stable.241212140722
       '@hiveio/workerbee':
         specifier: 1.27.6-rc9-stable.240920064516
         version: 1.27.6-rc9-stable.240920064516
@@ -625,8 +625,8 @@ importers:
         specifier: ^1.3.1
         version: 1.3.1
       '@hiveio/wax':
-        specifier: 1.27.6-rc5-stable.241029104701
-        version: 1.27.6-rc5-stable.241029104701
+        specifier: 1.27.6-rc6-stable.241212140722
+        version: 1.27.6-rc6-stable.241212140722
       '@radix-ui/react-accordion':
         specifier: ^1.1.2
         version: 1.2.0(@types/react-dom@18.3.0)(@types/react@18.3.0)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)
@@ -1463,6 +1463,10 @@ packages:
 
   '@hiveio/wax@1.27.6-rc5-stable.241029104701':
     resolution: {integrity: sha1-Jz6tVQXhyZxf8Gu665dyDTw2wH0=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.27.6-rc5-stable.241029104701.tgz}
+    engines: {node: '>= 18'}
+
+  '@hiveio/wax@1.27.6-rc6-stable.241212140722':
+    resolution: {integrity: sha1-5ZjAb9CmjafNGi8mW3OO/EYzYpI=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.27.6-rc6-stable.241212140722.tgz}
     engines: {node: '>= 18'}
 
   '@hiveio/workerbee@1.27.6-rc9-stable.240920064516':
@@ -8792,6 +8796,15 @@ snapshots:
       reflect-metadata: 0.1.14
 
   '@hiveio/wax@1.27.6-rc5-stable.241029104701':
+    dependencies:
+      '@hiveio/beekeeper': 1.27.6-rc4
+      class-transformer: 0.5.1
+      class-validator: 0.14.1
+      events: 3.3.0
+      long: 5.2.3
+      reflect-metadata: 0.1.14
+
+  '@hiveio/wax@1.27.6-rc6-stable.241212140722':
     dependencies:
       '@hiveio/beekeeper': 1.27.6-rc4
       class-transformer: 0.5.1
