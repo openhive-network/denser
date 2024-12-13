@@ -409,7 +409,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
           {user?.username === username && (
             <Link href="https://blocktrades.us" target="_blank">
               <Button variant="outlineRed" className="mx-2 my-8 border-destructive text-destructive">
-                Buy Hive or Hive Power
+                Buy HIVE or HIVE POWER
               </Button>
             </Link>
           )}
@@ -431,7 +431,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost">
                           <div>
-                            <span className="text-destructive">{amount.hive}</span>
+                            <span className="text-destructive">{amount.hive.toUpperCase()}</span>
                             <span className="m-1 text-xl">▾</span>
                           </div>
                         </Button>
@@ -520,7 +520,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost">
                           <div>
-                            <span className="text-destructive">{amount.hp}</span>
+                            <span className="text-destructive">{amount.hp.toUpperCase()}</span>
                             <span className="m-1 text-xl">▾</span>
                           </div>
                         </Button>
@@ -547,10 +547,10 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                       </DropdownMenuContent>
                     </DropdownMenu>
                   ) : (
-                    <div className="px-4 py-2">
-                      <div>{amount.hp + ' HIVE'}</div>
-                      <div>({received_power_balance + ' HIVE'})</div>
-                    </div>
+                    <div className="px-4 py-2">{amount.hp.toUpperCase()}</div>
+                  )}
+                  {Number(received_power_balance) !== 0 && (
+                    <div className="px-4">({received_power_balance + ' HIVE'})</div>
                   )}
                 </td>
               </tr>
@@ -646,7 +646,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost">
                             <div>
-                              <span className="text-destructive">{amount.savingsHive}</span>
+                              <span className="text-destructive">{amount.savingsHive.toUpperCase()}</span>
                               <span className="m-1 text-xl">▾</span>
                             </div>
                           </Button>
