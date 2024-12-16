@@ -16,9 +16,9 @@ test.describe("Wallet page tests", () => {
     await walletPage.goToWalletPage();
     await expect(walletPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/?/); // https://caddy/ or http://localhost:4000
 
-    await expect(walletPage.hiveTokenLabel).toHaveText("Hive");
+    await expect(walletPage.hiveTokenLabel).toHaveText("HIVE");
     await expect(walletPage.hiveTokensLiquidPlatformTokenLabel).toBeVisible();
-    await expect(walletPage.hivePowerTokenLabel).toHaveText("Hive power");
+    await expect(walletPage.hivePowerTokenLabel).toHaveText("HIVE power");
     await expect(walletPage.hiveTokensVestingInfluenceTokenLabel).toBeVisible();
     await expect(walletPage.hiveTokenHBDLabel).toHaveText("HBD");
     await expect(walletPage.hiveTokensSeeksPriceStabilityWithUSD).toBeVisible();
