@@ -201,7 +201,13 @@
     "close": "Close",
     "ok": "Ok",
     "available": "Available",
-    "buy_sell_prompt": "{{operation}} at least {{hive}} HIVE for {{hbd}} HBD ({{rate}})?"
+    "buy_sell_prompt": "{{operation}} at least {{hive}} HIVE for {{hbd}} HBD ({{rate}})?",
+    "date_created": "Date Created",
+    "type": "Type",
+    "filled": "Filled",
+    "action": "Action",
+    "cancel": "Cancel",
+    "open_orders": "Open Orders"
   },
   "witnesses_page": {
     "title": "Witness Voting",
