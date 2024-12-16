@@ -28,7 +28,7 @@ const MemoAccordionItem = ({ memo, width, canEdit }: { memo: string; width: numb
   };
   const disabled = updateMemoMutation.isLoading;
   return (
-    <div className="container">
+    <div className="sm:container">
       <AccordionItem value="memo" className="mt-6">
         <AccordionTrigger>
           <h2>Memo Authority</h2>

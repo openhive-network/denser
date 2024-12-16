@@ -48,7 +48,7 @@ const AuthoritesGroup: FC<GroupProps> = ({ data, width, canEdit }) => {
     }
   }, [updateThresholdAuthorityMutation.isLoading]);
   return (
-    <div className="container">
+    <div className="sm:container">
       <AccordionItem value={level} className="mt-6">
         <AccordionTrigger>
           <h2>{`${level.charAt(0).toUpperCase() + level.slice(1)} Authority`}</h2>
@@ -59,7 +59,7 @@ const AuthoritesGroup: FC<GroupProps> = ({ data, width, canEdit }) => {
               {canEdit ? (
                 <div className="flex items-center">
                   <AddAuthorityDialog authorityList={authorityList} level={data.level} />
-                  <div className="w-0 text-nowrap">Add Key or Account</div>
+                  <div className="hidden w-0 text-nowrap sm:inline-block">Add Key or Account</div>
                 </div>
               ) : (
                 <div />
