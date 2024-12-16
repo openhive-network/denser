@@ -6,6 +6,7 @@ import CopyToKeyboard from '@/wallet/components/copy-to-keyboard';
 import { cutPublicKey } from '@/wallet/lib/utils';
 import { useUpdateAuthorityMutation } from './hooks/use-update-authority-mutation';
 import { CircleSpinner } from 'react-spinners-kit';
+import ButtonTooltip from './button-tooltip';
 
 const MemoAccordionItem = ({ memo, width, canEdit }: { memo: string; width: number; canEdit: boolean }) => {
   const { t } = useTranslation('common_wallet');
@@ -52,20 +53,15 @@ const MemoAccordionItem = ({ memo, width, canEdit }: { memo: string; width: numb
             </div>
             {editMemo ? (
               <div className="flex items-center">
-                <Button
-                  disabled={disabled}
-                  variant="ghost"
-                  type="button"
-                  size="sm"
-                  title="Delete"
-                  onClick={onUpdateMemo}
-                >
-                  {disabled ? (
-                    <CircleSpinner loading={disabled} size={18} color="#dc2626" />
-                  ) : (
-                    <Save className="h-5 w-5" />
-                  )}
-                </Button>
+                <ButtonTooltip label="Save">
+                  <Button disabled={disabled} variant="ghost" type="button" size="sm" onClick={onUpdateMemo}>
+                    {disabled ? (
+                      <CircleSpinner loading={disabled} size={18} color="#dc2626" />
+                    ) : (
+                      <Save className="h-5 w-5" />
+                    )}
+                  </Button>
+                </ButtonTooltip>
                 <Button
                   disabled={disabled}
                   variant="ghost"
@@ -81,17 +77,18 @@ const MemoAccordionItem = ({ memo, width, canEdit }: { memo: string; width: numb
               </div>
             ) : canEdit ? (
               <div className="flex items-center">
-                <Button
-                  variant="ghost"
-                  type="button"
-                  size="sm"
-                  onClick={() => {
-                    setEditMemo(true);
-                  }}
-                  title="Edit"
-                >
-                  <Pencil className="h-5 w-5" />
-                </Button>
+                <ButtonTooltip label="Edit">
+                  <Button
+                    variant="ghost"
+                    type="button"
+                    size="sm"
+                    onClick={() => {
+                      setEditMemo(true);
+                    }}
+                  >
+                    <Pencil className="h-5 w-5" />
+                  </Button>
+                </ButtonTooltip>
               </div>
             ) : null}
           </div>

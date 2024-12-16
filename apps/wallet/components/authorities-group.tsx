@@ -9,6 +9,7 @@ import { FileX2, Pencil, Save, Trash } from 'lucide-react';
 import { useUpdateAuthorityMutation } from './hooks/use-update-authority-mutation';
 import { handlerError } from '../lib/utils';
 import { toast } from '@ui/components/hooks/use-toast';
+import ButtonTooltip from './button-tooltip';
 
 type GroupProps = {
   data: AuthorityLevel;
@@ -79,37 +80,42 @@ const AuthoritesGroup: FC<GroupProps> = ({ data, width, canEdit }) => {
               </div>
               {editThreshold ? (
                 <div className="flex items-center">
-                  <Button variant="ghost" type="button" size="sm" title="Delete" onClick={onUpdate}>
-                    <Save className="h-5 w-5" />
-                  </Button>
+                  <ButtonTooltip label="Save Threshold">
+                    <Button variant="ghost" type="button" size="sm" onClick={onUpdate}>
+                      <Save className="h-5 w-5" />
+                    </Button>
+                  </ButtonTooltip>
                   <div className="h-5 w-5 px-[22px]" />
-                  <Button
-                    variant="ghost"
-                    type="button"
-                    size="sm"
-                    onClick={() => {
-                      setEditThreshold(false);
-                      setValue(data.weight_threshold);
-                    }}
-                  >
-                    <FileX2 className="h-5 w-5" />
-                  </Button>
+                  <ButtonTooltip label="Cancel">
+                    <Button
+                      variant="ghost"
+                      type="button"
+                      size="sm"
+                      onClick={() => {
+                        setEditThreshold(false);
+                        setValue(data.weight_threshold);
+                      }}
+                    >
+                      <FileX2 className="h-5 w-5" />
+                    </Button>
+                  </ButtonTooltip>
                 </div>
               ) : canEdit ? (
                 <div className="flex items-center">
                   <div className="h-5 w-5 px-[22px]" />
                   <div className="h-5 w-5 px-[22px]" />
-                  <Button
-                    variant="ghost"
-                    type="button"
-                    size="sm"
-                    onClick={() => {
-                      setEditThreshold(true);
-                    }}
-                    title="Edit"
-                  >
-                    <Pencil className="h-5 w-5" />
-                  </Button>
+                  <ButtonTooltip label="Edit Threshold">
+                    <Button
+                      variant="ghost"
+                      type="button"
+                      size="sm"
+                      onClick={() => {
+                        setEditThreshold(true);
+                      }}
+                    >
+                      <Pencil className="h-5 w-5" />
+                    </Button>
+                  </ButtonTooltip>
                 </div>
               ) : null}
             </div>

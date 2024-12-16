@@ -9,6 +9,7 @@ import { useUpdateAuthorityMutation } from './hooks/use-update-authority-mutatio
 import { CircleSpinner } from 'react-spinners-kit';
 import { LevelAuthority } from '@transaction/index';
 import { toast } from '@ui/components/hooks/use-toast';
+import ButtonTooltip from './button-tooltip';
 
 const AuthoritiesGroupItem: FC<{
   item: { keyOrAccount: string; thresholdWeight: number };
@@ -87,52 +88,58 @@ const AuthoritiesGroupItem: FC<{
       </div>
       {editMode ? (
         <div className="flex items-center">
-          <Button disabled={disabled} variant="ghost" size="sm" title="Save" onClick={onUpload}>
-            {disabled ? (
-              <CircleSpinner loading={disabled} size={18} color="#dc2626" />
-            ) : (
-              <Save className="h-5 w-5" />
-            )}
-          </Button>
-          <Button disabled={disabled} variant="ghost" size="sm" title="Delete" onClick={onDelete}>
-            {disabled ? (
-              <CircleSpinner loading={disabled} size={18} color="#dc2626" />
-            ) : (
-              <Trash className="h-5 w-5" />
-            )}
-          </Button>
-          <Button
-            disabled={disabled}
-            variant="ghost"
-            title="Cancel"
-            size="sm"
-            onClick={() => {
-              setEditMode(false);
-              setValues(item);
-            }}
-          >
-            {disabled ? (
-              <CircleSpinner loading={disabled} size={18} color="#dc2626" />
-            ) : (
-              <FileX2 className="h-5 w-5" />
-            )}
-          </Button>
+          <ButtonTooltip label="Save">
+            <Button disabled={disabled} variant="ghost" size="sm" onClick={onUpload}>
+              {disabled ? (
+                <CircleSpinner loading={disabled} size={18} color="#dc2626" />
+              ) : (
+                <Save className="h-5 w-5" />
+              )}
+            </Button>
+          </ButtonTooltip>
+          <ButtonTooltip label="Delete">
+            <Button disabled={disabled} variant="ghost" size="sm" onClick={onDelete}>
+              {disabled ? (
+                <CircleSpinner loading={disabled} size={18} color="#dc2626" />
+              ) : (
+                <Trash className="h-5 w-5" />
+              )}
+            </Button>
+          </ButtonTooltip>
+          <ButtonTooltip label="Cancel">
+            <Button
+              disabled={disabled}
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setEditMode(false);
+                setValues(item);
+              }}
+            >
+              {disabled ? (
+                <CircleSpinner loading={disabled} size={18} color="#dc2626" />
+              ) : (
+                <FileX2 className="h-5 w-5" />
+              )}
+            </Button>
+          </ButtonTooltip>
         </div>
       ) : canEdit ? (
         <div className="flex items-center">
           <div className="h-5 w-5 px-[22px]" />
           <div className="h-5 w-5 px-[22px]" />
-          <Button
-            variant="ghost"
-            type="button"
-            size="sm"
-            title="Edit"
-            onClick={() => {
-              setEditMode(true);
-            }}
-          >
-            <Pencil className="h-5 w-5" />
-          </Button>
+          <ButtonTooltip label="Edit">
+            <Button
+              variant="ghost"
+              type="button"
+              size="sm"
+              onClick={() => {
+                setEditMode(true);
+              }}
+            >
+              <Pencil className="h-5 w-5" />
+            </Button>
+          </ButtonTooltip>
         </div>
       ) : null}
     </div>
