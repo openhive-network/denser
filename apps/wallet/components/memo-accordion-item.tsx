@@ -1,12 +1,13 @@
 import { AccordionContent, AccordionItem, AccordionTrigger, Button, Input } from '@ui/components';
 import { FileKey, FileX2, Pencil, Save, Trash } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import CopyToKeyboard from '@/wallet/components/copy-to-keyboard';
-import { cutPublicKey } from '@/wallet/lib/utils';
+import { cutPublicKey, handlerError } from '@/wallet/lib/utils';
 import { useUpdateAuthorityMutation } from './hooks/use-update-authority-mutation';
 import { CircleSpinner } from 'react-spinners-kit';
 import ButtonTooltip from './button-tooltip';
+import { toast } from '@ui/components/hooks/use-toast';
 
 const MemoAccordionItem = ({ memo, width, canEdit }: { memo: string; width: number; canEdit: boolean }) => {
   const { t } = useTranslation('common_wallet');
@@ -27,6 +28,14 @@ const MemoAccordionItem = ({ memo, width, canEdit }: { memo: string; width: numb
     );
   };
   const disabled = updateMemoMutation.isLoading;
+  useEffect(() => {
+    if (updateMemoMutation.isError) {
+      toast({
+        title: handlerError(updateMemoMutation),
+        variant: 'destructive'
+      });
+    }
+  }, [updateMemoMutation.isLoading]);
   return (
     <div className="sm:container">
       <AccordionItem value="memo" className="mt-6">
@@ -62,18 +71,20 @@ const MemoAccordionItem = ({ memo, width, canEdit }: { memo: string; width: numb
                     )}
                   </Button>
                 </ButtonTooltip>
-                <Button
-                  disabled={disabled}
-                  variant="ghost"
-                  type="button"
-                  size="sm"
-                  onClick={() => {
-                    setEditMemo(false);
-                    setValue(memo);
-                  }}
-                >
-                  <FileX2 className="h-5 w-5" />
-                </Button>
+                <div className="h-5 w-5 px-[22px]" />
+                <ButtonTooltip label="Cancel">
+                  <Button
+                    disabled={disabled}
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setEditMemo(false);
+                      setValue(memo);
+                    }}
+                  >
+                    <FileX2 className="h-5 w-5" />
+                  </Button>
+                </ButtonTooltip>
               </div>
             ) : canEdit ? (
               <div className="flex items-center">

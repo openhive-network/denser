@@ -20,7 +20,7 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
     enabled: !!username
   });
   const { width } = useWindowSize();
-  const accountOwner = user?.username === username;
+  const accountOwner = user.isLoggedIn && user?.username === username;
   if (isLoading) {
     return (
       <ProfileLayout>
