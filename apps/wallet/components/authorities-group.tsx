@@ -23,6 +23,7 @@ const AuthoritesGroup: FC<GroupProps> = ({ data, width, canEdit }) => {
   const [value, setValue] = useState(data.weight_threshold);
   const level = data.level;
   const updateThresholdAuthorityMutation = useUpdateAuthorityMutation();
+  const authorityList = [...data.account_auths, ...data.key_auths].map((e) => e.keyOrAccount);
 
   const onUpdate = () => {
     updateThresholdAuthorityMutation.mutate(
@@ -56,7 +57,7 @@ const AuthoritesGroup: FC<GroupProps> = ({ data, width, canEdit }) => {
             <div className="col-span-4 grid grid-cols-subgrid items-center text-xs hover:bg-foreground/20 sm:text-base">
               {canEdit ? (
                 <div className="flex items-center">
-                  <AddAuthorityDialog level={data.level} />
+                  <AddAuthorityDialog authorityList={authorityList} level={data.level} />
                   <div className="w-0 text-nowrap">Add Key or Account</div>
                 </div>
               ) : (

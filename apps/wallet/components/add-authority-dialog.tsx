@@ -17,11 +17,11 @@ import { CircleSpinner } from 'react-spinners-kit';
 import { LevelAuthority } from '@transaction/index';
 import { handlerError } from '../lib/utils';
 import { toast } from '@ui/components/hooks/use-toast';
-import { handleError } from '@ui/lib/utils';
 
 const AddAuthorityDialog: FC<{
   level: LevelAuthority;
-}> = ({ level }) => {
+  authorityList: string[];
+}> = ({ level, authorityList }) => {
   const [open, setOpen] = useState(false);
   const { t } = useTranslation('common_wallet');
   const [newItem, setNewItem] = useState<{ keyOrAccount: string; thresholdWeight: number }>({
@@ -29,7 +29,7 @@ const AddAuthorityDialog: FC<{
     thresholdWeight: 1
   });
   const addAuthorityMutation = useUpdateAuthorityMutation();
-
+  const inputAlreadyExist = authorityList.includes(newItem.keyOrAccount);
   const onAdd = () => {
     addAuthorityMutation.mutate(
       {
@@ -95,7 +95,12 @@ const AddAuthorityDialog: FC<{
           </div>
         </div>
         <DialogFooter>
-          <Button onClick={onAdd} disabled={disabled}>
+          {inputAlreadyExist ? (
+            <div className="flex items-center text-sm text-red-500">
+              Account or key already exists in the list of authority
+            </div>
+          ) : null}
+          <Button onClick={onAdd} disabled={disabled || inputAlreadyExist}>
             {disabled ? (
               <CircleSpinner loading={disabled} size={18} color="#dc2626" />
             ) : (
