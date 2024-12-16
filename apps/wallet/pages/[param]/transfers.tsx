@@ -261,7 +261,10 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
   }
 
   const totalFund = convertStringToBig(dynamicData.total_vesting_fund_hive);
-  const price_per_hive = 0; //convertStringToBig(historyFeedData.current_median_history.base);
+  const price_per_hive = Big(
+    Number(historyFeedData?.current_median_history.base.amount) *
+      10 ** -historyFeedData?.current_median_history.base.precision
+  );
   const totalDays = moment(accountData.next_vesting_withdrawal).diff(moment(), `d`);
   const totalShares = convertStringToBig(dynamicData.total_vesting_shares);
   const vesting_hive = vestingHive(accountData, dynamicData);
@@ -288,7 +291,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
     .plus(saving_balance_hive)
     .plus(savings_pending)
     .plus(hiveOrders);
-  const total_value = numberWithCommas(total_hive.times(Big(price_per_hive)).plus(total_hbd).toFixed(2));
+  const total_value = numberWithCommas(total_hive.times(price_per_hive).plus(total_hbd).toFixed(2));
 
   const filteredHistoryList = accountHistoryData?.filter(
     getFilter({ filter, totalFund, username, totalShares })
