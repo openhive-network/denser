@@ -18,7 +18,6 @@ import { LevelAuthority } from '@transaction/index';
 import { handlerError } from '../lib/utils';
 import { toast } from '@ui/components/hooks/use-toast';
 import NumberInput from './number-input';
-import ButtonTooltip from './button-tooltip';
 
 const AddAuthorityDialog: FC<{
   level: LevelAuthority;
@@ -60,11 +59,9 @@ const AddAuthorityDialog: FC<{
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <ButtonTooltip label="Add Key or Account">
-          <Button variant="ghost" size="sm" className="px-2">
-            <PlusCircle className="h-5 w-5 cursor-pointer" />
-          </Button>
-        </ButtonTooltip>
+        <Button variant="ghost" size="sm" className="px-2">
+          <PlusCircle className="h-5 w-5 cursor-pointer" />
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
