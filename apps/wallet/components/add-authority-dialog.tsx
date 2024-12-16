@@ -17,6 +17,7 @@ import { CircleSpinner } from 'react-spinners-kit';
 import { LevelAuthority } from '@transaction/index';
 import { handlerError } from '../lib/utils';
 import { toast } from '@ui/components/hooks/use-toast';
+import NumberInput from './number-input';
 
 const AddAuthorityDialog: FC<{
   level: LevelAuthority;
@@ -83,13 +84,11 @@ const AddAuthorityDialog: FC<{
             <Label htmlFor="threshold" className="text-right">
               {t('authorities_page.threshold')}
             </Label>
-            <Input
+            <NumberInput
+              id="threshold"
               disabled={disabled}
               value={newItem.thresholdWeight}
-              type="number"
-              onChange={(value) => {
-                setNewItem({ ...newItem, thresholdWeight: Number(value.target.value) });
-              }}
+              onChange={(value) => setNewItem((prev) => ({ ...prev, thresholdWeight: Number(value) }))}
               className="col-span-3 w-full self-center justify-self-center bg-white/10 p-0 px-3"
             />
           </div>

@@ -10,6 +10,7 @@ import { CircleSpinner } from 'react-spinners-kit';
 import { LevelAuthority } from '@transaction/index';
 import { toast } from '@ui/components/hooks/use-toast';
 import ButtonTooltip from './button-tooltip';
+import NumberInput from './number-input';
 
 const AuthoritiesGroupItem: FC<{
   item: { keyOrAccount: string; thresholdWeight: number };
@@ -77,10 +78,9 @@ const AuthoritiesGroupItem: FC<{
       </div>
       <div className="flex w-12 items-center justify-center">
         {editMode ? (
-          <Input
+          <NumberInput
             value={values.thresholdWeight}
-            type="number"
-            onChange={(e) => setValues((prev) => ({ ...prev, thresholdWeight: Number(e.target.value) }))}
+            onChange={(value) => setValues((prev) => ({ ...prev, thresholdWeight: Number(value) }))}
           />
         ) : (
           <span>{values.thresholdWeight}</span>

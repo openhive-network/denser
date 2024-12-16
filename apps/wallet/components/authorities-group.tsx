@@ -10,6 +10,7 @@ import { useUpdateAuthorityMutation } from './hooks/use-update-authority-mutatio
 import { handlerError } from '../lib/utils';
 import { toast } from '@ui/components/hooks/use-toast';
 import ButtonTooltip from './button-tooltip';
+import NumberInput from './number-input';
 
 type GroupProps = {
   data: AuthorityLevel;
@@ -66,10 +67,10 @@ const AuthoritesGroup: FC<GroupProps> = ({ data, width, canEdit }) => {
               <span className="justify-self-end font-medium">{t('authorities_page.threshold')}:</span>
               <div className="w-12">
                 {editThreshold ? (
-                  <Input
+                  <NumberInput
                     value={value}
-                    onChange={(e) => {
-                      setValue(Number(e.target.value));
+                    onChange={(value) => {
+                      setValue(Number(value));
                     }}
                     className="justify-self-end"
                   />
