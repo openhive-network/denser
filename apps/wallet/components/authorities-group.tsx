@@ -11,9 +11,10 @@ import { useUpdateAuthorityMutation } from './hooks/use-update-authority-mutatio
 type GroupProps = {
   data: AuthorityLevel;
   width: number;
+  canEdit: boolean;
 };
 
-const AuthoritesGroup: FC<GroupProps> = ({ data, width }) => {
+const AuthoritesGroup: FC<GroupProps> = ({ data, width, canEdit }) => {
   const { t } = useTranslation('common_wallet');
   const [editThreshold, setEditThreshold] = useState(false);
   const [value, setValue] = useState(data.weight_threshold);
@@ -42,22 +43,30 @@ const AuthoritesGroup: FC<GroupProps> = ({ data, width }) => {
         <AccordionContent>
           <div className="grid w-full grid-cols-[max-content_1fr_1fr_max-content] gap-1">
             <div className="col-span-4 grid grid-cols-subgrid items-center text-xs hover:bg-foreground/20 sm:text-base">
-              <div className="flex items-center">
-                <AddAuthorityDialog level={data.level} />
-                <div className="w-0 text-nowrap">Add Key or Account</div>
-              </div>
-              <span className="justify-self-end font-medium">{t('authorities_page.threshold')}:</span>
-              {editThreshold ? (
-                <Input
-                  value={value}
-                  onChange={(e) => {
-                    setValue(Number(e.target.value));
-                  }}
-                  className="h-6 w-1/2 self-center justify-self-center bg-white/10 p-0 px-3"
-                />
+              {canEdit ? (
+                <div className="flex items-center">
+                  <AddAuthorityDialog level={data.level} />
+                  <div className="w-0 text-nowrap">Add Key or Account</div>
+                </div>
               ) : (
-                <span className="justify-self-center">{data.weight_threshold}</span>
+                <div />
               )}
+              <span className="justify-self-end font-medium">{t('authorities_page.threshold')}:</span>
+              <div className="w-12">
+                {editThreshold ? (
+                  <Input
+                    value={value}
+                    onChange={(e) => {
+                      setValue(Number(e.target.value));
+                    }}
+                    className="justify-self-end"
+                  />
+                ) : (
+                  <span className="flex items-center justify-center justify-self-center">
+                    {data.weight_threshold}
+                  </span>
+                )}
+              </div>
               {editThreshold ? (
                 <div className="flex items-center">
                   <Button variant="ghost" type="button" size="sm" title="Delete" onClick={onUpdate}>
@@ -76,7 +85,7 @@ const AuthoritesGroup: FC<GroupProps> = ({ data, width }) => {
                     <FileX2 className="h-5 w-5" />
                   </Button>
                 </div>
-              ) : (
+              ) : canEdit ? (
                 <div className="flex items-center">
                   <div className="h-5 w-5 px-[22px]" />
                   <div className="h-5 w-5 px-[22px]" />
@@ -92,19 +101,19 @@ const AuthoritesGroup: FC<GroupProps> = ({ data, width }) => {
                     <Pencil className="h-5 w-5" />
                   </Button>
                 </div>
-              )}
+              ) : null}
             </div>
 
-            {data.key_auths.map((e, index) => (
-              <Fragment key={index}>
-                <AuthoritiesGroupItem width={width} item={e} level={data.level} />
+            {data.key_auths.map((e) => (
+              <Fragment key={e.keyOrAccount}>
+                <AuthoritiesGroupItem width={width} item={e} level={data.level} canEdit={canEdit} />
                 <Separator className="col-span-4 bg-foreground" />
               </Fragment>
             ))}
 
-            {data.account_auths.map((e, index) => (
-              <Fragment key={index}>
-                <AuthoritiesGroupItem width={width} item={e} level={data.level} />
+            {data.account_auths.map((e) => (
+              <Fragment key={e.keyOrAccount}>
+                <AuthoritiesGroupItem width={width} item={e} level={data.level} canEdit={canEdit} />
                 <Separator className="col-span-4 bg-foreground" />
               </Fragment>
             ))}

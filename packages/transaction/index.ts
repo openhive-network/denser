@@ -707,30 +707,30 @@ export class TransactionService {
       throw Error('Memo level should be used without setmemoKey action');
     }
     // We assert type here because of the error guard in previous line
-    const options = updateOperation.role(level as Exclude<LevelAuthority, 'memo'>);
+    const authorityDefinition = updateOperation.role(level as Exclude<LevelAuthority, 'memo'>);
 
     switch (action.type) {
       case 'add': {
         const { keyOrAccount, thresholdWeight } = action.payload;
-        options.add(keyOrAccount, thresholdWeight);
+        authorityDefinition.add(keyOrAccount, thresholdWeight);
         break;
       }
       case 'clear':
-        options.clear();
+        authorityDefinition.clear();
         break;
       case 'remove': {
         const { keyOrAccount } = action.payload;
-        options.remove(keyOrAccount);
+        authorityDefinition.remove(keyOrAccount);
         break;
       }
       case 'replace': {
         const { keyOrAccount, thresholdWeight } = action.payload;
 
-        options.replace(keyOrAccount, thresholdWeight);
+        authorityDefinition.replace(keyOrAccount, thresholdWeight);
         break;
       }
       case 'setThreshold': {
-        options.setTreshold(action.payload.threshold);
+        authorityDefinition.setTreshold(action.payload.threshold);
         break;
       }
       case 'setMemoKey': {

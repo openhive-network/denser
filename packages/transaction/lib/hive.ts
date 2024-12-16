@@ -902,7 +902,7 @@ function transformKeyAuths(authority: { [keyOrAccount: string]: number }): KeyAu
   }));
 }
 
-export const getAthority = async (username: string): Promise<Authority> => {
+export const getAuthority = async (username: string): Promise<Authority> => {
   const chain = await hiveChainService.getHiveChain();
   const operation = await AccountAuthorityUpdateOperation.createFor(chain, username);
   const memo = operation.role('memo').value;

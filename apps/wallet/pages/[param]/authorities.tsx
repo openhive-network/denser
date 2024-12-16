@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 import { getTranslations } from '../../lib/get-translations';
 import WalletMenu from '@/wallet/components/wallet-menu';
 import { useQuery } from '@tanstack/react-query';
-import { getAthority } from '@transaction/lib/hive';
+import { getAuthority } from '@transaction/lib/hive';
 import Loading from '@ui/components/loading';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Accordion } from '@ui/components';
@@ -16,7 +16,7 @@ import MemoAccordionItem from '@/wallet/components/memo-accordion-item';
 export default function EditableTable({ username }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { user } = useUser();
   const { t } = useTranslation('common_wallet');
-  const { data, isLoading } = useQuery(['authority', username], () => getAthority(username), {
+  const { data, isLoading } = useQuery(['authority', username], () => getAuthority(username), {
     enabled: !!username
   });
   const { width } = useWindowSize();
@@ -34,10 +34,12 @@ export default function EditableTable({ username }: InferGetServerSidePropsType<
       <WalletMenu username={username} />
       <div className="flex flex-col gap-8 p-6">
         <Accordion type="multiple">
-          <MemoAccordionItem memo={data.memo} width={width} />
+          <MemoAccordionItem memo={data.memo} width={width} canEdit={accountOwner} />
           {data.authorityLevels.length === 0
             ? null
-            : data.authorityLevels.map((e, i) => <AuthoritesGroup data={e} width={width} key={i} />)}
+            : data.authorityLevels.map((e, i) => (
+                <AuthoritesGroup data={e} width={width} key={i} canEdit={accountOwner} />
+              ))}
         </Accordion>
       </div>
     </ProfileLayout>

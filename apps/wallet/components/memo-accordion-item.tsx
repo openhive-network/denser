@@ -7,7 +7,7 @@ import { cutPublicKey } from '@/wallet/lib/utils';
 import { useUpdateAuthorityMutation } from './hooks/use-update-authority-mutation';
 import { CircleSpinner } from 'react-spinners-kit';
 
-const MemoAccordionItem = ({ memo, width }: { memo: string; width: number }) => {
+const MemoAccordionItem = ({ memo, width, canEdit }: { memo: string; width: number; canEdit: boolean }) => {
   const { t } = useTranslation('common_wallet');
   const [editMemo, setEditMemo] = useState(false);
   const [value, setValue] = useState<string>(memo);
@@ -79,7 +79,7 @@ const MemoAccordionItem = ({ memo, width }: { memo: string; width: number }) => 
                   <FileX2 className="h-5 w-5" />
                 </Button>
               </div>
-            ) : (
+            ) : canEdit ? (
               <div className="flex items-center">
                 <Button
                   variant="ghost"
@@ -93,7 +93,7 @@ const MemoAccordionItem = ({ memo, width }: { memo: string; width: number }) => 
                   <Pencil className="h-5 w-5" />
                 </Button>
               </div>
-            )}
+            ) : null}
           </div>
         </AccordionContent>
       </AccordionItem>

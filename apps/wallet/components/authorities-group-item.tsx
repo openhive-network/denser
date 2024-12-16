@@ -13,7 +13,8 @@ const AuthoritiesGroupItem: FC<{
   item: { keyOrAccount: string; thresholdWeight: number };
   width: number;
   level: LevelAuthority;
-}> = ({ item, width, level }) => {
+  canEdit: boolean;
+}> = ({ item, width, level, canEdit }) => {
   const updateAuthorityMutation = useUpdateAuthorityMutation();
   const type = item.keyOrAccount.startsWith('ST') ? 'KEY' : 'USER';
   const Icon = type === 'USER' ? UserSquare : FileKey;
@@ -52,56 +53,43 @@ const AuthoritiesGroupItem: FC<{
       <div className="flex items-center">
         <Icon className="size-5" />
       </div>
-      {editMode ? (
-        <Input
-          value={values.keyOrAccount}
-          onChange={(e) => setValues((prev) => ({ ...prev, keyOrAccount: e.target.value }))}
-        />
-      ) : type === 'USER' ? (
-        <Link
-          target="_blank"
-          href={`/@${values.keyOrAccount}/authorities`}
-          className="flex w-fit cursor-pointer items-center"
-        >
-          {values.keyOrAccount}
-        </Link>
-      ) : (
-        <CopyToKeyboard value={values.keyOrAccount} displayValue={cutPublicKey(values.keyOrAccount, width)} />
-      )}
-
-      {editMode ? (
-        <Input
-          value={values.thresholdWeight}
-          onChange={(e) => setValues((prev) => ({ ...prev, thresholdWeight: Number(e.target.value) }))}
-          className="h-6 self-center justify-self-center bg-white/10 p-0 px-3"
-        />
-      ) : (
-        <span className="justify-self-center">{values.thresholdWeight}</span>
-      )}
+      <div className="flex items-center">
+        {editMode ? (
+          <Input
+            value={values.keyOrAccount}
+            onChange={(e) => setValues((prev) => ({ ...prev, keyOrAccount: e.target.value }))}
+          />
+        ) : type === 'USER' ? (
+          <Link target="_blank" href={`/@${values.keyOrAccount}/authorities`}>
+            {values.keyOrAccount}
+          </Link>
+        ) : (
+          <CopyToKeyboard
+            value={values.keyOrAccount}
+            displayValue={cutPublicKey(values.keyOrAccount, width)}
+          />
+        )}
+      </div>
+      <div className="flex w-12 items-center justify-center">
+        {editMode ? (
+          <Input
+            value={values.thresholdWeight}
+            onChange={(e) => setValues((prev) => ({ ...prev, thresholdWeight: Number(e.target.value) }))}
+          />
+        ) : (
+          <span>{values.thresholdWeight}</span>
+        )}
+      </div>
       {editMode ? (
         <div className="flex items-center">
-          <Button
-            disabled={disabled}
-            variant="ghost"
-            type="button"
-            size="sm"
-            title="Delete"
-            onClick={onUpload}
-          >
+          <Button disabled={disabled} variant="ghost" size="sm" title="Save" onClick={onUpload}>
             {disabled ? (
               <CircleSpinner loading={disabled} size={18} color="#dc2626" />
             ) : (
               <Save className="h-5 w-5" />
             )}
           </Button>
-          <Button
-            disabled={disabled}
-            variant="ghost"
-            type="button"
-            size="sm"
-            title="Delete"
-            onClick={onDelete}
-          >
+          <Button disabled={disabled} variant="ghost" size="sm" title="Delete" onClick={onDelete}>
             {disabled ? (
               <CircleSpinner loading={disabled} size={18} color="#dc2626" />
             ) : (
@@ -111,7 +99,7 @@ const AuthoritiesGroupItem: FC<{
           <Button
             disabled={disabled}
             variant="ghost"
-            type="button"
+            title="Cancel"
             size="sm"
             onClick={() => {
               setEditMode(false);
@@ -125,7 +113,7 @@ const AuthoritiesGroupItem: FC<{
             )}
           </Button>
         </div>
-      ) : (
+      ) : canEdit ? (
         <div className="flex items-center">
           <div className="h-5 w-5 px-[22px]" />
           <div className="h-5 w-5 px-[22px]" />
@@ -133,15 +121,15 @@ const AuthoritiesGroupItem: FC<{
             variant="ghost"
             type="button"
             size="sm"
+            title="Edit"
             onClick={() => {
               setEditMode(true);
             }}
-            title="Edit"
           >
             <Pencil className="h-5 w-5" />
           </Button>
         </div>
-      )}
+      ) : null}
     </div>
   );
 };
