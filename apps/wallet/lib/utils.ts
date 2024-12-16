@@ -2,7 +2,7 @@ import { convertStringToBig } from '@hive/ui/lib/helpers';
 import { IDynamicGlobalProperties } from '@transaction/lib/hive';
 import { AccountHistoryData } from '../pages/[param]/transfers';
 import { TransferFilters } from '@/wallet/components/transfers-history-filter';
-import { TFunction } from 'next-i18next';
+import { useUpdateAuthorityMutation } from '../components/hooks/use-update-authority-mutation';
 
 export function getCurrentHpApr(data: IDynamicGlobalProperties) {
   // The inflation was set to 9.5% at block 7m
@@ -118,3 +118,26 @@ export const cutPublicKey = (publicKey?: string, width?: number): string => {
   }
   return `${publicKey.slice(0, 8)}...${publicKey.slice(publicKey.length - 5)}`;
 };
+
+export function handlerError(addAuthorityMutation: ReturnType<typeof useUpdateAuthorityMutation>) {
+  if (addAuthorityMutation.isError) {
+    const transactionError = addAuthorityMutation.error as Error;
+    const message = transactionError.message;
+    console.log('Error', message);
+    if (message.includes('satisfied due to insufficient weight')) {
+      return message;
+    }
+    if (message.startsWith('Invalid response from API: ')) {
+      try {
+        const errorCode = JSON.parse(message.split('Invalid response from API: ')[1]);
+        if (errorCode.error.message.includes('owner_update_limit_mgr')) {
+          return 'Limit actions reached for this account, max 2 actions per hour';
+        }
+      } catch (e) {
+        return 'Invalid account or key';
+      }
+    }
+    return 'Invalid account or key';
+  }
+  return '';
+}

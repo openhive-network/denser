@@ -11,10 +11,13 @@ import {
 } from '@ui/components';
 import { PlusCircle } from 'lucide-react';
 import { useTranslation } from 'next-i18next';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useUpdateAuthorityMutation } from './hooks/use-update-authority-mutation';
 import { CircleSpinner } from 'react-spinners-kit';
 import { LevelAuthority } from '@transaction/index';
+import { handlerError } from '../lib/utils';
+import { toast } from '@ui/components/hooks/use-toast';
+import { handleError } from '@ui/lib/utils';
 
 const AddAuthorityDialog: FC<{
   level: LevelAuthority;
@@ -44,6 +47,14 @@ const AddAuthorityDialog: FC<{
     );
   };
   const disabled = addAuthorityMutation.isLoading;
+  useEffect(() => {
+    if (addAuthorityMutation.isError) {
+      toast({
+        title: handlerError(addAuthorityMutation),
+        variant: 'destructive'
+      });
+    }
+  }, [addAuthorityMutation.isLoading]);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -84,7 +95,7 @@ const AddAuthorityDialog: FC<{
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={onAdd} disabled={disabled}>
+          <Button onClick={onAdd} disabled={disabled}>
             {disabled ? (
               <CircleSpinner loading={disabled} size={18} color="#dc2626" />
             ) : (

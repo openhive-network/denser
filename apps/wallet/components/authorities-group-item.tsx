@@ -1,13 +1,14 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Button } from '@ui/components/button';
 import { FileKey, FileX2, Pencil, Save, Trash, UserSquare } from 'lucide-react';
-import { cutPublicKey } from '@/wallet/lib/utils';
+import { cutPublicKey, handlerError } from '@/wallet/lib/utils';
 import CopyToKeyboard from '@/wallet/components/copy-to-keyboard';
 import { Input } from '@ui/components';
 import Link from 'next/link';
 import { useUpdateAuthorityMutation } from './hooks/use-update-authority-mutation';
 import { CircleSpinner } from 'react-spinners-kit';
 import { LevelAuthority } from '@transaction/index';
+import { toast } from '@ui/components/hooks/use-toast';
 
 const AuthoritiesGroupItem: FC<{
   item: { keyOrAccount: string; thresholdWeight: number };
@@ -48,18 +49,21 @@ const AuthoritiesGroupItem: FC<{
     );
   };
   const disabled = updateAuthorityMutation.isLoading;
+  useEffect(() => {
+    if (updateAuthorityMutation.isError) {
+      toast({
+        title: handlerError(updateAuthorityMutation),
+        variant: 'destructive'
+      });
+    }
+  }, [updateAuthorityMutation.isLoading]);
   return (
     <div className="col-span-4 grid grid-cols-subgrid pl-2 text-xs hover:bg-foreground/20 sm:text-base">
       <div className="flex items-center">
         <Icon className="size-5" />
       </div>
       <div className="flex items-center">
-        {editMode ? (
-          <Input
-            value={values.keyOrAccount}
-            onChange={(e) => setValues((prev) => ({ ...prev, keyOrAccount: e.target.value }))}
-          />
-        ) : type === 'USER' ? (
+        {type === 'USER' ? (
           <Link target="_blank" href={`/@${values.keyOrAccount}/authorities`}>
             {values.keyOrAccount}
           </Link>
@@ -74,6 +78,7 @@ const AuthoritiesGroupItem: FC<{
         {editMode ? (
           <Input
             value={values.thresholdWeight}
+            type="number"
             onChange={(e) => setValues((prev) => ({ ...prev, thresholdWeight: Number(e.target.value) }))}
           />
         ) : (

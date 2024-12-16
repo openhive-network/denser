@@ -1,4 +1,4 @@
-import React, { FC, Fragment, useState } from 'react';
+import React, { FC, Fragment, useEffect, useState } from 'react';
 import { Button, Input, Separator } from '@ui/components';
 import AuthoritiesGroupItem from './authorities-group-item';
 import AddAuthorityDialog from './add-authority-dialog';
@@ -7,6 +7,8 @@ import { useTranslation } from 'next-i18next';
 import { AuthorityLevel } from '@transaction/lib/hive';
 import { FileX2, Pencil, Save, Trash } from 'lucide-react';
 import { useUpdateAuthorityMutation } from './hooks/use-update-authority-mutation';
+import { handlerError } from '../lib/utils';
+import { toast } from '@ui/components/hooks/use-toast';
 
 type GroupProps = {
   data: AuthorityLevel;
@@ -34,6 +36,14 @@ const AuthoritesGroup: FC<GroupProps> = ({ data, width, canEdit }) => {
       }
     );
   };
+  useEffect(() => {
+    if (updateThresholdAuthorityMutation.isError) {
+      toast({
+        title: handlerError(updateThresholdAuthorityMutation),
+        variant: 'destructive'
+      });
+    }
+  }, [updateThresholdAuthorityMutation.isLoading]);
   return (
     <div className="container">
       <AccordionItem value={level} className="mt-6">
