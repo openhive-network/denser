@@ -895,12 +895,12 @@ export class TransactionService {
     wif: string,
     transactionOptions: TransactionOptions = {}
   ) {
-    if(!wif) {
+    if (!wif) {
       return Promise.reject(new Error('wif is required'));
     }
 
     console.log('wif', wif);
-    
+
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
         account_update2: {
@@ -996,7 +996,8 @@ export class TransactionService {
     minToReceive: asset,
     orderId: number,
     fillOrKill: boolean,
-    expiration: string
+    expiration: string,
+    transactionOptions: TransactionOptions = {}
   ) {
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
@@ -1009,7 +1010,18 @@ export class TransactionService {
           expiration
         }
       });
-    });
+    }, transactionOptions);
+  }
+
+  async limitOrderCancel(owner: string, orderId: number, transactionOptions: TransactionOptions = {}) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.pushOperation({
+        limit_order_cancel: {
+          owner,
+          orderid: orderId
+        }
+      });
+    }, transactionOptions);
   }
 }
 

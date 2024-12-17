@@ -208,7 +208,9 @@
     "action": "Action",
     "cancel": "Cancel",
     "open_orders": "Open Orders",
-    "no_orders": "You've got no open orders."
+    "no_orders": "You've got no open orders.",
+    "confirm_cancel_order": "Cancel order {{orderId}} from {{user}}?",
+    "cancel_order": "Cancel Order"
   },
   "witnesses_page": {
     "title": "Witness Voting",

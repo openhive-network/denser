@@ -1,19 +1,36 @@
 import clsx from 'clsx';
 import { IOpenOrdersData } from '../lib/hive';
 import { useTranslation } from 'next-i18next';
-import { Button } from '@ui/components';
+import { Button, Dialog, DialogContent, DialogFooter, DialogTrigger } from '@ui/components';
 import { dateToFormatted } from '@ui/lib/parse-date';
 import { useState } from 'react';
 import Loading from '@ui/components/loading';
+import { useCancelMarketOrder } from './hooks/use-market-mutation';
+import { handleError } from '@ui/lib/utils';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface OpenOrderProps {
+  user: string;
   orders?: IOpenOrdersData[];
   loading: boolean;
 }
 
-const OpenOrders: React.FC<OpenOrderProps> = ({ orders, loading }) => {
+const OpenOrders: React.FC<OpenOrderProps> = ({ user, orders, loading }) => {
   const { t } = useTranslation('common_wallet');
   const [sortAsc, setSortAsc] = useState(true);
+  const cancelOrderMutation = useCancelMarketOrder();
+  const queryClient = useQueryClient();
+
+  const cancelOrder = async (orderId: number) => {
+    const params = { owner: user, orderId };
+    try {
+      await cancelOrderMutation.mutateAsync(params);
+    } catch (error) {
+      handleError(error, { method: 'limit_order_cancel', params });
+    } finally {
+      queryClient.invalidateQueries({ queryKey: ['openOrders', user] });
+    }
+  };
 
   return (
     <div className={clsx('mt-4 flex h-[342px] w-full flex-col justify-between')}>
@@ -77,14 +94,30 @@ const OpenOrders: React.FC<OpenOrderProps> = ({ orders, loading }) => {
                         %
                       </td>
                       <td>
-                        {/* TODO */}
-                        <Button
-                          variant="ghost"
-                          className="h-fit py-0 text-destructive hover:bg-transparent"
-                          onClick={() => null}
-                        >
-                          {t('market_page.cancel')}
-                        </Button>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              className="h-fit py-0 text-destructive hover:bg-transparent"
+                              onClick={() => null}
+                            >
+                              {t('market_page.cancel')}
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="text-left sm:max-w-[425px]">
+                            {t('market_page.confirm_cancel_order', {
+                              orderId: order.orderid,
+                              user: order.seller
+                            })}
+                            <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
+                              <DialogTrigger asChild>
+                                <Button variant="redHover" onClick={() => cancelOrder(order.orderid)}>
+                                  {t('market_page.cancel_order')}
+                                </Button>
+                              </DialogTrigger>
+                            </DialogFooter>
+                          </DialogContent>
+                        </Dialog>
                       </td>
                     </tr>
                   );

@@ -33,3 +33,20 @@ export function useCreateMarketOrder() {
 
   return createMarketOrderMutation;
 }
+
+export function useCancelMarketOrder() {
+  const cancelMarketOrderMutation = useMutation({
+    mutationFn: async (params: { owner: string; orderId: number }) => {
+      const { owner, orderId } = params;
+
+      const broadcastResult = await transactionService.limitOrderCancel(owner, orderId, { observe: true });
+      const response = { ...params, broadcastResult };
+      logger.info('Done cancel market order: %o', response);
+    },
+    onSuccess: (data) => {
+      logger.info('useCancelMarketOrder onSuccess data: %o', data);
+    }
+  });
+
+  return cancelMarketOrderMutation;
+}

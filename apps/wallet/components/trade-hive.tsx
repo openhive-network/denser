@@ -126,7 +126,9 @@ const TradeHive = ({ tickerData }: { tickerData: Market }) => {
             label={t('market_page.trade_history')}
           />
         </div>
-        <OpenOrders orders={openOrders} loading={ordersLoading} />
+        {user.isLoggedIn && user.username && (
+          <OpenOrders orders={openOrders} loading={ordersLoading} user={user.username} />
+        )}
       </div>
     </div>
   );
