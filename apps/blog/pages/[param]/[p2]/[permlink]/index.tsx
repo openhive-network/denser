@@ -197,20 +197,7 @@ function PostPage({
 
   const commentSite = post?.depth !== 0 ? true : false;
   const [mutedPost, setMutedPost] = useState<boolean>(mutedStatus);
-  const generateUrls = () => {
-    if (!discussionState || discussionState.length === 0) return null;
 
-    const highest_item = discussionState.reduce(
-      (smallest, current) => (current.depth < smallest.depth ? current : smallest),
-      discussionState[0]
-    );
-
-    const postUrl = highest_item.url.startsWith('/') ? highest_item.url : `/${highest_item.url}`;
-    const parentUrl = `${highest_item.category}/@${highest_item.parent_author}/${highest_item.parent_permlink}`;
-
-    return { postUrl, parentUrl };
-  };
-  const { postUrl, parentUrl } = generateUrls() || {};
   if (userFromGDPR) {
     return <CustomError />;
   }
@@ -251,7 +238,7 @@ function PostPage({
                   </h1>
                   <Link
                     className="text-sm hover:text-destructive"
-                    href={`${postUrl}`}
+                    href={`${post.url}`}
                     data-testid="view-the-full-context"
                   >
                     • {t('post_content.if_comment.view_the_full_context')}
@@ -259,7 +246,7 @@ function PostPage({
                   {discussionState && !discussionState.some((e) => e.depth === 1) ? (
                     <Link
                       className="text-sm hover:text-destructive"
-                      href={`../../${parentUrl}`}
+                      href={`/${post.category}/@${post.parent_author}/${post.parent_permlink}`}
                       data-testid="view-the-direct-parent"
                     >
                       • {t('post_content.if_comment.view_the_direct_parent')}
