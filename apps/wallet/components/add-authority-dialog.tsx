@@ -15,7 +15,7 @@ import { FC, useEffect, useState } from 'react';
 import { useUpdateAuthorityMutation } from './hooks/use-update-authority-mutation';
 import { CircleSpinner } from 'react-spinners-kit';
 import { LevelAuthority } from '@transaction/index';
-import { handlerError } from '../lib/utils';
+import { handleAuthorityError } from '../lib/utils';
 import { toast } from '@ui/components/hooks/use-toast';
 import NumberInput from './number-input';
 
@@ -23,41 +23,45 @@ const AddAuthorityDialog: FC<{
   level: LevelAuthority;
   authorityList: string[];
 }> = ({ level, authorityList }) => {
-  const [open, setOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation('common_wallet');
-  const [newItem, setNewItem] = useState<{ keyOrAccount: string; thresholdWeight: number }>({
+  const [newAuthority, setNewAuthority] = useState<{ keyOrAccount: string; thresholdWeight: number }>({
     keyOrAccount: '',
     thresholdWeight: 1
   });
   const addAuthorityMutation = useUpdateAuthorityMutation();
-  const inputAlreadyExist = authorityList.includes(newItem.keyOrAccount);
-  const onAdd = () => {
+  const isInputAlreadyExist = authorityList.includes(newAuthority.keyOrAccount);
+
+  const handleAddAuthority = () => {
     addAuthorityMutation.mutate(
       {
         level: level,
         action: {
           type: 'add',
-          payload: newItem
+          payload: newAuthority
         }
       },
       {
         onSuccess: () => {
-          setOpen(false);
+          setIsOpen(false);
         }
       }
     );
   };
-  const disabled = addAuthorityMutation.isLoading;
+
+  const isDisabled = addAuthorityMutation.isLoading;
+
   useEffect(() => {
     if (addAuthorityMutation.isError) {
       toast({
-        title: handlerError(addAuthorityMutation),
+        title: handleAuthorityError(addAuthorityMutation),
         variant: 'destructive'
       });
     }
   }, [addAuthorityMutation.isLoading]);
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant="ghost" size="sm" className="px-2">
           <PlusCircle className="h-5 w-5 cursor-pointer" />
@@ -73,11 +77,11 @@ const AddAuthorityDialog: FC<{
               Key or Account
             </Label>
             <Input
-              disabled={disabled}
+              disabled={isDisabled}
               id="name"
               className="col-span-3"
-              value={newItem.keyOrAccount}
-              onChange={(e) => setNewItem((prev) => ({ ...prev, keyOrAccount: e.target.value }))}
+              value={newAuthority.keyOrAccount}
+              onChange={(e) => setNewAuthority((prev) => ({ ...prev, keyOrAccount: e.target.value }))}
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
@@ -86,22 +90,22 @@ const AddAuthorityDialog: FC<{
             </Label>
             <NumberInput
               id="threshold"
-              disabled={disabled}
-              value={newItem.thresholdWeight}
-              onChange={(value) => setNewItem((prev) => ({ ...prev, thresholdWeight: Number(value) }))}
+              disabled={isDisabled}
+              value={newAuthority.thresholdWeight}
+              onChange={(value) => setNewAuthority((prev) => ({ ...prev, thresholdWeight: Number(value) }))}
               className="col-span-3 w-full self-center justify-self-center bg-white/10 p-0 px-3"
             />
           </div>
         </div>
         <DialogFooter>
-          {inputAlreadyExist ? (
+          {isInputAlreadyExist ? (
             <div className="flex items-center text-sm text-red-500">
               Account or key already exists in the list of authority
             </div>
           ) : null}
-          <Button onClick={onAdd} disabled={disabled || inputAlreadyExist}>
-            {disabled ? (
-              <CircleSpinner loading={disabled} size={18} color="#dc2626" />
+          <Button onClick={handleAddAuthority} disabled={isDisabled || isInputAlreadyExist}>
+            {isDisabled ? (
+              <CircleSpinner loading={isDisabled} size={18} color="#dc2626" />
             ) : (
               t('authorities_page.add')
             )}

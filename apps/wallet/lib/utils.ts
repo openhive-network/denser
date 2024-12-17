@@ -119,25 +119,25 @@ export const cutPublicKey = (publicKey?: string, width?: number): string => {
   return `${publicKey.slice(0, 8)}...${publicKey.slice(publicKey.length - 5)}`;
 };
 
-export function handlerError(addAuthorityMutation: ReturnType<typeof useUpdateAuthorityMutation>) {
-  if (addAuthorityMutation.isError) {
-    const transactionError = addAuthorityMutation.error as Error;
-    const message = transactionError.message;
-    console.log('Error', message);
-    if (message.includes('satisfied due to insufficient weight')) {
-      return message;
+export function handleAuthorityError(addAuthorityMutation: ReturnType<typeof useUpdateAuthorityMutation>) {
+  if (!addAuthorityMutation.isError) return '';
+
+  const transactionError = addAuthorityMutation.error as Error;
+  const message = transactionError.message;
+  try {
+    const errorObject = JSON.parse(message.split('Invalid response from API: ')[1]);
+    if (errorObject.error.message.includes('owner_update_limit_mgr')) {
+      return 'Limit actions reached for this account, wait an hour and try again';
     }
-    if (message.startsWith('Invalid response from API: ')) {
-      try {
-        const errorCode = JSON.parse(message.split('Invalid response from API: ')[1]);
-        if (errorCode.error.message.includes('owner_update_limit_mgr')) {
-          return 'Limit actions reached for this account, max 2 actions per hour';
-        }
-      } catch (e) {
-        return 'Invalid account or key';
-      }
+    if (errorObject.error.message.includes('references non-existing')) {
+      return 'Account or Key does not exist';
     }
-    return 'Invalid account or key';
+  } catch (e) {
+    if (message.includes('10 assert_exception: Assert Exception')) {
+      return 'Invalid memo key';
+    }
+    return message;
   }
-  return '';
+
+  return 'Operation failed';
 }

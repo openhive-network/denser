@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next';
 import { AuthorityLevel } from '@transaction/lib/hive';
 import { FileX2, Pencil, Save, Trash } from 'lucide-react';
 import { useUpdateAuthorityMutation } from './hooks/use-update-authority-mutation';
-import { handlerError } from '../lib/utils';
+import { handleAuthorityError } from '../lib/utils';
 import { toast } from '@ui/components/hooks/use-toast';
 import ButtonTooltip from './button-tooltip';
 import NumberInput from './number-input';
@@ -42,7 +42,7 @@ const AuthoritesGroup: FC<GroupProps> = ({ data, width, canEdit }) => {
   useEffect(() => {
     if (updateThresholdAuthorityMutation.isError) {
       toast({
-        title: handlerError(updateThresholdAuthorityMutation),
+        title: handleAuthorityError(updateThresholdAuthorityMutation),
         variant: 'destructive'
       });
     }
@@ -83,7 +83,7 @@ const AuthoritesGroup: FC<GroupProps> = ({ data, width, canEdit }) => {
               {editThreshold ? (
                 <div className="flex items-center">
                   <ButtonTooltip label="Save Threshold">
-                    <Button variant="ghost" type="button" size="sm" onClick={onUpdate}>
+                    <Button variant="ghost" size="sm" onClick={onUpdate}>
                       <Save className="h-5 w-5" />
                     </Button>
                   </ButtonTooltip>
@@ -91,7 +91,6 @@ const AuthoritesGroup: FC<GroupProps> = ({ data, width, canEdit }) => {
                   <ButtonTooltip label="Cancel">
                     <Button
                       variant="ghost"
-                      type="button"
                       size="sm"
                       onClick={() => {
                         setEditThreshold(false);
@@ -109,7 +108,6 @@ const AuthoritesGroup: FC<GroupProps> = ({ data, width, canEdit }) => {
                   <ButtonTooltip label="Edit Threshold">
                     <Button
                       variant="ghost"
-                      type="button"
                       size="sm"
                       onClick={() => {
                         setEditThreshold(true);

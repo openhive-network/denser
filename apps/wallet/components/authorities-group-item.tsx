@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Button } from '@ui/components/button';
 import { FileKey, FileX2, Pencil, Save, Trash, UserSquare } from 'lucide-react';
-import { cutPublicKey, handlerError } from '@/wallet/lib/utils';
+import { cutPublicKey, handleAuthorityError } from '@/wallet/lib/utils';
 import CopyToKeyboard from '@/wallet/components/copy-to-keyboard';
 import { Input } from '@ui/components';
 import Link from 'next/link';
@@ -24,7 +24,7 @@ const AuthoritiesGroupItem: FC<{
   const [values, setValues] = useState(item);
   const [editMode, setEditMode] = useState(false);
 
-  const onUpload = () => {
+  const handleUpload = () => {
     updateAuthorityMutation.mutate(
       {
         level: level,
@@ -37,7 +37,8 @@ const AuthoritiesGroupItem: FC<{
       }
     );
   };
-  const onDelete = () => {
+
+  const handleDelete = () => {
     updateAuthorityMutation.mutate(
       {
         level: level,
@@ -50,15 +51,23 @@ const AuthoritiesGroupItem: FC<{
       }
     );
   };
+
+  const handleCancel = () => {
+    setEditMode(false);
+    setValues(item);
+  };
+
   const disabled = updateAuthorityMutation.isLoading;
+
   useEffect(() => {
     if (updateAuthorityMutation.isError) {
       toast({
-        title: handlerError(updateAuthorityMutation),
+        title: handleAuthorityError(updateAuthorityMutation),
         variant: 'destructive'
       });
     }
   }, [updateAuthorityMutation.isLoading]);
+
   return (
     <div className="col-span-4 grid grid-cols-subgrid pl-2 text-xs hover:bg-foreground/20 sm:text-base">
       <div className="flex items-center">
@@ -89,7 +98,7 @@ const AuthoritiesGroupItem: FC<{
       {editMode ? (
         <div className="flex items-center">
           <ButtonTooltip label="Save">
-            <Button disabled={disabled} variant="ghost" size="sm" onClick={onUpload}>
+            <Button disabled={disabled} variant="ghost" size="sm" onClick={handleUpload}>
               {disabled ? (
                 <CircleSpinner loading={disabled} size={18} color="#dc2626" />
               ) : (
@@ -98,7 +107,7 @@ const AuthoritiesGroupItem: FC<{
             </Button>
           </ButtonTooltip>
           <ButtonTooltip label="Delete">
-            <Button disabled={disabled} variant="ghost" size="sm" onClick={onDelete}>
+            <Button disabled={disabled} variant="ghost" size="sm" onClick={handleDelete}>
               {disabled ? (
                 <CircleSpinner loading={disabled} size={18} color="#dc2626" />
               ) : (
@@ -107,15 +116,7 @@ const AuthoritiesGroupItem: FC<{
             </Button>
           </ButtonTooltip>
           <ButtonTooltip label="Cancel">
-            <Button
-              disabled={disabled}
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                setEditMode(false);
-                setValues(item);
-              }}
-            >
+            <Button disabled={disabled} variant="ghost" size="sm" onClick={handleCancel}>
               {disabled ? (
                 <CircleSpinner loading={disabled} size={18} color="#dc2626" />
               ) : (
