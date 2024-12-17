@@ -9,7 +9,7 @@ import { handleError } from '@ui/lib/utils';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getAsset } from '../lib/utils';
 import { Dialog, DialogContent, DialogFooter, DialogTrigger } from '@ui/components';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getAccount } from '@transaction/lib/hive';
 
 enum ActionType {
@@ -92,6 +92,7 @@ export default function BuyOrSellForm({
   const { data: accountData } = useQuery(['accountData', user.username], () => getAccount(user.username), {
     enabled: !!user.username
   });
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     dispatch({ type: ActionType.ChangeCostValue, cost: price });
@@ -118,8 +119,9 @@ export default function BuyOrSellForm({
       handleError(error, { method: 'limit_order_create', params });
     } finally {
       setDialogOpen(false);
+      queryClient.invalidateQueries({ queryKey: ['openOrders', user.username] });
     }
-  }, [createBuyOrderMutation, state.amount, state.total, transaction, user.username]);
+  }, [createBuyOrderMutation, queryClient, state.amount, state.total, transaction, user.username]);
 
   const disabled = Boolean(state.amount || state.total);
   const label = transaction === 'sell' ? t('market_page.sell_hive') : t('market_page.buy_hive');

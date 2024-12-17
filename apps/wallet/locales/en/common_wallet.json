@@ -207,7 +207,8 @@
     "filled": "Filled",
     "action": "Action",
     "cancel": "Cancel",
-    "open_orders": "Open Orders"
+    "open_orders": "Open Orders",
+    "no_orders": "You've got no open orders."
   },
   "witnesses_page": {
     "title": "Witness Voting",

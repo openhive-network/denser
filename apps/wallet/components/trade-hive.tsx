@@ -11,6 +11,7 @@ import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getOpenOrder, IOpenOrdersData } from '../lib/hive';
 import OpenOrders from './open-orders';
+import { useQuery } from '@tanstack/react-query';
 
 interface Market {
   hbd_volume: string;
@@ -65,16 +66,15 @@ const TradeHive = ({ tickerData }: { tickerData: Market }) => {
   const paramsBuy = [t('market_page.total') + ' HBD($)', 'HBD($)', 'HIVE', t('market_page.price')];
   const paramsSell = [t('market_page.price'), 'HIVE', 'HBD($)', t('market_page.total') + ' HBD($)'];
   const paramsHistory = [t('market_page.date'), t('market_page.price'), 'HIVE', 'HBD($)'];
-
   const { user } = useUser();
-  const [openOrders, setOpenOrders] = useState<IOpenOrdersData[]>([]);
 
-  useEffect(() => {
-    (async function () {
-      const orders = await getOpenOrder(user.username);
-      setOpenOrders(orders);
-    })();
-  }, [user.username]);
+  const { data: openOrders, isLoading: ordersLoading } = useQuery(
+    ['openOrders', user.username],
+    () => getOpenOrder(user.username),
+    {
+      enabled: Boolean(user.username)
+    }
+  );
 
   if (!data.order || !data.recent || isLoading) {
     return <Loading loading />;
@@ -126,7 +126,7 @@ const TradeHive = ({ tickerData }: { tickerData: Market }) => {
             label={t('market_page.trade_history')}
           />
         </div>
-        <OpenOrders orders={openOrders} />
+        <OpenOrders orders={openOrders} loading={ordersLoading} />
       </div>
     </div>
   );
