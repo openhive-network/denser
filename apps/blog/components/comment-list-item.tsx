@@ -135,7 +135,7 @@ const CommentListItem = ({
                         data-testid="comment-card-header"
                       >
                         <div className="flex w-full items-center justify-between text-xs sm:text-sm">
-                          <div className="my-1 flex items-center">
+                          <div className="my-1 flex flex-wrap items-center pl-1">
                             <img
                               className=" h-[20px] w-[20px] rounded-3xl sm:hidden"
                               height="20"

@@ -29,7 +29,7 @@ export function SubsListDialog({
         <ul>
           {subs.map((e: Subscription) => (
             <li key={e[0]} className="flex items-center gap-1 p-[1.5px] text-sm">
-              <Link href={`@${e[0]}`} className="text-destructive">
+              <Link href={`/@${e[0]}`} className="text-destructive">
                 @{e[0]}
               </Link>
               <span className="text-xs font-thin">{e[1] !== 'guest' ? e[1].toLocaleUpperCase() : null}</span>

@@ -76,50 +76,44 @@ function PostPage({
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
 
-  const {
-    isLoading: isLoadingFollowList,
-    error: errorFollowList,
-    data: mutedList
-  } = useFollowListQuery(user.username, 'muted');
+  const { isLoading: isLoadingFollowList, data: mutedList } = useFollowListQuery(user.username, 'muted');
 
-  const {
-    isLoading: isLoadingPost,
-    error: errorPost,
-    data: post
-  } = useQuery(['postData', username, permlink], () => getPost(username, String(permlink)), {
-    enabled: !!username && !!permlink,
-  });
+  const { isLoading: isLoadingPost, data: post } = useQuery(
+    ['postData', username, permlink],
+    () => getPost(username, String(permlink)),
+    {
+      enabled: !!username && !!permlink
+    }
+  );
+  const { isLoading: isLoadingDiscussion, data: discussion } = useQuery(
+    ['discussionData', username, permlink, user.username],
+    () => getDiscussion(username, String(permlink), user.username),
+    {
+      enabled: !!username && !!permlink
+    }
+  );
+  const { isLoading: isLoadingCommunity, data: communityData } = useQuery(
+    ['communityData', community],
+    () => getCommunity(community),
+    {
+      enabled: !!username && !!community && community.startsWith('hive-')
+    }
+  );
 
-  const {
-    isLoading: isLoadingDiscussion,
-    error: errorDiscussion,
-    data: discussion
-  } = useQuery(['discussionData', username, permlink], () => getDiscussion(username, String(permlink)), {
-    enabled: !!username && !!permlink
-  });
-
-  const {
-    isLoading: isLoadingCommunity,
-    error: errorCommunity,
-    data: communityData
-  } = useQuery(['communityData', community], () => getCommunity(community), {
-    enabled: !!username && !!community && community.startsWith('hive-')
-  });
-
-  const {
-    data: activeVotesData,
-    isLoading: isActiveVotesLoading,
-    isError: activeVotesError
-  } = useQuery(['activeVotes'], () => getActiveVotes(username, permlink), {
-    enabled: !!username && !!permlink
-  });
-  const {
-    data: rolesData,
-    isLoading: rolesIsLoading,
-    isError: rolesIsError
-  } = useQuery(['rolesList', community], () => getListCommunityRoles(community), {
-    enabled: Boolean(community)
-  });
+  const { data: activeVotesData, isLoading: isActiveVotesLoading } = useQuery(
+    ['activeVotes'],
+    () => getActiveVotes(username, permlink),
+    {
+      enabled: !!username && !!permlink
+    }
+  );
+  const { data: rolesData, isLoading: rolesIsLoading } = useQuery(
+    ['rolesList', community],
+    () => getListCommunityRoles(community),
+    {
+      enabled: Boolean(community)
+    }
+  );
 
   const userRole = rolesData?.find((e) => e[0] === user.username);
   const userCanModerate = userRole
@@ -203,20 +197,7 @@ function PostPage({
 
   const commentSite = post?.depth !== 0 ? true : false;
   const [mutedPost, setMutedPost] = useState<boolean>(mutedStatus);
-  const generateUrls = () => {
-    if (!discussionState || discussionState.length === 0) return null;
 
-    const highest_item = discussionState.reduce(
-      (smallest, current) => (current.depth < smallest.depth ? current : smallest),
-      discussionState[0]
-    );
-
-    const postUrl = highest_item.url.startsWith('/') ? highest_item.url : `/${highest_item.url}`;
-    const parentUrl = `${highest_item.category}/@${highest_item.parent_author}/${highest_item.parent_permlink}`;
-
-    return { postUrl, parentUrl };
-  };
-  const { postUrl, parentUrl } = generateUrls() || {};
   if (userFromGDPR) {
     return <CustomError />;
   }
@@ -257,7 +238,7 @@ function PostPage({
                   </h1>
                   <Link
                     className="text-sm hover:text-destructive"
-                    href={`${postUrl}`}
+                    href={`${post.url}`}
                     data-testid="view-the-full-context"
                   >
                     • {t('post_content.if_comment.view_the_full_context')}
@@ -265,7 +246,7 @@ function PostPage({
                   {discussionState && !discussionState.some((e) => e.depth === 1) ? (
                     <Link
                       className="text-sm hover:text-destructive"
-                      href={`../../${parentUrl}`}
+                      href={`/${post.category}/@${post.parent_author}/${post.parent_permlink}`}
                       data-testid="view-the-direct-parent"
                     >
                       • {t('post_content.if_comment.view_the_direct_parent')}
@@ -321,20 +302,21 @@ function PostPage({
                   />
                 </ImageGallery>
               )}
-
               <div className="clear-both">
                 {!commentSite ? (
                   <ul className="flex flex-wrap gap-2" data-testid="hashtags-post">
-                    {post.json_metadata?.tags?.slice(post.community_title ? 0 : 1).map((tag: string) => (
-                      <li key={tag}>
-                        <Link
-                          href={`/trending/${tag}`}
-                          className="my-2 rounded-md border-[1px] border-border bg-background-secondary px-2 py-1 text-[14px] hover:border-[#788187]"
-                        >
-                          #{tag}
-                        </Link>
-                      </li>
-                    ))}
+                    {post.json_metadata.tags
+                      ?.filter((e) => e !== (post.community_title ?? post.category) && e !== '')
+                      .map((tag: string) => (
+                        <li key={tag}>
+                          <Link
+                            href={`/trending/${tag}`}
+                            className="my-2 rounded-md border-[1px] border-border bg-background-secondary px-2 py-1 text-[14px] hover:border-[#788187]"
+                          >
+                            #{tag}
+                          </Link>
+                        </li>
+                      ))}
                   </ul>
                 ) : null}
               </div>
@@ -494,7 +476,7 @@ function PostPage({
                         </button>
                       </DialogLogin>
                     )}
-                    {user && user.isLoggedIn && post.author === user.username ? (
+                    {user && user.isLoggedIn && post.author === user.username && !edit ? (
                       <>
                         <span className="mx-1">|</span>
                         <button
@@ -535,7 +517,7 @@ function PostPage({
                       </Tooltip>
                     </TooltipProvider>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex items-center gap-2">
                     <FacebookShare url={post.url} />
                     <TwitterShare title={post.title} url={post.url} />
                     <LinkedInShare title={post.title} url={post.url} />
@@ -600,7 +582,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       getPost(username, String(permlink))
     );
   }
-const mutedStatus = await getPost(username, String(permlink)).then((res) => res?.stats?.gray ?? false);
+  const mutedStatus = await getPost(username, String(permlink)).then((res) => res?.stats?.gray ?? false);
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
