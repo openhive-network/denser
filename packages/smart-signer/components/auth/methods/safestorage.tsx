@@ -199,7 +199,6 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
           authClient.current = await hbauthService.getOnlineClient();
 
           const auths = await authClient.current.getRegisteredUsers();
-          console.log('auths', auths);
 
           setAuthUsers(auths);
         } catch (error) {

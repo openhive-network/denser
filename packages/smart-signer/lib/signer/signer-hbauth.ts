@@ -162,9 +162,9 @@ export class SignerHbauth extends Signer {
 
   async checkAuth(username: string, keyType: string): Promise<boolean> {
     const authClient = await hbauthService.getOnlineClient();
-    const auths = await authClient.getAuths();
+    const auths = await authClient.getRegisteredUsers();
     logger.info('auths in safe storage %o', auths);
-    const auth = await authClient.getAuthByUser(username);
+    const auth = await authClient.getRegisteredUserByUsername(username);
     if (auth) {
       logger.info('Found auth for user %s: %o', username, auth);
       if (auth.authorized) {

@@ -83,7 +83,7 @@ export function DialogHBAuth({
       const authClient = await hbauthService.getOnlineClient();
 
       if (target.name === 'login') {
-        const auth = await authClient.getAuthByUser(username);
+        const auth = await authClient.getRegisteredUserByUsername(username);
         if (auth?.authorized) {
           updateStatus(auth);
         } else {
@@ -117,7 +117,7 @@ export function DialogHBAuth({
           authClient
             .authenticate(username, password, keyType)
             .then(async () => {
-              const auth = await authClient.getAuthByUser(username);
+              const auth = await authClient.getRegisteredUserByUsername(username);
               updateStatus(auth);
             })
             .catch((err: any) => {
@@ -130,7 +130,7 @@ export function DialogHBAuth({
         authClient
           .register(username, password, key, keyType)
           .then(async () => {
-            const auth = await authClient.getAuthByUser(username);
+            const auth = await authClient.getRegisteredUserByUsername(username);
             updateStatus(auth);
           })
           .catch((err: any) => {
