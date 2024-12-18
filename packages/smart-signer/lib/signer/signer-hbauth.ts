@@ -106,6 +106,8 @@ export class SignerHbauth extends Signer {
     if (!['posting', 'active'].includes(keyType)) {
       throw new Error(`Unsupported keyType: ${keyType}`);
     }
+    
+    // TODO: handle singleSign here
 
     const authClient = await hbauthService.getOnlineClient();
 

@@ -89,11 +89,13 @@ export class TransactionService {
     cb: (opBuilder: ITransaction) => void,
     transactionOptions: TransactionOptions = {}
   ): Promise<TransactionBroadcastResult> {
+    console.log('transactionOptions', transactionOptions);
     const defaultTransactionOptions = {
-      observe: false
+      observe: false,
+      singleSign: false
     };
 
-    const { observe } = {
+    const { observe, singleSign } = {
       ...defaultTransactionOptions,
       ...transactionOptions
     };
@@ -107,7 +109,7 @@ export class TransactionService {
     txBuilder.validate();
 
     // Get signature of transaction
-    const signature = await this.signTransaction(txBuilder);
+    const signature = await this.signTransaction(txBuilder, singleSign);
     // Add signature to transaction
     txBuilder.sign(signature);
 
@@ -125,7 +127,7 @@ export class TransactionService {
    * @return {*}  {Promise<string>}
    * @memberof TransactionService
    */
-  signTransaction(txBuilder: ITransaction): Promise<string> {
+  signTransaction(txBuilder: ITransaction, singleSign = false): Promise<string> {
     const signer = getSigner(this.signerOptions);
     return signer.signTransaction({
       digest: txBuilder.sigDigest,
