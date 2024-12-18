@@ -66,14 +66,14 @@ export function useTransferToSavingsMutation() {
  */
 export function useWithdrawFromSavingsMutation() {
   const withdrawFromSavingsMutation = useMutation({
-    mutationFn: async (params: { fromAccount: string; toAccount: string; memo: string; amount: asset }) => {
-      const { amount, fromAccount, memo, toAccount } = params;
-      const pendingWithdrawals = (await getSavingsWithdrawals(fromAccount)).withdrawals;
-      let requestId = 0;
-
-      if (!!pendingWithdrawals.length) {
-        requestId = Math.max(...pendingWithdrawals.map((withdrawal) => withdrawal.request_id)) + 1;
-      }
+    mutationFn: async (params: {
+      fromAccount: string;
+      toAccount: string;
+      memo: string;
+      amount: asset;
+      requestId: number;
+    }) => {
+      const { amount, fromAccount, memo, toAccount, requestId } = params;
 
       const broadcastResult = await transactionService.transferFromSavings(
         amount,

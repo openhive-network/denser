@@ -59,18 +59,19 @@ export function TransferDialog({
   currency: 'hive' | 'hbd';
   username: string;
 }) {
+  const { t } = useTranslation('common_wallet');
   const defaultValue = {
     title: '',
     description: '',
     amount: '',
     advancedBtn: false,
     selectCurr: true,
-    buttonTitle: 'Next',
+    buttonTitle: t('transfers_page.next'),
     to: ['transferTo', 'powerUp', 'withdrawHive', 'withdrawHiveDollars'].includes(type) ? username : '',
     onSubmit: new Function(),
-    memo: ''
+    memo: '',
+    requestId: 0
   };
-  const { t } = useTranslation('common_wallet');
   const [curr, setCurr] = useState<'hive' | 'hbd'>(currency);
   const [value, setValue] = useState('');
   const [advanced, setAdvanced] = useState(false);
@@ -83,7 +84,7 @@ export function TransferDialog({
   const delegateMutation = useDelegateMutation();
   const withdrawFromSavingsMutation = useWithdrawFromSavingsMutation();
   const triggerRef = useRef(null);
-
+  const [nextOpen, setNextOpen] = useState(false);
   const queryClient = useQueryClient();
 
   const invalidateData = useCallback(() => {
@@ -109,8 +110,8 @@ export function TransferDialog({
 
   switch (type) {
     case 'transfers':
-      data.title = 'Transfer to Account';
-      data.description = 'Move funds to another Hive account.';
+      data.title = t('transfers_page.transfer_to_account');
+      data.description = t('transfers_page.transfer_to_account_desc');
       data.amount = curr === 'hive' ? amount.hive : amount.hbd;
       data.onSubmit = async () => {
         const params = {
@@ -124,8 +125,8 @@ export function TransferDialog({
       break;
 
     case 'transferTo':
-      data.title = 'Transfer to Savings';
-      data.description = 'Protect funds by requiring a 3 day withdraw waiting period.';
+      data.title = t('transfers_page.transfer_to');
+      data.description = t('transfers_page.transfer_to_desc');
       data.amount = curr === 'hive' ? amount.hive : amount.hbd;
       data.advancedBtn = true;
       data.onSubmit = async () => {
@@ -140,13 +141,12 @@ export function TransferDialog({
       break;
 
     case 'powerUp':
-      data.title = 'Convert to HIVE POWER';
-      data.description =
-        'Influence tokens which give you more control over post payouts and allow you to earn on curation rewards. HIVE POWER is non-transferable and requires 3 months (13 payments) to convert back to HIVE.';
+      data.title = t('transfers_page.power_up');
+      data.description = t('transfers_page.power_up_desc');
       data.amount = curr === 'hive' ? amount.hive : amount.hbd;
       data.advancedBtn = true;
       data.selectCurr = false;
-      data.buttonTitle = 'Power Up';
+      data.buttonTitle = t('transfers_page.power_up');
       data.onSubmit = async () => {
         const params = { account: username, amount: await getAsset(value, curr) };
         transfersTransaction('powerUp', params, powerUpMutation.mutateAsync);
@@ -154,9 +154,9 @@ export function TransferDialog({
       break;
 
     case 'powerDown':
-      data.title = 'Power Down';
+      data.title = t('transfers_page.power_down');
       data.description = '';
-      data.buttonTitle = 'Power Down';
+      data.buttonTitle = t('transfers_page.power_down');
       data.amount = amount.hp;
       data.onSubmit = async () => {
         const params = { account: username, vestingShares: await getVests(value) };
@@ -165,7 +165,7 @@ export function TransferDialog({
       break;
 
     case 'delegate':
-      data.title = 'Delegate to Account';
+      data.title = t('transfers_page.delegate');
       data.description = '';
       data.amount = amount.hp;
       data.onSubmit = async () => {
@@ -175,32 +175,36 @@ export function TransferDialog({
       break;
 
     case 'withdrawHive':
-      data.title = 'Savings Withdraw';
-      data.description = 'Withdraw funds after the required 3 day waiting period.';
+      data.title = t('transfers_page.savings_withdraw');
+      data.description = t('transfers_page.savings_withdraw_desc');
       data.amount = amount.savingsHive;
       data.advancedBtn = true;
+      data.requestId = Math.floor((Date.now() / 1000) % 4294967295);
       data.onSubmit = async () => {
         const params = {
           fromAccount: username,
           toAccount: advanced ? data.to : username,
           memo: data.memo,
-          amount: await getAsset(value, curr)
+          amount: await getAsset(value, curr),
+          requestId: data.requestId
         };
         transfersTransaction('withdrawHive', params, withdrawFromSavingsMutation.mutateAsync);
       };
       break;
 
     case 'withdrawHiveDollars':
-      data.title = 'Savings Withdraw';
-      data.description = 'Withdraw funds after the required 3 day waiting period.';
+      data.title = t('transfers_page.savings_withdraw');
+      data.description = t('transfers_page.savings_withdraw_desc');
       data.amount = amount.savingsHbd;
       data.advancedBtn = true;
+      data.requestId = Math.floor((Date.now() / 1000) % 4294967295);
       data.onSubmit = async () => {
         const params = {
           fromAccount: username,
           toAccount: advanced ? data.to : username,
           memo: data.memo,
-          amount: await getAsset(value, curr)
+          amount: await getAsset(value, curr),
+          requestId: data.requestId
         };
         transfersTransaction('withdrawHiveDollars', params, withdrawFromSavingsMutation.mutateAsync);
       };
@@ -234,9 +238,14 @@ export function TransferDialog({
   });
 
   const onSubmit: SubmitHandler<z.infer<typeof transferSchema>> = () => {
+    setNextOpen(true);
+  };
+
+  const onConfirm = () => {
     data.onSubmit();
     // @ts-expect-error
     triggerRef.current.click();
+    setNextOpen(false);
   };
 
   return (
@@ -254,7 +263,7 @@ export function TransferDialog({
           </DialogHeader>
           <div className="grid gap-4 py-4 ">
             <div className="grid grid-cols-4 items-center gap-4">
-              From
+              {t('transfers_page.from')}
               <div className="relative col-span-3">
                 <Input
                   disabled
@@ -269,7 +278,7 @@ export function TransferDialog({
             {(advanced || !data.advancedBtn) && (
               <>
                 <div className="grid grid-cols-4 items-center gap-4">
-                  To
+                  {t('transfers_page.to')}
                   <div className="col-span-3">
                     <Autocompleter
                       value={data.to}
@@ -281,24 +290,18 @@ export function TransferDialog({
                   </div>
                 </div>
                 {badActors ? (
-                  <div className="p-2 text-sm text-red-500">
-                    Use caution sending to this account. Please double check your spelling for possible
-                    phishing.
-                  </div>
+                  <div className="p-2 text-sm text-red-500">{t('transfers_page.bad_actors_info')}</div>
                 ) : null}
               </>
             )}
             {type === 'powerUp' && advanced ? (
               <div className="grid grid-cols-4 items-center gap-4">
                 <div className=" col-span-1"></div>
-                <div className="col-span-3 w-fit pl-0 text-xs">
-                  Converted HIVE POWER can be sent to yourself or someone else but can not transfer again
-                  without converting back to HIVE.
-                </div>
+                <div className="col-span-3 w-fit pl-0 text-xs">{t('transfers_page.power_up_info')}</div>
               </div>
             ) : null}
             <div className="grid grid-cols-4 items-center gap-4">
-              Amount
+              {t('transfers_page.amount')}
               <div className="relative col-span-3">
                 {data.selectCurr && (
                   <div className="absolute right-0">
@@ -346,17 +349,17 @@ export function TransferDialog({
                 className="col-span-3 w-fit pl-0"
                 onClick={() => setValue(data.amount.replace(/[^0-9.]/g, ''))}
               >
-                Balance: {data.amount}
+                {t('transfers_page.balance')}: {data.amount}
               </Button>
             </div>
             {type === 'transfers' && (
               <div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <div className="col-span-1"></div>
-                  <div className="col-span-3 text-xs">This memo is public</div>
+                  <div className="col-span-3 text-xs">{t('transfers_page.memo_public')}</div>
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
-                  Memo
+                  {t('transfers_page.memo')}
                   <Input
                     placeholder="Memo"
                     className="col-span-3"
@@ -368,18 +371,129 @@ export function TransferDialog({
             )}
           </div>
           <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
-            <DialogTrigger ref={triggerRef}></DialogTrigger>
-            <Button type="submit" variant="redHover" className="w-fit" disabled={badActors}>
+            <DialogTrigger ref={triggerRef} className="absolute"></DialogTrigger>
+
+            <Button variant="redHover" className="w-fit" disabled={badActors} type="submit">
               {data.buttonTitle}
             </Button>
             {data.advancedBtn && (
-              <Button className="w-fit" variant="ghost" onClick={() => setAdvanced(!advanced)}>
-                {advanced ? <span>Basic</span> : <span>Advanced</span>}
+              <Button className="w-fit" variant="ghost" onClick={() => setAdvanced(!advanced)} type="button">
+                {advanced ? (
+                  <span>{t('transfers_page.basic')}</span>
+                ) : (
+                  <span>{t('transfers_page.advanced')}</span>
+                )}
               </Button>
             )}
           </DialogFooter>
         </form>
       </DialogContent>
+      <Dialog open={nextOpen} onOpenChange={setNextOpen}>
+        <DialogContent onOpenAutoFocus={(e) => e.preventDefault()}>
+          <DialogTitle>{t('transfers_page.confirm_transaction', { transaction: data.title })}</DialogTitle>
+          {type !== 'delegate' ? (
+            <>
+              <div className="grid grid-cols-4 items-center gap-4">
+                {t('transfers_page.from')}
+                <div className="relative col-span-3">
+                  <Input
+                    defaultValue={username}
+                    className="text-stale-900 pointer-events-none block w-full !cursor-default px-3 py-2.5 pl-11"
+                  />
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                    <Icons.atSign className="h-5 w-5" />
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                {t('transfers_page.to')}
+                <div className="relative col-span-3">
+                  <Input
+                    defaultValue={data.to}
+                    className="text-stale-900 pointer-events-none block w-full !cursor-default px-3 py-2.5 pl-11"
+                  />
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                    <Icons.atSign className="h-5 w-5" />
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                {t('transfers_page.amount')}
+                <div className="relative col-span-3">
+                  <Input
+                    defaultValue={value}
+                    className="text-stale-900 pointer-events-none block w-full !cursor-default px-3 py-2.5"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                {t('transfers_page.memo')}
+                <div className="relative col-span-3">
+                  <Input
+                    defaultValue={data.memo}
+                    className="text-stale-900 pointer-events-none block w-full !cursor-default px-3 py-2.5"
+                  />
+                </div>
+              </div>
+              {(type === 'withdrawHive' || type === 'withdrawHiveDollars') && (
+                <div className="grid grid-cols-4 items-center gap-4">
+                  request_id
+                  <div className="relative col-span-3">
+                    <Input
+                      defaultValue={data.requestId}
+                      className="text-stale-900 pointer-events-none block w-full !cursor-default px-3 py-2.5"
+                    />
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              <div className="grid grid-cols-4 items-center gap-4">
+                {t('transfers_page.delegator')}
+                <div className="relative col-span-3">
+                  <Input
+                    defaultValue={username}
+                    className="text-stale-900 pointer-events-none block w-full !cursor-default px-3 py-2.5 pl-11"
+                  />
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                    <Icons.atSign className="h-5 w-5" />
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                {t('transfers_page.delegatee')}
+                <div className="relative col-span-3">
+                  <Input
+                    defaultValue={data.to}
+                    className="text-stale-900 pointer-events-none block w-full !cursor-default px-3 py-2.5 pl-11"
+                  />
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                    <Icons.atSign className="h-5 w-5" />
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                HIVE
+                <div className="relative col-span-3">
+                  <Input
+                    defaultValue={value}
+                    className="text-stale-900 pointer-events-none block w-full !cursor-default px-3 py-2.5"
+                  />
+                </div>
+              </div>
+            </>
+          )}
+          <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
+            <Button variant="redHover" className="w-fit" onClick={onConfirm}>
+              {t('transfers_page.ok')}
+            </Button>
+            <Button variant="ghost" className="w-fit" onClick={() => setNextOpen(false)}>
+              {t('transfers_page.cancel')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Dialog>
   );
 }

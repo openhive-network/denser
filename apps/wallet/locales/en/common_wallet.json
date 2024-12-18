@@ -343,6 +343,32 @@
       "required": "Account name is required.",
       "insufficient_funds": "Insufficient funds.",
       "not_found": "Account not found."
-    }
+    },
+    "confirm_transaction": "Confirm {{transaction}}",
+    "ok": "OK",
+    "cancel": "Cancel",
+    "from": "From",
+    "to": "To",
+    "amount": "Amount",
+    "memo": "Memo",
+    "basic": "Basic",
+    "advanced": "Advanced",
+    "balance": "Balance",
+    "memo_public": "This memo is public",
+    "power_up_info": "Converted HIVE POWER can be sent to yourself or someone else but can not transfer again without converting back to HIVE.",
+    "bad_actors_info": "Use caution sending to this account. Please double check your spelling for possible phishing.",
+    "next": "Next",
+    "transfer_to_account": "Transfer To Account",
+    "transfer_to_account_desc": "Move funds to another Hive account.",
+    "transfer_to": "Transfer To Savings",
+    "transfer_to_desc": "Protect funds by requiring a 3 day withdraw waiting period.",
+    "power_up": "Power Up",
+    "power_up_desc": "Influence tokens which give you more control over post payouts and allow you to earn on curation rewards. HIVE POWER is non-transferable and requires 3 months (13 payments) to convert back to HIVE.",
+    "power_down": "Power Down",
+    "delegate": "Delagate To Account",
+    "savings_withdraw": "Savings Withdraw",
+    "savings_withdraw_desc": "Withdraw funds after the required 3 day waiting period.",
+    "delegatee": "Delegatee",
+    "delegator": "Delegator"
   }
 }
