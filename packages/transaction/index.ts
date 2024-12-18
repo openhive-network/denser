@@ -13,7 +13,8 @@ import {
   asset,
   authority,
   future_extensions,
-  EAvailableCommunityRoles
+  EAvailableCommunityRoles,
+  AccountAuthorityUpdateOperation
 } from '@hiveio/wax';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
@@ -891,48 +892,34 @@ export class TransactionService {
 
   async changeMasterPassword(
     account: string,
-    newOwner: string,
-    newActive: string,
-    newPosting: string,
+    keys: Record<string, { old: string; new: string }>,
     wif: string,
     transactionOptions: TransactionOptions = {}
   ) {
     if (!wif) {
-      return Promise.reject(new Error('wif is required'));
+      return Promise.reject(new Error('Missing owner key'));
     }
 
-    console.log('wif', wif);
+    const accountAuthorityUpdateOp = await AccountAuthorityUpdateOperation.createFor(
+      await hiveChainService.getHiveChain(),
+      account
+    );
 
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation({
-        account_update2: {
-          account,
-          owner: {
-            weight_threshold: 1,
-            key_auths: {
-              [newOwner]: 1
-            },
-            account_auths: {}
-          },
-          active: {
-            weight_threshold: 1,
-            key_auths: {
-              [newActive]: 1
-            },
-            account_auths: {}
-          },
-          posting: {
-            weight_threshold: 1,
-            key_auths: {
-              [newPosting]: 1
-            },
-            account_auths: {}
-          },
-          json_metadata: '', // ignore change
-          posting_json_metadata: '', // ignore change
-          extensions: []
-        }
-      });
+    const { owner, active, posting } = keys;
+
+    if (!owner || !active || !posting) {
+      return Promise.reject(new Error('owner, active and posting associated public keys are required'));
+    }
+
+    accountAuthorityUpdateOp.role('owner').replace(owner.old, 1, owner.new);
+    accountAuthorityUpdateOp.role('active').replace(active.old, 1, active.new);
+    accountAuthorityUpdateOp.role('posting').replace(posting.old, 1, posting.new);
+
+    console.log('accountAuthorityUpdateOp', accountAuthorityUpdateOp);
+
+    return;
+    return await this.processHiveAppOperation(async (builder) => {
+      builder.pushOperation(accountAuthorityUpdateOp);
     }, transactionOptions);
   }
 

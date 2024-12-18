@@ -87,9 +87,7 @@ export default function PostForm() {
 
   async function resolveChangePasswordComponents(password: string): Promise<{
     account: string;
-    newOwner: string;
-    newActive: string;
-    newPosting: string;
+    keys: Record<string, { old: string; new: string }>;
     wif: string;
   }> {
     const isWif = password.startsWith('5') && password.length === 51;
@@ -99,9 +97,12 @@ export default function PostForm() {
     if (isWif) {
       wif = password;
     } else {
-      const privateKey = wax.getPrivateKeyFromPassword(username, 'owner', password);
-      wif = privateKey.wifPrivateKey;
+      const pKey = wax.getPrivateKeyFromPassword(username, 'owner', password);
+      wif = pKey.wifPrivateKey;
     }
+    const oldOwner = wax.getPrivateKeyFromPassword(username, 'owner', password);
+    const oldActive = wax.getPrivateKeyFromPassword(username, 'active', password);
+    const oldPosting = wax.getPrivateKeyFromPassword(username, 'posting', password);
 
     // generate password
     const brainKeyData = wax.suggestBrainKey();
@@ -114,9 +115,20 @@ export default function PostForm() {
 
     return {
       account: username,
-      newOwner: newOwner.associatedPublicKey,
-      newActive: newActive.associatedPublicKey,
-      newPosting: newPosting.associatedPublicKey,
+      keys: {
+        owner: {
+          old: oldOwner.associatedPublicKey,
+          new: newOwner.associatedPublicKey
+        },
+        active: {
+          old: oldActive.associatedPublicKey,
+          new: newActive.associatedPublicKey
+        },
+        posting: {
+          old: oldPosting.associatedPublicKey,
+          new: newPosting.associatedPublicKey
+        }
+      },
       wif
     };
   }
@@ -194,7 +206,7 @@ export default function PostForm() {
                     </Link>
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} type="password" />
+                    <Input {...field} type="password" placeholder={t('change_password_page.current_password_or_owner_key')} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -271,8 +283,17 @@ export default function PostForm() {
                 </FormItem>
               )}
             />
-            <Button type="submit" variant="redHover" disabled={loading || !form.formState.isValid} className='w-[164px] flex justify-center'>
-              {loading ? <Icons.spinner className="h-4 w-4 animate-spin" /> : t('change_password_page.update_password')}
+            <Button
+              type="submit"
+              variant="redHover"
+              disabled={loading || !form.formState.isValid}
+              className="flex w-[164px] justify-center"
+            >
+              {loading ? (
+                <Icons.spinner className="h-4 w-4 animate-spin" />
+              ) : (
+                t('change_password_page.update_password')
+              )}
             </Button>
           </form>
         </Form>

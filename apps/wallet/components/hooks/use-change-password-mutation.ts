@@ -12,18 +12,13 @@ export function useChangePasswordMutation() {
   const changePasswordMutation = useMutation({
     mutationFn: async (params: {
       account: string;
-      newOwner: string;
-      newActive: string;
-      newPosting: string;
+      keys: Record<string, { old: string; new: string }>;
       wif: string;
     }) => {
-      const { account, newOwner, newActive, newPosting, wif } = params;
       const broadcastResult = await transactionService.changeMasterPassword(
-        account,
-        newOwner, 
-        newActive,
-        newPosting,
-        wif,
+        params.account,
+        params.keys,
+        params.wif,
         { observe: true, singleSign: true }
       );
       const response = { ...params, broadcastResult };
