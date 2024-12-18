@@ -1,6 +1,6 @@
 import { cryptoUtils } from '@hiveio/dhive';
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
-import { AuthStatus } from '@hiveio/hb-auth';
+import { AuthStatus, KeyAuthorityType } from '@hiveio/hb-auth';
 import { SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
 import { THexString, createWaxFoundation, TTransactionPackType } from '@hiveio/wax';
 import { PasswordDialogModalPromise } from '@smart-signer/components/password-dialog';
@@ -165,6 +165,11 @@ export class SignerHbauth extends Signer {
     const auths = await authClient.getRegisteredUsers();
     logger.info('auths in safe storage %o', auths);
     const auth = await authClient.getRegisteredUserByUsername(username);
+    const settings = await authClient.getUserSettings(username);
+
+    // set authorityUsername to the keyType that is authorized for this user
+    this.authorityUsername = settings?.authorizedAccounts?.[keyType as KeyAuthorityType];
+
     if (auth) {
       logger.info('Found auth for user %s: %o', username, auth);
       if (auth.authorized) {

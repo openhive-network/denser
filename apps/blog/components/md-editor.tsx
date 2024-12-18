@@ -65,8 +65,10 @@ const uploadImg = async (file: File, username: string, signer: Signer): Promise<
       message: buf,
       password: ''
     });
+    
+    const imageOwner = signer.authorityUsername || signer.username;
 
-    const postUrl = `${env('IMAGES_ENDPOINT')}${username}/${sig}`;
+    const postUrl = `${env('IMAGES_ENDPOINT')}${imageOwner}/${sig}`;
 
     const response = await fetch(postUrl, { method: 'POST', body: formData });
     const resJSON = await response.json();

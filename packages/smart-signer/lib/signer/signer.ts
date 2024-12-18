@@ -24,6 +24,7 @@ export interface SignerOptions {
   apiEndpoint: string;
   storageType: StorageType;
   chainId: string;
+  authorityUsername?: string;
 }
 
 /**
@@ -42,7 +43,7 @@ export abstract class Signer {
   storageType: StorageType;
   pack: TTransactionPackType;
   chainId: string;
-
+  authorityUsername?: string;
   constructor(
     { username, loginType, keyType, apiEndpoint, storageType, chainId }: SignerOptions,
     pack: TTransactionPackType
