@@ -409,14 +409,20 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
       <div className="flex w-full flex-col items-center ">
         <WalletMenu username={username} />
         {!!rewardsStr.length && (
-          <div className="mx-auto mt-4 flex w-full max-w-6xl items-center justify-between rounded-md bg-slate-600 px-4 py-4">
-            <div className="w-full">
-              {t('transfers_page.current_rewards')}
-              {rewardsStr}
+          <div className="mx-auto w-full px-2 text-sm md:px-0 md:text-base">
+            <div className="mx-auto mt-4 flex w-full max-w-6xl flex-col items-center justify-between gap-y-2 rounded-md bg-slate-600 px-4 py-4 md:flex-row">
+              <div className="w-full text-center md:text-left">
+                {t('transfers_page.current_rewards')}
+                {rewardsStr}
+              </div>
+              <Button
+                className="h-fit flex-shrink-0 text-sm md:text-base"
+                variant="redHover"
+                onClick={() => claimRewards()}
+              >
+                {t('transfers_page.redeem_rewards')}
+              </Button>
             </div>
-            <Button className="flex-shrink-0" variant="redHover" onClick={() => claimRewards()}>
-              {t('transfers_page.redeem_rewards')}
-            </Button>
           </div>
         )}
         <div>
