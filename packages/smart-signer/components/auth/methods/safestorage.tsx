@@ -90,7 +90,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
   ) => {
     useImperativeHandle(ref, () => ({
       async cancel() {
-        await cancelAuth();
+        await cancelAuth(username);
       }
     }));
 
@@ -184,9 +184,9 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       }
     }
 
-    async function cancelAuth(): Promise<void> {
+    async function cancelAuth(username: string): Promise<void> {
       form.reset();
-      await authClient?.current?.logout();
+      await authClient?.current?.logout(username);
       const users = (await authClient.current?.getAuths()) || [];
       setAuthUsers(users);
       setLoading(false);
@@ -198,7 +198,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
           // populate authUsers with existing user list
           authClient.current = await hbauthService.getOnlineClient();
 
-          const auths = await authClient.current.getAuths();
+          const auths = await authClient.current.getRegisteredUsers();
+          console.log('auths', auths);
 
           setAuthUsers(auths);
         } catch (error) {
@@ -461,7 +462,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
               type="button"
               variant="secondary"
               onClick={() => {
-                cancelAuth();
+                cancelAuth(username);
                 onSetStep(Steps.OTHER_LOGIN_OPTIONS);
               }}
             >

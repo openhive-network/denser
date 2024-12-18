@@ -1,6 +1,6 @@
 import { cryptoUtils } from '@hiveio/dhive';
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
-import { AuthStatus, KeyAuthorityType } from '@hiveio/hb-auth';
+import { AuthStatus } from '@hiveio/hb-auth';
 import { SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
 import { THexString, createWaxFoundation, TTransactionPackType } from '@hiveio/wax';
 import { PasswordDialogModalPromise } from '@smart-signer/components/password-dialog';
@@ -40,7 +40,7 @@ export class SignerHbauth extends Signer {
 
   async destroy() {
     const authClient = await hbauthService.getOnlineClient();
-    await authClient.logout();
+    await authClient.logout(this.username);
   }
 
   /**
