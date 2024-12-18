@@ -327,6 +327,7 @@ export function TransferDialog({
                   placeholder="Amount"
                   className="text-stale-900 block w-full px-3 py-2.5"
                   type="number"
+                  step="any"
                 />
               </div>
             </div>
