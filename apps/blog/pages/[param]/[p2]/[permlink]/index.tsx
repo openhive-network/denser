@@ -201,6 +201,11 @@ function PostPage({
   if (userFromGDPR) {
     return <CustomError />;
   }
+  useEffect(() => {
+    if (router.query.param === '[param]' && !!post) {
+      router.replace(`/${post.community ?? post.category}/@${username}/${permlink}`);
+    }
+  }, [isLoadingDiscussion]);
 
   const canonical_url = post ? new URL(post.url, env('SITE_DOMAIN')).href : undefined;
   const post_is_pinned = firstPost?.stats?.is_pinned ?? false;
