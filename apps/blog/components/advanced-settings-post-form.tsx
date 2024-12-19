@@ -39,13 +39,13 @@ type Template = AccountFormValues & {
 export function AdvancedSettingsPostForm({
   children,
   username,
-  onChangeStore,
-  data
+  data,
+  updateForm
 }: {
   children: ReactNode;
   username: string;
-  onChangeStore: (data: AccountFormValues) => void;
   data: AccountFormValues;
+  updateForm: (data: AccountFormValues) => void;
 }) {
   const { t } = useTranslation('common_blog');
   const [preferences, setPreferences] = useLocalStorage<Preferences>(
@@ -173,7 +173,7 @@ export function AdvancedSettingsPostForm({
     return 1000000;
   }
   function loadTemplate() {
-    onChangeStore({
+    updateForm({
       title: currentTemplate?.title || '',
       postArea: currentTemplate?.postArea || '',
       postSummary: currentTemplate?.postSummary || '',
@@ -231,7 +231,7 @@ export function AdvancedSettingsPostForm({
         }
       ]);
     }
-    onChangeStore({
+    updateForm({
       ...data,
       beneficiaries: beneficiaries,
       maxAcceptedPayout: maxAcceptedPayout(),
