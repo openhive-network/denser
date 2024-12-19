@@ -195,17 +195,18 @@ function PostPage({
     }
   }, [discussion, router.query.sort]);
 
+  useEffect(() => {
+    if (router.query.param === '[param]' && !!post) {
+      router.replace(`/${post.community ?? post.category}/@${username}/${permlink}`);
+    }
+  }, [isLoadingDiscussion]);
+
   const commentSite = post?.depth !== 0 ? true : false;
   const [mutedPost, setMutedPost] = useState<boolean>(mutedStatus);
 
   if (userFromGDPR) {
     return <CustomError />;
   }
-  useEffect(() => {
-    if (router.query.param === '[param]' && !!post) {
-      router.replace(`/${post.community ?? post.category}/@${username}/${permlink}`);
-    }
-  }, [isLoadingDiscussion]);
 
   const canonical_url = post ? new URL(post.url, env('SITE_DOMAIN')).href : undefined;
   const post_is_pinned = firstPost?.stats?.is_pinned ?? false;
