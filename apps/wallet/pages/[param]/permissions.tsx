@@ -5,26 +5,10 @@ import { Button, Card, Input, Label, Separator } from '@ui/components';
 import Link from 'next/link';
 import { cn } from '@ui/lib/utils';
 import { getTranslations } from '../../lib/get-translations';
-import { useEffect } from 'react';
-import { createWaxFoundation } from '@hiveio/wax';
-import { useUser } from '@smart-signer/lib/auth/use-user';
-import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { useTranslation } from 'next-i18next';
 
 function Permissions({ username }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { t } = useTranslation('common_wallet');
-
-  useEffect(() => {
-    (async function () {
-      const wax = await createWaxFoundation();
-      const chain = await hiveChainService.getHiveChain();
-      const owner = wax.getPrivateKeyFromPassword(username, 'owner', 'xd12');
-      const owner2 = wax.getPrivateKeyFromPassword(username, 'owner', 'xd');
-      // const active = wax.getPrivateKeyFromPassword(username, 'active', 'xd12');
-      // const posting = wax.getPrivateKeyFromPassword(username, 'posting', 'xd12');
-      console.log(owner, owner2);
-    })();
-  }, [username]);
 
   return (
     <ProfileLayout>
