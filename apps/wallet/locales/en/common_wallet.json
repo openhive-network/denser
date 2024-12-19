@@ -371,5 +371,62 @@
     "savings_withdraw_desc": "Withdraw funds after the required 3 day waiting period.",
     "delegatee": "Delegatee",
     "delegator": "Delegator"
+  },
+  "permissions": {
+    "reveal": "Reveal",
+    "keys_and_permissions": "Keys & Permissions",
+    "any_password": "Any password or key is more likely to get compromised the more it is used. That's why Hive uses a hierarchical key system to keep you safe. You are issued with four keys which have different permissions. For example, the Posting Key (which is intended to be used frequently) has a limited set of permissions for social actions that require less security. You'll need to be more careful with your Active Key since it has permissions to perform wallet related actions",
+    "note": "Please take note of your Hive Keys listed below. Ideally, use a Password Manager (like 1Password or LastPass) or store an offline copy safely (on a piece of paper or on a file on a USB drive).",
+    "posting_key": {
+      "name": "Posting Key",
+      "info": "This key should be used for social networking actions, like posting, commenting and voting. This key has a limited set of permissions and it is not able to be used for monetary actions. So you can't lose money if someone else gets access to this key.",
+      "use": "Use this key to log in to other Hive-powered social networks like Hive.blog, Busy and Esteem. Store this key safely.",
+      "private": "Your Private Posting Key",
+      "permissions": "Posting Key permissions",
+      "to": "Use your Posting Key to:",
+      "publish": "Publish a post or comment",
+      "edit": "Edit a post or comment",
+      "upvote": "Upvote or downvote",
+      "reblog": "Reblog content",
+      "follow": "Follow people",
+      "mute": "Mute accounts"
+    },
+    "active_key": {
+      "name": "Active Key",
+      "info": "This key has additional permissions for more sensitive monetary-related actions, like transferring and exchanging tokens.",
+      "use": "When performing a wallet related action, you may be prompted to authenticate with your Active key. You should only enter your Active Key into apps which you trust because anyone with access to this key can take your tokens. Do yourself a favor and store this key safely to avoid losing tokens in the future.",
+      "private": "Your Private Active Key",
+      "permissions": "Active Key permissions",
+      "to": "Use your Active Key to:",
+      "transfer": "Transfer tokens",
+      "power_hive": "Power HIVE up or down",
+      "vote": "Vote for witnesses",
+      "place_order": "Place an order on an exchange",
+      "profile_changes": "Certain profile changes",
+      "publish": "Publish a Witness price feed",
+      "create": "Create a new user"
+    },
+    "owner_key": {
+      "name": "Owner Key",
+      "info": "The owner key is required to change the other keys. This key has additional permissions to recover your account or change your other keys. It&apos;s the most important key and should be securely stored offline.",
+      "private": "Your Private Owner Key",
+      "permissions": "Owner Key permissions",
+      "to": "Use your Owner Key to:",
+      "reset": "Reset Owner, Active, and Posting keys",
+      "recover": "Recover your account",
+      "decline": "Decline voting rights"
+    },
+    "memo_key": {
+      "name": "Memo Key",
+      "info": "The Memo key because it is a bit of an outlier. The only thing the Memo Key can do is encrypt and decrypt private messages that are sent through the blockchain. While this could one day be a powerful feature, today it is not commonly used. If you have received a private message that you would like to decrypt, as always you should use the key with the minimum necessary authorities, which in this case would be the Memo Key.",
+      "private": "Your Private Memo Key",
+      "permissions": "Memo Key permissions",
+      "to": "Use your Memo Key to:",
+      "send": "Send an encrypted message",
+      "view": "View an encrypted message"
+    },
+    "public_keys": "Public keys",
+    "public_info": "Each Hive Key has a public and private key to encrypt and decrypt data. Public keys are associated with usernames and can be used to look up associated transactions on the blockchain. Your public keys are not required for login on Hive.blog and you don't need to store these safely.",
+    "view_public": "View public key information for this account (in the 'Authorities' module):"
   }
 }

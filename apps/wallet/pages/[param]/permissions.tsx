@@ -5,8 +5,27 @@ import { Button, Card, Input, Label, Separator } from '@ui/components';
 import Link from 'next/link';
 import { cn } from '@ui/lib/utils';
 import { getTranslations } from '../../lib/get-translations';
+import { useEffect } from 'react';
+import { createWaxFoundation } from '@hiveio/wax';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import { useTranslation } from 'next-i18next';
 
 function Permissions({ username }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const { t } = useTranslation('common_wallet');
+
+  useEffect(() => {
+    (async function () {
+      const wax = await createWaxFoundation();
+      const chain = await hiveChainService.getHiveChain();
+      const owner = wax.getPrivateKeyFromPassword(username, 'owner', 'xd12');
+      const owner2 = wax.getPrivateKeyFromPassword(username, 'owner', 'xd');
+      // const active = wax.getPrivateKeyFromPassword(username, 'active', 'xd12');
+      // const posting = wax.getPrivateKeyFromPassword(username, 'posting', 'xd12');
+      console.log(owner, owner2);
+    })();
+  }, [username]);
+
   return (
     <ProfileLayout>
       <div className="flex flex-col gap-8 ">
@@ -14,43 +33,25 @@ function Permissions({ username }: InferGetServerSidePropsType<typeof getServerS
           <WalletMenu username={username} />
         </div>
         <div className="flex flex-col gap-8 px-6">
-          <h1 className="text-2xl font-semibold">Keys & Permissions</h1>
+          <h1 className="text-2xl font-semibold">{t('permissions.keys_and_permissions')}</h1>
           <div className="flex flex-col gap-6 md:flex-row">
             <div className="flex flex-col gap-6 text-sm">
-              <p>
-                Any password or key is more likely to get compromised the more it is used. That&apos;s why
-                Hive uses a hierarchical key system to keep you safe. You are issued with four keys which have
-                different permissions. For example, the Posting Key (which is intended to be used frequently)
-                has a limited set of permissions for social actions that require less security. You&apos;ll
-                need to be more careful with your Active Key since it has permissions to perform wallet
-                related actions
-              </p>
-              <p>
-                Please take note of your Hive Keys listed below. Ideally, use a Password Manager (like
-                1Password or LastPass) or store an offline copy safely (on a piece of paper or on a file on a
-                USB drive).
-              </p>
+              <p>{t('permissions.any_password')}</p>
+              <p>{t('permissions.note')}</p>
             </div>
             <img className="w-[300px]" src="/permissions.png" alt="Permmisions info graphic" />
           </div>
 
           <Card className={cn('flex flex-col text-sm drop-shadow-xl dark:bg-background/95 dark:text-white')}>
-            <h1 className="p-4 text-2xl font-semibold">Posting Key</h1>
+            <h1 className="p-4 text-2xl font-semibold">{t('permissions.posting_key.name')}</h1>
             <Separator />
             <div className="flex flex-col md:grid md:grid-cols-[1fr_400px]">
               <div className="border-bg-border flex flex-col gap-8 border-none p-4 md:border-r-2 md:border-solid">
-                <p>
-                  This key should be used for social networking actions, like posting, commenting and voting.
-                  This key has a limited set of permissions and it is not able to be used for monetary
-                  actions. So you can&apos;t lose money if someone else gets access to this key.
-                </p>
-                <p>
-                  Use this key to log in to other Hive-powered social networks like Hive.blog, Busy and
-                  Esteem. Store this key safely.
-                </p>
+                <p>{t('permissions.posting_key.info')}</p>
+                <p>{t('permissions.posting_key.use')}</p>
                 <div className="flex flex-col">
                   <Label htmlFor="postingKey" className="text-lg font-semibold">
-                    Your Private Posting Key
+                    {t('permissions.posting_key.private')}
                   </Label>
                   <div className="md:relative md:h-10">
                     <Input
@@ -61,45 +62,37 @@ function Permissions({ username }: InferGetServerSidePropsType<typeof getServerS
                       value="wqinufiqwhuifhq783hfuq83hqsadasdasfas9h3q9ruq3h"
                     />
                     <Button className="right-0 mt-4 h-full p-2 md:absolute md:mt-0 md:rounded-l-none">
-                      Reveal
+                      {t('permissions.reveal')}
                     </Button>
                   </div>
                 </div>
               </div>
 
               <div className="flex flex-col p-4">
-                <h1 className="text-lg font-semibold">Posting Key permissions</h1>
-                <span>Use your Posting Key to:</span>
+                <h1 className="text-lg font-semibold">{t('permissions.posting_key.permissions')}</h1>
+                <span>{t('permissions.posting_key.to')}</span>
                 <ul className="flex list-disc flex-col gap-2 px-5 pt-2">
-                  <li>Publish a post or comment</li>
-                  <li>Edit a post or comment</li>
-                  <li>Upvote or downvote</li>
-                  <li>Reblog content</li>
-                  <li>Follow people</li>
-                  <li>Mute accounts</li>
+                  <li>{t('permissions.posting_key.publish')}</li>
+                  <li>{t('permissions.posting_key.edit')}</li>
+                  <li>{t('permissions.posting_key.upvote')}</li>
+                  <li>{t('permissions.posting_key.reblog')}</li>
+                  <li>{t('permissions.posting_key.follow')}</li>
+                  <li>{t('permissions.posting_key.mute')}</li>
                 </ul>
               </div>
             </div>
           </Card>
 
           <Card className={cn('flex flex-col text-sm drop-shadow-xl dark:bg-background/95 dark:text-white')}>
-            <h1 className="p-4 text-2xl font-semibold">Active Key</h1>
+            <h1 className="p-4 text-2xl font-semibold">{t('permissions.active_key.name')}</h1>
             <Separator />
             <div className="flex flex-col md:grid md:grid-cols-[1fr_400px]">
               <div className="border-bg-border flex flex-col gap-8 border-none p-4 md:border-r-2 md:border-solid">
-                <p>
-                  This key has additional permissions for more sensitive monetary-related actions, like
-                  transferring and exchanging tokens.
-                </p>
-                <p>
-                  When performing a wallet related action, you may be prompted to authenticate with your
-                  Active key. You should only enter your Active Key into apps which you trust because anyone
-                  with access to this key can take your tokens. Do yourself a favor and store this key safely
-                  to avoid losing tokens in the future.
-                </p>
+                <p>{t('permissions.active_key.info')}</p>
+                <p>{t('permissions.active_key.use')}</p>
                 <div className="flex flex-col">
                   <Label htmlFor="activeKey" className="text-lg font-semibold">
-                    Your Private Active Key
+                    {t('permissions.active_key.private')}
                   </Label>
                   <div className="relative md:h-10">
                     <Input
@@ -110,41 +103,36 @@ function Permissions({ username }: InferGetServerSidePropsType<typeof getServerS
                       value="wqinufiqwhuifhq783hfuq83hqsadasdasfas9h3q9ruq3h"
                     />
                     <Button className="right-0 mt-4 h-full p-2 md:absolute md:mt-0 md:rounded-l-none">
-                      Reveal
+                      {t('permissions.reveal')}
                     </Button>
                   </div>
                 </div>
               </div>
               <div className="flex flex-col p-4">
-                <h1 className="text-lg font-semibold">Active Key permissions</h1>
-                <span>Use your Active Key to:</span>
+                <h1 className="text-lg font-semibold">{t('permissions.active_key.permissions')}</h1>
+                <span>{t('permissions.active_key.to')}</span>
                 <ul className="flex list-disc flex-col gap-2 px-5 pt-2 ">
-                  <li>Transfer tokens</li>
-                  <li>Power HIVE up or down</li>
-                  <li>Power HIVE up or down</li>
-                  <li>Vote for witnesses</li>
-                  <li>Place an order on an exchange</li>
-                  <li>Certain profile changes</li>
-                  <li>Publish a Witness price feed</li>
-                  <li>Create a new user</li>
+                  <li>{t('permissions.active_key.transfer')}</li>
+                  <li>{t('permissions.active_key.power_hive')}</li>
+                  <li>{t('permissions.active_key.vote')}</li>
+                  <li>{t('permissions.active_key.place_order')}</li>
+                  <li>{t('permissions.active_key.profile_changes')}</li>
+                  <li>{t('permissions.active_key.publish')}</li>
+                  <li>{t('permissions.active_key.create')}</li>
                 </ul>
               </div>
             </div>
           </Card>
 
           <Card className={cn('flex flex-col text-sm drop-shadow-xl dark:bg-background/95 dark:text-white')}>
-            <h1 className="p-4 text-2xl font-semibold">Owner Key</h1>
+            <h1 className="p-4 text-2xl font-semibold">{t('permissions.owner_key.name')}</h1>
             <Separator />
             <div className="flex flex-col md:grid md:grid-cols-[1fr_400px]">
               <div className="border-bg-border flex flex-col gap-8 border-none p-4 md:border-r-2 md:border-solid">
-                <p>
-                  The owner key is required to change the other keys. This key has additional permissions to
-                  recover your account or change your other keys. It&apos;s the most important key and should
-                  be securely stored offline.
-                </p>
+                <p>{t('permissions.owner_key.info')}</p>
                 <div className="flex flex-col">
                   <Label htmlFor="ownerKey" className="text-lg font-semibold">
-                    Your Private Owner Key
+                    {t('permissions.owner_key.private')}
                   </Label>
                   <div className="relative md:h-10">
                     <Input
@@ -155,39 +143,33 @@ function Permissions({ username }: InferGetServerSidePropsType<typeof getServerS
                       value="wqinufiqwhuifhq783hfuq83hqsadasdasfas9h3q9ruq3h"
                     />
                     <Button className="right-0 mt-4 h-full p-2 md:absolute md:mt-0 md:rounded-l-none">
-                      Reveal
+                      {t('permissions.reveal')}
                     </Button>
                   </div>
                 </div>
               </div>
               <div className="flex flex-col p-4">
-                <h1 className="text-lg font-semibold">Owner Key permissions</h1>
-                <span>Use your Owner Key to:</span>
+                <h1 className="text-lg font-semibold">{t('permissions.owner_key.permissions')}</h1>
+                <span>{t('permissions.owner_key.to')}</span>
                 <ul className="flex list-disc flex-col gap-2 px-5 pt-2">
-                  <li>Reset Owner, Active, and Posting keys</li>
-                  <li>Recover your account</li>
-                  <li>Decline voting rights</li>
+                  <li>{t('permissions.owner_key.reset')}</li>
+                  <li>{t('permissions.owner_key.recover')}</li>
+                  <li>{t('permissions.owner_key.decline')}</li>
                 </ul>
               </div>
             </div>
           </Card>
 
           <Card className={cn('flex flex-col text-sm drop-shadow-xl dark:bg-background/95 dark:text-white')}>
-            <h1 className="p-4 text-2xl font-semibold">Memo Key</h1>
+            <h1 className="p-4 text-2xl font-semibold">{t('permissions.memo_key.name')}</h1>
             <Separator />
             <div className="flex flex-col md:grid md:grid-cols-[1fr_400px]">
               <div className="border-bg-border flex flex-col gap-8 border-none p-4 md:border-r-2 md:border-solid">
-                <p>
-                  The Memo key because it is a bit of an outlier. The only thing the Memo Key can do is
-                  encrypt and decrypt private messages that are sent through the blockchain. While this could
-                  one day be a powerful feature, today it is not commonly used. If you have received a private
-                  message that you would like to decrypt, as always you should use the key with the minimum
-                  necessary authorities, which in this case would be the Memo Key.
-                </p>
+                <p>{t('permissions.memo_key.info')}</p>
 
                 <div className="flex flex-col">
                   <Label htmlFor="memoKey" className="text-lg font-semibold">
-                    Your Private Memo Key
+                    {t('permissions.memo_key.private')}
                   </Label>
                   <div className="relative md:h-10">
                     <Input
@@ -198,17 +180,17 @@ function Permissions({ username }: InferGetServerSidePropsType<typeof getServerS
                       value="wqinufiqwhuifhq783hfuq83hqsadasdasfas9h3q9ruq3h"
                     />
                     <Button className="right-0 mt-4 h-full p-2 md:absolute md:mt-0 md:rounded-l-none">
-                      Reveal
+                      {t('permissions.reveal')}
                     </Button>
                   </div>
                 </div>
               </div>
               <div className="flex flex-col p-4">
-                <h1 className="text-lg font-semibold">Memo Key permissions</h1>
-                <span>Use your Memo Key to:</span>
+                <h1 className="text-lg font-semibold">{t('permissions.memo_key.permissions')}</h1>
+                <span>{t('permissions.memo_key.to')}</span>
                 <ul className="flex list-disc flex-col gap-2 px-5 pt-2">
-                  <li>Send an encrypted message</li>
-                  <li>View an encrypted message</li>
+                  <li>{t('permissions.memo_key.send')}</li>
+                  <li>{t('permissions.memo_key.view')}</li>
                 </ul>
               </div>
             </div>
@@ -216,15 +198,10 @@ function Permissions({ username }: InferGetServerSidePropsType<typeof getServerS
 
           <Separator />
           <div className="flex flex-col gap-4 py-12 text-sm">
-            <h1 className="text-xl font-semibold">Public Keys</h1>
-            <p>
-              Each Hive Key has a public and private key to encrypt and decrypt data. Public keys are
-              associated with usernames and can be used to look up associated transactions on the blockchain.
-              Your public keys are not required for login on Hive.blog and you don&apos;t need to store these
-              safely.
-            </p>
+            <h1 className="text-xl font-semibold">{t('permissions.public_keys')}</h1>
+            <p>{t('permissions.public_info')}</p>
             <div>
-              <p>View public key information for this account (in the &apos;Authorities&apos; module):</p>
+              <p>{t('permissions.view_public')}</p>
               <Link href="hiveblocks.com/@guest4test1" className="font-bold text-red-600">
                 hiveblocks.com/@guest4test1
               </Link>
