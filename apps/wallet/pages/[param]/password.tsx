@@ -74,6 +74,7 @@ export default function PostForm() {
     try {
       const components = await resolveChangePasswordComponents(_data.curr_password);
       await changePasswordMutation.mutateAsync({ ...components });
+      form.reset();
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
