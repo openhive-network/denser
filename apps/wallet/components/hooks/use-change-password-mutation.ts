@@ -13,18 +13,16 @@ export function useChangePasswordMutation() {
     mutationFn: async (params: {
       account: string;
       keys: Record<string, { old: string; new: string }>;
-      wif: string;
     }) => {
       const broadcastResult = await transactionService.changeMasterPassword(
         params.account,
         params.keys,
-        params.wif,
-        { observe: true, singleSign: true }
+        { observe: true, singleSignKeyType: 'owner' }
       );
       const response = { ...params, broadcastResult };
       logger.info('Done change master password transaction: %o', response);
     },
-    onSuccess: (data) => {
+    onSuccess: (data: unknown) => {
       logger.info('useChangePasswordMutation onSuccess data: %o', data);
     }
   });

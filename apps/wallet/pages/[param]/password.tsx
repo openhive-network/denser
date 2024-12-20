@@ -17,6 +17,7 @@ import { createWaxFoundation } from '@hiveio/wax';
 import { useChangePasswordMutation } from '@/wallet/components/hooks/use-change-password-mutation';
 import { handleError } from '@ui/lib/utils';
 import { Icons } from '@ui/components/icons';
+import { hiveChainService } from '@transaction/lib/hive-chain-service';
 
 export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
@@ -88,30 +89,22 @@ export default function PostForm() {
   async function resolveChangePasswordComponents(password: string): Promise<{
     account: string;
     keys: Record<string, { old: string; new: string }>;
-    wif: string;
   }> {
-    const isWif = password.startsWith('5') && password.length === 51;
-    const wax = await createWaxFoundation();
-    let wif = '';
+    const hiveChain = await hiveChainService.getHiveChain();
 
-    if (isWif) {
-      wif = password;
-    } else {
-      const pKey = wax.getPrivateKeyFromPassword(username, 'owner', password);
-      wif = pKey.wifPrivateKey;
-    }
-    const oldOwner = wax.getPrivateKeyFromPassword(username, 'owner', password);
-    const oldActive = wax.getPrivateKeyFromPassword(username, 'active', password);
-    const oldPosting = wax.getPrivateKeyFromPassword(username, 'posting', password);
+    // password !== WIF
+    const oldOwner = hiveChain.getPrivateKeyFromPassword(username, 'owner', password);
+    const oldActive = hiveChain.getPrivateKeyFromPassword(username, 'active', password);
+    const oldPosting = hiveChain.getPrivateKeyFromPassword(username, 'posting', password);
 
     // generate password
-    const brainKeyData = wax.suggestBrainKey();
+    const brainKeyData = hiveChain.suggestBrainKey();
     const passwordToBeSavedByUser = 'P' + brainKeyData.wifPrivateKey;
 
     // private keys for account authorities
-    const newOwner = wax.getPrivateKeyFromPassword(username, 'owner', passwordToBeSavedByUser);
-    const newActive = wax.getPrivateKeyFromPassword(username, 'active', passwordToBeSavedByUser);
-    const newPosting = wax.getPrivateKeyFromPassword(username, 'posting', passwordToBeSavedByUser);
+    const newOwner = hiveChain.getPrivateKeyFromPassword(username, 'owner', passwordToBeSavedByUser);
+    const newActive = hiveChain.getPrivateKeyFromPassword(username, 'active', passwordToBeSavedByUser);
+    const newPosting = hiveChain.getPrivateKeyFromPassword(username, 'posting', passwordToBeSavedByUser);
 
     return {
       account: username,
@@ -128,8 +121,7 @@ export default function PostForm() {
           old: oldPosting.associatedPublicKey,
           new: newPosting.associatedPublicKey
         }
-      },
-      wif
+      }
     };
   }
 
@@ -206,7 +198,11 @@ export default function PostForm() {
                     </Link>
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} type="password" placeholder={t('change_password_page.current_password_or_owner_key')} />
+                    <Input
+                      {...field}
+                      type="password"
+                      placeholder={t('change_password_page.current_password')}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

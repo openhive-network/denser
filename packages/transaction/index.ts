@@ -14,10 +14,10 @@ import {
   authority,
   future_extensions,
   EAvailableCommunityRoles,
-  AccountAuthorityUpdateOperation
+  AccountAuthorityUpdateOperation,
 } from '@hiveio/wax';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
-import { SignerOptions } from '@smart-signer/lib/signer/signer';
+import { SignerOptions, SignTransaction } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
 import { Beneficiarie, Preferences } from './lib/app-types';
 import WorkerBee, { ITransactionData, IWorkerBee } from '@hiveio/workerbee';
@@ -31,7 +31,7 @@ export type TransactionBroadcastCallback = (txBuilder: ITransaction) => Promise<
 
 export interface TransactionOptions {
   observe?: boolean;
-  singleSign?: boolean;
+  singleSignKeyType?: SignTransaction['singleSignKeyType'];
 }
 
 export interface TransactionBroadcastResult {
@@ -90,13 +90,13 @@ export class TransactionService {
     cb: (opBuilder: ITransaction) => void,
     transactionOptions: TransactionOptions = {}
   ): Promise<TransactionBroadcastResult> {
-    console.log('transactionOptions', transactionOptions);
+
     const defaultTransactionOptions = {
       observe: false,
-      singleSign: false
+      singleSignKeyType: undefined
     };
 
-    const { observe, singleSign } = {
+    const { observe, singleSignKeyType } = {
       ...defaultTransactionOptions,
       ...transactionOptions
     };
@@ -109,8 +109,8 @@ export class TransactionService {
     // Validate transaction
     txBuilder.validate();
 
-    // Get signature of transaction
-    const signature = await this.signTransaction(txBuilder, singleSign);
+    const signature = await this.signTransaction(txBuilder, singleSignKeyType);
+
     // Add signature to transaction
     txBuilder.sign(signature);
 
@@ -128,11 +128,12 @@ export class TransactionService {
    * @return {*}  {Promise<string>}
    * @memberof TransactionService
    */
-  signTransaction(txBuilder: ITransaction, singleSign = false): Promise<string> {
+  signTransaction(txBuilder: ITransaction, singleSignKeyType?: SignTransaction['singleSignKeyType']): Promise<string> {
     const signer = getSigner(this.signerOptions);
     return signer.signTransaction({
       digest: txBuilder.sigDigest,
-      transaction: txBuilder.transaction
+      transaction: txBuilder.transaction,
+      singleSignKeyType
     });
   }
 
@@ -892,35 +893,45 @@ export class TransactionService {
 
   async changeMasterPassword(
     account: string,
-    keys: Record<string, { old: string; new: string }>,
-    wif: string,
-    transactionOptions: TransactionOptions = {}
+    keys: Record<'owner' | 'active' | 'posting', { old: string; new: string }>,
+    transactionOptions: TransactionOptions
   ) {
-    if (!wif) {
-      return Promise.reject(new Error('Missing owner key'));
+    try {
+      const accountAuthorityUpdateOp = await AccountAuthorityUpdateOperation.createFor(
+        await hiveChainService.getHiveChain(),
+        account
+      );
+  
+      if (!keys.owner || !keys.active || !keys.posting) {
+        throw new Error('Missing required keys for master password change');
+      }
+  
+      const { owner, active, posting } = keys;
+  
+      if (
+        !accountAuthorityUpdateOp.role('owner').has(owner.old) ||
+        !accountAuthorityUpdateOp.role('active').has(active.old) ||
+        !accountAuthorityUpdateOp.role('posting').has(posting.old)
+      ) {
+        throw new Error('Wrong master password');
+      }
+  
+      accountAuthorityUpdateOp.role('owner').replace(owner.old, 1, owner.new);
+      accountAuthorityUpdateOp.role('active').replace(active.old, 1, active.new);
+      accountAuthorityUpdateOp.role('posting').replace(posting.old, 1, posting.new);
+  
+      return await this.processHiveAppOperation(async (builder) => {
+        builder.pushOperation(accountAuthorityUpdateOp);
+      }, transactionOptions);
+    } catch (error) {
+      const isKeyError = error instanceof Error && error.message.includes('import key');
+    
+      if (isKeyError) {
+        throw new Error('One time signing failed, invalid key.');
+      }
+
+      throw new Error(`One time signing failed: ${(error as Error)?.message || 'Unknown error'}`);
     }
-
-    const accountAuthorityUpdateOp = await AccountAuthorityUpdateOperation.createFor(
-      await hiveChainService.getHiveChain(),
-      account
-    );
-
-    const { owner, active, posting } = keys;
-
-    if (!owner || !active || !posting) {
-      return Promise.reject(new Error('owner, active and posting associated public keys are required'));
-    }
-
-    accountAuthorityUpdateOp.role('owner').replace(owner.old, 1, owner.new);
-    accountAuthorityUpdateOp.role('active').replace(active.old, 1, active.new);
-    accountAuthorityUpdateOp.role('posting').replace(posting.old, 1, posting.new);
-
-    console.log('accountAuthorityUpdateOp', accountAuthorityUpdateOp);
-
-    return;
-    return await this.processHiveAppOperation(async (builder) => {
-      builder.pushOperation(accountAuthorityUpdateOp);
-    }, transactionOptions);
   }
 
   async createClaimedAccount(

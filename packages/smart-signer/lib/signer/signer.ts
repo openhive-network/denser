@@ -9,8 +9,10 @@ const logger = getLogger('app');
 export interface SignTransaction {
   digest: THexString;
   transaction: transaction;
+  // if singleSign is defined, this is required
+  // so we need to get the private key from the user 
+  singleSignKeyType?: 'owner' | 'active' | 'posting'; 
 }
-
 export interface SignChallenge {
   message: string | Buffer;
   password?: string; // private key or password to unlock hbauth key

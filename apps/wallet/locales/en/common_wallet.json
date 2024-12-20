@@ -295,7 +295,6 @@
     "change_password": "Change Password",
     "account_name": "Account Name",
     "current_password": "Current Password",
-    "current_password_or_owner_key": "Current Password or Owner Key",
     "recover_password": "Recover Account",
     "generated_password": "Generated Password",
     "new": "New",
