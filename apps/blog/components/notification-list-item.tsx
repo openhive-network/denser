@@ -51,10 +51,10 @@ const NotificationListItem = ({ date, msg, score, type, url, lastRead }: IAccoun
         </a>
       ))
     : null;
-
+  const filteredUrl = type === 'follow' ? `/${url}` : url;
   return (
     <tr
-      className="even:bg-background-tertiary block w-full px-4 odd:bg-background "
+      className="block w-full px-4 odd:bg-background even:bg-background-tertiary "
       data-testid="notification-list-item"
     >
       <td className="flex justify-between py-4">
@@ -62,7 +62,7 @@ const NotificationListItem = ({ date, msg, score, type, url, lastRead }: IAccoun
           {unRead && isOwner ? <span className="mr-2 h-2 w-2 rounded-full bg-destructive" /> : null}
           {participants}
           <div className="flex flex-col">
-            <Link href={`/${url}`}>
+            <Link href={filteredUrl}>
               <span className="" data-testid="notification-account-and-message">
                 <strong data-testid="subscriber-name">{msg.split(' ')[0]}</strong>
                 {mentions ? msg.split(new RegExp(`(${mentions[0]})`, 'gi'))[2] : null}
