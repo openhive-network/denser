@@ -20,7 +20,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { cn, handleError } from '@ui/lib/utils';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
-import { hbauthUseStrictMode, hbauthService } from '@smart-signer/lib/hbauth-service';
+import { hbauthService } from '@smart-signer/lib/hbauth-service';
 import { getAccountFull } from '@transaction/lib/hive';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'next-i18next';
@@ -547,7 +547,7 @@ export default function UserSettings() {
             onValueChange={async (newEndpoint) => {
               setEndpoint(newEndpoint);
               await hiveChainService.setHiveChainEndpoint(newEndpoint);
-              await hbauthService.setOnlineClient(hbauthUseStrictMode, { node: newEndpoint });
+              await hbauthService.setOnlineClient({ node: newEndpoint });
             }}
             value={endpoint}
           >

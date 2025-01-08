@@ -10,6 +10,7 @@ const withPWA = require('next-pwa')({
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
+  swcMinify: false,
   experimental: {
     outputFileTracingRoot: path.join(__dirname, '../..')
   },

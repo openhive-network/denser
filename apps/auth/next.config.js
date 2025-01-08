@@ -3,7 +3,7 @@ const version = require('./version.json');
 const withTM = require('next-transpile-modules')(['@hive/smart-signer', '@hive/ui', '@hive/transaction']);
 const CopyPlugin = require('copy-webpack-plugin');
 const withPWA = require('next-pwa')({
-  dest: "public",
+  dest: 'public',
   disable: process.env.NODE_ENV !== 'production'
 });
 
@@ -11,6 +11,7 @@ const withPWA = require('next-pwa')({
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
+  swcMinify: false,
   images: {
     domains: ['avatars.githubusercontent.com']
   },
