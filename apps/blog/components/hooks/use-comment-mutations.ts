@@ -1,3 +1,4 @@
+import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { Preferences } from '@transaction/lib/app-types';
@@ -48,6 +49,7 @@ export function useCommentMutation() {
  */
 export function useUpdateCommentMutation() {
   const queryClient = useQueryClient();
+  const { user } = useUser();
   const updateCommentMutation = useMutation({
     mutationFn: async (params: {
       parentAuthor: string;
@@ -70,8 +72,11 @@ export function useUpdateCommentMutation() {
       return response;
     },
     onSuccess: (data) => {
+      const { username } = user;
+      const { permlink } = data;
       logger.info('useUpdateCommentMutation onSuccess data: %o', data);
       queryClient.invalidateQueries({ queryKey: ['discussionData'] });
+      queryClient.invalidateQueries({ queryKey: ['postData', username, permlink] });
     }
   });
 

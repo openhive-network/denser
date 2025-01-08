@@ -302,7 +302,17 @@ export default function PostForm({
       }
     }
   };
-
+  const handleLoadTemplate = (data: AccountFormValues) => {
+    form.setValue('author', data.author);
+    form.setValue('beneficiaries', data.beneficiaries);
+    form.setValue('category', data.category);
+    form.setValue('maxAcceptedPayout', data.maxAcceptedPayout);
+    form.setValue('payoutType', data.payoutType);
+    form.setValue('postArea', data.postArea);
+    form.setValue('postSummary', data.postSummary);
+    form.setValue('tags', data.tags);
+    form.setValue('title', data.title);
+  };
   return (
     <div className={clsx({ container: !sideBySide || !preview })}>
       <div
@@ -447,7 +457,11 @@ export default function PostForm({
                       ? t('submit_page.power_up')
                       : ' 50% HBD / 50% HP'}
                 </span>
-                <AdvancedSettingsPostForm username={username} onChangeStore={storePost} data={storedPost}>
+                <AdvancedSettingsPostForm
+                  username={username}
+                  updateForm={(e) => handleLoadTemplate(e)}
+                  data={storedPost}
+                >
                   <span
                     className="w-fit cursor-pointer text-xs text-destructive"
                     title={t('submit_page.advanced_tooltip')}
