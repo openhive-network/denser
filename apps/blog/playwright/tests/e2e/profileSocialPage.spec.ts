@@ -66,13 +66,13 @@ test.describe.skip('Social tab in the profile page of @gtg', () => {
         await profilePage.profileSocialTabIsSelected();
 
         expect(await profilePage.getElementCssPropertyValue(await profilePage.socialAuthorSubscribedCommunitiesListItem.locator('a').first(), 'color'))
-            .toBe('rgb(220, 38, 38)');
+            .toBe('rgb(218, 43, 43)');
         expect(await profilePage.getElementCssPropertyValue(await profilePage.socialAuthorSubscribedCommunitiesRoleTag.first(), 'color'))
             .toBe('rgb(15, 23, 42)');
         expect(await profilePage.getElementCssPropertyValue(await profilePage.socialAuthorSubscribedCommunitiesAffiliationTag.first(), 'color'))
             .toBe('rgb(100, 116, 139)');
         expect(await profilePage.getElementCssPropertyValue(await profilePage.socialAuthorSubscribedCommunitiesAffiliationTag.first(), 'border-color'))
-            .toBe('rgb(220, 38, 38)');
+            .toBe('rgb(218, 43, 43)');
             expect(await profilePage.getElementCssPropertyValue(await profilePage.socialAuthorSubscribedCommunitiesAffiliationTag.first(), 'background-color'))
             .toBe('rgba(0, 0, 0, 0)');
     });
@@ -85,13 +85,13 @@ test.describe.skip('Social tab in the profile page of @gtg', () => {
         await homePage.validateThemeModeIsDark();
 
         expect(await profilePage.getElementCssPropertyValue(await profilePage.socialAuthorSubscribedCommunitiesListItem.locator('a').first(), 'color'))
-            .toBe('rgb(220, 38, 38)');
+            .toBe('rgb(218, 43, 43)');
         expect(await profilePage.getElementCssPropertyValue(await profilePage.socialAuthorSubscribedCommunitiesRoleTag.first(), 'color'))
             .toBe('rgb(225, 231, 239)');
         expect(await profilePage.getElementCssPropertyValue(await profilePage.socialAuthorSubscribedCommunitiesAffiliationTag.first(), 'color'))
             .toBe('rgb(100, 116, 139)');
         expect(await profilePage.getElementCssPropertyValue(await profilePage.socialAuthorSubscribedCommunitiesAffiliationTag.first(), 'border-color'))
-            .toBe('rgb(220, 38, 38)');
+            .toBe('rgb(218, 43, 43)');
             expect(await profilePage.getElementCssPropertyValue(await profilePage.socialAuthorSubscribedCommunitiesAffiliationTag.first(), 'background-color'))
             .toBe('rgba(0, 0, 0, 0)');
     });

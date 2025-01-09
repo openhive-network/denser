@@ -125,7 +125,7 @@ export class WitnessPage {
     await expect(this.witnessesVoteBoxInput).toHaveCSS('placeholder', '');
     // button of the voting box
     await expect(this.witnessesVoteBoxButton).toHaveText('VOTE');
-    await expect(this.witnessesVoteBoxButton).toHaveCSS('background-color', 'rgb(255, 0, 0)');
+    await expect(this.witnessesVoteBoxButton).toHaveCSS('background-color', 'rgb(218, 43, 43)');
     await expect(this.witnessesVoteBoxButton).toHaveCSS('color', 'rgb(248, 250, 252)');
   }
 
@@ -145,7 +145,7 @@ export class WitnessPage {
     await expect(this.witnessesSetProxyBoxInput).toHaveCSS('placeholder', '');
     // button of the set proxy box
     await expect(this.witnessesSetProxyBoxButton).toHaveText('Set proxy');
-    await expect(this.witnessesSetProxyBoxButton).toHaveCSS('background-color', 'rgb(255, 0, 0)');
+    await expect(this.witnessesSetProxyBoxButton).toHaveCSS('background-color', 'rgb(218, 43, 43)');
     await expect(this.witnessesSetProxyBoxButton).toHaveCSS('color', 'rgb(248, 250, 252)');
   }
 

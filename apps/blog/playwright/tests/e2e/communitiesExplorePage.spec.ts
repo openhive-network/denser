@@ -139,7 +139,7 @@ test.describe('Explore communities page tests', () => {
     // Validate style of the community name
     expect(
       await communitiesPage.getElementCssPropertyValue(await communitiesPage.communityListItemTitle.first(), 'color')
-    ).toBe('rgb(255, 0, 0)');
+    ).toBe('rgb(218, 43, 43)');
     // Validate style of the community description
     expect(
         await communitiesPage.getElementCssPropertyValue(await communitiesPage.communityListItemAbout.first(), 'color')
@@ -155,7 +155,7 @@ test.describe('Explore communities page tests', () => {
     // Validate style of the community footer ( admin: name)
     expect(
         await communitiesPage.getElementCssPropertyValue(await communitiesPage.communityListItemFooter.locator('p span > a').first(), 'color')
-    ).toBe('rgb(255, 0, 0)');
+    ).toBe('rgb(218, 43, 43)');
     // Validate style of the community subscribe button
     expect(
         await communitiesPage.getElementCssPropertyValue(await communitiesPage.communityListItemSubscribeButton.first(), 'color')
