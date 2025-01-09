@@ -131,7 +131,7 @@ test.describe.skip('Login and Sign Up tests', () => {
         await hbauthLoginDialog.hbauthUnlockKeySubmitButton,
         'background-color'
       )
-    ).toBe('rgb(220, 38, 38)');
+    ).toBe('rgb(218, 43, 43)');
     await expect(
       await hbauthLoginDialog.getElementCssPropertyValue(
         await hbauthLoginDialog.hbauthUnlockKeySubmitButton,
@@ -240,7 +240,7 @@ test.describe.skip('Login and Sign Up tests', () => {
         await hbauthLoginDialog.hbauthUnlockKeySubmitButton,
         'background-color'
       )
-    ).toBe('rgb(220, 38, 38)');
+    ).toBe('rgb(218, 43, 43)');
     await expect(
       await hbauthLoginDialog.getElementCssPropertyValue(
         await hbauthLoginDialog.hbauthUnlockKeySubmitButton,
@@ -378,7 +378,7 @@ test.describe.skip('Login and Sign Up tests', () => {
         await hbauthLoginDialog.hbauthAddKeySubmitButton,
         'background-color'
       )
-    ).toBe('rgb(220, 38, 38)');
+    ).toBe('rgb(218, 43, 43)');
     await expect(
       await hbauthLoginDialog.getElementCssPropertyValue(
         await hbauthLoginDialog.hbauthAddKeySubmitButton,
@@ -531,7 +531,7 @@ test.describe.skip('Login and Sign Up tests', () => {
         await hbauthLoginDialog.hbauthAddKeySubmitButton,
         'background-color'
       )
-    ).toBe('rgb(220, 38, 38)');
+    ).toBe('rgb(218, 43, 43)');
     await expect(
       await hbauthLoginDialog.getElementCssPropertyValue(
         await hbauthLoginDialog.hbauthAddKeySubmitButton,
@@ -587,7 +587,7 @@ test.describe.skip('Login and Sign Up tests', () => {
     ).toBe('rgba(0, 0, 0, 0)');
     await expect(
       await hbauthLoginDialog.getElementCssPropertyValue(await hbauthLoginDialog.hbauthUnlockKeyResetButton, 'color')
-    ).toBe('rgb(220, 38, 38)');
+    ).toBe('rgb(218, 43, 43)');
     // Validate border color of username input after clicking inside
     await hbauthLoginDialog.hbauthUnlockKeyUsernameInput.click();
     await expect(
@@ -622,7 +622,7 @@ test.describe.skip('Login and Sign Up tests', () => {
     ).toBe('rgba(0, 0, 0, 0)');
     await expect(
       await hbauthLoginDialog.getElementCssPropertyValue(await hbauthLoginDialog.hbauthAddKeyResetButton, 'color')
-    ).toBe('rgb(220, 38, 38)');
+    ).toBe('rgb(218, 43, 43)');
     // Validate border color of username input after clicking inside
     await hbauthLoginDialog.hbauthAddKeyUsernameInput.click();
     await expect(

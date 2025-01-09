@@ -42,7 +42,7 @@ test.describe('Login and Sign Up tests', () =>{
     await expect(homePage.signupBtn).toHaveText("Sign up")
     await homePage.signupBtn.hover()
     await page.waitForTimeout(500)
-    expect(await homePage.getElementCssPropertyValue(homePage.signupBtn, 'background-color')).toBe("rgb(220, 38, 38)");
+    expect(await homePage.getElementCssPropertyValue(homePage.signupBtn, 'background-color')).toBe("rgb(218, 43, 43)");
   });
 
   test('Check if login and sign up buttons are displayed correctly - dark mode', async ({ page }) => {
@@ -59,7 +59,7 @@ test.describe('Login and Sign Up tests', () =>{
     await expect(homePage.signupBtn).toHaveText("Sign up")
     await homePage.signupBtn.hover()
     await page.waitForTimeout(1000)
-    expect(await homePage.getElementCssPropertyValue(homePage.signupBtn, 'background-color')).toBe("rgb(220, 38, 38)");
+    expect(await homePage.getElementCssPropertyValue(homePage.signupBtn, 'background-color')).toBe("rgb(218, 43, 43)");
     await homePage.changeThemeMode("Light")
   });
 
@@ -332,7 +332,7 @@ test.describe('Login and Sign Up tests', () =>{
     expect(await homePage.getElementCssPropertyValue(await loginForm.wifInput, 'color')).toBe("rgb(15, 23, 42)");
     // Save and sign in button color when disabled
     expect(await homePage.getElementCssPropertyValue(await loginForm.saveSignInButton, 'color')).toBe("rgb(255, 255, 255)");
-    expect(await homePage.getElementCssPropertyValue(await loginForm.saveSignInButton, 'background-color')).toBe("rgb(220, 38, 38)");
+    expect(await homePage.getElementCssPropertyValue(await loginForm.saveSignInButton, 'background-color')).toBe("rgb(218, 43, 43)");
     // Other sign in options background-color and text color
     expect(await homePage.getElementCssPropertyValue(await loginForm.otherSignInOptionsButton, 'color')).toBe("rgb(15, 23, 42)");
     expect(await homePage.getElementCssPropertyValue(await loginForm.otherSignInOptionsButton, 'background-color')).toBe("rgb(241, 245, 249)");
@@ -362,7 +362,7 @@ test.describe('Login and Sign Up tests', () =>{
     expect(await homePage.getElementCssPropertyValue(await loginForm.wifInput, 'color')).toBe("rgb(255, 255, 255)");
     // Save and sign in button color when disabled
     expect(await homePage.getElementCssPropertyValue(await loginForm.saveSignInButton, 'color')).toBe("rgb(255, 255, 255)");
-    expect(await homePage.getElementCssPropertyValue(await loginForm.saveSignInButton, 'background-color')).toBe("rgb(220, 38, 38)");
+    expect(await homePage.getElementCssPropertyValue(await loginForm.saveSignInButton, 'background-color')).toBe("rgb(218, 43, 43)");
     // Other sign in options background-color and text color
     expect(await homePage.getElementCssPropertyValue(await loginForm.otherSignInOptionsButton, 'color')).toBe("rgb(248, 250, 252)");
     expect(await homePage.getElementCssPropertyValue(await loginForm.otherSignInOptionsButton, 'background-color')).toBe("rgb(15, 23, 42)");
@@ -560,7 +560,7 @@ test.describe('Login and Sign Up tests', () =>{
     expect(await homePage.getElementCssPropertyValue(await loginForm.passwordInput, 'color')).toBe("rgb(15, 23, 42)");
     expect(await homePage.getElementCssPropertyValue(await loginForm.wifInput, 'color')).toBe("rgb(15, 23, 42)");
     expect(await homePage.getElementCssPropertyValue(await loginForm.saveSignInButton, 'color')).toBe("rgb(255, 255, 255)");
-    expect(await homePage.getElementCssPropertyValue(await loginForm.saveSignInButton, 'background-color')).toBe("rgb(220, 38, 38)");
+    expect(await homePage.getElementCssPropertyValue(await loginForm.saveSignInButton, 'background-color')).toBe("rgb(218, 43, 43)");
   });
 
   test('Validate styles during Unlock user with password in the Denser App in the dark mode', async ({page}) =>{
@@ -579,6 +579,6 @@ test.describe('Login and Sign Up tests', () =>{
     expect(await homePage.getElementCssPropertyValue(await loginForm.passwordInput, 'color')).toBe("rgb(255, 255, 255)");
     expect(await homePage.getElementCssPropertyValue(await loginForm.wifInput, 'color')).toBe("rgb(255, 255, 255)");
     expect(await homePage.getElementCssPropertyValue(await loginForm.saveSignInButton, 'color')).toBe("rgb(255, 255, 255)");
-    expect(await homePage.getElementCssPropertyValue(await loginForm.saveSignInButton, 'background-color')).toBe("rgb(220, 38, 38)");
+    expect(await homePage.getElementCssPropertyValue(await loginForm.saveSignInButton, 'background-color')).toBe("rgb(218, 43, 43)");
   });
 });

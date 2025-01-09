@@ -193,7 +193,7 @@ test.describe('Communities page tests', () => {
           await communitiesPage.communityPinnedPost.last().locator('..'),
           'background-color'
         )
-      ).toBe('rgb(220, 38, 38)');
+      ).toBe('rgb(218, 43, 43)');
     } else await console.log('There are not any pinned posts!!!');
   });
 

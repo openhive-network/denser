@@ -206,7 +206,7 @@ test.describe('Profile page of @gtg', () => {
         await postCategoryLink.first(),
         'color'
         )
-      ).toBe('rgb(220, 38, 38)');
+      ).toBe('rgb(218, 43, 43)');
     }
 
     // Validate style of the timestamp of the first post
@@ -307,7 +307,7 @@ test.describe('Profile page of @gtg', () => {
         await postCategoryLink.first(),
         'color'
         )
-      ).toBe('rgb(220, 38, 38)');
+      ).toBe('rgb(218, 43, 43)');
     }
 
     // Validate style of the timestamp of the first post
