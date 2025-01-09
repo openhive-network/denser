@@ -161,19 +161,22 @@ test.describe('Communities page tests', () => {
     }
   });
 
-  test('validate the last post header with the pinned tag in the LeoFinance community', async ({ page }) => {
+  test('validate the first post header with the pinned tag in the LeoFinance community', async ({ page }) => {
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
 
-    if (await communitiesPage.communityPinnedPost.last().isVisible()) {
-      await expect(communitiesPage.communityPinnedPost.last()).toBeVisible();
+    const rangedPostsOfLeoFinance = await apiHelper.getRankedPostsAPI('trending', '', '', 1, 'hive-167922', '');
+    const firstPostTitle = rangedPostsOfLeoFinance.result[0].title;
+    const firstPostIsPinned = rangedPostsOfLeoFinance.result[0].stats.is_pinned;
+
+    if (await communitiesPage.communityPinnedPost.first().isVisible()) {
+      await expect(communitiesPage.communityPinnedPost.first()).toBeVisible();
+      await expect(firstPostIsPinned).toBeTruthy();
       // Click the last pinned tag of the community articles
-      await communitiesPage.communityPinnedPost.last().click();
+      await communitiesPage.communityPinnedPost.first().click();
       await page.waitForLoadState('networkidle');
       await page.waitForSelector(postPage.articleFooter['_selector']);
-      await expect(postPage.articleTitle).toHaveText(
-        "LIVE LeoFinance's Project Blank Launch Party!! | New Features, Same Web3 Experience"
-      );
+      await expect(postPage.articleTitle).toHaveText(firstPostTitle);
     } else await console.log('There are not any pinned posts!!!');
   });
 
