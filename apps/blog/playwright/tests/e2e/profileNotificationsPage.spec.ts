@@ -498,7 +498,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     // Style before hovering
     expect(
       await profilePage.getElementCssPropertyValue(await profilePage.notificationLoadMoreButtonInAll, 'color')
-    ).toBe('rgb(255, 0, 0)');
+    ).toBe('rgb(218, 43, 43)');
     expect(
       await profilePage.getElementCssPropertyValue(
         await profilePage.notificationLoadMoreButtonInAll,
@@ -516,7 +516,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
         await profilePage.notificationLoadMoreButtonInAll,
         'background-color'
       )
-    ).toBe('rgb(255, 0, 0)');
+    ).toBe('rgb(218, 43, 43)');
   });
 
   test('Validate the notifications load more button in Reblogs Filter Tab', async ({ page }) => {

@@ -192,7 +192,7 @@ test.describe('Profile page of @gtg', () => {
       if (await firstPayout.getAttribute('data-state') == 'closed') {
         await commentViewPage.getResponseCommentPayout.first().hover();
         await commentViewPage.page.waitForTimeout(1000);
-        await expect(commentViewPage.getResponseCommentPayout.first()).toHaveCSS('color', 'rgb(255, 0, 0)');
+        await expect(commentViewPage.getResponseCommentPayout.first()).toHaveCSS('color', 'rgb(218, 43, 43)');
       } else {
       await commentViewPage.getResponseCommentPayout.first().hover();
       await commentViewPage.page.waitForTimeout(1000);
@@ -201,7 +201,7 @@ test.describe('Profile page of @gtg', () => {
     } else {
       await commentViewPage.getResponseCommentPayout.first().hover();
       await commentViewPage.page.waitForTimeout(1000);
-      await expect(commentViewPage.getResponseCommentPayout.first()).toHaveCSS('color', 'rgb(255, 0, 0)');
+      await expect(commentViewPage.getResponseCommentPayout.first()).toHaveCSS('color', 'rgb(218, 43, 43)');
       await expect(commentViewPage.payoutPostCardTooltip).toBeVisible();
     }
   });
@@ -311,7 +311,7 @@ test.describe('Profile page of @gtg', () => {
     if (await profilePage.postBlogItem.first().isVisible()) {
       await expect(profilePage.postBlogItem.first()).toBeVisible();
       await profilePage.communityTimeStamp.hover();
-      await expect(profilePage.communityTimeStamp).toHaveCSS('color', 'rgb(255, 0, 0)');
+      await expect(profilePage.communityTimeStamp).toHaveCSS('color', 'rgb(218, 43, 43)');
 
       const tittleText = await homePage.postTitle.first().textContent();
 

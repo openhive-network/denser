@@ -99,7 +99,7 @@ test.describe('Faq page tests', () => {
       faqPage.whatIsHiveBlogLink,
       'color'
     );
-    expect(await faqPageFirstLinkOfFirstSubtopicColor).toBe('rgb(255, 0, 0)');
+    expect(await faqPageFirstLinkOfFirstSubtopicColor).toBe('rgb(218, 43, 43)');
     const faqPageFirstLinkOfFirstSubtopicFontWeight = await faqPage.getElementCssPropertyValue(
       faqPage.whatIsHiveBlogLink,
       'font-weight'
@@ -110,7 +110,7 @@ test.describe('Faq page tests', () => {
       faqPage.isThereGithubPageForHiveBlogLink,
       'color'
     );
-    expect(await faqPageIsThereGithubPageForHiveBlogLinkColor).toBe('rgb(255, 0, 0)');
+    expect(await faqPageIsThereGithubPageForHiveBlogLinkColor).toBe('rgb(218, 43, 43)');
     const faqPageIsThereGithubPageForHiveBlogLinkFontWeight = await faqPage.getElementCssPropertyValue(
       faqPage.isThereGithubPageForHiveBlogLink,
       'font-weight'
@@ -255,6 +255,6 @@ test.describe('Faq page tests', () => {
     expect(await whatIsHiveBlogContentDescriptionFontWeight).toBe('400');
     // Validate styles of the first caret sign
     const firstCaretSignColor = await faqPage.getElementCssPropertyValue(faqPage.firstCaretSign, 'color');
-    expect(await firstCaretSignColor).toBe('rgb(255, 0, 0)');
+    expect(await firstCaretSignColor).toBe('rgb(218, 43, 43)');
   });
 });

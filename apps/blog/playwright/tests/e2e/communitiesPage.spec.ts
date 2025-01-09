@@ -209,7 +209,7 @@ test.describe('Communities page tests', () => {
     await communitiesPage.getFirstPostAuthor.hover();
     await communitiesPage.page.waitForTimeout(1000);
     expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthor, 'color')).toBe(
-      'rgb(255, 0, 0)'
+      'rgb(218, 43, 43)'
     );
 
     // Timestamp link color without hovering
@@ -221,7 +221,7 @@ test.describe('Communities page tests', () => {
     await communitiesPage.page.waitForTimeout(1000);
     expect(
       await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostCardTimestampLink, 'color')
-    ).toBe('rgb(255, 0, 0)');
+    ).toBe('rgb(218, 43, 43)');
     // Author reputation color without hovering
     expect(
       await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthorReputation, 'color')
@@ -289,7 +289,7 @@ test.describe('Communities page tests', () => {
     await homePage.page.waitForTimeout(1000);
     // Color of the first post payouts with hovering
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostPayout, 'color')).toBe(
-      'rgb(255, 0, 0)'
+      'rgb(218, 43, 43)'
     );
     // The tooltip is visible by hovering
     expect(await homePage.getFirstPostPayoutTooltip).toBeVisible();
