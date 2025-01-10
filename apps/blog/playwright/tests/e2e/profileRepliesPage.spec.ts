@@ -59,7 +59,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
     // console.log('commentContentWithoutSpaces: ', await commentContentWithoutSpaces);
 
-    if (await page.getByText('Images were hidden due to low ratings.').isVisible()){
+    if (await page.getByText('Content were hidden due to low ratings.').isVisible()){
       await page.locator('button').getByText('Show').click();
       const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
       const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
@@ -88,7 +88,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await profilePage.repliesCommentListItemDescription.locator('a').first().click();
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
 
-    if (await page.getByText('Images were hidden due to low ratings.').isVisible()){
+    if (await page.getByText('Content were hidden due to low ratings.').isVisible()){
       await page.locator('button').getByText('Show').click();
       const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
       const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
@@ -196,7 +196,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await profilePage.repliesCommentListItemTimestamp.first().click();
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
 
-    if (await page.getByText('Images were hidden due to low ratings.').isVisible()){
+    if (await page.getByText('Content were hidden due to low ratings.').isVisible()){
       await page.locator('button').getByText('Show').click();
       const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
       const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
@@ -234,7 +234,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
         await profilePage.repliesCommentListItemUpvote.locator('svg').first(),
         'background-color'
       )
-    ).toBe('rgb(255, 0, 0)');
+    ).toBe('rgb(218, 43, 43)');
 
     await profilePage.repliesCommentListItemUpvote.first().click();
     await loginDialog.validateDefaultLoginFormIsLoaded();
@@ -299,7 +299,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
           await profilePage.repliesCommentListItemPayout.first(),
           'color'
         )
-      ).toBe('rgb(255, 0, 0)');
+      ).toBe('rgb(218, 43, 43)');
     }
   });
 
@@ -350,7 +350,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
 
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
 
-    if (await page.getByText('Images were hidden due to low ratings.').isVisible()){
+    if (await page.getByText('Content were hidden due to low ratings.').isVisible()){
       await page.locator('button').getByText('Show').click();
       const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
       const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');

@@ -20,7 +20,6 @@ import LangToggle from './lang-toggle';
 import { PieChart, Pie } from 'recharts';
 import useManabars from './hooks/useManabars';
 import { hoursAndMinutes } from '../lib/utils';
-import { getAccountFull } from '@transaction/lib/hive';
 
 const SiteHeader: FC = () => {
   const router = useRouter();
@@ -38,13 +37,6 @@ const SiteHeader: FC = () => {
       enabled: !!user.username
     }
   );
-  const {
-    isLoading: profileIsLoading,
-    error: profileError,
-    data: profileData
-  } = useQuery(['profileData', user.username], () => getAccountFull(user.username), {
-    enabled: !!user.username
-  });
   const upvoteAngle = (360 * (manabarsData ? manabarsData?.upvote.percentageValue : 0)) / 100;
   const downvoteAngle = (360 * (manabarsData ? manabarsData?.downvote.percentageValue : 0)) / 100;
   const rcAngle = (360 * (manabarsData ? manabarsData?.rc.percentageValue : 0)) / 100;
@@ -211,7 +203,7 @@ const SiteHeader: FC = () => {
                         <Avatar className="z-30 flex h-9 w-9 items-center justify-center overflow-hidden rounded-full">
                           <AvatarImage
                             className="h-full w-full object-cover"
-                            src={profileData?.profile?.profile_image}
+                            src={user.avatarUrl}
                             alt="Profile picture"
                           />
                           <AvatarFallback>

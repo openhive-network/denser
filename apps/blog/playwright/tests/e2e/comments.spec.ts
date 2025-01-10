@@ -288,7 +288,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
         await postPage.commentAuthorLink.first().locator('div span'),
         'color'
       )
-    ).toBe('rgb(255, 0, 0)');
+    ).toBe('rgb(218, 43, 43)');
 
     // Validate the user info popover card is visible
     await postPage.commentAuthorLink.first().click();
@@ -330,7 +330,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
         await postPage.commentCardsHeadersTimeStampLink.first(),
         'color'
       )
-    ).toBe('rgb(255, 0, 0)');
+    ).toBe('rgb(218, 43, 43)');
 
     // Validate the timestamp tooltip
     const atrTitle = await postPage.commentCardsHeadersTimeStampLink.first().getAttribute('title');
@@ -561,7 +561,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await postPage.page.waitForTimeout(1000);
 
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
-      'rgb(255, 0, 0)'
+      'rgb(218, 43, 43)'
     );
     expect(
       await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'background-color')

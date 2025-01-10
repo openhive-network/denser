@@ -45,7 +45,7 @@ test.describe('Profile page of @gtg', () => {
     expect(await postListItemsBeforeLoadMore.length).toBe(20);
 
     await profilePage.page.keyboard.down('End');
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2000);
     const postListItemsAfterScrollDown = await profilePage.postBlogItem.all();
     expect(await postListItemsAfterScrollDown.length).toBe(40);
   });
@@ -151,7 +151,7 @@ test.describe('Profile page of @gtg', () => {
       await firstPostNickName,
       'color'
       )
-    ).toBe('rgb(255, 0, 0)');
+    ).toBe('rgb(218, 43, 43)');
 
     // Validate reputation color and tooltip
     const firstPostReputation = await profilePage.postReputation.first();
@@ -186,7 +186,7 @@ test.describe('Profile page of @gtg', () => {
         await postCommunityLink.first(),
         'color'
         )
-      ).toBe('rgb(255, 0, 0)');
+      ).toBe('rgb(218, 43, 43)');
     }
 
     if (await firstPostItem.filter({ has: postCategoryLink }).isVisible()){
@@ -206,7 +206,7 @@ test.describe('Profile page of @gtg', () => {
         await postCategoryLink.first(),
         'color'
         )
-      ).toBe('rgb(220, 38, 38)');
+      ).toBe('rgb(218, 43, 43)');
     }
 
     // Validate style of the timestamp of the first post
@@ -226,7 +226,7 @@ test.describe('Profile page of @gtg', () => {
       await firstPostTimestamp,
       'color'
       )
-    ).toBe('rgb(255, 0, 0)');
+    ).toBe('rgb(218, 43, 43)');
   });
 
   test('validate styles of the post header in the dark mode', async ({ page }) => {
@@ -307,7 +307,7 @@ test.describe('Profile page of @gtg', () => {
         await postCategoryLink.first(),
         'color'
         )
-      ).toBe('rgb(220, 38, 38)');
+      ).toBe('rgb(218, 43, 43)');
     }
 
     // Validate style of the timestamp of the first post
@@ -367,7 +367,7 @@ test.describe('Profile page of @gtg', () => {
         await profilePage.postUpvoteButton.locator('svg').first(),
         'background-color'
         )
-    ).toBe('rgb(255, 0, 0)');
+    ).toBe('rgb(218, 43, 43)');
 
     await profilePage.postUpvoteButton.first().click();
     await loginDialog.validateDefaultLoginFormIsLoaded();
@@ -431,7 +431,7 @@ test.describe('Profile page of @gtg', () => {
         await profilePage.postPayout.first(),
         'color'
         )
-      ).toBe('rgb(255, 0, 0)');
+      ).toBe('rgb(218, 43, 43)');
     }
   });
 

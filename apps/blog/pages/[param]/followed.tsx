@@ -9,10 +9,10 @@ import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { getServerSidePropsDefault } from '../../lib/get-translations';
+import { getDefaultProps } from '../../lib/get-translations';
 import ButtonsContainer from '@/blog/components/buttons-container';
 
-export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
+export const getServerSideProps: GetServerSideProps = getDefaultProps;
 
 const LIMIT = 50;
 export default function Followed() {
@@ -59,7 +59,7 @@ export default function Followed() {
           {followingData.data?.pages[page].map((e) => (
             <li
               key={e.following}
-              className="bg-background-tertiary flex items-center justify-between px-3 font-semibold text-destructive odd:bg-background"
+              className="flex items-center justify-between bg-background-tertiary px-3 font-semibold text-destructive odd:bg-background"
             >
               <Link href={`/@${e.following}`}>{e.following}</Link>
               {!user.isLoggedIn || user.username === e.following ? null : (

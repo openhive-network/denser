@@ -41,12 +41,12 @@ function find_first_img(post: Entry) {
   if (post.json_metadata.flow?.pictures && post.json_metadata.flow?.pictures[0]) {
     return proxifyImageUrl(post.json_metadata.flow?.pictures[0].url, true);
   }
-  if (post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw')) {
-    return proxifyImageUrl(`https://images.hive.blog/u/${post.author}/avatar/`, true);
-  }
   const youtube_id = extractYouTubeVideoIds(extractUrlsFromJsonString(post.body));
   if (youtube_id[0]) {
     return proxifyImageUrl(`https://img.youtube.com/vi/${youtube_id[0]}/0.jpg`, true);
+  }
+  if (post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw')) {
+    return proxifyImageUrl(`https://images.hive.blog/u/${post.author}/avatar/`, true);
   }
   const pictures_extracted = extractPictureFromPostBody(extractUrlsFromJsonString(post.body));
   if (pictures_extracted[0]) {

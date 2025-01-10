@@ -164,7 +164,7 @@ export async function getTransactionDigest(
 
   let txBuilder: ITransaction;
   if (txString) {
-    txBuilder = new wax.Transaction(JSON.parse(txString));
+    txBuilder = wax.createTransactionFromJson(JSON.parse(txString));
   } else {
     // Create transaction, if it does not exist.
     let dynamicGlobalProps: any;
@@ -182,7 +182,7 @@ export async function getTransactionDigest(
       throw error;
     }
     const { result: globalProps } = dynamicGlobalProps;
-    txBuilder = new wax.Transaction(globalProps.head_block_id, '+1m');
+    txBuilder = wax.createTransactionWithTaPoS(globalProps.head_block_id, '+1m');
   }
 
   // Pass operation to transaction, if it exists.

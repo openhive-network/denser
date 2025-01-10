@@ -89,7 +89,7 @@ export class SignerHbauth extends Signer {
     // When transaction is string, e.g. got from transaction.toApi().
     // const txBuilder = wax.TransactionBuilder.fromApi(transaction);
 
-    const txBuilder = new wax.Transaction(transaction);
+    const txBuilder = wax.createTransactionFromProto(transaction);
     if (digest !== txBuilder.sigDigest) {
       throw new Error('Digests do not match');
     }

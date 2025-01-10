@@ -312,6 +312,15 @@
     }
   },
   "communities": {
+    "set_title_for_user": "Ustaw tytuł dla @{{username}}",
+    "mute": "Wycisz post",
+    "unmute": "Wyłącz wyciszenie posta",
+    "post_comment": " post/komentarz",
+    "please_provide_a_note": "Podaj notatkę dotyczącą decyzji o wyciszeniu tej treści.",
+    "notes": "Notatka",
+    "pin": "Przypnij",
+    "unpin": "Odepnij",
+    "edit_title": "Edytuj tytuł",
     "admin": "administrator",
     "admins": "administratorzy",
     "subscribers": "subskrybentów",

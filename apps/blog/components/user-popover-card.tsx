@@ -18,6 +18,7 @@ export function UserPopoverCard({
   withImage = false
 }: UserPopoverCardProps) {
   const { t } = useTranslation('common_blog');
+
   return (
     <Popover>
       <PopoverTrigger data-testid="author-name-link">

@@ -3,7 +3,7 @@ import { Clock, Link2 } from 'lucide-react';
 import UserInfo from '@/blog/components/user-info';
 import { getActiveVotes } from '@transaction/lib/hive';
 import { useQuery } from '@tanstack/react-query';
-import { Entry, getCommunity, getDiscussion, getPost } from '@transaction/lib/bridge';
+import { Entry, getCommunity, getDiscussion, getListCommunityRoles, getPost } from '@transaction/lib/bridge';
 import Loading from '@hive/ui/components/loading';
 import dynamic from 'next/dynamic';
 import ImageGallery from '@/blog/components/image-gallery';
@@ -47,8 +47,15 @@ import ReblogTrigger from '@/blog/components/reblog-trigger';
 import { getTranslations } from '@/blog/lib/get-translations';
 import Head from 'next/head';
 import env from '@beam-australia/react-env';
+import { usePinMutation, useUnpinMutation } from '@/blog/components/hooks/use-pin-mutations';
+import { handleError } from '@ui/lib/utils';
+import MutePostDialog from '@/blog/components/mute-post-dialog';
+import { CircleSpinner } from 'react-spinners-kit';
+import ChangeTitleDialog from '@/blog/components/change-title-dialog';
 
 const logger = getLogger('app');
+export const postClassName =
+  'font-source text-[16.5px] prose-h1:text-[26.4px] prose-h2:text-[23.1px] prose-h3:text-[19.8px] prose-h4:text-[18.1px] sm:text-[17.6px] sm:prose-h1:text-[28px] sm:prose-h2:text-[24.7px] sm:prose-h3:text-[22.1px] sm:prose-h4:text-[19.4px] lg:text-[19.2px] lg:prose-h1:text-[30.7px] lg:prose-h2:text-[28.9px] lg:prose-h3:text-[23px] lg:prose-h4:text-[21.1px] prose-p:mb-6 prose-p:mt-0 prose-img:cursor-pointer';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -58,53 +65,69 @@ const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), 
 function PostPage({
   community,
   username,
-  permlink
+  permlink,
+  mutedStatus
 }: {
   community: string;
   username: string;
   permlink: string;
+  mutedStatus: boolean;
 }) {
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
 
-  const {
-    isLoading: isLoadingFollowList,
-    error: errorFollowList,
-    data: mutedList
-  } = useFollowListQuery(user.username, 'muted');
+  const { data: mutedList } = useFollowListQuery(user.username, 'muted');
 
-  const {
-    isLoading: isLoadingPost,
-    error: errorPost,
-    data: post
-  } = useQuery(['postData', username, permlink], () => getPost(username, String(permlink)), {
-    enabled: !!username && !!permlink,
-    onSuccess: (post) => setMutedPost(!!post?.stats?.gray)
-  });
-
-  const {
-    isLoading: isLoadingDiscussion,
-    error: errorDiscussion,
-    data: discussion
-  } = useQuery(['discussionData', username, permlink], () => getDiscussion(username, String(permlink)), {
-    enabled: !!username && !!permlink
-  });
-
-  const {
-    isLoading: isLoadingCommunity,
-    error: errorCommunity,
-    data: communityData
-  } = useQuery(['communityData', community], () => getCommunity(community), {
+  const { isLoading: isLoadingPost, data: post } = useQuery(
+    ['postData', username, permlink],
+    () => getPost(username, String(permlink)),
+    {
+      enabled: !!username && !!permlink
+    }
+  );
+  const { isLoading: isLoadingDiscussion, data: discussion } = useQuery(
+    ['discussionData', username, permlink, user.username],
+    () => getDiscussion(username, String(permlink), user.username),
+    {
+      enabled: !!username && !!permlink
+    }
+  );
+  const { data: communityData } = useQuery(['communityData', community], () => getCommunity(community), {
     enabled: !!username && !!community && community.startsWith('hive-')
   });
 
-  const {
-    data: activeVotesData,
-    isLoading: isActiveVotesLoading,
-    isError: activeVotesError
-  } = useQuery(['activeVotes'], () => getActiveVotes(username, permlink), {
-    enabled: !!username && !!permlink
+  const { data: activeVotesData, isLoading: isActiveVotesLoading } = useQuery(
+    ['activeVotes'],
+    () => getActiveVotes(username, permlink),
+    {
+      enabled: !!username && !!permlink
+    }
+  );
+  const { data: rolesData } = useQuery(['rolesList', community], () => getListCommunityRoles(community), {
+    enabled: Boolean(community)
   });
+
+  const userRole = rolesData?.find((e) => e[0] === user.username);
+  const userCanModerate = userRole
+    ? userRole[1] === 'mod' || userRole[1] === 'admin' || userRole[1] === 'owner'
+    : false;
+  const pinMutations = usePinMutation();
+  const unpinMutation = useUnpinMutation();
+
+  const pin = async () => {
+    try {
+      await pinMutations.mutateAsync({ community, username, permlink });
+    } catch (error) {
+      handleError(error, { method: 'pin', params: { community, username, permlink } });
+    }
+  };
+  const unpin = async () => {
+    try {
+      await unpinMutation.mutateAsync({ community, username, permlink });
+    } catch (error) {
+      handleError(error, { method: 'unpin', params: { community, username, permlink } });
+    }
+  };
 
   const [discussionState, setDiscussionState] = useState<Entry[]>();
   const router = useRouter();
@@ -164,33 +187,26 @@ function PostPage({
     }
   }, [discussion, router.query.sort]);
 
+  useEffect(() => {
+    if (router.query.param === '[param]' && !!post) {
+      router.replace(`/${post.community ?? post.category}/@${username}/${permlink}`);
+    }
+  }, [isLoadingDiscussion]);
+
   const commentSite = post?.depth !== 0 ? true : false;
-  const [mutedPost, setMutedPost] = useState<boolean | undefined>(undefined);
-  const generateUrls = () => {
-    if (!discussionState || discussionState.length === 0) return null;
+  const [mutedPost, setMutedPost] = useState<boolean>(mutedStatus);
 
-    const highest_item = discussionState.reduce(
-      (smallest, current) => (current.depth < smallest.depth ? current : smallest),
-      discussionState[0]
-    );
-
-    const postUrl = highest_item.url.startsWith('/') ? highest_item.url : `/${highest_item.url}`;
-    const parentUrl = `${highest_item.category}/@${highest_item.parent_author}/${highest_item.parent_permlink}`;
-
-    return { postUrl, parentUrl };
-  };
-  const { postUrl, parentUrl } = generateUrls() || {};
   if (userFromGDPR) {
     return <CustomError />;
   }
 
   const canonical_url = post ? new URL(post.url, env('SITE_DOMAIN')).href : undefined;
-
+  const post_is_pinned = firstPost?.stats?.is_pinned ?? false;
   return (
     <>
       <Head>{canonical_url ? <link rel="canonical" href={canonical_url} key="canonical" /> : null}</Head>
       <div className="py-8">
-        <div className="relative mx-auto my-0 max-w-4xl bg-background px-8 py-4">
+        <div className="relative mx-auto my-0 max-w-4xl bg-background p-4">
           {communityData ? (
             <AlertDialogFlag
               community={community}
@@ -198,13 +214,16 @@ function PostPage({
               permlink={permlink}
               flagText={communityData.flag_text}
             >
-              <Icons.flag className="absolute right-0 m-2 hover:text-destructive" />
+              <Icons.flag className="absolute right-0 m-2 cursor-pointer hover:text-destructive" />
             </AlertDialogFlag>
           ) : null}
           {!isLoadingPost && post ? (
             <div>
               {!commentSite ? (
-                <h1 className="text-3xl font-bold" data-testid="article-title">
+                <h1
+                  className="font-sanspro text-[21px] font-extrabold sm:text-[25.6px]"
+                  data-testid="article-title"
+                >
                   {post.title}
                 </h1>
               ) : (
@@ -217,7 +236,7 @@ function PostPage({
                   </h1>
                   <Link
                     className="text-sm hover:text-destructive"
-                    href={`${postUrl}`}
+                    href={`${post.url}`}
                     data-testid="view-the-full-context"
                   >
                     • {t('post_content.if_comment.view_the_full_context')}
@@ -225,7 +244,7 @@ function PostPage({
                   {discussionState && !discussionState.some((e) => e.depth === 1) ? (
                     <Link
                       className="text-sm hover:text-destructive"
-                      href={`../../${parentUrl}`}
+                      href={`/${post.category}/@${post.parent_author}/${post.parent_permlink}`}
                       data-testid="view-the-direct-parent"
                     >
                       • {t('post_content.if_comment.view_the_direct_parent')}
@@ -234,6 +253,8 @@ function PostPage({
                 </div>
               )}
               <UserInfo
+                permlink={permlink}
+                moderateEnabled={userCanModerate}
                 author={post.author}
                 author_reputation={post.author_reputation}
                 author_title={post.author_title}
@@ -244,11 +265,18 @@ function PostPage({
                 created={post.created}
                 blacklist={firstPost ? firstPost.blacklists : post.blacklists}
               />
-
-              <hr />
-
-              {mutedPost === undefined || isLoadingPost ? (
-                <Loading loading={mutedPost === undefined || isLoadingPost} />
+              {isLoadingPost ? (
+                <Loading loading={isLoadingPost} />
+              ) : edit && commentSite && post.parent_author && post.parent_permlink ? (
+                <ReplyTextbox
+                  editMode={edit}
+                  onSetReply={setEdit}
+                  username={post.parent_author}
+                  permlink={post.permlink}
+                  parentPermlink={post.parent_permlink}
+                  storageId={storageId}
+                  comment={post}
+                />
               ) : edit ? (
                 <PostForm
                   username={username}
@@ -277,25 +305,26 @@ function PostPage({
                   <RendererContainer
                     mainPost={post.depth === 0}
                     body={post.body}
-                    className="entry-body markdown-view user-selectable prose max-w-full py-4 dark:prose-invert"
                     author={post.author}
+                    className={postClassName}
                   />
                 </ImageGallery>
               )}
-
               <div className="clear-both">
                 {!commentSite ? (
                   <ul className="flex flex-wrap gap-2" data-testid="hashtags-post">
-                    {post.json_metadata?.tags?.slice(post.community_title ? 0 : 1).map((tag: string) => (
-                      <li key={tag}>
-                        <Link
-                          href={`/trending/${tag}`}
-                          className="my-2 rounded-md border-[1px] border-border bg-background-secondary px-2 py-1 text-[14px] hover:border-[#788187]"
-                        >
-                          #{tag}
-                        </Link>
-                      </li>
-                    ))}
+                    {post.json_metadata.tags
+                      ?.filter((e) => e !== (post.community_title ?? post.category) && e !== '')
+                      .map((tag: string) => (
+                        <li key={tag}>
+                          <Link
+                            href={`/trending/${tag}`}
+                            className="my-2 rounded-md border-[1px] border-border bg-background-secondary px-2 py-1 text-[14px] hover:border-[#788187]"
+                          >
+                            #{tag}
+                          </Link>
+                        </li>
+                      ))}
                   </ul>
                 ) : null}
               </div>
@@ -338,9 +367,24 @@ function PostPage({
                       />
                       {post.author_title ? (
                         <Badge variant="outline" className="border-destructive text-slate-500">
-                          {post.author_title}
+                          <span className="mr-1">{post.author_title}</span>
+                          <ChangeTitleDialog
+                            community={community}
+                            moderateEnabled={userCanModerate}
+                            userOnList={post.author}
+                            title={post.author_title ?? ''}
+                            permlink={permlink}
+                          />
                         </Badge>
-                      ) : null}
+                      ) : (
+                        <ChangeTitleDialog
+                          community={community}
+                          moderateEnabled={userCanModerate}
+                          userOnList={post.author}
+                          title={post.author_title ?? ''}
+                          permlink={permlink}
+                        />
+                      )}
                     </div>
                   </div>
                   <div className="flex items-center gap-2 sm:gap-4">
@@ -384,15 +428,55 @@ function PostPage({
                     />
                     <span className="mx-1">|</span>
                     {user && user.isLoggedIn ? (
-                      <button
-                        onClick={() => {
-                          setReply(!reply), removeBox();
-                        }}
-                        className="flex items-center text-destructive"
-                        data-testid="comment-reply"
-                      >
-                        {t('post_content.footer.reply')}
-                      </button>
+                      <>
+                        <button
+                          onClick={() => {
+                            setReply(!reply), removeBox();
+                          }}
+                          className="flex items-center text-destructive"
+                          data-testid="comment-reply"
+                        >
+                          {t('post_content.footer.reply')}
+                        </button>
+                        {pinMutations.isLoading || unpinMutation.isLoading ? (
+                          <div className="ml-2">
+                            <CircleSpinner
+                              loading={pinMutations.isLoading || unpinMutation.isLoading}
+                              size={18}
+                              color="#dc2626"
+                            />
+                          </div>
+                        ) : userCanModerate && post.depth === 0 ? (
+                          <div className="flex flex-col items-center">
+                            {/* <button
+                            className="ml-2 flex items-center text-destructive"
+                            onClick={post_is_pinned ? unpin : pin}
+                            >
+                            {post_is_pinned ? t('communities.unpin') : t('communities.pin')}
+                          </button> */}
+                            {/* TODO swap two button to one when api return stats.is_pinned, 
+                            temprary use two button to unpin and pin
+                            */}
+                            <button className="ml-2 flex items-center text-destructive" onClick={pin}>
+                              {t('communities.pin')}
+                            </button>
+                            <button className="ml-2 flex items-center text-destructive" onClick={unpin}>
+                              {t('communities.unpin')}
+                            </button>
+                          </div>
+                        ) : null}
+                        {userCanModerate ? (
+                          <MutePostDialog
+                            comment={false}
+                            community={community}
+                            username={post.author}
+                            permlink={post.permlink}
+                            contentMuted={post.stats?.gray ?? false}
+                            discussionPermlink={post.permlink}
+                            discussionAuthor={post.author}
+                          />
+                        ) : null}
+                      </>
                     ) : (
                       <DialogLogin>
                         <button className="flex items-center text-destructive" data-testid="comment-reply">
@@ -400,7 +484,7 @@ function PostPage({
                         </button>
                       </DialogLogin>
                     )}
-                    {user && user.isLoggedIn && post.author === user.username ? (
+                    {user && user.isLoggedIn && post.author === user.username && !edit ? (
                       <>
                         <span className="mx-1">|</span>
                         <button
@@ -441,7 +525,7 @@ function PostPage({
                       </Tooltip>
                     </TooltipProvider>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex items-center gap-2">
                     <FacebookShare url={post.url} />
                     <TwitterShare title={post.title} url={post.url} />
                     <LinkedInShare title={post.title} url={post.url} />
@@ -477,8 +561,12 @@ function PostPage({
               <CommentSelectFilter />
             </div>
             <DynamicComments
+              highestAuthor={post.author}
+              highestPermlink={post.permlink}
+              permissionToMute={userCanModerate}
               mutedList={mutedList || []}
               data={discussionState}
+              flagText={communityData?.flag_text}
               parent={post}
               parent_depth={post.depth}
             />
@@ -502,10 +590,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       getPost(username, String(permlink))
     );
   }
-
+  const mutedStatus = await getPost(username, String(permlink)).then((res) => res?.stats?.gray ?? false);
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
+      mutedStatus,
       community,
       username,
       permlink,

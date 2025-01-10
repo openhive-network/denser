@@ -79,7 +79,8 @@
       "button_other": "Inne opcje logowania",
       "button_cancel": "Anuluj",
       "button_sign_auth": "Podpisz transakcję autoryzacji",
-      "button_signin_unlocked": "Zaloguj się z podpisaną transakcją"
+      "button_signin_unlocked": "Zaloguj się z podpisaną transakcją",
+      "strict_mode": "Ograniczony tryb autoryzacji"
     },
     "zod_error": {
       "password_length": "Długość hasła powinna być większa niż 6 znaków",

@@ -1,10 +1,10 @@
 import { Remarkable } from 'remarkable';
-import { GetStaticProps, InferGetStaticPropsType } from 'next';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import path from 'path';
 import fs from 'fs';
 import { getTranslations } from '../lib/get-translations';
 
-export const getStaticProps: GetStaticProps<{
+export const getServerSideProps: GetServerSideProps<{
   data: string;
 }> = async (ctx) => {
   const file_path = path.join('lib', 'markdowns', 'faq.md');
@@ -17,7 +17,7 @@ export const getStaticProps: GetStaticProps<{
     }
   };
 };
-function Faq({ data }: InferGetStaticPropsType<typeof getStaticProps>) {
+function Faq({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const renderer = new Remarkable({
     html: true,
     xhtmlOut: true,
@@ -26,10 +26,10 @@ function Faq({ data }: InferGetStaticPropsType<typeof getStaticProps>) {
   });
   const faq_page = renderer.render(data);
   return (
-    <div className="mx-auto my-12 px-4 max-w-3xl ">
+    <div className="mx-auto my-12 max-w-3xl px-4 ">
       <div
         id="articleBody"
-        className="entry-body markdown-view user-selectable prose max-w-full dark:prose-invert"
+        className="prose"
         dangerouslySetInnerHTML={{
           __html: faq_page
         }}

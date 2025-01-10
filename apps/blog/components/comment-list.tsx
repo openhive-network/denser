@@ -4,15 +4,23 @@ import { useRouter } from 'next/router';
 import clsx from 'clsx';
 
 const CommentList = ({
+  highestAuthor,
+  highestPermlink,
+  permissionToMute,
   data,
   parent,
   parent_depth,
-  mutedList
+  mutedList,
+  flagText
 }: {
+  highestAuthor: string;
+  highestPermlink: string;
+  permissionToMute: Boolean;
   data: Entry[];
   parent: Entry;
   parent_depth: number;
   mutedList: IFollowList[];
+  flagText: string | undefined;
 }) => {
   let filtered = data.filter((x: Entry) => {
     return x?.parent_author === parent?.author && x?.parent_permlink === parent?.permlink;
@@ -43,13 +51,21 @@ const CommentList = ({
             )}
           >
             <CommentListItem
+              parentPermlink={highestPermlink}
+              parentAuthor={highestAuthor}
+              permissionToMute={permissionToMute}
               comment={comment}
               key={`${comment.post_id}-item-${comment.depth}-index-${index}`}
               parent_depth={parent_depth}
               mutedList={mutedList}
+              flagText={flagText}
             />
             {comment.children > 0 ? (
               <CommentList
+                flagText={flagText}
+                highestAuthor={highestAuthor}
+                highestPermlink={highestPermlink}
+                permissionToMute={permissionToMute}
                 mutedList={mutedList}
                 data={data}
                 parent={comment}

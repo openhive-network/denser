@@ -32,6 +32,7 @@ run_instance() {
     --app-scope="@hive/${APP}" \
     --app-path="/apps/${APP}" \
     --api-endpoint="https://api.hive.blog" \
+    --chain-id="${CHAIN_ID}" \
     --images-endpoint="https://images.hive.blog/" \
     --name="denser-${APP}" \
     --port="${PORT}" \

@@ -6,9 +6,9 @@ import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import Loading from '@ui/components/loading';
 import { GetServerSideProps } from 'next';
 import { useTranslation } from 'next-i18next';
-import { getServerSidePropsDefault } from '../../lib/get-translations';
+import { getDefaultProps } from '../../lib/get-translations';
 
-export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
+export const getServerSideProps: GetServerSideProps = getDefaultProps;
 
 export default function UserNotifications() {
   const { t } = useTranslation('common_blog');
@@ -30,7 +30,7 @@ export default function UserNotifications() {
         ) : (
           <div
             key="empty"
-            className="bg-card-noContent border-card-empty-border mt-12 border-2 border-solid px-4 py-6 text-sm"
+            className="border-card-empty-border mt-12 border-2 border-solid bg-card-noContent px-4 py-6 text-sm"
             data-testid="user-has-not-had-any-notifications-yet"
           >
             {t('user_profile.no_notifications_yet', { username: username })}

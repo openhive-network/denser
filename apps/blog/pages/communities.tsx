@@ -16,11 +16,11 @@ import CommunitiesMybar from '../components/communities-mybar';
 import Link from 'next/link';
 import env from '@beam-australia/react-env';
 import { getLogger } from '@ui/lib/logging';
-import { getServerSidePropsDefault } from '../lib/get-translations';
+import { getDefaultProps } from '../lib/get-translations';
 
 const logger = getLogger('app');
 
-export default function CommunitiesPage() {
+const CommunitiesPage = () => {
   const walletHost = env('WALLET_ENDPOINT');
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
@@ -42,12 +42,9 @@ export default function CommunitiesPage() {
     data: mySubsData,
     isLoading: mySubsIsLoading,
     isError: mySubsIsError
-  } = useQuery(['subscriptions', user.username],
-    () => getSubscriptions(user.username),
-    {
-      enabled: Boolean(user?.username)
-    }
-  );
+  } = useQuery(['subscriptions', user.username], () => getSubscriptions(user.username), {
+    enabled: Boolean(user?.username)
+  });
 
   function handleSearchCommunity(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') {
@@ -119,6 +116,7 @@ export default function CommunitiesPage() {
       </div>
     </div>
   );
-}
+};
+export default CommunitiesPage;
 
-export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
+export const getServerSideProps: GetServerSideProps = getDefaultProps;

@@ -1,0 +1,10 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "AutoPreview.serverURL": "http://localhost:3000/"
+    }
+}

@@ -77,7 +77,7 @@ export const authorityChecker = async (
       { txJSON, expectedSignerAccount, expectedAuthorityLevel, pack, strict });
 
     const hiveChain: IHiveChainInterface = await hiveChainService.getHiveChain();
-    const txBuilder = hiveChain.Transaction.fromApi(txJSON);
+    const txBuilder = hiveChain.createTransactionFromJson(txJSON);
 
     const authorityVerificationResult = await hiveChain.api.database_api
         .verify_authority({

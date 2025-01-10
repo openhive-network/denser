@@ -15,7 +15,7 @@ export class TOSPage {
     this.page = page;
     this.subtitles = page.locator('[id="articleBody"] h2');
     this.firstSubtitle = this.subtitles.first();
-    this.mainElement = page.locator('.entry-body.markdown-view.user-selectable');
+    this.mainElement = page.locator('#articleBody');
     this.paragrafText = page.getByText('If we decide to make changes to this Agreement');
     this.navPostLink = this.page.locator('[data-testid="nav-posts-link"]');
     this.navProposalsLink = this.page.locator('[data-testid="nav-proposals-link"]');

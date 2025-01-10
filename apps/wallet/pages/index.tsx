@@ -4,11 +4,23 @@ import DialogLogin from '@/wallet/components/dialog-login';
 import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
 import { getServerSidePropsDefault } from '../lib/get-translations';
+import { useRouter } from 'next/router';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useEffect } from 'react';
 
 export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
 export default function HomePage() {
   const { t } = useTranslation('common_wallet');
+  const router = useRouter();
+  const { user } = useUser();
+  useEffect(() => {
+    if (user.isLoggedIn) {
+      router.push(`/@${user.username}/transfers`);
+    }
+  }, [user.isLoggedIn]);
+  if (user.isLoggedIn) return null;
+
   return (
     <div className="mx-2 flex flex-col gap-24 pt-16 sm:flex-row sm:justify-around sm:gap-0">
       <div className="flex flex-col gap-3 sm:mr-4 sm:gap-8">
@@ -29,7 +41,7 @@ export default function HomePage() {
                 <Icons.hivetoken />
                 <span className="flex flex-col justify-center">
                   <span className="font-semibold" data-testid="hive-token-label">
-                    Hive
+                    HIVE
                   </span>
                   <p className="text-xs font-light text-primary/60">
                     {t('wallet_index.card.liquid_platform_token')}
@@ -40,7 +52,7 @@ export default function HomePage() {
                 <Icons.hivetokenpower />
                 <span className="flex flex-col justify-center">
                   <span className="font-semibold" data-testid="hive-power-token-label">
-                    Hive power
+                    HIVE power
                   </span>
                   <p className="text-xs font-light text-primary/60">
                     {t('wallet_index.card.vesting_influence_token')}

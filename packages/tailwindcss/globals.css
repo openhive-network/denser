@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -33,7 +32,7 @@
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
-    --destructive: 0 100% 50%;
+    --destructive: 0, 70%, 51%;
     --destructive-foreground: 210 40% 98%;
 
     --ring: 215 20.2% 65.1%;
@@ -98,6 +97,11 @@
   }
 }
 
+.prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)):after,
+.prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)):before {
+  content: none;
+}
+
 .pull-left {
   float: left;
   padding-right: 1rem;
@@ -108,11 +112,6 @@
   float: right;
   padding-left: 1rem;
   max-width: 50%;
-}
-
-.prose table thead th {
-  font-weight: bold;
-  text-align: left;
 }
 
 .preview-description,
@@ -141,44 +140,6 @@
   @apply py-1;
 }
 
-.prose :where(a):not(:where([class~='not-prose'] *)) {
-  color: #dc2626;
-  text-decoration: none;
-  font-weight: inherit;
-}
-
-.prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-  font-weight: 400;
-  font-size: 1rem;
-  padding: 0.2rem;
-}
-
-.light .prose :where(pre):not(:where([class~='not-prose'], [class~='not-prose'] *)),
-.light .prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-  background-color: #f1f5f9;
-  color: var(--tw-prose-code);
-}
-
-.dark .prose :where(pre):not(:where([class~='not-prose'], [class~='not-prose'] *)),
-.dark .prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-  background-color: #334155;
-  color: #f1f5f9;
-}
-
-.prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)):after,
-.prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)):before {
-  content: none;
-}
-
-.entry-body.prose p {
-  font-size: 1.2rem;
-  font-weight: 400;
-}
-
-.prose a.link {
-  color: #dc2626;
-}
-
 .prose a.link-external:after {
   content: '';
   background: url(./assets/external-icon.svg);
@@ -193,8 +154,9 @@
   opacity: 0.5;
 }
 
-.entry-body.prose img {
-  cursor: pointer;
+.prose .phishy {
+  display: inline;
+  color: red;
 }
 
 #articleBody .videoWrapper,
@@ -220,4 +182,8 @@
   word-wrap: break-word;
   word-break: break-word;
   hyphens: none;
-} 
+}
+
+.dark .w-md-editor-text .token.title {
+  color: #fff !important;
+}

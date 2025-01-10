@@ -25,7 +25,7 @@
     "@hive/transaction": "workspace:*",
     "@hive/tsconfig": "workspace:*",
     "@hive/ui": "workspace:*",
-    "@hiveio/wax": "1.27.6-rc1-stable.240803100048",
+    "@hiveio/wax": "1.27.6-rc5-stable.241029104701",
     "@hookform/resolvers": "^3.3.1",
     "@tanstack/react-query": "^4.36.1",
     "http-errors": "^2.0.0",

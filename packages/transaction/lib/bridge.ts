@@ -393,6 +393,19 @@ export const getCommunity = async (
   return chain.extend<GetCommunityData>().api.bridge.get_community({ name, observer });
 };
 
+type GetCommunityRolesData = {
+  bridge: {
+    list_community_roles: TWaxApiRequest<IGetCommunityRoles, CommunityTeam | null>;
+  };
+};
+type IGetCommunityRoles = {
+  community: string;
+};
+
+export const getListCommunityRoles = async (community: string): Promise<CommunityTeam | null> => {
+  return chain.extend<GetCommunityRolesData>().api.bridge.list_community_roles({ community });
+};
+
 interface IGetCommunities {
   sort: string;
   query?: string | null;

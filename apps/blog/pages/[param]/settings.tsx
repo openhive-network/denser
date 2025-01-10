@@ -34,10 +34,10 @@ import { toast } from '@ui/components/hooks/use-toast';
 import { useUnmuteMutation } from '@/blog/components/hooks/use-mute-mutations';
 import { useUpdateProfileMutation } from '@/blog/components/hooks/use-update-profile-mutation';
 import { z } from 'zod';
-import { getServerSidePropsDefault } from '../../lib/get-translations';
+import { getDefaultProps } from '../../lib/get-translations';
 import { CircleSpinner } from 'react-spinners-kit';
 
-export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
+export const getServerSideProps: GetServerSideProps = getDefaultProps;
 
 const logger = getLogger('app');
 interface Settings {
@@ -559,7 +559,7 @@ export default function UserSettings() {
             {endpoints?.map((endp, index) => (
               <div
                 key={endp}
-                className="even:bg-background-tertiary grid grid-cols-[220px_50px_50px] items-center p-2 odd:bg-background lg:grid-cols-3"
+                className="grid grid-cols-[220px_50px_50px] items-center p-2 odd:bg-background even:bg-background-tertiary lg:grid-cols-3"
               >
                 <Label htmlFor={`e#{index}`}>{endp}</Label>
                 <RadioGroupItem value={endp} id={`e#{index}`} className="border-destructive" />

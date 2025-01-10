@@ -79,7 +79,8 @@
       "button_other": "他のサインインオプション",
       "button_cancel": "キャンセル",
       "button_sign_auth": "署名されたtxを送信",
-      "button_signin_unlocked": "署名されたtxでサインイン"
+      "button_signin_unlocked": "署名されたtxでサインイン",
+      "strict_mode": "制限付きの権限モード"
     },
     "zod_error": {
       "password_length": "パスワードの長さは6文字以上である必要があります",

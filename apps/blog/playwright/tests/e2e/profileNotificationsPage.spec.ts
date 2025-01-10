@@ -473,7 +473,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     await profilePage.profileNotificationsTabIsSelected();
 
     const resAccountNotificationsAPI = await apiHelper.getAccountNotificationsAPI('gtg');
-    const lastNotificationId = await resAccountNotificationsAPI.result[49].id;
+    const lastNotificationId = await resAccountNotificationsAPI.result[47].id;
     const notificationListItemInAllArray = await profilePage.notificationListItemInAll.all();
     expect(await notificationListItemInAllArray.length).toBe(resAccountNotificationsAPI.result.length);
 
@@ -498,7 +498,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     // Style before hovering
     expect(
       await profilePage.getElementCssPropertyValue(await profilePage.notificationLoadMoreButtonInAll, 'color')
-    ).toBe('rgb(255, 0, 0)');
+    ).toBe('rgb(218, 43, 43)');
     expect(
       await profilePage.getElementCssPropertyValue(
         await profilePage.notificationLoadMoreButtonInAll,
@@ -516,7 +516,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
         await profilePage.notificationLoadMoreButtonInAll,
         'background-color'
       )
-    ).toBe('rgb(255, 0, 0)');
+    ).toBe('rgb(218, 43, 43)');
   });
 
   test('Validate the notifications load more button in Reblogs Filter Tab', async ({ page }) => {
@@ -525,7 +525,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
 
     const resAccountNotificationsAPI = await apiHelper.getAccountNotificationsAPI('gtg');
     const amountNotificationsAPI: number = await resAccountNotificationsAPI.result.length; // expected up to 50 (set request limit)
-    const lastNotificationId = await resAccountNotificationsAPI.result[49].id;
+    const lastNotificationId = await resAccountNotificationsAPI.result[amountNotificationsAPI-1].id;
 
     // Count how many notifications of the Reblog type is after first request
     let amountNotificationsReblogType: number = 0;
