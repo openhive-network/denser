@@ -21,23 +21,6 @@ import { hiveChainService } from '@transaction/lib/hive-chain-service';
 
 export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
-let key = '';
-const accountFormSchema = z.object({
-  name: z.string().min(2, 'Account name should be longer'),
-  curr_password: z.string().min(2, { message: 'Required owner key or current password' }),
-  genereted_password: z.string().refine((value) => value === key, {
-    message: 'Passwords do not match'
-  }),
-  understand: z.boolean().refine((value) => value === true, {
-    message: 'Required'
-  }),
-  saved_password: z.boolean().refine((value) => value === true, {
-    message: 'Required'
-  })
-});
-
-type AccountFormValues = z.infer<typeof accountFormSchema>;
-
 export default function PostForm() {
   const { t } = useTranslation('common_wallet');
   const [isKeyGenerated, setIsKeyGenerated] = useState(false);
@@ -50,8 +33,27 @@ export default function PostForm() {
   }>();
   const { username } = useSiteParams();
   const changePasswordMutation = useChangePasswordMutation();
+  const [generatedPassword, setGeneratedPassword] = useState<string>('');
 
-  const form = useForm<AccountFormValues>({
+  const accountFormSchema = useMemo(
+    () =>
+      z.object({
+        name: z.string().min(2, 'Account name should be longer'),
+        curr_password: z.string().min(2, { message: 'Required owner key or current password' }),
+        genereted_password: z.string().refine((value) => value === generatedPassword, {
+          message: 'Passwords do not match'
+        }),
+        understand: z.boolean().refine((value) => value === true, {
+          message: 'Required'
+        }),
+        saved_password: z.boolean().refine((value) => value === true, {
+          message: 'Required'
+        })
+      }),
+    [generatedPassword]
+  );
+
+  const form = useForm<z.infer<typeof accountFormSchema>>({
     mode: 'onSubmit',
     reValidateMode: 'onChange',
     resolver: zodResolver(accountFormSchema),
@@ -69,7 +71,7 @@ export default function PostForm() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username]);
 
-  async function onSubmit(_data: AccountFormValues) {
+  async function onSubmit(_data: z.infer<typeof accountFormSchema>) {
     setLoading(true);
     try {
       const components = await resolveChangePasswordComponents(_data.curr_password);
@@ -128,11 +130,9 @@ export default function PostForm() {
 
   async function handleKey() {
     const wax = await createWaxFoundation();
-    // generate password
     const brainKeyData = wax.suggestBrainKey();
     const passwordToBeSavedByUser = 'P' + brainKeyData.wifPrivateKey;
 
-    // private keys for account authorities
     const newOwner = wax.getPrivateKeyFromPassword(username, 'owner', passwordToBeSavedByUser);
     const newActive = wax.getPrivateKeyFromPassword(username, 'active', passwordToBeSavedByUser);
     const newPosting = wax.getPrivateKeyFromPassword(username, 'posting', passwordToBeSavedByUser);
@@ -143,7 +143,7 @@ export default function PostForm() {
       posting: newPosting.associatedPublicKey
     });
 
-    key = passwordToBeSavedByUser;
+    setGeneratedPassword(passwordToBeSavedByUser);
     setIsKeyGenerated(true);
   }
 
@@ -217,7 +217,7 @@ export default function PostForm() {
               {isKeyGenerated ? (
                 <div>
                   <code className="my-1 block bg-background px-1 py-2 text-center text-destructive">
-                    {key}
+                    {generatedPassword}
                   </code>
                   <div className="text-center text-xs font-bold">
                     {t('change_password_page.backup_password_by_storing_it')}
