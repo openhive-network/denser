@@ -17,7 +17,7 @@ const buttonVariants = cva(
           'border border-input hover:bg-accent hover:text-red-600 hover:border-red-600 border-slate-600 text-slate-600 dark:border-white dark:text-white',
         link: 'underline-offset-4 hover:underline text-primary',
         redHover:
-          'text-base disabled:bg-gray-400 hover:bg-red-600 bg-gray-800 rounded-none text-white shadow-md shadow-red-600 hover:shadow-gray-800 disabled:shadow-none',
+          'text-base disabled:bg-gray-400 hover:bg-red-600 bg-gray-800 rounded-none text-white shadow-[3px_3px_0px_var(--tw-shadow-color)] shadow-red-600 hover:shadow-gray-800  disabled:shadow-none',
         basic: 'h-2 border-input text-black hover:text-red-600 dark:text-slate-200'
       },
       size: {

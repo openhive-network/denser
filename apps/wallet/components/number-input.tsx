@@ -7,9 +7,10 @@ interface NumberInputProps {
   disabled?: boolean;
   className?: string;
   id?: string;
+  onBlur?: () => void;
 }
 
-export default function NumberInput({ value, onChange, className, disabled, id }: NumberInputProps) {
+export default function NumberInput({ value, onChange, className, disabled, id, onBlur }: NumberInputProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
     const numericValue = parseFloat(inputValue);
@@ -21,6 +22,7 @@ export default function NumberInput({ value, onChange, className, disabled, id }
   };
   return (
     <Input
+      onBlur={onBlur}
       id={id}
       disabled={disabled}
       value={value === '' ? '' : value.toString()}
