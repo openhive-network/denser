@@ -1,6 +1,7 @@
+import { AccountAuthorityUpdateOperation } from '@hiveio/wax';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { LevelAuthority, transactionService, UpdateAuthorityAction } from '@transaction/index';
+import { transactionService } from '@transaction/index';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
@@ -12,28 +13,21 @@ const logger = getLogger('app');
  * @return {*}
  */
 
-export function useUpdateAuthorityMutation() {
+export function useUpdateAuthorityOperationMutation() {
   const { user } = useUser();
   const queryClient = useQueryClient();
   const updateAuthorityMutation = useMutation({
-    mutationFn: async ({ level, action }: { level: LevelAuthority; action: UpdateAuthorityAction }) => {
-      const broadcastResult = await transactionService.updateAuthority(user.username, level, action, {
+    mutationFn: async (operations: AccountAuthorityUpdateOperation) => {
+      const broadcastResult = await transactionService.updateAuthority(operations, {
         observe: true
       });
-      const response = {
-        level,
-        action: action.type,
-        ...action.payload,
-        username: user.username,
-        broadcastResult
-      };
-
+      const response = { username: user.username, broadcastResult };
       return response;
     },
     onSuccess: (data) => {
       const { username } = data;
       queryClient.invalidateQueries(['authority', username]);
-      logger.info('useUpdateAuthorityMutation onSuccess data: %o', data);
+      logger.info('useUpdateAuthorityOperationMutation onSuccess data: %o', data);
     }
   });
   return updateAuthorityMutation;

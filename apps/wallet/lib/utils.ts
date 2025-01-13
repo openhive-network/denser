@@ -2,7 +2,7 @@ import { convertStringToBig } from '@hive/ui/lib/helpers';
 import { IDynamicGlobalProperties } from '@transaction/lib/hive';
 import { AccountHistoryData } from '../pages/[param]/transfers';
 import { TransferFilters } from '@/wallet/components/transfers-history-filter';
-import { useUpdateAuthorityMutation } from '../components/hooks/use-update-authority-mutation';
+import { useUpdateAuthorityOperationMutation } from '../components/hooks/use-update-authority-mutation';
 
 export function getCurrentHpApr(data: IDynamicGlobalProperties) {
   // The inflation was set to 9.5% at block 7m
@@ -109,20 +109,22 @@ export const getExternalLink = (path: string, baseUrl?: string) => {
 
   return url.toString();
 };
-export const cutPublicKey = (publicKey?: string, width?: number): string => {
+export const cutPublicKey = (publicKey?: string, width?: number, firstCut: number = 720): string => {
   if (!publicKey) return '';
   if (!width) return `${publicKey.slice(0, 8)}...${publicKey.slice(publicKey.length - 5)}`;
-  if (width > 1000) return publicKey;
+  if (width > firstCut) return publicKey;
   if (width > 500) {
-    return `${publicKey.slice(0, 15)}...${publicKey.slice(publicKey.length - 15)}`;
+    return `${publicKey.slice(0, 20)}...${publicKey.slice(publicKey.length - 20)}`;
   }
   return `${publicKey.slice(0, 8)}...${publicKey.slice(publicKey.length - 5)}`;
 };
 
-export function handleAuthorityError(addAuthorityMutation: ReturnType<typeof useUpdateAuthorityMutation>) {
-  if (!addAuthorityMutation.isError) return '';
+export function handleAuthorityError(
+  updateAuthorityMutation: ReturnType<typeof useUpdateAuthorityOperationMutation>
+) {
+  if (!updateAuthorityMutation.isError) return '';
 
-  const transactionError = addAuthorityMutation.error as Error;
+  const transactionError = updateAuthorityMutation.error as Error;
   const message = transactionError.message;
   try {
     const errorObject = JSON.parse(message.split('Invalid response from API: ')[1]);
@@ -130,14 +132,30 @@ export function handleAuthorityError(addAuthorityMutation: ReturnType<typeof use
       return 'Limit actions reached for this account, wait an hour and try again';
     }
     if (errorObject.error.message.includes('references non-existing')) {
-      return 'Account or Key does not exist';
+      return errorObject.error.message.split('Assert Exception:a != nullptr: ')[1];
     }
   } catch (e) {
     if (message.includes('10 assert_exception: Assert Exception')) {
-      return 'Invalid memo key';
+      return 'One of the keys is invalid';
+    }
+    if (message.includes('Wax API error: "4 parse_error_exception: Parse Error')) {
+      const error = message.split('\n')[2];
+      const invalidKey = JSON.parse(error).base58_str;
+      return `Invalid key: ${invalidKey}`;
     }
     return message;
   }
 
   return 'Operation failed';
+}
+
+export type KeyAuth = {
+  keyOrAccount: string;
+  thresholdWeight: number;
+};
+export function transformKeyAuths(authority: { [keyOrAccount: string]: number }): KeyAuth[] {
+  return Object.entries(authority).map(([keyOrAccount, thresholdWeight]) => ({
+    keyOrAccount,
+    thresholdWeight
+  }));
 }

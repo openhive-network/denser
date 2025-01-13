@@ -696,50 +696,11 @@ export class TransactionService {
   }
 
   async updateAuthority(
-    username: string,
-    level: LevelAuthority,
-    action: UpdateAuthorityAction,
+    operations: AccountAuthorityUpdateOperation,
     transactionOptions: TransactionOptions = {}
   ) {
-    const chain = await hiveChainService.getHiveChain();
-    const updateOperation = await AccountAuthorityUpdateOperation.createFor(chain, username);
-    if (level === 'memo' && action.type !== 'setMemoKey') {
-      throw Error('Memo level should be used without setmemoKey action');
-    }
-    // We assert type here because of the error guard in previous line
-    const authorityDefinition = updateOperation.role(level as Exclude<LevelAuthority, 'memo'>);
-
-    switch (action.type) {
-      case 'add': {
-        const { keyOrAccount, thresholdWeight } = action.payload;
-        authorityDefinition.add(keyOrAccount, thresholdWeight);
-        break;
-      }
-      case 'clear':
-        authorityDefinition.clear();
-        break;
-      case 'remove': {
-        const { keyOrAccount } = action.payload;
-        authorityDefinition.remove(keyOrAccount);
-        break;
-      }
-      case 'replace': {
-        const { keyOrAccount, thresholdWeight } = action.payload;
-
-        authorityDefinition.replace(keyOrAccount, thresholdWeight);
-        break;
-      }
-      case 'setThreshold': {
-        authorityDefinition.setTreshold(action.payload.threshold);
-        break;
-      }
-      case 'setMemoKey': {
-        updateOperation.role('memo').set(action.payload.key);
-        break;
-      }
-    }
     return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(updateOperation);
+      builder.pushOperation(operations);
     }, transactionOptions);
   }
 
@@ -1040,28 +1001,3 @@ export class TransactionService {
 }
 
 export const transactionService = new TransactionService();
-
-export type LevelAuthority = Parameters<
-  Awaited<ReturnType<(typeof AccountAuthorityUpdateOperation)['createFor']>>['role']
->[0];
-
-export type UpdateAuthorityAction =
-  | {
-      type: 'add' | 'remove' | 'replace';
-      payload: {
-        keyOrAccount: string;
-        thresholdWeight: number;
-      };
-    }
-  | {
-      type: 'setMemoKey';
-      payload: { key: string };
-    }
-  | {
-      type: 'clear';
-      payload?: never;
-    }
-  | {
-      type: 'setThreshold';
-      payload: { threshold: number };
-    };
