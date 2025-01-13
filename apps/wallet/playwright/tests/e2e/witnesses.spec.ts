@@ -238,7 +238,7 @@ test.describe('Witnesses page tests', () => {
     await expect(voteBoxButton).toHaveText('vote');
     expect(await witnessesPage.getElementCssPropertyValue(voteBoxButton, 'color')).toBe('rgb(248, 250, 252)');
     expect(await witnessesPage.getElementCssPropertyValue(voteBoxButton, 'background-color')).toBe(
-      'rgb(255, 0, 0)'
+      'rgb(218, 43, 43)'
     );
   });
 
@@ -295,7 +295,7 @@ test.describe('Witnesses page tests', () => {
       'rgb(248, 250, 252)'
     );
     expect(await witnessesPage.getElementCssPropertyValue(proxyBoxButton, 'background-color')).toBe(
-      'rgb(255, 0, 0)'
+      'rgb(218, 43, 43)'
     );
   });
 

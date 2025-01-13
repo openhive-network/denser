@@ -150,7 +150,7 @@ test.describe('Post page tests', () => {
     await postPage.page.waitForTimeout(1000);
 
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
-      'rgb(255, 0, 0)'
+      'rgb(218, 43, 43)'
     );
     expect(
       await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'background-color')

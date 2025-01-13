@@ -161,19 +161,22 @@ test.describe('Communities page tests', () => {
     }
   });
 
-  test('validate the last post header with the pinned tag in the LeoFinance community', async ({ page }) => {
+  test('validate the first post header with the pinned tag in the LeoFinance community', async ({ page }) => {
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
 
-    if (await communitiesPage.communityPinnedPost.last().isVisible()) {
-      await expect(communitiesPage.communityPinnedPost.last()).toBeVisible();
+    const rangedPostsOfLeoFinance = await apiHelper.getRankedPostsAPI('trending', '', '', 1, 'hive-167922', '');
+    const firstPostTitle = rangedPostsOfLeoFinance.result[0].title;
+    const firstPostIsPinned = rangedPostsOfLeoFinance.result[0].stats.is_pinned;
+
+    if (await communitiesPage.communityPinnedPost.first().isVisible()) {
+      await expect(communitiesPage.communityPinnedPost.first()).toBeVisible();
+      await expect(firstPostIsPinned).toBeTruthy();
       // Click the last pinned tag of the community articles
-      await communitiesPage.communityPinnedPost.last().click();
+      await communitiesPage.communityPinnedPost.first().click();
       await page.waitForLoadState('networkidle');
       await page.waitForSelector(postPage.articleFooter['_selector']);
-      await expect(postPage.articleTitle).toHaveText(
-        "LIVE LeoFinance's Project Blank Launch Party!! | New Features, Same Web3 Experience"
-      );
+      await expect(postPage.articleTitle).toHaveText(firstPostTitle);
     } else await console.log('There are not any pinned posts!!!');
   });
 
@@ -193,7 +196,7 @@ test.describe('Communities page tests', () => {
           await communitiesPage.communityPinnedPost.last().locator('..'),
           'background-color'
         )
-      ).toBe('rgb(220, 38, 38)');
+      ).toBe('rgb(218, 43, 43)');
     } else await console.log('There are not any pinned posts!!!');
   });
 
@@ -209,7 +212,7 @@ test.describe('Communities page tests', () => {
     await communitiesPage.getFirstPostAuthor.hover();
     await communitiesPage.page.waitForTimeout(1000);
     expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthor, 'color')).toBe(
-      'rgb(255, 0, 0)'
+      'rgb(218, 43, 43)'
     );
 
     // Timestamp link color without hovering
@@ -221,7 +224,7 @@ test.describe('Communities page tests', () => {
     await communitiesPage.page.waitForTimeout(1000);
     expect(
       await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostCardTimestampLink, 'color')
-    ).toBe('rgb(255, 0, 0)');
+    ).toBe('rgb(218, 43, 43)');
     // Author reputation color without hovering
     expect(
       await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthorReputation, 'color')
@@ -289,7 +292,7 @@ test.describe('Communities page tests', () => {
     await homePage.page.waitForTimeout(1000);
     // Color of the first post payouts with hovering
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostPayout, 'color')).toBe(
-      'rgb(255, 0, 0)'
+      'rgb(218, 43, 43)'
     );
     // The tooltip is visible by hovering
     expect(await homePage.getFirstPostPayoutTooltip).toBeVisible();

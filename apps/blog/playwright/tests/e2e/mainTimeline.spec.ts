@@ -91,7 +91,7 @@ test.describe('Home page tests', () => {
     await homePage.page.waitForTimeout(1000);
     // Color of the first post payouts with hovering
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostPayout, 'color')).toBe(
-      'rgb(255, 0, 0)'
+      'rgb(218, 43, 43)'
     );
     // The tooltip is visible by hovering
     expect(await homePage.getFirstPostPayoutTooltip).toBeVisible();
@@ -204,7 +204,7 @@ test.describe('Home page tests', () => {
     // Color of the first post comments number after hovering
     expect(
       await homePage.getElementCssPropertyValue(await homePage.getFirstPostChildernCommentNumber, 'color')
-    ).toBe('rgb(255, 0, 0)');
+    ).toBe('rgb(218, 43, 43)');
     // Color of the first post comments icon after hovering
     await homePage.getFirstPostChildernIcon.hover();
     await homePage.page.waitForTimeout(1000);
@@ -284,7 +284,7 @@ test.describe('Home page tests', () => {
     await homePage.getFirstPostAuthor.hover();
     await homePage.page.waitForTimeout(1000);
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostAuthor, 'color')).toBe(
-      'rgb(255, 0, 0)'
+      'rgb(218, 43, 43)'
     );
 
     // Community or category link color without hovering in the post card
@@ -298,7 +298,7 @@ test.describe('Home page tests', () => {
       await homePage.page.waitForTimeout(1000);
       expect(
         await homePage.getElementCssPropertyValue(await homePage.getFirstPostCardCommunityLink, 'color')
-      ).toBe('rgb(255, 0, 0)');
+      ).toBe('rgb(218, 43, 43)');
     }
     if (await homePage.getFirstPostCardCategoryLink.isVisible()) {
       // Communitylink color without hovering in the post card
@@ -310,7 +310,7 @@ test.describe('Home page tests', () => {
       await homePage.page.waitForTimeout(1000);
       expect(
         await homePage.getElementCssPropertyValue(await homePage.getFirstPostCardCategoryLink, 'color')
-      ).toBe('rgb(255, 0, 0)');
+      ).toBe('rgb(218, 43, 43)');
     }
 
     // Timestamp link color without hovering
@@ -322,7 +322,7 @@ test.describe('Home page tests', () => {
     await homePage.page.waitForTimeout(1000);
     expect(
       await homePage.getElementCssPropertyValue(await homePage.getFirstPostCardTimestampLink, 'color')
-    ).toBe('rgb(255, 0, 0)');
+    ).toBe('rgb(218, 43, 43)');
   });
 
   test('validate the first post header styles (for Trending filter) in the dark theme', async ({ page }) => {
@@ -670,7 +670,7 @@ test.describe('Home page tests', () => {
     await homePage.loginBtn.hover();
     await homePage.page.waitForTimeout(1000);
     await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'color')).toBe(
-      'rgb(255, 0, 0)'
+      'rgb(218, 43, 43)'
     );
     await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'background-color')).toBe(
       'rgb(241, 245, 249)'
@@ -750,7 +750,7 @@ test.describe('Home page tests', () => {
         await homePage.getFirstPostUpvoteButton.locator('svg'),
         'color'
       )
-    ).toBe('rgb(255, 0, 0)');
+    ).toBe('rgb(218, 43, 43)');
 
     // Upvote icon background-color
     expect(
@@ -779,7 +779,7 @@ test.describe('Home page tests', () => {
         await homePage.getFirstPostUpvoteButton.locator('svg'),
         'background-color'
       )
-    ).toBe('rgb(255, 0, 0)');
+    ).toBe('rgb(218, 43, 43)');
   });
 
   test('validate upvote button styles and the tooltip of the first post in the dark theme', async ({
@@ -1049,7 +1049,7 @@ test.describe('Home page tests', () => {
           await homePage.postCardAffiliationTag.first(),
           'border-color'
         )
-      ).toBe('rgb(255, 0, 0)');
+      ).toBe('rgb(218, 43, 43)');
     } else console.log('No affiliation tags on the 40 post cards');
   });
 

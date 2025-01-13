@@ -274,7 +274,7 @@ test.describe('Profile page of @gtg', () => {
     await profilePage.page.waitForTimeout(1000);
 
     expect(await profilePage.getElementCssPropertyValue(profilePage.followButton, 'color')).toBe(
-      'rgb(255, 0, 0)'
+      'rgb(218, 43, 43)'
     );
     expect(
       await profilePage.getElementCssPropertyValue(await profilePage.followButton, 'background-color')

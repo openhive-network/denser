@@ -76,7 +76,7 @@ function PostPage({
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
 
-  const { isLoading: isLoadingFollowList, data: mutedList } = useFollowListQuery(user.username, 'muted');
+  const { data: mutedList } = useFollowListQuery(user.username, 'muted');
 
   const { isLoading: isLoadingPost, data: post } = useQuery(
     ['postData', username, permlink],
@@ -92,13 +92,9 @@ function PostPage({
       enabled: !!username && !!permlink
     }
   );
-  const { isLoading: isLoadingCommunity, data: communityData } = useQuery(
-    ['communityData', community],
-    () => getCommunity(community),
-    {
-      enabled: !!username && !!community && community.startsWith('hive-')
-    }
-  );
+  const { data: communityData } = useQuery(['communityData', community], () => getCommunity(community), {
+    enabled: !!username && !!community && community.startsWith('hive-')
+  });
 
   const { data: activeVotesData, isLoading: isActiveVotesLoading } = useQuery(
     ['activeVotes'],
@@ -107,13 +103,9 @@ function PostPage({
       enabled: !!username && !!permlink
     }
   );
-  const { data: rolesData, isLoading: rolesIsLoading } = useQuery(
-    ['rolesList', community],
-    () => getListCommunityRoles(community),
-    {
-      enabled: Boolean(community)
-    }
-  );
+  const { data: rolesData } = useQuery(['rolesList', community], () => getListCommunityRoles(community), {
+    enabled: Boolean(community)
+  });
 
   const userRole = rolesData?.find((e) => e[0] === user.username);
   const userCanModerate = userRole
@@ -195,6 +187,12 @@ function PostPage({
     }
   }, [discussion, router.query.sort]);
 
+  useEffect(() => {
+    if (router.query.param === '[param]' && !!post) {
+      router.replace(`/${post.community ?? post.category}/@${username}/${permlink}`);
+    }
+  }, [isLoadingDiscussion]);
+
   const commentSite = post?.depth !== 0 ? true : false;
   const [mutedPost, setMutedPost] = useState<boolean>(mutedStatus);
 
@@ -269,6 +267,16 @@ function PostPage({
               />
               {isLoadingPost ? (
                 <Loading loading={isLoadingPost} />
+              ) : edit && commentSite && post.parent_author && post.parent_permlink ? (
+                <ReplyTextbox
+                  editMode={edit}
+                  onSetReply={setEdit}
+                  username={post.parent_author}
+                  permlink={post.permlink}
+                  parentPermlink={post.parent_permlink}
+                  storageId={storageId}
+                  comment={post}
+                />
               ) : edit ? (
                 <PostForm
                   username={username}

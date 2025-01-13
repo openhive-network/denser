@@ -531,7 +531,7 @@ export class ProfilePage {
     expect(await this.page.getByText('Public Profile Settings'));
     expect(await this.page.getByText('Preferences'));
     expect(await this.page.getByText('API Endpoint Options'));
-    expect(await this.getElementCssPropertyValue(this.profileSettingsLink, 'color')).toBe('rgb(220, 38, 38)');
+    expect(await this.getElementCssPropertyValue(this.profileSettingsLink, 'color')).toBe('rgb(218, 43, 43)');
   }
 
   async profileSettingsTabIsNotSelected() {
