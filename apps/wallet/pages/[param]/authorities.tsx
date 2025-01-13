@@ -39,8 +39,7 @@ export default function AuthoritesPage({ username }: InferGetServerSidePropsType
       toast({
         title: 'Error',
         description: error,
-        variant: 'destructive',
-        className: 'w-fit'
+        variant: 'destructive'
       });
     }
   }, [JSON.stringify(error)]);
