@@ -307,18 +307,17 @@
     "our_homepage": "our homepage"
   },
   "authorities_page": {
+    "authority_updated": "Authority updated",
+    "memo_key": "Memo key",
     "edit": "Edit",
     "cancel": "Cancel",
-    "save_changes": "Save changes",
-    "threshold_validator": "Make sure the sum of all {{id}} weights is greater than or equal to the threshold",
+    "update_authority": "Update Authority",
+    "add_key_account": "Add Key or Account",
+    "weight": "Weight",
+    "key_or_account": "Key or Account",
+    "account_exists_error": "This account or key already exists in the list",
+    "delete": "Delete",
     "threshold": "Threshold",
-    "account_exists_error": "This account already exists in the list",
-    "key_exists_error": "This key already exists in the list",
-    "field_required": "This field is required",
-    "add_item_title": "Add new {{id}} entry",
-    "type": "Type",
-    "account": "Account",
-    "key": "Key",
     "add": "Add"
   }
 }
