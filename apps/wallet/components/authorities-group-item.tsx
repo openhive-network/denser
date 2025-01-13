@@ -1,148 +1,85 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Button } from '@ui/components/button';
-import { FileKey, FileX2, Pencil, Save, Trash, UserSquare } from 'lucide-react';
-import { cutPublicKey, handleAuthorityError } from '@/wallet/lib/utils';
+import { FileKey, Trash, UserSquare } from 'lucide-react';
+import { cutPublicKey } from '@/wallet/lib/utils';
 import CopyToKeyboard from '@/wallet/components/copy-to-keyboard';
 import { Input } from '@ui/components';
 import Link from 'next/link';
-import { useUpdateAuthorityMutation } from './hooks/use-update-authority-mutation';
-import { CircleSpinner } from 'react-spinners-kit';
-import { LevelAuthority } from '@transaction/index';
-import { toast } from '@ui/components/hooks/use-toast';
 import ButtonTooltip from './button-tooltip';
 import NumberInput from './number-input';
+import { useTranslation } from 'next-i18next';
 
 const AuthoritiesGroupItem: FC<{
   item: { keyOrAccount: string; thresholdWeight: number };
   width: number;
-  level: LevelAuthority;
-  canEdit: boolean;
-}> = ({ item, width, level, canEdit }) => {
-  const updateAuthorityMutation = useUpdateAuthorityMutation();
-  const type = item.keyOrAccount.startsWith('ST') ? 'KEY' : 'USER';
-  const Icon = type === 'USER' ? UserSquare : FileKey;
-  const [values, setValues] = useState(item);
-  const [editMode, setEditMode] = useState(false);
-
-  const handleUpload = () => {
-    updateAuthorityMutation.mutate(
-      {
-        level: level,
-        action: { type: 'replace', payload: values }
-      },
-      {
-        onSuccess: () => {
-          setEditMode(false);
-        }
-      }
-    );
-  };
-
-  const handleDelete = () => {
-    updateAuthorityMutation.mutate(
-      {
-        level: level,
-        action: { type: 'remove', payload: values }
-      },
-      {
-        onSuccess: () => {
-          setEditMode(false);
-        }
-      }
-    );
-  };
-
-  const handleCancel = () => {
-    setEditMode(false);
-    setValues(item);
-  };
-
-  const disabled = updateAuthorityMutation.isLoading;
+  editMode: boolean;
+  disabled: boolean;
+  onDeleteAuthority: () => void;
+  onUpdateKeyOrAccount: (newKeyOrAccount: string, newThresholdWeight: number) => void;
+}> = ({ item, width, editMode, disabled, onDeleteAuthority, onUpdateKeyOrAccount }) => {
+  const [itemValue, setItemValue] = useState(item);
 
   useEffect(() => {
-    if (updateAuthorityMutation.isError) {
-      toast({
-        title: handleAuthorityError(updateAuthorityMutation),
-        variant: 'destructive'
-      });
-    }
-  }, [updateAuthorityMutation.isLoading]);
-
+    setItemValue(item);
+  }, [item]);
+  const { t } = useTranslation('common_wallet');
+  const type = itemValue.keyOrAccount.startsWith('STM') ? 'KEY' : 'USER';
+  const Icon = type === 'USER' ? UserSquare : FileKey;
+  const handleUpdateItem = () => {
+    onUpdateKeyOrAccount(itemValue.keyOrAccount, itemValue.thresholdWeight);
+  };
   return (
     <div className="col-span-4 grid grid-cols-subgrid pl-2 text-xs hover:bg-foreground/20 sm:text-base">
       <div className="flex items-center">
         <Icon className="size-5" />
       </div>
       <div className="flex items-center">
-        {type === 'USER' ? (
-          <Link target="_blank" href={`/@${values.keyOrAccount}/authorities`}>
-            {values.keyOrAccount}
+        {editMode ? (
+          <Input
+            value={itemValue.keyOrAccount}
+            disabled={disabled}
+            onChange={(e) =>
+              setItemValue((prev) => ({
+                ...prev,
+                keyOrAccount: e.target.value
+              }))
+            }
+            onBlur={handleUpdateItem}
+          />
+        ) : type === 'USER' ? (
+          <Link target="_blank" href={`/@${itemValue.keyOrAccount}/authorities`}>
+            {itemValue.keyOrAccount}
           </Link>
         ) : (
           <CopyToKeyboard
-            value={values.keyOrAccount}
-            displayValue={cutPublicKey(values.keyOrAccount, width)}
+            value={itemValue.keyOrAccount}
+            displayValue={cutPublicKey(itemValue.keyOrAccount, width)}
           />
         )}
       </div>
       <div className="flex w-12 items-center justify-center">
         {editMode ? (
           <NumberInput
-            value={values.thresholdWeight}
-            onChange={(value) => setValues((prev) => ({ ...prev, thresholdWeight: Number(value) }))}
+            disabled={disabled}
+            value={itemValue.thresholdWeight}
+            onChange={(e) => setItemValue((prev) => ({ ...prev, thresholdWeight: Number(e) }))}
+            onBlur={handleUpdateItem}
           />
         ) : (
-          <span>{values.thresholdWeight}</span>
+          <span>{itemValue.thresholdWeight}</span>
         )}
       </div>
-      {editMode ? (
-        <div className="flex items-center">
-          <ButtonTooltip label="Save">
-            <Button disabled={disabled} variant="ghost" size="sm" onClick={handleUpload}>
-              {disabled ? (
-                <CircleSpinner loading={disabled} size={18} color="#dc2626" />
-              ) : (
-                <Save className="h-5 w-5" />
-              )}
+      <div className="flex w-20 items-center justify-end">
+        {editMode ? (
+          <ButtonTooltip label={t('authorities_page.delete')}>
+            <Button disabled={disabled} variant="ghost" size="sm" onClick={onDeleteAuthority}>
+              <Trash className="h-5 w-5" />
             </Button>
           </ButtonTooltip>
-          <ButtonTooltip label="Delete">
-            <Button disabled={disabled} variant="ghost" size="sm" onClick={handleDelete}>
-              {disabled ? (
-                <CircleSpinner loading={disabled} size={18} color="#dc2626" />
-              ) : (
-                <Trash className="h-5 w-5" />
-              )}
-            </Button>
-          </ButtonTooltip>
-          <ButtonTooltip label="Cancel">
-            <Button disabled={disabled} variant="ghost" size="sm" onClick={handleCancel}>
-              {disabled ? (
-                <CircleSpinner loading={disabled} size={18} color="#dc2626" />
-              ) : (
-                <FileX2 className="h-5 w-5" />
-              )}
-            </Button>
-          </ButtonTooltip>
-        </div>
-      ) : canEdit ? (
-        <div className="flex items-center">
+        ) : (
           <div className="h-5 w-5 px-[22px]" />
-          <div className="h-5 w-5 px-[22px]" />
-          <ButtonTooltip label="Edit">
-            <Button
-              variant="ghost"
-              type="button"
-              size="sm"
-              onClick={() => {
-                setEditMode(true);
-              }}
-            >
-              <Pencil className="h-5 w-5" />
-            </Button>
-          </ButtonTooltip>
-        </div>
-      ) : null}
+        )}
+      </div>
     </div>
   );
 };

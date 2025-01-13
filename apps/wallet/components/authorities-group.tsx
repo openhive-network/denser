@@ -1,135 +1,195 @@
-import React, { FC, Fragment, useEffect, useState } from 'react';
-import { Button, Input, Separator } from '@ui/components';
+import React, { Dispatch, FC, Fragment, SetStateAction, useEffect, useState } from 'react';
+import { Button, Separator } from '@ui/components';
 import AuthoritiesGroupItem from './authorities-group-item';
 import AddAuthorityDialog from './add-authority-dialog';
 import { AccordionContent, AccordionItem, AccordionTrigger } from '@ui/components/accordion';
 import { useTranslation } from 'next-i18next';
-import { AuthorityLevel } from '@transaction/lib/hive';
-import { FileX2, Pencil, Save, Trash } from 'lucide-react';
-import { useUpdateAuthorityMutation } from './hooks/use-update-authority-mutation';
-import { handleAuthorityError } from '../lib/utils';
-import { toast } from '@ui/components/hooks/use-toast';
-import ButtonTooltip from './button-tooltip';
+import { KeyAuth } from '../lib/utils';
 import NumberInput from './number-input';
+import { LevelAuthority } from '@transaction/lib/hive';
+import { AuthorityAction } from './hooks/use-authority-operation';
+
+type AuthorityLevel = {
+  level: LevelAuthority;
+  account_auths: KeyAuth[];
+  key_auths: KeyAuth[];
+  weight_threshold: number;
+};
 
 type GroupProps = {
   data: AuthorityLevel;
+  authoritiesActions: AuthorityAction;
   width: number;
   canEdit: boolean;
+  isDisabled: boolean;
+  accordionControl: Dispatch<SetStateAction<string[]>>;
+  authorityUpdated: boolean;
 };
 
-const AuthoritesGroup: FC<GroupProps> = ({ data, width, canEdit }) => {
+const AuthoritesGroup: FC<GroupProps> = ({
+  data,
+  width,
+  canEdit,
+  authoritiesActions,
+  accordionControl,
+  isDisabled,
+  authorityUpdated
+}) => {
   const { t } = useTranslation('common_wallet');
-  const [editThreshold, setEditThreshold] = useState(false);
+  const [editMode, setEditMode] = useState(false);
   const [value, setValue] = useState(data.weight_threshold);
-  const level = data.level;
-  const updateThresholdAuthorityMutation = useUpdateAuthorityMutation();
+  const level = data.level as Exclude<LevelAuthority, 'memo'>;
   const authorityList = [...data.account_auths, ...data.key_auths].map((e) => e.keyOrAccount);
-
-  const onUpdate = () => {
-    updateThresholdAuthorityMutation.mutate(
-      {
-        level: level,
-        action: { type: 'setThreshold', payload: { threshold: value } }
-      },
-      {
-        onSuccess: () => {
-          setEditThreshold(false);
-        }
-      }
-    );
-  };
   useEffect(() => {
-    if (updateThresholdAuthorityMutation.isError) {
-      toast({
-        title: handleAuthorityError(updateThresholdAuthorityMutation),
-        variant: 'destructive'
-      });
+    if (authorityUpdated) {
+      setEditMode(false);
     }
-  }, [updateThresholdAuthorityMutation.isLoading]);
+  }, [isDisabled]);
+  const handleUpdateKeyOrAccount = (
+    keyOrAccount: string,
+    newKeyOrAccount: string,
+    newThresholdWeight: number
+  ) => {
+    authoritiesActions({
+      type: 'updateKeyOrAccount',
+      payload: {
+        level,
+        keyOrAccount,
+        newKeyOrAccount,
+        newThresholdWeight
+      }
+    });
+  };
+  const handleDeleteAuthority = (keyOrAccount: string) => {
+    authoritiesActions({
+      type: 'delete',
+      payload: {
+        level: level,
+        keyOrAccount
+      }
+    });
+  };
   return (
     <div className="sm:container">
       <AccordionItem value={level} className="mt-6">
-        <AccordionTrigger>
-          <h2>{`${level.charAt(0).toUpperCase() + level.slice(1)} Authority`}</h2>
-        </AccordionTrigger>
-        <AccordionContent>
-          <div className="grid w-full grid-cols-[max-content_1fr_1fr_max-content] gap-1">
-            <div className="col-span-4 grid grid-cols-subgrid items-center text-xs hover:bg-foreground/20 sm:text-base">
-              {canEdit ? (
-                <div className="flex items-center">
-                  <AddAuthorityDialog authorityList={authorityList} level={data.level} />
-                  <div className="hidden w-0 text-nowrap sm:inline-block">Add Key or Account</div>
-                </div>
+        <div className="flex items-center justify-between">
+          <AccordionTrigger>
+            <h2>{`${level.charAt(0).toUpperCase() + level.slice(1)} Authority`}</h2>
+          </AccordionTrigger>
+          <div className="flex items-center gap-2">
+            <span className="justify-self-end font-medium">{t('authorities_page.threshold')}:</span>
+            <div className="w-12">
+              {editMode ? (
+                <NumberInput
+                  value={value}
+                  disabled={isDisabled}
+                  onChange={(value) => {
+                    setValue(Number(value));
+                  }}
+                  onBlur={() =>
+                    authoritiesActions({
+                      type: 'updateThreshold',
+                      payload: { level: level, threshold: value }
+                    })
+                  }
+                  className="justify-self-end"
+                />
               ) : (
-                <div />
+                <span className="flex items-center justify-center justify-self-center">
+                  {data.weight_threshold}
+                </span>
               )}
-              <span className="justify-self-end font-medium">{t('authorities_page.threshold')}:</span>
-              <div className="w-12">
-                {editThreshold ? (
-                  <NumberInput
-                    value={value}
-                    onChange={(value) => {
-                      setValue(Number(value));
-                    }}
-                    className="justify-self-end"
+            </div>
+            <div className="flex w-20 ">
+              {!canEdit ? null : editMode ? (
+                <Button
+                  disabled={isDisabled}
+                  variant="outlineRed"
+                  className="w-full rounded-none"
+                  onClick={() => {
+                    setEditMode(false);
+                    authoritiesActions({
+                      type: 'reset',
+                      payload: { level }
+                    });
+                  }}
+                >
+                  {t('authorities_page.cancel')}
+                </Button>
+              ) : (
+                <Button
+                  disabled={isDisabled}
+                  className="w-full rounded-none"
+                  onClick={() => {
+                    setEditMode(true);
+                    accordionControl((prev) => (prev.includes(level) ? prev : [...prev, level]));
+                  }}
+                >
+                  {t('authorities_page.edit')}
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+        <AccordionContent>
+          <div className="grid w-full grid-cols-[max-content_1fr_max-content_5rem] gap-1">
+            <div className="col-span-4 grid grid-cols-subgrid items-center text-xs hover:bg-foreground/20 sm:text-base">
+              {canEdit && editMode ? (
+                <>
+                  <AddAuthorityDialog
+                    disabled={isDisabled}
+                    authorityList={authorityList}
+                    level={level}
+                    onAddAuthority={(authority) =>
+                      authoritiesActions({
+                        type: 'add',
+                        payload: {
+                          level,
+                          ...authority
+                        }
+                      })
+                    }
                   />
-                ) : (
-                  <span className="flex items-center justify-center justify-self-center">
-                    {data.weight_threshold}
-                  </span>
-                )}
-              </div>
-              {editThreshold ? (
-                <div className="flex items-center">
-                  <ButtonTooltip label="Save Threshold">
-                    <Button variant="ghost" size="sm" onClick={onUpdate}>
-                      <Save className="h-5 w-5" />
-                    </Button>
-                  </ButtonTooltip>
-                  <div className="h-5 w-5 px-[22px]" />
-                  <ButtonTooltip label="Cancel">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        setEditThreshold(false);
-                        setValue(data.weight_threshold);
-                      }}
-                    >
-                      <FileX2 className="h-5 w-5" />
-                    </Button>
-                  </ButtonTooltip>
-                </div>
-              ) : canEdit ? (
-                <div className="flex items-center">
-                  <div className="h-5 w-5 px-[22px]" />
-                  <div className="h-5 w-5 px-[22px]" />
-                  <ButtonTooltip label="Edit Threshold">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        setEditThreshold(true);
-                      }}
-                    >
-                      <Pencil className="h-5 w-5" />
-                    </Button>
-                  </ButtonTooltip>
-                </div>
-              ) : null}
+                  <span>{t('authorities_page.add_key_account')}</span>
+                </>
+              ) : (
+                <>
+                  <div />
+                  <div />
+                </>
+              )}
+              <span>{t('authorities_page.weight')}</span>
+              <div />
             </div>
 
             {data.key_auths.map((e) => (
               <Fragment key={e.keyOrAccount}>
-                <AuthoritiesGroupItem width={width} item={e} level={data.level} canEdit={canEdit} />
+                <AuthoritiesGroupItem
+                  width={width}
+                  item={e}
+                  editMode={editMode}
+                  disabled={isDisabled}
+                  onDeleteAuthority={() => handleDeleteAuthority(e.keyOrAccount)}
+                  onUpdateKeyOrAccount={(newKeyOrAccount, newThresholdWeight) =>
+                    handleUpdateKeyOrAccount(e.keyOrAccount, newKeyOrAccount, newThresholdWeight)
+                  }
+                />
                 <Separator className="col-span-4 bg-foreground" />
               </Fragment>
             ))}
 
             {data.account_auths.map((e) => (
               <Fragment key={e.keyOrAccount}>
-                <AuthoritiesGroupItem width={width} item={e} level={data.level} canEdit={canEdit} />
+                <AuthoritiesGroupItem
+                  width={width}
+                  item={e}
+                  editMode={editMode}
+                  disabled={isDisabled}
+                  onDeleteAuthority={() => handleDeleteAuthority(e.keyOrAccount)}
+                  onUpdateKeyOrAccount={(newKeyOrAccount, newThresholdWeight) =>
+                    handleUpdateKeyOrAccount(e.keyOrAccount, newKeyOrAccount, newThresholdWeight)
+                  }
+                />
                 <Separator className="col-span-4 bg-foreground" />
               </Fragment>
             ))}
