@@ -29,7 +29,7 @@
     "@hive/tsconfig": "workspace:*",
     "@hive/ui": "workspace:*",
     "@hiveio/content-renderer": "^2.2.0",
-    "@hiveio/wax": "1.27.6-rc6-stable.241212140722",
+    "@hiveio/wax": "1.27.6-rc6-stable.250109151100",
     "@hookform/resolvers": "^3.1.1",
     "@next/bundle-analyzer": "^14.2.2",
     "@tanstack/react-query": "^4.36.1",

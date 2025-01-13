@@ -27,7 +27,7 @@
     "@hive/transaction": "workspace:*",
     "@hive/tsconfig": "workspace:*",
     "@hive/ui": "workspace:*",
-    "@hiveio/wax": "1.27.6-rc6-stable.241212140722 ",
+    "@hiveio/wax": "1.27.6-rc6-stable.250109151100",
     "@hookform/resolvers": "^3.3.2",
     "@next/bundle-analyzer": "^14.2.2",
     "@types/big.js": "^6.2.2",
