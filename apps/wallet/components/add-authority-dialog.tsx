@@ -55,7 +55,7 @@ const AddAuthorityDialog: FC<{
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="threshold" className="text-right">
-              {t('authorities_page.threshold')}
+              {t('authorities_page.weight')}
             </Label>
             <NumberInput
               id="threshold"

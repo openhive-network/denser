@@ -37,7 +37,7 @@ const AuthoritesGroup: FC<GroupProps> = ({
 }) => {
   const { t } = useTranslation('common_wallet');
   const [editMode, setEditMode] = useState(false);
-  const [value, setValue] = useState(data.weight_threshold);
+  const [thresholdValue, setThresholdValue] = useState({threshold: data.weight_threshold});
   const level = data.level as Exclude<LevelAuthority, 'memo'>;
   const authorityList = [...data.account_auths, ...data.key_auths].map((e) => e.keyOrAccount);
   useEffect(() => {
@@ -69,6 +69,10 @@ const AuthoritesGroup: FC<GroupProps> = ({
       }
     });
   };
+  useEffect(() => {
+    setThresholdValue({ threshold: data.weight_threshold });
+  }
+  , [data]);
   return (
     <div className="sm:container">
       <AccordionItem value={level} className="mt-6">
@@ -81,15 +85,15 @@ const AuthoritesGroup: FC<GroupProps> = ({
             <div className="w-12">
               {editMode ? (
                 <NumberInput
-                  value={value}
+                  value={thresholdValue.threshold}
                   disabled={isDisabled}
                   onChange={(value) => {
-                    setValue(Number(value));
+                    setThresholdValue({ threshold: Number(value) });
                   }}
                   onBlur={() =>
                     authoritiesActions({
                       type: 'updateThreshold',
-                      payload: { level: level, threshold: value }
+                      payload: { level: level, threshold: thresholdValue.threshold }
                     })
                   }
                   className="justify-self-end"
@@ -112,6 +116,7 @@ const AuthoritesGroup: FC<GroupProps> = ({
                       type: 'reset',
                       payload: { level }
                     });
+                    setThresholdValue({ threshold: data.weight_threshold });
                   }}
                 >
                   {t('authorities_page.cancel')}
