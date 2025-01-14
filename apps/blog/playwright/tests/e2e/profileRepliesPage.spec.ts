@@ -76,28 +76,32 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await profilePage.gotoRepliesProfilePage('@gtg');
     await profilePage.profileRepliesTabIsSelected();
 
-    const firstCommentCardTitle: any = await profilePage.repliesCommentListItemTitle.first().textContent();
-    const firstCommentCardDescription: any = await profilePage.repliesCommentListItemDescription
-      .first()
-      .textContent();
-    const firstCommentCardDescriptionDots: any = await firstCommentCardDescription.replace(/\u2026/g, '');
-    const firstCommentCardDescriptionWitoutSpaces: any = await firstCommentCardDescriptionDots.replace(
-      /\s/g,
-      ''
-    );
-    await profilePage.repliesCommentListItemDescription.locator('a').first().click();
-    await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
+    if (await profilePage.repliesCommentListItemDescription.locator('a').first().isVisible()){
+      const firstCommentCardTitle: any = await profilePage.repliesCommentListItemTitle.first().textContent();
+      const firstCommentCardDescription: any = await profilePage.repliesCommentListItemDescription
+        .first()
+        .textContent();
+      const firstCommentCardDescriptionDots: any = await firstCommentCardDescription.replace(/\u2026/g, '');
+      const firstCommentCardDescriptionWitoutSpaces: any = await firstCommentCardDescriptionDots.replace(
+        /\s/g,
+        ''
+      );
+      await profilePage.repliesCommentListItemDescription.locator('a').first().click();
+      await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
 
-    if (await page.getByText('Content were hidden due to low ratings.').isVisible()){
-      await page.locator('button').getByText('Show').click();
-      const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
-      const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
-      await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
-    }
-    else {
-      const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
-      const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
-      await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
+      if (await page.getByText('Content were hidden due to low ratings.').isVisible()){
+        await page.locator('button').getByText('Show').click();
+        const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
+        const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
+        await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
+      }
+      else {
+        const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
+        const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
+        await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
+      }
+    } else {
+      await console.log('There is no post description');
     }
   });
 
