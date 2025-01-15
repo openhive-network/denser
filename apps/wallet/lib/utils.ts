@@ -134,6 +134,9 @@ export function handleAuthorityError(
     if (errorObject.error.message.includes('references non-existing')) {
       return errorObject.error.message.split('Assert Exception:a != nullptr: ')[1];
     }
+    if (errorObject.error.data.name === 'tx_missing_owner_auth') {
+      return errorObject.error.data.message;
+    }
   } catch (e) {
     if (message.includes('10 assert_exception: Assert Exception')) {
       return 'One of the keys is invalid';
