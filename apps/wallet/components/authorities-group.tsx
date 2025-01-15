@@ -8,6 +8,7 @@ import { KeyAuth } from '../lib/utils';
 import NumberInput from './number-input';
 import { LevelAuthority } from '@transaction/lib/hive';
 import { AuthorityAction } from './hooks/use-authority-operation';
+import { toast } from '@ui/components/hooks/use-toast';
 
 type AuthorityLevel = {
   level: LevelAuthority;
@@ -37,7 +38,7 @@ const AuthoritesGroup: FC<GroupProps> = ({
 }) => {
   const { t } = useTranslation('common_wallet');
   const [editMode, setEditMode] = useState(false);
-  const [thresholdValue, setThresholdValue] = useState({threshold: data.weight_threshold});
+  const [thresholdValue, setThresholdValue] = useState({ threshold: data.weight_threshold });
   const level = data.level as Exclude<LevelAuthority, 'memo'>;
   const authorityList = [...data.account_auths, ...data.key_auths].map((e) => e.keyOrAccount);
   useEffect(() => {
@@ -69,10 +70,15 @@ const AuthoritesGroup: FC<GroupProps> = ({
       }
     });
   };
+  const handleUpdateThreshold = () => {
+    authoritiesActions({
+      type: 'updateThreshold',
+      payload: { level: level, threshold: thresholdValue.threshold }
+    });
+  };
   useEffect(() => {
     setThresholdValue({ threshold: data.weight_threshold });
-  }
-  , [data]);
+  }, [data]);
   return (
     <div className="sm:container">
       <AccordionItem value={level} className="mt-6">
@@ -90,12 +96,17 @@ const AuthoritesGroup: FC<GroupProps> = ({
                   onChange={(value) => {
                     setThresholdValue({ threshold: Number(value) });
                   }}
-                  onBlur={() =>
-                    authoritiesActions({
-                      type: 'updateThreshold',
-                      payload: { level: level, threshold: thresholdValue.threshold }
-                    })
-                  }
+                  onBlur={() => {
+                    if (thresholdValue.threshold > 1 && level === 'owner') {
+                      confirm(
+                        'By changing Owner Authority threshold, you may lose the independent access to this account.\n\n Are you sure you want to continue'
+                      )
+                        ? handleUpdateThreshold()
+                        : setThresholdValue({ threshold: data.weight_threshold });
+                    } else {
+                      handleUpdateThreshold();
+                    }
+                  }}
                   className="justify-self-end"
                 />
               ) : (
