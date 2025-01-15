@@ -12,11 +12,7 @@ import { getLogger } from '@hive/ui/lib/logging';
 
 // import { WaxChainApiError } from '@hiveio/wax';
 
-declare class WaxError extends Error {}
-declare class WaxChainApiError extends WaxError {
-  apiError: object;
-  constructor(message: string, apiError: object);
-}
+declare const WaxChainApiError: any;
 
 const logger = getLogger('app');
 
