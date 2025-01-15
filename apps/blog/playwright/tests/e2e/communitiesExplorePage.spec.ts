@@ -112,7 +112,8 @@ test.describe('Explore communities page tests', () => {
     // validate amount of posts
     expect(await communitiesPage.communityListItemFooter.first().textContent()).toContain(firstPostsAmountRankCommunitiesAPI.toString());
     // validate amount of admins
-    // expect(await communitiesPage.communityListItemFooter.first().textContent()).toContain(firstAdminsAmountRankCommunitiesAPI.toString());
+    const firstAdminsAPI = firstAdminsAmountRankCommunitiesAPI[0];
+    expect(await communitiesPage.communityListItemFooter.first().textContent()).toContain(firstAdminsAPI.toString());
   });
 
   test('move to the login page after clicking subscribe button of the first community', async ({ page }) => {
