@@ -1094,9 +1094,8 @@ test.describe('Home page tests', () => {
     await homePage.mainPostsTimelineVisible(40);
 
     const apiHelper = await new ApiHelper(page);
-    const rankedPostResponse = await apiHelper.getRankedPostsAPI('trending', '', '', 40, '', '');
+    const rankedPostResponse = await apiHelper.getRankedPostsAPI('trending', '', '', 20, '', '');
     const rankedPostResultLength = await rankedPostResponse.result.length;
-    console.log('111', rankedPostResultLength)
     const elementsWithAffiliationTag: string[] = [];
 
     for (let i = 0; i < rankedPostResultLength; i++) {
