@@ -1087,7 +1087,9 @@ test.describe('Home page tests', () => {
   }) => {
     // test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
 
-    const apiHelper = new ApiHelper(page);
+    await page.waitForTimeout(3000);
+
+    const apiHelper = await new ApiHelper(page);
     const rankedPostResponse = await apiHelper.getRankedPostsAPI('trending', '', '', 40, '', '');
     const rankedPostResultLength = await rankedPostResponse.result.length;
     const elementsWithAffiliationTag: string[] = [];
