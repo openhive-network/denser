@@ -1087,11 +1087,16 @@ test.describe('Home page tests', () => {
   }) => {
     // test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
 
-    await page.waitForTimeout(3000);
+    // Load 40 posts - more likely to occur a badge
+    await homePage.goto();
+    await homePage.mainPostsTimelineVisible(20);
+    await homePage.page.keyboard.down('End');
+    await homePage.mainPostsTimelineVisible(40);
 
     const apiHelper = await new ApiHelper(page);
     const rankedPostResponse = await apiHelper.getRankedPostsAPI('trending', '', '', 40, '', '');
     const rankedPostResultLength = await rankedPostResponse.result.length;
+    console.log('111', rankedPostResultLength)
     const elementsWithAffiliationTag: string[] = [];
 
     for (let i = 0; i < rankedPostResultLength; i++) {
@@ -1100,11 +1105,6 @@ test.describe('Home page tests', () => {
     }
     // console.log('Elements with affiliation tag: ', await elementsWithAffiliationTag);
 
-    // Load 40 posts - more likely to occur a badge
-    await homePage.goto();
-    await homePage.mainPostsTimelineVisible(20);
-    await homePage.page.keyboard.down('End');
-    await homePage.mainPostsTimelineVisible(40);
 
     if (await homePage.postCardAffiliationTag.first().isVisible()) {
       // console.log('Text of the first affiliation tag: ', await homePage.postCardAffiliationTag.first().textContent());
