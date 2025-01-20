@@ -3,6 +3,7 @@ import { IDynamicGlobalProperties } from '@transaction/lib/hive';
 import { AccountHistoryData } from '../pages/[param]/transfers';
 import { TransferFilters } from '@/wallet/components/transfers-history-filter';
 import { useUpdateAuthorityOperationMutation } from '../components/hooks/use-update-authority-mutation';
+import { hiveChainService } from '@transaction/lib/hive-chain-service';
 
 export function getCurrentHpApr(data: IDynamicGlobalProperties) {
   // The inflation was set to 9.5% at block 7m
@@ -93,6 +94,21 @@ export const getFilter =
     }
     return true;
   };
+
+const ASSET_PRECISION = 1000;
+const VEST_PRECISION = 1000000;
+
+export const getAsset = async (value: string, curr: 'hive' | 'hbd') => {
+  const chain = await hiveChainService.getHiveChain();
+  const amount = Number(value) * ASSET_PRECISION;
+  return curr === 'hive' ? chain.hive(amount) : chain.hbd(amount);
+};
+
+export const getVests = async (value: string) => {
+  const chain = await hiveChainService.getHiveChain();
+  const amount = Number(value) * VEST_PRECISION;
+  return chain.vests(amount);
+};
 
 // The default is the blog domain
 export const getExternalLink = (path: string, baseUrl?: string) => {

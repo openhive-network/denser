@@ -1,7 +1,6 @@
 {
   "extends": "@hive/tsconfig/base.json",
   "compilerOptions": {
-    "moduleResolution": "Bundler",
     "baseUrl": ".",
     "paths": {
       "@smart-signer/*": ["../smart-signer/*"],

@@ -12,6 +12,8 @@ import { verifyLoginChallenge } from '@smart-signer/lib/verify-login-challenge';
 import { verifyLogin } from '@smart-signer/lib/verify-login';
 import { getLoginChallengeFromTransactionForLogin } from '@smart-signer/lib/login-operation'
 import { getLogger } from '@hive/ui/lib/logging';
+import { siteConfig } from '@hive/ui/config/site';
+import { getChatAuthToken } from '@smart-signer/lib/rocket-chat';
 
 const logger = getLogger('app');
 
@@ -22,7 +24,8 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
   const loginChallenge = req.cookies[`${cookieNamePrefix}login_challenge_server`] || '';
 
   const data: PostLoginSchema = await postLoginSchema.parseAsync(req.body);
-  const { username, loginType, signatures, keyType, authenticateOnBackend } = data;
+
+  const { username, loginType, signatures, keyType, authenticateOnBackend, strict } = data;
   let hiveUserProfile;
   let chainAccount;
   try {
@@ -41,6 +44,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
   }
 
   let result: boolean = false;
+  let verifiedUser: User | undefined;
 
   if (JSON.parse(data.txJSON)) {
     // Check whether loginChallenge is correct.
@@ -50,9 +54,10 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
       throw new createHttpError[401]('Invalid login challenge');
     }
 
-  // Verify signature in passed transaction.
-  try {
-      result = !!(await verifyLogin(data));
+    // Verify signature in passed transaction.
+    try {
+      verifiedUser = await verifyLogin(data);
+      result = verifiedUser.isLoggedIn;
     } catch (error) {
       // swallow error
     }
@@ -68,13 +73,27 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
     throw new createHttpError.Unauthorized('Invalid username or password');
   }
 
+  let chatAuthToken = '';
+  const oauthConsent: { [key: string]: boolean } = {};
+  if (siteConfig.openhiveChatIframeIntegrationEnable
+      && (verifiedUser?.strict || siteConfig.openhiveChatAllowNonStrictLogin)) {
+    const result = await getChatAuthToken(username);
+    if (result.success) {
+      chatAuthToken = result.data.authToken;
+      oauthConsent[siteConfig.openhiveChatClientId] = true;
+    }
+  }
+
   const user: User = {
     isLoggedIn: true,
     username,
     avatarUrl: hiveUserProfile?.profile_image || '',
     loginType,
     keyType,
-    authenticateOnBackend
+    authenticateOnBackend,
+    chatAuthToken,
+    oauthConsent,
+    strict: verifiedUser?.strict ? true : false,
   };
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
   session.user = user;

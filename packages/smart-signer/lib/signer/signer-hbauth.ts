@@ -40,7 +40,7 @@ export class SignerHbauth extends Signer {
 
   async destroy() {
     const authClient = await hbauthService.getOnlineClient();
-    await authClient.logout();
+    await authClient.logout(this.username);
   }
 
   /**
@@ -77,36 +77,36 @@ export class SignerHbauth extends Signer {
   }
 
   async signChallenge(
-    { password = '', message }: SignChallenge
+    { password = '', message }: SignChallenge,  
+    singleSignKeyType?: KeyAuthorityType
     ): Promise<string> {
     const digest = cryptoUtils.sha256(message).toString('hex');
-    return this.signDigest(digest, password);
+    return this.signDigest(digest, password, singleSignKeyType);
   }
 
-  async signTransaction({ digest, transaction }: SignTransaction) {
+  async signTransaction({ digest, transaction, singleSignKeyType }: SignTransaction) {
     const wax = await createWaxFoundation({ chainId: this.chainId });
 
     // When transaction is string, e.g. got from transaction.toApi().
     // const txBuilder = wax.TransactionBuilder.fromApi(transaction);
-
+    
     const txBuilder = wax.createTransactionFromProto(transaction);
     if (digest !== txBuilder.sigDigest) {
       throw new Error('Digests do not match');
     }
 
-    // TODO Show transaction in UI and get user's consent to sign it.
-
-    return this.signDigest(digest, '');
+    return this.signDigest(digest, '', singleSignKeyType);
   }
 
-  async signDigest(digest: THexString, password: string) {
+  async signDigest(digest: THexString, password: string, singleSignKeyType?: KeyAuthorityType) {
     const { username, keyType } = this;
     logger.info('signDigest args: %o', { password, digest, username, keyType });
 
-    if (!['posting', 'active'].includes(keyType)) {
+    const validKeyTypes = ['posting', 'active', 'owner'];
+    if (!validKeyTypes.includes(keyType)) {
       throw new Error(`Unsupported keyType: ${keyType}`);
     }
-
+    
     const authClient = await hbauthService.getOnlineClient();
 
     const checkAuthResult = await this.checkAuth(username, keyType);
@@ -149,20 +149,66 @@ export class SignerHbauth extends Signer {
       }
     }
 
-    const signature = await authClient.sign(
-      username,
-      digest,
-      keyType
-    );
+    let signature = '';
+
+    if (singleSignKeyType) {
+      console.log('singleSignKeyType', singleSignKeyType);
+      if (!validKeyTypes.includes(singleSignKeyType)) {
+        throw new Error(`Unsupported singleSignKeyType: ${singleSignKeyType}`);
+      }
+
+      // Get password for single sign
+      const passwordFormOptions: PasswordFormOptions = {
+        mode: PasswordFormMode.HBAUTH,
+        showInputStorePassword: false,
+        i18nKeysForCaptions: {
+          title: `login_form.this_operation_requires_your_key_for_single_sign_${singleSignKeyType}`,
+          inputPasswordPlaceholder: 'login_form.title_wif_dialog_password',
+        },
+      };
+
+      try {
+        const { password: singleSignPassword } = await PasswordDialogModalPromise({
+          isOpen: true,
+          passwordFormOptions
+        });
+
+        if (!singleSignPassword) {
+          throw new Error('No key provided for single sign');
+        }
+
+        signature = await authClient.singleSign(
+          username,
+          digest,
+          singleSignPassword,
+          singleSignKeyType,
+        );
+      } catch (error) {
+        logger.error('Error in single sign: %o', error);
+        throw error;
+      }
+    } else {
+      signature = await authClient.sign(
+        username,
+        digest,
+        keyType
+      );
+    }
+
     logger.info('hbauth: %o', { digest, signature });
     return signature;
   }
 
   async checkAuth(username: string, keyType: string): Promise<boolean> {
     const authClient = await hbauthService.getOnlineClient();
-    const auths = await authClient.getAuths();
+    const auths = await authClient.getRegisteredUsers();
     logger.info('auths in safe storage %o', auths);
-    const auth = await authClient.getAuthByUser(username);
+    const auth = await authClient.getRegisteredUserByUsername(username);
+    const settings = await authClient.getUserSettings(username);
+
+    // set authorityUsername to the keyType that is authorized for this user
+    this.authorityUsername = settings?.authorizedAccounts?.[keyType as KeyAuthorityType];
+
     if (auth) {
       logger.info('Found auth for user %s: %o', username, auth);
       if (auth.authorized) {

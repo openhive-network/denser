@@ -1,0 +1,35 @@
+{
+	# debug
+	# http_port {$API_HTTP_PORT}
+	https_port {$API_HTTPS_PORT}
+}
+
+{$PUBLIC_HOSTNAME}:{$AUTH_PORT} {
+	reverse_proxy denser-auth:{$AUTH_PORT}
+	tls internal
+	# tls /ets/caddy/certs/cert.pem /ets/caddy/certs/key.pem
+}
+
+{$PUBLIC_HOSTNAME}:{$BLOG_PORT} {
+	reverse_proxy denser-blog:{$BLOG_PORT}
+	tls internal
+	# tls /ets/caddy/certs/cert.pem /ets/caddy/certs/key.pem
+}
+
+{$PUBLIC_HOSTNAME}:{$WALLET_PORT} {
+	reverse_proxy denser-wallet:{$WALLET_PORT}
+	tls internal
+	# tls /ets/caddy/certs/cert.pem /ets/caddy/certs/key.pem
+}
+
+{$PUBLIC_HOSTNAME}:{$API_HTTPS_PORT} {
+	reverse_proxy docker:80 {
+		header_up host {$PUBLIC_HOSTNAME}
+	}
+	tls internal
+	# tls /ets/caddy/certs/cert.pem /ets/caddy/certs/key.pem
+	# transport http {
+	#   tls
+	#   tls_insecure_skip_verify
+	# }
+}

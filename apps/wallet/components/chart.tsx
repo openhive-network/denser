@@ -148,7 +148,7 @@ export default function Chart({ bids, asks }: { bids: OrdersItem[]; asks: Orders
   return (
     <>
       <AreaChart
-        width={windowWidth / 1.1}
+        width={Math.min(windowWidth / 1.1, 1200)}
         height={250}
         data={data}
         margin={{

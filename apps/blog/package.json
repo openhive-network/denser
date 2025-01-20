@@ -7,17 +7,20 @@
     "copy:worker": "cp ../../node_modules/@hiveio/hb-auth/dist/worker.js ./public/auth/",
     "predev": "pnpm run clean",
     "dev": "react-env -- next dev -p 3000 | pnpm dlx pino-pretty --colorize",
+    "dev:3010": "react-env -- next dev -p 3010 | pnpm dlx pino-pretty --colorize",
     "devssl": "react-env -- next dev --port 3000 --experimental-https --experimental-https-key ../../ssl/server-key.pem --experimental-https-cert ../../ssl/server-cert.pem | pnpm dlx pino-pretty --colorize",
     "prebuild": "pnpm run clean",
     "build": "react-env -- next build",
     "postbuild": "pnpm run copy:worker",
     "start": "react-env -- next start -p 3000",
-    "lint": "eslint .",
+    "lint": "eslint . --ignore-pattern \"playwright-report/*\"",
     "pw:test:local": "playwright test --config=playwright.local3000.config.ts  --update-snapshots",
     "pw:test:local:chromium": "playwright test --project=chromium --config=playwright.local3000.config.ts --headed  --update-snapshots",
     "pw:test:local:firefox": "playwright test --project=firefox --config=playwright.local3000.config.ts --headed  --update-snapshots",
     "pw:test:local:webkit": "playwright test --project=webkit --config=playwright.local3000.config.ts --headed  --update-snapshots",
-    "pw:test:local:experimental:ui": "playwright test --config=playwright.local3000.config.ts --ui"
+    "pw:test:local:experimental:ui": "playwright test --config=playwright.local3000.config.ts --ui",
+    "pw:blog:test:mir:chromium": "playwright test --project=chromium --config=playwright.stack-mirrornet-3000.config.ts --update-snapshots",
+    "pw:blog:test:mir:chromium:ui": "playwright test --project=chromium --config=playwright.stack-mirrornet-3000.config.ts --update-snapshots --ui"
   },
   "dependencies": {
     "@beam-australia/react-env": "^3.1.1",

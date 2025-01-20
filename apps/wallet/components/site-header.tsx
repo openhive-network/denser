@@ -66,11 +66,11 @@ const SiteHeader: FC = () => {
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background shadow-sm">
-      <div className="container flex h-14 w-full items-center justify-between">
-        <Link href="/" className="keychainify-checked mr-6 flex items-center space-x-2">
-          <Icons.walletlogo className="w-32" />
+      <div className="container flex h-14 w-full items-center justify-between px-0 pl-1 md:px-8">
+        <Link href="/" className="keychainify-checked flex items-center space-x-2 md:mr-6">
+          <Icons.walletlogo className="w-24 md:w-32" />
           {siteConfig.chainEnv !== 'mainnet' && (
-            <span className="text-xs uppercase text-background">{siteConfig.chainEnv}</span>
+            <span className="hidden text-xs uppercase text-background md:block">{siteConfig.chainEnv}</span>
           )}
         </Link>
         <div className="flex items-center space-x-2 sm:space-x-4">
@@ -90,7 +90,7 @@ const SiteHeader: FC = () => {
               </div>
             ) : null}
             {isClient && user?.isLoggedIn && (
-              <div className="mr-4 flex items-center gap-x-3">
+              <div className="mr-2 flex items-center gap-x-3 text-sm md:mr-4 md:text-base">
                 <Link href="/proposals">{t('global.proposals')}</Link>
                 <Link href="/~witnesses">{t('global.witnesses')}</Link>
               </div>

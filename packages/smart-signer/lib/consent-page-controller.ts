@@ -1,6 +1,9 @@
-import { oidc } from '@smart-signer/lib/oidc';
+import { oidc, OidcClientDetails } from '@smart-signer/lib/oidc';
 import { GetServerSideProps } from 'next';
 import { getLogger } from '@ui/lib/logging';
+import { getIronSession } from 'iron-session';
+import { IronSessionData } from '@smart-signer/types/common';
+import { sessionOptions } from './session';
 
 const logger = getLogger('app');
 
@@ -13,17 +16,10 @@ export const consentPageController: GetServerSideProps = async (ctx) => {
     return { props: {} };
   }
 
-  // Only accept GET and POST requests.
-  if (!['GET', 'POST'].includes(req.method || '')) return { notFound: true };
-
-  if (req.method === 'POST') {
-    // TODO Process submission
-  }
-
   try {
     if (uid) {
       const interactionDetails = await oidc.interactionDetails(req, res);
-      logger.info('consentPageController interactionDetails: %o', interactionDetails);
+      // logger.info('consentPageController interactionDetails: %o', interactionDetails);
       const {
         prompt: { name, details },
         params,
@@ -31,8 +27,60 @@ export const consentPageController: GetServerSideProps = async (ctx) => {
       } = interactionDetails as any;
 
       if (name !== "consent") {
+        // logger.info(`Invalid prompt name: ${name}, throwing error`);
         throw new Error(`Invalid prompt name: ${name}`);
       }
+
+      const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
+      const user = session.user;
+
+      if (!user) {
+        // logger.info('No user, throwing error');
+        throw new Error('No user in session');
+      }
+
+      const clientDetails = await oidc.Client.find(params.client_id as string);
+      const oidcClientDetails: OidcClientDetails = {
+        clientId: params.client_id,
+        clientName: clientDetails?.clientName || '',
+        clientUri: clientDetails?.clientUri || '',
+        logoUri: clientDetails?.logoUri || '',
+        policyUri: clientDetails?.policyUri || '',
+        tosUri: clientDetails?.tosUri || '',
+      };
+
+      if (Object.hasOwnProperty.call(user.oauthConsent, params.client_id)) {
+        if (user?.oauthConsent[params.client_id]) {
+          // User already consented to this client_id. We don't need to
+          // display consent page.
+          // logger.info('No need to display consent page');
+        } else {
+          // User already not consented to given client_id. We need to
+          // complete oauth flow, because of negative consent.
+          // logger.info('User did not consent');
+          const result = {
+            error: 'access_denied',
+            error_description: 'End-User aborted interaction',
+          };
+          await oidc.interactionFinished(ctx.req, ctx.res, result, {
+            mergeWithLastSubmission: false,
+          });
+          throw new Error('User did not consent');
+        }
+      } else {
+        // User never consented nor not consented to given client_id. We
+        // need to display consent page.
+        // logger.info('We need to display consent page');
+        return {
+          props: {
+            oidcClientDetails,
+            redirectTo: interactionDetails.returnTo
+          }
+        };
+      }
+
+      // From here we build a successful grant object without asking
+      // user about consent. We'll not display any consent page then.
 
       const grant = interactionDetails.grantId
       ? await oidc.Grant.find(interactionDetails.grantId)
@@ -71,6 +119,7 @@ export const consentPageController: GetServerSideProps = async (ctx) => {
       logger.info('consentPageController: no uid');
     }
   } catch (e) {
+    logger.error('Error in ConsentController: %o', e);
     // throw e;
     // Do something wiser here.
     res.statusCode = 404;

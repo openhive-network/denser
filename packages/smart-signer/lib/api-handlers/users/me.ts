@@ -4,6 +4,9 @@ import { sessionOptions } from '@smart-signer/lib/session';
 import { defaultUser } from '@smart-signer/lib/auth/utils';
 import { User } from '@smart-signer/types/common';
 import { IronSessionData } from '@smart-signer/types/common';
+import { getLogger } from "@hive/ui/lib/logging";
+
+const logger = getLogger('app');
 
 export const getUser: NextApiHandler<User> = async (req, res) => {
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);

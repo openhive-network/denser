@@ -16,7 +16,7 @@ interface TransfersHistoryFilterProps {
 function TransfersHistoryFilter({ onFiltersChange, value }: TransfersHistoryFilterProps) {
   const { t } = useTranslation('common_wallet');
   return (
-    <div className="flex flex-col  gap-2 border-b-2 border-zinc-500 p-2 text-xs sm:p-4">
+    <div className="flex flex-col  gap-2 border-y-2 border-zinc-500 p-2 text-xs sm:p-4">
       <h1 className="font-bold">{t('select_sort.sort_account_history.filters')}</h1>
 
       <div className="flex gap-1 sm:gap-4">

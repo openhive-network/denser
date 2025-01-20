@@ -5,6 +5,10 @@
       "cache": false,
       "persistent": true
     },
+    "dev:3010": {
+      "cache": false,
+      "persistent": true
+    },
     "devssl": {
       "cache": false,
       "persistent": true
@@ -40,6 +44,8 @@
     "pw:test:local:firefox": {},
     "pw:test:local:webkit": {},
     "pw:test:local:experimental:ui": {},
+    "pw:blog:test:mir:chromium": {},
+    "pw:blog:test:mir:chromium:ui": {},
     "lint": {}
   }
 }

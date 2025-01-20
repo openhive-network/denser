@@ -90,7 +90,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
   ) => {
     useImperativeHandle(ref, () => ({
       async cancel() {
-        await cancelAuth();
+        await cancelAuth(username);
       }
     }));
 
@@ -114,12 +114,11 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     });
 
     async function onSave(values: SafeStorageForm) {
-      const { username, password, wif, keyType } = values;
-
+      const { username, password, wif, keyType, strict } = values;
       try {
         setLoading(true);
         setError(null);
-        await authClient.current?.register(username, password, wif, keyType);
+        await authClient.current?.register(username, password, wif, keyType, strict);
         await finalize(values);
         form.reset();
       } catch (error) {
@@ -185,9 +184,9 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       }
     }
 
-    async function cancelAuth(): Promise<void> {
+    async function cancelAuth(username: string): Promise<void> {
       form.reset();
-      await authClient?.current?.logout();
+      await authClient?.current?.logout(username);
       const users = (await authClient.current?.getAuths()) || [];
       setAuthUsers(users);
       setLoading(false);
@@ -197,9 +196,9 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       (async () => {
         try {
           // populate authUsers with existing user list
-          authClient.current = await hbauthService.getOnlineClient(form.getValues().strict);
+          authClient.current = await hbauthService.getOnlineClient();
 
-          const auths = await authClient.current.getAuths();
+          const auths = await authClient.current.getRegisteredUsers();
 
           setAuthUsers(auths);
         } catch (error) {
@@ -209,7 +208,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         }
       })();
       /* eslint-disable react-hooks/exhaustive-deps */
-    }, [form.watch('strict')]);
+    }, []);
 
     const userFound = useMemo(() => {
       const formUsername = form.getValues().username;
@@ -407,7 +406,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger>
-                          <Icons.info className="w-5 h-5" />
+                          <Icons.info className="h-5 w-5" />
                         </TooltipTrigger>
                         <TooltipContent className="max-w-xs">
                           {t('login_form.signin_safe_storage.strict_mode_tooltip')}
@@ -462,7 +461,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
               type="button"
               variant="secondary"
               onClick={() => {
-                cancelAuth();
+                cancelAuth(username);
                 onSetStep(Steps.OTHER_LOGIN_OPTIONS);
               }}
             >
