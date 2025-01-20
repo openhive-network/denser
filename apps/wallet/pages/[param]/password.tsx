@@ -6,38 +6,56 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useForm } from 'react-hook-form';
 import { Checkbox, Separator } from '@hive/ui';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
 import WalletMenu from '@/wallet/components/wallet-menu';
 import { getServerSidePropsDefault } from '../../lib/get-translations';
+import { createWaxFoundation } from '@hiveio/wax';
+import { useChangePasswordMutation } from '@/wallet/components/hooks/use-change-password-mutation';
+import { handleError } from '@ui/lib/utils';
+import { Icons } from '@ui/components/icons';
+import { hiveChainService } from '@transaction/lib/hive-chain-service';
 
 export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
-let key = '';
-const accountFormSchema = z.object({
-  name: z.string().min(2, { message: 'Account name should be longer' }),
-  curr_password: z.string().min(2, { message: 'Required' }),
-  genereted_password: z.string().refine((value) => value === key, {
-    message: 'Passwords do not match'
-  }),
-  understand: z.boolean().refine((value) => value === true, {
-    message: 'Required'
-  }),
-  saved_password: z.boolean().refine((value) => value === true, {
-    message: 'Required'
-  })
-});
-
-type AccountFormValues = z.infer<typeof accountFormSchema>;
-
 export default function PostForm() {
   const { t } = useTranslation('common_wallet');
-  const [generatedKey, setGeneratedKey] = useState(false);
+  const [isKeyGenerated, setIsKeyGenerated] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [publicKeys, setPublicKeys] = useState<{
+    active: string;
+    owner: string;
+    posting: string;
+  }>();
   const { username } = useSiteParams();
-  const form = useForm<AccountFormValues>({
+  const changePasswordMutation = useChangePasswordMutation();
+  const [generatedPassword, setGeneratedPassword] = useState<string>('');
+
+  const accountFormSchema = useMemo(
+    () =>
+      z.object({
+        name: z.string().min(2, 'Account name should be longer'),
+        curr_password: z.string().min(2, { message: 'Required owner key or current password' }),
+        genereted_password: z.string().refine((value) => value === generatedPassword, {
+          message: 'Passwords do not match'
+        }),
+        understand: z.boolean().refine((value) => value === true, {
+          message: 'Required'
+        }),
+        saved_password: z.boolean().refine((value) => value === true, {
+          message: 'Required'
+        })
+      }),
+    [generatedPassword]
+  );
+
+  const form = useForm<z.infer<typeof accountFormSchema>>({
+    mode: 'onSubmit',
+    reValidateMode: 'onChange',
     resolver: zodResolver(accountFormSchema),
     defaultValues: {
       name: username,
@@ -47,15 +65,86 @@ export default function PostForm() {
       saved_password: false
     }
   });
-  const newKey = 'afbsdfgayhi4yh4uqhti4hqiuhu';
 
-  function onSubmit(data: AccountFormValues) {
-    console.log(JSON.stringify(data, null, 2));
+  useEffect(() => {
+    form.setValue('name', username);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [username]);
+
+  async function onSubmit(_data: z.infer<typeof accountFormSchema>) {
+    setLoading(true);
+    try {
+      const components = await resolveChangePasswordComponents(_data.curr_password);
+      await changePasswordMutation.mutateAsync({ ...components });
+      form.reset();
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError('An error occurred while processing your request');
+      }
+      handleError(error, { method: 'changePassword', params: { ..._data } });
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function handleKey() {
-    key = newKey;
-    setGeneratedKey(true);
+  async function resolveChangePasswordComponents(password: string): Promise<{
+    account: string;
+    keys: Record<string, { old: string; new: string }>;
+  }> {
+    const hiveChain = await hiveChainService.getHiveChain();
+
+    // password !== WIF
+    const oldOwner = hiveChain.getPrivateKeyFromPassword(username, 'owner', password);
+    const oldActive = hiveChain.getPrivateKeyFromPassword(username, 'active', password);
+    const oldPosting = hiveChain.getPrivateKeyFromPassword(username, 'posting', password);
+
+    // generate password
+    const brainKeyData = hiveChain.suggestBrainKey();
+    const passwordToBeSavedByUser = 'P' + brainKeyData.wifPrivateKey;
+
+    // private keys for account authorities
+    const newOwner = hiveChain.getPrivateKeyFromPassword(username, 'owner', passwordToBeSavedByUser);
+    const newActive = hiveChain.getPrivateKeyFromPassword(username, 'active', passwordToBeSavedByUser);
+    const newPosting = hiveChain.getPrivateKeyFromPassword(username, 'posting', passwordToBeSavedByUser);
+
+    return {
+      account: username,
+      keys: {
+        owner: {
+          old: oldOwner.associatedPublicKey,
+          new: newOwner.associatedPublicKey
+        },
+        active: {
+          old: oldActive.associatedPublicKey,
+          new: newActive.associatedPublicKey
+        },
+        posting: {
+          old: oldPosting.associatedPublicKey,
+          new: newPosting.associatedPublicKey
+        }
+      }
+    };
+  }
+
+  async function handleKey() {
+    const wax = await createWaxFoundation();
+    const brainKeyData = wax.suggestBrainKey();
+    const passwordToBeSavedByUser = 'P' + brainKeyData.wifPrivateKey;
+
+    const newOwner = wax.getPrivateKeyFromPassword(username, 'owner', passwordToBeSavedByUser);
+    const newActive = wax.getPrivateKeyFromPassword(username, 'active', passwordToBeSavedByUser);
+    const newPosting = wax.getPrivateKeyFromPassword(username, 'posting', passwordToBeSavedByUser);
+
+    setPublicKeys({
+      active: newActive.associatedPublicKey,
+      owner: newOwner.associatedPublicKey,
+      posting: newPosting.associatedPublicKey
+    });
+
+    setGeneratedPassword(passwordToBeSavedByUser);
+    setIsKeyGenerated(true);
   }
 
   return (
@@ -102,12 +191,19 @@ export default function PostForm() {
                 <FormItem>
                   <FormLabel className="flex justify-between">
                     <span>{t('change_password_page.current_password')}</span>{' '}
-                    <Link className="text-destructive" href="/recover_account_step_1">
+                    <Link
+                      className="pointer-events-none text-destructive opacity-70"
+                      href="/recover_account_step_1"
+                    >
                       {t('change_password_page.recover_password')}
                     </Link>
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} type="password" />
+                    <Input
+                      {...field}
+                      type="password"
+                      placeholder={t('change_password_page.current_password')}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -118,17 +214,24 @@ export default function PostForm() {
                 {t('change_password_page.generated_password')}
                 <span className="font-light">({t('change_password_page.new')})</span>
               </div>
-              {generatedKey ? (
+              {isKeyGenerated ? (
                 <div>
                   <code className="my-1 block bg-background px-1 py-2 text-center text-destructive">
-                    {key}
+                    {generatedPassword}
                   </code>
                   <div className="text-center text-xs font-bold">
                     {t('change_password_page.backup_password_by_storing_it')}
                   </div>
                 </div>
               ) : (
-                <Button className="my-1" variant="outlineRed" onClick={() => handleKey()}>
+                <Button
+                  className="my-1"
+                  variant="outlineRed"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleKey();
+                  }}
+                >
                   {t('change_password_page.click_to_generate_password')}
                 </Button>
               )}
@@ -177,8 +280,17 @@ export default function PostForm() {
                 </FormItem>
               )}
             />
-            <Button type="submit" variant="redHover">
-              {t('change_password_page.update_password')}
+            <Button
+              type="submit"
+              variant="redHover"
+              disabled={loading || !form.formState.isValid}
+              className="flex w-[164px] justify-center"
+            >
+              {loading ? (
+                <Icons.spinner className="h-4 w-4 animate-spin" />
+              ) : (
+                t('change_password_page.update_password')
+              )}
             </Button>
           </form>
         </Form>

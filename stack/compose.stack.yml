@@ -1,0 +1,69 @@
+services:
+  docker:
+    image: registry.gitlab.syncad.com/hive/haf_api_node/dind:${DIND_TAG:-latest}
+    privileged: true
+    environment:
+      DOCKER_TLS_CERTDIR: /certs
+      DOCKER_TLS_PORT:
+      TOP_LEVEL_DATASET_MOUNTPOINT: /cache/haf-datadir
+    volumes:
+      - type: volume
+        source: docker-certs-ca
+        target: /certs/ca
+      - type: volume
+        source: docker-certs-client
+        target: /certs/client
+      - type: volume
+        source: docker-certs-server
+        target: /certs/server
+      - type: volume
+        source: docker-lib
+        target: /var/lib/docker
+      - type: volume
+        source: haf-datadir
+        target: /cache/haf-datadir
+    networks:
+      - docker
+    ports:
+      - name: docker-tls
+        target: 2376
+        published: ${DOCKER_TLS_PORT:-2376}
+    healthcheck:
+      test: [ "CMD", "docker", "version"]
+      interval: 5s
+      timeout: 5s
+  compose:
+    image: registry.gitlab.syncad.com/hive/haf_api_node/compose:${COMPOSE_TAG:-latest}
+    environment:
+      CADDY_SITES: "http://"
+      DOCKER_TLS_CERTDIR: /certs
+      ARGUMENTS:
+      TOP_LEVEL_DATASET_MOUNTPOINT: /cache/haf-datadir
+      PUBLIC_HOSTNAME:
+      USE_ALTERNATE_HAPROXY_CONFIG:
+      HIVE_API_NODE_REGISTRY: registry.gitlab.syncad.com/hive
+      HAF_REGISTRY:
+      HIVEMIND_INSTANCE_IMAGE:
+      HAFAH_REGISTRY:
+      REPUTATION_TRACKER_REGISTRY:
+      HAF_VERSION:
+      HIVEMIND_INSTANCE_VERSION:
+      HAFAH_VERSION:
+      REPUTATION_TRACKER_VERSION:
+      FAKETIME:
+    volumes:
+      - type: volume
+        source: docker-certs-client
+        target: /certs/client
+      - type: volume
+        source: haf-datadir
+        target: /cache/haf-datadir  
+    networks:
+      - docker
+    healthcheck:
+      test: [ "CMD-SHELL", "wget --timeout=2 -nv -t1 --spider http://127.0.0.1 || exit 1" ] 
+      interval: 5s
+      timeout: 5s
+    depends_on:
+      docker:
+        condition: service_healthy

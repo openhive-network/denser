@@ -13,10 +13,11 @@ import {
   asset,
   authority,
   future_extensions,
-  EAvailableCommunityRoles
+  EAvailableCommunityRoles,
+  AccountAuthorityUpdateOperation,
 } from '@hiveio/wax';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
-import { SignerOptions } from '@smart-signer/lib/signer/signer';
+import { SignerOptions, SignTransaction } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
 import { Beneficiarie, Preferences } from './lib/app-types';
 import WorkerBee, { ITransactionData, IWorkerBee } from '@hiveio/workerbee';
@@ -30,6 +31,7 @@ export type TransactionBroadcastCallback = (txBuilder: ITransaction) => Promise<
 
 export interface TransactionOptions {
   observe?: boolean;
+  singleSignKeyType?: SignTransaction['singleSignKeyType'];
 }
 
 export interface TransactionBroadcastResult {
@@ -88,11 +90,13 @@ export class TransactionService {
     cb: (opBuilder: ITransaction) => void,
     transactionOptions: TransactionOptions = {}
   ): Promise<TransactionBroadcastResult> {
+
     const defaultTransactionOptions = {
-      observe: false
+      observe: false,
+      singleSignKeyType: undefined
     };
 
-    const { observe } = {
+    const { observe, singleSignKeyType } = {
       ...defaultTransactionOptions,
       ...transactionOptions
     };
@@ -105,8 +109,8 @@ export class TransactionService {
     // Validate transaction
     txBuilder.validate();
 
-    // Get signature of transaction
-    const signature = await this.signTransaction(txBuilder);
+    const signature = await this.signTransaction(txBuilder, singleSignKeyType);
+
     // Add signature to transaction
     txBuilder.sign(signature);
 
@@ -124,11 +128,12 @@ export class TransactionService {
    * @return {*}  {Promise<string>}
    * @memberof TransactionService
    */
-  signTransaction(txBuilder: ITransaction): Promise<string> {
+  signTransaction(txBuilder: ITransaction, singleSignKeyType?: SignTransaction['singleSignKeyType']): Promise<string> {
     const signer = getSigner(this.signerOptions);
     return signer.signTransaction({
       digest: txBuilder.sigDigest,
-      transaction: txBuilder.transaction
+      transaction: txBuilder.transaction,
+      singleSignKeyType
     });
   }
 
@@ -797,6 +802,27 @@ export class TransactionService {
     }, transactionOptions);
   }
 
+  async transferFromSavings(
+    amount: asset,
+    fromAccount: string,
+    memo: string,
+    toAccount: string,
+    requestId: number,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.pushOperation({
+        transfer_from_savings: {
+          amount,
+          from_account: fromAccount,
+          memo,
+          to_account: toAccount,
+          request_id: requestId
+        }
+      });
+    }, transactionOptions);
+  }
+
   async transfer(
     amount: asset,
     fromAccount: string,
@@ -867,42 +893,45 @@ export class TransactionService {
 
   async changeMasterPassword(
     account: string,
-    newOwner: string,
-    newActive: string,
-    newPosting: string,
-    transactionOptions: TransactionOptions = {}
+    keys: Record<'owner' | 'active' | 'posting', { old: string; new: string }>,
+    transactionOptions: TransactionOptions
   ) {
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation({
-        account_update2: {
-          account,
-          owner: {
-            weight_threshold: 1,
-            key_auths: {
-              [newOwner]: 1
-            },
-            account_auths: {}
-          },
-          active: {
-            weight_threshold: 1,
-            key_auths: {
-              [newActive]: 1
-            },
-            account_auths: {}
-          },
-          posting: {
-            weight_threshold: 1,
-            key_auths: {
-              [newPosting]: 1
-            },
-            account_auths: {}
-          },
-          json_metadata: '', // ignore change
-          posting_json_metadata: '', // ignore change
-          extensions: []
-        }
-      });
-    }, transactionOptions);
+    try {
+      const accountAuthorityUpdateOp = await AccountAuthorityUpdateOperation.createFor(
+        await hiveChainService.getHiveChain(),
+        account
+      );
+  
+      if (!keys.owner || !keys.active || !keys.posting) {
+        throw new Error('Missing required keys for master password change');
+      }
+  
+      const { owner, active, posting } = keys;
+  
+      if (
+        !accountAuthorityUpdateOp.role('owner').has(owner.old) ||
+        !accountAuthorityUpdateOp.role('active').has(active.old) ||
+        !accountAuthorityUpdateOp.role('posting').has(posting.old)
+      ) {
+        throw new Error('Wrong master password');
+      }
+  
+      accountAuthorityUpdateOp.role('owner').replace(owner.old, 1, owner.new);
+      accountAuthorityUpdateOp.role('active').replace(active.old, 1, active.new);
+      accountAuthorityUpdateOp.role('posting').replace(posting.old, 1, posting.new);
+  
+      return await this.processHiveAppOperation(async (builder) => {
+        builder.pushOperation(accountAuthorityUpdateOp);
+      }, transactionOptions);
+    } catch (error) {
+      const isKeyError = error instanceof Error && error.message.includes('import key');
+    
+      if (isKeyError) {
+        throw new Error('One time signing failed, invalid key.');
+      }
+
+      throw new Error(`One time signing failed: ${(error as Error)?.message || 'Unknown error'}`);
+    }
   }
 
   async createClaimedAccount(
@@ -959,6 +988,40 @@ export class TransactionService {
       }),
       transactionOptions
     );
+  }
+
+  async limitOrderCreate(
+    amountToSell: asset,
+    owner: string,
+    minToReceive: asset,
+    orderId: number,
+    fillOrKill: boolean,
+    expiration: string,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.pushOperation({
+        limit_order_create: {
+          amount_to_sell: amountToSell,
+          owner,
+          min_to_receive: minToReceive,
+          fill_or_kill: fillOrKill,
+          orderid: orderId,
+          expiration
+        }
+      });
+    }, transactionOptions);
+  }
+
+  async limitOrderCancel(owner: string, orderId: number, transactionOptions: TransactionOptions = {}) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.pushOperation({
+        limit_order_cancel: {
+          owner,
+          orderid: orderId
+        }
+      });
+    }, transactionOptions);
   }
 }
 

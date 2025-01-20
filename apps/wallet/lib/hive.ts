@@ -2,7 +2,7 @@ import Big from 'big.js';
 import { AccountHistory } from '@/wallet/store/app-types';
 import { makeBitMaskFilter, operationOrders } from '@hiveio/dhive/lib/utils';
 import moment from 'moment';
-import { TWaxApiRequest, RcAccount } from '@hiveio/wax';
+import { TWaxApiRequest, RcAccount, asset } from '@hiveio/wax';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 
 const chain = await hiveChainService.getHiveChain();
@@ -291,4 +291,49 @@ type GetRecentTradesyData = {
 
 export const getRecentTrades = async (limit: number = 1000): Promise<IRecentTradesData[]> => {
   return chain.extend<GetRecentTradesyData>().api.condenser_api.get_recent_trades([limit]);
+};
+
+type SavingsWithdrawals = {
+  withdrawals: {
+    amount: asset;
+    complete: Date;
+    from: string;
+    id: number;
+    memo: string;
+    request_id: number;
+    to: string;
+  }[];
+};
+
+type GetSavingsWithdrawalsData = {
+  database_api: {
+    find_savings_withdrawals: TWaxApiRequest<{ account: string }, SavingsWithdrawals>;
+  };
+};
+
+export const getSavingsWithdrawals = async (account: string): Promise<SavingsWithdrawals> => {
+  return chain
+    .extend<GetSavingsWithdrawalsData>()
+    .api.database_api.find_savings_withdrawals({ account: account });
+};
+
+type OwnerHistory = {
+  account: string;
+  id: number;
+  last_valid_time: string;
+  previous_owner_authority: {
+    account_auths: unknown[];
+    key_auths: [string, number][];
+    weight_threshold: number;
+  };
+}[];
+
+type GetOwnerHistoryData = {
+  condenser_api: {
+    get_owner_history: TWaxApiRequest<string[], OwnerHistory>;
+  };
+};
+
+export const getOwnerHistory = async (account: string): Promise<OwnerHistory> => {
+  return chain.extend<GetOwnerHistoryData>().api.condenser_api.get_owner_history([account]);
 };

@@ -4,13 +4,14 @@ const CopyPlugin = require('copy-webpack-plugin');
 const removeImports = require('next-remove-imports')();
 const withPWA = require('next-pwa')({
   dest: 'public',
-  disable: process.env.NODE_ENV === 'development'
+  disable: process.env.NODE_ENV !== 'production'
 });
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
+  swcMinify: false,
   experimental: {
     outputFileTracingRoot: path.join(__dirname, '../..')
   },

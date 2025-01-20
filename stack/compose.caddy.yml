@@ -1,0 +1,35 @@
+services:  
+  caddy:
+    profiles:
+      - denser
+    image: caddy:2.7.6
+    environment:
+      PUBLIC_HOSTNAME:
+      AUTH_PORT:
+      BLOG_PORT:
+      WALLET_PORT:
+      API_HTTPS_PORT:
+    volumes:
+       - ./Caddyfile:/etc/caddy/Caddyfile
+       - ./certs:/ets/caddy/certs:ro
+    networks:
+      - docker
+    ports:
+      - '${AUTH_PORT}:${AUTH_PORT}'
+      - '${BLOG_PORT}:${BLOG_PORT}'
+      - '${WALLET_PORT}:${WALLET_PORT}'
+      - '${API_HTTPS_PORT}:${API_HTTPS_PORT}'
+    extra_hosts:
+      - "${PUBLIC_HOSTNAME}:127.0.0.1"
+    healthcheck:
+      test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider https://$${PUBLIC_HOSTNAME}:$${AUTH_PORT}/ || exit 1']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      denser-auth:
+        condition: service_healthy
+      denser-blog:
+        condition: service_healthy  
+      denser-wallet:
+         condition: service_healthy

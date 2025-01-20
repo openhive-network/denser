@@ -20,7 +20,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { cn, handleError } from '@ui/lib/utils';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
-import { hbauthUseStrictMode, hbauthService } from '@smart-signer/lib/hbauth-service';
+import { hbauthService } from '@smart-signer/lib/hbauth-service';
 import { getAccountFull } from '@transaction/lib/hive';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'next-i18next';
@@ -29,13 +29,13 @@ import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import env from '@beam-australia/react-env';
 import { Signer } from '@smart-signer/lib/signer/signer';
 import { getLogger } from '@ui/lib/logging';
-import { useSignerContext } from '@/blog/components/common/signer';
 import { toast } from '@ui/components/hooks/use-toast';
 import { useUnmuteMutation } from '@/blog/components/hooks/use-mute-mutations';
 import { useUpdateProfileMutation } from '@/blog/components/hooks/use-update-profile-mutation';
 import { z } from 'zod';
 import { getDefaultProps } from '../../lib/get-translations';
 import { CircleSpinner } from 'react-spinners-kit';
+import { useSignerContext } from '@smart-signer/components/signer-provider';
 
 export const getServerSideProps: GetServerSideProps = getDefaultProps;
 
@@ -547,7 +547,7 @@ export default function UserSettings() {
             onValueChange={async (newEndpoint) => {
               setEndpoint(newEndpoint);
               await hiveChainService.setHiveChainEndpoint(newEndpoint);
-              await hbauthService.setOnlineClient(hbauthUseStrictMode, { node: newEndpoint });
+              await hbauthService.setOnlineClient({ node: newEndpoint });
             }}
             value={endpoint}
           >

@@ -11,15 +11,17 @@ const logger = getLogger('app');
  * @export
  * @return {*}
  */
-export function useClaimRewardMutation() {
+export function useClaimRewardsMutation() {
   const queryClient = useQueryClient();
   const { user } = useUser();
   const claimRewardMutation = useMutation({
     mutationFn: async (params: { account: ApiAccount }) => {
       const { account } = params;
+
       const broadcstResult = await transactionService.claimRewards(account, { observe: true });
       const response = { ...params, broadcstResult };
-      logger.info('Done claime reward tranasaction: %o', response);
+
+      logger.info('Done claim reward tranasaction: %o', response);
       return response;
     },
     onSuccess: (data) => {

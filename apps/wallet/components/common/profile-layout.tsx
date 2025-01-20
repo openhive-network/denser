@@ -49,7 +49,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             style={{
               background:
                 profileData?.posting_json_metadata &&
-                JSON.parse(profileData?.posting_json_metadata).profile.cover_image
+                JSON.parse(profileData?.posting_json_metadata).profile?.cover_image
                   ? `url('${proxifyImageUrl(
                       JSON.parse(profileData?.posting_json_metadata).profile.cover_image,
                       '2048x512'

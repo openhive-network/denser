@@ -1,5 +1,4 @@
 import { getLogger } from '@hive/ui/lib/logging';
-import { WaxChainApiError } from '@hiveio/wax';
 
 // TODO
 // Debug why the import
@@ -12,6 +11,8 @@ import { WaxChainApiError } from '@hiveio/wax';
 // ```
 
 // import { WaxChainApiError } from '@hiveio/wax';
+
+declare const WaxChainApiError: any;
 
 const logger = getLogger('app');
 
@@ -34,6 +35,8 @@ const wellKnownErrorDescriptions = [
   'You may only comment once every 3 seconds'
 ];
 
+// TODO: Refactor this function to use the new error handling mechanism
+// This is not working as expected and it isn't configurable to show UI errors
 /**
  * Return error description by trying to find a message for user in error stuff,
  * then swallow error
@@ -45,16 +48,16 @@ const wellKnownErrorDescriptions = [
 export function transformError<T>(e: any, ctx?: { method: string; params: T }, defaultDescription?: string) {
   logger.error('in transformError: got error (will be swallowed): %o on %o', e, ctx);
   const apiMessage = e.apiError?.data.message.charAt(0).toUpperCase() + e.apiError?.data.message.slice(1);
-  let description = apiMessage && apiMessage.toLowerCase() !== 'assert exception' ? apiMessage : 'Operation failed';
-  
+
+  let description =
+    apiMessage && apiMessage.toLowerCase() !== 'assert exception' ? apiMessage : 'Operation failed';
+
   if (!defaultDescription) {
     let errorDescription = '';
-
     // TODO Look at the top of this file. We have issue with failing
     // import of WaxChainApiError.
 
-    // if (e instanceof WaxChainApiError) {
-    if (false) {
+    if (e instanceof WaxChainApiError) {
       const error = e as any;
       if (error?.apiError?.code === -32003) {
         errorDescription = error?.apiError?.data?.stack[0]?.format;
@@ -77,6 +80,8 @@ export function transformError<T>(e: any, ctx?: { method: string; params: T }, d
 
     if (wellKnownErrorDescription) {
       description = wellKnownErrorDescription;
+    } else {
+      description = errorDescription;
     }
   }
 

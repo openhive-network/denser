@@ -1,10 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 import Big from 'big.js';
-import { getAccount, getDynamicGlobalProperties, getFeedHistory } from '@transaction/lib/hive';
+import {
+  getAccount,
+  getDynamicGlobalProperties,
+  getFeedHistory,
+  getFindAccounts
+} from '@transaction/lib/hive';
 import moment from 'moment';
 import { getAccountHistory, getOpenOrder } from '@/wallet/lib/hive';
 import { getCurrentHpApr, getFilter } from '@/wallet/lib/utils';
-import { delegatedHive, vestingHive, powerdownHive } from '@ui/lib/utils';
+import { delegatedHive, vestingHive, powerdownHive, handleError } from '@ui/lib/utils';
 import { numberWithCommas } from '@ui/lib/utils';
 import { dateToFullRelative } from '@ui/lib/parse-date';
 import { convertStringToBig } from '@ui/lib/helpers';
@@ -17,7 +22,7 @@ import ProfileLayout from '@/wallet/components/common/profile-layout';
 import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
 import WalletMenu from '@/wallet/components/wallet-menu';
-import { Button } from '@ui/components';
+import { Button, Dialog, DialogContent, DialogFooter, DialogTrigger } from '@ui/components';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,6 +34,10 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { TransferDialog } from '@/wallet/components/transfer-dialog';
 import useFilters from '@/wallet/components/hooks/use-filters';
 import { getTranslations } from '../../lib/get-translations';
+import FinancialReport from '@/wallet/components/financial-report';
+import { useClaimRewardsMutation } from '@/wallet/components/hooks/use-claim-rewards-mutation';
+import { useMemo } from 'react';
+import { useCancelPowerDownMutation } from '@/wallet/components/hooks/use-power-hive-mutation';
 
 const initialFilters: TransferFilters = {
   search: '',
@@ -208,6 +217,27 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
   const { data: historyFeedData, isLoading: historyFeedLoading } = useQuery(['feedHistory'], () =>
     getFeedHistory()
   );
+
+  const claimRewardsMutation = useClaimRewardsMutation();
+  const cancelPowerDownMutation = useCancelPowerDownMutation();
+
+  const rewardsStr = useMemo(() => {
+    const allRewards = [
+      accountData?.reward_hive_balance,
+      accountData?.reward_hbd_balance,
+      accountData?.reward_vesting_hive.replace('HIVE', 'HP')
+    ].filter((reward) => Number(reward?.split(' ')[0]) > 0);
+
+    return allRewards.length > 2
+      ? `${allRewards[0]}, ${allRewards[1]} ${t('global.and')} ${allRewards[2]}`
+      : allRewards.join(` ${t('global.and')} `);
+  }, [
+    accountData?.reward_hbd_balance,
+    accountData?.reward_hive_balance,
+    accountData?.reward_vesting_hive,
+    t
+  ]);
+
   if (
     accountLoading ||
     dynamicLoading ||
@@ -231,7 +261,10 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
   }
 
   const totalFund = convertStringToBig(dynamicData.total_vesting_fund_hive);
-  const price_per_hive = 0; //convertStringToBig(historyFeedData.current_median_history.base);
+  const price_per_hive = Big(
+    Number(historyFeedData?.current_median_history.base.amount) *
+      10 ** -historyFeedData?.current_median_history.base.precision
+  );
   const totalDays = moment(accountData.next_vesting_withdrawal).diff(moment(), `d`);
   const totalShares = convertStringToBig(dynamicData.total_vesting_shares);
   const vesting_hive = vestingHive(accountData, dynamicData);
@@ -258,11 +291,12 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
     .plus(saving_balance_hive)
     .plus(savings_pending)
     .plus(hiveOrders);
-  const total_value = numberWithCommas(total_hive.times(Big(price_per_hive)).plus(total_hbd).toFixed(2));
+  const total_value = numberWithCommas(total_hive.times(price_per_hive).plus(total_hbd).toFixed(2));
 
   const filteredHistoryList = accountHistoryData?.filter(
     getFilter({ filter, totalFund, username, totalShares })
   );
+
   const amount = {
     hive: numberWithCommas(balance_hive.toFixed(3)) + ' Hive',
     hbd: '$' + numberWithCommas(hbd_balance.toFixed(3)),
@@ -270,6 +304,26 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
     savingsHive: saving_balance_hive.toFixed(3) + ' Hive',
     savingsHbd: '$' + numberWithCommas(hbd_balance_savings.toFixed(3))
   };
+
+  const claimRewards = async () => {
+    const accounts = await getFindAccounts(username);
+    const params = { account: accounts.accounts[0] };
+    try {
+      await claimRewardsMutation.mutateAsync(params);
+    } catch (error) {
+      handleError(error, { method: 'claim_reward_balance', params });
+    }
+  };
+
+  const cancelPowerDown = async () => {
+    const params = { account: username };
+    try {
+      await cancelPowerDownMutation.mutateAsync(params);
+    } catch (error) {
+      handleError(error, { method: 'withdraw_vesting', params });
+    }
+  };
+
   function historyItemDescription(operation: Operation) {
     switch (operation.type) {
       case 'claim_reward_balance':
@@ -354,11 +408,28 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
     <ProfileLayout>
       <div className="flex w-full flex-col items-center ">
         <WalletMenu username={username} />
+        {!!rewardsStr.length && (
+          <div className="mx-auto w-full px-2 text-sm md:px-0 md:text-base">
+            <div className="mx-auto mt-4 flex w-full max-w-6xl flex-col items-center justify-between gap-y-2 rounded-md bg-slate-600 px-4 py-4 md:flex-row">
+              <div className="w-full text-center md:text-left">
+                {t('transfers_page.current_rewards')}
+                {rewardsStr}
+              </div>
+              <Button
+                className="h-fit flex-shrink-0 text-sm md:text-base"
+                variant="redHover"
+                onClick={() => claimRewards()}
+              >
+                {t('transfers_page.redeem_rewards')}
+              </Button>
+            </div>
+          </div>
+        )}
         <div>
           {user?.username === username && (
             <Link href="https://blocktrades.us" target="_blank">
               <Button variant="outlineRed" className="mx-2 my-8 border-destructive text-destructive">
-                Buy Hive or Hive Power
+                Buy HIVE or HIVE POWER
               </Button>
             </Link>
           )}
@@ -380,7 +451,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost">
                           <div>
-                            <span className="text-destructive">{amount.hive}</span>
+                            <span className="text-destructive">{amount.hive.toUpperCase()}</span>
                             <span className="m-1 text-xl">▾</span>
                           </div>
                         </Button>
@@ -469,7 +540,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost">
                           <div>
-                            <span className="text-destructive">{amount.hp}</span>
+                            <span className="text-destructive">{amount.hp.toUpperCase()}</span>
                             <span className="m-1 text-xl">▾</span>
                           </div>
                         </Button>
@@ -492,14 +563,31 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                           >
                             <span>Delegate</span>
                           </TransferDialog>
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <div className="w-full cursor-pointer px-2 py-1.5 text-sm hover:bg-background-tertiary hover:text-primary">
+                                <span>Cancel Power Down</span>
+                              </div>
+                            </DialogTrigger>
+                            <DialogContent className="text-left sm:max-w-[425px]">
+                              Are you sure you want to cancel Power Down?
+                              <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
+                                <DialogTrigger asChild>
+                                  <Button variant="redHover" onClick={cancelPowerDown}>
+                                    Cancel Power Down
+                                  </Button>
+                                </DialogTrigger>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
                         </DropdownMenuGroup>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   ) : (
-                    <div className="px-4 py-2">
-                      <div>{amount.hp + ' HIVE'}</div>
-                      <div>({received_power_balance + ' HIVE'})</div>
-                    </div>
+                    <div className="px-4 py-2">{amount.hp.toUpperCase()}</div>
+                  )}
+                  {Number(received_power_balance) !== 0 && (
+                    <div className="px-4">({received_power_balance + ' HIVE'})</div>
                   )}
                 </td>
               </tr>
@@ -595,7 +683,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost">
                             <div>
-                              <span className="text-destructive">{amount.savingsHive}</span>
+                              <span className="text-destructive">{amount.savingsHive.toUpperCase()}</span>
                               <span className="m-1 text-xl">▾</span>
                             </div>
                           </Button>
@@ -664,7 +752,6 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
             </tbody>
           </table>
         </div>
-
         {powerdown_hive.gt(0) ? (
           <div className="p-2 text-sm sm:p-4">
             {t('profil.the_next_power_down')} {totalDays} {totalDays !== 1 ? ' days' : 'day'}(~
@@ -672,6 +759,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
           </div>
         ) : null}
         <div className="w-full max-w-6xl">
+          {user.username === username && <FinancialReport username={user.username} />}
           <TransfersHistoryFilter
             onFiltersChange={(value) => {
               setFilter((prevFilters) => ({

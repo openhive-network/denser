@@ -13,12 +13,14 @@
     "build": "react-env -- next build",
     "postbuild": "pnpm run copy:worker",
     "start": "react-env -- next start -p 3000",
-    "lint": "eslint .",
+    "lint": "eslint . --ignore-pattern \"playwright-report/*\"",
     "pw:test:local": "playwright test --config=playwright.local3000.config.ts  --update-snapshots",
     "pw:test:local:chromium": "playwright test --project=chromium --config=playwright.local3000.config.ts --headed  --update-snapshots",
     "pw:test:local:firefox": "playwright test --project=firefox --config=playwright.local3000.config.ts --headed  --update-snapshots",
     "pw:test:local:webkit": "playwright test --project=webkit --config=playwright.local3000.config.ts --headed  --update-snapshots",
-    "pw:test:local:experimental:ui": "playwright test --config=playwright.local3000.config.ts --ui"
+    "pw:test:local:experimental:ui": "playwright test --config=playwright.local3000.config.ts --ui",
+    "pw:blog:test:mir:chromium": "playwright test --project=chromium --config=playwright.stack-mirrornet-3000.config.ts --update-snapshots",
+    "pw:blog:test:mir:chromium:ui": "playwright test --project=chromium --config=playwright.stack-mirrornet-3000.config.ts --update-snapshots --ui"
   },
   "dependencies": {
     "@beam-australia/react-env": "^3.1.1",
@@ -30,7 +32,7 @@
     "@hive/tsconfig": "workspace:*",
     "@hive/ui": "workspace:*",
     "@hiveio/content-renderer": "^2.2.0",
-    "@hiveio/wax": "1.27.6-rc5-stable.241029104701",
+    "@hiveio/wax": "1.27.6-rc6-241220084915",
     "@hookform/resolvers": "^3.1.1",
     "@next/bundle-analyzer": "^14.2.2",
     "@tanstack/react-query": "^4.36.1",

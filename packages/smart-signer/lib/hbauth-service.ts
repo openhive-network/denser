@@ -12,11 +12,8 @@ const defaultClientOptions: ClientOptions = {
   workerUrl: '/auth/worker.js'
 };
 
-export const hbauthUseStrictMode = true;
-
 class HbauthService extends StorageMixin(StorageBase) {
   static onlineClient: OnlineClient;
-  private strictMode: boolean = hbauthUseStrictMode;
 
   /**
    * Pending promise, returning Hbauth OnlineCLient. Intended for
@@ -32,10 +29,10 @@ class HbauthService extends StorageMixin(StorageBase) {
     this.onlineClientPromise = null;
   }
 
-  async getOnlineClient(strict: boolean = this.strictMode): Promise<OnlineClient> {
-    if (!HbauthService.onlineClient || strict !== this.strictMode) {
+  async getOnlineClient(): Promise<OnlineClient> {
+    if (!HbauthService.onlineClient) {
       // If we have pending promise, return its result.
-      if (this.onlineClientPromise && strict === this.strictMode) return await this.onlineClientPromise;
+      if (this.onlineClientPromise) return await this.onlineClientPromise;
 
       // If we haven't pending promise. let's create one.
       const promise = async () => {
@@ -46,11 +43,9 @@ class HbauthService extends StorageMixin(StorageBase) {
         }
         // Set promise result in this class' static property and return
         // it here as well.
-        await this.setOnlineClient(strict, { node, chainId: siteConfig.chainId });
+        await this.setOnlineClient({ node, chainId: siteConfig.chainId });
         return HbauthService.onlineClient;
       };
-
-      this.strictMode = strict;
 
       // Set promise to pending.
       this.onlineClientPromise = promise();
@@ -62,13 +57,13 @@ class HbauthService extends StorageMixin(StorageBase) {
     return HbauthService.onlineClient;
   }
 
-  async setOnlineClient(strict: boolean, options: Partial<ClientOptions>) {
+  async setOnlineClient(options: Partial<ClientOptions>) {
     const clientOptions = {
       ...defaultClientOptions,
       ...options
     };
     logger.info('Creating instance of HbauthService.onlineClient with options: %o', clientOptions);
-    HbauthService.onlineClient = await new OnlineClient(strict, clientOptions).initialize();
+    HbauthService.onlineClient = await new OnlineClient(clientOptions).initialize();
   }
 }
 

@@ -1,0 +1,3 @@
+[submodule "haf"]
+	path = haf
+	url = ../haf.git
