@@ -123,7 +123,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     } else {
       const notBloggingYet: string = await profilePage.userHasNotStartedBloggingYetMsg.textContent();
       await expect(notBloggingYet).toMatch(
-        /^Looks like @.\w+ hasn't started blogging yet!$/
+        /^Looks like @\b\w+(?:-\w+)?\b hasn't started blogging yet!$/
       );
     }
   });
@@ -150,7 +150,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     } else {
       const notBloggingYet: string = await profilePage.userHasNotStartedBloggingYetMsg.textContent();
       await expect(notBloggingYet).toMatch(
-        /^Looks like @.\w+ hasn't started blogging yet!$/
+        /^Looks like @\b\w+(?:-\w+)?\b hasn't started blogging yet!$/
       );
     }
   });
