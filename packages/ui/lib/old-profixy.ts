@@ -32,7 +32,7 @@ export const defaultWidth = () => {
 /**
  * Strips all proxy domains from the beginning of the url. Adds the global proxy if dimension is specified
  * @param {string} url
- * @param {string|boolean} dimensions - optional -  if provided. url is proxied && global var $STM_Config.img_proxy_prefix is avail. resp will be "$STM_Config.img_proxy_prefix{dimensions}/{sanitized url}"
+ * @param {string|boolean} dimensions - optional -  if provided. url is proxied && global var img_proxy_prefix is avail. resp will be "img_proxy_prefix{dimensions}/{sanitized url}"
  *                                          if falsy, all proxies are stripped.
  *                                          if true, preserves the first {int}x{int} in a proxy url. If not found, uses 0x0
  * @param {boolean} allowNaturalSize

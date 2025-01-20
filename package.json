@@ -5,6 +5,7 @@
     "dev": "turbo dev",
     "build": "turbo build",
     "dev:blog": "./scripts/write-version.sh ./apps/blog/version.json &&turbo dev --filter=@hive/blog",
+    "dev:3010:blog": "./scripts/write-version.sh ./apps/blog/version.json &&turbo dev:3010 --filter=@hive/blog",
     "devssl:blog": "./scripts/write-version.sh ./apps/blog/version.json &&turbo devssl --filter=@hive/blog",
     "build:blog": "./scripts/write-version.sh ./apps/blog/version.json &&turbo build --filter=@hive/blog",
     "start:blog": "./scripts/write-version.sh ./apps/blog/version.json &&turbo start --filter=@hive/blog",

@@ -1,4 +1,5 @@
-import { Locator, Page, expect } from "@playwright/test"
+import { Locator, Page, expect } from "@playwright/test";
+import { ApiHelper } from '../apiHelper';
 
 export class CommunitiesExplorePage{
     readonly page: Page;
@@ -40,7 +41,11 @@ export class CommunitiesExplorePage{
         await expect(this.searchInput).toBeVisible();
         await expect(this.combobox).toBeVisible();
         await expect(this.comboboxDefaultValue).toHaveText('Rank');
-        await expect(this.firstCommunityDefault).toHaveText('LeoFinance');
+
+        const apiHelper = await new ApiHelper(this.page);
+        const firstCommunity = await apiHelper.getListCommunitiesAPI();
+        const firstCommunityTitle = await firstCommunity.result[0].title;
+        await expect(this.firstCommunityDefault).toHaveText(firstCommunityTitle);
     }
 
     async getElementCssPropertyValue(element: Locator, cssProperty: string) {
