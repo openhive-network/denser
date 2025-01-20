@@ -78,13 +78,13 @@ function PostPage({
 
   const { data: mutedList } = useFollowListQuery(user.username, 'muted');
 
-  const { isLoading: isLoadingPost, data: post } = useQuery(
-    ['postData', username, permlink],
-    () => getPost(username, String(permlink)),
-    {
-      enabled: !!username && !!permlink
-    }
-  );
+  const {
+    isLoading: isLoadingPost,
+    data: post,
+    isError: postError
+  } = useQuery(['postData', username, permlink], () => getPost(username, String(permlink)), {
+    enabled: !!username && !!permlink
+  });
   const { isLoading: isLoadingDiscussion, data: discussion } = useQuery(
     ['discussionData', username, permlink, user.username],
     () => getDiscussion(username, String(permlink), user.username),
@@ -196,7 +196,7 @@ function PostPage({
   const commentSite = post?.depth !== 0 ? true : false;
   const [mutedPost, setMutedPost] = useState<boolean>(mutedStatus);
 
-  if (userFromGDPR) {
+  if (userFromGDPR || (postError && !post)) {
     return <CustomError />;
   }
 
@@ -590,7 +590,13 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       getPost(username, String(permlink))
     );
   }
-  const mutedStatus = await getPost(username, String(permlink)).then((res) => res?.stats?.gray ?? false);
+  let mutedStatus = false;
+  try {
+    const post = await getPost(username, String(permlink));
+    mutedStatus = post?.stats?.gray ?? false;
+  } catch (error) {
+    logger.error('Failed to fetch post:', error);
+  }
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
