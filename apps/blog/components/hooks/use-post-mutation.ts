@@ -75,3 +75,32 @@ export function usePostMutation() {
 
   return postMutation;
 }
+
+/**
+ * Makes delete comment transaction.
+ *
+ * @export
+ * @return {*}
+ */
+export function useDeletePostMutation() {
+  const { user } = useUser();
+  const queryClient = useQueryClient();
+  const deletePostMutation = useMutation({
+    mutationFn: async (params: { permlink: string }) => {
+      const { permlink } = params;
+      const broadcastResult = await transactionService.deleteComment(permlink, { observe: true });
+      const response = { ...params, broadcastResult };
+      logger.info('Done delete post transaction: %o', response);
+      return response;
+    },
+    onSuccess: (data) => {
+      const { permlink } = data;
+      const { username } = user;
+      logger.info('useDeletePostMutation onSuccess data: %o', data);
+      queryClient.invalidateQueries({ queryKey: ['postData', username, permlink] });
+      queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
+    }
+  });
+
+  return deletePostMutation;
+}

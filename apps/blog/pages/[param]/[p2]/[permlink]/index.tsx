@@ -52,6 +52,9 @@ import { handleError } from '@ui/lib/utils';
 import MutePostDialog from '@/blog/components/mute-post-dialog';
 import { CircleSpinner } from 'react-spinners-kit';
 import ChangeTitleDialog from '@/blog/components/change-title-dialog';
+import moment from 'moment';
+import { PostDeleteDialog } from '@/blog/components/post-delete-dialog';
+import { useDeletePostMutation } from '@/blog/components/hooks/use-post-mutation';
 
 const logger = getLogger('app');
 export const postClassName =
@@ -77,6 +80,7 @@ function PostPage({
   const { user } = useUser();
 
   const { data: mutedList } = useFollowListQuery(user.username, 'muted');
+  const deletePostMutation = useDeletePostMutation();
 
   const {
     isLoading: isLoadingPost,
@@ -128,7 +132,6 @@ function PostPage({
       handleError(error, { method: 'unpin', params: { community, username, permlink } });
     }
   };
-
   const [discussionState, setDiscussionState] = useState<Entry[]>();
   const router = useRouter();
   const isSortOrder = (token: any): token is SortOrder => {
@@ -199,7 +202,20 @@ function PostPage({
   if (userFromGDPR || (postError && !post)) {
     return <CustomError />;
   }
-
+  const deleteComment = async (permlink: string) => {
+    try {
+      await deletePostMutation.mutateAsync({ permlink }).then(() => {
+        router.push(`/@${username}/posts`);
+      });
+    } catch (error) {
+      handleError(error, { method: 'deleteComment', params: { permlink } });
+    }
+  };
+  const dialogAction = (permlink: string): void => {
+    if (permlink) {
+      deleteComment(permlink);
+    }
+  };
   const canonical_url = post ? new URL(post.url, env('SITE_DOMAIN')).href : undefined;
   const post_is_pinned = firstPost?.stats?.is_pinned ?? false;
   return (
@@ -484,6 +500,31 @@ function PostPage({
                         </button>
                       </DialogLogin>
                     )}
+                    {post.children === 0 &&
+                    user.isLoggedIn &&
+                    post.author === user.username &&
+                    moment().format('YYYY-MM-DDTHH:mm:ss') < post.payout_at ? (
+                      <>
+                        <span className="mx-1">|</span>
+                        <PostDeleteDialog permlink={post.permlink} action={dialogAction} label="Post">
+                          <button
+                            disabled={edit || deletePostMutation.isLoading}
+                            className="flex items-center text-destructive"
+                            data-testid="comment-card-footer-delete"
+                          >
+                            {deletePostMutation.isLoading ? (
+                              <CircleSpinner
+                                loading={deletePostMutation.isLoading}
+                                size={18}
+                                color="#dc2626"
+                              />
+                            ) : (
+                              t('cards.comment_card.delete')
+                            )}
+                          </button>
+                        </PostDeleteDialog>
+                      </>
+                    ) : null}
                     {user && user.isLoggedIn && post.author === user.username && !edit ? (
                       <>
                         <span className="mx-1">|</span>
