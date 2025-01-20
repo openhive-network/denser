@@ -28,7 +28,7 @@ const authorityStrictChecker = async (
     const findAccountsResponse = await hiveChain.api.database_api
         .find_accounts({ accounts: [signer] });
     const foundAccountInfo = findAccountsResponse.accounts;
-    logger.info(`Found # ${foundAccountInfo.length} account info(s): %o`, foundAccountInfo);
+    // logger.info(`Found # ${foundAccountInfo.length} account info(s): %o`, foundAccountInfo);
 
     for (const accountInfo of findAccountsResponse.accounts) {
       let authorityToVerify: ApiAuthority;
@@ -60,16 +60,21 @@ const authorityStrictChecker = async (
 
 }
 
+export interface AuthorityCheckerResult {
+  nonStrict: boolean;
+  strict: boolean | undefined;
+}
+
 export const authorityChecker = async (
   txJSON: ApiTransaction,
   expectedSignerAccount: string,
   expectedAuthorityLevel: AuthorityLevel,
   pack: TTransactionPackType,
   strict: boolean     // check if signer key is directly in key authority
-): Promise<boolean> =>  {
+): Promise<AuthorityCheckerResult> =>  {
   try {
     logger.info('authorityChecker args: %o',
-      { txJSON, expectedSignerAccount, expectedAuthorityLevel, pack });
+      { txJSON, expectedSignerAccount, expectedAuthorityLevel, pack, strict });
 
     const hiveChain: IHiveChainInterface = await hiveChainService.getHiveChain();
     const txBuilder = hiveChain.createTransactionFromJson(txJSON);
@@ -82,11 +87,14 @@ export const authorityChecker = async (
 
     if (!authorityVerificationResult.valid) {
         logger.info("Transaction has specified invalid authority");
-        return false;
+        return { nonStrict: false, strict: false }
     }
 
     logger.info('Transaction is signed correctly');
-    if (!strict) return true;
+    // When strict is false there's no reason to  do other checks, so we
+    // return now.
+    if (!strict) return { nonStrict: true, strict: undefined }
+
 
     logger.info([
       "Going to validate, that key used to generate signature is",
@@ -103,21 +111,24 @@ export const authorityChecker = async (
 
     // Below is some additional code just to make a reverse check for
     // public keys used to generate given signature
+
     for (const signatureKey of signatureKeys) {
-      const key = "STM" + signatureKey;
-      const referencedAccounts = (
-        await hiveChain.api.account_by_key_api
-        .get_key_references({ keys: [key] })
-        ).accounts;
+      const key = signatureKey;
 
-      const accounts: Array<Array<string>> =
-        new Array<Array<string>>(...referencedAccounts);
-      const accountList = accounts.join(",");
+      // TODO Disabled, not working now.
+      // const referencedAccounts = (
+      //   await hiveChain.api.account_by_key_api
+      //   .get_key_references({ keys: [key] })
+      //   ).accounts;
 
-      logger.info([
-        `Public key used to sign transaction: ${key}`,
-        `is referenced by account(s): ${accountList}`,
-      ].join(' '));
+      // const accounts: Array<Array<string>> =
+      //   new Array<Array<string>>(...referencedAccounts);
+      // const accountList = accounts.join(",");
+
+      // logger.info([
+      //   `Public key used to sign transaction: ${key}`,
+      //   `is referenced by account(s): ${accountList}`,
+      // ].join(' '));
 
       const directSigner = await authorityStrictChecker(
         key, expectedSignerAccount, expectedAuthorityLevel, hiveChain
@@ -128,17 +139,18 @@ export const authorityChecker = async (
           `The account: ${expectedSignerAccount}`,
           `directly authorized the transaction`
         ].join(' '));
-        return true;
+        return { nonStrict: true, strict: true};
       } else {
-        logger.info([
-          `WARNING: some other account(s): ${accountList}`,
-          `than: ${expectedSignerAccount} authorized the transaction`
-        ].join(' '));
+        // logger.info([
+        //   `WARNING: some other account(s): ${accountList}`,
+        //   `than: ${expectedSignerAccount} authorized the transaction`
+        // ].join(' '));
+        logger.info('No direct signer');
       }
 
     }
 
-    return false;
+    return { nonStrict: true, strict: false};
 
   } catch (error) {
     logger.error('Error in authorityChecker: %o', error);
