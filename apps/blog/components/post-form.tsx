@@ -233,9 +233,9 @@ export default function PostForm({
 
   async function onSubmit(data: AccountFormValues) {
     const chain = await hiveChainService.getHiveChain();
-    const tags = storedPost.tags.replace(/#/g, '').split(' ') ?? [];
-    const maxAcceptedPayout = await chain.hbd(Number(storedPost.maxAcceptedPayout * 1000));
-    const postPermlink = await createPermlink(storedPost?.title ?? '', username);
+    const tags = data.tags.replace(/#/g, '').split(' ') ?? [];
+    const maxAcceptedPayout = await chain.hbd(Number(data.maxAcceptedPayout * 1000));
+    const postPermlink = await createPermlink(data?.title ?? '', username);
     const permlinInEditMode = post_s?.permlink;
     try {
       if (btnRef.current) {
@@ -244,15 +244,15 @@ export default function PostForm({
 
       const postParams = {
         permlink: editMode && permlinInEditMode ? permlinInEditMode : postPermlink,
-        title: storedPost.title,
-        body: storedPost.postArea,
-        beneficiaries: storedPost.beneficiaries,
+        title: data.title,
+        body: data.postArea,
+        beneficiaries: data.beneficiaries,
         maxAcceptedPayout,
         tags,
-        category: communityPosting ? communityPosting : storedPost.category,
-        summary: storedPost.postSummary,
-        altAuthor: storedPost.author,
-        payoutType: storedPost.payoutType ?? preferences.blog_rewards,
+        category: communityPosting ? communityPosting : data.category,
+        summary: data.postSummary,
+        altAuthor: data.author,
+        payoutType: data.payoutType ?? preferences.blog_rewards,
         image: imagePickerState,
         editMode
       };
