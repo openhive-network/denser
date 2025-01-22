@@ -38,7 +38,6 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
                     <SelectItem value="ru">Russian русский</SelectItem>
                     <SelectItem value="fr">French français</SelectItem>
                     <SelectItem value="it">Italian italiano</SelectItem>
-                    <SelectItem value="ko">Korean 한국어</SelectItem>
                     <SelectItem value="ja">Japanese 日本語</SelectItem>
                     <SelectItem value="pl">Polish Polski</SelectItem>
                     <SelectItem value="zh">Chinese 简体中文</SelectItem>
