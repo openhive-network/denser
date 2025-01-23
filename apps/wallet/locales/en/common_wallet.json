@@ -333,7 +333,8 @@
     "account_exists_error": "This account or key already exists in the list",
     "delete": "Delete",
     "threshold": "Threshold",
-    "add": "Add"
+    "add": "Add",
+    "cancel": "Cancel"
   },
   "transfers_page": {
     "financial_report": "Financial Report",
