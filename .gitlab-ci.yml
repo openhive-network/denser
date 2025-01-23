@@ -375,7 +375,7 @@ review:deploy-auth:
     API_ENDPOINT: https://api.fake.openhive.network/
     CHAIN_ID: '42'
     IMAGES_ENDPOINT: https://images.hive.blog/
-    SITE_DOMAIN: https://auth.openhive.network
+    SITE_DOMAIN: https://auth.fake.openhive.network
     LOGGING_BROWSER_ENABLED: false
     LOGGING_LOG_LEVEL: info
   environment:
@@ -392,8 +392,8 @@ review:deploy-blog:
     API_ENDPOINT: https://api.fake.openhive.network/
     CHAIN_ID: '42'
     IMAGES_ENDPOINT: https://images.hive.blog/
-    WALLET_ENDPOINT: https://wallet.openhive.network
-    SITE_DOMAIN: https://blog.openhive.network
+    WALLET_ENDPOINT: https://wallet.fake.openhive.network
+    SITE_DOMAIN: https://blog.fake.openhive.network
     LOGGING_BROWSER_ENABLED: false
     LOGGING_LOG_LEVEL: info
   environment:
@@ -410,8 +410,8 @@ review:deploy-wallet:
     API_ENDPOINT: https://api.fake.openhive.network/
     CHAIN_ID: '42'
     IMAGES_ENDPOINT: https://images.hive.blog/
-    SITE_DOMAIN: https://wallet.openhive.network
-    BLOG_DOMAIN: https://blog.openhive.network
+    SITE_DOMAIN: https://wallet.fake.openhive.network
+    BLOG_DOMAIN: https://blog.fake.openhive.network
     LOGGING_BROWSER_ENABLED: false
     LOGGING_LOG_LEVEL: info
   environment:
