@@ -98,7 +98,10 @@
     },
     "wallet_nav": {
       "balances": "Balances",
-      "delegations": "Delegations"
+      "delegations": "Delegations",
+      "keys_and_permissions": "Keys & Permissions",
+      "change_password": "Change Password",
+      "communities": "Communities"
     },
     "user_menu": {
       "wallet": "Wallet",
@@ -145,6 +148,19 @@
     }
   },
   "profil": {
+    "transfer": "Transfer",
+    "transfer_to_savings": "Transfer to savings",
+    "power_up": "Power up",
+    "market": "Market",
+    "buy": "Buy",
+    "sell": "Sell",
+    "buy_hive_or_hive_power": "Buy HIVE or HIVE POWER",
+    "power_down": "Power Down",
+    "delegate": "Delegate",
+    "cancel_power_down": "Cancel Power Down",
+    "cancel_power_down_prompt": "Are you sure you want to cancel Power Down?",
+    "withdraw_hive": "Withdraw HIVE",
+    "withdraw_hive_dollars": "Withdraw HIVE DOLLARS",
     "joined": "Joined",
     "hive_description": "Tradeable tokens that may be transferred anywhere at anytime. Hive can be converted to HIVE POWER in a process called powering up.",
     "hp_description": "Influence tokens which give you more control over post payouts and allow you to earn on curation rewards. Part of {{username}}'s HIVE POWER is currently delegated. Delegation is donated for influence or to help new users perform actions on Hive. Your delegation amount can fluctuate. HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",
@@ -421,7 +437,7 @@
     },
     "owner_key": {
       "name": "Owner Key",
-      "info": "The owner key is required to change the other keys. This key has additional permissions to recover your account or change your other keys. It&apos;s the most important key and should be securely stored offline.",
+      "info": "The owner key is required to change the other keys. This key has additional permissions to recover your account or change your other keys. It's the most important key and should be securely stored offline.",
       "private": "Your Private Owner Key",
       "permissions": "Owner Key permissions",
       "to": "Use your Owner Key to:",
@@ -441,5 +457,19 @@
     "public_keys": "Public keys",
     "public_info": "Each Hive Key has a public and private key to encrypt and decrypt data. Public keys are associated with usernames and can be used to look up associated transactions on the blockchain. Your public keys are not required for login on Hive.blog and you don't need to store these safely.",
     "view_public": "View public key information for this account (in the 'Authorities' module):"
+  },
+  "communities": {
+    "create_community": "Create a community",
+    "title": "Title",
+    "about": "About",
+    "next": "Next",
+    "i_have_saved_password": "I have securely saved my owner name and password.",
+    "errors": {
+      "required": "Required"
+    }
+  },
+  "settings": {
+    "preferences": "Preferences",
+    "choose_api": "Choose Your Preferred API Node"
   }
 }

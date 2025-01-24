@@ -43,7 +43,7 @@ export default function WalletMenu({ username }: { username: string }) {
           )}
         >
           <div className="hover:text-red-600 dark:hover:text-red-400" data-testid="wallet-delegations-link">
-            Key & Permissions
+            {t('navigation.wallet_nav.keys_and_permissions')}
           </div>
         </Link>
       )}
@@ -57,7 +57,7 @@ export default function WalletMenu({ username }: { username: string }) {
           )}
         >
           <div className="hover:text-red-600 dark:hover:text-red-400" data-testid="wallet-delegations-link">
-            Change Password
+            {t('navigation.wallet_nav.change_password')}
           </div>
         </Link>
       )}
@@ -71,7 +71,7 @@ export default function WalletMenu({ username }: { username: string }) {
           )}
         >
           <div className="hover:text-red-600 dark:hover:text-red-400" data-testid="wallet-delegations-link">
-            Communities
+            {t('navigation.wallet_nav.communities')}
           </div>
         </Link>
       )}

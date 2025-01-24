@@ -22,43 +22,21 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
           <WalletMenu username={username} />
         </div>
         <div className="px-2 py-8" data-testid="settings-preferences">
-          <h2 className="py-4 text-lg font-semibold leading-5 text-slate-900 dark:text-white">Preferences</h2>
+          <h2 className="py-4 text-lg font-semibold leading-5 text-slate-900 dark:text-white">
+            {t('settings.preferences')}
+          </h2>
 
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-            <div data-testid="choose-language">
-              <Label htmlFor="choose-language">Choose Language</Label>
-              <Select defaultValue="en" name="choose-language">
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="en">English</SelectItem>
-                    <SelectItem value="es">Spanish Español</SelectItem>
-                    <SelectItem value="ru">Russian русский</SelectItem>
-                    <SelectItem value="fr">French français</SelectItem>
-                    <SelectItem value="it">Italian italiano</SelectItem>
-                    <SelectItem value="ja">Japanese 日本語</SelectItem>
-                    <SelectItem value="pl">Polish Polski</SelectItem>
-                    <SelectItem value="zh">Chinese 简体中文</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label htmlFor="choose-api-node">Choose Your Preferred API Node</Label>
-              <Select defaultValue="api" name="choose-api-node">
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="api">https://api.openhive.network</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+          <Label htmlFor="choose-api-node">{t('settings.choose_api')}</Label>
+          <Select defaultValue="api" name="choose-api-node">
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="api">https://api.openhive.network</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </div>
       </div>
     </ProfileLayout>
