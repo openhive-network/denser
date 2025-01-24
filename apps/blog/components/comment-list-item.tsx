@@ -19,7 +19,7 @@ import { useLocalStorage } from 'usehooks-ts';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';
 import { UserPopoverCard } from './user-popover-card';
-import { CommentDeleteDialog } from './comment-delete-dialog';
+import { PostDeleteDialog } from './post-delete-dialog';
 import moment from 'moment';
 import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
@@ -381,7 +381,11 @@ const CommentListItem = ({
                         moment().format('YYYY-MM-DDTHH:mm:ss') < comment.payout_at ? (
                           <>
                             <Separator orientation="vertical" className="h-5" />
-                            <CommentDeleteDialog permlink={comment.permlink} action={dialogAction}>
+                            <PostDeleteDialog
+                              permlink={comment.permlink}
+                              action={dialogAction}
+                              label="Comment"
+                            >
                               <button
                                 disabled={edit || deleteCommentMutation.isLoading}
                                 className="flex items-center hover:cursor-pointer hover:text-destructive"
@@ -397,7 +401,7 @@ const CommentListItem = ({
                                   t('cards.comment_card.delete')
                                 )}
                               </button>
-                            </CommentDeleteDialog>
+                            </PostDeleteDialog>
                           </>
                         ) : null}
                         {permissionToMute ? (

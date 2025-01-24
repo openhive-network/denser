@@ -6,7 +6,8 @@ import {
   IHiveChainInterface,
   transaction,
   NaiAsset,
-  ApiAccount
+  ApiAccount,
+  AccountAuthorityUpdateOperation
 } from '@hiveio/wax';
 import { isCommunity, parseAsset } from '@ui/lib/utils';
 import { vestsToRshares } from '@ui/lib/utils';
@@ -834,27 +835,34 @@ export const getListWitnessVotes = async (
 };
 
 export interface IVoteListItem {
-  id: number,
-  voter: string,
-  author: string,
-  permlink: string,
-  weight: string,
-  rshares: number,
-  vote_percent: number,
-  last_update: string,
-  num_changes: number,
+  id: number;
+  voter: string;
+  author: string;
+  permlink: string;
+  weight: string;
+  rshares: number;
+  vote_percent: number;
+  last_update: string;
+  num_changes: number;
 }
 
 type GetListVotesData = {
   database_api: {
-    list_votes: TWaxApiRequest<{ start: [string, string, string] | null; limit: number; order: 'by_comment_voter' | 'by_voter_comment' }, { votes: IVoteListItem[] }>;
+    list_votes: TWaxApiRequest<
+      {
+        start: [string, string, string] | null;
+        limit: number;
+        order: 'by_comment_voter' | 'by_voter_comment';
+      },
+      { votes: IVoteListItem[] }
+    >;
   };
 };
 
 // See https://developers.hive.io/apidefinitions/#database_api.list_votes
 export const getListVotesByCommentVoter = async (
   start: [string, string, string] | null, // should be [author, permlink, voter]
-  limit: number,
+  limit: number
 ): Promise<{ votes: IVoteListItem[] }> => {
   return chain
     .extend<GetListVotesData>()
@@ -863,9 +871,22 @@ export const getListVotesByCommentVoter = async (
 
 export const getListVotesByVoterComment = async (
   start: [string, string, string] | null, // should be [voter, author, permlink]
-  limit: number,
+  limit: number
 ): Promise<{ votes: IVoteListItem[] }> => {
   return chain
     .extend<GetListVotesData>()
     .api.database_api.list_votes({ start, limit, order: 'by_voter_comment' });
 };
+
+export const getAuthority = async (username: string): Promise<AccountAuthorityUpdateOperation> => {
+  const chain = await hiveChainService.getHiveChain();
+  const operation = await AccountAuthorityUpdateOperation.createFor(chain, username);
+
+  return operation;
+};
+export interface TransactionOptions {
+  observe?: boolean;
+}
+export type LevelAuthority = Parameters<
+  Awaited<ReturnType<(typeof AccountAuthorityUpdateOperation)['createFor']>>['role']
+>[0];

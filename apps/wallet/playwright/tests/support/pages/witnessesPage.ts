@@ -50,7 +50,7 @@ export class WitnessesPage {
     await this.page.waitForLoadState('networkidle');
     await expect(this.witnessTitle).toHaveText('Witness Voting');
     await expect(this.witnessTableBody).toBeVisible();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(5000);
   }
 
   async getElementCssPropertyValue(element: Locator, cssProperty: string) {
