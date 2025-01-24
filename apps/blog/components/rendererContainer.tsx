@@ -36,15 +36,15 @@ const RendererContainer = ({
   };
 
   useEffect(() => {
-    const elementsWithVideoWrapper = document.querySelectorAll('.videoWrapper');
-    elementsWithVideoWrapper.forEach((element) => {
-      element.classList.remove('videoWrapper');
-    });
     const nodes = ref.current?.querySelectorAll('a.link-external');
     nodes?.forEach((n) => n.addEventListener('click', handleClick));
     const paragraphs = ref.current?.querySelectorAll('p');
     if (!mainPost) paragraphs?.forEach((p) => (p.className = 'my-0'));
     if (communityDescription) {
+      const elementsWithVideoWrapper = document.querySelectorAll('.videoWrapper');
+      elementsWithVideoWrapper.forEach((element) => {
+        element.classList.remove('videoWrapper');
+      });
       const code_block = ref.current?.querySelectorAll('code');
       code_block?.forEach((c) => (c.className = 'whitespace-normal'));
       const links = ref.current?.querySelectorAll('a');
