@@ -437,7 +437,7 @@
     },
     "owner_key": {
       "name": "Owner Key",
-      "info": "The owner key is required to change the other keys. This key has additional permissions to recover your account or change your other keys. It&apos;s the most important key and should be securely stored offline.",
+      "info": "The owner key is required to change the other keys. This key has additional permissions to recover your account or change your other keys. It's the most important key and should be securely stored offline.",
       "private": "Your Private Owner Key",
       "permissions": "Owner Key permissions",
       "to": "Use your Owner Key to:",
