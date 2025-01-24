@@ -43,6 +43,11 @@ const RendererContainer = ({
   useEffect(() => {
     const nodes = ref.current?.querySelectorAll('a.link-external');
     nodes?.forEach((n) => n.addEventListener('click', handleClick));
+    const sub = document.querySelectorAll('sub');
+    sub?.forEach((e) => {
+      e.classList.add('leading-[150%]');
+    });
+
     const paragraphs = ref.current?.querySelectorAll('p');
     if (!mainPost) paragraphs?.forEach((p) => (p.className = 'my-0'));
     if (communityDescription) {
