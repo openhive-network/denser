@@ -322,6 +322,20 @@
     "not_to_worry": "Not to worry. You can head back to",
     "our_homepage": "our homepage"
   },
+  "authorities_page": {
+    "authority_updated": "Authority updated",
+    "memo_key": "Memo key",
+    "edit": "Edit",
+    "update_authority": "Update Authority",
+    "add_key_account": "Add Key or Account",
+    "weight": "Weight",
+    "key_or_account": "Key or Account",
+    "account_exists_error": "This account or key already exists in the list",
+    "delete": "Delete",
+    "threshold": "Threshold",
+    "add": "Add",
+    "cancel": "Cancel"
+  },
   "transfers_page": {
     "financial_report": "Financial Report",
     "financial_report_description": "Use this to generate a CSV file containing financial transactions from your history within the selected date range. Depending on how active your account is, it might take a little while to complete.",

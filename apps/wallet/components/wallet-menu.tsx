@@ -75,6 +75,20 @@ export default function WalletMenu({ username }: { username: string }) {
           </div>
         </Link>
       )}
+      {user?.username === username && (
+        <Link
+          href={`/@${username}/authorities`}
+          className={clsx(
+            router.asPath === `/@${username}/authorities`
+              ? 'font-semibold text-slate-700 dark:text-slate-100'
+              : 'hover:text-red-600 dark:hover:text-red-400'
+          )}
+        >
+          <div className="hover:text-red-600 dark:hover:text-red-400" data-testid="wallet-delegations-link">
+            Authorities
+          </div>
+        </Link>
+      )}
     </div>
   );
 }
