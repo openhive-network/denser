@@ -7,7 +7,7 @@
     "sorry_cant_show": "Przepraszam, Nie mogę teraz pokazać żadnych propozycji.",
     "its_probably": "Prawdopodobnie dzieje się tak dlatego, że nie ma żadnych propozycji spełniających Twoje kryteria.",
     "proposals": "Propozycje",
-    "witnesses": "Witness",
+    "witnesses": "Delegaci",
     "time_ago": {
       "a_few_seconds": " Kilka sekund temu",
       "seconds": " sekund temu",
@@ -374,10 +374,10 @@
       "to": "Użyj aktywnego klucza, aby:",
       "transfer": "Transferować tokeny",
       "power_hive": "Zwiększać lub zmniejszać moc HIVE",
-      "vote": "Głosować na Witness",
+      "vote": "Głosować na Delegatów",
       "place_order": "Złóżyć zamówienie na giełdzie",
       "profile_changes": "Dokonywać zmian profilu",
-      "publish": "Publikowac informacje o cenach Witness",
+      "publish": "Publikowac informacje o cenach Delegatów",
       "create": "Utwórzyć nowego użytkownika"
     },
     "owner_key": {
@@ -412,5 +412,9 @@
     "errors": {
       "required": "Wymagane"
     }
+  },
+  "settings": {
+    "preferences": "Preferencje",
+    "choose_api": "Wybierz preferowany API Node"
   }
 }

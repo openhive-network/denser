@@ -453,5 +453,9 @@
     "errors": {
       "required": "Required"
     }
+  },
+  "settings": {
+    "preferences": "Preferences",
+    "choose_api": "Choose Your Preferred API Node"
   }
 }
