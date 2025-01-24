@@ -31,7 +31,12 @@ const RendererContainer = ({
   const handleClick = (e: Event) => {
     e.preventDefault();
     const anchor = e.target as HTMLAnchorElement;
-    setLink(anchor.href);
+    let href = anchor.href;
+    if (!href) {
+      const parent = anchor.parentElement as HTMLAnchorElement;
+      href = parent.href;
+    }
+    setLink(href);
     setOpen(true);
   };
 
