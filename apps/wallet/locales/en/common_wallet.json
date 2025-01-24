@@ -443,5 +443,15 @@
     "public_keys": "Public keys",
     "public_info": "Each Hive Key has a public and private key to encrypt and decrypt data. Public keys are associated with usernames and can be used to look up associated transactions on the blockchain. Your public keys are not required for login on Hive.blog and you don't need to store these safely.",
     "view_public": "View public key information for this account (in the 'Authorities' module):"
+  },
+  "communities": {
+    "create_community": "Create a community",
+    "title": "Title",
+    "about": "About",
+    "next": "Next",
+    "i_have_saved_password": "I have securely saved my owner name and password.",
+    "errors": {
+      "required": "Required"
+    }
   }
 }

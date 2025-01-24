@@ -6,6 +6,8 @@
     "something_went_wrong": "Coś poszło nie tak",
     "sorry_cant_show": "Przepraszam, Nie mogę teraz pokazać żadnych propozycji.",
     "its_probably": "Prawdopodobnie dzieje się tak dlatego, że nie ma żadnych propozycji spełniających Twoje kryteria.",
+    "proposals": "Propozycje",
+    "witnesses": "Witness",
     "time_ago": {
       "a_few_seconds": " Kilka sekund temu",
       "seconds": " sekund temu",
@@ -342,6 +344,73 @@
       "required": "Nazwa konta 'Do' jest wymagana.",
       "insufficient_funds": "Niewystarczające środki.",
       "not_found": "Nie znaleziono konta."
+    }
+  },
+  "permissions": {
+    "reveal": "Ujawnij",
+    "keys_and_permissions": "Klucze i permisje",
+    "any_password": "Prawdopodobieństwo złamania dowolnego hasła lub klucza jest tym większe, im częściej jest ono używane. Dlatego Hive wykorzystuje hierarchiczny system kluczy, aby zapewnić ci bezpieczeństwo. Użytkownik otrzymuje cztery klucze, które mają różne uprawnienia. Na przykład, klucz Posting Key (który jest przeznaczony do częstego używania) ma ograniczony zestaw uprawnień do działań społecznościowych, które wymagają mniejszego bezpieczeństwa. Musisz być bardziej ostrożny z kluczem aktywnym, ponieważ ma on uprawnienia do wykonywania działań związanych z portfelem",
+    "note": "Zanotuj swoje klucze Hive wymienione poniżej. Najlepiej użyć menedżera haseł (takiego jak 1Password lub LastPass) lub bezpiecznie przechowywać kopię offline (na kartce papieru lub w pliku na dysku USB).",
+    "posting_key": {
+      "name": "Posting Key",
+      "info": "Klucz ten powinien być używany do działań w sieciach społecznościowych, takich jak publikowanie, komentowanie i głosowanie. ",
+      "use": "Użyj tego klucza, aby zalogować się do innych sieci społecznościowych opartych na Hive, takich jak Hive.blog, Busy i Esteem. ",
+      "private": "Twój prywatny klucz do publikowania",
+      "permissions": "Uprawnienia Public key",
+      "to": "Użyj klucza publikowania, aby:",
+      "publish": "Opublikować post lub komentarz",
+      "edit": "Edytować post lub komentarz",
+      "upvote": "Głoswać za lub przeciw",
+      "reblog": "Reblogować treść",
+      "follow": "Obserwować",
+      "mute": "Wyciszyć konta"
+    },
+    "active_key": {
+      "name": "Active key",
+      "info": "Ten klucz ma dodatkowe uprawnienia do bardziej wrażliwych działań związanych z pieniędzmi, takich jak przesyłanie i wymiana tokenów.",
+      "use": "Podczas wykonywania akcji związanej z portfelem możesz zostać poproszony o uwierzytelnienie za pomocą aktywnego klucza. ",
+      "private": "Twój prywatny aktywny klucz",
+      "permissions": "Uprawnienia Active Key",
+      "to": "Użyj aktywnego klucza, aby:",
+      "transfer": "Transferować tokeny",
+      "power_hive": "Zwiększać lub zmniejszać moc HIVE",
+      "vote": "Głosować na Witness",
+      "place_order": "Złóżyć zamówienie na giełdzie",
+      "profile_changes": "Dokonywać zmian profilu",
+      "publish": "Publikowac informacje o cenach Witness",
+      "create": "Utwórzyć nowego użytkownika"
+    },
+    "owner_key": {
+      "name": "Owner key",
+      "info": "Klucz właściciela jest zobowiązany do zmiany innych kluczy. ",
+      "private": "Twój klucz właściciela",
+      "permissions": "Uprawnienia Owner Key",
+      "to": "Użyj klucza właściciela, aby:",
+      "reset": "Zresetować klucze Owner, Active i Posting",
+      "recover": "Odzyskać swoje konto",
+      "decline": "Odrzucić prawa do głosowania"
+    },
+    "memo_key": {
+      "name": "Memo Key",
+      "info": "Jedyne co może robić klucz Memo, to szyfrowanie i odszyfrowywanie prywatnych wiadomości wysyłanych przez blockchain. Chociaż pewnego dnia może to być potężna funkcja, obecnie nie jest powszechnie używana. Jeśli otrzymałeś prywatną wiadomość, którą chciałbyś odszyfrować, jak zawsze powinieneś użyć klucza z minimalnymi niezbędnymi uprawnieniami, którym w tym przypadku byłby Memo Key.",
+      "private": "Twój klucz notatki",
+      "permissions": "Uprawnienia Memo Key",
+      "to": "Użyj klucza notatki, aby:",
+      "send": "Wysłać zaszyfrowaną wiadomość",
+      "view": "Wyświetlić zaszyfrowaną wiadomość"
+    },
+    "public_keys": "Klucze publiczne",
+    "public_info": "Każdy klucz Hive ma klucz publiczny i prywatny do szyfrowania i deszyfrowania danych. ",
+    "view_public": "Zobacz informacje o publicznych kluczach dla tego konta (w module 'Authorities'):"
+  },
+  "communities": {
+    "create_community": "Utwórz społeczność",
+    "title": "Nazwa",
+    "about": "Opis",
+    "next": "Dalej",
+    "i_have_saved_password": "Bezpiecznie zapisałem swoją nazwę społecznośći i hasło.",
+    "errors": {
+      "required": "Wymagane"
     }
   }
 }
