@@ -8,16 +8,18 @@ Usage: $0 [OPTION[=VALUE]]...
 
 Run a Denser Docker instance
 OPTIONS:
-  --image=IMAGE         Docker image to run (default: 'registry.gitlab.syncad.com/hive/denser:latest')
-  --api-endpoint=URL    API endpoint to be used by the new instance (default: 'https://api.hive.blog')
-  --chain-id=CHAIN_ID   Chain ID to be used by the new instance (default: 'beeab0de00000000000000000000000000000000000000000000000000000000')
-  --images-endpoint=URL IMAGES endpoint to be used by the new instance (default: 'https://api.hive.blog')
-  --app-scope=SCOPE     App scope (eg. '@hive/auth')
-  --app-path=PATH       App path (eg. '/apps/auth)
-  --port=PORT           Port to be exposed (default: 3000)
-  --name=NAME           Container name to be used (default: denser)
-  --detach              Run in detached mode 
-  --help|-h|-?          Display this help screen and exit
+  --image=IMAGE                         Docker image to run (default: 'registry.gitlab.syncad.com/hive/denser:latest')
+  --api-endpoint=URL                    API endpoint to be used by the new instance (default: 'https://api.hive.blog')
+  --wallet-endpoint=WALLET_ENDPOINT     Wallet endpoint to be used by the new instance (default: 'https://wallet.hive.blog')
+  --site-domain=SITE_DOMAIN             Site domain to be used by the new instance (default: 'https://blog.hive.blog')
+  --chain-id=CHAIN_ID                   Chain ID to be used by the new instance (default: 'beeab0de00000000000000000000000000000000000000000000000000000000')
+  --images-endpoint=URL                 IMAGES endpoint to be used by the new instance (default: 'https://api.hive.blog')
+  --app-scope=SCOPE                     App scope (eg. '@hive/auth')
+  --app-path=PATH                       App path (eg. '/apps/auth)
+  --port=PORT                           Port to be exposed (default: 3000)
+  --name=NAME                           Container name to be used (default: denser)
+  --detach                              Run in detached mode 
+  --help|-h|-?                          Display this help screen and exit
 EOF
 }
 
@@ -57,6 +59,14 @@ while [ $# -gt 0 ]; do
         arg="${1#*=}"
         IMAGES_ENDPOINT="$arg"
         ;;
+    --wallet-endpoint=*)
+        arg="${1#*=}"
+        WALLET_ENDPOINT="$arg"
+        ;;
+    --site-domain=*)
+        arg="${1#*=}"
+        SITE_DOMAIN="$arg"
+        ;;
     --port=*)
         arg="${1#*=}"
         PORT="$arg"
@@ -90,6 +100,8 @@ RUN_OPTIONS=(
     "--env" "PORT=$PORT"
     "--env" "REACT_APP_API_ENDPOINT=$API_ENDPOINT"
     "--env" "REACT_APP_IMAGES_ENDPOINT=$IMAGES_ENDPOINT"
+    "--env" "REACT_APP_WALLET_ENDPOINT=$WALLET_ENDPOINT"
+    "--env" "REACT_APP_SITE_DOMAIN=$SITE_DOMAIN"
     "--env" "REACT_APP_CHAIN_ID=$CHAIN_ID"
     "--env" "TURBO_APP_SCOPE=$TURBO_APP_SCOPE"
     "--env" "TURBO_APP_PATH=$TURBO_APP_PATH"
