@@ -1,14 +1,17 @@
 {
   "global": {
+    "and": "i",
     "no_rewards": "Brak nagród oczekujących na wykorzystanie.",
     "loading": "Wczytywanie",
     "something_went_wrong": "Coś poszło nie tak",
     "sorry_cant_show": "Przepraszam, Nie mogę teraz pokazać żadnych propozycji.",
     "its_probably": "Prawdopodobnie dzieje się tak dlatego, że nie ma żadnych propozycji spełniających Twoje kryteria.",
+    "proposals": "Propozycje",
+    "witnesses": "Delegaci",
     "time_ago": {
       "a_few_seconds": " Kilka sekund temu",
-      "seconds": " sekund_y temu",
-      "minutes": " minut_y temu",
+      "seconds": " sekund temu",
+      "minutes": " minut temu",
       "a_minute": " minute temu",
       "hours": " godzin temu",
       "an_hour": " godzine temu",
@@ -95,7 +98,10 @@
     },
     "wallet_nav": {
       "balances": "Salda",
-      "delegations": "Delegacje"
+      "delegations": "Delegacje",
+      "keys_and_permissions": "Klucze & Permisje",
+      "change_password": "Zmiana Hasła",
+      "communities": "Społeczności"
     },
     "user_menu": {
       "wallet": "Portfel",
@@ -142,6 +148,19 @@
     }
   },
   "profil": {
+    "transfer": "Transfer",
+    "transfer_to_savings": "Transfer do oszczędności",
+    "power_up": "Zwiększ moc",
+    "market": "Giełda",
+    "buy": "Kup",
+    "sell": "Sprzedaj",
+    "buy_hive_or_hive_power": "Kup HIVE lub HIVE POWER",
+    "power_down": "Zmniejsz moc",
+    "delegate": "Deleguj",
+    "cancel_power_down": "Anuluj zmniejszanie mocy",
+    "cancel_power_down_prompt": "czy na pewno chcesz anulować zmniejszanie mocy?",
+    "withdraw_hive": "Wypłać HIVE",
+    "withdraw_hive_dollars": "Wypłać HIVE DOLLARS",
     "joined": "Dołączono",
     "hive_description": "Zbywalne tokeny, które mogą być przesłane gdziekolwiek w dowolnym momencie. HIVE mogą zostać również przekonwertowane na HIVE POWER w procesie nazywanym zwiększenie mocy.",
     "hp_description": "Tokeny wpływu, które zwiększają Twój wpływ na podział wypłat za publikowanie treści, oraz pozwalają Ci zarabiać na głosowaniu na treści. Część z Twoich jednostek wpływu HIVE POWER jest Ci oddelegowana. Delegowanie jednostek to czasowe użyczenie dla zwiększenia wpływu lub by pomóc nowym użytkownikom platformy w korzystaniu ze Hive. Kwota oddelegowanych jednostek może się zmieniać w czasie. HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",
@@ -155,7 +174,7 @@
     "witnesses": "Witnesses",
     "account_history_description": "Uważaj na spam i linki phishingowe w notatkach transakcji. Nie otwieraj linków od użytkowników, którym nie ufasz. Nie udostępniaj swoich kluczy prywatnych żadnym stronom internetowym osób trzecich. Transakcje nie zostaną wyświetlone, dopóki nie zostaną potwierdzone w blockchain, co może zająć kilka minut.",
     "no_transactions_found": "Nie znaleziono transakcji",
-    "the_next_power_down": "The next power down is scheduled to happen in ",
+    "the_next_power_down": "Następne zmniejszanie mocy odbędzie się za",
     "paid_for": "Paid {{value1}} for {{value2}}",
     "cancel_transfer_from_savings": "Cancel transfer from savings (request {{number}})",
     "receive_interest": "'Receive interest of {{number}}",
@@ -236,8 +255,8 @@
     "bock_gap": {
       "just_now": " przed chwilą",
       "recently": " ostatnio",
-      "mins_ago": " minut_y temu",
-      "hrs_ago": " godzin_y temu",
+      "mins_ago": " minuty temu",
+      "hrs_ago": " godziny temu",
       "days_ago": " dni temu",
       "weeks_ago": " tygodni_e temu",
       "months_ago": " miesięce_y temu",
@@ -303,5 +322,99 @@
     "this_page_does_not_exist": "Przepraszamy! Ta strona nie istnieje.",
     "not_to_worry": "Możesz wrócić do",
     "our_homepage": "naszej strony startowej"
+  },
+  "transfers_page": {
+    "financial_report": "Raport finansowy",
+    "financial_report_description": "Wykorzystywany do generowania pliku CSV zawierającego transakcje z wybranego okresu. W zależności od aktywnosci konta, może to zająć chwile.",
+    "generate_report": "GENERUJ REPORT",
+    "download_report": "POBIERZ REPORT",
+    "report_periods": {
+      "last7days": "Ostatnie 7 dni",
+      "last14days": "Ostatnie 14 dni",
+      "last30days": "Ostatnie 30 dni",
+      "last60days": "Ostatnie 60 dni"
+    },
+    "current_rewards": "Aktualna nagroda: ",
+    "redeem_rewards": "Odbierz nagrody (Trafia do salda)",
+    "error": {
+      "amount_not_positive": "Ilość musi być dodatnia.",
+      "amount_empty": "Ilość nie może być pusta.",
+      "account_length_min": "Nazwa konta jest zbyt krótka. Wpisz przynajmniej 3 znaki.",
+      "account_length_max": "Nazwa konta jest zbyt długa. Wpisz maksymalnie 16 znaków.",
+      "required": "Nazwa konta 'Do' jest wymagana.",
+      "insufficient_funds": "Niewystarczające środki.",
+      "not_found": "Nie znaleziono konta."
+    }
+  },
+  "permissions": {
+    "reveal": "Ujawnij",
+    "keys_and_permissions": "Klucze i permisje",
+    "any_password": "Prawdopodobieństwo złamania dowolnego hasła lub klucza jest tym większe, im częściej jest ono używane. Dlatego Hive wykorzystuje hierarchiczny system kluczy, aby zapewnić ci bezpieczeństwo. Użytkownik otrzymuje cztery klucze, które mają różne uprawnienia. Na przykład, klucz Posting Key (który jest przeznaczony do częstego używania) ma ograniczony zestaw uprawnień do działań społecznościowych, które wymagają mniejszego bezpieczeństwa. Musisz być bardziej ostrożny z kluczem aktywnym, ponieważ ma on uprawnienia do wykonywania działań związanych z portfelem",
+    "note": "Zanotuj swoje klucze Hive wymienione poniżej. Najlepiej użyć menedżera haseł (takiego jak 1Password lub LastPass) lub bezpiecznie przechowywać kopię offline (na kartce papieru lub w pliku na dysku USB).",
+    "posting_key": {
+      "name": "Posting Key",
+      "info": "Klucz ten powinien być używany do działań w sieciach społecznościowych, takich jak publikowanie, komentowanie i głosowanie. ",
+      "use": "Użyj tego klucza, aby zalogować się do innych sieci społecznościowych opartych na Hive, takich jak Hive.blog, Busy i Esteem. ",
+      "private": "Twój prywatny klucz do publikowania",
+      "permissions": "Uprawnienia Public key",
+      "to": "Użyj klucza publikowania, aby:",
+      "publish": "Opublikować post lub komentarz",
+      "edit": "Edytować post lub komentarz",
+      "upvote": "Głoswać za lub przeciw",
+      "reblog": "Reblogować treść",
+      "follow": "Obserwować",
+      "mute": "Wyciszyć konta"
+    },
+    "active_key": {
+      "name": "Active key",
+      "info": "Ten klucz ma dodatkowe uprawnienia do bardziej wrażliwych działań związanych z pieniędzmi, takich jak przesyłanie i wymiana tokenów.",
+      "use": "Podczas wykonywania akcji związanej z portfelem możesz zostać poproszony o uwierzytelnienie za pomocą aktywnego klucza. ",
+      "private": "Twój prywatny aktywny klucz",
+      "permissions": "Uprawnienia Active Key",
+      "to": "Użyj aktywnego klucza, aby:",
+      "transfer": "Transferować tokeny",
+      "power_hive": "Zwiększać lub zmniejszać moc HIVE",
+      "vote": "Głosować na Delegatów",
+      "place_order": "Złóżyć zamówienie na giełdzie",
+      "profile_changes": "Dokonywać zmian profilu",
+      "publish": "Publikowac informacje o cenach Delegatów",
+      "create": "Utwórzyć nowego użytkownika"
+    },
+    "owner_key": {
+      "name": "Owner key",
+      "info": "Klucz właściciela jest zobowiązany do zmiany innych kluczy. ",
+      "private": "Twój klucz właściciela",
+      "permissions": "Uprawnienia Owner Key",
+      "to": "Użyj klucza właściciela, aby:",
+      "reset": "Zresetować klucze Owner, Active i Posting",
+      "recover": "Odzyskać swoje konto",
+      "decline": "Odrzucić prawa do głosowania"
+    },
+    "memo_key": {
+      "name": "Memo Key",
+      "info": "Jedyne co może robić klucz Memo, to szyfrowanie i odszyfrowywanie prywatnych wiadomości wysyłanych przez blockchain. Chociaż pewnego dnia może to być potężna funkcja, obecnie nie jest powszechnie używana. Jeśli otrzymałeś prywatną wiadomość, którą chciałbyś odszyfrować, jak zawsze powinieneś użyć klucza z minimalnymi niezbędnymi uprawnieniami, którym w tym przypadku byłby Memo Key.",
+      "private": "Twój klucz notatki",
+      "permissions": "Uprawnienia Memo Key",
+      "to": "Użyj klucza notatki, aby:",
+      "send": "Wysłać zaszyfrowaną wiadomość",
+      "view": "Wyświetlić zaszyfrowaną wiadomość"
+    },
+    "public_keys": "Klucze publiczne",
+    "public_info": "Każdy klucz Hive ma klucz publiczny i prywatny do szyfrowania i deszyfrowania danych. ",
+    "view_public": "Zobacz informacje o publicznych kluczach dla tego konta (w module 'Authorities'):"
+  },
+  "communities": {
+    "create_community": "Utwórz społeczność",
+    "title": "Nazwa",
+    "about": "Opis",
+    "next": "Dalej",
+    "i_have_saved_password": "Bezpiecznie zapisałem swoją nazwę społecznośći i hasło.",
+    "errors": {
+      "required": "Wymagane"
+    }
+  },
+  "settings": {
+    "preferences": "Preferencje",
+    "choose_api": "Wybierz preferowany API Node"
   }
 }

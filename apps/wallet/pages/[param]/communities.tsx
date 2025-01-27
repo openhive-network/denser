@@ -120,7 +120,7 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
           <WalletMenu username={username} />
         </div>
         <div className="flex flex-col gap-4 p-4">
-          <h4>Create a community</h4>
+          <h4>{t('communities.create_community')}</h4>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <FormField
@@ -128,7 +128,7 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Title</FormLabel>
+                    <FormLabel>{t('communities.title')}</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -141,7 +141,7 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
                 name="about"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>About</FormLabel>
+                    <FormLabel>{t('communities.about')}</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -151,7 +151,7 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
               />
               {!nextStep ? (
                 <Button onClick={() => handleNext()} className="mt-2 w-fit">
-                  Next
+                  {t('communities.next')}
                 </Button>
               ) : (
                 <div className="flex flex-col gap-2">
@@ -167,16 +167,14 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
                           <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                         </FormControl>
                         <div className="space-y-1 leading-none">
-                          <FormLabel className="text-xs">
-                            I have securely saved my owner name and password.
-                          </FormLabel>{' '}
+                          <FormLabel className="text-xs">{t('communities.i_have_saved_password')}</FormLabel>{' '}
                           <FormMessage />
                         </div>
                       </FormItem>
                     )}
                   />
                   <Button className="w-fit" type="submit">
-                    Create community
+                    {t('communities.create_community')}
                   </Button>
                 </div>
               )}

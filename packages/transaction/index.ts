@@ -14,7 +14,7 @@ import {
   authority,
   future_extensions,
   EAvailableCommunityRoles,
-  AccountAuthorityUpdateOperation,
+  AccountAuthorityUpdateOperation
 } from '@hiveio/wax';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions, SignTransaction } from '@smart-signer/lib/signer/signer';
@@ -37,6 +37,12 @@ export interface TransactionOptions {
 export interface TransactionBroadcastResult {
   blockNumber?: number;
   transactionId: string;
+}
+
+export interface Authorizes {
+  weight_threshold: number;
+  account_auths: { [key: string]: number };
+  key_auths: { [key: string]: number };
 }
 
 export class TransactionService {
@@ -90,7 +96,6 @@ export class TransactionService {
     cb: (opBuilder: ITransaction) => void,
     transactionOptions: TransactionOptions = {}
   ): Promise<TransactionBroadcastResult> {
-
     const defaultTransactionOptions = {
       observe: false,
       singleSignKeyType: undefined
@@ -128,7 +133,10 @@ export class TransactionService {
    * @return {*}  {Promise<string>}
    * @memberof TransactionService
    */
-  signTransaction(txBuilder: ITransaction, singleSignKeyType?: SignTransaction['singleSignKeyType']): Promise<string> {
+  signTransaction(
+    txBuilder: ITransaction,
+    singleSignKeyType?: SignTransaction['singleSignKeyType']
+  ): Promise<string> {
     const signer = getSigner(this.signerOptions);
     return signer.signTransaction({
       digest: txBuilder.sigDigest,
@@ -670,6 +678,37 @@ export class TransactionService {
       builder.pushOperation(blogPost);
     }, transactionOptions);
   }
+  async updateWalletProfile(
+    username: string,
+    memo_key: string,
+    json_metadata: string,
+    owner: Authorizes | undefined,
+    active: Authorizes | undefined,
+    posting: Authorizes | undefined,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.pushOperation({
+        account_update: {
+          account: username,
+          memo_key: memo_key,
+          json_metadata: json_metadata,
+          owner: owner,
+          active: active,
+          posting: posting
+        }
+      });
+    }, transactionOptions);
+  }
+
+  async updateAuthority(
+    operations: AccountAuthorityUpdateOperation,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.pushOperation(operations);
+    }, transactionOptions);
+  }
 
   async updateProfile(
     profile_image?: string,
@@ -901,13 +940,13 @@ export class TransactionService {
         await hiveChainService.getHiveChain(),
         account
       );
-  
+
       if (!keys.owner || !keys.active || !keys.posting) {
         throw new Error('Missing required keys for master password change');
       }
-  
+
       const { owner, active, posting } = keys;
-  
+
       if (
         !accountAuthorityUpdateOp.role('owner').has(owner.old) ||
         !accountAuthorityUpdateOp.role('active').has(active.old) ||
@@ -915,17 +954,17 @@ export class TransactionService {
       ) {
         throw new Error('Wrong master password');
       }
-  
+
       accountAuthorityUpdateOp.role('owner').replace(owner.old, 1, owner.new);
       accountAuthorityUpdateOp.role('active').replace(active.old, 1, active.new);
       accountAuthorityUpdateOp.role('posting').replace(posting.old, 1, posting.new);
-  
+
       return await this.processHiveAppOperation(async (builder) => {
         builder.pushOperation(accountAuthorityUpdateOp);
       }, transactionOptions);
     } catch (error) {
       const isKeyError = error instanceof Error && error.message.includes('import key');
-    
+
       if (isKeyError) {
         throw new Error('One time signing failed, invalid key.');
       }
