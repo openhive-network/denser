@@ -350,7 +350,8 @@
     "delete": "Delete",
     "threshold": "Threshold",
     "add": "Add",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "add_item_title": "Add new {{id}} entry"
   },
   "transfers_page": {
     "financial_report": "Financial Report",

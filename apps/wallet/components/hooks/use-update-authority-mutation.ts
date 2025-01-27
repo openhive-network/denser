@@ -18,8 +18,10 @@ export function useUpdateAuthorityOperationMutation() {
   const queryClient = useQueryClient();
   const updateAuthorityMutation = useMutation({
     mutationFn: async (operations: AccountAuthorityUpdateOperation) => {
+      const keyType = operations.role('owner').changed ? 'owner' : undefined;
       const broadcastResult = await transactionService.updateAuthority(operations, {
-        observe: true
+        observe: true,
+        singleSignKeyType: keyType
       });
       const response = { username: user.username, broadcastResult };
       return response;
