@@ -20,12 +20,14 @@ export default function LangToggle({ logged }: { logged: Boolean }) {
 
   useEffect(() => {
     const savedLang = getCookie('NEXT_LOCALE') || 'en';
-    setLang(savedLang);
-    // Ensure router locale matches saved locale on initial load
-    if (router.locale !== savedLang) {
-      router.push(router.asPath, router.asPath, { locale: savedLang });
+    if (!lang) {
+      setLang(savedLang);
+      if (router.locale !== savedLang) {
+        router.push(router.asPath, router.asPath, { locale: savedLang });
+      }
     }
-  }, [router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const languages = [
     { locale: 'ar', label: 'عر' },
@@ -46,15 +48,14 @@ export default function LangToggle({ logged }: { logged: Boolean }) {
     // Set new cookie with proper path and attributes
     document.cookie = `NEXT_LOCALE=${locale}; path=/; SameSite=Lax`;
     setLang(locale);
-    
+
     // Update the URL and locale using Next.js router
-    router.push(router.asPath, router.asPath, { locale })
-      .then(() => {
-        // Only reload if absolutely necessary
-        if (document.documentElement.lang !== locale) {
-          router.reload();
-        }
-      });
+    router.push(router.asPath, router.asPath, { locale }).then(() => {
+      // Only reload if absolutely necessary
+      if (document.documentElement.lang !== locale) {
+        router.reload();
+      }
+    });
   };
 
   return (
@@ -74,10 +75,7 @@ export default function LangToggle({ logged }: { logged: Boolean }) {
       </TooltipContainer>
       <DropdownMenuContent align="end">
         {languages.map(({ locale, label }) => (
-          <DropdownMenuItem
-            key={label}
-            onClick={() => handleLanguageChange(locale)}
-          >
+          <DropdownMenuItem key={label} onClick={() => handleLanguageChange(locale)}>
             {label}
             <span data-testid={locale}>&nbsp;{locale}</span>
           </DropdownMenuItem>
