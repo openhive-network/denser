@@ -178,6 +178,7 @@ export default function PostForm() {
   const KeyDisplaySection = ({ derivedKeys }: { derivedKeys: DerivedKeys }) => {
     const { t } = useTranslation('common_wallet');
     const [showKeys, setShowKeys] = useState(false);
+    const [copiedStates, setCopiedStates] = useState<Record<string, boolean>>({});
 
     const keys: KeyDisplay[] = [
       {
@@ -207,6 +208,14 @@ export default function PostForm() {
       }
     ];
 
+    const copyToClipboard = (text: string, keyType: string) => {
+      navigator.clipboard.writeText(text);
+      setCopiedStates((prev) => ({ ...prev, [keyType]: true }));
+      setTimeout(() => {
+        setCopiedStates((prev) => ({ ...prev, [keyType]: false }));
+      }, 2000);
+    };
+
     const downloadKeys = () => {
       const content = `HIVE ACCOUNT: ${username}
 GENERATED: ${new Date().toISOString()}
@@ -228,14 +237,6 @@ IMPORTANT:
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-    };
-
-    const copyToClipboard = (text: string, keyType: string) => {
-      navigator.clipboard.writeText(text);
-      setCopiedStates((prev) => ({ ...prev, [keyType]: true }));
-      setTimeout(() => {
-        setCopiedStates((prev) => ({ ...prev, [keyType]: false }));
-      }, 2000);
     };
 
     return (
@@ -283,11 +284,7 @@ IMPORTANT:
               <h3 className="text-lg font-bold text-destructive">{t('change_password_page.new_keys')}</h3>
               <div className="space-x-2 flex items-center">
                 <Button variant="outline" size="sm" onClick={() => setShowKeys(!showKeys)}>
-                  {showKeys ? (
-                    <span>{t('change_password_page.hide')}</span>
-                  ) : (
-                    <span>{t('change_password_page.show')}</span>
-                  )}
+                  {showKeys ? t('change_password_page.hide') : t('change_password_page.show')}
                 </Button>
                 <Button variant="outline" size="sm" onClick={downloadKeys}>
                   <Icons.arrowDownCircle className="mr-1 h-4 w-4" />
@@ -309,8 +306,7 @@ IMPORTANT:
                       onClick={() => copyToClipboard(key.value, key.type)}
                       className={cn(
                         'h-7 px-2 transition-colors duration-200',
-                        copiedStates[key.type] &&
-                          'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-300'
+                        copiedStates[key.type] && 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-300'
                       )}
                     >
                       {copiedStates[key.type] ? (
