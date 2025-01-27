@@ -1,4 +1,5 @@
 import { getLogger } from '@hive/ui/lib/logging';
+import { WaxChainApiError } from '@hiveio/wax';
 
 // TODO
 // Debug why the import
@@ -11,8 +12,6 @@ import { getLogger } from '@hive/ui/lib/logging';
 // ```
 
 // import { WaxChainApiError } from '@hiveio/wax';
-
-declare const WaxChainApiError: any;
 
 const logger = getLogger('app');
 
