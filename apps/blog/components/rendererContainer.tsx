@@ -31,20 +31,33 @@ const RendererContainer = ({
   const handleClick = (e: Event) => {
     e.preventDefault();
     const anchor = e.target as HTMLAnchorElement;
-    setLink(anchor.href);
+    let href = anchor.href;
+    if (!href) {
+      const parent = anchor.parentElement as HTMLAnchorElement;
+      href = parent.href;
+    }
+    setLink(href);
     setOpen(true);
   };
 
   useEffect(() => {
-    const elementsWithVideoWrapper = document.querySelectorAll('.videoWrapper');
-    elementsWithVideoWrapper.forEach((element) => {
-      element.classList.remove('videoWrapper');
-    });
     const nodes = ref.current?.querySelectorAll('a.link-external');
     nodes?.forEach((n) => n.addEventListener('click', handleClick));
+    const sub = document.querySelectorAll('sub');
+    sub?.forEach((e) => {
+      e.classList.add('leading-[150%]');
+    });
+    const threeSpeak = document.querySelectorAll('.threeSpeakWrapper');
+    threeSpeak?.forEach((link) => {
+      link.classList.add('videoWrapper');
+    });
     const paragraphs = ref.current?.querySelectorAll('p');
     if (!mainPost) paragraphs?.forEach((p) => (p.className = 'my-0'));
     if (communityDescription) {
+      const elementsWithVideoWrapper = document.querySelectorAll('.videoWrapper');
+      elementsWithVideoWrapper.forEach((element) => {
+        element.classList.remove('videoWrapper');
+      });
       const code_block = ref.current?.querySelectorAll('code');
       code_block?.forEach((c) => (c.className = 'whitespace-normal'));
       const links = ref.current?.querySelectorAll('a');
