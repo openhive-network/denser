@@ -21,6 +21,22 @@ import { hiveChainService } from '@transaction/lib/hive-chain-service';
 
 export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
+// New type for derived keys
+interface DerivedKeys {
+  master: string;
+  owner: string;
+  active: string;
+  posting: string;
+  memo: string;
+}
+
+// Add new types for key display
+interface KeyDisplay {
+  type: 'master' | 'owner' | 'active' | 'posting' | 'memo';
+  value: string;
+  description: string;
+}
+
 export default function PostForm() {
   const { t } = useTranslation('common_wallet');
   const [isKeyGenerated, setIsKeyGenerated] = useState(false);
@@ -34,19 +50,24 @@ export default function PostForm() {
   const { username } = useSiteParams();
   const changePasswordMutation = useChangePasswordMutation();
   const [generatedPassword, setGeneratedPassword] = useState<string>('');
+  const [derivedKeys, setDerivedKeys] = useState<DerivedKeys | null>(null);
+  const [securityAccepted, setSecurityAccepted] = useState(false);
 
   const accountFormSchema = useMemo(
     () =>
       z.object({
         name: z.string().min(2, 'Account name should be longer'),
-        curr_password: z.string().min(2, { message: 'Required owner key or current password' }),
+        curr_password: z.string().min(2, { message: 'Required master password' }),
         genereted_password: z.string().refine((value) => value === generatedPassword, {
           message: 'Passwords do not match'
         }),
-        understand: z.boolean().refine((value) => value === true, {
+        understand_master: z.boolean().refine((value) => value === true, {
           message: 'Required'
         }),
         saved_password: z.boolean().refine((value) => value === true, {
+          message: 'Required'
+        }),
+        understand_security: z.boolean().refine((value) => value === true, {
           message: 'Required'
         })
       }),
@@ -61,7 +82,8 @@ export default function PostForm() {
       name: username,
       curr_password: '',
       genereted_password: '',
-      understand: false,
+      understand_master: false,
+      understand_security: false,
       saved_password: false
     }
   });
@@ -133,41 +155,159 @@ export default function PostForm() {
     const brainKeyData = wax.suggestBrainKey();
     const passwordToBeSavedByUser = 'P' + brainKeyData.wifPrivateKey;
 
-    const newOwner = wax.getPrivateKeyFromPassword(username, 'owner', passwordToBeSavedByUser);
-    const newActive = wax.getPrivateKeyFromPassword(username, 'active', passwordToBeSavedByUser);
-    const newPosting = wax.getPrivateKeyFromPassword(username, 'posting', passwordToBeSavedByUser);
+    const newKeys = {
+      master: passwordToBeSavedByUser,
+      owner: wax.getPrivateKeyFromPassword(username, 'owner', passwordToBeSavedByUser).wifPrivateKey,
+      active: wax.getPrivateKeyFromPassword(username, 'active', passwordToBeSavedByUser).wifPrivateKey,
+      posting: wax.getPrivateKeyFromPassword(username, 'posting', passwordToBeSavedByUser).wifPrivateKey,
+      memo: wax.getPrivateKeyFromPassword(username, 'memo', passwordToBeSavedByUser).wifPrivateKey
+    };
 
-    setPublicKeys({
-      active: newActive.associatedPublicKey,
-      owner: newOwner.associatedPublicKey,
-      posting: newPosting.associatedPublicKey
-    });
-
+    setDerivedKeys(newKeys);
     setGeneratedPassword(passwordToBeSavedByUser);
     setIsKeyGenerated(true);
   }
+
+  // Modify the UI part for displaying generated credentials
+  const KeyDisplaySection = ({ derivedKeys }: { derivedKeys: DerivedKeys }) => {
+    const { t } = useTranslation('common_wallet');
+    const [showKeys, setShowKeys] = useState(false);
+
+    const keys: KeyDisplay[] = [
+      {
+        type: 'master',
+        value: derivedKeys.master,
+        description: t('permissions.master_key.info')
+      },
+      {
+        type: 'owner',
+        value: derivedKeys.owner,
+        description: t('permissions.owner_key.info')
+      },
+      {
+        type: 'active',
+        value: derivedKeys.active,
+        description: t('permissions.active_key.info')
+      },
+      {
+        type: 'posting',
+        value: derivedKeys.posting,
+        description: t('permissions.posting_key.info')
+      },
+      {
+        type: 'memo',
+        value: derivedKeys.memo,
+        description: t('permissions.memo_key.info')
+      }
+    ];
+
+    const downloadKeys = () => {
+      const content = `HIVE ACCOUNT: ${username}
+GENERATED: ${new Date().toISOString()}
+
+${keys.map((k) => `${k.type.toUpperCase()} KEY:\n${k.value}\n`).join('\n---\n\n')}
+
+IMPORTANT:
+- Save these keys immediately in a secure password manager
+- The master password can derive all other keys
+- Lost keys cannot be recovered
+- Never share your private keys`;
+
+      const blob = new Blob([content], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `hive-keys-${username}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    };
+
+    const copyToClipboard = (text: string) => {
+      navigator.clipboard.writeText(text);
+    };
+
+    return (
+      <div>
+        <div className="mt-4 rounded bg-yellow-50 p-3 text-sm dark:bg-yellow-900/20">
+          <h4 className="mb-1 font-semibold text-yellow-800 dark:text-yellow-200">Security Notes</h4>
+          <ul className="list-disc space-y-0.5 pl-4 text-yellow-700 dark:text-yellow-300">
+            <li>Save these keys immediately in a secure password manager</li>
+            <li>The master password can derive all other keys</li>
+            <li>Lost keys cannot be recovered</li>
+            <li>Never share your private keys</li>
+          </ul>
+          <div className="mt-3">
+            <FormField
+              control={form.control}
+              name="understand_security"
+              render={({ field }) => (
+                <FormItem className="flex items-center">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={(checked) => {
+                        field.onChange(checked);
+                        setSecurityAccepted(checked as boolean);
+                      }}
+                    />
+                  </FormControl>
+                  <FormLabel className="text-xs mt-0">
+                    I understand and accept these security implications
+                  </FormLabel>
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        {securityAccepted && form.getValues().understand_security && (
+          <>
+            <div className="mb-4 mt-4 flex items-center justify-between">
+              <h3 className="text-lg font-bold text-destructive">New Account Keys</h3>
+              <div className="space-x-2">
+                <Button variant="outline" size="sm" onClick={() => setShowKeys(!showKeys)}>
+                  {showKeys ? <span>Hide</span> : <span>Show</span>}
+                </Button>
+                <Button variant="outline" size="sm" onClick={downloadKeys}>
+                  <Icons.arrowDownCircle className="mr-1 h-4 w-4" />
+                  Save All
+                </Button>
+              </div>
+            </div>
+
+            <div className="grid gap-2">
+              {keys.map((key) => (
+                <div key={key.type} className="rounded border border-border bg-background p-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium capitalize">{key.type} Key</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => copyToClipboard(key.value)}
+                      className="h-7 px-2"
+                    >
+                      <Icons.copy className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <div className="mt-1 break-all font-mono text-xs">
+                    {showKeys ? key.value : '••••••••••••••••••••••••••'}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    );
+  };
 
   return (
     <ProfileLayout>
       <WalletMenu username={username} />
       <div className="m-auto flex max-w-2xl flex-col gap-4 bg-background p-2 pb-8">
         <div className="text-2xl font-bold">{t('change_password_page.change_password')}</div>
-        <Separator />
-        <p className="text-sm leading-relaxed text-primary/60">
-          {t('change_password_page.the_rules.one')}
-          <br />
-          {t('change_password_page.the_rules.second')}
-          <br />
-          {t('change_password_page.the_rules.third')}
-          <br />
-          {t('change_password_page.the_rules.fourth')}
-          <br />
-          {t('change_password_page.the_rules.fifth')}
-          <br />
-          {t('change_password_page.the_rules.sixth')}
-          <br />
-          {t('change_password_page.the_rules.seventh')}
-        </p>
         <Separator />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
@@ -210,23 +350,13 @@ export default function PostForm() {
               )}
             />
             <div>
-              <div className="text-sm font-semibold">
-                {t('change_password_page.generated_password')}
-                <span className="font-light">({t('change_password_page.new')})</span>
-              </div>
-              {isKeyGenerated ? (
-                <div>
-                  <code className="my-1 block bg-background px-1 py-2 text-center text-destructive">
-                    {generatedPassword}
-                  </code>
-                  <div className="text-center text-xs font-bold">
-                    {t('change_password_page.backup_password_by_storing_it')}
-                  </div>
-                </div>
+              <div className="text-sm font-semibold">{t('change_password_page.generated_password')}</div>
+              {isKeyGenerated && derivedKeys ? (
+                <KeyDisplaySection derivedKeys={derivedKeys} />
               ) : (
                 <Button
                   className="my-1"
-                  variant="outlineRed"
+                  variant="secondary"
                   onClick={(e) => {
                     e.preventDefault();
                     handleKey();
@@ -251,7 +381,7 @@ export default function PostForm() {
             />
             <FormField
               control={form.control}
-              name="understand"
+              name="understand_master"
               render={({ field }) => (
                 <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                   <FormControl>
@@ -263,7 +393,7 @@ export default function PostForm() {
                   </div>
                 </FormItem>
               )}
-            />{' '}
+            />
             <FormField
               control={form.control}
               name="saved_password"
