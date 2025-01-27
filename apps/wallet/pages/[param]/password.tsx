@@ -18,7 +18,7 @@ import { useChangePasswordMutation } from '@/wallet/components/hooks/use-change-
 import { handleError } from '@ui/lib/handle-error';
 import { Icons } from '@ui/components/icons';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
-import Head from 'next/head';
+import { cn } from '@ui/lib/utils';
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const username = ctx.params?.param as string;
@@ -51,16 +51,13 @@ export default function PostForm() {
   const [isKeyGenerated, setIsKeyGenerated] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [publicKeys, setPublicKeys] = useState<{
-    active: string;
-    owner: string;
-    posting: string;
-  }>();
+
   const { username } = useSiteParams();
   const changePasswordMutation = useChangePasswordMutation();
   const [generatedPassword, setGeneratedPassword] = useState<string>('');
   const [derivedKeys, setDerivedKeys] = useState<DerivedKeys | null>(null);
   const [securityAccepted, setSecurityAccepted] = useState(false);
+  const [copiedStates, setCopiedStates] = useState<Record<string, boolean>>({});
 
   const accountFormSchema = useMemo(
     () =>
@@ -233,27 +230,33 @@ IMPORTANT:
       URL.revokeObjectURL(url);
     };
 
-    const copyToClipboard = (text: string) => {
+    const copyToClipboard = (text: string, keyType: string) => {
       navigator.clipboard.writeText(text);
+      setCopiedStates((prev) => ({ ...prev, [keyType]: true }));
+      setTimeout(() => {
+        setCopiedStates((prev) => ({ ...prev, [keyType]: false }));
+      }, 2000);
     };
 
     return (
       <div>
         <div className="mt-4 rounded bg-yellow-50 p-3 text-sm dark:bg-yellow-900/20">
-          <h4 className="mb-1 font-semibold text-yellow-800 dark:text-yellow-200">Security Notes</h4>
+          <h4 className="mb-1 font-semibold text-yellow-800 dark:text-yellow-200">
+            {t('change_password_page.security_notes.title')}
+          </h4>
           <ul className="list-disc space-y-0.5 pl-4 text-yellow-700 dark:text-yellow-300">
-            <li>Save these keys immediately in a secure password manager</li>
-            <li>The master password can derive all other keys</li>
-            <li>Lost keys cannot be recovered</li>
-            <li>Never share your private keys</li>
+            <li>{t('change_password_page.security_notes.m1')}</li>
+            <li>{t('change_password_page.security_notes.m2')}</li>
+            <li>{t('change_password_page.security_notes.m3')}</li>
+            <li>{t('change_password_page.security_notes.m4')}</li>
           </ul>
           <div className="mt-3">
             <FormField
               control={form.control}
               name="understand_security"
               render={({ field }) => (
-                <FormItem className="flex items-center">
-                  <FormControl>
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormControl className="flex items-center">
                     <Checkbox
                       checked={field.value}
                       onCheckedChange={(checked) => {
@@ -262,9 +265,12 @@ IMPORTANT:
                       }}
                     />
                   </FormControl>
-                  <FormLabel className="mt-0 text-xs">
-                    I understand and accept these security implications
-                  </FormLabel>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel className="text-xs">
+                      {t('change_password_page.security_notes.confirm_security')}
+                    </FormLabel>
+                    <FormMessage />
+                  </div>
                 </FormItem>
               )}
             />
@@ -274,14 +280,18 @@ IMPORTANT:
         {securityAccepted && form.getValues().understand_security && (
           <>
             <div className="mb-4 mt-4 flex items-center justify-between">
-              <h3 className="text-lg font-bold text-destructive">New Account Keys</h3>
-              <div className="space-x-2">
+              <h3 className="text-lg font-bold text-destructive">{t('change_password_page.new_keys')}</h3>
+              <div className="space-x-2 flex items-center">
                 <Button variant="outline" size="sm" onClick={() => setShowKeys(!showKeys)}>
-                  {showKeys ? <span>Hide</span> : <span>Show</span>}
+                  {showKeys ? (
+                    <span>{t('change_password_page.hide')}</span>
+                  ) : (
+                    <span>{t('change_password_page.show')}</span>
+                  )}
                 </Button>
                 <Button variant="outline" size="sm" onClick={downloadKeys}>
                   <Icons.arrowDownCircle className="mr-1 h-4 w-4" />
-                  Save All
+                  {t('change_password_page.save_all')}
                 </Button>
               </div>
             </div>
@@ -290,14 +300,24 @@ IMPORTANT:
               {keys.map((key) => (
                 <div key={key.type} className="rounded border border-border bg-background p-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium capitalize">{key.type} Key</span>
+                    <span className="text-sm font-medium capitalize">
+                      {t(`change_password_page.key_titles.${key.type}`)}
+                    </span>
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => copyToClipboard(key.value)}
-                      className="h-7 px-2"
+                      onClick={() => copyToClipboard(key.value, key.type)}
+                      className={cn(
+                        'h-7 px-2 transition-colors duration-200',
+                        copiedStates[key.type] &&
+                          'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-300'
+                      )}
                     >
-                      <Icons.copy className="h-3 w-3" />
+                      {copiedStates[key.type] ? (
+                        <Icons.check className="h-3 w-3" />
+                      ) : (
+                        <Icons.copy className="h-3 w-3" />
+                      )}
                     </Button>
                   </div>
                   <div className="mt-1 break-all font-mono text-xs">
