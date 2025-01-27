@@ -47,7 +47,10 @@ const RendererContainer = ({
     sub?.forEach((e) => {
       e.classList.add('leading-[150%]');
     });
-
+    const threeSpeak = document.querySelectorAll('.threeSpeakWrapper');
+    threeSpeak?.forEach((link) => {
+      link.classList.add('videoWrapper');
+    });
     const paragraphs = ref.current?.querySelectorAll('p');
     if (!mainPost) paragraphs?.forEach((p) => (p.className = 'my-0'));
     if (communityDescription) {
