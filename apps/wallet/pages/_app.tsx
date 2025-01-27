@@ -10,8 +10,9 @@ const Providers = lazy(() => import('@/wallet/components/common/providers'));
 
 function App({ Component, pageProps }: AppProps) {
   useLayoutEffect(() => {
-    if (!getCookie('NEXT_LOCALE')) {
-      document.cookie = `NEXT_LOCALE=${i18n.defaultLocale}; SameSite=Lax`;
+    const currentLocale = getCookie('NEXT_LOCALE');
+    if (!currentLocale || !i18nConfig.i18n.locales.includes(currentLocale)) {
+      document.cookie = `NEXT_LOCALE=${i18n.defaultLocale}; path=/; SameSite=Lax`;
     }
   }, []);
 

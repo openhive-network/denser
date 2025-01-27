@@ -19,8 +19,13 @@ export default function LangToggle({ logged }: { logged: Boolean }) {
   const { t } = useTranslation('common_wallet');
 
   useEffect(() => {
-    setLang(getCookie('NEXT_LOCALE') || 'en');
-  }, []);
+    const savedLang = getCookie('NEXT_LOCALE') || 'en';
+    setLang(savedLang);
+    // Ensure router locale matches saved locale on initial load
+    if (router.locale !== savedLang) {
+      router.push(router.asPath, router.asPath, { locale: savedLang });
+    }
+  }, [router]);
 
   const languages = [
     { locale: 'ar', label: 'عر' },
@@ -34,6 +39,23 @@ export default function LangToggle({ logged }: { logged: Boolean }) {
     { locale: 'ru', label: '🇷🇺' },
     { locale: 'zh', label: '🇨🇳' }
   ];
+
+  const handleLanguageChange = (locale: string) => {
+    // Delete any existing NEXT_LOCALE cookies first
+    document.cookie = 'NEXT_LOCALE=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
+    // Set new cookie with proper path and attributes
+    document.cookie = `NEXT_LOCALE=${locale}; path=/; SameSite=Lax`;
+    setLang(locale);
+    
+    // Update the URL and locale using Next.js router
+    router.push(router.asPath, router.asPath, { locale })
+      .then(() => {
+        // Only reload if absolutely necessary
+        if (document.documentElement.lang !== locale) {
+          router.reload();
+        }
+      });
+  };
 
   return (
     <DropdownMenu>
@@ -54,10 +76,7 @@ export default function LangToggle({ logged }: { logged: Boolean }) {
         {languages.map(({ locale, label }) => (
           <DropdownMenuItem
             key={label}
-            onClick={() => {
-              document.cookie = `NEXT_LOCALE=${locale}; SameSite=Lax`;
-              router.reload();
-            }}
+            onClick={() => handleLanguageChange(locale)}
           >
             {label}
             <span data-testid={locale}>&nbsp;{locale}</span>

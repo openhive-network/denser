@@ -286,7 +286,7 @@ IMPORTANT:
                 <Button variant="outline" size="sm" onClick={() => setShowKeys(!showKeys)}>
                   {showKeys ? t('change_password_page.hide') : t('change_password_page.show')}
                 </Button>
-                <Button variant="outline" size="sm" onClick={downloadKeys}>
+                <Button variant="outlineRed" size="sm" onClick={downloadKeys}>
                   <Icons.arrowDownCircle className="mr-1 h-4 w-4" />
                   {t('change_password_page.save_all')}
                 </Button>
@@ -381,7 +381,7 @@ IMPORTANT:
               ) : (
                 <Button
                   className="my-1"
-                  variant="secondary"
+                  variant="destructive"
                   onClick={(e) => {
                     e.preventDefault();
                     handleKey();
