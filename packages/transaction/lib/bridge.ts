@@ -571,3 +571,68 @@ export const getTwitterInfo = async (username: string) => {
 
   return data;
 };
+
+export interface SearchResponse {
+  took: number;
+  hits: number;
+  results: SearchResult[];
+  scroll_id: string;
+}
+
+export interface SearchResult {
+  id: number;
+  author: string;
+  permlink: string;
+  category: string;
+  children: number;
+  author_rep: string;
+  author_reputation: string;
+  title: string;
+  title_marked: string | null;
+  body: string;
+  body_marked: string | null;
+  img_url: string;
+  payout: number;
+  total_votes: number;
+  up_votes: number;
+  created_at: string;
+  created: string;
+  tags: string[];
+  json_metadata: {
+    tags: string[];
+  };
+  app: string;
+  depth: number;
+}
+
+export const getSearch = async (
+  q: string,
+  scroll_id: string,
+  sort: string,
+  _csrf: string
+): Promise<SearchResponse> => {
+  try {
+    const response = await fetch(
+      process.env.ELASTIC_SEARCH_API_URL ?? 'https://api.hivesearcher.com/search',
+      {
+        method: 'POST',
+        body: JSON.stringify({ q, scroll_id, sort, _csrf }),
+        headers: {
+          Accept: 'application/json',
+          Authorization: process.env.ELASTIC_SEARCH_API_KEY ?? '',
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Search API Error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error in /search api call', error);
+    throw new Error('Error in /search api call');
+  }
+};
