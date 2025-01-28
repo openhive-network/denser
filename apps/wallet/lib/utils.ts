@@ -100,13 +100,13 @@ const VEST_PRECISION = 1000000;
 
 export const getAsset = async (value: string, curr: 'hive' | 'hbd') => {
   const chain = await hiveChainService.getHiveChain();
-  const amount = Number(value) * ASSET_PRECISION;
+  const amount = Math.round(Number(value) * ASSET_PRECISION);
   return curr === 'hive' ? chain.hive(amount) : chain.hbd(amount);
 };
 
 export const getVests = async (value: string) => {
   const chain = await hiveChainService.getHiveChain();
-  const amount = Number(value) * VEST_PRECISION;
+  const amount = Math.round(Number(value) * VEST_PRECISION);
   return chain.vests(amount);
 };
 
