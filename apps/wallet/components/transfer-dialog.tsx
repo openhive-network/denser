@@ -352,7 +352,7 @@ export function TransferDialog({
                 className="col-span-3 w-fit pl-0"
                 onClick={() => setValue(data.amount.replace(/[^0-9.]/g, ''))}
               >
-                {t('transfers_page.balance')}: {data.amount}
+                {t('transfers_page.balance')}: {data.amount.toUpperCase()}
               </Button>
             </div>
             {type === 'transfers' && (
