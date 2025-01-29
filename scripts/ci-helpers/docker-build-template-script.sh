@@ -4,7 +4,7 @@ set -e
 
 echo -e "\e[0Ksection_start:$(date +%s):tag[collapsed=true]\r\e[0KDetermining tag for the new image..."
 if [[ "${CI_COMMIT_BRANCH:?}" == "${CI_DEFAULT_BRANCH:?}" ]]; then
-  echo "Running on default branch '${CI_DEFAULT_BRANCH:}': tag = 'latest'"
+  echo "Running on default branch '${CI_DEFAULT_BRANCH}': tag = 'latest'"
   export TAG="latest"
 else
   echo "Running on branch '${CI_COMMIT_BRANCH:?}': tag = ${CI_COMMIT_REF_SLUG:?}"
