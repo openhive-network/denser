@@ -272,7 +272,7 @@ const PostListItem = ({
                   {post.stats ? <PostCardUpvotesTooltip votes={post.stats.total_votes} /> : null}
                   <Separator orientation="vertical" />
                   <PostCardCommentTooltip
-                    children={post.children}
+                    comments={post.children}
                     url={`/${post.category}/@${post.author}/${post.permlink}`}
                   />
                   <Separator orientation="vertical" />

@@ -8,7 +8,7 @@ interface PostCardHiddenProps {
   revealPost: () => void;
 }
 
-const PostCardHidden: FC<PostCardHiddenProps> = ({ user, revealPost }) => {
+const PostCardHidden = ({ user, revealPost }: PostCardHiddenProps) => {
   return (
     <div>
       <Badge variant="outline" className="mx-1 border-destructive text-destructive">

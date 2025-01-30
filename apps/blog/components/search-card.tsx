@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { useState } from 'react';
 import {
   Badge,
   Card,
@@ -32,7 +32,7 @@ interface SearchCardProps {
   blacklist: IFollowList[] | undefined;
 }
 
-const SearchCard: FC<SearchCardProps> = ({ post, nsfw, blacklist }) => {
+const SearchCard = ({ post, nsfw, blacklist }: SearchCardProps) => {
   const { t } = useTranslation('common_blog');
   const [reveal, setReveal] = useState(
     nsfw === 'show'
@@ -157,7 +157,7 @@ const SearchCard: FC<SearchCardProps> = ({ post, nsfw, blacklist }) => {
                   <PostCardUpvotesTooltip votes={post.total_votes} />
                   <Separator orientation="vertical" />
                   <PostCardCommentTooltip
-                    children={post.children}
+                    comments={post.children}
                     url={`/${post.category}/@${post.author}/${post.permlink}`}
                   />
                   <Separator orientation="vertical" />

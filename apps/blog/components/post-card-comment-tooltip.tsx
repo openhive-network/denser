@@ -5,11 +5,11 @@ import Link from 'next/link';
 import { FC } from 'react';
 
 interface PostCardCommentTooltipProps {
-  children: number;
+  comments: number;
   url: string;
 }
 
-const PostCardCommentTooltip: FC<PostCardCommentTooltipProps> = ({ children, url }) => {
+const PostCardCommentTooltip = ({ comments, url }: PostCardCommentTooltipProps) => {
   const { t } = useTranslation('common_blog');
   return (
     <div className="flex items-center" data-testid="post-children">
@@ -18,7 +18,7 @@ const PostCardCommentTooltip: FC<PostCardCommentTooltipProps> = ({ children, url
           <TooltipTrigger className="flex items-center">
             <>
               <Link href={url} className="flex cursor-pointer items-center">
-                {children > 1 ? (
+                {comments > 1 ? (
                   <Icons.messagesSquare className="h-4 w-4 sm:mr-1" />
                 ) : (
                   <Icons.comment className="h-4 w-4 sm:mr-1" />
@@ -30,18 +30,18 @@ const PostCardCommentTooltip: FC<PostCardCommentTooltipProps> = ({ children, url
                 className="flex cursor-pointer items-center pl-1 hover:text-destructive"
                 data-testid="post-card-response-link"
               >
-                {children}
+                {comments}
               </Link>
             </>
           </TooltipTrigger>
           <TooltipContent data-testid="post-card-responses">
             <p>
               {`${
-                children === 0
+                comments === 0
                   ? t('cards.post_card.no_responses')
-                  : children === 1
+                  : comments === 1
                     ? t('cards.post_card.response')
-                    : t('cards.post_card.responses', { responses: children })
+                    : t('cards.post_card.responses', { responses: comments })
               }`}
               {t('cards.post_card.click_to_respond')}
             </p>

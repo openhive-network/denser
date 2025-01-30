@@ -1,12 +1,11 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
-import { FC } from 'react';
 
 interface PostCardUpvotesTooltipProps {
   blacklistCheck: boolean;
   blacklists?: string[];
 }
 
-const PostCardBlacklistMark: FC<PostCardUpvotesTooltipProps> = ({ blacklistCheck, blacklists }) => {
+const PostCardBlacklistMark = ({ blacklistCheck, blacklists }: PostCardUpvotesTooltipProps) => {
   return blacklists && blacklists[0] ? (
     <TooltipProvider>
       <Tooltip>

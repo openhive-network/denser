@@ -3,7 +3,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/co
 import { useTranslation } from 'next-i18next';
 import { FC } from 'react';
 
-const PostCardUpvotesTooltip: FC<{ votes: number }> = ({ votes }) => {
+const PostCardUpvotesTooltip = ({ votes }: { votes: number }) => {
   const { t } = useTranslation('common_blog');
   return (
     <div className="flex items-center">
