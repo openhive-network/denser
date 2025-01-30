@@ -273,7 +273,7 @@ const PostListItem = ({
                   <Separator orientation="vertical" />
                   <PostCardCommentTooltip
                     comments={post.children}
-                    url={`/${post.category}/@${post.author}/${post.permlink}`}
+                    url={`/${post.category}/@${post.author}/${post.permlink}/#comments`}
                   />
                   <Separator orientation="vertical" />
                   {!post.title.includes('RE: ') ? (
