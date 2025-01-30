@@ -522,6 +522,7 @@ staging:deploy-auth:
   needs:
     - docker-build-auth
   variables:
+    IMAGE: "${AUTH_IMAGE_NAME}"
     PORT: 7000
     API_ENDPOINT: https://api.hive.blog
     IMAGES_ENDPOINT: https://images.hive.blog/
@@ -538,6 +539,7 @@ staging:deploy-blog:
   needs:
     - docker-build-blog
   variables:
+    IMAGE: "${BLOG_IMAGE_NAME}"
     PORT: 3000
     API_ENDPOINT: https://api.hive.blog
     IMAGES_ENDPOINT: https://images.hive.blog/
@@ -555,6 +557,7 @@ staging:deploy-wallet:
   needs:
     - docker-build-wallet
   variables:
+    IMAGE: "${WALLET_IMAGE_NAME}"
     PORT: 4000
     API_ENDPOINT: https://api.hive.blog
     IMAGES_ENDPOINT: https://images.hive.blog/
