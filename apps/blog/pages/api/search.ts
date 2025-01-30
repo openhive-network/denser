@@ -5,7 +5,6 @@ export async function POST(request: Request) {
   const authorization = `${process.env.ELASTIC_SEARCH_API_KEY}`;
   try {
     const response = await fetch(url, {
-      cache: 'no-store',
       headers: {
         Authorization: authorization,
         'Content-Type': 'application/json',

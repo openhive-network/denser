@@ -111,8 +111,8 @@ export default function SearchPage() {
       ) : !entriesData ? (
         'Nothing was found.'
       ) : (
-        entriesData.pages.map((data) => (
-          <ul>
+        entriesData.pages.map((data, i) => (
+          <ul key={i}>
             {data.results.map((post) => (
               <SearchCard post={post} key={post.id} nsfw={preferences.nsfw} blacklist={blacklist} />
             ))}
