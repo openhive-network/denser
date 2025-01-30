@@ -57,7 +57,8 @@ export function transformError<T>(e: any, ctx?: { method: string; params: T }, d
     // TODO Look at the top of this file. We have issue with failing
     // import of WaxChainApiError.
 
-    if (e instanceof WaxChainApiError) {
+    // if (e instanceof WaxChainApiError) {
+    if (false) {
       const error = e as any;
       if (error?.apiError?.code === -32003) {
         errorDescription = error?.apiError?.data?.stack[0]?.format;
