@@ -5,6 +5,9 @@ SRC_DIR="$SCRIPT_DIR/.."
 
 SERVICE="${SERVICE:-}"
 TAIL="${TAIL:-}"
+SINCE="${SINCE:-}"
+UNTIL="${UNTIL:-}"
+TIMESTAMPS="${TIMESTAMPS:-}"
 NO_COLOR="${NO_COLOR:-}"
 COMPOSE_PROFILES="${COMPOSE_PROFILES:-}"
 COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-}"
@@ -19,9 +22,14 @@ OPTIONS:
   --service=NAME                            Name of the service for which to print logs, eg. haf, hivemind-server,
                                             hafah-postgrest-1; if empty print logs for all the services (default: empty string)
   --tail=NUMBER                             Number of last lines of the log to print per service, if empty print all (default: empty string)
-  --no-color                                Print logs without color (useful if redirecting to file)                                        
+  --since=TIMESTAMP or RELATIVE             Show logs since timestamp  (e.g. 2013-01-02T13:23:37Z) or relative (e.g. 42m for
+                                            42 minutes) (default: empty string)
+  --until=TIMESTAMP or RELATIVE             Show logs before a timestamp (e.g. 2013-01-02T13:23:37Z) or relative (e.g. 42m for
+                                            42 minutes) (default: empty string)
+  --timestamps                              Show timestamps
+  --no-color                                Print logs without color (useful if redirecting to file)
   --profiles=P1,P2,P3                       Profile(s) to use, must be the same as when the stack was started
-  --project-name=NAME                               Name of the Compose project, must be the same as when the stack was started
+  --project-name=NAME                       Name of the Compose project, must be the same as when the stack was started
                                             (default: defined at the top of stack/compose.yml)
   --env-files=1.env,2.env                   Specify a file to use to start the stack, uses ${SRC_DIR}/stack/.env 
                                             when empty, must be the same as when the stack was started (default: empty)
@@ -44,6 +52,17 @@ while [ $# -gt 0 ]; do
     --tail=*)
         arg="${1#*=}"
         TAIL="$arg"
+        ;;
+    --since=*)
+        arg="${1#*=}"
+        SINCE="$arg"
+        ;;
+    --until=*)
+        arg="${1#*=}"
+        UNTIL="$arg"
+        ;;
+    --timestamps)
+        TIMESTAMPS="true"
         ;;
     --no-color)
         NO_COLOR="true"
@@ -84,8 +103,19 @@ if [[ -n "${TAIL:-}" ]]; then
   OPTIONS+=("--tail")
   OPTIONS+=("${TAIL}")
 fi
+if [[ -n "${SINCE:-}" ]]; then
+  OPTIONS+=("--since")
+  OPTIONS+=("${SINCE}")
+fi
+if [[ -n "${UNTIL:-}" ]]; then
+  OPTIONS+=("--until")
+  OPTIONS+=("${UNTIL}")
+fi
 if [[ -n "${NO_COLOR:-}" ]]; then
   OPTIONS+=("--no-color")
+fi
+if [[ -n "${TIMESTAMPS:-}" ]]; then
+  OPTIONS+=("--timestamps")
 fi
 if [[ -n "${SERVICE:-}" ]]; then
   OPTIONS+=("${SERVICE}")

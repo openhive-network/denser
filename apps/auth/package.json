@@ -14,7 +14,7 @@
     "build": "react-env -- next build",
     "postbuild": "pnpm run copy:worker",
     "start": "react-env -- next start -p 5000",
-    "lint": "eslint . --ignore-pattern \"playwright-report/*\" --ignore-pattern \"**/workbox-*.js\"",
+    "lint": "eslint .",
     "test:jest": "jest --watch"
   },
   "dependencies": {

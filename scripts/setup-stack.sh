@@ -19,21 +19,19 @@ BLOG_PORT=${BLOG_PORT:-3000}
 WALLET_PORT=${WALLET_PORT:-4000}
 
 # Stack config
-HAF_REGISTRY=${HAF_REGISTRY:-"registry.gitlab.syncad.com/hive/haf/mirrornet-instance"}
-HIVEMIND_INSTANCE_IMAGE=${HIVEMIND_INSTANCE_IMAGE:-"registry.gitlab.syncad.com/hive/hivemind/instance"}
-HAFAH_REGISTRY=${HAFAH_REGISTRY:-"registry.gitlab.syncad.com/hive/hafah/instance"}
-REPUTATION_TRACKER_REGISTRY=${REPUTATION_TRACKER_REGISTRY:-"registry.gitlab.syncad.com/hive/reputation_tracker"}
-DIND_TAG=${DIND_TAG:-"90486532"}
-COMPOSE_TAG=${COMPOSE_TAG:-"90486532"}
+HAF_IMAGE=${HAF_IMAGE:-"registry.gitlab.syncad.com/hive/haf/mirrornet-instance"}
+HIVEMIND_IMAGE=${HIVEMIND_IMAGE:-"registry.gitlab.syncad.com/hive/hivemind"}
+HAFAH_IMAGE=${HAFAH_IMAGE:-"registry.gitlab.syncad.com/hive/hafah"}
+REPUTATION_TRACKER_IMAGE=${REPUTATION_TRACKER_IMAGE:-"registry.gitlab.syncad.com/hive/reputation_tracker"}
+HIVE_API_NODE_VERSION=${HIVE_API_NODE_VERSION:-"1.27.8"}
+DIND_TAG=${DIND_TAG:-"denser-11"}
+COMPOSE_TAG=${COMPOSE_TAG:-"denser-11"}
 AUTH_IMAGE_TAG=${AUTH_IMAGE_TAG:-"local"}
 BLOG_IMAGE_TAG=${BLOG_IMAGE_TAG:-"local"}
 WALLET_IMAGE_TAG=${WALLET_IMAGE_TAG:-"local"}
-HAF_VERSION=${HAF_VERSION:-"13b9a6f7"}
-HIVEMIND_INSTANCE_VERSION=${HIVEMIND_INSTANCE_VERSION:-"daede252"}
-HAFAH_VERSION=${HAFAH_VERSION:-"a7cf1e38"}
-REPUTATION_TRACKER_VERSION=${REPUTATION_TRACKER_VERSION:-"762663b3"}
 REACT_APP_CHAIN_ID=${REACT_APP_CHAIN_ID:-"44"}
 ARGUMENTS=${ARGUMENTS:-"--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n --replay-blockchain --stop-at-block 5000785"}
+HIVEMIND_SYNC_ARGS=${HIVEMIND_SYNC_ARGS:-"--community-start-block=4998000"}
 PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME:-"$(echo "$(hostname).local" | tr '[:upper:]' '[:lower:]')"}
 USE_FAKETIME=${USE_FAKETIME:-"true"}
 USE_ALTERNATE_HAPROXY_CONFIG=${USE_ALTERNATE_HAPROXY_CONFIG:-"true"}
@@ -52,27 +50,29 @@ Usage: $0 OPTION[=VALUE]...
 Script for setting up an API stack for Denser
 OPTIONS:
   --env-path=PATH                           Path to dotenv file where the configuarion should be saved (default: $(realpath "${SRC_DIR}/stack/mirrornet-stack.env"))
-  --docker-tls-port=PORT                    Docker-in-Docker daemon port (default: 2376)
-  --api-http-port=PORT                      API HTTP port (default: 80)
-  --api-https-port=PORT                     API HTTPS port (default: 443)
+  --docker-tls-port=PORT                    Docker-in-Docker daemon port (default: 22376)
+  --api-http-port=PORT                      API HTTP port (default: 8080)
+  --api-https-port=PORT                     API HTTPS port (default: 8443)
   --auth-port=PORT                          Port used by the auth app (default: 5000)
-  --blog-port=PORT                          Port used by the blog app (default: 4000)
-  --wallet-port=PORT                        Port used by the wallet app (default: 3000)
+  --blog-port=PORT                          Port used by the blog app (default: 3000)
+  --wallet-port=PORT                        Port used by the wallet app (default: 4000)
   --haf-registry=REGISTRY                   HAF registry (default: registry.gitlab.syncad.com/hive/haf/mirrornet-instance)
-  --hivemind-registry=REGISTRY              Hivemind registry (default: registry.gitlab.syncad.com/hive/hivemind/instance)
-  --hafah-registry=REGISTRY                 HAfAH registry (default: registry.gitlab.syncad.com/hive/hafah/instance)
+  --hivemind-registry=REGISTRY              Hivemind registry (default: registry.gitlab.syncad.com/hive/hivemind)
+  --hafah-registry=REGISTRY                 HAfAH registry (default: registry.gitlab.syncad.com/hive/hafah)
   --reptracker-registry=REGISTRY            Reputation Tracker registry (default: registry.gitlab.syncad.com/hive/reputation_tracker)
-  --dind-tag=TAG                            Tag of registry.gitlab.syncad.com/hive/haf_api_node/dind to use (default: 90486532)
-  --compose-tag=TAG                         Tag of registry.gitlab.syncad.com/hive/haf_api_node/compose to use (default: 90486532)
+  --dind-tag=TAG                            Tag of registry.gitlab.syncad.com/hive/haf_api_node/dind to use (default: denser-11)
+  --compose-tag=TAG                         Tag of registry.gitlab.syncad.com/hive/haf_api_node/compose to use (default: denser-11)
   --auth-tag=TAG                            Tag of registry.gitlab.syncad.com/hive/denser/auth to use (default: local)
   --blog-tag=TAG                            Tag of registry.gitlab.syncad.com/hive/denser/blog to use (default: local)
   --wallet-tag=TAG                          Tag of registry.gitlab.syncad.com/hive/denser/wallet to use (default: local)
-  --haf-version=TAG                         HAF tag to use (default: 13b9a6f7)
-  --hivemind-version=TAG                    Hivemind tag to use (default: daede252)
-  --hafah-version=TAG                       HAfAH tag to use (default: a7cf1e38)
-  --reptracker-version=TAG                  Reputation tracker tag to use (default: 762663b3)
+  --api-version=VERSION                     API version (default: 1.27.8)
+  --haf-version=TAG                         HAF tag to use (default: 1.27.8)
+  --hivemind-version=TAG                    Hivemind tag to use (default: 1.27.8)
+  --hafah-version=TAG                       HAfAH tag to use (default: 1.27.8)
+  --reptracker-version=TAG                  Reputation tracker tag to use (default: 1.27.8)
   --chain-id=STRING                         Chain ID tu use (default: 44)
   --haf-arguments=STRING                    Arguments to be passed to the HAF instance in the stack (default: --chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n --replay-blockchain --stop-at-block 5000785)
+  --hivemind-sync-arguments=STRING          Additional arguments to be passed to the Hivemind sync process (default: --community-start-block=4998000)
   --public-hostname=HOSTNAME                Public hostname or domain name of the stack (default: $(echo "$(hostname).local" | tr '[:upper:]' '[:lower:]'))
   --use-faketime=true/false                 Set up faketime in HAF instance based on the last block of provided block log, requires --block-log-source and --block-log-util-path (default: true)
   --use-alternate-haproxy-config=true/false Use alternate HAProxy configuration - enable if stack is not going to be live syncing (default: true)
@@ -121,19 +121,19 @@ while [ $# -gt 0 ]; do
         ;;
     --haf-registry=*)
         arg="${1#*=}"
-        HAF_REGISTRY="$arg"
+        HAF_IMAGE="$arg"
         ;;
     --hivemind-registry=*)
         arg="${1#*=}"
-        HIVEMIND_INSTANCE_IMAGE="$arg"
+        HIVEMIND_IMAGE="$arg"
         ;;
     --hafah-registry=*)
         arg="${1#*=}"
-        HAFAH_REGISTRY="$arg"
+        HAFAH_IMAGE="$arg"
         ;;
     --reptracker-registry=*)
         arg="${1#*=}"
-        REPUTATION_TRACKER_REGISTRY="$arg"
+        REPUTATION_TRACKER_IMAGE="$arg"
         ;;
     --dind-tag=*)
         arg="${1#*=}"
@@ -161,7 +161,7 @@ while [ $# -gt 0 ]; do
         ;;
     --hivemind-version=*)
         arg="${1#*=}"
-        HIVEMIND_INSTANCE_VERSION="$arg"
+        HIVEMIND_VERSION="$arg"
         ;;
     --hafah-version=*)
         arg="${1#*=}"
@@ -178,6 +178,10 @@ while [ $# -gt 0 ]; do
     --haf-arguments=*)
         arg="${1#*=}"
         ARGUMENTS="$arg"
+        ;;
+    --hivemind-sync-arguments=*)
+        arg="${1#*=}"
+        HIVEMIND_SYNC_ARGS="$arg"
         ;;
     --public-hostname=*)
         arg="${1#*=}"
@@ -224,6 +228,12 @@ while [ $# -gt 0 ]; do
     esac
     shift
 done
+
+# Stack config pt.2 - must be set here due to denepdency on HIVE_API_NODE_VERSION
+HAF_VERSION=${HAF_VERSION:-"${HIVE_API_NODE_VERSION}"}
+HIVEMIND_VERSION=${HIVEMIND_VERSION:-"${HIVE_API_NODE_VERSION}"}
+HAFAH_VERSION=${HAFAH_VERSION:-"${HIVE_API_NODE_VERSION}"}
+REPUTATION_TRACKER_VERSION=${REPUTATION_TRACKER_VERSION:-"${HIVE_API_NODE_VERSION}"}
 
 echo "Creating data directory for the stack..."
 if ! mkdir -p "${HAF_DATA_DIRECTORY}"
@@ -320,21 +330,23 @@ BLOG_PORT=${BLOG_PORT}
 WALLET_PORT=${WALLET_PORT}
 
 # Stack config
-HAF_REGISTRY=${HAF_REGISTRY}
-HIVEMIND_INSTANCE_IMAGE=${HIVEMIND_INSTANCE_IMAGE}
-HAFAH_REGISTRY=${HAFAH_REGISTRY}
-REPUTATION_TRACKER_REGISTRY=${REPUTATION_TRACKER_REGISTRY}
+HIVE_API_NODE_VERSION="${HIVE_API_NODE_VERSION}"
+HAF_IMAGE=${HAF_IMAGE}
+HIVEMIND_IMAGE=${HIVEMIND_IMAGE}
+HAFAH_IMAGE=${HAFAH_IMAGE}
+REPUTATION_TRACKER_IMAGE=${REPUTATION_TRACKER_IMAGE}
 DIND_TAG=${DIND_TAG}
 COMPOSE_TAG=${COMPOSE_TAG}
 AUTH_IMAGE_TAG=${AUTH_IMAGE_TAG}
 BLOG_IMAGE_TAG=${AUTH_IMAGE_TAG}
 WALLET_IMAGE_TAG=${WALLET_IMAGE_TAG}
 HAF_VERSION=${HAF_VERSION}
-HIVEMIND_INSTANCE_VERSION=${HIVEMIND_INSTANCE_VERSION}
+HIVEMIND_VERSION=${HIVEMIND_VERSION}
 HAFAH_VERSION=${HAFAH_VERSION}
 REPUTATION_TRACKER_VERSION=${REPUTATION_TRACKER_VERSION}
 REACT_APP_CHAIN_ID=${REACT_APP_CHAIN_ID}
 ARGUMENTS=${ARGUMENTS}
+HIVEMIND_SYNC_ARGS=${HIVEMIND_SYNC_ARGS}
 PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME}
 FAKETIME=${FAKETIME}
 USE_ALTERNATE_HAPROXY_CONFIG=${USE_ALTERNATE_HAPROXY_CONFIG}
