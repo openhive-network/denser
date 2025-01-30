@@ -45,6 +45,7 @@
     "pw:test:local:webkit": {},
     "pw:test:local:experimental:ui": {},
     "pw:blog:test:mir:chromium": {},
+    "pw:blog:test:mir:chromium:trace": {},
     "pw:blog:test:mir:chromium:ui": {},
     "lint": {}
   }

@@ -139,7 +139,10 @@ export function handleAuthorityError(
   updateAuthorityMutation: ReturnType<typeof useUpdateAuthorityOperationMutation>
 ) {
   if (!updateAuthorityMutation.isError) return '';
-
+  const rejectedError = updateAuthorityMutation.error;
+  if (rejectedError === 'rejected') {
+    return 'Operation rejected due of Owner Key';
+  }
   const transactionError = updateAuthorityMutation.error as Error;
   const message = transactionError.message;
   try {

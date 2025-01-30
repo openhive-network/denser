@@ -70,18 +70,18 @@ export COMPOSE_ENV_FILES
 
 if [[ -n "$WAIT_FOR_SYNC" ]]
 then
-    until ./scripts/get-stack-logs.sh --service=haf --tail=1 | grep "No P2P data (block/transaction) received in last 30 seconds..."
+    until ./scripts/get-stack-logs.sh --service=haf --since=2m | grep "Stopped blockchain replaying on user request."
     do
         echo "Waiting for HAF replay to finish..."
         sleep 60
     done
-    until ./scripts/get-stack-logs.sh --service=hivemind-block-processing --tail=3 | grep "Last imported block is: $WAIT_FOR_SYNC"
+    until ./scripts/get-stack-logs.sh --service=hivemind-block-processing --since=2m | grep "Last imported block is: $WAIT_FOR_SYNC"
     do
         echo "Waiting for Hivemind sync to finish..."
         sleep 60
     done
 else
-    until ./scripts/get-stack-logs.sh --service=haf --tail=25 | grep "Broadcasting block"
+    until ./scripts/get-stack-logs.sh --service=haf --since=2m | grep "Broadcasting block"
     do
         echo "Waiting for HAF to start producing blocks"
         sleep 60

@@ -22,7 +22,7 @@ echo -e "\nHAfAH..."
 curl -k --data '{"jsonrpc":"2.0", "method":"block_api.get_block", "params":{"block_num":1}, "id":1}' --trace-ascii hafah-output.log "https://${PUBLIC_HOSTNAME:?}/"
 
 echo -e "\nHivemind..."
-curl -k --data '{"jsonrpc":"2.0", "method":"condenser_api.get_trending_tags", "id":1}' --trace-ascii hivemind-output.log "https://${PUBLIC_HOSTNAME:?}/"
+curl -k --data '{"jsonrpc":"2.0", "method":"condenser_api.get_blog", "params":["steem", 0, 1], "id":1}' --trace-ascii hivemind-output.log "https://${PUBLIC_HOSTNAME:?}/"
 
 function check-log-for-errors() {
     local logfile="$1"
