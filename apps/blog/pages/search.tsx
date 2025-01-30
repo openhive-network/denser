@@ -27,16 +27,13 @@ import { useInView } from 'react-intersection-observer';
 
 export const getServerSideProps: GetServerSideProps = getDefaultProps;
 
-const PER_PAGE = 20;
-
 export default function SearchPage() {
   const router = useRouter();
   const { t } = useTranslation('common_blog');
   const { ref, inView } = useInView();
   const [values, setValues] = useState({
     sort: 'newest',
-    input: '',
-    scrollid: ''
+    input: ''
   });
   const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
@@ -44,6 +41,7 @@ export default function SearchPage() {
     }
   };
   const { user } = useUser();
+
   const {
     data: entriesData,
     isLoading: entriesDataIsLoading,
@@ -53,19 +51,10 @@ export default function SearchPage() {
     fetchNextPage,
     hasNextPage
   } = useInfiniteQuery(
-    ['entriesInfinite', values.sort, values.input],
-    async () => {
-      return await getSearch(router.query.q as string, values.scrollid, router.query.sort as string, '');
-    },
+    ['infiniteSearch', router.query.q, router.query.sort],
+    (lastPage) => getSearch(router.query.q as string, lastPage.pageParam, router.query.sort as string),
     {
-      getNextPageParam: (lastPage) => {
-        if (lastPage && lastPage.results.length === PER_PAGE) {
-          setValues({ ...values, scrollid: lastPage.scroll_id });
-          return {
-            scroll_id: lastPage.scroll_id
-          };
-        }
-      },
+      getNextPageParam: (lastPage) => lastPage.scroll_id,
       enabled: Boolean(router.query.sort) && Boolean(router.query.q)
     }
   );

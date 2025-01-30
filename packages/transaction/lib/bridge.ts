@@ -605,30 +605,19 @@ export interface SearchResult {
   depth: number;
 }
 
-export const getSearch = async (
-  q: string,
-  scroll_id: string,
-  sort: string,
-  _csrf: string
-): Promise<SearchResponse> => {
+export const getSearch = async (q: string, scroll_id: string, sort: string): Promise<SearchResponse> => {
   try {
-    const response = await fetch(
-      process.env.ELASTIC_SEARCH_API_URL ?? 'https://api.hivesearcher.com/search',
-      {
-        method: 'POST',
-        body: JSON.stringify({ q, scroll_id, sort, _csrf }),
-        headers: {
-          Accept: 'application/json',
-          Authorization: process.env.ELASTIC_SEARCH_API_KEY ?? '',
-          'Content-Type': 'application/json'
-        }
+    const response = await fetch('/api/search', {
+      method: 'POST',
+      body: JSON.stringify({ q, scroll_id, sort }),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
       }
-    );
-
+    });
     if (!response.ok) {
       throw new Error(`Search API Error: ${response.status}`);
     }
-
     const data = await response.json();
     return data;
   } catch (error) {
