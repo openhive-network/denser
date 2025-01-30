@@ -638,7 +638,7 @@ review:deploy-blog:
     CHAIN_ID: '42'
     IMAGES_ENDPOINT: https://images.hive.blog/
     WALLET_ENDPOINT: https://wallet.fake.openhive.network
-    SITE_DOMAIN: https://blog.fake.openhive.network
+    BLOG_DOMAIN: https://blog.fake.openhive.network
     LOGGING_BROWSER_ENABLED: false
     LOGGING_LOG_LEVEL: info
   environment:

@@ -12,6 +12,7 @@ OPTIONS:
   --api-endpoint=URL                    API endpoint to be used by the new instance (default: 'https://api.hive.blog')
   --wallet-endpoint=WALLET_ENDPOINT     Wallet endpoint to be used by the new instance (default: 'https://wallet.hive.blog')
   --site-domain=SITE_DOMAIN             Site domain to be used by the new instance (default: 'https://blog.hive.blog')
+  --blog-domain=BLOG_DOMAIN             Blog domain to be used by the new instance (default: 'https://blog.hive.blog')
   --chain-id=CHAIN_ID                   Chain ID to be used by the new instance (default: 'beeab0de00000000000000000000000000000000000000000000000000000000')
   --images-endpoint=URL                 IMAGES endpoint to be used by the new instance (default: 'https://api.hive.blog')
   --app-scope=SCOPE                     App scope (eg. '@hive/auth')
@@ -63,6 +64,10 @@ while [ $# -gt 0 ]; do
         arg="${1#*=}"
         WALLET_ENDPOINT="$arg"
         ;;
+    --blog-domain=*)
+        arg="${1#*=}"
+        BLOG_DOMAIN="$arg"
+        ;;
     --site-domain=*)
         arg="${1#*=}"
         SITE_DOMAIN="$arg"
@@ -99,6 +104,7 @@ RUN_OPTIONS=(
     "--publish" "$PORT:$PORT"
     "--env" "PORT=$PORT"
     "--env" "REACT_APP_API_ENDPOINT=$API_ENDPOINT"
+    "--env" "REACT_APP_BLOG_DOMAIN=$BLOG_DOMAIN"
     "--env" "REACT_APP_IMAGES_ENDPOINT=$IMAGES_ENDPOINT"
     "--env" "REACT_APP_WALLET_ENDPOINT=$WALLET_ENDPOINT"
     "--env" "REACT_APP_SITE_DOMAIN=$SITE_DOMAIN"
