@@ -521,8 +521,10 @@ staging:deploy-auth:
   extends: .deploy_template_for_staging
   needs:
     - docker-build-auth
+  script:
+    - export IMAGE_NAME="${AUTH_IMAGE_NAME}"
+    - !reference [ .deploy_template_for_staging , script ]
   variables:
-    IMAGE: "${AUTH_IMAGE_NAME}"
     PORT: 7000
     API_ENDPOINT: https://api.hive.blog
     IMAGES_ENDPOINT: https://images.hive.blog/
@@ -538,8 +540,10 @@ staging:deploy-blog:
   extends: .deploy_template_for_staging
   needs:
     - docker-build-blog
+  script:
+    - export IMAGE_NAME="${BLOG_IMAGE_NAME}"
+    - !reference [ .deploy_template_for_staging , script ]  
   variables:
-    IMAGE: "${BLOG_IMAGE_NAME}"
     PORT: 3000
     API_ENDPOINT: https://api.hive.blog
     IMAGES_ENDPOINT: https://images.hive.blog/
@@ -556,8 +560,10 @@ staging:deploy-wallet:
   extends: .deploy_template_for_staging
   needs:
     - docker-build-wallet
+  script:
+    - export IMAGE_NAME="${WALLET_IMAGE_NAME}"
+    - !reference [ .deploy_template_for_staging , script ]   
   variables:
-    IMAGE: "${WALLET_IMAGE_NAME}"
     PORT: 4000
     API_ENDPOINT: https://api.hive.blog
     IMAGES_ENDPOINT: https://images.hive.blog/
