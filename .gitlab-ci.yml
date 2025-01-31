@@ -521,6 +521,9 @@ staging:deploy-auth:
   extends: .deploy_template_for_staging
   needs:
     - docker-build-auth
+  script:
+    - export IMAGE_NAME="${AUTH_IMAGE_NAME}"
+    - !reference [ .deploy_template_for_staging , script ]
   variables:
     PORT: 7000
     API_ENDPOINT: https://api.hive.blog
@@ -537,6 +540,9 @@ staging:deploy-blog:
   extends: .deploy_template_for_staging
   needs:
     - docker-build-blog
+  script:
+    - export IMAGE_NAME="${BLOG_IMAGE_NAME}"
+    - !reference [ .deploy_template_for_staging , script ]  
   variables:
     PORT: 3000
     API_ENDPOINT: https://api.hive.blog
@@ -554,6 +560,9 @@ staging:deploy-wallet:
   extends: .deploy_template_for_staging
   needs:
     - docker-build-wallet
+  script:
+    - export IMAGE_NAME="${WALLET_IMAGE_NAME}"
+    - !reference [ .deploy_template_for_staging , script ]   
   variables:
     PORT: 4000
     API_ENDPOINT: https://api.hive.blog
@@ -638,7 +647,7 @@ review:deploy-blog:
     CHAIN_ID: '42'
     IMAGES_ENDPOINT: https://images.hive.blog/
     WALLET_ENDPOINT: https://wallet.fake.openhive.network
-    SITE_DOMAIN: https://blog.fake.openhive.network
+    BLOG_DOMAIN: https://blog.fake.openhive.network
     LOGGING_BROWSER_ENABLED: false
     LOGGING_LOG_LEVEL: info
   environment:

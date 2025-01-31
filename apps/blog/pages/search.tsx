@@ -10,27 +10,69 @@ import {
 } from '@hive/ui';
 import { Icons } from '@ui/components/icons';
 import { useRouter } from 'next/router';
-import { useState, KeyboardEvent } from 'react';
+import { useState, KeyboardEvent, useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
 import { getDefaultProps } from '../lib/get-translations';
+import { getSearch } from '@transaction/lib/bridge';
+import SearchCard from '../components/search-card';
+import { useLocalStorage } from 'usehooks-ts';
+import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useFollowListQuery } from '../components/hooks/use-follow-list';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import Loading from '@ui/components/loading';
+import { PostSkeleton } from './[...param]';
+import { useInView } from 'react-intersection-observer';
 
 export const getServerSideProps: GetServerSideProps = getDefaultProps;
 
 export default function SearchPage() {
   const router = useRouter();
   const { t } = useTranslation('common_blog');
-  const [sort, setSort] = useState('newest');
-  const [input, setInput] = useState('');
+  const { ref, inView } = useInView();
+  const [values, setValues] = useState({
+    sort: 'newest',
+    input: ''
+  });
   const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      router.push(`/search?q=${encodeURIComponent(input)}&s=${encodeURIComponent(sort)}`);
+      router.push(`/search?q=${encodeURIComponent(values.input)}&sort=${encodeURIComponent(values.sort)}`);
     }
   };
+  const { user } = useUser();
+
+  const {
+    data: entriesData,
+    isLoading: entriesDataIsLoading,
+    isFetching: entriesDataIsFetching,
+    isError: entriesDataIsError,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage
+  } = useInfiniteQuery(
+    ['infiniteSearch', router.query.q, router.query.sort],
+    (lastPage) => getSearch(router.query.q as string, lastPage.pageParam, router.query.sort as string),
+    {
+      getNextPageParam: (lastPage) => lastPage.scroll_id,
+      enabled: Boolean(router.query.sort) && Boolean(router.query.q)
+    }
+  );
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [fetchNextPage, hasNextPage, inView]);
   const handleSelect = (e: string) => {
-    setSort(e);
-    router.push(`/search?q=${encodeURIComponent(input)}&s=${encodeURIComponent(e)}`);
+    setValues({ ...values, sort: e });
+    router.push(`/search?q=${encodeURIComponent(values.input)}&s=${encodeURIComponent(e)}`);
   };
+  const [preferences] = useLocalStorage<Preferences>(
+    `user-preferences-${user.username}`,
+    DEFAULT_PREFERENCES
+  );
+  const { data: blacklist } = useFollowListQuery(user.username, 'blacklisted');
+
   return (
     <div className="flex flex-col gap-12 px-4 py-8">
       <div className="flex flex-col gap-4">
@@ -42,13 +84,13 @@ export default function SearchPage() {
             type="search"
             className="block rounded-full p-4 pl-10 text-sm "
             placeholder="Search..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
+            value={values.input}
+            onChange={(e) => setValues({ ...values, input: e.target.value })}
             onKeyDown={(e) => handleEnter(e)}
           />
         </div>
         <div>
-          <Select defaultValue="newest" value={sort} onValueChange={(e) => handleSelect(e)}>
+          <Select defaultValue="newest" value={values.sort} onValueChange={handleSelect}>
             <Label>Sort by:</Label>
             <SelectTrigger className="w-[180px]" data-testid="search-sort-by-dropdown-list">
               <SelectValue />
@@ -62,6 +104,31 @@ export default function SearchPage() {
             </SelectContent>
           </Select>
         </div>
+      </div>
+
+      {entriesDataIsError ? null : entriesDataIsLoading ? (
+        <Loading loading={entriesDataIsLoading && entriesDataIsFetching} />
+      ) : !entriesData ? (
+        'Nothing was found.'
+      ) : (
+        entriesData.pages.map((data, i) => (
+          <ul key={i}>
+            {data.results.map((post) => (
+              <SearchCard post={post} key={post.id} nsfw={preferences.nsfw} blacklist={blacklist} />
+            ))}
+          </ul>
+        ))
+      )}
+      <div>
+        <button ref={ref} onClick={() => fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}>
+          {isFetchingNextPage ? (
+            <PostSkeleton />
+          ) : hasNextPage ? (
+            t('user_profile.load_newer')
+          ) : (
+            t('user_profile.nothing_more_to_load')
+          )}
+        </button>
       </div>
     </div>
   );

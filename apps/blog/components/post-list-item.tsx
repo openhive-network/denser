@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { getPostSummary } from '@/blog/lib/utils';
-import { cn } from '@ui/lib/utils';
 import { Icons } from '@hive/ui/components/icons';
 import {
   Card,
@@ -31,6 +30,10 @@ import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import { getLogger } from '@ui/lib/logging';
 import ReblogTrigger from './reblog-trigger';
+import PostCardCommentTooltip from './post-card-comment-tooltip';
+import PostCardUpvotesTooltip from './post-card-upvotes-tooltip';
+import PostCardHidden from './post-card-hidden';
+import PostCardBlacklistMark from './post-card-blacklist-mark';
 
 const logger = getLogger('app');
 
@@ -62,13 +65,9 @@ const PostListItem = ({
   const userFromImageBlockList = imageUserBlocklist.includes(post.author);
   const legalBlockedUser = userIllegalContent.includes(post.author);
 
-  function revealPost() {
-    setReveal((reveal) => !reveal);
-  }
+  const revealPost = () => setReveal((reveal) => !reveal);
 
-  if (gdprUserList.includes(post.author)) {
-    return null;
-  }
+  if (gdprUserList.includes(post.author)) return null;
 
   return (
     <li data-testid="post-list-item" className={post.stats?.gray ? 'opacity-50 hover:opacity-100' : ''}>
@@ -77,7 +76,7 @@ const PostListItem = ({
       preferences.nsfw === 'hide' ? null : (
         <Card className="mb-4 bg-background px-2 text-primary">
           {post.original_entry ? (
-            <div className="bg-background-secondary mt-2 rounded-sm px-2 py-1 text-sm">
+            <div className="mt-2 rounded-sm bg-background-secondary px-2 py-1 text-sm">
               <p className="flex items-center gap-1 text-xs md:text-sm">
                 <Icons.crossPost className="h-4 w-4 text-slate-500 dark:text-slate-400" />{' '}
                 <Link className="hover:cursor-pointer hover:text-destructive" href={`/@${post.author}`}>
@@ -135,20 +134,7 @@ const PostListItem = ({
                 >
                   ({accountReputation(post.author_reputation)})
                 </span>
-                {post.blacklists && post.blacklists[0] ? (
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <span className="text-destructive">({post.blacklists.length})</span>
-                      </TooltipTrigger>
-                      <TooltipContent>{post.blacklists[0]}</TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                ) : blacklistCheck ? (
-                  <span className="text-destructive" title="My blacklist">
-                    (1)
-                  </span>
-                ) : null}
+                <PostCardBlacklistMark blacklistCheck={blacklistCheck} blacklists={post.blacklists} />
                 {(router.query.param ? router.query.param[1]?.startsWith('hive-') : false) &&
                 post.author_role &&
                 post.author_role !== 'guest' ? (
@@ -264,35 +250,7 @@ const PostListItem = ({
                     <Separator orientation="horizontal" className="my-1" />
                   </>
                 ) : (
-                  <>
-                    <p>
-                      <Badge variant="outline" className="mx-1 border-destructive text-destructive">
-                        nsfw
-                      </Badge>
-                      <span className="cursor-pointer text-destructive" onClick={revealPost}>
-                        Reveal this post
-                      </span>{' '}
-                      or{' '}
-                      {user.isLoggedIn ? (
-                        <>
-                          adjust your{' '}
-                          <Link
-                            href={`/@${user.username}/settings`}
-                            className="cursor-pointer text-destructive"
-                          >
-                            display preferences.
-                          </Link>{' '}
-                        </>
-                      ) : (
-                        <>
-                          <Link href="https://signup.hive.io/" className="cursor-pointer text-destructive">
-                            create an account
-                          </Link>{' '}
-                          to save your preferences.
-                        </>
-                      )}
-                    </p>
-                  </>
+                  <PostCardHidden user={user} revealPost={revealPost} />
                 )}
               </CardContent>
               <CardFooter className="pb-2">
@@ -311,65 +269,12 @@ const PostListItem = ({
                   </DetailsCardHover>
 
                   <Separator orientation="vertical" />
-                  <div className="flex items-center">
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger className="flex items-center" data-testid="post-total-votes">
-                          <Icons.chevronUp className="h-4 w-4 sm:mr-1" />
-                          {post.stats && post.stats.total_votes}
-                        </TooltipTrigger>
-                        <TooltipContent data-testid="post-card-votes-tooltip">
-                          <p>
-                            {post.stats && post.stats.total_votes === 0
-                              ? t('cards.post_card.no_votes')
-                              : post.stats && post.stats.total_votes > 1
-                                ? t('cards.post_card.votes', { votes: post.stats.total_votes })
-                                : t('cards.post_card.vote')}
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
+                  {post.stats ? <PostCardUpvotesTooltip votes={post.stats.total_votes} /> : null}
                   <Separator orientation="vertical" />
-                  <div className="flex items-center" data-testid="post-children">
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger className="flex items-center">
-                          <>
-                            <Link
-                              href={`/${post.category}/@${post.author}/${post.permlink}/#comments`}
-                              className="flex cursor-pointer items-center"
-                            >
-                              {post.children > 1 ? (
-                                <Icons.messagesSquare className="h-4 w-4 sm:mr-1" />
-                              ) : (
-                                <Icons.comment className="h-4 w-4 sm:mr-1" />
-                              )}
-                            </Link>
-                            <Link
-                              href={`/${post.category}/@${post.author}/${post.permlink}/#comments`}
-                              className="flex cursor-pointer items-center pl-1 hover:text-destructive"
-                              data-testid="post-card-response-link"
-                            >
-                              {post.children}
-                            </Link>
-                          </>
-                        </TooltipTrigger>
-                        <TooltipContent data-testid="post-card-responses">
-                          <p>
-                            {`${
-                              post.children === 0
-                                ? t('cards.post_card.no_responses')
-                                : post.children === 1
-                                  ? t('cards.post_card.response')
-                                  : t('cards.post_card.responses', { responses: post.children })
-                            }`}
-                            {t('cards.post_card.click_to_respond')}
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
+                  <PostCardCommentTooltip
+                    comments={post.children}
+                    url={`/${post.category}/@${post.author}/${post.permlink}/#comments`}
+                  />
                   <Separator orientation="vertical" />
                   {!post.title.includes('RE: ') ? (
                     <div className="flex items-center" data-testid="post-card-reblog">
