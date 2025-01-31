@@ -95,18 +95,24 @@ export const getFilter =
     return true;
   };
 
-const ASSET_PRECISION = 1000;
-const VEST_PRECISION = 1000000;
+const ASSET_PRECISION = 3;
+const VEST_PRECISION = 6;
 
 export const getAsset = async (value: string, curr: 'hive' | 'hbd') => {
+  if (value.slice(value.indexOf('.')).length > ASSET_PRECISION + 1) {
+    throw new Error('There should be maximum of 3 decimal places in amount');
+  }
   const chain = await hiveChainService.getHiveChain();
-  const amount = Number(value) * ASSET_PRECISION;
+  const amount = Number(Number(value).toFixed(ASSET_PRECISION).replace('.', ''));
   return curr === 'hive' ? chain.hive(amount) : chain.hbd(amount);
 };
 
 export const getVests = async (value: string) => {
+  if (value.slice(value.indexOf('.')).length > ASSET_PRECISION + 1) {
+    throw new Error('There should be maximum of 3 decimal places in amount');
+  }
   const chain = await hiveChainService.getHiveChain();
-  const amount = Number(value) * VEST_PRECISION;
+  const amount = Number(Number(value).toFixed(VEST_PRECISION).replace('.', ''));
   return chain.vests(amount);
 };
 

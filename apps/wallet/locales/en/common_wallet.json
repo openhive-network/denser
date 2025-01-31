@@ -373,7 +373,8 @@
       "account_length_max": "Account name is too long. Use max 16 characters.",
       "required": "Account name is required.",
       "insufficient_funds": "Insufficient funds.",
-      "not_found": "Account not found."
+      "not_found": "Account not found.",
+      "precision": "Use only 3 digits of precision"
     },
     "confirm_transaction": "Confirm {{transaction}}",
     "ok": "OK",

@@ -225,6 +225,9 @@ export function TransferDialog({
           .refine((amount) => amount <= Number(data.amount.replaceAll(',', '').match(/[-+]?\d*\.?\d+/)), {
             message: t('transfers_page.error.insufficient_funds')
           })
+          .refine((amount) => /^\d+(\.\d{1,3})?$/.test(amount.toString()), {
+            message: t('transfers_page.error.precision')
+          })
       }),
     [data.amount, t]
   );
