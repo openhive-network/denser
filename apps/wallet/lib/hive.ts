@@ -293,7 +293,7 @@ export const getRecentTrades = async (limit: number = 1000): Promise<IRecentTrad
   return chain.extend<GetRecentTradesyData>().api.condenser_api.get_recent_trades([limit]);
 };
 
-type SavingsWithdrawals = {
+export type SavingsWithdrawals = {
   withdrawals: {
     amount: asset;
     complete: Date;
