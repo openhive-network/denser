@@ -38,6 +38,7 @@ import FinancialReport from '@/wallet/components/financial-report';
 import { useClaimRewardsMutation } from '@/wallet/components/hooks/use-claim-rewards-mutation';
 import { useMemo } from 'react';
 import { useCancelPowerDownMutation } from '@/wallet/components/hooks/use-power-hive-mutation';
+import env from '@beam-australia/react-env';
 
 const initialFilters: TransferFilters = {
   search: '',
@@ -188,6 +189,7 @@ export type AccountHistoryData = ReturnType<typeof mapToAccountHistoryObject>;
 
 function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { t } = useTranslation('common_wallet');
+  const blogURL = env('BLOG_DOMAIN');
   const [rawFilter, filter, setFilter] = useFilters(initialFilters);
   const { user } = useUser();
   const { data: accountData, isLoading: accountLoading } = useQuery(
@@ -525,7 +527,9 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                       value: getCurrentHpApr(dynamicData).toFixed(2)
                     })}
                     <span className="font-semibold text-primary hover:text-destructive">
-                      <Link href="https://hive.blog/faq.html#How_many_new_tokens_are_generated_by_the_blockchain">
+                      <Link
+                        href={`https:/${blogURL}/faq.html#How_many_new_tokens_are_generated_by_the_blockchain`}
+                      >
                         {t('profil.see_faq_for_details')}
                       </Link>
                     </span>
