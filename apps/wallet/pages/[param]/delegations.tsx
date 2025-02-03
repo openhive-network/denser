@@ -6,10 +6,11 @@ import { numberWithCommas } from '@ui/lib/utils';
 import { dateToFullRelative } from '@ui/lib/parse-date';
 import Loading from '@ui/components/loading';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
-import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import WalletMenu from '@/wallet/components/wallet-menu';
 import { getTranslations } from '../../lib/get-translations';
+import RevokeDialog from '@/wallet/components/revoke-dialog';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 
 const convertVestsToSteem = (vests: number, dynamicData: IDynamicGlobalProperties) => {
   const totalFund = parseFloat(dynamicData.total_vesting_fund_hive);
@@ -19,18 +20,14 @@ const convertVestsToSteem = (vests: number, dynamicData: IDynamicGlobalPropertie
 
 function DelegationsPage({ username }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { t } = useTranslation('common_wallet');
-  const router = useRouter();
-  const {
-    data: vestingData,
-    isLoading: vestingLoading,
-    isError: vestingError
-  } = useQuery(['vestingDelegation', username, '', 50], () => getVestingDelegations(username, '', 50));
-  const {
-    data: dynamicData,
-    isSuccess: dynamicSuccess,
-    isLoading: dynamicLoading,
-    isError: dynamicError
-  } = useQuery(['dynamicGlobalProperties'], () => getDynamicGlobalProperties());
+  const { user } = useUser();
+  const accoutOwner = user.isLoggedIn && user.username === username;
+  const { data: vestingData, isLoading: vestingLoading } = useQuery(['vestingDelegation', username], () =>
+    getVestingDelegations(username, '', 50)
+  );
+  const { data: dynamicData, isLoading: dynamicLoading } = useQuery(['dynamicGlobalProperties'], () =>
+    getDynamicGlobalProperties()
+  );
 
   if (dynamicLoading || vestingLoading) {
     return <Loading loading={dynamicLoading || vestingLoading} />;
@@ -50,11 +47,16 @@ function DelegationsPage({ username }: InferGetServerSidePropsType<typeof getSer
                 className="m-0 p-0 text-sm even:bg-slate-100 dark:even:bg-slate-700"
                 data-testid="wallet-delegation-item"
               >
-                <td className=" px-4 py-2 ">
+                <td className="px-1 py-2 sm:px-4">
                   {numberWithCommas(convertVestsToSteem(parseFloat(element.vesting_shares), dynamicData))} HP
                 </td>
-                <td className=" px-4 py-2 ">{element.delegatee}</td>
-                <td className=" px-4 py-2 ">{dateToFullRelative(element.min_delegation_time, t)}</td>
+                <td className="px-1 py-2 sm:px-4">{element.delegatee}</td>
+                <td className="px-1 py-2 sm:px-4">{dateToFullRelative(element.min_delegation_time, t)}</td>
+                <td className="px-1 py-2 sm:px-4">
+                  {accoutOwner ? (
+                    <RevokeDialog delegator={element.delegator} delegatee={element.delegatee} />
+                  ) : null}
+                </td>
               </tr>
             ))}
           </tbody>
