@@ -186,8 +186,11 @@ function Permissions({ username }: InferGetServerSidePropsType<typeof getServerS
             <p>{t('permissions.public_info')}</p>
             <div>
               <p>{t('permissions.view_public')}</p>
-              <Link href="hiveblocks.com/@guest4test1" className="font-bold text-red-600">
-                hiveblocks.com/@guest4test1
+              <Link
+                href={`https://testexplore.openhive.network/@${username}`}
+                className="font-bold text-red-600"
+              >
+                {`testexplore.openhive.network/@${username}`}
               </Link>
             </div>
           </div>
