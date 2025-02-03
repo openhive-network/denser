@@ -7,9 +7,9 @@ import {
   getFindAccounts
 } from '@transaction/lib/hive';
 import moment from 'moment';
-import { getAccountHistory, getOpenOrder } from '@/wallet/lib/hive';
-import { getCurrentHpApr, getFilter } from '@/wallet/lib/utils';
-import { delegatedHive, vestingHive, powerdownHive, handleError } from '@ui/lib/utils';
+import { getAccountHistory, getOpenOrder, getSavingsWithdrawals } from '@/wallet/lib/hive';
+import { getAmountFromWithdrawal, getCurrentHpApr, getFilter } from '@/wallet/lib/utils';
+import { delegatedHive, vestingHive, powerdownHive, handleError, cn } from '@ui/lib/utils';
 import { numberWithCommas } from '@ui/lib/utils';
 import { dateToFullRelative } from '@ui/lib/parse-date';
 import { convertStringToBig } from '@ui/lib/helpers';
@@ -216,6 +216,10 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
   );
   const { data: historyFeedData, isLoading: historyFeedLoading } = useQuery(['feedHistory'], () =>
     getFeedHistory()
+  );
+
+  const { data: withdrawals } = useQuery(['savingsWithdrawalsFrom', username], () =>
+    getSavingsWithdrawals(username)
   );
 
   const claimRewardsMutation = useClaimRewardsMutation();
@@ -761,6 +765,28 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
           </div>
         ) : null}
         <div className="w-full max-w-6xl">
+          <div className="flex flex-col">
+            <div className="p-2 font-semibold sm:p-4">Pending Savings Withdraws</div>
+            <table className="max-w-6xl text-sm">
+              <tbody>
+                {withdrawals?.withdrawals.map((withdrawal, index) => (
+                  <tr
+                    className={cn('flex flex-col py-2 sm:table-row', {
+                      'bg-background-secondary': index % 2 === 0
+                    })}
+                    key={withdrawal.id}
+                  >
+                    <td className="px-2 sm:px-4 sm:py-4">
+                      {dateToFullRelative(withdrawal.complete.toString(), t)}
+                    </td>
+                    <td>
+                      Withdraw {getAmountFromWithdrawal(withdrawal)} to {withdrawal.to}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           {user.username === username && <FinancialReport username={user.username} />}
           <TransfersHistoryFilter
             onFiltersChange={(value) => {

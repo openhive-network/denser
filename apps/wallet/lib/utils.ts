@@ -4,6 +4,7 @@ import { AccountHistoryData } from '../pages/[param]/transfers';
 import { TransferFilters } from '@/wallet/components/transfers-history-filter';
 import { useUpdateAuthorityOperationMutation } from '../components/hooks/use-update-authority-mutation';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import { SavingsWithdrawals } from './hive';
 
 export function getCurrentHpApr(data: IDynamicGlobalProperties) {
   // The inflation was set to 9.5% at block 7m
@@ -114,6 +115,15 @@ export const getVests = async (value: string) => {
   const chain = await hiveChainService.getHiveChain();
   const amount = Number(Number(value).toFixed(VEST_PRECISION).replace('.', ''));
   return chain.vests(amount);
+};
+
+const HIVE_NAI_STRING = '@@000000021';
+
+export const getAmountFromWithdrawal = (withdrawal: SavingsWithdrawals['withdrawals'][number]) => {
+  const amount = Number(withdrawal.amount.amount) / 10 ** withdrawal.amount.precision;
+  const currency = withdrawal.amount.nai === HIVE_NAI_STRING ? 'HIVE' : 'HBD';
+
+  return `${amount.toFixed(3)} ${currency}`;
 };
 
 // The default is the blog domain
