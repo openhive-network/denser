@@ -4,17 +4,23 @@ export class SpoilerPlugin implements RendererPlugin {
     name = 'spoiler';
 
     preProcess(text: string): string {
-        return text.replace(/^>! *\[(.*?)\] *([\s\S]*?)(?=^>! *\[|$)/gm, (_, title, content) => {
-            const cleanContent = content
+        return text.replace(/^>! *\[(.*?)\] *(.*?)(?:\n|$)([\s\S]*?)(?=^>! *\[|$)/gm, (_, title, firstLine, rest) => {
+            // Get the first line content (after the title)
+            const content = firstLine.trim();
+            
+            // Get the rest of the content (lines starting with >)
+            const restContent = rest
                 .split('\n')
-                .map((line: string) => line.replace(/^> ?/, '').trim())
-                .join('\n')
+                .map((line: string) => line.trim())
+                .filter((line: string) => line.startsWith('>'))
+                .map((line: string) => line.replace(/^> ?/, ''))
+                .join(' ')
                 .trim();
 
-            return `<details class="spoiler">
-                    <summary>${title}</summary>
-                    ${cleanContent}
-                </details>`;
+            // Combine all content
+            const fullContent = [content, restContent].filter(Boolean).join(' ');
+
+            return `<details class="spoiler"><summary>${title}</summary><p>${fullContent}</p></details>`;
         });
     }
 }

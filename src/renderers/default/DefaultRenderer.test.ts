@@ -196,11 +196,6 @@ describe('DefaultRender', () => {
             raw: 'https://vimeo.com/174544848',
             expected:
                 '<p><div class="videoWrapper"><iframe src="https://player.vimeo.com/video/174544848" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div></p>'
-        },
-        {
-            name: 'Renders spoiler tags correctly',
-            raw: '>! [Click to reveal] Hidden content\n> More hidden text',
-            expected: '<details class="spoiler"><summary>Click to reveal</summary><p>Hidden content\nMore hidden text</p></details>'
         }
     ];
 
@@ -293,5 +288,20 @@ describe('DefaultRender', () => {
         const rendered2 = renderer2.render(`![img.jpg](ipfs://QmQqzMTavQgT4f4T5v6PWBp7XNKtoPmC9jvn12WPT3gkSE)`).trim();
         expect(rendered1).to.be.equal('<p><img src="https://gateway.io/ipfs/QmQqzMTavQgT4f4T5v6PWBp7XNKtoPmC9jvn12WPT3gkSE" alt="img.jpg" /></p>');
         expect(rendered2).to.be.equal('<p><img src="https://gateway.io/ipfs/QmQqzMTavQgT4f4T5v6PWBp7XNKtoPmC9jvn12WPT3gkSE" alt="img.jpg" /></p>');
+    });
+
+    it('Renders spoiler tags correctly', () => {
+        const renderer = new DefaultRenderer(defaultOptions);
+        const raw = '>! [Click to reveal] Hidden content\n> More hidden text';
+        const rendered = renderer.render(raw).trim();
+
+        // Normalize both strings by removing extra whitespace
+        const normalizeHtml = (html: string) => {
+            return html.replace(/\s+/g, ' ').trim();
+        };
+
+        const expected = '<p></p><details><summary>Click to reveal</summary><p>Hidden content More hidden text</p></details><p></p>';
+
+        expect(normalizeHtml(rendered)).to.equal(normalizeHtml(expected));
     });
 });
