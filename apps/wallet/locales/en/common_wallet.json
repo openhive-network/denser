@@ -401,7 +401,12 @@
     "savings_withdraw": "Savings Withdraw",
     "savings_withdraw_desc": "Withdraw funds after the required 3 day waiting period.",
     "delegatee": "Delegatee",
-    "delegator": "Delegator"
+    "delegator": "Delegator",
+    "pending_savings": "Pending Savings Withdraws",
+    "withdraw": "Withdraw",
+    "to_lower": "to",
+    "cancel_withdraw_request": "Cancel this withdraw request?",
+    "cancel_withdraw_from_savings": "Cancel withdraw from savings"
   },
   "permissions": {
     "reveal": "Reveal",
