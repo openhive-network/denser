@@ -304,4 +304,19 @@ describe('DefaultRender', () => {
 
         expect(normalizeHtml(rendered)).to.equal(normalizeHtml(expected));
     });
+
+    it('Renders spoiler tags correctly with no title provided with fallback title', () => {
+        const renderer = new DefaultRenderer(defaultOptions);
+        const raw = '>! [] Hidden content\n> More hidden text';
+        const rendered = renderer.render(raw).trim();
+
+        // Normalize both strings by removing extra whitespace
+        const normalizeHtml = (html: string) => {
+            return html.replace(/\s+/g, ' ').trim();
+        };
+
+        const expected = '<p></p><details><summary>Reveal spoiler</summary><p>Hidden content More hidden text</p></details><p></p>';
+
+        expect(normalizeHtml(rendered)).to.equal(normalizeHtml(expected));
+    });
 });

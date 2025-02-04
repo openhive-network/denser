@@ -7,7 +7,7 @@ export class SpoilerPlugin implements RendererPlugin {
         return text.replace(/^>! *\[(.*?)\] *(.*?)(?:\n|$)([\s\S]*?)(?=^>! *\[|$)/gm, (_, title, firstLine, rest) => {
             // Get the first line content (after the title)
             const content = firstLine.trim();
-            
+
             // Get the rest of the content (lines starting with >)
             const restContent = rest
                 .split('\n')
@@ -20,7 +20,7 @@ export class SpoilerPlugin implements RendererPlugin {
             // Combine all content
             const fullContent = [content, restContent].filter(Boolean).join(' ');
 
-            return `<details class="spoiler"><summary>${title}</summary><p>${fullContent}</p></details>`;
+            return `<details class="spoiler"><summary>${title || 'Reveal spoiler'}</summary><p>${fullContent}</p></details>`;
         });
     }
 }
