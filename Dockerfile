@@ -3,7 +3,12 @@ FROM node:20.17-alpine AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 ENV TURBO_VERSION=2.1.1
-RUN corepack enable
+
+# Install and configure corepack/pnpm
+RUN apk add --no-cache libc6-compat && \
+    corepack enable && \
+    corepack prepare pnpm@9.6.0 --activate && \
+    pnpm config set store-dir /pnpm/store
 
 FROM base AS builder
 ARG TURBO_APP_SCOPE
@@ -59,12 +64,8 @@ LABEL io.hive.image.commit.author="$GIT_LAST_COMMITTER"
 LABEL io.hive.image.commit.date="$GIT_LAST_COMMIT_DATE"
 
 WORKDIR /app
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-    pnpm config set verify-store-integrity false && \
-    pnpm add -g @beam-australia/react-env@3.1.1 && \
-    pnpm config set verify-store-integrity true
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm add -g @beam-australia/react-env@3.1.1
 RUN apk add --no-cache tini
-
 # COPY --from=trajano/alpine-libfaketime:latest /faketime.so /lib/faketime.so
 
 # Don't run production as root
@@ -76,6 +77,8 @@ COPY --from=builder /app/docker/docker-entrypoint.sh .
 COPY --from=installer /app${TURBO_APP_PATH}/next.config.js .
 COPY --from=installer /app${TURBO_APP_PATH}/package.json .
 COPY --from=installer /app/node_modules ./node_modules
+COPY --from=installer /app/node_modules/@beam-australia/react-env ./node_modules/@beam-australia/react-env
+ENV PATH="/app/node_modules/.bin:$PATH"
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
