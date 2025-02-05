@@ -59,8 +59,12 @@ LABEL io.hive.image.commit.author="$GIT_LAST_COMMITTER"
 LABEL io.hive.image.commit.date="$GIT_LAST_COMMIT_DATE"
 
 WORKDIR /app
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm add -g @beam-australia/react-env@3.1.1 --ignore-scripts
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    pnpm config set verify-store-integrity false && \
+    pnpm add -g @beam-australia/react-env@3.1.1 && \
+    pnpm config set verify-store-integrity true
 RUN apk add --no-cache tini
+
 # COPY --from=trajano/alpine-libfaketime:latest /faketime.so /lib/faketime.so
 
 # Don't run production as root
