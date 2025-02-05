@@ -218,7 +218,7 @@ mirrornet-haf-node-replay:
   stage: test
   before_script:
     - corepack enable
-    - corepack prepare pnpm@latest-9 --activate
+    - corepack prepare pnpm@9.6.0 --activate
     - pnpm config set store-dir .pnpm-store
   script:
     - |

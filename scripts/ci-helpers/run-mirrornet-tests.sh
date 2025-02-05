@@ -7,6 +7,8 @@ echo "Current time: $(date)"
 echo -e "\e[0Ksection_start:$(date +%s):deps[collapsed=true]\r\e[0KInstalling dependencies..."
 # npm config set strict-ssl false
 pnpm config set store-dir .pnpm-store
+corepack enable
+corepack prepare pnpm@9.6.0 --activate
 pnpm install --frozen-lockfile
 echo -e "\e[0Ksection_end:$(date +%s):deps\r\e[0K"
 
