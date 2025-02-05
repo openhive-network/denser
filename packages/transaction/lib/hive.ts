@@ -890,3 +890,30 @@ export interface TransactionOptions {
 export type LevelAuthority = Parameters<
   Awaited<ReturnType<(typeof AccountAuthorityUpdateOperation)['createFor']>>['role']
 >[0];
+
+const keyTypes = ['active', 'owner', 'posting', 'memo'] as const;
+
+export const getPrivateKeys = async (
+  username: string,
+  password: string
+): Promise<
+  {
+    type: (typeof keyTypes)[number];
+    privateKey: string;
+    correctKey: boolean;
+  }[]
+> => {
+  const chain = await hiveChainService.getHiveChain();
+  const keys = await Promise.all(
+    keyTypes.map(async (keyType) => {
+      const key = await chain.getPrivateKeyFromPassword(username, keyType, password);
+      const operation = (await AccountAuthorityUpdateOperation.createFor(chain, username)).role(keyType);
+      const checkKey =
+        operation.level === 'memo'
+          ? operation.value === key.associatedPublicKey
+          : operation.has(key.associatedPublicKey);
+      return { type: keyType, privateKey: key.wifPrivateKey, correctKey: checkKey };
+    })
+  );
+  return keys;
+};
