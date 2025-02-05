@@ -1,15 +1,64 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
 import WalletMenu from '@/wallet/components/wallet-menu';
-import { Button, Card, Input, Label, Separator } from '@ui/components';
+import { Card, Separator } from '@ui/components';
 import Link from 'next/link';
 import { cn } from '@ui/lib/utils';
 import { getTranslations } from '../../lib/get-translations';
 import { useTranslation } from 'next-i18next';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import env from '@beam-australia/react-env';
+import { useState } from 'react';
+import { getPrivateKeys } from '@transaction/lib/hive';
+import { toast } from '@ui/components/hooks/use-toast';
+import RevealKeyComponent from '@/wallet/components/receal-key-component';
 
 function Permissions({ username }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { t } = useTranslation('common_wallet');
-
+  const { user } = useUser();
+  const explorerURL = env('EXPLORER_DOMAIN');
+  const wifLogin = user.isLoggedIn && user.loginType === 'wif';
+  const [reveal, setReveal] = useState({
+    posting: false,
+    active: false,
+    owner: false,
+    memo: false
+  });
+  const mockValue = Array.from({ length: 50 }, (_, i) => '1')
+    .toString()
+    .replace(/,/g, '');
+  const [keys, setKeys] = useState({
+    posting: mockValue,
+    active: mockValue,
+    owner: mockValue,
+    memo: mockValue
+  });
+  const onReveal = async (password: string, keyType: 'posting' | 'active' | 'owner' | 'memo') => {
+    if (keys[keyType] !== mockValue) {
+      setReveal((prev) => ({ ...prev, [keyType]: true }));
+      return;
+    }
+    try {
+      const keysCheck = await getPrivateKeys(user.username, password);
+      if (keysCheck.some((key) => key.correctKey !== true)) {
+        toast({
+          title: 'Error',
+          description: 'Invalid password',
+          variant: 'destructive'
+        });
+      } else {
+        setKeys((prev) => ({
+          posting: keysCheck.find((key) => key.type === 'posting')?.privateKey || prev.posting,
+          active: keysCheck.find((key) => key.type === 'active')?.privateKey || prev.active,
+          owner: keysCheck.find((key) => key.type === 'owner')?.privateKey || prev.owner,
+          memo: keysCheck.find((key) => key.type === 'memo')?.privateKey || prev.memo
+        }));
+        setReveal((prev) => ({ ...prev, [keyType]: true }));
+      }
+    } catch {
+      console.log('error');
+    }
+  };
   return (
     <ProfileLayout>
       <div className="flex flex-col gap-8 ">
@@ -33,23 +82,16 @@ function Permissions({ username }: InferGetServerSidePropsType<typeof getServerS
               <div className="border-bg-border flex flex-col gap-8 border-none p-4 md:border-r-2 md:border-solid">
                 <p>{t('permissions.posting_key.info')}</p>
                 <p>{t('permissions.posting_key.use')}</p>
-                <div className="flex flex-col">
-                  <Label htmlFor="postingKey" className="text-lg font-semibold">
-                    {t('permissions.posting_key.private')}
-                  </Label>
-                  <div className="md:relative md:h-10">
-                    <Input
-                      className="left-0 h-full md:absolute"
-                      type="password"
-                      id="postingKey"
-                      name="postingKey"
-                      value="wqinufiqwhuifhq783hfuq83hqsadasdasfas9h3q9ruq3h"
-                    />
-                    <Button className="right-0 mt-4 h-full p-2 md:absolute md:mt-0 md:rounded-l-none">
-                      {t('permissions.reveal')}
-                    </Button>
-                  </div>
-                </div>
+                {wifLogin ? (
+                  <RevealKeyComponent
+                    reveal={reveal.posting}
+                    keyValue={keys.posting}
+                    onReveal={(password) => onReveal(password, 'posting')}
+                    title={t('permissions.posting_key.private')}
+                    mockValue={mockValue}
+                    type="posting"
+                  />
+                ) : null}
               </div>
 
               <div className="flex flex-col p-4">
@@ -74,23 +116,16 @@ function Permissions({ username }: InferGetServerSidePropsType<typeof getServerS
               <div className="border-bg-border flex flex-col gap-8 border-none p-4 md:border-r-2 md:border-solid">
                 <p>{t('permissions.active_key.info')}</p>
                 <p>{t('permissions.active_key.use')}</p>
-                <div className="flex flex-col">
-                  <Label htmlFor="activeKey" className="text-lg font-semibold">
-                    {t('permissions.active_key.private')}
-                  </Label>
-                  <div className="relative md:h-10">
-                    <Input
-                      className="left-0 h-full md:absolute"
-                      type="password"
-                      id="activeKey"
-                      name="activeKey"
-                      value="wqinufiqwhuifhq783hfuq83hqsadasdasfas9h3q9ruq3h"
-                    />
-                    <Button className="right-0 mt-4 h-full p-2 md:absolute md:mt-0 md:rounded-l-none">
-                      {t('permissions.reveal')}
-                    </Button>
-                  </div>
-                </div>
+                {wifLogin ? (
+                  <RevealKeyComponent
+                    reveal={reveal.active}
+                    keyValue={keys.active}
+                    onReveal={(password) => onReveal(password, 'active')}
+                    title={t('permissions.active_key.private')}
+                    mockValue={mockValue}
+                    type="active"
+                  />
+                ) : null}
               </div>
               <div className="flex flex-col p-4">
                 <h1 className="text-lg font-semibold">{t('permissions.active_key.permissions')}</h1>
@@ -114,23 +149,16 @@ function Permissions({ username }: InferGetServerSidePropsType<typeof getServerS
             <div className="flex flex-col md:grid md:grid-cols-[1fr_400px]">
               <div className="border-bg-border flex flex-col gap-8 border-none p-4 md:border-r-2 md:border-solid">
                 <p>{t('permissions.owner_key.info')}</p>
-                <div className="flex flex-col">
-                  <Label htmlFor="ownerKey" className="text-lg font-semibold">
-                    {t('permissions.owner_key.private')}
-                  </Label>
-                  <div className="relative md:h-10">
-                    <Input
-                      className="left-0 h-full md:absolute"
-                      type="password"
-                      id="ownerKey"
-                      name="ownerKey"
-                      value="wqinufiqwhuifhq783hfuq83hqsadasdasfas9h3q9ruq3h"
-                    />
-                    <Button className="right-0 mt-4 h-full p-2 md:absolute md:mt-0 md:rounded-l-none">
-                      {t('permissions.reveal')}
-                    </Button>
-                  </div>
-                </div>
+                {wifLogin ? (
+                  <RevealKeyComponent
+                    reveal={reveal.owner}
+                    keyValue={keys.owner}
+                    onReveal={(password) => onReveal(password, 'owner')}
+                    title={t('permissions.owner_key.private')}
+                    mockValue={mockValue}
+                    type="owner"
+                  />
+                ) : null}
               </div>
               <div className="flex flex-col p-4">
                 <h1 className="text-lg font-semibold">{t('permissions.owner_key.permissions')}</h1>
@@ -151,23 +179,16 @@ function Permissions({ username }: InferGetServerSidePropsType<typeof getServerS
               <div className="border-bg-border flex flex-col gap-8 border-none p-4 md:border-r-2 md:border-solid">
                 <p>{t('permissions.memo_key.info')}</p>
 
-                <div className="flex flex-col">
-                  <Label htmlFor="memoKey" className="text-lg font-semibold">
-                    {t('permissions.memo_key.private')}
-                  </Label>
-                  <div className="relative md:h-10">
-                    <Input
-                      className="left-0 h-full md:absolute"
-                      type="password"
-                      id="memoKey"
-                      name="memoKey"
-                      value="wqinufiqwhuifhq783hfuq83hqsadasdasfas9h3q9ruq3h"
-                    />
-                    <Button className="right-0 mt-4 h-full p-2 md:absolute md:mt-0 md:rounded-l-none">
-                      {t('permissions.reveal')}
-                    </Button>
-                  </div>
-                </div>
+                {wifLogin ? (
+                  <RevealKeyComponent
+                    reveal={reveal.memo}
+                    keyValue={keys.memo}
+                    onReveal={(password) => onReveal(password, 'memo')}
+                    title={t('permissions.memo_key.private')}
+                    mockValue={mockValue}
+                    type="memo"
+                  />
+                ) : null}
               </div>
               <div className="flex flex-col p-4">
                 <h1 className="text-lg font-semibold">{t('permissions.memo_key.permissions')}</h1>
@@ -186,11 +207,8 @@ function Permissions({ username }: InferGetServerSidePropsType<typeof getServerS
             <p>{t('permissions.public_info')}</p>
             <div>
               <p>{t('permissions.view_public')}</p>
-              <Link
-                href={`https://testexplore.openhive.network/@${username}`}
-                className="font-bold text-red-600"
-              >
-                {`testexplore.openhive.network/@${username}`}
+              <Link href={`${explorerURL}L/@${username}`} className="font-bold text-red-600">
+                {`Block Explorer - ${username}`}
               </Link>
             </div>
           </div>
