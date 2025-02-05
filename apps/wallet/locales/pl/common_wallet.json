@@ -344,7 +344,13 @@
       "required": "Nazwa konta 'Do' jest wymagana.",
       "insufficient_funds": "Niewystarczające środki.",
       "not_found": "Nie znaleziono konta."
-    }
+    },
+    "cancel": "Anuluj",
+    "pending_savings": "Oczekujące wypłąty z oszczędności",
+    "withdraw": "Wypłata",
+    "to_lower": "do",
+    "cancel_withdraw_request": "Czy chcesz anulować wypłatę oszczędnośći?",
+    "cancel_withdraw_from_savings": "Anuluj wypłątę oszczędności"
   },
   "permissions": {
     "reveal": "Ujawnij",
