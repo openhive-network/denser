@@ -776,54 +776,56 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
           </div>
         ) : null}
         <div className="w-full max-w-6xl">
-          <div className="flex flex-col">
-            <div className="p-2 font-semibold sm:p-4">{t('transfers_page.pending_savings')}</div>
-            <table className="max-w-6xl text-sm">
-              <tbody>
-                {withdrawals?.withdrawals.map((withdrawal, index) => {
-                  const withdrawMessage = `${t('transfers_page.withdraw')} ${getAmountFromWithdrawal(withdrawal)} ${t('transfers_page.to_lower')} ${withdrawal.to}`;
-                  return (
-                    <tr
-                      className={cn('flex flex-col py-2 sm:table-row', {
-                        'bg-background-secondary': index % 2 === 0
-                      })}
-                      key={withdrawal.id}
-                    >
-                      <td className="px-2 sm:px-4 sm:py-2">
-                        {dateToFullRelative(withdrawal.complete.toString(), t)}
-                      </td>
-                      <td className="flex flex-row items-center px-2 sm:px-4 sm:py-2">
-                        <div>{withdrawMessage}</div>
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button variant="link" className="text-destructive hover:no-underline">
-                              {t('transfers_page.cancel')}
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent className="text-left sm:max-w-[425px]">
-                            <div className="flex flex-col gap-y-2">
-                              <div>{t('transfers_page.cancel_withdraw_request')}</div>
-                              <div>{withdrawMessage}</div>
-                            </div>
-                            <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
-                              <DialogTrigger asChild>
-                                <Button
-                                  variant="redHover"
-                                  onClick={() => cancelTransferFromSavings(withdrawal.request_id)}
-                                >
-                                  {t('transfers_page.cancel_withdraw_from_savings')}
-                                </Button>
-                              </DialogTrigger>
-                            </DialogFooter>
-                          </DialogContent>
-                        </Dialog>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          {!!withdrawals?.withdrawals.length && (
+            <div className="flex flex-col">
+              <div className="p-2 font-semibold sm:p-4">{t('transfers_page.pending_savings')}</div>
+              <table className="max-w-6xl text-sm">
+                <tbody>
+                  {withdrawals?.withdrawals.map((withdrawal, index) => {
+                    const withdrawMessage = `${t('transfers_page.withdraw')} ${getAmountFromWithdrawal(withdrawal)} ${t('transfers_page.to_lower')} ${withdrawal.to}`;
+                    return (
+                      <tr
+                        className={cn('flex flex-col py-2 sm:table-row', {
+                          'bg-background-secondary': index % 2 === 0
+                        })}
+                        key={withdrawal.id}
+                      >
+                        <td className="px-2 sm:px-4 sm:py-2">
+                          {dateToFullRelative(withdrawal.complete.toString(), t)}
+                        </td>
+                        <td className="flex flex-row items-center px-2 sm:px-4 sm:py-2">
+                          <div>{withdrawMessage}</div>
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button variant="link" className="text-destructive hover:no-underline">
+                                {t('transfers_page.cancel')}
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="text-left sm:max-w-[425px]">
+                              <div className="flex flex-col gap-y-2">
+                                <div>{t('transfers_page.cancel_withdraw_request')}</div>
+                                <div>{withdrawMessage}</div>
+                              </div>
+                              <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
+                                <DialogTrigger asChild>
+                                  <Button
+                                    variant="redHover"
+                                    onClick={() => cancelTransferFromSavings(withdrawal.request_id)}
+                                  >
+                                    {t('transfers_page.cancel_withdraw_from_savings')}
+                                  </Button>
+                                </DialogTrigger>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
           {user.username === username && <FinancialReport username={user.username} />}
           <TransfersHistoryFilter
             onFiltersChange={(value) => {
