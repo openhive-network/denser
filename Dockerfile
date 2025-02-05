@@ -3,7 +3,12 @@ FROM node:20.17-alpine AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 ENV TURBO_VERSION=2.1.1
-RUN corepack enable
+
+# Install and configure corepack/pnpm
+RUN apk add --no-cache libc6-compat && \
+    corepack enable && \
+    corepack prepare pnpm@9.6.0 --activate && \
+    pnpm config set store-dir /pnpm/store
 
 FROM base AS builder
 ARG TURBO_APP_SCOPE
@@ -72,6 +77,8 @@ COPY --from=builder /app/docker/docker-entrypoint.sh .
 COPY --from=installer /app${TURBO_APP_PATH}/next.config.js .
 COPY --from=installer /app${TURBO_APP_PATH}/package.json .
 COPY --from=installer /app/node_modules ./node_modules
+COPY --from=installer /app/node_modules/@beam-australia/react-env ./node_modules/@beam-australia/react-env
+ENV PATH="/app/node_modules/.bin:$PATH"
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
