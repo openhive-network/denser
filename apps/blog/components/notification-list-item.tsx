@@ -8,6 +8,9 @@ import { useTranslation } from 'next-i18next';
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getLogger } from '@ui/lib/logging';
+import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
+import env from '@beam-australia/react-env';
+import Image from 'next/image';
 
 const logger = getLogger('app');
 const usernamePattern = /\B@[a-z0-9.-]+/gi;
@@ -37,17 +40,19 @@ const NotificationListItem = ({ date, msg, score, type, url, lastRead }: IAccoun
     default:
       icon = <Icons.arrowUpCircle className="h-4 w-4" />;
   }
-
+  const imageHosterUrl = env('IMAGES_ENDPOINT');
   const participants = mentions
     ? mentions.map((m: string) => (
         <a key={m} href={'/' + m} data-testid="notification-account-icon-link">
-          <img
-            className="mr-3 h-[40px] w-[40px] rounded-3xl"
-            height="40"
-            width="40"
-            src={`https://images.hive.blog/u/${m.substring(1)}/avatar/small`}
-            alt={`${m} profile picture`}
-          />
+          <Avatar className="mr-3 h-[40px] w-[40px] rounded-3xl">
+            <AvatarImage
+              src={`${imageHosterUrl}u/${m.substring(1)}/avatar/small`}
+              alt={`${m} profile picture`}
+            />
+            <AvatarFallback className="bg-transparent">
+              <Image width={40} height={40} alt={`${m} profile picture`} src="/defaultavatar.png" />
+            </AvatarFallback>
+          </Avatar>
         </a>
       ))
     : null;
