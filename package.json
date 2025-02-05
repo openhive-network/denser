@@ -61,5 +61,8 @@
       "secp256k1",
       "core-js"
     ]
+  },
+  "dependencies": {
+    "@beam-australia/react-env": "3.1.1"
   }
 }
