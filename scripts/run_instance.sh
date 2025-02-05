@@ -14,7 +14,7 @@ OPTIONS:
   --site-domain=SITE_DOMAIN             Site domain to be used by the new instance (default: 'https://blog.hive.blog')
   --blog-domain=BLOG_DOMAIN             Blog domain to be used by the new instance (default: 'https://blog.hive.blog')
   --chain-id=CHAIN_ID                   Chain ID to be used by the new instance (default: 'beeab0de00000000000000000000000000000000000000000000000000000000')
-  --images-endpoint=URL                 IMAGES endpoint to be used by the new instance (default: 'https://api.hive.blog')
+  --images-endpoint=URL                 IMAGES endpoint to be used by the new instance (default: 'https://images.hive.blog/')
   --app-scope=SCOPE                     App scope (eg. '@hive/auth')
   --app-path=PATH                       App path (eg. '/apps/auth)
   --port=PORT                           Port to be exposed (default: 3000)
@@ -24,13 +24,16 @@ OPTIONS:
 EOF
 }
 
-IMAGE=${IMAGE:-"registry.gitlab.syncad.com/hive/denser:latest"}
-PORT=${PORT:-"3000"}
+IMAGE_NAME=${IMAGE_NAME:-"registry.gitlab.syncad.com/hive/denser:latest"}
 API_ENDPOINT=${API_ENDPOINT:-"https://api.hive.blog"}
+WALLET_ENDPOINT=${WALLET_ENDPOINT:-"https://wallet.hive.blog"}
+SITE_DOMAIN=${SITE_DOMAIN:-"https://blog.hive.blog"}
+BLOG_DOMAIN=${BLOG_DOMAIN:-"https://blog.hive.blog"}
 CHAIN_ID=${CHAIN_ID:-"beeab0de00000000000000000000000000000000000000000000000000000000"}
+IMAGES_ENDPOINT=${IMAGES_ENDPOINT:="https://images.hive.blog/"}
 TURBO_APP_SCOPE=${TURBO_APP_SCOPE:-}
 TURBO_APP_PATH=${TURBO_APP_PATH:-}
-IMAGES_ENDPOINT=${IMAGES_ENDPOINT:="https://images.hive.blog/"}
+PORT=${PORT:-"3000"}
 CONTAINER_NAME=${CONTAINER_NAME:-"denser"}
 DETACH=${DETACH:-false}
 
@@ -38,15 +41,31 @@ while [ $# -gt 0 ]; do
   case "$1" in
     --image=*)
         arg="${1#*=}"
-        IMAGE="$arg"
+        IMAGE_NAME="$arg"
         ;;
     --api-endpoint=*)
         arg="${1#*=}"
         API_ENDPOINT="$arg"
         ;;
+    --wallet-endpoint=*)
+        arg="${1#*=}"
+        WALLET_ENDPOINT="$arg"
+        ;;
+    --site-domain=*)
+        arg="${1#*=}"
+        SITE_DOMAIN="$arg"
+        ;;
+    --blog-domain=*)
+        arg="${1#*=}"
+        BLOG_DOMAIN="$arg"
+        ;;
     --chain-id=*)
         arg="${1#*=}"
         CHAIN_ID="$arg"
+        ;;
+    --images-endpoint=*)
+        arg="${1#*=}"
+        IMAGES_ENDPOINT="$arg"
         ;;
     --app-scope=*)
         arg="${1#*=}"
@@ -55,22 +74,6 @@ while [ $# -gt 0 ]; do
     --app-path=*)
         arg="${1#*=}"
         TURBO_APP_PATH="$arg"
-        ;;
-    --images-endpoint=*)
-        arg="${1#*=}"
-        IMAGES_ENDPOINT="$arg"
-        ;;
-    --wallet-endpoint=*)
-        arg="${1#*=}"
-        WALLET_ENDPOINT="$arg"
-        ;;
-    --blog-domain=*)
-        arg="${1#*=}"
-        BLOG_DOMAIN="$arg"
-        ;;
-    --site-domain=*)
-        arg="${1#*=}"
-        SITE_DOMAIN="$arg"
         ;;
     --port=*)
         arg="${1#*=}"
@@ -118,4 +121,4 @@ if [[ "$DETACH" == "true" ]]; then
     RUN_OPTIONS+=("--detach")
 fi
 
-docker run "${RUN_OPTIONS[@]}" "$IMAGE"
+docker run "${RUN_OPTIONS[@]}" "$IMAGE_NAME"
