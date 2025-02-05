@@ -207,7 +207,7 @@ function Permissions({ username }: InferGetServerSidePropsType<typeof getServerS
             <p>{t('permissions.public_info')}</p>
             <div>
               <p>{t('permissions.view_public')}</p>
-              <Link href={`${explorerURL}L/@${username}`} className="font-bold text-red-600">
+              <Link href={`${explorerURL}/@${username}`} className="font-bold text-red-600" target="_blank">
                 {`Block Explorer - ${username}`}
               </Link>
             </div>
