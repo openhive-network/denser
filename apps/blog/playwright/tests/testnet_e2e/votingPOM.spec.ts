@@ -36,10 +36,15 @@ test.describe('Voting tests with fixture and POM', () =>{
       const loginHelper = new LoginHelper(denserAutoTest4Page.page);
       const profileMenu = new ProfileUserMenu(denserAutoTest4Page.page);
 
+      // Validate User is logged in as denserautotest4
+      await loginHelper.validateLoggedInUser(users.denserautotest4.username);
+      // Click to close the profile menu  - click the main post list's header element
+      await profileMenu.clickCloseProfileMenu();
+      // Validate that Upvote button of the first color
       const firstPostUpvoteButtonLocator = homePage.getFirstPostUpvoteButtonIcon;
       const firstPostUpvoteButtonLocatorToClick = homePage.getFirstPostUpvoteButton;
 
-      if (await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color') == lightModeRedColor){
+      if (await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color') == 'rgb(218, 43, 43)'){
         // Validate that Upvote button of the first color red
         expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color')).toBe(lightModeRedColor);
         expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'background-color')).toBe(lightModeClearColor);
@@ -88,6 +93,10 @@ test.describe('Voting tests with fixture and POM', () =>{
       const loginHelper = new LoginHelper(denserAutoTest4Page.page);
       const profileMenu = new ProfileUserMenu(denserAutoTest4Page.page);
 
+      // Validate User is logged in as denserautotest4
+      await loginHelper.validateLoggedInUser(users.denserautotest4.username);
+      // Click to close the profile menu - click the main post list's header element
+      await profileMenu.clickCloseProfileMenu();
       // Validate that Upvote button of the first color red
       const firstPostUpvoteButtonLocator = homePage.getFirstPostUpvoteButtonIcon;
       const firstPostUpvoteButtonLocatorToClick = homePage.getFirstPostUpvoteButton;
@@ -130,6 +139,10 @@ test.describe('Voting tests with fixture and POM', () =>{
       const apiHelper = new ApiHelper(denserAutoTest4Page.page);
       const profileMenu = new ProfileUserMenu(denserAutoTest4Page.page);
 
+      // Validate User is logged in as denserautotest4
+      await loginHelper.validateLoggedInUser(users.denserautotest4.username);
+      // Click to close the profile menu - click the main post list's header element
+      await profileMenu.clickCloseProfileMenu();
       // Set first post upvote button locators
       const firstPostUpvoteButtonLocator = homePage.getFirstPostUpvoteButtonIcon;
       const firstPostUpvoteButtonLocatorToClick = homePage.getFirstPostUpvoteButton;
@@ -254,11 +267,15 @@ test.describe('Voting tests with fixture and POM', () =>{
       const loginHelper = new LoginHelper(denserAutoTest4Page.page);
       const profileMenu = new ProfileUserMenu(denserAutoTest4Page.page);
 
+      // Validate User is logged in as denserautotest4
+      await loginHelper.validateLoggedInUser(users.denserautotest4.username);
+      // Click to close the profile menu - click the main post list's header element
+      await profileMenu.clickCloseProfileMenu();
       // Validate that Downvote button of the first color
       const secondPostDownvoteButtonLocator = homePage.getSecondPostDownvoteButtonIcon;
       const secondPostDownvoteButtonLocatorToClick = homePage.getSecondPostDownvoteButton;
 
-      if (await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'color') == lightModeGreyColor){
+      if (await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'color') == 'rgb(75, 85, 99)'){
         // Validate that Upvote button of the first color red
         expect(await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'color')).toBe(lightModeGreyColor);
         expect(await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'background-color')).toBe(lightModeClearColor);
@@ -307,6 +324,10 @@ test.describe('Voting tests with fixture and POM', () =>{
       const loginHelper = new LoginHelper(denserAutoTest4Page.page);
       const profileMenu = new ProfileUserMenu(denserAutoTest4Page.page);
 
+      // Validate User is logged in as denserautotest4
+      await loginHelper.validateLoggedInUser(users.denserautotest4.username);
+      // Click to close the profile menu - click the main post list's header element
+      await profileMenu.clickCloseProfileMenu();
       // Get the second downvote button locator
       const secondPostDownvoteButtonLocator = homePage.getSecondPostDownvoteButtonIcon;
       const secondPostDownvoteButtonLocatorToClick = homePage.getSecondPostDownvoteButton;
@@ -348,6 +369,10 @@ test.describe('Voting tests with fixture and POM', () =>{
       const apiHelper = new ApiHelper(denserAutoTest4Page.page);
       const profileMenu = new ProfileUserMenu(denserAutoTest4Page.page);
 
+      // Validate User is logged in as denserautotest4
+      await loginHelper.validateLoggedInUser(users.denserautotest4.username);
+      // Click to close the profile menu - click the main post list's header element
+      await profileMenu.clickCloseProfileMenu();
       // Set second post downvote button locators
       const secondPostDownvoteButtonLocator = homePage.getSecondPostDownvoteButtonIcon;
       const secondPostDownvoteButtonLocatorToClick = homePage.getSecondPostDownvoteButton;
