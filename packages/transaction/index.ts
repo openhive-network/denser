@@ -1062,6 +1062,21 @@ export class TransactionService {
       });
     }, transactionOptions);
   }
+
+  async cancelTransferFromSavings(
+    fromAccount: string,
+    requestId: number,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.pushOperation({
+        cancel_transfer_from_savings: {
+          from_account: fromAccount,
+          request_id: requestId
+        }
+      });
+    }, transactionOptions);
+  }
 }
 
 export const transactionService = new TransactionService();

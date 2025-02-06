@@ -1,6 +1,7 @@
 import { getSavingsWithdrawals } from '@/wallet/lib/hive';
 import { asset } from '@hiveio/wax';
-import { useMutation } from '@tanstack/react-query';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { logger } from '@ui/lib/logger';
 
@@ -65,6 +66,8 @@ export function useTransferToSavingsMutation() {
  * @returns
  */
 export function useWithdrawFromSavingsMutation() {
+  const queryClient = useQueryClient();
+  const { user } = useUser();
   const withdrawFromSavingsMutation = useMutation({
     mutationFn: async (params: {
       fromAccount: string;
@@ -89,6 +92,8 @@ export function useWithdrawFromSavingsMutation() {
     },
     onSuccess: (data) => {
       logger.info('useWithdrawFromSavingsMutation onSuccess data: %o', data);
+      const { username } = user;
+      queryClient.invalidateQueries({ queryKey: ['savingsWithdrawalsFrom', username] });
     }
   });
 

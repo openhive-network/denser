@@ -7,9 +7,9 @@ import {
   getFindAccounts
 } from '@transaction/lib/hive';
 import moment from 'moment';
-import { getAccountHistory, getOpenOrder } from '@/wallet/lib/hive';
-import { getCurrentHpApr, getFilter } from '@/wallet/lib/utils';
-import { delegatedHive, vestingHive, powerdownHive, handleError } from '@ui/lib/utils';
+import { getAccountHistory, getOpenOrder, getSavingsWithdrawals } from '@/wallet/lib/hive';
+import { getAmountFromWithdrawal, getCurrentHpApr, getFilter } from '@/wallet/lib/utils';
+import { delegatedHive, vestingHive, powerdownHive, handleError, cn } from '@ui/lib/utils';
 import { numberWithCommas } from '@ui/lib/utils';
 import { dateToFullRelative } from '@ui/lib/parse-date';
 import { convertStringToBig } from '@ui/lib/helpers';
@@ -39,6 +39,7 @@ import { useClaimRewardsMutation } from '@/wallet/components/hooks/use-claim-rew
 import { useMemo } from 'react';
 import { useCancelPowerDownMutation } from '@/wallet/components/hooks/use-power-hive-mutation';
 import env from '@beam-australia/react-env';
+import { useCancelTransferFromSavingsMutation } from '@/wallet/components/hooks/use-cancel-transfer-from-savings-mutation';
 
 const initialFilters: TransferFilters = {
   search: '',
@@ -220,8 +221,13 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
     getFeedHistory()
   );
 
+  const { data: withdrawals } = useQuery(['savingsWithdrawalsFrom', username], () =>
+    getSavingsWithdrawals(username)
+  );
+
   const claimRewardsMutation = useClaimRewardsMutation();
   const cancelPowerDownMutation = useCancelPowerDownMutation();
+  const cancelTransferFromSavingsMutation = useCancelTransferFromSavingsMutation();
 
   const rewardsStr = useMemo(() => {
     const allRewards = [
@@ -323,6 +329,15 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
       await cancelPowerDownMutation.mutateAsync(params);
     } catch (error) {
       handleError(error, { method: 'withdraw_vesting', params });
+    }
+  };
+
+  const cancelTransferFromSavings = async (requestId: number) => {
+    const params = { fromAccount: username, requestId: requestId };
+    try {
+      await cancelTransferFromSavingsMutation.mutateAsync(params);
+    } catch (error) {
+      handleError(error, { method: 'cancel_transfer_from_savings', params });
     }
   };
 
@@ -765,6 +780,56 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
           </div>
         ) : null}
         <div className="w-full max-w-6xl">
+          {!!withdrawals?.withdrawals.length && (
+            <div className="flex flex-col">
+              <div className="p-2 font-semibold sm:p-4">{t('transfers_page.pending_savings')}</div>
+              <table className="max-w-6xl text-sm">
+                <tbody>
+                  {withdrawals?.withdrawals.map((withdrawal, index) => {
+                    const withdrawMessage = `${t('transfers_page.withdraw')} ${getAmountFromWithdrawal(withdrawal)} ${t('transfers_page.to_lower')} ${withdrawal.to}`;
+                    return (
+                      <tr
+                        className={cn('flex flex-col py-2 sm:table-row', {
+                          'bg-background-secondary': index % 2 === 0
+                        })}
+                        key={withdrawal.id}
+                      >
+                        <td className="px-2 sm:px-4 sm:py-2">
+                          {dateToFullRelative(withdrawal.complete.toString(), t)}
+                        </td>
+                        <td className="flex flex-row items-center px-2 sm:px-4 sm:py-2">
+                          <div>{withdrawMessage}</div>
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button variant="link" className="text-destructive hover:no-underline">
+                                {t('transfers_page.cancel')}
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="text-left sm:max-w-[425px]">
+                              <div className="flex flex-col gap-y-2">
+                                <div>{t('transfers_page.cancel_withdraw_request')}</div>
+                                <div>{withdrawMessage}</div>
+                              </div>
+                              <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
+                                <DialogTrigger asChild>
+                                  <Button
+                                    variant="redHover"
+                                    onClick={() => cancelTransferFromSavings(withdrawal.request_id)}
+                                  >
+                                    {t('transfers_page.cancel_withdraw_from_savings')}
+                                  </Button>
+                                </DialogTrigger>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
           {user.username === username && <FinancialReport username={user.username} />}
           <TransfersHistoryFilter
             onFiltersChange={(value) => {
