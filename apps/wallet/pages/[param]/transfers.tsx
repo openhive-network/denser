@@ -425,7 +425,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
     <ProfileLayout>
       <div className="flex w-full flex-col items-center ">
         <WalletMenu username={username} />
-        {!!rewardsStr.length && (
+        {!!rewardsStr.length && user?.username === username && (
           <div className="mx-auto w-full px-2 text-sm md:px-0 md:text-base">
             <div className="mx-auto mt-4 flex w-full max-w-6xl flex-col items-center justify-between gap-y-2 rounded-md bg-slate-600 px-4 py-4 md:flex-row">
               <div className="w-full text-center md:text-left">
