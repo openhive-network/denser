@@ -1,0 +1,49 @@
+{
+  "cookies": [
+    {
+      "name": "blog_login_challenge_server",
+      "value": "1cbecb0b-d229-4e9b-893e-8c3524c6fc9e",
+      "domain": "blog.fake.openhive.network",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "blog_login_challenge",
+      "value": "1cbecb0b-d229-4e9b-893e-8c3524c6fc9e",
+      "domain": "blog.fake.openhive.network",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "NEXT_LOCALE",
+      "value": "en",
+      "domain": "blog.fake.openhive.network",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://blog.fake.openhive.network",
+      "localStorage": [
+        {
+          "name": "user",
+          "value": "{\"isLoggedIn\":true,\"username\":\"guest4test2\",\"avatarUrl\":\"\",\"loginType\":\"hbauth\",\"keyType\":\"posting\",\"authenticateOnBackend\":false,\"chatAuthToken\":\"\",\"oauthConsent\":{},\"strict\":true}"
+        },
+        {
+          "name": "lastLoggedInUser",
+          "value": "\"guest4test2\""
+        }
+      ]
+    }
+  ]
+}
