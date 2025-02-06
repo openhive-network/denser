@@ -19,14 +19,16 @@ test.describe('Voting tests with fixture and POM', () =>{
     test('Upvote the first post of the tranding list', async ({denserAutoTest4Page}) =>{
       const loginForm = new LoginForm(denserAutoTest4Page.page);
       const loginHelper = new LoginHelper(denserAutoTest4Page.page);
+      const profileMenu = new ProfileUserMenu(denserAutoTest4Page.page);
 
       // Validate User is logged in as denserautotest4
       await loginHelper.validateLoggedInUser(users.denserautotest4.username);
-      // Click to close the profile menu
-      await denserAutoTest4Page.page.getByTestId('community-name').locator('..').locator('..').click({force: true});
+      // Click to close the profile menu  - click the main post list's header element
+      await profileMenu.clickCloseProfileMenu();
       // Validate that Upvote button of the first color
-      const firstPostUpvoteButtonLocator = denserAutoTest4Page.page.getByTestId('post-list-item').first().getByTestId('upvote-button').locator('svg');
-      const firstPostUpvoteButtonLocatorToClick = denserAutoTest4Page.page.getByTestId('post-list-item').first().getByTestId('upvote-button');
+      const firstPostUpvoteButtonLocator = homePage.getFirstPostUpvoteButtonIcon;
+      const firstPostUpvoteButtonLocatorToClick = homePage.getFirstPostUpvoteButton;
+
       if (await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color') == 'rgb(218, 43, 43)'){
         // Validate that Upvote button of the first color red
         expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color')).toBe('rgb(218, 43, 43)');
@@ -62,11 +64,11 @@ test.describe('Voting tests with fixture and POM', () =>{
 
       // Validate User is logged in as denserautotest4
       await loginHelper.validateLoggedInUser(users.denserautotest4.username);
-      // Click to close the profile menu
-      await denserAutoTest4Page.page.getByTestId('community-name').locator('..').locator('..').click({force: true});
+      // Click to close the profile menu - click the main post list's header element
+      await profileMenu.clickCloseProfileMenu();
       // Validate that Upvote button of the first color red
-      const firstPostUpvoteButtonLocator = denserAutoTest4Page.page.getByTestId('post-list-item').first().getByTestId('upvote-button').locator('svg');
-      const firstPostUpvoteButtonLocatorToClick = denserAutoTest4Page.page.getByTestId('post-list-item').first().getByTestId('upvote-button');
+      const firstPostUpvoteButtonLocator = homePage.getFirstPostUpvoteButtonIcon;
+      const firstPostUpvoteButtonLocatorToClick = homePage.getFirstPostUpvoteButton;
 
       if (await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color') == 'rgb(255, 255, 255)') {
         // Wait until optimistic ui is finished and validate the color of the upvote button
@@ -84,8 +86,9 @@ test.describe('Voting tests with fixture and POM', () =>{
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
       // Wait until optimistic ui is finished and validate the color of the upvote button
       await firstPostUpvoteButtonLocator.waitFor({state: 'visible'});
-      // Move pointer from the upvote icon
-      await denserAutoTest4Page.page.getByTestId('community-name').locator('..').locator('..').click({force: true});
+      // Move pointer from the upvote icon - click the main post list's header element
+      await profileMenu.clickCloseProfileMenu();
+      // await denserAutoTest4Page.page.getByTestId('community-name').locator('..').locator('..').click({force: true});
 
       if (await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color') == 'rgb(218, 43, 43)'){
         // Validate that Upvote button of the first color red
@@ -103,14 +106,15 @@ test.describe('Voting tests with fixture and POM', () =>{
       const loginForm = new LoginForm(denserAutoTest4Page.page);
       const loginHelper = new LoginHelper(denserAutoTest4Page.page);
       const apiHelper = new ApiHelper(denserAutoTest4Page.page);
+      const profileMenu = new ProfileUserMenu(denserAutoTest4Page.page);
 
       // Validate User is logged in as denserautotest4
       await loginHelper.validateLoggedInUser(users.denserautotest4.username);
-      // Click to close the profile menu
-      await denserAutoTest4Page.page.getByTestId('community-name').locator('..').locator('..').click({force: true});
+      // Click to close the profile menu - click the main post list's header element
+      await profileMenu.clickCloseProfileMenu();
       // Set first post upvote button locators
-      const firstPostUpvoteButtonLocator = denserAutoTest4Page.page.getByTestId('post-list-item').first().getByTestId('upvote-button').locator('svg');
-      const firstPostUpvoteButtonLocatorToClick = denserAutoTest4Page.page.getByTestId('post-list-item').first().getByTestId('upvote-button');
+      const firstPostUpvoteButtonLocator = homePage.getFirstPostUpvoteButtonIcon;
+      const firstPostUpvoteButtonLocatorToClick = homePage.getFirstPostUpvoteButton;
       // wait for the broadcast transaction
       const broadcastTransaction = apiHelper.waitForRequestToIntercept(url, "POST", "network_broadcast_api.broadcast_transaction");
       // Click Upvote button of the first post on the trending list
@@ -146,14 +150,16 @@ test.describe('Voting tests with fixture and POM', () =>{
     test('Downvote the second post of the tranding list', async ({denserAutoTest4Page}) =>{
       const loginForm = new LoginForm(denserAutoTest4Page.page);
       const loginHelper = new LoginHelper(denserAutoTest4Page.page);
+      const profileMenu = new ProfileUserMenu(denserAutoTest4Page.page);
 
       // Validate User is logged in as denserautotest4
       await loginHelper.validateLoggedInUser(users.denserautotest4.username);
-      // Click to close the profile menu
-      await denserAutoTest4Page.page.getByTestId('community-name').locator('..').locator('..').click({force: true});
+      // Click to close the profile menu - click the main post list's header element
+      await profileMenu.clickCloseProfileMenu();
       // Validate that Downvote button of the first color
-      const secondPostDownvoteButtonLocator = denserAutoTest4Page.page.getByTestId('post-list-item').nth(1).getByTestId('downvote-button').locator('svg');
-      const secondPostDownvoteButtonLocatorToClick = denserAutoTest4Page.page.getByTestId('post-list-item').nth(1).getByTestId('downvote-button');
+      const secondPostDownvoteButtonLocator = homePage.getSecondPostDownvoteButtonIcon;
+      const secondPostDownvoteButtonLocatorToClick = homePage.getSecondPostDownvoteButton;
+
       if (await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'color') == 'rgb(75, 85, 99)'){
         // Validate that Upvote button of the first color red
         expect(await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'color')).toBe('rgb(75, 85, 99)');
@@ -189,11 +195,11 @@ test.describe('Voting tests with fixture and POM', () =>{
 
       // Validate User is logged in as denserautotest4
       await loginHelper.validateLoggedInUser(users.denserautotest4.username);
-      // Click to close the profile menu
-      await denserAutoTest4Page.page.getByTestId('community-name').locator('..').locator('..').click({force: true});
+      // Click to close the profile menu - click the main post list's header element
+      await profileMenu.clickCloseProfileMenu();
       // Get the second downvote button locator
-      const secondPostDownvoteButtonLocator = denserAutoTest4Page.page.getByTestId('post-list-item').nth(1).getByTestId('downvote-button').locator('svg');
-      const secondPostDownvoteButtonLocatorToClick = denserAutoTest4Page.page.getByTestId('post-list-item').nth(1).getByTestId('downvote-button');
+      const secondPostDownvoteButtonLocator = homePage.getSecondPostDownvoteButtonIcon;
+      const secondPostDownvoteButtonLocatorToClick = homePage.getSecondPostDownvoteButton;
 
       if (await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'color') == 'rgb(255, 255, 255)') {
         // Wait until optimistic ui is finished and validate the color of the downvote button
@@ -211,8 +217,8 @@ test.describe('Voting tests with fixture and POM', () =>{
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
       // Wait until optimistic ui is finished and validate the color of the downvote button
       await secondPostDownvoteButtonLocator.waitFor({state: 'visible'});
-      // Move pointer from the upvote icon
-      await denserAutoTest4Page.page.getByTestId('community-name').locator('..').locator('..').click({force: true});
+      // Move pointer from the upvote icon - click the main post list's header element
+      await profileMenu.clickCloseProfileMenu();
 
       if (await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'color') == 'rgb(75, 85, 99)'){
         // Validate that Downvote button of the second post is color grey
@@ -230,14 +236,15 @@ test.describe('Voting tests with fixture and POM', () =>{
       const loginForm = new LoginForm(denserAutoTest4Page.page);
       const loginHelper = new LoginHelper(denserAutoTest4Page.page);
       const apiHelper = new ApiHelper(denserAutoTest4Page.page);
+      const profileMenu = new ProfileUserMenu(denserAutoTest4Page.page);
 
       // Validate User is logged in as denserautotest4
       await loginHelper.validateLoggedInUser(users.denserautotest4.username);
-      // Click to close the profile menu
-      await denserAutoTest4Page.page.getByTestId('community-name').locator('..').locator('..').click({force: true});
+      // Click to close the profile menu - click the main post list's header element
+      await profileMenu.clickCloseProfileMenu();
       // Set second post downvote button locators
-      const secondPostDownvoteButtonLocator = denserAutoTest4Page.page.getByTestId('post-list-item').nth(1).getByTestId('downvote-button').locator('svg');
-      const secondPostDownvoteButtonLocatorToClick = denserAutoTest4Page.page.getByTestId('post-list-item').nth(1).getByTestId('downvote-button');
+      const secondPostDownvoteButtonLocator = homePage.getSecondPostDownvoteButtonIcon;
+      const secondPostDownvoteButtonLocatorToClick = homePage.getSecondPostDownvoteButton;
       // wait for the broadcast transaction
       const broadcastTransaction = apiHelper.waitForRequestToIntercept(url, "POST", "network_broadcast_api.broadcast_transaction");
       // Click Downvote button of the second post on the trending list

@@ -12,6 +12,7 @@ export class ProfileUserMenu {
     readonly languageTypeButton: Locator;
     readonly walletLink: Locator;
     readonly logoutLink: Locator;
+    readonly headerPostList: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -25,6 +26,7 @@ export class ProfileUserMenu {
         this.languageTypeButton = page.locator('[data-testid="toggle-language"]');
         this.walletLink = page.locator('[data-testid="user-profile-menu-wallet-link"]');
         this.logoutLink = page.locator('[data-testid="user-profile-menu-logout-link"]');
+        this.headerPostList = page.getByTestId('community-name').locator('..').locator('..');
     }
 
     async validateUserProfileManuIsOpen() {
@@ -33,5 +35,9 @@ export class ProfileUserMenu {
 
     async validateUserNameInProfileMenu(username: string){
         await expect(this.profileUserName).toHaveText(username);
+    }
+
+    async clickCloseProfileMenu() {
+        this.headerPostList.click({force: true});
     }
 }
