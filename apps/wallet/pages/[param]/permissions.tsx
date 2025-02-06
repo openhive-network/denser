@@ -11,7 +11,16 @@ import env from '@beam-australia/react-env';
 import { useState } from 'react';
 import { getPrivateKeys } from '@transaction/lib/hive';
 import { toast } from '@ui/components/hooks/use-toast';
-import RevealKeyComponent from '@/wallet/components/receal-key-component';
+import RevealKeyComponent from '@/wallet/components/reveal-key-component';
+interface Key {
+  type: string;
+  privateKey: string;
+  correctKey: boolean;
+}
+function keyDecoded(keys: Key[], type: 'posting' | 'active' | 'owner' | 'memo') {
+  const key = keys.find((key) => key.type === type);
+  return key?.correctKey ? key?.privateKey : undefined;
+}
 
 function Permissions({ username }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { t } = useTranslation('common_wallet');
@@ -43,20 +52,24 @@ function Permissions({ username }: InferGetServerSidePropsType<typeof getServerS
       if (keysCheck.some((key) => key.correctKey !== true)) {
         toast({
           title: 'Error',
-          description: 'Invalid password',
+          description: 'Password is not including all keys',
           variant: 'destructive'
         });
       } else {
         setKeys((prev) => ({
-          posting: keysCheck.find((key) => key.type === 'posting')?.privateKey || prev.posting,
-          active: keysCheck.find((key) => key.type === 'active')?.privateKey || prev.active,
-          owner: keysCheck.find((key) => key.type === 'owner')?.privateKey || prev.owner,
-          memo: keysCheck.find((key) => key.type === 'memo')?.privateKey || prev.memo
+          posting: keyDecoded(keysCheck, 'posting') || prev.posting,
+          active: keyDecoded(keysCheck, 'active') || prev.active,
+          owner: keyDecoded(keysCheck, 'owner') || prev.owner,
+          memo: keyDecoded(keysCheck, 'memo') || prev.memo
         }));
         setReveal((prev) => ({ ...prev, [keyType]: true }));
       }
     } catch {
-      console.log('error');
+      toast({
+        title: 'Error',
+        description: 'Operation failed',
+        variant: 'destructive'
+      });
     }
   };
   return (

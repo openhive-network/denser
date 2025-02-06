@@ -26,7 +26,7 @@ const RevealKeyComponent = ({
       <div className="relative h-10">
         <Input
           className="absolute left-0 h-full"
-          type={reveal ? 'input' : 'password'}
+          type={reveal && keyValue !== mockValue ? 'input' : 'password'}
           id={type}
           value={keyValue}
         />
