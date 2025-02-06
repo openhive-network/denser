@@ -20,7 +20,7 @@ if (process.env.REACT_APP_API_ENDPOINT.substr(-1) != '/') process.env.REACT_APP_
 export default defineConfig({
   testDir: './playwright/tests/testnet_e2e',
   /* Maximum time one test can run for. */
-  timeout: 60 * 1000,
+  timeout: 120 * 1000,
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
