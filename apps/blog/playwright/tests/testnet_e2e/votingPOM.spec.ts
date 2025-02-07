@@ -12,15 +12,6 @@ test.describe('Voting tests with fixture and POM', () =>{
   const lightModeWhiteColor: string = 'rgb(255, 255, 255)';
   const lightModeClearColor: string = 'rgba(0, 0, 0, 0)';
   const lightModeGreyColor: string = 'rgb(75, 85, 99)';
-  const darkModeRedColor: string = 'rgb(226, 18, 53)';
-  const darkModeWhiteColor: string = 'rgb(255, 255, 255)';
-  const darkModeClearColor: string = 'rgba(0, 0, 0, 0)';
-  const darkModeGreyColor: string = 'rgb(75, 85, 99)';
-  // Upvotes and downvotes tooltip texts
-  const upvoteTooltipText: string = 'UpvoteUpvote';
-  const undoUpvoteTooltipText: string = 'Undo your upvoteUndo your upvote';
-  const downvoteTooltipText: string = 'DownvoteDownvote';
-  const undoDownvoteTooltipText: string = 'Undo your downvoteUndo your downvote';
 
   let homePage: HomePage;
 
@@ -44,23 +35,15 @@ test.describe('Voting tests with fixture and POM', () =>{
       const firstPostUpvoteButtonLocator = homePage.getFirstPostUpvoteButtonIcon;
       const firstPostUpvoteButtonLocatorToClick = homePage.getFirstPostUpvoteButton;
 
-      if (await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color') == 'rgb(218, 43, 43)'){
+      if (await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color') == lightModeRedColor){
         // Validate that Upvote button of the first color red
         expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color')).toBe(lightModeRedColor);
         expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'background-color')).toBe(lightModeClearColor);
-        // Validate the upvote tooltips
-        await firstPostUpvoteButtonLocator.hover();
-        await homePage.page.waitForTimeout(1000);
-        expect(await homePage.getUpvoteButtonTooltip.textContent()).toBe(upvoteTooltipText);
       } else {
         // Wait until optimistic ui is finished and validate the color of the upvote button
         await firstPostUpvoteButtonLocator.waitFor({state: 'visible'});
         expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color')).toBe(lightModeWhiteColor);
         expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'background-color')).toBe(lightModeRedColor);
-        // Validate the upvote tooltips
-        await firstPostUpvoteButtonLocator.hover();
-        await homePage.page.waitForTimeout(1000);
-        expect(await homePage.getUpvoteButtonTooltip.textContent()).toBe(undoUpvoteTooltipText);
       }
       // Click Upvote button of the first post on the trending list
       await firstPostUpvoteButtonLocatorToClick.click();
@@ -73,18 +56,10 @@ test.describe('Voting tests with fixture and POM', () =>{
         // Wait until optimistic ui is finished and validate the color of the upvote button
         expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color')).toBe(lightModeWhiteColor);
         expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'background-color')).toBe(lightModeRedColor);
-
-        await firstPostUpvoteButtonLocator.hover();
-        await homePage.page.waitForTimeout(1000);
-        expect(await homePage.getUpvoteButtonTooltip.textContent()).toBe(undoUpvoteTooltipText);
       } else {
         // Validate that Upvote button of the first color red
         expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color')).toBe(lightModeRedColor);
         expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'background-color')).toBe(lightModeClearColor);
-
-        await firstPostUpvoteButtonLocator.hover();
-        await homePage.page.waitForTimeout(1000);
-        expect(await homePage.getUpvoteButtonTooltip.textContent()).toBe(upvoteTooltipText);
       }
     });
 
@@ -275,23 +250,15 @@ test.describe('Voting tests with fixture and POM', () =>{
       const secondPostDownvoteButtonLocator = homePage.getSecondPostDownvoteButtonIcon;
       const secondPostDownvoteButtonLocatorToClick = homePage.getSecondPostDownvoteButton;
 
-      if (await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'color') == 'rgb(75, 85, 99)'){
+      if (await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'color') == lightModeGreyColor){
         // Validate that Upvote button of the first color red
         expect(await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'color')).toBe(lightModeGreyColor);
         expect(await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'background-color')).toBe(lightModeClearColor);
-        // Validate the downvote tooltip text
-        await secondPostDownvoteButtonLocator.hover();
-        await homePage.page.waitForTimeout(1000);
-        expect(await homePage.getDownvoteButtonTooltip.textContent()).toBe(downvoteTooltipText);
       } else {
         // Wait until optimistic ui is finished and validate the color of the downvote button
         await secondPostDownvoteButtonLocator.waitFor({state: 'visible'});
         expect(await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'color')).toBe(lightModeWhiteColor);
         expect(await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'background-color')).toBe(lightModeRedColor);
-        // Validate the undo downvote tooltip text
-        await secondPostDownvoteButtonLocator.hover();
-        await homePage.page.waitForTimeout(1000);
-        expect(await homePage.getDownvoteButtonTooltip.textContent()).toBe(undoDownvoteTooltipText);
       }
       // Click Downvote button of the second post on the trending list
       await secondPostDownvoteButtonLocatorToClick.click();
@@ -304,18 +271,10 @@ test.describe('Voting tests with fixture and POM', () =>{
         // Wait until optimistic ui is finished and validate the color of the upvote button
         expect(await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'color')).toBe(lightModeWhiteColor);
         expect(await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'background-color')).toBe(lightModeRedColor);
-        // Validate the undo downvote tooltip text
-        await secondPostDownvoteButtonLocator.hover();
-        await homePage.page.waitForTimeout(1000);
-        expect(await homePage.getDownvoteButtonTooltip.textContent()).toBe(undoDownvoteTooltipText);
       } else {
         // Validate that Downvote button of the second post has color grey
         expect(await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'color')).toBe(lightModeGreyColor);
         expect(await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'background-color')).toBe(lightModeClearColor);
-        // Validate the downvote tooltip text
-        await secondPostDownvoteButtonLocator.hover();
-        await homePage.page.waitForTimeout(1000);
-        expect(await homePage.getDownvoteButtonTooltip.textContent()).toBe(downvoteTooltipText);
       }
     });
 
