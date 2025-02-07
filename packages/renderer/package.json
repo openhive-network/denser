@@ -2,8 +2,8 @@
   "name": "@hive/renderer",
   "version": "0.0.0-development",
   "description": "Content renderer for Hive posts and comments. Markdown + HTML",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
   "unpkg": "dist/browser/hive-content-renderer.min.js",
   "engines": {
     "node": ">=20"
@@ -12,20 +12,9 @@
     "access": "public"
   },
   "scripts": {
-    "build:clean": "rm -rf dist",
-    "build:node": "tsc -p tsconfig.build.json",
-    "build:browser": "NODE_ENV=production webpack --mode=production --config webpack.config.js",
-    "build": "pnpm run build:clean && pnpm run build:node && pnpm run build:browser",
-    "prepare": "if [ -f tsconfig.build.json ]; then pnpm run build; fi",
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint ./src --ext .js,.jsx,.ts,.tsx --fix",
-    "test": "mocha 'src/**/*.test.ts'",
-    "test:coverage": "nyc --reporter=cobertura mocha 'src/**/*.test.ts'",
-    "verify:ci": "/opt/testcafe/docker/testcafe-docker.sh --selector-timeout 2000 --assertion-timeout 2000 chromium,firefox browser-test/browser-test.js",
-    "verify:chrome": "testcafe --selector-timeout 2000 --assertion-timeout 2000 chrome browser-test/browser-test.js",
-    "verify:firefox": "testcafe --selector-timeout 2000 --assertion-timeout 2000 firefox browser-test/browser-test.js",
-    "semantic-release": "semantic-release",
-    "hooks:install": "husky"
+    "test": "mocha 'src/**/*.test.ts'"
   },
   "dependencies": {
     "@xmldom/xmldom": "0.8.10",

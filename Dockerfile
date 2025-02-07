@@ -32,9 +32,6 @@ WORKDIR /app
 # First install the dependencies (as they change less often)
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-COPY --from=builder /app/packages/tsconfig ./packages/tsconfig
-COPY --from=builder /app/packages/renderer/src ./packages/renderer/src
-COPY --from=builder /app/packages/renderer/tsconfig*.json ./packages/renderer/
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Build the project
