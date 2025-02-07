@@ -531,6 +531,7 @@ staging:deploy-auth:
     CONTAINER_NAME: denser-auth
     TURBO_APP_SCOPE: '@hive/auth'
     TURBO_APP_PATH: '/apps/auth'
+    EXPLORER_DOMAIN: 'https://explore.openhive.network'
   environment:
     name: staging-auth
     action: start
@@ -551,6 +552,7 @@ staging:deploy-blog:
     CONTAINER_NAME: denser-blog
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
+    EXPLORER_DOMAIN: 'https://explore.openhive.network'
   environment:
     name: staging-blog
     action: start
@@ -570,6 +572,7 @@ staging:deploy-wallet:
     CONTAINER_NAME: denser-wallet
     TURBO_APP_SCOPE: '@hive/wallet'
     TURBO_APP_PATH: '/apps/wallet'
+    EXPLORER_DOMAIN: 'https://explore.openhive.network'
   environment:
     name: staging-wallet
     action: start
@@ -632,6 +635,7 @@ review:deploy-auth:
     SITE_DOMAIN: https://auth.fake.openhive.network
     LOGGING_BROWSER_ENABLED: false
     LOGGING_LOG_LEVEL: info
+    EXPLORER_DOMAIN: 'https://testexplorer.openhive.network'
   environment:
     name: review-auth
     action: start
@@ -650,6 +654,7 @@ review:deploy-blog:
     BLOG_DOMAIN: https://blog.fake.openhive.network
     LOGGING_BROWSER_ENABLED: false
     LOGGING_LOG_LEVEL: info
+    EXPLORER_DOMAIN: 'https://testexplorer.openhive.network'
   environment:
     name: review-blog
     action: start
@@ -668,6 +673,7 @@ review:deploy-wallet:
     BLOG_DOMAIN: https://blog.fake.openhive.network
     LOGGING_BROWSER_ENABLED: false
     LOGGING_LOG_LEVEL: info
+    EXPLORER_DOMAIN: 'https://testexplorer.openhive.network'
   environment:
     name: review-wallet
     action: start

@@ -13,6 +13,7 @@ OPTIONS:
   --wallet-endpoint=WALLET_ENDPOINT     Wallet endpoint to be used by the new instance (default: 'https://wallet.hive.blog')
   --site-domain=SITE_DOMAIN             Site domain to be used by the new instance (default: 'https://blog.hive.blog')
   --blog-domain=BLOG_DOMAIN             Blog domain to be used by the new instance (default: 'https://blog.hive.blog')
+  --explorer-domain=EXPLORER_DOMAIN     Explorer domain to be used by the new instance (default: 'https://explore.hive.blog')
   --chain-id=CHAIN_ID                   Chain ID to be used by the new instance (default: 'beeab0de00000000000000000000000000000000000000000000000000000000')
   --images-endpoint=URL                 IMAGES endpoint to be used by the new instance (default: 'https://images.hive.blog/')
   --app-scope=SCOPE                     App scope (eg. '@hive/auth')
@@ -29,6 +30,7 @@ API_ENDPOINT=${API_ENDPOINT:-"https://api.hive.blog"}
 WALLET_ENDPOINT=${WALLET_ENDPOINT:-"https://wallet.hive.blog"}
 SITE_DOMAIN=${SITE_DOMAIN:-"https://blog.hive.blog"}
 BLOG_DOMAIN=${BLOG_DOMAIN:-"https://blog.hive.blog"}
+EXPLORER_DOMAIN=${EXPLORER_DOMAIN:-"https://explore.openhive.network"}
 CHAIN_ID=${CHAIN_ID:-"beeab0de00000000000000000000000000000000000000000000000000000000"}
 IMAGES_ENDPOINT=${IMAGES_ENDPOINT:="https://images.hive.blog/"}
 TURBO_APP_SCOPE=${TURBO_APP_SCOPE:-}
@@ -58,6 +60,10 @@ while [ $# -gt 0 ]; do
     --blog-domain=*)
         arg="${1#*=}"
         BLOG_DOMAIN="$arg"
+        ;;
+    --explorer-domain=*)
+        arg="${1#*=}"
+        EXPLORER_DOMAIN="$arg"
         ;;
     --chain-id=*)
         arg="${1#*=}"
@@ -110,6 +116,7 @@ RUN_OPTIONS=(
     "--env" "REACT_APP_BLOG_DOMAIN=$BLOG_DOMAIN"
     "--env" "REACT_APP_IMAGES_ENDPOINT=$IMAGES_ENDPOINT"
     "--env" "REACT_APP_WALLET_ENDPOINT=$WALLET_ENDPOINT"
+    "--env" "REACT_APP_EXPLORER_DOMAIN=$EXPLORER_DOMAIN"
     "--env" "REACT_APP_SITE_DOMAIN=$SITE_DOMAIN"
     "--env" "REACT_APP_CHAIN_ID=$CHAIN_ID"
     "--env" "TURBO_APP_SCOPE=$TURBO_APP_SCOPE"
