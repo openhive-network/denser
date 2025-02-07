@@ -1,4 +1,4 @@
-import { DefaultRenderer } from '@hiveio/content-renderer';
+import { DefaultRenderer } from '@hive/renderer';
 import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
 import env from '@beam-australia/react-env';
 import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';

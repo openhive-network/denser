@@ -1,5 +1,5 @@
 {
-  "name": "@hiveio/content-renderer",
+  "name": "@hive/renderer",
   "version": "0.0.0-development",
   "description": "Content renderer for Hive posts and comments. Markdown + HTML",
   "main": "dist/index.js",
@@ -14,9 +14,9 @@
   "scripts": {
     "build:clean": "rm -rf dist",
     "build:node": "tsc -p tsconfig.build.json",
-    "build:browser": "rm -rf dist/browser/ && NODE_ENV=production webpack --mode=production --config webpack.config.js",
-    "build": "npm run build:clean && npm run build:node && npm run build:browser",
-    "prepare": "npm run hooks:install && NODE_ENV=production npm run build",
+    "build:browser": "NODE_ENV=production webpack --mode=production --config webpack.config.js",
+    "build": "pnpm run build:clean && pnpm run build:node && pnpm run build:browser",
+    "prepare": "pnpm run build",
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint ./src --ext .js,.jsx,.ts,.tsx --fix",
     "test": "mocha 'src/**/*.test.ts'",
@@ -37,6 +37,7 @@
     "universe-log": "5.2.0"
   },
   "devDependencies": {
+    "@hive/tsconfig": "workspace:*",
     "@commitlint/cli": "19.3.0",
     "@commitlint/config-conventional": "19.2.2",
     "@engrave/eslint-config-engrave": "1.0.0",
@@ -67,7 +68,8 @@
     "uuid": "10.0.0",
     "webpack": "5.92.1",
     "webpack-cli": "5.1.4",
-    "webpack-visualizer-plugin2": "1.1.0"
+    "webpack-visualizer-plugin2": "1.1.0",
+    "ts-loader": "^9.5.1"
   },
   "commitlint": {
     "extends": [

@@ -1,5 +1,5 @@
 const path = require('path');
-const withTM = require('next-transpile-modules')(['@hive/smart-signer', '@hive/ui', '@hive/transaction']);
+const withTM = require('next-transpile-modules')(['@hive/smart-signer', '@hive/ui', '@hive/transaction', '@hive/renderer']);
 const CopyPlugin = require('copy-webpack-plugin');
 const removeImports = require('next-remove-imports')();
 const withPWA = require('next-pwa')({

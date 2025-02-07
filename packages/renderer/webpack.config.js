@@ -12,17 +12,35 @@ const DEFAULTS = {
 
 module.exports = {
     mode: (DEFAULTS.isDevelopment ? "development" : "production"),
-    entry: "./dist/index",
+    entry: "./src/index.ts",
     output: {
         path: path.resolve(__dirname, "dist", "browser"),
         filename: "hive-content-renderer.min.js",
         library: "HiveContentRenderer",
-        libraryTarget: "umd"
+        libraryTarget: "umd",
+        globalObject: 'this'
     },
     devtool: (DEFAULTS.isDevelopment ? 'eval-cheap-source-map' : false),
     target: "web",
     module: {
-        rules: []
+        rules: [
+            {
+                test: /\.tsx?$/,
+                use: [
+                    {
+                        loader: 'ts-loader',
+                        options: {
+                            configFile: 'tsconfig.build.json',
+                            transpileOnly: true,
+                            compilerOptions: {
+                                module: 'esnext'
+                            }
+                        }
+                    }
+                ],
+                exclude: /node_modules/
+            }
+        ]
     },
     optimization: {
         minimize: (!DEFAULTS.isDevelopment)
@@ -31,7 +49,7 @@ module.exports = {
         hints: false
     },
     resolve: {
-        extensions: [".js", ".json"],
+        extensions: ['.tsx', '.ts', '.js', '.json'],
         fallback: {
             "fs": false,
             "url": false
