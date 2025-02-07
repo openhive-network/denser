@@ -1,0 +1,1 @@
+module.exports = require('@engrave/eslint-config-engrave/prettier.config');

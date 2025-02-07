@@ -1,0 +1,116 @@
+{
+  "name": "@hiveio/content-renderer",
+  "version": "0.0.0-development",
+  "description": "Content renderer for Hive posts and comments. Markdown + HTML",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "unpkg": "dist/browser/hive-content-renderer.min.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build:clean": "rm -rf dist",
+    "build:node": "tsc -p tsconfig.build.json",
+    "build:browser": "rm -rf dist/browser/ && NODE_ENV=production webpack --mode=production --config webpack.config.js",
+    "build": "npm run build:clean && npm run build:node && npm run build:browser",
+    "prepare": "npm run hooks:install && NODE_ENV=production npm run build",
+    "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint ./src --ext .js,.jsx,.ts,.tsx --fix",
+    "test": "mocha 'src/**/*.test.ts'",
+    "test:coverage": "nyc --reporter=cobertura mocha 'src/**/*.test.ts'",
+    "verify:ci": "/opt/testcafe/docker/testcafe-docker.sh --selector-timeout 2000 --assertion-timeout 2000 chromium,firefox browser-test/browser-test.js",
+    "verify:chrome": "testcafe --selector-timeout 2000 --assertion-timeout 2000 chrome browser-test/browser-test.js",
+    "verify:firefox": "testcafe --selector-timeout 2000 --assertion-timeout 2000 firefox browser-test/browser-test.js",
+    "semantic-release": "semantic-release",
+    "hooks:install": "husky"
+  },
+  "dependencies": {
+    "@xmldom/xmldom": "0.8.10",
+    "ow": "0.28.2",
+    "react-twitter-embed": "^4.0.4",
+    "remarkable": "2.0.1",
+    "sanitize-html": "2.13.0",
+    "typescript-chained-error": "1.6.0",
+    "universe-log": "5.2.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "19.3.0",
+    "@commitlint/config-conventional": "19.2.2",
+    "@engrave/eslint-config-engrave": "1.0.0",
+    "@semantic-release/gitlab": "13.2.0",
+    "@types/chai": "4.3.16",
+    "@types/jsdom": "21.1.7",
+    "@types/lodash": "4.17.6",
+    "@types/mocha": "10.0.7",
+    "@types/node": "20.14.10",
+    "@types/remarkable": "2.0.8",
+    "@types/sanitize-html": "2.11.0",
+    "@types/uuid": "10.0.0",
+    "@typescript-eslint/eslint-plugin": "7.15.0",
+    "chai": "4.4.1",
+    "eslint": "8.57.0",
+    "eslint-plugin-import": "2.29.1",
+    "husky": "9.0.11",
+    "jsdom": "24.1.0",
+    "lodash": "4.17.21",
+    "mocha": "10.6.0",
+    "nyc": "17.0.0",
+    "prettier": "3.3.2",
+    "semantic-release": "24.0.0",
+    "testcafe": "3.6.2",
+    "ts-node": "10.9.2",
+    "typescript": "5.5.3",
+    "typescript-eslint": "7.15.0",
+    "uuid": "10.0.0",
+    "webpack": "5.92.1",
+    "webpack-cli": "5.1.4",
+    "webpack-visualizer-plugin2": "1.1.0"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
+    "rules": {
+      "header-max-length": [
+        0
+      ],
+      "scope-case": [
+        0
+      ]
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.syncad.com/hive/hive-renderer.git"
+  },
+  "keywords": [
+    "hive",
+    "markdown",
+    "renderer",
+    "blockchain",
+    "hive",
+    "content",
+    "content-renderer"
+  ],
+  "author": "Engrave (https://engrave.dev/)",
+  "contributors": [
+    "Jędrzej Lewandowski <jedrzejblew@gmail.com> (https://jedrzej.lewandowski.doctor/)",
+    "Bartłomiej Górnicki <contact@engrave.dev> (https://engrave.dev)"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://gitlab.syncad.com/hive/hive-renderer/-/issues"
+  },
+  "homepage": "https://hive.io",
+  "release": {
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/gitlab",
+      "@semantic-release/npm"
+    ]
+  }
+}

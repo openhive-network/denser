@@ -1,0 +1,56 @@
+stages:
+  - test
+  - release
+
+image: node:20.11.1
+
+before_script:
+  - npm ci
+
+lint:code:
+  stage: test
+  script:
+    - npm run lint
+
+lint:commit message:
+  stage: test
+  script:
+    - echo "${CI_COMMIT_MESSAGE}" | npx commitlint
+
+test:unit:
+  stage: test
+  script:
+      - npm run test:coverage
+      - NODE_ENV=production npm run build && node sample/demo-local.js
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
+
+test:browser:
+  stage: test
+  image:
+    name: testcafe/testcafe
+    entrypoint: ["/bin/sh", "-c"]
+  script:
+    - NODE_ENV=production npm run build
+    - npm run verify:ci
+
+release:
+  stage: release
+  script:
+    - npm run semantic-release
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+
+pages:
+  stage: release
+  script:
+    - mkdir -p public
+    - cp sample/live-demo.html public/index.html
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
