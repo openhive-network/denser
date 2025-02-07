@@ -16,7 +16,7 @@
     "build:node": "tsc -p tsconfig.build.json",
     "build:browser": "NODE_ENV=production webpack --mode=production --config webpack.config.js",
     "build": "pnpm run build:clean && pnpm run build:node && pnpm run build:browser",
-    "prepare": "pnpm run build",
+    "prepare": "if [ -f tsconfig.build.json ]; then pnpm run build; fi",
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint ./src --ext .js,.jsx,.ts,.tsx --fix",
     "test": "mocha 'src/**/*.test.ts'",
