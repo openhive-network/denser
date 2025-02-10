@@ -72,7 +72,12 @@ export class HtmlDOMParser {
 
     public parse(html: string): HtmlDOMParser {
         try {
-            const doc: Document = this.domParser.parseFromString(html, 'text/html');
+            const fixedHtml = html
+                // Remove wrapping <p> from details
+                .replace(/<p>\s*(<details>[\s\S]*?<\/details>)\s*<\/p>/g, '$1')
+                // Move content after details outside of it
+                .replace(/(<details>[\s\S]*?<\/pre>)([\s\S]*?)(<\/details>)/g, '$1$3$2');
+            const doc: Document = this.domParser.parseFromString(fixedHtml, 'text/html');
             this.traverseDOMNode(doc);
             if (this.mutate) this.postprocessDOM(doc);
             this.parsedDocument = doc;
