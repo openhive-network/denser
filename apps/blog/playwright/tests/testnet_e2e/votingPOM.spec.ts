@@ -27,11 +27,6 @@ test.describe('Voting tests with fixture and POM', () =>{
       const loginHelper = new LoginHelper(denserAutoTest4Page.page);
       const profileMenu = new ProfileUserMenu(denserAutoTest4Page.page);
 
-      // Validate User is logged in as denserautotest4
-      await loginHelper.validateLoggedInUser(users.denserautotest4.username);
-      // Click to close the profile menu  - click the main post list's header element
-      await profileMenu.clickCloseProfileMenu();
-      // Validate that Upvote button of the first color
       const firstPostUpvoteButtonLocator = homePage.getFirstPostUpvoteButtonIcon;
       const firstPostUpvoteButtonLocatorToClick = homePage.getFirstPostUpvoteButton;
 
@@ -48,7 +43,7 @@ test.describe('Voting tests with fixture and POM', () =>{
       // Click Upvote button of the first post on the trending list
       await firstPostUpvoteButtonLocatorToClick.click();
       // If a password to unlock key is needed
-      await loginForm.page.waitForTimeout(20000);
+      await loginForm.page.waitForTimeout(3000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
       await firstPostUpvoteButtonLocator.waitFor({state: 'visible'});
 
@@ -68,10 +63,6 @@ test.describe('Voting tests with fixture and POM', () =>{
       const loginHelper = new LoginHelper(denserAutoTest4Page.page);
       const profileMenu = new ProfileUserMenu(denserAutoTest4Page.page);
 
-      // Validate User is logged in as denserautotest4
-      await loginHelper.validateLoggedInUser(users.denserautotest4.username);
-      // Click to close the profile menu - click the main post list's header element
-      await profileMenu.clickCloseProfileMenu();
       // Validate that Upvote button of the first color red
       const firstPostUpvoteButtonLocator = homePage.getFirstPostUpvoteButtonIcon;
       const firstPostUpvoteButtonLocatorToClick = homePage.getFirstPostUpvoteButton;
@@ -88,7 +79,7 @@ test.describe('Voting tests with fixture and POM', () =>{
       // Click Upvote button of the first post on the trending list
       await firstPostUpvoteButtonLocatorToClick.click({force: true});
       // If a password to unlock key is needed
-      await loginForm.page.waitForTimeout(20000);
+      await loginForm.page.waitForTimeout(3000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
       // Wait until optimistic ui is finished and validate the color of the upvote button
       await firstPostUpvoteButtonLocator.waitFor({state: 'visible'});
@@ -114,10 +105,6 @@ test.describe('Voting tests with fixture and POM', () =>{
       const apiHelper = new ApiHelper(denserAutoTest4Page.page);
       const profileMenu = new ProfileUserMenu(denserAutoTest4Page.page);
 
-      // Validate User is logged in as denserautotest4
-      await loginHelper.validateLoggedInUser(users.denserautotest4.username);
-      // Click to close the profile menu - click the main post list's header element
-      await profileMenu.clickCloseProfileMenu();
       // Set first post upvote button locators
       const firstPostUpvoteButtonLocator = homePage.getFirstPostUpvoteButtonIcon;
       const firstPostUpvoteButtonLocatorToClick = homePage.getFirstPostUpvoteButton;
@@ -126,13 +113,13 @@ test.describe('Voting tests with fixture and POM', () =>{
       // Click Upvote button of the first post on the trending list
       await firstPostUpvoteButtonLocatorToClick.click();
       // If a password to unlock key is needed
-      await loginForm.page.waitForTimeout(20000);
+      await loginForm.page.waitForTimeout(3000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
       await firstPostUpvoteButtonLocator.waitFor({state: 'visible'});
 
       // wait for promise to resolve intercepted request
       const broadcastTransactionReq = await broadcastTransaction;
-      await denserAutoTest4Page.page.waitForTimeout(20000);
+      await denserAutoTest4Page.page.waitForTimeout(5000);
       const broadcastTransactionReqJson = await broadcastTransactionReq.postDataJSON();
       // console.log('operations >>>: ', await broadcastTransactionReqJson.params.trx.operations);
       // If now color of the upvote button is read
@@ -158,10 +145,6 @@ test.describe('Voting tests with fixture and POM', () =>{
       const loginHelper = new LoginHelper(denserAutoTest4Page.page);
       const profileMenu = new ProfileUserMenu(denserAutoTest4Page.page);
 
-      // Validate User is logged in as denserautotest4
-      await loginHelper.validateLoggedInUser(users.denserautotest4.username);
-      // Click to close the profile menu - click the main post list's header element
-      await profileMenu.clickCloseProfileMenu();
       // Validate that Downvote button of the first color
       const secondPostDownvoteButtonLocator = homePage.getSecondPostDownvoteButtonIcon;
       const secondPostDownvoteButtonLocatorToClick = homePage.getSecondPostDownvoteButton;
@@ -179,7 +162,7 @@ test.describe('Voting tests with fixture and POM', () =>{
       // Click Downvote button of the second post on the trending list
       await secondPostDownvoteButtonLocatorToClick.click();
       // If a password to unlock key is needed
-      await loginForm.page.waitForTimeout(20000);
+      await loginForm.page.waitForTimeout(3000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
       await secondPostDownvoteButtonLocator.waitFor({state: 'visible'});
       await loginForm.page.waitForTimeout(2000);
@@ -199,10 +182,6 @@ test.describe('Voting tests with fixture and POM', () =>{
       const loginHelper = new LoginHelper(denserAutoTest4Page.page);
       const profileMenu = new ProfileUserMenu(denserAutoTest4Page.page);
 
-      // Validate User is logged in as denserautotest4
-      await loginHelper.validateLoggedInUser(users.denserautotest4.username);
-      // Click to close the profile menu - click the main post list's header element
-      await profileMenu.clickCloseProfileMenu();
       // Get the second downvote button locator
       const secondPostDownvoteButtonLocator = homePage.getSecondPostDownvoteButtonIcon;
       const secondPostDownvoteButtonLocatorToClick = homePage.getSecondPostDownvoteButton;
@@ -219,7 +198,7 @@ test.describe('Voting tests with fixture and POM', () =>{
       // Click Downvote button of the second post on the trending list
       await secondPostDownvoteButtonLocatorToClick.click({force: true});
       // If a password to unlock key is needed
-      await loginForm.page.waitForTimeout(20000);
+      await loginForm.page.waitForTimeout(3000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
       // Wait until optimistic ui is finished and validate the color of the downvote button
       await secondPostDownvoteButtonLocator.waitFor({state: 'visible'});
@@ -244,10 +223,6 @@ test.describe('Voting tests with fixture and POM', () =>{
       const apiHelper = new ApiHelper(denserAutoTest4Page.page);
       const profileMenu = new ProfileUserMenu(denserAutoTest4Page.page);
 
-      // Validate User is logged in as denserautotest4
-      await loginHelper.validateLoggedInUser(users.denserautotest4.username);
-      // Click to close the profile menu - click the main post list's header element
-      await profileMenu.clickCloseProfileMenu();
       // Set second post downvote button locators
       const secondPostDownvoteButtonLocator = homePage.getSecondPostDownvoteButtonIcon;
       const secondPostDownvoteButtonLocatorToClick = homePage.getSecondPostDownvoteButton;
@@ -256,13 +231,13 @@ test.describe('Voting tests with fixture and POM', () =>{
       // Click Downvote button of the second post on the trending list
       await secondPostDownvoteButtonLocatorToClick.click();
       // If a password to unlock key is needed
-      await loginForm.page.waitForTimeout(20000);
+      await loginForm.page.waitForTimeout(3000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
       await secondPostDownvoteButtonLocator.waitFor({state: 'visible'});
       await loginForm.page.waitForTimeout(2000);
       // wait for promise to resolve intercepted request
       const broadcastTransactionReq = await broadcastTransaction;
-      await denserAutoTest4Page.page.waitForTimeout(20000);
+      await denserAutoTest4Page.page.waitForTimeout(5000);
       const broadcastTransactionReqJson = await broadcastTransactionReq.postDataJSON();
       // console.log('operations >>>: ', await broadcastTransactionReqJson.params.trx.operations);
       // If now color of the downvote button is grey
