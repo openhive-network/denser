@@ -12,6 +12,10 @@ test.describe('Voting tests with fixture and POM', () =>{
   const lightModeWhiteColor: string = 'rgb(255, 255, 255)';
   const lightModeClearColor: string = 'rgba(0, 0, 0, 0)';
   const lightModeGreyColor: string = 'rgb(75, 85, 99)';
+  const darkModeRedColor: string = 'rgb(226, 18, 53)';
+  const darkModeWhiteColor: string = 'rgb(255, 255, 255)';
+  const darkModeClearColor: string = 'rgba(0, 0, 0, 0)';
+  const darkModeGreyColor: string = 'rgb(75, 85, 99)';
 
   let homePage: HomePage;
 
@@ -119,7 +123,7 @@ test.describe('Voting tests with fixture and POM', () =>{
 
       // wait for promise to resolve intercepted request
       const broadcastTransactionReq = await broadcastTransaction;
-      await denserAutoTest4Page.page.waitForTimeout(5000);
+      await denserAutoTest4Page.page.waitForTimeout(10000);
       const broadcastTransactionReqJson = await broadcastTransactionReq.postDataJSON();
       // console.log('operations >>>: ', await broadcastTransactionReqJson.params.trx.operations);
       // If now color of the upvote button is read
@@ -321,7 +325,7 @@ test.describe('Voting tests with fixture and POM', () =>{
       await loginForm.page.waitForTimeout(2000);
       // wait for promise to resolve intercepted request
       const broadcastTransactionReq = await broadcastTransaction;
-      await denserAutoTest4Page.page.waitForTimeout(5000);
+      await denserAutoTest4Page.page.waitForTimeout(10000);
       const broadcastTransactionReqJson = await broadcastTransactionReq.postDataJSON();
       // console.log('operations >>>: ', await broadcastTransactionReqJson.params.trx.operations);
       // If now color of the downvote button is grey
