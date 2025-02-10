@@ -2,7 +2,7 @@
   "cookies": [
     {
       "name": "blog_login_challenge_server",
-      "value": "1cbecb0b-d229-4e9b-893e-8c3524c6fc9e",
+      "value": "6001bf35-0cd6-4535-92b4-2d94a6ccfd2a",
       "domain": "blog.fake.openhive.network",
       "path": "/",
       "expires": -1,
@@ -12,7 +12,7 @@
     },
     {
       "name": "blog_login_challenge",
-      "value": "1cbecb0b-d229-4e9b-893e-8c3524c6fc9e",
+      "value": "6001bf35-0cd6-4535-92b4-2d94a6ccfd2a",
       "domain": "blog.fake.openhive.network",
       "path": "/",
       "expires": -1,

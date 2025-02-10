@@ -58,7 +58,24 @@ export const users = {
       private_posting: process.env.DENSER_AUTO_TEST4_WIF_POSTING as string,
       private_memo: process.env.DENSER_AUTO_TEST4_WIF_MEMO as string,
     }
+  },
+
+  guest4test2: {
+    username: 'guest4test2',
+    safeStoragePassword: 'testtest',
+    keys: {
+      private_owner: process.env.DENSER_AUTO_TEST4_WIF_OWNER as string,
+      private_active: process.env.DENSER_AUTO_TEST4_WIF_ACTIVE as string,
+      private_posting: process.env.DENSER_GUEST4TEST2_WIF_POSTING as string,
+      private_memo: process.env.DENSER_AUTO_TEST4_WIF_MEMO as string,
+    }
   }
+}
+
+export const urls = {
+  staging: {
+    url: 'https://blog.fake.openhive.network'
+  },
 }
 
 export class LoginHelper {
