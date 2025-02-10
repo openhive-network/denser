@@ -10,7 +10,9 @@ export class TwitterEmbedder extends AbstractEmbedder {
     public getEmbedMetadata(input: string | HTMLObjectElement): EmbedMetadata | undefined {
         const url = typeof input === 'string' ? input : input.data;
         try {
-            const metadata = TwitterEmbedder.getTwitterMetadataFromLink(url);
+            const metadata = TwitterEmbedder.getTwitterMetadataFromLink(url.startsWith('\n') ? url.replace('\n', '') : url);
+            console.log('input', input, 'url', url, 'metadata', metadata);
+
             if (!metadata) {
                 return undefined;
             }

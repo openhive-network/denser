@@ -10,7 +10,7 @@ export class ThreeSpeakEmbedder extends AbstractEmbedder {
     public getEmbedMetadata(input: string | HTMLObjectElement): EmbedMetadata | undefined {
         const url = typeof input === 'string' ? input : input.data;
         try {
-            const match = url.match(ThreeSpeakEmbedder.linkRegex);
+            const match = (url.startsWith('\n') ? url.replace('\n', '') : url).match(ThreeSpeakEmbedder.linkRegex);
             if (match && match[1]) {
                 const id = match[1];
                 return {
