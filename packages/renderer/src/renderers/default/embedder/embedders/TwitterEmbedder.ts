@@ -11,7 +11,6 @@ export class TwitterEmbedder extends AbstractEmbedder {
         const url = typeof input === 'string' ? input : input.data;
         try {
             const metadata = TwitterEmbedder.getTwitterMetadataFromLink(url.startsWith('\n') ? url.replace('\n', '') : url);
-            console.log('input', input, 'url', url, 'metadata', metadata);
 
             if (!metadata) {
                 return undefined;
