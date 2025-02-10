@@ -21,6 +21,7 @@ import { useTranslation } from 'next-i18next';
 import imageUserBlocklist from '@ui/config/lists/image-user-blocklist';
 import { cn } from '@ui/lib/utils';
 import { useSignerContext } from '@smart-signer/components/signer-provider';
+import { Button } from '@ui/components';
 
 const logger = getLogger('app');
 
@@ -240,7 +241,38 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     }
   });
 
-  const editChoice = (inputRef: MutableRefObject<HTMLInputElement>) => [imgBtn(inputRef)];
+  const spoilerBtn = (): commands.ICommand => ({
+    name: "Add Spoiler",
+    keyCommand: "spoiler",
+    render: (
+      command: commands.ICommand,
+      disabled: boolean | undefined,
+      executeCommand: (
+        arg0: commands.ICommand<string>,
+        arg1: string | undefined
+      ) => void
+    ) => {
+      return (
+        <Button
+          variant="basic"
+          onClick={() => executeCommand(command, command.groupName)}
+          disabled={disabled}
+        >
+          Spoiler
+        </Button>
+      );
+    },
+    execute: (_: commands.ExecuteState, api: TextAreaTextApi) => {
+      const spoilerTemplate = ">! [Click to reveal] Your spoiler content";
+      const newState = api.replaceSelection(spoilerTemplate);
+      api.setSelectionRange({
+        start:
+          newState.selection.start +
+          spoilerTemplate.indexOf("Your spoiler content"),
+        end: newState.selection.end,
+      });
+    },
+  });
 
   return !imageUserBlocklist?.includes(user.username) ? (
     <div>
@@ -264,7 +296,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
             onChange={(value) => {
               setFormValue(value || '');
             }}
-            commands={[...(commands.getCommands() as ICommand[]), imgBtn(inputRef)]}
+            commands={[...(commands.getCommands() as ICommand[]), imgBtn(inputRef), spoilerBtn()]}
             extraCommands={[]}
             className={cn({ '!bg-red-400 !bg-opacity-20': isDrag })}
             onDrop={dropHandler}
@@ -287,7 +319,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       onChange={(value) => {
         setFormValue(value || '');
       }}
-      commands={[...(commands.getCommands() as ICommand[]), imgBtn(inputRef)]}
+      commands={[...(commands.getCommands() as ICommand[]), imgBtn(inputRef), spoilerBtn()]}
       extraCommands={[]}
       //@ts-ignore
       style={{ '--color-canvas-default': 'var(--background)' }}
