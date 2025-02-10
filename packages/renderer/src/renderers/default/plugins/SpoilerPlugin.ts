@@ -4,23 +4,22 @@ export class SpoilerPlugin implements RendererPlugin {
     name = 'spoiler';
 
     preProcess(text: string): string {
-        return text.replace(/^>! *\[(.*?)\] *(.*?)(?:\n|$)([\s\S]*?)(?=^>! *\[|$)/gm, (_, title, firstLine, rest) => {
-            // Get the first line content (after the title)
-            const content = firstLine.trim();
+        // Matches spoiler blocks with optional title and multiple lines
+        return text.replace(/^>!(?:\s*\[(.*?)\])?\s*(.*?)(?:\n|$)((?:\n> ?.*)*)$/gm, (_, title, firstLine, rest) => {
+            // Combines first line and additional lines into single content string
+            const content = [
+                firstLine.trim(),
+                ...rest
+                    .split('\n') // Split additional lines
+                    .map((line: string) => line.trim()) // Remove whitespace
+                    .filter((line: string) => line.startsWith('>')) // Keep only quote lines
+                    .map((line: string) => line.replace(/^> ?/, '')) // Remove quote markers
+            ]
+                .join(' ') // Join all lines with spaces
+                .trim(); // Remove extra whitespace
 
-            // Get the rest of the content (lines starting with >)
-            const restContent = rest
-                .split('\n')
-                .map((line: string) => line.trim())
-                .filter((line: string) => line.startsWith('>'))
-                .map((line: string) => line.replace(/^> ?/, ''))
-                .join(' ')
-                .trim();
-
-            // Combine all content
-            const fullContent = [content, restContent].filter(Boolean).join(' ');
-
-            return `<details class="spoiler"><summary>${title || 'Reveal spoiler'}</summary><p>${fullContent}</p></details>`;
+            // Generate HTML details/summary structure
+            return `<details class="spoiler"><summary>${title || 'Reveal spoiler'}</summary><p>${content}</p></details>`;
         });
     }
 }
