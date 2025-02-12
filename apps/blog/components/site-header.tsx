@@ -20,6 +20,7 @@ import LangToggle from './lang-toggle';
 import { PieChart, Pie } from 'recharts';
 import useManabars from './hooks/useManabars';
 import { hoursAndMinutes } from '../lib/utils';
+import env from '@beam-australia/react-env';
 
 const SiteHeader: FC = () => {
   const router = useRouter();
@@ -203,7 +204,7 @@ const SiteHeader: FC = () => {
                         <Avatar className="z-30 flex h-9 w-9 items-center justify-center overflow-hidden rounded-full">
                           <AvatarImage
                             className="h-full w-full object-cover"
-                            src={user.avatarUrl}
+                            src={`${env("IMAGES_ENDPOINT")}/u/${user.username}/avatar`}
                             alt="Profile picture"
                           />
                           <AvatarFallback>
