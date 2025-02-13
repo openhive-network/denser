@@ -141,6 +141,32 @@ export function powerdownHive(accountData: FullAccount, dynamicData: IDynamicGlo
   return powerdown_hivef;
 }
 
+export function findAndParseJSON(value: string) {
+  try {
+    const valueJSON = value.slice(value.indexOf('{'), value.lastIndexOf('}') + 1);
+    const parsedJSON = JSON.parse(valueJSON);
+    return parsedJSON;
+  } catch (error) {
+    throw error;
+  }
+}
+
+const INVALID_RES_FROM_API_MESSAGE = 'Invalid response from API';
+
+export function transformTranscationError(transactionError: unknown) {
+  const errorString = (transactionError as string).toString();
+  const isInvalidResponseFromApi = errorString.includes(INVALID_RES_FROM_API_MESSAGE);
+
+  if (isInvalidResponseFromApi) {
+    try {
+      const transactionError = findAndParseJSON(errorString);
+      return transactionError?.error?.message;
+    } catch (error) {
+      return transactionError;
+    }
+  } else return transactionError;
+}
+
 export function handleError<T>(error: any, ctx?: { method: string; params: T }, toastOptions?: Toast) {
   toast({
     description: transformError<T>(error, ctx),

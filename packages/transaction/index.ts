@@ -23,6 +23,7 @@ import { Beneficiarie, Preferences } from './lib/app-types';
 import WorkerBee, { ITransactionData, IWorkerBee } from '@hiveio/workerbee';
 
 import { getLogger } from '@hive/ui/lib/logging';
+import { transformTranscationError } from '@ui/lib/utils';
 const logger = getLogger('app');
 
 export type TransactionErrorCallback = (error: any) => any;
@@ -237,7 +238,7 @@ export class TransactionService {
       return result;
     } catch (error) {
       logger.error('Got error, logging and rethrowing it: %o', error);
-      throw error;
+      throw transformTranscationError(error);
     } finally {
       if (--this.observedTransactionsCounter === 0) {
         // Stop bot
