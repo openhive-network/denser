@@ -142,13 +142,8 @@ export function powerdownHive(accountData: FullAccount, dynamicData: IDynamicGlo
 }
 
 export function findAndParseJSON(value: string) {
-  try {
-    const valueJSON = value.slice(value.indexOf('{'), value.lastIndexOf('}') + 1);
-    const parsedJSON = JSON.parse(valueJSON);
-    return parsedJSON;
-  } catch (error) {
-    throw error;
-  }
+  const valueJSON = value.slice(value.indexOf('{'), value.lastIndexOf('}') + 1);
+  return JSON.parse(valueJSON);
 }
 
 const INVALID_RES_FROM_API_MESSAGE = 'Invalid response from API';
