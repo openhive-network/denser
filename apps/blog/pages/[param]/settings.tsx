@@ -17,7 +17,7 @@ import { useLocalStorage } from 'usehooks-ts';
 import { GetServerSideProps } from 'next';
 import { useParams } from 'next/navigation';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { cn, handleError } from '@ui/lib/utils';
+import { cn } from '@ui/lib/utils';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
@@ -36,6 +36,7 @@ import { z } from 'zod';
 import { getDefaultProps } from '../../lib/get-translations';
 import { CircleSpinner } from 'react-spinners-kit';
 import { useSignerContext } from '@smart-signer/components/signer-provider';
+import { handleError } from '@ui/lib/handle-error';
 
 export const getServerSideProps: GetServerSideProps = getDefaultProps;
 
