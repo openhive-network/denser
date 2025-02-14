@@ -146,26 +146,11 @@ export function findAndParseJSON(value: string) {
   return JSON.parse(valueJSON);
 }
 
-const INVALID_RES_FROM_API_MESSAGE = 'Invalid response from API';
-
-export function transformTranscationError(transactionError: unknown) {
-  const errorString = (transactionError as string).toString();
-  const isInvalidResponseFromApi = errorString.includes(INVALID_RES_FROM_API_MESSAGE);
-
-  if (isInvalidResponseFromApi) {
-    try {
-      const transactionError = findAndParseJSON(errorString);
-      return transactionError?.error?.message;
-    } catch (error) {
-      return transactionError;
-    }
-  } else return transactionError;
-}
-
-export function handleError<T>(error: any, ctx?: { method: string; params: T }, toastOptions?: Toast) {
-  toast({
-    description: transformError<T>(error, ctx),
-    variant: 'destructive',
-    ...toastOptions
-  });
+export function isJSON(value: string) {
+  try {
+    JSON.parse(value);
+    return true;
+  } catch (error) {
+    return false;
+  }
 }

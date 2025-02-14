@@ -1,6 +1,6 @@
 import { Button } from '@hive/ui';
 import { useTranslation } from 'next-i18next';
-import { handleError } from '@ui/lib/utils';
+import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
 
 const FollowButton = ({
