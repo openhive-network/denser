@@ -50,8 +50,8 @@ export class TwitterPlugin implements RendererPlugin {
     }
     preProcess: (text: string) => string = (text: string) => {
         return text.replace(
-            /(?:https?:\/\/)?(?:www\.)?(twitter|x)\.com\/(?:#!\/)?(\w+)\/status(es)?\/(\d+)/g,
-            (_match, _domain, author, _status, id) => `<div>twitter-id-${id}-author-${author}</div>`
+            /(?<!\()(https?:\/\/)?(?:www\.)?(twitter|x)\.com\/(?:#!\/)?(\w+)\/status(es)?\/(\d+)[^)\s]*/g,
+            (_match, _protocol, _domain, author, _status, id) => `<div>twitter-id-${id}-author-${author}</div>`
         );
     };
 
@@ -63,8 +63,7 @@ export class TwitterPlugin implements RendererPlugin {
             if (window.twttr?.ready) {
                 setTimeout(() => this.renderTweet(id, containerId), 0);
             }
-
-            return `<div id="${containerId}" class="twitter-container"><a href="${url}" target="_blank">${url}</a></div>`;
+            return `<div id="${containerId}" class="twitter-tweet"><a href="${url}" target="_blank">${url}</a></div>`;
         });
     };
 }
