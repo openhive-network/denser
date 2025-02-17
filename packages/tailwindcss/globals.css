@@ -102,6 +102,15 @@
   content: none;
 }
 
+.twitter-tweet,
+.instagram-embed {
+  display: flex;
+  justify-content: center;
+}
+
+#twitter-widget-0 {
+  border-radius: 15px;
+}
 .pull-left {
   float: left;
   padding-right: 1rem;
@@ -139,7 +148,11 @@
 .preview-rules ul > li {
   @apply py-1;
 }
-
+.prose a.link-external,
+.prose a {
+  position: relative;
+  display: inline-block;
+}
 .prose a.link-external:after {
   content: '';
   background: url(./assets/external-icon.svg);
@@ -148,7 +161,6 @@
   width: 0.7em;
   height: 0.7em;
   top: 0.05em;
-  position: relative;
   left: 0.1em;
   margin-right: 0.1em;
   opacity: 0.5;

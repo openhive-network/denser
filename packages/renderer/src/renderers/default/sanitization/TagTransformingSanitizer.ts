@@ -43,6 +43,7 @@ export class TagTransformingSanitizer {
 
                 // style is subject to attack, filtering more below
                 td: ['style'],
+                th: ['style'],
                 img: ['src', 'alt'],
 
                 // title is only set in the case of an external link warning
@@ -130,6 +131,23 @@ export class TagTransformingSanitizer {
                     const attys: sanitize.Attributes = {};
                     if (attribs.style === 'text-align:right') {
                         attys.style = 'text-align:right';
+                    }
+                    if (attribs.style === 'text-align:center') {
+                        attys.style = 'text-align:center';
+                    }
+                    const retTag: sanitize.Tag = {
+                        tagName,
+                        attribs: attys
+                    };
+                    return retTag;
+                },
+                th: (tagName, attribs) => {
+                    const attys: sanitize.Attributes = {};
+                    if (attribs.style === 'text-align:right') {
+                        attys.style = 'text-align:right';
+                    }
+                    if (attribs.style === 'text-align:center') {
+                        attys.style = 'text-align:center';
                     }
                     const retTag: sanitize.Tag = {
                         tagName,
