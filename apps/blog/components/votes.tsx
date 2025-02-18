@@ -14,7 +14,7 @@ import { Entry } from '@transaction/lib/bridge';
 import { Slider } from '@ui/components/slider';
 import { Popover, PopoverTrigger, PopoverContent } from '@ui/components/popover';
 import { useLoggedUserContext } from './common/logged-user';
-import { handleError } from '@ui/lib/utils';
+import { handleError } from '@ui/lib/handle-error';
 import { useUpVoteStore, useDownVoteStore } from './hooks/use-vote-store';
 
 const logger = getLogger('app');

@@ -9,7 +9,7 @@ import {
 import moment from 'moment';
 import { getAccountHistory, getOpenOrder, getSavingsWithdrawals } from '@/wallet/lib/hive';
 import { getAmountFromWithdrawal, getCurrentHpApr, getFilter } from '@/wallet/lib/utils';
-import { delegatedHive, vestingHive, powerdownHive, handleError, cn } from '@ui/lib/utils';
+import { delegatedHive, vestingHive, powerdownHive, cn } from '@ui/lib/utils';
 import { numberWithCommas } from '@ui/lib/utils';
 import { dateToFullRelative } from '@ui/lib/parse-date';
 import { convertStringToBig } from '@ui/lib/helpers';
@@ -40,6 +40,7 @@ import { useMemo } from 'react';
 import { useCancelPowerDownMutation } from '@/wallet/components/hooks/use-power-hive-mutation';
 import env from '@beam-australia/react-env';
 import { useCancelTransferFromSavingsMutation } from '@/wallet/components/hooks/use-cancel-transfer-from-savings-mutation';
+import { handleError } from '@ui/lib/handle-error';
 
 const initialFilters: TransferFilters = {
   search: '',
