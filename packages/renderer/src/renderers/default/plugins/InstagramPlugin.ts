@@ -22,7 +22,7 @@ export class InstagramPlugin implements RendererPlugin {
         if (this.scriptLoaded || window?.instgrm) return;
 
         const script = document.createElement('script');
-        script.src = 'www.instagram.com/embed.js';
+        script.src = 'https://www.instagram.com/embed.js';
         script.async = true;
         script.onload = () => {
             this.scriptLoaded = true;
