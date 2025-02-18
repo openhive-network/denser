@@ -6,10 +6,11 @@ declare global {
     }
 }
 
+// Instagram plugin
 export class InstagramPlugin implements RendererPlugin {
     private renderedPosts = new Set<string>();
     private scriptLoaded = false;
-
+    // Plugin name
     name = 'instagram';
 
     constructor() {
@@ -17,7 +18,7 @@ export class InstagramPlugin implements RendererPlugin {
             this.loadInstagramScript();
         }
     }
-
+    // Load Instagram embed script
     private loadInstagramScript() {
         if (this.scriptLoaded || window?.instgrm) return;
 
@@ -31,10 +32,12 @@ export class InstagramPlugin implements RendererPlugin {
         document.head.appendChild(script);
     }
 
+    // Process queued Instagram posts
     private processQueuedPosts() {
         window.instgrm?.Embeds?.process();
     }
 
+    // Render Instagram post
     private renderPost(url: string, containerId: string) {
         if (typeof window === 'undefined') return;
         if (this.renderedPosts.has(containerId)) return;
@@ -44,7 +47,6 @@ export class InstagramPlugin implements RendererPlugin {
 
         this.renderedPosts.add(containerId);
         const isDarkMode = container.closest('.dark') !== null;
-
         container.innerHTML = `
       <blockquote 
         class="instagram-media" 
@@ -69,35 +71,43 @@ export class InstagramPlugin implements RendererPlugin {
         }
     }
 
+    // Pre-process the text before rendering
     preProcess = (text: string): string => {
+        // Match Instagram URLs
         return text.replace(/(https?:\/\/(www\.)?instagram\.com\/[^\s]+)/g, (match) => {
             const embedUrl = this.getInstagramMetadataFromLink(match);
             return embedUrl ? `<div>instagram-url-${encodeURIComponent(embedUrl)}</div>` : match;
         });
     };
 
+    // Post-process the text after rendering
     postProcess = (text: string): string => {
+        // Replace Instagram URLs with embeds
         return text.replace(/<div>instagram-url-(.*?)<\/div>/g, (_match, encodedUrl) => {
             const url = decodeURIComponent(encodedUrl);
             const containerId = `instagram-${Math.random().toString(36).substring(7)}`;
 
             setTimeout(() => this.renderPost(url, containerId), 0);
-
             return `<div id="${containerId}" class="instagram-embed"></div>`;
         });
     };
 
+    // Get Instagram metadata from the link
     private getInstagramMetadataFromLink(link: string): string | undefined {
         if (!link) return undefined;
+        // Match profile URLs
+        const profileMatch = link.match(/^https:\/\/www\.instagram\.com\/([a-zA-Z0-9_.]+)\/?$/i);
+        if (profileMatch) {
+            return profileMatch[0];
+        }
 
-        const match = link.match(/^https:\/\/www\.instagram\.com\/(p|reel|reels|[a-zA-Z0-9_.]+)\/(.*?)\/?$/i);
-        if (!match) return undefined;
-
-        const [_, type, id] = match;
-
-        if (id.startsWith('p/')) return `https://www.instagram.com/${id}`;
-        if (type.includes('reel')) return `https://www.instagram.com/reel/${id}`;
-
-        return match[0];
+        // Match post/reel URLs
+        const postMatch = link.match(/^https:\/\/www\.instagram\.com\/(?:[a-zA-Z0-9_.]+\/)?(?<type>p|reel|reels)\/(?<id>[^/?]+)/i);
+        if (postMatch) {
+            const id = postMatch.groups?.id || '';
+            const type = postMatch.groups?.type.includes('reel') ? 'reel' : 'p';
+            return `https://www.instagram.com/${type}/${id}`;
+        }
+        return undefined;
     }
 }
