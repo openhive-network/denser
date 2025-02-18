@@ -10,7 +10,7 @@ import {
   Separator
 } from '@ui/components';
 import { useState } from 'react';
-import { handleError } from '@ui/lib/utils';
+import { handleError } from '@ui/lib/handle-error';
 import { useMutePostMutation, useUnmutePostMutation } from '@/blog/components/hooks/use-mute-post-mutations';
 import { CircleSpinner } from 'react-spinners-kit';
 import clsx from 'clsx';

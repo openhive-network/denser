@@ -21,7 +21,7 @@ import { useCreateCommunityMutation } from '@/wallet/components/hooks/use-create
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { handleError } from '@ui/lib/utils';
+import { handleError } from '@ui/lib/handle-error';
 import { getAccount, getAccounts } from '@transaction/lib/hive';
 
 const createCommunitySchema = z.object({

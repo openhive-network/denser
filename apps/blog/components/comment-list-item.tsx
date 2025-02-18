@@ -26,7 +26,7 @@ import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import RendererContainer from './rendererContainer';
 import { useDeleteCommentMutation } from './hooks/use-comment-mutations';
-import { handleError } from '@ui/lib/utils';
+import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
 import MutePostDialog from './mute-post-dialog';
 import ChangeTitleDialog from './change-title-dialog';

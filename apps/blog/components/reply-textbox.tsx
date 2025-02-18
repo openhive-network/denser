@@ -14,7 +14,7 @@ import { Entry } from '@transaction/lib/bridge';
 import RendererContainer from './rendererContainer';
 import { getLogger } from '@ui/lib/logging';
 import { useCommentMutation, useUpdateCommentMutation } from './hooks/use-comment-mutations';
-import { handleError } from '@ui/lib/utils';
+import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
 import { commentClassName } from './comment-list-item';
 
@@ -212,7 +212,11 @@ export function ReplyTextbox({
             </Link>
           </div>
         </div>
-        <RendererContainer body={text} author="" className={commentClassName + ' max-w-full border-2 border-background-tertiary p-2'} />
+        <RendererContainer
+          body={text}
+          author=""
+          className={commentClassName + ' max-w-full border-2 border-background-tertiary p-2'}
+        />
       </div>
     </div>
   );

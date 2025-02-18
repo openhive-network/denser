@@ -15,7 +15,7 @@ import WalletMenu from '@/wallet/components/wallet-menu';
 import { getServerSidePropsDefault } from '../../lib/get-translations';
 import { createWaxFoundation } from '@hiveio/wax';
 import { useChangePasswordMutation } from '@/wallet/components/hooks/use-change-password-mutation';
-import { handleError } from '@ui/lib/utils';
+import { handleError } from '@ui/lib/handle-error';
 import { Icons } from '@ui/components/icons';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 

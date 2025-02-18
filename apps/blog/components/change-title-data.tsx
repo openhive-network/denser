@@ -8,7 +8,7 @@ import {
   Input,
   Separator
 } from '@ui/components';
-import { handleError } from '@ui/lib/utils';
+import { handleError } from '@ui/lib/handle-error';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
 import { useUserTitleMutation } from './hooks/use-user-title';
