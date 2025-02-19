@@ -215,12 +215,13 @@ const VotesComponent = ({ post }: { post: Entry }) => {
             sideOffset={offsetSlider.popoverSideOffset}
             align="start"
             alignOffset={offsetSlider.popoverAlignOfset}
+            data-testid='downvote-slider-modal'
           >
             <div className="flex h-full items-center gap-2">
               <TooltipContainer
                 loading={voteMutation.isLoading}
                 text={t('cards.post_card.downvote')}
-                dataTestId="downvote-button"
+                dataTestId="downvote-button-slider"
               >
                 <Icons.arrowDownCircle
                   className="h-[24px] w-[24px] cursor-pointer rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1"
@@ -233,6 +234,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                 />
               </TooltipContainer>
               <Slider
+                dataTestId="downvote-slider"
                 defaultValue={sliderDownvote}
                 value={sliderDownvote}
                 min={1}
@@ -241,7 +243,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
               />
               <div className="w-fit text-destructive">-{sliderDownvote}%</div>
             </div>
-            <div className="flex flex-col gap-1 pt-2 text-sm">
+            <div className="flex flex-col gap-1 pt-2 text-sm" data-testid="downvote-description-content">
               <p>{t('cards.post_card.downvote_warning')}</p>
               <ul>
                 <li>{t('cards.post_card.reason_1')}</li>
