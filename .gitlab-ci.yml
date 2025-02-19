@@ -808,7 +808,7 @@ deploy:dev:auth:mainnet:
     - .develop_mainnet
   variables:
     APP_NAME: auth
-    PORT: $PORTS.AUTH
+    PORT: $AUTH_PORT
     CONTAINER_NAME: denser-dev-auth-mainnet
 
 deploy:dev:blog:mainnet:
@@ -817,7 +817,7 @@ deploy:dev:blog:mainnet:
     - .develop_mainnet
   variables:
     APP_NAME: blog
-    PORT: $PORTS.BLOG
+    PORT: $BLOG_PORT
     CONTAINER_NAME: denser-dev-blog-mainnet
 
 deploy:dev:wallet:mainnet:
@@ -826,7 +826,7 @@ deploy:dev:wallet:mainnet:
     - .develop_mainnet
   variables:
     APP_NAME: wallet
-    PORT: $PORTS.WALLET
+    PORT: $WALLET_PORT
     CONTAINER_NAME: denser-dev-wallet-mainnet
 
 # Development Mirrornet Deployments
@@ -836,7 +836,7 @@ deploy:dev:blog:mirrornet:
     - .develop_mirrornet
   variables:
     APP_NAME: blog
-    PORT: $PORTS.BLOG
+    PORT: $BLOG_PORT
     CONTAINER_NAME: denser-dev-blog-mirrornet
 
 deploy:dev:wallet:mirrornet:
@@ -845,7 +845,7 @@ deploy:dev:wallet:mirrornet:
     - .develop_mirrornet
   variables:
     APP_NAME: wallet
-    PORT: $PORTS.WALLET
+    PORT: $WALLET_PORT
     CONTAINER_NAME: denser-dev-wallet-mirrornet
 
 deploy:dev:auth:mirrornet:
@@ -854,7 +854,7 @@ deploy:dev:auth:mirrornet:
     - .develop_mirrornet
   variables:
     APP_NAME: auth
-    PORT: $PORTS.AUTH
+    PORT: $AUTH_PORT
     CONTAINER_NAME: denser-dev-auth-mirrornet
 
 # Production Mainnet Deployments
@@ -864,7 +864,7 @@ deploy:prod:blog:mainnet:
     - .production_mainnet
   variables:
     APP_NAME: blog
-    PORT: $PORTS.BLOG
+    PORT: $BLOG_PORT
     CONTAINER_NAME: denser-prod-blog-mainnet
 
 deploy:prod:wallet:mainnet:
@@ -873,7 +873,7 @@ deploy:prod:wallet:mainnet:
     - .production_mainnet
   variables:
     APP_NAME: wallet
-    PORT: $PORTS.WALLET
+    PORT: $WALLET_PORT
     CONTAINER_NAME: denser-prod-wallet-mainnet
 
 deploy:prod:auth:mainnet:
@@ -882,7 +882,7 @@ deploy:prod:auth:mainnet:
     - .production_mainnet
   variables:
     APP_NAME: auth
-    PORT: $PORTS.AUTH
+    PORT: $AUTH_PORT
     CONTAINER_NAME: denser-prod-auth-mainnet
 
 # Production Mirrornet Deployments
@@ -892,7 +892,7 @@ deploy:prod:blog:mirrornet:
     - .production_mirrornet
   variables:
     APP_NAME: blog
-    PORT: $PORTS.BLOG
+    PORT: $BLOG_PORT
     CONTAINER_NAME: denser-prod-blog-mirrornet
 
 deploy:prod:wallet:mirrornet:
@@ -901,7 +901,7 @@ deploy:prod:wallet:mirrornet:
     - .production_mirrornet
   variables:
     APP_NAME: wallet
-    PORT: $PORTS.WALLET
+    PORT: $WALLET_PORT
     CONTAINER_NAME: denser-prod-wallet-mirrornet
 
 deploy:prod:auth:mirrornet:
@@ -910,5 +910,5 @@ deploy:prod:auth:mirrornet:
     - .production_mirrornet
   variables:
     APP_NAME: auth
-    PORT: $PORTS.AUTH
+    PORT: $AUTH_PORT
     CONTAINER_NAME: denser-prod-auth-mirrornet

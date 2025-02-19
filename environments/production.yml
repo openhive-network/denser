@@ -2,10 +2,9 @@
   extends: .mainnet_variables
   variables:
     DOMAIN_SUFFIX: "openhive.network"
-    PORTS:
-      AUTH: 8093
-      BLOG: 8091
-      WALLET: 8092
+    AUTH_PORT: 8093
+    BLOG_PORT: 8091
+    WALLET_PORT: 8092
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
       when: manual
@@ -14,10 +13,9 @@
   extends: .mirrornet_variables
   variables:
     DOMAIN_SUFFIX: "fake.openhive.network"
-    PORTS:
-      AUTH: 8193
-      BLOG: 8191
-      WALLET: 8192
+    AUTH_PORT: 8193
+    BLOG_PORT: 8191
+    WALLET_PORT: 8192
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
       when: manual 
