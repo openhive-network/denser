@@ -138,7 +138,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                 className="w-36"
                 onValueChange={(e: number[]) => setSliderUpvote(e)}
               />
-              <div className="w-fit">{sliderUpvote}%</div>
+              <div className="w-fit" data-testid="upvote-slider-percentage-value">{sliderUpvote}%</div>
             </div>
           </PopoverContent>
         </Popover>
@@ -241,7 +241,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                 className="w-36"
                 onValueChange={(e: number[]) => setSliderDownvote(e)}
               />
-              <div className="w-fit text-destructive">-{sliderDownvote}%</div>
+              <div className="w-fit text-destructive" data-testid="downvote-slider-percentage-value">-{sliderDownvote}%</div>
             </div>
             <div className="flex flex-col gap-1 pt-2 text-sm" data-testid="downvote-description-content">
               <p>{t('cards.post_card.downvote_warning')}</p>
