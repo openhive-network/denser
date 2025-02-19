@@ -48,7 +48,7 @@ import { getTranslations } from '@/blog/lib/get-translations';
 import Head from 'next/head';
 import env from '@beam-australia/react-env';
 import { usePinMutation, useUnpinMutation } from '@/blog/components/hooks/use-pin-mutations';
-import { handleError } from '@ui/lib/utils';
+import { handleError } from '@ui/lib/handle-error';
 import MutePostDialog from '@/blog/components/mute-post-dialog';
 import { CircleSpinner } from 'react-spinners-kit';
 import ChangeTitleDialog from '@/blog/components/change-title-dialog';

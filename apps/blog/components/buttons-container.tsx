@@ -8,7 +8,7 @@ import { useFollowMutation, useUnfollowMutation } from './hooks/use-follow-mutat
 import { Button } from '@hive/ui';
 import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
-import { handleError } from '@ui/lib/utils';
+import { handleError } from '@ui/lib/handle-error';
 
 const ButtonsContainer = ({
   username,

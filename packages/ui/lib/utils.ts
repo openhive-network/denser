@@ -141,10 +141,16 @@ export function powerdownHive(accountData: FullAccount, dynamicData: IDynamicGlo
   return powerdown_hivef;
 }
 
-export function handleError<T>(error: any, ctx?: { method: string; params: T }, toastOptions?: Toast) {
-  toast({
-    description: transformError<T>(error, ctx),
-    variant: 'destructive',
-    ...toastOptions
-  });
+export function findAndParseJSON(value: string) {
+  const valueJSON = value.slice(value.indexOf('{'), value.lastIndexOf('}') + 1);
+  return JSON.parse(valueJSON);
+}
+
+export function isJSON(value: string) {
+  try {
+    JSON.parse(value);
+    return true;
+  } catch (error) {
+    return false;
+  }
 }

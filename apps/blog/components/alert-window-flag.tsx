@@ -15,7 +15,7 @@ import { ReactNode, useState } from 'react';
 import ln2list from '../lib/ln2list';
 import { useTranslation } from 'next-i18next';
 import { useFlagMutation } from './hooks/use-flag-mutation';
-import { handleError } from '@ui/lib/utils';
+import { handleError } from '@ui/lib/handle-error';
 
 export function AlertDialogFlag({
   children,

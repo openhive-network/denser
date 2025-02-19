@@ -8,7 +8,7 @@ import { useReblogMutation } from './hooks/use-reblog-mutation';
 import { CircleSpinner } from 'react-spinners-kit';
 import { getLogger } from '@ui/lib/logging';
 import { ReblogDialog } from './reblog-dialog';
-import { handleError } from '@ui/lib/utils';
+import { handleError } from '@ui/lib/handle-error';
 
 const logger = getLogger('app');
 

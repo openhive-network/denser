@@ -14,7 +14,7 @@ import { getAccountFull, getFindAccounts } from '@transaction/lib/hive';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useMarkAllNotificationsAsReadMutation } from './hooks/use-notifications-read-mutation';
 import { useClaimRewardsMutation } from './hooks/use-claim-reward-mutation';
-import { handleError } from '@ui/lib/utils';
+import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
 import { getLogger } from '@ui/lib/logging';
 

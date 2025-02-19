@@ -19,7 +19,7 @@ import {
 import { ReactNode, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useSetRoleMutation } from './hooks/use-set-role-mutations';
-import { handleError } from '@ui/lib/utils';
+import { handleError } from '@ui/lib/handle-error';
 import { EAvailableCommunityRoles } from '@hiveio/wax';
 import { CircleSpinner } from 'react-spinners-kit';
 
