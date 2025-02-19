@@ -1,7 +1,6 @@
-.production_mainnet: &production_mainnet
+.production_mainnet:
+  extends: .mainnet_variables
   variables:
-    <<: *common_variables
-    <<: *mainnet_variables
     DOMAIN_SUFFIX: "openhive.network"
     PORTS:
       AUTH: 8093
@@ -11,10 +10,9 @@
     - if: $CI_COMMIT_BRANCH == "main"
       when: manual
 
-.production_mirrornet: &production_mirrornet
+.production_mirrornet:
+  extends: .mirrornet_variables
   variables:
-    <<: *common_variables
-    <<: *mirrornet_variables
     DOMAIN_SUFFIX: "fake.openhive.network"
     PORTS:
       AUTH: 8193

@@ -1,13 +1,16 @@
-.common_variables: &common_variables
+variables:
+  COMMON_REGISTRY: "registry.gitlab.syncad.com/hive/denser"
   IMAGES_ENDPOINT: "https://images.hive.blog/"
   LOGGING_BROWSER_ENABLED: "false"
   LOGGING_LOG_LEVEL: "info"
   EXPLORER_DOMAIN: "https://explore.openhive.network"
 
-.mainnet_variables: &mainnet_variables
-  API_ENDPOINT: "https://api.hive.blog/"
-  CHAIN_ID: "beeab0de00000000000000000000000000000000000000000000000000000000"
+.mainnet_variables:
+  variables:
+    API_ENDPOINT: "https://api.hive.blog/"
+    CHAIN_ID: "beeab0de00000000000000000000000000000000000000000000000000000000"
 
-.mirrornet_variables: &mirrornet_variables
-  API_ENDPOINT: "https://api.fake.openhive.network/"
-  CHAIN_ID: "42" 
+.mirrornet_variables:
+  variables:
+    API_ENDPOINT: "https://api.fake.openhive.network/"
+    CHAIN_ID: "42" 

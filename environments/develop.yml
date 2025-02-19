@@ -1,7 +1,6 @@
-.develop_mainnet: &develop_mainnet
+.develop_mainnet:
+  extends: .mainnet_variables
   variables:
-    <<: *common_variables
-    <<: *mainnet_variables
     DOMAIN_SUFFIX: "dev.openhive.network"
     PORTS:
       AUTH: 8083
@@ -11,10 +10,9 @@
     - if: $CI_COMMIT_BRANCH == "develop"
       when: on_success
 
-.develop_mirrornet: &develop_mirrornet
+.develop_mirrornet:
+  extends: .mirrornet_variables
   variables:
-    <<: *common_variables
-    <<: *mirrornet_variables
     DOMAIN_SUFFIX: "dev.fake.openhive.network"
     PORTS:
       AUTH: 8183
