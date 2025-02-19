@@ -219,6 +219,7 @@ mirrornet-replay-data-copy:
   stage: replay-and-sync
   needs:
     - mirrornet-haf-node-replay
+  image: "registry.gitlab.syncad.com/hive/hive/ci-base-image${TEST_IMAGE_TAG}"
   script: scripts/ci-helpers/copy-replay-data.sh
   variables:
     REPLAY_SOURCE: "${REPLAY_PIPELINE_DIRECTORY}"
