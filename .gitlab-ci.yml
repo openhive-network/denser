@@ -53,6 +53,10 @@ include:
   - project: 'hive/haf_api_node'
     ref: denser-11
     file: 'ci/node-replay.gitlab-ci.yml'  
+  - local: 'environments/common.yml'
+  - local: 'environments/develop.yml'
+  - local: 'environments/production.yml'
+  - local: 'templates/denser-deploy.yml'
 
 .docker_build_template:
   extends: .docker_image_builder_job_template
@@ -796,3 +800,115 @@ cleanup_old_haf_api_node_cache:
     CLEANUP_PATH_PATTERN: "${REPLAY_DIRECTORY_PREFIX}*"
   tags:
     - data-cache-storage
+
+# Development Mainnet Deployments
+deploy:dev:auth:mainnet:
+  extends: 
+    - .denser_deploy_template
+    - .develop_mainnet
+  variables:
+    APP_NAME: auth
+    PORT: $PORTS.AUTH
+    CONTAINER_NAME: denser-dev-auth-mainnet
+
+deploy:dev:blog:mainnet:
+  extends: 
+    - .denser_deploy_template
+    - .develop_mainnet
+  variables:
+    APP_NAME: blog
+    PORT: $PORTS.BLOG
+    CONTAINER_NAME: denser-dev-blog-mainnet
+
+deploy:dev:wallet:mainnet:
+  extends: 
+    - .denser_deploy_template
+    - .develop_mainnet
+  variables:
+    APP_NAME: wallet
+    PORT: $PORTS.WALLET
+    CONTAINER_NAME: denser-dev-wallet-mainnet
+
+# Development Mirrornet Deployments
+deploy:dev:blog:mirrornet:
+  extends: 
+    - .denser_deploy_template
+    - .develop_mirrornet
+  variables:
+    APP_NAME: blog
+    PORT: $PORTS.BLOG
+    CONTAINER_NAME: denser-dev-blog-mirrornet
+
+deploy:dev:wallet:mirrornet:
+  extends: 
+    - .denser_deploy_template
+    - .develop_mirrornet
+  variables:
+    APP_NAME: wallet
+    PORT: $PORTS.WALLET
+    CONTAINER_NAME: denser-dev-wallet-mirrornet
+
+deploy:dev:auth:mirrornet:
+  extends: 
+    - .denser_deploy_template
+    - .develop_mirrornet
+  variables:
+    APP_NAME: auth
+    PORT: $PORTS.AUTH
+    CONTAINER_NAME: denser-dev-auth-mirrornet
+
+# Production Mainnet Deployments
+deploy:prod:blog:mainnet:
+  extends: 
+    - .denser_deploy_template
+    - .production_mainnet
+  variables:
+    APP_NAME: blog
+    PORT: $PORTS.BLOG
+    CONTAINER_NAME: denser-prod-blog-mainnet
+
+deploy:prod:wallet:mainnet:
+  extends: 
+    - .denser_deploy_template
+    - .production_mainnet
+  variables:
+    APP_NAME: wallet
+    PORT: $PORTS.WALLET
+    CONTAINER_NAME: denser-prod-wallet-mainnet
+
+deploy:prod:auth:mainnet:
+  extends: 
+    - .denser_deploy_template
+    - .production_mainnet
+  variables:
+    APP_NAME: auth
+    PORT: $PORTS.AUTH
+    CONTAINER_NAME: denser-prod-auth-mainnet
+
+# Production Mirrornet Deployments
+deploy:prod:blog:mirrornet:
+  extends: 
+    - .denser_deploy_template
+    - .production_mirrornet
+  variables:
+    APP_NAME: blog
+    PORT: $PORTS.BLOG
+    CONTAINER_NAME: denser-prod-blog-mirrornet
+
+deploy:prod:wallet:mirrornet:
+  extends: 
+    - .denser_deploy_template
+    - .production_mirrornet
+  variables:
+    APP_NAME: wallet
+    PORT: $PORTS.WALLET
+    CONTAINER_NAME: denser-prod-wallet-mirrornet
+
+deploy:prod:auth:mirrornet:
+  extends: 
+    - .denser_deploy_template
+    - .production_mirrornet
+  variables:
+    APP_NAME: auth
+    PORT: $PORTS.AUTH
+    CONTAINER_NAME: denser-prod-auth-mirrornet

@@ -1,0 +1,23 @@
+.denser_deploy_template:
+  stage: deploy
+  script:
+    - |
+      deploy_app() {
+        docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+        
+        docker run -d \
+          --name "${CONTAINER_NAME}" \
+          -p "${PORT}:${PORT}" \
+          -e "PORT=${PORT}" \
+          -e "REACT_APP_API_ENDPOINT=${API_ENDPOINT}" \
+          -e "REACT_APP_CHAIN_ID=${CHAIN_ID}" \
+          -e "REACT_APP_IMAGES_ENDPOINT=${IMAGES_ENDPOINT}" \
+          -e "REACT_APP_SITE_DOMAIN=https://${APP_NAME}.${DOMAIN_SUFFIX}" \
+          -e "REACT_APP_LOGGING_BROWSER_ENABLED=${LOGGING_BROWSER_ENABLED}" \
+          -e "REACT_APP_LOGGING_LOG_LEVEL=${LOGGING_LOG_LEVEL}" \
+          -e "REACT_APP_EXPLORER_DOMAIN=${EXPLORER_DOMAIN}" \
+          -e "REACT_APP_HIVE_ROCKET_CHAT_URL=${HIVE_ROCKET_CHAT_URL}" \
+          "${CI_REGISTRY_IMAGE}/${APP_NAME}:${CI_COMMIT_SHA}"
+      }
+
+      deploy_app 

@@ -42,7 +42,7 @@ export const siteConfig = {
   // Rocket Chat Widget
   openhiveChatClientId: env('OPENHIVE_CHAT_CLIENT_ID') || 'openhive_chat',
   openhiveChatApiUri: env('OPENHIVE_CHAT_API_URI') || 'https://openhive.chat',
-  openhiveChatUri: env('OPENHIVE_CHAT_URI') || 'https://openhive.chat',
+  openhiveChatUri: env('HIVE_ROCKET_CHAT_URL') || 'https://openhive.chat',
   openhiveChatIframeIntegrationEnable: env('OPENHIVE_CHAT_IFRAME_INTEGRATION_ENABLE') || 'no',
   openhiveChatIframeVisible: env('OPENHIVE_CHAT_IFRAME_VISIBLE') || 'yes',
   openhiveChatAllowNonStrictLogin: env('OPENHIVE_CHAT_ALLOW_NON_STRICT_LOGIN')
