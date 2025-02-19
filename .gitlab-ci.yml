@@ -214,6 +214,18 @@ mirrornet-haf-node-replay:
   tags:
     - data-cache-storage
 
+mirrornet-replay-data-copy:
+  extends: .job-defaults
+  stage: replay-and-sync
+  needs:
+    - mirrornet-haf-node-replay
+  script: scripts/ci-helpers/copy-replay-data.sh
+  variables:
+    REPLAY_SOURCE: "${REPLAY_PIPELINE_DIRECTORY}"
+    REPLAY_DESTINATION: "${REPLAY_DIRECTORY}"
+  tags:
+    - data-cache-storage
+
 .node-job:
   extends: .job-defaults
   image:
@@ -356,6 +368,86 @@ deploy:prod:wallet:mainnet:
     APP_NAME: wallet
     PORT: $WALLET_PORT
     CONTAINER_NAME: denser-prod-wallet-mainnet
+
+# Development Mirrornet Deployments
+deploy:dev:auth:mirrornet:
+  extends: 
+    - .denser_deploy_template
+    - .develop_mirrornet
+  needs:
+    - docker-build-auth
+    - e2e-tests-auth
+    - mirrornet-based-tests
+  variables:
+    APP_NAME: auth
+    PORT: $AUTH_PORT
+    CONTAINER_NAME: denser-dev-auth-mirrornet
+
+deploy:dev:blog:mirrornet:
+  extends: 
+    - .denser_deploy_template
+    - .develop_mirrornet
+  needs:
+    - docker-build-blog
+    - e2e-tests-blog
+    - mirrornet-based-tests
+  variables:
+    APP_NAME: blog
+    PORT: $BLOG_PORT
+    CONTAINER_NAME: denser-dev-blog-mirrornet
+
+deploy:dev:wallet:mirrornet:
+  extends: 
+    - .denser_deploy_template
+    - .develop_mirrornet
+  needs:
+    - docker-build-wallet
+    - e2e-tests-wallet
+    - mirrornet-based-tests
+  variables:
+    APP_NAME: wallet
+    PORT: $WALLET_PORT
+    CONTAINER_NAME: denser-dev-wallet-mirrornet
+
+# Production Mirrornet Deployments
+deploy:prod:auth:mirrornet:
+  extends: 
+    - .denser_deploy_template
+    - .production_mirrornet
+  needs:
+    - docker-build-auth
+    - e2e-tests-auth
+    - mirrornet-based-tests
+  variables:
+    APP_NAME: auth
+    PORT: $AUTH_PORT
+    CONTAINER_NAME: denser-prod-auth-mirrornet
+
+deploy:prod:blog:mirrornet:
+  extends: 
+    - .denser_deploy_template
+    - .production_mirrornet
+  needs:
+    - docker-build-blog
+    - e2e-tests-blog
+    - mirrornet-based-tests
+  variables:
+    APP_NAME: blog
+    PORT: $BLOG_PORT
+    CONTAINER_NAME: denser-prod-blog-mirrornet
+
+deploy:prod:wallet:mirrornet:
+  extends: 
+    - .denser_deploy_template
+    - .production_mirrornet
+  needs:
+    - docker-build-wallet
+    - e2e-tests-wallet
+    - mirrornet-based-tests
+  variables:
+    APP_NAME: wallet
+    PORT: $WALLET_PORT
+    CONTAINER_NAME: denser-prod-wallet-mirrornet
 
 buildkit_cache_cleanup:
   stage: cleanup
