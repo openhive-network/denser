@@ -112,12 +112,13 @@ const VotesComponent = ({ post }: { post: Entry }) => {
             sideOffset={offsetSlider.popoverSideOffset}
             align="start"
             alignOffset={offsetSlider.popoverAlignOfset}
+            data-testid='upvote-slider-modal'
           >
             <div className="flex h-full items-center gap-2">
               <TooltipContainer
                 loading={voteMutation.isLoading}
                 text={t('cards.post_card.upvote')}
-                dataTestId="upvote-button"
+                dataTestId="upvote-button-slider"
               >
                 <Icons.arrowUpCircle
                   className="h-[24px] w-[24px] cursor-pointer rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1"
@@ -130,6 +131,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                 />
               </TooltipContainer>
               <Slider
+                dataTestId="upvote-slider"
                 defaultValue={sliderUpvote}
                 value={sliderUpvote}
                 min={1}
