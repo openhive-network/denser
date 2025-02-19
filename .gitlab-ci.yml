@@ -491,3 +491,83 @@ cleanup_old_haf_api_node_cache:
     CLEANUP_PATH_PATTERN: "${REPLAY_DIRECTORY_PREFIX}*"
   tags:
     - data-cache-storage
+
+mirrornet-based-tests:
+  extends: 
+    - .haf_api_node_test
+    - .node-job
+  needs:
+    - mirrornet-haf-binaries-extraction
+    - docker-build-auth
+    - docker-build-blog
+    - docker-build-wallet
+    - mirrornet-replay-data-copy
+    - block_log_processing
+  image: "mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}"
+  services:
+    - name: $BLOG_IMAGE_NAME
+      alias: denser-blog
+      variables:
+        HEALTHCHECK_TCP_PORT: '3000'
+        PORT: "3000"
+        REACT_APP_SITE_DOMAIN: "https://caddy-blog.local"
+        REACT_APP_WALLET_ENDPOINT: "https://caddy-wallet"
+        TURBO_APP_SCOPE: '@hive/blog'
+        TURBO_APP_PATH: '/apps/blog'
+    - name: caddy:${CADDY_TAG}
+      alias: caddy-blog
+      command:
+        - caddy
+        - reverse-proxy
+        - --from=https://caddy-blog
+        - --to=denser-blog:3000
+        - --internal-certs
+    - name: $WALLET_IMAGE_NAME
+      alias: denser-wallet
+      variables:
+        HEALTHCHECK_TCP_PORT: '4000'
+        PORT: "4000"
+        REACT_APP_SITE_DOMAIN: "https://caddy-wallet.local"
+        REACT_APP_BLOG_DOMAIN: "https://caddy-blog"
+        TURBO_APP_SCOPE: '@hive/wallet'
+        TURBO_APP_PATH: '/apps/wallet'
+    - name: caddy:${CADDY_TAG}
+      alias: caddy-wallet
+      command:
+        - caddy
+        - reverse-proxy
+        - --from=https://caddy-wallet
+        - --to=denser-wallet:4000
+        - --internal-certs
+  variables:
+    CI_DEBUG_SERVICES: "false"
+    ARGUMENTS: "--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n --alternate-chain-spec=/home/hived/datadir/blockchain/alternate-chain-spec.json"
+    FAKETIME: ${HEAD_BLOCK_TIMESTAMP}
+    HAF_IMAGE: ${HAF_IMAGE_REGISTRY}
+    HIVE_API_NODE_VERSION: ${API_NODE_VERSION}
+    REACT_APP_API_ENDPOINT: "https://dind/"
+    REACT_APP_IMAGES_ENDPOINT: "https://images.hive.blog/"
+    REACT_APP_CHAIN_ID: "44"
+    REACT_APP_LOGGING_BROWSER_ENABLED: "true"
+    NODE_TLS_REJECT_UNAUTHORIZED: 0
+  timeout: 3 hours
+  script: scripts/ci-helpers/run-mirrornet-tests.sh
+  after_script:
+    - |
+      cp "${REPLAY_PIPELINE_DIRECTORY}/docker_entrypoint.log" "${CI_PROJECT_DIR}/haf.log"
+      cp --recursive "${REPLAY_PIPELINE_DIRECTORY}/logs" "${CI_PROJECT_DIR}/logs"
+  cache:
+    key: "mirrornet-tests-1"    
+  artifacts:
+    paths:
+      - "*.log"
+      - "logs/"
+      - "*.env"
+      - "apps/blog/playwright-report/"
+      - "apps/blog/test-results/"
+      - "apps/blog/junit/"
+    reports:
+      junit: "apps/blog/junit/results.xml"
+  tags:
+    - data-cache-storage
+    - docker-build-blog
