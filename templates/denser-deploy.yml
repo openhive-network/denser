@@ -17,7 +17,23 @@
           -e "REACT_APP_LOGGING_LOG_LEVEL=${LOGGING_LOG_LEVEL}" \
           -e "REACT_APP_EXPLORER_DOMAIN=${EXPLORER_DOMAIN}" \
           -e "REACT_APP_HIVE_ROCKET_CHAT_URL=${HIVE_ROCKET_CHAT_URL}" \
+          -e "TURBO_APP_SCOPE=${TURBO_APP_SCOPE}" \
+          -e "TURBO_APP_PATH=${TURBO_APP_PATH}" \
           "${CI_REGISTRY_IMAGE}/${APP_NAME}:${CI_COMMIT_SHA}"
       }
 
       deploy_app 
+  tags:
+    - hs-denser
+
+.develop_mainnet:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+      when: manual
+      allow_failure: true
+
+.production_mainnet:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: manual
+      allow_failure: true 
