@@ -4,8 +4,13 @@ import { VotingSlider } from '../support/pages/votingSlider';
 
 test.describe('Test for slider voting', () => {
   test.describe('Upvote group', () => {
+    const minValueOfDownvoteSlider: number = 1;   // 1%
+    const maxValueOfDownvoteSlider: number = 100; // 100%
+
     test('Validate setting upvote slider of the first post to 1%', async ({ denserAutoTest3Page }) => {
-      const percentageValueofSlider: string = '1%';
+      const expectedPercentageValueOfSlider: string = '1%';
+      const setupValueOfSlider: number = 1; // 1%
+
       const homePage: HomePage = new HomePage(denserAutoTest3Page.page);
       const votingSlider: VotingSlider = new VotingSlider(denserAutoTest3Page.page);
 
@@ -17,15 +22,17 @@ test.describe('Test for slider voting', () => {
       await votingSlider.moveCustomSlider(
         votingSlider.upvoteSliderTrack,
         votingSlider.upvoteSliderThumb,
-        1,
-        1,
-        100
+        setupValueOfSlider,
+        minValueOfDownvoteSlider,
+        maxValueOfDownvoteSlider
       );
-      await votingSlider.validateUpvotePercentageValueOfSlider(percentageValueofSlider);
+      await votingSlider.validateUpvotePercentageValueOfSlider(expectedPercentageValueOfSlider);
     });
 
     test('Validate setting upvote slider of the second post to 100%', async ({ denserAutoTest3Page }) => {
-      const percentageValueofSlider: string = '100%';
+      const expectedPercentageValueOfSlider: string = '100%';
+      const setupValueOfSlider: number = 100; // 100%
+
       const homePage: HomePage = new HomePage(denserAutoTest3Page.page);
       const votingSlider: VotingSlider = new VotingSlider(denserAutoTest3Page.page);
 
@@ -37,15 +44,17 @@ test.describe('Test for slider voting', () => {
       await votingSlider.moveCustomSlider(
         votingSlider.upvoteSliderTrack,
         votingSlider.upvoteSliderThumb,
-        100,
-        1,
-        100
+        setupValueOfSlider,
+        minValueOfDownvoteSlider,
+        maxValueOfDownvoteSlider
       );
-      await votingSlider.validateUpvotePercentageValueOfSlider(percentageValueofSlider);
+      await votingSlider.validateUpvotePercentageValueOfSlider(expectedPercentageValueOfSlider);
     });
 
     test('Validate setting upvote slider of the third post to 73%', async ({ denserAutoTest3Page }) => {
-      const percentageValueofSlider: string = '73%';
+      const expectedPercentageValueOfSlider: string = '73%';
+      const setupValueOfSlider: number = 73; // 73%
+
       const homePage: HomePage = new HomePage(denserAutoTest3Page.page);
       const votingSlider: VotingSlider = new VotingSlider(denserAutoTest3Page.page);
 
@@ -57,11 +66,11 @@ test.describe('Test for slider voting', () => {
       await votingSlider.moveCustomSlider(
         votingSlider.upvoteSliderTrack,
         votingSlider.upvoteSliderThumb,
-        73,
-        1,
-        100
+        setupValueOfSlider,
+        minValueOfDownvoteSlider,
+        maxValueOfDownvoteSlider
       );
-      await votingSlider.validateUpvotePercentageValueOfSlider(percentageValueofSlider);
+      await votingSlider.validateUpvotePercentageValueOfSlider(expectedPercentageValueOfSlider);
     });
   });
 
