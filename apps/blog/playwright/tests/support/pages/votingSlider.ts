@@ -8,6 +8,13 @@ export class VotingSlider {
   readonly upvoteSliderTrack: Locator;
   readonly upvoteSliderPercentageValue: Locator;
 
+  readonly downvoteSliderModal: Locator;
+  readonly downvoteSliderButton: Locator;
+  readonly downvoteSliderThumb: Locator;
+  readonly downvoteSliderTrack: Locator;
+  readonly downvoteSliderPercentageValue: Locator;
+  readonly downvoteSliderDescriptionContent: Locator;
+
   constructor(page: Page) {
     this.page = page;
     this.upvoteSliderModal = page.locator('[data-testid="upvote-slider-modal"]');
@@ -15,6 +22,13 @@ export class VotingSlider {
     this.upvoteSliderThumb = page.locator('[data-testid="upvote-slider-thumb"]');
     this.upvoteSliderTrack = page.locator('[data-testid="upvote-slider-track"]');
     this.upvoteSliderPercentageValue = page.locator('[data-testid="upvote-slider-percentage-value"]');
+
+    this.downvoteSliderModal = page.locator('[data-testid="downvote-slider-modal"]');
+    this.downvoteSliderButton = page.locator('[data-testid="downvote-button-slider"]');
+    this.downvoteSliderThumb = page.locator('[data-testid="downvote-slider-thumb"]');
+    this.downvoteSliderTrack = page.locator('[data-testid="downvote-slider-track"]');
+    this.downvoteSliderPercentageValue = page.locator('[data-testid="downvote-slider-percentage-value"]');
+    this.downvoteSliderDescriptionContent = page.locator('[data-testid="downvote-description-content"]');
   }
 
   async moveCustomSlider(
@@ -53,7 +67,12 @@ export class VotingSlider {
     await this.page.mouse.up();
   }
 
-  async validatePercentageValueOfSlider(expectedValue: string){
+  async validateUpvotePercentageValueOfSlider(expectedValue: string){
     expect(await this.upvoteSliderPercentageValue.textContent()).toBe(expectedValue);
   }
+
+  async validateDownvotePercentageValueOfSlider(expectedValue: string){
+    expect(await this.downvoteSliderPercentageValue.textContent()).toBe(expectedValue);
+  }
+
 }
