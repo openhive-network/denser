@@ -99,9 +99,11 @@ export class HomePage {
   readonly languageMenu: Locator;
   readonly languageMenuPl: Locator;
   readonly themeMode: Locator;
+  readonly postAuthor: string;
 
   // for logged in user
   readonly profileAvatarButton: Locator;
+  readonly profileAvatar: string;
 
   constructor(page: Page) {
     this.page = page;
@@ -131,6 +133,7 @@ export class HomePage {
     this.getPostCardAvatar = page.locator('[data-testid="post-card-avatar"]');
     this.getFirstPostCardAvatar = this.getPostCardAvatar.first();
     this.getFirstPostAuthor = page.locator('[data-testid="post-author"]').first();
+    this.postAuthor = '[data-testid="post-author"]'
     this.getFirstPostAuthorReputation = page.locator('[data-testid="post-author-reputation"]').first();
     this.getFirstPostCardCommunityLink = page.locator('[data-testid="post-card-community"]').first();
     this.getFirstPostCardCategoryLink = page.locator('[data-testid="post-card-category"]').first();
@@ -211,6 +214,7 @@ export class HomePage {
 
     // for logged in user
     this.profileAvatarButton = page.locator('[data-testid="profile-avatar-button"]');
+    this.profileAvatar = '[data-testid="profile-avatar-button"]';
   }
 
   async goto() {

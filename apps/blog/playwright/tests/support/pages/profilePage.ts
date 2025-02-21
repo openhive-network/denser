@@ -182,11 +182,15 @@ export class ProfilePage {
   readonly userBannerBadgeLink: Locator;
   readonly userBannerBadgeImg: Locator;
   readonly userBannerTwitterBadgeLink: Locator;
+  readonly profileNameString: string;
+  readonly followBtn: string;
 
   constructor(page: Page) {
     this.page = page;
+    this.followBtn = '[data-testid="profile-follow-button"]'
     this.profileInfo = page.locator('[data-testid="profile-info"]');
     this.profileName = page.locator('[data-testid="profile-name"]');
+    this.profileNameString = '[data-testid="profile-name"]';
     this.profileNickName = page.locator('[data-testid="profile-nickname"]');
     this.profileAbout = page.locator('[data-testid="profile-about"]');
     this.profileLastTimeActive = page.locator('[data-testid="user-last-time-active"]');

@@ -6,7 +6,7 @@ export class ProfileUserMenu {
     readonly homePage: HomePage;
     readonly profileMenuContent: Locator;
     readonly profileUserName: Locator;
-    readonly profileLink: Locator;
+    readonly profileLink: string;
     readonly notificationsLink: Locator;
     readonly commentsLink: Locator;
     readonly repliesLink: Locator;
@@ -25,7 +25,7 @@ export class ProfileUserMenu {
         this.homePage = new HomePage(page);
         this.profileMenuContent = page.locator('[data-testid="user-profile-menu-content"]');
         this.profileUserName = page.locator('[data-testid="user-name-in-profile-menu"]');
-        this.profileLink = page.locator('[data-testid="user-profile-menu-profile-link"]');
+        this.profileLink = '[data-testid="user-profile-menu-profile-link"]'
         this.notificationsLink = page.locator('[data-testid="user-profile-menu-notifications-link"]');
         this.commentsLink = page.locator('[data-testid="user-profile-menu-comments-link"]');
         this.repliesLink = page.locator('[data-testid="user-profile-menu-replies-link"]');
