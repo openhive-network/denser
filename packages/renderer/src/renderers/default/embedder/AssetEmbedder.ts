@@ -4,7 +4,6 @@ import {AbstractEmbedder} from './embedders/AbstractEmbedder';
 import {SpotifyEmbedder} from './embedders/SpotifyEmbedder';
 import {ThreeSpeakEmbedder} from './embedders/ThreeSpeakEmbedder';
 import {TwitchEmbedder} from './embedders/TwitchEmbedder';
-import {TwitterEmbedder} from './embedders/TwitterEmbedder';
 import {VimeoEmbedder} from './embedders/VimeoEmbedder';
 import {YoutubeEmbedder} from './embedders/YoutubeEmbedder';
 
@@ -23,8 +22,7 @@ export class AssetEmbedder {
             new VimeoEmbedder(),
             new TwitchEmbedder(options),
             new SpotifyEmbedder(),
-            new ThreeSpeakEmbedder(),
-            new TwitterEmbedder()
+            new ThreeSpeakEmbedder()
         ];
     }
 

@@ -21,9 +21,7 @@
     "pw:test:local:experimental:ui": "playwright test --config=playwright.local3000.config.ts --ui",
     "pw:blog:test:mir:chromium": "playwright test --project=chromium --config=playwright.stack-mirrornet-3000.config.ts --update-snapshots",
     "pw:blog:test:mir:chromium:trace": "playwright test --project=chromium --config=playwright.stack-mirrornet-3000.config.ts --update-snapshots --trace on",
-    "pw:blog:test:mir:chromium:ui": "playwright test --project=chromium --config=playwright.stack-mirrornet-3000.config.ts --update-snapshots --ui",
-    "pw:blog:test:mir:chromium:container:local": "playwright test --project=chromium --config=playwright.stack-mirrornet-local-3000.config.ts --headed --update-snapshots",
-    "pw:blog:test:mir:chromium:ui:container:local": "playwright test --project=chromium --config=playwright.stack-mirrornet-local-3000.config.ts --update-snapshots --ui"
+    "pw:blog:test:mir:chromium:ui": "playwright test --project=chromium --config=playwright.stack-mirrornet-3000.config.ts --update-snapshots --ui"
   },
   "dependencies": {
     "@beam-australia/react-env": "^3.1.1",

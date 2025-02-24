@@ -15,7 +15,7 @@ export class SpoilerPlugin implements RendererPlugin {
                     .filter((line: string) => line.startsWith('>')) // Keep only quote lines
                     .map((line: string) => line.replace(/^> ?/, '')) // Remove quote markers
             ]
-                .join(' ') // Join all lines with spaces
+                .join('\n') // Join all lines with newlines instead of spaces
                 .trim(); // Remove extra whitespace
 
             // Generate HTML details/summary structure

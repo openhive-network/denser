@@ -109,6 +109,7 @@
     },
     "profile_notifications_tab_navbar": {
       "unclaimed_rewards": "Nieodebrane nagrody: ",
+      "no_notifications_yet": "Brak powiadomień",
       "redeem": "Obierz",
       "mark_all": "Oznacz wszystkie jako przeczytane",
       "all": "Wszystkie",
