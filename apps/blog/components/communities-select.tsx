@@ -47,6 +47,7 @@ export function CommunitiesSelect({
         <SelectValue placeholder={title} />
       </SelectTrigger>
       <SelectContent
+      className="overflow-y-auto max-h-96"
         ref={(ref) => {
           if (!ref) return;
           ref.ontouchstart = (e) => {

@@ -35,9 +35,6 @@ export class HomePage {
   readonly getPostCardFooter: Locator;
   readonly getUpvoteButton: Locator;
   readonly getFirstPostUpvoteButton: Locator;
-  readonly getFirstPostUpvoteButtonIcon: Locator;
-  readonly getSecondPostDownvoteButton: Locator;
-  readonly getSecondPostDownvoteButtonIcon: Locator;
   readonly getUpvoteButtonTooltip: Locator;
   readonly getDownvoteButton: Locator;
   readonly getReblogButton: Locator;
@@ -154,9 +151,6 @@ export class HomePage {
     this.getPostCardFooter = page.locator('[data-testid="post-card-footer"]');
     this.getUpvoteButton = page.locator('[data-testid="upvote-button"]');
     this.getFirstPostUpvoteButton = this.getUpvoteButton.first();
-    this.getFirstPostUpvoteButtonIcon = this.getFirstPostUpvoteButton.locator('svg');
-    this.getSecondPostDownvoteButton = page.getByTestId('post-list-item').nth(1).getByTestId('downvote-button');
-    this.getSecondPostDownvoteButtonIcon = this.getSecondPostDownvoteButton.locator('svg');
     this.getFirstPostCardFooter = this.getPostCardFooter.first();
     this.getUpvoteButtonTooltip = page.locator('[data-testid="upvote-button-tooltip"]');
     this.getFirstPostUpvoteButtonTooltip = this.getUpvoteButtonTooltip.first();

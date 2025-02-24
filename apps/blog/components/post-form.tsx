@@ -496,7 +496,9 @@ export default function PostForm({
                                 ? storedPost.category
                                 : 'blog'
                           }
-                          onValueChange={(e) => storePost({ ...storedPost, category: e })}
+                          onValueChange={(e) => {
+                            form.setValue('category', e);
+                            storePost({ ...storedPost, category: e })}}
                         >
                           <FormControl>
                             <SelectTrigger data-testid="posting-to-list-trigger">
