@@ -1,5 +1,7 @@
 import { test, expect, Locator } from '../../fixtures';
 import { HomePage } from '../support/pages/homePage';
+import { LoginForm } from '../support/pages/loginForm';
+import { users } from '../support/loginHelper';
 import { VotingSlider } from '../support/pages/votingSlider';
 
 test.describe('Test for slider voting', () => {
@@ -72,6 +74,62 @@ test.describe('Test for slider voting', () => {
       );
       await votingSlider.validateUpvotePercentageValueOfSlider(expectedPercentageValueOfSlider);
     });
+
+    test('Upvote 34% for the first post and undo that voting', async ({ denserAutoTest3Page }) => {
+        const lightModeRedColor: string = 'rgb(218, 43, 43)';
+        const lightModeWhiteColor: string = 'rgb(255, 255, 255)';
+        const lightModeClearColor: string = 'rgba(0, 0, 0, 0)';
+
+        const expectedPercentageValueOfSlider: string = '34%';
+        const setupValueOfSlider: number = 34; // 34%
+        const undoUpvoteTooltipText: string = 'Undo your upvote 34.00%Undo your upvote 34.00%';
+        const upvoteTooltipText: string = "UpvoteUpvote";
+
+        const homePage: HomePage = new HomePage(denserAutoTest3Page.page);
+        const votingSlider: VotingSlider = new VotingSlider(denserAutoTest3Page.page);
+        const loginForm: LoginForm = new LoginForm(denserAutoTest3Page.page);
+
+        const firstPostCardUpvoteButtonLocator: Locator = homePage.firstPostCardUpvoteButtonLocator;
+        const firstPostCardDownvoteButtonLocator: Locator = homePage.firstPostCardDownvoteButtonLocator;
+        const firstPostCardUpvoteButtonLocatorToClick: Locator = homePage.getFirstPostUpvoteButton;
+        await firstPostCardUpvoteButtonLocatorToClick.click();
+        // Validate that upvote button modal is visible
+        await expect(votingSlider.upvoteSliderModal).toBeVisible();
+        // Set slider to 34% (upvote slider from 1 to 100)
+        await votingSlider.moveCustomSlider(
+          votingSlider.upvoteSliderTrack,
+          votingSlider.upvoteSliderThumb,
+          setupValueOfSlider,
+          minValueOfDownvoteSlider,
+          maxValueOfDownvoteSlider
+        );
+        await votingSlider.validateUpvotePercentageValueOfSlider(expectedPercentageValueOfSlider);
+        // Click vote button
+        await votingSlider.upvoteSliderButton.click();
+        // If a password to unlock key is needed
+        await loginForm.page.waitForTimeout(3000);
+        await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest3.safeStoragePassword);
+        // Wait until optimistic ui is finished and validate the color of the upvote button
+        await firstPostCardUpvoteButtonLocator.waitFor({state: 'visible'});
+        expect(await homePage.getElementCssPropertyValue(firstPostCardUpvoteButtonLocator, 'color')).toBe(lightModeWhiteColor);
+        expect(await homePage.getElementCssPropertyValue(firstPostCardUpvoteButtonLocator, 'background-color')).toBe(lightModeRedColor);
+        // Validate tooltip text - `undo you upvote ...`
+        await firstPostCardUpvoteButtonLocator.hover();
+        await homePage.page.waitForTimeout(1000);
+        expect(await homePage.getUpvoteButtonTooltip.textContent()).toBe(undoUpvoteTooltipText);
+        // Click Upvote button again to undo the upvote your vote
+        await firstPostCardUpvoteButtonLocatorToClick.click();
+        // Wait until optimistic ui is finished and validate the color of the upvote button
+        await firstPostCardUpvoteButtonLocator.waitFor({state: 'visible'});
+        // Hovering the downvote button due to validate the real uncovered upvote button
+        await firstPostCardDownvoteButtonLocator.hover();
+        expect(await homePage.getElementCssPropertyValue(firstPostCardUpvoteButtonLocator, 'color')).toBe(lightModeRedColor);
+        expect(await homePage.getElementCssPropertyValue(firstPostCardUpvoteButtonLocator, 'background-color')).toBe(lightModeClearColor);
+        // Hover the upvote button to validate the tooltip text
+        await firstPostCardUpvoteButtonLocator.hover();
+        await homePage.page.waitForTimeout(1000);
+        expect(await homePage.getUpvoteButtonTooltip.textContent()).toBe(upvoteTooltipText);
+      });
   });
 
   test.describe('Downvote group', () => {
