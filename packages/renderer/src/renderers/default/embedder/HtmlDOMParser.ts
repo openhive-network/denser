@@ -72,14 +72,7 @@ export class HtmlDOMParser {
 
     public parse(html: string): HtmlDOMParser {
         try {
-            const fixedHtml = html
-                // Remove wrapping <p> from details
-                .replace(/<p>\s*(<details>[\s\S]*?<\/details>)\s*<\/p>/g, '$1')
-                // Move content after details outside of it
-                .replace(/(<details>[\s\S]*?<\/pre>)([\s\S]*?)(<\/details>)/g, '$1$3$2')
-                // Clean up <center> tags
-                .replace(/<p>(?=[\s\S]*?<\/center>)/g, '');
-            const doc: Document = this.domParser.parseFromString(fixedHtml, 'text/html');
+            const doc: Document = this.domParser.parseFromString(preprocessHtml(html), 'text/xml');
             this.traverseDOMNode(doc);
             if (this.mutate) this.postprocessDOM(doc);
 
@@ -364,3 +357,77 @@ export class HtmlDOMParserError extends ChainedError {
         super(message, cause);
     }
 }
+
+function preprocessHtml(child: string) {
+    try {
+        if (typeof child === 'string') {
+            // Replace gist embed code with embed shortcode
+            const gist = extractMetadataFromEmbedCode(child);
+            if (gist) {
+                child = child.replace(regex.htmlReplacement, `~~~ embed:${gist.id} gist metadata:${Buffer.from(gist.fullId).toString('base64')} ~~~`);
+            }
+
+            // Remove wrapping <p> from details
+            child = preprocessDetails(child);
+            // Remove wrapping <p> from center
+            child = preprocessCenter(child);
+        }
+    } catch (error) {
+        console.log(error);
+    }
+
+    return child;
+}
+
+interface GistMetadata {
+    id: string;
+    fullId: string;
+    url: string;
+    canonical: string;
+    thumbnail: string | null;
+    username: string;
+}
+
+function preprocessDetails(html: string): string {
+    // Remove wrapping <p> from details
+    html = html.replace(/<p>\s*(<details>[\s\S]*?<\/details>)\s*<\/p>/g, '$1');
+    // Move content after details outside of it
+    html = html.replace(/(<details>[\s\S]*?<\/pre>)([\s\S]*?)(<\/details>)/g, '$1$3$2');
+    return html;
+}
+
+function preprocessCenter(html: string): string {
+    // Remove wrapping <p> from center
+    html = html.replace(/<p>(?=[\s\S]*?<\/center>)/g, '');
+    return html;
+}
+
+function extractMetadataFromEmbedCode(data: string): GistMetadata | null {
+    if (!data) return null;
+
+    // Extract metadata from gist embed code
+    const match: RegExpMatchArray | null = data.match(regex.htmlReplacement);
+    if (match) {
+        const url: string = match[1];
+        const fullId: string = match[2];
+        const username: string = match[3];
+        const id: string = match[4];
+
+        return {
+            id,
+            fullId,
+            url,
+            canonical: url,
+            thumbnail: null,
+            username
+        };
+    }
+    return null;
+}
+
+const regex = {
+    main: /(https?:\/\/gist\.github\.com\/((.*?)\/(.*)))/i,
+    sanitize: /(https:\/\/gist\.github\.com\/((.*?)\/(.*?))\.js)/i,
+    // regex to replace gist embed code with embed shortcode
+    htmlReplacement: /<script src="(https:\/\/gist\.github\.com\/((.*?)\/(.*?))\.js)"><\/script>/i
+};
