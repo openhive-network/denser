@@ -184,6 +184,7 @@ export class ProfilePage {
   readonly userBannerTwitterBadgeLink: Locator;
   readonly profileNameString: string;
   readonly followBtn: string;
+  readonly profileStatsString: string;
 
   constructor(page: Page) {
     this.page = page;
@@ -197,6 +198,7 @@ export class ProfilePage {
     this.profileJoined = page.locator('[data-testid="user-joined"]');
     this.profileLocation = page.locator('[data-testid="user-location"]');
     this.profileStats = page.locator('[data-testid="profile-stats"]');
+    this.profileStatsString = '[data-testid="profile-stats"]'
     this.profileNumberOfPosts = this.profileStats.locator('li').nth(1);
     this.profileHP = this.profileStats.locator('li').nth(3);
     this.profileFollowing = this.profileStats.locator('li').nth(2);

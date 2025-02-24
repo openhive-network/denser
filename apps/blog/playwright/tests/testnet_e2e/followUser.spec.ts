@@ -1,6 +1,4 @@
 import { test, expect } from '../../fixtures';
-import { LoginHelper, users } from '../support/loginHelper';
-import { LoginForm } from '../support/pages/loginForm';
 import { HomePage } from '../support/pages/homePage';
 import { ProfileUserMenu } from '../support/pages/profileUserMenu';
 import { ProfilePage } from '../support/pages/profilePage';
@@ -28,12 +26,12 @@ test.describe('Follow user - tests', () => {
 
     await denserAutoTest0Page.page.locator(homePage.profileAvatar).click()
     await denserAutoTest0Page.page.locator(profileUserMenu.profileLink).click()
-    await expect(denserAutoTest0Page.page.locator('[data-testid="profile-stats"]')).toContainText('1 following')
+    await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText('1 following')
     await denserAutoTest0Page.page.getByText('1 following').click()
     await expect(denserAutoTest0Page.page.getByRole('link', { name: `${secondPostAuthor}` })).toBeVisible()
     await expect(denserAutoTest0Page.page.locator(profilePage.followBtn)).toContainText('Unfollow')
     await denserAutoTest0Page.page.locator(profilePage.followBtn).click()
     expect(denserAutoTest0Page.page.getByRole('link', { name: `${secondPostAuthor}` })).not.toBeVisible()
-    await expect(denserAutoTest0Page.page.locator('[data-testid="profile-stats"]')).toContainText('Not following anybody')
+    await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText('Not following anybody')
   });
 });
