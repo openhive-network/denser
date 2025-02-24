@@ -215,5 +215,69 @@ test.describe('Test for slider voting', () => {
       );
       await votingSlider.validateDownvotePercentageValueOfSlider(expectedPercentageValueOfSlider);
     });
+
+    test('Downvote -25% for the first post and undo that voting', async ({ denserAutoTest3Page }) => {
+        const lightModeRedColor: string = 'rgb(218, 43, 43)';
+        const lightModeWhiteColor: string = 'rgb(255, 255, 255)';
+        const lightModeClearColor: string = 'rgba(0, 0, 0, 0)';
+        const lightModeGreyColor: string = 'rgb(75, 85, 99)';
+
+        const expectedPercentageValueOfSlider: string = '-25%';
+        const setupValueOfSlider: number = 25; // -25%
+        const undoDownvoteTooltipText: string = 'Undo your downvote 25.00%Undo your downvote 25.00%';
+        const downvoteTooltipText: string = "DownvoteDownvote";
+
+        const homePage: HomePage = new HomePage(denserAutoTest3Page.page);
+        const votingSlider: VotingSlider = new VotingSlider(denserAutoTest3Page.page);
+        const loginForm: LoginForm = new LoginForm(denserAutoTest3Page.page);
+
+        const firstPostCardUpvoteButtonLocator: Locator = homePage.firstPostCardUpvoteButtonLocator;
+        const firstPostCardDownvoteButtonLocator: Locator = homePage.firstPostCardDownvoteButtonLocator;
+        const firstPostDownvoteButtonLocatorToClick: Locator = homePage.getFirstPostDownvoteButton;
+        await firstPostDownvoteButtonLocatorToClick.click();
+        // Validate that downvote button modal is visible
+        await expect(votingSlider.downvoteSliderModal).toBeVisible();
+        await expect(await votingSlider.downvoteSliderDescriptionContent.textContent()).toContain(
+          textIncludedInDownvoteDescription1
+        );
+        // Set slider to -25% (upvote slider from 1 to 100)
+        await votingSlider.moveCustomSlider(
+          votingSlider.downvoteSliderTrack,
+          votingSlider.downvoteSliderThumb,
+          setupValueOfSlider,
+          minValueOfDownvoteSlider,
+          maxValueOfDownvoteSlider
+        );
+        await votingSlider.validateDownvotePercentageValueOfSlider(expectedPercentageValueOfSlider);
+        // Click downvote button
+        await votingSlider.downvoteSliderButton.click();
+        // If a password to unlock key is needed
+        await loginForm.page.waitForTimeout(3000);
+        await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest3.safeStoragePassword);
+        // Wait until optimistic ui is finished and validate the color of the downvote button
+        await firstPostCardDownvoteButtonLocator.waitFor({state: 'visible'});
+        expect(await homePage.getElementCssPropertyValue(firstPostCardDownvoteButtonLocator, 'color')).toBe(lightModeWhiteColor);
+        expect(await homePage.getElementCssPropertyValue(firstPostCardDownvoteButtonLocator, 'background-color')).toBe(lightModeGreyColor);
+        // Hovering the upvote button due to validate the real uncovered downvote button after voting
+        await firstPostCardUpvoteButtonLocator.hover();
+        expect(await homePage.getElementCssPropertyValue(firstPostCardDownvoteButtonLocator, 'color')).toBe(lightModeWhiteColor);
+        expect(await homePage.getElementCssPropertyValue(firstPostCardDownvoteButtonLocator, 'background-color')).toBe(lightModeRedColor);
+        // Validate tooltip text - `undo you downvote ...`
+        await firstPostCardDownvoteButtonLocator.hover();
+        await homePage.page.waitForTimeout(1000);
+        expect(await homePage.getDownvoteButtonTooltip.textContent()).toBe(undoDownvoteTooltipText);
+        // Click Downvote button again to undo the downvote your vote
+        await firstPostDownvoteButtonLocatorToClick.click();
+        // Wait until optimistic ui is finished and validate the color of the downvote button
+        await firstPostCardDownvoteButtonLocator.waitFor({state: 'visible'});
+        // Hovering the upvote button due to validate the real uncovered downvote button
+        await firstPostCardUpvoteButtonLocator.hover();
+        expect(await homePage.getElementCssPropertyValue(firstPostCardDownvoteButtonLocator, 'color')).toBe(lightModeGreyColor);
+        expect(await homePage.getElementCssPropertyValue(firstPostCardDownvoteButtonLocator, 'background-color')).toBe(lightModeClearColor);
+        // Hover the downvote button to validate the tooltip text
+        await firstPostCardDownvoteButtonLocator.hover();
+        await homePage.page.waitForTimeout(1000);
+        expect(await homePage.getDownvoteButtonTooltip.textContent()).toBe(downvoteTooltipText);
+      });
   });
 });
