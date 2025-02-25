@@ -6,16 +6,16 @@
     "unavailable_for_legal_reasons": "Niedostępne z przyczyn prawnych",
     "time_ago": {
       "a_few_seconds": " Kilka sekund temu",
-      "seconds": " sekund_y temu",
-      "minutes": " minut_y temu",
+      "seconds": " sekund temu",
+      "minutes": " minut temu",
       "a_minute": " minute temu",
-      "hours": " godzin_y temu",
+      "hours": " godzin temu",
       "an_hour": " godzine temu",
       "days": " dni temu",
       "a_day": " dzień temu",
-      "months": " miesięce_y temu",
+      "months": " miesięce temu",
       "a_month": " miesiąc temu",
-      "years": " lat_a temu",
+      "years": " lat temu",
       "a_year": " rok temu"
     },
     "months": {

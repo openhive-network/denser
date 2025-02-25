@@ -62,7 +62,8 @@ export const dateToFullRelative = (d: string, t: TFunction<'common_wallet', unde
       .replace('months ago', t('global.time_ago.months'))
       .replace('a month ago', t('global.time_ago.a_month'))
       .replace('years ago', t('global.time_ago.years'))
-      .replace('a year ago', t('global.time_ago.a_year'));
+      .replace('a year ago', t('global.time_ago.a_year'))
+      .replace('hours ago', t('global.time_ago.hours'));
   }
   const dd = dm
     .fromNow()
