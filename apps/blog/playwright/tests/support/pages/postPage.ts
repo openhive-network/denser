@@ -89,6 +89,10 @@ export class PostPage {
   readonly postFooterDownvoteTooltip: Locator;
   readonly firstPostAffiliationTag: Locator;
   readonly showPostBodyBtn: Locator;
+  readonly articleBodyString: string;
+  readonly articleAuthor: string;
+  readonly userPopoverCardContent: string;
+  readonly profileFollowBtn: string;
 
   constructor(page: Page) {
     this.page = page;
@@ -100,16 +104,20 @@ export class PostPage {
       .first();
     this.articleTitle = page.locator('[data-testid="article-title"]');
     this.articleBody = page.locator('#articleBody').first();
+    this.articleBodyString = '#articleBody';
     this.articleAuthorData = page.locator('[data-testid="author-data"]');
+    this.articleAuthor = '[data-testid="author-name-link"]'
     this.articleAuthorName = this.articleAuthorData
       .locator('[data-testid="author-name-link"]')
       .locator('span')
       .nth(1);
     this.articleFooter = page.locator('[data-testid="author-data-post-footer"]');
+    this.profileFollowBtn = '[data-testid="profile-follow-button"]';
     this.footerAuthorNameLink = this.articleFooter.locator('[data-testid="author-name-link"]');
     this.footerAuthorName = page.locator('[data-testid="author-name-link"]').last();
     this.footerAuthorNameFirst = page.locator('[data-testid="author-name-link"]').first();
     this.userPopoverCard = page.locator('[data-testid="user-popover-card-content"]');
+    this.userPopoverCardContent = '[data-testid="user-popover-card-content"]';
     this.userPopoverCardAvatar = page.locator('[data-testid="popover-card-user-avatar"]');
     this.userPopoverCardName = page.locator('[data-testid="popover-card-user-name"]');
     this.userPopoverCardNickName = page.locator('[data-testid="popover-card-user-nickname"]');

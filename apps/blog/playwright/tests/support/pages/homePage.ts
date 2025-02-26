@@ -100,6 +100,7 @@ export class HomePage {
   readonly languageMenuPl: Locator;
   readonly themeMode: Locator;
   readonly postAuthor: string;
+  readonly postsImages: string;
 
   // for logged in user
   readonly profileAvatarButton: Locator;
@@ -211,6 +212,7 @@ export class HomePage {
     this.languageMenu = page.locator('[role="menuitem"]');
     this.languageMenuPl = page.locator('[data-testid="pl"]').locator('..');
     this.themeMode = page.locator('[data-testid="theme-mode"]');
+    this.postsImages = '[data-testid="post-image"]'
 
     // for logged in user
     this.profileAvatarButton = page.locator('[data-testid="profile-avatar-button"]');

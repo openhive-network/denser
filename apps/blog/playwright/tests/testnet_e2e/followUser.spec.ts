@@ -2,16 +2,19 @@ import { test, expect } from '../../fixtures';
 import { HomePage } from '../support/pages/homePage';
 import { ProfileUserMenu } from '../support/pages/profileUserMenu';
 import { ProfilePage } from '../support/pages/profilePage';
+import { PostPage } from '../support/pages/postPage';
 
 test.describe('Follow user - tests', () => {
   let profileUserMenu: ProfileUserMenu;
   let homePage: HomePage;
   let profilePage: ProfilePage;
+  let postPage: PostPage;
 
   test.beforeEach(async ({ denserAutoTest0Page, page }) => {
     profileUserMenu = new ProfileUserMenu(page);
-    homePage = new HomePage(page)
-    profilePage = new ProfilePage(page)
+    homePage = new HomePage(page);
+    profilePage = new ProfilePage(page);
+    postPage = new PostPage(page);
   });
 
   test('Add user to follow list - user account', async ({ denserAutoTest0Page }) => {
@@ -37,14 +40,14 @@ test.describe('Follow user - tests', () => {
 
   test('Add user to follow list from post', async ({ denserAutoTest0Page }) => {
     const postAuthor = await denserAutoTest0Page.page.locator(homePage.postAuthor).first().innerText()
-    await denserAutoTest0Page.page.waitForTimeout(5000)
-    await expect(denserAutoTest0Page.page.locator('[data-testid="post-image"]').first()).toBeVisible()
-    await denserAutoTest0Page.page.locator('[data-testid="post-image"]').first().click({force: true})
-    await expect(denserAutoTest0Page.page.locator('[id="articleBody"]').first()).toBeVisible()
-    await denserAutoTest0Page.page.getByTestId('author-data').getByTestId('author-name-link').click()
-    await expect(denserAutoTest0Page.page.getByTestId('user-popover-card-content')).toBeVisible()
-    await denserAutoTest0Page.page.getByTestId('profile-follow-button').click()
-    await expect(denserAutoTest0Page.page.getByTestId('profile-follow-button')).toContainText('Unfollow')
+    
+    await expect(denserAutoTest0Page.page.locator(homePage.postsImages).first()).toBeVisible()
+    await denserAutoTest0Page.page.locator(homePage.postsImages).first().click({force: true})
+    await expect(denserAutoTest0Page.page.locator(postPage.articleBodyString).first()).toBeVisible()
+    await denserAutoTest0Page.page.locator(postPage.articleAuthor).first().click()
+    await expect(denserAutoTest0Page.page.locator(postPage.userPopoverCardContent)).toBeVisible()
+    await denserAutoTest0Page.page.locator(postPage.profileFollowBtn).click()
+    await expect(denserAutoTest0Page.page.locator(postPage.profileFollowBtn)).toContainText('Unfollow')
 
     await denserAutoTest0Page.page.locator(homePage.profileAvatar).click()
     await denserAutoTest0Page.page.locator(profileUserMenu.profileLink).click()
