@@ -14,6 +14,7 @@ OPTIONS:
   --site-domain=SITE_DOMAIN             Site domain to be used by the new instance (default: 'https://blog.hive.blog')
   --blog-domain=BLOG_DOMAIN             Blog domain to be used by the new instance (default: 'https://blog.hive.blog')
   --explorer-domain=EXPLORER_DOMAIN     Explorer domain to be used by the new instance (default: 'https://explore.hive.blog')
+  --openhive-chat-uri=OPENHIVE_CHAT_URI Chat URI to be used by the new instance (default: 'http://openhive.chat')
   --chain-id=CHAIN_ID                   Chain ID to be used by the new instance (default: 'beeab0de00000000000000000000000000000000000000000000000000000000')
   --images-endpoint=URL                 IMAGES endpoint to be used by the new instance (default: 'https://images.hive.blog/')
   --app-scope=SCOPE                     App scope (eg. '@hive/auth')
@@ -31,6 +32,7 @@ WALLET_ENDPOINT=${WALLET_ENDPOINT:-"https://wallet.hive.blog"}
 SITE_DOMAIN=${SITE_DOMAIN:-"https://blog.hive.blog"}
 BLOG_DOMAIN=${BLOG_DOMAIN:-"https://blog.hive.blog"}
 EXPLORER_DOMAIN=${EXPLORER_DOMAIN:-"https://explore.openhive.network"}
+OPENHIVE_CHAT_URI=${OPENHIVE_CHAT_URI:-"http://openhive.chat"}
 CHAIN_ID=${CHAIN_ID:-"beeab0de00000000000000000000000000000000000000000000000000000000"}
 IMAGES_ENDPOINT=${IMAGES_ENDPOINT:="https://images.hive.blog/"}
 TURBO_APP_SCOPE=${TURBO_APP_SCOPE:-}
@@ -60,6 +62,10 @@ while [ $# -gt 0 ]; do
     --blog-domain=*)
         arg="${1#*=}"
         BLOG_DOMAIN="$arg"
+        ;;
+    --openhive-chat-uri=*)
+        arg="${1#*=}"
+        OPENHIVE_CHAT_URI="$arg"
         ;;
     --explorer-domain=*)
         arg="${1#*=}"
@@ -117,6 +123,7 @@ RUN_OPTIONS=(
     "--env" "REACT_APP_IMAGES_ENDPOINT=$IMAGES_ENDPOINT"
     "--env" "REACT_APP_WALLET_ENDPOINT=$WALLET_ENDPOINT"
     "--env" "REACT_APP_EXPLORER_DOMAIN=$EXPLORER_DOMAIN"
+    "--env" "REACT_APP_OPENHIVE_CHAT_URI=$OPENHIVE_CHAT_URI"
     "--env" "REACT_APP_SITE_DOMAIN=$SITE_DOMAIN"
     "--env" "REACT_APP_CHAIN_ID=$CHAIN_ID"
     "--env" "TURBO_APP_SCOPE=$TURBO_APP_SCOPE"
