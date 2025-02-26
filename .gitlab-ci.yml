@@ -490,7 +490,7 @@ publish:
   tags:
     - public-runner-docker
 
-.deploy_template_for_staging:
+.deploy_template:
   extends: .job-defaults
   stage: deploy
   before_script:
@@ -510,249 +510,160 @@ publish:
         --name="$CONTAINER_NAME" \
         --port=$PORT \
         --detach
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: manual
-      allow_failure: true
   tags:
     - hs-denser
 
-staging:deploy-auth:
-  extends: .deploy_template_for_staging
-  needs:
-    - docker-build-auth
-  script:
-    - export IMAGE_NAME="${AUTH_IMAGE_NAME}"
-    - !reference [ .deploy_template_for_staging , script ]
-  variables:
-    PORT: 7000
-    API_ENDPOINT: https://api.hive.blog
-    IMAGES_ENDPOINT: https://images.hive.blog/
-    CONTAINER_NAME: denser-auth
-    TURBO_APP_SCOPE: '@hive/auth'
-    TURBO_APP_PATH: '/apps/auth'
-    EXPLORER_DOMAIN: 'https://explore.openhive.network'
-  environment:
-    name: staging-auth
-    action: start
-    on_stop: staging:stop-auth
-
-staging:deploy-blog:
-  extends: .deploy_template_for_staging
+# DEVELOP BRANCH - MAINNET
+develop:deploy-blog-mainnet:
+  extends: .deploy_develop
   needs:
     - docker-build-blog
-  script:
-    - export IMAGE_NAME="${BLOG_IMAGE_NAME}"
-    - !reference [ .deploy_template_for_staging , script ]  
   variables:
-    PORT: 3000
-    API_ENDPOINT: https://api.hive.blog
-    IMAGES_ENDPOINT: https://images.hive.blog/
-    WALLET_ENDPOINT: https://wallet.openhive.network
-    CONTAINER_NAME: denser-blog
+    <<: [*develop_vars, *mainnet_vars]
+    PORT: 8111
+    CONTAINER_NAME: denser-blog-dev-mainnet
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
-    EXPLORER_DOMAIN: 'https://explore.openhive.network'
-  environment:
-    name: staging-blog
-    action: start
-    on_stop: staging:stop-blog
+    SITE_DOMAIN: https://blog.dev.openhive.network
+    WALLET_ENDPOINT: https://wallet.dev.openhive.network
 
-staging:deploy-wallet:
-  extends: .deploy_template_for_staging
+develop:deploy-wallet-mainnet:
+  extends: .deploy_develop
   needs:
     - docker-build-wallet
-  script:
-    - export IMAGE_NAME="${WALLET_IMAGE_NAME}"
-    - !reference [ .deploy_template_for_staging , script ]   
   variables:
-    PORT: 4000
-    API_ENDPOINT: https://api.hive.blog
-    IMAGES_ENDPOINT: https://images.hive.blog/
-    CONTAINER_NAME: denser-wallet
+    <<: [*develop_vars, *mainnet_vars]
+    PORT: 8122
+    CONTAINER_NAME: denser-wallet-dev-mainnet
     TURBO_APP_SCOPE: '@hive/wallet'
     TURBO_APP_PATH: '/apps/wallet'
-    EXPLORER_DOMAIN: 'https://explore.openhive.network'
-  environment:
-    name: staging-wallet
-    action: start
-    on_stop: staging:stop-wallet
+    SITE_DOMAIN: https://wallet.dev.openhive.network
+    BLOG_DOMAIN: https://blog.dev.openhive.network
 
-.stop_template_for_staging:
-  extends: .job-defaults
-  stage: deploy
-  script:
-    - docker ps -q --filter "name=$CONTAINER_NAME" | grep -q . && docker stop $CONTAINER_NAME
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: manual
-      allow_failure: true
-  tags:
-    - hs-denser
-
-staging:stop-auth:
-  extends: .stop_template_for_staging
+develop:deploy-auth-mainnet:
+  extends: .deploy_develop
   needs:
-    - staging:deploy-auth
-  environment:
-    name: staging-auth
-    action: stop
+    - docker-build-auth
   variables:
-    CONTAINER_NAME: denser-auth
-    GIT_STRATEGY: none
-
-staging:stop-blog:
-  extends: .stop_template_for_staging
-  needs:
-    - staging:deploy-blog
-  environment:
-    name: staging-blog
-    action: stop
-  variables:
-    CONTAINER_NAME: denser-blog
-    GIT_STRATEGY: none
-
-staging:stop-wallet:
-  extends: .stop_template_for_staging
-  needs:
-    - staging:deploy-wallet
-  environment:
-    name: staging-wallet
-    action: stop
-  variables:
-    CONTAINER_NAME: denser-wallet
-    GIT_STRATEGY: none
-
-review:deploy-auth:
-  extends: staging:deploy-auth
-  variables:
-    CONTAINER_NAME: denser-review-auth
-    PORT: 7001
-    AUTH_PORT: 7001
-    API_ENDPOINT: https://api.fake.openhive.network/
-    CHAIN_ID: '42'
-    IMAGES_ENDPOINT: https://images.hive.blog/
-    SITE_DOMAIN: https://auth.fake.openhive.network
-    LOGGING_BROWSER_ENABLED: false
-    LOGGING_LOG_LEVEL: info
-    EXPLORER_DOMAIN: 'https://testexplorer.openhive.network'
-  environment:
-    name: review-auth
-    action: start
-    on_stop: review:stop-auth
-
-review:deploy-blog:
-  extends: staging:deploy-blog
-  variables:
-    CONTAINER_NAME: denser-review-blog
-    PORT: 3001
-    BLOG_PORT: 3001
-    API_ENDPOINT: https://api.fake.openhive.network/
-    CHAIN_ID: '42'
-    IMAGES_ENDPOINT: https://images.hive.blog/
-    WALLET_ENDPOINT: https://wallet.fake.openhive.network
-    BLOG_DOMAIN: https://blog.fake.openhive.network
-    LOGGING_BROWSER_ENABLED: false
-    LOGGING_LOG_LEVEL: info
-    EXPLORER_DOMAIN: 'https://testexplorer.openhive.network'
-  environment:
-    name: review-blog
-    action: start
-    on_stop: review:stop-blog
-
-review:deploy-wallet:
-  extends: staging:deploy-wallet
-  variables:
-    CONTAINER_NAME: denser-review-wallet
-    PORT: 4001
-    WALLET_PORT: 4001
-    API_ENDPOINT: https://api.fake.openhive.network/
-    CHAIN_ID: '42'
-    IMAGES_ENDPOINT: https://images.hive.blog/
-    SITE_DOMAIN: https://wallet.fake.openhive.network
-    BLOG_DOMAIN: https://blog.fake.openhive.network
-    LOGGING_BROWSER_ENABLED: false
-    LOGGING_LOG_LEVEL: info
-    EXPLORER_DOMAIN: 'https://testexplorer.openhive.network'
-  environment:
-    name: review-wallet
-    action: start
-    on_stop: review:stop-wallet
-
-review:stop-auth:
-  extends: staging:stop-auth
-  needs:
-    - review:deploy-auth
-  variables:
-    CONTAINER_NAME: denser-review-auth
-  environment:
-    name: review-auth
-    action: stop
-
-review:stop-blog:
-  extends: staging:stop-blog
-  needs:
-    - review:deploy-blog
-  variables:
-    CONTAINER_NAME: denser-review-blog
-  environment:
-    name: review-blog
-    action: stop
-
-review:stop-wallet:
-  extends: staging:stop-wallet
-  needs:
-    - review:deploy-wallet
-  variables:
-    CONTAINER_NAME: denser-review-wallet
-  environment:
-    name: review-wallet
-    action: stop
-
-build_and_publish_auth_image:
-  stage: publish
-  extends: .publish_docker_image_template
-  variables:
+    <<: [*develop_vars, *mainnet_vars]
+    PORT: 8133
+    CONTAINER_NAME: denser-auth-dev-mainnet
     TURBO_APP_SCOPE: '@hive/auth'
     TURBO_APP_PATH: '/apps/auth'
-    TURBO_APP_NAME: 'auth'
-  before_script:
-    - !reference [.publish_docker_image_template, before_script]
-  script:
-    - scripts/ci-helpers/build_and_publish_instance.sh
-  tags:
-    - public-runner-docker
-    - hived-for-tests
+    SITE_DOMAIN: https://auth.dev.openhive.network
 
-build_and_publish_blog_image:
-  stage: publish
-  extends: .publish_docker_image_template
+# DEVELOP BRANCH - MIRRORNET
+develop:deploy-blog-mirrornet:
+  extends: .deploy_develop
+  needs:
+    - docker-build-blog
   variables:
+    <<: [*develop_vars, *mirrornet_vars]
+    PORT: 8211
+    CONTAINER_NAME: denser-blog-dev-mirrornet
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
-    TURBO_APP_NAME: 'blog'
-  before_script:
-    - !reference [.publish_docker_image_template, before_script]
-  script:
-    - scripts/ci-helpers/build_and_publish_instance.sh
-  tags:
-    - public-runner-docker
-    - hived-for-tests
+    SITE_DOMAIN: https://blog.dev.fake.openhive.network
+    WALLET_ENDPOINT: https://wallet.dev.fake.openhive.network
 
-build_and_publish_wallet_image:
-  stage: publish
-  extends: .publish_docker_image_template
+develop:deploy-wallet-mirrornet:
+  extends: .deploy_develop
+  needs:
+    - docker-build-wallet
   variables:
+    <<: [*develop_vars, *mirrornet_vars]
+    PORT: 8222
+    CONTAINER_NAME: denser-wallet-dev-mirrornet
     TURBO_APP_SCOPE: '@hive/wallet'
     TURBO_APP_PATH: '/apps/wallet'
-    TURBO_APP_NAME: 'wallet'
-  before_script:
-    - !reference [.publish_docker_image_template, before_script]
-  script:
-    - scripts/ci-helpers/build_and_publish_instance.sh
-  tags:
-    - public-runner-docker
-    - hived-for-tests
+    SITE_DOMAIN: https://wallet.dev.fake.openhive.network
+    BLOG_DOMAIN: https://blog.dev.fake.openhive.network
+
+develop:deploy-auth-mirrornet:
+  extends: .deploy_develop
+  needs:
+    - docker-build-auth
+  variables:
+    <<: [*develop_vars, *mirrornet_vars]
+    PORT: 8233
+    CONTAINER_NAME: denser-auth-dev-mirrornet
+    TURBO_APP_SCOPE: '@hive/auth'
+    TURBO_APP_PATH: '/apps/auth'
+    SITE_DOMAIN: https://auth.dev.fake.openhive.network
+
+# MAIN BRANCH - MAINNET
+main:deploy-blog-mainnet:
+  extends: .deploy_main
+  needs:
+    - docker-build-blog
+  variables:
+    <<: [*main_vars, *mainnet_vars]
+    PORT: 9111
+    CONTAINER_NAME: denser-blog-main-mainnet
+    TURBO_APP_SCOPE: '@hive/blog'
+    TURBO_APP_PATH: '/apps/blog'
+    SITE_DOMAIN: https://blog.openhive.network
+    WALLET_ENDPOINT: https://wallet.openhive.network
+
+main:deploy-wallet-mainnet:
+  extends: .deploy_main
+  needs:
+    - docker-build-wallet
+  variables:
+    <<: [*main_vars, *mainnet_vars]
+    PORT: 9122
+    CONTAINER_NAME: denser-wallet-main-mainnet
+    TURBO_APP_SCOPE: '@hive/wallet'
+    TURBO_APP_PATH: '/apps/wallet'
+    SITE_DOMAIN: https://wallet.openhive.network
+    BLOG_DOMAIN: https://blog.openhive.network
+
+main:deploy-auth-mainnet:
+  extends: .deploy_main
+  needs:
+    - docker-build-auth
+  variables:
+    <<: [*main_vars, *mainnet_vars]
+    PORT: 9133
+    CONTAINER_NAME: denser-auth-main-mainnet
+    TURBO_APP_SCOPE: '@hive/auth'
+    TURBO_APP_PATH: '/apps/auth'
+    SITE_DOMAIN: https://auth.openhive.network
+
+# MAIN BRANCH - MIRRORNET
+main:deploy-blog-mirrornet:
+  extends: .deploy_main
+  needs:
+    - docker-build-blog
+  variables:
+    <<: [*main_vars, *mirrornet_vars]
+    PORT: 9211
+    CONTAINER_NAME: denser-blog-main-mirrornet
+    TURBO_APP_SCOPE: '@hive/blog'
+    SITE_DOMAIN: https://blog.fake.openhive.network
+    WALLET_ENDPOINT: https://wallet.fake.openhive.network
+
+main:deploy-wallet-mirrornet:
+  extends: .deploy_main
+  needs:
+    - docker-build-wallet
+  variables:
+    <<: [*main_vars, *mirrornet_vars]
+    PORT: 9222
+    CONTAINER_NAME: denser-wallet-main-mirrornet
+    TURBO_APP_SCOPE: '@hive/wallet'
+    SITE_DOMAIN: https://wallet.fake.openhive.network
+    BLOG_DOMAIN: https://blog.fake.openhive.network
+
+main:deploy-auth-mirrornet:
+  extends: .deploy_main
+  needs:
+    - docker-build-auth
+  variables:
+    <<: [*main_vars, *mirrornet_vars]
+    PORT: 9233
+    CONTAINER_NAME: denser-auth-main-mirrornet
+    SITE_DOMAIN: https://auth.fake.openhive.network
 
 buildkit_cache_cleanup:
   stage: cleanup
