@@ -380,49 +380,31 @@ mirrornet-based-tests:
     - data-cache-storage
 
 e2e-tests-auth:
-  stage: test
+  extends: .e2e_tests_template
   needs:
     - docker-build-auth
-  image: "mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}"
-  script: 
-    - cd apps/auth
-    - npm run test:e2e
-  artifacts:
-    paths:
-      - "apps/auth/playwright-report/"
-      - "apps/auth/test-results/"
-    reports:
-      junit: "apps/auth/junit/results.xml"
+  variables:
+    TURBO_APP_SCOPE: '@hive/auth'
+    TURBO_APP_PATH: '/apps/auth'
+    TURBO_APP_NAME: 'auth'
 
 e2e-tests-blog:
-  stage: test
+  extends: .e2e_tests_template
   needs:
     - docker-build-blog
-  image: "mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}"
-  script:
-    - cd apps/blog
-    - npm run test:e2e
-  artifacts:
-    paths:
-      - "apps/blog/playwright-report/"
-      - "apps/blog/test-results/"
-    reports:
-      junit: "apps/blog/junit/results.xml"
+  variables:
+    TURBO_APP_SCOPE: '@hive/blog'
+    TURBO_APP_PATH: '/apps/blog'
+    TURBO_APP_NAME: 'blog'
 
 e2e-tests-wallet:
-  stage: test
+  extends: .e2e_tests_template
   needs:
     - docker-build-wallet
-  image: "mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}"
-  script:
-    - cd apps/wallet
-    - npm run test:e2e
-  artifacts:
-    paths:
-      - "apps/wallet/playwright-report/"
-      - "apps/wallet/test-results/"
-    reports:
-      junit: "apps/wallet/junit/results.xml"
+  variables:
+    TURBO_APP_SCOPE: '@hive/wallet'
+    TURBO_APP_PATH: '/apps/wallet'
+    TURBO_APP_NAME: 'wallet'
 
 .e2e_report_aggregate_template:
   extends: .node-job
