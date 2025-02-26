@@ -257,17 +257,17 @@ mirrornet-haf-node-replay:
     - !reference [.node-job, script]
     - |
       echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=false]\r\e[0KRunning tests..."
-      cd .$TURBO_APP_PATH
+      cd apps/${TURBO_APP_NAME}
       npx playwright install --with-deps
       npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --update-snapshots
       echo -e "\e[0Ksection_end:$(date +%s):tests\r\e[0K"
   artifacts:
     paths:
-      - .${TURBO_APP_PATH}/playwright-report/
-      - .${TURBO_APP_PATH}/test-results/
-      - .${TURBO_APP_PATH}/junit/
+      - apps/${TURBO_APP_NAME}/playwright-report/
+      - apps/${TURBO_APP_NAME}/test-results/
+      - apps/${TURBO_APP_NAME}/junit/
     reports:
-      junit: .${TURBO_APP_PATH}/junit/**/**/results.xml
+      junit: apps/${TURBO_APP_NAME}/junit/**/**/results.xml
 
 mirrornet-replay-data-copy:
   extends: .haf_api_node_replay_data_copy
@@ -386,23 +386,49 @@ e2e-tests-auth:
     - docker-build-auth
   variables:
     TURBO_APP_SCOPE: '@hive/auth'
-    TURBO_APP_PATH: '/apps/auth'
+    TURBO_APP_NAME: 'auth'
 
 e2e-tests-blog:
   extends: .e2e_tests_template
   needs:
     - docker-build-blog
+  services:
+    - name: $BLOG_IMAGE_NAME
+      alias: denser
+      variables:
+        HEALTHCHECK_TCP_PORT: '3000'
+    - name: caddy:${CADDY_TAG}
+      command:
+        - caddy
+        - reverse-proxy
+        - --from=https://caddy
+        - --to=denser:3000
+        - --internal-certs
   variables:
     TURBO_APP_SCOPE: '@hive/blog'
-    TURBO_APP_PATH: '/apps/blog'
+    TURBO_APP_NAME: 'blog'
+    PORT: 3000
 
 e2e-tests-wallet:
   extends: .e2e_tests_template
   needs:
     - docker-build-wallet
+  services:
+    - name: $WALLET_IMAGE_NAME
+      alias: denser
+      variables:
+        HEALTHCHECK_TCP_PORT: '4000'
+    - name: caddy:${CADDY_TAG}
+      command:
+        - caddy
+        - reverse-proxy
+        - --from=https://caddy
+        - --to=denser:4000
+        - --internal-certs
   variables:
     TURBO_APP_SCOPE: '@hive/wallet'
-    TURBO_APP_PATH: '/apps/wallet'
+    TURBO_APP_NAME: 'wallet'
+    PORT: 4000
 
 .e2e_report_aggregate_template:
   extends: .node-job
