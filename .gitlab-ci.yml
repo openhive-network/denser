@@ -55,27 +55,46 @@ include:
     file: 'ci/node-replay.gitlab-ci.yml'  
 
 .docker_build_template:
-  extends: .docker_image_builder_job_template
-  stage: build
-  before_script:
-    - !reference [.docker_image_builder_job_template, before_script]
-    - |
-      echo -e "\e[0Ksection_start:$(date +%s):login[collapsed=true]\r\e[0KLogging to Docker registry..."
-      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-      echo -e "\e[0Ksection_end:$(date +%s):login\r\e[0K"
-  script: 
-    - scripts/ci-helpers/docker-build-template-script.sh
-    # Add explicit export of the image name to the artifacts
-    - |
-      echo "IMAGE_NAME=${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:${CI_COMMIT_SHA}" > ${TURBO_APP_NAME}-docker-build.env
-  artifacts:
-    paths:
-      - ${TURBO_APP_NAME}-docker-build.env
-    reports:
-      dotenv: ${TURBO_APP_NAME}-docker-build.env
+  image: docker:24.0.5
   tags:
     - public-runner-docker
-    - hived-for-tests
+  services:
+    - docker:24.0.5-dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  before_script:
+    - echo "Logging to Docker registry..."
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - |
+      IMAGE_NAME="${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:${CI_COMMIT_SHA}"
+      echo "Building Docker image: ${IMAGE_NAME}"
+      docker build -t ${IMAGE_NAME} -f Dockerfile --target ${TURBO_APP_NAME} .
+      docker push ${IMAGE_NAME}
+      # Save the image name to a file that will be passed as an artifact
+      echo "IMAGE_NAME=${IMAGE_NAME}" > ${TURBO_APP_NAME}-docker-build.env
+  artifacts:
+    reports:
+      dotenv: ${TURBO_APP_NAME}-docker-build.env
+    expire_in: 1 day
+
+# Individual build jobs
+build-auth:
+  extends: .docker_build_template
+  variables:
+    TURBO_APP_NAME: auth
+
+build-blog:
+  extends: .docker_build_template
+  variables:
+    TURBO_APP_NAME: blog
+
+build-wallet:
+  extends: .docker_build_template
+  variables:
+    TURBO_APP_NAME: wallet
 
 mirrornet-haf-binaries-extraction:
   extends: .job-defaults
@@ -94,27 +113,6 @@ mirrornet-haf-binaries-extraction:
   tags:
     - public-runner-docker
     - hived-for-tests
-
-docker-build-auth:
-  extends: .docker_build_template
-  variables:
-    TURBO_APP_SCOPE: '@hive/auth'
-    TURBO_APP_PATH: '/apps/auth'
-    TURBO_APP_NAME: 'auth'
-
-docker-build-blog:
-  extends: .docker_build_template
-  variables:
-    TURBO_APP_SCOPE: '@hive/blog'
-    TURBO_APP_PATH: '/apps/blog'
-    TURBO_APP_NAME: 'blog'
-
-docker-build-wallet:
-  extends: .docker_build_template
-  variables:
-    TURBO_APP_SCOPE: '@hive/wallet'
-    TURBO_APP_PATH: '/apps/wallet'
-    TURBO_APP_NAME: 'wallet'
 
 # Hived binary built as a part of HAF requires an additional
 # library to function. This library has to be extracted from
@@ -245,12 +243,15 @@ mirrornet-haf-node-replay:
 .e2e_tests_template:
   extends: .node-job
   image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
+  tags:
+    - public-runner-docker
   variables:
     CI_DEBUG_SERVICES: true
     FF_NETWORK_PER_BUILD: 1
     REACT_APP_API_ENDPOINT: https://api.hive.blog
     REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
     DENSER_URL: https://caddy
+    TURBO_APP_PATH: apps/${TURBO_APP_NAME}
   parallel:
     matrix:
       - PROJECT: ['chromium', 'firefox', 'webkit']
@@ -497,6 +498,13 @@ publish:
 .deploy_template:
   extends: .job-defaults
   stage: deploy
+  tags:
+    - public-runner-docker
+  services:
+    - docker:24.0.5-dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
   before_script:
     - |
       echo -e "\e[0Ksection_start:$(date +%s):login[collapsed=true]\r\e[0KLogging to Docker registry..."
