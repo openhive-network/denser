@@ -257,17 +257,26 @@ mirrornet-haf-node-replay:
     - !reference [.node-job, script]
     - |
       echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=false]\r\e[0KRunning tests..."
-      cd apps/${TURBO_APP_NAME}
-      npx playwright install --with-deps
+      echo "Current directory before cd: $(pwd)"
+      echo "TURBO_APP_PATH value: $TURBO_APP_PATH"
+      echo "Directory contents before cd:"
+      ls -la
+      cd .$TURBO_APP_PATH
+      echo "Current directory after cd: $(pwd)"
+      echo "Directory contents after cd:"
+      ls -la
+      echo "Playwright config files:"
+      find . -name "playwright*.config.ts"
+      echo "Running test command: npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --update-snapshots"
       npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --update-snapshots
       echo -e "\e[0Ksection_end:$(date +%s):tests\r\e[0K"
   artifacts:
     paths:
-      - apps/${TURBO_APP_NAME}/playwright-report/
-      - apps/${TURBO_APP_NAME}/test-results/
-      - apps/${TURBO_APP_NAME}/junit/
+      - .${TURBO_APP_PATH}/playwright-report/
+      - .${TURBO_APP_PATH}/test-results/
+      - .${TURBO_APP_PATH}/junit/
     reports:
-      junit: apps/${TURBO_APP_NAME}/junit/**/**/results.xml
+      junit: .${TURBO_APP_PATH}/junit/**/**/results.xml
 
 mirrornet-replay-data-copy:
   extends: .haf_api_node_replay_data_copy
