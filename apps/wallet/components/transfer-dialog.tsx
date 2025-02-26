@@ -21,7 +21,7 @@ import {
 } from './hooks/use-transfer-hive-mutation';
 import { usePowerDownMutation, usePowerUpMutation } from './hooks/use-power-hive-mutation';
 import { useDelegateMutation } from './hooks/use-delegate-mutation';
-import { handleError } from '@ui/lib/utils';
+import { handleError } from '@ui/lib/handle-error';
 import { useQueryClient } from '@tanstack/react-query';
 import { TransactionBroadcastResult } from '@transaction/index';
 import { getVests, getAsset } from '../lib/utils';

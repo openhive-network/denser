@@ -26,6 +26,7 @@ export function useSubscribeMutation() {
       queryClient.invalidateQueries({ queryKey: ['subscriptions', username] });
       queryClient.invalidateQueries({ queryKey: ['community', community] });
       queryClient.invalidateQueries({ queryKey: ['subscribers', community] });
+      queryClient.invalidateQueries({ queryKey: ['AccountNotification', community]});
     }
   });
 
@@ -55,6 +56,7 @@ export function useUnsubscribeMutation() {
       queryClient.invalidateQueries({ queryKey: ['subscriptions', username] });
       queryClient.invalidateQueries({ queryKey: ['community', community] });
       queryClient.invalidateQueries({ queryKey: ['subscribers', community] });
+      queryClient.invalidateQueries({ queryKey: ['AccountNotification', community]});
     }
   });
 

@@ -34,7 +34,7 @@ import { getLogger } from '@ui/lib/logging';
 import SelectImageList from './select-image-list';
 import RendererContainer from './rendererContainer';
 import { usePostMutation } from './hooks/use-post-mutation';
-import { handleError } from '@ui/lib/utils';
+import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
 import { postClassName } from '../pages/[param]/[p2]/[permlink]';
 
@@ -351,7 +351,7 @@ export default function PostForm({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder={t('submit_page.title')} {...field} data-testid="post-title-input"/>
+                    <Input placeholder={t('submit_page.title')} {...field} data-testid="post-title-input" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -496,7 +496,9 @@ export default function PostForm({
                                 ? storedPost.category
                                 : 'blog'
                           }
-                          onValueChange={(e) => storePost({ ...storedPost, category: e })}
+                          onValueChange={(e) => {
+                            form.setValue('category', e);
+                            storePost({ ...storedPost, category: e })}}
                         >
                           <FormControl>
                             <SelectTrigger data-testid="posting-to-list-trigger">

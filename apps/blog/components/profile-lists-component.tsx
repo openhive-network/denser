@@ -25,7 +25,7 @@ import {
   useResetFollowMutedBlogMutation,
   useResetAllListsMutation
 } from './hooks/use-reset-mutations';
-import { handleError } from '@ui/lib/utils';
+import { handleError } from '@ui/lib/handle-error';
 
 import { CircleSpinner } from 'react-spinners-kit';
 
@@ -291,7 +291,7 @@ export default function ProfileLists({
               return (
                 <li
                   key={e.name}
-                  className="odd:bg-background-tertiary flex w-72 items-center justify-between bg-background p-1 font-semibold"
+                  className="flex w-72 items-center justify-between bg-background p-1 font-semibold odd:bg-background-tertiary"
                 >
                   <span className="px-2">
                     <Link className="text-destructive" href={`/@${e.name}`}>
@@ -335,7 +335,7 @@ export default function ProfileLists({
             })
           ) : null}
           {item_is_loading ? (
-            <li className="bg-background-tertiary flex h-9 w-72 items-center justify-center pl-2 pr-1">
+            <li className="flex h-9 w-72 items-center justify-center bg-background-tertiary pl-2 pr-1">
               <CircleSpinner loading={item_is_loading} size={18} color="#dc2626" />
             </li>
           ) : null}
@@ -376,7 +376,7 @@ export default function ProfileLists({
           <div className="flex flex-col items-center">
             <h1 className="text-xl font-bold">{t('user_profile.lists.list.add_account_to_list')}</h1>
             <span className="text-sm">{t('user_profile.lists.list.single_account')}</span>
-            <div className="bg-background-tertiary flex w-full justify-center p-2">
+            <div className="flex w-full justify-center bg-background-tertiary p-2">
               <Input
                 className="bg-background sm:w-3/4"
                 value={addValue}
@@ -397,7 +397,7 @@ export default function ProfileLists({
           </div>
         ) : null}
         <h1 className="text-xl font-bold">{t('user_profile.lists.list.search_this_list')}</h1>
-        <div className="bg-background-tertiary  flex justify-center p-2 sm:w-1/3">
+        <div className="flex  justify-center bg-background-tertiary p-2 sm:w-1/3">
           <Input onChange={(e) => onSearchChange(e.target.value)} className="bg-background sm:w-3/4" />
         </div>
         {userOwner ? (

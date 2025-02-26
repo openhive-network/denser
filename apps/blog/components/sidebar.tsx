@@ -16,19 +16,29 @@ import { siteConfig } from '@ui/config/site';
 const Item = ({
   href,
   children,
-  target = false
+  target = false,
+  disabled = false
 }: {
   href: string;
   children: ReactNode;
   target?: boolean;
+  disabled?: boolean;
 }) => {
   return (
-    <li className="hover:bg-background-secondary cursor-pointer border-b-2 border-border text-foreground hover:border-destructive dark:hover:border-destructive">
-      <Link href={href} target={clsx(target ? '_blank' : '')}>
-        <SheetClose className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
+    <li
+      className='cursor-pointer border-b-2 border-border text-foreground hover:border-destructive hover:bg-background-secondary dark:hover:border-destructive'
+    >
+      {disabled ? (
+        <div className="flex h-full w-full cursor-not-allowed items-center gap-1 p-4 text-sm font-semibold opacity-50 hover:border-border">
           {children}
-        </SheetClose>
-      </Link>
+        </div>
+      ) : (
+        <Link href={href} target={clsx(target ? '_blank' : '')}>
+          <SheetClose className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
+            {children}
+          </SheetClose>
+        </Link>
+      )}
     </li>
   );
 };
@@ -38,6 +48,7 @@ const Sidebar = () => {
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
   const walletHost = env('WALLET_ENDPOINT');
+  const expolorerHost = env('EXPLORER_DOMAIN');
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -54,7 +65,7 @@ const Sidebar = () => {
         <div className="flex flex-col">
           <ul className="flex flex-col">
             {!user?.isLoggedIn && (
-              <li className="hover:bg-background-secondary cursor-pointer border-b-2 border-border text-foreground hover:border-destructive dark:hover:border-destructive">
+              <li className="cursor-pointer border-b-2 border-border text-foreground hover:border-destructive hover:bg-background-secondary dark:hover:border-destructive">
                 <DialogLogin>
                   <div className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
                     {t('navigation.main_nav_bar.login')}
@@ -63,7 +74,7 @@ const Sidebar = () => {
               </li>
             )}
             {!user?.isLoggedIn && (
-              <li className="hover:bg-background-secondary cursor-pointer border-b-2 border-border text-foreground hover:border-destructive dark:hover:border-destructive">
+              <li className="cursor-pointer border-b-2 border-border text-foreground hover:border-destructive hover:bg-background-secondary dark:hover:border-destructive">
                 <Link href="https://signup.hive.io/" target="_blank">
                   <SheetClose className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
                     {t('navigation.main_nav_bar.sign_up')}
@@ -75,16 +86,16 @@ const Sidebar = () => {
             {!user?.isLoggedIn && <Separator className="my-2 sm:hidden" />}
             <Item href="/welcome">{t('navigation.sidebar.welcome')}</Item>
             <Item href="/faq.html">{t('navigation.sidebar.faq')}</Item>
-            <Item href="https://hiveblocks.com" target>
+            <Item href={expolorerHost} target>
               Block Explorer
               <Icons.forward className="w-4" />
             </Item>
             <Separator className="my-2" />
-            <Item href={`${walletHost}/recover_account_step_1`} target>
+            <Item href={`${walletHost}/recover_account_step_1`} target disabled={true}>
               {t('navigation.sidebar.stolen_account_recovery')}
               <Icons.forward className="w-4" />
             </Item>
-            <Item href={`${walletHost}/change_password`} target>
+            <Item href={`${walletHost}/${user.username}/password`} target disabled={!user?.isLoggedIn}>
               {t('navigation.sidebar.change_account_password')}
               <Icons.forward className="w-4" />
             </Item>
