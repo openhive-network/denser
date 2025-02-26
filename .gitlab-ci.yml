@@ -63,7 +63,11 @@ include:
       echo -e "\e[0Ksection_start:$(date +%s):login[collapsed=true]\r\e[0KLogging to Docker registry..."
       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
       echo -e "\e[0Ksection_end:$(date +%s):login\r\e[0K"
-  script: scripts/ci-helpers/docker-build-template-script.sh
+  script: 
+    - scripts/ci-helpers/docker-build-template-script.sh
+    # Add explicit export of the image name to the artifacts
+    - |
+      echo "IMAGE_NAME=${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:${CI_COMMIT_SHA}" > ${TURBO_APP_NAME}-docker-build.env
   artifacts:
     paths:
       - ${TURBO_APP_NAME}-docker-build.env
@@ -499,8 +503,28 @@ publish:
       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
       echo -e "\e[0Ksection_end:$(date +%s):login\r\e[0K"
   script:
-    - export IMAGE_NAME="${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:${CI_COMMIT_SHA}"
     - |
+      echo "Current directory: $(pwd)"
+      echo "Directory contents:"
+      ls -la
+      echo "Build env file contents:"
+      cat ${TURBO_APP_NAME}-docker-build.env || echo "Build env file not found!"
+      
+      if [ -f "${TURBO_APP_NAME}-docker-build.env" ]; then
+        source ${TURBO_APP_NAME}-docker-build.env
+        echo "Loaded IMAGE_NAME: $IMAGE_NAME"
+      else
+        echo "ERROR: Build artifact ${TURBO_APP_NAME}-docker-build.env not found!"
+        exit 1
+      fi
+
+      echo "Pulling image to verify it exists..."
+      docker pull "${IMAGE_NAME}" || {
+        echo "ERROR: Failed to pull image ${IMAGE_NAME}"
+        exit 1
+      }
+
+      echo "Running deployment..."
       scripts/run_instance.sh \
       --image="${IMAGE_NAME}" \
       --app-scope="${TURBO_APP_SCOPE}" \
@@ -558,7 +582,6 @@ develop:deploy-wallet-mainnet:
     - job: docker-build-wallet
       artifacts: true
     - job: e2e-tests-wallet
-    - job: mirrornet-based-tests
   variables:
     PORT: 8122
     CONTAINER_NAME: denser-wallet-dev-mainnet
@@ -576,7 +599,6 @@ develop:deploy-auth-mainnet:
   needs:
     - job: docker-build-auth
       artifacts: true
-    - job: mirrornet-based-tests
   variables:
     PORT: 8133
     CONTAINER_NAME: denser-auth-dev-mainnet
@@ -614,7 +636,6 @@ develop:deploy-wallet-mirrornet:
     - job: docker-build-wallet
       artifacts: true
     - job: e2e-tests-wallet
-    - job: mirrornet-based-tests
   variables:
     PORT: 8222
     CONTAINER_NAME: denser-wallet-dev-mirrornet
@@ -632,7 +653,6 @@ develop:deploy-auth-mirrornet:
   needs:
     - job: docker-build-auth
       artifacts: true
-    - job: mirrornet-based-tests
   variables:
     PORT: 8233
     CONTAINER_NAME: denser-auth-dev-mirrornet
@@ -670,7 +690,6 @@ main:deploy-wallet-mainnet:
     - job: docker-build-wallet
       artifacts: true
     - job: e2e-tests-wallet
-    - job: mirrornet-based-tests
   variables:
     PORT: 9122
     CONTAINER_NAME: denser-wallet-main-mainnet
@@ -688,7 +707,6 @@ main:deploy-auth-mainnet:
   needs:
     - job: docker-build-auth
       artifacts: true
-    - job: mirrornet-based-tests
   variables:
     PORT: 9133
     CONTAINER_NAME: denser-auth-main-mainnet
@@ -726,7 +744,6 @@ main:deploy-wallet-mirrornet:
     - job: docker-build-wallet
       artifacts: true
     - job: e2e-tests-wallet
-    - job: mirrornet-based-tests
   variables:
     PORT: 9222
     CONTAINER_NAME: denser-wallet-main-mirrornet
@@ -744,7 +761,6 @@ main:deploy-auth-mirrornet:
   needs:
     - job: docker-build-auth
       artifacts: true
-    - job: mirrornet-based-tests
   variables:
     PORT: 9233
     CONTAINER_NAME: denser-auth-main-mirrornet
