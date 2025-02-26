@@ -513,44 +513,68 @@ publish:
   tags:
     - hs-denser
 
+# Develop branch deployments (auto)
+.deploy_develop:
+  extends: .deploy_template
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+      when: on_success
+  variables:
+    EXPLORER_DOMAIN: 'https://testexplorer.openhive.network'
+
+# Main branch deployments (manual)
+.deploy_main:
+  extends: .deploy_template
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: manual
+  variables:
+    EXPLORER_DOMAIN: 'https://explore.openhive.network'
+
 # DEVELOP BRANCH - MAINNET
 develop:deploy-blog-mainnet:
   extends: .deploy_develop
   needs:
     - docker-build-blog
   variables:
-    <<: [*develop_vars, *mainnet_vars]
     PORT: 8111
     CONTAINER_NAME: denser-blog-dev-mainnet
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
     SITE_DOMAIN: https://blog.dev.openhive.network
     WALLET_ENDPOINT: https://wallet.dev.openhive.network
+    API_ENDPOINT: https://api.hive.blog
+    IMAGES_ENDPOINT: https://images.hive.blog/
+    CHAIN_ID: ''
 
 develop:deploy-wallet-mainnet:
   extends: .deploy_develop
   needs:
     - docker-build-wallet
   variables:
-    <<: [*develop_vars, *mainnet_vars]
     PORT: 8122
     CONTAINER_NAME: denser-wallet-dev-mainnet
     TURBO_APP_SCOPE: '@hive/wallet'
     TURBO_APP_PATH: '/apps/wallet'
     SITE_DOMAIN: https://wallet.dev.openhive.network
     BLOG_DOMAIN: https://blog.dev.openhive.network
+    API_ENDPOINT: https://api.hive.blog
+    IMAGES_ENDPOINT: https://images.hive.blog/
+    CHAIN_ID: ''
 
 develop:deploy-auth-mainnet:
   extends: .deploy_develop
   needs:
     - docker-build-auth
   variables:
-    <<: [*develop_vars, *mainnet_vars]
     PORT: 8133
     CONTAINER_NAME: denser-auth-dev-mainnet
     TURBO_APP_SCOPE: '@hive/auth'
     TURBO_APP_PATH: '/apps/auth'
     SITE_DOMAIN: https://auth.dev.openhive.network
+    API_ENDPOINT: https://api.hive.blog
+    IMAGES_ENDPOINT: https://images.hive.blog/
+    CHAIN_ID: ''
 
 # DEVELOP BRANCH - MIRRORNET
 develop:deploy-blog-mirrornet:
@@ -558,38 +582,44 @@ develop:deploy-blog-mirrornet:
   needs:
     - docker-build-blog
   variables:
-    <<: [*develop_vars, *mirrornet_vars]
     PORT: 8211
     CONTAINER_NAME: denser-blog-dev-mirrornet
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
     SITE_DOMAIN: https://blog.dev.fake.openhive.network
     WALLET_ENDPOINT: https://wallet.dev.fake.openhive.network
+    API_ENDPOINT: https://api.fake.openhive.network/
+    IMAGES_ENDPOINT: https://images.hive.blog/
+    CHAIN_ID: '42'
 
 develop:deploy-wallet-mirrornet:
   extends: .deploy_develop
   needs:
     - docker-build-wallet
   variables:
-    <<: [*develop_vars, *mirrornet_vars]
     PORT: 8222
     CONTAINER_NAME: denser-wallet-dev-mirrornet
     TURBO_APP_SCOPE: '@hive/wallet'
     TURBO_APP_PATH: '/apps/wallet'
     SITE_DOMAIN: https://wallet.dev.fake.openhive.network
     BLOG_DOMAIN: https://blog.dev.fake.openhive.network
+    API_ENDPOINT: https://api.fake.openhive.network/
+    IMAGES_ENDPOINT: https://images.hive.blog/
+    CHAIN_ID: '42'
 
 develop:deploy-auth-mirrornet:
   extends: .deploy_develop
   needs:
     - docker-build-auth
   variables:
-    <<: [*develop_vars, *mirrornet_vars]
     PORT: 8233
     CONTAINER_NAME: denser-auth-dev-mirrornet
     TURBO_APP_SCOPE: '@hive/auth'
     TURBO_APP_PATH: '/apps/auth'
     SITE_DOMAIN: https://auth.dev.fake.openhive.network
+    API_ENDPOINT: https://api.fake.openhive.network/
+    IMAGES_ENDPOINT: https://images.hive.blog/
+    CHAIN_ID: '42'
 
 # MAIN BRANCH - MAINNET
 main:deploy-blog-mainnet:
@@ -597,38 +627,44 @@ main:deploy-blog-mainnet:
   needs:
     - docker-build-blog
   variables:
-    <<: [*main_vars, *mainnet_vars]
     PORT: 9111
     CONTAINER_NAME: denser-blog-main-mainnet
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
     SITE_DOMAIN: https://blog.openhive.network
     WALLET_ENDPOINT: https://wallet.openhive.network
+    API_ENDPOINT: https://api.hive.blog
+    IMAGES_ENDPOINT: https://images.hive.blog/
+    CHAIN_ID: ''
 
 main:deploy-wallet-mainnet:
   extends: .deploy_main
   needs:
     - docker-build-wallet
   variables:
-    <<: [*main_vars, *mainnet_vars]
     PORT: 9122
     CONTAINER_NAME: denser-wallet-main-mainnet
     TURBO_APP_SCOPE: '@hive/wallet'
     TURBO_APP_PATH: '/apps/wallet'
     SITE_DOMAIN: https://wallet.openhive.network
     BLOG_DOMAIN: https://blog.openhive.network
+    API_ENDPOINT: https://api.hive.blog
+    IMAGES_ENDPOINT: https://images.hive.blog/
+    CHAIN_ID: ''
 
 main:deploy-auth-mainnet:
   extends: .deploy_main
   needs:
     - docker-build-auth
   variables:
-    <<: [*main_vars, *mainnet_vars]
     PORT: 9133
     CONTAINER_NAME: denser-auth-main-mainnet
     TURBO_APP_SCOPE: '@hive/auth'
     TURBO_APP_PATH: '/apps/auth'
     SITE_DOMAIN: https://auth.openhive.network
+    API_ENDPOINT: https://api.hive.blog
+    IMAGES_ENDPOINT: https://images.hive.blog/
+    CHAIN_ID: ''
 
 # MAIN BRANCH - MIRRORNET
 main:deploy-blog-mirrornet:
@@ -636,34 +672,41 @@ main:deploy-blog-mirrornet:
   needs:
     - docker-build-blog
   variables:
-    <<: [*main_vars, *mirrornet_vars]
     PORT: 9211
     CONTAINER_NAME: denser-blog-main-mirrornet
     TURBO_APP_SCOPE: '@hive/blog'
     SITE_DOMAIN: https://blog.fake.openhive.network
     WALLET_ENDPOINT: https://wallet.fake.openhive.network
+    API_ENDPOINT: https://api.fake.openhive.network/
+    IMAGES_ENDPOINT: https://images.hive.blog/
+    CHAIN_ID: '42'
 
 main:deploy-wallet-mirrornet:
   extends: .deploy_main
   needs:
     - docker-build-wallet
   variables:
-    <<: [*main_vars, *mirrornet_vars]
     PORT: 9222
     CONTAINER_NAME: denser-wallet-main-mirrornet
     TURBO_APP_SCOPE: '@hive/wallet'
     SITE_DOMAIN: https://wallet.fake.openhive.network
     BLOG_DOMAIN: https://blog.fake.openhive.network
+    API_ENDPOINT: https://api.fake.openhive.network/
+    IMAGES_ENDPOINT: https://images.hive.blog/
+    CHAIN_ID: '42'
 
 main:deploy-auth-mirrornet:
   extends: .deploy_main
   needs:
     - docker-build-auth
   variables:
-    <<: [*main_vars, *mirrornet_vars]
     PORT: 9233
     CONTAINER_NAME: denser-auth-main-mirrornet
+    TURBO_APP_SCOPE: '@hive/auth'
     SITE_DOMAIN: https://auth.fake.openhive.network
+    API_ENDPOINT: https://api.fake.openhive.network/
+    IMAGES_ENDPOINT: https://images.hive.blog/
+    CHAIN_ID: '42'
 
 buildkit_cache_cleanup:
   stage: cleanup
