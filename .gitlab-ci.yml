@@ -63,6 +63,8 @@ include:
   script:
     - |
       IMAGE_NAME="${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:${CI_COMMIT_SHA}"
+      # Generate version.json file before building
+      ./scripts/write-version.sh ./apps/${TURBO_APP_NAME}/version.json
       docker build -t ${IMAGE_NAME} \
         --build-arg TURBO_APP_SCOPE="@hive/${TURBO_APP_NAME}" \
         --build-arg TURBO_APP_PATH="/apps/${TURBO_APP_NAME}" \
