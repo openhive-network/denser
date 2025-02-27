@@ -386,12 +386,14 @@ mirrornet-based-tests:
   tags:
     - data-cache-storage
 
+# Example test job for blog
 e2e-tests-blog:
   extends: .e2e_tests_template
   needs:
-    - docker-build-blog
+    - job: docker-build-blog
+      artifacts: true
   services:
-    - name: $BLOG_IMAGE_NAME
+    - name: ${CI_REGISTRY_IMAGE}/blog:${CI_COMMIT_SHA}
       alias: denser
       variables:
         HEALTHCHECK_TCP_PORT: '3000'
