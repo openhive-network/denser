@@ -150,7 +150,7 @@ test.describe('Test for slider voting', () => {
       const weightOfUndoUpvote: number = 0;
       const typeOperation: string = 'vote_operation';
       const voterName: string = users.denserautotest3.username;
-      const firstPostAuthor: string = 'cass';
+      const firstPostAuthor: string = 'dollarvigilante';
 
       const homePage: HomePage = new HomePage(denserAutoTest3Page.page);
       const votingSlider: VotingSlider = new VotingSlider(denserAutoTest3Page.page);
@@ -393,7 +393,7 @@ test.describe('Test for slider voting', () => {
       const weightOfUndoDownvote: number = 0;
       const typeOperation: string = 'vote_operation';
       const voterName: string = users.denserautotest3.username;
-      const firstPostAuthor: string = 'cass';
+      const firstPostAuthor: string = 'dollarvigilante';
 
       const homePage: HomePage = new HomePage(denserAutoTest3Page.page);
       const votingSlider: VotingSlider = new VotingSlider(denserAutoTest3Page.page);
