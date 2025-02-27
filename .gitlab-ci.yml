@@ -64,7 +64,7 @@ include:
     - |
       IMAGE_NAME="${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:${CI_COMMIT_SHA}"
       docker build -t ${IMAGE_NAME} \
-        --build-arg TURBO_APP_SCOPE="@denser/${TURBO_APP_NAME}" \
+        --build-arg TURBO_APP_SCOPE="@hive/${TURBO_APP_NAME}" \
         --build-arg TURBO_APP_PATH="/apps/${TURBO_APP_NAME}" \
         --build-arg TURBO_APP_NAME="${TURBO_APP_NAME}" \
         --target runner \
