@@ -4,6 +4,7 @@ import path from 'path';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getTranslations } from '../lib/get-translations';
 import { useTranslation } from 'next-i18next';
+import { useMemo } from 'react';
 
 export const getServerSideProps: GetServerSideProps<{
   data: string;
@@ -26,14 +27,14 @@ function Welcome({ data }: InferGetServerSidePropsType<typeof getServerSideProps
     typographer: false,
     quotes: '“”‘’'
   });
-  const welcome_page = renderer.render(data);
+  const content = useMemo(() => renderer.render(data), []);
   return (
     <div className="mx-auto my-12 max-w-3xl px-4">
       <div
         id="articleBody"
         className="prose"
         dangerouslySetInnerHTML={{
-          __html: welcome_page
+          __html: content
         }}
       />
     </div>
