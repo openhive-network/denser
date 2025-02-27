@@ -517,21 +517,21 @@ publish:
 
       if [ -f "${TURBO_APP_NAME}-docker-build.env" ]; then
         source ${TURBO_APP_NAME}-docker-build.env
-        echo "Loaded IMAGE_NAME: $IMAGE_NAME"
+        echo "Loaded IMAGE_NAME: $DOCKER_IMAGE"
       else
         echo "ERROR: Build artifact ${TURBO_APP_NAME}-docker-build.env not found!"
         exit 1
       fi
 
       echo "Pulling image to verify it exists..."
-      docker pull "${IMAGE_NAME}" || {
-        echo "ERROR: Failed to pull image ${IMAGE_NAME}"
+      docker pull "${DOCKER_IMAGE}" || {
+        echo "ERROR: Failed to pull image ${DOCKER_IMAGE}"
         exit 1
       }
 
       echo "Running deployment..."
       scripts/run_instance.sh \
-      --image="${IMAGE_NAME}" \
+      --image="${DOCKER_IMAGE}" \
       --app-scope="${TURBO_APP_SCOPE}" \
       --app-path="${TURBO_APP_PATH}" \
       --api-endpoint="${API_ENDPOINT}" \
