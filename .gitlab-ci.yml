@@ -505,8 +505,10 @@ publish:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - echo "Current directory $(pwd)"
     - ls -la
-    - echo "Build env file contents"
-    - cat ${TURBO_APP_NAME}-docker-build.env || echo "Build env file not found!"
+    - echo "Checking artifacts directory:"
+    - ls -la "${CI_PROJECT_DIR}"
+    # Check if file exists in expected location
+    - test -f "${TURBO_APP_NAME}-docker-build.env" && echo "Found env file" || echo "Env file not found"
   script:
     - |
       echo "Current directory: $(pwd)"
