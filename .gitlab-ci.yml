@@ -289,16 +289,18 @@ mirrornet-based-tests:
     - .node-job
   needs:
     - mirrornet-haf-binaries-extraction
-    - docker-build-auth
+    - job: docker-build-auth
+      artifacts: true
     - job: docker-build-blog
       artifacts: true
-    - docker-build-wallet
+    - job: docker-build-wallet
+      artifacts: true
     - mirrornet-replay-data-copy
     - block_log_processing
   image: 'mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}'
   services:
     - !reference [.haf_api_node_test, services]
-    - name: $DOCKER_IMAGE
+    - name: $DOCKER_IMAGE  # This will be from blog-docker-build.env
       alias: denser-blog
       variables:
         HEALTHCHECK_TCP_PORT: '3000'
@@ -315,9 +317,7 @@ mirrornet-based-tests:
         - --from=https://caddy-blog
         - --to=denser-blog:3000
         - --internal-certs
-        # - --debug
-        # - --access-log
-    - name: $WALLET_IMAGE_NAME
+    - name: $DOCKER_IMAGE  # This will be from wallet-docker-build.env
       alias: denser-wallet
       variables:
         HEALTHCHECK_TCP_PORT: '4000'
@@ -334,9 +334,7 @@ mirrornet-based-tests:
         - --from=https://caddy-wallet
         - --to=denser-wallet:4000
         - --internal-certs
-        # - --debug
-        # - --access-log
-    - name: $AUTH_IMAGE_NAME
+    - name: $DOCKER_IMAGE  # This will be from auth-docker-build.env
       alias: denser-auth
       variables:
         HEALTHCHECK_TCP_PORT: '5000'
@@ -352,8 +350,6 @@ mirrornet-based-tests:
         - --from=https://caddy-auth
         - --to=denser-auth:5000
         - --internal-certs
-        # - --debug
-        # - --access-log
   variables:
     GIT_STRATEGY: 'clone'
     CI_DEBUG_SERVICES: 'false'
