@@ -4,6 +4,7 @@ export class VotingSlider {
   readonly page: Page;
   readonly upvoteSliderModal: Locator;
   readonly upvoteSliderButton: Locator;
+  readonly upvoteSliderButtonIcon: Locator;
   readonly upvoteSliderThumb: Locator;
   readonly upvoteSliderTrack: Locator;
   readonly upvoteSliderPercentageValue: Locator;
@@ -19,6 +20,7 @@ export class VotingSlider {
     this.page = page;
     this.upvoteSliderModal = page.locator('[data-testid="upvote-slider-modal"]');
     this.upvoteSliderButton = page.locator('[data-testid="upvote-button-slider"]');
+    this.upvoteSliderButtonIcon = page.locator('[data-testid="upvote-button-slider"] > svg');
     this.upvoteSliderThumb = page.locator('[data-testid="upvote-slider-thumb"]');
     this.upvoteSliderTrack = page.locator('[data-testid="upvote-slider-track"]');
     this.upvoteSliderPercentageValue = page.locator('[data-testid="upvote-slider-percentage-value"]');
