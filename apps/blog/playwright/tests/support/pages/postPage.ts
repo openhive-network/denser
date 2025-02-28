@@ -93,6 +93,8 @@ export class PostPage {
   readonly articleAuthor: string;
   readonly userPopoverCardContent: string;
   readonly profileFollowBtn: string;
+  readonly commentCard: string;
+  readonly commentListItem: string;
 
   constructor(page: Page) {
     this.page = page;
@@ -129,6 +131,7 @@ export class PostPage {
     this.buttonFollowPopoverCard = page.locator('button').getByText('FOLLOW');
     this.buttonMutePopoverCard = page.locator('button').getByText('Mute');
     this.commentListItems = page.locator('[data-testid="comment-list-item"]');
+    this.commentListItem = '[data-testid="comment-list-item"]'
     this.commentAuthorLink = page.locator(
       '[data-testid="comment-card-header"] [data-testid="author-name-link"]'
     );
@@ -140,6 +143,7 @@ export class PostPage {
     this.commentCardsHeadersTimeStampLink = page.locator('[data-testid="comment-timestamp-link"]');
     this.commentCardsTitles = page.locator('[data-testid="comment-card-title"]');
     this.commentCardsDescriptions = page.locator('[data-testid="comment-card-description"]');
+    this.commentCard = '[data-testid="comment-card-description"]';
     this.commentCardsFooters = page.locator('[data-testid="comment-card-footer"]');
     this.commentCardsFooterUpvotes = this.commentCardsFooters.locator('[data-testid="upvote-button"]');
     this.commentCardsFooterDownvotes = this.commentCardsFooters.locator('[data-testid="downvote-button"]');
