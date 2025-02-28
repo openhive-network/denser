@@ -541,5 +541,69 @@ test.describe('Test for slider voting', () => {
         weightOfUndoDownvote
       );
     });
+
+    test('Validate setting downvote slider css styles in white mode', async ({ denserAutoTest3Page }) => {
+        const homePage: HomePage = new HomePage(denserAutoTest3Page.page);
+        const votingSlider: VotingSlider = new VotingSlider(denserAutoTest3Page.page);
+
+        const firstPostDownvoteButtonLocatorToClick: Locator = homePage.getFirstPostDownvoteButton;
+        await firstPostDownvoteButtonLocatorToClick.click();
+        // Validate that Downvote button modal is visible
+        await expect(votingSlider.downvoteSliderModal).toBeVisible();
+
+        // Downvote slider modal
+        expect(await homePage.getElementCssPropertyValue(votingSlider.downvoteSliderModal, 'color')).toBe('rgb(15, 23, 42)');
+        expect(await homePage.getElementCssPropertyValue(votingSlider.downvoteSliderModal, 'background-color')).toBe('rgb(247, 247, 247)');
+        // Downvote slider track
+        expect(await homePage.getElementCssPropertyValue(votingSlider.downvoteSliderTrack, 'color')).toBe('rgb(15, 23, 42)');
+        // Downvote slider handel
+        expect(await homePage.getElementCssPropertyValue(votingSlider.downvoteSliderThumb, 'color')).toBe('rgb(15, 23, 42)');
+        expect(await homePage.getElementCssPropertyValue(votingSlider.downvoteSliderThumb, 'background-color')).toBe('rgb(255, 255, 255)');
+        // Downvote slider percentage value
+        expect(await homePage.getElementCssPropertyValue(votingSlider.downvoteSliderPercentageValue, 'color')).toBe('rgb(218, 43, 43)');
+        // Downvote slider button icon
+        await votingSlider.downvoteSliderModal.hover();
+        expect(await homePage.getElementCssPropertyValue(votingSlider.downvoteSliderButtonIcon, 'color')).toBe('rgb(75, 85, 99)');
+        expect(await homePage.getElementCssPropertyValue(votingSlider.downvoteSliderButtonIcon, 'background-color')).toBe('rgba(0, 0, 0, 0)');
+        // Downvote slider button icon after hover it
+        await votingSlider.downvoteSliderButton.hover();
+        expect(await homePage.getElementCssPropertyValue(votingSlider.downvoteSliderButtonIcon, 'color')).toBe('rgb(255, 255, 255)');
+        expect(await homePage.getElementCssPropertyValue(votingSlider.downvoteSliderButtonIcon, 'background-color')).toBe('rgb(75, 85, 99)');
+      });
+
+      test('Validate setting downvote slider css styles in dark mode', async ({ denserAutoTest3Page }) => {
+        const homePage: HomePage = new HomePage(denserAutoTest3Page.page);
+        const votingSlider: VotingSlider = new VotingSlider(denserAutoTest3Page.page);
+        const profileMenu: ProfileUserMenu = new ProfileUserMenu(denserAutoTest3Page.page);
+
+        // Set the dark theme
+        await profileMenu.setTheme('Dark');
+        await profileMenu.page.waitForTimeout(500);
+
+        const firstPostDownvoteButtonLocatorToClick: Locator = homePage.getFirstPostDownvoteButton;
+        await firstPostDownvoteButtonLocatorToClick.click();
+
+        // Validate that downvote button modal is visible
+        await expect(votingSlider.downvoteSliderModal).toBeVisible();
+
+        // Downvote slider modal
+        expect(await homePage.getElementCssPropertyValue(votingSlider.downvoteSliderModal, 'color')).toBe('rgb(148, 163, 184)');
+        expect(await homePage.getElementCssPropertyValue(votingSlider.downvoteSliderModal, 'background-color')).toBe('rgb(34, 38, 42)');
+        // Downvote slider track
+        expect(await homePage.getElementCssPropertyValue(votingSlider.downvoteSliderTrack, 'color')).toBe('rgb(148, 163, 184)');
+        // Downvote slider handel
+        expect(await homePage.getElementCssPropertyValue(votingSlider.downvoteSliderThumb, 'color')).toBe('rgb(148, 163, 184)');
+        expect(await homePage.getElementCssPropertyValue(votingSlider.downvoteSliderThumb, 'background-color')).toBe('rgb(44, 48, 53)');
+        // Downvote slider percentage value
+        expect(await homePage.getElementCssPropertyValue(votingSlider.downvoteSliderPercentageValue, 'color')).toBe('rgb(226, 18, 53)');
+        // Downvote slider button icon
+        await votingSlider.downvoteSliderModal.hover();
+        expect(await homePage.getElementCssPropertyValue(votingSlider.downvoteSliderButtonIcon, 'color')).toBe('rgb(75, 85, 99)');
+        expect(await homePage.getElementCssPropertyValue(votingSlider.downvoteSliderButtonIcon, 'background-color')).toBe('rgba(0, 0, 0, 0)');
+        // Downvote slider button icon after hover it
+        await votingSlider.downvoteSliderButton.hover();
+        expect(await homePage.getElementCssPropertyValue(votingSlider.downvoteSliderButtonIcon, 'color')).toBe('rgb(255, 255, 255)');
+        expect(await homePage.getElementCssPropertyValue(votingSlider.downvoteSliderButtonIcon, 'background-color')).toBe('rgb(75, 85, 99)');
+      });
   });
 });
