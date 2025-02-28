@@ -11,6 +11,7 @@ export class VotingSlider {
 
   readonly downvoteSliderModal: Locator;
   readonly downvoteSliderButton: Locator;
+  readonly downvoteSliderButtonIcon: Locator;
   readonly downvoteSliderThumb: Locator;
   readonly downvoteSliderTrack: Locator;
   readonly downvoteSliderPercentageValue: Locator;
@@ -27,6 +28,7 @@ export class VotingSlider {
 
     this.downvoteSliderModal = page.locator('[data-testid="downvote-slider-modal"]');
     this.downvoteSliderButton = page.locator('[data-testid="downvote-button-slider"]');
+    this.downvoteSliderButtonIcon = page.locator('[data-testid="downvote-button-slider"] > svg');
     this.downvoteSliderThumb = page.locator('[data-testid="downvote-slider-thumb"]');
     this.downvoteSliderTrack = page.locator('[data-testid="downvote-slider-track"]');
     this.downvoteSliderPercentageValue = page.locator('[data-testid="downvote-slider-percentage-value"]');
