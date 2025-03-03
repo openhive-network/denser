@@ -63,19 +63,22 @@ include:
   script:
     - |
       IMAGE_NAME="${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:${CI_COMMIT_SHA}"
-      # Generate version.json file before building
-      ./scripts/write-version.sh ./apps/${TURBO_APP_NAME}/version.json
       docker build -t ${IMAGE_NAME} \
-        --build-arg TURBO_APP_SCOPE="@hive/${TURBO_APP_NAME}" \
-        --build-arg TURBO_APP_PATH="/apps/${TURBO_APP_NAME}" \
+        --build-arg TURBO_APP_SCOPE="${TURBO_APP_SCOPE}" \
+        --build-arg TURBO_APP_PATH="${TURBO_APP_PATH}" \
         --build-arg TURBO_APP_NAME="${TURBO_APP_NAME}" \
         --target runner \
         -f Dockerfile .
       docker push ${IMAGE_NAME}
-      echo "DOCKER_IMAGE=${IMAGE_NAME}" > ${TURBO_APP_NAME}-docker-build.env
+      # Create the env file with the image name
+      echo "DOCKER_IMAGE=${IMAGE_NAME}" > "${TURBO_APP_NAME}-docker-build.env"
+      # Verify the file exists and has content
+      cat "${TURBO_APP_NAME}-docker-build.env"
   artifacts:
     reports:
-      dotenv: ${TURBO_APP_NAME}-docker-build.env
+      dotenv: "${TURBO_APP_NAME}-docker-build.env"
+    paths:
+      - "${TURBO_APP_NAME}-docker-build.env"
     expire_in: 1 day
   tags:
     - public-runner-docker
@@ -511,39 +514,14 @@ publish:
     - test -f "${TURBO_APP_NAME}-docker-build.env" && echo "Found env file" || echo "Env file not found"
   script:
     - |
-      echo "Current directory: $(pwd)"
-      echo "Directory contents:"
-      ls -la
-      echo "Build env file contents:"
-      cat ${TURBO_APP_NAME}-docker-build.env || echo "Build env file not found!"
-
-      if [ -f "${TURBO_APP_NAME}-docker-build.env" ]; then
-        source ${TURBO_APP_NAME}-docker-build.env
-        echo "Loaded IMAGE_NAME: $DOCKER_IMAGE"
-      else
+      if [ ! -f "${TURBO_APP_NAME}-docker-build.env" ]; then
         echo "ERROR: Build artifact ${TURBO_APP_NAME}-docker-build.env not found!"
+        ls -la
         exit 1
       fi
-
-      echo "Pulling image to verify it exists..."
-      docker pull "${DOCKER_IMAGE}" || {
-        echo "ERROR: Failed to pull image ${DOCKER_IMAGE}"
-        exit 1
-      }
-
-      echo "Running deployment..."
-      scripts/run_instance.sh \
-      --image="${DOCKER_IMAGE}" \
-      --app-scope="${TURBO_APP_SCOPE}" \
-      --app-path="${TURBO_APP_PATH}" \
-      --api-endpoint="${API_ENDPOINT}" \
-      --chain-id="${CHAIN_ID}" \
-      --images-endpoint="${IMAGES_ENDPOINT}" \
-      --name="${CONTAINER_NAME}" \
-      --port="${PORT}" \
-      --detach
-  tags:
-    - hs-denser
+      source "${TURBO_APP_NAME}-docker-build.env"
+      echo "Using DOCKER_IMAGE: ${DOCKER_IMAGE}"
+      # Your deployment commands here using ${DOCKER_IMAGE}
 
 # Develop branch deployments (auto)
 .deploy_develop:
@@ -602,16 +580,14 @@ develop:deploy-wallet-mainnet:
     CHAIN_ID: ''
 
 develop:deploy-auth-mainnet:
-  extends: .deploy_develop
+  extends: .deploy_template
   needs:
     - job: docker-build-auth
       artifacts: true
   variables:
+    TURBO_APP_NAME: 'auth'
     PORT: 8133
     CONTAINER_NAME: denser-auth-dev-mainnet
-    TURBO_APP_SCOPE: '@hive/auth'
-    TURBO_APP_PATH: '/apps/auth'
-    TURBO_APP_NAME: 'auth'
     SITE_DOMAIN: https://auth.dev.openhive.network
     API_ENDPOINT: https://api.hive.blog
     IMAGES_ENDPOINT: https://images.hive.blog/
@@ -656,16 +632,14 @@ develop:deploy-wallet-mirrornet:
     CHAIN_ID: '42'
 
 develop:deploy-auth-mirrornet:
-  extends: .deploy_develop
+  extends: .deploy_template
   needs:
     - job: docker-build-auth
       artifacts: true
   variables:
+    TURBO_APP_NAME: 'auth'
     PORT: 8233
     CONTAINER_NAME: denser-auth-dev-mirrornet
-    TURBO_APP_SCOPE: '@hive/auth'
-    TURBO_APP_PATH: '/apps/auth'
-    TURBO_APP_NAME: 'auth'
     SITE_DOMAIN: https://auth.dev.fake.openhive.network
     API_ENDPOINT: https://api.fake.openhive.network/
     IMAGES_ENDPOINT: https://images.hive.blog/
