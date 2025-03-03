@@ -134,6 +134,7 @@ library_extraction:
       - '${BINARY_CACHE_PATH}'
   tags:
     - public-runner-docker
+    - hived-for-tests
 
 extended_block_log_creation:
   extends: .extended_block_log_creation
@@ -654,6 +655,19 @@ main:deploy-wallet-mirrornet:
     name: main-wallet-mirrornet
     url: https://wallet.fake.openhive.network
     on_stop: main:stop-wallet-mirrornet
+
+# Stop jobs template
+.stop_template:
+  extends: .job-defaults
+  stage: cleanup
+  script:
+    - docker ps -q --filter "name=$CONTAINER_NAME" | grep -q . && docker stop $CONTAINER_NAME
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: manual
+      allow_failure: true
+  tags:
+    - hs-denser
 
 # Stop jobs for main deployments
 main:stop-auth-mainnet:
