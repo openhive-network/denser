@@ -41,6 +41,7 @@ import { useCancelPowerDownMutation } from '@/wallet/components/hooks/use-power-
 import env from '@beam-australia/react-env';
 import { useCancelTransferFromSavingsMutation } from '@/wallet/components/hooks/use-cancel-transfer-from-savings-mutation';
 import { handleError } from '@ui/lib/handle-error';
+import { CircleSpinner } from 'react-spinners-kit';
 
 const initialFilters: TransferFilters = {
   search: '',
@@ -437,8 +438,10 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                 className="h-fit flex-shrink-0 text-sm md:text-base"
                 variant="redHover"
                 onClick={() => claimRewards()}
+                disabled={claimRewardsMutation.isLoading}
               >
                 {t('transfers_page.redeem_rewards')}
+                {claimRewardsMutation.isLoading ? <CircleSpinner size={18} color="#dc2626" /> : null}
               </Button>
             </div>
           </div>
