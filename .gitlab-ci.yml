@@ -500,17 +500,7 @@ publish:
       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
       echo -e "\e[0Ksection_end:$(date +%s):login\r\e[0K"
   script:
-    - |
-      scripts/run_instance.sh \
-        --image="$IMAGE_NAME" \
-        --app-scope="$TURBO_APP_SCOPE" \
-        --app-path="$TURBO_APP_PATH" \
-        --api-endpoint="https://api.hive.blog" \
-        --chain-id="beeab0de00000000000000000000000000000000000000000000000000000000" \
-        --images-endpoint="https://images.hive.blog/" \
-        --name="$CONTAINER_NAME" \
-        --port=$PORT \
-        --detach
+    - scripts/run_instance.sh --image="$IMAGE_NAME" --app-scope="$TURBO_APP_SCOPE" --app-path="$TURBO_APP_PATH" --api-endpoint="https://api.hive.blog" --chain-id="beeab0de00000000000000000000000000000000000000000000000000000000" --images-endpoint="https://images.hive.blog/" --name="$CONTAINER_NAME" --port=$PORT --detach
   tags:
     - hs-denser
 
@@ -518,17 +508,7 @@ publish:
   extends: .deploy_template_mainnet
   stage: deploy-mirrornet
   script:
-    - |
-      scripts/run_instance.sh \
-        --image="$IMAGE_NAME" \
-        --app-scope="$TURBO_APP_SCOPE" \
-        --app-path="$TURBO_APP_PATH" \
-        --api-endpoint="https://api.fake.openhive.network/" \
-        --chain-id="42" \
-        --images-endpoint="https://images.hive.blog/" \
-        --name="$CONTAINER_NAME" \
-        --port=$PORT \
-        --detach
+    - scripts/run_instance.sh --image="$IMAGE_NAME" --app-scope="$TURBO_APP_SCOPE" --app-path="$TURBO_APP_PATH" --api-endpoint="https://api.fake.openhive.network/" --chain-id="42" --images-endpoint="https://images.hive.blog/" --name="$CONTAINER_NAME" --port=$PORT --detach
 
 # Develop branch deployments (auto)
 develop:deploy-auth-mainnet:
