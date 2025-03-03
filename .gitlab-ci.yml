@@ -500,7 +500,17 @@ publish:
       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
       echo -e "\e[0Ksection_end:$(date +%s):login\r\e[0K"
   script:
-    - scripts/run_instance.sh --image="$IMAGE_NAME" --app-scope="$TURBO_APP_SCOPE" --app-path="$TURBO_APP_PATH" --api-endpoint="https://api.hive.blog" --chain-id="beeab0de00000000000000000000000000000000000000000000000000000000" --images-endpoint="https://images.hive.blog/" --name="$CONTAINER_NAME" --port=$PORT --detach
+    - |
+      scripts/run_instance.sh \
+        --image="$IMAGE_NAME" \
+        --app-scope="$TURBO_APP_SCOPE" \
+        --app-path="$TURBO_APP_PATH" \
+        --api-endpoint="https://api.hive.blog" \
+        --chain-id="beeab0de00000000000000000000000000000000000000000000000000000000" \
+        --images-endpoint="https://images.hive.blog/" \
+        --name="$CONTAINER_NAME" \
+        --port=$PORT \
+        --detach
   tags:
     - hs-denser
 
@@ -508,120 +518,17 @@ publish:
   extends: .deploy_template_mainnet
   stage: deploy-mirrornet
   script:
-    - scripts/run_instance.sh --image="$IMAGE_NAME" --app-scope="$TURBO_APP_SCOPE" --app-path="$TURBO_APP_PATH" --api-endpoint="https://api.fake.openhive.network/" --chain-id="42" --images-endpoint="https://images.hive.blog/" --name="$CONTAINER_NAME" --port=$PORT --detach
-
-# Develop branch deployments (auto)
-develop:deploy-auth-mainnet:
-  extends: .deploy_template_mainnet
-  needs:
-    - docker-build-auth
-  variables:
-    CONTAINER_NAME: denser-dev-auth
-    PORT: 8133
-    TURBO_APP_SCOPE: '@hive/auth'
-    TURBO_APP_PATH: '/apps/auth'
-    SITE_DOMAIN: https://auth.dev.openhive.network
-    EXPLORER_DOMAIN: https://explore.openhive.network
-  rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
-  environment:
-    name: develop-auth-mainnet
-    url: https://auth.dev.openhive.network
-    on_stop: develop:stop-auth-mainnet
-
-develop:deploy-blog-mainnet:
-  extends: .deploy_template_mainnet
-  needs:
-    - docker-build-blog
-  variables:
-    CONTAINER_NAME: denser-dev-blog
-    PORT: 8111
-    TURBO_APP_SCOPE: '@hive/blog'
-    TURBO_APP_PATH: '/apps/blog'
-    SITE_DOMAIN: https://blog.dev.openhive.network
-    WALLET_ENDPOINT: https://wallet.dev.openhive.network
-    EXPLORER_DOMAIN: https://explore.openhive.network
-  rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
-  environment:
-    name: develop-blog-mainnet
-    url: https://blog.dev.openhive.network
-    on_stop: develop:stop-blog-mainnet
-
-develop:deploy-wallet-mainnet:
-  extends: .deploy_template_mainnet
-  needs:
-    - docker-build-wallet
-  variables:
-    CONTAINER_NAME: denser-dev-wallet
-    PORT: 8122
-    TURBO_APP_SCOPE: '@hive/wallet'
-    TURBO_APP_PATH: '/apps/wallet'
-    SITE_DOMAIN: https://wallet.dev.openhive.network
-    BLOG_DOMAIN: https://blog.dev.openhive.network
-    EXPLORER_DOMAIN: https://explore.openhive.network
-  rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
-  environment:
-    name: develop-wallet-mainnet
-    url: https://wallet.dev.openhive.network
-    on_stop: develop:stop-wallet-mainnet
-
-develop:deploy-auth-mirrornet:
-  extends: .deploy_template_mirrornet
-  needs:
-    - docker-build-auth
-  variables:
-    CONTAINER_NAME: denser-dev-auth-mirror
-    PORT: 8233
-    TURBO_APP_SCOPE: '@hive/auth'
-    TURBO_APP_PATH: '/apps/auth'
-    SITE_DOMAIN: https://auth.dev.fake.openhive.network
-    EXPLORER_DOMAIN: https://testexplorer.openhive.network
-  rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
-  environment:
-    name: develop-auth-mirrornet
-    url: https://auth.dev.fake.openhive.network
-    on_stop: develop:stop-auth-mirrornet
-
-develop:deploy-blog-mirrornet:
-  extends: .deploy_template_mirrornet
-  needs:
-    - docker-build-blog
-  variables:
-    CONTAINER_NAME: denser-dev-blog-mirror
-    PORT: 8211
-    TURBO_APP_SCOPE: '@hive/blog'
-    TURBO_APP_PATH: '/apps/blog'
-    SITE_DOMAIN: https://blog.dev.fake.openhive.network
-    WALLET_ENDPOINT: https://wallet.dev.fake.openhive.network
-    EXPLORER_DOMAIN: https://testexplorer.openhive.network
-  rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
-  environment:
-    name: develop-blog-mirrornet
-    url: https://blog.dev.fake.openhive.network
-    on_stop: develop:stop-blog-mirrornet
-
-develop:deploy-wallet-mirrornet:
-  extends: .deploy_template_mirrornet
-  needs:
-    - docker-build-wallet
-  variables:
-    CONTAINER_NAME: denser-dev-wallet-mirror
-    PORT: 8222
-    TURBO_APP_SCOPE: '@hive/wallet'
-    TURBO_APP_PATH: '/apps/wallet'
-    SITE_DOMAIN: https://wallet.dev.fake.openhive.network
-    BLOG_DOMAIN: https://blog.dev.fake.openhive.network
-    EXPLORER_DOMAIN: https://testexplorer.openhive.network
-  rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
-  environment:
-    name: develop-wallet-mirrornet
-    url: https://wallet.dev.fake.openhive.network
-    on_stop: develop:stop-wallet-mirrornet
+    - |
+      scripts/run_instance.sh \
+        --image="$IMAGE_NAME" \
+        --app-scope="$TURBO_APP_SCOPE" \
+        --app-path="$TURBO_APP_PATH" \
+        --api-endpoint="https://api.fake.openhive.network/" \
+        --chain-id="42" \
+        --images-endpoint="https://images.hive.blog/" \
+        --name="$CONTAINER_NAME" \
+        --port=$PORT \
+        --detach
 
 # Main branch deployments (manual)
 main:deploy-auth-mainnet:
@@ -635,6 +542,7 @@ main:deploy-auth-mainnet:
     TURBO_APP_PATH: '/apps/auth'
     SITE_DOMAIN: https://auth.openhive.network
     EXPLORER_DOMAIN: https://explore.openhive.network
+    IMAGE_NAME: $AUTH_IMAGE_NAME
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: manual
@@ -655,6 +563,7 @@ main:deploy-blog-mainnet:
     SITE_DOMAIN: https://blog.openhive.network
     WALLET_ENDPOINT: https://wallet.openhive.network
     EXPLORER_DOMAIN: https://explore.openhive.network
+    IMAGE_NAME: $BLOG_IMAGE_NAME
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: manual
@@ -675,6 +584,7 @@ main:deploy-wallet-mainnet:
     SITE_DOMAIN: https://wallet.openhive.network
     BLOG_DOMAIN: https://blog.openhive.network
     EXPLORER_DOMAIN: https://explore.openhive.network
+    IMAGE_NAME: $WALLET_IMAGE_NAME
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: manual
@@ -694,6 +604,7 @@ main:deploy-auth-mirrornet:
     TURBO_APP_PATH: '/apps/auth'
     SITE_DOMAIN: https://auth.fake.openhive.network
     EXPLORER_DOMAIN: https://testexplorer.openhive.network
+    IMAGE_NAME: $AUTH_IMAGE_NAME
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: manual
@@ -714,6 +625,7 @@ main:deploy-blog-mirrornet:
     SITE_DOMAIN: https://blog.fake.openhive.network
     WALLET_ENDPOINT: https://wallet.fake.openhive.network
     EXPLORER_DOMAIN: https://testexplorer.openhive.network
+    IMAGE_NAME: $BLOG_IMAGE_NAME
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: manual
@@ -734,6 +646,7 @@ main:deploy-wallet-mirrornet:
     SITE_DOMAIN: https://wallet.fake.openhive.network
     BLOG_DOMAIN: https://blog.fake.openhive.network
     EXPLORER_DOMAIN: https://testexplorer.openhive.network
+    IMAGE_NAME: $WALLET_IMAGE_NAME
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: manual
@@ -741,19 +654,6 @@ main:deploy-wallet-mirrornet:
     name: main-wallet-mirrornet
     url: https://wallet.fake.openhive.network
     on_stop: main:stop-wallet-mirrornet
-
-# Stop jobs for develop deployments
-.stop_template:
-  extends: .job-defaults
-  stage: cleanup
-  script:
-    - docker ps -q --filter "name=$CONTAINER_NAME" | grep -q . && docker stop $CONTAINER_NAME
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "web"
-      when: manual
-      allow_failure: true
-  tags:
-    - hs-denser
 
 # Stop jobs for main deployments
 main:stop-auth-mainnet:
@@ -845,6 +745,125 @@ main:stop-wallet-mirrornet:
   environment:
     name: main-wallet-mirrornet
     action: stop
+
+# Develop branch deployments
+develop:deploy-auth-mainnet:
+  extends: .deploy_template_mainnet
+  needs:
+    - docker-build-auth
+  variables:
+    CONTAINER_NAME: denser-dev-auth
+    PORT: 8133
+    TURBO_APP_SCOPE: '@hive/auth'
+    TURBO_APP_PATH: '/apps/auth'
+    SITE_DOMAIN: https://auth.dev.openhive.network
+    EXPLORER_DOMAIN: https://explore.openhive.network
+    IMAGE_NAME: $AUTH_IMAGE_NAME
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+  environment:
+    name: develop-auth-mainnet
+    url: https://auth.dev.openhive.network
+    on_stop: develop:stop-auth-mainnet
+
+develop:deploy-blog-mainnet:
+  extends: .deploy_template_mainnet
+  needs:
+    - docker-build-blog
+  variables:
+    CONTAINER_NAME: denser-dev-blog
+    PORT: 8111
+    TURBO_APP_SCOPE: '@hive/blog'
+    TURBO_APP_PATH: '/apps/blog'
+    SITE_DOMAIN: https://blog.dev.openhive.network
+    WALLET_ENDPOINT: https://wallet.dev.openhive.network
+    EXPLORER_DOMAIN: https://explore.openhive.network
+    IMAGE_NAME: $BLOG_IMAGE_NAME
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+  environment:
+    name: develop-blog-mainnet
+    url: https://blog.dev.openhive.network
+    on_stop: develop:stop-blog-mainnet
+
+develop:deploy-wallet-mainnet:
+  extends: .deploy_template_mainnet
+  needs:
+    - docker-build-wallet
+  variables:
+    CONTAINER_NAME: denser-dev-wallet
+    PORT: 8122
+    TURBO_APP_SCOPE: '@hive/wallet'
+    TURBO_APP_PATH: '/apps/wallet'
+    SITE_DOMAIN: https://wallet.dev.openhive.network
+    BLOG_DOMAIN: https://blog.dev.openhive.network
+    EXPLORER_DOMAIN: https://explore.openhive.network
+    IMAGE_NAME: $WALLET_IMAGE_NAME
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+  environment:
+    name: develop-wallet-mainnet
+    url: https://wallet.dev.openhive.network
+    on_stop: develop:stop-wallet-mainnet
+
+develop:deploy-auth-mirrornet:
+  extends: .deploy_template_mirrornet
+  needs:
+    - docker-build-auth
+  variables:
+    CONTAINER_NAME: denser-dev-auth-mirror
+    PORT: 8233
+    TURBO_APP_SCOPE: '@hive/auth'
+    TURBO_APP_PATH: '/apps/auth'
+    SITE_DOMAIN: https://auth.dev.fake.openhive.network
+    EXPLORER_DOMAIN: https://testexplorer.openhive.network
+    IMAGE_NAME: $AUTH_IMAGE_NAME
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+  environment:
+    name: develop-auth-mirrornet
+    url: https://auth.dev.fake.openhive.network
+    on_stop: develop:stop-auth-mirrornet
+
+develop:deploy-blog-mirrornet:
+  extends: .deploy_template_mirrornet
+  needs:
+    - docker-build-blog
+  variables:
+    CONTAINER_NAME: denser-dev-blog-mirror
+    PORT: 8211
+    TURBO_APP_SCOPE: '@hive/blog'
+    TURBO_APP_PATH: '/apps/blog'
+    SITE_DOMAIN: https://blog.dev.fake.openhive.network
+    WALLET_ENDPOINT: https://wallet.dev.fake.openhive.network
+    EXPLORER_DOMAIN: https://testexplorer.openhive.network
+    IMAGE_NAME: $BLOG_IMAGE_NAME
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+  environment:
+    name: develop-blog-mirrornet
+    url: https://blog.dev.fake.openhive.network
+    on_stop: develop:stop-blog-mirrornet
+
+develop:deploy-wallet-mirrornet:
+  extends: .deploy_template_mirrornet
+  needs:
+    - docker-build-wallet
+  variables:
+    CONTAINER_NAME: denser-dev-wallet-mirror
+    PORT: 8222
+    TURBO_APP_SCOPE: '@hive/wallet'
+    TURBO_APP_PATH: '/apps/wallet'
+    SITE_DOMAIN: https://wallet.dev.fake.openhive.network
+    BLOG_DOMAIN: https://blog.dev.fake.openhive.network
+    EXPLORER_DOMAIN: https://testexplorer.openhive.network
+    IMAGE_NAME: $WALLET_IMAGE_NAME
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+  environment:
+    name: develop-wallet-mirrornet
+    url: https://wallet.dev.fake.openhive.network
+    on_stop: develop:stop-wallet-mirrornet
 
 # Stop jobs for develop deployments
 develop:stop-auth-mainnet:
