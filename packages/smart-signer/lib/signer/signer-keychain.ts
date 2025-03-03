@@ -2,6 +2,7 @@ import { KeychainSDK, KeychainKeyTypes } from 'keychain-sdk';
 import { Operation, TransferOperation } from '@hiveio/dhive';
 import { SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
 import { createWaxFoundation, operation, TTransactionPackType } from '@hiveio/wax';
+import KeychainProvider from '@hiveio/wax-signers-keychain';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -65,17 +66,20 @@ export function waxToKeychainOperation(operation: operation | operation[]) {
  * @extends {Signer}
  */
 export class SignerKeychain extends Signer {
+  private keychainProvider: KeychainProvider;
 
   constructor(
     signerOptions: SignerOptions,
     pack: TTransactionPackType = TTransactionPackType.LEGACY
     ) {
     super(signerOptions, pack);
+    this.keychainProvider = KeychainProvider.for(signerOptions.username, signerOptions.keyType);
   }
 
   async destroy(): Promise<void> {}
 
   async signChallenge({ message }: SignChallenge): Promise<string> {
+    console.log
     const { username, keyType } = this;
     logger.info('in SignerKeychain.signChallenge %o', { message, username, keyType });
     const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
@@ -105,13 +109,26 @@ export class SignerKeychain extends Signer {
 
   async signTransaction({ digest, transaction }: SignTransaction): Promise<string> {
     try {
-      const { username, keyType } = this;
       const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
 
       const wax = await createWaxFoundation({ chainId: this.chainId });
+      
       const txBuilder = wax.createTransactionFromProto(transaction);
       logger.info('signTransaction digests: %o', { digest, 'txBuilder.sigDigest': txBuilder.sigDigest });
       if (digest !== txBuilder.sigDigest) throw new Error('Digests do not match');
+
+      txBuilder.pushOperation({
+        custom_json: {
+          id: 'login',
+          json: JSON.stringify({
+            username: this.username,
+            keyType: this.keyType,
+            description: 'You are logging in to Denser using Hive Keychain',
+          }),
+          required_auths: ['posting'],
+          required_posting_auths: []
+        }
+      })
 
       // At this point we normally show transaction to user and get
       // his consent to sign it, but here we assume that Keychain will
@@ -128,17 +145,10 @@ export class SignerKeychain extends Signer {
       if (!(await keychain.isKeychainInstalled())) {
         throw new Error('Keychain is not installed');
       }
-      // Sign transaction. There's not digest nor publicKey in response.
-      const signResult = await keychain.signTx({
-        username,
-        method: KeychainKeyTypes[keyType],
-        tx: JSON.parse(txBuilder.toLegacyApi())
-      });
-      logger.info('SignerKeychain.signTransaction keychain response: %o', signResult);
-      if (signResult.error) {
-        throw new Error(`Error in signTx: ${signResult.error}`);
-      }
-      return signResult.result.signatures[0];
+
+      await this.keychainProvider.signTransaction(txBuilder);
+
+      return txBuilder.sigDigest;
     } catch (error) {
       logger.error('SignerKeychain.signTransaction error: %o', error);
       throw error;
