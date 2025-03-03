@@ -768,76 +768,25 @@ main:deploy-wallet-mirrornet:
   stage: cleanup
   script:
     - docker ps -q --filter "name=$CONTAINER_NAME" | grep -q . && docker stop $CONTAINER_NAME
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: manual
+      allow_failure: true
   tags:
     - hs-denser
-
-develop:stop-auth-mainnet:
-  extends: .stop_template
-  needs:
-    - develop:deploy-auth-mainnet
-  variables:
-    CONTAINER_NAME: denser-dev-auth
-  environment:
-    name: develop-auth-mainnet
-    action: stop
-
-develop:stop-blog-mainnet:
-  extends: .stop_template
-  needs:
-    - develop:deploy-blog-mainnet
-  variables:
-    CONTAINER_NAME: denser-dev-blog
-  environment:
-    name: develop-blog-mainnet
-    action: stop
-
-develop:stop-wallet-mainnet:
-  extends: .stop_template
-  needs:
-    - develop:deploy-wallet-mainnet
-  variables:
-    CONTAINER_NAME: denser-dev-wallet
-  environment:
-    name: develop-wallet-mainnet
-    action: stop
-
-develop:stop-auth-mirrornet:
-  extends: .stop_template
-  needs:
-    - develop:deploy-auth-mirrornet
-  variables:
-    CONTAINER_NAME: denser-dev-auth-mirror
-  environment:
-    name: develop-auth-mirrornet
-    action: stop
-
-develop:stop-blog-mirrornet:
-  extends: .stop_template
-  needs:
-    - develop:deploy-blog-mirrornet
-  variables:
-    CONTAINER_NAME: denser-dev-blog-mirror
-  environment:
-    name: develop-blog-mirrornet
-    action: stop
-
-develop:stop-wallet-mirrornet:
-  extends: .stop_template
-  needs:
-    - develop:deploy-wallet-mirrornet
-  variables:
-    CONTAINER_NAME: denser-dev-wallet-mirror
-  environment:
-    name: develop-wallet-mirrornet
-    action: stop
 
 # Stop jobs for main deployments
 main:stop-auth-mainnet:
   extends: .stop_template
   needs:
-    - main:deploy-auth-mainnet
+    - job: main:deploy-auth-mainnet
+      optional: true
   variables:
     CONTAINER_NAME: denser-main-auth
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+      allow_failure: true
   environment:
     name: main-auth-mainnet
     action: stop
@@ -845,9 +794,14 @@ main:stop-auth-mainnet:
 main:stop-blog-mainnet:
   extends: .stop_template
   needs:
-    - main:deploy-blog-mainnet
+    - job: main:deploy-blog-mainnet
+      optional: true
   variables:
     CONTAINER_NAME: denser-main-blog
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+      allow_failure: true
   environment:
     name: main-blog-mainnet
     action: stop
@@ -855,9 +809,14 @@ main:stop-blog-mainnet:
 main:stop-wallet-mainnet:
   extends: .stop_template
   needs:
-    - main:deploy-wallet-mainnet
+    - job: main:deploy-wallet-mainnet
+      optional: true
   variables:
     CONTAINER_NAME: denser-main-wallet
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+      allow_failure: true
   environment:
     name: main-wallet-mainnet
     action: stop
@@ -865,9 +824,14 @@ main:stop-wallet-mainnet:
 main:stop-auth-mirrornet:
   extends: .stop_template
   needs:
-    - main:deploy-auth-mirrornet
+    - job: main:deploy-auth-mirrornet
+      optional: true
   variables:
     CONTAINER_NAME: denser-main-auth-mirror
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+      allow_failure: true
   environment:
     name: main-auth-mirrornet
     action: stop
@@ -875,9 +839,14 @@ main:stop-auth-mirrornet:
 main:stop-blog-mirrornet:
   extends: .stop_template
   needs:
-    - main:deploy-blog-mirrornet
+    - job: main:deploy-blog-mirrornet
+      optional: true
   variables:
     CONTAINER_NAME: denser-main-blog-mirror
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+      allow_failure: true
   environment:
     name: main-blog-mirrornet
     action: stop
@@ -885,9 +854,105 @@ main:stop-blog-mirrornet:
 main:stop-wallet-mirrornet:
   extends: .stop_template
   needs:
-    - main:deploy-wallet-mirrornet
+    - job: main:deploy-wallet-mirrornet
+      optional: true
   variables:
     CONTAINER_NAME: denser-main-wallet-mirror
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+      allow_failure: true
   environment:
     name: main-wallet-mirrornet
+    action: stop
+
+# Stop jobs for develop deployments
+develop:stop-auth-mainnet:
+  extends: .stop_template
+  needs:
+    - job: develop:deploy-auth-mainnet
+      optional: true
+  variables:
+    CONTAINER_NAME: denser-dev-auth
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+      when: manual
+      allow_failure: true
+  environment:
+    name: develop-auth-mainnet
+    action: stop
+
+develop:stop-blog-mainnet:
+  extends: .stop_template
+  needs:
+    - job: develop:deploy-blog-mainnet
+      optional: true
+  variables:
+    CONTAINER_NAME: denser-dev-blog
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+      when: manual
+      allow_failure: true
+  environment:
+    name: develop-blog-mainnet
+    action: stop
+
+develop:stop-wallet-mainnet:
+  extends: .stop_template
+  needs:
+    - job: develop:deploy-wallet-mainnet
+      optional: true
+  variables:
+    CONTAINER_NAME: denser-dev-wallet
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+      when: manual
+      allow_failure: true
+  environment:
+    name: develop-wallet-mainnet
+    action: stop
+
+develop:stop-auth-mirrornet:
+  extends: .stop_template
+  needs:
+    - job: develop:deploy-auth-mirrornet
+      optional: true
+  variables:
+    CONTAINER_NAME: denser-dev-auth-mirror
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+      when: manual
+      allow_failure: true
+  environment:
+    name: develop-auth-mirrornet
+    action: stop
+
+develop:stop-blog-mirrornet:
+  extends: .stop_template
+  needs:
+    - job: develop:deploy-blog-mirrornet
+      optional: true
+  variables:
+    CONTAINER_NAME: denser-dev-blog-mirror
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+      when: manual
+      allow_failure: true
+  environment:
+    name: develop-blog-mirrornet
+    action: stop
+
+develop:stop-wallet-mirrornet:
+  extends: .stop_template
+  needs:
+    - job: develop:deploy-wallet-mirrornet
+      optional: true
+  variables:
+    CONTAINER_NAME: denser-dev-wallet-mirror
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+      when: manual
+      allow_failure: true
+  environment:
+    name: develop-wallet-mirrornet
     action: stop
