@@ -90,6 +90,7 @@ export class LoginHelper {
     await this.page.waitForSelector(this.profileMenu.profileMenuContent['_selector']);
     await this.profileMenu.validateUserProfileManuIsOpen();
     await this.profileMenu.validateUserNameInProfileMenu(username);
+    await this.profileMenu.clickCloseProfileMenu();
   }
 
   async validateLoggedInUser(username: string){
